@@ -107,7 +107,7 @@ Sidebar.prototype.init = function()
 					}
 				}
 			}
-			this.addImagePalette('clipart', stopsGroup.groupName, dir + '/clipart/', '_128x128.png',stopsNameList, stopsDescList, stopsNameList);
+			this.addImagePalette('clipart', stopsGroup.groupName, dir + '/clipart/', '_128x128.png',stopsNameList, stopsDescList, stopsNameList, stopsNameList);
 		}
 	};
 };
@@ -2547,14 +2547,14 @@ Sidebar.prototype.removePalette = function(id)
 /**
  * Adds the given image palette.
  */
-Sidebar.prototype.addImagePalette = function(id, title, prefix, postfix, items, titles, tags)
+Sidebar.prototype.addImagePalette = function(id, title, prefix, postfix, items, titles, values, tags)
 {
 	var showTitles = titles != null;
 	var fns = [];
 	
 	for (var i = 0; i < items.length; i++)
 	{
-		(mxUtils.bind(this, function(item, title, tmpTags)
+		(mxUtils.bind(this, function(item, title, value, tmpTags)
 		{
 			if (tmpTags == null)
 			{
@@ -2564,8 +2564,8 @@ Sidebar.prototype.addImagePalette = function(id, title, prefix, postfix, items, 
 			}
 			
 			fns.push(this.createVertexTemplateEntry('image;html=1;labelBackgroundColor=#ffffff;image=' + prefix + item + postfix,
-				this.defaultImageWidth, this.defaultImageHeight, '', title, title != null, null, this.filterTags(tmpTags)));
-		}))(items[i], (titles != null) ? titles[i] : null, (tags != null) ? tags[items[i]] : null);
+				this.defaultImageWidth, this.defaultImageHeight, value, title, title != null, null, this.filterTags(tmpTags)));
+		}))(items[i], (titles != null) ? titles[i] : null, (values != null) ? values[i] : '', (tags != null) ? tags[items[i]] : null);
 	}
 
 	this.addPaletteFunctions(id, title, false, fns);
