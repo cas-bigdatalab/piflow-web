@@ -455,6 +455,7 @@ Format.prototype.refresh = function()
 		label.style.width = (containsLabel) ? '50%' : '33.3%';
 		var label2 = label.cloneNode(false);
 		var label3 = label2.cloneNode(false);
+		var label4 = label3.cloneNode(false);
 
 		// Workaround for ignored background in IE
 		label2.style.backgroundColor = this.inactiveTabBackgroundColor;
@@ -479,26 +480,84 @@ Format.prototype.refresh = function()
 			addClickHandler(label, stylePanel, idx++);
 		}
 		
+		//属性
+		mxUtils.write(label4, mxResources.get('textAttribute'));
+		div.appendChild(label4);
+
+		var textPanel1 = div.cloneNode(false);
+		textPanel1.style.display = 'none';
+		//可编辑的inut
+		var bq = document.createElement('input');
+		bq.setAttribute('type', 'text');
+		bq.setAttribute('id', 'shuxingId');
+		bq.setAttribute('onblur', 'shiqu()');
+		//隐藏的input存放id
+		var hidden = document.createElement('input');
+		hidden.setAttribute('type', 'hidden');
+		hidden.setAttribute('id', 'hiddenId');
+		//通过id来显示属性
+		var span3 = document.createElement('label');
+		span3.setAttribute('id', 'pContent');
+		//span3.style.border = '0px';
+		//div.appendChild(bq);
+		var span = document.createElement('span');
+		var span2 = document.createElement('span');
+		var hr = document.createElement('hr');
+		mxUtils.write(span, '名称： ');
+		mxUtils.write(span2, '描述： ');
+		//div.appendChild(span);
+		this.container.appendChild(textPanel1);
+		this.container.appendChild(hr);
+		this.container.appendChild(span2);
+		this.container.appendChild(span3);
+		this.container.appendChild(document.createElement('br'));
+		this.container.appendChild(span);
+		this.container.appendChild(bq);
+		this.container.appendChild(hidden);
+		//document.getElementById("shuxingId").value = "内容";
+		var btn = mxUtils.button('保存', mxUtils.bind(this, function(evt)
+		{
+		var content = document.getElementById('shuxingId').value;
+		var hiddenId = document.getElementById('hiddenId').value;
+		 $.ajax({
+             cache:true, 
+             type:"POST", 
+             url:"/stops/updateStops", 
+             data:{"id":hiddenId,"content":content},
+             async:true, 
+             error:function(request){ 
+            	 console.log("error");
+                 return;
+             },
+             success:function(data){ 
+                 console.log("success");
+             }
+         });
+		}));
+		btn.style.width = '60px';
+		this.container.appendChild(btn);
+		
 		// Text
 		mxUtils.write(label2, mxResources.get('text'));
-		div.appendChild(label2);
+		//div.appendChild(label2);
 
 		var textPanel = div.cloneNode(false);
 		textPanel.style.display = 'none';
 		this.panels.push(new TextFormatPanel(this, ui, textPanel));
-		this.container.appendChild(textPanel);
+		//this.container.appendChild(textPanel);
 		
 		// Arrange
 		mxUtils.write(label3, mxResources.get('arrange'));
-		div.appendChild(label3);
+		//div.appendChild(label3);
 
 		var arrangePanel = div.cloneNode(false);
 		arrangePanel.style.display = 'none';
 		this.panels.push(new ArrangePanel(this, ui, arrangePanel));
-		this.container.appendChild(arrangePanel);
+		//this.container.appendChild(arrangePanel);
 		
 		addClickHandler(label2, textPanel, idx++);
 		addClickHandler(label3, arrangePanel, idx++);
+		addClickHandler(label4, textPanel1, idx++);
 	}
 };
 
@@ -4917,3 +4976,21 @@ DiagramFormatPanel.prototype.destroy = function()
 		this.gridEnabledListener = null;
 	}
 };
+function shiqu(){
+	var content = document.getElementById('shuxingId').value;
+	var hiddenId = document.getElementById('hiddenId').value;
+	 $.ajax({
+         cache:true, 
+         type:"POST", 
+         url:"/stops/updateStops", 
+         data:{"id":hiddenId,"content":content},
+         async:true, 
+         error:function(request){ 
+        	 console.log("error");
+             return;
+         },
+         success:function(data){ 
+             console.log("success");
+         }
+     });
+  }

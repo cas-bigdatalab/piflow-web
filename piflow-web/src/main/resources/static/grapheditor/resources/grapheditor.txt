@@ -313,3 +313,4 @@ writingDirection=字体方向
 zoom=Zoom
 zoomIn=放大
 zoomOut=缩小
+textAttribute=属性信息

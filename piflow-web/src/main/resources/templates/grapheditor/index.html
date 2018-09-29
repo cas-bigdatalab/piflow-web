@@ -2,20 +2,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Grapheditor</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="viewport"
-	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="_csrf" th:content="${_csrf.token}" />
-<meta name="_csrf_header" th:content="${_csrf.headerName}" />
-<link rel="stylesheet" type="text/css"
-	th:href="@{/grapheditor/styles/grapheditor.css}">
-<script th:inline="javascript">
+	<title>Grapheditor</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="_csrf" th:content="${_csrf.token}" />
+	<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+	<link rel="stylesheet" type="text/css" th:href="@{/grapheditor/styles/grapheditor.css}">
+	<script th:inline="javascript">
 		var stopsGroupData = [[${groupsList}]];
 		var xmlDate = [[${xmlDate}]];
 		var loadId = [[${load}]];
 	</script>
-<script type="text/javascript">
+	<script type="text/javascript">
 		// Parses URL parameters. Supported parameters are:
 		// - lang=xy: Specifies the language of the user interface.
 		// - touch=1: Enables a touch-style user interface.
@@ -47,27 +45,23 @@
 		// Default resources are included in grapheditor resources
 		mxLoadResources = false;
 	</script>
-<script type="text/javascript" th:src="@{/grapheditor/js/Init.js}"></script>
-<script type="text/javascript"
-	th:src="@{/grapheditor/deflate/pako.min.js}"></script>
-<script type="text/javascript"
-	th:src="@{/grapheditor/deflate/base64.js}"></script>
-<script type="text/javascript"
-	th:src="@{/grapheditor/jscolor/jscolor.js}"></script>
-<script type="text/javascript"
-	th:src="@{/grapheditor/sanitizer/sanitizer.min.js}"></script>
-<script type="text/javascript" th:src="@{/grapheditor/mxClient.js}"></script>
-<script type="text/javascript" th:src="@{/grapheditor/js/EditorUi.js}"></script>
-<script type="text/javascript" th:src="@{/grapheditor/js/Editor.js}"></script>
-<script type="text/javascript" th:src="@{/grapheditor/js/Sidebar.js}"></script>
-<script type="text/javascript" th:src="@{/grapheditor/js/Graph.js}"></script>
-<script type="text/javascript" th:src="@{/grapheditor/js/Shapes.js}"></script>
-<script type="text/javascript" th:src="@{/grapheditor/js/Actions.js}"></script>
-<script type="text/javascript" th:src="@{/grapheditor/js/Menus.js}"></script>
-<script type="text/javascript" th:src="@{/grapheditor/js/Format.js}"></script>
-<script type="text/javascript" th:src="@{/grapheditor/js/Toolbar.js}"></script>
-<script type="text/javascript" th:src="@{/grapheditor/js/Dialogs.js}"></script>
-<script type="text/javascript" th:src="@{/grapheditor/js/jquery.min.js}"></script>
+	<script type="text/javascript" th:src="@{/grapheditor/js/Init.js}"></script>
+	<script type="text/javascript" th:src="@{/grapheditor/deflate/pako.min.js}"></script>
+	<script type="text/javascript" th:src="@{/grapheditor/deflate/base64.js}"></script>
+	<script type="text/javascript" th:src="@{/grapheditor/jscolor/jscolor.js}"></script>
+	<script type="text/javascript" th:src="@{/grapheditor/sanitizer/sanitizer.min.js}"></script>
+	<script type="text/javascript" th:src="@{/grapheditor/mxClient.js}"></script>
+	<script type="text/javascript" th:src="@{/grapheditor/js/EditorUi.js}"></script>
+	<script type="text/javascript" th:src="@{/grapheditor/js/Editor.js}"></script>
+	<script type="text/javascript" th:src="@{/grapheditor/js/Sidebar.js}"></script>
+	<script type="text/javascript" th:src="@{/grapheditor/js/Graph.js}"></script>
+	<script type="text/javascript" th:src="@{/grapheditor/js/Shapes.js}"></script>
+	<script type="text/javascript" th:src="@{/grapheditor/js/Actions.js}"></script>
+	<script type="text/javascript" th:src="@{/grapheditor/js/Menus.js}"></script>
+	<script type="text/javascript" th:src="@{/grapheditor/js/Format.js}"></script>
+	<script type="text/javascript" th:src="@{/grapheditor/js/Toolbar.js}"></script>
+	<script type="text/javascript" th:src="@{/grapheditor/js/Dialogs.js}"></script>
+	<script type="text/javascript" th:src="@{/grapheditor/js/jquery.min.js}"></script>
 </head>
 <body class="geEditor">
 	<script type="text/javascript">
@@ -112,11 +106,37 @@
 					saveXml();
 					console.info("CELLS_REMOVED");
 		         });
-		        /* 
 		         graphGlobal.addListener(mxEvent.CLICK, function(sender, evt) {
-					console.info("CLICK");
+					var cells = evt.properties.cell;
+					if(typeof(cells)!="undefined"){
+					var id = evt.properties.cell.id;
+					//var content = document.getElementById('shuxingId').value;
+				//	document.getElementById("hiddenId").value = id;
+				    $.ajax({
+		                cache:true, 
+		                type:"POST", 
+		                url:"/stops/queryIdInfo", 
+		                data:{"id":id},
+		                async:true, 
+		                error:function(request){ 
+		                	alert("Jquery Ajax request error!!!");
+		                    return;
+		                },
+		                success:function(data){ 
+		                    if(""!=data){
+		                    	  console.log("success");
+		                    	  console.info(data);
+		                		  document.getElementById("pContent").innerText = data[0].description;
+		                		  document.getElementById('shuxingId').value = data[0].name;
+		                		  document.getElementById('hiddenId').value = data[0].id;
+		                    }else{
+		                    	  console.log("error");
+		                    }
+		                }
+		            });
+					}
 		         });
-		         */
+
 				if(xmlDate){
 					var xml = mxUtils.parseXml(xmlDate);
 					var node = xml.documentElement;
