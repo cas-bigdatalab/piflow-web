@@ -1,0 +1,35 @@
+server:
+  port: 7001
+
+
+#数据源
+spring:
+  datasource:
+    url: jdbc:mysql://192.168.32.128:3306/mytest?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+
+#配置自动建表：updata:没有表新建，有表更新操作,控制台显示建表语句
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    open-in-view: true
+    
+#=========== 日志配置·简易（spring boot已经集成logback日志）=========
+#controller层日志 WARN级别输出
+#logging.level.com.liyan.controller=WARN
+#mapper层 sql日志 DEBUG级别输出
+#logging.level.com.liyan.mapper=DEBUG
+#logging.file=logs/spring-boot-logging.log
+#logging.pattern.console=%d{yyyy/MM/dd-HH:mm:ss} [%thread] %-5level %logger- %msg%n
+#logging.pattern.file=%d{yyyy/MM/dd-HH:mm} [%thread] %-5level %logger- %msg%n
+#打印运行时sql语句到控制台
+#spring.jpa.show-sql=true
+ 
+#==================== 日志配合·标准  ============================
+logging:
+  level:
+    root: info
