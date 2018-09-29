@@ -5,8 +5,7 @@ import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -26,10 +25,6 @@ public class StopsTemplate extends BaseHibernateModelUUIDNoCorpAgentId {
 
 	private static final long serialVersionUID = 1L;
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "FK_STOP_GROUP_ID")
-	private StopGroup stopGroup;
-
 	private String name;
 
 	private String bundel;
@@ -44,17 +39,12 @@ public class StopsTemplate extends BaseHibernateModelUUIDNoCorpAgentId {
 
 	private Integer numberOfExports = 1;// 出口数
 
+	@ManyToMany(mappedBy = "stopsTemplateList")
+	private List<StopGroup> stopGroupList = new ArrayList<StopGroup>();
+
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "stopsTemplate")
 	@Where(clause = "enable_flag=1")
 	private List<PropertyTemplate> properties = new ArrayList<PropertyTemplate>();
-
-	public StopGroup getStopGroup() {
-		return stopGroup;
-	}
-
-	public void setStopGroup(StopGroup stopGroup) {
-		this.stopGroup = stopGroup;
-	}
 
 	public String getName() {
 		return name;
@@ -118,6 +108,14 @@ public class StopsTemplate extends BaseHibernateModelUUIDNoCorpAgentId {
 
 	public void setProperties(List<PropertyTemplate> properties) {
 		this.properties = properties;
+	}
+
+	public List<StopGroup> getStopGroupList() {
+		return stopGroupList;
+	}
+
+	public void setStopGroupList(List<StopGroup> stopGroupList) {
+		this.stopGroupList = stopGroupList;
 	}
 
 }

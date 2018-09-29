@@ -97,7 +97,7 @@ Sidebar.prototype.init = function()
 		if(stopsGroup && ''!==stopsGroup){
 			var stopsNameList = new Array();
 			var stopsDescList = new Array();
-			stopsList = stopsGroup.stopsList;
+			stopsList = stopsGroup.stopsTemplateList;
 			if(stopsList && stopsList.length > 0){
 				for (var j=0;j<stopsList.length;j++){
 					var stops = stopsList[j];

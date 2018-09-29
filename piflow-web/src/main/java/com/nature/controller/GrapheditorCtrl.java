@@ -1,6 +1,5 @@
 package com.nature.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,8 +17,8 @@ import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.UUIDUtils;
 import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.model.StopGroup;
-import com.nature.component.workFlow.model.StopsTemplate;
 import com.nature.component.workFlow.service.FlowService;
+import com.nature.component.workFlow.service.StopGroupService;
 
 @Controller
 @RequestMapping("/flow/*")
@@ -33,28 +32,33 @@ public class GrapheditorCtrl {
 	@Autowired
 	private FlowService flowService;
 
+	@Autowired
+	private StopGroupService stopGroupService;
+
 	private String saveXml = "";
+
+	private String saveLoadId = "";
 
 	@RequestMapping("/grapheditor")
 	public String kitchenSink(Model model, String load) {
-		// 左側的組和stops
-		List<StopGroup> groupsList = getStopGroupTemplate();
-		model.addAttribute("groupsList", groupsList);
 		// 判斷是否存在Flow的id(load),如果存在則加載，否則生成UUID返回返回頁面
 		if (StringUtils.isNotBlank(load)) {
-			Flow flowById = flowService.getFlowById(load);
-			// 把查詢出來的Flow轉爲XML
-			FlowXmlUtils.flowToXml(flowById);
-			model.addAttribute("xmlDate", saveXml);
+			// 左側的組和stops
+			List<StopGroup> groupsList = stopGroupService.getStopGroupAll();
+			model.addAttribute("groupsList", groupsList);
+			if (load.equals(saveLoadId)) {
+				model.addAttribute("xmlDate", saveXml);
+			} else {
+				Flow flowById = flowService.getFlowById(load);
+				// 把查詢出來的Flow轉爲XML
+				FlowXmlUtils.flowToXml(flowById);
+			}
 			model.addAttribute("load", load);
 		} else {
 			// 生成32位UUID
 			load = UUIDUtils.getUUID32();
 			return "redirect:grapheditor?load=" + load;
 		}
-
-		model.addAttribute("say", "say hello spring boot !!!!!");
-		model.addAttribute("sss", "ss后台返回数据ss");
 		return "grapheditor/index";
 	}
 
@@ -110,6 +114,7 @@ public class GrapheditorCtrl {
 		if (null != flowById) {
 			logger.info("在'" + loadId + "'的基礎上保存");
 		} else {
+			saveLoadId = loadId;
 			logger.info("新建");
 		}
 		saveXml = parameter;
@@ -125,65 +130,6 @@ public class GrapheditorCtrl {
 		logger.info(parameter);
 		model.addAttribute("now", "say hello spring boot !!!!!");
 		return parameter;
-	}
-
-	private List<StopGroup> getStopGroupTemplate() {
-		// 测试stops组件1
-		StopsTemplate stopsTemplate1 = new StopsTemplate();
-		stopsTemplate1.setName("test_stops_Components_1");
-		stopsTemplate1.setBundel("测试stops组件1");
-		stopsTemplate1.setGroups("测试stops组件1");
-		stopsTemplate1.setOwner("测试stops组件1");
-		stopsTemplate1.setDescription("测试stops组件1");
-		stopsTemplate1.setNumberOfEntrances(1);
-		stopsTemplate1.setNumberOfExports(1);
-		// 测试stops组件2
-		StopsTemplate stopsTemplate2 = new StopsTemplate();
-		stopsTemplate2.setName("test_stops_Components_2");
-		stopsTemplate2.setBundel("测试stops组件2");
-		stopsTemplate2.setGroups("测试stops组件2");
-		stopsTemplate2.setOwner("测试stops组件2");
-		stopsTemplate2.setDescription("测试stops组件2");
-		stopsTemplate2.setNumberOfEntrances(1);
-		stopsTemplate2.setNumberOfExports(1);
-		// 测试stops组件3
-		StopsTemplate stopsTemplate3 = new StopsTemplate();
-		stopsTemplate3.setName("test_stops_Components_3");
-		stopsTemplate3.setBundel("测试stops组件3");
-		stopsTemplate3.setGroups("测试stops组件3");
-		stopsTemplate3.setOwner("测试stops组件3");
-		stopsTemplate3.setDescription("测试stops组件3");
-		stopsTemplate3.setNumberOfEntrances(1);
-		stopsTemplate3.setNumberOfExports(1);
-
-		List<StopGroup> groupsList = new ArrayList<StopGroup>();
-		StopGroup stopGroup = null;
-		List<StopsTemplate> stopsList = null;
-		// 测试一组
-		stopGroup = new StopGroup();
-		stopsList = new ArrayList<StopsTemplate>();
-		stopGroup.setGroupName("test_group_1");
-		stopsList.add(stopsTemplate1);
-		stopsList.add(stopsTemplate2);
-		stopGroup.setStopsList(stopsList);
-		groupsList.add(stopGroup);
-		// 测试二组
-		stopGroup = new StopGroup();
-		stopsList = new ArrayList<StopsTemplate>();
-		stopGroup.setGroupName("Test_group_2");
-		stopsList.add(stopsTemplate1);
-		stopsList.add(stopsTemplate3);
-		stopGroup.setStopsList(stopsList);
-		groupsList.add(stopGroup);
-		// 测试三组
-		stopGroup = new StopGroup();
-		stopsList = new ArrayList<StopsTemplate>();
-		stopGroup.setGroupName("Test_group_3");
-		stopsList.add(stopsTemplate2);
-		stopsList.add(stopsTemplate3);
-		stopGroup.setStopsList(stopsList);
-		groupsList.add(stopGroup);
-		return groupsList;
 	}
 
 }

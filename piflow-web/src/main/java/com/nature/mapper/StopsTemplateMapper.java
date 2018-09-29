@@ -36,8 +36,17 @@ public interface StopsTemplateMapper {
 	 * @return
 	 */
 	@Select("select * from flow_stops_template where id = #{id}")
-	@Results({
+	@Results({ @Result(id = true, column = "id", property = "id"),
 			@Result(property = "properties", column = "id", many = @Many(select = "com.nature.mapper.PropertyTemplateMapper.getPropertyTemplateBySotpsId")) })
 	StopsTemplate getStopsPropertyById(String id);
+
+	/**
+	 * 根据stops组的id查询stops模板
+	 * 
+	 * @param groupId
+	 * @return
+	 */
+	@Select("select * from flow_stops_template where id in (select agst.stops_template_id from association_groups_stops_template agst where agst.groups_id = #{groupId})")
+	List<StopsTemplate> getStopsTemplateListByGroupId(String groupId);
 
 }

@@ -5,10 +5,11 @@ import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.OrderBy;
 import org.hibernate.annotations.Where;
 
 import com.nature.base.BaseHibernateModelUUIDNoCorpAgentId;
@@ -28,10 +29,10 @@ public class StopGroup extends BaseHibernateModelUUIDNoCorpAgentId {
 	private String groupName; // 组名称
 
 	// 组包含的stop
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "stopGroup")
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "association_groups_stops_template", joinColumns = @JoinColumn(name = "groups_id"), inverseJoinColumns = @JoinColumn(name = "stops_template_id"))
 	@Where(clause = "enable_flag=1")
-	@OrderBy(clause = "lastUpdateDttm desc")
-	private List<StopsTemplate> stopsList = new ArrayList<StopsTemplate>();
+	private List<StopsTemplate> stopsTemplateList = new ArrayList<StopsTemplate>();
 
 	public String getGroupName() {
 		return groupName;
@@ -41,12 +42,12 @@ public class StopGroup extends BaseHibernateModelUUIDNoCorpAgentId {
 		this.groupName = groupName;
 	}
 
-	public List<StopsTemplate> getStopsList() {
-		return stopsList;
+	public List<StopsTemplate> getStopsTemplateList() {
+		return stopsTemplateList;
 	}
 
-	public void setStopsList(List<StopsTemplate> stopsList) {
-		this.stopsList = stopsList;
+	public void setStopsTemplateList(List<StopsTemplate> stopsTemplateList) {
+		this.stopsTemplateList = stopsTemplateList;
 	}
 
 }
