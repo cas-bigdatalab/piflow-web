@@ -1,5 +1,6 @@
 package com.nature.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,7 +17,9 @@ import com.nature.base.util.FlowXmlUtils;
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.UUIDUtils;
 import com.nature.component.workFlow.model.Flow;
+import com.nature.component.workFlow.model.Paths;
 import com.nature.component.workFlow.model.StopGroup;
+import com.nature.component.workFlow.model.Stops;
 import com.nature.component.workFlow.service.FlowService;
 import com.nature.component.workFlow.service.StopGroupService;
 
@@ -108,18 +111,24 @@ public class GrapheditorCtrl {
 	@RequestMapping("/saveData")
 	@ResponseBody
 	public String saveData(HttpServletRequest request, Model model) {
-		String parameter = request.getParameter("imageXML");
+		String imageXML = request.getParameter("imageXML");
 		String loadId = request.getParameter("load");
-		Flow flowById = flowService.getFlowById(loadId);
-		if (null != flowById) {
-			logger.info("在'" + loadId + "'的基礎上保存");
-		} else {
-			saveLoadId = loadId;
-			logger.info("新建");
+		if (StringUtils.isNotBlank(imageXML) && StringUtils.isNotBlank(loadId)) {
+			// 把页面传來的XML转为FLOW
+			Flow xmlToFlow = FlowXmlUtils.xmlToFlow(imageXML);
+			Flow flowById = flowService.getFlowById(loadId);
+			if (null != flowById) {
+				logger.info("在'" + loadId + "'的基礎上保存");
+			} else {
+				saveLoadId = loadId;
+				flowById = new Flow();
+				flowById.setId(loadId);
+				logger.info("新建");
+			}
+			setFlow(xmlToFlow, flowById);
+			saveXml = imageXML;
+			logger.info(imageXML);
 		}
-		saveXml = parameter;
-		logger.info(parameter);
-		model.addAttribute("say", "say hello spring boot !!!!!");
 		return "flwoId";
 	}
 
@@ -130,6 +139,30 @@ public class GrapheditorCtrl {
 		logger.info(parameter);
 		model.addAttribute("now", "say hello spring boot !!!!!");
 		return parameter;
+	}
+
+	private Flow setFlow(Flow xmlToFlow, Flow flow) {
+		if (null == xmlToFlow) {
+			return null;
+		} else {
+			if (null == flow) {
+				flow = new Flow();
+			}
+			flow.setAppId(xmlToFlow.getAppId());
+			flow.setCrtDttm(new Date());
+			flow.setCrtUser(xmlToFlow.getCrtUser());
+			flow.setLastUpdateDttm(new Date());
+			flow.setLastUpdateUser(xmlToFlow.getLastUpdateUser());
+			flow.setName(xmlToFlow.getName());
+			flow.setUuid(xmlToFlow.getUuid());
+			flow.setVersion(flow.getVersion() + 1);
+			List<Paths> paths = xmlToFlow.getPaths();
+			List<Stops> stops = xmlToFlow.getStops();
+			flow.setPaths(paths);
+			flow.setStops(stops);
+			return flow;
+		}
+
 	}
 
 }

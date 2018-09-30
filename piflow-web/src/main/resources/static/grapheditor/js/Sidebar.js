@@ -160,12 +160,12 @@ Sidebar.prototype.gearImage = STENCIL_PATH + '/clipart/Gear_128x128.png';
 /**
  * Specifies the width of the thumbnails.
  */
-Sidebar.prototype.thumbWidth = 36;
+Sidebar.prototype.thumbWidth = 90;
 
 /**
  * Specifies the height of the thumbnails.
  */
-Sidebar.prototype.thumbHeight = 36;
+Sidebar.prototype.thumbHeight = 90;
 
 /**
  * Specifies the padding for the thumbnails. Default is 3.
@@ -180,7 +180,7 @@ Sidebar.prototype.thumbBorder = 2;
 /**
  * Specifies the size of the sidebar titles.
  */
-Sidebar.prototype.sidebarTitleSize = 9;
+Sidebar.prototype.sidebarTitleSize = 26;
 
 /**
  * Specifies if titles in the sidebar should be enabled.
@@ -212,12 +212,12 @@ Sidebar.prototype.addStencilsToIndex = true;
 /**
  * Specifies the width for clipart images. Default is 80.
  */
-Sidebar.prototype.defaultImageWidth = 80;
+Sidebar.prototype.defaultImageWidth = 100;
 
 /**
  * Specifies the height for clipart images. Default is 80.
  */
-Sidebar.prototype.defaultImageHeight = 80;
+Sidebar.prototype.defaultImageHeight = 100;
 
 /**
  * Adds all palettes to the sidebar.
