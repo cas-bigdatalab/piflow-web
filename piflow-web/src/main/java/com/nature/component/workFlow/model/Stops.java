@@ -3,6 +3,7 @@ package com.nature.component.workFlow.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -44,6 +45,9 @@ public class Stops extends BaseHibernateModelUUIDNoCorpAgentId {
 	private String numberOfEntrances;
 
 	private String numberOfExports;
+	
+	@Column(name = "page_id")
+	private String pageId;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "stops")
 	@Where(clause = "enable_flag=1")
@@ -122,4 +126,13 @@ public class Stops extends BaseHibernateModelUUIDNoCorpAgentId {
 		this.properties = properties;
 	}
 
+	public String getPageId() {
+		return pageId;
+	}
+
+	public void setPageId(String pageId) {
+		this.pageId = pageId;
+	}
+
+	
 }
