@@ -314,3 +314,4 @@ zoom=Zoom
 zoomIn=放大
 zoomOut=缩小
 textAttribute=属性信息
+basicInfo=基础信息

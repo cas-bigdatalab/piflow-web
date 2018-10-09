@@ -1,12 +1,10 @@
 package com.nature.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nature.component.workFlow.model.Property;
+import com.nature.component.workFlow.model.Stops;
 import com.nature.component.workFlow.service.StopsTemplateService;
 
 @RestController
@@ -17,17 +15,14 @@ public class StopsCtrl {
 	StopsTemplateService stopsTemplateService;
 
 	@RequestMapping("/queryIdInfo")
-	public List<Property> getStopGroup(String id) {
-		List<Property> queryInfo = stopsTemplateService.queryAll(id);
-		if (queryInfo.size()>0 && !queryInfo.isEmpty()) {
-			return queryInfo;
-		}
-		return null;
+	public Stops getStopGroup(String fid,String id) {
+		Stops queryInfo = stopsTemplateService.queryAll(fid,id);
+		return (Stops) queryInfo;
 	}
 	
 	@RequestMapping("/updateStops")
-	public Integer updateStops(String content,String id){
-		int updateStops = stopsTemplateService.updateStops(content,id);
+	public Integer updateStops(String content,String display_name,String custom_value,String description,String version,String id){
+		int updateStops = stopsTemplateService.updateStops(content,display_name,custom_value,description,version,id);
 		return updateStops;
 		
 	}

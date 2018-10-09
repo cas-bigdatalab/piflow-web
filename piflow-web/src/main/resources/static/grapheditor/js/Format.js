@@ -341,6 +341,7 @@ Format.prototype.refresh = function()
 	div.style.color = 'rgb(112, 112, 112)';
 	div.style.textAlign = 'left';
 	div.style.cursor = 'default';
+	div.style.lineHeight = '25px';
 	
 	var label = document.createElement('div');
 	label.style.border = '1px solid #c0c0c0';
@@ -456,10 +457,33 @@ Format.prototype.refresh = function()
 		var label2 = label.cloneNode(false);
 		var label3 = label2.cloneNode(false);
 		var label4 = label3.cloneNode(false);
+		var label5 = label4.cloneNode(false);
 
 		// Workaround for ignored background in IE
-		label2.style.backgroundColor = this.inactiveTabBackgroundColor;
+		/*	label2.style.backgroundColor = this.inactiveTabBackgroundColor;
 		label3.style.backgroundColor = this.inactiveTabBackgroundColor;
+		label4.style.backgroundColor = this.inactiveTabBackgroundColor;
+		label5.style.backgroundColor = this.inactiveTabBackgroundColor;*/
+		
+		//开始设置stops基础信息
+		label5.style.borderLeftWidth = '0px';
+		mxUtils.write(label5, mxResources.get('basicInfo'));
+		div.appendChild(label5);
+		var StopsBasicInfo = div.cloneNode(false);
+		StopsBasicInfo.style.display = 'none';
+		this.panels.push(new StopsBasicInfoFormatPanel(this, ui, StopsBasicInfo));
+		this.container.appendChild(StopsBasicInfo);
+		addClickHandler(label5, StopsBasicInfo, idx++);
+		
+		//开始设置stops属性
+		label4.style.borderLeftWidth = '0px';
+		mxUtils.write(label4, mxResources.get('textAttribute'));
+		div.appendChild(label4);
+		var StopsTextAttribute = div.cloneNode(false);
+		StopsTextAttribute.style.display = 'none';
+		this.panels.push(new StopsAttributeFormatPanel(this, ui, StopsTextAttribute));
+		this.container.appendChild(StopsTextAttribute);
+		addClickHandler(label4, StopsTextAttribute, idx++);
 		
 		// Style
 		if (containsLabel)
@@ -476,71 +500,12 @@ Format.prototype.refresh = function()
 			stylePanel.style.display = 'none';
 			this.panels.push(new StyleFormatPanel(this, ui, stylePanel));
 			this.container.appendChild(stylePanel);
-
 			addClickHandler(label, stylePanel, idx++);
 		}
-		
-		//属性
-		mxUtils.write(label4, mxResources.get('textAttribute'));
-		div.appendChild(label4);
-
-		var textPanel1 = div.cloneNode(false);
-		textPanel1.style.display = 'none';
-		//可编辑的inut
-		var bq = document.createElement('input');
-		bq.setAttribute('type', 'text');
-		bq.setAttribute('id', 'shuxingId');
-		bq.setAttribute('onblur', 'shiqu()');
-		//隐藏的input存放id
-		var hidden = document.createElement('input');
-		hidden.setAttribute('type', 'hidden');
-		hidden.setAttribute('id', 'hiddenId');
-		//通过id来显示属性
-		var span3 = document.createElement('label');
-		span3.setAttribute('id', 'pContent');
-		//span3.style.border = '0px';
-		//div.appendChild(bq);
-		var span = document.createElement('span');
-		var span2 = document.createElement('span');
-		var hr = document.createElement('hr');
-		mxUtils.write(span, '名称： ');
-		mxUtils.write(span2, '描述： ');
-		//div.appendChild(span);
-		this.container.appendChild(textPanel1);
-		this.container.appendChild(hr);
-		this.container.appendChild(span2);
-		this.container.appendChild(span3);
-		this.container.appendChild(document.createElement('br'));
-		this.container.appendChild(span);
-		this.container.appendChild(bq);
-		this.container.appendChild(hidden);
-		//document.getElementById("shuxingId").value = "内容";
-		var btn = mxUtils.button('保存', mxUtils.bind(this, function(evt)
-		{
-		var content = document.getElementById('shuxingId').value;
-		var hiddenId = document.getElementById('hiddenId').value;
-		 $.ajax({
-             cache:true, 
-             type:"POST", 
-             url:"/stops/updateStops", 
-             data:{"id":hiddenId,"content":content},
-             async:true, 
-             error:function(request){ 
-            	 console.log("error");
-                 return;
-             },
-             success:function(data){ 
-                 console.log("success");
-             }
-         });
-		}));
-		btn.style.width = '60px';
-		this.container.appendChild(btn);
 		
 		// Text
 		mxUtils.write(label2, mxResources.get('text'));
 		//div.appendChild(label2);
-
 		var textPanel = div.cloneNode(false);
 		textPanel.style.display = 'none';
 		this.panels.push(new TextFormatPanel(this, ui, textPanel));
@@ -549,7 +514,6 @@ Format.prototype.refresh = function()
 		// Arrange
 		mxUtils.write(label3, mxResources.get('arrange'));
 		//div.appendChild(label3);
-
 		var arrangePanel = div.cloneNode(false);
 		arrangePanel.style.display = 'none';
 		this.panels.push(new ArrangePanel(this, ui, arrangePanel));
@@ -557,7 +521,6 @@ Format.prototype.refresh = function()
 		
 		addClickHandler(label2, textPanel, idx++);
 		addClickHandler(label3, arrangePanel, idx++);
-		addClickHandler(label4, textPanel1, idx++);
 	}
 };
 
@@ -2213,6 +2176,208 @@ ArrangePanel.prototype.addEdgeGeometry = function(container)
 	this.listeners.push({destroy: function() { graph.getModel().removeListener(listener); }});
 	listener();
 };
+
+/*Add stops attribute tab  start*/
+/**
+ * Adds the label menu items to the given menu and parent.
+ */
+StopsAttributeFormatPanel = function(format, editorUi, container)
+{
+	BaseFormatPanel.call(this, format, editorUi, container);
+	this.init();
+};
+
+mxUtils.extend(StopsAttributeFormatPanel, BaseFormatPanel);
+
+/**
+ * Adds the label menu items to the given menu and parent.
+ */
+StopsAttributeFormatPanel.prototype.init = function()
+{
+	this.container.style.borderBottom = 'none';
+	this.addFont(this.container);
+};
+
+StopsAttributeFormatPanel.prototype.addFont = function(container)
+{
+	var ui = this.editorUi;
+	var editor = ui.editor;
+	var graph = editor.graph;
+	var ss = this.format.getSelectionState();
+
+	//input name
+	var name = document.createElement('input');
+	name.setAttribute('type', 'text');
+	name.setAttribute('id', 'shuxingId');
+	name.setAttribute('onblur', 'shiqu()');
+	name.style.float = "right";
+	//input display_name
+	var display_name = document.createElement('input');
+	display_name.setAttribute('type', 'text');
+	display_name.setAttribute('id', 'display_name');
+	display_name.setAttribute('onblur', 'shiqu()');
+	display_name.style.float = "right";
+	//input custom_value
+	var custom_value = document.createElement('input');
+	custom_value.setAttribute('type', 'text');
+	custom_value.setAttribute('id', 'custom_value');
+	custom_value.setAttribute('onblur', 'shiqu()');
+	custom_value.style.float = "right";
+	//input description
+	var description = document.createElement('input');
+	description.setAttribute('type', 'text');
+	description.setAttribute('id', 'description');
+	description.setAttribute('onblur', 'shiqu()');
+	description.style.float = "right";
+	//input version
+	var version = document.createElement('input');
+	version.setAttribute('type', 'text');
+	version.setAttribute('id', 'version');
+	version.setAttribute('onblur', 'shiqu()');
+	version.style.float = "right";
+	//隐藏的input存放id
+	var hidden = document.createElement('input');
+	hidden.setAttribute('type', 'hidden');
+	hidden.setAttribute('id', 'hiddenId');
+	var spanName = document.createElement('span');
+	var spanDisplay_name = document.createElement('span');
+	var spanCustom_value = document.createElement('span');
+	var spanDescription = document.createElement('span');
+	var spanVersion = document.createElement('span');
+	var hr = document.createElement('hr');
+	mxUtils.write(spanName, '名称： ');
+	mxUtils.write(spanDisplay_name, '显示名称： ');
+	mxUtils.write(spanDescription, '描述： ');
+	mxUtils.write(spanVersion, '版本： ');
+	mxUtils.write(spanCustom_value, '默认值： ');
+	this.container.appendChild(hr);
+	this.container.appendChild(spanName);
+	this.container.appendChild(name);
+	this.container.appendChild(document.createElement('br'));
+	this.container.appendChild(spanDisplay_name);
+	this.container.appendChild(display_name);
+	this.container.appendChild(document.createElement('br'));
+	this.container.appendChild(spanVersion);
+	this.container.appendChild(version);
+	this.container.appendChild(document.createElement('br'));
+	this.container.appendChild(spanCustom_value);
+	this.container.appendChild(custom_value);
+	this.container.appendChild(document.createElement('br'));
+	this.container.appendChild(spanDescription);
+	this.container.appendChild(description);
+	this.container.appendChild(hidden);
+	this.container.appendChild(document.createElement('br'));
+	var btn = mxUtils.button('保存', mxUtils.bind(this, function(evt)
+	{
+	var content = document.getElementById('shuxingId').value;
+	var hiddenId = document.getElementById('hiddenId').value;
+	 $.ajax({
+         cache:true, 
+         type:"POST", 
+         url:"/stops/updateStops", 
+         data:{"id":hiddenId,"content":content},
+         async:true, 
+         error:function(request){ 
+        	 console.log("error");
+             return;
+         },
+         success:function(data){ 
+             console.log("success");
+         }
+     });
+	}));
+	btn.style.width = '60px';
+	this.container.appendChild(btn);
+	return container;
+};
+/*Add stops attribute tab  stop*/
+
+/*Add StopsBasicInfo tab  start*/
+/**
+ * Adds the label menu items to the given menu and parent.
+ */
+StopsBasicInfoFormatPanel = function(format, editorUi, container)
+{
+	BaseFormatPanel.call(this, format, editorUi, container);
+	this.init();
+};
+
+mxUtils.extend(StopsBasicInfoFormatPanel, BaseFormatPanel);
+
+/**
+ * Adds the label menu items to the given menu and parent.
+ */
+StopsBasicInfoFormatPanel.prototype.init = function()
+{
+	this.container.style.borderBottom = 'none';
+	this.addFont(this.container);
+};
+
+StopsBasicInfoFormatPanel.prototype.addFont = function(container)
+{
+	var ui = this.editorUi;
+	var editor = ui.editor;
+	var graph = editor.graph;
+	var ss = this.format.getSelectionState();
+
+	//模板名称
+	var labelTemplate = document.createElement('label');
+	labelTemplate.setAttribute('id', 'labelTemplateName');
+	//stopsName
+	var stopsNameLabel = document.createElement('label');
+	stopsNameLabel.setAttribute('id', 'stopsNameLabel');
+	//stops描述
+	var stopsDescription = document.createElement('label');
+	stopsDescription.setAttribute('id', 'stopsDescription');
+	//stops组名
+	var stopsGroups = document.createElement('label');
+	stopsGroups.setAttribute('id', 'stopsGroups');
+	//stops bundel
+	var stopsBundel = document.createElement('label');
+	stopsBundel.setAttribute('id', 'stopsBundel');
+	//stops version
+	var stopsVersion = document.createElement('label');
+	stopsVersion.setAttribute('id', 'stopsVersion');
+ 
+	//通过id来显示属性
+	var span3 = document.createElement('label');
+	span3.setAttribute('id', 'pContent');
+	var span = document.createElement('span');
+	var span1 = document.createElement('span');
+	var span2 = document.createElement('span');
+	var span3 = document.createElement('span');
+	var span4 = document.createElement('span');
+	var span5 = document.createElement('span');
+	var hr = document.createElement('hr');
+	mxUtils.write(span, 'stopsName： ');
+	mxUtils.write(span1, '组名： ');
+	mxUtils.write(span2, '描述： ');
+	mxUtils.write(span3, 'bundel： ');
+	mxUtils.write(span4, '模板名称： ');
+	mxUtils.write(span5, 'version： ');
+	this.container.appendChild(hr);
+	this.container.appendChild(span4);
+	this.container.appendChild(labelTemplate);
+	this.container.appendChild(document.createElement('br'));
+	this.container.appendChild(span);
+	this.container.appendChild(stopsNameLabel);
+	this.container.appendChild(document.createElement('br'));
+ 	this.container.appendChild(span2);
+	this.container.appendChild(stopsDescription);
+	this.container.appendChild(document.createElement('br'));
+	this.container.appendChild(span1);
+	this.container.appendChild(stopsGroups);
+	this.container.appendChild(document.createElement('br')); 
+	this.container.appendChild(span3);
+	this.container.appendChild(stopsBundel);
+	this.container.appendChild(document.createElement('br'));
+	this.container.appendChild(span5);
+	this.container.appendChild(stopsVersion);
+	this.container.appendChild(document.createElement('br'));
+  
+	return container;
+};
+/*Add StopsBasicInfo tab  stop*/
 
 /**
  * Adds the label menu items to the given menu and parent.
@@ -4979,11 +5144,22 @@ DiagramFormatPanel.prototype.destroy = function()
 function shiqu(){
 	var content = document.getElementById('shuxingId').value;
 	var hiddenId = document.getElementById('hiddenId').value;
+	var display_name = document.getElementById('display_name').value;
+	var custom_value = document.getElementById('custom_value').value;
+	var description = document.getElementById('description').value;
+	var version = document.getElementById('version').value;
 	 $.ajax({
          cache:true, 
          type:"POST", 
          url:"/stops/updateStops", 
-         data:{"id":hiddenId,"content":content},
+		 data : {
+			"id" : hiddenId,
+			"content" : content,
+			"display_name" : display_name,
+			"custom_value" : custom_value,
+			"description" : description,
+			"version" : version
+		},
          async:true, 
          error:function(request){ 
         	 console.log("error");
