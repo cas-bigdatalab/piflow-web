@@ -47,6 +47,11 @@ public class DateUtils {
 	public static final String DATE_PATTERN_yyyy_MM_dd_HH_MM_ss = "yyyy-MM-dd HH:mm:ss";
 
 	/**
+	 * yyyy-MM-dd HH:mm:ss 2012-12-25 20:20:20.098
+	 */
+	public static final String DATE_PATTERN_yyyy_MM_dd_HH_MM_ss_S = "yyyy-MM-dd HH:mm:ss.S";
+
+	/**
 	 * yyyy-MM-dd HH:mm:ss 2012-12-25 20:20
 	 */
 	public static final String DATE_PATTERN_yyyy_MM_dd_HH_MM = "yyyy-MM-dd HH:mm";
@@ -204,6 +209,22 @@ public class DateUtils {
 			return "";
 		}
 		SimpleDateFormat formatter = new SimpleDateFormat(DATE_PATTERN_yyyy_MM_dd_HH_MM_ss);
+		String dateString = formatter.format(dateDate);
+		return dateString;
+	}
+
+	/**
+	 * 将时间格式的时间转换为字符串 yyyy-MM-dd_HH_MM_ss
+	 * 
+	 * @param dateDate
+	 * @param k
+	 * @return
+	 */
+	public static String dateTimesToStr(java.util.Date dateDate) {
+		if (dateDate == null) {
+			return "";
+		}
+		SimpleDateFormat formatter = new SimpleDateFormat(DATE_PATTERN_yyyy_MM_dd_HH_MM_ss_S);
 		String dateString = formatter.format(dateDate);
 		return dateString;
 	}
