@@ -119,7 +119,7 @@ public class GrapheditorCtrl {
 				logger.info("在'" + loadId + "'的基礎上保存");
 			} else {
 				logger.info("新建");
-				StatefulRtnBase addFlow = flowService.addFlow(mxGraphModel, loadId);
+				StatefulRtnBase addFlow = flowService.addFlow(flowById);
 				// addFlow不为空且ReqRtnStatus的值为true,则保存成功
 				if (null != addFlow && addFlow.isReqRtnStatus()) {
 					rtnStr = "1";
