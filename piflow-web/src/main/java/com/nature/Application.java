@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import com.nature.base.util.LoggerUtil;
 
 @SpringBootApplication
-@MapperScan(basePackages = "com.nature.mapper.*")
+@MapperScan(basePackages = "com.nature.mapper.*.*")
 public class Application {
 
 	static Logger logger = LoggerUtil.getLogger();
