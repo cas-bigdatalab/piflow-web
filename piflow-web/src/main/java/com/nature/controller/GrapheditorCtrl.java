@@ -121,9 +121,7 @@ public class GrapheditorCtrl {
 				logger.info("新建");
 				int addFlow = flowService.addFlow(flowById);
 				// addFlow不为空且ReqRtnStatus的值为true,则保存成功
-				if (null != addFlow && addFlow.isReqRtnStatus()) {
-					rtnStr = "1";
-				}
+				rtnStr = addFlow;
 			}
 		}
 		return rtnStr;
