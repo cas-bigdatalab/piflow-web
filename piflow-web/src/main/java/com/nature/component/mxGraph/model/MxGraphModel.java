@@ -23,32 +23,46 @@ public class MxGraphModel extends BaseHibernateModelUUIDNoCorpAgentId {
 
 	@Column(name = "MX_DX")
 	private String dx;
+
 	@Column(name = "MX_DY")
 	private String dy;
+
 	@Column(name = "MX_GRID")
 	private String grid;
+
 	@Column(name = "MX_GRIDSIZE")
 	private String gridSize;
+
 	@Column(name = "MX_GUIDES")
 	private String guides;
+
 	@Column(name = "MX_TOOLTIPS")
 	private String tooltips;
+
 	@Column(name = "MX_CONNECT")
 	private String connect;
+
 	@Column(name = "MX_ARROWS")
 	private String arrows;
+
 	@Column(name = "MX_FOLD")
 	private String fold;
+
 	@Column(name = "MX_PAGE")
 	private String page;
+
 	@Column(name = "MX_PAGESCALE")
 	private String pageScale;
+
 	@Column(name = "MX_PAGEWIDTH")
 	private String pageWidth;
+
 	@Column(name = "MX_PAGEHEIGHT")
 	private String pageHeight;
+
 	@Column(name = "MX_BACKGROUND")
 	private String background;
+
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "mxGraphModel")
 	@Where(clause = "enable_flag=1")
 	private List<MxCell> root = new ArrayList<MxCell>();

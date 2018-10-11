@@ -25,9 +25,9 @@ public interface StopGroupMapper {
 	/**
 	 * 根据组id查询stops模板组
 	 * 
-	 * @param id
+	 * @param stopsId
 	 * @return
 	 */
 
-	StopGroup getStopGroupById(String id);
+	StopGroup getStopGroupById(String stopsId);
 }

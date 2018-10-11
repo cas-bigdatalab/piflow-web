@@ -5,13 +5,16 @@ import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.OrderBy;
 import org.hibernate.annotations.Where;
 
 import com.nature.base.BaseHibernateModelUUIDNoCorpAgentId;
+import com.nature.component.mxGraph.model.MxGraphModel;
 
 @Entity
 @Table(name = "FLOW")
@@ -24,6 +27,10 @@ public class Flow extends BaseHibernateModelUUIDNoCorpAgentId {
 	private String name;
 
 	private String uuid;
+
+	@OneToOne
+	@JoinColumn(name = "mxGraphModelId", referencedColumnName = "id")
+	private MxGraphModel mxGraphModel;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "flow")
 	@Where(clause = "enable_flag=1")
@@ -57,6 +64,14 @@ public class Flow extends BaseHibernateModelUUIDNoCorpAgentId {
 
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
+	}
+
+	public MxGraphModel getMxGraphModel() {
+		return mxGraphModel;
+	}
+
+	public void setMxGraphModel(MxGraphModel mxGraphModel) {
+		this.mxGraphModel = mxGraphModel;
 	}
 
 	public List<Stops> getStops() {

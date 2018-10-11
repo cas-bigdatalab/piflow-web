@@ -1,4 +1,6 @@
-package com.nature.component.workFlow.service;
+package com.nature.mapper;
+
+import java.util.Date;
 
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -10,16 +12,16 @@ import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.Utils;
 import com.nature.component.workFlow.model.Flow;
 
-public class FlowServiceTest extends ApplicationTests {
+public class FlowMapperTest extends ApplicationTests {
 
 	@Autowired
-	private FlowService flowService;
+	private FlowMapper flowMapper;
 
 	Logger logger = LoggerUtil.getLogger();
 
 	@Test
 	public void testGetFlowById() {
-		Flow flow = flowService.getFlowById("85f90a18423245b09cde371cbb333021");
+		Flow flow = flowMapper.getFlowById("85f90a18423245b09cde371cbb333021");
 		if (null == flow) {
 			logger.info("查询结果为空");
 			flow = new Flow();
@@ -28,18 +30,22 @@ public class FlowServiceTest extends ApplicationTests {
 	}
 
 	@Test
-	@Rollback(false)
+	@Rollback(true)
 	public void testAddFlow() {
 		Flow flow = new Flow();
 		flow.setId(Utils.getUUID32());
-		flow.setAppId("kongkong");
 		flow.setCrtUser("Nature");
+		flow.setCrtDttm(new Date());
 		flow.setLastUpdateUser("Nature");
+		flow.setLastUpdateDttm(new Date());
+		flow.setVersion(0L);
+		flow.setEnableFlag(true);
+		flow.setAppId("kongkong");
 		flow.setUuid(flow.getId());
 		flow.setName("testFlow");
-		flow.setVersion(0L);
-		// StatefulRtnBase addFlow = flowService.addFlow(MxGraphModel mxGraphModel,
-		// String flowId);
-		// logger.info(addFlow + "");
+
+		int addFlow = flowMapper.addFlow(flow);
+		logger.info(addFlow + "");
 	}
+
 }

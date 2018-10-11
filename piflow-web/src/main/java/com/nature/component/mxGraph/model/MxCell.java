@@ -21,22 +21,31 @@ public class MxCell extends BaseHibernateModelUUIDNoCorpAgentId {
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "FK_MX_GRAPH_ID")
 	private MxGraphModel mxGraphModel;
+
 	@Column(name = "MX_PAGEID")
 	private String pageId;
+
 	@Column(name = "MX_PARENT")
 	private String parent;
+
 	@Column(name = "MX_STYLE")
 	private String style;
+
 	@Column(name = "MX_EDGE")
 	private String edge; // 线有
+
 	@Column(name = "MX_SOURCE")
 	private String source; // 线有
+
 	@Column(name = "MX_TARGET")
 	private String target; // 线有
+
 	@Column(name = "MX_VALUE")
 	private String value;
+
 	@Column(name = "MX_VERTEX")
 	private String vertex;
+
 	@OneToOne
 	@JoinColumn(name = "mxGeometryId", referencedColumnName = "id")
 	private MxGeometry mxGeometry;

@@ -7,8 +7,10 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.SelectProvider;
 
 import com.nature.component.workFlow.model.StopsTemplate;
+import com.nature.provider.StopsTemplateMapperProvider;
 
 @Mapper
 public interface StopsTemplateMapper {
@@ -49,4 +51,6 @@ public interface StopsTemplateMapper {
 	@Select("select * from flow_stops_template where id in (select agst.stops_template_id from association_groups_stops_template agst where agst.groups_id = #{groupId})")
 	List<StopsTemplate> getStopsTemplateListByGroupId(String groupId);
 
+	@SelectProvider(type = StopsTemplateMapperProvider.class, method = "getStopsTemplateByName")
+	public List<StopsTemplate> getStopsTemplateByName(String stopsName);
 }

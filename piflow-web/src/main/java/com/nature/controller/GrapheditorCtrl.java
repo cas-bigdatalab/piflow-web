@@ -32,23 +32,21 @@ public class GrapheditorCtrl {
 	Logger logger = LoggerUtil.getLogger();
 
 	@Autowired
-	private FlowService flowService;
+	private FlowService flowServiceImpl;
 
 	@Autowired
-	private StopGroupService stopGroupService;
+	private StopGroupService stopGroupServiceImpl;
 
-	private MxGraphModel mxGraphModel = null;
-
-	private String saveLoadId = "";
+	private MxGraphModel mxGraphModel_init = null;
 
 	@RequestMapping("/grapheditor")
 	public String kitchenSink(Model model, String load) {
 		// 判斷是否存在Flow的id(load),如果存在則加載，否則生成UUID返回返回頁面
 		if (StringUtils.isNotBlank(load)) {
 			// 左側的組和stops
-			List<StopGroup> groupsList = stopGroupService.getStopGroupAll();
+			List<StopGroup> groupsList = stopGroupServiceImpl.getStopGroupAll();
 			model.addAttribute("groupsList", groupsList);
-			Flow flowById = flowService.getFlowById(load);
+			Flow flowById = flowServiceImpl.getFlowById(load);
 			// 把查詢出來的Flow轉爲XML
 			String saveXml = FlowXmlUtils.mxGraphModelToXml(flowToMxGraphModel(flowById));
 			model.addAttribute("xmlDate", saveXml);
@@ -56,6 +54,7 @@ public class GrapheditorCtrl {
 		} else {
 			// 生成32位UUID
 			load = Utils.getUUID32();
+			mxGraphModel_init = null;
 			return "redirect:grapheditor?load=" + load;
 		}
 		return "grapheditor/index";
@@ -111,24 +110,27 @@ public class GrapheditorCtrl {
 		String imageXML = request.getParameter("imageXML");
 		String loadId = request.getParameter("load");
 		if (StringUtils.isNotBlank(imageXML) && StringUtils.isNotBlank(loadId)) {
-			// 把页面传來的XML转为FLOW
-			mxGraphModel = FlowXmlUtils.xmlToMxGraphModel(imageXML);
+			// 把页面传來的XML转为mxGraphModel
+			MxGraphModel xmlToMxGraphModel = FlowXmlUtils.xmlToMxGraphModel(imageXML);
 			// 根据Flow的id查询
-			Flow flowById = flowService.getFlowById(loadId);
+			Flow flowById = flowServiceImpl.getFlowById(loadId);
 			if (null != flowById) {
+				mxGraphModel_init = xmlToMxGraphModel;
 				logger.info("在'" + loadId + "'的基礎上保存");
 			} else {
 				logger.info("新建");
-				int addFlow = flowService.addFlow(flowById);
+				StatefulRtnBase addFlow = flowServiceImpl.addFlow(xmlToMxGraphModel, loadId);
 				// addFlow不为空且ReqRtnStatus的值为true,则保存成功
-				rtnStr = addFlow;
+				if (null != addFlow && addFlow.isReqRtnStatus()) {
+					rtnStr = "1";
+				}
 			}
 		}
 		return rtnStr;
 	}
 
 	private MxGraphModel flowToMxGraphModel(Flow flow) {
-		return mxGraphModel;
+		return mxGraphModel_init;
 	}
 
 }

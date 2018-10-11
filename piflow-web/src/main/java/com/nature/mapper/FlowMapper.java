@@ -2,16 +2,17 @@ package com.nature.mapper;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
 import com.nature.component.workFlow.model.Flow;
+import com.nature.provider.FlowMapperProvider;
 
 @Mapper
 public interface FlowMapper {
 
-	@Insert("insert into flow(id,crt_dttm,crt_user,last_update_dttm,last_update_user,enable_flag,version,app_id,name,uuid) values (#{id},#{crtDttm},#{crtUser},#{lastUpdateDttm},#{lastUpdateUser},#{enableFlag},#{version},#{appId},#{name},#{uuid})")
+	@InsertProvider(type = FlowMapperProvider.class, method = "addFlow")
 	public int addFlow(Flow flow);
 
 	/**
