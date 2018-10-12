@@ -39,8 +39,10 @@ public class StopsTemplate extends BaseHibernateModelUUIDNoCorpAgentId {
 
 	private Integer numberOfExports = 1;// 出口数
 
-	@ManyToMany(mappedBy = "stopsTemplateList")
-	private List<StopGroup> stopGroupList = new ArrayList<StopGroup>();
+//	@ManyToMany(mappedBy = "stopsTemplateList")
+//	private List<StopGroup> stopGroupList = new ArrayList<StopGroup>();
+	
+	private String stopGroup;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "stopsTemplate")
 	@Where(clause = "enable_flag=1")
@@ -110,12 +112,14 @@ public class StopsTemplate extends BaseHibernateModelUUIDNoCorpAgentId {
 		this.properties = properties;
 	}
 
-	public List<StopGroup> getStopGroupList() {
-		return stopGroupList;
+	public String getStopGroup() {
+		return stopGroup;
 	}
 
-	public void setStopGroupList(List<StopGroup> stopGroupList) {
-		this.stopGroupList = stopGroupList;
+	public void setStopGroup(String stopGroup) {
+		this.stopGroup = stopGroup;
 	}
+
+	 
 
 }

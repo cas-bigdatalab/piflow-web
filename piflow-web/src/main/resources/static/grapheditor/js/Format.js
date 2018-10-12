@@ -2235,6 +2235,15 @@ StopsAttributeFormatPanel.prototype.addFont = function(container)
 	version.setAttribute('id', 'version');
 	version.setAttribute('onblur', 'shiqu()');
 	version.style.float = "right";
+	
+	//input createDate
+	var createDate = document.createElement('input');
+	createDate.setAttribute('type', 'text');
+	createDate.setAttribute('id', 'createDate');
+	//createDate.setAttribute('onclick', 'WdatePicker();');
+	createDate.setAttribute('onblur', 'shiqu()');
+	createDate.style.float = "right";
+	
 	//隐藏的input存放id
 	var hidden = document.createElement('input');
 	hidden.setAttribute('type', 'hidden');
@@ -2244,12 +2253,14 @@ StopsAttributeFormatPanel.prototype.addFont = function(container)
 	var spanCustom_value = document.createElement('span');
 	var spanDescription = document.createElement('span');
 	var spanVersion = document.createElement('span');
+	var spanCreateDate = document.createElement('span');
 	var hr = document.createElement('hr');
 	mxUtils.write(spanName, '名称： ');
 	mxUtils.write(spanDisplay_name, '显示名称： ');
 	mxUtils.write(spanDescription, '描述： ');
 	mxUtils.write(spanVersion, '版本： ');
 	mxUtils.write(spanCustom_value, '默认值： ');
+	mxUtils.write(spanCreateDate, '创建时间： ');
 	this.container.appendChild(hr);
 	this.container.appendChild(spanName);
 	this.container.appendChild(name);
@@ -2267,6 +2278,9 @@ StopsAttributeFormatPanel.prototype.addFont = function(container)
 	this.container.appendChild(description);
 	this.container.appendChild(hidden);
 	this.container.appendChild(document.createElement('br'));
+	//this.container.appendChild(spanCreateDate);
+	//this.container.appendChild(createDate);
+	//this.container.appendChild(document.createElement('br'));
 	var btn = mxUtils.button('保存', mxUtils.bind(this, function(evt)
 	{
 	var content = document.getElementById('shuxingId').value;
@@ -2338,6 +2352,13 @@ StopsBasicInfoFormatPanel.prototype.addFont = function(container)
 	//stops version
 	var stopsVersion = document.createElement('label');
 	stopsVersion.setAttribute('id', 'stopsVersion');
+	//stops owner
+	var owner = document.createElement('label');
+	owner.setAttribute('id', 'stopSowner');
+	// create date
+	var createDate = document.createElement('label');
+	createDate.setAttribute('id', 'stopCreateDate');
+	
  
 	//通过id来显示属性
 	var span3 = document.createElement('label');
@@ -2348,6 +2369,8 @@ StopsBasicInfoFormatPanel.prototype.addFont = function(container)
 	var span3 = document.createElement('span');
 	var span4 = document.createElement('span');
 	var span5 = document.createElement('span');
+	var span6 = document.createElement('span');
+	var span7 = document.createElement('span');
 	var hr = document.createElement('hr');
 	mxUtils.write(span, 'stopsName： ');
 	mxUtils.write(span1, '组名： ');
@@ -2355,6 +2378,9 @@ StopsBasicInfoFormatPanel.prototype.addFont = function(container)
 	mxUtils.write(span3, 'bundel： ');
 	mxUtils.write(span4, '模板名称： ');
 	mxUtils.write(span5, 'version： ');
+	mxUtils.write(span6, '作者信息： ');
+	mxUtils.write(span7, '创建时间： ');
+	
 	this.container.appendChild(hr);
 	this.container.appendChild(span4);
 	this.container.appendChild(labelTemplate);
@@ -2374,7 +2400,11 @@ StopsBasicInfoFormatPanel.prototype.addFont = function(container)
 	this.container.appendChild(span5);
 	this.container.appendChild(stopsVersion);
 	this.container.appendChild(document.createElement('br'));
-  
+	this.container.appendChild(span6);
+	this.container.appendChild(owner);
+	this.container.appendChild(document.createElement('br'));
+	this.container.appendChild(span7);
+	this.container.appendChild(createDate);
 	return container;
 };
 /*Add StopsBasicInfo tab  stop*/
@@ -5148,6 +5178,7 @@ function shiqu(){
 	var custom_value = document.getElementById('custom_value').value;
 	var description = document.getElementById('description').value;
 	var version = document.getElementById('version').value;
+	//var createDate = document.getElementById('createDate').value;
 	 $.ajax({
          cache:true, 
          type:"POST", 

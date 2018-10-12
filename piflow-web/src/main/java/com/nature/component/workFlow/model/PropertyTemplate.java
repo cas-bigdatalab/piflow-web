@@ -15,9 +15,9 @@ public class PropertyTemplate extends BaseHibernateModelUUIDNoCorpAgentId {
 
 	private static final long serialVersionUID = 1L;
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	//@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "FK_STOPS_ID")
-	private StopsTemplate stopsTemplate;
+	private String stopsTemplate;
 
 	private String name;
 
@@ -37,11 +37,11 @@ public class PropertyTemplate extends BaseHibernateModelUUIDNoCorpAgentId {
 	@Column(name = "PROPERTY_SENSITIVE")
 	private boolean sensitive;
 
-	public StopsTemplate getStopsTemplate() {
+	public String getStopsTemplate() {
 		return stopsTemplate;
 	}
 
-	public void setStopsTemplate(StopsTemplate stopsTemplate) {
+	public void setStopsTemplate(String stopsTemplate) {
 		this.stopsTemplate = stopsTemplate;
 	}
 

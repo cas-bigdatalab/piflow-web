@@ -62,6 +62,7 @@
 	<script type="text/javascript" th:src="@{/grapheditor/js/Toolbar.js}"></script>
 	<script type="text/javascript" th:src="@{/grapheditor/js/Dialogs.js}"></script>
 	<script type="text/javascript" th:src="@{/grapheditor/js/jquery.min.js}"></script>
+	<script type="text/javascript" th:src="@{/grapheditor/js/My97DatePicker/WdatePicker.js}"></script>
 </head>
 <body class="geEditor">
 	<script type="text/javascript">
@@ -132,11 +133,14 @@
 		                		  document.getElementById('custom_value').value = data.properties[0].customValue;
 		                		  document.getElementById('description').value = data.properties[0].description;
 		                		  document.getElementById('version').value = data.properties[0].version;
+		                		  //document.getElementById('createDate').value = data.properties[0].crtDttmString;
 		                		  document.getElementById('stopsNameLabel').innerText = data.properties[0].name; 
 		                		  document.getElementById('stopsDescription').innerText = data.description;
 		                		  document.getElementById('stopsGroups').innerText = data.groups;
 		                		  document.getElementById('stopsBundel').innerText = data.bundel;
 		                		  document.getElementById('stopsVersion').innerText = data.version;
+		                		  document.getElementById('stopSowner').innerText = data.owner;
+		                		  document.getElementById('stopCreateDate').innerText = data.crtDttmString;
 		                    }else{
 		                    	  console.log("stops属性查询null");
 		                    }

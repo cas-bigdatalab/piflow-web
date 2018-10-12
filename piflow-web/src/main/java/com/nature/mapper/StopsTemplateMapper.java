@@ -53,4 +53,11 @@ public interface StopsTemplateMapper {
 
 	@SelectProvider(type = StopsTemplateMapperProvider.class, method = "getStopsTemplateByName")
 	public List<StopsTemplate> getStopsTemplateByName(String stopsName);
+	
+	/**
+	 *  Add more than one FLOW_STOPS_TEMPLATE List.
+	 * @param stopsTemplateList
+	 * @return
+	 */
+	int insertStopsTemplate(List<StopsTemplate > stopsTemplateList);
 }
