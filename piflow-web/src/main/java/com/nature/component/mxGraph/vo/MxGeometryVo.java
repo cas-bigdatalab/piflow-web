@@ -1,35 +1,23 @@
-package com.nature.component.mxGraph.model;
+package com.nature.component.mxGraph.vo;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import java.io.Serializable;
 
-import com.nature.base.BaseHibernateModelUUIDNoCorpAgentId;
-
-@Entity
-@Table(name = "MX_GEOMETRY")
-public class MxGeometry extends BaseHibernateModelUUIDNoCorpAgentId {
+public class MxGeometryVo implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "MX_RELATIVE")
 	private String relative;
 
-	@Column(name = "MX_AS")
 	private String as;
 
-	@Column(name = "MX_X")
 	private String x;
 
-	@Column(name = "MX_Y")
 	private String y;
 
-	@Column(name = "MX_WIDTH")
 	private String width;
 
-	@Column(name = "MX_HEIGHT")
 	private String height;
 
 	public String getRelative() {

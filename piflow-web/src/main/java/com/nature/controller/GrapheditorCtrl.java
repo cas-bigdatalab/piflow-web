@@ -1,11 +1,13 @@
 package com.nature.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,7 +18,12 @@ import com.nature.base.util.FlowXmlUtils;
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.Utils;
 import com.nature.base.vo.StatefulRtnBase;
+import com.nature.component.mxGraph.model.MxCell;
+import com.nature.component.mxGraph.model.MxGeometry;
 import com.nature.component.mxGraph.model.MxGraphModel;
+import com.nature.component.mxGraph.vo.MxCellVo;
+import com.nature.component.mxGraph.vo.MxGeometryVo;
+import com.nature.component.mxGraph.vo.MxGraphModelVo;
 import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.model.StopGroup;
 import com.nature.component.workFlow.service.FlowService;
@@ -37,8 +44,6 @@ public class GrapheditorCtrl {
 	@Autowired
 	private StopGroupService stopGroupServiceImpl;
 
-	private MxGraphModel mxGraphModel_init = null;
-
 	@RequestMapping("/grapheditor")
 	public String kitchenSink(Model model, String load) {
 		// 判斷是否存在Flow的id(load),如果存在則加載，否則生成UUID返回返回頁面
@@ -48,13 +53,12 @@ public class GrapheditorCtrl {
 			model.addAttribute("groupsList", groupsList);
 			Flow flowById = flowServiceImpl.getFlowById(load);
 			// 把查詢出來的Flow轉爲XML
-			String saveXml = FlowXmlUtils.mxGraphModelToXml(flowToMxGraphModel(flowById));
-			model.addAttribute("xmlDate", saveXml);
+			String loadXml = FlowXmlUtils.mxGraphModelToXml(flowToMxGraphModelVo(flowById));
+			model.addAttribute("xmlDate", loadXml);
 			model.addAttribute("load", load);
 		} else {
 			// 生成32位UUID
 			load = Utils.getUUID32();
-			mxGraphModel_init = null;
 			return "redirect:grapheditor?load=" + load;
 		}
 		return "grapheditor/index";
@@ -111,26 +115,54 @@ public class GrapheditorCtrl {
 		String loadId = request.getParameter("load");
 		if (StringUtils.isNotBlank(imageXML) && StringUtils.isNotBlank(loadId)) {
 			// 把页面传來的XML转为mxGraphModel
-			MxGraphModel xmlToMxGraphModel = FlowXmlUtils.xmlToMxGraphModel(imageXML);
-			// 根据Flow的id查询
-			Flow flowById = flowServiceImpl.getFlowById(loadId);
-			if (null != flowById) {
-				mxGraphModel_init = xmlToMxGraphModel;
-				logger.info("在'" + loadId + "'的基礎上保存");
-			} else {
-				logger.info("新建");
-				StatefulRtnBase addFlow = flowServiceImpl.addFlow(xmlToMxGraphModel, loadId);
-				// addFlow不为空且ReqRtnStatus的值为true,则保存成功
-				if (null != addFlow && addFlow.isReqRtnStatus()) {
-					rtnStr = "1";
-				}
+			MxGraphModelVo xmlToMxGraphModel = FlowXmlUtils.xmlToMxGraphModel(imageXML);
+			StatefulRtnBase addFlow = flowServiceImpl.saveOrUpdateFlow(xmlToMxGraphModel, loadId);
+			// addFlow不为空且ReqRtnStatus的值为true,则保存成功
+			if (null != addFlow && addFlow.isReqRtnStatus()) {
+				rtnStr = "1";
 			}
 		}
 		return rtnStr;
 	}
 
-	private MxGraphModel flowToMxGraphModel(Flow flow) {
-		return mxGraphModel_init;
+	private MxGraphModelVo flowToMxGraphModelVo(Flow flow) {
+		MxGraphModelVo mxGraphModelVo = null;
+		// 判空
+		if (null != flow) {
+			// 取出mxGraphModel
+			MxGraphModel mxGraphModel = flow.getMxGraphModel();
+			// 判空mxGraphModel
+			if (null != mxGraphModel) {
+				mxGraphModelVo = new MxGraphModelVo();
+				// 拷贝mxGraphModel的内容到mxGraphModelVo中
+				BeanUtils.copyProperties(mxGraphModel, mxGraphModelVo);
+				// 取出mxCellList
+				List<MxCell> root = mxGraphModel.getRoot();
+				// 判空
+				if (null != root && root.size() > 0) {
+					List<MxCellVo> mxCellVoList = new ArrayList<MxCellVo>();
+					// 循环拷贝
+					for (MxCell mxCell : root) {
+						if (null != mxCell) {
+							MxCellVo mxCellVo = new MxCellVo();
+							// 拷贝mxGraphModel的内容到mxGraphModelVo中
+							BeanUtils.copyProperties(mxCell, mxCellVo);
+							MxGeometry mxGeometry = mxCell.getMxGeometry();
+							if (null != mxGeometry) {
+								MxGeometryVo mxGeometryVo = new MxGeometryVo();
+								// 拷贝mxGeometry的内容到mxGeometryVo中
+								BeanUtils.copyProperties(mxGeometry, mxGeometryVo);
+								mxCellVo.setMxGeometryVo(mxGeometryVo);
+							}
+							mxCellVoList.add(mxCellVo);
+						}
+					}
+					mxGraphModelVo.setRootVo(mxCellVoList);
+				}
+
+			}
+		}
+		return mxGraphModelVo;
 	}
 
 }

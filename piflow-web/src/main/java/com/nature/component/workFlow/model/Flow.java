@@ -29,18 +29,18 @@ public class Flow extends BaseHibernateModelUUIDNoCorpAgentId {
 	private String uuid;
 
 	@OneToOne
-	@JoinColumn(name = "mxGraphModelId", referencedColumnName = "id")
+	@JoinColumn(name = "fk_mx_graph_model_id", referencedColumnName = "id")
 	private MxGraphModel mxGraphModel;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "flow")
 	@Where(clause = "enable_flag=1")
 	@OrderBy(clause = "lastUpdateDttm desc")
-	private List<Stops> stops = new ArrayList<Stops>();
+	private List<Stops> stopsList = new ArrayList<Stops>();
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "flow")
 	@Where(clause = "enable_flag=1")
 	@OrderBy(clause = "lastUpdateDttm desc")
-	private List<Paths> paths = new ArrayList<Paths>();
+	private List<Paths> pathsList = new ArrayList<Paths>();
 
 	public String getAppId() {
 		return appId;
@@ -74,20 +74,20 @@ public class Flow extends BaseHibernateModelUUIDNoCorpAgentId {
 		this.mxGraphModel = mxGraphModel;
 	}
 
-	public List<Stops> getStops() {
-		return stops;
+	public List<Stops> getStopsList() {
+		return stopsList;
 	}
 
-	public void setStops(List<Stops> stops) {
-		this.stops = stops;
+	public void setStopsList(List<Stops> stopsList) {
+		this.stopsList = stopsList;
 	}
 
-	public List<Paths> getPaths() {
-		return paths;
+	public List<Paths> getPathsList() {
+		return pathsList;
 	}
 
-	public void setPaths(List<Paths> paths) {
-		this.paths = paths;
+	public void setPathsList(List<Paths> pathsList) {
+		this.pathsList = pathsList;
 	}
 
 }

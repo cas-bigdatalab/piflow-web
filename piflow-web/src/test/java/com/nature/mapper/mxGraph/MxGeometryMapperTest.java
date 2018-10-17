@@ -11,7 +11,6 @@ import com.nature.ApplicationTests;
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.Utils;
 import com.nature.component.mxGraph.model.MxGeometry;
-import com.nature.mapper.mxGraph.MxGeometryMapper;
 
 public class MxGeometryMapperTest extends ApplicationTests {
 
@@ -19,6 +18,12 @@ public class MxGeometryMapperTest extends ApplicationTests {
 	private MxGeometryMapper mxGeometryMapper;
 
 	Logger logger = LoggerUtil.getLogger();
+
+	@Test
+	public void testGetMxGeometryById() {
+		MxGeometry mxGeometryById = mxGeometryMapper.getMxGeometryById("fadb97a91beb43c9a0d74023c32e249d");
+		logger.info(mxGeometryById.toString());
+	}
 
 	@Test
 	@Rollback(true)

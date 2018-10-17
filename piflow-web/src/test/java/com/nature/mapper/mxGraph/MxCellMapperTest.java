@@ -1,6 +1,7 @@
 package com.nature.mapper.mxGraph;
 
 import java.util.Date;
+import java.util.List;
 
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -11,6 +12,7 @@ import com.nature.ApplicationTests;
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.Utils;
 import com.nature.component.mxGraph.model.MxCell;
+import com.nature.component.mxGraph.model.MxGeometry;
 
 public class MxCellMapperTest extends ApplicationTests {
 
@@ -18,6 +20,18 @@ public class MxCellMapperTest extends ApplicationTests {
 	private MxCellMapper mxCellMapper;
 
 	Logger logger = LoggerUtil.getLogger();
+
+	@Test
+	public void testGetMeCellByMxGraphId() {
+		List<MxCell> meCellByMxGraphId = mxCellMapper.getMeCellByMxGraphId("0bb7410706404b4e9bfd96159e58a713");
+		logger.info(meCellByMxGraphId.toString());
+	}
+
+	@Test
+	public void testGetMeCellById() {
+		MxCell meCellByMxGraphId = mxCellMapper.getMeCellById("b35003d9c1a9479193398d35835017ec");
+		logger.info(meCellByMxGraphId.toString());
+	}
 
 	@Test
 	@Rollback(true)
@@ -38,6 +52,23 @@ public class MxCellMapperTest extends ApplicationTests {
 		mxCell.setTarget("target");
 		mxCell.setValue("value");
 		mxCell.setVertex("vertex");
+
+		MxGeometry mxGeometry = new MxGeometry();
+		mxGeometry.setId(Utils.getUUID32());
+		mxGeometry.setCrtDttm(new Date());
+		mxGeometry.setCrtUser("Nature");
+		mxGeometry.setEnableFlag(true);
+		mxGeometry.setLastUpdateUser("Nature");
+		mxGeometry.setLastUpdateDttm(new Date());
+		mxGeometry.setVersion(0L);
+		mxGeometry.setAs("as");
+		mxGeometry.setHeight("111");
+		mxGeometry.setRelative("relative");
+		mxGeometry.setWidth("111");
+		mxGeometry.setX("111");
+		mxGeometry.setY("111");
+		mxCell.setMxGeometry(mxGeometry);
+
 		int addFlow = mxCellMapper.addMxCell(mxCell);
 		logger.info(addFlow + "");
 	}

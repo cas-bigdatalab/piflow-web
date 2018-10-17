@@ -20,6 +20,12 @@ public class MxGraphModelMapperTest extends ApplicationTests {
 	Logger logger = LoggerUtil.getLogger();
 
 	@Test
+	public void testGetMeCellByMxGraphId() {
+		MxGraphModel mxGraphModelById = mxGraphModelMapper.getMxGraphModelById("0bb7410706404b4e9bfd96159e58a713");
+		logger.info(mxGraphModelById.toString());
+	}
+
+	@Test
 	@Rollback(true)
 	public void testAddMxGraphModel() {
 		MxGraphModel mxGraphModel = new MxGraphModel();

@@ -15,49 +15,56 @@ import com.nature.provider.StopsTemplateMapperProvider;
 @Mapper
 public interface StopsTemplateMapper {
 	/**
-	 * 查詢所有stops模板
+	 * @Title 查詢所有stops模板
 	 * 
 	 * @return
 	 */
-	@Select("select * from flow_stops_template")
-	List<StopsTemplate> getStopsTemplateList();
+	@SelectProvider(type = StopsTemplateMapperProvider.class, method = "getStopsTemplateList")
+	public List<StopsTemplate> getStopsTemplateList();
 
 	/**
-	 * 根據stops模板id查詢模板
+	 * @Title 根據stops模板id查詢模板
 	 * 
 	 * @param id
 	 * @return
 	 */
-	@Select("select * from flow_stops_template where id = #{id}")
-	StopsTemplate getStopsTemplateById(String id);
+	@SelectProvider(type = StopsTemplateMapperProvider.class, method = "getStopsTemplateById")
+	public StopsTemplate getStopsTemplateById(String id);
 
 	/**
-	 * 根據stops模板的id查詢stops模板(包括屬性list)
+	 * @Title 根據stops模板的id查詢stops模板(包括屬性list)
 	 * 
 	 * @param id
 	 * @return
 	 */
-	@Select("select * from flow_stops_template where id = #{id}")
+	@SelectProvider(type = StopsTemplateMapperProvider.class, method = "getStopsPropertyById")
 	@Results({ @Result(id = true, column = "id", property = "id"),
 			@Result(property = "properties", column = "id", many = @Many(select = "com.nature.mapper.PropertyTemplateMapper.getPropertyTemplateBySotpsId")) })
-	StopsTemplate getStopsPropertyById(String id);
+	public StopsTemplate getStopsPropertyById(String id);
 
 	/**
-	 * 根据stops组的id查询stops模板
+	 * @Title 根据stops组的id查询stops模板
 	 * 
 	 * @param groupId
 	 * @return
 	 */
 	@Select("select * from flow_stops_template where id in (select agst.stops_template_id from association_groups_stops_template agst where agst.groups_id = #{groupId})")
-	List<StopsTemplate> getStopsTemplateListByGroupId(String groupId);
+	public List<StopsTemplate> getStopsTemplateListByGroupId(String groupId);
 
+	/**
+	 * @Title 根据stopsName查询StopsTemplate
+	 * 
+	 * @param stopsName
+	 * @return
+	 */
 	@SelectProvider(type = StopsTemplateMapperProvider.class, method = "getStopsTemplateByName")
 	public List<StopsTemplate> getStopsTemplateByName(String stopsName);
-	
+
 	/**
-	 *  Add more than one FLOW_STOPS_TEMPLATE List.
+	 * Add more than one FLOW_STOPS_TEMPLATE List.
+	 * 
 	 * @param stopsTemplateList
 	 * @return
 	 */
-	int insertStopsTemplate(List<StopsTemplate > stopsTemplateList);
+	public int insertStopsTemplate(List<StopsTemplate> stopsTemplateList);
 }

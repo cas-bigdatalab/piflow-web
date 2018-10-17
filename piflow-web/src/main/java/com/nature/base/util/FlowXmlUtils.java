@@ -12,9 +12,9 @@ import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
 import org.xml.sax.InputSource;
 
-import com.nature.component.mxGraph.model.MxCell;
-import com.nature.component.mxGraph.model.MxGeometry;
-import com.nature.component.mxGraph.model.MxGraphModel;
+import com.nature.component.mxGraph.vo.MxCellVo;
+import com.nature.component.mxGraph.vo.MxGeometryVo;
+import com.nature.component.mxGraph.vo.MxGraphModelVo;
 
 public class FlowXmlUtils {
 
@@ -23,27 +23,27 @@ public class FlowXmlUtils {
 	/**
 	 * MxGraphModel转字符串的xml
 	 * 
-	 * @param mxGraphModel
+	 * @param mxGraphModelVo
 	 * @return
 	 */
-	public static String mxGraphModelToXml(MxGraphModel mxGraphModel) {
+	public static String mxGraphModelToXml(MxGraphModelVo mxGraphModelVo) {
 		// 拼xml注意一定要写空格
-		if (null != mxGraphModel) {
+		if (null != mxGraphModelVo) {
 			StringBuffer xmlStrSb = new StringBuffer();
-			String dx = mxGraphModel.getDx();
-			String dy = mxGraphModel.getDy();
-			String grid = mxGraphModel.getGrid();
-			String gridSize = mxGraphModel.getGridSize();
-			String guides = mxGraphModel.getGuides();
-			String tooltips = mxGraphModel.getTooltips();
-			String connect = mxGraphModel.getConnect();
-			String arrows = mxGraphModel.getArrows();
-			String fold = mxGraphModel.getFold();
-			String page = mxGraphModel.getPage();
-			String pageScale = mxGraphModel.getPageScale();
-			String pageWidth = mxGraphModel.getPageWidth();
-			String pageHeight = mxGraphModel.getPageHeight();
-			String background = mxGraphModel.getBackground();
+			String dx = mxGraphModelVo.getDx();
+			String dy = mxGraphModelVo.getDy();
+			String grid = mxGraphModelVo.getGrid();
+			String gridSize = mxGraphModelVo.getGridSize();
+			String guides = mxGraphModelVo.getGuides();
+			String tooltips = mxGraphModelVo.getTooltips();
+			String connect = mxGraphModelVo.getConnect();
+			String arrows = mxGraphModelVo.getArrows();
+			String fold = mxGraphModelVo.getFold();
+			String page = mxGraphModelVo.getPage();
+			String pageScale = mxGraphModelVo.getPageScale();
+			String pageWidth = mxGraphModelVo.getPageWidth();
+			String pageHeight = mxGraphModelVo.getPageHeight();
+			String background = mxGraphModelVo.getBackground();
 			xmlStrSb.append("<mxGraphModel ");
 			if (StringUtils.isNotBlank(dx)) {
 				xmlStrSb.append("dx=\"" + dx + "\" ");
@@ -88,18 +88,18 @@ public class FlowXmlUtils {
 				xmlStrSb.append("background=\"" + background + "\" ");
 			}
 			xmlStrSb.append("><root>");
-			List<MxCell> rootList = mxGraphModel.getRoot();
-			if (null != rootList && rootList.size() > 0) {
-				for (MxCell mxCell : rootList) {
-					String id = mxCell.getPageId();
-					String parent = mxCell.getParent();
-					String style = mxCell.getStyle();
-					String value = mxCell.getValue();
-					String vertex = mxCell.getVertex();
-					String edge = mxCell.getEdge();
-					String source = mxCell.getSource();
-					String target = mxCell.getTarget();
-					MxGeometry mxGeometry = mxCell.getMxGeometry();
+			List<MxCellVo> rootVoList = mxGraphModelVo.getRootVo();
+			if (null != rootVoList && rootVoList.size() > 0) {
+				for (MxCellVo mxCellVo : rootVoList) {
+					String id = mxCellVo.getPageId();
+					String parent = mxCellVo.getParent();
+					String style = mxCellVo.getStyle();
+					String value = mxCellVo.getValue();
+					String vertex = mxCellVo.getVertex();
+					String edge = mxCellVo.getEdge();
+					String source = mxCellVo.getSource();
+					String target = mxCellVo.getTarget();
+					MxGeometryVo mxGeometryVo = mxCellVo.getMxGeometryVo();
 					xmlStrSb.append("<mxCell ");
 					if (StringUtils.isNotBlank(id)) {
 						xmlStrSb.append("id=\"" + id + "\" ");
@@ -125,13 +125,13 @@ public class FlowXmlUtils {
 					if (StringUtils.isNotBlank(target)) {
 						xmlStrSb.append("target=\"" + target + "\" ");
 					}
-					if (null != mxGeometry) {
-						String relative = mxGeometry.getRelative();
-						String as = mxGeometry.getAs();
-						String x = mxGeometry.getX();
-						String y = mxGeometry.getY();
-						String width = mxGeometry.getWidth();
-						String height = mxGeometry.getHeight();
+					if (null != mxGeometryVo) {
+						String relative = mxGeometryVo.getRelative();
+						String as = mxGeometryVo.getAs();
+						String x = mxGeometryVo.getX();
+						String y = mxGeometryVo.getY();
+						String width = mxGeometryVo.getWidth();
+						String height = mxGeometryVo.getHeight();
 						xmlStrSb.append("><mxGeometry ");
 						if (StringUtils.isNotBlank(relative)) {
 							xmlStrSb.append("relative=\"" + relative + "\" ");
@@ -172,9 +172,9 @@ public class FlowXmlUtils {
 	 * @return
 	 */
 	@SuppressWarnings("rawtypes")
-	public static MxGraphModel xmlToMxGraphModel(String xmldata) {
+	public static MxGraphModelVo xmlToMxGraphModel(String xmldata) {
 		String transformation = "<nature>" + xmldata + "</nature>";
-		MxGraphModel mxGraphModelVo = new MxGraphModel();
+		MxGraphModelVo mxGraphModelVo = new MxGraphModelVo();
 		InputSource in = new InputSource(new StringReader(transformation));
 		in.setEncoding("UTF-8");
 		SAXReader reader = new SAXReader();
@@ -212,12 +212,12 @@ public class FlowXmlUtils {
 			mxGraphModelVo.setPageWidth(pageWidth);
 			mxGraphModelVo.setPageHeight(pageHeight);
 			mxGraphModelVo.setBackground(background);
-			List<MxCell> rootList = new ArrayList<MxCell>();
+			List<MxCellVo> rootVoList = new ArrayList<MxCellVo>();
 			Element rootjd = mxGraphModel.element("root");
 			Iterator rootiter = rootjd.elementIterator("mxCell"); // 获取根节点下的子节点mxCell
 			while (rootiter.hasNext()) {
-				MxCell mxCellVo = new MxCell();
-				MxGeometry mxGeometryVo = null;
+				MxCellVo mxCellVo = new MxCellVo();
+				MxGeometryVo mxGeometryVo = null;
 				Element recordEle = (Element) rootiter.next();
 				String mxCellId = recordEle.attributeValue("id");
 				String parent = recordEle.attributeValue("parent");
@@ -236,7 +236,7 @@ public class FlowXmlUtils {
 				mxCellVo.setValue(value);
 				mxCellVo.setVertex(vertex);
 				if (StringUtils.isNotBlank(style)) {
-					mxGeometryVo = new MxGeometry();
+					mxGeometryVo = new MxGeometryVo();
 					Element mxGeometry = recordEle.element("mxGeometry");
 					String relative = mxGeometry.attributeValue("relative");
 					String as = mxGeometry.attributeValue("as");
@@ -251,10 +251,10 @@ public class FlowXmlUtils {
 					mxGeometryVo.setWidth(width);
 					mxGeometryVo.setHeight(height);
 				}
-				mxCellVo.setMxGeometry(mxGeometryVo);
-				rootList.add(mxCellVo);
+				mxCellVo.setMxGeometryVo(mxGeometryVo);
+				rootVoList.add(mxCellVo);
 			}
-			mxGraphModelVo.setRoot(rootList);
+			mxGraphModelVo.setRootVo(rootVoList);
 		} catch (Exception e) {
 			logger.error("转换失败", e);
 			return null;

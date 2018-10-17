@@ -4,26 +4,27 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.SelectProvider;
 
 import com.nature.component.workFlow.model.Property;
 import com.nature.component.workFlow.model.PropertyTemplate;
-import com.nature.component.workFlow.model.StopGroup;
-import com.nature.component.workFlow.model.StopsTemplate;
+import com.nature.provider.PropertyTemplateMapperProvider;
 
 @Mapper
 public interface PropertyTemplateMapper {
 
 	/**
-	 * 根據stops模板id查詢對應的stops的所有屬性
+	 * @Title 根據stops模板id查詢對應的stops的所有屬性
 	 * 
 	 * @param stopsId
 	 * @return
 	 */
-	@Select("select fspt.* from flow_stops_property_template fspt where fspt.fk_stops_id = #{stopsId}")
+	@SelectProvider(type = PropertyTemplateMapperProvider.class, method = "getPropertyTemplateBySotpsId")
 	List<PropertyTemplate> getPropertyTemplateBySotpsId(String stopsId);
-	
+
 	/**
 	 * Query through ID flow_stops_property.
+	 * 
 	 * @param id
 	 * @return
 	 */

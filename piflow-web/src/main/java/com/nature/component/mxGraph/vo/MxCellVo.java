@@ -1,61 +1,39 @@
-package com.nature.component.mxGraph.model;
+package com.nature.component.mxGraph.vo;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import java.io.Serializable;
 
-import com.nature.base.BaseHibernateModelUUIDNoCorpAgentId;
-
-@Entity
-@Table(name = "MX_CELL")
-public class MxCell extends BaseHibernateModelUUIDNoCorpAgentId {
+public class MxCellVo implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "FK_MX_GRAPH_ID")
-	private MxGraphModel mxGraphModel;
+	private MxGraphModelVo mxGraphModelVo;
 
-	@Column(name = "MX_PAGEID")
 	private String pageId;
 
-	@Column(name = "MX_PARENT")
 	private String parent;
 
-	@Column(name = "MX_STYLE")
 	private String style;
 
-	@Column(name = "MX_EDGE")
 	private String edge; // 线有
 
-	@Column(name = "MX_SOURCE")
 	private String source; // 线有
 
-	@Column(name = "MX_TARGET")
 	private String target; // 线有
 
-	@Column(name = "MX_VALUE")
 	private String value;
 
-	@Column(name = "MX_VERTEX")
 	private String vertex;
 
-	@OneToOne
-	@JoinColumn(name = "fk_mx_geometry_id", referencedColumnName = "id")
-	private MxGeometry mxGeometry;
+	private MxGeometryVo mxGeometryVo;
 
-	public MxGraphModel getMxGraphModel() {
-		return mxGraphModel;
+	public MxGraphModelVo getMxGraphModelVo() {
+		return mxGraphModelVo;
 	}
 
-	public void setMxGraphModel(MxGraphModel mxGraphModel) {
-		this.mxGraphModel = mxGraphModel;
+	public void setMxGraphModelVo(MxGraphModelVo mxGraphModelVo) {
+		this.mxGraphModelVo = mxGraphModelVo;
 	}
 
 	public String getPageId() {
@@ -122,12 +100,12 @@ public class MxCell extends BaseHibernateModelUUIDNoCorpAgentId {
 		this.vertex = vertex;
 	}
 
-	public MxGeometry getMxGeometry() {
-		return mxGeometry;
+	public MxGeometryVo getMxGeometryVo() {
+		return mxGeometryVo;
 	}
 
-	public void setMxGeometry(MxGeometry mxGeometry) {
-		this.mxGeometry = mxGeometry;
+	public void setMxGeometryVo(MxGeometryVo mxGeometryVo) {
+		this.mxGeometryVo = mxGeometryVo;
 	}
 
 }

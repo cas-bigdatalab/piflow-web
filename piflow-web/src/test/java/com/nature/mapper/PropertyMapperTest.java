@@ -1,11 +1,14 @@
 package com.nature.mapper;
 
+import java.util.List;
+
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.nature.ApplicationTests;
 import com.nature.base.util.LoggerUtil;
+import com.nature.component.workFlow.model.Property;
 import com.nature.component.workFlow.model.Stops;
 
 public class PropertyMapperTest extends ApplicationTests {
@@ -14,6 +17,16 @@ public class PropertyMapperTest extends ApplicationTests {
 	private PropertyMapper propertyMapper;
 
 	Logger logger = LoggerUtil.getLogger();
+
+	@Test
+	public void testGetPropertyListByStopsId() {
+		List<Property> propertyList = propertyMapper.getPropertyListByStopsId("85f90a18423245b09cde371cbb3330sd");
+		if (null == propertyList) {
+			logger.info("查询结果为空");
+		} else {
+			logger.info(propertyList.size() + "");
+		}
+	}
 
 	@Test
 	public void testGetStopsPropertyById() {
