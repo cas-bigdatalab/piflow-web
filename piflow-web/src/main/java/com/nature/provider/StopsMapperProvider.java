@@ -9,6 +9,7 @@ import org.apache.ibatis.jdbc.SQL;
 
 import com.nature.base.util.DateUtils;
 import com.nature.base.util.Utils;
+import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.model.Stops;
 
 public class StopsMapperProvider {
@@ -34,6 +35,8 @@ public class StopsMapperProvider {
 			String numberOfEntrances = stops.getNumberOfEntrances();
 			String numberOfExports = stops.getNumberOfExports();
 			String owner = stops.getOwner();
+			String pageId = stops.getPageId();
+			Flow flow = stops.getFlow();
 			SQL sql = new SQL();
 
 			sql.INSERT_INTO("flow_stops");
@@ -86,6 +89,15 @@ public class StopsMapperProvider {
 			if (StringUtils.isNotBlank(bundel)) {
 				sql.VALUES("owner", Utils.addSqlStr(owner));
 			}
+			if (StringUtils.isNotBlank(pageId)) {
+				sql.VALUES("page_id", Utils.addSqlStr(pageId));
+			}
+			if (null != flow) {
+				String flowId = flow.getId();
+				if (StringUtils.isNotBlank(pageId)) {
+					sql.VALUES("FK_FLOW_ID", Utils.addSqlStr(flowId));
+				}
+			}
 
 			sqlStr = sql.toString() + ";";
 		}
@@ -119,7 +131,9 @@ public class StopsMapperProvider {
 			sql.append("name,");
 			sql.append("number_of_entrances,");
 			sql.append("number_of_exports,");
-			sql.append("owner");
+			sql.append("owner,");
+			sql.append("page_id,");
+			sql.append("fk_flow_id");
 			sql.append(") ");
 			sql.append("values");
 			int i = 0;
@@ -139,8 +153,11 @@ public class StopsMapperProvider {
 				String numberOfEntrances = stops.getNumberOfEntrances();
 				String numberOfExports = stops.getNumberOfExports();
 				String owner = stops.getOwner();
-				if (null == crtUser) {
-					crtUser = "";
+				String pageId = stops.getPageId();
+				Flow flow = stops.getFlow();
+				String flowId = "";
+				if (null != flow) {
+					flowId = flow.getId();
 				}
 				sql.append("(");
 				sql.append(Utils.addSqlStr((id == null ? "" : id)) + ",");
@@ -157,7 +174,9 @@ public class StopsMapperProvider {
 				sql.append(Utils.addSqlStr((name == null ? "" : name)) + ",");
 				sql.append(Utils.addSqlStr((numberOfEntrances == null ? "" : numberOfEntrances)) + ",");
 				sql.append(Utils.addSqlStr((numberOfExports == null ? "" : numberOfExports)) + ",");
-				sql.append(Utils.addSqlStr((owner == null ? "" : owner)));
+				sql.append(Utils.addSqlStr((owner == null ? "" : owner)) + ",");
+				sql.append(Utils.addSqlStr((pageId == null ? "" : pageId)) + ",");
+				sql.append(Utils.addSqlStr((flowId == null ? "" : flowId)));
 				if (i != stopsList.size()) {
 					sql.append("),");
 				} else {
