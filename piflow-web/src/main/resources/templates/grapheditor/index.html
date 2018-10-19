@@ -108,10 +108,12 @@
 		         });
 		         graphGlobal.addListener(mxEvent.CLICK, function(sender, evt) {
 					var cells = evt.properties.cell;
+					console.info(cells);
 					if(typeof(cells)!="undefined"){
 					var id = evt.properties.cell.id;
 					//var content = document.getElementById('shuxingId').value;
-					document.getElementById('labelTemplateName').innerText = cells.value;
+					//document.getElementById('labelTemplateName').innerText = cells.value;
+					document.getElementById('stopsNameLabel').innerText = cells.value;
 				    $.ajax({
 		                cache:true, 
 		                type:"POST", 
@@ -133,7 +135,6 @@
 		                		  document.getElementById('description').value = data.properties[0].description;
 		                		  document.getElementById('version').value = data.properties[0].version;
 		                		  //document.getElementById('createDate').value = data.properties[0].crtDttmString;
-		                		  document.getElementById('stopsNameLabel').innerText = data.properties[0].name; 
 		                		  document.getElementById('stopsDescription').innerText = data.description;
 		                		  document.getElementById('stopsGroups').innerText = data.groups;
 		                		  document.getElementById('stopsBundel').innerText = data.bundel;

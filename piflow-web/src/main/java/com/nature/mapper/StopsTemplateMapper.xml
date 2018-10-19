@@ -7,14 +7,14 @@
                 SELECT LAST_INSERT_ID()
             </selectKey >
            insert into flow_stops_template
-           (id,crt_dttm, crt_user, enable_flag,last_update_dttm,last_update_user,version,bundel,description,groups,name,number_of_entrances,number_of_exports,owner,stop_group)
+           (id,crt_dttm, crt_user, enable_flag,last_update_dttm,last_update_user,version,bundel,description,groups,name,number_of_entrances,number_of_exports,owner,stop_group,inports,outports)
            values
             <foreach collection ="list" item="stops_template" index= "index" separator =",">
                 (
                 #{stops_template.id}, #{stops_template.crtDttm}, #{stops_template.crtUser}, #{stops_template.enableFlag}, #{stops_template.lastUpdateDttm},
                #{stops_template.lastUpdateUser},#{stops_template.version},#{stops_template.bundel},#{stops_template.description},
                #{stops_template.groups},#{stops_template.name},#{stops_template.numberOfEntrances},#{stops_template.numberOfExports}
-               ,#{stops_template.owner},#{stops_template.stopGroup}
+               ,#{stops_template.owner},#{stops_template.stopGroup},#{stops_template.inports},#{stops_template.outports}
                 )
             </foreach >
      </insert >

@@ -452,8 +452,9 @@ Format.prototype.refresh = function()
 
 		label.style.backgroundColor = this.inactiveTabBackgroundColor;
 		label.style.borderLeftWidth = '1px';
-		label.style.width = (containsLabel) ? '50%' : '33.3%';
-		label.style.width = (containsLabel) ? '50%' : '33.3%';
+		//label.style.width = (containsLabel) ? '50%' : '33.3%';
+		//label.style.width = (containsLabel) ? '50%' : '33.3%';
+		label.style.width =   '50%' ;
 		var label2 = label.cloneNode(false);
 		var label3 = label2.cloneNode(false);
 		var label4 = label3.cloneNode(false);
@@ -467,7 +468,7 @@ Format.prototype.refresh = function()
 		
 		//开始设置stops基础信息
 		label5.style.borderLeftWidth = '0px';
-		mxUtils.write(label5, mxResources.get('basicInfo'));
+		mxUtils.write(label5, "basicInfo");
 		div.appendChild(label5);
 		var StopsBasicInfo = div.cloneNode(false);
 		StopsBasicInfo.style.display = 'none';
@@ -477,7 +478,7 @@ Format.prototype.refresh = function()
 		
 		//开始设置stops属性
 		label4.style.borderLeftWidth = '0px';
-		mxUtils.write(label4, mxResources.get('textAttribute'));
+		mxUtils.write(label4, "AttributeInfo");
 		div.appendChild(label4);
 		var StopsTextAttribute = div.cloneNode(false);
 		StopsTextAttribute.style.display = 'none';
@@ -494,12 +495,12 @@ Format.prototype.refresh = function()
 		{
 			label.style.borderLeftWidth = '0px';
 			mxUtils.write(label, mxResources.get('style'));
-			div.appendChild(label);
+			//div.appendChild(label);
 			
 			var stylePanel = div.cloneNode(false);
 			stylePanel.style.display = 'none';
 			this.panels.push(new StyleFormatPanel(this, ui, stylePanel));
-			this.container.appendChild(stylePanel);
+			//this.container.appendChild(stylePanel);
 			addClickHandler(label, stylePanel, idx++);
 		}
 		
@@ -2210,31 +2211,31 @@ StopsAttributeFormatPanel.prototype.addFont = function(container)
 	name.setAttribute('type', 'text');
 	name.setAttribute('id', 'shuxingId');
 	name.setAttribute('onblur', 'shiqu()');
-	name.style.float = "right";
+	//name.style.float = "right";
 	//input display_name
 	var display_name = document.createElement('input');
 	display_name.setAttribute('type', 'text');
 	display_name.setAttribute('id', 'display_name');
 	display_name.setAttribute('onblur', 'shiqu()');
-	display_name.style.float = "right";
+	//display_name.style.float = "right";
 	//input custom_value
 	var custom_value = document.createElement('input');
 	custom_value.setAttribute('type', 'text');
 	custom_value.setAttribute('id', 'custom_value');
 	custom_value.setAttribute('onblur', 'shiqu()');
-	custom_value.style.float = "right";
+	//custom_value.style.float = "right";
 	//input description
 	var description = document.createElement('input');
 	description.setAttribute('type', 'text');
 	description.setAttribute('id', 'description');
 	description.setAttribute('onblur', 'shiqu()');
-	description.style.float = "right";
+	//description.style.float = "right";
 	//input version
 	var version = document.createElement('input');
 	version.setAttribute('type', 'text');
 	version.setAttribute('id', 'version');
 	version.setAttribute('onblur', 'shiqu()');
-	version.style.float = "right";
+	//version.style.float = "right";
 	
 	//input createDate
 	var createDate = document.createElement('input');
@@ -2242,18 +2243,26 @@ StopsAttributeFormatPanel.prototype.addFont = function(container)
 	createDate.setAttribute('id', 'createDate');
 	//createDate.setAttribute('onclick', 'WdatePicker();');
 	createDate.setAttribute('onblur', 'shiqu()');
-	createDate.style.float = "right";
+	//createDate.style.float = "right";
 	
 	//隐藏的input存放id
 	var hidden = document.createElement('input');
 	hidden.setAttribute('type', 'hidden');
 	hidden.setAttribute('id', 'hiddenId');
 	var spanName = document.createElement('span');
+	spanName.style.marginRight = "18px";
 	var spanDisplay_name = document.createElement('span');
+	spanDisplay_name.style.marginRight = "-6px";
 	var spanCustom_value = document.createElement('span');
+	spanCustom_value.style.marginRight = "12px";
 	var spanDescription = document.createElement('span');
+	spanDescription.style.marginRight = "24px";
 	var spanVersion = document.createElement('span');
+	spanVersion.style.marginRight = "18px";
 	var spanCreateDate = document.createElement('span');
+	spanCreateDate.style.marginRight = "18px";
+	var spanColorRed = document.createElement('span');
+	spanColorRed.style.color = "red";
 	var hr = document.createElement('hr');
 	mxUtils.write(spanName, '名称： ');
 	mxUtils.write(spanDisplay_name, '显示名称： ');
@@ -2261,14 +2270,22 @@ StopsAttributeFormatPanel.prototype.addFont = function(container)
 	mxUtils.write(spanVersion, '版本： ');
 	mxUtils.write(spanCustom_value, '默认值： ');
 	mxUtils.write(spanCreateDate, '创建时间： ');
+	mxUtils.write(spanColorRed, '*');
+	var spanColorRed1 = spanColorRed.cloneNode(false);
+	var spanColorRed2 = spanColorRed.cloneNode(false);
+	mxUtils.write(spanColorRed1, '*');
+	mxUtils.write(spanColorRed2, '*');
 	this.container.appendChild(hr);
 	this.container.appendChild(spanName);
+	this.container.appendChild(spanColorRed);
 	this.container.appendChild(name);
 	this.container.appendChild(document.createElement('br'));
 	this.container.appendChild(spanDisplay_name);
+	this.container.appendChild(spanColorRed1);
 	this.container.appendChild(display_name);
 	this.container.appendChild(document.createElement('br'));
 	this.container.appendChild(spanVersion);
+	this.container.appendChild(spanColorRed2);
 	this.container.appendChild(version);
 	this.container.appendChild(document.createElement('br'));
 	this.container.appendChild(spanCustom_value);
@@ -2284,7 +2301,9 @@ StopsAttributeFormatPanel.prototype.addFont = function(container)
 	var btn = mxUtils.button('保存', mxUtils.bind(this, function(evt)
 	{
 	var content = document.getElementById('shuxingId').value;
+	alert(content);
 	var hiddenId = document.getElementById('hiddenId').value;
+	alert(hiddenId);
 	 $.ajax({
          cache:true, 
          type:"POST", 
@@ -2373,18 +2392,18 @@ StopsBasicInfoFormatPanel.prototype.addFont = function(container)
 	var span7 = document.createElement('span');
 	var hr = document.createElement('hr');
 	mxUtils.write(span, 'stopsName： ');
-	mxUtils.write(span1, '组名： ');
-	mxUtils.write(span2, '描述： ');
+	mxUtils.write(span1, 'GroupName： ');
+	mxUtils.write(span2, 'description： ');
 	mxUtils.write(span3, 'bundel： ');
 	mxUtils.write(span4, '模板名称： ');
 	mxUtils.write(span5, 'version： ');
-	mxUtils.write(span6, '作者信息： ');
-	mxUtils.write(span7, '创建时间： ');
+	mxUtils.write(span6, 'owner： ');
+	mxUtils.write(span7, 'createDate： ');
 	
 	this.container.appendChild(hr);
-	this.container.appendChild(span4);
-	this.container.appendChild(labelTemplate);
-	this.container.appendChild(document.createElement('br'));
+	//this.container.appendChild(span4);
+	//this.container.appendChild(labelTemplate);
+	//this.container.appendChild(document.createElement('br'));
 	this.container.appendChild(span);
 	this.container.appendChild(stopsNameLabel);
 	this.container.appendChild(document.createElement('br'));
@@ -3620,7 +3639,7 @@ StyleFormatPanel.prototype.init = function()
 
 	this.container.appendChild(this.addStroke(this.createPanel()));
 	this.container.appendChild(this.addLineJumps(this.createPanel()));
-	var opacityPanel = this.createRelativeOption(mxResources.get('opacity'), mxConstants.STYLE_OPACITY, 41);
+	var opacityPanel = this.createRelativeOption(mxResources.get('opacity')+'213', mxConstants.STYLE_OPACITY, 41);
 	opacityPanel.style.paddingTop = '8px';
 	opacityPanel.style.paddingBottom = '8px';
 	this.container.appendChild(opacityPanel);

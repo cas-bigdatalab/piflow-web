@@ -7,6 +7,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.validator.constraints.Length;
+
 import com.nature.base.BaseHibernateModelUUIDNoCorpAgentId;
 
 @Entity
@@ -16,7 +18,7 @@ public class PropertyTemplate extends BaseHibernateModelUUIDNoCorpAgentId {
 	private static final long serialVersionUID = 1L;
 
 	//@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "FK_STOPS_ID")
+	@Column(name = "FK_STOPS_ID")
 	private String stopsTemplate;
 
 	private String name;

@@ -8,7 +8,7 @@
             </selectKey >
            insert into flow_stops_property_template
            (id,crt_dttm, crt_user, enable_flag,last_update_dttm,last_update_user,version,allowable_values,default_value
-           ,description,display_name,name,property_required,property_sensitive,stops_template)
+           ,description,display_name,name,property_required,property_sensitive,fk_stops_id)
            values
             <foreach collection ="list" item="stops_template" index= "index" separator =",">
                 (
