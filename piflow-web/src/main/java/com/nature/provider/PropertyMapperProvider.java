@@ -12,9 +12,9 @@ import com.nature.component.workFlow.model.Stops;
 public class PropertyMapperProvider {
 
 	/**
-	 * custom sql 自定义sql
+	 * @Title 插入list<Property> 注意拼sql的方法必须用map接 Param内容为键值
 	 * 
-	 * @param map (内容： 键为pathsList,值为List<Paths>)
+	 * @param map (内容： 键为propertyList,值为List<Property>)
 	 * @return
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -23,7 +23,7 @@ public class PropertyMapperProvider {
 		StringBuffer sql = new StringBuffer();
 		if (null != propertyList && propertyList.size() > 0) {
 			sql.append("insert into ");
-			sql.append("flow_path ");
+			sql.append("flow_stops_property ");
 			sql.append("(");
 			sql.append("id,");
 			sql.append("crt_dttm,");

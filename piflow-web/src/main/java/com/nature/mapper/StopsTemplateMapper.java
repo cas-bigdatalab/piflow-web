@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.mapping.FetchType;
 
 import com.nature.component.workFlow.model.StopsTemplate;
 import com.nature.provider.StopsTemplateMapperProvider;
@@ -58,6 +59,10 @@ public interface StopsTemplateMapper {
 	 * @return
 	 */
 	@SelectProvider(type = StopsTemplateMapperProvider.class, method = "getStopsTemplateByName")
+	@Results({ @Result(id = true, column = "id", property = "id"),
+			@Result(column = "id", property = "properties", many = @Many(select = "com.nature.mapper.PropertyTemplateMapper.getPropertyTemplateBySotpsId", fetchType = FetchType.EAGER))
+
+	})
 	public List<StopsTemplate> getStopsTemplateByName(String stopsName);
 
 	/**

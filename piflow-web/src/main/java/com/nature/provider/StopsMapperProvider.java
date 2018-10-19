@@ -157,7 +157,9 @@ public class StopsMapperProvider {
 				Flow flow = stops.getFlow();
 				String flowId = "";
 				if (null != flow) {
-					flowId = flow.getId();
+					if (StringUtils.isNotBlank(flow.getId())) {
+						flowId = flow.getId();
+					}
 				}
 				sql.append("(");
 				sql.append(Utils.addSqlStr((id == null ? "" : id)) + ",");

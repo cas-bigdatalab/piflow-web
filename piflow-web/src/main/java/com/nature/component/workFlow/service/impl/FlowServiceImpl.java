@@ -66,6 +66,8 @@ public class FlowServiceImpl implements FlowService {
 	@Autowired
 	private PropertyMapper propertyMapper;
 
+	private boolean flag = false;
+
 	/**
 	 * @Title 向数据库添加flow
 	 * 
@@ -81,7 +83,12 @@ public class FlowServiceImpl implements FlowService {
 			Flow flow = flowMapper.getFlowById(flowId);
 			if (null == flow) {
 				logger.info("新建");
-				satefulRtnBase = this.addFlow(mxGraphModelVo, flowId);
+				if (flag) {
+					satefulRtnBase = this.addFlow(mxGraphModelVo, flowId);
+					flag = false;
+				} else {
+					flag = true;
+				}
 			} else {
 				logger.info("在'" + flowId + "'的基礎上保存");
 				satefulRtnBase = this.updateFlow(mxGraphModelVo, flow);
@@ -237,7 +244,7 @@ public class FlowServiceImpl implements FlowService {
 									// 取出propertyList
 									List<Property> propertyList = stops.getProperties();
 									// 判空propertyList
-									if (null != propertyList & propertyList.size() > 0) {
+									if (null != propertyList && propertyList.size() > 0) {
 										// 保存propertyList
 										int addPropertyList = propertyMapper.addPropertyList(propertyList);
 										if (addPropertyList <= 0) {
@@ -589,6 +596,7 @@ public class FlowServiceImpl implements FlowService {
 									} else {
 										// 如果取到的是空则新增
 										Stops toStops = this.stopsTemplateToStops(mxCellVo);
+										toStops.setFlow(flow);
 										addStops.add(toStops);
 									}
 								}
@@ -604,7 +612,27 @@ public class FlowServiceImpl implements FlowService {
 							}
 							// 做添加操作
 							if (null != addStops && addStops.size() > 0) {
-								stopsMapper.addStopsList(addStops);
+								// 保存addStops
+								int addStopsList = stopsMapper.addStopsList(addStops);
+								if (addStopsList > 0) {
+									for (Stops stops : addStops) {
+										// 取出propertyList
+										List<Property> propertyList = stops.getProperties();
+										// 判空propertyList
+										if (null != propertyList && propertyList.size() > 0) {
+											// 保存propertyList
+											int addPropertyList = propertyMapper.addPropertyList(propertyList);
+											if (addPropertyList <= 0) {
+												logger.info("Property保存失败：stopsId(" + stops.getId() + "),stopsName("
+														+ stops.getName() + ")");
+											}
+										} else {
+											logger.info("propertyList为空,不保存");
+										}
+									}
+								} else {
+									setStatefulRtnBase("新建保存失败stopsList");
+								}
 							}
 							// 做删除操作
 							if (null != updateStops && updateStops.size() > 0) {
@@ -615,15 +643,30 @@ public class FlowServiceImpl implements FlowService {
 								}
 							}
 						} else {
-							int addStopsListInt = 0;
 							// 判断页面传的值是否为空，不为空则直接添加线，否则不操作
 							if (null != objectStops && objectStops.size() > 0) {
 								// 根据MxCellList中的内容生成paths的list
 								List<Stops> toStopsList = this.mxCellVoListToStopsList(objectStops, flow);
 								if (null != toStopsList && toStopsList.size() > 0) {
 									// 保存stopsList
-									addStopsListInt = stopsMapper.addStopsList(toStopsList);
-									if (addStopsListInt <= 0) {
+									int addStopsListInt = stopsMapper.addStopsList(toStopsList);
+									if (addStopsListInt > 0) {
+										for (Stops stops : toStopsList) {
+											// 取出propertyList
+											List<Property> propertyList = stops.getProperties();
+											// 判空propertyList
+											if (null != propertyList && propertyList.size() > 0) {
+												// 保存propertyList
+												int addPropertyList = propertyMapper.addPropertyList(propertyList);
+												if (addPropertyList <= 0) {
+													logger.info("Property保存失败：stopsId(" + stops.getId() + "),stopsName("
+															+ stops.getName() + ")");
+												}
+											} else {
+												logger.info("propertyList为空,不保存");
+											}
+										}
+									} else {
 										logger.info("stopsList保存失败所属流：flowId(" + flow.getId() + ")");
 									}
 								} else {
@@ -817,7 +860,7 @@ public class FlowServiceImpl implements FlowService {
 									property.setSensitive(propertyTemplate.isSensitive());
 									property.setDisplayName(propertyTemplate.getDisplayName());
 									property.setDescription(propertyTemplate.getDescription());
-									property.setCustomValue(property.getCustomValue());
+									property.setCustomValue(propertyTemplate.getDefaultValue());
 									property.setAllowableValues(propertyTemplate.getAllowableValues());
 									propertiesList.add(property);
 								}
