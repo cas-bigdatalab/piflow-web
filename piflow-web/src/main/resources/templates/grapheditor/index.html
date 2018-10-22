@@ -115,7 +115,6 @@
 					console.info("CELLS_REMOVED");
 		         });
 			 	function add(data){
-					console.info(data);
 					if(data!=null && data.length>0){
 						var table=document.createElement("table");
 	               		var tbody=document.createElement("tbody");
@@ -126,13 +125,11 @@
 							var displayName = document.createElement('input');
 							displayName.setAttribute('type', 'text');
 							displayName.setAttribute('id', ''+data[y].displayName+'');
-							displayName.setAttribute('onblur', 'shiqu('+data+')');
-							displayName.style.width = "135px";
+							displayName.setAttribute('onblur', 'shiqu("'+data[y].id+'","'+data[y].displayName+'")');
+							displayName.style.width = "120px";
 							displayName.setAttribute('value', ''+customValue+'');
 							var spanDisplayName = 'span'+data[y].displayName;
 		               		var spanDisplayName = document.createElement('span');
-		               		
-		               		console.info(displayName);
 		               		mxUtils.write(spanDisplayName, ''+data[y].displayName+'');
 		               		//var divAppend = document.getElementById("divAppend").value;
 		               		var tr=document.createElement("tr");
@@ -147,11 +144,33 @@
 		               		table.appendChild(tbody); 
 		               	  }
 						divValue.appendChild(table);
+						var btn = mxUtils.button('保存', mxUtils.bind(this, function(evt)
+						{
+						var content = document.getElementById('shuxingId').value;
+						alert(content);
+						var hiddenId = document.getElementById('hiddenId').value;
+						alert(hiddenId);
+						 $.ajax({
+					         cache:true, 
+					         type:"POST", 
+					         url:"/stops/updateStops", 
+					         data:{"id":hiddenId,"content":content},
+					         async:true, 
+					         error:function(request){ 
+					        	 console.log("error");
+					             return;
+					         },
+					         success:function(data){ 
+					             console.log("success");
+					         }
+					     });
+						}));
+						btn.style.width = '60px';
+						divValue.appendChild(btn);
 					}
 			    }  
 		         graphGlobal.addListener(mxEvent.CLICK, function(sender, evt) {
 					var cells = evt.properties.cell;
-					console.info(cells);
 					if(typeof(cells)!="undefined"){
 					var id = evt.properties.cell.id;
 					document.getElementById('stopsNameLabel').innerText = cells.value;
@@ -162,13 +181,12 @@
 		                data:{"id":id,"fid":loadId},
 		                async:true, 
 		                error:function(request){ 
-		                	alert("Jquery Ajax request error!!!");
+		                	//alert("Jquery Ajax request error!!!");
 		                    return;
 		                },
 		                success:function(data){ 
 		                    if(""!=data){
 		                    	  console.log("stops属性查询success");
-		                    	  console.log(data);
 		                    	  add(data.properties);
 		                		  document.getElementById('stopsDescription').innerText = data.description;
 		                		  document.getElementById('stopsGroups').innerText = data.groups;

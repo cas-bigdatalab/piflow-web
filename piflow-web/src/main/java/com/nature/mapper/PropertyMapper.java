@@ -39,14 +39,8 @@ public interface PropertyMapper {
 	/**
 	 * Modify stops attribute information
 	 */
-	@Update("update flow_stops_property set name = #{name},display_name = #{display_name},custom_value = #{custom_value},description = #{description},version = #{version} where id = #{id}")
-	public int updateStops(
-
-			@Param("name") String content, @Param("display_name") String display_name,
-			@Param("custom_value") String custom_value, @Param("description") String description,
-			@Param("version") String version, @Param("id") String id
-
-	);
+	@Update("update flow_stops_property set custom_value = #{custom_value},version = version+1 where id = #{id}")
+	public int updateStops(@Param("custom_value") String content, @Param("id") String id);
 
 	/**
 	 * query All StopsProperty List;

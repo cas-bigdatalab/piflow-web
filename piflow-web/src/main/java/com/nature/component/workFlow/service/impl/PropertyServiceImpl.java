@@ -22,8 +22,8 @@ public class PropertyServiceImpl implements PropertyService {
 	}
 
 	@Override
-	public int updateStops(String content,String display_name,String custom_value,String description,String version,String id) {
-		return propertyMapper.updateStops(content,display_name,custom_value,description,version,id);
+	public int updateStops(String content,String id) {
+		return propertyMapper.updateStops(content,id);
 	}
 
 	@Override

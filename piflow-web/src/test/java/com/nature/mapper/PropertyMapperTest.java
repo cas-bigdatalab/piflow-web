@@ -39,7 +39,7 @@ public class PropertyMapperTest extends ApplicationTests {
 
 	@Test
 	public void updateStopsPropertyById() {
-		int update = propertyMapper.updateStops("hahah", "12332", "1232", "I'm miaoshuInfo", "1", "8731612e48cc4cc89a24191e737817f2");
+		int update = propertyMapper.updateStops("hahah", "8731612e48cc4cc89a24191e737817f2");
 		if (0 == update) {
 			logger.info("修改失败了"+",影响行数:"+update);
 		}else {

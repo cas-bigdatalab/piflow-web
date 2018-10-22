@@ -21,8 +21,8 @@ public class StopsCtrl {
 	}
 	
 	@RequestMapping("/updateStops")
-	public Integer updateStops(String content,String display_name,String custom_value,String description,String version,String id){
-		int updateStops = PropertyService.updateStops(content,display_name,custom_value,description,version,id);
+	public Integer updateStops(String content,String id){
+		int updateStops = PropertyService.updateStops(content,id);
 		return updateStops;
 		
 	}

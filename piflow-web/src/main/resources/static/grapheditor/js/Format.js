@@ -2206,121 +2206,6 @@ StopsAttributeFormatPanel.prototype.addFont = function(container)
 	var graph = editor.graph;
 	var ss = this.format.getSelectionState();
 	divAppend(this.container);
-	//input name
-	/*var name = document.createElement('input');
-	name.setAttribute('type', 'text');
-	name.setAttribute('id', 'shuxingId');
-	name.setAttribute('onblur', 'shiqu()');
-	//name.style.float = "right";
-	//input display_name
-	var display_name = document.createElement('input');
-	display_name.setAttribute('type', 'text');
-	display_name.setAttribute('id', 'display_name');
-	display_name.setAttribute('onblur', 'shiqu()');
-	//display_name.style.float = "right";
-	//input custom_value
-	var custom_value = document.createElement('input');
-	custom_value.setAttribute('type', 'text');
-	custom_value.setAttribute('id', 'custom_value');
-	custom_value.setAttribute('onblur', 'shiqu()');
-	//custom_value.style.float = "right";
-	//input description
-	var description = document.createElement('input');
-	description.setAttribute('type', 'text');
-	description.setAttribute('id', 'description');
-	description.setAttribute('onblur', 'shiqu()');
-	//description.style.float = "right";
-	//input version
-	var version = document.createElement('input');
-	version.setAttribute('type', 'text');
-	version.setAttribute('id', 'version');
-	version.setAttribute('onblur', 'shiqu()');
-	//version.style.float = "right";
-	
-	//input createDate
-	var createDate = document.createElement('input');
-	createDate.setAttribute('type', 'text');
-	createDate.setAttribute('id', 'createDate');
-	//createDate.setAttribute('onclick', 'WdatePicker();');
-	createDate.setAttribute('onblur', 'shiqu()');
-	//createDate.style.float = "right";
-	
-	//隐藏的input存放id
-	var hidden = document.createElement('input');
-	hidden.setAttribute('type', 'hidden');
-	hidden.setAttribute('id', 'hiddenId');
-	var spanName = document.createElement('span');
-	spanName.style.marginRight = "18px";
-	var spanDisplay_name = document.createElement('span');
-	spanDisplay_name.style.marginRight = "-6px";
-	var spanCustom_value = document.createElement('span');
-	spanCustom_value.style.marginRight = "12px";
-	var spanDescription = document.createElement('span');
-	spanDescription.style.marginRight = "24px";
-	var spanVersion = document.createElement('span');
-	spanVersion.style.marginRight = "18px";
-	var spanCreateDate = document.createElement('span');
-	spanCreateDate.style.marginRight = "18px";
-	var spanColorRed = document.createElement('span');
-	spanColorRed.style.color = "red";
-	var hr = document.createElement('hr');
-	mxUtils.write(spanName, '名称： ');
-	mxUtils.write(spanDisplay_name, '显示名称： ');
-	mxUtils.write(spanDescription, '描述： ');
-	mxUtils.write(spanVersion, '版本： ');
-	mxUtils.write(spanCustom_value, '默认值： ');
-	mxUtils.write(spanCreateDate, '创建时间： ');
-	mxUtils.write(spanColorRed, '*');
-	var spanColorRed1 = spanColorRed.cloneNode(false);
-	var spanColorRed2 = spanColorRed.cloneNode(false);
-	mxUtils.write(spanColorRed1, '*');
-	mxUtils.write(spanColorRed2, '*');
-	this.container.appendChild(hr);
-	this.container.appendChild(spanName);
-	this.container.appendChild(spanColorRed);
-	this.container.appendChild(name);
-	this.container.appendChild(document.createElement('br'));
-	this.container.appendChild(spanDisplay_name);
-	this.container.appendChild(spanColorRed1);
-	this.container.appendChild(display_name);
-	this.container.appendChild(document.createElement('br'));
-	this.container.appendChild(spanVersion);
-	this.container.appendChild(spanColorRed2);
-	this.container.appendChild(version);
-	this.container.appendChild(document.createElement('br'));
-	this.container.appendChild(spanCustom_value);
-	this.container.appendChild(custom_value);
-	this.container.appendChild(document.createElement('br'));
-	this.container.appendChild(spanDescription);
-	this.container.appendChild(description);
-	this.container.appendChild(hidden);
-	this.container.appendChild(document.createElement('br'));*/
-	//this.container.appendChild(spanCreateDate);
-	//this.container.appendChild(createDate);
-	//this.container.appendChild(document.createElement('br'));
-	/*var btn = mxUtils.button('保存', mxUtils.bind(this, function(evt)
-	{
-	var content = document.getElementById('shuxingId').value;
-	alert(content);
-	var hiddenId = document.getElementById('hiddenId').value;
-	alert(hiddenId);
-	 $.ajax({
-         cache:true, 
-         type:"POST", 
-         url:"/stops/updateStops", 
-         data:{"id":hiddenId,"content":content},
-         async:true, 
-         error:function(request){ 
-        	 console.log("error");
-             return;
-         },
-         success:function(data){ 
-             console.log("success");
-         }
-     });
-	}));
-	btn.style.width = '60px';
-	this.container.appendChild(btn);*/
 	return container;
 };
 /*Add stops attribute tab  stop*/
@@ -5190,46 +5075,16 @@ DiagramFormatPanel.prototype.destroy = function()
 		this.gridEnabledListener = null;
 	}
 };
-function shiqu(data){
-	if(data!=null && data.length>0){
-		for(var y=0;y<data.length;y++){
-			var displayName = data[y].displayName;
-			if("FTP_File".equals(displayName)){
-				
-			}else if("Local_Path".equals(displayName)){
-				
-			}else if("PORT".equals(displayName)){
-				
-			}else if("USER_NAME".equals(displayName)){
-				
-			}else if("PASSWORD".equals(displayName)){
-				
-			}else if("URL".equals(displayName)){
-				
-			}
-			
-			
-		}
-	}
-		
-	var content = document.getElementById('shuxingId').value;
-	var hiddenId = document.getElementById('hiddenId').value;
-	var display_name = document.getElementById('display_name').value;
-	var custom_value = document.getElementById('custom_value').value;
-	var description = document.getElementById('description').value;
-	var version = document.getElementById('version').value;
-	//var createDate = document.getElementById('createDate').value;
+function shiqu(id,data){
+	if(data!=null && data.length>0 && id.length>0){
+		var content = document.getElementById(''+data+'').value;
 	 $.ajax({
          cache:true, 
          type:"POST", 
          url:"/stops/updateStops", 
 		 data : {
-			"id" : hiddenId,
-			"content" : content,
-			"display_name" : display_name,
-			"custom_value" : custom_value,
-			"description" : description,
-			"version" : version
+			"id" : id,
+			"content" : content 
 		},
          async:true, 
          error:function(request){ 
@@ -5239,5 +5094,5 @@ function shiqu(data){
          success:function(data){ 
              console.log("success");
          }
-     });
+     });}
   }
