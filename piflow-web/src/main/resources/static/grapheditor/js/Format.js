@@ -2205,9 +2205,9 @@ StopsAttributeFormatPanel.prototype.addFont = function(container)
 	var editor = ui.editor;
 	var graph = editor.graph;
 	var ss = this.format.getSelectionState();
-
+	divAppend(this.container);
 	//input name
-	var name = document.createElement('input');
+	/*var name = document.createElement('input');
 	name.setAttribute('type', 'text');
 	name.setAttribute('id', 'shuxingId');
 	name.setAttribute('onblur', 'shiqu()');
@@ -2294,11 +2294,11 @@ StopsAttributeFormatPanel.prototype.addFont = function(container)
 	this.container.appendChild(spanDescription);
 	this.container.appendChild(description);
 	this.container.appendChild(hidden);
-	this.container.appendChild(document.createElement('br'));
+	this.container.appendChild(document.createElement('br'));*/
 	//this.container.appendChild(spanCreateDate);
 	//this.container.appendChild(createDate);
 	//this.container.appendChild(document.createElement('br'));
-	var btn = mxUtils.button('保存', mxUtils.bind(this, function(evt)
+	/*var btn = mxUtils.button('保存', mxUtils.bind(this, function(evt)
 	{
 	var content = document.getElementById('shuxingId').value;
 	alert(content);
@@ -2320,7 +2320,7 @@ StopsAttributeFormatPanel.prototype.addFont = function(container)
      });
 	}));
 	btn.style.width = '60px';
-	this.container.appendChild(btn);
+	this.container.appendChild(btn);*/
 	return container;
 };
 /*Add stops attribute tab  stop*/
@@ -5190,7 +5190,28 @@ DiagramFormatPanel.prototype.destroy = function()
 		this.gridEnabledListener = null;
 	}
 };
-function shiqu(){
+function shiqu(data){
+	if(data!=null && data.length>0){
+		for(var y=0;y<data.length;y++){
+			var displayName = data[y].displayName;
+			if("FTP_File".equals(displayName)){
+				
+			}else if("Local_Path".equals(displayName)){
+				
+			}else if("PORT".equals(displayName)){
+				
+			}else if("USER_NAME".equals(displayName)){
+				
+			}else if("PASSWORD".equals(displayName)){
+				
+			}else if("URL".equals(displayName)){
+				
+			}
+			
+			
+		}
+	}
+		
 	var content = document.getElementById('shuxingId').value;
 	var hiddenId = document.getElementById('hiddenId').value;
 	var display_name = document.getElementById('display_name').value;
