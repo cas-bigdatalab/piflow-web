@@ -27,6 +27,8 @@ public class User {
 
 	private Integer age;
 
+	private boolean enabled;
+
 	public Long getId() {
 		return id;
 	}
@@ -65,6 +67,14 @@ public class User {
 
 	public void setAge(Integer age) {
 		this.age = age;
+	}
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 
 }

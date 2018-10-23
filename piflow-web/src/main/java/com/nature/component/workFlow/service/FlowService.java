@@ -13,7 +13,7 @@ public interface FlowService {
 	 * @param isAdd
 	 * @return
 	 */
-	public StatefulRtnBase saveOrUpdateFlow(MxGraphModelVo mxGraphModelVo, String flowId);
+	public StatefulRtnBase saveOrUpdateFlowAll(MxGraphModelVo mxGraphModelVo, String flowId);
 
 	/**
 	 * @Title 根据id查询流信息
@@ -22,4 +22,13 @@ public interface FlowService {
 	 * @return
 	 */
 	public Flow getFlowById(String id);
+
+	/**
+	 * @Title 保存appId
+	 * 
+	 * @param flowId
+	 * @param appId
+	 * @return
+	 */
+	public StatefulRtnBase saveAppId(String flowId, String appId);
 }

@@ -76,7 +76,7 @@ public class FlowServiceImpl implements FlowService {
 	 * @return
 	 */
 	@Override
-	public StatefulRtnBase saveOrUpdateFlow(MxGraphModelVo mxGraphModelVo, String flowId) {
+	public StatefulRtnBase saveOrUpdateFlowAll(MxGraphModelVo mxGraphModelVo, String flowId) {
 		StatefulRtnBase satefulRtnBase = new StatefulRtnBase();
 		if (StringUtils.isNotBlank(flowId)) {
 			// 根据flowId查询flow
@@ -108,6 +108,37 @@ public class FlowServiceImpl implements FlowService {
 	@Override
 	public Flow getFlowById(String id) {
 		return flowMapper.getFlowById(id);
+	}
+
+	/**
+	 * @Title 保存appId
+	 * 
+	 * @param flowId
+	 * @param appId
+	 * @return
+	 */
+	@Override
+	public StatefulRtnBase saveAppId(String flowId, String appId) {
+		StatefulRtnBase satefulRtnBase = new StatefulRtnBase();
+		if (StringUtils.isNotBlank(flowId)) {
+			// 根据flowId查询flow
+			Flow flowById = flowMapper.getFlowById(flowId);
+			if (null != flowById) {
+				flowById.setAppId(appId);
+				flowById.setVersion(flowById.getVersion() + 1);
+				flowById.setLastUpdateDttm(new Date());
+				flowById.setLastUpdateUser("Nature");
+				int updateFlow = flowMapper.updateFlow(flowById);
+				if (updateFlow <= 0) {
+					satefulRtnBase = setStatefulRtnBase("AppId保存失败");
+				}
+			} else {
+				satefulRtnBase = setStatefulRtnBase("未查询到flowId为" + flowId + "的flow，保存失败");
+			}
+		} else {
+			satefulRtnBase = setStatefulRtnBase("flowId为空，保存失败");
+		}
+		return satefulRtnBase;
 	}
 
 	private StatefulRtnBase setStatefulRtnBase(String errMsg) {

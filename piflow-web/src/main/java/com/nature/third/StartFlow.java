@@ -46,6 +46,8 @@ public class StartFlow {
 		List<StopVo> stops = new ArrayList<StopVo>();
 		// paths
 		List<PathVo> paths = new ArrayList<PathVo>();
+		// stops
+		Map<String, StopVo> stopsMap = new HashMap<String, StopVo>();
 
 		flowVo.setName(flow.getName());
 		flowVo.setUuid(flow.getUuid());
@@ -77,16 +79,25 @@ public class StartFlow {
 				}
 			}
 			stopVo.setProperties(properties);
+			stopsMap.put(stop.getPageId(), stopVo);
 			stops.add(stopVo);
 		}
 
 		List<Paths> pathsList = flow.getPathsList();
 		if (null != pathsList && pathsList.size() > 0) {
 			for (Paths path : pathsList) {
-				String from = (null != path.getFrom() ? path.getFrom() : "");
+				StopVo fromStopVo = stopsMap.get(path.getFrom());
+				StopVo StopVoto = stopsMap.get(path.getTo());
+				if (null == fromStopVo) {
+					fromStopVo = new StopVo();
+				}
+				if (null == StopVoto) {
+					fromStopVo = new StopVo();
+				}
+				String from = (null != StopVoto.getName() ? path.getFrom() : "");
 				String outport = (null != path.getOutport() ? path.getOutport() : "");
 				String inport = (null != path.getInport() ? path.getInport() : "");
-				String to = (null != path.getTo() ? path.getTo() : "");
+				String to = (null != fromStopVo.getName() ? path.getTo() : "");
 				PathVo pathVo = new PathVo();
 				pathVo.setFrom(from);
 				pathVo.setOutport(outport);

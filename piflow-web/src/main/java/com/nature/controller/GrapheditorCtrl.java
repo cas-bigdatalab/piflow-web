@@ -3,6 +3,7 @@ package com.nature.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
@@ -28,13 +29,15 @@ import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.model.StopGroup;
 import com.nature.component.workFlow.service.FlowService;
 import com.nature.component.workFlow.service.StopGroupService;
+import com.nature.third.StartFlow;
+import com.nature.third.StopFlow;
 
 @Controller
 @RequestMapping("/flow/*")
 public class GrapheditorCtrl {
 
 	/**
-	 * 引入日志，注意都是"org.slf4j"包下
+	 * @Title 引入日志，注意都是"org.slf4j"包下
 	 */
 	Logger logger = LoggerUtil.getLogger();
 
@@ -43,6 +46,12 @@ public class GrapheditorCtrl {
 
 	@Autowired
 	private StopGroupService stopGroupServiceImpl;
+
+	@Resource
+	private StartFlow startFlowInf;
+
+	@Resource
+	private StopFlow stopFlowInf;
 
 	@RequestMapping("/grapheditor")
 	public String kitchenSink(Model model, String load) {
@@ -116,13 +125,72 @@ public class GrapheditorCtrl {
 		if (StringUtils.isNotBlank(imageXML) && StringUtils.isNotBlank(loadId)) {
 			// 把页面传來的XML转为mxGraphModel
 			MxGraphModelVo xmlToMxGraphModel = FlowXmlUtils.xmlToMxGraphModel(imageXML);
-			StatefulRtnBase addFlow = flowServiceImpl.saveOrUpdateFlow(xmlToMxGraphModel, loadId);
+			StatefulRtnBase addFlow = flowServiceImpl.saveOrUpdateFlowAll(xmlToMxGraphModel, loadId);
 			// addFlow不为空且ReqRtnStatus的值为true,则保存成功
 			if (null != addFlow && addFlow.isReqRtnStatus()) {
 				rtnStr = "1";
 			}
 		}
 		return rtnStr;
+	}
+
+	@RequestMapping("/runFlow")
+	@ResponseBody
+	public String runFlow(HttpServletRequest request, Model model) {
+		String rtnMsg = "失败";
+		String flowId = request.getParameter("flowId");
+		if (StringUtils.isNotBlank(flowId)) {
+			// 根据flowId查询flow
+			Flow flowById = flowServiceImpl.getFlowById(flowId);
+			// addFlow不为空且ReqRtnStatus的值为true,则保存成功
+			if (null != flowById) {
+				String startFlow = startFlowInf.startFlow(flowById);
+				if (StringUtils.isNotBlank(startFlow)) {
+					StatefulRtnBase saveAppId = flowServiceImpl.saveAppId(flowId, startFlow);
+					if (null != saveAppId && saveAppId.isReqRtnStatus()) {
+						logger.info("flowId为" + flowId + "的flow，保存appID成功" + startFlow);
+					} else {
+						logger.warn("flowId为" + flowId + "的flow，保存appID出错");
+					}
+					rtnMsg = "启动成功，返回的appid为：" + startFlow;
+				} else {
+					rtnMsg = "启动失败";
+				}
+			} else {
+				logger.warn("未查询到flowId为" + flowId + "的flow");
+			}
+		} else {
+			logger.warn("flowId为空");
+		}
+		return rtnMsg;
+	}
+
+	@RequestMapping("/stopFlow")
+	@ResponseBody
+	public String stopFlow(HttpServletRequest request, Model model) {
+		String rtnMsg = "失败";
+		String flowId = request.getParameter("flowId");
+		if (StringUtils.isNotBlank(flowId)) {
+			// 根据flowId查询flow
+			Flow flowById = flowServiceImpl.getFlowById(flowId);
+			// addFlow不为空且ReqRtnStatus的值为true,则保存成功
+			if (null != flowById) {
+				String appId = flowById.getAppId();
+				if (StringUtils.isNotBlank(appId)) {
+					String flowStop = stopFlowInf.flowStop(appId);
+					if (StringUtils.isNotBlank(flowStop)) {
+						rtnMsg = "停止成功，appid为：" + flowStop;
+					} else {
+						rtnMsg = "停止失败";
+					}
+				}
+			} else {
+				logger.warn("未查询到flowId为" + flowId + "的flow");
+			}
+		} else {
+			logger.warn("flowId为空");
+		}
+		return rtnMsg;
 	}
 
 	private MxGraphModelVo flowToMxGraphModelVo(Flow flow) {

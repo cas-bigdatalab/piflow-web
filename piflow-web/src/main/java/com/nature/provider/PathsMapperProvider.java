@@ -40,6 +40,7 @@ public class PathsMapperProvider {
 			sql.append("line_outport,");
 			sql.append("line_inport,");
 			sql.append("line_port,");
+			sql.append("page_id,");
 			sql.append("fk_flow_id");
 			sql.append(") ");
 			sql.append("values");
@@ -58,6 +59,7 @@ public class PathsMapperProvider {
 				String outport = paths.getOutport();
 				String inport = paths.getInport();
 				String port = paths.getPort();
+				String pageId = paths.getPageId();
 				Flow flow = paths.getFlow();
 
 				sql.append("(");
@@ -74,6 +76,7 @@ public class PathsMapperProvider {
 				sql.append(Utils.addSqlStr((outport == null ? "" : outport)) + ",");
 				sql.append(Utils.addSqlStr((inport == null ? "" : inport)) + ",");
 				sql.append(Utils.addSqlStr((port == null ? "" : port)) + ",");
+				sql.append(Utils.addSqlStr((pageId == null ? "" : pageId)) + ",");
 				sql.append(Utils.addSqlStr((flow == null ? "" : flow.getId())));
 				if (i != pathsList.size()) {
 					sql.append("),");
@@ -106,6 +109,7 @@ public class PathsMapperProvider {
 			String outport = paths.getOutport();
 			String inport = paths.getInport();
 			String port = paths.getPort();
+			String pageId = paths.getPageId();
 			Flow flow = paths.getFlow();
 			SQL sql = new SQL();
 			sql.INSERT_INTO("flow_path");
@@ -151,6 +155,9 @@ public class PathsMapperProvider {
 			}
 			if (StringUtils.isNotBlank(port)) {
 				sql.VALUES("line_port", Utils.addSqlStr(port));
+			}
+			if (StringUtils.isNotBlank(pageId)) {
+				sql.VALUES("line_port", Utils.addSqlStr(pageId));
 			}
 			if (null != flow) {
 				String flowId = flow.getId();
@@ -214,7 +221,7 @@ public class PathsMapperProvider {
 				sql.SET("line_inport = " + Utils.addSqlStr(inport));
 			}
 			if (StringUtils.isNotBlank(port)) {
-				sql.SET("line_port = " + Utils.addSqlStr(port));
+				sql.SET("page_id = " + Utils.addSqlStr(port));
 			}
 			sql.WHERE("id = " + Utils.addSqlStr(id));
 			sqlStr = sql.toString() + ";";
