@@ -1,9 +1,10 @@
 package com.nature.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.nature.base.util.FlowXmlUtils;
+import com.nature.base.util.HttpUtils;
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.Utils;
 import com.nature.base.vo.StatefulRtnBase;
@@ -29,8 +31,11 @@ import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.model.StopGroup;
 import com.nature.component.workFlow.service.FlowService;
 import com.nature.component.workFlow.service.StopGroupService;
-import com.nature.third.StartFlow;
-import com.nature.third.StopFlow;
+import com.nature.third.inf.IGetFlowLog;
+import com.nature.third.inf.IStartFlow;
+import com.nature.third.inf.IStopFlow;
+import com.nature.third.vo.flowLog.AppVo;
+import com.nature.third.vo.flowLog.FlowLog;
 
 @Controller
 @RequestMapping("/flow/*")
@@ -47,11 +52,14 @@ public class GrapheditorCtrl {
 	@Autowired
 	private StopGroupService stopGroupServiceImpl;
 
-	@Resource
-	private StartFlow startFlowInf;
+	@Autowired
+	private IStartFlow startFlowImpl;
 
-	@Resource
-	private StopFlow stopFlowInf;
+	@Autowired
+	private IStopFlow stopFlowImpl;
+
+	@Autowired
+	private IGetFlowLog getFlowLogImpl;
 
 	@RequestMapping("/grapheditor")
 	public String kitchenSink(Model model, String load) {
@@ -61,6 +69,9 @@ public class GrapheditorCtrl {
 			List<StopGroup> groupsList = stopGroupServiceImpl.getStopGroupAll();
 			model.addAttribute("groupsList", groupsList);
 			Flow flowById = flowServiceImpl.getFlowById(load);
+			if (null != flowById) {
+				model.addAttribute("appId", flowById.getAppId());
+			}
 			// 把查詢出來的Flow轉爲XML
 			String loadXml = FlowXmlUtils.mxGraphModelToXml(flowToMxGraphModelVo(flowById));
 			model.addAttribute("xmlDate", loadXml);
@@ -137,14 +148,14 @@ public class GrapheditorCtrl {
 	@RequestMapping("/runFlow")
 	@ResponseBody
 	public String runFlow(HttpServletRequest request, Model model) {
-		String rtnMsg = "失败";
+		String rtnMsg = "0";
 		String flowId = request.getParameter("flowId");
 		if (StringUtils.isNotBlank(flowId)) {
 			// 根据flowId查询flow
 			Flow flowById = flowServiceImpl.getFlowById(flowId);
 			// addFlow不为空且ReqRtnStatus的值为true,则保存成功
 			if (null != flowById) {
-				String startFlow = startFlowInf.startFlow(flowById);
+				String startFlow = startFlowImpl.startFlow(flowById);
 				if (StringUtils.isNotBlank(startFlow)) {
 					StatefulRtnBase saveAppId = flowServiceImpl.saveAppId(flowId, startFlow);
 					if (null != saveAppId && saveAppId.isReqRtnStatus()) {
@@ -153,8 +164,6 @@ public class GrapheditorCtrl {
 						logger.warn("flowId为" + flowId + "的flow，保存appID出错");
 					}
 					rtnMsg = "启动成功，返回的appid为：" + startFlow;
-				} else {
-					rtnMsg = "启动失败";
 				}
 			} else {
 				logger.warn("未查询到flowId为" + flowId + "的flow");
@@ -168,7 +177,7 @@ public class GrapheditorCtrl {
 	@RequestMapping("/stopFlow")
 	@ResponseBody
 	public String stopFlow(HttpServletRequest request, Model model) {
-		String rtnMsg = "失败";
+		String rtnMsg = "0";
 		String flowId = request.getParameter("flowId");
 		if (StringUtils.isNotBlank(flowId)) {
 			// 根据flowId查询flow
@@ -177,11 +186,9 @@ public class GrapheditorCtrl {
 			if (null != flowById) {
 				String appId = flowById.getAppId();
 				if (StringUtils.isNotBlank(appId)) {
-					String flowStop = stopFlowInf.flowStop(appId);
+					String flowStop = stopFlowImpl.stopFlow(appId);
 					if (StringUtils.isNotBlank(flowStop)) {
-						rtnMsg = "停止成功，appid为：" + flowStop;
-					} else {
-						rtnMsg = "停止失败";
+						rtnMsg = "停止成功，返回状态为：" + flowStop;
 					}
 				}
 			} else {
@@ -190,6 +197,43 @@ public class GrapheditorCtrl {
 		} else {
 			logger.warn("flowId为空");
 		}
+		return rtnMsg;
+	}
+
+	@RequestMapping("/getLogUrl")
+	@ResponseBody
+	public Map<String, String> getLogUrl(HttpServletRequest request, Model model) {
+		Map<String, String> rtnMap = new HashMap<>();
+		rtnMap.put("code", "0");
+		String appId = request.getParameter("appId");
+		if (StringUtils.isNotBlank(appId)) {
+			FlowLog flowlog = getFlowLogImpl.getFlowLog(appId);
+			if (null != flowlog) {
+				AppVo app = flowlog.getApp();
+				if (null != app) {
+					rtnMap.put("code", "1");
+					rtnMap.put("stdoutLog", app.getAmContainerLogs() + "/stdout/?start=0");
+					rtnMap.put("stderrLog", app.getAmContainerLogs() + "/stderr/?start=0");
+				}
+			}
+		} else {
+			logger.warn("appId为空");
+		}
+
+		return rtnMap;
+	}
+
+	@RequestMapping("/getLog")
+	@ResponseBody
+	public String getLog(HttpServletRequest request, Model model) {
+		String rtnMsg = "";
+		String urlStr = request.getParameter("url");
+		if (StringUtils.isNotBlank(urlStr)) {
+			rtnMsg = HttpUtils.getHtml(urlStr);
+		} else {
+			logger.warn("urlStr为空");
+		}
+
 		return rtnMsg;
 	}
 

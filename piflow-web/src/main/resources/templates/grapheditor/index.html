@@ -1,6 +1,6 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=5,IE=9" ><![endif]-->
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
 	<title>Grapheditor</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -8,10 +8,14 @@
 	<meta name="_csrf" th:content="${_csrf.token}" />
 	<meta name="_csrf_header" th:content="${_csrf.headerName}" />
 	<link rel="stylesheet" type="text/css" th:href="@{/grapheditor/styles/grapheditor.css}">
+	<link rel="stylesheet" type="text/css" th:href="@{/charisma/css/bootstrap.min.css}">
 	<script th:inline="javascript">
 		var stopsGroupData = [[${groupsList}]];
 		var xmlDate = [[${xmlDate}]];
 		var loadId = [[${load}]];
+		var appId = [[${appId}]];
+		var stdoutLog = [[${stdoutLog}]];
+		var stderrLog = [[${stderrLog}]];
 		var divValue = null;
 		 function divAppend(divAppend){
  /*    		 var divHidden = document.createElement('input');
@@ -70,8 +74,46 @@
 	<script type="text/javascript" th:src="@{/grapheditor/js/Toolbar.js}"></script>
 	<script type="text/javascript" th:src="@{/grapheditor/js/Dialogs.js}"></script>
 	<script type="text/javascript" th:src="@{/grapheditor/js/jquery.min.js}"></script>
+	<!--用户拖动元素，链接：http://api.jqueryui.com/draggable/#method-disable/-->
+	<script type="text/javascript" th:src="@{/charisma/js/jquery-ui.min.js}"></script>
+	<!--移动设备用户拖动元素，依赖juery-ui.min.js，链接：http://touchpunch.furf.com/-->
+	<script type="text/javascript" th:src="@{/charisma/js/jquery.ui.touch-punch.min.js}"></script>
+	<script type="text/javascript" th:src="@{/charisma/js/bootstrap.min.js}"></script>
 </head>
 <body class="geEditor">
+	<div style="width: 30%; float: right;">
+		<div style="position: fixed; z-index: 999;text-align: right; width: 30%;">
+			<input id="startFlow" type="button" onclick="runFlow()" value="运行"/>
+			<input id="stopFlow" type="button" onclick="stopFlow()" value="停止"/>
+			<input type="button" class="btn-primary" data-toggle="modal" onclick="getLogUrl()" data-target="#myModal" value="日志"/>
+		</div>
+	</div>
+	<!-- Modal -->
+	<div  class="modal"  id="myModal" aria-labelledby="myModalLabel" data-backdrop="static">
+	    <div id="modalDialog" class="modal-dialog" role="document">
+	        <div class="modal-content" style="width: 200%; left: -290px; top: 77px;">
+	            <div class="modal-header">
+	                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	                <h4 class="modal-title" id="myModalLabel">日志窗口</h4>
+	            </div>
+	            <div class="modal-body">
+					 <!-- <div id="logTitle">加载中</div> -->
+					 <table border="1" style="width: 100%; height: 100%;">
+						<tr style="height: 90%;">
+							<td id="customContent">
+								日志内容待加载……
+							</td>
+						</tr>
+					</table>
+					<input type="button" onclick="changeUrl(1)" value="加载地址1">
+					<input type="button" onclick="changeUrl(2)" value="加载地址2">
+	            </div>
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+	            </div>
+	        </div>
+	    </div>
+	</div>
 	<script type="text/javascript">
 		// Extends EditorUi to update I/O action states based on availability of backend
 		var graphGlobal = null;
@@ -296,13 +338,124 @@
 			thisEditor.ignoredChanges = 0;
 			thisEditor.setModified(false);
 		}
-	    (function()
-  		{
-	    	
-  		})();
-	    
-	    
-	    
+	    //运行
+	    function runFlow(){
+	    	var startFlow = $('#startFlow');
+	    	startFlow.hide();
+            $.ajax({
+                cache:true,//保留缓存数据
+                type:"POST",//为post请求
+                url:"runFlow",//这是我在后台接受数据的文件名
+                //data:$('#loginForm').serialize(),//将该表单序列化
+                data:{flowId:loadId},
+                async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
+                error:function(request){//请求失败之后的操作
+                	startFlow.show();
+                    return;
+                },
+                success:function(data){//请求成功之后的操作
+                    //console.log("success");
+                	if('0'!==data){
+                		alert('启动成功，返回的appid为：'+data);
+                		$('#appId').val(data);
+                	}else{
+                		alert("启动失败");
+                		startFlow.show();
+                	}
+					
+                }
+            });
+		}
+	    //停止
+	    function stopFlow(){
+	    	var stopFlow = $('#stopFlow');
+	    	stopFlow.hide();
+            $.ajax({
+                cache:true,//保留缓存数据
+                type:"POST",//为post请求
+                url:"stopFlow",//这是我在后台接受数据的文件名
+                //data:$('#loginForm').serialize(),//将该表单序列化
+                data:{flowId:loadId},
+                async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
+                error:function(request){//请求失败之后的操作
+                    return;
+                    stopFlow.show();
+                },
+                success:function(data){//请求成功之后的操作
+                    //console.log("success");
+                	if('0'!==data){
+                		alert(data);
+                	}else{
+                		alert("停止失败");
+                		stopFlow.show();
+                	}
+                }
+            });
+		}
+	    function getLogUrl(){
+	    	appId = "application_1539850523117_0152";
+	    	$.ajax({
+                cache:true,//保留缓存数据
+                type:"POST",//为post请求
+                url:"getLogUrl",//这是我在后台接受数据的文件名
+                //data:$('#loginForm').serialize(),//将该表单序列化
+                data:{"appId":appId},
+                async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
+                error:function(request){//请求失败之后的操作
+                    return;
+                },
+                success:function(data){//请求成功之后的操作
+                    console.log("success");
+	                if('0'!==data.code){
+	                	stdoutLog = data.stdoutLog;
+	                	stderrLog = data.stderrLog;
+	                }
+					//alert(data);
+                }
+            });
+	    }
+		function changeUrl(key){
+			var url
+			switch (key) {
+				case 1:
+					url = stdoutLog;
+					break;
+				case 2:
+					url = stderrLog;
+					break;
+				default:
+					break;
+			}
+			$.ajax({
+                cache:true,//保留缓存数据
+                type:"POST",//为post请求
+                url:"getLog",//这是我在后台接受数据的文件名
+                //data:$('#loginForm').serialize(),//将该表单序列化
+                data:{url:url},
+                async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
+                error:function(request){//请求失败之后的操作
+                    return;
+                },
+                success:function(data){//请求成功之后的操作
+                    console.log("success");
+	                if(''!==data){
+	                	var split0 = data.split('<td class="content">');
+	                	var data0 = split0[1];
+	                	var split2 = data0.split("</td>");
+	                	var data2 = split2[0];
+	                	"white-space: pre-line;"
+	                	data2 = data2.replace("<pre>", '<pre style="white-space: pre-wrap; height: 288px;">');
+	                    //document.getElementById("logTitle").innerHTML = "<h1>"+data1+"</h1>";
+	                    document.getElementById("customContent").innerHTML = "<div>"+data2+"</div>";
+	                }
+					//alert(data);
+                }
+            });
+		}
+		$(document).ready(function(){
+			$("#modalDialog").draggable();//为模态对话框添加拖拽
+			//$("#myModal").css("overflow", "hidden");//禁止模态对话框的半透明背景滚动
+		});
     	//@ sourceURL=index-----------.js
 	</script>
 </body>

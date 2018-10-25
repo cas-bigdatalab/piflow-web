@@ -9,19 +9,18 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.nature.ApplicationTests;
 import com.nature.base.util.LoggerUtil;
+import com.nature.third.inf.IGetAllStops;
 
-public class GetFlowInfoTest extends ApplicationTests {
+public class IGetAllStopsTest extends ApplicationTests {
 
 	@Resource
-	private GetFlowInfo getFlowInfo;
+	private IGetAllStops getAllStopsImpl;
 
 	Logger logger = LoggerUtil.getLogger();
 
 	@Test
-	public void testFlowStop() {
-		String appId = "application_1539850523117_0103";
-		String startFlow2 = getFlowInfo.flowInfo(appId);
-		logger.info("测试返回信息：" + startFlow2);
+	public void testDoGet() {
+		getAllStopsImpl.getAllStops();
 	}
 
 	@Test
@@ -29,4 +28,5 @@ public class GetFlowInfoTest extends ApplicationTests {
 	@Rollback(value = false)
 	public void testAddFlow() {
 	}
+
 }

@@ -3,28 +3,43 @@ server:
   servlet:
     session:
       timeout: 600
-        
-#数据源
 spring:
+########################################################
+######  数据源
+########################################################
   datasource:
     url: jdbc:mysql://192.168.32.135:3306/mytest?useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowMultiQueries=true
     username: root
     password: 123456
     driver-class-name: com.mysql.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
-  #模板引擎
+########################################################
+######  模板引擎thymeleaf
+########################################################
   thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML5
+    encoding: UTF-8
+#热部署文件，页面不产生缓存，及时更新
     cache:  false
-    servlet:
-      content-type: text/html
-    mode: LEGACYHTML5
-  #配置静态资源
+  resources:
+    chain:
+      strategy:
+        content:
+          enabled: true
+          paths: /**
+########################################################
+######  配置静态资源
+########################################################
   mvc:
     view:
       prefix: /templates/
       suffix: .html
     static-path-pattern: /**
-  #配置自动建表：updata:没有表新建，有表更新操作,控制台显示建表语句
+########################################################
+######  配置自动建表：updata: 没有表新建，有表更新操作,控制台显示建表语句
+########################################################
   jpa:
     hibernate:
       ddl-auto: update
@@ -33,15 +48,19 @@ spring:
 #Springboot中Hibernate默认创建的mysql表为myisam引擎,因不支持事物所以指定为：innodb    
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
 
-  # security 
+########################################################
+### securityconfig
+########################################################
   security:
     user:
       name: soso
-      password: 12345
-#spring-boot整合mybatis
+      password: 1
+########################################################
+### 整合mybatis
+########################################################
 mybatis:
   type-aliases-package: com.nature.**.model
-  ##开启驼峰映射
+  #开启驼峰映射
   configuration:
     map-underscore-to-camel-case: true
 
@@ -64,4 +83,7 @@ logging:
     org: 
       springframework: 
         security: info
+#==================== 日志配合·XML  ============================
+#logging:
+#  config: classpath:log4j2.xml
      

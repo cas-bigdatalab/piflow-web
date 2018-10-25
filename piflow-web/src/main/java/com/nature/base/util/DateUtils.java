@@ -5,6 +5,7 @@ import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -85,6 +86,11 @@ public class DateUtils {
 	 * yyyy-MM 2012-12
 	 */
 	public static final String DATE_PATTERN_yyyy_MM = "yyyy-MM";
+
+	/**
+	 * EEE MMM dd HH:mm:ss zzz yyyy 例如 Thu Oct 25 10:03:25 CST 2018
+	 */
+	public static final String EEE_MMM_dd_HH_mm_ss_zzz_yyyy = "EEE MMM dd HH:mm:ss zzz yyyy";
 
 	/**
 	 * 计算第二天的开始
@@ -559,5 +565,16 @@ public class DateUtils {
 		String hhmmCh = dateToHhMmStr(dateDate);
 		hhmmCh = hhmmCh.replace(":", "时") + "分";
 		return dateCh + "  " + hhmmCh;
+	}
+
+	public static Date strCstToDate(String cstStr) {
+		Date date = null;
+		if (StringUtils.isNotBlank(cstStr)) {
+			SimpleDateFormat formatter = new SimpleDateFormat(EEE_MMM_dd_HH_mm_ss_zzz_yyyy, Locale.US);
+			ParsePosition pos = new ParsePosition(0);
+			date = formatter.parse(cstStr, pos);
+			System.out.println("转换后的值：" + date);
+		}
+		return date;
 	}
 }

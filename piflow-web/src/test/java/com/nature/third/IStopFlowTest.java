@@ -9,17 +9,20 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.nature.ApplicationTests;
 import com.nature.base.util.LoggerUtil;
+import com.nature.third.inf.IStopFlow;
 
-public class GetAllGroupsTest extends ApplicationTests {
+public class IStopFlowTest extends ApplicationTests {
 
 	@Resource
-	private GetAllGroups getAllGroups;
+	private IStopFlow stopFlowImpl;
 
 	Logger logger = LoggerUtil.getLogger();
 
 	@Test
-	public void testDoGet() {
-		getAllGroups.get();
+	public void testStopFlow() {
+		String appId = "application_1539850523117_0041";
+		String startFlow2 = stopFlowImpl.stopFlow(appId);
+		logger.info("测试返回信息：" + startFlow2);
 	}
 
 	@Test

@@ -27,6 +27,8 @@ public class User {
 
 	private Integer age;
 
+	private String sex;
+
 	private boolean enabled;
 
 	public Long getId() {
@@ -67,6 +69,14 @@ public class User {
 
 	public void setAge(Integer age) {
 		this.age = age;
+	}
+
+	public String getSex() {
+		return sex;
+	}
+
+	public void setSex(String sex) {
+		this.sex = sex;
 	}
 
 	public boolean isEnabled() {

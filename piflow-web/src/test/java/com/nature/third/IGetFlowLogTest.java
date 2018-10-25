@@ -9,17 +9,23 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.nature.ApplicationTests;
 import com.nature.base.util.LoggerUtil;
+import com.nature.third.inf.IGetFlowLog;
+import com.nature.third.vo.flowLog.FlowLog;
 
-public class GetAllStopsTest extends ApplicationTests {
+public class IGetFlowLogTest extends ApplicationTests {
 
 	@Resource
-	private GetAllStops GetAllStops;
+	private IGetFlowLog getFlowLogImpl;
 
 	Logger logger = LoggerUtil.getLogger();
 
 	@Test
-	public void testDoGet() {
-		GetAllStops.get();
+	public void testGetFlowLog() {
+		String appId = "application_1539850523117_0159";
+		FlowLog flowLog = getFlowLogImpl.getFlowLog(appId);
+		if (null != flowLog) {
+			flowLog.getApp();
+		}
 	}
 
 	@Test

@@ -16,18 +16,19 @@ import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.model.Paths;
 import com.nature.component.workFlow.model.Property;
 import com.nature.component.workFlow.model.Stops;
+import com.nature.third.inf.IStartFlow;
 
-public class StartFlowTest extends ApplicationTests {
+public class IStartFlowTest extends ApplicationTests {
 
 	@Resource
-	private StartFlow startFlow;
+	private IStartFlow startFlowImpl;
 
 	Logger logger = LoggerUtil.getLogger();
 
 	@Test
 	public void testStartFlow() {
 		Flow setFlow = this.setFlow();
-		String startFlow2 = startFlow.startFlow(setFlow);
+		String startFlow2 = startFlowImpl.startFlow(setFlow);
 		logger.info("测试返回信息：" + startFlow2);
 	}
 

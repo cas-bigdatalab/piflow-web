@@ -1,19 +1,27 @@
 package com.nature.component.user.vo;
 
+import java.io.Serializable;
+
 /**
  * 
  * @author Nature
  *
  */
-public class UserVo {
+public class UserVo implements Serializable {
 
-	private Integer id;// 主键id 声明主键 声明主键的生成策略
+	private static final long serialVersionUID = 1L;
 
-	private String userName;
+	private Integer id;
 
-	private String passWd;
+	private String username;
+
+	private String password;
 
 	private String name;
+
+	private Integer age;
+
+	private String sex;
 
 	public Integer getId() {
 		return id;
@@ -23,20 +31,20 @@ public class UserVo {
 		this.id = id;
 	}
 
-	public String getUserName() {
-		return userName;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
-	public String getPassWd() {
-		return passWd;
+	public String getPassword() {
+		return password;
 	}
 
-	public void setPassWd(String passWd) {
-		this.passWd = passWd;
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public String getName() {
@@ -55,6 +63,12 @@ public class UserVo {
 		this.age = age;
 	}
 
-	private Integer age;
+	public String getSex() {
+		return sex;
+	}
+
+	public void setSex(String sex) {
+		this.sex = sex;
+	}
 
 }

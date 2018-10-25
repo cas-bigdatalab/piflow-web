@@ -9,17 +9,19 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.nature.ApplicationTests;
 import com.nature.base.util.LoggerUtil;
+import com.nature.third.inf.IGetStopInfo;
 
-public class GetStopInfoTest extends ApplicationTests {
+public class IGetStopInfoTest extends ApplicationTests {
 
 	@Resource
-	private GetStopInfo GetStopInfo;
+	private IGetStopInfo getStopInfoImpl;
 
 	Logger logger = LoggerUtil.getLogger();
 
 	@Test
 	public void testDoGet() {
-		GetStopInfo.get();
+		String bundle = "cn.piflow.bundle.csv.CsvParser";
+		getStopInfoImpl.getStopInfo(bundle);
 	}
 
 	@Test
