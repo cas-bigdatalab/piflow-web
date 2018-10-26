@@ -33,7 +33,7 @@ public interface FlowInfoDbMapper {
 	 */
 	@Select("SELECT * FROM flow where enable_flag = '1' ORDER BY crt_dttm DESC ")
 	@Results({
-		@Result(property="appId",column="app_id",javaType=App.class,one=@One(select="com.nature.mapper.FlowInfoDbMapper.getAppByAppId"))
+		@Result(property="appId",column="app_id",javaType=FlowInfoDb.class,one=@One(select="com.nature.mapper.FlowInfoDbMapper.getAppByAppId"))
  			})
 	public List<Flow> findAppList();
  
