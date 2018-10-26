@@ -2,6 +2,7 @@ package com.nature.mapper;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Many;
 import org.apache.ibatis.annotations.Mapper;
@@ -61,4 +62,10 @@ public interface StopGroupMapper {
             "</foreach>" +
         "</script>")
 	List<StopGroup> getStopGroupByName(@Param("group_name") List<String> groupName);
+	
+	@Delete("DELETE from association_groups_stops_template;DELETE from flow_sotps_groups;")
+	int deleteGroup();
+	
+	@Delete("DELETE from flow_stops_property_template;DELETE from flow_stops_template;")
+	int deleteStopsInfo();
 }

@@ -41,7 +41,7 @@
 
     <!-- jQuery -->
     <script th:src="@{/charisma/js/jquery.min.js}"></script>
-
+	<script th:src="@{/charisma/js/layer/layer.js}"></script>
     <!-- The HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -49,7 +49,6 @@
 
     <!-- The fav icon -->
     <link rel="shortcut icon" th:href="@{/charisma/img/favicon.ico}">
-
 </head>
 
 <body>
@@ -159,604 +158,56 @@
                         </div>
                         <div class="box-content">
                             <div class="alert alert-info">
-                            	<span>
-	                            	<span>
-	                            		freemarker&nbsp;&nbsp;： ${sss} + ${say}
-	                            	</span>
-                            	</span>
-                            	<br>
-                            	<span>
-	                            	<span th:inline="text">
-	                            		页面thymeleaf取 &nbsp;&nbsp;： 
-	                            		sss,[[${sss}]]&nbsp;&nbsp;+&nbsp;&nbsp;say:[[${say}]]
-	                            	</span>
-                            	</span>
-                            	<br>
-                            	<span>
-                            		<span id="sss">
-                            			jq :
-                            		</span>
-                            	</span>
-                            	
+                            	<a class='btn' href='javascript:void(0);' onclick="newPath();" style='background-color: #C0C0C0;border: 1px solid;color: #080808;'><i class='glyphicon glyphicon-edit icon-white'></i> 
+                			  Newly build</a>
                             </div>
+                              <div class="tableDiv" style="overflow: scroll;">
                                 <table class="table table-striped table-bordered bootstrap-datatable datatable responsive">
                                     <thead>
                                         <tr>
-                                            <th>Username</th>
-                                            <th>Date registered</th>
-                                            <th>Role</th>
-                                            <th>Status</th>
+                                            <th>flowId</th>
+                                            <th>appId</th>
+                                            <th>name</th>
+                                            <th>description</th>
+                                            <th>startTime</th>
+                                            <th>finishedTime</th>  
+                                            <th>progress</th>
+                                            <th>state</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>David R</td>
-                                            <td class="center">2012/01/01</td>
-                                            <td class="center">Member</td>
-                                            <td class="center">
-                                                <span class="label-success label label-default">Active</span>
-                                            </td>
-                                            <td class="center">
-                                                <a class="btn btn-success" th:href="@{grapheditor}">
+                                    <tbody id="tableData">
+                                      <tr th:each='list:${appInfo}'>
+                                            <td th:text="${list.id}" ></td>
+                                            <td class="center" th:text="${list.appId.id}"></td>
+                                            <td class="center" th:text="${list.name}"></td>
+                                             <td class="center" th:text="${list.description}"></td>
+                                             <input type="hidden" id = "updateId"  th:value="${list.id}" />
+                                             <input type="hidden" id = "updateName"  th:value="${list.name}" />
+                                             <input type="hidden" id = "updateDescription"  th:value="${list.description}" />
+                                             <td th:text="${#dates.format(list.appId.startTime, 'yyyy-MM-dd HH:mm:ss')}" ></td>
+                                             <td th:text="${#dates.format(list.appId.endTime, 'yyyy-MM-dd HH:mm:ss')}" ></td>
+                                                <td class="center" ><div id='d'> <p id='pgv' >进度：100%</p><progress id='pg' max='100' value='100'></progress></div></td>
+                                               <td class="center" th:text="${list.appId.state}"></td>
+                                            <td class="center" style="white-space: nowrap;">
+                                                <a class="btn" th:href="'grapheditor?load='+${list.id}+''" target="_blank" style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;">
                                                     <i class="glyphicon glyphicon-zoom-in icon-white"></i>
                                                     View
                                                 </a>
-                                                <a class="btn btn-info" th:href="@{grapheditor}">
+                                                <a class="btn" href="javascript:void(0);"  onclick="update();" 
+                                                style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;">
                                                     <i class="glyphicon glyphicon-edit icon-white"></i>
                                                     Edit
                                                 </a>
-                                                <a class="btn btn-danger" href="#">
+                                                  <a class="btn" href="#" style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;">
                                                     <i class="glyphicon glyphicon-trash icon-white"></i>
-                                                    Delete
+                                                    start
                                                 </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Chris Jack</td>
-                                            <td class="center">2012/01/01</td>
-                                            <td class="center">Member</td>
-                                            <td class="center">
-                                                <span class="label-success label label-default">Active</span>
-                                            </td>
-                                            <td class="center">
-                                                <a class="btn btn-success" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-zoom-in icon-white"></i>
-                                                    View
-                                                </a>
-                                                <a class="btn btn-info" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-edit icon-white"></i>
-                                                    Edit
-                                                </a>
-                                                <a class="btn btn-danger" href="#">
+                                                  <a class="btn" href="#" style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;">
                                                     <i class="glyphicon glyphicon-trash icon-white"></i>
-                                                    Delete
+                                                    stop
                                                 </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Jack Chris</td>
-                                            <td class="center">2012/01/01</td>
-                                            <td class="center">Member</td>
-                                            <td class="center">
-                                                <span class="label-success label label-default">Active</span>
-                                            </td>
-                                            <td class="center">
-                                                <a class="btn btn-success" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-zoom-in icon-white"></i>
-                                                    View
-                                                </a>
-                                                <a class="btn btn-info" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-edit icon-white"></i>
-                                                    Edit
-                                                </a>
-                                                <a class="btn btn-danger" href="#">
-                                                    <i class="glyphicon glyphicon-trash icon-white"></i>
-                                                    Delete
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Muhammad Usman</td>
-                                            <td class="center">2012/01/01</td>
-                                            <td class="center">Member</td>
-                                            <td class="center">
-                                                <span class="label-success label label-default">Active</span>
-                                            </td>
-                                            <td class="center">
-                                                <a class="btn btn-success" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-zoom-in icon-white"></i>
-                                                    View
-                                                </a>
-                                                <a class="btn btn-info" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-edit icon-white"></i>
-                                                    Edit
-                                                </a>
-                                                <a class="btn btn-danger" href="#">
-                                                    <i class="glyphicon glyphicon-trash icon-white"></i>
-                                                    Delete
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Sheikh Heera</td>
-                                            <td class="center">2012/02/01</td>
-                                            <td class="center">Staff</td>
-                                            <td class="center">
-                                                <span class="label-default label label-danger">Banned</span>
-                                            </td>
-                                            <td class="center">
-                                                <a class="btn btn-success" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-zoom-in icon-white"></i>
-                                                    View
-                                                </a>
-                                                <a class="btn btn-info" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-edit icon-white"></i>
-                                                    Edit
-                                                </a>
-                                                <a class="btn btn-danger" href="#">
-                                                    <i class="glyphicon glyphicon-trash icon-white"></i>
-                                                    Delete
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Helen Garner</td>
-                                            <td class="center">2012/02/01</td>
-                                            <td class="center">Staff</td>
-                                            <td class="center">
-                                                <span class="label-default label label-danger">Banned</span>
-                                            </td>
-                                            <td class="center">
-                                                <a class="btn btn-success" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-zoom-in icon-white"></i>
-                                                    View
-                                                </a>
-                                                <a class="btn btn-info" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-edit icon-white"></i>
-                                                    Edit
-                                                </a>
-                                                <a class="btn btn-danger" href="#">
-                                                    <i class="glyphicon glyphicon-trash icon-white"></i>
-                                                    Delete
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Saruar Ahmed</td>
-                                            <td class="center">2012/03/01</td>
-                                            <td class="center">Member</td>
-                                            <td class="center">
-                                                <span class="label-warning label label-default">Pending</span>
-                                            </td>
-                                            <td class="center">
-                                                <a class="btn btn-success" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-zoom-in icon-white"></i>
-                                                    View
-                                                </a>
-                                                <a class="btn btn-info" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-edit icon-white"></i>
-                                                    Edit
-                                                </a>
-                                                <a class="btn btn-danger" href="#">
-                                                    <i class="glyphicon glyphicon-trash icon-white"></i>
-                                                    Delete
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Ahemd Saruar</td>
-                                            <td class="center">2012/03/01</td>
-                                            <td class="center">Member</td>
-                                            <td class="center">
-                                                <span class="label-warning label label-default">Pending</span>
-                                            </td>
-                                            <td class="center">
-                                                <a class="btn btn-success" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-zoom-in icon-white"></i>
-                                                    View
-                                                </a>
-                                                <a class="btn btn-info" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-edit icon-white"></i>
-                                                    Edit
-                                                </a>
-                                                <a class="btn btn-danger" href="#">
-                                                    <i class="glyphicon glyphicon-trash icon-white"></i>
-                                                    Delete
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Habib Rizwan</td>
-                                            <td class="center">2012/01/21</td>
-                                            <td class="center">Staff</td>
-                                            <td class="center">
-                                                <span class="label-success label label-default">Active</span>
-                                            </td>
-                                            <td class="center">
-                                                <a class="btn btn-success" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-zoom-in icon-white"></i>
-                                                    View
-                                                </a>
-                                                <a class="btn btn-info" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-edit icon-white"></i>
-                                                    Edit
-                                                </a>
-                                                <a class="btn btn-danger" href="#">
-                                                    <i class="glyphicon glyphicon-trash icon-white"></i>
-                                                    Delete
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Rizwan Habib</td>
-                                            <td class="center">2012/01/21</td>
-                                            <td class="center">Staff</td>
-                                            <td class="center">
-                                                <span class="label-success label label-default">Active</span>
-                                            </td>
-                                            <td class="center">
-                                                <a class="btn btn-success" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-zoom-in icon-white"></i>
-                                                    View
-                                                </a>
-                                                <a class="btn btn-info" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-edit icon-white"></i>
-                                                    Edit
-                                                </a>
-                                                <a class="btn btn-danger" href="#">
-                                                    <i class="glyphicon glyphicon-trash icon-white"></i>
-                                                    Delete
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Amrin Sana</td>
-                                            <td class="center">2012/08/23</td>
-                                            <td class="center">Staff</td>
-                                            <td class="center">
-                                                <span class="label-default label label-danger">Banned</span>
-                                            </td>
-                                            <td class="center">
-                                                <a class="btn btn-success" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-zoom-in icon-white"></i>
-                                                    View
-                                                </a>
-                                                <a class="btn btn-info" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-edit icon-white"></i>
-                                                    Edit
-                                                </a>
-                                                <a class="btn btn-danger" href="#">
-                                                    <i class="glyphicon glyphicon-trash icon-white"></i>
-                                                    Delete
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Sana Amrin</td>
-                                            <td class="center">2012/08/23</td>
-                                            <td class="center">Staff</td>
-                                            <td class="center">
-                                                <span class="label-default label label-danger">Banned</span>
-                                            </td>
-                                            <td class="center">
-                                                <a class="btn btn-success" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-zoom-in icon-white"></i>
-                                                    View
-                                                </a>
-                                                <a class="btn btn-info" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-edit icon-white"></i>
-                                                    Edit
-                                                </a>
-                                                <a class="btn btn-danger" href="#">
-                                                    <i class="glyphicon glyphicon-trash icon-white"></i>
-                                                    Delete
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Ifrah Jannat</td>
-                                            <td class="center">2012/06/01</td>
-                                            <td class="center">Admin</td>
-                                            <td class="center">
-                                                <span class="label-default label">Inactive</span>
-                                            </td>
-                                            <td class="center">
-                                                <a class="btn btn-success" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-zoom-in icon-white"></i>
-                                                    View
-                                                </a>
-                                                <a class="btn btn-info" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-edit icon-white"></i>
-                                                    Edit
-                                                </a>
-                                                <a class="btn btn-danger" href="#">
-                                                    <i class="glyphicon glyphicon-trash icon-white"></i>
-                                                    Delete
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Jannat Ifrah</td>
-                                            <td class="center">2012/06/01</td>
-                                            <td class="center">Admin</td>
-                                            <td class="center">
-                                                <span class="label-default label">Inactive</span>
-                                            </td>
-                                            <td class="center">
-                                                <a class="btn btn-success" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-zoom-in icon-white"></i>
-                                                    View
-                                                </a>
-                                                <a class="btn btn-info" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-edit icon-white"></i>
-                                                    Edit
-                                                </a>
-                                                <a class="btn btn-danger" href="#">
-                                                    <i class="glyphicon glyphicon-trash icon-white"></i>
-                                                    Delete
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Robert</td>
-                                            <td class="center">2012/03/01</td>
-                                            <td class="center">Member</td>
-                                            <td class="center">
-                                                <span class="label-warning label label-default">Pending</span>
-                                            </td>
-                                            <td class="center">
-                                                <a class="btn btn-success" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-zoom-in icon-white"></i>
-                                                    View
-                                                </a>
-                                                <a class="btn btn-info" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-edit icon-white"></i>
-                                                    Edit
-                                                </a>
-                                                <a class="btn btn-danger" href="#">
-                                                    <i class="glyphicon glyphicon-trash icon-white"></i>
-                                                    Delete
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Dave Robert</td>
-                                            <td class="center">2012/03/01</td>
-                                            <td class="center">Member</td>
-                                            <td class="center">
-                                                <span class="label-warning label label-default">Pending</span>
-                                            </td>
-                                            <td class="center">
-                                                <a class="btn btn-success" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-zoom-in icon-white"></i>
-                                                    View
-                                                </a>
-                                                <a class="btn btn-info" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-edit icon-white"></i>
-                                                    Edit
-                                                </a>
-                                                <a class="btn btn-danger" href="#">
-                                                    <i class="glyphicon glyphicon-trash icon-white"></i>
-                                                    Delete
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Brown Robert</td>
-                                            <td class="center">2012/03/01</td>
-                                            <td class="center">Member</td>
-                                            <td class="center">
-                                                <span class="label-warning label label-default">Pending</span>
-                                            </td>
-                                            <td class="center">
-                                                <a class="btn btn-success" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-zoom-in icon-white"></i>
-                                                    View
-                                                </a>
-                                                <a class="btn btn-info" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-edit icon-white"></i>
-                                                    Edit
-                                                </a>
-                                                <a class="btn btn-danger" href="#">
-                                                    <i class="glyphicon glyphicon-trash icon-white"></i>
-                                                    Delete
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Usman Muhammad</td>
-                                            <td class="center">2012/01/01</td>
-                                            <td class="center">Member</td>
-                                            <td class="center">
-                                                <span class="label-success label label-default">Active</span>
-                                            </td>
-                                            <td class="center">
-                                                <a class="btn btn-success" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-zoom-in icon-white"></i>
-                                                    View
-                                                </a>
-                                                <a class="btn btn-info" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-edit icon-white"></i>
-                                                    Edit
-                                                </a>
-                                                <a class="btn btn-danger" href="#">
-                                                    <i class="glyphicon glyphicon-trash icon-white"></i>
-                                                    Delete
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Abdullah</td>
-                                            <td class="center">2012/02/01</td>
-                                            <td class="center">Staff</td>
-                                            <td class="center">
-                                                <span class="label-default label label-danger">Banned</span>
-                                            </td>
-                                            <td class="center">
-                                                <a class="btn btn-success" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-zoom-in icon-white"></i>
-                                                    View
-                                                </a>
-                                                <a class="btn btn-info" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-edit icon-white"></i>
-                                                    Edit
-                                                </a>
-                                                <a class="btn btn-danger" href="#">
-                                                    <i class="glyphicon glyphicon-trash icon-white"></i>
-                                                    Delete
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Dow John</td>
-                                            <td class="center">2012/02/01</td>
-                                            <td class="center">Admin</td>
-                                            <td class="center">
-                                                <span class="label-default label">Inactive</span>
-                                            </td>
-                                            <td class="center">
-                                                <a class="btn btn-success" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-zoom-in icon-white"></i>
-                                                    View
-                                                </a>
-                                                <a class="btn btn-info" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-edit icon-white"></i>
-                                                    Edit
-                                                </a>
-                                                <a class="btn btn-danger" href="#">
-                                                    <i class="glyphicon glyphicon-trash icon-white"></i>
-                                                    Delete
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>John R</td>
-                                            <td class="center">2012/02/01</td>
-                                            <td class="center">Admin</td>
-                                            <td class="center">
-                                                <span class="label-default label">Inactive</span>
-                                            </td>
-                                            <td class="center">
-                                                <a class="btn btn-success" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-zoom-in icon-white"></i>
-                                                    View
-                                                </a>
-                                                <a class="btn btn-info" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-edit icon-white"></i>
-                                                    Edit
-                                                </a>
-                                                <a class="btn btn-danger" href="#">
-                                                    <i class="glyphicon glyphicon-trash icon-white"></i>
-                                                    Delete
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Paul Wilson</td>
-                                            <td class="center">2012/03/01</td>
-                                            <td class="center">Member</td>
-                                            <td class="center">
-                                                <span class="label-warning label label-default">Pending</span>
-                                            </td>
-                                            <td class="center">
-                                                <a class="btn btn-success" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-zoom-in icon-white"></i>
-                                                    View
-                                                </a>
-                                                <a class="btn btn-info" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-edit icon-white"></i>
-                                                    Edit
-                                                </a>
-                                                <a class="btn btn-danger" href="#">
-                                                    <i class="glyphicon glyphicon-trash icon-white"></i>
-                                                    Delete
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Wilson Paul</td>
-                                            <td class="center">2012/03/01</td>
-                                            <td class="center">Member</td>
-                                            <td class="center">
-                                                <span class="label-warning label label-default">Pending</span>
-                                            </td>
-                                            <td class="center">
-                                                <a class="btn btn-success" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-zoom-in icon-white"></i>
-                                                    View
-                                                </a>
-                                                <a class="btn btn-info" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-edit icon-white"></i>
-                                                    Edit
-                                                </a>
-                                                <a class="btn btn-danger" href="#">
-                                                    <i class="glyphicon glyphicon-trash icon-white"></i>
-                                                    Delete
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Heera Sheikh</td>
-                                            <td class="center">2012/01/21</td>
-                                            <td class="center">Staff</td>
-                                            <td class="center">
-                                                <span class="label-success label label-default">Active</span>
-                                            </td>
-                                            <td class="center">
-                                                <a class="btn btn-success" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-zoom-in icon-white"></i>
-                                                    View
-                                                </a>
-                                                <a class="btn btn-info" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-edit icon-white"></i>
-                                                    Edit
-                                                </a>
-                                                <a class="btn btn-danger" href="#">
-                                                    <i class="glyphicon glyphicon-trash icon-white"></i>
-                                                    Delete
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Sheikh Heera</td>
-                                            <td class="center">2012/01/21</td>
-                                            <td class="center">Staff</td>
-                                            <td class="center">
-                                                <span class="label-success label label-default">Active</span>
-                                            </td>
-                                            <td class="center">
-                                                <a class="btn btn-success" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-zoom-in icon-white"></i>
-                                                    View
-                                                </a>
-                                                <a class="btn btn-info" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-edit icon-white"></i>
-                                                    Edit
-                                                </a>
-                                                <a class="btn btn-danger" href="#">
-                                                    <i class="glyphicon glyphicon-trash icon-white"></i>
-                                                    Delete
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Christopher</td>
-                                            <td class="center">2012/08/23</td>
-                                            <td class="center">Staff</td>
-                                            <td class="center">
-                                                <span class="label-default label label-danger">Banned</span>
-                                            </td>
-                                            <td class="center">
-                                                <a class="btn btn-success" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-zoom-in icon-white"></i>
-                                                    View
-                                                </a>
-                                                <a class="btn btn-info" th:href="@{grapheditor}">
-                                                    <i class="glyphicon glyphicon-edit icon-white"></i>
-                                                    Edit
-                                                </a>
-                                                <a class="btn btn-danger" href="#">
+                                                <a class="btn" href="#" style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;">
                                                     <i class="glyphicon glyphicon-trash icon-white"></i>
                                                     Delete
                                                 </a>
@@ -764,6 +215,7 @@
                                         </tr>
                                     </tbody>
                                 </table>
+                              </div>
                         </div>
                     </div>
                 </div>
@@ -829,15 +281,111 @@
 <script th:src="@{/charisma/js/charisma.js}"></script>
 
 <script th:inline="javascript">
-
-	var say = [[${say}]];
-	var sss = [[${sss}]];
-	
-	
-	    $("#sss").text("__________________________________________"+say+'<br>'+sss);
-	    
+	   function newPath(){
+			layer.open({
+	      	  type: 1,
+	      	  title: '新建流水线',
+	      	  shadeClose:true,
+	      	  closeBtn: false,
+	      	  shift: 7,
+	      	  skin: 'layui-layer-rim', //加上边框
+	      	  content: "<div style='width:350px;'><div style='width:320px;margin-left: 3%;margin-top: 3%;' class='form-group has-feedback'><p>请输入flowName</p><input id='flowName' class='form-control' type='text' name='awardName' value=''/></div>" +
+	            "<div style='width:320px;margin-left: 3%;' class='form-group has-feedback'><p>请输入description</p><textarea  style='resize:none'  class='form-control' rows='4' cols='3' id='description'></textarea></div>"+ 
+	            "<div style='width:320px;margin-left: 3%;' class='form-group has-feedback'><p>请输入名称</p><input id='awardDescription' class='form-control' type='text' name='awardDescription' value=''/></div>"+ 
+	            "<div style='width:320px;margin-left: 3%;' class='form-group has-feedback'><p>请输入名称</p><input id='awardDescription' class='form-control' type='text' name='awardDescription' value=''/></div>"+ 
+	            "<div style='width:320px;margin-left: 3%;' class='form-group has-feedback'><p>请输入描述</p><input id='awardUserCount' class='form-control' type='number' name='awardUserCount' value=''/></div>"+  
+	          "<div style='width:320px;margin-left: 3%;' class='form-group has-feedback'>" +
+	          "<button style='margin-top:5%;' type='button' class='btn btn-block btn-succ2ess btn-lg' onclick='saveFlowInfo()'>提交</button></div>"
+	      	});
+	    }
 	   
-	    
+	   function update(){
+		   var id  = $("#updateId").val();
+		   var updateName  = $("#updateName").val();
+		   var updateDescription  = $("#updateDescription").val();
+			layer.open({
+	      	  type: 1,
+	      	  title: '新建流水线',
+	      	  shadeClose:true,
+	      	  closeBtn: false,
+	      	  shift: 7,
+	      	  skin: 'layui-layer-rim', //加上边框
+	      	  content: "<div style='width:350px;'><div style='width:320px;margin-left: 3%;margin-top: 3%;' class='form-group has-feedback'><p>请输入flowName</p><input id='flowName' class='form-control' type='text' name='awardName' value='"+updateName+"'/></div>" +
+	            "<div style='width:320px;margin-left: 3%;' class='form-group has-feedback'><p>请输入description</p><textarea  style='resize:none'  class='form-control' rows='4' cols='3' id='description'>"+updateDescription+"</textarea></div>"+ 
+	            "<div style='width:320px;margin-left: 3%;' class='form-group has-feedback'><p>请输入名称</p><input id='awardDescription' class='form-control' type='text' name='awardDescription' value=''/></div>"+ 
+	            "<div style='width:320px;margin-left: 3%;' class='form-group has-feedback'><p>请输入名称</p><input id='awardDescription' class='form-control' type='text' name='awardDescription' value=''/></div>"+ 
+	            "<div style='width:320px;margin-left: 3%;' class='form-group has-feedback'><p>请输入描述</p><input id='awardUserCount' class='form-control' type='number' name='awardUserCount' value=''/></div>"+  
+	          "<div style='width:320px;margin-left: 3%;' class='form-group has-feedback'>" +
+	          "<button style='margin-top:5%;' type='button' class='btn btn-block btn-succ2ess btn-lg' onclick=updateFlow('"+id+"')>提交</button></div>"
+	      	});
+	    }
+	
+	    function saveFlowInfo(){
+	    	var flowName = $("#flowName").val();
+	    	var description = $("#description").val();
+	    	 if(flowName == ''){
+					layer.msg('flowName不能为空！',{icon: 2,  shade:0,  time: 2000});
+					document.getElementById('flowName').focus();
+					return false;
+				}
+				if(description == ''){
+					layer.msg('description不能为空！',{icon: 2,  shade:0,  time: 2000});
+					document.getElementById('description').focus();
+					return false;
+				}
+              $.ajax({
+                cache:true,//保留缓存数据
+                type:"get",//为post请求
+                url:"saveFlowInfo",//这是我在后台接受数据的文件名
+                data:{name:flowName,description:description},
+                async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
+                error:function(request){//请求失败之后的操作
+                	layer.closeAll('page'); 
+                	layer.msg('创建失败,请稍后再试！',{icon: 2,  shade:0,  time: 2000}, function(){});
+                    return;
+                },
+                success:function(data){//请求成功之后的操作
+                	 console.info(data);
+                	 layer.closeAll('page'); 
+                	 layer.msg('创建成功',{icon: 1,  shade:0,  time: 2000}, function(){
+                	 var tempwindow=window.open('_blank');
+                	 tempwindow.location="/flow/grapheditor?load="+data.id;
+                	 });
+                }
+            }); 
+		}
+	    function updateFlow(id){
+	    	var flowName = $("#flowName").val();
+	    	var description = $("#description").val();
+	    	 if(flowName == ''){
+					layer.msg('flowName不能为空！',{icon: 2,  shade:0,  time: 2000});
+					document.getElementById('flowName').focus();
+					return false;
+				}
+				if(description == ''){
+					layer.msg('description不能为空！',{icon: 2,  shade:0,  time: 2000});
+					document.getElementById('description').focus();
+					return false;
+				}
+              $.ajax({
+                cache:true,//保留缓存数据
+                type:"get",//为post请求
+                url:"updateFlowInfo",//这是我在后台接受数据的文件名
+                data:{id:id,name:flowName,description:description},
+                async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
+                error:function(request){//请求失败之后的操作
+                	layer.closeAll('page'); 
+                	layer.msg('修改失败,请稍后再试！',{icon: 2,  shade:0,  time: 2000}, function(){});
+                    return;
+                },
+                success:function(data){//请求成功之后的操作
+                	if(data>0){
+                	 layer.closeAll('page'); 
+                	 layer.msg('修改成功',{icon: 1,  shade:0,  time: 2000}, function(){location.reload(); });
+                	}
+                }
+            }); 
+		}
 </script>
 
 </body>

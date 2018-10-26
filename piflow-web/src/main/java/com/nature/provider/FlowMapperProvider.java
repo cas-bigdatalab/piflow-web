@@ -9,6 +9,7 @@ import com.nature.base.util.DateUtils;
 import com.nature.base.util.Utils;
 import com.nature.component.mxGraph.model.MxGraphModel;
 import com.nature.component.workFlow.model.Flow;
+import com.nature.component.workFlow.model.FlowInfoDb;
 
 public class FlowMapperProvider {
 
@@ -28,7 +29,7 @@ public class FlowMapperProvider {
 			Date lastUpdateDttm = flow.getLastUpdateDttm();
 			Long version = flow.getVersion();
 			Boolean enableFlag = flow.getEnableFlag();
-			String appId = flow.getAppId();
+			String description = flow.getDescription();
 			String name = flow.getName();
 			String uuid = flow.getUuid();
 			MxGraphModel mxGraphModel = flow.getMxGraphModel();
@@ -66,8 +67,8 @@ public class FlowMapperProvider {
 				int enableFlagInt = enableFlag ? 1 : 0;
 				sql.VALUES("ENABLE_FLAG", enableFlagInt + "");
 			}
-			if (StringUtils.isNotBlank(appId)) {
-				sql.VALUES("APP_ID", Utils.addSqlStr(appId));
+			if (StringUtils.isNotBlank(description)) {
+				sql.VALUES("description", Utils.addSqlStr(description));
 			}
 			if (StringUtils.isNotBlank(name)) {
 				sql.VALUES("NAME", Utils.addSqlStr(name));
@@ -101,10 +102,11 @@ public class FlowMapperProvider {
 			Date lastUpdateDttm = flow.getLastUpdateDttm();
 			Long version = flow.getVersion();
 			Boolean enableFlag = flow.getEnableFlag();
-			String appId = flow.getAppId();
+			String description = flow.getDescription();
 			String name = flow.getName();
 			String uuid = flow.getUuid();
 			MxGraphModel mxGraphModel = flow.getMxGraphModel();
+			FlowInfoDb appId = flow.getAppId();
 			SQL sql = new SQL();
 
 			// INSERT_INTO括号中为数据库表名
@@ -127,8 +129,8 @@ public class FlowMapperProvider {
 				int enableFlagInt = enableFlag ? 1 : 0;
 				sql.SET("ENABLE_FLAG = " + enableFlagInt);
 			}
-			if (StringUtils.isNotBlank(appId)) {
-				sql.SET("APP_ID = " + Utils.addSqlStr(appId));
+			if (StringUtils.isNotBlank(description)) {
+				sql.SET("description = " + Utils.addSqlStr(description));
 			}
 			if (StringUtils.isNotBlank(name)) {
 				sql.SET("NAME = " + Utils.addSqlStr(name));
@@ -140,6 +142,12 @@ public class FlowMapperProvider {
 				String mxGraphModelId = mxGraphModel.getId();
 				if (StringUtils.isNotBlank(mxGraphModelId)) {
 					sql.SET("fk_mx_graph_model_id = " + Utils.addSqlStr(mxGraphModelId));
+				}
+			}
+			if (null != appId) {
+				String appid = appId.getId();
+				if (StringUtils.isNotBlank(appid)) {
+					sql.SET("app_id = " + Utils.addSqlStr(appid));
 				}
 			}
 			sql.WHERE("id = " + Utils.addSqlStr(id));

@@ -18,10 +18,6 @@
 		var stderrLog = [[${stderrLog}]];
 		var divValue = null;
 		 function divAppend(divAppend){
- /*    		 var divHidden = document.createElement('input');
-    		 divHidden.setAttribute('type', 'hidden');
-    		 divHidden.setAttribute('id', 'divAppend');
-    		 divHidden.setAttribute('value', ''+divAppend+''); */
     		 divValue = divAppend;
     }
 	</script>
@@ -118,6 +114,7 @@
 		// Extends EditorUi to update I/O action states based on availability of backend
 		var graphGlobal = null;
 		var thisEditor = null;
+		var sign = true;
 		(function()
 		{
 			
@@ -159,23 +156,26 @@
 			 	function add(data){
 					if(data!=null && data.length>0){
 						var table=document.createElement("table");
+						table.style.borderCollapse = "separate";
+						table.style.borderSpacing = "0px 5px";
 	               		var tbody=document.createElement("tbody");
 						for(var y=0;y<data.length;y++){
-							console.info(data[y].displayName);
 							var displayName = data[y].displayName;
 							var customValue = data[y].customValue;
 							var displayName = document.createElement('input');
 							displayName.setAttribute('type', 'text');
 							displayName.setAttribute('id', ''+data[y].displayName+'');
 							displayName.setAttribute('onblur', 'shiqu("'+data[y].id+'","'+data[y].displayName+'")');
-							displayName.style.width = "120px";
+							displayName.style.width = "108px";
 							displayName.setAttribute('value', ''+customValue+'');
 							var spanDisplayName = 'span'+data[y].displayName;
 		               		var spanDisplayName = document.createElement('span');
+							spanDisplayName.style.cursor = "pointer";
+							spanDisplayName.setAttribute('title', ''+data[y].description+'');
 		               		mxUtils.write(spanDisplayName, ''+data[y].displayName+'');
-		               		//var divAppend = document.getElementById("divAppend").value;
 		               		var tr=document.createElement("tr");
 		               		var td=document.createElement("td");
+		               		td.style.width = "90px";
 		               		var td1=document.createElement("td");
 		               		//开始appendchild()追加各个元素
 		               		td.appendChild(spanDisplayName);
@@ -185,19 +185,24 @@
 		               		tbody.appendChild(tr);
 		               		table.appendChild(tbody); 
 		               	  }
-						divValue.appendChild(table);
 						var btn = mxUtils.button('保存', mxUtils.bind(this, function(evt)
 						{
-						var content = document.getElementById('shuxingId').value;
-						alert(content);
-						var hiddenId = document.getElementById('hiddenId').value;
-						alert(hiddenId);
-						 $.ajax({
+							//创建一个数组
+							var arrayObj = new Array();
+							for(var y=0;y<data.length;y++){
+								var content = document.getElementById(''+data[y].displayName+'').value;
+								if(content!=null && content.length>0){
+								arrayObj.push(content+","+data[y].id);
+								}
+							}
+							console.info(arrayObj);
+						   $.ajax({
 					         cache:true, 
 					         type:"POST", 
 					         url:"/stops/updateStops", 
-					         data:{"id":hiddenId,"content":content},
+					         data:{content:arrayObj},
 					         async:true, 
+					         traditional: true,
 					         error:function(request){ 
 					        	 console.log("error");
 					             return;
@@ -205,9 +210,12 @@
 					         success:function(data){ 
 					             console.log("success");
 					         }
-					     });
+					     });     
 						}));
-						btn.style.width = '60px';
+						btn.style.width = '202px';
+						btn.style.marginLeft = '18px';
+						btn.style.marginTop = '10px';
+						divValue.appendChild(table);
 						divValue.appendChild(btn);
 					}
 			    }  
@@ -338,56 +346,26 @@
 			thisEditor.ignoredChanges = 0;
 			thisEditor.setModified(false);
 		}
-	    //运行
-	    function runFlow(){
-	    	var startFlow = $('#startFlow');
-	    	startFlow.hide();
-            $.ajax({
+	    function queryFlowInfo(){
+	    	$.ajax({
+	    		data:{"load":loadId},
                 cache:true,//保留缓存数据
                 type:"POST",//为post请求
-                url:"runFlow",//这是我在后台接受数据的文件名
-                //data:$('#loginForm').serialize(),//将该表单序列化
-                data:{flowId:loadId},
-                async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
-                error:function(request){//请求失败之后的操作
-                	startFlow.show();
-                    return;
-                },
-                success:function(data){//请求成功之后的操作
-                    //console.log("success");
-                	if('0'!==data){
-                		alert('启动成功，返回的appid为：'+data);
-                		$('#appId').val(data);
-                	}else{
-                		alert("启动失败");
-                		startFlow.show();
-                	}
-					
-                }
-            });
-		}
-	    //停止
-	    function stopFlow(){
-	    	var stopFlow = $('#stopFlow');
-	    	stopFlow.hide();
-            $.ajax({
-                cache:true,//保留缓存数据
-                type:"POST",//为post请求
-                url:"stopFlow",//这是我在后台接受数据的文件名
-                //data:$('#loginForm').serialize(),//将该表单序列化
-                data:{flowId:loadId},
+                url:"/flow/queryFlowData",//这是我在后台接受数据的文件名
                 async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
                 error:function(request){//请求失败之后的操作
                     return;
                     stopFlow.show();
                 },
                 success:function(data){//请求成功之后的操作
-                    //console.log("success");
-                	if('0'!==data){
-                		alert(data);
+                	if(data!=null && data!=""){
+                 		 document.getElementById('UUID').innerText = data.id;
+           		 		 document.getElementById('flowName').innerText = data.name;
+           				 document.getElementById('crtDttmString').innerText = data.crtDttmString;
                 	}else{
-                		alert("停止失败");
-                		stopFlow.show();
+                		 document.getElementById('UUID').innerText = "No time";
+                 		 document.getElementById('flowName').innerText = "No time";
+                 		 document.getElementById('crtDttmString').innerText = "No time";
                 	}
                 }
             });

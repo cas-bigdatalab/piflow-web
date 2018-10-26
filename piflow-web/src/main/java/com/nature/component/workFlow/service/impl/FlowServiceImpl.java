@@ -22,6 +22,7 @@ import com.nature.component.mxGraph.vo.MxCellVo;
 import com.nature.component.mxGraph.vo.MxGeometryVo;
 import com.nature.component.mxGraph.vo.MxGraphModelVo;
 import com.nature.component.workFlow.model.Flow;
+import com.nature.component.workFlow.model.FlowInfoDb;
 import com.nature.component.workFlow.model.Paths;
 import com.nature.component.workFlow.model.Property;
 import com.nature.component.workFlow.model.PropertyTemplate;
@@ -118,7 +119,7 @@ public class FlowServiceImpl implements FlowService {
 	 * @return
 	 */
 	@Override
-	public StatefulRtnBase saveAppId(String flowId, String appId) {
+	public StatefulRtnBase saveAppId(String flowId, FlowInfoDb appId) {
 		StatefulRtnBase satefulRtnBase = new StatefulRtnBase();
 		if (StringUtils.isNotBlank(flowId)) {
 			// 根据flowId查询flow
@@ -919,6 +920,16 @@ public class FlowServiceImpl implements FlowService {
 			stopsTemplate = stopsTemplateList.get(0);
 		}
 		return stopsTemplate;
+	}
+
+	@Override
+	public int addFlow(Flow flow) {
+		return flowMapper.addFlow(flow);
+	}
+
+	@Override
+	public int updateFlow(Flow flow) {
+		return flowMapper.updateFlow(flow);
 	}
 
 }

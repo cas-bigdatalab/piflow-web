@@ -351,7 +351,7 @@ Format.prototype.refresh = function()
 	label.style.overflow = 'hidden';
 	label.style.display = (mxClient.IS_QUIRKS) ? 'inline' : 'inline-block';
 	label.style.paddingTop = '8px';
-	label.style.height = (mxClient.IS_QUIRKS) ? '34px' : '25px';
+	label.style.height = (mxClient.IS_QUIRKS) ? '34px' : '39px';
 	label.style.width = '100%';
 	this.container.appendChild(div);
 	
@@ -386,7 +386,7 @@ Format.prototype.refresh = function()
 			});
 		}
 		
-		div.appendChild(label);
+		//div.appendChild(label);
 		this.panels.push(new DiagramFormatPanel(this, ui, div));
 	}
 	else if (graph.isEditing())
@@ -4637,8 +4637,8 @@ DiagramFormatPanel.prototype.init = function()
 
 	if (graph.isEnabled())
 	{
-		this.container.appendChild(this.addOptions(this.createPanel()));
-		this.container.appendChild(this.addPaperSize(this.createPanel()));
+		//this.container.appendChild(this.addOptions(this.createPanel()));
+		//this.container.appendChild(this.addPaperSize(this.createPanel()));
 		this.container.appendChild(this.addStyleOps(this.createPanel()));
 	}
 };
@@ -4651,13 +4651,37 @@ DiagramFormatPanel.prototype.addView = function(div)
 	var ui = this.editorUi;
 	var editor = ui.editor;
 	var graph = editor.graph;
+	queryFlowInfo();
+	div.appendChild(this.createTitle('线信息'));
 	
-	div.appendChild(this.createTitle(mxResources.get('view')));
+	//UUID
+	var UUID = document.createElement('label');
+	UUID.setAttribute('id', 'UUID');
+	//flowName
+	var flowName = document.createElement('label');
+	flowName.setAttribute('id', 'flowName');
+	//crtDttm
+	var crtDttmString = document.createElement('label');
+	crtDttmString.setAttribute('id', 'crtDttmString');
 	
+	var span = document.createElement('span');
+	var span1 = document.createElement('span');
+	var span2 = document.createElement('span');
+	var hr = document.createElement('hr');
+	mxUtils.write(span, 'UUID： ');
+	mxUtils.write(span1, 'flowName： ');
+	mxUtils.write(span2, 'crtDttmString： ');
+	div.appendChild(span);
+	div.appendChild(UUID);
+	div.appendChild(document.createElement('br'));
+	div.appendChild(span1);
+	div.appendChild(flowName);
+	div.appendChild(document.createElement('br'));
+	div.appendChild(span2);
+	div.appendChild(crtDttmString);
 	// Grid
 	this.addGridOption(div);
-
-	if (graph.isEnabled())
+	/*if (graph.isEnabled())
 	{
 		// Page View
 		if (DiagramFormatPanel.showPageView)
@@ -4733,7 +4757,7 @@ DiagramFormatPanel.prototype.addView = function(div)
 		}
 		
 		div.appendChild(bg);
-	}
+	}*/
 	
 	return div;
 };
@@ -4747,9 +4771,9 @@ DiagramFormatPanel.prototype.addOptions = function(div)
 	var editor = ui.editor;
 	var graph = editor.graph;
 	
-	div.appendChild(this.createTitle(mxResources.get('options')));	
+	div.appendChild(this.createTitle(123321));	
 
-	if (graph.isEnabled())
+	/*if (graph.isEnabled())
 	{
 		// Connection arrows
 		div.appendChild(this.createOption(mxResources.get('connectionArrows'), function()
@@ -4822,7 +4846,7 @@ DiagramFormatPanel.prototype.addOptions = function(div)
 				ui.removeListener(this.listener);
 			}
 		}));
-	}
+	}*/
 
 	return div;
 };
@@ -4922,9 +4946,9 @@ DiagramFormatPanel.prototype.addGridOption = function(container)
 			}
 		});
 
-		panel.appendChild(input);
-		panel.appendChild(stepper);
-		container.appendChild(panel);
+		//panel.appendChild(input);
+		//panel.appendChild(stepper);
+		//container.appendChild(panel);
 	}
 	else
 	{
@@ -4933,10 +4957,10 @@ DiagramFormatPanel.prototype.addGridOption = function(container)
 		stepper.style.marginTop = '2px';
 		stepper.style.right = '20px';
 		
-		container.appendChild(input);
-		container.appendChild(stepper);
+		//container.appendChild(input);
+		//container.appendChild(stepper);
 		
-		container.appendChild(this.createOption(mxResources.get('grid'), function()
+		/*container.appendChild(this.createOption(mxResources.get('grid'), function()
 		{
 			return graph.isGridEnabled();
 		}, function(checked)
@@ -4967,7 +4991,7 @@ DiagramFormatPanel.prototype.addGridOption = function(container)
 			{
 				ui.removeListener(this.listener);
 			}
-		}));
+		}));*/
 	}
 };
 
@@ -4995,8 +5019,8 @@ DiagramFormatPanel.prototype.addPaperSize = function(div)
 	var editor = ui.editor;
 	var graph = editor.graph;
 	
-	div.appendChild(this.createTitle(mxResources.get('paperSize')));
-
+	//div.appendChild(this.createTitle(mxResources.get('paperSize')));
+/*
 	var accessor = PageSetupDialog.addPageFormatPanel(div, 'formatpanel', graph.pageFormat, function(pageFormat)
 	{
 		if (graph.pageFormat == null || graph.pageFormat.width != pageFormat.width ||
@@ -5029,7 +5053,7 @@ DiagramFormatPanel.prototype.addPaperSize = function(div)
 	
 	graph.getModel().addListener(mxEvent.CHANGE, listener);
 	this.listeners.push({destroy: function() { graph.getModel().removeListener(listener); }});
-	
+	*/
 	return div;
 };
 
@@ -5046,18 +5070,18 @@ DiagramFormatPanel.prototype.addStyleOps = function(div)
 	btn.setAttribute('title', mxResources.get('editData') + ' (' + this.editorUi.actions.get('editData').shortcut + ')');
 	btn.style.width = '202px';
 	btn.style.marginBottom = '2px';
-	div.appendChild(btn);
+	//div.appendChild(btn);
 
-	mxUtils.br(div);
+	//mxUtils.br(div);
 	
-	btn = mxUtils.button(mxResources.get('clearDefaultStyle'), mxUtils.bind(this, function(evt)
+/*	btn = mxUtils.button(mxResources.get('clearDefaultStyle'), mxUtils.bind(this, function(evt)
 	{
 		this.editorUi.actions.get('clearDefaultStyle').funct();
 	}));
 	
 	btn.setAttribute('title', mxResources.get('clearDefaultStyle') + ' (' + this.editorUi.actions.get('clearDefaultStyle').shortcut + ')');
 	btn.style.width = '202px';
-	div.appendChild(btn);
+	div.appendChild(btn);*/
 
 	return div;
 };
@@ -5075,13 +5099,13 @@ DiagramFormatPanel.prototype.destroy = function()
 		this.gridEnabledListener = null;
 	}
 };
-function shiqu(id,data){
+  function shiqu(id,data){
 	if(data!=null && data.length>0 && id.length>0){
 		var content = document.getElementById(''+data+'').value;
 	 $.ajax({
          cache:true, 
          type:"POST", 
-         url:"/stops/updateStops", 
+         url:"/stops/updateStopsOne", 
 		 data : {
 			"id" : id,
 			"content" : content 

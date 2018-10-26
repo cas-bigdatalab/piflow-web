@@ -1,10 +1,12 @@
 package com.nature.controller;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
@@ -28,14 +30,20 @@ import com.nature.component.mxGraph.vo.MxCellVo;
 import com.nature.component.mxGraph.vo.MxGeometryVo;
 import com.nature.component.mxGraph.vo.MxGraphModelVo;
 import com.nature.component.workFlow.model.Flow;
+import com.nature.component.workFlow.model.FlowInfoDb;
 import com.nature.component.workFlow.model.StopGroup;
+import com.nature.component.workFlow.service.AppService;
 import com.nature.component.workFlow.service.FlowService;
 import com.nature.component.workFlow.service.StopGroupService;
+import com.nature.third.GetFlowInfo;
+import com.nature.third.inf.IGetFlowInfo;
 import com.nature.third.inf.IGetFlowLog;
 import com.nature.third.inf.IStartFlow;
 import com.nature.third.inf.IStopFlow;
+import com.nature.third.vo.flowInfo.FlowInfo;
 import com.nature.third.vo.flowLog.AppVo;
 import com.nature.third.vo.flowLog.FlowLog;
+
 
 @Controller
 @RequestMapping("/flow/*")
@@ -60,6 +68,15 @@ public class GrapheditorCtrl {
 
 	@Autowired
 	private IGetFlowLog getFlowLogImpl;
+	
+	@Autowired
+	private AppService appService;
+	
+	@Resource
+	private IGetFlowInfo getFlowInfoImpl;
+	
+	@Resource
+	private GetFlowInfo getFlowInfo;
 
 	@RequestMapping("/grapheditor")
 	public String kitchenSink(Model model, String load) {
@@ -92,8 +109,10 @@ public class GrapheditorCtrl {
 
 	@RequestMapping("/table")
 	public String runningList(Model model) {
+		List<Flow> appInfo = appService.findAppList();
 		model.addAttribute("say", "say hello spring boot !!!!!");
 		model.addAttribute("sss", "ss后台返回数据ss");
+		model.addAttribute("appInfo",appInfo);
 		return "/charisma/table";
 	}
 
@@ -157,13 +176,16 @@ public class GrapheditorCtrl {
 			if (null != flowById) {
 				String startFlow = startFlowImpl.startFlow(flowById);
 				if (StringUtils.isNotBlank(startFlow)) {
-					StatefulRtnBase saveAppId = flowServiceImpl.saveAppId(flowId, startFlow);
+					FlowInfoDb flowInfoDb = getFlowInfo.AddFlowInfo(startFlow);
+					StatefulRtnBase saveAppId = flowServiceImpl.saveAppId(flowId, flowInfoDb);
 					if (null != saveAppId && saveAppId.isReqRtnStatus()) {
 						logger.info("flowId为" + flowId + "的flow，保存appID成功" + startFlow);
 					} else {
 						logger.warn("flowId为" + flowId + "的flow，保存appID出错");
 					}
 					rtnMsg = "启动成功，返回的appid为：" + startFlow;
+				} else {
+					rtnMsg = "启动失败";
 				}
 			} else {
 				logger.warn("未查询到flowId为" + flowId + "的flow");
@@ -184,7 +206,7 @@ public class GrapheditorCtrl {
 			Flow flowById = flowServiceImpl.getFlowById(flowId);
 			// addFlow不为空且ReqRtnStatus的值为true,则保存成功
 			if (null != flowById) {
-				String appId = flowById.getAppId();
+				String appId = flowById.getAppId().getId();
 				if (StringUtils.isNotBlank(appId)) {
 					String flowStop = stopFlowImpl.stopFlow(appId);
 					if (StringUtils.isNotBlank(flowStop)) {
@@ -276,5 +298,46 @@ public class GrapheditorCtrl {
 		}
 		return mxGraphModelVo;
 	}
+	
+	@RequestMapping("/queryFlowData")
+	@ResponseBody
+	public Flow saveData(String load) {
+		Flow flow = flowServiceImpl.getFlowById(load);
+		return flow;
+	}
+
+	@RequestMapping("/saveFlowInfo")
+	@ResponseBody
+	public Flow saveFlowInfo(Flow flow) {
+		 String id = Utils.getUUID32();
+		 flow.setId(id);
+		 flow.setName(flow.getName());
+		 flow.setDescription(flow.getDescription());
+		 flow.setCrtDttm(new Date());
+		 flow.setCrtUser("wdd");
+		 flow.setLastUpdateDttm(new Date());
+		 flow.setLastUpdateUser("ddw");
+		 flow.setEnableFlag(true);
+		 flow.setVersion(0L);
+		 flow.setUuid(id);
+		 int result = flowServiceImpl.addFlow(flow);
+		 return flow;
+	}
+	
+	@RequestMapping("/updateFlowInfo")
+	@ResponseBody
+	public int updateFlowInfo(Flow flow) {
+		 String id =flow.getId();
+		 flow.setId(id);
+		 flow.setName(flow.getName());
+		 flow.setDescription(flow.getDescription());
+		 flow.setLastUpdateDttm(new Date());
+		 flow.setLastUpdateUser("ddw");
+		 flow.setVersion(0L+1);
+		 int result = flowServiceImpl.updateFlow(flow);
+		 return result;
+	}
+	
+	
 
 }

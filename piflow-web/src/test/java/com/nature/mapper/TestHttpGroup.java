@@ -26,7 +26,7 @@ public class TestHttpGroup {
 	@Test
 	public void test(){
 		   // 请求接口地址
-        String url = "http://10.0.86.98:8002/stop/groups";
+        String url = "http://10.0.86.98:8001/stop/groups";
         // 请求参数
        // String userid = "";
 
@@ -75,12 +75,9 @@ public class TestHttpGroup {
                 DefaultHttpClient httpClient = new DefaultHttpClient();
                 // 通过请求对象获取响应对象
                 HttpResponse response = httpClient.execute(request);
-                 
                 // 判断网络连接状态码是否正常(0--200都数正常)
                 if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                     result= EntityUtils.toString(response.getEntity(),"utf-8");
-                    jsonResult = JSONObject.fromObject(result).getString("stops");
-                    System.out.println(jsonResult);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -91,15 +88,14 @@ public class TestHttpGroup {
 	@Test
 	public void getStopInfo(){
 		HashMap<String, Object> map = new HashMap<>();
-		String param = "cn.piflow.bundle.url.GetUrl";
-		//String param = "cn.piflow.bundle.common.Fork";
+		//String param = "cn.piflow.bundle.http.UnGZip";
+		String param = "cn.piflow.bundle.UserDefineSelectHiveQL";
 		// 请求接口地址
         String url = "http://10.0.86.98:8002/stop/info"+"?bundle="+param;
         // 请求参数
         HttpClient httpclient = null;
         GetMethod post = null;
         String result= "";
-        String jsonResult = null;
         try {
             //创建连接
             httpclient = new HttpClient();
@@ -112,34 +108,6 @@ public class TestHttpGroup {
             if (post.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
             // 接口返回信息
              result = new String(post.getResponseBody(), "UTF-8");
-             System.out.println(result);
-             JSONObject jb = new JSONObject();
- 			 JSONObject jb1 = jb.fromObject(result);
- 			 JSONArray ja =  JSONArray.fromObject(jb1.get("StopInfo"));
- 			 Iterator<Object> it = ja.iterator();
- 			 while (it.hasNext()) {
- 				JSONObject ob = (JSONObject) it.next();
- 				String bundle = ob.get("bundle")+"";
- 				String owner = ob.get("owner")+"";
- 				String inportCount = ob.get("inportCount")+"";
- 				String outportCount = ob.get("outportCount")+"";
- 				String groups = ob.get("groups")+"";
- 				String properties = ob.get("properties")+"";
- 				String name = ob.get("name")+"";
- 				String description = ob.get("description")+"";
- 				String icon = ob.get("icon")+"";
- 				GenerateImage(icon,name);
- 				map.put("bundle", bundle);
- 				map.put("owner", owner);
- 				map.put("inportCount", inportCount);
- 				map.put("outportCount", outportCount);
- 				map.put("groups", groups);
- 				map.put("properties", properties);
- 				map.put("name", name);
- 				map.put("description", description);
- 				map.put("icon", icon);
- 				System.out.println("getStopInfo接口调用成功~"+map);
- 			}
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -167,11 +135,9 @@ public class TestHttpGroup {
                 }  
             }  
             //生成jpeg图片  d:\\image\\
-            String imgFilePath = "D:\\ss\\01.png";//新生成的图片  
+            String imgFilePath = "D:\\01.png";//新生成的图片  
             String property = System.getProperty("user.dir");
             String path = property + "\\src\\main\\resources\\static\\grapheditor\\stencils\\clipart\\"+name+"_128x128.png";
-            System.out.println(path);
-            System.out.println(imgFilePath);
             OutputStream out = new FileOutputStream(imgFilePath);   
             out.write(b);  
             out.flush();  

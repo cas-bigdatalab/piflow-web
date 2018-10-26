@@ -3,6 +3,7 @@ package com.nature.component.workFlow.service;
 import com.nature.base.vo.StatefulRtnBase;
 import com.nature.component.mxGraph.vo.MxGraphModelVo;
 import com.nature.component.workFlow.model.Flow;
+import com.nature.component.workFlow.model.FlowInfoDb;
 
 public interface FlowService {
 	/**
@@ -27,8 +28,18 @@ public interface FlowService {
 	 * @Title 保存appId
 	 * 
 	 * @param flowId
-	 * @param appId
+	 * @param startFlow
 	 * @return
 	 */
-	public StatefulRtnBase saveAppId(String flowId, String appId);
+	public StatefulRtnBase saveAppId(String flowId, FlowInfoDb startFlow);
+	
+	/**
+	 * add flow
+	 * @param flow
+	 * @return
+	 */
+	public int addFlow(Flow flow);
+
+	public int updateFlow(Flow flow);
+
 }

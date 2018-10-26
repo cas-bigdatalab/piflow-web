@@ -286,6 +286,24 @@ public class DateUtils {
 		String dateString = formatter.format(dateDate);
 		return dateString;
 	}
+	
+	/**
+	 * 13位时间戳转日期格式
+	 * @param timeLong
+	 * @return
+	 */
+	public static String dateToStr_yyyyMMddHHMMss(String timeLong) {
+		Long time = Long.parseLong(timeLong);
+		SimpleDateFormat formatter = new SimpleDateFormat(DATE_PATTERN_yyyy_MM_dd_HH_MM_ss);
+	    Date date;
+		try {
+			date = formatter.parse(formatter.format(time));
+			return formatter.format(date);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+	    return null;
+	}
 
 	/**
 	 * 根据一个日期，返回是星期几的字符串

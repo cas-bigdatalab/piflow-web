@@ -40,9 +40,9 @@ public class FlowMapperTest extends ApplicationTests {
 		flow.setLastUpdateDttm(new Date());
 		flow.setVersion(0L);
 		flow.setEnableFlag(true);
-		flow.setAppId("kongkong");
+		//flow.setAppId("kongkong");
 		flow.setUuid(flow.getId());
-		flow.setName("testFlow");
+		flow.setName("sss");
 
 		int addFlow = flowMapper.addFlow(flow);
 		logger.info(addFlow + "");

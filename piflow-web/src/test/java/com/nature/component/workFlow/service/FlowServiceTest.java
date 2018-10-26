@@ -32,7 +32,7 @@ public class FlowServiceTest extends ApplicationTests {
 	public void testAddFlow() {
 		Flow flow = new Flow();
 		flow.setId(Utils.getUUID32());
-		flow.setAppId("kongkong");
+		//flow.setAppId("kongkong");
 		flow.setCrtUser("Nature");
 		flow.setLastUpdateUser("Nature");
 		flow.setUuid(flow.getId());

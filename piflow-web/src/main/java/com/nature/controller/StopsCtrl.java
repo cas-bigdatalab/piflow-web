@@ -21,6 +21,19 @@ public class StopsCtrl {
 	}
 	
 	@RequestMapping("/updateStops")
+	public Integer updateStops(String[] content,String id){
+		int updateStops = 0;
+		for (String string : content) {
+			System.out.println(string);
+			String[] split = string.split(",");
+			String updateContent = split[0];
+			String updateId = split[1];
+			updateStops = PropertyService.updateStops(updateContent,updateId);
+		}
+		return updateStops;
+	}
+	
+	@RequestMapping("/updateStopsOne")
 	public Integer updateStops(String content,String id){
 		int updateStops = PropertyService.updateStops(content,id);
 		return updateStops;

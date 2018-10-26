@@ -3,6 +3,7 @@ package com.nature.component.workFlow.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -22,11 +23,16 @@ public class Flow extends BaseHibernateModelUUIDNoCorpAgentId {
 
 	private static final long serialVersionUID = 1L;
 
-	private String appId;
+	@OneToOne
+	@JoinColumn(name = "app_id", referencedColumnName = "id")
+	private FlowInfoDb appId;
 
 	private String name;
 
 	private String uuid;
+	
+	@Column(name = "description",columnDefinition="varchar(1000) COMMENT '描述'")
+	private String description;
 
 	@OneToOne
 	@JoinColumn(name = "fk_mx_graph_model_id", referencedColumnName = "id")
@@ -42,11 +48,11 @@ public class Flow extends BaseHibernateModelUUIDNoCorpAgentId {
 	@OrderBy(clause = "lastUpdateDttm desc")
 	private List<Paths> pathsList = new ArrayList<Paths>();
 
-	public String getAppId() {
+	public FlowInfoDb getAppId() {
 		return appId;
 	}
 
-	public void setAppId(String appId) {
+	public void setAppId(FlowInfoDb appId) {
 		this.appId = appId;
 	}
 
@@ -90,4 +96,13 @@ public class Flow extends BaseHibernateModelUUIDNoCorpAgentId {
 		this.pathsList = pathsList;
 	}
 
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	
 }

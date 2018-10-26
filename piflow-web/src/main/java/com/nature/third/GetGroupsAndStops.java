@@ -1,8 +1,7 @@
-package com.nature.mapper;
+package com.nature.third;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -10,23 +9,33 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
-import org.junit.Test;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.nature.ApplicationTests;
 import com.nature.base.util.HttpClientStop;
+import com.nature.base.util.HttpUtils;
+import com.nature.base.util.JsonFormatTool;
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.Utils;
 import com.nature.common.constant.SysParamsCache;
+import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.model.PropertyTemplate;
 import com.nature.component.workFlow.model.StopGroup;
 import com.nature.component.workFlow.model.StopsTemplate;
+import com.nature.mapper.PropertyTemplateMapper;
+import com.nature.mapper.StopGroupMapper;
+import com.nature.mapper.StopsTemplateMapper;
 
-public class StopsTemplateMapperTest extends ApplicationTests {
+@Component
+@RequestMapping("/getGroup")
+public class GetGroupsAndStops {
 
+	Logger logger = LoggerUtil.getLogger();
+
+	
 	@Autowired
 	private StopsTemplateMapper stopsTemplateMapper;
 	@Autowired
@@ -34,45 +43,21 @@ public class StopsTemplateMapperTest extends ApplicationTests {
 	@Autowired
 	private PropertyTemplateMapper propertyTemplateMapper;
 	
-
-	Logger logger = LoggerUtil.getLogger();
-
-	@Test
-	public void testGetStopsTemplateById() {
-		StopsTemplate stopsTemplate = stopsTemplateMapper.getStopsTemplateById("fbb42f0d8ca14a83bfab13e0ba2d7293");
-		if (null == stopsTemplate) {
-			logger.info("查询结果为空");
-			stopsTemplate = new StopsTemplate();
-		}
-		logger.info(stopsTemplate.toString());
+	
+	public void startFlow(Flow flow) {
+		getGroupAndSave();
+		getStopsAndProperty();
 	}
-
-	@Test
-	public void testGetStopsPropertyById() {
-		StopsTemplate stopsTemplate = stopsTemplateMapper.getStopsPropertyById("fbb42f0d8ca14a83bfab13e0ba2d7293");
-		if (null == stopsTemplate) {
-			logger.info("查询结果为空");
-			stopsTemplate = new StopsTemplate();
-		}
-		logger.info(stopsTemplate.toString());
-	}
-
-	@Test
-	public void testGetStopsTemplateListByGroupId() {
-		List<StopsTemplate> stopsTemplateList = stopsTemplateMapper
-				.getStopsTemplateListByGroupId("fbb42f0d8ca14a83bfab13e0ba2d7290");
-		if (null == stopsTemplateList) {
-			logger.info("查询结果为空");
-		}
-		logger.info(stopsTemplateList.size() + "");
-	}
+	
 	
 	
 	/**
-	 * 调用getAllGroups并保存group
+	 * 调用getAllGroups并保存
 	 */
-	@Test
-	public void getStopGroupAndSave() {
+	@RequestMapping("/save")
+	@Transactional
+	public void getGroupAndSave() {
+		//先清空Group表信息再插入
 		int deleteGroup = stopGroupMapper.deleteGroup();
 		System.out.println("成功删除Group"+deleteGroup+"条数据！！！");
 		HttpClientStop stop = new HttpClientStop();
@@ -101,10 +86,14 @@ public class StopsTemplateMapperTest extends ApplicationTests {
 		System.out.println("成功插入Group"+a+"条数据！！！");
 	}
 	
-	@Test
+	
+	/**
+	 * 调用getAllStops与Group进行管理，并保存stop属性信息
+	 */
+	@RequestMapping("/saveStopsAndProperty")
 	@Transactional
-	@Rollback(value = false)
-	public void saveStopsAndProperty(){
+	private void getStopsAndProperty(){
+		//先清空所有stop和stop属性表，重新插入
 		int deleteStopsInfo = stopGroupMapper.deleteStopsInfo();
 		System.out.println("成功删除StopsInfo"+deleteStopsInfo+"条数据！！！");
 		// 1.先调stop接口获取getAllStops数据；
@@ -121,16 +110,16 @@ public class StopsTemplateMapperTest extends ApplicationTests {
 			if (stopInfo.contains("Error")) {
 				continue;
 			}
-		if (StringUtils.isNotBlank(stopInfo)) {
+		if (!stopInfo.isEmpty()) {
 			List<String> list = new ArrayList<>();
 			List<PropertyTemplate> listPropertyTemplate = new ArrayList<>();
 			List<StopsTemplate> listStopsTemplate = new ArrayList<>();
 			 JSONObject jb1 = JSONObject.fromObject(stopInfo);
 			 JSONArray ja =  JSONArray.fromObject(jb1.get("StopInfo"));
 			 @SuppressWarnings("unchecked")
-			Iterator<Object> it = ja.iterator();
+			 Iterator<Object> it = ja.iterator();
 			 while (it.hasNext()) {
-				 	JSONObject ob = (JSONObject) it.next();
+				 JSONObject ob = (JSONObject) it.next();
 					String bundle = ob.get("bundle")+"";
 					String owner = ob.get("owner")+"";
 					String inports = ob.get("inports")+"";
@@ -174,7 +163,6 @@ public class StopsTemplateMapperTest extends ApplicationTests {
 			}
 			int insertStopsTemplate = stopsTemplateMapper.insertStopsTemplate(listStopsTemplate);
 			System.out.println("flow_stops_template表插入影响行数："+insertStopsTemplate);
-			
 			System.out.println("=============================association_groups_stops_template=====start==================");
 			for (StopsTemplate zjb : listStopsTemplate) {
 				String stopGroupId = zjb.getStopGroup();
@@ -210,7 +198,7 @@ public class StopsTemplateMapperTest extends ApplicationTests {
 		  }
 		}
 		System.out.println(num+"次数");
-	}
 	
- 
+	}
+
 }
