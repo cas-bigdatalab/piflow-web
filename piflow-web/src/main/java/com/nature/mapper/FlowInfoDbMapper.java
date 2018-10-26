@@ -27,7 +27,7 @@ public interface FlowInfoDbMapper {
 			+ ")")
 	public int addFlowInfo(@Param("app") FlowInfoDb app);
 	
-	@Select("SELECT * FROM flow where enable_flag = '1' ")
+	@Select("SELECT * FROM flow where enable_flag = '1' ORDER BY crt_dttm DESC ")
 	@Results({
 		@Result(property="appId",column="app_id",javaType=App.class,one=@One(select="com.nature.mapper.FlowInfoDbMapper.getAppByAppId"))
  			})
