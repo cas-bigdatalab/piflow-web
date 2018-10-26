@@ -27,6 +27,10 @@ public interface FlowInfoDbMapper {
 			+ ")")
 	public int addFlowInfo(@Param("app") FlowInfoDb app);
 	
+	/**
+	 * 查询flow以及flowinfoDb信息
+	 * @return
+	 */
 	@Select("SELECT * FROM flow where enable_flag = '1' ORDER BY crt_dttm DESC ")
 	@Results({
 		@Result(property="appId",column="app_id",javaType=App.class,one=@One(select="com.nature.mapper.FlowInfoDbMapper.getAppByAppId"))
@@ -35,4 +39,12 @@ public interface FlowInfoDbMapper {
  
 	@Select("SELECT id,name,end_time,start_time,state FROM flow_info where enable_flag = '1' and id = #{id}")
 	public List<FlowInfoDb> getAppByAppId(@Param("id") String appId);
+	
+	/**
+	 * 根据appId查询
+	 * @param appId
+	 * @return
+	 */
+	@Select("SELECT * FROM flow_info where enable_flag = '1' and id = #{id} ")
+	public FlowInfoDb flowInfoDb(@Param("id") String appId);
 }

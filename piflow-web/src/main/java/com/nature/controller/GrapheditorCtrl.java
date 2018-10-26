@@ -40,7 +40,6 @@ import com.nature.third.inf.IGetFlowInfo;
 import com.nature.third.inf.IGetFlowLog;
 import com.nature.third.inf.IStartFlow;
 import com.nature.third.inf.IStopFlow;
-import com.nature.third.vo.flowInfo.FlowInfo;
 import com.nature.third.vo.flowLog.AppVo;
 import com.nature.third.vo.flowLog.FlowLog;
 
@@ -176,7 +175,8 @@ public class GrapheditorCtrl {
 			if (null != flowById) {
 				String startFlow = startFlowImpl.startFlow(flowById);
 				if (StringUtils.isNotBlank(startFlow)) {
-					FlowInfoDb flowInfoDb = getFlowInfo.AddFlowInfo(startFlow);
+					FlowInfoDb flowInfoDb = getFlowInfoImpl.AddFlowInfo(startFlow);
+					if (null != flowInfoDb) {
 					StatefulRtnBase saveAppId = flowServiceImpl.saveAppId(flowId, flowInfoDb);
 					if (null != saveAppId && saveAppId.isReqRtnStatus()) {
 						logger.info("flowId为" + flowId + "的flow，保存appID成功" + startFlow);
@@ -184,6 +184,9 @@ public class GrapheditorCtrl {
 						logger.warn("flowId为" + flowId + "的flow，保存appID出错");
 					}
 					rtnMsg = "启动成功，返回的appid为：" + startFlow;
+					}else {
+						rtnMsg = "flowInfoDb创建失败";
+					}
 				} else {
 					rtnMsg = "启动失败";
 				}

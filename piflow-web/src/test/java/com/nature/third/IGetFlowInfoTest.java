@@ -54,6 +54,15 @@ public class IGetFlowInfoTest extends ApplicationTests {
 		db.setLastUpdateUser("王栋栋");
 		db.setLastUpdateDttm(new Date());
 		int addFlowInfo = flowInfoDbMapper.addFlowInfo(db);
-	 
+	}
+	
+	@Test
+	public void findFlowInfoDb(){
+		FlowInfoDb flowInfoDb = flowInfoDbMapper.flowInfoDb("application_1539850523117_0159");
+		if (null != flowInfoDb) {
+			logger.info("flowInfoDb存在：" + flowInfoDb);
+		}else {
+			logger.info("flowInfoDb不存在");
+		}
 	}
 }

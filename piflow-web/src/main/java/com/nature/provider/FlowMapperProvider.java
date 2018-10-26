@@ -33,6 +33,7 @@ public class FlowMapperProvider {
 			String name = flow.getName();
 			String uuid = flow.getUuid();
 			MxGraphModel mxGraphModel = flow.getMxGraphModel();
+			FlowInfoDb appId = flow.getAppId();
 			SQL sql = new SQL();
 
 			// INSERT_INTO括号中为数据库表名
@@ -80,6 +81,12 @@ public class FlowMapperProvider {
 				String mxGraphModelId = mxGraphModel.getId();
 				if (StringUtils.isNotBlank(mxGraphModelId)) {
 					sql.VALUES("fk_mx_graph_model_id", Utils.addSqlStr(mxGraphModelId));
+				}
+			}
+			if (null != appId) {
+				String app_id = appId.getId();
+				if (StringUtils.isNotBlank(app_id)) {
+					sql.VALUES("app_id", Utils.addSqlStr(app_id));
 				}
 			}
 			sqlStr = sql.toString() + ";";
