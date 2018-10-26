@@ -44,7 +44,10 @@ public class GetGroupsAndStops {
 	private PropertyTemplateMapper propertyTemplateMapper;
 	
 	
-	public void startFlow(Flow flow) {
+	/**
+	 * 调接口添加group和stops关联添加
+	 */
+	public void addGroupAndStopsList() {
 		getGroupAndSave();
 		getStopsAndProperty();
 	}
