@@ -20,15 +20,24 @@ public class StopsCtrl {
 		return (Stops) queryInfo;
 	}
 	
+	/**
+	 * 多个一保存起修改
+	 * @param content
+	 * @param id
+	 * @return
+	 */
 	@RequestMapping("/updateStops")
 	public Integer updateStops(String[] content,String id){
 		int updateStops = 0;
 		for (String string : content) {
 			System.out.println(string);
-			String[] split = string.split(",");
-			String updateContent = split[0];
-			String updateId = split[1];
-			updateStops = PropertyService.updateStops(updateContent,updateId);
+			//使用#id#标记来截取数据,第一为内容，第二个为要修改记录的id
+			String[] split = string.split("#id#");
+			if (split.length>2) {
+				String updateContent = split[0];
+				String updateId = split[1];
+				updateStops = PropertyService.updateStops(updateContent,updateId);
+			}
 		}
 		return updateStops;
 	}

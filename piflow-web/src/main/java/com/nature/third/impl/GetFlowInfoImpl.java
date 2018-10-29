@@ -6,7 +6,7 @@ import java.util.Map;
 
 import net.sf.json.JSONObject;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -59,9 +59,11 @@ public class GetFlowInfoImpl implements IGetFlowInfo {
 		FlowInfoDb db = new FlowInfoDb();
 		FlowInfo startFlow2 = getFlowInfo(appId);
 		logger.info("测试返回信息：" + startFlow2);
-		FlowInfoDb flowInfoDb = flowInfoDbMapper.flowInfoDb(startFlow2.getFlow().getId());
-		if (null != flowInfoDb) {
-			return flowInfoDb;
+		if (StringUtils.isNotBlank(startFlow2.getFlow().getId())) {
+			FlowInfoDb flowInfoDb = flowInfoDbMapper.flowInfoDb(startFlow2.getFlow().getId());
+			if (null != flowInfoDb) {
+				return flowInfoDb;
+			}
 		}
 		db.setId(startFlow2.getFlow().getId());
 		db.setName(startFlow2.getFlow().getName());

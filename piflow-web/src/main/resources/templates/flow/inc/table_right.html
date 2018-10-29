@@ -57,7 +57,7 @@
                                  <td th:text="${#dates.format(list.appId?.startTime, 'yyyy-MM-dd HH:mm:ss')}" ></td>
                                  <td th:text="${#dates.format(list.appId?.endTime, 'yyyy-MM-dd HH:mm:ss')}" ></td>
                                     <td class="center" ><div id='d'> <p id='pgv' >进度：100%</p><progress id='pg' max='100' value='100'></progress></div></td>
-                                   <td class="center" th:text="${list.appId?.state}"></td>
+                                   <td class="center" th:text="${list.appId?.state}?${list.appId?.state}:'No state'"></td>
                                 <td class="center" style="white-space: nowrap;">
                                     <a class="btn" th:href="'grapheditor?load='+${list.id}+''" target="_blank" style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;">
                                         <i class="glyphicon glyphicon-zoom-in icon-white"></i>

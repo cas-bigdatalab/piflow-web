@@ -192,7 +192,7 @@
 							for(var y=0;y<data.length;y++){
 								var content = document.getElementById(''+data[y].displayName+'').value;
 								if(content!=null && content.length>0){
-								arrayObj.push(content+","+data[y].id);
+								arrayObj.push(content+"#id#"+data[y].id);
 								}
 							}
 							console.info(arrayObj);
