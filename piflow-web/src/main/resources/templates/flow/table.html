@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!--
+        ===
+        This comment should NOT be removed.
+
+        Charisma v2.0.0
+
+        Copyright 2012-2014 Muhammad Usman
+        Licensed under the Apache License v2.0
+        http://www.apache.org/licenses/LICENSE-2.0
+
+        http://usman.it
+        http://twitter.com/halalit_usman
+        ===
+    -->
+    <meta charset="utf-8">
+    <title>table</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Charisma, a fully featured, responsive, HTML5, Bootstrap admin template.">
+    <meta name="author" content="Muhammad Usman">
+
+    <!-- The styles -->
+    <link id="bs-css" th:href="@{/bootstrap/css/bootstrap-cerulean.min.css}" rel="stylesheet">
+
+    <link th:href="@{/charisma/css/charisma-app.css}" rel="stylesheet">
+    <link th:href='@{/charisma/fullcalendar/fullcalendar.css}' rel='stylesheet'>
+    <link th:href='@{/charisma/fullcalendar/fullcalendar.print.css}' rel='stylesheet' media='print'>
+    <link th:href='@{/charisma/chosen/chosen.min.css}' rel='stylesheet'>
+    <link th:href='@{/charisma/colorbox/colorbox.css}' rel='stylesheet'>
+    <link th:href='@{/charisma/responsive-tables/responsive-tables.css}' rel='stylesheet'>
+    <link th:href='@{/charisma/bootstrap-tour/css/bootstrap-tour.min.css}' rel='stylesheet'>
+    <link th:href='@{/charisma/css/jquery.noty.css}' rel='stylesheet'>
+    <link th:href='@{/charisma/css/noty_theme_default.css}' rel='stylesheet'>
+    <link th:href='@{/charisma/css/elfinder.min.css}' rel='stylesheet'>
+    <link th:href='@{/charisma/css/elfinder.theme.css}' rel='stylesheet'>
+    <link th:href='@{/charisma/css/jquery.iphone.toggle.css}' rel='stylesheet'>
+    <link th:href='@{/charisma/css/uploadify.css}' rel='stylesheet'>
+    <link th:href='@{/charisma/css/animate.min.css}' rel='stylesheet'>
+
+    <!-- jQuery -->
+    <script th:src="@{/js/jquery/jquery.min.js}"></script>
+    <!-- The HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- The fav icon -->
+    <link rel="shortcut icon" th:href="@{/charisma/img/favicon.ico}">
+
+</head>
+
+<body>
+    <!-- topbar starts -->
+    <div class="navbar navbar-default" role="navigation">
+
+        <div class="navbar-inner">
+            <a class="navbar-brand" href="index"> <img alt="Charisma Logo" th:src="@{/charisma/img/logo20.png}" class="hidden-xs"/>
+                <span>Nature</span></a>
+
+            <!-- user dropdown starts -->
+            <div class="btn-group pull-right">
+                <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                    <i class="glyphicon glyphicon-user"></i><span class="hidden-sm hidden-xs"> admin</span>
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href="#">Profile</a></li>
+                    <li class="divider"></li>
+                    <li><a href="login">Logout</a></li>
+                </ul>
+            </div>
+            <!-- user dropdown ends -->
+        </div>
+    </div>
+    <!-- topbar ends -->
+<div class="ch-container">
+    <div class="row">
+        <!-- left menu starts -->
+        <div class="col-sm-2 col-lg-2">
+            <div class="sidebar-nav">
+                <div class="nav-canvas">
+                    <div class="nav-sm nav nav-stacked">
+
+                    </div>
+                    <ul class="nav nav-pills nav-stacked main-menu">
+                        <li class="nav-header">Main</li>
+                        <li>
+                        	<a class="ajax-link" onclick="loadGetRight('indexHome')">
+                        		<i class="glyphicon glyphicon-home"></i>
+                        		<span> Dashboard</span>
+                        	</a>
+                        </li>
+                        <li>
+                        	<a class="ajax-link" onclick="loadGetRight('ui')">
+	                        	<i class="glyphicon glyphicon-eye-open"></i>
+	                        	<span> UI Features</span>
+                        	</a>
+                        </li>
+                        <li>
+                        	<a class="ajax-link" onclick="initAll('flowList')">
+                        		<i class="glyphicon glyphicon-align-justify"></i>
+                        		<span> Tables</span>
+                        	</a>
+                        </li>
+                        <li>
+                        	<a class="ajax-link" onclick="loadGetRight('tour')">
+                        	<i class="glyphicon glyphicon-globe"></i>
+                        	<span> Tour</span>
+                        	</a>
+                        </li>
+                        <li><a class="ajax-link" href="errorPage">
+                        		<i class="glyphicon glyphicon-ban-circle"></i>
+                        		<span> Error Page</span>
+                        	</a>
+                        </li>
+                        <li>
+	                        <a class="ajax-link" href="login">
+	                        	<i class="glyphicon glyphicon-lock"></i>
+	                        	<span> Login Page</span>
+	                        </a>
+                        </li>
+                        <li class="accordion">
+                            <a href="#"><i class="glyphicon glyphicon-plus"></i><span> Accordion Menu</span></a>
+                            <ul class="nav nav-pills nav-stacked">
+                                <li><a href="#">Child Menu 1</a></li>
+                                <li><a href="#">Child Menu 2</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <label id="for-is-ajax" for="is-ajax"><input id="is-ajax" type="checkbox"> Ajax on menu</label>
+                </div>
+            </div>
+        </div>
+        <!--/span-->
+        <!-- left menu ends -->
+		<div id="content" class="col-lg-10 col-sm-10">
+            		<!-- content starts -->
+			<!-- <div class="rightBar" style="width: 100%; height: 100%">
+				<div th:include="/flow/inc/index_right :: index_right"></div>
+				-------------------------------------------------------------
+			</div> -->
+			<div th:replace="/flow/inc/table_right :: table"></div>
+            		<!-- content ends -->
+		</div><!--/#content.col-md-0-->
+</div><!--/fluid-row-->
+
+    <hr>
+
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                    <h3>Settings</h3>
+                </div>
+                <div class="modal-body">
+                    <p>Here settings can be configured...</p>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-default" data-dismiss="modal">Close</a>
+                    <a href="#" class="btn btn-primary" data-dismiss="modal">Save changes</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div><!--/.fluid-container-->
+
+<!-- external javascript -->
+
+<script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+
+<!-- library for cookie management -->
+<script th:src="@{/charisma/js/jquery.cookie.js}"></script>
+<!-- calender plugin -->
+<script th:src='@{/charisma/moment/min/moment.min.js}'></script>
+<script th:src='@{/charisma/fullcalendar/fullcalendar.min.js}'></script>
+<!-- data table plugin -->
+<script th:src='@{/charisma/js/jquery.dataTables.min.js}'></script>
+<!-- select or dropdown enhancer -->
+<script th:src="@{/charisma/chosen/chosen.jquery.min.js}"></script>
+<!-- plugin for gallery image view -->
+<script th:src="@{/charisma/colorbox/js/jquery.colorbox-min.js}"></script>
+<!-- notification plugin -->
+<script th:src="@{/charisma/js/jquery.noty.js}"></script>
+<!-- library for making tables responsive -->
+<script th:src="@{/charisma/responsive-tables/responsive-tables.js}"></script>
+<!-- tour plugin -->
+<script th:src="@{/charisma/bootstrap-tour/js/bootstrap-tour.min.js}"></script>
+<!-- star rating plugin -->
+<script th:src="@{/charisma/js/jquery.raty.min.js}"></script>
+<!-- for iOS style toggle switch -->
+<script th:src="@{/charisma/js/jquery.iphone.toggle.js}"></script>
+<!-- autogrowing textarea plugin -->
+<script th:src="@{/charisma/js/jquery.autogrow-textarea.js}"></script>
+<!-- multiple file upload plugin -->
+<script th:src="@{/charisma/js/jquery.uploadify-3.1.min.js}"></script>
+<!-- history.js for cross-browser state change on ajax -->
+<script th:src="@{/charisma/js/jquery.history.js}"></script>
+<!-- application script for Charisma demo -->
+<script th:src="@{/charisma/js/charisma.js}"></script>
+
+<script th:inline="javascript">
+	function loadPostRight(url) {
+		$.ajax({
+            type:"POST",//为get请求
+            url:url,
+            data:{},
+            success:function(data){//请求成功之后的操作
+                //console.log("success");
+            	$('#content').html(data);
+            }
+        });
+		
+	}
+	function loadGetRight(url) {
+		$.ajax({
+            type:"GET",//为get请求
+            url:url,
+            data:{},
+            success:function(data){//请求成功之后的操作
+                //console.log("success");
+            	$('#content').html(data);
+            }
+        });
+		
+	}
+	function initAll(url) {
+		window.location.href = url;		
+	}
+	//@ sourceURL=table.js
+</script>
+<script th:inline="javascript">
+	   function newPath(){
+			layer.open({
+	      	  type: 1,
+	      	  title: '新建流水线',
+	      	  shadeClose:true,
+	      	  closeBtn: false,
+	      	  shift: 7,
+	      	  skin: 'layui-layer-rim', //加上边框
+	      	  content: "<div style='width:350px;'><div style='width:320px;margin-left: 3%;margin-top: 3%;' class='form-group has-feedback'><p>请输入flowName</p><input id='flowName' class='form-control' type='text' name='awardName' value=''/></div>" +
+	            "<div style='width:320px;margin-left: 3%;' class='form-group has-feedback'><p>请输入description</p><textarea  style='resize:none'  class='form-control' rows='4' cols='3' id='description'></textarea></div>"+ 
+	            "<div style='width:320px;margin-left: 3%;' class='form-group has-feedback'><p>请输入名称</p><input id='awardDescription' class='form-control' type='text' name='awardDescription' value=''/></div>"+ 
+	            "<div style='width:320px;margin-left: 3%;' class='form-group has-feedback'><p>请输入名称</p><input id='awardDescription' class='form-control' type='text' name='awardDescription' value=''/></div>"+ 
+	            "<div style='width:320px;margin-left: 3%;' class='form-group has-feedback'><p>请输入描述</p><input id='awardUserCount' class='form-control' type='number' name='awardUserCount' value=''/></div>"+  
+	          "<div style='width:320px;margin-left: 3%;' class='form-group has-feedback'>" +
+	          "<button style='margin-top:5%;' type='button' class='btn btn-block btn-succ2ess btn-lg' onclick='saveFlowInfo()'>提交</button></div>"
+	      	});
+	    }
+	   
+	   function update(id,updateName,updateDescription){
+			layer.open({
+	      	  type: 1,
+	      	  title: '新建流水线',
+	      	  shadeClose:true,
+	      	  closeBtn: false,
+	      	  shift: 7,
+	      	  skin: 'layui-layer-rim', //加上边框
+	      	  content: "<div style='width:350px;'><div style='width:320px;margin-left: 3%;margin-top: 3%;' class='form-group has-feedback'><p>请输入flowName</p><input id='flowName' class='form-control' type='text' name='awardName' value='"+updateName+"'/></div>" +
+	            "<div style='width:320px;margin-left: 3%;' class='form-group has-feedback'><p>请输入description</p><textarea  style='resize:none'  class='form-control' rows='4' cols='3' id='description'>"+updateDescription+"</textarea></div>"+ 
+	            "<div style='width:320px;margin-left: 3%;' class='form-group has-feedback'><p>请输入名称</p><input id='awardDescription' class='form-control' type='text' name='awardDescription' value=''/></div>"+ 
+	            "<div style='width:320px;margin-left: 3%;' class='form-group has-feedback'><p>请输入名称</p><input id='awardDescription' class='form-control' type='text' name='awardDescription' value=''/></div>"+ 
+	            "<div style='width:320px;margin-left: 3%;' class='form-group has-feedback'><p>请输入描述</p><input id='awardUserCount' class='form-control' type='number' name='awardUserCount' value=''/></div>"+  
+	          "<div style='width:320px;margin-left: 3%;' class='form-group has-feedback'>" +
+	          "<button style='margin-top:5%;' type='button' class='btn btn-block btn-succ2ess btn-lg' onclick=updateFlow('"+id+"')>提交</button></div>"
+	      	});
+	    }
+	
+	    function saveFlowInfo(){
+	    	var flowName = $("#flowName").val();
+	    	var description = $("#description").val();
+	    	 if(flowName == ''){
+					layer.msg('flowName不能为空！',{icon: 2,  shade:0,  time: 2000});
+					document.getElementById('flowName').focus();
+					return false;
+				}
+				if(description == ''){
+					layer.msg('description不能为空！',{icon: 2,  shade:0,  time: 2000});
+					document.getElementById('description').focus();
+					return false;
+				}
+              $.ajax({
+                cache:true,//保留缓存数据
+                type:"get",//为post请求
+                url:"saveFlowInfo",//这是我在后台接受数据的文件名
+                data:{name:flowName,description:description},
+                async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
+                error:function(request){//请求失败之后的操作
+                	layer.closeAll('page'); 
+                	layer.msg('创建失败,请稍后再试！',{icon: 2,  shade:0,  time: 2000}, function(){});
+                    return;
+                },
+                success:function(data){//请求成功之后的操作
+                	 console.info(data);
+                	 layer.closeAll('page'); 
+                	 layer.msg('创建成功',{icon: 1,  shade:0,  time: 2000}, function(){
+                	 var tempwindow=window.open('_blank');
+                	 tempwindow.location="/flow/grapheditor?load="+data.id;
+                	 });
+                }
+            }); 
+		}
+	    function updateFlow(id){
+	    	var flowName = $("#flowName").val();
+	    	var description = $("#description").val();
+	    	 if(flowName == ''){
+					layer.msg('flowName不能为空！',{icon: 2,  shade:0,  time: 2000});
+					document.getElementById('flowName').focus();
+					return false;
+				}
+				if(description == ''){
+					layer.msg('description不能为空！',{icon: 2,  shade:0,  time: 2000});
+					document.getElementById('description').focus();
+					return false;
+				}
+              $.ajax({
+                cache:true,//保留缓存数据
+                type:"get",//为post请求
+                url:"updateFlowInfo",//这是我在后台接受数据的文件名
+                data:{id:id,name:flowName,description:description},
+                async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
+                error:function(request){//请求失败之后的操作
+                	layer.closeAll('page'); 
+                	layer.msg('修改失败,请稍后再试！',{icon: 2,  shade:0,  time: 2000}, function(){});
+                    return;
+                },
+                success:function(data){//请求成功之后的操作
+                	if(data>0){
+                	 layer.closeAll('page'); 
+                	 layer.msg('修改成功',{icon: 1,  shade:0,  time: 2000}, function(){location.reload(); });
+                	}
+                }
+            }); 
+		}
+	  //@ sourceURL=table_right.js
+</script>
+</body>
+</html>

@@ -370,6 +370,60 @@
                 }
             });
 		}
+	    //运行
+	    function runFlow(){
+	    	var startFlow = $('#startFlow');
+	    	startFlow.hide();
+            $.ajax({
+                cache:true,//保留缓存数据
+                type:"POST",//为post请求
+                url:"runFlow",//这是我在后台接受数据的文件名
+                //data:$('#loginForm').serialize(),//将该表单序列化
+                data:{flowId:loadId},
+                async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
+                error:function(request){//请求失败之后的操作
+                	startFlow.show();
+                    return;
+                },
+                success:function(data){//请求成功之后的操作
+                    //console.log("success");
+                	if('0'!==data){
+                		alert('启动成功，返回的appid为：'+data);
+                		$('#appId').val(data);
+                	}else{
+                		alert("启动失败");
+                		startFlow.show();
+                	}
+					
+                }
+            });
+		}
+	    //停止
+	    function stopFlow(){
+	    	var stopFlow = $('#stopFlow');
+	    	stopFlow.hide();
+            $.ajax({
+                cache:true,//保留缓存数据
+                type:"POST",//为post请求
+                url:"stopFlow",//这是我在后台接受数据的文件名
+                //data:$('#loginForm').serialize(),//将该表单序列化
+                data:{flowId:loadId},
+                async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
+                error:function(request){//请求失败之后的操作
+                    return;
+                    stopFlow.show();
+                },
+                success:function(data){//请求成功之后的操作
+                    //console.log("success");
+                	if('0'!==data){
+                		alert(data);
+                	}else{
+                		alert("停止失败");
+                		stopFlow.show();
+                	}
+                }
+            });
+		}
 	    function getLogUrl(){
 	    	appId = "application_1539850523117_0152";
 	    	$.ajax({

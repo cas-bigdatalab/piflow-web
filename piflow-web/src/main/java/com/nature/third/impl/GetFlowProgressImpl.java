@@ -1,32 +1,25 @@
 package com.nature.third.impl;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.sf.json.JSONObject;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.nature.base.util.HttpUtils;
 import com.nature.base.util.LoggerUtil;
 import com.nature.common.constant.SysParamsCache;
-import com.nature.component.workFlow.model.FlowInfoDb;
-import com.nature.mapper.FlowInfoDbMapper;
 import com.nature.third.inf.IGetFlowProgress;
 import com.nature.third.vo.flowInfo.FlowInfo;
 import com.nature.third.vo.flowInfo.FlowInfoStopVo;
+
+import net.sf.json.JSONObject;
 
 @Component
 public class GetFlowProgressImpl implements IGetFlowProgress {
 
 	Logger logger = LoggerUtil.getLogger();
-	
-	@Autowired
-	private FlowInfoDbMapper flowInfoDbMapper;
 
 	/**
 	 * @Title 发送 post请求
@@ -50,7 +43,5 @@ public class GetFlowProgressImpl implements IGetFlowProgress {
 		}
 		return jb;
 	}
-
-	 
 
 }

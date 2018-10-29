@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -38,14 +37,14 @@ public class StopsTemplate extends BaseHibernateModelUUIDNoCorpAgentId {
 	private Integer numberOfEntrances = 1;// 入口数
 
 	private Integer numberOfExports = 1;// 出口数
-	
+
 	private String inports;
-	
+
 	private String outports;
 
 //	@ManyToMany(mappedBy = "stopsTemplateList")
 //	private List<StopGroup> stopGroupList = new ArrayList<StopGroup>();
-	
+
 	private String stopGroup;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "stopsTemplate")
@@ -139,7 +138,5 @@ public class StopsTemplate extends BaseHibernateModelUUIDNoCorpAgentId {
 	public void setOutports(String outports) {
 		this.outports = outports;
 	}
-
-	 
 
 }

@@ -250,7 +250,7 @@ public class StopsMapperProvider {
 			if (StringUtils.isNotBlank(bundel)) {
 				sql.SET("owner = " + Utils.addSqlStr(owner));
 			}
-			sql.WHERE("id = " + id);
+			sql.WHERE("id = " + Utils.addSqlStr(id));
 			sqlStr = sql.toString() + ";";
 			if (StringUtils.isBlank(id)) {
 				sqlStr = "";

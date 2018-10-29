@@ -400,7 +400,8 @@ public class FlowServiceImpl implements FlowService {
 						String pageId = mxCellVo.getPageId();
 						// 根据pageId去map取，取到说明数据库中有，做修改操作，否则做新增操作
 						MxCell mxCell = mxCellMap.get(pageId);
-
+						// 把需要修改的移除，剩下的是要逻辑删除的
+						mxCellMap.remove(pageId);
 						// 判断object是否为空，当为空时视为新增
 						if (null == mxCell) {
 							// 新增
@@ -452,6 +453,18 @@ public class FlowServiceImpl implements FlowService {
 						if (isAddList) {
 							addMxCellList.add(mxCell);
 						} else {
+							updateMxCellList.add(mxCell);
+						}
+					}
+
+					// objectPathsMap中的所有需要修改的移除，剩下为要逻辑删除的
+					for (String pageid : mxCellMap.keySet()) {
+						MxCell mxCell = mxCellMap.get(pageid);
+						if (null != mxCell) {
+							mxCell.setEnableFlag(false);
+							mxCell.setLastUpdateDttm(new Date());
+							mxCell.setLastUpdateUser("Nature");
+							mxCell.setVersion(mxCell.getVersion() + 1);
 							updateMxCellList.add(mxCell);
 						}
 					}
@@ -554,7 +567,7 @@ public class FlowServiceImpl implements FlowService {
 										addPaths.add(objPaths);
 									}
 								}
-								// objectPathsMap中的所有不需要动的都以移除，剩下为要逻辑删除的
+								// objectPathsMap中的所有需要修改的移除，剩下为要逻辑删除的
 								for (String pageid : objectPathsMap.keySet()) {
 									Paths paths = objectPathsMap.get(pageid);
 									if (null != paths) {
@@ -602,7 +615,7 @@ public class FlowServiceImpl implements FlowService {
 						}
 						// 取stops的明显CellVoList
 						List<MxCellVo> objectStops = (ArrayList<MxCellVo>) stopsPathsMap.get("stops");
-						// 判断数据库中的线的list是否为空，不为空继续下边的判断操作，否则直接添加
+						// 判断数据库中的Stops的list是否为空，不为空继续下边的判断操作，否则直接添加
 						if (null != stopsList && stopsList.size() > 0) {
 							// key为stops的PageId(画板中所属id),value为Stops
 							Map<String, Stops> objectStopsMap = new HashMap<String, Stops>();
@@ -630,6 +643,17 @@ public class FlowServiceImpl implements FlowService {
 										Stops toStops = this.stopsTemplateToStops(mxCellVo);
 										toStops.setFlow(flow);
 										addStops.add(toStops);
+									}
+								}
+								// objectPathsMap中的所有需要修改的移除，剩下为要逻辑删除的
+								for (String pageid : objectStopsMap.keySet()) {
+									Stops stops = objectStopsMap.get(pageid);
+									if (null != stops) {
+										stops.setEnableFlag(false);
+										stops.setLastUpdateDttm(new Date());
+										stops.setLastUpdateUser("Nature");
+										stops.setVersion(stops.getVersion() + 1);
+										updateStops.add(stops);
 									}
 								}
 							} else {
@@ -666,7 +690,7 @@ public class FlowServiceImpl implements FlowService {
 									setStatefulRtnBase("新建保存失败stopsList");
 								}
 							}
-							// 做删除操作
+							// 做修改操作
 							if (null != updateStops && updateStops.size() > 0) {
 								for (Stops stops : updateStops) {
 									if (null != stops) {

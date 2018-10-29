@@ -1,0 +1,107 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <div th:fragment=ui>
+<!-- content starts -->
+
+<div>
+    <ul class="breadcrumb">
+        <li>
+            <a href="#">Home</a>
+        </li>
+        <li>
+            <a href="#">UI Features</a>
+        </li>
+    </ul>
+</div>
+<div class="row"><!--row-->
+    <div class="box col-md-12"><!--span-->
+        <div class="box-inner">
+            <div class="box-header well" data-original-title="">
+                <h2><i class="glyphicon glyphicon-plus"></i> Extended Elements</h2>
+
+                <div class="box-icon">
+                    <a href="#" class="btn btn-setting btn-round btn-default"><i
+                            class="glyphicon glyphicon-cog"></i></a>
+                    <a href="#" class="btn btn-minimize btn-round btn-default"><i
+                            class="glyphicon glyphicon-chevron-up"></i></a>
+                    <a href="#" class="btn btn-close btn-round btn-default"><i
+                            class="glyphicon glyphicon-remove"></i></a>
+                </div>
+            </div>
+            <div class="box-content">
+                <table class="table table-bordered table-striped responsive">
+                    <tbody>
+                    <tr>
+                        <td><h3>Multiple File Upload</h3></td>
+                        <td>
+                            <input data-no-uniform="true" type="file" name="file_upload" id="file_upload">
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><h3>CSS3 Animations</h3></td>
+                        <td>
+                            <h3 class="animated rubberBand">Animation</h3>
+                        </td>
+                        <td>
+                            <code>&lt;h3 class="animated rubberBand"&gt;Animation&lt;/h3&gt;</code>
+                            <br>
+                            For all more animation classes like <code>rubberBand</code>, please refer to
+                            <a target="_blank" href="http://daneden.github.io/animate.css/">http://daneden.github.io/animate.css/</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><h3>Toggle Switch</h3></td>
+                        <td>
+                            <input data-no-uniform="true" checked="checked" type="checkbox" class="iphone-toggle">
+                        </td>
+                        <td><code>&lt;input data-no-uniform="true" type="checkbox" class="iphone-toggle"&gt;</code></td>
+                    </tr>
+                    <tr>
+                        <td><h3>Auto Growing Textarea</h3></td>
+                        <td>
+                            <textarea class="autogrow">Press enter here, it will grow automatically.</textarea>
+                        </td>
+                        <td><code>&lt;textarea class="autogrow"&gt;&lt;/textarea&gt;</code></td>
+                    </tr>
+                    <tr>
+                        <td><h3>Popover</h3></td>
+                        <td>
+                            <a href="#" class="btn btn-danger" data-toggle="popover"
+                            data-content="And here's some amazing content. It's very engaging. right?"
+                            title="A Title">Click for popover</a>
+                        </td>
+                        <td><code>&lt;a href="#" class="btn btn-danger" data-toggle="popover" data-content="And here's
+                                some amazing content. It's very engaging. right?" title="A Title"&gt;hover for popover&lt;/a&gt;</code>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><h3>Dialog</h3></td>
+                        <td>
+                            <a href="#" class="btn btn-info btn-setting">Click for dialog</a>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><h3>Tooltip</h3></td>
+                        <td>
+                            <a href="#" title="Tooltip, you can change the position." data-toggle="tooltip"
+                            class="btn btn-warning">Hover for tooltip</a>
+                        </td>
+                        <td><code>&lt;a href="#" title="Tooltip, you can change the position, for example use
+                                data-placement="left"." data-toggle="tooltip" class="btn btn-warning"&gt;Hover for
+                                tooltip&lt;/a&gt;</code></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div><!--/span-->
+</div><!--/row-->
+
+<!-- content ends -->
+    </div>
+  </body>
+</html>

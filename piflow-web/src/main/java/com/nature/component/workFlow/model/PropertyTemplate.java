@@ -2,12 +2,7 @@ package com.nature.component.workFlow.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import org.hibernate.validator.constraints.Length;
 
 import com.nature.base.BaseHibernateModelUUIDNoCorpAgentId;
 
@@ -17,7 +12,7 @@ public class PropertyTemplate extends BaseHibernateModelUUIDNoCorpAgentId {
 
 	private static final long serialVersionUID = 1L;
 
-	//@ManyToOne(fetch = FetchType.EAGER)
+	// @ManyToOne(fetch = FetchType.EAGER)
 	@Column(name = "FK_STOPS_ID")
 	private String stopsTemplate;
 
@@ -25,7 +20,7 @@ public class PropertyTemplate extends BaseHibernateModelUUIDNoCorpAgentId {
 
 	private String displayName;
 
-	@Column(name = "description",columnDefinition="varchar(1000) COMMENT '描述'")
+	@Column(name = "description", columnDefinition = "varchar(1000) COMMENT '描述'")
 	private String description;
 
 	@Column(name = "DEFAULT_VALUE")

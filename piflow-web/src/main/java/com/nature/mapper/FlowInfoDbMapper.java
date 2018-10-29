@@ -12,7 +12,6 @@ import org.apache.ibatis.annotations.Select;
 
 import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.model.FlowInfoDb;
-import com.nature.third.vo.App;
 
 @Mapper
 public interface FlowInfoDbMapper {
@@ -26,22 +25,23 @@ public interface FlowInfoDbMapper {
 			+ "( #{app.id},#{app.crtDttm},#{app.crtUser},#{app.enableFlag},#{app.lastUpdateDttm} , #{app.lastUpdateUser},#{app.version},#{app.endTime},#{app.name},#{app.startTime},#{app.state}"
 			+ ")")
 	public int addFlowInfo(@Param("app") FlowInfoDb app);
-	
+
 	/**
 	 * 查询flow以及flowinfoDb信息
+	 * 
 	 * @return
 	 */
 	@Select("SELECT * FROM flow where enable_flag = '1' ORDER BY crt_dttm DESC ")
 	@Results({
-		@Result(property="appId",column="app_id",javaType=FlowInfoDb.class,one=@One(select="com.nature.mapper.FlowInfoDbMapper.getAppByAppId"))
- 			})
+			@Result(property = "appId", column = "app_id", javaType = FlowInfoDb.class, one = @One(select = "com.nature.mapper.FlowInfoDbMapper.getAppByAppId")) })
 	public List<Flow> findAppList();
- 
+
 	@Select("SELECT id,name,end_time,start_time,state FROM flow_info where enable_flag = '1' and id = #{id}")
 	public List<FlowInfoDb> getAppByAppId(@Param("id") String appId);
-	
+
 	/**
 	 * 根据appId查询
+	 * 
 	 * @param appId
 	 * @return
 	 */

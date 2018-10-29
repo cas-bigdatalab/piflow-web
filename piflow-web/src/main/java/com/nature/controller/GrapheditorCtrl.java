@@ -32,7 +32,6 @@ import com.nature.component.mxGraph.vo.MxGraphModelVo;
 import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.model.FlowInfoDb;
 import com.nature.component.workFlow.model.StopGroup;
-import com.nature.component.workFlow.service.AppService;
 import com.nature.component.workFlow.service.FlowService;
 import com.nature.component.workFlow.service.StopGroupService;
 import com.nature.third.GetFlowInfo;
@@ -42,7 +41,6 @@ import com.nature.third.inf.IStartFlow;
 import com.nature.third.inf.IStopFlow;
 import com.nature.third.vo.flowLog.AppVo;
 import com.nature.third.vo.flowLog.FlowLog;
-
 
 @Controller
 @RequestMapping("/flow/*")
@@ -67,13 +65,10 @@ public class GrapheditorCtrl {
 
 	@Autowired
 	private IGetFlowLog getFlowLogImpl;
-	
-	@Autowired
-	private AppService appService;
-	
+
 	@Resource
 	private IGetFlowInfo getFlowInfoImpl;
-	
+
 	@Resource
 	private GetFlowInfo getFlowInfo;
 
@@ -103,46 +98,7 @@ public class GrapheditorCtrl {
 	@RequestMapping("/open")
 	public String open(Model model) {
 		model.addAttribute("josnStr", "");
-		return "/grapheditor/open";
-	}
-
-	@RequestMapping("/table")
-	public String runningList(Model model) {
-		List<Flow> appInfo = appService.findAppList();
-		model.addAttribute("say", "say hello spring boot !!!!!");
-		model.addAttribute("sss", "ss后台返回数据ss");
-		model.addAttribute("appInfo",appInfo);
-		return "/charisma/table";
-	}
-
-	@RequestMapping("/index")
-	public String index(Model model) {
-		model.addAttribute("now", "say hello spring boot !!!!!");
-		return "/charisma/index";
-	}
-
-	@RequestMapping("/login")
-	public String login(Model model) {
-		model.addAttribute("now", "say hello spring boot !!!!!");
-		return "/charisma/login";
-	}
-
-	@RequestMapping("/tour")
-	public String tour(Model model) {
-		model.addAttribute("now", "say hello spring boot !!!!!");
-		return "/charisma/tour";
-	}
-
-	@RequestMapping("/ui")
-	public String ui(Model model) {
-		model.addAttribute("now", "say hello spring boot !!!!!");
-		return "/charisma/ui";
-	}
-
-	@RequestMapping("/errorPage")
-	public String error(Model model) {
-		model.addAttribute("now", "say hello spring boot !!!!!");
-		return "/charisma/errorPage";
+		return "grapheditor/open";
 	}
 
 	@RequestMapping("/saveData")
@@ -177,14 +133,14 @@ public class GrapheditorCtrl {
 				if (StringUtils.isNotBlank(startFlow)) {
 					FlowInfoDb flowInfoDb = getFlowInfoImpl.AddFlowInfo(startFlow);
 					if (null != flowInfoDb) {
-					StatefulRtnBase saveAppId = flowServiceImpl.saveAppId(flowId, flowInfoDb);
-					if (null != saveAppId && saveAppId.isReqRtnStatus()) {
-						logger.info("flowId为" + flowId + "的flow，保存appID成功" + startFlow);
+						StatefulRtnBase saveAppId = flowServiceImpl.saveAppId(flowId, flowInfoDb);
+						if (null != saveAppId && saveAppId.isReqRtnStatus()) {
+							logger.info("flowId为" + flowId + "的flow，保存appID成功" + startFlow);
+						} else {
+							logger.warn("flowId为" + flowId + "的flow，保存appID出错");
+						}
+						rtnMsg = "启动成功，返回的appid为：" + startFlow;
 					} else {
-						logger.warn("flowId为" + flowId + "的flow，保存appID出错");
-					}
-					rtnMsg = "启动成功，返回的appid为：" + startFlow;
-					}else {
 						rtnMsg = "flowInfoDb创建失败";
 					}
 				} else {
@@ -301,7 +257,7 @@ public class GrapheditorCtrl {
 		}
 		return mxGraphModelVo;
 	}
-	
+
 	@RequestMapping("/queryFlowData")
 	@ResponseBody
 	public Flow saveData(String load) {
@@ -312,35 +268,33 @@ public class GrapheditorCtrl {
 	@RequestMapping("/saveFlowInfo")
 	@ResponseBody
 	public Flow saveFlowInfo(Flow flow) {
-		 String id = Utils.getUUID32();
-		 flow.setId(id);
-		 flow.setName(flow.getName());
-		 flow.setDescription(flow.getDescription());
-		 flow.setCrtDttm(new Date());
-		 flow.setCrtUser("wdd");
-		 flow.setLastUpdateDttm(new Date());
-		 flow.setLastUpdateUser("ddw");
-		 flow.setEnableFlag(true);
-		 flow.setVersion(0L);
-		 flow.setUuid(id);
-		 int result = flowServiceImpl.addFlow(flow);
-		 return flow;
+		String id = Utils.getUUID32();
+		flow.setId(id);
+		flow.setName(flow.getName());
+		flow.setDescription(flow.getDescription());
+		flow.setCrtDttm(new Date());
+		flow.setCrtUser("wdd");
+		flow.setLastUpdateDttm(new Date());
+		flow.setLastUpdateUser("ddw");
+		flow.setEnableFlag(true);
+		flow.setVersion(0L);
+		flow.setUuid(id);
+		flowServiceImpl.addFlow(flow);
+		return flow;
 	}
-	
+
 	@RequestMapping("/updateFlowInfo")
 	@ResponseBody
 	public int updateFlowInfo(Flow flow) {
-		 String id =flow.getId();
-		 flow.setId(id);
-		 flow.setName(flow.getName());
-		 flow.setDescription(flow.getDescription());
-		 flow.setLastUpdateDttm(new Date());
-		 flow.setLastUpdateUser("ddw");
-		 flow.setVersion(0L+1);
-		 int result = flowServiceImpl.updateFlow(flow);
-		 return result;
+		String id = flow.getId();
+		flow.setId(id);
+		flow.setName(flow.getName());
+		flow.setDescription(flow.getDescription());
+		flow.setLastUpdateDttm(new Date());
+		flow.setLastUpdateUser("ddw");
+		flow.setVersion(0L + 1);
+		int result = flowServiceImpl.updateFlow(flow);
+		return result;
 	}
-	
-	
 
 }
