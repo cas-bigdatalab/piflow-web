@@ -132,17 +132,24 @@ public class GrapheditorCtrl {
 				String startFlow = startFlowImpl.startFlow(flowById);
 				if (StringUtils.isNotBlank(startFlow)) {
 					FlowInfoDb flowInfoDb = getFlowInfoImpl.AddFlowInfo(startFlow);
-					if (null != flowInfoDb) {
-						StatefulRtnBase saveAppId = flowServiceImpl.saveAppId(flowId, flowInfoDb);
-						if (null != saveAppId && saveAppId.isReqRtnStatus()) {
-							logger.info("flowId为" + flowId + "的flow，保存appID成功" + startFlow);
-						} else {
-							logger.warn("flowId为" + flowId + "的flow，保存appID出错");
-						}
-						rtnMsg = "启动成功，返回的appid为：" + startFlow;
-					} else {
+					if (null == flowInfoDb) {
 						rtnMsg = "flowInfoDb创建失败";
+						flowInfoDb = new FlowInfoDb();
+						flowInfoDb.setId(startFlow);
+						flowInfoDb.setCrtDttm(new Date());
+						flowInfoDb.setCrtUser("wdd");
+						flowInfoDb.setVersion(0L);
+						flowInfoDb.setEnableFlag(true);
+						flowInfoDb.setLastUpdateUser("王栋栋");
+						flowInfoDb.setLastUpdateDttm(new Date());
 					}
+					StatefulRtnBase saveAppId = flowServiceImpl.saveAppId(flowId, flowInfoDb);
+					if (null != saveAppId && saveAppId.isReqRtnStatus()) {
+						logger.info("flowId为" + flowId + "的flow，保存appID成功" + startFlow);
+					} else {
+						logger.warn("flowId为" + flowId + "的flow，保存appID出错");
+					}
+					rtnMsg = "启动成功，返回的appid为：" + startFlow;
 				} else {
 					rtnMsg = "启动失败";
 				}
