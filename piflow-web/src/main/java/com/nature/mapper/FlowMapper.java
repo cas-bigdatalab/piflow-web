@@ -53,7 +53,8 @@ public interface FlowMapper {
 	@Results({ @Result(id = true, column = "id", property = "id"),
 			@Result(column = "fk_mx_graph_model_id", property = "mxGraphModel", one = @One(select = "com.nature.mapper.mxGraph.MxGraphModelMapper.getMxGraphModelById", fetchType = FetchType.EAGER)),
 			@Result(column = "id", property = "stopsList", many = @Many(select = "com.nature.mapper.StopsMapper.getStopsListByFlowId", fetchType = FetchType.EAGER)),
-			@Result(column = "id", property = "pathsList", many = @Many(select = "com.nature.mapper.PathsMapper.getPathsListByFlowId", fetchType = FetchType.EAGER))
+			@Result(column = "id", property = "pathsList", many = @Many(select = "com.nature.mapper.PathsMapper.getPathsListByFlowId", fetchType = FetchType.EAGER)),
+			@Result(column = "id", property = "appId", one = @One(select = "com.nature.mapper.FlowInfoDbMapper.getAppListByFlowId", fetchType = FetchType.EAGER))
 
 	})
 	public Flow getFlowById(String id);

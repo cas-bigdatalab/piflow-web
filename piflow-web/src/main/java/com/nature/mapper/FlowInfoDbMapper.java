@@ -9,10 +9,12 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.Update;
 
 import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.model.FlowInfoDb;
+import com.nature.provider.FlowInfoDbMapperProvider;
 
 @Mapper
 public interface FlowInfoDbMapper {
@@ -58,4 +60,12 @@ public interface FlowInfoDbMapper {
 			+ "start_time = #{app.startTime},state = #{app.state}  where id  = #{app.id}    "
 			+ ")")
 	public int updateFlowInfo(@Param("app") FlowInfoDb app);
+	
+	/**
+	 * 根据flowID查询appId信息
+	 * @param flowId
+	 * @return
+	 */
+	@SelectProvider(type = FlowInfoDbMapperProvider.class, method = "getFlowInfoDbListByFlowId")
+	public List<FlowInfoDb> getAppListByFlowId(String flowId);
 }
