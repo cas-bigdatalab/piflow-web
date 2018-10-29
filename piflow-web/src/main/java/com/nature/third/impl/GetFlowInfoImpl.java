@@ -64,7 +64,7 @@ public class GetFlowInfoImpl implements IGetFlowInfo {
 		FlowInfo startFlow2 = getFlowInfo(appId);
 		String progress = iGetFlowProgress.getFlowInfo(appId);
 		logger.info("测试返回信息：" + startFlow2);
-		if (StringUtils.isNotBlank(startFlow2.getFlow().getId())) {
+		if ( null != startFlow2 && null!= startFlow2.getFlow()) {
 			FlowInfoDb flowInfoDb = flowInfoDbMapper.flowInfoDb(startFlow2.getFlow().getId());
 			if (null != flowInfoDb) {
 				FlowInfoDb up = new FlowInfoDb();
@@ -81,11 +81,7 @@ public class GetFlowInfoImpl implements IGetFlowInfo {
 				return up;
 			}
 		}
-		db.setId(startFlow2.getFlow().getId());
-		db.setName(startFlow2.getFlow().getName());
-		db.setState(startFlow2.getFlow().getState());
-		db.setEndTime(startFlow2.getFlow().getEndTime());
-		db.setStartTime(startFlow2.getFlow().getStartTime());
+		db.setId(appId);
 		db.setProgress(progress);
 		db.setCrtDttm(new Date());
 		db.setCrtUser("wdd");

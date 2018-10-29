@@ -4639,7 +4639,7 @@ DiagramFormatPanel.prototype.init = function()
 	{
 		//this.container.appendChild(this.addOptions(this.createPanel()));
 		//this.container.appendChild(this.addPaperSize(this.createPanel()));
-		this.container.appendChild(this.addStyleOps(this.createPanel()));
+		//this.container.appendChild(this.addStyleOps(this.createPanel()));
 	}
 };
 
@@ -4771,7 +4771,7 @@ DiagramFormatPanel.prototype.addOptions = function(div)
 	var editor = ui.editor;
 	var graph = editor.graph;
 	
-	div.appendChild(this.createTitle(123321));	
+	//div.appendChild(this.createTitle(123321));	
 
 	/*if (graph.isEnabled())
 	{
@@ -5099,7 +5099,7 @@ DiagramFormatPanel.prototype.destroy = function()
 		this.gridEnabledListener = null;
 	}
 };
-  function shiqu(id,data){
+   function shiqu(id,data){
 	if(data!=null && data.length>0 && id.length>0){
 		var content = document.getElementById(''+data+'').value;
 	 $.ajax({
@@ -5119,4 +5119,4 @@ DiagramFormatPanel.prototype.destroy = function()
              console.log("success");
          }
      });}
-  }
+  } 

@@ -288,7 +288,7 @@
               $.ajax({
                 cache:true,//保留缓存数据
                 type:"get",//为post请求
-                url:"saveFlowInfo",//这是我在后台接受数据的文件名
+                url:"/flow/saveFlowInfo",//这是我在后台接受数据的文件名
                 data:{name:flowName,description:description},
                 async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
                 error:function(request){//请求失败之后的操作
@@ -322,7 +322,7 @@
               $.ajax({
                 cache:true,//保留缓存数据
                 type:"get",//为post请求
-                url:"updateFlowInfo",//这是我在后台接受数据的文件名
+                url:"/flow/updateFlowInfo",//这是我在后台接受数据的文件名
                 data:{id:id,name:flowName,description:description},
                 async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
                 error:function(request){//请求失败之后的操作
@@ -337,6 +337,51 @@
                 	}
                 }
             }); 
+		}
+	    //运行
+	    function runFlow(loadId){
+            $.ajax({
+                cache:true,//保留缓存数据
+                type:"get",//为post请求
+                url:"/flow/runFlow",//这是我在后台接受数据的文件名
+                //data:$('#loginForm').serialize(),//将该表单序列化
+                data:{flowId:loadId},
+                async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
+                error:function(request){//请求失败之后的操作
+                    return;
+                },
+                success:function(data){//请求成功之后的操作
+                    console.log("data");
+                	if('0'!==data){
+                		alert('启动成功，返回的appid为：'+data);
+                		$('#appId').val(data);
+                	}else{
+                		alert("启动失败");
+                	}
+					
+                }
+            });
+		}
+	    //停止
+	    function stopFlow(loadId){
+            $.ajax({
+                cache:true,//保留缓存数据
+                type:"get",//为post请求
+                url:"/flow/stopFlow",//这是我在后台接受数据的文件名
+                //data:$('#loginForm').serialize(),//将该表单序列化
+                data:{flowId:loadId},
+                async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
+                error:function(request){//请求失败之后的操作
+                    return;
+                },
+                success:function(data){//请求成功之后的操作
+                	if('0'!==data){
+                		alert(data);
+                	}else{
+                		alert("停止失败");
+                	}
+                }
+            });
 		}
 	  //@ sourceURL=table_right.js
 </script>
