@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.model.FlowInfoDb;
@@ -36,7 +37,7 @@ public interface FlowInfoDbMapper {
 			@Result(property = "appId", column = "app_id", javaType = FlowInfoDb.class, one = @One(select = "com.nature.mapper.FlowInfoDbMapper.getAppByAppId")) })
 	public List<Flow> findAppList();
 
-	@Select("SELECT id,name,end_time,start_time,state FROM flow_info where enable_flag = '1' and id = #{id}")
+	@Select("SELECT id,name,end_time,start_time,state,progress FROM flow_info where enable_flag = '1' and id = #{id}")
 	public List<FlowInfoDb> getAppByAppId(@Param("id") String appId);
 
 	/**
@@ -47,4 +48,14 @@ public interface FlowInfoDbMapper {
 	 */
 	@Select("SELECT * FROM flow_info where enable_flag = '1' and id = #{id} ")
 	public FlowInfoDb flowInfoDb(@Param("id") String appId);
+	
+	/**
+	 * 修改
+	 * @param app
+	 * @return
+	 */
+	@Update("update flow_info set last_update_dttm = #{app.lastUpdateDttm},last_update_user = #{app.lastUpdateUser},version = version+1,end_time = #{app.endTime},name = #{app.name},"
+			+ "start_time = #{app.startTime},state = #{app.state}  where id  = #{app.id}    "
+			+ ")")
+	public int updateFlowInfo(@Param("app") FlowInfoDb app);
 }

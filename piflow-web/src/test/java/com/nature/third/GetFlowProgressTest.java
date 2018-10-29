@@ -10,7 +10,6 @@ import com.nature.ApplicationTests;
 import com.nature.base.util.LoggerUtil;
 import com.nature.mapper.FlowInfoDbMapper;
 import com.nature.third.inf.IGetFlowProgress;
-import com.nature.third.vo.flowInfo.FlowInfo;
 
 public class GetFlowProgressTest extends ApplicationTests {
 
@@ -25,7 +24,7 @@ public class GetFlowProgressTest extends ApplicationTests {
 	@Test
 	public void testFlowStop() {
 		String appId = "application_1539850523117_0159";
-		FlowInfo startFlow2 = getFlowProgress.getFlowInfo(appId);
+		String startFlow2 = getFlowProgress.getFlowInfo(appId);
 		logger.info("测试返回信息：" + startFlow2);
 	}
 

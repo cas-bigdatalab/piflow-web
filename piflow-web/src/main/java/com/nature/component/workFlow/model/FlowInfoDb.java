@@ -17,6 +17,7 @@ public class FlowInfoDb extends BaseHibernateModelUUIDNoCorpAgentId implements S
 	private String state;
 	private String startTime;
 	private String endTime;
+	private String progress;
 
 	public String getName() {
 		return name;
@@ -48,6 +49,14 @@ public class FlowInfoDb extends BaseHibernateModelUUIDNoCorpAgentId implements S
 
 	public void setEndTime(String endTime) {
 		this.endTime = endTime;
+	}
+
+	public String getProgress() {
+		return progress;
+	}
+
+	public void setProgress(String progress) {
+		this.progress = progress;
 	}
 
 }

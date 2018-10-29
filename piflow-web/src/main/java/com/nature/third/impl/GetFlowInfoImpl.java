@@ -17,6 +17,7 @@ import com.nature.common.constant.SysParamsCache;
 import com.nature.component.workFlow.model.FlowInfoDb;
 import com.nature.mapper.FlowInfoDbMapper;
 import com.nature.third.inf.IGetFlowInfo;
+import com.nature.third.inf.IGetFlowProgress;
 import com.nature.third.vo.flowInfo.FlowInfo;
 import com.nature.third.vo.flowInfo.FlowInfoStopVo;
 
@@ -27,6 +28,9 @@ public class GetFlowInfoImpl implements IGetFlowInfo {
 	
 	@Autowired
 	private FlowInfoDbMapper flowInfoDbMapper;
+	@Autowired
+	private IGetFlowProgress iGetFlowProgress;
+	
 
 	/**
 	 * @Title 发送 post请求
@@ -58,11 +62,23 @@ public class GetFlowInfoImpl implements IGetFlowInfo {
 	public FlowInfoDb AddFlowInfo(String appId) {
 		FlowInfoDb db = new FlowInfoDb();
 		FlowInfo startFlow2 = getFlowInfo(appId);
+		String progress = iGetFlowProgress.getFlowInfo(appId);
 		logger.info("测试返回信息：" + startFlow2);
 		if (StringUtils.isNotBlank(startFlow2.getFlow().getId())) {
 			FlowInfoDb flowInfoDb = flowInfoDbMapper.flowInfoDb(startFlow2.getFlow().getId());
 			if (null != flowInfoDb) {
-				return flowInfoDb;
+				FlowInfoDb up = new FlowInfoDb();
+				up.setId(flowInfoDb.getId());
+				up.setName(startFlow2.getFlow().getName());
+				up.setState(startFlow2.getFlow().getState());
+				up.setEndTime(startFlow2.getFlow().getEndTime());
+				up.setStartTime(startFlow2.getFlow().getStartTime());
+				up.setProgress(progress);
+				up.setVersion(0L+1);
+				up.setLastUpdateUser("王栋栋");
+				up.setLastUpdateDttm(new Date());
+				flowInfoDbMapper.updateFlowInfo(up);
+				return up;
 			}
 		}
 		db.setId(startFlow2.getFlow().getId());
@@ -70,6 +86,7 @@ public class GetFlowInfoImpl implements IGetFlowInfo {
 		db.setState(startFlow2.getFlow().getState());
 		db.setEndTime(startFlow2.getFlow().getEndTime());
 		db.setStartTime(startFlow2.getFlow().getStartTime());
+		db.setProgress(progress);
 		db.setCrtDttm(new Date());
 		db.setCrtUser("wdd");
 		db.setVersion(0L);
