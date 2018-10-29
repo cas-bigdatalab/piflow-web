@@ -47,37 +47,39 @@ public class PathsMapperProvider {
 			int i = 0;
 			for (Paths paths : pathsList) {
 				i++;
-				String id = paths.getId();
-				Date crtDttm = paths.getCrtDttm();
-				String crtUser = paths.getCrtUser();
-				Date lastUpdateDttm = paths.getLastUpdateDttm();
-				String lastUpdateUser = paths.getLastUpdateUser();
-				Long version = paths.getVersion();
-				Boolean enableFlag = paths.getEnableFlag();
-				String from = paths.getFrom();
-				String to = paths.getTo();
-				String outport = paths.getOutport();
-				String inport = paths.getInport();
-				String port = paths.getPort();
-				String pageId = paths.getPageId();
-				Flow flow = paths.getFlow();
+				if (null != paths) {
+					String id = paths.getId();
+					Date crtDttm = paths.getCrtDttm();
+					String crtUser = paths.getCrtUser();
+					Date lastUpdateDttm = paths.getLastUpdateDttm();
+					String lastUpdateUser = paths.getLastUpdateUser();
+					Long version = paths.getVersion();
+					Boolean enableFlag = paths.getEnableFlag();
+					String from = paths.getFrom();
+					String to = paths.getTo();
+					String outport = paths.getOutport();
+					String inport = paths.getInport();
+					String port = paths.getPort();
+					String pageId = paths.getPageId();
+					Flow flow = paths.getFlow();
 
-				sql.append("(");
-				sql.append(Utils.addSqlStr((id == null ? "" : id)) + ",");
-				sql.append(Utils.addSqlStr((crtDttm == null ? "" : DateUtils.dateTimesToStr(crtDttm))) + ",");
-				sql.append(Utils.addSqlStr((crtUser == null ? "" : crtUser)) + ",");
-				sql.append(Utils.addSqlStr((lastUpdateDttm == null ? "" : DateUtils.dateTimesToStr(lastUpdateDttm)))
-						+ ",");
-				sql.append(Utils.addSqlStr((lastUpdateUser == null ? "" : lastUpdateUser)) + ",");
-				sql.append((version == null ? "" : 0) + ",");
-				sql.append((enableFlag == null ? "" : (enableFlag ? 1 : 0)) + ",");
-				sql.append(Utils.addSqlStr((from == null ? "" : from)) + ",");
-				sql.append(Utils.addSqlStr((to == null ? "" : to)) + ",");
-				sql.append(Utils.addSqlStr((outport == null ? "" : outport)) + ",");
-				sql.append(Utils.addSqlStr((inport == null ? "" : inport)) + ",");
-				sql.append(Utils.addSqlStr((port == null ? "" : port)) + ",");
-				sql.append(Utils.addSqlStr((pageId == null ? "" : pageId)) + ",");
-				sql.append(Utils.addSqlStr((flow == null ? "" : flow.getId())));
+					sql.append("(");
+					sql.append(Utils.addSqlStr((id == null ? "" : id)) + ",");
+					sql.append(Utils.addSqlStr((crtDttm == null ? "" : DateUtils.dateTimesToStr(crtDttm))) + ",");
+					sql.append(Utils.addSqlStr((crtUser == null ? "" : crtUser)) + ",");
+					sql.append(Utils.addSqlStr((lastUpdateDttm == null ? "" : DateUtils.dateTimesToStr(lastUpdateDttm)))
+							+ ",");
+					sql.append(Utils.addSqlStr((lastUpdateUser == null ? "" : lastUpdateUser)) + ",");
+					sql.append((version == null ? "" : 0) + ",");
+					sql.append((enableFlag == null ? "" : (enableFlag ? 1 : 0)) + ",");
+					sql.append(Utils.addSqlStr((from == null ? "" : from)) + ",");
+					sql.append(Utils.addSqlStr((to == null ? "" : to)) + ",");
+					sql.append(Utils.addSqlStr((outport == null ? "" : outport)) + ",");
+					sql.append(Utils.addSqlStr((inport == null ? "" : inport)) + ",");
+					sql.append(Utils.addSqlStr((port == null ? "" : port)) + ",");
+					sql.append(Utils.addSqlStr((pageId == null ? "" : pageId)) + ",");
+					sql.append(Utils.addSqlStr((flow == null ? "" : flow.getId())));
+				}
 				if (i != pathsList.size()) {
 					sql.append("),");
 				} else {

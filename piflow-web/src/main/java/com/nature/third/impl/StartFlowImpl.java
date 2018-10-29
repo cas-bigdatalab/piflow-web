@@ -95,17 +95,17 @@ public class StartFlowImpl implements IStartFlow {
 		if (null != pathsList && pathsList.size() > 0) {
 			for (Paths path : pathsList) {
 				StopVo fromStopVo = stopsMap.get(path.getFrom());
-				StopVo StopVoto = stopsMap.get(path.getTo());
+				StopVo toStopVo = stopsMap.get(path.getTo());
 				if (null == fromStopVo) {
 					fromStopVo = new StopVo();
 				}
-				if (null == StopVoto) {
-					fromStopVo = new StopVo();
+				if (null == toStopVo) {
+					toStopVo = new StopVo();
 				}
-				String from = (null != StopVoto.getName() ? path.getFrom() : "");
+				String to = (null != toStopVo.getName() ? toStopVo.getName() : "");
 				String outport = (null != path.getOutport() ? path.getOutport() : "");
 				String inport = (null != path.getInport() ? path.getInport() : "");
-				String to = (null != fromStopVo.getName() ? path.getTo() : "");
+				String from = (null != fromStopVo.getName() ? fromStopVo.getName() : "");
 				PathVo pathVo = new PathVo();
 				pathVo.setFrom(from);
 				pathVo.setOutport(outport);

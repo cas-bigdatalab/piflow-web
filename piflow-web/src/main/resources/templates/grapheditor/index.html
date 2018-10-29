@@ -293,6 +293,8 @@
 	<script type="text/javascript">
     	var token = $("meta[name='_csrf']").attr("content");
     	var header = $("meta[name='_csrf_header']").attr("content");
+		var startFlow = $('#startFlow');
+		var stopFlow = $('#stopFlow');
     	$(document).ajaxSend(function(e, xhr, options) {
     	    xhr.setRequestHeader(header, token);
     	});
@@ -372,7 +374,6 @@
 		}
 	    //运行
 	    function runFlow(){
-	    	var startFlow = $('#startFlow');
 	    	startFlow.hide();
             $.ajax({
                 cache:true,//保留缓存数据
@@ -387,9 +388,12 @@
                 },
                 success:function(data){//请求成功之后的操作
                     //console.log("success");
-                	if('0'!==data){
-                		alert('启动成功，返回的appid为：'+data);
-                		$('#appId').val(data);
+                	var dataMap = JSON.parse(data);
+                	if('0'!==dataMap.code){
+                		alert(dataMap.errMsg);
+                		//$('#appId').val(data);
+                		appId = dataMap.appid;
+                		stopFlow.hide();
                 	}else{
                 		alert("启动失败");
                 		startFlow.show();
@@ -400,7 +404,6 @@
 		}
 	    //停止
 	    function stopFlow(){
-	    	var stopFlow = $('#stopFlow');
 	    	stopFlow.hide();
             $.ajax({
                 cache:true,//保留缓存数据
@@ -417,6 +420,7 @@
                     //console.log("success");
                 	if('0'!==data){
                 		alert(data);
+                		startFlow.show();
                 	}else{
                 		alert("停止失败");
                 		stopFlow.show();
@@ -425,7 +429,7 @@
             });
 		}
 	    function getLogUrl(){
-	    	appId = "application_1539850523117_0152";
+	    	//appId = "application_1539850523117_0152";
 	    	$.ajax({
                 cache:true,//保留缓存数据
                 type:"POST",//为post请求

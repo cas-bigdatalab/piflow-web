@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.nature.base.util.FlowXmlUtils;
 import com.nature.base.util.HttpUtils;
+import com.nature.base.util.JsonUtils;
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.Utils;
 import com.nature.base.vo.StatefulRtnBase;
@@ -81,7 +82,11 @@ public class GrapheditorCtrl {
 			model.addAttribute("groupsList", groupsList);
 			Flow flowById = flowServiceImpl.getFlowById(load);
 			if (null != flowById) {
-				model.addAttribute("appId", flowById.getAppId());
+				FlowInfoDb appVo = flowById.getAppId();
+				if (null != appVo) {
+					String appId = appVo.getId();
+					model.addAttribute("appId", appId);
+				}
 			}
 			// 把查詢出來的Flow轉爲XML
 			String loadXml = FlowXmlUtils.mxGraphModelToXml(flowToMxGraphModelVo(flowById));
@@ -122,7 +127,9 @@ public class GrapheditorCtrl {
 	@RequestMapping("/runFlow")
 	@ResponseBody
 	public String runFlow(HttpServletRequest request, Model model) {
-		String rtnMsg = "0";
+		Map<String, String> rtnMap = new HashMap<String, String>();
+		rtnMap.put("code", "0");
+		String errMsg = "";
 		String flowId = request.getParameter("flowId");
 		if (StringUtils.isNotBlank(flowId)) {
 			// 根据flowId查询flow
@@ -134,33 +141,39 @@ public class GrapheditorCtrl {
 					FlowInfoDb flowInfoDb = getFlowInfoImpl.AddFlowInfo(startFlow);
 					//flowInfo接口返回为空的情况
 					if (null == flowInfoDb) {
-						rtnMsg = "flowInfoDb创建失败";
-						flowInfoDb = new FlowInfoDb();
-						flowInfoDb.setId(startFlow);
-						flowInfoDb.setCrtDttm(new Date());
-						flowInfoDb.setCrtUser("wdd");
-						flowInfoDb.setVersion(0L);
-						flowInfoDb.setEnableFlag(true);
-						flowInfoDb.setLastUpdateUser("王栋栋");
-						flowInfoDb.setLastUpdateDttm(new Date());
+						rtnMap.put("flowInfoDbMsg", "flowInfoDb创建失败");
 					}
 					StatefulRtnBase saveAppId = flowServiceImpl.saveAppId(flowId, flowInfoDb);
+					String saveAppIdMsg = "";
 					if (null != saveAppId && saveAppId.isReqRtnStatus()) {
-						logger.info("flowId为" + flowId + "的flow，保存appID成功" + startFlow);
+						saveAppIdMsg = "flowId为" + flowId + "的flow，保存appID成功" + startFlow;
+						rtnMap.put("saveAppIdMsg", saveAppIdMsg);
+						logger.info(saveAppIdMsg);
 					} else {
-						logger.warn("flowId为" + flowId + "的flow，保存appID出错");
+						saveAppIdMsg = "flowId为" + flowId + "的flow，保存appID出错";
+						rtnMap.put("saveAppIdMsg", saveAppIdMsg);
+						logger.warn(saveAppIdMsg);
 					}
-					rtnMsg = "启动成功，返回的appid为：" + startFlow;
+					errMsg = "启动成功，返回的appid为：" + startFlow;
+					rtnMap.put("code", "1");
+					rtnMap.put("appid", startFlow);
+					rtnMap.put("errMsg", errMsg);
 				} else {
-					rtnMsg = "启动失败";
+					errMsg = "启动失败";
+					rtnMap.put("errMsg", errMsg);
+					logger.warn(errMsg);
 				}
 			} else {
-				logger.warn("未查询到flowId为" + flowId + "的flow");
+				errMsg = "未查询到flowId为" + flowId + "的flow";
+				rtnMap.put("errMsg", errMsg);
+				logger.warn(errMsg);
 			}
 		} else {
-			logger.warn("flowId为空");
+			errMsg = "flowId为空";
+			rtnMap.put("errMsg", errMsg);
+			logger.warn(errMsg);
 		}
-		return rtnMsg;
+		return JsonUtils.toJsonNoException(rtnMap);
 	}
 
 	@RequestMapping("/stopFlow")

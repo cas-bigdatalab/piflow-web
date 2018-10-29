@@ -564,7 +564,7 @@ public class FlowServiceImpl implements FlowService {
 										objectPathsMap.remove(pageId);
 									} else {
 										// 如果取到的是空则新增
-										addPaths.add(objPaths);
+										addPaths.add(paths);
 									}
 								}
 								// objectPathsMap中的所有需要修改的移除，剩下为要逻辑删除的
@@ -911,7 +911,7 @@ public class FlowServiceImpl implements FlowService {
 									property.setVersion(0L);
 									property.setEnableFlag(propertyTemplate.getEnableFlag());
 									property.setStops(stops);
-									property.setName(property.getName());
+									property.setName(propertyTemplate.getName());
 									property.setRequired(propertyTemplate.isRequired());
 									property.setSensitive(propertyTemplate.isSensitive());
 									property.setDisplayName(propertyTemplate.getDisplayName());
