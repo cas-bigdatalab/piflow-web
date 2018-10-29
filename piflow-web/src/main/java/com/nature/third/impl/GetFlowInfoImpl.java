@@ -60,12 +60,12 @@ public class GetFlowInfoImpl implements IGetFlowInfo {
 	 */
 	@Override
 	public FlowInfoDb AddFlowInfo(String appId) {
-		FlowInfoDb db = new FlowInfoDb();
 		FlowInfo startFlow2 = getFlowInfo(appId);
 		String progress = iGetFlowProgress.getFlowInfo(appId);
 		logger.info("测试返回信息：" + startFlow2);
 		if ( null != startFlow2 && null!= startFlow2.getFlow()) {
 			FlowInfoDb flowInfoDb = flowInfoDbMapper.flowInfoDb(startFlow2.getFlow().getId());
+			//如果数据库不为空则更新接口返回来的数据
 			if (null != flowInfoDb) {
 				FlowInfoDb up = new FlowInfoDb();
 				up.setId(flowInfoDb.getId());
@@ -74,27 +74,34 @@ public class GetFlowInfoImpl implements IGetFlowInfo {
 				up.setEndTime(startFlow2.getFlow().getEndTime());
 				up.setStartTime(startFlow2.getFlow().getStartTime());
 				up.setProgress(progress);
-				up.setVersion(0L+1);
 				up.setLastUpdateUser("王栋栋");
 				up.setLastUpdateDttm(new Date());
-				flowInfoDbMapper.updateFlowInfo(up);
-				return up;
+				int updateFlowInfo = flowInfoDbMapper.updateFlowInfo(up);
+				if (updateFlowInfo > 0) {
+					return up;
+				} 
+			}else{
+				//接口返回不为空的话,数据库保存
+				FlowInfoDb add = new FlowInfoDb();
+				add.setId(startFlow2.getFlow().getId());
+				add.setName(startFlow2.getFlow().getName());
+				add.setState(startFlow2.getFlow().getState());
+				add.setEndTime(startFlow2.getFlow().getEndTime());
+				add.setStartTime(startFlow2.getFlow().getStartTime());
+				add.setProgress(progress);
+				add.setCrtDttm(new Date());
+				add.setCrtUser("wdd");
+				add.setVersion(0L);
+				add.setEnableFlag(true);
+				add.setLastUpdateUser("王栋栋");
+				add.setLastUpdateDttm(new Date());
+				int addFlowInfo = flowInfoDbMapper.addFlowInfo(add);
+				if (addFlowInfo > 0) {
+					return add;
+				} 
 			}
 		}
-		db.setId(appId);
-		db.setProgress(progress);
-		db.setCrtDttm(new Date());
-		db.setCrtUser("wdd");
-		db.setVersion(0L);
-		db.setEnableFlag(true);
-		db.setLastUpdateUser("王栋栋");
-		db.setLastUpdateDttm(new Date());
-		int addFlowInfo = flowInfoDbMapper.addFlowInfo(db);
-		if (addFlowInfo > 0) {
-			return db;
-		}else {
 			return null;
-		}
 	}
 
 }

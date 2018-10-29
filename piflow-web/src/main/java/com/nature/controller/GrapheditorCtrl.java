@@ -132,6 +132,7 @@ public class GrapheditorCtrl {
 				String startFlow = startFlowImpl.startFlow(flowById);
 				if (StringUtils.isNotBlank(startFlow)) {
 					FlowInfoDb flowInfoDb = getFlowInfoImpl.AddFlowInfo(startFlow);
+					//flowInfo接口返回为空的情况
 					if (null == flowInfoDb) {
 						rtnMsg = "flowInfoDb创建失败";
 						flowInfoDb = new FlowInfoDb();

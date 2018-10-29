@@ -4662,7 +4662,7 @@ DiagramFormatPanel.prototype.addView = function(div)
 	flowName.setAttribute('id', 'flowName');
 	//crtDttm
 	var crtDttmString = document.createElement('label');
-	crtDttmString.setAttribute('id', 'crtDttmString');
+	crtDttmString.setAttribute('id', 'createrTime');
 	
 	var span = document.createElement('span');
 	var span1 = document.createElement('span');

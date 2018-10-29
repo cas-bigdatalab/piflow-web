@@ -24,8 +24,8 @@ public interface FlowInfoDbMapper {
 	 * @param App
 	 * @return
 	 */
-	@Insert("insert into flow_info(id, crt_dttm,crt_user,enable_flag,last_update_dttm,last_update_user,version,end_time,name,start_time,state) VALUES  "
-			+ "( #{app.id},#{app.crtDttm},#{app.crtUser},#{app.enableFlag},#{app.lastUpdateDttm} , #{app.lastUpdateUser},#{app.version},#{app.endTime},#{app.name},#{app.startTime},#{app.state}"
+	@Insert("insert into flow_info(id, crt_dttm,crt_user,enable_flag,last_update_dttm,last_update_user,version,end_time,name,start_time,state,progress) VALUES  "
+			+ "( #{app.id},#{app.crtDttm},#{app.crtUser},#{app.enableFlag},#{app.lastUpdateDttm} , #{app.lastUpdateUser},#{app.version},#{app.endTime},#{app.name},#{app.startTime},#{app.state},#{app.progress}"
 			+ ")")
 	public int addFlowInfo(@Param("app") FlowInfoDb app);
 
@@ -57,7 +57,7 @@ public interface FlowInfoDbMapper {
 	 * @return
 	 */
 	@Update("update flow_info set last_update_dttm = #{app.lastUpdateDttm},last_update_user = #{app.lastUpdateUser},version = version+1,end_time = #{app.endTime},name = #{app.name},"
-			+ "start_time = #{app.startTime},state = #{app.state}  where id  = #{app.id}    "
+			+ "start_time = #{app.startTime},state = #{app.state},progress = #{app.progress}  where id  = #{app.id}    "
 			+ ")")
 	public int updateFlowInfo(@Param("app") FlowInfoDb app);
 	
