@@ -41,5 +41,7 @@ public interface FlowService {
 	public int addFlow(Flow flow);
 
 	public int updateFlow(Flow flow);
+	
+	public int deleteFLowInfo(String id);
 
 }

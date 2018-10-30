@@ -6,11 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.nature.component.workFlow.model.Flow;
-import com.nature.component.workFlow.service.AppService;
+import com.nature.component.workFlow.model.FlowInfoDb;
+import com.nature.component.workFlow.service.FlowInfoDbService;
 import com.nature.mapper.FlowInfoDbMapper;
 
 @Service
-public class AppServiceImpl implements AppService {
+public class FlowInfoDbServiceImpl implements FlowInfoDbService {
 
 	
 	@Autowired
@@ -19,6 +20,11 @@ public class AppServiceImpl implements AppService {
 	@Override
 	public List<Flow> findAppList() {
 		return appMapper.findAppList();
+	}
+
+	@Override
+	public List<FlowInfoDb> getFlowInfoByIds(List<String> ids) {
+		return appMapper.getFlowInfoByIds(ids);
 	}
 	 
 }

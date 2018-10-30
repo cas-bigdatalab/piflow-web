@@ -1,8 +1,10 @@
 package com.nature.mapper.mxGraph;
 
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.Many;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.SelectProvider;
@@ -57,5 +59,9 @@ public interface MxGraphModelMapper {
 			@Result(column = "MX_BACKGROUND", property = "background"),
 			@Result(column = "id", property = "root", many = @Many(select = "com.nature.mapper.mxGraph.MxCellMapper.getMeCellByMxGraphId", fetchType = FetchType.EAGER)) })
 	public MxGraphModel getMxGraphModelById(String id);
+	
+	
+	@Delete("DELETE from mx_graph_model where id = #{id}; ")
+	int deleteMxGraphModelById(@Param("id") String id);
 
 }

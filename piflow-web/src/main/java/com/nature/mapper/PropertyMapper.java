@@ -61,4 +61,11 @@ public interface PropertyMapper {
 	@Delete("delete from flow_stops_property where id=#{id}")
 	public int deleteStopsProperty(String id);
 
+	/**
+	 * delete StopsProperty according to StopId;
+	 * 
+	 * @return
+	 */
+	@Delete("delete from flow_stops_property where id=#{id}")
+	public int deleteStopsPropertyByStopId(String id);
 }

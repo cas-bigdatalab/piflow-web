@@ -955,5 +955,11 @@ public class FlowServiceImpl implements FlowService {
 	public int updateFlow(Flow flow) {
 		return flowMapper.updateFlow(flow);
 	}
+	
+
+	@Override
+	public int deleteFLowInfo(String id) {
+		return flowMapper.deleteFLowInfo(id);
+	}
 
 }

@@ -2,6 +2,7 @@ package com.nature.mapper;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.One;
@@ -68,4 +69,15 @@ public interface FlowInfoDbMapper {
 	 */
 	@SelectProvider(type = FlowInfoDbMapperProvider.class, method = "getFlowInfoDbListByFlowId")
 	public List<FlowInfoDb> getAppListByFlowId(String flowId);
+	
+	@Select({
+			"<script>",
+			"select ",
+			"id,state,progress ",
+			"from flow_info ",
+			"where id in",
+			"<foreach collection='ids' item='id' open='(' separator=',' close=')'>",
+			"#{id}", "</foreach>", "</script>" })
+	List<FlowInfoDb> getFlowInfoByIds(@Param("ids") List<String> ids);
+	
 }

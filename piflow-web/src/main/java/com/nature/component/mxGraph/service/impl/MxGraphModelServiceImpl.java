@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.vo.StatefulRtnBase;
@@ -15,6 +16,7 @@ import com.nature.mapper.mxGraph.MxCellMapper;
 import com.nature.mapper.mxGraph.MxGeometryMapper;
 import com.nature.mapper.mxGraph.MxGraphModelMapper;
 
+@Service
 public class MxGraphModelServiceImpl implements MxGraphModelService {
 
 	Logger logger = LoggerUtil.getLogger();
@@ -63,5 +65,10 @@ public class MxGraphModelServiceImpl implements MxGraphModelService {
 		statefulRtnBase.setErrorCode(statefulRtnBase.ERRCODE_FAIL);
 		statefulRtnBase.setErrorMsg(errMsg);
 		return statefulRtnBase;
+	}
+
+	@Override
+	public int deleteMxGraphModelById(String id) {
+		return mxGraphModelMapper.deleteMxGraphModelById(id);
 	}
 }

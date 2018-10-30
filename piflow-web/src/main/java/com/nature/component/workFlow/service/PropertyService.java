@@ -38,5 +38,11 @@ public interface PropertyService {
      * @return
      */
 	public int deleteStopsProperty(String id);
+	
+	/**
+     * delete StopsProperty according to StopId;
+     * @return
+     */
+	public int deleteStopsPropertyByStopId(String id);
 
 }

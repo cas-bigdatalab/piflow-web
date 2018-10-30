@@ -1,5 +1,6 @@
 package com.nature.mapper.mxGraph;
 
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Result;
@@ -47,5 +48,9 @@ public interface MxGeometryMapper {
 		@Result(column = "MX_HEIGHT", property = "height")
 	})
 	public MxGeometry getMxGeometryById(String id);
+	
+	
+	@Delete("delete from mx_geometry where id = #{id}")
+	public int deleteMxGraphById(String id);
 
 }

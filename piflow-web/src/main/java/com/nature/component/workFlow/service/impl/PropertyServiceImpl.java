@@ -38,4 +38,9 @@ public class PropertyServiceImpl implements PropertyService {
 		return 0;
 	}
 
+	@Override
+	public int deleteStopsPropertyByStopId(String id) {
+		return propertyMapper.deleteStopsPropertyByStopId(id);
+	}
+
 }

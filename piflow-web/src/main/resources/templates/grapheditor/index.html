@@ -155,6 +155,10 @@
 		         });
 			 	function add(data){
 					if(data!=null && data.length>0){
+						  while(divValue.hasChildNodes()) 
+						    {
+							  divValue.removeChild(divValue.firstChild);
+						    }
 						var table=document.createElement("table");
 						table.style.borderCollapse = "separate";
 						table.style.borderSpacing = "0px 5px";
@@ -363,7 +367,7 @@
                 	if(data!=null && data!=""){
                  		 document.getElementById('UUID').innerText = data.id;
            		 		 document.getElementById('flowName').innerText = data.name;
-           				 document.getElementById('crtDttmString').innerText = data.crtDttmString;
+           				 document.getElementById('createrTime').innerText = data.crtDttmString;
                 	}else{
                 		 document.getElementById('UUID').innerText = "No time";
                  		 document.getElementById('flowName').innerText = "No time";

@@ -2,6 +2,7 @@ package com.nature.mapper.mxGraph;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.One;
@@ -62,5 +63,9 @@ public interface MxCellMapper {
 			@Result(column = "MX_VALUE", property = "value"), @Result(column = "MX_VERTEX", property = "vertex"),
 			@Result(column = "fk_mx_geometry_id", property = "mxGeometry", one = @One(select = "com.nature.mapper.mxGraph.MxGeometryMapper.getMxGeometryById", fetchType = FetchType.EAGER)) })
 	public MxCell getMeCellById(String id);
+	
+	
+	@Delete("delete from mx_cell where fk_mx_graph_id = #{id}")
+	public int deleteMxCellByMxId(String id);
 
 }

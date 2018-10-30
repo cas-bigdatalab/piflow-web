@@ -6,14 +6,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -27,14 +28,23 @@ import com.nature.base.vo.StatefulRtnBase;
 import com.nature.component.mxGraph.model.MxCell;
 import com.nature.component.mxGraph.model.MxGeometry;
 import com.nature.component.mxGraph.model.MxGraphModel;
+import com.nature.component.mxGraph.service.MxCellService;
+import com.nature.component.mxGraph.service.MxGraphModelService;
+import com.nature.component.mxGraph.service.MxGraphService;
 import com.nature.component.mxGraph.vo.MxCellVo;
 import com.nature.component.mxGraph.vo.MxGeometryVo;
 import com.nature.component.mxGraph.vo.MxGraphModelVo;
 import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.model.FlowInfoDb;
+import com.nature.component.workFlow.model.Property;
 import com.nature.component.workFlow.model.StopGroup;
+import com.nature.component.workFlow.model.Stops;
 import com.nature.component.workFlow.service.FlowService;
+import com.nature.component.workFlow.service.PathsService;
+import com.nature.component.workFlow.service.PropertyService;
 import com.nature.component.workFlow.service.StopGroupService;
+import com.nature.component.workFlow.service.StopsService;
+import com.nature.mapper.mxGraph.MxCellMapper;
 import com.nature.third.GetFlowInfo;
 import com.nature.third.inf.IGetFlowInfo;
 import com.nature.third.inf.IGetFlowLog;
@@ -67,11 +77,34 @@ public class GrapheditorCtrl {
 	@Autowired
 	private IGetFlowLog getFlowLogImpl;
 
-	@Resource
+	@Autowired
 	private IGetFlowInfo getFlowInfoImpl;
 
-	@Resource
+	@Autowired
 	private GetFlowInfo getFlowInfo;
+	
+	@Autowired
+	private PropertyService propertyService;
+	
+	@Autowired
+	private StopsService stopsService;
+	
+	@Autowired
+	private PathsService pathsService;
+	
+	@Autowired
+	private MxGraphModelService mxGraphModelService;
+	
+	@Autowired
+	private MxCellService mxCellService;
+	
+	@Autowired
+	private MxGraphService mxGraphService;
+	
+	@Autowired
+	private MxCellMapper mxCellMapper;
+	
+	
 
 	@RequestMapping("/grapheditor")
 	public String kitchenSink(Model model, String load) {
@@ -317,5 +350,37 @@ public class GrapheditorCtrl {
 		int result = flowServiceImpl.updateFlow(flow);
 		return result;
 	}
+	
+	
+	@RequestMapping("/deleteFlow")
+	@ResponseBody
+	@Transactional
+	@Rollback(value = false)
+	public int deleteFlow(String id) {
+		int deleteFLowInfo = 0;
+		 Flow flowById = flowServiceImpl.getFlowById(id);
+		 if (null != flowById) {
+			 //删除stops
+			for (Stops stopId : flowById.getStopsList()) {
+				for (Property property : stopId.getProperties()) {
+					propertyService.deleteStopsPropertyByStopId(property.getId());
+				}
+			}
+			stopsService.deleteStopsByFlowId(flowById.getId());
+			pathsService.deletePathsByFlowId(flowById.getId());
+			List<MxCell> root = flowById.getMxGraphModel().getRoot();
+			for (MxCell stopId : root) {
+				MxCell meCellById = mxCellMapper.getMeCellById(stopId.getId());
+				//mxGraphService.deleteMxGraphById(meCellById.getMxGeometry().getId());
+			}
+			mxCellService.deleteMxCellByMxId(flowById.getMxGraphModel().getId());
+			deleteFLowInfo = flowServiceImpl.deleteFLowInfo(id);
+			mxGraphModelService.deleteMxGraphModelById(flowById.getMxGraphModel().getId());
+		}
+		 
+		 return deleteFLowInfo;
+	}
+	
+	 
 
 }

@@ -297,7 +297,6 @@
                     return;
                 },
                 success:function(data){//请求成功之后的操作
-                	 console.info(data);
                 	 layer.closeAll('page'); 
                 	 layer.msg('创建成功',{icon: 1,  shade:0,  time: 2000}, function(){
                 	 var tempwindow=window.open('_blank');
@@ -327,7 +326,7 @@
                 async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
                 error:function(request){//请求失败之后的操作
                 	layer.closeAll('page'); 
-                	layer.msg('修改失败,请稍后再试！',{icon: 2,  shade:0,  time: 2000}, function(){});
+                	layer.msg('修改失败,请稍后再试！',{icon: 2,  shade:0,  time: 2000}, function(){window.location.reload();});
                     return;
                 },
                 success:function(data){//请求成功之后的操作
@@ -383,6 +382,61 @@
                 }
             });
 		}
+	    function tableRow(){
+	    	var arrayObj = new Array();
+	    	var table = $("table tr").find("td:eq(1)");
+	    	for (var i = 0; i<table.length;i++){
+	    		if(table[i].innerHTML != ""){
+	    		arrayObj.push(table[i].innerHTML);
+	    		}
+	    	}
+	    	   $.ajax({
+			         cache:true, 
+			         type:"get", 
+			         url:"/flowInfoDb/list", 
+			         data:{content:arrayObj},
+			         async:true, 
+			         traditional: true,
+			         error:function(request){ 
+			        	 console.log("error");
+			             return;
+			         },
+			         success:function(data){ 
+			        	 if(null != data){
+			        		 for(var k in data){  //通过定义一个局部变量k遍历获取到了map中所有的key值
+				            	  var docList=data[k]; //获取到了key所对应的value的值！ 
+				            	  document.getElementById(""+k+"").value=docList;
+				            	  document.getElementById(""+k+"Info").innerHTML="进度"+docList+"%";
+				            }
+			        	 }
+			         }
+			     });
+	    }
+	    $(document).ready(function(){
+	    	     /*   c = window.setInterval("tableRow()",5000);    */     
+	    });
+	    
+	    function deleteFlow(id){
+	    	  $.ajax({
+	                cache:true,//保留缓存数据
+	                type:"get",//为post请求
+	                url:"/flow/deleteFlow",//这是我在后台接受数据的文件名
+	                data:{id:id},
+	                async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
+	                error:function(request){//请求失败之后的操作
+	                    return;
+	                },
+	                success:function(data){//请求成功之后的操作
+	                	if(data > 0){
+	                		layer.msg('删除成功',{icon: 1,  shade:0,  time: 2000});
+	                		location.reload(); 
+	                	}else{
+	                		layer.msg('删除成功',{icon: 2,  shade:0,  time: 2000});
+	                		location.reload(); 
+	                	}
+	                }
+	            });
+	    }
 	  //@ sourceURL=table_right.js
 </script>
 </body>
