@@ -14,7 +14,6 @@ import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -40,7 +39,7 @@ import com.nature.component.workFlow.model.Property;
 import com.nature.component.workFlow.model.StopGroup;
 import com.nature.component.workFlow.model.Stops;
 import com.nature.component.workFlow.service.IFlowInfoDbService;
-import com.nature.component.workFlow.service.FlowService;
+import com.nature.component.workFlow.service.IFlowService;
 import com.nature.component.workFlow.service.IPathsService;
 import com.nature.component.workFlow.service.IPropertyService;
 import com.nature.component.workFlow.service.IStopGroupService;
@@ -63,7 +62,7 @@ public class GrapheditorCtrl {
 	Logger logger = LoggerUtil.getLogger();
 
 	@Autowired
-	private FlowService flowServiceImpl;
+	private IFlowService flowServiceImpl;
 
 	@Autowired
 	private IStopGroupService stopGroupServiceImpl;
@@ -99,10 +98,10 @@ public class GrapheditorCtrl {
 	private IMxCellService mxCellServiceImpl;
 	
 	@Autowired
-	private MxGraphService mxGraphService;
+	private IMxGraphService mxGraphServiceImpl;
 	
 	@Autowired
-	private FlowInfoDbService flowInfoDbService;
+	private IFlowInfoDbService flowInfoDbServiceImpl;
 	
 	
 	
@@ -363,7 +362,6 @@ public class GrapheditorCtrl {
 	@RequestMapping("/deleteFlow")
 	@ResponseBody
 	@Transactional
-	@Rollback(value = false)
 	public int deleteFlow(String id) {
 		int deleteFLowInfo = 0;
 		 Flow flowById = flowServiceImpl.getFlowById(id);
@@ -371,7 +369,7 @@ public class GrapheditorCtrl {
 			 //先循环删除stop属性
 			for (Stops stopId : flowById.getStopsList()) {
 				for (Property property : stopId.getProperties()) {
-					propertyService.deleteStopsPropertyByStopId(property.getId());
+					propertyServiceImpl.deleteStopsPropertyByStopId(property.getId());
 				}
 			}
 			//删除stop
@@ -380,9 +378,9 @@ public class GrapheditorCtrl {
 			pathsService.deletePathsByFlowId(flowById.getId());
 			List<MxCell> root = flowById.getMxGraphModel().getRoot();
 			for (MxCell mxcell : root) {
-					mxCellService.deleteMxCellById(mxcell.getId());
+					mxCellServiceImpl.deleteMxCellById(mxcell.getId());
 				if (mxcell.getMxGeometry() != null) {
-					mxGraphService.deleteMxGraphById(mxcell.getMxGeometry().getId());
+					mxGraphServiceImpl.deleteMxGraphById(mxcell.getMxGeometry().getId());
 				}
 				if (mxcell.getMxGraphModel() != null) {
 					mxGraphModelService.deleteMxGraphModelById(mxcell.getMxGraphModel().getId());
@@ -391,7 +389,7 @@ public class GrapheditorCtrl {
 			deleteFLowInfo = flowServiceImpl.deleteFLowInfo(id);
 			mxGraphModelService.deleteMxGraphModelById(flowById.getMxGraphModel().getId());
 			if (flowById.getAppId()!=null) {
-				flowInfoDbService.deleteFlowInfoById(flowById.getAppId().getId());
+				flowInfoDbServiceImpl.deleteFlowInfoById(flowById.getAppId().getId());
 			}
 			
 		}

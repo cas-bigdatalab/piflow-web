@@ -12,11 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.nature.base.util.LoggerUtil;
 import com.nature.component.workFlow.model.FlowInfoDb;
-import com.nature.component.workFlow.service.FlowInfoDbService;
+import com.nature.component.workFlow.service.IFlowInfoDbService;
 import com.nature.mapper.FlowInfoDbMapper;
 import com.nature.third.inf.IGetFlowProgress;
 
@@ -30,7 +29,7 @@ public class FlowInfoDbCtrl {
 	Logger logger = LoggerUtil.getLogger();
 
 	@Autowired
-	private FlowInfoDbService flowInfoDbService;
+	private IFlowInfoDbService flowInfoDbServiceImpl;
 	
 	@Autowired
 	private IGetFlowProgress iGetFlowProgress;

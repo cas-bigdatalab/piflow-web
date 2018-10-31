@@ -10,7 +10,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.nature.base.util.LoggerUtil;
 import com.nature.component.workFlow.model.Flow;
-import com.nature.component.workFlow.service.FlowInfoDbService;
+import com.nature.component.workFlow.service.IFlowInfoDbService;
 
 @Controller
 @RequestMapping("/web/*")
@@ -22,7 +22,7 @@ public class IndexCtrl {
 	Logger logger = LoggerUtil.getLogger();
 
 	@Autowired
-	FlowInfoDbService appService;
+    IFlowInfoDbService appService;
 
 	/**
 	 * @Title 首页
