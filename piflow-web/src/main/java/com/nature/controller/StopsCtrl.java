@@ -33,7 +33,8 @@ public class StopsCtrl {
 			System.out.println(string);
 			//使用#id#标记来截取数据,第一为内容，第二个为要修改记录的id
 			String[] split = string.split("#id#");
-			if (split.length>2) {
+			System.out.println(split.length);
+			if (split.length == 2) {
 				String updateContent = split[0];
 				String updateId = split[1];
 				updateStops = PropertyService.updateStops(updateContent,updateId);

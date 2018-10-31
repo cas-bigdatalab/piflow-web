@@ -164,13 +164,36 @@
 						table.style.borderSpacing = "0px 5px";
 	               		var tbody=document.createElement("tbody");
 						for(var y=0;y<data.length;y++){
+	               			var select = document.createElement('select');
+	               			select.style.width = "125px";
+	               			select.style.height = "22px";
+	               			select.setAttribute('id', ''+data[y].displayName+'');
 							var displayName = data[y].displayName;
 							var customValue = data[y].customValue;
+							var allowableValues = data[y].allowableValues;
+							//如果大于4表示有下拉框
+							if(allowableValues.length > 4){
+							var selectValue = JSON.parse(allowableValues); 
+							var selectInfo =  JSON.stringify(selectValue);
+							var strs=selectInfo.split(",");  
+							//循环给select下来赋值
+							for (i=0;i<strs.length ;i++ ){
+							var option = document.createElement("option");
+							option.value =strs[i];
+							option.innerHTML =strs[i];
+							//设置默认选中项
+							if(strs[i].indexOf(''+customValue+'') != -1){
+								option.setAttribute('selected', 'selected');
+									}
+							select.appendChild(option); 
+								}
+							}
 							var displayName = document.createElement('input');
 							displayName.setAttribute('type', 'text');
 							displayName.setAttribute('id', ''+data[y].displayName+'');
 							displayName.setAttribute('onblur', 'shiqu("'+data[y].id+'","'+data[y].displayName+'")');
-							displayName.style.width = "108px";
+							displayName.style.width = "125px";
+							displayName.style.height = "22px";
 							displayName.setAttribute('value', ''+customValue+'');
 							var spanDisplayName = 'span'+data[y].displayName;
 		               		var spanDisplayName = document.createElement('span');
@@ -179,15 +202,21 @@
 		               		mxUtils.write(spanDisplayName, ''+data[y].displayName+'');
 		               		var tr=document.createElement("tr");
 		               		var td=document.createElement("td");
-		               		td.style.width = "90px";
+		               		td.style.width = "60px";
 		               		var td1=document.createElement("td");
 		               		//开始appendchild()追加各个元素
 		               		td.appendChild(spanDisplayName);
+		               		//本次循环大于4追加下拉,小于4默认文本框
+		               		if(allowableValues.length > 4){
+		               		td1.appendChild(select);
+		               		}else{
 		               		td1.appendChild(displayName);
+		               		}
 		               		tr.appendChild(td);
 		               		tr.appendChild(td1);
 		               		tbody.appendChild(tr);
 		               		table.appendChild(tbody); 
+		               		
 		               	  }
 						var btn = mxUtils.button('保存', mxUtils.bind(this, function(evt)
 						{
@@ -208,11 +237,14 @@
 					         async:true, 
 					         traditional: true,
 					         error:function(request){ 
-					        	 console.log("error");
+					        	 console.log("attribute update error");
+					        	 $("input").css("background-color","#FF0000");
 					             return;
 					         },
 					         success:function(data){ 
-					             console.log("success");
+					             console.log("attribute update success");
+					             $("input").blur();
+					             $("select").blur();
 					         }
 					     });     
 						}));
@@ -365,13 +397,13 @@
                 },
                 success:function(data){//请求成功之后的操作
                 	if(data!=null && data!=""){
-                 		 document.getElementById('UUID').innerText = data.id;
+                 		 document.getElementById('UUID').innerText = data.uuid;
            		 		 document.getElementById('flowName').innerText = data.name;
            				 document.getElementById('createrTime').innerText = data.crtDttmString;
                 	}else{
-                		 document.getElementById('UUID').innerText = "No time";
-                 		 document.getElementById('flowName').innerText = "No time";
-                 		 document.getElementById('crtDttmString').innerText = "No time";
+                		 document.getElementById('UUID').innerText = "No content";
+                 		 document.getElementById('flowName').innerText = "No content";
+                 		 document.getElementById('createrTime').innerText = "No content";
                 	}
                 }
             });

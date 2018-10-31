@@ -109,6 +109,7 @@ public class GetFlowInfoImpl implements IGetFlowInfo {
 			kong.setVersion(0L);
 			kong.setEnableFlag(true);
 			kong.setLastUpdateUser("王栋栋");
+			kong.setProgress("0");
 			kong.setLastUpdateDttm(new Date());
 			flowInfoDbMapper.addFlowInfo(kong);
 			return kong;

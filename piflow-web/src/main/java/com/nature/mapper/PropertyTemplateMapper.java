@@ -28,7 +28,7 @@ public interface PropertyTemplateMapper {
 	 * @param id
 	 * @return
 	 */
-	@Select("select fsp.id, fsp.name, fsp.description,fsp.display_name,fsp.custom_value,fsp.version from flow_stops_property fsp where fsp.fk_stops_id = #{id}")
+	@Select("select fsp.id, fsp.name, fsp.description,fsp.display_name,fsp.custom_value,fsp.version,fsp.allowable_values from flow_stops_property fsp where fsp.fk_stops_id = #{id}")
 	List<Property> getPropertyBySotpsId(String id);
 	
 	/**
