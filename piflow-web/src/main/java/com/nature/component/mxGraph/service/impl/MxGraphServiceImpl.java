@@ -5,11 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.nature.base.util.LoggerUtil;
-import com.nature.component.mxGraph.service.MxGraphService;
+import com.nature.component.mxGraph.service.IMxGraphService;
 import com.nature.mapper.mxGraph.MxGeometryMapper;
 
 @Service
-public class MxGraphServiceImpl implements MxGraphService {
+public class MxGraphServiceImpl implements IMxGraphService {
 
 	Logger logger = LoggerUtil.getLogger();
 

@@ -1,6 +1,7 @@
 server:
   port: 7001
   servlet:
+    context-path: /piflow-web
     session:
       timeout: 600
 spring:

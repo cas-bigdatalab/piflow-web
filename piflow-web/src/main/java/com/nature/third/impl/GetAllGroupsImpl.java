@@ -15,7 +15,9 @@ import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.Utils;
 import com.nature.common.constant.SysParamsCache;
 import com.nature.component.workFlow.model.StopGroup;
+import com.nature.mapper.PropertyTemplateMapper;
 import com.nature.mapper.StopGroupMapper;
+import com.nature.mapper.StopsTemplateMapper;
 import com.nature.third.inf.IGetAllGroups;
 
 @Component

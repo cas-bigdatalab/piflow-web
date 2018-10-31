@@ -7,11 +7,11 @@ import org.springframework.stereotype.Service;
 
 import com.nature.component.workFlow.model.Property;
 import com.nature.component.workFlow.model.Stops;
-import com.nature.component.workFlow.service.PropertyService;
+import com.nature.component.workFlow.service.IPropertyService;
 import com.nature.mapper.PropertyMapper;
 
 @Service
-public class PropertyServiceImpl implements PropertyService {
+public class PropertyServiceImpl implements IPropertyService {
 
 	@Autowired
 	PropertyMapper propertyMapper;

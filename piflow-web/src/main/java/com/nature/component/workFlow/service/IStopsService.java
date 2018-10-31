@@ -1,7 +1,7 @@
 package com.nature.component.workFlow.service;
 
 
-public interface StopsService {
+public interface IStopsService {
 	
 	public int deleteStopsByFlowId(String id);
 

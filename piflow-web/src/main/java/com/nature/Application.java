@@ -3,12 +3,16 @@ package com.nature;
 import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
 import com.nature.base.util.LoggerUtil;
 
 @SpringBootApplication
 @MapperScan(basePackages = "com.nature.mapper.*.*")
+@EnableAutoConfiguration
 public class Application {
 
 	static Logger logger = LoggerUtil.getLogger();

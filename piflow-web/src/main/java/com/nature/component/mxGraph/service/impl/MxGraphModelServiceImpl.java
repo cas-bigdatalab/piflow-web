@@ -11,13 +11,13 @@ import com.nature.base.vo.StatefulRtnBase;
 import com.nature.component.mxGraph.model.MxCell;
 import com.nature.component.mxGraph.model.MxGeometry;
 import com.nature.component.mxGraph.model.MxGraphModel;
-import com.nature.component.mxGraph.service.MxGraphModelService;
+import com.nature.component.mxGraph.service.IMxGraphModelService;
 import com.nature.mapper.mxGraph.MxCellMapper;
 import com.nature.mapper.mxGraph.MxGeometryMapper;
 import com.nature.mapper.mxGraph.MxGraphModelMapper;
 
 @Service
-public class MxGraphModelServiceImpl implements MxGraphModelService {
+public class MxGraphModelServiceImpl implements IMxGraphModelService {
 
 	Logger logger = LoggerUtil.getLogger();
 

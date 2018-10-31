@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.nature.component.workFlow.model.StopGroup;
 
-public interface StopGroupService {
+public interface IStopGroupService {
 
 	public List<StopGroup> getStopGroupAll();
 

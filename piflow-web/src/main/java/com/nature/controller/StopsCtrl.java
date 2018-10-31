@@ -5,18 +5,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nature.component.workFlow.model.Stops;
-import com.nature.component.workFlow.service.PropertyService;
+import com.nature.component.workFlow.service.IPropertyService;
 
 @RestController
 @RequestMapping("/stops")
 public class StopsCtrl {
 	
 	@Autowired
-	PropertyService PropertyService;
+	IPropertyService propertyServiceImpl;
 
 	@RequestMapping("/queryIdInfo")
 	public Stops getStopGroup(String fid,String id) {
-		Stops queryInfo = PropertyService.queryAll(fid,id);
+		Stops queryInfo = propertyServiceImpl.queryAll(fid,id);
 		return (Stops) queryInfo;
 	}
 	
@@ -37,7 +37,7 @@ public class StopsCtrl {
 			if (split.length == 2) {
 				String updateContent = split[0];
 				String updateId = split[1];
-				updateStops = PropertyService.updateStops(updateContent,updateId);
+				updateStops = propertyServiceImpl.updateStops(updateContent,updateId);
 			}
 		}
 		return updateStops;
@@ -45,7 +45,7 @@ public class StopsCtrl {
 	
 	@RequestMapping("/updateStopsOne")
 	public Integer updateStops(String content,String id){
-		int updateStops = PropertyService.updateStops(content,id);
+		int updateStops = propertyServiceImpl.updateStops(content,id);
 		return updateStops;
 		
 	}

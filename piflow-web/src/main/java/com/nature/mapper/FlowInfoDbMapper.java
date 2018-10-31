@@ -51,9 +51,10 @@ public interface FlowInfoDbMapper {
 	 */
 	@Select("SELECT * FROM flow_info where enable_flag = '1' and id = #{id} ")
 	public FlowInfoDb flowInfoDb(@Param("id") String appId);
-	
+
 	/**
 	 * 修改
+	 * 
 	 * @param app
 	 * @return
 	 */
@@ -61,9 +62,10 @@ public interface FlowInfoDbMapper {
 			+ "start_time = #{app.startTime},state = #{app.state},progress = #{app.progress}  where id  = #{app.id}    "
 			+ ")")
 	public int updateFlowInfo(@Param("app") FlowInfoDb app);
-	
+
 	/**
 	 * 根据flowID查询appId信息
+	 * 
 	 * @param flowId
 	 * @return
 	 */

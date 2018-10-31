@@ -87,36 +87,36 @@
                     <ul class="nav nav-pills nav-stacked main-menu">
                         <li class="nav-header">Main</li>
                         <li>
-                        	<a class="ajax-link" onclick="loadGetRight('indexHome')">
+                        	<a class="ajax-link" onclick="loadGetRight('/piflow-web/web/indexHome')">
                         		<i class="glyphicon glyphicon-home"></i>
                         		<span> Dashboard</span>
                         	</a>
                         </li>
                         <li>
-                        	<a class="ajax-link" onclick="loadGetRight('ui')">
+                        	<a class="ajax-link" onclick="loadGetRight('/piflow-web/web/ui')">
 	                        	<i class="glyphicon glyphicon-eye-open"></i>
 	                        	<span> UI Features</span>
                         	</a>
                         </li>
                         <li>
-                        	<a class="ajax-link" onclick="initAll('flowList')">
+                        	<a class="ajax-link" onclick="initAll('/piflow-web/web/flowList')">
                         		<i class="glyphicon glyphicon-align-justify"></i>
                         		<span> Tables</span>
                         	</a>
                         </li>
                         <li>
-                        	<a class="ajax-link" onclick="loadGetRight('tour')">
+                        	<a class="ajax-link" onclick="loadGetRight('/piflow-web/web/tour')">
                         	<i class="glyphicon glyphicon-globe"></i>
                         	<span> Tour</span>
                         	</a>
                         </li>
-                        <li><a class="ajax-link" href="errorPage">
+                        <li><a class="ajax-link" href="/piflow-web/web/errorPage">
                         		<i class="glyphicon glyphicon-ban-circle"></i>
                         		<span> Error Page</span>
                         	</a>
                         </li>
                         <li>
-	                        <a class="ajax-link" href="login">
+	                        <a class="ajax-link" href="/piflow-web/web/login">
 	                        	<i class="glyphicon glyphicon-lock"></i>
 	                        	<span> Login Page</span>
 	                        </a>
@@ -288,7 +288,7 @@
               $.ajax({
                 cache:true,//保留缓存数据
                 type:"get",//为post请求
-                url:"/flow/saveFlowInfo",//这是我在后台接受数据的文件名
+                url:"/piflow-web/flow/saveFlowInfo",//这是我在后台接受数据的文件名
                 data:{name:flowName,description:description},
                 async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
                 error:function(request){//请求失败之后的操作
@@ -321,7 +321,7 @@
               $.ajax({
                 cache:true,//保留缓存数据
                 type:"get",//为post请求
-                url:"/flow/updateFlowInfo",//这是我在后台接受数据的文件名
+                url:"/piflow-web/flow/updateFlowInfo",//这是我在后台接受数据的文件名
                 data:{id:id,name:flowName,description:description},
                 async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
                 error:function(request){//请求失败之后的操作
@@ -342,7 +342,7 @@
             $.ajax({
                 cache:true,//保留缓存数据
                 type:"get",//为post请求
-                url:"/flow/runFlow",//这是我在后台接受数据的文件名
+                url:"/piflow-web/flow/runFlow",//这是我在后台接受数据的文件名
                 //data:$('#loginForm').serialize(),//将该表单序列化
                 data:{flowId:loadId},
                 async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
@@ -366,7 +366,7 @@
             $.ajax({
                 cache:true,//保留缓存数据
                 type:"get",//为post请求
-                url:"/flow/stopFlow",//这是我在后台接受数据的文件名
+                url:"/piflow-web/flow/stopFlow",//这是我在后台接受数据的文件名
                 //data:$('#loginForm').serialize(),//将该表单序列化
                 data:{flowId:loadId},
                 async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
@@ -396,7 +396,7 @@
 	    	   $.ajax({
 			         cache:true, 
 			         type:"get", 
-			         url:"/flowInfoDb/list", 
+			         url:"/piflow-web/flowInfoDb/list", 
 			         data:{content:arrayObj},
 			         async:true, 
 			         traditional: true,
@@ -423,7 +423,7 @@
 	    	  $.ajax({
 	                cache:true,//保留缓存数据
 	                type:"get",//为post请求
-	                url:"/flow/deleteFlow",//这是我在后台接受数据的文件名
+	                url:"/piflow-web/flow/deleteFlow",//这是我在后台接受数据的文件名
 	                data:{id:id},
 	                async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
 	                error:function(request){//请求失败之后的操作

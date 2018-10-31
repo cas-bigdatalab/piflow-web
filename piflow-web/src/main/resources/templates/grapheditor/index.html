@@ -9,11 +9,27 @@
 	<meta name="_csrf_header" th:content="${_csrf.headerName}" />
 	<link rel="stylesheet" type="text/css" th:href="@{/grapheditor/styles/grapheditor.css}">
 	<link rel="stylesheet" type="text/css" th:href="@{/charisma/css/bootstrap.min.css}">
+	<style type="text/css">
+       /*人为制造一个占据整个屏幕的Div,其透明度为0.7且z-index为9999使之前的页面被压在底层无法点击*/
+       .fullScreen
+       {
+           position: fixed;
+           width: 100%;
+           height: 100%;
+           left: 0;
+           top: 0;
+           opacity: 0.7;
+           background-color: black;
+           z-index: 9999;
+           text-align: center;
+       }
+	</style>
 	<script th:inline="javascript">
 		var stopsGroupData = [[${groupsList}]];
 		var xmlDate = [[${xmlDate}]];
 		var loadId = [[${load}]];
 		var appId = [[${appId}]];
+		var flowState = [[${flowState}]];
 		var stdoutLog = [[${stdoutLog}]];
 		var stderrLog = [[${stderrLog}]];
 		var divValue = null;
@@ -77,6 +93,13 @@
 	<script type="text/javascript" th:src="@{/charisma/js/bootstrap.min.js}"></script>
 </head>
 <body class="geEditor">
+     <div id='fullScreen' class="fullScreen" style="display: none;">
+         <div style="margin-top: 15%;">
+             <p>
+                 <img th:src="@{/img/fullScreen.gif}" alt="">
+             </p>
+         </div>  
+     </div>
 	<div style="width: 30%; float: right;">
 		<div style="position: fixed; z-index: 999;text-align: right; width: 30%;">
 			<input id="startFlow" type="button" onclick="runFlow()" value="运行"/>
@@ -216,7 +239,6 @@
 		               		tr.appendChild(td1);
 		               		tbody.appendChild(tr);
 		               		table.appendChild(tbody); 
-		               		
 		               	  }
 						var btn = mxUtils.button('保存', mxUtils.bind(this, function(evt)
 						{
@@ -331,6 +353,7 @@
     	var header = $("meta[name='_csrf_header']").attr("content");
 		var startFlow = $('#startFlow');
 		var stopFlow = $('#stopFlow');
+		var fullScreen = $('#fullScreen')
     	$(document).ajaxSend(function(e, xhr, options) {
     	    xhr.setRequestHeader(header, token);
     	});
@@ -343,7 +366,7 @@
             $.ajax({
                 cache:true,//保留缓存数据
                 type:"POST",//为post请求
-                url:"saveData",//这是我在后台接受数据的文件名
+                url:"/piflow-web/flow/saveData",//这是我在后台接受数据的文件名
                 //data:$('#loginForm').serialize(),//将该表单序列化
                 data:{imageXML:sssss,load:loadId},
                 async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
@@ -361,7 +384,7 @@
 	    	$.ajax({
                 cache:true,//保留缓存数据
                 type:"POST",//为post请求
-                url:"loadData",//这是我在后台接受数据的文件名
+                url:"/piflow-web/flow/loadData",//这是我在后台接受数据的文件名
                 //data:$('#loginForm').serialize(),//将该表单序列化
                 async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
                 error:function(request){//请求失败之后的操作
@@ -389,7 +412,7 @@
 	    		data:{"load":loadId},
                 cache:true,//保留缓存数据
                 type:"POST",//为post请求
-                url:"/flow/queryFlowData",//这是我在后台接受数据的文件名
+                url:"/piflow-web/flow/queryFlowData",//这是我在后台接受数据的文件名
                 async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
                 error:function(request){//请求失败之后的操作
                     return;
@@ -411,10 +434,11 @@
 	    //运行
 	    function runFlow(){
 	    	startFlow.hide();
+	    	fullScreen.show();
             $.ajax({
                 cache:true,//保留缓存数据
                 type:"POST",//为post请求
-                url:"runFlow",//这是我在后台接受数据的文件名
+                url:"/piflow-web/flow/runFlow",//这是我在后台接受数据的文件名
                 //data:$('#loginForm').serialize(),//将该表单序列化
                 data:{flowId:loadId},
                 async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
@@ -434,17 +458,18 @@
                 		alert("启动失败");
                 		startFlow.show();
                 	}
-					
+                	fullScreen.hide();
                 }
             });
 		}
 	    //停止
 	    function stopFlow(){
 	    	stopFlow.hide();
+	    	fullScreen.show();
             $.ajax({
                 cache:true,//保留缓存数据
                 type:"POST",//为post请求
-                url:"stopFlow",//这是我在后台接受数据的文件名
+                url:"/piflow-web/flow/stopFlow",//这是我在后台接受数据的文件名
                 //data:$('#loginForm').serialize(),//将该表单序列化
                 data:{flowId:loadId},
                 async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
@@ -461,6 +486,7 @@
                 		alert("停止失败");
                 		stopFlow.show();
                 	}
+                	fullScreen.hide();
                 }
             });
 		}
@@ -469,7 +495,7 @@
 	    	$.ajax({
                 cache:true,//保留缓存数据
                 type:"POST",//为post请求
-                url:"getLogUrl",//这是我在后台接受数据的文件名
+                url:"/piflow-web/flow/getLogUrl",//这是我在后台接受数据的文件名
                 //data:$('#loginForm').serialize(),//将该表单序列化
                 data:{"appId":appId},
                 async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
@@ -481,6 +507,7 @@
 	                if('0'!==data.code){
 	                	stdoutLog = data.stdoutLog;
 	                	stderrLog = data.stderrLog;
+	                	changeUrl(1);
 	                }
 					//alert(data);
                 }
@@ -501,7 +528,7 @@
 			$.ajax({
                 cache:true,//保留缓存数据
                 type:"POST",//为post请求
-                url:"getLog",//这是我在后台接受数据的文件名
+                url:"/piflow-web/flow/getLog",//这是我在后台接受数据的文件名
                 //data:$('#loginForm').serialize(),//将该表单序列化
                 data:{url:url},
                 async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死

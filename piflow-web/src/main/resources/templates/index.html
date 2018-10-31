@@ -25,19 +25,19 @@
     <link id="bs-css" th:href="@{/bootstrap/css/bootstrap-cerulean.min.css}" rel="stylesheet">
 
     <link th:href="@{/charisma/css/charisma-app.css}" rel="stylesheet">
-    <link th:href='@{/charisma/fullcalendar/fullcalendar.css}' rel='stylesheet'>
-    <link th:href='@{/charisma/fullcalendar/fullcalendar.print.css}' rel='stylesheet' media='print'>
-    <link th:href='@{/charisma/chosen/chosen.min.css}' rel='stylesheet'>
-    <link th:href='@{/charisma/colorbox/colorbox.css}' rel='stylesheet'>
-    <link th:href='@{/charisma/responsive-tables/responsive-tables.css}' rel='stylesheet'>
-    <link th:href='@{/charisma/bootstrap-tour/css/bootstrap-tour.min.css}' rel='stylesheet'>
-    <link th:href='@{/charisma/css/jquery.noty.css}' rel='stylesheet'>
-    <link th:href='@{/charisma/css/noty_theme_default.css}' rel='stylesheet'>
-    <link th:href='@{/charisma/css/elfinder.min.css}' rel='stylesheet'>
-    <link th:href='@{/charisma/css/elfinder.theme.css}' rel='stylesheet'>
-    <link th:href='@{/charisma/css/jquery.iphone.toggle.css}' rel='stylesheet'>
-    <link th:href='@{/charisma/css/uploadify.css}' rel='stylesheet'>
-    <link th:href='@{/charisma/css/animate.min.css}' rel='stylesheet'>
+    <link th:href="@{/charisma/fullcalendar/fullcalendar.css}" rel='stylesheet'>
+    <link th:href="@{/charisma/fullcalendar/fullcalendar.print.css}" rel='stylesheet' media='print'>
+    <link th:href="@{/charisma/chosen/chosen.min.css}" rel='stylesheet'>
+    <link th:href="@{/charisma/colorbox/colorbox.css}" rel='stylesheet'>
+    <link th:href="@{/charisma/responsive-tables/responsive-tables.css}" rel='stylesheet'>
+    <link th:href="@{/charisma/bootstrap-tour/css/bootstrap-tour.min.css}" rel='stylesheet'>
+    <link th:href="@{/charisma/css/jquery.noty.css}" rel='stylesheet'>
+    <link th:href="@{/charisma/css/noty_theme_default.css}" rel='stylesheet'>
+    <link th:href="@{/charisma/css/elfinder.min.css}" rel='stylesheet'>
+    <link th:href="@{/charisma/css/elfinder.theme.css}" rel='stylesheet'>
+    <link th:href="@{/charisma/css/jquery.iphone.toggle.css}" rel='stylesheet'>
+    <link th:href="@{/charisma/css/uploadify.css}" rel='stylesheet'>
+    <link th:href="@{/charisma/css/animate.min.css}" rel='stylesheet'>
 
     <!-- jQuery -->
     <script th:src="@{/js/jquery/jquery.min.js}"></script>
@@ -88,36 +88,36 @@
                     <ul class="nav nav-pills nav-stacked main-menu">
                         <li class="nav-header">Main</li>
                         <li>
-                        	<a class="ajax-link" onclick="loadGetRight('indexHome')">
+                        	<a class="ajax-link" onclick="loadGetRight('/piflow-web/web/indexHome')">
                         		<i class="glyphicon glyphicon-home"></i>
                         		<span> Dashboard</span>
                         	</a>
                         </li>
                         <li>
-                        	<a class="ajax-link" onclick="loadGetRight('ui')">
+                        	<a class="ajax-link" onclick="loadGetRight('/piflow-web/web/ui')">
 	                        	<i class="glyphicon glyphicon-eye-open"></i>
 	                        	<span> UI Features</span>
                         	</a>
                         </li>
                         <li>
-                        	<a class="ajax-link" onclick="initAll('flowList')">
+                        	<a class="ajax-link" onclick="initAll('/piflow-web/web/flowList')">
                         		<i class="glyphicon glyphicon-align-justify"></i>
                         		<span> Tables</span>
                         	</a>
                         </li>
                         <li>
-                        	<a class="ajax-link" onclick="loadGetRight('tour')">
+                        	<a class="ajax-link" onclick="loadGetRight('/piflow-web/web/tour')">
                         	<i class="glyphicon glyphicon-globe"></i>
                         	<span> Tour</span>
                         	</a>
                         </li>
-                        <li><a class="ajax-link" href="errorPage">
+                        <li><a class="ajax-link" href="/piflow-web/web/errorPage">
                         		<i class="glyphicon glyphicon-ban-circle"></i>
                         		<span> Error Page</span>
                         	</a>
                         </li>
                         <li>
-	                        <a class="ajax-link" href="login">
+	                        <a class="ajax-link" href="/piflow-web/web/login">
 	                        	<i class="glyphicon glyphicon-lock"></i>
 	                        	<span> Login Page</span>
 	                        </a>
@@ -182,10 +182,10 @@
 <!-- library for cookie management -->
 <script th:src="@{/charisma/js/jquery.cookie.js}"></script>
 <!-- calender plugin -->
-<script th:src='@{/charisma/moment/min/moment.min.js}'></script>
-<script th:src='@{/charisma/fullcalendar/fullcalendar.min.js}'></script>
+<script th:src="@{/charisma/moment/min/moment.min.js}"></script>
+<script th:src="@{/charisma/fullcalendar/fullcalendar.min.js}"></script>
 <!-- data table plugin -->
-<script th:src='@{/charisma/js/jquery.dataTables.min.js}'></script>
+<script th:src="@{/charisma/js/jquery.dataTables.min.js}"></script>
 <!-- select or dropdown enhancer -->
 <script th:src="@{/charisma/chosen/chosen.jquery.min.js}"></script>
 <!-- plugin for gallery image view -->

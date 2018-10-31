@@ -28,9 +28,9 @@ import com.nature.base.vo.StatefulRtnBase;
 import com.nature.component.mxGraph.model.MxCell;
 import com.nature.component.mxGraph.model.MxGeometry;
 import com.nature.component.mxGraph.model.MxGraphModel;
-import com.nature.component.mxGraph.service.MxCellService;
-import com.nature.component.mxGraph.service.MxGraphModelService;
-import com.nature.component.mxGraph.service.MxGraphService;
+import com.nature.component.mxGraph.service.IMxCellService;
+import com.nature.component.mxGraph.service.IMxGraphModelService;
+import com.nature.component.mxGraph.service.IMxGraphService;
 import com.nature.component.mxGraph.vo.MxCellVo;
 import com.nature.component.mxGraph.vo.MxGeometryVo;
 import com.nature.component.mxGraph.vo.MxGraphModelVo;
@@ -39,12 +39,12 @@ import com.nature.component.workFlow.model.FlowInfoDb;
 import com.nature.component.workFlow.model.Property;
 import com.nature.component.workFlow.model.StopGroup;
 import com.nature.component.workFlow.model.Stops;
-import com.nature.component.workFlow.service.FlowInfoDbService;
+import com.nature.component.workFlow.service.IFlowInfoDbService;
 import com.nature.component.workFlow.service.FlowService;
-import com.nature.component.workFlow.service.PathsService;
-import com.nature.component.workFlow.service.PropertyService;
-import com.nature.component.workFlow.service.StopGroupService;
-import com.nature.component.workFlow.service.StopsService;
+import com.nature.component.workFlow.service.IPathsService;
+import com.nature.component.workFlow.service.IPropertyService;
+import com.nature.component.workFlow.service.IStopGroupService;
+import com.nature.component.workFlow.service.IStopsService;
 import com.nature.third.GetFlowInfo;
 import com.nature.third.inf.IGetFlowInfo;
 import com.nature.third.inf.IGetFlowLog;
@@ -66,7 +66,7 @@ public class GrapheditorCtrl {
 	private FlowService flowServiceImpl;
 
 	@Autowired
-	private StopGroupService stopGroupServiceImpl;
+	private IStopGroupService stopGroupServiceImpl;
 
 	@Autowired
 	private IStartFlow startFlowImpl;
@@ -84,19 +84,19 @@ public class GrapheditorCtrl {
 	private GetFlowInfo getFlowInfo;
 	
 	@Autowired
-	private PropertyService propertyService;
-	
+	private IPropertyService propertyServiceImpl;
+
 	@Autowired
-	private StopsService stopsService;
-	
+	private IStopsService stopsService;
+
 	@Autowired
-	private PathsService pathsService;
-	
+	private IPathsService pathsService;
+
 	@Autowired
-	private MxGraphModelService mxGraphModelService;
-	
+	private IMxGraphModelService mxGraphModelService;
+
 	@Autowired
-	private MxCellService mxCellService;
+	private IMxCellService mxCellServiceImpl;
 	
 	@Autowired
 	private MxGraphService mxGraphService;
@@ -119,7 +119,9 @@ public class GrapheditorCtrl {
 				FlowInfoDb appVo = flowById.getAppId();
 				if (null != appVo) {
 					String appId = appVo.getId();
+					String state = appVo.getState();
 					model.addAttribute("appId", appId);
+					model.addAttribute("flowState", state);
 				}
 			}
 			// 把查詢出來的Flow轉爲XML
@@ -173,7 +175,7 @@ public class GrapheditorCtrl {
 				String startFlow = startFlowImpl.startFlow(flowById);
 				if (StringUtils.isNotBlank(startFlow)) {
 					FlowInfoDb flowInfoDb = getFlowInfoImpl.AddFlowInfo(startFlow);
-					//flowInfo接口返回为空的情况
+					// flowInfo接口返回为空的情况
 					if (null == flowInfoDb) {
 						rtnMap.put("flowInfoDbMsg", "flowInfoDb创建失败");
 					}
@@ -395,7 +397,5 @@ public class GrapheditorCtrl {
 		}
 		 return deleteFLowInfo;
 	}
-	
-	 
 
 }

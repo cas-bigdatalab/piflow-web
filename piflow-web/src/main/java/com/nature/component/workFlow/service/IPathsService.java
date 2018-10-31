@@ -1,7 +1,7 @@
 package com.nature.component.workFlow.service;
 
 
-public interface PathsService {
+public interface IPathsService {
 	
 	 public int deletePathsByFlowId(String id);
 

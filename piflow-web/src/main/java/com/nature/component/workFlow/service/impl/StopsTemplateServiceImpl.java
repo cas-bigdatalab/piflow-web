@@ -4,11 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.nature.component.workFlow.model.StopsTemplate;
-import com.nature.component.workFlow.service.StopsTemplateService;
+import com.nature.component.workFlow.service.IStopsTemplateService;
 import com.nature.mapper.StopsTemplateMapper;
 
 @Service
-public class StopsTemplateServiceImpl implements StopsTemplateService {
+public class StopsTemplateServiceImpl implements IStopsTemplateService {
 
 	@Autowired
 	StopsTemplateMapper stopsTemplateMapper;

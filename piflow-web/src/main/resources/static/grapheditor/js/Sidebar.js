@@ -160,12 +160,12 @@ Sidebar.prototype.gearImage = STENCIL_PATH + '/clipart/Gear_128x128.png';
 /**
  * Specifies the width of the thumbnails.
  */
-Sidebar.prototype.thumbWidth = 90;
+Sidebar.prototype.thumbWidth = 56;
 
 /**
  * Specifies the height of the thumbnails.
  */
-Sidebar.prototype.thumbHeight = 90;
+Sidebar.prototype.thumbHeight = 56;
 
 /**
  * Specifies the padding for the thumbnails. Default is 3.
@@ -212,12 +212,12 @@ Sidebar.prototype.addStencilsToIndex = true;
 /**
  * Specifies the width for clipart images. Default is 80.
  */
-Sidebar.prototype.defaultImageWidth = 100;
+Sidebar.prototype.defaultImageWidth = 66;
 
 /**
  * Specifies the height for clipart images. Default is 80.
  */
-Sidebar.prototype.defaultImageHeight = 100;
+Sidebar.prototype.defaultImageHeight = 66;
 
 /**
  * Adds all palettes to the sidebar.
@@ -977,6 +977,7 @@ Sidebar.prototype.createThumb = function(cells, width, height, parent, title, sh
 		parent.style.backgroundImage = 'url(' + this.editorUi.editor.transparentImage + ')';
 	}
 	
+	//svg属性设置	
 	node.style.position = 'relative';
 	node.style.overflow = 'hidden';
 	node.style.cursor = 'move';

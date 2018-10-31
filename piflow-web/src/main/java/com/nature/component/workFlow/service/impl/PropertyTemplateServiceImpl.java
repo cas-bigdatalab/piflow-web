@@ -2,9 +2,9 @@ package com.nature.component.workFlow.service.impl;
 
 import org.springframework.stereotype.Service;
 
-import com.nature.component.workFlow.service.PropertyTemplateService;
+import com.nature.component.workFlow.service.IPropertyTemplateService;
 
 @Service
-public class PropertyTemplateServiceImpl implements PropertyTemplateService {
+public class PropertyTemplateServiceImpl implements IPropertyTemplateService {
 
 }

@@ -2,7 +2,7 @@ package com.nature.component.workFlow.service;
 
 import com.nature.component.workFlow.model.StopsTemplate;
 
-public interface StopsTemplateService {
+public interface IStopsTemplateService {
 	
 	public StopsTemplate getStopsTemplateById(String id);
 

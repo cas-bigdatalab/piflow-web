@@ -6,7 +6,7 @@ import com.nature.component.workFlow.model.Property;
 import com.nature.component.workFlow.model.Stops;
 
 
-public interface PropertyService {
+public interface IPropertyService {
 	
 	 /**
 	  * Querying group attribute information based on ID

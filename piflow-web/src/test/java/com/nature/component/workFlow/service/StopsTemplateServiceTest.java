@@ -11,7 +11,7 @@ import com.nature.component.workFlow.model.StopsTemplate;
 public class StopsTemplateServiceTest extends ApplicationTests {
 
 	@Autowired
-	private StopsTemplateService stopsTemplateService;
+	private IStopsTemplateService stopsTemplateService;
 
 	Logger logger = LoggerUtil.getLogger();
 
