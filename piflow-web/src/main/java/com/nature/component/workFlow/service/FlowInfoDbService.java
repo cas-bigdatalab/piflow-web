@@ -11,4 +11,6 @@ public interface FlowInfoDbService {
 	public List<Flow> findAppList();
 	
 	public List<FlowInfoDb> getFlowInfoByIds(List<String> ids);
+	
+	public int deleteFlowInfoById(String id);
 }

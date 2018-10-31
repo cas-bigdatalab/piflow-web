@@ -78,6 +78,14 @@ public interface FlowInfoDbMapper {
 			"where id in",
 			"<foreach collection='ids' item='id' open='(' separator=',' close=')'>",
 			"#{id}", "</foreach>", "</script>" })
-	List<FlowInfoDb> getFlowInfoByIds(@Param("ids") List<String> ids);
+	public List<FlowInfoDb> getFlowInfoByIds(@Param("ids") List<String> ids);
+	
+	/**
+	 * 根据id删除flowInfo
+	 * @param id
+	 * @return
+	 */
+	@Delete("DELETE from flow_info where id = #{id}; ")
+	public int deleteFlowInfoById(@Param("id") String id);
 	
 }

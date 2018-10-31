@@ -17,8 +17,8 @@ public class MxCellServiceImpl implements MxCellService {
 	private MxCellMapper mxCellMapper;
 
 	@Override
-	public int deleteMxCellByMxId(String id) {
-		return mxCellMapper.deleteMxCellByMxId(id);
+	public int deleteMxCellById(String id) {
+		return mxCellMapper.deleteMxCellById(id);
 	}
  
 }

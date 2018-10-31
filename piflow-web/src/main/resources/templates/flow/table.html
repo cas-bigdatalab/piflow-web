@@ -239,7 +239,7 @@
 	   function newPath(){
 			layer.open({
 	      	  type: 1,
-	      	  title: '新建流水线',
+	      	  title: 'create flow',
 	      	  shadeClose:true,
 	      	  closeBtn: false,
 	      	  shift: 7,
@@ -257,7 +257,7 @@
 	   function update(id,updateName,updateDescription){
 			layer.open({
 	      	  type: 1,
-	      	  title: '新建流水线',
+	      	  title: 'update flow',
 	      	  shadeClose:true,
 	      	  closeBtn: false,
 	      	  shift: 7,
@@ -390,6 +390,9 @@
 	    		arrayObj.push(table[i].innerHTML);
 	    		}
 	    	}
+	    	if(arrayObj.length == 0){
+	    		return;
+	    	}
 	    	   $.ajax({
 			         cache:true, 
 			         type:"get", 
@@ -413,7 +416,7 @@
 			     });
 	    }
 	    $(document).ready(function(){
-	    	     /*   c = window.setInterval("tableRow()",5000);    */     
+	    	            c = window.setInterval("tableRow()",5000);       
 	    });
 	    
 	    function deleteFlow(id){

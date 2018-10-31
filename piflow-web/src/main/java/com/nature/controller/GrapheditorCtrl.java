@@ -39,12 +39,12 @@ import com.nature.component.workFlow.model.FlowInfoDb;
 import com.nature.component.workFlow.model.Property;
 import com.nature.component.workFlow.model.StopGroup;
 import com.nature.component.workFlow.model.Stops;
+import com.nature.component.workFlow.service.FlowInfoDbService;
 import com.nature.component.workFlow.service.FlowService;
 import com.nature.component.workFlow.service.PathsService;
 import com.nature.component.workFlow.service.PropertyService;
 import com.nature.component.workFlow.service.StopGroupService;
 import com.nature.component.workFlow.service.StopsService;
-import com.nature.mapper.mxGraph.MxCellMapper;
 import com.nature.third.GetFlowInfo;
 import com.nature.third.inf.IGetFlowInfo;
 import com.nature.third.inf.IGetFlowLog;
@@ -102,7 +102,8 @@ public class GrapheditorCtrl {
 	private MxGraphService mxGraphService;
 	
 	@Autowired
-	private MxCellMapper mxCellMapper;
+	private FlowInfoDbService flowInfoDbService;
+	
 	
 	
 
@@ -352,6 +353,11 @@ public class GrapheditorCtrl {
 	}
 	
 	
+	/**
+	 * 根据flowId删除flow关联信息
+	 * @param id
+	 * @return
+	 */
 	@RequestMapping("/deleteFlow")
 	@ResponseBody
 	@Transactional
@@ -360,24 +366,33 @@ public class GrapheditorCtrl {
 		int deleteFLowInfo = 0;
 		 Flow flowById = flowServiceImpl.getFlowById(id);
 		 if (null != flowById) {
-			 //删除stops
+			 //先循环删除stop属性
 			for (Stops stopId : flowById.getStopsList()) {
 				for (Property property : stopId.getProperties()) {
 					propertyService.deleteStopsPropertyByStopId(property.getId());
 				}
 			}
+			//删除stop
 			stopsService.deleteStopsByFlowId(flowById.getId());
+			//删除paths
 			pathsService.deletePathsByFlowId(flowById.getId());
 			List<MxCell> root = flowById.getMxGraphModel().getRoot();
-			for (MxCell stopId : root) {
-				MxCell meCellById = mxCellMapper.getMeCellById(stopId.getId());
-				//mxGraphService.deleteMxGraphById(meCellById.getMxGeometry().getId());
+			for (MxCell mxcell : root) {
+					mxCellService.deleteMxCellById(mxcell.getId());
+				if (mxcell.getMxGeometry() != null) {
+					mxGraphService.deleteMxGraphById(mxcell.getMxGeometry().getId());
+				}
+				if (mxcell.getMxGraphModel() != null) {
+					mxGraphModelService.deleteMxGraphModelById(mxcell.getMxGraphModel().getId());
+				}
 			}
-			mxCellService.deleteMxCellByMxId(flowById.getMxGraphModel().getId());
 			deleteFLowInfo = flowServiceImpl.deleteFLowInfo(id);
 			mxGraphModelService.deleteMxGraphModelById(flowById.getMxGraphModel().getId());
+			if (flowById.getAppId()!=null) {
+				flowInfoDbService.deleteFlowInfoById(flowById.getAppId().getId());
+			}
+			
 		}
-		 
 		 return deleteFLowInfo;
 	}
 	

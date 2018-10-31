@@ -26,5 +26,10 @@ public class FlowInfoDbServiceImpl implements FlowInfoDbService {
 	public List<FlowInfoDb> getFlowInfoByIds(List<String> ids) {
 		return appMapper.getFlowInfoByIds(ids);
 	}
+
+	@Override
+	public int deleteFlowInfoById(String id) {
+		return appMapper.deleteFlowInfoById(id);
+	}
 	 
 }

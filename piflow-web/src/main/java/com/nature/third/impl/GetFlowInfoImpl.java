@@ -103,7 +103,6 @@ public class GetFlowInfoImpl implements IGetFlowInfo {
 		}
 			FlowInfoDb kong = new FlowInfoDb();
 			//flowInfo接口返回为空的情况
-			kong = new FlowInfoDb();
 			kong.setId(appId);
 			kong.setCrtDttm(new Date());
 			kong.setCrtUser("wdd");
@@ -111,6 +110,7 @@ public class GetFlowInfoImpl implements IGetFlowInfo {
 			kong.setEnableFlag(true);
 			kong.setLastUpdateUser("王栋栋");
 			kong.setLastUpdateDttm(new Date());
+			flowInfoDbMapper.addFlowInfo(kong);
 			return kong;
 	}
 

@@ -65,7 +65,7 @@ public interface MxCellMapper {
 	public MxCell getMeCellById(String id);
 	
 	
-	@Delete("delete from mx_cell where fk_mx_graph_id = #{id}")
-	public int deleteMxCellByMxId(String id);
+	@Delete("delete from mx_cell where id = #{id}")
+	public int deleteMxCellById(String id);
 
 }

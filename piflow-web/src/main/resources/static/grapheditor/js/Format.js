@@ -5102,6 +5102,9 @@ DiagramFormatPanel.prototype.destroy = function()
    function shiqu(id,data){
 	if(data!=null && data.length>0 && id.length>0){
 		var content = document.getElementById(''+data+'').value;
+		if(content == "" ){
+			return;
+		}
 	 $.ajax({
          cache:true, 
          type:"POST", 

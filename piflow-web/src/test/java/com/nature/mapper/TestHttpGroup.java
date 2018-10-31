@@ -4,7 +4,6 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.Base64;
 import java.util.Base64.Decoder;
-import java.util.HashMap;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.SimpleHttpConnectionManager;
@@ -17,21 +16,18 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.junit.Test;
 
-import net.sf.json.JSONObject;
-
+@SuppressWarnings({ "unused", "deprecation" })
 public class TestHttpGroup {
 
 	@Test
 	public void test() {
 		// 请求接口地址
-		String url = "http://10.0.86.98:8001/stop/groups";
+		String url = "http://10.0.86.191:8002/stop/groups";
 		// 请求参数
 		// String userid = "";
 
 		HttpClient httpclient = null;
 		GetMethod post = null;
-		JSONObject jsonResult = null;
-		String result = "";
 		try {
 			// 创建连接
 			httpclient = new HttpClient();
@@ -45,11 +41,8 @@ public class TestHttpGroup {
 			// 判断网络连接状态码是否正常(0--200都数正常)
 			if (post.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 				// 接口返回信息
-				result = new String(post.getResponseBody(), "UTF-8");
-				System.out.println(result + "...");
+				String result = new String(post.getResponseBody(), "UTF-8");
 			}
-			jsonResult = JSONObject.fromObject(result);
-			String apiString = jsonResult.getString("groups");
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -62,18 +55,18 @@ public class TestHttpGroup {
 	@Test
 	public void getStopList() {
 		String urlNameString = "http://10.0.86.98:8002/stop/list";
-		String result = "";
-		String jsonResult = null;
 		try {
 			// 根据地址获取请求
 			HttpGet request = new HttpGet(urlNameString);// 这里发送get请求
 			// 获取当前客户端对象
+			@SuppressWarnings("resource")
 			DefaultHttpClient httpClient = new DefaultHttpClient();
 			// 通过请求对象获取响应对象
 			HttpResponse response = httpClient.execute(request);
 			// 判断网络连接状态码是否正常(0--200都数正常)
 			if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-				result = EntityUtils.toString(response.getEntity(), "utf-8");
+				
+				String result = EntityUtils.toString(response.getEntity(), "utf-8");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -83,15 +76,12 @@ public class TestHttpGroup {
 
 	@Test
 	public void getStopInfo() {
-		HashMap<String, Object> map = new HashMap<>();
-		// String param = "cn.piflow.bundle.http.UnGZip";
-		String param = "cn.piflow.bundle.UserDefineSelectHiveQL";
+		String param = "cn.piflow.bundle.redis.ReadFromRedis";
 		// 请求接口地址
-		String url = "http://10.0.86.98:8002/stop/info" + "?bundle=" + param;
+		String url = "http://10.0.86.191:8002/stop/info" + "?bundle=" + param;
 		// 请求参数
 		HttpClient httpclient = null;
 		GetMethod post = null;
-		String result = "";
 		try {
 			// 创建连接
 			httpclient = new HttpClient();
@@ -103,7 +93,7 @@ public class TestHttpGroup {
 			// 判断网络连接状态码是否正常(0--200都数正常)
 			if (post.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 				// 接口返回信息
-				result = new String(post.getResponseBody(), "UTF-8");
+				String result = new String(post.getResponseBody(), "UTF-8");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
