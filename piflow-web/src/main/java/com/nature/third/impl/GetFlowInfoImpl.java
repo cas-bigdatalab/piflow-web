@@ -74,7 +74,7 @@ public class GetFlowInfoImpl implements IGetFlowInfo {
 				up.setEndTime(startFlow2.getFlow().getEndTime());
 				up.setStartTime(startFlow2.getFlow().getStartTime());
 				up.setProgress(progress);
-				up.setLastUpdateUser("王栋栋");
+				up.setLastUpdateUser("-1");
 				up.setLastUpdateDttm(new Date());
 				int updateFlowInfo = flowInfoDbMapper.updateFlowInfo(up);
 				if (updateFlowInfo > 0) {
@@ -93,7 +93,7 @@ public class GetFlowInfoImpl implements IGetFlowInfo {
 				add.setCrtUser("wdd");
 				add.setVersion(0L);
 				add.setEnableFlag(true);
-				add.setLastUpdateUser("王栋栋");
+				add.setLastUpdateUser("-1");
 				add.setLastUpdateDttm(new Date());
 				int addFlowInfo = flowInfoDbMapper.addFlowInfo(add);
 				if (addFlowInfo > 0) {
@@ -108,7 +108,7 @@ public class GetFlowInfoImpl implements IGetFlowInfo {
 			kong.setCrtUser("wdd");
 			kong.setVersion(0L);
 			kong.setEnableFlag(true);
-			kong.setLastUpdateUser("王栋栋");
+			kong.setLastUpdateUser("-1");
 			kong.setProgress("0");
 			kong.setLastUpdateDttm(new Date());
 			flowInfoDbMapper.addFlowInfo(kong);

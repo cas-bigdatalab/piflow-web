@@ -9,11 +9,11 @@ spring:
 ######  数据源
 ########################################################
   datasource:
-    url: jdbc:mysql://192.168.32.135:3306/mytest?useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowMultiQueries=true
+    url: jdbc:mysql://192.168.32.136:3306/mytest?useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowMultiQueries=true
     username: root
     password: 123456
     driver-class-name: com.mysql.jdbc.Driver
-    type: com.alibaba.druid.pool.DruidDataSource
+    #type: com.alibaba.druid.pool.DruidDataSource
 ########################################################
 ######  模板引擎thymeleaf
 ########################################################

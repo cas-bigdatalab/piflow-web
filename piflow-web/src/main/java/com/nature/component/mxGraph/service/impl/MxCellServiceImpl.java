@@ -9,8 +9,6 @@ import org.springframework.stereotype.Service;
 import com.nature.base.util.LoggerUtil;
 import com.nature.component.mxGraph.service.IMxCellService;
 
-import javax.annotation.Resource;
-
 @Service
 public class MxCellServiceImpl implements IMxCellService {
 

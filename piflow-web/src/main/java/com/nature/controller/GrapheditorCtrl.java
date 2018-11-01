@@ -44,7 +44,6 @@ import com.nature.component.workFlow.service.IPathsService;
 import com.nature.component.workFlow.service.IPropertyService;
 import com.nature.component.workFlow.service.IStopGroupService;
 import com.nature.component.workFlow.service.IStopsService;
-import com.nature.third.GetFlowInfo;
 import com.nature.third.inf.IGetFlowInfo;
 import com.nature.third.inf.IGetFlowLog;
 import com.nature.third.inf.IStartFlow;
@@ -79,9 +78,6 @@ public class GrapheditorCtrl {
 	@Autowired
 	private IGetFlowInfo getFlowInfoImpl;
 
-	@Autowired
-	private GetFlowInfo getFlowInfo;
-	
 	@Autowired
 	private IPropertyService propertyServiceImpl;
 

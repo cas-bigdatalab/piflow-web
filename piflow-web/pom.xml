@@ -21,7 +21,6 @@
     		<!-- 使用UTF-8编码  -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<druid>1.1.6</druid>
 		<!-- 使用jdk1.8版本  -->
 		<java.version>1.8</java.version>
 	</properties>
@@ -52,11 +51,6 @@
 		         <artifactId>spring-boot-starter-tomcat</artifactId>
 		      </exclusion>
 		   </exclusions>
-        </dependency>
-        <!-- thymeleaf 依赖 -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jetty</artifactId>
         </dependency>
 		<!-- thymeleaf 依赖 -->
 		<dependency>
@@ -141,11 +135,13 @@
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 		<!-- druid阿里巴巴数据库连接池 -->
+		<!--
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>druid</artifactId>
 			<version>1.1.6</version>
 		</dependency>
+		-->
 		<!-- 分页插件 -->  
 		<dependency>  
 			<groupId>com.github.pagehelper</groupId>  
@@ -168,10 +164,12 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<!--
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 		</dependency>
+		-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-configuration-processor</artifactId>

@@ -13,7 +13,7 @@ spring:
     username: root
     password: 123456
     driver-class-name: com.mysql.jdbc.Driver
-    type: com.alibaba.druid.pool.DruidDataSource
+    #type: com.alibaba.druid.pool.DruidDataSource
 ########################################################
 ######  模板引擎thymeleaf
 ########################################################

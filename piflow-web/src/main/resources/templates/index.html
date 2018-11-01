@@ -53,29 +53,29 @@
 </head>
 
 <body>
-    <!-- topbar starts -->
-    <div class="navbar navbar-default" role="navigation">
+<!-- topbar starts -->
+<div class="navbar navbar-default" role="navigation">
 
-        <div class="navbar-inner">
-            <a class="navbar-brand" href="index"> <img alt="Charisma Logo" th:src="@{/charisma/img/logo20.png}" class="hidden-xs"/>
-                <span>Nature</span></a>
+    <div class="navbar-inner">
+        <a class="navbar-brand" href="index"> <img alt="Charisma Logo" th:src="@{/charisma/img/logo20.png}" class="hidden-xs"/>
+            <span>Nature</span></a>
 
-            <!-- user dropdown starts -->
-            <div class="btn-group pull-right">
-                <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                    <i class="glyphicon glyphicon-user"></i><span class="hidden-sm hidden-xs"> admin</span>
-                    <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a href="#">Profile</a></li>
-                    <li class="divider"></li>
-                    <li><a href="login">Logout</a></li>
-                </ul>
-            </div>
-            <!-- user dropdown ends -->
+        <!-- user dropdown starts -->
+        <div class="btn-group pull-right">
+            <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                <i class="glyphicon glyphicon-user"></i><span class="hidden-sm hidden-xs"> admin</span>
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a href="#">Profile</a></li>
+                <li class="divider"></li>
+                <li><a href="login">Logout</a></li>
+            </ul>
         </div>
+        <!-- user dropdown ends -->
     </div>
-    <!-- topbar ends -->
+</div>
+<!-- topbar ends -->
 <div class="ch-container">
     <div class="row">
         <!-- left menu starts -->
@@ -87,68 +87,45 @@
                     </div>
                     <ul class="nav nav-pills nav-stacked main-menu">
                         <li class="nav-header">Main</li>
+                        <!--
                         <li>
                         	<a class="ajax-link" onclick="loadGetRight('/piflow-web/web/indexHome')">
                         		<i class="glyphicon glyphicon-home"></i>
                         		<span> Dashboard</span>
                         	</a>
                         </li>
+                        -->
                         <li>
-                        	<a class="ajax-link" onclick="loadGetRight('/piflow-web/web/ui')">
-	                        	<i class="glyphicon glyphicon-eye-open"></i>
-	                        	<span> UI Features</span>
-                        	</a>
-                        </li>
-                        <li>
-                        	<a class="ajax-link" onclick="initAll('/piflow-web/web/flowList')">
-                        		<i class="glyphicon glyphicon-align-justify"></i>
-                        		<span> Tables</span>
-                        	</a>
+                            <a class="ajax-link" onclick="initAll('/piflow-web/web/flowList')">
+                                <i class="glyphicon glyphicon-align-justify"></i>
+                                <span>Flows</span>
+                            </a>
                         </li>
                         <li>
-                        	<a class="ajax-link" onclick="loadGetRight('/piflow-web/web/tour')">
-                        	<i class="glyphicon glyphicon-globe"></i>
-                        	<span> Tour</span>
-                        	</a>
-                        </li>
-                        <li><a class="ajax-link" href="/piflow-web/web/errorPage">
-                        		<i class="glyphicon glyphicon-ban-circle"></i>
-                        		<span> Error Page</span>
-                        	</a>
-                        </li>
-                        <li>
-	                        <a class="ajax-link" href="/piflow-web/web/login">
-	                        	<i class="glyphicon glyphicon-lock"></i>
-	                        	<span> Login Page</span>
-	                        </a>
-                        </li>
-                        <li class="accordion">
-                            <a href="#"><i class="glyphicon glyphicon-plus"></i><span> Accordion Menu</span></a>
-                            <ul class="nav nav-pills nav-stacked">
-                                <li><a href="#">Child Menu 1</a></li>
-                                <li><a href="#">Child Menu 2</a></li>
-                            </ul>
+                            <a class="ajax-link" onclick="loadGetRight('/piflow-web/web/tour')">
+                                <i class="glyphicon glyphicon-globe"></i>
+                                <span>Template</span>
+                            </a>
                         </li>
                     </ul>
-                    <label id="for-is-ajax" for="is-ajax"><input id="is-ajax" type="checkbox"> Ajax on menu</label>
                 </div>
             </div>
         </div>
         <!--/span-->
         <!-- left menu ends -->
-		<div id="content" class="col-lg-10 col-sm-10">
-            	<!-- content starts -->
-			<div th:include="/flow/inc/index_right :: index_right"></div>
-			<!-- <div class="rightBar" style="width: 100%; height: 100%">
-				<div th:include="/flow/inc/table :: table"></div>
-				-------------------------------------------------------------
-			</div> -->
-            	<!-- content ends -->
-		</div><!--/#content.col-md-0-->
+        <div id="content" class="col-lg-10 col-sm-10">
+            <!-- content starts -->
+            <div th:include="/flow/inc/index_right :: index_right"></div>
+            <!-- <div class="rightBar" style="width: 100%; height: 100%">
+                <div th:include="/flow/inc/table :: table"></div>
+                -------------------------------------------------------------
+            </div> -->
+            <!-- content ends -->
+        </div><!--/#content.col-md-0-->
 
 
-</div><!--/fluid-row-->
- <!-- Ad ends -->
+    </div><!--/fluid-row-->
+    <!-- Ad ends -->
 
     <hr>
 
@@ -210,35 +187,35 @@
 <script th:src="@{/charisma/js/charisma.js}"></script>
 
 <script th:inline="javascript">
-	function loadPostRight(url) {
-		$.ajax({
+    function loadPostRight(url) {
+        $.ajax({
             type:"POST",//为get请求
             url:url,
             data:{},
             success:function(data){//请求成功之后的操作
                 //console.log("success");
-            	$('#content').html(data);
+                $('#content').html(data);
             }
         });
-		
-	}
-	function loadGetRight(url) {
-		$.ajax({
+
+    }
+    function loadGetRight(url) {
+        $.ajax({
             type:"GET",//为get请求
             url:url,
             data:{},
             success:function(data){//请求成功之后的操作
                 //console.log("success");
-            	$('#content').html(data);
+                $('#content').html(data);
             }
         });
-		
-	}
-	function initAll(url) {
-		window.location.href = url;		
-	}
-	
-	//@ sourceURL=indexHome.js
+
+    }
+    function initAll(url) {
+        window.location.href = url;
+    }
+
+    //@ sourceURL=indexHome.js
 </script>
 
 </body>
