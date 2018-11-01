@@ -59,7 +59,7 @@
                                     <td class="center" ><div id='d'> <p th:id='${list.appId?.id}+Info' th:text="${list.appId?.progress}?${list.appId?.progress}+'%':'0%'"></p><progress th:id='${list.appId?.id}' max='100' th:value="${list.appId?.progress}"></progress></div></td>
                                    <td class="center" th:text="${list.appId?.state}?${list.appId?.state}:'No state'"></td>
                                 <td class="center" style="white-space: nowrap;">
-                                    <a class="btn" th:href="'/flow/grapheditor?load='+${list.id}+''" target="_blank" style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;">
+                                    <a class="btn" th:href="'/piflow-web/flow/grapheditor?load='+${list.id}+''" target="_blank" style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;">
                                         <i class="glyphicon glyphicon-zoom-in icon-white"></i>
                                         View
                                     </a>
@@ -76,7 +76,7 @@
                                         <i class="glyphicon glyphicon-trash icon-white"></i>
                                         stop
                                     </a>
-                                    <a class="btn" href="javascript:void(0);" style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;" th:onclick="'javascript:deleteFlow(\''+${list.id}+'\');'">
+                                    <a class="btn" href="javascript:void(0);" style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;" th:onclick="'javascript:deleteFlow(\''+${list.id}+'\',\''+${list.name}+'\');'">
                                         <i class="glyphicon glyphicon-trash icon-white"></i>
                                         Delete
                                     </a>

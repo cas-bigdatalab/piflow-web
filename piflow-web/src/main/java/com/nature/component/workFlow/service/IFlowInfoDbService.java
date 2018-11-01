@@ -6,7 +6,7 @@ import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.model.FlowInfoDb;
 
 
-public interface FlowInfoDbService {
+public interface IFlowInfoDbService {
 	 
 	public List<Flow> findAppList();
 	

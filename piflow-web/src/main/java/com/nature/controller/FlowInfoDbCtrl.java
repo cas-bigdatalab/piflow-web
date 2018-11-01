@@ -55,7 +55,7 @@ public class FlowInfoDbCtrl {
 			}
 		}
 		//通过appId查询数据库,返回list
-		List<FlowInfoDb> flowInfoList = flowInfoDbService.getFlowInfoByIds(list);
+		List<FlowInfoDb> flowInfoList = flowInfoDbServiceImpl.getFlowInfoByIds(list);
 		if (null == flowInfoList && flowInfoList.isEmpty()) {
 			return map;
 		}

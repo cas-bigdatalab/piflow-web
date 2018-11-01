@@ -13,7 +13,7 @@ import com.nature.component.workFlow.model.Flow;
 public class FlowServiceTest extends ApplicationTests {
 
 	@Autowired
-	private FlowService flowService;
+	private IFlowService flowService;
 
 	Logger logger = LoggerUtil.getLogger();
 

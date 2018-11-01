@@ -5,7 +5,7 @@ import com.nature.component.mxGraph.vo.MxGraphModelVo;
 import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.model.FlowInfoDb;
 
-public interface FlowService {
+public interface IFlowService {
 	/**
 	 * @Title 向数据库添加或修改flow
 	 * 

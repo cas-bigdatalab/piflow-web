@@ -5100,7 +5100,7 @@ DiagramFormatPanel.prototype.destroy = function()
 	}
 };
    function shiqu(id,data){
-	if(data!=null && data.length>0 && id.length>0){
+	 if(data!=null && data.length>0 && id.length>0){
 		var content = document.getElementById(''+data+'').value;
 		if(content == "" ){
 			return;
@@ -5108,7 +5108,7 @@ DiagramFormatPanel.prototype.destroy = function()
 	 $.ajax({
          cache:true, 
          type:"POST", 
-         url:"/stops/updateStopsOne", 
+         url:"/piflow-web/stops/updateStopsOne", 
 		 data : {
 			"id" : id,
 			"content" : content 
@@ -5121,5 +5121,5 @@ DiagramFormatPanel.prototype.destroy = function()
          success:function(data){ 
              console.log("success");
          }
-     });}
+     });} 
   } 

@@ -7,11 +7,11 @@ import org.springframework.stereotype.Service;
 
 import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.model.FlowInfoDb;
-import com.nature.component.workFlow.service.FlowInfoDbService;
+import com.nature.component.workFlow.service.IFlowInfoDbService;
 import com.nature.mapper.FlowInfoDbMapper;
 
 @Service
-public class FlowInfoDbServiceImpl implements FlowInfoDbService {
+public class FlowInfoDbServiceImpl implements IFlowInfoDbService {
 
 	
 	@Autowired

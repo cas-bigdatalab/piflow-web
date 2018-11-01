@@ -29,7 +29,7 @@ public class IGetFlowInfoTest extends ApplicationTests {
 
 	@Test
 	public void testFlowStop() {
-		String appId = "application_1539850523117_0159";
+		String appId = "application_1540442049798_0057";
 		FlowInfo startFlow2 = getFlowInfoImpl.getFlowInfo(appId);
 		logger.info("测试返回信息：" + startFlow2);
 	}
@@ -53,7 +53,7 @@ public class IGetFlowInfoTest extends ApplicationTests {
 		db.setEnableFlag(true);
 		db.setLastUpdateUser("王栋栋");
 		db.setLastUpdateDttm(new Date());
-		int addFlowInfo = flowInfoDbMapper.addFlowInfo(db);
+		flowInfoDbMapper.addFlowInfo(db);
 	}
 	
 	@Test

@@ -28,7 +28,7 @@ import com.nature.component.workFlow.model.Property;
 import com.nature.component.workFlow.model.PropertyTemplate;
 import com.nature.component.workFlow.model.Stops;
 import com.nature.component.workFlow.model.StopsTemplate;
-import com.nature.component.workFlow.service.FlowService;
+import com.nature.component.workFlow.service.IFlowService;
 import com.nature.mapper.FlowMapper;
 import com.nature.mapper.PathsMapper;
 import com.nature.mapper.PropertyMapper;
@@ -39,7 +39,7 @@ import com.nature.mapper.mxGraph.MxGeometryMapper;
 import com.nature.mapper.mxGraph.MxGraphModelMapper;
 
 @Service
-public class FlowServiceImpl implements FlowService {
+public class FlowServiceImpl implements IFlowService {
 
 	Logger logger = LoggerUtil.getLogger();
 
