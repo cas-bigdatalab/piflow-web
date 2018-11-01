@@ -2,8 +2,8 @@ package com.nature.base.util;
 
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.util.Base64;
-import java.util.Base64.Decoder;
+
+import sun.misc.BASE64Decoder;
 
 public class ImageUtils {
 
@@ -11,10 +11,10 @@ public class ImageUtils {
 		if (imgStr == null) // 图像数据为空
 			return false;
 
-		Decoder decoder = Base64.getDecoder();
+		BASE64Decoder decoder = new BASE64Decoder();
 		try {
 			// Base64解码
-			byte[] b = decoder.decode(imgStr);
+			byte[] b = decoder.decodeBuffer(imgStr);
 			for (int i = 0; i < b.length; ++i) {
 				if (b[i] < 0) {// 调整异常数据
 					b[i] += 256;

@@ -4652,7 +4652,7 @@ DiagramFormatPanel.prototype.addView = function(div)
 	var editor = ui.editor;
 	var graph = editor.graph;
 	queryFlowInfo();
-	div.appendChild(this.createTitle('线信息'));
+	div.appendChild(this.createTitle('流水线信息'));
 	
 	//UUID
 	var UUID = document.createElement('label');

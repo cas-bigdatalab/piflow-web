@@ -202,8 +202,8 @@
 							//循环给select下来赋值
 							for (i=0;i<strs.length ;i++ ){
 							var option = document.createElement("option");
-							option.value =strs[i];
-							option.innerHTML =strs[i];
+							option.value =strs[i].replace("\"","").replace("\"","").replace("\[","").replace("\]","");
+							option.innerHTML =strs[i].replace("\"","").replace("\"","").replace("\[","").replace("\]","");
 							//设置默认选中项
 							if(strs[i].indexOf(''+customValue+'') != -1){
 								option.setAttribute('selected', 'selected');
@@ -240,7 +240,7 @@
 		               		tbody.appendChild(tr);
 		               		table.appendChild(tbody); 
 		               	  }
-						var btn = mxUtils.button('保存', mxUtils.bind(this, function(evt)
+						var btn = mxUtils.button('submit', mxUtils.bind(this, function(evt)
 						{
 							//创建一个数组
 							var arrayObj = new Array();
@@ -254,13 +254,12 @@
 						   $.ajax({
 					         cache:true, 
 					         type:"POST", 
-					         url:"/stops/updateStops", 
+					         url:"/piflow-web/stops/updateStops", 
 					         data:{content:arrayObj},
 					         async:true, 
 					         traditional: true,
 					         error:function(request){ 
 					        	 console.log("attribute update error");
-					        	 $("input").css("background-color","#FF0000");
 					             return;
 					         },
 					         success:function(data){ 
@@ -285,7 +284,7 @@
 				    $.ajax({
 		                cache:true, 
 		                type:"POST", 
-		                url:"/stops/queryIdInfo", 
+		                url:"/piflow-web/stops/queryIdInfo", 
 		                data:{"id":id,"fid":loadId},
 		                async:true, 
 		                error:function(request){ 

@@ -61,10 +61,10 @@ public class FlowInfoDbCtrl {
 		}
 		 for (FlowInfoDb flowInfoDb : flowInfoList) {
 			 //遍历list,如果进度小于100去调接口,否则说明已经是100,直接返回
-			if (Integer.parseInt(flowInfoDb.getProgress()) < 100/* && "COMPLETED".equals(flowInfoDb.getState())*/) {
+			if (Float.parseFloat(flowInfoDb.getProgress()) < 100/* && "COMPLETED".equals(flowInfoDb.getState())*/) {
 				 String progress = iGetFlowProgress.getFlowInfo(flowInfoDb.getId());
 				 //如果接口返回进度为符合100,则更新数据库并返回
-				if (StringUtils.isNotBlank(progress) && Integer.parseInt(progress) == 100) {
+				if (StringUtils.isNotBlank(progress) && Float.parseFloat(progress) == 100) {
 					FlowInfoDb up = new FlowInfoDb();
 					up.setId(flowInfoDb.getId());
 					up.setProgress(progress);

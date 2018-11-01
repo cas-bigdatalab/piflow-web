@@ -1,9 +1,12 @@
 package com.nature.mapper;
 
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Base64;
-import java.util.Base64.Decoder;
+import java.util.Iterator;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.SimpleHttpConnectionManager;
@@ -16,13 +19,14 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.junit.Test;
 
-@SuppressWarnings({ "unused", "deprecation" })
+import sun.misc.BASE64Decoder;
+
 public class TestHttpGroup {
 
 	@Test
 	public void test() {
 		// 请求接口地址
-		String url = "http://10.0.86.191:8002/stop/groups";
+		String url = "http://10.0.86.191:8001/stop/groups";
 		// 请求参数
 		// String userid = "";
 
@@ -76,7 +80,7 @@ public class TestHttpGroup {
 
 	@Test
 	public void getStopInfo() {
-		String param = "cn.piflow.bundle.redis.ReadFromRedis";
+		String param = "cn.piflow.bundle.microorganism.GenBankParse";
 		// 请求接口地址
 		String url = "http://10.0.86.191:8002/stop/info" + "?bundle=" + param;
 		// 请求参数
@@ -94,6 +98,16 @@ public class TestHttpGroup {
 			if (post.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 				// 接口返回信息
 				String result = new String(post.getResponseBody(), "UTF-8");
+				JSONObject jb1 = JSONObject.fromObject(result);
+				JSONArray ja = JSONArray.fromObject(jb1.get("StopInfo"));
+				@SuppressWarnings("unchecked")
+				Iterator<Object> it = ja.iterator();
+				while (it.hasNext()) {
+					JSONObject ob = (JSONObject) it.next();
+					String icon = ob.get("icon") + "";
+					String name = ob.get("name") + "";
+					GenerateImages(icon, name);
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -104,19 +118,19 @@ public class TestHttpGroup {
 		}
 	}
 
-	public static boolean GenerateImages(String imgStr, String name) {
+	public static boolean GenerateImages(String imgStr, String name) throws IOException {
 		// 对字节数组字符串进行Base64解码并生成图片
 		if (imgStr == null) // 图像数据为空
 			return false;
-		Decoder decoder = Base64.getDecoder();
-		try {
-			// Base64解码
-			byte[] b = decoder.decode(imgStr);
-			for (int i = 0; i < b.length; ++i) {
-				if (b[i] < 0) {// 调整异常数据
-					b[i] += 256;
-				}
+		BASE64Decoder decoder = new BASE64Decoder();
+		 
+		// Base64解码,对字节数组字符串进行Base64解码并生成图片
+		byte[] b = decoder.decodeBuffer(imgStr);
+		for (int i = 0; i < b.length; ++i) {
+			if (b[i] < 0) {// 调整异常数据
+				b[i] += 256;
 			}
+		}
 			// 生成jpeg图片 d:\\image\\
 			String imgFilePath = "D:\\01.png";// 新生成的图片
 			//String property = System.getProperty("user.dir");
@@ -125,10 +139,9 @@ public class TestHttpGroup {
 			out.write(b);
 			out.flush();
 			out.close();
-			return true;
-		} catch (Exception e) {
 			return false;
-		}
+		 
+		 
 	}
 
 }
