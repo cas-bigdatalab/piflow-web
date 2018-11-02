@@ -5,6 +5,9 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +27,8 @@ import com.nature.mapper.PropertyTemplateMapper;
 import com.nature.mapper.StopGroupMapper;
 import com.nature.mapper.StopsTemplateMapper;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-
 @Component
-@RequestMapping("/getGroup")
+@Transactional
 public class GetGroupsAndStops {
 
 	Logger logger = LoggerUtil.getLogger();

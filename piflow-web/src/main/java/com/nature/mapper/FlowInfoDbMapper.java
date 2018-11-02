@@ -11,7 +11,7 @@ import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.SelectProvider;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.UpdateProvider;
 
 import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.model.FlowInfoDb;
@@ -58,10 +58,8 @@ public interface FlowInfoDbMapper {
 	 * @param app
 	 * @return
 	 */
-	@Update("update flow_info set last_update_dttm = #{app.lastUpdateDttm},last_update_user = #{app.lastUpdateUser},version = version+1,end_time = #{app.endTime},name = #{app.name},"
-			+ "start_time = #{app.startTime},state = #{app.state},progress = #{app.progress}  where id  = #{app.id}    "
-			+ ")")
-	public int updateFlowInfo(@Param("app") FlowInfoDb app);
+	@UpdateProvider(type = FlowInfoDbMapperProvider.class, method = "updateFlowInfo")
+	public int updateFlowInfo(FlowInfoDb app);
 
 	/**
 	 * 根据flowID查询appId信息

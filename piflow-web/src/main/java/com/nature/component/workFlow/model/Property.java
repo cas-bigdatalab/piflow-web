@@ -39,10 +39,10 @@ public class Property extends BaseHibernateModelUUIDNoCorpAgentId {
 	private String allowableValues;
 
 	@Column(name = "PROPERTY_REQUIRED")
-	private boolean required;
+	private Boolean required;
 
 	@Column(name = "PROPERTY_SENSITIVE")
-	private boolean sensitive;
+	private Boolean sensitive;
 
 	public Stops getStops() {
 		return stops;
@@ -92,19 +92,19 @@ public class Property extends BaseHibernateModelUUIDNoCorpAgentId {
 		this.allowableValues = allowableValues;
 	}
 
-	public boolean isRequired() {
+	public Boolean isRequired() {
 		return required;
 	}
 
-	public void setRequired(boolean required) {
+	public void setRequired(Boolean required) {
 		this.required = required;
 	}
 
-	public boolean isSensitive() {
+	public Boolean isSensitive() {
 		return sensitive;
 	}
 
-	public void setSensitive(boolean sensitive) {
+	public void setSensitive(Boolean sensitive) {
 		this.sensitive = sensitive;
 	}
 

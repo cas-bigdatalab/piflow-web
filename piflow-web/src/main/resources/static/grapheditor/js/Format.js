@@ -4663,19 +4663,27 @@ DiagramFormatPanel.prototype.addView = function(div)
 	//crtDttm
 	var crtDttmString = document.createElement('label');
 	crtDttmString.setAttribute('id', 'createrTime');
+	//flowDescription
+	var flowDescription = document.createElement('label');
+	flowDescription.setAttribute('id', 'flowDescription');
 	
 	var span = document.createElement('span');
 	var span1 = document.createElement('span');
 	var span2 = document.createElement('span');
+	var span3 = document.createElement('span');
 	var hr = document.createElement('hr');
 	mxUtils.write(span, 'UUID： ');
 	mxUtils.write(span1, 'flowName： ');
 	mxUtils.write(span2, 'crtDttmString： ');
+	mxUtils.write(span3, 'description： ');
 	div.appendChild(span);
 	div.appendChild(UUID);
 	div.appendChild(document.createElement('br'));
 	div.appendChild(span1);
 	div.appendChild(flowName);
+	div.appendChild(document.createElement('br'));
+	div.appendChild(span3);
+	div.appendChild(flowDescription);
 	div.appendChild(document.createElement('br'));
 	div.appendChild(span2);
 	div.appendChild(crtDttmString);
@@ -5102,9 +5110,15 @@ DiagramFormatPanel.prototype.destroy = function()
    function shiqu(id,data){
 	 if(data!=null && data.length>0 && id.length>0){
 		var content = document.getElementById(''+data+'').value;
-		if(content == "" ){
-			return;
+		var classname = document.getElementById(''+data+'').className;
+		if(classname == 'true'){
+			if(content == "") 
+			 $("#"+data+"").focus();
+			 $("#"+data+"").css("background-color","#FFD39B");
 		}
+		if(content == "" ) 
+			return;
+		 $("#"+data+"").css("background-color","");
 	 $.ajax({
          cache:true, 
          type:"POST", 

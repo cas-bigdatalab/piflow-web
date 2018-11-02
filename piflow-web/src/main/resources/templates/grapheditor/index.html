@@ -194,6 +194,8 @@
 							var displayName = data[y].displayName;
 							var customValue = data[y].customValue;
 							var allowableValues = data[y].allowableValues;
+							//是否必填
+							var required = data[y].required;
 							//如果大于4表示有下拉框
 							if(allowableValues.length > 4){
 							var selectValue = JSON.parse(allowableValues); 
@@ -208,10 +210,12 @@
 							if(strs[i].indexOf(''+customValue+'') != -1){
 								option.setAttribute('selected', 'selected');
 									}
-							select.appendChild(option); 
+								select.appendChild(option); 
 								}
 							}
 							var displayName = document.createElement('input');
+							if(required) 
+							displayName.setAttribute('class', 'true');
 							displayName.setAttribute('type', 'text');
 							displayName.setAttribute('id', ''+data[y].displayName+'');
 							displayName.setAttribute('onblur', 'shiqu("'+data[y].id+'","'+data[y].displayName+'")');
@@ -220,9 +224,12 @@
 							displayName.setAttribute('value', ''+customValue+'');
 							var spanDisplayName = 'span'+data[y].displayName;
 		               		var spanDisplayName = document.createElement('span');
+		               		var spanFlag = document.createElement('span');
 							spanDisplayName.style.cursor = "pointer";
 							spanDisplayName.setAttribute('title', ''+data[y].description+'');
+							spanFlag.setAttribute('style','color:red');
 		               		mxUtils.write(spanDisplayName, ''+data[y].displayName+'');
+		               		mxUtils.write(spanFlag, ' *');
 		               		var tr=document.createElement("tr");
 		               		var td=document.createElement("td");
 		               		td.style.width = "60px";
@@ -234,6 +241,8 @@
 		               		td1.appendChild(select);
 		               		}else{
 		               		td1.appendChild(displayName);
+		               		if(required) 
+		               		td1.appendChild(spanFlag);
 		               		}
 		               		tr.appendChild(td);
 		               		tr.appendChild(td1);
@@ -246,11 +255,16 @@
 							var arrayObj = new Array();
 							for(var y=0;y<data.length;y++){
 								var content = document.getElementById(''+data[y].displayName+'').value;
+								var classname = document.getElementById(''+data[y].displayName+'').className;
 								if(content!=null && content.length>0){
 								arrayObj.push(content+"#id#"+data[y].id);
+								}else{
+									if(classname == 'true'){
+										 $("#"+data[y].displayName+"").focus();
+										 $("#"+data[y].displayName+"").css("background-color","#FFD39B");
+									}
 								}
 							}
-							console.info(arrayObj);
 						   $.ajax({
 					         cache:true, 
 					         type:"POST", 
@@ -421,6 +435,7 @@
                 	if(data!=null && data!=""){
                  		 document.getElementById('UUID').innerText = data.uuid;
            		 		 document.getElementById('flowName').innerText = data.name;
+           		 		 document.getElementById('flowDescription').innerText = data.description;
            				 document.getElementById('createrTime').innerText = data.crtDttmString;
                 	}else{
                 		 document.getElementById('UUID').innerText = "No content";

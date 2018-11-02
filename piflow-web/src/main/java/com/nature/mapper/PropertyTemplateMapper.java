@@ -3,9 +3,10 @@ package com.nature.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Result;
+import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.SelectProvider;
-
 import com.nature.component.workFlow.model.Property;
 import com.nature.component.workFlow.model.PropertyTemplate;
 import com.nature.provider.PropertyTemplateMapperProvider;
@@ -28,7 +29,11 @@ public interface PropertyTemplateMapper {
 	 * @param id
 	 * @return
 	 */
-	@Select("select fsp.id, fsp.name, fsp.description,fsp.display_name,fsp.custom_value,fsp.version,fsp.allowable_values from flow_stops_property fsp where fsp.fk_stops_id = #{id}")
+	@Select("select fsp.id, fsp.name, fsp.description,fsp.display_name,fsp.custom_value,fsp.version,fsp.allowable_values,property_required from flow_stops_property fsp where fsp.fk_stops_id = #{id}")
+	@Results({
+		@Result(id = true, column = "id", property = "id"),
+        @Result(column = "property_required", property = "required"),
+        @Result(column = "property_sensitive", property = "sensitive") })
 	List<Property> getPropertyBySotpsId(String id);
 	
 	/**

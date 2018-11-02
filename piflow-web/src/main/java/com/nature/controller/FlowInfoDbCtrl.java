@@ -69,6 +69,8 @@ public class FlowInfoDbCtrl {
 					up.setId(flowInfoDb.getId());
 					up.setProgress(progress);
 					up.setLastUpdateDttm(new Date());
+					up.setLastUpdateUser("wdd");
+					up.setState("COMPLETE");
 					flowInfoDbMapper.updateFlowInfo(up);
 				} 
 				map.put(flowInfoDb.getId(), progress);
@@ -78,5 +80,4 @@ public class FlowInfoDbCtrl {
 		  } 
 		return map;
 	} 
-
 }

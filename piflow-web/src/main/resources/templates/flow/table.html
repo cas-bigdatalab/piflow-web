@@ -53,7 +53,7 @@
 
 <body>
 <!-- topbar starts -->
-<div class="navbar navbar-default" role="navigation" style="background-image: linear-gradient(#ffffff, #ffffff 60%, #ffffff); border-color: #ffffff;">
+<div class="navbar navbar-default" role="navigation" style="background-image: linear-gradient(#bbacac, #ffffff 60%, #ffffff); border-color: #ffffff;">
 
     <div class="">
         <a class="navbar-brand" href="index">
@@ -81,7 +81,6 @@
         <!-- left menu starts -->
         <div class="col-sm-2 col-lg-2">
             <ul class="nav nav-pills nav-stacked main-menu">
-                <li class="nav-header">Main</li>
                 <!--
                 <li>
                     <a class="ajax-link" onclick="loadGetRight('/piflow-web/web/indexHome')">
@@ -91,13 +90,13 @@
                 </li>
                 -->
                 <li>
-                    <a class="ajax-link" onclick="initAll('/piflow-web/web/flowList')">
+                    <a class="ajax-link" onclick="initAll('/piflow-web/web/flowList')" style="color: #8F8F8F;">
                         <i class="glyphicon glyphicon-align-justify"></i>
                         <span>Flows</span>
                     </a>
                 </li>
                 <li>
-                    <a class="ajax-link" onclick="loadGetRight('/piflow-web/web/tour')">
+                    <a class="ajax-link" onclick="loadGetRight('/piflow-web/web/tour')" style="color: #8F8F8F;">
                         <i class="glyphicon glyphicon-globe"></i>
                         <span>Template</span>
                     </a>
@@ -387,29 +386,32 @@
         });
     }
     $(document).ready(function(){
-        /*c = window.setInterval("tableRow()",5000);*/
+        /*  c = window.setInterval("tableRow()",5000);  */
     });
 
-    function deleteFlow(id){
-        $.ajax({
-            cache:true,//保留缓存数据
-            type:"get",//为post请求
-            url:"/piflow-web/flow/deleteFlow",//这是我在后台接受数据的文件名
-            data:{id:id},
-            async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
-            error:function(request){//请求失败之后的操作
-                return;
-            },
-            success:function(data){//请求成功之后的操作
-                if(data > 0){
-                    layer.msg('删除成功',{icon: 1,  shade:0,  time: 2000});
-                    location.reload();
-                }else{
-                    layer.msg('删除成功',{icon: 2,  shade:0,  time: 2000});
-                    location.reload();
-                }
-            }
-        });
+    function deleteFlow(id,name){
+    	var flag = confirm("确定删除"+name+"吗?");
+    	 if(flag){
+    	     $.ajax({
+    	            cache:true,//保留缓存数据
+    	            type:"get",//为post请求
+    	            url:"/piflow-web/flow/deleteFlow",//这是我在后台接受数据的文件名
+    	            data:{id:id},
+    	            async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
+    	            error:function(request){//请求失败之后的操作
+    	                return;
+    	            },
+    	            success:function(data){//请求成功之后的操作
+    	                if(data > 0){
+    	                    layer.msg('删除成功',{icon: 1,  shade:0,  time: 2000});
+    	                    location.reload();
+    	                }else{
+    	                    layer.msg('删除成功',{icon: 2,  shade:0,  time: 2000});
+    	                    location.reload();
+    	                }
+    	            }
+    	        });
+         } 
     }
     //@ sourceURL=table_right.js
 </script>

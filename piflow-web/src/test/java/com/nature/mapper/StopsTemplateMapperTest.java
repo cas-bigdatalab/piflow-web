@@ -5,6 +5,9 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
 import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -21,9 +24,6 @@ import com.nature.common.constant.SysParamsCache;
 import com.nature.component.workFlow.model.PropertyTemplate;
 import com.nature.component.workFlow.model.StopGroup;
 import com.nature.component.workFlow.model.StopsTemplate;
-
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 
 public class StopsTemplateMapperTest extends ApplicationTests {
 
@@ -70,6 +70,7 @@ public class StopsTemplateMapperTest extends ApplicationTests {
 	 * 调用getAllGroups并保存group
 	 */
 	@Test
+	@Transactional
 	public void getStopGroupAndSave() {
 		int deleteGroup = stopGroupMapper.deleteGroup();
 		System.out.println("成功删除Group" + deleteGroup + "条数据！！！");

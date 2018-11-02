@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.nature.component.workFlow.model.Stops;
 import com.nature.component.workFlow.service.IPropertyService;
-
 @RestController
 @RequestMapping("/stops")
 public class StopsCtrl {

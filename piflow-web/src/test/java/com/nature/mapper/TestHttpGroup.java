@@ -21,12 +21,13 @@ import org.junit.Test;
 
 import sun.misc.BASE64Decoder;
 
+@SuppressWarnings({ "deprecation", "restriction" })
 public class TestHttpGroup {
 
 	@Test
 	public void test() {
 		// 请求接口地址
-		String url = "http://10.0.86.191:8001/stop/groups";
+		String url = "http://10.0.86.191:8002/stop/groups";
 		// 请求参数
 		// String userid = "";
 
@@ -58,7 +59,7 @@ public class TestHttpGroup {
 
 	@Test
 	public void getStopList() {
-		String urlNameString = "http://10.0.86.98:8002/stop/list";
+		String urlNameString = "http://10.0.86.191:8002/stop/list";
 		try {
 			// 根据地址获取请求
 			HttpGet request = new HttpGet(urlNameString);// 这里发送get请求

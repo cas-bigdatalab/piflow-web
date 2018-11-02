@@ -5,6 +5,7 @@ import java.io.OutputStream;
 
 import sun.misc.BASE64Decoder;
 
+@SuppressWarnings("restriction")
 public class ImageUtils {
 
 	public static boolean generateImage(String imgStr, String name) { // 对字节数组字符串进行Base64解码并生成图片
