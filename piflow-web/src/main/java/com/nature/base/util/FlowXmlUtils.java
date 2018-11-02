@@ -10,15 +10,66 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
+import org.springframework.beans.BeanUtils;
 import org.xml.sax.InputSource;
 
+import com.nature.component.mxGraph.model.MxCell;
+import com.nature.component.mxGraph.model.MxGeometry;
+import com.nature.component.mxGraph.model.MxGraphModel;
 import com.nature.component.mxGraph.vo.MxCellVo;
 import com.nature.component.mxGraph.vo.MxGeometryVo;
 import com.nature.component.mxGraph.vo.MxGraphModelVo;
+import com.nature.component.workFlow.model.Flow;
 
 public class FlowXmlUtils {
 
 	static Logger logger = LoggerUtil.getLogger();
+
+	/**
+	 * flow转mxGraphModelVo
+	 *
+	 * @param flow
+	 * @return
+	 */
+	public static MxGraphModelVo flowToMxGraphModelVo(Flow flow) {
+		MxGraphModelVo mxGraphModelVo = null;
+		// 判空
+		if (null != flow) {
+			// 取出mxGraphModel
+			MxGraphModel mxGraphModel = flow.getMxGraphModel();
+			// 判空mxGraphModel
+			if (null != mxGraphModel) {
+				mxGraphModelVo = new MxGraphModelVo();
+				// 拷贝mxGraphModel的内容到mxGraphModelVo中
+				BeanUtils.copyProperties(mxGraphModel, mxGraphModelVo);
+				// 取出mxCellList
+				List<MxCell> root = mxGraphModel.getRoot();
+				// 判空
+				if (null != root && root.size() > 0) {
+					List<MxCellVo> mxCellVoList = new ArrayList<MxCellVo>();
+					// 循环拷贝
+					for (MxCell mxCell : root) {
+						if (null != mxCell) {
+							MxCellVo mxCellVo = new MxCellVo();
+							// 拷贝mxGraphModel的内容到mxGraphModelVo中
+							BeanUtils.copyProperties(mxCell, mxCellVo);
+							MxGeometry mxGeometry = mxCell.getMxGeometry();
+							if (null != mxGeometry) {
+								MxGeometryVo mxGeometryVo = new MxGeometryVo();
+								// 拷贝mxGeometry的内容到mxGeometryVo中
+								BeanUtils.copyProperties(mxGeometry, mxGeometryVo);
+								mxCellVo.setMxGeometryVo(mxGeometryVo);
+							}
+							mxCellVoList.add(mxCellVo);
+						}
+					}
+					mxGraphModelVo.setRootVo(mxCellVoList);
+				}
+
+			}
+		}
+		return mxGraphModelVo;
+	}
 
 	/**
 	 * MxGraphModel转字符串的xml

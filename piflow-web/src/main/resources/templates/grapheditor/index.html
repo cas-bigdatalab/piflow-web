@@ -102,6 +102,10 @@
      </div>
 	<div style="width: 30%; float: right;">
 		<div style="position: fixed; z-index: 999;text-align: right; width: 30%;">
+			<span>
+				进度：<span id="progress">0.00%</span>
+			</span>
+			<input id="reloadStops" type="button" onclick="reloadStops()" value="ReloadStops"/>
 			<input id="startFlow" type="button" onclick="runFlow()" value="运行"/>
 			<input id="stopFlow" type="button" onclick="stopFlow()" value="停止"/>
 			<input type="button" class="btn-primary" data-toggle="modal" onclick="getLogUrl()" data-target="#myModal" value="日志"/>
@@ -370,7 +374,8 @@
     	$(document).ajaxSend(function(e, xhr, options) {
     	    xhr.setRequestHeader(header, token);
     	});
-    	//保存xml文件
+		var timer;
+        //保存xml文件
 	    function saveXml(){
 	    	var getXml = thisEditor.getGraphXml();
 	    	var sssss = getXml.outerHTML;
@@ -379,7 +384,7 @@
             $.ajax({
                 cache:true,//保留缓存数据
                 type:"POST",//为post请求
-                url:"/piflow-web/flow/saveData",//这是我在后台接受数据的文件名
+                url:"/piflow-web/grapheditor/saveData",//这是我在后台接受数据的文件名
                 //data:$('#loginForm').serialize(),//将该表单序列化
                 data:{imageXML:sssss,load:loadId},
                 async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
@@ -404,13 +409,13 @@
                     return;
                 },
                 success:function(data){//请求成功之后的操作
-                	openXml(data);
+                	loadXml(data);
                     console.log("success");
                 }
             });
 		}
 	    //加载xml文件
-	    function openXml(loadStr){
+	    function loadXml(loadStr){
 	    	var xml = mxUtils.parseXml(loadStr);
 			var node = xml.documentElement;
 			var dec = new mxCodec(node.ownerDocument);
@@ -420,6 +425,23 @@
 			thisEditor.ignoredChanges = 0;
 			thisEditor.setModified(false);
 		}
+        function reloadStops(){
+            fullScreen.show();
+            $.ajax({
+                data:{"load":loadId},
+                cache:true,//保留缓存数据
+                type:"POST",//为post请求
+                url:"/piflow-web/grapheditor/reloadStops",//这是我在后台接受数据的文件名
+                error:function(request){//请求失败之后的操作
+                    fullScreen.hide();
+                    alert("reload fail")
+                    return;
+                },
+                success:function(data){//请求成功之后的操作
+
+                }
+            });
+        }
 	    function queryFlowInfo(){
 	    	$.ajax({
 	    		data:{"load":loadId},
@@ -467,7 +489,8 @@
                 		alert(dataMap.errMsg);
                 		//$('#appId').val(data);
                 		appId = dataMap.appid;
-                		stopFlow.hide();
+                        startFlow.hide();
+                        timer = window.setInterval("tableRow(appId)",5000);
                 	}else{
                 		alert("启动失败");
                 		startFlow.show();
@@ -565,6 +588,32 @@
                 }
             });
 		}
+        function tableRow(appId){
+            if(appId ===''){
+                return;
+            }
+            $.ajax({
+                cache:true,
+                type:"get",
+                url:"/piflow-web/flowInfoDb/getAppInfoProgress",
+                data:{appid:appId},
+                async:true,
+                traditional: true,
+                error:function(request){
+                    console.log("error");
+                    return;
+                },
+                success:function(data){
+                    var dataMap = JSON.parse(data);
+                    if(0 !== dataMap.code){
+                        if('STARTED' === dataMap.state || dataMap.progress === 100){
+                            window.clearInterval(timer);
+						}
+                        document.getElementById("progress").innerHTML="进度"+dataMap.progress+"%";
+                    }
+                }
+            });
+        }
 		$(document).ready(function(){
 			$("#modalDialog").draggable();//为模态对话框添加拖拽
 			//$("#myModal").css("overflow", "hidden");//禁止模态对话框的半透明背景滚动

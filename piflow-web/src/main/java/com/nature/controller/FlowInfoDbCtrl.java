@@ -18,6 +18,7 @@ import com.nature.component.workFlow.model.FlowInfoDb;
 import com.nature.component.workFlow.service.IFlowInfoDbService;
 import com.nature.mapper.FlowInfoDbMapper;
 import com.nature.third.inf.IGetFlowProgress;
+import com.nature.base.util.JsonUtils;
 
 @Controller
 @RequestMapping("/flowInfoDb")
@@ -80,4 +81,42 @@ public class FlowInfoDbCtrl {
 		  } 
 		return map;
 	} 
+
+	/**
+	 * 查询进度
+	 * @param appid
+	 * @return
+	 */
+	@RequestMapping("/getAppInfoProgress")
+	@ResponseBody
+	public String getAppInfoProgress(String appid) {
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("code","0");
+		//通过appId查询数据库
+		FlowInfoDb flowInfo = flowInfoDbServiceImpl.getFlowInfoById(appid);
+		if (null == flowInfo) {
+			return JsonUtils.toJsonNoException(map);
+		}
+		//如果进度小于100去调接口,否则说明已经是100,直接返回
+		if (Float.parseFloat(flowInfo.getProgress()) < 100 /*&& "STARTED".equals(flowInfo.getState())*/) {
+			String progress = iGetFlowProgress.getFlowInfo(flowInfo.getId());
+			//如果接口返回进度为符合100,则更新数据库并返回
+			if (StringUtils.isNotBlank(progress) && Float.parseFloat(progress) == 100) {
+				FlowInfoDb up = new FlowInfoDb();
+				up.setId(flowInfo.getId());
+				up.setProgress(progress);
+				up.setLastUpdateDttm(new Date());
+				up.setLastUpdateUser("wdd");
+				up.setState("COMPLETE");
+				flowInfoDbMapper.updateFlowInfo(up);
+			}
+			map.put("progress", progress);
+		}else {
+			map.put("progress", flowInfo.getProgress());
+		}
+		map.put("code","1");
+		map.put("state", flowInfo.getState());
+		return JsonUtils.toJsonNoException(map);
+	}
+
 }

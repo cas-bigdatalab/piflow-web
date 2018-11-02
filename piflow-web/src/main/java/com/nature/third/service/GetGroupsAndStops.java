@@ -1,4 +1,4 @@
-package com.nature.third;
+package com.nature.third.service;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,6 +43,7 @@ public class GetGroupsAndStops {
 	/**
 	 * 调接口添加group和stops关联添加
 	 */
+	@Transactional
 	public void addGroupAndStopsList() {
 		getGroupAndSave();
 		getStopsAndProperty();

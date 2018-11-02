@@ -28,6 +28,11 @@ public class FlowInfoDbServiceImpl implements IFlowInfoDbService {
 	}
 
 	@Override
+	public FlowInfoDb getFlowInfoById(String id) {
+		return appMapper.flowInfoDb(id);
+	}
+
+	@Override
 	public int deleteFlowInfoById(String id) {
 		return appMapper.deleteFlowInfoById(id);
 	}

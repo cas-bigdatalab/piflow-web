@@ -270,7 +270,7 @@
                 layer.closeAll('page');
                 layer.msg('创建成功',{icon: 1,  shade:0,  time: 2000}, function(){
                     var tempwindow=window.open('_blank');
-                    tempwindow.location="/piflow-web/flow/grapheditor?load="+data.id;
+                    tempwindow.location="/piflow-web/grapheditor/home?load="+data.id;
                 });
             }
         });
@@ -386,7 +386,7 @@
         });
     }
     $(document).ready(function(){
-        /*  c = window.setInterval("tableRow()",5000);  */
+        //c = window.setInterval("tableRow()",5000);
     });
 
     function deleteFlow(id,name){
