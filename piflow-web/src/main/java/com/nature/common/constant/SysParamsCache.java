@@ -1,6 +1,7 @@
 package com.nature.common.constant;
 
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.nature.base.util.LoggerUtil;
@@ -13,7 +14,9 @@ import com.nature.base.util.LoggerUtil;
  * 
  * 注： 缓存类的静态属性必须使用时进行缓存值替换的测试，确保缓存使用正确
  * 
- * 设置常量规则 1、默认设置的常量值 2、spring从properties文件获取设置[static不能注入，需要public的非静态set方法处理]
+ * 设置常量规则
+ * 1、默认设置的常量值
+ * 2、spring从properties文件获取设置[static不能注入，需要public的非静态set方法处理]
  * 3、数据库读取设置
  * 
  * @author LHG
@@ -99,5 +102,12 @@ public class SysParamsCache {
 	public static String FLOW_PROGRESS_URL() {
 		return INTERFACE_URL_HEAD + INTERFACE_FLOW_PROGRESS;
 	}
-	
+
+	// 图片路径(配置文件中 读取)
+	public static String IMAGES_PATH;
+
+	@Value("${syspara.imagesPath}")
+	public void setImagesPath(String imagesPath) {
+		IMAGES_PATH = imagesPath.replace("file:","");
+	}
 }

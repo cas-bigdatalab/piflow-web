@@ -32,7 +32,7 @@ public class FlowInfoDbMapperProvider {
 	 * @param flow
 	 * @return
 	 */
-	public String updateFlow(FlowInfoDb flow) {
+	public String updateFlowInfo(FlowInfoDb flow) {
 
 		String sqlStr = "";
 		if (null != flow) {

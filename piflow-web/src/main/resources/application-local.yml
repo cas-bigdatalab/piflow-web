@@ -3,17 +3,17 @@ server:
   servlet:
     context-path: /piflow-web
     session:
-      timeout: 3000
+      timeout: 600
 syspara:
-  imagesPath: file:/usr/local/tomcat/apache-tomcat-8.5.34/piflow-web-image/
+  imagesPath: file:/D:/Z-mytest/Image/
 spring:
 ########################################################
 ######  数据源
 ########################################################
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/piflow_web?useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowMultiQueries=true
+    url: jdbc:mysql://192.168.32.136:3306/mytest?useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowMultiQueries=true
     username: root
-    password: root
+    password: 123456
     driver-class-name: com.mysql.jdbc.Driver
     #type: com.alibaba.druid.pool.DruidDataSource
 ########################################################
@@ -48,7 +48,7 @@ spring:
       ddl-auto: update
     show-sql: true
     open-in-view: true
-#Springboot中Hibernate默认创建的mysql表为myisam引擎,因不支持事物所以指定为：innodb
+#Springboot中Hibernate默认创建的mysql表为myisam引擎,因不支持事物所以指定为：innodb    
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
 
 ########################################################
@@ -77,14 +77,14 @@ mybatis:
 #logging.pattern.file=%d{yyyy/MM/dd-HH:mm} [%thread] %-5level %logger- %msg%n
 #打印运行时sql语句到控制台
 #spring.jpa.show-sql=true
-
+ 
 #==================== 日志配合·标准  ============================
 logging:
   level:
     com.nature.mapper : debug
     root: info
-    org:
-      springframework:
+    org: 
+      springframework: 
         security: info
 #==================== 日志配合·XML  ============================
 #logging:

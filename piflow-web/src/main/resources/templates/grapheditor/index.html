@@ -425,6 +425,7 @@
 			thisEditor.ignoredChanges = 0;
 			thisEditor.setModified(false);
 		}
+		//请求接口重新加载stops
         function reloadStops(){
             fullScreen.show();
             $.ajax({
@@ -434,11 +435,17 @@
                 url:"/piflow-web/grapheditor/reloadStops",//这是我在后台接受数据的文件名
                 error:function(request){//请求失败之后的操作
                     fullScreen.hide();
-                    alert("reload fail")
+                    alert("reload fail");
                     return;
                 },
                 success:function(data){//请求成功之后的操作
-
+                    var dataMap = JSON.parse(data);
+                    if (0!==dataMap.code){
+                        window.location.href = "/piflow-web/grapheditor/home?load="+dataMap.load+"&_" + new Date().getTime();
+                    }else {
+                        alert("reload fail");
+                        fullScreen.hide();
+					}
                 }
             });
         }

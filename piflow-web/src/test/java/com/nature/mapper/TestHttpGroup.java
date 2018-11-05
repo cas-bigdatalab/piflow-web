@@ -135,7 +135,7 @@ public class TestHttpGroup {
 			// 生成jpeg图片 d:\\image\\
 			String imgFilePath = "D:\\01.png";// 新生成的图片
 			//String property = System.getProperty("user.dir");
-			//String path = property + "\\src\\main\\resources\\static\\grapheditor\\stencils\\clipart\\" + name + "_128x128.png";
+			//String path = property + SysParamsCache.IMAGES_PATH + name + "_128x128.png";
 			OutputStream out = new FileOutputStream(imgFilePath);
 			out.write(b);
 			out.flush();

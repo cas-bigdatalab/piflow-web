@@ -126,7 +126,7 @@ public class GetGroupsAndStops {
 					String name = ob.get("name") + "";
 					String description = ob.get("description") + "";
 					String icon = ob.get("icon") + "";
-					ImageUtils.generateImage(icon, name);
+					ImageUtils.generateImage(icon, name,SysParamsCache.IMAGES_PATH);
 					// 一个stops存在有多个group,所以此处需要处理一下
 					if (groups.contains(",")) {
 						String[] split = groups.split(",");

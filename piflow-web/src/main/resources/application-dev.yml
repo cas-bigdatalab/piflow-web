@@ -4,6 +4,8 @@ server:
     context-path: /piflow-web
     session:
       timeout: 600
+syspara:
+  imagesPath: file:/usr/local/tomcat/apache-tomcat-8.5.34/piflow-web-image/
 spring:
 ########################################################
 ######  数据源
@@ -87,4 +89,3 @@ logging:
 #==================== 日志配合·XML  ============================
 #logging:
 #  config: classpath:log4j2.xml
-     

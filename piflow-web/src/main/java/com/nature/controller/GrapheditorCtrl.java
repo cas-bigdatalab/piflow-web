@@ -1,9 +1,13 @@
 package com.nature.controller;
 
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.nature.base.util.JsonUtils;
 import com.nature.third.service.GetGroupsAndStops;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -99,9 +103,14 @@ public class GrapheditorCtrl {
 	}
 
 	@RequestMapping("/reloadStops")
+	@ResponseBody
 	public String reloadStops(String load){
+		Map<String, String> rtnMap = new HashMap<String, String>();
+		rtnMap.put("code", "0");
 		getGroupsAndStops.addGroupAndStopsList();
-		return "redirect:/grapheditor/home?load=" + load;
+		rtnMap.put("code","1");
+		rtnMap.put("load",load);
+		return JsonUtils.toJsonNoException(rtnMap);
 	}
 
 }

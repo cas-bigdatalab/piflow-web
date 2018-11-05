@@ -107,7 +107,7 @@ Sidebar.prototype.init = function()
 					}
 				}
 			}
-			this.addImagePalette('clipart', stopsGroup.groupName, dir + '/clipart/', '_128x128.png',stopsNameList, stopsDescList, stopsNameList, stopsNameList);
+			this.addImagePalette('clipart', stopsGroup.groupName, '/piflow-web/images/', '_128x128.png',stopsNameList, stopsDescList, stopsNameList, stopsNameList);
 		}
 	};
 };

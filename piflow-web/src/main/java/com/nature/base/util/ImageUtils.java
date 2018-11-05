@@ -8,7 +8,7 @@ import sun.misc.BASE64Decoder;
 @SuppressWarnings("restriction")
 public class ImageUtils {
 
-	public static boolean generateImage(String imgStr, String name) { // 对字节数组字符串进行Base64解码并生成图片
+	public static boolean generateImage(String imgStr, String name,String pathUrl) { // 对字节数组字符串进行Base64解码并生成图片
 		if (imgStr == null) // 图像数据为空
 			return false;
 
@@ -22,9 +22,7 @@ public class ImageUtils {
 				}
 			}
 			// 设置生成图片的路径
-			String property = System.getProperty("user.dir");
-			String path = property + "\\src\\main\\resources\\static\\grapheditor\\stencils\\clipart\\" + name
-					+ "_128x128.png";
+			String path = pathUrl + name + "_128x128.png";
 			OutputStream out = new FileOutputStream(path);
 			out.write(b);
 			out.flush();
