@@ -298,6 +298,7 @@
 					var cells = evt.properties.cell;
 					if(typeof(cells)!="undefined"){
 					var id = evt.properties.cell.id;
+					if(document.getElementById("stopsNameLabel")) 
 					document.getElementById('stopsNameLabel').innerText = cells.value;
 				    $.ajax({
 		                cache:true, 
@@ -461,6 +462,7 @@
                     stopFlow.show();
                 },
                 success:function(data){//请求成功之后的操作
+                	if(document.getElementById("UUID")) {//js判断元素是否存在
                 	if(data!=null && data!=""){
                  		 document.getElementById('UUID').innerText = data.uuid;
            		 		 document.getElementById('flowName').innerText = data.name;
@@ -470,6 +472,7 @@
                 		 document.getElementById('UUID').innerText = "No content";
                  		 document.getElementById('flowName').innerText = "No content";
                  		 document.getElementById('createrTime').innerText = "No content";
+                		}
                 	}
                 }
             });

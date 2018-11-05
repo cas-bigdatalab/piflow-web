@@ -90,9 +90,8 @@ public class GetGroupsAndStops {
 	@RequestMapping("/saveStopsAndProperty")
 	@Transactional
 	private void getStopsAndProperty() {
-		// 先清空所有stop和stop属性表，重新插入
 		int deleteStopsInfo = stopGroupMapper.deleteStopsInfo();
-		System.out.println("成功删除StopsInfo" + deleteStopsInfo + "条数据！！！");
+		logger.info("成功删除StopsInfo" + deleteStopsInfo + "条数据！！！");
 		// 1.先调stop接口获取getAllStops数据；
 		HttpClientStop stops = new HttpClientStop();
 		String stopList = stops.getGroupAndStopInfo("", SysParamsCache.STOP_LIST_URL());
@@ -102,12 +101,12 @@ public class GetGroupsAndStops {
 		for (String stopListInfos : stop) {
 			num++;
 			// 2.先根据bundle查询stopInfo
-			System.out.println("现在调用的是：" + stopListInfos);
+			logger.info("现在调用的是：" + stopListInfos);
 			String stopInfo = stops.getGroupAndStopInfo(stopListInfos, SysParamsCache.STOP_INFO_URL());
 			if (stopInfo.contains("Error")) {
 				continue;
 			}
-			if (!stopInfo.isEmpty()) {
+			if (StringUtils.isNotBlank(stopInfo)) {
 				List<String> list = new ArrayList<>();
 				List<PropertyTemplate> listPropertyTemplate = new ArrayList<>();
 				List<StopsTemplate> listStopsTemplate = new ArrayList<>();
@@ -139,39 +138,33 @@ public class GetGroupsAndStops {
 					}
 					// 根据stops中的groupName查询Group信息
 					List<StopGroup> stopGroupByName = stopGroupMapper.getStopGroupByName(list);
-					for (StopGroup stopGroup : stopGroupByName) {
-						StopsTemplate stopsTemplate = new StopsTemplate();
-						stopsTemplate.setId(Utils.getUUID32());
-						stopsTemplate.setCrtDttm(new Date());
-						stopsTemplate.setCrtUser("wdd");
-						stopsTemplate.setEnableFlag(true);
-						stopsTemplate.setLastUpdateUser("Nature");
-						stopsTemplate.setLastUpdateDttm(new Date());
-						stopsTemplate.setVersion(0L);
-						stopsTemplate.setBundel(bundle);
-						stopsTemplate.setDescription(description);
-						stopsTemplate.setGroups(groups);
-						stopsTemplate.setName(name);
-						stopsTemplate.setInports(inports);
-						stopsTemplate.setOutports(outports);
-						stopsTemplate.setOwner(owner);
-						stopsTemplate.setStopGroup(stopGroup.getId());
-						listStopsTemplate.add(stopsTemplate);
-					}
+					StopsTemplate stopsTemplate = new StopsTemplate();
+					stopsTemplate.setId(Utils.getUUID32());
+					stopsTemplate.setCrtDttm(new Date());
+					stopsTemplate.setCrtUser("wdd");
+					stopsTemplate.setEnableFlag(true);
+					stopsTemplate.setLastUpdateUser("Nature");
+					stopsTemplate.setLastUpdateDttm(new Date());
+					stopsTemplate.setVersion(0L);
+					stopsTemplate.setBundel(bundle);
+					stopsTemplate.setDescription(description);
+					stopsTemplate.setGroups(groups);
+					stopsTemplate.setName(name);
+					stopsTemplate.setInports(inports);
+					stopsTemplate.setOutports(outports);
+					stopsTemplate.setOwner(owner);
+					listStopsTemplate.add(stopsTemplate);
 					int insertStopsTemplate = stopsTemplateMapper.insertStopsTemplate(listStopsTemplate);
-					System.out.println("flow_stops_template表插入影响行数：" + insertStopsTemplate);
-					System.out.println(
-							"=============================association_groups_stops_template=====start==================");
-					for (StopsTemplate zjb : listStopsTemplate) {
-						String stopGroupId = zjb.getStopGroup();
-						String stopsTemplateId = zjb.getId();
-						int insertAssociationGroupsStopsTemplate = stopGroupMapper
-								.insertAssociationGroupsStopsTemplate(stopGroupId, stopsTemplateId);
-						System.out.println(
-								"association_groups_stops_template关联表插入影响行数：" + insertAssociationGroupsStopsTemplate);
+					logger.info("flow_stops_template表插入影响行数：" + insertStopsTemplate);
+					logger.info( "=============================association_groups_stops_template=====start==================");
+					for (StopGroup stopGroup : stopGroupByName) {
+						String stopGroupId = stopGroup.getId();
+						String stopsTemplateId = stopsTemplate.getId();
+						int insertAssociationGroupsStopsTemplate = stopGroupMapper.insertAssociationGroupsStopsTemplate(stopGroupId, stopsTemplateId);
+						logger.info("association_groups_stops_template关联表插入影响行数：" + insertAssociationGroupsStopsTemplate);
 					}
 					JSONArray jsonArray = JSONArray.fromObject(properties);
-					for (StopsTemplate zjb : listStopsTemplate) {
+					if (null != jsonArray && !jsonArray.isEmpty()) {
 						for (int i = 0; i < jsonArray.size(); i++) {
 							PropertyTemplate PropertyTemplate = new PropertyTemplate();
 							PropertyTemplate.setId(Utils.getUUID32());
@@ -182,26 +175,22 @@ public class GetGroupsAndStops {
 							PropertyTemplate.setLastUpdateDttm(new Date());
 							PropertyTemplate.setVersion(0L);
 							PropertyTemplate.setDefaultValue(jsonArray.getJSONObject(i).getString("defaultValue"));
-							PropertyTemplate
-									.setAllowableValues(jsonArray.getJSONObject(i).getString("allowableValues"));
+							PropertyTemplate.setAllowableValues(jsonArray.getJSONObject(i).getString("allowableValues"));
 							PropertyTemplate.setDescription(jsonArray.getJSONObject(i).getString("description"));
 							PropertyTemplate.setDisplayName(jsonArray.getJSONObject(i).getString("displayName"));
 							PropertyTemplate.setName(jsonArray.getJSONObject(i).getString("name"));
-							PropertyTemplate.setRequired(
-									jsonArray.getJSONObject(i).getString("required").equals("true") ? true : false);
-							PropertyTemplate.setSensitive(
-									jsonArray.getJSONObject(i).getString("sensitive").equals("true") ? true : false);
-							PropertyTemplate.setStopsTemplate(zjb.getId());
+							PropertyTemplate.setRequired(jsonArray.getJSONObject(i).getString("required").equals("true") ? true : false);
+							PropertyTemplate.setSensitive(jsonArray.getJSONObject(i).getString("sensitive").equals("true") ? true : false);
+							PropertyTemplate.setStopsTemplate(stopsTemplate.getId());
 							listPropertyTemplate.add(PropertyTemplate);
 						}
 					}
 					int insertPropertyTemplate = propertyTemplateMapper.insertPropertyTemplate(listPropertyTemplate);
-					System.out.println("flow_stops_property_template表插入影响行数：" + insertPropertyTemplate);
+					logger.info("flow_stops_property_template表插入影响行数：" + insertPropertyTemplate);
 				}
 			}
 		}
-		System.out.println(num + "次数");
-
+		logger.info(num + "次数");
 	}
 
 }

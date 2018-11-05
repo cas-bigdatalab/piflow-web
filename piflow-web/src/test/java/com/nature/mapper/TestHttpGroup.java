@@ -19,6 +19,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.junit.Test;
 
+import com.nature.common.constant.SysParamsCache;
+
 import sun.misc.BASE64Decoder;
 
 @SuppressWarnings({ "deprecation", "restriction" })
@@ -107,7 +109,7 @@ public class TestHttpGroup {
 					JSONObject ob = (JSONObject) it.next();
 					String icon = ob.get("icon") + "";
 					String name = ob.get("name") + "";
-					GenerateImages(icon, name);
+					GenerateImages(icon, name,SysParamsCache.IMAGES_PATH);
 				}
 			}
 		} catch (Exception e) {
@@ -119,7 +121,7 @@ public class TestHttpGroup {
 		}
 	}
 
-	public static boolean GenerateImages(String imgStr, String name) throws IOException {
+	public static boolean GenerateImages(String imgStr, String name,String pathUrl) throws IOException {
 		// 对字节数组字符串进行Base64解码并生成图片
 		if (imgStr == null) // 图像数据为空
 			return false;
@@ -133,10 +135,11 @@ public class TestHttpGroup {
 			}
 		}
 			// 生成jpeg图片 d:\\image\\
-			String imgFilePath = "D:\\01.png";// 新生成的图片
+			//String imgFilePath = "D:\\01.png";// 新生成的图片
+			String path = pathUrl + name + "_128x128.png";
 			//String property = System.getProperty("user.dir");
 			//String path = property + SysParamsCache.IMAGES_PATH + name + "_128x128.png";
-			OutputStream out = new FileOutputStream(imgFilePath);
+			OutputStream out = new FileOutputStream(path);
 			out.write(b);
 			out.flush();
 			out.close();
