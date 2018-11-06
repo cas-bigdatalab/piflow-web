@@ -19,54 +19,49 @@ import com.nature.component.mxGraph.model.MxGraphModel;
 import com.nature.component.mxGraph.vo.MxCellVo;
 import com.nature.component.mxGraph.vo.MxGeometryVo;
 import com.nature.component.mxGraph.vo.MxGraphModelVo;
-import com.nature.component.workFlow.model.Flow;
+
 
 public class FlowXmlUtils {
 
 	static Logger logger = LoggerUtil.getLogger();
 
 	/**
-	 * flow转mxGraphModelVo
+	 * mxGraphModel转mxGraphModelVo
 	 *
-	 * @param flow
+	 * @param mxGraphModel
 	 * @return
 	 */
-	public static MxGraphModelVo flowToMxGraphModelVo(Flow flow) {
+	public static MxGraphModelVo mxGraphModelPoToVo(MxGraphModel mxGraphModel) {
 		MxGraphModelVo mxGraphModelVo = null;
-		// 判空
-		if (null != flow) {
-			// 取出mxGraphModel
-			MxGraphModel mxGraphModel = flow.getMxGraphModel();
-			// 判空mxGraphModel
-			if (null != mxGraphModel) {
-				mxGraphModelVo = new MxGraphModelVo();
-				// 拷贝mxGraphModel的内容到mxGraphModelVo中
-				BeanUtils.copyProperties(mxGraphModel, mxGraphModelVo);
-				// 取出mxCellList
-				List<MxCell> root = mxGraphModel.getRoot();
-				// 判空
-				if (null != root && root.size() > 0) {
-					List<MxCellVo> mxCellVoList = new ArrayList<MxCellVo>();
-					// 循环拷贝
-					for (MxCell mxCell : root) {
-						if (null != mxCell) {
-							MxCellVo mxCellVo = new MxCellVo();
-							// 拷贝mxGraphModel的内容到mxGraphModelVo中
-							BeanUtils.copyProperties(mxCell, mxCellVo);
-							MxGeometry mxGeometry = mxCell.getMxGeometry();
-							if (null != mxGeometry) {
-								MxGeometryVo mxGeometryVo = new MxGeometryVo();
-								// 拷贝mxGeometry的内容到mxGeometryVo中
-								BeanUtils.copyProperties(mxGeometry, mxGeometryVo);
-								mxCellVo.setMxGeometryVo(mxGeometryVo);
-							}
-							mxCellVoList.add(mxCellVo);
+		// 判空mxGraphModel
+		if (null != mxGraphModel) {
+			mxGraphModelVo = new MxGraphModelVo();
+			// 拷贝mxGraphModel的内容到mxGraphModelVo中
+			BeanUtils.copyProperties(mxGraphModel, mxGraphModelVo);
+			// 取出mxCellList
+			List<MxCell> root = mxGraphModel.getRoot();
+			// 判空
+			if (null != root && root.size() > 0) {
+				List<MxCellVo> mxCellVoList = new ArrayList<MxCellVo>();
+				// 循环拷贝
+				for (MxCell mxCell : root) {
+					if (null != mxCell) {
+						MxCellVo mxCellVo = new MxCellVo();
+						// 拷贝mxGraphModel的内容到mxGraphModelVo中
+						BeanUtils.copyProperties(mxCell, mxCellVo);
+						MxGeometry mxGeometry = mxCell.getMxGeometry();
+						if (null != mxGeometry) {
+							MxGeometryVo mxGeometryVo = new MxGeometryVo();
+							// 拷贝mxGeometry的内容到mxGeometryVo中
+							BeanUtils.copyProperties(mxGeometry, mxGeometryVo);
+							mxCellVo.setMxGeometryVo(mxGeometryVo);
 						}
+						mxCellVoList.add(mxCellVo);
 					}
-					mxGraphModelVo.setRootVo(mxCellVoList);
 				}
-
+				mxGraphModelVo.setRootVo(mxCellVoList);
 			}
+
 		}
 		return mxGraphModelVo;
 	}
@@ -155,26 +150,26 @@ public class FlowXmlUtils {
 					if (StringUtils.isNotBlank(id)) {
 						xmlStrSb.append("id=\"" + id + "\" ");
 					}
-					if (StringUtils.isNotBlank(parent)) {
-						xmlStrSb.append("parent=\"" + parent + "\" ");
+					if (StringUtils.isNotBlank(value)) {
+						xmlStrSb.append("value=\"" + value + "\" ");
 					}
 					if (StringUtils.isNotBlank(style)) {
 						xmlStrSb.append("style=\"" + style + "\" ");
 					}
-					if (StringUtils.isNotBlank(value)) {
-						xmlStrSb.append("value=\"" + value + "\" ");
-					}
-					if (StringUtils.isNotBlank(vertex)) {
-						xmlStrSb.append("vertex=\"" + vertex + "\" ");
-					}
-					if (StringUtils.isNotBlank(edge)) {
-						xmlStrSb.append("edge=\"" + edge + "\" ");
+					if (StringUtils.isNotBlank(parent)) {
+						xmlStrSb.append("parent=\"" + parent + "\" ");
 					}
 					if (StringUtils.isNotBlank(source)) {
 						xmlStrSb.append("source=\"" + source + "\" ");
 					}
 					if (StringUtils.isNotBlank(target)) {
 						xmlStrSb.append("target=\"" + target + "\" ");
+					}
+					if (StringUtils.isNotBlank(vertex)) {
+						xmlStrSb.append("vertex=\"" + vertex + "\" ");
+					}
+					if (StringUtils.isNotBlank(edge)) {
+						xmlStrSb.append("edge=\"" + edge + "\" ");
 					}
 					if (null != mxGeometryVo) {
 						String relative = mxGeometryVo.getRelative();
@@ -184,12 +179,6 @@ public class FlowXmlUtils {
 						String width = mxGeometryVo.getWidth();
 						String height = mxGeometryVo.getHeight();
 						xmlStrSb.append("><mxGeometry ");
-						if (StringUtils.isNotBlank(relative)) {
-							xmlStrSb.append("relative=\"" + relative + "\" ");
-						}
-						if (StringUtils.isNotBlank(as)) {
-							xmlStrSb.append("as=\"" + as + "\" ");
-						}
 						if (StringUtils.isNotBlank(x)) {
 							xmlStrSb.append("x=\"" + x + "\" ");
 						}
@@ -201,6 +190,12 @@ public class FlowXmlUtils {
 						}
 						if (StringUtils.isNotBlank(height)) {
 							xmlStrSb.append("height=\"" + height + "\" ");
+						}
+						if (StringUtils.isNotBlank(relative)) {
+							xmlStrSb.append("relative=\"" + relative + "\" ");
+						}
+						if (StringUtils.isNotBlank(as)) {
+							xmlStrSb.append("as=\"" + as + "\" ");
 						}
 						xmlStrSb.append("/></mxCell>");
 					} else {
@@ -278,6 +273,11 @@ public class FlowXmlUtils {
 				String target = recordEle.attributeValue("target");
 				String value = recordEle.attributeValue("value");
 				String vertex = recordEle.attributeValue("vertex");
+				if("1".equals(edge)){
+					if(StringUtils.isBlank(source)||StringUtils.isBlank(target)){
+						continue;
+					}
+				}
 				mxCellVo.setPageId(mxCellId);
 				mxCellVo.setParent(parent);
 				mxCellVo.setStyle(style);

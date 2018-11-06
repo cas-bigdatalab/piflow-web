@@ -4,6 +4,7 @@ import com.nature.base.vo.StatefulRtnBase;
 import com.nature.component.mxGraph.vo.MxGraphModelVo;
 import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.model.FlowInfoDb;
+import org.springframework.data.annotation.Transient;
 
 public interface IFlowService {
 	/**
@@ -14,6 +15,7 @@ public interface IFlowService {
 	 * @param isAdd
 	 * @return
 	 */
+	@Transient
 	public StatefulRtnBase saveOrUpdateFlowAll(MxGraphModelVo mxGraphModelVo, String flowId);
 
 	/**
@@ -22,6 +24,7 @@ public interface IFlowService {
 	 * @param id
 	 * @return
 	 */
+	@Transient
 	public Flow getFlowById(String id);
 
 	/**
@@ -31,6 +34,7 @@ public interface IFlowService {
 	 * @param startFlow
 	 * @return
 	 */
+	@Transient
 	public StatefulRtnBase saveAppId(String flowId, FlowInfoDb startFlow);
 	
 	/**
@@ -38,10 +42,13 @@ public interface IFlowService {
 	 * @param flow
 	 * @return
 	 */
+	@Transient
 	public int addFlow(Flow flow);
 
+	@Transient
 	public int updateFlow(Flow flow);
-	
+
+	@Transient
 	public int deleteFLowInfo(String id);
 
 }

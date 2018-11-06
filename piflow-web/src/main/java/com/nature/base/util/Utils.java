@@ -21,4 +21,18 @@ public class Utils {
 	public static String addSqlStr(String str) {
 		return "'" + str + "'";
 	}
+
+	/**
+	 * str(替换字符串中的单引为双单引)
+	 *
+	 * @param str
+	 * @return
+	 */
+	public static String replaceString(String str) {
+		if(null==str){
+			str = "";
+		}
+		str = str.replace("'","''");
+		return str;
+	}
 }

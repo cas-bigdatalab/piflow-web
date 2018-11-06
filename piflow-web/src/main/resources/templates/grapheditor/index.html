@@ -37,60 +37,7 @@
     		 divValue = divAppend;
     }
 	</script>
-	<script type="text/javascript">
-		// Parses URL parameters. Supported parameters are:
-		// - lang=xy: Specifies the language of the user interface.
-		// - touch=1: Enables a touch-style user interface.
-		// - storage=local: Enables HTML5 local storage.
-		// - chrome=0: Chromeless mode.
-		var urlParams = (function(url)
-		{
-			var result = new Object();
-			var idx = url.lastIndexOf('?');
-	
-			if (idx > 0)
-			{
-				var params = url.substring(idx + 1).split('&');
-				
-				for (var i = 0; i < params.length; i++)
-				{
-					idx = params[i].indexOf('=');
-					
-					if (idx > 0)
-					{
-						result[params[i].substring(0, idx)] = params[i].substring(idx + 1);
-					}
-				}
-			}
-			
-			return result;
-		})(window.location.href);
-	
-		// Default resources are included in grapheditor resources
-		mxLoadResources = false;
-	</script>
-	<script type="text/javascript" th:src="@{/grapheditor/js/Init.js}"></script>
-	<script type="text/javascript" th:src="@{/grapheditor/deflate/pako.min.js}"></script>
-	<script type="text/javascript" th:src="@{/grapheditor/deflate/base64.js}"></script>
-	<script type="text/javascript" th:src="@{/grapheditor/jscolor/jscolor.js}"></script>
-	<script type="text/javascript" th:src="@{/grapheditor/sanitizer/sanitizer.min.js}"></script>
-	<script type="text/javascript" th:src="@{/grapheditor/mxClient.js}"></script>
-	<script type="text/javascript" th:src="@{/grapheditor/js/EditorUi.js}"></script>
-	<script type="text/javascript" th:src="@{/grapheditor/js/Editor.js}"></script>
-	<script type="text/javascript" th:src="@{/grapheditor/js/Sidebar.js}"></script>
-	<script type="text/javascript" th:src="@{/grapheditor/js/Graph.js}"></script>
-	<script type="text/javascript" th:src="@{/grapheditor/js/Shapes.js}"></script>
-	<script type="text/javascript" th:src="@{/grapheditor/js/Actions.js}"></script>
-	<script type="text/javascript" th:src="@{/grapheditor/js/Menus.js}"></script>
-	<script type="text/javascript" th:src="@{/grapheditor/js/Format.js}"></script>
-	<script type="text/javascript" th:src="@{/grapheditor/js/Toolbar.js}"></script>
-	<script type="text/javascript" th:src="@{/grapheditor/js/Dialogs.js}"></script>
-	<script type="text/javascript" th:src="@{/grapheditor/js/jquery.min.js}"></script>
-	<!--用户拖动元素，链接：http://api.jqueryui.com/draggable/#method-disable/-->
-	<script type="text/javascript" th:src="@{/charisma/js/jquery-ui.min.js}"></script>
-	<!--移动设备用户拖动元素，依赖juery-ui.min.js，链接：http://touchpunch.furf.com/-->
-	<script type="text/javascript" th:src="@{/charisma/js/jquery.ui.touch-punch.min.js}"></script>
-	<script type="text/javascript" th:src="@{/charisma/js/bootstrap.min.js}"></script>
+	<meta th:include="/grapheditor/index_improt :: index_improt" />
 </head>
 <body class="geEditor">
      <div id='fullScreen' class="fullScreen" style="display: none;">
@@ -137,235 +84,8 @@
 	        </div>
 	    </div>
 	</div>
-	<script type="text/javascript">
-		// Extends EditorUi to update I/O action states based on availability of backend
-		var graphGlobal = null;
-		var thisEditor = null;
-		var sign = true;
-		(function()
-		{
-			
-			var editorUiInit = EditorUi.prototype.init;
-			
-			EditorUi.prototype.init = function()
-			{
-				editorUiInit.apply(this, arguments);
-				this.actions.get('export').setEnabled(false);
-				graphGlobal = this.editor.graph;
-				thisEditor = this.editor;
-
-				// Updates action states which require a backend
-				if (!Editor.useLocalStorage)
-				{
-					mxUtils.post(OPEN_URL, '', mxUtils.bind(this, function(req)
-					{
-						var enabled = req.getStatus() != 404;
-						this.actions.get('open').setEnabled(enabled || Graph.fileSupport);
-						this.actions.get('import').setEnabled(enabled || Graph.fileSupport);
-						this.actions.get('save').setEnabled(enabled);
-						this.actions.get('saveAs').setEnabled(enabled);
-						this.actions.get('export').setEnabled(enabled);
-					}));
-				}
-				//监控事件
-				graphGlobal.addListener(mxEvent.CELLS_ADDED, function(sender, evt) {
-					saveXml();
-					console.info("CELLS_ADDED");
-		         });
-				graphGlobal.addListener(mxEvent.CELLS_MOVED, function(sender, evt) {
-					saveXml();
-					console.info("CELLS_MOVED");
-		         });
-				graphGlobal.addListener(mxEvent.CELLS_REMOVED, function(sender, evt) {
-					saveXml();
-					console.info("CELLS_REMOVED");
-		         });
-			 	function add(data){
-					if(data!=null && data.length>0){
-						  while(divValue.hasChildNodes()) 
-						    {
-							  divValue.removeChild(divValue.firstChild);
-						    }
-						var table=document.createElement("table");
-						table.style.borderCollapse = "separate";
-						table.style.borderSpacing = "0px 5px";
-	               		var tbody=document.createElement("tbody");
-						for(var y=0;y<data.length;y++){
-	               			var select = document.createElement('select');
-	               			select.style.width = "125px";
-	               			select.style.height = "22px";
-	               			select.setAttribute('id', ''+data[y].displayName+'');
-							var displayName = data[y].displayName;
-							var customValue = data[y].customValue;
-							var allowableValues = data[y].allowableValues;
-							//是否必填
-							var required = data[y].required;
-							//如果大于4表示有下拉框
-							if(allowableValues.length > 4){
-							var selectValue = JSON.parse(allowableValues); 
-							var selectInfo =  JSON.stringify(selectValue);
-							var strs=selectInfo.split(",");  
-							//循环给select下来赋值
-							for (i=0;i<strs.length ;i++ ){
-							var option = document.createElement("option");
-							option.value =strs[i].replace("\"","").replace("\"","").replace("\[","").replace("\]","");
-							option.innerHTML =strs[i].replace("\"","").replace("\"","").replace("\[","").replace("\]","");
-							//设置默认选中项
-							if(strs[i].indexOf(''+customValue+'') != -1){
-								option.setAttribute('selected', 'selected');
-									}
-								select.appendChild(option); 
-								}
-							}
-							var displayName = document.createElement('input');
-							if(required) 
-							displayName.setAttribute('class', 'true');
-							displayName.setAttribute('type', 'text');
-							displayName.setAttribute('id', ''+data[y].displayName+'');
-							displayName.setAttribute('onblur', 'shiqu("'+data[y].id+'","'+data[y].displayName+'")');
-							displayName.style.width = "125px";
-							displayName.style.height = "22px";
-							displayName.setAttribute('value', ''+customValue+'');
-							var spanDisplayName = 'span'+data[y].displayName;
-		               		var spanDisplayName = document.createElement('span');
-		               		var spanFlag = document.createElement('span');
-							spanDisplayName.style.cursor = "pointer";
-							spanDisplayName.setAttribute('title', ''+data[y].description+'');
-							spanFlag.setAttribute('style','color:red');
-		               		mxUtils.write(spanDisplayName, ''+data[y].displayName+'');
-		               		mxUtils.write(spanFlag, ' *');
-		               		var tr=document.createElement("tr");
-		               		var td=document.createElement("td");
-		               		td.style.width = "60px";
-		               		var td1=document.createElement("td");
-		               		//开始appendchild()追加各个元素
-		               		td.appendChild(spanDisplayName);
-		               		//本次循环大于4追加下拉,小于4默认文本框
-		               		if(allowableValues.length > 4){
-		               		td1.appendChild(select);
-		               		}else{
-		               		td1.appendChild(displayName);
-		               		if(required) 
-		               		td1.appendChild(spanFlag);
-		               		}
-		               		tr.appendChild(td);
-		               		tr.appendChild(td1);
-		               		tbody.appendChild(tr);
-		               		table.appendChild(tbody); 
-		               	  }
-						var btn = mxUtils.button('submit', mxUtils.bind(this, function(evt)
-						{
-							//创建一个数组
-							var arrayObj = new Array();
-							for(var y=0;y<data.length;y++){
-								var content = document.getElementById(''+data[y].displayName+'').value;
-								var classname = document.getElementById(''+data[y].displayName+'').className;
-								if(content!=null && content.length>0){
-								arrayObj.push(content+"#id#"+data[y].id);
-								}else{
-									if(classname == 'true'){
-										 $("#"+data[y].displayName+"").focus();
-										 $("#"+data[y].displayName+"").css("background-color","#FFD39B");
-									}
-								}
-							}
-						   $.ajax({
-					         cache:true, 
-					         type:"POST", 
-					         url:"/piflow-web/stops/updateStops",
-					         data:{content:arrayObj},
-					         async:true, 
-					         traditional: true,
-					         error:function(request){ 
-					        	 console.log("attribute update error");
-					             return;
-					         },
-					         success:function(data){ 
-					             console.log("attribute update success");
-					             $("input").blur();
-					             $("select").blur();
-					         }
-					     });     
-						}));
-						btn.style.width = '202px';
-						btn.style.marginLeft = '18px';
-						btn.style.marginTop = '10px';
-						divValue.appendChild(table);
-						divValue.appendChild(btn);
-					}
-			    }  
-		         graphGlobal.addListener(mxEvent.CLICK, function(sender, evt) {
-					var cells = evt.properties.cell;
-					if(typeof(cells)!="undefined"){
-					var id = evt.properties.cell.id;
-					if(document.getElementById("stopsNameLabel")) 
-					document.getElementById('stopsNameLabel').innerText = cells.value;
-				    $.ajax({
-		                cache:true, 
-		                type:"POST", 
-		                url:"/piflow-web/stops/queryIdInfo",
-		                data:{"id":id,"fid":loadId},
-		                async:true, 
-		                error:function(request){ 
-		                	//alert("Jquery Ajax request error!!!");
-		                    return;
-		                },
-		                success:function(data){ 
-		                    if(""!=data){
-		                    	  console.log("stops属性查询success");
-		                    	  add(data.properties);
-		                		  document.getElementById('stopsDescription').innerText = data.description;
-		                		  document.getElementById('stopsGroups').innerText = data.groups;
-		                		  document.getElementById('stopsBundel').innerText = data.bundel;
-		                		  document.getElementById('stopsVersion').innerText = data.version;
-		                		  document.getElementById('stopSowner').innerText = data.owner;
-		                		  document.getElementById('stopCreateDate').innerText = data.crtDttmString; 
-		                    }else{
-		                    	  console.log("stops属性查询null");
-		                    }
-		                }
-		            });
-					}
-		         });
-
-				if(xmlDate){
-					var xml = mxUtils.parseXml(xmlDate);
-					var node = xml.documentElement;
-					var dec = new mxCodec(node.ownerDocument);
-					dec.decode(node, graphGlobal.getModel());
-					thisEditor.lastSnapshot = new Date().getTime();
-					thisEditor.undoManager.clear();
-					thisEditor.ignoredChanges = 0;
-					thisEditor.setModified(false);
-				};
-				graphGlobal.setTooltips(false);
-			};
-
-			// Adds required resources (disables loading of fallback properties, this can only
-			// be used if we know that all keys are defined in the language specific file)
-			mxResources.loadDefaultBundle = false;
-			var bundle = mxResources.getDefaultBundle(RESOURCE_BASE, mxLanguage) ||
-				mxResources.getSpecialBundle(RESOURCE_BASE, mxLanguage);
-
-			// Fixes possible asynchronous requests
-			mxUtils.getAll([bundle, STYLE_PATH + '/default.xml'], function(xhr)
-			{
-				// Adds bundle text to resources
-				mxResources.parse(xhr[0].getText());
-				
-				// Configures the default graph theme
-				var themes = new Object();
-				themes[Graph.prototype.defaultThemeName] = xhr[1].getDocumentElement(); 
-				
-				// Main
-				new EditorUi(new Editor(urlParams['chrome'] == '0', themes));
-			}, function()
-			{
-				document.body.innerHTML = '<center style="margin-top:10%;">Error loading resource files. Please check browser console.</center>';
-			});
-		})();
-		//@ sourceURL=indexsss.js
-	</script>
+	 <!--初始化画板-->
+	 <script type="text/javascript" th:src="@{/grapheditor/initGraph.js}"></script>
 	<script type="text/javascript">
     	var token = $("meta[name='_csrf']").attr("content");
     	var header = $("meta[name='_csrf_header']").attr("content");
@@ -376,6 +96,173 @@
     	    xhr.setRequestHeader(header, token);
     	});
 		var timer;
+        function findBasicInfo(evt) {
+            var cells = evt.properties.cell;
+            if(typeof(cells)!="undefined"){
+                alert(0000000000000000000);
+                var id = evt.properties.cell.id;
+                if(document.getElementById("stopsNameLabel"))
+                    document.getElementById('stopsNameLabel').innerText = cells.value;
+                $.ajax({
+                    cache:true,
+                    type:"POST",
+                    url:"/piflow-web/stops/queryIdInfo",
+                    data:{"id":id,"fid":loadId},
+                    async:true,
+                    error:function(request){
+                        //alert("Jquery Ajax request error!!!");
+                        return;
+                    },
+                    success:function(data){
+                        if(""!=data){
+                            console.log("stops属性查询success");
+                            add(data.properties);
+                            document.getElementById('stopsDescription').innerText = data.description;
+                            document.getElementById('stopsGroups').innerText = data.groups;
+                            document.getElementById('stopsBundel').innerText = data.bundel;
+                            document.getElementById('stopsVersion').innerText = data.version;
+                            document.getElementById('stopSowner').innerText = data.owner;
+                            document.getElementById('stopCreateDate').innerText = data.crtDttmString;
+                        }else{
+                            console.log("stops属性查询null");
+                        }
+                    }
+                });
+            }
+        }
+        function add(data){
+            if(data!=null && data.length>0){
+                while(divValue.hasChildNodes())
+                {
+                    divValue.removeChild(divValue.firstChild);
+                }
+                var table=document.createElement("table");
+                table.style.borderCollapse = "separate";
+                table.style.borderSpacing = "0px 5px";
+                var tbody=document.createElement("tbody");
+                for(var y=0;y<data.length;y++){
+                    var select = document.createElement('select');
+                    select.style.width = "125px";
+                    select.style.height = "22px";
+                    select.setAttribute('id', ''+data[y].displayName+'');
+                    var displayName = data[y].displayName;
+                    var customValue = data[y].customValue;
+                    var allowableValues = data[y].allowableValues;
+                    //是否必填
+                    var required = data[y].required;
+                    //如果大于4表示有下拉框
+                    if(allowableValues.length > 4){
+                        var selectValue = JSON.parse(allowableValues);
+                        var selectInfo =  JSON.stringify(selectValue);
+                        var strs=selectInfo.split(",");
+                        //循环给select下来赋值
+                        for (i=0;i<strs.length ;i++ ){
+                            var option = document.createElement("option");
+                            option.value =strs[i].replace("\"","").replace("\"","").replace("\[","").replace("\]","");
+                            option.innerHTML =strs[i].replace("\"","").replace("\"","").replace("\[","").replace("\]","");
+                            //设置默认选中项
+                            if(strs[i].indexOf(''+customValue+'') != -1){
+                                option.setAttribute('selected', 'selected');
+                            }
+                            select.appendChild(option);
+                        }
+                    }
+                    var displayName = document.createElement('input');
+                    if(required)
+                        displayName.setAttribute('class', 'true');
+                    displayName.setAttribute('type', 'text');
+                    displayName.setAttribute('id', ''+data[y].displayName+'');
+                    displayName.setAttribute('onblur', 'shiqu("'+data[y].id+'","'+data[y].displayName+'")');
+                    displayName.style.width = "125px";
+                    displayName.style.height = "22px";
+                    displayName.setAttribute('value', ''+customValue+'');
+                    var spanDisplayName = 'span'+data[y].displayName;
+                    var spanDisplayName = document.createElement('span');
+                    var spanFlag = document.createElement('span');
+                    spanDisplayName.style.cursor = "pointer";
+                    spanDisplayName.setAttribute('title', ''+data[y].description+'');
+                    spanFlag.setAttribute('style','color:red');
+                    mxUtils.write(spanDisplayName, ''+data[y].displayName+'');
+                    mxUtils.write(spanFlag, ' *');
+                    var tr=document.createElement("tr");
+                    var td=document.createElement("td");
+                    td.style.width = "60px";
+                    var td1=document.createElement("td");
+                    //开始appendchild()追加各个元素
+                    td.appendChild(spanDisplayName);
+                    //本次循环大于4追加下拉,小于4默认文本框
+                    if(allowableValues.length > 4){
+                        td1.appendChild(select);
+                    }else{
+                        td1.appendChild(displayName);
+                        if(required)
+                            td1.appendChild(spanFlag);
+                    }
+                    tr.appendChild(td);
+                    tr.appendChild(td1);
+                    tbody.appendChild(tr);
+                    table.appendChild(tbody);
+                }
+                var btn = mxUtils.button('submit', mxUtils.bind(this, function(evt)
+                {
+                    //创建一个数组
+                    var arrayObj = new Array();
+                    for(var y=0;y<data.length;y++){
+                        var content = document.getElementById(''+data[y].displayName+'').value;
+                        var classname = document.getElementById(''+data[y].displayName+'').className;
+                        if(content!=null && content.length>0){
+                            arrayObj.push(content+"#id#"+data[y].id);
+                        }else{
+                            if(classname == 'true'){
+                                $("#"+data[y].displayName+"").focus();
+                                $("#"+data[y].displayName+"").css("background-color","#FFD39B");
+                            }
+                        }
+                    }
+                    $.ajax({
+                        cache:true,
+                        type:"POST",
+                        url:"/piflow-web/stops/updateStops",
+                        data:{content:arrayObj},
+                        async:true,
+                        traditional: true,
+                        error:function(request){
+                            console.log("attribute update error");
+                            return;
+                        },
+                        success:function(data){
+                            console.log("attribute update success");
+                            $("input").blur();
+                            $("select").blur();
+                        }
+                    });
+                }));
+                btn.style.width = '202px';
+                btn.style.marginLeft = '18px';
+                btn.style.marginTop = '10px';
+                divValue.appendChild(table);
+                divValue.appendChild(btn);
+            }
+        }
+        function addCellsCustom(cells) {
+            var paths = [];
+            for (var i=0 ;i<cells.length;i++){
+                var cellfor = cells[i];
+                if (cellfor && cellfor.edge){
+                    if(cellfor.target && cellfor.source){
+
+                    }else {
+                        paths[paths.length] = cellfor;
+                    }
+                }else if(cellfor.style && (cellfor.style).indexOf("text\;") === 0) {
+                    paths[paths.length] = cellfor;
+				}
+            }
+            graphGlobal.removeCells(paths);
+            if(cells.length !=paths.length){
+                saveXml();
+            }
+        }
         //保存xml文件
 	    function saveXml(){
 	    	var getXml = thisEditor.getGraphXml();
@@ -628,7 +515,7 @@
 			$("#modalDialog").draggable();//为模态对话框添加拖拽
 			//$("#myModal").css("overflow", "hidden");//禁止模态对话框的半透明背景滚动
 		});
-    	//@ sourceURL=index-----------.js
+    	//@ sourceURL=index.js
 	</script>
 </body>
 </html>

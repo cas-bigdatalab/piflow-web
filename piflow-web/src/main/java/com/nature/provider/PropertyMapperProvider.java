@@ -20,73 +20,72 @@ public class PropertyMapperProvider {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public String addPropertyList(Map map) {
 		List<Property> propertyList = (List<Property>) map.get("propertyList");
-		StringBuffer sql = new StringBuffer();
-		if (null != propertyList && propertyList.size() > 0) {
-			sql.append("insert into ");
-			sql.append("flow_stops_property ");
-			sql.append("(");
-			sql.append("id,");
-			sql.append("crt_dttm,");
-			sql.append("crt_user,");
-			sql.append("last_update_dttm,");
-			sql.append("last_update_user,");
-			sql.append("version,");
-			sql.append("enable_flag,");
-			sql.append("name,");
-			sql.append("display_name,");
-			sql.append("description,");
-			sql.append("custom_value,");
-			sql.append("allowable_values,");
-			sql.append("property_required,");
-			sql.append("property_sensitive,");
-			sql.append("fk_stops_id");
-			sql.append(") ");
-			sql.append("values");
-			int i = 0;
-			for (Property property : propertyList) {
-				i++;
-				String id = property.getId();
-				Date crtDttm = property.getCrtDttm();
-				String crtUser = property.getCrtUser();
-				Date lastUpdateDttm = property.getLastUpdateDttm();
-				String lastUpdateUser = property.getLastUpdateUser();
-				Long version = property.getVersion();
-				Boolean enableFlag = property.getEnableFlag();
-				String name = property.getName();
-				String displayName = property.getDisplayName();
-				String description = property.getDescription();
-				String customValue = property.getCustomValue();
-				String allowableValues = property.getAllowableValues();
-				boolean required = property.isRequired();
-				boolean sensitive = property.isSensitive();
-				Stops stops = property.getStops();
-				// 拼接时位置顺序不能错
-				sql.append("(");
-				sql.append(Utils.addSqlStr((id == null ? "" : id)) + ",");
-				sql.append(Utils.addSqlStr((crtDttm == null ? "" : DateUtils.dateTimesToStr(crtDttm))) + ",");
-				sql.append(Utils.addSqlStr((crtUser == null ? "" : crtUser)) + ",");
-				sql.append(Utils.addSqlStr((lastUpdateDttm == null ? "" : DateUtils.dateTimesToStr(lastUpdateDttm)))
-						+ ",");
-				sql.append(Utils.addSqlStr((lastUpdateUser == null ? "" : lastUpdateUser)) + ",");
-				sql.append((version == null ? "" : 0) + ",");
-				sql.append((enableFlag == null ? "" : (enableFlag ? 1 : 0)) + ",");
-				sql.append(Utils.addSqlStr((name == null ? "" : name)) + ",");
-				sql.append(Utils.addSqlStr((displayName == null ? "" : displayName)) + ",");
-				sql.append(Utils.addSqlStr((description == null ? "" : description)) + ",");
-				sql.append(Utils.addSqlStr((customValue == null ? "" : customValue)) + ",");
-				sql.append(Utils.addSqlStr((allowableValues == null ? "" : allowableValues)) + ",");
-				sql.append((required ? 1 : 0) + ",");
-				sql.append((sensitive ? 1 : 0) + ",");
-				sql.append(Utils.addSqlStr((stops == null ? "" : stops.getId())));
-				if (i != propertyList.size()) {
-					sql.append("),");
-				} else {
-					sql.append(")");
-				}
-			}
-			sql.append(";");
-		}
-		return sql.toString();
-	};
-
+        StringBuffer sqlStrBuffer = new StringBuffer();
+        if (null != propertyList && propertyList.size() > 0) {
+            sqlStrBuffer.append("insert into ");
+            sqlStrBuffer.append("flow_stops_property ");
+            sqlStrBuffer.append("(");
+            sqlStrBuffer.append("id,");
+            sqlStrBuffer.append("crt_dttm,");
+            sqlStrBuffer.append("crt_user,");
+            sqlStrBuffer.append("last_update_dttm,");
+            sqlStrBuffer.append("last_update_user,");
+            sqlStrBuffer.append("version,");
+            sqlStrBuffer.append("enable_flag,");
+            sqlStrBuffer.append("name,");
+            sqlStrBuffer.append("display_name,");
+            sqlStrBuffer.append("description,");
+            sqlStrBuffer.append("custom_value,");
+            sqlStrBuffer.append("allowable_values,");
+            sqlStrBuffer.append("property_required,");
+            sqlStrBuffer.append("property_sensitive,");
+            sqlStrBuffer.append("fk_stops_id");
+            sqlStrBuffer.append(") ");
+            sqlStrBuffer.append("values");
+            int i = 0;
+            for (Property property : propertyList) {
+                i++;
+                String id = property.getId();
+                Date crtDttm = property.getCrtDttm();
+                String crtUser = property.getCrtUser();
+                Date lastUpdateDttm = property.getLastUpdateDttm();
+                String lastUpdateUser = property.getLastUpdateUser();
+                Long version = property.getVersion();
+                Boolean enableFlag = property.getEnableFlag();
+                String name = property.getName();
+                String displayName = property.getDisplayName();
+                String description = property.getDescription();
+                String customValue = property.getCustomValue();
+                String allowableValues = property.getAllowableValues();
+                boolean required = property.isRequired();
+                boolean sensitive = property.isSensitive();
+                Stops stops = property.getStops();
+                // 拼接时位置顺序不能错
+                sqlStrBuffer.append("(");
+                sqlStrBuffer.append(Utils.addSqlStr(Utils.replaceString(id)) + ",");
+                sqlStrBuffer.append(Utils.addSqlStr((crtDttm == null ? "" : DateUtils.dateTimesToStr(crtDttm))) + ",");
+                sqlStrBuffer.append(Utils.addSqlStr((Utils.replaceString(crtUser))) + ",");
+                sqlStrBuffer.append(Utils.addSqlStr((lastUpdateDttm == null ? "" : DateUtils.dateTimesToStr(lastUpdateDttm))) + ",");
+                sqlStrBuffer.append(Utils.addSqlStr((Utils.replaceString(lastUpdateUser))) + ",");
+                sqlStrBuffer.append((version == null ? "" : 0) + ",");
+                sqlStrBuffer.append((enableFlag == null ? "" : (enableFlag ? 1 : 0)) + ",");
+                sqlStrBuffer.append(Utils.addSqlStr((Utils.replaceString(name))) + ",");
+                sqlStrBuffer.append(Utils.addSqlStr((Utils.replaceString(displayName))) + ",");
+                sqlStrBuffer.append(Utils.addSqlStr((Utils.replaceString(description))) + ",");
+                sqlStrBuffer.append(Utils.addSqlStr((Utils.replaceString(customValue))) + ",");
+                sqlStrBuffer.append(Utils.addSqlStr((Utils.replaceString(allowableValues))) + ",");
+                sqlStrBuffer.append((required ? 1 : 0) + ",");
+                sqlStrBuffer.append((sensitive ? 1 : 0) + ",");
+                sqlStrBuffer.append(Utils.addSqlStr((stops == null ? "" : stops.getId())));
+                if (i != propertyList.size()) {
+                    sqlStrBuffer.append("),");
+                } else {
+                    sqlStrBuffer.append(")");
+                }
+            }
+            sqlStrBuffer.append(";");
+        }
+		String sqlStr = sqlStrBuffer.toString();
+		return sqlStr;
+	}
 }

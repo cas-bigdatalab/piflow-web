@@ -19,6 +19,7 @@ import com.nature.base.util.JsonUtils;
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.Utils;
 import com.nature.base.vo.StatefulRtnBase;
+import com.nature.component.mxGraph.model.MxGraphModel;
 import com.nature.component.mxGraph.vo.MxGraphModelVo;
 import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.model.FlowInfoDb;
@@ -56,6 +57,7 @@ public class GrapheditorCtrl {
 			List<StopGroup> groupsList = stopGroupServiceImpl.getStopGroupAll();
 			model.addAttribute("groupsList", groupsList);
 			Flow flowById = flowServiceImpl.getFlowById(load);
+            MxGraphModelVo mxGraphModelVo = null;
 			if (null != flowById) {
 				FlowInfoDb appVo = flowById.getAppId();
 				if (null != appVo) {
@@ -64,9 +66,11 @@ public class GrapheditorCtrl {
 					model.addAttribute("appId", appId);
 					model.addAttribute("flowState", state);
 				}
+                MxGraphModel mxGraphModel = flowById.getMxGraphModel();
+				mxGraphModelVo = FlowXmlUtils.mxGraphModelPoToVo(mxGraphModel);
 			}
-			// 把查詢出來的Flow轉爲XML
-			String loadXml = FlowXmlUtils.mxGraphModelToXml(FlowXmlUtils.flowToMxGraphModelVo(flowById));
+			// 把查詢出來的mxGraphModelVo轉爲XML
+            String loadXml = FlowXmlUtils.mxGraphModelToXml(mxGraphModelVo);
 			model.addAttribute("xmlDate", loadXml);
 			model.addAttribute("load", load);
 		} else {

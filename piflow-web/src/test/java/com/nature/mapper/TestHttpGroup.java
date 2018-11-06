@@ -109,7 +109,7 @@ public class TestHttpGroup {
 					JSONObject ob = (JSONObject) it.next();
 					String icon = ob.get("icon") + "";
 					String name = ob.get("name") + "";
-					GenerateImages(icon, name,SysParamsCache.IMAGES_PATH);
+					GenerateImages(icon, name + "_128x128.png",SysParamsCache.IMAGES_PATH);
 				}
 			}
 		} catch (Exception e) {

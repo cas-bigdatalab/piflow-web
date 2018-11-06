@@ -10,8 +10,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.annotation.Transient;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.Utils;
 import com.nature.base.vo.StatefulRtnBase;
@@ -39,6 +40,7 @@ import com.nature.mapper.mxGraph.MxGeometryMapper;
 import com.nature.mapper.mxGraph.MxGraphModelMapper;
 
 @Service
+@Transactional
 public class FlowServiceImpl implements IFlowService {
 
 	Logger logger = LoggerUtil.getLogger();
@@ -77,6 +79,7 @@ public class FlowServiceImpl implements IFlowService {
 	 * @return
 	 */
 	@Override
+	@Transient
 	public StatefulRtnBase saveOrUpdateFlowAll(MxGraphModelVo mxGraphModelVo, String flowId) {
 		StatefulRtnBase satefulRtnBase = new StatefulRtnBase();
 		if (StringUtils.isNotBlank(flowId)) {
@@ -175,7 +178,7 @@ public class FlowServiceImpl implements IFlowService {
 			// 版本号
 			flow.setVersion(0L);
 			// 流水线Name
-			flow.setName("默认");
+			flow.setName("default");
 			// 保存mxGraphModel
 			// 新建
 			MxGraphModel mxGraphModel = new MxGraphModel();
@@ -641,8 +644,10 @@ public class FlowServiceImpl implements IFlowService {
 									} else {
 										// 如果取到的是空则新增
 										Stops toStops = this.stopsTemplateToStops(mxCellVo);
-										toStops.setFlow(flow);
-										addStops.add(toStops);
+										if(null != toStops){
+											toStops.setFlow(flow);
+											addStops.add(toStops);
+										}
 									}
 								}
 								// objectPathsMap中的所有需要修改的移除，剩下为要逻辑删除的
