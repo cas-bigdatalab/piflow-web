@@ -1,6 +1,5 @@
 package com.nature.mapper.mxGraph;
 
-import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.Many;
 import org.apache.ibatis.annotations.Mapper;
@@ -8,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.annotations.UpdateProvider;
 import org.apache.ibatis.mapping.FetchType;
 
@@ -61,7 +61,7 @@ public interface MxGraphModelMapper {
 	public MxGraphModel getMxGraphModelById(String id);
 	
 	
-	@Delete("DELETE from mx_graph_model where id = #{id}; ")
+	@Update("update mx_graph_model set enable_flag = 0 where id = #{id}; ")
 	int deleteMxGraphModelById(@Param("id") String id);
 
 }

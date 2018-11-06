@@ -2,7 +2,6 @@ package com.nature.mapper;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.Many;
 import org.apache.ibatis.annotations.Mapper;
@@ -10,6 +9,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.annotations.UpdateProvider;
 import org.apache.ibatis.mapping.FetchType;
 
@@ -72,7 +72,7 @@ public interface StopsMapper {
 	})
 	public List<Stops> getStopsListByFlowId(String flowId);
 	
-	@Delete("delete from flow_stops where fk_flow_id=#{flowId}")
- 	int deleteStopsByFlowId(@Param("flowId") String id);
+	@Update("update flow_stops set enable_flag = 0 where fk_flow_id=#{flowId}")
+	public int deleteStopsByFlowId(@Param("flowId") String id);
 
 }

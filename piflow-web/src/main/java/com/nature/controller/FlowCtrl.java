@@ -40,7 +40,7 @@ import java.util.Map;
 public class FlowCtrl {
 
     /**
-     * @Title ÒıÈëÈÕÖ¾£¬×¢Òâ¶¼ÊÇ"org.slf4j"°üÏÂ
+     * @Title å¼•å…¥æ—¥å¿—ï¼Œæ³¨æ„éƒ½æ˜¯"org.slf4j"åŒ…ä¸‹
      */
     Logger logger = LoggerUtil.getLogger();
 
@@ -81,7 +81,7 @@ public class FlowCtrl {
     private IMxGraphService mxGraphServiceImpl;
 
     /**
-     * Æô¶¯flow
+     * å¯åŠ¨flow
      *
      * @param request
      * @param model
@@ -95,44 +95,44 @@ public class FlowCtrl {
         String errMsg = "";
         String flowId = request.getParameter("flowId");
         if (StringUtils.isNotBlank(flowId)) {
-            // ¸ù¾İflowId²éÑ¯flow
+            // æ ¹æ®flowIdæŸ¥è¯¢flow
             Flow flowById = flowServiceImpl.getFlowById(flowId);
-            // addFlow²»Îª¿ÕÇÒReqRtnStatusµÄÖµÎªtrue,Ôò±£´æ³É¹¦
+            // addFlowä¸ä¸ºç©ºä¸”ReqRtnStatusçš„å€¼ä¸ºtrue,åˆ™ä¿å­˜æˆåŠŸ
             if (null != flowById) {
                 String startFlow = startFlowImpl.startFlow(flowById);
                 if (StringUtils.isNotBlank(startFlow)) {
                     FlowInfoDb flowInfoDb = getFlowInfoImpl.AddFlowInfo(startFlow);
-                    // flowInfo½Ó¿Ú·µ»ØÎª¿ÕµÄÇé¿ö
+                    // flowInfoæ¥å£è¿”å›ä¸ºç©ºçš„æƒ…å†µ
                     if (null == flowInfoDb) {
-                        rtnMap.put("flowInfoDbMsg", "flowInfoDb´´½¨Ê§°Ü");
+                        rtnMap.put("flowInfoDbMsg", "flowInfoDbåˆ›å»ºå¤±è´¥");
                     }
                     StatefulRtnBase saveAppId = flowServiceImpl.saveAppId(flowId, flowInfoDb);
                     String saveAppIdMsg = "";
                     if (null != saveAppId && saveAppId.isReqRtnStatus()) {
-                        saveAppIdMsg = "flowIdÎª" + flowId + "µÄflow£¬±£´æappID³É¹¦" + startFlow;
+                        saveAppIdMsg = "flowIdä¸º" + flowId + "çš„flowï¼Œä¿å­˜appIDæˆåŠŸ" + startFlow;
                         rtnMap.put("saveAppIdMsg", saveAppIdMsg);
                         logger.info(saveAppIdMsg);
                     } else {
-                        saveAppIdMsg = "flowIdÎª" + flowId + "µÄflow£¬±£´æappID³ö´í";
+                        saveAppIdMsg = "flowIdä¸º" + flowId + "çš„flowï¼Œä¿å­˜appIDå‡ºé”™";
                         rtnMap.put("saveAppIdMsg", saveAppIdMsg);
                         logger.warn(saveAppIdMsg);
                     }
-                    errMsg = "Æô¶¯³É¹¦£¬·µ»ØµÄappidÎª£º" + startFlow;
+                    errMsg = "å¯åŠ¨æˆåŠŸï¼Œè¿”å›çš„appidä¸ºï¼š" + startFlow;
                     rtnMap.put("code", "1");
                     rtnMap.put("appid", startFlow);
                     rtnMap.put("errMsg", errMsg);
                 } else {
-                    errMsg = "Æô¶¯Ê§°Ü";
+                    errMsg = "å¯åŠ¨å¤±è´¥";
                     rtnMap.put("errMsg", errMsg);
                     logger.warn(errMsg);
                 }
             } else {
-                errMsg = "Î´²éÑ¯µ½flowIdÎª" + flowId + "µÄflow";
+                errMsg = "æœªæŸ¥è¯¢åˆ°flowIdä¸º" + flowId + "çš„flow";
                 rtnMap.put("errMsg", errMsg);
                 logger.warn(errMsg);
             }
         } else {
-            errMsg = "flowIdÎª¿Õ";
+            errMsg = "flowIdä¸ºç©º";
             rtnMap.put("errMsg", errMsg);
             logger.warn(errMsg);
         }
@@ -140,7 +140,7 @@ public class FlowCtrl {
     }
 
     /**
-     * Í£Ö¹flow
+     * åœæ­¢flow
      *
      * @param request
      * @param model
@@ -153,30 +153,30 @@ public class FlowCtrl {
         rtnMap.put("code", "0");
         String flowId = request.getParameter("flowId");
         if (StringUtils.isNotBlank(flowId)) {
-            // ¸ù¾İflowId²éÑ¯flow
+            // æ ¹æ®flowIdæŸ¥è¯¢flow
             Flow flowById = flowServiceImpl.getFlowById(flowId);
-            // addFlow²»Îª¿ÕÇÒReqRtnStatusµÄÖµÎªtrue,Ôò±£´æ³É¹¦
+            // addFlowä¸ä¸ºç©ºä¸”ReqRtnStatusçš„å€¼ä¸ºtrue,åˆ™ä¿å­˜æˆåŠŸ
             if (null != flowById) {
                 String appId = flowById.getAppId().getId();
                 if (StringUtils.isNotBlank(appId)) {
                     String flowStop = stopFlowImpl.stopFlow(appId);
                     if (StringUtils.isNotBlank(flowStop)) {
                         rtnMap.put("code", "1");
-                        rtnMap.put("rtnMsg","Í£Ö¹³É¹¦£¬·µ»Ø×´Ì¬Îª£º" + flowStop);
+                        rtnMap.put("rtnMsg","åœæ­¢æˆåŠŸï¼Œè¿”å›çŠ¶æ€ä¸ºï¼š" + flowStop);
                     }
                 }
             } else {
-                logger.warn("Î´²éÑ¯µ½flowIdÎª" + flowId + "µÄflow");
-                rtnMap.put("rtnMsg","Î´²éÑ¯µ½flowIdÎª" + flowId + "µÄflow");
+                logger.warn("æœªæŸ¥è¯¢åˆ°flowIdä¸º" + flowId + "çš„flow");
+                rtnMap.put("rtnMsg","æœªæŸ¥è¯¢åˆ°flowIdä¸º" + flowId + "çš„flow");
             }
         } else {
-            logger.warn("flowIdÎª¿Õ");
+            logger.warn("flowIdä¸ºç©º");
         }
         return JsonUtils.toJsonNoException(rtnMap);
     }
 
     /**
-     * »ñÈ¡flowµÄLogµÄµØÖ·
+     * è·å–flowçš„Logçš„åœ°å€
      *
      * @param request
      * @param model
@@ -199,14 +199,14 @@ public class FlowCtrl {
                 }
             }
         } else {
-            logger.warn("appIdÎª¿Õ");
+            logger.warn("appIdä¸ºç©º");
         }
 
         return rtnMap;
     }
 
     /**
-     * Í¨¹ıflowµÄµØÖ·ÅÀµ½log
+     * é€šè¿‡flowçš„åœ°å€çˆ¬åˆ°log
      *
      * @param request
      * @param model
@@ -220,7 +220,7 @@ public class FlowCtrl {
         if (StringUtils.isNotBlank(urlStr)) {
             rtnMsg = HttpUtils.getHtml(urlStr);
         } else {
-            logger.warn("urlStrÎª¿Õ");
+            logger.warn("urlSträ¸ºç©º");
         }
 
         return rtnMsg;
@@ -234,7 +234,7 @@ public class FlowCtrl {
     }
 
     /**
-     * ±£´æÌí¼Óflow
+     * ä¿å­˜æ·»åŠ flow
      *
      * @param flow
      * @return
@@ -258,7 +258,7 @@ public class FlowCtrl {
     }
 
     /**
-     * ĞŞ¸ÄFlow
+     * ä¿®æ”¹Flow
      *
      * @param flow
      * @return
@@ -278,7 +278,7 @@ public class FlowCtrl {
     }
 
     /**
-     * ¸ù¾İflowIdÉ¾³ıflow¹ØÁªĞÅÏ¢
+     * æ ¹æ®flowIdåˆ é™¤flowå…³è”ä¿¡æ¯
      * @param id
      * @return
      */
@@ -289,33 +289,35 @@ public class FlowCtrl {
         int deleteFLowInfo = 0;
         Flow flowById = flowServiceImpl.getFlowById(id);
         if (null != flowById) {
-            //ÏÈÑ­»·É¾³ıstopÊôĞÔ
-            for (Stops stopId : flowById.getStopsList()) {
-                for (Property property : stopId.getProperties()) {
-                    propertyServiceImpl.deleteStopsPropertyByStopId(property.getId());
+            if (null != flowById.getStopsList())
+                //å…ˆå¾ªç¯åˆ é™¤stopå±æ€§
+                for (Stops stopId : flowById.getStopsList()) {
+                    if (null != stopId.getProperties())
+                        for (Property property : stopId.getProperties()) {
+                            propertyServiceImpl.deleteStopsPropertyByStopId(property.getId());
+                        }
                 }
-            }
-            //É¾³ıstop
+            //åˆ é™¤stop
             stopsServiceImpl.deleteStopsByFlowId(flowById.getId());
-            //É¾³ıpaths
+            //åˆ é™¤paths
             pathsServiceImpl.deletePathsByFlowId(flowById.getId());
-            List<MxCell> root = flowById.getMxGraphModel().getRoot();
-            for (MxCell mxcell : root) {
-                mxCellServiceImpl.deleteMxCellById(mxcell.getId());
-                if (mxcell.getMxGeometry() != null) {
-                    mxGraphServiceImpl.deleteMxGraphById(mxcell.getMxGeometry().getId());
-                }
-                if (mxcell.getMxGraphModel() != null) {
-                    mxGraphModelServiceImpl.deleteMxGraphModelById(mxcell.getMxGraphModel().getId());
-                }
+            if (null != flowById.getMxGraphModel()) {
+                List<MxCell> root = flowById.getMxGraphModel().getRoot();
+                if (null != root && !root.isEmpty())
+                    for (MxCell mxcell : root) {
+                        mxCellServiceImpl.deleteMxCellById(mxcell.getId());
+                        if (mxcell.getMxGeometry() != null) {
+                            mxGraphServiceImpl.deleteMxGraphById(mxcell.getMxGeometry().getId());
+                        }
+                    }
             }
             deleteFLowInfo = flowServiceImpl.deleteFLowInfo(id);
-            mxGraphModelServiceImpl.deleteMxGraphModelById(flowById.getMxGraphModel().getId());
+            if (null != flowById.getMxGraphModel())
+                mxGraphModelServiceImpl.deleteMxGraphModelById(flowById.getMxGraphModel().getId());
             if (flowById.getAppId()!=null) {
                 flowInfoDbServiceImpl.deleteFlowInfoById(flowById.getAppId().getId());
             }
 
         }
-        return deleteFLowInfo;
-    }
+        return deleteFLowInfo;}
 }

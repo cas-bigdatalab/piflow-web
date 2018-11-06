@@ -1,19 +1,11 @@
 package com.nature.mapper.mxGraph;
 
-import java.util.List;
-
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.InsertProvider;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.One;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.SelectProvider;
-import org.apache.ibatis.annotations.UpdateProvider;
-import org.apache.ibatis.mapping.FetchType;
-
 import com.nature.component.mxGraph.model.MxCell;
 import com.nature.provider.mxGraph.MxCellMapperProvider;
+import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.mapping.FetchType;
+
+import java.util.List;
 
 @Mapper
 public interface MxCellMapper {
@@ -47,7 +39,9 @@ public interface MxCellMapper {
 			@Result(column = "MX_STYLE", property = "style"), @Result(column = "MX_EDGE", property = "edge"),
 			@Result(column = "MX_SOURCE", property = "source"), @Result(column = "MX_TARGET", property = "target"),
 			@Result(column = "MX_VALUE", property = "value"), @Result(column = "MX_VERTEX", property = "vertex"),
-			@Result(column = "fk_mx_geometry_id", property = "mxGeometry", one = @One(select = "com.nature.mapper.mxGraph.MxGeometryMapper.getMxGeometryById", fetchType = FetchType.EAGER)) })
+			@Result(column = "fk_mx_geometry_id", property = "mxGeometry", one = @One(select = "com.nature.mapper.mxGraph.MxGeometryMapper.getMxGeometryById", fetchType = FetchType.EAGER)),
+			@Result(column = "FK_MX_GRAPH_ID", property = "mxGraphModel", one = @One(select = "com.nature.mapper.mxGraph.MxGraphModelMapper.getMxGraphModelById", fetchType = FetchType.EAGER))
+	})
 	public List<MxCell> getMeCellByMxGraphId(String mxGraphId);
 
 	/**

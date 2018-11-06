@@ -18,6 +18,7 @@ import com.nature.component.workFlow.model.FlowInfoDb;
 import com.nature.mapper.FlowInfoDbMapper;
 import com.nature.third.inf.IGetFlowInfo;
 import com.nature.third.inf.IGetFlowProgress;
+import com.nature.third.vo.ProgressVo;
 import com.nature.third.vo.flowInfo.FlowInfo;
 import com.nature.third.vo.flowInfo.FlowInfoStopVo;
 
@@ -61,7 +62,7 @@ public class GetFlowInfoImpl implements IGetFlowInfo {
 	@Override
 	public FlowInfoDb AddFlowInfo(String appId) {
 		FlowInfo startFlow2 = getFlowInfo(appId);
-		String progress = iGetFlowProgress.getFlowInfo(appId);
+		ProgressVo progress = iGetFlowProgress.getFlowInfo(appId);
 		logger.info("测试返回信息：" + startFlow2);
 		if ( null != startFlow2 && null!= startFlow2.getFlow()) {
 			FlowInfoDb flowInfoDb = flowInfoDbMapper.flowInfoDb(startFlow2.getFlow().getId());
@@ -73,7 +74,7 @@ public class GetFlowInfoImpl implements IGetFlowInfo {
 				up.setState(startFlow2.getFlow().getState());
 				up.setEndTime(startFlow2.getFlow().getEndTime());
 				up.setStartTime(startFlow2.getFlow().getStartTime());
-				up.setProgress(progress);
+				up.setProgress(progress.getProgress());
 				up.setLastUpdateUser("-1");
 				up.setLastUpdateDttm(new Date());
 				int updateFlowInfo = flowInfoDbMapper.updateFlowInfo(up);
@@ -88,7 +89,7 @@ public class GetFlowInfoImpl implements IGetFlowInfo {
 				add.setState(startFlow2.getFlow().getState());
 				add.setEndTime(startFlow2.getFlow().getEndTime());
 				add.setStartTime(startFlow2.getFlow().getStartTime());
-				add.setProgress(progress);
+				add.setProgress(progress.getProgress());
 				add.setCrtDttm(new Date());
 				add.setCrtUser("wdd");
 				add.setVersion(0L);
