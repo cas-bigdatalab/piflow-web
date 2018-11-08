@@ -253,6 +253,10 @@ public class FlowCtrl {
         flow.setEnableFlag(true);
         flow.setVersion(0L);
         flow.setUuid(id);
+        flow.setDriverMemory(flow.getDriverMemory());
+        flow.setExecutorCores(flow.getExecutorCores());
+        flow.setExecutorMemory(flow.getExecutorMemory());
+        flow.setExecutorNumber(flow.getExecutorNumber());
         flowServiceImpl.addFlow(flow);
         return flow;
     }
@@ -319,5 +323,6 @@ public class FlowCtrl {
             }
 
         }
-        return deleteFLowInfo;}
+        return deleteFLowInfo;
+    }
 }

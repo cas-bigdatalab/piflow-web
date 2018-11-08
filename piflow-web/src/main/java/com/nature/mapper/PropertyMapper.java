@@ -31,7 +31,7 @@ public interface PropertyMapper {
 	/**
 	 * uerying group attribute information based on ID
 	 */
-	@Select("select fs.* from flow_stops fs LEFT JOIN flow f on f.id = fs.fk_flow_id where f.id = #{fid} and fs.page_id = #{id}")
+	@Select("select fs.* from flow_stops fs LEFT JOIN flow f on f.id = fs.fk_flow_id where f.id = #{fid} and fs.page_id = #{id} and fs.enable_flag = 1 ")
 	@Results({
 			@Result(property = "properties", column = "id", many = @Many(select = "com.nature.mapper.PropertyTemplateMapper.getPropertyBySotpsId")) })
 	public Stops getStopGroupList(@Param("fid") String fid, @Param("id") String id);
@@ -44,13 +44,13 @@ public interface PropertyMapper {
 
 	/**
 	 * query All StopsProperty List;
-	 * 
+	 *
 	 * @return
 	 */
-	@Select("select * from flow_stops_property")
+	@Select("select * from flow_stops_property where enable_flag = 1 ")
 	public List<Property> getStopsPropertyList();
 
-	@Select("select * from flow_stops_property where fk_stops_id = #{stopsId}")
+	@Select("select * from flow_stops_property where fk_stops_id = #{stopsId} and enable_flag = 1 ")
 	public List<Property> getPropertyListByStopsId(String stopsId);
 
 	/**

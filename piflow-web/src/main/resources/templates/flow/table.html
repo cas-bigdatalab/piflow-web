@@ -38,7 +38,6 @@
     <link th:href="@{/charisma/css/jquery.iphone.toggle.css}" rel='stylesheet'>
     <link th:href="@{/charisma/css/uploadify.css}" rel='stylesheet'>
     <link th:href="@{/charisma/css/animate.min.css}" rel='stylesheet'>
-
     <!-- jQuery -->
     <script th:src="@{/js/jquery/jquery.min.js}"></script>
     <!-- The HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -140,7 +139,51 @@
 
 
 </div><!--/.fluid-container-->
-
+<div style="display: none;" id="SubmitPage">
+<form class="layui-form" action=""   >
+  <div class="layui-form-item">
+    <label class="layui-form-label">flowName</label>
+    <div class="layui-input-block">
+      <input type="hidden" id="flowId"/>
+      <input id="flowName" placeholder="please input flowName..." autocomplete="off" class="layui-input" style="width: 400px;margin-left: 20px;">
+    </div>
+  </div>
+  <div class="layui-form-item layui-form-text">
+    <label class="layui-form-label">description</label>
+    <div class="layui-input-block">
+      <textarea id="description" placeholder="please input description..." class="layui-textarea" style="width: 400px;margin-left: 20px;"></textarea>
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">driverMemory</label>
+    <div class="layui-input-block">
+      <input id="driverMemory" autocomplete="off" class="layui-input" style="width: 400px;margin-left: 20px;" value="1g">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">executorNumber</label>
+    <div class="layui-input-block">
+      <input id="executorNumber" autocomplete="off"  class="layui-input" style="width: 400px;margin-left: 20px;" value="1">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">executorMemory</label>
+    <div class="layui-input-block">
+      <input id="executorMemory" autocomplete="off"  class="layui-input" style="width: 400px;margin-left: 20px;" value="1g">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">executorCores</label>
+    <div class="layui-input-block">
+      <input id="executorCores" autocomplete="off"  class="layui-input" style="width: 400px;margin-left: 20px;" value="1">
+    </div>
+  </div>
+  <div class="layui-form-item" style="text-align: center;margin-right: 90px;">
+    <div class="layui-input-block"> 
+      <button type="button" class="layui-btn layui-btn-primary" onclick='saveFlow()' id="buttonFlow">提交</button>
+    </div>
+  </div>
+</form> </div>
 <!-- external javascript -->
 
 <script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
@@ -207,60 +250,64 @@
 </script>
 <script th:inline="javascript">
     function newPath(){
+    	 $("#buttonFlow").attr("onclick",""); 
+    	 $("#buttonFlow").attr("onclick","saveFlow()"); 
+    	 $("#flowId").val("");
+    	 $("#flowName").val("");
+         $("#description").val("");
+         $("#driverMemory").val('1g');
+         $("#executorNumber").val('1');
+         $("#executorMemory").val('1g');
+         $("#executorCores").val('1');
         layer.open({
             type: 1,
             title: 'create flow',
             shadeClose:true,
             closeBtn: 1,
             shift: 7,
+            area: ['580px', '520px'], //宽高
             skin: 'layui-layer-rim', //加上边框
-            content: "<div style='width:350px;'><div style='width:320px;margin-left: 3%;margin-top: 3%;' class='form-group has-feedback'><p>请输入flowName</p><input id='flowName' class='form-control' type='text' name='awardName' value=''/></div>" +
-                "<div style='width:320px;margin-left: 3%;' class='form-group has-feedback'><p>请输入description</p><textarea  style='resize:none'  class='form-control' rows='4' cols='3' id='description'></textarea></div>"+
-                "<div style='width:320px;margin-left: 3%;' class='form-group has-feedback'><p>请输入名称</p><input id='awardDescription' class='form-control' type='text' name='awardDescription' value=''/></div>"+
-                "<div style='width:320px;margin-left: 3%;' class='form-group has-feedback'><p>请输入名称</p><input id='awardDescription' class='form-control' type='text' name='awardDescription' value=''/></div>"+
-                "<div style='width:320px;margin-left: 3%;' class='form-group has-feedback'><p>请输入描述</p><input id='awardUserCount' class='form-control' type='number' name='awardUserCount' value=''/></div>"+
-                "<div style='width:320px;margin-left: 3%;' class='form-group has-feedback'>" +
-                "<button style='margin-top:5%;' type='button' class='btn btn-block btn-succ2ess btn-lg' onclick='saveFlowInfo()'>提交</button></div>"
+            content:$("#SubmitPage")
         });
     }
 
-    function update(id,updateName,updateDescription){
+     function update(id,updateName,updateDescription,driverMemory,executorNumber,executorMemory,executorCores){
+    	 $("#buttonFlow").attr("onclick",""); 
+    	 $("#buttonFlow").attr("onclick","updateFlow()"); 
+    	 $("#flowId").val(id);
+    	 $("#flowName").val(updateName);
+         $("#description").val(updateDescription);
+         $("#driverMemory").val(driverMemory);
+         $("#executorNumber").val(executorNumber);
+         $("#executorMemory").val(executorMemory);
+         $("#executorCores").val(executorCores);
         layer.open({
             type: 1,
             title: 'update flow',
             shadeClose:true,
             closeBtn: false,
             shift: 7,
+            closeBtn: 1,
+            area: ['580px', '520px'], //宽高
             skin: 'layui-layer-rim', //加上边框
-            content: "<div style='width:350px;'><div style='width:320px;margin-left: 3%;margin-top: 3%;' class='form-group has-feedback'><p>请输入flowName</p><input id='flowName' class='form-control' type='text' name='awardName' value='"+updateName+"'/></div>" +
-                "<div style='width:320px;margin-left: 3%;' class='form-group has-feedback'><p>请输入description</p><textarea  style='resize:none'  class='form-control' rows='4' cols='3' id='description'>"+updateDescription+"</textarea></div>"+
-                "<div style='width:320px;margin-left: 3%;' class='form-group has-feedback'><p>请输入名称</p><input id='awardDescription' class='form-control' type='text' name='awardDescription' value=''/></div>"+
-                "<div style='width:320px;margin-left: 3%;' class='form-group has-feedback'><p>请输入名称</p><input id='awardDescription' class='form-control' type='text' name='awardDescription' value=''/></div>"+
-                "<div style='width:320px;margin-left: 3%;' class='form-group has-feedback'><p>请输入描述</p><input id='awardUserCount' class='form-control' type='number' name='awardUserCount' value=''/></div>"+
-                "<div style='width:320px;margin-left: 3%;' class='form-group has-feedback'>" +
-                "<button style='margin-top:5%;' type='button' class='btn btn-block btn-succ2ess btn-lg' onclick=updateFlow('"+id+"')>提交</button></div>"
+            content: $("#SubmitPage") 
         });
-    }
+    }  
 
-    function saveFlowInfo(){
-        var flowName = $("#flowName").val();
+    function saveFlow(){
+    	var flowName = $("#flowName").val();
         var description = $("#description").val();
-        if(flowName == ''){
-            layer.msg('flowName不能为空！',{icon: 2,  shade:0,  time: 2000});
-            document.getElementById('flowName').focus();
-            return false;
-        }
-        if(description == ''){
-            layer.msg('description不能为空！',{icon: 2,  shade:0,  time: 2000});
-            document.getElementById('description').focus();
-            return false;
-        }
+        var driverMemory = $("#driverMemory").val();
+        var executorNumber = $("#executorNumber").val();
+        var executorMemory = $("#executorMemory").val();
+        var executorCores = $("#executorCores").val();
+        checkFlowInput(flowName,description,driverMemory,executorNumber,executorMemory,executorCores);
         $.ajax({
             cache:true,//保留缓存数据
             type:"get",//为post请求
             url:"/piflow-web/flow/saveFlowInfo",//这是我在后台接受数据的文件名
-            data:{name:flowName,description:description},
-            async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
+            data:{name:flowName,description:description,driverMemory:driverMemory,executorNumber:executorNumber,executorMemory:executorMemory,executorCores:executorCores},
+            async:false,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
             error:function(request){//请求失败之后的操作
                 layer.closeAll('page');
                 layer.msg('创建失败,请稍后再试！',{icon: 2,  shade:0,  time: 2000}, function(){});
@@ -275,24 +322,20 @@
             }
         });
     }
-    function updateFlow(id){
-        var flowName = $("#flowName").val();
+    function updateFlow(){
+    	var id = $("#flowId").val();
+     	var flowName = $("#flowName").val();
         var description = $("#description").val();
-        if(flowName == ''){
-            layer.msg('flowName不能为空！',{icon: 2,  shade:0,  time: 2000});
-            document.getElementById('flowName').focus();
-            return false;
-        }
-        if(description == ''){
-            layer.msg('description不能为空！',{icon: 2,  shade:0,  time: 2000});
-            document.getElementById('description').focus();
-            return false;
-        }
+        var driverMemory = $("#driverMemory").val();
+        var executorNumber = $("#executorNumber").val();
+        var executorMemory = $("#executorMemory").val();
+        var executorCores = $("#executorCores").val();
+        checkFlowInput(flowName,description,driverMemory,executorNumber,executorMemory,executorCores);
         $.ajax({
             cache:true,//保留缓存数据
             type:"get",//为post请求
             url:"/piflow-web/flow/updateFlowInfo",//这是我在后台接受数据的文件名
-            data:{id:id,name:flowName,description:description},
+            data:{id:id,name:flowName,description:description,driverMemory:driverMemory,executorNumber:executorNumber,executorMemory:executorMemory,executorCores:executorCores},
             async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
             error:function(request){//请求失败之后的操作
                 layer.closeAll('page');
@@ -355,12 +398,15 @@
     function tableRow(){
         var arrayObj = new Array();
         var table = $("table tr").find("td:eq(1)");
+        var state = $("table tr").find("td:eq(7)");
         for (var i = 0; i<table.length;i++){
             if(table[i].innerHTML != ""){
+                if(state[i].innerHTML != "No state" && state[i].innerHTML == "RUNNING")
                 arrayObj.push(table[i].innerHTML);
             }
         }
         if(arrayObj.length == 0){
+            clearInterval(c);
             return;
         }
         $.ajax({
@@ -386,7 +432,7 @@
         });
     }
     $(document).ready(function(){
-        //c = window.setInterval("tableRow()",5000);
+             c = window.setInterval("tableRow()",5000);
     });
 
     function deleteFlow(id,name){
@@ -412,6 +458,38 @@
     	            }
     	        });
          } 
+    }
+    function checkFlowInput(flowName,description,driverMemory,executorNumber,executorMemory,executorCores){
+    	if(flowName == ''){
+            layer.msg('flowName不能为空！',{icon: 2,  shade:0,  time: 2000});
+            document.getElementById('flowName').focus();
+            return false;
+        }
+        if(description == ''){
+            layer.msg('description不能为空！',{icon: 2,  shade:0,  time: 2000});
+            document.getElementById('description').focus();
+            return false;
+        }
+        if(driverMemory == ''){
+            layer.msg('driverMemory不能为空！',{icon: 2,  shade:0,  time: 2000});
+            document.getElementById('driverMemory').focus();
+            return false;
+        }
+        if(executorNumber == ''){
+            layer.msg('executorNumber不能为空！',{icon: 2,  shade:0,  time: 2000});
+            document.getElementById('executorNumber').focus();
+            return false;
+        }
+        if(executorMemory == ''){
+            layer.msg('executorMemory不能为空！',{icon: 2,  shade:0,  time: 2000});
+            document.getElementById('executorMemory').focus();
+            return;
+        }
+        if(executorCores == ''){
+            layer.msg('executorCores不能为空！',{icon: 2,  shade:0,  time: 2000});
+            document.getElementById('executorCores').focus();
+            return false;
+        }
     }
     //@ sourceURL=table_right.js
 </script>

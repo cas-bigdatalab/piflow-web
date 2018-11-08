@@ -34,6 +34,10 @@ public class FlowMapperProvider {
 			String uuid = flow.getUuid();
 			MxGraphModel mxGraphModel = flow.getMxGraphModel();
 			FlowInfoDb appId = flow.getAppId();
+			String driverMemory = flow.getDriverMemory();
+			String executorCores = flow.getExecutorCores();
+			String executorMemory = flow.getExecutorMemory();
+			String executorNumber = flow.getExecutorNumber();
 			SQL sql = new SQL();
 
 			// INSERT_INTO括号中为数据库表名
@@ -88,6 +92,18 @@ public class FlowMapperProvider {
 				if (StringUtils.isNotBlank(app_id)) {
 					sql.VALUES("app_id", Utils.addSqlStr(app_id));
 				}
+			}
+			if (StringUtils.isNotBlank(driverMemory)) {
+				sql.VALUES("driver_memory", Utils.addSqlStr(driverMemory));
+			}
+			if (StringUtils.isNotBlank(executorCores)) {
+				sql.VALUES("executor_cores", Utils.addSqlStr(executorCores));
+			}
+			if (StringUtils.isNotBlank(executorMemory)) {
+				sql.VALUES("executor_memory", Utils.addSqlStr(executorMemory));
+			}
+			if (StringUtils.isNotBlank(executorNumber)) {
+				sql.VALUES("executor_number", Utils.addSqlStr(executorNumber));
 			}
 			sqlStr = sql.toString() + ";";
 		}

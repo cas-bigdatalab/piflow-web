@@ -1,13 +1,8 @@
 package com.nature.mapper;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Iterator;
-
+import com.nature.common.constant.SysParamsCache;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.SimpleHttpConnectionManager;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -18,10 +13,12 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.junit.Test;
-
-import com.nature.common.constant.SysParamsCache;
-
 import sun.misc.BASE64Decoder;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Iterator;
 
 @SuppressWarnings({ "deprecation", "restriction" })
 public class TestHttpGroup {

@@ -31,6 +31,14 @@ public class Flow extends BaseHibernateModelUUIDNoCorpAgentId {
 
 	private String uuid;
 	
+	private String driverMemory;
+	
+	private String executorNumber;
+	
+	private String executorMemory;
+	
+	private String executorCores;
+	
 	@Column(name = "description",columnDefinition="varchar(1000) COMMENT '描述'")
 	private String description;
 
@@ -104,5 +112,36 @@ public class Flow extends BaseHibernateModelUUIDNoCorpAgentId {
 		this.description = description;
 	}
 
+	public String getDriverMemory() {
+		return driverMemory;
+	}
+
+	public void setDriverMemory(String driverMemory) {
+		this.driverMemory = driverMemory;
+	}
+
+	public String getExecutorNumber() {
+		return executorNumber;
+	}
+
+	public void setExecutorNumber(String executorNumber) {
+		this.executorNumber = executorNumber;
+	}
+
+	public String getExecutorMemory() {
+		return executorMemory;
+	}
+
+	public void setExecutorMemory(String executorMemory) {
+		this.executorMemory = executorMemory;
+	}
+
+	public String getExecutorCores() {
+		return executorCores;
+	}
+
+	public void setExecutorCores(String executorCores) {
+		this.executorCores = executorCores;
+	}
 	
 }
