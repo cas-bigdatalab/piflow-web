@@ -1,11 +1,11 @@
 package com.nature.third.inf;
 
 import com.nature.component.workFlow.model.FlowInfoDb;
-import com.nature.third.vo.flowInfo.FlowInfo;
+import com.nature.third.vo.flowInfo.ThirdFlowInfo;
 
 public interface IGetFlowInfo {
 
-	public FlowInfo getFlowInfo(String appid);
+	public ThirdFlowInfo getFlowInfo(String appid);
 	
 	public FlowInfoDb AddFlowInfo(String appId);
 }

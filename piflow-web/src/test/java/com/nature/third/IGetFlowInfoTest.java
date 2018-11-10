@@ -1,21 +1,19 @@
 package com.nature.third;
 
-import java.util.Date;
-
-import javax.annotation.Resource;
-
+import com.nature.ApplicationTests;
+import com.nature.base.util.LoggerUtil;
+import com.nature.component.workFlow.model.FlowInfoDb;
+import com.nature.mapper.FlowInfoDbMapper;
+import com.nature.third.inf.IGetFlowInfo;
+import com.nature.third.vo.flowInfo.ThirdFlowInfo;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.nature.ApplicationTests;
-import com.nature.base.util.LoggerUtil;
-import com.nature.component.workFlow.model.FlowInfoDb;
-import com.nature.mapper.FlowInfoDbMapper;
-import com.nature.third.inf.IGetFlowInfo;
-import com.nature.third.vo.flowInfo.FlowInfo;
+import javax.annotation.Resource;
+import java.util.Date;
 
 public class IGetFlowInfoTest extends ApplicationTests {
 
@@ -30,7 +28,7 @@ public class IGetFlowInfoTest extends ApplicationTests {
 	@Test
 	public void testFlowStop() {
 		String appId = "application_1540442049798_0057";
-		FlowInfo startFlow2 = getFlowInfoImpl.getFlowInfo(appId);
+		ThirdFlowInfo startFlow2 = getFlowInfoImpl.getFlowInfo(appId);
 		logger.info("测试返回信息：" + startFlow2);
 	}
 
@@ -40,7 +38,7 @@ public class IGetFlowInfoTest extends ApplicationTests {
 	public void testAddFlow() {
 		FlowInfoDb db = new FlowInfoDb();
 		String appId = "application_1539850523117_0159";
-		FlowInfo startFlow2 = getFlowInfoImpl.getFlowInfo(appId);
+		ThirdFlowInfo startFlow2 = getFlowInfoImpl.getFlowInfo(appId);
 		logger.info("测试返回信息：" + startFlow2);
 		db.setId(startFlow2.getFlow().getId());
 		db.setName(startFlow2.getFlow().getName());

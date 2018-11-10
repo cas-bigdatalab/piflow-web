@@ -1,21 +1,25 @@
-package com.nature.component.workFlow.model;
+package com.nature.component.workFlow.vo;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import java.io.Serializable;
 
-import com.nature.base.BaseHibernateModelUUIDNoCorpAgentId;
-
-@Entity
-@Table(name =  "flow_info")
-public class FlowInfoDb extends BaseHibernateModelUUIDNoCorpAgentId {
+public class FlowInfoDbVo implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	private String id;
 	private String name;
 	private String state;
 	private String startTime;
 	private String endTime;
 	private String progress;
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
 
 	public String getName() {
 		return name;

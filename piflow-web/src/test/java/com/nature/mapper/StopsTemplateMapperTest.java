@@ -48,7 +48,7 @@ public class StopsTemplateMapperTest extends ApplicationTests {
 
 	@Test
 	public void testGetStopsPropertyById() {
-		StopsTemplate stopsTemplate = stopsTemplateMapper.getStopsPropertyById("fbb42f0d8ca14a83bfab13e0ba2d7293");
+		StopsTemplate stopsTemplate = stopsTemplateMapper.getStopsTemplateAndPropertyById("fbb42f0d8ca14a83bfab13e0ba2d7293");
 		if (null == stopsTemplate) {
 			logger.info("查询结果为空");
 			stopsTemplate = new StopsTemplate();

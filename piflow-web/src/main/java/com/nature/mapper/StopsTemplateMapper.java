@@ -2,12 +2,7 @@ package com.nature.mapper;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Many;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
 
 import com.nature.component.workFlow.model.StopsTemplate;
@@ -16,7 +11,7 @@ import com.nature.provider.StopsTemplateMapperProvider;
 @Mapper
 public interface StopsTemplateMapper {
 	/**
-	 * @Title 查詢所有stops模板
+	 * 查询所有stops模板
 	 * 
 	 * @return
 	 */
@@ -24,7 +19,7 @@ public interface StopsTemplateMapper {
 	public List<StopsTemplate> getStopsTemplateList();
 
 	/**
-	 * @Title 根據stops模板id查詢模板
+	 * 根据stops模板查询模板
 	 * 
 	 * @param id
 	 * @return
@@ -33,15 +28,15 @@ public interface StopsTemplateMapper {
 	public StopsTemplate getStopsTemplateById(String id);
 
 	/**
-	 * @Title 根據stops模板的id查詢stops模板(包括屬性list)
+	 * 根据stops模板的id查询stops模板(包括属性list)
 	 * 
 	 * @param id
 	 * @return
 	 */
-	@SelectProvider(type = StopsTemplateMapperProvider.class, method = "getStopsPropertyById")
+	@SelectProvider(type = StopsTemplateMapperProvider.class, method = "getStopsTemplateById")
 	@Results({ @Result(id = true, column = "id", property = "id"),
 			@Result(property = "properties", column = "id", many = @Many(select = "com.nature.mapper.PropertyTemplateMapper.getPropertyTemplateBySotpsId")) })
-	public StopsTemplate getStopsPropertyById(String id);
+	public StopsTemplate getStopsTemplateAndPropertyById(String id);
 
 	/**
 	 * @Title 根据stops组的id查询stops模板
@@ -71,5 +66,6 @@ public interface StopsTemplateMapper {
 	 * @param stopsTemplateList
 	 * @return
 	 */
-	public int insertStopsTemplate(List<StopsTemplate> stopsTemplateList);
+	@InsertProvider(type = StopsTemplateMapperProvider.class, method = "insertStopsTemplate")
+	public int insertStopsTemplate(@Param("stopsTemplateList")List<StopsTemplate> stopsTemplateList);
 }

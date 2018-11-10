@@ -57,8 +57,8 @@ public class PropertyMapperProvider {
                 String description = property.getDescription();
                 String customValue = property.getCustomValue();
                 String allowableValues = property.getAllowableValues();
-                boolean required = property.isRequired();
-                boolean sensitive = property.isSensitive();
+                Boolean required = property.getRequired();
+                Boolean sensitive = property.getSensitive();
                 Stops stops = property.getStops();
                 // 拼接时位置顺序不能错
                 sqlStrBuffer.append("(");

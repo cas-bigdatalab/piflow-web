@@ -2,7 +2,7 @@ package com.nature.third.vo.flowInfo;
 
 import java.io.Serializable;
 
-public class FlowInfoStopVo2 implements Serializable {
+public class ThirdFlowInfoStopVo2 implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

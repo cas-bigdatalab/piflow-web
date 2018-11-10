@@ -14,12 +14,13 @@ import com.nature.component.workFlow.model.FlowInfoDb;
 import com.nature.component.workFlow.model.Property;
 import com.nature.component.workFlow.model.Stops;
 import com.nature.component.workFlow.service.*;
+import com.nature.component.workFlow.vo.FlowVo;
 import com.nature.third.inf.IGetFlowInfo;
 import com.nature.third.inf.IGetFlowLog;
 import com.nature.third.inf.IStartFlow;
 import com.nature.third.inf.IStopFlow;
-import com.nature.third.vo.flowLog.AppVo;
-import com.nature.third.vo.flowLog.FlowLog;
+import com.nature.third.vo.flowLog.ThirdAppVo;
+import com.nature.third.vo.flowLog.ThirdFlowLog;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -189,9 +190,9 @@ public class FlowCtrl {
         rtnMap.put("code", "0");
         String appId = request.getParameter("appId");
         if (StringUtils.isNotBlank(appId)) {
-            FlowLog flowlog = getFlowLogImpl.getFlowLog(appId);
+            ThirdFlowLog flowlog = getFlowLogImpl.getFlowLog(appId);
             if (null != flowlog) {
-                AppVo app = flowlog.getApp();
+                ThirdAppVo app = flowlog.getApp();
                 if (null != app) {
                     rtnMap.put("code", "1");
                     rtnMap.put("stdoutLog", app.getAmContainerLogs() + "/stdout/?start=0");
@@ -228,9 +229,12 @@ public class FlowCtrl {
 
     @RequestMapping("/queryFlowData")
     @ResponseBody
-    public Flow saveData(String load) {
-        Flow flow = flowServiceImpl.getFlowById(load);
-        return flow;
+    public String queryFlowData(String load) {
+        Map<String, Object> rtnMap = new HashMap<String, Object>();
+        rtnMap.put("code", "0");
+        FlowVo flowVo = flowServiceImpl.getFlowVoById(load);
+        rtnMap.put("flow",flowVo);
+        return JsonUtils.toJsonNoException(rtnMap);
     }
 
     /**

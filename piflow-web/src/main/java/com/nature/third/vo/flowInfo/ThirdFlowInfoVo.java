@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FlowInfoVo implements Serializable {
+public class ThirdFlowInfoVo implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -14,7 +14,7 @@ public class FlowInfoVo implements Serializable {
 	private String startTime;
 	private String endTime;
 
-	List<FlowInfoStopVo> stops = new ArrayList<FlowInfoStopVo>();
+	List<ThirdFlowInfoStopVo> stops = new ArrayList<ThirdFlowInfoStopVo>();
 
 	public String getId() {
 		return id;
@@ -56,11 +56,11 @@ public class FlowInfoVo implements Serializable {
 		this.endTime = endTime;
 	}
 
-	public List<FlowInfoStopVo> getStops() {
+	public List<ThirdFlowInfoStopVo> getStops() {
 		return stops;
 	}
 
-	public void setStops(List<FlowInfoStopVo> stops) {
+	public void setStops(List<ThirdFlowInfoStopVo> stops) {
 		this.stops = stops;
 	}
 

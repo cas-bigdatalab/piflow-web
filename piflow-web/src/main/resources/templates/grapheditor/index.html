@@ -1,521 +1,583 @@
-<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=5,IE=9" ><![endif]-->
+<!--[if IE]>
+<meta http-equiv="X-UA-Compatible" content="IE=5,IE=9"><![endif]-->
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
-	<title>Grapheditor</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-	<meta name="_csrf" th:content="${_csrf.token}" />
-	<meta name="_csrf_header" th:content="${_csrf.headerName}" />
-	<link rel="stylesheet" type="text/css" th:href="@{/grapheditor/styles/grapheditor.css}">
-	<link rel="stylesheet" type="text/css" th:href="@{/charisma/css/bootstrap.min.css}">
-	<style type="text/css">
-       /*人为制造一个占据整个屏幕的Div,其透明度为0.7且z-index为9999使之前的页面被压在底层无法点击*/
-       .fullScreen
-       {
-           position: fixed;
-           width: 100%;
-           height: 100%;
-           left: 0;
-           top: 0;
-           opacity: 0.7;
-           background-color: black;
-           z-index: 9999;
-           text-align: center;
-       }
-	</style>
-	<script th:inline="javascript">
-		var stopsGroupData = [[${groupsList}]];
-		var xmlDate = [[${xmlDate}]];
-		var loadId = [[${load}]];
-		var appId = [[${appId}]];
-		var flowState = [[${flowState}]];
-		var stdoutLog = [[${stdoutLog}]];
-		var stderrLog = [[${stderrLog}]];
-		var divValue = null;
-		 function divAppend(divAppend){
-    		 divValue = divAppend;
-    }
-	</script>
-	<meta th:include="/grapheditor/index_improt :: index_improt" />
+    <title>Grapheditor</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/grapheditor/styles/grapheditor.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/charisma/css/bootstrap.min.css}">
+    <style type="text/css">
+        /*人为制造一个占据整个屏幕的Div,其透明度为0.7且z-index为9999使之前的页面被压在底层无法点击*/
+        .fullScreen {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            opacity: 0.7;
+            background-color: black;
+            z-index: 9999;
+            text-align: center;
+        }
+    </style>
+    <script th:inline="javascript">
+        var stopsGroupData = [[${groupsList}]];
+        var xmlDate = [[${xmlDate}]];
+        var loadId = [[${load}]];
+        var appId = [[${appId}]];
+        var flowState = [[${flowState}]];
+        var stdoutLog = [[${stdoutLog}]];
+        var stderrLog = [[${stderrLog}]];
+        var divValue = null;
+
+        function divAppend(divAppend) {
+            divValue = divAppend;
+        }
+    </script>
+    <meta th:include="/grapheditor/inc/index_improt :: index_improt"/>
 </head>
 <body class="geEditor">
-     <div id='fullScreen' class="fullScreen" style="display: none;">
-         <div style="margin-top: 15%;">
-             <p>
-                 <img th:src="@{/img/fullScreen.gif}" alt="">
-             </p>
-         </div>  
-     </div>
-	<div style="width: 30%; float: right;">
-		<div style="position: fixed; z-index: 999;text-align: right; width: 30%;">
+<div id='fullScreen' class="fullScreen" style="display: none;">
+    <div style="margin-top: 15%;">
+        <p>
+            <img th:src="@{/img/fullScreen.gif}" alt="">
+        </p>
+    </div>
+</div>
+<div style="width: 30%; float: right;">
+    <div style="position: fixed; z-index: 999;text-align: right; width: 30%;">
 			<span>
 				进度：<span id="progress">0.00%</span>
 			</span>
-			<input id="reloadStops" type="button" onclick="reloadStops()" value="ReloadStops"/>
-			<input id="startFlow" type="button" onclick="runFlow()" value="运行"/>
-			<input id="stopFlow" type="button" onclick="stopFlow()" value="停止"/>
-			<input type="button" class="btn-primary" data-toggle="modal" onclick="getLogUrl()" data-target="#myModal" value="日志"/>
-		</div>
-	</div>
-	<!-- Modal -->
-	<div  class="modal"  id="myModal" aria-labelledby="myModalLabel" data-backdrop="static">
-	    <div id="modalDialog" class="modal-dialog" role="document">
-	        <div class="modal-content" style="width: 200%; left: -290px; top: 77px;">
-	            <div class="modal-header">
-	                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-	                <h4 class="modal-title" id="myModalLabel">LOG WINDOWS</h4>
-	            </div>
-	            <div class="modal-body">
-					 <!-- <div id="logTitle">加载中</div> -->
-					 <table border="1" style="width: 100%; height: 100%;">
-						<tr style="height: 90%;">
-							<td id="customContent">
-								loading.....
-							</td>
-						</tr>
-					</table>
-					<input type="button" onclick="changeUrl(1)" value="stdout">
-					<input type="button" onclick="changeUrl(2)" value="stderr">
-	            </div>
-	            <div class="modal-footer">
-	                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-	            </div>
-	        </div>
-	    </div>
-	</div>
-	 <!--初始化画板-->
-	 <script type="text/javascript" th:src="@{/grapheditor/initGraph.js}"></script>
-	<script type="text/javascript">
-    	var token = $("meta[name='_csrf']").attr("content");
-    	var header = $("meta[name='_csrf_header']").attr("content");
-		var startFlow = $('#startFlow');
-		var stopFlow = $('#stopFlow');
-		var fullScreen = $('#fullScreen')
-    	$(document).ajaxSend(function(e, xhr, options) {
-    	    xhr.setRequestHeader(header, token);
-    	});
-		var timer;
-        function findBasicInfo(evt) {
-            var cells = evt.properties.cell;
-            if(typeof(cells)!="undefined"){
-                alert(0000000000000000000);
-                var id = evt.properties.cell.id;
-                if(document.getElementById("stopsNameLabel"))
-                    document.getElementById('stopsNameLabel').innerText = cells.value;
+        <input id="reloadStops" type="button" onclick="reloadStops()" value="ReloadStops"/>
+        <input id="startFlow" type="button" onclick="runFlow()" value="运行"/>
+        <input id="stopFlow" type="button" onclick="stopFlow()" value="停止"/>
+        <input type="button" class="btn-primary" data-toggle="modal" onclick="getLogUrl()" data-target="#myModal"
+               value="日志"/>
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal" id="myModal" aria-labelledby="myModalLabel" data-backdrop="static">
+    <div id="modalDialog" class="modal-dialog" role="document">
+        <div class="modal-content" style="width: 200%; left: -290px; top: 77px;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">LOG WINDOWS</h4>
+            </div>
+            <div class="modal-body">
+                <!-- <div id="logTitle">加载中</div> -->
+                <table border="1" style="width: 100%; height: 100%;">
+                    <tr style="height: 90%;">
+                        <td id="customContent">
+                            loading.....
+                        </td>
+                    </tr>
+                </table>
+                <input type="button" onclick="changeUrl(1)" value="stdout">
+                <input type="button" onclick="changeUrl(2)" value="stderr">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--初始化画板-->
+<script type="text/javascript" th:src="@{/grapheditor/initGraph.js}"></script>
+<script type="text/javascript">
+    var token = $("meta[name='_csrf']").attr("content");
+    var header = $("meta[name='_csrf_header']").attr("content");
+    var startFlow = $('#startFlow');
+    var stopFlow = $('#stopFlow');
+    var fullScreen = $('#fullScreen')
+    $(document).ajaxSend(function (e, xhr, options) {
+        xhr.setRequestHeader(header, token);
+    });
+    var timer;
+
+    function findBasicInfo(evt) {
+        var cells = evt.properties.cell;
+        if (typeof(cells) != "undefined") {
+            var id = evt.properties.cell.id;
+            if (document.getElementById("stopsNameLabel"))
+                document.getElementById('stopsNameLabel').innerText = cells.value;
+            $.ajax({
+                cache: true,
+                type: "POST",
+                url: "/piflow-web/stops/queryIdInfo",
+                data: {"id": id, "fid": loadId},
+                async: true,
+                error: function (request) {
+                    //alert("Jquery Ajax request error!!!");
+                    return;
+                },
+                success: function (data) {
+                    if ("" != data) {
+                        console.log("stops属性查询success");
+                        add(data.properties);
+                        document.getElementById('stopsDescription').innerText = data.description;
+                        document.getElementById('stopsGroups').innerText = data.groups;
+                        document.getElementById('stopsBundel').innerText = data.bundel;
+                        document.getElementById('stopsVersion').innerText = data.version;
+                        document.getElementById('stopSowner').innerText = data.owner;
+                        document.getElementById('stopCreateDate').innerText = data.crtDttmString;
+                    } else {
+                        console.log("stops属性查询null");
+                    }
+                }
+            });
+        }
+    }
+
+    function add(data) {
+        if (data != null && data.length > 0) {
+            while (divValue.hasChildNodes()) {
+                divValue.removeChild(divValue.firstChild);
+            }
+            var table = document.createElement("table");
+            table.style.borderCollapse = "separate";
+            table.style.borderSpacing = "0px 5px";
+            var tbody = document.createElement("tbody");
+            for (var y = 0; y < data.length; y++) {
+                var select = document.createElement('select');
+                select.style.width = "125px";
+                select.style.height = "22px";
+                select.setAttribute('id', '' + data[y].displayName + '');
+                var displayName = data[y].displayName;
+                var customValue = data[y].customValue;
+                var allowableValues = data[y].allowableValues;
+                //是否必填
+                var required = data[y].required;
+                //如果大于4表示有下拉框
+                if (allowableValues.length > 4) {
+                    var selectValue = JSON.parse(allowableValues);
+                    var selectInfo = JSON.stringify(selectValue);
+                    var strs = selectInfo.split(",");
+                    //循环给select下来赋值
+                    for (i = 0; i < strs.length; i++) {
+                        var option = document.createElement("option");
+                        option.value = strs[i].replace("\"", "").replace("\"", "").replace("\[", "").replace("\]", "");
+                        option.innerHTML = strs[i].replace("\"", "").replace("\"", "").replace("\[", "").replace("\]", "");
+                        //设置默认选中项
+                        if (strs[i].indexOf('' + customValue + '') != -1) {
+                            option.setAttribute('selected', 'selected');
+                        }
+                        select.appendChild(option);
+                    }
+                }
+                var displayName = document.createElement('input');
+                if (required)
+                    displayName.setAttribute('class', 'true');
+                displayName.setAttribute('type', 'text');
+                displayName.setAttribute('id', '' + data[y].displayName + '');
+                displayName.setAttribute('onblur', 'shiqu("' + data[y].id + '","' + data[y].displayName + '")');
+                displayName.style.width = "125px";
+                displayName.style.height = "22px";
+                displayName.setAttribute('value', '' + customValue + '');
+                var spanDisplayName = 'span' + data[y].displayName;
+                var spanDisplayName = document.createElement('span');
+                var spanFlag = document.createElement('span');
+                spanDisplayName.style.cursor = "pointer";
+                spanDisplayName.setAttribute('title', '' + data[y].description + '');
+                spanFlag.setAttribute('style', 'color:red');
+                mxUtils.write(spanDisplayName, '' + data[y].displayName + '');
+                mxUtils.write(spanFlag, ' *');
+                var tr = document.createElement("tr");
+                var td = document.createElement("td");
+                td.style.width = "60px";
+                var td1 = document.createElement("td");
+                //开始appendchild()追加各个元素
+                td.appendChild(spanDisplayName);
+                //本次循环大于4追加下拉,小于4默认文本框
+                if (allowableValues.length > 4) {
+                    td1.appendChild(select);
+                } else {
+                    td1.appendChild(displayName);
+                    if (required)
+                        td1.appendChild(spanFlag);
+                }
+                tr.appendChild(td);
+                tr.appendChild(td1);
+                tbody.appendChild(tr);
+                table.appendChild(tbody);
+            }
+            var btn = mxUtils.button('submit', mxUtils.bind(this, function (evt) {
+                //创建一个数组
+                var arrayObj = new Array();
+                for (var y = 0; y < data.length; y++) {
+                    var content = document.getElementById('' + data[y].displayName + '').value;
+                    var classname = document.getElementById('' + data[y].displayName + '').className;
+                    if (content != null && content.length > 0) {
+                        arrayObj.push(content + "#id#" + data[y].id);
+                    } else {
+                        if (classname == 'true') {
+                            $("#" + data[y].displayName + "").focus();
+                            $("#" + data[y].displayName + "").css("background-color", "#FFD39B");
+                        }
+                    }
+                }
                 $.ajax({
-                    cache:true,
-                    type:"POST",
-                    url:"/piflow-web/stops/queryIdInfo",
-                    data:{"id":id,"fid":loadId},
-                    async:true,
-                    error:function(request){
-                        //alert("Jquery Ajax request error!!!");
+                    cache: true,
+                    type: "POST",
+                    url: "/piflow-web/stops/updateStops",
+                    data: {content: arrayObj},
+                    async: true,
+                    traditional: true,
+                    error: function (request) {
+                        console.log("attribute update error");
                         return;
                     },
-                    success:function(data){
-                        if(""!=data){
-                            console.log("stops属性查询success");
-                            add(data.properties);
-                            document.getElementById('stopsDescription').innerText = data.description;
-                            document.getElementById('stopsGroups').innerText = data.groups;
-                            document.getElementById('stopsBundel').innerText = data.bundel;
-                            document.getElementById('stopsVersion').innerText = data.version;
-                            document.getElementById('stopSowner').innerText = data.owner;
-                            document.getElementById('stopCreateDate').innerText = data.crtDttmString;
-                        }else{
-                            console.log("stops属性查询null");
-                        }
+                    success: function (data) {
+                        console.log("attribute update success");
+                        $("input").blur();
+                        $("select").blur();
                     }
                 });
-            }
+            }));
+            btn.style.width = '202px';
+            btn.style.marginLeft = '18px';
+            btn.style.marginTop = '10px';
+            divValue.appendChild(table);
+            divValue.appendChild(btn);
         }
-        function add(data){
-            if(data!=null && data.length>0){
-                while(divValue.hasChildNodes())
-                {
-                    divValue.removeChild(divValue.firstChild);
-                }
-                var table=document.createElement("table");
-                table.style.borderCollapse = "separate";
-                table.style.borderSpacing = "0px 5px";
-                var tbody=document.createElement("tbody");
-                for(var y=0;y<data.length;y++){
-                    var select = document.createElement('select');
-                    select.style.width = "125px";
-                    select.style.height = "22px";
-                    select.setAttribute('id', ''+data[y].displayName+'');
-                    var displayName = data[y].displayName;
-                    var customValue = data[y].customValue;
-                    var allowableValues = data[y].allowableValues;
-                    //是否必填
-                    var required = data[y].required;
-                    //如果大于4表示有下拉框
-                    if(allowableValues.length > 4){
-                        var selectValue = JSON.parse(allowableValues);
-                        var selectInfo =  JSON.stringify(selectValue);
-                        var strs=selectInfo.split(",");
-                        //循环给select下来赋值
-                        for (i=0;i<strs.length ;i++ ){
-                            var option = document.createElement("option");
-                            option.value =strs[i].replace("\"","").replace("\"","").replace("\[","").replace("\]","");
-                            option.innerHTML =strs[i].replace("\"","").replace("\"","").replace("\[","").replace("\]","");
-                            //设置默认选中项
-                            if(strs[i].indexOf(''+customValue+'') != -1){
-                                option.setAttribute('selected', 'selected');
-                            }
-                            select.appendChild(option);
-                        }
-                    }
-                    var displayName = document.createElement('input');
-                    if(required)
-                        displayName.setAttribute('class', 'true');
-                    displayName.setAttribute('type', 'text');
-                    displayName.setAttribute('id', ''+data[y].displayName+'');
-                    displayName.setAttribute('onblur', 'shiqu("'+data[y].id+'","'+data[y].displayName+'")');
-                    displayName.style.width = "125px";
-                    displayName.style.height = "22px";
-                    displayName.setAttribute('value', ''+customValue+'');
-                    var spanDisplayName = 'span'+data[y].displayName;
-                    var spanDisplayName = document.createElement('span');
-                    var spanFlag = document.createElement('span');
-                    spanDisplayName.style.cursor = "pointer";
-                    spanDisplayName.setAttribute('title', ''+data[y].description+'');
-                    spanFlag.setAttribute('style','color:red');
-                    mxUtils.write(spanDisplayName, ''+data[y].displayName+'');
-                    mxUtils.write(spanFlag, ' *');
-                    var tr=document.createElement("tr");
-                    var td=document.createElement("td");
-                    td.style.width = "60px";
-                    var td1=document.createElement("td");
-                    //开始appendchild()追加各个元素
-                    td.appendChild(spanDisplayName);
-                    //本次循环大于4追加下拉,小于4默认文本框
-                    if(allowableValues.length > 4){
-                        td1.appendChild(select);
-                    }else{
-                        td1.appendChild(displayName);
-                        if(required)
-                            td1.appendChild(spanFlag);
-                    }
-                    tr.appendChild(td);
-                    tr.appendChild(td1);
-                    tbody.appendChild(tr);
-                    table.appendChild(tbody);
-                }
-                var btn = mxUtils.button('submit', mxUtils.bind(this, function(evt)
-                {
-                    //创建一个数组
-                    var arrayObj = new Array();
-                    for(var y=0;y<data.length;y++){
-                        var content = document.getElementById(''+data[y].displayName+'').value;
-                        var classname = document.getElementById(''+data[y].displayName+'').className;
-                        if(content!=null && content.length>0){
-                            arrayObj.push(content+"#id#"+data[y].id);
-                        }else{
-                            if(classname == 'true'){
-                                $("#"+data[y].displayName+"").focus();
-                                $("#"+data[y].displayName+"").css("background-color","#FFD39B");
-                            }
-                        }
-                    }
-                    $.ajax({
-                        cache:true,
-                        type:"POST",
-                        url:"/piflow-web/stops/updateStops",
-                        data:{content:arrayObj},
-                        async:true,
-                        traditional: true,
-                        error:function(request){
-                            console.log("attribute update error");
-                            return;
-                        },
-                        success:function(data){
-                            console.log("attribute update success");
-                            $("input").blur();
-                            $("select").blur();
-                        }
-                    });
-                }));
-                btn.style.width = '202px';
-                btn.style.marginLeft = '18px';
-                btn.style.marginTop = '10px';
-                divValue.appendChild(table);
-                divValue.appendChild(btn);
-            }
-        }
-        function addCellsCustom(cells) {
-            var paths = [];
-            for (var i=0 ;i<cells.length;i++){
-                var cellfor = cells[i];
-                if (cellfor && cellfor.edge){
-                    if(cellfor.target && cellfor.source){
+    }
 
-                    }else {
-                        paths[paths.length] = cellfor;
-                    }
-                }else if(cellfor.style && (cellfor.style).indexOf("text\;") === 0) {
+    function addCellsCustom(cells) {
+        var removePaths = [];
+        var paths = [];
+        for (var i = 0; i < cells.length; i++) {
+            var cellfor = cells[i];
+            if (cellfor && cellfor.edge) {
+                if (cellfor.target && cellfor.source) {
                     paths[paths.length] = cellfor;
-				}
-            }
-            graphGlobal.removeCells(paths);
-            if(cells.length !=paths.length){
-                saveXml();
+                } else {
+                    removePaths[removePaths.length] = cellfor;
+                }
+            } else if (cellfor.style && (cellfor.style).indexOf("text\;") === 0) {
+                removePaths[removePaths.length] = cellfor;
             }
         }
-        //保存xml文件
-	    function saveXml(){
-	    	var getXml = thisEditor.getGraphXml();
-	    	var sssss = getXml.outerHTML;
-		    //var waitxml = encodeURIComponent(getXml.outerHTML);//这就是要提交到后台的xml代码
-		    
-            $.ajax({
-                cache:true,//保留缓存数据
-                type:"POST",//为post请求
-                url:"/piflow-web/grapheditor/saveData",//这是我在后台接受数据的文件名
-                //data:$('#loginForm').serialize(),//将该表单序列化
-                data:{imageXML:sssss,load:loadId},
-                async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
-                error:function(request){//请求失败之后的操作
-                    return;
-                },
-                success:function(data){//请求成功之后的操作
-                    console.log("success");
-					thisEditor.setModified(false);
-                }
-            });
-		}
-	    //打开xml文件
-	    function openXml(){
-	    	$.ajax({
-                cache:true,//保留缓存数据
-                type:"POST",//为post请求
-                url:"/piflow-web/flow/loadData",//这是我在后台接受数据的文件名
-                //data:$('#loginForm').serialize(),//将该表单序列化
-                async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
-                error:function(request){//请求失败之后的操作
-                    return;
-                },
-                success:function(data){//请求成功之后的操作
-                	loadXml(data);
-                    console.log("success");
-                }
-            });
-		}
-	    //加载xml文件
-	    function loadXml(loadStr){
-	    	var xml = mxUtils.parseXml(loadStr);
-			var node = xml.documentElement;
-			var dec = new mxCodec(node.ownerDocument);
-			dec.decode(node, graphGlobal.getModel());
-			thisEditor.lastSnapshot = new Date().getTime();
-			thisEditor.undoManager.clear();
-			thisEditor.ignoredChanges = 0;
-			thisEditor.setModified(false);
-		}
-		//请求接口重新加载stops
-        function reloadStops(){
-            fullScreen.show();
-            $.ajax({
-                data:{"load":loadId},
-                cache:true,//保留缓存数据
-                type:"POST",//为post请求
-                url:"/piflow-web/grapheditor/reloadStops",//这是我在后台接受数据的文件名
-                error:function(request){//请求失败之后的操作
-                    fullScreen.hide();
-                    alert("reload fail");
-                    return;
-                },
-                success:function(data){//请求成功之后的操作
-                    var dataMap = JSON.parse(data);
-                    if (0!==dataMap.code){
-                        window.location.href = "/piflow-web/grapheditor/home?load="+dataMap.load+"&_" + new Date().getTime();
-                    }else {
-                        alert("reload fail");
-                        fullScreen.hide();
-					}
-                }
-            });
+        graphGlobal.removeCells(removePaths);
+        if (cells.length != removePaths.length) {
+            saveXml(paths);
         }
-	    function queryFlowInfo(){
-	    	$.ajax({
-	    		data:{"load":loadId},
-                cache:true,//保留缓存数据
-                type:"POST",//为post请求
-                url:"/piflow-web/flow/queryFlowData",//这是我在后台接受数据的文件名
-                async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
-                error:function(request){//请求失败之后的操作
-                    return;
-                    stopFlow.show();
-                },
-                success:function(data){//请求成功之后的操作
-                	if(document.getElementById("UUID")) {//js判断元素是否存在
-                	if(data!=null && data!=""){
-                 		 document.getElementById('UUID').innerText = data.uuid;
-           		 		 document.getElementById('flowName').innerText = data.name;
-           		 		 document.getElementById('flowDescription').innerText = data.description;
-           				 document.getElementById('createrTime').innerText = data.crtDttmString;
-                	}else{
-                		 document.getElementById('UUID').innerText = "No content";
-                 		 document.getElementById('flowName').innerText = "No content";
-                 		 document.getElementById('createrTime').innerText = "No content";
-                		}
-                	}
-                }
-            });
-		}
-	    //运行
-	    function runFlow(){
-	    	startFlow.hide();
-	    	fullScreen.show();
-            $.ajax({
-                cache:true,//保留缓存数据
-                type:"POST",//为post请求
-                url:"/piflow-web/flow/runFlow",//这是我在后台接受数据的文件名
-                //data:$('#loginForm').serialize(),//将该表单序列化
-                data:{flowId:loadId},
-                async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
-                error:function(request){//请求失败之后的操作
-                	startFlow.show();
-                    return;
-                },
-                success:function(data){//请求成功之后的操作
-                    //console.log("success");
-                	var dataMap = JSON.parse(data);
-                	if('0'!==dataMap.code){
-                		alert(dataMap.errMsg);
-                		//$('#appId').val(data);
-                		appId = dataMap.appid;
-                        startFlow.hide();
-                        timer = window.setInterval("tableRow(appId)",5000);
-                	}else{
-                		alert("启动失败");
-                		startFlow.show();
-                	}
-                	fullScreen.hide();
-                }
-            });
-		}
-	    //停止
-	    function stopFlow(){
-	    	stopFlow.hide();
-	    	fullScreen.show();
-            $.ajax({
-                cache:true,//保留缓存数据
-                type:"POST",//为post请求
-                url:"/piflow-web/flow/stopFlow",//这是我在后台接受数据的文件名
-                //data:$('#loginForm').serialize(),//将该表单序列化
-                data:{flowId:loadId},
-                async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
-                error:function(request){//请求失败之后的操作
-                    return;
-                    stopFlow.show();
-                },
-                success:function(data){//请求成功之后的操作
-                    //console.log("success");
-                	if('0'!==data){
-                		alert(data);
-                		startFlow.show();
-                	}else{
-                		alert("停止失败");
-                		stopFlow.show();
-                	}
-                	fullScreen.hide();
-                }
-            });
-		}
-	    function getLogUrl(){
-	    	//appId = "application_1539850523117_0152";
-	    	$.ajax({
-                cache:true,//保留缓存数据
-                type:"POST",//为post请求
-                url:"/piflow-web/flow/getLogUrl",//这是我在后台接受数据的文件名
-                //data:$('#loginForm').serialize(),//将该表单序列化
-                data:{"appId":appId},
-                async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
-                error:function(request){//请求失败之后的操作
-                    return;
-                },
-                success:function(data){//请求成功之后的操作
-                    console.log("success");
-	                if('0'!==data.code){
-	                	stdoutLog = data.stdoutLog;
-	                	stderrLog = data.stderrLog;
-	                	changeUrl(1);
-	                }
-					//alert(data);
-                }
-            });
-	    }
-		function changeUrl(key){
-			var url
-			switch (key) {
-				case 1:
-					url = stdoutLog;
-					break;
-				case 2:
-					url = stderrLog;
-					break;
-				default:
-					break;
-			}
-			$.ajax({
-                cache:true,//保留缓存数据
-                type:"POST",//为post请求
-                url:"/piflow-web/flow/getLog",//这是我在后台接受数据的文件名
-                //data:$('#loginForm').serialize(),//将该表单序列化
-                data:{url:url},
-                async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
-                error:function(request){//请求失败之后的操作
-                    return;
-                },
-                success:function(data){//请求成功之后的操作
-                    console.log("success");
-	                if(''!==data){
-	                	var split0 = data.split('<td class="content">');
-	                	var data0 = split0[1];
-	                	var split2 = data0.split("</td>");
-	                	var data2 = split2[0];
-	                	"white-space: pre-line;"
-	                	data2 = data2.replace("<pre>", '<pre style="white-space: pre-wrap; height: 288px;">');
-	                    //document.getElementById("logTitle").innerHTML = "<h1>"+data1+"</h1>";
-	                    document.getElementById("customContent").innerHTML = "<div>"+data2+"</div>";
-	                }
-					//alert(data);
-                }
-            });
-		}
-        function tableRow(appId){
-            if(appId ===''){
+    }
+
+    //保存xml文件
+    function saveXml(paths) {
+        var getXml = thisEditor.getGraphXml();
+        var sssss = getXml.outerHTML;
+        //var waitxml = encodeURIComponent(getXml.outerHTML);//这就是要提交到后台的xml代码
+
+        $.ajax({
+            cache: true,//保留缓存数据
+            type: "POST",//为post请求
+            url: "/piflow-web/grapheditor/saveData",//这是我在后台接受数据的文件名
+            //data:$('#loginForm').serialize(),//将该表单序列化
+            data: {imageXML: sssss, load: loadId},
+            async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
+            error: function (request) {//请求失败之后的操作
                 return;
+            },
+            success: function (data) {//请求成功之后的操作
+                console.log("success");
+                thisEditor.setModified(false);
+                //选择port
+                chooseProt(paths);
             }
-            $.ajax({
-                cache:true,
-                type:"get",
-                url:"/piflow-web/flowInfoDb/getAppInfoProgress",
-                data:{appid:appId},
-                async:true,
-                traditional: true,
-                error:function(request){
-                    console.log("error");
-                    return;
-                },
-                success:function(data){
-                    var dataMap = JSON.parse(data);
-                    if(0 !== dataMap.code){
-                        if('STARTED' === dataMap.state || dataMap.progress === 100){
-                            window.clearInterval(timer);
-						}
-                        document.getElementById("progress").innerHTML="进度"+dataMap.progress+"%";
+        });
+    }
+
+    //打开xml文件
+    function openXml() {
+        $.ajax({
+            cache: true,//保留缓存数据
+            type: "POST",//为post请求
+            url: "/piflow-web/flow/loadData",//这是我在后台接受数据的文件名
+            //data:$('#loginForm').serialize(),//将该表单序列化
+            async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
+            error: function (request) {//请求失败之后的操作
+                return;
+            },
+            success: function (data) {//请求成功之后的操作
+                loadXml(data);
+                console.log("success");
+            }
+        });
+    }
+
+    //加载xml文件
+    function loadXml(loadStr) {
+        var xml = mxUtils.parseXml(loadStr);
+        var node = xml.documentElement;
+        var dec = new mxCodec(node.ownerDocument);
+        dec.decode(node, graphGlobal.getModel());
+        thisEditor.lastSnapshot = new Date().getTime();
+        thisEditor.undoManager.clear();
+        thisEditor.ignoredChanges = 0;
+        thisEditor.setModified(false);
+    }
+
+    //请求接口重新加载stops
+    function reloadStops() {
+        fullScreen.show();
+        $.ajax({
+            data: {"load": loadId},
+            cache: true,//保留缓存数据
+            type: "POST",//为post请求
+            url: "/piflow-web/grapheditor/reloadStops",//这是我在后台接受数据的文件名
+            error: function (request) {//请求失败之后的操作
+                fullScreen.hide();
+                alert("reload fail");
+                return;
+            },
+            success: function (data) {//请求成功之后的操作
+                var dataMap = JSON.parse(data);
+                if (0 !== dataMap.code) {
+                    window.location.href = "/piflow-web/grapheditor/home?load=" + dataMap.load + "&_" + new Date().getTime();
+                } else {
+                    alert("reload fail");
+                    fullScreen.hide();
+                }
+            }
+        });
+    }
+
+    function queryFlowInfo() {
+        $.ajax({
+            data: {"load": loadId},
+            cache: true,//保留缓存数据
+            type: "POST",//为post请求
+            url: "/piflow-web/flow/queryFlowData",//这是我在后台接受数据的文件名
+            async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
+            error: function (request) {//请求失败之后的操作
+                return;
+                stopFlow.show();
+            },
+            success: function (data) {//请求成功之后的操作
+                var dataMap = JSON.parse(data);
+                if (document.getElementById("UUID")) {//js判断元素是否存在
+                    var flow = dataMap.flow;
+                    if (flow != null && flow != "") {
+                        document.getElementById('UUID').innerText = flow.uuid;
+                        document.getElementById('flowName').innerText = flow.name;
+                        document.getElementById('flowDescription').innerText = flow.description;
+                        document.getElementById('createrTime').innerText = flow.crtDttmString;
+                    } else {
+                        document.getElementById('UUID').innerText = "No content";
+                        document.getElementById('flowName').innerText = "No content";
+                        document.getElementById('createrTime').innerText = "No content";
                     }
                 }
-            });
+            }
+        });
+    }
+
+    //运行
+    function runFlow() {
+        startFlow.hide();
+        fullScreen.show();
+        $.ajax({
+            cache: true,//保留缓存数据
+            type: "POST",//为post请求
+            url: "/piflow-web/flow/runFlow",//这是我在后台接受数据的文件名
+            //data:$('#loginForm').serialize(),//将该表单序列化
+            data: {flowId: loadId},
+            async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
+            error: function (request) {//请求失败之后的操作
+                startFlow.show();
+                return;
+            },
+            success: function (data) {//请求成功之后的操作
+                //console.log("success");
+                var dataMap = JSON.parse(data);
+                if ('0' !== dataMap.code) {
+                    alert(dataMap.errMsg);
+                    //$('#appId').val(data);
+                    appId = dataMap.appid;
+                    startFlow.hide();
+                    timer = window.setInterval("tableRow(appId)", 5000);
+                } else {
+                    alert("启动失败");
+                    startFlow.show();
+                }
+                fullScreen.hide();
+            }
+        });
+    }
+
+    //停止
+    function stopFlow() {
+        stopFlow.hide();
+        fullScreen.show();
+        $.ajax({
+            cache: true,//保留缓存数据
+            type: "POST",//为post请求
+            url: "/piflow-web/flow/stopFlow",//这是我在后台接受数据的文件名
+            //data:$('#loginForm').serialize(),//将该表单序列化
+            data: {flowId: loadId},
+            async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
+            error: function (request) {//请求失败之后的操作
+                return;
+                stopFlow.show();
+            },
+            success: function (data) {//请求成功之后的操作
+                //console.log("success");
+                if ('0' !== data) {
+                    alert(data);
+                    startFlow.show();
+                } else {
+                    alert("停止失败");
+                    stopFlow.show();
+                }
+                fullScreen.hide();
+            }
+        });
+    }
+
+    function getLogUrl() {
+        //appId = "application_1539850523117_0152";
+        $.ajax({
+            cache: true,//保留缓存数据
+            type: "POST",//为post请求
+            url: "/piflow-web/flow/getLogUrl",//这是我在后台接受数据的文件名
+            //data:$('#loginForm').serialize(),//将该表单序列化
+            data: {"appId": appId},
+            async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
+            error: function (request) {//请求失败之后的操作
+                return;
+            },
+            success: function (data) {//请求成功之后的操作
+                console.log("success");
+                if ('0' !== data.code) {
+                    stdoutLog = data.stdoutLog;
+                    stderrLog = data.stderrLog;
+                    changeUrl(1);
+                }
+                //alert(data);
+            }
+        });
+    }
+
+    function changeUrl(key) {
+        var url
+        switch (key) {
+            case 1:
+                url = stdoutLog;
+                break;
+            case 2:
+                url = stderrLog;
+                break;
+            default:
+                break;
         }
-		$(document).ready(function(){
-			$("#modalDialog").draggable();//为模态对话框添加拖拽
-			//$("#myModal").css("overflow", "hidden");//禁止模态对话框的半透明背景滚动
-		});
-    	//@ sourceURL=index.js
-	</script>
+        $.ajax({
+            cache: true,//保留缓存数据
+            type: "POST",//为post请求
+            url: "/piflow-web/flow/getLog",//这是我在后台接受数据的文件名
+            //data:$('#loginForm').serialize(),//将该表单序列化
+            data: {url: url},
+            async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
+            error: function (request) {//请求失败之后的操作
+                return;
+            },
+            success: function (data) {//请求成功之后的操作
+                console.log("success");
+                if ('' !== data) {
+                    var split0 = data.split('<td class="content">');
+                    var data0 = split0[1];
+                    var split2 = data0.split("</td>");
+                    var data2 = split2[0];
+                    "white-space: pre-line;"
+                    data2 = data2.replace("<pre>", '<pre style="white-space: pre-wrap; height: 288px;">');
+                    //document.getElementById("logTitle").innerHTML = "<h1>"+data1+"</h1>";
+                    document.getElementById("customContent").innerHTML = "<div>" + data2 + "</div>";
+                }
+                //alert(data);
+            }
+        });
+    }
+
+    function tableRow(appId) {
+        if (appId === '') {
+            return;
+        }
+        $.ajax({
+            cache: true,
+            type: "get",
+            url: "/piflow-web/flowInfoDb/getAppInfoProgress",
+            data: {appid: appId},
+            async: true,
+            traditional: true,
+            error: function (request) {
+                console.log("error");
+                return;
+            },
+            success: function (data) {
+                var dataMap = JSON.parse(data);
+                if (0 !== dataMap.code) {
+                    if ('STARTED' === dataMap.state || dataMap.progress === 100) {
+                        window.clearInterval(timer);
+                    }
+                    document.getElementById("progress").innerHTML = "进度" + dataMap.progress + "%";
+                }
+            }
+        });
+    }
+
+    function chooseProt(paths) {
+        if (paths && paths.length > 0) {
+            if (paths.length > 1) {
+                graphGlobal.removeCells(paths);
+            } else {
+                var sourceMxCellId = '';
+                var targetMxCellId = '';
+                var pathLine = paths[0];
+                var pathLineId = pathLine.id;
+                var sourceMxCell = pathLine.source;
+                var targetMxCell = pathLine.target;
+                if (targetMxCell) {
+                    sourceMxCellId = sourceMxCell.id;
+                }
+                if (targetMxCell) {
+                    targetMxCellId = targetMxCell.id;
+                }
+                $.ajax({
+                    cache: true,
+                    type: "get",
+                    url: "/piflow-web/grapheditor/getStopsPort",
+                    data: {
+                        "flowId": loadId,
+                        "sourceId": sourceMxCellId,
+                        "targetId": targetMxCellId,
+                        "pathLineId": pathLineId
+                    },
+                    async: true,
+                    traditional: true,
+                    error: function (request) {
+                        console.log("error");
+                        return;
+                    },
+                    success: function (data) {
+                        var dataMap = JSON.parse(data);
+                        alert(dataMap);
+                    }
+                });
+
+            }
+        }
+    }
+
+    $(document).ready(function () {
+        $("#modalDialog").draggable();//为模态对话框添加拖拽
+        //$("#myModal").css("overflow", "hidden");//禁止模态对话框的半透明背景滚动
+    });
+    //@ sourceURL=index.js
+</script>
 </body>
 </html>

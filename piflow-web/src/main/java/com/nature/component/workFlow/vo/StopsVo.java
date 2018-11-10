@@ -1,30 +1,23 @@
-package com.nature.component.workFlow.model;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.*;
+package com.nature.component.workFlow.vo;
 
 import com.nature.common.Eunm.PortType;
-import org.hibernate.annotations.OrderBy;
-import org.hibernate.annotations.Where;
 
-import com.nature.base.BaseHibernateModelUUIDNoCorpAgentId;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * stop组建表
  *
  * @author Nature
  */
-@Entity
-@Table(name = "FLOW_STOPS")
-public class Stops extends BaseHibernateModelUUIDNoCorpAgentId {
+public class StopsVo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "FK_FLOW_ID")
-    private Flow flow;
+    private String id;
+
+    private FlowVo flowVo;
 
     private String name;
 
@@ -36,30 +29,32 @@ public class Stops extends BaseHibernateModelUUIDNoCorpAgentId {
 
     private String description;
 
+    private String pageId;
+
     private String inports;
 
-    @Enumerated(EnumType.STRING)
     private PortType inPortType;
 
     private String outports;
 
-    @Enumerated(EnumType.STRING)
     private PortType outPortType;
 
-    @Column(name = "page_id")
-    private String pageId;
+    private List<PropertyVo> propertiesVo = new ArrayList<PropertyVo>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stops")
-    @Where(clause = "enable_flag=1")
-    @OrderBy(clause = "lastUpdateDttm desc")
-    private List<Property> properties = new ArrayList<Property>();
-
-    public Flow getFlow() {
-        return flow;
+    public String getId() {
+        return id;
     }
 
-    public void setFlow(Flow flow) {
-        this.flow = flow;
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public FlowVo getFlowVo() {
+        return flowVo;
+    }
+
+    public void setFlowVo(FlowVo flowVo) {
+        this.flowVo = flowVo;
     }
 
     public String getName() {
@@ -102,6 +97,14 @@ public class Stops extends BaseHibernateModelUUIDNoCorpAgentId {
         this.description = description;
     }
 
+    public String getPageId() {
+        return pageId;
+    }
+
+    public void setPageId(String pageId) {
+        this.pageId = pageId;
+    }
+
     public String getInports() {
         return inports;
     }
@@ -134,19 +137,11 @@ public class Stops extends BaseHibernateModelUUIDNoCorpAgentId {
         this.outPortType = outPortType;
     }
 
-    public String getPageId() {
-        return pageId;
+    public List<PropertyVo> getPropertiesVo() {
+        return propertiesVo;
     }
 
-    public void setPageId(String pageId) {
-        this.pageId = pageId;
-    }
-
-    public List<Property> getProperties() {
-        return properties;
-    }
-
-    public void setProperties(List<Property> properties) {
-        this.properties = properties;
+    public void setPropertiesVo(List<PropertyVo> propertiesVo) {
+        this.propertiesVo = propertiesVo;
     }
 }

@@ -2,11 +2,8 @@ package com.nature.mapper;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.SelectProvider;
+import com.nature.provider.StopsTemplateMapperProvider;
+import org.apache.ibatis.annotations.*;
 import com.nature.component.workFlow.model.Property;
 import com.nature.component.workFlow.model.PropertyTemplate;
 import com.nature.provider.PropertyTemplateMapperProvider;
@@ -15,17 +12,21 @@ import com.nature.provider.PropertyTemplateMapperProvider;
 public interface PropertyTemplateMapper {
 
 	/**
-	 * @Title 根據stops模板id查詢對應的stops的所有屬性
+	 * 根据stopsId查询对应的stops的所有属性
 	 * 
 	 * @param stopsId
 	 * @return
 	 */
 	@SelectProvider(type = PropertyTemplateMapperProvider.class, method = "getPropertyTemplateBySotpsId")
+	@Results({
+			@Result(id = true, column = "id", property = "id"),
+			@Result(column = "property_required", property = "required"),
+			@Result(column = "property_sensitive", property = "sensitive") })
 	List<PropertyTemplate> getPropertyTemplateBySotpsId(String stopsId);
 
 	/**
 	 * Query through ID flow_stops_property.
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
@@ -38,9 +39,10 @@ public interface PropertyTemplateMapper {
 	
 	/**
 	 * Add more than one FLOW_STOPS_PROPERTY_TEMPLATE List.
-	 * @param propertyTemplate
+	 * @param propertyTemplateList
 	 * @return
 	 */
-	int insertPropertyTemplate(List<PropertyTemplate > propertyTemplate);
+	@InsertProvider(type = PropertyTemplateMapperProvider.class, method = "insertPropertyTemplate")
+	public int insertPropertyTemplate(@Param("propertyTemplateList")List<PropertyTemplate > propertyTemplateList);
 
 }

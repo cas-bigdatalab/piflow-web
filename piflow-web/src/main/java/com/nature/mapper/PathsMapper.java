@@ -16,41 +16,74 @@ import com.nature.provider.PathsMapperProvider;
 
 @Mapper
 public interface PathsMapper {
-	/**
-	 * @Title 插入list<Paths> 注意拼sql的方法必须用map接 Param内容为键值
+    /**
+	 * 插入list<Paths> 注意拼sql的方法必须用map接 Param内容为键值
 	 * 
-	 * @param pathsList
-	 * @return
-	 */
-	@InsertProvider(type = PathsMapperProvider.class, method = "addPathsList")
-	public int addPathsList(@Param("pathsList") List<Paths> pathsList);
+     * @param pathsList
+     * @return
+     */
+    @InsertProvider(type = PathsMapperProvider.class, method = "addPathsList")
+    public int addPathsList(@Param("pathsList") List<Paths> pathsList);
 
-	/**
-	 * @Title 修改paths
-	 * @param paths
-	 * @return
-	 */
-	@UpdateProvider(type = PathsMapperProvider.class, method = "updatePaths")
-	public int updatePathsList(Paths paths);
+    /**
+	 * 修改paths
+     * @param paths
+     * @return
+     */
+    @UpdateProvider(type = PathsMapperProvider.class, method = "updatePaths")
+    public int updatePathsList(Paths paths);
 
-	/**
-	 * @Title 根据flowId查询
-	 * @param flowId
-	 * @return
-	 */
-	@SelectProvider(type = PathsMapperProvider.class, method = "getPathsListByFlowId")
-	@Results({
+    /**
+     * 根据flowId查询
+     * @param flowId
+     * @return
+     */
+    @SelectProvider(type = PathsMapperProvider.class, method = "getPathsListByFlowId")
+    @Results({
 
-			@Result(column = "LINE_FROM", property = "from"), 
-			@Result(column = "LINE_TO", property = "to"),
-			@Result(column = "LINE_OUTPORT", property = "outport"),
-			@Result(column = "LINE_INPORT", property = "inport"), 
-			@Result(column = "LINE_PORT", property = "port")
+            @Result(column = "LINE_FROM", property = "from"),
+            @Result(column = "LINE_TO", property = "to"),
+            @Result(column = "LINE_OUTPORT", property = "outport"),
+            @Result(column = "LINE_INPORT", property = "inport"),
+            @Result(column = "LINE_PORT", property = "port")
 
-	})
-	public List<Paths> getPathsListByFlowId(String flowId);
-	
-	
-	@Delete("delete from flow_path where fk_flow_id=#{flowId}")
-	public int deletePathsByFlowId(@Param("flowId") String id);
+    })
+    public List<Paths> getPathsListByFlowId(String flowId);
+
+
+    /**
+     * 查询连线信息
+     *
+     * @param flowId 流水线Id
+     * @param pageId 线的pageID
+     * @param from   线的from
+     * @param to     线的from
+     * @return
+     */
+    @SelectProvider(type = PathsMapperProvider.class, method = "getPaths")
+    @Results({
+
+            @Result(column = "LINE_FROM", property = "from"),
+            @Result(column = "LINE_TO", property = "to"),
+            @Result(column = "LINE_OUTPORT", property = "outport"),
+            @Result(column = "LINE_INPORT", property = "inport"),
+            @Result(column = "LINE_PORT", property = "port")
+
+    })
+    public List<Paths> getPaths(String flowId, String pageId, String from, String to);
+
+    /**
+     * 查询连线的数量
+     *
+     * @param flowId 流水线Id
+     * @param pageId 线的pageID
+     * @param from   线的from
+     * @param to     线的from
+     * @return
+     */
+    @SelectProvider(type = PathsMapperProvider.class, method = "getPathsCounts")
+    public Integer getPathsCounts(String flowId, String pageId, String from, String to);
+
+    @Delete("delete from flow_path where fk_flow_id=#{flowId}")
+    public int deletePathsByFlowId(@Param("flowId") String id);
 }

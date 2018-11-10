@@ -29,7 +29,7 @@ public class User {
 
 	private String sex;
 
-	private boolean enabled;
+	private Boolean enabled;
 
 	public Long getId() {
 		return id;
@@ -79,11 +79,11 @@ public class User {
 		this.sex = sex;
 	}
 
-	public boolean isEnabled() {
+	public Boolean getEnabled() {
 		return enabled;
 	}
 
-	public void setEnabled(boolean enabled) {
+	public void setEnabled(Boolean enabled) {
 		this.enabled = enabled;
 	}
 

@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class StopVo implements Serializable {
+public class ThirdStopVo implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

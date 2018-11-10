@@ -1,16 +1,15 @@
 package com.nature.third;
 
-import javax.annotation.Resource;
-
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.nature.ApplicationTests;
 import com.nature.base.util.LoggerUtil;
 import com.nature.mapper.FlowInfoDbMapper;
 import com.nature.third.inf.IGetFlowProgress;
-import com.nature.third.vo.ProgressVo;
+import com.nature.third.vo.ThirdProgressVo;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.annotation.Resource;
 
 public class GetFlowProgressTest extends ApplicationTests {
 
@@ -24,9 +23,9 @@ public class GetFlowProgressTest extends ApplicationTests {
 
 	@Test
 	public void testFlowStop() {
-		ProgressVo jd = null;
+		ThirdProgressVo jd = null;
 		String appId = "application_1540442049798_0095";
-		ProgressVo startFlow2 = getFlowProgress.getFlowInfo(appId);
+		ThirdProgressVo startFlow2 = getFlowProgress.getFlowInfo(appId);
 		logger.info("测试返回信息：" + startFlow2);
 	}
 

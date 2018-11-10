@@ -93,7 +93,7 @@ public class Property extends BaseHibernateModelUUIDNoCorpAgentId {
 		this.allowableValues = allowableValues;
 	}
 
-	public Boolean isRequired() {
+	public Boolean getRequired() {
 		return required;
 	}
 
@@ -101,12 +101,11 @@ public class Property extends BaseHibernateModelUUIDNoCorpAgentId {
 		this.required = required;
 	}
 
-	public Boolean isSensitive() {
+	public Boolean getSensitive() {
 		return sensitive;
 	}
 
 	public void setSensitive(Boolean sensitive) {
 		this.sensitive = sensitive;
 	}
-
 }

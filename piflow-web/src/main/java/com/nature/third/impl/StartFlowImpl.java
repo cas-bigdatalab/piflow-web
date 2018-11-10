@@ -1,14 +1,5 @@
 package com.nature.third.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-
 import com.alibaba.fastjson.JSON;
 import com.nature.base.util.HttpUtils;
 import com.nature.base.util.JsonFormatTool;
@@ -19,9 +10,17 @@ import com.nature.component.workFlow.model.Paths;
 import com.nature.component.workFlow.model.Property;
 import com.nature.component.workFlow.model.Stops;
 import com.nature.third.inf.IStartFlow;
-import com.nature.third.vo.FlowVo;
-import com.nature.third.vo.PathVo;
-import com.nature.third.vo.StopVo;
+import com.nature.third.vo.ThirdFlowVo;
+import com.nature.third.vo.ThirdPathVo;
+import com.nature.third.vo.ThirdStopVo;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Component
 public class StartFlowImpl implements IStartFlow {
@@ -49,24 +48,24 @@ public class StartFlowImpl implements IStartFlow {
 	}
 
 	private String flowToJosn(Flow flow) {
-		FlowVo flowVo = new FlowVo();
+		ThirdFlowVo flowVo = new ThirdFlowVo();
 		// stops
-		List<StopVo> stops = new ArrayList<StopVo>();
+		List<ThirdStopVo> stops = new ArrayList<ThirdStopVo>();
 		// paths
-		List<PathVo> paths = new ArrayList<PathVo>();
+		List<ThirdPathVo> paths = new ArrayList<ThirdPathVo>();
 		// stops
-		Map<String, StopVo> stopsMap = new HashMap<String, StopVo>();
+		Map<String, ThirdStopVo> stopsMap = new HashMap<String, ThirdStopVo>();
 
 		flowVo.setName(flow.getName());
 		flowVo.setUuid(flow.getUuid());
 
 		List<Stops> stopsList = flow.getStopsList();
 		for (Stops stop : stopsList) {
-			StopVo stopVo = new StopVo();
+			ThirdStopVo thirdStopVo = new ThirdStopVo();
 			Map<String, Object> properties = new HashMap<String, Object>();
-			stopVo.setUuid(stop.getId());
-			stopVo.setName(stop.getName());
-			stopVo.setBundle(stop.getBundel());
+			thirdStopVo.setUuid(stop.getId());
+			thirdStopVo.setName(stop.getName());
+			thirdStopVo.setBundle(stop.getBundel());
 			List<Property> propertiesList = stop.getProperties();
 			if (null != propertiesList && propertiesList.size() > 0) {
 				for (Property property : propertiesList) {
@@ -86,27 +85,27 @@ public class StartFlowImpl implements IStartFlow {
 					}
 				}
 			}
-			stopVo.setProperties(properties);
-			stopsMap.put(stop.getPageId(), stopVo);
-			stops.add(stopVo);
+			thirdStopVo.setProperties(properties);
+			stopsMap.put(stop.getPageId(), thirdStopVo);
+			stops.add(thirdStopVo);
 		}
 
 		List<Paths> pathsList = flow.getPathsList();
 		if (null != pathsList && pathsList.size() > 0) {
 			for (Paths path : pathsList) {
-				StopVo fromStopVo = stopsMap.get(path.getFrom());
-				StopVo toStopVo = stopsMap.get(path.getTo());
-				if (null == fromStopVo) {
-					fromStopVo = new StopVo();
+				ThirdStopVo fromThirdStopVo = stopsMap.get(path.getFrom());
+				ThirdStopVo toThirdStopVo = stopsMap.get(path.getTo());
+				if (null == fromThirdStopVo) {
+					fromThirdStopVo = new ThirdStopVo();
 				}
-				if (null == toStopVo) {
-					toStopVo = new StopVo();
+				if (null == toThirdStopVo) {
+					toThirdStopVo = new ThirdStopVo();
 				}
-				String to = (null != toStopVo.getName() ? toStopVo.getName() : "");
+				String to = (null != toThirdStopVo.getName() ? toThirdStopVo.getName() : "");
 				String outport = (null != path.getOutport() ? path.getOutport() : "");
 				String inport = (null != path.getInport() ? path.getInport() : "");
-				String from = (null != fromStopVo.getName() ? fromStopVo.getName() : "");
-				PathVo pathVo = new PathVo();
+				String from = (null != fromThirdStopVo.getName() ? fromThirdStopVo.getName() : "");
+				ThirdPathVo pathVo = new ThirdPathVo();
 				pathVo.setFrom(from);
 				pathVo.setOutport(outport);
 				pathVo.setInport(inport);

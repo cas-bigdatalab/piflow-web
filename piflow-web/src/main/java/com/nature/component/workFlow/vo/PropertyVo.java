@@ -1,46 +1,41 @@
-package com.nature.component.workFlow.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+package com.nature.component.workFlow.vo;
 
-import com.nature.base.BaseHibernateModelUUIDNoCorpAgentId;
+import java.io.Serializable;
 
-@Entity
-@Table(name = "FLOW_STOPS_PROPERTY_TEMPLATE")
-public class PropertyTemplate extends BaseHibernateModelUUIDNoCorpAgentId {
+/**
+ * stop的属性
+ * 
+ * @author Nature
+ *
+ */
+
+public class PropertyVo implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	// @ManyToOne(fetch = FetchType.EAGER)
-	@Column(name = "FK_STOPS_ID")
-	private String stopsTemplate;
+	private StopsVo stopsVo;
 
 	private String name;
 
 	private String displayName;
 
-	@Column(name = "description", columnDefinition = "varchar(1000) COMMENT '描述'")
 	private String description;
 
-	@Column(name = "DEFAULT_VALUE")
-	private String defaultValue;
+	private String customValue;
 
-	@Column(name = "ALLOWABLE_VALUES")
 	private String allowableValues;
 
-	@Column(name = "PROPERTY_REQUIRED")
 	private Boolean required;
 
-	@Column(name = "PROPERTY_SENSITIVE")
 	private Boolean sensitive;
 
-	public String getStopsTemplate() {
-		return stopsTemplate;
+	public StopsVo getStopsVo() {
+		return stopsVo;
 	}
 
-	public void setStopsTemplate(String stopsTemplate) {
-		this.stopsTemplate = stopsTemplate;
+	public void setStopsVo(StopsVo stopsVo) {
+		this.stopsVo = stopsVo;
 	}
 
 	public String getName() {
@@ -67,12 +62,12 @@ public class PropertyTemplate extends BaseHibernateModelUUIDNoCorpAgentId {
 		this.description = description;
 	}
 
-	public String getDefaultValue() {
-		return defaultValue;
+	public String getCustomValue() {
+		return customValue;
 	}
 
-	public void setDefaultValue(String defaultValue) {
-		this.defaultValue = defaultValue;
+	public void setCustomValue(String customValue) {
+		this.customValue = customValue;
 	}
 
 	public String getAllowableValues() {

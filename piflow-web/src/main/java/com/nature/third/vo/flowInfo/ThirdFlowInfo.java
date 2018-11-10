@@ -2,17 +2,17 @@ package com.nature.third.vo.flowInfo;
 
 import java.io.Serializable;
 
-public class FlowInfo implements Serializable {
+public class ThirdFlowInfo implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private FlowInfoVo flow;
+	private ThirdFlowInfoVo flow;
 
-	public FlowInfoVo getFlow() {
+	public ThirdFlowInfoVo getFlow() {
 		return flow;
 	}
 
-	public void setFlow(FlowInfoVo flow) {
+	public void setFlow(ThirdFlowInfoVo flow) {
 		this.flow = flow;
 	}
 

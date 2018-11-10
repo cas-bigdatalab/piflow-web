@@ -19,7 +19,7 @@ import com.nature.component.workFlow.model.FlowInfoDb;
 import com.nature.component.workFlow.service.IFlowInfoDbService;
 import com.nature.mapper.FlowInfoDbMapper;
 import com.nature.third.inf.IGetFlowProgress;
-import com.nature.third.vo.ProgressVo;
+import com.nature.third.vo.ThirdProgressVo;
 
 @Controller
 @RequestMapping("/flowInfoDb")
@@ -64,7 +64,7 @@ public class FlowInfoDbCtrl {
 		 for (FlowInfoDb flowInfoDb : flowInfoList) {
 			 //遍历list,如果进度小于100去调接口,否则说明已经是100,直接返回
 			if (Float.parseFloat(flowInfoDb.getProgress()) < 100/* && "COMPLETED".equals(flowInfoDb.getState())*/) {
-				 ProgressVo progress = iGetFlowProgress.getFlowInfo(flowInfoDb.getId());
+				ThirdProgressVo progress = iGetFlowProgress.getFlowInfo(flowInfoDb.getId());
 				 //如果接口返回进度为符合100,则更新数据库并返回
 				if (StringUtils.isNotBlank(progress.getProgress()) && Float.parseFloat(progress.getProgress()) == 100) {
 					FlowInfoDb up = new FlowInfoDb();
@@ -100,7 +100,7 @@ public class FlowInfoDbCtrl {
 		}
 		//如果进度小于100去调接口,否则说明已经是100,直接返回
 		if (Float.parseFloat(flowInfo.getProgress()) < 100 /*&& "STARTED".equals(flowInfo.getState())*/) {
-			ProgressVo progress = iGetFlowProgress.getFlowInfo(flowInfo.getId());
+			ThirdProgressVo progress = iGetFlowProgress.getFlowInfo(flowInfo.getId());
 			//如果接口返回进度为符合100,则更新数据库并返回
 			if (StringUtils.isNotBlank(progress.getProgress()) && Float.parseFloat(progress.getProgress()) == 100) {
 				FlowInfoDb up = new FlowInfoDb();

@@ -1,6 +1,6 @@
 package com.nature.third.vo;
 
-public class ProgressVo {
+public class ThirdProgressVo {
 	
 	private String appId;
 	private String name;

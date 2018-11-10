@@ -1,16 +1,5 @@
 package com.nature.third.impl;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
-import net.sf.json.JSONObject;
-
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.nature.base.util.HttpUtils;
 import com.nature.base.util.LoggerUtil;
 import com.nature.common.constant.SysParamsCache;
@@ -18,9 +7,18 @@ import com.nature.component.workFlow.model.FlowInfoDb;
 import com.nature.mapper.FlowInfoDbMapper;
 import com.nature.third.inf.IGetFlowInfo;
 import com.nature.third.inf.IGetFlowProgress;
-import com.nature.third.vo.ProgressVo;
-import com.nature.third.vo.flowInfo.FlowInfo;
-import com.nature.third.vo.flowInfo.FlowInfoStopVo;
+import com.nature.third.vo.ThirdProgressVo;
+import com.nature.third.vo.flowInfo.ThirdFlowInfo;
+import com.nature.third.vo.flowInfo.ThirdFlowInfoStopVo;
+import net.sf.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class GetFlowInfoImpl implements IGetFlowInfo {
@@ -38,8 +36,8 @@ public class GetFlowInfoImpl implements IGetFlowInfo {
 	 */
 	@SuppressWarnings("rawtypes")
 	@Override
-	public FlowInfo getFlowInfo(String appid) {
-		FlowInfo jb = null;
+	public ThirdFlowInfo getFlowInfo(String appid) {
+		ThirdFlowInfo jb = null;
 		Map<String, String> map = new HashMap<String, String>();
 		map.put("appID", appid);
 		String doGet = HttpUtils.doGet(SysParamsCache.FLOW_INFO_URL(), map);
@@ -49,9 +47,9 @@ public class GetFlowInfoImpl implements IGetFlowInfo {
 			// 当FlowInfo中有List时需要
 			Map<String, Class> classMap = new HashMap<String, Class>();
 			// key为FlowInfo中的List的name,value为list的泛型的class
-			classMap.put("stops", FlowInfoStopVo.class);
+			classMap.put("stops", ThirdFlowInfoStopVo.class);
 			// 将json对象转换为java对象
-			jb = (FlowInfo) JSONObject.toBean(obj, FlowInfo.class, classMap);
+			jb = (ThirdFlowInfo) JSONObject.toBean(obj, ThirdFlowInfo.class, classMap);
 		}
 		return jb;
 	}
@@ -61,8 +59,8 @@ public class GetFlowInfoImpl implements IGetFlowInfo {
 	 */
 	@Override
 	public FlowInfoDb AddFlowInfo(String appId) {
-		FlowInfo startFlow2 = getFlowInfo(appId);
-		ProgressVo progress = iGetFlowProgress.getFlowInfo(appId);
+		ThirdFlowInfo startFlow2 = getFlowInfo(appId);
+		ThirdProgressVo progress = iGetFlowProgress.getFlowInfo(appId);
 		logger.info("测试返回信息：" + startFlow2);
 		if ( null != startFlow2 && null!= startFlow2.getFlow()) {
 			FlowInfoDb flowInfoDb = flowInfoDbMapper.flowInfoDb(startFlow2.getFlow().getId());

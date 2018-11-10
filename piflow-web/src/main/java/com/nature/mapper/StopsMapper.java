@@ -71,6 +71,13 @@ public interface StopsMapper {
 
 	})
 	public List<Stops> getStopsListByFlowId(String flowId);
+
+	@SelectProvider(type = StopsMapperProvider.class, method = "getStopsListByFlowIdAndPageIds")
+	@Results({ @Result(id = true, column = "id", property = "id"),
+			@Result(column = "id", property = "properties", many = @Many(select = "com.nature.mapper.PropertyMapper.getPropertyListByStopsId", fetchType = FetchType.EAGER))
+
+	})
+	public List<Stops> getStopsListByFlowIdAndPageIds(@Param("flowId")String flowId, @Param("pageIds")String[] pageIds);
 	
 	@Update("update flow_stops set enable_flag = 0 where fk_flow_id=#{flowId}")
 	public int deleteStopsByFlowId(@Param("flowId") String id);

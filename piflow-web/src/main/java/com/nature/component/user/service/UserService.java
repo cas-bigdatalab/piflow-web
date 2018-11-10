@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.nature.component.user.model.User;
-import com.nature.mapper.UserMapper;
+import com.nature.mapper.user.UserMapper;
 
 @Service
 public class UserService {

@@ -20,7 +20,7 @@ public class StopsTemplateServiceImpl implements IStopsTemplateService {
 
 	@Override
 	public StopsTemplate getStopsPropertyById(String id) {
-		return stopsTemplateMapper.getStopsPropertyById(id);
+		return stopsTemplateMapper.getStopsTemplateAndPropertyById(id);
 	}
 
 }

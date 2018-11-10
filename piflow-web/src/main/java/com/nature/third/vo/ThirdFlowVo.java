@@ -4,14 +4,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FlowVo implements Serializable {
+public class ThirdFlowVo implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	private String name;
 	private String uuid;
-	private List<StopVo> stops = new ArrayList<StopVo>();
-	private List<PathVo> paths = new ArrayList<PathVo>();
+	private List<ThirdStopVo> stops = new ArrayList<ThirdStopVo>();
+	private List<ThirdPathVo> paths = new ArrayList<ThirdPathVo>();
 
 	public String getName() {
 		return name;
@@ -29,19 +29,19 @@ public class FlowVo implements Serializable {
 		this.uuid = uuid;
 	}
 
-	public List<StopVo> getStops() {
+	public List<ThirdStopVo> getStops() {
 		return stops;
 	}
 
-	public void setStops(List<StopVo> stops) {
+	public void setStops(List<ThirdStopVo> stops) {
 		this.stops = stops;
 	}
 
-	public List<PathVo> getPaths() {
+	public List<ThirdPathVo> getPaths() {
 		return paths;
 	}
 
-	public void setPaths(List<PathVo> paths) {
+	public void setPaths(List<ThirdPathVo> paths) {
 		this.paths = paths;
 	}
 

@@ -60,8 +60,6 @@ public class StopMapperTest extends ApplicationTests {
 		stops.setGroups("Groups测试stops组件" + num);
 		stops.setOwner("Owner测试stops组件" + num);
 		stops.setDescription("Desc测试stops组件" + num);
-		stops.setNumberOfEntrances(1 + "");
-		stops.setNumberOfExports(1 + "");
 
 		return stops;
 	}

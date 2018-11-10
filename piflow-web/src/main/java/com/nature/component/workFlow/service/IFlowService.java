@@ -4,6 +4,7 @@ import com.nature.base.vo.StatefulRtnBase;
 import com.nature.component.mxGraph.vo.MxGraphModelVo;
 import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.model.FlowInfoDb;
+import com.nature.component.workFlow.vo.FlowVo;
 import org.springframework.data.annotation.Transient;
 
 public interface IFlowService {
@@ -19,13 +20,22 @@ public interface IFlowService {
 	public StatefulRtnBase saveOrUpdateFlowAll(MxGraphModelVo mxGraphModelVo, String flowId);
 
 	/**
-	 * @Title 根据id查询流信息
-	 * 
+	 * 根据id查询流信息
+	 *
 	 * @param id
 	 * @return
 	 */
 	@Transient
 	public Flow getFlowById(String id);
+
+	/**
+	 * 根据id查询流信息
+	 *
+	 * @param id
+	 * @return
+	 */
+	@Transient
+	public FlowVo getFlowVoById(String id);
 
 	/**
 	 * @Title 保存appId

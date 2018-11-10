@@ -17,7 +17,7 @@ public class StopsCtrl {
 	@RequestMapping("/queryIdInfo")
 	public Stops getStopGroup(String fid,String id) {
 		Stops queryInfo = propertyServiceImpl.queryAll(fid,id);
-		return (Stops) queryInfo;
+		return queryInfo;
 	}
 	
 	/**

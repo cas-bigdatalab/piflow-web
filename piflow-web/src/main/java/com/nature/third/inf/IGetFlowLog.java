@@ -1,9 +1,9 @@
 package com.nature.third.inf;
 
-import com.nature.third.vo.flowLog.FlowLog;
+import com.nature.third.vo.flowLog.ThirdFlowLog;
 
 public interface IGetFlowLog {
 
-	public FlowLog getFlowLog(String appid);
+	public ThirdFlowLog getFlowLog(String appid);
 
 }

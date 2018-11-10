@@ -1,4 +1,4 @@
-package com.nature.mapper;
+package com.nature.mapper.user;
 
 import java.util.List;
 

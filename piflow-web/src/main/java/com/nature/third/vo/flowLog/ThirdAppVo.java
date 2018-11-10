@@ -2,7 +2,7 @@ package com.nature.third.vo.flowLog;
 
 import java.io.Serializable;
 
-public class AppVo implements Serializable {
+public class ThirdAppVo implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
