@@ -60,7 +60,7 @@
                value="日志"/>
     </div>
 </div>
-<!-- Modal -->
+<!-- Modal 日志 -->
 <div class="modal" id="myModal" aria-labelledby="myModalLabel" data-backdrop="static">
     <div id="modalDialog" class="modal-dialog" role="document">
         <div class="modal-content" style="width: 200%; left: -290px; top: 77px;">
@@ -87,6 +87,27 @@
         </div>
     </div>
 </div>
+<!-- Modal 端口 -->
+<div class="modal" id="myModalPort" aria-labelledby="myModalLabel" data-backdrop="static">
+    <div id="modalDialogPort" class="modal-dialog" role="document">
+        <div class="modal-content" style="width: 100%;  top: 77px;">
+            <div class="modal-header">
+                <!--<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>-->
+                <!--</button>-->
+                <h4 class="modal-title" id="myModalLabelPort">CHOOSE PROT WINDOWS</h4>
+            </div>
+            <div class="modal-body">
+                <div id="protInfo">加载中</div>
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" onclick="chooseProt(1)">Submit</button>
+                <button type="button" class="btn btn-default" onclick="chooseProt(0)">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
 <!--初始化画板-->
 <script type="text/javascript" th:src="@{/grapheditor/initGraph.js}"></script>
 <script type="text/javascript">
@@ -94,7 +115,8 @@
     var header = $("meta[name='_csrf_header']").attr("content");
     var startFlow = $('#startFlow');
     var stopFlow = $('#stopFlow');
-    var fullScreen = $('#fullScreen')
+    var fullScreen = $('#fullScreen');
+    var pathsCells = [];
     $(document).ajaxSend(function (e, xhr, options) {
         xhr.setRequestHeader(header, token);
     });
@@ -287,8 +309,8 @@
             success: function (data) {//请求成功之后的操作
                 console.log("success");
                 thisEditor.setModified(false);
-                //选择port
-                chooseProt(paths);
+                //获取port
+                getStopsPort(paths);
             }
         });
     }
@@ -530,14 +552,16 @@
         });
     }
 
-    function chooseProt(paths) {
+    //获取端口
+    function getStopsPort(paths) {
         if (paths && paths.length > 0) {
-            if (paths.length > 1) {
-                graphGlobal.removeCells(paths);
+            pathsCells = paths;
+            if (pathsCells.length > 1) {
+                graphGlobal.removeCells(pathsCells);
             } else {
                 var sourceMxCellId = '';
                 var targetMxCellId = '';
-                var pathLine = paths[0];
+                var pathLine = pathsCells[0];
                 var pathLineId = pathLine.id;
                 var sourceMxCell = pathLine.source;
                 var targetMxCell = pathLine.target;
@@ -566,6 +590,11 @@
                     success: function (data) {
                         var dataMap = JSON.parse(data);
                         alert(dataMap);
+                        if('1'===dataMap.code){
+                            $('#myModalPort').modal('show');
+                        }else{
+                            graphGlobal.removeCells(pathsCells);
+                        }
                     }
                 });
 
@@ -573,9 +602,19 @@
         }
     }
 
+    // 选择端口
+    function chooseProt(paths) {
+        if(0===paths){
+            $('#myModalPort').modal('hide');
+        }else{}
+        graphGlobal.removeCells(pathsCells);
+    }
+
     $(document).ready(function () {
         $("#modalDialog").draggable();//为模态对话框添加拖拽
-        //$("#myModal").css("overflow", "hidden");//禁止模态对话框的半透明背景滚动
+        $("#myModal").css("overflow", "hidden");//禁止模态对话框的半透明背景滚动
+        $("#myModalPort").draggable();//为模态对话框添加拖拽
+        $("#myModalPort").css("overflow", "hidden");//禁止模态对话框的半透明背景滚动
     });
     //@ sourceURL=index.js
 </script>

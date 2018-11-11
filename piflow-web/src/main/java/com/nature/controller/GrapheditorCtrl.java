@@ -230,7 +230,7 @@ public class GrapheditorCtrl {
                     // 第十种
                     // sourceStop的sourceStopOutports为Default，去查询默认端口是否占用，如果占用直接返回并删除线，否则不处理
                     // targetStop的targetStopInports 为Default，去查询默认端口是否占用，如果占用直接返回并删除线，否则不处理
-                    // 查询
+                    // 处理查询端口使用情况 并封装返回的map
                     rtnMap = stopPortUsed(rtnMap, sourceStop, targetStop, flowId, pathLineId);
                     return JsonUtils.toJsonNoException(rtnMap);
                 }
