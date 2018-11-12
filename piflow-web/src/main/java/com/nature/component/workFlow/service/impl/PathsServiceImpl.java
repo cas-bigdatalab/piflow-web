@@ -37,7 +37,7 @@ public class PathsServiceImpl implements IPathsService {
         return pathsVo;
     }
     /**
-     * ²éÑ¯Á¬ÏßĞÅÏ¢
+     * æŸ¥è¯¢è¿çº¿ä¿¡æ¯
      *
      * @param flowId
      * @param from
@@ -55,7 +55,7 @@ public class PathsServiceImpl implements IPathsService {
     }
 
     /**
-     * ²éÑ¯Á¬ÏßµÄÊıÁ¿
+     * æŸ¥è¯¢è¿çº¿çš„æ•°é‡
      *
      * @param flowId
      * @param from
