@@ -16,10 +16,9 @@ public class PathsMapperProvider {
 
     /**
      * 插入list<Paths> 注意拼sql的方法必须用map接 Param内容为键值
-     * 
+     *
      * @param map (内容： 键为pathsList,值为List<Paths>)
      * @return
-
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
     public String addPathsList(Map map) {
@@ -94,6 +93,7 @@ public class PathsMapperProvider {
 
     /**
      * 新增paths
+     *
      * @param paths
      * @return
      */
@@ -176,7 +176,7 @@ public class PathsMapperProvider {
 
     /**
      * 修改paths
-     * 
+     *
      * @param paths
      * @return
      */
@@ -235,6 +235,7 @@ public class PathsMapperProvider {
 
     /**
      * 根据flowId查询
+     *
      * @param flowId
      * @return
      */
@@ -311,4 +312,21 @@ public class PathsMapperProvider {
         return sqlStr;
     }
 
+    /**
+     * 根据id查询paths
+     *
+     * @param id
+     * @return
+     */
+    public String getPathsById(String id) {
+        String sqlStr = "select 0";
+        if (StringUtils.isNotBlank(id)) {
+            SQL sql = new SQL();
+            sql.SELECT("*");
+            sql.FROM("flow_path");
+            sql.WHERE("enable_flag = 1");
+            sql.WHERE("id=" + Utils.addSqlStr(id));
+        }
+        return sqlStr;
+    }
 }

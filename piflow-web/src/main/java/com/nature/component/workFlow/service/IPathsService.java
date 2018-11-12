@@ -36,4 +36,12 @@ public interface IPathsService {
 	 */
 	public Integer getPathsCounts(String flowId, String from, String to);
 
+	/**
+	 * 保存更新连线信息
+	 *
+	 * @param pathsVo
+	 * @return
+	 */
+	public int upDatePathsVo(PathsVo pathsVo);
+
 }

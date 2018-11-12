@@ -636,7 +636,7 @@ public class FlowServiceImpl implements IFlowService {
 							if (null != updatePaths && updatePaths.size() > 0) {
 								for (Paths paths : updatePaths) {
 									if (null != paths) {
-										pathsMapper.updatePathsList(paths);
+										pathsMapper.updatePaths(paths);
 									}
 								}
 							}

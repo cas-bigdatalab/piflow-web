@@ -127,6 +127,7 @@ public class GetGroupsAndStops {
                     String inports = ob.get("inports") + "";
                     PortType inPortType = null;
                     if (StringUtils.isNotBlank(inports)) {
+                        inPortType = null;
                         for (PortType value : PortType.values()) {
                             if (inports.equalsIgnoreCase(value.getValue())) {
                                 inPortType = value;
@@ -139,9 +140,10 @@ public class GetGroupsAndStops {
                     PortType.selectGenderByValue(inports);
                     String outports = ob.get("outports") + "";
                     PortType outPortType = null;
-                    if (StringUtils.isNotBlank(inports)) {
+                    if (StringUtils.isNotBlank(outports)) {
+                        outPortType = null;
                         for (PortType value : PortType.values()) {
-                            if (inports.equalsIgnoreCase(value.getValue())) {
+                            if (outports.equalsIgnoreCase(value.getValue())) {
                                 outPortType = value;
                             }
                         }

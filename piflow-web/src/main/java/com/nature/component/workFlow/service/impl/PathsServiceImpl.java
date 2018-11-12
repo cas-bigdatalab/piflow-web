@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.nature.component.workFlow.service.IPathsService;
 import com.nature.mapper.PathsMapper;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -36,6 +37,7 @@ public class PathsServiceImpl implements IPathsService {
         }
         return pathsVo;
     }
+
     /**
      * 查询连线信息
      *
@@ -49,7 +51,7 @@ public class PathsServiceImpl implements IPathsService {
         List<PathsVo> pathsVoList = null;
         List<Paths> pathsList = pathsMapper.getPaths(flowId, null, from, to);
         if (null != pathsList && pathsList.size() > 0) {
-            pathsVoList=PathsUtil.pathsListPoToVo(pathsList);
+            pathsVoList = PathsUtil.pathsListPoToVo(pathsList);
         }
         return pathsVoList;
     }
@@ -66,5 +68,20 @@ public class PathsServiceImpl implements IPathsService {
     public Integer getPathsCounts(String flowId, String from, String to) {
         Integer pathsCounts = pathsMapper.getPathsCounts(flowId, null, from, to);
         return pathsCounts;
+    }
+
+    @Override
+    public int upDatePathsVo(PathsVo pathsVo) {
+
+        Paths pathsById = pathsMapper.getPathsById(pathsVo.getId());
+        if (null != pathsById) {
+            BeanUtils.copyProperties(pathsVo, pathsById);
+            pathsById.setVersion(pathsById.getVersion()+1);
+            pathsById.setLastUpdateDttm(new Date());
+            pathsById.setLastUpdateUser("-1");
+            int i = pathsMapper.updatePaths(pathsById);
+            return i;
+        }
+        return 0;
     }
 }

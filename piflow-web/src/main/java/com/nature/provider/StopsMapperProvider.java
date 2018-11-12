@@ -1,17 +1,16 @@
 package com.nature.provider;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.jdbc.SQL;
-
 import com.nature.base.util.DateUtils;
 import com.nature.base.util.Utils;
 import com.nature.common.Eunm.PortType;
 import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.model.Stops;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.jdbc.SQL;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public class StopsMapperProvider {
     /**

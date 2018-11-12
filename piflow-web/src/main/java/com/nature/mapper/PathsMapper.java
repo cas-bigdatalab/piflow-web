@@ -31,7 +31,7 @@ public interface PathsMapper {
      * @return
      */
     @UpdateProvider(type = PathsMapperProvider.class, method = "updatePaths")
-    public int updatePathsList(Paths paths);
+    public int updatePaths(Paths paths);
 
     /**
      * 根据flowId查询
@@ -83,6 +83,15 @@ public interface PathsMapper {
      */
     @SelectProvider(type = PathsMapperProvider.class, method = "getPathsCounts")
     public Integer getPathsCounts(String flowId, String pageId, String from, String to);
+
+    /**
+     * 根据id查询paths
+     *
+     * @param id
+     * @return
+     */
+    @SelectProvider(type = PathsMapperProvider.class, method = "getPathsById")
+    public Paths getPathsById(String id);
 
     @Delete("delete from flow_path where fk_flow_id=#{flowId}")
     public int deletePathsByFlowId(@Param("flowId") String id);

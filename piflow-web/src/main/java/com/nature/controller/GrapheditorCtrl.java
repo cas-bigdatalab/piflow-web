@@ -208,28 +208,28 @@ public class GrapheditorCtrl {
                     // targetStop的targetStopInports 为Default，去查询默认端口是否占用，如果占用直接返回并删除线，否则不处理
                     // 第三种
                     // sourceStop的sourceStopOutports为Default，去查询默认端口是否占用，如果占用直接返回并删除线，否则不处理
-                    // targetStop的targetStopInports 为Default，去查询默认端口是否占用，如果占用直接返回并删除线，否则不处理
+                    // targetStop的targetStopInports 为UserDefault，去查询端口占用情况，如果无可用端口返回并删除线，否则返回端口使用情况
                     // 第四种
                     // sourceStop的sourceStopOutports为Default，去查询默认端口是否占用，如果占用直接返回并删除线，否则不处理
-                    // targetStop的targetStopInports 为Default，去查询默认端口是否占用，如果占用直接返回并删除线，否则不处理
+                    // targetStop的targetStopInports 为Any，去查询端口占用情况，返回端口使用情况
                     // 第五种
-                    // sourceStop的sourceStopOutports为Default，去查询默认端口是否占用，如果占用直接返回并删除线，否则不处理
+                    // sourceStop的sourceStopOutports为UserDefault，去查询端口占用情况，如果无可用端口返回并删除线，否则返回端口使用情况
                     // targetStop的targetStopInports 为Default，去查询默认端口是否占用，如果占用直接返回并删除线，否则不处理
                     // 第六种
-                    // sourceStop的sourceStopOutports为Default，去查询默认端口是否占用，如果占用直接返回并删除线，否则不处理
-                    // targetStop的targetStopInports 为Default，去查询默认端口是否占用，如果占用直接返回并删除线，否则不处理
+                    // sourceStop的sourceStopOutports为UserDefault，去查询端口占用情况，如果无可用端口返回并删除线，否则返回端口使用情况
+                    // targetStop的targetStopInports 为UserDefault，去查询端口占用情况，如果无可用端口返回并删除线，否则返回端口使用情况
                     // 第七种
-                    // sourceStop的sourceStopOutports为Default，去查询默认端口是否占用，如果占用直接返回并删除线，否则不处理
-                    // targetStop的targetStopInports 为Default，去查询默认端口是否占用，如果占用直接返回并删除线，否则不处理
+                    // sourceStop的sourceStopOutports为UserDefault，去查询端口占用情况，如果无可用端口返回并删除线，否则返回端口使用情况
+                    // targetStop的targetStopInports 为Any，去查询端口占用情况，返回端口使用情况
                     // 第八种
-                    // sourceStop的sourceStopOutports为Default，去查询默认端口是否占用，如果占用直接返回并删除线，否则不处理
+                    // sourceStop的sourceStopOutports为Any，去查询端口占用情况，返回端口使用情况
                     // targetStop的targetStopInports 为Default，去查询默认端口是否占用，如果占用直接返回并删除线，否则不处理
                     // 第九种
-                    // sourceStop的sourceStopOutports为Default，去查询默认端口是否占用，如果占用直接返回并删除线，否则不处理
-                    // targetStop的targetStopInports 为Default，去查询默认端口是否占用，如果占用直接返回并删除线，否则不处理
+                    // sourceStop的sourceStopOutports为Any，去查询端口占用情况，返回端口使用情况
+                    // targetStop的targetStopInports 为UserDefault，去查询端口占用情况，如果无可用端口返回并删除线，否则返回端口使用情况
                     // 第十种
-                    // sourceStop的sourceStopOutports为Default，去查询默认端口是否占用，如果占用直接返回并删除线，否则不处理
-                    // targetStop的targetStopInports 为Default，去查询默认端口是否占用，如果占用直接返回并删除线，否则不处理
+                    // sourceStop的sourceStopOutports为Any，去查询端口占用情况，返回端口使用情况
+                    // targetStop的targetStopInports 为Any，去查询端口占用情况，返回端口使用情况
                     // 处理查询端口使用情况 并封装返回的map
                     rtnMap = stopPortUsed(rtnMap, sourceStop, targetStop, flowId, pathLineId);
                     return JsonUtils.toJsonNoException(rtnMap);
@@ -358,7 +358,6 @@ public class GrapheditorCtrl {
                     if (isSourceStop) {
                         // put是否为source
                         stopPortUsageMap.put("isSourceStop", true);
-
                         // 查询stopVo接口的占用情况
                         usedPathsList = pathsServiceImpl.getPaths(flowId, stopVo.getPageId(), null);
                     } else {
@@ -532,21 +531,23 @@ public class GrapheditorCtrl {
                 if (null != isSourceStop && isSourceStop) {
                     // 把查到已使用的端口put进map
                     for (PathsVo pathsVo : usedPathsList) {
-                        if (null != pathsVo) {
+                        if (null != pathsVo && StringUtils.isNotBlank(pathsVo.getOutport())) {
                             if (currentPathsId.equals(pathsVo.getId())) {
                                 portUsageMap.put(pathsVo.getOutport(), true);
+                            } else {
+                                portUsageMap.put(pathsVo.getOutport(), false);
                             }
-                            portUsageMap.put(pathsVo.getOutport(), false);
                         }
                     }
                 } else {
                     // 把查到已使用的端口put进map
                     for (PathsVo pathsVo : usedPathsList) {
-                        if (null != pathsVo) {
+                        if (null != pathsVo && StringUtils.isNotBlank(pathsVo.getOutport())) {
                             if (currentPathsId.equals(pathsVo.getId())) {
                                 portUsageMap.put(pathsVo.getInport(), true);
+                            } else {
+                                portUsageMap.put(pathsVo.getInport(), false);
                             }
-                            portUsageMap.put(pathsVo.getInport(), false);
                         }
                     }
                 }
@@ -558,16 +559,58 @@ public class GrapheditorCtrl {
                 if (null != stopVoPortsSplit && stopVoPortsSplit.length > 0) {
                     // 循环数组
                     for (String portName : stopVoPortsSplit) {
-                        // 在portUsageMap中根据端口名进行取值，取到则说明 已放如不用继续放
-                        Boolean isUsed = portUsageMap.get(portName);
-                        // 之前把所有的已经使用的端口都放入的map中，取不到则说明还没放入，也没有使用
-                        if (null == isUsed) {
-                            portUsageMap.put(portName, true);
+                        if (StringUtils.isNotBlank(portName)) {
+                            // 在portUsageMap中根据端口名进行取值，取到则说明 已放如不用继续放
+                            Boolean isUsed = portUsageMap.get(portName);
+                            // 之前把所有的已经使用的端口都放入的map中，取不到则说明还没放入，也没有使用
+                            if (null == isUsed) {
+                                portUsageMap.put(portName, true);
+                            }
                         }
                     }
                 }
             }
         }
         return portUsageMap;
+    }
+
+    @RequestMapping("/savePathsPort")
+    @ResponseBody
+    public String savePathsPort(HttpServletRequest request) {
+        Map<String, String> rtnMap = new HashMap<String, String>();
+        rtnMap.put("code", "0");
+        //取参数
+        //flowId
+        String flowId = request.getParameter("flowId");
+        // 线的id
+        String pathLineId = request.getParameter("pathLineId");
+        // sourceOut
+        String sourcePortVal = request.getParameter("sourcePortVal");
+        // targetIn
+        String targetPortVal = request.getParameter("targetPortVal");
+        if (StringUtils.isAnyEmpty(flowId, pathLineId)) {
+            rtnMap.put("errMsg", "传入参数有空的");
+            logger.info("传入参数有空的");
+            return JsonUtils.toJsonNoException(rtnMap);
+        } else {
+            PathsVo currentPaths = pathsServiceImpl.getPathsByFlowIdAndPageId(flowId, pathLineId);
+            if (StringUtils.isNotBlank(sourcePortVal)) {
+                currentPaths.setOutport(sourcePortVal);
+            }
+            if (StringUtils.isNotBlank(targetPortVal)) {
+                currentPaths.setInport(targetPortVal);
+            }
+            int i = pathsServiceImpl.upDatePathsVo(currentPaths);
+            if (i <= 0) {
+                rtnMap.put("code", "0");
+                rtnMap.put("errMsg", "保存失败");
+            } else {
+                rtnMap.put("code", "1");
+                rtnMap.put("errMsg", "保存成功");
+            }
+            return JsonUtils.toJsonNoException(rtnMap);
+        }
+
+
     }
 }

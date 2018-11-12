@@ -1,18 +1,18 @@
 package com.nature.provider;
 
-import java.util.List;
-import java.util.Map;
-
+import com.nature.base.util.DateUtils;
+import com.nature.component.workFlow.model.PropertyTemplate;
 import org.apache.ibatis.jdbc.SQL;
 
-import com.nature.base.util.DateUtils;
 import com.nature.base.util.Utils;
-import com.nature.component.workFlow.model.PropertyTemplate;
+
+import java.util.List;
+import java.util.Map;
 
 public class PropertyTemplateMapperProvider {
 
     /**
-     * 根據stops模板id查詢對應的stops的所有屬性
+     * 根据stops模板id查询对应的stops的所有属性
      * 
      * @param stopsId
      * @return
@@ -74,8 +74,8 @@ public class PropertyTemplateMapperProvider {
                     sqlValuesStr.append(Utils.addSqlStr(propertyTemplate.getDescription().equals("null") ? "" : propertyTemplate.getDescription()) + ",");
                     sqlValuesStr.append(Utils.addSqlStr(propertyTemplate.getDisplayName()) + ",");
                     sqlValuesStr.append(Utils.addSqlStr(propertyTemplate.getName()) + ",");
-                    sqlValuesStr.append(required ? 1 : 0 + ",");
-                    sqlValuesStr.append(sensitive ? 1 : 0 + ",");
+                    sqlValuesStr.append(required ? 1 + "," : 0 + ",");
+                    sqlValuesStr.append(sensitive ? 1 + "," : 0 + ",");
                     sqlValuesStr.append(Utils.addSqlStr(null != propertyTemplate.getStopsTemplate() ? propertyTemplate.getStopsTemplate() : ""));
                     sqlValuesStr.append(")");
                     if (i < propertyTemplateList.size() - 1) {
@@ -83,7 +83,7 @@ public class PropertyTemplateMapperProvider {
                     }
                 }
             }
-            System.out.println(sqlColumns.toString() + sqlValuesStr.toString());
+            sqlStr = (sqlColumns.toString() + sqlValuesStr.toString());
         }
         return sqlStr;
     }
