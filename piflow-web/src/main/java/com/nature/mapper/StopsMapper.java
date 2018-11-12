@@ -81,5 +81,17 @@ public interface StopsMapper {
 	
 	@Update("update flow_stops set enable_flag = 0 where fk_flow_id=#{flowId}")
 	public int deleteStopsByFlowId(@Param("flowId") String id);
+	
+	/**
+	 * 根据stopsId 查询stop和属性信息
+	 * @param Id
+	 * @return
+	 */
+	@SelectProvider(type = StopsMapperProvider.class, method = "getStopsById")
+	@Results({ @Result(id = true, column = "id", property = "id"),
+			@Result(column = "id", property = "properties", many = @Many(select = "com.nature.mapper.PropertyMapper.getPropertyListByStopsId", fetchType = FetchType.EAGER))
+
+	})
+	public Stops getStopsById(String Id);
 
 }

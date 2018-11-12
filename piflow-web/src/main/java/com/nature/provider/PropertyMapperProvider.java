@@ -4,6 +4,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.ibatis.jdbc.SQL;
+
 import com.nature.base.util.DateUtils;
 import com.nature.base.util.Utils;
 import com.nature.component.workFlow.model.Property;
@@ -54,7 +57,7 @@ public class PropertyMapperProvider {
                 Boolean enableFlag = property.getEnableFlag();
                 String name = property.getName();
                 String displayName = property.getDisplayName();
-                String description = property.getDescription();
+                String description = property.getDescription().equals("null") ? null : property.getDisplayName();
                 String customValue = property.getCustomValue();
                 String allowableValues = property.getAllowableValues();
                 Boolean required = property.getRequired();
@@ -88,4 +91,87 @@ public class PropertyMapperProvider {
 		String sqlStr = sqlStrBuffer.toString();
 		return sqlStr;
 	}
+	
+	/**
+     * @Title 修改Property
+     *
+     * @param flow
+     * @return
+     */
+    public String updateStopsProperty(Property property) {
+        String sqlStr = "";
+        if (null != property) {
+            String id = property.getId();
+            String lastUpdateUser = property.getLastUpdateUser();
+            Date lastUpdateDttm = property.getLastUpdateDttm();
+            Long version = property.getVersion();
+            Boolean enableFlag = property.getEnableFlag();
+            String description = property.getDescription();
+            String name = property.getName();
+            String allowable_values = property.getAllowableValues();
+            String custom_value = property.getCustomValue();
+            String display_name = property.getDisplayName();
+            Boolean required = property.getRequired();
+            Boolean sensitive = property.getSensitive();
+            Stops stops = property.getStops();
+            SQL sql = new SQL();
+
+            // INSERT_INTO括号中为数据库表名
+            sql.UPDATE("flow_stops_property");
+            // SET中的第一个字符串为数据库中表对应的字段名
+            // 除数字类型的字段外其他类型必须加单引号
+            if (null != lastUpdateDttm) {
+                String lastUpdateDttmStr = DateUtils.dateTimesToStr(lastUpdateDttm);
+                if (StringUtils.isNotBlank(lastUpdateDttmStr)) {
+                    sql.SET("LAST_UPDATE_DTTM = " + Utils.addSqlStr(lastUpdateDttmStr));
+                }
+            }
+            if (StringUtils.isNotBlank(lastUpdateUser)) {
+                sql.SET("LAST_UPDATE_USER = " + Utils.addSqlStr(lastUpdateUser));
+            }
+            if (null != version && StringUtils.isNotBlank(version.toString())) {
+                sql.SET("VERSION = " + version.toString());
+            }
+            if (null != enableFlag) {
+                int enableFlagInt = enableFlag ? 1 : 0;
+                sql.SET("ENABLE_FLAG = " + enableFlagInt);
+            }
+            if (StringUtils.isNotBlank(description)) {
+                sql.SET("description = " + Utils.addSqlStr(Utils.replaceString(description)));
+            }
+            if (StringUtils.isNotBlank(name)) {
+                sql.SET("NAME = " + Utils.addSqlStr(Utils.replaceString(name)));
+            }
+            if (StringUtils.isNotBlank(allowable_values)) {
+                sql.SET("allowable_values = " + Utils.addSqlStr(allowable_values));
+            }
+            if (StringUtils.isNotBlank(custom_value)) {
+                sql.SET("custom_value = " + Utils.addSqlStr(custom_value));
+            }
+            if (StringUtils.isNotBlank(display_name)) {
+                sql.SET("display_name = " + Utils.addSqlStr(display_name));
+            }
+            if (null != required) {
+                int requiredNum = required ? 1 : 0;
+                sql.SET("property_required = " + requiredNum);
+            }
+            if (null != sensitive) {
+                int sensitiveNum = sensitive ? 1 : 0;
+                sql.SET("property_sensitive = " + sensitiveNum);
+            }
+            if (null != stops) {
+                String stopsId = stops.getId();
+                if (StringUtils.isNotBlank(stopsId)) {
+                    sql.SET("fk_stops_id = " + Utils.addSqlStr(stopsId));
+                }
+            }
+            sql.WHERE("id = " + Utils.addSqlStr(id));
+            sqlStr = sql.toString() + ";";
+            if (StringUtils.isBlank(id)) {
+                sqlStr = "";
+            }
+        }
+        return sqlStr;
+    }
+    
 }

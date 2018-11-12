@@ -1,16 +1,17 @@
 package com.nature.provider;
 
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.jdbc.SQL;
+
 import com.nature.base.util.DateUtils;
 import com.nature.base.util.Utils;
 import com.nature.common.Eunm.PortType;
 import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.model.Stops;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.jdbc.SQL;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 public class StopsMapperProvider {
     /**
@@ -30,7 +31,7 @@ public class StopsMapperProvider {
             Long version = stops.getVersion();
             Boolean enableFlag = stops.getEnableFlag();
             String bundel = stops.getBundel();
-            String description = stops.getDescription();
+            String description = stops.getDescription().equals("null") ? null : stops.getDescription();
             String groups = stops.getGroups();
             String name = stops.getName();
             String inports = stops.getInports();
@@ -346,5 +347,21 @@ public class StopsMapperProvider {
         sqlStr = sql.toString() + ";";
         return sqlStr;
     }
+    
+    /**
+     * 根据stopsId查询
+     * @param Id
+     * @return
+     */
+    public String getStopsById(String Id) {
+		String sqlStr = "";
+		SQL sql = new SQL();
+		sql.SELECT("*");
+		sql.FROM("flow_stops");
+		sql.WHERE("enable_flag = 1");
+		sql.WHERE("id = " + Utils.addSqlStr(Id));
+		sqlStr = sql.toString() + ";";
+		return sqlStr;
+	}
 
 }

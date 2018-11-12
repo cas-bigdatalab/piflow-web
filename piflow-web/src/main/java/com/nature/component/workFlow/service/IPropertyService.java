@@ -37,12 +37,19 @@ public interface IPropertyService {
      * delete StopsProperty according to ID;
      * @return
      */
-	public int deleteStopsProperty(String id);
+	public int deleteStopsPropertyById(String id);
 	
 	/**
      * delete StopsProperty according to StopId;
      * @return
      */
 	public int deleteStopsPropertyByStopId(String id);
+	
+	
+	/**
+	 * check stops template 
+	 * @param stops
+	 */
+	public void checkStopTemplateUpdate(Stops stops);
 
 }

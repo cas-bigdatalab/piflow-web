@@ -99,7 +99,7 @@ public class StopsTemplateMapperProvider {
                     sqlValuesStr.append(Utils.addSqlStr(stopsTemplate.getLastUpdateUser()) + ",");
                     sqlValuesStr.append((null != stopsTemplate.getVersion() ? stopsTemplate.getVersion() : 0) + ",");
                     sqlValuesStr.append(Utils.addSqlStr(stopsTemplate.getBundel()) + ",");
-                    sqlValuesStr.append(Utils.addSqlStr(stopsTemplate.getDescription()) + ",");
+                    sqlValuesStr.append(Utils.addSqlStr(stopsTemplate.getDescription().equals("null") ? "" : stopsTemplate.getDescription()) + ",");
                     sqlValuesStr.append(Utils.addSqlStr(stopsTemplate.getGroups()) + ",");
                     sqlValuesStr.append(Utils.addSqlStr(stopsTemplate.getName()) + ",");
                     sqlValuesStr.append(Utils.addSqlStr(stopsTemplate.getOwner()) + ",");

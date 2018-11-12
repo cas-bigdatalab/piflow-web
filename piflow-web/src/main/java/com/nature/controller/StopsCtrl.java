@@ -1,5 +1,6 @@
 package com.nature.controller;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,8 +17,15 @@ public class StopsCtrl {
 
 	@RequestMapping("/queryIdInfo")
 	public Stops getStopGroup(String fid,String id) {
-		Stops queryInfo = propertyServiceImpl.queryAll(fid,id);
-		return queryInfo;
+		if (StringUtils.isNotBlank(fid) && StringUtils.isNotBlank(id)) {
+			Stops queryInfo = propertyServiceImpl.queryAll(fid, id);
+			if (null != queryInfo) {
+				//对比stops模板属性并作出修改
+				propertyServiceImpl.checkStopTemplateUpdate(queryInfo);
+				return queryInfo;
+			}
+		}
+		return null;
 	}
 	
 	/**
@@ -29,12 +37,11 @@ public class StopsCtrl {
 	@RequestMapping("/updateStops")
 	public Integer updateStops(String[] content,String id){
 		int updateStops = 0;
+		if (null != content && content.length > 0 )  
 		for (String string : content) {
-			System.out.println(string);
 			//使用#id#标记来截取数据,第一为内容，第二个为要修改记录的id
 			String[] split = string.split("#id#");
-			System.out.println(split.length);
-			if (split.length == 2) {
+			if (null != split && split.length == 2) {
 				String updateContent = split[0];
 				String updateId = split[1];
 				updateStops = propertyServiceImpl.updateStops(updateContent,updateId);

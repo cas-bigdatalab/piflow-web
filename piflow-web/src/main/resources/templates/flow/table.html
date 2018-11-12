@@ -301,7 +301,7 @@
         var executorNumber = $("#executorNumber").val();
         var executorMemory = $("#executorMemory").val();
         var executorCores = $("#executorCores").val();
-        checkFlowInput(flowName,description,driverMemory,executorNumber,executorMemory,executorCores);
+        if (checkFlowInput(flowName,description,driverMemory,executorNumber,executorMemory,executorCores))
         $.ajax({
             cache:true,//保留缓存数据
             type:"get",//为post请求
@@ -330,7 +330,7 @@
         var executorNumber = $("#executorNumber").val();
         var executorMemory = $("#executorMemory").val();
         var executorCores = $("#executorCores").val();
-        checkFlowInput(flowName,description,driverMemory,executorNumber,executorMemory,executorCores);
+        if (checkFlowInput(flowName,description,driverMemory,executorNumber,executorMemory,executorCores))
         $.ajax({
             cache:true,//保留缓存数据
             type:"get",//为post请求
@@ -465,6 +465,7 @@
             document.getElementById('flowName').focus();
             return false;
         }
+    	
         if(description == ''){
             layer.msg('description不能为空！',{icon: 2,  shade:0,  time: 2000});
             document.getElementById('description').focus();
@@ -483,13 +484,14 @@
         if(executorMemory == ''){
             layer.msg('executorMemory不能为空！',{icon: 2,  shade:0,  time: 2000});
             document.getElementById('executorMemory').focus();
-            return;
+            return false;
         }
         if(executorCores == ''){
             layer.msg('executorCores不能为空！',{icon: 2,  shade:0,  time: 2000});
             document.getElementById('executorCores').focus();
             return false;
         }
+        return true;
     }
     //@ sourceURL=table_right.js
 </script>

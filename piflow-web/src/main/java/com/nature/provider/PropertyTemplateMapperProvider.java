@@ -1,13 +1,13 @@
 package com.nature.provider;
 
-import com.nature.base.util.DateUtils;
-import com.nature.component.workFlow.model.PropertyTemplate;
-import org.apache.ibatis.jdbc.SQL;
-
-import com.nature.base.util.Utils;
-
 import java.util.List;
 import java.util.Map;
+
+import org.apache.ibatis.jdbc.SQL;
+
+import com.nature.base.util.DateUtils;
+import com.nature.base.util.Utils;
+import com.nature.component.workFlow.model.PropertyTemplate;
 
 public class PropertyTemplateMapperProvider {
 
@@ -71,7 +71,7 @@ public class PropertyTemplateMapperProvider {
                     sqlValuesStr.append((null != propertyTemplate.getVersion() ? propertyTemplate.getVersion() : 0) + ",");
                     sqlValuesStr.append(Utils.addSqlStr(propertyTemplate.getAllowableValues()) + ",");
                     sqlValuesStr.append(Utils.addSqlStr(propertyTemplate.getDefaultValue()) + ",");
-                    sqlValuesStr.append(Utils.addSqlStr(propertyTemplate.getDescription()) + ",");
+                    sqlValuesStr.append(Utils.addSqlStr(propertyTemplate.getDescription().equals("null") ? "" : propertyTemplate.getDescription()) + ",");
                     sqlValuesStr.append(Utils.addSqlStr(propertyTemplate.getDisplayName()) + ",");
                     sqlValuesStr.append(Utils.addSqlStr(propertyTemplate.getName()) + ",");
                     sqlValuesStr.append(required ? 1 : 0 + ",");

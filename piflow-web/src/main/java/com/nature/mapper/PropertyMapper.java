@@ -11,6 +11,7 @@ import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.UpdateProvider;
 
 import com.nature.component.workFlow.model.Property;
 import com.nature.component.workFlow.model.Stops;
@@ -31,8 +32,9 @@ public interface PropertyMapper {
 	/**
 	 * uerying group attribute information based on ID
 	 */
-	@Select("select fs.* from flow_stops fs LEFT JOIN flow f on f.id = fs.fk_flow_id where f.id = #{fid} and fs.page_id = #{id} and fs.enable_flag = 1 ")
+	@Select("select fs.* from flow_stops fs LEFT JOIN flow f on f.id = fs.fk_flow_id where f.id = #{fid} and fs.page_id = #{id} and fs.enable_flag = 1  LIMIT 1 ")
 	@Results({
+			@Result(id = true, column = "id", property = "id"),
 			@Result(property = "properties", column = "id", many = @Many(select = "com.nature.mapper.PropertyTemplateMapper.getPropertyBySotpsId")) })
 	public Stops getStopGroupList(@Param("fid") String fid, @Param("id") String id);
 
@@ -41,6 +43,15 @@ public interface PropertyMapper {
 	 */
 	@Update("update flow_stops_property set custom_value = #{custom_value},version = version+1 where id = #{id}")
 	public int updateStops(@Param("custom_value") String content, @Param("id") String id);
+	
+	
+	/**
+	 * update property Method
+	 * @param property
+	 * @return
+	 */
+	@UpdateProvider(type = PropertyMapperProvider.class, method = "updateStopsProperty")
+	public int updateStopsProperty(Property property);
 
 	/**
 	 * query All StopsProperty List;
@@ -59,7 +70,7 @@ public interface PropertyMapper {
 	 * @return
 	 */
 	@Delete("delete from flow_stops_property where id=#{id}")
-	public int deleteStopsProperty(String id);
+	public int deleteStopsPropertyById(String id);
 
 	/**
 	 * delete StopsProperty according to StopId;

@@ -6,12 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.nature.component.workFlow.utils.MxGraphModelUtil;
-import com.nature.component.workFlow.utils.PathsUtil;
-import com.nature.component.workFlow.utils.StopsUtil;
-import com.nature.component.workFlow.vo.PathsVo;
-import com.nature.component.workFlow.vo.PropertyVo;
-import com.nature.component.workFlow.vo.StopsVo;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
@@ -19,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Transient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.Utils;
 import com.nature.base.vo.StatefulRtnBase;
@@ -36,7 +31,13 @@ import com.nature.component.workFlow.model.PropertyTemplate;
 import com.nature.component.workFlow.model.Stops;
 import com.nature.component.workFlow.model.StopsTemplate;
 import com.nature.component.workFlow.service.IFlowService;
+import com.nature.component.workFlow.utils.MxGraphModelUtil;
+import com.nature.component.workFlow.utils.PathsUtil;
+import com.nature.component.workFlow.utils.StopsUtil;
 import com.nature.component.workFlow.vo.FlowVo;
+import com.nature.component.workFlow.vo.PathsVo;
+import com.nature.component.workFlow.vo.StopsVo;
+import com.nature.mapper.FlowInfoDbMapper;
 import com.nature.mapper.FlowMapper;
 import com.nature.mapper.PathsMapper;
 import com.nature.mapper.PropertyMapper;
@@ -75,6 +76,9 @@ public class FlowServiceImpl implements IFlowService {
 
 	@Autowired
 	private PropertyMapper propertyMapper;
+	
+	@Autowired
+	private FlowInfoDbMapper flowInfoDbMapper;
 
 	private boolean flag = false;
 
@@ -154,12 +158,14 @@ public class FlowServiceImpl implements IFlowService {
      * @return
 
      */
-    @Override
+    @SuppressWarnings("unused")
+	@Override
     public StatefulRtnBase saveAppId(String flowId, FlowInfoDb appId) {
         StatefulRtnBase satefulRtnBase = new StatefulRtnBase();
         if (StringUtils.isNotBlank(flowId)) {
             // 根据flowId查询flow
             Flow flowById = flowMapper.getFlowById(flowId);
+            FlowInfoDb oldAppId = flowById.getAppId();
             if (null != flowById) {
                 flowById.setAppId(appId);
                 flowById.setVersion(flowById.getVersion() + 1);
@@ -168,7 +174,10 @@ public class FlowServiceImpl implements IFlowService {
                 int updateFlow = flowMapper.updateFlow(flowById);
                 if (updateFlow <= 0) {
                     satefulRtnBase = setStatefulRtnBase("AppId保存失败");
-                }
+                }else {
+					//把之前的appId置为无效
+                	flowInfoDbMapper.deleteFlowInfoById(oldAppId.getId());
+				}
             } else {
                 satefulRtnBase = setStatefulRtnBase("未查询到flowId为" + flowId + "的flow，保存失败");
             }
