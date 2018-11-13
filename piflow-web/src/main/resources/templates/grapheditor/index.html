@@ -187,9 +187,10 @@
             var tbody = document.createElement("tbody");
             for (var y = 0; y < data.length; y++) {
                 var select = document.createElement('select');
-                select.style.width = "125px";
-                select.style.height = "22px";
+                select.style.width = "210px";
+                select.style.height = "26px";
                 select.setAttribute('id', '' + data[y].displayName + '');
+                select.setAttribute('onblur', 'shiqu("' + data[y].id + '","' + data[y].displayName + '")');
                 var displayName = data[y].displayName;
                 var customValue = data[y].customValue;
                 var allowableValues = data[y].allowableValues;
@@ -212,15 +213,17 @@
                         select.appendChild(option);
                     }
                 }
-                var displayName = document.createElement('input');
+                var displayName = document.createElement('textarea');
                 if (required)
-                    displayName.setAttribute('class', 'true');
-                displayName.setAttribute('type', 'text');
+                displayName.setAttribute('class', 'true');
+                displayName.setAttribute('onclick', 'dbssn("' + data[y].displayName + '")');
                 displayName.setAttribute('id', '' + data[y].displayName + '');
+                displayName.setAttribute('rows', '2');
+                displayName.setAttribute('cols', '20');
                 displayName.setAttribute('onblur', 'shiqu("' + data[y].id + '","' + data[y].displayName + '")');
-                displayName.style.width = "125px";
-                displayName.style.height = "22px";
-                displayName.setAttribute('value', '' + customValue + '');
+                displayName.style.width = "210px";
+                displayName.style.resize = "none";
+                displayName.innerHTML = '' + customValue + '';
                 var spanDisplayName = 'span' + data[y].displayName;
                 var spanDisplayName = document.createElement('span');
                 var spanFlag = document.createElement('span');
@@ -228,11 +231,12 @@
                 spanDisplayName.setAttribute('title', '' + data[y].description + '');
                 spanFlag.setAttribute('style', 'color:red');
                 mxUtils.write(spanDisplayName, '' + data[y].displayName + '');
-                mxUtils.write(spanFlag, ' *');
+                mxUtils.write(spanFlag, '*');
                 var tr = document.createElement("tr");
                 var td = document.createElement("td");
                 td.style.width = "60px";
                 var td1 = document.createElement("td");
+                var td2 = document.createElement("td");
                 //开始appendchild()追加各个元素
                 td.appendChild(spanDisplayName);
                 //本次循环大于4追加下拉,小于4默认文本框
@@ -241,10 +245,11 @@
                 } else {
                     td1.appendChild(displayName);
                     if (required)
-                        td1.appendChild(spanFlag);
+                    td2.appendChild(spanFlag);
                 }
                 tr.appendChild(td);
                 tr.appendChild(td1);
+                tr.appendChild(td2);
                 tbody.appendChild(tr);
                 table.appendChild(tbody);
             }
@@ -276,7 +281,7 @@
                     },
                     success: function (data) {
                         console.log("attribute update success");
-                        $("input").blur();
+                        $("textarea").blur();
                         $("select").blur();
                     }
                 });
@@ -285,7 +290,7 @@
             btn.style.marginLeft = '18px';
             btn.style.marginTop = '10px';
             divValue.appendChild(table);
-            divValue.appendChild(btn);
+            //divValue.appendChild(btn);
         }
     }
 

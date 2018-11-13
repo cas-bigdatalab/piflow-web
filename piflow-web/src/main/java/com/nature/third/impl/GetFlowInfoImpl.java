@@ -2,6 +2,7 @@ package com.nature.third.impl;
 
 import com.nature.base.util.HttpUtils;
 import com.nature.base.util.LoggerUtil;
+import com.nature.common.Eunm.FlowState;
 import com.nature.common.constant.SysParamsCache;
 import com.nature.component.workFlow.model.FlowInfoDb;
 import com.nature.mapper.FlowInfoDbMapper;
@@ -10,7 +11,9 @@ import com.nature.third.inf.IGetFlowProgress;
 import com.nature.third.vo.ThirdProgressVo;
 import com.nature.third.vo.flowInfo.ThirdFlowInfo;
 import com.nature.third.vo.flowInfo.ThirdFlowInfoStopVo;
+
 import net.sf.json.JSONObject;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,7 +75,11 @@ public class GetFlowInfoImpl implements IGetFlowInfo {
 				up.setState(startFlow2.getFlow().getState());
 				up.setEndTime(startFlow2.getFlow().getEndTime());
 				up.setStartTime(startFlow2.getFlow().getStartTime());
-				up.setProgress(progress.getProgress());
+				if (null == progress.getProgress() || "NaN".equals(progress.getProgress())) {
+					up.setProgress("0");
+				}else {
+					up.setProgress(progress.getProgress());
+				}
 				up.setLastUpdateUser("-1");
 				up.setLastUpdateDttm(new Date());
 				int updateFlowInfo = flowInfoDbMapper.updateFlowInfo(up);
@@ -84,7 +91,7 @@ public class GetFlowInfoImpl implements IGetFlowInfo {
 				FlowInfoDb add = new FlowInfoDb();
 				add.setId(startFlow2.getFlow().getId());
 				add.setName(startFlow2.getFlow().getName());
-				add.setState(startFlow2.getFlow().getState());
+				add.setState(progress.getState());
 				add.setEndTime(startFlow2.getFlow().getEndTime());
 				add.setStartTime(startFlow2.getFlow().getStartTime());
 				add.setProgress(progress.getProgress());
@@ -109,6 +116,7 @@ public class GetFlowInfoImpl implements IGetFlowInfo {
 			kong.setEnableFlag(true);
 			kong.setLastUpdateUser("-1");
 			kong.setProgress("0");
+			kong.setState(FlowState.STARTED.toString());
 			kong.setLastUpdateDttm(new Date());
 			flowInfoDbMapper.addFlowInfo(kong);
 			return kong;

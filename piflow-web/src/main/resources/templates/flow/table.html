@@ -47,10 +47,32 @@
 
     <!-- The fav icon -->
     <link rel="shortcut icon" th:href="@{/charisma/img/favicon.ico}">
-
+	<style type="text/css">
+        /*人为制造一个占据整个屏幕的Div,其透明度为0.7且z-index为9999使之前的页面被压在底层无法点击*/
+        .fullScreen {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            opacity: 0.7;
+            background-color: black;
+            z-index: 9999;
+            text-align: center;
+        }
+    </style>
 </head>
 
 <body>
+<!-- loading start -->
+<div id='fullScreen' class="fullScreen" style="display: none;">
+    <div style="margin-top: 15%;">
+        <p>
+            <img th:src="@{/img/fullScreen.gif}" alt="">
+        </p>
+    </div>
+</div>
+<!-- loading end -->
 <!-- topbar starts -->
 <div class="navbar navbar-default" role="navigation" style="background-image: linear-gradient(#bbacac, #ffffff 60%, #ffffff); border-color: #ffffff;">
 
@@ -352,6 +374,7 @@
     }
     //运行
     function runFlow(loadId){
+    	$('#fullScreen').show();
         $.ajax({
             cache:true,//保留缓存数据
             type:"get",//为post请求
@@ -360,15 +383,18 @@
             data:{flowId:loadId},
             async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
             error:function(request){//请求失败之后的操作
-                return;
+            	  $('#fullScreen').hide();
+                  alert("reload fail");
+                  return;
             },
             success:function(data){//请求成功之后的操作
                 console.log("data");
                 if('0'!==data){
-                    alert('启动成功，返回的appid为：'+data);
-                    $('#appId').val(data);
+                	 $('#fullScreen').hide();
+                	 layer.msg('启动成功',{icon: 1,  shade:0,  time: 2000}, function(){location.reload(); });
                 }else{
-                    alert("启动失败");
+                	$('#fullScreen').hide();
+                	layer.msg('启动失败',{icon: 2,  shade:0,  time: 2000}, function(){location.reload(); });
                 }
 
             }
@@ -376,6 +402,7 @@
     }
     //停止
     function stopFlow(loadId){
+    	$('#fullScreen').show();
         $.ajax({
             cache:true,//保留缓存数据
             type:"get",//为post请求
@@ -384,13 +411,18 @@
             data:{flowId:loadId},
             async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
             error:function(request){//请求失败之后的操作
-                return;
+            	 $('#fullScreen').hide();
+                 alert("reload fail");
+                 return;
             },
             success:function(data){//请求成功之后的操作
                 if('0'!==data){
-                    alert(data);
+                    $('#fullScreen').hide();
+                    layer.msg('停止成功',{icon: 1,  shade:0,  time: 2000}, function(){location.reload(); });
+                    return;
                 }else{
-                    alert("停止失败");
+                	$('#fullScreen').hide();
+                    layer.msg('停止失败',{icon: 2,  shade:0,  time: 2000}, function(){location.reload(); });
                 }
             }
         });
@@ -401,10 +433,11 @@
         var state = $("table tr").find("td:eq(7)");
         for (var i = 0; i<table.length;i++){
             if(table[i].innerHTML != ""){
-                if(state[i].innerHTML != "No state" && state[i].innerHTML == "RUNNING")
+                if(state[i].innerHTML != "No state" && state[i].innerHTML == "STARTED")
                 arrayObj.push(table[i].innerHTML);
             }
         }
+        console.info(arrayObj);
         if(arrayObj.length == 0){
             clearInterval(c);
             return;
@@ -424,8 +457,12 @@
                 if(null != data){
                     for(var k in data){  //通过定义一个局部变量k遍历获取到了map中所有的key值
                         var docList=data[k]; //获取到了key所对应的value的值！
-                        document.getElementById(""+k+"").value=docList;
-                        document.getElementById(""+k+"Info").innerHTML="进度"+docList+"%";
+                        var strs = new Array(); //定义一数组 
+                        strs=docList.split(","); //字符分割 
+                        if(null != strs && strs.length > 0)
+                        document.getElementById(""+k+"").value=strs[0];
+                        document.getElementById(""+k+"Info").innerHTML="进度"+strs[0]+"%";
+                        document.getElementById(""+k+"state").innerHTML=strs[1];
                     }
                 }
             }
@@ -449,11 +486,9 @@
     	            },
     	            success:function(data){//请求成功之后的操作
     	                if(data > 0){
-    	                    layer.msg('删除成功',{icon: 1,  shade:0,  time: 2000});
-    	                    location.reload();
+    	                    layer.msg('删除成功',{icon: 1,  shade:0,  time: 2000}, function(){location.reload(); });
     	                }else{
-    	                    layer.msg('删除成功',{icon: 2,  shade:0,  time: 2000});
-    	                    location.reload();
+    	                    layer.msg('删除失败',{icon: 2,  shade:0,  time: 2000}, function(){location.reload(); });
     	                }
     	            }
     	        });

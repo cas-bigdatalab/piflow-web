@@ -38,8 +38,8 @@
                         <td class="center" th:text="${list.description}"></td>
                         <td th:text="${#dates.format(list.appId?.startTime, 'yyyy-MM-dd HH:mm:ss')}" ></td>
                         <td th:text="${#dates.format(list.appId?.endTime, 'yyyy-MM-dd HH:mm:ss')}" ></td>
-                        <td class="center" ><div id='d'> <p th:id='${list.appId?.id}+Info' th:text="${list.appId?.progress}?${list.appId?.progress}+'%':'0%'"></p><progress th:id='${list.appId?.id}' max='100' th:value="${list.appId?.progress}"></progress></div></td>
-                        <td class="center" th:text="${list.appId?.state}?${list.appId?.state}:'No state'"></td>
+                        <td class="center" ><div id='d'> <p th:id='${list.appId?.id}+Info' th:text="${list.appId?.progress}?'进度'+${list.appId?.progress}+'%':'进度0%'"></p><progress th:id='${list.appId?.id}' max='100' th:value="${list.appId?.progress}"></progress></div></td>
+                        <td class="center" th:text="${list.appId?.state}?${list.appId?.state}:'No state'" th:id='${list.appId?.id}+state'></td>
                          <td style="display: none" class="center" th:text="${list.driverMemory}?${list.driverMemory}:'1g'"></td>
                           <td style="display: none" class="center" th:text="${list.executorNumber}?${list.executorNumber}:'1'"></td>
                            <td style="display: none" class="center" th:text="${list.executorMemory}?${list.executorMemory}:'1g'"></td>
