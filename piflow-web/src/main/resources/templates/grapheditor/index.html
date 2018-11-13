@@ -433,6 +433,8 @@
             async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
             error: function (request) {//请求失败之后的操作
                 startFlow.show();
+                alert("请求失败");
+                fullScreen.hide();
                 return;
             },
             success: function (data) {//请求成功之后的操作
@@ -465,8 +467,10 @@
             data: {flowId: loadId},
             async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
             error: function (request) {//请求失败之后的操作
-                return;
                 stopFlow.show();
+                alert("请求失败");
+                fullScreen.hide();
+                return;
             },
             success: function (data) {//请求成功之后的操作
                 //console.log("success");
@@ -675,10 +679,17 @@
                                     $('#targetTitle').show();
                                     $('#copyDivCheckbox').hide();
                                 }
+                                if ("Default" === sourceTypeStr && "Default" === targetTypeStr) {
+                                    $('#myModalPort').modal('hide');
+                                } else if ("None" === sourceTypeStr || "None" === targetTypeStr) {
+                                    $('#myModalPort').modal('hide');
+                                } else {
+                                    $('#myModalPort').modal('show');
+                                }
                             } else {
                                 graphGlobal.removeCells(pathsCells);
                             }
-                            $('#myModalPort').modal('show');
+
                         } else {
                             graphGlobal.removeCells(pathsCells);
                         }
@@ -692,36 +703,57 @@
     // 选择端口
     function chooseProt(paths) {
         if (1 === paths) {
-            var sourcePortVal;
-            var targetPortVal;
-            if($("#sourceTitleCheckbox input:checked:checked").length > 1){
-                alert("sourcePort只能选一个");
-                return false;
+            var sourcePortVal = '';
+            var targetPortVal = '';
+            if ($("#sourceTitleCheckbox").find("input[type='checkbox']").length > 0) {
+                if ($("#sourceTitleCheckbox").find("input[type='checkbox']:checked").length > 1) {
+                    alert("sourcePort只能选一个");
+                    return false;
+                }
+                if ($("#sourceTitleCheckbox input:checked:checked").length < 1) {
+                    alert("请选择sourcePort");
+                    return false;
+                }
             }
-            if($("#targetTitleCheckbox input:checked:checked").length > 1){
-                alert("targetPort只能选一个");
-                return false;
+            if ($("#targetTitleCheckbox").find("input[type='checkbox']").length > 0) {
+                if ($("#targetTitleCheckbox").find("input[type='checkbox']:checked").length > 1) {
+                    alert("targetPort只能选一个");
+                    return false;
+                }
+                if ($("#targetTitleCheckbox").find("input[type='checkbox']:checked").length < 1) {
+                    alert("请选择targetPort");
+                    return false;
+                }
             }
-            if($("#sourceTitleCheckbox input:checked:checked").length < 1){
-                alert("sourcePort只能选一个");
-                return false;
-            }
-            if($("#targetTitleCheckbox input:checked:checked").length < 1){
-                alert("targetPort只能选一个");
-                return false;
-            }
-            $("#sourceTitleCheckbox input:checked:checked").each(function(){
-                sourcePortVal = sourcePortVal +","+$(this).val();
+            $("#sourceTitleCheckbox").find("input[type='checkbox']:checked").each(function () {
+                if(''===sourcePortVal){
+                    sourcePortVal = $(this).val();
+                }else{
+                    sourcePortVal = sourcePortVal + "," + $(this).val();
+                }
             });
-            $("#targetTitleCheckbox input:checked:checked").each(function(){
-                targetPortVal = targetPortVal +","+$(this).val();
+            $("#targetTitleCheckbox").find("input[type='checkbox']:checked").each(function () {
+                if(''===targetPortVal){
+                    targetPortVal = $(this).val();
+                }else{
+                    targetPortVal = targetPortVal + "," + $(this).val();
+                }
             });
             if (pathsCells.length > 1) {
                 graphGlobal.removeCells(pathsCells);
             } else {
+                var sourceMxCellId = '';
+                var targetMxCellId = '';
                 var pathLine = pathsCells[0];
                 var pathLineId = pathLine.id;
-
+                var sourceMxCell = pathLine.source;
+                var targetMxCell = pathLine.target;
+                if (targetMxCell) {
+                    sourceMxCellId = sourceMxCell.id;
+                }
+                if (targetMxCell) {
+                    targetMxCellId = targetMxCell.id;
+                }
                 $.ajax({
                     cache: true,
                     type: "get",
@@ -729,8 +761,10 @@
                     data: {
                         "flowId": loadId,
                         "pathLineId": pathLineId,
-                        "sourcePortVal":sourcePortVal,
-                        "targetPortVal":targetPortVal
+                        "sourcePortVal": sourcePortVal,
+                        "targetPortVal": targetPortVal,
+                        "sourceId": sourceMxCellId,
+                        "targetId": targetMxCellId
                     },
                     async: true,
                     traditional: true,
@@ -753,13 +787,13 @@
             }
             alert("提交");
         } else {
+            graphGlobal.removeCells(pathsCells);
         }
         $('#myModalPort').modal('hide');
         $('.addCrtBtn').remove();
         $('.addCheckbox').remove();
         $('#sourceTitle').hide();
         $('#targetTitle').hide();
-        graphGlobal.removeCells(pathsCells);
     }
 
     function crtAnyPort(crtProtInputId, isSource) {

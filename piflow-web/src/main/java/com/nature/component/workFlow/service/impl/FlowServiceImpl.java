@@ -51,86 +51,88 @@ import com.nature.mapper.mxGraph.MxGraphModelMapper;
 @Transactional
 public class FlowServiceImpl implements IFlowService {
 
-	Logger logger = LoggerUtil.getLogger();
+    Logger logger = LoggerUtil.getLogger();
 
-	@Autowired
-	private FlowMapper flowMapper;
+    @Autowired
+    private FlowMapper flowMapper;
 
-	@Autowired
-	private StopsTemplateMapper stopsTemplateMapper;
+    @Autowired
+    private StopsTemplateMapper stopsTemplateMapper;
 
-	@Autowired
-	private MxGraphModelMapper mxGraphModelMapper;
+    @Autowired
+    private MxGraphModelMapper mxGraphModelMapper;
 
-	@Autowired
-	private MxCellMapper mxCellMapper;
+    @Autowired
+    private MxCellMapper mxCellMapper;
 
-	@Autowired
-	private MxGeometryMapper mxGeometryMapper;
+    @Autowired
+    private MxGeometryMapper mxGeometryMapper;
 
-	@Autowired
-	private PathsMapper pathsMapper;
+    @Autowired
+    private PathsMapper pathsMapper;
 
-	@Autowired
-	private StopsMapper stopsMapper;
+    @Autowired
+    private StopsMapper stopsMapper;
 
-	@Autowired
-	private PropertyMapper propertyMapper;
-	
-	@Autowired
-	private FlowInfoDbMapper flowInfoDbMapper;
+    @Autowired
+    private PropertyMapper propertyMapper;
 
-	private boolean flag = false;
+    @Autowired
+    private FlowInfoDbMapper flowInfoDbMapper;
 
-	/**
-	 * 向数据库添加flow
-	 * 
-	 * @param mxGraphModel
-	 * @param flowId
-	 * @return
-	 */
-	@Override
-	@Transient
-	public StatefulRtnBase saveOrUpdateFlowAll(MxGraphModelVo mxGraphModelVo, String flowId) {
-		StatefulRtnBase satefulRtnBase = new StatefulRtnBase();
-		if (StringUtils.isNotBlank(flowId)) {
-			// 根据flowId查询flow
-			Flow flow = flowMapper.getFlowById(flowId);
-			if (null == flow) {
-				logger.info("新建");
-				if (flag) {
-					satefulRtnBase = this.addFlow(mxGraphModelVo, flowId);
-					flag = false;
-				} else {
-					flag = true;
-				}
-			} else {
-				logger.info("在'" + flowId + "'的基礎上保存");
-				satefulRtnBase = this.updateFlow(mxGraphModelVo, flow);
-			}
-		} else {
-			satefulRtnBase = setStatefulRtnBase("flowId为空，保存失败");
-		}
-		return satefulRtnBase;
-	}
+    private boolean flag = false;
 
-	/**
+    /**
+     * 向数据库添加flow
+     *
+     * @param mxGraphModel
+     * @param flowId
+     * @return
+     */
+    @Override
+    @Transient
+    public StatefulRtnBase saveOrUpdateFlowAll(MxGraphModelVo mxGraphModelVo, String flowId) {
+        StatefulRtnBase satefulRtnBase = new StatefulRtnBase();
+        if (StringUtils.isNotBlank(flowId)) {
+            // 根据flowId查询flow
+            Flow flow = flowMapper.getFlowById(flowId);
+            if (null == flow) {
+                logger.info("新建");
+                if (flag) {
+                    satefulRtnBase = this.addFlow(mxGraphModelVo, flowId);
+                    flag = false;
+                } else {
+                    flag = true;
+                }
+            } else {
+                logger.info("在'" + flowId + "'的基礎上保存");
+                satefulRtnBase = this.updateFlow(mxGraphModelVo, flow);
+            }
+        } else {
+            satefulRtnBase = setStatefulRtnBase("flowId为空，保存失败");
+        }
+        return satefulRtnBase;
+    }
+
+    /**
      * 根据id查询流信息
-	 * @param id
-	 * @return
-	 * @author Nature
-	 */
-	@Override
-	public Flow getFlowById(String id) {
-		return flowMapper.getFlowById(id);
-	}
+     *
+     * @param id
+     * @return
+     * @author Nature
+     */
+    @Override
+    public Flow getFlowById(String id) {
+        return flowMapper.getFlowById(id);
+    }
 
-	/**
+    /**
      * 根据id查询流信息
-	 * @param id
-	 * @return
-	 * @author Nature
-	 */
+     *
+     * @param id
+     * @return
+     * @author Nature
+     */
     @Override
     public FlowVo getFlowVoById(String id) {
         FlowVo flowVo = null;
@@ -153,13 +155,13 @@ public class FlowServiceImpl implements IFlowService {
 
     /**
      * 保存appId
+     *
      * @param flowId
      * @param appId
      * @return
-
      */
     @SuppressWarnings("unused")
-	@Override
+    @Override
     public StatefulRtnBase saveAppId(String flowId, FlowInfoDb appId) {
         StatefulRtnBase satefulRtnBase = new StatefulRtnBase();
         if (StringUtils.isNotBlank(flowId)) {
@@ -174,10 +176,12 @@ public class FlowServiceImpl implements IFlowService {
                 int updateFlow = flowMapper.updateFlow(flowById);
                 if (updateFlow <= 0) {
                     satefulRtnBase = setStatefulRtnBase("AppId保存失败");
-                }else {
-					//把之前的appId置为无效
-                	flowInfoDbMapper.deleteFlowInfoById(oldAppId.getId());
-				}
+                } else {
+                    if (null != oldAppId) {
+                        //把之前的appId置为无效
+                        flowInfoDbMapper.deleteFlowInfoById(oldAppId.getId());
+                    }
+                }
             } else {
                 satefulRtnBase = setStatefulRtnBase("未查询到flowId为" + flowId + "的flow，保存失败");
             }
@@ -291,9 +295,9 @@ public class FlowServiceImpl implements IFlowService {
                 int addFlow = flowMapper.addFlow(flow);
                 // 判断是否保存成功
                 if (addFlow > 0) {
-					// 线的List
-					List<Paths> pathsList = new ArrayList<Paths>();
-					// stops的list
+                    // 线的List
+                    List<Paths> pathsList = new ArrayList<Paths>();
+                    // stops的list
                     List<Stops> stopsList = new ArrayList<Stops>();
                     // 取出所有的MxCellVo(里边有线也有stops)
                     List<MxCellVo> root = mxGraphModelVo.getRootVo();
@@ -301,16 +305,16 @@ public class FlowServiceImpl implements IFlowService {
                     if (null != root && root.size() > 0) {
                         // 把root中的stops和线分开
                         Map<String, Object> stopsPathsMap = distinguishStopsPaths(root);
-						// 从Map中取出mxCellVoList(线的list)
-						List<MxCellVo> objectPaths = (ArrayList<MxCellVo>) stopsPathsMap.get("paths");
+                        // 从Map中取出mxCellVoList(线的list)
+                        List<MxCellVo> objectPaths = (ArrayList<MxCellVo>) stopsPathsMap.get("paths");
                         // 从Map中取出mxCellVoList(stops的list)
                         List<MxCellVo> objectStops = (ArrayList<MxCellVo>) stopsPathsMap.get("stops");
                         // 根据MxCellList中的内容生成stops的list
                         stopsList = this.mxCellVoListToStopsList(objectStops, flow);
-						// 根据MxCellList中的内容生成paths的list
-						pathsList = this.mxCellListToPathsList(objectPaths, flow);
-						// 把list放入flow中
-						flow.setPathsList(pathsList);
+                        // 根据MxCellList中的内容生成paths的list
+                        pathsList = this.mxCellListToPathsList(objectPaths, flow);
+                        // 把list放入flow中
+                        flow.setPathsList(pathsList);
                         flow.setStopsList(stopsList);
                         // stopsList判空
                         if (null != stopsList && stopsList.size() > 0) {
@@ -338,7 +342,7 @@ public class FlowServiceImpl implements IFlowService {
                         } else {
                             logger.info("stopsList为空,不保存");
                         }
-						// 判空pathsList
+                        // 判空pathsList
                         if (null != pathsList && pathsList.size() > 0) {
                             // 保存pathsList
                             int addPathsList = pathsMapper.addPathsList(pathsList);
@@ -578,85 +582,85 @@ public class FlowServiceImpl implements IFlowService {
                     // 把mxCellVoList中的stops和线分开
                     Map<String, Object> stopsPathsMap = this.distinguishStopsPaths(mxCellVoList);
                     if (null != stopsPathsMap) {
-						// 取线的mxCellVoList
-						List<MxCellVo> objectPaths = (ArrayList<MxCellVo>) stopsPathsMap.get("paths");
-						// 根据MxCellList中的内容生成paths的list(转换过后的)
-						List<Paths> toPathsList = this.mxCellListToPathsList(objectPaths, flow);
-						// 判断数据库中的线的list是否为空，不为空继续下边的判断操作，否则直接添加
-						if (null != pathsList && pathsList.size() > 0) {
-							// key为paths的PageId(画板中所属id),value为Paths
-							Map<String, Paths> objectPathsMap = new HashMap<String, Paths>();
-							// 需添加的pathsList
-							List<Paths> addPaths = new ArrayList<Paths>();
-							// 需修改的pathsList
-							List<Paths> updatePaths = new ArrayList<Paths>();
+                        // 取线的mxCellVoList
+                        List<MxCellVo> objectPaths = (ArrayList<MxCellVo>) stopsPathsMap.get("paths");
+                        // 根据MxCellList中的内容生成paths的list(转换过后的)
+                        List<Paths> toPathsList = this.mxCellListToPathsList(objectPaths, flow);
+                        // 判断数据库中的线的list是否为空，不为空继续下边的判断操作，否则直接添加
+                        if (null != pathsList && pathsList.size() > 0) {
+                            // key为paths的PageId(画板中所属id),value为Paths
+                            Map<String, Paths> objectPathsMap = new HashMap<String, Paths>();
+                            // 需添加的pathsList
+                            List<Paths> addPaths = new ArrayList<Paths>();
+                            // 需修改的pathsList
+                            List<Paths> updatePaths = new ArrayList<Paths>();
 
-							// 判断转换后的页面传过来的值是否为空，不为空就是修改
-							// 否则说明页面把所有线都删除了，我们也做逻辑删除
-							if (null != toPathsList && toPathsList.size() > 0) {
-								// 循环 把objectPaths转为objectPathsMap
-								for (Paths paths : pathsList) {
-									if (null != paths) {
-										objectPathsMap.put(paths.getPageId(), paths);
-									}
-								}
-								for (Paths paths : toPathsList) {
-									String pageId = paths.getPageId();
-									Paths objPaths = objectPathsMap.get(pageId);
-									if (null != objPaths) {
-										// 取到说明数据库中已存在不用操作，移除map即可
-										objectPathsMap.remove(pageId);
-									} else {
-										// 如果取到的是空则新增
-										addPaths.add(paths);
-									}
-								}
-								// objectPathsMap中的所有需要修改的移除，剩下为要逻辑删除的
-								for (String pageid : objectPathsMap.keySet()) {
-									Paths paths = objectPathsMap.get(pageid);
-									if (null != paths) {
-										paths.setEnableFlag(false);
-										paths.setLastUpdateDttm(new Date());
-										paths.setLastUpdateUser("Nature");
-										paths.setVersion(paths.getVersion() + 1);
-										updatePaths.add(paths);
-									}
-								}
+                            // 判断转换后的页面传过来的值是否为空，不为空就是修改
+                            // 否则说明页面把所有线都删除了，我们也做逻辑删除
+                            if (null != toPathsList && toPathsList.size() > 0) {
+                                // 循环 把objectPaths转为objectPathsMap
+                                for (Paths paths : pathsList) {
+                                    if (null != paths) {
+                                        objectPathsMap.put(paths.getPageId(), paths);
+                                    }
+                                }
+                                for (Paths paths : toPathsList) {
+                                    String pageId = paths.getPageId();
+                                    Paths objPaths = objectPathsMap.get(pageId);
+                                    if (null != objPaths) {
+                                        // 取到说明数据库中已存在不用操作，移除map即可
+                                        objectPathsMap.remove(pageId);
+                                    } else {
+                                        // 如果取到的是空则新增
+                                        addPaths.add(paths);
+                                    }
+                                }
+                                // objectPathsMap中的所有需要修改的移除，剩下为要逻辑删除的
+                                for (String pageid : objectPathsMap.keySet()) {
+                                    Paths paths = objectPathsMap.get(pageid);
+                                    if (null != paths) {
+                                        paths.setEnableFlag(false);
+                                        paths.setLastUpdateDttm(new Date());
+                                        paths.setLastUpdateUser("Nature");
+                                        paths.setVersion(paths.getVersion() + 1);
+                                        updatePaths.add(paths);
+                                    }
+                                }
 
-							} else {
-								// 循环做逻辑删除操作
-								for (Paths paths : pathsList) {
-									paths.setEnableFlag(false);
-									paths.setLastUpdateDttm(new Date());
-									paths.setLastUpdateUser("Nature");
-									paths.setVersion(paths.getVersion() + 1);
-									updatePaths.add(paths);
-								}
-							}
-							if (null != updatePaths && updatePaths.size() > 0) {
-								for (Paths paths : updatePaths) {
-									if (null != paths) {
-										pathsMapper.updatePaths(paths);
-									}
-								}
-							}
-							if (null != addPaths && addPaths.size() > 0) {
-								// 保存pathsList
-								int addPathsListInt = pathsMapper.addPathsList(addPaths);
-								if (addPathsListInt <= 0) {
-									logger.info("pathsList保存失败所属流：flowId(" + flow.getId() + ")");
-								}
-							}
-						} else {
-							// 判断页面传的值是否为空，不为空则直接添加线，否则不操作
-							if (null != toPathsList && toPathsList.size() > 0) {
-								// 保存pathsList
-								int addPathsListInt = pathsMapper.addPathsList(toPathsList);
-								if (addPathsListInt <= 0) {
-									logger.info("pathsList保存失败所属流：flowId(" + flow.getId() + ")");
-								}
-							}
-						}
+                            } else {
+                                // 循环做逻辑删除操作
+                                for (Paths paths : pathsList) {
+                                    paths.setEnableFlag(false);
+                                    paths.setLastUpdateDttm(new Date());
+                                    paths.setLastUpdateUser("Nature");
+                                    paths.setVersion(paths.getVersion() + 1);
+                                    updatePaths.add(paths);
+                                }
+                            }
+                            if (null != updatePaths && updatePaths.size() > 0) {
+                                for (Paths paths : updatePaths) {
+                                    if (null != paths) {
+                                        pathsMapper.updatePaths(paths);
+                                    }
+                                }
+                            }
+                            if (null != addPaths && addPaths.size() > 0) {
+                                // 保存pathsList
+                                int addPathsListInt = pathsMapper.addPathsList(addPaths);
+                                if (addPathsListInt <= 0) {
+                                    logger.info("pathsList保存失败所属流：flowId(" + flow.getId() + ")");
+                                }
+                            }
+                        } else {
+                            // 判断页面传的值是否为空，不为空则直接添加线，否则不操作
+                            if (null != toPathsList && toPathsList.size() > 0) {
+                                // 保存pathsList
+                                int addPathsListInt = pathsMapper.addPathsList(toPathsList);
+                                if (addPathsListInt <= 0) {
+                                    logger.info("pathsList保存失败所属流：flowId(" + flow.getId() + ")");
+                                }
+                            }
+                        }
                         // 取stops的明显CellVoList
                         List<MxCellVo> objectStops = (ArrayList<MxCellVo>) stopsPathsMap.get("stops");
                         // 判断数据库中的Stops的list是否为空，不为空继续下边的判断操作，否则直接添加
@@ -793,7 +797,8 @@ public class FlowServiceImpl implements IFlowService {
     }
 
     /**
-	 * 区分stop和path
+     * 区分stop和path
+     *
      * @param root
      * @return 返回map中有stops和paths的Mxcell型的List(键为 ： paths和stops)
      */
@@ -833,19 +838,19 @@ public class FlowServiceImpl implements IFlowService {
      * @param flow
      * @return
      */
-	private List<Paths> mxCellListToPathsList(List<MxCellVo> objectPaths, Flow flow) {
-		List<Paths> pathsList = null;
-		if (null != objectPaths && objectPaths.size() > 0) {
-			pathsList = new ArrayList<Paths>();
-			// 循环objectPaths
-			for (MxCellVo mxCellVo : objectPaths) {
-				Paths paths = this.mxCellToPaths(mxCellVo);
-				if (null != paths) {
-					paths.setFlow(flow);
-					pathsList.add(paths);
-				}
-			}
-		}
+    private List<Paths> mxCellListToPathsList(List<MxCellVo> objectPaths, Flow flow) {
+        List<Paths> pathsList = null;
+        if (null != objectPaths && objectPaths.size() > 0) {
+            pathsList = new ArrayList<Paths>();
+            // 循环objectPaths
+            for (MxCellVo mxCellVo : objectPaths) {
+                Paths paths = this.mxCellToPaths(mxCellVo);
+                if (null != paths) {
+                    paths.setFlow(flow);
+                    pathsList.add(paths);
+                }
+            }
+        }
         return pathsList;
     }
 
@@ -855,9 +860,9 @@ public class FlowServiceImpl implements IFlowService {
      * @param mxCellVo
      * @return
      */
-	private Paths mxCellToPaths(MxCellVo mxCellVo) {
+    private Paths mxCellToPaths(MxCellVo mxCellVo) {
         Paths paths = null;
-		if (null != mxCellVo) {
+        if (null != mxCellVo) {
             paths = new Paths();
             paths.setId(Utils.getUUID32());
             paths.setCrtDttm(new Date());
@@ -866,8 +871,8 @@ public class FlowServiceImpl implements IFlowService {
             paths.setLastUpdateUser("-1");
             paths.setVersion(0L);
             paths.setEnableFlag(true);
-			paths.setFrom(mxCellVo.getSource());
-			paths.setTo(mxCellVo.getTarget());
+            paths.setFrom(mxCellVo.getSource());
+            paths.setTo(mxCellVo.getTarget());
             paths.setOutport("");
             paths.setInport("");
             paths.setPageId(mxCellVo.getPageId());
@@ -876,8 +881,8 @@ public class FlowServiceImpl implements IFlowService {
     }
 
     /**
-	 * 根据MxCellList中的内容生成stops的list
-	 * 
+     * 根据MxCellList中的内容生成stops的list
+     *
      * @param objectStops
      * @param flow
      * @return
@@ -899,7 +904,8 @@ public class FlowServiceImpl implements IFlowService {
     }
 
     /**
-	 * mxCell转stops
+     * mxCell转stops
+     *
      * @param mxCellVo
      * @return
      */
@@ -966,10 +972,9 @@ public class FlowServiceImpl implements IFlowService {
 
     /**
      * 根据stopsName查询stops
-	 *
+     *
      * @param stopsName
      * @return
-
      */
     private StopsTemplate getStopsTemplate(String stopsName) {
         StopsTemplate stopsTemplate = null;

@@ -25,7 +25,7 @@ public interface IPropertyService {
 	 * @param custom_value 
 	 * @return
 	 */
-	public int updateStops(String content,String id);
+	public int updateProperty(String content,String id);
 	
 	/**
 	 * query All StopsProperty List;

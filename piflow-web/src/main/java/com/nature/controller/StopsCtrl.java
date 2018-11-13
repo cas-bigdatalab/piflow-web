@@ -44,7 +44,7 @@ public class StopsCtrl {
 			if (null != split && split.length == 2) {
 				String updateContent = split[0];
 				String updateId = split[1];
-				updateStops = propertyServiceImpl.updateStops(updateContent,updateId);
+				updateStops = propertyServiceImpl.updateProperty(updateContent,updateId);
 			}
 		}
 		return updateStops;
@@ -52,7 +52,7 @@ public class StopsCtrl {
 	
 	@RequestMapping("/updateStopsOne")
 	public Integer updateStops(String content,String id){
-		int updateStops = propertyServiceImpl.updateStops(content,id);
+		int updateStops = propertyServiceImpl.updateProperty(content,id);
 		return updateStops;
 		
 	}

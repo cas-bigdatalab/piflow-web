@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.nature.component.workFlow.service.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +26,6 @@ import com.nature.component.mxGraph.vo.MxGraphModelVo;
 import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.model.FlowInfoDb;
 import com.nature.component.workFlow.model.StopGroup;
-import com.nature.component.workFlow.service.IFlowService;
-import com.nature.component.workFlow.service.IPathsService;
-import com.nature.component.workFlow.service.IStopGroupService;
-import com.nature.component.workFlow.service.IStopsService;
 import com.nature.component.workFlow.vo.PathsVo;
 import com.nature.component.workFlow.vo.PropertyVo;
 import com.nature.component.workFlow.vo.StopsVo;
@@ -57,6 +54,9 @@ public class GrapheditorCtrl {
 
     @Autowired
     private IPathsService pathsServiceImpl;
+
+    @Autowired
+    private IPropertyService propertyServiceImpl;
 
     @Autowired
     private GetGroupsAndStops getGroupsAndStops;
@@ -586,19 +586,80 @@ public class GrapheditorCtrl {
         String pathLineId = request.getParameter("pathLineId");
         // sourceOut
         String sourcePortVal = request.getParameter("sourcePortVal");
+        //output 的stop的PageId
+        String sourceId = request.getParameter("sourceId");
+        //input 的stop的PageId
+        String targetId = request.getParameter("targetId");
         // targetIn
         String targetPortVal = request.getParameter("targetPortVal");
-        if (StringUtils.isAnyEmpty(flowId, pathLineId)) {
+        if (StringUtils.isAnyEmpty(flowId, pathLineId, sourceId, targetId)) {
             rtnMap.put("errMsg", "传入参数有空的");
             logger.info("传入参数有空的");
             return JsonUtils.toJsonNoException(rtnMap);
         } else {
+            StopsVo sourceStop = null;
+            StopsVo targetStop = null;
+            List<StopsVo> queryInfoList = stopsServiceImpl.getStopsByFlowIdAndPageIds(flowId, new String[]{sourceId, targetId});
+            // 如果queryInfoList为空，或者queryInfoList的size小于2则直接返回
+            if (null == queryInfoList || queryInfoList.size() < 2) {
+                rtnMap.put("errMsg", "没有查询到source或target");
+                return JsonUtils.toJsonNoException(rtnMap);
+            } else {
+                //循环取出sourceStop和targetStop
+                for (StopsVo stopVo : queryInfoList) {
+                    if (null != stopVo) {
+                        if (sourceId.equals(stopVo.getPageId())) {
+                            sourceStop = stopVo;
+                        } else if (targetId.equals(stopVo.getPageId())) {
+                            targetStop = stopVo;
+                        }
+                    }
+                }
+            }
             PathsVo currentPaths = pathsServiceImpl.getPathsByFlowIdAndPageId(flowId, pathLineId);
             if (StringUtils.isNotBlank(sourcePortVal)) {
                 currentPaths.setOutport(sourcePortVal);
+                if (null != sourceStop && PortType.ANY == sourceStop.getOutPortType()) {
+                    List<PropertyVo> propertyVoList = sourceStop.getPropertiesVo();
+                    String outports = null;
+                    PropertyVo sourcePropertyVo = null;
+                    for (PropertyVo propertyVo : propertyVoList) {
+                        if ("outports".equals(propertyVo.getName())) {
+                            sourcePropertyVo = propertyVo;
+                            break;
+                        }
+                    }
+                    if(null!=sourcePropertyVo){
+                        if (null == sourcePropertyVo.getCustomValue()) {
+                            outports = "";
+                        }else{
+                            outports = sourcePropertyVo.getCustomValue();
+                        }
+                        propertyServiceImpl.updateProperty((outports + sourcePortVal),sourcePropertyVo.getId());
+                    }
+                }
             }
             if (StringUtils.isNotBlank(targetPortVal)) {
                 currentPaths.setInport(targetPortVal);
+                if (null != targetStop && PortType.ANY == targetStop.getInPortType()) {
+                    String inports = null;
+                    PropertyVo targetPropertyVo = null;
+                    List<PropertyVo> propertyVoList = targetStop.getPropertiesVo();
+                    for (PropertyVo propertyVo : propertyVoList) {
+                        if ("inports".equals(propertyVo.getName())) {
+                            targetPropertyVo = propertyVo;
+                            break;
+                        }
+                    }
+                    if(null!=targetPropertyVo){
+                        if (null == targetPropertyVo.getCustomValue()) {
+                            inports = "";
+                        }else{
+                            inports = targetPropertyVo.getCustomValue();
+                        }
+                        propertyServiceImpl.updateProperty((inports + targetPortVal),targetPropertyVo.getId());
+                    }
+                }
             }
             int i = pathsServiceImpl.upDatePathsVo(currentPaths);
             if (i <= 0) {

@@ -14,6 +14,8 @@ public class PropertyVo implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	private String id;
+
 	private StopsVo stopsVo;
 
 	private String name;
@@ -29,6 +31,14 @@ public class PropertyVo implements Serializable {
 	private Boolean required;
 
 	private Boolean sensitive;
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
 
 	public StopsVo getStopsVo() {
 		return stopsVo;

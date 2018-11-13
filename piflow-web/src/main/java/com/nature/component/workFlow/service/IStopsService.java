@@ -18,4 +18,12 @@ public interface IStopsService {
 	 */
 	public List<StopsVo> getStopsByFlowIdAndPageIds(String flowId, String[] pageIds);
 
+	/**
+	 * 修改stop
+	 *
+	 * @param stopsVo
+	 * @return
+	 */
+	public Integer stopsUpdate(StopsVo stopsVo);
+
 }

@@ -72,15 +72,16 @@ public class PathsServiceImpl implements IPathsService {
 
     @Override
     public int upDatePathsVo(PathsVo pathsVo) {
-
-        Paths pathsById = pathsMapper.getPathsById(pathsVo.getId());
-        if (null != pathsById) {
-            BeanUtils.copyProperties(pathsVo, pathsById);
-            pathsById.setVersion(pathsById.getVersion()+1);
-            pathsById.setLastUpdateDttm(new Date());
-            pathsById.setLastUpdateUser("-1");
-            int i = pathsMapper.updatePaths(pathsById);
-            return i;
+        if (null != pathsVo) {
+            Paths pathsById = pathsMapper.getPathsById(pathsVo.getId());
+            if (null != pathsById) {
+                BeanUtils.copyProperties(pathsVo, pathsById);
+                pathsById.setVersion(pathsById.getVersion() + 1);
+                pathsById.setLastUpdateDttm(new Date());
+                pathsById.setLastUpdateUser("-1");
+                int i = pathsMapper.updatePaths(pathsById);
+                return i;
+            }
         }
         return 0;
     }

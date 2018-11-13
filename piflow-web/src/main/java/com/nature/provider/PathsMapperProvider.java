@@ -326,6 +326,7 @@ public class PathsMapperProvider {
             sql.FROM("flow_path");
             sql.WHERE("enable_flag = 1");
             sql.WHERE("id=" + Utils.addSqlStr(id));
+            sqlStr = sql.toString() + ";";
         }
         return sqlStr;
     }

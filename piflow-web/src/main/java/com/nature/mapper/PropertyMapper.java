@@ -42,7 +42,7 @@ public interface PropertyMapper {
 	 * Modify stops attribute information
 	 */
 	@Update("update flow_stops_property set custom_value = #{custom_value},version = version+1 where id = #{id}")
-	public int updateStops(@Param("custom_value") String content, @Param("id") String id);
+	public int updateProperty(@Param("custom_value") String content, @Param("id") String id);
 	
 	
 	/**

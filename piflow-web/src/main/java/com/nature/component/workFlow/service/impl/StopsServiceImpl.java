@@ -5,9 +5,11 @@ import com.nature.component.workFlow.service.IStopsService;
 import com.nature.component.workFlow.utils.StopsUtil;
 import com.nature.component.workFlow.vo.StopsVo;
 import com.nature.mapper.StopsMapper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -33,6 +35,22 @@ public class StopsServiceImpl implements IStopsService {
         List<Stops> stopsList = stopsMapper.getStopsListByFlowIdAndPageIds(flowId, pageIds);
         List<StopsVo> stopsVoList = StopsUtil.stopsListPoToVo(stopsList);
         return stopsVoList;
+    }
+
+    @Override
+    public Integer stopsUpdate(StopsVo stopsVo) {
+            if (null != stopsVo) {
+            Stops stopsById = stopsMapper.getStopsById(stopsVo.getId());
+            if (null != stopsById) {
+                BeanUtils.copyProperties(stopsVo, stopsById);
+                stopsById.setVersion(stopsById.getVersion() + 1);
+                stopsById.setLastUpdateDttm(new Date());
+                stopsById.setLastUpdateUser("-1");
+                int i = stopsMapper.updateStops(stopsById);
+                return i;
+            }
+        }
+        return 0;
     }
 
 }
