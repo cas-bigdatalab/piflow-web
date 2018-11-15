@@ -43,7 +43,7 @@ public class PropertyServiceImpl implements IPropertyService {
 
 	@Override
 	public int updateProperty(String content,String id) {
-		return propertyMapper.updateProperty(content,id);
+		return propertyMapper.updatePropertyCustomValue(content,id);
 	}
 
 	@Override

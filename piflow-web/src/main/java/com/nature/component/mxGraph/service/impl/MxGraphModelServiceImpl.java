@@ -2,6 +2,7 @@ package com.nature.component.mxGraph.service.impl;
 
 import java.util.List;
 
+import com.nature.base.util.StatefulRtnBaseUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,25 +46,16 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
 						mxCell.setMxGeometry(mxGeometry);
 						int addMxCell = mxCellMapper.addMxCell(mxCell);
 						if (addMxCell <= 0) {
-							statefulRtnBase = setStatefulRtnBase("MxCell保存失败");
+							statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("MxCell保存失败");
 						}
 					} else {
-						statefulRtnBase = setStatefulRtnBase("MxGraphModel保存失败");
+						statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("MxGraphModel保存失败");
 					}
 				}
 			}
 		} else {
-			statefulRtnBase = setStatefulRtnBase("MxGraphModel保存失败");
+			statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("MxGraphModel保存失败");
 		}
-		return statefulRtnBase;
-	}
-
-	private StatefulRtnBase setStatefulRtnBase(String errMsg) {
-		StatefulRtnBase statefulRtnBase = new StatefulRtnBase();
-		logger.info(errMsg);
-		statefulRtnBase.setReqRtnStatus(false);
-		statefulRtnBase.setErrorCode(statefulRtnBase.ERRCODE_FAIL);
-		statefulRtnBase.setErrorMsg(errMsg);
 		return statefulRtnBase;
 	}
 

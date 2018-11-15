@@ -1,5 +1,6 @@
 package com.nature.controller;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,14 +71,16 @@ public class GrapheditorCtrl {
      */
     @RequestMapping("/home")
     public String kitchenSink(Model model, String load) {
-        // 判斷是否存在Flow的id(load),如果存在則加載，否則生成UUID返回返回頁面
+        // 判断是否存在Flow的id(load),如果存在則加载，否則生成UUID返回返回页面
         if (StringUtils.isNotBlank(load)) {
-            // 左側的組和stops
-            List<StopGroup> groupsList = stopGroupServiceImpl.getStopGroupAll();
-            model.addAttribute("groupsList", groupsList);
+            // 根据加载id进行查询
             Flow flowById = flowServiceImpl.getFlowById(load);
-            MxGraphModelVo mxGraphModelVo = null;
             if (null != flowById) {
+                // 左侧的组和stops
+                List<StopGroup> groupsList = stopGroupServiceImpl.getStopGroupAll();
+                model.addAttribute("groupsList", groupsList);
+
+                MxGraphModelVo mxGraphModelVo = null;
                 FlowInfoDb appVo = flowById.getAppId();
                 if (null != appVo) {
                     String appId = appVo.getId();
@@ -87,17 +90,42 @@ public class GrapheditorCtrl {
                 }
                 MxGraphModel mxGraphModel = flowById.getMxGraphModel();
                 mxGraphModelVo = FlowXmlUtils.mxGraphModelPoToVo(mxGraphModel);
+                // 把查询出來的mxGraphModelVo转为XML
+                String loadXml = FlowXmlUtils.mxGraphModelToXml(mxGraphModelVo);
+                model.addAttribute("xmlDate", loadXml);
+                model.addAttribute("load", load);
+                return "grapheditor/index";
+            } else {
+                return "errorPage";
             }
-            // 把查詢出來的mxGraphModelVo轉爲XML
-            String loadXml = FlowXmlUtils.mxGraphModelToXml(mxGraphModelVo);
-            model.addAttribute("xmlDate", loadXml);
-            model.addAttribute("load", load);
         } else {
             // 生成32位UUID
             load = Utils.getUUID32();
-            return "redirect:/grapheditor/home?load=" + load;
+            Flow flow = new Flow();
+            flow.setId(load);
+            flow.setCrtDttm(new Date());
+            flow.setCrtUser("Add");
+            flow.setLastUpdateDttm(new Date());
+            flow.setLastUpdateUser("Add");
+            flow.setEnableFlag(true);
+            flow.setVersion(0L);
+            flow.setName("default");
+            MxGraphModel mxGraphModel = new MxGraphModel();
+            mxGraphModel.setId(load);
+            mxGraphModel.setCrtDttm(new Date());
+            mxGraphModel.setCrtUser("Add");
+            mxGraphModel.setLastUpdateDttm(new Date());
+            mxGraphModel.setLastUpdateUser("Add");
+            mxGraphModel.setEnableFlag(true);
+            mxGraphModel.setVersion(0L);
+            flow.setMxGraphModel(mxGraphModel);
+            int addFlow = flowServiceImpl.addFlow(flow);
+            if (addFlow > 0) {
+                return "redirect:/grapheditor/home?load=" + load;
+            } else {
+                return "errorPage";
+            }
         }
-        return "grapheditor/index";
     }
 
     @RequestMapping("/open")
@@ -116,19 +144,31 @@ public class GrapheditorCtrl {
     @RequestMapping("/saveData")
     @ResponseBody
     public String saveData(HttpServletRequest request, Model model) {
-        String rtnStr = "0";
+        Map<String, String> rtnMap = new HashMap<String, String>();
+        rtnMap.put("code", "0");
         String imageXML = request.getParameter("imageXML");
         String loadId = request.getParameter("load");
-        if (StringUtils.isNotBlank(imageXML) && StringUtils.isNotBlank(loadId)) {
+        String operType = request.getParameter("operType");
+        if (StringUtils.isAnyEmpty(imageXML, loadId, operType)) {
+            rtnMap.put("errMsg", "传入参数有空的");
+            logger.info("传入参数有空的");
+            return JsonUtils.toJsonNoException(rtnMap);
+        } else {
             // 把页面传來的XML转为mxGraphModel
             MxGraphModelVo xmlToMxGraphModel = FlowXmlUtils.xmlToMxGraphModel(imageXML);
-            StatefulRtnBase addFlow = flowServiceImpl.saveOrUpdateFlowAll(xmlToMxGraphModel, loadId);
+            StatefulRtnBase addFlow = flowServiceImpl.saveOrUpdateFlowAll(xmlToMxGraphModel, loadId, operType);
             // addFlow不为空且ReqRtnStatus的值为true,则保存成功
             if (null != addFlow && addFlow.isReqRtnStatus()) {
-                rtnStr = "1";
+                rtnMap.put("code", "1");
+                rtnMap.put("errMsg", "保存成功");
+                logger.info("传入参数有空的");
+            } else {
+                rtnMap.put("errMsg", "保存失败");
+                logger.info("保存失败");
             }
+            return JsonUtils.toJsonNoException(rtnMap);
         }
-        return rtnStr;
+
     }
 
     /**
@@ -542,7 +582,7 @@ public class GrapheditorCtrl {
                 } else {
                     // 把查到已使用的端口put进map
                     for (PathsVo pathsVo : usedPathsList) {
-                        if (null != pathsVo && StringUtils.isNotBlank(pathsVo.getOutport())) {
+                        if (null != pathsVo && StringUtils.isNotBlank(pathsVo.getInport())) {
                             if (currentPathsId.equals(pathsVo.getId())) {
                                 portUsageMap.put(pathsVo.getInport(), true);
                             } else {
@@ -574,6 +614,12 @@ public class GrapheditorCtrl {
         return portUsageMap;
     }
 
+    /**
+     * 保存用户选择的端口
+     *
+     * @param request
+     * @return
+     */
     @RequestMapping("/savePathsPort")
     @ResponseBody
     public String savePathsPort(HttpServletRequest request) {
@@ -619,47 +665,11 @@ public class GrapheditorCtrl {
             PathsVo currentPaths = pathsServiceImpl.getPathsByFlowIdAndPageId(flowId, pathLineId);
             if (StringUtils.isNotBlank(sourcePortVal)) {
                 currentPaths.setOutport(sourcePortVal);
-                if (null != sourceStop && PortType.ANY == sourceStop.getOutPortType()) {
-                    List<PropertyVo> propertyVoList = sourceStop.getPropertiesVo();
-                    String outports = null;
-                    PropertyVo sourcePropertyVo = null;
-                    for (PropertyVo propertyVo : propertyVoList) {
-                        if ("outports".equals(propertyVo.getName())) {
-                            sourcePropertyVo = propertyVo;
-                            break;
-                        }
-                    }
-                    if(null!=sourcePropertyVo){
-                        if (null == sourcePropertyVo.getCustomValue()) {
-                            outports = "";
-                        }else{
-                            outports = sourcePropertyVo.getCustomValue();
-                        }
-                        propertyServiceImpl.updateProperty((outports + sourcePortVal),sourcePropertyVo.getId());
-                    }
-                }
+                updatePropertyBypaths(sourcePortVal, sourceStop, "outports");
             }
             if (StringUtils.isNotBlank(targetPortVal)) {
                 currentPaths.setInport(targetPortVal);
-                if (null != targetStop && PortType.ANY == targetStop.getInPortType()) {
-                    String inports = null;
-                    PropertyVo targetPropertyVo = null;
-                    List<PropertyVo> propertyVoList = targetStop.getPropertiesVo();
-                    for (PropertyVo propertyVo : propertyVoList) {
-                        if ("inports".equals(propertyVo.getName())) {
-                            targetPropertyVo = propertyVo;
-                            break;
-                        }
-                    }
-                    if(null!=targetPropertyVo){
-                        if (null == targetPropertyVo.getCustomValue()) {
-                            inports = "";
-                        }else{
-                            inports = targetPropertyVo.getCustomValue();
-                        }
-                        propertyServiceImpl.updateProperty((inports + targetPortVal),targetPropertyVo.getId());
-                    }
-                }
+                updatePropertyBypaths(targetPortVal, targetStop, "inports");
             }
             int i = pathsServiceImpl.upDatePathsVo(currentPaths);
             if (i <= 0) {
@@ -673,5 +683,41 @@ public class GrapheditorCtrl {
         }
 
 
+    }
+
+    /**
+     * 根据paths的端口信息，修改端口类型为any的端口属性值
+     *
+     * @param sourcePortVal
+     * @param stopsVo
+     * @param propertyName
+     */
+    private void updatePropertyBypaths(String sourcePortVal, StopsVo stopsVo, String propertyName) {
+        if (null != stopsVo) {
+            if (PortType.ANY == stopsVo.getInPortType()||PortType.ANY == stopsVo.getOutPortType()) {
+                List<PropertyVo> propertyVoList = stopsVo.getPropertiesVo();
+                if (null != propertyVoList && propertyVoList.size() > 0) {
+                    String ports = null;
+                    PropertyVo propertyVoSave = null;
+                    for (PropertyVo propertyVo : propertyVoList) {
+                        if (propertyName.equals(propertyVo.getName())) {
+                            propertyVoSave = propertyVo;
+                            break;
+                        }
+                    }
+                    if (null != propertyVoSave) {
+                        if (null == propertyVoSave.getCustomValue()) {
+                            ports = "";
+                        } else {
+                            ports = propertyVoSave.getCustomValue();
+                        }
+                        if (StringUtils.isNotBlank(ports)) {
+                            ports = ports + ",";
+                        }
+                        propertyServiceImpl.updateProperty((ports + sourcePortVal), propertyVoSave.getId());
+                    }
+                }
+            }
+        }
     }
 }

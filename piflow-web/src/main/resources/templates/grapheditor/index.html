@@ -223,7 +223,7 @@
                 displayName.setAttribute('onblur', 'shiqu("' + data[y].id + '","' + data[y].displayName + '")');
                 displayName.style.width = "210px";
                 displayName.style.resize = "none";
-                displayName.innerHTML = '' + customValue + '';
+                displayName.innerHTML = '' + customValue + '';
                 var spanDisplayName = 'span' + data[y].displayName;
                 var spanDisplayName = document.createElement('span');
                 var spanFlag = document.createElement('span');
@@ -294,7 +294,8 @@
         }
     }
 
-    function addCellsCustom(cells) {
+    // 添加操作处理
+    function addCellsCustom(cells, operType) {
         var removePaths = [];
         var paths = [];
         for (var i = 0; i < cells.length; i++) {
@@ -311,12 +312,12 @@
         }
         graphGlobal.removeCells(removePaths);
         if (cells.length != removePaths.length) {
-            saveXml(paths);
+            saveXml(paths, operType);
         }
     }
 
-    //保存xml文件
-    function saveXml(paths) {
+    //保存xml文件和相关信息
+    function saveXml(paths, operType) {
         var getXml = thisEditor.getGraphXml();
         var sssss = getXml.outerHTML;
         //var waitxml = encodeURIComponent(getXml.outerHTML);//这就是要提交到后台的xml代码
@@ -326,16 +327,29 @@
             type: "POST",//为post请求
             url: "/piflow-web/grapheditor/saveData",//这是我在后台接受数据的文件名
             //data:$('#loginForm').serialize(),//将该表单序列化
-            data: {imageXML: sssss, load: loadId},
+            data: {
+                imageXML: sssss,
+                load: loadId,
+                operType: operType
+            },
             async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
             error: function (request) {//请求失败之后的操作
                 return;
             },
             success: function (data) {//请求成功之后的操作
-                console.log("success");
-                thisEditor.setModified(false);
-                //获取port
-                getStopsPort(paths);
+                var dataMap = JSON.parse(data);
+                if (0 !== dataMap.code) {
+                    console.log(operType + " save success");
+                    thisEditor.setModified(false);
+                    if (operType && '' !== operType) {
+                        //获取port
+                        getStopsPort(paths);
+                    }
+                } else {
+                    alert(operType + " save fail");
+                    console.log(operType + " save fail");
+                    fullScreen.hide();
+                }
             }
         });
     }
@@ -572,10 +586,12 @@
             success: function (data) {
                 var dataMap = JSON.parse(data);
                 if (0 !== dataMap.code) {
-                    if ('STARTED' === dataMap.state || dataMap.progress === 100) {
-                        window.clearInterval(timer);
+                    if (dataMap.state && "" !== dataMap.state) {
+                        if ('STARTED' !== dataMap.state || dataMap.progress === 100) {
+                            window.clearInterval(timer);
+                        }
                     }
-                    document.getElementById("progress").innerHTML = "进度" + dataMap.progress + "%";
+                    document.getElementById("progress").innerHTML = ":" + dataMap.progress + "%";
                 }
             }
         });
@@ -710,40 +726,64 @@
         if (1 === paths) {
             var sourcePortVal = '';
             var targetPortVal = '';
-            if ($("#sourceTitleCheckbox").find("input[type='checkbox']").length > 0) {
-                if ($("#sourceTitleCheckbox").find("input[type='checkbox']:checked").length > 1) {
-                    alert("sourcePort只能选一个");
-                    return false;
-                }
-                if ($("#sourceTitleCheckbox input:checked:checked").length < 1) {
-                    alert("请选择sourcePort");
-                    return false;
-                }
+            var sourceTitle = $('#sourceTitle');
+            var targetTitle = $("#targetTitle");
+            if (!sourceTitle && !targetTitle) {
+                alert("页面报错，请检查！");
+                return false;
             }
-            if ($("#targetTitleCheckbox").find("input[type='checkbox']").length > 0) {
-                if ($("#targetTitleCheckbox").find("input[type='checkbox']:checked").length > 1) {
-                    alert("targetPort只能选一个");
-                    return false;
+            var sourceTitleCheckbox = $('#sourceTitleCheckbox');
+            var targetTitleCheckbox = $("#targetTitleCheckbox");
+            if (targetTitleCheckbox) {
+                var sourceDivDisplay = sourceTitle.css('display');
+                if (sourceDivDisplay == 'none') {
+                    alert("被你发现了，我是隐藏的啦！");
+                } else {
+                    if (sourceTitleCheckbox.find("input[type='checkbox']:checked").length > 1) {
+                        alert("sourcePort只能选一个");
+                        return false;
+                    }
+                    if (sourceTitleCheckbox.find("input[type='checkbox']:checked").length < 1) {
+                        alert("请选择sourcePort");
+                        return false;
+                    }
+                    sourceTitleCheckbox.find("input[type='checkbox']:checked").each(function () {
+                        if ('' === sourcePortVal) {
+                            sourcePortVal = $(this).val();
+                        } else {
+                            sourcePortVal = sourcePortVal + "," + $(this).val();
+                        }
+                    });
                 }
-                if ($("#targetTitleCheckbox").find("input[type='checkbox']:checked").length < 1) {
-                    alert("请选择targetPort");
-                    return false;
-                }
+            } else {
+                alert("页面报错，请检查！");
+                return false;
             }
-            $("#sourceTitleCheckbox").find("input[type='checkbox']:checked").each(function () {
-                if(''===sourcePortVal){
-                    sourcePortVal = $(this).val();
-                }else{
-                    sourcePortVal = sourcePortVal + "," + $(this).val();
+            if (targetTitleCheckbox) {
+                var targetDivDisplay = targetTitle.css('display');
+                if (targetDivDisplay == 'none') {
+                    alert("被你发现了，我是隐藏的啦！");
+                } else {
+                    if (targetTitleCheckbox.find("input[type='checkbox']:checked").length > 1) {
+                        alert("targetPort只能选一个");
+                        return false;
+                    }
+                    if (targetTitleCheckbox.find("input[type='checkbox']:checked").length < 1) {
+                        alert("请选择targetPort");
+                        return false;
+                    }
+                    targetTitleCheckbox.find("input[type='checkbox']:checked").each(function () {
+                        if ('' === targetPortVal) {
+                            targetPortVal = $(this).val();
+                        } else {
+                            targetPortVal = targetPortVal + "," + $(this).val();
+                        }
+                    });
                 }
-            });
-            $("#targetTitleCheckbox").find("input[type='checkbox']:checked").each(function () {
-                if(''===targetPortVal){
-                    targetPortVal = $(this).val();
-                }else{
-                    targetPortVal = targetPortVal + "," + $(this).val();
-                }
-            });
+            } else {
+                alert("页面报错，请检查！");
+                return false;
+            }
             if (pathsCells.length > 1) {
                 graphGlobal.removeCells(pathsCells);
             } else {
@@ -804,22 +844,26 @@
     function crtAnyPort(crtProtInputId, isSource) {
         var crtProtInput = $('#' + crtProtInputId);
         var portNameVal = crtProtInput.val();
-        if (!document.getElementById(portNameVal)) {
-            $('#copyDivCheckbox').show();
-            var obj = $('#copyDivCheckbox').clone();
-            $(obj).removeAttr("id");
-            $(obj).attr('class', 'addCheckbox').attr('id', portNameVal + 'Checkbox');
-            $(obj).find('input').attr('class', 'addCheckbox').attr('id', portNameVal).attr('name', portNameVal).attr('value', portNameVal);
-            $(obj).find('span').attr('class', 'addCheckbox').attr('class', portNameVal);
-            if (isSource) {
-                $('#sourceTitleCheckbox').append(obj);
+        if (portNameVal && '' !== portNameVal) {
+            if (!document.getElementById(portNameVal)) {
+                $('#copyDivCheckbox').show();
+                var obj = $('#copyDivCheckbox').clone();
+                $(obj).removeAttr("id");
+                $(obj).attr('class', 'addCheckbox').attr('id', portNameVal + 'Checkbox');
+                $(obj).find('input').attr('class', 'addCheckbox').attr('id', portNameVal).attr('name', portNameVal).attr('value', portNameVal);
+                $(obj).find('span').attr('class', 'addCheckbox').attr('class', portNameVal);
+                if (isSource) {
+                    $('#sourceTitleCheckbox').append(obj);
+                } else {
+                    $('#targetTitleCheckbox').append(obj);
+                }
+                $('.' + portNameVal).text(portNameVal);
+                $('#copyDivCheckbox').hide();
             } else {
-                $('#targetTitleCheckbox').append(obj);
+                alert("端口名称被占用！！");
             }
-            $('.' + portNameVal).text(portNameVal);
-            $('#copyDivCheckbox').hide();
         } else {
-            alert("端口名称被占用！！");
+            alert("端口名不能为空");
         }
     }
 

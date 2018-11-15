@@ -31,9 +31,6 @@ public class Paths extends BaseHibernateModelUUIDNoCorpAgentId {
 	@Column(name = "LINE_TO")
 	private String to;
 
-	@Column(name = "LINE_PORT")
-	private String port;
-
 	@Column(name = "page_id")
 	private String pageId;
 
@@ -75,14 +72,6 @@ public class Paths extends BaseHibernateModelUUIDNoCorpAgentId {
 
 	public void setTo(String to) {
 		this.to = to;
-	}
-
-	public String getPort() {
-		return port;
-	}
-
-	public void setPort(String port) {
-		this.port = port;
 	}
 
 	public String getPageId() {

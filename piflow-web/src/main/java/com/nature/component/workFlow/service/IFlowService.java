@@ -9,15 +9,15 @@ import org.springframework.data.annotation.Transient;
 
 public interface IFlowService {
 	/**
-	 * @Title 向数据库添加或修改flow
+	 * 向数据库修改或添加flow中stops和paths信息
 	 * 
 	 * @param mxGraphModelVo
 	 * @param flowId
-	 * @param isAdd
+	 * @param operType 操作类型（添加，移动，删除）
 	 * @return
 	 */
 	@Transient
-	public StatefulRtnBase saveOrUpdateFlowAll(MxGraphModelVo mxGraphModelVo, String flowId);
+	public StatefulRtnBase saveOrUpdateFlowAll(MxGraphModelVo mxGraphModelVo, String flowId,String operType);
 
 	/**
 	 * 根据id查询流信息
@@ -38,7 +38,7 @@ public interface IFlowService {
 	public FlowVo getFlowVoById(String id);
 
 	/**
-	 * @Title 保存appId
+	 * 保存appId
 	 * 
 	 * @param flowId
 	 * @param startFlow
@@ -48,7 +48,7 @@ public interface IFlowService {
 	public StatefulRtnBase saveAppId(String flowId, FlowInfoDb startFlow);
 	
 	/**
-	 * add flow
+	 * add flow(包含画板信息)
 	 * @param flow
 	 * @return
 	 */

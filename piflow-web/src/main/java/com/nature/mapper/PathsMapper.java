@@ -17,8 +17,8 @@ import com.nature.provider.PathsMapperProvider;
 @Mapper
 public interface PathsMapper {
     /**
-	 * 插入list<Paths> 注意拼sql的方法必须用map接 Param内容为键值
-	 * 
+     * 插入list<Paths> 注意拼sql的方法必须用map接 Param内容为键值
+     *
      * @param pathsList
      * @return
      */
@@ -26,7 +26,8 @@ public interface PathsMapper {
     public int addPathsList(@Param("pathsList") List<Paths> pathsList);
 
     /**
-	 * 修改paths
+     * 修改paths
+     *
      * @param paths
      * @return
      */
@@ -35,18 +36,16 @@ public interface PathsMapper {
 
     /**
      * 根据flowId查询
+     *
      * @param flowId
      * @return
      */
     @SelectProvider(type = PathsMapperProvider.class, method = "getPathsListByFlowId")
     @Results({
-
             @Result(column = "LINE_FROM", property = "from"),
             @Result(column = "LINE_TO", property = "to"),
             @Result(column = "LINE_OUTPORT", property = "outport"),
-            @Result(column = "LINE_INPORT", property = "inport"),
-            @Result(column = "LINE_PORT", property = "port")
-
+            @Result(column = "LINE_INPORT", property = "inport")
     })
     public List<Paths> getPathsListByFlowId(String flowId);
 

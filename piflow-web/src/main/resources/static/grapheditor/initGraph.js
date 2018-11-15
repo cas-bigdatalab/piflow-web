@@ -30,13 +30,13 @@ var sign = true;
         //监控事件
         graphGlobal.addListener(mxEvent.CELLS_ADDED, function(sender, evt) {
             var cells = evt.properties.cells;
-            addCellsCustom(cells);
+            addCellsCustom(cells,'ADD');
         });
         graphGlobal.addListener(mxEvent.CELLS_MOVED, function(sender, evt) {
-            saveXml();
+            saveXml(null,'MOVED');
         });
         graphGlobal.addListener(mxEvent.CELLS_REMOVED, function(sender, evt) {
-            saveXml();
+            saveXml(null,'REMOVED');
         });
         graphGlobal.addListener(mxEvent.CLICK, function(sender, evt) {
             findBasicInfo(evt);

@@ -14,15 +14,15 @@ import com.nature.component.workFlow.model.Stops;
 
 public class PropertyMapperProvider {
 
-	/**
-	 * @Title 插入list<Property> 注意拼sql的方法必须用map接 Param内容为键值
+    /**
+	 * 插入list<Property> 注意拼sql的方法必须用map接 Param内容为键值
 	 * 
-	 * @param map (内容： 键为propertyList,值为List<Property>)
-	 * @return
-	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public String addPropertyList(Map map) {
-		List<Property> propertyList = (List<Property>) map.get("propertyList");
+     * @param map (内容： 键为propertyList,值为List<Property>)
+     * @return
+     */
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public String addPropertyList(Map map) {
+        List<Property> propertyList = (List<Property>) map.get("propertyList");
         StringBuffer sqlStrBuffer = new StringBuffer();
         if (null != propertyList && propertyList.size() > 0) {
             sqlStrBuffer.append("insert into ");
@@ -88,14 +88,13 @@ public class PropertyMapperProvider {
             }
             sqlStrBuffer.append(";");
         }
-		String sqlStr = sqlStrBuffer.toString();
-		return sqlStr;
-	}
-	
-	/**
-     * @Title 修改Property
-     *
-     * @param flow
+        String sqlStr = sqlStrBuffer.toString();
+        return sqlStr;
+    }
+
+    /**
+     * 修改Property
+     * @param property
      * @return
      */
     public String updateStopsProperty(Property property) {
@@ -126,7 +125,7 @@ public class PropertyMapperProvider {
                     sql.SET("LAST_UPDATE_DTTM = " + Utils.addSqlStr(lastUpdateDttmStr));
                 }
             }
-            if (StringUtils.isNotBlank(lastUpdateUser)) {
+            if (null != lastUpdateUser) {
                 sql.SET("LAST_UPDATE_USER = " + Utils.addSqlStr(lastUpdateUser));
             }
             if (null != version && StringUtils.isNotBlank(version.toString())) {
@@ -136,19 +135,19 @@ public class PropertyMapperProvider {
                 int enableFlagInt = enableFlag ? 1 : 0;
                 sql.SET("ENABLE_FLAG = " + enableFlagInt);
             }
-            if (StringUtils.isNotBlank(description)) {
+            if (null != description) {
                 sql.SET("description = " + Utils.addSqlStr(Utils.replaceString(description)));
             }
-            if (StringUtils.isNotBlank(name)) {
+            if (null != name) {
                 sql.SET("NAME = " + Utils.addSqlStr(Utils.replaceString(name)));
             }
-            if (StringUtils.isNotBlank(allowable_values)) {
+            if (null != allowable_values) {
                 sql.SET("allowable_values = " + Utils.addSqlStr(allowable_values));
             }
-            if (StringUtils.isNotBlank(custom_value)) {
+            if (null != custom_value) {
                 sql.SET("custom_value = " + Utils.addSqlStr(custom_value));
             }
-            if (StringUtils.isNotBlank(display_name)) {
+            if (null != display_name) {
                 sql.SET("display_name = " + Utils.addSqlStr(display_name));
             }
             if (null != required) {
@@ -173,5 +172,5 @@ public class PropertyMapperProvider {
         }
         return sqlStr;
     }
-    
+
 }
