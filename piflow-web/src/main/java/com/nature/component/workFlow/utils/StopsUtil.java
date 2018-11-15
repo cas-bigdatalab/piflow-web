@@ -1,19 +1,14 @@
 package com.nature.component.workFlow.utils;
 
-import com.nature.component.mxGraph.model.MxCell;
-import com.nature.component.mxGraph.model.MxGeometry;
-import com.nature.component.mxGraph.model.MxGraphModel;
-import com.nature.component.mxGraph.vo.MxCellVo;
-import com.nature.component.mxGraph.vo.MxGeometryVo;
-import com.nature.component.mxGraph.vo.MxGraphModelVo;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.BeanUtils;
+
 import com.nature.component.workFlow.model.Property;
 import com.nature.component.workFlow.model.Stops;
 import com.nature.component.workFlow.vo.PropertyVo;
 import com.nature.component.workFlow.vo.StopsVo;
-import org.springframework.beans.BeanUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class StopsUtil {
     /**

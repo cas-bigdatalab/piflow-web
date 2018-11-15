@@ -31,6 +31,9 @@ var sign = true;
         graphGlobal.addListener(mxEvent.CELLS_ADDED, function(sender, evt) {
             var cells = evt.properties.cells;
             addCellsCustom(cells,'ADD');
+            if('cellsAdded' == evt.name){
+            	findBasicInfo(evt);
+            }
         });
         graphGlobal.addListener(mxEvent.CELLS_MOVED, function(sender, evt) {
             saveXml(null,'MOVED');

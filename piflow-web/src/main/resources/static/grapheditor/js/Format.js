@@ -468,6 +468,7 @@ Format.prototype.refresh = function()
 		
 		//开始设置stops基础信息
 		label5.style.borderLeftWidth = '0px';
+		label5.setAttribute('id', 'basicInfoId');
 		mxUtils.write(label5, "basicInfo");
 		div.appendChild(label5);
 		var StopsBasicInfo = div.cloneNode(false);
@@ -478,6 +479,7 @@ Format.prototype.refresh = function()
 		
 		//开始设置stops属性
 		label4.style.borderLeftWidth = '0px';
+		label4.setAttribute('id', 'AttributeInfoId');
 		mxUtils.write(label4, "AttributeInfo");
 		div.appendChild(label4);
 		var StopsTextAttribute = div.cloneNode(false);
@@ -2268,13 +2270,20 @@ StopsBasicInfoFormatPanel.prototype.addFont = function(container)
 	var span3 = document.createElement('label');
 	span3.setAttribute('id', 'pContent');
 	var span = document.createElement('span');
+	span.setAttribute('id', 'stopsNameID');
 	var span1 = document.createElement('span');
+	span1.setAttribute('id', 'GroupNameID');
 	var span2 = document.createElement('span');
+	span2.setAttribute('id', 'descriptionID');
 	var span3 = document.createElement('span');
+	span3.setAttribute('id', 'bundelID');
 	var span4 = document.createElement('span');
 	var span5 = document.createElement('span');
+	span5.setAttribute('id', 'versionID');
 	var span6 = document.createElement('span');
+	span6.setAttribute('id', 'ownerID');
 	var span7 = document.createElement('span');
+	span7.setAttribute('id', 'createDateID');
 	var hr = document.createElement('hr');
 	mxUtils.write(span, 'stopsName： ');
 	mxUtils.write(span1, 'GroupName： ');
@@ -4637,7 +4646,7 @@ DiagramFormatPanel.prototype.init = function()
 
 	if (graph.isEnabled())
 	{
-		//this.container.appendChild(this.addOptions(this.createPanel()));
+		this.container.appendChild(this.addOptions(this.createPanel()));
 		//this.container.appendChild(this.addPaperSize(this.createPanel()));
 		//this.container.appendChild(this.addStyleOps(this.createPanel()));
 	}
@@ -4779,8 +4788,40 @@ DiagramFormatPanel.prototype.addOptions = function(div)
 	var editor = ui.editor;
 	var graph = editor.graph;
 	
-	//div.appendChild(this.createTitle(123321));	
-
+	div.appendChild(this.createTitle("flowInfo"));	
+	//UUID
+	var UUID = document.createElement('label');
+	UUID.setAttribute('id', 'startTime');
+	//flowName
+	var flowName = document.createElement('label');
+	flowName.setAttribute('id', 'stopTime');
+	//crtDttm
+	var crtDttmString = document.createElement('label');
+	crtDttmString.setAttribute('id', 'progressData');
+	//flowDescription
+	var flowDescription = document.createElement('label');
+	flowDescription.setAttribute('id', 'state');
+	
+	var span = document.createElement('span');
+	var span1 = document.createElement('span');
+	var span2 = document.createElement('span');
+	var span3 = document.createElement('span');
+	var hr = document.createElement('hr');
+	mxUtils.write(span, 'Start time ： ');
+	mxUtils.write(span1, 'Stop time ： ');
+	mxUtils.write(span2, 'progress data ： ');
+	mxUtils.write(span3, 'state ： ');
+	div.appendChild(span);
+	div.appendChild(UUID);
+	div.appendChild(document.createElement('br'));
+	div.appendChild(span1);
+	div.appendChild(flowName);
+	div.appendChild(document.createElement('br'));
+	div.appendChild(span3);
+	div.appendChild(flowDescription);
+	div.appendChild(document.createElement('br'));
+	div.appendChild(span2);
+	div.appendChild(crtDttmString);
 	/*if (graph.isEnabled())
 	{
 		// Connection arrows
@@ -4855,7 +4896,7 @@ DiagramFormatPanel.prototype.addOptions = function(div)
 			}
 		}));
 	}*/
-
+	this.addGridOption(div);
 	return div;
 };
 
@@ -5113,7 +5154,7 @@ DiagramFormatPanel.prototype.destroy = function()
 		var classname = document.getElementById(''+data+'').className;
 		if(classname == 'true'){
 			if(content == "") 
-			 $("#"+data+"").focus();
+			// $("#"+data+"").focus();
 			 $("#"+data+"").css("background-color","#FFD39B");
 		}
 		if(content == "" ) 

@@ -44,8 +44,8 @@ public class FlowInfoDbMapperProvider {
 			String name = flow.getName();
 			String state = flow.getState();
 			String progress = flow.getProgress();
-			String endTime = flow.getEndTime();
-			String startTime = flow.getStartTime();
+			Date endTime = flow.getEndTime();
+			Date startTime = flow.getStartTime();
 			SQL sql = new SQL();
 			// INSERT_INTO括号中为数据库表名
 			sql.UPDATE("flow_info");
@@ -76,14 +76,16 @@ public class FlowInfoDbMapperProvider {
 			if (StringUtils.isNotBlank(progress)) {
 				sql.SET("progress = " + Utils.addSqlStr(progress));
 			}
-			if (StringUtils.isNotBlank(endTime)) {
-				if (StringUtils.isNotBlank(endTime)) {
-					sql.SET("end_time = " + Utils.addSqlStr(endTime));
+			if (null != endTime) {
+				String endTimeStr = DateUtils.dateTimesToStr(endTime);
+				if (StringUtils.isNotBlank(endTimeStr)) {
+					sql.SET("end_time = " + Utils.addSqlStr(endTimeStr));
 				}
 			}
-			if (StringUtils.isNotBlank(startTime)) {
-				if (StringUtils.isNotBlank(startTime)) {
-					sql.SET("start_time = " + Utils.addSqlStr(startTime));
+			if (null != startTime) {
+				String startTimeStr = DateUtils.dateTimesToStr(startTime);
+				if (StringUtils.isNotBlank(startTimeStr)) {
+					sql.SET("start_time = " + Utils.addSqlStr(startTimeStr));
 				}
 			}
 			sql.WHERE("id = " + Utils.addSqlStr(id));

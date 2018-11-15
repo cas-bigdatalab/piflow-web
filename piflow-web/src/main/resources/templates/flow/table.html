@@ -433,11 +433,11 @@
         var state = $("table tr").find("td:eq(7)");
         for (var i = 0; i<table.length;i++){
             if(table[i].innerHTML != ""){
-                if(state[i].innerHTML != "No state" && state[i].innerHTML == "STARTED")
-                arrayObj.push(table[i].innerHTML);
+                if(state[i].innerHTML != "No state" && state[i].innerHTML == "STARTED"){
+                    arrayObj.push(table[i].innerHTML);
+                }
             }
         }
-        console.info(arrayObj);
         if(arrayObj.length == 0){
             clearInterval(c);
             return;

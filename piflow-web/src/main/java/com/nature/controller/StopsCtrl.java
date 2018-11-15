@@ -21,7 +21,7 @@ public class StopsCtrl {
 			Stops queryInfo = propertyServiceImpl.queryAll(fid, id);
 			if (null != queryInfo) {
 				//对比stops模板属性并作出修改
-				propertyServiceImpl.checkStopTemplateUpdate(queryInfo);
+				propertyServiceImpl.checkStopTemplateUpdate(queryInfo.getId());
 				return queryInfo;
 			}
 		}

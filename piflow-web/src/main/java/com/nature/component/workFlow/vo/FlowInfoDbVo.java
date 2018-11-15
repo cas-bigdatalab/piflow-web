@@ -1,6 +1,7 @@
 package com.nature.component.workFlow.vo;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class FlowInfoDbVo implements Serializable {
 
@@ -9,8 +10,8 @@ public class FlowInfoDbVo implements Serializable {
 	private String id;
 	private String name;
 	private String state;
-	private String startTime;
-	private String endTime;
+	private Date startTime;
+	private Date endTime;
 	private String progress;
 
 	public String getId() {
@@ -37,19 +38,19 @@ public class FlowInfoDbVo implements Serializable {
 		this.state = state;
 	}
 
-	public String getStartTime() {
+	public Date getStartTime() {
 		return startTime;
 	}
 
-	public void setStartTime(String startTime) {
+	public void setStartTime(Date startTime) {
 		this.startTime = startTime;
 	}
 
-	public String getEndTime() {
+	public Date getEndTime() {
 		return endTime;
 	}
 
-	public void setEndTime(String endTime) {
+	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
 	}
 

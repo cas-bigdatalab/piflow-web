@@ -55,7 +55,7 @@
 			</span>
         <input id="reloadStops" type="button" onclick="reloadStops()" value="ReloadStops"/>
         <input id="startFlow" type="button" onclick="runFlow()" value="运行"/>
-        <input id="stopFlow" type="button" onclick="stopFlow()" value="停止"/>
+        <input id="stopFlow" type="button" onclick="stopFlows()" value="停止"/>
         <input type="button" class="btn-primary" data-toggle="modal" onclick="getLogUrl()" data-target="#myModal"
                value="日志"/>
     </div>
@@ -141,39 +141,116 @@
         xhr.setRequestHeader(header, token);
     });
     var timer;
+    var flag = 0;
 
     function findBasicInfo(evt) {
-        var cells = evt.properties.cell;
-        if (typeof(cells) != "undefined") {
-            var id = evt.properties.cell.id;
+        console.info(evt);
+        flag = 0;
+    	var cells = null;
+    	var id = null;
+    	var value = null;
+    	var ss = [];
+            //针对不同事件设置值
+           	if('cellsAdded' == evt.name){
+         		  cells = evt.properties.cells;
+         		  ss = cells[0];  
+         		  value = ss.value ; 
+         		  id = ss.id;
+             }else{  
+            	  cells = evt.properties;
+            	  if(null != cells.cell){
+            	  value = cells.cell.value; 
+            	  id = cells.cell.id;
+            	  }
+            }
+        if (typeof(cells) != "undefined" && null != id && "" != id && "null" != id) {
             if (document.getElementById("stopsNameLabel"))
-                document.getElementById('stopsNameLabel').innerText = cells.value;
-            $.ajax({
-                cache: true,
-                type: "POST",
-                url: "/piflow-web/stops/queryIdInfo",
-                data: {"id": id, "fid": loadId},
-                async: true,
-                error: function (request) {
-                    //alert("Jquery Ajax request error!!!");
-                    return;
-                },
-                success: function (data) {
-                    if ("" != data) {
-                        console.log("stops属性查询success");
-                        add(data.properties);
-                        document.getElementById('stopsDescription').innerText = data.description;
-                        document.getElementById('stopsGroups').innerText = data.groups;
-                        document.getElementById('stopsBundel').innerText = data.bundel;
-                        document.getElementById('stopsVersion').innerText = data.version;
-                        document.getElementById('stopSowner').innerText = data.owner;
-                        document.getElementById('stopCreateDate').innerText = data.crtDttmString;
-                    } else {
-                        console.log("stops属性查询null");
-                    }
+                document.getElementById('stopsNameLabel').innerText = value;
+            //选中是线的情况
+            if (cells.cell && cells.cell.edge) {
+                if (cells.cell.target && cells.cell.source) {
+                    //查询phth
+                    queryPathInfo(id);
                 }
-            });
+            }else{
+                //查询stops以及属性信息；
+                queryStopsProperty(id);
+            }
         }
+    }
+    function queryStopsProperty(id){
+    	if(flag > 5){
+            window.clearTimeout(t1);
+    	}
+        $.ajax({
+            cache: true,
+            type: "POST",
+            url: "/piflow-web/stops/queryIdInfo",
+            data: {"id": id, "fid": loadId},
+            async: true,
+            error: function (request) {
+                //alert("Jquery Ajax request error!!!");
+                return;
+            },
+            success: function (data) {
+                if ("" != data) {
+                    console.log("stops属性查询success");
+                    add(data.properties);
+                    document.getElementById('stopsNameLabel').innerText = data.name;
+                    document.getElementById('stopsDescription').innerText = data.description;
+                    document.getElementById('stopsGroups').innerText = data.groups;
+                    document.getElementById('stopsBundel').innerText = data.bundel;
+                    document.getElementById('stopsVersion').innerText = data.version;
+                    document.getElementById('stopSowner').innerText = data.owner;
+                    document.getElementById('stopCreateDate').innerText = data.crtDttmString;
+                    //成功的话去掉定时器
+                    window.clearTimeout(t1);
+                } else {
+                    console.log("stops属性查询null");
+                    var t1 = window.setTimeout(queryStopsProperty(id),500);
+                    flag ++;
+                }
+            }
+        });
+    }
+
+    function queryPathInfo(id){
+        $.ajax({
+            cache: true,
+            type: "POST",
+            url: "/piflow-web/path/queryPathInfo",
+            data: {"id": id, "fid": loadId},
+            async: true,
+            error: function (request) {
+                //alert("Jquery Ajax request error!!!");
+                return;
+            },
+            success: function (data) {
+                if ("" != data) {
+                    console.log("path查询success");
+                    console.info(data);
+                    $("#AttributeInfoId").hide();
+                    $("#basicInfoId").html('线信息');
+                    $('#basicInfoId').css('text-align','');
+                    $("#stopsNameID").html('pageId');
+                    $("#GroupNameID").html('form');
+                    $("#descriptionID").html('to');
+                    $("#bundelID").html('inport');
+                    $("#versionID").html('outport');
+                   // $("#ownerID").html('port');
+                    $("#createDateID").html('flowName');
+                    document.getElementById('stopsNameLabel').innerText = data.pageId;
+                    document.getElementById('stopsDescription').innerText = data.to;
+                    document.getElementById('stopsGroups').innerText = data.from;
+                    document.getElementById('stopsBundel').innerText = data.inport;
+                    document.getElementById('stopsVersion').innerText = data.outport;
+                    //document.getElementById('stopSowner').innerText = data.port;
+                    document.getElementById('stopCreateDate').innerText = data.flow;
+                } else {
+                    console.log("path属性查询null");
+                }
+            }
+        });
     }
 
     function add(data) {
@@ -223,7 +300,7 @@
                 displayName.setAttribute('onblur', 'shiqu("' + data[y].id + '","' + data[y].displayName + '")');
                 displayName.style.width = "210px";
                 displayName.style.resize = "none";
-                displayName.innerHTML = '' + customValue + '';
+                displayName.innerHTML = '' + customValue + '';
                 var spanDisplayName = 'span' + data[y].displayName;
                 var spanDisplayName = document.createElement('span');
                 var spanFlag = document.createElement('span');
@@ -293,6 +370,10 @@
             //divValue.appendChild(btn);
         }
     }
+    
+    function dbssn(id){
+      	 $("#" + id + "").focus();
+       }
 
     // 添加操作处理
     function addCellsCustom(cells, operType) {
@@ -424,16 +505,30 @@
                 var dataMap = JSON.parse(data);
                 if (document.getElementById("UUID")) {//js判断元素是否存在
                     var flow = dataMap.flow;
+                    if (flow != null && flow != "")
+                    var flowInfoDbInfo = flow.flowInfoDbVo;
                     if (flow != null && flow != "") {
-                        document.getElementById('UUID').innerText = flow.uuid;
-                        document.getElementById('flowName').innerText = flow.name;
-                        document.getElementById('flowDescription').innerText = flow.description;
-                        document.getElementById('createrTime').innerText = flow.crtDttmString;
-                    } else {
-                        document.getElementById('UUID').innerText = "No content";
+                        document.getElementById('UUID').innerText = flow.uuid ? flow.uuid : "No content";
+                        document.getElementById('flowName').innerText = flow.name ? flow.name : "No content";
+                        document.getElementById('flowDescription').innerText = flow.description ? flow.description : "No content";
+                        document.getElementById('createrTime').innerText = flow.crtDttmString ? flow.crtDttmString : "No content";
+                    }else{
+                    	document.getElementById('UUID').innerText = "No content";
                         document.getElementById('flowName').innerText = "No content";
+                        document.getElementById('flowDescription').innerText = "No content";
                         document.getElementById('createrTime').innerText = "No content";
-                    }
+                    } 
+                    if (flowInfoDbInfo != null && flowInfoDbInfo != ""){
+                        document.getElementById('startTime').innerText = flowInfoDbInfo.startTime ? flowInfoDbInfo.startTime : "No startTime" ;
+                        document.getElementById('stopTime').innerText = flowInfoDbInfo.endTime ? flowInfoDbInfo.endTime : "No stopTime" ;
+                        document.getElementById('progressData').innerText = flowInfoDbInfo.progress ? flowInfoDbInfo.progress + '%' : "0%" ;
+                        document.getElementById('state').innerText = flowInfoDbInfo.state ? flowInfoDbInfo.state : "No state" ;
+                     }else{
+                    	 document.getElementById('startTime').innerText = "No startTime" ;
+                         document.getElementById('stopTime').innerText = "No stopTime" ;
+                         document.getElementById('progressData').innerText = "0%" ;
+                         document.getElementById('state').innerText = "No state" ;
+                     }
                 }
             }
         });
@@ -475,7 +570,7 @@
     }
 
     //停止
-    function stopFlow() {
+    function stopFlows() {
         stopFlow.hide();
         fullScreen.show();
         $.ajax({

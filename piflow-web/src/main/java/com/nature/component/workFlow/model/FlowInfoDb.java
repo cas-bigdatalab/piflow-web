@@ -1,5 +1,7 @@
 package com.nature.component.workFlow.model;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -13,8 +15,8 @@ public class FlowInfoDb extends BaseHibernateModelUUIDNoCorpAgentId {
 
 	private String name;
 	private String state;
-	private String startTime;
-	private String endTime;
+	private Date startTime;
+	private Date endTime;
 	private String progress;
 
 	public String getName() {
@@ -33,19 +35,19 @@ public class FlowInfoDb extends BaseHibernateModelUUIDNoCorpAgentId {
 		this.state = state;
 	}
 
-	public String getStartTime() {
+	public Date getStartTime() {
 		return startTime;
 	}
 
-	public void setStartTime(String startTime) {
+	public void setStartTime(Date startTime) {
 		this.startTime = startTime;
 	}
 
-	public String getEndTime() {
+	public Date getEndTime() {
 		return endTime;
 	}
 
-	public void setEndTime(String endTime) {
+	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
 	}
 

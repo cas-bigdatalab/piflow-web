@@ -50,6 +50,6 @@ public interface IPropertyService {
 	 * check stops template 
 	 * @param stops
 	 */
-	public void checkStopTemplateUpdate(Stops stops);
+	public void checkStopTemplateUpdate(String stopsId);
 
 }

@@ -315,7 +315,12 @@ public class FlowCtrl {
                     for (MxCell mxcell : root) {
                         mxCellServiceImpl.deleteMxCellById(mxcell.getId());
                         if (mxcell.getMxGeometry() != null) {
+                            System.out.println(mxcell.getMxGeometry().getId());
                             mxGraphServiceImpl.deleteMxGraphById(mxcell.getMxGeometry().getId());
+                            if (null != mxcell.getMxGraphModel() && null != flowById.getMxGraphModel()){
+                                if(flowById.getMxGraphModel().getId().equals(mxcell.getMxGraphModel().getId()))
+                            	mxGraphModelServiceImpl.deleteMxGraphModelById(mxcell.getMxGraphModel().getId());
+                            }
                         }
                     }
             }

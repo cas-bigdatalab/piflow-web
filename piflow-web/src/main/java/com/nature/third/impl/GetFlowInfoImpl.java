@@ -1,5 +1,16 @@
 package com.nature.third.impl;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import net.sf.json.JSONObject;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.nature.base.util.HttpUtils;
 import com.nature.base.util.LoggerUtil;
 import com.nature.common.Eunm.FlowState;
@@ -11,17 +22,6 @@ import com.nature.third.inf.IGetFlowProgress;
 import com.nature.third.vo.ThirdProgressVo;
 import com.nature.third.vo.flowInfo.ThirdFlowInfo;
 import com.nature.third.vo.flowInfo.ThirdFlowInfoStopVo;
-
-import net.sf.json.JSONObject;
-
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 @Component
 public class GetFlowInfoImpl implements IGetFlowInfo {

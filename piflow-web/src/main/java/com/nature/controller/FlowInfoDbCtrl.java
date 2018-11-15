@@ -18,6 +18,7 @@ import com.nature.base.util.LoggerUtil;
 import com.nature.component.workFlow.model.FlowInfoDb;
 import com.nature.component.workFlow.service.IFlowInfoDbService;
 import com.nature.mapper.FlowInfoDbMapper;
+import com.nature.third.inf.IGetFlowInfo;
 import com.nature.third.inf.IGetFlowProgress;
 import com.nature.third.vo.ThirdProgressVo;
 import com.nature.third.vo.flowInfo.ThirdFlowInfo;
@@ -39,7 +40,10 @@ public class FlowInfoDbCtrl {
 	
 	@Autowired
 	private FlowInfoDbMapper flowInfoDbMapper;
-
+	
+	@Autowired
+	private IGetFlowInfo iGetFlowInfo;
+	
 	/**
 	 * 查询进度
 	 * @param model
@@ -70,7 +74,7 @@ public class FlowInfoDbCtrl {
 				if (StringUtils.isNotBlank(progress.getProgress()))
 				if (!"STARTED".equals(progress.getState()) || !"STARTED".equals(flowInfoDb.getState()) || Float.parseFloat(progress.getProgress()) < Float.parseFloat(flowInfoDb.getProgress())) {
 					//再次调用flowInfo信息,获取开始和结束时间
-					ThirdFlowInfo thirdFlowInfo = getFlowInfo(flowInfoDb.getId());
+					ThirdFlowInfo thirdFlowInfo = iGetFlowInfo.getFlowInfo(flowInfoDb.getId());
 					FlowInfoDb up = new FlowInfoDb();
 					if (null != thirdFlowInfo) {
 						up.setEndTime(thirdFlowInfo.getFlow().getEndTime());
@@ -78,7 +82,7 @@ public class FlowInfoDbCtrl {
 						up.setName(thirdFlowInfo.getFlow().getName());
 					}
 					up.setId(flowInfoDb.getId());
-					up.setState(progress.getState());
+					up.setState(StringUtils.isNotBlank(progress.getState()) ? progress.getState() : "FAILED");
 					up.setLastUpdateDttm(new Date());
 					up.setLastUpdateUser("wdd");
 					if (null == progress.getProgress() || "NaN".equals(progress.getProgress())) {
@@ -96,11 +100,6 @@ public class FlowInfoDbCtrl {
 		  } 
 		return map;
 	} 
-
-	private ThirdFlowInfo getFlowInfo(String id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	/**
 	 * 查询进度

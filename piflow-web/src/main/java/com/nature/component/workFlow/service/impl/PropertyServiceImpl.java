@@ -65,23 +65,29 @@ public class PropertyServiceImpl implements IPropertyService {
 	 * 对比stops模板如有差异则修改
 	 */
 	@Override
-	public void checkStopTemplateUpdate(Stops stops) {
+	public void checkStopTemplateUpdate(String id) {
         Map<String, Property> PropertyMap = new HashMap<String, Property>();
         List<Property> addPropertyList = new ArrayList<Property>();
         //获取stop信息
-        Stops stopsList = stopsMapper.getStopsById(stops.getId());
+        Stops stopsList = stopsMapper.getStopsById(id);
         //获取当前stops的StopsTemplate
         List<StopsTemplate> stopsTemplateList = stopsTemplateMapper.getStopsTemplateByName(stopsList.getName());
-        StopsTemplate stopsTemplate = stopsTemplateList.get(0);
-        logger.info("stopsTemplateList记录条数:"+stopsTemplateList.size());
-          	//拿到StopsTemplate的模板属性
-            List<PropertyTemplate> propertiesTemplateList = stopsTemplate.getProperties();
-            // 当前stop存在的属性   	
-            List<Property> property = stopsList.getProperties();
-            if (null != property && property.size() > 0)  
-          	  for (Property one : property) {
-          		  PropertyMap.put(one.getName(),one);
-    			}
+		StopsTemplate stopsTemplate = null;
+		List<PropertyTemplate> propertiesTemplateList = null;
+		if (null != stopsTemplateList && !stopsTemplateList.isEmpty()) {
+			stopsTemplate = stopsTemplateList.get(0);
+			logger.info("stopsTemplateList记录条数:" + stopsTemplateList.size());
+		}
+		// 拿到StopsTemplate的模板属性
+		if (null != stopsTemplate) {
+			propertiesTemplateList = stopsTemplate.getProperties();
+		}
+		// 当前stop存在的属性
+		List<Property> property = stopsList.getProperties();
+		if (null != property && property.size() > 0)
+			for (Property one : property) {
+				PropertyMap.put(one.getName(), one);
+			}
             //如果模板的数据大于stop当前的属性个数,一样的做修改操作,多了的新增stops属性
             if (propertiesTemplateList.size()>0 && property.size()>0) {
           	  for (PropertyTemplate pt : propertiesTemplateList) { 
@@ -90,35 +96,42 @@ public class PropertyServiceImpl implements IPropertyService {
       					if (ptname!=null) {
       						PropertyMap.remove(pt.getName());
                             Property update = new Property();
-                            String name = pt.getName();
-                            Date crtDttm = pt.getCrtDttm();
-                            String crtUser = pt.getCrtUser();
+                            String name = ptname.getName();
+                            Date crtDttm = ptname.getCrtDttm();
+                            String crtUser = ptname.getCrtUser();
+                            String displayName = pt.getDisplayName();
+                            String description = pt.getDescription();
 							BeanUtils.copyProperties(pt, update);
                           	update.setName(name);
                           	update.setCrtDttm(crtDttm);
                           	update.setCrtUser(crtUser);
+                          	update.setDisplayName(Utils.replaceString(displayName));
+                          	update.setDescription(Utils.replaceString(description));
                           	update.setId(ptname.getId());
                           	propertyMapper.updateStopsProperty(update);
       					}else {
       						logger.info("===============stop属性与模板不一致,需要添加=================");
       						Property newProperty = new Property();
+      						String displayName = pt.getDisplayName();
+                            String description = pt.getDescription();
 						    BeanUtils.copyProperties(pt, newProperty);
       						newProperty.setId(Utils.getUUID32());
       						newProperty.setCrtDttm(new Date());
       						newProperty.setCrtUser("Nature");
       						newProperty.setEnableFlag(true);
+      						newProperty.setDisplayName(Utils.replaceString(displayName));
+      						newProperty.setDescription(Utils.replaceString(description));
       						newProperty.setVersion(0L);
       						newProperty.setStops(stopsList);
       						addPropertyList.add(newProperty);
 							} 
       					}
       				}
-          	  if (addPropertyList.size()>0) {
+          	  if (addPropertyList.size()>0 && !addPropertyList.isEmpty()) {
 					propertyMapper.addPropertyList(addPropertyList);
 				}
-			} 
-        	// objectPathsMap中的所有需要修改的移除，剩下为要逻辑删除的
-            if (null != PropertyMap && PropertyMap.size()>0)  
+			// objectPathsMap中的所有需要修改的移除，剩下为要逻辑删除的
+			if (null != PropertyMap && PropertyMap.size() > 0)
 				for (String pageid : PropertyMap.keySet()) {
 					Property deleteProperty = PropertyMap.get(pageid);
 					if (null != deleteProperty) {
@@ -126,5 +139,6 @@ public class PropertyServiceImpl implements IPropertyService {
 						propertyMapper.deleteStopsPropertyById(deleteProperty.getId());
 					}
 				}
-			}
+            }
+		} 
 	}

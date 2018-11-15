@@ -50,7 +50,7 @@ public interface MxGeometryMapper {
 	public MxGeometry getMxGeometryById(String id);
 	
 	
-	@Delete("delete from mx_geometry where id = #{id}")
+	@Delete("update mx_geometry set enable_flag = 0 where id = #{id};")
 	public int deleteMxGraphById(String id);
 
 }

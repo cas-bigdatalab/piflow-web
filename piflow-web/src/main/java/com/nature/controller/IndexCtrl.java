@@ -31,10 +31,7 @@ public class IndexCtrl {
 	 */
 	@RequestMapping("/index")
 	public ModelAndView index(ModelAndView modelAndView) {
-		modelAndView.setViewName("index");
-		modelAndView.addObject("now", "say hello spring boot !!!!!");
-		List<Flow> appInfo = appService.findAppList();
-		modelAndView.addObject("appInfo", appInfo);
+		modelAndView.setViewName("indexPage");
 		return modelAndView;
 	}
 

@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.nature.base.util.StatefulRtnBaseUtils;
-import com.nature.common.Eunm.PortType;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
@@ -17,8 +15,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.nature.base.util.LoggerUtil;
+import com.nature.base.util.StatefulRtnBaseUtils;
 import com.nature.base.util.Utils;
 import com.nature.base.vo.StatefulRtnBase;
+import com.nature.common.Eunm.PortType;
 import com.nature.component.mxGraph.model.MxCell;
 import com.nature.component.mxGraph.model.MxGeometry;
 import com.nature.component.mxGraph.model.MxGraphModel;
@@ -33,9 +33,11 @@ import com.nature.component.workFlow.model.PropertyTemplate;
 import com.nature.component.workFlow.model.Stops;
 import com.nature.component.workFlow.model.StopsTemplate;
 import com.nature.component.workFlow.service.IFlowService;
+import com.nature.component.workFlow.utils.FlowInfoDbUtil;
 import com.nature.component.workFlow.utils.MxGraphModelUtil;
 import com.nature.component.workFlow.utils.PathsUtil;
 import com.nature.component.workFlow.utils.StopsUtil;
+import com.nature.component.workFlow.vo.FlowInfoDbVo;
 import com.nature.component.workFlow.vo.FlowVo;
 import com.nature.component.workFlow.vo.PathsVo;
 import com.nature.component.workFlow.vo.StopsVo;
@@ -81,6 +83,8 @@ public class FlowServiceImpl implements IFlowService {
 
     @Autowired
     private FlowInfoDbMapper flowInfoDbMapper;
+
+    private boolean flag = false;
 
     /**
      * 向数据库添加flow
@@ -160,9 +164,12 @@ public class FlowServiceImpl implements IFlowService {
             List<StopsVo> stopsVoList = StopsUtil.stopsListPoToVo(flowById.getStopsList());
             //取出pathsList，并转为Vo
             List<PathsVo> pathsVoList = PathsUtil.pathsListPoToVo(flowById.getPathsList());
+            //取出flowInfoDb，并转为Vo
+            FlowInfoDbVo flowInfoDbVo = FlowInfoDbUtil.flowInfoDbToVo(flowById.getAppId());
             flowVo.setMxGraphModelVo(mxGraphModelVo);
             flowVo.setStopsVoList(stopsVoList);
             flowVo.setPathsVoList(pathsVoList);
+            flowVo.setFlowInfoDbVo(flowInfoDbVo);
         }
         return flowVo;
     }
