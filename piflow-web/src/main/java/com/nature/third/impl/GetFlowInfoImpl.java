@@ -35,7 +35,7 @@ public class GetFlowInfoImpl implements IGetFlowInfo {
 	
 
 	/**
-	 * @Title 发送 post请求
+	 * 发送 post请求
 	 */
 	@SuppressWarnings("rawtypes")
 	@Override

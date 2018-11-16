@@ -2,8 +2,7 @@ package com.nature.component.workFlow.model;
 
 import java.util.Date;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import com.nature.base.BaseHibernateModelUUIDNoCorpAgentId;
 
@@ -13,11 +12,23 @@ public class FlowInfoDb extends BaseHibernateModelUUIDNoCorpAgentId {
 
 	private static final long serialVersionUID = 1L;
 
+	@OneToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "FK_FLOW_ID")
+	private Flow flow;
+
 	private String name;
 	private String state;
 	private Date startTime;
 	private Date endTime;
 	private String progress;
+
+	public Flow getFlow() {
+		return flow;
+	}
+
+	public void setFlow(Flow flow) {
+		this.flow = flow;
+	}
 
 	public String getName() {
 		return name;

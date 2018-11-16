@@ -1,14 +1,9 @@
 package com.nature.component.mxGraph.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import com.nature.base.BaseHibernateModelUUIDNoCorpAgentId;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Table(name = "MX_CELL")
@@ -46,8 +41,8 @@ public class MxCell extends BaseHibernateModelUUIDNoCorpAgentId {
 	@Column(name = "MX_VERTEX")
 	private String vertex;
 
-	@OneToOne
-	@JoinColumn(name = "fk_mx_geometry_id", referencedColumnName = "id")
+	@OneToOne(fetch = FetchType.EAGER, mappedBy = "mxCell")
+	@Where(clause = "enable_flag=1")
 	private MxGeometry mxGeometry;
 
 	public MxGraphModel getMxGraphModel() {

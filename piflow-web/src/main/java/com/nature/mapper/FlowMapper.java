@@ -20,7 +20,7 @@ import com.nature.provider.FlowMapperProvider;
 @Mapper
 public interface FlowMapper {
 	/**
-	 * @Title 新增Flow
+	 * 新增Flow
 	 * 
 	 * @param flow
 	 * @return
@@ -29,7 +29,7 @@ public interface FlowMapper {
 	public int addFlow(Flow flow);
 
 	/**
-	 * @Title 修改Flow
+	 * 修改Flow
 	 * 
 	 * @param flow
 	 * @return
@@ -38,7 +38,7 @@ public interface FlowMapper {
 	public int updateFlow(Flow flow);
 
 	/**
-	 * @Title 查詢所有工作流
+	 * 查詢所有工作流
 	 * 
 	 * @return
 	 */
@@ -46,15 +46,16 @@ public interface FlowMapper {
 	public List<Flow> getFlowList();
 
 	/**
-	 * @Title 根據工作流Id查詢工作流
+	 * 根据工作流Id查询工作流
 	 * 
 	 * @param id
 	 * @return
 	 */
 	@SelectProvider(type = FlowMapperProvider.class, method = "getFlowById")
-	@Results({ @Result(id = true, column = "id", property = "id"),
-			@Result(column = "fk_mx_graph_model_id", property = "mxGraphModel", one = @One(select = "com.nature.mapper.mxGraph.MxGraphModelMapper.getMxGraphModelById", fetchType = FetchType.EAGER)),
-			@Result(column = "app_id", property = "appId", one = @One(select = "com.nature.mapper.FlowInfoDbMapper.getAppByAppId", fetchType = FetchType.EAGER)),
+	@Results({
+			@Result(id = true, column = "id", property = "id"),
+			@Result(column = "id", property = "mxGraphModel", one = @One(select = "com.nature.mapper.mxGraph.MxGraphModelMapper.getMxGraphModelByFlowId", fetchType = FetchType.EAGER)),
+			@Result(column = "id", property = "appId", one = @One(select = "com.nature.mapper.FlowInfoDbMapper.getAppByAppFlowId", fetchType = FetchType.EAGER)),
 			@Result(column = "id", property = "stopsList", many = @Many(select = "com.nature.mapper.StopsMapper.getStopsListByFlowId", fetchType = FetchType.EAGER)),
 			@Result(column = "id", property = "pathsList", many = @Many(select = "com.nature.mapper.PathsMapper.getPathsListByFlowId", fetchType = FetchType.EAGER))
 

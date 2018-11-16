@@ -17,51 +17,76 @@ import com.nature.provider.mxGraph.MxGraphModelProvider;
 @Mapper
 public interface MxGraphModelMapper {
 
-	/**
-	 * @Title 新增mxGraphModel
-	 * 
-	 * @param mxGraphModel
-	 * @return
-	 */
-	@InsertProvider(type = MxGraphModelProvider.class, method = "addMxGraphModel")
-	public int addMxGraphModel(MxGraphModel mxGraphModel);
+    /**
+     * 新增mxGraphModel
+     *
+     * @param mxGraphModel
+     * @return
+     */
+    @InsertProvider(type = MxGraphModelProvider.class, method = "addMxGraphModel")
+    public int addMxGraphModel(MxGraphModel mxGraphModel);
 
-	/**
-	 * @Title 修改mxGraphModel
-	 * 
-	 * @param mxGraphModel
-	 * @return
-	 */
-	@UpdateProvider(type = MxGraphModelProvider.class, method = "updateMxGraphModel")
-	public int updateMxGraphModel(MxGraphModel mxGraphModel);
+    /**
+     * 修改mxGraphModel
+     * @param mxGraphModel
+     * @return
+     */
+    @UpdateProvider(type = MxGraphModelProvider.class, method = "updateMxGraphModel")
+    public int updateMxGraphModel(MxGraphModel mxGraphModel);
 
-	/**
-	 * @Title 根据Id查询mxGraphModel
-	 * 
-	 * @param id
-	 * @return
-	 */
-	@SelectProvider(type = MxGraphModelProvider.class, method = "getMxGraphModelById")
-	@Results({ @Result(id = true, column = "id", property = "id"), 
-		@Result(column = "MX_DX", property = "dx"),
-			@Result(column = "MX_DY", property = "dy"), 
-			@Result(column = "MX_GRID", property = "grid"),
-			@Result(column = "MX_GRIDSIZE", property = "gridSize"), 
-			@Result(column = "MX_GUIDES", property = "guides"),
-			@Result(column = "MX_TOOLTIPS", property = "tooltips"),
-			@Result(column = "MX_CONNECT", property = "connect"), 
-			@Result(column = "MX_ARROWS", property = "arrows"),
-			@Result(column = "MX_FOLD", property = "fold"), 
-			@Result(column = "MX_PAGE", property = "page"),
-			@Result(column = "MX_PAGESCALE", property = "pageScale"),
-			@Result(column = "MX_PAGEWIDTH", property = "pageWidth"),
-			@Result(column = "MX_PAGEHEIGHT", property = "pageHeight"),
-			@Result(column = "MX_BACKGROUND", property = "background"),
-			@Result(column = "id", property = "root", many = @Many(select = "com.nature.mapper.mxGraph.MxCellMapper.getMeCellByMxGraphId", fetchType = FetchType.EAGER)) })
-	public MxGraphModel getMxGraphModelById(String id);
-	
-	
-	@Update("update mx_graph_model set enable_flag = 0 where id = #{id}; ")
-	int deleteMxGraphModelById(@Param("id") String id);
+    /**
+     * 根据Id查询mxGraphModel
+     *
+     * @param id
+     * @return
+     */
+    @SelectProvider(type = MxGraphModelProvider.class, method = "getMxGraphModelById")
+    @Results({@Result(id = true, column = "id", property = "id"),
+            @Result(column = "MX_DX", property = "dx"),
+            @Result(column = "MX_DY", property = "dy"),
+            @Result(column = "MX_GRID", property = "grid"),
+            @Result(column = "MX_GRIDSIZE", property = "gridSize"),
+            @Result(column = "MX_GUIDES", property = "guides"),
+            @Result(column = "MX_TOOLTIPS", property = "tooltips"),
+            @Result(column = "MX_CONNECT", property = "connect"),
+            @Result(column = "MX_ARROWS", property = "arrows"),
+            @Result(column = "MX_FOLD", property = "fold"),
+            @Result(column = "MX_PAGE", property = "page"),
+            @Result(column = "MX_PAGESCALE", property = "pageScale"),
+            @Result(column = "MX_PAGEWIDTH", property = "pageWidth"),
+            @Result(column = "MX_PAGEHEIGHT", property = "pageHeight"),
+            @Result(column = "MX_BACKGROUND", property = "background"),
+            @Result(column = "id", property = "root", many = @Many(select = "com.nature.mapper.mxGraph.MxCellMapper.getMeCellByMxGraphId", fetchType = FetchType.EAGER))})
+    public MxGraphModel getMxGraphModelById(String id);
+
+    /**
+     * 根据flowId查询mxGraphModel
+     *
+     * @param flowId
+     * @return
+     */
+    @SelectProvider(type = MxGraphModelProvider.class, method = "getMxGraphModelByFlowId")
+    @Results({
+            @Result(id = true, column = "id", property = "id"),
+            @Result(column = "MX_DX", property = "dx"),
+            @Result(column = "MX_DY", property = "dy"),
+            @Result(column = "MX_GRID", property = "grid"),
+            @Result(column = "MX_GRIDSIZE", property = "gridSize"),
+            @Result(column = "MX_GUIDES", property = "guides"),
+            @Result(column = "MX_TOOLTIPS", property = "tooltips"),
+            @Result(column = "MX_CONNECT", property = "connect"),
+            @Result(column = "MX_ARROWS", property = "arrows"),
+            @Result(column = "MX_FOLD", property = "fold"),
+            @Result(column = "MX_PAGE", property = "page"),
+            @Result(column = "MX_PAGESCALE", property = "pageScale"),
+            @Result(column = "MX_PAGEWIDTH", property = "pageWidth"),
+            @Result(column = "MX_PAGEHEIGHT", property = "pageHeight"),
+            @Result(column = "MX_BACKGROUND", property = "background"),
+            @Result(column = "id", property = "root", many = @Many(select = "com.nature.mapper.mxGraph.MxCellMapper.getMeCellByMxGraphId", fetchType = FetchType.EAGER))})
+    public MxGraphModel getMxGraphModelByFlowId(String flowId);
+
+
+    @Update("update mx_graph_model set enable_flag = 0 where fk_flow_id = #{flowId}; ")
+    int deleteMxGraphModelById(@Param("flowId") String flowId);
 
 }

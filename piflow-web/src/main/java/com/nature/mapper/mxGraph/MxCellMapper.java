@@ -11,7 +11,7 @@ import java.util.List;
 public interface MxCellMapper {
 
 	/**
-	 * @Title 添加mxCell
+	 * 添加mxCell
 	 * 
 	 * @param mxCell
 	 * @return
@@ -20,7 +20,7 @@ public interface MxCellMapper {
 	public int addMxCell(MxCell mxCell);
 
 	/**
-	 * @Title 修改mxCell
+	 * 修改mxCell
 	 * 
 	 * @param mxCell
 	 * @return
@@ -29,36 +29,49 @@ public interface MxCellMapper {
 	public int updateMxCell(MxCell mxCell);
 
 	/**
-	 * @Title 根据mxGraphId查询MxCell的list
+	 * 根据mxGraphId查询MxCell的list
 	 * 
 	 * @param mxGraphId
 	 * @return
 	 */
 	@SelectProvider(type = MxCellMapperProvider.class, method = "getMeCellByMxGraphId")
-	@Results({ @Result(column = "MX_PAGEID", property = "pageId"), @Result(column = "MX_PARENT", property = "parent"),
-			@Result(column = "MX_STYLE", property = "style"), @Result(column = "MX_EDGE", property = "edge"),
-			@Result(column = "MX_SOURCE", property = "source"), @Result(column = "MX_TARGET", property = "target"),
-			@Result(column = "MX_VALUE", property = "value"), @Result(column = "MX_VERTEX", property = "vertex"),
-			@Result(column = "fk_mx_geometry_id", property = "mxGeometry", one = @One(select = "com.nature.mapper.mxGraph.MxGeometryMapper.getMxGeometryById", fetchType = FetchType.EAGER))
+	@Results({
+			@Result(column = "ID", property = "id"),
+			@Result(column = "MX_PAGEID", property = "pageId"),
+			@Result(column = "MX_PARENT", property = "parent"),
+			@Result(column = "MX_STYLE", property = "style"),
+			@Result(column = "MX_EDGE", property = "edge"),
+			@Result(column = "MX_SOURCE", property = "source"),
+			@Result(column = "MX_TARGET", property = "target"),
+			@Result(column = "MX_VALUE", property = "value"),
+			@Result(column = "MX_VERTEX", property = "vertex"),
+			@Result(column = "id", property = "mxGeometry", one = @One(select = "com.nature.mapper.mxGraph.MxGeometryMapper.getMxGeometryByFlowId", fetchType = FetchType.EAGER))
 	})
 	public List<MxCell> getMeCellByMxGraphId(String mxGraphId);
 
 	/**
-	 * @Title 根据Id查询MxCell
+	 * 根据Id查询MxCell
 	 * 
 	 * @param id
 	 * @return
 	 */
 	@SelectProvider(type = MxCellMapperProvider.class, method = "getMeCellById")
-	@Results({ @Result(column = "MX_PAGEID", property = "pageId"), @Result(column = "MX_PARENT", property = "parent"),
-			@Result(column = "MX_STYLE", property = "style"), @Result(column = "MX_EDGE", property = "edge"),
-			@Result(column = "MX_SOURCE", property = "source"), @Result(column = "MX_TARGET", property = "target"),
-			@Result(column = "MX_VALUE", property = "value"), @Result(column = "MX_VERTEX", property = "vertex"),
-			@Result(column = "fk_mx_geometry_id", property = "mxGeometry", one = @One(select = "com.nature.mapper.mxGraph.MxGeometryMapper.getMxGeometryById", fetchType = FetchType.EAGER)) })
+	@Results({
+			@Result(column = "ID", property = "id"),
+			@Result(column = "MX_PAGEID", property = "pageId"),
+			@Result(column = "MX_PARENT", property = "parent"),
+			@Result(column = "MX_STYLE", property = "style"),
+			@Result(column = "MX_EDGE", property = "edge"),
+			@Result(column = "MX_SOURCE", property = "source"),
+			@Result(column = "MX_TARGET", property = "target"),
+			@Result(column = "MX_VALUE", property = "value"),
+			@Result(column = "MX_VERTEX", property = "vertex"),
+			@Result(column = "id", property = "mxGeometry", one = @One(select = "com.nature.mapper.mxGraph.MxGeometryMapper.getMxGeometryById", fetchType = FetchType.EAGER))
+	})
 	public MxCell getMeCellById(String id);
 	
 	
-	@Delete("delete from mx_cell where id = #{id}")
+	@Delete("update mx_cell set enable_flag = 0 where id = #{id}")
 	public int deleteMxCellById(String id);
 
 }

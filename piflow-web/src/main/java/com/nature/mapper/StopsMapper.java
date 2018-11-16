@@ -26,7 +26,7 @@ import com.nature.provider.StopsMapperProvider;
 public interface StopsMapper {
 
 	/**
-	 * @Title 添加单个stops
+	 * 添加单个stops
 	 * 
 	 * @param stops
 	 * @return
@@ -35,7 +35,7 @@ public interface StopsMapper {
 	public int addStops(Stops stops);
 
 	/**
-	 * @Title 插入list<Stops> 注意拼sql的方法必须用map接 Param内容为键值
+	 * 插入list<Stops> 注意拼sql的方法必须用map接 Param内容为键值
 	 * 
 	 * @param stopsList
 	 * @return
@@ -44,7 +44,7 @@ public interface StopsMapper {
 	public int addStopsList(@Param("stopsList") List<Stops> stopsList);
 
 	/**
-	 * @Title 修改stops
+	 * 修改stops
 	 * 
 	 * @param stops
 	 * @return
@@ -53,7 +53,7 @@ public interface StopsMapper {
 	public int updateStops(Stops stops);
 
 	/**
-	 * @Title 查询所有的stops数据
+	 * 查询所有的stops数据
 	 * 
 	 * @return
 	 */
@@ -61,7 +61,7 @@ public interface StopsMapper {
 	public List<Stops> getStopsAll();
 
 	/**
-	 * @Title 根据flowId查询StopsList
+	 * 根据flowId查询StopsList
 	 * @param flowId
 	 * @return
 	 */

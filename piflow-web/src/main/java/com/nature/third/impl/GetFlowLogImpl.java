@@ -19,7 +19,7 @@ public class GetFlowLogImpl implements IGetFlowLog {
 	Logger logger = LoggerUtil.getLogger();
 
 	/**
-	 * @Title 发送 post请求
+	 * 发送 post请求
 	 */
 	@Override
 	public ThirdFlowLog getFlowLog(String appid) {

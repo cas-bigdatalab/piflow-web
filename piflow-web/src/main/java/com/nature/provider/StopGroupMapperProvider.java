@@ -5,7 +5,7 @@ import org.apache.ibatis.jdbc.SQL;
 public class StopGroupMapperProvider {
 
 	/**
-	 * @Title 查詢所有組
+	 * 查詢所有組
 	 * 
 	 * @return
 	 */

@@ -17,7 +17,7 @@ import com.nature.component.workFlow.service.IFlowInfoDbService;
 public class IndexCtrl {
 
 	/**
-	 * @Title 引入日志，注意都是"org.slf4j"包下
+	 * 引入日志，注意都是"org.slf4j"包下
 	 */
 	Logger logger = LoggerUtil.getLogger();
 
@@ -25,7 +25,7 @@ public class IndexCtrl {
     IFlowInfoDbService appService;
 
 	/**
-	 * @Title 首页
+	 * 首页
 	 * @param modelAndView
 	 * @return
 	 */
@@ -36,7 +36,7 @@ public class IndexCtrl {
 	}
 
 	/**
-	 * @Title 首页右侧
+	 * 首页右侧
 	 * 
 	 * @param modelAndView
 	 * @return

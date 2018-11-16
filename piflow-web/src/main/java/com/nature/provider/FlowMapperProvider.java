@@ -14,7 +14,7 @@ import com.nature.component.workFlow.model.FlowInfoDb;
 public class FlowMapperProvider {
 
 	/**
-	 * @Title 新增Flow
+	 * 新增Flow
 	 * 
 	 * @param flow
 	 * @return
@@ -32,8 +32,6 @@ public class FlowMapperProvider {
 			String description = flow.getDescription();
 			String name = flow.getName();
 			String uuid = flow.getUuid();
-			MxGraphModel mxGraphModel = flow.getMxGraphModel();
-			FlowInfoDb appId = flow.getAppId();
 			String driverMemory = flow.getDriverMemory();
 			String executorCores = flow.getExecutorCores();
 			String executorMemory = flow.getExecutorMemory();
@@ -81,18 +79,6 @@ public class FlowMapperProvider {
 			if (StringUtils.isNotBlank(uuid)) {
 				sql.VALUES("UUID", Utils.addSqlStr(uuid));
 			}
-			if (null != mxGraphModel) {
-				String mxGraphModelId = mxGraphModel.getId();
-				if (StringUtils.isNotBlank(mxGraphModelId)) {
-					sql.VALUES("fk_mx_graph_model_id", Utils.addSqlStr(mxGraphModelId));
-				}
-			}
-			if (null != appId) {
-				String app_id = appId.getId();
-				if (StringUtils.isNotBlank(app_id)) {
-					sql.VALUES("app_id", Utils.addSqlStr(app_id));
-				}
-			}
 			if (StringUtils.isNotBlank(driverMemory)) {
 				sql.VALUES("driver_memory", Utils.addSqlStr(driverMemory));
 			}
@@ -111,7 +97,7 @@ public class FlowMapperProvider {
 	}
 
 	/**
-	 * @Title 修改Flow
+	 * 修改Flow
 	 * 
 	 * @param flow
 	 * @return
@@ -128,8 +114,6 @@ public class FlowMapperProvider {
 			String description = flow.getDescription();
 			String name = flow.getName();
 			String uuid = flow.getUuid();
-			MxGraphModel mxGraphModel = flow.getMxGraphModel();
-			FlowInfoDb appId = flow.getAppId();
 			SQL sql = new SQL();
 
 			// INSERT_INTO括号中为数据库表名
@@ -161,18 +145,6 @@ public class FlowMapperProvider {
 			if (StringUtils.isNotBlank(uuid)) {
 				sql.SET("UUID = " + Utils.addSqlStr(uuid));
 			}
-			if (null != mxGraphModel) {
-				String mxGraphModelId = mxGraphModel.getId();
-				if (StringUtils.isNotBlank(mxGraphModelId)) {
-					sql.SET("fk_mx_graph_model_id = " + Utils.addSqlStr(mxGraphModelId));
-				}
-			}
-			if (null != appId) {
-				String appid = appId.getId();
-				if (StringUtils.isNotBlank(appid)) {
-					sql.SET("app_id = " + Utils.addSqlStr(appid));
-				}
-			}
 			sql.WHERE("id = " + Utils.addSqlStr(id));
 			sqlStr = sql.toString() + ";";
 			if (StringUtils.isBlank(id)) {
@@ -183,7 +155,7 @@ public class FlowMapperProvider {
 	}
 
 	/**
-	 * @Title 查詢所有工作流
+	 * 查詢所有工作流
 	 * 
 	 * @return
 	 */
@@ -198,7 +170,7 @@ public class FlowMapperProvider {
 	}
 
 	/**
-	 * @Title 根據工作流Id查詢工作流
+	 * 根据工作流Id查询工作流
 	 * 
 	 * @param id
 	 * @return

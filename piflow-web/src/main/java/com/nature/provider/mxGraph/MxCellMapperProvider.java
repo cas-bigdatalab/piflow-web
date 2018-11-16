@@ -14,7 +14,7 @@ import com.nature.component.mxGraph.model.MxGraphModel;
 public class MxCellMapperProvider {
 
 	/**
-	 * @Title 添加mxCell
+	 * 添加mxCell
 	 * 
 	 * @param mxCell
 	 * @return
@@ -37,7 +37,6 @@ public class MxCellMapperProvider {
 			String target = mxCell.getTarget();
 			String value = mxCell.getValue();
 			String vertex = mxCell.getVertex();
-			MxGeometry mxGeometry = mxCell.getMxGeometry();
 			MxGraphModel mxGraphModel = mxCell.getMxGraphModel();
 			SQL NewSQL = new SQL();
 
@@ -97,12 +96,6 @@ public class MxCellMapperProvider {
 			if (StringUtils.isNotBlank(vertex)) {
 				NewSQL.VALUES("MX_VERTEX", Utils.addSqlStr(vertex));
 			}
-			if (null != mxGeometry) {
-				String mxGeometryId = mxGeometry.getId();
-				if (StringUtils.isNotBlank(mxGeometryId)) {
-					NewSQL.VALUES("FK_MX_GEOMETRY_ID", Utils.addSqlStr(mxGeometryId));
-				}
-			}
 			if (null != mxGraphModel) {
 				String mxGraphModelId = mxGraphModel.getId();
 				if (StringUtils.isNotBlank(mxGraphModelId)) {
@@ -116,7 +109,7 @@ public class MxCellMapperProvider {
 	}
 
 	/**
-	 * @Title 修改mxCell
+	 * 修改mxCell
 	 * 
 	 * @param mxCell
 	 * @return
@@ -137,7 +130,6 @@ public class MxCellMapperProvider {
 			String target = mxCell.getTarget();
 			String value = mxCell.getValue();
 			String vertex = mxCell.getVertex();
-			MxGeometry mxGeometry = mxCell.getMxGeometry();
 			MxGraphModel mxGraphModel = mxCell.getMxGraphModel();
 			SQL newSQL = new SQL();
 
@@ -186,12 +178,6 @@ public class MxCellMapperProvider {
 			if (StringUtils.isNotBlank(vertex)) {
 				newSQL.SET("MX_VERTEX = " + Utils.addSqlStr(vertex));
 			}
-			if (null != mxGeometry) {
-				String mxGeometryId = mxGeometry.getId();
-				if (StringUtils.isNotBlank(mxGeometryId)) {
-					newSQL.SET("FK_MX_GEOMETRY_ID = " + Utils.addSqlStr(mxGeometryId));
-				}
-			}
 			if (null != mxGraphModel) {
 				String mxGraphModelId = mxGraphModel.getId();
 				if (StringUtils.isNotBlank(mxGraphModelId)) {
@@ -208,7 +194,7 @@ public class MxCellMapperProvider {
 	}
 
 	/**
-	 * @Title 根据mxGraphId查询MxCell的list
+	 * 根据mxGraphId查询MxCell的list
 	 * 
 	 * @param mxGraphId
 	 * @return
@@ -225,7 +211,7 @@ public class MxCellMapperProvider {
 	}
 
 	/**
-	 * @Title 根据Id查询MxCell
+	 * 根据Id查询MxCell
 	 * 
 	 * @param id
 	 * @return

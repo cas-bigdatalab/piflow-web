@@ -3,13 +3,7 @@ package com.nature.component.workFlow.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import org.hibernate.annotations.OrderBy;
 import org.hibernate.annotations.Where;
@@ -22,10 +16,6 @@ import com.nature.component.mxGraph.model.MxGraphModel;
 public class Flow extends BaseHibernateModelUUIDNoCorpAgentId {
 
 	private static final long serialVersionUID = 1L;
-
-	@OneToOne
-	@JoinColumn(name = "app_id", referencedColumnName = "id")
-	private FlowInfoDb appId;
 
 	private String name;
 
@@ -42,8 +32,12 @@ public class Flow extends BaseHibernateModelUUIDNoCorpAgentId {
 	@Column(name = "description",columnDefinition="varchar(1000) COMMENT '描述'")
 	private String description;
 
-	@OneToOne
-	@JoinColumn(name = "fk_mx_graph_model_id", referencedColumnName = "id")
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "flow")
+	@Where(clause = "enable_flag=1")
+	private FlowInfoDb appId;
+
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "flow")
+	@Where(clause = "enable_flag=1")
 	private MxGraphModel mxGraphModel;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "flow")
@@ -55,14 +49,6 @@ public class Flow extends BaseHibernateModelUUIDNoCorpAgentId {
 	@Where(clause = "enable_flag=1")
 	@OrderBy(clause = "lastUpdateDttm desc")
 	private List<Paths> pathsList = new ArrayList<Paths>();
-
-	public FlowInfoDb getAppId() {
-		return appId;
-	}
-
-	public void setAppId(FlowInfoDb appId) {
-		this.appId = appId;
-	}
 
 	public String getName() {
 		return name;
@@ -78,38 +64,6 @@ public class Flow extends BaseHibernateModelUUIDNoCorpAgentId {
 
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
-	}
-
-	public MxGraphModel getMxGraphModel() {
-		return mxGraphModel;
-	}
-
-	public void setMxGraphModel(MxGraphModel mxGraphModel) {
-		this.mxGraphModel = mxGraphModel;
-	}
-
-	public List<Stops> getStopsList() {
-		return stopsList;
-	}
-
-	public void setStopsList(List<Stops> stopsList) {
-		this.stopsList = stopsList;
-	}
-
-	public List<Paths> getPathsList() {
-		return pathsList;
-	}
-
-	public void setPathsList(List<Paths> pathsList) {
-		this.pathsList = pathsList;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
 	}
 
 	public String getDriverMemory() {
@@ -143,5 +97,44 @@ public class Flow extends BaseHibernateModelUUIDNoCorpAgentId {
 	public void setExecutorCores(String executorCores) {
 		this.executorCores = executorCores;
 	}
-	
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public FlowInfoDb getAppId() {
+		return appId;
+	}
+
+	public void setAppId(FlowInfoDb appId) {
+		this.appId = appId;
+	}
+
+	public MxGraphModel getMxGraphModel() {
+		return mxGraphModel;
+	}
+
+	public void setMxGraphModel(MxGraphModel mxGraphModel) {
+		this.mxGraphModel = mxGraphModel;
+	}
+
+	public List<Stops> getStopsList() {
+		return stopsList;
+	}
+
+	public void setStopsList(List<Stops> stopsList) {
+		this.stopsList = stopsList;
+	}
+
+	public List<Paths> getPathsList() {
+		return pathsList;
+	}
+
+	public void setPathsList(List<Paths> pathsList) {
+		this.pathsList = pathsList;
+	}
 }

@@ -47,7 +47,7 @@
 
     <!-- The fav icon -->
     <link rel="shortcut icon" th:href="@{/charisma/img/favicon.ico}">
-	<style type="text/css">
+    <style type="text/css">
         /*人为制造一个占据整个屏幕的Div,其透明度为0.7且z-index为9999使之前的页面被压在底层无法点击*/
         .fullScreen {
             position: fixed;
@@ -74,7 +74,8 @@
 </div>
 <!-- loading end -->
 <!-- topbar starts -->
-<div class="navbar navbar-default" role="navigation" style="background-image: linear-gradient(#bbacac, #ffffff 60%, #ffffff); border-color: #ffffff;">
+<div class="navbar navbar-default" role="navigation"
+     style="background-image: linear-gradient(#bbacac, #ffffff 60%, #ffffff); border-color: #ffffff;">
 
     <div class="">
         <a class="navbar-brand" href="index">
@@ -162,50 +163,58 @@
 
 </div><!--/.fluid-container-->
 <div style="display: none;" id="SubmitPage">
-<form class="layui-form" action=""   >
-  <div class="layui-form-item">
-    <label class="layui-form-label">flowName</label>
-    <div class="layui-input-block">
-      <input type="hidden" id="flowId"/>
-      <input id="flowName" placeholder="please input flowName..." autocomplete="off" class="layui-input" style="width: 400px;margin-left: 20px;">
-    </div>
-  </div>
-  <div class="layui-form-item layui-form-text">
-    <label class="layui-form-label">description</label>
-    <div class="layui-input-block">
-      <textarea id="description" placeholder="please input description..." class="layui-textarea" style="width: 400px;margin-left: 20px;"></textarea>
-    </div>
-  </div>
-  <div class="layui-form-item">
-    <label class="layui-form-label">driverMemory</label>
-    <div class="layui-input-block">
-      <input id="driverMemory" autocomplete="off" class="layui-input" style="width: 400px;margin-left: 20px;" value="1g">
-    </div>
-  </div>
-  <div class="layui-form-item">
-    <label class="layui-form-label">executorNumber</label>
-    <div class="layui-input-block">
-      <input id="executorNumber" autocomplete="off"  class="layui-input" style="width: 400px;margin-left: 20px;" value="1">
-    </div>
-  </div>
-  <div class="layui-form-item">
-    <label class="layui-form-label">executorMemory</label>
-    <div class="layui-input-block">
-      <input id="executorMemory" autocomplete="off"  class="layui-input" style="width: 400px;margin-left: 20px;" value="1g">
-    </div>
-  </div>
-  <div class="layui-form-item">
-    <label class="layui-form-label">executorCores</label>
-    <div class="layui-input-block">
-      <input id="executorCores" autocomplete="off"  class="layui-input" style="width: 400px;margin-left: 20px;" value="1">
-    </div>
-  </div>
-  <div class="layui-form-item" style="text-align: center;margin-right: 90px;">
-    <div class="layui-input-block"> 
-      <button type="button" class="layui-btn layui-btn-primary" onclick='saveFlow()' id="buttonFlow">提交</button>
-    </div>
-  </div>
-</form> </div>
+    <form class="layui-form" action="">
+        <div class="layui-form-item">
+            <label class="layui-form-label">flowName</label>
+            <div class="layui-input-block">
+                <input type="hidden" id="flowId"/>
+                <input id="flowName" placeholder="please input flowName..." autocomplete="off" class="layui-input"
+                       style="width: 400px;margin-left: 20px;">
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">description</label>
+            <div class="layui-input-block">
+                <textarea id="description" placeholder="please input description..." class="layui-textarea"
+                          style="width: 400px;margin-left: 20px;"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">driverMemory</label>
+            <div class="layui-input-block">
+                <input id="driverMemory" autocomplete="off" class="layui-input" style="width: 400px;margin-left: 20px;"
+                       value="1g">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">executorNumber</label>
+            <div class="layui-input-block">
+                <input id="executorNumber" autocomplete="off" class="layui-input"
+                       style="width: 400px;margin-left: 20px;" value="1">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">executorMemory</label>
+            <div class="layui-input-block">
+                <input id="executorMemory" autocomplete="off" class="layui-input"
+                       style="width: 400px;margin-left: 20px;" value="1g">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">executorCores</label>
+            <div class="layui-input-block">
+                <input id="executorCores" autocomplete="off" class="layui-input" style="width: 400px;margin-left: 20px;"
+                       value="1">
+            </div>
+        </div>
+        <div class="layui-form-item" style="text-align: center;margin-right: 90px;">
+            <div class="layui-input-block">
+                <button type="button" class="layui-btn layui-btn-primary" onclick='saveFlow()' id="buttonFlow">提交
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
 <!-- external javascript -->
 
 <script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
@@ -243,291 +252,339 @@
 <script th:inline="javascript">
     function loadPostRight(url) {
         $.ajax({
-            type:"POST",//为get请求
-            url:url,
-            data:{},
-            success:function(data){//请求成功之后的操作
+            type: "POST",//为get请求
+            url: url,
+            data: {},
+            success: function (data) {//请求成功之后的操作
                 //console.log("success");
                 $('#content').html(data);
             }
         });
 
     }
+
     function loadGetRight(url) {
         $.ajax({
-            type:"GET",//为get请求
-            url:url,
-            data:{},
-            success:function(data){//请求成功之后的操作
+            type: "GET",//为get请求
+            url: url,
+            data: {},
+            success: function (data) {//请求成功之后的操作
                 //console.log("success");
                 $('#content').html(data);
             }
         });
 
     }
+
     function initAll(url) {
         window.location.href = url;
     }
+
     //@ sourceURL=table.js
 </script>
 <script th:inline="javascript">
-    function newPath(){
-    	 $("#buttonFlow").attr("onclick",""); 
-    	 $("#buttonFlow").attr("onclick","saveFlow()"); 
-    	 $("#flowId").val("");
-    	 $("#flowName").val("");
-         $("#description").val("");
-         $("#driverMemory").val('1g');
-         $("#executorNumber").val('1');
-         $("#executorMemory").val('1g');
-         $("#executorCores").val('1');
+    function newPath() {
+        $("#buttonFlow").attr("onclick", "");
+        $("#buttonFlow").attr("onclick", "saveFlow()");
+        $("#flowId").val("");
+        $("#flowName").val("");
+        $("#description").val("");
+        $("#driverMemory").val('1g');
+        $("#executorNumber").val('1');
+        $("#executorMemory").val('1g');
+        $("#executorCores").val('1');
         layer.open({
             type: 1,
             title: 'create flow',
-            shadeClose:true,
+            shadeClose: true,
             closeBtn: 1,
             shift: 7,
             area: ['580px', '520px'], //宽高
             skin: 'layui-layer-rim', //加上边框
-            content:$("#SubmitPage")
+            content: $("#SubmitPage")
         });
     }
 
-     function update(id,updateName,updateDescription,driverMemory,executorNumber,executorMemory,executorCores){
-    	 $("#buttonFlow").attr("onclick",""); 
-    	 $("#buttonFlow").attr("onclick","updateFlow()"); 
-    	 $("#flowId").val(id);
-    	 $("#flowName").val(updateName);
-         $("#description").val(updateDescription);
-         $("#driverMemory").val(driverMemory);
-         $("#executorNumber").val(executorNumber);
-         $("#executorMemory").val(executorMemory);
-         $("#executorCores").val(executorCores);
+    function update(id, updateName, updateDescription, driverMemory, executorNumber, executorMemory, executorCores) {
+        $("#buttonFlow").attr("onclick", "");
+        $("#buttonFlow").attr("onclick", "updateFlow()");
+        $("#flowId").val(id);
+        $("#flowName").val(updateName);
+        $("#description").val(updateDescription);
+        $("#driverMemory").val(driverMemory);
+        $("#executorNumber").val(executorNumber);
+        $("#executorMemory").val(executorMemory);
+        $("#executorCores").val(executorCores);
         layer.open({
             type: 1,
             title: 'update flow',
-            shadeClose:true,
+            shadeClose: true,
             closeBtn: false,
             shift: 7,
             closeBtn: 1,
             area: ['580px', '520px'], //宽高
             skin: 'layui-layer-rim', //加上边框
-            content: $("#SubmitPage") 
-        });
-    }  
-
-    function saveFlow(){
-    	var flowName = $("#flowName").val();
-        var description = $("#description").val();
-        var driverMemory = $("#driverMemory").val();
-        var executorNumber = $("#executorNumber").val();
-        var executorMemory = $("#executorMemory").val();
-        var executorCores = $("#executorCores").val();
-        if (checkFlowInput(flowName,description,driverMemory,executorNumber,executorMemory,executorCores))
-        $.ajax({
-            cache:true,//保留缓存数据
-            type:"get",//为post请求
-            url:"/piflow-web/flow/saveFlowInfo",//这是我在后台接受数据的文件名
-            data:{name:flowName,description:description,driverMemory:driverMemory,executorNumber:executorNumber,executorMemory:executorMemory,executorCores:executorCores},
-            async:false,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
-            error:function(request){//请求失败之后的操作
-                layer.closeAll('page');
-                layer.msg('创建失败,请稍后再试！',{icon: 2,  shade:0,  time: 2000}, function(){});
-                return;
-            },
-            success:function(data){//请求成功之后的操作
-                layer.closeAll('page');
-                layer.msg('创建成功',{icon: 1,  shade:0,  time: 2000}, function(){
-                    var tempwindow=window.open('_blank');
-                    tempwindow.location="/piflow-web/grapheditor/home?load="+data.id;
-                });
-            }
+            content: $("#SubmitPage")
         });
     }
-    function updateFlow(){
-    	var id = $("#flowId").val();
-     	var flowName = $("#flowName").val();
+
+    function saveFlow() {
+        var flowName = $("#flowName").val();
         var description = $("#description").val();
         var driverMemory = $("#driverMemory").val();
         var executorNumber = $("#executorNumber").val();
         var executorMemory = $("#executorMemory").val();
         var executorCores = $("#executorCores").val();
-        if (checkFlowInput(flowName,description,driverMemory,executorNumber,executorMemory,executorCores))
-        $.ajax({
-            cache:true,//保留缓存数据
-            type:"get",//为post请求
-            url:"/piflow-web/flow/updateFlowInfo",//这是我在后台接受数据的文件名
-            data:{id:id,name:flowName,description:description,driverMemory:driverMemory,executorNumber:executorNumber,executorMemory:executorMemory,executorCores:executorCores},
-            async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
-            error:function(request){//请求失败之后的操作
-                layer.closeAll('page');
-                layer.msg('修改失败,请稍后再试！',{icon: 2,  shade:0,  time: 2000}, function(){window.location.reload();});
-                return;
-            },
-            success:function(data){//请求成功之后的操作
-                if(data>0){
+        if (checkFlowInput(flowName, description, driverMemory, executorNumber, executorMemory, executorCores))
+            $.ajax({
+                cache: true,//保留缓存数据
+                type: "get",//为post请求
+                url: "/piflow-web/flow/saveFlowInfo",//这是我在后台接受数据的文件名
+                data: {
+                    name: flowName,
+                    description: description,
+                    driverMemory: driverMemory,
+                    executorNumber: executorNumber,
+                    executorMemory: executorMemory,
+                    executorCores: executorCores
+                },
+                async: false,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
+                error: function (request) {//请求失败之后的操作
                     layer.closeAll('page');
-                    layer.msg('修改成功',{icon: 1,  shade:0,  time: 2000}, function(){location.reload(); });
+                    layer.msg('创建失败,请稍后再试！', {icon: 2, shade: 0, time: 2000}, function () {
+                    });
+                    return;
+                },
+                success: function (data) {//请求成功之后的操作
+                    layer.closeAll('page');
+                    var dataMap = JSON.parse(data);
+                    if ("1" === dataMap.code) {
+                        layer.msg('创建成功', {icon: 1, shade: 0, time: 2000}, function () {
+                            var tempwindow = window.open('_blank');
+                            tempwindow.location = "/piflow-web/grapheditor/home?load=" + dataMap.flowId;
+                        });
+                    }else {
+                        layer.msg('创建失败,请稍后再试！', {icon: 2, shade: 0, time: 2000}, function () {
+                        });
+                    }
                 }
-            }
-        });
+            });
     }
+
+    function updateFlow() {
+        var id = $("#flowId").val();
+        var flowName = $("#flowName").val();
+        var description = $("#description").val();
+        var driverMemory = $("#driverMemory").val();
+        var executorNumber = $("#executorNumber").val();
+        var executorMemory = $("#executorMemory").val();
+        var executorCores = $("#executorCores").val();
+        if (checkFlowInput(flowName, description, driverMemory, executorNumber, executorMemory, executorCores))
+            $.ajax({
+                cache: true,//保留缓存数据
+                type: "get",//为post请求
+                url: "/piflow-web/flow/updateFlowInfo",//这是我在后台接受数据的文件名
+                data: {
+                    id: id,
+                    name: flowName,
+                    description: description,
+                    driverMemory: driverMemory,
+                    executorNumber: executorNumber,
+                    executorMemory: executorMemory,
+                    executorCores: executorCores
+                },
+                async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
+                error: function (request) {//请求失败之后的操作
+                    layer.closeAll('page');
+                    layer.msg('修改失败,请稍后再试！', {icon: 2, shade: 0, time: 2000}, function () {
+                        window.location.reload();
+                    });
+                    return;
+                },
+                success: function (data) {//请求成功之后的操作
+                    if (data > 0) {
+                        layer.closeAll('page');
+                        layer.msg('修改成功', {icon: 1, shade: 0, time: 2000}, function () {
+                            location.reload();
+                        });
+                    }
+                }
+            });
+    }
+
     //运行
-    function runFlow(loadId){
-    	$('#fullScreen').show();
+    function runFlow(loadId) {
+        $('#fullScreen').show();
         $.ajax({
-            cache:true,//保留缓存数据
-            type:"get",//为post请求
-            url:"/piflow-web/flow/runFlow",//这是我在后台接受数据的文件名
+            cache: true,//保留缓存数据
+            type: "get",//为post请求
+            url: "/piflow-web/flow/runFlow",//这是我在后台接受数据的文件名
             //data:$('#loginForm').serialize(),//将该表单序列化
-            data:{flowId:loadId},
-            async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
-            error:function(request){//请求失败之后的操作
-            	  $('#fullScreen').hide();
-                  alert("reload fail");
-                  return;
+            data: {flowId: loadId},
+            async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
+            error: function (request) {//请求失败之后的操作
+                $('#fullScreen').hide();
+                alert("reload fail");
+                return;
             },
-            success:function(data){//请求成功之后的操作
+            success: function (data) {//请求成功之后的操作
                 console.log("data");
-                if('0'!==data){
-                	 $('#fullScreen').hide();
-                	 layer.msg('启动成功',{icon: 1,  shade:0,  time: 2000}, function(){location.reload(); });
-                }else{
-                	$('#fullScreen').hide();
-                	layer.msg('启动失败',{icon: 2,  shade:0,  time: 2000}, function(){location.reload(); });
+                if ('0' !== data) {
+                    $('#fullScreen').hide();
+                    layer.msg('启动成功', {icon: 1, shade: 0, time: 2000}, function () {
+                        location.reload();
+                    });
+                } else {
+                    $('#fullScreen').hide();
+                    layer.msg('启动失败', {icon: 2, shade: 0, time: 2000}, function () {
+                        location.reload();
+                    });
                 }
 
             }
         });
     }
+
     //停止
-    function stopFlow(loadId){
-    	$('#fullScreen').show();
+    function stopFlow(loadId) {
+        $('#fullScreen').show();
         $.ajax({
-            cache:true,//保留缓存数据
-            type:"get",//为post请求
-            url:"/piflow-web/flow/stopFlow",//这是我在后台接受数据的文件名
+            cache: true,//保留缓存数据
+            type: "get",//为post请求
+            url: "/piflow-web/flow/stopFlow",//这是我在后台接受数据的文件名
             //data:$('#loginForm').serialize(),//将该表单序列化
-            data:{flowId:loadId},
-            async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
-            error:function(request){//请求失败之后的操作
-            	 $('#fullScreen').hide();
-                 alert("reload fail");
-                 return;
+            data: {flowId: loadId},
+            async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
+            error: function (request) {//请求失败之后的操作
+                $('#fullScreen').hide();
+                alert("reload fail");
+                return;
             },
-            success:function(data){//请求成功之后的操作
-                if('0'!==data){
+            success: function (data) {//请求成功之后的操作
+                if ('0' !== data) {
                     $('#fullScreen').hide();
-                    layer.msg('停止成功',{icon: 1,  shade:0,  time: 2000}, function(){location.reload(); });
+                    layer.msg('停止成功', {icon: 1, shade: 0, time: 2000}, function () {
+                        location.reload();
+                    });
                     return;
-                }else{
-                	$('#fullScreen').hide();
-                    layer.msg('停止失败',{icon: 2,  shade:0,  time: 2000}, function(){location.reload(); });
+                } else {
+                    $('#fullScreen').hide();
+                    layer.msg('停止失败', {icon: 2, shade: 0, time: 2000}, function () {
+                        location.reload();
+                    });
                 }
             }
         });
     }
-    function tableRow(){
+
+    function tableRow() {
         var arrayObj = new Array();
         var table = $("table tr").find("td:eq(1)");
         var state = $("table tr").find("td:eq(7)");
-        for (var i = 0; i<table.length;i++){
-            if(table[i].innerHTML != ""){
-                if(state[i].innerHTML != "No state" && state[i].innerHTML == "STARTED"){
+        for (var i = 0; i < table.length; i++) {
+            if (table[i].innerHTML != "") {
+                if (state[i].innerHTML != "No state" && state[i].innerHTML == "STARTED") {
                     arrayObj.push(table[i].innerHTML);
                 }
             }
         }
-        if(arrayObj.length == 0){
+        if (arrayObj.length == 0) {
             clearInterval(c);
             return;
         }
         $.ajax({
-            cache:true,
-            type:"get",
-            url:"/piflow-web/flowInfoDb/list",
-            data:{content:arrayObj},
-            async:true,
+            cache: true,
+            type: "get",
+            url: "/piflow-web/flowInfoDb/list",
+            data: {content: arrayObj},
+            async: true,
             traditional: true,
-            error:function(request){
+            error: function (request) {
                 console.log("error");
                 return;
             },
-            success:function(data){
-                if(null != data){
-                    for(var k in data){  //通过定义一个局部变量k遍历获取到了map中所有的key值
-                        var docList=data[k]; //获取到了key所对应的value的值！
+            success: function (data) {
+                if (null != data) {
+                    for (var k in data) {  //通过定义一个局部变量k遍历获取到了map中所有的key值
+                        var docList = data[k]; //获取到了key所对应的value的值！
                         var strs = new Array(); //定义一数组 
-                        strs=docList.split(","); //字符分割 
-                        if(null != strs && strs.length > 0)
-                        document.getElementById(""+k+"").value=strs[0];
-                        document.getElementById(""+k+"Info").innerHTML="进度"+strs[0]+"%";
-                        document.getElementById(""+k+"state").innerHTML=strs[1];
+                        strs = docList.split(","); //字符分割
+                        if (null != strs && strs.length > 0)
+                            document.getElementById("" + k + "").value = strs[0];
+                        document.getElementById("" + k + "Info").innerHTML = "进度" + strs[0] + "%";
+                        document.getElementById("" + k + "state").innerHTML = strs[1];
                     }
                 }
             }
         });
     }
-    $(document).ready(function(){
-             c = window.setInterval("tableRow()",5000);
+
+    $(document).ready(function () {
+        c = window.setInterval("tableRow()", 5000);
     });
 
-    function deleteFlow(id,name){
-    	var flag = confirm("确定删除"+name+"吗?");
-    	 if(flag){
-    	     $.ajax({
-    	            cache:true,//保留缓存数据
-    	            type:"get",//为post请求
-    	            url:"/piflow-web/flow/deleteFlow",//这是我在后台接受数据的文件名
-    	            data:{id:id},
-    	            async:true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
-    	            error:function(request){//请求失败之后的操作
-    	                return;
-    	            },
-    	            success:function(data){//请求成功之后的操作
-    	                if(data > 0){
-    	                    layer.msg('删除成功',{icon: 1,  shade:0,  time: 2000}, function(){location.reload(); });
-    	                }else{
-    	                    layer.msg('删除失败',{icon: 2,  shade:0,  time: 2000}, function(){location.reload(); });
-    	                }
-    	            }
-    	        });
-         } 
+    function deleteFlow(id, name) {
+        var flag = confirm("确定删除" + name + "吗?");
+        if (flag) {
+            $.ajax({
+                cache: true,//保留缓存数据
+                type: "get",//为post请求
+                url: "/piflow-web/flow/deleteFlow",//这是我在后台接受数据的文件名
+                data: {id: id},
+                async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
+                error: function (request) {//请求失败之后的操作
+                    return;
+                },
+                success: function (data) {//请求成功之后的操作
+                    if (data > 0) {
+                        layer.msg('删除成功', {icon: 1, shade: 0, time: 2000}, function () {
+                            location.reload();
+                        });
+                    } else {
+                        layer.msg('删除失败', {icon: 2, shade: 0, time: 2000}, function () {
+                            location.reload();
+                        });
+                    }
+                }
+            });
+        }
     }
-    function checkFlowInput(flowName,description,driverMemory,executorNumber,executorMemory,executorCores){
-    	if(flowName == ''){
-            layer.msg('flowName不能为空！',{icon: 2,  shade:0,  time: 2000});
+
+    function checkFlowInput(flowName, description, driverMemory, executorNumber, executorMemory, executorCores) {
+        if (flowName == '') {
+            layer.msg('flowName不能为空！', {icon: 2, shade: 0, time: 2000});
             document.getElementById('flowName').focus();
             return false;
         }
-    	
-        if(description == ''){
-            layer.msg('description不能为空！',{icon: 2,  shade:0,  time: 2000});
+
+        if (description == '') {
+            layer.msg('description不能为空！', {icon: 2, shade: 0, time: 2000});
             document.getElementById('description').focus();
             return false;
         }
-        if(driverMemory == ''){
-            layer.msg('driverMemory不能为空！',{icon: 2,  shade:0,  time: 2000});
+        if (driverMemory == '') {
+            layer.msg('driverMemory不能为空！', {icon: 2, shade: 0, time: 2000});
             document.getElementById('driverMemory').focus();
             return false;
         }
-        if(executorNumber == ''){
-            layer.msg('executorNumber不能为空！',{icon: 2,  shade:0,  time: 2000});
+        if (executorNumber == '') {
+            layer.msg('executorNumber不能为空！', {icon: 2, shade: 0, time: 2000});
             document.getElementById('executorNumber').focus();
             return false;
         }
-        if(executorMemory == ''){
-            layer.msg('executorMemory不能为空！',{icon: 2,  shade:0,  time: 2000});
+        if (executorMemory == '') {
+            layer.msg('executorMemory不能为空！', {icon: 2, shade: 0, time: 2000});
             document.getElementById('executorMemory').focus();
             return false;
         }
-        if(executorCores == ''){
-            layer.msg('executorCores不能为空！',{icon: 2,  shade:0,  time: 2000});
+        if (executorCores == '') {
+            layer.msg('executorCores不能为空！', {icon: 2, shade: 0, time: 2000});
             document.getElementById('executorCores').focus();
             return false;
         }
         return true;
     }
+
     //@ sourceURL=table_right.js
 </script>
 </body>

@@ -39,7 +39,7 @@ public interface StopsTemplateMapper {
 	public StopsTemplate getStopsTemplateAndPropertyById(String id);
 
 	/**
-	 * @Title 根据stops组的id查询stops模板
+	 * 根据stops组的id查询stops模板
 	 * 
 	 * @param groupId
 	 * @return
@@ -48,7 +48,7 @@ public interface StopsTemplateMapper {
 	public List<StopsTemplate> getStopsTemplateListByGroupId(String groupId);
 
 	/**
-	 * @Title 根据stopsName查询StopsTemplate
+	 * 根据stopsName查询StopsTemplate
 	 * 
 	 * @param stopsName
 	 * @return

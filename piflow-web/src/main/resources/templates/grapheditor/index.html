@@ -109,13 +109,13 @@
                 </div>
                 <from id="protInfo">
                     <div id="sourceTitle" style="display: none">
-                        <span style="font-size: 30px">SourcePort</span>
+                        <span style="font-size: 30px">SourceOutport</span>
                         <div id="sourceTitleCheckbox"></div>
                         <div id="sourceTitleBtn"></div>
                     </div>
                     <hr/>
                     <div id="targetTitle" style="display: none">
-                        <span style="font-size: 30px">TargetPort</span>
+                        <span style="font-size: 30px">TargetInport</span>
                         <div id="targetTitleCheckbox"></div>
                         <div id="targetTitleBtn"></div>
                     </div>
@@ -153,13 +153,13 @@
             //针对不同事件设置值
            	if('cellsAdded' == evt.name){
          		  cells = evt.properties.cells;
-         		  ss = cells[0];  
-         		  value = ss.value ; 
+         		  ss = cells[0];
+         		  value = ss.value ;
          		  id = ss.id;
-             }else{  
+             }else{
             	  cells = evt.properties;
             	  if(null != cells.cell){
-            	  value = cells.cell.value; 
+            	  value = cells.cell.value;
             	  id = cells.cell.id;
             	  }
             }
@@ -295,7 +295,7 @@
                 displayName.setAttribute('class', 'true');
                 displayName.setAttribute('onclick', 'dbssn("' + data[y].displayName + '")');
                 displayName.setAttribute('id', '' + data[y].displayName + '');
-                displayName.setAttribute('rows', '2');
+                displayName.setAttribute('rows', '1');
                 displayName.setAttribute('cols', '20');
                 displayName.setAttribute('onblur', 'shiqu("' + data[y].id + '","' + data[y].displayName + '")');
                 displayName.style.width = "210px";
@@ -370,7 +370,7 @@
             //divValue.appendChild(btn);
         }
     }
-    
+
     function dbssn(id){
       	 $("#" + id + "").focus();
        }
@@ -517,7 +517,7 @@
                         document.getElementById('flowName').innerText = "No content";
                         document.getElementById('flowDescription').innerText = "No content";
                         document.getElementById('createrTime').innerText = "No content";
-                    } 
+                    }
                     if (flowInfoDbInfo != null && flowInfoDbInfo != ""){
                         document.getElementById('startTime').innerText = flowInfoDbInfo.startTime ? flowInfoDbInfo.startTime : "No startTime" ;
                         document.getElementById('stopTime').innerText = flowInfoDbInfo.endTime ? flowInfoDbInfo.endTime : "No stopTime" ;
@@ -588,11 +588,12 @@
             },
             success: function (data) {//请求成功之后的操作
                 //console.log("success");
-                if ('0' !== data) {
-                    alert(data);
+                var dataMap = JSON.parse(data);
+                if ('0' !== dataMap.code) {
+                    alert(dataMap.errorMsg);
                     startFlow.show();
                 } else {
-                    alert("停止失败");
+                    alert("停止失败"+dataMap.errMsg);
                     stopFlow.show();
                 }
                 fullScreen.hide();
@@ -832,23 +833,30 @@
             if (targetTitleCheckbox) {
                 var sourceDivDisplay = sourceTitle.css('display');
                 if (sourceDivDisplay == 'none') {
-                    alert("被你发现了，我是隐藏的啦！");
+                    //alert("被你发现了，我是隐藏的啦！");
                 } else {
-                    if (sourceTitleCheckbox.find("input[type='checkbox']:checked").length > 1) {
+                    var sourceEffCheckbox=[];
+                    sourceTitleCheckbox.find("input[type='checkbox']:checked").each(function () {
+                        if($(this).prop("disabled")==false){
+                            sourceEffCheckbox[sourceEffCheckbox.length] = $(this);
+                        }
+                    });
+                    if (sourceEffCheckbox.length > 1) {
                         alert("sourcePort只能选一个");
                         return false;
                     }
-                    if (sourceTitleCheckbox.find("input[type='checkbox']:checked").length < 1) {
+                    if (sourceEffCheckbox < 1) {
                         alert("请选择sourcePort");
                         return false;
                     }
-                    sourceTitleCheckbox.find("input[type='checkbox']:checked").each(function () {
+                    for (var i = 0; i < sourceEffCheckbox.length; i++){
+                        var sourcecheckBoxEff = sourceEffCheckbox[i];
                         if ('' === sourcePortVal) {
-                            sourcePortVal = $(this).val();
+                            sourcePortVal = sourcecheckBoxEff.val();
                         } else {
-                            sourcePortVal = sourcePortVal + "," + $(this).val();
+                            sourcePortVal = sourcePortVal + "," + sourcecheckBoxEff.val();
                         }
-                    });
+                    }
                 }
             } else {
                 alert("页面报错，请检查！");
@@ -857,23 +865,30 @@
             if (targetTitleCheckbox) {
                 var targetDivDisplay = targetTitle.css('display');
                 if (targetDivDisplay == 'none') {
-                    alert("被你发现了，我是隐藏的啦！");
+                    //alert("被你发现了，我是隐藏的啦！");
                 } else {
-                    if (targetTitleCheckbox.find("input[type='checkbox']:checked").length > 1) {
+                    var targetEffCheckbox=[];
+                    targetTitleCheckbox.find("input[type='checkbox']:checked").each(function () {
+                        if($(this).prop("disabled")==false){
+                            targetEffCheckbox[targetEffCheckbox.length] = $(this);
+                        }
+                    });
+                    if (targetEffCheckbox.length > 1) {
                         alert("targetPort只能选一个");
                         return false;
                     }
-                    if (targetTitleCheckbox.find("input[type='checkbox']:checked").length < 1) {
+                    if (targetEffCheckbox.length < 1) {
                         alert("请选择targetPort");
                         return false;
                     }
-                    targetTitleCheckbox.find("input[type='checkbox']:checked").each(function () {
+                    for (var i = 0; i < targetEffCheckbox.length; i++){
+                        var targetcheckBoxEff = targetEffCheckbox[i];
                         if ('' === targetPortVal) {
-                            targetPortVal = $(this).val();
+                            targetPortVal = targetcheckBoxEff.val();
                         } else {
-                            targetPortVal = targetPortVal + "," + $(this).val();
+                            targetPortVal = targetPortVal + "," + targetcheckBoxEff.val();
                         }
-                    });
+                    }
                 }
             } else {
                 alert("页面报错，请检查！");
@@ -916,7 +931,7 @@
                         var dataMap = JSON.parse(data);
                         //alert(dataMap);
                         if ('1' === dataMap.code) {
-                            alert("端口选择保存成功");
+                            //alert("端口选择保存成功");
                         } else {
                             alert("端口选择保存失败");
                             graphGlobal.removeCells(pathsCells);
@@ -925,7 +940,7 @@
                 });
 
             }
-            alert("提交");
+            //alert("提交");
         } else {
             graphGlobal.removeCells(pathsCells);
         }

@@ -20,6 +20,14 @@ public class FlowVo implements Serializable {
 	
 	private String description; //描述
 
+	private String driverMemory;
+
+	private String executorNumber;
+
+	private String executorMemory;
+
+	private String executorCores;
+
 	private MxGraphModelVo mxGraphModelVo;//画板信息
 
 	private List<StopsVo> stopsVoList = new ArrayList<StopsVo>();//当前流所有的stop
@@ -64,6 +72,38 @@ public class FlowVo implements Serializable {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public String getDriverMemory() {
+		return driverMemory;
+	}
+
+	public void setDriverMemory(String driverMemory) {
+		this.driverMemory = driverMemory;
+	}
+
+	public String getExecutorNumber() {
+		return executorNumber;
+	}
+
+	public void setExecutorNumber(String executorNumber) {
+		this.executorNumber = executorNumber;
+	}
+
+	public String getExecutorMemory() {
+		return executorMemory;
+	}
+
+	public void setExecutorMemory(String executorMemory) {
+		this.executorMemory = executorMemory;
+	}
+
+	public String getExecutorCores() {
+		return executorCores;
+	}
+
+	public void setExecutorCores(String executorCores) {
+		this.executorCores = executorCores;
 	}
 
 	public MxGraphModelVo getMxGraphModelVo() {

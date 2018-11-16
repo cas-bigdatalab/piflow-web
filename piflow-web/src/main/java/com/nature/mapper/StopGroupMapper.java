@@ -19,7 +19,7 @@ import com.nature.provider.StopGroupMapperProvider;
 @Mapper
 public interface StopGroupMapper {
 	/**
-	 * @Title 查詢所有組
+	 * 查詢所有組
 	 * 
 	 * @return
 	 */

@@ -21,9 +21,9 @@ import com.nature.provider.PropertyMapperProvider;
 public interface PropertyMapper {
 
 	/**
-	 * @Title 插入list<Property> 注意拼sql的方法必须用map接 Param内容为键值
+	 * 插入list<Property> 注意拼sql的方法必须用map接 Param内容为键值
 	 * 
-	 * @param map (内容： 键为propertyList,值为List<Property>)
+	 * @param propertyList (内容： 键为propertyList,值为List<Property>)
 	 * @return
 	 */
 	@InsertProvider(type = PropertyMapperProvider.class, method = "addPropertyList")

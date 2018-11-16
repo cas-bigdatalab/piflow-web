@@ -15,7 +15,7 @@ import com.nature.component.workFlow.vo.PathsVo;
 public class PathCtrl {
 
     /**
-     * @Title 引入日志，注意都是"org.slf4j"包下
+     * 引入日志，注意都是"org.slf4j"包下
      */
     Logger logger = LoggerUtil.getLogger();
 

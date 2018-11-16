@@ -1,8 +1,6 @@
 package com.nature.component.mxGraph.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import com.nature.base.BaseHibernateModelUUIDNoCorpAgentId;
 
@@ -13,6 +11,10 @@ public class MxGeometry extends BaseHibernateModelUUIDNoCorpAgentId {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+
+	@OneToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "FK_MX_CELL_ID")
+	private MxCell mxCell;
 
 	@Column(name = "MX_RELATIVE")
 	private String relative;
@@ -31,6 +33,14 @@ public class MxGeometry extends BaseHibernateModelUUIDNoCorpAgentId {
 
 	@Column(name = "MX_HEIGHT")
 	private String height;
+
+	public MxCell getMxCell() {
+		return mxCell;
+	}
+
+	public void setMxCell(MxCell mxCell) {
+		this.mxCell = mxCell;
+	}
 
 	public String getRelative() {
 		return relative;
@@ -79,5 +89,4 @@ public class MxGeometry extends BaseHibernateModelUUIDNoCorpAgentId {
 	public void setHeight(String height) {
 		this.height = height;
 	}
-
 }

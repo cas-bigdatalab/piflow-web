@@ -3,12 +3,10 @@ package com.nature.component.mxGraph.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
+import com.nature.component.workFlow.model.Flow;
+import org.hibernate.annotations.OrderBy;
 import org.hibernate.annotations.Where;
 
 import com.nature.base.BaseHibernateModelUUIDNoCorpAgentId;
@@ -16,175 +14,188 @@ import com.nature.base.BaseHibernateModelUUIDNoCorpAgentId;
 @Entity
 @Table(name = "MX_GRAPH_MODEL")
 public class MxGraphModel extends BaseHibernateModelUUIDNoCorpAgentId {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
-	@Column(name = "MX_DX")
-	private String dx;
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "FK_FLOW_ID")
+    private Flow flow;
 
-	@Column(name = "MX_DY")
-	private String dy;
+    @Column(name = "MX_DX")
+    private String dx;
 
-	@Column(name = "MX_GRID")
-	private String grid;
+    @Column(name = "MX_DY")
+    private String dy;
 
-	@Column(name = "MX_GRIDSIZE")
-	private String gridSize;
+    @Column(name = "MX_GRID")
+    private String grid;
 
-	@Column(name = "MX_GUIDES")
-	private String guides;
+    @Column(name = "MX_GRIDSIZE")
+    private String gridSize;
 
-	@Column(name = "MX_TOOLTIPS")
-	private String tooltips;
+    @Column(name = "MX_GUIDES")
+    private String guides;
 
-	@Column(name = "MX_CONNECT")
-	private String connect;
+    @Column(name = "MX_TOOLTIPS")
+    private String tooltips;
 
-	@Column(name = "MX_ARROWS")
-	private String arrows;
+    @Column(name = "MX_CONNECT")
+    private String connect;
 
-	@Column(name = "MX_FOLD")
-	private String fold;
+    @Column(name = "MX_ARROWS")
+    private String arrows;
 
-	@Column(name = "MX_PAGE")
-	private String page;
+    @Column(name = "MX_FOLD")
+    private String fold;
 
-	@Column(name = "MX_PAGESCALE")
-	private String pageScale;
+    @Column(name = "MX_PAGE")
+    private String page;
 
-	@Column(name = "MX_PAGEWIDTH")
-	private String pageWidth;
+    @Column(name = "MX_PAGESCALE")
+    private String pageScale;
 
-	@Column(name = "MX_PAGEHEIGHT")
-	private String pageHeight;
+    @Column(name = "MX_PAGEWIDTH")
+    private String pageWidth;
 
-	@Column(name = "MX_BACKGROUND")
-	private String background;
+    @Column(name = "MX_PAGEHEIGHT")
+    private String pageHeight;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "mxGraphModel")
-	@Where(clause = "enable_flag=1")
-	private List<MxCell> root = new ArrayList<MxCell>();
+    @Column(name = "MX_BACKGROUND")
+    private String background;
 
-	public String getDx() {
-		return dx;
-	}
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "mxGraphModel")
+    @Where(clause = "enable_flag=1")
+    @OrderBy(clause = "lastUpdateDttm desc")
+    private List<MxCell> root = new ArrayList<MxCell>();
 
-	public void setDx(String dx) {
-		this.dx = dx;
-	}
+    public Flow getFlow() {
+        return flow;
+    }
 
-	public String getDy() {
-		return dy;
-	}
+    public void setFlow(Flow flow) {
+        this.flow = flow;
+    }
 
-	public void setDy(String dy) {
-		this.dy = dy;
-	}
+    public String getDx() {
+        return dx;
+    }
 
-	public String getGrid() {
-		return grid;
-	}
+    public void setDx(String dx) {
+        this.dx = dx;
+    }
 
-	public void setGrid(String grid) {
-		this.grid = grid;
-	}
+    public String getDy() {
+        return dy;
+    }
 
-	public String getGridSize() {
-		return gridSize;
-	}
+    public void setDy(String dy) {
+        this.dy = dy;
+    }
 
-	public void setGridSize(String gridSize) {
-		this.gridSize = gridSize;
-	}
+    public String getGrid() {
+        return grid;
+    }
 
-	public String getGuides() {
-		return guides;
-	}
+    public void setGrid(String grid) {
+        this.grid = grid;
+    }
 
-	public void setGuides(String guides) {
-		this.guides = guides;
-	}
+    public String getGridSize() {
+        return gridSize;
+    }
 
-	public String getTooltips() {
-		return tooltips;
-	}
+    public void setGridSize(String gridSize) {
+        this.gridSize = gridSize;
+    }
 
-	public void setTooltips(String tooltips) {
-		this.tooltips = tooltips;
-	}
+    public String getGuides() {
+        return guides;
+    }
 
-	public String getConnect() {
-		return connect;
-	}
+    public void setGuides(String guides) {
+        this.guides = guides;
+    }
 
-	public void setConnect(String connect) {
-		this.connect = connect;
-	}
+    public String getTooltips() {
+        return tooltips;
+    }
 
-	public String getArrows() {
-		return arrows;
-	}
+    public void setTooltips(String tooltips) {
+        this.tooltips = tooltips;
+    }
 
-	public void setArrows(String arrows) {
-		this.arrows = arrows;
-	}
+    public String getConnect() {
+        return connect;
+    }
 
-	public String getFold() {
-		return fold;
-	}
+    public void setConnect(String connect) {
+        this.connect = connect;
+    }
 
-	public void setFold(String fold) {
-		this.fold = fold;
-	}
+    public String getArrows() {
+        return arrows;
+    }
 
-	public String getPage() {
-		return page;
-	}
+    public void setArrows(String arrows) {
+        this.arrows = arrows;
+    }
 
-	public void setPage(String page) {
-		this.page = page;
-	}
+    public String getFold() {
+        return fold;
+    }
 
-	public String getPageScale() {
-		return pageScale;
-	}
+    public void setFold(String fold) {
+        this.fold = fold;
+    }
 
-	public void setPageScale(String pageScale) {
-		this.pageScale = pageScale;
-	}
+    public String getPage() {
+        return page;
+    }
 
-	public String getPageWidth() {
-		return pageWidth;
-	}
+    public void setPage(String page) {
+        this.page = page;
+    }
 
-	public void setPageWidth(String pageWidth) {
-		this.pageWidth = pageWidth;
-	}
+    public String getPageScale() {
+        return pageScale;
+    }
 
-	public String getPageHeight() {
-		return pageHeight;
-	}
+    public void setPageScale(String pageScale) {
+        this.pageScale = pageScale;
+    }
 
-	public void setPageHeight(String pageHeight) {
-		this.pageHeight = pageHeight;
-	}
+    public String getPageWidth() {
+        return pageWidth;
+    }
 
-	public String getBackground() {
-		return background;
-	}
+    public void setPageWidth(String pageWidth) {
+        this.pageWidth = pageWidth;
+    }
 
-	public void setBackground(String background) {
-		this.background = background;
-	}
+    public String getPageHeight() {
+        return pageHeight;
+    }
 
-	public List<MxCell> getRoot() {
-		return root;
-	}
+    public void setPageHeight(String pageHeight) {
+        this.pageHeight = pageHeight;
+    }
 
-	public void setRoot(List<MxCell> root) {
-		this.root = root;
-	}
+    public String getBackground() {
+        return background;
+    }
+
+    public void setBackground(String background) {
+        this.background = background;
+    }
+
+    public List<MxCell> getRoot() {
+        return root;
+    }
+
+    public void setRoot(List<MxCell> root) {
+        this.root = root;
+    }
 
 }
