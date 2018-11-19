@@ -3,6 +3,7 @@ package com.nature.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.mapping.FetchType;
 
 import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.model.FlowInfoDb;
@@ -26,13 +27,15 @@ public interface FlowInfoDbMapper {
      */
     @Select("SELECT * FROM flow where enable_flag = '1' ORDER BY crt_dttm DESC ")
     @Results({
-            @Result(property = "appId", column = "app_id", javaType = FlowInfoDb.class, one = @One(select = "com.nature.mapper.FlowInfoDbMapper.getAppByAppId"))})
+    			@Result(id = true, column = "id", property = "id"),
+    			@Result(column = "id", property = "appId", one = @One(select = "com.nature.mapper.FlowInfoDbMapper.getAppByAppFlowId", fetchType = FetchType.EAGER))
+            })
     public List<Flow> findAppList();
 
     @Select("SELECT id,name,end_time,start_time,state,progress FROM flow_info where enable_flag = '1' and id = #{id}")
     public List<FlowInfoDb> getAppByAppId(@Param("id") String appId);
 
-    @Select("SELECT id,name,end_time,start_time,state,progress FROM flow_info where enable_flag = '1' and fk_flow_id = #{flowId}")
+    @Select("SELECT id,name,end_time,start_time,state,progress FROM flow_info where enable_flag = '1' and fk_flow_id = #{flowId} ORDER BY crt_dttm desc  LIMIT 1  ")
     public List<FlowInfoDb> getAppByAppFlowId(@Param("flowId") String flowId);
 
     /**

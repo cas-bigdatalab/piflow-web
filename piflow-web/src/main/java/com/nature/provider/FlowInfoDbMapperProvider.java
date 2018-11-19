@@ -91,7 +91,7 @@ public class FlowInfoDbMapperProvider {
         sql.SELECT("*");
         sql.FROM("flow_info");
         sql.WHERE("enable_flag = 1");
-        sql.WHERE("id =  (SELECT app_id from flow where id = '" + flowId + "')");
+        sql.WHERE("fk_flow_id = '" + flowId + "' ");
         sqlStr = sql.toString() + ";";
         return sqlStr;
     }

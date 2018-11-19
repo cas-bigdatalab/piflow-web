@@ -142,9 +142,9 @@
     });
     var timer;
     var flag = 0;
+    var timerPath;
 
     function findBasicInfo(evt) {
-        console.info(evt);
         flag = 0;
     	var cells = null;
     	var id = null;
@@ -179,9 +179,6 @@
         }
     }
     function queryStopsProperty(id){
-    	if(flag > 5){
-            window.clearTimeout(t1);
-    	}
         $.ajax({
             cache: true,
             type: "POST",
@@ -204,11 +201,15 @@
                     document.getElementById('stopSowner').innerText = data.owner;
                     document.getElementById('stopCreateDate').innerText = data.crtDttmString;
                     //成功的话去掉定时器
-                    window.clearTimeout(t1);
+                    window.clearTimeout(timerPath);
                 } else {
                     console.log("stops属性查询null");
-                    var t1 = window.setTimeout(queryStopsProperty(id),500);
                     flag ++;
+                    if(flag > 5){
+                        window.clearTimeout(timerPath);
+                        return;
+                	}
+                    timerPath = window.setTimeout(queryStopsProperty(id),500);
                 }
             }
         });
@@ -228,24 +229,27 @@
             success: function (data) {
                 if ("" != data) {
                     console.log("path查询success");
-                    console.info(data);
                     $("#AttributeInfoId").hide();
+                    $("#containerID").show();
                     $("#basicInfoId").html('线信息');
                     $('#basicInfoId').css('text-align','');
-                    $("#stopsNameID").html('pageId');
-                    $("#GroupNameID").html('form');
-                    $("#descriptionID").html('to');
-                    $("#bundelID").html('inport');
-                    $("#versionID").html('outport');
-                   // $("#ownerID").html('port');
-                    $("#createDateID").html('flowName');
+                    $('#basicInfoId').css('background-color','');
+                    $('#basicInfoId').css('border-style','');
+                    $('#basicInfoId').css('height','27px');
+                    $("#stopsNameID").html('pageId：');
+                    $("#GroupNameID").html('form：');
+                    $("#descriptionID").html('to：');
+                    $("#bundelID").html('inport：');
+                    $("#versionID").html('outport：');
+                    $("#ownerID").html('createrTime：');
+                    $("#createDateID").html('flowName：');
                     document.getElementById('stopsNameLabel').innerText = data.pageId;
-                    document.getElementById('stopsDescription').innerText = data.to;
-                    document.getElementById('stopsGroups').innerText = data.from;
+                    document.getElementById('stopsDescription').innerText = data.stopTo.name;
+                    document.getElementById('stopsGroups').innerText = data.stopFrom.name;
                     document.getElementById('stopsBundel').innerText = data.inport;
                     document.getElementById('stopsVersion').innerText = data.outport;
-                    //document.getElementById('stopSowner').innerText = data.port;
-                    document.getElementById('stopCreateDate').innerText = data.flow;
+                    document.getElementById('stopSowner').innerText = data.crtDttmString;
+                    document.getElementById('stopCreateDate').innerText = data.flow.name;
                 } else {
                     console.log("path属性查询null");
                 }
@@ -266,8 +270,8 @@
                 var select = document.createElement('select');
                 select.style.width = "210px";
                 select.style.height = "26px";
-                select.setAttribute('id', '' + data[y].displayName + '');
-                select.setAttribute('onblur', 'shiqu("' + data[y].id + '","' + data[y].displayName + '")');
+                select.setAttribute('id', '' + data[y].name + '');
+                select.setAttribute('onblur', 'shiqu("' + data[y].id + '","' + data[y].name + '")');
                 var displayName = data[y].displayName;
                 var customValue = data[y].customValue;
                 var allowableValues = data[y].allowableValues;
@@ -293,11 +297,11 @@
                 var displayName = document.createElement('textarea');
                 if (required)
                 displayName.setAttribute('class', 'true');
-                displayName.setAttribute('onclick', 'dbssn("' + data[y].displayName + '")');
-                displayName.setAttribute('id', '' + data[y].displayName + '');
+                displayName.setAttribute('onclick', 'dbssn("' + data[y].name + '")');
+                displayName.setAttribute('id', '' + data[y].name + '');
                 displayName.setAttribute('rows', '1');
                 displayName.setAttribute('cols', '20');
-                displayName.setAttribute('onblur', 'shiqu("' + data[y].id + '","' + data[y].displayName + '")');
+                displayName.setAttribute('onblur', 'shiqu("' + data[y].id + '","' + data[y].name + '")');
                 displayName.style.width = "210px";
                 displayName.style.resize = "none";
                 displayName.innerHTML = '' + customValue + '';
@@ -590,7 +594,7 @@
                 //console.log("success");
                 var dataMap = JSON.parse(data);
                 if ('0' !== dataMap.code) {
-                    alert(dataMap.errorMsg);
+                    alert(dataMap.errMsg);
                     startFlow.show();
                 } else {
                     alert("停止失败"+dataMap.errMsg);
@@ -681,13 +685,21 @@
             },
             success: function (data) {
                 var dataMap = JSON.parse(data);
-                if (0 !== dataMap.code) {
+                if (0 != dataMap.code) {
                     if (dataMap.state && "" !== dataMap.state) {
-                        if ('STARTED' !== dataMap.state || dataMap.progress === 100) {
+                        if ('STARTED' !== dataMap.state || dataMap.progress === 100  || "undefeated" == dataMap.state) {
                             window.clearInterval(timer);
                         }
                     }
                     document.getElementById("progress").innerHTML = ":" + dataMap.progress + "%";
+                    document.getElementById('progressData').innerText = + dataMap.progress + "%";
+                    document.getElementById('state').innerText = dataMap.state ;
+                    if(dataMap.endTime && "" !== dataMap.endTime){
+                    document.getElementById('startTime').innerText = dataMap.startTime ;
+                    document.getElementById('stopTime').innerText = dataMap.endTime ;
+                    }
+                }else{
+                	window.clearInterval(timer);
                 }
             }
         });

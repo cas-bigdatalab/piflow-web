@@ -104,7 +104,7 @@ public class FlowCtrl {
             if (null != flowById) {
                 String startFlow = startFlowImpl.startFlow(flowById);
                 if (StringUtils.isNotBlank(startFlow)) {
-                    FlowInfoDb flowInfoDb = getFlowInfoImpl.AddFlowInfo(startFlow);
+                    FlowInfoDb flowInfoDb = getFlowInfoImpl.AddFlowInfo(startFlow, flowById);
                     // flowInfo接口返回为空的情况
                     if (null == flowInfoDb) {
                         rtnMap.put("flowInfoDbMsg", "flowInfoDb创建失败");
@@ -156,13 +156,13 @@ public class FlowCtrl {
         rtnMap.put("code", "0");
         String flowId = request.getParameter("flowId");
         if (StringUtils.isNotBlank(flowId)) {
-            // 根据flowId查询flow
-            Flow flowById = flowServiceImpl.getFlowById(flowId);
-            // addFlow不为空且ReqRtnStatus的值为true,则保存成功
-            if (null != flowById) {
-                FlowInfoDb appId1 = flowById.getAppId();
-                if (null != appId1) {
-                    String appId = appId1.getId();
+            // 根据flowId查询flowInfo
+        	List<FlowInfoDb> flowInfo = flowInfoDbServiceImpl.getAppListByFlowId(flowId);
+        	FlowInfoDb flowInfoDb = null;
+            if (flowInfo.size() > 0 && !flowInfo.isEmpty()) {
+            	flowInfoDb = flowInfo.get(0);
+                if (null != flowInfoDb) {
+                    String appId = flowInfoDb.getId();
                     if (StringUtils.isNotBlank(appId)) {
                         String flowStop = stopFlowImpl.stopFlow(appId);
                         if (StringUtils.isNotBlank(flowStop)) {

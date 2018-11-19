@@ -4,12 +4,14 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.InsertProvider;
+import org.apache.ibatis.annotations.Many;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.UpdateProvider;
+import org.apache.ibatis.mapping.FetchType;
 
 import com.nature.component.workFlow.model.Paths;
 import com.nature.provider.PathsMapperProvider;
@@ -66,8 +68,8 @@ public interface PathsMapper {
             @Result(column = "LINE_TO", property = "to"),
             @Result(column = "LINE_OUTPORT", property = "outport"),
             @Result(column = "LINE_INPORT", property = "inport"),
-            @Result(column = "LINE_PORT", property = "port")
-
+            @Result(column = "LINE_PORT", property = "port"),
+			@Result(column = "fk_flow_id", property = "flow", many = @Many(select = "com.nature.mapper.FlowMapper.getFlowById", fetchType = FetchType.EAGER))
     })
     public List<Paths> getPaths(String flowId, String pageId, String from, String to);
 

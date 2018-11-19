@@ -15,6 +15,7 @@ import com.nature.base.util.HttpUtils;
 import com.nature.base.util.LoggerUtil;
 import com.nature.common.Eunm.FlowState;
 import com.nature.common.constant.SysParamsCache;
+import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.model.FlowInfoDb;
 import com.nature.mapper.FlowInfoDbMapper;
 import com.nature.third.inf.IGetFlowInfo;
@@ -61,7 +62,7 @@ public class GetFlowInfoImpl implements IGetFlowInfo {
 	 * 通过appId调接口返回flowInfo并保存数据库
 	 */
 	@Override
-	public FlowInfoDb AddFlowInfo(String appId) {
+	public FlowInfoDb AddFlowInfo(String appId,Flow flow) {
 		ThirdFlowInfo startFlow2 = getFlowInfo(appId);
 		ThirdProgressVo progress = iGetFlowProgress.getFlowInfo(appId);
 		logger.info("测试返回信息：" + startFlow2);
@@ -101,6 +102,7 @@ public class GetFlowInfoImpl implements IGetFlowInfo {
 				add.setEnableFlag(true);
 				add.setLastUpdateUser("-1");
 				add.setLastUpdateDttm(new Date());
+				add.setFlow(flow);
 				int addFlowInfo = flowInfoDbMapper.addFlowInfo(add);
 				if (addFlowInfo > 0) {
 					return add;
@@ -118,6 +120,7 @@ public class GetFlowInfoImpl implements IGetFlowInfo {
 			kong.setProgress("0");
 			kong.setState(FlowState.STARTED.toString());
 			kong.setLastUpdateDttm(new Date());
+			kong.setFlow(flow);
 			flowInfoDbMapper.addFlowInfo(kong);
 			return kong;
 	}

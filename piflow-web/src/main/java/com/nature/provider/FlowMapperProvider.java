@@ -7,9 +7,7 @@ import org.apache.ibatis.jdbc.SQL;
 
 import com.nature.base.util.DateUtils;
 import com.nature.base.util.Utils;
-import com.nature.component.mxGraph.model.MxGraphModel;
 import com.nature.component.workFlow.model.Flow;
-import com.nature.component.workFlow.model.FlowInfoDb;
 
 public class FlowMapperProvider {
 
@@ -114,6 +112,10 @@ public class FlowMapperProvider {
 			String description = flow.getDescription();
 			String name = flow.getName();
 			String uuid = flow.getUuid();
+			String driverMemory = flow.getDriverMemory();
+			String executorCores = flow.getExecutorCores();
+			String executorMemory = flow.getExecutorMemory();
+			String executorNumber = flow.getExecutorNumber();
 			SQL sql = new SQL();
 
 			// INSERT_INTO括号中为数据库表名
@@ -144,6 +146,18 @@ public class FlowMapperProvider {
 			}
 			if (StringUtils.isNotBlank(uuid)) {
 				sql.SET("UUID = " + Utils.addSqlStr(uuid));
+			}
+			if (StringUtils.isNotBlank(driverMemory)) {
+				sql.SET("driver_memory = " + Utils.addSqlStr(driverMemory));
+			}
+			if (StringUtils.isNotBlank(executorCores)) {
+				sql.SET("executor_cores = " + Utils.addSqlStr(executorCores));
+			}
+			if (StringUtils.isNotBlank(executorMemory)) {
+				sql.SET("executor_memory = " + Utils.addSqlStr(executorMemory));
+			}
+			if (StringUtils.isNotBlank(executorNumber)) {
+				sql.SET("executor_number = " + Utils.addSqlStr(executorNumber));
 			}
 			sql.WHERE("id = " + Utils.addSqlStr(id));
 			sqlStr = sql.toString() + ";";

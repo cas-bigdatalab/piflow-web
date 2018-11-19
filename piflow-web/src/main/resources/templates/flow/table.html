@@ -427,18 +427,15 @@
                 alert("reload fail");
                 return;
             },
-            success: function (data) {//请求成功之后的操作
+            success:function(data){//请求成功之后的操作
                 console.log("data");
-                if ('0' !== data) {
-                    $('#fullScreen').hide();
-                    layer.msg('启动成功', {icon: 1, shade: 0, time: 2000}, function () {
-                        location.reload();
-                    });
-                } else {
-                    $('#fullScreen').hide();
-                    layer.msg('启动失败', {icon: 2, shade: 0, time: 2000}, function () {
-                        location.reload();
-                    });
+                var dataMap = JSON.parse(data);
+                if('0'!==dataMap.code){
+                	 $('#fullScreen').hide();
+                	 layer.msg(dataMap.errMsg,{icon:1,  shade:0,  time: 2000}, function(){location.reload(); });
+                }else{
+                	$('#fullScreen').hide();
+                	layer.msg(dataMap.errMsg,{icon: 2,  shade:0,  time: 2000}, function(){location.reload(); });
                 }
 
             }
@@ -460,18 +457,15 @@
                 alert("reload fail");
                 return;
             },
-            success: function (data) {//请求成功之后的操作
-                if ('0' !== data) {
+            success:function(data){//请求成功之后的操作
+                var dataMap = JSON.parse(data);
+                if('0'!==dataMap.code){
                     $('#fullScreen').hide();
-                    layer.msg('停止成功', {icon: 1, shade: 0, time: 2000}, function () {
-                        location.reload();
-                    });
+                    layer.msg(dataMap.rtnMsg,{icon: 1,  shade:0,  time: 2000}, function(){location.reload(); });
                     return;
-                } else {
-                    $('#fullScreen').hide();
-                    layer.msg('停止失败', {icon: 2, shade: 0, time: 2000}, function () {
-                        location.reload();
-                    });
+                }else{
+                	$('#fullScreen').hide();
+                    layer.msg(dataMap.rtnMsg,{icon: 2,  shade:0,  time: 2000}, function(){location.reload(); });
                 }
             }
         });
@@ -481,14 +475,14 @@
         var arrayObj = new Array();
         var table = $("table tr").find("td:eq(1)");
         var state = $("table tr").find("td:eq(7)");
-        for (var i = 0; i < table.length; i++) {
-            if (table[i].innerHTML != "") {
-                if (state[i].innerHTML != "No state" && state[i].innerHTML == "STARTED") {
+        for (var i = 0; i<table.length;i++){
+            if(table[i].innerHTML != ""){
+                if(state[i].innerHTML != "No state" && state[i].innerHTML == "STARTED"){
                     arrayObj.push(table[i].innerHTML);
                 }
             }
         }
-        if (arrayObj.length == 0) {
+        if(arrayObj.length == 0){
             clearInterval(c);
             return;
         }
@@ -508,11 +502,11 @@
                     for (var k in data) {  //通过定义一个局部变量k遍历获取到了map中所有的key值
                         var docList = data[k]; //获取到了key所对应的value的值！
                         var strs = new Array(); //定义一数组 
-                        strs = docList.split(","); //字符分割
-                        if (null != strs && strs.length > 0)
-                            document.getElementById("" + k + "").value = strs[0];
-                        document.getElementById("" + k + "Info").innerHTML = "进度" + strs[0] + "%";
-                        document.getElementById("" + k + "state").innerHTML = strs[1];
+                        strs=docList.split(","); //字符分割 
+                        if(null != strs && strs.length > 0)
+                        document.getElementById(""+k+"").value=strs[0];
+                        document.getElementById(""+k+"Info").innerHTML="进度"+strs[0]+"%";
+                        document.getElementById(""+k+"state").innerHTML=strs[1];
                     }
                 }
             }

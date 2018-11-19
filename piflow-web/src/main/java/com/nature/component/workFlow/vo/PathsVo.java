@@ -1,10 +1,12 @@
 package com.nature.component.workFlow.vo;
 
-import com.nature.component.workFlow.model.Flow;
-
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import com.nature.base.util.DateUtils;
+import com.nature.component.workFlow.model.Flow;
+import com.nature.component.workFlow.model.Stops;
 
 public class PathsVo implements Serializable {
 
@@ -26,6 +28,12 @@ public class PathsVo implements Serializable {
 
     private String pageId;
 
+    private Stops stopFrom; 
+    
+    private Stops StopTo;
+    
+    private Date crtDttm;
+    
     public String getId() {
         return id;
     }
@@ -89,4 +97,33 @@ public class PathsVo implements Serializable {
     public void setPageId(String pageId) {
         this.pageId = pageId;
     }
+
+	public Stops getStopFrom() {
+		return stopFrom;
+	}
+
+	public void setStopFrom(Stops stopFrom) {
+		this.stopFrom = stopFrom;
+	}
+
+	public Stops getStopTo() {
+		return StopTo;
+	}
+
+	public void setStopTo(Stops stopTo) {
+		StopTo = stopTo;
+	}
+
+	public Date getCrtDttm() {
+		return crtDttm;
+	}
+
+	public void setCrtDttm(Date crtDttm) {
+		this.crtDttm = crtDttm;
+	}
+	
+	public String getCrtDttmString() {
+		SimpleDateFormat sdf = new SimpleDateFormat(DateUtils.DATE_PATTERN_yyyy_MM_dd_HH_MM_ss);
+		return crtDttm != null ? sdf.format(crtDttm) : "";
+	}
 }

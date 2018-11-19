@@ -1,23 +1,28 @@
 package com.nature.component.workFlow.service.impl;
 
-import com.nature.component.workFlow.model.Paths;
-import com.nature.component.workFlow.utils.PathsUtil;
-import com.nature.component.workFlow.vo.PathsVo;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.nature.component.workFlow.model.Paths;
+import com.nature.component.workFlow.model.Stops;
 import com.nature.component.workFlow.service.IPathsService;
+import com.nature.component.workFlow.utils.PathsUtil;
+import com.nature.component.workFlow.vo.PathsVo;
 import com.nature.mapper.PathsMapper;
-
-import java.util.Date;
-import java.util.List;
+import com.nature.mapper.PropertyMapper;
 
 @Service
 public class PathsServiceImpl implements IPathsService {
 
     @Autowired
     private PathsMapper pathsMapper;
+    @Autowired
+    private PropertyMapper propertyMapper;
 
     @Override
     public int deletePathsByFlowId(String id) {
@@ -31,8 +36,20 @@ public class PathsServiceImpl implements IPathsService {
         if (null != pathsList && pathsList.size() > 0) {
             Paths paths = pathsList.get(0);
             if (null != paths) {
+            	Stops stopFrom = null;
+            	Stops stopTo = null;
+            	if (StringUtils.isNotBlank(paths.getFrom()) && StringUtils.isNotBlank(paths.getTo())) {
+            		stopFrom = propertyMapper.getStopGroupList(paths.getFlow().getId(), paths.getFrom());
+            		stopTo = propertyMapper.getStopGroupList(paths.getFlow().getId(), paths.getTo());
+				}
                 pathsVo = new PathsVo();
                 BeanUtils.copyProperties(paths, pathsVo);
+                if (null != stopFrom) {
+                	pathsVo.setStopFrom(stopFrom);
+				}
+                if (null != stopTo) {
+                	pathsVo.setStopTo(stopTo);
+                }
             }
         }
         return pathsVo;

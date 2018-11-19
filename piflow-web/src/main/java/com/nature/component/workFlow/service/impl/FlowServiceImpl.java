@@ -203,7 +203,7 @@ public class FlowServiceImpl implements IFlowService {
                 } else {
                     if (null != oldAppId) {
                         //把之前的appId置为无效
-                        flowInfoDbMapper.deleteFlowInfoById(oldAppId.getId());
+                      //  flowInfoDbMapper.deleteFlowInfoById(oldAppId.getId());
                     }
                 }
             } else {

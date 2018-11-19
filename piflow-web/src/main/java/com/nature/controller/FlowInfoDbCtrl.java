@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.nature.base.util.DateUtils;
 import com.nature.base.util.JsonUtils;
 import com.nature.base.util.LoggerUtil;
 import com.nature.component.workFlow.model.FlowInfoDb;
@@ -71,7 +72,7 @@ public class FlowInfoDbCtrl {
 			if (Float.parseFloat(flowInfoDb.getProgress()) < 100 && !"COMPLETED".equals(flowInfoDb.getState())) {
 				ThirdProgressVo progress = iGetFlowProgress.getFlowInfo(flowInfoDb.getId());
 				 //如果接口返回进度为符合100,则更新数据库并返回
-				if (StringUtils.isNotBlank(progress.getProgress()))
+				if (StringUtils.isNotBlank(progress.getProgress())){
 				if (!"STARTED".equals(progress.getState()) || !"STARTED".equals(flowInfoDb.getState()) || Float.parseFloat(progress.getProgress()) < Float.parseFloat(flowInfoDb.getProgress())) {
 					//再次调用flowInfo信息,获取开始和结束时间
 					ThirdFlowInfo thirdFlowInfo = iGetFlowInfo.getFlowInfo(flowInfoDb.getId());
@@ -92,7 +93,8 @@ public class FlowInfoDbCtrl {
 					}
 					up.setName(progress.getName());
 					flowInfoDbMapper.updateFlowInfo(up);
-				} 
+					} 
+				}
 				map.put(flowInfoDb.getId(), progress.getProgress()+","+progress.getState());
 			}else {
 				map.put(flowInfoDb.getId(), flowInfoDb.getProgress()+","+flowInfoDb.getState());
@@ -117,13 +119,20 @@ public class FlowInfoDbCtrl {
 			return JsonUtils.toJsonNoException(map);
 		}
 		//如果进度小于100去调接口,否则说明已经是100,直接返回
-		if (Float.parseFloat(flowInfo.getProgress()) < 100 /*&& "STARTED".equals(flowInfo.getState())*/) {
+		if (Float.parseFloat(flowInfo.getProgress()) < 100  && !"COMPLETED".equals(flowInfo.getState())) {
 			ThirdProgressVo progress = iGetFlowProgress.getFlowInfo(flowInfo.getId());
+			//再次调用flowInfo信息,获取开始和结束时间
+			ThirdFlowInfo thirdFlowInfo = iGetFlowInfo.getFlowInfo(flowInfo.getId());
 			//如果接口返回进度为符合100,则更新数据库并返回
-			if (StringUtils.isNotBlank(progress.getProgress()) && Float.parseFloat(progress.getProgress()) == 100) {
+			if (StringUtils.isNotBlank(progress.getProgress()) || !"STARTED".equals(progress.getState()) || Float.parseFloat(progress.getProgress()) < Float.parseFloat(flowInfo.getProgress())) {
 				FlowInfoDb up = new FlowInfoDb();
+				if (null != thirdFlowInfo) {
+					up.setEndTime(thirdFlowInfo.getFlow().getEndTime());
+					up.setStartTime(thirdFlowInfo.getFlow().getStartTime());
+					up.setName(thirdFlowInfo.getFlow().getName());
+				}
 				up.setId(flowInfo.getId());
-				up.setState(progress.getState());
+				up.setState(StringUtils.isNotBlank(progress.getState()) ? progress.getState() : "FAILED");
 				up.setLastUpdateDttm(new Date());
 				up.setLastUpdateUser("wdd");
 				if (null == progress.getProgress() || "NaN".equals(progress.getProgress())) {
@@ -133,9 +142,16 @@ public class FlowInfoDbCtrl {
 				}
 				flowInfoDbMapper.updateFlowInfo(up);
 			}
-			map.put("progress", progress.getProgress());
+			map.put("progress", "NaN".equals(progress.getProgress()) ? "0.00" : progress.getProgress());
+			if (null != thirdFlowInfo) {
+			map.put("state", progress.getState());
+			map.put("startTime", DateUtils.dateTimeToStr(thirdFlowInfo.getFlow().getStartTime()));
+			map.put("endTime", DateUtils.dateTimeToStr(thirdFlowInfo.getFlow().getEndTime()));
+			}
 		}else {
 			map.put("progress", flowInfo.getProgress());
+			map.put("startTime", DateUtils.dateTimeToStr(flowInfo.getStartTime()));
+			map.put("endTime", DateUtils.dateTimeToStr(flowInfo.getEndTime()));
 		}
 		map.put("code","1");
 		map.put("state", flowInfo.getState());

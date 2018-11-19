@@ -2240,6 +2240,32 @@ StopsBasicInfoFormatPanel.prototype.addFont = function(container)
 	var graph = editor.graph;
 	var ss = this.format.getSelectionState();
 
+    var tableStopsBasic = document.createElement("table");
+    tableStopsBasic.style.borderCollapse = "separate";
+    tableStopsBasic.style.borderSpacing = "0px 5px";
+    var tbodyStopsBasic = document.createElement("tbody");
+    var trStopsBasic1 = document.createElement("tr");
+    var trStopsBasic2 = document.createElement("tr");
+    var trStopsBasic3 = document.createElement("tr");
+    var trStopsBasic4 = document.createElement("tr");
+    var trStopsBasic5 = document.createElement("tr");
+    var trStopsBasic6 = document.createElement("tr");
+    var trStopsBasic7 = document.createElement("tr");
+    var tdStopsBasic1 = document.createElement("td");
+    var tdStopsBasic2 = document.createElement("td");
+    var tdStopsBasic3 = document.createElement("td");
+    var tdStopsBasic4 = document.createElement("td");
+    var tdStopsBasic5 = document.createElement("td");
+    var tdStopsBasic6 = document.createElement("td");
+    var tdStopsBasic7 = document.createElement("td");
+    var tdStopsBasic8 = document.createElement("td");
+    var tdStopsBasic9 = document.createElement("td");
+    var tdStopsBasic10 = document.createElement("td");
+    var tdStopsBasic11 = document.createElement("td");
+    var tdStopsBasic12 = document.createElement("td");
+    var tdStopsBasic13 = document.createElement("td");
+    var tdStopsBasic14 = document.createElement("td");
+
 	//模板名称
 	var labelTemplate = document.createElement('label');
 	labelTemplate.setAttribute('id', 'labelTemplateName');
@@ -2277,7 +2303,6 @@ StopsBasicInfoFormatPanel.prototype.addFont = function(container)
 	span2.setAttribute('id', 'descriptionID');
 	var span3 = document.createElement('span');
 	span3.setAttribute('id', 'bundelID');
-	var span4 = document.createElement('span');
 	var span5 = document.createElement('span');
 	span5.setAttribute('id', 'versionID');
 	var span6 = document.createElement('span');
@@ -2289,35 +2314,51 @@ StopsBasicInfoFormatPanel.prototype.addFont = function(container)
 	mxUtils.write(span1, 'GroupName： ');
 	mxUtils.write(span2, 'description： ');
 	mxUtils.write(span3, 'bundel： ');
-	mxUtils.write(span4, '模板名称： ');
 	mxUtils.write(span5, 'version： ');
 	mxUtils.write(span6, 'owner： ');
 	mxUtils.write(span7, 'createDate： ');
-	
-	this.container.appendChild(hr);
-	//this.container.appendChild(span4);
-	//this.container.appendChild(labelTemplate);
-	//this.container.appendChild(document.createElement('br'));
-	this.container.appendChild(span);
-	this.container.appendChild(stopsNameLabel);
-	this.container.appendChild(document.createElement('br'));
- 	this.container.appendChild(span2);
-	this.container.appendChild(stopsDescription);
-	this.container.appendChild(document.createElement('br'));
-	this.container.appendChild(span1);
-	this.container.appendChild(stopsGroups);
-	this.container.appendChild(document.createElement('br')); 
-	this.container.appendChild(span3);
-	this.container.appendChild(stopsBundel);
-	this.container.appendChild(document.createElement('br'));
-	this.container.appendChild(span5);
-	this.container.appendChild(stopsVersion);
-	this.container.appendChild(document.createElement('br'));
-	this.container.appendChild(span6);
-	this.container.appendChild(owner);
-	this.container.appendChild(document.createElement('br'));
-	this.container.appendChild(span7);
-	this.container.appendChild(createDate);
+	//this.container.appendChild(hr);
+    tdStopsBasic1.appendChild(span);
+    tdStopsBasic2.appendChild(stopsNameLabel);
+    tdStopsBasic3.appendChild(span2);
+    tdStopsBasic4.appendChild(stopsDescription);
+    tdStopsBasic5.appendChild(span1);
+    tdStopsBasic6.appendChild(stopsGroups);
+    tdStopsBasic7.appendChild(span3);
+    tdStopsBasic8.appendChild(stopsBundel);
+    tdStopsBasic9.appendChild(span5);
+    tdStopsBasic10.appendChild(stopsVersion);
+    tdStopsBasic11.appendChild(span6);
+    tdStopsBasic12.appendChild(owner);
+    tdStopsBasic13.appendChild(span7);
+    tdStopsBasic14.appendChild(createDate);
+    trStopsBasic1.appendChild(tdStopsBasic1);
+    trStopsBasic1.appendChild(tdStopsBasic2);
+    trStopsBasic2.appendChild(tdStopsBasic3);
+    trStopsBasic2.appendChild(tdStopsBasic4);
+    trStopsBasic3.appendChild(tdStopsBasic5);
+    trStopsBasic3.appendChild(tdStopsBasic6);
+    trStopsBasic4.appendChild(tdStopsBasic7);
+    trStopsBasic4.appendChild(tdStopsBasic8);
+    trStopsBasic5.appendChild(tdStopsBasic9);
+    trStopsBasic5.appendChild(tdStopsBasic10);
+    trStopsBasic6.appendChild(tdStopsBasic11);
+    trStopsBasic6.appendChild(tdStopsBasic12);
+    trStopsBasic7.appendChild(tdStopsBasic13);
+    trStopsBasic7.appendChild(tdStopsBasic14);
+    tbodyStopsBasic.appendChild(trStopsBasic1);
+    tbodyStopsBasic.appendChild(trStopsBasic2);
+    tbodyStopsBasic.appendChild(trStopsBasic3);
+    tbodyStopsBasic.appendChild(trStopsBasic4);
+    tbodyStopsBasic.appendChild(trStopsBasic5);
+    tbodyStopsBasic.appendChild(trStopsBasic6);
+    tbodyStopsBasic.appendChild(trStopsBasic7);
+    tableStopsBasic.appendChild(tbodyStopsBasic);
+    this.container.appendChild(tableStopsBasic);
+    var hrhr = document.createElement('hr');
+    hrhr.style.border = "0.6px solid rgb(192, 192, 192)";
+    this.container.appendChild(hrhr);
+    this.container.setAttribute('id', 'containerID');
 	return container;
 };
 /*Add StopsBasicInfo tab  stop*/
@@ -4662,7 +4703,25 @@ DiagramFormatPanel.prototype.addView = function(div)
 	var graph = editor.graph;
 	queryFlowInfo();
 	div.appendChild(this.createTitle('流水线信息'));
-	
+
+    var tableFlow = document.createElement("table");
+    tableFlow.style.borderCollapse = "separate";
+    tableFlow.style.borderSpacing = "0px 5px";
+    var tbodyFlow = document.createElement("tbody");
+    var trFlow1 = document.createElement("tr");
+    var trFlow2 = document.createElement("tr");
+    var trFlow3 = document.createElement("tr");
+    var trFlow4 = document.createElement("tr");
+    var tdFlow1 = document.createElement("td");
+    var tdFlow2 = document.createElement("td");
+    var tdFlow3 = document.createElement("td");
+    var tdFlow4 = document.createElement("td");
+    var tdFlow5 = document.createElement("td");
+    var tdFlow6 = document.createElement("td");
+    var tdFlow7 = document.createElement("td");
+    var tdFlow8 = document.createElement("td");
+
+
 	//UUID
 	var UUID = document.createElement('label');
 	UUID.setAttribute('id', 'UUID');
@@ -4685,17 +4744,28 @@ DiagramFormatPanel.prototype.addView = function(div)
 	mxUtils.write(span1, 'flowName： ');
 	mxUtils.write(span2, 'crtDttmString： ');
 	mxUtils.write(span3, 'description： ');
-	div.appendChild(span);
-	div.appendChild(UUID);
-	div.appendChild(document.createElement('br'));
-	div.appendChild(span1);
-	div.appendChild(flowName);
-	div.appendChild(document.createElement('br'));
-	div.appendChild(span3);
-	div.appendChild(flowDescription);
-	div.appendChild(document.createElement('br'));
-	div.appendChild(span2);
-	div.appendChild(crtDttmString);
+    tdFlow1.appendChild(span);
+    tdFlow2.appendChild(UUID);
+    tdFlow3.appendChild(span1);
+    tdFlow4.appendChild(flowName);
+    tdFlow5.appendChild(span3);
+    tdFlow6.appendChild(flowDescription);
+    tdFlow7.appendChild(span2);
+    tdFlow8.appendChild(crtDttmString);
+    trFlow1.appendChild(tdFlow1);
+    trFlow1.appendChild(tdFlow2);
+    trFlow2.appendChild(tdFlow3);
+    trFlow2.appendChild(tdFlow4);
+    trFlow3.appendChild(tdFlow5);
+    trFlow3.appendChild(tdFlow6);
+    trFlow4.appendChild(tdFlow7);
+    trFlow4.appendChild(tdFlow8);
+    tbodyFlow.appendChild(trFlow1);
+    tbodyFlow.appendChild(trFlow2);
+    tbodyFlow.appendChild(trFlow3);
+    tbodyFlow.appendChild(trFlow4);
+    tableFlow.appendChild(tbodyFlow);
+    div.appendChild(tableFlow);
 	// Grid
 	this.addGridOption(div);
 	/*if (graph.isEnabled())
@@ -4788,7 +4858,7 @@ DiagramFormatPanel.prototype.addOptions = function(div)
 	var editor = ui.editor;
 	var graph = editor.graph;
 	
-	div.appendChild(this.createTitle("flowInfo"));	
+	div.appendChild(this.createTitle("flowInfo"));
 	//UUID
 	var UUID = document.createElement('label');
 	UUID.setAttribute('id', 'startTime');
@@ -5177,4 +5247,4 @@ DiagramFormatPanel.prototype.destroy = function()
              console.log("success");
          }
      });} 
-  } 
+  }
