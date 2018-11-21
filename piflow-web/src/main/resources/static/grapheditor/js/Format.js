@@ -2359,6 +2359,60 @@ StopsBasicInfoFormatPanel.prototype.addFont = function(container)
     hrhr.style.border = "0.6px solid rgb(192, 192, 192)";
     this.container.appendChild(hrhr);
     this.container.setAttribute('id', 'containerID');
+	
+    //创建一个div,里面放置所有的stopState属性标签
+    var stopStateDiv = document.createElement('stopStateDiv');
+    stopStateDiv.setAttribute('id', 'table_idDiv');
+    var tableStopState = document.createElement("tableStopState");
+    tableStopState.style.borderCollapse = "separate";
+    tableStopState.style.borderSpacing = "0px 5px";
+    var tbodyStopState = document.createElement("tbody");
+    var trStopState1 = document.createElement("tr");
+    var trStopState2 = document.createElement("tr");
+    var trStopState3 = document.createElement("tr");
+    var tdStopState1 = document.createElement("td");
+    var tdStopState2 = document.createElement("td");
+    var tdStopState3 = document.createElement("td");
+    var tdStopState4 = document.createElement("td");
+    var tdStopState5 = document.createElement("td");
+    var tdStopState6 = document.createElement("td");
+    stopStateDiv.appendChild(this.createTitle('stop state'));
+	var stopState = document.createElement('span');
+	stopState.setAttribute('id', 'stopState');
+	var stopsStartTime = document.createElement('span');
+	stopsStartTime.setAttribute('id', 'stopsStartTime');
+	var stopEndTime = document.createElement('span');
+	stopEndTime.setAttribute('id', 'stopEndTime');
+	mxUtils.write(stopState, 'state： ');
+	mxUtils.write(stopsStartTime, 'stopsStartTime： ');
+	mxUtils.write(stopEndTime, 'stopEndTime： ');
+	//stopState 
+	var stopStateId = document.createElement('label');
+	stopStateId.setAttribute('id', 'stopStateId');
+	//stopsStartTime 
+	var stopsStartTimeId = document.createElement('label');
+	stopsStartTimeId.setAttribute('id', 'stopsStartTimeId');
+	//stopEndTime 
+	var stopEndTimeId = document.createElement('label');
+	stopEndTimeId.setAttribute('id', 'stopEndTimeId');
+	tdStopState1.appendChild(stopState);
+	tdStopState2.appendChild(stopStateId);
+	tdStopState3.appendChild(stopsStartTime);
+	tdStopState4.appendChild(stopsStartTimeId);
+	tdStopState5.appendChild(stopEndTime);
+	tdStopState6.appendChild(stopEndTimeId);
+	trStopState1.appendChild(tdStopState1);
+	trStopState1.appendChild(tdStopState2);
+	trStopState2.appendChild(tdStopState3);
+	trStopState2.appendChild(tdStopState4);
+	trStopState3.appendChild(tdStopState5);
+	trStopState3.appendChild(tdStopState6);
+	tbodyStopState.appendChild(trStopState1);
+	tbodyStopState.appendChild(trStopState2);
+	tbodyStopState.appendChild(trStopState3);
+	tableStopState.appendChild(tbodyStopState);
+	stopStateDiv.appendChild(tableStopState);
+	this.container.appendChild(stopStateDiv);
 	return container;
 };
 /*Add StopsBasicInfo tab  stop*/

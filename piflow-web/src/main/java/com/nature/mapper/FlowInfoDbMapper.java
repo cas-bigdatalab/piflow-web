@@ -45,6 +45,10 @@ public interface FlowInfoDbMapper {
      * @return
      */
     @Select("SELECT * FROM flow_info where enable_flag = '1' and id = #{id} ")
+    @Results({
+		@Result(id = true, column = "id", property = "id"),
+		@Result(column = "fk_flow_id", property = "flow", one = @One(select = "com.nature.mapper.FlowMapper.getFlowById", fetchType = FetchType.EAGER)),
+    })
     public FlowInfoDb flowInfoDb(@Param("id") String appId);
 
     /**
@@ -67,12 +71,15 @@ public interface FlowInfoDbMapper {
 
     @Select({
             "<script>",
-            "select ",
-            "id,state,progress ",
+            "select * ",
             "from flow_info ",
             "where id in",
             "<foreach collection='ids' item='id' open='(' separator=',' close=')'>",
             "#{id}", "</foreach>", "</script>"})
+    @Results({
+		@Result(id = true, column = "id", property = "id"),
+		@Result(column = "fk_flow_id", property = "flow", one = @One(select = "com.nature.mapper.FlowMapper.getFlowById", fetchType = FetchType.EAGER)),
+    })
     public List<FlowInfoDb> getFlowInfoByIds(@Param("ids") List<String> ids);
 
     /**

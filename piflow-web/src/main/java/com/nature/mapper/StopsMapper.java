@@ -15,6 +15,7 @@ import org.apache.ibatis.mapping.FetchType;
 
 import com.nature.component.workFlow.model.Stops;
 import com.nature.provider.StopsMapperProvider;
+import com.nature.third.vo.flowInfo.ThirdFlowInfoStopVo2;
 
 /**
  * stop组建表
@@ -93,5 +94,9 @@ public interface StopsMapper {
 
 	})
 	public Stops getStopsById(String Id);
+	
+	
+	@UpdateProvider(type = StopsMapperProvider.class, method = "updateStopsByFlowIdAndName")
+	public int updateStopsByFlowIdAndName(ThirdFlowInfoStopVo2 stopVo);
 
 }

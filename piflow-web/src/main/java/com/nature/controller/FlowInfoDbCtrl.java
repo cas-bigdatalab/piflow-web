@@ -18,11 +18,14 @@ import com.nature.base.util.JsonUtils;
 import com.nature.base.util.LoggerUtil;
 import com.nature.component.workFlow.model.FlowInfoDb;
 import com.nature.component.workFlow.service.IFlowInfoDbService;
+import com.nature.component.workFlow.service.IStopsService;
 import com.nature.mapper.FlowInfoDbMapper;
 import com.nature.third.inf.IGetFlowInfo;
 import com.nature.third.inf.IGetFlowProgress;
 import com.nature.third.vo.ThirdProgressVo;
 import com.nature.third.vo.flowInfo.ThirdFlowInfo;
+import com.nature.third.vo.flowInfo.ThirdFlowInfoStopVo;
+import com.nature.third.vo.flowInfo.ThirdFlowInfoStopVo2;
 
 @Controller
 @RequestMapping("/flowInfoDb")
@@ -45,6 +48,10 @@ public class FlowInfoDbCtrl {
 	@Autowired
 	private IGetFlowInfo iGetFlowInfo;
 	
+	@Autowired
+	private IStopsService sStopsServiceImpl;
+	
+	
 	/**
 	 * 查询进度
 	 * @param model
@@ -54,9 +61,10 @@ public class FlowInfoDbCtrl {
 	@SuppressWarnings("null")
 	@RequestMapping("/list")
 	@ResponseBody
-	public Map<String, String> findAppInfo(String[] content) {
+	public String findAppInfo(String[] content) {
 		List<String> list = new ArrayList<String>();
 		Map<String, String> map = new HashMap<String, String>();
+		map.put("code","0");
 		if (content.length> 0 && null != content) {
 			for (String string : content) {
 				list.add(string);
@@ -65,42 +73,14 @@ public class FlowInfoDbCtrl {
 		//通过appId查询数据库,返回list
 		List<FlowInfoDb> flowInfoList = flowInfoDbServiceImpl.getFlowInfoByIds(list);
 		if (null == flowInfoList && flowInfoList.isEmpty()) {
-			return map;
+			return JsonUtils.toJsonNoException(map);
 		}
-		 for (FlowInfoDb flowInfoDb : flowInfoList) {
-			 //遍历list,如果进度小于100去调接口,否则说明已经是100,直接返回
-			if (Float.parseFloat(flowInfoDb.getProgress()) < 100 && !"COMPLETED".equals(flowInfoDb.getState())) {
-				ThirdProgressVo progress = iGetFlowProgress.getFlowInfo(flowInfoDb.getId());
-				 //如果接口返回进度为符合100,则更新数据库并返回
-				if (StringUtils.isNotBlank(progress.getProgress())){
-				if (!"STARTED".equals(progress.getState()) || !"STARTED".equals(flowInfoDb.getState()) || Float.parseFloat(progress.getProgress()) < Float.parseFloat(flowInfoDb.getProgress())) {
-					//再次调用flowInfo信息,获取开始和结束时间
-					ThirdFlowInfo thirdFlowInfo = iGetFlowInfo.getFlowInfo(flowInfoDb.getId());
-					FlowInfoDb up = new FlowInfoDb();
-					if (null != thirdFlowInfo) {
-						up.setEndTime(thirdFlowInfo.getFlow().getEndTime());
-						up.setStartTime(thirdFlowInfo.getFlow().getStartTime());
-						up.setName(thirdFlowInfo.getFlow().getName());
-					}
-					up.setId(flowInfoDb.getId());
-					up.setState(StringUtils.isNotBlank(progress.getState()) ? progress.getState() : "FAILED");
-					up.setLastUpdateDttm(new Date());
-					up.setLastUpdateUser("wdd");
-					if (null == progress.getProgress() || "NaN".equals(progress.getProgress())) {
-						up.setProgress("0");
-					}else {
-						up.setProgress(progress.getProgress());
-					}
-					up.setName(progress.getName());
-					flowInfoDbMapper.updateFlowInfo(up);
-					} 
-				}
-				map.put(flowInfoDb.getId(), progress.getProgress()+","+progress.getState());
-			}else {
-				map.put(flowInfoDb.getId(), flowInfoDb.getProgress()+","+flowInfoDb.getState());
-			}
-		  } 
-		return map;
+		Map<String, String> progressAndUpdate = null;
+		 for (FlowInfoDb flowInfoDb : flowInfoList) { 
+			 progressAndUpdate = getProgressAndUpdate(map, flowInfoDb);
+			 progressAndUpdate.put("code","1");
+		 } 
+		 return JsonUtils.toJsonNoException(progressAndUpdate);
 	} 
 
 	/**
@@ -118,19 +98,53 @@ public class FlowInfoDbCtrl {
 		if (null == flowInfo) {
 			return JsonUtils.toJsonNoException(map);
 		}
-		//如果进度小于100去调接口,否则说明已经是100,直接返回
-		if (Float.parseFloat(flowInfo.getProgress()) < 100  && !"COMPLETED".equals(flowInfo.getState())) {
+		Map<String, String> result = getProgressAndUpdate(map, flowInfo);
+		result.put("code","1");
+		return JsonUtils.toJsonNoException(result);
+	}
+
+	/**
+	 * 调取接口及时更新并返回
+	 * @param map
+	 * @param flowInfo
+	 * @return
+	 */
+	private Map<String, String> getProgressAndUpdate(Map<String, String> map, FlowInfoDb flowInfo) {
+		//如果进度等于100或者状态是COMPLETED,直接返回
+		if (Float.parseFloat(flowInfo.getProgress()) == 100 || "COMPLETED".equals(flowInfo.getState())) {
+				map.put("id", flowInfo.getId());
+				map.put("progress", flowInfo.getProgress());
+				map.put("state", flowInfo.getState());
+				map.put("startTime", DateUtils.dateTimeToStr(flowInfo.getStartTime()));
+				map.put("endTime", DateUtils.dateTimeToStr(flowInfo.getEndTime()));
+				return map;
+		}
+			//进度接口
 			ThirdProgressVo progress = iGetFlowProgress.getFlowInfo(flowInfo.getId());
 			//再次调用flowInfo信息,获取开始和结束时间
 			ThirdFlowInfo thirdFlowInfo = iGetFlowInfo.getFlowInfo(flowInfo.getId());
 			//如果接口返回进度为符合100,则更新数据库并返回
-			if (StringUtils.isNotBlank(progress.getProgress()) || !"STARTED".equals(progress.getState()) || Float.parseFloat(progress.getProgress()) < Float.parseFloat(flowInfo.getProgress())) {
+			if (StringUtils.isNotBlank(progress.getProgress()) || !"STARTED".equals(progress.getState()) || Float.parseFloat(progress.getProgress()) > Float.parseFloat(flowInfo.getProgress())) {
 				FlowInfoDb up = new FlowInfoDb();
 				if (null != thirdFlowInfo) {
-					up.setEndTime(thirdFlowInfo.getFlow().getEndTime());
-					up.setStartTime(thirdFlowInfo.getFlow().getStartTime());
-					up.setName(thirdFlowInfo.getFlow().getName());
+					if (null != thirdFlowInfo.getFlow()) {
+						up.setEndTime(thirdFlowInfo.getFlow().getEndTime());
+						up.setStartTime(thirdFlowInfo.getFlow().getStartTime());
+						up.setName(thirdFlowInfo.getFlow().getName());
+						List<ThirdFlowInfoStopVo> stops = thirdFlowInfo.getFlow().getStops();
+						if (stops.size() > 0 && !stops.isEmpty()) {
+							 for (ThirdFlowInfoStopVo thirdFlowInfoStopVo : stops) {
+								 if (null != thirdFlowInfoStopVo.getStop()) {
+									 //更新stop状态信息
+									 ThirdFlowInfoStopVo2 stop = thirdFlowInfoStopVo.getStop();
+									 stop.setFlowId(flowInfo.getFlow().getId());
+									 sStopsServiceImpl.updateStopsByFlowIdAndName(stop);
+								}
+							}
+						}
+					}
 				}
+				up.setName(progress.getName());
 				up.setId(flowInfo.getId());
 				up.setState(StringUtils.isNotBlank(progress.getState()) ? progress.getState() : "FAILED");
 				up.setLastUpdateDttm(new Date());
@@ -142,20 +156,14 @@ public class FlowInfoDbCtrl {
 				}
 				flowInfoDbMapper.updateFlowInfo(up);
 			}
+			map.put("id", flowInfo.getId());
 			map.put("progress", "NaN".equals(progress.getProgress()) ? "0.00" : progress.getProgress());
-			if (null != thirdFlowInfo) {
 			map.put("state", progress.getState());
+			if (null != thirdFlowInfo) {
 			map.put("startTime", DateUtils.dateTimeToStr(thirdFlowInfo.getFlow().getStartTime()));
 			map.put("endTime", DateUtils.dateTimeToStr(thirdFlowInfo.getFlow().getEndTime()));
 			}
-		}else {
-			map.put("progress", flowInfo.getProgress());
-			map.put("startTime", DateUtils.dateTimeToStr(flowInfo.getStartTime()));
-			map.put("endTime", DateUtils.dateTimeToStr(flowInfo.getEndTime()));
-		}
-		map.put("code","1");
-		map.put("state", flowInfo.getState());
-		return JsonUtils.toJsonNoException(map);
+		return map;
 	}
 
 }

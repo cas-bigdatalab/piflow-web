@@ -5,6 +5,8 @@ import com.nature.component.workFlow.service.IStopsService;
 import com.nature.component.workFlow.utils.StopsUtil;
 import com.nature.component.workFlow.vo.StopsVo;
 import com.nature.mapper.StopsMapper;
+import com.nature.third.vo.flowInfo.ThirdFlowInfoStopVo2;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -52,5 +54,10 @@ public class StopsServiceImpl implements IStopsService {
         }
         return 0;
     }
+
+	@Override
+	public int updateStopsByFlowIdAndName(ThirdFlowInfoStopVo2 stopVo) {
+		return stopsMapper.updateStopsByFlowIdAndName(stopVo);
+	}
 
 }

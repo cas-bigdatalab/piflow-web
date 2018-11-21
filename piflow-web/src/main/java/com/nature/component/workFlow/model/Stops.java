@@ -1,15 +1,19 @@
 package com.nature.component.workFlow.model;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.*;
 
 import com.nature.common.Eunm.PortType;
+
 import org.hibernate.annotations.OrderBy;
 import org.hibernate.annotations.Where;
 
 import com.nature.base.BaseHibernateModelUUIDNoCorpAgentId;
+import com.nature.base.util.DateUtils;
 
 /**
  * stop组建表
@@ -37,8 +41,38 @@ public class Stops extends BaseHibernateModelUUIDNoCorpAgentId {
     private String description;
 
     private String inports;
+    
+    private String state;
+    
+    private Date startTime;
+    
+    private Date stopTime;
 
-    @Enumerated(EnumType.STRING)
+    public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	public Date getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
+
+	public Date getStopTime() {
+		return stopTime;
+	}
+
+	public void setStopTime(Date stopTime) {
+		this.stopTime = stopTime;
+	}
+
+	@Enumerated(EnumType.STRING)
     private PortType inPortType;
 
     private String outports;
@@ -149,4 +183,14 @@ public class Stops extends BaseHibernateModelUUIDNoCorpAgentId {
     public void setProperties(List<Property> properties) {
         this.properties = properties;
     }
+    
+    public String getStartTimes() {
+		SimpleDateFormat sdf = new SimpleDateFormat(DateUtils.DATE_PATTERN_yyyy_MM_dd_HH_MM_ss);
+		return startTime != null ? sdf.format(startTime) : "";
+	}
+    
+    public String getStopTimes() {
+		SimpleDateFormat sdf = new SimpleDateFormat(DateUtils.DATE_PATTERN_yyyy_MM_dd_HH_MM_ss);
+		return stopTime != null ? sdf.format(stopTime) : "";
+	}
 }

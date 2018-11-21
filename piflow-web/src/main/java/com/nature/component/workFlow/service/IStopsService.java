@@ -1,10 +1,10 @@
 package com.nature.component.workFlow.service;
 
 
-import com.nature.component.workFlow.model.Stops;
-import com.nature.component.workFlow.vo.StopsVo;
-
 import java.util.List;
+
+import com.nature.component.workFlow.vo.StopsVo;
+import com.nature.third.vo.flowInfo.ThirdFlowInfoStopVo2;
 
 public interface IStopsService {
 	
@@ -25,5 +25,14 @@ public interface IStopsService {
 	 * @return
 	 */
 	public Integer stopsUpdate(StopsVo stopsVo);
+	
+	/**
+	 * 修改接口返回的stops个别字段
+	 * @param stopVo
+	 * @return
+	 */
+	public int updateStopsByFlowIdAndName(ThirdFlowInfoStopVo2 stopVo);
+	
+	
 
 }

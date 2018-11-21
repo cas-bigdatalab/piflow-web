@@ -1,6 +1,7 @@
 package com.nature.third.vo.flowInfo;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class ThirdFlowInfoStopVo2 implements Serializable {
 
@@ -8,8 +9,9 @@ public class ThirdFlowInfoStopVo2 implements Serializable {
 
 	private String name;
 	private String state;
-	private String startTime;
-	private String endTime;
+	private Date startTime;
+	private Date endTime;
+	private String flowId;
 
 	public String getName() {
 		return name;
@@ -27,20 +29,29 @@ public class ThirdFlowInfoStopVo2 implements Serializable {
 		this.state = state;
 	}
 
-	public String getStartTime() {
+	public Date getStartTime() {
 		return startTime;
 	}
 
-	public void setStartTime(String startTime) {
+	public void setStartTime(Date startTime) {
 		this.startTime = startTime;
 	}
 
-	public String getEndTime() {
+	public Date getEndTime() {
 		return endTime;
 	}
 
-	public void setEndTime(String endTime) {
+	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
 	}
+
+	public String getFlowId() {
+		return flowId;
+	}
+
+	public void setFlowId(String flowId) {
+		this.flowId = flowId;
+	}
+	
 
 }

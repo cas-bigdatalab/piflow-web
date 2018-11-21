@@ -200,6 +200,10 @@
                     document.getElementById('stopsVersion').innerText = data.version;
                     document.getElementById('stopSowner').innerText = data.owner;
                     document.getElementById('stopCreateDate').innerText = data.crtDttmString;
+                    
+                    document.getElementById('stopStateId').innerText = data.state ? data.state : "No state" ;
+                    document.getElementById('stopsStartTimeId').innerText = data.startTimes ? data.startTimes : "No startTime" ;
+                    document.getElementById('stopEndTimeId').innerText = data.stopTimes ? data.stopTimes : "No stopTimes" ;
                     //成功的话去掉定时器
                     window.clearTimeout(timerPath);
                 } else {
@@ -243,6 +247,7 @@
                     $("#versionID").html('outport：');
                     $("#ownerID").html('createrTime：');
                     $("#createDateID").html('flowName：');
+                    document.getElementById('table_idDiv').style.display='none';
                     document.getElementById('stopsNameLabel').innerText = data.pageId;
                     document.getElementById('stopsDescription').innerText = data.stopTo.name;
                     document.getElementById('stopsGroups').innerText = data.stopFrom.name;

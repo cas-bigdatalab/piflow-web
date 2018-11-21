@@ -22,6 +22,9 @@ import com.nature.third.inf.IStartFlow;
 import com.nature.third.inf.IStopFlow;
 import com.nature.third.vo.flowLog.ThirdAppVo;
 import com.nature.third.vo.flowLog.ThirdFlowLog;
+
+import net.sf.json.JSONObject;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
@@ -33,6 +36,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -104,6 +108,9 @@ public class FlowCtrl {
             if (null != flowById) {
                 String startFlow = startFlowImpl.startFlow(flowById);
                 if (StringUtils.isNotBlank(startFlow)) {
+                /*	JSONObject obj = JSONObject.fromObject(startFlow);
+                    JSONObject flowObj = (JSONObject) obj.get("flow");
+                    String startFlowId = flowObj.get("id").toString();*/
                     FlowInfoDb flowInfoDb = getFlowInfoImpl.AddFlowInfo(startFlow, flowById);
                     // flowInfo接口返回为空的情况
                     if (null == flowInfoDb) {
@@ -168,7 +175,10 @@ public class FlowCtrl {
                         if (StringUtils.isNotBlank(flowStop)) {
                             rtnMap.put("code", "1");
                             rtnMap.put("errMsg", "停止成功，返回状态为：" + flowStop);
-                        }
+                        }else {
+                        	logger.warn("flowId为" + flowId + "的flow的AppId为空");
+                        	rtnMap.put("errMsg", "停止失败，返回状态为：" + flowStop);
+						}
                     } else {
                         logger.warn("flowId为" + flowId + "的flow的AppId为空");
                         rtnMap.put("errMsg", "flowId为" + flowId + "的flow的AppId为空");

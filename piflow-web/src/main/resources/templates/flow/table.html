@@ -413,7 +413,7 @@
     }
 
     //运行
-    function runFlow(loadId) {
+    function runFlows(loadId) {
         $('#fullScreen').show();
         $.ajax({
             cache: true,//保留缓存数据
@@ -428,7 +428,6 @@
                 return;
             },
             success:function(data){//请求成功之后的操作
-                console.log("data");
                 var dataMap = JSON.parse(data);
                 if('0'!==dataMap.code){
                 	 $('#fullScreen').hide();
@@ -461,11 +460,11 @@
                 var dataMap = JSON.parse(data);
                 if('0'!==dataMap.code){
                     $('#fullScreen').hide();
-                    layer.msg(dataMap.rtnMsg,{icon: 1,  shade:0,  time: 2000}, function(){location.reload(); });
+                    layer.msg(dataMap.errMsg,{icon: 1,  shade:0,  time: 2000}, function(){location.reload(); });
                     return;
                 }else{
                 	$('#fullScreen').hide();
-                    layer.msg(dataMap.rtnMsg,{icon: 2,  shade:0,  time: 2000}, function(){location.reload(); });
+                    layer.msg(dataMap.errMsg,{icon: 2,  shade:0,  time: 2000}, function(){location.reload(); });
                 }
             }
         });
@@ -499,15 +498,16 @@
             },
             success: function (data) {
                 if (null != data) {
-                    for (var k in data) {  //通过定义一个局部变量k遍历获取到了map中所有的key值
-                        var docList = data[k]; //获取到了key所对应的value的值！
-                        var strs = new Array(); //定义一数组 
-                        strs=docList.split(","); //字符分割 
-                        if(null != strs && strs.length > 0)
-                        document.getElementById(""+k+"").value=strs[0];
-                        document.getElementById(""+k+"Info").innerHTML="进度"+strs[0]+"%";
-                        document.getElementById(""+k+"state").innerHTML=strs[1];
-                    }
+                	var dataMap = JSON.parse(data);
+                    if ('0' !== dataMap.code) {
+                    	document.getElementById(""+dataMap.id+"").value=dataMap.progress;
+                        document.getElementById(""+dataMap.id+"Info").innerHTML="进度"+dataMap.progress+"%";
+                        document.getElementById(""+dataMap.id+"state").innerHTML=dataMap.state;
+                        if(dataMap.endTime && "" !== dataMap.startTime){
+                        document.getElementById(""+dataMap.id+"startTime").innerHTML=dataMap.startTime ;
+                        document.getElementById(""+dataMap.id+"endTime").innerHTML=dataMap.endTime ;
+                        }
+                    }    
                 }
             }
         });
