@@ -70,16 +70,16 @@ public class HttpUtils {
 				result = EntityUtils.toString(response.getEntity(), "utf-8");
 			}
 		} catch (UnsupportedCharsetException e) {
-			logger.debug("接口调用出错", e);
+			logger.error("接口调用出错", e);
 			result = "接口调用出错:UnsupportedCharsetException";
 		} catch (ClientProtocolException e) {
-			logger.debug("接口调用出错", e);
+			logger.error("接口调用出错", e);
 			result = "接口调用出错:ClientProtocolException";
 		} catch (ParseException e) {
-			logger.debug("接口调用出错", e);
+			logger.error("接口调用出错", e);
 			result = "接口调用出错:ParseException";
 		} catch (IOException e) {
-			logger.debug("接口调用出错", e);
+			logger.error("接口调用出错", e);
 			result = "接口调用出错:IOException";
 		}
 		return result;

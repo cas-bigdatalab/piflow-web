@@ -108,6 +108,35 @@ public class MxGraphModelUtil {
         }
         return map;
     }
+    /**
+     * 区分stop和path
+     *
+     * @param root
+     * @return 返回map中有stops和paths的MxCell型的List(键为 ： paths和stops)
+     */
+    public static Map<String, Object> mxCellDistinguishStopsPaths(List<MxCell> root) {
+        Map<String, Object> map = null;
+        if (null != root && root.size() > 0) {
+            map = new HashMap<String, Object>();
+            List<MxCell> pathsList = new ArrayList<MxCell>();
+            List<MxCell> stopsList = new ArrayList<MxCell>();
+            // 循环root
+            for (MxCell mxCell : root) {
+                if (null != mxCell) {
+                    // 取出线特有的属性判断是否为空
+                    String edge = mxCell.getEdge();
+                    if (StringUtils.isNotBlank(edge)) {
+                        pathsList.add(mxCell);
+                    } else {
+                        stopsList.add(mxCell);
+                    }
+                }
+            }
+            map.put("stops", stopsList);
+            map.put("paths", pathsList);
+        }
+        return map;
+    }
 
     /**
      * 根据MxCellList中的内容生成paths的list
@@ -116,7 +145,7 @@ public class MxGraphModelUtil {
      * @param flow
      * @return
      */
-    public static List<Paths> mxCellVoListToPathsVoList(List<MxCellVo> objectPaths, Flow flow) {
+    public static List<Paths> mxCellVoListToPathsList(List<MxCellVo> objectPaths, Flow flow) {
         List<Paths> pathsList = null;
         if (null != objectPaths && objectPaths.size() > 0) {
             pathsList = new ArrayList<Paths>();

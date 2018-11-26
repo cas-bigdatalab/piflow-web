@@ -194,7 +194,6 @@ public class DateUtils {
 	 * 将短时间格式时间转换为字符串 yyyy-MM-dd
 	 * 
 	 * @param dateDate
-	 * @param k
 	 * @return
 	 */
 	public static String dateToStr(java.util.Date dateDate) {
@@ -207,7 +206,6 @@ public class DateUtils {
 	 * 将短时间格式时间转换为字符串 yyyy-MM-dd_HH_MM_ss
 	 * 
 	 * @param dateDate
-	 * @param k
 	 * @return
 	 */
 	public static String dateTimeToStr(java.util.Date dateDate) {
@@ -223,7 +221,6 @@ public class DateUtils {
 	 * 将时间格式的时间转换为字符串 yyyy-MM-dd_HH_MM_ss
 	 * 
 	 * @param dateDate
-	 * @param k
 	 * @return
 	 */
 	public static String dateTimesToStr(java.util.Date dateDate) {
@@ -239,7 +236,6 @@ public class DateUtils {
 	 * 将短时间格式时间转换为字符串 yyyy-MM-dd_HH_MM
 	 * 
 	 * @param dateDate
-	 * @param k
 	 * @return
 	 */
 	public static String dateTimeSecToStr(java.util.Date dateDate) {
@@ -252,7 +248,6 @@ public class DateUtils {
 	 * 将短时间格式时间转换为字符串 yyyy-MM-dd
 	 * 
 	 * @param dateDate
-	 * @param k
 	 * @return
 	 */
 	public static String dateToHhMmStr(java.util.Date dateDate) {
@@ -265,7 +260,6 @@ public class DateUtils {
 	 * 将短时间格式时间转换为字符串 yyyyMMdd
 	 * 
 	 * @param dateDate
-	 * @param k
 	 * @return
 	 */
 	public static String dateToStr_YYYYMMDD(java.util.Date dateDate) {
@@ -278,7 +272,6 @@ public class DateUtils {
 	 * 将短时间格式时间转换为字符串 yyyyMMddHHmmss
 	 * 
 	 * @param dateDate
-	 * @param k
 	 * @return
 	 */
 	public static String dateToStr_yyyyMMddHHMMss(java.util.Date dateDate) {
@@ -551,7 +544,6 @@ public class DateUtils {
 	 * 将短时间格式时间转换为字符串 yyyy
 	 * 
 	 * @param dateDate
-	 * @param k
 	 * @return
 	 */
 	public static String dateToStr_YYYY(java.util.Date dateDate) {
@@ -564,7 +556,6 @@ public class DateUtils {
 	 * 将年月时间格式时间转换为字符串 yyyy_MM
 	 * 
 	 * @param dateDate
-	 * @param k
 	 * @return
 	 */
 	public static String dateToStr_yy_MM(java.util.Date dateDate) {

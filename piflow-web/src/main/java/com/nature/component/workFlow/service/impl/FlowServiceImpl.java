@@ -377,8 +377,9 @@ public class FlowServiceImpl implements IFlowService {
 
                                 // 线的List
                                 List<Paths> addPathsList = new ArrayList<Paths>();
+
                                 // 根据MxCellList中的内容生成paths的list
-                                addPathsList = MxGraphModelUtil.mxCellVoListToPathsVoList(objectPaths, flow);
+                                addPathsList = MxGraphModelUtil.mxCellVoListToPathsList(objectPaths, flow);
 
                                 // 判空pathsList
                                 if (null != addPathsList && addPathsList.size() > 0) {
@@ -664,7 +665,7 @@ public class FlowServiceImpl implements IFlowService {
                                 for (Stops stops : updateStops) {
                                     if (null != stops) {
                                         int updateStopsNum = stopsMapper.updateStops(stops);
-                                        if(updateStopsNum>0){
+                                        if (updateStopsNum > 0) {
                                             List<Property> properties = stops.getProperties();
                                             for (Property property : properties) {
                                                 propertyMapper.updateStopsProperty(property);

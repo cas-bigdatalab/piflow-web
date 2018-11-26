@@ -29,6 +29,20 @@ public class Utils {
     }
 
     /**
+     * str(给字符串加单引,并替换字符串中的单引为双单引)
+     *
+     * @param str
+     * @return
+     */
+    public static String addSqlStrAndReplace(String str) {
+        if (StringUtils.isNotBlank(str)) {
+            return "'" + replaceString(str) + "'";
+        } else {
+            return "''";
+        }
+    }
+
+    /**
      * str(替换字符串中的单引为双单引)
      *
      * @param str

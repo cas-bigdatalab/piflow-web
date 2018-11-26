@@ -76,11 +76,11 @@ public class PathsMapperProvider {
                     sql.append(Utils.addSqlStr((inport == null ? "" : inport)) + ",");
                     sql.append(Utils.addSqlStr((pageId == null ? "" : pageId)) + ",");
                     sql.append(Utils.addSqlStr((flow == null ? "" : flow.getId())));
-                }
-                if (i != pathsList.size()) {
-                    sql.append("),");
-                } else {
-                    sql.append(")");
+                    if (i != pathsList.size()) {
+                        sql.append("),");
+                    } else {
+                        sql.append(")");
+                    }
                 }
             }
             sql.append(";");
