@@ -19,7 +19,7 @@
 	color:#000000;
 	text-decoration:none;
 }
-.geMenubarContainer, .geToolbarContainer, .geDiagramContainer, .geSidebarContainer, .geFooterContainer, .geHsplit, .geVsplit {
+.geMenubarContainer, .geToolbarContainer, .geDiagramContainer, .geSidebarContainer, .geFooterContainer, .geHsplit, .geVsplit , .hsplitRight {
 	overflow:hidden;
 	position:absolute;
 	cursor:default;
@@ -413,7 +413,7 @@ div.mxWindow .geButton {
 	padding:12px 38px 11px 38px;
 	white-space:nowrap;
 }
-.geHsplit {
+.geHsplit , .hsplitRight {
 	cursor:col-resize;
 	background-color:#e5e5e5;
 	background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAHBAMAAADdS/HjAAAAGFBMVEUzMzP///9tbW1QUFCKiopBQUF8fHxfX1/IXlmXAAAAHUlEQVQImWMQEGAQFWUQFmYQF2cQEmIQE2MQEQEACy4BF67hpEwAAAAASUVORK5CYII=);
@@ -430,7 +430,7 @@ div.mxWindow .geButton {
 	background-repeat:no-repeat;
 	background-position:center center;
 }
-.geHsplit:hover, .geVsplit:hover {
+.geHsplit:hover, .geVsplit:hover ,.hsplitRight:hover {
 	background-color:#d5d5d5;
 }
 .geDialog {

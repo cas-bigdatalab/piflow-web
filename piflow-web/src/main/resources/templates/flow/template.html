@@ -1,29 +1,15 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <!--
-        ===
-        This comment should NOT be removed.
-
-        Charisma v2.0.0
-
-        Copyright 2012-2014 Muhammad Usman
-        Licensed under the Apache License v2.0
-        http://www.apache.org/licenses/LICENSE-2.0
-
-        http://usman.it
-        http://twitter.com/halalit_usman
-        ===
-    -->
     <meta charset="utf-8">
-    <title>index</title>
+    <title>table</title>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Charisma, a fully featured, responsive, HTML5, Bootstrap admin template.">
     <meta name="author" content="Muhammad Usman">
-
     <!-- The styles -->
     <link id="bs-css" th:href="@{/bootstrap/css/bootstrap-cerulean.min.css}" rel="stylesheet">
-
     <link th:href="@{/charisma/css/charisma-app.css}" rel="stylesheet">
     <link th:href="@{/charisma/fullcalendar/fullcalendar.css}" rel='stylesheet'>
     <link th:href="@{/charisma/fullcalendar/fullcalendar.print.css}" rel='stylesheet' media='print'>
@@ -38,26 +24,28 @@
     <link th:href="@{/charisma/css/jquery.iphone.toggle.css}" rel='stylesheet'>
     <link th:href="@{/charisma/css/uploadify.css}" rel='stylesheet'>
     <link th:href="@{/charisma/css/animate.min.css}" rel='stylesheet'>
-
     <!-- jQuery -->
     <script th:src="@{/js/jquery/jquery.min.js}"></script>
-
-    <!-- The HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-
-    <!-- The fav icon -->
     <link rel="shortcut icon" th:href="@{/charisma/img/favicon.ico}">
-
 </head>
 
 <body>
+<!-- loading start -->
+<div id='fullScreen' class="fullScreen" style="display: none;">
+    <div style="margin-top: 15%;">
+        <p>
+            <img th:src="@{/img/fullScreen.gif}" alt="">
+        </p>
+    </div>
+</div>
+<!-- loading end -->
 <!-- topbar starts -->
-<div class="navbar navbar-default" role="navigation">
+<div class="navbar navbar-default" role="navigation"
+     style="background-image: linear-gradient(#bbacac, #ffffff 60%, #ffffff); border-color: #ffffff;">
 
-    <div class="navbar-inner">
-        <a class="navbar-brand" href="index"> <img alt="Charisma Logo" th:src="@{/charisma/img/logo20.png}" class="hidden-xs"/>
+    <div class="">
+        <a class="navbar-brand" href="index">
+            <!--<img alt="Charisma Logo" th:src="@{/charisma/img/logo20.png}" class="hidden-xs"/> -->
             <span>Nature</span></a>
 
         <!-- user dropdown starts -->
@@ -80,52 +68,41 @@
     <div class="row">
         <!-- left menu starts -->
         <div class="col-sm-2 col-lg-2">
-            <div class="sidebar-nav">
-                <div class="nav-canvas">
-                    <div class="nav-sm nav nav-stacked">
-
-                    </div>
-                    <ul class="nav nav-pills nav-stacked main-menu">
-                        <li class="nav-header">Main</li>
-                        <!--
-                        <li>
-                        	<a class="ajax-link" onclick="loadGetRight('/piflow-web/web/indexHome')">
-                        		<i class="glyphicon glyphicon-home"></i>
-                        		<span> Dashboard</span>
-                        	</a>
-                        </li>
-                        -->
-                        <li>
-                            <a class="ajax-link" onclick="initAll('/piflow-web/web/flowList')" style="color: #8F8F8F;">
-                                <i class="glyphicon glyphicon-align-justify"></i>
-                                <span>Flows</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="ajax-link" onclick="loadGetRight('/piflow-web/web/template')" style="color: #8F8F8F;">
-                                <i class="glyphicon glyphicon-globe"></i>
-                                <span>Template</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+            <ul class="nav nav-pills nav-stacked main-menu">
+                <!--
+                <li>
+                    <a class="ajax-link" onclick="loadGetRight('/piflow-web/web/indexHome')">
+                        <i class="glyphicon glyphicon-home"></i>
+                        <span> Dashboard</span>
+                    </a>
+                </li>
+                -->
+                <li>
+                    <a class="ajax-link" onclick="initFlows('/piflow-web/web/flowList')" style="color: #8F8F8F;">
+                        <i class="glyphicon glyphicon-align-justify"></i>
+                        <span>Flows</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="ajax-link" onclick="initTemplate('/piflow-web/web/template')" style="color: #8F8F8F;">
+                        <i class="glyphicon glyphicon-globe"></i>
+                        <span>Template</span>
+                    </a>
+                </li>
+            </ul>
         </div>
         <!--/span-->
         <!-- left menu ends -->
         <div id="content" class="col-lg-10 col-sm-10">
             <!-- content starts -->
-            <div th:include="/flow/inc/index_right :: index_right"></div>
             <!-- <div class="rightBar" style="width: 100%; height: 100%">
-                <div th:include="/flow/inc/table :: table"></div>
+                <div th:include="/flow/inc/index_right :: index_right"></div>
                 -------------------------------------------------------------
             </div> -->
+            <div th:replace="/flow/inc/template_right :: table"></div>
             <!-- content ends -->
         </div><!--/#content.col-md-0-->
-
-
     </div><!--/fluid-row-->
-    <!-- Ad ends -->
 
     <hr>
 
@@ -150,9 +127,7 @@
     </div>
 
 
-</div><!--/.fluid-container-->
-
-<!-- external javascript -->
+</div> 
 
 <script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
 
@@ -185,29 +160,100 @@
 <script th:src="@{/charisma/js/jquery.history.js}"></script>
 <!-- application script for Charisma demo -->
 <script th:src="@{/charisma/js/charisma.js}"></script>
-
 <script th:inline="javascript">
-    function loadPostRight(url) {
-        $.ajax({
-            type:"POST",//为get请求
-            url:url,
-            data:{},
-            success:function(data){//请求成功之后的操作
-                //console.log("success");
-                $('#content').html(data);
-            }
-        });
+var token = $("meta[name='_csrf']").attr("content");
+var header = $("meta[name='_csrf_header']").attr("content");
+$(document).ajaxSend(function (e, xhr, options) {
+    xhr.setRequestHeader(header, token);
+});
+    function initTemplate(url) {
+    	   window.location.href = url;
+    }
 
-    }
-    function loadGetRight(url) {
-    	window.location.href = url;
-    }
-    function initAll(url) {
+    function initFlows(url) {
         window.location.href = url;
     }
 
-    //@ sourceURL=indexHome.js
+    //@ sourceURL=table.js
 </script>
-
+<script type="text/javascript">
+  function deleteTemPlate(id, name) {
+      var flag = confirm("确定删除" + name + "吗?");
+      if (flag) {
+          $.ajax({
+              cache: true,//保留缓存数据
+              type: "get",//为post请求
+              url: "/piflow-web/template/deleteTemplate",//这是我在后台接受数据的文件名
+              data: {id: id},
+              async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
+              error: function (request) {//请求失败之后的操作
+                  return;
+              },
+              success: function (data) {//请求成功之后的操作
+                  if (data > 0) {
+                      layer.msg('删除成功', {icon: 1, shade: 0, time: 2000}, function () {
+                    	  location.reload();
+                      });
+                  } else {
+                      layer.msg('删除失败', {icon: 2, shade: 0, time: 2000}, function () {
+                      });
+                  }
+              }
+          });
+      }
+  }
+  
+  function uploadTemplate(){
+	  document.getElementById("templateFile").click();
+  }
+  
+  function importFile(){
+	  if(!FileTypeCheck()) {
+	 		return false;
+	 	}
+      var formData = new FormData($('#uploadForm')[0]);
+      $.ajax({
+          type: 'post',
+          url: "/piflow-web/template/upload",
+          data: formData,
+          cache: false,
+          processData: false,
+          contentType: false,
+      }).success(function (data) {
+    	  var dataMap = JSON.parse(data);
+    	  if (0 !== dataMap.code) {
+    		  layer.msg(dataMap.errMsg, {icon: 1, shade: 0, time: 2000}, function () {  location.reload();});
+    	  }else{
+    		  layer.msg(dataMap.errMsg, {icon: 2, shade: 0, time: 2000}, function () {});
+    	  }
+      }).error(function () {
+          layer.msg("上传失败", {icon: 2, shade: 0, time: 2000}, function () {});
+      });
+  }
+  
+  function FileTypeCheck()
+  {
+  var obj =document.getElementById('templateFile'); 
+  if(obj.value==null || obj.value ==''){ 
+  	layer.msg('请选择xml文件', {icon: 2, shade: 0, time: 2000}, function () {});
+  	this.focus()
+  	return false;
+  }
+  var length = obj.value.length;
+  var charindex = obj.value.lastIndexOf(".");
+  var ExtentName = obj.value.substring(charindex,charindex+4);
+  if(!(ExtentName == ".xml" )){
+  	layer.msg('请上传xml文件', {icon: 2, shade: 0, time: 2000}, function () {});
+  	this.focus()
+  	return false;
+  }
+  	return true;
+  }
+  
+  function downloadTemplate(id){
+	  window.location.href = "/piflow-web/template/templateDownload?templateId="+id;
+  }
+ </script>
+ 
 </body>
 </html>

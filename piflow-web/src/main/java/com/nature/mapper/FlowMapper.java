@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.One;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.annotations.UpdateProvider;
@@ -64,4 +65,12 @@ public interface FlowMapper {
 	
 	@Update("update flow set enable_flag = 0 where id = #{id}; ")
 	public int deleteFLowInfo(@Param("id") String id);
+	
+	/**
+	 * 根据flow查询PageId最大值
+	 * @param flowId
+	 * @return
+	 */
+	@Select("SELECT MAX(page_id) from flow_stops where fk_flow_id = #{flowId} and enable_flag = 1 ")
+	public String getMaxStopPageId(@Param("flowId") String flowId);
 }

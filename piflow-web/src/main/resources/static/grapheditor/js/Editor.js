@@ -549,7 +549,7 @@ Editor.prototype.updateGraphComponents = function()
 	{
 		graph.view.validateBackground();
 		graph.container.style.overflow = (graph.scrollbars) ? 'auto' : 'hidden';
-		graph.container.style.right = '330px';
+		//graph.container.style.right = '330px';
 		this.fireEvent(new mxEventObject('updateGraphComponents'));
 	}
 };

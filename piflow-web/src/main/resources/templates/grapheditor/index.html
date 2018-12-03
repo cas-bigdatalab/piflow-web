@@ -23,10 +23,15 @@
             z-index: 9999;
             text-align: center;
         }
+        #divloadingXml{
+    	height: 200px;
+    	display: none;
+    }
     </style>
     <script th:inline="javascript">
         var stopsGroupData = [[${groupsList}]];
         var xmlDate = [[${xmlDate}]];
+        var xmlDateStr = [[${xmlDateStr}]];
         var loadId = [[${load}]];
         var appId = [[${appId}]];
         var flowState = [[${flowState}]];
@@ -48,8 +53,8 @@
         </p>
     </div>
 </div>
-<div style="width: 30%; float: right;">
-    <div style="position: fixed; z-index: 999;text-align: right; width: 30%;">
+<div style="width: 45.2%; float: right;">
+    <div style="position: fixed; z-index: 999;text-align: right; width:45%;">
 			<span>
 				进度：<span id="progress">0.00%</span>
 			</span>
@@ -58,6 +63,14 @@
         <input id="stopFlow" type="button" onclick="stopFlows()" value="停止"/>
         <input type="button" class="btn-primary" data-toggle="modal" onclick="getLogUrl()" data-target="#myModal"
                value="日志"/>
+        <input type="button" onclick="saveTemplate()" value="save Template"/>
+        <input type="button"  value="loadingXml" id="loadingXml"/>
+        <div id="divloadingXml">
+		<select  name="loadingXmlSelect" id="loadingXmlSelect" onchange="loadTemplate()"></select>
+	</div>
+       <!--  <form id="uploadForm" enctype="multipart/form-data" method="post" >
+         <input type="file" id="uploadFile" name="templateFile"  style="display:none;"  onchange="uploadXmlFile()"/>
+        <input type="button" onclick="uploadTemplate()" value="upload Template"/></form> -->
     </div>
 </div>
 <!-- Modal 日志 -->
@@ -999,7 +1012,138 @@
         $("#myModal").css("overflow", "hidden");//禁止模态对话框的半透明背景滚动
         $("#myModalPort").draggable();//为模态对话框添加拖拽
         $("#myModalPort").css("overflow", "hidden");//禁止模态对话框的半透明背景滚动
+        loadingSelect();
     });
+    
+    function saveTemplate(){
+    	var getXml = thisEditor.getGraphXml();
+        var sssss = getXml.outerHTML;
+    	layer.prompt({title: '请输入模板名称', formType: 2}, function(text, index){
+    	    layer.close(index);
+    	    $.ajax({
+                cache: true,//保留缓存数据
+                type: "POST",//为post请求
+                url: "/piflow-web/template/saveTemplate",//这是我在后台接受数据的文件名
+                data: {
+                	value: sssss,
+                    load: loadId,
+                    name: text
+                },
+                async: true, 
+                error: function (request) {//请求失败之后的操作
+                	console.log( " save template error");
+                    return;
+                },
+                success: function (data) {//请求成功之后的操作
+                    var dataMap = JSON.parse(data);
+                    if (0 !== dataMap.code) {
+                    	 layer.msg(dataMap.errMsg, {icon: 1, shade: 0, time: 2000}, function () {});
+                    } else {
+                    	 layer.msg(dataMap.errMsg, {icon: 2, shade: 0, time: 2000}, function () {});
+                    }
+                }
+            });
+    	  });
+    }
+    function uploadTemplate(){
+  	  document.getElementById("uploadFile").click();
+    }
+    
+    function uploadXmlFile(){
+  	  if(!FileTypeCheck()) {
+  	 		return false;
+  	 	}
+        var formData = new FormData($('#uploadForm')[0]);
+        $.ajax({
+            type: 'post',
+            url: "/piflow-web/template/upload",
+            data: formData,
+            cache: false,
+            processData: false,
+            contentType: false,
+        }).success(function (data) {
+      	  var dataMap = JSON.parse(data);
+      	  if (0 !== dataMap.code) {
+      		  layer.msg(dataMap.errMsg, {icon: 1, shade: 0, time: 2000}, function () {  location.reload();});
+      	  }else{
+      		  layer.msg(dataMap.errMsg, {icon: 2, shade: 0, time: 2000}, function () {});
+      	  }
+        }).error(function () {
+            layer.msg("上传失败", {icon: 2, shade: 0, time: 2000}, function () {});
+        });
+    }
+    
+    function FileTypeCheck(){
+    var obj =document.getElementById('uploadFile'); 
+    if(obj.value==null || obj.value ==''){ 
+    	layer.msg('请选择xml文件', {icon: 2, shade: 0, time: 2000}, function () {});
+    	this.focus()
+    	return false;
+    }
+    var length = obj.value.length;
+    var charindex = obj.value.lastIndexOf(".");
+    var ExtentName = obj.value.substring(charindex,charindex+4);
+    if(!(ExtentName == ".xml" )){
+    	layer.msg('请上传xml文件', {icon: 2, shade: 0, time: 2000}, function () {});
+    	this.focus()
+    	return false;
+    }
+    	return true;
+    }
+    
+    function loadingXml(id,loadId){
+         $.ajax({
+             type: 'post',
+             data: {
+                 templateId: id,
+                 load: loadId
+             },
+             async: true, 
+             url: "/piflow-web/template/loadingXmlPage",
+         }).success(function (data) {
+        	 window.location.reload();
+         }).error(function () {
+         }); 
+    }
+    
+    window.onload=showSelect;
+    function showSelect(){
+    	var bt=document.getElementById("loadingXml");
+    	bt.onclick=function(){
+    		var oDiv=document.getElementById("divloadingXml");
+    		if(oDiv.style.display=="block"){
+    			oDiv.style.display="none";
+    		}else{
+    			oDiv.style.display="block";
+
+    		}
+    	}
+    }
+    function loadingSelect(){
+    	$.ajax({
+    		url:"/piflow-web/template/templateAllSelect",
+    		type:"post",
+    		success:function(data){
+    			 if(data!=null){
+    				//$("#loadingXmlSelect").append("<option value="" >-----请选择-----</option>");
+    				for(var i=0;i<data.length;i++){
+    				$("#loadingXmlSelect").append("<option value="+data[i].id+" >"+data[i].name+"</option>");
+    				}  
+	        	}
+    		}
+    	});
+    }
+    
+    
+    function loadTemplate(){
+    	var id = $("#loadingXmlSelect").val();
+    	var name = $("#loadingXmlSelect option:selected").text();
+    	layer.confirm('您确定打开 '+name+'吗？', {
+    		  btn: ['确定','取消'] //按钮
+    		}, function(){
+    		  loadingXml(id,loadId);
+    		}, function(){});
+    }
     //@ sourceURL=index.js
 </script>
 </body>

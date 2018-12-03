@@ -118,7 +118,7 @@
                     </a>
                 </li>
                 <li>
-                    <a class="ajax-link" onclick="loadGetRight('/piflow-web/web/tour')" style="color: #8F8F8F;">
+                    <a class="ajax-link" onclick="loadGetRight('/piflow-web/web/template')" style="color: #8F8F8F;">
                         <i class="glyphicon glyphicon-globe"></i>
                         <span>Template</span>
                     </a>
@@ -264,16 +264,7 @@
     }
 
     function loadGetRight(url) {
-        $.ajax({
-            type: "GET",//为get请求
-            url: url,
-            data: {},
-            success: function (data) {//请求成功之后的操作
-                //console.log("success");
-                $('#content').html(data);
-            }
-        });
-
+    	 window.location.href = url;
     }
 
     function initAll(url) {

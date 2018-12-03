@@ -111,4 +111,11 @@ public class SysParamsCache {
     public void setImagesPath(String imagesPath) {
         IMAGES_PATH = imagesPath.replace("file:", "");
     }
+    
+    // xml文件路径(配置文件中 读取)
+    public static String XML_PATH;
+	@Value("${syspara.xmlPath}")
+	public void setmlPath(String xmlPath) {
+		XML_PATH = xmlPath ;
+	}
 }

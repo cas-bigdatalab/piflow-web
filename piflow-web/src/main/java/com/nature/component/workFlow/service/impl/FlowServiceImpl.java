@@ -94,7 +94,7 @@ public class FlowServiceImpl implements IFlowService {
      */
     @Override
     @Transient
-    public StatefulRtnBase saveOrUpdateFlowAll(MxGraphModelVo mxGraphModelVo, String flowId, String operType) {
+    public StatefulRtnBase saveOrUpdateFlowAll(MxGraphModelVo mxGraphModelVo, String flowId, String operType,boolean flag) {
         StatefulRtnBase statefulRtnBase = new StatefulRtnBase();
         // 参数判空
         if (!StringUtils.isAnyEmpty(flowId, operType)) {
@@ -105,7 +105,7 @@ public class FlowServiceImpl implements IFlowService {
                 if (null != flow) {
                     if ("ADD".equals(operType)) {
                         logger.info("ADD操作开始");
-                        statefulRtnBase = this.addFlowStops(mxGraphModelVo, flow);
+                        statefulRtnBase = this.addFlowStops(mxGraphModelVo, flow,flag);
                     } else if ("MOVED".equals(operType)) {
                         logger.info("MOVED操作开始");
                         statefulRtnBase = this.updateMxGraph(mxGraphModelVo, flow.getMxGraphModel());
@@ -252,9 +252,10 @@ public class FlowServiceImpl implements IFlowService {
      *
      * @param mxGraphModelVo
      * @param flow
+     * @param flag 是否添加stop信息
      * @return
      */
-    private StatefulRtnBase addFlowStops(MxGraphModelVo mxGraphModelVo, Flow flow) {
+    private StatefulRtnBase addFlowStops(MxGraphModelVo mxGraphModelVo, Flow flow,boolean flag) {
         StatefulRtnBase statefulRtnBase = new StatefulRtnBase();
         // 判断mxGraphModelVo和flow是否为空
         if (null != mxGraphModelVo && null != flow) {
@@ -370,7 +371,9 @@ public class FlowServiceImpl implements IFlowService {
                                 // 根据MxCellList中的内容生成stops的list
                                 addStopsList = this.mxCellVoListToStopsList(objectStops, flow);
                                 // 保存addStopsList
-                                this.addStopList(addStopsList);
+                                if (flag) {
+                                	this.addStopList(addStopsList);
+								}
 
                                 // 从Map中取出mxCellVoList(线的list)
                                 List<MxCellVo> objectPaths = (ArrayList<MxCellVo>) stopsPathsMap.get("paths");
@@ -951,5 +954,10 @@ public class FlowServiceImpl implements IFlowService {
             logger.info("addStopsList为空,不保存");
         }
     }
+
+	@Override
+	public String getMaxStopPageId(String flowId) {
+		return flowMapper.getMaxStopPageId(flowId);
+	}
 
 }

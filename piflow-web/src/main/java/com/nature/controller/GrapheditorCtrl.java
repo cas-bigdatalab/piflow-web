@@ -156,7 +156,7 @@ public class GrapheditorCtrl {
         } else {
             // 把页面传來的XML转为mxGraphModel
             MxGraphModelVo xmlToMxGraphModel = FlowXmlUtils.xmlToMxGraphModel(imageXML);
-            StatefulRtnBase addFlow = flowServiceImpl.saveOrUpdateFlowAll(xmlToMxGraphModel, loadId, operType);
+            StatefulRtnBase addFlow = flowServiceImpl.saveOrUpdateFlowAll(xmlToMxGraphModel, loadId, operType,true);
             // addFlow不为空且ReqRtnStatus的值为true,则保存成功
             if (null != addFlow && addFlow.isReqRtnStatus()) {
                 rtnMap.put("code", "1");

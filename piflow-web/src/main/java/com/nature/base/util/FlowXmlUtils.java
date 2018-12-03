@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
@@ -19,6 +21,12 @@ import com.nature.component.mxGraph.model.MxGraphModel;
 import com.nature.component.mxGraph.vo.MxCellVo;
 import com.nature.component.mxGraph.vo.MxGeometryVo;
 import com.nature.component.mxGraph.vo.MxGraphModelVo;
+import com.nature.component.template.vo.StopTemplateVo;
+import com.nature.component.workFlow.model.Flow;
+import com.nature.component.workFlow.model.Property;
+import com.nature.component.workFlow.model.Stops;
+import com.nature.component.workFlow.model.Template;
+import com.nature.component.workFlow.vo.PropertyVo;
 
 
 public class FlowXmlUtils {
@@ -312,4 +320,185 @@ public class FlowXmlUtils {
 		}
 		return mxGraphModelVo;
 	}
+	
+	
+	/**
+	 * flow转字符串的xml
+	 * 
+	 * @param flow
+	 * @return
+	 */
+	public static String flowAndStopInfoToXml(Flow flow,String xmlStr) {
+		// 拼xml注意一定要写空格
+		if (null != flow) {
+			StringBuffer xmlStrSb = new StringBuffer();
+			String id = flow.getId();
+			String name = flow.getName();
+			String description = flow.getDescription();
+			xmlStrSb.append("<flow ");
+			if (StringUtils.isNotBlank(id)) {
+				xmlStrSb.append("id=\"" + id + "\" ");
+			}
+			if (StringUtils.isNotBlank(name)) {
+				xmlStrSb.append("name=\"" + name + "\" ");
+			}
+			if (StringUtils.isNotBlank(description)) {
+				xmlStrSb.append("description=\"" + description + "\" ");
+			}
+			xmlStrSb.append("> \n");
+			List<Stops> stopsVoList = flow.getStopsList();
+			if (null != stopsVoList && stopsVoList.size() > 0) {
+				for (Stops stopVo : stopsVoList) {
+					String stopId = stopVo.getId();
+					String pageId = stopVo.getPageId();
+					String stopName = stopVo.getName();
+					String bundel = stopVo.getBundel();
+					String stopDescription = stopVo.getDescription();
+					xmlStrSb.append("<stop ");
+					if (StringUtils.isNotBlank(stopId)) {
+						xmlStrSb.append("id=\"" + stopId + "\" ");
+					}
+					if (StringUtils.isNotBlank(pageId)) {
+						xmlStrSb.append("pageId=\"" + pageId + "\" ");
+					}
+					if (StringUtils.isNotBlank(stopName)) {
+						xmlStrSb.append("name=\"" + stopName + "\" ");
+					}
+					if (StringUtils.isNotBlank(bundel)) {
+						xmlStrSb.append("bundel=\"" + bundel + "\" ");
+					}
+					if (StringUtils.isNotBlank(stopDescription)) {
+						xmlStrSb.append("description=\"" + stopDescription + "\" ");
+					}
+					List<Property> property = stopVo.getProperties();
+					if (null != property && property.size() > 0) {
+						xmlStrSb.append("> \n");
+						for (Property propertyVo : property) {
+						xmlStrSb.append("<property ");
+						String propertyId = propertyVo.getId();
+						String displayName = propertyVo.getDisplayName();
+						String propertyName = propertyVo.getName();
+						String customValue = propertyVo.getCustomValue();
+						String propertyDescription = propertyVo.getDescription();
+						String allowableValues = propertyVo.getAllowableValues();
+						Boolean required = propertyVo.getRequired();
+						Boolean sensitive = propertyVo.getSensitive();
+						if (StringUtils.isNotBlank(propertyId)) {
+							xmlStrSb.append("id=\"" + propertyId + "\" ");
+						}
+						if (StringUtils.isNotBlank(displayName)) {
+							xmlStrSb.append("displayName=\"" + displayName + "\" ");
+						}
+						if (StringUtils.isNotBlank(propertyName)) {
+							xmlStrSb.append("name=\"" + propertyName + "\" ");
+						}
+						if (StringUtils.isNotBlank(propertyDescription)) {
+							xmlStrSb.append("description=\"" + propertyDescription + "\" ");
+						}
+						if (StringUtils.isNotBlank(allowableValues)) {
+							xmlStrSb.append("allowableValues=\"" + allowableValues.replaceAll("\"", "") + "\" ");
+						}
+						if (StringUtils.isNotBlank(customValue)) {
+							xmlStrSb.append("customValue=\"" + customValue + "\" ");
+						}
+							xmlStrSb.append("required=\"" + required + "\" ");
+							xmlStrSb.append("sensitive=\"" + sensitive + "\" ");
+							xmlStrSb.append("/> \n");
+						}
+						xmlStrSb.append("</stop> \n");
+					} else {
+						xmlStrSb.append("/> \n");
+					}
+				}
+			}
+			if (StringUtils.isNoneBlank(xmlStr)) {
+				xmlStrSb.append(xmlStr);
+			}
+			xmlStrSb.append("</flow>");
+
+			return new String(xmlStrSb);
+		}
+		return null;
+	}
+	
+	
+	/**
+	 * String类型的xml转stop等信息
+	 * 
+	 * @param xmldata
+	 * @return
+	 * @throws DocumentException 
+	 */
+	@SuppressWarnings("rawtypes")
+	public static Template xmlToFlowStopInfo(String xmldata) {
+		Document document = null;
+		try {
+			document = DocumentHelper.parseText(xmldata);
+		} catch (DocumentException e1) {
+			e1.printStackTrace();
+		}
+		String strXml = document.getRootElement().asXML();
+		String transformation = "<sdds>"+strXml + "</sdds>";
+		InputSource in = new InputSource(new StringReader(transformation));
+		in.setEncoding("UTF-8");
+		SAXReader reader = new SAXReader();
+		List<StopTemplateVo> stopVoList = new ArrayList<StopTemplateVo>();
+		
+		Template template = new Template();
+		try {
+			document = reader.read(in);
+			// 获取所有拥有autoSaveNode属性的mxCell节点
+			Element rootElt = document.getRootElement(); // 获取根节点
+			Element flow = rootElt.element("flow");
+			Iterator rootiter = flow.elementIterator("stop"); // 获取根节点下的子节点stop
+			while (rootiter.hasNext()) {
+				List<PropertyVo> propertyList = new ArrayList<PropertyVo>();
+				StopTemplateVo stopVo = new StopTemplateVo();
+				Element recordEle = (Element) rootiter.next();
+				String bundel = recordEle.attributeValue("bundel");
+				String description = recordEle.attributeValue("description");
+				String id = recordEle.attributeValue("id");
+				String name = recordEle.attributeValue("name");
+				String pageId = recordEle.attributeValue("pageId");
+				stopVo.setPageId(pageId);
+				stopVo.setName(name);
+				stopVo.setDescription(description);
+				stopVo.setBundel(bundel);
+				stopVo.setId(id);
+				 	Iterator property = recordEle.elementIterator("property"); 
+				 	if (null != property) {
+				 	while (property.hasNext()) {
+				 		Element propertyValue = (Element) property.next();
+				 		PropertyVo propertyVo = new PropertyVo();
+				 		String allowableValues = propertyValue.attributeValue("allowableValues");
+						String customValue = propertyValue.attributeValue("customValue");
+						String propertyDescription = propertyValue.attributeValue("description");
+						String displayName = propertyValue.attributeValue("displayName");
+						String propertyId = propertyValue.attributeValue("id");
+						String propertyName = propertyValue.attributeValue("name");
+						Boolean required = propertyValue.attributeValue("required").equals("1") ? true : false;
+						Boolean sensitive = propertyValue.attributeValue("sensitive").equals("1") ? true : false;
+						propertyVo.setAllowableValues(allowableValues);
+						propertyVo.setCustomValue(customValue);
+						propertyVo.setDescription(propertyDescription);
+						propertyVo.setDisplayName(displayName);
+						propertyVo.setId(propertyId);
+						propertyVo.setName(propertyName);
+						propertyVo.setRequired(required);
+						propertyVo.setSensitive(sensitive);
+						propertyList.add(propertyVo);
+				 		}
+				 	}
+					stopVo.setProperties(propertyList);
+					stopVoList.add(stopVo);
+			}
+			template.setStopsList(stopVoList);
+		} catch (Exception e) {
+			logger.error("转换失败", e);
+			return null;
+		}
+		return template;
+	}
+	
+	
 }

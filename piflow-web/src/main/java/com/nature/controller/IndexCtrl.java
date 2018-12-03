@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.nature.base.util.LoggerUtil;
+import com.nature.component.template.service.ITemplateService;
 import com.nature.component.workFlow.model.Flow;
+import com.nature.component.workFlow.model.Template;
 import com.nature.component.workFlow.service.IFlowInfoDbService;
 
 @Controller
@@ -23,6 +25,9 @@ public class IndexCtrl {
 
 	@Autowired
     IFlowInfoDbService appService;
+	
+	@Autowired
+	private ITemplateService iTemplateService;
 
 	/**
 	 * 首页
@@ -75,6 +80,14 @@ public class IndexCtrl {
 	public ModelAndView error(ModelAndView modelAndView) {
 		modelAndView.setViewName("errorPage");
 		modelAndView.addObject("now", "say hello spring boot !!!!!");
+		return modelAndView;
+	}
+	
+	@RequestMapping("/template")
+	public ModelAndView template(ModelAndView modelAndView) {
+		List<Template> findTemPlateList = iTemplateService.findTemPlateList();
+		modelAndView.setViewName("flow/template");
+		modelAndView.addObject("TemPlateList",findTemPlateList);
 		return modelAndView;
 	}
 

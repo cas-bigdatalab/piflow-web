@@ -6,6 +6,7 @@ server:
       timeout: 600
 syspara:
   imagesPath: file:/D:/Z-mytest/Image/
+  xmlPath: D:/Z-mytest/xml/
 spring:
 ########################################################
 ######  数据源

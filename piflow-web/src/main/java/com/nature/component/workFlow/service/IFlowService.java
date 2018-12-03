@@ -1,11 +1,12 @@
 package com.nature.component.workFlow.service;
 
+import org.springframework.data.annotation.Transient;
+
 import com.nature.base.vo.StatefulRtnBase;
 import com.nature.component.mxGraph.vo.MxGraphModelVo;
 import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.model.FlowInfoDb;
 import com.nature.component.workFlow.vo.FlowVo;
-import org.springframework.data.annotation.Transient;
 
 public interface IFlowService {
 	/**
@@ -14,10 +15,11 @@ public interface IFlowService {
 	 * @param mxGraphModelVo
 	 * @param flowId
 	 * @param operType 操作类型（添加，移动，删除）
+	 * @param flag 是否添加stop信息
 	 * @return
 	 */
 	@Transient
-	public StatefulRtnBase saveOrUpdateFlowAll(MxGraphModelVo mxGraphModelVo, String flowId,String operType);
+	public StatefulRtnBase saveOrUpdateFlowAll(MxGraphModelVo mxGraphModelVo, String flowId,String operType,boolean flag);
 
 	/**
 	 * 根据id查询流信息
@@ -60,5 +62,7 @@ public interface IFlowService {
 
 	@Transient
 	public int deleteFLowInfo(String id);
+	
+	public String getMaxStopPageId(String flowId);
 
 }
