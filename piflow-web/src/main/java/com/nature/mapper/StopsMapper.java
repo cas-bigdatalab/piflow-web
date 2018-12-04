@@ -1,21 +1,12 @@
 package com.nature.mapper;
 
-import java.util.List;
-
-import org.apache.ibatis.annotations.InsertProvider;
-import org.apache.ibatis.annotations.Many;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.SelectProvider;
-import org.apache.ibatis.annotations.Update;
-import org.apache.ibatis.annotations.UpdateProvider;
-import org.apache.ibatis.mapping.FetchType;
-
 import com.nature.component.workFlow.model.Stops;
 import com.nature.provider.StopsMapperProvider;
-import com.nature.third.vo.flowInfo.ThirdFlowInfoStopVo2;
+import com.nature.third.vo.flowInfo.ThirdFlowInfoStopVo;
+import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.mapping.FetchType;
+
+import java.util.List;
 
 /**
  * stop组建表
@@ -68,14 +59,14 @@ public interface StopsMapper {
 	 */
 	@SelectProvider(type = StopsMapperProvider.class, method = "getStopsListByFlowId")
 	@Results({ @Result(id = true, column = "id", property = "id"),
-			@Result(column = "id", property = "properties", many = @Many(select = "com.nature.mapper.PropertyMapper.getPropertyListByStopsId", fetchType = FetchType.EAGER))
+			@Result(column = "id", property = "properties", many = @Many(select = "com.nature.mapper.PropertyMapper.getPropertyListByStopsId", fetchType = FetchType.LAZY))
 
 	})
 	public List<Stops> getStopsListByFlowId(String flowId);
 
 	@SelectProvider(type = StopsMapperProvider.class, method = "getStopsListByFlowIdAndPageIds")
 	@Results({ @Result(id = true, column = "id", property = "id"),
-			@Result(column = "id", property = "properties", many = @Many(select = "com.nature.mapper.PropertyMapper.getPropertyListByStopsId", fetchType = FetchType.EAGER))
+			@Result(column = "id", property = "properties", many = @Many(select = "com.nature.mapper.PropertyMapper.getPropertyListByStopsId", fetchType = FetchType.LAZY))
 
 	})
 	public List<Stops> getStopsListByFlowIdAndPageIds(@Param("flowId")String flowId, @Param("pageIds")String[] pageIds);
@@ -90,13 +81,13 @@ public interface StopsMapper {
 	 */
 	@SelectProvider(type = StopsMapperProvider.class, method = "getStopsById")
 	@Results({ @Result(id = true, column = "id", property = "id"),
-			@Result(column = "id", property = "properties", many = @Many(select = "com.nature.mapper.PropertyMapper.getPropertyListByStopsId", fetchType = FetchType.EAGER))
+			@Result(column = "id", property = "properties", many = @Many(select = "com.nature.mapper.PropertyMapper.getPropertyListByStopsId", fetchType = FetchType.LAZY))
 
 	})
 	public Stops getStopsById(String Id);
 	
 	
 	@UpdateProvider(type = StopsMapperProvider.class, method = "updateStopsByFlowIdAndName")
-	public int updateStopsByFlowIdAndName(ThirdFlowInfoStopVo2 stopVo);
+	public int updateStopsByFlowIdAndName(ThirdFlowInfoStopVo stopVo);
 
 }

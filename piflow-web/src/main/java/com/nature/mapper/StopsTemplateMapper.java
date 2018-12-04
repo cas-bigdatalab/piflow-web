@@ -1,12 +1,11 @@
 package com.nature.mapper;
 
-import java.util.List;
-
+import com.nature.component.workFlow.model.StopsTemplate;
+import com.nature.provider.StopsTemplateMapperProvider;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
 
-import com.nature.component.workFlow.model.StopsTemplate;
-import com.nature.provider.StopsTemplateMapperProvider;
+import java.util.List;
 
 @Mapper
 public interface StopsTemplateMapper {
@@ -55,7 +54,7 @@ public interface StopsTemplateMapper {
 	 */
 	@SelectProvider(type = StopsTemplateMapperProvider.class, method = "getStopsTemplateByName")
 	@Results({ @Result(id = true, column = "id", property = "id"),
-			@Result(column = "id", property = "properties", many = @Many(select = "com.nature.mapper.PropertyTemplateMapper.getPropertyTemplateBySotpsId", fetchType = FetchType.EAGER))
+			@Result(column = "id", property = "properties", many = @Many(select = "com.nature.mapper.PropertyTemplateMapper.getPropertyTemplateBySotpsId", fetchType = FetchType.LAZY))
 
 	})
 	public List<StopsTemplate> getStopsTemplateByName(String stopsName);

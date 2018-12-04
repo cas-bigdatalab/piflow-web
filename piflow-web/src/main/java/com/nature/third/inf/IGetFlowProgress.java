@@ -1,9 +1,9 @@
 package com.nature.third.inf;
 
-import com.nature.third.vo.ThirdProgressVo;
+import com.nature.third.vo.flow.ThirdProgressVo;
 
 public interface IGetFlowProgress {
 
-	public ThirdProgressVo getFlowInfo(String appid);
+	public ThirdProgressVo getFlowProgress(String appid);
 	
 }

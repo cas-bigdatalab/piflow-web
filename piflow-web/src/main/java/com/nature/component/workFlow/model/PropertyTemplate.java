@@ -12,7 +12,7 @@ public class PropertyTemplate extends BaseHibernateModelUUIDNoCorpAgentId {
 
 	private static final long serialVersionUID = 1L;
 
-	// @ManyToOne(fetch = FetchType.EAGER)
+	// @ManyToOne(fetch = FetchType.LAZY)
 	@Column(name = "FK_STOPS_ID")
 	private String stopsTemplate;
 

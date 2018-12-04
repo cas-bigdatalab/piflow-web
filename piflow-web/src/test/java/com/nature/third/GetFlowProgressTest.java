@@ -4,7 +4,7 @@ import com.nature.ApplicationTests;
 import com.nature.base.util.LoggerUtil;
 import com.nature.mapper.FlowInfoDbMapper;
 import com.nature.third.inf.IGetFlowProgress;
-import com.nature.third.vo.ThirdProgressVo;
+import com.nature.third.vo.flow.ThirdProgressVo;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class GetFlowProgressTest extends ApplicationTests {
 	public void testFlowStop() {
 		ThirdProgressVo jd = null;
 		String appId = "application_1540442049798_0095";
-		ThirdProgressVo startFlow2 = getFlowProgress.getFlowInfo(appId);
+		ThirdProgressVo startFlow2 = getFlowProgress.getFlowProgress(appId);
 		logger.info("测试返回信息：" + startFlow2);
 	}
 

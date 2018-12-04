@@ -12,7 +12,7 @@ public class MxGeometry extends BaseHibernateModelUUIDNoCorpAgentId {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@OneToOne(fetch = FetchType.EAGER)
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "FK_MX_CELL_ID")
 	private MxCell mxCell;
 

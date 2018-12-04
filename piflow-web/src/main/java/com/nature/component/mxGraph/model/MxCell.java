@@ -13,7 +13,7 @@ public class MxCell extends BaseHibernateModelUUIDNoCorpAgentId {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "FK_MX_GRAPH_ID")
 	private MxGraphModel mxGraphModel;
 
@@ -41,7 +41,7 @@ public class MxCell extends BaseHibernateModelUUIDNoCorpAgentId {
 	@Column(name = "MX_VERTEX")
 	private String vertex;
 
-	@OneToOne(fetch = FetchType.EAGER, mappedBy = "mxCell")
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "mxCell")
 	@Where(clause = "enable_flag=1")
 	private MxGeometry mxGeometry;
 

@@ -39,7 +39,9 @@ public class StopsVo implements Serializable {
 
     private PortType outPortType;
 
-    private List<PropertyVo> propertiesVo = new ArrayList<PropertyVo>();
+    private Boolean isCheckpoint;
+
+    private List<StopsPropertyVo> propertiesVo = new ArrayList<StopsPropertyVo>();
 
     public String getId() {
         return id;
@@ -137,11 +139,19 @@ public class StopsVo implements Serializable {
         this.outPortType = outPortType;
     }
 
-    public List<PropertyVo> getPropertiesVo() {
+    public Boolean getCheckpoint() {
+        return isCheckpoint;
+    }
+
+    public void setCheckpoint(Boolean checkpoint) {
+        isCheckpoint = checkpoint;
+    }
+
+    public List<StopsPropertyVo> getPropertiesVo() {
         return propertiesVo;
     }
 
-    public void setPropertiesVo(List<PropertyVo> propertiesVo) {
+    public void setPropertiesVo(List<StopsPropertyVo> propertiesVo) {
         this.propertiesVo = propertiesVo;
     }
 }

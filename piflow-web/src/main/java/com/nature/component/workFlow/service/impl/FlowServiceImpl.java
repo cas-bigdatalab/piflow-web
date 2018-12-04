@@ -599,33 +599,30 @@ public class FlowServiceImpl implements IFlowService {
                                                     if (null != properties && properties.size() > 0) {
                                                         Property inportProperty = null;
                                                         Property outportProperty = null;
+                                                        List<Property> propertiesNew = new ArrayList<Property>();
                                                         // 循环属性
                                                         for (Property property : properties) {
                                                             if ("inports".equals(property.getName())) {
                                                                 inportProperty = property;
-                                                                properties.remove(property);
-                                                                if (properties.size() <= 0) {
-                                                                    break;
-                                                                }
+                                                                continue;
                                                             } else if ("outports".equals(property.getName())) {
                                                                 outportProperty = property;
-                                                                properties.remove(property);
-                                                                if (properties.size() <= 0) {
-                                                                    break;
-                                                                }
+                                                                continue;
                                                             }
+                                                            propertiesNew.add(property);
                                                         }
                                                         boolean isUpdate = false;
                                                         if (null != inportProperty && StringUtils.isNotBlank(inprot)) {
-                                                            inportProperty = replaceProtValue(outprot, inportProperty);
-                                                            properties.add(inportProperty);
+                                                            inportProperty = replaceProtValue(inprot, inportProperty);
+                                                            propertiesNew.add(inportProperty);
                                                             isUpdate = true;
                                                         }
                                                         if (null != outportProperty && StringUtils.isNotBlank(outprot)) {
                                                             outportProperty = replaceProtValue(outprot, outportProperty);
-                                                            properties.add(outportProperty);
+                                                            propertiesNew.add(outportProperty);
                                                             isUpdate = true;
                                                         }
+                                                        stops.setProperties(propertiesNew);
                                                         if (isUpdate) {
                                                             stops.setLastUpdateDttm(new Date());//最后跟新时间
                                                             stops.setLastUpdateUser("REMOVED");//最后更新人

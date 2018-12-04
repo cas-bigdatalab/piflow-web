@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!--
+        ===
+        This comment should NOT be removed.
+
+        Charisma v2.0.0
+
+        Copyright 2012-2014 Muhammad Usman
+        Licensed under the Apache License v2.0
+        http://www.apache.org/licenses/LICENSE-2.0
+
+        http://usman.it
+        http://twitter.com/halalit_usman
+        ===
+    -->
+    <meta charset="utf-8">
+    <title>ProcessList</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Charisma, a fully featured, responsive, HTML5, Bootstrap admin template.">
+    <meta name="author" content="Muhammad Usman">
+
+    <!-- The styles -->
+    <link id="bs-css" th:href="@{/bootstrap/css/bootstrap-cerulean.min.css}" rel="stylesheet">
+
+    <link th:href="@{/charisma/css/charisma-app.css}" rel="stylesheet">
+    <link th:href="@{/charisma/fullcalendar/fullcalendar.css}" rel='stylesheet'>
+    <link th:href="@{/charisma/fullcalendar/fullcalendar.print.css}" rel='stylesheet' media='print'>
+    <link th:href="@{/charisma/chosen/chosen.min.css}" rel='stylesheet'>
+    <link th:href="@{/charisma/colorbox/colorbox.css}" rel='stylesheet'>
+    <link th:href="@{/charisma/responsive-tables/responsive-tables.css}" rel='stylesheet'>
+    <link th:href="@{/charisma/bootstrap-tour/css/bootstrap-tour.min.css}" rel='stylesheet'>
+    <link th:href="@{/charisma/css/jquery.noty.css}" rel='stylesheet'>
+    <link th:href="@{/charisma/css/noty_theme_default.css}" rel='stylesheet'>
+    <link th:href="@{/charisma/css/elfinder.min.css}" rel='stylesheet'>
+    <link th:href="@{/charisma/css/elfinder.theme.css}" rel='stylesheet'>
+    <link th:href="@{/charisma/css/jquery.iphone.toggle.css}" rel='stylesheet'>
+    <link th:href="@{/charisma/css/uploadify.css}" rel='stylesheet'>
+    <link th:href="@{/charisma/css/animate.min.css}" rel='stylesheet'>
+
+    <!-- jQuery -->
+    <script th:src="@{/js/jquery/jquery.min.js}"></script>
+
+    <!-- The HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- The fav icon -->
+    <link rel="shortcut icon" th:href="@{/img/logo.ico}">
+</head>
+
+<body>
+<!-- topbar starts -->
+<div class="navbar navbar-default" role="navigation">
+
+    <div class="navbar-inner">
+        <a class="navbar-brand" href="/piflow-web/web/flowList">
+            <span>Nature</span></a>
+
+        <!-- user dropdown starts -->
+        <div class="btn-group pull-right">
+            <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                <i class="glyphicon glyphicon-user"></i><span class="hidden-sm hidden-xs"> admin</span>
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a href="#">Profile</a></li>
+                <li class="divider"></li>
+                <li><a href="login">Logout</a></li>
+            </ul>
+        </div>
+        <!-- user dropdown ends -->
+    </div>
+</div>
+<!-- topbar ends -->
+<div class="ch-container">
+    <div class="row">
+        <!-- left menu starts -->
+        <div class="col-sm-2 col-lg-2">
+            <div class="sidebar-nav">
+                <div class="nav-canvas">
+                    <div class="nav-sm nav nav-stacked">
+
+                    </div>
+                    <ul class="nav nav-pills nav-stacked main-menu">
+                        <li class="nav-header">Main</li>
+                        <!--
+                        <li>
+                        	<a class="ajax-link" onclick="loadGetRight('/piflow-web/web/indexHome')">
+                        		<i class="glyphicon glyphicon-home"></i>
+                        		<span> Dashboard</span>
+                        	</a>
+                        </li>
+                        -->
+                        <li>
+                            <a class="ajax-link" onclick="initAll('/piflow-web/web/flowList')" style="color: #8F8F8F;">
+                                <i class="glyphicon glyphicon-align-justify"></i>
+                                <span>Flows</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="ajax-link" onclick="initAll('/piflow-web/process/getProcessList')" style="color: #8F8F8F;">
+                                <i class="glyphicon glyphicon-align-justify"></i>
+                                <span>Process</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="ajax-link" onclick="initAll('/piflow-web/web/template')" style="color: #8F8F8F;">
+                                <i class="glyphicon glyphicon-globe"></i>
+                                <span>Template</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!--/span-->
+        <!-- left menu ends -->
+        <div id="content" class="col-lg-10 col-sm-10">
+            <!-- content starts -->
+            <div th:include="/process/inc/process_List :: process_List"></div>
+            <!-- content ends -->
+        </div><!--/#content.col-md-0-->
+
+
+    </div>
+    <!--/fluid-row-->
+    <!-- Ad ends -->
+
+    <hr>
+
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                    <h3>Settings</h3>
+                </div>
+                <div class="modal-body">
+                    <p>Here settings can be configured...</p>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-default" data-dismiss="modal">Close</a>
+                    <a href="#" class="btn btn-primary" data-dismiss="modal">Save changes</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--/.fluid-container-->
+
+<!-- external javascript -->
+
+<script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+
+<!-- library for cookie management -->
+<script th:src="@{/charisma/js/jquery.cookie.js}"></script>
+<!-- calender plugin -->
+<script th:src="@{/charisma/moment/min/moment.min.js}"></script>
+<script th:src="@{/charisma/fullcalendar/fullcalendar.min.js}"></script>
+<!-- data table plugin -->
+<script th:src="@{/charisma/js/jquery.dataTables.min.js}"></script>
+<!-- select or dropdown enhancer -->
+<script th:src="@{/charisma/chosen/chosen.jquery.min.js}"></script>
+<!-- plugin for gallery image view -->
+<script th:src="@{/charisma/colorbox/js/jquery.colorbox-min.js}"></script>
+<!-- notification plugin -->
+<script th:src="@{/charisma/js/jquery.noty.js}"></script>
+<!-- library for making tables responsive -->
+<script th:src="@{/charisma/responsive-tables/responsive-tables.js}"></script>
+<!-- tour plugin -->
+<script th:src="@{/charisma/bootstrap-tour/js/bootstrap-tour.min.js}"></script>
+<!-- star rating plugin -->
+<script th:src="@{/charisma/js/jquery.raty.min.js}"></script>
+<!-- for iOS style toggle switch -->
+<script th:src="@{/charisma/js/jquery.iphone.toggle.js}"></script>
+<!-- autogrowing textarea plugin -->
+<script th:src="@{/charisma/js/jquery.autogrow-textarea.js}"></script>
+<!-- multiple file upload plugin -->
+<script th:src="@{/charisma/js/jquery.uploadify-3.1.min.js}"></script>
+<!-- history.js for cross-browser state change on ajax -->
+<script th:src="@{/charisma/js/jquery.history.js}"></script>
+<!-- application script for Charisma demo -->
+<script th:src="@{/charisma/js/charisma.js}"></script>
+
+<script th:inline="javascript">
+    var token = $("meta[name='_csrf']").attr("content");
+    var header = $("meta[name='_csrf_header']").attr("content");
+    function loadPostRight(url) {
+        $.ajax({
+            type:"POST",//为get请求
+            url:url,
+            data:{},
+            success:function(data){//请求成功之后的操作
+                //console.log("success");
+                $('#content').html(data);
+            }
+        });
+
+    }
+    function loadGetRight(url) {
+        $.ajax({
+            type:"GET",//为get请求
+            url:url,
+            data:{},
+            success:function(data){//请求成功之后的操作
+                //console.log("success");
+                $('#content').html(data);
+            }
+        });
+
+    }
+    function initAll(url) {
+        window.location.href = url;
+    }
+    //@ sourceURL=processHome.js
+</script>
+
+</body>
+</html>

@@ -45,7 +45,7 @@ public interface MxCellMapper {
 			@Result(column = "MX_TARGET", property = "target"),
 			@Result(column = "MX_VALUE", property = "value"),
 			@Result(column = "MX_VERTEX", property = "vertex"),
-			@Result(column = "id", property = "mxGeometry", one = @One(select = "com.nature.mapper.mxGraph.MxGeometryMapper.getMxGeometryByFlowId", fetchType = FetchType.EAGER))
+			@Result(column = "id", property = "mxGeometry", one = @One(select = "com.nature.mapper.mxGraph.MxGeometryMapper.getMxGeometryByFlowId", fetchType = FetchType.LAZY))
 	})
 	public List<MxCell> getMeCellByMxGraphId(String mxGraphId);
 
@@ -66,7 +66,7 @@ public interface MxCellMapper {
 			@Result(column = "MX_TARGET", property = "target"),
 			@Result(column = "MX_VALUE", property = "value"),
 			@Result(column = "MX_VERTEX", property = "vertex"),
-			@Result(column = "id", property = "mxGeometry", one = @One(select = "com.nature.mapper.mxGraph.MxGeometryMapper.getMxGeometryById", fetchType = FetchType.EAGER))
+			@Result(column = "id", property = "mxGeometry", one = @One(select = "com.nature.mapper.mxGraph.MxGeometryMapper.getMxGeometryById", fetchType = FetchType.LAZY))
 	})
 	public MxCell getMeCellById(String id);
 	

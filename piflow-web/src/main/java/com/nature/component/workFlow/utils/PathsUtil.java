@@ -2,11 +2,7 @@ package com.nature.component.workFlow.utils;
 
 import com.nature.base.util.Utils;
 import com.nature.component.workFlow.model.Paths;
-import com.nature.component.workFlow.model.Property;
-import com.nature.component.workFlow.model.Stops;
 import com.nature.component.workFlow.vo.PathsVo;
-import com.nature.component.workFlow.vo.PropertyVo;
-import com.nature.component.workFlow.vo.StopsVo;
 import org.springframework.beans.BeanUtils;
 
 import java.util.ArrayList;

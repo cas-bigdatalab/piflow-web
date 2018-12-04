@@ -46,7 +46,7 @@
     <![endif]-->
 
     <!-- The fav icon -->
-    <link rel="shortcut icon" th:href="@{/charisma/img/favicon.ico}">
+    <link rel="shortcut icon" th:href="@{/img/logo.ico}">
     <style type="text/css">
         /*人为制造一个占据整个屏幕的Div,其透明度为0.7且z-index为9999使之前的页面被压在底层无法点击*/
         .fullScreen {
@@ -117,6 +117,13 @@
                         <span>Flows</span>
                     </a>
                 </li>
+                <li>
+                    <a class="ajax-link" onclick="initAll('/piflow-web/process/getProcessList')" style="color: #8F8F8F;">
+                        <i class="glyphicon glyphicon-align-justify"></i>
+                        <span>Process</span>
+                    </a>
+                </li>
+                <li>
                 <li>
                     <a class="ajax-link" onclick="loadGetRight('/piflow-web/web/template')" style="color: #8F8F8F;">
                         <i class="glyphicon glyphicon-globe"></i>

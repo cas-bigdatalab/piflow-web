@@ -1,22 +1,11 @@
 package com.nature.mapper;
 
-import java.util.List;
-
-import org.apache.ibatis.annotations.InsertProvider;
-import org.apache.ibatis.annotations.Many;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.One;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.SelectProvider;
-import org.apache.ibatis.annotations.Update;
-import org.apache.ibatis.annotations.UpdateProvider;
-import org.apache.ibatis.mapping.FetchType;
-
 import com.nature.component.workFlow.model.Flow;
 import com.nature.provider.FlowMapperProvider;
+import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.mapping.FetchType;
+
+import java.util.List;
 
 @Mapper
 public interface FlowMapper {
@@ -55,10 +44,10 @@ public interface FlowMapper {
 	@SelectProvider(type = FlowMapperProvider.class, method = "getFlowById")
 	@Results({
 			@Result(id = true, column = "id", property = "id"),
-			@Result(column = "id", property = "mxGraphModel", one = @One(select = "com.nature.mapper.mxGraph.MxGraphModelMapper.getMxGraphModelByFlowId", fetchType = FetchType.EAGER)),
-			@Result(column = "id", property = "appId", one = @One(select = "com.nature.mapper.FlowInfoDbMapper.getAppByAppFlowId", fetchType = FetchType.EAGER)),
-			@Result(column = "id", property = "stopsList", many = @Many(select = "com.nature.mapper.StopsMapper.getStopsListByFlowId", fetchType = FetchType.EAGER)),
-			@Result(column = "id", property = "pathsList", many = @Many(select = "com.nature.mapper.PathsMapper.getPathsListByFlowId", fetchType = FetchType.EAGER))
+			@Result(column = "id", property = "mxGraphModel", one = @One(select = "com.nature.mapper.mxGraph.MxGraphModelMapper.getMxGraphModelByFlowId", fetchType = FetchType.LAZY)),
+			@Result(column = "id", property = "appId", one = @One(select = "com.nature.mapper.FlowInfoDbMapper.getAppByAppFlowId", fetchType = FetchType.LAZY)),
+			@Result(column = "id", property = "stopsList", many = @Many(select = "com.nature.mapper.StopsMapper.getStopsListByFlowId", fetchType = FetchType.LAZY)),
+			@Result(column = "id", property = "pathsList", many = @Many(select = "com.nature.mapper.PathsMapper.getPathsListByFlowId", fetchType = FetchType.LAZY))
 
 	})
 	public Flow getFlowById(String id);

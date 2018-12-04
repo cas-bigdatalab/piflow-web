@@ -271,12 +271,17 @@ public class TemplateCtrl {
 	     */
 	    @RequestMapping("/templateAllSelect")
 	    @ResponseBody
-		public List<Template> template() {
-			List<Template> findTemPlateList = iTemplateService.findTemPlateList();
-			if(null != findTemPlateList && findTemPlateList.size() > 0 ){
-				return findTemPlateList;
-			}
-			return null;
+    public String template() {
+        Map<String, Object> rtnMap = new HashMap<String, Object>();
+        rtnMap.put("code", "0");
+        List<Template> findTemPlateList = iTemplateService.findTemPlateList();
+        if (null != findTemPlateList && findTemPlateList.size() > 0) {
+            rtnMap.put("code", "1");
+            rtnMap.put("temPlateList", findTemPlateList);
+        } else {
+            rtnMap.put("errMsg", "查询结果为空");
+        }
+        return JsonUtils.toJsonNoException(rtnMap);
 		}
 	    
 	    /**

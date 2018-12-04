@@ -1,21 +1,5 @@
 package com.nature.controller;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import com.nature.component.workFlow.service.*;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.nature.base.util.FlowXmlUtils;
 import com.nature.base.util.JsonUtils;
 import com.nature.base.util.LoggerUtil;
@@ -25,12 +9,25 @@ import com.nature.common.Eunm.PortType;
 import com.nature.component.mxGraph.model.MxGraphModel;
 import com.nature.component.mxGraph.vo.MxGraphModelVo;
 import com.nature.component.workFlow.model.Flow;
-import com.nature.component.workFlow.model.FlowInfoDb;
-import com.nature.component.workFlow.model.StopGroup;
+import com.nature.component.workFlow.service.*;
 import com.nature.component.workFlow.vo.PathsVo;
-import com.nature.component.workFlow.vo.PropertyVo;
+import com.nature.component.workFlow.vo.StopGroupVo;
+import com.nature.component.workFlow.vo.StopsPropertyVo;
 import com.nature.component.workFlow.vo.StopsVo;
 import com.nature.third.service.GetGroupsAndStops;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 画板的ctrl
@@ -77,17 +74,10 @@ public class GrapheditorCtrl {
             Flow flowById = flowServiceImpl.getFlowById(load);
             if (null != flowById) {
                 // 左侧的组和stops
-                List<StopGroup> groupsList = stopGroupServiceImpl.getStopGroupAll();
-                model.addAttribute("groupsList", groupsList);
+                List<StopGroupVo> groupsVoList = stopGroupServiceImpl.getStopGroupAll();
+                model.addAttribute("groupsVoList", groupsVoList);
 
                 MxGraphModelVo mxGraphModelVo = null;
-                FlowInfoDb appVo = flowById.getAppId();
-                if (null != appVo) {
-                    String appId = appVo.getId();
-                    String state = appVo.getState();
-                    model.addAttribute("appId", appId);
-                    model.addAttribute("flowState", state);
-                }
                 MxGraphModel mxGraphModel = flowById.getMxGraphModel();
                 mxGraphModelVo = FlowXmlUtils.mxGraphModelPoToVo(mxGraphModel);
                 // 把查询出來的mxGraphModelVo转为XML
@@ -111,7 +101,7 @@ public class GrapheditorCtrl {
             flow.setVersion(0L);
             flow.setName("default");
             MxGraphModel mxGraphModel = new MxGraphModel();
-            mxGraphModel.setId(load);
+            mxGraphModel.setId(Utils.getUUID32());
             mxGraphModel.setCrtDttm(new Date());
             mxGraphModel.setCrtUser("Add");
             mxGraphModel.setLastUpdateDttm(new Date());
@@ -161,7 +151,7 @@ public class GrapheditorCtrl {
             if (null != addFlow && addFlow.isReqRtnStatus()) {
                 rtnMap.put("code", "1");
                 rtnMap.put("errMsg", "保存成功");
-                logger.info("传入参数有空的");
+                logger.info("保存成功");
             } else {
                 rtnMap.put("errMsg", "保存失败");
                 logger.info("保存失败");
@@ -517,14 +507,14 @@ public class GrapheditorCtrl {
 
                     }
                     // 获取stopVo的属性List
-                    List<PropertyVo> propertyVoList = stopVo.getPropertiesVo();
+                    List<StopsPropertyVo> propertyVoList = stopVo.getPropertiesVo();
                     // 循环属性，获取存放端口的属性
-                    for (PropertyVo propertyVo : propertyVoList) {
-                        if (null != propertyVo) {
+                    for (StopsPropertyVo stopsPropertyVo : propertyVoList) {
+                        if (null != stopsPropertyVo) {
                             // 判断是否为存放端口的属性
-                            if (propertyVoName.equals(propertyVo.getName())) {
+                            if (propertyVoName.equals(stopsPropertyVo.getName())) {
                                 // 取到stopVo所有端口
-                                stopVoPortsAny = propertyVo.getCustomValue();
+                                stopVoPortsAny = stopsPropertyVo.getCustomValue();
                                 break;
                             }
                         }
@@ -694,12 +684,12 @@ public class GrapheditorCtrl {
      */
     private void updatePropertyBypaths(String sourcePortVal, StopsVo stopsVo, String propertyName) {
         if (null != stopsVo) {
-            if (PortType.ANY == stopsVo.getInPortType()||PortType.ANY == stopsVo.getOutPortType()) {
-                List<PropertyVo> propertyVoList = stopsVo.getPropertiesVo();
+            if (PortType.ANY == stopsVo.getInPortType() || PortType.ANY == stopsVo.getOutPortType()) {
+                List<StopsPropertyVo> propertyVoList = stopsVo.getPropertiesVo();
                 if (null != propertyVoList && propertyVoList.size() > 0) {
                     String ports = null;
-                    PropertyVo propertyVoSave = null;
-                    for (PropertyVo propertyVo : propertyVoList) {
+                    StopsPropertyVo propertyVoSave = null;
+                    for (StopsPropertyVo propertyVo : propertyVoList) {
                         if (propertyName.equals(propertyVo.getName())) {
                             propertyVoSave = propertyVo;
                             break;

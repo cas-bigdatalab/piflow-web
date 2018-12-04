@@ -47,6 +47,8 @@ public class SysParamsCache {
     public static String INTERFACE_FLOW_LOG = "/flow/log";
     // flow进度接口
     public static String INTERFACE_FLOW_PROGRESS = "/flow/progress";
+    // flow checkpoints接口
+    public static String INTERFACE_FLOW_CHECKPOINTS = "/flow/checkpoints";
 
     /**
      * stops groups信息(所有)地址
@@ -102,6 +104,13 @@ public class SysParamsCache {
      */
     public static String FLOW_PROGRESS_URL() {
         return INTERFACE_URL_HEAD + INTERFACE_FLOW_PROGRESS;
+    }
+
+    /**
+     * flow进度接口地址
+     */
+    public static String FLOW_CHECKPOINTS_URL() {
+        return INTERFACE_URL_HEAD + INTERFACE_FLOW_CHECKPOINTS;
     }
 
     // 图片路径(配置文件中 读取)

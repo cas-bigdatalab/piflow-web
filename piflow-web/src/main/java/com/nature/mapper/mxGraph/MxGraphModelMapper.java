@@ -1,18 +1,9 @@
 package com.nature.mapper.mxGraph;
 
-import org.apache.ibatis.annotations.InsertProvider;
-import org.apache.ibatis.annotations.Many;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.SelectProvider;
-import org.apache.ibatis.annotations.Update;
-import org.apache.ibatis.annotations.UpdateProvider;
-import org.apache.ibatis.mapping.FetchType;
-
 import com.nature.component.mxGraph.model.MxGraphModel;
 import com.nature.provider.mxGraph.MxGraphModelProvider;
+import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.mapping.FetchType;
 
 @Mapper
 public interface MxGraphModelMapper {
@@ -56,7 +47,7 @@ public interface MxGraphModelMapper {
             @Result(column = "MX_PAGEWIDTH", property = "pageWidth"),
             @Result(column = "MX_PAGEHEIGHT", property = "pageHeight"),
             @Result(column = "MX_BACKGROUND", property = "background"),
-            @Result(column = "id", property = "root", many = @Many(select = "com.nature.mapper.mxGraph.MxCellMapper.getMeCellByMxGraphId", fetchType = FetchType.EAGER))})
+            @Result(column = "id", property = "root", many = @Many(select = "com.nature.mapper.mxGraph.MxCellMapper.getMeCellByMxGraphId", fetchType = FetchType.LAZY))})
     public MxGraphModel getMxGraphModelById(String id);
 
     /**
@@ -82,7 +73,7 @@ public interface MxGraphModelMapper {
             @Result(column = "MX_PAGEWIDTH", property = "pageWidth"),
             @Result(column = "MX_PAGEHEIGHT", property = "pageHeight"),
             @Result(column = "MX_BACKGROUND", property = "background"),
-            @Result(column = "id", property = "root", many = @Many(select = "com.nature.mapper.mxGraph.MxCellMapper.getMeCellByMxGraphId", fetchType = FetchType.EAGER))})
+            @Result(column = "id", property = "root", many = @Many(select = "com.nature.mapper.mxGraph.MxCellMapper.getMeCellByMxGraphId", fetchType = FetchType.LAZY))})
     public MxGraphModel getMxGraphModelByFlowId(String flowId);
 
 

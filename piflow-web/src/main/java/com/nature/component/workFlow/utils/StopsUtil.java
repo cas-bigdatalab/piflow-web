@@ -1,14 +1,13 @@
 package com.nature.component.workFlow.utils;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.beans.BeanUtils;
-
 import com.nature.component.workFlow.model.Property;
 import com.nature.component.workFlow.model.Stops;
-import com.nature.component.workFlow.vo.PropertyVo;
+import com.nature.component.workFlow.vo.StopsPropertyVo;
 import com.nature.component.workFlow.vo.StopsVo;
+import org.springframework.beans.BeanUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class StopsUtil {
     /**
@@ -42,7 +41,7 @@ public class StopsUtil {
         if (null != stop) {
             stopsVo = new StopsVo();
             BeanUtils.copyProperties(stop, stopsVo);
-            List<PropertyVo> propertyVos = popertyListPoToVo(stop.getProperties());
+            List<StopsPropertyVo> propertyVos = popertyListPoToVo(stop.getProperties());
             stopsVo.setPropertiesVo(propertyVos);
         }
         return stopsVo;
@@ -54,13 +53,13 @@ public class StopsUtil {
      * @param properties
      * @return
      */
-    public static List<PropertyVo> popertyListPoToVo(List<Property> properties){
-        List<PropertyVo> propertiesVo = null;
+    public static List<StopsPropertyVo> popertyListPoToVo(List<Property> properties){
+        List<StopsPropertyVo> propertiesVo = null;
         if(null!=properties&&properties.size()>0){
-            propertiesVo = new ArrayList<PropertyVo>();
+            propertiesVo = new ArrayList<StopsPropertyVo>();
             for(Property property:properties){
                 if(null!=property){
-                    PropertyVo propertyVo = new PropertyVo();
+                    StopsPropertyVo propertyVo = new StopsPropertyVo();
                     BeanUtils.copyProperties(property, propertyVo);
                     propertiesVo.add(propertyVo);
                 }

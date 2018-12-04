@@ -1,17 +1,16 @@
 package com.nature.controller;
 
-import com.nature.base.util.HttpUtils;
 import com.nature.base.util.JsonUtils;
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.Utils;
-import com.nature.base.vo.StatefulRtnBase;
 import com.nature.component.mxGraph.model.MxCell;
 import com.nature.component.mxGraph.model.MxGraphModel;
 import com.nature.component.mxGraph.service.IMxCellService;
 import com.nature.component.mxGraph.service.IMxGraphModelService;
 import com.nature.component.mxGraph.service.IMxGraphService;
+import com.nature.component.process.model.Process;
+import com.nature.component.process.service.IProcessService;
 import com.nature.component.workFlow.model.Flow;
-import com.nature.component.workFlow.model.FlowInfoDb;
 import com.nature.component.workFlow.model.Property;
 import com.nature.component.workFlow.model.Stops;
 import com.nature.component.workFlow.service.*;
@@ -20,11 +19,6 @@ import com.nature.third.inf.IGetFlowInfo;
 import com.nature.third.inf.IGetFlowLog;
 import com.nature.third.inf.IStartFlow;
 import com.nature.third.inf.IStopFlow;
-import com.nature.third.vo.flowLog.ThirdAppVo;
-import com.nature.third.vo.flowLog.ThirdFlowLog;
-
-import net.sf.json.JSONObject;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
@@ -36,7 +30,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -87,6 +80,9 @@ public class FlowCtrl {
     @Autowired
     private IMxGraphService mxGraphServiceImpl;
 
+    @Autowired
+    private IProcessService processServiceImpl;
+
     /**
      * 启动flow
      *
@@ -106,33 +102,13 @@ public class FlowCtrl {
             Flow flowById = flowServiceImpl.getFlowById(flowId);
             // addFlow不为空且ReqRtnStatus的值为true,则保存成功
             if (null != flowById) {
-                String startFlow = startFlowImpl.startFlow(flowById);
-                if (StringUtils.isNotBlank(startFlow)) {
-                /*	JSONObject obj = JSONObject.fromObject(startFlow);
-                    JSONObject flowObj = (JSONObject) obj.get("flow");
-                    String startFlowId = flowObj.get("id").toString();*/
-                    FlowInfoDb flowInfoDb = getFlowInfoImpl.AddFlowInfo(startFlow, flowById);
-                    // flowInfo接口返回为空的情况
-                    if (null == flowInfoDb) {
-                        rtnMap.put("flowInfoDbMsg", "flowInfoDb创建失败");
-                    }
-                    StatefulRtnBase saveAppId = flowServiceImpl.saveAppId(flowId, flowInfoDb);
-                    String saveAppIdMsg = "";
-                    if (null != saveAppId && saveAppId.isReqRtnStatus()) {
-                        saveAppIdMsg = "flowId为" + flowId + "的flow，保存appID成功" + startFlow;
-                        rtnMap.put("saveAppIdMsg", saveAppIdMsg);
-                        logger.info(saveAppIdMsg);
-                    } else {
-                        saveAppIdMsg = "flowId为" + flowId + "的flow，保存appID出错";
-                        rtnMap.put("saveAppIdMsg", saveAppIdMsg);
-                        logger.warn(saveAppIdMsg);
-                    }
-                    errMsg = "启动成功，返回的appid为：" + startFlow;
+                Process process = processServiceImpl.startFlowAndUpdateProcess(flowById);
+                if (null != process) {
                     rtnMap.put("code", "1");
-                    rtnMap.put("appid", startFlow);
-                    rtnMap.put("errMsg", errMsg);
+                    rtnMap.put("processId", process.getId());
+                    rtnMap.put("errMsg", "保存到process成功，调用接口成功，更新成功");
                 } else {
-                    errMsg = "启动失败";
+                    errMsg = "调用接口失败";
                     rtnMap.put("errMsg", errMsg);
                     logger.warn(errMsg);
                 }
@@ -147,105 +123,6 @@ public class FlowCtrl {
             logger.warn(errMsg);
         }
         return JsonUtils.toJsonNoException(rtnMap);
-    }
-
-    /**
-     * 停止flow
-     *
-     * @param request
-     * @param model
-     * @return
-     */
-    @RequestMapping("/stopFlow")
-    @ResponseBody
-    public String stopFlow(HttpServletRequest request, Model model) {
-        Map<String, String> rtnMap = new HashMap<String, String>();
-        rtnMap.put("code", "0");
-        String flowId = request.getParameter("flowId");
-        if (StringUtils.isNotBlank(flowId)) {
-            // 根据flowId查询flowInfo
-        	List<FlowInfoDb> flowInfo = flowInfoDbServiceImpl.getAppListByFlowId(flowId);
-        	FlowInfoDb flowInfoDb = null;
-            if (flowInfo.size() > 0 && !flowInfo.isEmpty()) {
-            	flowInfoDb = flowInfo.get(0);
-                if (null != flowInfoDb) {
-                    String appId = flowInfoDb.getId();
-                    if (StringUtils.isNotBlank(appId)) {
-                        String flowStop = stopFlowImpl.stopFlow(appId);
-                        if (StringUtils.isNotBlank(flowStop)) {
-                            rtnMap.put("code", "1");
-                            rtnMap.put("errMsg", "停止成功，返回状态为：" + flowStop);
-                        }else {
-                        	logger.warn("flowId为" + flowId + "的flow的AppId为空");
-                        	rtnMap.put("errMsg", "停止失败，返回状态为：" + flowStop);
-						}
-                    } else {
-                        logger.warn("flowId为" + flowId + "的flow的AppId为空");
-                        rtnMap.put("errMsg", "flowId为" + flowId + "的flow的AppId为空");
-                    }
-                } else {
-                    logger.warn("flowId为" + flowId + "的flow的AppId为空");
-                    rtnMap.put("errMsg", "flowId为" + flowId + "的flow的AppId为空");
-                }
-            } else {
-                logger.warn("未查询到flowId为" + flowId + "的flow");
-                rtnMap.put("errMsg", "未查询到flowId为" + flowId + "的flow");
-            }
-        } else {
-            logger.warn("flowId为空");
-        }
-        return JsonUtils.toJsonNoException(rtnMap);
-    }
-
-    /**
-     * 获取flow的Log的地址
-     *
-     * @param request
-     * @param model
-     * @return
-     */
-    @RequestMapping("/getLogUrl")
-    @ResponseBody
-    public Map<String, String> getLogUrl(HttpServletRequest request, Model model) {
-        Map<String, String> rtnMap = new HashMap<>();
-        rtnMap.put("code", "0");
-        String appId = request.getParameter("appId");
-        if (StringUtils.isNotBlank(appId)) {
-            ThirdFlowLog flowlog = getFlowLogImpl.getFlowLog(appId);
-            if (null != flowlog) {
-                ThirdAppVo app = flowlog.getApp();
-                if (null != app) {
-                    rtnMap.put("code", "1");
-                    rtnMap.put("stdoutLog", app.getAmContainerLogs() + "/stdout/?start=0");
-                    rtnMap.put("stderrLog", app.getAmContainerLogs() + "/stderr/?start=0");
-                }
-            }
-        } else {
-            logger.warn("appId为空");
-        }
-
-        return rtnMap;
-    }
-
-    /**
-     * 通过flow的地址爬到log
-     *
-     * @param request
-     * @param model
-     * @return
-     */
-    @RequestMapping("/getLog")
-    @ResponseBody
-    public String getLog(HttpServletRequest request, Model model) {
-        String rtnMsg = "";
-        String urlStr = request.getParameter("url");
-        if (StringUtils.isNotBlank(urlStr)) {
-            rtnMsg = HttpUtils.getHtml(urlStr);
-        } else {
-            logger.warn("urlStr为空");
-        }
-
-        return rtnMsg;
     }
 
     @RequestMapping("/queryFlowData")

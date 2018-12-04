@@ -10,12 +10,14 @@ public class ThirdFlowInfoVo implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private String id;
+	private String pid;
 	private String name;
 	private String state;
 	private Date startTime;
 	private Date endTime;
+	private String progress;
 
-	List<ThirdFlowInfoStopVo> stops = new ArrayList<ThirdFlowInfoStopVo>();
+	List<ThirdFlowInfoStopsVo> stops = new ArrayList<ThirdFlowInfoStopsVo>();
 
 	public String getId() {
 		return id;
@@ -23,6 +25,14 @@ public class ThirdFlowInfoVo implements Serializable {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public String getPid() {
+		return pid;
+	}
+
+	public void setPid(String pid) {
+		this.pid = pid;
 	}
 
 	public String getName() {
@@ -57,12 +67,19 @@ public class ThirdFlowInfoVo implements Serializable {
 		this.endTime = endTime;
 	}
 
-	public List<ThirdFlowInfoStopVo> getStops() {
+	public String getProgress() {
+		return progress;
+	}
+
+	public void setProgress(String progress) {
+		this.progress = progress;
+	}
+
+	public List<ThirdFlowInfoStopsVo> getStops() {
 		return stops;
 	}
 
-	public void setStops(List<ThirdFlowInfoStopVo> stops) {
+	public void setStops(List<ThirdFlowInfoStopsVo> stops) {
 		this.stops = stops;
 	}
-
 }

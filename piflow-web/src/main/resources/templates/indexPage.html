@@ -48,7 +48,7 @@
     <![endif]-->
 
     <!-- The fav icon -->
-    <link rel="shortcut icon" th:href="@{/charisma/img/favicon.ico}">
+    <link rel="shortcut icon" th:href="@{/img/logo.ico}">
 
 </head>
 
@@ -102,7 +102,13 @@
                             </a>
                         </li>
                         <li>
-                            <a class="ajax-link" onclick="loadGetRight('/piflow-web/web/template')" style="color: #8F8F8F;">
+                            <a class="ajax-link" onclick="initAll('/piflow-web/process/getProcessList')" style="color: #8F8F8F;">
+                                <i class="glyphicon glyphicon-align-justify"></i>
+                                <span>Process</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="ajax-link" onclick="loadGetRight('/piflow-web/web/tour')" style="color: #8F8F8F;">
                                 <i class="glyphicon glyphicon-globe"></i>
                                 <span>Template</span>
                             </a>

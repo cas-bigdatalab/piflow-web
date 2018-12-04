@@ -5,8 +5,8 @@ import com.nature.component.workFlow.service.IStopsService;
 import com.nature.component.workFlow.utils.StopsUtil;
 import com.nature.component.workFlow.vo.StopsVo;
 import com.nature.mapper.StopsMapper;
-import com.nature.third.vo.flowInfo.ThirdFlowInfoStopVo2;
-
+import com.nature.third.vo.flowInfo.ThirdFlowInfoStopVo;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,7 +41,7 @@ public class StopsServiceImpl implements IStopsService {
 
     @Override
     public Integer stopsUpdate(StopsVo stopsVo) {
-            if (null != stopsVo) {
+        if (null != stopsVo) {
             Stops stopsById = stopsMapper.getStopsById(stopsVo.getId());
             if (null != stopsById) {
                 BeanUtils.copyProperties(stopsVo, stopsById);
@@ -55,9 +55,31 @@ public class StopsServiceImpl implements IStopsService {
         return 0;
     }
 
-	@Override
-	public int updateStopsByFlowIdAndName(ThirdFlowInfoStopVo2 stopVo) {
-		return stopsMapper.updateStopsByFlowIdAndName(stopVo);
-	}
+    @Override
+    public int updateStopsByFlowIdAndName(ThirdFlowInfoStopVo stopVo) {
+        return stopsMapper.updateStopsByFlowIdAndName(stopVo);
+    }
+
+    /**
+     * 修改isCheckpoint字段
+     *
+     * @param stopId
+     * @param isCheckpoint
+     * @return
+     */
+    @Override
+    public int updateStopsCheckpoint(String stopId, boolean isCheckpoint) {
+        if (StringUtils.isNotBlank(stopId)) {
+            Stops stopsById = stopsMapper.getStopsById(stopId);
+            if(null!=stopsById){
+                stopsById.setLastUpdateUser("updateCheckpoint");
+                stopsById.setLastUpdateDttm(new Date());
+                stopsById.setVersion(stopsById.getVersion()+1);
+                stopsById.setCheckpoint(isCheckpoint);
+                return stopsMapper.updateStops(stopsById);
+            }
+        }
+        return 0;
+    }
 
 }

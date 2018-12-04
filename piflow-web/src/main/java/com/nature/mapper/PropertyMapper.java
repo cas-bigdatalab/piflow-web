@@ -1,21 +1,11 @@
 package com.nature.mapper;
 
-import java.util.List;
-
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.InsertProvider;
-import org.apache.ibatis.annotations.Many;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
-import org.apache.ibatis.annotations.UpdateProvider;
-
 import com.nature.component.workFlow.model.Property;
 import com.nature.component.workFlow.model.Stops;
 import com.nature.provider.PropertyMapperProvider;
+import org.apache.ibatis.annotations.*;
+
+import java.util.List;
 
 @Mapper
 public interface PropertyMapper {
@@ -35,6 +25,7 @@ public interface PropertyMapper {
 	@Select("select fs.* from flow_stops fs LEFT JOIN flow f on f.id = fs.fk_flow_id where f.id = #{fid} and fs.page_id = #{id} and fs.enable_flag = 1  LIMIT 1 ")
 	@Results({
 			@Result(id = true, column = "id", property = "id"),
+			@Result(column = "is_checkpoint", property = "checkpoint"),
 			@Result(property = "properties", column = "id", many = @Many(select = "com.nature.mapper.PropertyTemplateMapper.getPropertyBySotpsId")) })
 	public Stops getStopGroupList(@Param("fid") String fid, @Param("id") String id);
 

@@ -26,7 +26,7 @@ public class Stops extends BaseHibernateModelUUIDNoCorpAgentId {
 
     private static final long serialVersionUID = 1L;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "FK_FLOW_ID")
     private Flow flow;
 
@@ -41,38 +41,8 @@ public class Stops extends BaseHibernateModelUUIDNoCorpAgentId {
     private String description;
 
     private String inports;
-    
-    private String state;
-    
-    private Date startTime;
-    
-    private Date stopTime;
 
-    public String getState() {
-		return state;
-	}
-
-	public void setState(String state) {
-		this.state = state;
-	}
-
-	public Date getStartTime() {
-		return startTime;
-	}
-
-	public void setStartTime(Date startTime) {
-		this.startTime = startTime;
-	}
-
-	public Date getStopTime() {
-		return stopTime;
-	}
-
-	public void setStopTime(Date stopTime) {
-		this.stopTime = stopTime;
-	}
-
-	@Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING)
     private PortType inPortType;
 
     private String outports;
@@ -82,6 +52,14 @@ public class Stops extends BaseHibernateModelUUIDNoCorpAgentId {
 
     @Column(name = "page_id")
     private String pageId;
+
+    private String state;
+
+    private Date startTime;
+
+    private Date stopTime;
+
+    private Boolean isCheckpoint;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "stops")
     @Where(clause = "enable_flag=1")
@@ -176,6 +154,42 @@ public class Stops extends BaseHibernateModelUUIDNoCorpAgentId {
         this.pageId = pageId;
     }
 
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public Date getStopTime() {
+        return stopTime;
+    }
+
+    public void setStopTime(Date stopTime) {
+        this.stopTime = stopTime;
+    }
+
+    public Boolean getCheckpoint() {
+        return isCheckpoint;
+    }
+
+    public void setCheckpoint(Boolean checkpoint) {
+        isCheckpoint = checkpoint;
+    }
+
     public List<Property> getProperties() {
         return properties;
     }
@@ -183,14 +197,14 @@ public class Stops extends BaseHibernateModelUUIDNoCorpAgentId {
     public void setProperties(List<Property> properties) {
         this.properties = properties;
     }
-    
+
     public String getStartTimes() {
-		SimpleDateFormat sdf = new SimpleDateFormat(DateUtils.DATE_PATTERN_yyyy_MM_dd_HH_MM_ss);
-		return startTime != null ? sdf.format(startTime) : "";
-	}
-    
+        SimpleDateFormat sdf = new SimpleDateFormat(DateUtils.DATE_PATTERN_yyyy_MM_dd_HH_MM_ss);
+        return startTime != null ? sdf.format(startTime) : "";
+    }
+
     public String getStopTimes() {
-		SimpleDateFormat sdf = new SimpleDateFormat(DateUtils.DATE_PATTERN_yyyy_MM_dd_HH_MM_ss);
-		return stopTime != null ? sdf.format(stopTime) : "";
-	}
+        SimpleDateFormat sdf = new SimpleDateFormat(DateUtils.DATE_PATTERN_yyyy_MM_dd_HH_MM_ss);
+        return stopTime != null ? sdf.format(stopTime) : "";
+    }
 }

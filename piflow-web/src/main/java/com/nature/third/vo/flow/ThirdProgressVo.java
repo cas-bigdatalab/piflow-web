@@ -1,4 +1,4 @@
-package com.nature.third.vo;
+package com.nature.third.vo.flow;
 
 public class ThirdProgressVo {
 	

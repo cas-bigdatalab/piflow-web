@@ -1,4 +1,4 @@
-package com.nature.third.vo;
+package com.nature.third.vo.flow;
 
 import java.io.Serializable;
 import java.util.HashMap;

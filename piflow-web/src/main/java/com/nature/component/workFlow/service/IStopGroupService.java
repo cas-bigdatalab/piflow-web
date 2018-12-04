@@ -1,11 +1,11 @@
 package com.nature.component.workFlow.service;
 
-import java.util.List;
+import com.nature.component.workFlow.vo.StopGroupVo;
 
-import com.nature.component.workFlow.model.StopGroup;
+import java.util.List;
 
 public interface IStopGroupService {
 
-	public List<StopGroup> getStopGroupAll();
+	public List<StopGroupVo> getStopGroupAll();
 
 }

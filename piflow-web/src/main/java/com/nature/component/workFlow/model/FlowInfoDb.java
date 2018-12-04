@@ -12,7 +12,7 @@ public class FlowInfoDb extends BaseHibernateModelUUIDNoCorpAgentId {
 
 	private static final long serialVersionUID = 1L;
 
-	@OneToOne(fetch = FetchType.EAGER)
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "FK_FLOW_ID")
 	private Flow flow;
 

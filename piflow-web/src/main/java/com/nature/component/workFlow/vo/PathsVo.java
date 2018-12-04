@@ -1,12 +1,11 @@
 package com.nature.component.workFlow.vo;
 
+import com.nature.base.util.DateUtils;
+import com.nature.component.workFlow.model.Stops;
+
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import com.nature.base.util.DateUtils;
-import com.nature.component.workFlow.model.Flow;
-import com.nature.component.workFlow.model.Stops;
 
 public class PathsVo implements Serializable {
 
@@ -14,7 +13,7 @@ public class PathsVo implements Serializable {
 
     private String id;
 
-    private Flow flow;
+    private FlowVo flowVo;
 
     private String from;
 
@@ -28,12 +27,12 @@ public class PathsVo implements Serializable {
 
     private String pageId;
 
-    private Stops stopFrom; 
-    
+    private Stops stopFrom;
+
     private Stops StopTo;
-    
+
     private Date crtDttm;
-    
+
     public String getId() {
         return id;
     }
@@ -42,12 +41,12 @@ public class PathsVo implements Serializable {
         this.id = id;
     }
 
-    public Flow getFlow() {
-        return flow;
+    public FlowVo getFlowVo() {
+        return flowVo;
     }
 
-    public void setFlow(Flow flow) {
-        this.flow = flow;
+    public void setFlowVo(FlowVo flowVo) {
+        this.flowVo = flowVo;
     }
 
     public String getFrom() {
@@ -98,32 +97,32 @@ public class PathsVo implements Serializable {
         this.pageId = pageId;
     }
 
-	public Stops getStopFrom() {
-		return stopFrom;
-	}
+    public Stops getStopFrom() {
+        return stopFrom;
+    }
 
-	public void setStopFrom(Stops stopFrom) {
-		this.stopFrom = stopFrom;
-	}
+    public void setStopFrom(Stops stopFrom) {
+        this.stopFrom = stopFrom;
+    }
 
-	public Stops getStopTo() {
-		return StopTo;
-	}
+    public Stops getStopTo() {
+        return StopTo;
+    }
 
-	public void setStopTo(Stops stopTo) {
-		StopTo = stopTo;
-	}
+    public void setStopTo(Stops stopTo) {
+        StopTo = stopTo;
+    }
 
-	public Date getCrtDttm() {
-		return crtDttm;
-	}
+    public Date getCrtDttm() {
+        return crtDttm;
+    }
 
-	public void setCrtDttm(Date crtDttm) {
-		this.crtDttm = crtDttm;
-	}
-	
-	public String getCrtDttmString() {
-		SimpleDateFormat sdf = new SimpleDateFormat(DateUtils.DATE_PATTERN_yyyy_MM_dd_HH_MM_ss);
-		return crtDttm != null ? sdf.format(crtDttm) : "";
-	}
+    public void setCrtDttm(Date crtDttm) {
+        this.crtDttm = crtDttm;
+    }
+
+    public String getCrtDttmString() {
+        SimpleDateFormat sdf = new SimpleDateFormat(DateUtils.DATE_PATTERN_yyyy_MM_dd_HH_MM_ss);
+        return crtDttm != null ? sdf.format(crtDttm) : "";
+    }
 }

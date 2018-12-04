@@ -1,11 +1,9 @@
 package com.nature.provider;
 
 import com.nature.base.util.DateUtils;
-import com.nature.component.workFlow.model.Stops;
+import com.nature.base.util.Utils;
 import com.nature.component.workFlow.model.StopsTemplate;
 import org.apache.ibatis.jdbc.SQL;
-
-import com.nature.base.util.Utils;
 
 import java.util.List;
 import java.util.Map;

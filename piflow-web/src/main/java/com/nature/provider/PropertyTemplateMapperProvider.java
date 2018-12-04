@@ -1,10 +1,9 @@
 package com.nature.provider;
 
 import com.nature.base.util.DateUtils;
+import com.nature.base.util.Utils;
 import com.nature.component.workFlow.model.PropertyTemplate;
 import org.apache.ibatis.jdbc.SQL;
-
-import com.nature.base.util.Utils;
 
 import java.util.List;
 import java.util.Map;
@@ -19,7 +18,7 @@ public class PropertyTemplateMapperProvider {
      */
     public String getPropertyTemplateBySotpsId(String stopsId) {
 
-        String sqlStr = "select fspt.* from  fspt where fspt. = #{stopsId}";
+        String sqlStr = "select 0";
         if (null != stopsId) {
             SQL sql = new SQL();
             sql.SELECT("*");

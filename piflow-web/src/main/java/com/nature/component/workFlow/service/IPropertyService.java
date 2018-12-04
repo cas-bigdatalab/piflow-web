@@ -3,7 +3,7 @@ package com.nature.component.workFlow.service;
 import java.util.List;
 
 import com.nature.component.workFlow.model.Property;
-import com.nature.component.workFlow.model.Stops;
+import com.nature.component.workFlow.vo.StopsVo;
 
 
 public interface IPropertyService {
@@ -13,7 +13,7 @@ public interface IPropertyService {
 	  * @param id
 	  * @return
 	  */
-	public Stops queryAll(String fid,String id);
+	public StopsVo queryAll(String fid, String id);
 	 
 	/**
 	 * Modify stops attribute information

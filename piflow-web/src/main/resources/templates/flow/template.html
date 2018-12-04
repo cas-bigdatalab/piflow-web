@@ -84,6 +84,12 @@
                     </a>
                 </li>
                 <li>
+                    <a class="ajax-link" onclick="initAll('/piflow-web/process/getProcessList')" style="color: #8F8F8F;">
+                        <i class="glyphicon glyphicon-align-justify"></i>
+                        <span>Process</span>
+                    </a>
+                </li>
+                <li>
                     <a class="ajax-link" onclick="initTemplate('/piflow-web/web/template')" style="color: #8F8F8F;">
                         <i class="glyphicon glyphicon-globe"></i>
                         <span>Template</span>
@@ -201,6 +207,9 @@ $(document).ajaxSend(function (e, xhr, options) {
               }
           });
       }
+  }
+  function initAll(url) {
+      window.location.href = url;
   }
   
   function uploadTemplate(){

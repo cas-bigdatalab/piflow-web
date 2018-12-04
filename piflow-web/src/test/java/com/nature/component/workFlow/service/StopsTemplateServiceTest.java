@@ -1,12 +1,11 @@
 package com.nature.component.workFlow.service;
 
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.nature.ApplicationTests;
 import com.nature.base.util.LoggerUtil;
 import com.nature.component.workFlow.model.StopsTemplate;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class StopsTemplateServiceTest extends ApplicationTests {
 

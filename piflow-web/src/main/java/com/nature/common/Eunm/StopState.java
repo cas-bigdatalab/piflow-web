@@ -8,7 +8,7 @@ public enum StopState {
     INIT("INIT", "初始化"),
     STARTED("STARTED", "启动"),
     COMPLETED("COMPLETED", "完成"),
-    HOME("FAILED", "失败");
+    FAILED("FAILED", "失败");
 
     private final String value;
     private final String text;

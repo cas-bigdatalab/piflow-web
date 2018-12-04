@@ -10,6 +10,7 @@
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <link rel="stylesheet" type="text/css" th:href="@{/grapheditor/styles/grapheditor.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/charisma/css/bootstrap.min.css}">
+    <link rel="shortcut icon" th:href="@{/img/logo.ico}">
     <style type="text/css">
         /*人为制造一个占据整个屏幕的Div,其透明度为0.7且z-index为9999使之前的页面被压在底层无法点击*/
         .fullScreen {
@@ -23,27 +24,24 @@
             z-index: 9999;
             text-align: center;
         }
-        #divloadingXml{
-    	height: 200px;
-    	display: none;
-    }
+
+        #divloadingXml {
+            height: 200px;
+            display: none;
+        }
     </style>
     <script th:inline="javascript">
-        var stopsGroupData = [[${groupsList}]];
+        var stopsGroupData = [[${groupsVoList}]];
         var xmlDate = [[${xmlDate}]];
         var xmlDateStr = [[${xmlDateStr}]];
         var loadId = [[${load}]];
-        var appId = [[${appId}]];
-        var flowState = [[${flowState}]];
-        var stdoutLog = [[${stdoutLog}]];
-        var stderrLog = [[${stderrLog}]];
         var divValue = null;
 
         function divAppend(divAppend) {
             divValue = divAppend;
         }
     </script>
-    <meta th:include="/grapheditor/inc/index_improt :: index_improt"/>
+    <meta th:include="/grapheditor/inc/index_graph_improt :: index_graph_improt"/>
 </head>
 <body class="geEditor">
 <div id='fullScreen' class="fullScreen" style="display: none;">
@@ -55,14 +53,8 @@
 </div>
 <div style="width: 45.2%; float: right;">
     <div style="position: fixed; z-index: 999;text-align: right; width:45%;">
-			<span>
-				进度：<span id="progress">0.00%</span>
-			</span>
         <input id="reloadStops" type="button" onclick="reloadStops()" value="ReloadStops"/>
-        <input id="startFlow" type="button" onclick="runFlow()" value="运行"/>
-        <input id="stopFlow" type="button" onclick="stopFlows()" value="停止"/>
-        <input type="button" class="btn-primary" data-toggle="modal" onclick="getLogUrl()" data-target="#myModal"
-               value="日志"/>
+        <input id="startProcess" type="button" onclick="runFlow()" value="运行"/>
         <input type="button" onclick="saveTemplate()" value="save Template"/>
         <input type="button"  value="loadingXml" id="loadingXml"/>
         <div id="divloadingXml">
@@ -71,33 +63,6 @@
        <!--  <form id="uploadForm" enctype="multipart/form-data" method="post" >
          <input type="file" id="uploadFile" name="templateFile"  style="display:none;"  onchange="uploadXmlFile()"/>
         <input type="button" onclick="uploadTemplate()" value="upload Template"/></form> -->
-    </div>
-</div>
-<!-- Modal 日志 -->
-<div class="modal" id="myModal" aria-labelledby="myModalLabel" data-backdrop="static">
-    <div id="modalDialog" class="modal-dialog" role="document">
-        <div class="modal-content" style="width: 200%; left: -290px; top: 77px;">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
-                </button>
-                <h4 class="modal-title" id="myModalLabel">LOG WINDOWS</h4>
-            </div>
-            <div class="modal-body">
-                <!-- <div id="logTitle">加载中</div> -->
-                <table border="1" style="width: 100%; height: 100%;">
-                    <tr style="height: 90%;">
-                        <td id="customContent">
-                            loading.....
-                        </td>
-                    </tr>
-                </table>
-                <input type="button" onclick="changeUrl(1)" value="stdout">
-                <input type="button" onclick="changeUrl(2)" value="stderr">
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-            </div>
-        </div>
     </div>
 </div>
 <!-- Modal 端口 -->
@@ -146,36 +111,33 @@
 <script type="text/javascript">
     var token = $("meta[name='_csrf']").attr("content");
     var header = $("meta[name='_csrf_header']").attr("content");
-    var startFlow = $('#startFlow');
-    var stopFlow = $('#stopFlow');
-    var fullScreen = $('#fullScreen');
-    var pathsCells = [];
     $(document).ajaxSend(function (e, xhr, options) {
         xhr.setRequestHeader(header, token);
     });
-    var timer;
+    var fullScreen = $('#fullScreen');
+    var pathsCells = [];
     var flag = 0;
     var timerPath;
 
     function findBasicInfo(evt) {
         flag = 0;
-    	var cells = null;
-    	var id = null;
-    	var value = null;
-    	var ss = [];
-            //针对不同事件设置值
-           	if('cellsAdded' == evt.name){
-         		  cells = evt.properties.cells;
-         		  ss = cells[0];
-         		  value = ss.value ;
-         		  id = ss.id;
-             }else{
-            	  cells = evt.properties;
-            	  if(null != cells.cell){
-            	  value = cells.cell.value;
-            	  id = cells.cell.id;
-            	  }
+        var cells = null;
+        var id = null;
+        var value = null;
+        var ss = [];
+        //针对不同事件设置值
+        if ('cellsAdded' == evt.name) {
+            cells = evt.properties.cells;
+            ss = cells[0];
+            value = ss.value;
+            id = ss.id;
+        } else {
+            cells = evt.properties;
+            if (null != cells.cell) {
+                value = cells.cell.value;
+                id = cells.cell.id;
             }
+        }
         if (typeof(cells) != "undefined" && null != id && "" != id && "null" != id) {
             if (document.getElementById("stopsNameLabel"))
                 document.getElementById('stopsNameLabel').innerText = value;
@@ -185,13 +147,14 @@
                     //查询phth
                     queryPathInfo(id);
                 }
-            }else{
+            } else {
                 //查询stops以及属性信息；
                 queryStopsProperty(id);
             }
         }
     }
-    function queryStopsProperty(id){
+
+    function queryStopsProperty(id) {
         $.ajax({
             cache: true,
             type: "POST",
@@ -205,7 +168,7 @@
             success: function (data) {
                 if ("" != data) {
                     console.log("stops属性查询success");
-                    add(data.properties);
+                    add(data.propertiesVo, data.id, data.checkpoint);
                     document.getElementById('stopsNameLabel').innerText = data.name;
                     document.getElementById('stopsDescription').innerText = data.description;
                     document.getElementById('stopsGroups').innerText = data.groups;
@@ -213,26 +176,26 @@
                     document.getElementById('stopsVersion').innerText = data.version;
                     document.getElementById('stopSowner').innerText = data.owner;
                     document.getElementById('stopCreateDate').innerText = data.crtDttmString;
-                    
-                    document.getElementById('stopStateId').innerText = data.state ? data.state : "No state" ;
-                    document.getElementById('stopsStartTimeId').innerText = data.startTimes ? data.startTimes : "No startTime" ;
-                    document.getElementById('stopEndTimeId').innerText = data.stopTimes ? data.stopTimes : "No stopTimes" ;
+
+                    document.getElementById('stopStateId').innerText = data.state ? data.state : "No state";
+                    document.getElementById('stopsStartTimeId').innerText = data.startTimes ? data.startTimes : "No startTime";
+                    document.getElementById('stopEndTimeId').innerText = data.stopTimes ? data.stopTimes : "No stopTimes";
                     //成功的话去掉定时器
                     window.clearTimeout(timerPath);
                 } else {
                     console.log("stops属性查询null");
-                    flag ++;
-                    if(flag > 5){
+                    flag++;
+                    if (flag > 5) {
                         window.clearTimeout(timerPath);
                         return;
-                	}
-                    timerPath = window.setTimeout(queryStopsProperty(id),500);
+                    }
+                    timerPath = window.setTimeout(queryStopsProperty(id), 500);
                 }
             }
         });
     }
 
-    function queryPathInfo(id){
+    function queryPathInfo(id) {
         $.ajax({
             cache: true,
             type: "POST",
@@ -244,30 +207,34 @@
                 return;
             },
             success: function (data) {
-                if ("" != data) {
-                    console.log("path查询success");
-                    $("#AttributeInfoId").hide();
-                    $("#containerID").show();
-                    $("#basicInfoId").html('线信息');
-                    $('#basicInfoId').css('text-align','');
-                    $('#basicInfoId').css('background-color','');
-                    $('#basicInfoId').css('border-style','');
-                    $('#basicInfoId').css('height','27px');
-                    $("#stopsNameID").html('pageId：');
-                    $("#GroupNameID").html('form：');
-                    $("#descriptionID").html('to：');
-                    $("#bundelID").html('inport：');
-                    $("#versionID").html('outport：');
-                    $("#ownerID").html('createrTime：');
-                    $("#createDateID").html('flowName：');
-                    document.getElementById('table_idDiv').style.display='none';
-                    document.getElementById('stopsNameLabel').innerText = data.pageId;
-                    document.getElementById('stopsDescription').innerText = data.stopTo.name;
-                    document.getElementById('stopsGroups').innerText = data.stopFrom.name;
-                    document.getElementById('stopsBundel').innerText = data.inport;
-                    document.getElementById('stopsVersion').innerText = data.outport;
-                    document.getElementById('stopSowner').innerText = data.crtDttmString;
-                    document.getElementById('stopCreateDate').innerText = data.flow.name;
+                var dataMap = JSON.parse(data);
+                if ('0' != dataMap.code) {
+                    var queryInfo = dataMap.queryInfo;
+                    if ("" != queryInfo) {
+                        console.log("path查询success");
+                        $("#AttributeInfoId").hide();
+                        $("#containerID").show();
+                        $("#basicInfoId").html('线信息');
+                        $('#basicInfoId').css('text-align', '');
+                        $('#basicInfoId').css('background-color', '');
+                        $('#basicInfoId').css('border-style', '');
+                        $('#basicInfoId').css('height', '27px');
+                        $("#stopsNameID").html('pageId：');
+                        $("#GroupNameID").html('form：');
+                        $("#descriptionID").html('to：');
+                        $("#bundelID").html('inport：');
+                        $("#versionID").html('outport：');
+                        $("#ownerID").html('createrTime：');
+                        $("#createDateID").html('flowName：');
+                        document.getElementById('table_idDiv').style.display = 'none';
+                        document.getElementById('stopsNameLabel').innerText = queryInfo.pageId;
+                        document.getElementById('stopsDescription').innerText = queryInfo.stopTo.name;
+                        document.getElementById('stopsGroups').innerText = queryInfo.stopFrom.name;
+                        document.getElementById('stopsBundel').innerText = queryInfo.inport;
+                        document.getElementById('stopsVersion').innerText = queryInfo.outport;
+                        document.getElementById('stopSowner').innerText = queryInfo.crtDttmString;
+                        document.getElementById('stopCreateDate').innerText = queryInfo.flow.name;
+                    }
                 } else {
                     console.log("path属性查询null");
                 }
@@ -275,7 +242,7 @@
         });
     }
 
-    function add(data) {
+    function add(data, stopId, isCheckpointss) {
         if (data != null && data.length > 0) {
             while (divValue.hasChildNodes()) {
                 divValue.removeChild(divValue.firstChild);
@@ -385,17 +352,28 @@
                     }
                 });
             }));
+            var checkboxCheckpoint = document.createElement('input');
+            checkboxCheckpoint.setAttribute('type', 'checkbox');
+            checkboxCheckpoint.setAttribute('id', 'isCheckpoint');
+            if (isCheckpointss) {
+                checkboxCheckpoint.setAttribute('checked', 'checked');
+            }
+            checkboxCheckpoint.setAttribute('onclick', 'saveCheckpoints("' + stopId + '")');
+            var spanCheckpoint = document.createElement('span');
+            mxUtils.write(spanCheckpoint, '是否加Checkpoint');
             btn.style.width = '202px';
             btn.style.marginLeft = '18px';
             btn.style.marginTop = '10px';
             divValue.appendChild(table);
             //divValue.appendChild(btn);
+            divValue.appendChild(checkboxCheckpoint);
+            divValue.appendChild(spanCheckpoint);
         }
     }
 
-    function dbssn(id){
-      	 $("#" + id + "").focus();
-       }
+    function dbssn(id) {
+        $("#" + id + "").focus();
+    }
 
     // 添加操作处理
     function addCellsCustom(cells, operType) {
@@ -521,7 +499,6 @@
             async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
             error: function (request) {//请求失败之后的操作
                 return;
-                stopFlow.show();
             },
             success: function (data) {//请求成功之后的操作
                 var dataMap = JSON.parse(data);
@@ -558,7 +535,6 @@
 
     //运行
     function runFlow() {
-        startFlow.hide();
         fullScreen.show();
         $.ajax({
             cache: true,//保留缓存数据
@@ -568,7 +544,6 @@
             data: {flowId: loadId},
             async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
             error: function (request) {//请求失败之后的操作
-                startFlow.show();
                 alert("请求失败");
                 fullScreen.hide();
                 return;
@@ -577,148 +552,11 @@
                 //console.log("success");
                 var dataMap = JSON.parse(data);
                 if ('0' !== dataMap.code) {
-                    alert(dataMap.errMsg);
-                    //$('#appId').val(data);
-                    appId = dataMap.appid;
-                    startFlow.hide();
-                    timer = window.setInterval("tableRow(appId)", 5000);
+                    window.location.href = "/piflow-web/process/getProcessById?processId=" + dataMap.processId;
                 } else {
-                    alert("启动失败");
-                    startFlow.show();
+                    alert("启动失败：" + dataMap.errMsg);
                 }
                 fullScreen.hide();
-            }
-        });
-    }
-
-    //停止
-    function stopFlows() {
-        stopFlow.hide();
-        fullScreen.show();
-        $.ajax({
-            cache: true,//保留缓存数据
-            type: "POST",//为post请求
-            url: "/piflow-web/flow/stopFlow",//这是我在后台接受数据的文件名
-            //data:$('#loginForm').serialize(),//将该表单序列化
-            data: {flowId: loadId},
-            async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
-            error: function (request) {//请求失败之后的操作
-                stopFlow.show();
-                alert("请求失败");
-                fullScreen.hide();
-                return;
-            },
-            success: function (data) {//请求成功之后的操作
-                //console.log("success");
-                var dataMap = JSON.parse(data);
-                if ('0' !== dataMap.code) {
-                    alert(dataMap.errMsg);
-                    startFlow.show();
-                } else {
-                    alert("停止失败"+dataMap.errMsg);
-                    stopFlow.show();
-                }
-                fullScreen.hide();
-            }
-        });
-    }
-
-    function getLogUrl() {
-        //appId = "application_1539850523117_0152";
-        $.ajax({
-            cache: true,//保留缓存数据
-            type: "POST",//为post请求
-            url: "/piflow-web/flow/getLogUrl",//这是我在后台接受数据的文件名
-            //data:$('#loginForm').serialize(),//将该表单序列化
-            data: {"appId": appId},
-            async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
-            error: function (request) {//请求失败之后的操作
-                return;
-            },
-            success: function (data) {//请求成功之后的操作
-                console.log("success");
-                if ('0' !== data.code) {
-                    stdoutLog = data.stdoutLog;
-                    stderrLog = data.stderrLog;
-                    changeUrl(1);
-                }
-                //alert(data);
-            }
-        });
-    }
-
-    function changeUrl(key) {
-        var url
-        switch (key) {
-            case 1:
-                url = stdoutLog;
-                break;
-            case 2:
-                url = stderrLog;
-                break;
-            default:
-                break;
-        }
-        $.ajax({
-            cache: true,//保留缓存数据
-            type: "POST",//为post请求
-            url: "/piflow-web/flow/getLog",//这是我在后台接受数据的文件名
-            //data:$('#loginForm').serialize(),//将该表单序列化
-            data: {url: url},
-            async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
-            error: function (request) {//请求失败之后的操作
-                return;
-            },
-            success: function (data) {//请求成功之后的操作
-                console.log("success");
-                if ('' !== data) {
-                    var split0 = data.split('<td class="content">');
-                    var data0 = split0[1];
-                    var split2 = data0.split("</td>");
-                    var data2 = split2[0];
-                    "white-space: pre-line;"
-                    data2 = data2.replace("<pre>", '<pre style="white-space: pre-wrap; height: 288px;">');
-                    //document.getElementById("logTitle").innerHTML = "<h1>"+data1+"</h1>";
-                    document.getElementById("customContent").innerHTML = "<div>" + data2 + "</div>";
-                }
-                //alert(data);
-            }
-        });
-    }
-
-    function tableRow(appId) {
-        if (appId === '') {
-            return;
-        }
-        $.ajax({
-            cache: true,
-            type: "get",
-            url: "/piflow-web/flowInfoDb/getAppInfoProgress",
-            data: {appid: appId},
-            async: true,
-            traditional: true,
-            error: function (request) {
-                console.log("error");
-                return;
-            },
-            success: function (data) {
-                var dataMap = JSON.parse(data);
-                if (0 != dataMap.code) {
-                    if (dataMap.state && "" !== dataMap.state) {
-                        if ('STARTED' !== dataMap.state || dataMap.progress === 100  || "undefeated" == dataMap.state) {
-                            window.clearInterval(timer);
-                        }
-                    }
-                    document.getElementById("progress").innerHTML = ":" + dataMap.progress + "%";
-                    document.getElementById('progressData').innerText = + dataMap.progress + "%";
-                    document.getElementById('state').innerText = dataMap.state ;
-                    if(dataMap.endTime && "" !== dataMap.endTime){
-                    document.getElementById('startTime').innerText = dataMap.startTime ;
-                    document.getElementById('stopTime').innerText = dataMap.endTime ;
-                    }
-                }else{
-                	window.clearInterval(timer);
-                }
             }
         });
     }
@@ -865,9 +703,9 @@
                 if (sourceDivDisplay == 'none') {
                     //alert("被你发现了，我是隐藏的啦！");
                 } else {
-                    var sourceEffCheckbox=[];
+                    var sourceEffCheckbox = [];
                     sourceTitleCheckbox.find("input[type='checkbox']:checked").each(function () {
-                        if($(this).prop("disabled")==false){
+                        if ($(this).prop("disabled") == false) {
                             sourceEffCheckbox[sourceEffCheckbox.length] = $(this);
                         }
                     });
@@ -879,7 +717,7 @@
                         alert("请选择sourcePort");
                         return false;
                     }
-                    for (var i = 0; i < sourceEffCheckbox.length; i++){
+                    for (var i = 0; i < sourceEffCheckbox.length; i++) {
                         var sourcecheckBoxEff = sourceEffCheckbox[i];
                         if ('' === sourcePortVal) {
                             sourcePortVal = sourcecheckBoxEff.val();
@@ -897,9 +735,9 @@
                 if (targetDivDisplay == 'none') {
                     //alert("被你发现了，我是隐藏的啦！");
                 } else {
-                    var targetEffCheckbox=[];
+                    var targetEffCheckbox = [];
                     targetTitleCheckbox.find("input[type='checkbox']:checked").each(function () {
-                        if($(this).prop("disabled")==false){
+                        if ($(this).prop("disabled") == false) {
                             targetEffCheckbox[targetEffCheckbox.length] = $(this);
                         }
                     });
@@ -911,7 +749,7 @@
                         alert("请选择targetPort");
                         return false;
                     }
-                    for (var i = 0; i < targetEffCheckbox.length; i++){
+                    for (var i = 0; i < targetEffCheckbox.length; i++) {
                         var targetcheckBoxEff = targetEffCheckbox[i];
                         if ('' === targetPortVal) {
                             targetPortVal = targetcheckBoxEff.val();
@@ -1007,9 +845,42 @@
         }
     }
 
+    function saveCheckpoints(stopId) {
+        //alert("ssss");
+        var isCheckpoint = 0;
+        if ($('#isCheckpoint').is(':checked')) {
+            isCheckpoint = 1;
+        }
+        $.ajax({
+            cache: true,
+            type: "POST",
+            url: "/piflow-web/stops/updateStopsById",
+            data: {
+                stopId: stopId,
+                isCheckpoint: isCheckpoint
+            },
+            async: true,
+            traditional: true,
+            error: function (request) {
+                alert("标记Checkpoint失败");
+                return;
+            },
+            success: function (data) {
+                var dataMap = JSON.parse(data);
+                //alert(dataMap);
+                //alert("端口选择保存成功");
+                //console.log("attribute update success");
+                if ('1' === dataMap.code) {
+                    alert("修改标记Checkpoint成功");
+                } else {
+                    alert("修改标记Checkpoint失败");
+                }
+
+            }
+        });
+    }
+
     $(document).ready(function () {
-        $("#modalDialog").draggable();//为模态对话框添加拖拽
-        $("#myModal").css("overflow", "hidden");//禁止模态对话框的半透明背景滚动
         $("#myModalPort").draggable();//为模态对话框添加拖拽
         $("#myModalPort").css("overflow", "hidden");//禁止模态对话框的半透明背景滚动
         loadingSelect();
@@ -1124,14 +995,16 @@
     		url:"/piflow-web/template/templateAllSelect",
     		type:"post",
     		success:function(data){
-    			 if(data!=null){
+                var dataMap = JSON.parse(data);
+                if (dataMap.code != '0') {
+                    var temPlateList = dataMap.temPlateList;
     				$("#loadingXmlSelect").append("<option value='-1' >-------------请选择-------------</option>");
-    				for(var i=0;i<data.length;i++){
-    				$("#loadingXmlSelect").append("<option value="+data[i].id+" >"+data[i].name+"</option>");
-    				}  
-	        	}
-    		}
-    	});
+                    for (var i = 0; i < temPlateList.length; i++) {
+                        $("#loadingXmlSelect").append("<option value=" + temPlateList[i].id + " >" + temPlateList[i].name + "</option>");
+                    }
+                }
+            }
+        });
     }
     
     
@@ -1147,6 +1020,7 @@
     		  loadingXml(id,loadId);
     		}, function(){});
     }
+
     //@ sourceURL=index.js
 </script>
 </body>

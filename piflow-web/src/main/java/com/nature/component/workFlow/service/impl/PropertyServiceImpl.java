@@ -1,16 +1,5 @@
 package com.nature.component.workFlow.service.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.BeanUtils;
-import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.Utils;
 import com.nature.component.workFlow.model.Property;
@@ -18,9 +7,17 @@ import com.nature.component.workFlow.model.PropertyTemplate;
 import com.nature.component.workFlow.model.Stops;
 import com.nature.component.workFlow.model.StopsTemplate;
 import com.nature.component.workFlow.service.IPropertyService;
+import com.nature.component.workFlow.utils.StopsUtil;
+import com.nature.component.workFlow.vo.StopsVo;
 import com.nature.mapper.PropertyMapper;
 import com.nature.mapper.StopsMapper;
 import com.nature.mapper.StopsTemplateMapper;
+import org.slf4j.Logger;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
 
 @Service
 public class PropertyServiceImpl implements IPropertyService {
@@ -37,8 +34,10 @@ public class PropertyServiceImpl implements IPropertyService {
 	StopsTemplateMapper stopsTemplateMapper;
 	
 	@Override
-	public Stops queryAll(String fid,String id) {
-		return propertyMapper.getStopGroupList(fid,id);
+	public StopsVo queryAll(String fid,String id) {
+		Stops stops = propertyMapper.getStopGroupList(fid, id);
+		StopsVo stopsVo = StopsUtil.stopPoToVo(stops);
+		return stopsVo;
 	}
 
 	@Override

@@ -1,9 +1,16 @@
 package com.nature.third.inf;
 
-import com.nature.component.workFlow.model.Flow;
+import com.nature.base.vo.StatefulRtnBase;
+import com.nature.component.process.model.Process;
 
 public interface IStartFlow {
 
-	public String startFlow(Flow flow);
+    /**
+     * 启动process
+     *
+     * @param process
+     * @return
+     */
+    public StatefulRtnBase startProcess(Process process, String checkpoint);
 
 }
