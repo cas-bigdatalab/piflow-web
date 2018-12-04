@@ -89,10 +89,11 @@ public class ProcessCtrl {
                 if (null != processStopVoList && processStopVoList.size() > 0) {
                     modelAndView.addObject("processStopVoListInit", processStopVoList);
                 }
-                modelAndView.addObject("percentage", (null != processVo.getProgress() ? processVo.getProgress() : 0));
+                modelAndView.addObject("percentage", (null != processVo.getProgress() ? processVo.getProgress() : 0.00));
                 modelAndView.addObject("appId", processVo.getAppId());
                 modelAndView.addObject("processId", processId);
                 modelAndView.addObject("parentProcessId", processVo.getParentProcessId());
+                modelAndView.addObject("pID", processVo.getProcessId());
                 modelAndView.setViewName("process/processContent");
             } else {
                 modelAndView.setViewName("errorPage");
@@ -356,14 +357,14 @@ public class ProcessCtrl {
      */
     @RequestMapping("/getCheckpoint")
     public ModelAndView getCheckpoint(HttpServletRequest request, ModelAndView modelAndView) {
-        String processId = request.getParameter("processId");
+        String pID = request.getParameter("pID");
         String parentProcessId = request.getParameter("parentProcessId");
         modelAndView.setViewName("process/inc/process_Checkpoint_Inc");
         String checkpoints = "";
         if (StringUtils.isNotBlank(parentProcessId) && !"null".equals(parentProcessId)) {
             checkpoints = flowCheckpointsImpl.getCheckpoints(parentProcessId);
-        } else if (StringUtils.isNotBlank(processId)) {
-            checkpoints = flowCheckpointsImpl.getCheckpoints(processId);
+        } else if (StringUtils.isNotBlank(pID)) {
+            checkpoints = flowCheckpointsImpl.getCheckpoints(pID);
         }
         if (StringUtils.isNotBlank(checkpoints)) {
             String[] checkpointsSplit = checkpoints.split(",");

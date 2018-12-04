@@ -112,6 +112,7 @@
     var xmlDate = [[${xmlDate}]];
     var processId = [[${processId}]];
     var parentProcessId = [[${parentProcessId}]];
+    var pID = [[${pID}]];
     var appId = [[${appId}]];
     var processState = [[${processState}]];
     var stdoutLog = [[${stdoutLog}]];
@@ -214,7 +215,7 @@
             url: "/piflow-web/process/getCheckpoint",//这是我在后台接受数据的文件名
             //data:$('#loginForm').serialize(),//将该表单序列化
             data: {
-                processId: processId,
+                pID: pID,
                 parentProcessId:parentProcessId
             },
             async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
