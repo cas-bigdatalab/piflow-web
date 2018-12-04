@@ -12,9 +12,9 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.mapping.FetchType;
 
-import com.nature.component.template.vo.FlowTemplateVo;
-import com.nature.component.template.vo.StopTemplateVo;
-import com.nature.component.workFlow.vo.PropertyVo;
+import com.nature.component.template.model.FlowTemplateModel;
+import com.nature.component.template.model.PropertyTemplateModel;
+import com.nature.component.template.model.StopTemplateModel;
 import com.nature.provider.FlowAndStopsTemplateVoMapperProvider;
 
 /**
@@ -33,7 +33,7 @@ public interface FlowAndStopsTemplateVoMapper {
 	 * @return
 	 */
 	@InsertProvider(type = FlowAndStopsTemplateVoMapperProvider.class, method = "addStops")
-	public int addStops(StopTemplateVo stops);
+	public int addStops(StopTemplateModel stops);
 	
 	/**
 	 * 新增Flow
@@ -42,7 +42,7 @@ public interface FlowAndStopsTemplateVoMapper {
 	 * @return
 	 */
 	@InsertProvider(type = FlowAndStopsTemplateVoMapperProvider.class, method = "addFlow")
-	public int addFlow(FlowTemplateVo flow);
+	public int addFlow(FlowTemplateModel flow);
 	
 	/**
 	 * 插入list<PropertyVo> 注意拼sql的方法必须用map接 Param内容为键值
@@ -51,7 +51,7 @@ public interface FlowAndStopsTemplateVoMapper {
 	 * @return
 	 */
 	@InsertProvider(type = FlowAndStopsTemplateVoMapperProvider.class, method = "addPropertyList")
-	public int addPropertyList(@Param("propertyList") List<PropertyVo> propertyList);
+	public int addPropertyList(@Param("propertyList") List<PropertyTemplateModel> propertyList);
 
 	/**
 	 * 根据templateId修改无效或删除stop
@@ -79,7 +79,7 @@ public interface FlowAndStopsTemplateVoMapper {
 			@Result(column = "id", property = "properties", many = @Many(select = "com.nature.mapper.template.FlowAndStopsTemplateVoMapper.getPropertyListByStopsId", fetchType = FetchType.EAGER))
 
 	})
-	public List<StopTemplateVo> getStopsListByTemPlateId(@Param("templateId") String templateId);
+	public List<StopTemplateModel> getStopsListByTemPlateId(@Param("templateId") String templateId);
 	
 	
 	/**
@@ -92,6 +92,6 @@ public interface FlowAndStopsTemplateVoMapper {
 		@Result(id = true, column = "id", property = "id"),
 		@Result(column = "property_required", property = "required"),
 		@Result(column = "property_sensitive", property = "sensitive") })
-	public List<PropertyVo> getPropertyListByStopsId(String stopsId);
+	public List<PropertyTemplateModel> getPropertyListByStopsId(String stopsId);
 
 }

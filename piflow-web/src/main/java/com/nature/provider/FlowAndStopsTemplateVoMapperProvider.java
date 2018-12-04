@@ -1,17 +1,19 @@
 package com.nature.provider;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
 
+import com.nature.base.util.DateUtils;
 import com.nature.base.util.Utils;
 import com.nature.common.Eunm.PortType;
-import com.nature.component.template.vo.FlowTemplateVo;
-import com.nature.component.template.vo.StopTemplateVo;
+import com.nature.component.template.model.FlowTemplateModel;
+import com.nature.component.template.model.PropertyTemplateModel;
+import com.nature.component.template.model.StopTemplateModel;
 import com.nature.component.workFlow.model.Template;
-import com.nature.component.workFlow.vo.PropertyVo;
 
 public class FlowAndStopsTemplateVoMapperProvider {
 
@@ -23,13 +25,14 @@ public class FlowAndStopsTemplateVoMapperProvider {
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
     public String addPropertyList(Map map) {
-        List<PropertyVo> propertyList = (List<PropertyVo>) map.get("propertyList");
+        List<PropertyTemplateModel> propertyList = (List<PropertyTemplateModel>) map.get("propertyList");
         StringBuffer sqlStrBuffer = new StringBuffer();
         if (null != propertyList && propertyList.size() > 0) {
             sqlStrBuffer.append("insert into ");
             sqlStrBuffer.append("property_template ");
             sqlStrBuffer.append("(");
             sqlStrBuffer.append("id,");
+            sqlStrBuffer.append("crt_dttm,");
             sqlStrBuffer.append("enable_flag,");
             sqlStrBuffer.append("name,");
             sqlStrBuffer.append("display_name,");
@@ -38,13 +41,15 @@ public class FlowAndStopsTemplateVoMapperProvider {
             sqlStrBuffer.append("allowable_values,");
             sqlStrBuffer.append("property_required,");
             sqlStrBuffer.append("property_sensitive,");
+            sqlStrBuffer.append("version,");
             sqlStrBuffer.append("fk_stops_id");
             sqlStrBuffer.append(") ");
             sqlStrBuffer.append("values");
             int i = 0;
-            for (PropertyVo property : propertyList) {
+            for (PropertyTemplateModel property : propertyList) {
                 i++;
                 String id = property.getId();
+                Date crtDttm = property.getCrtDttm();
                 Boolean enableFlag = property.getEnableFlag();
                 String name = property.getName();
                 String displayName = property.getDisplayName();
@@ -53,10 +58,12 @@ public class FlowAndStopsTemplateVoMapperProvider {
                 String allowableValues = property.getAllowableValues();
                 Boolean required = property.getRequired();
                 Boolean sensitive = property.getSensitive();
-                StopTemplateVo stops = property.getStopsVo();
+                Long version = property.getVersion();
+                StopTemplateModel stops = property.getStopsVo();
                 // 拼接时位置顺序不能错
                 sqlStrBuffer.append("(");
                 sqlStrBuffer.append(Utils.addSqlStr(Utils.replaceString(id)) + ",");
+                sqlStrBuffer.append(Utils.addSqlStr((crtDttm == null ? "" : DateUtils.dateTimesToStr(crtDttm))) + ",");
                 sqlStrBuffer.append((enableFlag == null ? "" : (enableFlag ? 1 : 0)) + ",");
                 sqlStrBuffer.append(Utils.addSqlStr((Utils.replaceString(name))) + ",");
                 sqlStrBuffer.append(Utils.addSqlStr((Utils.replaceString(displayName))) + ",");
@@ -65,6 +72,7 @@ public class FlowAndStopsTemplateVoMapperProvider {
                 sqlStrBuffer.append(Utils.addSqlStr((Utils.replaceString(allowableValues))) + ",");
                 sqlStrBuffer.append((required ? 1 : 0) + ",");
                 sqlStrBuffer.append((sensitive ? 1 : 0) + ",");
+                sqlStrBuffer.append((version == null ? "" : 0) + ",");
                 sqlStrBuffer.append(Utils.addSqlStr((stops == null ? "" : stops.getId())));
                 if (i != propertyList.size()) {
                     sqlStrBuffer.append("),");
@@ -84,7 +92,7 @@ public class FlowAndStopsTemplateVoMapperProvider {
 	 * @param flow
 	 * @return
 	 */
-	public String addFlow(FlowTemplateVo flow) {
+	public String addFlow(FlowTemplateModel flow) {
 		String sqlStr = "";
 		if (null != flow) {
 			String id = flow.getId();
@@ -115,7 +123,7 @@ public class FlowAndStopsTemplateVoMapperProvider {
      * @param stops
      * @return
      */
-    public String addStops(StopTemplateVo stops) {
+    public String addStops(StopTemplateModel stops) {
         String sqlStr = "";
         if (null != stops) {
             String id = stops.getId();
@@ -130,6 +138,8 @@ public class FlowAndStopsTemplateVoMapperProvider {
             String pageId = stops.getPageId();
             Template flow = stops.getTemplate();
             Boolean enableFlag = stops.getEnableFlag();
+            Date crtDttm = stops.getCrtDttm();
+            Long version = stops.getVersion();
             SQL sql = new SQL();
             sql.INSERT_INTO("stops_template");
             if (StringUtils.isNotBlank(id)) {
@@ -137,6 +147,15 @@ public class FlowAndStopsTemplateVoMapperProvider {
             }
             if (StringUtils.isNotBlank(bundel)) {
                 sql.VALUES("bundel", Utils.addSqlStr(bundel));
+            }
+            if (null != crtDttm) {
+                String crtDttmStr = DateUtils.dateTimesToStr(crtDttm);
+                if (StringUtils.isNotBlank(crtDttmStr)) {
+                    sql.VALUES("crt_dttm", Utils.addSqlStr(crtDttmStr));
+                }
+            }
+            if (null != version && StringUtils.isNotBlank(version.toString())) {
+                sql.VALUES("version", version.toString());
             }
             if (StringUtils.isNotBlank(description)) {
                 sql.VALUES("description", Utils.addSqlStr(description));

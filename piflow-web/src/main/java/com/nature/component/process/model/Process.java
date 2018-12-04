@@ -47,10 +47,10 @@ public class Process extends BaseHibernateModelUUIDNoCorpAgentId {
     @Enumerated(EnumType.STRING)
     private ProcessState state;
 
-    @Column(columnDefinition = "datetime(0) COMMENT 'Process startup time'")
+    @Column(columnDefinition = "datetime  COMMENT 'Process startup time'")
     private Date startTime;
 
-    @Column(columnDefinition = "datetime(0) COMMENT 'End time of the process'")
+    @Column(columnDefinition = "datetime  COMMENT 'End time of the process'")
     private Date endTime;
 
     @Column(columnDefinition = "varchar(255) COMMENT 'Process progress'")

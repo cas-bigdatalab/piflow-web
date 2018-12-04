@@ -33,9 +33,9 @@ import com.nature.base.vo.StatefulRtnBase;
 import com.nature.common.constant.SysParamsCache;
 import com.nature.component.mxGraph.model.MxGraphModel;
 import com.nature.component.mxGraph.vo.MxGraphModelVo;
+import com.nature.component.template.model.StopTemplateModel;
 import com.nature.component.template.service.IFlowAndStopsTemplateVoService;
 import com.nature.component.template.service.ITemplateService;
-import com.nature.component.template.vo.StopTemplateVo;
 import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.model.Stops;
 import com.nature.component.workFlow.model.Template;
@@ -138,9 +138,9 @@ public class TemplateCtrl {
 			if(StringUtils.isNoneBlank(id)){
 				Template template = iTemplateService.queryTemplate(id);
 				if (null != template) {
-					List<StopTemplateVo> stopsList = template.getStopsList();
+					List<StopTemplateModel> stopsList = template.getStopsList();
 					if (null != stopsList && stopsList.size() > 0) {
-						for (StopTemplateVo stopTemplateVo : stopsList) {
+						for (StopTemplateModel stopTemplateVo : stopsList) {
 							//先根据stopid删除stop属性
 							flowAndStopsTemplateVoServiceImpl.deleteStopPropertyTemByStopId(stopTemplateVo.getId());
 						}
@@ -193,7 +193,7 @@ public class TemplateCtrl {
 	    			  return JsonUtils.toJsonNoException(rtnMap);
 				}
 				//根据xml字符串获取mxGraphModel部分保存至value
-				MxGraphModelVo xmlToFlowStopInfo = FlowXmlUtils.allXmlToMxGraphModel(xmlFileToStr);
+				MxGraphModelVo xmlToFlowStopInfo = FlowXmlUtils.allXmlToMxGraphModel(xmlFileToStr,0);
 				if (null != xmlToFlowStopInfo) {
 					// 把查询出來的mxGraphModelVo转为XML
 					String loadXml = FlowXmlUtils.mxGraphModelToXml(xmlToFlowStopInfo);
@@ -242,20 +242,24 @@ public class TemplateCtrl {
 	    			  rtnMap.put("errMsg", "xml文件读取失败,请稍微再试");
 	    			  return JsonUtils.toJsonNoException(rtnMap);
 				}
+				// 获取stop 中 pageId最大值
+				String maxStopPageId = iFlowServiceImpl.getMaxStopPageId(loadId);
+				maxStopPageId = StringUtils.isNotBlank(maxStopPageId) ? maxStopPageId : "0";
+				int maxPageId = Integer.parseInt(maxStopPageId);
 				//xml转换Template对象,包含stops和属性
 				Template xmlToFlowStopInfo = FlowXmlUtils.xmlToFlowStopInfo(xmlFileToStr);
-				if (null != xmlToFlowStopInfo) {
-					//保存stops和属性信息
-					flowAndStopsTemplateVoServiceImpl.addTemplateStopsToFlow(xmlToFlowStopInfo,loadId);
-				}
 				StatefulRtnBase addFlow = null;
-	            MxGraphModelVo xmlToMxGraphModel = FlowXmlUtils.xmlToMxGraphModel(template.getValue());
+	            MxGraphModelVo xmlToMxGraphModel = FlowXmlUtils.allXmlToMxGraphModel(xmlFileToStr,maxPageId);
 	            if (null != xmlToMxGraphModel) {
 	            	xmlToMxGraphModel.getRootVo();
 	            	addFlow = iFlowServiceImpl.saveOrUpdateFlowAll(xmlToMxGraphModel, loadId, "ADD",false);
 				}
 	            // addFlow不为空且ReqRtnStatus的值为true,则保存成功
 	            if (null != addFlow && addFlow.isReqRtnStatus()) {
+	            	if (null != xmlToFlowStopInfo) {
+						//保存stops和属性信息
+						flowAndStopsTemplateVoServiceImpl.addTemplateStopsToFlow(template,loadId,maxPageId);
+					}
 	                logger.info("加载模板成功");
 	                return "grapheditor/index";
 	            } else {

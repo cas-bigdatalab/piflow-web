@@ -1,7 +1,9 @@
-package com.nature.component.template.vo;
+package com.nature.component.template.model;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -15,16 +17,19 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Version;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.nature.base.util.DateUtils;
 import com.nature.component.workFlow.model.Template;
 import com.nature.common.Eunm.PortType;
-import com.nature.component.workFlow.vo.PropertyVo;
 
 @Entity
 @Table(name = "stops_template")
-public class StopTemplateVo implements Serializable {
+public class StopTemplateModel implements Serializable {
 	/**
 	 * stop模板
 	 */
@@ -63,9 +68,19 @@ public class StopTemplateVo implements Serializable {
 
     @Enumerated(EnumType.STRING)
     private PortType outPortType;
+    
+    private Boolean isCheckpoint;
+    
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(nullable = false, updatable = false)
+	private Date crtDttm = new Date();
+	
+	@Version
+	@Column
+	private Long version;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "stopsVo")
-    private List<PropertyVo> properties = new ArrayList<PropertyVo>();
+    private List<PropertyTemplateModel> properties = new ArrayList<PropertyTemplateModel>();
     
 	public Template getTemplate() {
 		return template;
@@ -163,11 +178,40 @@ public class StopTemplateVo implements Serializable {
 		this.enableFlag = enableFlag;
 	}
 
-	public List<PropertyVo> getProperties() {
+	public List<PropertyTemplateModel> getProperties() {
 		return properties;
 	}
 
-	public void setProperties(List<PropertyVo> properties) {
+	public void setProperties(List<PropertyTemplateModel> properties) {
 		this.properties = properties;
+	}
+
+	public Boolean getIsCheckpoint() {
+		return isCheckpoint;
+	}
+
+	public void setIsCheckpoint(Boolean isCheckpoint) {
+		this.isCheckpoint = isCheckpoint;
+	}
+
+	public Date getCrtDttm() {
+		return crtDttm;
+	}
+
+	public void setCrtDttm(Date crtDttm) {
+		this.crtDttm = crtDttm;
+	}
+
+	public Long getVersion() {
+		return version;
+	}
+
+	public void setVersion(Long version) {
+		this.version = version;
+	}
+	
+	public String getCrtDttmString() {
+		SimpleDateFormat sdf = new SimpleDateFormat(DateUtils.DATE_PATTERN_yyyy_MM_dd_HH_MM_ss);
+		return crtDttm != null ? sdf.format(crtDttm) : "";
 	}
 }

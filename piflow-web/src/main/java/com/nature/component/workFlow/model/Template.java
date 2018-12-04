@@ -16,7 +16,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Type;
 
 import com.nature.base.BaseHibernateModelUUIDNoCorpAgentId;
-import com.nature.component.template.vo.StopTemplateVo;
+import com.nature.component.template.model.StopTemplateModel;
 
 @Entity
 @Table(name =  "flow_template")
@@ -39,7 +39,7 @@ public class Template extends BaseHibernateModelUUIDNoCorpAgentId {
 	private String path;
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "template")
-	private List<StopTemplateVo> stopsList = new ArrayList<StopTemplateVo>();
+	private List<StopTemplateModel> stopsList = new ArrayList<StopTemplateModel>();
 
  	public Flow getFlow() {
 		return flow;
@@ -81,11 +81,11 @@ public class Template extends BaseHibernateModelUUIDNoCorpAgentId {
 		this.description = description;
 	}
 
-	public List<StopTemplateVo> getStopsList() {
+	public List<StopTemplateModel> getStopsList() {
 		return stopsList;
 	}
 
-	public void setStopsList(List<StopTemplateVo> stopsList) {
+	public void setStopsList(List<StopTemplateModel> stopsList) {
 		this.stopsList = stopsList;
 	}
 }

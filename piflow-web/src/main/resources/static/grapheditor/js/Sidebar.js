@@ -92,6 +92,7 @@ Sidebar.prototype.init = function()
 	//搜索
 	this.addSearchPalette(true);
 	var stopsGroupList = stopsGroupData;
+	if(null != stopsGroupList){
 	for (var i=0;i<stopsGroupList.length;i++){
 		var stopsGroup = stopsGroupList[i];
 		if(stopsGroup && ''!==stopsGroup){
@@ -110,6 +111,7 @@ Sidebar.prototype.init = function()
 			this.addImagePalette('clipart', stopsGroup.groupName, '/piflow-web/images/', '_128x128.png',stopsNameList, stopsDescList, stopsNameList, stopsNameList);
 		}
 	};
+	}
 };
 
 /**

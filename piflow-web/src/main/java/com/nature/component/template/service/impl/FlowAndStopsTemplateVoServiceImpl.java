@@ -1,9 +1,9 @@
 package com.nature.component.template.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,14 +12,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.Utils;
+import com.nature.component.template.model.FlowTemplateModel;
+import com.nature.component.template.model.PropertyTemplateModel;
+import com.nature.component.template.model.StopTemplateModel;
 import com.nature.component.template.service.IFlowAndStopsTemplateVoService;
-import com.nature.component.template.vo.FlowTemplateVo;
-import com.nature.component.template.vo.StopTemplateVo;
 import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.model.Property;
 import com.nature.component.workFlow.model.Stops;
 import com.nature.component.workFlow.model.Template;
-import com.nature.component.workFlow.vo.PropertyVo;
 import com.nature.mapper.FlowMapper;
 import com.nature.mapper.PropertyMapper;
 import com.nature.mapper.StopsMapper;
@@ -45,17 +45,17 @@ public class FlowAndStopsTemplateVoServiceImpl implements IFlowAndStopsTemplateV
     private PropertyMapper propertyMapper;
 
 	@Override
-	public int addStops(StopTemplateVo stops) {
+	public int addStops(StopTemplateModel stops) {
 		return flowAndStopsTemplateVoMapper.addStops(stops);
 	}
 
 	@Override
-	public int addFlow(FlowTemplateVo flow) {
+	public int addFlow(FlowTemplateModel flow) {
 		return flowAndStopsTemplateVoMapper.addFlow(flow);
 	}
 
 	@Override
-	public int addPropertyList(List<PropertyVo> propertyList) {
+	public int addPropertyList(List<PropertyTemplateModel> propertyList) {
 		return flowAndStopsTemplateVoMapper.addPropertyList(propertyList);
 	}
 
@@ -70,45 +70,47 @@ public class FlowAndStopsTemplateVoServiceImpl implements IFlowAndStopsTemplateV
 	}
 
 	@Override
-	public List<StopTemplateVo> getStopsListByTemPlateId(String templateId) {
+	public List<StopTemplateModel> getStopsListByTemPlateId(String templateId) {
 		return flowAndStopsTemplateVoMapper.getStopsListByTemPlateId(templateId);
 	}
 
 	@Override
-	public List<PropertyVo> getPropertyListByStopsId(String stopsId) {
+	public List<PropertyTemplateModel> getPropertyListByStopsId(String stopsId) {
 		return flowAndStopsTemplateVoMapper.getPropertyListByStopsId(stopsId);
 	}
 
 	@Override
-	public void addTemplateStopsToFlow(Template template,String flowId) {
+	public void addTemplateStopsToFlow(Template template,String flowId,int maxPageId) {
 		int addPropertyList = 0;
 		List<Property> list = new ArrayList<Property>();
 		Flow flowById = flowMapper.getFlowById(flowId);
-		// 获取stop 中 pageId最大值
-		String maxStopPageId = flowMapper.getMaxStopPageId(flowId);
-		maxStopPageId = StringUtils.isNotBlank(maxStopPageId) ? maxStopPageId : "1";
 		// 获取stop信息
-		List<StopTemplateVo> stopsList = template.getStopsList();
+		List<StopTemplateModel> stopsList = template.getStopsList();
 		int num = 0;
 		// 开始遍历保存stop和属性信息
 		 if (null != stopsList && stopsList.size() > 0) {
-			for (StopTemplateVo stopsVo : stopsList) {
+			for (StopTemplateModel stopsVo : stopsList) {
 				num++;
 				Stops stop = new Stops();
 				BeanUtils.copyProperties(stopsVo, stop);
 				//pageId最大值开始增加
-				stop.setPageId(String.valueOf(Integer.parseInt(maxStopPageId)+num));
+				stop.setPageId((Integer.parseInt(stopsVo.getPageId())+maxPageId)+"");
 				stop.setId(Utils.getUUID32());
 				stop.setCrtUser("wdd");
 				stop.setLastUpdateUser("wdd");
 				stop.setFlow(flowById);
+				stop.setVersion(0L);
+				stop.setInPortType(stopsVo.getInPortType());
+				stop.setInports(stopsVo.getInports());
+				stop.setOutports(stopsVo.getOutports());
+				stop.setOutPortType(stopsVo.getOutPortType());
 				int addStops = stopsMapper.addStops(stop);
 				logger.info("addStops影响行数"+addStops);
 				if (addStops > 0) {
 					if (null != stopsVo.getProperties()) {
-						List<PropertyVo> properties = stopsVo.getProperties();
+						List<PropertyTemplateModel> properties = stopsVo.getProperties();
 						if (null != properties && properties.size() > 0) {
-							for (PropertyVo property : properties) {
+							for (PropertyTemplateModel property : properties) {
 								Property propertyModel = new Property();
 								BeanUtils.copyProperties(property, propertyModel);
 								propertyModel.setStops(stop);
@@ -136,23 +138,25 @@ public class FlowAndStopsTemplateVoServiceImpl implements IFlowAndStopsTemplateV
 
 	@Override
 	public void addStopsList(List<Stops> stopsList,Template template) {
-		List<PropertyVo> list = new ArrayList<PropertyVo>();
+		List<PropertyTemplateModel> list = new ArrayList<PropertyTemplateModel>();
 		//保存stop，属性信息
 		 if (null != stopsList && stopsList.size() > 0) {
 			for (Stops stops : stopsList) {
-				StopTemplateVo stopTemplate = new StopTemplateVo();
+				StopTemplateModel stopTemplate = new StopTemplateModel();
 				BeanUtils.copyProperties(stops, stopTemplate);
 				stopTemplate.setTemplate(template);
 				stopTemplate.setId(Utils.getUUID32());
+				stopTemplate.setCrtDttm(new Date());
 				flowAndStopsTemplateVoMapper.addStops(stopTemplate);
 				if (null != stops.getProperties()) {
 					List<Property> properties = stops.getProperties();
 					if (null != properties && properties.size() > 0) {
 						for (Property property : properties) {
-							PropertyVo propertyVo = new PropertyVo();
+							PropertyTemplateModel propertyVo = new PropertyTemplateModel();
 							BeanUtils.copyProperties(property, propertyVo);
 							propertyVo.setStopsVo(stopTemplate);
 							propertyVo.setId(Utils.getUUID32());
+							propertyVo.setCrtDttm(new Date());
 							list.add(propertyVo);
 						}
 					}

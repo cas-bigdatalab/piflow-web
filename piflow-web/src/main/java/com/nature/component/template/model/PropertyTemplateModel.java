@@ -1,7 +1,9 @@
 
-package com.nature.component.workFlow.vo;
+package com.nature.component.template.model;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,10 +13,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Version;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import com.nature.component.template.vo.StopTemplateVo;
+import com.nature.base.util.DateUtils;
 
 /**
  * stop的属性
@@ -24,13 +29,13 @@ import com.nature.component.template.vo.StopTemplateVo;
  */
 @Entity
 @Table(name = "property_template")
-public class PropertyVo implements Serializable {
+public class PropertyTemplateModel implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "FK_STOPS_ID")
-	private StopTemplateVo stopsVo;
+	private StopTemplateModel stopsVo;
 	
 	@Id
 	@GenericGenerator(name = "idGenerator", strategy = "uuid")
@@ -59,6 +64,14 @@ public class PropertyVo implements Serializable {
 	
 	@Column(nullable = false)
 	private Boolean enableFlag = Boolean.TRUE;
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(nullable = false, updatable = false)
+	private Date crtDttm = new Date();
+	
+	@Version
+	@Column
+	private Long version;
 
 	public String getId() {
 		return id;
@@ -68,11 +81,11 @@ public class PropertyVo implements Serializable {
 		this.id = id;
 	}
 
-	public StopTemplateVo getStopsVo() {
+	public StopTemplateModel getStopsVo() {
 		return stopsVo;
 	}
 
-	public void setStopsVo(StopTemplateVo stopsVo) {
+	public void setStopsVo(StopTemplateModel stopsVo) {
 		this.stopsVo = stopsVo;
 	}
 
@@ -139,6 +152,26 @@ public class PropertyVo implements Serializable {
 	public void setSensitive(Boolean sensitive) {
 		this.sensitive = sensitive;
 	}
+
+	public Date getCrtDttm() {
+		return crtDttm;
+	}
+
+	public void setCrtDttm(Date crtDttm) {
+		this.crtDttm = crtDttm;
+	}
+
+	public Long getVersion() {
+		return version;
+	}
+
+	public void setVersion(Long version) {
+		this.version = version;
+	}
 	
+	public String getCrtDttmString() {
+		SimpleDateFormat sdf = new SimpleDateFormat(DateUtils.DATE_PATTERN_yyyy_MM_dd_HH_MM_ss);
+		return crtDttm != null ? sdf.format(crtDttm) : "";
+	}
 	
 }

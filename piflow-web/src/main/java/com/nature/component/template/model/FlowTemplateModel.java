@@ -1,4 +1,4 @@
-package com.nature.component.template.vo;
+package com.nature.component.template.model;
 
 import java.io.Serializable;
 
@@ -12,7 +12,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "flow_template")
-public class FlowTemplateVo implements Serializable {
+public class FlowTemplateModel implements Serializable {
 	/**
 	 * flow 模板
 	 */

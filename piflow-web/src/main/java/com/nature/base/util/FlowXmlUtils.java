@@ -21,12 +21,12 @@ import com.nature.component.mxGraph.model.MxGraphModel;
 import com.nature.component.mxGraph.vo.MxCellVo;
 import com.nature.component.mxGraph.vo.MxGeometryVo;
 import com.nature.component.mxGraph.vo.MxGraphModelVo;
-import com.nature.component.template.vo.StopTemplateVo;
+import com.nature.component.template.model.PropertyTemplateModel;
+import com.nature.component.template.model.StopTemplateModel;
 import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.model.Property;
 import com.nature.component.workFlow.model.Stops;
 import com.nature.component.workFlow.model.Template;
-import com.nature.component.workFlow.vo.PropertyVo;
 
 
 public class FlowXmlUtils {
@@ -442,7 +442,7 @@ public class FlowXmlUtils {
 		InputSource in = new InputSource(new StringReader(transformation));
 		in.setEncoding("UTF-8");
 		SAXReader reader = new SAXReader();
-		List<StopTemplateVo> stopVoList = new ArrayList<StopTemplateVo>();
+		List<StopTemplateModel> stopVoList = new ArrayList<StopTemplateModel>();
 		
 		Template template = new Template();
 		try {
@@ -452,8 +452,8 @@ public class FlowXmlUtils {
 			Element flow = rootElt.element("flow");
 			Iterator rootiter = flow.elementIterator("stop"); // 获取根节点下的子节点stop
 			while (rootiter.hasNext()) {
-				List<PropertyVo> propertyList = new ArrayList<PropertyVo>();
-				StopTemplateVo stopVo = new StopTemplateVo();
+				List<PropertyTemplateModel> propertyList = new ArrayList<PropertyTemplateModel>();
+				StopTemplateModel stopVo = new StopTemplateModel();
 				Element recordEle = (Element) rootiter.next();
 				String bundel = recordEle.attributeValue("bundel");
 				String description = recordEle.attributeValue("description");
@@ -469,7 +469,7 @@ public class FlowXmlUtils {
 				 	if (null != property) {
 				 	while (property.hasNext()) {
 				 		Element propertyValue = (Element) property.next();
-				 		PropertyVo propertyVo = new PropertyVo();
+				 		PropertyTemplateModel propertyVo = new PropertyTemplateModel();
 				 		String allowableValues = propertyValue.attributeValue("allowableValues");
 						String customValue = propertyValue.attributeValue("customValue");
 						String propertyDescription = propertyValue.attributeValue("description");
@@ -507,7 +507,7 @@ public class FlowXmlUtils {
 	 * @return
 	 */
 	@SuppressWarnings("rawtypes")
-	public static MxGraphModelVo allXmlToMxGraphModel(String xmldata) {
+	public static MxGraphModelVo allXmlToMxGraphModel(String xmldata,int PageId) {
 		Document document = null;
 		try {
 			document = DocumentHelper.parseText(xmldata);
@@ -569,17 +569,24 @@ public class FlowXmlUtils {
 				String target = recordEle.attributeValue("target");
 				String value = recordEle.attributeValue("value");
 				String vertex = recordEle.attributeValue("vertex");
+				if (PageId >= 1 ) {
+					if (Integer.parseInt(mxCellId) < 2) {
+						continue;
+					} 
+				}
 				if("1".equals(edge)){
 					if(StringUtils.isBlank(source)||StringUtils.isBlank(target)){
 						continue;
 					}
 				}
-				mxCellVo.setPageId(mxCellId);
+				mxCellVo.setPageId((Integer.parseInt(mxCellId)+PageId)+"");
 				mxCellVo.setParent(parent);
 				mxCellVo.setStyle(style);
 				mxCellVo.setEdge(edge);
-				mxCellVo.setSource(source);
-				mxCellVo.setTarget(target);
+				if (StringUtils.isNotBlank(source) && StringUtils.isNotBlank(target)) {
+					mxCellVo.setSource((Integer.parseInt(source)+PageId)+"");
+					mxCellVo.setTarget((Integer.parseInt(target)+PageId)+"");
+				}
 				mxCellVo.setValue(value);
 				mxCellVo.setVertex(vertex);
 				if (StringUtils.isNotBlank(style)) {
