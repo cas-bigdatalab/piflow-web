@@ -133,4 +133,34 @@ public class FlowAndStopsTemplateVoServiceImpl implements IFlowAndStopsTemplateV
 			}
 		}
 	}
+
+	@Override
+	public void addStopsList(List<Stops> stopsList,Template template) {
+		List<PropertyVo> list = new ArrayList<PropertyVo>();
+		//保存stop，属性信息
+		 if (null != stopsList && stopsList.size() > 0) {
+			for (Stops stops : stopsList) {
+				StopTemplateVo stopTemplate = new StopTemplateVo();
+				BeanUtils.copyProperties(stops, stopTemplate);
+				stopTemplate.setTemplate(template);
+				stopTemplate.setId(Utils.getUUID32());
+				flowAndStopsTemplateVoMapper.addStops(stopTemplate);
+				if (null != stops.getProperties()) {
+					List<Property> properties = stops.getProperties();
+					if (null != properties && properties.size() > 0) {
+						for (Property property : properties) {
+							PropertyVo propertyVo = new PropertyVo();
+							BeanUtils.copyProperties(property, propertyVo);
+							propertyVo.setStopsVo(stopTemplate);
+							propertyVo.setId(Utils.getUUID32());
+							list.add(propertyVo);
+						}
+					}
+				}
+			}
+			if (null != list && list.size() > 0) {
+				flowAndStopsTemplateVoMapper.addPropertyList(list);
+			}
+		}
+	}
 }

@@ -569,6 +569,32 @@
         }
         return true;
     }
+    
+    function saveTableTemplate(id,name){
+    	layer.confirm('确定将"'+name+'"保存模板吗？', {
+  		  btn: ['确定','取消'] //按钮
+  		}, function(){
+  			 $.ajax({
+                 cache: true,//保留缓存数据
+                 type: "get",//为post请求
+                 url: "/piflow-web/template/saveTableTemplate",//这是我在后台接受数据的文件名
+                 data:  {flowId: id},
+                 async: true, 
+                 error: function (request) {//请求失败之后的操作
+                 	console.log( " save template error");
+                     return;
+                 },
+                 success: function (data) {//请求成功之后的操作
+                     var dataMap = JSON.parse(data);
+                     if (0 !== dataMap.code) {
+                     	 layer.msg(dataMap.errMsg, {icon: 1, shade: 0, time: 2000}, function () {});
+                     } else {
+                     	 layer.msg(dataMap.errMsg, {icon: 2, shade: 0, time: 2000}, function () {});
+                     }
+                 }
+             });
+  		}, function(){});
+    }
 
     //@ sourceURL=table_right.js
 </script>

@@ -66,7 +66,7 @@
         <input type="button" onclick="saveTemplate()" value="save Template"/>
         <input type="button"  value="loadingXml" id="loadingXml"/>
         <div id="divloadingXml">
-		<select  name="loadingXmlSelect" id="loadingXmlSelect" onchange="loadTemplate()"></select>
+		<select  name="loadingXmlSelect" id="loadingXmlSelect" onchange="loadTemplate()" style="width: 164px;"></select>
 	</div>
        <!--  <form id="uploadForm" enctype="multipart/form-data" method="post" >
          <input type="file" id="uploadFile" name="templateFile"  style="display:none;"  onchange="uploadXmlFile()"/>
@@ -1125,7 +1125,7 @@
     		type:"post",
     		success:function(data){
     			 if(data!=null){
-    				//$("#loadingXmlSelect").append("<option value="" >-----请选择-----</option>");
+    				$("#loadingXmlSelect").append("<option value='-1' >-------------请选择-------------</option>");
     				for(var i=0;i<data.length;i++){
     				$("#loadingXmlSelect").append("<option value="+data[i].id+" >"+data[i].name+"</option>");
     				}  
@@ -1137,6 +1137,9 @@
     
     function loadTemplate(){
     	var id = $("#loadingXmlSelect").val();
+    	if(id == '-1'){
+    		return;
+    	}
     	var name = $("#loadingXmlSelect option:selected").text();
     	layer.confirm('您确定打开 '+name+'吗？', {
     		  btn: ['确定','取消'] //按钮

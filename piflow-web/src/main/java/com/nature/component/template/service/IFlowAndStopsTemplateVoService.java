@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.nature.component.template.vo.FlowTemplateVo;
 import com.nature.component.template.vo.StopTemplateVo;
+import com.nature.component.workFlow.model.Stops;
 import com.nature.component.workFlow.model.Template;
 import com.nature.component.workFlow.vo.PropertyVo;
 
@@ -46,4 +47,6 @@ public interface IFlowAndStopsTemplateVoService {
 	public List<PropertyVo> getPropertyListByStopsId(String stopsId);
 	
 	public void addTemplateStopsToFlow(Template template,String flowId);
+	
+	public void addStopsList(List<Stops> stops,Template template);
 }

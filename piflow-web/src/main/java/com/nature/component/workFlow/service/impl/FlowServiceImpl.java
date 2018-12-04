@@ -642,7 +642,7 @@ public class FlowServiceImpl implements IFlowService {
                                             stops.setEnableFlag(false);//逻辑删除标识
                                             stops.setLastUpdateDttm(new Date());//最后跟新时间
                                             stops.setLastUpdateUser("REMOVED");//最后更新人
-                                            stops.setVersion(stops.getVersion() + 1);//版本号
+                                            stops.setVersion((null == stops.getVersion() ?  0  : stops.getVersion()) + 1);//版本号
                                             //stops的属性
                                             List<Property> properties = stops.getProperties();
                                             // 判空

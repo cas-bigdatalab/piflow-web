@@ -83,7 +83,6 @@ public class FileUtils {
 	 public static String upload(MultipartFile file,String path ) {
 			Map<String, String> rtnMap = new HashMap<String, String>();
 			rtnMap.put("code", "0");
-			String url = "";
 	        if (!file.isEmpty()) {
 	        	//文件名
 	            String saveFileName = file.getOriginalFilename();
@@ -96,9 +95,8 @@ public class FileUtils {
 	                out.write(file.getBytes());
 	                out.flush();
 	                out.close();
-	                url = FileUtils.getUrl();
 	                logger.info(saveFile.getName() + " 上传成功");
-	                rtnMap.put("url", url + path + saveFileName);
+	                rtnMap.put("url",path + saveFileName);
 	                rtnMap.put("fileName", saveFileName);
 	                rtnMap.put("msgInfo", "上传成功");
 	                rtnMap.put("code", "1");

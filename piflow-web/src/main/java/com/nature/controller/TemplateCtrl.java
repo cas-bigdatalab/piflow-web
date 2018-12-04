@@ -3,7 +3,6 @@ package com.nature.controller;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +14,6 @@ import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,17 +31,16 @@ import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.Utils;
 import com.nature.base.vo.StatefulRtnBase;
 import com.nature.common.constant.SysParamsCache;
+import com.nature.component.mxGraph.model.MxGraphModel;
 import com.nature.component.mxGraph.vo.MxGraphModelVo;
 import com.nature.component.template.service.IFlowAndStopsTemplateVoService;
 import com.nature.component.template.service.ITemplateService;
 import com.nature.component.template.vo.StopTemplateVo;
 import com.nature.component.workFlow.model.Flow;
-import com.nature.component.workFlow.model.Property;
 import com.nature.component.workFlow.model.Stops;
 import com.nature.component.workFlow.model.Template;
 import com.nature.component.workFlow.service.IFlowService;
 import com.nature.component.workFlow.service.IStopGroupService;
-import com.nature.component.workFlow.vo.PropertyVo;
 
 /**
  * template的ctrl
@@ -80,7 +77,6 @@ public class TemplateCtrl {
 	        String name = request.getParameter("name");
 	        String loadId = request.getParameter("load");
 	        String value = request.getParameter("value");
-	        List<PropertyVo> list = new ArrayList<PropertyVo>();
 	        if (StringUtils.isAnyEmpty(name, loadId, value)) {
 	            rtnMap.put("errMsg", "传入参数有空的");
 	            logger.info("传入参数有空的");
@@ -111,41 +107,20 @@ public class TemplateCtrl {
 					 if (addTemplate > 0) {
 			                rtnMap.put("code", "1");
 			                rtnMap.put("errMsg", "保存模板成功");
-			                 //保存stop，属性信息
-			        		 List<Stops> stopsList = flowById.getStopsList(); 
-			        		 if (null != stopsList && stopsList.size() > 0) {
-								for (Stops stops : stopsList) {
-									StopTemplateVo stopTemplate = new StopTemplateVo();
-									BeanUtils.copyProperties(stops, stopTemplate);
-									stopTemplate.setTemplate(template);
-									stopTemplate.setId(Utils.getUUID32());
-									flowAndStopsTemplateVoServiceImpl.addStops(stopTemplate);
-									if (null != stops.getProperties()) {
-										List<Property> properties = stops.getProperties();
-										if (null != properties && properties.size() > 0) {
-											for (Property property : properties) {
-												PropertyVo propertyVo = new PropertyVo();
-												BeanUtils.copyProperties(property, propertyVo);
-												propertyVo.setStopsVo(stopTemplate);
-												propertyVo.setId(Utils.getUUID32());
-												list.add(propertyVo);
-											}
-										}
-									}
-								}
-								if (null != list && list.size() > 0) {
-									flowAndStopsTemplateVoServiceImpl.addPropertyList(list);
-								}
+			              //保存stop，属性信息
+							List<Stops> stopsList = flowById.getStopsList();
+							if (null != stopsList && stopsList.size() > 0) {
+								flowAndStopsTemplateVoServiceImpl.addStopsList(stopsList,template);
 							}
-			            } else {
-			                rtnMap.put("errMsg", "保存模板失败");
-			                logger.info("保存模板失败");
-			            }
-			            return JsonUtils.toJsonNoException(rtnMap);
-				}else {
-					rtnMap.put("errMsg", "Flow信息为空");
-		            logger.info("Flow信息为空,loadId："+loadId);
-		            return JsonUtils.toJsonNoException(rtnMap);
+					 } else {
+					rtnMap.put("errMsg", "保存模板失败");
+					logger.info("保存模板失败");
+					}
+					 return JsonUtils.toJsonNoException(rtnMap);
+	        	} else {
+				rtnMap.put("errMsg", "Flow信息为空");
+				logger.info("Flow信息为空,loadId：" + loadId);
+				return JsonUtils.toJsonNoException(rtnMap);
 				}
 	        }
 	    }
@@ -210,6 +185,20 @@ public class TemplateCtrl {
 				template.setLastUpdateDttm(new Date());
 				template.setName(name.substring(0, name.length()-4));
 				template.setPath(path);
+				//根据保存好的文件路径读取xml文件并返回xml字符串
+				String xmlFileToStr = FileUtils.XmlFileToStr(template.getPath());
+				if (StringUtils.isBlank(xmlFileToStr)) {
+					  logger.info("xml文件读取失败,上传模板失败");
+	    			  rtnMap.put("errMsg", "xml文件读取失败,请稍微再试");
+	    			  return JsonUtils.toJsonNoException(rtnMap);
+				}
+				//根据xml字符串获取mxGraphModel部分保存至value
+				MxGraphModelVo xmlToFlowStopInfo = FlowXmlUtils.allXmlToMxGraphModel(xmlFileToStr);
+				if (null != xmlToFlowStopInfo) {
+					// 把查询出來的mxGraphModelVo转为XML
+					String loadXml = FlowXmlUtils.mxGraphModelToXml(xmlToFlowStopInfo);
+					template.setValue(loadXml);
+				}
 				int addTemplate = iTemplateService.addTemplate(template);
 				 if (addTemplate > 0) {
 		                rtnMap.put("code", "1");
@@ -259,7 +248,6 @@ public class TemplateCtrl {
 					//保存stops和属性信息
 					flowAndStopsTemplateVoServiceImpl.addTemplateStopsToFlow(xmlToFlowStopInfo,loadId);
 				}
-			    // 把页面传來的XML转为mxGraphModel
 				StatefulRtnBase addFlow = null;
 	            MxGraphModelVo xmlToMxGraphModel = FlowXmlUtils.xmlToMxGraphModel(template.getValue());
 	            if (null != xmlToMxGraphModel) {
@@ -323,4 +311,69 @@ public class TemplateCtrl {
             }
 	    }
 	    
+	    /**
+	     * 保存表格中的模板
+	     * @param request
+	     * @param model
+	     * @return
+	     */
+	    @RequestMapping("/saveTableTemplate")
+	    @ResponseBody
+	    @Transactional
+	    public String saveTableTemplate(HttpServletRequest request, Model model) {
+	    	Map<String, String> rtnMap = new HashMap<String, String>();
+	        rtnMap.put("code", "0");
+	        MxGraphModelVo mxGraphModelVo = null;
+	        String flowAndStopInfoToXml = "";
+	        String loadXml = "";
+	        String loadId = request.getParameter("flowId");
+	        if (StringUtils.isBlank(loadId)) {
+	        	 rtnMap.put("errMsg", "flowId为空,保存失败");
+	        	 logger.info("flowId为空,表格模板保存失败");
+	        	 return JsonUtils.toJsonNoException(rtnMap);
+			}
+	        Flow flowById = iFlowServiceImpl.getFlowById(loadId);
+	        if (null != flowById) {
+	            MxGraphModel mxGraphModel = flowById.getMxGraphModel();
+	            if (null != mxGraphModel) {
+	            	mxGraphModelVo = FlowXmlUtils.mxGraphModelPoToVo(mxGraphModel);
+	            	// 把查询出來的mxGraphModelVo转为XML
+	            	loadXml = FlowXmlUtils.mxGraphModelToXml(mxGraphModelVo);
+	            	//根据flowById 去拼接xml 
+	            	flowAndStopInfoToXml = FlowXmlUtils.flowAndStopInfoToXml(flowById,loadXml);
+				}
+	    		logger.info(flowAndStopInfoToXml);
+        		Template template = new Template();
+		        template.setId(Utils.getUUID32());
+		    	template.setCrtDttm(new Date());
+				template.setCrtUser("wdd");
+				template.setVersion(0L);
+				template.setEnableFlag(true);
+				template.setLastUpdateUser("-1");
+				template.setLastUpdateDttm(new Date());
+				template.setName(flowById.getName());
+				template.setValue(loadXml);
+				template.setFlow(flowById);
+				//xml转文件并保存到指定目录
+				String path = FileUtils.createXml(flowAndStopInfoToXml,flowById.getName(),".xml",SysParamsCache.XML_PATH);
+				template.setPath(path);
+				int addTemplate = iTemplateService.addTemplate(template);
+				 if (addTemplate > 0) {
+		                rtnMap.put("code", "1");
+		                rtnMap.put("errMsg", "保存模板成功");
+		            	//保存stop，属性信息
+						List<Stops> stopsList = flowById.getStopsList();
+						if (null != stopsList && stopsList.size() > 0) {
+							flowAndStopsTemplateVoServiceImpl.addStopsList(stopsList,template);
+						}
+			} else {
+				rtnMap.put("errMsg", "保存模板失败");
+				logger.info("保存模板失败");
+			}
+		} else {
+			rtnMap.put("errMsg", "flow信息为空,表格模板保存失败");
+			logger.info("flow信息为空,表格模板保存失败");
+		}
+		return JsonUtils.toJsonNoException(rtnMap);
+	}
 }

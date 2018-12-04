@@ -292,6 +292,12 @@ Sidebar.prototype.showTooltip = function(elt, cells, w, h, title, showLabel)
 				this.graph2.labelsVisible = (showLabel == null || showLabel);
 				var fo = mxClient.NO_FO;
 				mxClient.NO_FO = Editor.prototype.originalNoForeignObject;
+				//判断title是否存在并且是否包含"#"
+				if (null != title && title.indexOf("#") != -1 ){
+					var ss= title.split("#");
+					//截取描述中的stop描述中的名称并赋值
+					cells[0].value = ss[0];
+				}
 				this.graph2.addCells(cells);
 				mxClient.NO_FO = fo;
 				
@@ -343,6 +349,12 @@ Sidebar.prototype.showTooltip = function(elt, cells, w, h, title, showLabel)
 					}
 					
 					this.tooltipTitle.style.display = '';
+					//判断title是否存在并且是否包含"#"
+					if (null != title && title.indexOf("#") != -1 ){
+						var ss= title.split("#");
+						//去掉前面stop名称部分,只拿后半部分
+						title = ss[1];
+					}
 					mxUtils.write(this.tooltipTitle, title);
 					
 					var ddy = this.tooltipTitle.offsetHeight + 10;
@@ -2566,7 +2578,7 @@ Sidebar.prototype.addImagePalette = function(id, title, prefix, postfix, items, 
 			
 			fns.push(this.createVertexTemplateEntry('image;html=1;labelBackgroundColor=#ffffff;image=' + prefix + item + postfix,
 				this.defaultImageWidth, this.defaultImageHeight, value, title, title != null, null, this.filterTags(tmpTags)));
-		}))(items[i], (titles != null) ? titles[i] : null, (values != null) ? values[i] : '', (tags != null) ? tags[items[i]] : null);
+		}))(items[i], (titles != null) ?  values[i]+"#"+titles[i] : null, (values != null) ? (values[i].length >10) ? values[i].substring(0,10)+"..." : values[i] : '', (tags != null) ? tags[items[i]] : null);
 	}
 
 	this.addPaletteFunctions(id, title, false, fns);
