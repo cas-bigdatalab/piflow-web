@@ -1,5 +1,6 @@
 package com.nature.component.process.vo;
 
+import com.nature.base.util.DateUtils;
 import com.nature.common.Eunm.PortType;
 
 import java.io.Serializable;
@@ -143,5 +144,12 @@ public class ProcessStopVo implements Serializable {
 
     public void setProcessStopPropertyVoList(List<ProcessStopPropertyVo> processStopPropertyVoList) {
         this.processStopPropertyVoList = processStopPropertyVoList;
+    }
+    public String getStartTimeStr() {
+        return DateUtils.dateTimesToStr(this.startTime);
+    }
+
+    public String getEndTimeStr() {
+        return DateUtils.dateTimesToStr(this.endTime);
     }
 }

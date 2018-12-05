@@ -1,6 +1,7 @@
 package com.nature.third;
 
 import com.nature.ApplicationTests;
+import com.nature.base.util.DateUtils;
 import com.nature.base.util.LoggerUtil;
 import com.nature.component.workFlow.model.FlowInfoDb;
 import com.nature.mapper.FlowInfoDbMapper;
@@ -43,8 +44,8 @@ public class IGetFlowInfoTest extends ApplicationTests {
 		db.setId(startFlow2.getId());
 		db.setName(startFlow2.getName());
 		db.setState(startFlow2.getState());
-		db.setEndTime(startFlow2.getEndTime());
-		db.setStartTime(startFlow2.getStartTime());
+		db.setEndTime(DateUtils.strCstToDate(startFlow2.getEndTime()));
+		db.setStartTime(DateUtils.strCstToDate(startFlow2.getStartTime()));
 		db.setCrtDttm(new Date());
 		db.setCrtUser("wdd");
 		db.setVersion(0L);

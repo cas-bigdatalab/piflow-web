@@ -1,5 +1,6 @@
 package com.nature.component.process.service.Impl;
 
+import com.nature.base.util.DateUtils;
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.Utils;
 import com.nature.base.vo.StatefulRtnBase;
@@ -76,7 +77,7 @@ public class ProcessServiceImpl implements IProcessService {
             for (Process process : processList) {
                 if (null != process) {
                     ProcessVo processVo = this.processPoToVo(process);
-                    processVo.setCrtDate(process.getCrtDttm());
+                    processVo.setCrtDttm(process.getCrtDttm());
                     processVoList.add(processVo);
                 }
             }
@@ -99,7 +100,7 @@ public class ProcessServiceImpl implements IProcessService {
                 if (null != process) {
                     ProcessVo processVo = new ProcessVo();
                     BeanUtils.copyProperties(process, processVo);
-                    processVo.setCrtDate(process.getCrtDttm());
+                    processVo.setCrtDttm(process.getCrtDttm());
                     processVoList.add(processVo);
                 }
             }
@@ -137,7 +138,7 @@ public class ProcessServiceImpl implements IProcessService {
             if (null != processById) {
                 processVo = new ProcessVo();
                 BeanUtils.copyProperties(processById, processVo);
-                processVo.setCrtDate(processById.getCrtDttm());
+                processVo.setCrtDttm(processById.getCrtDttm());
             }
         }
         return processVo;
@@ -231,8 +232,8 @@ public class ProcessServiceImpl implements IProcessService {
                             processById.setState(ProcessState.selectGender(thirdFlowInfoVo.getState()));
                             processById.setProcessId(thirdFlowInfoVo.getPid());
                             processById.setName(thirdFlowInfoVo.getName());
-                            processById.setStartTime(thirdFlowInfoVo.getStartTime());
-                            processById.setEndTime(thirdFlowInfoVo.getEndTime());
+                            processById.setStartTime(DateUtils.strCstToDate(thirdFlowInfoVo.getStartTime()));
+                            processById.setEndTime(DateUtils.strCstToDate(thirdFlowInfoVo.getEndTime()));
                             processTransaction.updateProcess(processById);
                             // 修改stops信息
                             List<ThirdFlowInfoStopsVo> stops = thirdFlowInfoVo.getStops();
@@ -246,8 +247,8 @@ public class ProcessServiceImpl implements IProcessService {
                                             ProcessStopVo processStopVo = new ProcessStopVo();
                                             processStopVo.setName(thirdFlowInfoStopVo.getName());
                                             processStopVo.setState(thirdFlowInfoStopVo.getState());
-                                            processStopVo.setStartTime(thirdFlowInfoStopVo.getStartTime());
-                                            processStopVo.setEndTime(thirdFlowInfoStopVo.getEndTime());
+                                            processStopVo.setStartTime(DateUtils.strCstToDate(thirdFlowInfoStopVo.getStartTime()));
+                                            processStopVo.setEndTime(DateUtils.strCstToDate(thirdFlowInfoStopVo.getEndTime()));
                                             processStopVo.setProcessVo(processVo);
                                             ProcessStop processStop = processStopTransaction.updateProcessStopByProcessId(processStopVo);
                                             if (null != processStop) {
@@ -1021,7 +1022,7 @@ public class ProcessServiceImpl implements IProcessService {
         if (null != process) {
             processVo = new ProcessVo();
             BeanUtils.copyProperties(process, processVo);
-            processVo.setCrtDate(process.getCrtDttm());
+            processVo.setCrtDttm(process.getCrtDttm());
             List<ProcessStopVo> processStopVoList = ProcessStopUtils.processStopListPoToVo(process.getProcessStopList());
             processVo.setProcessStopVoList(processStopVoList);
             List<ProcessPath> processPathList = process.getProcessPathList();

@@ -387,8 +387,8 @@ public class StopsMapperProvider {
         String sqlStr = "";
         SQL sql = new SQL();
         sql.UPDATE("flow_stops");
-        Date endTime = stopVo.getEndTime();
-        Date startTime = stopVo.getStartTime();
+        Date endTime = DateUtils.strCstToDate(stopVo.getEndTime());
+        Date startTime = DateUtils.strCstToDate(stopVo.getStartTime());
         String name = stopVo.getName();
         String state = stopVo.getState();
         String flowId = stopVo.getFlowId();

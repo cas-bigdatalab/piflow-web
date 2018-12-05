@@ -42,7 +42,7 @@
 
 <div id="processLeft" class="geSidebarContainer"
      style="right: 0px;background-color: whitesmoke;font-size: 12px;width: 25%;height: 100%;">
-    Loading.....
+    <div th:include="/process/inc/process_Info_Inc :: process_Info_Inc"></div>
 </div>
 <!-- Modal Checkpoint -->
 <div class="modal" id="checkpointShow" aria-labelledby="myModalLabel" data-backdrop="static">
@@ -84,7 +84,7 @@
                 <input type="button" onclick="changeUrl(2)" value="stderr">
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -145,7 +145,7 @@
                 monitor(processStopVoInit.pageId, processStopVoInit.state);
             }
         }
-        queryProcess(processId);
+        //queryProcess(processId);
         $("#modalDialog").draggable();//为模态对话框添加拖拽
         $("#myModal").css("overflow", "hidden");//禁止模态对话框的半透明背景滚动
     })();
@@ -300,7 +300,7 @@
             url: "/piflow-web/process/stopProcess",//这是我在后台接受数据的文件名
             //data:$('#loginForm').serialize(),//将该表单序列化
             data: {
-                flowId: appId
+                appId: appId
             },
             async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
             error: function (request) {//请求失败之后的操作
@@ -316,7 +316,7 @@
                     alert(dataMap.errorMsg);
                     startFlow.show();
                 } else {
-                    alert("停止失败" + dataMap.errMsg);
+                    alert("停止失败:" + dataMap.errMsg);
                     stopFlow.show();
                 }
                 fullScreen.hide();

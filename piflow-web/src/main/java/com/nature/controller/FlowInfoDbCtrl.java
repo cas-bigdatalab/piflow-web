@@ -125,8 +125,8 @@ public class FlowInfoDbCtrl {
         if (StringUtils.isNotBlank(progress.getProgress()) || !"STARTED".equals(progress.getState()) || Float.parseFloat(progress.getProgress()) > Float.parseFloat(flowInfo.getProgress())) {
             FlowInfoDb up = new FlowInfoDb();
             if (null != thirdFlowInfoVo) {
-                up.setEndTime(thirdFlowInfoVo.getEndTime());
-                up.setStartTime(thirdFlowInfoVo.getStartTime());
+                up.setEndTime(DateUtils.strCstToDate(thirdFlowInfoVo.getEndTime()));
+                up.setStartTime(DateUtils.strCstToDate(thirdFlowInfoVo.getStartTime()));
                 up.setName(thirdFlowInfoVo.getName());
                 List<ThirdFlowInfoStopsVo> stops = thirdFlowInfoVo.getStops();
                 if (stops.size() > 0 && !stops.isEmpty()) {
@@ -156,8 +156,8 @@ public class FlowInfoDbCtrl {
         map.put("progress", "NaN".equals(progress.getProgress()) ? "0.00" : progress.getProgress());
         map.put("state", progress.getState());
         if (null != thirdFlowInfoVo) {
-            map.put("startTime", DateUtils.dateTimeToStr(thirdFlowInfoVo.getStartTime()));
-            map.put("endTime", DateUtils.dateTimeToStr(thirdFlowInfoVo.getEndTime()));
+            map.put("startTime", thirdFlowInfoVo.getStartTime());
+            map.put("endTime", thirdFlowInfoVo.getEndTime());
         }
         return map;
     }

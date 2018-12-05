@@ -9,8 +9,8 @@ public class ThirdFlowInfoStopVo implements Serializable {
 
 	private String name;
 	private String state;
-	private Date startTime;
-	private Date endTime;
+	private String startTime;
+	private String endTime;
 	private String flowId;
 
 	public String getName() {
@@ -29,19 +29,19 @@ public class ThirdFlowInfoStopVo implements Serializable {
 		this.state = state;
 	}
 
-	public Date getStartTime() {
+	public String getStartTime() {
 		return startTime;
 	}
 
-	public void setStartTime(Date startTime) {
+	public void setStartTime(String startTime) {
 		this.startTime = startTime;
 	}
 
-	public Date getEndTime() {
+	public String getEndTime() {
 		return endTime;
 	}
 
-	public void setEndTime(Date endTime) {
+	public void setEndTime(String endTime) {
 		this.endTime = endTime;
 	}
 

@@ -94,6 +94,7 @@ public class ProcessCtrl {
                 modelAndView.addObject("processId", processId);
                 modelAndView.addObject("parentProcessId", processVo.getParentProcessId());
                 modelAndView.addObject("pID", processVo.getProcessId());
+                modelAndView.addObject("processVo", processVo);
                 modelAndView.setViewName("process/processContent");
             } else {
                 modelAndView.setViewName("errorPage");
@@ -201,7 +202,13 @@ public class ProcessCtrl {
                     if (StringUtils.isNotBlank(flowStop) && !flowStop.contains("Exception")) {
                         rtnMap.put("code", "1");
                         rtnMap.put("errMsg", "停止成功，返回状态为：" + flowStop);
+                    }else {
+                        logger.warn("接口返回值为空");
+                        rtnMap.put("errMsg", "接口返回值为空");
                     }
+                }else {
+                    logger.warn("查询到的process的Id为空");
+                    rtnMap.put("errMsg", "查询到的process的Id为空");
                 }
             } else {
                 logger.warn("未查询到appId为" + appId + "的process");

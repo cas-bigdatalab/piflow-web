@@ -1,5 +1,6 @@
 package com.nature.third.impl;
 
+import com.nature.base.util.DateUtils;
 import com.nature.base.util.HttpUtils;
 import com.nature.base.util.LoggerUtil;
 import com.nature.common.Eunm.FlowState;
@@ -74,8 +75,8 @@ public class GetFlowInfoImpl implements IGetFlowInfo {
                 up.setId(flowInfoDb.getId());
                 up.setName(startFlow2.getName());
                 up.setState(startFlow2.getState());
-                up.setEndTime(startFlow2.getEndTime());
-                up.setStartTime(startFlow2.getStartTime());
+                up.setEndTime(DateUtils.strCstToDate(startFlow2.getEndTime()));
+                up.setStartTime(DateUtils.strCstToDate(startFlow2.getStartTime()));
                 if (null == progress.getProgress() || "NaN".equals(progress.getProgress())) {
                     up.setProgress("0");
                 } else {
@@ -93,8 +94,8 @@ public class GetFlowInfoImpl implements IGetFlowInfo {
                 add.setId(startFlow2.getId());
                 add.setName(startFlow2.getName());
                 add.setState(progress.getState());
-                add.setEndTime(startFlow2.getEndTime());
-                add.setStartTime(startFlow2.getStartTime());
+                add.setEndTime(DateUtils.strCstToDate(startFlow2.getEndTime()));
+                add.setStartTime(DateUtils.strCstToDate(startFlow2.getStartTime()));
                 add.setProgress(progress.getProgress());
                 add.setCrtDttm(new Date());
                 add.setCrtUser("wdd");

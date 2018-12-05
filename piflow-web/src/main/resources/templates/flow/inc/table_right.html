@@ -19,10 +19,10 @@
                         <th style="display: none">appId</th>
                         <th>name</th>
                         <th>description</th>
-                        <th>startTime</th>
-                        <th>finishedTime</th>
-                        <th>progress</th>
-                        <th>state</th>
+                        <th style="display: none">startTime</th>
+                        <th style="display: none">finishedTime</th>
+                        <th style="display: none">progress</th>
+                        <th style="display: none">state</th>
                         <th>Actions</th>
                         <th style="display: none">driverMemory</th>
                         <th style="display: none">executorNumber</th>
@@ -36,10 +36,10 @@
                         <td style="display: none" class="center" th:text="${list.appId?.id}"></td>
                         <td class="center" th:text="${list.name}"></td>
                         <td class="center" th:text="${list.description}"></td>
-                        <td th:text="${#dates.format(list.appId?.startTime, 'yyyy-MM-dd HH:mm:ss')}" th:id='${list.appId?.id}+startTime'></td>
-                        <td th:text="${#dates.format(list.appId?.endTime, 'yyyy-MM-dd HH:mm:ss')}" th:id='${list.appId?.id}+endTime'></td>
-                        <td class="center" ><div id='d'> <p th:id='${list.appId?.id}+Info' th:text="${list.appId?.progress}?'进度'+${list.appId?.progress}+'%':'进度0%'"></p><progress th:id='${list.appId?.id}' max='100' th:value="${list.appId?.progress}"></progress></div></td>
-                        <td class="center" th:text="${list.appId?.state}?${list.appId?.state}:'No state'" th:id='${list.appId?.id}+state'></td>
+                        <td style="display: none" th:text="${#dates.format(list.appId?.startTime, 'yyyy-MM-dd HH:mm:ss')}" th:id='${list.appId?.id}+startTime'></td>
+                        <td style="display: none" th:text="${#dates.format(list.appId?.endTime, 'yyyy-MM-dd HH:mm:ss')}" th:id='${list.appId?.id}+endTime'></td>
+                        <td style="display: none" class="center" ><div id='d'> <p th:id='${list.appId?.id}+Info' th:text="${list.appId?.progress}?'进度'+${list.appId?.progress}+'%':'进度0%'"></p><progress th:id='${list.appId?.id}' max='100' th:value="${list.appId?.progress}"></progress></div></td>
+                        <td style="display: none" class="center" th:text="${list.appId?.state}?${list.appId?.state}:'No state'" th:id='${list.appId?.id}+state'></td>
                          <td style="display: none" class="center" th:text="${list.driverMemory}?${list.driverMemory}:'1g'"></td>
                           <td style="display: none" class="center" th:text="${list.executorNumber}?${list.executorNumber}:'1'"></td>
                            <td style="display: none" class="center" th:text="${list.executorMemory}?${list.executorMemory}:'1g'"></td>

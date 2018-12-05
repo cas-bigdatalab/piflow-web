@@ -1,5 +1,6 @@
 package com.nature.component.process.vo;
 
+import com.nature.base.util.DateUtils;
 import com.nature.common.Eunm.ProcessState;
 
 import java.io.Serializable;
@@ -10,7 +11,7 @@ import java.util.List;
 public class ProcessVo implements Serializable {
 
     private String id;
-    private Date crtDate;
+    private Date crtDttm;
     private String name;
     private String driverMemory;
     private String executorNumber;
@@ -37,12 +38,12 @@ public class ProcessVo implements Serializable {
         this.id = id;
     }
 
-    public Date getCrtDate() {
-        return crtDate;
+    public Date getCrtDttm() {
+        return crtDttm;
     }
 
-    public void setCrtDate(Date crtDate) {
-        crtDate = crtDate;
+    public void setCrtDttm(Date crtDttm) {
+        this.crtDttm = crtDttm;
     }
 
     public String getName() {
@@ -179,5 +180,17 @@ public class ProcessVo implements Serializable {
 
     public void setProcessPathVoList(List<ProcessPathVo> processPathVoList) {
         this.processPathVoList = processPathVoList;
+    }
+
+    public String getCrtDttmStr() {
+        return DateUtils.dateTimesToStr(this.crtDttm);
+    }
+
+    public String getStartTimeStr() {
+        return DateUtils.dateTimesToStr(this.startTime);
+    }
+
+    public String getEndTimeStr() {
+        return DateUtils.dateTimesToStr(this.endTime);
     }
 }

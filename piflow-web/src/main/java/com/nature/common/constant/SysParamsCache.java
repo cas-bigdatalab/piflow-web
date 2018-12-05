@@ -28,8 +28,8 @@ public class SysParamsCache {
     static Logger logger = LoggerUtil.getLogger();
 
     // 接口ip和端口
-    // public static String INTERFACE_URL_HEAD = "http://10.0.86.191:8002";
-    public static String INTERFACE_URL_HEAD = "http://10.0.86.98:8001";
+    public static String INTERFACE_URL_HEAD = "http://10.0.86.191:8002";
+    // public static String INTERFACE_URL_HEAD = "http://10.0.86.98:8001";
     // public static String INTERFACE_URL_HEAD = "http://10.0.88.25:8002";
     // stops groups信息
     public static String INTERFACE_STOPS_GROUPS = "/stop/groups";
@@ -123,8 +123,9 @@ public class SysParamsCache {
     
     // xml文件路径(配置文件中 读取)
     public static String XML_PATH;
-	@Value("${syspara.xmlPath}")
-	public void setmlPath(String xmlPath) {
-		XML_PATH = xmlPath ;
-	}
+
+    @Value("${syspara.xmlPath}")
+    public void setmlPath(String xmlPath) {
+        XML_PATH = xmlPath;
+    }
 }

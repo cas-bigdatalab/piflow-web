@@ -35,9 +35,9 @@
                 </tr>
                 <tr>
                     <td>
-                        <span>crtDttmString：</span></td>
+                        <span>crtTime：</span></td>
                     <td>
-                        <span th:text="${processVo.crtDate}"/>
+                        <span th:text="${processVo.crtDttmStr}"/>
                 </tr>
                 </tbody>
             </table>
@@ -47,10 +47,10 @@
                 Process Runing Information
             </div>
             <span>Start time ：</span>
-            <span id="processStartTimeShow" th:text="${processVo.startTime}"/>
+            <span id="processStartTimeShow" th:text="${processVo.startTimeStr}"/>
             <br>
             <span>Stop time ：</span>
-            <span id="processStopTimeShow" th:text="${processVo.endTime}"/>
+            <span id="processStopTimeShow" th:text="${processVo.endTimeStr}"/>
             <br>
             <span>state ：</span>
             <span id="processStateShow" th:text="${processVo.state}"/>
