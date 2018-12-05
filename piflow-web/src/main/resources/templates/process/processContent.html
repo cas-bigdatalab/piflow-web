@@ -28,14 +28,15 @@
 <body class="geEditor">
 <div style="position: fixed; z-index: 779;text-align: right;right: 27%;top: 10px;">
 			<span>
-				进度：<span id="progress" th:text="${percentage} + '%'"></span>
+				progress：<span id="progress" th:text="${percentage} + '%'"></span>
 			</span>
-    <input id="startFlow" type="button" onclick="getCheckpoint()" value="运行"/>
-    <input id="stopFlow" type="button" onclick="stopProcess()" value="停止"/>
+    <input id="startFlow" type="button" onclick="getCheckpoint()" value="Run"/>
+    <input id="stopFlow" type="button" onclick="stopProcess()" value="Stop"/>
     <input type="button" class="btn-primary" data-toggle="modal" onclick="getLogUrl()" data-target="#myModal"
-           value="日志"/>
+           value="Log"/>
 </div>
-<div id="processContent" style="overflow: auto; width: 75%; height: 100%; position: fixed;z-index: 778;">
+<div id="processContent" th:onclick="'queryProcess(\''+${processId}+'\')'"
+     style="overflow: auto; width: 75%; height: 100%; position: fixed;z-index: 778;">
     <div class="geBackgroundPage"
          style="position: absolute;border-width: 1px;overflow: hidden;width: 2391px;height: 2167px;border-color: rgb(202, 202, 202);border-style: solid;background-color: rgb(255, 255, 255);background-image: url(&quot;data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAgTSAwIDIwIEwgNDAgMjAgTSAyMCAwIEwgMjAgNDAgTSAwIDMwIEwgNDAgMzAgTSAzMCAwIEwgMzAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2UwZTBlMCIgb3BhY2l0eT0iMC4yIiBzdHJva2Utd2lkdGg9IjEiLz48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZTBlMGUwIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=&quot;);background-position: -1px -1px;"></div>
 </div>
@@ -117,6 +118,7 @@
     var processState = [[${processState}]];
     var stdoutLog = [[${stdoutLog}]];
     var stderrLog = [[${stderrLog}]];
+    var isLoadProcessInfo = true;
     $(document).ajaxSend(function (e, xhr, options) {
         xhr.setRequestHeader(header, token);
     });
@@ -163,27 +165,40 @@
     }
 
     function queryProcess(processId) {
-        $.ajax({
-            cache: true,//保留缓存数据
-            type: "POST",//为post请求
-            url: "/piflow-web/process/queryProcess",//这是我在后台接受数据的文件名
-            //data:$('#loginForm').serialize(),//将该表单序列化
-            data: {
-                processId: processId
-            },
-            async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
-            error: function (request) {//请求失败之后的操作
-                console.log("fail");
-                return;
-            },
-            success: function (data) {//请求成功之后的操作
-                // console.log(data);
-                $('#processLeft').html(data)
+        if (!isLoadProcessInfo) {
+            isLoadProcessInfo = true;
+        } else {
+            if (!processId || '' === processId || 'null' === processId || 'NULL' === processId) {
+                alert("Id为空，没有获取到，请检查！！");
+            }else {
+                $.ajax({
+                    cache: true,//保留缓存数据
+                    type: "POST",//为post请求
+                    url: "/piflow-web/process/queryProcess",//这是我在后台接受数据的文件名
+                    //data:$('#loginForm').serialize(),//将该表单序列化
+                    data: {
+                        processId: processId
+                    },
+                    async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
+                    error: function (request) {//请求失败之后的操作
+                        console.log("fail");
+                        return;
+                    },
+                    success: function (data) {//请求成功之后的操作
+                        // console.log(data);
+                        $('#processLeft').html(data)
+                        $('#selectedRectShow').hide();
+                    }
+                });
             }
-        });
+        }
+        return;
     }
 
     function queryProcessStop(processId, pageId) {
+        if (isLoadProcessInfo) {
+            isLoadProcessInfo = false;
+        }
         $.ajax({
             cache: true,//保留缓存数据
             type: "POST",//为post请求
@@ -216,7 +231,7 @@
             //data:$('#loginForm').serialize(),//将该表单序列化
             data: {
                 pID: pID,
-                parentProcessId:parentProcessId
+                parentProcessId: parentProcessId
             },
             async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
             error: function (request) {//请求失败之后的操作
