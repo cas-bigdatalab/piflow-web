@@ -37,6 +37,7 @@ var sign = true;
         });
         graphGlobal.addListener(mxEvent.CELLS_MOVED, function(sender, evt) {
             saveXml(null,'MOVED');
+            findBasicInfo(evt);
         });
         graphGlobal.addListener(mxEvent.CELLS_REMOVED, function(sender, evt) {
             saveXml(null,'REMOVED');

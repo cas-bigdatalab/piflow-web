@@ -42,10 +42,26 @@ public interface IFlowAndStopsTemplateVoService {
 	
 	public int deleteStopPropertyTemByStopId(@Param("id") String stopId);
 	
+	/**
+	 * 根据模板id查询所有stop信息
+	 * @param templateId
+	 * @return
+	 */
 	public List<StopTemplateModel> getStopsListByTemPlateId(@Param("templateId") String templateId);
 	 
+	/**
+	 * 根据stopId查询所有stop属性信息
+	 * @param templateId
+	 * @return
+	 */
 	public List<PropertyTemplateModel> getPropertyListByStopsId(String stopsId);
 	
+	/**
+	 * 加载模板保存stop信息
+	 * @param template
+	 * @param flowId
+	 * @param maxPageId  flow中stop中的最大值
+	 */
 	public void addTemplateStopsToFlow(Template template,String flowId, int maxPageId);
 	
 	public void addStopsList(List<Stops> stops,Template template);

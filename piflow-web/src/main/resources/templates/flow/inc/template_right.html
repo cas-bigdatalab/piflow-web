@@ -22,6 +22,7 @@
                         <th style="display: none">templateId</th>
                         <th>flowName</th>
                         <th>templateName</th>
+                        <th>createTime</th>
                         <th>Actions</th>
                     </tr>
                     </thead>
@@ -29,8 +30,9 @@
                     <tr th:each='list:${TemPlateList}'>
                         <td style="display: none" th:text="${list.id}" ></td>
                         <td style="display: none" class="center" th:text="${list.flow?.id}"></td>
-                        <td class="center" th:text="${list.flow?.name}"></td>
+                        <td class="center" th:text="${list.flow?.name} ? ${list.flow?.name} : 'no flowName'"></td>
                         <td class="center" th:text="${list.name}"></td>
+                        <td th:text="${#dates.format(list.crtDttm, 'yyyy-MM-dd HH:mm:ss')}"></td>
                         <td class="center" style="white-space: nowrap;">
                            <!--  <a class="btn" href="javascript:void(0);" th:onclick="'javascript:uploadTemplate();'"  style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;">
                               	upload </a> -->

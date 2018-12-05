@@ -1,10 +1,10 @@
 package com.nature.component.workFlow.vo;
 
-import com.nature.common.Eunm.PortType;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.nature.common.Eunm.PortType;
 
 /**
  * stop组建表
@@ -40,6 +40,8 @@ public class StopsVo implements Serializable {
     private PortType outPortType;
 
     private Boolean isCheckpoint;
+    
+	private Long version;
 
     private List<StopsPropertyVo> propertiesVo = new ArrayList<StopsPropertyVo>();
 
@@ -154,4 +156,12 @@ public class StopsVo implements Serializable {
     public void setPropertiesVo(List<StopsPropertyVo> propertiesVo) {
         this.propertiesVo = propertiesVo;
     }
+
+	public Long getVersion() {
+		return version;
+	}
+
+	public void setVersion(Long version) {
+		this.version = version;
+	}
 }

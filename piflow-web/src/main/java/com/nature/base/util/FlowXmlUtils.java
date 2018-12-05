@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.xml.sax.InputSource;
 
+import com.nature.common.Eunm.PortType;
 import com.nature.component.mxGraph.model.MxCell;
 import com.nature.component.mxGraph.model.MxGeometry;
 import com.nature.component.mxGraph.model.MxGraphModel;
@@ -354,6 +355,12 @@ public class FlowXmlUtils {
 					String stopName = stopVo.getName();
 					String bundel = stopVo.getBundel();
 					String stopDescription = stopVo.getDescription();
+					Boolean checkpoint = stopVo.getCheckpoint();
+					String inports = stopVo.getInports();
+					PortType inPortType = stopVo.getInPortType();
+					String outports = stopVo.getOutports();
+					PortType outPortType = stopVo.getOutPortType();
+					String owner = stopVo.getOwner();
 					xmlStrSb.append("<stop ");
 					if (StringUtils.isNotBlank(stopId)) {
 						xmlStrSb.append("id=\"" + stopId + "\" ");
@@ -369,6 +376,26 @@ public class FlowXmlUtils {
 					}
 					if (StringUtils.isNotBlank(stopDescription)) {
 						xmlStrSb.append("description=\"" + stopDescription + "\" ");
+					}
+					if (null != checkpoint) {
+		                int ischeckpoint = checkpoint ? 1 : 0;
+		                xmlStrSb.append("isCheckpoint=\"" + ischeckpoint + "\" ");
+		            }
+					if (StringUtils.isNotBlank(inports)) {
+						xmlStrSb.append("inports=\"" + inports + "\" ");
+					}
+					
+					if (StringUtils.isNotBlank(outports)) {
+						xmlStrSb.append("outports=\"" + outports + "\" ");
+					}
+					if (StringUtils.isNotBlank(owner)) {
+						xmlStrSb.append("owner=\"" + owner + "\" ");
+					}
+					if (null != inPortType) {
+						xmlStrSb.append("inPortType=\"" + inPortType + "\" ");
+					}
+					if (null != outPortType) {
+						xmlStrSb.append("outPortType=\"" + outPortType + "\" ");
 					}
 					List<Property> property = stopVo.getProperties();
 					if (null != property && property.size() > 0) {
@@ -460,11 +487,25 @@ public class FlowXmlUtils {
 				String id = recordEle.attributeValue("id");
 				String name = recordEle.attributeValue("name");
 				String pageId = recordEle.attributeValue("pageId");
+				String inPortType = recordEle.attributeValue("inPortType");
+				String inports = recordEle.attributeValue("inports");
+				String outPortType = recordEle.attributeValue("outPortType");
+				String outports = recordEle.attributeValue("outports");
+				String isCheckpoint = recordEle.attributeValue("isCheckpoint");
+				String owner = recordEle.attributeValue("owner");
 				stopVo.setPageId(pageId);
 				stopVo.setName(name);
 				stopVo.setDescription(description);
 				stopVo.setBundel(bundel);
 				stopVo.setId(id);
+				stopVo.setInports(inports);
+				stopVo.setOutports(outports);
+				stopVo.setOutPortType(PortType.selectGender(outPortType));
+				stopVo.setInPortType(PortType.selectGenderByValue(inPortType));
+				Boolean Checkpoint = false;
+				Checkpoint =  "0".equals(isCheckpoint) ? false : true;
+				stopVo.setIsCheckpoint(Checkpoint);
+				stopVo.setOwner(owner);
 				 	Iterator property = recordEle.elementIterator("property"); 
 				 	if (null != property) {
 				 	while (property.hasNext()) {
@@ -486,6 +527,7 @@ public class FlowXmlUtils {
 						propertyVo.setName(propertyName);
 						propertyVo.setRequired(required);
 						propertyVo.setSensitive(sensitive);
+						propertyVo.setStopsVo(stopVo);
 						propertyList.add(propertyVo);
 				 		}
 				 	}
@@ -500,6 +542,7 @@ public class FlowXmlUtils {
 		return template;
 	}
 	
+
 	/**
 	 * String类型的xml转MxGraphModel
 	 * 
@@ -616,4 +659,40 @@ public class FlowXmlUtils {
 		return mxGraphModelVo;
 	}
 	
+	/**
+	 * List<StopTemplateModel>  to  List<Stops> 
+	 * @param stopsListTemplate
+	 * @return
+	 */
+	public static List<Stops> stopTemplateVoToStop(List<StopTemplateModel> stopsListTemplate) {
+		List<Stops> stopsList = new ArrayList<Stops>();
+			// 判空
+			if (null != stopsListTemplate && stopsListTemplate.size() > 0) {
+				// 循环拷贝
+				for (StopTemplateModel stopTemplate : stopsListTemplate) {
+					if (null != stopTemplate) {
+						Stops stops = new Stops();
+						// 拷贝StopTemplateModel的内容到Stops中
+						BeanUtils.copyProperties(stopTemplate, stops);
+						stops.setCheckpoint(stopTemplate.getIsCheckpoint());
+						List<PropertyTemplateModel> propertyTemplateModel = stopTemplate.getProperties();
+						if (null != propertyTemplateModel && propertyTemplateModel.size() > 0) {
+							List<Property> propertyList = new ArrayList<Property>();
+							for (PropertyTemplateModel propertyTemplate : propertyTemplateModel) {
+								if (null != propertyTemplate) {
+									Property property = new Property();
+									// 拷贝propertyTemplate的内容到property中
+									BeanUtils.copyProperties(propertyTemplate, property);
+									property.setStops(stops);
+									propertyList.add(property);
+								}
+							}
+							stops.setProperties(propertyList);
+						}
+						stopsList.add(stops);
+					}
+				}
+			}
+		return stopsList;
+	}
 }

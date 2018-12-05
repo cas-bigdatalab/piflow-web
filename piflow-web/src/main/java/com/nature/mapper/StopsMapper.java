@@ -3,6 +3,7 @@ package com.nature.mapper;
 import com.nature.component.workFlow.model.Stops;
 import com.nature.provider.StopsMapperProvider;
 import com.nature.third.vo.flowInfo.ThirdFlowInfoStopVo;
+
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
 
@@ -59,6 +60,7 @@ public interface StopsMapper {
 	 */
 	@SelectProvider(type = StopsMapperProvider.class, method = "getStopsListByFlowId")
 	@Results({ @Result(id = true, column = "id", property = "id"),
+			@Result(column = "is_checkpoint", property = "isCheckpoint"),
 			@Result(column = "id", property = "properties", many = @Many(select = "com.nature.mapper.PropertyMapper.getPropertyListByStopsId", fetchType = FetchType.LAZY))
 
 	})

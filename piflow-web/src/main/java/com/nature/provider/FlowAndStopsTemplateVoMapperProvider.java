@@ -140,6 +140,7 @@ public class FlowAndStopsTemplateVoMapperProvider {
             Boolean enableFlag = stops.getEnableFlag();
             Date crtDttm = stops.getCrtDttm();
             Long version = stops.getVersion();
+            Boolean checkpoint = stops.getIsCheckpoint();
             SQL sql = new SQL();
             sql.INSERT_INTO("stops_template");
             if (StringUtils.isNotBlank(id)) {
@@ -190,6 +191,9 @@ public class FlowAndStopsTemplateVoMapperProvider {
                 if (StringUtils.isNotBlank(flowId)) {
                     sql.VALUES("FK_template_ID", Utils.addSqlStr(flowId));
                 }
+            }
+            if (null != checkpoint) {
+                sql.VALUES("is_checkpoint", (checkpoint ? 1 : 0) + "");
             }
 
             sqlStr = sql.toString() + ";";

@@ -80,17 +80,16 @@ public class FlowAndStopsTemplateVoServiceImpl implements IFlowAndStopsTemplateV
 	}
 
 	@Override
+	@Transactional
 	public void addTemplateStopsToFlow(Template template,String flowId,int maxPageId) {
 		int addPropertyList = 0;
 		List<Property> list = new ArrayList<Property>();
 		Flow flowById = flowMapper.getFlowById(flowId);
 		// 获取stop信息
 		List<StopTemplateModel> stopsList = template.getStopsList();
-		int num = 0;
 		// 开始遍历保存stop和属性信息
 		 if (null != stopsList && stopsList.size() > 0) {
 			for (StopTemplateModel stopsVo : stopsList) {
-				num++;
 				Stops stop = new Stops();
 				BeanUtils.copyProperties(stopsVo, stop);
 				//pageId最大值开始增加
@@ -100,10 +99,7 @@ public class FlowAndStopsTemplateVoServiceImpl implements IFlowAndStopsTemplateV
 				stop.setLastUpdateUser("wdd");
 				stop.setFlow(flowById);
 				stop.setVersion(0L);
-				stop.setInPortType(stopsVo.getInPortType());
-				stop.setInports(stopsVo.getInports());
-				stop.setOutports(stopsVo.getOutports());
-				stop.setOutPortType(stopsVo.getOutPortType());
+				stop.setCheckpoint(stopsVo.getIsCheckpoint());
 				int addStops = stopsMapper.addStops(stop);
 				logger.info("addStops影响行数"+addStops);
 				if (addStops > 0) {
@@ -137,6 +133,7 @@ public class FlowAndStopsTemplateVoServiceImpl implements IFlowAndStopsTemplateV
 	}
 
 	@Override
+	@Transactional
 	public void addStopsList(List<Stops> stopsList,Template template) {
 		List<PropertyTemplateModel> list = new ArrayList<PropertyTemplateModel>();
 		//保存stop，属性信息
@@ -147,6 +144,8 @@ public class FlowAndStopsTemplateVoServiceImpl implements IFlowAndStopsTemplateV
 				stopTemplate.setTemplate(template);
 				stopTemplate.setId(Utils.getUUID32());
 				stopTemplate.setCrtDttm(new Date());
+				stopTemplate.setIsCheckpoint(stops.getCheckpoint());
+				stopTemplate.setVersion(0L);
 				flowAndStopsTemplateVoMapper.addStops(stopTemplate);
 				if (null != stops.getProperties()) {
 					List<Property> properties = stops.getProperties();
@@ -157,6 +156,7 @@ public class FlowAndStopsTemplateVoServiceImpl implements IFlowAndStopsTemplateV
 							propertyVo.setStopsVo(stopTemplate);
 							propertyVo.setId(Utils.getUUID32());
 							propertyVo.setCrtDttm(new Date());
+							propertyVo.setVersion(0L);
 							list.add(propertyVo);
 						}
 					}

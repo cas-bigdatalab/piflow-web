@@ -126,7 +126,7 @@
         var value = null;
         var ss = [];
         //针对不同事件设置值
-        if ('cellsAdded' == evt.name) {
+        if ('cellsAdded' == evt.name || 'cellsMoved' == evt.name) {
             cells = evt.properties.cells;
             ss = cells[0];
             value = ss.value;
