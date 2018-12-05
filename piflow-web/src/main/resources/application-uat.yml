@@ -5,7 +5,7 @@ server:
     session:
       timeout: 3000
 syspara:
-  imagesPath: file:/usr/local/tomcat/apache-tomcat-8.5.34/piflow-web-image/
+  imagesPath: file:/usr/local/tomcat/apache-tomcat-8.5.34/piflow-web-file/image/
   xmlPath: file:/usr/local/tomcat/apache-tomcat-8.5.34/piflow-web-file/xml/
 spring:
 ########################################################
