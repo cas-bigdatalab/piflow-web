@@ -155,6 +155,8 @@ public class ProcessCtrl {
             if (null != process) {
                 StatefulRtnBase statefulRtnBase = startFlowImpl.startProcess(process, checkpoint);
                 if (null != statefulRtnBase && statefulRtnBase.isReqRtnStatus()) {
+                    // 启动成功后直接调一次info
+                    processServiceImpl.getAppInfoByThirdAndSave(process.getAppId());
                     errMsg = "启动成功";
                     rtnMap.put("code", "1");
                     rtnMap.put("processId", process.getId());
@@ -202,11 +204,11 @@ public class ProcessCtrl {
                     if (StringUtils.isNotBlank(flowStop) && !flowStop.contains("Exception")) {
                         rtnMap.put("code", "1");
                         rtnMap.put("errMsg", "停止成功，返回状态为：" + flowStop);
-                    }else {
+                    } else {
                         logger.warn("接口返回值为空");
                         rtnMap.put("errMsg", "接口返回值为空");
                     }
-                }else {
+                } else {
                     logger.warn("查询到的process的Id为空");
                     rtnMap.put("errMsg", "查询到的process的Id为空");
                 }
