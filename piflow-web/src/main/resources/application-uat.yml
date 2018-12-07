@@ -5,16 +5,16 @@ server:
     session:
       timeout: 3000
 syspara:
-  imagesPath: file:/usr/local/tomcat/apache-tomcat-8.5.34/piflow-web-file/image/
-  xmlPath: file:/usr/local/tomcat/apache-tomcat-8.5.34/piflow-web-file/xml/
+  imagesPath: file:/piflow/image/
+  xmlPath: file:/piflow/xml/
 spring:
 ########################################################
 ######  数据源
 ########################################################
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/piflow_web?useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowMultiQueries=true
-    username: root
-    password: root
+    url: jdbc:mysql://10.0.88.55:3306/piflow_web?useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowMultiQueries=true
+    username: piflow_web
+    password: 123456
     driver-class-name: com.mysql.jdbc.Driver
     #type: com.alibaba.druid.pool.DruidDataSource
 ########################################################
