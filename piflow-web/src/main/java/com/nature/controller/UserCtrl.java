@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nature.base.util.LoggerUtil;
-import com.nature.component.user.model.User;
-import com.nature.component.user.service.UserService;
+import com.nature.component.sysUser.model.SysUser;
+import com.nature.component.sysUser.service.IUserService;
 
 /**
  * Created by wangwei on 2016/9/2.
@@ -25,25 +25,25 @@ public class UserCtrl {
 	Logger logger = LoggerUtil.getLogger();
 
 	@Autowired
-	UserService userService;
+	IUserService userServiceImpl;
 
 	@RequestMapping(value = "/user")
 	@ResponseBody
-	public List<User> user(String name) {
-		List<User> userList = userService.findByName(name);
+	public List<SysUser> user(String name) {
+		List<SysUser> userList = userServiceImpl.findByName(name);
 		logger.info("111111111111111111111111111");
 		return userList;
 	}
 
 	@RequestMapping(value = "/addUser")
-	public User addUser(User user) {
-		return userService.addUser(user);
+	public SysUser addUser(SysUser user) {
+		return userServiceImpl.addUser(user);
 	}
 
 	@RequestMapping(value = "/deleteUser")
 	public String deleteUser(int id) {
 		String resultStr = "删除失败";
-		int result = userService.deleteUser(id);
+		int result = userServiceImpl.deleteUser(id);
 		if (1 <= result) {
 			resultStr = "删除 成功";
 		}
@@ -51,9 +51,9 @@ public class UserCtrl {
 	}
 
 	@RequestMapping(value = "/saveOrUpdate")
-	public String saveOrUpdate(User user) {
+	public String saveOrUpdate(SysUser user) {
 		String resultStr = "更新操作失败";
-		int result = userService.saveOrUpdate(user);
+		int result = userServiceImpl.saveOrUpdate(user);
 		if (1 <= result) {
 			resultStr = "更新操作成功";
 		}
@@ -62,8 +62,8 @@ public class UserCtrl {
 
 	@RequestMapping(value = "/getUserList")
 	@ResponseBody
-	public List<User> getUserList() {
-		return userService.getUserList();
+	public List<SysUser> getUserList() {
+		return userServiceImpl.getUserList();
 	}
 
 }

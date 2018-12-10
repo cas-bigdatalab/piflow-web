@@ -1,23 +1,17 @@
-package com.nature.component.user.model;
+package com.nature.component.sysUser.vo;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import java.io.Serializable;
 
 /**
- * 使用JPA定义用户。实现UserDetails接口，用户实体即为springSecurity所使用的用户。
  * 
  * @author Nature
  *
  */
-@Entity
-@Table(name = "USER_INFO")
-public class User {
+public class UserVo implements Serializable {
 
-	@Id
-	@GeneratedValue
-	private Long id;// 主键id 声明主键 声明主键的生成策略
+	private static final long serialVersionUID = 1L;
+
+	private Integer id;
 
 	private String username;
 
@@ -29,13 +23,11 @@ public class User {
 
 	private String sex;
 
-	private Boolean enabled;
-
-	public Long getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
@@ -77,14 +69,6 @@ public class User {
 
 	public void setSex(String sex) {
 		this.sex = sex;
-	}
-
-	public Boolean getEnabled() {
-		return enabled;
-	}
-
-	public void setEnabled(Boolean enabled) {
-		this.enabled = enabled;
 	}
 
 }

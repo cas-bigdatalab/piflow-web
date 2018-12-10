@@ -79,7 +79,6 @@
 
     <div class="">
         <a class="navbar-brand" href="index">
-            <!--<img alt="Charisma Logo" th:src="@{/charisma/img/logo20.png}" class="hidden-xs"/> -->
             <span>Nature</span></a>
 
         <!-- user dropdown starts -->
@@ -91,7 +90,10 @@
             <ul class="dropdown-menu">
                 <li><a href="#">Profile</a></li>
                 <li class="divider"></li>
-                <li><a href="login">Logout</a></li>
+                <li>
+                    <a href="javascript:document.logoutForm.submit();">Logout</a>
+                    <form style="display: none" name="logoutForm" th:action="@{/logout}" method="post"></form>
+                </li>
             </ul>
         </div>
         <!-- user dropdown ends -->
@@ -361,7 +363,7 @@
                             var tempwindow = window.open('_blank');
                             tempwindow.location = "/piflow-web/grapheditor/home?load=" + dataMap.flowId;
                         });
-                    }else {
+                    } else {
                         layer.msg('创建失败,请稍后再试！', {icon: 2, shade: 0, time: 2000}, function () {
                         });
                     }
@@ -472,14 +474,14 @@
         var arrayObj = new Array();
         var table = $("table tr").find("td:eq(1)");
         var state = $("table tr").find("td:eq(7)");
-        for (var i = 0; i<table.length;i++){
+        for (var i = 0; i< table.length;i++){
             if(table[i].innerHTML != ""){
                 if(state[i].innerHTML != "No state" && state[i].innerHTML == "STARTED"){
                     arrayObj.push(table[i].innerHTML);
                 }
             }
         }
-        if(arrayObj.length == 0){
+        if (arrayObj.length == 0) {
             clearInterval(c);
             return;
         }
@@ -496,16 +498,16 @@
             },
             success: function (data) {
                 if (null != data) {
-                	var dataMap = JSON.parse(data);
+                    var dataMap = JSON.parse(data);
                     if ('0' !== dataMap.code) {
-                    	document.getElementById(""+dataMap.id+"").value=dataMap.progress;
-                        document.getElementById(""+dataMap.id+"Info").innerHTML="进度"+dataMap.progress+"%";
-                        document.getElementById(""+dataMap.id+"state").innerHTML=dataMap.state;
-                        if(dataMap.endTime && "" !== dataMap.startTime){
-                        document.getElementById(""+dataMap.id+"startTime").innerHTML=dataMap.startTime ;
-                        document.getElementById(""+dataMap.id+"endTime").innerHTML=dataMap.endTime ;
+                        document.getElementById("" + dataMap.id + "").value = dataMap.progress;
+                        document.getElementById("" + dataMap.id + "Info").innerHTML = "进度" + dataMap.progress + "%";
+                        document.getElementById("" + dataMap.id + "state").innerHTML = dataMap.state;
+                        if (dataMap.endTime && "" !== dataMap.startTime) {
+                            document.getElementById("" + dataMap.id + "startTime").innerHTML = dataMap.startTime;
+                            document.getElementById("" + dataMap.id + "endTime").innerHTML = dataMap.endTime;
                         }
-                    }    
+                    }
                 }
             }
         });
@@ -549,11 +551,11 @@
             return false;
         }
 
-       /*  if (description == '') {
-            layer.msg('description不能为空！', {icon: 2, shade: 0, time: 2000});
-            document.getElementById('description').focus();
-            return false;
-        } */
+        /*  if (description == '') {
+             layer.msg('description不能为空！', {icon: 2, shade: 0, time: 2000});
+             document.getElementById('description').focus();
+             return false;
+         } */
         if (driverMemory == '') {
             layer.msg('driverMemory不能为空！', {icon: 2, shade: 0, time: 2000});
             document.getElementById('driverMemory').focus();
@@ -576,11 +578,11 @@
         }
         return true;
     }
-    
-    function saveTableTemplate(id,name){
-    	layer.prompt({title: '请输入要保存的模板名称', formType: 0}, function(text, index){
-    	    layer.close(index);
-    	    $.ajax({
+
+    function saveTableTemplate(id, name) {
+        layer.prompt({title: '请输入要保存的模板名称', formType: 0}, function (text, index) {
+            layer.close(index);
+            $.ajax({
                 cache: true,//保留缓存数据
                 type: "get",//为post请求
                 url: "/piflow-web/template/saveTemplate",//这是我在后台接受数据的文件名
@@ -599,7 +601,7 @@
                     }
                 }
             });
-    	  });
+        });
     }
 
     //@ sourceURL=table_right.js

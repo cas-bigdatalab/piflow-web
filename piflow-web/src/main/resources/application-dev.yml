@@ -5,8 +5,8 @@ server:
     session:
       timeout: 600
 syspara:
-  imagesPath: file:/usr/local/tomcat/apache-tomcat-8.5.34/piflow-web-file/image/
-  xmlPath: file:/usr/local/tomcat/apache-tomcat-8.5.34/piflow-web-file/xml/
+  imagesPath: file:/piflow/image/
+  xmlPath: file:/piflow/xml/
 spring:
 ########################################################
 ######  数据源
@@ -55,10 +55,10 @@ spring:
 ########################################################
 ### securityconfig
 ########################################################
-  security:
-    user:
-      name: soso
-      password: 1
+#  security:
+#    user:
+#      name: soso
+#      password: 1
 ########################################################
 ### 整合mybatis
 ########################################################

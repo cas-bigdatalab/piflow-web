@@ -69,7 +69,10 @@
             <ul class="dropdown-menu">
                 <li><a href="#">Profile</a></li>
                 <li class="divider"></li>
-                <li><a href="login">Logout</a></li>
+                <li>
+                    <a href="javascript:document.logoutForm.submit();">Logout</a>
+                    <form style="display: none" name="logoutForm" th:action="@{/logout}" method="post"></form>
+                </li>
             </ul>
         </div>
         <!-- user dropdown ends -->
