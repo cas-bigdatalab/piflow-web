@@ -2242,7 +2242,7 @@ StopsBasicInfoFormatPanel.prototype.addFont = function(container)
 
     var tableStopsBasic = document.createElement("table");
     tableStopsBasic.style.borderCollapse = "separate";
-    tableStopsBasic.style.borderSpacing = "0px 5px";
+    tableStopsBasic.style.borderSpacing = "0px 0px";
     var tbodyStopsBasic = document.createElement("tbody");
     var trStopsBasic1 = document.createElement("tr");
     var trStopsBasic2 = document.createElement("tr");
@@ -4756,7 +4756,7 @@ DiagramFormatPanel.prototype.addView = function(div)
 	var editor = ui.editor;
 	var graph = editor.graph;
 	queryFlowInfo();
-	div.appendChild(this.createTitle('流水线信息'));
+	div.appendChild(this.createTitle('flow Line Info'));
 
     var tableFlow = document.createElement("table");
     tableFlow.style.borderCollapse = "separate";

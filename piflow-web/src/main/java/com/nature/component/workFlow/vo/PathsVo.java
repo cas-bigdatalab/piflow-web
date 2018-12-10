@@ -1,6 +1,7 @@
 package com.nature.component.workFlow.vo;
 
 import com.nature.base.util.DateUtils;
+import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.model.Stops;
 
 import java.io.Serializable;
@@ -32,6 +33,8 @@ public class PathsVo implements Serializable {
     private Stops StopTo;
 
     private Date crtDttm;
+    
+    private Flow flow;
 
     public String getId() {
         return id;
@@ -125,4 +128,13 @@ public class PathsVo implements Serializable {
         SimpleDateFormat sdf = new SimpleDateFormat(DateUtils.DATE_PATTERN_yyyy_MM_dd_HH_MM_ss);
         return crtDttm != null ? sdf.format(crtDttm) : "";
     }
+
+	public Flow getFlow() {
+		return flow;
+	}
+
+	public void setFlow(Flow flow) {
+		this.flow = flow;
+	}
+    
 }

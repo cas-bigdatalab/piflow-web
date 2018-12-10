@@ -77,13 +77,22 @@ public class TemplateCtrl {
 	        String name = request.getParameter("name");
 	        String loadId = request.getParameter("load");
 	        String value = request.getParameter("value");
-	        if (StringUtils.isAnyEmpty(name, loadId, value)) {
+	        MxGraphModelVo mxGraphModelVo = null;
+	        if (StringUtils.isAnyEmpty(name, loadId)) {
 	            rtnMap.put("errMsg", "传入参数有空的");
 	            logger.info("传入参数有空的");
 	            return JsonUtils.toJsonNoException(rtnMap);
-	        } else {
+	        }
 	        	Flow flowById = iFlowServiceImpl.getFlowById(loadId);
 	        	if (null != flowById) {
+	        		if (StringUtils.isBlank(value)) {
+	        			MxGraphModel mxGraphModel = flowById.getMxGraphModel();
+	    	            if (null != mxGraphModel) {
+	    	            	mxGraphModelVo = FlowXmlUtils.mxGraphModelPoToVo(mxGraphModel);
+	    	            	// 把查询出來的mxGraphModelVo转为XML
+	    	            	value = FlowXmlUtils.mxGraphModelToXml(mxGraphModelVo);
+	    				}
+	    			}
 	        		//根据flowById 去拼接xml 
 	        		String flowAndStopInfoToXml = FlowXmlUtils.flowAndStopInfoToXml(flowById,value);
 	        		logger.info(flowAndStopInfoToXml);
@@ -122,7 +131,6 @@ public class TemplateCtrl {
 				logger.info("Flow信息为空,loadId：" + loadId);
 				return JsonUtils.toJsonNoException(rtnMap);
 				}
-	        }
 	    }
 	    
 	    /**
@@ -331,71 +339,4 @@ public class TemplateCtrl {
                 e.printStackTrace();
             }
 	    }
-	    
-	    /**
-	     * 保存表格中的模板
-	     * @param request
-	     * @param model
-	     * @return
-	     */
-	    @RequestMapping("/saveTableTemplate")
-	    @ResponseBody
-	    @Transactional
-	    public String saveTableTemplate(HttpServletRequest request, Model model) {
-	    	Map<String, String> rtnMap = new HashMap<String, String>();
-	        rtnMap.put("code", "0");
-	        MxGraphModelVo mxGraphModelVo = null;
-	        String flowAndStopInfoToXml = "";
-	        String loadXml = "";
-	        String loadId = request.getParameter("flowId");
-	        String name = request.getParameter("name");
-	        if (StringUtils.isBlank(loadId) && StringUtils.isBlank(name)) {
-	        	 rtnMap.put("errMsg", "传递数据为空,保存失败");
-	        	 logger.info("flowId为空,表格模板保存失败");
-	        	 return JsonUtils.toJsonNoException(rtnMap);
-			}
-	        Flow flowById = iFlowServiceImpl.getFlowById(loadId);
-	        if (null != flowById) {
-	            MxGraphModel mxGraphModel = flowById.getMxGraphModel();
-	            if (null != mxGraphModel) {
-	            	mxGraphModelVo = FlowXmlUtils.mxGraphModelPoToVo(mxGraphModel);
-	            	// 把查询出來的mxGraphModelVo转为XML
-	            	loadXml = FlowXmlUtils.mxGraphModelToXml(mxGraphModelVo);
-	            	//根据flowById 去拼接xml 
-	            	flowAndStopInfoToXml = FlowXmlUtils.flowAndStopInfoToXml(flowById,loadXml);
-				}
-	    		logger.info(flowAndStopInfoToXml);
-        		Template template = new Template();
-		        template.setId(Utils.getUUID32());
-		    	template.setCrtDttm(new Date());
-				template.setCrtUser("wdd");
-				template.setVersion(0L);
-				template.setEnableFlag(true);
-				template.setLastUpdateUser("-1");
-				template.setLastUpdateDttm(new Date());
-				template.setName(name);
-				template.setValue(loadXml);
-				template.setFlow(flowById);
-				//xml转文件并保存到指定目录
-				String path = FileUtils.createXml(flowAndStopInfoToXml,name,".xml",SysParamsCache.XML_PATH);
-				template.setPath(path);
-				int addTemplate = iTemplateService.addTemplate(template);
-				 if (addTemplate > 0) {
-		                rtnMap.put("code", "1");
-		                rtnMap.put("errMsg", "保存模板成功");
-		            	//保存stop，属性信息
-						List<Stops> stopsList = flowById.getStopsList();
-						if (null != stopsList && stopsList.size() > 0) {
-							flowAndStopsTemplateVoServiceImpl.addStopsList(stopsList,template);
-						}
-			} else {
-				rtnMap.put("errMsg", "保存模板失败");
-				logger.info("保存模板失败");
-			}
-		} else {
-			rtnMap.put("errMsg", "flow信息为空,表格模板保存失败");
-			logger.info("flow信息为空,表格模板保存失败");
-		}
-		return JsonUtils.toJsonNoException(rtnMap);
-	}
 }

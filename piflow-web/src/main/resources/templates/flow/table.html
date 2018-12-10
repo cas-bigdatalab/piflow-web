@@ -583,8 +583,8 @@
     	    $.ajax({
                 cache: true,//保留缓存数据
                 type: "get",//为post请求
-                url: "/piflow-web/template/saveTableTemplate",//这是我在后台接受数据的文件名
-                data:  {flowId: id,name:text},
+                url: "/piflow-web/template/saveTemplate",//这是我在后台接受数据的文件名
+                data:  {load: id,name:text},
                 async: true, 
                 error: function (request) {//请求失败之后的操作
                 	console.log( " save template error");

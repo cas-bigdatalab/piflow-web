@@ -3109,27 +3109,6 @@ EditorUi.prototype.createUi = function()
 
         this.addSplitHandlers(this.hsplitRight, true, 0, mxUtils.bind(this, function(value)
         {
-       /*     var num = null;
-            var numResult = value;
-            console.info("numResult"+numResult)
-            if (value >240 ){
-                console.info("da" +value);
-                num = value - 240 ;
-
-                value = 240 - num ;
-
-            }else if (value < 240) {
-                console.info("xiao"+value);
-                num =  240 - value ;
-                value = num + 240;
-            }
-            if (value < 0){
-                value = 0;
-            }else if (value == 0){
-                value = numResult;
-            }
-            console.info("value"+value)*/
-            console.info("value"+value);
             this.hsplitRightPosition = value;
             this.refresh();
         }));
@@ -3313,7 +3292,15 @@ EditorUi.prototype.addSplitHandlers = function(elt, horizontal, dx, onChange)
         if (start != null)
         {
             var pt = new mxPoint(mxEvent.getClientX(evt), mxEvent.getClientY(evt));
-            onChange(Math.max(0, initial + ((horizontal) ? (pt.x - start.x) : (start.y - pt.y)) - dx));
+            if(pt.x < start.x){
+           	 // 绝对值+宽度.应该是增大
+           	 onChange(Math.max(0, initial + ((horizontal) ? (Math.abs(pt.x - start.x)) : (start.y - pt.y)) - dx));
+            }else if(pt.x > start.x){
+             // 正数取负
+       	     onChange(Math.max(0, initial + ((horizontal) ? (-(pt.x - start.x)) : (start.y - pt.y)) - dx));
+            }else{
+       	   onChange(Math.max(0, initial + ((horizontal) ? (pt.x - start.x) : (start.y - pt.y)) - dx));
+            } 
             mxEvent.consume(evt);
 
             if (initial != getValue())

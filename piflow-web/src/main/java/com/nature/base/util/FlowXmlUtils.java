@@ -361,6 +361,7 @@ public class FlowXmlUtils {
 					String outports = stopVo.getOutports();
 					PortType outPortType = stopVo.getOutPortType();
 					String owner = stopVo.getOwner();
+					String groups = stopVo.getGroups();
 					xmlStrSb.append("<stop ");
 					if (StringUtils.isNotBlank(stopId)) {
 						xmlStrSb.append("id=\"" + stopId + "\" ");
@@ -396,6 +397,9 @@ public class FlowXmlUtils {
 					}
 					if (null != outPortType) {
 						xmlStrSb.append("outPortType=\"" + outPortType + "\" ");
+					}
+					if (StringUtils.isNotBlank(groups)) {
+						xmlStrSb.append("groups=\"" + groups + "\" ");
 					}
 					List<Property> property = stopVo.getProperties();
 					if (null != property && property.size() > 0) {
@@ -493,6 +497,7 @@ public class FlowXmlUtils {
 				String outports = recordEle.attributeValue("outports");
 				String isCheckpoint = recordEle.attributeValue("isCheckpoint");
 				String owner = recordEle.attributeValue("owner");
+				String groups = recordEle.attributeValue("groups");
 				stopVo.setPageId(pageId);
 				stopVo.setName(name);
 				stopVo.setDescription(description);
@@ -502,6 +507,7 @@ public class FlowXmlUtils {
 				stopVo.setOutports(outports);
 				stopVo.setOutPortType(PortType.selectGender(outPortType));
 				stopVo.setInPortType(PortType.selectGenderByValue(inPortType));
+				stopVo.setGroups(groups);
 				Boolean Checkpoint = false;
 				Checkpoint =  "0".equals(isCheckpoint) ? false : true;
 				stopVo.setIsCheckpoint(Checkpoint);

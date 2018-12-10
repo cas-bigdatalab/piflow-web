@@ -71,6 +71,8 @@ public class StopTemplateModel implements Serializable {
     
     private Boolean isCheckpoint;
     
+    private String groups;
+    
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(nullable = false, updatable = false)
 	private Date crtDttm = new Date();
@@ -214,4 +216,13 @@ public class StopTemplateModel implements Serializable {
 		SimpleDateFormat sdf = new SimpleDateFormat(DateUtils.DATE_PATTERN_yyyy_MM_dd_HH_MM_ss);
 		return crtDttm != null ? sdf.format(crtDttm) : "";
 	}
+
+	public String getGroups() {
+		return groups;
+	}
+
+	public void setGroups(String groups) {
+		this.groups = groups;
+	}
+	
 }

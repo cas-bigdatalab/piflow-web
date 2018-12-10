@@ -1,5 +1,20 @@
 package com.nature.controller;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.nature.base.util.FlowXmlUtils;
 import com.nature.base.util.JsonUtils;
 import com.nature.base.util.LoggerUtil;
@@ -9,25 +24,16 @@ import com.nature.common.Eunm.PortType;
 import com.nature.component.mxGraph.model.MxGraphModel;
 import com.nature.component.mxGraph.vo.MxGraphModelVo;
 import com.nature.component.workFlow.model.Flow;
-import com.nature.component.workFlow.service.*;
+import com.nature.component.workFlow.service.IFlowService;
+import com.nature.component.workFlow.service.IPathsService;
+import com.nature.component.workFlow.service.IPropertyService;
+import com.nature.component.workFlow.service.IStopGroupService;
+import com.nature.component.workFlow.service.IStopsService;
 import com.nature.component.workFlow.vo.PathsVo;
 import com.nature.component.workFlow.vo.StopGroupVo;
 import com.nature.component.workFlow.vo.StopsPropertyVo;
 import com.nature.component.workFlow.vo.StopsVo;
 import com.nature.third.service.GetGroupsAndStops;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 画板的ctrl
@@ -76,7 +82,10 @@ public class GrapheditorCtrl {
                 // 左侧的组和stops
                 List<StopGroupVo> groupsVoList = stopGroupServiceImpl.getStopGroupAll();
                 model.addAttribute("groupsVoList", groupsVoList);
-
+                String maxStopPageId = flowServiceImpl.getMaxStopPageId(load);
+                //maxStopPageId如果为空则默认给2,否则maxStopPageId+1
+                maxStopPageId = StringUtils.isBlank(maxStopPageId) ? "2" : (Integer.parseInt(maxStopPageId)+1)+"";
+                model.addAttribute("maxStopPageId", maxStopPageId);
                 MxGraphModelVo mxGraphModelVo = null;
                 MxGraphModel mxGraphModel = flowById.getMxGraphModel();
                 mxGraphModelVo = FlowXmlUtils.mxGraphModelPoToVo(mxGraphModel);

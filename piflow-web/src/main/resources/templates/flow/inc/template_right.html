@@ -10,7 +10,7 @@
             <div class="alert alert-info">
             	<form id="uploadForm" enctype="multipart/form-data" method="post">
             		<input type="file" id="templateFile" name="templateFile" style="display:none;" onchange="importFile()"/>
-               	 <a class='btn' href='javascript:void(0);' th:onclick="'javascript:uploadTemplate();'"  style='background-color: #C0C0C0;border: 1px solid;color: #080808;'>
+               	 <a class='btn' href='javascript:void(0);' th:onclick="'javascript:uploadTemplate();'"  style='background-color: #C0C0C0;border: 1px solid;color: #080808;' title="upload template">
                	 <i class="glyphicon glyphicon-upload icon-white"></i></a>
            		 </form>
             </div>
@@ -36,9 +36,9 @@
                         <td class="center" style="white-space: nowrap;">
                            <!--  <a class="btn" href="javascript:void(0);" th:onclick="'javascript:uploadTemplate();'"  style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;">
                               	upload </a> -->
-                            <a class="btn" href="javascript:void(0);" style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;"   th:onclick="'javascript:downloadTemplate(\''+${list.id}+'\');'"> 
+                            <a class="btn" href="javascript:void(0);" style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;"   th:onclick="'javascript:downloadTemplate(\''+${list.id}+'\');'" title="download template"> 
                            <i class="glyphicon glyphicon-download icon-white"></i>  </a>
-                            <a class="btn" href="javascript:void(0);" style=" background-color: #C0C0C0;border: 1px solid;color: #6b5555;" th:onclick="'javascript:deleteTemPlate(\''+${list.id}+'\',\''+${list.name}+'\');'">
+                            <a class="btn" href="javascript:void(0);" style=" background-color: #C0C0C0;border: 1px solid;color: #6b5555;" th:onclick="'javascript:deleteTemPlate(\''+${list.id}+'\',\''+${list.name}+'\');'" title="delete template">
                             	<i class="glyphicon glyphicon-trash icon-white"></i></a>
                         </td>
                     </tr>
