@@ -2,7 +2,6 @@ package com.nature.third.vo.flowInfo;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class ThirdFlowInfoVo implements Serializable {

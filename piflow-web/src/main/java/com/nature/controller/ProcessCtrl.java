@@ -6,8 +6,10 @@ import com.nature.base.util.LoggerUtil;
 import com.nature.base.vo.StatefulRtnBase;
 import com.nature.common.Eunm.ProcessState;
 import com.nature.component.process.model.Process;
+import com.nature.component.process.service.IProcessPathService;
 import com.nature.component.process.service.IProcessService;
 import com.nature.component.process.service.IProcessStopService;
+import com.nature.component.process.vo.ProcessPathVo;
 import com.nature.component.process.vo.ProcessStopVo;
 import com.nature.component.process.vo.ProcessVo;
 import com.nature.third.inf.*;
@@ -59,8 +61,18 @@ public class ProcessCtrl {
     IProcessStopService processStopServiceImpl;
 
     @Autowired
+    IProcessPathService processPathServiceImpl;
+
+    @Autowired
     IGetFlowProgress getFlowProgressImpl;
 
+    /**
+     * 查询并进入process列表
+     *
+     * @param request
+     * @param modelAndView
+     * @return
+     */
     @RequestMapping("/getProcessList")
     public ModelAndView getProcessList(HttpServletRequest request, ModelAndView modelAndView) {
         List<ProcessVo> processVoList = processServiceImpl.getProcessVoList();
@@ -69,6 +81,13 @@ public class ProcessCtrl {
         return modelAndView;
     }
 
+    /**
+     * 根据id查询并进入process详情
+     *
+     * @param request
+     * @param modelAndView
+     * @return
+     */
     @RequestMapping("/getProcessById")
     public ModelAndView getProcessById(HttpServletRequest request, ModelAndView modelAndView) {
         String processId = request.getParameter("processId");
@@ -105,6 +124,13 @@ public class ProcessCtrl {
         return modelAndView;
     }
 
+    /**
+     * 查询Process基本信息
+     *
+     * @param request
+     * @param modelAndView
+     * @return
+     */
     @RequestMapping("/queryProcess")
     public ModelAndView queryProcess(HttpServletRequest request, ModelAndView modelAndView) {
         String processId = request.getParameter("processId");
@@ -120,6 +146,13 @@ public class ProcessCtrl {
         return modelAndView;
     }
 
+    /**
+     * 查询ProcessStop基本信息
+     *
+     * @param request
+     * @param modelAndView
+     * @return
+     */
     @RequestMapping("/queryProcessStop")
     public ModelAndView queryProcessStop(HttpServletRequest request, ModelAndView modelAndView) {
         String processId = request.getParameter("processId");
@@ -128,6 +161,27 @@ public class ProcessCtrl {
         if (!StringUtils.isAnyEmpty(processId, pageId)) {
             ProcessStopVo processStopVoByPageId = processStopServiceImpl.getProcessStopVoByPageId(processId, pageId);
             modelAndView.addObject("processStopVo", processStopVoByPageId);
+        } else {
+            logger.info("参数传入不正确");
+        }
+        return modelAndView;
+    }
+
+    /**
+     * 查询ProcessPath基本信息
+     *
+     * @param request
+     * @param modelAndView
+     * @return
+     */
+    @RequestMapping("/queryProcessPath")
+    public ModelAndView queryProcessPath(HttpServletRequest request, ModelAndView modelAndView) {
+        String processId = request.getParameter("processId");
+        String pageId = request.getParameter("pageId");
+        modelAndView.setViewName("process/inc/process_Path_Inc");
+        if (!StringUtils.isAnyEmpty(processId, pageId)) {
+            ProcessPathVo processPathVoByPageId = processPathServiceImpl.getProcessPathVoByPageId(processId, pageId);
+            modelAndView.addObject("processPathVo", processPathVoByPageId);
         } else {
             logger.info("参数传入不正确");
         }
@@ -192,32 +246,37 @@ public class ProcessCtrl {
     public String stopProcess(HttpServletRequest request, Model model) {
         Map<String, String> rtnMap = new HashMap<String, String>();
         rtnMap.put("code", "0");
-        String appId = request.getParameter("appId");
-        if (StringUtils.isNotBlank(appId)) {
+        String processId = request.getParameter("processId");
+        if (StringUtils.isNotBlank(processId)) {
             // 根据processId查询process
-            ProcessVo processVo = processServiceImpl.getProcessVoByAppId(appId);
+            ProcessVo processVo = processServiceImpl.getProcessVoById(processId);
             // 判空，看是否保存成功
             if (null != processVo) {
-                String processVoId = processVo.getId();
-                if (null != processVoId) {
-                    String flowStop = stopFlowImpl.stopFlow(appId);
-                    if (StringUtils.isNotBlank(flowStop) && !flowStop.contains("Exception")) {
-                        rtnMap.put("code", "1");
-                        rtnMap.put("errMsg", "停止成功，返回状态为：" + flowStop);
+                String appId = processVo.getId();
+                if (null != appId) {
+                    if (ProcessState.STARTED == processVo.getState()) {
+                        String flowStop = stopFlowImpl.stopFlow(appId);
+                        if (StringUtils.isNotBlank(flowStop) && !flowStop.contains("Exception")) {
+                            rtnMap.put("code", "1");
+                            rtnMap.put("errMsg", "停止成功，返回状态为：" + flowStop);
+                        } else {
+                            logger.warn("接口返回值为空");
+                            rtnMap.put("errMsg", "接口返回值为空");
+                        }
                     } else {
-                        logger.warn("接口返回值为空");
-                        rtnMap.put("errMsg", "接口返回值为空");
+                        logger.warn("process的状态为" + processVo.getState() + "无法停止");
+                        rtnMap.put("errMsg", "process的状态为" + processVo.getState() + "无法停止");
                     }
                 } else {
-                    logger.warn("查询到的process的Id为空");
-                    rtnMap.put("errMsg", "查询到的process的Id为空");
+                    logger.warn("查询到的process的appId为空");
+                    rtnMap.put("errMsg", "查询到的process的appId为空");
                 }
             } else {
-                logger.warn("未查询到appId为" + appId + "的process");
-                rtnMap.put("errMsg", "未查询到appId为" + appId + "的process");
+                logger.warn("未查询到Id为" + processId + "的process");
+                rtnMap.put("errMsg", "未查询到Id为" + processId + "的process");
             }
         } else {
-            logger.warn("processId或appId为空");
+            logger.warn("processId为空");
             rtnMap.put("errMsg", "appId为空");
         }
         return JsonUtils.toJsonNoException(rtnMap);
@@ -238,11 +297,19 @@ public class ProcessCtrl {
         String processID = request.getParameter("processID");
         if (StringUtils.isNotBlank(processID)) {
             // 根据processId查询process
-            boolean isSuccess = processServiceImpl.updateProcessEnableFlag(processID);
+            StatefulRtnBase isSuccess = processServiceImpl.updateProcessEnableFlag(processID);
             // 判空是否删除成功
-            if (isSuccess) {
-                rtnMap.put("code", "1");
-                rtnMap.put("errMsg", "删除成功");
+            if (null != isSuccess) {
+                if (isSuccess.isReqRtnStatus()) {
+                    rtnMap.put("code", "1");
+                    rtnMap.put("errMsg", "Successfully Deleted");
+                } else {
+                    logger.warn(isSuccess.getErrorMsg());
+                    rtnMap.put("errMsg", isSuccess.getErrorMsg());
+                }
+            }else {
+                logger.warn("删除失败");
+                rtnMap.put("errMsg", "删除失败");
             }
         } else {
             logger.warn("processID为空");
@@ -277,7 +344,6 @@ public class ProcessCtrl {
         } else {
             logger.warn("appId为空");
         }
-
         return rtnMap;
     }
 

@@ -1,10 +1,7 @@
 package com.nature.base.util;
 
 import com.nature.base.vo.StatefulRtnBase;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
-
-import java.util.UUID;
 
 public class StatefulRtnBaseUtils {
 

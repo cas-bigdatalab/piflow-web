@@ -62,7 +62,7 @@
                             <td class="center">
                                 <div id='d'>
                                     <p th:id='${processVo.id}+Info'
-                                       th:text="${processVo.progress}?'进度'+${processVo.progress}+'%':'进度0%'"></p>
+                                       th:text="${processVo.progress}?'progress:'+${processVo.progress}+'%':'progressprogress:0%'"></p>
                                     <progress th:id='${processVo.id}' max='100'
                                               th:value="${processVo.progress}"></progress>
                                 </div>
@@ -88,7 +88,7 @@
                                 </a>
                                 <a class="btn" href="javascript:void(0);"
                                    style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;"
-                                   th:onclick="'javascript:stopProcess(\''+${processVo.appId}+'\');'">
+                                   th:onclick="'javascript:stopProcess(\''+${processVo.id}+'\');'">
                                     <i class="glyphicon glyphicon-stop icon-white"></i>
                                 </a>
                                 <a class="btn" href="javascript:void(0);"
@@ -115,7 +115,7 @@
                     <h4 class="modal-title" id="myModalLabelPort">CHOOSE CHECKPOINT WINDOWS</h4>
                 </div>
                 <div id="checkpointListContent" class="modal-body">
-                    没有查询到checkpoint信息
+                    Did not find checkpoint information
                     <input type="checkbox" value="">
                 </div>
                 <div class="modal-footer">
@@ -176,7 +176,7 @@
                                         if (process && '' !== process) {
                                             if (process.id && '' != process.id) {
                                                 document.getElementById("" + process.id + "").value = process.progress;
-                                                document.getElementById("" + process.id + "Info").innerHTML = "进度" + process.progress + "%";
+                                                document.getElementById("" + process.id + "Info").innerHTML = "progress:" + process.progress + "%";
                                                 if (process.state && "" !== process.state) {
                                                     document.getElementById("" + process.id + "state").innerHTML = process.state.text;
                                                 }
@@ -201,7 +201,7 @@
         //获取Checkpoint点
         function getCheckpointList(id, processId, parentProcessId) {
             if (!processId) {
-                alert("错误，没有获得processId");
+                alert("Error，Did not get processId");
                 return;
             }
             $('#fullScreenList').show();
@@ -217,7 +217,7 @@
                 },
                 async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
                 error: function (request) {//请求失败之后的操作
-                    alert("请求失败");
+                    alert("Request Failed");
                     $('#fullScreenList').hide();
                     $('#checkpointListShow').modal('hide');
                     return;
@@ -228,7 +228,7 @@
                     $('#runProcessBtn').attr('onclick', 'listRunProcess(true,"' + id + '")');
                     $('#stopProcessBtn').attr('onclick', 'listRunProcess(false,"' + id + '")');
                     if ($('#checkpointsIsNull').val()) {
-                        alert("没有查询到");
+                        alert("No Checkpoint was queried");
                         listRunProcess(true, id);
                     } else {
                         $('#checkpointListShow').modal('show');
@@ -263,7 +263,7 @@
                 },
                 async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
                 error: function (request) {//请求失败之后的操作
-                    alert("请求失败");
+                    alert("Request Failed");
                     $('#fullScreenList').hide();
                     return;
                 },
@@ -275,7 +275,7 @@
                         window.location.reload();
                         window.open("/piflow-web/process/getProcessById?processId=" + dataMap.processId);
                     } else {
-                        alert("启动失败");
+                        alert("Startup Failed");
                         $('#fullScreenList').hide();
                     }
 
@@ -284,7 +284,7 @@
         }
 
         //停止
-        function stopProcess(appId) {
+        function stopProcess(processID) {
             $('#fullScreenList').show();
             $.ajax({
                 cache: true,//保留缓存数据
@@ -292,11 +292,11 @@
                 url: "/piflow-web/process/stopProcess",//这是我在后台接受数据的文件名
                 //data:$('#loginForm').serialize(),//将该表单序列化
                 data: {
-                    appId: appId
+                    processId: processID
                 },
                 async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
                 error: function (request) {//请求失败之后的操作
-                    alert("请求失败");
+                    alert("Request Failed");
                     $('#fullScreenList').hide();
                     return;
                 },
@@ -307,7 +307,7 @@
                         alert(dataMap.errorMsg);
                         window.location.reload();
                     } else {
-                        alert("停止失败" + dataMap.errMsg);
+                        alert("Stop Failed:" + dataMap.errMsg);
                     }
                     $('#fullScreenList').hide();
 
@@ -328,7 +328,7 @@
                 },
                 async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
                 error: function (request) {//请求失败之后的操作
-                    alert("请求失败");
+                    alert("Request Failed");
                     $('#fullScreenList').hide();
                     return;
                 },
@@ -338,7 +338,7 @@
                         alert(dataMap.errMsg);
                         window.location.reload();
                     } else {
-                        alert("删除失败" + dataMap.errMsg);
+                        alert("Delete Failed" + dataMap.errMsg);
                     }
                     $('#fullScreenList').hide();
                 }

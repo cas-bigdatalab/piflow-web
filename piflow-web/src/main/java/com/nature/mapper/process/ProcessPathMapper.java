@@ -44,6 +44,23 @@ public interface ProcessPathMapper {
     public ProcessPath getProcessPathByProcessId(String processId);
 
     /**
+     * 根据pid和pageId查询
+     *
+     * @param processId
+     * @param pageId
+     * @return
+     */
+    @SelectProvider(type = ProcessPathMapperProvider.class, method = "getProcessPathByPageIdAndPid")
+    @Results({
+            @Result(id = true, column = "id", property = "id"),
+            @Result(column = "LINE_FROM", property = "from"),
+            @Result(column = "LINE_OUTPORT", property = "outport"),
+            @Result(column = "LINE_INPORT", property = "inport"),
+            @Result(column = "LINE_TO", property = "to")
+    })
+    public ProcessPath getProcessPathByPageIdAndPid(String processId, String pageId);
+
+    /**
      * 修改processPath
      *
      * @param processPath

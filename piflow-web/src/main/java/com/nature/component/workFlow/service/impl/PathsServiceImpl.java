@@ -36,19 +36,19 @@ public class PathsServiceImpl implements IPathsService {
         if (null != pathsList && pathsList.size() > 0) {
             Paths paths = pathsList.get(0);
             if (null != paths) {
-            	Stops stopFrom = null;
-            	Stops stopTo = null;
-            	if (StringUtils.isNotBlank(paths.getFrom()) && StringUtils.isNotBlank(paths.getTo())) {
-            		stopFrom = propertyMapper.getStopGroupList(paths.getFlow().getId(), paths.getFrom());
-            		stopTo = propertyMapper.getStopGroupList(paths.getFlow().getId(), paths.getTo());
-				}
+                Stops stopFrom = null;
+                Stops stopTo = null;
+                if (StringUtils.isNotBlank(paths.getFrom()) && StringUtils.isNotBlank(paths.getTo())) {
+                    stopFrom = propertyMapper.getStopGroupList(flowId, paths.getFrom());
+                    stopTo = propertyMapper.getStopGroupList(flowId, paths.getTo());
+                }
                 pathsVo = new PathsVo();
                 BeanUtils.copyProperties(paths, pathsVo);
                 if (null != stopFrom) {
-                	pathsVo.setStopFrom(stopFrom);
-				}
+                    pathsVo.setStopFrom(stopFrom);
+                }
                 if (null != stopTo) {
-                	pathsVo.setStopTo(stopTo);
+                    pathsVo.setStopTo(stopTo);
                 }
             }
         }

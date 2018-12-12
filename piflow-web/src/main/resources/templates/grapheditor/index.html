@@ -56,13 +56,14 @@
         <input id="reloadStops" type="button" onclick="reloadStops()" value="ReloadStops"/>
         <input id="startProcess" type="button" onclick="runFlow()" value="Run"/>
         <input type="button" onclick="saveTemplate()" value="save Template"/>
-        <input type="button"  value="loadingXml" id="loadingXml"/>
+        <input type="button" value="loadingXml" id="loadingXml"/>
         <div id="divloadingXml">
-		<select  name="loadingXmlSelect" id="loadingXmlSelect" onchange="loadTemplate()" style="width: 164px;"></select>
-	</div>
-       <!--  <form id="uploadForm" enctype="multipart/form-data" method="post" >
-         <input type="file" id="uploadFile" name="templateFile"  style="display:none;"  onchange="uploadXmlFile()"/>
-        <input type="button" onclick="uploadTemplate()" value="upload Template"/></form> -->
+            <select name="loadingXmlSelect" id="loadingXmlSelect" onchange="loadTemplate()"
+                    style="width: 164px;"></select>
+        </div>
+        <!--  <form id="uploadForm" enctype="multipart/form-data" method="post" >
+          <input type="file" id="uploadFile" name="templateFile"  style="display:none;"  onchange="uploadXmlFile()"/>
+         <input type="button" onclick="uploadTemplate()" value="upload Template"/></form> -->
     </div>
 </div>
 <!-- Modal 端口 -->
@@ -72,7 +73,7 @@
             <div class="modal-header">
                 <!--<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>-->
                 <!--</button>-->
-                <h4 class="modal-title" id="myModalLabelPort">CHOOSE PROT WINDOWS</h4>
+                <h3 class="modal-title" id="myModalLabelPort">SET PATN PROT WINDOWS</h3>
             </div>
             <div class="modal-body">
                 <!-- 提供copy的端口checkbox -->
@@ -81,21 +82,27 @@
                     <span></span>
                 </div>
                 <!-- 提供copy的端口创建按钮 -->
-                <div id="copyDivCrtBtn" style="display: none">
-                    <input/>
-                    <button>CreatePort</button>
+                <div id="copyDivCrtBtn" class="input-group" style="display: none">
+                    <input type="text"/>
+                    <span class="input-group-btn">
+						<button type="button">
+							CrtPort
+						</button>
+					</span>
                 </div>
                 <from id="protInfo">
                     <div id="sourceTitle" style="display: none">
-                        <span style="font-size: 30px">SourceOutport</span>
+                        <span id="sourceTitleStr" style="font-size: 20px">Source:</span>
                         <div id="sourceTitleCheckbox"></div>
-                        <div id="sourceTitleBtn"></div>
+                        <div id="sourceTitleBtn" style="width: 70%"></div>
+                        <div id="sourceTypeDiv" style="display: none"></div>
                     </div>
                     <hr/>
                     <div id="targetTitle" style="display: none">
-                        <span style="font-size: 30px">TargetInport</span>
+                        <span id="targetTitleStr" style="font-size: 20px">Source:</span>
                         <div id="targetTitleCheckbox"></div>
-                        <div id="targetTitleBtn"></div>
+                        <div id="targetTitleBtn" style="width: 70%"></div>
+                        <div id="targetTypeDiv" style="display: none"></div>
                     </div>
                 </from>
             </div>
@@ -311,7 +318,7 @@
                 } else {
                     td1.appendChild(displayName);
                     if (required)
-                    td2.appendChild(spanFlag);
+                        td2.appendChild(spanFlag);
                 }
                 tr.appendChild(td);
                 tr.appendChild(td1);
@@ -505,29 +512,29 @@
                 if (document.getElementById("UUID")) {//js判断元素是否存在
                     var flow = dataMap.flow;
                     if (flow != null && flow != "")
-                    var flowInfoDbInfo = flow.flowInfoDbVo;
+                        var flowInfoDbInfo = flow.flowInfoDbVo;
                     if (flow != null && flow != "") {
                         document.getElementById('UUID').innerText = flow.uuid ? flow.uuid : "No content";
                         document.getElementById('flowName').innerText = flow.name ? flow.name : "No content";
                         document.getElementById('flowDescription').innerText = flow.description ? flow.description : "No content";
                         document.getElementById('createrTime').innerText = flow.crtDttmString ? flow.crtDttmString : "No content";
-                    }else{
-                    	document.getElementById('UUID').innerText = "No content";
+                    } else {
+                        document.getElementById('UUID').innerText = "No content";
                         document.getElementById('flowName').innerText = "No content";
                         document.getElementById('flowDescription').innerText = "No content";
                         document.getElementById('createrTime').innerText = "No content";
                     }
-                    if (flowInfoDbInfo != null && flowInfoDbInfo != ""){
-                        document.getElementById('startTime').innerText = flowInfoDbInfo.startTime ? flowInfoDbInfo.startTime : "No startTime" ;
-                        document.getElementById('stopTime').innerText = flowInfoDbInfo.endTime ? flowInfoDbInfo.endTime : "No stopTime" ;
-                        document.getElementById('progressData').innerText = flowInfoDbInfo.progress ? flowInfoDbInfo.progress + '%' : "0%" ;
-                        document.getElementById('state').innerText = flowInfoDbInfo.state ? flowInfoDbInfo.state : "No state" ;
-                     }else{
-                    	 document.getElementById('startTime').innerText = "No startTime" ;
-                         document.getElementById('stopTime').innerText = "No stopTime" ;
-                         document.getElementById('progressData').innerText = "0%" ;
-                         document.getElementById('state').innerText = "No state" ;
-                     }
+                    if (flowInfoDbInfo != null && flowInfoDbInfo != "") {
+                        document.getElementById('startTime').innerText = flowInfoDbInfo.startTime ? flowInfoDbInfo.startTime : "No startTime";
+                        document.getElementById('stopTime').innerText = flowInfoDbInfo.endTime ? flowInfoDbInfo.endTime : "No stopTime";
+                        document.getElementById('progressData').innerText = flowInfoDbInfo.progress ? flowInfoDbInfo.progress + '%' : "0%";
+                        document.getElementById('state').innerText = flowInfoDbInfo.state ? flowInfoDbInfo.state : "No state";
+                    } else {
+                        document.getElementById('startTime').innerText = "No startTime";
+                        document.getElementById('stopTime').innerText = "No stopTime";
+                        document.getElementById('progressData').innerText = "0%";
+                        document.getElementById('state').innerText = "No state";
+                    }
                 }
             }
         });
@@ -544,7 +551,7 @@
             data: {flowId: loadId},
             async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
             error: function (request) {//请求失败之后的操作
-                alert("请求失败");
+                alert("Request Failed");
                 fullScreen.hide();
                 return;
             },
@@ -606,7 +613,6 @@
                             var targetTypeStr = targetType.text;
                             //判断可用端口数，如果可用端口数不大于0则直接删除线
                             if (dataMap.sourceCounts > 0 && dataMap.targetCounts > 0) {
-
                                 // 获取source端口的详细使用情况
                                 var sourcePortUsageMap = dataMap.sourcePortUsageMap;
                                 if (sourcePortUsageMap) {
@@ -626,15 +632,22 @@
                                         $('#copyDivCrtBtn').show();
                                         var sourceCrtBtn = $('#copyDivCrtBtn').clone();
                                         $(sourceCrtBtn).removeAttr("id");
-                                        $(sourceCrtBtn).attr('class', 'addCrtBtn').attr('id', 'sourceCrtBtn');
-                                        $(sourceCrtBtn).find('input').attr('class', 'addCrtBtn').attr('id', 'sourceCrtPort');
-                                        $(sourceCrtBtn).find('button').attr('class', 'addCrtBtn').attr('onclick', 'crtAnyPort("sourceCrtPort",true)');
+                                        $(sourceCrtBtn).attr('class', 'addCrtBtn input-group').attr('id', 'sourceCrtBtn');
+                                        $(sourceCrtBtn).find('input').attr('class', 'addCrtBtn form-control').attr('id', 'sourceCrtPort');
+                                        $(sourceCrtBtn).find('button').attr('class', 'addCrtBtn btn btn-default').attr('onclick', 'crtAnyPort("sourceCrtPort",true)');
                                         $('#sourceTitleBtn').append(sourceCrtBtn);
                                         $('#copyDivCrtBtn').hide();
                                     }
-                                    $('#sourceTitle').show();
-                                    $('#copyDivCheckbox').hide();
+                                } else {
+                                    // 当类型为Default时，添加默认端口
+                                    if ('Default' === sourceTypeStr) {
+                                        $('#sourceTitleCheckbox').html('<input type="checkbox" class="addCheckbox" checked="checked" disabled="disabled"/><span class="addCheckbox">default</span>');
+                                    }
                                 }
+                                $('#sourceTypeDiv').html(sourceTypeStr);
+                                $('#sourceTitle').show();
+                                $('#copyDivCheckbox').hide();
+                                $('#sourceTitleStr').html('Source:' + dataMap.sourceName);
 
                                 // 获取target端口的详细使用情况
                                 var targetPortUsageMap = dataMap.targetPortUsageMap;
@@ -655,15 +668,22 @@
                                         $('#copyDivCrtBtn').show();
                                         var targetCrtBtn = $('#copyDivCrtBtn').clone();
                                         $(targetCrtBtn).removeAttr("id");
-                                        $(targetCrtBtn).attr('class', 'addCrtBtn').attr('id', 'targetCrtBtn');
-                                        $(targetCrtBtn).find('input').attr('class', 'addCrtBtn').attr('id', 'targetCrtPort');
-                                        $(targetCrtBtn).find('button').attr('class', 'addCrtBtn').attr('onclick', 'crtAnyPort("targetCrtPort",false)');
+                                        $(targetCrtBtn).attr('class', 'addCrtBtn input-group').attr('id', 'targetCrtBtn');
+                                        $(targetCrtBtn).find('input').attr('class', 'addCrtBtn form-control').attr('id', 'targetCrtPort');
+                                        $(targetCrtBtn).find('button').attr('class', 'addCrtBtn btn btn-default').attr('onclick', 'crtAnyPort("targetCrtPort",false)');
                                         $('#targetTitleBtn').append(targetCrtBtn);
                                         $('#copyDivCrtBtn').hide();
                                     }
-                                    $('#targetTitle').show();
-                                    $('#copyDivCheckbox').hide();
+                                } else {
+                                    // 当类型为Default时，添加默认端口
+                                    if ('Default' === targetTypeStr) {
+                                        $('#targetTitleCheckbox').html('<input type="checkbox" class="addCheckbox" checked="checked" disabled="disabled"/><span class="addCheckbox">default</span>');
+                                    }
                                 }
+                                $('#targetTypeDiv').html(targetTypeStr);
+                                $('#targetTitle').show();
+                                $('#copyDivCheckbox').hide();
+                                $('#targetTitleStr').html('Targer:' + dataMap.targetName);
                                 if ("Default" === sourceTypeStr && "Default" === targetTypeStr) {
                                     $('#myModalPort').modal('hide');
                                 } else if ("None" === sourceTypeStr || "None" === targetTypeStr) {
@@ -690,18 +710,18 @@
         if (1 === paths) {
             var sourcePortVal = '';
             var targetPortVal = '';
-            var sourceTitle = $('#sourceTitle');
-            var targetTitle = $("#targetTitle");
-            if (!sourceTitle && !targetTitle) {
+            var sourceTypeDiv = $('#sourceTypeDiv');
+            var targetTypeDiv = $("#targetTypeDiv");
+            if (!sourceTypeDiv && !sourceTypeDiv) {
                 alert("页面报错，请检查！");
                 return false;
             }
             var sourceTitleCheckbox = $('#sourceTitleCheckbox');
             var targetTitleCheckbox = $("#targetTitleCheckbox");
-            if (targetTitleCheckbox) {
-                var sourceDivDisplay = sourceTitle.css('display');
-                if (sourceDivDisplay == 'none') {
-                    //alert("被你发现了，我是隐藏的啦！");
+            if (sourceTitleCheckbox) {
+                var sourceDivType = sourceTypeDiv.html();
+                if (sourceDivType === 'Default') {
+                    //Default类型不校验
                 } else {
                     var sourceEffCheckbox = [];
                     sourceTitleCheckbox.find("input[type='checkbox']:checked").each(function () {
@@ -731,9 +751,9 @@
                 return false;
             }
             if (targetTitleCheckbox) {
-                var targetDivDisplay = targetTitle.css('display');
-                if (targetDivDisplay == 'none') {
-                    //alert("被你发现了，我是隐藏的啦！");
+                var targetDivType = targetTypeDiv.html();
+                if (targetDivType === 'Default') {
+                    //Default类型不校验
                 } else {
                     var targetEffCheckbox = [];
                     targetTitleCheckbox.find("input[type='checkbox']:checked").each(function () {
@@ -885,45 +905,48 @@
         $("#myModalPort").css("overflow", "hidden");//禁止模态对话框的半透明背景滚动
         loadingSelect();
     });
-    
-    function saveTemplate(){
-    	var getXml = thisEditor.getGraphXml();
+
+    function saveTemplate() {
+        var getXml = thisEditor.getGraphXml();
         var sssss = getXml.outerHTML;
-    	layer.prompt({title: '请输入模板名称', formType: 2}, function(text, index){
-    	    layer.close(index);
-    	    $.ajax({
+        layer.prompt({title: '请输入模板名称', formType: 2}, function (text, index) {
+            layer.close(index);
+            $.ajax({
                 cache: true,//保留缓存数据
                 type: "POST",//为post请求
                 url: "/piflow-web/template/saveTemplate",//这是我在后台接受数据的文件名
                 data: {
-                	value: sssss,
+                    value: sssss,
                     load: loadId,
                     name: text
                 },
-                async: true, 
+                async: true,
                 error: function (request) {//请求失败之后的操作
-                	console.log( " save template error");
+                    console.log(" save template error");
                     return;
                 },
                 success: function (data) {//请求成功之后的操作
                     var dataMap = JSON.parse(data);
                     if (0 !== dataMap.code) {
-                    	 layer.msg(dataMap.errMsg, {icon: 1, shade: 0, time: 2000}, function () {});
+                        layer.msg(dataMap.errMsg, {icon: 1, shade: 0, time: 2000}, function () {
+                        });
                     } else {
-                    	 layer.msg(dataMap.errMsg, {icon: 2, shade: 0, time: 2000}, function () {});
+                        layer.msg(dataMap.errMsg, {icon: 2, shade: 0, time: 2000}, function () {
+                        });
                     }
                 }
             });
-    	  });
+        });
     }
-    function uploadTemplate(){
-  	  document.getElementById("uploadFile").click();
+
+    function uploadTemplate() {
+        document.getElementById("uploadFile").click();
     }
-    
-    function uploadXmlFile(){
-  	  if(!FileTypeCheck()) {
-  	 		return false;
-  	 	}
+
+    function uploadXmlFile() {
+        if (!FileTypeCheck()) {
+            return false;
+        }
         var formData = new FormData($('#uploadForm')[0]);
         $.ajax({
             type: 'post',
@@ -933,72 +956,79 @@
             processData: false,
             contentType: false,
         }).success(function (data) {
-      	  var dataMap = JSON.parse(data);
-      	  if (0 !== dataMap.code) {
-      		  layer.msg(dataMap.errMsg, {icon: 1, shade: 0, time: 2000}, function () {  location.reload();});
-      	  }else{
-      		  layer.msg(dataMap.errMsg, {icon: 2, shade: 0, time: 2000}, function () {});
-      	  }
+            var dataMap = JSON.parse(data);
+            if (0 !== dataMap.code) {
+                layer.msg(dataMap.errMsg, {icon: 1, shade: 0, time: 2000}, function () {
+                });
+            } else {
+                layer.msg(dataMap.errMsg, {icon: 2, shade: 0, time: 2000}, function () {
+                });
+            }
         }).error(function () {
-            layer.msg("上传失败", {icon: 2, shade: 0, time: 2000}, function () {});
+            layer.msg("上传失败", {icon: 2, shade: 0, time: 2000}, function () {
+            });
         });
     }
-    
-    function FileTypeCheck(){
-    var obj =document.getElementById('uploadFile'); 
-    if(obj.value==null || obj.value ==''){ 
-    	layer.msg('请选择xml文件', {icon: 2, shade: 0, time: 2000}, function () {});
-    	this.focus()
-    	return false;
-    }
-    var length = obj.value.length;
-    var charindex = obj.value.lastIndexOf(".");
-    var ExtentName = obj.value.substring(charindex,charindex+4);
-    if(!(ExtentName == ".xml" )){
-    	layer.msg('请上传xml文件', {icon: 2, shade: 0, time: 2000}, function () {});
-    	this.focus()
-    	return false;
-    }
-    	return true;
-    }
-    
-    function loadingXml(id,loadId){
-         $.ajax({
-             type: 'post',
-             data: {
-                 templateId: id,
-                 load: loadId
-             },
-             async: true, 
-             url: "/piflow-web/template/loadingXmlPage",
-         }).success(function (data) {
-        	 window.location.reload();
-         }).error(function () {
-         }); 
-    }
-    
-    window.onload=showSelect;
-    function showSelect(){
-    	var bt=document.getElementById("loadingXml");
-    	bt.onclick=function(){
-    		var oDiv=document.getElementById("divloadingXml");
-    		if(oDiv.style.display=="block"){
-    			oDiv.style.display="none";
-    		}else{
-    			oDiv.style.display="block";
 
-    		}
-    	}
+    function FileTypeCheck() {
+        var obj = document.getElementById('uploadFile');
+        if (obj.value == null || obj.value == '') {
+            layer.msg('请选择xml文件', {icon: 2, shade: 0, time: 2000}, function () {
+            });
+            this.focus()
+            return false;
+        }
+        var length = obj.value.length;
+        var charindex = obj.value.lastIndexOf(".");
+        var ExtentName = obj.value.substring(charindex, charindex + 4);
+        if (!(ExtentName == ".xml")) {
+            layer.msg('请上传xml文件', {icon: 2, shade: 0, time: 2000}, function () {
+            });
+            this.focus()
+            return false;
+        }
+        return true;
     }
-    function loadingSelect(){
-    	$.ajax({
-    		url:"/piflow-web/template/templateAllSelect",
-    		type:"post",
-    		success:function(data){
+
+    function loadingXml(id, loadId) {
+        $.ajax({
+            type: 'post',
+            data: {
+                templateId: id,
+                load: loadId
+            },
+            async: true,
+            url: "/piflow-web/template/loadingXmlPage",
+        }).success(function (data) {
+            window.location.reload();
+        }).error(function () {
+        });
+    }
+
+    window.onload = showSelect;
+
+    function showSelect() {
+        var bt = document.getElementById("loadingXml");
+        bt.onclick = function () {
+            var oDiv = document.getElementById("divloadingXml");
+            if (oDiv.style.display == "block") {
+                oDiv.style.display = "none";
+            } else {
+                oDiv.style.display = "block";
+
+            }
+        }
+    }
+
+    function loadingSelect() {
+        $.ajax({
+            url: "/piflow-web/template/templateAllSelect",
+            type: "post",
+            success: function (data) {
                 var dataMap = JSON.parse(data);
                 if (dataMap.code != '0') {
                     var temPlateList = dataMap.temPlateList;
-    				$("#loadingXmlSelect").append("<option value='-1' >-------------请选择-------------</option>");
+                    $("#loadingXmlSelect").append("<option value='-1' >-------------请选择-------------</option>");
                     for (var i = 0; i < temPlateList.length; i++) {
                         $("#loadingXmlSelect").append("<option value=" + temPlateList[i].id + " >" + temPlateList[i].name + "</option>");
                     }
@@ -1006,22 +1036,23 @@
             }
         });
     }
-    
-    
-    function loadTemplate(){
-    	var id = $("#loadingXmlSelect").val();
-    	if(id == '-1'){
-    		return;
-    	}
-    	var name = $("#loadingXmlSelect option:selected").text();
-    	layer.confirm('您确定打开 '+name+'吗？', {
-    		  btn: ['确定','取消'] //按钮
-    		}, function(){
-    		  loadingXml(id,loadId);
-    		}, function(){});
+
+
+    function loadTemplate() {
+        var id = $("#loadingXmlSelect").val();
+        if (id == '-1') {
+            return;
+        }
+        var name = $("#loadingXmlSelect option:selected").text();
+        layer.confirm('您确定打开 ' + name + '吗？', {
+            btn: ['确定', '取消'] //按钮
+        }, function () {
+            loadingXml(id, loadId);
+        }, function () {
+        });
     }
 
-    //@ sourceURL=index.js
+    //@ sourceURL=grapheditorIndex.js
 </script>
 </body>
 </html>

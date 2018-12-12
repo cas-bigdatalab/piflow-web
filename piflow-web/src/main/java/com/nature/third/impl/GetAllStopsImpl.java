@@ -1,22 +1,6 @@
 package com.nature.third.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-
-import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import com.nature.base.util.HttpClientStop;
-import com.nature.base.util.HttpUtils;
-import com.nature.base.util.ImageUtils;
-import com.nature.base.util.LoggerUtil;
-import com.nature.base.util.Utils;
+import com.nature.base.util.*;
 import com.nature.common.constant.SysParamsCache;
 import com.nature.component.workFlow.model.PropertyTemplate;
 import com.nature.component.workFlow.model.StopGroup;
@@ -25,6 +9,16 @@ import com.nature.mapper.PropertyTemplateMapper;
 import com.nature.mapper.StopGroupMapper;
 import com.nature.mapper.StopsTemplateMapper;
 import com.nature.third.inf.IGetAllStops;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 @Component
 public class GetAllStopsImpl implements IGetAllStops {

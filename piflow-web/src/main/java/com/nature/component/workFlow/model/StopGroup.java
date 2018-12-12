@@ -1,18 +1,11 @@
 package com.nature.component.workFlow.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-
+import com.nature.base.BaseHibernateModelUUIDNoCorpAgentId;
 import org.hibernate.annotations.Where;
 
-import com.nature.base.BaseHibernateModelUUIDNoCorpAgentId;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 组名称表

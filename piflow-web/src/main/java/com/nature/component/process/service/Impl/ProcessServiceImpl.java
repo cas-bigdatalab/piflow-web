@@ -2,6 +2,7 @@ package com.nature.component.process.service.Impl;
 
 import com.nature.base.util.DateUtils;
 import com.nature.base.util.LoggerUtil;
+import com.nature.base.util.StatefulRtnBaseUtils;
 import com.nature.base.util.Utils;
 import com.nature.base.vo.StatefulRtnBase;
 import com.nature.common.Eunm.ArrowDirection;
@@ -686,13 +687,7 @@ public class ProcessServiceImpl implements IProcessService {
                                 imageY = mxGeometryY;
 
                                 // 点击的边框
-                                viewXmlStrBuf.append("<g onclick=\"clickFormation(");//点击时选中效果坐标
-                                viewXmlStrBuf.append("'" + imageX + "',");
-                                viewXmlStrBuf.append("'" + imageY + "',");
-                                viewXmlStrBuf.append("'" + mxGeometryWidth + "',");
-                                viewXmlStrBuf.append("'" + mxGeometryHeight + "',");
-                                viewXmlStrBuf.append("'" + mxCell.getPageId() + "'");
-                                viewXmlStrBuf.append(")\">");
+                                viewXmlStrBuf.append("<g onclick=\"selectedFormation('" + mxCell.getPageId() + "',this)\">");//点击时选中效果坐标
 
                                 // 开始拼接监控图标
                                 // fail图标
@@ -721,7 +716,7 @@ public class ProcessServiceImpl implements IProcessService {
 
                                 // 开始拼图片
                                 viewXmlStrBuf.append("<g style='visibility: visible;'>");
-                                viewXmlStrBuf.append("<image ");
+                                viewXmlStrBuf.append("<image name='stopImg' ");
                                 viewXmlStrBuf.append("x='" + imageX + "' ");//图片X坐标
                                 viewXmlStrBuf.append("y='" + imageY + "' ");//图片Y坐标
                                 viewXmlStrBuf.append("width='" + mxGeometryWidth + "' ");//图片宽
@@ -768,7 +763,7 @@ public class ProcessServiceImpl implements IProcessService {
                                 MxGeometry sourceMxGeometry = sourceMxCell1.getMxGeometry();
                                 MxGeometry targetMxGeometry = targetMxCell1.getMxGeometry();
                                 if (null != sourceMxGeometry && null != targetMxGeometry) {
-                                    String drawingLine = this.drawingLine(sourceMxGeometry, targetMxGeometry);
+                                    String drawingLine = this.drawingLine(sourceMxGeometry, targetMxGeometry, mxCell.getPageId());
                                     if (StringUtils.isNotBlank(drawingLine)) {
                                         viewXmlStrBuf.append(drawingLine);
                                     }
@@ -780,8 +775,10 @@ public class ProcessServiceImpl implements IProcessService {
                     viewXmlStrBuf.append("</g>");
                 }
             }
-            viewXmlStrBuf.append(" <g transform='translate(2,2)'>");
+            viewXmlStrBuf.append(" <g transform='translate(0.5,0.5)'>");
             viewXmlStrBuf.append("<rect id='selectedRectShow' x='0' y='0' width='66' height='66' fill='none' stroke='#00a8ff' stroke-dasharray='3 3' pointer-events='none' style='display: none;'></rect>");
+            viewXmlStrBuf.append("<path id='selectedPathShow' d='M 0 0 L 0 0 ' fill='none' stroke='#00a8ff' stroke-width='5' stroke-miterlimit='10' style='display: none;'></path>");
+            viewXmlStrBuf.append("<path id='selectedArrowShow'd='M 0 0 L 0 0 L 0 0 L 0 0 Z' fill='none' stroke='#00a8ff' stroke-width='5' stroke-miterlimit='00' pointer-events='all'></path>");
             viewXmlStrBuf.append("</g>");
             viewXmlStrBuf.append("</g>");
             viewXmlStrBuf.append("</svg>");
@@ -795,9 +792,10 @@ public class ProcessServiceImpl implements IProcessService {
      *
      * @param sourceMxGeometry
      * @param targetMxGeometry
+     * @param pageID
      * @return
      */
-    private String drawingLine(MxGeometry sourceMxGeometry, MxGeometry targetMxGeometry) {
+    private String drawingLine(MxGeometry sourceMxGeometry, MxGeometry targetMxGeometry, String pageID) {
         String lineSvg = "";
         if (null != sourceMxGeometry && null != targetMxGeometry) {
             // 取坐标和高宽参数
@@ -936,18 +934,19 @@ public class ProcessServiceImpl implements IProcessService {
                 if (null != arrowDirection) {
                     // 开始画线
                     StringBuffer lineSvgBuf = new StringBuffer();
-                    lineSvgBuf.append("<g transform='translate(0.5,0.5)' style='visibility: visible;'>");
+                    lineSvgBuf.append("<g transform='translate(0.5,0.5)' style='visibility: visible;'");
+                    lineSvgBuf.append("onclick=\"selectedPath('" + pageID + "',this)\">");
                     // 线开始计算
                     switch (breakPoint) {
                         case 0:
                             if (sourceDotX == targetDotX || sourceDotY == targetDotY) {
                                 //无折点，直接拼线
-                                lineSvgBuf.append("<path d='");
+                                lineSvgBuf.append("<path name='pathName' d='");
                                 lineSvgBuf.append("M " + sourceDotX + " " + sourceDotY + " ");
                                 lineSvgBuf.append("L " + targetDotX + " " + targetDotY + " ");
                                 lineSvgBuf.append("' fill='none' stroke='#000000' stroke-miterlimit='10'></path>");
                             } else {
-                                lineSvgBuf.append("<path d='");
+                                lineSvgBuf.append("<path name='pathName' d='");
                                 lineSvgBuf.append("M " + sourceDotX + " " + sourceDotY + " ");
                                 // 两个折点，计算折点坐标
                                 if (arrowDirection == ArrowDirection.UP_DIRECTION) {
@@ -969,7 +968,7 @@ public class ProcessServiceImpl implements IProcessService {
                             break;
                         case 1:
                             // 一个折点
-                            lineSvgBuf.append("<path d='");
+                            lineSvgBuf.append("<path name='pathName' d='");
                             lineSvgBuf.append("M " + sourceDotX + " " + sourceDotY + " ");
                             lineSvgBuf.append("L " + targetDotX + " " + sourceDotY + " ");
                             lineSvgBuf.append("L " + targetDotX + " " + targetDotY + " ");
@@ -980,7 +979,7 @@ public class ProcessServiceImpl implements IProcessService {
                     }
 
                     // 箭头坐标开始计算
-                    lineSvgBuf.append("<path d='");
+                    lineSvgBuf.append("<path name='arrowName' d='");
                     // 箭头是由一个M坐标三个L坐标组成，M坐标为箭头的指向的点
                     lineSvgBuf.append("M " + targetDotX + " " + targetDotY + " ");
                     // 第一个L箭头(右侧点)，
@@ -1048,7 +1047,20 @@ public class ProcessServiceImpl implements IProcessService {
      * @return
      */
     @Override
-    public boolean updateProcessEnableFlag(String processId) {
-        return processTransaction.updateProcessEnableFlag(processId);
+    public StatefulRtnBase updateProcessEnableFlag(String processId) {
+        StatefulRtnBase statefulRtnBase = new StatefulRtnBase();
+        Process processById = processTransaction.getProcessById(processId);
+        if (null != processById) {
+            if (processById.getState() != ProcessState.STARTED) {
+                processTransaction.updateProcessEnableFlag(processId);
+            } else {
+                statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("状态为STARTED，不可删除");
+                logger.warn("状态为STARTED，不可删除");
+            }
+        } else {
+            statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("没有查询到id为" + processId + "的process");
+            logger.warn("状态为STARTED，不可删除");
+        }
+        return statefulRtnBase;
     }
 }

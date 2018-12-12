@@ -1,18 +1,8 @@
 package com.nature.transaction.sysUser;
 
 import com.nature.base.util.LoggerUtil;
-import com.nature.component.process.model.Process;
-import com.nature.component.process.model.ProcessPath;
-import com.nature.component.process.model.ProcessStop;
-import com.nature.component.process.model.ProcessStopProperty;
 import com.nature.component.sysUser.model.SysUser;
-import com.nature.mapper.process.ProcessMapper;
-import com.nature.mapper.process.ProcessPathMapper;
-import com.nature.mapper.process.ProcessStopMapper;
-import com.nature.mapper.process.ProcessStopPropertyMapper;
 import com.nature.mapper.sysUser.SysUserMapper;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.annotations.*;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;

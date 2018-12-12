@@ -164,7 +164,7 @@ public class ProcessMapperProvider {
         sql.SELECT("*");
         sql.FROM("FLOW_PROCESS");
         sql.WHERE("ENABLE_FLAG = 1");
-        sql.ORDER_BY("CRT_DTTM,LAST_UPDATE_DTTM DESC");
+        sql.ORDER_BY("CRT_DTTM DESC,LAST_UPDATE_DTTM DESC");
         return sql.toString() + ";";
     }
 

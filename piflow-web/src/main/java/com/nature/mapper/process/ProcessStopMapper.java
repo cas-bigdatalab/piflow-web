@@ -49,13 +49,28 @@ public interface ProcessStopMapper {
      * @param pageId
      * @return
      */
-    @SelectProvider(type = ProcessStopMapperProvider.class, method = "getProcessStopByPageIdAndPid")
+    @SelectProvider(type = ProcessStopMapperProvider.class, method = "getProcessStopByPageIdAndPageId")
     @Results({
             @Result(id = true, column = "id", property = "id"),
             @Result(column = "id", property = "processStopPropertyList", many = @Many(select = "com.nature.mapper.process.ProcessStopPropertyMapper.getStopPropertyByProcessStopId", fetchType = FetchType.LAZY))
 
     })
-    public ProcessStop getProcessStopByPageIdAndPid(String processId, String pageId);
+    public ProcessStop getProcessStopByPageIdAndPageId(String processId, String pageId);
+
+    /**
+     * 根据pid和pageId查询
+     *
+     * @param processId
+     * @param pageIds
+     * @return
+     */
+    @SelectProvider(type = ProcessStopMapperProvider.class, method = "getProcessStopByPageIdAndPageIds")
+    @Results({
+            @Result(id = true, column = "id", property = "id"),
+            @Result(column = "id", property = "processStopPropertyList", many = @Many(select = "com.nature.mapper.process.ProcessStopPropertyMapper.getStopPropertyByProcessStopId", fetchType = FetchType.LAZY))
+
+    })
+    public List<ProcessStop> getProcessStopByPageIdAndPageIds(@Param("processId")String processId, @Param("pageIds")String[] pageIds);
 
     /**
      * 根据pid和name查询

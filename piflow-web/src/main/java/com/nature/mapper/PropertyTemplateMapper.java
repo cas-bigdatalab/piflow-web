@@ -1,12 +1,11 @@
 package com.nature.mapper;
 
-import java.util.List;
-
-import com.nature.provider.StopsTemplateMapperProvider;
-import org.apache.ibatis.annotations.*;
 import com.nature.component.workFlow.model.Property;
 import com.nature.component.workFlow.model.PropertyTemplate;
 import com.nature.provider.PropertyTemplateMapperProvider;
+import org.apache.ibatis.annotations.*;
+
+import java.util.List;
 
 @Mapper
 public interface PropertyTemplateMapper {

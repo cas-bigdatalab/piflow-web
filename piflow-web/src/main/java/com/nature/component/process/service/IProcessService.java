@@ -1,5 +1,6 @@
 package com.nature.component.process.service;
 
+import com.nature.base.vo.StatefulRtnBase;
 import com.nature.component.process.model.Process;
 import com.nature.component.process.vo.ProcessVo;
 import com.nature.component.workFlow.model.Flow;
@@ -123,5 +124,5 @@ public interface IProcessService {
      * @return
      */
     @Transient
-    public boolean updateProcessEnableFlag(String processId);
+    public StatefulRtnBase updateProcessEnableFlag(String processId);
 }

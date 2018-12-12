@@ -24,6 +24,8 @@
             text-align: center;
         }
     </style>
+    <!-- The fav icon -->
+    <link rel="shortcut icon" th:href="@{/img/logo.ico}">
 </head>
 <body class="geEditor">
 <div style="position: fixed; z-index: 779;text-align: right;right: 27%;top: 10px;">
@@ -66,7 +68,7 @@
 <!-- Modal 日志 -->
 <div class="modal" id="myModal" aria-labelledby="myModalLabel" data-backdrop="static">
     <div id="modalDialog" class="modal-dialog" role="document">
-        <div class="modal-content" style="width: 200%; left: -290px; top: 77px;">
+        <div class="modal-content" style="top: 20px;">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
                 </button>
@@ -81,8 +83,8 @@
                         </td>
                     </tr>
                 </table>
-                <input type="button" onclick="changeUrl(1)" value="stdout">
-                <input type="button" onclick="changeUrl(2)" value="stderr">
+                <input type="button" class="btn btn-default" onclick="changeUrl(1)" value="stdout">
+                <input type="button" class="btn btn-default" onclick="changeUrl(2)" value="stderr">
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -152,11 +154,35 @@
         $("#myModal").css("overflow", "hidden");//禁止模态对话框的半透明背景滚动
     })();
 
-    function clickFormation(x, y, width, height, pageId) {
-        if (x && y && width && height && pageId) {
+    //浏览器窗口大小变化时
+    $(window).resize(function () {
+        var window_width = $(window).width();//获取浏览器窗口宽度
+        var window_height = $(window).height();//获取浏览器窗口宽度
+        $('#modalDialog').height(window_height - 124);
+        $('#modalDialog').width(window_width - 124);
+        $('#preId').height(window_height - 300);
+        $('#divPreId').height(window_height - 300);
+    });
+
+    function selectedFormation(pageId, e) {
+        if (isLoadProcessInfo) {
+            isLoadProcessInfo = false;
+        }
+        if (e && pageId) {
             var selectedRectShow = $('#selectedRectShow');
             if (selectedRectShow) {
-                selectedRectShow.attr('x', x).attr('y', y).attr('width', width).attr('height', height);
+                var imgStyleX = 0;
+                var imgStyleY = 0;
+                var imgStyleWidth = 66;
+                var imgStyleHeight = 66;
+                if (e) {
+                    var selectedStop = $(e).find('image[name="stopImg"]');
+                    imgStyleX = $(selectedStop).attr('x');
+                    imgStyleY = $(selectedStop).attr('y');
+                    imgStyleWidth = $(selectedStop).attr('width');
+                    imgStyleHeight = $(selectedStop).attr('height');
+                }
+                selectedRectShow.attr('x', imgStyleX).attr('y', imgStyleY).attr('width', imgStyleWidth).attr('height', imgStyleHeight);
             }
             queryProcessStop(processId, pageId);
         } else {
@@ -164,13 +190,41 @@
         }
     }
 
+    function selectedPath(pageId, e) {
+        if (isLoadProcessInfo) {
+            isLoadProcessInfo = false;
+        }
+        if (pageId) {
+            var selectedPathShow = $('#selectedPathShow');
+            var selectedArrowShow = $('#selectedArrowShow');
+            var pathStyleD = 'M 0 0 L 0 0';
+            var arrowStyleD = 'M 0 0 L 0 0 L 0 0 L 0 0 Z';
+            //var paths = $(e).find('path[name="arrowName"]');
+            if (e) {
+                pathStyleD = $(e).find('path[name="arrowName"]').attr("d");
+                arrowStyleD = $(e).find('path[name="pathName"]').attr("d");
+            }
+            if (selectedPathShow) {
+                selectedPathShow.attr('d', pathStyleD);
+                selectedArrowShow.attr('d', arrowStyleD);
+                selectedPathShow.show();
+                selectedArrowShow.show();
+                //selectedPolygonShow.attr('x', x).attr('y', y).attr('width', width).attr('height', height);
+            }
+            queryProcessPath(processId, pageId);
+        } else {
+            alert("必要位置参数没有获得");
+        }
+    }
+
+    // 查询process的基本信息
     function queryProcess(processId) {
         if (!isLoadProcessInfo) {
             isLoadProcessInfo = true;
         } else {
             if (!processId || '' === processId || 'null' === processId || 'NULL' === processId) {
                 alert("Id为空，没有获取到，请检查！！");
-            }else {
+            } else {
                 $.ajax({
                     cache: true,//保留缓存数据
                     type: "POST",//为post请求
@@ -188,6 +242,8 @@
                         // console.log(data);
                         $('#processLeft').html(data)
                         $('#selectedRectShow').hide();
+                        $('#selectedPathShow').hide();
+                        $('#selectedArrowShow').hide();
                     }
                 });
             }
@@ -195,10 +251,8 @@
         return;
     }
 
+    //查询stops的基本信息
     function queryProcessStop(processId, pageId) {
-        if (isLoadProcessInfo) {
-            isLoadProcessInfo = false;
-        }
         $.ajax({
             cache: true,//保留缓存数据
             type: "POST",//为post请求
@@ -215,8 +269,39 @@
             },
             success: function (data) {//请求成功之后的操作
                 // console.log(data);
-                $('#processLeft').html(data)
+                $('#processLeft').html(data);
                 $('#selectedRectShow').show();
+                $('#selectedArrowShow').hide();
+                $('#selectedPathShow').hide();
+            }
+        });
+    }
+
+    //查询path基本信息
+    function queryProcessPath(processId, pageId) {
+        if (isLoadProcessInfo) {
+            isLoadProcessInfo = false;
+        }
+        $.ajax({
+            cache: true,//保留缓存数据
+            type: "POST",//为post请求
+            url: "/piflow-web/process/queryProcessPath",//这是我在后台接受数据的文件名
+            //data:$('#loginForm').serialize(),//将该表单序列化
+            data: {
+                processId: processId,
+                pageId: pageId
+            },
+            async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
+            error: function (request) {//请求失败之后的操作
+                console.log("fail");
+                return;
+            },
+            success: function (data) {//请求成功之后的操作
+                // console.log(data);
+                $('#processLeft').html(data);
+                $('#selectedArrowShow').show();
+                $('#selectedPathShow').show();
+                $('#selectedRectShow').hide();
             }
         });
     }
@@ -236,7 +321,7 @@
             async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
             error: function (request) {//请求失败之后的操作
                 startFlow.show();
-                alert("请求失败");
+                alert("Request Failed");
                 fullScreen.hide();
                 checkpointShow.modal('hide');
                 return;
@@ -246,7 +331,7 @@
                 $('#checkpointContent').html(data);
                 if ($('#checkpointsIsNull').val()) {
                     alert("没有查询到");
-                    checkpointShow.modal('hide');
+                    //checkpointShow.modal('hide');
                     runProcess(true);
                 } else {
                     checkpointShow.modal('show');
@@ -285,7 +370,7 @@
             async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
             error: function (request) {//请求失败之后的操作
                 startFlow.show();
-                alert("请求失败");
+                alert("Request Failed");
                 fullScreen.hide();
                 return;
             },
@@ -315,12 +400,12 @@
             url: "/piflow-web/process/stopProcess",//这是我在后台接受数据的文件名
             //data:$('#loginForm').serialize(),//将该表单序列化
             data: {
-                appId: appId
+                processId: processId
             },
             async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
             error: function (request) {//请求失败之后的操作
                 stopFlow.show();
-                alert("请求失败");
+                alert("Request Failed");
                 fullScreen.hide();
                 return;
             },
@@ -331,7 +416,7 @@
                     alert(dataMap.errorMsg);
                     startFlow.show();
                 } else {
-                    alert("停止失败:" + dataMap.errMsg);
+                    alert("Stop Failed:" + dataMap.errMsg);
                     stopFlow.show();
                 }
                 fullScreen.hide();
@@ -340,7 +425,7 @@
     }
 
     function getLogUrl() {
-        //appId = "application_1539850523117_0152";
+
         $.ajax({
             cache: true,//保留缓存数据
             type: "POST",//为post请求
@@ -350,15 +435,15 @@
             async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
             error: function (request) {//请求失败之后的操作
                 return;
-            },
+                },
             success: function (data) {//请求成功之后的操作
-                console.log("success");
+                //console.log("success");
+                //alert(data);
                 if ('0' !== data.code) {
                     stdoutLog = data.stdoutLog;
                     stderrLog = data.stderrLog;
                     changeUrl(1);
                 }
-                //alert(data);
             }
         });
     }
@@ -375,6 +460,8 @@
             default:
                 break;
         }
+        var window_width = $(window).width();//获取浏览器窗口宽度
+        var window_height = $(window).height();//获取浏览器窗口宽度
         $.ajax({
             cache: true,//保留缓存数据
             type: "POST",//为post请求
@@ -388,14 +475,17 @@
             success: function (data) {//请求成功之后的操作
                 console.log("success");
                 if ('' !== data) {
+                    $('#modalDialog').height(window_height - 124);
+                    $('#modalDialog').width(window_width - 124);
                     var split0 = data.split('<td class="content">');
                     var data0 = split0[1];
                     var split2 = data0.split("</td>");
                     var data2 = split2[0];
                     "white-space: pre-line;"
-                    data2 = data2.replace("<pre>", '<pre style="white-space: pre-wrap; height: 288px;">');
+                    var pre_height = window_height - 300;
+                    data2 = data2.replace("<pre>", '<pre id="preId" style="white-space: pre-wrap; height: ' + pre_height + 'px;">');
                     //document.getElementById("logTitle").innerHTML = "<h1>"+data1+"</h1>";
-                    document.getElementById("customContent").innerHTML = "<div>" + data2 + "</div>";
+                    document.getElementById("customContent").innerHTML = "<div id='divPreId' style='height: " + pre_height + "px'>" + data2 + "</div>";
                 }
                 //alert(data);
             }

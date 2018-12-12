@@ -1,14 +1,9 @@
 
 package com.nature.component.workFlow.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
 import com.nature.base.BaseHibernateModelUUIDNoCorpAgentId;
+
+import javax.persistence.*;
 
 /**
  * stop的属性

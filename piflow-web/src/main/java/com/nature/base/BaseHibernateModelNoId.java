@@ -1,16 +1,11 @@
 package com.nature.base;
 
+import com.nature.base.util.DateUtils;
+
+import javax.persistence.*;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Version;
-
-import com.nature.base.util.DateUtils;
 
 @MappedSuperclass
 public class BaseHibernateModelNoId implements Serializable {

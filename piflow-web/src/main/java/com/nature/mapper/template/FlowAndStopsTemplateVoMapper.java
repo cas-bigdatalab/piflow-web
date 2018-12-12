@@ -1,21 +1,13 @@
 package com.nature.mapper.template;
 
-import java.util.List;
-
-import org.apache.ibatis.annotations.InsertProvider;
-import org.apache.ibatis.annotations.Many;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
-import org.apache.ibatis.mapping.FetchType;
-
 import com.nature.component.template.model.FlowTemplateModel;
 import com.nature.component.template.model.PropertyTemplateModel;
 import com.nature.component.template.model.StopTemplateModel;
 import com.nature.provider.FlowAndStopsTemplateVoMapperProvider;
+import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.mapping.FetchType;
+
+import java.util.List;
 
 /**
  * stop组建表

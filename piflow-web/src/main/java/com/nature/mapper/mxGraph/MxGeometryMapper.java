@@ -1,15 +1,8 @@
 package com.nature.mapper.mxGraph;
 
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.InsertProvider;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.SelectProvider;
-import org.apache.ibatis.annotations.UpdateProvider;
-
 import com.nature.component.mxGraph.model.MxGeometry;
 import com.nature.provider.mxGraph.MxGeometryMapperProvider;
+import org.apache.ibatis.annotations.*;
 
 @Mapper
 public interface MxGeometryMapper {

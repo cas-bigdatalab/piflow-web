@@ -1,7 +1,6 @@
 package com.nature.third.vo.flowInfo;
 
 import java.io.Serializable;
-import java.util.Date;
 
 public class ThirdFlowInfoStopVo implements Serializable {
 

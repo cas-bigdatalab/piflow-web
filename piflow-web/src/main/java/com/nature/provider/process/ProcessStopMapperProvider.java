@@ -240,7 +240,7 @@ public class ProcessStopMapperProvider {
      * @param pageId
      * @return
      */
-    public String getProcessStopByPageIdAndPid(String processId, String pageId) {
+    public String getProcessStopByPageIdAndPageId(String processId, String pageId) {
         String sqlStr = "select 0";
         if (!StringUtils.isAnyEmpty(processId, pageId)) {
             SQL sql = new SQL();
@@ -249,6 +249,38 @@ public class ProcessStopMapperProvider {
             sql.WHERE("enable_flag = 1");
             sql.WHERE("FK_FLOW_PROCESS_ID = " + Utils.addSqlStr(processId));
             sql.WHERE("PAGE_ID = " + Utils.addSqlStr(pageId));
+
+            sqlStr = sql.toString() + ";";
+        }
+        return sqlStr;
+    }
+
+    /**
+     * 根据pid和pageIds查询
+     *
+     * @param map
+     * @return
+     */
+    public String getProcessStopByPageIdAndPageIds(Map map) {
+        String processId = (String) map.get("processId");
+        String[] pageIds = (String[]) map.get("pageIds");
+        String sqlStr = "select 0";
+        if (StringUtils.isNotBlank(processId) && null != pageIds && pageIds.length > 0) {
+            SQL sql = new SQL();
+            sql.SELECT("*");
+            sql.FROM("FLOW_PROCESS_STOP");
+            sql.WHERE("enable_flag = 1");
+            sql.WHERE("FK_FLOW_PROCESS_ID = " + Utils.addSqlStr(processId));
+            String pageIdsStr = "";
+            for (int i = 0; i < pageIds.length; i++) {
+                if (StringUtils.isNotBlank(pageIds[i])) {
+                    pageIdsStr += Utils.addSqlStr(pageIds[i]);
+                    if (i < pageIds.length - 1) {
+                        pageIdsStr += ",";
+                    }
+                }
+            }
+            sql.WHERE("PAGE_ID IN ( " + pageIdsStr + ")");
 
             sqlStr = sql.toString() + ";";
         }

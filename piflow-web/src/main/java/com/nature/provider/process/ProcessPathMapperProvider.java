@@ -12,7 +12,12 @@ import java.util.List;
 import java.util.Map;
 
 public class ProcessPathMapperProvider {
-
+    /**
+     * 添加 processPath
+     *
+     * @param processPath
+     * @return
+     */
     public String addProcessPath(ProcessPath processPath) {
         String sqlStr = "select 0";
         if (null != processPath) {
@@ -80,6 +85,12 @@ public class ProcessPathMapperProvider {
         return sqlStr;
     }
 
+    /**
+     * 添加 processPath
+     *
+     * @param processPathList
+     * @return
+     */
     public String addProcessPathList(Map<String, List<ProcessPath>> processPathList) {
         List<ProcessPath> processPaths = processPathList.get("processPathList");
         String sqlStr = "select 0";
@@ -149,6 +160,12 @@ public class ProcessPathMapperProvider {
         return sqlStr;
     }
 
+    /**
+     * 根据进程Id查询processPath
+     *
+     * @param processId
+     * @return
+     */
     public String getProcessPathByProcessId(String processId) {
         String sqlStr = "select 0";
         if (StringUtils.isNotBlank(processId)) {
@@ -157,6 +174,28 @@ public class ProcessPathMapperProvider {
             sql.FROM("FLOW_PROCESS_PATH");
             sql.WHERE("enable_flag = 1");
             sql.WHERE("FK_FLOW_PROCESS_ID = " + Utils.addSqlStr(processId));
+
+            sqlStr = sql.toString() + ";";
+        }
+        return sqlStr;
+    }
+
+    /**
+     * 根据pid和pageId查询
+     *
+     * @param processId
+     * @param pageId
+     * @return
+     */
+    public String getProcessPathByPageIdAndPid(String processId, String pageId) {
+        String sqlStr = "select 0";
+        if (!StringUtils.isAnyEmpty(processId, pageId)) {
+            SQL sql = new SQL();
+            sql.SELECT("*");
+            sql.FROM("FLOW_PROCESS_PATH");
+            sql.WHERE("enable_flag = 1");
+            sql.WHERE("FK_FLOW_PROCESS_ID = " + Utils.addSqlStr(processId));
+            sql.WHERE("PAGE_ID = " + Utils.addSqlStr(pageId));
 
             sqlStr = sql.toString() + ";";
         }

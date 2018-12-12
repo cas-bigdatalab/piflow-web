@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @Component
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
@@ -30,9 +31,17 @@ public class ProcessStopTransaction {
     public ProcessStop getProcessStopByPageId(String processID, String pageID) {
         ProcessStop processStop = null;
         if (!StringUtils.isAnyEmpty(processID, pageID)) {
-            processStop = processStopMapper.getProcessStopByPageIdAndPid(processID, pageID);
+            processStop = processStopMapper.getProcessStopByPageIdAndPageId(processID, pageID);
         }
         return processStop;
+    }
+
+    public List<ProcessStop> getProcessStopByPageIds(String processID, String[] pageIDs) {
+        List<ProcessStop> processStopList = null;
+        if (StringUtils.isNotBlank(processID) && null != pageIDs && pageIDs.length > 0) {
+            processStopList = processStopMapper.getProcessStopByPageIdAndPageIds(processID, pageIDs);
+        }
+        return processStopList;
     }
 
     public ProcessStop updateProcessStopByProcessId(ProcessStopVo processStopVo) {

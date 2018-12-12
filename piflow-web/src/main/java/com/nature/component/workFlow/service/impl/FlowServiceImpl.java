@@ -1,19 +1,5 @@
 package com.nature.component.workFlow.service.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.annotation.Transient;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.StatefulRtnBaseUtils;
 import com.nature.base.util.Utils;
@@ -25,13 +11,7 @@ import com.nature.component.mxGraph.model.MxGraphModel;
 import com.nature.component.mxGraph.vo.MxCellVo;
 import com.nature.component.mxGraph.vo.MxGeometryVo;
 import com.nature.component.mxGraph.vo.MxGraphModelVo;
-import com.nature.component.workFlow.model.Flow;
-import com.nature.component.workFlow.model.FlowInfoDb;
-import com.nature.component.workFlow.model.Paths;
-import com.nature.component.workFlow.model.Property;
-import com.nature.component.workFlow.model.PropertyTemplate;
-import com.nature.component.workFlow.model.Stops;
-import com.nature.component.workFlow.model.StopsTemplate;
+import com.nature.component.workFlow.model.*;
 import com.nature.component.workFlow.service.IFlowService;
 import com.nature.component.workFlow.utils.FlowInfoDbUtil;
 import com.nature.component.workFlow.utils.MxGraphModelUtil;
@@ -41,15 +21,19 @@ import com.nature.component.workFlow.vo.FlowInfoDbVo;
 import com.nature.component.workFlow.vo.FlowVo;
 import com.nature.component.workFlow.vo.PathsVo;
 import com.nature.component.workFlow.vo.StopsVo;
-import com.nature.mapper.FlowInfoDbMapper;
-import com.nature.mapper.FlowMapper;
-import com.nature.mapper.PathsMapper;
-import com.nature.mapper.PropertyMapper;
-import com.nature.mapper.StopsMapper;
-import com.nature.mapper.StopsTemplateMapper;
+import com.nature.mapper.*;
 import com.nature.mapper.mxGraph.MxCellMapper;
 import com.nature.mapper.mxGraph.MxGeometryMapper;
 import com.nature.mapper.mxGraph.MxGraphModelMapper;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.annotation.Transient;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.*;
 
 @Service
 @Transactional

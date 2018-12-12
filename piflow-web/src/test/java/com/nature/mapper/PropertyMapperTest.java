@@ -63,9 +63,9 @@ public class PropertyMapperTest extends ApplicationTests {
 	public void deleteStopsPropertyById() {
 		int delete = propertyMapper.deleteStopsPropertyById("8731612e42cc4cc89a24191e737817f2");
 		if (0 == delete) {
-			logger.info("删除失败了"+",影响行数："+delete);
+			logger.info("Delete Failed"+",Number of rows affected："+delete);
 		}else {
-			logger.info("删除成功了"+",影响行数："+delete);
+			logger.info("Successfully Deleted"+",Number of rows affected："+delete);
 		}
 	}
 	

@@ -1,16 +1,15 @@
 package com.nature.controller;
 
-import java.util.List;
-
+import com.nature.base.util.LoggerUtil;
+import com.nature.component.sysUser.model.SysUser;
+import com.nature.component.sysUser.service.IUserService;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nature.base.util.LoggerUtil;
-import com.nature.component.sysUser.model.SysUser;
-import com.nature.component.sysUser.service.IUserService;
+import java.util.List;
 
 /**
  * Created by wangwei on 2016/9/2.

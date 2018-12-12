@@ -1,11 +1,10 @@
 package com.nature.component.sysUser.model;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
-import java.util.Collection;
 
 /**
  * 使用JPA定义用户。实现UserDetails接口，用户实体即为springSecurity所使用的用户。

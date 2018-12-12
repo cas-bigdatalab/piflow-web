@@ -1,20 +1,5 @@
 package com.nature.controller;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.nature.base.util.FlowXmlUtils;
 import com.nature.base.util.JsonUtils;
 import com.nature.base.util.LoggerUtil;
@@ -24,16 +9,25 @@ import com.nature.common.Eunm.PortType;
 import com.nature.component.mxGraph.model.MxGraphModel;
 import com.nature.component.mxGraph.vo.MxGraphModelVo;
 import com.nature.component.workFlow.model.Flow;
-import com.nature.component.workFlow.service.IFlowService;
-import com.nature.component.workFlow.service.IPathsService;
-import com.nature.component.workFlow.service.IPropertyService;
-import com.nature.component.workFlow.service.IStopGroupService;
-import com.nature.component.workFlow.service.IStopsService;
+import com.nature.component.workFlow.service.*;
 import com.nature.component.workFlow.vo.PathsVo;
 import com.nature.component.workFlow.vo.StopGroupVo;
 import com.nature.component.workFlow.vo.StopsPropertyVo;
 import com.nature.component.workFlow.vo.StopsVo;
 import com.nature.third.service.GetGroupsAndStops;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 画板的ctrl
@@ -84,7 +78,7 @@ public class GrapheditorCtrl {
                 model.addAttribute("groupsVoList", groupsVoList);
                 String maxStopPageId = flowServiceImpl.getMaxStopPageId(load);
                 //maxStopPageId如果为空则默认给2,否则maxStopPageId+1
-                maxStopPageId = StringUtils.isBlank(maxStopPageId) ? "2" : (Integer.parseInt(maxStopPageId)+1)+"";
+                maxStopPageId = StringUtils.isBlank(maxStopPageId) ? "2" : (Integer.parseInt(maxStopPageId) + 1) + "";
                 model.addAttribute("maxStopPageId", maxStopPageId);
                 MxGraphModelVo mxGraphModelVo = null;
                 MxGraphModel mxGraphModel = flowById.getMxGraphModel();
@@ -155,7 +149,7 @@ public class GrapheditorCtrl {
         } else {
             // 把页面传來的XML转为mxGraphModel
             MxGraphModelVo xmlToMxGraphModel = FlowXmlUtils.xmlToMxGraphModel(imageXML);
-            StatefulRtnBase addFlow = flowServiceImpl.saveOrUpdateFlowAll(xmlToMxGraphModel, loadId, operType,true);
+            StatefulRtnBase addFlow = flowServiceImpl.saveOrUpdateFlowAll(xmlToMxGraphModel, loadId, operType, true);
             // addFlow不为空且ReqRtnStatus的值为true,则保存成功
             if (null != addFlow && addFlow.isReqRtnStatus()) {
                 rtnMap.put("code", "1");
@@ -291,50 +285,26 @@ public class GrapheditorCtrl {
         // 获取sourceStop和targetStop的端口类型
         PortType sourcePortType = sourceStop.getOutPortType();
         PortType targetPortType = targetStop.getInPortType();
-        if (null == sourcePortType || null == targetPortType) {
-            rtnMap.put("code", "0");
-            rtnMap.put("errMsg", "sourceStop的sourceStopOutports或者targetStop的targetStopInports为Null不能输出");
-            logger.info("sourceStop的sourceStopOutports或者targetStop的targetStopInports为Null不能输出");
-        } else {
-            if (PortType.NONE == sourcePortType || PortType.NONE == sourcePortType) {
-                rtnMap.put("code", "0");
-                rtnMap.put("errMsg", "sourceStop的sourceStopOutports或者targetStop的targetStopInports为None不能输出");
-                logger.info("sourceStop的sourceStopOutports或者targetStop的targetStopInports为None不能输出");
-            } else {
+        if (null != sourcePortType && null != targetPortType) {
+            if (PortType.NONE != sourcePortType && PortType.NONE != sourcePortType) {
                 // 调用stopPortUsage方法查询可用接口，返回的Map 的key如下
                 // 1、stop的端口类型枚举的text(value为可使用端口数量Integer)
                 // 2、isSourceStop(value为是否为source)
                 // 3、portUsageMap(value为端口详细信息map(使用情况)， map的key为端口名，value为是否可用boolean)
                 // 查询sourceStop接口的占用情况
                 Map sourcePortUsageMap = stopPortUsage(true, flowId, sourceStop, pathLineId);
-                if (null == sourcePortUsageMap) {
-                    rtnMap.put("code", "0");
-                    rtnMap.put("errMsg", "查询sourceStop接口的占用情况出错");
-                    logger.info("查询sourceStop接口的占用情况出错");
-                } else {
+                if (null != sourcePortUsageMap) {
                     // 取出可用端口数量
                     Integer sourceCounts = (Integer) sourcePortUsageMap.get(sourcePortType.getText());
                     // 判断可用端口数量是否大于0
-                    if (null == sourceCounts || sourceCounts <= 0) {
-                        rtnMap.put("code", "0");
-                        rtnMap.put("errMsg", "查询sourceStop暂无可用端口");
-                        logger.info("查询sourceStop暂无可用端口");
-                    } else {
+                    if (null != sourceCounts && sourceCounts > 0) {
                         // 查询targetStop接口的占用情况
                         Map targetPortUsageMap = stopPortUsage(false, flowId, targetStop, pathLineId);
-                        if (null == targetPortUsageMap) {
-                            rtnMap.put("code", "0");
-                            rtnMap.put("errMsg", "查询targetStop接口的占用情况出错");
-                            logger.info("查询targetStop接口的占用情况出错");
-                        } else {
+                        if (null != targetPortUsageMap) {
                             // 取出可用端口数量
                             Integer targetCounts = (Integer) targetPortUsageMap.get(targetPortType.getText());
                             // 判断可用端口数量是否大于0
-                            if (null == targetCounts || targetCounts <= 0) {
-                                rtnMap.put("code", "0");
-                                rtnMap.put("errMsg", "查询targetStop暂无可用端口");
-                                logger.info("查询targetStop暂无可用端口");
-                            } else {
+                            if (null != targetCounts && targetCounts > 0) {
                                 rtnMap.put("code", "1");
                                 // 将可用端口数量放入返回的map
                                 rtnMap.put("sourceCounts", sourceCounts);
@@ -345,11 +315,38 @@ public class GrapheditorCtrl {
                                 // stop的端口类型放入返回的map
                                 rtnMap.put("sourceType", sourcePortType);
                                 rtnMap.put("targetType", targetPortType);
+                                // stop的name放入返回的map
+                                rtnMap.put("sourceName", sourceStop.getName());
+                                rtnMap.put("targetName", targetStop.getName());
+                            } else {
+                                rtnMap.put("code", "0");
+                                rtnMap.put("errMsg", "查询targetStop暂无可用端口");
+                                logger.info("查询targetStop暂无可用端口");
                             }
+                        } else {
+                            rtnMap.put("code", "0");
+                            rtnMap.put("errMsg", "查询targetStop接口的占用情况出错");
+                            logger.info("查询targetStop接口的占用情况出错");
                         }
+                    } else {
+                        rtnMap.put("code", "0");
+                        rtnMap.put("errMsg", "查询sourceStop暂无可用端口");
+                        logger.info("查询sourceStop暂无可用端口");
                     }
+                } else {
+                    rtnMap.put("code", "0");
+                    rtnMap.put("errMsg", "查询sourceStop接口的占用情况出错");
+                    logger.info("查询sourceStop接口的占用情况出错");
                 }
+            } else {
+                rtnMap.put("code", "0");
+                rtnMap.put("errMsg", "sourceStop的sourceStopOutports或者targetStop的targetStopInports为None不能输出");
+                logger.info("sourceStop的sourceStopOutports或者targetStop的targetStopInports为None不能输出");
             }
+        } else {
+            rtnMap.put("code", "0");
+            rtnMap.put("errMsg", "sourceStop的sourceStopOutports或者targetStop的targetStopInports为Null不能输出");
+            logger.info("sourceStop的sourceStopOutports或者targetStop的targetStopInports为Null不能输出");
         }
         return rtnMap;
     }
