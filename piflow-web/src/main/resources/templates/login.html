@@ -10,7 +10,7 @@
     <!-- The fav icon -->
     <link rel="shortcut icon" th:href="@{/img/logo.ico}">
     <style type="text/css">
-        /*ÈËÎªÖÆÔìÒ»¸öÕ¼¾İÕû¸öÆÁÄ»µÄDiv,ÆäÍ¸Ã÷¶ÈÎª0.7ÇÒz-indexÎª9999Ê¹Ö®Ç°µÄÒ³Ãæ±»Ñ¹ÔÚµ×²ãÎŞ·¨µã»÷*/
+        /*äººä¸ºåˆ¶é€ ä¸€ä¸ªå æ®æ•´ä¸ªå±å¹•çš„Div,å…¶é€æ˜åº¦ä¸º0.7ä¸”z-indexä¸º9999ä½¿ä¹‹å‰çš„é¡µé¢è¢«å‹åœ¨åº•å±‚æ— æ³•ç‚¹å‡»*/
         .fullScreen {
             position: fixed;
             width: 100%;
@@ -142,7 +142,7 @@
 <script type="text/javascript" th:src='@{/js/jquery/jquery.js}'></script>
 <script type="text/javascript" th:src='@{/js/jquery.form.3.51.0/jquery.form.js}'></script>
 <script type="text/javascript">
-    //³ÌĞòĞ´Íê£¬ÒªÏ°¹ßĞÔ¼ì²éÒ»ÏÂ
+    //ç¨‹åºå†™å®Œï¼Œè¦ä¹ æƒ¯æ€§æ£€æŸ¥ä¸€ä¸‹
     $(function () {
         $("#userInput").change(function () {
             var val = $(this).val();
@@ -169,11 +169,11 @@
         var pw1 = $("#pw1").val();
         var pw2 = $("#pw2").val();
         if (pw1 == pw2) {
-            $("#promptSpan").html('<font color=\'green\'>Á½´ÎÃÜÂëÏàÍ¬</font>');
+            $("#promptSpan").html('<font color=\'green\'>Verification passed</font>');
             $('#signUpBtn').attr("disabled", false);
         }
         else {
-            $("#promptSpan").html("<font color='red'>Á½´ÎÃÜÂë²»ÏàÍ¬</font>");
+            $("#promptSpan").html("<font color='red'>Two passwords are different</font>");
             $('#signUpBtn').attr("disabled", true);
         }
         $("#promptSpan").show();
