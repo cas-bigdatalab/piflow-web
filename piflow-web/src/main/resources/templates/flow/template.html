@@ -187,29 +187,30 @@ $(document).ajaxSend(function (e, xhr, options) {
 </script>
 <script type="text/javascript">
   function deleteTemPlate(id, name) {
-      var flag = confirm("确定删除" + name + "吗?");
-      if (flag) {
-          $.ajax({
-              cache: true,//保留缓存数据
-              type: "get",//为post请求
-              url: "/piflow-web/template/deleteTemplate",//这是我在后台接受数据的文件名
-              data: {id: id},
-              async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
-              error: function (request) {//请求失败之后的操作
-                  return;
-              },
-              success: function (data) {//请求成功之后的操作
-                  if (data > 0) {
-                      layer.msg('Successfully Deleted', {icon: 1, shade: 0, time: 2000}, function () {
-                    	  location.reload();
-                      });
-                  } else {
-                      layer.msg('删除失败', {icon: 2, shade: 0, time: 2000}, function () {
-                      });
-                  }
-              }
-          });
-      }
+	  layer.confirm("Are you sure to delete '" + name + "' ?", {
+		  btn: ['confirm','cancel'] //按钮
+	 	 ,title: 'Confirmation prompt' 
+		}, function(){
+			$.ajax({
+	              cache: true,//保留缓存数据
+	              type: "get",//为post请求
+	              url: "/piflow-web/template/deleteTemplate",//这是我在后台接受数据的文件名
+	              data: {id: id},
+	              async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
+	              error: function (request) {//请求失败之后的操作
+	                  return;
+	              },
+	              success: function (data) {//请求成功之后的操作
+	                  if (data > 0) {
+	                      layer.msg('Delete Success', {icon: 1, shade: 0, time: 2000}, function () {
+	                    	  location.reload();
+	                      });
+	                  } else {
+	                      layer.msg('Delete failed', {icon: 2, shade: 0, time: 2000}, function () {});
+	                  }
+	              }
+	          });
+		}, function(){});
   }
   function initAll(url) {
       window.location.href = url;
@@ -239,7 +240,7 @@ $(document).ajaxSend(function (e, xhr, options) {
     		  layer.msg(dataMap.errMsg, {icon: 2, shade: 0, time: 2000}, function () {});
     	  }
       }).error(function () {
-          layer.msg("上传失败", {icon: 2, shade: 0, time: 2000}, function () {});
+          layer.msg("Upload failure", {icon: 2, shade: 0, time: 2000}, function () {});
       });
   }
   
@@ -247,7 +248,7 @@ $(document).ajaxSend(function (e, xhr, options) {
   {
   var obj =document.getElementById('templateFile'); 
   if(obj.value==null || obj.value ==''){ 
-  	layer.msg('请选择xml文件', {icon: 2, shade: 0, time: 2000}, function () {});
+  	layer.msg('please upload the XML file', {icon: 2, shade: 0, time: 2000}, function () {});
   	this.focus()
   	return false;
   }
@@ -255,7 +256,7 @@ $(document).ajaxSend(function (e, xhr, options) {
   var charindex = obj.value.lastIndexOf(".");
   var ExtentName = obj.value.substring(charindex,charindex+4);
   if(!(ExtentName == ".xml" )){
-  	layer.msg('请上传xml文件', {icon: 2, shade: 0, time: 2000}, function () {});
+  	layer.msg('please upload the XML file', {icon: 2, shade: 0, time: 2000}, function () {});
   	this.focus()
   	return false;
   }

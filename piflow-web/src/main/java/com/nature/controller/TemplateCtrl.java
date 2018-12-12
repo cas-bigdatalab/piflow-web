@@ -105,14 +105,14 @@ public class TemplateCtrl {
 					int addTemplate = iTemplateService.addTemplate(template);
 					 if (addTemplate > 0) {
 			                rtnMap.put("code", "1");
-			                rtnMap.put("errMsg", "保存模板成功");
+			                rtnMap.put("errMsg", "save template success");
 			              //保存stop，属性信息
 							List<Stops> stopsList = flowById.getStopsList();
 							if (null != stopsList && stopsList.size() > 0) {
 								flowAndStopsTemplateVoServiceImpl.addStopsList(stopsList,template);
 							}
 					 } else {
-					rtnMap.put("errMsg", "保存模板失败");
+					rtnMap.put("errMsg", "failed to save template");
 					logger.info("保存模板失败");
 					}
 					 return JsonUtils.toJsonNoException(rtnMap);
@@ -168,7 +168,7 @@ public class TemplateCtrl {
 	       if (!map.isEmpty() && null != map) {
 	    	    String code = (String) map.get("code");
 	    	    if ("0".equals(code)) {
-	    	    	rtnMap.put("errMsg", "上传文件失败");
+	    	    	rtnMap.put("errMsg", "failed to upload file");
 	    	    	JsonUtils.toJsonNoException(rtnMap);
 				}
 	    	    String name = (String) map.get("fileName");
@@ -214,10 +214,10 @@ public class TemplateCtrl {
 							}
 					 	}
 		                rtnMap.put("code", "1");
-		                rtnMap.put("errMsg", "模板上传成功");
+		                rtnMap.put("errMsg", "successful template upload");
 		                logger.info("模板上传成功");
 		            } else {
-		                rtnMap.put("errMsg", "模板上传失败");
+		                rtnMap.put("errMsg", "template upload failed");
 		                logger.info("模板上传失败");
 		            }
 		            return JsonUtils.toJsonNoException(rtnMap);

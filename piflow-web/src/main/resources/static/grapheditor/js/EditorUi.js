@@ -938,7 +938,7 @@ EditorUi.prototype.formatEnabled = true;
 /**
  * Specifies the width of the format panel. Default is 240.
  */
-EditorUi.prototype.formatWidth = 240;
+EditorUi.prototype.formatWidth = 425;
 
 /**
  * Specifies the height of the toolbar. Default is 36.
@@ -965,7 +965,7 @@ EditorUi.prototype.editButtonLink = null;
  * screen widths <= 640px.
  */
 EditorUi.prototype.hsplitPosition = (screen.width <= 640) ? 118 : 208;
-EditorUi.prototype.hsplitRightPosition = (screen.width <= 640) ? 118 : 240;
+EditorUi.prototype.hsplitRightPosition = (screen.width <= 640) ? 118 : 425;
 
 /**
  * Specifies if animations are allowed in <executeLayout>. Default is true.

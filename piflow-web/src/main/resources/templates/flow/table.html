@@ -351,7 +351,7 @@
                 async: false,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
                 error: function (request) {//请求失败之后的操作
                     layer.closeAll('page');
-                    layer.msg('创建失败,请稍后再试！', {icon: 2, shade: 0, time: 2000}, function () {
+                    layer.msg('creation failed ', {icon: 2, shade: 0, time: 2000}, function () {
                     });
                     return;
                 },
@@ -359,12 +359,12 @@
                     layer.closeAll('page');
                     var dataMap = JSON.parse(data);
                     if ("1" === dataMap.code) {
-                        layer.msg('创建成功', {icon: 1, shade: 0, time: 2000}, function () {
+                        layer.msg('create success ', {icon: 1, shade: 0, time: 2000}, function () {
                             var tempwindow = window.open('_blank');
                             tempwindow.location = "/piflow-web/grapheditor/home?load=" + dataMap.flowId;
                         });
                     } else {
-                        layer.msg('创建失败,请稍后再试！', {icon: 2, shade: 0, time: 2000}, function () {
+                        layer.msg('creation failed', {icon: 2, shade: 0, time: 2000}, function () {
                         });
                     }
                 }
@@ -396,7 +396,7 @@
                 async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
                 error: function (request) {//请求失败之后的操作
                     layer.closeAll('page');
-                    layer.msg('修改失败,请稍后再试！', {icon: 2, shade: 0, time: 2000}, function () {
+                    layer.msg('update failed ', {icon: 2, shade: 0, time: 2000}, function () {
                         window.location.reload();
                     });
                     return;
@@ -404,7 +404,7 @@
                 success: function (data) {//请求成功之后的操作
                     if (data > 0) {
                         layer.closeAll('page');
-                        layer.msg('修改成功', {icon: 1, shade: 0, time: 2000}, function () {
+                        layer.msg('update success', {icon: 1, shade: 0, time: 2000}, function () {
                             location.reload();
                         });
                     }
@@ -518,9 +518,11 @@
     });
 
     function deleteFlow(id, name) {
-        var flag = confirm("确定删除" + name + "吗?");
-        if (flag) {
-            $.ajax({
+    	 layer.confirm("Are you sure to delete '" + name + "' ?", {
+    		  btn: ['confirm','cancel'] //按钮
+    	 	 ,title: 'Confirmation prompt' 
+    		}, function(){
+         	  $.ajax({
                 cache: true,//保留缓存数据
                 type: "get",//为post请求
                 url: "/piflow-web/flow/deleteFlow",//这是我在后台接受数据的文件名
@@ -531,22 +533,20 @@
                 },
                 success: function (data) {//请求成功之后的操作
                     if (data > 0) {
-                        layer.msg('Successfully Deleted', {icon: 1, shade: 0, time: 2000}, function () {
+                        layer.msg('Delete Success', {icon: 1, shade: 0, time: 2000}, function () {
                             location.reload();
                         });
                     } else {
-                        layer.msg('删除失败', {icon: 2, shade: 0, time: 2000}, function () {
-                            location.reload();
-                        });
+                        layer.msg('Delete failed', {icon: 2, shade: 0, time: 2000}, function () {});
                     }
                 }
-            });
-        }
+            });  
+    	}, function(){});
     }
 
     function checkFlowInput(flowName, description, driverMemory, executorNumber, executorMemory, executorCores) {
         if (flowName == '') {
-            layer.msg('flowName不能为空！', {icon: 2, shade: 0, time: 2000});
+            layer.msg('flowName Can not be empty', {icon: 2, shade: 0, time: 2000});
             document.getElementById('flowName').focus();
             return false;
         }
@@ -557,22 +557,22 @@
              return false;
          } */
         if (driverMemory == '') {
-            layer.msg('driverMemory不能为空！', {icon: 2, shade: 0, time: 2000});
+            layer.msg('driverMemory Can not be empty', {icon: 2, shade: 0, time: 2000});
             document.getElementById('driverMemory').focus();
             return false;
         }
         if (executorNumber == '') {
-            layer.msg('executorNumber不能为空！', {icon: 2, shade: 0, time: 2000});
+            layer.msg('executorNumber Can not be empty', {icon: 2, shade: 0, time: 2000});
             document.getElementById('executorNumber').focus();
             return false;
         }
         if (executorMemory == '') {
-            layer.msg('executorMemory不能为空！', {icon: 2, shade: 0, time: 2000});
+            layer.msg('executorMemory Can not be empty', {icon: 2, shade: 0, time: 2000});
             document.getElementById('executorMemory').focus();
             return false;
         }
         if (executorCores == '') {
-            layer.msg('executorCores不能为空！', {icon: 2, shade: 0, time: 2000});
+            layer.msg('executorCores Can not be empty', {icon: 2, shade: 0, time: 2000});
             document.getElementById('executorCores').focus();
             return false;
         }
@@ -580,7 +580,7 @@
     }
 
     function saveTableTemplate(id, name) {
-        layer.prompt({title: '请输入要保存的模板名称', formType: 0}, function (text, index) {
+        layer.prompt({title: 'please enter the template name', formType: 0,btn: ['submit', 'cancel']}, function (text, index) {
             layer.close(index);
             $.ajax({
                 cache: true,//保留缓存数据

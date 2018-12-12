@@ -5,6 +5,7 @@ import com.nature.base.util.LoggerUtil;
 import com.nature.component.workFlow.service.IPropertyService;
 import com.nature.component.workFlow.service.IStopsService;
 import com.nature.component.workFlow.vo.StopsVo;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -70,15 +72,21 @@ public class StopsCtrl {
     }
 
     @RequestMapping("/updateStopsOne")
-    public Integer updateStops(String content, String id) {
+    public String updateStops(String content, String id) {
+    	Map<String, String> rtnMap = new HashMap<String, String>();
+        rtnMap.put("code", "0");
         int updateStops = 0;
         updateStops = propertyServiceImpl.updateProperty(content, id);
         if (updateStops > 0) {
+        	 rtnMap.put("code", "1");
+             rtnMap.put("errMsg", "保存成功");
+             rtnMap.put("value", content);
             logger.info("stops属性修改成功:" + updateStops);
-            return updateStops;
         } else {
-            return updateStops;
+        	   rtnMap.put("errMsg", "数据库保存失败");
+               logger.info("数据库保存失败");
         }
+        return JsonUtils.toJsonNoException(rtnMap);
     }
 
     @RequestMapping("/updateStopsById")

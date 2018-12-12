@@ -712,3 +712,13 @@ html td.mxWindowTitle {
  	color:rgb(112, 112, 112);
  	padding:4px;
 }
+#loadingXmlSelect{  
+    background:#fafdfe;  
+    height:28px;  
+    width:180px;  
+    line-height:28px;  
+    border:1px solid #9bc0dd;  
+    -moz-border-radius:2px;  
+    -webkit-border-radius:2px;  
+    border-radius:2px;  
+}  

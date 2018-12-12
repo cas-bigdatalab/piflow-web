@@ -35,6 +35,7 @@
         var xmlDate = [[${xmlDate}]];
         var xmlDateStr = [[${xmlDateStr}]];
         var loadId = [[${load}]];
+        var maxStopId = [[${maxStopPageId}]];
         var divValue = null;
 
         function divAppend(divAppend) {
@@ -53,17 +54,27 @@
 </div>
 <div style="width: 45.2%; float: right;">
     <div style="position: fixed; z-index: 999;text-align: right; width:45%;">
-        <input id="reloadStops" type="button" onclick="reloadStops()" value="ReloadStops"/>
-        <input id="startProcess" type="button" onclick="runFlow()" value="Run"/>
-        <input type="button" onclick="saveTemplate()" value="save Template"/>
-        <input type="button" value="loadingXml" id="loadingXml"/>
-        <div id="divloadingXml">
-            <select name="loadingXmlSelect" id="loadingXmlSelect" onchange="loadTemplate()"
-                    style="width: 164px;"></select>
-        </div>
-        <!--  <form id="uploadForm" enctype="multipart/form-data" method="post" >
-          <input type="file" id="uploadFile" name="templateFile"  style="display:none;"  onchange="uploadXmlFile()"/>
-         <input type="button" onclick="uploadTemplate()" value="upload Template"/></form> -->
+      <a  href='javascript:void(0);' onclick="runFlow()" title="Run flow" > <i class="glyphicon glyphicon-play icon-white"></i></a>
+ <div class="btn-group">
+  <a  class="btn" href='javascript:void(0);' title="menu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+   <i class='glyphicon glyphicon-cog'></i> 
+  </a>
+  <ul class="dropdown-menu pull-right">
+    <li><a id="reloadStops" href='javascript:void(0);' onclick="reloadStops()" title="reload Stops" >reloadStops </a></li>
+  	<li role="separator" class="divider"></li>
+    <li><a id="saveTemplate" href='javascript:void(0);' onclick="saveTemplate()" title="save Template" >save Template </a></li>
+  	<li role="separator" class="divider"></li>
+    <li><a id="uploadTemplate" href='javascript:void(0);' onclick="uploadTemplate()" title="uploadTemplate" >uploadTemplate </a></li>
+ 	<li role="separator" class="divider"></li>
+    <li><a id="loadingXml" href='javascript:void(0);' >loading Flow </a></li>
+  </ul>
+</div>
+         <div id="divloadingXml">
+		<select  name="loadingXmlSelect" id="loadingXmlSelect" onchange="loadTemplate()" style="width: 164px;" ></select>
+		</div>  
+         <form id="uploadForm" enctype="multipart/form-data" method="post" >
+         <input type="file" id="uploadFile" name="templateFile"  style="display:none;"  onchange="uploadXmlFile()"/>
+       </form>  
     </div>
 </div>
 <!-- Modal 端口 -->
@@ -114,6 +125,24 @@
     </div>
 </div>
 <!--初始化画板-->
+<!--stop 属性编辑弹窗开始-->
+<div style="display: none;" id="stopOpen">
+    <form class="layui-form" action="">
+        <div class="layui-form-item layui-form-text">
+            <div class="layui-input-block">
+                <textarea id="stopValue" placeholder="please input ..." class="layui-textarea"
+                          style="width: 314px;margin-left: -100px;resize:none;"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item" style="text-align: center;margin-right: 90px;margin-top: -8px;">
+            <div class="layui-input-block">
+                <button type="button" class="layui-btn layui-btn-primary"   id="buttonStop">save
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+<!--stop 属性编辑弹窗结束-->
 <script type="text/javascript" th:src="@{/grapheditor/initGraph.js}"></script>
 <script type="text/javascript">
     var token = $("meta[name='_csrf']").attr("content");
@@ -128,21 +157,24 @@
 
     function findBasicInfo(evt) {
         flag = 0;
-        var cells = null;
         var id = null;
         var value = null;
         var ss = [];
         //针对不同事件设置值
-        if ('cellsAdded' == evt.name || 'cellsMoved' == evt.name) {
-            cells = evt.properties.cells;
-            ss = cells[0];
-            value = ss.value;
-            id = ss.id;
+        var cells = evt.properties.cells;
+        if (null != cells) {
+            //cellsAdded和cellsMoved操作走这里
+            value = cells[0].value;
+            id = cells[0].id;
         } else {
             cells = evt.properties;
             if (null != cells.cell) {
+                //点击stop操作
                 value = cells.cell.value;
                 id = cells.cell.id;
+            }else{
+                //第一次给画板添加stop时，拖拽过程获取不到id时
+                queryStopsProperty(maxStopId);
             }
         }
         if (typeof(cells) != "undefined" && null != id && "" != id && "null" != id) {
@@ -174,7 +206,6 @@
             },
             success: function (data) {
                 if ("" != data) {
-                    console.log("stops属性查询success");
                     add(data.propertiesVo, data.id, data.checkpoint);
                     document.getElementById('stopsNameLabel').innerText = data.name;
                     document.getElementById('stopsDescription').innerText = data.description;
@@ -218,7 +249,6 @@
                 if ('0' != dataMap.code) {
                     var queryInfo = dataMap.queryInfo;
                     if ("" != queryInfo) {
-                        console.log("path查询success");
                         $("#AttributeInfoId").hide();
                         $("#containerID").show();
                         $("#basicInfoId").html('线信息');
@@ -226,21 +256,21 @@
                         $('#basicInfoId').css('background-color', '');
                         $('#basicInfoId').css('border-style', '');
                         $('#basicInfoId').css('height', '27px');
+                        $("#descriptionID").html('flowName：');
                         $("#stopsNameID").html('pageId：');
-                        $("#GroupNameID").html('form：');
-                        $("#descriptionID").html('to：');
-                        $("#bundelID").html('inport：');
-                        $("#versionID").html('outport：');
-                        $("#ownerID").html('createrTime：');
-                        $("#createDateID").html('flowName：');
+                        $("#GroupNameID").html('inport：');
+                        $("#bundelID").html('outport：');
+                        $("#versionID").html('form：');
+                        $("#ownerID").html('to：');
+                        $("#createDateID").html('createrTime：');
                         document.getElementById('table_idDiv').style.display = 'none';
+                        document.getElementById('stopsDescription').innerText = queryInfo.flow.name;
                         document.getElementById('stopsNameLabel').innerText = queryInfo.pageId;
-                        document.getElementById('stopsDescription').innerText = queryInfo.stopTo.name;
-                        document.getElementById('stopsGroups').innerText = queryInfo.stopFrom.name;
-                        document.getElementById('stopsBundel').innerText = queryInfo.inport;
-                        document.getElementById('stopsVersion').innerText = queryInfo.outport;
-                        document.getElementById('stopSowner').innerText = queryInfo.crtDttmString;
-                        document.getElementById('stopCreateDate').innerText = queryInfo.flow.name;
+                        document.getElementById('stopsGroups').innerText = queryInfo.inport;
+                        document.getElementById('stopsBundel').innerText = queryInfo.outport;
+                        document.getElementById('stopsVersion').innerText = queryInfo.stopFrom.name;
+                        document.getElementById('stopSowner').innerText = queryInfo.stopTo.name;
+                        document.getElementById('stopCreateDate').innerText = queryInfo.crtDttmString;
                     }
                 } else {
                     console.log("path属性查询null");
@@ -286,26 +316,30 @@
                         select.appendChild(option);
                     }
                 }
-                var displayName = document.createElement('textarea');
+                var displayName = document.createElement('input');
                 if (required)
                 displayName.setAttribute('class', 'true');
-                displayName.setAttribute('onclick', 'dbssn("' + data[y].name + '")');
-                displayName.setAttribute('id', '' + data[y].name + '');
-                displayName.setAttribute('rows', '1');
-                displayName.setAttribute('cols', '20');
-                displayName.setAttribute('onblur', 'shiqu("' + data[y].id + '","' + data[y].name + '")');
-                displayName.style.width = "210px";
-                displayName.style.resize = "none";
-                displayName.innerHTML = '' + customValue + '';
+               // displayName.style.border = '0px' ;
+                displayName.setAttribute('id', '' + data[y].id + '');
+                displayName.setAttribute('name', '' + data[y].name + '');
+              	displayName.setAttribute('onclick', 'stopTabTd(this)');
+                displayName.style.width = "345px";
+                displayName.style.background = "rgb(245, 245, 245)";
+                displayName.setAttribute('value', ''+ customValue +'');
                 var spanDisplayName = 'span' + data[y].displayName;
                 var spanDisplayName = document.createElement('span');
                 var spanFlag = document.createElement('span');
                 spanDisplayName.style.cursor = "pointer";
                 spanDisplayName.setAttribute('title', '' + data[y].description + '');
                 spanFlag.setAttribute('style', 'color:red');
-                mxUtils.write(spanDisplayName, '' + data[y].displayName + '');
+                mxUtils.write(spanDisplayName, '' + data[y].displayName + '' + ": ");
                 mxUtils.write(spanFlag, '*');
+                //端口不可编辑
+                if("outports"==data[y].displayName || "inports"==data[y].displayName){
+                	 displayName.setAttribute('disabled', 'disabled');
+                }
                 var tr = document.createElement("tr");
+                tr.setAttribute('class', 'trTableStop');
                 var td = document.createElement("td");
                 td.style.width = "60px";
                 var td1 = document.createElement("td");
@@ -318,7 +352,7 @@
                 } else {
                     td1.appendChild(displayName);
                     if (required)
-                        td2.appendChild(spanFlag);
+                    td2.appendChild(spanFlag);
                 }
                 tr.appendChild(td);
                 tr.appendChild(td1);
@@ -377,11 +411,7 @@
             divValue.appendChild(spanCheckpoint);
         }
     }
-
-    function dbssn(id) {
-        $("#" + id + "").focus();
-    }
-
+ 
     // 添加操作处理
     function addCellsCustom(cells, operType) {
         var removePaths = [];
@@ -904,35 +934,41 @@
         $("#myModalPort").draggable();//为模态对话框添加拖拽
         $("#myModalPort").css("overflow", "hidden");//禁止模态对话框的半透明背景滚动
         loadingSelect();
+        $(".btn-group").mouseover(function () {
+            $(this).addClass("open");
+            var oDiv=document.getElementById("divloadingXml");
+    		  oDiv.style.display="none";
+        });
+        $(".btn-group").mouseleave(function(){
+            $(this).removeClass("open");
+        })
     });
-
-    function saveTemplate() {
-        var getXml = thisEditor.getGraphXml();
+    
+    function saveTemplate(){
+    	var getXml = thisEditor.getGraphXml();
         var sssss = getXml.outerHTML;
-        layer.prompt({title: '请输入模板名称', formType: 2}, function (text, index) {
-            layer.close(index);
-            $.ajax({
+    	layer.prompt({title: 'please enter the template name', formType: 0 ,btn: ['submit', 'cancel']}, function(text, index){
+    	    layer.close(index);
+    	    $.ajax({
                 cache: true,//保留缓存数据
                 type: "POST",//为post请求
                 url: "/piflow-web/template/saveTemplate",//这是我在后台接受数据的文件名
                 data: {
-                    value: sssss,
+                	value: sssss,
                     load: loadId,
                     name: text
                 },
-                async: true,
+                async: true, 
                 error: function (request) {//请求失败之后的操作
-                    console.log(" save template error");
+                	console.log( " save template error");
                     return;
                 },
                 success: function (data) {//请求成功之后的操作
                     var dataMap = JSON.parse(data);
                     if (0 !== dataMap.code) {
-                        layer.msg(dataMap.errMsg, {icon: 1, shade: 0, time: 2000}, function () {
-                        });
+                    	 layer.msg(dataMap.errMsg, {icon: 1, shade: 0, time: 2000}, function () {});
                     } else {
-                        layer.msg(dataMap.errMsg, {icon: 2, shade: 0, time: 2000}, function () {
-                        });
+                    	 layer.msg(dataMap.errMsg, {icon: 2, shade: 0, time: 2000}, function () {});
                     }
                 }
             });
@@ -956,38 +992,33 @@
             processData: false,
             contentType: false,
         }).success(function (data) {
-            var dataMap = JSON.parse(data);
-            if (0 !== dataMap.code) {
-                layer.msg(dataMap.errMsg, {icon: 1, shade: 0, time: 2000}, function () {
-                });
-            } else {
-                layer.msg(dataMap.errMsg, {icon: 2, shade: 0, time: 2000}, function () {
-                });
-            }
+      	  var dataMap = JSON.parse(data);
+      	  if (0 !== dataMap.code) {
+      		  layer.msg(dataMap.errMsg, {icon: 1, shade: 0, time: 2000}, function () {});
+      	  }else{
+      		  layer.msg(dataMap.errMsg, {icon: 2, shade: 0, time: 2000}, function () {});
+      	  }
         }).error(function () {
-            layer.msg("上传失败", {icon: 2, shade: 0, time: 2000}, function () {
-            });
+            layer.msg("Upload failure", {icon: 2, shade: 0, time: 2000}, function () {});
         });
     }
-
-    function FileTypeCheck() {
-        var obj = document.getElementById('uploadFile');
-        if (obj.value == null || obj.value == '') {
-            layer.msg('请选择xml文件', {icon: 2, shade: 0, time: 2000}, function () {
-            });
-            this.focus()
-            return false;
-        }
-        var length = obj.value.length;
-        var charindex = obj.value.lastIndexOf(".");
-        var ExtentName = obj.value.substring(charindex, charindex + 4);
-        if (!(ExtentName == ".xml")) {
-            layer.msg('请上传xml文件', {icon: 2, shade: 0, time: 2000}, function () {
-            });
-            this.focus()
-            return false;
-        }
-        return true;
+    
+    function FileTypeCheck(){
+    var obj =document.getElementById('uploadFile'); 
+    if(obj.value==null || obj.value ==''){ 
+    	layer.msg('please upload the XML file', {icon: 2, shade: 0, time: 2000}, function () {});
+    	this.focus()
+    	return false;
+    }
+    var length = obj.value.length;
+    var charindex = obj.value.lastIndexOf(".");
+    var ExtentName = obj.value.substring(charindex,charindex+4);
+    if(!(ExtentName == ".xml" )){
+    	layer.msg('please upload the XML file', {icon: 2, shade: 0, time: 2000}, function () {});
+    	this.focus()
+    	return false;
+    }
+    	return true;
     }
 
     function loadingXml(id, loadId) {
@@ -1028,7 +1059,7 @@
                 var dataMap = JSON.parse(data);
                 if (dataMap.code != '0') {
                     var temPlateList = dataMap.temPlateList;
-                    $("#loadingXmlSelect").append("<option value='-1' >-------------请选择-------------</option>");
+                    $("#loadingXmlSelect").append("<option value='-1' >--------please choose--------</option>");
                     for (var i = 0; i < temPlateList.length; i++) {
                         $("#loadingXmlSelect").append("<option value=" + temPlateList[i].id + " >" + temPlateList[i].name + "</option>");
                     }
@@ -1036,20 +1067,24 @@
             }
         });
     }
-
-
-    function loadTemplate() {
-        var id = $("#loadingXmlSelect").val();
-        if (id == '-1') {
-            return;
-        }
-        var name = $("#loadingXmlSelect option:selected").text();
-        layer.confirm('您确定打开 ' + name + '吗？', {
-            btn: ['确定', '取消'] //按钮
-        }, function () {
-            loadingXml(id, loadId);
-        }, function () {
-        });
+    
+    
+    function loadTemplate(){
+    	var id = $("#loadingXmlSelect").val();
+    	if(id == '-1'){
+    		return;
+    	}
+    	var name = $("#loadingXmlSelect option:selected").text();
+    	layer.confirm('Are you sure you want to load '+name+'？', {
+    		  btn: ['submit','cancel'] //按钮
+    		}, function(){
+    		  loadingXml(id,loadId);
+    		  var oDiv=document.getElementById("divloadingXml");
+      		  oDiv.style.display="none";
+    		}, function(){
+    		var oDiv=document.getElementById("divloadingXml");
+        	oDiv.style.display="none";
+    		});
     }
 
     //@ sourceURL=grapheditorIndex.js

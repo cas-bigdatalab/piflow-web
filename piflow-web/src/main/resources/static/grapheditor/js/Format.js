@@ -5302,3 +5302,66 @@ DiagramFormatPanel.prototype.destroy = function()
          }
      });} 
   }
+   function stopTabTd(e){
+       var name = e.getAttribute('name');
+       var id = e.getAttribute('id');
+       $("#stopValue").css("background-color","");
+       $("#stopValue").attr('id',name);
+       $("#"+name).val($("#"+id).val());
+       $("#"+name).attr('name',name);
+     //  $("#"+name).attr('onblur','shiqu("' + id + '","stopValue")');
+       $("#"+name).attr('id','stopValue');
+       $("#buttonStop").attr("onclick","updateStops('"+ id + "','stopValue',this);");
+	   var p = $(e).offset();
+		layer.open({
+            type: 1,
+            title: name,
+            shadeClose: true,
+            closeBtn: 1,
+            shift:7,
+            anim: 1,//由上往下弹出
+            shade: 0.1,
+            resize:false,//禁止拉伸
+            move: false,//禁止拖拽
+            offset:[''+p.top+'px',''+p.left+'px'],//坐标
+            area: ['345px', '214px'], //宽高
+            content: $("#stopOpen")
+        });
+   }
+   function updateStops(id,name,e){
+	   var p = $(e).offset();
+		var content = document.getElementById(''+name+'').value;
+		var classname = document.getElementById(''+id+'').className;
+		if(content == "") {
+			if(classname == 'true'){
+				 $("#"+name+"").css("background-color","#FFD39B");
+			}
+			return;
+		}
+	   $.ajax({
+           cache: true,
+           type: "POST",
+           url:"/piflow-web/stops/updateStopsOne", 
+           data : {
+   			"id" : id,
+   			"content" : content 
+   			},
+           async: true,
+           traditional: true,
+           error: function (request) {
+               console.log("attribute update error");
+               return;
+           },
+           success: function (data) {
+        	   var dataMap = JSON.parse(data);
+        	   if ('1' === dataMap.code) {
+        		   layer.msg('success', {icon: 1, shade: 0, time: 2000, offset:[''+p.top-30+'px',''+p.left+50+'px']}, function () {});
+        		   $("#"+id).val(dataMap.value);
+               } else {
+            	   layer.msg('', {icon: 2, shade: 0, time: 2000}, function () {});
+               }
+        	   layer.closeAll('page');
+               console.log("attribute update success");
+           }
+       });
+   }
