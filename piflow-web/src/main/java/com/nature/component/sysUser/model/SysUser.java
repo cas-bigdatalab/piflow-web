@@ -1,5 +1,7 @@
 package com.nature.component.sysUser.model;
 
+import com.nature.base.BaseHibernateModelUUIDNoCorpAgentId;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -13,11 +15,7 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "SYS_USER")
-public class SysUser implements Serializable {
-
-    @Id
-    @GeneratedValue
-    private Integer id;// 主键id 声明主键 声明主键的生成策略
+public class SysUser extends BaseHibernateModelUUIDNoCorpAgentId {
 
     private String username;
 
@@ -29,17 +27,7 @@ public class SysUser implements Serializable {
 
     private String sex;
 
-    private Boolean enabled;
-
     private String role;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public String getUsername() {
         return username;
@@ -79,14 +67,6 @@ public class SysUser implements Serializable {
 
     public void setSex(String sex) {
         this.sex = sex;
-    }
-
-    public Boolean getEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(Boolean enabled) {
-        this.enabled = enabled;
     }
 
     public String getRole() {

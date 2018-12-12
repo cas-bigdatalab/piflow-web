@@ -1,6 +1,5 @@
 package com.nature.base.config;
 
-import com.nature.base.config.security.MyPasswordEncoder;
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.SpringContextUtil;
 import com.nature.component.sysUser.model.SysUser;
@@ -55,6 +54,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers("/").permitAll()
+                .antMatchers("/register").permitAll()
+                .antMatchers("/checkUserName").permitAll()
                 .anyRequest()//all others request authentication
                 .authenticated()
                 .and()

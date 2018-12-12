@@ -25,12 +25,12 @@ public class SysUserTransaction {
     private SysUserMapper sysUserMapper;
 
 
-    public List<SysUser> findUserByName(String name) {
-        return sysUserMapper.findUserByName(name);
+    public List<SysUser> findUserByNameLike(String name) {
+        return sysUserMapper.findUserByNameLike(name);
     }
 
-    public SysUser findUserByNames(String name) {
-        return sysUserMapper.findUserByNames(name);
+    public List<SysUser> findUserByName(String name) {
+        return sysUserMapper.findUserByName(name);
     }
 
     public SysUser findUserByUserName(String userName) {
@@ -44,14 +44,14 @@ public class SysUserTransaction {
     }
 
     public int addUser(SysUser user) {
-        return sysUserMapper.addUser(user);
+        return sysUserMapper.addSysUser(user);
     }
 
     public int saveOrUpdate(SysUser user) {
-        return sysUserMapper.saveOrUpdate(user);
+        return sysUserMapper.updateSysUser(user);
     }
 
-    public int deleteUser(int id) {
+    public int deleteUser(String id) {
         return sysUserMapper.deleteUser(id);
     }
 }

@@ -1,30 +1,31 @@
 package com.nature.mapper.sysUser;
 
 import com.nature.component.sysUser.model.SysUser;
+import com.nature.provider.sysUser.SysUserMapperProvider;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
 @Mapper
 public interface SysUserMapper {
-    @Select("select * from SYS_USER where name like #{name}")
-    public List<SysUser> findUserByName(@Param("name") String name);
+    @SelectProvider(type = SysUserMapperProvider.class, method = "findUserByNameLike")
+    public List<SysUser> findUserByNameLike(@Param("name") String name);
 
-    @Select("select * from SYS_USER where name = #{name}")
-    public SysUser findUserByNames(String name);
+    @SelectProvider(type = SysUserMapperProvider.class, method = "findUserByName")
+    public List<SysUser> findUserByName(String name);
 
-    @Select("select * from SYS_USER where username = #{userName}")
+    @SelectProvider(type = SysUserMapperProvider.class, method = "findUserByUserName")
     public SysUser findUserByUserName(String userName);
 
     @Select("select * from SYS_USER")
     public List<SysUser> getUserList();
 
-    @Insert("insert into SYS_USER(id,name,age) values (#{id},#{name},#{age})")
-    public int addUser(SysUser user);
+    @InsertProvider(type = SysUserMapperProvider.class, method = "addSysUser")
+    public int addSysUser(SysUser sysUser);
 
-    @Update("update SYS_USER set name=#{name},age=#{age} where id=#{id}")
-    public int saveOrUpdate(SysUser user);
+    @UpdateProvider(type = SysUserMapperProvider.class, method = "updateSysUser")
+    public int updateSysUser(SysUser sysUser);
 
     @Delete("delete from SYS_USER where id=#{id}")
-    public int deleteUser(int id);
+    public int deleteUser(String id);
 }

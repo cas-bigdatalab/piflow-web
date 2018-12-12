@@ -4,17 +4,89 @@
     <meta charset="utf-8">
     <title>Piflow-Web</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta th:include="/Macro/csrfTokeHeadMacro :: csrfTokeHeadMacro"/>
     <link id="bs-css" th:href="@{/bootstrap/css/bootstrap-cerulean.min.css}" rel="stylesheet">
 
     <!-- The fav icon -->
     <link rel="shortcut icon" th:href="@{/img/logo.ico}">
-
+    <style type="text/css">
+        /*人为制造一个占据整个屏幕的Div,其透明度为0.7且z-index为9999使之前的页面被压在底层无法点击*/
+        .fullScreen {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            opacity: 0.7;
+            background-color: black;
+            z-index: 9999;
+            text-align: center;
+        }
+    </style>
 </head>
 
 <body style="background-color: #f1f1f1; padding-bottom: 0">
-<div class="container" style="margin-top: 60px">
+<div id="signUpDiv" class="container" style="margin-top: 2%; display: none">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">User Registration</h3>
+                </div>
+                <div class="panel-body">
+                    <form id="signUpForm" th:action="@{/piflow-web/register}" method="post">
+                        <div class="form-group" style="margin-top: 30px">
+                            <label>Username<span style="color: red">*</span></label>
+                            <input type="text" class="form-control" name="username" id="userInput"
+                                   placeholder="Username">
+                            <label id="checkMessage" style="display: none"></label>
+                        </div>
+                        <div class="form-group ">
+                            <label>Password<span style="color: red">*</span></label>
+                            <input type="password" class="form-control" name="pw" id="pw1" placeholder="Password"/>
+                        </div>
+                        <div class="form-group ">
+                            <label>Confirm Password<span style="color: red">*</span></label>
+                            <input type="password" class="form-control" name="pw" id="pw2" placeholder="Password"
+                                   onkeyup="validate()"/>
+                            <label id="promptSpan" style="display: none"></label>
+                        </div>
+                        <div class="form-group ">
+                            <label>Name<span style="color: red">*</span></label>
+                            <input type="text" class="form-control" name="name" id="name" placeholder="Name"/>
+                        </div>
+                        <div class="form-group ">
+                            <label>SEX<span style="color: red">*</span></label>
+                            <div class="radio">
+                                <label class="radio-inline">
+                                    <input type="radio" name="sex" value="1" placeholder="SEX"/>Man
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="sex" value="0" placeholder="SEX"/>Ladies
+                                </label>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <div style="text-align: center;" class="col-md-12 col-xs-12 ">
+                                <button id="signUpBtn" type="button" onclick="submitSignUpForm()" style="width: 25%"
+                                        class="btn btn-primary">SIGN
+                                    UP
+                                </button>
+                                <button id="resetBtn" type="button" onclick="resetSignUpForm()" style="width: 25%"
+                                        class="btn btn-primary">RESET
+                                </button>
+                            </div>
+                        </div>
 
-    <div class="row" style="margin-top: 100px">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="signInDiv" class="container" style="margin-top: 2%">
+    <div class="row" style="margin-top: 10%">
         <div class="col-md-6 col-md-offset-3">
             <div class="panel panel-primary">
                 <div class="panel-heading">
@@ -25,7 +97,8 @@
                         <div class="form-group" style="margin-top: 30px">
                             <div class="input-group col-md-6 col-md-offset-3">
                                 <div class="input-group-addon"><span class="glyphicon glyphicon-user"></span></div>
-                                <input type="text" class="form-control" name="username" id="username" placeholder="Username">
+                                <input type="text" class="form-control" name="username" id="username"
+                                       placeholder="Username">
                             </div>
                         </div>
                         <div class="form-group ">
@@ -37,7 +110,8 @@
                         </div>
                         <br>
                         <div th:if="${param.error}">
-                            <p style="text-align: center" class="text-danger">Login failed, account or password is wrong!</p>
+                            <p style="text-align: center" class="text-danger">Login failed, account or password is
+                                wrong!</p>
                         </div>
                         <div th:if="${result}">
                             <p style="text-align: center" class="text-success" th:text="${result}"></p>
@@ -49,7 +123,7 @@
                         </div>
                         <div class="form-group">
                             <div class="input-group col-md-6 col-md-offset-3" style="text-align: center">
-                                Sign up | Forgot password?
+                                <span class="btn-link" onclick="signUpFunction()">Sign up</span> | Forgot password?
                             </div>
                         </div>
                     </form>
@@ -58,6 +132,89 @@
         </div>
     </div>
 </div>
+<div id='fullScreen' class="fullScreen" style="display: none;">
+    <div style="margin-top: 15%;">
+        <p>
+            <img th:src="@{/img/fullScreen.gif}" alt="">
+        </p>
+    </div>
+</div>
+<script type="text/javascript" th:src='@{/js/jquery/jquery.js}'></script>
+<script type="text/javascript" th:src='@{/js/jquery.form.3.51.0/jquery.form.js}'></script>
+<script type="text/javascript">
+    //程序写完，要习惯性检查一下
+    $(function () {
+        $("#userInput").change(function () {
+            var val = $(this).val();
+            val = $.trim(val);
+            if (val != "") {
+                var url = "/piflow-web/checkUserName";
+                var args = {"userName": val, "time": new Date()};
+                $.get(url, args, function (data) {
+                    var dataMap = JSON.parse(data);
+                    if ('1' === dataMap.code) {
+                        $("#checkMessage").html('<span style="color: green">' + dataMap.errMsg + '</span>');
+                        $('#signUpBtn').attr("disabled", false);
+                    } else {
+                        $("#checkMessage").html('<span style="color: red">' + dataMap.errMsg + '</span>');
+                        $('#signUpBtn').attr("disabled", true);
+                    }
+                    $("#checkMessage").show();
+                });
+            }
+        });
+    });
 
+    function validate() {
+        var pw1 = $("#pw1").val();
+        var pw2 = $("#pw2").val();
+        if (pw1 == pw2) {
+            $("#promptSpan").html('<font color=\'green\'>两次密码相同</font>');
+            $('#signUpBtn').attr("disabled", false);
+        }
+        else {
+            $("#promptSpan").html("<font color='red'>两次密码不相同</font>");
+            $('#signUpBtn').attr("disabled", true);
+        }
+        $("#promptSpan").show();
+    }
+
+    function signUpFunction() {
+        $("#signUpDiv").show();
+        $("#signInDiv").hide();
+    }
+
+    function resetSignUpForm() {
+        $('#signUpForm')[0].reset();
+        $("#promptSpan").hide();
+        $("#checkMessage").hide();
+    }
+
+    function submitSignUpForm() {
+        $("#fullScreen").show();
+        $.ajax({
+            cache: true,
+            type: "POST",
+            url: "/piflow-web/register",
+            data: $('#signUpForm').serialize(),
+            async: true,
+            error: function (request) {
+                //alert("Jquery Ajax request error!!!");
+                return;
+            },
+            success: function (data) {
+                var dataMap = JSON.parse(data);
+                if ('1' === dataMap.code) {
+                    resetSignUpForm()
+                    $("#signUpDiv").hide();
+                    $("#signInDiv").show();
+                }
+                alert(dataMap.errMsg);
+                $("#fullScreen").hide();
+            }
+        });
+    }
+    //@ sourceURL=login.js
+</script>
 </body>
 </html>

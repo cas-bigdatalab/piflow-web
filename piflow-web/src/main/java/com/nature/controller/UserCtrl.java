@@ -2,7 +2,7 @@ package com.nature.controller;
 
 import com.nature.base.util.LoggerUtil;
 import com.nature.component.sysUser.model.SysUser;
-import com.nature.component.sysUser.service.IUserService;
+import com.nature.component.sysUser.service.ISysUserService;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +24,7 @@ public class UserCtrl {
 	Logger logger = LoggerUtil.getLogger();
 
 	@Autowired
-	IUserService userServiceImpl;
+	ISysUserService userServiceImpl;
 
 	@RequestMapping(value = "/user")
 	@ResponseBody
@@ -40,7 +40,7 @@ public class UserCtrl {
 	}
 
 	@RequestMapping(value = "/deleteUser")
-	public String deleteUser(int id) {
+	public String deleteUser(String id) {
 		String resultStr = "删除失败";
 		int result = userServiceImpl.deleteUser(id);
 		if (1 <= result) {
