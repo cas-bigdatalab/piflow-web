@@ -43,7 +43,7 @@ $(document).ready(function () {
 
     function switchTheme(themeName) {
         if (themeName == 'classic') {
-            $('#bs-css').attr('th:href', '@{/charisma/bower_components/bootstrap/css/bootstrap.min.css}');
+            $('#bs-css').attr('th:href', '@{bootstrap/css/bootstrap.min.css}');
         } else {
             $('#bs-css').attr('th:href', '@{/charisma/css/bootstrap-' + themeName + '.min.css}');
         }

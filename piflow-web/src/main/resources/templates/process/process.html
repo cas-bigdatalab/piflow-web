@@ -20,6 +20,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Charisma, a fully featured, responsive, HTML5, Bootstrap admin template.">
     <meta name="author" content="Muhammad Usman">
+    <meta th:include="/Macro/csrfTokeHeadMacro :: csrfTokeHeadMacro"/>
 
     <!-- The styles -->
     <link id="bs-css" th:href="@{/bootstrap/css/bootstrap-cerulean.min.css}" rel="stylesheet">
@@ -191,8 +192,6 @@
 <script th:src="@{/charisma/js/charisma.js}"></script>
 
 <script th:inline="javascript">
-    var token = $("meta[name='_csrf']").attr("content");
-    var header = $("meta[name='_csrf_header']").attr("content");
     function loadPostRight(url) {
         $.ajax({
             type:"POST",//为get请求

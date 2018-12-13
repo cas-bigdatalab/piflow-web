@@ -12,7 +12,7 @@ spring:
 ######  数据源
 ########################################################
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/mytest?useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowMultiQueries=true
+    url: jdbc:mysql://127.0.0.1:3306/piflow-web?useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowMultiQueries=true
     username: root
     password: root
     driver-class-name: com.mysql.jdbc.Driver

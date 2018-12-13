@@ -2,6 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <body>
 <div th:fragment=process_List>
+    <meta th:include="/indexINC/index_improt :: index_improt"/>
+    <meta th:include="/Macro/csrfTokeHeadMacro :: csrfTokeHeadMacro"/>
     <style type="text/css">
         /*人为制造一个占据整个屏幕的Div,其透明度为0.7且z-index为9999使之前的页面被压在底层无法点击*/
         .fullScreenList {
@@ -208,7 +210,7 @@
             $('#checkpointListShow').modal('hide');
             $.ajax({
                 cache: true,//保留缓存数据
-                type: "get",//为get请求
+                type: "POST",//为POST请求
                 url: "/piflow-web/process/getCheckpoint",//这是我在后台接受数据的文件名
                 //data:$('#loginForm').serialize(),//将该表单序列化
                 data: {
@@ -254,7 +256,7 @@
             $('#fullScreenList').show();
             $.ajax({
                 cache: true,//保留缓存数据
-                type: "get",//为get请求
+                type: "POST",//为POST请求
                 url: "/piflow-web/process/runProcess",//这是我在后台接受数据的文件名
                 //data:$('#loginForm').serialize(),//将该表单序列化
                 data: {
@@ -288,7 +290,7 @@
             $('#fullScreenList').show();
             $.ajax({
                 cache: true,//保留缓存数据
-                type: "get",//为get请求
+                type: "POST",//为POST请求
                 url: "/piflow-web/process/stopProcess",//这是我在后台接受数据的文件名
                 //data:$('#loginForm').serialize(),//将该表单序列化
                 data: {
