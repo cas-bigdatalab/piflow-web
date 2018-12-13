@@ -91,5 +91,23 @@ public interface StopsMapper {
 	
 	@UpdateProvider(type = StopsMapperProvider.class, method = "updateStopsByFlowIdAndName")
 	public int updateStopsByFlowIdAndName(ThirdFlowInfoStopVo stopVo);
+	
+	  /**
+     * 修改stopname根据id
+     * @param id
+     * @param stopName
+     * @return
+     */
+	@Update("update flow_stops set name = #{stopName} where id=#{id}")
+	public int updateStopsNameById(String id,String stopName);
+	
+	/**
+	 * 校验stopname是否重名
+	 * @param flowId
+	 * @param stopName
+	 * @return
+	 */
+	@Select("select id from flow_stops where name = #{stopName} and fk_flow_id =#{flowId}")
+	public String getStopByNameAndFlowId(String flowId,String stopName);
 
 }

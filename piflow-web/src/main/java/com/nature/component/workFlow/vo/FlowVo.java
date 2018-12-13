@@ -1,17 +1,18 @@
 package com.nature.component.workFlow.vo;
 
-import com.nature.component.mxGraph.vo.MxGraphModelVo;
-
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+import com.nature.component.mxGraph.vo.MxGraphModelVo;
 
 public class FlowVo implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private FlowInfoDbVo flowInfoDbVo;
-
+	private String id;
+	
 	private String name;
 
 	private String uuid;
@@ -27,20 +28,14 @@ public class FlowVo implements Serializable {
 	private String executorMemory;
 
 	private String executorCores;
+	
+	private Date crtDttm;
 
 	private MxGraphModelVo mxGraphModelVo;//画板信息
 
 	private List<StopsVo> stopsVoList = new ArrayList<StopsVo>();//当前流所有的stop
 
 	private List<PathsVo> pathsVoList = new ArrayList<PathsVo>();//当前流所有的paths
-
-	public FlowInfoDbVo getFlowInfoDbVo() {
-		return flowInfoDbVo;
-	}
-
-	public void setFlowInfoDbVo(FlowInfoDbVo flowInfoDbVo) {
-		this.flowInfoDbVo = flowInfoDbVo;
-	}
 
 	public String getName() {
 		return name;
@@ -128,5 +123,21 @@ public class FlowVo implements Serializable {
 
 	public void setPathsVoList(List<PathsVo> pathsVoList) {
 		this.pathsVoList = pathsVoList;
+	}
+
+	public Date getCrtDttm() {
+		return crtDttm;
+	}
+
+	public void setCrtDttm(Date crtDttm) {
+		this.crtDttm = crtDttm;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 }

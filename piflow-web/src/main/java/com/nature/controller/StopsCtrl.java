@@ -1,10 +1,9 @@
 package com.nature.controller;
 
-import com.nature.base.util.JsonUtils;
-import com.nature.base.util.LoggerUtil;
-import com.nature.component.workFlow.service.IPropertyService;
-import com.nature.component.workFlow.service.IStopsService;
-import com.nature.component.workFlow.vo.StopsVo;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -12,10 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.nature.base.util.JsonUtils;
+import com.nature.base.util.LoggerUtil;
+import com.nature.base.vo.StatefulRtnBase;
+import com.nature.component.workFlow.service.IFlowService;
+import com.nature.component.workFlow.service.IPropertyService;
+import com.nature.component.workFlow.service.IStopsService;
+import com.nature.component.workFlow.vo.StopsVo;
 
 @RestController
 @RequestMapping("/stops")
@@ -28,6 +30,9 @@ public class StopsCtrl {
 
     @Autowired
     IStopsService stopsServiceImpl;
+    
+    @Autowired
+    IFlowService flowServiceImpl;
 
     @RequestMapping("/queryIdInfo")
     public StopsVo getStopGroup(String fid, String id) {
@@ -111,6 +116,30 @@ public class StopsCtrl {
             }
         }else {
             rtnMap.put("errMsg", "传入参数有空的");
+            logger.info("传入参数有空的");
+        }
+        return JsonUtils.toJsonNoException(rtnMap);
+    }
+    
+    @RequestMapping("/updateStopsNameById")
+    public String updateStopsNameById(HttpServletRequest request) {
+        Map<String, String> rtnMap = new HashMap<String, String>();
+        rtnMap.put("code", "0");
+        String id = request.getParameter("stopId");
+        String flowId = request.getParameter("flowId");
+        String stopName = request.getParameter("stopName");
+        String pageId = request.getParameter("pageId");
+        if (!StringUtils.isAnyEmpty(id, stopName,flowId,pageId)) {
+			StatefulRtnBase updateStopName = stopsServiceImpl.updateStopName(id, flowId, stopName, pageId);
+			 // addFlow不为空且ReqRtnStatus的值为true,则保存成功
+            if (null != updateStopName && updateStopName.isReqRtnStatus()) {
+                rtnMap.put("code", "1");
+                rtnMap.put("errMsg", updateStopName.getErrorMsg());
+            } else {
+                rtnMap.put("errMsg", updateStopName.getErrorMsg());
+            }
+        }else {
+            rtnMap.put("errMsg", "The incoming parameter is empty");
             logger.info("传入参数有空的");
         }
         return JsonUtils.toJsonNoException(rtnMap);

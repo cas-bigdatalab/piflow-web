@@ -130,7 +130,7 @@
         <div class="layui-form-item layui-form-text">
             <div class="layui-input-block">
                 <textarea id="stopValue" placeholder="please input ..." class="layui-textarea"
-                          style="width: 314px;margin-left: -100px;resize:none;"></textarea>
+                          style="width: 272px;margin-left: -100px;resize:none;"></textarea>
             </div>
         </div>
         <div class="layui-form-item" style="text-align: center;margin-right: 90px;margin-top: -8px;">
@@ -178,7 +178,7 @@
         }
         if (typeof(cells) != "undefined" && null != id && "" != id && "null" != id) {
             if (document.getElementById("stopsNameLabel"))
-                document.getElementById('stopsNameLabel').innerText = value;
+                document.getElementById('stopsNameLabel').value = value;
             //选中是线的情况
             if (cells.cell && cells.cell.edge) {
                 if (cells.cell.target && cells.cell.source) {
@@ -206,7 +206,10 @@
             success: function (data) {
                 if ("" != data) {
                     add(data.propertiesVo, data.id, data.checkpoint);
-                    document.getElementById('stopsNameLabel').innerText = data.name;
+                    document.getElementById('stopsNameLabel').value = data.name;
+                    document.getElementById('stopsNameLabel').name = data.id;
+                    document.getElementById('stopsValueInput').value = data.name;
+                    document.getElementById('stopsValueInput').name = data.pageId;
                     document.getElementById('stopsDescription').innerText = data.description;
                     document.getElementById('stopsGroups').innerText = data.groups;
                     document.getElementById('stopsBundel').innerText = data.bundel;
@@ -250,7 +253,7 @@
                     if ("" != queryInfo) {
                         $("#AttributeInfoId").hide();
                         $("#containerID").show();
-                        $("#basicInfoId").html('线信息');
+                        $("#basicInfoId").html('path info');
                         $('#basicInfoId').css('text-align', '');
                         $('#basicInfoId').css('background-color', '');
                         $('#basicInfoId').css('border-style', '');
@@ -262,9 +265,10 @@
                         $("#versionID").html('form：');
                         $("#ownerID").html('to：');
                         $("#createDateID").html('createrTime：');
+                        $("#updateStopNameBtn").hide();
                         document.getElementById('table_idDiv').style.display = 'none';
                         document.getElementById('stopsDescription').innerText = queryInfo.flow.name;
-                        document.getElementById('stopsNameLabel').innerText = queryInfo.pageId;
+                        document.getElementById('stopsNameLabel').value = queryInfo.pageId;
                         document.getElementById('stopsGroups').innerText = queryInfo.inport;
                         document.getElementById('stopsBundel').innerText = queryInfo.outport;
                         document.getElementById('stopsVersion').innerText = queryInfo.stopFrom.name;
@@ -322,8 +326,8 @@
                 displayName.setAttribute('id', '' + data[y].id + '');
                 displayName.setAttribute('name', '' + data[y].name + '');
               	displayName.setAttribute('onclick', 'stopTabTd(this)');
-                displayName.style.width = "345px";
-                displayName.style.background = "rgb(245, 245, 245)";
+                displayName.style.width = "290px";
+            //    displayName.style.background = "rgb(245, 245, 245)";
                 displayName.setAttribute('value', ''+ customValue +'');
                 var spanDisplayName = 'span' + data[y].displayName;
                 var spanDisplayName = document.createElement('span');

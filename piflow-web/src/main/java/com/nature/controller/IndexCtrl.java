@@ -5,6 +5,9 @@ import com.nature.component.template.service.ITemplateService;
 import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.model.Template;
 import com.nature.component.workFlow.service.IFlowInfoDbService;
+import com.nature.component.workFlow.service.IFlowService;
+import com.nature.component.workFlow.vo.FlowVo;
+
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,6 +27,9 @@ public class IndexCtrl {
 
 	@Autowired
     IFlowInfoDbService appService;
+	
+	@Autowired
+    IFlowService flowServiceImpl;
 	
 	@Autowired
 	private ITemplateService iTemplateService;
@@ -56,7 +62,7 @@ public class IndexCtrl {
 	@RequestMapping("/flowList")
 	public ModelAndView flowList(ModelAndView modelAndView) {
 		modelAndView.setViewName("flow/table");
-		List<Flow> appInfo = appService.findAppList();
+		List<FlowVo> appInfo = flowServiceImpl.getFlowList();
 		modelAndView.addObject("appInfo", appInfo);
 		return modelAndView;
 	}

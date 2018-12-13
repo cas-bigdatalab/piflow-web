@@ -1,5 +1,7 @@
 package com.nature.component.workFlow.service;
 
+import java.util.List;
+
 import org.springframework.data.annotation.Transient;
 
 import com.nature.base.vo.StatefulRtnBase;
@@ -64,5 +66,7 @@ public interface IFlowService {
 	public int deleteFLowInfo(String id);
 	
 	public String getMaxStopPageId(String flowId);
+	
+	public List<FlowVo> getFlowList();
 
 }

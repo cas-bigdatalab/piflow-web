@@ -1,9 +1,12 @@
 package com.nature.component.workFlow.vo;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import com.nature.base.util.DateUtils;
 import com.nature.common.Eunm.PortType;
 
 /**
@@ -42,6 +45,8 @@ public class StopsVo implements Serializable {
     private Boolean isCheckpoint;
     
 	private Long version;
+	
+	private Date crtDttm = new Date();
 
     private List<StopsPropertyVo> propertiesVo = new ArrayList<StopsPropertyVo>();
 
@@ -163,5 +168,17 @@ public class StopsVo implements Serializable {
 
 	public void setVersion(Long version) {
 		this.version = version;
+	}
+
+	public Date getCrtDttm() {
+		return crtDttm;
+	}
+
+	public void setCrtDttm(Date crtDttm) {
+		this.crtDttm = crtDttm;
+	}
+	public String getCrtDttmString() {
+		SimpleDateFormat sdf = new SimpleDateFormat(DateUtils.DATE_PATTERN_yyyy_MM_dd_HH_MM_ss);
+		return crtDttm != null ? sdf.format(crtDttm) : "";
 	}
 }

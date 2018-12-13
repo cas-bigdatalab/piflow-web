@@ -1,5 +1,19 @@
 package com.nature.component.workFlow.service.impl;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.annotation.Transient;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.StatefulRtnBaseUtils;
 import com.nature.base.util.Utils;
@@ -11,7 +25,13 @@ import com.nature.component.mxGraph.model.MxGraphModel;
 import com.nature.component.mxGraph.vo.MxCellVo;
 import com.nature.component.mxGraph.vo.MxGeometryVo;
 import com.nature.component.mxGraph.vo.MxGraphModelVo;
-import com.nature.component.workFlow.model.*;
+import com.nature.component.workFlow.model.Flow;
+import com.nature.component.workFlow.model.FlowInfoDb;
+import com.nature.component.workFlow.model.Paths;
+import com.nature.component.workFlow.model.Property;
+import com.nature.component.workFlow.model.PropertyTemplate;
+import com.nature.component.workFlow.model.Stops;
+import com.nature.component.workFlow.model.StopsTemplate;
 import com.nature.component.workFlow.service.IFlowService;
 import com.nature.component.workFlow.utils.FlowInfoDbUtil;
 import com.nature.component.workFlow.utils.MxGraphModelUtil;
@@ -21,19 +41,15 @@ import com.nature.component.workFlow.vo.FlowInfoDbVo;
 import com.nature.component.workFlow.vo.FlowVo;
 import com.nature.component.workFlow.vo.PathsVo;
 import com.nature.component.workFlow.vo.StopsVo;
-import com.nature.mapper.*;
+import com.nature.mapper.FlowInfoDbMapper;
+import com.nature.mapper.FlowMapper;
+import com.nature.mapper.PathsMapper;
+import com.nature.mapper.PropertyMapper;
+import com.nature.mapper.StopsMapper;
+import com.nature.mapper.StopsTemplateMapper;
 import com.nature.mapper.mxGraph.MxCellMapper;
 import com.nature.mapper.mxGraph.MxGeometryMapper;
 import com.nature.mapper.mxGraph.MxGraphModelMapper;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.annotation.Transient;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.*;
 
 @Service
 @Transactional
@@ -155,7 +171,6 @@ public class FlowServiceImpl implements IFlowService {
             flowVo.setMxGraphModelVo(mxGraphModelVo);
             flowVo.setStopsVoList(stopsVoList);
             flowVo.setPathsVoList(pathsVoList);
-            flowVo.setFlowInfoDbVo(flowInfoDbVo);
         }
         return flowVo;
     }
@@ -300,11 +315,15 @@ public class FlowServiceImpl implements IFlowService {
                             if (null != addMxCellVoList && addMxCellVoList.size() > 0) {
                                 for (MxCellVo mxCellVo : addMxCellVoList) {
                                     if (null != mxCellVo) {
+                                    	String stopByNameAndFlowId = stopsMapper.getStopByNameAndFlowId(flow.getId(), mxCellVo.getValue());
                                         // 保存MxCell
                                         // 新建
                                         MxCell mxCell = new MxCell();
                                         // 将mxCellVo中的值copy到mxCell中
                                         BeanUtils.copyProperties(mxCellVo, mxCell);
+                                        if (StringUtils.isNotBlank(stopByNameAndFlowId)) {
+                                        	mxCell.setValue(mxCellVo.getValue()+mxCellVo.getPageId());
+										} 
                                         // mxCell 的基本属性(创建时必填)
                                         mxCell.setId(Utils.getUUID32());
                                         mxCell.setCrtDttm(new Date());
@@ -714,6 +733,10 @@ public class FlowServiceImpl implements IFlowService {
             for (MxCellVo mxCellVo : objectStops) {
                 Stops stops = this.stopsTemplateToStops(mxCellVo);
                 if (null != stops) {
+                	String stopByNameAndFlowId = stopsMapper.getStopByNameAndFlowId(flow.getId(), stops.getName());
+					if (StringUtils.isNotBlank(stopByNameAndFlowId)) {
+						stops.setName(stops.getName()+stops.getPageId());
+					}
                     stops.setFlow(flow);
                     stopsList.add(stops);
                 }
@@ -941,4 +964,20 @@ public class FlowServiceImpl implements IFlowService {
 		return flowMapper.getMaxStopPageId(flowId);
 	}
 
+	@Override
+	public List<FlowVo> getFlowList() {
+		List<FlowVo> flowVoList = new ArrayList<>();
+		List<Flow> flowList = flowMapper.getFlowList();
+		  if (null != flowList && flowList.size() > 0) {
+	            for (Flow flow : flowList) {
+	                if (null != flow) {
+	                	FlowVo flowVo = new FlowVo();
+	                	 BeanUtils.copyProperties(flow, flowVo);
+	                	 flowVo.setCrtDttm(flow.getCrtDttm());
+	                	 flowVoList.add(flowVo);
+	                }
+	            }
+	        }
+		return flowVoList;
+	}
 }

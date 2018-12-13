@@ -2270,8 +2270,16 @@ StopsBasicInfoFormatPanel.prototype.addFont = function(container)
 	var labelTemplate = document.createElement('label');
 	labelTemplate.setAttribute('id', 'labelTemplateName');
 	//stopsName
-	var stopsNameLabel = document.createElement('label');
+	var stopsNameLabel = document.createElement('input');
+	stopsNameLabel.style.border = '0px' ;
+	stopsNameLabel.style.fontWeight = '700' ;
+	stopsNameLabel.style.background = "rgb(245, 245, 245)";
 	stopsNameLabel.setAttribute('id', 'stopsNameLabel');
+	stopsNameLabel.setAttribute('readonly', 'true');
+	//stopsValue
+	var stopsValue = document.createElement('input');
+	stopsValue.setAttribute('id', 'stopsValueInput');
+	stopsValue.setAttribute('type', 'hidden');
 	//stops描述
 	var stopsDescription = document.createElement('label');
 	stopsDescription.setAttribute('id', 'stopsDescription');
@@ -2317,9 +2325,70 @@ StopsBasicInfoFormatPanel.prototype.addFont = function(container)
 	mxUtils.write(span5, 'version： ');
 	mxUtils.write(span6, 'owner： ');
 	mxUtils.write(span7, 'createDate： ');
+	  var btn = mxUtils.button('', mxUtils.bind(this, function (evt) { 
+		  var pwdBtn = document.getElementById("updateStopNameBtn");
+			var classname = pwdBtn.className;
+			//根据className来判断点击的是第几次,true为第一次,即显示input并save
+				if(classname == 'glyphicon glyphicon-floppy-saved'){
+					  $("#stopsNameLabel").css("background-color","");
+					   $("#stopsNameLabel").css("border","1px solid");
+					 //pwdBtn.innerHTML ="save";
+					   pwdBtn.className = "glyphicon glyphicon-saved";
+					  $("#stopsNameLabel").removeAttr("readonly");//去除input元素的readonly属性
+				}else{
+					//第二次save的情况
+					 var stopName = $("#stopsNameLabel").val();
+					 var stopId = $("#stopsNameLabel").attr('name');
+					 var stopsValue = $("#stopsValueInput").val();
+					 var pageId = $("#stopsValueInput").attr('name');
+					 //判断input的值是否有变化,如果无变化则去除input,并不做任何操作
+					 if(stopName == stopsValue){
+						 $("#stopsNameLabel").css("background-color","rgb(245, 245, 245)");
+    					 $("#stopsNameLabel").css("border","0px");
+    					 pwdBtn.className = "glyphicon glyphicon-floppy-saved";
+    					 $("#stopsNameLabel").blur();
+    					 $("#stopsNameLabel").attr("readonly","readonly");//将input元素设置为readonly
+    					 return;
+					 }
+					 //开始修改name
+					  $.ajax({
+		                    cache: true,
+		                    type: "POST",
+		                    url: "/piflow-web/stops/updateStopsNameById",
+		                    data: {stopId: stopId,flowId:loadId,stopName:stopName,pageId:pageId},
+		                    async: true,
+		                    traditional: true,
+		                    error: function (request) {
+		                        console.log("attribute update error");
+		                        return;
+		                    },
+		                    success: function (data) {
+		                    	var dataMap = JSON.parse(data);
+		                    	if ('1' === dataMap.code) {
+		                    		// 修改成功后隐藏input并恢复update按钮
+		                    	   $("#stopsNameLabel").css("background-color","rgb(245, 245, 245)");
+		      					   $("#stopsNameLabel").css("border","0px");
+		      					   pwdBtn.className = "glyphicon glyphicon-floppy-saved";
+		      					   $("#stopsNameLabel").blur();
+		      					   $("#stopsNameLabel").attr("readonly","readonly");// 将input元素设置为readonly
+		                 		   layer.msg(dataMap.errMsg, {icon: 1, shade: 0, time: 2000}, function () {});
+		                        } else {
+		                     	   layer.msg(dataMap.errMsg, {icon: 2, shade: 0, time: 2000}, function () {});
+		                        }
+		                    }
+		                });
+				}
+		  }));
+	 btn.setAttribute('id', 'updateStopNameBtn');
+	 btn.setAttribute('title', 'update StopName');
+	 btn.setAttribute('class', 'glyphicon glyphicon-floppy-saved');
+	 btn.style.height = '28px' ;
+	 btn.style.width = '28px' ;
 	//this.container.appendChild(hr);
     tdStopsBasic1.appendChild(span);
     tdStopsBasic2.appendChild(stopsNameLabel);
+    tdStopsBasic2.appendChild(stopsValue);
+    tdStopsBasic2.appendChild(btn);
     tdStopsBasic3.appendChild(span2);
     tdStopsBasic4.appendChild(stopsDescription);
     tdStopsBasic5.appendChild(span1);
@@ -2334,6 +2403,7 @@ StopsBasicInfoFormatPanel.prototype.addFont = function(container)
     tdStopsBasic14.appendChild(createDate);
     trStopsBasic1.appendChild(tdStopsBasic1);
     trStopsBasic1.appendChild(tdStopsBasic2);
+    //trStopsBasic1.appendChild(btn);
     trStopsBasic2.appendChild(tdStopsBasic3);
     trStopsBasic2.appendChild(tdStopsBasic4);
     trStopsBasic3.appendChild(tdStopsBasic5);
@@ -5324,7 +5394,7 @@ DiagramFormatPanel.prototype.destroy = function()
             resize:false,//禁止拉伸
             move: false,//禁止拖拽
             offset:[''+p.top+'px',''+p.left+'px'],//坐标
-            area: ['345px', '214px'], //宽高
+            area: ['290px', '204px'], //宽高
             content: $("#stopOpen")
         });
    }
