@@ -1051,15 +1051,10 @@ public class ProcessServiceImpl implements IProcessService {
         StatefulRtnBase statefulRtnBase = new StatefulRtnBase();
         Process processById = processTransaction.getProcessById(processId);
         if (null != processById) {
-            if (processById.getState() != ProcessState.STARTED) {
-                processTransaction.updateProcessEnableFlag(processId);
-            } else {
-                statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("状态为STARTED，不可删除");
-                logger.warn("状态为STARTED，不可删除");
-            }
+            processTransaction.updateProcessEnableFlag(processId);
         } else {
             statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("没有查询到id为" + processId + "的process");
-            logger.warn("状态为STARTED，不可删除");
+            logger.warn("没有查询到id为" + processId + "的process");
         }
         return statefulRtnBase;
     }

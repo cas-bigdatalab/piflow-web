@@ -25,6 +25,7 @@
     </style>
     <!-- The fav icon -->
     <link rel="shortcut icon" th:href="@{/img/logo.ico}">
+    <script type="text/javascript" th:src='@{/js/jquery/jquery.js}'></script>
 </head>
 <body class="geEditor">
 <div style="position: fixed; z-index: 779;text-align: right;right: 27%;top: 10px;">
@@ -100,9 +101,9 @@
     </div>
     `
 </div>
-<script type="text/javascript" th:src="@{/grapheditor/js/jquery.min.js}"></script>
-<script type="text/javascript" th:src="@{/charisma/js/jquery-ui.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/jquery/jquery-ui.min.js}"></script>
 <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+<script th:include="/Macro/csrfTokeHeadMacroScript :: csrfTokeHeadMacroScript"/>
 <script th:inline="javascript">
     var fullScreen = $('#fullScreen');
     var startFlow = $('#startFlow');
@@ -339,8 +340,8 @@
 
     //运行
     function runProcess(flag) {
+        checkpointShow.modal('hide');
         if (!flag) {
-            checkpointShow.modal('hide');
             return;
         }
         startFlow.hide();
@@ -429,7 +430,7 @@
             async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
             error: function (request) {//请求失败之后的操作
                 return;
-                },
+            },
             success: function (data) {//请求成功之后的操作
                 //console.log("success");
                 //alert(data);

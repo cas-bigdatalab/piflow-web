@@ -2,7 +2,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <body>
 <div th:fragment=process_List>
-    <meta th:include="/indexINC/index_improt :: index_improt"/>
     <meta th:include="/Macro/csrfTokeHeadMacro :: csrfTokeHeadMacro"/>
     <style type="text/css">
         /*人为制造一个占据整个屏幕的Div,其透明度为0.7且z-index为9999使之前的页面被压在底层无法点击*/
@@ -135,6 +134,7 @@
         </div>
         `
     </div>
+    <script th:include="/Macro/csrfTokeHeadMacroScript :: csrfTokeHeadMacroScript"/>
     <script th:inline="javascript">
         function processListMonitoring() {
             var arrayObj = new Array();

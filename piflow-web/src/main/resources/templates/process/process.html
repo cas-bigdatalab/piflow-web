@@ -190,7 +190,7 @@
 <script th:src="@{/charisma/js/jquery.history.js}"></script>
 <!-- application script for Charisma demo -->
 <script th:src="@{/charisma/js/charisma.js}"></script>
-
+<script th:include="/Macro/csrfTokeHeadMacroScript :: csrfTokeHeadMacroScript"/>
 <script th:inline="javascript">
     function loadPostRight(url) {
         $.ajax({

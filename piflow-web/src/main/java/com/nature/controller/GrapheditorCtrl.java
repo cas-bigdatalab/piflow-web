@@ -121,12 +121,6 @@ public class GrapheditorCtrl {
         }
     }
 
-    @RequestMapping("/open")
-    public String open(Model model) {
-        model.addAttribute("josnStr", "");
-        return "grapheditor/open";
-    }
-
     /**
      * 保存数据
      *

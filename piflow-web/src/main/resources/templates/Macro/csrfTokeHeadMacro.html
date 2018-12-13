@@ -3,14 +3,6 @@
 <head th:fragment=csrfTokeHeadMacro>
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-    <script type="text/javascript" th:src='@{/js/jquery/jquery.js}'></script>
-    <script>
-        var token = $("meta[name='_csrf']").attr("content");
-        var header = $("meta[name='_csrf_header']").attr("content");
-        $(document).ajaxSend(function (e, xhr, options) {
-            xhr.setRequestHeader(header, token);
-        });
-    </script>
 </head>
 <body>
 </body>
