@@ -93,7 +93,9 @@ public class IndexCtrl {
 	@RequestMapping("/template")
 	public ModelAndView template(ModelAndView modelAndView) {
 		List<Template> findTemPlateList = iTemplateService.findTemPlateList();
-		modelAndView.setViewName("flow/template");
+		//modelAndView.setViewName("flow/template");
+		modelAndView.setViewName("/indexNew");
+		modelAndView.addObject("accessPath", "template");
 		modelAndView.addObject("TemPlateList",findTemPlateList);
 		return modelAndView;
 	}
