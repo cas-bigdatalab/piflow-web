@@ -76,9 +76,9 @@ public class ProcessCtrl {
      */
     @RequestMapping("/getProcessList")
     public ModelAndView getProcessList(HttpServletRequest request, ModelAndView modelAndView) {
-        //modelAndView.setViewName("/indexNew");
+        modelAndView.setViewName("/indexNew");
         modelAndView.addObject("accessPath", "getProcessList");
-        modelAndView.setViewName("process/process");
+        // modelAndView.setViewName("process/process");
         List<ProcessVo> processVoList = processServiceImpl.getProcessVoList();
         modelAndView.addObject("processVoList", processVoList);
         return modelAndView;

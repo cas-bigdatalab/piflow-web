@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <title>piflow-web</title>
+    <link rel="shortcut icon" th:href="@{/favicon.ico}">
+    <meta th:include="/indexINC/index_improt :: index_improt"/>
+</head>
+<body>
+<!-- Fixed top -->
+<div id="top">
+    <div class="fixed">
+        <a href="indexNew.html" title="" class="logo"><img th:src='@{/img/logo.png}' /></a>
+        <ul class="top-menu">
+            <li><a class="fullview"></a></li>
+            <li class="dropdown">
+                <a class="user-menu" data-toggle="dropdown">
+                    <img th:src='@{/index/img/userpic.png}' alt=""/>
+                    <span>Howdy, Eugene! <b class="caret"></b></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <!--<li><a href="#" title=""><i class="icon-user"></i>Profile</a></li>-->
+                    <li>
+                        <a href="javascript:document.logoutForm.submit();" title="Logout"><i class="icon-remove"></i>Logout</a>
+                        <form style="display: none" name="logoutForm" th:action="@{/logout}" method="post"></form>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>
+<!-- /fixed top -->
+
+
+<!-- Content container -->
+<div id="container">
+
+    <!-- Sidebar -->
+    <div id="sidebar">
+        <div class="sidebar-tabs">
+            <div id="general widget">
+                <!-- Main navigation -->
+                <ul class="navigation widget">
+                    <li class=""><a th:href="@{/}" title=""><i class="icon-home"></i>Dashboard</a></li>
+                    <li class="active">
+                        <a id="currents" href="#" title="" class="expand">
+                            <i class="icon-reorder"></i>Menu<strong>3</strong>
+                        </a>
+                        <ul>
+                            <li><a th:href="@{/web/flowList}" title="">Flow List</a></li>
+                            <li><a th:href="@{/process/getProcessList}" title="" class="current">Process List</a></li>
+                            <li><a th:href="@{/web/template}" title="">Template</a></li>
+                        </ul>
+                    </li>
+                    <!--
+                    <li><a href="#" title="" class="expand"><i class="icon-warning-sign"></i>Error
+                        pages<strong>6</strong></a>
+                        <ul>
+                            <li><a href="403.html" title="">403 page</a></li>
+                            <li><a href="404.html" title="">404 page</a></li>
+                            <li><a href="405.html" title="">405 page</a></li>
+                            <li><a href="500.html" title="">500 page</a></li>
+                            <li><a href="503.html" title="">503 page</a></li>
+                            <li><a href="offline.html" title="">Offline page</a></li>
+                        </ul>
+                    </li>
+                     -->
+                </ul>
+                <!-- /main navigation -->
+            </div>
+        </div>
+    </div>
+    <!-- /sidebar -->
+
+
+    <!-- Content -->
+    <div id="content">
+        <!-- Content wrapper -->
+        <div th:switch="${accessPath}">
+            <div th:case="'indexHome'">
+                <div th:include="/indexRight/process_List :: indexHome"></div>
+            </div>
+            <div th:case="'getProcessList'">
+                <div th:include="/indexRight/process_List :: process_List"></div>
+            </div>
+            <div th:case="'flowList'">
+                <div th:include="/indexRight/flow_List :: flow_List"></div>
+            </div>
+        </div>
+        <!-- /content wrapper -->
+    </div>
+    <!-- /content -->
+</div>
+<!-- /content container -->
+
+
+<!-- Footer -->
+<div id="footer">
+
+</div>
+<!-- /footer -->
+<script type="text/javascript" th:src='@{/index/js/files/bootstrap.min.js}'></script>
+<script th:inline="javascript">
+    (function () {
+       // $('#menu_Default').addClass("current");
+    })();
+</script>
+</body>
+</html>

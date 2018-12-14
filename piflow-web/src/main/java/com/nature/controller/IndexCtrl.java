@@ -61,7 +61,9 @@ public class IndexCtrl {
 
 	@RequestMapping("/flowList")
 	public ModelAndView flowList(ModelAndView modelAndView) {
-		modelAndView.setViewName("flow/table");
+		// modelAndView.setViewName("flow/table");
+		modelAndView.setViewName("/indexNew");
+		modelAndView.addObject("accessPath", "flowList");
 		List<FlowVo> appInfo = flowServiceImpl.getFlowList();
 		modelAndView.addObject("appInfo", appInfo);
 		return modelAndView;

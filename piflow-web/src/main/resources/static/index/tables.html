@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+<title>Pannonia - premium responsive admin template by Eugene Kopyov</title>
+<link href="css/main.css" rel="stylesheet" type="text/css" />
+<!--[if IE 8]><link href="css/ie8.css" rel="stylesheet" type="text/css" /><![endif]-->
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
+<script type="text/javascript" src="js/plugins/charts/jquery.sparkline.min.js"></script>
+
+<script type="text/javascript" src="js/plugins/ui/jquery.easytabs.min.js"></script>
+<script type="text/javascript" src="js/plugins/ui/jquery.collapsible.min.js"></script>
+<script type="text/javascript" src="js/plugins/ui/jquery.mousewheel.js"></script>
+<script type="text/javascript" src="js/plugins/ui/jquery.bootbox.min.js"></script>
+<script type="text/javascript" src="js/plugins/ui/jquery.colorpicker.js"></script>
+<script type="text/javascript" src="js/plugins/ui/jquery.timepicker.min.js"></script>
+<script type="text/javascript" src="js/plugins/ui/jquery.jgrowl.js"></script>
+<script type="text/javascript" src="js/plugins/ui/jquery.fancybox.js"></script>
+<script type="text/javascript" src="js/plugins/ui/jquery.fullcalendar.min.js"></script>
+<script type="text/javascript" src="js/plugins/ui/jquery.elfinder.js"></script>
+
+<script type="text/javascript" src="js/plugins/uploader/plupload.js"></script>
+<script type="text/javascript" src="js/plugins/uploader/plupload.html4.js"></script>
+<script type="text/javascript" src="js/plugins/uploader/plupload.html5.js"></script>
+<script type="text/javascript" src="js/plugins/uploader/jquery.plupload.queue.js"></script>
+
+<script type="text/javascript" src="js/plugins/forms/jquery.uniform.min.js"></script>
+<script type="text/javascript" src="js/plugins/forms/jquery.autosize.js"></script>
+<script type="text/javascript" src="js/plugins/forms/jquery.inputlimiter.min.js"></script>
+<script type="text/javascript" src="js/plugins/forms/jquery.tagsinput.min.js"></script>
+<script type="text/javascript" src="js/plugins/forms/jquery.inputmask.js"></script>
+<script type="text/javascript" src="js/plugins/forms/jquery.select2.min.js"></script>
+<script type="text/javascript" src="js/plugins/forms/jquery.listbox.js"></script>
+<script type="text/javascript" src="js/plugins/forms/jquery.validation.js"></script>
+<script type="text/javascript" src="js/plugins/forms/jquery.validationEngine-en.js"></script>
+<script type="text/javascript" src="js/plugins/forms/jquery.form.wizard.js"></script>
+<script type="text/javascript" src="js/plugins/forms/jquery.form.js"></script>
+
+<script type="text/javascript" src="js/plugins/tables/jquery.dataTables.min.js"></script>
+
+<script type="text/javascript" src="js/files/bootstrap.min.js"></script>
+
+<script type="text/javascript" src="js/files/functions.js"></script>
+
+</head>
+
+<body>
+
+	<!-- Fixed top -->
+	<div id="top">
+		<div class="fixed">
+			<a href="index.html" title="" class="logo"><img src="img/logo.png" alt="" /></a>
+			<ul class="top-menu">
+				<li><a class="fullview"></a></li>
+				<li><a class="showmenu"></a></li>
+				<li><a href="#" title="" class="messages"><i class="new-message"></i></a></li>
+				<li class="dropdown">
+					<a class="user-menu" data-toggle="dropdown"><img src="img/userpic.png" alt="" /><span>Howdy, Eugene! <b class="caret"></b></span></a>
+					<ul class="dropdown-menu">
+						<li><a href="#" title=""><i class="icon-user"></i>Profile</a></li>
+						<li><a href="#" title=""><i class="icon-inbox"></i>Messages<span class="badge badge-info">9</span></a></li>
+						<li><a href="#" title=""><i class="icon-cog"></i>Settings</a></li>
+						<li><a href="#" title=""><i class="icon-remove"></i>Logout</a></li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<!-- /fixed top -->
+
+
+	<!-- Content container -->
+	<div id="container">
+
+		<!-- Sidebar -->
+		<div id="sidebar">
+
+			<div class="sidebar-tabs">
+		        <ul class="tabs-nav two-items">
+		            <li><a href="#general" title=""><i class="icon-reorder"></i></a></li>
+		            <li><a href="#stuff" title=""><i class="icon-cogs"></i></a></li>
+		        </ul>
+
+		        <div id="general">
+
+			        <!-- Sidebar user -->
+			        <div class="sidebar-user widget">
+						<div class="navbar"><div class="navbar-inner"><h6>Wazzup, Eugene!</h6></div></div>
+			            <a href="#" title="" class="user"><img src="http://placehold.it/210x110" alt="" /></a>
+			            <ul class="user-links">
+			            	<li><a href="" title="">New users<strong>+12</strong></a></li>
+			            	<li><a href="" title="">New orders<strong>+156</strong></a></li>
+			            	<li><a href="" title="">New messages<strong>+45</strong></a></li>
+			            </ul>
+			        </div>
+			        <!-- /sidebar user -->
+
+			        <div class="general-stats widget">
+				        <ul class="head">
+				        	<li><span>Users</span></li>
+				        	<li><span>Orders</span></li>
+				        	<li><span>Visits</span></li>
+				        </ul>
+				        <ul class="body">
+				        	<li><strong>116k+</strong></li>
+				        	<li><strong>1290</strong></li>
+				        	<li><strong>554</strong></li>
+				        </ul>
+				    </div>
+
+				    <!-- Main navigation -->
+			        <ul class="navigation widget">
+			            <li><a href="index.html" title=""><i class="icon-home"></i>Dashboard</a></li>
+			            <li><a href="#" title="" class="expand"><i class="icon-reorder"></i>Form elements<strong>3</strong></a>
+			                <ul>
+			                    <li><a href="forms.html" title="">Form components</a></li>
+			                    <li><a href="wysiwyg.html" title="">WYSIWYG editor</a></li>
+			                    <li><a href="form_wizards.html" title="">Wizards</a></li>
+			                </ul>
+			            </li>
+			            <li><a href="#" title="" class="expand"><i class="icon-tasks"></i>Components<strong>4</strong></a>
+			                <ul>
+			                    <li><a href="components.html" title="">Content components</a></li>
+			                    <li><a href="content_grid.html" title="">Content grid</a></li>
+			                    <li><a href="blank.html" title="">Blank page</a></li>
+			                </ul>
+			            </li>
+			            <li><a href="media.html" title=""><i class="icon-picture"></i>Media</a></li>
+			            <li><a href="icons.html" title=""><i class="icon-th"></i>Icons</a></li>
+			            <li><a href="charts.html" title=""><i class="icon-signal"></i>Charts &amp; graphs</a></li>
+			            <li><a href="invoice.html" title=""><i class="icon-copy"></i>Invoice</a></li>
+			            <li class="active"><a href="tables.html" title=""><i class="icon-table"></i>Tables</a></li>
+			            <li><a href="#" title="" class="expand"><i class="icon-warning-sign"></i>Error pages<strong>6</strong></a>
+			                <ul>
+			                    <li><a href="403.html" title="">403 page</a></li>
+			                    <li><a href="404.html" title="">404 page</a></li>
+			                    <li><a href="405.html" title="">405 page</a></li>
+			                    <li><a href="500.html" title="">500 page</a></li>
+			                    <li><a href="503.html" title="">503 page</a></li>
+			                    <li><a href="offline.html" title="">Offline page</a></li>
+			                </ul>
+			            </li>
+			            <li><a href="typography.html" title=""><i class="icon-text-height"></i>Typography</a></li>
+			            <li><a href="calendar.html" title=""><i class="icon-calendar"></i>Calendar</a></li>
+			            <li><a href="file_management.html" title=""><i class="icon-cogs"></i>File management</a></li>
+	                    <li><a href="#" title="" class="expand"><i class="icon-indent-right"></i>Menu levels<strong>3</strong></a>
+			                <ul>
+			                    <li><a href="#" title="">Link</a></li>
+			                    <li><a href="#" title="" class="expand">Link with submenu</a>
+					                <ul>
+					                    <li><a href="#" title="">Lorem ipsum</a></li>
+					                    <li><a href="#" title="">Dolor sit amet</a></li>
+					                </ul>
+			                    </li>
+			                    <li><a href="#" title="">Link</a></li>
+			                </ul>
+	                    </li>
+			            <li><a href="#" title="" class="expand"><i class="icon-sitemap"></i>Page layouts<strong>3</strong></a>
+			                <ul>
+			                    <li><a href="no_sidebar_tabs.html" title="">No sidebar tabs</a></li>
+			                    <li><a href="no_action_tabs.html" title="">No action tabs</a></li>
+			                    <li><a href="actions_on_top.html" title="">Action tabs on top</a></li>
+			                    <li><a href="no_breadcrumbs.html" title="">No breadcrumbs line</a></li>
+			                </ul>
+			            </li>
+			        </ul>
+			        <!-- /main navigation -->
+
+		        </div>
+
+		        <div id="stuff">
+
+			        <!-- Social stats -->
+			        <div class="widget">
+			        	<h6 class="widget-name"><i class="icon-twitter"></i>Social statistics</h6>
+			        	<ul class="social-stats">
+			        		<li>
+			        			<a href="" title="" class="orange-square"><i class="icon-rss"></i></a>
+			        			<div>
+				        			<h4>1,286</h4>
+				        			<span>total feed subscribers</span>
+				        		</div>
+			        		</li>
+			        		<li>
+			        			<a href="" title="" class="blue-square"><i class="icon-twitter"></i></a>
+			        			<div>
+				        			<h4>12,683</h4>
+				        			<span>total twitter followers</span>
+				        		</div>
+			        		</li>
+			        		<li>
+			        			<a href="" title="" class="dark-blue-square"><i class="icon-facebook"></i></a>
+			        			<div>
+				        			<h4>530,893</h4>
+				        			<span>total facebook likes</span>
+				        		</div>
+			        		</li>
+			        	</ul>
+			        </div>
+			        <!-- /social stats -->
+
+
+			        <!-- Categories -->
+			        <div class="widget">
+			        	<h6 class="widget-name"><i class="icon-list"></i>Categories</h6>
+				        <ul class="plus-list categories">
+				        	<li>
+				        		<a href="#" title="">Company documents</a>
+				        		<strong>1232</strong>
+				        	</li>
+				        	<li>
+				        		<a href="#" title="">Media entries</a>
+				        		<strong>7638</strong>
+				        	</li>
+				        	<li>
+				        		<a href="#" title="">Blog posts</a>
+				        		<strong>221</strong>
+				        	</li>
+				        	<li>
+				        		<a href="#" title="">Job positions</a>
+				        		<strong>49</strong>
+				        	</li>
+				        	<li>
+				        		<a href="#" title="">Team members</a>
+				        		<strong>80</strong>
+				        	</li>
+				        	<li>
+				        		<a href="#" title="">Projects</a>
+				        		<strong>43</strong>
+				        	</li>
+				        </ul>
+				    </div>
+				    <!-- /categories -->
+
+
+				    <!-- Gallery thumbs -->
+				    <div class="widget">
+				    	<h6 class="widget-name"><i class="icon-picture"></i>Gallery thumbs</h6>
+				    	<div class="row-fluid thumbs">
+					    	<div class="span6">
+					    		<a href="img/demo/big.jpg" class="lightbox"><img src="http://placehold.it/580x380" alt="" /></a>
+					    		<a href="img/demo/big.jpg" class="lightbox"><img src="http://placehold.it/580x380" alt="" /></a>
+					    		<a href="img/demo/big.jpg" class="lightbox"><img src="http://placehold.it/580x380" alt="" /></a>
+					    		<a href="img/demo/big.jpg" class="lightbox"><img src="http://placehold.it/580x380" alt="" /></a>
+					    	</div>
+					    	<div class="span6">
+					    		<a href="img/demo/big.jpg" class="lightbox"><img src="http://placehold.it/580x380" alt="" /></a>
+					    		<a href="img/demo/big.jpg" class="lightbox"><img src="http://placehold.it/580x380" alt="" /></a>
+					    		<a href="img/demo/big.jpg" class="lightbox"><img src="http://placehold.it/580x380" alt="" /></a>
+					    		<a href="img/demo/big.jpg" class="lightbox"><img src="http://placehold.it/580x380" alt="" /></a>
+					    	</div>
+					    </div>
+				    </div>
+				    <!-- /gallery thumbs -->
+
+		        	<!-- Action buttons -->
+	                <div class="widget">
+	                	<h6 class="widget-name"><i class="icon-search"></i>Action buttons</h6>
+	                	<button class="btn btn-block btn-danger">Action button</button>
+	                	<button class="btn btn-block btn-info">Action button</button>
+	                	<button class="btn btn-block btn-success">Action button</button>
+	                </div>
+	                <!-- /action buttons -->
+
+			        <!-- Tags input -->
+					<div class="widget">
+						<h6 class="widget-name"><i class="icon-search"></i>Tags input</h6>
+						<input type="text" id="tags1" class="tags" value="these,are,sample,tags" />
+					</div>
+					<!-- /tags input -->
+
+		        </div>
+
+		    </div>
+		</div>
+		<!-- /sidebar -->
+
+
+		<!-- Content -->
+		<div id="content">
+
+		    <!-- Content wrapper -->
+		    <div class="wrapper">
+
+			    <!-- Breadcrumbs line -->
+			    <div class="crumbs">
+		            <ul id="breadcrumbs" class="breadcrumb"> 
+		                <li><a href="index.html">Dashboard</a></li>
+		                <li class="active"><a href="tables.html" title="">Tables</a></li>
+		            </ul>
+			        
+		            <ul class="alt-buttons">
+		                <li><a href="#" title=""><i class="icon-signal"></i><span>Stats</span></a></li>
+		                <li><a href="#" title=""><i class="icon-comments"></i><span>Messages</span></a></li>
+		                <li class="dropdown"><a href="#" title="" data-toggle="dropdown"><i class="icon-tasks"></i><span>Tasks</span> <strong>(+16)</strong></a>
+		                	<ul class="dropdown-menu pull-right">
+		                        <li><a href="#" title=""><i class="icon-plus"></i>Add new task</a></li>
+		                        <li><a href="#" title=""><i class="icon-reorder"></i>Statement</a></li>
+		                        <li><a href="#" title=""><i class="icon-cog"></i>Settings</a></li>
+		                	</ul>
+		                </li>
+		            </ul>
+			    </div>
+			    <!-- /breadcrumbs line -->
+
+			    <!-- Page header -->
+			    <div class="page-header">
+			    	<div class="page-title">
+				    	<h5>Tables</h5>
+				    	<span>Static and dynamic tables</span>
+			    	</div>
+
+			    	<ul class="page-stats">
+			    		<li>
+			    			<div class="showcase">
+			    				<span>New visits</span>
+			    				<h2>22.504</h2>
+			    			</div>
+			    			<div id="total-visits" class="chart">10,14,8,45,23,41,22,31,19,12, 28, 21, 24, 20</div>
+			    		</li>
+			    		<li>
+			    			<div class="showcase">
+			    				<span>My balance</span>
+			    				<h2>$16.290</h2>
+			    			</div>
+			    			<div id="balance" class="chart">10,14,8,45,23,41,22,31,19,12, 28, 21, 24, 20</div>
+			    		</li>
+			    	</ul>
+			    </div>
+			    <!-- /page header -->
+
+			    <!-- Action tabs -->
+			    <div class="actions-wrapper">
+				    <div class="actions">
+
+				    	<div id="user-stats">
+					        <ul class="round-buttons">
+					            <li><div class="depth"><a href="" title="Add new post" class="tip"><i class="icon-plus"></i></a></div></li>
+					            <li><div class="depth"><a href="" title="View statement" class="tip"><i class="icon-signal"></i></a></div></li>
+					            <li><div class="depth"><a href="" title="Media posts" class="tip"><i class="icon-reorder"></i></a></div></li>
+					            <li><div class="depth"><a href="" title="RSS feed" class="tip"><i class="icon-rss"></i></a></div></li>
+					            <li><div class="depth"><a href="" title="Create new task" class="tip"><i class="icon-tasks"></i></a></div></li>
+					            <li><div class="depth"><a href="" title="Layout settings" class="tip"><i class="icon-cogs"></i></a></div></li>
+					        </ul>
+				    	</div>
+
+				    	<div id="quick-actions">
+				    		<ul class="statistics">
+				    			<li>
+				    				<div class="top-info">
+					    				<a href="#" title="" class="blue-square"><i class="icon-plus"></i></a>
+					    				<strong>12,476</strong>
+					    			</div>
+									<div class="progress progress-micro"><div class="bar" style="width: 60%;"></div></div>
+									<span>User registrations</span>
+				    			</li>
+				    			<li>
+				    				<div class="top-info">
+					    				<a href="#" title="" class="red-square"><i class="icon-hand-up"></i></a>
+					    				<strong>621,873</strong>
+					    			</div>
+									<div class="progress progress-micro"><div class="bar" style="width: 20%;"></div></div>
+									<span>Total clicks</span>
+				    			</li>
+				    			<li>
+				    				<div class="top-info">
+					    				<a href="#" title="" class="purple-square"><i class="icon-shopping-cart"></i></a>
+					    				<strong>562</strong>
+					    			</div>
+									<div class="progress progress-micro"><div class="bar" style="width: 90%;"></div></div>
+									<span>New orders</span>
+				    			</li>
+				    			<li>
+				    				<div class="top-info">
+					    				<a href="#" title="" class="green-square"><i class="icon-ok"></i></a>
+					    				<strong>$45,360</strong>
+					    			</div>
+									<div class="progress progress-micro"><div class="bar" style="width: 70%;"></div></div>
+									<span>General balance</span>
+				    			</li>
+				    			<li>
+				    				<div class="top-info">
+					    				<a href="#" title="" class="sea-square"><i class="icon-group"></i></a>
+					    				<strong>562K+</strong>
+					    			</div>
+									<div class="progress progress-micro"><div class="bar" style="width: 50%;"></div></div>
+									<span>Total users</span>
+				    			</li>
+				    			<li>
+				    				<div class="top-info">
+					    				<a href="#" title="" class="dark-blue-square"><i class="icon-facebook"></i></a>
+					    				<strong>36,290</strong>
+					    			</div>
+									<div class="progress progress-micro"><div class="bar" style="width: 93%;"></div></div>
+									<span>Facebook fans</span>
+				    			</li>
+				    		</ul>
+				    	</div>
+
+				    	<div id="map">
+				    		<div id="google-map"></div>
+				    	</div>
+
+				    	<ul class="action-tabs">
+				    		<li><a href="#user-stats" title="">Quick actions</a></li>
+				    		<li><a href="#quick-actions" title="">Website statistics</a></li>
+				    		<li><a href="#map" title="" id="map-link">Google map</a></li>
+				    	</ul>
+				    </div>
+				</div>
+			    <!-- /action tabs -->
+
+		    	<!-- Search widget -->
+		    	<form class="search widget" action="#">
+		    		<div class="autocomplete-append">
+			    		<ul class="search-options">
+			    			<li><a href="#" title="Go to search page" class="go-option tip"></a></li>
+			    			<li><a href="#" title="Advanced search" class="advanced-option tip"></a></li>
+			    			<li><a href="#" title="Settings" class="settings-option tip"></a></li>
+			    		</ul>
+			    		<input type="text" placeholder="search website..." id="autocomplete" />
+			    		<input type="submit" class="btn btn-info" value="Search" />
+			    	</div>
+		    	</form>
+		    	<!-- /search widget -->
+
+
+		    	<h5 class="widget-name"><i class="icon-columns"></i>Default tables</h5>
+	                	
+                <!-- Table with options -->
+                <div class="widget">
+                	<div class="navbar"><div class="navbar-inner"><h6>Table classes</h6></div></div>
+                    <div class="table-overflow">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Class</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>.table</code></td>
+                                    <td>Default table styling</td>
+                                </tr>
+                                <tr>
+                                    <td><code>.table-striped</code></td>
+                                    <td>Different background for even rows</td>
+                                </tr>
+                                <tr>
+                                    <td><code>.table-bordered</code></td>
+                                    <td>Default bordered table</td>
+                                </tr>
+                                <tr>
+                                    <td><code>.table-hover</code></td>
+                                    <td>Change background color for rows on hover</td>
+                                </tr>
+                                <tr>
+                                    <td><code>.table-condensed</code></td>
+                                    <td>Smaller padding</td>
+                                </tr>
+                                <tr>
+                                      <td><code>.table-checks</code></td>
+                                      <td>Table with checkboxes</td>
+                                </tr>
+                                <tr>
+                                      <td><code>.navbar-tabs .table-tabs</code></td>
+                                      <td>Table inside tabs. Should be applied for .widget</td>
+                                </tr>
+                                <tr>
+                                      <td><code>div.table-footer</code></td>
+                                      <td>Footer for static tables. Goes after table</td>
+                                </tr>
+                                <tr>
+                                      <td><code>.table-bordered .table-gradient</code></td>
+                                      <td>Light gradient for table rows</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- /table with options -->
+
+                <!-- Default table -->
+                <div class="widget">
+                	<div class="navbar"><div class="navbar-inner"><h6>Default table</h6></div></div>
+                    <div class="table-overflow">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>Username</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Mark</td>
+                                    <td>Otto</td>
+                                    <td>@mdo</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>Jacob</td>
+                                    <td>Thornton</td>
+                                    <td>@fat</td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>Larry</td>
+                                    <td>the Bird</td>
+                                    <td>@twitter</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- /default table -->
+	                        
+                <!-- Table striped -->
+                <div class="widget">
+                	<div class="navbar"><div class="navbar-inner"><h6>Striped table</h6></div></div>
+                    <div class="table-overflow">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>Username</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Mark</td>
+                                    <td>Otto</td>
+                                    <td>@mdo</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>Jacob</td>
+                                    <td>Thornton</td>
+                                    <td>@fat</td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>Larry</td>
+                                    <td>the Bird</td>
+                                    <td>@twitter</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- /table striped -->
+	                        
+                <!-- Table bordered -->
+                <div class="widget">
+                	<div class="navbar"><div class="navbar-inner"><h6>Bordered table</h6></div></div>
+                    <div class="table-overflow">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>Username</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td rowspan="2">1</td>
+                                    <td>Mark</td>
+                                    <td>Otto</td>
+                                    <td>@mdo</td>
+                                </tr>
+                                <tr>
+                                    <td class="rowspan">Mark</td>
+                                    <td>Otto</td>
+                                    <td>@TwBootstrap</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>Jacob</td>
+                                    <td>Thornton</td>
+                                    <td>@fat</td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td colspan="2">Larry the Bird</td>
+                                    <td>@twitter</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- /table bordered -->
+	                        
+                <!-- Table bordered inside well -->
+                <div class="widget">
+                	<div class="navbar"><div class="navbar-inner"><h6>Bordered inside well</h6></div></div>
+                    <div class="well body">
+                    	<div class="table-overflow">
+	                        <table class="table table-bordered">
+	                            <thead>
+	                                <tr>
+	                                    <th>#</th>
+	                                    <th>First Name</th>
+	                                    <th>Last Name</th>
+	                                    <th>Username</th>
+	                                </tr>
+	                            </thead>
+	                            <tbody>
+	                                <tr>
+	                                    <td rowspan="2">1</td>
+	                                    <td>Mark</td>
+	                                    <td>Otto</td>
+	                                    <td>@mdo</td>
+	                                </tr>
+	                                <tr>
+	                                    <td>Mark</td>
+	                                    <td>Otto</td>
+	                                    <td>@TwBootstrap</td>
+	                                </tr>
+	                                <tr>
+	                                    <td>2</td>
+	                                    <td>Jacob</td>
+	                                    <td>Thornton</td>
+	                                    <td>@fat</td>
+	                                </tr>
+	                                <tr>
+	                                    <td>3</td>
+	                                    <td colspan="2">Larry the Bird</td>
+	                                    <td>@twitter</td>
+	                                </tr>
+	                            </tbody>
+	                        </table>
+	                    </div>
+                    </div>
+                </div>
+                <!-- /table bordered inside well -->
+	                        
+                <!-- Table hover -->
+                <div class="widget">
+                	<div class="navbar"><div class="navbar-inner"><h6>Hover cells table</h6></div></div>
+                    <div class="table-overflow">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>Username</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Mark</td>
+                                    <td>Otto</td>
+                                    <td>@mdo</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>Jacob</td>
+                                    <td>Thornton</td>
+                                    <td>@fat</td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td colspan="2">Larry the Bird</td>
+                                    <td>@twitter</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- /table hover -->
+	                        
+                <!-- Table condensed -->
+                <div class="widget">
+                	<div class="navbar"><div class="navbar-inner"><h6>Condensed table</h6></div></div>
+                    <div class="table-overflow">
+                        <table class="table table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>Username</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Mark</td>
+                                    <td>Otto</td>
+                                    <td>@mdo</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>Jacob</td>
+                                    <td>Thornton</td>
+                                    <td>@fat</td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td colspan="2">Larry the Bird</td>
+                                    <td>@twitter</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- /table condensed -->
+	                        	                        
+                <!-- Row styling -->
+                <div class="widget">
+                	<div class="navbar"><div class="navbar-inner"><h6>Row styling</h6></div></div>
+                    <div class="table-overflow">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Product</th>
+                                    <th>Payment Taken</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="success">
+                                    <td>1</td>
+                                    <td>TB - Monthly</td>
+                                    <td>01/04/2014</td>
+                                    <td>Approved</td>
+                                </tr>
+                                <tr class="error">
+                                    <td>2</td>
+                                    <td>TB - Monthly</td>
+                                    <td>02/04/2014</td>
+                                    <td>Declined</td>
+                                </tr>
+                                <tr class="warning">
+                                    <td>3</td>
+                                    <td>TB - Monthly</td>
+                                    <td>03/04/2014</td>
+                                    <td>Pending</td>
+                                </tr>
+                                <tr class="info">
+                                    <td>4</td>
+                                    <td>TB - Monthly</td>
+                                    <td>04/04/2014</td>
+                                    <td>Call in to confirm</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- /row styling -->
+
+
+                <h5 class="widget-name"><i class="icon-columns"></i>Custom tables</h5>
+	                                               
+                <!-- Default datatable -->
+                <div class="widget">
+                	<div class="navbar"><div class="navbar-inner"><h6>Default datatable</h6></div></div>
+                    <div class="table-overflow">
+                        <table class="table table-striped table-bordered" id="data-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>Username</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Mark</td>
+                                    <td>Otto</td>
+                                    <td>@mdo</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>Jacob</td>
+                                    <td>Thornton</td>
+                                    <td>@fat</td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>Larry</td>
+                                    <td>the Bird</td>
+                                    <td>@twitter</td>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Mark</td>
+                                    <td>Otto</td>
+                                    <td>@mdo</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>Jacob</td>
+                                    <td>Thornton</td>
+                                    <td>@fat</td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>Larry</td>
+                                    <td>the Bird</td>
+                                    <td>@twitter</td>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Mark</td>
+                                    <td>Otto</td>
+                                    <td>@mdo</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>Jacob</td>
+                                    <td>Thornton</td>
+                                    <td>@fat</td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>Larry</td>
+                                    <td>the Bird</td>
+                                    <td>@twitter</td>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Mark</td>
+                                    <td>Otto</td>
+                                    <td>@mdo</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>Jacob</td>
+                                    <td>Thornton</td>
+                                    <td>@fat</td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>Larry</td>
+                                    <td>the Bird</td>
+                                    <td>@twitter</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- /default datatable -->
+	                        	                        
+                <!-- Table with footer -->
+                <div class="widget">
+                	<div class="navbar"><div class="navbar-inner"><h6>Table with footer</h6></div></div>
+                    <div class="table-overflow">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>Username</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Mark</td>
+                                    <td>Otto</td>
+                                    <td>@mdo</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>Jacob</td>
+                                    <td>Thornton</td>
+                                    <td>@fat</td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>Larry</td>
+                                    <td>the Bird</td>
+                                    <td>@twitter</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="table-footer">
+                        <div class="table-actions">
+                            <label>Apply action:</label>
+                            <select class="styled">
+                                <option value="">Select action...</option>
+                                <option value="Edit">Edit</option>
+                                <option value="Delete">Delete</option>
+                                <option value="Move">Move somewhere</option>
+                            </select>
+                        </div>
+                        <div class="pagination">
+                            <ul>
+                                <li><a href="#">Prev</a></li>
+                                <li><a href="#">1</a></li>
+                                <li><a href="#">2</a></li>
+                                <li class="active"><a href="#">3</a></li>
+                                <li><a href="#">4</a></li>
+                                <li><a href="#">Next</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- /table with footer -->
+	                        
+                <!-- Table with gradient -->
+                <div class="widget">
+                	<div class="navbar"><div class="navbar-inner"><h6>With gradient</h6></div></div>
+                    <div class="table-overflow">
+                        <table class="table table-bordered table-gradient">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>Username</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Mark</td>
+                                    <td>Otto</td>
+                                    <td>@mdo</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>Jacob</td>
+                                    <td>Thornton</td>
+                                    <td>@fat</td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>Larry</td>
+                                    <td>the Bird</td>
+                                    <td>@twitter</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- /table with gradient -->
+	                        
+                <!-- Table with checkboxes -->
+                <div class="widget">
+                	<div class="navbar"><div class="navbar-inner"><h6>Table with checkboxes</h6></div></div>
+                    <div class="table-overflow">
+                        <table class="table table-bordered table-checks" id="select-all">
+                          <thead>
+                              <tr>
+                                  <th><input type="checkbox" name="checkRow" class="styled" /></th>
+                                  <th>Column name</th>
+                                  <th>Column name</th>
+                                  <th>Column name</th>
+                                  <th>Column name</th>
+                                  <th>Column name</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              <tr>
+                                  <td><input type="checkbox" name="checkRow" class="styled" /></td>
+                                  <td>Row 1</td>
+                                  <td>Row 2</td>
+                                  <td>Row 3</td>
+                                  <td>Row 4</td>
+                                  <td>Row 5</td>
+                              </tr>
+                              <tr>
+                                  <td><input type="checkbox" name="checkRow" class="styled" /></td>
+                                  <td>Row 1</td>
+                                  <td>Row 2</td>
+                                  <td>Row 3</td>
+                                  <td>Row 4</td>
+                                  <td>Row 5</td>
+                              </tr>
+                              <tr>
+                                  <td><input type="checkbox" name="checkRow" class="styled" /></td>
+                                  <td>Row 1</td>
+                                  <td>Row 2</td>
+                                  <td>Row 3</td>
+                                  <td>Row 4</td>
+                                  <td>Row 5</td>
+                              </tr>
+                              <tr>
+                                  <td><input type="checkbox" name="checkRow" class="styled" /></td>
+                                  <td>Row 1</td>
+                                  <td>Row 2</td>
+                                  <td>Row 3</td>
+                                  <td>Row 4</td>
+                                  <td>Row 5</td>
+                              </tr>
+                              <tr>
+                                  <td><input type="checkbox" name="checkRow" class="styled" /></td>
+                                  <td>Row 1</td>
+                                  <td>Row 2</td>
+                                  <td>Row 3</td>
+                                  <td>Row 4</td>
+                                  <td>Row 5</td>
+                              </tr>
+                          </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- /table with checkboxes -->
+	                        
+                <!-- Table with toolbar -->
+                <div class="widget">
+                	<div class="navbar"><div class="navbar-inner"><h6>Table with toolbar</h6></div></div>
+                    <ul class="toolbar">
+                        <li><a href="#" title=""><i class="icon-heart"></i><span>Upload file</span></a></li>
+                        <li><a href="#" title=""><i class="icon-download-alt"></i><span>Download file</span></a></li>
+                        <li><a href="#" title=""><i class="icon-cog"></i><span>Settings</span></a></li>
+                    </ul>
+                    <div class="table-overflow">
+                        <table class="table table-bordered table-checks">
+                          <thead>
+                              <tr>
+                                  <th><input type="checkbox" name="checkRow" class="styled" /></th>
+                                  <th>Column name</th>
+                                  <th>Column name</th>
+                                  <th>Column name</th>
+                                  <th>Column name</th>
+                                  <th>Column name</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              <tr>
+                                  <td><input type="checkbox" name="checkRow" class="styled" /></td>
+                                  <td>Row 1</td>
+                                  <td>Row 2</td>
+                                  <td>Row 3</td>
+                                  <td>Row 4</td>
+                                  <td>Row 5</td>
+                              </tr>
+                              <tr>
+                                  <td><input type="checkbox" name="checkRow" class="styled" /></td>
+                                  <td>Row 1</td>
+                                  <td>Row 2</td>
+                                  <td>Row 3</td>
+                                  <td>Row 4</td>
+                                  <td>Row 5</td>
+                              </tr>
+                              <tr>
+                                  <td><input type="checkbox" name="checkRow" class="styled" /></td>
+                                  <td>Row 1</td>
+                                  <td>Row 2</td>
+                                  <td>Row 3</td>
+                                  <td>Row 4</td>
+                                  <td>Row 5</td>
+                              </tr>
+                              <tr>
+                                  <td><input type="checkbox" name="checkRow" class="styled" /></td>
+                                  <td>Row 1</td>
+                                  <td>Row 2</td>
+                                  <td>Row 3</td>
+                                  <td>Row 4</td>
+                                  <td>Row 5</td>
+                              </tr>
+                              <tr>
+                                  <td><input type="checkbox" name="checkRow" class="styled" /></td>
+                                  <td>Row 1</td>
+                                  <td>Row 2</td>
+                                  <td>Row 3</td>
+                                  <td>Row 4</td>
+                                  <td>Row 5</td>
+                              </tr>
+                          </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- /table with toolbar -->
+	                        
+                <!-- Inside tabs -->
+                <div class="widget navbar-tabs table-tabs">
+                    <div class="navbar">
+                        <div class="navbar-inner">
+                            <h6>Inside tabs</h6>
+                            <ul class="nav nav-tabs pull-right">
+                                <li class="active"><a href="#table-tab" data-toggle="tab">Section 1</a></li>
+                                <li><a href="#table-tab2" data-toggle="tab">Section 2</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="tabbable">
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="table-tab">
+                                <div class="table-overflow">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>First Name</th>
+                                                <th>Last Name</th>
+                                                <th>Username</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>1</td>
+                                                <td>Mark</td>
+                                                <td>Otto</td>
+                                                <td>@mdo</td>
+                                            </tr>
+                                            <tr>
+                                                <td>2</td>
+                                                <td>Jacob</td>
+                                                <td>Thornton</td>
+                                                <td>@fat</td>
+                                            </tr>
+                                            <tr>
+                                                <td>3</td>
+                                                <td>Larry</td>
+                                                <td>the Bird</td>
+                                                <td>@twitter</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="table-tab2">
+                                <div class="table-overflow">
+                                    <table class="table table-hover table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>First Name</th>
+                                                <th>Last Name</th>
+                                                <th>Username</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>1</td>
+                                                <td>Mark</td>
+                                                <td>Otto</td>
+                                                <td>@mdo</td>
+                                            </tr>
+                                            <tr>
+                                                <td>2</td>
+                                                <td>Jacob</td>
+                                                <td>Thornton</td>
+                                                <td>@fat</td>
+                                            </tr>
+                                            <tr>
+                                                <td>3</td>
+                                                <td>Larry</td>
+                                                <td>the Bird</td>
+                                                <td>@twitter</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /inside tabs -->
+	                        
+                <!-- Table with navbar elements -->
+                <div class="widget">
+                	<div class="navbar">
+                    	<div class="navbar-inner">
+                        	<h6>With navbar elements</h6>
+                            <div class="nav pull-right">
+                                <a href="#" class="dropdown-toggle navbar-icon" data-toggle="dropdown"><i class="icon-cog"></i></a>
+                                <ul class="dropdown-menu pull-right">
+                                    <li><a href="#"><i class="icon-plus"></i>Add new option</a></li>
+                                    <li><a href="#"><i class="icon-reorder"></i>View statement</a></li>
+                                    <li><a href="#"><i class="icon-cogs"></i>Parameters</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-overflow">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>Username</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Mark</td>
+                                    <td>Otto</td>
+                                    <td>@mdo</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>Jacob</td>
+                                    <td>Thornton</td>
+                                    <td>@fat</td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>Larry</td>
+                                    <td>the Bird</td>
+                                    <td>@twitter</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- /table with navbar elements -->
+	                        
+                <!-- Some controlы -->
+                <div class="widget">
+                    <div class="navbar">
+                        <div class="navbar-inner">
+                            <h6>Table elements</h6>
+                            <div class="nav pull-right">
+                                <a href="#" class="dropdown-toggle just-icon" data-toggle="dropdown"><i class="font-cog"></i></a>
+                                <ul class="dropdown-menu pull-right">
+                                    <li><a href="#"><i class="font-heart"></i>Favorite it</a></li>
+                                    <li><a href="#"><i class="font-refresh"></i>Reload page</a></li>
+                                    <li><a href="#"><i class="font-link"></i>Attach something</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-overflow">
+                        <table class="table table-striped table-bordered align-center">
+                            <thead>
+                                <tr>
+                                    <th>Labels</th>
+                                    <th>Icons</th>
+                                    <th>Progress bars</th>
+                                    <th>Buttons</th>
+                                    <th>FamFam icons</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span class="label label-info">In progress</span></td>
+                                    <td>
+                                        <ul class="table-controls">
+                                            <li><a href="#" class="tip" title="Add entry"><i class="icon-plus"></i></a> </li>
+                                            <li><a href="#" class="tip" title="Edit entry"><i class="icon-pencil"></i></a> </li>
+                                            <li><a href="#" class="tip" title="Export"><i class="icon-cogs"></i></a> </li>
+                                        </ul>
+                                    </td>
+                                    <td><div class="progress progress-striped progress-success active"><div class="bar" style="width: 40%;"></div></div></td>
+                                    <td>
+                                        <ul class="table-controls">
+                                            <li><a href="#" class="btn tip" title="Add entry"><i class="icon-plus"></i></a> </li>
+                                            <li><a href="#" class="btn tip" title="Edit entry"><i class="icon-pencil"></i></a> </li>
+                                            <li><a href="#" class="btn tip" title="Export"><i class="icon-cogs"></i></a> </li>
+                                        </ul>
+                                    </td>
+                                    <td>
+                                        <ul class="table-controls">
+                                            <li><a href="#" class="tip" title="Publish"><i class="fam-tick"></i></a> </li>
+                                            <li><a href="#" class="tip" title="Edit entry"><i class="fam-pencil"></i></a> </li>
+                                            <li><a href="#" class="tip" title="Remove entry"><i class="fam-cross"></i></a> </li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><span class="label label-important">Error</span></td>
+                                    <td>
+                                        <ul class="table-controls">
+                                            <li><a href="#" class="tip" title="Add entry"><i class="icon-plus"></i></a> </li>
+                                            <li><a href="#" class="tip" title="Edit entry"><i class="icon-pencil"></i></a> </li>
+                                            <li><a href="#" class="tip" title="Export"><i class="icon-cogs"></i></a> </li>
+                                        </ul>
+                                    </td>
+                                    <td><div class="progress progress-striped progress-danger active"><div class="bar" style="width: 60%;"></div></div></td>
+                                    <td>
+                                        <ul class="table-controls">
+                                            <li><a href="#" class="btn tip" title="Add entry"><i class="icon-plus"></i></a> </li>
+                                            <li><a href="#" class="btn tip" title="Edit entry"><i class="icon-pencil"></i></a> </li>
+                                            <li><a href="#" class="btn tip" title="Export"><i class="icon-cogs"></i></a> </li>
+                                        </ul>
+                                    </td>
+                                    <td>
+                                        <ul class="table-controls">
+                                            <li><a href="#" class="tip" title="Publish"><i class="fam-tick"></i></a> </li>
+                                            <li><a href="#" class="tip" title="Edit entry"><i class="fam-pencil"></i></a> </li>
+                                            <li><a href="#" class="tip" title="Remove entry"><i class="fam-cross"></i></a> </li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><span class="label label-success">Done</span></td>
+                                    <td>
+                                        <ul class="table-controls">
+                                            <li><a href="#" class="tip" title="Add entry"><i class="icon-plus"></i></a> </li>
+                                            <li><a href="#" class="tip" title="Edit entry"><i class="icon-pencil"></i></a> </li>
+                                            <li><a href="#" class="tip" title="Export"><i class="icon-cogs"></i></a> </li>
+                                        </ul>
+                                    </td>
+                                    <td><div class="progress progress-striped progress-info active"><div class="bar" style="width: 80%;"></div></div></td>
+                                    <td>
+                                        <ul class="table-controls">
+                                            <li><a href="#" class="btn tip" title="Add entry"><i class="icon-plus"></i></a> </li>
+                                            <li><a href="#" class="btn tip" title="Edit entry"><i class="icon-pencil"></i></a> </li>
+                                            <li><a href="#" class="btn tip" title="Export"><i class="icon-cogs"></i></a> </li>
+                                        </ul>
+                                    </td>
+                                    <td>
+                                        <ul class="table-controls">
+                                            <li><a href="#" class="tip" title="Publish"><i class="fam-tick"></i></a> </li>
+                                            <li><a href="#" class="tip" title="Edit entry"><i class="fam-pencil"></i></a> </li>
+                                            <li><a href="#" class="tip" title="Remove entry"><i class="fam-cross"></i></a> </li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- /some controlы -->
+
+		    </div>
+		    <!-- /content wrapper -->
+
+		</div>
+		<!-- content -->
+
+	</div>
+	<!-- /content container -->
+
+
+	<!-- Footer -->
+	<div id="footer">
+		<div class="copyrights">Copyright &copy; 2014.Company name All rights reserved.More Templates <a href="http://www.cssmoban.com/" target="_blank" title="模板之家">模板之家</a> - Collect from <a href="http://www.cssmoban.com/" title="网页模板" target="_blank">网页模板</a></div>
+		<ul class="footer-links">
+			<li><a href="" title=""><i class="icon-cogs"></i>Contact admin</a></li>
+			<li><a href="" title=""><i class="icon-screenshot"></i>Report bug</a></li>
+		</ul>
+	</div>
+	<!-- /footer -->
+
+
+</body>
+</html>

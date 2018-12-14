@@ -105,7 +105,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new UserDetailsService() {
 
             User getUserDetails(String username) {
-                if(null== sysUserMapper){
+                if (null == sysUserMapper) {
                     sysUserMapper = (SysUserMapper) SpringContextUtil.getBean("sysUserMapper");
                 }
                 SysUser sysUser = sysUserMapper.findUserByUserName(username);
