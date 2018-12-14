@@ -5397,6 +5397,7 @@ DiagramFormatPanel.prototype.destroy = function()
             area: ['290px', '204px'], //宽高
             content: $("#stopOpen")
         });
+		$("#stopValue").focus();
    }
    function updateStops(id,name,e){
 	   var p = $(e).offset();
