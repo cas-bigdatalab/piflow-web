@@ -18,7 +18,6 @@
                 <table class="table table-striped table-bordered bootstrap-datatable datatable responsive">
                     <thead>
                     <tr>
-                     <th style="display: none">sort</th>
                         <th style="display: none">flowId</th>
                         <th style="display: none">templateId</th>
                         <th>flowName</th>
@@ -29,9 +28,8 @@
                     </thead>
                     <tbody id="tableData">
                     <tr th:each='list:${TemPlateList}'>
-                    <td style="display: none" th:text="${listStat.index}"></td>
-                        <td style="display: none" class="center" th:text="${list.flow?.id}"></td>
                         <td style="display: none" th:text="${list.id}" ></td>
+                        <td style="display: none" class="center" th:text="${list.flow?.id}"></td>
                         <td class="center" th:text="${list.flow?.name} ? ${list.flow?.name} : 'no flowName'"></td>
                         <td class="center" th:text="${list.name}"></td>
                         <td th:text="${#dates.format(list.crtDttm, 'yyyy-MM-dd HH:mm:ss')}"></td>

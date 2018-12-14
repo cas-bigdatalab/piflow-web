@@ -3,10 +3,8 @@ package com.nature.component.template.service;
 import com.nature.component.template.model.FlowTemplateModel;
 import com.nature.component.template.model.PropertyTemplateModel;
 import com.nature.component.template.model.StopTemplateModel;
-import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.model.Stops;
 import com.nature.component.workFlow.model.Template;
-
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -63,7 +61,7 @@ public interface IFlowAndStopsTemplateVoService {
 	 * @param flowId
 	 * @param maxPageId  flow中stop中的最大值
 	 */
-	public void addTemplateStopsToFlow(Template template,Flow flow, int maxPageId);
+	public void addTemplateStopsToFlow(Template template,String flowId, int maxPageId);
 	
 	public void addStopsList(List<Stops> stops,Template template);
 }
