@@ -5,6 +5,7 @@ import com.nature.base.util.SpringContextUtil;
 import com.nature.component.sysUser.model.SysUser;
 import com.nature.mapper.sysUser.SysUserMapper;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -23,6 +24,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
+import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -37,6 +39,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      * 引入日志，注意都是"org.slf4j"包下
      */
     Logger logger = LoggerUtil.getLogger();
+
+    @Resource
+    private  SysUserMapper sysUserMapper;
 
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -100,7 +105,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new UserDetailsService() {
 
             User getUserDetails(String username) {
-                SysUserMapper sysUserMapper = (SysUserMapper) SpringContextUtil.getBean("sysUserMapper");
+                if(null== sysUserMapper){
+                    sysUserMapper = (SysUserMapper) SpringContextUtil.getBean("sysUserMapper");
+                }
                 SysUser sysUser = sysUserMapper.findUserByUserName(username);
                 String password = "";
                 String role = null;
