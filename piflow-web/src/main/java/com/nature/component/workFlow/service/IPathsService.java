@@ -1,7 +1,12 @@
 package com.nature.component.workFlow.service;
 
+import com.nature.component.workFlow.model.Flow;
+import com.nature.component.workFlow.model.Paths;
 import com.nature.component.workFlow.vo.PathsVo;
+
 import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
 
 public interface IPathsService {
 
@@ -43,5 +48,12 @@ public interface IPathsService {
 	 * @return
 	 */
 	public int upDatePathsVo(PathsVo pathsVo);
+	
+	/**
+	 * 插入list<Paths> 
+	 * @param pathsList
+	 * @return
+	 */
+	public int addPathsList(List<Paths> pathsList,Flow flow);
 
 }

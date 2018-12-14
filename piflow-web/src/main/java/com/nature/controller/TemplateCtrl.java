@@ -1,7 +1,34 @@
 package com.nature.controller;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.alibaba.fastjson.JSON;
-import com.nature.base.util.*;
+import com.nature.base.util.FileUtils;
+import com.nature.base.util.FlowXmlUtils;
+import com.nature.base.util.JsonUtils;
+import com.nature.base.util.LoggerUtil;
+import com.nature.base.util.Utils;
 import com.nature.base.vo.StatefulRtnBase;
 import com.nature.common.constant.SysParamsCache;
 import com.nature.component.mxGraph.model.MxGraphModel;
@@ -10,27 +37,12 @@ import com.nature.component.template.model.StopTemplateModel;
 import com.nature.component.template.service.IFlowAndStopsTemplateVoService;
 import com.nature.component.template.service.ITemplateService;
 import com.nature.component.workFlow.model.Flow;
+import com.nature.component.workFlow.model.Paths;
 import com.nature.component.workFlow.model.Stops;
 import com.nature.component.workFlow.model.Template;
 import com.nature.component.workFlow.service.IFlowService;
+import com.nature.component.workFlow.service.IPathsService;
 import com.nature.component.workFlow.service.IStopGroupService;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.transaction.Transactional;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * template的ctrl
@@ -50,6 +62,9 @@ public class TemplateCtrl {
 	
 	@Autowired
 	private IFlowAndStopsTemplateVoService flowAndStopsTemplateVoServiceImpl;
+	
+	@Autowired
+	private IPathsService pathsServiceImpl;
 	
 	
 	
@@ -241,6 +256,12 @@ public class TemplateCtrl {
 	        rtnMap.put("code", "0");
 	        String templateId = request.getParameter("templateId");
 	        String loadId = request.getParameter("load");
+	        Flow flowById = iFlowServiceImpl.getFlowById(loadId);
+		        if (null == flowById) {
+	  			  logger.info("template为空,加载模板失败");
+	  			  rtnMap.put("errMsg", "加载失败,请稍微再试");
+	  			  return JsonUtils.toJsonNoException(rtnMap);
+				}
 	    		Template template = iTemplateService.queryTemplate(templateId);
 	    		if (null == template) {
 	    			  logger.info("template为空,加载模板失败");
@@ -264,11 +285,15 @@ public class TemplateCtrl {
 	            	xmlToMxGraphModel.getRootVo();
 	            	addFlow = iFlowServiceImpl.saveOrUpdateFlowAll(xmlToMxGraphModel, loadId, "ADD",false);
 				}
+	            List<Paths> pathsList = FlowXmlUtils.xmlToPaths(xmlFileToStr);
+	            if (null != pathsList && pathsList.size() > 0) {
+	            	pathsServiceImpl.addPathsList(pathsList,flowById);
+				}
 	            // addFlow不为空且ReqRtnStatus的值为true,则保存成功
 	            if (null != addFlow && addFlow.isReqRtnStatus()) {
 	            	if (null != template) {
 						//保存stops和属性信息
-						flowAndStopsTemplateVoServiceImpl.addTemplateStopsToFlow(template,loadId,maxPageId);
+						flowAndStopsTemplateVoServiceImpl.addTemplateStopsToFlow(template,flowById,maxPageId);
 					}
 	                logger.info("加载模板成功");
 	                return "grapheditor/index";

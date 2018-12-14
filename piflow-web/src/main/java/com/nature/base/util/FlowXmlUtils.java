@@ -25,6 +25,7 @@ import com.nature.component.mxGraph.vo.MxGraphModelVo;
 import com.nature.component.template.model.PropertyTemplateModel;
 import com.nature.component.template.model.StopTemplateModel;
 import com.nature.component.workFlow.model.Flow;
+import com.nature.component.workFlow.model.Paths;
 import com.nature.component.workFlow.model.Property;
 import com.nature.component.workFlow.model.Stops;
 import com.nature.component.workFlow.model.Template;
@@ -348,6 +349,7 @@ public class FlowXmlUtils {
 			}
 			xmlStrSb.append("> \n");
 			List<Stops> stopsVoList = flow.getStopsList();
+			List<Paths> pathsList = flow.getPathsList();
 			if (null != stopsVoList && stopsVoList.size() > 0) {
 				for (Stops stopVo : stopsVoList) {
 					String stopId = stopVo.getId();
@@ -441,6 +443,37 @@ public class FlowXmlUtils {
 						xmlStrSb.append("/> \n");
 					}
 				}
+				if (null != pathsList && pathsList.size() > 0) {
+						for (Paths paths : pathsList) {
+							xmlStrSb.append("<paths ");
+							String crtUser = paths.getCrtUser();
+							String from = paths.getFrom();
+							String to = paths.getTo();
+							String inport = paths.getInport();
+							String outport = paths.getOutport();
+							String pageId = paths.getPageId();
+							if (StringUtils.isNotBlank(crtUser)) {
+								xmlStrSb.append("crtUser=\"" + crtUser + "\" ");
+							}
+							if (StringUtils.isNotBlank(from)) {
+								xmlStrSb.append("from=\"" + from + "\" ");
+							}
+							if (StringUtils.isNotBlank(to)) {
+								xmlStrSb.append("to=\"" + to + "\" ");
+							}
+							if (StringUtils.isNotBlank(inport)) {
+								xmlStrSb.append("inport=\"" + inport + "\" ");
+							}
+							if (StringUtils.isNotBlank(outport)) {
+								xmlStrSb.append("outport=\"" + outport + "\" ");
+							}
+							if (StringUtils.isNotBlank(pageId)) {
+								xmlStrSb.append("pageId=\"" + pageId + "\" ");
+							}
+							xmlStrSb.append(" /> \n");
+					}
+				}
+					
 			}
 			if (StringUtils.isNoneBlank(xmlStr)) {
 				xmlStrSb.append(xmlStr);
@@ -700,5 +733,49 @@ public class FlowXmlUtils {
 				}
 			}
 		return stopsList;
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public static List<Paths> xmlToPaths(String xmldata) {
+		Document document = null;
+		try {
+			document = DocumentHelper.parseText(xmldata);
+		} catch (DocumentException e1) {
+			e1.printStackTrace();
+		}
+		String strXml = document.getRootElement().asXML();
+		String transformation = "<sdds>"+strXml + "</sdds>";
+		InputSource in = new InputSource(new StringReader(transformation));
+		in.setEncoding("UTF-8");
+		SAXReader reader = new SAXReader();
+		List<Paths> PathsList = new ArrayList<Paths>();
+		try {
+			document = reader.read(in);
+			// 获取所有拥有autoSaveNode属性的mxCell节点
+			Element rootElt = document.getRootElement(); // 获取根节点
+			Element flow = rootElt.element("flow");
+			Iterator rootiter = flow.elementIterator("paths"); // 获取根节点下的子节点paths
+			while (rootiter.hasNext()) {
+				Paths paths = new Paths();
+				Element recordEle = (Element) rootiter.next();
+				String crtUser = recordEle.attributeValue("crtUser");
+				String from = recordEle.attributeValue("from");
+				String to = recordEle.attributeValue("to");
+				String outport = recordEle.attributeValue("outport");
+				String pageId = recordEle.attributeValue("pageId");
+				String inport = recordEle.attributeValue("inport");
+				paths.setCrtUser(crtUser);
+				paths.setFrom(from);
+				paths.setTo(to);
+				paths.setOutport(outport);
+				paths.setInport(inport);
+				paths.setPageId(pageId);
+				PathsList.add(paths);
+			}
+		} catch (Exception e) {
+			logger.error("转换失败", e);
+			return null;
+		}
+		return PathsList;
 	}
 }
