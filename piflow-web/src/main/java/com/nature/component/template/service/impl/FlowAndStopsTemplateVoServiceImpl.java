@@ -81,10 +81,9 @@ public class FlowAndStopsTemplateVoServiceImpl implements IFlowAndStopsTemplateV
 
 	@Override
 	@Transactional
-	public void addTemplateStopsToFlow(Template template,String flowId,int maxPageId) {
+	public void addTemplateStopsToFlow(Template template,Flow flow,int maxPageId) {
 		int addPropertyList = 0;
 		List<Property> list = new ArrayList<Property>();
-		Flow flowById = flowMapper.getFlowById(flowId);
 		// 获取stop信息
 		List<StopTemplateModel> stopsList = template.getStopsList();
 		// 开始遍历保存stop和属性信息
@@ -97,7 +96,7 @@ public class FlowAndStopsTemplateVoServiceImpl implements IFlowAndStopsTemplateV
 				stop.setId(Utils.getUUID32());
 				stop.setCrtUser("wdd");
 				stop.setLastUpdateUser("wdd");
-				stop.setFlow(flowById);
+				stop.setFlow(flow);
 				stop.setVersion(0L);
 				stop.setCheckpoint(stopsVo.getIsCheckpoint());
 				int addStops = stopsMapper.addStops(stop);

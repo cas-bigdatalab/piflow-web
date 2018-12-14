@@ -179,6 +179,7 @@ public class FlowMapperProvider {
 		sql.SELECT("*");
 		sql.FROM("flow");
 		sql.WHERE("enable_flag = 1");
+		sql.ORDER_BY(" crt_dttm DESC  ");
 		sqlStr = sql.toString() + ";";
 		return sqlStr;
 	}

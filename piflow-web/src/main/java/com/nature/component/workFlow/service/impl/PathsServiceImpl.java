@@ -1,5 +1,6 @@
 package com.nature.component.workFlow.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -8,6 +9,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.nature.base.util.Utils;
+import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.model.Paths;
 import com.nature.component.workFlow.model.Stops;
 import com.nature.component.workFlow.service.IPathsService;
@@ -102,4 +105,24 @@ public class PathsServiceImpl implements IPathsService {
         }
         return 0;
     }
+
+	@Override
+	public int addPathsList(List<Paths> pathsList,Flow flow) {
+		List<Paths> list = new ArrayList<Paths>();
+		if (null != pathsList && pathsList.size() > 0) {
+			for (Paths paths : pathsList) {
+				if (null != paths) {
+					paths.setId(Utils.getUUID32());
+					paths.setCrtDttm(new Date());
+					paths.setFlow(flow);
+					paths.setEnableFlag(true);
+					paths.setLastUpdateDttm(new Date());
+					paths.setLastUpdateUser("wdd");
+					paths.setVersion(0L);
+					list.add(paths);
+				}
+			}
+		}
+		return pathsMapper.addPathsList(list);
+	}
 }

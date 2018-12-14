@@ -386,7 +386,7 @@ public class FlowServiceImpl implements IFlowService {
 
                                 // 根据MxCellList中的内容生成paths的list
                                 addPathsList = MxGraphModelUtil.mxCellVoListToPathsList(objectPaths, flow);
-
+                                if (flag) {
                                 // 判空pathsList
                                 if (null != addPathsList && addPathsList.size() > 0) {
                                     // 保存 addPathsList
@@ -397,7 +397,7 @@ public class FlowServiceImpl implements IFlowService {
                                 } else {
                                     logger.info("addPathsList为空,不保存");
                                 }
-
+                              }
                             } else {
                                 statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("无可添加数据,添加失败");
                             }
