@@ -467,14 +467,14 @@ span.green { background-color: #41CA83; }
 /*===== Top =====*/
 
 #top { height: 48px; display: block; }
-.fixed { position: fixed; height: 48px; width: 100%; z-index: 1039; background: url(../img/backgrounds/dark.png); padding: 0 20px; border-bottom: 4px solid #ef705b; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; -ms-box-sizing: border-box; box-sizing: border-box; }
+.fixed { position: fixed; height: 48px; width: 100%; z-index: 1039; background: ghostwhite; padding: 0 20px; border-bottom: 4px solid gainsboro; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; -ms-box-sizing: border-box; box-sizing: border-box; }
 #top:after { content: ""; display: block; clear: both; }
 .logo { display: block; padding: 11px 0; float: left; }
 
-.top-menu { border-left: 1px solid #464646; border-right: 1px solid #464646; float: right; margin-right: -1px; }
-.top-menu > li { list-style: none; float: left; border-right: 1px solid #252525; position: relative; }
-.top-menu > li:first-child { border-left: 1px solid #252525; }
-.top-menu > li > a { cursor: pointer; display: block; border-left: 1px solid #464646; border-right: 1px solid #464646; 
+.top-menu { border-left: 1px solid gainsboro; border-right: 1px solid gainsboro; float: right; margin-right: -1px; }
+.top-menu > li { list-style: none; float: left; border-right: 1px solid ghostwhite; position: relative; }
+.top-menu > li:first-child { border-left: 1px solid ghostwhite; }
+.top-menu > li > a { cursor: pointer; display: block; border-left: 1px solid gainsboro; border-right: 1px solid gainsboro;
   -webkit-transition: all 0.2s ease-in-out; 
      -moz-transition: all 0.2s ease-in-out;
        -o-transition: all 0.2s ease-in-out;
@@ -489,9 +489,9 @@ span.green { background-color: #41CA83; }
 .top-menu > li > ul.pull-right:after { left: auto; right: 18px; }
 
 .user-menu { padding: 12px 14px; height: 20px; }
-.top-menu .dropdown .caret { display: inline-block; border-top-color: white; margin: 9px 0 0 8px; }
+.top-menu .dropdown .caret { display: inline-block; border-top-color: black; margin: 9px 0 0 8px; }
 .user-menu > img { display: inline-block; float: left; margin-right: 10px; margin-top: -1px; }
-.user-menu > span { font-size: 11px; margin-left: 32px; display: block; color: white; font-weight: bold; white-space: nowrap; }
+.user-menu > span { font-size: 11px; margin-left: 32px; display: block; color: grey; font-weight: bold; white-space: nowrap; }
 .new-message { width: 8px; height: 8px; position: absolute; top: 8px; right: 8px; background: url(../img/elements/interface/new_message.png) no-repeat; }
 
 .fullview { background: url(../img/icons/top/fullview.png) no-repeat 50%; width: 18px; height: 16px; padding: 14px; }
@@ -769,7 +769,7 @@ span.green { background-color: #41CA83; }
 .navigation > li > ul > li.current > a, .navigation > li > ul > li.current > a:hover { color: #327394; margin-right: -1px; }
 .navigation > li > ul > li > a { color: #5f5f5f; font-size: 11px; display: block; padding: 8px 12px; background: #fcfcfc;
   -webkit-transition: all 0.1s ease-in-out; 
-     -moz-transition: all 0.1 ease-in-out;
+     -moz-transition: all 0.1s ease-in-out;
        -o-transition: all 0.1s ease-in-out;
           transition: all 0.1s ease-in-out;
 }
@@ -862,7 +862,7 @@ span.green { background-color: #41CA83; }
 .subtitle code { margin-left: 6px; font-weight: normal; }
 .margin { margin: 15px 14px; }
 .drag { width: 12px; height: 10px; background: url(../img/elements/interface/order.png) no-repeat; cursor: pointer; display: block; float: right; margin: 14px; }
-#sidebar .widget { margin: 10px 10px 0 10px; }
+#sidebar .widget { margin: 25px 20px 0 20px; }
 .pre-scrollable { max-height: 340px; overflow-y: scroll; }
 
 
@@ -1237,9 +1237,9 @@ table { max-width: 100%; background-color: transparent; border-collapse: collaps
 .dropdown-toggle:active, .open .dropdown-toggle { outline: 0; }
 .dropdown .caret { margin-top: 9px; margin-left: 3px; border-top-width: 3px; border-left-width: 3px; border-right-width: 3px; }
 .dropdown-menu { position: absolute; top: 100%; left: 0; z-index: 1000; display: none; float: left; min-width: 160px; margin: 0; font-size: 11px; list-style: none; background-color: #ffffff; border: 1px solid #ccc; *border-right-width: 2px; *border-bottom-width: 2px;
--webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1)
-   -moz-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1)
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1)
+-webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+   -moz-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 -webkit-background-clip: padding-box;
    -moz-background-clip: padding;
         background-clip: padding-box;
@@ -1378,7 +1378,6 @@ table { max-width: 100%; background-color: transparent; border-collapse: collaps
      -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
           box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   -webkit-background-clip: padding-box;
-     -moz-background-clip: padding-box;
           background-clip: padding-box;
 }
 .modal.fade { top: -25%;

@@ -18,49 +18,6 @@ $(function() {
 		$('.actions-wrapper').slideToggle(100);
 	});
 
-
-
-	//===== Form wizards =====//
-
-	$("#wizard1").formwizard({
-		formPluginEnabled: false, 
-		validationEnabled: false,
-		focusFirstInput : false,
-		disableUIStyles : true
-	});
-
-	$("#wizard2").formwizard({
-		formPluginEnabled: true, 
-		validationEnabled: false,
-		focusFirstInput : false,
-		disableUIStyles : true,
-	
-		formOptions :{
-			success: function(data){$("#status1").fadeTo(500,1,function(){ $(this).html("<span>Form was submitted!</span>").fadeTo(5000, 0); })},
-			beforeSubmit: function(data){$("#data1").html("<span>Form was submitted with ajax. Data sent to the server: " + $.param(data) + "</span>");},
-			resetForm: true
-		}
-	});
-
-	$("#wizard3").formwizard({ 
-	 	formPluginEnabled: true,
-	 	validationEnabled: false,
-	 	focusFirstInput : false,
-	 	formOptions :{
-			success: function(data){$("#status2").fadeTo(500,1,function(){ $(this).html("<span>Form was submitted!</span>").fadeTo(5000, 0); })},
-			beforeSubmit: function(data){$("#data2").html("<span>Form was submitted with ajax. Data sent to the server: " + $.param(data) + "</span>");},
-			resetForm: true
-	 	},
-	 	inAnimation : {height: 'show'},
-        outAnimation: {height: 'hide'},
-		inDuration : 400,
-		outDuration: 400,
-		easing: 'easeInBack'	//see e.g. http://gsgd.co.uk/sandbox/jquery/easing/ for information on easing
-	 }
-	);
-
-
-
 	//===== File manager =====//	
 	
 	var elf = $('#file-manager').elfinder({
@@ -227,46 +184,6 @@ $(function() {
 	$('#cp4').colorpicker().on('changeColor', function(ev){
 		bodyStyle.background = ev.color.toHex();
 	});
-
-
-
-	//===== Date pickers =====//
-
-	$( ".datepicker" ).datepicker({
-				defaultDate: +7,
-		showOtherMonths:true,
-		autoSize: true,
-		appendText: '(dd-mm-yyyy)',
-		dateFormat: 'dd-mm-yy'
-		});
-		
-	$('.inlinepicker').datepicker({
-        inline: true,
-		showOtherMonths:true
-    });
-
-	var dates = $( "#fromDate, #toDate" ).datepicker({
-		defaultDate: "+1w",
-		changeMonth: false,
-		showOtherMonths:true,
-		numberOfMonths: 3,
-		onSelect: function( selectedDate ) {
-			var option = this.id == "fromDate" ? "minDate" : "maxDate",
-				instance = $( this ).data( "datepicker" ),
-				date = $.datepicker.parseDate(
-					instance.settings.dateFormat ||
-					$.datepicker._defaults.dateFormat,
-					selectedDate, instance.settings );
-			dates.not( this ).datepicker( "option", option, date );
-		}
-	});
-	
-	$( "#datepicker-icon, .navbar-datepicker" ).datepicker({
-		showOn: "button",
-		buttonImage: "img/icons/date_picker.png",
-		buttonImageOnly: true
-	});
-
 
 
 	//===== Modals and dialogs =====//
@@ -454,81 +371,12 @@ $(function() {
 	});
 
 
-
-	//===== Autocomplete =====//
-	
-	var tags = [ "ActionScript", "AppleScript", "Asp", "BASIC", "C", "C++", "Clojure", "COBOL", "ColdFusion", "Erlang", "Fortran", "Groovy", "Haskell", "Java", "JavaScript", "Lisp", "Perl", "PHP", "Python", "Ruby", "Scala", "Scheme" ];
-	$( "#autocomplete" ).autocomplete({
-		source: tags,
-		appendTo: ".autocomplete-append"
-	});	
-
-	function setSizes() {
-		var containerHeight = $(".autocomplete-append input[type=text]").width();
-		$(".autocomplete-append").width(containerWidth - 180);
-	};
-
-
-
     //===== Typeahead =====//
 
 	$('#typeahead').typeahead({
 		source: ["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Dakota","North Carolina","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"],
 		appendToBody: false
 	});
-
-
-
-	//===== Jquery UI sliders =====//
-
-	$( "#default-slider" ).slider();
-
-	$( "#increments-slider" ).slider({
-		value:100,
-		min: 0,
-		max: 500,
-		step: 50,
-		slide: function( event, ui ) {
-		$( "#donation-amount" ).val( "$" + ui.value );
-	}
-    });
-    $( "#donation-amount" ).val( "$" + $( "#increments-slider" ).slider( "value" ) );
-
-	$( "#range-slider, #range-slider1" ).slider({
-		range: true,
-		min: 0,
-		max: 500,
-		values: [ 75, 300 ],
-		slide: function( event, ui ) {
-			$( "#price-amount, #price-amount1" ).val( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
-		}
-    });
-    $( "#price-amount, #price-amount1" ).val( "$" + $( "#range-slider, #range-slider1" ).slider( "values", 0 ) +
-      " - $" + $( "#range-slider, #range-slider1" ).slider( "values", 1 ) );
-
-	$( "#slider-range-min, #slider-range-min1" ).slider({
-		range: "min",
-		value: 37,
-		min: 1,
-		max: 700,
-		slide: function( event, ui ) {
-			$( "#min-amount, #min-amount1" ).val( "$" + ui.value );
-		}
-    });
-    $( "#min-amount, #min-amount1" ).val( "$" + $( "#slider-range-min, #slider-range-min1" ).slider( "value" ) );
-
-	$( "#slider-range-max, #slider-range-max1" ).slider({
-		range: "max",
-		min: 1,
-		max: 10,
-		value: 2,
-		slide: function( event, ui ) {
-			$( "#max-amount, #max-amount1" ).val( ui.value );
-		}
-    });
-    $( "#max-amount, #max-amount1" ).val( $( "#slider-range-max, #slider-range-max1" ).slider( "value" ) );
-
-
 
 	//===== Loading button =====//
 
@@ -568,80 +416,6 @@ $(function() {
 	//===== Dual select boxes =====//
 	
 	$.configureBoxes();
-
-
-
-	//===== Spinner options =====//
-	
-	$( "#spinner-default" ).spinner();
-	
-	$( "#spinner-decimal" ).spinner({
-		step: 0.01,
-		numberFormat: "n"
-	});
-	
-	$( "#culture" ).change(function() {
-		var current = $( "#spinner-decimal" ).spinner( "value" );
-		Globalize.culture( $(this).val() );
-		$( "#spinner-decimal" ).spinner( "value", current );
-	});
-	
-	$( "#currency" ).change(function() {
-		$( "#spinner-currency" ).spinner( "option", "culture", $( this ).val() );
-	});
-	
-	$( "#spinner-currency" ).spinner({
-		min: 5,
-		max: 2500,
-		step: 25,
-		start: 1000,
-		numberFormat: "C"
-	});
-		
-	$( "#spinner-overflow" ).spinner({
-		spin: function( event, ui ) {
-			if ( ui.value > 10 ) {
-				$( this ).spinner( "value", -10 );
-				return false;
-			} else if ( ui.value < -10 ) {
-				$( this ).spinner( "value", 10 );
-				return false;
-			}
-		}
-	});
-	
-	$.widget( "ui.timespinner", $.ui.spinner, {
-		options: {
-			// seconds
-			step: 60 * 1000,
-			// hours
-			page: 60
-		},
-
-		_parse: function( value ) {
-			if ( typeof value === "string" ) {
-				// already a timestamp
-				if ( Number( value ) == value ) {
-					return Number( value );
-				}
-				return +Globalize.parseDate( value );
-			}
-			return value;
-		},
-
-		_format: function( value ) {
-			return Globalize.format( new Date(value), "t" );
-		}
-	});
-
-	$( "#spinner-time" ).timespinner();
-	$( "#culture-time" ).change(function() {
-		var current = $( "#spinner-time" ).timespinner( "value" );
-		Globalize.culture( $(this).val() );
-		$( "#spinner-time" ).timespinner( "value", current );
-	});
-
-
 
 	//===== Select2 dropdowns =====//
 
@@ -781,34 +555,18 @@ $(function() {
 
 	
 	//===== Easy tabs =====//
+	
+	$('.sidebar-tabs').easytabs({
+		animationSpeed: 150,
+		collapsible: false,
+		tabActiveClass: "active"
+	});
 
 	$('.actions').easytabs({
 		animationSpeed: 300,
 		collapsible: false,
 		tabActiveClass: "current"
 	});
-
-
-
-	//===== Make Google maps visible inaide tabs =====//
-
-	function initialize()
-	{
-		var mapProp= {
-			center: new google.maps.LatLng(-37.814666,144.982452),
-			zoom: 12,
-			mapTypeId:google.maps.MapTypeId.ROADMAP
-		};
-		var map=new google.maps.Map(document.getElementById("google-map"),mapProp);
-
-		$('.actions').bind('easytabs:after', function() {
-			google.maps.event.trigger(map, 'resize');
-			map.setCenter(new google.maps.LatLng(-37.814666,144.982452));
-		});
-
-	};
-	google.maps.event.addDomListener(window, 'load', initialize);
-
 
 
 	//===== Collapsible plugin for main nav =====//
@@ -821,9 +579,5 @@ $(function() {
 		speed: 200
 	});
 
-
-	//===== Form elements styling =====//
-	
-	$(".ui-datepicker-month, .styled, .dataTables_length select").uniform({ radioClass: 'choice' });
 	
 });

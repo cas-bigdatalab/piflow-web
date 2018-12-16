@@ -250,7 +250,7 @@ public class ProcessCtrl {
             ProcessVo processVo = processServiceImpl.getProcessVoById(processId);
             // Determine whether it is empty, and determine whether the save is successful.
             if (null != processVo) {
-                String appId = processVo.getId();
+                String appId = processVo.getAppId();
                 if (null != appId) {
                     if (ProcessState.STARTED == processVo.getState()) {
                         String flowStop = stopFlowImpl.stopFlow(appId);

@@ -5,58 +5,45 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 	<meta name="_csrf" th:content="${_csrf.token}" />
 	<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+
 	<link rel="stylesheet" type="text/css" th:href='@{/index/css/main.css}' />
 
 	<!--[if IE 8]>
 	<link rel="stylesheet" type="text/css" th:href='@{/index/css/ie8.css}' />
 	<![endif]-->
-	<link rel='stylesheet' type='text/css'th:href='@{/index/css/family.css}' >
 
-	<script type="text/javascript" th:src='@{/js/jquery/jquery.min.js}'></script>
-	<script type="text/javascript" th:src='@{/js/jquery/jquery-ui.min.js}'></script>
+	<script type="text/javascript" th:src='@{/index/js/jquery.min.js}'></script>
 
 
-	<script type="text/javascript" th:src='@{/index/js/plugins/charts/excanvas.min.js}'></script>
-	<script type="text/javascript" th:src='@{/index/js/plugins/charts/jquery.flot.js}'></script>
-	<script type="text/javascript" th:src='@{/index/js/plugins/charts/jquery.flot.resize.js}'></script>
-	<script type="text/javascript" th:src='@{/index/js/plugins/charts/jquery.sparkline.min.js}'></script>
+	<script type="text/javascript" th:src='@{/index/js/charts/excanvas.min.js}'></script>
+	<script type="text/javascript" th:src='@{/index/js/charts/jquery.sparkline.min.js}'></script>
 
-	<script type="text/javascript" th:src='@{/index/js/plugins/ui/jquery.easytabs.min.js}'></script>
-	<script type="text/javascript" th:src='@{/index/js/plugins/ui/jquery.collapsible.min.js}'></script>
-	<script type="text/javascript" th:src='@{/index/js/plugins/ui/jquery.mousewheel.js}'></script>
-	<script type="text/javascript" th:src='@{/index/js/plugins/ui/prettify.js}'></script>
-	<script type="text/javascript" th:src='@{/index/js/plugins/ui/jquery.bootbox.min.js}'></script>
-	<script type="text/javascript" th:src='@{/index/js/plugins/ui/jquery.colorpicker.js}'></script>
-	<script type="text/javascript" th:src='@{/index/js/plugins/ui/jquery.timepicker.min.js}'></script>
-	<script type="text/javascript" th:src='@{/index/js/plugins/ui/jquery.jgrowl.js}'></script>
-	<script type="text/javascript" th:src='@{/index/js/plugins/ui/jquery.fancybox.js}'></script>
-	<script type="text/javascript" th:src='@{/index/js/plugins/ui/jquery.fullcalendar.min.js}'></script>
-	<script type="text/javascript" th:src='@{/index/js/plugins/ui/jquery.elfinder.js}'></script>
+	<script type="text/javascript" th:src='@{/index/js/ui/jquery.easytabs.min.js}'></script>
+	<script type="text/javascript" th:src='@{/index/js/ui/jquery.collapsible.min.js}'></script>
+	<script type="text/javascript" th:src='@{/index/js/ui/jquery.mousewheel.js}'></script>
+	<script type="text/javascript" th:src='@{/index/js/ui/prettify.js}'></script>
+	<script type="text/javascript" th:src='@{/index/js/ui/jquery.bootbox.min.js}'></script>
+	<script type="text/javascript" th:src='@{/index/js/ui/jquery.colorpicker.js}'></script>
+	<script type="text/javascript" th:src='@{/index/js/ui/jquery.timepicker.min.js}'></script>
+	<script type="text/javascript" th:src='@{/index/js/ui/jquery.jgrowl.js}'></script>
+	<script type="text/javascript" th:src='@{/index/js/ui/jquery.fancybox.js}'></script>
+	<script type="text/javascript" th:src='@{/index/js/ui/jquery.fullcalendar.min.js}'></script>
+	<script type="text/javascript" th:src='@{/index/js/ui/jquery.elfinder.js}'></script>
 
-	<script type="text/javascript" th:src='@{/index/js/plugins/uploader/plupload.js}'></script>
-	<script type="text/javascript" th:src='@{/index/js/plugins/uploader/plupload.html4.js}'></script>
-	<script type="text/javascript" th:src='@{/index/js/plugins/uploader/plupload.html5.js}'></script>
-	<script type="text/javascript" th:src='@{/index/js/plugins/uploader/jquery.plupload.queue.js}'></script>
+	<script type="text/javascript" th:src='@{/index/js/uploader/jquery.plupload.queue.js}'></script>
 
-	<script type="text/javascript" th:src='@{/index/js/plugins/forms/jquery.uniform.js}'></script>
-	<script type="text/javascript" th:src='@{/index/js/plugins/forms/jquery.autosize.js}'></script>
-	<script type="text/javascript" th:src='@{/index/js/plugins/forms/jquery.inputlimiter.min.js}'></script>
-	<script type="text/javascript" th:src='@{/index/js/plugins/forms/jquery.tagsinput.min.js}'></script>
-	<script type="text/javascript" th:src='@{/index/js/plugins/forms/jquery.inputmask.js}'></script>
-	<script type="text/javascript" th:src='@{/index/js/plugins/forms/jquery.select2.min.js}'></script>
-	<script type="text/javascript" th:src='@{/index/js/plugins/forms/jquery.listbox.js}'></script>
-	<script type="text/javascript" th:src='@{/index/js/plugins/forms/jquery.validation.js}'></script>
-	<script type="text/javascript" th:src='@{/index/js/plugins/forms/jquery.validationEngine-en.js}'></script>
-	<script type="text/javascript" th:src='@{/index/js/plugins/forms/jquery.form.wizard.js}'></script>
-	<script type="text/javascript" th:src='@{/index/js/plugins/forms/jquery.form.js}'></script>
+	<script type="text/javascript" th:src='@{/index/js/forms/jquery.autosize.js}'></script>
+	<script type="text/javascript" th:src='@{/index/js/forms/jquery.inputlimiter.min.js}'></script>
+	<script type="text/javascript" th:src='@{/index/js/forms/jquery.tagsinput.min.js}'></script>
+	<script type="text/javascript" th:src='@{/index/js/forms/jquery.select2.min.js}'></script>
+	<script type="text/javascript" th:src='@{/index/js/forms/jquery.listbox.js}'></script>
+	<script type="text/javascript" th:src='@{/index/js/forms/jquery.validation.js}'></script>
 
-	<script type="text/javascript" th:src='@{/index/js/plugins/tables/jquery.dataTables.min.js}'></script>
+	<script type="text/javascript" th:src='@{/index/js/tables/jquery.dataTables.min.js}'></script>
 
 	<script type="text/javascript" th:src='@{/index/js/files/bootstrap.min.js}'></script>
 
 	<script type="text/javascript" th:src='@{/index/js/files/functions.js}'></script>
-
-	<script type="text/javascript" th:src='@{/index/js/charts/graph.js}'></script>
 
 </head>
 <body>

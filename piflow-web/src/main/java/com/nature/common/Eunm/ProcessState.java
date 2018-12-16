@@ -9,7 +9,8 @@ public enum ProcessState {
     COMPLETED("COMPLETED", "完成"),
     FAILED("FAILED", "失败"),
     ABORTED("ABORTED","中止"),
-    FORK("FORK","FORK");
+    FORK("FORK","FORK"),
+    KILLED("KILLED","停止");
 
     private final String value;
     private final String text;

@@ -5,7 +5,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
     <title>piflow-web</title>
     <link rel="shortcut icon" th:href="@{/favicon.ico}">
-    <meta th:include="/indexINC/index_improt :: index_improt"/>
+
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+
+    <link rel="stylesheet" type="text/css" th:href='@{/index/css/main.css}' />
+
+    <!--[if IE 8]>
+    <link rel="stylesheet" type="text/css" th:href='@{/index/css/ie8.css}' />
+    <![endif]-->
+
+    <script type="text/javascript" th:src='@{/index/js/jquery.min.js}'></script>
+
+
+    <script type="text/javascript" th:src='@{/index/js/charts/excanvas.min.js}'></script>
+    <script type="text/javascript" th:src='@{/index/js/charts/jquery.sparkline.min.js}'></script>
+
+    <script type="text/javascript" th:src='@{/index/js/ui/jquery.easytabs.min.js}'></script>
+    <script type="text/javascript" th:src='@{/index/js/ui/jquery.collapsible.min.js}'></script>
+    <script type="text/javascript" th:src='@{/index/js/ui/jquery.mousewheel.js}'></script>
+    <script type="text/javascript" th:src='@{/index/js/ui/prettify.js}'></script>
+    <script type="text/javascript" th:src='@{/index/js/ui/jquery.bootbox.min.js}'></script>
+    <script type="text/javascript" th:src='@{/index/js/ui/jquery.colorpicker.js}'></script>
+    <script type="text/javascript" th:src='@{/index/js/ui/jquery.timepicker.min.js}'></script>
+    <script type="text/javascript" th:src='@{/index/js/ui/jquery.jgrowl.js}'></script>
+    <script type="text/javascript" th:src='@{/index/js/ui/jquery.fancybox.js}'></script>
+    <script type="text/javascript" th:src='@{/index/js/ui/jquery.fullcalendar.min.js}'></script>
+    <script type="text/javascript" th:src='@{/index/js/ui/jquery.elfinder.js}'></script>
+
+    <script type="text/javascript" th:src='@{/index/js/uploader/jquery.plupload.queue.js}'></script>
+
+    <script type="text/javascript" th:src='@{/index/js/forms/jquery.autosize.js}'></script>
+    <script type="text/javascript" th:src='@{/index/js/forms/jquery.inputlimiter.min.js}'></script>
+    <script type="text/javascript" th:src='@{/index/js/forms/jquery.tagsinput.min.js}'></script>
+    <script type="text/javascript" th:src='@{/index/js/forms/jquery.select2.min.js}'></script>
+    <script type="text/javascript" th:src='@{/index/js/forms/jquery.listbox.js}'></script>
+    <script type="text/javascript" th:src='@{/index/js/forms/jquery.validation.js}'></script>
+
+    <script type="text/javascript" th:src='@{/index/js/tables/jquery.dataTables.min.js}'></script>
+
+    <script type="text/javascript" th:src='@{/index/js/files/functions.js}'></script>
+
 </head>
 <body>
 <!-- Fixed top -->
@@ -38,37 +78,35 @@
 
     <!-- Sidebar -->
     <div id="sidebar">
-        <div class="sidebar-tabs">
-            <div id="general widget">
-                <!-- Main navigation -->
-                <ul class="navigation widget">
-                    <li class=""><a th:href="@{/}" title=""><i class="icon-home"></i>Dashboard</a></li>
-                    <li class="active">
-                        <a id="currents" href="#" title="" class="expand">
-                            <i class="icon-reorder"></i>Menu<strong>3</strong>
-                        </a>
-                        <ul>
-                            <li><a th:href="@{/web/flowList}" title="">Flow List</a></li>
-                            <li><a th:href="@{/process/getProcessList}" title="" class="current">Process List</a></li>
-                            <li><a th:href="@{/web/template}" title="">Template</a></li>
-                        </ul>
-                    </li>
-                    <!--
-                    <li><a href="#" title="" class="expand"><i class="icon-warning-sign"></i>Error
-                        pages<strong>6</strong></a>
-                        <ul>
-                            <li><a href="403.html" title="">403 page</a></li>
-                            <li><a href="404.html" title="">404 page</a></li>
-                            <li><a href="405.html" title="">405 page</a></li>
-                            <li><a href="500.html" title="">500 page</a></li>
-                            <li><a href="503.html" title="">503 page</a></li>
-                            <li><a href="offline.html" title="">Offline page</a></li>
-                        </ul>
-                    </li>
-                     -->
-                </ul>
-                <!-- /main navigation -->
-            </div>
+        <div id="general">
+            <!-- Main navigation -->
+            <ul class="navigation widget">
+                <li class=""><a th:href="@{/}" title=""><i class="icon-home"></i>Dashboard</a></li>
+                <li>
+                    <a id="currents" href="#" title="" class="expand">
+                        <i class="icon-reorder"></i>Menu<strong>3</strong>
+                    </a>
+                    <ul>
+                        <li><a th:href="@{/web/flowList}" title="">Flow List</a></li>
+                        <li><a th:href="@{/process/getProcessList}" title="" class="">Process List</a></li>
+                        <li><a th:href="@{/web/template}" title="">Template</a></li>
+                    </ul>
+                </li>
+                <!--
+                <li><a href="#" title="" class="expand"><i class="icon-warning-sign"></i>Error
+                    pages<strong>6</strong></a>
+                    <ul>
+                        <li><a href="403.html" title="">403 page</a></li>
+                        <li><a href="404.html" title="">404 page</a></li>
+                        <li><a href="405.html" title="">405 page</a></li>
+                        <li><a href="500.html" title="">500 page</a></li>
+                        <li><a href="503.html" title="">503 page</a></li>
+                        <li><a href="offline.html" title="">Offline page</a></li>
+                    </ul>
+                </li>
+                 -->
+            </ul>
+            <!-- /main navigation -->
         </div>
     </div>
     <!-- /sidebar -->
@@ -106,7 +144,7 @@
 <script type="text/javascript" th:src='@{/index/js/files/bootstrap.min.js}'></script>
 <script th:inline="javascript">
     (function () {
-       // $('#menu_Default').addClass("current");
+       $('#currents').addClass("subOpened");
     })();
 </script>
 </body>
