@@ -502,7 +502,7 @@ span.green { background-color: #41CA83; }
 
 /*===== Footer =====*/
 
-#footer { -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; background: url(../img/backgrounds/dark.png); height: 42px; width: 100%; padding: 0 20px; border-top: 4px solid #EF705B; position: absolute; bottom: 0; font-size: 11px; color: #fff; }
+#footer { -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; background: ghostwhite; height: 42px; width: 100%; padding: 0 20px; border-top: 4px solid gainsboro; position: absolute; bottom: 0; font-size: 11px; color: #fff; }
 .copyrights { display: block; float: left; padding: 9px 0; }
 .footer-links { float: right; border-left: 1px solid #464646; border-right: 1px solid #464646; }
 .footer-links li { float: left; border-right: 1px solid #252525; }
