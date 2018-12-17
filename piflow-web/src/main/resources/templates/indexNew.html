@@ -6,58 +6,39 @@
     <title>piflow-web</title>
     <link rel="shortcut icon" th:href="@{/favicon.ico}">
 
-    <meta name="_csrf" th:content="${_csrf.token}" />
-    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 
-    <link rel="stylesheet" type="text/css" th:href='@{/index/css/main.css}' />
+    <link rel="stylesheet" type="text/css" th:href='@{/index/css/main.css}'/>
 
     <!--[if IE 8]>
-    <link rel="stylesheet" type="text/css" th:href='@{/index/css/ie8.css}' />
+    <link rel="stylesheet" type="text/css" th:href='@{/index/css/ie8.css}'/>
     <![endif]-->
 
     <script type="text/javascript" th:src='@{/index/js/jquery.min.js}'></script>
 
+    <script type="text/javascript" th:src='@{/index/js/jquery.easytabs.min.js}'></script>
+    <script type="text/javascript" th:src='@{/index/js/jquery.collapsible.min.js}'></script>
 
-    <script type="text/javascript" th:src='@{/index/js/charts/excanvas.min.js}'></script>
-    <script type="text/javascript" th:src='@{/index/js/charts/jquery.sparkline.min.js}'></script>
+    <script type="text/javascript" th:src='@{/index/js/jquery.dataTables.min.js}'></script>
 
-    <script type="text/javascript" th:src='@{/index/js/ui/jquery.easytabs.min.js}'></script>
-    <script type="text/javascript" th:src='@{/index/js/ui/jquery.collapsible.min.js}'></script>
-    <script type="text/javascript" th:src='@{/index/js/ui/jquery.mousewheel.js}'></script>
-    <script type="text/javascript" th:src='@{/index/js/ui/prettify.js}'></script>
-    <script type="text/javascript" th:src='@{/index/js/ui/jquery.bootbox.min.js}'></script>
-    <script type="text/javascript" th:src='@{/index/js/ui/jquery.colorpicker.js}'></script>
-    <script type="text/javascript" th:src='@{/index/js/ui/jquery.timepicker.min.js}'></script>
-    <script type="text/javascript" th:src='@{/index/js/ui/jquery.jgrowl.js}'></script>
-    <script type="text/javascript" th:src='@{/index/js/ui/jquery.fancybox.js}'></script>
-    <script type="text/javascript" th:src='@{/index/js/ui/jquery.fullcalendar.min.js}'></script>
-    <script type="text/javascript" th:src='@{/index/js/ui/jquery.elfinder.js}'></script>
-
-    <script type="text/javascript" th:src='@{/index/js/uploader/jquery.plupload.queue.js}'></script>
-
-    <script type="text/javascript" th:src='@{/index/js/forms/jquery.autosize.js}'></script>
-    <script type="text/javascript" th:src='@{/index/js/forms/jquery.inputlimiter.min.js}'></script>
-    <script type="text/javascript" th:src='@{/index/js/forms/jquery.tagsinput.min.js}'></script>
-    <script type="text/javascript" th:src='@{/index/js/forms/jquery.select2.min.js}'></script>
-    <script type="text/javascript" th:src='@{/index/js/forms/jquery.listbox.js}'></script>
-    <script type="text/javascript" th:src='@{/index/js/forms/jquery.validation.js}'></script>
-
-    <script type="text/javascript" th:src='@{/index/js/tables/jquery.dataTables.min.js}'></script>
-
-    <script type="text/javascript" th:src='@{/index/js/files/functions.js}'></script>
+    <script type="text/javascript" th:src='@{/index/js/functions.js}'></script>
 
 </head>
+
 <body>
+
 <!-- Fixed top -->
 <div id="top">
     <div class="fixed">
-        <a href="indexNew.html" title="" class="logo"><img th:src='@{/img/logo.png}' /></a>
+        <a href="indexNew.html" title="" class="logo"><img th:src='@{/img/logo.png}'/></a>
         <ul class="top-menu">
             <li><a class="fullview"></a></li>
+            <!--<li><a class="showmenu"></a></li>-->
             <li class="dropdown">
                 <a class="user-menu" data-toggle="dropdown">
                     <img th:src='@{/index/img/userpic.png}' alt=""/>
-                    <span>Howdy, Eugene! <b class="caret"></b></span>
+                    <span>Howdy, Nature! <b class="caret"></b></span>
                 </a>
                 <ul class="dropdown-menu">
                     <!--<li><a href="#" title=""><i class="icon-user"></i>Profile</a></li>-->
@@ -78,23 +59,28 @@
 
     <!-- Sidebar -->
     <div id="sidebar">
+
         <div id="general">
+
             <!-- Main navigation -->
             <ul class="navigation widget">
-                <li class=""><a th:href="@{/}" title=""><i class="icon-home"></i>Dashboard</a></li>
-                <li>
-                    <a id="currents" href="#" title="" class="expand">
+                <li><a th:href="@{/}" title=""><i class="icon-home"></i>Dashboard</a></li>
+                <li id="selectedMenu" class="active">
+                    <a href="#" title="" class="expand" id="current">
                         <i class="icon-reorder"></i>Menu<strong>3</strong>
                     </a>
                     <ul>
-                        <li><a th:href="@{/web/flowList}" title="">Flow List</a></li>
-                        <li><a th:href="@{/process/getProcessList}" title="" class="">Process List</a></li>
-                        <li><a th:href="@{/web/template}" title="">Template</a></li>
+                        <li><a id="flowListMenuID" th:href="@{/web/flowList}" title="">Flow List</a></li>
+                        <li><a id="getProcessListMenuID" th:href="@{/process/getProcessList}" title="">Process List</a>
+                        </li>
+                        <li><a id="templateMenuID" th:href="@{/web/template}" title="">Template</a></li>
                     </ul>
                 </li>
                 <!--
-                <li><a href="#" title="" class="expand"><i class="icon-warning-sign"></i>Error
-                    pages<strong>6</strong></a>
+                <li>
+		    <a href="#" title="" class="expand">
+		    	<i class="icon-warning-sign"></i>Error pages<strong>6</strong>
+		    </a>
                     <ul>
                         <li><a href="403.html" title="">403 page</a></li>
                         <li><a href="404.html" title="">404 page</a></li>
@@ -107,7 +93,9 @@
                  -->
             </ul>
             <!-- /main navigation -->
+
         </div>
+
     </div>
     <!-- /sidebar -->
 
@@ -119,11 +107,11 @@
             <div th:case="'indexHome'">
                 <div th:include="/indexRight/process_List :: indexHome"></div>
             </div>
-            <div th:case="'getProcessList'">
-                <div th:include="/indexRight/process_List :: process_List"></div>
-            </div>
             <div th:case="'flowList'">
                 <div th:include="/indexRight/flow_List :: flow_List"></div>
+            </div>
+            <div th:case="'getProcessList'">
+                <div th:include="/indexRight/process_List :: process_List"></div>
             </div>
             <div th:case="'template'">
                 <div th:include="/indexRight/template_List :: template_List"></div>
@@ -141,10 +129,12 @@
 
 </div>
 <!-- /footer -->
-<script type="text/javascript" th:src='@{/index/js/files/bootstrap.min.js}'></script>
+<script type="text/javascript" th:src='@{/index/js/bootstrap.min.js}'></script>
 <script th:inline="javascript">
+    var accessPath = [[${accessPath}]];
     (function () {
-       $('#currents').addClass("subOpened");
+        $('#selectedMenu').addClass("active");
+        $('#' + accessPath + 'MenuID').addClass("current");
     })();
 </script>
 </body>
