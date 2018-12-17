@@ -566,21 +566,21 @@
     }
 
     function monitor(pageId, processStopVoState) {
-        var stopFailShow = $("#stopFailShow" + pageId);
-        var stopOkShow = $("#stopOkShow" + pageId);
-        var stopLoadingShow = $("#stopLoadingShow" + pageId);
-        if (processStopVoState && (processStopVoState === "STARTED")) {
-            stopFailShow.hide();
-            stopOkShow.hide();
-            stopLoadingShow.show();
-        } else if (processStopVoState && processStopVoState === "COMPLETED") {
-            stopFailShow.hide();
-            stopLoadingShow.hide();
-            stopOkShow.show();
-        } else if (processStopVoState && processStopVoState === "FAILED") {
-            stopOkShow.hide();
-            stopLoadingShow.hide();
-            stopFailShow.show();
+        var stopPath = $('g[name="stopPageId' + pageId + '"]');
+        if (stopPath.length > 0) {
+            for (var i = 0; i < stopPath.length; i++) {
+                var pathName = $(stopPath[i]).find('path[name="pathName"]');
+                var arrowName = $(stopPath[i]).find('path[name="arrowName"]');
+                if (processStopVoState && (processStopVoState === "STARTED")) {
+
+                } else if (processStopVoState && processStopVoState === "COMPLETED") {
+                    $(pathName).attr('stroke', 'green');
+                    $(arrowName).attr('stroke', 'green').attr('fill', 'green');
+                } else if (processStopVoState && processStopVoState === "FAILED") {
+                    $(pathName).attr('stroke', 'red');
+                    $(arrowName).attr('stroke', 'red').attr('fill', 'red');
+                }
+            }
         }
     }
 

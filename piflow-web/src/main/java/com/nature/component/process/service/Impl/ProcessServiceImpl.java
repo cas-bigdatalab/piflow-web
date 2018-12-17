@@ -763,7 +763,7 @@ public class ProcessServiceImpl implements IProcessService {
                                 MxGeometry sourceMxGeometry = sourceMxCell1.getMxGeometry();
                                 MxGeometry targetMxGeometry = targetMxCell1.getMxGeometry();
                                 if (null != sourceMxGeometry && null != targetMxGeometry) {
-                                    String drawingLine = this.drawingLine(sourceMxGeometry, targetMxGeometry, mxCell.getPageId());
+                                    String drawingLine = this.drawingLine(sourceMxCell1, targetMxCell1, mxCell.getPageId());
                                     if (StringUtils.isNotBlank(drawingLine)) {
                                         viewXmlStrBuf.append(drawingLine);
                                     }
@@ -790,229 +790,234 @@ public class ProcessServiceImpl implements IProcessService {
     /**
      * 根据source属性和target属性画连接线
      *
-     * @param sourceMxGeometry
-     * @param targetMxGeometry
+     * @param sourceMxCell
+     * @param sourceMxCell
      * @param pageID
      * @return
      */
-    private String drawingLine(MxGeometry sourceMxGeometry, MxGeometry targetMxGeometry, String pageID) {
+    private String drawingLine(MxCell sourceMxCell, MxCell targetMxCell, String pageID) {
         String lineSvg = "";
-        if (null != sourceMxGeometry && null != targetMxGeometry) {
-            // 取坐标和高宽参数
-            String sourceXStr = sourceMxGeometry.getX();
-            String sourceYStr = sourceMxGeometry.getY();
-            String sourceWidthStr = sourceMxGeometry.getWidth();
-            String sourceHeightStr = sourceMxGeometry.getHeight();
-            String targetXStr = targetMxGeometry.getX();
-            String targetYStr = targetMxGeometry.getY();
-            String targetWidthStr = targetMxGeometry.getWidth();
-            String targetHeightStr = targetMxGeometry.getHeight();
-            // 参数判空
-            if (!StringUtils.isAnyEmpty(sourceXStr, sourceYStr, sourceWidthStr, sourceHeightStr, targetXStr, targetYStr, targetWidthStr, targetHeightStr)) {
-                // 坐标和高宽参数转int
-                int sourceX = Integer.parseInt(sourceXStr);
-                int sourceY = Integer.parseInt(sourceYStr);
-                int sourceWidth = Integer.parseInt(sourceWidthStr);
-                int sourceHeight = Integer.parseInt(sourceHeightStr);
-                int targetX = Integer.parseInt(targetXStr);
-                int targetY = Integer.parseInt(targetYStr);
-                int targetWidth = Integer.parseInt(targetWidthStr);
-                int targetHeight = Integer.parseInt(targetHeightStr);
-                // 线的起点坐标
-                int sourceDotX = 0;
-                int sourceDotY = 0;
-                // 线的终点点坐标
-                int targetDotX = 0;
-                int targetDotY = 0;
-                // 箭头方向
-                ArrowDirection arrowDirection = null;
+        if (null != sourceMxCell && null != targetMxCell) {
+            MxGeometry sourceMxGeometry = sourceMxCell.getMxGeometry();
+            MxGeometry targetMxGeometry = targetMxCell.getMxGeometry();
+            if (null != sourceMxGeometry && null != targetMxGeometry) {
+                // 取坐标和高宽参数
+                String sourceXStr = sourceMxGeometry.getX();
+                String sourceYStr = sourceMxGeometry.getY();
+                String sourceWidthStr = sourceMxGeometry.getWidth();
+                String sourceHeightStr = sourceMxGeometry.getHeight();
+                String targetXStr = targetMxGeometry.getX();
+                String targetYStr = targetMxGeometry.getY();
+                String targetWidthStr = targetMxGeometry.getWidth();
+                String targetHeightStr = targetMxGeometry.getHeight();
+                // 参数判空
+                if (!StringUtils.isAnyEmpty(sourceXStr, sourceYStr, sourceWidthStr, sourceHeightStr, targetXStr, targetYStr, targetWidthStr, targetHeightStr)) {
+                    // 坐标和高宽参数转int
+                    int sourceX = Integer.parseInt(sourceXStr);
+                    int sourceY = Integer.parseInt(sourceYStr);
+                    int sourceWidth = Integer.parseInt(sourceWidthStr);
+                    int sourceHeight = Integer.parseInt(sourceHeightStr);
+                    int targetX = Integer.parseInt(targetXStr);
+                    int targetY = Integer.parseInt(targetYStr);
+                    int targetWidth = Integer.parseInt(targetWidthStr);
+                    int targetHeight = Integer.parseInt(targetHeightStr);
+                    // 线的起点坐标
+                    int sourceDotX = 0;
+                    int sourceDotY = 0;
+                    // 线的终点点坐标
+                    int targetDotX = 0;
+                    int targetDotY = 0;
+                    // 箭头方向
+                    ArrowDirection arrowDirection = null;
 
-                //线的生成规则如下：
-                //             ||           ||
-                //     E区     ||    A区    ||     F区
-                //             ||           ||
-                //=============||===========||=============
-                //             ||           ||
-                //     D区     ||   target  ||     B区
-                //             ||           ||
-                //=============||===========||=============
-                //             ||           ||
-                //     H区     ||     C区   ||     G区
-                //             ||           ||
-                //-----------------------------------------
-                // 以target为中心，source的位置分布在A到H的9个区中，通过source和target的位置判断出线入线方向，以此画线
+                    //线的生成规则如下：
+                    //             ||           ||
+                    //     E区     ||    A区    ||     F区
+                    //             ||           ||
+                    //=============||===========||=============
+                    //             ||           ||
+                    //     D区     ||   target  ||     B区
+                    //             ||           ||
+                    //=============||===========||=============
+                    //             ||           ||
+                    //     H区     ||     C区   ||     G区
+                    //             ||           ||
+                    //-----------------------------------------
+                    // 以target为中心，source的位置分布在A到H的9个区中，通过source和target的位置判断出线入线方向，以此画线
 
-                // A区为下出上入，条件：sourceY < targetY 且 (targetX-source宽) <= sourceX <= (targetX+target宽)
-                // B区为左出右入，条件：sourceX > (targetX+target宽) 且 (targetY-source高) <= sourceY <= (targetY+target高)
-                // C区为上出下入，条件：sourceY >= targetY 且 (targetX-source宽) <= sourceX <= (targetX+target宽)
-                // D区为右出左入，条件：sourceX < (targetX-source宽) 且 (targetY-source高) <= sourceY <= (targetY+target高)
-                // E区为右出上入，条件：sourceX < (targetX-source宽) 且 sourceY < (targetY-source高)
-                // F区为左出上入，条件：sourceX > (targetX+target宽) 且 sourceY < (targetY-source高)
-                // G区为左出下入，条件：sourceX > (targetX+target宽) 且 sourceY > (targetY+target高)
-                // H区为右出下入，条件：sourceX < (targetX-source宽) 且 sourceY > (targetY+target高)
-                // 线的折点数,
-                // ABCD区线的折点数为0或2，breakPoint用0表示，
-                // EFGH区线的折点数为1,breakPoint用1表示，
-                int breakPoint = 0;
-                // 根据A到H区的条件判断求出出线点和入线点的坐标(起点终点)
-                if (sourceY < targetY && (targetX - sourceWidth) <= sourceX && sourceX <= (targetX + targetWidth)) {
-                    // A区 下出上入
-                    // 当source在A区时，起点为source下边的中心点，终点为target上边的中心点
-                    sourceDotX = sourceX + (sourceWidth / 2);
-                    sourceDotY = sourceY + sourceHeight;
-                    targetDotX = targetX + (targetWidth / 2);
-                    targetDotY = targetY;
-                    arrowDirection = ArrowDirection.DOWN_DIRECTION;
-                    breakPoint = 0;
-                } else if (sourceX > (targetX + targetWidth) && (targetY - sourceHeight) <= sourceY && sourceY <= (targetY + targetHeight)) {
-                    // B区为左出右入
-                    // 当source在B区时，起点为source左边的中心点，终点为target右边的中心点
-                    sourceDotX = sourceX;
-                    sourceDotY = sourceY + (sourceHeight / 2);
-                    targetDotX = targetX + targetWidth;
-                    targetDotY = targetY + (targetHeight / 2);
-                    arrowDirection = ArrowDirection.LEFT_DIRECTION;
-                    breakPoint = 0;
-                } else if (sourceY >= targetY && (targetX - sourceWidth) <= sourceX && sourceX <= (targetX + targetWidth)) {
-                    // C区为上出下入
-                    // 当source在C区时，起点为source上边的中心点，终点为target下边的中心点
-                    sourceDotX = sourceX + (sourceWidth / 2);
-                    sourceDotY = sourceY;
-                    targetDotX = targetX + (targetWidth / 2);
-                    targetDotY = targetY + targetHeight;
-                    arrowDirection = ArrowDirection.UP_DIRECTION;
-                    breakPoint = 0;
-                } else if (sourceX < (targetX - sourceWidth) && (targetY - sourceHeight) <= sourceY && sourceY <= (targetY + targetHeight)) {
-                    // D区为右出左入
-                    // 当source在D区时，起点为source右边的中心点，终点为target左边的中心点
-                    sourceDotX = sourceX + sourceWidth;
-                    sourceDotY = sourceY + (sourceHeight / 2);
-                    targetDotX = targetX;
-                    targetDotY = targetY + (targetHeight / 2);
-                    arrowDirection = ArrowDirection.RIGHT_DIRECTION;
-                    breakPoint = 0;
-                } else if (sourceX < (targetX - sourceWidth) && sourceY < (targetY - sourceHeight)) {
-                    // E区为右出上入
-                    // 当source在E区时，起点为source右边的中心点，终点为target上边的中心点
-                    sourceDotX = sourceX + sourceWidth;
-                    sourceDotY = sourceY + (sourceHeight / 2);
-                    targetDotX = targetX + (targetWidth / 2);
-                    targetDotY = targetY;
-                    arrowDirection = ArrowDirection.DOWN_DIRECTION;
-                    breakPoint = 1;
-                } else if (sourceX > (targetX + targetWidth) && sourceY < (targetY - sourceHeight)) {
-                    // F区为左出上入
-                    // 当source在F区时，起点为source左边的中心点，终点为target上边的中心点
-                    sourceDotX = sourceX;
-                    sourceDotY = sourceY + (sourceHeight / 2);
-                    targetDotX = targetX + (targetWidth / 2);
-                    targetDotY = targetY;
-                    arrowDirection = ArrowDirection.DOWN_DIRECTION;
-                    breakPoint = 1;
-                } else if (sourceX > (targetX + targetWidth) && sourceY > (targetY + targetHeight)) {
-                    // G区为左出下入
-                    // 当source在G区时，起点为source左边的中心点，终点为target下边的中心点
-                    sourceDotX = sourceX;
-                    sourceDotY = sourceY + (sourceHeight / 2);
-                    targetDotX = targetX + (targetWidth / 2);
-                    targetDotY = targetY + targetHeight;
-                    arrowDirection = ArrowDirection.DOWN_DIRECTION;
-                    breakPoint = 1;
-                } else if (sourceX < (targetX - sourceWidth) && sourceY > (targetY + targetHeight)) {
-                    // H区为右出下入
-                    // 当source在H区时，起点为source右边的中心点，终点为target下边的中心点
-                    sourceDotX = sourceX + sourceWidth;
-                    sourceDotY = sourceY + (sourceHeight / 2);
-                    targetDotX = targetX + (targetWidth / 2);
-                    targetDotY = targetY + targetHeight;
-                    arrowDirection = ArrowDirection.DOWN_DIRECTION;
-                    breakPoint = 1;
-                } else {
-                    logger.warn("没有判断出位置信息，画线失败");
-                    return lineSvg;
-                }
-                if (null != arrowDirection) {
-                    // 开始画线
-                    StringBuffer lineSvgBuf = new StringBuffer();
-                    lineSvgBuf.append("<g transform='translate(0.5,0.5)' style='visibility: visible;'");
-                    lineSvgBuf.append("onclick=\"selectedPath('" + pageID + "',this)\">");
-                    // 线开始计算
-                    switch (breakPoint) {
-                        case 0:
-                            if (sourceDotX == targetDotX || sourceDotY == targetDotY) {
-                                //无折点，直接拼线
-                                lineSvgBuf.append("<path name='pathName' d='");
-                                lineSvgBuf.append("M " + sourceDotX + " " + sourceDotY + " ");
-                                lineSvgBuf.append("L " + targetDotX + " " + targetDotY + " ");
-                                lineSvgBuf.append("' fill='none' stroke='#000000' stroke-miterlimit='10'></path>");
-                            } else {
-                                lineSvgBuf.append("<path name='pathName' d='");
-                                lineSvgBuf.append("M " + sourceDotX + " " + sourceDotY + " ");
-                                // 两个折点，计算折点坐标
-                                if (arrowDirection == ArrowDirection.UP_DIRECTION) {
-                                    lineSvgBuf.append("L " + sourceDotX + " " + (((sourceDotY - targetDotY) / 2) + targetDotY) + " ");
-                                    lineSvgBuf.append("L " + targetDotX + " " + (((sourceDotY - targetDotY) / 2) + targetDotY) + " ");
-                                } else if (arrowDirection == ArrowDirection.DOWN_DIRECTION) {
-                                    lineSvgBuf.append("L " + sourceDotX + " " + (((targetDotY - sourceDotY) / 2) + sourceDotY) + " ");
-                                    lineSvgBuf.append("L " + targetDotX + " " + (((targetDotY - sourceDotY) / 2) + sourceDotY) + " ");
-                                } else if (arrowDirection == ArrowDirection.LEFT_DIRECTION) {
-                                    lineSvgBuf.append("L " + (((sourceDotX - targetDotX) / 2) + targetDotX) + " " + sourceDotY + " ");
-                                    lineSvgBuf.append("L " + (((sourceDotX - targetDotX) / 2) + targetDotX) + " " + targetDotY + " ");
-                                } else if (arrowDirection == ArrowDirection.RIGHT_DIRECTION) {
-                                    lineSvgBuf.append("L " + (((targetDotX - sourceDotX) / 2) + sourceDotX) + " " + sourceDotX + " ");
-                                    lineSvgBuf.append("L " + (((targetDotX - sourceDotX) / 2) + sourceDotX) + " " + targetDotX + " ");
-                                }
-                                lineSvgBuf.append("L " + targetDotX + " " + targetDotY + " ");
-                                lineSvgBuf.append("' fill='none' stroke='#000000' stroke-miterlimit='10'></path>");
-                            }
-                            break;
-                        case 1:
-                            // 一个折点
-                            lineSvgBuf.append("<path name='pathName' d='");
-                            lineSvgBuf.append("M " + sourceDotX + " " + sourceDotY + " ");
-                            lineSvgBuf.append("L " + targetDotX + " " + sourceDotY + " ");
-                            lineSvgBuf.append("L " + targetDotX + " " + targetDotY + " ");
-                            lineSvgBuf.append("' fill='none' stroke='#000000' stroke-miterlimit='10'></path>");
-                            break;
-                        default:
-                            break;
+                    // A区为下出上入，条件：sourceY < targetY 且 (targetX-source宽) <= sourceX <= (targetX+target宽)
+                    // B区为左出右入，条件：sourceX > (targetX+target宽) 且 (targetY-source高) <= sourceY <= (targetY+target高)
+                    // C区为上出下入，条件：sourceY >= targetY 且 (targetX-source宽) <= sourceX <= (targetX+target宽)
+                    // D区为右出左入，条件：sourceX < (targetX-source宽) 且 (targetY-source高) <= sourceY <= (targetY+target高)
+                    // E区为右出上入，条件：sourceX < (targetX-source宽) 且 sourceY < (targetY-source高)
+                    // F区为左出上入，条件：sourceX > (targetX+target宽) 且 sourceY < (targetY-source高)
+                    // G区为左出下入，条件：sourceX > (targetX+target宽) 且 sourceY > (targetY+target高)
+                    // H区为右出下入，条件：sourceX < (targetX-source宽) 且 sourceY > (targetY+target高)
+                    // 线的折点数,
+                    // ABCD区线的折点数为0或2，breakPoint用0表示，
+                    // EFGH区线的折点数为1,breakPoint用1表示，
+                    int breakPoint = 0;
+                    // 根据A到H区的条件判断求出出线点和入线点的坐标(起点终点)
+                    if (sourceY < targetY && (targetX - sourceWidth) <= sourceX && sourceX <= (targetX + targetWidth)) {
+                        // A区 下出上入
+                        // 当source在A区时，起点为source下边的中心点，终点为target上边的中心点
+                        sourceDotX = sourceX + (sourceWidth / 2);
+                        sourceDotY = sourceY + sourceHeight;
+                        targetDotX = targetX + (targetWidth / 2);
+                        targetDotY = targetY;
+                        arrowDirection = ArrowDirection.DOWN_DIRECTION;
+                        breakPoint = 0;
+                    } else if (sourceX > (targetX + targetWidth) && (targetY - sourceHeight) <= sourceY && sourceY <= (targetY + targetHeight)) {
+                        // B区为左出右入
+                        // 当source在B区时，起点为source左边的中心点，终点为target右边的中心点
+                        sourceDotX = sourceX;
+                        sourceDotY = sourceY + (sourceHeight / 2);
+                        targetDotX = targetX + targetWidth;
+                        targetDotY = targetY + (targetHeight / 2);
+                        arrowDirection = ArrowDirection.LEFT_DIRECTION;
+                        breakPoint = 0;
+                    } else if (sourceY >= targetY && (targetX - sourceWidth) <= sourceX && sourceX <= (targetX + targetWidth)) {
+                        // C区为上出下入
+                        // 当source在C区时，起点为source上边的中心点，终点为target下边的中心点
+                        sourceDotX = sourceX + (sourceWidth / 2);
+                        sourceDotY = sourceY;
+                        targetDotX = targetX + (targetWidth / 2);
+                        targetDotY = targetY + targetHeight;
+                        arrowDirection = ArrowDirection.UP_DIRECTION;
+                        breakPoint = 0;
+                    } else if (sourceX < (targetX - sourceWidth) && (targetY - sourceHeight) <= sourceY && sourceY <= (targetY + targetHeight)) {
+                        // D区为右出左入
+                        // 当source在D区时，起点为source右边的中心点，终点为target左边的中心点
+                        sourceDotX = sourceX + sourceWidth;
+                        sourceDotY = sourceY + (sourceHeight / 2);
+                        targetDotX = targetX;
+                        targetDotY = targetY + (targetHeight / 2);
+                        arrowDirection = ArrowDirection.RIGHT_DIRECTION;
+                        breakPoint = 0;
+                    } else if (sourceX < (targetX - sourceWidth) && sourceY < (targetY - sourceHeight)) {
+                        // E区为右出上入
+                        // 当source在E区时，起点为source右边的中心点，终点为target上边的中心点
+                        sourceDotX = sourceX + sourceWidth;
+                        sourceDotY = sourceY + (sourceHeight / 2);
+                        targetDotX = targetX + (targetWidth / 2);
+                        targetDotY = targetY;
+                        arrowDirection = ArrowDirection.DOWN_DIRECTION;
+                        breakPoint = 1;
+                    } else if (sourceX > (targetX + targetWidth) && sourceY < (targetY - sourceHeight)) {
+                        // F区为左出上入
+                        // 当source在F区时，起点为source左边的中心点，终点为target上边的中心点
+                        sourceDotX = sourceX;
+                        sourceDotY = sourceY + (sourceHeight / 2);
+                        targetDotX = targetX + (targetWidth / 2);
+                        targetDotY = targetY;
+                        arrowDirection = ArrowDirection.DOWN_DIRECTION;
+                        breakPoint = 1;
+                    } else if (sourceX > (targetX + targetWidth) && sourceY > (targetY + targetHeight)) {
+                        // G区为左出下入
+                        // 当source在G区时，起点为source左边的中心点，终点为target下边的中心点
+                        sourceDotX = sourceX;
+                        sourceDotY = sourceY + (sourceHeight / 2);
+                        targetDotX = targetX + (targetWidth / 2);
+                        targetDotY = targetY + targetHeight;
+                        arrowDirection = ArrowDirection.DOWN_DIRECTION;
+                        breakPoint = 1;
+                    } else if (sourceX < (targetX - sourceWidth) && sourceY > (targetY + targetHeight)) {
+                        // H区为右出下入
+                        // 当source在H区时，起点为source右边的中心点，终点为target下边的中心点
+                        sourceDotX = sourceX + sourceWidth;
+                        sourceDotY = sourceY + (sourceHeight / 2);
+                        targetDotX = targetX + (targetWidth / 2);
+                        targetDotY = targetY + targetHeight;
+                        arrowDirection = ArrowDirection.DOWN_DIRECTION;
+                        breakPoint = 1;
+                    } else {
+                        logger.warn("没有判断出位置信息，画线失败");
+                        return lineSvg;
                     }
+                    if (null != arrowDirection) {
+                        // 开始画线
+                        StringBuffer lineSvgBuf = new StringBuffer();
+                        lineSvgBuf.append("<g name='stopPageId" + sourceMxCell.getPageId() + "' transform='translate(0.5,0.5)' style='visibility: visible;'");
+                        lineSvgBuf.append("onclick=\"selectedPath('" + pageID + "',this)\">");
+                        // 线开始计算
+                        switch (breakPoint) {
+                            case 0:
+                                if (sourceDotX == targetDotX || sourceDotY == targetDotY) {
+                                    //无折点，直接拼线
+                                    lineSvgBuf.append("<path name='pathName' d='");
+                                    lineSvgBuf.append("M " + sourceDotX + " " + sourceDotY + " ");
+                                    lineSvgBuf.append("L " + targetDotX + " " + targetDotY + " ");
+                                    lineSvgBuf.append("' fill='none' stroke='#000000' stroke-width='3' stroke-miterlimit='10'></path>");
+                                } else {
+                                    lineSvgBuf.append("<path name='pathName' d='");
+                                    lineSvgBuf.append("M " + sourceDotX + " " + sourceDotY + " ");
+                                    // 两个折点，计算折点坐标
+                                    if (arrowDirection == ArrowDirection.UP_DIRECTION) {
+                                        lineSvgBuf.append("L " + sourceDotX + " " + (((sourceDotY - targetDotY) / 2) + targetDotY) + " ");
+                                        lineSvgBuf.append("L " + targetDotX + " " + (((sourceDotY - targetDotY) / 2) + targetDotY) + " ");
+                                    } else if (arrowDirection == ArrowDirection.DOWN_DIRECTION) {
+                                        lineSvgBuf.append("L " + sourceDotX + " " + (((targetDotY - sourceDotY) / 2) + sourceDotY) + " ");
+                                        lineSvgBuf.append("L " + targetDotX + " " + (((targetDotY - sourceDotY) / 2) + sourceDotY) + " ");
+                                    } else if (arrowDirection == ArrowDirection.LEFT_DIRECTION) {
+                                        lineSvgBuf.append("L " + (((sourceDotX - targetDotX) / 2) + targetDotX) + " " + sourceDotY + " ");
+                                        lineSvgBuf.append("L " + (((sourceDotX - targetDotX) / 2) + targetDotX) + " " + targetDotY + " ");
+                                    } else if (arrowDirection == ArrowDirection.RIGHT_DIRECTION) {
+                                        lineSvgBuf.append("L " + (((targetDotX - sourceDotX) / 2) + sourceDotX) + " " + sourceDotX + " ");
+                                        lineSvgBuf.append("L " + (((targetDotX - sourceDotX) / 2) + sourceDotX) + " " + targetDotX + " ");
+                                    }
+                                    lineSvgBuf.append("L " + targetDotX + " " + targetDotY + " ");
+                                    lineSvgBuf.append("' fill='none' stroke='#000000' stroke-width='3' stroke-miterlimit='10'></path>");
+                                }
+                                break;
+                            case 1:
+                                // 一个折点
+                                lineSvgBuf.append("<path name='pathName' d='");
+                                lineSvgBuf.append("M " + sourceDotX + " " + sourceDotY + " ");
+                                lineSvgBuf.append("L " + targetDotX + " " + sourceDotY + " ");
+                                lineSvgBuf.append("L " + targetDotX + " " + targetDotY + " ");
+                                lineSvgBuf.append("' fill='none' stroke='#000000' stroke-width='3' stroke-miterlimit='10'></path>");
+                                break;
+                            default:
+                                break;
+                        }
 
-                    // 箭头坐标开始计算
-                    lineSvgBuf.append("<path name='arrowName' d='");
-                    // 箭头是由一个M坐标三个L坐标组成，M坐标为箭头的指向的点
-                    lineSvgBuf.append("M " + targetDotX + " " + targetDotY + " ");
-                    // 第一个L箭头(右侧点)，
-                    lineSvgBuf.append("L ");
-                    // 第一个L(右侧点)的X
-                    lineSvgBuf.append((targetDotX - (arrowDirection.getUpX() - arrowDirection.getRightX())) + " ");
-                    // 第一个L(右侧点)的Y
-                    lineSvgBuf.append((targetDotY - (arrowDirection.getUpY() - arrowDirection.getRightY())) + " ");
-                    // 第二个L箭头(尾点)，
-                    lineSvgBuf.append("L ");
-                    // 第二个L(尾点)的X
-                    lineSvgBuf.append((targetDotX - (arrowDirection.getUpX() - arrowDirection.getDownX())) + " ");
-                    // 第二个L(尾点)的Y
-                    lineSvgBuf.append((targetDotY - (arrowDirection.getUpY() - arrowDirection.getDownY())) + " ");
-                    // 第三个L箭头(左侧点)，
-                    lineSvgBuf.append("L ");
-                    // 第三个L(左侧点)的X
-                    lineSvgBuf.append((targetDotX - (arrowDirection.getUpX() - arrowDirection.getLfetX())) + " ");
-                    // 第三个L(左侧点)的Y
-                    lineSvgBuf.append((targetDotY - (arrowDirection.getUpY() - arrowDirection.getLfetY())) + " ");
-                    lineSvgBuf.append("Z' fill='#000000' stroke='#000000' stroke-miterlimit='10' pointer-events='all'></path>");
-                    lineSvgBuf.append("</g>");
-                    lineSvg = lineSvgBuf.toString();
+                        // 箭头坐标开始计算
+                        lineSvgBuf.append("<path name='arrowName' d='");
+                        // 箭头是由一个M坐标三个L坐标组成，M坐标为箭头的指向的点
+                        lineSvgBuf.append("M " + targetDotX + " " + targetDotY + " ");
+                        // 第一个L箭头(右侧点)，
+                        lineSvgBuf.append("L ");
+                        // 第一个L(右侧点)的X
+                        lineSvgBuf.append((targetDotX - (arrowDirection.getUpX() - arrowDirection.getRightX())) + " ");
+                        // 第一个L(右侧点)的Y
+                        lineSvgBuf.append((targetDotY - (arrowDirection.getUpY() - arrowDirection.getRightY())) + " ");
+                        // 第二个L箭头(尾点)，
+                        lineSvgBuf.append("L ");
+                        // 第二个L(尾点)的X
+                        lineSvgBuf.append((targetDotX - (arrowDirection.getUpX() - arrowDirection.getDownX())) + " ");
+                        // 第二个L(尾点)的Y
+                        lineSvgBuf.append((targetDotY - (arrowDirection.getUpY() - arrowDirection.getDownY())) + " ");
+                        // 第三个L箭头(左侧点)，
+                        lineSvgBuf.append("L ");
+                        // 第三个L(左侧点)的X
+                        lineSvgBuf.append((targetDotX - (arrowDirection.getUpX() - arrowDirection.getLfetX())) + " ");
+                        // 第三个L(左侧点)的Y
+                        lineSvgBuf.append((targetDotY - (arrowDirection.getUpY() - arrowDirection.getLfetY())) + " ");
+                        lineSvgBuf.append("Z' fill='#000000' stroke='#000000' stroke-width='3' stroke-miterlimit='10' pointer-events='all'></path>");
+                        lineSvgBuf.append("</g>");
+                        lineSvg = lineSvgBuf.toString();
+                    } else {
+                        logger.warn("没有判断出箭头方向，箭头方向为空，画线失败");
+                    }
                 } else {
-                    logger.warn("没有判断出箭头方向，箭头方向为空，画线失败");
+                    logger.warn("source或target的坐标或高宽为空，画线失败");
                 }
             } else {
-                logger.warn("source或target的坐标或高宽为空，画线失败");
+                logger.warn("参数有空值，画线失败");
             }
         } else {
             logger.warn("参数有空值，画线失败");
         }
-
         return lineSvg;
     }
 
