@@ -94,6 +94,8 @@ public class ProcessCtrl {
     @RequestMapping("/getProcessById")
     public ModelAndView getProcessById(HttpServletRequest request, ModelAndView modelAndView) {
         String processId = request.getParameter("processId");
+        String parentAccessPath = request.getParameter("parentAccessPath");
+        modelAndView.addObject("parentAccessPath", parentAccessPath);
         // Determine whether there is a flow id (load), if it exists, load it, otherwise generate UUID to return to the return page
         if (StringUtils.isNotBlank(processId)) {
             // Query process by load id

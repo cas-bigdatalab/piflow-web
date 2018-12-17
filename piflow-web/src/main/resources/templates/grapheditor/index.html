@@ -53,29 +53,47 @@
 </div>
 <div style="width: 45.2%; float: right;">
     <div style="position: fixed; z-index: 999;text-align: right; width:45%;">
-      <a  href='javascript:void(0);' onclick="runFlow()" title="Run flow" > <i class="glyphicon glyphicon-play icon-white"></i></a>
- <div class="btn-group">
-  <a  class="btn" href='javascript:void(0);' title="menu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-   <i class='glyphicon glyphicon-cog'></i> 
-  </a>
-  <ul class="dropdown-menu pull-right">
-    <li><a id="reloadStops" href='javascript:void(0);' onclick="reloadStops()" title="reload Stops" >reloadStops </a></li>
-  	<li role="separator" class="divider"></li>
-    <li><a id="saveTemplate" href='javascript:void(0);' onclick="saveTemplate()" title="save Template" >save Template </a></li>
-  	<li role="separator" class="divider"></li>
-    <li><a id="uploadTemplate" href='javascript:void(0);' onclick="uploadTemplate()" title="uploadTemplate" >uploadTemplate </a></li>
- 	<li role="separator" class="divider"></li>
-    <li><a id="loadingXml" href='javascript:void(0);' >loading Flow </a></li>
-  </ul>
-</div>
-         <div id="divloadingXml">
-		<select  name="loadingXmlSelect" id="loadingXmlSelect" onchange="loadTemplate()" style="width: 164px;" ></select>
-		</div>  
-         <form id="uploadForm" enctype="multipart/form-data" method="post" >
-         <input type="file" id="uploadFile" name="templateFile"  style="display:none;"  onchange="uploadXmlFile()"/>
-       </form>  
+        <a href='javascript:void(0);' onclick="runFlow()" title="Run flow">
+			<i class="glyphicon glyphicon-play icon-white"></i>
+		</a>
+        <div class="btn-group">
+            <a class="btn" href='javascript:void(0);' title="menu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class='glyphicon glyphicon-cog'></i>
+            </a>
+            <ul class="dropdown-menu pull-right">
+                <li>
+					<a id="reloadStops" href='javascript:void(0);' onclick="reloadStops()" title="reload Stops">reloadStops </a>
+                </li>
+                <li role="separator" class="divider"></li>
+                <li>
+					<a id="saveTemplate" href='javascript:void(0);' onclick="saveTemplate()" title="save Template">saveTemplate</a>
+				</li>
+                <li role="separator" class="divider"></li>
+                <li><a id="uploadTemplate" href='javascript:void(0);' onclick="uploadTemplate()" title="uploadTemplate">uploadTemplate </a>
+                </li>
+                <li role="separator" class="divider"></li>
+                <li><a id="loadingXml" href='javascript:void(0);'>loading Flow </a></li>
+            </ul>
+        </div>
+        <div id="divloadingXml">
+            <select name="loadingXmlSelect" id="loadingXmlSelect" onchange="loadTemplate()" style="width: 164px;"></select>
+        </div>
+        <form id="uploadForm" enctype="multipart/form-data" method="post">
+            <input type="file" id="uploadFile" name="templateFile" style="display:none;" onchange="uploadXmlFile()"/>
+        </form>
     </div>
 </div>
+<!-- crumbs -->
+<div style="width: 100%;position: fixed;z-index: 99999;float: left;left: 0px;bottom: 0px;text-align: left;height: 28px;line-height: 28px;">
+    <div style="position: fixed;left: 10px;bottom: 0px;">
+        <span style="color: #004849">
+            <a style="color: #004849" th:href="@{/web/flowList}">FlowList</a>
+        </span>
+        <span style="color: #004849">»</span>
+        <span style="color: #004849; font-weight: bold">FlowContent</span>
+    </div>
+</div>
+
 <!-- Modal 端口 -->
 <div class="modal" id="myModalPort" aria-labelledby="myModalLabel" data-backdrop="static">
     <div id="modalDialogPort" class="modal-dialog" role="document">
@@ -135,7 +153,7 @@
         </div>
         <div class="layui-form-item" style="text-align: center;margin-right: 90px;margin-top: -8px;">
             <div class="layui-input-block">
-                <button type="button" class="layui-btn layui-btn-primary"   id="buttonStop">save
+                <button type="button" class="layui-btn layui-btn-primary" id="buttonStop">save
                 </button>
             </div>
         </div>
@@ -167,7 +185,7 @@
                 //点击stop操作
                 value = cells.cell.value;
                 id = cells.cell.id;
-            }else{
+            } else {
                 //第一次给画板添加stop时，拖拽过程获取不到id时
                 queryStopsProperty(maxStopId);
             }
@@ -317,14 +335,14 @@
                 }
                 var displayName = document.createElement('input');
                 if (required)
-                displayName.setAttribute('class', 'true');
-               // displayName.style.border = '0px' ;
+                    displayName.setAttribute('class', 'true');
+                // displayName.style.border = '0px' ;
                 displayName.setAttribute('id', '' + data[y].id + '');
                 displayName.setAttribute('name', '' + data[y].name + '');
-              	displayName.setAttribute('onclick', 'stopTabTd(this)');
+                displayName.setAttribute('onclick', 'stopTabTd(this)');
                 displayName.style.width = "290px";
-            //    displayName.style.background = "rgb(245, 245, 245)";
-                displayName.setAttribute('value', ''+ customValue +'');
+                //    displayName.style.background = "rgb(245, 245, 245)";
+                displayName.setAttribute('value', '' + customValue + '');
                 var spanDisplayName = 'span' + data[y].displayName;
                 var spanDisplayName = document.createElement('span');
                 var spanFlag = document.createElement('span');
@@ -334,8 +352,8 @@
                 mxUtils.write(spanDisplayName, '' + data[y].displayName + '' + ": ");
                 mxUtils.write(spanFlag, '*');
                 //端口不可编辑
-                if("outports"==data[y].displayName || "inports"==data[y].displayName){
-                	 displayName.setAttribute('disabled', 'disabled');
+                if ("outports" == data[y].displayName || "inports" == data[y].displayName) {
+                    displayName.setAttribute('disabled', 'disabled');
                 }
                 var tr = document.createElement("tr");
                 tr.setAttribute('class', 'trTableStop');
@@ -351,7 +369,7 @@
                 } else {
                     td1.appendChild(displayName);
                     if (required)
-                    td2.appendChild(spanFlag);
+                        td2.appendChild(spanFlag);
                 }
                 tr.appendChild(td);
                 tr.appendChild(td1);
@@ -410,7 +428,7 @@
             divValue.appendChild(spanCheckpoint);
         }
     }
- 
+
     // 添加操作处理
     function addCellsCustom(cells, operType) {
         var removePaths = [];
@@ -588,7 +606,7 @@
                 //console.log("success");
                 var dataMap = JSON.parse(data);
                 if ('0' !== dataMap.code) {
-                    window.location.href = "/piflow-web/process/getProcessById?processId=" + dataMap.processId;
+                    window.location.href = "/piflow-web/process/getProcessById?parentAccessPath=grapheditor&processId=" + dataMap.processId;
                 } else {
                     alert("启动失败：" + dataMap.errMsg);
                 }
@@ -935,39 +953,45 @@
         loadingSelect();
         $(".btn-group").mouseover(function () {
             $(this).addClass("open");
-            var oDiv=document.getElementById("divloadingXml");
-    		  oDiv.style.display="none";
+            var oDiv = document.getElementById("divloadingXml");
+            oDiv.style.display = "none";
         });
-        $(".btn-group").mouseleave(function(){
+        $(".btn-group").mouseleave(function () {
             $(this).removeClass("open");
         })
     });
-    
-    function saveTemplate(){
-    	var getXml = thisEditor.getGraphXml();
+
+    function saveTemplate() {
+        var getXml = thisEditor.getGraphXml();
         var sssss = getXml.outerHTML;
-    	layer.prompt({title: 'please enter the template name', formType: 0 ,btn: ['submit', 'cancel']}, function(text, index){
-    	    layer.close(index);
-    	    $.ajax({
+        layer.prompt({
+            title: 'please enter the template name',
+            formType: 0,
+            btn: ['submit', 'cancel']
+        }, function (text, index) {
+            layer.close(index);
+            $.ajax({
                 cache: true,//保留缓存数据
                 type: "POST",//为post请求
                 url: "/piflow-web/template/saveTemplate",//这是我在后台接受数据的文件名
                 data: {
-                	value: sssss,
+                    value: sssss,
                     load: loadId,
                     name: text
                 },
-                async: true, 
+                async: true,
                 error: function (request) {//请求失败之后的操作
-                	console.log( " save template error");
+                    console.log(" save template error");
                     return;
                 },
                 success: function (data) {//请求成功之后的操作
                     var dataMap = JSON.parse(data);
                     if (0 !== dataMap.code) {
-                    	 layer.msg(dataMap.errMsg, {icon: 1, shade: 0, time: 2000}, function () {});
+                        layer.msg(dataMap.errMsg, {icon: 1, shade: 0, time: 2000}, function () {
+                        });
                     } else {
-                    	 layer.msg(dataMap.errMsg, {icon: 2, shade: 0, time: 2000}, function () {});
+                        layer.msg(dataMap.errMsg, {icon: 2, shade: 0, time: 2000}, function () {
+                        });
                     }
                 }
             });
@@ -991,33 +1015,38 @@
             processData: false,
             contentType: false,
         }).success(function (data) {
-      	  var dataMap = JSON.parse(data);
-      	  if (0 !== dataMap.code) {
-      		  layer.msg(dataMap.errMsg, {icon: 1, shade: 0, time: 2000}, function () {});
-      	  }else{
-      		  layer.msg(dataMap.errMsg, {icon: 2, shade: 0, time: 2000}, function () {});
-      	  }
+            var dataMap = JSON.parse(data);
+            if (0 !== dataMap.code) {
+                layer.msg(dataMap.errMsg, {icon: 1, shade: 0, time: 2000}, function () {
+                });
+            } else {
+                layer.msg(dataMap.errMsg, {icon: 2, shade: 0, time: 2000}, function () {
+                });
+            }
         }).error(function () {
-            layer.msg("Upload failure", {icon: 2, shade: 0, time: 2000}, function () {});
+            layer.msg("Upload failure", {icon: 2, shade: 0, time: 2000}, function () {
+            });
         });
     }
-    
-    function FileTypeCheck(){
-    var obj =document.getElementById('uploadFile'); 
-    if(obj.value==null || obj.value ==''){ 
-    	layer.msg('please upload the XML file', {icon: 2, shade: 0, time: 2000}, function () {});
-    	this.focus()
-    	return false;
-    }
-    var length = obj.value.length;
-    var charindex = obj.value.lastIndexOf(".");
-    var ExtentName = obj.value.substring(charindex,charindex+4);
-    if(!(ExtentName == ".xml" )){
-    	layer.msg('please upload the XML file', {icon: 2, shade: 0, time: 2000}, function () {});
-    	this.focus()
-    	return false;
-    }
-    	return true;
+
+    function FileTypeCheck() {
+        var obj = document.getElementById('uploadFile');
+        if (obj.value == null || obj.value == '') {
+            layer.msg('please upload the XML file', {icon: 2, shade: 0, time: 2000}, function () {
+            });
+            this.focus()
+            return false;
+        }
+        var length = obj.value.length;
+        var charindex = obj.value.lastIndexOf(".");
+        var ExtentName = obj.value.substring(charindex, charindex + 4);
+        if (!(ExtentName == ".xml")) {
+            layer.msg('please upload the XML file', {icon: 2, shade: 0, time: 2000}, function () {
+            });
+            this.focus()
+            return false;
+        }
+        return true;
     }
 
     function loadingXml(id, loadId) {
@@ -1066,24 +1095,24 @@
             }
         });
     }
-    
-    
-    function loadTemplate(){
-    	var id = $("#loadingXmlSelect").val();
-    	if(id == '-1'){
-    		return;
-    	}
-    	var name = $("#loadingXmlSelect option:selected").text();
-    	layer.confirm('Are you sure you want to load '+name+'？', {
-    		  btn: ['submit','cancel'] //按钮
-    		}, function(){
-    		  loadingXml(id,loadId);
-    		  var oDiv=document.getElementById("divloadingXml");
-      		  oDiv.style.display="none";
-    		}, function(){
-    		var oDiv=document.getElementById("divloadingXml");
-        	oDiv.style.display="none";
-    		});
+
+
+    function loadTemplate() {
+        var id = $("#loadingXmlSelect").val();
+        if (id == '-1') {
+            return;
+        }
+        var name = $("#loadingXmlSelect option:selected").text();
+        layer.confirm('Are you sure you want to load ' + name + '？', {
+            btn: ['submit', 'cancel'] //按钮
+        }, function () {
+            loadingXml(id, loadId);
+            var oDiv = document.getElementById("divloadingXml");
+            oDiv.style.display = "none";
+        }, function () {
+            var oDiv = document.getElementById("divloadingXml");
+            oDiv.style.display = "none";
+        });
     }
 
     //@ sourceURL=grapheditorIndex.js
