@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
 
 import com.nature.base.util.DateUtils;
@@ -122,18 +122,27 @@ public class PropertyMapperProvider {
             sql.UPDATE("flow_stops_property");
             // SET中的第一个字符串为数据库中表对应的字段名
             // 除数字类型的字段外其他类型必须加单引号
-            if (null != lastUpdateDttm) {
-                String lastUpdateDttmStr = DateUtils.dateTimesToStr(lastUpdateDttm);
-                if (StringUtils.isNotBlank(lastUpdateDttmStr)) {
-                    sql.SET("LAST_UPDATE_DTTM = " + Utils.addSqlStr(lastUpdateDttmStr));
-                }
+
+            //先处理修改必填字段
+            if (null == lastUpdateDttm) {
+                lastUpdateDttm = new Date();
             }
-            if (null != lastUpdateUser) {
-                sql.SET("LAST_UPDATE_USER = " + Utils.addSqlStr(lastUpdateUser));
+            if (StringUtils.isBlank(lastUpdateUser)) {
+                lastUpdateUser = "-1";
             }
-            if (null != version && StringUtils.isNotBlank(version.toString())) {
-                sql.SET("VERSION = " + version.toString());
+            if (null == version) {
+                version = 0L;
             }
+            String lastUpdateDttmStr = DateUtils.dateTimesToStr(lastUpdateDttm);
+            sql.SET("LAST_UPDATE_DTTM = " + Utils.addSqlStr(lastUpdateDttmStr));
+            sql.SET("LAST_UPDATE_USER = " + Utils.addSqlStr(lastUpdateUser));
+            sql.SET("VERSION = " + (version + 1));
+            if (null != enableFlag) {
+                int enableFlagInt = enableFlag ? 1 : 0;
+                sql.SET("ENABLE_FLAG = " + enableFlagInt);
+            }
+
+            // 处理其他字段
             if (null != enableFlag) {
                 int enableFlagInt = enableFlag ? 1 : 0;
                 sql.SET("ENABLE_FLAG = " + enableFlagInt);
@@ -167,6 +176,7 @@ public class PropertyMapperProvider {
                     sql.SET("fk_stops_id = " + Utils.addSqlStr(stopsId));
                 }
             }
+            sql.WHERE("version = " + version);
             sql.WHERE("id = " + Utils.addSqlStr(id));
             sqlStr = sql.toString() + ";";
             if (StringUtils.isBlank(id)) {

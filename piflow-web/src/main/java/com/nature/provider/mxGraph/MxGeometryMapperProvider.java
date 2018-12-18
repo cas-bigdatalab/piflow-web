@@ -40,34 +40,35 @@ public class MxGeometryMapperProvider {
             sql.INSERT_INTO("mx_geometry");
             // value中的第一个字符串为数据库中表对应的字段名
             // 除数字类型的字段外其他类型必须加单引号
-            if (StringUtils.isNotBlank(id)) {
-                sql.VALUES("ID", Utils.addSqlStr(id));
+
+            //先处理修改必填字段
+            if (null == crtDttm) {
+                crtDttm = new Date();
             }
-            if (null != crtDttm) {
-                String crtDttmStr = DateUtils.dateTimesToStr(crtDttm);
-                if (StringUtils.isNotBlank(crtDttmStr)) {
-                    sql.VALUES("CRT_DTTM", Utils.addSqlStr(crtDttmStr));
-                }
+            if (StringUtils.isBlank(crtUser)) {
+                crtUser = "-1";
             }
-            if (StringUtils.isNotBlank(crtUser)) {
-                sql.VALUES("CRT_USER", Utils.addSqlStr(crtUser));
+            if (null == lastUpdateDttm) {
+                lastUpdateDttm = new Date();
             }
-            if (null != enableFlag) {
-                int enableFlagInt = enableFlag ? 1 : 0;
-                sql.VALUES("ENABLE_FLAG", enableFlagInt + "");
+            if (StringUtils.isBlank(lastUpdateUser)) {
+                lastUpdateUser = "-1";
             }
-            if (null != lastUpdateDttm) {
-                String lastUpdateDttmStr = DateUtils.dateTimesToStr(lastUpdateDttm);
-                if (StringUtils.isNotBlank(lastUpdateDttmStr)) {
-                    sql.VALUES("LAST_UPDATE_DTTM", Utils.addSqlStr(lastUpdateDttmStr));
-                }
+            if (null == enableFlag) {
+                enableFlag = true;
             }
-            if (StringUtils.isNotBlank(lastUpdateUser)) {
-                sql.VALUES("LAST_UPDATE_USER", Utils.addSqlStr(lastUpdateUser));
+            if (null == version) {
+                version = 0L;
             }
-            if (null != version && StringUtils.isNotBlank(version.toString())) {
-                sql.VALUES("VERSION", version.toString());
-            }
+            sql.VALUES("ID", Utils.addSqlStr(id));
+            sql.VALUES("CRT_DTTM", Utils.addSqlStr(DateUtils.dateTimesToStr(crtDttm)));
+            sql.VALUES("CRT_USER", Utils.addSqlStr(crtUser));
+            sql.VALUES("LAST_UPDATE_DTTM", Utils.addSqlStr(DateUtils.dateTimesToStr(lastUpdateDttm)));
+            sql.VALUES("LAST_UPDATE_USER", Utils.addSqlStr(lastUpdateUser));
+            sql.VALUES("ENABLE_FLAG", (enableFlag ? 1 : 0) + "");
+            sql.VALUES("VERSION", version + "");
+
+            // 处理其他字段
             if (StringUtils.isNotBlank(as)) {
                 sql.VALUES("MX_AS", Utils.addSqlStr(as));
             }
@@ -120,21 +121,26 @@ public class MxGeometryMapperProvider {
             sql.UPDATE("mx_geometry");
             // SET中的第一个字符串为数据库中表对应的字段名
             // 除数字类型的字段外其他类型必须加单引号
+
+            //先处理修改必填字段
+            if (null == lastUpdateDttm) {
+                lastUpdateDttm = new Date();
+            }
+            if (StringUtils.isBlank(lastUpdateUser)) {
+                lastUpdateUser = "-1";
+            }
+            if (null == version) {
+                version = 0L;
+            }
+            String lastUpdateDttmStr = DateUtils.dateTimesToStr(lastUpdateDttm);
+            sql.SET("LAST_UPDATE_DTTM = " + Utils.addSqlStr(lastUpdateDttmStr));
+            sql.SET("LAST_UPDATE_USER = " + Utils.addSqlStr(lastUpdateUser));
+            sql.SET("VERSION = " + (version + 1));
+
+            // 处理其他字段
             if (null != enableFlag) {
                 int enableFlagInt = enableFlag ? 1 : 0;
                 sql.SET("ENABLE_FLAG = " + enableFlagInt);
-            }
-            if (null != lastUpdateDttm) {
-                String lastUpdateDttmStr = DateUtils.dateTimesToStr(lastUpdateDttm);
-                if (StringUtils.isNotBlank(lastUpdateDttmStr)) {
-                    sql.SET("LAST_UPDATE_DTTM = " + Utils.addSqlStr(lastUpdateDttmStr));
-                }
-            }
-            if (StringUtils.isNotBlank(lastUpdateUser)) {
-                sql.SET("LAST_UPDATE_USER = " + Utils.addSqlStr(lastUpdateUser));
-            }
-            if (null != version && StringUtils.isNotBlank(version.toString())) {
-                sql.SET("VERSION = " + version.toString());
             }
             if (StringUtils.isNotBlank(as)) {
                 sql.SET("MX_AS = " + Utils.addSqlStr(as));
@@ -157,7 +163,8 @@ public class MxGeometryMapperProvider {
             if (null != mxCell) {
                 sql.SET("FK_MX_CELL_ID = " + Utils.addSqlStr(mxCell.getId()));
             }
-            sql.WHERE("id = " + Utils.addSqlStr(id));
+            sql.WHERE("VERSION = " + version);
+            sql.WHERE("ID = " + Utils.addSqlStr(id));
 
             sqlStr = sql.toString() + ";";
 

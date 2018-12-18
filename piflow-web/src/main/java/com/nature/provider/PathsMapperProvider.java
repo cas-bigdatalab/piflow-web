@@ -112,34 +112,35 @@ public class PathsMapperProvider {
             Flow flow = paths.getFlow();
             SQL sql = new SQL();
             sql.INSERT_INTO("flow_path");
-            if (StringUtils.isNotBlank(id)) {
-                sql.VALUES("id", Utils.addSqlStr(id));
+
+            //先处理修改必填字段
+            if (null == crtDttm) {
+                crtDttm = new Date();
             }
-            if (null != crtDttm) {
-                String crtDttmStr = DateUtils.dateTimesToStr(crtDttm);
-                if (StringUtils.isNotBlank(crtDttmStr)) {
-                    sql.VALUES("crt_dttm", Utils.addSqlStr(crtDttmStr));
-                }
+            if (StringUtils.isBlank(crtUser)) {
+                crtUser = "-1";
             }
-            if (StringUtils.isNotBlank(crtUser)) {
-                sql.VALUES("crt_user", Utils.addSqlStr(crtUser));
+            if (null == lastUpdateDttm) {
+                lastUpdateDttm = new Date();
             }
-            if (null != lastUpdateDttm) {
-                String lastUpdateDttmStr = DateUtils.dateTimesToStr(lastUpdateDttm);
-                if (StringUtils.isNotBlank(lastUpdateDttmStr)) {
-                    sql.VALUES("last_update_dttm", Utils.addSqlStr(lastUpdateDttmStr));
-                }
+            if (StringUtils.isBlank(lastUpdateUser)) {
+                lastUpdateUser = "-1";
             }
-            if (StringUtils.isNotBlank(lastUpdateUser)) {
-                sql.VALUES("last_update_user", Utils.addSqlStr(lastUpdateUser));
+            if (null == version) {
+                version = 0L;
             }
-            if (null != version && StringUtils.isNotBlank(version.toString())) {
-                sql.VALUES("version", version.toString());
+            if (null == enableFlag) {
+                enableFlag = true;
             }
-            if (null != enableFlag) {
-                int enableFlagInt = enableFlag ? 1 : 0;
-                sql.VALUES("ENABLE_FLAG", enableFlagInt + "");
-            }
+            sql.VALUES("id", Utils.addSqlStr(id));
+            sql.VALUES("crt_dttm", Utils.addSqlStr(DateUtils.dateTimesToStr(crtDttm)));
+            sql.VALUES("crt_user", Utils.addSqlStr(crtUser));
+            sql.VALUES("last_update_dttm", Utils.addSqlStr(DateUtils.dateTimesToStr(lastUpdateDttm)));
+            sql.VALUES("last_update_user", Utils.addSqlStr(lastUpdateUser));
+            sql.VALUES("version", (version + 1) + "");
+            sql.VALUES("ENABLE_FLAG", (enableFlag ? 1 : 0) + "");
+
+            // 处理其他字段
             if (StringUtils.isNotBlank(from)) {
                 sql.VALUES("line_from", Utils.addSqlStr(from));
             }
@@ -187,18 +188,23 @@ public class PathsMapperProvider {
             String inport = paths.getInport();
             SQL sql = new SQL();
             sql.UPDATE("flow_path");
-            if (null != lastUpdateDttm) {
-                String lastUpdateDttmStr = DateUtils.dateTimesToStr(lastUpdateDttm);
-                if (StringUtils.isNotBlank(lastUpdateDttmStr)) {
-                    sql.SET("last_update_dttm = " + Utils.addSqlStr(lastUpdateDttmStr));
-                }
+
+            //先处理修改必填字段
+            if (null == lastUpdateDttm) {
+                lastUpdateDttm = new Date();
             }
-            if (StringUtils.isNotBlank(lastUpdateUser)) {
-                sql.SET("last_update_user = " + Utils.addSqlStr(lastUpdateUser));
+            if (StringUtils.isBlank(lastUpdateUser)) {
+                lastUpdateUser = "-1";
             }
-            if (null != version && StringUtils.isNotBlank(version.toString())) {
-                sql.SET("version = " + version.toString());
+            if (null == version) {
+                version = 0L;
             }
+            String lastUpdateDttmStr = DateUtils.dateTimesToStr(lastUpdateDttm);
+            sql.SET("LAST_UPDATE_DTTM = " + Utils.addSqlStr(lastUpdateDttmStr));
+            sql.SET("LAST_UPDATE_USER = " + Utils.addSqlStr(lastUpdateUser));
+            sql.SET("VERSION = " + (version + 1));
+
+            // 处理其他字段
             if (null != enableFlag) {
                 int enableFlagInt = enableFlag ? 1 : 0;
                 sql.SET("ENABLE_FLAG = " + enableFlagInt);
@@ -215,6 +221,7 @@ public class PathsMapperProvider {
             if (StringUtils.isNotBlank(inport)) {
                 sql.SET("line_inport = " + Utils.addSqlStr(inport));
             }
+            sql.WHERE("VERSION = " + version);
             sql.WHERE("id = " + Utils.addSqlStr(id));
             sqlStr = sql.toString() + ";";
 

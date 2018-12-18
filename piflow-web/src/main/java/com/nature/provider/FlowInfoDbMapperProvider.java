@@ -37,13 +37,13 @@ public class FlowInfoDbMapperProvider {
             if (null == crtDttm) {
                 crtDttm = new Date();
             }
-            if (null == crtUser) {
+            if (StringUtils.isBlank(crtUser)) {
                 crtUser = "-1";
             }
             if (null == lastUpdateDttm) {
                 lastUpdateDttm = new Date();
             }
-            if (null == lastUpdateUser) {
+            if (StringUtils.isBlank(lastUpdateUser)) {
                 lastUpdateUser = "-1";
             }
             if (null == version) {
@@ -51,10 +51,10 @@ public class FlowInfoDbMapperProvider {
             }
             sql.VALUES("crt_dttm", Utils.addSqlStr(DateUtils.dateTimesToStr(crtDttm)));
             sql.VALUES("crt_user", Utils.addSqlStr(crtUser));
-            sql.VALUES("enable_flag", (enableFlag ? 1 : 0)+"");
+            sql.VALUES("enable_flag", (enableFlag ? 1 : 0) + "");
             sql.VALUES("last_update_dttm", Utils.addSqlStr(DateUtils.dateTimesToStr(lastUpdateDttm)));
             sql.VALUES("last_update_user", Utils.addSqlStr(lastUpdateUser));
-            sql.VALUES("version", Utils.addSqlStr(version.toString()));
+            sql.VALUES("version", version + "");
 
             if (null != startTime) {
                 sql.VALUES("start_time", Utils.addSqlStr(DateUtils.dateTimesToStr(startTime)));
@@ -74,7 +74,7 @@ public class FlowInfoDbMapperProvider {
             if (null != flow) {
                 sql.VALUES("fk_flow_id", Utils.addSqlStr(flow.getId()));
             }
-            sqlStr = sql.toString() +";";
+            sqlStr = sql.toString() + ";";
         }
         return sqlStr;
     }
@@ -122,18 +122,23 @@ public class FlowInfoDbMapperProvider {
             sql.UPDATE("flow_info");
             // SET中的第一个字符串为数据库中表对应的字段名
             // 除数字类型的字段外其他类型必须加单引号
-            if (null != lastUpdateDttm) {
-                String lastUpdateDttmStr = DateUtils.dateTimesToStr(lastUpdateDttm);
-                if (StringUtils.isNotBlank(lastUpdateDttmStr)) {
-                    sql.SET("LAST_UPDATE_DTTM = " + Utils.addSqlStr(lastUpdateDttmStr));
-                }
+
+            //先处理修改必填字段
+            if (null == lastUpdateDttm) {
+                lastUpdateDttm = new Date();
             }
-            if (StringUtils.isNotBlank(lastUpdateUser)) {
-                sql.SET("LAST_UPDATE_USER = " + Utils.addSqlStr(lastUpdateUser));
+            if (StringUtils.isBlank(lastUpdateUser)) {
+                lastUpdateUser = "-1";
             }
-            if (null != version && StringUtils.isNotBlank(version.toString())) {
-                sql.SET("VERSION = " + version.toString());
+            if (null == version) {
+                version = 0L;
             }
+            String lastUpdateDttmStr = DateUtils.dateTimesToStr(lastUpdateDttm);
+            sql.SET("LAST_UPDATE_DTTM = " + Utils.addSqlStr(lastUpdateDttmStr));
+            sql.SET("LAST_UPDATE_USER = " + Utils.addSqlStr(lastUpdateUser));
+            sql.SET("VERSION = " + (version + 1));
+
+            // 处理其他字段
             if (null != enableFlag) {
                 int enableFlagInt = enableFlag ? 1 : 0;
                 sql.SET("ENABLE_FLAG = " + enableFlagInt);
@@ -162,7 +167,8 @@ public class FlowInfoDbMapperProvider {
             if (null != flow1) {
                 sql.SET("fk_flow_id = " + Utils.addSqlStr(flow1.getId()));
             }
-            sql.WHERE("id = " + Utils.addSqlStr(id));
+            sql.WHERE("VERSION = " + version);
+            sql.WHERE("ID = " + Utils.addSqlStr(id));
             sqlStr = sql.toString() + ";";
             if (StringUtils.isBlank(id)) {
                 sqlStr = "";

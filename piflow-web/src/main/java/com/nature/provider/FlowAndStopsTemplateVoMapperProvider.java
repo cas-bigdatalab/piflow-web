@@ -18,8 +18,8 @@ import com.nature.component.workFlow.model.Template;
 public class FlowAndStopsTemplateVoMapperProvider {
 
     /**
-	 * 插入list<Property> 注意拼sql的方法必须用map接 Param内容为键值
-	 * 
+     * 插入list<Property> 注意拼sql的方法必须用map接 Param内容为键值
+     *
      * @param map (内容： 键为propertyList,值为List<Property>)
      * @return
      */
@@ -90,37 +90,36 @@ public class FlowAndStopsTemplateVoMapperProvider {
     }
 
     /**
-	 * 新增FlowTemplateVo
-	 * 
-	 * @param flow
-	 * @return
-	 */
-	public String addFlow(FlowTemplateModel flow) {
-		String sqlStr = "";
-		if (null != flow) {
-			String id = flow.getId();
-			String description = flow.getDescription();
-			String name = flow.getName();
-			SQL sql = new SQL();
-			// INSERT_INTO括号中为数据库表名
-			sql.INSERT_INTO("flow_template");
-			// value中的第一个字符串为数据库中表对应的字段名
-			// 除数字类型的字段外其他类型必须加单引号
-			if (StringUtils.isNotBlank(id)) {
-				sql.VALUES("ID", Utils.addSqlStr(id));
-			}
-			if (StringUtils.isNotBlank(description)) {
-				sql.VALUES("description", Utils.addSqlStr(description));
-			}
-			if (StringUtils.isNotBlank(name)) {
-				sql.VALUES("NAME", Utils.addSqlStr(name));
-			}
-			sqlStr = sql.toString() + ";";
-		}
-		return sqlStr;
-	}
+     * 新增FlowTemplateVo
+     *
+     * @param flow
+     * @return
+     */
+    public String addFlow(FlowTemplateModel flow) {
+        String sqlStr = "";
+        if (null != flow) {
+            String id = flow.getId();
+            String description = flow.getDescription();
+            String name = flow.getName();
+            SQL sql = new SQL();
+            // INSERT_INTO括号中为数据库表名
+            sql.INSERT_INTO("flow_template");
+            // value中的第一个字符串为数据库中表对应的字段名
+            // 除数字类型的字段外其他类型必须加单引号
 
-	  /**
+            sql.VALUES("ID", Utils.addSqlStr(id));
+            if (StringUtils.isNotBlank(description)) {
+                sql.VALUES("description", Utils.addSqlStr(description));
+            }
+            if (StringUtils.isNotBlank(name)) {
+                sql.VALUES("NAME", Utils.addSqlStr(name));
+            }
+            sqlStr = sql.toString() + ";";
+        }
+        return sqlStr;
+    }
+
+    /**
      * 新增StopTemplateVo
      *
      * @param stops
@@ -147,20 +146,27 @@ public class FlowAndStopsTemplateVoMapperProvider {
             String groups = stops.getGroups();
             SQL sql = new SQL();
             sql.INSERT_INTO("stops_template");
-            if (StringUtils.isNotBlank(id)) {
-                sql.VALUES("id", Utils.addSqlStr(id));
+
+            //先处理修改必填字段
+            if (null == crtDttm) {
+                crtDttm = new Date();
             }
+            if (null == version) {
+                version = 0L;
+            }
+            if (null == enableFlag) {
+                enableFlag = true;
+            }
+            sql.VALUES("id", Utils.addSqlStr(id));
+            String crtDttmStr = DateUtils.dateTimesToStr(crtDttm);
+            sql.VALUES("crt_dttm", Utils.addSqlStr(crtDttmStr));
+            sql.VALUES("version", (version + 1) + "");
+            int enableFlagInt = enableFlag ? 1 : 0;
+            sql.VALUES("ENABLE_FLAG", enableFlagInt + "");
+
+            // 处理其他字段
             if (StringUtils.isNotBlank(bundel)) {
                 sql.VALUES("bundel", Utils.addSqlStr(bundel));
-            }
-            if (null != crtDttm) {
-                String crtDttmStr = DateUtils.dateTimesToStr(crtDttm);
-                if (StringUtils.isNotBlank(crtDttmStr)) {
-                    sql.VALUES("crt_dttm", Utils.addSqlStr(crtDttmStr));
-                }
-            }
-            if (null != version && StringUtils.isNotBlank(version.toString())) {
-                sql.VALUES("version", version.toString());
             }
             if (StringUtils.isNotBlank(description)) {
                 sql.VALUES("description", Utils.addSqlStr(description));
@@ -185,10 +191,6 @@ public class FlowAndStopsTemplateVoMapperProvider {
             }
             if (StringUtils.isNotBlank(pageId)) {
                 sql.VALUES("page_id", Utils.addSqlStr(pageId));
-            }
-            if (null != enableFlag) {
-                int enableFlagInt = enableFlag ? 1 : 0;
-                sql.VALUES("ENABLE_FLAG", enableFlagInt + "");
             }
             if (null != flow) {
                 String flowId = flow.getId();

@@ -45,34 +45,35 @@ public class StopsMapperProvider {
             SQL sql = new SQL();
 
             sql.INSERT_INTO("flow_stops");
-            if (StringUtils.isNotBlank(id)) {
-                sql.VALUES("id", Utils.addSqlStr(id));
+
+            //先处理修改必填字段
+            if (null == crtDttm) {
+                crtDttm = new Date();
             }
-            if (null != crtDttm) {
-                String crtDttmStr = DateUtils.dateTimesToStr(crtDttm);
-                if (StringUtils.isNotBlank(crtDttmStr)) {
-                    sql.VALUES("crt_dttm", Utils.addSqlStr(crtDttmStr));
-                }
+            if (StringUtils.isBlank(crtUser)) {
+                crtUser = "-1";
             }
-            if (StringUtils.isNotBlank(crtUser)) {
-                sql.VALUES("crt_user", Utils.addSqlStr(crtUser));
+            if (null == lastUpdateDttm) {
+                lastUpdateDttm = new Date();
             }
-            if (null != lastUpdateDttm) {
-                String lastUpdateDttmStr = DateUtils.dateTimesToStr(lastUpdateDttm);
-                if (StringUtils.isNotBlank(lastUpdateDttmStr)) {
-                    sql.VALUES("last_update_dttm", Utils.addSqlStr(lastUpdateDttmStr));
-                }
+            if (StringUtils.isBlank(lastUpdateUser)) {
+                lastUpdateUser = "-1";
             }
-            if (StringUtils.isNotBlank(lastUpdateUser)) {
-                sql.VALUES("last_update_user", Utils.addSqlStr(lastUpdateUser));
+            if (null == version) {
+                version = 0L;
             }
-            if (null != version && StringUtils.isNotBlank(version.toString())) {
-                sql.VALUES("version", version.toString());
+            if (null == enableFlag) {
+                enableFlag = true;
             }
-            if (null != enableFlag) {
-                int enableFlagInt = enableFlag ? 1 : 0;
-                sql.VALUES("ENABLE_FLAG", enableFlagInt + "");
-            }
+            sql.VALUES("id", Utils.addSqlStr(id));
+            sql.VALUES("crt_dttm", Utils.addSqlStr(DateUtils.dateTimesToStr(crtDttm)));
+            sql.VALUES("crt_user", Utils.addSqlStr(crtUser));
+            sql.VALUES("last_update_dttm", Utils.addSqlStr(DateUtils.dateTimesToStr(lastUpdateDttm)));
+            sql.VALUES("last_update_user", Utils.addSqlStr(lastUpdateUser));
+            sql.VALUES("version", version + "");
+            sql.VALUES("ENABLE_FLAG", (enableFlag ? 1 : 0) + "");
+
+            // 处理其他字段
             if (StringUtils.isNotBlank(bundel)) {
                 sql.VALUES("bundel", Utils.addSqlStr(bundel));
             }
@@ -181,15 +182,19 @@ public class StopsMapperProvider {
                         flowId = flow.getId();
                     }
                 }
+
                 sql.append("(");
+
+                //先处理修改必填字段
                 sql.append(Utils.addSqlStr((id == null ? "" : id)) + ",");
-                sql.append(Utils.addSqlStr((crtDttm == null ? "" : DateUtils.dateTimesToStr(crtDttm))) + ",");
-                sql.append(Utils.addSqlStr((crtUser == null ? "" : crtUser)) + ",");
-                sql.append(Utils.addSqlStr((lastUpdateDttm == null ? "" : DateUtils.dateTimesToStr(lastUpdateDttm)))
-                        + ",");
-                sql.append(Utils.addSqlStr((lastUpdateUser == null ? "" : lastUpdateUser)) + ",");
-                sql.append((version == null ? "" : 0) + ",");
-                sql.append((enableFlag == null ? "" : (enableFlag ? 1 : 0)) + ",");
+                sql.append(Utils.addSqlStr((crtDttm == null ? DateUtils.dateTimesToStr(new Date()) : DateUtils.dateTimesToStr(crtDttm))) + ",");
+                sql.append(Utils.addSqlStr((crtUser == null ? "-1" : crtUser)) + ",");
+                sql.append(Utils.addSqlStr((lastUpdateDttm == null ? DateUtils.dateTimesToStr(new Date()) : DateUtils.dateTimesToStr(lastUpdateDttm))) + ",");
+                sql.append(Utils.addSqlStr((lastUpdateUser == null ? "-1" : lastUpdateUser)) + ",");
+                sql.append((version == null ? 0 : version) + ",");
+                sql.append((enableFlag == null ? 1 : (enableFlag ? 1 : 0)) + ",");
+
+                // 处理其他字段
                 sql.append(Utils.addSqlStr((bundel == null ? "" : bundel)) + ",");
                 sql.append(Utils.addSqlStr((description == null ? "" : description)) + ",");
                 sql.append(Utils.addSqlStr((groups == null ? "" : groups)) + ",");
@@ -240,18 +245,22 @@ public class StopsMapperProvider {
             SQL sql = new SQL();
 
             sql.UPDATE("flow_stops");
-            if (null != lastUpdateDttm) {
-                String lastUpdateDttmStr = DateUtils.dateTimesToStr(lastUpdateDttm);
-                if (StringUtils.isNotBlank(lastUpdateDttmStr)) {
-                    sql.SET("last_update_dttm = " + Utils.addSqlStr(lastUpdateDttmStr));
-                }
+
+            //先处理修改必填字段
+            if (null == lastUpdateDttm) {
+                lastUpdateDttm = new Date();
             }
-            if (StringUtils.isNotBlank(lastUpdateUser)) {
-                sql.SET("last_update_user = " + Utils.addSqlStr(lastUpdateUser));
+            if (StringUtils.isBlank(lastUpdateUser)) {
+                lastUpdateUser = "-1";
             }
-            if (null != version && StringUtils.isNotBlank(version.toString())) {
-                sql.SET("version = " + version.toString());
+            if (null == version) {
+                version = 0L;
             }
+            sql.SET("LAST_UPDATE_DTTM = " + Utils.addSqlStr(DateUtils.dateTimesToStr(lastUpdateDttm)));
+            sql.SET("LAST_UPDATE_USER = " + Utils.addSqlStr(lastUpdateUser));
+            sql.SET("VERSION = " + (version + 1));
+
+            // 处理其他字段
             if (null != enableFlag) {
                 int enableFlagInt = enableFlag ? 1 : 0;
                 sql.SET("ENABLE_FLAG = " + enableFlagInt);
@@ -287,6 +296,7 @@ public class StopsMapperProvider {
                 int checkpointInt = checkpoint ? 1 : 0;
                 sql.SET("is_checkpoint = " + checkpointInt);
             }
+            sql.WHERE("VERSION = " + version);
             sql.WHERE("id = " + Utils.addSqlStr(id));
             sqlStr = sql.toString() + ";";
             if (StringUtils.isBlank(id)) {

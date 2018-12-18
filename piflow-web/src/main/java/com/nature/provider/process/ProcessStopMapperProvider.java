@@ -52,27 +52,35 @@ public class ProcessStopMapperProvider {
             sql.INSERT_INTO("FLOW_PROCESS_STOP");
             // value中的第一个字符串为数据库中表对应的字段名
             // 除数字类型的字段外其他类型必须加单引号
-            if (null != id) {
-                sql.VALUES("ID", Utils.addSqlStrAndReplace(id));
-            }
-            if (null != crtDttm) {
-                sql.VALUES("CRT_DTTM", Utils.addSqlStrAndReplace(DateUtils.dateTimesToStr(crtDttm)));
+
+            //先处理修改必填字段
+            if (null == crtDttm) {
+                crtDttm = new Date();
             }
             if (null != crtUser) {
-                sql.VALUES("CRT_USER", Utils.addSqlStrAndReplace(crtUser));
+                crtUser = "-1";
             }
-            if (null != lastUpdateDttm) {
-                sql.VALUES("LAST_UPDATE_DTTM", Utils.addSqlStrAndReplace(DateUtils.dateTimesToStr(lastUpdateDttm)));
+            if (null == lastUpdateDttm) {
+                lastUpdateDttm = new Date();
             }
             if (null != lastUpdateUser) {
-                sql.VALUES("LAST_UPDATE_USER", Utils.addSqlStrAndReplace(lastUpdateUser));
+                lastUpdateUser = "-1";
             }
-            if (null != version) {
-                sql.VALUES("VERSION", version + "");
+            if (null == version) {
+                version = 0L;
             }
             if (null != enableFlag) {
-                sql.VALUES("ENABLE_FLAG", (enableFlag ? 1 : 0) + "");
+                enableFlag = true;
             }
+            sql.VALUES("ID", Utils.addSqlStrAndReplace(id));
+            sql.VALUES("CRT_DTTM", Utils.addSqlStrAndReplace(DateUtils.dateTimesToStr(crtDttm)));
+            sql.VALUES("CRT_USER", Utils.addSqlStrAndReplace(crtUser));
+            sql.VALUES("LAST_UPDATE_DTTM", Utils.addSqlStrAndReplace(DateUtils.dateTimesToStr(lastUpdateDttm)));
+            sql.VALUES("LAST_UPDATE_USER", Utils.addSqlStrAndReplace(lastUpdateUser));
+            sql.VALUES("VERSION", version + "");
+            sql.VALUES("ENABLE_FLAG", (enableFlag ? 1 : 0) + "");
+
+            // 处理其他字段
             if (null != name) {
                 sql.VALUES("NAME", Utils.addSqlStrAndReplace(name));
             }
@@ -336,18 +344,22 @@ public class ProcessStopMapperProvider {
                 SQL sql = new SQL();
                 sql.UPDATE("FLOW_PROCESS_STOP");
 
-                if (null != lastUpdateDttm) {
-                    String lastUpdateDttmStr = DateUtils.dateTimesToStr(lastUpdateDttm);
-                    if (StringUtils.isNotBlank(lastUpdateDttmStr)) {
-                        sql.SET("LAST_UPDATE_DTTM = " + Utils.addSqlStr(lastUpdateDttmStr));
-                    }
+                //先处理修改必填字段
+                if (null == lastUpdateDttm) {
+                    lastUpdateDttm = new Date();
                 }
-                if (StringUtils.isNotBlank(lastUpdateUser)) {
-                    sql.SET("LAST_UPDATE_USER = " + Utils.addSqlStr(lastUpdateUser));
+                if (StringUtils.isBlank(lastUpdateUser)) {
+                    lastUpdateUser = "-1";
                 }
-                if (null != version && StringUtils.isNotBlank(version.toString())) {
-                    sql.SET("VERSION = " + version.toString());
+                if (null == version) {
+                    version = 0L;
                 }
+                String lastUpdateDttmStr = DateUtils.dateTimesToStr(lastUpdateDttm);
+                sql.SET("LAST_UPDATE_DTTM = " + Utils.addSqlStr(lastUpdateDttmStr));
+                sql.SET("LAST_UPDATE_USER = " + Utils.addSqlStr(lastUpdateUser));
+                sql.SET("VERSION = " + (version + 1));
+
+                // 处理其他字段
                 if (null != enableFlag) {
                     int enableFlagInt = enableFlag ? 1 : 0;
                     sql.SET("ENABLE_FLAG = " + enableFlagInt);
@@ -399,6 +411,7 @@ public class ProcessStopMapperProvider {
                 }
 
                 sql.WHERE("ENABLE_FLAG = 1");
+                sql.WHERE("VERSION = " + version);
                 sql.WHERE("ID = " + Utils.addSqlStr(id));
 
                 sqlStr = sql.toString() + ";";

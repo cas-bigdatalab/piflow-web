@@ -49,34 +49,35 @@ public class ProcessMapperProvider {
             sql.INSERT_INTO("FLOW_PROCESS");
             // value中的第一个字符串为数据库中表对应的字段名
             // 除数字类型的字段外其他类型必须加单引号
-            if (null != id) {
-                sql.VALUES("ID", Utils.addSqlStrAndReplace(id));
-            }
-            if (null != crtDttm) {
-                String crtDttmStr = DateUtils.dateTimesToStr(crtDttm);
-                if (StringUtils.isNotBlank(crtDttmStr)) {
-                    sql.VALUES("CRT_DTTM", Utils.addSqlStrAndReplace(crtDttmStr));
-                }
+
+            //先处理修改必填字段
+            if (null == crtDttm) {
+                crtDttm = new Date();
             }
             if (null != crtUser) {
-                sql.VALUES("CRT_USER", Utils.addSqlStrAndReplace(crtUser));
+                crtUser = "-1";
             }
-            if (null != lastUpdateDttm) {
-                String lastUpdateDttmStr = DateUtils.dateTimesToStr(lastUpdateDttm);
-                if (StringUtils.isNotBlank(lastUpdateDttmStr)) {
-                    sql.VALUES("LAST_UPDATE_DTTM", Utils.addSqlStrAndReplace(lastUpdateDttmStr));
-                }
+            if (null == lastUpdateDttm) {
+                lastUpdateDttm = new Date();
             }
             if (null != lastUpdateUser) {
-                sql.VALUES("LAST_UPDATE_USER", Utils.addSqlStrAndReplace(lastUpdateUser));
+                lastUpdateUser = "-1";
             }
-            if (null != version) {
-                sql.VALUES("VERSION", version + "");
+            if (null == version) {
+                version = 0L;
             }
             if (null != enableFlag) {
-                int enableFlagInt = enableFlag ? 1 : 0;
-                sql.VALUES("ENABLE_FLAG", enableFlagInt + "");
+                enableFlag = true;
             }
+            sql.VALUES("ID", Utils.addSqlStrAndReplace(id));
+            sql.VALUES("CRT_DTTM", Utils.addSqlStrAndReplace(DateUtils.dateTimesToStr(crtDttm)));
+            sql.VALUES("CRT_USER", Utils.addSqlStrAndReplace(crtUser));
+            sql.VALUES("LAST_UPDATE_DTTM", Utils.addSqlStrAndReplace(DateUtils.dateTimesToStr(lastUpdateDttm)));
+            sql.VALUES("LAST_UPDATE_USER", Utils.addSqlStrAndReplace(lastUpdateUser));
+            sql.VALUES("VERSION", version + "");
+            sql.VALUES("ENABLE_FLAG", (enableFlag ? 1 : 0) + "");
+
+            // 处理其他字段
             if (null != name) {
                 sql.VALUES("NAME", Utils.addSqlStrAndReplace(name));
             }
@@ -249,18 +250,23 @@ public class ProcessMapperProvider {
             String progress = process.getProgress();
             SQL sql = new SQL();
             sql.UPDATE("FLOW_PROCESS");
-            if (null != lastUpdateDttm) {
-                String lastUpdateDttmStr = DateUtils.dateTimesToStr(lastUpdateDttm);
-                if (StringUtils.isNotBlank(lastUpdateDttmStr)) {
-                    sql.SET("LAST_UPDATE_DTTM=" + Utils.addSqlStrAndReplace(lastUpdateDttmStr));
-                }
+
+            //先处理修改必填字段
+            if (null == lastUpdateDttm) {
+                lastUpdateDttm = new Date();
             }
-            if (null != lastUpdateUser) {
-                sql.SET("LAST_UPDATE_USER=" + Utils.addSqlStrAndReplace(lastUpdateUser));
+            if (StringUtils.isBlank(lastUpdateUser)) {
+                lastUpdateUser = "-1";
             }
-            if (null != version) {
-                sql.SET("VERSION=" + version);
+            if (null == version) {
+                version = 0L;
             }
+            String lastUpdateDttmStr = DateUtils.dateTimesToStr(lastUpdateDttm);
+            sql.SET("LAST_UPDATE_DTTM = " + Utils.addSqlStr(lastUpdateDttmStr));
+            sql.SET("LAST_UPDATE_USER = " + Utils.addSqlStr(lastUpdateUser));
+            sql.SET("VERSION = " + (version + 1));
+
+            // 处理其他字段
             if (null != enableFlag) {
                 sql.SET("ENABLE_FLAG=" + (enableFlag ? 1 : 0));
             }
@@ -309,6 +315,7 @@ public class ProcessMapperProvider {
             if (null != progress) {
                 sql.SET("progress=" + Utils.addSqlStrAndReplace(progress));
             }
+            sql.WHERE("VERSION = " + version);
             sql.WHERE("id = " + Utils.addSqlStr(id));
             if (StringUtils.isNotBlank(id)) {
                 sqlStr = sql.toString() + ";";
