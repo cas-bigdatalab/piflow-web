@@ -42,7 +42,8 @@ public class PropertyMapperProvider {
             sqlStrBuffer.append("allowable_values,");
             sqlStrBuffer.append("property_required,");
             sqlStrBuffer.append("property_sensitive,");
-            sqlStrBuffer.append("fk_stops_id");
+            sqlStrBuffer.append("fk_stops_id,");
+            sqlStrBuffer.append("is_select");
             sqlStrBuffer.append(") ");
             sqlStrBuffer.append("values");
             int i = 0;
@@ -63,6 +64,7 @@ public class PropertyMapperProvider {
                 Boolean required = property.getRequired();
                 Boolean sensitive = property.getSensitive();
                 Stops stops = property.getStops();
+                Boolean isSelect = property.getIsSelect();
                 // 拼接时位置顺序不能错
                 sqlStrBuffer.append("(");
                 sqlStrBuffer.append(Utils.addSqlStr(Utils.replaceString(id)) + ",");
@@ -79,7 +81,8 @@ public class PropertyMapperProvider {
                 sqlStrBuffer.append(Utils.addSqlStr((Utils.replaceString(allowableValues))) + ",");
                 sqlStrBuffer.append((required ? 1 : 0) + ",");
                 sqlStrBuffer.append((sensitive ? 1 : 0) + ",");
-                sqlStrBuffer.append(Utils.addSqlStr((stops == null ? "" : stops.getId())));
+                sqlStrBuffer.append(Utils.addSqlStr((stops == null ? "" : stops.getId()))  + ",");
+                sqlStrBuffer.append((isSelect ? 1 : 0));
                 if (i != propertyList.size()) {
                     sqlStrBuffer.append("),");
                 } else {

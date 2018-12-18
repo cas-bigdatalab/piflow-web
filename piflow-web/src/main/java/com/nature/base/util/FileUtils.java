@@ -114,6 +114,7 @@ public class FileUtils {
 	 * @return
 	 */
 	 public static Document strToDocument(String xmlStr) {
+		  xmlStr.replace("&","&amp;");
 	        Document doc = null;
 	        StringReader sr = new StringReader(xmlStr);
 	        InputSource is = new InputSource(sr);

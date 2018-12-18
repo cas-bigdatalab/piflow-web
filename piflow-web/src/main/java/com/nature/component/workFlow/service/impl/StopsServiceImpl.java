@@ -102,7 +102,17 @@ public class StopsServiceImpl implements IStopsService {
 
 	@Override
 	public int updateStopsNameById(String id, String stopName) {
-		return stopsMapper.updateStopsNameById(id, stopName);
+          if (StringUtils.isNotBlank(id) && StringUtils.isNotBlank(stopName)) {
+              Stops stopsById = stopsMapper.getStopsById(id);
+              if(null!=stopsById){
+                  stopsById.setLastUpdateUser("updatestopName");
+                  stopsById.setLastUpdateDttm(new Date());
+                  stopsById.setVersion(stopsById.getVersion()+1);
+                  stopsById.setName(stopName);
+                  return stopsMapper.updateStops(stopsById);
+              }
+          }
+        return 0;
 	}
 
 	@Override
@@ -112,9 +122,8 @@ public class StopsServiceImpl implements IStopsService {
 
 	@SuppressWarnings("null")
 	@Override
-	public StatefulRtnBase updateStopName(String stopId, String flowId,String stopName, String pageId) {
+	public StatefulRtnBase updateStopName(String stopId,Flow flowById,String stopName, String pageId) {
 		StatefulRtnBase statefulRtnBase = new StatefulRtnBase();
-    	Flow flowById = flowMapper.getFlowById(flowId);
     	List<MxCell> root = null;
     	if (null != flowById) {
     		MxGraphModel mxGraphModel = flowById.getMxGraphModel();
@@ -124,11 +133,11 @@ public class StopsServiceImpl implements IStopsService {
     	}
     	if (null == root && root.size() == 0) {
         	statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("No flow information,update failed ");
-        	logger.info(flowId+"画板信息为空,更新失败");
+        	logger.info(flowById.getId()+"画板信息为空,更新失败");
         	return statefulRtnBase;
 		}
     	//校验name是否重名
-    	String checkResult = this.getStopByNameAndFlowId(flowId, stopName);
+    	String checkResult = this.getStopByNameAndFlowId(flowById.getId(), stopName);
         if(StringUtils.isNotBlank(checkResult)){
         	statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("Name already exists");
             logger.info(stopName+"名称已经重复,保存失败");

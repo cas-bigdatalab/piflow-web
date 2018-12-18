@@ -109,12 +109,12 @@ EditorUi = function(editor, container, lightbox)
 
         if (mxClient.IS_IE && (typeof(document.documentMode) === 'undefined' || document.documentMode < 9))
         {
-            mxEvent.addListener(this.diagramContainer, 'contextmenu', linkHandler);
+         //   mxEvent.addListener(this.diagramContainer, 'contextmenu', linkHandler);
         }
         else
         {
             // Allows browser context menu outside of diagram and sidebar
-            this.diagramContainer.oncontextmenu = linkHandler;
+           // this.diagramContainer.oncontextmenu = linkHandler;
         }
     }
     else
@@ -964,8 +964,8 @@ EditorUi.prototype.editButtonLink = null;
  * Specifies the position of the horizontal split bar. Default is 208 or 118 for
  * screen widths <= 640px.
  */
-EditorUi.prototype.hsplitPosition = (screen.width <= 640) ? 118 : 208;
-EditorUi.prototype.hsplitRightPosition = (screen.width <= 640) ? 118 : 425;
+EditorUi.prototype.hsplitPosition = (screen.width <= 640) ? 118 : 220;
+EditorUi.prototype.hsplitRightPosition = (screen.width <= 640) ? 118 : 220;
 
 /**
  * Specifies if animations are allowed in <executeLayout>. Default is true.
@@ -2872,7 +2872,6 @@ EditorUi.prototype.refresh = function(sizeDidChange)
         this.sidebarFooterContainer.style.height = sidebarFooterHeight + 'px';
         this.sidebarFooterContainer.style.bottom = bottom + 'px';
     }
-
     var fw = (this.format != null) ? this.formatWidth : 0;
     this.sidebarContainer.style.top = tmp + 'px';
     this.sidebarContainer.style.width = effHsplitPosition + 'px';
@@ -2990,7 +2989,7 @@ EditorUi.prototype.createDivs = function()
     this.hsplitRight.style.width = this.splitSize + 'px';
     // Only vertical scrollbars, no background in format sidebar
     this.formatContainer.style.backgroundColor = 'whiteSmoke';
-    /*this.formatContainer.style.overflowX = 'hidden';*/
+    this.formatContainer.style.overflowX = 'hidden'; 
     //this.formatContainer.style.overflowY = 'auto';
     this.formatContainer.style.fontSize = '12px';
 

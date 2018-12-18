@@ -2,9 +2,11 @@
 package com.nature.component.template.model;
 
 import com.nature.base.util.DateUtils;
+
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -60,6 +62,8 @@ public class PropertyTemplateModel implements Serializable {
 	@Version
 	@Column
 	private Long version;
+	
+	private Boolean isSelect;
 
 	public String getId() {
 		return id;
@@ -161,5 +165,12 @@ public class PropertyTemplateModel implements Serializable {
 		SimpleDateFormat sdf = new SimpleDateFormat(DateUtils.DATE_PATTERN_yyyy_MM_dd_HH_MM_ss);
 		return crtDttm != null ? sdf.format(crtDttm) : "";
 	}
-	
+
+	public Boolean getIsSelect() {
+		return isSelect;
+	}
+
+	public void setIsSelect(Boolean isSelect) {
+		this.isSelect = isSelect;
+	}
 }

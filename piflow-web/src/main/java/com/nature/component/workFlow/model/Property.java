@@ -39,6 +39,8 @@ public class Property extends BaseHibernateModelUUIDNoCorpAgentId {
 
 	@Column(name = "PROPERTY_SENSITIVE")
 	private Boolean sensitive;
+	
+	private Boolean isSelect;
 
 	public Stops getStops() {
 		return stops;
@@ -103,4 +105,13 @@ public class Property extends BaseHibernateModelUUIDNoCorpAgentId {
 	public void setSensitive(Boolean sensitive) {
 		this.sensitive = sensitive;
 	}
+
+	public Boolean getIsSelect() {
+		return isSelect;
+	}
+
+	public void setIsSelect(Boolean isSelect) {
+		this.isSelect = isSelect;
+	}
+	
 }

@@ -31,6 +31,8 @@ public class StopsPropertyVo implements Serializable {
 	private Boolean required;
 
 	private Boolean sensitive;
+	
+	private Boolean isSelect;
 
 	public String getId() {
 		return id;
@@ -102,5 +104,13 @@ public class StopsPropertyVo implements Serializable {
 
 	public void setSensitive(Boolean sensitive) {
 		this.sensitive = sensitive;
+	}
+
+	public Boolean getIsSelect() {
+		return isSelect;
+	}
+
+	public void setIsSelect(Boolean isSelect) {
+		this.isSelect = isSelect;
 	}
 }

@@ -514,30 +514,48 @@ Sidebar.prototype.searchEntries = function(searchTerms, count, page, success, er
 {
 	if (this.taglist != null && searchTerms != null)
 	{
-		var tmp = searchTerms.toLowerCase().split(' ');
+		var value = [];
+		//该数组记录所有的stopname
+		var valueObj = [];
+		var tmp = searchTerms.toLowerCase();
+		value.push(tmp);
 		var dict = new mxDictionary();
 		var max = (page + 1) * count;
 		var results = [];
 		var index = 0;
 		
-		for (var i = 0; i < tmp.length; i++)
+		var str="";
+		//将整个存放stop信息的对象,遍历出名称再存入valueObj数组中
+		for (var item in this.taglist){
+		    str +=item+":"+this.taglist[item]+"\n";
+		    valueObj.push(item);
+		}
+		
+		for (var i = 0; i < value.length; i++)
 		{
-			if (tmp[i].length > 0)
+			if (value[i].length > 0)
 			{
-				var entry = this.taglist[tmp[i]];
-				var tmpDict = new mxDictionary();
-				
+				//循环所有stop信息
+				for(var b = 0; b < valueObj.length; b++){
+					//valueObj是否包含输入内容
+					 var res = valueObj[b].indexOf(value[i]);
+					if(res != -1){
+						//包含则拿全名匹配stop
+						var entry = this.taglist[valueObj[b]];
+					}else{
+						continue;
+					} 
+					var tmpDict = new mxDictionary(); 
+				  
 				if (entry != null)
 				{
 					var arr = entry.entries;
-					results = [];
-
+					//	results = [];
 					for (var j = 0; j < arr.length; j++)
 					{
 						var entry = arr[j];
-	
 						// NOTE Array does not contain duplicates
-						if ((index == 0) == (dict.get(entry) == null))
+						if (dict.get(entry) == null)
 						{
 							tmpDict.put(entry, entry);
 							results.push(entry);
@@ -545,7 +563,6 @@ Sidebar.prototype.searchEntries = function(searchTerms, count, page, success, er
 							if (i == tmp.length - 1 && results.length == max)
 							{
 								success(results.slice(page * count, max), max, true, tmp);
-								
 								return;
 							}
 						}
@@ -560,7 +577,7 @@ Sidebar.prototype.searchEntries = function(searchTerms, count, page, success, er
 				index++;
 			}
 		}
-		
+		}
 		var len = results.length;
 		success(results.slice(page * count, (page + 1) * count), len, false, tmp);
 	}
@@ -850,12 +867,13 @@ Sidebar.prototype.addSearchPalette = function(expand)
 	mxEvent.addListener(input, 'keyup', mxUtils.bind(this, function(evt)
 	{
 		if (input.value == '')
-		{
+		{	find();
 			cross.setAttribute('src', Sidebar.prototype.searchImage);
 			cross.setAttribute('title', mxResources.get('search'));
 		}
 		else
-		{
+		{   
+			find();
 			cross.setAttribute('src', Dialog.prototype.closeImage);
 			cross.setAttribute('title', mxResources.get('reset'));
 		}

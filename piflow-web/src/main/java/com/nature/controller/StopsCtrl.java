@@ -1,23 +1,25 @@
 package com.nature.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.nature.base.util.FlowXmlUtils;
+import com.nature.base.util.JsonUtils;
+import com.nature.base.util.LoggerUtil;
+import com.nature.base.vo.StatefulRtnBase;
+import com.nature.component.mxGraph.model.MxGraphModel;
+import com.nature.component.mxGraph.vo.MxGraphModelVo;
+import com.nature.component.workFlow.model.Flow;
+import com.nature.component.workFlow.service.IFlowService;
+import com.nature.component.workFlow.service.IPropertyService;
+import com.nature.component.workFlow.service.IStopsService;
+import com.nature.component.workFlow.vo.StopsVo;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nature.base.util.JsonUtils;
-import com.nature.base.util.LoggerUtil;
-import com.nature.base.vo.StatefulRtnBase;
-import com.nature.component.workFlow.service.IFlowService;
-import com.nature.component.workFlow.service.IPropertyService;
-import com.nature.component.workFlow.service.IStopsService;
-import com.nature.component.workFlow.vo.StopsVo;
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/stops")
@@ -127,16 +129,31 @@ public class StopsCtrl {
         rtnMap.put("code", "0");
         String id = request.getParameter("stopId");
         String flowId = request.getParameter("flowId");
-        String stopName = request.getParameter("stopName");
+        String stopName = request.getParameter("name");
         String pageId = request.getParameter("pageId");
         if (!StringUtils.isAnyEmpty(id, stopName,flowId,pageId)) {
-			StatefulRtnBase updateStopName = stopsServiceImpl.updateStopName(id, flowId, stopName, pageId);
-			 // addFlow不为空且ReqRtnStatus的值为true,则保存成功
+            Flow flowById = flowServiceImpl.getFlowById(flowId);
+            if (null != flowById){
+            	StatefulRtnBase updateStopName = stopsServiceImpl.updateStopName(id, flowById, stopName, pageId);
+            	// addFlow不为空且ReqRtnStatus的值为true,则保存成功
             if (null != updateStopName && updateStopName.isReqRtnStatus()) {
+                MxGraphModelVo mxGraphModelVo = null;
+                MxGraphModel mxGraphModel = flowById.getMxGraphModel();
+                if (null != mxGraphModel) {
+                mxGraphModelVo = FlowXmlUtils.mxGraphModelPoToVo(mxGraphModel);
+                // 把查询出來的mxGraphModelVo转为XML
+                String loadXml = FlowXmlUtils.mxGraphModelToXml(mxGraphModelVo);
+                loadXml = StringUtils.isNotBlank(loadXml) ? loadXml : "";
+                rtnMap.put("XmlData", loadXml);
+                }
                 rtnMap.put("code", "1");
                 rtnMap.put("errMsg", updateStopName.getErrorMsg());
-            } else {
-                rtnMap.put("errMsg", updateStopName.getErrorMsg());
+                } else {
+                    rtnMap.put("errMsg", updateStopName.getErrorMsg());
+                }
+            }else{
+                rtnMap.put("errMsg", "flow information is empty");
+                logger.info("flow查询为null,flowId:"+flowId);
             }
         }else {
             rtnMap.put("errMsg", "The incoming parameter is empty");

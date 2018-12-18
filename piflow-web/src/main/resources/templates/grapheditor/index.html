@@ -76,7 +76,7 @@
             </ul>
         </div>
         <div id="divloadingXml">
-            <select name="loadingXmlSelect" id="loadingXmlSelect" onchange="loadTemplate()" style="width: 164px;"></select>
+            <select name="loadingXmlSelect" id="loadingXmlSelect" onchange="loadTemplate()" style="width: 218px;"></select>
         </div>
         <form id="uploadForm" enctype="multipart/form-data" method="post">
             <input type="file" id="uploadFile" name="templateFile" style="display:none;" onchange="uploadXmlFile()"/>
@@ -185,7 +185,7 @@
                 //点击stop操作
                 value = cells.cell.value;
                 id = cells.cell.id;
-            } else {
+            }else{
                 //第一次给画板添加stop时，拖拽过程获取不到id时
                 queryStopsProperty(maxStopId);
             }
@@ -220,6 +220,7 @@
             success: function (data) {
                 if ("" != data) {
                     add(data.propertiesVo, data.id, data.checkpoint);
+                  //  $("#stopsValueInput").data("result",evt);
                     document.getElementById('stopsNameLabel').value = data.name;
                     document.getElementById('stopsNameLabel').name = data.id;
                     document.getElementById('stopsValueInput').value = data.name;
@@ -307,20 +308,26 @@
             var tbody = document.createElement("tbody");
             for (var y = 0; y < data.length; y++) {
                 var select = document.createElement('select');
-                select.style.width = "210px";
-                select.style.height = "26px";
+                select.style.width = "290px";
+                select.style.height = "28px";
                 select.setAttribute('id', '' + data[y].name + '');
                 select.setAttribute('onblur', 'shiqu("' + data[y].id + '","' + data[y].name + '")');
                 var displayName = data[y].displayName;
                 var customValue = data[y].customValue;
                 var allowableValues = data[y].allowableValues;
+                var isSelect = data[y].isSelect;
                 //是否必填
                 var required = data[y].required;
                 //如果大于4表示有下拉框
-                if (allowableValues.length > 4) {
+                if (allowableValues.length > 4 && isSelect) {
                     var selectValue = JSON.parse(allowableValues);
                     var selectInfo = JSON.stringify(selectValue);
                     var strs = selectInfo.split(",");
+                    var optionDefault = document.createElement("option");
+                    optionDefault.value = '';
+                    optionDefault.innerHTML = '';
+                    optionDefault.setAttribute('selected', 'selected');
+                    select.appendChild(optionDefault);
                     //循环给select下来赋值
                     for (i = 0; i < strs.length; i++) {
                         var option = document.createElement("option");
@@ -335,14 +342,14 @@
                 }
                 var displayName = document.createElement('input');
                 if (required)
-                    displayName.setAttribute('class', 'true');
-                // displayName.style.border = '0px' ;
+                displayName.setAttribute('class', 'true');
                 displayName.setAttribute('id', '' + data[y].id + '');
                 displayName.setAttribute('name', '' + data[y].name + '');
-                displayName.setAttribute('onclick', 'stopTabTd(this)');
+              	displayName.setAttribute('onclick', 'stopTabTd(this)');
                 displayName.style.width = "290px";
-                //    displayName.style.background = "rgb(245, 245, 245)";
-                displayName.setAttribute('value', '' + customValue + '');
+            //    displayName.style.background = "rgb(245, 245, 245)";
+                customValue  = customValue =='null' ? '' : customValue ;
+                displayName.setAttribute('value', ''+ customValue +'');
                 var spanDisplayName = 'span' + data[y].displayName;
                 var spanDisplayName = document.createElement('span');
                 var spanFlag = document.createElement('span');
@@ -364,12 +371,12 @@
                 //开始appendchild()追加各个元素
                 td.appendChild(spanDisplayName);
                 //本次循环大于4追加下拉,小于4默认文本框
-                if (allowableValues.length > 4) {
+                if (allowableValues.length > 4 && isSelect) {
                     td1.appendChild(select);
                 } else {
                     td1.appendChild(displayName);
                     if (required)
-                        td2.appendChild(spanFlag);
+                    td2.appendChild(spanFlag);
                 }
                 tr.appendChild(td);
                 tr.appendChild(td1);
@@ -428,7 +435,7 @@
             divValue.appendChild(spanCheckpoint);
         }
     }
-
+ 
     // 添加操作处理
     function addCellsCustom(cells, operType) {
         var removePaths = [];
@@ -570,17 +577,6 @@
                         document.getElementById('flowName').innerText = "No content";
                         document.getElementById('flowDescription').innerText = "No content";
                         document.getElementById('createrTime').innerText = "No content";
-                    }
-                    if (flowInfoDbInfo != null && flowInfoDbInfo != "") {
-                        document.getElementById('startTime').innerText = flowInfoDbInfo.startTime ? flowInfoDbInfo.startTime : "No startTime";
-                        document.getElementById('stopTime').innerText = flowInfoDbInfo.endTime ? flowInfoDbInfo.endTime : "No stopTime";
-                        document.getElementById('progressData').innerText = flowInfoDbInfo.progress ? flowInfoDbInfo.progress + '%' : "0%";
-                        document.getElementById('state').innerText = flowInfoDbInfo.state ? flowInfoDbInfo.state : "No state";
-                    } else {
-                        document.getElementById('startTime').innerText = "No startTime";
-                        document.getElementById('stopTime').innerText = "No stopTime";
-                        document.getElementById('progressData').innerText = "0%";
-                        document.getElementById('state').innerText = "No state";
                     }
                 }
             }
@@ -1087,7 +1083,7 @@
                 var dataMap = JSON.parse(data);
                 if (dataMap.code != '0') {
                     var temPlateList = dataMap.temPlateList;
-                    $("#loadingXmlSelect").append("<option value='-1' >--------please choose--------</option>");
+                    $("#loadingXmlSelect").append("<option value='-1' >------------please choose------------</option>");
                     for (var i = 0; i < temPlateList.length; i++) {
                         $("#loadingXmlSelect").append("<option value=" + temPlateList[i].id + " >" + temPlateList[i].name + "</option>");
                     }

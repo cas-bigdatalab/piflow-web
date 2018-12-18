@@ -2243,6 +2243,7 @@ StopsBasicInfoFormatPanel.prototype.addFont = function(container)
     var tableStopsBasic = document.createElement("table");
     tableStopsBasic.style.borderCollapse = "separate";
     tableStopsBasic.style.borderSpacing = "0px 0px";
+    tableStopsBasic.style.marginLeft = "10px";
     var tbodyStopsBasic = document.createElement("tbody");
     var trStopsBasic1 = document.createElement("tr");
     var trStopsBasic2 = document.createElement("tr");
@@ -2281,8 +2282,15 @@ StopsBasicInfoFormatPanel.prototype.addFont = function(container)
 	stopsValue.setAttribute('id', 'stopsValueInput');
 	stopsValue.setAttribute('type', 'hidden');
 	//stops描述
-	var stopsDescription = document.createElement('label');
+	var stopsDescription = document.createElement('SPAN');
 	stopsDescription.setAttribute('id', 'stopsDescription');
+    stopsDescription.style.fontWeight = "700";
+    stopsDescription.style.wordBreak = "normal";
+    stopsDescription.style.width = "auto";
+    stopsDescription.style.display = "block";
+    stopsDescription.style.whiteSpace = "pre-wrap";
+    stopsDescription.style.wordWrap = "break-word";
+    stopsDescription.style.overflow = "hidden";
 	//stops组名
 	var stopsGroups = document.createElement('label');
 	stopsGroups.setAttribute('id', 'stopsGroups');
@@ -2355,7 +2363,7 @@ StopsBasicInfoFormatPanel.prototype.addFont = function(container)
 		                    cache: true,
 		                    type: "POST",
 		                    url: "/piflow-web/stops/updateStopsNameById",
-		                    data: {stopId: stopId,flowId:loadId,stopName:stopName,pageId:pageId},
+		                    data: {stopId: stopId,flowId:loadId,name:stopName,pageId:pageId},
 		                    async: true,
 		                    traditional: true,
 		                    error: function (request) {
@@ -2365,13 +2373,25 @@ StopsBasicInfoFormatPanel.prototype.addFont = function(container)
 		                    success: function (data) {
 		                    	var dataMap = JSON.parse(data);
 		                    	if ('1' === dataMap.code) {
+		                    		//重新加载xml
+		                    	    var xml = mxUtils.parseXml(dataMap.XmlData);
+		                            var node = xml.documentElement;
+		                            var dec = new mxCodec(node.ownerDocument);
+		                            dec.decode(node, graphGlobal.getModel());
+		                            //修改成功后页面赋值给cell.value,防止拖拽时更新name与stopname不一致
+                                   /* var results = $("#stopsValueInput").data("result");
+                                    results.properties.cell.value =  stopName ;*/
+                                    //动态记录新的stopname，用来做对比下次修改是否有差异
+		                    		$("#stopsValueInput").val(stopName);
 		                    		// 修改成功后隐藏input并恢复update按钮
 		                    	   $("#stopsNameLabel").css("background-color","rgb(245, 245, 245)");
 		      					   $("#stopsNameLabel").css("border","0px");
 		      					   pwdBtn.className = "glyphicon glyphicon-floppy-saved";
 		      					   $("#stopsNameLabel").blur();
 		      					   $("#stopsNameLabel").attr("readonly","readonly");// 将input元素设置为readonly
-		                 		   layer.msg(dataMap.errMsg, {icon: 1, shade: 0, time: 2000}, function () {});
+		                 		   layer.msg(dataMap.errMsg, {icon: 1, shade: 0, time: 2000}, function () {
+		                 			  findBasicInfo(results);
+		                 		   });
 		                        } else {
 		                     	   layer.msg(dataMap.errMsg, {icon: 2, shade: 0, time: 2000}, function () {});
 		                        }
@@ -2384,6 +2404,8 @@ StopsBasicInfoFormatPanel.prototype.addFont = function(container)
 	 btn.setAttribute('class', 'glyphicon glyphicon-floppy-saved');
 	 btn.style.height = '28px' ;
 	 btn.style.width = '28px' ;
+	 btn.style.background = 'rgb(245, 245, 245)' ;
+	 btn.style.border = '1px solid' ;
 	//this.container.appendChild(hr);
     tdStopsBasic1.appendChild(span);
     tdStopsBasic2.appendChild(stopsNameLabel);
@@ -2436,6 +2458,7 @@ StopsBasicInfoFormatPanel.prototype.addFont = function(container)
     var tableStopState = document.createElement("tableStopState");
     tableStopState.style.borderCollapse = "separate";
     tableStopState.style.borderSpacing = "0px 5px";
+    tableStopState.style.marginLeft = "10px";
     var tbodyStopState = document.createElement("tbody");
     var trStopState1 = document.createElement("tr");
     var trStopState2 = document.createElement("tr");
@@ -4811,7 +4834,8 @@ DiagramFormatPanel.prototype.init = function()
 
 	if (graph.isEnabled())
 	{
-		this.container.appendChild(this.addOptions(this.createPanel()));
+		//此处注释了appInfo信息;
+		//this.container.appendChild(this.addOptions(this.createPanel()));
 		//this.container.appendChild(this.addPaperSize(this.createPanel()));
 		//this.container.appendChild(this.addStyleOps(this.createPanel()));
 	}
@@ -4866,7 +4890,7 @@ DiagramFormatPanel.prototype.addView = function(div)
 	var hr = document.createElement('hr');
 	mxUtils.write(span, 'UUID： ');
 	mxUtils.write(span1, 'flowName： ');
-	mxUtils.write(span2, 'crtDttmString： ');
+	mxUtils.write(span2, 'createrTime： ');
 	mxUtils.write(span3, 'description： ');
     tdFlow1.appendChild(span);
     tdFlow2.appendChild(UUID);

@@ -3,6 +3,7 @@ package com.nature.controller;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -196,7 +197,16 @@ public class TemplateCtrl {
 				template.setEnableFlag(true);
 				template.setLastUpdateUser("-1");
 				template.setLastUpdateDttm(new Date());
-				template.setName(name.substring(0, name.length()-4));
+				SimpleDateFormat sdf = new SimpleDateFormat("MMddHHmmSSSS");
+		    	Date nowDate = new Date();
+		    	String fileName = sdf.format(nowDate);
+		    	//文件名前缀
+		    	String prefix = name.substring(0, name.length()-4);
+		    	//后缀.xml
+		    	String Suffix = name.substring(name.length()- 4);
+		    	//添加时间戳
+		    	String uploadfileName =  prefix + fileName ;
+				template.setName(uploadfileName + Suffix);
 				template.setPath(path);
 				//根据保存好的文件路径读取xml文件并返回xml字符串
 				String xmlFileToStr = FileUtils.XmlFileToStr(template.getPath());
@@ -224,7 +234,7 @@ public class TemplateCtrl {
 					//保存stop，属性信息
 					 if (null != stopsList && stopsList.size() > 0) {
 						 List<Stops> stop = FlowXmlUtils.stopTemplateVoToStop(stopsList);
-						 if (null != stopsList && stopsList.size() > 0) {
+						 if (null != stop && stop.size() > 0) {
 								flowAndStopsTemplateVoServiceImpl.addStopsList(stop,template);
 							}
 					 	}

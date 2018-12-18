@@ -1,10 +1,15 @@
 package com.nature.base.util;
 
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
+import com.nature.common.Eunm.PortType;
+import com.nature.component.mxGraph.model.MxCell;
+import com.nature.component.mxGraph.model.MxGeometry;
+import com.nature.component.mxGraph.model.MxGraphModel;
+import com.nature.component.mxGraph.vo.MxCellVo;
+import com.nature.component.mxGraph.vo.MxGeometryVo;
+import com.nature.component.mxGraph.vo.MxGraphModelVo;
+import com.nature.component.template.model.PropertyTemplateModel;
+import com.nature.component.template.model.StopTemplateModel;
+import com.nature.component.workFlow.model.*;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -15,20 +20,10 @@ import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.xml.sax.InputSource;
 
-import com.nature.common.Eunm.PortType;
-import com.nature.component.mxGraph.model.MxCell;
-import com.nature.component.mxGraph.model.MxGeometry;
-import com.nature.component.mxGraph.model.MxGraphModel;
-import com.nature.component.mxGraph.vo.MxCellVo;
-import com.nature.component.mxGraph.vo.MxGeometryVo;
-import com.nature.component.mxGraph.vo.MxGraphModelVo;
-import com.nature.component.template.model.PropertyTemplateModel;
-import com.nature.component.template.model.StopTemplateModel;
-import com.nature.component.workFlow.model.Flow;
-import com.nature.component.workFlow.model.Paths;
-import com.nature.component.workFlow.model.Property;
-import com.nature.component.workFlow.model.Stops;
-import com.nature.component.workFlow.model.Template;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 
 public class FlowXmlUtils {
@@ -378,6 +373,7 @@ public class FlowXmlUtils {
 						xmlStrSb.append("bundel=\"" + bundel + "\" ");
 					}
 					if (StringUtils.isNotBlank(stopDescription)) {
+						stopDescription = stopDescription.replace("&","&amp;");
 						xmlStrSb.append("description=\"" + stopDescription + "\" ");
 					}
 					if (null != checkpoint) {
@@ -416,6 +412,7 @@ public class FlowXmlUtils {
 						String allowableValues = propertyVo.getAllowableValues();
 						Boolean required = propertyVo.getRequired();
 						Boolean sensitive = propertyVo.getSensitive();
+						Boolean isSelect = propertyVo.getIsSelect();
 						if (StringUtils.isNotBlank(propertyId)) {
 							xmlStrSb.append("id=\"" + propertyId + "\" ");
 						}
@@ -436,6 +433,7 @@ public class FlowXmlUtils {
 						}
 							xmlStrSb.append("required=\"" + required + "\" ");
 							xmlStrSb.append("sensitive=\"" + sensitive + "\" ");
+							xmlStrSb.append("isSelect=\"" + isSelect + "\" ");
 							xmlStrSb.append("/> \n");
 						}
 						xmlStrSb.append("</stop> \n");
@@ -479,7 +477,6 @@ public class FlowXmlUtils {
 				xmlStrSb.append(xmlStr);
 			}
 			xmlStrSb.append("</flow>");
-
 			return new String(xmlStrSb);
 		}
 		return null;
@@ -558,6 +555,7 @@ public class FlowXmlUtils {
 						String propertyName = propertyValue.attributeValue("name");
 						Boolean required = propertyValue.attributeValue("required").equals("1") ? true : false;
 						Boolean sensitive = propertyValue.attributeValue("sensitive").equals("1") ? true : false;
+						Boolean isSelect = propertyValue.attributeValue("isSelect").equals("1") ? true : false;
 						propertyVo.setAllowableValues(allowableValues);
 						propertyVo.setCustomValue(customValue);
 						propertyVo.setDescription(propertyDescription);
@@ -567,6 +565,7 @@ public class FlowXmlUtils {
 						propertyVo.setRequired(required);
 						propertyVo.setSensitive(sensitive);
 						propertyVo.setStopsVo(stopVo);
+						propertyVo.setIsSelect(isSelect);
 						propertyList.add(propertyVo);
 				 		}
 				 	}

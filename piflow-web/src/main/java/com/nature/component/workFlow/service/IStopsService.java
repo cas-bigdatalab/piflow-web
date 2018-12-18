@@ -1,13 +1,13 @@
 package com.nature.component.workFlow.service;
 
 
-import java.util.List;
-
-import org.springframework.data.annotation.Transient;
-
 import com.nature.base.vo.StatefulRtnBase;
+import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.vo.StopsVo;
 import com.nature.third.vo.flowInfo.ThirdFlowInfoStopVo;
+import org.springframework.data.annotation.Transient;
+
+import java.util.List;
 
 public interface IStopsService {
 
@@ -58,7 +58,7 @@ public interface IStopsService {
     public String getStopByNameAndFlowId(String flowId, String stopName);
     
 	@Transient
-    public StatefulRtnBase updateStopName(String stopId,String flowId, String stopName,String pageId);
+    public StatefulRtnBase updateStopName(String stopId, Flow flow, String stopName, String pageId);
 
 
 }
