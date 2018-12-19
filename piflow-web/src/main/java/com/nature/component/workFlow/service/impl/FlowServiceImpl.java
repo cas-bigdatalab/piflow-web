@@ -177,7 +177,6 @@ public class FlowServiceImpl implements IFlowService {
             FlowInfoDb oldAppId = flowById.getAppId();
             if (null != flowById) {
                 flowById.setAppId(appId);
-                flowById.setVersion(flowById.getVersion() + 1);
                 flowById.setLastUpdateDttm(new Date());
                 flowById.setLastUpdateUser("Nature");
                 int updateFlow = flowMapper.updateFlow(flowById);
@@ -246,7 +245,6 @@ public class FlowServiceImpl implements IFlowService {
             flow.setLastUpdateDttm(new Date()); // 最后更新时间
             flow.setLastUpdateUser("Nature");// 最后更新人
             flow.setEnableFlag(true);// 是否有效
-            flow.setVersion(flow.getVersion() + 1);// 版本号
             // 更新flow信息
             int updateFlowNum = flowMapper.updateFlow(flow);
             if (updateFlowNum > 0) {
@@ -260,7 +258,6 @@ public class FlowServiceImpl implements IFlowService {
                     mxGraphModelDb.setEnableFlag(true);
                     mxGraphModelDb.setLastUpdateUser("Add");
                     mxGraphModelDb.setLastUpdateDttm(new Date());
-                    mxGraphModelDb.setVersion(mxGraphModelDb.getVersion() + 1);
                     // 画板的flow外键无变化，无需更新
                     // mxGraphModelDb.setFlow(flow); 添加外键
                     // 更新mxGraphModel
@@ -316,7 +313,6 @@ public class FlowServiceImpl implements IFlowService {
                                         mxCell.setEnableFlag(true);
                                         mxCell.setLastUpdateUser("Add");
                                         mxCell.setLastUpdateDttm(new Date());
-                                        mxCell.setVersion(0L);
                                         // mxGraphModel外键
                                         mxCell.setMxGraphModel(mxGraphModelDb);
                                         // 保存mxCell
@@ -336,7 +332,6 @@ public class FlowServiceImpl implements IFlowService {
                                             mxGeometry.setEnableFlag(true);
                                             mxGeometry.setLastUpdateUser("Add");
                                             mxGeometry.setLastUpdateDttm(new Date());
-                                            mxGeometry.setVersion(0L);
                                             // mxCell外键
                                             mxGeometry.setMxCell(mxCell);
                                             // 保存mxGeometry
@@ -424,8 +419,6 @@ public class FlowServiceImpl implements IFlowService {
             if (null != mxGraphModel) {
                 // 将mxGraphModelVo中的值copy到mxGraphModelDb中
                 BeanUtils.copyProperties(mxGraphModelVo, mxGraphModel);
-                // 修改时版本号递增
-                mxGraphModel.setVersion(mxGraphModel.getVersion() + 1);
                 // setmxGraphModel基本属性
                 mxGraphModel.setLastUpdateUser("MOVED");// 最后更新人
                 mxGraphModel.setLastUpdateDttm(new Date());// 最后更新时间
@@ -465,8 +458,6 @@ public class FlowServiceImpl implements IFlowService {
                 flow.setLastUpdateDttm(new Date());
                 // 最后更新人
                 flow.setLastUpdateUser("update");
-                // 版本号
-                flow.setVersion(flow.getVersion() + 1);
 
                 // 保存flow
                 int updateFlow = flowMapper.updateFlow(flow);
@@ -522,7 +513,6 @@ public class FlowServiceImpl implements IFlowService {
                                             paths.setEnableFlag(false);
                                             paths.setLastUpdateUser("REMOVED");
                                             paths.setLastUpdateDttm(new Date());
-                                            paths.setVersion(paths.getVersion() + 1);
                                             paths.setFlow(flow);
                                             updatePaths.add(paths);
                                             // 把需要逻辑删除的端口信息放入pathsDelInfoMap的map中
@@ -613,7 +603,6 @@ public class FlowServiceImpl implements IFlowService {
                                                         if (isUpdate) {
                                                             stops.setLastUpdateDttm(new Date());//最后跟新时间
                                                             stops.setLastUpdateUser("REMOVED");//最后更新人
-                                                            stops.setVersion(stops.getVersion() + 1);//版本号
                                                             stops.setProperties(properties);//属性list
                                                             stops.setFlow(flow);
                                                             updateStops.add(stops);
@@ -626,7 +615,6 @@ public class FlowServiceImpl implements IFlowService {
                                             stops.setEnableFlag(false);//逻辑删除标识
                                             stops.setLastUpdateDttm(new Date());//最后跟新时间
                                             stops.setLastUpdateUser("REMOVED");//最后更新人
-                                            stops.setVersion((null == stops.getVersion() ?  0  : stops.getVersion()) + 1);//版本号
                                             //stops的属性
                                             List<Property> properties = stops.getProperties();
                                             // 判空
@@ -638,7 +626,6 @@ public class FlowServiceImpl implements IFlowService {
                                                         property.setEnableFlag(false);//逻辑删除标识
                                                         property.setLastUpdateDttm(new Date());//最后跟新时间
                                                         property.setLastUpdateUser("REMOVED");//最后更新人
-                                                        property.setVersion(property.getVersion() + 1);//版本号
                                                         propertyList.add(property);
                                                     }
                                                 }
@@ -765,7 +752,6 @@ public class FlowServiceImpl implements IFlowService {
                             stops.setCrtUser("Add");
                             stops.setLastUpdateDttm(new Date());
                             stops.setLastUpdateUser("add");
-                            stops.setVersion(0L);
                             stops.setEnableFlag(true);
                             stops.setId(Utils.getUUID32());
                             stops.setPageId(mxCellVo.getPageId());
@@ -781,7 +767,6 @@ public class FlowServiceImpl implements IFlowService {
                                     property.setCrtUser("add");
                                     property.setLastUpdateDttm(new Date());
                                     property.setLastUpdateUser("add");
-                                    property.setVersion(0L);
                                     property.setEnableFlag(true);
                                     property.setStops(stops);
                                     property.setCustomValue(propertyTemplate.getDefaultValue());
@@ -863,7 +848,6 @@ public class FlowServiceImpl implements IFlowService {
                         mxCell.setEnableFlag(true);// 是否有效
                         mxCell.setLastUpdateUser("MOVED");// 最后更新人
                         mxCell.setLastUpdateDttm(new Date());// 最后更新时间
-                        mxCell.setVersion(mxCell.getVersion() + 1);// 修改时版本号递增
 
                         // 修改时不用处理外键，除非取消或修改外键
                         // mxGraphModel外键
@@ -874,8 +858,7 @@ public class FlowServiceImpl implements IFlowService {
                             if (null != mxGeometryVo) {
                                 // 将 mxGeometryVo 中的值copy到 mxGeometry 中
                                 BeanUtils.copyProperties(mxGeometryVo, mxGeometry);
-                                // 修改时版本号递增
-                                mxGeometry.setVersion(mxGeometry.getVersion() + 1);
+
                                 // setmxGraphModel基本属性
                                 mxGeometry.setLastUpdateUser("MOVED");// 最后更新人
                                 mxGeometry.setLastUpdateDttm(new Date());// 最后更新时间

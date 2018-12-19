@@ -120,7 +120,6 @@ public class PropertyServiceImpl implements IPropertyService {
       						newProperty.setEnableFlag(true);
       						newProperty.setDisplayName(Utils.replaceString(displayName));
       						newProperty.setDescription(Utils.replaceString(description));
-      						newProperty.setVersion(0L);
       						newProperty.setStops(stopsList);
       						addPropertyList.add(newProperty);
 							} 

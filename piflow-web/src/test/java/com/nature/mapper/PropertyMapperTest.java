@@ -120,7 +120,6 @@ public class PropertyMapperTest extends ApplicationTests {
         						newProperty.setCrtDttm(new Date());
         						newProperty.setCrtUser("Nature");
         						newProperty.setEnableFlag(true);
-        						newProperty.setVersion(0L);
         						newProperty.setStops(stopsList);
         						addPropertyList.add(newProperty);
 							} 

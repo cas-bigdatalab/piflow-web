@@ -193,14 +193,33 @@ public class ProcessStopMapperProvider {
                     String pageId = processStop.getPageId();
                     Process process = processStop.getProcess();
 
+                    if (null == crtDttm) {
+                        crtDttm = new Date();
+                    }
+                    if (StringUtils.isBlank(crtUser)) {
+                        crtUser = "-1";
+                    }
+                    if (null == lastUpdateDttm) {
+                        lastUpdateDttm = new Date();
+                    }
+                    if (StringUtils.isBlank(lastUpdateUser)) {
+                        lastUpdateUser = "-1";
+                    }
+                    if (null != version) {
+                        version = 0L;
+                    }
+                    if (null != enableFlag) {
+                        enableFlag = true;
+                    }
+
                     sql.append("(");
                     sql.append(Utils.addSqlStrAndReplace(id) + ",");
                     sql.append(Utils.addSqlStrAndReplace(DateUtils.dateTimesToStr(crtDttm)) + ",");
                     sql.append(Utils.addSqlStrAndReplace(crtUser) + ",");
                     sql.append(Utils.addSqlStrAndReplace(DateUtils.dateTimesToStr(lastUpdateDttm)) + ",");
                     sql.append(Utils.addSqlStrAndReplace(lastUpdateUser) + ",");
-                    sql.append((version == null ? 0 : version) + ",");
-                    sql.append((enableFlag == null ? 0 : (enableFlag ? 1 : 0)) + ",");
+                    sql.append(version + ",");
+                    sql.append((enableFlag ? 1 : 0) + ",");
                     sql.append(Utils.addSqlStrAndReplace(name) + ",");
                     sql.append(Utils.addSqlStrAndReplace(bundel) + ",");
                     sql.append(Utils.addSqlStrAndReplace(groups) + ",");
@@ -274,23 +293,20 @@ public class ProcessStopMapperProvider {
         String[] pageIds = (String[]) map.get("pageIds");
         String sqlStr = "select 0";
         if (StringUtils.isNotBlank(processId) && null != pageIds && pageIds.length > 0) {
-            SQL sql = new SQL();
-            sql.SELECT("*");
-            sql.FROM("FLOW_PROCESS_STOP");
-            sql.WHERE("enable_flag = 1");
-            sql.WHERE("FK_FLOW_PROCESS_ID = " + Utils.addSqlStr(processId));
-            String pageIdsStr = "";
-            for (int i = 0; i < pageIds.length; i++) {
-                if (StringUtils.isNotBlank(pageIds[i])) {
-                    pageIdsStr += Utils.addSqlStr(pageIds[i]);
-                    if (i < pageIds.length - 1) {
-                        pageIdsStr += ",";
-                    }
-                }
-            }
-            sql.WHERE("PAGE_ID IN ( " + pageIdsStr + ")");
+            String pageIdsStr = Utils.strArrayToStr(pageIds);
+            if (StringUtils.isNotBlank(pageIdsStr)) {
 
-            sqlStr = sql.toString() + ";";
+                pageIdsStr = pageIdsStr.replace(",", "','");
+                pageIdsStr = "'" + pageIdsStr + "'";
+                SQL sql = new SQL();
+                sql.SELECT("*");
+                sql.FROM("FLOW_PROCESS_STOP");
+                sql.WHERE("enable_flag = 1");
+                sql.WHERE("FK_FLOW_PROCESS_ID = " + Utils.addSqlStr(processId));
+                sql.WHERE("PAGE_ID IN ( " + pageIdsStr + ")");
+
+                sqlStr = sql.toString() + ";";
+            }
         }
         return sqlStr;
     }

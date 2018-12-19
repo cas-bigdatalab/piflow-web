@@ -65,7 +65,6 @@ public class SysUserServiceImpl implements ISysUserService {
                 sysUser.setLastUpdateDttm(new Date());
                 sysUser.setLastUpdateUser("system");
                 sysUser.setEnableFlag(true);
-                sysUser.setVersion(0L);
                 sysUser.setUsername(username);
                 sysUser.setPassword(password);
                 sysUser.setName(sysUserVo.getName());

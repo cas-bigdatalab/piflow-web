@@ -52,7 +52,6 @@ public class StopMapperTest extends ApplicationTests {
 		stops.setEnableFlag(true);
 		stops.setLastUpdateDttm(new Date());
 		stops.setLastUpdateUser("test");
-		stops.setVersion(0L);
 
 		// 测试stops组件
 		stops.setName("test_stops_" + num);

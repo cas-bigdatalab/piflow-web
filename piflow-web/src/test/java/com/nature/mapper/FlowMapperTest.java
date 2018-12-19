@@ -38,7 +38,6 @@ public class FlowMapperTest extends ApplicationTests {
 		flow.setCrtDttm(new Date());
 		flow.setLastUpdateUser("Nature");
 		flow.setLastUpdateDttm(new Date());
-		flow.setVersion(0L);
 		flow.setEnableFlag(true);
 		//flow.setAppId("kongkong");
 		flow.setUuid(flow.getId());

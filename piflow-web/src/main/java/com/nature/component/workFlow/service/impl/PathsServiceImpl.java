@@ -96,7 +96,6 @@ public class PathsServiceImpl implements IPathsService {
             Paths pathsById = pathsMapper.getPathsById(pathsVo.getId());
             if (null != pathsById) {
                 BeanUtils.copyProperties(pathsVo, pathsById);
-                pathsById.setVersion(pathsById.getVersion() + 1);
                 pathsById.setLastUpdateDttm(new Date());
                 pathsById.setLastUpdateUser("-1");
                 int i = pathsMapper.updatePaths(pathsById);
@@ -118,7 +117,6 @@ public class PathsServiceImpl implements IPathsService {
 					paths.setEnableFlag(true);
 					paths.setLastUpdateDttm(new Date());
 					paths.setLastUpdateUser("wdd");
-					paths.setVersion(0L);
 					list.add(paths);
 				}
 			}

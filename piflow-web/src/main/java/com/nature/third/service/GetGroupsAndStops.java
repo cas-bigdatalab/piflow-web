@@ -76,7 +76,6 @@ public class GetGroupsAndStops {
                 stopGroup.setLastUpdateUser("Nature");
                 stopGroup.setEnableFlag(true);
                 stopGroup.setLastUpdateDttm(new Date());
-                stopGroup.setVersion(0L);
                 stopGroup.setGroupName(string);
                 int insertStopGroup = stopGroupMapper.insertStopGroup(stopGroup);
                 a += insertStopGroup;
@@ -171,7 +170,6 @@ public class GetGroupsAndStops {
                     stopsTemplate.setEnableFlag(true);
                     stopsTemplate.setLastUpdateUser("Nature");
                     stopsTemplate.setLastUpdateDttm(new Date());
-                    stopsTemplate.setVersion(0L);
                     stopsTemplate.setBundel(bundle);
                     stopsTemplate.setDescription(Utils.replaceString(description));
                     stopsTemplate.setGroups(Utils.replaceString(groups));
@@ -201,7 +199,6 @@ public class GetGroupsAndStops {
                             PropertyTemplate.setEnableFlag(true);
                             PropertyTemplate.setLastUpdateUser("wdd");
                             PropertyTemplate.setLastUpdateDttm(new Date());
-                            PropertyTemplate.setVersion(0L);
                             PropertyTemplate.setDefaultValue(Utils.replaceString(jsonArray.getJSONObject(i).getString("defaultValue")));
                             PropertyTemplate.setAllowableValues(Utils.replaceString(jsonArray.getJSONObject(i).getString("allowableValues")));
                             PropertyTemplate.setDescription(Utils.replaceString(jsonArray.getJSONObject(i).getString("description")));

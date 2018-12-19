@@ -200,16 +200,11 @@ public class ProcessMapperProvider {
         String[] appIDs = map.get("appIDs");
         if (null != appIDs && appIDs.length > 0) {
             SQL sql = new SQL();
-            String appIDsStr = "";
-            for (int i = 0; i < appIDs.length; i++) {
-                if (StringUtils.isNotBlank(appIDs[i])) {
-                    appIDsStr += Utils.addSqlStr(appIDs[i]);
-                    if (i < appIDs.length - 1) {
-                        appIDsStr += ",";
-                    }
-                }
-            }
+            String appIDsStr = Utils.strArrayToStr(appIDs);
             if (StringUtils.isNotBlank(appIDsStr)) {
+                appIDsStr = appIDsStr.replace(",","','");
+                appIDsStr = "'" + appIDsStr + "'";
+
                 sql.SELECT("*");
                 sql.FROM("FLOW_PROCESS");
                 sql.WHERE("enable_flag = 1");

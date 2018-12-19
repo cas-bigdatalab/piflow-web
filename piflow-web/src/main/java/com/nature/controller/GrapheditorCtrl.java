@@ -101,7 +101,6 @@ public class GrapheditorCtrl {
             flow.setLastUpdateDttm(new Date());
             flow.setLastUpdateUser("Add");
             flow.setEnableFlag(true);
-            flow.setVersion(0L);
             flow.setName("default");
             MxGraphModel mxGraphModel = new MxGraphModel();
             mxGraphModel.setId(Utils.getUUID32());
@@ -110,7 +109,6 @@ public class GrapheditorCtrl {
             mxGraphModel.setLastUpdateDttm(new Date());
             mxGraphModel.setLastUpdateUser("Add");
             mxGraphModel.setEnableFlag(true);
-            mxGraphModel.setVersion(0L);
             flow.setMxGraphModel(mxGraphModel);
             int addFlow = flowServiceImpl.addFlow(flow);
             if (addFlow > 0) {

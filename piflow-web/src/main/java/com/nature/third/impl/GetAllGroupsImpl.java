@@ -54,7 +54,6 @@ public class GetAllGroupsImpl implements IGetAllGroups {
 			stopGroup.setLastUpdateUser("Nature");
 			stopGroup.setEnableFlag(true);
 			stopGroup.setLastUpdateDttm(new Date());
-			stopGroup.setVersion(0L);
 			stopGroup.setGroupName(string);
 			int insertStopGroup = stopGroupMapper.insertStopGroup(stopGroup);
 			a+=insertStopGroup;

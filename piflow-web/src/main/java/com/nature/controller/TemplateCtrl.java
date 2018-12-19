@@ -107,7 +107,6 @@ public class TemplateCtrl {
 			        template.setId(Utils.getUUID32());
 			    	template.setCrtDttm(new Date());
 					template.setCrtUser("wdd");
-					template.setVersion(0L);
 					template.setEnableFlag(true);
 					template.setLastUpdateUser("-1");
 					template.setLastUpdateDttm(new Date());
@@ -193,7 +192,6 @@ public class TemplateCtrl {
 		        template.setId(Utils.getUUID32());
 				template.setCrtDttm(new Date());
 				template.setCrtUser("wdd");
-				template.setVersion(0L);
 				template.setEnableFlag(true);
 				template.setLastUpdateUser("-1");
 				template.setLastUpdateDttm(new Date());

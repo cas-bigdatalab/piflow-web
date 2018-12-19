@@ -35,7 +35,6 @@ public class MxGeometryMapperTest extends ApplicationTests {
 		mxGeometry.setEnableFlag(true);
 		mxGeometry.setLastUpdateUser("Nature");
 		mxGeometry.setLastUpdateDttm(new Date());
-		mxGeometry.setVersion(0L);
 		mxGeometry.setAs("as");
 		mxGeometry.setHeight("111");
 		mxGeometry.setRelative("relative");

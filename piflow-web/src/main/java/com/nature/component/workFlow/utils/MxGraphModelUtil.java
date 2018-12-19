@@ -176,7 +176,6 @@ public class MxGraphModelUtil {
             paths.setLastUpdateDttm(new Date());
             paths.setLastUpdateUser("Add");
             paths.setEnableFlag(true);
-            paths.setVersion(0L);
             paths.setFrom(mxCellVo.getSource());
             paths.setTo(mxCellVo.getTarget());
             paths.setPageId(mxCellVo.getPageId());

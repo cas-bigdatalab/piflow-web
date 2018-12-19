@@ -228,7 +228,6 @@ public class ProcessServiceImpl implements IProcessService {
                             // 修改flow信息
                             processById.setLastUpdateUser("update");
                             processById.setLastUpdateDttm(new Date());
-                            processById.setVersion(processById.getVersion() + 1);
                             processById.setProgress(progressNums + "");
                             processById.setState(ProcessState.selectGender(thirdFlowInfoVo.getState()));
                             processById.setProcessId(thirdFlowInfoVo.getPid());
@@ -313,7 +312,6 @@ public class ProcessServiceImpl implements IProcessService {
                                 // 修改flow信息
                                 process.setLastUpdateUser("update");
                                 process.setLastUpdateDttm(new Date());
-                                process.setVersion(process.getVersion() + 1);
                                 process.setProgress(progressNums + "");
                                 process.setState(ProcessState.selectGender(flowProgress.getState()));
                                 process.setName(flowProgress.getName());
@@ -347,7 +345,6 @@ public class ProcessServiceImpl implements IProcessService {
                 BeanUtils.copyProperties("processVo", "processById");
                 processById.setLastUpdateUser("update");
                 processById.setLastUpdateDttm(new Date());
-                processById.setVersion(processById.getVersion() + 1);
                 processById.setState(processVo.getState());
                 processById.setProgress(processVo.getProgress());
                 processById.setStartTime(processVo.getStartTime());
@@ -408,7 +405,6 @@ public class ProcessServiceImpl implements IProcessService {
                 processCopy.setCrtDttm(new Date());
                 processCopy.setLastUpdateUser("Copy");
                 processCopy.setLastUpdateDttm(new Date());
-                processCopy.setVersion(0L);
                 processCopy.setEnableFlag(true);
                 processCopy.setState(ProcessState.STARTED);
                 processCopy.setName(process.getName());
@@ -431,7 +427,6 @@ public class ProcessServiceImpl implements IProcessService {
                             processPathCopy.setCrtUser("Copy");
                             processPathCopy.setLastUpdateDttm(new Date());
                             processPathCopy.setLastUpdateUser("Copy");
-                            processPathCopy.setVersion(0L);
                             processPathCopy.setEnableFlag(true);
                             processPathCopy.setFrom(processPath.getFrom());
                             processPathCopy.setTo(processPath.getTo());
@@ -455,7 +450,6 @@ public class ProcessServiceImpl implements IProcessService {
                             processStopCopy.setCrtUser("Copy");
                             processStopCopy.setLastUpdateDttm(new Date());
                             processStopCopy.setLastUpdateUser("Copy");
-                            processStopCopy.setVersion(0L);
                             processStopCopy.setEnableFlag(true);
                             processStopCopy.setBundel(processStop.getBundel());
                             processStopCopy.setName(processStop.getName());
@@ -479,7 +473,6 @@ public class ProcessServiceImpl implements IProcessService {
                                         processStopPropertyCopy.setCrtUser("Copy");
                                         processStopPropertyCopy.setLastUpdateDttm(new Date());
                                         processStopPropertyCopy.setLastUpdateUser("Copy");
-                                        processStopPropertyCopy.setVersion(0L);
                                         processStopPropertyCopy.setEnableFlag(true);
                                         processStopPropertyCopy.setCustomValue(processStopProperty.getCustomValue());
                                         processStopPropertyCopy.setName(processStopProperty.getName());
@@ -533,7 +526,6 @@ public class ProcessServiceImpl implements IProcessService {
                 process.setLastUpdateDttm(new Date());
                 process.setLastUpdateUser("Add");
                 process.setEnableFlag(true);
-                process.setVersion(0L);
                 // 取出flow的画板信息
                 MxGraphModel mxGraphModel = flowById.getMxGraphModel();
                 // flow画板信息转为ViewXml
@@ -562,7 +554,6 @@ public class ProcessServiceImpl implements IProcessService {
                             processStop.setLastUpdateDttm(new Date());
                             processStop.setLastUpdateUser("Add");
                             processStop.setEnableFlag(true);
-                            processStop.setVersion(0L);
                             // 关联外键
                             processStop.setProcess(process);
                             // 取出stops的属性
@@ -584,7 +575,6 @@ public class ProcessServiceImpl implements IProcessService {
                                         processStopProperty.setLastUpdateDttm(new Date());
                                         processStopProperty.setLastUpdateUser("Add");
                                         processStopProperty.setEnableFlag(true);
-                                        processStopProperty.setVersion(0L);
                                         // 关联外键
                                         processStopProperty.setProcessStop(processStop);
                                         processStopPropertyList.add(processStopProperty);
@@ -616,7 +606,6 @@ public class ProcessServiceImpl implements IProcessService {
                             processPath.setLastUpdateDttm(new Date());
                             processPath.setLastUpdateUser("Add");
                             processPath.setEnableFlag(true);
-                            processPath.setVersion(0L);
                             // 关联外键
                             processPath.setProcess(process);
                             processPathList.add(processPath);

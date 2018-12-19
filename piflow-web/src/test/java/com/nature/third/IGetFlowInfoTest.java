@@ -48,7 +48,6 @@ public class IGetFlowInfoTest extends ApplicationTests {
 		db.setStartTime(DateUtils.strCstToDate(startFlow2.getStartTime()));
 		db.setCrtDttm(new Date());
 		db.setCrtUser("wdd");
-		db.setVersion(0L);
 		db.setEnableFlag(true);
 		db.setLastUpdateUser("王栋栋");
 		db.setLastUpdateDttm(new Date());

@@ -55,4 +55,19 @@ public class Utils {
         str = str.replace("'", "''");
         return str;
     }
+
+    public static String strArrayToStr(String[] strArray) {
+        String str = "";
+        if (null != strArray && strArray.length > 0) {
+            for (int i = 0; i < strArray.length; i++) {
+                if (StringUtils.isNotBlank(strArray[i])) {
+                    str += strArray[i];
+                    if (i < strArray.length - 1) {
+                        str += ",";
+                    }
+                }
+            }
+        }
+        return str;
+    }
 }

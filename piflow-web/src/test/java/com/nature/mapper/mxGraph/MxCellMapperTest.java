@@ -43,7 +43,6 @@ public class MxCellMapperTest extends ApplicationTests {
 		mxCell.setEnableFlag(true);
 		mxCell.setLastUpdateUser("Nature");
 		mxCell.setLastUpdateDttm(new Date());
-		mxCell.setVersion(0L);
 		mxCell.setPageId("12");
 		mxCell.setParent("3");
 		mxCell.setStyle("dafd");
@@ -60,7 +59,6 @@ public class MxCellMapperTest extends ApplicationTests {
 		mxGeometry.setEnableFlag(true);
 		mxGeometry.setLastUpdateUser("Nature");
 		mxGeometry.setLastUpdateDttm(new Date());
-		mxGeometry.setVersion(0L);
 		mxGeometry.setAs("as");
 		mxGeometry.setHeight("111");
 		mxGeometry.setRelative("relative");

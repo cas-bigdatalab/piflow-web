@@ -156,7 +156,6 @@ public class FlowCtrl {
         flow.setLastUpdateDttm(new Date());
         flow.setLastUpdateUser("Add");
         flow.setEnableFlag(true);
-        flow.setVersion(0L);
         flow.setUuid(id);
 
         MxGraphModel mxGraphModel = new MxGraphModel();
@@ -167,7 +166,6 @@ public class FlowCtrl {
         mxGraphModel.setLastUpdateDttm(new Date());
         mxGraphModel.setLastUpdateUser("Add");
         mxGraphModel.setEnableFlag(true);
-        mxGraphModel.setVersion(0L);
         flow.setMxGraphModel(mxGraphModel);
         int addFlow = flowServiceImpl.addFlow(flow);
         if (addFlow > 0) {
@@ -192,7 +190,6 @@ public class FlowCtrl {
         flow.setDescription(flow.getDescription());
         flow.setLastUpdateDttm(new Date());
         flow.setLastUpdateUser("ddw");
-        flow.setVersion(0L + 1);
         int result = flowServiceImpl.updateFlow(flow);
         return result;
     }

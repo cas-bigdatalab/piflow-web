@@ -49,7 +49,6 @@ public class PathsUtil {
                     paths.setCrtUser("add");
                     paths.setLastUpdateDttm(new Date());
                     paths.setLastUpdateUser("add");
-                    paths.setVersion(0L);
                     paths.setEnableFlag(true);
                     pathsList.add(paths);
                 }

@@ -144,14 +144,33 @@ public class ProcessStopPropertyMapperProvider {
                     Boolean sensitive = processStopProperty.getSensitive();
                     ProcessStop processStop = processStopProperty.getProcessStop();
 
+                    if (null == crtDttm) {
+                        crtDttm = new Date();
+                    }
+                    if (null != crtUser) {
+                        crtUser = "-1";
+                    }
+                    if (null == lastUpdateDttm) {
+                        lastUpdateDttm = new Date();
+                    }
+                    if (null != lastUpdateUser) {
+                        lastUpdateUser = "-1";
+                    }
+                    if (null == version) {
+                        version = 0L;
+                    }
+                    if (null != enableFlag) {
+                        enableFlag = true;
+                    }
+
                     sql.append("(");
                     sql.append(Utils.addSqlStrAndReplace(id) + ",");
                     sql.append(Utils.addSqlStrAndReplace(DateUtils.dateTimesToStr(crtDttm)) + ",");
                     sql.append(Utils.addSqlStrAndReplace(crtUser) + ",");
                     sql.append(Utils.addSqlStrAndReplace(DateUtils.dateTimesToStr(lastUpdateDttm)) + ",");
                     sql.append(Utils.addSqlStrAndReplace(lastUpdateUser) + ",");
-                    sql.append((version == null ? 0 : version) + ",");
-                    sql.append((enableFlag == null ? 0 : (enableFlag ? 1 : 0)) + ",");
+                    sql.append(version + ",");
+                    sql.append((enableFlag ? 1 : 0) + ",");
                     sql.append(Utils.addSqlStrAndReplace(name) + ",");
                     sql.append(Utils.addSqlStrAndReplace(displayName) + ",");
                     sql.append(Utils.addSqlStrAndReplace(description) + ",");

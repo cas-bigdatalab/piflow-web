@@ -101,7 +101,6 @@ public class GetAllStopsImpl implements IGetAllStops {
 				stopsTemplate.setEnableFlag(true);
 				stopsTemplate.setLastUpdateUser("Nature");
 				stopsTemplate.setLastUpdateDttm(new Date());
-				stopsTemplate.setVersion(0L);
 				stopsTemplate.setBundel(bundle);
 				stopsTemplate.setDescription(description);
 				stopsTemplate.setGroups(groups);
@@ -131,7 +130,6 @@ public class GetAllStopsImpl implements IGetAllStops {
 					PropertyTemplate.setEnableFlag(true);
 					PropertyTemplate.setLastUpdateUser("wdd");
 					PropertyTemplate.setLastUpdateDttm(new Date());
-					PropertyTemplate.setVersion(0L);
 					PropertyTemplate.setDefaultValue(jsonArray.getJSONObject(i).getString("defaultValue"));
 					PropertyTemplate.setAllowableValues(jsonArray.getJSONObject(i).getString("allowableValues"));
 					PropertyTemplate.setDescription(jsonArray.getJSONObject(i).getString("description"));

@@ -97,7 +97,6 @@ public class FlowAndStopsTemplateVoServiceImpl implements IFlowAndStopsTemplateV
 				stop.setCrtUser("wdd");
 				stop.setLastUpdateUser("wdd");
 				stop.setFlow(flow);
-				stop.setVersion(0L);
 				stop.setCheckpoint(stopsVo.getIsCheckpoint());
 				int addStops = stopsMapper.addStops(stop);
 				logger.info("addStops影响行数"+addStops);
@@ -112,7 +111,6 @@ public class FlowAndStopsTemplateVoServiceImpl implements IFlowAndStopsTemplateV
 								propertyModel.setId(Utils.getUUID32());
 								propertyModel.setCrtUser("wdd");
 								propertyModel.setLastUpdateUser("wdd");
-								propertyModel.setVersion(0L);
 								list.add(propertyModel);
 							}
 						}
@@ -144,7 +142,6 @@ public class FlowAndStopsTemplateVoServiceImpl implements IFlowAndStopsTemplateV
 				stopTemplate.setId(Utils.getUUID32());
 				stopTemplate.setCrtDttm(new Date());
 				stopTemplate.setIsCheckpoint(stops.getCheckpoint());
-				stopTemplate.setVersion(0L);
 				flowAndStopsTemplateVoMapper.addStops(stopTemplate);
 				if (null != stops.getProperties()) {
 					List<Property> properties = stops.getProperties();
@@ -155,7 +152,6 @@ public class FlowAndStopsTemplateVoServiceImpl implements IFlowAndStopsTemplateV
 							propertyVo.setStopsVo(stopTemplate);
 							propertyVo.setId(Utils.getUUID32());
 							propertyVo.setCrtDttm(new Date());
-							propertyVo.setVersion(0L);
 							list.add(propertyVo);
 						}
 					}

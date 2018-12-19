@@ -63,7 +63,6 @@ public class StopsServiceImpl implements IStopsService {
             Stops stopsById = stopsMapper.getStopsById(stopsVo.getId());
             if (null != stopsById) {
                 BeanUtils.copyProperties(stopsVo, stopsById);
-                stopsById.setVersion(stopsById.getVersion() + 1);
                 stopsById.setLastUpdateDttm(new Date());
                 stopsById.setLastUpdateUser("-1");
                 int i = stopsMapper.updateStops(stopsById);
@@ -92,7 +91,6 @@ public class StopsServiceImpl implements IStopsService {
             if(null!=stopsById){
                 stopsById.setLastUpdateUser("updateCheckpoint");
                 stopsById.setLastUpdateDttm(new Date());
-                stopsById.setVersion(stopsById.getVersion()+1);
                 stopsById.setCheckpoint(isCheckpoint);
                 return stopsMapper.updateStops(stopsById);
             }
@@ -107,7 +105,6 @@ public class StopsServiceImpl implements IStopsService {
               if(null!=stopsById){
                   stopsById.setLastUpdateUser("updatestopName");
                   stopsById.setLastUpdateDttm(new Date());
-                  stopsById.setVersion(stopsById.getVersion()+1);
                   stopsById.setName(stopName);
                   return stopsMapper.updateStops(stopsById);
               }

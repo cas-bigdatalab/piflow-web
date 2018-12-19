@@ -141,14 +141,32 @@ public class ProcessPathMapperProvider {
                     String pageId = processPath.getPageId();
                     Process process = processPath.getProcess();
 
+                    if (null == crtDttm) {
+                        crtDttm = new Date();
+                    }
+                    if (StringUtils.isBlank(crtUser)) {
+                        crtUser = "-1";
+                    }
+                    if (null == lastUpdateDttm) {
+                        lastUpdateDttm = new Date();
+                    }
+                    if (StringUtils.isBlank(lastUpdateUser)) {
+                        lastUpdateUser = "-1";
+                    }
+                    if (null != version) {
+                        version = 0L;
+                    }
+                    if (null != enableFlag) {
+                        enableFlag = true;
+                    }
                     sql.append("(");
                     sql.append(Utils.addSqlStrAndReplace(id) + ",");
                     sql.append(Utils.addSqlStrAndReplace(DateUtils.dateTimesToStr(crtDttm)) + ",");
                     sql.append(Utils.addSqlStrAndReplace(crtUser) + ",");
                     sql.append(Utils.addSqlStrAndReplace(DateUtils.dateTimesToStr(lastUpdateDttm)) + ",");
                     sql.append(Utils.addSqlStrAndReplace(lastUpdateUser) + ",");
-                    sql.append((version == null ? 0 : version) + ",");
-                    sql.append((enableFlag == null ? 0 : (enableFlag ? 1 : 0)) + ",");
+                    sql.append(version + ",");
+                    sql.append((enableFlag ? 1 : 0) + ",");
                     sql.append(Utils.addSqlStrAndReplace(from) + ",");
                     sql.append(Utils.addSqlStrAndReplace(to) + ",");
                     sql.append(Utils.addSqlStrAndReplace(outport) + ",");
@@ -252,8 +270,7 @@ public class ProcessPathMapperProvider {
 
                 // 处理其他字段
                 if (null != enableFlag) {
-                    int enableFlagInt = enableFlag ? 1 : 0;
-                    sql.SET("ENABLE_FLAG = " + enableFlagInt);
+                    sql.SET("ENABLE_FLAG = " + (enableFlag ? 1 : 0));
                 }
                 if (StringUtils.isNotBlank(to)) {
                     sql.SET("LINE_TO = " + Utils.addSqlStr(to));

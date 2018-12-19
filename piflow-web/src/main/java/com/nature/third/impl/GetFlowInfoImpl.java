@@ -99,7 +99,6 @@ public class GetFlowInfoImpl implements IGetFlowInfo {
                 add.setProgress(progress.getProgress());
                 add.setCrtDttm(new Date());
                 add.setCrtUser("wdd");
-                add.setVersion(0L);
                 add.setEnableFlag(true);
                 add.setLastUpdateUser("-1");
                 add.setLastUpdateDttm(new Date());
@@ -115,7 +114,6 @@ public class GetFlowInfoImpl implements IGetFlowInfo {
         kong.setId(appId);
         kong.setCrtDttm(new Date());
         kong.setCrtUser("wdd");
-        kong.setVersion(0L);
         kong.setEnableFlag(true);
         kong.setLastUpdateUser("-1");
         kong.setProgress("0");

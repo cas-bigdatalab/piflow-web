@@ -35,7 +35,6 @@ public class MxGraphModelMapperTest extends ApplicationTests {
 		mxGraphModel.setEnableFlag(true);
 		mxGraphModel.setLastUpdateUser("Nature");
 		mxGraphModel.setLastUpdateDttm(new Date());
-		mxGraphModel.setVersion(0L);
 		mxGraphModel.setDx("dx");
 		mxGraphModel.setDy("dy");
 		mxGraphModel.setGrid("grid");

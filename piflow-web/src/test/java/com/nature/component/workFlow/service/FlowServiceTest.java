@@ -37,7 +37,6 @@ public class FlowServiceTest extends ApplicationTests {
 		flow.setLastUpdateUser("Nature");
 		flow.setUuid(flow.getId());
 		flow.setName("testFlow");
-		flow.setVersion(0L);
 		// StatefulRtnBase addFlow = flowService.addFlow(MxGraphModel mxGraphModel,
 		// String flowId);
 		// logger.info(addFlow + "");
