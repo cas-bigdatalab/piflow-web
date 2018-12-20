@@ -1,12 +1,5 @@
 package com.nature.provider;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.ibatis.jdbc.SQL;
-
 import com.nature.base.util.DateUtils;
 import com.nature.base.util.Utils;
 import com.nature.common.Eunm.PortType;
@@ -14,6 +7,12 @@ import com.nature.component.template.model.FlowTemplateModel;
 import com.nature.component.template.model.PropertyTemplateModel;
 import com.nature.component.template.model.StopTemplateModel;
 import com.nature.component.workFlow.model.Template;
+import org.apache.commons.lang.StringUtils;
+import org.apache.ibatis.jdbc.SQL;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public class FlowAndStopsTemplateVoMapperProvider {
 
@@ -66,7 +65,7 @@ public class FlowAndStopsTemplateVoMapperProvider {
                 sqlStrBuffer.append("(");
                 sqlStrBuffer.append(Utils.addSqlStr(Utils.replaceString(id)) + ",");
                 sqlStrBuffer.append(Utils.addSqlStr((crtDttm == null ? "" : DateUtils.dateTimesToStr(crtDttm))) + ",");
-                sqlStrBuffer.append((enableFlag == null ? "" : (enableFlag ? 1 : 0)) + ",");
+                sqlStrBuffer.append((enableFlag == null ? "1" : (enableFlag ? 1 : 0)) + ",");
                 sqlStrBuffer.append(Utils.addSqlStr((Utils.replaceString(name))) + ",");
                 sqlStrBuffer.append(Utils.addSqlStr((Utils.replaceString(displayName))) + ",");
                 sqlStrBuffer.append(Utils.addSqlStr((Utils.replaceString(description))) + ",");
@@ -74,9 +73,9 @@ public class FlowAndStopsTemplateVoMapperProvider {
                 sqlStrBuffer.append(Utils.addSqlStr((Utils.replaceString(allowableValues))) + ",");
                 sqlStrBuffer.append((required ? 1 : 0) + ",");
                 sqlStrBuffer.append((sensitive ? 1 : 0) + ",");
-                sqlStrBuffer.append((version == null ? "" : 0) + ",");
+                sqlStrBuffer.append((version == null ? "0" : version) + ",");
                 sqlStrBuffer.append(Utils.addSqlStr((stops == null ? "" : stops.getId())) + "," );
-                sqlStrBuffer.append((isSelect ? 1 : 0));
+                sqlStrBuffer.append((isSelect == null ? 0 : isSelect));
                 if (i != propertyList.size()) {
                     sqlStrBuffer.append("),");
                 } else {

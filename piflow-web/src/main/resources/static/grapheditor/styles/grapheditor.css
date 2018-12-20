@@ -305,7 +305,8 @@ div.mxWindow .geButton {
 	filter:none !important;
 }
 .geDiagramBackdrop {
-	background-color: #ebebeb;
+	/* 画板背景色设置白色; */
+	/* background-color: #ebebeb; */
 	border-style: solid;
 	border-color: #e5e5e5;
 	border-width: 1px 0px 0px 1px;

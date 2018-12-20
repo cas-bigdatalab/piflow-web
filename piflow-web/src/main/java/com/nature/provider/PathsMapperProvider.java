@@ -1,16 +1,15 @@
 package com.nature.provider;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.jdbc.SQL;
-
 import com.nature.base.util.DateUtils;
 import com.nature.base.util.Utils;
 import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.model.Paths;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.jdbc.SQL;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public class PathsMapperProvider {
 
@@ -68,8 +67,8 @@ public class PathsMapperProvider {
                     sql.append(Utils.addSqlStr((lastUpdateDttm == null ? "" : DateUtils.dateTimesToStr(lastUpdateDttm)))
                             + ",");
                     sql.append(Utils.addSqlStr((lastUpdateUser == null ? "" : lastUpdateUser)) + ",");
-                    sql.append((version == null ? "" : 0) + ",");
-                    sql.append((enableFlag == null ? "" : (enableFlag ? 1 : 0)) + ",");
+                    sql.append((version == null ? "0" : version) + ",");
+                    sql.append((enableFlag == null ? "1" : (enableFlag ? 1 : 0)) + ",");
                     sql.append(Utils.addSqlStr((from == null ? "" : from)) + ",");
                     sql.append(Utils.addSqlStr((to == null ? "" : to)) + ",");
                     sql.append(Utils.addSqlStr((outport == null ? "" : outport)) + ",");

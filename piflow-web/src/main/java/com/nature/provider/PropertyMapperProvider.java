@@ -1,16 +1,15 @@
 package com.nature.provider;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.jdbc.SQL;
-
 import com.nature.base.util.DateUtils;
 import com.nature.base.util.Utils;
 import com.nature.component.workFlow.model.Property;
 import com.nature.component.workFlow.model.Stops;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.jdbc.SQL;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public class PropertyMapperProvider {
 
@@ -72,8 +71,8 @@ public class PropertyMapperProvider {
                 sqlStrBuffer.append(Utils.addSqlStr((Utils.replaceString(crtUser))) + ",");
                 sqlStrBuffer.append(Utils.addSqlStr((lastUpdateDttm == null ? "" : DateUtils.dateTimesToStr(lastUpdateDttm))) + ",");
                 sqlStrBuffer.append(Utils.addSqlStr((Utils.replaceString(lastUpdateUser))) + ",");
-                sqlStrBuffer.append((version == null ? "" : 0) + ",");
-                sqlStrBuffer.append((enableFlag == null ? "" : (enableFlag ? 1 : 0)) + ",");
+                sqlStrBuffer.append((version == null ? "0" : version) + ",");
+                sqlStrBuffer.append((enableFlag == null ? "1" : (enableFlag ? 1 : 0)) + ",");
                 sqlStrBuffer.append(Utils.addSqlStr((Utils.replaceString(name))) + ",");
                 sqlStrBuffer.append(Utils.addSqlStr((Utils.replaceString(displayName))) + ",");
                 sqlStrBuffer.append(Utils.addSqlStr((Utils.replaceString(description))) + ",");
