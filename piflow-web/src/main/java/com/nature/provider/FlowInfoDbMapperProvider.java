@@ -118,7 +118,7 @@ public class FlowInfoDbMapperProvider {
             Date startTime = flow.getStartTime();
             Flow flow1 = flow.getFlow();
             SQL sql = new SQL();
-            // INSERT_INTO括号中为数据库表名
+            // UPDATE括号中为数据库表名
             sql.UPDATE("flow_info");
             // SET中的第一个字符串为数据库中表对应的字段名
             // 除数字类型的字段外其他类型必须加单引号
@@ -140,8 +140,7 @@ public class FlowInfoDbMapperProvider {
 
             // 处理其他字段
             if (null != enableFlag) {
-                int enableFlagInt = enableFlag ? 1 : 0;
-                sql.SET("ENABLE_FLAG = " + enableFlagInt);
+                sql.SET("ENABLE_FLAG = " + (enableFlag ? 1 : 0));
             }
             if (StringUtils.isNotBlank(state)) {
                 sql.SET("state = " + Utils.addSqlStr(state));

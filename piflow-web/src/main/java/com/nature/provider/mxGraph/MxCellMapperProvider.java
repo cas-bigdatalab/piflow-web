@@ -154,8 +154,7 @@ public class MxCellMapperProvider {
 
             // 处理其他字段
             if (null != enableFlag) {
-                int enableFlagInt = enableFlag ? 1 : 0;
-                newSQL.SET("ENABLE_FLAG = " + enableFlagInt);
+                newSQL.SET("ENABLE_FLAG = " + (enableFlag ? 1 : 0));
             }
             if (StringUtils.isNotBlank(pageId)) {
                 newSQL.SET("MX_PAGEID = " + Utils.addSqlStr(pageId));

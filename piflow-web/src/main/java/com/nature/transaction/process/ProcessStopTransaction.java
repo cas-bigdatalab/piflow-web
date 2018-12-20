@@ -44,29 +44,21 @@ public class ProcessStopTransaction {
         return processStopList;
     }
 
-    public ProcessStop updateProcessStopByProcessId(ProcessStopVo processStopVo) {
-        ProcessStop processStop = null;
-        if (null != processStopVo) {
-            ProcessVo processVo = processStopVo.getProcessVo();
-            String name = processStopVo.getName();
-            if (StringUtils.isNotBlank(name) && null != processVo) {
-                String processVoID = processVo.getId();
-                if (StringUtils.isNotBlank(processVoID)) {
-                    processStop = processStopMapper.getProcessStopByNameAndPid(processVoID, name);
-                    if (null != processStop) {
-                        processStop.setName(processStopVo.getName());
-                        processStop.setState(StopState.selectGender(processStopVo.getState()));
-                        processStop.setStartTime(processStopVo.getStartTime());
-                        processStop.setEndTime(processStopVo.getEndTime());
-                        int updateProcessStop = processStopMapper.updateProcessStop(processStop);
-                        if (updateProcessStop <= 0) {
-                            processStop = null;
-                        }
-                    }
-                }
-            }
-
+    public int updateProcessStop(ProcessStop processStop) {
+        int updateProcessStop = 0;
+        if (null != processStop) {
+            updateProcessStop = processStopMapper.updateProcessStop(processStop);
         }
-        return processStop;
+        return updateProcessStop;
+    }
+
+    /**
+     * 根据processId和processStop的name查询processStop
+     * @param processID
+     * @param name
+     * @return
+     */
+    public ProcessStop getProcessStopByNameAndPid(String processID, String name) {
+        return processStopMapper.getProcessStopByNameAndPid(processID, name);
     }
 }

@@ -54,19 +54,19 @@ public class ProcessMapperProvider {
             if (null == crtDttm) {
                 crtDttm = new Date();
             }
-            if (null != crtUser) {
+            if (StringUtils.isBlank(crtUser)) {
                 crtUser = "-1";
             }
             if (null == lastUpdateDttm) {
                 lastUpdateDttm = new Date();
             }
-            if (null != lastUpdateUser) {
+            if (StringUtils.isBlank(lastUpdateUser)) {
                 lastUpdateUser = "-1";
             }
             if (null == version) {
                 version = 0L;
             }
-            if (null != enableFlag) {
+            if (null == enableFlag) {
                 enableFlag = true;
             }
             sql.VALUES("ID", Utils.addSqlStrAndReplace(id));

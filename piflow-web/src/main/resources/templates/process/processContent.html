@@ -61,7 +61,7 @@
                 </span>
             </span>
             <span th:case="*" style="color: #004849">
-                <a style="color: #004849">ProcessList</a>
+                <a style="color: #004849" th:href="@{/process/getProcessList}">ProcessList</a>
             </span>
         </span>
         <span style="color: #004849">»</span>
@@ -192,7 +192,7 @@
                 var imgStyleWidth = 66;
                 var imgStyleHeight = 66;
                 if (e) {
-                    var selectedStop = $(e).find('image[name="stopImg"]');
+                    var selectedStop = $(e).find('#stopImg' + pageId);
                     imgStyleX = $(selectedStop).attr('x');
                     imgStyleY = $(selectedStop).attr('y');
                     imgStyleWidth = $(selectedStop).attr('width');
@@ -351,9 +351,9 @@
                     runProcess(true);
                 } else {
                     checkpointShow.modal('show');
+                    startFlow.show();
+                    fullScreen.hide();
                 }
-                startFlow.show();
-                fullScreen.hide();
             }
         });
 
@@ -361,8 +361,10 @@
 
     //运行
     function runProcess(flag) {
+        fullScreen.show();
         checkpointShow.modal('hide');
         if (!flag) {
+            fullScreen.hide();
             return;
         }
         startFlow.hide();
@@ -373,7 +375,6 @@
             }
             checkpointStr = (checkpointStr + $(this).val());
         });
-        fullScreen.show();
         $.ajax({
             cache: true,//保留缓存数据
             type: "POST",//为post请求
@@ -397,7 +398,7 @@
                     alert(dataMap.errMsg);
                     window.location.href = "/piflow-web/process/getProcessById?processId=" + dataMap.processId;
                 } else {
-                    alert("启动失败");
+                    alert(dataMap.errMsg);
                     startFlow.show();
                     fullScreen.hide();
                 }
@@ -566,6 +567,34 @@
     }
 
     function monitor(pageId, processStopVoState) {
+        var stopFailShow = $("#stopFailShow" + pageId);
+        var stopOkShow = $("#stopOkShow" + pageId);
+        var stopLoadingShow = $("#stopLoadingShow" + pageId);
+        var stopImgChange = $("#stopImg" + pageId);
+        if(processStopVoState){
+            if (processStopVoState !== "INIT") {
+                stopImgChange.attr('opacity',1);
+                if (processStopVoState && (processStopVoState === "STARTED")) {
+                    stopFailShow.hide();
+                    stopOkShow.hide();
+                    stopLoadingShow.show();
+                } else if (processStopVoState && processStopVoState === "COMPLETED") {
+                    stopFailShow.hide();
+                    stopLoadingShow.hide();
+                    stopOkShow.show();
+                } else if (processStopVoState && processStopVoState === "FAILED") {
+                    stopOkShow.hide();
+                    stopLoadingShow.hide();
+                    stopFailShow.show();
+                }
+            } else {
+                stopImgChange.attr('opacity',0.4);
+            }
+        }else {
+            stopImgChange.attr('opacity',0.4);
+        }
+
+        /*
         var stopPath = $('g[name="stopPageId' + pageId + '"]');
         if (stopPath.length > 0) {
             for (var i = 0; i < stopPath.length; i++) {
@@ -582,6 +611,7 @@
                 }
             }
         }
+        */
     }
 
     //@ sourceURL=processContent.js

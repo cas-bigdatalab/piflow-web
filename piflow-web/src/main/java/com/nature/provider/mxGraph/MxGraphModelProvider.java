@@ -171,8 +171,7 @@ public class MxGraphModelProvider {
 
                 // 处理其他字段
                 if (null != enableFlag) {
-                    int enableFlagInt = enableFlag ? 1 : 0;
-                    sql.SET("ENABLE_FLAG = " + enableFlagInt);
+                    sql.SET("ENABLE_FLAG = " + (enableFlag ? 1 : 0));
                 }
                 if (StringUtils.isNotBlank(dx)) {
                     sql.SET("MX_DX = " + Utils.addSqlStr(dx));

@@ -262,8 +262,7 @@ public class StopsMapperProvider {
 
             // 处理其他字段
             if (null != enableFlag) {
-                int enableFlagInt = enableFlag ? 1 : 0;
-                sql.SET("ENABLE_FLAG = " + enableFlagInt);
+                sql.SET("ENABLE_FLAG = " + (enableFlag ? 1 : 0));
             }
             if (StringUtils.isNotBlank(bundel)) {
                 sql.SET("bundel = " + Utils.addSqlStr(bundel));

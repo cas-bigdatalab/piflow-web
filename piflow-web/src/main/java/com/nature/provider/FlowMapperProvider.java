@@ -125,7 +125,7 @@ public class FlowMapperProvider {
             // 除数字类型的字段外其他类型必须加单引号
 
             //先处理修改必填字段
-            if (null != lastUpdateDttm) {
+            if (null == lastUpdateDttm) {
                 lastUpdateDttm = new Date();
             }
             if (StringUtils.isBlank(lastUpdateUser)) {
