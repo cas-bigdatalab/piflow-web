@@ -2,6 +2,7 @@ package com.nature.controller;
 
 import com.nature.base.util.JsonUtils;
 import com.nature.base.util.LoggerUtil;
+import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.Utils;
 import com.nature.component.mxGraph.model.MxCell;
 import com.nature.component.mxGraph.model.MxGraphModel;
@@ -23,6 +24,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -144,6 +146,8 @@ public class FlowCtrl {
     @RequestMapping("/saveFlowInfo")
     @ResponseBody
     public String saveFlowInfo(FlowVo flowVo) {
+        User user = SessionUserUtil.getCurrentUser();
+        String username = (null != user) ? user.getUsername() : "-1";
         Map<String, Object> rtnMap = new HashMap<String, Object>();
         rtnMap.put("code", "0");
         Flow flow = new Flow();
@@ -152,9 +156,9 @@ public class FlowCtrl {
         String id = Utils.getUUID32();
         flow.setId(id);
         flow.setCrtDttm(new Date());
-        flow.setCrtUser("Add");
+        flow.setCrtUser(username);
         flow.setLastUpdateDttm(new Date());
-        flow.setLastUpdateUser("Add");
+        flow.setLastUpdateUser(username);
         flow.setEnableFlag(true);
         flow.setUuid(id);
 
@@ -162,9 +166,9 @@ public class FlowCtrl {
         mxGraphModel.setFlow(flow);
         mxGraphModel.setId(Utils.getUUID32());
         mxGraphModel.setCrtDttm(new Date());
-        mxGraphModel.setCrtUser("Add");
+        mxGraphModel.setCrtUser(username);
         mxGraphModel.setLastUpdateDttm(new Date());
-        mxGraphModel.setLastUpdateUser("Add");
+        mxGraphModel.setLastUpdateUser(username);
         mxGraphModel.setEnableFlag(true);
         flow.setMxGraphModel(mxGraphModel);
         int addFlow = flowServiceImpl.addFlow(flow);
@@ -184,12 +188,14 @@ public class FlowCtrl {
     @RequestMapping("/updateFlowInfo")
     @ResponseBody
     public int updateFlowInfo(Flow flow) {
+        User user = SessionUserUtil.getCurrentUser();
+        String username = (null != user) ? user.getUsername() : "-1";
         String id = flow.getId();
         flow.setId(id);
         flow.setName(flow.getName());
         flow.setDescription(flow.getDescription());
         flow.setLastUpdateDttm(new Date());
-        flow.setLastUpdateUser("ddw");
+        flow.setLastUpdateUser(username);
         int result = flowServiceImpl.updateFlow(flow);
         return result;
     }

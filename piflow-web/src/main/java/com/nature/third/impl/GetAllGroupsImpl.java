@@ -1,22 +1,18 @@
 package com.nature.third.impl;
 
-import java.util.Date;
-
-import net.sf.json.JSONObject;
-
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import com.nature.base.util.HttpClientStop;
-import com.nature.base.util.HttpUtils;
-import com.nature.base.util.LoggerUtil;
-import com.nature.base.util.Utils;
+import com.nature.base.util.*;
 import com.nature.common.constant.SysParamsCache;
 import com.nature.component.workFlow.model.StopGroup;
 import com.nature.mapper.StopGroupMapper;
 import com.nature.third.inf.IGetAllGroups;
+import net.sf.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.stereotype.Component;
+
+import java.util.Date;
 
 @Component
 public class GetAllGroupsImpl implements IGetAllGroups {
@@ -34,6 +30,8 @@ public class GetAllGroupsImpl implements IGetAllGroups {
 
 	@Override
 	public void getGroupAndSave() {
+		User user = SessionUserUtil.getCurrentUser();
+		String username = (null != user) ? user.getUsername() : "-1";
 		//先清空Group表信息再插入
 		int deleteGroup = stopGroupMapper.deleteGroup();
 		System.out.println("成功删除Group"+deleteGroup+"条数据！！！");
@@ -50,8 +48,8 @@ public class GetAllGroupsImpl implements IGetAllGroups {
 			StopGroup stopGroup = new StopGroup();
 			stopGroup.setId(Utils.getUUID32());
 			stopGroup.setCrtDttm(new Date());
-			stopGroup.setCrtUser("Nature");
-			stopGroup.setLastUpdateUser("Nature");
+			stopGroup.setCrtUser(username);
+			stopGroup.setLastUpdateUser(username);
 			stopGroup.setEnableFlag(true);
 			stopGroup.setLastUpdateDttm(new Date());
 			stopGroup.setGroupName(string);

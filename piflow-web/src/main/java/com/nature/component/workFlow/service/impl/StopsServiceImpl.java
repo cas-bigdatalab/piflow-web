@@ -1,6 +1,7 @@
 package com.nature.component.workFlow.service.impl;
 
 import com.nature.base.util.LoggerUtil;
+import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.StatefulRtnBaseUtils;
 import com.nature.base.vo.StatefulRtnBase;
 import com.nature.component.mxGraph.model.MxCell;
@@ -19,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -40,7 +42,7 @@ public class StopsServiceImpl implements IStopsService {
 
     @Override
     public int deleteStopsByFlowId(String id) {
-        return stopsMapper.deleteStopsByFlowId(id);
+        return stopsMapper.updateEnableFlagByFlowId(id);
     }
 
     /**
@@ -86,10 +88,12 @@ public class StopsServiceImpl implements IStopsService {
      */
     @Override
     public int updateStopsCheckpoint(String stopId, boolean isCheckpoint) {
+    	 User user = SessionUserUtil.getCurrentUser();
+         String username = (null != user) ? user.getUsername() : "-1";
         if (StringUtils.isNotBlank(stopId)) {
             Stops stopsById = stopsMapper.getStopsById(stopId);
             if(null!=stopsById){
-                stopsById.setLastUpdateUser("updateCheckpoint");
+                stopsById.setLastUpdateUser(username);
                 stopsById.setLastUpdateDttm(new Date());
                 stopsById.setCheckpoint(isCheckpoint);
                 return stopsMapper.updateStops(stopsById);
@@ -100,10 +104,12 @@ public class StopsServiceImpl implements IStopsService {
 
 	@Override
 	public int updateStopsNameById(String id, String stopName) {
+		 User user = SessionUserUtil.getCurrentUser();
+         String username = (null != user) ? user.getUsername() : "-1";
           if (StringUtils.isNotBlank(id) && StringUtils.isNotBlank(stopName)) {
               Stops stopsById = stopsMapper.getStopsById(id);
               if(null!=stopsById){
-                  stopsById.setLastUpdateUser("updatestopName");
+                  stopsById.setLastUpdateUser(username);
                   stopsById.setLastUpdateDttm(new Date());
                   stopsById.setName(stopName);
                   return stopsMapper.updateStops(stopsById);
@@ -120,6 +126,8 @@ public class StopsServiceImpl implements IStopsService {
 	@SuppressWarnings("null")
 	@Override
 	public StatefulRtnBase updateStopName(String stopId,Flow flowById,String stopName, String pageId) {
+		 User user = SessionUserUtil.getCurrentUser();
+         String username = (null != user) ? user.getUsername() : "-1";
 		StatefulRtnBase statefulRtnBase = new StatefulRtnBase();
     	List<MxCell> root = null;
     	if (null != flowById) {
@@ -145,6 +153,8 @@ public class StopsServiceImpl implements IStopsService {
         			 if (null != mxCell) {
         				 if (mxCell.getPageId().equals(pageId)) {
      						mxCell.setValue(stopName);
+     						mxCell.setLastUpdateDttm(new Date());
+     						mxCell.setLastUpdateUser(username);
      						int updateMxCell = mxCellMapper.updateMxCell(mxCell);
      						if (updateMxCell > 0) {
      							logger.info("修改成功");

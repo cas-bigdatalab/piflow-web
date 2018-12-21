@@ -7,10 +7,12 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.nature.base.util.LoggerUtil;
+import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.Utils;
 import com.nature.component.template.model.FlowTemplateModel;
 import com.nature.component.template.model.PropertyTemplateModel;
@@ -82,6 +84,8 @@ public class FlowAndStopsTemplateVoServiceImpl implements IFlowAndStopsTemplateV
 	@Override
 	@Transactional
 	public void addTemplateStopsToFlow(Template template,Flow flow,int maxPageId) {
+		User user = SessionUserUtil.getCurrentUser();
+	    String username = (null != user) ? user.getUsername() : "-1";
 		int addPropertyList = 0;
 		List<Property> list = new ArrayList<Property>();
 		// 获取stop信息
@@ -94,8 +98,8 @@ public class FlowAndStopsTemplateVoServiceImpl implements IFlowAndStopsTemplateV
 				//pageId最大值开始增加
 				stop.setPageId((Integer.parseInt(stopsVo.getPageId())+maxPageId)+"");
 				stop.setId(Utils.getUUID32());
-				stop.setCrtUser("wdd");
-				stop.setLastUpdateUser("wdd");
+				stop.setCrtUser(username);
+				stop.setLastUpdateUser(username);
 				stop.setFlow(flow);
 				stop.setCheckpoint(stopsVo.getIsCheckpoint());
 				int addStops = stopsMapper.addStops(stop);
@@ -109,8 +113,8 @@ public class FlowAndStopsTemplateVoServiceImpl implements IFlowAndStopsTemplateV
 								BeanUtils.copyProperties(property, propertyModel);
 								propertyModel.setStops(stop);
 								propertyModel.setId(Utils.getUUID32());
-								propertyModel.setCrtUser("wdd");
-								propertyModel.setLastUpdateUser("wdd");
+								propertyModel.setCrtUser(username);
+								propertyModel.setLastUpdateUser(username);
 								list.add(propertyModel);
 							}
 						}
@@ -132,6 +136,8 @@ public class FlowAndStopsTemplateVoServiceImpl implements IFlowAndStopsTemplateV
 	@Override
 	@Transactional
 	public void addStopsList(List<Stops> stopsList,Template template) {
+		 User user = SessionUserUtil.getCurrentUser();
+         String username = (null != user) ? user.getUsername() : "-1";
 		List<PropertyTemplateModel> list = new ArrayList<PropertyTemplateModel>();
 		//保存stop，属性信息
 		 if (null != stopsList && stopsList.size() > 0) {
@@ -141,6 +147,7 @@ public class FlowAndStopsTemplateVoServiceImpl implements IFlowAndStopsTemplateV
 				stopTemplate.setTemplate(template);
 				stopTemplate.setId(Utils.getUUID32());
 				stopTemplate.setCrtDttm(new Date());
+				stopTemplate.setCrtUser(username);
 				stopTemplate.setIsCheckpoint(stops.getCheckpoint());
 				flowAndStopsTemplateVoMapper.addStops(stopTemplate);
 				if (null != stops.getProperties()) {
@@ -152,6 +159,7 @@ public class FlowAndStopsTemplateVoServiceImpl implements IFlowAndStopsTemplateV
 							propertyVo.setStopsVo(stopTemplate);
 							propertyVo.setId(Utils.getUUID32());
 							propertyVo.setCrtDttm(new Date());
+							propertyVo.setCrtUser(username);
 							list.add(propertyVo);
 						}
 					}

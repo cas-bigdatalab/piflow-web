@@ -13,6 +13,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -43,6 +44,8 @@ public class GetAllStopsImpl implements IGetAllStops {
 	
 	@Override
 	public void getStopsAndProperty() {
+		User user = SessionUserUtil.getCurrentUser();
+		String username = (null != user) ? user.getUsername() : "-1";
 		//先清空所有stop和stop属性表，重新插入
 		int deleteStopsInfo = stopGroupMapper.deleteStopsInfo();
 		System.out.println("成功删除StopsInfo"+deleteStopsInfo+"条数据！！！");
@@ -97,9 +100,9 @@ public class GetAllStopsImpl implements IGetAllStops {
 				StopsTemplate stopsTemplate = new StopsTemplate();
 				stopsTemplate.setId(Utils.getUUID32());
 				stopsTemplate.setCrtDttm(new Date());
-				stopsTemplate.setCrtUser("wdd");
+				stopsTemplate.setCrtUser(username);
 				stopsTemplate.setEnableFlag(true);
-				stopsTemplate.setLastUpdateUser("Nature");
+				stopsTemplate.setLastUpdateUser(username);
 				stopsTemplate.setLastUpdateDttm(new Date());
 				stopsTemplate.setBundel(bundle);
 				stopsTemplate.setDescription(description);
@@ -126,9 +129,9 @@ public class GetAllStopsImpl implements IGetAllStops {
 				    PropertyTemplate PropertyTemplate = new PropertyTemplate();
 					PropertyTemplate.setId(Utils.getUUID32());
 					PropertyTemplate.setCrtDttm(new Date());
-					PropertyTemplate.setCrtUser("wdd");
+					PropertyTemplate.setCrtUser(username);
 					PropertyTemplate.setEnableFlag(true);
-					PropertyTemplate.setLastUpdateUser("wdd");
+					PropertyTemplate.setLastUpdateUser(username);
 					PropertyTemplate.setLastUpdateDttm(new Date());
 					PropertyTemplate.setDefaultValue(jsonArray.getJSONObject(i).getString("defaultValue"));
 					PropertyTemplate.setAllowableValues(jsonArray.getJSONObject(i).getString("allowableValues"));

@@ -16,6 +16,7 @@ import javax.transaction.Transactional;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,6 +30,7 @@ import com.nature.base.util.FileUtils;
 import com.nature.base.util.FlowXmlUtils;
 import com.nature.base.util.JsonUtils;
 import com.nature.base.util.LoggerUtil;
+import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.Utils;
 import com.nature.base.vo.StatefulRtnBase;
 import com.nature.common.constant.SysParamsCache;
@@ -78,6 +80,8 @@ public class TemplateCtrl {
 	    @ResponseBody
 	    @Transactional
 	    public String saveData(HttpServletRequest request, Model model) {
+	    	User user = SessionUserUtil.getCurrentUser();
+	        String username = (null != user) ? user.getUsername() : "-1";
 		  	Map<String, String> rtnMap = new HashMap<String, String>();
 	        rtnMap.put("code", "0");
 	        String name = request.getParameter("name");
@@ -106,9 +110,9 @@ public class TemplateCtrl {
 	        		Template template = new Template();
 			        template.setId(Utils.getUUID32());
 			    	template.setCrtDttm(new Date());
-					template.setCrtUser("wdd");
+					template.setCrtUser(username);
 					template.setEnableFlag(true);
-					template.setLastUpdateUser("-1");
+					template.setLastUpdateUser(username);
 					template.setLastUpdateDttm(new Date());
 					template.setName(name);
 					//数据库保存一份
@@ -175,6 +179,8 @@ public class TemplateCtrl {
 	    @RequestMapping(value = "/upload", method = RequestMethod.POST)
 	    @ResponseBody
 	    public String upload(@RequestParam("templateFile") MultipartFile file) {
+	    	User user = SessionUserUtil.getCurrentUser();
+	        String username = (null != user) ? user.getUsername() : "-1";
 	       Map<String, Object> rtnMap = new HashMap<String, Object>();
 	       rtnMap.put("code", "0");
 	       if (!file.isEmpty()) {
@@ -191,9 +197,9 @@ public class TemplateCtrl {
 	    	    Template template = new Template();
 		        template.setId(Utils.getUUID32());
 				template.setCrtDttm(new Date());
-				template.setCrtUser("wdd");
+				template.setCrtUser(username);
 				template.setEnableFlag(true);
-				template.setLastUpdateUser("-1");
+				template.setLastUpdateUser(username);
 				template.setLastUpdateDttm(new Date());
 				SimpleDateFormat sdf = new SimpleDateFormat("MMddHHmmSSSS");
 		    	Date nowDate = new Date();

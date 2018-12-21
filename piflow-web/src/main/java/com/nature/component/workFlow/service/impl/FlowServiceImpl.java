@@ -1,6 +1,22 @@
 package com.nature.component.workFlow.service.impl;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.annotation.Transient;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.nature.base.util.LoggerUtil;
+import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.StatefulRtnBaseUtils;
 import com.nature.base.util.Utils;
 import com.nature.base.vo.StatefulRtnBase;
@@ -11,7 +27,13 @@ import com.nature.component.mxGraph.model.MxGraphModel;
 import com.nature.component.mxGraph.vo.MxCellVo;
 import com.nature.component.mxGraph.vo.MxGeometryVo;
 import com.nature.component.mxGraph.vo.MxGraphModelVo;
-import com.nature.component.workFlow.model.*;
+import com.nature.component.workFlow.model.Flow;
+import com.nature.component.workFlow.model.FlowInfoDb;
+import com.nature.component.workFlow.model.Paths;
+import com.nature.component.workFlow.model.Property;
+import com.nature.component.workFlow.model.PropertyTemplate;
+import com.nature.component.workFlow.model.Stops;
+import com.nature.component.workFlow.model.StopsTemplate;
 import com.nature.component.workFlow.service.IFlowService;
 import com.nature.component.workFlow.utils.FlowInfoDbUtil;
 import com.nature.component.workFlow.utils.MxGraphModelUtil;
@@ -21,19 +43,15 @@ import com.nature.component.workFlow.vo.FlowInfoDbVo;
 import com.nature.component.workFlow.vo.FlowVo;
 import com.nature.component.workFlow.vo.PathsVo;
 import com.nature.component.workFlow.vo.StopsVo;
-import com.nature.mapper.*;
+import com.nature.mapper.FlowInfoDbMapper;
+import com.nature.mapper.FlowMapper;
+import com.nature.mapper.PathsMapper;
+import com.nature.mapper.PropertyMapper;
+import com.nature.mapper.StopsMapper;
+import com.nature.mapper.StopsTemplateMapper;
 import com.nature.mapper.mxGraph.MxCellMapper;
 import com.nature.mapper.mxGraph.MxGeometryMapper;
 import com.nature.mapper.mxGraph.MxGraphModelMapper;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.annotation.Transient;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.*;
 
 @Service
 @Transactional
@@ -170,6 +188,8 @@ public class FlowServiceImpl implements IFlowService {
     @Override
     @Transient
     public StatefulRtnBase saveAppId(String flowId, FlowInfoDb appId) {
+        User user = SessionUserUtil.getCurrentUser();
+        String username = (null != user) ? user.getUsername() : "-1";
         StatefulRtnBase satefulRtnBase = new StatefulRtnBase();
         if (StringUtils.isNotBlank(flowId)) {
             // 根据flowId查询flow
@@ -178,7 +198,7 @@ public class FlowServiceImpl implements IFlowService {
             if (null != flowById) {
                 flowById.setAppId(appId);
                 flowById.setLastUpdateDttm(new Date());
-                flowById.setLastUpdateUser("Nature");
+                flowById.setLastUpdateUser(username);
                 int updateFlow = flowMapper.updateFlow(flowById);
                 if (updateFlow <= 0) {
                     satefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("AppId保存失败");
@@ -226,7 +246,7 @@ public class FlowServiceImpl implements IFlowService {
 
     @Override
     public int deleteFLowInfo(String id) {
-        return flowMapper.deleteFLowInfo(id);
+        return flowMapper.updateEnableFlagById(id);
     }
 
     /**
@@ -238,12 +258,14 @@ public class FlowServiceImpl implements IFlowService {
      * @return
      */
     private StatefulRtnBase addFlowStops(MxGraphModelVo mxGraphModelVo, Flow flow,boolean flag) {
+    	 User user = SessionUserUtil.getCurrentUser();
+         String username = (null != user) ? user.getUsername() : "-1";
         StatefulRtnBase statefulRtnBase = new StatefulRtnBase();
         // 判断mxGraphModelVo和flow是否为空
         if (null != mxGraphModelVo && null != flow) {
             // 更新flow
             flow.setLastUpdateDttm(new Date()); // 最后更新时间
-            flow.setLastUpdateUser("Nature");// 最后更新人
+            flow.setLastUpdateUser(username);// 最后更新人
             flow.setEnableFlag(true);// 是否有效
             // 更新flow信息
             int updateFlowNum = flowMapper.updateFlow(flow);
@@ -256,7 +278,7 @@ public class FlowServiceImpl implements IFlowService {
                     // 将mxGraphModelVo中的值copy到mxGraphModelDb中
                     BeanUtils.copyProperties(mxGraphModelVo, mxGraphModelDb);
                     mxGraphModelDb.setEnableFlag(true);
-                    mxGraphModelDb.setLastUpdateUser("Add");
+                    mxGraphModelDb.setLastUpdateUser(username);
                     mxGraphModelDb.setLastUpdateDttm(new Date());
                     // 画板的flow外键无变化，无需更新
                     // mxGraphModelDb.setFlow(flow); 添加外键
@@ -308,10 +330,10 @@ public class FlowServiceImpl implements IFlowService {
                                         // mxCell 的基本属性(创建时必填)
                                         mxCell.setId(Utils.getUUID32());
                                         mxCell.setCrtDttm(new Date());
-                                        mxCell.setCrtUser("Nature");
+                                        mxCell.setCrtUser(username);
                                         // mxCell 的基本属性
                                         mxCell.setEnableFlag(true);
-                                        mxCell.setLastUpdateUser("Add");
+                                        mxCell.setLastUpdateUser(username);
                                         mxCell.setLastUpdateDttm(new Date());
                                         // mxGraphModel外键
                                         mxCell.setMxGraphModel(mxGraphModelDb);
@@ -327,10 +349,10 @@ public class FlowServiceImpl implements IFlowService {
                                             // mxGeometry 的基本属性(创建时必填)
                                             mxGeometry.setId(Utils.getUUID32());
                                             mxGeometry.setCrtDttm(new Date());
-                                            mxGeometry.setCrtUser("Add");
+                                            mxGeometry.setCrtUser(username);
                                             // setmxGraphModel基本属性
                                             mxGeometry.setEnableFlag(true);
-                                            mxGeometry.setLastUpdateUser("Add");
+                                            mxGeometry.setLastUpdateUser(username);
                                             mxGeometry.setLastUpdateDttm(new Date());
                                             // mxCell外键
                                             mxGeometry.setMxCell(mxCell);
@@ -412,6 +434,8 @@ public class FlowServiceImpl implements IFlowService {
      * @return
      */
     private StatefulRtnBase updateMxGraph(MxGraphModelVo mxGraphModelVo, MxGraphModel mxGraphModel) {
+        User user = SessionUserUtil.getCurrentUser();
+        String username = (null != user) ? user.getUsername() : "-1";
         StatefulRtnBase statefulRtnBase = new StatefulRtnBase();
         // 判断传入的数据是否为空
         if (null != mxGraphModelVo) {
@@ -420,7 +444,7 @@ public class FlowServiceImpl implements IFlowService {
                 // 将mxGraphModelVo中的值copy到mxGraphModelDb中
                 BeanUtils.copyProperties(mxGraphModelVo, mxGraphModel);
                 // setmxGraphModel基本属性
-                mxGraphModel.setLastUpdateUser("MOVED");// 最后更新人
+                mxGraphModel.setLastUpdateUser(username);// 最后更新人
                 mxGraphModel.setLastUpdateDttm(new Date());// 最后更新时间
                 mxGraphModel.setEnableFlag(true);// 是否有效
                 // 保存MxGraphModel
@@ -451,13 +475,15 @@ public class FlowServiceImpl implements IFlowService {
      * @return
      */
     private StatefulRtnBase updateFlow(MxGraphModelVo mxGraphModelVo, Flow flow) {
+        User user = SessionUserUtil.getCurrentUser();
+        String username = (null != user) ? user.getUsername() : "-1";
         StatefulRtnBase statefulRtnBase = new StatefulRtnBase();
         if (null != flow) {
             if (null != mxGraphModelVo) {
                 // 最后更新时间
                 flow.setLastUpdateDttm(new Date());
                 // 最后更新人
-                flow.setLastUpdateUser("update");
+                flow.setLastUpdateUser(username);
 
                 // 保存flow
                 int updateFlow = flowMapper.updateFlow(flow);
@@ -511,7 +537,7 @@ public class FlowServiceImpl implements IFlowService {
                                             //操作画板时暂无修改stop信息的操作，可以修改属性，但立刻保存了，这里无需操作
                                         } else {
                                             paths.setEnableFlag(false);
-                                            paths.setLastUpdateUser("REMOVED");
+                                            paths.setLastUpdateUser(username);
                                             paths.setLastUpdateDttm(new Date());
                                             paths.setFlow(flow);
                                             updatePaths.add(paths);
@@ -602,7 +628,7 @@ public class FlowServiceImpl implements IFlowService {
                                                         stops.setProperties(propertiesNew);
                                                         if (isUpdate) {
                                                             stops.setLastUpdateDttm(new Date());//最后跟新时间
-                                                            stops.setLastUpdateUser("REMOVED");//最后更新人
+                                                            stops.setLastUpdateUser(username);//最后更新人
                                                             stops.setProperties(properties);//属性list
                                                             stops.setFlow(flow);
                                                             updateStops.add(stops);
@@ -614,7 +640,7 @@ public class FlowServiceImpl implements IFlowService {
                                         } else {
                                             stops.setEnableFlag(false);//逻辑删除标识
                                             stops.setLastUpdateDttm(new Date());//最后跟新时间
-                                            stops.setLastUpdateUser("REMOVED");//最后更新人
+                                            stops.setLastUpdateUser(username);//最后更新人
                                             //stops的属性
                                             List<Property> properties = stops.getProperties();
                                             // 判空
@@ -625,7 +651,7 @@ public class FlowServiceImpl implements IFlowService {
                                                     if (null != property) {
                                                         property.setEnableFlag(false);//逻辑删除标识
                                                         property.setLastUpdateDttm(new Date());//最后跟新时间
-                                                        property.setLastUpdateUser("REMOVED");//最后更新人
+                                                        property.setLastUpdateUser(username);//最后更新人
                                                         propertyList.add(property);
                                                     }
                                                 }
@@ -723,6 +749,8 @@ public class FlowServiceImpl implements IFlowService {
      * @return
      */
     private Stops stopsTemplateToStops(MxCellVo mxCellVo) {
+        User user = SessionUserUtil.getCurrentUser();
+        String username = (null != user) ? user.getUsername() : "-1";
         Stops stops = null;
         if (null != mxCellVo) {
             // 取出style属性(属性中有stops的name)
@@ -749,9 +777,9 @@ public class FlowServiceImpl implements IFlowService {
                             stops = new Stops();
                             BeanUtils.copyProperties(stopsTemplate, stops);
                             stops.setCrtDttm(new Date());
-                            stops.setCrtUser("Add");
+                            stops.setCrtUser(username);
                             stops.setLastUpdateDttm(new Date());
-                            stops.setLastUpdateUser("add");
+                            stops.setLastUpdateUser(username);
                             stops.setEnableFlag(true);
                             stops.setId(Utils.getUUID32());
                             stops.setPageId(mxCellVo.getPageId());
@@ -764,9 +792,9 @@ public class FlowServiceImpl implements IFlowService {
                                     BeanUtils.copyProperties(propertyTemplate, property);
                                     property.setId(Utils.getUUID32());
                                     property.setCrtDttm(new Date());
-                                    property.setCrtUser("add");
+                                    property.setCrtUser(username);
                                     property.setLastUpdateDttm(new Date());
-                                    property.setLastUpdateUser("add");
+                                    property.setLastUpdateUser(username);
                                     property.setEnableFlag(true);
                                     property.setStops(stops);
                                     property.setCustomValue(propertyTemplate.getDefaultValue());
@@ -817,6 +845,8 @@ public class FlowServiceImpl implements IFlowService {
      * @return
      */
     private StatefulRtnBase updateMxCellList(List<MxCellVo> mxCellVoList, List<MxCell> mxCellList) {
+        User user = SessionUserUtil.getCurrentUser();
+        String username = (null != user) ? user.getUsername() : "-1";
         StatefulRtnBase statefulRtnBase = new StatefulRtnBase();
 
         // 如果mxCellList为空，则修改失败，因为此方法只处理修改的，不负责新增
@@ -846,7 +876,7 @@ public class FlowServiceImpl implements IFlowService {
                         BeanUtils.copyProperties(mxCellVo, mxCell);
                         // mxCell 的基本属性
                         mxCell.setEnableFlag(true);// 是否有效
-                        mxCell.setLastUpdateUser("MOVED");// 最后更新人
+                        mxCell.setLastUpdateUser(username);// 最后更新人
                         mxCell.setLastUpdateDttm(new Date());// 最后更新时间
 
                         // 修改时不用处理外键，除非取消或修改外键
@@ -860,7 +890,7 @@ public class FlowServiceImpl implements IFlowService {
                                 BeanUtils.copyProperties(mxGeometryVo, mxGeometry);
 
                                 // setmxGraphModel基本属性
-                                mxGeometry.setLastUpdateUser("MOVED");// 最后更新人
+                                mxGeometry.setLastUpdateUser(username);// 最后更新人
                                 mxGeometry.setLastUpdateDttm(new Date());// 最后更新时间
                                 mxGeometry.setEnableFlag(true);// 是否有效
                                 mxGeometry.setMxCell(mxCell);
@@ -870,7 +900,7 @@ public class FlowServiceImpl implements IFlowService {
                         //逻辑删
                         mxCell.setEnableFlag(false);
                         mxCell.setLastUpdateDttm(new Date());
-                        mxCell.setLastUpdateUser("REMOVED");
+                        mxCell.setLastUpdateUser(username);
                     }
                     // 填入修改list
                     updateMxCellList.add(mxCell);

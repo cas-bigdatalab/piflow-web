@@ -1,6 +1,7 @@
 package com.nature.provider;
 
 import com.nature.base.util.DateUtils;
+import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.Utils;
 import com.nature.common.Eunm.PortType;
 import com.nature.component.workFlow.model.Flow;
@@ -8,6 +9,7 @@ import com.nature.component.workFlow.model.Stops;
 import com.nature.third.vo.flowInfo.ThirdFlowInfoStopVo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
+import org.springframework.security.core.userdetails.User;
 
 import java.util.Date;
 import java.util.List;
@@ -415,5 +417,24 @@ public class StopsMapperProvider {
         sqlStr = sql.toString() + ";";
         return sqlStr;
     }
+    
+    
+    public String updateEnableFlagByFlowId(String flowId) {
+   	 User user = SessionUserUtil.getCurrentUser();
+        String username = (null != user) ? user.getUsername() : "-1";
+        String sqlStr = "select 0";
+       if (StringUtils.isNotBlank(flowId)) {
+           SQL sql = new SQL();
+           sql.UPDATE("flow_stops");
+           sql.SET("ENABLE_FLAG = 0");
+           sql.SET("last_update_user = " + Utils.addSqlStr(username) );
+           sql.SET("last_update_dttm = " + Utils.addSqlStr(DateUtils.dateTimesToStr(new Date())) );
+           sql.WHERE("ENABLE_FLAG = 1");
+           sql.WHERE("fk_flow_id = " + Utils.addSqlStrAndReplace(flowId));
+
+           sqlStr = sql.toString() + ";";
+       }
+       return sqlStr;
+   }
 
 }

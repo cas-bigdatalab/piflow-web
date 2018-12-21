@@ -2390,7 +2390,7 @@ StopsBasicInfoFormatPanel.prototype.addFont = function(container)
 		      					   $("#stopsNameLabel").blur();
 		      					   $("#stopsNameLabel").attr("readonly","readonly");// 将input元素设置为readonly
 		                 		   layer.msg(dataMap.errMsg, {icon: 1, shade: 0, time: 2000}, function () {
-		                 			  findBasicInfo(results);
+		                 			 // findBasicInfo(results);
 		                 		   });
 		                        } else {
 		                     	   layer.msg(dataMap.errMsg, {icon: 2, shade: 0, time: 2000}, function () {});

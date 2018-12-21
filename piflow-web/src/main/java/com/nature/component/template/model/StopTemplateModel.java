@@ -3,9 +3,11 @@ package com.nature.component.template.model;
 import com.nature.base.util.DateUtils;
 import com.nature.common.Eunm.PortType;
 import com.nature.component.workFlow.model.Template;
+
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -65,6 +67,8 @@ public class StopTemplateModel implements Serializable {
 	@Version
 	@Column
 	private Long version;
+	
+	private String crtUser;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "stopsVo")
     private List<PropertyTemplateModel> properties = new ArrayList<PropertyTemplateModel>();
@@ -208,6 +212,14 @@ public class StopTemplateModel implements Serializable {
 
 	public void setGroups(String groups) {
 		this.groups = groups;
+	}
+
+	public String getCrtUser() {
+		return crtUser;
+	}
+
+	public void setCrtUser(String crtUser) {
+		this.crtUser = crtUser;
 	}
 	
 }

@@ -18,7 +18,7 @@ public class MxGraphServiceImpl implements IMxGraphService {
 
 	@Override
 	public int deleteMxGraphById(String id){
-		return mxGeometryMapper.deleteMxGraphById(id);
+		return mxGeometryMapper.updateEnableFlagById(id);
 	}
  
 }

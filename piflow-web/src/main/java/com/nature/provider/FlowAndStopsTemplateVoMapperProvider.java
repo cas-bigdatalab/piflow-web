@@ -42,7 +42,8 @@ public class FlowAndStopsTemplateVoMapperProvider {
             sqlStrBuffer.append("property_sensitive,");
             sqlStrBuffer.append("version,");
             sqlStrBuffer.append("fk_stops_id,");
-            sqlStrBuffer.append("is_select");
+            sqlStrBuffer.append("is_select,");
+            sqlStrBuffer.append("crt_user");
             sqlStrBuffer.append(") ");
             sqlStrBuffer.append("values");
             int i = 0;
@@ -61,6 +62,7 @@ public class FlowAndStopsTemplateVoMapperProvider {
                 Long version = property.getVersion();
                 StopTemplateModel stops = property.getStopsVo();
                 Boolean isSelect = property.getIsSelect();
+                String crtUser = property.getCrtUser();
                 // 拼接时位置顺序不能错
                 sqlStrBuffer.append("(");
                 sqlStrBuffer.append(Utils.addSqlStr(Utils.replaceString(id)) + ",");
@@ -75,7 +77,8 @@ public class FlowAndStopsTemplateVoMapperProvider {
                 sqlStrBuffer.append((sensitive ? 1 : 0) + ",");
                 sqlStrBuffer.append((version == null ? "0" : version) + ",");
                 sqlStrBuffer.append(Utils.addSqlStr((stops == null ? "" : stops.getId())) + "," );
-                sqlStrBuffer.append((isSelect == null ? 0 : isSelect));
+                sqlStrBuffer.append((isSelect == null ? 0 : isSelect) + ",");
+                sqlStrBuffer.append(Utils.addSqlStr((Utils.replaceString(crtUser))));
                 if (i != propertyList.size()) {
                     sqlStrBuffer.append("),");
                 } else {
@@ -143,6 +146,7 @@ public class FlowAndStopsTemplateVoMapperProvider {
             Long version = stops.getVersion();
             Boolean checkpoint = stops.getIsCheckpoint();
             String groups = stops.getGroups();
+            String crtUser = stops.getCrtUser();
             SQL sql = new SQL();
             sql.INSERT_INTO("stops_template");
 
@@ -190,6 +194,9 @@ public class FlowAndStopsTemplateVoMapperProvider {
             }
             if (StringUtils.isNotBlank(pageId)) {
                 sql.VALUES("page_id", Utils.addSqlStr(pageId));
+            }
+            if (StringUtils.isNotBlank(crtUser)) {
+            	sql.VALUES("crt_user", Utils.addSqlStr(crtUser));
             }
             if (null != flow) {
                 String flowId = flow.getId();

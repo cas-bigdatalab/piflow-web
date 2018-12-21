@@ -1,11 +1,20 @@
 package com.nature.mapper.template;
 
-import com.nature.component.workFlow.model.Template;
-import com.nature.provider.TemplateMapperProvider;
-import org.apache.ibatis.annotations.*;
+import java.util.List;
+
+import org.apache.ibatis.annotations.InsertProvider;
+import org.apache.ibatis.annotations.Many;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.One;
+import org.apache.ibatis.annotations.Result;
+import org.apache.ibatis.annotations.Results;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.UpdateProvider;
 import org.apache.ibatis.mapping.FetchType;
 
-import java.util.List;
+import com.nature.component.workFlow.model.Template;
+import com.nature.provider.TemplateMapperProvider;
 
 @Mapper
 public interface TemplateMapper {
@@ -30,8 +39,8 @@ public interface TemplateMapper {
 	 * @param id
 	 * @return
 	 */
-	@Update("update flow_template set enable_flag = 0 where id = #{id} ")
-	public int deleteTemplate(String id);
+	@UpdateProvider(type = TemplateMapperProvider.class, method = "updateEnableFlagById")
+	public int updateEnableFlagById(String id);
 	
 	/**
 	 * 根据templateId查询所有template信息

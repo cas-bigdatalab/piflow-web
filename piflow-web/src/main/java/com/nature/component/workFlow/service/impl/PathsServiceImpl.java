@@ -7,8 +7,10 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
+import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.Utils;
 import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.model.Paths;
@@ -29,7 +31,7 @@ public class PathsServiceImpl implements IPathsService {
 
     @Override
     public int deletePathsByFlowId(String id) {
-        return pathsMapper.deletePathsByFlowId(id);
+        return pathsMapper.updateEnableFlagByFlowId(id);
     }
 
     @Override
@@ -107,6 +109,8 @@ public class PathsServiceImpl implements IPathsService {
 
 	@Override
 	public int addPathsList(List<Paths> pathsList,Flow flow) {
+		User user = SessionUserUtil.getCurrentUser();
+	    String username = (null != user) ? user.getUsername() : "-1";
 		List<Paths> list = new ArrayList<Paths>();
 		if (null != pathsList && pathsList.size() > 0) {
 			for (Paths paths : pathsList) {
@@ -116,7 +120,7 @@ public class PathsServiceImpl implements IPathsService {
 					paths.setFlow(flow);
 					paths.setEnableFlag(true);
 					paths.setLastUpdateDttm(new Date());
-					paths.setLastUpdateUser("wdd");
+					paths.setLastUpdateUser(username);
 					list.add(paths);
 				}
 			}

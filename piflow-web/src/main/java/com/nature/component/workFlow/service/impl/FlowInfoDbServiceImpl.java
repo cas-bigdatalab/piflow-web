@@ -34,7 +34,7 @@ public class FlowInfoDbServiceImpl implements IFlowInfoDbService {
 
 	@Override
 	public int deleteFlowInfoById(String id) {
-		return appMapper.deleteFlowInfoById(id);
+		return appMapper.updateEnableFlagById(id);
 	}
 
 	@Override

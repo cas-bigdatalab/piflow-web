@@ -1,9 +1,17 @@
 package com.nature.mapper.mxGraph;
 
+import org.apache.ibatis.annotations.InsertProvider;
+import org.apache.ibatis.annotations.Many;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Result;
+import org.apache.ibatis.annotations.Results;
+import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.annotations.UpdateProvider;
+import org.apache.ibatis.mapping.FetchType;
+
 import com.nature.component.mxGraph.model.MxGraphModel;
 import com.nature.provider.mxGraph.MxGraphModelProvider;
-import org.apache.ibatis.annotations.*;
-import org.apache.ibatis.mapping.FetchType;
 
 @Mapper
 public interface MxGraphModelMapper {
@@ -77,7 +85,7 @@ public interface MxGraphModelMapper {
     public MxGraphModel getMxGraphModelByFlowId(String flowId);
 
 
-    @Update("update mx_graph_model set enable_flag = 0 where fk_flow_id = #{flowId}; ")
-    int deleteMxGraphModelById(@Param("flowId") String flowId);
+    @UpdateProvider(type = MxGraphModelProvider.class, method = "updateEnableFlagByFlowId")
+    public int updateEnableFlagByFlowId(@Param("flowId") String flowId);
 
 }

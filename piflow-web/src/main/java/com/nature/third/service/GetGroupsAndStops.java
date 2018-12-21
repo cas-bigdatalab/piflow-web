@@ -5,13 +5,13 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import com.nature.common.Eunm.PortType;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.nature.base.util.HttpClientStop;
 import com.nature.base.util.ImageUtils;
 import com.nature.base.util.LoggerUtil;
+import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.Utils;
+import com.nature.common.Eunm.PortType;
 import com.nature.common.constant.SysParamsCache;
 import com.nature.component.workFlow.model.PropertyTemplate;
 import com.nature.component.workFlow.model.StopGroup;
@@ -56,6 +58,8 @@ public class GetGroupsAndStops {
     @RequestMapping("/save")
     @Transactional
     public void getGroupAndSave() {
+        User user = SessionUserUtil.getCurrentUser();
+        String username = (null != user) ? user.getUsername() : "-1";
         // 先清空Group表信息再插入
         int deleteGroup = stopGroupMapper.deleteGroup();
         System.out.println("成功删除Group" + deleteGroup + "条数据！！！");
@@ -72,8 +76,8 @@ public class GetGroupsAndStops {
                 StopGroup stopGroup = new StopGroup();
                 stopGroup.setId(Utils.getUUID32());
                 stopGroup.setCrtDttm(new Date());
-                stopGroup.setCrtUser("Nature");
-                stopGroup.setLastUpdateUser("Nature");
+                stopGroup.setCrtUser(username);
+                stopGroup.setLastUpdateUser(username);
                 stopGroup.setEnableFlag(true);
                 stopGroup.setLastUpdateDttm(new Date());
                 stopGroup.setGroupName(string);
@@ -90,6 +94,8 @@ public class GetGroupsAndStops {
     @RequestMapping("/saveStopsAndProperty")
     @Transactional
     private void getStopsAndProperty() {
+    	  User user = SessionUserUtil.getCurrentUser();
+        String username = (null != user) ? user.getUsername() : "-1";
         int deleteStopsInfo = stopGroupMapper.deleteStopsInfo();
         logger.info("成功删除StopsInfo" + deleteStopsInfo + "条数据！！！");
         // 1.先调stop接口获取getAllStops数据；
@@ -166,9 +172,9 @@ public class GetGroupsAndStops {
                     StopsTemplate stopsTemplate = new StopsTemplate();
                     stopsTemplate.setId(Utils.getUUID32());
                     stopsTemplate.setCrtDttm(new Date());
-                    stopsTemplate.setCrtUser("wdd");
+                    stopsTemplate.setCrtUser(username);
                     stopsTemplate.setEnableFlag(true);
-                    stopsTemplate.setLastUpdateUser("Nature");
+                    stopsTemplate.setLastUpdateUser(username);
                     stopsTemplate.setLastUpdateDttm(new Date());
                     stopsTemplate.setBundel(bundle);
                     stopsTemplate.setDescription(Utils.replaceString(description));
@@ -195,9 +201,9 @@ public class GetGroupsAndStops {
                             PropertyTemplate PropertyTemplate = new PropertyTemplate();
                             PropertyTemplate.setId(Utils.getUUID32());
                             PropertyTemplate.setCrtDttm(new Date());
-                            PropertyTemplate.setCrtUser("wdd");
+                            PropertyTemplate.setCrtUser(username);
                             PropertyTemplate.setEnableFlag(true);
-                            PropertyTemplate.setLastUpdateUser("wdd");
+                            PropertyTemplate.setLastUpdateUser(username);
                             PropertyTemplate.setLastUpdateDttm(new Date());
                             PropertyTemplate.setDefaultValue(Utils.replaceString(jsonArray.getJSONObject(i).getString("defaultValue")));
                             PropertyTemplate.setAllowableValues(Utils.replaceString(jsonArray.getJSONObject(i).getString("allowableValues")));

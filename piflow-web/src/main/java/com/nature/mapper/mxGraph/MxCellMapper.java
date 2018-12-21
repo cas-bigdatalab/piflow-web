@@ -71,7 +71,14 @@ public interface MxCellMapper {
 	public MxCell getMeCellById(String id);
 	
 	
-	@Delete("update mx_cell set enable_flag = 0 where id = #{id}")
-	public int deleteMxCellById(String id);
+	/**
+     *  
+     * 根据flowId逻辑删除flowInfo
+     *
+     * @param id
+     * @return
+     */
+	@UpdateProvider(type = MxCellMapperProvider.class, method = "updateEnableFlagById")
+	public int updateEnableFlagById(String id);
 
 }

@@ -3,6 +3,7 @@ package com.nature.third.impl;
 import com.nature.base.util.DateUtils;
 import com.nature.base.util.HttpUtils;
 import com.nature.base.util.LoggerUtil;
+import com.nature.base.util.SessionUserUtil;
 import com.nature.common.Eunm.FlowState;
 import com.nature.common.constant.SysParamsCache;
 import com.nature.component.workFlow.model.Flow;
@@ -17,6 +18,7 @@ import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -64,6 +66,8 @@ public class GetFlowInfoImpl implements IGetFlowInfo {
      */
     @Override
     public FlowInfoDb AddFlowInfo(String appId, Flow flow) {
+        User user = SessionUserUtil.getCurrentUser();
+        String username = (null != user) ? user.getUsername() : "-1";
         ThirdFlowInfoVo startFlow2 = getFlowInfo(appId);
         ThirdProgressVo progress = iGetFlowProgress.getFlowProgress(appId);
         logger.info("测试返回信息：" + startFlow2);
@@ -82,7 +86,7 @@ public class GetFlowInfoImpl implements IGetFlowInfo {
                 } else {
                     up.setProgress(progress.getProgress());
                 }
-                up.setLastUpdateUser("-1");
+                up.setLastUpdateUser(username);
                 up.setLastUpdateDttm(new Date());
                 int updateFlowInfo = flowInfoDbMapper.updateFlowInfo(up);
                 if (updateFlowInfo > 0) {
@@ -98,9 +102,9 @@ public class GetFlowInfoImpl implements IGetFlowInfo {
                 add.setStartTime(DateUtils.strCstToDate(startFlow2.getStartTime()));
                 add.setProgress(progress.getProgress());
                 add.setCrtDttm(new Date());
-                add.setCrtUser("wdd");
+                add.setCrtUser(username);
                 add.setEnableFlag(true);
-                add.setLastUpdateUser("-1");
+                add.setLastUpdateUser(username);
                 add.setLastUpdateDttm(new Date());
                 add.setFlow(flow);
                 int addFlowInfo = flowInfoDbMapper.addFlowInfo(add);
@@ -113,9 +117,9 @@ public class GetFlowInfoImpl implements IGetFlowInfo {
         //flowInfo接口返回为空的情况
         kong.setId(appId);
         kong.setCrtDttm(new Date());
-        kong.setCrtUser("wdd");
+        kong.setCrtUser(username);
         kong.setEnableFlag(true);
-        kong.setLastUpdateUser("-1");
+        kong.setLastUpdateUser(username);
         kong.setProgress("0");
         kong.setState(FlowState.STARTED.toString());
         kong.setLastUpdateDttm(new Date());

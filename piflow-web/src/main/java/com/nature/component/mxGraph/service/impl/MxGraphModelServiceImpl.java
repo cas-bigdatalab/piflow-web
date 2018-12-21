@@ -2,12 +2,12 @@ package com.nature.component.mxGraph.service.impl;
 
 import java.util.List;
 
-import com.nature.base.util.StatefulRtnBaseUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.nature.base.util.LoggerUtil;
+import com.nature.base.util.StatefulRtnBaseUtils;
 import com.nature.base.vo.StatefulRtnBase;
 import com.nature.component.mxGraph.model.MxCell;
 import com.nature.component.mxGraph.model.MxGeometry;
@@ -61,6 +61,6 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
 
 	@Override
 	public int deleteMxGraphModelById(String id) {
-		return mxGraphModelMapper.deleteMxGraphModelById(id);
+		return mxGraphModelMapper.updateEnableFlagByFlowId(id);
 	}
 }

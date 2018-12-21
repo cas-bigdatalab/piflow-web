@@ -33,7 +33,7 @@ public class TemplateServiceImpl implements ITemplateService {
 
 	@Override
 	public int deleteTemplate(String id) {
-		return templateMapper.deleteTemplate(id);
+		return templateMapper.updateEnableFlagById(id);
 	}
 
 	@Override

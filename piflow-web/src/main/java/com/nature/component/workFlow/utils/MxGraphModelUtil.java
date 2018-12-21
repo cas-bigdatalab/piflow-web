@@ -1,5 +1,6 @@
 package com.nature.component.workFlow.utils;
 
+import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.Utils;
 import com.nature.component.mxGraph.model.MxCell;
 import com.nature.component.mxGraph.model.MxGeometry;
@@ -11,6 +12,7 @@ import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.model.Paths;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.security.core.userdetails.User;
 
 import java.util.*;
 
@@ -167,14 +169,16 @@ public class MxGraphModelUtil {
      * @return
      */
     public static Paths mxCellToPaths(MxCellVo mxCellVo) {
+        User user = SessionUserUtil.getCurrentUser();
+        String username = (null != user) ? user.getUsername() : "-1";
         Paths paths = null;
         if (null != mxCellVo) {
             paths = new Paths();
             paths.setId(Utils.getUUID32());
             paths.setCrtDttm(new Date());
-            paths.setCrtUser("Add");
+            paths.setCrtUser(username);
             paths.setLastUpdateDttm(new Date());
-            paths.setLastUpdateUser("Add");
+            paths.setLastUpdateUser(username);
             paths.setEnableFlag(true);
             paths.setFrom(mxCellVo.getSource());
             paths.setTo(mxCellVo.getTarget());

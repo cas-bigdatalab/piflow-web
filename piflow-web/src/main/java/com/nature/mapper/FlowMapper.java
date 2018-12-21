@@ -2,6 +2,7 @@ package com.nature.mapper;
 
 import com.nature.component.workFlow.model.Flow;
 import com.nature.provider.FlowMapperProvider;
+
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
 
@@ -52,8 +53,8 @@ public interface FlowMapper {
 	})
 	public Flow getFlowById(String id);
 	
-	@Update("update flow set enable_flag = 0 where id = #{id}; ")
-	public int deleteFLowInfo(@Param("id") String id);
+	@UpdateProvider(type = FlowMapperProvider.class, method = "updateEnableFlagById")
+	public int updateEnableFlagById(@Param("id") String id);
 	
 	/**
 	 * 根据flow查询PageId最大值

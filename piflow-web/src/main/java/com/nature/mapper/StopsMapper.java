@@ -73,8 +73,8 @@ public interface StopsMapper {
 	})
 	public List<Stops> getStopsListByFlowIdAndPageIds(@Param("flowId")String flowId, @Param("pageIds")String[] pageIds);
 	
-	@Update("update flow_stops set enable_flag = 0 where fk_flow_id=#{flowId}")
-	public int deleteStopsByFlowId(@Param("flowId") String id);
+	@UpdateProvider(type = StopsMapperProvider.class, method = "updateEnableFlagByFlowId")
+	public int updateEnableFlagByFlowId(String id);
 	
 	/**
 	 * 根据stopsId 查询stop和属性信息

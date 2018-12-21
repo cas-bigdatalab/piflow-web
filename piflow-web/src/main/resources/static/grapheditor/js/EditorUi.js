@@ -109,12 +109,12 @@ EditorUi = function(editor, container, lightbox)
 
         if (mxClient.IS_IE && (typeof(document.documentMode) === 'undefined' || document.documentMode < 9))
         {
-         //   mxEvent.addListener(this.diagramContainer, 'contextmenu', linkHandler);
+             mxEvent.addListener(this.diagramContainer, 'contextmenu', linkHandler);
         }
         else
         {
             // Allows browser context menu outside of diagram and sidebar
-           // this.diagramContainer.oncontextmenu = linkHandler;
+            this.diagramContainer.oncontextmenu = linkHandler;
         }
     }
     else
@@ -994,11 +994,11 @@ EditorUi.prototype.init = function()
 
     mxEvent.addListener(graph.container, 'keydown', mxUtils.bind(this, function(evt)
     {
-        this.onKeyDown(evt);
+        //this.onKeyDown(evt);
     }));
     mxEvent.addListener(graph.container, 'keypress', mxUtils.bind(this, function(evt)
     {
-        this.onKeyPress(evt);
+       // this.onKeyPress(evt);
     }));
 
     // Updates action states

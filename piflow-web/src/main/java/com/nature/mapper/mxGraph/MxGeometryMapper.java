@@ -2,6 +2,7 @@ package com.nature.mapper.mxGraph;
 
 import com.nature.component.mxGraph.model.MxGeometry;
 import com.nature.provider.mxGraph.MxGeometryMapperProvider;
+
 import org.apache.ibatis.annotations.*;
 
 @Mapper
@@ -60,7 +61,7 @@ public interface MxGeometryMapper {
     public MxGeometry getMxGeometryByFlowId(String flowId);
 
 
-    @Delete("update mx_geometry set enable_flag = 0 where id = #{id};")
-    public int deleteMxGraphById(String id);
+    @UpdateProvider(type = MxGeometryMapperProvider.class, method = "updateEnableFlagById")
+    public int updateEnableFlagById(String id);
 
 }

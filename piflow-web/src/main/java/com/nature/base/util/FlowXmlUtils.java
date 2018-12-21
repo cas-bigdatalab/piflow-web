@@ -10,6 +10,7 @@ import com.nature.component.mxGraph.vo.MxGraphModelVo;
 import com.nature.component.template.model.PropertyTemplateModel;
 import com.nature.component.template.model.StopTemplateModel;
 import com.nature.component.workFlow.model.*;
+
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -359,6 +360,7 @@ public class FlowXmlUtils {
 					PortType outPortType = stopVo.getOutPortType();
 					String owner = stopVo.getOwner();
 					String groups = stopVo.getGroups();
+					String crtUser = stopVo.getCrtUser();
 					xmlStrSb.append("<stop ");
 					if (StringUtils.isNotBlank(stopId)) {
 						xmlStrSb.append("id=\"" + stopId + "\" ");
@@ -399,6 +401,9 @@ public class FlowXmlUtils {
 					if (StringUtils.isNotBlank(groups)) {
 						xmlStrSb.append("groups=\"" + groups + "\" ");
 					}
+					if (StringUtils.isNotBlank(crtUser)) {
+						xmlStrSb.append("crtUser=\"" + crtUser + "\" ");
+					}
 					List<Property> property = stopVo.getProperties();
 					if (null != property && property.size() > 0) {
 						xmlStrSb.append("> \n");
@@ -413,6 +418,7 @@ public class FlowXmlUtils {
 						Boolean required = propertyVo.getRequired();
 						Boolean sensitive = propertyVo.getSensitive();
 						Boolean isSelect = propertyVo.getIsSelect();
+						String propertyVocrtUser = propertyVo.getCrtUser();
 						if (StringUtils.isNotBlank(propertyId)) {
 							xmlStrSb.append("id=\"" + propertyId + "\" ");
 						}
@@ -430,6 +436,9 @@ public class FlowXmlUtils {
 						}
 						if (StringUtils.isNotBlank(customValue)) {
 							xmlStrSb.append("customValue=\"" + customValue + "\" ");
+						}
+						if (StringUtils.isNotBlank(propertyVocrtUser)) {
+							xmlStrSb.append("crtUser=\"" + propertyVocrtUser + "\" ");
 						}
 							xmlStrSb.append("required=\"" + required + "\" ");
 							xmlStrSb.append("sensitive=\"" + sensitive + "\" ");

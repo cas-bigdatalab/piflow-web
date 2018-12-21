@@ -80,11 +80,11 @@
                            th:onclick="'javascript:runFlows(\''+${list.id}+'\');'">
                             <i class="icon-play icon-white"></i>
                         </a>
-                        <a class="btn" href="javascript:void(0);"
+                       <!-- <a class="btn" href="javascript:void(0);"
                            style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;"
                            th:onclick="'javascript:stopFlow(\''+${list.id}+'\');'">
                             <i class="icon-stop icon-white"></i>
-                        </a>
+                        </a>-->
                         <a class="btn" href="javascript:void(0);"
                            style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;"
                            th:onclick="'javascript:deleteFlow(\''+${list.id}+'\',\''+${list.name}+'\');'">
@@ -344,7 +344,7 @@
 
     //运行
     function runFlows(loadId) {
-        $('#fullScreen').show();
+        $('#fullScreenList').show();
         $.ajax({
             cache: true,//保留缓存数据
             type: "get",//为post请求
@@ -353,19 +353,19 @@
             data: {flowId: loadId},
             async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
             error: function (request) {//请求失败之后的操作
-                $('#fullScreen').hide();
+                $('#fullScreenList').hide();
                 alert("reload fail");
                 return;
             },
             success: function (data) {//请求成功之后的操作
                 var dataMap = JSON.parse(data);
                 if ('0' !== dataMap.code) {
-                    $('#fullScreen').hide();
+                    $('#fullScreenList').hide();
                     layer.msg(dataMap.errMsg, {icon: 1, shade: 0, time: 2000}, function () {
                         location.reload();
                     });
                 } else {
-                    $('#fullScreen').hide();
+                    $('#fullScreenList').hide();
                     layer.msg(dataMap.errMsg, {icon: 2, shade: 0, time: 2000}, function () {
                         location.reload();
                     });
@@ -377,7 +377,7 @@
 
     //停止
     function stopFlow(loadId) {
-        $('#fullScreen').show();
+        $('#fullScreenList').show();
         $.ajax({
             cache: true,//保留缓存数据
             type: "get",//为post请求
@@ -386,20 +386,20 @@
             data: {flowId: loadId},
             async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
             error: function (request) {//请求失败之后的操作
-                $('#fullScreen').hide();
+                $('#fullScreenList').hide();
                 alert("reload fail");
                 return;
             },
             success: function (data) {//请求成功之后的操作
                 var dataMap = JSON.parse(data);
                 if ('0' !== dataMap.code) {
-                    $('#fullScreen').hide();
+                    $('#fullScreenList').hide();
                     layer.msg(dataMap.errMsg, {icon: 1, shade: 0, time: 2000}, function () {
                         location.reload();
                     });
                     return;
                 } else {
-                    $('#fullScreen').hide();
+                    $('#fullScreenList').hide();
                     layer.msg(dataMap.errMsg, {icon: 2, shade: 0, time: 2000}, function () {
                         location.reload();
                     });

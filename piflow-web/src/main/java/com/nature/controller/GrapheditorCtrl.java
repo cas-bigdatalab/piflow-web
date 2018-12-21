@@ -1,9 +1,6 @@
 package com.nature.controller;
 
-import com.nature.base.util.FlowXmlUtils;
-import com.nature.base.util.JsonUtils;
-import com.nature.base.util.LoggerUtil;
-import com.nature.base.util.Utils;
+import com.nature.base.util.*;
 import com.nature.base.vo.StatefulRtnBase;
 import com.nature.common.Eunm.PortType;
 import com.nature.component.mxGraph.model.MxGraphModel;
@@ -18,6 +15,7 @@ import com.nature.third.service.GetGroupsAndStops;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -68,6 +66,8 @@ public class GrapheditorCtrl {
      */
     @RequestMapping("/home")
     public String kitchenSink(Model model, String load) {
+        User user = SessionUserUtil.getCurrentUser();
+        String username = (null != user) ? user.getUsername() : "-1";
         // 判断是否存在Flow的id(load),如果存在則加载，否則生成UUID返回返回页面
         if (StringUtils.isNotBlank(load)) {
             // 根据加载id进行查询
@@ -97,17 +97,17 @@ public class GrapheditorCtrl {
             Flow flow = new Flow();
             flow.setId(load);
             flow.setCrtDttm(new Date());
-            flow.setCrtUser("Add");
+            flow.setCrtUser(username);
             flow.setLastUpdateDttm(new Date());
-            flow.setLastUpdateUser("Add");
+            flow.setLastUpdateUser(username);
             flow.setEnableFlag(true);
             flow.setName("default");
             MxGraphModel mxGraphModel = new MxGraphModel();
             mxGraphModel.setId(Utils.getUUID32());
             mxGraphModel.setCrtDttm(new Date());
-            mxGraphModel.setCrtUser("Add");
+            mxGraphModel.setCrtUser(username);
             mxGraphModel.setLastUpdateDttm(new Date());
-            mxGraphModel.setLastUpdateUser("Add");
+            mxGraphModel.setLastUpdateUser(username);
             mxGraphModel.setEnableFlag(true);
             flow.setMxGraphModel(mxGraphModel);
             int addFlow = flowServiceImpl.addFlow(flow);

@@ -82,12 +82,12 @@ public interface FlowInfoDbMapper {
     public List<FlowInfoDb> getFlowInfoByIds(@Param("ids") List<String> ids);
 
     /**
-     * 根据id删除flowInfo
+     * 根据id逻辑删除flowInfo
      *
      * @param id
      * @return
      */
-    @Update("update flow_info set enable_flag = 0 where id = #{id}; ")
-    public int deleteFlowInfoById(@Param("id") String id);
+    @UpdateProvider(type = FlowInfoDbMapperProvider.class, method = "updateEnableFlagById")
+    public int updateEnableFlagById(@Param("id") String id);
 
 }

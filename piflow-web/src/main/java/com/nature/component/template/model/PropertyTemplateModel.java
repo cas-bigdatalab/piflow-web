@@ -64,6 +64,8 @@ public class PropertyTemplateModel implements Serializable {
 	private Long version;
 	
 	private Boolean isSelect;
+	
+	private String crtUser;
 
 	public String getId() {
 		return id;
@@ -173,4 +175,13 @@ public class PropertyTemplateModel implements Serializable {
 	public void setIsSelect(Boolean isSelect) {
 		this.isSelect = isSelect;
 	}
+
+	public String getCrtUser() {
+		return crtUser;
+	}
+
+	public void setCrtUser(String crtUser) {
+		this.crtUser = crtUser;
+	}
+	
 }

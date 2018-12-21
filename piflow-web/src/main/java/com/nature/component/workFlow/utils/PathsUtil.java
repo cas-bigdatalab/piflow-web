@@ -1,9 +1,11 @@
 package com.nature.component.workFlow.utils;
 
+import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.Utils;
 import com.nature.component.workFlow.model.Paths;
 import com.nature.component.workFlow.vo.PathsVo;
 import org.springframework.beans.BeanUtils;
+import org.springframework.security.core.userdetails.User;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -37,6 +39,8 @@ public class PathsUtil {
      * @return
      */
     public static List<Paths> pathsListVoToPo(List<PathsVo> pathsVoList) {
+        User user = SessionUserUtil.getCurrentUser();
+        String username = (null != user) ? user.getUsername() : "-1";
         List<Paths> pathsList = null;
         if (null != pathsList && pathsList.size() > 0) {
             pathsList = new ArrayList<Paths>();
@@ -46,9 +50,9 @@ public class PathsUtil {
                     BeanUtils.copyProperties(pathsVo, paths);
                     paths.setId(Utils.getUUID32());
                     paths.setCrtDttm(new Date());
-                    paths.setCrtUser("add");
+                    paths.setCrtUser(username);
                     paths.setLastUpdateDttm(new Date());
-                    paths.setLastUpdateUser("add");
+                    paths.setLastUpdateUser(username);
                     paths.setEnableFlag(true);
                     pathsList.add(paths);
                 }

@@ -32,8 +32,8 @@ public interface PropertyMapper {
 	/**
 	 * Modify stops attribute information
 	 */
-	@Update("update flow_stops_property set custom_value = #{custom_value},version = version+1 where id = #{id}")
-	public int updatePropertyCustomValue(@Param("custom_value") String content, @Param("id") String id);
+	@UpdateProvider(type = PropertyMapperProvider.class, method = "updatePropertyCustomValue")
+	public int updatePropertyCustomValue(String content, String id);
 	
 	/**
 	 * update property Method
@@ -71,6 +71,6 @@ public interface PropertyMapper {
 	 * 
 	 * @return
 	 */
-	@Delete("delete from flow_stops_property where id=#{id}")
-	public int deleteStopsPropertyByStopId(String id);
+	@UpdateProvider(type = PropertyMapperProvider.class, method = "updateEnableFlagByStopId")
+	public int updateEnableFlagByStopId(String id);
 }
