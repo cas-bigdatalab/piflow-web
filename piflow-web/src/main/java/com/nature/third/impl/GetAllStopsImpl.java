@@ -1,5 +1,6 @@
 package com.nature.third.impl;
 
+import com.nature.base.config.vo.UserVo;
 import com.nature.base.util.*;
 import com.nature.common.constant.SysParamsCache;
 import com.nature.component.workFlow.model.PropertyTemplate;
@@ -13,7 +14,6 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ public class GetAllStopsImpl implements IGetAllStops {
 	
 	@Override
 	public void getStopsAndProperty() {
-		User user = SessionUserUtil.getCurrentUser();
+		UserVo user = SessionUserUtil.getCurrentUser();
 		String username = (null != user) ? user.getUsername() : "-1";
 		//先清空所有stop和stop属性表，重新插入
 		int deleteStopsInfo = stopGroupMapper.deleteStopsInfo();

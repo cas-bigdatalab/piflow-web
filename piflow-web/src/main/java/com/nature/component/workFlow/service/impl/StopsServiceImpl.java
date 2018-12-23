@@ -1,5 +1,6 @@
 package com.nature.component.workFlow.service.impl;
 
+import com.nature.base.config.vo.UserVo;
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.StatefulRtnBaseUtils;
@@ -15,12 +16,10 @@ import com.nature.mapper.FlowMapper;
 import com.nature.mapper.StopsMapper;
 import com.nature.mapper.mxGraph.MxCellMapper;
 import com.nature.third.vo.flowInfo.ThirdFlowInfoStopVo;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -88,7 +87,7 @@ public class StopsServiceImpl implements IStopsService {
      */
     @Override
     public int updateStopsCheckpoint(String stopId, boolean isCheckpoint) {
-    	 User user = SessionUserUtil.getCurrentUser();
+    	 UserVo user = SessionUserUtil.getCurrentUser();
          String username = (null != user) ? user.getUsername() : "-1";
         if (StringUtils.isNotBlank(stopId)) {
             Stops stopsById = stopsMapper.getStopsById(stopId);
@@ -104,7 +103,7 @@ public class StopsServiceImpl implements IStopsService {
 
 	@Override
 	public int updateStopsNameById(String id, String stopName) {
-		 User user = SessionUserUtil.getCurrentUser();
+		 UserVo user = SessionUserUtil.getCurrentUser();
          String username = (null != user) ? user.getUsername() : "-1";
           if (StringUtils.isNotBlank(id) && StringUtils.isNotBlank(stopName)) {
               Stops stopsById = stopsMapper.getStopsById(id);
@@ -126,7 +125,7 @@ public class StopsServiceImpl implements IStopsService {
 	@SuppressWarnings("null")
 	@Override
 	public StatefulRtnBase updateStopName(String stopId,Flow flowById,String stopName, String pageId) {
-		 User user = SessionUserUtil.getCurrentUser();
+		 UserVo user = SessionUserUtil.getCurrentUser();
          String username = (null != user) ? user.getUsername() : "-1";
 		StatefulRtnBase statefulRtnBase = new StatefulRtnBase();
     	List<MxCell> root = null;

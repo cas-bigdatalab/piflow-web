@@ -1,16 +1,15 @@
 package com.nature.provider.mxGraph;
 
-import java.util.Date;
-
-import com.nature.component.workFlow.model.Flow;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.jdbc.SQL;
-import org.springframework.security.core.userdetails.User;
-
+import com.nature.base.config.vo.UserVo;
 import com.nature.base.util.DateUtils;
 import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.Utils;
 import com.nature.component.mxGraph.model.MxGraphModel;
+import com.nature.component.workFlow.model.Flow;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.jdbc.SQL;
+
+import java.util.Date;
 
 public class MxGraphModelProvider {
 
@@ -276,7 +275,7 @@ public class MxGraphModelProvider {
      * @return
      */
     public String updateEnableFlagByFlowId(String flowId) {
-      	 User user = SessionUserUtil.getCurrentUser();
+      	 UserVo user = SessionUserUtil.getCurrentUser();
            String username = (null != user) ? user.getUsername() : "-1";
            String sqlStr = "select 0";
           if (StringUtils.isNotBlank(flowId)) {

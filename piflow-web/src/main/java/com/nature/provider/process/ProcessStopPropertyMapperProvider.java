@@ -280,11 +280,14 @@ public class ProcessStopPropertyMapperProvider {
         return sqlStr;
     }
 
-    public String updateEnableFlagByProcessStopId(String processStopId) {
+    public String updateEnableFlagByProcessStopId(String processStopId,String username) {
         String sqlStr = "select 0";
-        if (StringUtils.isNotBlank(processStopId)) {
+        if (!StringUtils.isAnyEmpty(processStopId,username)) {
             SQL sql = new SQL();
             sql.UPDATE("FLOW_PROCESS_STOP_PROPERTY");
+            sql.SET("LAST_UPDATE_DTTM = " + Utils.addSqlStr(DateUtils.dateTimesToStr(new Date())));
+            sql.SET("LAST_UPDATE_USER = " + Utils.addSqlStr(username));
+            sql.SET("VERSION=(VERSION+1)");
             sql.SET("ENABLE_FLAG = 0");
             sql.WHERE("ENABLE_FLAG = 1");
             sql.WHERE("FK_FLOW_PROCESS_STOP_ID = " + Utils.addSqlStr(processStopId));

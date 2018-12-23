@@ -1,15 +1,6 @@
 package com.nature.component.workFlow.service.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.stereotype.Service;
-
+import com.nature.base.config.vo.UserVo;
 import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.Utils;
 import com.nature.component.workFlow.model.Flow;
@@ -20,6 +11,14 @@ import com.nature.component.workFlow.utils.PathsUtil;
 import com.nature.component.workFlow.vo.PathsVo;
 import com.nature.mapper.PathsMapper;
 import com.nature.mapper.PropertyMapper;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class PathsServiceImpl implements IPathsService {
@@ -109,7 +108,7 @@ public class PathsServiceImpl implements IPathsService {
 
 	@Override
 	public int addPathsList(List<Paths> pathsList,Flow flow) {
-		User user = SessionUserUtil.getCurrentUser();
+		UserVo user = SessionUserUtil.getCurrentUser();
 	    String username = (null != user) ? user.getUsername() : "-1";
 		List<Paths> list = new ArrayList<Paths>();
 		if (null != pathsList && pathsList.size() > 0) {

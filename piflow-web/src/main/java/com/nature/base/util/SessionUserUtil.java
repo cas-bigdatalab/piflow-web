@@ -1,5 +1,8 @@
 package com.nature.base.util;
 
+import com.nature.base.config.vo.UserVo;
+import com.nature.component.sysUser.model.SysUser;
+import com.nature.component.sysUser.vo.SysUserVo;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -14,12 +17,12 @@ public class SessionUserUtil {
 
     static Logger logger = LoggerUtil.getLogger();
 
-    public static User getCurrentUser() {
-        User user = null;
+    public static UserVo getCurrentUser() {
+        UserVo user = null;
         SecurityContext ctx = SecurityContextHolder.getContext();
         Authentication auth = ctx.getAuthentication();
         if (auth.getPrincipal() instanceof UserDetails) {
-            user = (User) auth.getPrincipal();
+            user = (UserVo) auth.getPrincipal();
         }
         return user;
     }

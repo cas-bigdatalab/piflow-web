@@ -1,6 +1,8 @@
 package com.nature.controller;
 
+import com.nature.base.config.vo.UserVo;
 import com.nature.base.util.LoggerUtil;
+import com.nature.base.util.SessionUserUtil;
 import com.nature.component.template.service.ITemplateService;
 import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.model.Template;
@@ -63,6 +65,8 @@ public class IndexCtrl {
 	public ModelAndView flowList(ModelAndView modelAndView) {
 		// modelAndView.setViewName("flow/table");
 		modelAndView.setViewName("/indexNew");
+		UserVo currentUser = SessionUserUtil.getCurrentUser();
+		modelAndView.addObject("currentUser", currentUser);
 		modelAndView.addObject("accessPath", "flowList");
 		List<FlowVo> appInfo = flowServiceImpl.getFlowList();
 		modelAndView.addObject("appInfo", appInfo);
@@ -95,6 +99,8 @@ public class IndexCtrl {
 		List<Template> findTemPlateList = iTemplateService.findTemPlateList();
 		//modelAndView.setViewName("flow/template");
 		modelAndView.setViewName("/indexNew");
+		UserVo currentUser = SessionUserUtil.getCurrentUser();
+		modelAndView.addObject("currentUser", currentUser);
 		modelAndView.addObject("accessPath", "template");
 		modelAndView.addObject("TemPlateList",findTemPlateList);
 		return modelAndView;

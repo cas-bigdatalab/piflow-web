@@ -1,6 +1,7 @@
 package com.nature.third.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.nature.base.config.vo.UserVo;
 import com.nature.base.util.HttpUtils;
 import com.nature.base.util.JsonFormatTool;
 import com.nature.base.util.LoggerUtil;
@@ -12,7 +13,6 @@ import com.nature.component.process.model.Process;
 import com.nature.component.process.model.ProcessPath;
 import com.nature.component.process.model.ProcessStop;
 import com.nature.component.process.model.ProcessStopProperty;
-import com.nature.component.process.service.IProcessService;
 import com.nature.third.inf.IStartFlow;
 import com.nature.third.vo.flow.ThirdFlowVo;
 import com.nature.third.vo.flow.ThirdPathVo;
@@ -24,10 +24,7 @@ import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class StartFlowImpl implements IStartFlow {
@@ -37,9 +34,6 @@ public class StartFlowImpl implements IStartFlow {
     @Resource
     ProcessTransaction processTransaction;
 
-    @Resource
-    IProcessService processServiceImpl;
-
     /**
      * 启动process
      *
@@ -47,9 +41,9 @@ public class StartFlowImpl implements IStartFlow {
      * @return
      */
     @Override
-    public StatefulRtnBase startProcess(Process process, String checkpoint) {
+    public StatefulRtnBase startProcess(Process process, String checkpoint, UserVo currentUser) {
         StatefulRtnBase statefulRtnBase = new StatefulRtnBase();
-        if (null != process) {
+        if (null != process && null != currentUser) {
             String json = this.processToJosn(process, checkpoint);
             String encoding = "";
             String formatJson = JsonFormatTool.formatJson(json);
@@ -63,6 +57,8 @@ public class StartFlowImpl implements IStartFlow {
                     processById.setAppId(obj.getString("id"));
                     processById.setProcessId(obj.getString("pid"));
                     processById.setState(ProcessState.STARTED);
+                    processById.setLastUpdateUser(currentUser.getUsername());
+                    processById.setLastUpdateDttm(new Date());
                     int updateProcess = processTransaction.updateProcess(processById);
                     if (updateProcess <= 0) {
                         statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("保存更新状态失败");

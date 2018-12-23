@@ -70,6 +70,6 @@ public interface ProcessPathMapper {
     public int updateProcessPath(ProcessPath processPath);
 
     @UpdateProvider(type = ProcessPathMapperProvider.class, method = "updateEnableFlagByProcessId")
-    public int updateEnableFlagByProcessId(String processId);
+    public int updateEnableFlagByProcessId(String processId, String userName);
 
 }

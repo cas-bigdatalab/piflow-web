@@ -1,5 +1,6 @@
 package com.nature.third.impl;
 
+import com.nature.base.config.vo.UserVo;
 import com.nature.base.util.*;
 import com.nature.common.constant.SysParamsCache;
 import com.nature.component.workFlow.model.StopGroup;
@@ -9,7 +10,6 @@ import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -30,7 +30,7 @@ public class GetAllGroupsImpl implements IGetAllGroups {
 
 	@Override
 	public void getGroupAndSave() {
-		User user = SessionUserUtil.getCurrentUser();
+		UserVo user = SessionUserUtil.getCurrentUser();
 		String username = (null != user) ? user.getUsername() : "-1";
 		//先清空Group表信息再插入
 		int deleteGroup = stopGroupMapper.deleteGroup();

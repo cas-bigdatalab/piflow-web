@@ -1,5 +1,6 @@
 package com.nature.component.process.service;
 
+import com.nature.base.config.vo.UserVo;
 import com.nature.base.vo.StatefulRtnBase;
 import com.nature.component.process.model.Process;
 import com.nature.component.process.vo.ProcessVo;
@@ -17,6 +18,7 @@ public interface IProcessService {
      */
     @Transient
     public List<ProcessVo> getProcessAllVoList();
+
     /**
      * 查询processVoList(只查询process表)
      *
@@ -90,7 +92,7 @@ public interface IProcessService {
      * @param processVo
      * @return
      */
-    public int updateProcess(ProcessVo processVo);
+    public int updateProcess(ProcessVo processVo, UserVo currentUser);
 
     /**
      * 调用start接口并保存返回信息
@@ -98,7 +100,7 @@ public interface IProcessService {
      * @param flow
      * @return
      */
-    public Process startFlowAndUpdateProcess(Flow flow);
+    public Process startFlowAndUpdateProcess(Flow flow, UserVo currentUser);
 
     /**
      * 拷贝 process并新建
@@ -106,7 +108,7 @@ public interface IProcessService {
      * @param processId
      * @return
      */
-    public Process processCopyProcessAndAdd(String processId);
+    public Process processCopyProcessAndAdd(String processId, UserVo currentUser);
 
     /**
      * 根据flowId生成Process并保存
@@ -124,5 +126,5 @@ public interface IProcessService {
      * @return
      */
     @Transient
-    public StatefulRtnBase updateProcessEnableFlag(String processId);
+    public StatefulRtnBase updateProcessEnableFlag(String processId, UserVo currentUser);
 }

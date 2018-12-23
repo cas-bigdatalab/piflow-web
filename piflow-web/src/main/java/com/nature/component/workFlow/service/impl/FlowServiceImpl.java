@@ -1,20 +1,6 @@
 package com.nature.component.workFlow.service.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.annotation.Transient;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
+import com.nature.base.config.vo.UserVo;
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.StatefulRtnBaseUtils;
@@ -27,13 +13,7 @@ import com.nature.component.mxGraph.model.MxGraphModel;
 import com.nature.component.mxGraph.vo.MxCellVo;
 import com.nature.component.mxGraph.vo.MxGeometryVo;
 import com.nature.component.mxGraph.vo.MxGraphModelVo;
-import com.nature.component.workFlow.model.Flow;
-import com.nature.component.workFlow.model.FlowInfoDb;
-import com.nature.component.workFlow.model.Paths;
-import com.nature.component.workFlow.model.Property;
-import com.nature.component.workFlow.model.PropertyTemplate;
-import com.nature.component.workFlow.model.Stops;
-import com.nature.component.workFlow.model.StopsTemplate;
+import com.nature.component.workFlow.model.*;
 import com.nature.component.workFlow.service.IFlowService;
 import com.nature.component.workFlow.utils.FlowInfoDbUtil;
 import com.nature.component.workFlow.utils.MxGraphModelUtil;
@@ -43,15 +23,19 @@ import com.nature.component.workFlow.vo.FlowInfoDbVo;
 import com.nature.component.workFlow.vo.FlowVo;
 import com.nature.component.workFlow.vo.PathsVo;
 import com.nature.component.workFlow.vo.StopsVo;
-import com.nature.mapper.FlowInfoDbMapper;
-import com.nature.mapper.FlowMapper;
-import com.nature.mapper.PathsMapper;
-import com.nature.mapper.PropertyMapper;
-import com.nature.mapper.StopsMapper;
-import com.nature.mapper.StopsTemplateMapper;
+import com.nature.mapper.*;
 import com.nature.mapper.mxGraph.MxCellMapper;
 import com.nature.mapper.mxGraph.MxGeometryMapper;
 import com.nature.mapper.mxGraph.MxGraphModelMapper;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.annotation.Transient;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.*;
 
 @Service
 @Transactional
@@ -188,7 +172,7 @@ public class FlowServiceImpl implements IFlowService {
     @Override
     @Transient
     public StatefulRtnBase saveAppId(String flowId, FlowInfoDb appId) {
-        User user = SessionUserUtil.getCurrentUser();
+        UserVo user = SessionUserUtil.getCurrentUser();
         String username = (null != user) ? user.getUsername() : "-1";
         StatefulRtnBase satefulRtnBase = new StatefulRtnBase();
         if (StringUtils.isNotBlank(flowId)) {
@@ -258,7 +242,7 @@ public class FlowServiceImpl implements IFlowService {
      * @return
      */
     private StatefulRtnBase addFlowStops(MxGraphModelVo mxGraphModelVo, Flow flow,boolean flag) {
-    	 User user = SessionUserUtil.getCurrentUser();
+    	 UserVo user = SessionUserUtil.getCurrentUser();
          String username = (null != user) ? user.getUsername() : "-1";
         StatefulRtnBase statefulRtnBase = new StatefulRtnBase();
         // 判断mxGraphModelVo和flow是否为空
@@ -434,7 +418,7 @@ public class FlowServiceImpl implements IFlowService {
      * @return
      */
     private StatefulRtnBase updateMxGraph(MxGraphModelVo mxGraphModelVo, MxGraphModel mxGraphModel) {
-        User user = SessionUserUtil.getCurrentUser();
+        UserVo user = SessionUserUtil.getCurrentUser();
         String username = (null != user) ? user.getUsername() : "-1";
         StatefulRtnBase statefulRtnBase = new StatefulRtnBase();
         // 判断传入的数据是否为空
@@ -475,7 +459,7 @@ public class FlowServiceImpl implements IFlowService {
      * @return
      */
     private StatefulRtnBase updateFlow(MxGraphModelVo mxGraphModelVo, Flow flow) {
-        User user = SessionUserUtil.getCurrentUser();
+        UserVo user = SessionUserUtil.getCurrentUser();
         String username = (null != user) ? user.getUsername() : "-1";
         StatefulRtnBase statefulRtnBase = new StatefulRtnBase();
         if (null != flow) {
@@ -749,7 +733,7 @@ public class FlowServiceImpl implements IFlowService {
      * @return
      */
     private Stops stopsTemplateToStops(MxCellVo mxCellVo) {
-        User user = SessionUserUtil.getCurrentUser();
+        UserVo user = SessionUserUtil.getCurrentUser();
         String username = (null != user) ? user.getUsername() : "-1";
         Stops stops = null;
         if (null != mxCellVo) {
@@ -845,7 +829,7 @@ public class FlowServiceImpl implements IFlowService {
      * @return
      */
     private StatefulRtnBase updateMxCellList(List<MxCellVo> mxCellVoList, List<MxCell> mxCellList) {
-        User user = SessionUserUtil.getCurrentUser();
+        UserVo user = SessionUserUtil.getCurrentUser();
         String username = (null != user) ? user.getUsername() : "-1";
         StatefulRtnBase statefulRtnBase = new StatefulRtnBase();
 

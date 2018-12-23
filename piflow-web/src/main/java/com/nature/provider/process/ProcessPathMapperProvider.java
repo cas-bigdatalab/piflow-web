@@ -299,11 +299,14 @@ public class ProcessPathMapperProvider {
         return sqlStr;
     }
 
-    public String updateEnableFlagByProcessId(String processId) {
+    public String updateEnableFlagByProcessId(String processId, String userName) {
         String sqlStr = "select 0";
-        if (StringUtils.isNotBlank(processId)) {
+        if (!StringUtils.isAnyEmpty(processId, userName)) {
             SQL sql = new SQL();
             sql.UPDATE("FLOW_PROCESS_PATH");
+            sql.SET("LAST_UPDATE_DTTM = " + Utils.addSqlStr(DateUtils.dateTimesToStr(new Date())));
+            sql.SET("LAST_UPDATE_USER = " + Utils.addSqlStr(userName));
+            sql.SET("VERSION=(VERSION+1)");
             sql.SET("enable_flag = 0");
             sql.WHERE("enable_flag = 1");
             sql.WHERE("FK_FLOW_PROCESS_ID = " + Utils.addSqlStr(processId));

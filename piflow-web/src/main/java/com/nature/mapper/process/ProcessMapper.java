@@ -93,6 +93,6 @@ public interface ProcessMapper {
      * @return
      */
     @UpdateProvider(type = ProcessMapperProvider.class, method = "updateEnableFlag")
-    public int updateEnableFlag(String id);
+    public int updateEnableFlag(String id, String username);
 
 }

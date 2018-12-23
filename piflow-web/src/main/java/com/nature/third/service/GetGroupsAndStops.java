@@ -1,26 +1,7 @@
 package com.nature.third.service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import com.nature.base.util.HttpClientStop;
-import com.nature.base.util.ImageUtils;
-import com.nature.base.util.LoggerUtil;
-import com.nature.base.util.SessionUserUtil;
-import com.nature.base.util.Utils;
+import com.nature.base.config.vo.UserVo;
+import com.nature.base.util.*;
 import com.nature.common.Eunm.PortType;
 import com.nature.common.constant.SysParamsCache;
 import com.nature.component.workFlow.model.PropertyTemplate;
@@ -29,6 +10,19 @@ import com.nature.component.workFlow.model.StopsTemplate;
 import com.nature.mapper.PropertyTemplateMapper;
 import com.nature.mapper.StopGroupMapper;
 import com.nature.mapper.StopsTemplateMapper;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 @Component
 @Transactional
@@ -58,7 +52,7 @@ public class GetGroupsAndStops {
     @RequestMapping("/save")
     @Transactional
     public void getGroupAndSave() {
-        User user = SessionUserUtil.getCurrentUser();
+        UserVo user = SessionUserUtil.getCurrentUser();
         String username = (null != user) ? user.getUsername() : "-1";
         // 先清空Group表信息再插入
         int deleteGroup = stopGroupMapper.deleteGroup();
@@ -94,7 +88,7 @@ public class GetGroupsAndStops {
     @RequestMapping("/saveStopsAndProperty")
     @Transactional
     private void getStopsAndProperty() {
-    	  User user = SessionUserUtil.getCurrentUser();
+    	  UserVo user = SessionUserUtil.getCurrentUser();
         String username = (null != user) ? user.getUsername() : "-1";
         int deleteStopsInfo = stopGroupMapper.deleteStopsInfo();
         logger.info("成功删除StopsInfo" + deleteStopsInfo + "条数据！！！");

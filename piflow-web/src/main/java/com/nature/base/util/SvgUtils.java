@@ -55,8 +55,8 @@ public class SvgUtils {
                     // 放stops的g标签开始
                     viewXmlStrBuf.append("<g>");
                     // stop图片的坐标
-                    int imageX = 0;
-                    int imageY = 0;
+                    double imageX = 0;
+                    double imageY = 0;
                     for (MxCell mxCell : stops) {
                         if (null != mxCell) {
                             //stop的name
@@ -67,13 +67,13 @@ public class SvgUtils {
                             MxGeometry mxGeometry = mxCell.getMxGeometry();
                             if (null != mxGeometry) {
                                 //mxCell的x坐标
-                                int mxGeometryX = (StringUtils.isNotBlank(mxGeometry.getX()) ? Integer.parseInt(mxGeometry.getX()) : 0);
+                                double mxGeometryX = (StringUtils.isNotBlank(mxGeometry.getX()) ? Double.parseDouble(mxGeometry.getX()) : 0);
                                 //mxCell的y坐标
-                                int mxGeometryY = (StringUtils.isNotBlank(mxGeometry.getY()) ? Integer.parseInt(mxGeometry.getY()) : 0);
+                                double mxGeometryY = (StringUtils.isNotBlank(mxGeometry.getY()) ? Double.parseDouble(mxGeometry.getY()) : 0);
                                 //mxCell的高度
-                                int mxGeometryHeight = (StringUtils.isNotBlank(mxGeometry.getHeight()) ? Integer.parseInt(mxGeometry.getHeight()) : 0);
+                                double mxGeometryHeight = (StringUtils.isNotBlank(mxGeometry.getHeight()) ? Double.parseDouble(mxGeometry.getHeight()) : 0);
                                 //mxCell的宽度
-                                int mxGeometryWidth = (StringUtils.isNotBlank(mxGeometry.getWidth()) ? Integer.parseInt(mxGeometry.getWidth()) : 0);
+                                double mxGeometryWidth = (StringUtils.isNotBlank(mxGeometry.getWidth()) ? Double.parseDouble(mxGeometry.getWidth()) : 0);
                                 // stop 图片信息计算
                                 // stop图片的坐标
                                 imageX = mxGeometryX;
@@ -119,10 +119,10 @@ public class SvgUtils {
                                 viewXmlStrBuf.append("</g>");
                                 // stop 文字信息计算
                                 // 字的坐标
-                                int fontX = ((mxGeometryWidth - name.length() * 6) / 2) + imageX;
-                                int fontY = imageY + mxGeometryHeight + 8;
-                                int fontWidth = name.length() * 6;
-                                int fontHeight = 12;
+                                double fontX = ((mxGeometryWidth - name.length() * 6) / 2) + imageX;
+                                double fontY = imageY + mxGeometryHeight + 8;
+                                double fontWidth = name.length() * 6;
+                                double fontHeight = 12;
                                 // 开始拼字
                                 viewXmlStrBuf.append("<g transform='translate(" + fontX + "," + fontY + ")'>");//x和y坐标
                                 viewXmlStrBuf.append("<foreignObject style='overflow:visible;' pointer-events='all' ");
@@ -206,21 +206,21 @@ public class SvgUtils {
                 String targetHeightStr = targetMxGeometry.getHeight();
                 // 参数判空
                 if (!StringUtils.isAnyEmpty(sourceXStr, sourceYStr, sourceWidthStr, sourceHeightStr, targetXStr, targetYStr, targetWidthStr, targetHeightStr)) {
-                    // 坐标和高宽参数转int
-                    int sourceX = Integer.parseInt(sourceXStr);
-                    int sourceY = Integer.parseInt(sourceYStr);
-                    int sourceWidth = Integer.parseInt(sourceWidthStr);
-                    int sourceHeight = Integer.parseInt(sourceHeightStr);
-                    int targetX = Integer.parseInt(targetXStr);
-                    int targetY = Integer.parseInt(targetYStr);
-                    int targetWidth = Integer.parseInt(targetWidthStr);
-                    int targetHeight = Integer.parseInt(targetHeightStr);
+                    // 坐标和高宽参数转double
+                    double sourceX = Double.parseDouble(sourceXStr);
+                    double sourceY = Double.parseDouble(sourceYStr);
+                    double sourceWidth = Double.parseDouble(sourceWidthStr);
+                    double sourceHeight = Double.parseDouble(sourceHeightStr);
+                    double targetX = Double.parseDouble(targetXStr);
+                    double targetY = Double.parseDouble(targetYStr);
+                    double targetWidth = Double.parseDouble(targetWidthStr);
+                    double targetHeight = Double.parseDouble(targetHeightStr);
                     // 线的起点坐标
-                    int sourceDotX = 0;
-                    int sourceDotY = 0;
+                    double sourceDotX = 0;
+                    double sourceDotY = 0;
                     // 线的终点点坐标
-                    int targetDotX = 0;
-                    int targetDotY = 0;
+                    double targetDotX = 0;
+                    double targetDotY = 0;
                     // 箭头方向
                     ArrowDirection arrowDirection = null;
 

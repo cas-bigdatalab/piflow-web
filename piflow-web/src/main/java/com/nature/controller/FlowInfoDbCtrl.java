@@ -1,5 +1,6 @@
 package com.nature.controller;
 
+import com.nature.base.config.vo.UserVo;
 import com.nature.base.util.DateUtils;
 import com.nature.base.util.JsonUtils;
 import com.nature.base.util.LoggerUtil;
@@ -17,7 +18,6 @@ import com.nature.third.vo.flowInfo.ThirdFlowInfoVo;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -110,7 +110,7 @@ public class FlowInfoDbCtrl {
      * @return
      */
     private Map<String, String> getProgressAndUpdate(Map<String, String> map, FlowInfoDb flowInfo) {
-        User user = SessionUserUtil.getCurrentUser();
+        UserVo user = SessionUserUtil.getCurrentUser();
         String username = (null != user) ? user.getUsername() : "-1";
         //如果进度等于100或者状态是COMPLETED,直接返回
         if (Float.parseFloat(flowInfo.getProgress()) == 100 || "COMPLETED".equals(flowInfo.getState())) {

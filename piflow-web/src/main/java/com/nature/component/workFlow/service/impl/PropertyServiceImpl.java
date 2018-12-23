@@ -1,5 +1,6 @@
 package com.nature.component.workFlow.service.impl;
 
+import com.nature.base.config.vo.UserVo;
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.Utils;
@@ -13,11 +14,9 @@ import com.nature.component.workFlow.vo.StopsVo;
 import com.nature.mapper.PropertyMapper;
 import com.nature.mapper.StopsMapper;
 import com.nature.mapper.StopsTemplateMapper;
-
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -68,7 +67,7 @@ public class PropertyServiceImpl implements IPropertyService {
 	 */
 	@Override
 	public void checkStopTemplateUpdate(String id) {
-		 User user = SessionUserUtil.getCurrentUser();
+		 UserVo user = SessionUserUtil.getCurrentUser();
          String username = (null != user) ? user.getUsername() : "-1";
         Map<String, Property> PropertyMap = new HashMap<String, Property>();
         List<Property> addPropertyList = new ArrayList<Property>();

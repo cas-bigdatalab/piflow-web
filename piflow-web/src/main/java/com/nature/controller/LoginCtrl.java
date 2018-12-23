@@ -1,5 +1,6 @@
 package com.nature.controller;
 
+import com.nature.base.config.vo.UserVo;
 import com.nature.base.util.JsonUtils;
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.SessionUserUtil;
@@ -8,7 +9,6 @@ import com.nature.component.sysUser.service.ISysUserService;
 import com.nature.component.sysUser.vo.SysUserVo;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -33,7 +33,7 @@ public class LoginCtrl {
 
     @RequestMapping("/login")
     public ModelAndView login(ModelAndView modelAndView) {
-        User user = SessionUserUtil.getCurrentUser();
+        UserVo user = SessionUserUtil.getCurrentUser();
         if (null != user) {
             logger.info("已经登陆过了，跳转主页");
             modelAndView.setViewName("index");
@@ -47,7 +47,7 @@ public class LoginCtrl {
     @RequestMapping("/")
     public ModelAndView indexHome(ModelAndView modelAndView) {
         modelAndView.setViewName("index");
-        User user = SessionUserUtil.getCurrentUser();
+        UserVo user = SessionUserUtil.getCurrentUser();
         if (null != user) {
             logger.info("用户" + user.getUsername() + "登陆成功跳转主页");
         }

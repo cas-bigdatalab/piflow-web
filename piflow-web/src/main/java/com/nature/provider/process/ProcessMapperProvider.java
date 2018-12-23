@@ -202,7 +202,7 @@ public class ProcessMapperProvider {
             SQL sql = new SQL();
             String appIDsStr = Utils.strArrayToStr(appIDs);
             if (StringUtils.isNotBlank(appIDsStr)) {
-                appIDsStr = appIDsStr.replace(",","','");
+                appIDsStr = appIDsStr.replace(",", "','");
                 appIDsStr = "'" + appIDsStr + "'";
 
                 sql.SELECT("*");
@@ -325,11 +325,14 @@ public class ProcessMapperProvider {
      * @param id
      * @return
      */
-    public String updateEnableFlag(String id) {
+    public String updateEnableFlag(String id, String username) {
         String sqlStr = "select 0";
-        if (StringUtils.isNotBlank(id)) {
+        if (!StringUtils.isAnyEmpty(id, username)) {
             SQL sql = new SQL();
             sql.UPDATE("FLOW_PROCESS");
+            sql.SET("LAST_UPDATE_DTTM = " + Utils.addSqlStr(DateUtils.dateTimesToStr(new Date())));
+            sql.SET("LAST_UPDATE_USER = " + Utils.addSqlStr(username));
+            sql.SET("VERSION=(VERSION+1)");
             sql.SET("ENABLE_FLAG = 0");
             sql.WHERE("ENABLE_FLAG = 1");
             sql.WHERE("ID = " + Utils.addSqlStrAndReplace(id));

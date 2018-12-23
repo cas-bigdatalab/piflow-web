@@ -1,16 +1,6 @@
 package com.nature.component.template.service.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
+import com.nature.base.config.vo.UserVo;
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.Utils;
@@ -26,6 +16,15 @@ import com.nature.mapper.FlowMapper;
 import com.nature.mapper.PropertyMapper;
 import com.nature.mapper.StopsMapper;
 import com.nature.mapper.template.FlowAndStopsTemplateVoMapper;
+import org.slf4j.Logger;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Service
 @Transactional
@@ -84,7 +83,7 @@ public class FlowAndStopsTemplateVoServiceImpl implements IFlowAndStopsTemplateV
 	@Override
 	@Transactional
 	public void addTemplateStopsToFlow(Template template,Flow flow,int maxPageId) {
-		User user = SessionUserUtil.getCurrentUser();
+		UserVo user = SessionUserUtil.getCurrentUser();
 	    String username = (null != user) ? user.getUsername() : "-1";
 		int addPropertyList = 0;
 		List<Property> list = new ArrayList<Property>();
@@ -136,7 +135,7 @@ public class FlowAndStopsTemplateVoServiceImpl implements IFlowAndStopsTemplateV
 	@Override
 	@Transactional
 	public void addStopsList(List<Stops> stopsList,Template template) {
-		 User user = SessionUserUtil.getCurrentUser();
+		 UserVo user = SessionUserUtil.getCurrentUser();
          String username = (null != user) ? user.getUsername() : "-1";
 		List<PropertyTemplateModel> list = new ArrayList<PropertyTemplateModel>();
 		//保存stop，属性信息

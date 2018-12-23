@@ -1,37 +1,8 @@
 package com.nature.controller;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.transaction.Transactional;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.alibaba.fastjson.JSON;
-import com.nature.base.util.FileUtils;
-import com.nature.base.util.FlowXmlUtils;
-import com.nature.base.util.JsonUtils;
-import com.nature.base.util.LoggerUtil;
-import com.nature.base.util.SessionUserUtil;
-import com.nature.base.util.Utils;
+import com.nature.base.config.vo.UserVo;
+import com.nature.base.util.*;
 import com.nature.base.vo.StatefulRtnBase;
 import com.nature.common.constant.SysParamsCache;
 import com.nature.component.mxGraph.model.MxGraphModel;
@@ -46,6 +17,24 @@ import com.nature.component.workFlow.model.Template;
 import com.nature.component.workFlow.service.IFlowService;
 import com.nature.component.workFlow.service.IPathsService;
 import com.nature.component.workFlow.service.IStopGroupService;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * template的ctrl
@@ -80,7 +69,7 @@ public class TemplateCtrl {
 	    @ResponseBody
 	    @Transactional
 	    public String saveData(HttpServletRequest request, Model model) {
-	    	User user = SessionUserUtil.getCurrentUser();
+	    	UserVo user = SessionUserUtil.getCurrentUser();
 	        String username = (null != user) ? user.getUsername() : "-1";
 		  	Map<String, String> rtnMap = new HashMap<String, String>();
 	        rtnMap.put("code", "0");
@@ -179,7 +168,7 @@ public class TemplateCtrl {
 	    @RequestMapping(value = "/upload", method = RequestMethod.POST)
 	    @ResponseBody
 	    public String upload(@RequestParam("templateFile") MultipartFile file) {
-	    	User user = SessionUserUtil.getCurrentUser();
+	    	UserVo user = SessionUserUtil.getCurrentUser();
 	        String username = (null != user) ? user.getUsername() : "-1";
 	       Map<String, Object> rtnMap = new HashMap<String, Object>();
 	       rtnMap.put("code", "0");

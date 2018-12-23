@@ -1,9 +1,10 @@
 package com.nature.controller;
 
+import com.nature.base.config.vo.UserVo;
 import com.nature.base.util.HttpUtils;
 import com.nature.base.util.JsonUtils;
 import com.nature.base.util.LoggerUtil;
-import com.nature.base.util.StatefulRtnBaseUtils;
+import com.nature.base.util.SessionUserUtil;
 import com.nature.base.vo.StatefulRtnBase;
 import com.nature.common.Eunm.ProcessState;
 import com.nature.component.process.model.Process;
@@ -77,6 +78,8 @@ public class ProcessCtrl {
     @RequestMapping("/getProcessList")
     public ModelAndView getProcessList(HttpServletRequest request, ModelAndView modelAndView) {
         modelAndView.setViewName("/indexNew");
+        UserVo currentUser = SessionUserUtil.getCurrentUser();
+        modelAndView.addObject("currentUser", currentUser);
         modelAndView.addObject("accessPath", "getProcessList");
         // modelAndView.setViewName("process/process");
         List<ProcessVo> processVoList = processServiceImpl.getProcessVoList();
@@ -208,10 +211,11 @@ public class ProcessCtrl {
         String id = request.getParameter("id");
         String checkpoint = request.getParameter("checkpointStr");
         if (StringUtils.isNotBlank(id)) {
+            UserVo currentUser = SessionUserUtil.getCurrentUser();
             // Query Process by 'ProcessId' and copy new
-            Process process = processServiceImpl.processCopyProcessAndAdd(id);
+            Process process = processServiceImpl.processCopyProcessAndAdd(id, currentUser);
             if (null != process) {
-                StatefulRtnBase statefulRtnBase = startFlowImpl.startProcess(process, checkpoint);
+                StatefulRtnBase statefulRtnBase = startFlowImpl.startProcess(process, checkpoint, currentUser);
                 if (null != statefulRtnBase && statefulRtnBase.isReqRtnStatus()) {
                     // Call the 'AppInfo' interface once the startup is successful
                     processServiceImpl.getAppInfoByThirdAndSave(process.getAppId());
@@ -219,7 +223,7 @@ public class ProcessCtrl {
                     rtnMap.put("processId", process.getId());
                     rtnMap.put("errMsg", "Successful startup");
                 } else {
-                    processServiceImpl.updateProcessEnableFlag(process.getId());
+                    processServiceImpl.updateProcessEnableFlag(process.getId(), currentUser);
                     rtnMap.put("errMsg", "Calling interface failed, startup failed");
                     logger.warn("Calling interface failed, startup failed");
                 }
@@ -296,11 +300,12 @@ public class ProcessCtrl {
         rtnMap.put("code", "0");
         String processID = request.getParameter("processID");
         if (StringUtils.isNotBlank(processID)) {
+            UserVo currentUser = SessionUserUtil.getCurrentUser();
             // Query Process by 'ProcessId'
             Process processById = processServiceImpl.getProcessById(processID);
             if (null != processById) {
                 if (processById.getState() != ProcessState.STARTED) {
-                    StatefulRtnBase isSuccess = processServiceImpl.updateProcessEnableFlag(processID);
+                    StatefulRtnBase isSuccess = processServiceImpl.updateProcessEnableFlag(processID, currentUser);
                     // Determine whether the deletion is successful
                     if (null != isSuccess) {
                         if (isSuccess.isReqRtnStatus()) {
@@ -326,6 +331,7 @@ public class ProcessCtrl {
             logger.warn("processID is null");
             rtnMap.put("errMsg", "processID is null");
         }
+        SessionUserUtil.getCurrentUser();
         return JsonUtils.toJsonNoException(rtnMap);
     }
 

@@ -1,5 +1,6 @@
 package com.nature.base.config;
 
+import com.nature.base.config.vo.UserVo;
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.SpringContextUtil;
 import com.nature.component.sysUser.model.SysUser;
@@ -15,6 +16,7 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -29,6 +31,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 @Configurable
 @EnableWebSecurity
@@ -77,7 +80,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new SavedRequestAwareAuthenticationSuccessHandler() {
             @Override
             public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-                User userDetails = (User) authentication.getPrincipal();
+                UserVo userDetails = (UserVo) authentication.getPrincipal();
                 logger.info("USER : " + userDetails.getUsername() + " LOGIN SUCCESS !  ");
                 super.onAuthenticationSuccess(request, response, authentication);
             }
@@ -104,7 +107,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public UserDetailsService userDetailsService() {    //用户登录实现
         return new UserDetailsService() {
 
-            User getUserDetails(String username) {
+            UserVo getUserDetails(String username) {
+                UserVo userVo = null;
                 if (null == sysUserMapper) {
                     sysUserMapper = (SysUserMapper) SpringContextUtil.getBean("sysUserMapper");
                 }
@@ -112,15 +116,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 String password = "";
                 String role = null;
                 if (null != sysUser) {
+                    userVo = new UserVo();
                     password = sysUser.getPassword();
                     role = sysUser.getRole();
+                    userVo.setUsername(sysUser.getUsername());
+                    userVo.setPassword(sysUser.getPassword());
+                    userVo.setName(sysUser.getName());
+                    userVo.setAge(sysUser.getAge());
+                    userVo.setRole(role);
+                    userVo.setAuthorities(AuthorityUtils.commaSeparatedStringToAuthorityList(role));
                 }
-                return new User(username, password, AuthorityUtils.commaSeparatedStringToAuthorityList(role));
+                return userVo;
             }
 
             @Override
             public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-                User user = getUserDetails(username);
+                UserVo user = getUserDetails(username);
                 if (user == null) {
                     throw new UsernameNotFoundException("Username " + username + " not found");
                 }

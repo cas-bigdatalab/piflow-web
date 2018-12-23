@@ -1,5 +1,6 @@
 package com.nature.controller;
 
+import com.nature.base.config.vo.UserVo;
 import com.nature.base.util.JsonUtils;
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.SessionUserUtil;
@@ -24,7 +25,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -100,11 +100,12 @@ public class FlowCtrl {
         String errMsg = "";
         String flowId = request.getParameter("flowId");
         if (StringUtils.isNotBlank(flowId)) {
+            UserVo currentUser = SessionUserUtil.getCurrentUser();
             // 根据flowId查询flow
             Flow flowById = flowServiceImpl.getFlowById(flowId);
             // addFlow不为空且ReqRtnStatus的值为true,则保存成功
             if (null != flowById) {
-                Process process = processServiceImpl.startFlowAndUpdateProcess(flowById);
+                Process process = processServiceImpl.startFlowAndUpdateProcess(flowById, currentUser);
                 if (null != process) {
                     rtnMap.put("code", "1");
                     rtnMap.put("processId", process.getId());
@@ -146,7 +147,7 @@ public class FlowCtrl {
     @RequestMapping("/saveFlowInfo")
     @ResponseBody
     public String saveFlowInfo(FlowVo flowVo) {
-        User user = SessionUserUtil.getCurrentUser();
+        UserVo user = SessionUserUtil.getCurrentUser();
         String username = (null != user) ? user.getUsername() : "-1";
         Map<String, Object> rtnMap = new HashMap<String, Object>();
         rtnMap.put("code", "0");
@@ -188,7 +189,7 @@ public class FlowCtrl {
     @RequestMapping("/updateFlowInfo")
     @ResponseBody
     public int updateFlowInfo(Flow flow) {
-        User user = SessionUserUtil.getCurrentUser();
+        UserVo user = SessionUserUtil.getCurrentUser();
         String username = (null != user) ? user.getUsername() : "-1";
         String id = flow.getId();
         flow.setId(id);

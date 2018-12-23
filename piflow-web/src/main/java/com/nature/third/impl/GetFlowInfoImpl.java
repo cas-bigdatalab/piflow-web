@@ -1,5 +1,6 @@
 package com.nature.third.impl;
 
+import com.nature.base.config.vo.UserVo;
 import com.nature.base.util.DateUtils;
 import com.nature.base.util.HttpUtils;
 import com.nature.base.util.LoggerUtil;
@@ -18,7 +19,6 @@ import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -66,7 +66,7 @@ public class GetFlowInfoImpl implements IGetFlowInfo {
      */
     @Override
     public FlowInfoDb AddFlowInfo(String appId, Flow flow) {
-        User user = SessionUserUtil.getCurrentUser();
+        UserVo user = SessionUserUtil.getCurrentUser();
         String username = (null != user) ? user.getUsername() : "-1";
         ThirdFlowInfoVo startFlow2 = getFlowInfo(appId);
         ThirdProgressVo progress = iGetFlowProgress.getFlowProgress(appId);

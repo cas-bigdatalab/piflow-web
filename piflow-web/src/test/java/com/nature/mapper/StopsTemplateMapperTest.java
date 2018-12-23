@@ -1,6 +1,7 @@
 package com.nature.mapper;
 
 import com.nature.ApplicationTests;
+import com.nature.base.config.vo.UserVo;
 import com.nature.base.util.*;
 import com.nature.common.constant.SysParamsCache;
 import com.nature.component.workFlow.model.PropertyTemplate;
@@ -69,7 +70,7 @@ public class StopsTemplateMapperTest extends ApplicationTests {
 	@Transactional
 	@Rollback(value = false)
 	public void getStopGroupAndSave() {
-		User user = SessionUserUtil.getCurrentUser();
+		UserVo user = SessionUserUtil.getCurrentUser();
 		String username = (null != user) ? user.getUsername() : "-1";
 		int deleteGroup = stopGroupMapper.deleteGroup();
 		System.out.println("成功删除Group" + deleteGroup + "条数据！！！");
@@ -102,7 +103,7 @@ public class StopsTemplateMapperTest extends ApplicationTests {
 	@Transactional
 	@Rollback(value = false)
 	public void saveStopsAndProperty() {
-		User user = SessionUserUtil.getCurrentUser();
+		UserVo user = SessionUserUtil.getCurrentUser();
 		String username = (null != user) ? user.getUsername() : "-1";
 		int deleteStopsInfo = stopGroupMapper.deleteStopsInfo();
 		logger.info("成功删除StopsInfo" + deleteStopsInfo + "条数据！！！");

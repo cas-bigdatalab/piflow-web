@@ -70,7 +70,7 @@ public interface ProcessStopMapper {
             @Result(column = "id", property = "processStopPropertyList", many = @Many(select = "com.nature.mapper.process.ProcessStopPropertyMapper.getStopPropertyByProcessStopId", fetchType = FetchType.LAZY))
 
     })
-    public List<ProcessStop> getProcessStopByPageIdAndPageIds(@Param("processId")String processId, @Param("pageIds")String[] pageIds);
+    public List<ProcessStop> getProcessStopByPageIdAndPageIds(@Param("processId") String processId, @Param("pageIds") String[] pageIds);
 
     /**
      * 根据pid和name查询
@@ -103,6 +103,6 @@ public interface ProcessStopMapper {
      * @return
      */
     @UpdateProvider(type = ProcessStopMapperProvider.class, method = "updateEnableFlagByProcessId")
-    public int updateEnableFlagByProcessId(String processId);
+    public int updateEnableFlagByProcessId(String processId, String username);
 
 }

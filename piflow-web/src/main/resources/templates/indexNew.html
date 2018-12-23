@@ -38,7 +38,7 @@
             <li class="dropdown">
                 <a class="user-menu" data-toggle="dropdown">
                     <img th:src='@{/index/img/userpic.png}' alt=""/>
-                    <span>Howdy, Nature! <b class="caret"></b></span>
+                    <span th:text="'Howdy,' + ${currentUser?.name}"><b class="caret"></b></span>
                 </a>
                 <ul class="dropdown-menu">
                     <!--<li><a href="#" title=""><i class="icon-user"></i>Profile</a></li>-->

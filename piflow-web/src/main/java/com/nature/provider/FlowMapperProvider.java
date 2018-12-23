@@ -2,6 +2,7 @@ package com.nature.provider;
 
 import java.util.Date;
 
+import com.nature.base.config.vo.UserVo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
 import org.springframework.security.core.userdetails.User;
@@ -216,7 +217,7 @@ public class FlowMapperProvider {
      * @return
      */
     public String updateEnableFlagById(String id) {
-      	 User user = SessionUserUtil.getCurrentUser();
+      	 UserVo user = SessionUserUtil.getCurrentUser();
            String username = (null != user) ? user.getUsername() : "-1";
            String sqlStr = "select 0";
           if (StringUtils.isNotBlank(id)) {
