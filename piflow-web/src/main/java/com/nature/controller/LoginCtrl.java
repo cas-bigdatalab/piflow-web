@@ -73,7 +73,7 @@ public class LoginCtrl {
             if (addUser > 0) {
                 rtnMap.put("code", "1");
                 rtnMap.put("errMsg", "Congratulations, registration is successful");
-            }else {
+            } else {
                 rtnMap.put("errMsg", "Registration failed, save failed");
                 logger.info("注册失败，保存失败");
             }
