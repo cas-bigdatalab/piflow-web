@@ -28,8 +28,8 @@ public class SysParamsCache {
 
     // 接口ip和端口
     // public static String INTERFACE_URL_HEAD = "http://10.0.88.55:8002";
-    // public static String INTERFACE_URL_HEAD = "http://10.0.86.191:8002";
-     public static String INTERFACE_URL_HEAD = "http://10.0.86.98:8001";
+    public static String INTERFACE_URL_HEAD = "http://10.0.86.191:8002";
+    // public static String INTERFACE_URL_HEAD = "http://10.0.86.98:8001";
     // public static String INTERFACE_URL_HEAD = "http://10.0.88.25:8002";
     // stops groups信息
     public static String INTERFACE_STOPS_GROUPS = "/stop/groups";
