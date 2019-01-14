@@ -709,6 +709,7 @@ Sidebar.prototype.addSearchPalette = function(expand)
 	button.style.marginBottom = '8px';
 	center.style.paddingTop = '4px';
 	center.style.paddingBottom = '8px';
+    button.setAttribute('class', 'btn btn-default');
 	
 	center.appendChild(button);
 	div.appendChild(center);
