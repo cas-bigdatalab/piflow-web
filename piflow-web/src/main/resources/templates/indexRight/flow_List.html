@@ -51,6 +51,7 @@
                 </tbody>
                 <tbody th:if="${appInfo}">
                 <tr th:each='list:${appInfo}'>
+                    <td style="display: none" th:text="${#dates.format(list.crtDttm, 'yyyy-MM-dd HH:mm:ss')}"></td>
                     <td style="display: none" th:text="${list.id}"></td>
                     <td class="center" th:text="${list.name}"></td>
                     <td class="center" th:text="${list.description}"></td>
@@ -362,7 +363,9 @@
                 if ('0' !== dataMap.code) {
                     $('#fullScreenList').hide();
                     layer.msg(dataMap.errMsg, {icon: 1, shade: 0, time: 2000}, function () {
-                        location.reload();
+                        //启动成功后跳转至监控页面
+                        var tempwindow = window.open('_blank');
+                        tempwindow.location = "/piflow-web/process/getProcessById?processId=" + dataMap.processId;
                     });
                 } else {
                     $('#fullScreenList').hide();
