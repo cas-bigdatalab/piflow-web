@@ -54,7 +54,7 @@ public interface FlowMapper {
 	public Flow getFlowById(String id);
 	
 	@UpdateProvider(type = FlowMapperProvider.class, method = "updateEnableFlagById")
-	public int updateEnableFlagById(@Param("id") String id);
+	public int updateEnableFlagById(String id);
 	
 	/**
 	 * 根据flow查询PageId最大值

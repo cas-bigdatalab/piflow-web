@@ -218,7 +218,7 @@ public class PropertyMapperProvider {
       	 UserVo user = SessionUserUtil.getCurrentUser();
            String username = (null != user) ? user.getUsername() : "-1";
            String sqlStr = "select 0";
-          if (StringUtils.isNotBlank(content) && StringUtils.isNotBlank(id)) {
+          if (StringUtils.isNotBlank(id)) {
               SQL sql = new SQL();
               sql.UPDATE("flow_stops_property");
               sql.SET("custom_value = " + Utils.addSqlStr(content));

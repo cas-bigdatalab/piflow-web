@@ -198,7 +198,7 @@ public class TemplateCtrl {
 		    	//后缀.xml
 		    	String Suffix = name.substring(name.length()- 4);
 		    	//添加时间戳
-		    	String uploadfileName =  prefix + fileName ;
+		    	String uploadfileName =  prefix + "-" +fileName ;
 				template.setName(uploadfileName + Suffix);
 				template.setPath(path);
 				//根据保存好的文件路径读取xml文件并返回xml字符串

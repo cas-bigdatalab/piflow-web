@@ -60,12 +60,14 @@ public class StopsServiceImpl implements IStopsService {
 
     @Override
     public Integer stopsUpdate(StopsVo stopsVo) {
+        UserVo user = SessionUserUtil.getCurrentUser();
+        String username = (null != user) ? user.getUsername() : "-1";
         if (null != stopsVo) {
             Stops stopsById = stopsMapper.getStopsById(stopsVo.getId());
             if (null != stopsById) {
                 BeanUtils.copyProperties(stopsVo, stopsById);
                 stopsById.setLastUpdateDttm(new Date());
-                stopsById.setLastUpdateUser("-1");
+                stopsById.setLastUpdateUser(username);
                 int i = stopsMapper.updateStops(stopsById);
                 return i;
             }

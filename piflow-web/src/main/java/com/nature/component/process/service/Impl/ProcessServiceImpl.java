@@ -15,7 +15,6 @@ import com.nature.component.process.utils.ProcessStopUtils;
 import com.nature.component.process.vo.ProcessPathVo;
 import com.nature.component.process.vo.ProcessStopVo;
 import com.nature.component.process.vo.ProcessVo;
-import com.nature.component.sysUser.vo.SysUserVo;
 import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.model.Paths;
 import com.nature.component.workFlow.model.Property;
@@ -510,6 +509,8 @@ public class ProcessServiceImpl implements IProcessService {
      */
     @Override
     public Process flowToProcessAndSave(String flowId) {
+        UserVo user = SessionUserUtil.getCurrentUser();
+        String username = (null != user) ? user.getUsername() : "-1";
         Process process = null;
         //flowId判空
         if (StringUtils.isNotBlank(flowId)) {
@@ -523,9 +524,9 @@ public class ProcessServiceImpl implements IProcessService {
                 // set基本信息
                 process.setId(Utils.getUUID32());
                 process.setCrtDttm(new Date());
-                process.setCrtUser("Add");
+                process.setCrtUser(username);
                 process.setLastUpdateDttm(new Date());
-                process.setLastUpdateUser("Add");
+                process.setLastUpdateUser(username);
                 process.setEnableFlag(true);
                 // 取出flow的画板信息
                 MxGraphModel mxGraphModel = flowById.getMxGraphModel();
@@ -551,9 +552,9 @@ public class ProcessServiceImpl implements IProcessService {
                             // set基本信息
                             processStop.setId(Utils.getUUID32());
                             processStop.setCrtDttm(new Date());
-                            processStop.setCrtUser("Add");
+                            processStop.setCrtUser(username);
                             processStop.setLastUpdateDttm(new Date());
-                            processStop.setLastUpdateUser("Add");
+                            processStop.setLastUpdateUser(username);
                             processStop.setEnableFlag(true);
                             // 关联外键
                             processStop.setProcess(process);
@@ -572,9 +573,9 @@ public class ProcessServiceImpl implements IProcessService {
                                         // set 基本信息
                                         processStopProperty.setId(Utils.getUUID32());
                                         processStopProperty.setCrtDttm(new Date());
-                                        processStopProperty.setCrtUser("Add");
+                                        processStopProperty.setCrtUser(username);
                                         processStopProperty.setLastUpdateDttm(new Date());
-                                        processStopProperty.setLastUpdateUser("Add");
+                                        processStopProperty.setLastUpdateUser(username);
                                         processStopProperty.setEnableFlag(true);
                                         // 关联外键
                                         processStopProperty.setProcessStop(processStop);
@@ -603,9 +604,9 @@ public class ProcessServiceImpl implements IProcessService {
                             // set基本信息
                             processPath.setId(Utils.getUUID32());
                             processPath.setCrtDttm(new Date());
-                            processPath.setCrtUser("Add");
+                            processPath.setCrtUser(username);
                             processPath.setLastUpdateDttm(new Date());
-                            processPath.setLastUpdateUser("Add");
+                            processPath.setLastUpdateUser(username);
                             processPath.setEnableFlag(true);
                             // 关联外键
                             processPath.setProcess(process);

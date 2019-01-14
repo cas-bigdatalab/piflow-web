@@ -5366,17 +5366,18 @@ DiagramFormatPanel.prototype.destroy = function()
 		this.gridEnabledListener = null;
 	}
 };
-   function shiqu(id,data){
+   function shiqu(id,data,type){
 	 if(data!=null && data.length>0 && id.length>0){
 		var content = document.getElementById(''+data+'').value;
 		var classname = document.getElementById(''+data+'').className;
-		if(classname == 'true'){
-			if(content == "") 
-			// $("#"+data+"").focus();
-			 $("#"+data+"").css("background-color","#FFD39B");
+		//如果修改内容为空并且是文本框的话,将不执行修改操作；
+		if(content == "" && type == "input" && classname == 'true'){
+            // $("#"+data+"").focus();
+            $("#"+data+"").css("background-color","#FFD39B");
+            return;
+        }else if(content == "" && type == "select"){
+            content = "-1";
 		}
-		if(content == "" ) 
-			return;
 		 $("#"+data+"").css("background-color","");
 	 $.ajax({
          cache:true, 
@@ -5403,7 +5404,7 @@ DiagramFormatPanel.prototype.destroy = function()
        $("#stopValue").attr('id',name);
        $("#"+name).val($("#"+id).val());
        $("#"+name).attr('name',name);
-     //  $("#"+name).attr('onblur','shiqu("' + id + '","stopValue")');
+     //  $("#"+name).attr('onblur','shiqu("' + id + '","stopValue","input")');
        $("#"+name).attr('id','stopValue');
        $("#buttonStop").attr("onclick","updateStops('"+ id + "','stopValue',this);");
 	   var p = $(e).offset();
