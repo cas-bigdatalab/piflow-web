@@ -7,6 +7,7 @@ server:
 syspara:
   imagesPath: file:/piflow/image/
   xmlPath: file:/piflow/xml/
+  interfaceUrlHead : http://10.0.86.191:8002
 spring:
   ########################################################
   ######  数据源

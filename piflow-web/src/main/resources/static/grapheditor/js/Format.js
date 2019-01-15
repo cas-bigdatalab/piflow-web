@@ -2453,7 +2453,7 @@ StopsBasicInfoFormatPanel.prototype.addFont = function(container)
     this.container.setAttribute('id', 'containerID');
 	
     //创建一个div,里面放置所有的stopState属性标签
-    var stopStateDiv = document.createElement('stopStateDiv');
+    /*var stopStateDiv = document.createElement('stopStateDiv');
     stopStateDiv.setAttribute('id', 'table_idDiv');
     var tableStopState = document.createElement("tableStopState");
     tableStopState.style.borderCollapse = "separate";
@@ -2505,7 +2505,7 @@ StopsBasicInfoFormatPanel.prototype.addFont = function(container)
 	tbodyStopState.appendChild(trStopState3);
 	tableStopState.appendChild(tbodyStopState);
 	stopStateDiv.appendChild(tableStopState);
-	this.container.appendChild(stopStateDiv);
+	this.container.appendChild(stopStateDiv);*/
 	return container;
 };
 /*Add StopsBasicInfo tab  stop*/
@@ -5369,7 +5369,7 @@ DiagramFormatPanel.prototype.destroy = function()
    function shiqu(id,data,type){
 	 if(data!=null && data.length>0 && id.length>0){
 		var content = document.getElementById(''+data+'').value;
-		var classname = document.getElementById(''+data+'').className;
+		var classname =  $('#'+data).attr('data-toggle');
 		//如果修改内容为空并且是文本框的话,将不执行修改操作；
 		if(content == "" && type == "input" && classname == 'true'){
             // $("#"+data+"").focus();
@@ -5427,7 +5427,7 @@ DiagramFormatPanel.prototype.destroy = function()
    function updateStops(id,name,e){
 	   var p = $(e).offset();
 		var content = document.getElementById(''+name+'').value;
-		var classname = document.getElementById(''+id+'').className;
+       var classname =  $('#'+id).attr('data-toggle');
 		if(content == "") {
 			if(classname == 'true'){
 				 $("#"+name+"").css("background-color","#FFD39B");

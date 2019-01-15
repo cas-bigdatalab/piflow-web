@@ -1,16 +1,14 @@
 package com.nature.provider;
 
-import java.util.Date;
-
 import com.nature.base.config.vo.UserVo;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.jdbc.SQL;
-import org.springframework.security.core.userdetails.User;
-
 import com.nature.base.util.DateUtils;
 import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.Utils;
 import com.nature.component.workFlow.model.Flow;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.jdbc.SQL;
+
+import java.util.Date;
 
 public class FlowMapperProvider {
 
@@ -135,7 +133,7 @@ public class FlowMapperProvider {
                 lastUpdateUser = "-1";
             }
             if (null == version) {
-                version = 0L;
+                version = 1L;
             }
             String lastUpdateDttmStr = DateUtils.dateTimesToStr(lastUpdateDttm);
             sql.SET("LAST_UPDATE_DTTM = " + Utils.addSqlStr(lastUpdateDttmStr));

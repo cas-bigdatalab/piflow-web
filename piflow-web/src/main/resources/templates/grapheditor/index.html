@@ -232,9 +232,9 @@
                     document.getElementById('stopSowner').innerText = data.owner;
                     document.getElementById('stopCreateDate').innerText = data.crtDttmString;
 
-                    document.getElementById('stopStateId').innerText = data.state ? data.state : "No state";
+                   /* document.getElementById('stopStateId').innerText = data.state ? data.state : "No state";
                     document.getElementById('stopsStartTimeId').innerText = data.startTimes ? data.startTimes : "No startTime";
-                    document.getElementById('stopEndTimeId').innerText = data.stopTimes ? data.stopTimes : "No stopTimes";
+                    document.getElementById('stopEndTimeId').innerText = data.stopTimes ? data.stopTimes : "No stopTimes";*/
                     //成功的话去掉定时器
                     window.clearTimeout(timerPath);
                 } else {
@@ -305,14 +305,15 @@
             var table = document.createElement("table");
             table.style.borderCollapse = "separate";
             table.style.borderSpacing = "0px 5px";
+            table.style.marginLeft = "12px";
             var tbody = document.createElement("tbody");
             for (var y = 0; y < data.length; y++) {
                 var select = document.createElement('select');
                 select.style.width = "290px";
-                select.style.height = "28px";
+                select.style.height = "32px";
                 select.setAttribute('id', '' + data[y].name + '');
                 select.setAttribute('onblur', 'shiqu("' + data[y].id + '","' + data[y].name + '","select")');
-                select.style.backgroundColor = "#E0EEEE";
+                select.setAttribute('class','form-control');
                 var displayName = data[y].displayName;
                 var customValue = data[y].customValue;
                 var allowableValues = data[y].allowableValues;
@@ -332,6 +333,7 @@
                     //循环给select下来赋值
                     for (i = 0; i < strs.length; i++) {
                         var option = document.createElement("option");
+                        option.style.backgroundColor = "#DBDBDB";
                         option.value = strs[i].replace("\"", "").replace("\"", "").replace("\[", "").replace("\]", "");
                         option.innerHTML = strs[i].replace("\"", "").replace("\"", "").replace("\[", "").replace("\]", "");
                         //设置默认选中项
@@ -343,7 +345,8 @@
                 }
                 var displayName = document.createElement('input');
                 if (required)
-                displayName.setAttribute('class', 'true');
+                displayName.setAttribute('data-toggle', 'true');
+                displayName.setAttribute('class', 'form-control');
                 displayName.setAttribute('id', '' + data[y].id + '');
                 displayName.setAttribute('name', '' + data[y].name + '');
               	displayName.setAttribute('onclick', 'stopTabTd(this)');
@@ -357,7 +360,7 @@
                 spanDisplayName.style.cursor = "pointer";
                 spanDisplayName.setAttribute('title', '' + data[y].description + '');
                 spanFlag.setAttribute('style', 'color:red');
-                mxUtils.write(spanDisplayName, '' + data[y].displayName + '' + ": ");
+                mxUtils.write(spanDisplayName, '' + data[y].name + '' + ": ");
                 mxUtils.write(spanFlag, '*');
                 //端口不可编辑
                 if ("outports" == data[y].displayName || "inports" == data[y].displayName) {

@@ -225,6 +225,8 @@ public class FlowServiceImpl implements IFlowService {
 
     @Override
     public int updateFlow(Flow flow) {
+        Flow flowDb = flowMapper.getFlowById(flow.getId());
+        flow.setVersion(flowDb.getVersion());
         return flowMapper.updateFlow(flow);
     }
 
