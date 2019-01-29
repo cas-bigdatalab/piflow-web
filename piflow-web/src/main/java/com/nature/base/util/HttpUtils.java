@@ -13,6 +13,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
+import org.apache.http.HttpVersion;
 import org.apache.http.NameValuePair;
 import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
@@ -58,6 +59,7 @@ public class HttpUtils {
 			// 设置参数到请求对象中
 			StringEntity stringEntity = new StringEntity(json.toString(), ContentType.APPLICATION_JSON);
 			stringEntity.setContentEncoding("utf-8");
+			httpPost.setProtocolVersion(HttpVersion.HTTP_1_1);
 			httpPost.setEntity(stringEntity);
 
 			logger.info("调用" + url + "，开始");

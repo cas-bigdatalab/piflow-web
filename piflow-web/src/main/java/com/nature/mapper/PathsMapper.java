@@ -1,11 +1,19 @@
 package com.nature.mapper;
 
-import com.nature.component.workFlow.model.Paths;
-import com.nature.provider.PathsMapperProvider;
-import org.apache.ibatis.annotations.*;
+import java.util.List;
+
+import org.apache.ibatis.annotations.InsertProvider;
+import org.apache.ibatis.annotations.Many;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Result;
+import org.apache.ibatis.annotations.Results;
+import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.annotations.UpdateProvider;
 import org.apache.ibatis.mapping.FetchType;
 
-import java.util.List;
+import com.nature.component.workFlow.model.Paths;
+import com.nature.provider.PathsMapperProvider;
 
 @Mapper
 public interface PathsMapper {
@@ -93,5 +101,5 @@ public interface PathsMapper {
      * @return
      */
     @UpdateProvider(type = PathsMapperProvider.class, method = "updateEnableFlagByFlowId")
-    public int updateEnableFlagByFlowId(String id);
+    public int updateEnableFlagByFlowId(@Param("flowId") String id);
 }
