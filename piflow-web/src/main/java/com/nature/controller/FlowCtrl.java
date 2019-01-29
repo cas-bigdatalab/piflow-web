@@ -245,7 +245,7 @@ public class FlowCtrl {
                 mxGraphModelServiceImpl.deleteMxGraphModelById(flowById.getId());
             }
             //删除FLow
-            deleteFLowInfo = flowServiceImpl.deleteFLowInfo(flowById.getId());
+            deleteFLowInfo = flowServiceImpl.deleteFLowInfo(id);
         }
         return deleteFLowInfo;
     }

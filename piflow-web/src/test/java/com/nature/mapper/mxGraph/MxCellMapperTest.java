@@ -14,9 +14,11 @@ import com.nature.base.util.Utils;
 import com.nature.component.mxGraph.model.MxCell;
 import com.nature.component.mxGraph.model.MxGeometry;
 
+import javax.annotation.Resource;
+
 public class MxCellMapperTest extends ApplicationTests {
 
-	@Autowired
+	@Resource
 	private MxCellMapper mxCellMapper;
 
 	Logger logger = LoggerUtil.getLogger();

@@ -219,7 +219,7 @@ public class MxGraphModelProvider {
                 if (null != flow) {
                     sql.SET("FK_FLOW_ID = " + Utils.addSqlStr(flow.getId()));
                 }
-             //   sql.WHERE("VERSION = " + version);
+                sql.WHERE("VERSION = " + version);
                 sql.WHERE("id = " + Utils.addSqlStr(id));
                 sqlStr = sql.toString() + ";";
                 if (StringUtils.isBlank(id)) {
