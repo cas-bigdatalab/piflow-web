@@ -2597,7 +2597,7 @@ Sidebar.prototype.addImagePalette = function(id, title, prefix, postfix, items, 
 				tmpTags = item.substring((slash >= 0) ? slash + 1 : 0, (dot >= 0) ? dot : item.length).replace(/[-_]/g, ' ');
 			}
 			
-			fns.push(this.createVertexTemplateEntry('image;html=1;labelBackgroundColor=#ffffff;image=' + prefix + item + postfix,
+			fns.push(this.createVertexTemplateEntry('image;html=1;labelBackgroundColor=#ffffff00;image=' + prefix + item + postfix,
 				this.defaultImageWidth, this.defaultImageHeight, value, title, title != null, null, this.filterTags(tmpTags)));
 		}))(items[i], (titles != null) ?  values[i]+"#"+titles[i] : null, (values != null) ? (values[i].length >10) ? values[i].substring(0,10)+"..." : values[i] : '', (tags != null) ? tags[items[i]] : null);
 	}
