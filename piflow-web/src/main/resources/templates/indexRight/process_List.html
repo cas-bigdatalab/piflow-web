@@ -318,7 +318,7 @@
                     //console.log("success");
                     var dataMap = JSON.parse(data);
                     if ('0' !== dataMap.code) {
-                        alert(dataMap.errorMsg);
+                        alert(dataMap.errMsg);
                         window.location.reload();
                     } else {
                         alert("Stop Failed:" + dataMap.errMsg);

@@ -7,7 +7,7 @@ server:
 syspara:
   imagesPath: file:/C:/Z_Nature/Z-mytest/piflow-web-file/Image/
   xmlPath: C:/Z_Nature/Z-mytest/piflow-web-file/xml/
-  interfaceUrlHead : http://10.0.86.98:8002
+  interfaceUrlHead : http://10.0.86.191:8002
 spring:
   ########################################################
   ######  数据源
