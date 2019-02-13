@@ -65,22 +65,30 @@
             <!-- Main navigation -->
             <ul class="navigation widget">
                 <li><a th:href="@{/}" title=""><i class="icon-home"></i>Dashboard</a></li>
-                <li id="selectedMenu" class="active">
+                <li id="selectedMenu">
                     <a href="#" title="" class="expand" id="current">
                         <i class="icon-reorder"></i>Menu<strong>3</strong>
                     </a>
                     <ul>
                         <li><a id="flowListMenuID" th:href="@{/web/flowList}" title="">Flow List</a></li>
-                        <li><a id="getProcessListMenuID" th:href="@{/process/processList}" title="">Process List</a>
-                        </li>
+                        <li><a id="getProcessListMenuID" th:href="@{/process/processList}" title="">Process List</a></li>
                         <li><a id="templateMenuID" th:href="@{/web/template}" title="">Template</a></li>
+                    </ul>
+                </li>
+                <li id="exampleMenu">
+                    <a href="#" title="" class="expand">
+                        <i class="icon-warning-sign"></i>ExampleMenu<strong>2</strong>
+                    </a>
+                    <ul>
+                        <li><a id="VideoMenuID" onclick="playVideo()" title="">Instructional Video</a></li>
+                        <li><a onclick="exampleView()" title="">Example</a></li>
                     </ul>
                 </li>
                 <!--
                 <li>
-		    <a href="#" title="" class="expand">
-		    	<i class="icon-warning-sign"></i>Error pages<strong>6</strong>
-		    </a>
+                    <a href="#" title="" class="expand">
+                        <i class="icon-warning-sign"></i>Error pages<strong>6</strong>
+                    </a>
                     <ul>
                         <li><a href="403.html" title="">403 page</a></li>
                         <li><a href="404.html" title="">404 page</a></li>
@@ -133,9 +141,15 @@
 <script th:inline="javascript">
     var accessPath = [[${accessPath}]];
     (function () {
-        $('#selectedMenu').addClass("active");
+        // $('#selectedMenu').addClass("active");
         $('#' + accessPath + 'MenuID').addClass("current");
     })();
+    function playVideo() {
+        $('#content').html("视频暂无");
+    }
+    function exampleView() {
+        $('#content').html("样例暂无");
+    }
 </script>
 </body>
 </html>
