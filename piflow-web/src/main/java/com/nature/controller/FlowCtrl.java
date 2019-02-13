@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/flow/*")
+@RequestMapping("/flow")
 public class FlowCtrl {
 
     /**

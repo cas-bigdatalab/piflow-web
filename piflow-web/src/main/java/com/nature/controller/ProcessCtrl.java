@@ -75,8 +75,8 @@ public class ProcessCtrl {
      * @param modelAndView
      * @return
      */
-    @RequestMapping("/getProcessList")
-    public ModelAndView getProcessList(HttpServletRequest request, ModelAndView modelAndView) {
+    @RequestMapping("/processList")
+    public ModelAndView processList(HttpServletRequest request, ModelAndView modelAndView) {
         modelAndView.setViewName("/indexNew");
         UserVo currentUser = SessionUserUtil.getCurrentUser();
         modelAndView.addObject("currentUser", currentUser);

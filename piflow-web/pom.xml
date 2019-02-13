@@ -140,12 +140,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>1.14.8</version>
-			<scope>provided</scope>
-		</dependency>
 		<!-- druid阿里巴巴数据库连接池 -->
 		<!--
 		<dependency>

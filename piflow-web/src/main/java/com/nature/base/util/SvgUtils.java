@@ -341,7 +341,7 @@ public class SvgUtils {
                                     lineSvgBuf.append("<path name='pathName' d='");
                                     lineSvgBuf.append("M " + sourceDotX + " " + sourceDotY + " ");
                                     lineSvgBuf.append("L " + targetDotX + " " + targetDotY + " ");
-                                    lineSvgBuf.append("' fill='none' stroke='#000000' stroke-width='3' stroke-miterlimit='10'></path>");
+                                    lineSvgBuf.append("' fill='none' stroke='#000000' stroke-width='1' stroke-miterlimit='10'></path>");
                                 } else {
                                     lineSvgBuf.append("<path name='pathName' d='");
                                     lineSvgBuf.append("M " + sourceDotX + " " + sourceDotY + " ");
@@ -360,7 +360,7 @@ public class SvgUtils {
                                         lineSvgBuf.append("L " + (((targetDotX - sourceDotX) / 2) + sourceDotX) + " " + targetDotX + " ");
                                     }
                                     lineSvgBuf.append("L " + targetDotX + " " + targetDotY + " ");
-                                    lineSvgBuf.append("' fill='none' stroke='#000000' stroke-width='3' stroke-miterlimit='10'></path>");
+                                    lineSvgBuf.append("' fill='none' stroke='#000000' stroke-width='1' stroke-miterlimit='10'></path>");
                                 }
                                 break;
                             case 1:
@@ -369,7 +369,7 @@ public class SvgUtils {
                                 lineSvgBuf.append("M " + sourceDotX + " " + sourceDotY + " ");
                                 lineSvgBuf.append("L " + targetDotX + " " + sourceDotY + " ");
                                 lineSvgBuf.append("L " + targetDotX + " " + targetDotY + " ");
-                                lineSvgBuf.append("' fill='none' stroke='#000000' stroke-width='3' stroke-miterlimit='10'></path>");
+                                lineSvgBuf.append("' fill='none' stroke='#000000' stroke-width='1' stroke-miterlimit='10'></path>");
                                 break;
                             default:
                                 break;
@@ -397,7 +397,7 @@ public class SvgUtils {
                         lineSvgBuf.append((targetDotX - (arrowDirection.getUpX() - arrowDirection.getLfetX())) + " ");
                         // 第三个L(左侧点)的Y
                         lineSvgBuf.append((targetDotY - (arrowDirection.getUpY() - arrowDirection.getLfetY())) + " ");
-                        lineSvgBuf.append("Z' fill='#000000' stroke='#000000' stroke-width='3' stroke-miterlimit='10' pointer-events='all'></path>");
+                        lineSvgBuf.append("Z' fill='#000000' stroke='#000000' stroke-width='1' stroke-miterlimit='10' pointer-events='all'></path>");
                         lineSvgBuf.append("</g>");
                         lineSvg = lineSvgBuf.toString();
                     } else {
