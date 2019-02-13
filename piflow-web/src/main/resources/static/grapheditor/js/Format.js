@@ -5414,7 +5414,7 @@ DiagramFormatPanel.prototype.destroy = function()
             shadeClose: true,
             closeBtn: 1,
             shift:7,
-            anim: 1,//由上往下弹出
+            anim: 5,//由上往下弹出
             shade: 0.1,
             resize:false,//禁止拉伸
             move: false,//禁止拖拽

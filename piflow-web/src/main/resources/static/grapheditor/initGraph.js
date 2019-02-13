@@ -234,7 +234,7 @@ function add(data, stopId, isCheckpointss) {
             var isSelect = data[y].isSelect;
             //是否必填
             var required = data[y].required;
-            //如果大于4表示有下拉框
+            //如果大于4并且isSelect为true表示有下拉框
             if (allowableValues.length > 4 && isSelect) {
                 var selectValue = JSON.parse(allowableValues);
                 var selectInfo = JSON.stringify(selectValue);
@@ -265,14 +265,13 @@ function add(data, stopId, isCheckpointss) {
             displayName.setAttribute('name', '' + data[y].name + '');
             displayName.setAttribute('onclick', 'stopTabTd(this)');
             displayName.style.width = "290px";
-            //    displayName.style.background = "rgb(245, 245, 245)";
+            displayName.setAttribute('readonly', 'readonly');
+            displayName.style.background = "rgb(245, 245, 245)";
             customValue = customValue == 'null' ? '' : customValue;
             displayName.setAttribute('value', '' + customValue + '');
             var spanDisplayName = 'span' + data[y].displayName;
             var spanDisplayName = document.createElement('span');
             var spanFlag = document.createElement('span');
-            spanDisplayName.style.cursor = "pointer";
-            spanDisplayName.setAttribute('title', '' + data[y].description + '');
             spanFlag.setAttribute('style', 'color:red');
             mxUtils.write(spanDisplayName, '' + data[y].name + '' + ": ");
             mxUtils.write(spanFlag, '*');
@@ -280,23 +279,33 @@ function add(data, stopId, isCheckpointss) {
             if ("outports" == data[y].displayName || "inports" == data[y].displayName) {
                 displayName.setAttribute('disabled', 'disabled');
             }
+
+            var img = document.createElement("img");
+            img.setAttribute('src', '/piflow-web/img/descIcon.png');
+            img.style.cursor = "pointer";
+            img.setAttribute('title', '' + data[y].description + '');
             var tr = document.createElement("tr");
             tr.setAttribute('class', 'trTableStop');
             var td = document.createElement("td");
             td.style.width = "60px";
             var td1 = document.createElement("td");
             var td2 = document.createElement("td");
+            var td3 = document.createElement("td");
+            td3.style.width = "25px";
             //开始appendchild()追加各个元素
             td.appendChild(spanDisplayName);
+            td3.appendChild(img);
             //本次循环大于4追加下拉,小于4默认文本框
             if (allowableValues.length > 4 && isSelect) {
                 td1.appendChild(select);
+
             } else {
                 td1.appendChild(displayName);
                 if (required)
                     td2.appendChild(spanFlag);
             }
             tr.appendChild(td);
+            tr.appendChild(td3);
             tr.appendChild(td1);
             tr.appendChild(td2);
             tbody.appendChild(tr);
