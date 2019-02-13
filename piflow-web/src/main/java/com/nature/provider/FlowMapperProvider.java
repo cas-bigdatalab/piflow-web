@@ -35,6 +35,7 @@ public class FlowMapperProvider {
             String executorCores = flow.getExecutorCores();
             String executorMemory = flow.getExecutorMemory();
             String executorNumber = flow.getExecutorNumber();
+            Boolean isExample = flow.getIsExample();
             SQL sql = new SQL();
 
             // INSERT_INTO括号中为数据库表名
@@ -61,6 +62,9 @@ public class FlowMapperProvider {
             if (null == enableFlag) {
                 enableFlag = true;
             }
+            if (null == isExample) {
+                isExample = false;
+            }
             sql.VALUES("ID", Utils.addSqlStr(id));
             sql.VALUES("CRT_DTTM", Utils.addSqlStr(DateUtils.dateTimesToStr(crtDttm)));
             sql.VALUES("CRT_USER", Utils.addSqlStr(crtUser));
@@ -68,6 +72,7 @@ public class FlowMapperProvider {
             sql.VALUES("LAST_UPDATE_USER", Utils.addSqlStr(lastUpdateUser));
             sql.VALUES("VERSION", version + "");
             sql.VALUES("ENABLE_FLAG", (enableFlag ? 1 : 0) + "");
+            sql.VALUES("IS_EXAMPLE", (isExample ? 1 : 0) + "");
 
             // 处理其他字段
             if (StringUtils.isNotBlank(description)) {
@@ -186,8 +191,9 @@ public class FlowMapperProvider {
         SQL sql = new SQL();
         sql.SELECT("*");
         sql.FROM("flow");
-        sql.WHERE("enable_flag = 1");
-        sql.ORDER_BY(" crt_dttm DESC  ");
+        sql.WHERE("ENABLE_FLAG = 1");
+        sql.WHERE("IS_EXAMPLE = 0");
+        sql.ORDER_BY(" CRT_DTTM DESC  ");
         sqlStr = sql.toString() + ";";
         return sqlStr;
     }
@@ -204,7 +210,8 @@ public class FlowMapperProvider {
         sql.SELECT("*");
         sql.FROM("flow");
         sql.WHERE("id = " + Utils.addSqlStr(id));
-        sql.WHERE("enable_flag = 1");
+        sql.WHERE("ENABLE_FLAG = 1");
+        sql.WHERE("IS_EXAMPLE = 0");
         sqlStr = sql.toString() + ";";
         return sqlStr;
     }
@@ -220,12 +227,13 @@ public class FlowMapperProvider {
            String sqlStr = "select 0";
           if (StringUtils.isNotBlank(id)) {
               SQL sql = new SQL();
-              sql.UPDATE("flow");
+              sql.UPDATE("FLOW");
               sql.SET("ENABLE_FLAG = 0");
-              sql.SET("last_update_user = " + Utils.addSqlStr(username) );
-              sql.SET("last_update_dttm = " + Utils.addSqlStr(DateUtils.dateTimesToStr(new Date())) );
+              sql.SET("LAST_UPDATE_USER = " + Utils.addSqlStr(username) );
+              sql.SET("LAST_UPDATE_DTTM = " + Utils.addSqlStr(DateUtils.dateTimesToStr(new Date())) );
               sql.WHERE("ENABLE_FLAG = 1");
-              sql.WHERE("id = " + Utils.addSqlStrAndReplace(id));
+              sql.WHERE("IS_EXAMPLE = 0");
+              sql.WHERE("ID = " + Utils.addSqlStrAndReplace(id));
 
               sqlStr = sql.toString() + ";";
           }

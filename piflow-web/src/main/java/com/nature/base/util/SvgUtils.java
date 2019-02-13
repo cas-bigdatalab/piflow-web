@@ -168,7 +168,7 @@ public class SvgUtils {
                     viewXmlStrBuf.append("</g>");
                 }
             }
-            viewXmlStrBuf.append(" <g transform='translate(0.5,0.5)'>");
+            viewXmlStrBuf.append(" <g transform='translate(0,0)'>");
             viewXmlStrBuf.append("<rect id='selectedRectShow' x='0' y='0' width='66' height='66' fill='none' stroke='#00a8ff' stroke-dasharray='3 3' pointer-events='none' style='display: none;'></rect>");
             viewXmlStrBuf.append("<path id='selectedPathShow' d='M 0 0 L 0 0 ' fill='none' stroke='#00a8ff' stroke-width='5' stroke-miterlimit='10' style='display: none;'></path>");
             viewXmlStrBuf.append("<path id='selectedArrowShow'd='M 0 0 L 0 0 L 0 0 L 0 0 Z' fill='none' stroke='#00a8ff' stroke-width='5' stroke-miterlimit='00' pointer-events='all'></path>");
@@ -331,7 +331,7 @@ public class SvgUtils {
                     if (null != arrowDirection) {
                         // 开始画线
                         StringBuffer lineSvgBuf = new StringBuffer();
-                        lineSvgBuf.append("<g name='stopPageId" + sourceMxCell.getPageId() + "' transform='translate(0.5,0.5)' style='visibility: visible;'");
+                        lineSvgBuf.append("<g name='stopPageId" + sourceMxCell.getPageId() + "' transform='translate(0,0)' style='visibility: visible;'");
                         lineSvgBuf.append("onclick=\"selectedPath('" + pageID + "',this)\">");
                         // 线开始计算
                         switch (breakPoint) {
