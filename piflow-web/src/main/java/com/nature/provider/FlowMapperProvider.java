@@ -211,7 +211,6 @@ public class FlowMapperProvider {
         sql.FROM("flow");
         sql.WHERE("id = " + Utils.addSqlStr(id));
         sql.WHERE("ENABLE_FLAG = 1");
-        sql.WHERE("IS_EXAMPLE = 0");
         sqlStr = sql.toString() + ";";
         return sqlStr;
     }

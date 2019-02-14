@@ -71,17 +71,17 @@
                     </a>
                     <ul>
                         <li><a id="flowListMenuID" th:href="@{/web/flowList}" title="">Flow List</a></li>
-                        <li><a id="getProcessListMenuID" th:href="@{/process/processList}" title="">Process List</a></li>
+                        <li><a id="getProcessListMenuID" th:href="@{/process/processList}" title="">Process List</a>
+                        </li>
                         <li><a id="templateMenuID" th:href="@{/web/template}" title="">Template</a></li>
                     </ul>
                 </li>
                 <li id="exampleMenu">
                     <a href="#" title="" class="expand">
-                        <i class="icon-warning-sign"></i>ExampleMenu<strong>2</strong>
+                        <i class="icon-warning-sign"></i>ExampleMenu<strong id="exampleMenuCounts">1</strong>
                     </a>
                     <ul>
                         <li><a id="VideoMenuID" onclick="playVideo()" title="">Instructional Video</a></li>
-                        <li><a onclick="exampleView()" title="">Example</a></li>
                     </ul>
                 </li>
                 <!--
@@ -143,13 +143,51 @@
     (function () {
         // $('#selectedMenu').addClass("active");
         $('#' + accessPath + 'MenuID').addClass("current");
+        $.ajax({
+            cache: true,//保留缓存数据
+            type: "POST",//为post请求
+            url: "/piflow-web/exampleMenu/exampleUrlList",//这是我在后台接受数据的文件名
+            data: {},
+            async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
+            error: function (request) {//请求失败之后的操作
+                if (confirm("The sample failed to load, is it reloaded?")) {
+                    window.location.reload();
+                }
+                return;
+            },
+            success: function (data) {//请求成功之后的操作
+                var dataMap = JSON.parse(data);
+                if (0 !== dataMap.code) {
+                    var flowExampleList = dataMap.flowExampleList;
+                    if (flowExampleList && flowExampleList.length > 0) {
+                        $('#exampleMenuCounts').html(flowExampleList.length + 1);
+                        var exampleMenuUl = $('#exampleMenu ul');
+                        for (var i = 0; i < flowExampleList.length; i++) {
+                            var appendHtml = '<li><a onclick=\'exampleView(';
+                            appendHtml += '"' + flowExampleList[i].id + '"';
+                            appendHtml += ')\' title="">';
+                            appendHtml += flowExampleList[i].name;
+                            appendHtml += '</a></li>';
+                            exampleMenuUl.append(appendHtml);
+                            console.log(appendHtml);
+                        }
+
+                    }
+                }
+            }
+        });
     })();
+
     function playVideo() {
         $('#content').html("视频暂无");
     }
-    function exampleView() {
-        $('#content').html("样例暂无");
+
+    function exampleView(exampleId) {
+        $('#content').html("样例" + exampleId + "暂无");
+        window.location.href = "/piflow-web/grapheditor/home?load=d41d23dc3cad4494aeb6624aae48c2dc";
     }
+
+    //@ sourceURL=index.js
 </script>
 </body>
 </html>
