@@ -931,6 +931,11 @@ EditorUi.prototype.splitSize = (mxClient.IS_TOUCH || mxClient.IS_POINTER) ? 12 :
 EditorUi.prototype.menubarHeight = 30;
 
 /**
+ * Specifies that the menu bar is displayed or hidden. Default is true.
+ */
+EditorUi.prototype.menubarShow = true;
+
+/**
  * Specifies the width of the format panel should be enabled. Default is true.
  */
 EditorUi.prototype.formatEnabled = true;
@@ -2974,6 +2979,7 @@ EditorUi.prototype.createDivs = function()
     this.menubarContainer.style.top = '0px';
     this.menubarContainer.style.left = '0px';
     this.menubarContainer.style.right = '0px';
+    this.menubarContainer.style.display = (this.menubarShow ? 'block':'none');
     this.toolbarContainer.style.left = '0px';
     this.toolbarContainer.style.right = '0px';
     this.sidebarContainer.style.left = '0px';
@@ -3084,7 +3090,6 @@ EditorUi.prototype.createUi = function()
 
     // Creates toolbar
     this.toolbar = (this.editor.chromeless) ? null : this.createToolbar(this.createDiv('geToolbar'));
-
     if (this.toolbar != null)
     {
         this.toolbarContainer.appendChild(this.toolbar.container);
