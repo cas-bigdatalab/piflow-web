@@ -69,4 +69,6 @@ public interface IFlowService {
 	
 	public List<FlowVo> getFlowList();
 
+	public String getFlowExampleList();
+
 }

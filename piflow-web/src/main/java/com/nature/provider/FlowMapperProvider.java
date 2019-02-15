@@ -199,6 +199,23 @@ public class FlowMapperProvider {
     }
 
     /**
+     * 查詢所有样例工作流
+     *
+     * @return
+     */
+    public String getFlowExampleList() {
+        String sqlStr = "";
+        SQL sql = new SQL();
+        sql.SELECT("ID,NAME");
+        sql.FROM("FLOW");
+        sql.WHERE("ENABLE_FLAG = 1");
+        sql.WHERE("IS_EXAMPLE = 1");
+        sql.ORDER_BY(" CRT_DTTM DESC  ");
+        sqlStr = sql.toString() + ";";
+        return sqlStr;
+    }
+
+    /**
      * 根据工作流Id查询工作流
      *
      * @param id

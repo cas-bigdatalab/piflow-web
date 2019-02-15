@@ -1,10 +1,7 @@
 package com.nature.component.workFlow.service.impl;
 
 import com.nature.base.config.vo.UserVo;
-import com.nature.base.util.LoggerUtil;
-import com.nature.base.util.SessionUserUtil;
-import com.nature.base.util.StatefulRtnBaseUtils;
-import com.nature.base.util.Utils;
+import com.nature.base.util.*;
 import com.nature.base.vo.StatefulRtnBase;
 import com.nature.common.Eunm.PortType;
 import com.nature.component.mxGraph.model.MxCell;
@@ -27,10 +24,10 @@ import com.nature.mapper.*;
 import com.nature.mapper.mxGraph.MxCellMapper;
 import com.nature.mapper.mxGraph.MxGeometryMapper;
 import com.nature.mapper.mxGraph.MxGraphModelMapper;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Transient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -983,4 +980,24 @@ public class FlowServiceImpl implements IFlowService {
 	        }
 		return flowVoList;
 	}
+
+    @Override
+    public String getFlowExampleList() {
+        Map<String, Object> rtnMap = new HashMap<String, Object>();
+        rtnMap.put("code", 0);
+        List<FlowVo> flowVoList = new ArrayList<>();
+        List<Flow> flowExampleList = flowMapper.getFlowExampleList();
+        // list判空
+        if(CollectionUtils.isNotEmpty(flowExampleList)){
+            flowExampleList.forEach(flow -> {
+                FlowVo flowVo = new FlowVo();
+                flowVo.setId(flow.getId());
+                flowVo.setName(flow.getName());
+                flowVoList.add(flowVo);
+            });
+            rtnMap.put("code", 1);
+            rtnMap.put("flowExampleList", flowVoList);
+        }
+        return JsonUtils.toJsonNoException(rtnMap);
+    }
 }

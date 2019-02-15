@@ -37,6 +37,14 @@ public interface FlowMapper {
 	public List<Flow> getFlowList();
 
 	/**
+	 * 查詢所有样例工作流
+	 *
+	 * @return
+	 */
+	@SelectProvider(type = FlowMapperProvider.class, method = "getFlowExampleList")
+	public List<Flow> getFlowExampleList();
+
+	/**
 	 * 根据工作流Id查询工作流
 	 * 
 	 * @param id

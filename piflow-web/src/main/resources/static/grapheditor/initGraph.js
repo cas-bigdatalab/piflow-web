@@ -29,20 +29,14 @@ function initGraph() {
         }
         //监控事件
         graphGlobal.addListener(mxEvent.CELLS_ADDED, function (sender, evt) {
-            var cells = evt.properties.cells;
-            addCellsCustom(cells, 'ADD');
-            if ('cellsAdded' == evt.name) {
-                findBasicInfo(evt);
-            }
+            processListener(evt, "ADD");
         });
         graphGlobal.addListener(mxEvent.CELLS_MOVED, function (sender, evt) {
-            if(evt.properties.disconnect){
-                saveXml(null, 'MOVED');
-            }
-            findBasicInfo(evt);
+            processListener(evt, "MOVED");
+
         });
         graphGlobal.addListener(mxEvent.CELLS_REMOVED, function (sender, evt) {
-            saveXml(null, 'REMOVED');
+            processListener(evt, "REMOVED");
         });
         graphGlobal.addListener(mxEvent.CLICK, function (sender, evt) {
             findBasicInfo(evt);
@@ -52,10 +46,7 @@ function initGraph() {
             var node = xml.documentElement;
             var dec = new mxCodec(node.ownerDocument);
             dec.decode(node, graphGlobal.getModel());
-            thisEditor.lastSnapshot = new Date().getTime();
-            thisEditor.undoManager.clear();
-            thisEditor.ignoredChanges = 0;
-            thisEditor.setModified(false);
+            eraseRecord()
         }
         ;
         graphGlobal.setTooltips(false);
@@ -447,10 +438,7 @@ function loadXml(loadStr) {
     var node = xml.documentElement;
     var dec = new mxCodec(node.ownerDocument);
     dec.decode(node, graphGlobal.getModel());
-    thisEditor.lastSnapshot = new Date().getTime();
-    thisEditor.undoManager.clear();
-    thisEditor.ignoredChanges = 0;
-    thisEditor.setModified(false);
+    eraseRecord()
 }
 
 //请求接口重新加载stops
@@ -1019,4 +1007,63 @@ function loadTemplate() {
         var oDiv = document.getElementById("divloadingXml");
         oDiv.style.display = "none";
     });
+}
+
+function processListener(evt, operType) {
+    if (!isExample) {
+        if ('ADD' === operType) {
+            var cells = evt.properties.cells;
+            addCellsCustom(cells, 'ADD');
+            if ('cellsAdded' == evt.name) {
+                findBasicInfo(evt);
+            }
+        } else if ('MOVED' === operType) {
+            if (evt.properties.disconnect) {
+                saveXml(null, operType);
+            }
+            findBasicInfo(evt);
+        } else if ('REMOVED' === operType) {
+            saveXml(null, operType);
+        }
+
+    } else {
+        if ('ADD' === operType || 'REMOVED' === operType) {
+            alert("This is an example, you can't add edit delete");
+        } else if ('MOVED' === operType) {
+            findBasicInfo(evt);
+        }
+        prohibitEditing(isExample, operType);
+    }
+
+}
+
+function prohibitEditing(isExample, operType) {
+    $.ajax({
+        cache: true,//保留缓存数据
+        type: "POST",//为post请求
+        url: "/piflow-web/exampleMenu/exampleUrlList",//这是我在后台接受数据的文件名
+        data: {},
+        async: true,
+        error: function (request) {//请求失败之后的操作
+            if ('ADD' === operType || 'REMOVED' === operType) {
+                location.reload();
+            }
+            eraseRecord()
+            return;
+        },
+        success: function (data) {//请求成功之后的操作
+            if ('ADD' === operType || 'REMOVED' === operType) {
+                location.reload();
+            }
+            eraseRecord()
+        }
+    });
+}
+
+//擦除画板记录
+function eraseRecord() {
+    thisEditor.lastSnapshot = new Date().getTime();
+    thisEditor.undoManager.clear();
+    thisEditor.ignoredChanges = 0;
+    thisEditor.setModified(false);
 }

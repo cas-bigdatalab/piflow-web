@@ -87,6 +87,7 @@ public class GrapheditorCtrl {
                 String loadXml = FlowXmlUtils.mxGraphModelToXml(mxGraphModelVo);
                 model.addAttribute("xmlDate", loadXml);
                 model.addAttribute("load", load);
+                model.addAttribute("isExample", (null == flowById.getIsExample() ? false : flowById.getIsExample()));
                 return "grapheditor/index";
             } else {
                 return "errorPage";
