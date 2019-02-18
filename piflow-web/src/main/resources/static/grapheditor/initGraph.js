@@ -480,6 +480,7 @@ function queryFlowInfo() {
                     document.getElementById('flowDescription').innerText = "No content";
                     document.getElementById('createrTime').innerText = "No content";
                 }
+                getRunningProcessList();
             }
         }
     });
@@ -1043,6 +1044,23 @@ function prohibitEditing(isExample, operType) {
                 location.reload();
             }
             eraseRecord()
+        }
+    });
+}
+
+function getRunningProcessList() {
+    $.ajax({
+        cache: true,//保留缓存数据
+        type: "POST",//为post请求
+        url: "/piflow-web/grapheditor/getRunningProcessList",//这是我在后台接受数据的文件名
+        data: {"flowId" : loadId},
+        async: true,
+        error: function (request) {//请求失败之后的操作
+            return;
+        },
+        success: function (data) {//请求成功之后的操作
+            $('#runningProcessID').remove();
+            $('#rightSidebarID').append(data);
         }
     });
 }

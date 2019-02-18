@@ -48,6 +48,14 @@ public interface ProcessMapper {
     public List<Process> getProcessList();
 
     /**
+     * 根据flowId查询正在运行的进程List(processList)
+     *
+     * @return
+     */
+    @SelectProvider(type = ProcessMapperProvider.class, method = "getRunningProcessList")
+    public List<Process> getRunningProcessList(@Param("flowId")String flowId);
+
+    /**
      * 根据进程AppId查询进程
      *
      * @param appID

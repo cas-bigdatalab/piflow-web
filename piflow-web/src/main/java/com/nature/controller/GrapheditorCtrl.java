@@ -6,6 +6,8 @@ import com.nature.base.vo.StatefulRtnBase;
 import com.nature.common.Eunm.PortType;
 import com.nature.component.mxGraph.model.MxGraphModel;
 import com.nature.component.mxGraph.vo.MxGraphModelVo;
+import com.nature.component.process.service.IProcessService;
+import com.nature.component.process.vo.ProcessVo;
 import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.service.*;
 import com.nature.component.workFlow.vo.PathsVo;
@@ -13,6 +15,7 @@ import com.nature.component.workFlow.vo.StopGroupVo;
 import com.nature.component.workFlow.vo.StopsPropertyVo;
 import com.nature.component.workFlow.vo.StopsVo;
 import com.nature.third.service.GetGroupsAndStops;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +23,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
@@ -56,6 +60,9 @@ public class GrapheditorCtrl {
 
     @Autowired
     private GetGroupsAndStops getGroupsAndStops;
+
+    @Autowired
+    private IProcessService processServiceImpl;
 
     /**
      * 进入画板首页
@@ -709,4 +716,19 @@ public class GrapheditorCtrl {
             }
         }
     }
+
+  /**
+   * 获取flow下运行中的list
+   *
+   * @param request
+   * @return
+   */
+  @RequestMapping("/getRunningProcessList")
+  public ModelAndView getRunningProcessList(HttpServletRequest request, ModelAndView modelAndView) {
+    modelAndView.setViewName("grapheditor/rightPage/runningProcess");
+    String flowId = request.getParameter("flowId");
+    List<ProcessVo> runningProcessVoList = processServiceImpl.getRunningProcessVoList(flowId);
+    modelAndView.addObject("runningProcessVoList", runningProcessVoList);
+    return modelAndView;
+  }
 }

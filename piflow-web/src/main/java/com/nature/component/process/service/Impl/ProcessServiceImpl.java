@@ -20,6 +20,7 @@ import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.model.Paths;
 import com.nature.component.workFlow.model.Property;
 import com.nature.component.workFlow.model.Stops;
+import com.nature.mapper.process.ProcessMapper;
 import com.nature.third.inf.IGetFlowInfo;
 import com.nature.third.inf.IGetFlowProgress;
 import com.nature.third.inf.IStartFlow;
@@ -30,6 +31,7 @@ import com.nature.third.vo.flowInfo.ThirdFlowInfoVo;
 import com.nature.transaction.process.ProcessStopTransaction;
 import com.nature.transaction.process.ProcessTransaction;
 import com.nature.transaction.workFlow.FlowTransaction;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
@@ -50,6 +52,9 @@ public class ProcessServiceImpl implements IProcessService {
 
     @Resource
     ProcessStopTransaction processStopTransaction;
+
+    @Resource
+    ProcessMapper processMapper;
 
     @Resource
     private FlowTransaction flowTransaction;
@@ -676,5 +681,31 @@ public class ProcessServiceImpl implements IProcessService {
             logger.warn("参数为空或丢失");
         }
         return statefulRtnBase;
+    }
+
+    /**
+     * 根据flowId查询正在运行的进程List(processList)
+     *
+     * @param flowId
+     * @return
+     */
+    @Override
+    public List<ProcessVo> getRunningProcessVoList(String flowId) {
+        List<ProcessVo> processVoList = new ArrayList<ProcessVo>();;
+        List<Process> processList = processMapper.getRunningProcessList(flowId);
+        if (CollectionUtils.isNotEmpty(processList)) {
+            processList.forEach(process -> {
+                if (null != process) {
+                    ProcessVo processVo = new ProcessVo();
+                    BeanUtils.copyProperties(process, processVo);
+                    processVoList.add(processVo);
+                }
+            });
+        }
+        if(CollectionUtils.isEmpty(processVoList)){
+            return null;
+        }else {
+            return processVoList;
+        }
     }
 }

@@ -169,6 +169,22 @@ public class ProcessMapperProvider {
         return sql.toString() + ";";
     }
 
+  /**
+   * 根据flowId查询正在运行的进程List(processList)
+   *
+   * @return
+   */
+  public String getRunningProcessList(String flowId) {
+    SQL sql = new SQL();
+    sql.SELECT("*");
+    sql.FROM("FLOW_PROCESS");
+    sql.WHERE("ENABLE_FLAG = 1");
+    sql.WHERE("FLOW_ID = " + Utils.addSqlStr(flowId));
+    sql.WHERE("STATE = " + Utils.addSqlStr(ProcessState.STARTED.name()));
+    sql.ORDER_BY("CRT_DTTM DESC,LAST_UPDATE_DTTM DESC");
+    return sql.toString() + ";";
+  }
+
     /**
      * 根据进程appId查询进程
      *

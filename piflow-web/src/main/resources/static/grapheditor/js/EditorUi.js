@@ -2995,7 +2995,8 @@ EditorUi.prototype.createDivs = function()
     this.hsplitRight.style.width = this.splitSize + 'px';
     // Only vertical scrollbars, no background in format sidebar
     this.formatContainer.style.backgroundColor = 'whiteSmoke';
-    this.formatContainer.style.overflowX = 'hidden'; 
+    this.formatContainer.style.overflowX = 'hidden';
+    this.formatContainer.setAttribute('id', 'rightSidebarID');
     //this.formatContainer.style.overflowY = 'auto';
     this.formatContainer.style.fontSize = '12px';
 

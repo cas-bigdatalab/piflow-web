@@ -127,4 +127,12 @@ public interface IProcessService {
      */
     @Transient
     public StatefulRtnBase updateProcessEnableFlag(String processId, UserVo currentUser);
+
+    /**
+     * 根据flowId查询正在运行的进程List(processList)
+     *
+     * @param flowId
+     * @return
+     */
+    public List<ProcessVo> getRunningProcessVoList(String flowId);
 }
