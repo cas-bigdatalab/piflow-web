@@ -206,6 +206,9 @@ function add(data, stopId, isCheckpointss) {
             select.setAttribute('id', '' + data[y].name + '');
             select.setAttribute('onblur', 'shiqu("' + data[y].id + '","' + data[y].name + '","select")');
             select.setAttribute('class', 'form-control');
+            if (isExample){
+                select.setAttribute('disabled', 'disabled');
+            }
             var displayName = data[y].displayName;
             var customValue = data[y].customValue;
             var allowableValues = data[y].allowableValues;
