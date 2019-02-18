@@ -2399,6 +2399,10 @@ StopsBasicInfoFormatPanel.prototype.addFont = function(container)
 		                });
 				}
 		  }));
+	  //示例数据不可编辑,此处将btn隐藏
+    if (isExample){
+        btn.style.display='none';
+    }
 	 btn.setAttribute('id', 'updateStopNameBtn');
 	 btn.setAttribute('title', 'update StopName');
 	 btn.setAttribute('class', 'glyphicon glyphicon-floppy-saved');
@@ -5398,6 +5402,10 @@ DiagramFormatPanel.prototype.destroy = function()
      });} 
   }
    function stopTabTd(e){
+   	   if (isExample){
+           $("#stopValue").attr("disabled","disabled");
+           $("#buttonStop").hide();
+	   }
        var name = e.getAttribute('name');
        var id = e.getAttribute('id');
        $("#stopValue").css("background-color","");
