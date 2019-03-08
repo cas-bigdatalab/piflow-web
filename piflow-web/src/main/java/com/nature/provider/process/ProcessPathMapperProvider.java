@@ -88,7 +88,7 @@ public class ProcessPathMapperProvider {
             if (null != process) {
                 sql.VALUES("FK_FLOW_PROCESS_ID", Utils.addSqlStrAndReplace(process.getId()));
             }
-            sqlStr = sql.toString() + ";";
+            sqlStr = sql.toString();
         }
         return sqlStr;
     }
@@ -181,7 +181,7 @@ public class ProcessPathMapperProvider {
                 }
             }
 
-            sqlStr = sql.toString() + ";";
+            sqlStr = sql.toString();
         }
         return sqlStr;
     }
@@ -201,7 +201,7 @@ public class ProcessPathMapperProvider {
             sql.WHERE("enable_flag = 1");
             sql.WHERE("FK_FLOW_PROCESS_ID = " + Utils.addSqlStr(processId));
 
-            sqlStr = sql.toString() + ";";
+            sqlStr = sql.toString();
         }
         return sqlStr;
     }
@@ -223,7 +223,7 @@ public class ProcessPathMapperProvider {
             sql.WHERE("FK_FLOW_PROCESS_ID = " + Utils.addSqlStr(processId));
             sql.WHERE("PAGE_ID = " + Utils.addSqlStr(pageId));
 
-            sqlStr = sql.toString() + ";";
+            sqlStr = sql.toString();
         }
         return sqlStr;
     }
@@ -293,7 +293,7 @@ public class ProcessPathMapperProvider {
                 sql.WHERE("ENABLE_FLAG = 1");
                 sql.WHERE("VERSION = " + version);
                 sql.WHERE("ID = " + Utils.addSqlStr(id));
-                sqlStr = sql.toString() + ";";
+                sqlStr = sql.toString();
             }
         }
         return sqlStr;
@@ -311,7 +311,7 @@ public class ProcessPathMapperProvider {
             sql.WHERE("enable_flag = 1");
             sql.WHERE("FK_FLOW_PROCESS_ID = " + Utils.addSqlStr(processId));
 
-            sqlStr = sql.toString() + ";";
+            sqlStr = sql.toString();
         }
         return sqlStr;
     }

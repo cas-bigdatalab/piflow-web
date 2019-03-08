@@ -1,9 +1,9 @@
 package com.nature.provider;
 
-import com.nature.base.config.vo.UserVo;
 import com.nature.base.util.DateUtils;
 import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.Utils;
+import com.nature.base.vo.UserVo;
 import com.nature.component.workFlow.model.Property;
 import com.nature.component.workFlow.model.Stops;
 import org.apache.commons.lang3.StringUtils;
@@ -177,7 +177,7 @@ public class PropertyMapperProvider {
             }
             sql.WHERE("version = " + version);
             sql.WHERE("id = " + Utils.addSqlStr(id));
-            sqlStr = sql.toString() + ";";
+            sqlStr = sql.toString();
             if (StringUtils.isBlank(id)) {
                 sqlStr = "";
             }
@@ -204,7 +204,7 @@ public class PropertyMapperProvider {
             sql.WHERE("ENABLE_FLAG = 1");
             sql.WHERE("ID = " + Utils.addSqlStrAndReplace(id));
 
-            sqlStr = sql.toString() + ";";
+            sqlStr = sql.toString();
         }
         return sqlStr;
     }
@@ -227,7 +227,7 @@ public class PropertyMapperProvider {
               sql.SET("version = " + 1 );
               sql.WHERE("ENABLE_FLAG = 1");
               sql.WHERE("id = " + Utils.addSqlStrAndReplace(id));
-              sqlStr = sql.toString() + ";";
+              sqlStr = sql.toString();
           }
           return sqlStr;
       }

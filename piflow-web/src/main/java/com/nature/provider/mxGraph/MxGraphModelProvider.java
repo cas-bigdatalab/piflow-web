@@ -1,9 +1,9 @@
 package com.nature.provider.mxGraph;
 
-import com.nature.base.config.vo.UserVo;
 import com.nature.base.util.DateUtils;
 import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.Utils;
+import com.nature.base.vo.UserVo;
 import com.nature.component.mxGraph.model.MxGraphModel;
 import com.nature.component.workFlow.model.Flow;
 import org.apache.commons.lang3.StringUtils;
@@ -119,7 +119,7 @@ public class MxGraphModelProvider {
                 sql.VALUES("FK_FLOW_ID", Utils.addSqlStr(flow.getId()));
             }
 
-            sqlStr = sql.toString() + ";";
+            sqlStr = sql.toString();
         }
         return sqlStr;
     }
@@ -221,7 +221,7 @@ public class MxGraphModelProvider {
                 }
                 sql.WHERE("VERSION = " + version);
                 sql.WHERE("id = " + Utils.addSqlStr(id));
-                sqlStr = sql.toString() + ";";
+                sqlStr = sql.toString();
                 if (StringUtils.isBlank(id)) {
                     sqlStr = "";
                 }
@@ -244,7 +244,7 @@ public class MxGraphModelProvider {
             sql.FROM("mx_graph_model");
             sql.WHERE("id = " + Utils.addSqlStr(id));
             sql.WHERE("enable_flag = 1");
-            sqlStr = sql.toString() + ";";
+            sqlStr = sql.toString();
         }
         return sqlStr;
     }
@@ -263,7 +263,7 @@ public class MxGraphModelProvider {
             sql.FROM("mx_graph_model");
             sql.WHERE("fk_flow_id = " + Utils.addSqlStr(flowId));
             sql.WHERE("enable_flag = 1");
-            sqlStr = sql.toString() + ";";
+            sqlStr = sql.toString();
         }
         return sqlStr;
     }
@@ -271,7 +271,7 @@ public class MxGraphModelProvider {
     
     /**
      * 根据flowId逻辑删除,设为无效
-     * @param id
+     * @param flowId
      * @return
      */
     public String updateEnableFlagByFlowId(String flowId) {
@@ -287,7 +287,7 @@ public class MxGraphModelProvider {
               sql.WHERE("ENABLE_FLAG = 1");
               sql.WHERE("fk_flow_id = " + Utils.addSqlStrAndReplace(flowId));
 
-              sqlStr = sql.toString() + ";";
+              sqlStr = sql.toString();
           }
           return sqlStr;
       }

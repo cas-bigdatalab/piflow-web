@@ -1,8 +1,8 @@
 package com.nature.mapper;
 
 import com.nature.ApplicationTests;
-import com.nature.base.config.vo.UserVo;
 import com.nature.base.util.*;
+import com.nature.base.vo.UserVo;
 import com.nature.common.constant.SysParamsCache;
 import com.nature.component.workFlow.model.PropertyTemplate;
 import com.nature.component.workFlow.model.StopGroup;
@@ -13,7 +13,6 @@ import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 

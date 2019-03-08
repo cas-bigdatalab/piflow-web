@@ -1,9 +1,9 @@
 package com.nature.component.workFlow.service.impl;
 
-import com.nature.base.config.vo.UserVo;
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.Utils;
+import com.nature.base.vo.UserVo;
 import com.nature.component.workFlow.model.Property;
 import com.nature.component.workFlow.model.PropertyTemplate;
 import com.nature.component.workFlow.model.Stops;

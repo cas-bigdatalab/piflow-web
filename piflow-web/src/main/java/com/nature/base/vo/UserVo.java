@@ -1,4 +1,4 @@
-package com.nature.base.config.vo;
+package com.nature.base.vo;
 
 import lombok.Getter;
 import lombok.Setter;

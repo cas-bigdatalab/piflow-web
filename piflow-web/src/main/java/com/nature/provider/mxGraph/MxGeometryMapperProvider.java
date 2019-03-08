@@ -1,9 +1,9 @@
 package com.nature.provider.mxGraph;
 
-import com.nature.base.config.vo.UserVo;
 import com.nature.base.util.DateUtils;
 import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.Utils;
+import com.nature.base.vo.UserVo;
 import com.nature.component.mxGraph.model.MxCell;
 import com.nature.component.mxGraph.model.MxGeometry;
 import org.apache.commons.lang3.StringUtils;
@@ -92,7 +92,7 @@ public class MxGeometryMapperProvider {
             if (null != mxCell) {
                 sql.VALUES("FK_MX_CELL_ID", Utils.addSqlStr(mxCell.getId()));
             }
-            sqlStr = sql.toString() + ";";
+            sqlStr = sql.toString();
         }
         return sqlStr;
     }
@@ -167,7 +167,7 @@ public class MxGeometryMapperProvider {
             sql.WHERE("VERSION = " + version);
             sql.WHERE("ID = " + Utils.addSqlStr(id));
 
-            sqlStr = sql.toString() + ";";
+            sqlStr = sql.toString();
 
             if (StringUtils.isBlank(id)) {
                 sqlStr = "";
@@ -190,7 +190,7 @@ public class MxGeometryMapperProvider {
             sql.FROM("mx_geometry");
             sql.WHERE("id = " + Utils.addSqlStr(id));
             sql.WHERE("ENABLE_FLAG = 1");
-            sqlStr = sql.toString() + ";";
+            sqlStr = sql.toString();
         }
 
         return sqlStr;
@@ -210,7 +210,7 @@ public class MxGeometryMapperProvider {
             sql.FROM("mx_geometry");
             sql.WHERE("FK_MX_CELL_ID = " + Utils.addSqlStr(flowId));
             sql.WHERE("ENABLE_FLAG = 1");
-            sqlStr = sql.toString() + ";";
+            sqlStr = sql.toString();
         }
 
         return sqlStr;
@@ -234,7 +234,7 @@ public class MxGeometryMapperProvider {
              sql.WHERE("ENABLE_FLAG = 1");
              sql.WHERE("id = " + Utils.addSqlStrAndReplace(id));
 
-             sqlStr = sql.toString() + ";";
+             sqlStr = sql.toString();
          }
          return sqlStr;
      }

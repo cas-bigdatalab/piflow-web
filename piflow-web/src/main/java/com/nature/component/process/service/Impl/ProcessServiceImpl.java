@@ -1,8 +1,8 @@
 package com.nature.component.process.service.Impl;
 
-import com.nature.base.config.vo.UserVo;
 import com.nature.base.util.*;
 import com.nature.base.vo.StatefulRtnBase;
+import com.nature.base.vo.UserVo;
 import com.nature.common.Eunm.ProcessState;
 import com.nature.common.Eunm.StopState;
 import com.nature.component.mxGraph.model.MxGraphModel;
@@ -15,7 +15,6 @@ import com.nature.component.process.utils.ProcessStopUtils;
 import com.nature.component.process.vo.ProcessPathVo;
 import com.nature.component.process.vo.ProcessStopVo;
 import com.nature.component.process.vo.ProcessVo;
-import com.nature.component.sysUser.vo.SysUserVo;
 import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.model.Paths;
 import com.nature.component.workFlow.model.Property;

@@ -1,9 +1,9 @@
 package com.nature.provider;
 
-import com.nature.base.config.vo.UserVo;
 import com.nature.base.util.DateUtils;
 import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.Utils;
+import com.nature.base.vo.UserVo;
 import com.nature.component.workFlow.model.Flow;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
@@ -96,7 +96,7 @@ public class FlowMapperProvider {
             if (StringUtils.isNotBlank(executorNumber)) {
                 sql.VALUES("executor_number", Utils.addSqlStr(executorNumber));
             }
-            sqlStr = sql.toString() + ";";
+            sqlStr = sql.toString();
         }
         return sqlStr;
     }
@@ -173,7 +173,7 @@ public class FlowMapperProvider {
             }
             sql.WHERE("VERSION = " + version);
             sql.WHERE("id = " + Utils.addSqlStr(id));
-            sqlStr = sql.toString() + ";";
+            sqlStr = sql.toString();
             if (StringUtils.isBlank(id)) {
                 sqlStr = "";
             }
@@ -194,7 +194,7 @@ public class FlowMapperProvider {
         sql.WHERE("ENABLE_FLAG = 1");
         sql.WHERE("IS_EXAMPLE = 0");
         sql.ORDER_BY(" CRT_DTTM DESC  ");
-        sqlStr = sql.toString() + ";";
+        sqlStr = sql.toString();
         return sqlStr;
     }
 
@@ -211,7 +211,7 @@ public class FlowMapperProvider {
         sql.WHERE("ENABLE_FLAG = 1");
         sql.WHERE("IS_EXAMPLE = 1");
         sql.ORDER_BY(" CRT_DTTM DESC  ");
-        sqlStr = sql.toString() + ";";
+        sqlStr = sql.toString();
         return sqlStr;
     }
 
@@ -228,7 +228,7 @@ public class FlowMapperProvider {
         sql.FROM("flow");
         sql.WHERE("id = " + Utils.addSqlStr(id));
         sql.WHERE("ENABLE_FLAG = 1");
-        sqlStr = sql.toString() + ";";
+        sqlStr = sql.toString();
         return sqlStr;
     }
     
@@ -251,7 +251,7 @@ public class FlowMapperProvider {
               sql.WHERE("IS_EXAMPLE = 0");
               sql.WHERE("ID = " + Utils.addSqlStrAndReplace(id));
 
-              sqlStr = sql.toString() + ";";
+              sqlStr = sql.toString();
           }
           return sqlStr;
       }

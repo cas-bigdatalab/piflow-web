@@ -1,11 +1,9 @@
 package com.nature.controller;
 
-import com.nature.base.config.vo.UserVo;
-import com.nature.base.util.HttpUtils;
-import com.nature.base.util.JsonUtils;
-import com.nature.base.util.LoggerUtil;
-import com.nature.base.util.SessionUserUtil;
+import com.github.pagehelper.PageHelper;
+import com.nature.base.util.*;
 import com.nature.base.vo.StatefulRtnBase;
+import com.nature.base.vo.UserVo;
 import com.nature.common.Eunm.ProcessState;
 import com.nature.component.process.model.Process;
 import com.nature.component.process.service.IProcessPathService;
@@ -33,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/process/*")
+@RequestMapping("/process")
 public class ProcessCtrl {
 
     /**
@@ -82,9 +80,30 @@ public class ProcessCtrl {
         modelAndView.addObject("currentUser", currentUser);
         modelAndView.addObject("accessPath", "getProcessList");
         // modelAndView.setViewName("process/process");
+        PageHelper.startPage(1, 5);
         List<ProcessVo> processVoList = processServiceImpl.getProcessVoList();
         modelAndView.addObject("processVoList", processVoList);
+        modelAndView = PageHelperUtils.setDataTableParam(modelAndView, processVoList);
         return modelAndView;
+    }
+
+    /**
+     * Query and enter the process list
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping("/processLists")
+    @ResponseBody
+    public String processLists(HttpServletRequest request) {
+        Map<String, Object> rtnMap = new HashMap<String, Object>();
+        UserVo currentUser = SessionUserUtil.getCurrentUser();
+        // modelAndView.setViewName("process/process");
+        PageHelper.startPage(1, 5);
+        List<ProcessVo> processVoList = processServiceImpl.getProcessVoList();
+        rtnMap = PageHelperUtils.setDataTableParam(processVoList,rtnMap);
+        rtnMap.put("code",200);
+        return JsonUtils.toJsonNoException(rtnMap);
     }
 
     /**

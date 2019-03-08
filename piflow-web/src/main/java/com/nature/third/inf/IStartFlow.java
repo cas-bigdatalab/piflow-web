@@ -1,7 +1,7 @@
 package com.nature.third.inf;
 
-import com.nature.base.config.vo.UserVo;
 import com.nature.base.vo.StatefulRtnBase;
+import com.nature.base.vo.UserVo;
 import com.nature.component.process.model.Process;
 
 public interface IStartFlow {

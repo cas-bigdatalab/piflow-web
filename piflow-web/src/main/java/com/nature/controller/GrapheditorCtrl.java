@@ -1,8 +1,8 @@
 package com.nature.controller;
 
-import com.nature.base.config.vo.UserVo;
 import com.nature.base.util.*;
 import com.nature.base.vo.StatefulRtnBase;
+import com.nature.base.vo.UserVo;
 import com.nature.common.Eunm.PortType;
 import com.nature.component.mxGraph.model.MxGraphModel;
 import com.nature.component.mxGraph.vo.MxGraphModelVo;
@@ -15,7 +15,6 @@ import com.nature.component.workFlow.vo.StopGroupVo;
 import com.nature.component.workFlow.vo.StopsPropertyVo;
 import com.nature.component.workFlow.vo.StopsVo;
 import com.nature.third.service.GetGroupsAndStops;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

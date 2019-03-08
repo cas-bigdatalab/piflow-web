@@ -1,9 +1,9 @@
 package com.nature.provider;
 
-import com.nature.base.config.vo.UserVo;
 import com.nature.base.util.DateUtils;
 import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.Utils;
+import com.nature.base.vo.UserVo;
 import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.model.FlowInfoDb;
 import org.apache.commons.lang3.StringUtils;
@@ -75,7 +75,7 @@ public class FlowInfoDbMapperProvider {
             if (null != flow) {
                 sql.VALUES("fk_flow_id", Utils.addSqlStr(flow.getId()));
             }
-            sqlStr = sql.toString() + ";";
+            sqlStr = sql.toString();
         }
         return sqlStr;
     }
@@ -93,7 +93,7 @@ public class FlowInfoDbMapperProvider {
         sql.FROM("flow_info");
         sql.WHERE("enable_flag = 1");
         sql.WHERE("fk_flow_id = '" + flowId + "' ");
-        sqlStr = sql.toString() + ";";
+        sqlStr = sql.toString();
         return sqlStr;
     }
 
@@ -169,7 +169,7 @@ public class FlowInfoDbMapperProvider {
             }
             sql.WHERE("VERSION = " + version);
             sql.WHERE("ID = " + Utils.addSqlStr(id));
-            sqlStr = sql.toString() + ";";
+            sqlStr = sql.toString();
             if (StringUtils.isBlank(id)) {
                 sqlStr = "";
             }
@@ -190,7 +190,7 @@ public class FlowInfoDbMapperProvider {
              sql.WHERE("ENABLE_FLAG = 1");
              sql.WHERE("id = " + Utils.addSqlStrAndReplace(id));
 
-             sqlStr = sql.toString() + ";";
+             sqlStr = sql.toString();
          }
          return sqlStr;
      }

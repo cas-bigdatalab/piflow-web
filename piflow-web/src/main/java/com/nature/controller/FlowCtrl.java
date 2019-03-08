@@ -1,10 +1,10 @@
 package com.nature.controller;
 
-import com.nature.base.config.vo.UserVo;
 import com.nature.base.util.JsonUtils;
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.Utils;
+import com.nature.base.vo.UserVo;
 import com.nature.component.mxGraph.model.MxCell;
 import com.nature.component.mxGraph.model.MxGraphModel;
 import com.nature.component.mxGraph.service.IMxCellService;

@@ -92,7 +92,7 @@ public class ProcessStopPropertyMapperProvider {
                 sql.VALUES("FK_FLOW_PROCESS_STOP_ID", Utils.addSqlStrAndReplace(processStop.getId()));
             }
 
-            sqlStr = sql.toString() + ";";
+            sqlStr = sql.toString();
         }
         return sqlStr;
     }
@@ -186,7 +186,7 @@ public class ProcessStopPropertyMapperProvider {
                     }
                 }
             }
-            sqlStr = sql.toString() + ";";
+            sqlStr = sql.toString();
         }
         return sqlStr;
     }
@@ -200,7 +200,7 @@ public class ProcessStopPropertyMapperProvider {
             sql.WHERE("ENABLE_FLAG = 1");
             sql.WHERE("FK_FLOW_PROCESS_STOP_ID = " + Utils.addSqlStr(processStopId));
 
-            sqlStr = sql.toString() + ";";
+            sqlStr = sql.toString();
         }
         return sqlStr;
     }
@@ -274,7 +274,7 @@ public class ProcessStopPropertyMapperProvider {
                 sql.WHERE("VERSION = " + version);
                 sql.WHERE("ID = " + Utils.addSqlStr(id));
 
-                sqlStr = sql.toString() + ";";
+                sqlStr = sql.toString();
             }
         }
         return sqlStr;
@@ -292,7 +292,7 @@ public class ProcessStopPropertyMapperProvider {
             sql.WHERE("ENABLE_FLAG = 1");
             sql.WHERE("FK_FLOW_PROCESS_STOP_ID = " + Utils.addSqlStr(processStopId));
 
-            sqlStr = sql.toString() + ";";
+            sqlStr = sql.toString();
         }
         return sqlStr;
     }

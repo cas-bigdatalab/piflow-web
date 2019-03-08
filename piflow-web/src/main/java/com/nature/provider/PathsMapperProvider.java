@@ -1,14 +1,13 @@
 package com.nature.provider;
 
-import com.nature.base.config.vo.UserVo;
 import com.nature.base.util.DateUtils;
 import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.Utils;
+import com.nature.base.vo.UserVo;
 import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.model.Paths;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
-import org.springframework.security.core.userdetails.User;
 
 import java.util.Date;
 import java.util.List;
@@ -164,7 +163,7 @@ public class PathsMapperProvider {
                     sql.VALUES("fk_flow_id", Utils.addSqlStr(flowId));
                 }
             }
-            sqlStr = sql.toString() + ";";
+            sqlStr = sql.toString();
 
         }
         return sqlStr;
@@ -224,7 +223,7 @@ public class PathsMapperProvider {
             }
             sql.WHERE("VERSION = " + version);
             sql.WHERE("id = " + Utils.addSqlStr(id));
-            sqlStr = sql.toString() + ";";
+            sqlStr = sql.toString();
 
         }
         return sqlStr;
@@ -243,7 +242,7 @@ public class PathsMapperProvider {
         sql.FROM("flow_path");
         sql.WHERE("enable_flag = 1");
         sql.WHERE("fk_flow_id = " + Utils.addSqlStr(flowId));
-        sqlStr = sql.toString() + ";";
+        sqlStr = sql.toString();
         return sqlStr;
     }
 
@@ -274,7 +273,7 @@ public class PathsMapperProvider {
         if (StringUtils.isNotBlank(to)) {
             sql.WHERE("line_to = " + Utils.addSqlStr(to));
         }
-        sqlStr = sql.toString() + ";";
+        sqlStr = sql.toString();
         return sqlStr;
     }
 
@@ -305,7 +304,7 @@ public class PathsMapperProvider {
         if (StringUtils.isNotBlank(to)) {
             sql.WHERE("line_to = " + Utils.addSqlStr(to));
         }
-        sqlStr = sql.toString() + ";";
+        sqlStr = sql.toString();
         return sqlStr;
     }
 
@@ -323,7 +322,7 @@ public class PathsMapperProvider {
             sql.FROM("flow_path");
             sql.WHERE("enable_flag = 1");
             sql.WHERE("id=" + Utils.addSqlStr(id));
-            sqlStr = sql.toString() + ";";
+            sqlStr = sql.toString();
         }
         return sqlStr;
     }
@@ -331,7 +330,7 @@ public class PathsMapperProvider {
     
     /**
      * 根据flowId逻辑删除,设为无效
-     * @param id
+     * @param flowId
      * @return
      */
     public String updateEnableFlagByFlowId(String flowId) {
@@ -347,7 +346,7 @@ public class PathsMapperProvider {
               sql.WHERE("ENABLE_FLAG = 1");
               sql.WHERE("fk_flow_id = " + Utils.addSqlStrAndReplace(flowId));
 
-              sqlStr = sql.toString() + ";";
+              sqlStr = sql.toString();
           }
           return sqlStr;
       }

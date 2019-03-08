@@ -1,12 +1,12 @@
 package com.nature.third.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.nature.base.config.vo.UserVo;
 import com.nature.base.util.HttpUtils;
 import com.nature.base.util.JsonFormatTool;
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.StatefulRtnBaseUtils;
 import com.nature.base.vo.StatefulRtnBase;
+import com.nature.base.vo.UserVo;
 import com.nature.common.Eunm.ProcessState;
 import com.nature.common.constant.SysParamsCache;
 import com.nature.component.process.model.Process;

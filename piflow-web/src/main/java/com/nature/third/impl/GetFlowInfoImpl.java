@@ -1,10 +1,10 @@
 package com.nature.third.impl;
 
-import com.nature.base.config.vo.UserVo;
 import com.nature.base.util.DateUtils;
 import com.nature.base.util.HttpUtils;
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.SessionUserUtil;
+import com.nature.base.vo.UserVo;
 import com.nature.common.Eunm.FlowState;
 import com.nature.common.constant.SysParamsCache;
 import com.nature.component.workFlow.model.Flow;

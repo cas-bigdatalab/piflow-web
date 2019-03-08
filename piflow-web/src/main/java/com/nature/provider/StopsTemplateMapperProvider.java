@@ -21,7 +21,7 @@ public class StopsTemplateMapperProvider {
         sql.SELECT("*");
         sql.FROM("flow_stops_template");
         sql.WHERE("enable_flag = 1 ");
-        sqlStr = sql.toString() + ";";
+        sqlStr = sql.toString();
         return sqlStr;
     }
 
@@ -38,7 +38,7 @@ public class StopsTemplateMapperProvider {
         sql.FROM("flow_stops_template");
         sql.WHERE("enable_flag = 1 ");
         sql.WHERE("id = " + Utils.addSqlStr(id));
-        sqlStr = sql.toString() + ";";
+        sqlStr = sql.toString();
         return sqlStr;
     }
 
@@ -55,7 +55,7 @@ public class StopsTemplateMapperProvider {
         sql.FROM("flow_stops_template");
         sql.WHERE("enable_flag = 1 ");
         sql.WHERE("name = " + Utils.addSqlStr(stopsName));
-        sqlStr = sql.toString() + ";";
+        sqlStr = sql.toString();
         return sqlStr;
     }
 

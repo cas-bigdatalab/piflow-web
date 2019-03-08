@@ -116,7 +116,7 @@ public class FlowAndStopsTemplateVoMapperProvider {
             if (StringUtils.isNotBlank(name)) {
                 sql.VALUES("NAME", Utils.addSqlStr(name));
             }
-            sqlStr = sql.toString() + ";";
+            sqlStr = sql.toString();
         }
         return sqlStr;
     }
@@ -211,7 +211,7 @@ public class FlowAndStopsTemplateVoMapperProvider {
                 sql.VALUES("groups", Utils.addSqlStr(groups));
             }
 
-            sqlStr = sql.toString() + ";";
+            sqlStr = sql.toString();
         }
         return sqlStr;
     }

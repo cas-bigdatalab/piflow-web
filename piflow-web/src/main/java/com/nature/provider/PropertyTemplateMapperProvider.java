@@ -25,7 +25,7 @@ public class PropertyTemplateMapperProvider {
             sql.FROM("flow_stops_property_template");
             sql.WHERE("fk_stops_id = " + Utils.addSqlStr(stopsId));
             sql.WHERE("enable_flag = 1");
-            sqlStr = sql.toString() + ";";
+            sqlStr = sql.toString();
         }
         return sqlStr;
     }

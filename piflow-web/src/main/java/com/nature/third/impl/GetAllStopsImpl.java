@@ -1,7 +1,7 @@
 package com.nature.third.impl;
 
-import com.nature.base.config.vo.UserVo;
 import com.nature.base.util.*;
+import com.nature.base.vo.UserVo;
 import com.nature.common.constant.SysParamsCache;
 import com.nature.component.workFlow.model.PropertyTemplate;
 import com.nature.component.workFlow.model.StopGroup;

@@ -1,7 +1,7 @@
 package com.nature.transaction.process;
 
-import com.nature.base.config.vo.UserVo;
 import com.nature.base.util.LoggerUtil;
+import com.nature.base.vo.UserVo;
 import com.nature.component.process.model.Process;
 import com.nature.component.process.model.ProcessPath;
 import com.nature.component.process.model.ProcessStop;

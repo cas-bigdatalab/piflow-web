@@ -123,7 +123,7 @@ public class ProcessStopMapperProvider {
             if (null != process) {
                 sql.VALUES("FK_FLOW_PROCESS_ID", Utils.addSqlStrAndReplace(process.getId()));
             }
-            sqlStr = sql.toString() + ";";
+            sqlStr = sql.toString();
         }
         return sqlStr;
     }
@@ -241,7 +241,7 @@ public class ProcessStopMapperProvider {
                     }
                 }
             }
-            sqlStr = sql.toString() + ";";
+            sqlStr = sql.toString();
         }
         return sqlStr;
     }
@@ -255,7 +255,7 @@ public class ProcessStopMapperProvider {
             sql.WHERE("enable_flag = 1");
             sql.WHERE("FK_FLOW_PROCESS_ID = " + Utils.addSqlStr(processId));
 
-            sqlStr = sql.toString() + ";";
+            sqlStr = sql.toString();
         }
         return sqlStr;
     }
@@ -277,7 +277,7 @@ public class ProcessStopMapperProvider {
             sql.WHERE("FK_FLOW_PROCESS_ID = " + Utils.addSqlStr(processId));
             sql.WHERE("PAGE_ID = " + Utils.addSqlStr(pageId));
 
-            sqlStr = sql.toString() + ";";
+            sqlStr = sql.toString();
         }
         return sqlStr;
     }
@@ -305,7 +305,7 @@ public class ProcessStopMapperProvider {
                 sql.WHERE("FK_FLOW_PROCESS_ID = " + Utils.addSqlStr(processId));
                 sql.WHERE("PAGE_ID IN ( " + pageIdsStr + ")");
 
-                sqlStr = sql.toString() + ";";
+                sqlStr = sql.toString();
             }
         }
         return sqlStr;
@@ -328,7 +328,7 @@ public class ProcessStopMapperProvider {
             sql.WHERE("FK_FLOW_PROCESS_ID = " + Utils.addSqlStr(processId));
             sql.WHERE("NAME = " + Utils.addSqlStr(name));
 
-            sqlStr = sql.toString() + ";";
+            sqlStr = sql.toString();
         }
         return sqlStr;
     }
@@ -429,7 +429,7 @@ public class ProcessStopMapperProvider {
                 sql.WHERE("VERSION = " + version);
                 sql.WHERE("ID = " + Utils.addSqlStr(id));
 
-                sqlStr = sql.toString() + ";";
+                sqlStr = sql.toString();
             }
         }
         return sqlStr;
@@ -447,7 +447,7 @@ public class ProcessStopMapperProvider {
             sql.WHERE("enable_flag = 1");
             sql.WHERE("FK_FLOW_PROCESS_ID = " + Utils.addSqlStr(processId));
 
-            sqlStr = sql.toString() + ";";
+            sqlStr = sql.toString();
         }
         return sqlStr;
     }

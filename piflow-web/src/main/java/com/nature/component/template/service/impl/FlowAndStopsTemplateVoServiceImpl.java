@@ -1,9 +1,9 @@
 package com.nature.component.template.service.impl;
 
-import com.nature.base.config.vo.UserVo;
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.Utils;
+import com.nature.base.vo.UserVo;
 import com.nature.component.template.model.FlowTemplateModel;
 import com.nature.component.template.model.PropertyTemplateModel;
 import com.nature.component.template.model.StopTemplateModel;

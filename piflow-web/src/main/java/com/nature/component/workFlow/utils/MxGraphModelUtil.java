@@ -1,8 +1,8 @@
 package com.nature.component.workFlow.utils;
 
-import com.nature.base.config.vo.UserVo;
 import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.Utils;
+import com.nature.base.vo.UserVo;
 import com.nature.component.mxGraph.model.MxCell;
 import com.nature.component.mxGraph.model.MxGeometry;
 import com.nature.component.mxGraph.model.MxGraphModel;

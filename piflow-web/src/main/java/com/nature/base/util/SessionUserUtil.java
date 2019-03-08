@@ -1,14 +1,11 @@
 package com.nature.base.util;
 
-import com.nature.base.config.vo.UserVo;
-import com.nature.component.sysUser.model.SysUser;
-import com.nature.component.sysUser.vo.SysUserVo;
+import com.nature.base.vo.UserVo;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.servlet.http.HttpServletRequest;

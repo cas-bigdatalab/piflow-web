@@ -89,7 +89,7 @@ public class SysUserMapperProvider {
                 sql.VALUES("ROLE", Utils.addSqlStrAndReplace(role));
             }
 
-            sqlStr = sql.toString() + ";";
+            sqlStr = sql.toString();
         }
         return sqlStr;
     }
@@ -158,7 +158,7 @@ public class SysUserMapperProvider {
             sql.WHERE("VERSION = " + version);
             sql.WHERE("id = " + Utils.addSqlStr(id));
             if (StringUtils.isNotBlank(id)) {
-                sqlStr = sql.toString() + ";";
+                sqlStr = sql.toString();
             }
         }
         return sqlStr;
@@ -177,7 +177,7 @@ public class SysUserMapperProvider {
             sql.SELECT("*");
             sql.FROM("SYS_USER");
             sql.WHERE("NAME LIKE '%" + name + "%'");
-            sqlStr = sql.toString() + ";";
+            sqlStr = sql.toString();
         }
         return sqlStr;
     }
@@ -195,7 +195,7 @@ public class SysUserMapperProvider {
             sql.SELECT("*");
             sql.FROM("SYS_USER");
             sql.WHERE("NAME = '" + name + "'");
-            sqlStr = sql.toString() + ";";
+            sqlStr = sql.toString();
         }
         return sqlStr;
     }
@@ -213,7 +213,7 @@ public class SysUserMapperProvider {
             sql.SELECT("*");
             sql.FROM("SYS_USER");
             sql.WHERE("USERNAME = '" + userName + "'");
-            sqlStr = sql.toString() + ";";
+            sqlStr = sql.toString();
         }
         return sqlStr;
     }
@@ -240,7 +240,7 @@ public class SysUserMapperProvider {
             SQL sql = new SQL();
             sql.DELETE_FROM("SYS_USER");
             sql.WHERE("USERNAME = '" + id + "'");
-            sqlStr = sql.toString() + ";";
+            sqlStr = sql.toString();
         }
         return sqlStr;
     }

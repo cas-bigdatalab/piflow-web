@@ -1,10 +1,10 @@
 package com.nature.component.workFlow.service.impl;
 
-import com.nature.base.config.vo.UserVo;
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.StatefulRtnBaseUtils;
 import com.nature.base.vo.StatefulRtnBase;
+import com.nature.base.vo.UserVo;
 import com.nature.component.mxGraph.model.MxCell;
 import com.nature.component.mxGraph.model.MxGraphModel;
 import com.nature.component.workFlow.model.Flow;

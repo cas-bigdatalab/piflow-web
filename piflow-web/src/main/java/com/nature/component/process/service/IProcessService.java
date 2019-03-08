@@ -1,7 +1,7 @@
 package com.nature.component.process.service;
 
-import com.nature.base.config.vo.UserVo;
 import com.nature.base.vo.StatefulRtnBase;
+import com.nature.base.vo.UserVo;
 import com.nature.component.process.model.Process;
 import com.nature.component.process.vo.ProcessVo;
 import com.nature.component.workFlow.model.Flow;

@@ -1,9 +1,9 @@
 package com.nature.provider;
 
-import com.nature.base.config.vo.UserVo;
 import com.nature.base.util.DateUtils;
 import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.Utils;
+import com.nature.base.vo.UserVo;
 import com.nature.common.Eunm.PortType;
 import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.model.Stops;
@@ -116,7 +116,7 @@ public class StopsMapperProvider {
                 }
             }
 
-            sqlStr = sql.toString() + ";";
+            sqlStr = sql.toString();
         }
         return sqlStr;
     }
@@ -299,7 +299,7 @@ public class StopsMapperProvider {
             }
             sql.WHERE("VERSION = " + version);
             sql.WHERE("id = " + Utils.addSqlStr(id));
-            sqlStr = sql.toString() + ";";
+            sqlStr = sql.toString();
             if (StringUtils.isBlank(id)) {
                 sqlStr = "";
             }
@@ -318,7 +318,7 @@ public class StopsMapperProvider {
         sql.SELECT("*");
         sql.FROM("flow_stops");
         sql.WHERE("enable_flag = 1");
-        sqlStr = sql.toString() + ";";
+        sqlStr = sql.toString();
         return sqlStr;
     }
 
@@ -335,7 +335,7 @@ public class StopsMapperProvider {
         sql.FROM("flow_stops");
         sql.WHERE("enable_flag = 1");
         sql.WHERE("fk_flow_id = " + Utils.addSqlStr(flowId));
-        sqlStr = sql.toString() + ";";
+        sqlStr = sql.toString();
         return sqlStr;
     }
 
@@ -367,7 +367,7 @@ public class StopsMapperProvider {
             pageIdsStr.append(")");
             sql.WHERE(pageIdsStr.toString());
         }
-        sqlStr = sql.toString() + ";";
+        sqlStr = sql.toString();
         return sqlStr;
     }
 
@@ -384,7 +384,7 @@ public class StopsMapperProvider {
         sql.FROM("flow_stops");
         sql.WHERE("enable_flag = 1");
         sql.WHERE("id = " + Utils.addSqlStr(Id));
-        sqlStr = sql.toString() + ";";
+        sqlStr = sql.toString();
         return sqlStr;
     }
 
@@ -414,7 +414,7 @@ public class StopsMapperProvider {
         }
         sql.WHERE("fk_flow_id = " + Utils.addSqlStr(flowId));
         sql.WHERE("name = " + Utils.addSqlStr(name));
-        sqlStr = sql.toString() + ";";
+        sqlStr = sql.toString();
         return sqlStr;
     }
     
@@ -432,7 +432,7 @@ public class StopsMapperProvider {
            sql.WHERE("ENABLE_FLAG = 1");
            sql.WHERE("fk_flow_id = " + Utils.addSqlStrAndReplace(flowId));
 
-           sqlStr = sql.toString() + ";";
+           sqlStr = sql.toString();
        }
        return sqlStr;
    }

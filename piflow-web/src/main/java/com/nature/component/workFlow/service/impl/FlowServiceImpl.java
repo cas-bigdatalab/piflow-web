@@ -1,8 +1,8 @@
 package com.nature.component.workFlow.service.impl;
 
-import com.nature.base.config.vo.UserVo;
 import com.nature.base.util.*;
 import com.nature.base.vo.StatefulRtnBase;
+import com.nature.base.vo.UserVo;
 import com.nature.common.Eunm.PortType;
 import com.nature.component.mxGraph.model.MxCell;
 import com.nature.component.mxGraph.model.MxGeometry;

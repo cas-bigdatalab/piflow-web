@@ -1,9 +1,9 @@
 package com.nature.provider.mxGraph;
 
-import com.nature.base.config.vo.UserVo;
 import com.nature.base.util.DateUtils;
 import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.Utils;
+import com.nature.base.vo.UserVo;
 import com.nature.component.mxGraph.model.MxCell;
 import com.nature.component.mxGraph.model.MxGraphModel;
 import org.apache.commons.lang3.StringUtils;
@@ -104,7 +104,7 @@ public class MxCellMapperProvider {
                 }
             }
 
-            sqlStr = NewSQL.toString() + ";";
+            sqlStr = NewSQL.toString();
         }
         return sqlStr;
     }
@@ -190,7 +190,7 @@ public class MxCellMapperProvider {
             }
             newSQL.WHERE("VERSION = " + version);
             newSQL.WHERE("id = " + Utils.addSqlStr(id));
-            sqlStr = newSQL.toString() + ";";
+            sqlStr = newSQL.toString();
             if (StringUtils.isBlank(id)) {
                 sqlStr = "";
             }
@@ -211,7 +211,7 @@ public class MxCellMapperProvider {
         sql.FROM("mx_cell");
         sql.WHERE("fk_mx_graph_id = " + Utils.addSqlStr(mxGraphId));
         sql.WHERE("enable_flag = 1");
-        sqlStr = sql.toString() + ";";
+        sqlStr = sql.toString();
         return sqlStr;
     }
 
@@ -228,7 +228,7 @@ public class MxCellMapperProvider {
         sql.FROM("mx_cell");
         sql.WHERE("id = " + Utils.addSqlStr(id));
         sql.WHERE("enable_flag = 1");
-        sqlStr = sql.toString() + ";";
+        sqlStr = sql.toString();
         return sqlStr;
     }
 
@@ -251,7 +251,7 @@ public class MxCellMapperProvider {
               sql.WHERE("ENABLE_FLAG = 1");
               sql.WHERE("id = " + Utils.addSqlStrAndReplace(id));
 
-              sqlStr = sql.toString() + ";";
+              sqlStr = sql.toString();
           }
           return sqlStr;
       }

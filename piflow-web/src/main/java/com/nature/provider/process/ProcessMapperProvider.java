@@ -130,7 +130,7 @@ public class ProcessMapperProvider {
                 sql.VALUES("parent_process_id", Utils.addSqlStrAndReplace(parentProcessId));
             }
 
-            sqlStr = sql.toString() + ";";
+            sqlStr = sql.toString();
         }
         return sqlStr;
     }
@@ -150,7 +150,7 @@ public class ProcessMapperProvider {
             sql.WHERE("enable_flag = 1");
             sql.WHERE("id = " + Utils.addSqlStrAndReplace(id));
 
-            sqlStr = sql.toString() + ";";
+            sqlStr = sql.toString();
         }
         return sqlStr;
     }
@@ -166,7 +166,7 @@ public class ProcessMapperProvider {
         sql.FROM("FLOW_PROCESS");
         sql.WHERE("ENABLE_FLAG = 1");
         sql.ORDER_BY("CRT_DTTM DESC,LAST_UPDATE_DTTM DESC");
-        return sql.toString() + ";";
+        return sql.toString();
     }
 
   /**
@@ -182,7 +182,7 @@ public class ProcessMapperProvider {
     sql.WHERE("FLOW_ID = " + Utils.addSqlStr(flowId));
     sql.WHERE("STATE = " + Utils.addSqlStr(ProcessState.STARTED.name()));
     sql.ORDER_BY("CRT_DTTM DESC,LAST_UPDATE_DTTM DESC");
-    return sql.toString() + ";";
+    return sql.toString();
   }
 
     /**
@@ -200,7 +200,7 @@ public class ProcessMapperProvider {
             sql.WHERE("enable_flag = 1");
             sql.WHERE("app_id = " + Utils.addSqlStrAndReplace(appID));
 
-            sqlStr = sql.toString() + ";";
+            sqlStr = sql.toString();
         }
         return sqlStr;
     }
@@ -226,7 +226,7 @@ public class ProcessMapperProvider {
                 sql.WHERE("enable_flag = 1");
                 sql.WHERE("app_id in (" + appIDsStr + ")");
 
-                sqlStr = sql.toString() + ";";
+                sqlStr = sql.toString();
             }
         }
         return sqlStr;
@@ -329,7 +329,7 @@ public class ProcessMapperProvider {
             sql.WHERE("VERSION = " + version);
             sql.WHERE("id = " + Utils.addSqlStr(id));
             if (StringUtils.isNotBlank(id)) {
-                sqlStr = sql.toString() + ";";
+                sqlStr = sql.toString();
             }
         }
         return sqlStr;
@@ -353,7 +353,7 @@ public class ProcessMapperProvider {
             sql.WHERE("ENABLE_FLAG = 1");
             sql.WHERE("ID = " + Utils.addSqlStrAndReplace(id));
 
-            sqlStr = sql.toString() + ";";
+            sqlStr = sql.toString();
         }
         return sqlStr;
     }

@@ -1,9 +1,9 @@
 package com.nature.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.nature.base.config.vo.UserVo;
 import com.nature.base.util.*;
 import com.nature.base.vo.StatefulRtnBase;
+import com.nature.base.vo.UserVo;
 import com.nature.common.constant.SysParamsCache;
 import com.nature.component.mxGraph.model.MxGraphModel;
 import com.nature.component.mxGraph.vo.MxGraphModelVo;
