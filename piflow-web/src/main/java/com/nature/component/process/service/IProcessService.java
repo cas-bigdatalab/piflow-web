@@ -135,4 +135,15 @@ public interface IProcessService {
      * @return
      */
     public List<ProcessVo> getRunningProcessVoList(String flowId);
+
+    /**
+     * 查询processVoList（参数为空时不分页)
+     *
+     * @param offset
+     * @param limit
+     * @param extra_search
+     * @return
+     */
+    @Transient
+    public String getProcessVoListPage(Integer offset, Integer limit, String extra_search);
 }

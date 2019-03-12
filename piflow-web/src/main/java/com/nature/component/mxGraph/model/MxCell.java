@@ -3,6 +3,7 @@ package com.nature.component.mxGraph.model;
 import javax.persistence.*;
 
 import com.nature.base.BaseHibernateModelUUIDNoCorpAgentId;
+import org.apache.ibatis.annotations.Insert;
 import org.hibernate.annotations.Where;
 
 @Entity

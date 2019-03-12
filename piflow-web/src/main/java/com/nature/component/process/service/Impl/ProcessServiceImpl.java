@@ -1,5 +1,8 @@
 package com.nature.component.process.service.Impl;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.nature.base.util.*;
 import com.nature.base.vo.StatefulRtnBase;
 import com.nature.base.vo.UserVo;
@@ -19,7 +22,6 @@ import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.model.Paths;
 import com.nature.component.workFlow.model.Property;
 import com.nature.component.workFlow.model.Stops;
-import com.nature.mapper.process.ProcessMapper;
 import com.nature.third.inf.IGetFlowInfo;
 import com.nature.third.inf.IGetFlowProgress;
 import com.nature.third.inf.IStartFlow;
@@ -37,9 +39,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class ProcessServiceImpl implements IProcessService {
@@ -51,9 +51,6 @@ public class ProcessServiceImpl implements IProcessService {
 
     @Resource
     ProcessStopTransaction processStopTransaction;
-
-    @Resource
-    ProcessMapper processMapper;
 
     @Resource
     private FlowTransaction flowTransaction;
@@ -690,21 +687,27 @@ public class ProcessServiceImpl implements IProcessService {
      */
     @Override
     public List<ProcessVo> getRunningProcessVoList(String flowId) {
-        List<ProcessVo> processVoList = new ArrayList<ProcessVo>();;
-        List<Process> processList = processMapper.getRunningProcessList(flowId);
-        if (CollectionUtils.isNotEmpty(processList)) {
-            processList.forEach(process -> {
-                if (null != process) {
-                    ProcessVo processVo = new ProcessVo();
-                    BeanUtils.copyProperties(process, processVo);
-                    processVoList.add(processVo);
-                }
-            });
-        }
-        if(CollectionUtils.isEmpty(processVoList)){
+        List<ProcessVo> processVoList = processTransaction.getRunningProcessList(flowId);
+        if (CollectionUtils.isEmpty(processVoList)) {
             return null;
-        }else {
+        } else {
             return processVoList;
         }
+    }
+
+    @Override
+    public String getProcessVoListPage(Integer offset, Integer limit, String extra_search) {
+        Map<String, Object> rtnMap = new HashMap<String, Object>();
+        UserVo currentUser = SessionUserUtil.getCurrentUser();
+        if (null != offset && null != limit) {
+            Page page= PageHelper.startPage(offset, limit);
+            List<ProcessVo> processVoList = processTransaction.getProcessVoList();
+            PageInfo info=new PageInfo(page.getResult());
+            //rtnMap.put("draw", offset);
+            rtnMap.put("iTotalDisplayRecords", info.getTotal());
+            rtnMap.put("iTotalRecords", info.getTotal());
+            rtnMap.put("pageData", info.getList());//数据集合
+        }
+        return JsonUtils.toJsonNoException(rtnMap);
     }
 }

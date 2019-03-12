@@ -1,9 +1,5 @@
 $(function() {
-
-
-
 	//===== Hide/show sidebar =====//
-
 	$('.fullview').click(function(){
 	    $("body").toggleClass("clean");
 	    $('#sidebar').toggleClass("hide-sidebar mobile-sidebar");
@@ -21,7 +17,7 @@ $(function() {
 
 
 	//===== Easy tabs =====//
-	
+
 	$('.sidebar-tabs').easytabs({
 		animationSpeed: 150,
 		collapsible: false,
@@ -44,36 +40,22 @@ $(function() {
 		speed: 200
 	});
 
-		//===== Datatables =====//
+	//===== Datatables =====//
 
-		oTable = $('#data-table').dataTable({
-			"bJQueryUI": false,
-			"bAutoWidth": false,
-			"sPaginationType": "full_numbers",
-			"sDom": '<"datatable-header"fl>t<"datatable-footer"ip>',
-			"oLanguage": {
-				"sSearch": "<span>Filter records:</span> _INPUT_",
-				"sLengthMenu": "<span>Show entries:</span> _MENU_",
-				"oPaginate": { "sFirst": "First", "sLast": "Last", "sNext": ">", "sPrevious": "<" }
-			}
-		});
-	
-	
-		oTable = $(".media-table").dataTable({
-			"bJQueryUI": false,
-			"bAutoWidth": false,
-			"sPaginationType": "full_numbers",
-			"sDom": '<"datatable-header"fl>t<"datatable-footer"ip>',
-			"oLanguage": {
-				"sSearch": "<span>Filter records:</span> _INPUT_",
-				"sLengthMenu": "<span>Show entries:</span> _MENU_",
-				"oPaginate": { "sFirst": "First", "sLast": "Last", "sNext": ">", "sPrevious": "<" }
-			},
-			"aoColumnDefs": [
-			  { "bSortable": false, "aTargets": [ 0, 4 ] }
-			]
-		});
-	
-	
+	oTable = $(".media-table").dataTable({
+		"bJQueryUI": false,
+		"bAutoWidth": false,
+		"sPaginationType": "full_numbers",
+		"sDom": '<"datatable-header"fl>t<"datatable-footer"ip>',
+		"oLanguage": {
+			"sSearch": "<span>Filter records:</span> _INPUT_",
+			"sLengthMenu": "<span>Show entries:</span> _MENU_",
+			"oPaginate": { "sFirst": "First", "sLast": "Last", "sNext": ">", "sPrevious": "<" }
+		},
+		"aoColumnDefs": [
+			{ "bSortable": false, "aTargets": [ 0, 4 ] }
+		]
+	});
+
 
 });

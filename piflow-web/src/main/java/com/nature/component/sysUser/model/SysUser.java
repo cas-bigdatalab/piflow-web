@@ -6,6 +6,8 @@ import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 使用JPA定义用户。实现UserDetails接口，用户实体即为springSecurity所使用的用户。
@@ -30,4 +32,8 @@ public class SysUser extends BaseHibernateModelUUIDNoCorpAgentId {
     private String sex;
 
     private String role;
+
+    public void s (){
+        List<SysUser> s = new ArrayList<>();
+    }
 }

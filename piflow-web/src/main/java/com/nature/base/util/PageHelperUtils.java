@@ -31,8 +31,7 @@ public class PageHelperUtils {
   public static Map setDataTableParam(List dataList, Map<String, Object> rtnMap) {
     if (CollectionUtils.isNotEmpty(dataList) && null != rtnMap) {
       PageInfo<ProcessVo> pageInfo = new PageInfo<>(dataList);
-      rtnMap.put("total", pageInfo.getTotal());
-      rtnMap.put("dataLength", pageInfo.getPages());
+      rtnMap.put("total", pageInfo.getPages());
       rtnMap.put("rowDatas", pageInfo.getList());
     }
     return rtnMap;

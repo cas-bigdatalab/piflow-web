@@ -1,6 +1,8 @@
 package com.nature.controller;
 
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.nature.base.util.*;
 import com.nature.base.vo.StatefulRtnBase;
 import com.nature.base.vo.UserVo;
@@ -80,7 +82,6 @@ public class ProcessCtrl {
         modelAndView.addObject("currentUser", currentUser);
         modelAndView.addObject("accessPath", "getProcessList");
         // modelAndView.setViewName("process/process");
-        PageHelper.startPage(1, 5);
         List<ProcessVo> processVoList = processServiceImpl.getProcessVoList();
         modelAndView.addObject("processVoList", processVoList);
         modelAndView = PageHelperUtils.setDataTableParam(modelAndView, processVoList);
@@ -93,17 +94,10 @@ public class ProcessCtrl {
      * @param request
      * @return
      */
-    @RequestMapping("/processLists")
+    @RequestMapping("/processListPage")
     @ResponseBody
-    public String processLists(HttpServletRequest request) {
-        Map<String, Object> rtnMap = new HashMap<String, Object>();
-        UserVo currentUser = SessionUserUtil.getCurrentUser();
-        // modelAndView.setViewName("process/process");
-        PageHelper.startPage(1, 5);
-        List<ProcessVo> processVoList = processServiceImpl.getProcessVoList();
-        rtnMap = PageHelperUtils.setDataTableParam(processVoList,rtnMap);
-        rtnMap.put("code",200);
-        return JsonUtils.toJsonNoException(rtnMap);
+    public String processListPage(HttpServletRequest request, Integer start, Integer length, Integer draw, String extra_search) {
+        return processServiceImpl.getProcessVoListPage(start / length + 1, length, extra_search);
     }
 
     /**

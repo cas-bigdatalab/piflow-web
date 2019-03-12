@@ -1,3 +1,5 @@
+var processTable;
+
 function processListMonitoring() {
     var arrayObj = new Array();
     var processAppIds = $("td[name='processAppId']");
@@ -214,188 +216,111 @@ function delProcess(processID) {
     });
 }
 
-function initTable(tableId, url, columns) {
-    $('#' + tableId).bootstrapTable('destroy');
-    $('#' + tableId).bootstrapTable({
-        url: url,
-        method: 'post',
-        toolbar: '#toolbar',        //工具按钮用哪个容器
-        pagination: true,                   //是否显示分页（*）
-        contentType: "application/json",
-        sortable: false,
-        queryParams: queryTableParams,
-        cache: false,
-        singleSelect: true,                         //单选
-        clickToSelect: true,
-        showRefresh: false,                  //是否显示刷新按钮
-        showPaginationSwitch: true,       //是否显示选择分页数按钮
-        pageNumber: 1,                       //初始化加载第一页，默认第一页
-        pageSize: 10, //每页的记录行数（*）
-        search: false,
-        sidePagination: "server",   //分页方式：client客户端分页，server服务端分页（*）
-        columns: columns,
+function initDatatablePage(testTableId, url) {
+    processTable = $('#' + testTableId).DataTable({
+        "pagingType": "full_numbers",//设置分页控件的模式
+        "searching": true,//屏蔽datatales的查询框
+        "aLengthMenu": [10,20,50,100],//设置一页展示10条记录
+        "bAutoWidth": true,
+        "bLengthChange": true,//屏蔽tables的一页展示多少条记录的下拉列表
+        "oLanguage": {
+            "sSearch": "<span>Filter records:</span> _INPUT_",
+            "sLengthMenu": "<span>Show entries:</span> _MENU_",
+            "oPaginate": { "sFirst": "First", "sLast": "Last", "sNext": ">", "sPrevious": "<" }
+        },
+        "processing": true, //打开数据加载时的等待效果
+        "serverSide": true,//打开后台分页
+        "ajax": {
+            "url": url,
+            "data": function (d) {
+                var level1 = $('#level1').val();
+                //添加额外的参数传给服务器
+                d.extra_search = d.search.value;
+            },
+            "dataSrc": responseHandler
+        },
+        "columns": [
+            {"mDataProp": "appId",},
+            {"mDataProp": "name"},
+            {"mDataProp": "description",},
+            {"mDataProp": "startTime",},
+            {"mDataProp": "endTime",},
+            {"mDataProp": "progress",},
+            {"mDataProp": "state",},
+            {"mDataProp": "actions",}
+        ]
 
     });
-    // 隐藏主键显示
-    //$('#' + tableId).bootstrapTable('hideColumn', 'innerId');
 }
 
-function queryTableParams(params) {
-    var temp = {
-        pageNumber: params.limit + params.offset - 1,
-        pageSize: params.offset
-    }
-    return JSON.stringify(temp);
-}
-
-
-function TableInit(tableId, url, columns) {
-    //初始化Table
-    $('#' + tableId).bootstrapTable({
-
-        url: url,         //请求后台的URL（*）
-        method: 'POST',                      //请求方式（*）
-        striped: true,                      //是否显示行间隔色
-        cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
-        pagination: true,                   //是否显示分页（*）
-        sortOrder: "asc",                   //排序方式
-        queryParamsType: '',
-        dataType: 'json',
-        paginationShowPageGo: true,
-        showJumpto: true,
-        pageNumber: 1, //初始化加载第一页，默认第一页
-        queryParams: queryParams,//请求服务器时所传的参数
-        sidePagination: 'server',//指定服务器端分页
-        pageSize: 10,//单页记录数
-        pageList: [10, 20, 30, 40],//分页步进值
-        search: false, //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
-        silent: true,
-        showRefresh: false,                  //是否显示刷新按钮
-        showToggle: false,
-        minimumCountColumns: 2,             //最少允许的列数
-        uniqueId: "id",                     //每一行的唯一标识，一般为主键列
-
-        columns: [
-            /*{
-                field: 'index',
-                title: 'No',
-                align: 'center'
-            },*/
-            {
-                field: 'appId',
-                title: 'ProcessID',
-                align: 'center',
-                width: '230px'
-            },
-            {
-                field: 'name',
-                title: 'Name',
-                align: 'center',
-                width: '230px'
-            },
-            {
-                field: 'description',
-                title: 'Description',
-                align: 'center'
-            }, {
-                field: 'startTime',
-                title: 'StartTime',
-                align: 'center'
-            }, {
-                field: 'endTime',
-                title: 'EndTime',
-                align: 'center'
-            },
-            {
-                field: 'progress',
-                title: 'Progress',
-                align: 'center'
-            }, {
-                field: 'state',
-                title: 'State',
-                align: 'center'
-            }, {
-                field: 'operation',
-                title: 'Actions',
-                align: 'center',
-                formatter: addFunctionAlty//表格中增加按钮
-            }],
-        responseHandler: function (res) {  //后台返回的结果
-            console.log(res);
-            if (res.code == 200) {
-                var userInfo = res.rowDatas;
-                var NewData = [];
-                if (userInfo.length) {
-                    for (var i = 0; i < userInfo.length; i++) {
-                        var dataNewObj = {
-                            'id': '',
-                            'parentProcessId': '',
-                            'appId': '',
-                            "name": '',
-                            'description': '',
-                            "startTime": '',
-                            'endTime': '',
-                            'progress': '',
-                            'state': ''
-                        };
-
-                        dataNewObj.id = userInfo[i].id;
-                        dataNewObj.parentProcessId = userInfo[i].parentProcessId;
-                        dataNewObj.appId = userInfo[i].appId;
-                        dataNewObj.name = userInfo[i].name;
-                        dataNewObj.description = userInfo[i].description;
-                        dataNewObj.startTime = userInfo[i].startTime;
-                        dataNewObj.endTime = userInfo[i].endTime;
-                        dataNewObj.progress = userInfo[i].progress;
-                        dataNewObj.state = userInfo[i].state;
-                        NewData.push(dataNewObj);
-                    }
-                    console.log(NewData)
-                }
-                var data = {
-                    total: res.total,
-                    rows: NewData
-                };
-
-                return data;
+//后台返回的结果
+function responseHandler(res) {
+    let resPageData = res.pageData;
+    var pageData = []
+    if (resPageData && resPageData.length > 0) {
+        for (var i = 0; i < resPageData.length; i++) {
+            var data1 = {
+                "appId": "",
+                "name": "",
+                "description": "",
+                "startTime": "",
+                "endTime": "",
+                "progress": "",
+                "state": "",
+                "actions": ""
             }
+            var descriptionHtmlStr = '<div ' +
+                'style="width: 85px;overflow: hidden;text-overflow:ellipsis;white-space:nowrap;" ' +
+                'data-toggle="tooltip" ' +
+                'data-placement="top" ' +
+                'title="' + resPageData[i].description + '">' +
+                resPageData[i].description +
+                '</div>';
 
+            var progressHtmlStr = '<div id="d">' +
+                '<p id="' + resPageData[i].id + 'Info">progress:' +
+                (resPageData[i].progress ? (resPageData[i].progress + '%') : '0%') +
+                '</p>' +
+                '<progress id="' + resPageData[i].id + '" max="100" value="' + resPageData[i].progress + '">' +
+                '</progress>' +
+                '</div>';
+
+            var actionsHtmlStr = '<a class="btn" ' +
+                'href="/piflow-web/process/getProcessById?processId=' + resPageData[i].id + '">' +
+                '<i class="icon-share-alt icon-white"></i>' +
+                '</a>' +
+                '<a class="btn" ' +
+                'href="javascript:void(0);" ' +
+                'style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;"' +
+                'onclick="javascript:getCheckpointList(\'' + resPageData[i].id + '\',\'' + resPageData[i].parentProcessId + '\',\'null\');">' +
+                '<i class="icon-play icon-white"></i>' +
+                '</a>' +
+                '<a class="btn" ' +
+                'href="javascript:void(0);" ' +
+                'style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;" ' +
+                'onclick="javascript:stopProcess(\'' + resPageData[i].id + '\');">' +
+                '<i class="icon-stop icon-white"></i>' +
+                '</a>' +
+                '<a class="btn" ' +
+                'href="javascript:void(0);" ' +
+                'style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;" ' +
+                'onclick="javascript:delProcess(\'' + resPageData[i].id + '\');">' +
+                '<i class="icon-trash icon-white"></i>' +
+                '</a>';
+            data1.appId = resPageData[i].appId;
+            data1.name = resPageData[i].name;
+            data1.description = descriptionHtmlStr;
+            data1.startTime = resPageData[i].startTime;
+            data1.endTime = resPageData[i].endTime;
+            data1.progress = progressHtmlStr;
+            data1.state = resPageData[i].state.text;
+            data1.actions = actionsHtmlStr;
+            pageData.push(data1);
         }
-    });
-
-    // 得到查询的参数
-    function queryParams(params) {
-        var userName = $("#keyWord").val();
-        console.log(userName);
-        var temp = {   //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
-            pageNum: params.pageNumber,
-            pageSize: params.pageSize,
-            username: userName
-        };
-        return JSON.stringify(temp);
     }
-    //$('#' + tableId).bootstrapTable('showColumn', 'ShopName');
-    //$('#' + tableId).bootstrapTable('hideColumn', 'index');
+    return pageData;
 }
 
-
-// 表格中按钮
-function addFunctionAlty(value, row, index) {
-    var btnText = '';
-
-    btnText += "<button type=\"button\" id=\"btn_look\" onclick=\"resetPassword(" + "'" + row.id + "'" + ")\" style='width: 77px;' class=\"btn btn-default-g ajax-link\">重置密码</button>  ";
-
-    btnText += "<button type=\"button\" id=\"btn_look\" onclick=\"openCreateUserPage(" + "'" + row.id + "'" + "," + "'编辑')\" class=\"btn btn-default-g ajax-link\">编辑</button>  ";
-
-    btnText += "<button type=\"button\" id=\"btn_stop" + row.id + "\" onclick=\"changeStatus(" + "'" + row.id + "'" + ")\" class=\"btn btn-danger-g ajax-link\">关闭</button>  ";
-
-    btnText += "<button type=\"button\" id=\"btn_stop" + row.id + "\" onclick=\"deleteUser(" + "'" + row.id + "'" + ")\" class=\"btn btn-danger-g ajax-link\">删除</button>  ";
-
-    return btnText;
-}
-
-
-//刷新表格
-function getUserList() {
-    $("#userTable").bootstrapTable('refresh');
+function search1() {
+    processTable.ajax.reload();
 }
