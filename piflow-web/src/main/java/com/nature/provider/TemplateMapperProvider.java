@@ -13,6 +13,22 @@ import java.util.Date;
 
 public class TemplateMapperProvider {
 
+
+    public String findTemPlateListPage(String param){
+        String sqlStr = "select 0";
+        SQL sql = new SQL();
+        sql.SELECT("*");
+        sql.FROM("FLOW_TEMPLATE");
+        sql.WHERE("ENABLE_FLAG = 1");
+        if (StringUtils.isNotBlank(param)) {
+            sql.AND();
+            String paramSql = "NAME LIKE '%" + param + "%'";
+            sql.WHERE(paramSql);
+        }
+        sql.ORDER_BY(" CRT_DTTM DESC  ");
+        return sqlStr = sql.toString();
+    }
+
     /**
      * 新增Template
      *

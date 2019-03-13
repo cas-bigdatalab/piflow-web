@@ -324,20 +324,20 @@ function initDatatableFlowPage(testTableId, url) {
                 //添加额外的参数传给服务器
                 d.extra_search = d.search.value;
             },
-            "dataSrc": responseHandler
+            "dataSrc": responseHandlerFlow
         },
         "columns": [
             {"mDataProp": "name"},
             {"mDataProp": "description"},
             {"mDataProp": "crtDttm"},
-            {"mDataProp": "actions"}
+            {"mDataProp": "actions",'sClass': "text-center"}
         ]
 
     });
 }
 
 //后台返回的结果
-function responseHandler(res) {
+function responseHandlerFlow(res) {
     let resPageData = res.pageData;
     var pageData = []
     if (resPageData && resPageData.length > 0) {
@@ -348,58 +348,70 @@ function responseHandler(res) {
                 "crtDttm": "",
                 "actions": ""
             }
-            var descriptionHtmlStr = '<div ' +
-                'style="width: 85px;overflow: hidden;text-overflow:ellipsis;white-space:nowrap;" ' +
-                'data-toggle="tooltip" ' +
-                'data-placement="top" ' +
-                'title="' + resPageData[i].description + '">' +
-                resPageData[i].description +
-                '</div>';
-            var actionsHtmlStr = '<a class="btn" ' +
-                'href="/piflow-web/grapheditor/home?load=' + resPageData[i].id + '"' +
-                'target="_blank" ' +
-                'style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;">' +
-                '<i class="icon-share-alt icon-white"></i>' +
-                '</a>' +
-                '<a class="btn" ' +
-                'href="javascript:void(0);" ' +
-                'style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;"' +
-                'onclick="javascript:update(\'' +
-                resPageData[i].id + '\',\'' +
-                resPageData[i].name + '\',\'' +
-                resPageData[i].description + '\',\'' +
-                resPageData[i].driverMemory + '\',\'' +
-                resPageData[i].executorNumber + '\',\'' +
-                resPageData[i].executorMemory + '\',\'' +
-                resPageData[i].executorCores + '\');">' +
-                '<i class="icon-edit icon-white"></i>' +
-                '</a>' +
-                '<a class="btn" ' +
-                'href="javascript:void(0);" ' +
-                'style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;" ' +
-                'onclick="javascript:runFlows(\'' + resPageData[i].id + '\');">' +
-                '<i class="icon-play icon-white"></i>' +
-                '</a>' +
-                '<a class="btn" ' +
-                'href="javascript:void(0);" ' +
-                'style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;" ' +
-                'onclick="javascript:deleteFlow(\'' +
-                resPageData[i].id + '\',\'' +
-                resPageData[i].name + '\');">' +
-                '<i class="icon-trash icon-white"></i>' +
-                '</a>' +
-                '<a class="btn" ' +
-                'href="javascript:void(0);" ' +
-                'style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;" ' +
-                'onclick="javascript:saveTableTemplate(\'' +
-                resPageData[i].id + '\',\'' +
-                resPageData[i].name + '\');">' +
-                '<i class="icon-trash icon-white"></i>' +
-                '</a>';
-            data1.name = resPageData[i].name;
-            data1.description = descriptionHtmlStr;
-            data1.crtDttm = resPageData[i].crtDttm;
-            data1.actions = actionsHtmlStr;
+            if (resPageData[i]) {
+                var descriptionHtmlStr = '<div ' +
+                    'style="width: 85px;overflow: hidden;text-overflow:ellipsis;white-space:nowrap;" ' +
+                    'data-toggle="tooltip" ' +
+                    'data-placement="top" ' +
+                    'title="' + resPageData[i].description + '">' +
+                    resPageData[i].description +
+                    '</div>';
+                var actionsHtmlStr = '<div style="width: 100%; text-align: center" >' +
+                    '<a class="btn" ' +
+                    'href="/piflow-web/grapheditor/home?load=' + resPageData[i].id + '"' +
+                    'target="_blank" ' +
+                    'style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;">' +
+                    '<i class="icon-share-alt icon-white"></i>' +
+                    '</a>&nbsp;' +
+                    '<a class="btn" ' +
+                    'href="javascript:void(0);" ' +
+                    'style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;"' +
+                    'onclick="javascript:update(\'' +
+                    resPageData[i].id + '\',\'' +
+                    resPageData[i].name + '\',\'' +
+                    resPageData[i].description + '\',\'' +
+                    resPageData[i].driverMemory + '\',\'' +
+                    resPageData[i].executorNumber + '\',\'' +
+                    resPageData[i].executorMemory + '\',\'' +
+                    resPageData[i].executorCores + '\');">' +
+                    '<i class="icon-edit icon-white"></i>' +
+                    '</a>&nbsp;' +
+                    '<a class="btn" ' +
+                    'href="javascript:void(0);" ' +
+                    'style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;" ' +
+                    'onclick="javascript:runFlows(\'' + resPageData[i].id + '\');">' +
+                    '<i class="icon-play icon-white"></i>' +
+                    '</a>&nbsp;' +
+                    '<a class="btn" ' +
+                    'href="javascript:void(0);" ' +
+                    'style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;" ' +
+                    'onclick="javascript:deleteFlow(\'' +
+                    resPageData[i].id + '\',\'' +
+                    resPageData[i].name + '\');">' +
+                    '<i class="icon-trash icon-white"></i>' +
+                    '</a>&nbsp;' +
+                    '<a class="btn" ' +
+                    'href="javascript:void(0);" ' +
+                    'style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;" ' +
+                    'onclick="javascript:saveTableTemplate(\'' +
+                    resPageData[i].id + '\',\'' +
+                    resPageData[i].name + '\');">' +
+                    '<i class="icon-check icon-white"></i>' +
+                    '</a>&nbsp;' +
+                    '</div>';
+                if (resPageData[i].name) {
+                    data1.name = resPageData[i].name;
+                }
+                if (resPageData[i].crtDttm) {
+                    data1.crtDttm = resPageData[i].crtDttm;
+                }
+                if (descriptionHtmlStr) {
+                    data1.description = descriptionHtmlStr;
+                }
+                if (actionsHtmlStr) {
+                    data1.actions = actionsHtmlStr;
+                }
+            }
             pageData.push(data1);
         }
     }
@@ -428,6 +440,7 @@ function reloadStopsList() {
             var dataMap = JSON.parse(data);
             if (0 !== dataMap.code) {
                 alert("reload success");
+                fullScreenList.hide();
             } else {
                 alert("reload fail");
                 fullScreenList.hide();

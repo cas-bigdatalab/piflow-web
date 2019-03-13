@@ -1,7 +1,13 @@
 package com.nature.component.template.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.nature.base.util.JsonUtils;
+import com.nature.base.util.PageHelperUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,13 +18,15 @@ import com.nature.component.template.service.ITemplateService;
 import com.nature.component.workFlow.model.Template;
 import com.nature.mapper.template.TemplateMapper;
 
+import javax.annotation.Resource;
+
 @Service
 @Transactional
 public class TemplateServiceImpl implements ITemplateService {
 
     Logger logger = LoggerUtil.getLogger();
 
-    @Autowired
+    @Resource
     private TemplateMapper templateMapper;
 
 	@Override
@@ -39,6 +47,17 @@ public class TemplateServiceImpl implements ITemplateService {
 	@Override
 	public Template queryTemplate(String id) {
 		return templateMapper.queryTemplate(id);
+	}
+
+	@Override
+	public String getTemplateListPage(Integer offset, Integer limit, String param) {
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+		if (null != offset && null != limit) {
+			Page page = PageHelper.startPage(offset, limit);
+			templateMapper.findTemPlateListPage(param);
+			rtnMap = PageHelperUtils.setDataTableParam(page, rtnMap);
+		}
+		return JsonUtils.toJsonNoException(rtnMap);
 	}
 
 }

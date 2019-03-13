@@ -35,7 +35,17 @@
                 </form>
             </div>
             <div class="table-overflow">
-                <table class="table table-striped table-bordered table-checks media-table">
+                <table id="templateTableId" style="width: 100%" class="table table-striped table-bordered table-checks">
+                    <thead>
+                    <tr>
+                        <th width="10%">name</th>
+                        <th width="50%">templateName</th>
+                        <th width="32%">createTime</th>
+                        <th width="8%" class="actions-column">Actions</th>
+                    </tr>
+                    </thead>
+                </table>
+                <!--<table class="table table-striped table-bordered table-checks media-table">
                     <thead>
                     <tr>
                         <th style="display: none">sort</th>
@@ -72,7 +82,7 @@
                         </td>
                     </tr>
                     </tbody>
-                </table>
+                </table>-->
             </div>
         </div>
         <!-- /media datatable -->
@@ -86,87 +96,12 @@
         </div>
     </div>
     <script th:include="/Macro/csrfTokeHeadMacroScript :: csrfTokeHeadMacroScript"/>
+    <script th:src="@{/custom/templateList.js}"></script>
     <script th:inline="javascript">
-        function deleteTemPlate(id, name) {
-            layer.confirm("Are you sure to delete '" + name + "' ?", {
-                btn: ['confirm','cancel'] //按钮
-                ,title: 'Confirmation prompt'
-            }, function(){
-                $.ajax({
-                    cache: true,//保留缓存数据
-                    type: "get",//为post请求
-                    url: "/piflow-web/template/deleteTemplate",//这是我在后台接受数据的文件名
-                    data: {id: id},
-                    async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
-                    error: function (request) {//请求失败之后的操作
-                        return;
-                    },
-                    success: function (data) {//请求成功之后的操作
-                        if (data > 0) {
-                            layer.msg('Delete Success', {icon: 1, shade: 0, time: 2000}, function () {
-                                location.reload();
-                            });
-                        } else {
-                            layer.msg('Delete failed', {icon: 2, shade: 0, time: 2000}, function () {});
-                        }
-                    }
-                });
-            }, function(){});
-        }
-        function initAll(url) {
-            window.location.href = url;
-        }
 
-        function uploadTemplate(){
-            document.getElementById("templateFile").click();
-        }
+        initDatatableTemplatePage('templateTableId', "/piflow-web/template/templatePage");
 
-        function importFile(){
-            if(!FileTypeCheck()) {
-                return false;
-            }
-            var formData = new FormData($('#uploadForm')[0]);
-            $.ajax({
-                type: 'post',
-                url: "/piflow-web/template/upload",
-                data: formData,
-                cache: false,
-                processData: false,
-                contentType: false,
-            }).success(function (data) {
-                var dataMap = JSON.parse(data);
-                if (0 !== dataMap.code) {
-                    layer.msg(dataMap.errMsg, {icon: 1, shade: 0, time: 2000}, function () {  location.reload();});
-                }else{
-                    layer.msg(dataMap.errMsg, {icon: 2, shade: 0, time: 2000}, function () {});
-                }
-            }).error(function () {
-                layer.msg("Upload failure", {icon: 2, shade: 0, time: 2000}, function () {});
-            });
-        }
 
-        function FileTypeCheck()
-        {
-            var obj =document.getElementById('templateFile');
-            if(obj.value==null || obj.value ==''){
-                layer.msg('please upload the XML file', {icon: 2, shade: 0, time: 2000}, function () {});
-                this.focus()
-                return false;
-            }
-            var length = obj.value.length;
-            var charindex = obj.value.lastIndexOf(".");
-            var ExtentName = obj.value.substring(charindex,charindex+4);
-            if(!(ExtentName == ".xml" )){
-                layer.msg('please upload the XML file', {icon: 2, shade: 0, time: 2000}, function () {});
-                this.focus()
-                return false;
-            }
-            return true;
-        }
-
-        function downloadTemplate(id){
-            window.location.href = "/piflow-web/template/templateDownload?templateId="+id;
-        }
         //@ sourceURL=template_List.js
     </script>
 </body>

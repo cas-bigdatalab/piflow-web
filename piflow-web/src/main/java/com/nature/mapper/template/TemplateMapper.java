@@ -2,15 +2,7 @@ package com.nature.mapper.template;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.InsertProvider;
-import org.apache.ibatis.annotations.Many;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.One;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
-import org.apache.ibatis.annotations.UpdateProvider;
+import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
 
 import com.nature.component.workFlow.model.Template;
@@ -33,6 +25,13 @@ public interface TemplateMapper {
     			@Result(column = "fk_flow_id", property = "flow", one = @One(select = "com.nature.mapper.FlowMapper.getFlowById", fetchType = FetchType.EAGER))
             })
 	public List<Template> findTemPlateList();
+
+	@SelectProvider(type = TemplateMapperProvider.class, method = "findTemPlateListPage")
+	@Results({
+			@Result(id = true, column = "id", property = "id"),
+			@Result(column = "fk_flow_id", property = "flow", one = @One(select = "com.nature.mapper.FlowMapper.getFlowById", fetchType = FetchType.EAGER))
+	})
+	public List<Template> findTemPlateListPage(String param);
 	
 	/**
 	 * 根据id删除模板或修改模板为无效

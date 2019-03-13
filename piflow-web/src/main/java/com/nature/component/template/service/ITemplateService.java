@@ -36,4 +36,14 @@ public interface ITemplateService {
 	 * @return
 	 */
 	public Template queryTemplate(String id);
+
+	/**
+	 * 查询所有模板列表分页
+	 *
+	 * @param offset 页数
+	 * @param limit 每页条数
+	 * @param param 搜索关键字
+	 * @return
+	 */
+	public String getTemplateListPage(Integer offset, Integer limit, String param);
 }

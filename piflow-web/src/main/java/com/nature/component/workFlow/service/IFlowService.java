@@ -68,6 +68,14 @@ public interface IFlowService {
 	
 	public List<FlowVo> getFlowList();
 
+	/**
+	 * 分页查询flow
+	 *
+	 * @param offset 页数
+	 * @param limit 每页条数
+	 * @param param 搜索关键字
+	 * @return
+	 */
 	public String getFlowListPage(Integer offset, Integer limit, String param);
 
 	public String getFlowExampleList();

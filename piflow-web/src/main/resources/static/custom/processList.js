@@ -220,14 +220,14 @@ function initDatatablePage(testTableId, url) {
     processTable = $('#' + testTableId).DataTable({
         "pagingType": "full_numbers",//设置分页控件的模式
         "searching": true,//屏蔽datatales的查询框
-        "aLengthMenu": [10,20,50,100],//设置一页展示10条记录
+        "aLengthMenu": [10, 20, 50, 100],//设置一页展示10条记录
         "bAutoWidth": true,
         "bLengthChange": true,//屏蔽tables的一页展示多少条记录的下拉列表
         "ordering": false, // 禁止排序
         "oLanguage": {
             "sSearch": "<span>Filter records:</span> _INPUT_",
             "sLengthMenu": "<span>Show entries:</span> _MENU_",
-            "oPaginate": { "sFirst": "First", "sLast": "Last", "sNext": ">", "sPrevious": "<" }
+            "oPaginate": {"sFirst": "First", "sLast": "Last", "sNext": ">", "sPrevious": "<"}
         },
         "processing": true, //打开数据加载时的等待效果
         "serverSide": true,//打开后台分页
@@ -270,52 +270,72 @@ function responseHandler(res) {
                 "state": "",
                 "actions": ""
             }
-            var descriptionHtmlStr = '<div ' +
-                'style="width: 85px;overflow: hidden;text-overflow:ellipsis;white-space:nowrap;" ' +
-                'data-toggle="tooltip" ' +
-                'data-placement="top" ' +
-                'title="' + resPageData[i].description + '">' +
-                resPageData[i].description +
-                '</div>';
+            if (resPageData[i]) {
+                var descriptionHtmlStr = '<div ' +
+                    'style="width: 85px;overflow: hidden;text-overflow:ellipsis;white-space:nowrap;" ' +
+                    'data-toggle="tooltip" ' +
+                    'data-placement="top" ' +
+                    'title="' + resPageData[i].description + '">' +
+                    resPageData[i].description +
+                    '</div>';
 
-            var progressHtmlStr = '<div id="d">' +
-                '<p id="' + resPageData[i].id + 'Info">progress:' +
-                (resPageData[i].progress ? (resPageData[i].progress + '%') : '0%') +
-                '</p>' +
-                '<progress id="' + resPageData[i].id + '" max="100" value="' + resPageData[i].progress + '">' +
-                '</progress>' +
-                '</div>';
+                var progressHtmlStr = '<div id="d">' +
+                    '<p id="' + resPageData[i].id + 'Info">progress:' +
+                    (resPageData[i].progress ? (resPageData[i].progress + '%') : '0%') +
+                    '</p>' +
+                    '<progress id="' + resPageData[i].id + '" max="100" value="' + resPageData[i].progress + '">' +
+                    '</progress>' +
+                    '</div>';
 
-            var actionsHtmlStr = '<a class="btn" ' +
-                'href="/piflow-web/process/getProcessById?processId=' + resPageData[i].id + '">' +
-                '<i class="icon-share-alt icon-white"></i>' +
-                '</a>' +
-                '<a class="btn" ' +
-                'href="javascript:void(0);" ' +
-                'style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;"' +
-                'onclick="javascript:getCheckpointList(\'' + resPageData[i].id + '\',\'' + resPageData[i].parentProcessId + '\',\'null\');">' +
-                '<i class="icon-play icon-white"></i>' +
-                '</a>' +
-                '<a class="btn" ' +
-                'href="javascript:void(0);" ' +
-                'style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;" ' +
-                'onclick="javascript:stopProcess(\'' + resPageData[i].id + '\');">' +
-                '<i class="icon-stop icon-white"></i>' +
-                '</a>' +
-                '<a class="btn" ' +
-                'href="javascript:void(0);" ' +
-                'style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;" ' +
-                'onclick="javascript:delProcess(\'' + resPageData[i].id + '\');">' +
-                '<i class="icon-trash icon-white"></i>' +
-                '</a>';
-            data1.appId = resPageData[i].appId;
-            data1.name = resPageData[i].name;
-            data1.description = descriptionHtmlStr;
-            data1.startTime = resPageData[i].startTime;
-            data1.endTime = resPageData[i].endTime;
-            data1.progress = progressHtmlStr;
-            data1.state = resPageData[i].state.text;
-            data1.actions = actionsHtmlStr;
+                var actionsHtmlStr = '<div style="width: 100%; text-align: center" >' +
+                    '<a class="btn" ' +
+                    'href="/piflow-web/process/getProcessById?processId=' + resPageData[i].id + '">' +
+                    '<i class="icon-share-alt icon-white"></i>' +
+                    '</a>&nbsp;' +
+                    '<a class="btn" ' +
+                    'href="javascript:void(0);" ' +
+                    'style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;"' +
+                    'onclick="javascript:getCheckpointList(\'' + resPageData[i].id + '\',\'' + resPageData[i].parentProcessId + '\',\'null\');">' +
+                    '<i class="icon-play icon-white"></i>' +
+                    '</a>&nbsp;' +
+                    '<a class="btn" ' +
+                    'href="javascript:void(0);" ' +
+                    'style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;" ' +
+                    'onclick="javascript:stopProcess(\'' + resPageData[i].id + '\');">' +
+                    '<i class="icon-stop icon-white"></i>' +
+                    '</a>&nbsp;' +
+                    '<a class="btn" ' +
+                    'href="javascript:void(0);" ' +
+                    'style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;" ' +
+                    'onclick="javascript:delProcess(\'' + resPageData[i].id + '\');">' +
+                    '<i class="icon-trash icon-white"></i>' +
+                    '</a>&nbsp;' +
+                    '</div>';
+                if (resPageData[i].appId) {
+                    data1.appId = resPageData[i].appId;
+                }
+                if (resPageData[i].name) {
+                    data1.name = resPageData[i].name;
+                }
+                if (resPageData[i].startTime) {
+                    data1.startTime = resPageData[i].startTime;
+                }
+                if (resPageData[i].endTime) {
+                    data1.endTime = resPageData[i].endTime;
+                }
+                if (resPageData[i].state) {
+                    data1.state = resPageData[i].state.text;
+                }
+                if (descriptionHtmlStr) {
+                    data1.description = descriptionHtmlStr;
+                }
+                if (progressHtmlStr) {
+                    data1.progress = progressHtmlStr;
+                }
+                if (actionsHtmlStr) {
+                    data1.actions = actionsHtmlStr;
+                }
+            }
             pageData.push(data1);
         }
     }
