@@ -2,7 +2,6 @@ package com.nature.component.process.service.Impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.nature.base.util.*;
 import com.nature.base.vo.StatefulRtnBase;
 import com.nature.base.vo.UserVo;
@@ -696,17 +695,12 @@ public class ProcessServiceImpl implements IProcessService {
     }
 
     @Override
-    public String getProcessVoListPage(Integer offset, Integer limit, String extra_search) {
+    public String getProcessVoListPage(Integer offset, Integer limit, String param) {
         Map<String, Object> rtnMap = new HashMap<String, Object>();
-        UserVo currentUser = SessionUserUtil.getCurrentUser();
         if (null != offset && null != limit) {
-            Page page= PageHelper.startPage(offset, limit);
-            List<ProcessVo> processVoList = processTransaction.getProcessVoList();
-            PageInfo info=new PageInfo(page.getResult());
-            //rtnMap.put("draw", offset);
-            rtnMap.put("iTotalDisplayRecords", info.getTotal());
-            rtnMap.put("iTotalRecords", info.getTotal());
-            rtnMap.put("pageData", info.getList());//数据集合
+            Page page = PageHelper.startPage(offset, limit);
+            processTransaction.getProcessListByParam(param);
+            rtnMap = PageHelperUtils.setDataTableParam(page, rtnMap);
         }
         return JsonUtils.toJsonNoException(rtnMap);
     }

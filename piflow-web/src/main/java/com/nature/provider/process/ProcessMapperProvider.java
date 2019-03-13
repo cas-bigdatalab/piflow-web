@@ -169,21 +169,44 @@ public class ProcessMapperProvider {
         return sql.toString();
     }
 
-  /**
-   * 根据flowId查询正在运行的进程List(processList)
-   *
-   * @return
-   */
-  public String getRunningProcessList(String flowId) {
-    SQL sql = new SQL();
-    sql.SELECT("*");
-    sql.FROM("FLOW_PROCESS");
-    sql.WHERE("ENABLE_FLAG = 1");
-    sql.WHERE("FLOW_ID = " + Utils.addSqlStr(flowId));
-    sql.WHERE("STATE = " + Utils.addSqlStr(ProcessState.STARTED.name()));
-    sql.ORDER_BY("CRT_DTTM DESC,LAST_UPDATE_DTTM DESC");
-    return sql.toString();
-  }
+    /**
+     * 查询进程List根据param(processList)
+     *
+     * @param param
+     * @return
+     */
+    public String getProcessListByParam(String param) {
+        SQL sql = new SQL();
+        sql.SELECT("*");
+        sql.FROM("FLOW_PROCESS");
+        sql.WHERE("ENABLE_FLAG = 1");
+        if (StringUtils.isNotBlank(param)) {
+            sql.AND();
+            String paramSql = "APP_ID LIKE '%" + param + "%'" + " OR " +
+                    "NAME LIKE '%" + param + "%'" + " OR " +
+                    "STATE LIKE '%" + param + "%'" + " OR " +
+                    "DESCRIPTION LIKE '%" + param + "%'";
+            sql.WHERE(paramSql);
+        }
+        sql.ORDER_BY("CRT_DTTM DESC,LAST_UPDATE_DTTM DESC");
+        return sql.toString();
+    }
+
+    /**
+     * 根据flowId查询正在运行的进程List(processList)
+     *
+     * @return
+     */
+    public String getRunningProcessList(String flowId) {
+        SQL sql = new SQL();
+        sql.SELECT("*");
+        sql.FROM("FLOW_PROCESS");
+        sql.WHERE("ENABLE_FLAG = 1");
+        sql.WHERE("FLOW_ID = " + Utils.addSqlStr(flowId));
+        sql.WHERE("STATE = " + Utils.addSqlStr(ProcessState.STARTED.name()));
+        sql.ORDER_BY("CRT_DTTM DESC,LAST_UPDATE_DTTM DESC");
+        return sql.toString();
+    }
 
     /**
      * 根据进程appId查询进程

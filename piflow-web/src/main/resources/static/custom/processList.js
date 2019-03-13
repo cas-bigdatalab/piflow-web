@@ -223,6 +223,7 @@ function initDatatablePage(testTableId, url) {
         "aLengthMenu": [10,20,50,100],//设置一页展示10条记录
         "bAutoWidth": true,
         "bLengthChange": true,//屏蔽tables的一页展示多少条记录的下拉列表
+        "ordering": false, // 禁止排序
         "oLanguage": {
             "sSearch": "<span>Filter records:</span> _INPUT_",
             "sLengthMenu": "<span>Show entries:</span> _MENU_",

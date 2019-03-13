@@ -48,18 +48,19 @@ public interface ProcessMapper {
     public List<Process> getProcessList();
 
     /**
-     * 查询进程List(processList)
+     * 查询进程List根据param(processList)
      *
+     * @param param
      * @return
      */
-    /*@SelectProvider(type = ProcessMapperProvider.class, method = "getProcessListByParam")
+    @SelectProvider(type = ProcessMapperProvider.class, method = "getProcessListByParam")
     @Results({
             @Result(id = true, column = "id", property = "id"),
             @Result(column = "id", property = "processStopList", many = @Many(select = "com.nature.mapper.process.ProcessStopMapper.getProcessStopByProcessId", fetchType = FetchType.LAZY)),
             @Result(column = "id", property = "processPathList", many = @Many(select = "com.nature.mapper.process.ProcessPathMapper.getProcessPathByProcessId", fetchType = FetchType.LAZY))
 
     })
-    public List<Process> getProcessListByParam(String param);*/
+    public List<Process> getProcessListByParam(String param);
 
     /**
      * 根据flowId查询正在运行的进程List(processList)

@@ -1,14 +1,13 @@
 package com.nature.component.workFlow.service;
 
-import java.util.List;
-
-import org.springframework.data.annotation.Transient;
-
 import com.nature.base.vo.StatefulRtnBase;
 import com.nature.component.mxGraph.vo.MxGraphModelVo;
 import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.model.FlowInfoDb;
 import com.nature.component.workFlow.vo.FlowVo;
+import org.springframework.data.annotation.Transient;
+
+import java.util.List;
 
 public interface IFlowService {
 	/**
@@ -68,6 +67,8 @@ public interface IFlowService {
 	public String getMaxStopPageId(String flowId);
 	
 	public List<FlowVo> getFlowList();
+
+	public String getFlowListPage(Integer offset, Integer limit, String param);
 
 	public String getFlowExampleList();
 

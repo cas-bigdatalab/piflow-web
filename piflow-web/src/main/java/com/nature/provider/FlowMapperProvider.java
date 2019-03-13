@@ -186,7 +186,30 @@ public class FlowMapperProvider {
      *
      * @return
      */
-    public String getFlowList() {
+    public String getFlowList(String param) {
+        String sqlStr = "";
+        SQL sql = new SQL();
+        sql.SELECT("*");
+        sql.FROM("flow");
+        sql.WHERE("ENABLE_FLAG = 1");
+        sql.WHERE("IS_EXAMPLE = 0");
+        if (StringUtils.isNotBlank(param)) {
+            sql.AND();
+            String paramSql = "NAME LIKE '%" + param + "%'" + " OR " +
+                    "DESCRIPTION LIKE '%" + param + "%'";
+            sql.WHERE(paramSql);
+        }
+        sql.ORDER_BY(" CRT_DTTM DESC  ");
+        sqlStr = sql.toString();
+        return sqlStr;
+    }
+
+    /**
+     * 查詢所有工作流分页查询
+     * @param parma
+     * @return
+     */
+    public String getFlowListParma(String parma) {
         String sqlStr = "";
         SQL sql = new SQL();
         sql.SELECT("*");

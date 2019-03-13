@@ -15,12 +15,11 @@ import com.nature.component.process.service.IProcessService;
 import com.nature.component.workFlow.model.Flow;
 import com.nature.component.workFlow.model.Property;
 import com.nature.component.workFlow.model.Stops;
-import com.nature.component.workFlow.service.*;
+import com.nature.component.workFlow.service.IFlowService;
+import com.nature.component.workFlow.service.IPathsService;
+import com.nature.component.workFlow.service.IPropertyService;
+import com.nature.component.workFlow.service.IStopsService;
 import com.nature.component.workFlow.vo.FlowVo;
-import com.nature.third.inf.IGetFlowInfo;
-import com.nature.third.inf.IGetFlowLog;
-import com.nature.third.inf.IStartFlow;
-import com.nature.third.inf.IStopFlow;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
@@ -50,18 +49,6 @@ public class FlowCtrl {
     private IFlowService flowServiceImpl;
 
     @Autowired
-    private IStartFlow startFlowImpl;
-
-    @Autowired
-    private IStopFlow stopFlowImpl;
-
-    @Autowired
-    private IGetFlowInfo getFlowInfoImpl;
-
-    @Autowired
-    private IGetFlowLog getFlowLogImpl;
-
-    @Autowired
     private IPropertyService propertyServiceImpl;
 
     @Autowired
@@ -74,9 +61,6 @@ public class FlowCtrl {
     private IMxGraphModelService mxGraphModelServiceImpl;
 
     @Autowired
-    private IFlowInfoDbService flowInfoDbServiceImpl;
-
-    @Autowired
     private IMxCellService mxCellServiceImpl;
 
     @Autowired
@@ -84,6 +68,22 @@ public class FlowCtrl {
 
     @Autowired
     private IProcessService processServiceImpl;
+
+    /**
+     * flowList分页查询
+     *
+     * @param request
+     * @param start
+     * @param length
+     * @param draw
+     * @param extra_search
+     * @return
+     */
+    @RequestMapping("/getFlowListPage")
+    @ResponseBody
+    public String getFlowListPage(HttpServletRequest request, Integer start, Integer length, Integer draw, String extra_search){
+        return flowServiceImpl.getFlowListPage(start / length + 1, length, extra_search);
+    }
 
     /**
      * 启动flow
@@ -228,7 +228,7 @@ public class FlowCtrl {
             pathsServiceImpl.deletePathsByFlowId(flowById.getId());
             //删除FLowInfo
             if (flowById.getAppId() != null) {
-                flowInfoDbServiceImpl.deleteFlowInfoById(flowById.getAppId().getId());
+                //flowInfoDbServiceImpl.deleteFlowInfoById(flowById.getAppId().getId());
             }
             if (null != flowById.getMxGraphModel()) {
                 List<MxCell> root = flowById.getMxGraphModel().getRoot();

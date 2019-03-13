@@ -1,9 +1,9 @@
 package com.nature.controller;
 
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
-import com.nature.base.util.*;
+import com.nature.base.util.HttpUtils;
+import com.nature.base.util.JsonUtils;
+import com.nature.base.util.LoggerUtil;
+import com.nature.base.util.SessionUserUtil;
 import com.nature.base.vo.StatefulRtnBase;
 import com.nature.base.vo.UserVo;
 import com.nature.common.Eunm.ProcessState;
@@ -84,7 +84,6 @@ public class ProcessCtrl {
         // modelAndView.setViewName("process/process");
         List<ProcessVo> processVoList = processServiceImpl.getProcessVoList();
         modelAndView.addObject("processVoList", processVoList);
-        modelAndView = PageHelperUtils.setDataTableParam(modelAndView, processVoList);
         return modelAndView;
     }
 

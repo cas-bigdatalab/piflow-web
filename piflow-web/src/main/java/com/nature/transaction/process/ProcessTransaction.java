@@ -143,9 +143,6 @@ public class ProcessTransaction {
      * @return
      */
     public Process getProcessById(String id) {
-        //SqlSession openSession = sqlSessionFactory.openSession();
-        //ProcessMapper userDao = openSession.getMapper(ProcessMapper.class);
-        //Process processById = userDao.getProcessById(id);
         Process processById = processMapper.getProcessById(id);
         return processById;
     }
@@ -186,19 +183,8 @@ public class ProcessTransaction {
      *
      * @return
      */
-    public List<ProcessVo> getProcessVoListByParam(String param) {
-        List<Process> processList = null;
-        processList = processMapper.getProcessList();
-        List<ProcessVo> processVoList = new ArrayList<ProcessVo>();
-        if (null != processList && processList.size() > 0) {
-            for (Process process : processList) {
-                ProcessVo processVo = processPoToVo(process);
-                if (null != processVo) {
-                    processVoList.add(processVo);
-                }
-            }
-        }
-        return processVoList;
+    public List<Process> getProcessListByParam(String param) {
+        return processMapper.getProcessListByParam(param);
     }
 
     /**

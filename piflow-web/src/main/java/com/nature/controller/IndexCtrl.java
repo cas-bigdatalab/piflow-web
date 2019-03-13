@@ -7,7 +7,6 @@ import com.nature.component.template.service.ITemplateService;
 import com.nature.component.workFlow.model.Template;
 import com.nature.component.workFlow.service.IFlowInfoDbService;
 import com.nature.component.workFlow.service.IFlowService;
-import com.nature.component.workFlow.vo.FlowVo;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -66,8 +65,8 @@ public class IndexCtrl {
 		UserVo currentUser = SessionUserUtil.getCurrentUser();
 		modelAndView.addObject("currentUser", currentUser);
 		modelAndView.addObject("accessPath", "flowList");
-		List<FlowVo> appInfo = flowServiceImpl.getFlowList();
-		modelAndView.addObject("appInfo", appInfo);
+		//List<FlowVo> appInfo = flowServiceImpl.getFlowList();
+		//modelAndView.addObject("appInfo", appInfo);
 		return modelAndView;
 	}
 

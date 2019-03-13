@@ -141,9 +141,9 @@ public interface IProcessService {
      *
      * @param offset
      * @param limit
-     * @param extra_search
+     * @param param
      * @return
      */
     @Transient
-    public String getProcessVoListPage(Integer offset, Integer limit, String extra_search);
+    public String getProcessVoListPage(Integer offset, Integer limit, String param);
 }

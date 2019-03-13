@@ -32,9 +32,6 @@ public class StopsServiceImpl implements IStopsService {
     private StopsMapper stopsMapper;
     
     @Autowired
-    private FlowMapper flowMapper;
-    
-    @Autowired
     private MxCellMapper mxCellMapper;
     
     Logger logger = LoggerUtil.getLogger();

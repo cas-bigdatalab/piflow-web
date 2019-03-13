@@ -2,7 +2,6 @@ package com.nature.mapper;
 
 import com.nature.component.workFlow.model.Flow;
 import com.nature.provider.FlowMapperProvider;
-
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
 
@@ -35,6 +34,15 @@ public interface FlowMapper {
 	 */
 	@SelectProvider(type = FlowMapperProvider.class, method = "getFlowList")
 	public List<Flow> getFlowList();
+
+	/**
+	 * 查詢所有工作流分页查询
+	 *
+	 * @param parma
+	 * @return
+	 */
+	@SelectProvider(type = FlowMapperProvider.class, method = "getFlowListParma")
+	public List<Flow> getFlowListParma(String parma);
 
 	/**
 	 * 查詢所有样例工作流

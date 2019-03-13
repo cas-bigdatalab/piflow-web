@@ -5,17 +5,17 @@ server:
     session:
       timeout: 600
 syspara:
-  imagesPath: file:/C:/Z_Nature/Z-mytest/piflow-web-file/Image/
-  xmlPath: C:/Z_Nature/Z-mytest/piflow-web-file/xml/
+  imagesPath: file:/home/nature/IdeaProjects/piflow/image/
+  xmlPath: file:/home/nature/IdeaProjects/piflow/xml/
   interfaceUrlHead : http://10.0.86.191:8002
 spring:
   ########################################################
   ######  数据源
   ########################################################
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/piflow-web?useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowMultiQueries=true
+    url: jdbc:mysql://127.0.0.1:3306/piflow_web?useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowMultiQueries=true
     username: root
-    password: root
+    password: 123456
     driver-class-name: com.mysql.jdbc.Driver
     #type: com.alibaba.druid.pool.DruidDataSource
   ########################################################

@@ -1,5 +1,7 @@
 package com.nature.component.workFlow.service.impl;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.nature.base.util.*;
 import com.nature.base.vo.StatefulRtnBase;
 import com.nature.base.vo.UserVo;
@@ -979,6 +981,16 @@ public class FlowServiceImpl implements IFlowService {
 	            }
 	        }
 		return flowVoList;
+	}
+	@Override
+    public String getFlowListPage(Integer offset, Integer limit, String param) {
+        Map<String, Object> rtnMap = new HashMap<String, Object>();
+        if (null != offset && null != limit) {
+            Page page = PageHelper.startPage(offset, limit);
+            flowMapper.getFlowListParma(param);
+            rtnMap = PageHelperUtils.setDataTableParam(page, rtnMap);
+        }
+        return JsonUtils.toJsonNoException(rtnMap);
 	}
 
     @Override
