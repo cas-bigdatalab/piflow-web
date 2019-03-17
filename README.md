@@ -1,9 +1,8 @@
-# piflow-web
-## Architecture
-![](https://github.com/cas-bigdatalab/piflow/blob/master/doc/architecture.png) 
+![](https://github.com/cas-bigdatalab/piflow/blob/master/doc/piflow-logo2.png) 
+piflow is an easy to use, powerful big data pipeline system.
 ## Requirements
 * JDK 1.8 or newer
 * Apache Maven 3.1.0 or newer
-* Git Client (used during build process by 'bower' plugin)
-* Spark-2.1.0
-* Hadoop-2.6.0
+* Apache Tomcat 8.5 or newer
+## Getting Started
+
