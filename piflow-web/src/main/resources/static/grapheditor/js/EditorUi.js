@@ -988,6 +988,11 @@ EditorUi.prototype.lightboxMaxFitScale = 2;
 EditorUi.prototype.lightboxVerticalDivider = 4;
 
 /**
+ * is customToobar. Default is false.
+ */
+EditorUi.prototype.customToobar = false;
+
+/**
  * Installs the listeners to update the action states.
  */
 EditorUi.prototype.init = function()
@@ -2948,6 +2953,10 @@ EditorUi.prototype.refresh = function(sizeDidChange)
     if (sizeDidChange)
     {
         this.editor.graph.sizeDidChange();
+    }
+    if($('.geToolbar')){
+        //$('.geToolbar').html("");
+        //toolbarReset($('.geToolbar'));
     }
 };
 

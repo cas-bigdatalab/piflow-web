@@ -82,6 +82,10 @@ public class StartFlowImpl implements IStartFlow {
         // stops
         Map<String, ThirdStopVo> stopsMap = new HashMap<String, ThirdStopVo>();
 
+        flowVo.setDriverMemory(process.getDriverMemory());
+        flowVo.setExecutorMemory(process.getExecutorMemory());
+        flowVo.setExecutorCores(process.getExecutorCores());
+        flowVo.setExecutorNumber(process.getExecutorNumber());
         flowVo.setName(process.getName());
         flowVo.setUuid(process.getId());
 

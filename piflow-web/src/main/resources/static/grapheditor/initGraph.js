@@ -18,9 +18,13 @@ function initGraph() {
         //监控事件
         graphGlobal.addListener(mxEvent.CELLS_ADDED, function (sender, evt) {
             processListener(evt, "ADD");
+            //console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+            //console.log(evt);
         });
         graphGlobal.addListener(mxEvent.CELLS_MOVED, function (sender, evt) {
             processListener(evt, "MOVED");
+            //console.log("uuuuuuuuuuuuuuu");
+            //console.log(evt);
 
         });
         graphGlobal.addListener(mxEvent.CELLS_REMOVED, function (sender, evt) {
@@ -56,8 +60,13 @@ function initGraph() {
     }, function () {
         document.body.innerHTML = '<center style="margin-top:10%;">Error loading resource files. Please check browser console.</center>';
     });
-    EditorUi.prototype.menubarHeight = 0;
-    EditorUi.prototype.menubarShow = false;
+    EditorUi.prototype.menubarHeight = 48;
+    EditorUi.prototype.menubarShow = true;
+    EditorUi.prototype.customToobar = true;
+}
+
+function f() {
+
 }
 
 function findBasicInfo(evt) {
@@ -331,6 +340,9 @@ function add(data, stopId, isCheckpointss) {
         if (isCheckpointss) {
             checkboxCheckpoint.setAttribute('checked', 'checked');
         }
+        if (isExample){
+            checkboxCheckpoint.setAttribute('disabled', 'disabled');
+        }
         checkboxCheckpoint.setAttribute('onclick', 'saveCheckpoints("' + stopId + '")');
         var spanCheckpoint = document.createElement('span');
         mxUtils.write(spanCheckpoint, '是否加Checkpoint');
@@ -396,7 +408,8 @@ function saveXml(paths, operType) {
                     getStopsPort(paths);
                 }
             } else {
-                alert(operType + " save fail");
+                //alert(operType + " save fail");
+                layer.msg(operType + " save fail", {icon: 2, shade: 0, time: 2000}, function () {});
                 console.log(operType + " save fail");
                 fullScreen.hide();
             }
@@ -441,7 +454,8 @@ function reloadStops() {
         url: "/piflow-web/grapheditor/reloadStops",//这是我在后台接受数据的文件名
         error: function (request) {//请求失败之后的操作
             fullScreen.hide();
-            alert("reload fail");
+            //alert("reload fail");
+            layer.msg("reload fail", {icon: 2, shade: 0, time: 2000}, function () {});
             return;
         },
         success: function (data) {//请求成功之后的操作
@@ -449,7 +463,8 @@ function reloadStops() {
             if (0 !== dataMap.code) {
                 window.location.href = "/piflow-web/grapheditor/home?load=" + dataMap.load + "&_" + new Date().getTime();
             } else {
-                alert("reload fail");
+                //alert("reload fail");
+                layer.msg("reload fail", {icon: 2, shade: 0, time: 2000}, function () {});
                 fullScreen.hide();
             }
         }
@@ -500,7 +515,8 @@ function runFlow() {
         data: {flowId: loadId},
         async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
         error: function (request) {//请求失败之后的操作
-            alert("Request Failed");
+            //alert("Request Failed");
+            layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000}, function () {});
             fullScreen.hide();
             return;
         },
@@ -510,7 +526,8 @@ function runFlow() {
             if ('0' !== dataMap.code) {
                 window.location.href = "/piflow-web/process/getProcessById?parentAccessPath=grapheditor&processId=" + dataMap.processId;
             } else {
-                alert("启动失败：" + dataMap.errMsg);
+                //alert("启动失败：" + dataMap.errMsg);
+                layer.msg("启动失败：" + dataMap.errMsg, {icon: 2, shade: 0, time: 2000}, function () {});
             }
             fullScreen.hide();
         }
@@ -662,7 +679,8 @@ function chooseProt(paths) {
         var sourceTypeDiv = $('#sourceTypeDiv');
         var targetTypeDiv = $("#targetTypeDiv");
         if (!sourceTypeDiv && !sourceTypeDiv) {
-            alert("页面报错，请检查！");
+            //alert("页面报错，请检查！");
+            layer.msg("页面报错，请检查！", {icon: 2, shade: 0, time: 2000}, function () {});
             return false;
         }
         var sourceTitleCheckbox = $('#sourceTitleCheckbox');
@@ -679,11 +697,13 @@ function chooseProt(paths) {
                     }
                 });
                 if (sourceEffCheckbox.length > 1) {
-                    alert("sourcePort只能选一个");
+                    //alert("sourcePort只能选一个");
+                    layer.msg("sourcePort只能选一个", {icon: 2, shade: 0, time: 2000}, function () {});
                     return false;
                 }
                 if (sourceEffCheckbox < 1) {
-                    alert("请选择sourcePort");
+                    //alert("请选择sourcePort");
+                    layer.msg("请选择sourcePort", {icon: 2, shade: 0, time: 2000}, function () {});
                     return false;
                 }
                 for (var i = 0; i < sourceEffCheckbox.length; i++) {
@@ -696,7 +716,8 @@ function chooseProt(paths) {
                 }
             }
         } else {
-            alert("页面报错，请检查！");
+            //alert("页面报错，请检查！");
+            layer.msg("页面报错，请检查！", {icon: 2, shade: 0, time: 2000}, function () {});
             return false;
         }
         if (targetTitleCheckbox) {
@@ -711,11 +732,13 @@ function chooseProt(paths) {
                     }
                 });
                 if (targetEffCheckbox.length > 1) {
-                    alert("targetPort只能选一个");
+                    //alert("targetPort只能选一个");
+                    layer.msg("targetPort只能选一个", {icon: 2, shade: 0, time: 2000}, function () {});
                     return false;
                 }
                 if (targetEffCheckbox.length < 1) {
-                    alert("请选择targetPort");
+                    //alert("请选择targetPort");
+                    layer.msg("请选择targetPort", {icon: 2, shade: 0, time: 2000}, function () {});
                     return false;
                 }
                 for (var i = 0; i < targetEffCheckbox.length; i++) {
@@ -728,7 +751,8 @@ function chooseProt(paths) {
                 }
             }
         } else {
-            alert("页面报错，请检查！");
+            //alert("页面报错，请检查！");
+            layer.msg("页面报错，请检查！", {icon: 2, shade: 0, time: 2000}, function () {});
             return false;
         }
         if (pathsCells.length > 1) {
@@ -770,7 +794,8 @@ function chooseProt(paths) {
                     if ('1' === dataMap.code) {
                         //alert("端口选择保存成功");
                     } else {
-                        alert("端口选择保存失败");
+                        //alert("端口选择保存失败");
+                        layer.msg("端口选择保存失败", {icon: 2, shade: 0, time: 2000}, function () {});
                         graphGlobal.removeCells(pathsCells);
                     }
                 }
@@ -807,10 +832,12 @@ function crtAnyPort(crtProtInputId, isSource) {
             $('.' + portNameVal).text(portNameVal);
             $('#copyDivCheckbox').hide();
         } else {
-            alert("端口名称被占用！！");
+            //alert("端口名称被占用！！");
+            layer.msg("端口名称被占用！！", {icon: 2, shade: 0, time: 2000}, function () {});
         }
     } else {
-        alert("端口名不能为空");
+        //alert("端口名不能为空");
+        layer.msg("端口名不能为空", {icon: 2, shade: 0, time: 2000}, function () {});
     }
 }
 
@@ -831,18 +858,22 @@ function saveCheckpoints(stopId) {
         async: true,
         traditional: true,
         error: function (request) {
-            alert("标记Checkpoint失败");
+            //alert("标记Checkpoint失败");
+            layer.msg("标记Checkpoint失败", {icon: 2, shade: 0, time: 2000}, function () {});
             return;
         },
         success: function (data) {
             var dataMap = JSON.parse(data);
             //alert(dataMap);
+
             //alert("端口选择保存成功");
             //console.log("attribute update success");
             if ('1' === dataMap.code) {
-                alert("修改标记Checkpoint成功");
+                //alert("修改标记Checkpoint成功");
+                layer.msg("修改标记Checkpoint成功", {icon: 1, shade: 0, time: 2000}, function () {});
             } else {
-                alert("修改标记Checkpoint失败");
+                //alert("修改标记Checkpoint失败");
+                layer.msg("修改标记Checkpoint失败", {icon: 2, shade: 0, time: 2000}, function () {});
             }
 
         }
@@ -953,12 +984,18 @@ function loadingXml(id, loadId) {
 }
 
 function showSelect() {
+
     var bt = document.getElementById("loadingXml");
     bt.onclick = function () {
         var oDiv = document.getElementById("divloadingXml");
         if (oDiv.style.display == "block") {
             oDiv.style.display = "none";
         } else {
+            if (isExample){
+                layer.msg('This is an example, you can\'t edit', {icon: 2, shade: 0, time: 2000}, function () {});
+                    return;
+            }
+            loadingSelect();
             oDiv.style.display = "block";
 
         }
@@ -966,9 +1003,11 @@ function showSelect() {
 }
 
 function loadingSelect() {
+    $("#loadingXmlSelect").html("");
     $.ajax({
         url: "/piflow-web/template/templateAllSelect",
         type: "post",
+        async:false,
         success: function (data) {
             var dataMap = JSON.parse(data);
             if (dataMap.code != '0') {
@@ -987,6 +1026,7 @@ function loadTemplate() {
     if (id == '-1') {
         return;
     }
+
     var name = $("#loadingXmlSelect option:selected").text();
     layer.confirm('Are you sure you want to load ' + name + '？', {
         btn: ['submit', 'cancel'] //按钮
@@ -1019,7 +1059,7 @@ function processListener(evt, operType) {
 
     } else {
         if ('ADD' === operType || 'REMOVED' === operType) {
-            alert("This is an example, you can't add edit delete");
+            layer.msg("This is an example, you can't add edit delete", {icon: 2, shade: 0, time: 2000}, function () {});
         } else if ('MOVED' === operType) {
             findBasicInfo(evt);
         }

@@ -98,7 +98,7 @@ function getCheckpointList(id, processId, parentProcessId) {
             $('#runProcessBtn').attr('onclick', 'listRunProcess(true,"' + id + '")');
             $('#stopProcessBtn').attr('onclick', 'listRunProcess(false,"' + id + '")');
             if ($('#checkpointsIsNull').val()) {
-                alert("No Checkpoint was queried");
+                //alert("No Checkpoint was queried");
                 listRunProcess(true, id);
             } else {
                 $('#checkpointListShow').modal('show');
@@ -142,7 +142,7 @@ function listRunProcess(flag, id) {
             //console.log("success");
             var dataMap = JSON.parse(data);
             if ('0' !== dataMap.code) {
-                alert(dataMap.errMsg);
+                //alert(dataMap.errMsg);
                 window.location.reload();
                 window.open("/piflow-web/process/getProcessById?processId=" + dataMap.processId);
             } else {
@@ -294,19 +294,16 @@ function responseHandler(res) {
                     '</a>&nbsp;' +
                     '<a class="btn" ' +
                     'href="javascript:void(0);" ' +
-                    'style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;"' +
                     'onclick="javascript:getCheckpointList(\'' + resPageData[i].id + '\',\'' + resPageData[i].parentProcessId + '\',\'null\');">' +
                     '<i class="icon-play icon-white"></i>' +
                     '</a>&nbsp;' +
                     '<a class="btn" ' +
                     'href="javascript:void(0);" ' +
-                    'style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;" ' +
                     'onclick="javascript:stopProcess(\'' + resPageData[i].id + '\');">' +
                     '<i class="icon-stop icon-white"></i>' +
                     '</a>&nbsp;' +
                     '<a class="btn" ' +
                     'href="javascript:void(0);" ' +
-                    'style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;" ' +
                     'onclick="javascript:delProcess(\'' + resPageData[i].id + '\');">' +
                     '<i class="icon-trash icon-white"></i>' +
                     '</a>&nbsp;' +

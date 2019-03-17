@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,6 +36,11 @@ public class GetFlowProgressImpl implements IGetFlowProgress {
                 // 将json对象转换为java对象
                 jd = (ThirdProgressVo) JSONObject.toBean(obj, ThirdProgressVo.class);
             }
+        }
+        String progressNums = jd.getProgress();
+        if (StringUtils.isNotBlank(progressNums)) {
+            int i = progressNums.indexOf(".");
+            jd.setProgress(progressNums.substring(0, i + 3));
         }
         return jd;
     }

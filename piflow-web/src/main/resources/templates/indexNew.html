@@ -27,19 +27,19 @@
 <body>
 
 <!-- Fixed top -->
-<div id="top">
+<!--<div id="top">
     <div class="fixed">
         <a href="indexNew.html" title="" class="logo"><img th:src='@{/img/logo.png}'/>烟草科技知识图谱大数据流水线系统</a>
         <ul class="top-menu">
             <li><a class="fullview"></a></li>
-            <!--<li><a class="showmenu"></a></li>-->
+            &lt;!&ndash;<li><a class="showmenu"></a></li>&ndash;&gt;
             <li class="dropdown">
                 <a class="user-menu" data-toggle="dropdown">
                     <img th:src='@{/index/img/userpic.png}' alt=""/>
                     <span th:text="'Howdy,' + ${currentUser?.name}"><b class="caret"></b></span>
                 </a>
                 <ul class="dropdown-menu">
-                    <!--<li><a href="#" title=""><i class="icon-user"></i>Profile</a></li>-->
+                    &lt;!&ndash;<li><a href="#" title=""><i class="icon-user"></i>Profile</a></li>&ndash;&gt;
                     <li>
                         <a href="javascript:document.logoutForm.submit();" title="Logout"><i class="icon-remove"></i>Logout</a>
                         <form style="display: none" name="logoutForm" th:action="@{/logout}" method="post"></form>
@@ -48,7 +48,8 @@
             </li>
         </ul>
     </div>
-</div>
+</div>-->
+<div id="top" th:include="/Macro/publicMacro :: headMacro"></div>
 <!-- /fixed top -->
 
 
@@ -65,7 +66,7 @@
                 <li><a th:href="@{/}" title=""><i class="icon-home"></i>Dashboard</a></li>
                 <li id="selectedMenu">
                     <a href="#" title="" class="expand" id="current">
-                        <i class="icon-reorder"></i>Menu<strong>3</strong>
+                        <i class="icon-reorder"></i>Menu<strong style="background:#20794b">3</strong>
                     </a>
                     <ul>
                         <li><a id="flowListMenuID" th:href="@{/web/flowList}" title="">Flow List</a></li>
@@ -76,7 +77,7 @@
                 </li>
                 <li id="exampleMenu">
                     <a href="#" title="" class="expand">
-                        <i class="icon-warning-sign"></i>ExampleMenu<strong id="exampleMenuCounts">1</strong>
+                        <i class="icon-reorder"></i>ExampleMenu<strong id="exampleMenuCounts" style="background:#20794b">1</strong>
                     </a>
                     <ul>
                         <li><a id="VideoMenuID" onclick="playVideo()" title="">Instructional Video</a></li>
@@ -131,9 +132,8 @@
 
 
 <!-- Footer -->
-<div id="footer">
-
-</div>
+<!--<div id="footer"></div>-->
+<div th:include="/Macro/publicMacro :: footHeadMacro"></div>
 <!-- /footer -->
 <script type="text/javascript" th:src='@{/index/js/bootstrap.min.js}'></script>
 <script th:inline="javascript">
@@ -176,11 +176,15 @@
     })();
 
     function playVideo() {
-        $('#content').html("视频暂无");
+        $('#content').html('<div style="align-content: center;">' +
+            '<video muted autoplay="autoplay" loop="loop" src="/piflow-web/videos/WeChat_20190314101409.mp4" controls="controls">' +
+            '您的浏览器不支持 video 标签。' +
+            '</video>' +
+            '</div>');
     }
 
     function exampleView(exampleId) {
-        $('#content').html("样例" + exampleId + "暂无");
+        $('#content').html("样例" + exampleId + "加载中");
         window.location.href = "/piflow-web/grapheditor/home?load=" + exampleId;
     }
 

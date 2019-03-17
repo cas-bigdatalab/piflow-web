@@ -5,8 +5,9 @@ server:
     session:
       timeout: 600
 syspara:
-  imagesPath: file:/home/nature/IdeaProjects/piflow/image/
-  xmlPath: file:/home/nature/IdeaProjects/piflow/xml/
+  imagesPath: /home/nature/IdeaProjects/piflow-web/image/
+  videosPath: /home/nature/IdeaProjects/piflow-web/video/
+  xmlPath: /home/nature/IdeaProjects/piflow/xml/
   interfaceUrlHead : http://10.0.86.191:8002
 spring:
   ########################################################

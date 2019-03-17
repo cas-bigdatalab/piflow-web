@@ -24,13 +24,13 @@
         <div class="widget">
             <div class="navbar">
                 <div class="navbar-inner">
-                    <h6>Template List</h6>
+                    <h6 style="color: #1A7444">Template List</h6>
                 </div>
             </div>
             <div class="navbar">
                 <form id="uploadForm" enctype="multipart/form-data" method="post">
                     <input type="file" id="templateFile" name="templateFile" style="display:none;" onchange="importFile()"/>
-                    <a class='btn' href='javascript:void(0);' th:onclick="'javascript:uploadTemplate();'"  style='background-color: #C0C0C0;border: 1px solid;color: #080808;' title="upload template">
+                    <a class='btn' href='javascript:void(0);' th:onclick="'javascript:uploadTemplate();'"  style='background-color: #1A7444;border: 1px solid;color: #1A7444;' title="upload template">
                         <i class="icon-upload icon-white"></i></a>
                 </form>
             </div>
@@ -38,10 +38,10 @@
                 <table id="templateTableId" style="width: 100%" class="table table-striped table-bordered table-checks">
                     <thead>
                     <tr>
-                        <th width="10%">name</th>
-                        <th width="50%">templateName</th>
-                        <th width="32%">createTime</th>
-                        <th width="8%" class="actions-column">Actions</th>
+                        <th width="10%" style="color: #1A7444">name</th>
+                        <th width="50%" style="color: #1A7444">templateName</th>
+                        <th width="32%" style="color: #1A7444">createTime</th>
+                        <th width="8%" style="color: #1A7444" class="actions-column">Actions</th>
                     </tr>
                     </thead>
                 </table>

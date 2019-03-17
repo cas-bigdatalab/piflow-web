@@ -12,7 +12,7 @@ function newPath() {
     $("#executorCores").val('1');
     layer.open({
         type: 1,
-        title: 'create flow',
+        title: '<span style="color: #269252;">create flow</span>',
         shadeClose: true,
         closeBtn: 1,
         shift: 7,
@@ -34,7 +34,7 @@ function update(id, updateName, updateDescription, driverMemory, executorNumber,
     $("#executorCores").val(executorCores);
     layer.open({
         type: 1,
-        title: 'update flow',
+        title: '<span style="color: #269252;">update flow</span>',
         shadeClose: true,
         closeBtn: false,
         shift: 7,
@@ -359,13 +359,11 @@ function responseHandlerFlow(res) {
                 var actionsHtmlStr = '<div style="width: 100%; text-align: center" >' +
                     '<a class="btn" ' +
                     'href="/piflow-web/grapheditor/home?load=' + resPageData[i].id + '"' +
-                    'target="_blank" ' +
-                    'style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;">' +
+                    'target="_blank" >' +
                     '<i class="icon-share-alt icon-white"></i>' +
                     '</a>&nbsp;' +
                     '<a class="btn" ' +
                     'href="javascript:void(0);" ' +
-                    'style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;"' +
                     'onclick="javascript:update(\'' +
                     resPageData[i].id + '\',\'' +
                     resPageData[i].name + '\',\'' +
@@ -378,13 +376,11 @@ function responseHandlerFlow(res) {
                     '</a>&nbsp;' +
                     '<a class="btn" ' +
                     'href="javascript:void(0);" ' +
-                    'style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;" ' +
                     'onclick="javascript:runFlows(\'' + resPageData[i].id + '\');">' +
                     '<i class="icon-play icon-white"></i>' +
                     '</a>&nbsp;' +
                     '<a class="btn" ' +
                     'href="javascript:void(0);" ' +
-                    'style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;" ' +
                     'onclick="javascript:deleteFlow(\'' +
                     resPageData[i].id + '\',\'' +
                     resPageData[i].name + '\');">' +
@@ -392,7 +388,6 @@ function responseHandlerFlow(res) {
                     '</a>&nbsp;' +
                     '<a class="btn" ' +
                     'href="javascript:void(0);" ' +
-                    'style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;" ' +
                     'onclick="javascript:saveTableTemplate(\'' +
                     resPageData[i].id + '\',\'' +
                     resPageData[i].name + '\');">' +

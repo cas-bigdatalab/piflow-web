@@ -9,6 +9,8 @@
     <meta th:include="/Macro/csrfTokeHeadMacro :: csrfTokeHeadMacro"/>
     <link rel="stylesheet" type="text/css" th:href="@{/grapheditor/styles/grapheditor.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href='@{/custom/css/publicMacro.css}'/>
+
     <link rel="shortcut icon" th:href="@{/img/logo.ico}">
     <style type="text/css">
         /*人为制造一个占据整个屏幕的Div,其透明度为0.7且z-index为9999使之前的页面被压在底层无法点击*/
@@ -45,6 +47,7 @@
     <meta th:include="/grapheditor/inc/index_graph_improt :: index_graph_improt"/>
 </head>
 <body class="geEditor">
+<div th:include="/Macro/publicMacro :: userHeadMacro"></div>
 <div id='fullScreen' class="fullScreen" style="display: none;">
     <div style="margin-top: 15%;">
         <p>
@@ -53,12 +56,14 @@
     </div>
 </div>
 <div style="width: 45.2%; float: right;">
-    <div style="position: fixed; z-index: 999;text-align: right; width:45%;">
-        <a href='javascript:void(0);' onclick="runFlow()" title="Run flow">
-			<i class="glyphicon glyphicon-play icon-white"></i>
-		</a>
+    <div style="position: fixed; margin-top: 48px; z-index: 999;text-align: right; width:45%;">
         <div class="btn-group">
-            <a class="btn" href='javascript:void(0);' title="menu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <a class="btn" style="background: #1A8B5F; color: #ffffff" href='javascript:void(0);' onclick="runFlow()" title="Run flow">
+                <i class="glyphicon glyphicon-play icon-white"></i>
+            </a>
+        </div>
+        <div class="btn-group">
+            <a class="btn" style="background: #F14D50; color: #ffffff" href='javascript:void(0);' title="menu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class='glyphicon glyphicon-cog'></i>
             </a>
             <ul class="dropdown-menu pull-right" style="margin-top: 0px">
@@ -85,14 +90,12 @@
     </div>
 </div>
 <!-- crumbs -->
-<div style="width: 100%;position: fixed;z-index: 99999;float: left;left: 0px;bottom: 0px;text-align: left;height: 28px;line-height: 28px;">
-    <div style="position: fixed;left: 10px;bottom: 0px;">
-        <span style="color: #004849">
-            <a style="color: #004849" th:href="@{/web/flowList}">FlowList</a>
+<div style="width: 100%;position: fixed;z-index: 99999;float: left;left: 0px;bottom: 0px;text-align: center;height: 28px;line-height: 28px; background: #37714b;">
+    <span style="color: #ffffff">
+            <a style="color: #ffffff" th:href="@{/web/flowList}">FlowList</a>
         </span>
-        <span style="color: #004849">»</span>
-        <span style="color: #004849; font-weight: bold">FlowContent</span>
-    </div>
+    <span style="color: #ffffff">>></span>
+    <span style="color: #ffffff; font-weight: bold">FlowContent</span>
 </div>
 
 <!-- Modal 端口 -->
@@ -167,8 +170,7 @@
     $(document).ready(function () {
         $("#myModalPort").draggable();//为模态对话框添加拖拽
         $("#myModalPort").css("overflow", "hidden");//禁止模态对话框的半透明背景滚动
-        loadingSelect();
-        $(".btn-group").mouseover(function () {
+         $(".btn-group").mouseover(function () {
             $(this).addClass("open");
             var oDiv = document.getElementById("divloadingXml");
             oDiv.style.display = "none";

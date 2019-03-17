@@ -139,14 +139,12 @@ function responseHandlerTemplate(res) {
                 var actionsHtmlStr = '<div style="width: 100%; text-align: center" >' +
                     '<a class="btn" ' +
                     'href="javascript:void(0);" ' +
-                    'style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;" ' +
                     'onclick="javascript:downloadTemplate(\'' + resPageData[i].id + '\');" ' +
                     'title="download template">' +
                     '<i class="icon-download icon-white"></i>' +
                     '</a>' +
                     '<a class="btn" href="javascript:void(0);" ' +
-                    'style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;" ' +
-                    'onclick="javascript:deleteTemPlate(\'' + resPageData[i].id + '\',\'' + resPageData[i].name + '\'"); ' +
+                    'onclick="javascript:deleteTemPlate(\'' + resPageData[i].id + '\',\'' + resPageData[i].name + '\'); "' +
                     'title="delete template" > ' +
                     '<i class="icon-trash icon-white"></i>' +
                     '</a>' +

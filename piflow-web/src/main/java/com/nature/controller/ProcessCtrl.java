@@ -369,6 +369,10 @@ public class ProcessCtrl {
                     rtnMap.put("stdoutLog", app.getAmContainerLogs() + "/stdout/?start=0");
                     rtnMap.put("stderrLog", app.getAmContainerLogs() + "/stderr/?start=0");
                 }
+            } else {
+                rtnMap.put("code", "1");
+                rtnMap.put("stdoutLog", "Interface call failed");
+                rtnMap.put("stderrLog", "Interface call failed");
             }
         } else {
             logger.warn("appId is null");
@@ -389,7 +393,11 @@ public class ProcessCtrl {
         String rtnMsg = "";
         String urlStr = request.getParameter("url");
         if (StringUtils.isNotBlank(urlStr)) {
-            rtnMsg = HttpUtils.getHtml(urlStr);
+            if ("Interface call failed".equals(urlStr)) {
+                rtnMsg = "Interface call failed";
+            } else {
+                rtnMsg = HttpUtils.getHtml(urlStr);
+            }
         } else {
             logger.warn("urlStr is null");
         }

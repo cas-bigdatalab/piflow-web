@@ -9,6 +9,12 @@
     <meta th:include="/Macro/csrfTokeHeadMacro :: csrfTokeHeadMacro"/>
     <link rel="stylesheet" type="text/css" th:href="@{/grapheditor/styles/grapheditor.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href='@{/custom/css/publicMacro.css}'/>
+
+    <!--[if IE 8]>
+    <link rel="stylesheet" type="text/css" th:href='@{/index/css/ie8.css}'/>
+    <![endif]-->
+
     <style type="text/css">
         /*人为制造一个占据整个屏幕的Div,其透明度为0.7且z-index为9999使之前的页面被压在底层无法点击*/
         .fullScreen {
@@ -28,7 +34,8 @@
     <script type="text/javascript" th:src='@{/js/jquery/jquery.js}'></script>
 </head>
 <body class="geEditor">
-<div style="position: fixed; z-index: 779;text-align: right;right: 27%;top: 10px;">
+<div th:include="/Macro/publicMacro :: userHeadMacro"></div>
+<div style="position: fixed; z-index: 779;text-align: right;right: 27%;top: 58px;">
 			<span>
 				progress：<span id="progress" th:text="${percentage} + '%'"></span>
 			</span>
@@ -38,35 +45,33 @@
            value="Log"/>
 </div>
 <div id="processContent" th:onclick="'queryProcess(\''+${processId}+'\')'"
-     style="overflow: auto; position: fixed; top: 0px; bottom: 28px;left: 0%;right: 25%; z-index: 778;">
+     style="overflow: auto; position: fixed; top: 48px; bottom: 28px;left: 0%;right: 25%; z-index: 778;">
     <div class="geBackgroundPage"
          style="position: absolute;border-width: 1px;overflow: hidden;width: 2391px;height: 2167px;border-color: rgb(202, 202, 202);border-style: solid;background-color: rgb(255, 255, 255);background-image: url(&quot;data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAgTSAwIDIwIEwgNDAgMjAgTSAyMCAwIEwgMjAgNDAgTSAwIDMwIEwgNDAgMzAgTSAzMCAwIEwgMzAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2UwZTBlMCIgb3BhY2l0eT0iMC4yIiBzdHJva2Utd2lkdGg9IjEiLz48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZTBlMGUwIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=&quot;);background-position: -1px -1px;"></div>
 </div>
 
 <div id="processLeft" class="geSidebarContainer"
-     style="right: 0px;top: 0%;bottom: 28px;left: 75%;background-color: whitesmoke;font-size: 12px;">
+     style="right: 0px;top: 48px;bottom: 28px;left: 75%;background-color: whitesmoke;font-size: 12px;">
     <div th:include="/process/inc/process_Info_Inc :: process_Info_Inc"></div>
 </div>
 <!-- crumbs -->
-<div style="width: 100%;position: fixed;z-index: 99999;float: left;left: 0px;bottom: 0px;text-align: left;height: 28px;line-height: 28px;background: gainsboro;">
-    <div style="position: fixed;left: 10px;bottom: 0px;">
-        <span th:switch="${parentAccessPath}">
+<div style=" width: 100%;position: fixed;z-index: 99999;left: 0px;bottom: 0px;text-align: center;height: 28px;line-height: 28px;background: #37714b;">
+    <span th:switch="${parentAccessPath}">
             <span th:case="'grapheditor'">
-                <span style="color: #004849">
-                    <a style="color: #004849" th:href="@{/web/flowList}">FlowList</a>
+                <span style="color: #ffffff">
+                    <a style="color: #ffffff" th:href="@{/web/flowList}">FlowList</a>
                 </span>
-                <span style="color: #004849">»</span>
-                <span style="color: #004849;">
-                    <a style="color: #004849" th:href="@{/grapheditor/home} + '?load=' + ${processVo.flowId}">FlowContent</a>
+                <span style="color: #ffffff">&gt;&gt;</span>
+                <span style="color: #ffffff;">
+                    <a style="color: #ffffff" th:href="@{/grapheditor/home} + '?load=' + ${processVo.flowId}">FlowContent</a>
                 </span>
             </span>
-            <span th:case="*" style="color: #004849">
-                <a style="color: #004849" th:href="@{/process/processList}">ProcessList</a>
+            <span th:case="*" style="color: #ffffff">
+                <a style="color: #ffffff" th:href="@{/process/processList}">ProcessList</a>
             </span>
         </span>
-        <span style="color: #004849">»</span>
-        <span style="color: #004849; font-weight: bold">ProcessContent</span>
-    </div>
+    <span style="color: #ffffff">&gt;&gt;</span>
+    <span style="color: #ffffff; font-weight: bold">ProcessContent</span>
 </div>
 <!-- Modal Checkpoint -->
 <div class="modal" id="checkpointShow" aria-labelledby="myModalLabel" data-backdrop="static">

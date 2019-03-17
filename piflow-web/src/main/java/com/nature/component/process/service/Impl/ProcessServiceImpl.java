@@ -38,6 +38,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.*;
 
 @Service
@@ -290,6 +291,8 @@ public class ProcessServiceImpl implements IProcessService {
                         ThirdProgressVo flowProgress = getFlowProgressImpl.getFlowProgress(process.getAppId());
                         if (null != flowProgress) {
                             double progressNums = Double.parseDouble(flowProgress.getProgress());
+                            BigDecimal formatBD = new BigDecimal(progressNums);
+                            progressNums = formatBD.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
                             double progressNumsDb = 0.00;
                             String percentage = process.getProgress();
                             if (StringUtils.isNotBlank(percentage)) {

@@ -320,18 +320,20 @@ function changeUrl(key) {
                 $('#modalDialog').height(window_height - 124);
                 $('#modalDialog').width(window_width - 124);
                 var oo = $(data);
-
                 var ff = oo.find('td');
                 var pp = '';
-                for(var i = 0; i < ff.length; i++){
-                    if($(ff[i]).attr('class') === 'content'){
+                for (var i = 0; i < ff.length; i++) {
+                    if ($(ff[i]).attr('class') === 'content') {
                         pp = $(ff[i]).find('pre');
+                        break;
                     }
                 }
                 var tt = '';
-                for(var i = 0; i < pp.length; i++){
-                    if(pp[i]){
-                        tt += $(pp[i]).text();
+                if ('' !== pp) {
+                    for (var i = 0; i < pp.length; i++) {
+                        if (pp[i]) {
+                            tt += $(pp[i]).text();
+                        }
                     }
                 }
                 var pre_height = window_height - 300;
@@ -405,9 +407,9 @@ function monitor(pageId, processStopVoState) {
     var stopOkShow = $("#stopOkShow" + pageId);
     var stopLoadingShow = $("#stopLoadingShow" + pageId);
     var stopImgChange = $("#stopImg" + pageId);
-    if(processStopVoState){
+    if (processStopVoState) {
         if (processStopVoState !== "INIT") {
-            stopImgChange.attr('opacity',1);
+            stopImgChange.attr('opacity', 1);
             if (processStopVoState && (processStopVoState === "STARTED")) {
                 stopFailShow.hide();
                 stopOkShow.hide();
@@ -422,10 +424,10 @@ function monitor(pageId, processStopVoState) {
                 stopFailShow.show();
             }
         } else {
-            stopImgChange.attr('opacity',0.4);
+            stopImgChange.attr('opacity', 0.4);
         }
-    }else {
-        stopImgChange.attr('opacity',0.4);
+    } else {
+        stopImgChange.attr('opacity', 0.4);
     }
 
     /*
