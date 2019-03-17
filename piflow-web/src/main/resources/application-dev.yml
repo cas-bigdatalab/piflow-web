@@ -1,12 +1,12 @@
 server:
-  port: 6001
+  port: 7001
   servlet:
     context-path: /piflow-web
     session:
       timeout: 600
 syspara:
-  imagesPath: /piflow/images/
-  videoPath: /piflow/video/
+  imagesPath: /piflow/image/
+  videosPath: /piflow/video/
   xmlPath: /piflow/xml/
   interfaceUrlHead : http://10.0.88.108:8002
 spring:

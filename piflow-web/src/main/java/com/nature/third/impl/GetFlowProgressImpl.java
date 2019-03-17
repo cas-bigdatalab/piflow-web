@@ -35,12 +35,12 @@ public class GetFlowProgressImpl implements IGetFlowProgress {
                 JSONObject obj = JSONObject.fromObject(jsonResult);// 将json字符串转换为json对象
                 // 将json对象转换为java对象
                 jd = (ThirdProgressVo) JSONObject.toBean(obj, ThirdProgressVo.class);
+                String progressNums = jd.getProgress();
+                if (StringUtils.isNotBlank(progressNums)) {
+                    int i = progressNums.indexOf(".");
+                    jd.setProgress(progressNums.substring(0, i + 3));
+                }
             }
-        }
-        String progressNums = jd.getProgress();
-        if (StringUtils.isNotBlank(progressNums)) {
-            int i = progressNums.indexOf(".");
-            jd.setProgress(progressNums.substring(0, i + 3));
         }
         return jd;
     }
