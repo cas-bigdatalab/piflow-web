@@ -36,7 +36,7 @@ public class LoginCtrl {
         UserVo user = SessionUserUtil.getCurrentUser();
         if (null != user) {
             logger.info("已经登陆过了，跳转主页");
-            modelAndView.setViewName("index");
+            modelAndView.setViewName("jump");
         } else {
             modelAndView.setViewName("login");
         }
@@ -46,7 +46,7 @@ public class LoginCtrl {
 
     @RequestMapping("/")
     public ModelAndView indexHome(ModelAndView modelAndView) {
-        modelAndView.setViewName("index");
+        modelAndView.setViewName("jump");
         UserVo user = SessionUserUtil.getCurrentUser();
         if (null != user) {
             logger.info("用户" + user.getUsername() + "登陆成功跳转主页");

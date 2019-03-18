@@ -80,24 +80,9 @@
                         <i class="icon-reorder"></i>ExampleMenu<strong id="exampleMenuCounts" style="background:#20794b">1</strong>
                     </a>
                     <ul>
-                        <li><a id="VideoMenuID" onclick="playVideo()" title="">INSTRUCTIONAL VIDEO</a></li>
+                        <li><a id="instructionalVideoMenuID" onclick="playVideo()" title="">INSTRUCTIONAL VIDEO</a></li>
                     </ul>
                 </li>
-                <!--
-                <li>
-                    <a href="#" title="" class="expand">
-                        <i class="icon-warning-sign"></i>Error pages<strong>6</strong>
-                    </a>
-                    <ul>
-                        <li><a href="403.html" title="">403 page</a></li>
-                        <li><a href="404.html" title="">404 page</a></li>
-                        <li><a href="405.html" title="">405 page</a></li>
-                        <li><a href="500.html" title="">500 page</a></li>
-                        <li><a href="503.html" title="">503 page</a></li>
-                        <li><a href="offline.html" title="">Offline page</a></li>
-                    </ul>
-                </li>
-                 -->
             </ul>
             <!-- /main navigation -->
 
@@ -122,6 +107,9 @@
             </div>
             <div th:case="'template'">
                 <div th:include="/indexRight/template_List :: template_List"></div>
+            </div>
+            <div th:case="'instructionalVideo'">
+                <div th:include="/indexRight/instructional_Video :: instructional_Video"></div>
             </div>
         </div>
         <!-- /content wrapper -->
@@ -176,15 +164,12 @@
     })();
 
     function playVideo() {
-        $('#content').html('<div style="align-content: center;">' +
-            '<video muted autoplay="autoplay" loop="loop" src="/piflow-web/videos/WeChat_20190314101409.mp4" controls="controls">' +
-            '您的浏览器不支持 video 标签。' +
-            '</video>' +
-            '</div>');
+        $('#content').html('Vodeo Loading');
+        window.location.href = "/piflow-web/web/instructionalVideo";
     }
 
     function exampleView(exampleId) {
-        $('#content').html("样例" + exampleId + "加载中");
+        $('#content').html("Example " + exampleId + " loading");
         window.location.href = "/piflow-web/grapheditor/home?load=" + exampleId;
     }
 
