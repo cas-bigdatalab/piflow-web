@@ -182,7 +182,6 @@ function queryPathInfo(id) {
                     $("#ownerID").html('to：');
                     $("#createDateID").html('createrTime：');
                     $("#updateStopNameBtn").hide();
-                    document.getElementById('table_idDiv').style.display = 'none';
                     document.getElementById('stopsDescription').innerText = queryInfo.flow.name;
                     document.getElementById('stopsNameLabel').value = queryInfo.pageId;
                     document.getElementById('stopsGroups').innerText = queryInfo.inport;
@@ -190,6 +189,7 @@ function queryPathInfo(id) {
                     document.getElementById('stopsVersion').innerText = queryInfo.stopFrom.name;
                     document.getElementById('stopSowner').innerText = queryInfo.stopTo.name;
                     document.getElementById('stopCreateDate').innerText = queryInfo.crtDttmString;
+                    //document.getElementById('table_idDiv').style.display = 'none';
                 }
             } else {
                 console.log("path属性查询null");

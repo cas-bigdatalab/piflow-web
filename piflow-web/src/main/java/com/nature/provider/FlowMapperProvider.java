@@ -233,7 +233,7 @@ public class FlowMapperProvider {
         sql.FROM("FLOW");
         sql.WHERE("ENABLE_FLAG = 1");
         sql.WHERE("IS_EXAMPLE = 1");
-        sql.ORDER_BY(" CRT_DTTM DESC  ");
+        sql.ORDER_BY(" NAME ASC  ");
         sqlStr = sql.toString();
         return sqlStr;
     }

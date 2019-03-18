@@ -37,8 +37,12 @@ public class GetFlowProgressImpl implements IGetFlowProgress {
                 jd = (ThirdProgressVo) JSONObject.toBean(obj, ThirdProgressVo.class);
                 String progressNums = jd.getProgress();
                 if (StringUtils.isNotBlank(progressNums)) {
-                    int i = progressNums.indexOf(".");
-                    jd.setProgress(progressNums.substring(0, i + 3));
+                    try {
+                        double progressNumsD = Double.parseDouble(progressNums);
+                        jd.setProgress(String.format("%.2f", progressNumsD));
+                    }catch (Throwable e){
+                        logger.warn("进度转换失败");
+                    }
                 }
             }
         }

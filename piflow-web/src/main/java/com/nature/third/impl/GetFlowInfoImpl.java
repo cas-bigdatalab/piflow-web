@@ -58,9 +58,13 @@ public class GetFlowInfoImpl implements IGetFlowInfo {
             // 将json对象转换为java对象
             jb = (ThirdFlowInfoVo) JSONObject.toBean(obj, ThirdFlowInfoVo.class, classMap);
             String progressNums = jb.getProgress();
-            if (org.apache.commons.lang3.StringUtils.isNotBlank(progressNums)) {
-                int i = progressNums.indexOf(".");
-                jb.setProgress(progressNums.substring(0, i + 3));
+            if (StringUtils.isNotBlank(progressNums)) {
+                try {
+                    double progressNumsD = Double.parseDouble(progressNums);
+                    jb.setProgress(String.format("%.2f", progressNumsD));
+                }catch (Throwable e){
+                    logger.warn("进度转换失败");
+                }
             }
         }
         return jb;
