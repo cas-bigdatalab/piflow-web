@@ -227,6 +227,7 @@
             async: true,
             error: function (request) {
                 //alert("Jquery Ajax request error!!!");
+                layer.msg("Jquery Ajax request error!!!", {icon: 2, shade: 0, time: 2000}, function () {});
                 return;
             },
             success: function (data) {
@@ -235,8 +236,10 @@
                     resetSignUpForm()
                     $("#signUpDiv").hide();
                     $("#signInDiv").show();
+                    ayer.msg(dataMap.errMsg, {icon: 1, shade: 0, time: 2000}, function () {});
                 }
-                alert(dataMap.errMsg);
+                //alert(dataMap.errMsg);
+                layer.msg(dataMap.errMsg, {icon: 2, shade: 0, time: 2000}, function () {});
                 $("#fullScreen").hide();
             }
         });

@@ -141,7 +141,8 @@ function runFlows(loadId) {
         async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
         error: function (request) {//请求失败之后的操作
             $('#fullScreenList').hide();
-            alert("reload fail");
+            //alert("reload fail");
+            layer.msg("reload fail", {icon: 2, shade: 0, time: 2000}, function () {});
             return;
         },
         success: function (data) {//请求成功之后的操作
@@ -427,17 +428,20 @@ function reloadStopsList() {
         type: "POST",//为post请求
         url: "/piflow-web/grapheditor/reloadStops",//这是我在后台接受数据的文件名
         error: function (request) {//请求失败之后的操作
-            fullScreenList.hide();
-            alert("reload fail");
+            //fullScreenList.hide();
+            //alert("reload fail");
+            layer.msg("reload fail", {icon: 2, shade: 0, time: 2000}, function () {});
             return;
         },
         success: function (data) {//请求成功之后的操作
             var dataMap = JSON.parse(data);
             if (0 !== dataMap.code) {
-                alert("reload success");
+                //alert("reload success");
+                layer.msg("reload success", {icon: 1, shade: 0, time: 2000}, function () {});
                 fullScreenList.hide();
             } else {
-                alert("reload fail");
+                //alert("reload fail");
+                layer.msg("reload fail", {icon: 2, shade: 0, time: 2000}, function () {});
                 fullScreenList.hide();
             }
         }

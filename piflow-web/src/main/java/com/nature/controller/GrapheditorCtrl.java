@@ -74,6 +74,7 @@ public class GrapheditorCtrl {
     public String kitchenSink(Model model, String load) {
         UserVo user = SessionUserUtil.getCurrentUser();
         String username = (null != user) ? user.getUsername() : "-1";
+        model.addAttribute("currentUser", user);
         // 判断是否存在Flow的id(load),如果存在則加载，否則生成UUID返回返回页面
         if (StringUtils.isNotBlank(load)) {
             // 根据加载id进行查询

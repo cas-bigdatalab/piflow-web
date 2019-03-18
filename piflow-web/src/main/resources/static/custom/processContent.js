@@ -27,7 +27,8 @@ function selectedFormation(pageId, e) {
         }
         queryProcessStop(processId, pageId);
     } else {
-        alert("必要位置参数没有获得");
+        //alert("Necessary position parameters were not obtained");
+        layer.msg("Necessary position parameters were not obtained", {icon: 2, shade: 0, time: 2000}, function () {});
     }
 }
 
@@ -54,7 +55,8 @@ function selectedPath(pageId, e) {
         }
         queryProcessPath(processId, pageId);
     } else {
-        alert("必要位置参数没有获得");
+        //alert("必要位置参数没有获得");
+        layer.msg("Necessary position parameters were not obtained", {icon: 2, shade: 0, time: 2000}, function () {});
     }
 }
 
@@ -64,7 +66,8 @@ function queryProcess(processId) {
         isLoadProcessInfo = true;
     } else {
         if (!processId || '' === processId || 'null' === processId || 'NULL' === processId) {
-            alert("Id为空，没有获取到，请检查！！");
+            //alert("Id is empty, not obtained, please check!!");
+            layer.msg("Id is empty, not obtained, please check!!", {icon: 2, shade: 0, time: 2000}, function () {});
         } else {
             $.ajax({
                 cache: true,//保留缓存数据
@@ -162,7 +165,8 @@ function getCheckpoint() {
         async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
         error: function (request) {//请求失败之后的操作
             startFlow.show();
-            alert("Request Failed");
+            //alert("Request Failed");
+            layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000}, function () {});
             fullScreen.hide();
             checkpointShow.modal('hide');
             return;
@@ -171,7 +175,8 @@ function getCheckpoint() {
             //console.log("success");
             $('#checkpointContent').html(data);
             if ($('#checkpointsIsNull').val()) {
-                alert("没有查询到");
+                //alert("No Checkpoint was queried");
+                layer.msg("No Checkpoint was queried", {icon: 2, shade: 0, time: 2000}, function () {});
                 //checkpointShow.modal('hide');
                 runProcess(true);
             } else {
@@ -212,7 +217,8 @@ function runProcess(flag) {
         async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
         error: function (request) {//请求失败之后的操作
             startFlow.show();
-            alert("Request Failed");
+            //alert("Request Failed");
+            layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000}, function () {});
             fullScreen.hide();
             return;
         },
@@ -220,10 +226,12 @@ function runProcess(flag) {
             //console.log("success");
             var dataMap = JSON.parse(data);
             if ('0' !== dataMap.code) {
-                alert(dataMap.errMsg);
+                //alert(dataMap.errMsg);
+                layer.msg(dataMap.errMsg, {icon: 1, shade: 0, time: 2000}, function () {});
                 window.location.href = "/piflow-web/process/getProcessById?processId=" + dataMap.processId;
             } else {
-                alert(dataMap.errMsg);
+                //alert(dataMap.errMsg);
+                layer.msg(dataMap.errMsg, {icon: 2, shade: 0, time: 2000}, function () {});
                 startFlow.show();
                 fullScreen.hide();
             }
@@ -247,7 +255,8 @@ function stopProcess() {
         async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
         error: function (request) {//请求失败之后的操作
             stopFlow.show();
-            alert("Request Failed");
+            //alert("Request Failed");
+            layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000}, function () {});
             fullScreen.hide();
             return;
         },
@@ -255,10 +264,12 @@ function stopProcess() {
             //console.log("success");
             var dataMap = JSON.parse(data);
             if ('0' !== dataMap.code) {
-                alert(dataMap.errMsg);
+                //alert(dataMap.errMsg);
+                layer.msg(dataMap.errMsg, {icon: 1, shade: 0, time: 2000}, function () {});
                 startFlow.show();
             } else {
-                alert("Stop Failed:" + dataMap.errMsg);
+                //alert("Stop Failed:" + dataMap.errMsg);
+                layer.msg("Stop Failed", {icon: 2, shade: 0, time: 2000}, function () {});
                 stopFlow.show();
             }
             fullScreen.hide();
@@ -276,6 +287,7 @@ function getLogUrl() {
         data: {"appId": appId},
         async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
         error: function (request) {//请求失败之后的操作
+            layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000}, function () {});
             return;
         },
         success: function (data) {//请求成功之后的操作

@@ -180,7 +180,7 @@ function queryPathInfo(id) {
                     $("#bundelID").html('outport：');
                     $("#versionID").html('form：');
                     $("#ownerID").html('to：');
-                    $("#createDateID").html('createrTime：');
+                    $("#createDateID").html('createTime：');
                     $("#updateStopNameBtn").hide();
                     document.getElementById('stopsDescription').innerText = queryInfo.flow.name;
                     document.getElementById('stopsNameLabel').value = queryInfo.pageId;
@@ -491,12 +491,12 @@ function queryFlowInfo() {
                     document.getElementById('UUID').innerText = flow.uuid ? flow.uuid : "No content";
                     document.getElementById('flowName').innerText = flow.name ? flow.name : "No content";
                     document.getElementById('flowDescription').innerText = flow.description ? flow.description : "No content";
-                    document.getElementById('createrTime').innerText = flow.crtDttmString ? flow.crtDttmString : "No content";
+                    document.getElementById('createTime').innerText = flow.crtDttmString ? flow.crtDttmString : "No content";
                 } else {
                     document.getElementById('UUID').innerText = "No content";
                     document.getElementById('flowName').innerText = "No content";
                     document.getElementById('flowDescription').innerText = "No content";
-                    document.getElementById('createrTime').innerText = "No content";
+                    document.getElementById('createTime').innerText = "No content";
                 }
                 getRunningProcessList();
             }
@@ -526,8 +526,8 @@ function runFlow() {
             if ('0' !== dataMap.code) {
                 window.location.href = "/piflow-web/process/getProcessById?parentAccessPath=grapheditor&processId=" + dataMap.processId;
             } else {
-                //alert("启动失败：" + dataMap.errMsg);
-                layer.msg("启动失败：" + dataMap.errMsg, {icon: 2, shade: 0, time: 2000}, function () {});
+                //alert("Startup failure：" + dataMap.errMsg);
+                layer.msg("Startup failure：" + dataMap.errMsg, {icon: 2, shade: 0, time: 2000}, function () {});
             }
             fullScreen.hide();
         }
@@ -1059,7 +1059,7 @@ function processListener(evt, operType) {
 
     } else {
         if ('ADD' === operType || 'REMOVED' === operType) {
-            layer.msg("This is an example, you can't add edit delete", {icon: 2, shade: 0, time: 2000}, function () {});
+            layer.msg("This is an example, you can't add, edit or delete", {icon: 2, shade: 0, time: 2000}, function () {});
         } else if ('MOVED' === operType) {
             findBasicInfo(evt);
         }

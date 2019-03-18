@@ -424,7 +424,8 @@
             async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
             error: function (request) {//请求失败之后的操作
                 $('#fullScreen').hide();
-                alert("reload fail");
+                //alert("reload fail");
+                layer.msg("reload fail", {icon: 2, shade: 0, time: 2000}, function () {});
                 return;
             },
             success:function(data){//请求成功之后的操作
@@ -453,7 +454,8 @@
             async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
             error: function (request) {//请求失败之后的操作
                 $('#fullScreen').hide();
-                alert("reload fail");
+                //alert("reload fail");
+                layer.msg("reload fail", {icon: 2, shade: 0, time: 2000}, function () {});
                 return;
             },
             success:function(data){//请求成功之后的操作

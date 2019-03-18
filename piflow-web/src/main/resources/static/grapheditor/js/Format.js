@@ -4854,7 +4854,7 @@ DiagramFormatPanel.prototype.addView = function(div)
 	var editor = ui.editor;
 	var graph = editor.graph;
 	queryFlowInfo();
-	div.appendChild(this.createTitle('flow Line Info'));
+	div.appendChild(this.createTitle('Flow Line Info'));
 
     var tableFlow = document.createElement("table");
     tableFlow.style.borderCollapse = "separate";
@@ -4882,7 +4882,7 @@ DiagramFormatPanel.prototype.addView = function(div)
 	flowName.setAttribute('id', 'flowName');
 	//crtDttm
 	var crtDttmString = document.createElement('label');
-	crtDttmString.setAttribute('id', 'createrTime');
+	crtDttmString.setAttribute('id', 'createTime');
 	//flowDescription
 	var flowDescription = document.createElement('label');
 	flowDescription.setAttribute('id', 'flowDescription');
@@ -4894,7 +4894,7 @@ DiagramFormatPanel.prototype.addView = function(div)
 	var hr = document.createElement('hr');
 	mxUtils.write(span, 'UUID： ');
 	mxUtils.write(span1, 'flowName： ');
-	mxUtils.write(span2, 'createrTime： ');
+	mxUtils.write(span2, 'createTime： ');
 	mxUtils.write(span3, 'description： ');
     tdFlow1.appendChild(span);
     tdFlow2.appendChild(UUID);

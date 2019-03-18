@@ -108,6 +108,8 @@ public class ProcessCtrl {
      */
     @RequestMapping("/getProcessById")
     public ModelAndView getProcessById(HttpServletRequest request, ModelAndView modelAndView) {
+        UserVo currentUser = SessionUserUtil.getCurrentUser();
+        modelAndView.addObject("currentUser", currentUser);
         String processId = request.getParameter("processId");
         String parentAccessPath = request.getParameter("parentAccessPath");
         modelAndView.addObject("parentAccessPath", parentAccessPath);

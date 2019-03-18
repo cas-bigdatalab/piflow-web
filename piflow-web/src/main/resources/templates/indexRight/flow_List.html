@@ -31,16 +31,16 @@
             <a class='btn' href='javascript:void(0);' onclick="newPath();" style='background-color: #C0C0C0;border: 1px solid;color: #21794c;' title="create flow">
                 <i class='icon-plus-sign icon-white'></i>
             </a>
-            <button style="display: block;" id="reloadStops" type="button" onclick="reloadStopsList()" title="reload Stops">reloadStops </button>
+            <button style="display: none;" id="reloadStops" type="button" onclick="reloadStopsList()" title="reload Stops">reloadStops </button>
         </div>
         <div class="table-overflow">
             <table id="flowTableId" style="width: 100%" class="table table-striped table-bordered table-checks">
                 <thead>
                 <tr>
-                    <th width="25%" style="color: #1A7444">name</th>
-                    <th width="30%" style="color: #1A7444">description</th>
-                    <th width="28%" style="color: #1A7444">createTime</th>
-                    <th width="17%" style="color: #1A7444" class="actions-column">Actions</th>
+                    <th width="25%" style="color: #1A7444">NAME</th>
+                    <th width="30%" style="color: #1A7444">DESCRIPTION</th>
+                    <th width="28%" style="color: #1A7444">CREATETIME</th>
+                    <th width="17%" style="color: #1A7444" class="actions-column">ACTIONS</th>
                 </tr>
                 </thead>
             </table>
@@ -189,7 +189,7 @@
         <div class="layui-form-item" style="text-align: center;margin-right: 90px;">
             <div class="layui-input-block">
                 <button type="button" class="layui-btn layui-btn-primary" onclick='saveFlow()' style="color: #ffffff;background-color: #2f7600;border-color: #2f7600;" id="buttonFlow">
-                    提交
+                    SUBMIT
                 </button>
             </div>
         </div>

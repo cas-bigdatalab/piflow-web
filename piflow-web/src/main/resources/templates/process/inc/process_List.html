@@ -203,7 +203,8 @@
         //获取Checkpoint点
         function getCheckpointList(id, processId, parentProcessId) {
             if (!processId) {
-                alert("Error，Did not get processId");
+                //alert("Error，Did not get processId");
+                layer.msg("Error，Did not get processId", {icon: 2, shade: 0, time: 2000}, function () {});
                 return;
             }
             $('#fullScreenList').show();
@@ -219,7 +220,8 @@
                 },
                 async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
                 error: function (request) {//请求失败之后的操作
-                    alert("Request Failed");
+                    //alert("Request Failed");
+                    layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000}, function () {});
                     $('#fullScreenList').hide();
                     $('#checkpointListShow').modal('hide');
                     return;
@@ -230,7 +232,8 @@
                     $('#runProcessBtn').attr('onclick', 'listRunProcess(true,"' + id + '")');
                     $('#stopProcessBtn').attr('onclick', 'listRunProcess(false,"' + id + '")');
                     if ($('#checkpointsIsNull').val()) {
-                        alert("No Checkpoint was queried");
+                        //alert("No Checkpoint was queried");
+                        layer.msg("No Checkpoint was queried", {icon: 1, shade: 0, time: 2000}, function () {});
                         listRunProcess(true, id);
                     } else {
                         $('#checkpointListShow').modal('show');
@@ -265,7 +268,8 @@
                 },
                 async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
                 error: function (request) {//请求失败之后的操作
-                    alert("Request Failed");
+                    //alert("Request Failed");
+                    layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000}, function () {});
                     $('#fullScreenList').hide();
                     return;
                 },
@@ -273,11 +277,13 @@
                     //console.log("success");
                     var dataMap = JSON.parse(data);
                     if ('0' !== dataMap.code) {
-                        alert(dataMap.errMsg);
+                        //alert(dataMap.errMsg);
+                        layer.msg(dataMap.errMsg, {icon: 1, shade: 0, time: 2000}, function () {});
                         window.location.reload();
                         window.open("/piflow-web/process/getProcessById?processId=" + dataMap.processId);
                     } else {
-                        alert("Startup Failed");
+                        //alert("Startup Failed");
+                        layer.msg("Startup Failed", {icon: 2, shade: 0, time: 2000}, function () {});
                         $('#fullScreenList').hide();
                     }
 
@@ -298,7 +304,8 @@
                 },
                 async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
                 error: function (request) {//请求失败之后的操作
-                    alert("Request Failed");
+                    //alert("Request Failed");
+                    layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000}, function () {});
                     $('#fullScreenList').hide();
                     return;
                 },
@@ -306,10 +313,12 @@
                     //console.log("success");
                     var dataMap = JSON.parse(data);
                     if ('0' !== dataMap.code) {
-                        alert(dataMap.errorMsg);
+                        //alert(dataMap.errorMsg);
+                        layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {});
                         window.location.reload();
                     } else {
-                        alert("Stop Failed:" + dataMap.errMsg);
+                        //alert("Stop Failed:" + dataMap.errMsg);
+                        layer.msg("Stop Failed:" + dataMap.errMsg, {icon: 2, shade: 0, time: 2000}, function () {});
                     }
                     $('#fullScreenList').hide();
 
@@ -330,17 +339,20 @@
                 },
                 async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
                 error: function (request) {//请求失败之后的操作
-                    alert("Request Failed");
+                    //alert("Request Failed");
+                    layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000}, function () {});
                     $('#fullScreenList').hide();
                     return;
                 },
                 success: function (data) {//请求成功之后的操作
                     var dataMap = JSON.parse(data);
                     if ('0' !== dataMap.code) {
-                        alert(dataMap.errMsg);
+                        //alert(dataMap.errMsg);
+                        layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {});
                         window.location.reload();
                     } else {
-                        alert("Delete Failed" + dataMap.errMsg);
+                        //alert("Delete Failed" + dataMap.errMsg);
+                        layer.msg("Delete Failed" + dataMap.errMsg, {icon: 2, shade: 0, time: 2000}, function () {});
                     }
                     $('#fullScreenList').hide();
                 }
