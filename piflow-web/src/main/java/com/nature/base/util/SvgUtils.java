@@ -127,7 +127,7 @@ public class SvgUtils {
                                 viewXmlStrBuf.append("<g transform='translate(" + fontX + "," + fontY + ")'>");//x和y坐标
                                 viewXmlStrBuf.append("<foreignObject style='overflow:visible;' pointer-events='all' ");
                                 viewXmlStrBuf.append("width='" + fontWidth + "' height='" + fontHeight + "'>");//宽度和高度
-                                viewXmlStrBuf.append("<div style='display:inline-block;font-size:12px;font-family:Helvetica;color:#000000;line-height:1.2;vertical-align:top;white-space:nowrap;text-align:center;'>");
+                                viewXmlStrBuf.append("<div style='display:inline-block;font-size:12px;font-family:Helvetica;color:#666666;line-height:1.2;vertical-align:top;white-space:nowrap;text-align:center;'>");
                                 viewXmlStrBuf.append("<div xmlns='http://www.w3.org/1999/xhtml' style = 'display:inline-block;text-align:inherit;text-decoration:inherit;background-color:#ffffff;'>");
                                 viewXmlStrBuf.append(name); //stop的name
                                 viewXmlStrBuf.append("</div>");
@@ -169,9 +169,9 @@ public class SvgUtils {
                 }
             }
             viewXmlStrBuf.append(" <g transform='translate(0,0)'>");
-            viewXmlStrBuf.append("<rect id='selectedRectShow' x='0' y='0' width='66' height='66' fill='none' stroke='#00a8ff' stroke-dasharray='3 3' pointer-events='none' style='display: none;'></rect>");
-            viewXmlStrBuf.append("<path id='selectedPathShow' d='M 0 0 L 0 0 ' fill='none' stroke='#00a8ff' stroke-width='5' stroke-miterlimit='10' style='display: none;'></path>");
-            viewXmlStrBuf.append("<path id='selectedArrowShow'd='M 0 0 L 0 0 L 0 0 L 0 0 Z' fill='none' stroke='#00a8ff' stroke-width='5' stroke-miterlimit='00' pointer-events='all'></path>");
+            viewXmlStrBuf.append("<rect id='selectedRectShow' x='0' y='0' width='66' height='66' fill='none' stroke='#7bc89e' stroke-dasharray='3 3' pointer-events='none' style='display: none;'></rect>");
+            viewXmlStrBuf.append("<path id='selectedPathShow' d='M 0 0 L 0 0 ' fill='none' stroke='#7bc89e' stroke-width='5' stroke-miterlimit='10' style='display: none;'></path>");
+            viewXmlStrBuf.append("<path id='selectedArrowShow'd='M 0 0 L 0 0 L 0 0 L 0 0 Z' fill='none' stroke='#7bc89e' stroke-width='5' stroke-miterlimit='00' pointer-events='all'></path>");
             viewXmlStrBuf.append("</g>");
             viewXmlStrBuf.append("</g>");
             viewXmlStrBuf.append("</svg>");
@@ -341,7 +341,7 @@ public class SvgUtils {
                                     lineSvgBuf.append("<path name='pathName' d='");
                                     lineSvgBuf.append("M " + sourceDotX + " " + sourceDotY + " ");
                                     lineSvgBuf.append("L " + targetDotX + " " + targetDotY + " ");
-                                    lineSvgBuf.append("' fill='none' stroke='#000000' stroke-width='1' stroke-miterlimit='10'></path>");
+                                    lineSvgBuf.append("' fill='none' stroke='#666666' stroke-width='1' stroke-miterlimit='10'></path>");
                                 } else {
                                     lineSvgBuf.append("<path name='pathName' d='");
                                     lineSvgBuf.append("M " + sourceDotX + " " + sourceDotY + " ");
@@ -360,7 +360,7 @@ public class SvgUtils {
                                         lineSvgBuf.append("L " + (((targetDotX - sourceDotX) / 2) + sourceDotX) + " " + targetDotX + " ");
                                     }
                                     lineSvgBuf.append("L " + targetDotX + " " + targetDotY + " ");
-                                    lineSvgBuf.append("' fill='none' stroke='#000000' stroke-width='1' stroke-miterlimit='10'></path>");
+                                    lineSvgBuf.append("' fill='none' stroke='#666666' stroke-width='1' stroke-miterlimit='10'></path>");
                                 }
                                 break;
                             case 1:
@@ -369,7 +369,7 @@ public class SvgUtils {
                                 lineSvgBuf.append("M " + sourceDotX + " " + sourceDotY + " ");
                                 lineSvgBuf.append("L " + targetDotX + " " + sourceDotY + " ");
                                 lineSvgBuf.append("L " + targetDotX + " " + targetDotY + " ");
-                                lineSvgBuf.append("' fill='none' stroke='#000000' stroke-width='1' stroke-miterlimit='10'></path>");
+                                lineSvgBuf.append("' fill='none' stroke='#666666' stroke-width='1' stroke-miterlimit='10'></path>");
                                 break;
                             default:
                                 break;
@@ -397,7 +397,7 @@ public class SvgUtils {
                         lineSvgBuf.append((targetDotX - (arrowDirection.getUpX() - arrowDirection.getLfetX())) + " ");
                         // 第三个L(左侧点)的Y
                         lineSvgBuf.append((targetDotY - (arrowDirection.getUpY() - arrowDirection.getLfetY())) + " ");
-                        lineSvgBuf.append("Z' fill='#000000' stroke='#000000' stroke-width='1' stroke-miterlimit='10' pointer-events='all'></path>");
+                        lineSvgBuf.append("Z' fill='#666666' stroke='#666666' stroke-width='1' stroke-miterlimit='10' pointer-events='all'></path>");
                         lineSvgBuf.append("</g>");
                         lineSvg = lineSvgBuf.toString();
                     } else {

@@ -4,6 +4,6 @@ import com.nature.third.vo.flowLog.ThirdFlowLog;
 
 public interface IGetFlowLog {
 
-	public ThirdFlowLog getFlowLog(String appid);
+	public String getFlowLog(String appid);
 
 }

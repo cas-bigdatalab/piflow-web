@@ -59,7 +59,7 @@ public class PropertyMapperProvider {
                 Boolean enableFlag = property.getEnableFlag();
                 String name = property.getName();
                 String displayName = property.getDisplayName();
-                String description = property.getDescription().equals("null") ? null : property.getDisplayName();
+                String description = property.getDescription().equals("null") ? null : property.getDescription();
                 String customValue = property.getCustomValue();
                 String allowableValues = property.getAllowableValues();
                 Boolean required = property.getRequired();

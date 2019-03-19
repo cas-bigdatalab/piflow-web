@@ -32,6 +32,7 @@
     <!-- The fav icon -->
     <link rel="shortcut icon" th:href="@{/img/logo.ico}">
     <script type="text/javascript" th:src='@{/js/jquery/jquery.js}'></script>
+    <script th:src="@{/charisma/js/layer/layer.js}"></script>
 </head>
 <body class="geEditor">
 <div th:include="/Macro/publicMacro :: userHeadMacro"></div>
@@ -78,7 +79,7 @@
     <div id="modalDialogPort" class="modal-dialog" role="document">
         <div class="modal-content" style="width: 100%;  top: 77px;">
             <div class="modal-header">
-                <h4 class="modal-title" id="myModalLabelPort">CHOOSE CHECKPOINT WINDOWS</h4>
+                <h4 class="modal-title" id="myModalLabelPort">Choose Checkpoint Windows</h4>
             </div>
             <div id="checkpointContent" class="modal-body">
                 没有查询到checkpoint信息
@@ -98,7 +99,7 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
                 </button>
-                <h4 class="modal-title" id="myModalLabel">LOG WINDOWS</h4>
+                <h4 class="modal-title" id="myModalLabel">Log Windows</h4>
             </div>
             <div class="modal-body">
                 <!-- <div id="logTitle">加载中</div> -->

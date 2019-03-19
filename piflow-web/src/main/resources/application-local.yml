@@ -8,13 +8,13 @@ syspara:
   imagesPath: /home/nature/IdeaProjects/piflow/image/
   videosPath: /home/nature/IdeaProjects/piflow/video/
   xmlPath: /home/nature/IdeaProjects/piflow/xml/
-  interfaceUrlHead : http://10.0.86.191:8002
+  interfaceUrlHead : http://10.0.88.108:8002
 spring:
   ########################################################
   ######  数据源
   ########################################################
   datasource:
-    url: jdbc:mysql://10.0.88.109:3306/piflow_web?useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowMultiQueries=true
+    url: jdbc:mysql://127.0.0.1:3306/piflow_web?useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowMultiQueries=true&autoReconnect=true&failOverReadOnly=false
     username: root
     password: 123456
     driver-class-name: com.mysql.jdbc.Driver

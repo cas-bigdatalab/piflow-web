@@ -21,10 +21,7 @@ public class IGetFlowLogTest extends ApplicationTests {
 	@Test
 	public void testGetFlowLog() {
 		String appId = "application_1539850523117_0159";
-		ThirdFlowLog thirdFlowLog = getFlowLogImpl.getFlowLog(appId);
-		if (null != thirdFlowLog) {
-			thirdFlowLog.getApp();
-		}
+		String thirdFlowLog = getFlowLogImpl.getFlowLog(appId);
 	}
 
 	@Test

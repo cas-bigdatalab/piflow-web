@@ -22,8 +22,9 @@ public class GetFlowLogImpl implements IGetFlowLog {
      * 发送 post请求
      */
     @Override
-    public ThirdFlowLog getFlowLog(String appid) {
-        ThirdFlowLog thirdFlowLog = null;
+    public String getFlowLog(String appid) {
+        //ThirdFlowLog thirdFlowLog = null;
+        String amContainerLogs = "";
         Map<String, String> map = new HashMap<String, String>();
         map.put("appID", appid);
         String doGet = HttpUtils.doGet(SysParamsCache.FLOW_LOG_URL(), map);
@@ -31,10 +32,19 @@ public class GetFlowLogImpl implements IGetFlowLog {
             logger.info("调用成功 : " + doGet);
             // 同样先将json字符串转换为json对象，再将json对象转换为java对象，如下所示。
             JSONObject obj = JSONObject.fromObject(doGet);// 将json字符串转换为json对象
+            if (null != obj) {
+                JSONObject app = obj.getJSONObject("app");
+                if (null != app) {
+                    amContainerLogs = app.getString("amContainerLogs");
+                }
+            }
             // 将json对象转换为java对象
-            thirdFlowLog = (ThirdFlowLog) JSONObject.toBean(obj, ThirdFlowLog.class);
+            // thirdFlowLog = (ThirdFlowLog) JSONObject.toBean(obj, ThirdFlowLog.class);
+        } else {
+            logger.info("调用失败 : " + doGet);
         }
-        return thirdFlowLog;
+        // return thirdFlowLog;
+        return amContainerLogs;
     }
 
 }

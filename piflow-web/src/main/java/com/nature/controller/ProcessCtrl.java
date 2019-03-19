@@ -363,14 +363,11 @@ public class ProcessCtrl {
         rtnMap.put("code", "0");
         String appId = request.getParameter("appId");
         if (StringUtils.isNotBlank(appId)) {
-            ThirdFlowLog flowlog = getFlowLogImpl.getFlowLog(appId);
-            if (null != flowlog) {
-                ThirdAppVo app = flowlog.getApp();
-                if (null != app) {
-                    rtnMap.put("code", "1");
-                    rtnMap.put("stdoutLog", app.getAmContainerLogs() + "/stdout/?start=0");
-                    rtnMap.put("stderrLog", app.getAmContainerLogs() + "/stderr/?start=0");
-                }
+            String amContainerLogs = getFlowLogImpl.getFlowLog(appId);
+            if (StringUtils.isNotBlank(amContainerLogs)) {
+                rtnMap.put("code", "1");
+                rtnMap.put("stdoutLog", amContainerLogs + "/stdout/?start=0");
+                rtnMap.put("stderrLog", amContainerLogs + "/stderr/?start=0");
             } else {
                 rtnMap.put("code", "1");
                 rtnMap.put("stdoutLog", "Interface call failed");

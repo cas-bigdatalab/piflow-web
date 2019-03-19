@@ -11,6 +11,7 @@
     <link rel="shortcut icon" th:href="@{/img/logo.ico}">
     <script type="text/javascript" th:src='@{/js/jquery/jquery.min.js}'></script>
     <script type="text/javascript" th:src='@{/js/jquery.form.3.51.0/jquery.form.js}'></script>
+    <script th:src="@{/charisma/js/layer/layer.js}"></script>
     <style type="text/css">
         /*人为制造一个占据整个屏幕的Div,其透明度为0.7且z-index为9999使之前的页面被压在底层无法点击*/
         .fullScreen {
@@ -236,10 +237,11 @@
                     resetSignUpForm()
                     $("#signUpDiv").hide();
                     $("#signInDiv").show();
-                    ayer.msg(dataMap.errMsg, {icon: 1, shade: 0, time: 2000}, function () {});
+                    layer.msg(dataMap.errMsg, {icon: 1, shade: 0, time: 2000}, function () {});
+                }else {
+                    //alert(dataMap.errMsg);
+                    layer.msg(dataMap.errMsg, {icon: 2, shade: 0, time: 2000}, function () {});
                 }
-                //alert(dataMap.errMsg);
-                layer.msg(dataMap.errMsg, {icon: 2, shade: 0, time: 2000}, function () {});
                 $("#fullScreen").hide();
             }
         });
