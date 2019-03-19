@@ -1,18 +1,18 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <body th:fragment=instructional_Video>
-<meta th:include="/Macro/csrfTokeHeadMacro :: csrfTokeHeadMacro"/>
+<meta th:include="Macro/csrfTokeHeadMacro :: csrfTokeHeadMacro"/>
 <!-- content starts -->
 <div style="text-align: center;">
 
     <video muted autoplay="autoplay"
            loop="loop"
-           src="/piflow-web/videos/exampleVideo.mp4"
+           th:src="'/piflow-web/videos/' + ${videoName}"
            controls="controls"
            style="height: -webkit-fill-available;">
         您的浏览器不支持 video 标签。
     </video>
 </div>
-<script th:include="/Macro/csrfTokeHeadMacroScript :: csrfTokeHeadMacroScript"/>
+<script th:include="Macro/csrfTokeHeadMacroScript :: csrfTokeHeadMacroScript"/>
 </body>
 </html>

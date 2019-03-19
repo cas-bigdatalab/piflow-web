@@ -50,7 +50,7 @@
         </ul>
     </div>
 </div>-->
-<div id="top" th:include="/Macro/publicMacro :: headMacro"></div>
+<div id="top" th:include="Macro/publicMacro :: headMacro"></div>
 <!-- /fixed top -->
 
 
@@ -71,7 +71,7 @@
                     </a>
                     <ul>
                         <li><a id="flowListMenuID" th:href="@{/web/flowList}" title="">Flows</a></li>
-                        <li><a id="getProcessListMenuID" th:href="@{/process/processList}" title="">Processes</a>
+                        <li><a id="getProcessListMenuID" th:href="@{/web/processList}" title="">Processes</a>
                         </li>
                         <li><a id="templateMenuID" th:href="@{/web/template}" title="">Templates</a></li>
                     </ul>
@@ -81,7 +81,7 @@
                         <i class="icon-reorder"></i>Example<strong id="exampleMenuCounts" style="background:#20794b">1</strong>
                     </a>
                     <ul>
-                        <li><a id="instructionalVideoMenuID" href="/piflow-web/web/instructionalVideo" title="">Instructional</a></li>
+                        <li><a id="instructionalVideoMenuID" href="/piflow-web/web/instructionalVideo" title="">Instruction</a></li>
                     </ul>
                 </li>
             </ul>
@@ -98,19 +98,19 @@
         <!-- Content wrapper -->
         <div th:switch="${accessPath}">
             <div th:case="'indexHome'">
-                <div th:include="/indexRight/process_List :: indexHome"></div>
+                <div th:include="indexRight/process_List :: indexHome"></div>
             </div>
             <div th:case="'flowList'">
-                <div th:include="/indexRight/flow_List :: flow_List"></div>
+                <div th:include="indexRight/flow_List :: flow_List"></div>
             </div>
             <div th:case="'getProcessList'">
-                <div th:include="/indexRight/process_List :: process_List"></div>
+                <div th:include="indexRight/process_List :: process_List"></div>
             </div>
             <div th:case="'template'">
-                <div th:include="/indexRight/template_List :: template_List"></div>
+                <div th:include="indexRight/template_List :: template_List"></div>
             </div>
             <div th:case="'instructionalVideo'">
-                <div th:include="/indexRight/instructional_Video :: instructional_Video"></div>
+                <div th:include="indexRight/instructional_Video :: instructional_Video"></div>
             </div>
         </div>
         <!-- /content wrapper -->
@@ -122,7 +122,7 @@
 
 <!-- Footer -->
 <!--<div id="footer"></div>-->
-<div th:include="/Macro/publicMacro :: footHeadMacro"></div>
+<div th:include="Macro/publicMacro :: footHeadMacro"></div>
 <!-- /footer -->
 <script type="text/javascript" th:src='@{/index/js/bootstrap.min.js}'></script>
 <script th:inline="javascript">

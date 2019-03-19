@@ -72,25 +72,6 @@ public class ProcessCtrl {
      * Query and enter the process list
      *
      * @param request
-     * @param modelAndView
-     * @return
-     */
-    @RequestMapping("/processList")
-    public ModelAndView processList(HttpServletRequest request, ModelAndView modelAndView) {
-        modelAndView.setViewName("/indexNew");
-        UserVo currentUser = SessionUserUtil.getCurrentUser();
-        modelAndView.addObject("currentUser", currentUser);
-        modelAndView.addObject("accessPath", "getProcessList");
-        // modelAndView.setViewName("process/process");
-        List<ProcessVo> processVoList = processServiceImpl.getProcessVoList();
-        modelAndView.addObject("processVoList", processVoList);
-        return modelAndView;
-    }
-
-    /**
-     * Query and enter the process list
-     *
-     * @param request
      * @return
      */
     @RequestMapping("/processListPage")

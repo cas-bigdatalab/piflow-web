@@ -1,7 +1,7 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <body th:fragment=flow_List>
-<meta th:include="/Macro/csrfTokeHeadMacro :: csrfTokeHeadMacro"/>
+<meta th:include="Macro/csrfTokeHeadMacro :: csrfTokeHeadMacro"/>
 <style type="text/css">
     /*人为制造一个占据整个屏幕的Div,其透明度为0.7且z-index为9999使之前的页面被压在底层无法点击*/
     .fullScreenList {
@@ -196,7 +196,7 @@
     </form>
 </div>
 
-<script th:include="/Macro/csrfTokeHeadMacroScript :: csrfTokeHeadMacroScript"/>
+<script th:include="Macro/csrfTokeHeadMacroScript :: csrfTokeHeadMacroScript"/>
 <script th:src="@{/custom/flowList.js}"></script>
 <script th:inline="javascript">
     initDatatableFlowPage('flowTableId', "/piflow-web/flow/getFlowListPage");

@@ -20,7 +20,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Charisma, a fully featured, responsive, HTML5, Bootstrap admin template.">
     <meta name="author" content="Muhammad Usman">
-    <meta th:include="/Macro/csrfTokeHeadMacro :: csrfTokeHeadMacro"/>
+    <meta th:include="Macro/csrfTokeHeadMacro :: csrfTokeHeadMacro"/>
 
     <!-- The styles -->
     <link id="bs-css" th:href="@{/bootstrap/css/bootstrap-cerulean.min.css}" rel="stylesheet">
@@ -117,7 +117,7 @@
         <!-- left menu ends -->
         <div id="content" class="col-lg-10 col-sm-10">
             <!-- content starts -->
-            <div th:include="/process/inc/process_List :: process_List"></div>
+            <div th:include="process/inc/process_List :: process_List"></div>
             <!-- content ends -->
         </div><!--/#content.col-md-0-->
 
@@ -183,7 +183,7 @@
 <script th:src="@{/charisma/js/jquery.history.js}"></script>
 <!-- application script for Charisma demo -->
 <script th:src="@{/charisma/js/charisma.js}"></script>
-<script th:include="/Macro/csrfTokeHeadMacroScript :: csrfTokeHeadMacroScript"/>
+<script th:include="Macro/csrfTokeHeadMacroScript :: csrfTokeHeadMacroScript"/>
 <script th:inline="javascript">
     function loadPostRight(url) {
         $.ajax({

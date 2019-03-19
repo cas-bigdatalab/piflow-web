@@ -6,7 +6,7 @@
     <title>piflow-web</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta th:include="/Macro/csrfTokeHeadMacro :: csrfTokeHeadMacro"/>
+    <meta th:include="Macro/csrfTokeHeadMacro :: csrfTokeHeadMacro"/>
     <link rel="stylesheet" type="text/css" th:href="@{/grapheditor/styles/grapheditor.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/bootstrap/css/bootstrap.min.css}">
     <link rel="stylesheet" type="text/css" th:href='@{/custom/css/publicMacro.css}'/>
@@ -44,10 +44,10 @@
             divValue = divAppend;
         }
     </script>
-    <meta th:include="/grapheditor/inc/index_graph_improt :: index_graph_improt"/>
+    <meta th:include="grapheditor/inc/index_graph_improt :: index_graph_improt"/>
 </head>
 <body class="geEditor">
-<div th:include="/Macro/publicMacro :: userHeadMacro"></div>
+<div th:include="Macro/publicMacro :: userHeadMacro"></div>
 <div id='fullScreen' class="fullScreen" style="display: none;">
     <div style="margin-top: 15%;">
         <p>
@@ -163,7 +163,7 @@
         </div>
     </form>
 </div>
-<script th:include="/Macro/csrfTokeHeadMacroScript :: csrfTokeHeadMacroScript"/>
+<script th:include="Macro/csrfTokeHeadMacroScript :: csrfTokeHeadMacroScript"/>
 <!--stop 属性编辑弹窗结束-->
 <script type="text/javascript" th:src="@{/grapheditor/initGraph.js}"></script>
 <script type="text/javascript">

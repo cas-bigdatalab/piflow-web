@@ -6,7 +6,7 @@
 	<groupId>com.nature</groupId>
 	<artifactId>piflow-web</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<name>piflow-web</name>
 	<description>piflow-web</description>
 
@@ -39,19 +39,6 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!-- 排除tomcat 依赖 -->
-		<dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-tomcat</artifactId>
-            <scope>provided</scope>
-            <!--忽略内嵌tomcat，打包部署到tomcat。注*本地运行的时候要把这一段忽略引入个注释掉，要不然项目启动不了-->
-		   <exclusions>
-		      <exclusion>
-		         <groupId>org.springframework.boot</groupId>
-		         <artifactId>spring-boot-starter-tomcat</artifactId>
-		      </exclusion>
-		   </exclusions>
-        </dependency>
 		<!-- thymeleaf 依赖 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -185,11 +172,15 @@
 		<finalName>piflow-web</finalName>
 		<plugins>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+		                <configuration>
+		                    <skip>true</skip>
+		                </configuration>
+			</plugin>
+			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-		                <configuration>
-		                    <fork>true</fork>
-		                </configuration>
 			</plugin>
 		</plugins>
 	</build>

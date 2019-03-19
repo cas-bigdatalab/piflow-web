@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>Piflow-Web</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta th:include="/Macro/csrfTokeHeadMacro :: csrfTokeHeadMacro"/>
+    <meta th:include="Macro/csrfTokeHeadMacro :: csrfTokeHeadMacro"/>
     <link id="bs-css" th:href="@{/bootstrap/css/bootstrap-cerulean.min.css}" rel="stylesheet">
     <link rel="stylesheet" type="text/css" th:href='@{/custom/css/publicMacro.css}'/>
     <!-- The fav icon -->
@@ -29,7 +29,7 @@
 </head>
 
 <body style="background-image: url('/piflow-web/img/loginBackground.jpg');">
-<div th:include="/Macro/publicMacro :: loginHeadMacro"></div>
+<div th:include="Macro/publicMacro :: loginHeadMacro"></div>
 <div>
     <div id="signInDiv" class="container">
         <div class="row" style="margin-top: 10%">
@@ -168,7 +168,7 @@
         </p>
     </div>
 </div>
-<script th:include="/Macro/csrfTokeHeadMacroScript :: csrfTokeHeadMacroScript"/>
+<script th:include="Macro/csrfTokeHeadMacroScript :: csrfTokeHeadMacroScript"/>
 <script type="text/javascript">
     //程序写完，要习惯性检查一下
     $(function () {

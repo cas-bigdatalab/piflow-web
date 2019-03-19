@@ -6,7 +6,7 @@
     <title>ProcessContent</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta th:include="/Macro/csrfTokeHeadMacro :: csrfTokeHeadMacro"/>
+    <meta th:include="Macro/csrfTokeHeadMacro :: csrfTokeHeadMacro"/>
     <link rel="stylesheet" type="text/css" th:href="@{/grapheditor/styles/grapheditor.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/bootstrap/css/bootstrap.min.css}">
     <link rel="stylesheet" type="text/css" th:href='@{/custom/css/publicMacro.css}'/>
@@ -35,7 +35,7 @@
     <script th:src="@{/charisma/js/layer/layer.js}"></script>
 </head>
 <body class="geEditor">
-<div th:include="/Macro/publicMacro :: userHeadMacro"></div>
+<div th:include="Macro/publicMacro :: userHeadMacro"></div>
 <div style="position: fixed; z-index: 779;text-align: right;right: 27%;top: 58px;">
 			<span>
 				progress：<span id="progress" th:text="${percentage} + '%'"></span>
@@ -53,7 +53,7 @@
 
 <div id="processLeft" class="geSidebarContainer"
      style="right: 0px;top: 48px;bottom: 28px;left: 75%;background-color: whitesmoke;font-size: 12px;">
-    <div th:include="/process/inc/process_Info_Inc :: process_Info_Inc"></div>
+    <div th:include="process/inc/process_Info_Inc :: process_Info_Inc"></div>
 </div>
 <!-- crumbs -->
 <div style=" width: 100%;position: fixed;z-index: 99999;left: 0px;bottom: 0px;text-align: center;height: 28px;line-height: 28px;background: #37714b;">
@@ -68,7 +68,7 @@
                 </span>
             </span>
             <span th:case="*" style="color: #ffffff">
-                <a style="color: #ffffff" th:href="@{/process/processList}">ProcessList</a>
+                <a style="color: #ffffff" th:href="@{/web/processList}">ProcessList</a>
             </span>
         </span>
     <span style="color: #ffffff">&gt;&gt;</span>
@@ -130,7 +130,7 @@
 </div>
 <script type="text/javascript" th:src="@{/js/jquery/jquery-ui.min.js}"></script>
 <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
-<script th:include="/Macro/csrfTokeHeadMacroScript :: csrfTokeHeadMacroScript"/>
+<script th:include="Macro/csrfTokeHeadMacroScript :: csrfTokeHeadMacroScript"/>
 <script th:src="@{/custom/processContent.js}"></script>
 <script th:inline="javascript">
     var xmlDate = [[${xmlDate}]];
