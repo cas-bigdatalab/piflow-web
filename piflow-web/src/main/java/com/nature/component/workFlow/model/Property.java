@@ -25,10 +25,10 @@ public class Property extends BaseHibernateModelUUIDNoCorpAgentId {
 
 	private String displayName;
 
-	@Column(name = "description", columnDefinition = "varchar(1000) COMMENT '描述'")
+	@Column(name = "DESCRIPTION", columnDefinition = "varchar(1000) COMMENT '描述'")
 	private String description;
 
-	@Column(name = "CUSTOM_VALUE")
+	@Column(name = "DEFAULT_VALUE", columnDefinition = "varchar(1000) COMMENT '默认值'")
 	private String customValue;
 
 	@Column(name = "ALLOWABLE_VALUES")
