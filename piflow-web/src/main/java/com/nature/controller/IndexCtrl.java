@@ -32,7 +32,7 @@ public class IndexCtrl {
     @Autowired
     IFlowService flowServiceImpl;
 
-    @Value("${videoName}")
+    @Value("${syspara.videoName}")
     private String videoName;
 
     @RequestMapping("/flowList")
