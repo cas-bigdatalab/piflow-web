@@ -93,9 +93,9 @@
 <script th:include="Macro/csrfTokeHeadMacroScript :: csrfTokeHeadMacroScript"/>
 <script th:src="@{/custom/processList.js}"></script>
 <script th:inline="javascript">
+    initDatatablePage("testTableId", "/piflow-web/process/processListPage");
     $(function () {
         timer = window.setInterval("processListMonitoring()", 5000);
-        initDatatablePage("testTableId", "/piflow-web/process/processListPage");
     });
     //@ sourceURL=processList0.js
 </script>

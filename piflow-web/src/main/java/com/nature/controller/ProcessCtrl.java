@@ -422,21 +422,7 @@ public class ProcessCtrl {
     @ResponseBody
     public String getAppInfoList(HttpServletRequest request) {
         String[] arrayObj = request.getParameterValues("arrayObj");
-        List<String> list = new ArrayList<String>();
-        Map<String, Object> rtnMap = new HashMap<String, Object>();
-        rtnMap.put("code", "0");
-        if (null != arrayObj && arrayObj.length > 0) {
-            List<ProcessVo> progressByThirdAndSave = processServiceImpl.getProgressByThirdAndSave(arrayObj);
-            if (null != progressByThirdAndSave && progressByThirdAndSave.size() > 0) {
-                rtnMap.put("code", "1");
-                for (ProcessVo processVo : progressByThirdAndSave) {
-                    if (null != processVo) {
-                        rtnMap.put(processVo.getAppId(), processVo);
-                    }
-                }
-            }
-        }
-        return JsonUtils.toJsonNoException(rtnMap);
+        return processServiceImpl.getProgressByThirdAndSave(arrayObj);
     }
 
 

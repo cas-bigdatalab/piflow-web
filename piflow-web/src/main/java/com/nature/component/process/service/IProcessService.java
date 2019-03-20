@@ -84,7 +84,7 @@ public interface IProcessService {
      * @param appIDs
      * @return
      */
-    public List<ProcessVo> getProgressByThirdAndSave(String[] appIDs);
+    public String getProgressByThirdAndSave(String[] appIDs);
 
     /**
      * 修改process

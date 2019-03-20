@@ -277,59 +277,74 @@ public class ProcessServiceImpl implements IProcessService {
      */
 
     @Override
-    public List<ProcessVo> getProgressByThirdAndSave(String[] appIDs) {
+    public String getProgressByThirdAndSave(String[] appIDs) {
+        Map<String, Object> rtnMap = new HashMap<String, Object>();
+        rtnMap.put("code", "0");
         List<ProcessVo> processVoList = null;
-        List<Process> processListByAppIDs = processTransaction.getProcessListByAppIDs(appIDs);
-        if (null != processListByAppIDs && processListByAppIDs.size() > 0) {
-            processVoList = new ArrayList<ProcessVo>();
-            for (Process process : processListByAppIDs) {
-                if (null != process) {
-                    ProcessVo processVo = null;
-                    // 如果状态为STARTED，去调接口,否则说明已经是启动完成,直接返回
-                    ProcessState state = process.getState();
-                    if (ProcessState.STARTED == state) {
-                        ThirdProgressVo flowProgress = getFlowProgressImpl.getFlowProgress(process.getAppId());
-                        if (null != flowProgress) {
-                            double progressNums = Double.parseDouble(flowProgress.getProgress());
-                            BigDecimal formatBD = new BigDecimal(progressNums);
-                            progressNums = formatBD.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-                            double progressNumsDb = 0.00;
-                            String percentage = process.getProgress();
-                            if (StringUtils.isNotBlank(percentage)) {
-                                progressNumsDb = Float.parseFloat(percentage);
-                            }
-                            boolean isUpdateProcess = false;
-                            // 判断状态，如果状态是STARTED，判断返回进度是否大于数据库进度，大于则保存
-                            // 如果状态不是STARTED直接保存数据库
-                            if ("STARTED".equals(flowProgress.getState())) {
-                                //如果返回进度大于数据库进度则进行保存
-                                if (progressNums > progressNumsDb) {
+        if (null != appIDs && appIDs.length > 0) {
+            List<Process> processListByAppIDs = processTransaction.getProcessListByAppIDs(appIDs);
+            if (null != processListByAppIDs && processListByAppIDs.size() > 0) {
+                processVoList = new ArrayList<ProcessVo>();
+                for (Process process : processListByAppIDs) {
+                    if (null != process) {
+                        ProcessVo processVo = null;
+                        // 如果状态为STARTED，去调接口,否则说明已经是启动完成,直接返回
+                        ProcessState state = process.getState();
+                        if (ProcessState.STARTED == state) {
+                            ThirdProgressVo flowProgress = getFlowProgressImpl.getFlowProgress(process.getAppId());
+                            if (null != flowProgress) {
+                                double progressNumsDb = 0.00;
+                                String percentage = process.getProgress();
+                                if (StringUtils.isNotBlank(percentage)) {
+                                    progressNumsDb = Float.parseFloat(percentage);
+                                }
+                                double progressNums = progressNumsDb;
+                                if (!"NaN".equals(flowProgress.getProgress())) {
+                                    progressNums = Double.parseDouble(flowProgress.getProgress());
+                                    BigDecimal formatBD = new BigDecimal(progressNums);
+                                    progressNums = formatBD.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+                                }
+                                boolean isUpdateProcess = false;
+                                // 判断状态，如果状态是STARTED，判断返回进度是否大于数据库进度，大于则保存
+                                // 如果状态不是STARTED直接保存数据库
+                                if ("STARTED".equals(flowProgress.getState())) {
+                                    //如果返回进度大于数据库进度则进行保存
+                                    if (progressNums > progressNumsDb) {
+                                        isUpdateProcess = true;
+                                    }
+                                } else {
                                     isUpdateProcess = true;
                                 }
-                            } else {
-                                isUpdateProcess = true;
+                                if (isUpdateProcess) {
+                                    // 修改flow信息
+                                    process.setLastUpdateUser("update");
+                                    process.setLastUpdateDttm(new Date());
+                                    process.setProgress(progressNums + "");
+                                    process.setState(ProcessState.selectGender(flowProgress.getState()));
+                                    process.setName(flowProgress.getName());
+                                    processTransaction.updateProcess(process);
+                                }
                             }
-                            if (isUpdateProcess) {
-                                // 修改flow信息
-                                process.setLastUpdateUser("update");
-                                process.setLastUpdateDttm(new Date());
-                                process.setProgress(progressNums + "");
-                                process.setState(ProcessState.selectGender(flowProgress.getState()));
-                                process.setName(flowProgress.getName());
-                                processTransaction.updateProcess(process);
-                            }
+                            processVo = this.processPoToVo(process);
+                        } else if (null == process.getStartTime()) {
+                            processVo = this.getAppInfoByThirdAndSave(process.getAppId());
                         }
-                        processVo = this.processPoToVo(process);
-                    } else if (null == process.getStartTime()) {
-                        processVo = this.getAppInfoByThirdAndSave(process.getAppId());
-                    }
-                    if (null != processVo) {
-                        processVoList.add(processVo);
+                        if (null != processVo) {
+                            processVoList.add(processVo);
+                        }
                     }
                 }
             }
         }
-        return processVoList;
+        if (null != processVoList && processVoList.size() > 0) {
+            rtnMap.put("code", "1");
+            for (ProcessVo processVo : processVoList) {
+                if (null != processVo) {
+                    rtnMap.put(processVo.getAppId(), processVo);
+                }
+            }
+        }
+        return JsonUtils.toJsonNoException(rtnMap);
     }
 
     /**

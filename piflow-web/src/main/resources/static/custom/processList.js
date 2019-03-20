@@ -1,10 +1,11 @@
 var processTable;
+var isTableLoading = true;
 
 function processListMonitoring() {
     var arrayObj = new Array();
-    var processAppIds = $("td[name='processAppId']");
-    var processStartTimes = $("td[name='processStartTime']");
-    var processStates = $("td[name='processState']");
+    var processAppIds = $("div[name='processAppId']");
+    var processStartTimes = $("div[name='processStartTime']");
+    var processStates = $("div[name='processState']");
     if (processAppIds && processStartTimes && processStates) {
         if (processAppIds.length == processStartTimes.length && processStartTimes.length === processStates.length) {
             for (var i = 0; i < processAppIds.length; i++) {
@@ -17,55 +18,64 @@ function processListMonitoring() {
                     arrayObj.push(processAppIds[i].innerHTML);
                 }
             }
+            if (processAppIds.length > 0) {
+                isTableLoading = false;
+            }
         }
+    } else {
+        isTableLoading = true;
     }
-    if (arrayObj.length == 0) {
-        window.clearInterval(timer);
+    if (isTableLoading) {
         return;
-    }
-    $.ajax({
-        cache: true,
-        type: "get",
-        url: "/piflow-web/process/getAppInfoList",
-        data: {arrayObj: arrayObj},
-        async: true,
-        traditional: true,
-        error: function (request) {
-            console.log("error");
+    } else {
+        if (arrayObj.length == 0) {
+            window.clearInterval(timer);
             return;
-        },
-        success: function (data) {
-            if (null != data) {
-                var dataMap = JSON.parse(data);
-                if ('0' !== dataMap.code) {
-                    if (arrayObj && arrayObj.length > 0) {
-                        for (var i in arrayObj) {
-                            var strAppID = arrayObj[i];
-                            if (strAppID && '' !== strAppID) {
-                                var process = dataMap[strAppID];
-                                if (process && '' !== process) {
-                                    if (process.id && '' != process.id) {
-                                        document.getElementById("" + process.id + "").value = process.progress;
-                                        document.getElementById("" + process.id + "Info").innerHTML = "progress:" + process.progress + "%";
-                                        if (process.state && "" !== process.state) {
-                                            document.getElementById("" + process.id + "state").innerHTML = process.state.text;
-                                        }
-                                        if (dataMap.startTime && "" !== process.startTime) {
-                                            document.getElementById("" + process.id + "startTime").innerHTML = process.startTime;
-                                        }
-                                        if (dataMap.endTime && "" !== process.endTime) {
-                                            document.getElementById("" + process.id + "endTime").innerHTML = process.endTime;
+        }
+        $.ajax({
+            cache: true,
+            type: "get",
+            url: "/piflow-web/process/getAppInfoList",
+            data: {arrayObj: arrayObj},
+            async: true,
+            traditional: true,
+            error: function (request) {
+                console.log("error");
+                return;
+            },
+            success: function (data) {
+                if (null != data) {
+                    var dataMap = JSON.parse(data);
+                    if ('0' !== dataMap.code) {
+                        if (arrayObj && arrayObj.length > 0) {
+                            for (var i in arrayObj) {
+                                var strAppID = arrayObj[i];
+                                if (strAppID && '' !== strAppID) {
+                                    var process = dataMap[strAppID];
+                                    if (process && '' !== process) {
+                                        if (process.id && '' != process.id) {
+                                            document.getElementById("" + process.id + "").value = process.progress;
+                                            document.getElementById("" + process.id + "Info").innerHTML = "progress:" + process.progress + "%";
+                                            if (process.state && "" !== process.state) {
+                                                document.getElementById("" + process.id + "state").innerHTML = process.state.text;
+                                            }
+                                            if (dataMap.startTime && "" !== process.startTime) {
+                                                document.getElementById("" + process.id + "startTime").innerHTML = process.startTime;
+                                            }
+                                            if (dataMap.endTime && "" !== process.endTime) {
+                                                document.getElementById("" + process.id + "endTime").innerHTML = process.endTime;
+                                            }
                                         }
                                     }
-                                }
 
+                                }
                             }
                         }
                     }
                 }
             }
-        }
-    });
+        });
+    }
 }
 
 //获取Checkpoint点
@@ -261,15 +271,16 @@ function responseHandler(res) {
     if (resPageData && resPageData.length > 0) {
         for (var i = 0; i < resPageData.length; i++) {
             var data1 = {
-                "appId": "",
+                "appId": "<div name='processAppId'></div>",
                 "name": "",
                 "description": "",
-                "startTime": "",
-                "endTime": "",
+                "startTime": "<div id='" + resPageData[i].id + "startTime' name='processStartTime'></div>",
+                "endTime": "<div id='" + resPageData[i].id + "endTime' name='processEndTime'></div>",
                 "progress": "",
-                "state": "",
+                "state": "<div name='processState'>No State</div>",
                 "actions": ""
             }
+
             if (resPageData[i]) {
                 var descriptionHtmlStr = '<div ' +
                     'style="width: 85px;overflow: hidden;text-overflow:ellipsis;white-space:nowrap;" ' +
@@ -309,19 +320,19 @@ function responseHandler(res) {
                     '</a>&nbsp;' +
                     '</div>';
                 if (resPageData[i].appId) {
-                    data1.appId = resPageData[i].appId;
+                    data1.appId = '<div name="processAppId">' + resPageData[i].appId + '</div>';
                 }
                 if (resPageData[i].name) {
                     data1.name = resPageData[i].name;
                 }
                 if (resPageData[i].startTime) {
-                    data1.startTime = resPageData[i].startTime;
+                    data1.startTime = '<div id="' + resPageData[i].id + 'startTime" name="processStartTime">' + resPageData[i].startTime + '</div>';
                 }
                 if (resPageData[i].endTime) {
-                    data1.endTime = resPageData[i].endTime;
+                    data1.endTime = '<div id="' + resPageData[i].id + 'endTime" name="processEndTime">' + resPageData[i].endTime + '</div>';
                 }
                 if (resPageData[i].state) {
-                    data1.state = resPageData[i].state.text;
+                    data1.state = '<div id="' + resPageData[i].id + 'state" name="processState">' + resPageData[i].state.text + '</div>';
                 }
                 if (descriptionHtmlStr) {
                     data1.description = descriptionHtmlStr;
