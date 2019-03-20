@@ -1028,15 +1028,22 @@ function loadTemplate() {
     }
 
     var name = $("#loadingXmlSelect option:selected").text();
-    layer.confirm('Are you sure you want to load ' + name + '？', {
-        btn: ['submit', 'cancel'] //按钮
-    }, function () {
-        loadingXml(id, loadId);
-        var oDiv = document.getElementById("divloadingXml");
-        oDiv.style.display = "none";
-    }, function () {
-        var oDiv = document.getElementById("divloadingXml");
-        oDiv.style.display = "none";
+    layer.open({
+        title: 'LoadTemplate',
+        content: 'Are you sure you want to load ' + name + '？',
+        btn: ['submit', 'cancel'],
+        yes: function(index, layero){
+            loadingXml(id, loadId);
+            var oDiv = document.getElementById("divloadingXml");
+            oDiv.style.display = "none";
+        },
+        btn2: function(index, layero){
+            var oDiv = document.getElementById("divloadingXml");
+            oDiv.style.display = "none";
+        },cancel: function(){
+            var oDiv = document.getElementById("divloadingXml");
+            oDiv.style.display = "none";
+        }
     });
 }
 

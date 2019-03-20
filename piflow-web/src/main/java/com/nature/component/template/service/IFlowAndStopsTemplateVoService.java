@@ -51,7 +51,7 @@ public interface IFlowAndStopsTemplateVoService {
 	 
 	/**
 	 * 根据stopId查询所有stop属性信息
-	 * @param templateId
+	 * @param stopsId
 	 * @return
 	 */
 	public List<PropertyTemplateModel> getPropertyListByStopsId(String stopsId);
@@ -59,7 +59,7 @@ public interface IFlowAndStopsTemplateVoService {
 	/**
 	 * 加载模板保存stop信息
 	 * @param template
-	 * @param flowId
+	 * @param flow
 	 * @param maxPageId  flow中stop中的最大值
 	 */
 	public void addTemplateStopsToFlow(Template template,Flow flow, int maxPageId);
