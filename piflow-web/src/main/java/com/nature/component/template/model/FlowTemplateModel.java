@@ -21,7 +21,7 @@ public class FlowTemplateModel implements Serializable {
 	
 	private String name;
 	
-	@Column(name = "description",columnDefinition="varchar(1000) COMMENT '描述'")
+	@Column(name = "description",columnDefinition="varchar(1024) COMMENT '描述'")
 	private String description;
 
 	public String getId() {

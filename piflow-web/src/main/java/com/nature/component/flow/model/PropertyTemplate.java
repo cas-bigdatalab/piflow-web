@@ -20,10 +20,10 @@ public class PropertyTemplate extends BaseHibernateModelUUIDNoCorpAgentId {
 
 	private String displayName;
 
-	@Column(name = "DESCRIPTION", columnDefinition = "varchar(1000) COMMENT '描述'")
+	@Column(name = "DESCRIPTION", columnDefinition = "varchar(1024) COMMENT '描述'")
 	private String description;
 
-	@Column(name = "DEFAULT_VALUE", columnDefinition = "varchar(1000) COMMENT '默认值'")
+	@Column(name = "DEFAULT_VALUE", columnDefinition = "varchar(1024) COMMENT '默认值'")
 	private String defaultValue;
 
 	@Column(name = "ALLOWABLE_VALUES")

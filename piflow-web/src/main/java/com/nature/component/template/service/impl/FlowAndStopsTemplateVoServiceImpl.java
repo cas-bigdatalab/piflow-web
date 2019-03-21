@@ -19,6 +19,7 @@ import com.nature.mapper.template.FlowAndStopsTemplateVoMapper;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.annotation.Transient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,9 +36,6 @@ public class FlowAndStopsTemplateVoServiceImpl implements IFlowAndStopsTemplateV
     
     @Autowired
     private FlowAndStopsTemplateVoMapper flowAndStopsTemplateVoMapper;
-    
-    @Autowired
-    private FlowMapper flowMapper;
     
     @Autowired
     private StopsMapper stopsMapper;
@@ -81,7 +79,7 @@ public class FlowAndStopsTemplateVoServiceImpl implements IFlowAndStopsTemplateV
 	}
 
 	@Override
-	@Transactional
+	@Transient
 	public void addTemplateStopsToFlow(Template template,Flow flow,int maxPageId) {
 		UserVo user = SessionUserUtil.getCurrentUser();
 	    String username = (null != user) ? user.getUsername() : "-1";
@@ -133,7 +131,7 @@ public class FlowAndStopsTemplateVoServiceImpl implements IFlowAndStopsTemplateV
 	}
 
 	@Override
-	@Transactional
+	@Transient
 	public void addStopsList(List<Stops> stopsList,Template template) {
 		 UserVo user = SessionUserUtil.getCurrentUser();
          String username = (null != user) ? user.getUsername() : "-1";

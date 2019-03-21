@@ -28,7 +28,7 @@ public class Process extends BaseHibernateModelUUIDNoCorpAgentId {
     @Column(columnDefinition = "text COMMENT 'Process view xml string'")
     private String viewXml;
 
-    @Column(columnDefinition = "varchar(1000) COMMENT 'description'")
+    @Column(columnDefinition = "varchar(1024) COMMENT 'description'")
     private String description;
 
     @Column(columnDefinition = "varchar(255) COMMENT 'flowId'")

@@ -16,7 +16,7 @@ public class ProcessStopProperty extends BaseHibernateModelUUIDNoCorpAgentId {
 
     private String displayName;
 
-    @Column(name = "description", columnDefinition = "varchar(1000) COMMENT '描述'")
+    @Column(name = "description", columnDefinition = "varchar(1024) COMMENT '描述'")
     private String description;
 
     @Column(name = "CUSTOM_VALUE")

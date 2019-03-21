@@ -256,6 +256,7 @@ public class TemplateCtrl {
      */
     @RequestMapping("/loadingXmlPage")
     @ResponseBody
+    @Transactional
     public String loadingXml(HttpServletRequest request, Model model) {
         Map<String, String> rtnMap = new HashMap<String, String>();
         rtnMap.put("code", "0");
@@ -303,7 +304,7 @@ public class TemplateCtrl {
             logger.info("加载模板成功");
             return "grapheditor/index";
         } else {
-            logger.info("加载模板失败");
+            logger.warn("加载模板失败");
             return "errorPage";
         }
     }

@@ -20,7 +20,7 @@ public class Template extends BaseHibernateModelUUIDNoCorpAgentId {
 
 	private String name;
 	
-	@Column(name = "description",columnDefinition="varchar(1000) COMMENT '描述'")
+	@Column(name = "description",columnDefinition="varchar(1024) COMMENT '描述'")
 	private String description;
 	
 	@Lob @Basic(fetch = FetchType.LAZY) @Type(type="text") @Column(name="value", nullable=true)
