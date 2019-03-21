@@ -1,5 +1,6 @@
 package com.nature.common.constant;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -128,7 +129,15 @@ public class SysParamsCache {
     public static String XML_PATH;
 
     @Value("${syspara.xmlPath}")
-    public void setmlPath(String xmlPath) {
+    public void setXmlPath(String xmlPath) {
         XML_PATH = xmlPath;
+    }
+
+    // 是否加载stops
+    public static Boolean IS_LOAD_STOP = false;
+
+    @Value("${syspara.isLoadStop}")
+    public void setIsLoadStop(String isLoadStop) {
+        IS_LOAD_STOP = Boolean.valueOf(isLoadStop);
     }
 }

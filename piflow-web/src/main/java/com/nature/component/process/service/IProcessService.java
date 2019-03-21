@@ -148,6 +148,17 @@ public interface IProcessService {
     public String getProcessVoListPage(Integer offset, Integer limit, String param);
 
     /**
+     * Start processes
+     *
+     * @param processId
+     * @param checkpoint
+     * @param currentUser
+     * @return
+     */
+    @Transient
+    public String startProcess(String processId, String checkpoint, UserVo currentUser);
+
+    /**
      * Stop running processes
      *
      * @param processId

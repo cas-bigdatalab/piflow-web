@@ -320,19 +320,23 @@ function responseHandler(res) {
                     '</a>&nbsp;' +
                     '</div>';
                 if (resPageData[i].appId) {
-                    data1.appId = '<div name="processAppId">' + resPageData[i].appId + '</div>';
+                    data1.appId = '<div name="processAppId" style="word-wrap: break-word;">' + resPageData[i].appId + '</div>';
                 }
                 if (resPageData[i].name) {
                     data1.name = resPageData[i].name;
                 }
                 if (resPageData[i].startTime) {
-                    data1.startTime = '<div id="' + resPageData[i].id + 'startTime" name="processStartTime">' + resPageData[i].startTime + '</div>';
+                    data1.startTime = '<div id="' + resPageData[i].id + 'startTime" name="processStartTime" style="word-wrap: break-word;">' +
+                        resPageData[i].startTime +
+                        '</div>';
                 }
                 if (resPageData[i].endTime) {
-                    data1.endTime = '<div id="' + resPageData[i].id + 'endTime" name="processEndTime">' + resPageData[i].endTime + '</div>';
+                    data1.endTime = '<div id="' + resPageData[i].id + 'endTime" name="processEndTime" style="word-wrap: break-word;">' +
+                        resPageData[i].endTime + '</div>';
                 }
                 if (resPageData[i].state) {
-                    data1.state = '<div id="' + resPageData[i].id + 'state" name="processState">' + resPageData[i].state.text + '</div>';
+                    data1.state = '<div id="' + resPageData[i].id + 'state" name="processState" style="word-wrap: break-word;">' +
+                        resPageData[i].state.text + '</div>';
                 }
                 if (descriptionHtmlStr) {
                     data1.description = descriptionHtmlStr;

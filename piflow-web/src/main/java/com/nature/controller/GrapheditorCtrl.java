@@ -173,9 +173,10 @@ public class GrapheditorCtrl {
     @RequestMapping("/reloadStops")
     @ResponseBody
     public String reloadStops(String load) {
+        UserVo user = SessionUserUtil.getCurrentUser();
         Map<String, String> rtnMap = new HashMap<String, String>();
         rtnMap.put("code", "0");
-        getGroupsAndStops.addGroupAndStopsList();
+        getGroupsAndStops.addGroupAndStopsList(user);
         rtnMap.put("code", "1");
         rtnMap.put("load", load);
         return JsonUtils.toJsonNoException(rtnMap);

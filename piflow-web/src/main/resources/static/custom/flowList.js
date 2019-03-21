@@ -393,7 +393,7 @@ function responseHandlerFlow(res) {
                     resPageData[i].id + '\',\'' +
                     resPageData[i].name + '\');">' +
                     '<i class="icon-check icon-white"></i>' +
-                    '</a>&nbsp;' +
+                    '</a>' +
                     '</div>';
                 if (resPageData[i].name) {
                     data1.name = resPageData[i].name;

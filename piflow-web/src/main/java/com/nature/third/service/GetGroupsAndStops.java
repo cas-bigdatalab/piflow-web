@@ -41,18 +41,16 @@ public class GetGroupsAndStops {
      * 调接口添加group和stops关联添加
      */
     @Transactional
-    public void addGroupAndStopsList() {
-        getGroupAndSave();
-        getStopsAndProperty();
+    public void addGroupAndStopsList(UserVo user) {
+        getGroupAndSave(user);
+        getStopsAndProperty(user);
     }
 
     /**
      * 调用getAllGroups并保存
      */
-    @RequestMapping("/save")
     @Transactional
-    public void getGroupAndSave() {
-        UserVo user = SessionUserUtil.getCurrentUser();
+    public void getGroupAndSave(UserVo user) {
         String username = (null != user) ? user.getUsername() : "-1";
         // 先清空Group表信息再插入
         int deleteGroup = stopGroupMapper.deleteGroup();
@@ -85,10 +83,8 @@ public class GetGroupsAndStops {
     /**
      * 调用getAllStops与Group进行管理，并保存stop属性信息
      */
-    @RequestMapping("/saveStopsAndProperty")
     @Transactional
-    private void getStopsAndProperty() {
-    	  UserVo user = SessionUserUtil.getCurrentUser();
+    public void getStopsAndProperty(UserVo user) {
         String username = (null != user) ? user.getUsername() : "-1";
         int deleteStopsInfo = stopGroupMapper.deleteStopsInfo();
         logger.info("成功删除StopsInfo" + deleteStopsInfo + "条数据！！！");

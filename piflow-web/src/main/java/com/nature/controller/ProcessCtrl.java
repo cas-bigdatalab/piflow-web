@@ -193,36 +193,10 @@ public class ProcessCtrl {
     @RequestMapping("/runProcess")
     @ResponseBody
     public String runProcess(HttpServletRequest request, Model model) {
-        Map<String, String> rtnMap = new HashMap<String, String>();
-        rtnMap.put("code", "0");
         String id = request.getParameter("id");
         String checkpoint = request.getParameter("checkpointStr");
-        if (StringUtils.isNotBlank(id)) {
-            UserVo currentUser = SessionUserUtil.getCurrentUser();
-            // Query Process by 'ProcessId' and copy new
-            Process process = processServiceImpl.processCopyProcessAndAdd(id, currentUser);
-            if (null != process) {
-                StatefulRtnBase statefulRtnBase = startFlowImpl.startProcess(process, checkpoint, currentUser);
-                if (null != statefulRtnBase && statefulRtnBase.isReqRtnStatus()) {
-                    // Call the 'AppInfo' interface once the startup is successful
-                    processServiceImpl.getAppInfoByThirdAndSave(process.getAppId());
-                    rtnMap.put("code", "1");
-                    rtnMap.put("processId", process.getId());
-                    rtnMap.put("errMsg", "Successful startup");
-                } else {
-                    processServiceImpl.updateProcessEnableFlag(process.getId(), currentUser);
-                    rtnMap.put("errMsg", "Calling interface failed, startup failed");
-                    logger.warn("Calling interface failed, startup failed");
-                }
-            } else {
-                rtnMap.put("errMsg", "No process Id'" + id + "'");
-                logger.warn("No process Id'" + id + "'");
-            }
-        } else {
-            rtnMap.put("errMsg", "processId is null");
-            logger.warn("processId is null");
-        }
-        return JsonUtils.toJsonNoException(rtnMap);
+        UserVo currentUser = SessionUserUtil.getCurrentUser();
+        return processServiceImpl.startProcess(id, checkpoint, currentUser);
     }
 
     /**

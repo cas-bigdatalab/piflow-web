@@ -1,6 +1,5 @@
 package com.nature.component.process.service.Impl;
 
-import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.nature.base.util.*;
@@ -8,7 +7,10 @@ import com.nature.base.vo.StatefulRtnBase;
 import com.nature.base.vo.UserVo;
 import com.nature.common.Eunm.ProcessState;
 import com.nature.common.Eunm.StopState;
-import com.nature.common.constant.SysParamsCache;
+import com.nature.component.flow.model.Flow;
+import com.nature.component.flow.model.Paths;
+import com.nature.component.flow.model.Property;
+import com.nature.component.flow.model.Stops;
 import com.nature.component.mxGraph.model.MxGraphModel;
 import com.nature.component.process.model.Process;
 import com.nature.component.process.model.ProcessPath;
@@ -19,10 +21,6 @@ import com.nature.component.process.utils.ProcessStopUtils;
 import com.nature.component.process.vo.ProcessPathVo;
 import com.nature.component.process.vo.ProcessStopVo;
 import com.nature.component.process.vo.ProcessVo;
-import com.nature.component.flow.model.Flow;
-import com.nature.component.flow.model.Paths;
-import com.nature.component.flow.model.Property;
-import com.nature.component.flow.model.Stops;
 import com.nature.third.inf.IGetFlowInfo;
 import com.nature.third.inf.IGetFlowProgress;
 import com.nature.third.inf.IStartFlow;
@@ -31,9 +29,9 @@ import com.nature.third.vo.flow.ThirdProgressVo;
 import com.nature.third.vo.flowInfo.ThirdFlowInfoStopVo;
 import com.nature.third.vo.flowInfo.ThirdFlowInfoStopsVo;
 import com.nature.third.vo.flowInfo.ThirdFlowInfoVo;
+import com.nature.transaction.flow.FlowTransaction;
 import com.nature.transaction.process.ProcessStopTransaction;
 import com.nature.transaction.process.ProcessTransaction;
-import com.nature.transaction.flow.FlowTransaction;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -733,6 +731,45 @@ public class ProcessServiceImpl implements IProcessService {
             Page page = PageHelper.startPage(offset, limit);
             processTransaction.getProcessListByParam(param);
             rtnMap = PageHelperUtils.setDataTableParam(page, rtnMap);
+        }
+        return JsonUtils.toJsonNoException(rtnMap);
+    }
+
+    /**
+     * Start processes
+     *
+     * @param processId
+     * @param checkpoint
+     * @param currentUser
+     * @return
+     */
+    @Override
+    public String startProcess(String processId, String checkpoint, UserVo currentUser) {
+        Map<String, String> rtnMap = new HashMap<String, String>();
+        rtnMap.put("code", "0");
+        if (StringUtils.isNotBlank(processId) && null != currentUser) {
+            // Query Process by 'ProcessId' and copy new
+            Process process = this.processCopyProcessAndAdd(processId, currentUser);
+            if (null != process) {
+                StatefulRtnBase statefulRtnBase = startFlowImpl.startProcess(process, checkpoint, currentUser);
+                if (null != statefulRtnBase && statefulRtnBase.isReqRtnStatus()) {
+                    // Call the 'AppInfo' interface once the startup is successful
+                    this.getAppInfoByThirdAndSave(process.getAppId());
+                    rtnMap.put("code", "1");
+                    rtnMap.put("processId", process.getId());
+                    rtnMap.put("errMsg", "Successful startup");
+                } else {
+                    this.updateProcessEnableFlag(process.getId(), currentUser);
+                    rtnMap.put("errMsg", "Calling interface failed, startup failed");
+                    logger.warn("Calling interface failed, startup failed");
+                }
+            } else {
+                rtnMap.put("errMsg", "No process Id'" + processId + "'");
+                logger.warn("No process Id'" + processId + "'");
+            }
+        } else {
+            rtnMap.put("errMsg", "processId is null");
+            logger.warn("processId is null");
         }
         return JsonUtils.toJsonNoException(rtnMap);
     }

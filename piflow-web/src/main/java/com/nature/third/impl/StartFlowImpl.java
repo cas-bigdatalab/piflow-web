@@ -49,7 +49,7 @@ public class StartFlowImpl implements IStartFlow {
             String formatJson = JsonFormatTool.formatJson(json);
             logger.debug("\n" + formatJson);
             String doPost = HttpUtils.doPost(SysParamsCache.FLOW_START_URL(), formatJson, encoding);
-            logger.info("返回信息：" + doPost);
+            logger.info("Return information：" + doPost);
             if (StringUtils.isNotBlank(doPost) && !doPost.contains("Exception")) {
                 try {
                     JSONObject obj = JSONObject.fromObject(doPost).getJSONObject("flow");// 将json字符串转换为json对象
@@ -61,13 +61,13 @@ public class StartFlowImpl implements IStartFlow {
                     processById.setLastUpdateDttm(new Date());
                     int updateProcess = processTransaction.updateProcess(processById);
                     if (updateProcess <= 0) {
-                        statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("保存更新状态失败");
+                        statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("Failed to save update status");
                     }
                 } catch (Exception e) {
-                    statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("接口调用成功，转换或保存出错");
+                    statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("Interface call succeeded, conversion or save error");
                 }
             } else {
-                statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("接口调用失败");
+                statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("Interface call failed");
             }
         }
         return statefulRtnBase;
