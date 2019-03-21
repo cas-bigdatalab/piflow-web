@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.persistence.*;
 
-import com.nature.component.workFlow.model.Flow;
+import com.nature.component.flow.model.Flow;
 import org.hibernate.annotations.OrderBy;
 import org.hibernate.annotations.Where;
 

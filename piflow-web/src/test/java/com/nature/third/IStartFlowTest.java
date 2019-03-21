@@ -2,10 +2,10 @@ package com.nature.third;
 
 import com.nature.ApplicationTests;
 import com.nature.base.util.LoggerUtil;
-import com.nature.component.workFlow.model.Flow;
-import com.nature.component.workFlow.model.Paths;
-import com.nature.component.workFlow.model.Property;
-import com.nature.component.workFlow.model.Stops;
+import com.nature.component.flow.model.Flow;
+import com.nature.component.flow.model.Paths;
+import com.nature.component.flow.model.Property;
+import com.nature.component.flow.model.Stops;
 import com.nature.third.inf.IStartFlow;
 import org.junit.Test;
 import org.slf4j.Logger;

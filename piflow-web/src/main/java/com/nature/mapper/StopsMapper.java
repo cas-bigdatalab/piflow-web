@@ -1,6 +1,6 @@
 package com.nature.mapper;
 
-import com.nature.component.workFlow.model.Stops;
+import com.nature.component.flow.model.Stops;
 import com.nature.provider.StopsMapperProvider;
 import com.nature.third.vo.flowInfo.ThirdFlowInfoStopVo;
 

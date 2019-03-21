@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.nature.ApplicationTests;
 import com.nature.base.util.LoggerUtil;
-import com.nature.component.workFlow.model.StopGroup;
+import com.nature.component.flow.model.StopGroup;
 
 public class StopGroupMapperTest extends ApplicationTests {
 

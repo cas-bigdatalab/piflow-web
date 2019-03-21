@@ -6,7 +6,7 @@ import com.nature.common.Eunm.PortType;
 import com.nature.component.template.model.FlowTemplateModel;
 import com.nature.component.template.model.PropertyTemplateModel;
 import com.nature.component.template.model.StopTemplateModel;
-import com.nature.component.workFlow.model.Template;
+import com.nature.component.flow.model.Template;
 import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
 

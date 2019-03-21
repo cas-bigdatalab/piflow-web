@@ -3,9 +3,9 @@ package com.nature.component.template.service;
 import com.nature.component.template.model.FlowTemplateModel;
 import com.nature.component.template.model.PropertyTemplateModel;
 import com.nature.component.template.model.StopTemplateModel;
-import com.nature.component.workFlow.model.Flow;
-import com.nature.component.workFlow.model.Stops;
-import com.nature.component.workFlow.model.Template;
+import com.nature.component.flow.model.Flow;
+import com.nature.component.flow.model.Stops;
+import com.nature.component.flow.model.Template;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

@@ -1,6 +1,6 @@
 package com.nature.component.template.service;
 
-import com.nature.component.workFlow.model.Template;
+import com.nature.component.flow.model.Template;
 import org.springframework.data.annotation.Transient;
 
 import java.util.List;

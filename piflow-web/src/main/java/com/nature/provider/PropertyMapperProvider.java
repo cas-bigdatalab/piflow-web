@@ -4,8 +4,8 @@ import com.nature.base.util.DateUtils;
 import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.Utils;
 import com.nature.base.vo.UserVo;
-import com.nature.component.workFlow.model.Property;
-import com.nature.component.workFlow.model.Stops;
+import com.nature.component.flow.model.Property;
+import com.nature.component.flow.model.Stops;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
 

@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.nature.ApplicationTests;
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.Utils;
-import com.nature.component.workFlow.model.Stops;
+import com.nature.component.flow.model.Stops;
 
 public class StopMapperTest extends ApplicationTests {
 

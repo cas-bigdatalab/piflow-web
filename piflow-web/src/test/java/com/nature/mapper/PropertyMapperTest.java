@@ -14,10 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.nature.ApplicationTests;
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.Utils;
-import com.nature.component.workFlow.model.Property;
-import com.nature.component.workFlow.model.PropertyTemplate;
-import com.nature.component.workFlow.model.Stops;
-import com.nature.component.workFlow.model.StopsTemplate;
+import com.nature.component.flow.model.Property;
+import com.nature.component.flow.model.PropertyTemplate;
+import com.nature.component.flow.model.Stops;
+import com.nature.component.flow.model.StopsTemplate;
 
 public class PropertyMapperTest extends ApplicationTests {
 

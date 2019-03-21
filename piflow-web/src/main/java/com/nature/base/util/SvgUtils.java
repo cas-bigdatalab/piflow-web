@@ -1,28 +1,13 @@
 package com.nature.base.util;
 
 import com.nature.common.Eunm.ArrowDirection;
-import com.nature.common.Eunm.PortType;
 import com.nature.component.mxGraph.model.MxCell;
 import com.nature.component.mxGraph.model.MxGeometry;
 import com.nature.component.mxGraph.model.MxGraphModel;
-import com.nature.component.mxGraph.vo.MxCellVo;
-import com.nature.component.mxGraph.vo.MxGeometryVo;
-import com.nature.component.mxGraph.vo.MxGraphModelVo;
-import com.nature.component.template.model.PropertyTemplateModel;
-import com.nature.component.template.model.StopTemplateModel;
-import com.nature.component.workFlow.model.*;
-import com.nature.component.workFlow.utils.MxGraphModelUtil;
+import com.nature.component.flow.utils.MxGraphModelUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
-import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
-import org.springframework.beans.BeanUtils;
-import org.xml.sax.InputSource;
 
-import java.io.StringReader;
 import java.util.*;
 
 

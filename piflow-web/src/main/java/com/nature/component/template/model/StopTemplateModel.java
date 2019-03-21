@@ -2,7 +2,7 @@ package com.nature.component.template.model;
 
 import com.nature.base.util.DateUtils;
 import com.nature.common.Eunm.PortType;
-import com.nature.component.workFlow.model.Template;
+import com.nature.component.flow.model.Template;
 
 import org.hibernate.annotations.GenericGenerator;
 

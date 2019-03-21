@@ -10,7 +10,7 @@ import org.springframework.test.annotation.Rollback;
 import com.nature.ApplicationTests;
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.Utils;
-import com.nature.component.workFlow.model.Flow;
+import com.nature.component.flow.model.Flow;
 
 public class FlowMapperTest extends ApplicationTests {
 

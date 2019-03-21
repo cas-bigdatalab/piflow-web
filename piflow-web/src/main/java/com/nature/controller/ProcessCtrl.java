@@ -48,12 +48,6 @@ public class ProcessCtrl {
     IStartFlow startFlowImpl;
 
     @Autowired
-    IGetFlowInfo getFlowInfoImpl;
-
-    @Autowired
-    IStopFlow stopFlowImpl;
-
-    @Autowired
     IGetFlowLog getFlowLogImpl;
 
     @Autowired
@@ -118,12 +112,10 @@ public class ProcessCtrl {
                 modelAndView.addObject("pID", processVo.getProcessId());
                 modelAndView.addObject("processVo", processVo);
                 modelAndView.setViewName("process/processContent");
-            } else {
-                modelAndView.setViewName("errorPage");
+                return modelAndView;
             }
-        } else {
-            modelAndView.setViewName("errorPage");
         }
+        modelAndView.setViewName("errorPage");
         return modelAndView;
     }
 
@@ -144,7 +136,7 @@ public class ProcessCtrl {
             ProcessVo processVo = processServiceImpl.getProcessVoById(processId);
             modelAndView.addObject("processVo", processVo);
         } else {
-            logger.info("Parameter passed in incorrectly");
+            logger.warn("Parameter passed in incorrectly");
         }
         return modelAndView;
     }
@@ -165,7 +157,7 @@ public class ProcessCtrl {
             ProcessStopVo processStopVoByPageId = processStopServiceImpl.getProcessStopVoByPageId(processId, pageId);
             modelAndView.addObject("processStopVo", processStopVoByPageId);
         } else {
-            logger.info("Parameter passed in incorrectly");
+            logger.warn("Parameter passed in incorrectly");
         }
         return modelAndView;
     }
@@ -243,42 +235,8 @@ public class ProcessCtrl {
     @RequestMapping("/stopProcess")
     @ResponseBody
     public String stopProcess(HttpServletRequest request, Model model) {
-        Map<String, String> rtnMap = new HashMap<String, String>();
-        rtnMap.put("code", "0");
         String processId = request.getParameter("processId");
-        if (StringUtils.isNotBlank(processId)) {
-            // Query Process by 'ProcessId'
-            ProcessVo processVo = processServiceImpl.getProcessVoById(processId);
-            // Determine whether it is empty, and determine whether the save is successful.
-            if (null != processVo) {
-                String appId = processVo.getAppId();
-                if (null != appId) {
-                    if (ProcessState.STARTED == processVo.getState()) {
-                        String flowStop = stopFlowImpl.stopFlow(appId);
-                        if (StringUtils.isNotBlank(flowStop) && !flowStop.contains("Exception")) {
-                            rtnMap.put("code", "1");
-                            rtnMap.put("errMsg", "Stop successful, return status is " + flowStop);
-                        } else {
-                            logger.warn("Interface return value is null.");
-                            rtnMap.put("errMsg", "Interface return value is null.");
-                        }
-                    } else {
-                        logger.warn("The status of the process is " + processVo.getState() + " and cannot be stopped.");
-                        rtnMap.put("errMsg", "The status of the process is " + processVo.getState() + " and cannot be stopped.");
-                    }
-                } else {
-                    logger.warn("The 'appId' of the 'process' is empty.");
-                    rtnMap.put("errMsg", "The 'appId' of the 'process' is empty.");
-                }
-            } else {
-                logger.warn("No process ID is '" + processId + "' process");
-                rtnMap.put("errMsg", " No process ID is '" + processId + "' process");
-            }
-        } else {
-            logger.warn("processId is null");
-            rtnMap.put("errMsg", "processId is null");
-        }
-        return JsonUtils.toJsonNoException(rtnMap);
+        return processServiceImpl.stopProcess(processId);
     }
 
     /**

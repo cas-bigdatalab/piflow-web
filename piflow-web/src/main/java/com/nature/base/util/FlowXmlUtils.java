@@ -9,7 +9,7 @@ import com.nature.component.mxGraph.vo.MxGeometryVo;
 import com.nature.component.mxGraph.vo.MxGraphModelVo;
 import com.nature.component.template.model.PropertyTemplateModel;
 import com.nature.component.template.model.StopTemplateModel;
-import com.nature.component.workFlow.model.*;
+import com.nature.component.flow.model.*;
 
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;

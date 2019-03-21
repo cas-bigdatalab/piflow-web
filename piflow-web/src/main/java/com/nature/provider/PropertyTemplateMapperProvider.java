@@ -2,7 +2,7 @@ package com.nature.provider;
 
 import com.nature.base.util.DateUtils;
 import com.nature.base.util.Utils;
-import com.nature.component.workFlow.model.PropertyTemplate;
+import com.nature.component.flow.model.PropertyTemplate;
 import org.apache.ibatis.jdbc.SQL;
 
 import java.util.List;

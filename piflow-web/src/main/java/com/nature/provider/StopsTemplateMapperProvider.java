@@ -2,7 +2,7 @@ package com.nature.provider;
 
 import com.nature.base.util.DateUtils;
 import com.nature.base.util.Utils;
-import com.nature.component.workFlow.model.StopsTemplate;
+import com.nature.component.flow.model.StopsTemplate;
 import org.apache.ibatis.jdbc.SQL;
 
 import java.util.List;

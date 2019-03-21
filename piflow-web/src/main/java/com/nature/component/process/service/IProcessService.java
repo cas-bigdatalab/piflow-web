@@ -2,9 +2,9 @@ package com.nature.component.process.service;
 
 import com.nature.base.vo.StatefulRtnBase;
 import com.nature.base.vo.UserVo;
+import com.nature.component.flow.model.Flow;
 import com.nature.component.process.model.Process;
 import com.nature.component.process.vo.ProcessVo;
-import com.nature.component.workFlow.model.Flow;
 import org.springframework.data.annotation.Transient;
 
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.List;
 public interface IProcessService {
 
     /**
-     * 查询processVoList(查询包含其子表)
+     * Query processVoList (Query contains its subtables)
      *
      * @return
      */
@@ -20,7 +20,7 @@ public interface IProcessService {
     public List<ProcessVo> getProcessAllVoList();
 
     /**
-     * 查询processVoList(只查询process表)
+     * Query processVoList (query process table only)
      *
      * @return
      */
@@ -28,7 +28,7 @@ public interface IProcessService {
     public List<ProcessVo> getProcessVoList();
 
     /**
-     * 查询processVo根据id(查询包含其子表)
+     * Query processVo according to ID (query contains its subtable)
      *
      * @param id
      * @return
@@ -37,7 +37,7 @@ public interface IProcessService {
     public ProcessVo getProcessAllVoById(String id);
 
     /**
-     * 查询processVo根据id(只查询process表)
+     * Query processVo according to ID (query process table only)
      *
      * @param id
      * @return
@@ -46,7 +46,7 @@ public interface IProcessService {
     public ProcessVo getProcessVoById(String id);
 
     /**
-     * 查询process根据id
+     * Query process according to ID
      *
      * @param id
      * @return
@@ -55,7 +55,7 @@ public interface IProcessService {
     public Process getProcessById(String id);
 
     /**
-     * 根据Appid查询process
+     * Query process according to Appid
      *
      * @param appId
      * @return
@@ -63,7 +63,7 @@ public interface IProcessService {
     public ProcessVo getProcessVoByAppId(String appId);
 
     /**
-     * 根据数组Appid查询process
+     * Query process based on array Appid
      *
      * @param appIDs
      * @return
@@ -71,7 +71,7 @@ public interface IProcessService {
     public List<ProcessVo> getProcessVoByAppIds(String appIDs);
 
     /**
-     * 根据appID在第三方接口查询appInfo并保存
+     * Query appInfo at third-party interface according to appID and save it
      *
      * @param appID
      * @return
@@ -79,7 +79,7 @@ public interface IProcessService {
     public ProcessVo getAppInfoByThirdAndSave(String appID);
 
     /**
-     * 根据appID在第三方接口查询progress并保存
+     * Query and save programs at the third-party interface according to appID
      *
      * @param appIDs
      * @return
@@ -87,7 +87,7 @@ public interface IProcessService {
     public String getProgressByThirdAndSave(String[] appIDs);
 
     /**
-     * 修改process
+     * Update process
      *
      * @param processVo
      * @return
@@ -95,7 +95,7 @@ public interface IProcessService {
     public int updateProcess(ProcessVo processVo, UserVo currentUser);
 
     /**
-     * 调用start接口并保存返回信息
+     * Call the start interface and save the return information
      *
      * @param flow
      * @return
@@ -103,7 +103,7 @@ public interface IProcessService {
     public Process startFlowAndUpdateProcess(Flow flow, UserVo currentUser);
 
     /**
-     * 拷贝 process并新建
+     * Copy process and create a new one
      *
      * @param processId
      * @return
@@ -111,7 +111,7 @@ public interface IProcessService {
     public Process processCopyProcessAndAdd(String processId, UserVo currentUser);
 
     /**
-     * 根据flowId生成Process并保存
+     * Generate Process from flowId and save it
      *
      * @param flowId
      * @return
@@ -120,7 +120,7 @@ public interface IProcessService {
     public Process flowToProcessAndSave(String flowId);
 
     /**
-     * 逻辑删除
+     * Logical deletion
      *
      * @param processId
      * @return
@@ -129,7 +129,7 @@ public interface IProcessService {
     public StatefulRtnBase updateProcessEnableFlag(String processId, UserVo currentUser);
 
     /**
-     * 根据flowId查询正在运行的进程List(processList)
+     * Query the running process List (process List) according to flowId
      *
      * @param flowId
      * @return
@@ -137,7 +137,7 @@ public interface IProcessService {
     public List<ProcessVo> getRunningProcessVoList(String flowId);
 
     /**
-     * 查询processVoList（参数为空时不分页)
+     * Query processVoList (parameter space-time non-paging)
      *
      * @param offset
      * @param limit
@@ -146,4 +146,13 @@ public interface IProcessService {
      */
     @Transient
     public String getProcessVoListPage(Integer offset, Integer limit, String param);
+
+    /**
+     * Stop running processes
+     *
+     * @param processId
+     * @return
+     */
+    @Transient
+    public String stopProcess(String processId);
 }

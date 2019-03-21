@@ -1,6 +1,6 @@
 package com.nature.mapper;
 
-import com.nature.component.workFlow.model.Flow;
+import com.nature.component.flow.model.Flow;
 import com.nature.provider.FlowMapperProvider;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;

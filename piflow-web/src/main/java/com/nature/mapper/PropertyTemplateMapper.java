@@ -1,7 +1,7 @@
 package com.nature.mapper;
 
-import com.nature.component.workFlow.model.Property;
-import com.nature.component.workFlow.model.PropertyTemplate;
+import com.nature.component.flow.model.Property;
+import com.nature.component.flow.model.PropertyTemplate;
 import com.nature.provider.PropertyTemplateMapperProvider;
 import org.apache.ibatis.annotations.*;
 

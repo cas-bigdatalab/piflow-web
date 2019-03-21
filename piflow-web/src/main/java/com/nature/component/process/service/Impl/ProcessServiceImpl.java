@@ -1,5 +1,6 @@
 package com.nature.component.process.service.Impl;
 
+import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.nature.base.util.*;
@@ -7,6 +8,7 @@ import com.nature.base.vo.StatefulRtnBase;
 import com.nature.base.vo.UserVo;
 import com.nature.common.Eunm.ProcessState;
 import com.nature.common.Eunm.StopState;
+import com.nature.common.constant.SysParamsCache;
 import com.nature.component.mxGraph.model.MxGraphModel;
 import com.nature.component.process.model.Process;
 import com.nature.component.process.model.ProcessPath;
@@ -17,20 +19,21 @@ import com.nature.component.process.utils.ProcessStopUtils;
 import com.nature.component.process.vo.ProcessPathVo;
 import com.nature.component.process.vo.ProcessStopVo;
 import com.nature.component.process.vo.ProcessVo;
-import com.nature.component.workFlow.model.Flow;
-import com.nature.component.workFlow.model.Paths;
-import com.nature.component.workFlow.model.Property;
-import com.nature.component.workFlow.model.Stops;
+import com.nature.component.flow.model.Flow;
+import com.nature.component.flow.model.Paths;
+import com.nature.component.flow.model.Property;
+import com.nature.component.flow.model.Stops;
 import com.nature.third.inf.IGetFlowInfo;
 import com.nature.third.inf.IGetFlowProgress;
 import com.nature.third.inf.IStartFlow;
+import com.nature.third.inf.IStopFlow;
 import com.nature.third.vo.flow.ThirdProgressVo;
 import com.nature.third.vo.flowInfo.ThirdFlowInfoStopVo;
 import com.nature.third.vo.flowInfo.ThirdFlowInfoStopsVo;
 import com.nature.third.vo.flowInfo.ThirdFlowInfoVo;
 import com.nature.transaction.process.ProcessStopTransaction;
 import com.nature.transaction.process.ProcessTransaction;
-import com.nature.transaction.workFlow.FlowTransaction;
+import com.nature.transaction.flow.FlowTransaction;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -57,6 +60,9 @@ public class ProcessServiceImpl implements IProcessService {
 
     @Resource
     private IStartFlow startFlowImpl;
+
+    @Resource
+    private IStopFlow stopFlow;
 
     @Resource
     private IGetFlowInfo getFlowInfoImpl;
@@ -555,15 +561,15 @@ public class ProcessServiceImpl implements IProcessService {
                 process.setViewXml(viewXml);
                 // set flowId
                 process.setFlowId(flowId);
-                // 取出flow的stops
+                // Stops to remove flow
                 List<Stops> stopsList = flowById.getStopsList();
-                // 判空stopsList
+                // stopsList isEmpty
                 if (null != stopsList && stopsList.size() > 0) {
-                    // proce的stop的list
+                    // List of stop of process
                     List<ProcessStop> processStopList = new ArrayList<ProcessStop>();
-                    // 循环stopsList
+                    // Loop stopsList
                     for (Stops stops : stopsList) {
-                        // 判空stops
+                        // isEmpty
                         if (null != stops) {
                             ProcessStop processStop = new ProcessStop();
                             // copy stops的信息到processStop中
@@ -582,21 +588,21 @@ public class ProcessServiceImpl implements IProcessService {
                             // stops的属性判空
                             if (null != properties && properties.size() > 0) {
                                 List<ProcessStopProperty> processStopPropertyList = new ArrayList<ProcessStopProperty>();
-                                // 循环stops的属性
+                                // Attributes of loop stops
                                 for (Property property : properties) {
-                                    // 判空
+                                    // isEmpty
                                     if (null != property) {
                                         ProcessStopProperty processStopProperty = new ProcessStopProperty();
-                                        // copy property的信息到processStopProperty中
+                                        // Copy property information into processStopProperty
                                         BeanUtils.copyProperties(property, processStopProperty);
-                                        // set 基本信息
+                                        // Set basic information
                                         processStopProperty.setId(Utils.getUUID32());
                                         processStopProperty.setCrtDttm(new Date());
                                         processStopProperty.setCrtUser(username);
                                         processStopProperty.setLastUpdateDttm(new Date());
                                         processStopProperty.setLastUpdateUser(username);
                                         processStopProperty.setEnableFlag(true);
-                                        // 关联外键
+                                        // Associated foreign key
                                         processStopProperty.setProcessStop(processStop);
                                         processStopPropertyList.add(processStopProperty);
                                     }
@@ -608,26 +614,26 @@ public class ProcessServiceImpl implements IProcessService {
                     }
                     process.setProcessStopList(processStopList);
                 }
-                // 取flow的paths信息
+                // Get the paths information of flow
                 List<Paths> pathsList = flowById.getPathsList();
-                // 判空paths信息
+                // isEmpty
                 if (null != pathsList && pathsList.size() > 0) {
                     List<ProcessPath> processPathList = new ArrayList<ProcessPath>();
-                    // 循环paths信息
+                    // Loop paths information
                     for (Paths paths : pathsList) {
-                        // 判空paths
+                        // isEmpty
                         if (null != paths) {
                             ProcessPath processPath = new ProcessPath();
-                            // copy paths的信息到processPath中
+                            // Copy paths information into processPath
                             BeanUtils.copyProperties(paths, processPath);
-                            // set基本信息
+                            // Set basic information
                             processPath.setId(Utils.getUUID32());
                             processPath.setCrtDttm(new Date());
                             processPath.setCrtUser(username);
                             processPath.setLastUpdateDttm(new Date());
                             processPath.setLastUpdateUser(username);
                             processPath.setEnableFlag(true);
-                            // 关联外键
+                            // Associated foreign key
                             processPath.setProcess(process);
                             processPathList.add(processPath);
                         }
@@ -637,13 +643,13 @@ public class ProcessServiceImpl implements IProcessService {
                 int addProcess = processTransaction.addProcess(process);
                 if (addProcess <= 0) {
                     process = null;
-                    logger.warn("保存失败，转换失败");
+                    logger.warn("Save failed, transform failed");
                 }
             } else {
-                logger.warn("查询不到flowId为‘" + flowId + "的flow’，转换失败");
+                logger.warn("Unable to query flow Id for'" + flowId + "'flow, the conversion failed");
             }
         } else {
-            logger.warn("参数flowId为空，转换失败");
+            logger.warn("The parameter'flowId'is empty and the conversion fails");
         }
         return process;
     }
@@ -673,7 +679,7 @@ public class ProcessServiceImpl implements IProcessService {
     }
 
     /**
-     * 逻辑删除
+     * Logical deletion
      *
      * @param processId
      * @return
@@ -686,18 +692,18 @@ public class ProcessServiceImpl implements IProcessService {
             if (null != processById) {
                 processTransaction.updateProcessEnableFlag(processId, currentUser);
             } else {
-                statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("没有查询到id为" + processId + "的process");
-                logger.warn("没有查询到id为" + processId + "的process");
+                statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("No process with ID of'" + processId + "'was queried");
+                logger.warn("No process with ID of'" + processId + "'was queried");
             }
         } else {
-            statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("参数为空或丢失");
-            logger.warn("参数为空或丢失");
+            statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("The parameter is empty or missing");
+            logger.warn("The parameter is empty or missing");
         }
         return statefulRtnBase;
     }
 
     /**
-     * 根据flowId查询正在运行的进程List(processList)
+     * Query the running process List (process List) according to flowId
      *
      * @param flowId
      * @return
@@ -712,6 +718,14 @@ public class ProcessServiceImpl implements IProcessService {
         }
     }
 
+    /**
+     * Query processVoList (parameter space-time non-paging)
+     *
+     * @param offset
+     * @param limit
+     * @param param
+     * @return
+     */
     @Override
     public String getProcessVoListPage(Integer offset, Integer limit, String param) {
         Map<String, Object> rtnMap = new HashMap<String, Object>();
@@ -720,6 +734,52 @@ public class ProcessServiceImpl implements IProcessService {
             processTransaction.getProcessListByParam(param);
             rtnMap = PageHelperUtils.setDataTableParam(page, rtnMap);
         }
+        return JsonUtils.toJsonNoException(rtnMap);
+    }
+
+    /**
+     * Stop running processes
+     *
+     * @param processId
+     * @return
+     */
+    @Override
+    public String stopProcess(String processId) {
+        Map<String, String> rtnMap = new HashMap<String, String>();
+        rtnMap.put("code", "0");
+        if (StringUtils.isNotBlank(processId)) {
+            // Query Process by 'ProcessId'
+            Process process = processTransaction.getProcessById(processId);
+            // Determine whether it is empty, and determine whether the save is successful.
+            if (null != process) {
+                String appId = process.getAppId();
+                if (null != appId) {
+                    if (ProcessState.STARTED == process.getState()) {
+                        String stopFlow = this.stopFlow.stopFlow(processId);
+                        if (StringUtils.isNotBlank(stopFlow) && !stopFlow.contains("Exception")) {
+                            rtnMap.put("code", "1");
+                            rtnMap.put("errMsg", "Stop successful, return status is " + stopFlow);
+                        } else {
+                            logger.warn("Interface return value is null.");
+                            rtnMap.put("errMsg", "Interface return value is null.");
+                        }
+                    } else {
+                        logger.warn("The status of the process is " + process.getState() + " and cannot be stopped.");
+                        rtnMap.put("errMsg", "The status of the process is " + process.getState() + " and cannot be stopped.");
+                    }
+                } else {
+                    logger.warn("The 'appId' of the 'process' is empty.");
+                    rtnMap.put("errMsg", "The 'appId' of the 'process' is empty.");
+                }
+            } else {
+                logger.warn("No process ID is '" + processId + "' process");
+                rtnMap.put("errMsg", " No process ID is '" + processId + "' process");
+            }
+        } else {
+            logger.warn("processId is null");
+            rtnMap.put("errMsg", "processId is null");
+        }
+
         return JsonUtils.toJsonNoException(rtnMap);
     }
 }

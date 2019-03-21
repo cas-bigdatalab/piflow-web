@@ -2,7 +2,7 @@ package com.nature.controller;
 
 import com.nature.base.util.JsonUtils;
 import com.nature.base.util.LoggerUtil;
-import com.nature.component.workFlow.service.IFlowService;
+import com.nature.component.flow.service.IFlowService;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

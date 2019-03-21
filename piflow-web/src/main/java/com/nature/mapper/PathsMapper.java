@@ -12,7 +12,7 @@ import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.UpdateProvider;
 import org.apache.ibatis.mapping.FetchType;
 
-import com.nature.component.workFlow.model.Paths;
+import com.nature.component.flow.model.Paths;
 import com.nature.provider.PathsMapperProvider;
 
 @Mapper

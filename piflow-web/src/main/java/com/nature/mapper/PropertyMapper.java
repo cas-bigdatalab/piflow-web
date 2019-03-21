@@ -1,7 +1,7 @@
 package com.nature.mapper;
 
-import com.nature.component.workFlow.model.Property;
-import com.nature.component.workFlow.model.Stops;
+import com.nature.component.flow.model.Property;
+import com.nature.component.flow.model.Stops;
 import com.nature.provider.PropertyMapperProvider;
 import org.apache.ibatis.annotations.*;
 

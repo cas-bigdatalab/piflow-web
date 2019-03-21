@@ -2,8 +2,8 @@ package com.nature.controller;
 
 import com.nature.base.util.JsonUtils;
 import com.nature.base.util.LoggerUtil;
-import com.nature.component.workFlow.service.IPathsService;
-import com.nature.component.workFlow.vo.PathsVo;
+import com.nature.component.flow.service.IPathsService;
+import com.nature.component.flow.vo.PathsVo;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

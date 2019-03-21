@@ -5,7 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
 
-import com.nature.component.workFlow.model.Template;
+import com.nature.component.flow.model.Template;
 import com.nature.provider.TemplateMapperProvider;
 
 @Mapper

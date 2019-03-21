@@ -1,6 +1,6 @@
 package com.nature.mapper;
 
-import com.nature.component.workFlow.model.StopsTemplate;
+import com.nature.component.flow.model.StopsTemplate;
 import com.nature.provider.StopsTemplateMapperProvider;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;

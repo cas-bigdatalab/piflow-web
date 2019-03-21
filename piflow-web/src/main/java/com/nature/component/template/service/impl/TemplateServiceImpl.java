@@ -9,13 +9,12 @@ import com.github.pagehelper.PageHelper;
 import com.nature.base.util.JsonUtils;
 import com.nature.base.util.PageHelperUtils;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.nature.base.util.LoggerUtil;
 import com.nature.component.template.service.ITemplateService;
-import com.nature.component.workFlow.model.Template;
+import com.nature.component.flow.model.Template;
 import com.nature.mapper.template.TemplateMapper;
 
 import javax.annotation.Resource;

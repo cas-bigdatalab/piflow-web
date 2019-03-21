@@ -1,6 +1,6 @@
 package com.nature.mapper;
 
-import com.nature.component.workFlow.model.StopGroup;
+import com.nature.component.flow.model.StopGroup;
 import com.nature.provider.StopGroupMapperProvider;
 import org.apache.ibatis.annotations.*;
 
