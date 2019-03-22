@@ -28,8 +28,7 @@ public interface TemplateMapper {
 
 	@SelectProvider(type = TemplateMapperProvider.class, method = "findTemPlateListPage")
 	@Results({
-			@Result(id = true, column = "id", property = "id"),
-			@Result(column = "fk_flow_id", property = "flow", one = @One(select = "com.nature.mapper.FlowMapper.getFlowById", fetchType = FetchType.EAGER))
+			@Result(id = true, column = "id", property = "id")
 	})
 	public List<Template> findTemPlateListPage(String param);
 	

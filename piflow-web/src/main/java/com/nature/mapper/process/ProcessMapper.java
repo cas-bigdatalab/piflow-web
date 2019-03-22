@@ -56,9 +56,6 @@ public interface ProcessMapper {
     @SelectProvider(type = ProcessMapperProvider.class, method = "getProcessListByParam")
     @Results({
             @Result(id = true, column = "id", property = "id"),
-            @Result(column = "id", property = "processStopList", many = @Many(select = "com.nature.mapper.process.ProcessStopMapper.getProcessStopByProcessId", fetchType = FetchType.LAZY)),
-            @Result(column = "id", property = "processPathList", many = @Many(select = "com.nature.mapper.process.ProcessPathMapper.getProcessPathByProcessId", fetchType = FetchType.LAZY))
-
     })
     public List<Process> getProcessListByParam(String param);
 
