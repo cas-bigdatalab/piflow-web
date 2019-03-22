@@ -17,6 +17,7 @@ import org.apache.http.HttpVersion;
 import org.apache.http.NameValuePair;
 import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -41,10 +42,13 @@ public class HttpUtils {
 	 * 
 	 * @param url
 	 * @param json
-	 * @param encoding
+	 * @param timeOutMS (Millisecond)
 	 * @return
 	 */
-	public static String doPost(String url, String json, String encoding) {
+	public static String doPost(String url, String json, int timeOutMS) {
+		if(0 == timeOutMS){
+			timeOutMS = 1000;
+		}
 		String result = "";
 		// 执行请求操作，并拿到结果（同步阻塞）
 		CloseableHttpResponse response = null;
@@ -61,6 +65,12 @@ public class HttpUtils {
 			stringEntity.setContentEncoding("utf-8");
 			httpPost.setProtocolVersion(HttpVersion.HTTP_1_1);
 			httpPost.setEntity(stringEntity);
+
+			// 设置超时时间
+			RequestConfig requestConfig = RequestConfig.custom()
+					.setConnectTimeout(5000).setConnectionRequestTimeout(1000)
+					.setSocketTimeout(timeOutMS).build();
+			httpPost.setConfig(requestConfig);
 
 			logger.info("调用" + url + "，开始");
 			// 执行请求操作，并拿到结果（同步阻塞）
@@ -92,9 +102,10 @@ public class HttpUtils {
 	 * 
 	 * @param url
 	 * @param map 请求传入参数(key为参数名称，value为参数值) map可为空
+	 * @param timeOutMS (Millisecond)
 	 * @return
 	 */
-	public static String doGet(String url, Map<String, String> map) {
+	public static String doGet(String url, Map<String, String> map, int timeOutMS) {
 		String result = "";
 		if (StringUtils.isNotBlank(url)) {
 			try {
@@ -131,6 +142,13 @@ public class HttpUtils {
 
 				// 传输的类型
 				httpGet.addHeader("Content-type", "application/json");
+
+				// 设置超时时间
+				RequestConfig requestConfig = RequestConfig.custom()
+						.setConnectTimeout(5000).setConnectionRequestTimeout(1000)
+						.setSocketTimeout(timeOutMS).build();
+				httpGet.setConfig(requestConfig);
+
 				logger.info("调用" + url + "，开始");
 				// 通过请求对象获取响应对象
 				CloseableHttpResponse response = httpClient.execute(httpGet);

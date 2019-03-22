@@ -274,5 +274,8 @@ public class ProcessTransaction {
         return processVo;
     }
 
+    public List<String> getRunningProcess(){
+        return processMapper.getRunningProcess();
+    }
 
 }

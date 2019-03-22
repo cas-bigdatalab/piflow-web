@@ -28,7 +28,7 @@ public class IGetFlowInfoTest extends ApplicationTests {
 
 	@Test
 	public void testFlowStop() {
-		String appId = "application_1540442049798_0057";
+		String appId = "application_1544066083705_0409";
 		ThirdFlowInfoVo startFlow2 = getFlowInfoImpl.getFlowInfo(appId);
 		logger.info("测试返回信息：" + startFlow2);
 	}

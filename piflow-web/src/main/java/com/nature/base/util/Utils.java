@@ -22,9 +22,9 @@ public class Utils {
      */
     public static String addSqlStr(String str) {
         if (StringUtils.isNotBlank(str)) {
-            return "'" + str + "'";
+            return "'" + str + "' ";
         } else {
-            return "''";
+            return "'' ";
         }
     }
 
@@ -36,9 +36,9 @@ public class Utils {
      */
     public static String addSqlStrAndReplace(String str) {
         if (StringUtils.isNotBlank(str)) {
-            return "'" + replaceString(str) + "'";
+            return "'" + replaceString(str) + "' ";
         } else {
-            return "''";
+            return "'' ";
         }
     }
 

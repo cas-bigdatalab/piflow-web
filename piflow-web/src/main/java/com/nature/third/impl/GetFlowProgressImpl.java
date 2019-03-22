@@ -26,7 +26,7 @@ public class GetFlowProgressImpl implements IGetFlowProgress {
         ThirdProgressVo jd = null;
         Map<String, String> map = new HashMap<String, String>();
         map.put("appID", appid);
-        String doGet = HttpUtils.doGet(SysParamsCache.FLOW_PROGRESS_URL(), map);
+        String doGet = HttpUtils.doGet(SysParamsCache.FLOW_PROGRESS_URL(), map, 10 * 1000);
         if (StringUtils.isNotBlank(doGet) && !doGet.contains("Exception")) {
             String jsonResult = JSONObject.fromObject(doGet).getString("FlowInfo");
             if (StringUtils.isNotBlank(jsonResult)) {
@@ -39,7 +39,7 @@ public class GetFlowProgressImpl implements IGetFlowProgress {
                     try {
                         double progressNumsD = Double.parseDouble(progressNums);
                         jd.setProgress(String.format("%.2f", progressNumsD));
-                    }catch (Throwable e){
+                    } catch (Throwable e) {
                         logger.warn("进度转换失败");
                     }
                 }

@@ -274,6 +274,30 @@ public class ProcessServiceImpl implements IProcessService {
     }
 
     /**
+     * Query appInfo according to appID
+     *
+     * @param appID
+     * @return
+     */
+    public String getAppInfoByAppId(String appID){
+        Map<String, Object> rtnMap = new HashMap<String, Object>();
+        rtnMap.put("code", "0");
+        if (StringUtils.isNotBlank(appID)) {
+            // 查询appinfo
+            ProcessVo processVoThird = this.getAppInfoByThirdAndSave(appID);
+            if (null != processVoThird) {
+                rtnMap.put("code", "1");
+                rtnMap.put("progress", (null != processVoThird.getProgress() ? processVoThird.getProgress() : "0.00"));
+                rtnMap.put("state", (null != processVoThird.getState() ? processVoThird.getState().name() : "NO_STATE"));
+                rtnMap.put("processVo", processVoThird);
+            }
+        } else {
+            rtnMap.put("errMsg", "appID is null");
+        }
+        return JsonUtils.toJsonNoException(rtnMap);
+    }
+
+    /**
      * 根据appID在第三方接口查询progress并保存
      *
      * @param appIDs
@@ -345,6 +369,32 @@ public class ProcessServiceImpl implements IProcessService {
             for (ProcessVo processVo : processVoList) {
                 if (null != processVo) {
                     rtnMap.put(processVo.getAppId(), processVo);
+                }
+            }
+        }
+        return JsonUtils.toJsonNoException(rtnMap);
+    }
+
+    /**
+     * Query  process according to appID
+     *
+     * @param appIDs
+     * @return
+     */
+    public String getProgressByAppIds(String[] appIDs) {
+        Map<String, Object> rtnMap = new HashMap<String, Object>();
+        rtnMap.put("code", "0");
+        if (null != appIDs && appIDs.length > 0) {
+            List<Process> processListByAppIDs = processTransaction.getProcessListByAppIDs(appIDs);
+            if (CollectionUtils.isNotEmpty(processListByAppIDs)) {
+                rtnMap.put("code", "1");
+                for (Process process : processListByAppIDs) {
+                    if (null != process) {
+                        ProcessVo processVo = this.processPoToVo(process);
+                        if (null != process) {
+                            rtnMap.put(processVo.getAppId(), processVo);
+                        }
+                    }
                 }
             }
         }

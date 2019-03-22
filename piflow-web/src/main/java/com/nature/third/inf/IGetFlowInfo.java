@@ -8,5 +8,7 @@ public interface IGetFlowInfo {
 
     public ThirdFlowInfoVo getFlowInfo(String appid);
 
+    public void getProcessInfoAndSave(String appid);
+
     public FlowInfoDb AddFlowInfo(String appId, Flow flow);
 }

@@ -27,7 +27,7 @@ public class GetFlowLogImpl implements IGetFlowLog {
         String amContainerLogs = "";
         Map<String, String> map = new HashMap<String, String>();
         map.put("appID", appid);
-        String doGet = HttpUtils.doGet(SysParamsCache.FLOW_LOG_URL(), map);
+        String doGet = HttpUtils.doGet(SysParamsCache.FLOW_LOG_URL(), map, 5 * 1000);
         if (StringUtils.isNotBlank(doGet) && !doGet.contains("Exception")) {
             logger.info("调用成功 : " + doGet);
             // 同样先将json字符串转换为json对象，再将json对象转换为java对象，如下所示。

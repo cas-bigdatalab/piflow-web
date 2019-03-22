@@ -15,15 +15,15 @@ import com.nature.third.inf.IGetStopInfo;
 @Component
 public class GetStopInfoImpl implements IGetStopInfo {
 
-	Logger logger = LoggerUtil.getLogger();
+    Logger logger = LoggerUtil.getLogger();
 
-	@Override
-	public void getStopInfo(String bundle) {
-		if (StringUtils.isNotBlank(bundle)) {
-			Map<String, String> map = new HashMap<String, String>();
-			map.put("bundle", bundle);
-			String sendGetData = HttpUtils.doGet(SysParamsCache.STOP_INFO_URL(), map);
-			logger.info("返回信息：" + sendGetData);
-		}
-	}
+    @Override
+    public void getStopInfo(String bundle) {
+        if (StringUtils.isNotBlank(bundle)) {
+            Map<String, String> map = new HashMap<String, String>();
+            map.put("bundle", bundle);
+            String sendGetData = HttpUtils.doGet(SysParamsCache.STOP_INFO_URL(), map, 30 * 1000);
+            logger.info("返回信息：" + sendGetData);
+        }
+    }
 }

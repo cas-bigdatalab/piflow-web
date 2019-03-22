@@ -6,6 +6,7 @@ import com.nature.common.Eunm.ProcessState;
 import com.nature.component.process.model.Process;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
+import org.aspectj.weaver.ast.Or;
 
 import java.util.Date;
 import java.util.Map;
@@ -165,6 +166,7 @@ public class ProcessMapperProvider {
         sql.SELECT("*");
         sql.FROM("FLOW_PROCESS");
         sql.WHERE("ENABLE_FLAG = 1");
+        sql.WHERE("APP_ID IS NOT null");
         sql.ORDER_BY("CRT_DTTM DESC,LAST_UPDATE_DTTM DESC");
         return sql.toString();
     }
@@ -179,6 +181,7 @@ public class ProcessMapperProvider {
         SQL sql = new SQL();
         sql.SELECT("*");
         sql.FROM("FLOW_PROCESS");
+        sql.WHERE("APP_ID IS NOT null");
         sql.WHERE("ENABLE_FLAG = 1");
         if (StringUtils.isNotBlank(param)) {
             sql.AND();
@@ -201,6 +204,7 @@ public class ProcessMapperProvider {
         SQL sql = new SQL();
         sql.SELECT("*");
         sql.FROM("FLOW_PROCESS");
+        sql.WHERE("APP_ID IS NOT null");
         sql.WHERE("ENABLE_FLAG = 1");
         sql.WHERE("FLOW_ID = " + Utils.addSqlStr(flowId));
         sql.WHERE("STATE = " + Utils.addSqlStr(ProcessState.STARTED.name()));
@@ -220,9 +224,8 @@ public class ProcessMapperProvider {
             SQL sql = new SQL();
             sql.SELECT("*");
             sql.FROM("FLOW_PROCESS");
-            sql.WHERE("enable_flag = 1");
-            sql.WHERE("app_id = " + Utils.addSqlStrAndReplace(appID));
-
+            sql.WHERE("ENABLE_FLAG = 1");
+            sql.WHERE("APP_ID = " + Utils.addSqlStrAndReplace(appID));
             sqlStr = sql.toString();
         }
         return sqlStr;
@@ -368,17 +371,44 @@ public class ProcessMapperProvider {
         String sqlStr = "select 0";
         if (!StringUtils.isAnyEmpty(id, username)) {
             SQL sql = new SQL();
-            sql.UPDATE("FLOW_PROCESS");
-            sql.SET("LAST_UPDATE_DTTM = " + Utils.addSqlStr(DateUtils.dateTimesToStr(new Date())));
-            sql.SET("LAST_UPDATE_USER = " + Utils.addSqlStr(username));
-            sql.SET("VERSION=(VERSION+1)");
-            sql.SET("ENABLE_FLAG = 0");
-            sql.WHERE("ENABLE_FLAG = 1");
-            sql.WHERE("ID = " + Utils.addSqlStrAndReplace(id));
+            StringBuffer sqlStrBuf = new StringBuffer();
+            sqlStrBuf.append("UPDATE FLOW_PROCESS ");
+            sqlStrBuf.append("SET LAST_UPDATE_DTTM = " + Utils.addSqlStr(DateUtils.dateTimesToStr(new Date())));
+            sqlStrBuf.append("SET LAST_UPDATE_DTTM = " + Utils.addSqlStr(DateUtils.dateTimesToStr(new Date())));
+            sqlStrBuf.append("SET LAST_UPDATE_USER = " + Utils.addSqlStr(username));
+            sqlStrBuf.append("SET VERSION=(VERSION+1) ");
+            sqlStrBuf.append("SET ENABLE_FLAG = 0 ");
+            sqlStrBuf.append("WHERE ENABLE_FLAG = 1 ");
+            sqlStrBuf.append("WHERE ID = " + Utils.addSqlStrAndReplace(id));
 
             sqlStr = sql.toString();
         }
         return sqlStr;
+    }
+
+    /**
+     * 查询需要同步的任务
+     *
+     * @return
+     */
+    public String getRunningProcess() {
+        StringBuffer sqlStrBuf = new StringBuffer();
+        sqlStrBuf.append("SELECT APP_ID ");
+        sqlStrBuf.append("FROM FLOW_PROCESS ");
+        sqlStrBuf.append("WHERE ENABLE_FLAG = 1 ");
+        sqlStrBuf.append("AND ");
+        sqlStrBuf.append("APP_ID IS NOT NULL ");
+        sqlStrBuf.append("AND ");
+        sqlStrBuf.append("( ");
+        sqlStrBuf.append("STATE = " + Utils.addSqlStr(ProcessState.STARTED.getText()));
+        sqlStrBuf.append("OR ");
+        sqlStrBuf.append("( ");
+        sqlStrBuf.append("STATE = " + Utils.addSqlStr(ProcessState.COMPLETED.getText()));
+        sqlStrBuf.append("AND ");
+        sqlStrBuf.append("END_TIME IS NULL ");
+        sqlStrBuf.append(") ");
+        sqlStrBuf.append(") ");
+        return sqlStrBuf.toString();
     }
 
 }

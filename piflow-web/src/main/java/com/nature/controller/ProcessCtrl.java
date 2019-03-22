@@ -326,22 +326,8 @@ public class ProcessCtrl {
     @RequestMapping("/getAppInfo")
     @ResponseBody
     public String getAppInfo(HttpServletRequest request) {
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("code", "0");
         String appid = request.getParameter("appid");
-        if (StringUtils.isNotBlank(appid)) {
-            // 查询appinfo
-            ProcessVo processVoThird = processServiceImpl.getAppInfoByThirdAndSave(appid);
-            if (null != processVoThird) {
-                map.put("code", "1");
-                map.put("progress", (null != processVoThird.getProgress() ? processVoThird.getProgress() : "0.00"));
-                map.put("state", (null != processVoThird.getState() ? processVoThird.getState().name() : "NO_STATE"));
-                map.put("processVo", processVoThird);
-            }
-        } else {
-            map.put("errMsg", "appID is null");
-        }
-        return JsonUtils.toJsonNoException(map);
+        return processServiceImpl.getAppInfoByAppId(appid);
     }
 
     /**
@@ -354,7 +340,8 @@ public class ProcessCtrl {
     @ResponseBody
     public String getAppInfoList(HttpServletRequest request) {
         String[] arrayObj = request.getParameterValues("arrayObj");
-        return processServiceImpl.getProgressByThirdAndSave(arrayObj);
+        //return processServiceImpl.getProgressByThirdAndSave(arrayObj);
+        return processServiceImpl.getProgressByAppIds(arrayObj);
     }
 
 

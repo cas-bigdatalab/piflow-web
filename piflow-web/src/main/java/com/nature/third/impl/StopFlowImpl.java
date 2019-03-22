@@ -27,10 +27,10 @@ public class StopFlowImpl implements IStopFlow {
         Map<String, String> map = new HashMap<>();
         map.put("appID", appId);
         String json = JSON.toJSON(map).toString();
-        String doPost = HttpUtils.doPost(SysParamsCache.FLOW_STOP_URL(), json, encoding);
+        String doPost = HttpUtils.doPost(SysParamsCache.FLOW_STOP_URL(), json, 5 * 1000);
         if (StringUtils.isNotBlank(doPost) && !doPost.contains("Exception")) {
             logger.warn("Interface return exception");
-        }else {
+        } else {
             logger.info("Interface return value: " + doPost);
         }
         return doPost;

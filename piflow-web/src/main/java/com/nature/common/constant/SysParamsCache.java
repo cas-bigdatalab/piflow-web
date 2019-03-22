@@ -140,4 +140,12 @@ public class SysParamsCache {
     public void setIsLoadStop(String isLoadStop) {
         IS_LOAD_STOP = Boolean.valueOf(isLoadStop);
     }
+
+    // 定时任务Cron表达式
+    public static String SYNC_PROCESS_CRON = "0/5 * * * * ?";
+
+    @Value("${syspara.syncProcessCron}")
+    public void setSyncProcessCron(String syncProcessCron) {
+        SYNC_PROCESS_CRON = syncProcessCron;
+    }
 }

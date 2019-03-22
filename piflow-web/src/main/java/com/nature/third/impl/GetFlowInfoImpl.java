@@ -6,15 +6,24 @@ import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.SessionUserUtil;
 import com.nature.base.vo.UserVo;
 import com.nature.common.Eunm.FlowState;
+import com.nature.common.Eunm.ProcessState;
+import com.nature.common.Eunm.StopState;
 import com.nature.common.constant.SysParamsCache;
 import com.nature.component.flow.model.Flow;
 import com.nature.component.flow.model.FlowInfoDb;
+import com.nature.component.process.model.Process;
+import com.nature.component.process.model.ProcessStop;
+import com.nature.component.process.vo.ProcessStopVo;
 import com.nature.mapper.FlowInfoDbMapper;
+import com.nature.mapper.process.ProcessMapper;
 import com.nature.third.inf.IGetFlowInfo;
 import com.nature.third.inf.IGetFlowProgress;
+import com.nature.third.utils.ThirdFlowInfoVoUtils;
 import com.nature.third.vo.flow.ThirdProgressVo;
+import com.nature.third.vo.flowInfo.ThirdFlowInfoStopVo;
 import com.nature.third.vo.flowInfo.ThirdFlowInfoStopsVo;
 import com.nature.third.vo.flowInfo.ThirdFlowInfoVo;
+import com.nature.transaction.process.ProcessTransaction;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -22,9 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class GetFlowInfoImpl implements IGetFlowInfo {
@@ -34,20 +41,22 @@ public class GetFlowInfoImpl implements IGetFlowInfo {
     @Resource
     private FlowInfoDbMapper flowInfoDbMapper;
 
-    @Autowired
+    @Resource
     private IGetFlowProgress iGetFlowProgress;
+
+    @Resource
+    private ProcessTransaction processTransaction;
 
 
     /**
      * 发送 post请求
      */
-    @SuppressWarnings("rawtypes")
     @Override
     public ThirdFlowInfoVo getFlowInfo(String appid) {
         ThirdFlowInfoVo jb = null;
         Map<String, String> map = new HashMap<String, String>();
         map.put("appID", appid);
-        String doGet = HttpUtils.doGet(SysParamsCache.FLOW_INFO_URL(), map);
+        String doGet = HttpUtils.doGet(SysParamsCache.FLOW_INFO_URL(), map, 30 * 1000);
         if (StringUtils.isNotBlank(doGet) && !doGet.contains("Exception")) {
             // 同样先将json字符串转换为json对象，再将json对象转换为java对象，如下所示。
             JSONObject obj = JSONObject.fromObject(doGet).getJSONObject("flow");// 将json字符串转换为json对象
@@ -62,12 +71,25 @@ public class GetFlowInfoImpl implements IGetFlowInfo {
                 try {
                     double progressNumsD = Double.parseDouble(progressNums);
                     jb.setProgress(String.format("%.2f", progressNumsD));
-                }catch (Throwable e){
+                } catch (Throwable e) {
                     logger.warn("进度转换失败");
                 }
             }
         }
         return jb;
+    }
+
+    @Override
+    public void getProcessInfoAndSave(String appid) {
+        ThirdFlowInfoVo thirdFlowInfoVo = getFlowInfo(appid);
+        //判断接口返回的进度是否为空
+        if (null != thirdFlowInfoVo) {
+            Process processByAppId = processTransaction.getProcessByAppId(appid);
+            processByAppId = ThirdFlowInfoVoUtils.setProcess(processByAppId, thirdFlowInfoVo);
+            processByAppId.setProcessPathList(null);
+            processTransaction.updateProcessAll(processByAppId);
+        }
+
     }
 
     /**

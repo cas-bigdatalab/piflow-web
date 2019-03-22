@@ -68,7 +68,7 @@ public interface ProcessMapper {
      * @return
      */
     @SelectProvider(type = ProcessMapperProvider.class, method = "getRunningProcessList")
-    public List<Process> getRunningProcessList(@Param("flowId")String flowId);
+    public List<Process> getRunningProcessList(@Param("flowId") String flowId);
 
     /**
      * 根据进程AppId查询进程
@@ -117,5 +117,13 @@ public interface ProcessMapper {
      */
     @UpdateProvider(type = ProcessMapperProvider.class, method = "updateEnableFlag")
     public int updateEnableFlag(String id, String username);
+
+    /**
+     * 查询需要同步的任务
+     *
+     * @return
+     */
+    @SelectProvider(type = ProcessMapperProvider.class, method = "getRunningProcess")
+    public List<String> getRunningProcess();
 
 }

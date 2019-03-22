@@ -79,12 +79,28 @@ public interface IProcessService {
     public ProcessVo getAppInfoByThirdAndSave(String appID);
 
     /**
-     * Query and save programs at the third-party interface according to appID
+     * Query appInfo according to appID
+     *
+     * @param appID
+     * @return
+     */
+    public String getAppInfoByAppId(String appID);
+
+    /**
+     * Query and save process at the third-party interface according to appID
      *
      * @param appIDs
      * @return
      */
     public String getProgressByThirdAndSave(String[] appIDs);
+
+    /**
+     * Query  process according to appID
+     *
+     * @param appIDs
+     * @return
+     */
+    public String getProgressByAppIds(String[] appIDs);
 
     /**
      * Update process

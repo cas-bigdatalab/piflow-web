@@ -26,7 +26,7 @@ public class FlowCheckpointsImpl implements IFlowCheckpoints {
         String jb = null;
         Map<String, String> map = new HashMap<String, String>();
         map.put("processID", processId);
-        String doGet = HttpUtils.doGet(SysParamsCache.FLOW_CHECKPOINTS_URL(), map);
+        String doGet = HttpUtils.doGet(SysParamsCache.FLOW_CHECKPOINTS_URL(), map, 5 * 1000);
         if (StringUtils.isNotBlank(doGet) && !doGet.contains("Exception")) {
             // 同样先将json字符串转换为json对象，再将json对象转换为java对象，如下所示。
             JSONObject obj = JSONObject.fromObject(doGet);// 将json字符串转换为json对象
