@@ -1,6 +1,9 @@
 package com.nature.third.service;
 
-import com.nature.base.util.*;
+import com.nature.base.util.HttpClientStop;
+import com.nature.base.util.ImageUtils;
+import com.nature.base.util.LoggerUtil;
+import com.nature.base.util.SqlUtils;
 import com.nature.base.vo.UserVo;
 import com.nature.common.Eunm.PortType;
 import com.nature.common.constant.SysParamsCache;
@@ -14,11 +17,10 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -30,11 +32,11 @@ public class GetGroupsAndStops {
 
     Logger logger = LoggerUtil.getLogger();
 
-    @Autowired
+    @Resource
     private StopsTemplateMapper stopsTemplateMapper;
-    @Autowired
+    @Resource
     private StopGroupMapper stopGroupMapper;
-    @Autowired
+    @Resource
     private PropertyTemplateMapper propertyTemplateMapper;
 
     /**
@@ -66,7 +68,7 @@ public class GetGroupsAndStops {
         for (String string : group) {
             if (string.length() > 0) {
                 StopGroup stopGroup = new StopGroup();
-                stopGroup.setId(Utils.getUUID32());
+                stopGroup.setId(SqlUtils.getUUID32());
                 stopGroup.setCrtDttm(new Date());
                 stopGroup.setCrtUser(username);
                 stopGroup.setLastUpdateUser(username);
@@ -128,7 +130,7 @@ public class GetGroupsAndStops {
                                 inPortType = value;
                             }
                         }
-                        if(null == inPortType){
+                        if (null == inPortType) {
                             inPortType = PortType.USER_DEFAULT;
                         }
                     }
@@ -142,7 +144,7 @@ public class GetGroupsAndStops {
                                 outPortType = value;
                             }
                         }
-                        if(null == outPortType){
+                        if (null == outPortType) {
                             outPortType = PortType.USER_DEFAULT;
                         }
                     }
@@ -160,16 +162,16 @@ public class GetGroupsAndStops {
                     // 根据stops中的groupName查询Group信息
                     List<StopGroup> stopGroupByName = stopGroupMapper.getStopGroupByName(list);
                     StopsTemplate stopsTemplate = new StopsTemplate();
-                    stopsTemplate.setId(Utils.getUUID32());
+                    stopsTemplate.setId(SqlUtils.getUUID32());
                     stopsTemplate.setCrtDttm(new Date());
                     stopsTemplate.setCrtUser(username);
                     stopsTemplate.setEnableFlag(true);
                     stopsTemplate.setLastUpdateUser(username);
                     stopsTemplate.setLastUpdateDttm(new Date());
                     stopsTemplate.setBundel(bundle);
-                    stopsTemplate.setDescription(Utils.replaceString(description));
-                    stopsTemplate.setGroups(Utils.replaceString(groups));
-                    stopsTemplate.setName(Utils.replaceString(name));
+                    stopsTemplate.setDescription(SqlUtils.replaceString(description));
+                    stopsTemplate.setGroups(SqlUtils.replaceString(groups));
+                    stopsTemplate.setName(SqlUtils.replaceString(name));
                     stopsTemplate.setInports(inports);
                     stopsTemplate.setInPortType(inPortType);
                     stopsTemplate.setOutports(outports);
@@ -189,17 +191,17 @@ public class GetGroupsAndStops {
                     if (null != jsonArray && !jsonArray.isEmpty()) {
                         for (int i = 0; i < jsonArray.size(); i++) {
                             PropertyTemplate PropertyTemplate = new PropertyTemplate();
-                            PropertyTemplate.setId(Utils.getUUID32());
+                            PropertyTemplate.setId(SqlUtils.getUUID32());
                             PropertyTemplate.setCrtDttm(new Date());
                             PropertyTemplate.setCrtUser(username);
                             PropertyTemplate.setEnableFlag(true);
                             PropertyTemplate.setLastUpdateUser(username);
                             PropertyTemplate.setLastUpdateDttm(new Date());
-                            PropertyTemplate.setDefaultValue(Utils.replaceString(jsonArray.getJSONObject(i).getString("defaultValue")));
-                            PropertyTemplate.setAllowableValues(Utils.replaceString(jsonArray.getJSONObject(i).getString("allowableValues")));
-                            PropertyTemplate.setDescription(Utils.replaceString(jsonArray.getJSONObject(i).getString("description")));
-                            PropertyTemplate.setDisplayName(Utils.replaceString(jsonArray.getJSONObject(i).getString("displayName")));
-                            PropertyTemplate.setName(Utils.replaceString(jsonArray.getJSONObject(i).getString("name")));
+                            PropertyTemplate.setDefaultValue(SqlUtils.replaceString(jsonArray.getJSONObject(i).getString("defaultValue")));
+                            PropertyTemplate.setAllowableValues(SqlUtils.replaceString(jsonArray.getJSONObject(i).getString("allowableValues")));
+                            PropertyTemplate.setDescription(SqlUtils.replaceString(jsonArray.getJSONObject(i).getString("description")));
+                            PropertyTemplate.setDisplayName(SqlUtils.replaceString(jsonArray.getJSONObject(i).getString("displayName")));
+                            PropertyTemplate.setName(SqlUtils.replaceString(jsonArray.getJSONObject(i).getString("name")));
                             PropertyTemplate.setRequired(jsonArray.getJSONObject(i).getString("required").equals("true") ? true : false);
                             PropertyTemplate.setSensitive(jsonArray.getJSONObject(i).getString("sensitive").equals("true") ? true : false);
                             PropertyTemplate.setStopsTemplate(stopsTemplate.getId());

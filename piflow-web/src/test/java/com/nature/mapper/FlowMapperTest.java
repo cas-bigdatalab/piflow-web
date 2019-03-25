@@ -2,6 +2,7 @@ package com.nature.mapper;
 
 import java.util.Date;
 
+import com.nature.base.util.SqlUtils;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,12 +10,13 @@ import org.springframework.test.annotation.Rollback;
 
 import com.nature.ApplicationTests;
 import com.nature.base.util.LoggerUtil;
-import com.nature.base.util.Utils;
 import com.nature.component.flow.model.Flow;
+
+import javax.annotation.Resource;
 
 public class FlowMapperTest extends ApplicationTests {
 
-	@Autowired
+	@Resource
 	private FlowMapper flowMapper;
 
 	Logger logger = LoggerUtil.getLogger();
@@ -33,7 +35,7 @@ public class FlowMapperTest extends ApplicationTests {
 	@Rollback(true)
 	public void testAddFlow() {
 		Flow flow = new Flow();
-		flow.setId(Utils.getUUID32());
+		flow.setId(SqlUtils.getUUID32());
 		flow.setCrtUser("Nature");
 		flow.setCrtDttm(new Date());
 		flow.setLastUpdateUser("Nature");

@@ -4,16 +4,16 @@ import com.nature.base.util.*;
 import com.nature.base.vo.StatefulRtnBase;
 import com.nature.base.vo.UserVo;
 import com.nature.common.Eunm.PortType;
-import com.nature.component.mxGraph.model.MxGraphModel;
-import com.nature.component.mxGraph.vo.MxGraphModelVo;
-import com.nature.component.process.service.IProcessService;
-import com.nature.component.process.vo.ProcessVo;
 import com.nature.component.flow.model.Flow;
 import com.nature.component.flow.service.*;
 import com.nature.component.flow.vo.PathsVo;
 import com.nature.component.flow.vo.StopGroupVo;
 import com.nature.component.flow.vo.StopsPropertyVo;
 import com.nature.component.flow.vo.StopsVo;
+import com.nature.component.mxGraph.model.MxGraphModel;
+import com.nature.component.mxGraph.vo.MxGraphModelVo;
+import com.nature.component.process.service.IProcessService;
+import com.nature.component.process.vo.ProcessVo;
 import com.nature.third.service.GetGroupsAndStops;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -101,7 +101,7 @@ public class GrapheditorCtrl {
             }
         } else {
             // 生成32位UUID
-            load = Utils.getUUID32();
+            load = SqlUtils.getUUID32();
             Flow flow = new Flow();
             flow.setId(load);
             flow.setCrtDttm(new Date());
@@ -111,7 +111,7 @@ public class GrapheditorCtrl {
             flow.setEnableFlag(true);
             flow.setName("default");
             MxGraphModel mxGraphModel = new MxGraphModel();
-            mxGraphModel.setId(Utils.getUUID32());
+            mxGraphModel.setId(SqlUtils.getUUID32());
             mxGraphModel.setCrtDttm(new Date());
             mxGraphModel.setCrtUser(username);
             mxGraphModel.setLastUpdateDttm(new Date());

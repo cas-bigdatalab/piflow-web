@@ -2,7 +2,7 @@ package com.nature.component.flow.service.impl;
 
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.SessionUserUtil;
-import com.nature.base.util.Utils;
+import com.nature.base.util.SqlUtils;
 import com.nature.base.vo.UserVo;
 import com.nature.component.flow.model.Property;
 import com.nature.component.flow.model.PropertyTemplate;
@@ -108,8 +108,8 @@ public class PropertyServiceImpl implements IPropertyService {
                           	update.setName(name);
                           	update.setCrtDttm(crtDttm);
                           	update.setCrtUser(crtUser);
-                          	update.setDisplayName(Utils.replaceString(displayName));
-                          	update.setDescription(Utils.replaceString(description));
+                          	update.setDisplayName(SqlUtils.replaceString(displayName));
+                          	update.setDescription(SqlUtils.replaceString(description));
                           	update.setId(ptname.getId());
                           	propertyMapper.updateStopsProperty(update);
       					}else {
@@ -118,12 +118,12 @@ public class PropertyServiceImpl implements IPropertyService {
       						String displayName = pt.getDisplayName();
                             String description = pt.getDescription();
 						    BeanUtils.copyProperties(pt, newProperty);
-      						newProperty.setId(Utils.getUUID32());
+      						newProperty.setId(SqlUtils.getUUID32());
       						newProperty.setCrtDttm(new Date());
       						newProperty.setCrtUser(username);
       						newProperty.setEnableFlag(true);
-      						newProperty.setDisplayName(Utils.replaceString(displayName));
-      						newProperty.setDescription(Utils.replaceString(description));
+      						newProperty.setDisplayName(SqlUtils.replaceString(displayName));
+      						newProperty.setDescription(SqlUtils.replaceString(description));
       						newProperty.setStops(stopsList);
       						addPropertyList.add(newProperty);
 							} 

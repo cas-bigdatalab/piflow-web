@@ -1,7 +1,7 @@
 package com.nature.provider.process;
 
 import com.nature.base.util.DateUtils;
-import com.nature.base.util.Utils;
+import com.nature.base.util.SqlUtils;
 import com.nature.component.process.model.Process;
 import com.nature.component.process.model.ProcessPath;
 import org.apache.commons.lang3.StringUtils;
@@ -61,32 +61,32 @@ public class ProcessPathMapperProvider {
             if (null == enableFlag) {
                 enableFlag = true;
             }
-            sql.VALUES("ID", Utils.addSqlStrAndReplace(id));
-            sql.VALUES("CRT_DTTM", Utils.addSqlStrAndReplace(DateUtils.dateTimesToStr(crtDttm)));
-            sql.VALUES("CRT_USER", Utils.addSqlStrAndReplace(crtUser));
-            sql.VALUES("LAST_UPDATE_DTTM", Utils.addSqlStrAndReplace(DateUtils.dateTimesToStr(lastUpdateDttm)));
-            sql.VALUES("LAST_UPDATE_USER", Utils.addSqlStrAndReplace(lastUpdateUser));
+            sql.VALUES("ID", SqlUtils.addSqlStrAndReplace(id));
+            sql.VALUES("CRT_DTTM", SqlUtils.addSqlStrAndReplace(DateUtils.dateTimesToStr(crtDttm)));
+            sql.VALUES("CRT_USER", SqlUtils.addSqlStrAndReplace(crtUser));
+            sql.VALUES("LAST_UPDATE_DTTM", SqlUtils.addSqlStrAndReplace(DateUtils.dateTimesToStr(lastUpdateDttm)));
+            sql.VALUES("LAST_UPDATE_USER", SqlUtils.addSqlStrAndReplace(lastUpdateUser));
             sql.VALUES("VERSION", version + "");
             sql.VALUES("ENABLE_FLAG", (enableFlag ? 1 : 0) + "");
 
             // 处理其他字段
             if (null != from) {
-                sql.VALUES("LINE_FROM", Utils.addSqlStrAndReplace(from));
+                sql.VALUES("LINE_FROM", SqlUtils.addSqlStrAndReplace(from));
             }
             if (null != outport) {
-                sql.VALUES("LINE_OUTPORT", Utils.addSqlStrAndReplace(outport));
+                sql.VALUES("LINE_OUTPORT", SqlUtils.addSqlStrAndReplace(outport));
             }
             if (null != inport) {
-                sql.VALUES("LINE_INPORT", Utils.addSqlStrAndReplace(inport));
+                sql.VALUES("LINE_INPORT", SqlUtils.addSqlStrAndReplace(inport));
             }
             if (null != to) {
-                sql.VALUES("LINE_TO", Utils.addSqlStrAndReplace(to));
+                sql.VALUES("LINE_TO", SqlUtils.addSqlStrAndReplace(to));
             }
             if (null != pageId) {
-                sql.VALUES("PAGE_ID", Utils.addSqlStrAndReplace(pageId));
+                sql.VALUES("PAGE_ID", SqlUtils.addSqlStrAndReplace(pageId));
             }
             if (null != process) {
-                sql.VALUES("FK_FLOW_PROCESS_ID", Utils.addSqlStrAndReplace(process.getId()));
+                sql.VALUES("FK_FLOW_PROCESS_ID", SqlUtils.addSqlStrAndReplace(process.getId()));
             }
             sqlStr = sql.toString();
         }
@@ -160,19 +160,19 @@ public class ProcessPathMapperProvider {
                         enableFlag = true;
                     }
                     sql.append("(");
-                    sql.append(Utils.addSqlStrAndReplace(id) + ",");
-                    sql.append(Utils.addSqlStrAndReplace(DateUtils.dateTimesToStr(crtDttm)) + ",");
-                    sql.append(Utils.addSqlStrAndReplace(crtUser) + ",");
-                    sql.append(Utils.addSqlStrAndReplace(DateUtils.dateTimesToStr(lastUpdateDttm)) + ",");
-                    sql.append(Utils.addSqlStrAndReplace(lastUpdateUser) + ",");
+                    sql.append(SqlUtils.addSqlStrAndReplace(id) + ",");
+                    sql.append(SqlUtils.addSqlStrAndReplace(DateUtils.dateTimesToStr(crtDttm)) + ",");
+                    sql.append(SqlUtils.addSqlStrAndReplace(crtUser) + ",");
+                    sql.append(SqlUtils.addSqlStrAndReplace(DateUtils.dateTimesToStr(lastUpdateDttm)) + ",");
+                    sql.append(SqlUtils.addSqlStrAndReplace(lastUpdateUser) + ",");
                     sql.append(version + ",");
                     sql.append((enableFlag ? 1 : 0) + ",");
-                    sql.append(Utils.addSqlStrAndReplace(from) + ",");
-                    sql.append(Utils.addSqlStrAndReplace(to) + ",");
-                    sql.append(Utils.addSqlStrAndReplace(outport) + ",");
-                    sql.append(Utils.addSqlStrAndReplace(inport) + ",");
-                    sql.append(Utils.addSqlStrAndReplace(pageId) + ",");
-                    sql.append(Utils.addSqlStrAndReplace((process == null ? "" : process.getId())));
+                    sql.append(SqlUtils.addSqlStrAndReplace(from) + ",");
+                    sql.append(SqlUtils.addSqlStrAndReplace(to) + ",");
+                    sql.append(SqlUtils.addSqlStrAndReplace(outport) + ",");
+                    sql.append(SqlUtils.addSqlStrAndReplace(inport) + ",");
+                    sql.append(SqlUtils.addSqlStrAndReplace(pageId) + ",");
+                    sql.append(SqlUtils.addSqlStrAndReplace((process == null ? "" : process.getId())));
                     if (i != processPaths.size()) {
                         sql.append("),");
                     } else {
@@ -199,7 +199,7 @@ public class ProcessPathMapperProvider {
             sql.SELECT("*");
             sql.FROM("FLOW_PROCESS_PATH");
             sql.WHERE("enable_flag = 1");
-            sql.WHERE("FK_FLOW_PROCESS_ID = " + Utils.addSqlStr(processId));
+            sql.WHERE("FK_FLOW_PROCESS_ID = " + SqlUtils.addSqlStr(processId));
 
             sqlStr = sql.toString();
         }
@@ -220,8 +220,8 @@ public class ProcessPathMapperProvider {
             sql.SELECT("*");
             sql.FROM("FLOW_PROCESS_PATH");
             sql.WHERE("enable_flag = 1");
-            sql.WHERE("FK_FLOW_PROCESS_ID = " + Utils.addSqlStr(processId));
-            sql.WHERE("PAGE_ID = " + Utils.addSqlStr(pageId));
+            sql.WHERE("FK_FLOW_PROCESS_ID = " + SqlUtils.addSqlStr(processId));
+            sql.WHERE("PAGE_ID = " + SqlUtils.addSqlStr(pageId));
 
             sqlStr = sql.toString();
         }
@@ -264,8 +264,8 @@ public class ProcessPathMapperProvider {
                     version = 0L;
                 }
                 String lastUpdateDttmStr = DateUtils.dateTimesToStr(lastUpdateDttm);
-                sql.SET("LAST_UPDATE_DTTM = " + Utils.addSqlStr(lastUpdateDttmStr));
-                sql.SET("LAST_UPDATE_USER = " + Utils.addSqlStr(lastUpdateUser));
+                sql.SET("LAST_UPDATE_DTTM = " + SqlUtils.addSqlStr(lastUpdateDttmStr));
+                sql.SET("LAST_UPDATE_USER = " + SqlUtils.addSqlStr(lastUpdateUser));
                 sql.SET("VERSION = " + (version + 1));
 
                 // 处理其他字段
@@ -273,26 +273,26 @@ public class ProcessPathMapperProvider {
                     sql.SET("ENABLE_FLAG = " + (enableFlag ? 1 : 0));
                 }
                 if (StringUtils.isNotBlank(to)) {
-                    sql.SET("LINE_TO = " + Utils.addSqlStr(to));
+                    sql.SET("LINE_TO = " + SqlUtils.addSqlStr(to));
                 }
                 if (StringUtils.isNotBlank(from)) {
-                    sql.SET("LINE_FROM = " + Utils.addSqlStr(from));
+                    sql.SET("LINE_FROM = " + SqlUtils.addSqlStr(from));
                 }
                 if (StringUtils.isNotBlank(outport)) {
-                    sql.SET("LINE_OUTPORT = " + Utils.addSqlStr(outport));
+                    sql.SET("LINE_OUTPORT = " + SqlUtils.addSqlStr(outport));
                 }
                 if (StringUtils.isNotBlank(inport)) {
-                    sql.SET("LINE_INPORT = " + Utils.addSqlStr(inport));
+                    sql.SET("LINE_INPORT = " + SqlUtils.addSqlStr(inport));
                 }
                 if (StringUtils.isNotBlank(pageId)) {
-                    sql.SET("PAGE_ID = " + Utils.addSqlStr(pageId));
+                    sql.SET("PAGE_ID = " + SqlUtils.addSqlStr(pageId));
                 }
                 if (null != process) {
-                    sql.SET("FK_FLOW_PROCESS_ID = " + Utils.addSqlStr(process.getId()));
+                    sql.SET("FK_FLOW_PROCESS_ID = " + SqlUtils.addSqlStr(process.getId()));
                 }
                 sql.WHERE("ENABLE_FLAG = 1");
                 sql.WHERE("VERSION = " + version);
-                sql.WHERE("ID = " + Utils.addSqlStr(id));
+                sql.WHERE("ID = " + SqlUtils.addSqlStr(id));
                 sqlStr = sql.toString();
             }
         }
@@ -304,12 +304,12 @@ public class ProcessPathMapperProvider {
         if (!StringUtils.isAnyEmpty(processId, userName)) {
             SQL sql = new SQL();
             sql.UPDATE("FLOW_PROCESS_PATH");
-            sql.SET("LAST_UPDATE_DTTM = " + Utils.addSqlStr(DateUtils.dateTimesToStr(new Date())));
-            sql.SET("LAST_UPDATE_USER = " + Utils.addSqlStr(userName));
+            sql.SET("LAST_UPDATE_DTTM = " + SqlUtils.addSqlStr(DateUtils.dateTimesToStr(new Date())));
+            sql.SET("LAST_UPDATE_USER = " + SqlUtils.addSqlStr(userName));
             sql.SET("VERSION=(VERSION+1)");
             sql.SET("enable_flag = 0");
             sql.WHERE("enable_flag = 1");
-            sql.WHERE("FK_FLOW_PROCESS_ID = " + Utils.addSqlStr(processId));
+            sql.WHERE("FK_FLOW_PROCESS_ID = " + SqlUtils.addSqlStr(processId));
 
             sqlStr = sql.toString();
         }

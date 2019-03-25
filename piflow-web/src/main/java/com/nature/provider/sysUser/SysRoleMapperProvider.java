@@ -1,14 +1,9 @@
 package com.nature.provider.sysUser;
 
-import com.nature.base.util.DateUtils;
-import com.nature.base.util.Utils;
 import com.nature.component.sysUser.model.SysRole;
-import com.nature.component.sysUser.model.SysUser;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.jdbc.SQL;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 

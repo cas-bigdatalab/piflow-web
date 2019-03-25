@@ -1,7 +1,7 @@
 package com.nature.provider;
 
 import com.nature.base.util.DateUtils;
-import com.nature.base.util.Utils;
+import com.nature.base.util.SqlUtils;
 import com.nature.component.flow.model.PropertyTemplate;
 import org.apache.ibatis.jdbc.SQL;
 
@@ -23,7 +23,7 @@ public class PropertyTemplateMapperProvider {
             SQL sql = new SQL();
             sql.SELECT("*");
             sql.FROM("flow_stops_property_template");
-            sql.WHERE("fk_stops_id = " + Utils.addSqlStr(stopsId));
+            sql.WHERE("fk_stops_id = " + SqlUtils.addSqlStr(stopsId));
             sql.WHERE("enable_flag = 1");
             sqlStr = sql.toString();
         }
@@ -61,21 +61,21 @@ public class PropertyTemplateMapperProvider {
                     Boolean required = (null == propertyTemplate.getRequired()) ? false : propertyTemplate.getRequired();
                     Boolean sensitive = (null == propertyTemplate.getSensitive()) ? false : propertyTemplate.getSensitive();
                     sqlValuesStr.append("(");
-                    sqlValuesStr.append(Utils.addSqlStr(propertyTemplate.getId()) + ",");
-                    sqlValuesStr.append(Utils.addSqlStr(DateUtils.dateTimesToStr(propertyTemplate.getCrtDttm())) + ",");
-                    sqlValuesStr.append(Utils.addSqlStr(propertyTemplate.getCrtUser()) + ",");
+                    sqlValuesStr.append(SqlUtils.addSqlStr(propertyTemplate.getId()) + ",");
+                    sqlValuesStr.append(SqlUtils.addSqlStr(DateUtils.dateTimesToStr(propertyTemplate.getCrtDttm())) + ",");
+                    sqlValuesStr.append(SqlUtils.addSqlStr(propertyTemplate.getCrtUser()) + ",");
                     sqlValuesStr.append(propertyTemplate.getEnableFlag() ? 1 + "," : 0 + ",");
-                    sqlValuesStr.append(Utils.addSqlStr(DateUtils.dateTimesToStr(propertyTemplate.getLastUpdateDttm())) + ",");
-                    sqlValuesStr.append(Utils.addSqlStr(propertyTemplate.getLastUpdateUser()) + ",");
+                    sqlValuesStr.append(SqlUtils.addSqlStr(DateUtils.dateTimesToStr(propertyTemplate.getLastUpdateDttm())) + ",");
+                    sqlValuesStr.append(SqlUtils.addSqlStr(propertyTemplate.getLastUpdateUser()) + ",");
                     sqlValuesStr.append((null != propertyTemplate.getVersion() ? propertyTemplate.getVersion() : 0) + ",");
-                    sqlValuesStr.append(Utils.addSqlStr(propertyTemplate.getAllowableValues()) + ",");
-                    sqlValuesStr.append(Utils.addSqlStr(propertyTemplate.getDefaultValue()) + ",");
-                    sqlValuesStr.append(Utils.addSqlStr(propertyTemplate.getDescription().equals("null") ? "" : propertyTemplate.getDescription()) + ",");
-                    sqlValuesStr.append(Utils.addSqlStr(propertyTemplate.getDisplayName()) + ",");
-                    sqlValuesStr.append(Utils.addSqlStr(propertyTemplate.getName()) + ",");
+                    sqlValuesStr.append(SqlUtils.addSqlStr(propertyTemplate.getAllowableValues()) + ",");
+                    sqlValuesStr.append(SqlUtils.addSqlStr(propertyTemplate.getDefaultValue()) + ",");
+                    sqlValuesStr.append(SqlUtils.addSqlStr(propertyTemplate.getDescription().equals("null") ? "" : propertyTemplate.getDescription()) + ",");
+                    sqlValuesStr.append(SqlUtils.addSqlStr(propertyTemplate.getDisplayName()) + ",");
+                    sqlValuesStr.append(SqlUtils.addSqlStr(propertyTemplate.getName()) + ",");
                     sqlValuesStr.append(required ? 1 + "," : 0 + ",");
                     sqlValuesStr.append(sensitive ? 1 + "," : 0 + ",");
-                    sqlValuesStr.append(Utils.addSqlStr(null != propertyTemplate.getStopsTemplate() ? propertyTemplate.getStopsTemplate() : ""));
+                    sqlValuesStr.append(SqlUtils.addSqlStr(null != propertyTemplate.getStopsTemplate() ? propertyTemplate.getStopsTemplate() : ""));
                     sqlValuesStr.append(")");
                     if (i < propertyTemplateList.size() - 1) {
                         sqlValuesStr.append(",\n");

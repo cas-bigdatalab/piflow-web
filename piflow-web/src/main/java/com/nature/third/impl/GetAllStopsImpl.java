@@ -13,9 +13,9 @@ import com.nature.third.inf.IGetAllStops;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -26,13 +26,13 @@ public class GetAllStopsImpl implements IGetAllStops {
 
     Logger logger = LoggerUtil.getLogger();
 
-    @Autowired
+    @Resource
     private StopsTemplateMapper stopsTemplateMapper;
 
-    @Autowired
+    @Resource
     private PropertyTemplateMapper propertyTemplateMapper;
 
-    @Autowired
+    @Resource
     private StopGroupMapper stopGroupMapper;
 
     @Override
@@ -98,7 +98,7 @@ public class GetAllStopsImpl implements IGetAllStops {
                     List<StopGroup> stopGroupByName = stopGroupMapper.getStopGroupByName(list);
                     for (StopGroup stopGroup : stopGroupByName) {
                         StopsTemplate stopsTemplate = new StopsTemplate();
-                        stopsTemplate.setId(Utils.getUUID32());
+                        stopsTemplate.setId(SqlUtils.getUUID32());
                         stopsTemplate.setCrtDttm(new Date());
                         stopsTemplate.setCrtUser(username);
                         stopsTemplate.setEnableFlag(true);
@@ -127,7 +127,7 @@ public class GetAllStopsImpl implements IGetAllStops {
                     for (StopsTemplate zjb : listStopsTemplate) {
                         for (int i = 0; i < jsonArray.size(); i++) {
                             PropertyTemplate PropertyTemplate = new PropertyTemplate();
-                            PropertyTemplate.setId(Utils.getUUID32());
+                            PropertyTemplate.setId(SqlUtils.getUUID32());
                             PropertyTemplate.setCrtDttm(new Date());
                             PropertyTemplate.setCrtUser(username);
                             PropertyTemplate.setEnableFlag(true);

@@ -2,7 +2,7 @@ package com.nature.provider;
 
 import com.nature.base.util.DateUtils;
 import com.nature.base.util.SessionUserUtil;
-import com.nature.base.util.Utils;
+import com.nature.base.util.SqlUtils;
 import com.nature.base.vo.UserVo;
 import com.nature.component.flow.model.Property;
 import com.nature.component.flow.model.Stops;
@@ -68,21 +68,21 @@ public class PropertyMapperProvider {
                 Boolean isSelect = property.getIsSelect();
                 // 拼接时位置顺序不能错
                 sqlStrBuffer.append("(");
-                sqlStrBuffer.append(Utils.addSqlStr(Utils.replaceString(id)) + ",");
-                sqlStrBuffer.append(Utils.addSqlStr((crtDttm == null ? "" : DateUtils.dateTimesToStr(crtDttm))) + ",");
-                sqlStrBuffer.append(Utils.addSqlStr((Utils.replaceString(crtUser))) + ",");
-                sqlStrBuffer.append(Utils.addSqlStr((lastUpdateDttm == null ? "" : DateUtils.dateTimesToStr(lastUpdateDttm))) + ",");
-                sqlStrBuffer.append(Utils.addSqlStr((Utils.replaceString(lastUpdateUser))) + ",");
+                sqlStrBuffer.append(SqlUtils.addSqlStr(SqlUtils.replaceString(id)) + ",");
+                sqlStrBuffer.append(SqlUtils.addSqlStr((crtDttm == null ? "" : DateUtils.dateTimesToStr(crtDttm))) + ",");
+                sqlStrBuffer.append(SqlUtils.addSqlStr((SqlUtils.replaceString(crtUser))) + ",");
+                sqlStrBuffer.append(SqlUtils.addSqlStr((lastUpdateDttm == null ? "" : DateUtils.dateTimesToStr(lastUpdateDttm))) + ",");
+                sqlStrBuffer.append(SqlUtils.addSqlStr((SqlUtils.replaceString(lastUpdateUser))) + ",");
                 sqlStrBuffer.append((version == null ? "0" : version) + ",");
                 sqlStrBuffer.append((enableFlag == null ? "1" : (enableFlag ? 1 : 0)) + ",");
-                sqlStrBuffer.append(Utils.addSqlStr((Utils.replaceString(name))) + ",");
-                sqlStrBuffer.append(Utils.addSqlStr((Utils.replaceString(displayName))) + ",");
-                sqlStrBuffer.append(Utils.addSqlStr((Utils.replaceString(description))) + ",");
-                sqlStrBuffer.append(Utils.addSqlStr((Utils.replaceString(customValue))) + ",");
-                sqlStrBuffer.append(Utils.addSqlStr((Utils.replaceString(allowableValues))) + ",");
+                sqlStrBuffer.append(SqlUtils.addSqlStr((SqlUtils.replaceString(name))) + ",");
+                sqlStrBuffer.append(SqlUtils.addSqlStr((SqlUtils.replaceString(displayName))) + ",");
+                sqlStrBuffer.append(SqlUtils.addSqlStr((SqlUtils.replaceString(description))) + ",");
+                sqlStrBuffer.append(SqlUtils.addSqlStr((SqlUtils.replaceString(customValue))) + ",");
+                sqlStrBuffer.append(SqlUtils.addSqlStr((SqlUtils.replaceString(allowableValues))) + ",");
                 sqlStrBuffer.append((required ? 1 : 0) + ",");
                 sqlStrBuffer.append((sensitive ? 1 : 0) + ",");
-                sqlStrBuffer.append(Utils.addSqlStr((stops == null ? "" : stops.getId()))  + ",");
+                sqlStrBuffer.append(SqlUtils.addSqlStr((stops == null ? "" : stops.getId()))  + ",");
                 sqlStrBuffer.append((isSelect ? 1 : 0));
                 if (i != propertyList.size()) {
                     sqlStrBuffer.append("),");
@@ -135,8 +135,8 @@ public class PropertyMapperProvider {
                 version = 0L;
             }
             String lastUpdateDttmStr = DateUtils.dateTimesToStr(lastUpdateDttm);
-            sql.SET("LAST_UPDATE_DTTM = " + Utils.addSqlStr(lastUpdateDttmStr));
-            sql.SET("LAST_UPDATE_USER = " + Utils.addSqlStr(lastUpdateUser));
+            sql.SET("LAST_UPDATE_DTTM = " + SqlUtils.addSqlStr(lastUpdateDttmStr));
+            sql.SET("LAST_UPDATE_USER = " + SqlUtils.addSqlStr(lastUpdateUser));
             sql.SET("VERSION = " + (version + 1));
             if (null != enableFlag) {
                 sql.SET("ENABLE_FLAG = " + (enableFlag ? 1 : 0));
@@ -147,19 +147,19 @@ public class PropertyMapperProvider {
                 sql.SET("ENABLE_FLAG = " + (enableFlag ? 1 : 0));
             }
             if (null != description) {
-                sql.SET("description = " + Utils.addSqlStr(Utils.replaceString(description)));
+                sql.SET("description = " + SqlUtils.addSqlStr(SqlUtils.replaceString(description)));
             }
             if (null != name) {
-                sql.SET("NAME = " + Utils.addSqlStr(Utils.replaceString(name)));
+                sql.SET("NAME = " + SqlUtils.addSqlStr(SqlUtils.replaceString(name)));
             }
             if (null != allowable_values) {
-                sql.SET("allowable_values = " + Utils.addSqlStr(allowable_values));
+                sql.SET("allowable_values = " + SqlUtils.addSqlStr(allowable_values));
             }
             if (null != custom_value) {
-                sql.SET("custom_value = " + Utils.addSqlStr(custom_value));
+                sql.SET("custom_value = " + SqlUtils.addSqlStr(custom_value));
             }
             if (null != display_name) {
-                sql.SET("display_name = " + Utils.addSqlStr(display_name));
+                sql.SET("display_name = " + SqlUtils.addSqlStr(display_name));
             }
             if (null != required) {
                 int requiredNum = required ? 1 : 0;
@@ -172,11 +172,11 @@ public class PropertyMapperProvider {
             if (null != stops) {
                 String stopsId = stops.getId();
                 if (StringUtils.isNotBlank(stopsId)) {
-                    sql.SET("fk_stops_id = " + Utils.addSqlStr(stopsId));
+                    sql.SET("fk_stops_id = " + SqlUtils.addSqlStr(stopsId));
                 }
             }
             sql.WHERE("version = " + version);
-            sql.WHERE("id = " + Utils.addSqlStr(id));
+            sql.WHERE("id = " + SqlUtils.addSqlStr(id));
             sqlStr = sql.toString();
             if (StringUtils.isBlank(id)) {
                 sqlStr = "";
@@ -199,10 +199,10 @@ public class PropertyMapperProvider {
             SQL sql = new SQL();
             sql.UPDATE("flow_stops_property");
             sql.SET("ENABLE_FLAG = 0");
-            sql.SET("last_update_user = " + Utils.addSqlStr(username) );
-            sql.SET("last_update_dttm = " + Utils.addSqlStr(DateUtils.dateTimesToStr(new Date())) );
+            sql.SET("last_update_user = " + SqlUtils.addSqlStr(username) );
+            sql.SET("last_update_dttm = " + SqlUtils.addSqlStr(DateUtils.dateTimesToStr(new Date())) );
             sql.WHERE("ENABLE_FLAG = 1");
-            sql.WHERE("ID = " + Utils.addSqlStrAndReplace(id));
+            sql.WHERE("ID = " + SqlUtils.addSqlStrAndReplace(id));
 
             sqlStr = sql.toString();
         }
@@ -221,12 +221,12 @@ public class PropertyMapperProvider {
           if (StringUtils.isNotBlank(id)) {
               SQL sql = new SQL();
               sql.UPDATE("flow_stops_property");
-              sql.SET("custom_value = " + Utils.addSqlStr(content));
-              sql.SET("last_update_user = " + Utils.addSqlStr(username) );
-              sql.SET("last_update_dttm = " + Utils.addSqlStr(DateUtils.dateTimesToStr(new Date())) );
+              sql.SET("custom_value = " + SqlUtils.addSqlStr(content));
+              sql.SET("last_update_user = " + SqlUtils.addSqlStr(username) );
+              sql.SET("last_update_dttm = " + SqlUtils.addSqlStr(DateUtils.dateTimesToStr(new Date())) );
               sql.SET("version = " + 1 );
               sql.WHERE("ENABLE_FLAG = 1");
-              sql.WHERE("id = " + Utils.addSqlStrAndReplace(id));
+              sql.WHERE("id = " + SqlUtils.addSqlStrAndReplace(id));
               sqlStr = sql.toString();
           }
           return sqlStr;

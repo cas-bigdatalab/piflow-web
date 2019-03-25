@@ -1,16 +1,16 @@
 package com.nature.component.flow.utils;
 
 import com.nature.base.util.SessionUserUtil;
-import com.nature.base.util.Utils;
+import com.nature.base.util.SqlUtils;
 import com.nature.base.vo.UserVo;
+import com.nature.component.flow.model.Flow;
+import com.nature.component.flow.model.Paths;
 import com.nature.component.mxGraph.model.MxCell;
 import com.nature.component.mxGraph.model.MxGeometry;
 import com.nature.component.mxGraph.model.MxGraphModel;
 import com.nature.component.mxGraph.vo.MxCellVo;
 import com.nature.component.mxGraph.vo.MxGeometryVo;
 import com.nature.component.mxGraph.vo.MxGraphModelVo;
-import com.nature.component.flow.model.Flow;
-import com.nature.component.flow.model.Paths;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 
@@ -174,7 +174,7 @@ public class MxGraphModelUtil {
         Paths paths = null;
         if (null != mxCellVo) {
             paths = new Paths();
-            paths.setId(Utils.getUUID32());
+            paths.setId(SqlUtils.getUUID32());
             paths.setCrtDttm(new Date());
             paths.setCrtUser(username);
             paths.setLastUpdateDttm(new Date());

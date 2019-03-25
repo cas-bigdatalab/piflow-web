@@ -2,7 +2,7 @@ package com.nature.component.flow.service;
 
 import com.nature.ApplicationTests;
 import com.nature.base.util.LoggerUtil;
-import com.nature.base.util.Utils;
+import com.nature.base.util.SqlUtils;
 import com.nature.component.flow.model.Flow;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -31,7 +31,7 @@ public class FlowServiceTest extends ApplicationTests {
 	@Rollback(false)
 	public void testAddFlow() {
 		Flow flow = new Flow();
-		flow.setId(Utils.getUUID32());
+		flow.setId(SqlUtils.getUUID32());
 		//flow.setAppId("kongkong");
 		flow.setCrtUser("Nature");
 		flow.setLastUpdateUser("Nature");

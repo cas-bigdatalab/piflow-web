@@ -2,7 +2,7 @@ package com.nature.provider.mxGraph;
 
 import com.nature.base.util.DateUtils;
 import com.nature.base.util.SessionUserUtil;
-import com.nature.base.util.Utils;
+import com.nature.base.util.SqlUtils;
 import com.nature.base.vo.UserVo;
 import com.nature.component.mxGraph.model.MxCell;
 import com.nature.component.mxGraph.model.MxGeometry;
@@ -62,35 +62,35 @@ public class MxGeometryMapperProvider {
             if (null == version) {
                 version = 0L;
             }
-            sql.VALUES("ID", Utils.addSqlStr(id));
-            sql.VALUES("CRT_DTTM", Utils.addSqlStr(DateUtils.dateTimesToStr(crtDttm)));
-            sql.VALUES("CRT_USER", Utils.addSqlStr(crtUser));
-            sql.VALUES("LAST_UPDATE_DTTM", Utils.addSqlStr(DateUtils.dateTimesToStr(lastUpdateDttm)));
-            sql.VALUES("LAST_UPDATE_USER", Utils.addSqlStr(lastUpdateUser));
+            sql.VALUES("ID", SqlUtils.addSqlStr(id));
+            sql.VALUES("CRT_DTTM", SqlUtils.addSqlStr(DateUtils.dateTimesToStr(crtDttm)));
+            sql.VALUES("CRT_USER", SqlUtils.addSqlStr(crtUser));
+            sql.VALUES("LAST_UPDATE_DTTM", SqlUtils.addSqlStr(DateUtils.dateTimesToStr(lastUpdateDttm)));
+            sql.VALUES("LAST_UPDATE_USER", SqlUtils.addSqlStr(lastUpdateUser));
             sql.VALUES("ENABLE_FLAG", (enableFlag ? 1 : 0) + "");
             sql.VALUES("VERSION", version + "");
 
             // 处理其他字段
             if (StringUtils.isNotBlank(as)) {
-                sql.VALUES("MX_AS", Utils.addSqlStr(as));
+                sql.VALUES("MX_AS", SqlUtils.addSqlStr(as));
             }
             if (StringUtils.isNotBlank(relative)) {
-                sql.VALUES("MX_RELATIVE", Utils.addSqlStr(relative));
+                sql.VALUES("MX_RELATIVE", SqlUtils.addSqlStr(relative));
             }
             if (StringUtils.isNotBlank(height)) {
-                sql.VALUES("MX_HEIGHT", Utils.addSqlStr(height));
+                sql.VALUES("MX_HEIGHT", SqlUtils.addSqlStr(height));
             }
             if (StringUtils.isNotBlank(width)) {
-                sql.VALUES("MX_WIDTH", Utils.addSqlStr(width));
+                sql.VALUES("MX_WIDTH", SqlUtils.addSqlStr(width));
             }
             if (StringUtils.isNotBlank(x)) {
-                sql.VALUES("MX_X", Utils.addSqlStr(x));
+                sql.VALUES("MX_X", SqlUtils.addSqlStr(x));
             }
             if (StringUtils.isNotBlank(y)) {
-                sql.VALUES("MX_Y", Utils.addSqlStr(y));
+                sql.VALUES("MX_Y", SqlUtils.addSqlStr(y));
             }
             if (null != mxCell) {
-                sql.VALUES("FK_MX_CELL_ID", Utils.addSqlStr(mxCell.getId()));
+                sql.VALUES("FK_MX_CELL_ID", SqlUtils.addSqlStr(mxCell.getId()));
             }
             sqlStr = sql.toString();
         }
@@ -135,8 +135,8 @@ public class MxGeometryMapperProvider {
                 version = 0L;
             }
             String lastUpdateDttmStr = DateUtils.dateTimesToStr(lastUpdateDttm);
-            sql.SET("LAST_UPDATE_DTTM = " + Utils.addSqlStr(lastUpdateDttmStr));
-            sql.SET("LAST_UPDATE_USER = " + Utils.addSqlStr(lastUpdateUser));
+            sql.SET("LAST_UPDATE_DTTM = " + SqlUtils.addSqlStr(lastUpdateDttmStr));
+            sql.SET("LAST_UPDATE_USER = " + SqlUtils.addSqlStr(lastUpdateUser));
             sql.SET("VERSION = " + (version + 1));
 
             // 处理其他字段
@@ -144,28 +144,28 @@ public class MxGeometryMapperProvider {
                 sql.SET("ENABLE_FLAG = " + (enableFlag ? 1 : 0));
             }
             if (StringUtils.isNotBlank(as)) {
-                sql.SET("MX_AS = " + Utils.addSqlStr(as));
+                sql.SET("MX_AS = " + SqlUtils.addSqlStr(as));
             }
             if (StringUtils.isNotBlank(relative)) {
-                sql.SET("MX_RELATIVE = " + Utils.addSqlStr(relative));
+                sql.SET("MX_RELATIVE = " + SqlUtils.addSqlStr(relative));
             }
             if (StringUtils.isNotBlank(height)) {
-                sql.SET("MX_HEIGHT = " + Utils.addSqlStr(height));
+                sql.SET("MX_HEIGHT = " + SqlUtils.addSqlStr(height));
             }
             if (StringUtils.isNotBlank(width)) {
-                sql.SET("MX_WIDTH = " + Utils.addSqlStr(width));
+                sql.SET("MX_WIDTH = " + SqlUtils.addSqlStr(width));
             }
             if (StringUtils.isNotBlank(x)) {
-                sql.SET("MX_X = " + Utils.addSqlStr(x));
+                sql.SET("MX_X = " + SqlUtils.addSqlStr(x));
             }
             if (StringUtils.isNotBlank(y)) {
-                sql.SET("MX_Y = " + Utils.addSqlStr(y));
+                sql.SET("MX_Y = " + SqlUtils.addSqlStr(y));
             }
             if (null != mxCell) {
-                sql.SET("FK_MX_CELL_ID = " + Utils.addSqlStr(mxCell.getId()));
+                sql.SET("FK_MX_CELL_ID = " + SqlUtils.addSqlStr(mxCell.getId()));
             }
             sql.WHERE("VERSION = " + version);
-            sql.WHERE("ID = " + Utils.addSqlStr(id));
+            sql.WHERE("ID = " + SqlUtils.addSqlStr(id));
 
             sqlStr = sql.toString();
 
@@ -188,7 +188,7 @@ public class MxGeometryMapperProvider {
             SQL sql = new SQL();
             sql.SELECT("*");
             sql.FROM("mx_geometry");
-            sql.WHERE("id = " + Utils.addSqlStr(id));
+            sql.WHERE("id = " + SqlUtils.addSqlStr(id));
             sql.WHERE("ENABLE_FLAG = 1");
             sqlStr = sql.toString();
         }
@@ -208,7 +208,7 @@ public class MxGeometryMapperProvider {
             SQL sql = new SQL();
             sql.SELECT("*");
             sql.FROM("mx_geometry");
-            sql.WHERE("FK_MX_CELL_ID = " + Utils.addSqlStr(flowId));
+            sql.WHERE("FK_MX_CELL_ID = " + SqlUtils.addSqlStr(flowId));
             sql.WHERE("ENABLE_FLAG = 1");
             sqlStr = sql.toString();
         }
@@ -229,10 +229,10 @@ public class MxGeometryMapperProvider {
              SQL sql = new SQL();
              sql.UPDATE("mx_geometry");
              sql.SET("ENABLE_FLAG = 0");
-             sql.SET("last_update_user = " + Utils.addSqlStr(username) );
-             sql.SET("last_update_dttm = " + Utils.addSqlStr(DateUtils.dateTimesToStr(new Date())) );
+             sql.SET("last_update_user = " + SqlUtils.addSqlStr(username) );
+             sql.SET("last_update_dttm = " + SqlUtils.addSqlStr(DateUtils.dateTimesToStr(new Date())) );
              sql.WHERE("ENABLE_FLAG = 1");
-             sql.WHERE("id = " + Utils.addSqlStrAndReplace(id));
+             sql.WHERE("id = " + SqlUtils.addSqlStrAndReplace(id));
 
              sqlStr = sql.toString();
          }

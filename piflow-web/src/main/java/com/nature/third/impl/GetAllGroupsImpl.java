@@ -46,7 +46,7 @@ public class GetAllGroupsImpl implements IGetAllGroups {
         for (String string : group) {
             if (string.length() > 0) {
                 StopGroup stopGroup = new StopGroup();
-                stopGroup.setId(Utils.getUUID32());
+                stopGroup.setId(SqlUtils.getUUID32());
                 stopGroup.setCrtDttm(new Date());
                 stopGroup.setCrtUser(username);
                 stopGroup.setLastUpdateUser(username);

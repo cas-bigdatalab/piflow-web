@@ -2,6 +2,7 @@ package com.nature.mapper.template;
 
 import java.util.List;
 
+import com.nature.base.vo.UserVo;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
 
@@ -36,7 +37,7 @@ public interface TemplateMapper {
     @Results({
             @Result(id = true, column = "id", property = "id")
     })
-    public List<Template> findTemPlateListPage(String param);
+    public List<Template> findTemPlateListPage(@Param("currentUser") UserVo currentUser, @Param("param") String param);
 
     /**
      * 根据id删除模板或修改模板为无效

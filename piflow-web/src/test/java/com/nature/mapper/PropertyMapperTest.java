@@ -1,23 +1,18 @@
 package com.nature.mapper;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.nature.ApplicationTests;
+import com.nature.base.util.LoggerUtil;
+import com.nature.base.util.SqlUtils;
+import com.nature.component.flow.model.Property;
+import com.nature.component.flow.model.PropertyTemplate;
+import com.nature.component.flow.model.Stops;
+import com.nature.component.flow.model.StopsTemplate;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.nature.ApplicationTests;
-import com.nature.base.util.LoggerUtil;
-import com.nature.base.util.Utils;
-import com.nature.component.flow.model.Property;
-import com.nature.component.flow.model.PropertyTemplate;
-import com.nature.component.flow.model.Stops;
-import com.nature.component.flow.model.StopsTemplate;
+import java.util.*;
 
 public class PropertyMapperTest extends ApplicationTests {
 
@@ -116,7 +111,7 @@ public class PropertyMapperTest extends ApplicationTests {
 								} catch (Exception e) {
 									e.printStackTrace();
 								}  
-        						newProperty.setId(Utils.getUUID32());
+        						newProperty.setId(SqlUtils.getUUID32());
         						newProperty.setCrtDttm(new Date());
         						newProperty.setCrtUser("Nature");
         						newProperty.setEnableFlag(true);

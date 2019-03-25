@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -23,11 +24,11 @@ import java.util.List;
 
 public class StopsTemplateMapperTest extends ApplicationTests {
 
-	@Autowired
+	@Resource
 	private StopsTemplateMapper stopsTemplateMapper;
-	@Autowired
+	@Resource
 	private StopGroupMapper stopGroupMapper;
-	@Autowired
+	@Resource
 	private PropertyTemplateMapper propertyTemplateMapper;
 
 	Logger logger = LoggerUtil.getLogger();
@@ -84,7 +85,7 @@ public class StopsTemplateMapperTest extends ApplicationTests {
 		for (String string : group) {
 			if (string.length() > 0) {
 				StopGroup stopGroup = new StopGroup();
-				stopGroup.setId(Utils.getUUID32());
+				stopGroup.setId(SqlUtils.getUUID32());
 				stopGroup.setCrtDttm(new Date());
 				stopGroup.setCrtUser(username);
 				stopGroup.setLastUpdateUser(username);
@@ -153,16 +154,16 @@ public class StopsTemplateMapperTest extends ApplicationTests {
 					// 根据stops中的groupName查询Group信息
 					List<StopGroup> stopGroupByName = stopGroupMapper.getStopGroupByName(list);
 					StopsTemplate stopsTemplate = new StopsTemplate();
-					stopsTemplate.setId(Utils.getUUID32());
+					stopsTemplate.setId(SqlUtils.getUUID32());
 					stopsTemplate.setCrtDttm(new Date());
 					stopsTemplate.setCrtUser(username);
 					stopsTemplate.setEnableFlag(true);
 					stopsTemplate.setLastUpdateUser(username);
 					stopsTemplate.setLastUpdateDttm(new Date());
 					stopsTemplate.setBundel(bundle);
-					stopsTemplate.setDescription(Utils.replaceString(description));
-					stopsTemplate.setGroups(Utils.replaceString(groups));
-					stopsTemplate.setName(Utils.replaceString(name));
+					stopsTemplate.setDescription(SqlUtils.replaceString(description));
+					stopsTemplate.setGroups(SqlUtils.replaceString(groups));
+					stopsTemplate.setName(SqlUtils.replaceString(name));
 					stopsTemplate.setInports(inports);
 					stopsTemplate.setOutports(outports);
 					stopsTemplate.setOwner(owner);
@@ -180,17 +181,17 @@ public class StopsTemplateMapperTest extends ApplicationTests {
 					if (null != jsonArray && !jsonArray.isEmpty()) {
 						for (int i = 0; i < jsonArray.size(); i++) {
 							PropertyTemplate PropertyTemplate = new PropertyTemplate();
-							PropertyTemplate.setId(Utils.getUUID32());
+							PropertyTemplate.setId(SqlUtils.getUUID32());
 							PropertyTemplate.setCrtDttm(new Date());
 							PropertyTemplate.setCrtUser(username);
 							PropertyTemplate.setEnableFlag(true);
 							PropertyTemplate.setLastUpdateUser(username);
 							PropertyTemplate.setLastUpdateDttm(new Date());
-							PropertyTemplate.setDefaultValue(Utils.replaceString(jsonArray.getJSONObject(i).getString("defaultValue")));
-							PropertyTemplate.setAllowableValues(Utils.replaceString(jsonArray.getJSONObject(i).getString("allowableValues")));
-							PropertyTemplate.setDescription(Utils.replaceString(jsonArray.getJSONObject(i).getString("description")));
-							PropertyTemplate.setDisplayName(Utils.replaceString(jsonArray.getJSONObject(i).getString("displayName")));
-							PropertyTemplate.setName(Utils.replaceString(jsonArray.getJSONObject(i).getString("name")));
+							PropertyTemplate.setDefaultValue(SqlUtils.replaceString(jsonArray.getJSONObject(i).getString("defaultValue")));
+							PropertyTemplate.setAllowableValues(SqlUtils.replaceString(jsonArray.getJSONObject(i).getString("allowableValues")));
+							PropertyTemplate.setDescription(SqlUtils.replaceString(jsonArray.getJSONObject(i).getString("description")));
+							PropertyTemplate.setDisplayName(SqlUtils.replaceString(jsonArray.getJSONObject(i).getString("displayName")));
+							PropertyTemplate.setName(SqlUtils.replaceString(jsonArray.getJSONObject(i).getString("name")));
 							PropertyTemplate.setRequired(jsonArray.getJSONObject(i).getString("required").equals("true") ? true : false);
 							PropertyTemplate.setSensitive(jsonArray.getJSONObject(i).getString("sensitive").equals("true") ? true : false);
 							PropertyTemplate.setStopsTemplate(stopsTemplate.getId());

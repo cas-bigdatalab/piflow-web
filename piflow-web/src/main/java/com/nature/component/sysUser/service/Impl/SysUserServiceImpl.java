@@ -1,6 +1,6 @@
 package com.nature.component.sysUser.service.Impl;
 
-import com.nature.base.util.Utils;
+import com.nature.base.util.SqlUtils;
 import com.nature.common.Eunm.SysRoleType;
 import com.nature.component.sysUser.model.SysRole;
 import com.nature.component.sysUser.model.SysUser;
@@ -62,7 +62,7 @@ public class SysUserServiceImpl implements ISysUserService {
                 //加密密码
                 password = new BCryptPasswordEncoder().encode(password);
                 SysUser sysUser = new SysUser();
-                sysUser.setId(Utils.getUUID32());
+                sysUser.setId(SqlUtils.getUUID32());
                 sysUser.setCrtDttm(new Date());
                 sysUser.setCrtUser("system");
                 sysUser.setLastUpdateDttm(new Date());

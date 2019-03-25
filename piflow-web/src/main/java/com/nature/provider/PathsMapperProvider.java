@@ -2,7 +2,7 @@ package com.nature.provider;
 
 import com.nature.base.util.DateUtils;
 import com.nature.base.util.SessionUserUtil;
-import com.nature.base.util.Utils;
+import com.nature.base.util.SqlUtils;
 import com.nature.base.vo.UserVo;
 import com.nature.component.flow.model.Flow;
 import com.nature.component.flow.model.Paths;
@@ -63,20 +63,20 @@ public class PathsMapperProvider {
                     Flow flow = paths.getFlow();
 
                     sql.append("(");
-                    sql.append(Utils.addSqlStr((id == null ? "" : id)) + ",");
-                    sql.append(Utils.addSqlStr((crtDttm == null ? "" : DateUtils.dateTimesToStr(crtDttm))) + ",");
-                    sql.append(Utils.addSqlStr((crtUser == null ? "" : crtUser)) + ",");
-                    sql.append(Utils.addSqlStr((lastUpdateDttm == null ? "" : DateUtils.dateTimesToStr(lastUpdateDttm)))
+                    sql.append (SqlUtils.addSqlStr((id == null ? "" : id)) + ",");
+                    sql.append (SqlUtils.addSqlStr((crtDttm == null ? "" : DateUtils.dateTimesToStr(crtDttm))) + ",");
+                    sql.append (SqlUtils.addSqlStr((crtUser == null ? "" : crtUser)) + ",");
+                    sql.append (SqlUtils.addSqlStr((lastUpdateDttm == null ? "" : DateUtils.dateTimesToStr(lastUpdateDttm)))
                             + ",");
-                    sql.append(Utils.addSqlStr((lastUpdateUser == null ? "" : lastUpdateUser)) + ",");
+                    sql.append (SqlUtils.addSqlStr((lastUpdateUser == null ? "" : lastUpdateUser)) + ",");
                     sql.append((version == null ? "0" : version) + ",");
                     sql.append((enableFlag == null ? "1" : (enableFlag ? 1 : 0)) + ",");
-                    sql.append(Utils.addSqlStr((from == null ? "" : from)) + ",");
-                    sql.append(Utils.addSqlStr((to == null ? "" : to)) + ",");
-                    sql.append(Utils.addSqlStr((outport == null ? "" : outport)) + ",");
-                    sql.append(Utils.addSqlStr((inport == null ? "" : inport)) + ",");
-                    sql.append(Utils.addSqlStr((pageId == null ? "" : pageId)) + ",");
-                    sql.append(Utils.addSqlStr((flow == null ? "" : flow.getId())));
+                    sql.append (SqlUtils.addSqlStr((from == null ? "" : from)) + ",");
+                    sql.append (SqlUtils.addSqlStr((to == null ? "" : to)) + ",");
+                    sql.append (SqlUtils.addSqlStr((outport == null ? "" : outport)) + ",");
+                    sql.append (SqlUtils.addSqlStr((inport == null ? "" : inport)) + ",");
+                    sql.append (SqlUtils.addSqlStr((pageId == null ? "" : pageId)) + ",");
+                    sql.append (SqlUtils.addSqlStr((flow == null ? "" : flow.getId())));
                     if (i != pathsList.size()) {
                         sql.append("),");
                     } else {
@@ -133,34 +133,34 @@ public class PathsMapperProvider {
             if (null == enableFlag) {
                 enableFlag = true;
             }
-            sql.VALUES("id", Utils.addSqlStr(id));
-            sql.VALUES("crt_dttm", Utils.addSqlStr(DateUtils.dateTimesToStr(crtDttm)));
-            sql.VALUES("crt_user", Utils.addSqlStr(crtUser));
-            sql.VALUES("last_update_dttm", Utils.addSqlStr(DateUtils.dateTimesToStr(lastUpdateDttm)));
-            sql.VALUES("last_update_user", Utils.addSqlStr(lastUpdateUser));
+            sql.VALUES("id",  SqlUtils.addSqlStr(id));
+            sql.VALUES("crt_dttm",  SqlUtils.addSqlStr(DateUtils.dateTimesToStr(crtDttm)));
+            sql.VALUES("crt_user",  SqlUtils.addSqlStr(crtUser));
+            sql.VALUES("last_update_dttm",  SqlUtils.addSqlStr(DateUtils.dateTimesToStr(lastUpdateDttm)));
+            sql.VALUES("last_update_user",  SqlUtils.addSqlStr(lastUpdateUser));
             sql.VALUES("version", (version + 1) + "");
             sql.VALUES("ENABLE_FLAG", (enableFlag ? 1 : 0) + "");
 
             // 处理其他字段
             if (StringUtils.isNotBlank(from)) {
-                sql.VALUES("line_from", Utils.addSqlStr(from));
+                sql.VALUES("line_from",  SqlUtils.addSqlStr(from));
             }
             if (StringUtils.isNotBlank(to)) {
-                sql.VALUES("line_to", Utils.addSqlStr(to));
+                sql.VALUES("line_to",  SqlUtils.addSqlStr(to));
             }
             if (StringUtils.isNotBlank(outport)) {
-                sql.VALUES("line_outport", Utils.addSqlStr(outport));
+                sql.VALUES("line_outport",  SqlUtils.addSqlStr(outport));
             }
             if (StringUtils.isNotBlank(inport)) {
-                sql.VALUES("line_inport", Utils.addSqlStr(inport));
+                sql.VALUES("line_inport",  SqlUtils.addSqlStr(inport));
             }
             if (StringUtils.isNotBlank(pageId)) {
-                sql.VALUES("line_port", Utils.addSqlStr(pageId));
+                sql.VALUES("line_port",  SqlUtils.addSqlStr(pageId));
             }
             if (null != flow) {
                 String flowId = flow.getId();
                 if (StringUtils.isNotBlank(flowId)) {
-                    sql.VALUES("fk_flow_id", Utils.addSqlStr(flowId));
+                    sql.VALUES("fk_flow_id",  SqlUtils.addSqlStr(flowId));
                 }
             }
             sqlStr = sql.toString();
@@ -201,8 +201,8 @@ public class PathsMapperProvider {
                 version = 0L;
             }
             String lastUpdateDttmStr = DateUtils.dateTimesToStr(lastUpdateDttm);
-            sql.SET("LAST_UPDATE_DTTM = " + Utils.addSqlStr(lastUpdateDttmStr));
-            sql.SET("LAST_UPDATE_USER = " + Utils.addSqlStr(lastUpdateUser));
+            sql.SET("LAST_UPDATE_DTTM = " +  SqlUtils.addSqlStr(lastUpdateDttmStr));
+            sql.SET("LAST_UPDATE_USER = " +  SqlUtils.addSqlStr(lastUpdateUser));
             sql.SET("VERSION = " + (version + 1));
 
             // 处理其他字段
@@ -210,19 +210,19 @@ public class PathsMapperProvider {
                 sql.SET("ENABLE_FLAG = " + (enableFlag ? 1 : 0));
             }
             if (StringUtils.isNotBlank(from)) {
-                sql.SET("line_from = " + Utils.addSqlStr(from));
+                sql.SET("line_from = " +  SqlUtils.addSqlStr(from));
             }
             if (StringUtils.isNotBlank(to)) {
-                sql.SET("line_to = " + Utils.addSqlStr(to));
+                sql.SET("line_to = " +  SqlUtils.addSqlStr(to));
             }
             if (StringUtils.isNotBlank(outport)) {
-                sql.SET("line_outport = " + Utils.addSqlStr(outport));
+                sql.SET("line_outport = " +  SqlUtils.addSqlStr(outport));
             }
             if (StringUtils.isNotBlank(inport)) {
-                sql.SET("line_inport = " + Utils.addSqlStr(inport));
+                sql.SET("line_inport = " +  SqlUtils.addSqlStr(inport));
             }
             sql.WHERE("VERSION = " + version);
-            sql.WHERE("id = " + Utils.addSqlStr(id));
+            sql.WHERE("id = " +  SqlUtils.addSqlStr(id));
             sqlStr = sql.toString();
 
         }
@@ -241,7 +241,7 @@ public class PathsMapperProvider {
         sql.SELECT("*");
         sql.FROM("flow_path");
         sql.WHERE("enable_flag = 1");
-        sql.WHERE("fk_flow_id = " + Utils.addSqlStr(flowId));
+        sql.WHERE("fk_flow_id = " +  SqlUtils.addSqlStr(flowId));
         sqlStr = sql.toString();
         return sqlStr;
     }
@@ -262,16 +262,16 @@ public class PathsMapperProvider {
         sql.FROM("flow_path");
         sql.WHERE("enable_flag = 1");
         if (StringUtils.isNotBlank(flowId)) {
-            sql.WHERE("fk_flow_id = " + Utils.addSqlStr(flowId));
+            sql.WHERE("fk_flow_id = " +  SqlUtils.addSqlStr(flowId));
         }
         if (StringUtils.isNotBlank(pageId)) {
-            sql.WHERE("page_id = " + Utils.addSqlStr(pageId));
+            sql.WHERE("page_id = " +  SqlUtils.addSqlStr(pageId));
         }
         if (StringUtils.isNotBlank(from)) {
-            sql.WHERE("line_from = " + Utils.addSqlStr(from));
+            sql.WHERE("line_from = " +  SqlUtils.addSqlStr(from));
         }
         if (StringUtils.isNotBlank(to)) {
-            sql.WHERE("line_to = " + Utils.addSqlStr(to));
+            sql.WHERE("line_to = " +  SqlUtils.addSqlStr(to));
         }
         sqlStr = sql.toString();
         return sqlStr;
@@ -293,16 +293,16 @@ public class PathsMapperProvider {
         sql.FROM("flow_path");
         sql.WHERE("enable_flag = 1");
         if (StringUtils.isNotBlank(flowId)) {
-            sql.WHERE("fk_flow_id = " + Utils.addSqlStr(flowId));
+            sql.WHERE("fk_flow_id = " +  SqlUtils.addSqlStr(flowId));
         }
         if (StringUtils.isNotBlank(pageId)) {
-            sql.WHERE("page_id = " + Utils.addSqlStr(pageId));
+            sql.WHERE("page_id = " +  SqlUtils.addSqlStr(pageId));
         }
         if (StringUtils.isNotBlank(from)) {
-            sql.WHERE("line_from = " + Utils.addSqlStr(from));
+            sql.WHERE("line_from = " +  SqlUtils.addSqlStr(from));
         }
         if (StringUtils.isNotBlank(to)) {
-            sql.WHERE("line_to = " + Utils.addSqlStr(to));
+            sql.WHERE("line_to = " +  SqlUtils.addSqlStr(to));
         }
         sqlStr = sql.toString();
         return sqlStr;
@@ -321,7 +321,7 @@ public class PathsMapperProvider {
             sql.SELECT("*");
             sql.FROM("flow_path");
             sql.WHERE("enable_flag = 1");
-            sql.WHERE("id=" + Utils.addSqlStr(id));
+            sql.WHERE("id=" +  SqlUtils.addSqlStr(id));
             sqlStr = sql.toString();
         }
         return sqlStr;
@@ -341,10 +341,10 @@ public class PathsMapperProvider {
               SQL sql = new SQL();
               sql.UPDATE("flow_path");
               sql.SET("ENABLE_FLAG = 0");
-              sql.SET("last_update_user = " + Utils.addSqlStr(username) );
-              sql.SET("last_update_dttm = " + Utils.addSqlStr(DateUtils.dateTimesToStr(new Date())) );
+              sql.SET("last_update_user = " +  SqlUtils.addSqlStr(username) );
+              sql.SET("last_update_dttm = " +  SqlUtils.addSqlStr(DateUtils.dateTimesToStr(new Date())) );
               sql.WHERE("ENABLE_FLAG = 1");
-              sql.WHERE("fk_flow_id = " + Utils.addSqlStrAndReplace(flowId));
+              sql.WHERE("fk_flow_id = " +  SqlUtils.addSqlStrAndReplace(flowId));
 
               sqlStr = sql.toString();
           }

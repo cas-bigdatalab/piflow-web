@@ -2,7 +2,7 @@ package com.nature.provider;
 
 import com.nature.base.util.DateUtils;
 import com.nature.base.util.SessionUserUtil;
-import com.nature.base.util.Utils;
+import com.nature.base.util.SqlUtils;
 import com.nature.base.vo.UserVo;
 import com.nature.component.flow.model.Flow;
 import com.nature.component.flow.model.FlowInfoDb;
@@ -33,7 +33,7 @@ public class FlowInfoDbMapperProvider {
             SQL sql = new SQL();
             sql.INSERT_INTO("flow_info");
             if (null != id) {
-                sql.VALUES("id", Utils.addSqlStr(id));
+                sql.VALUES("id", SqlUtils.addSqlStr(id));
             }
             if (null == crtDttm) {
                 crtDttm = new Date();
@@ -50,30 +50,30 @@ public class FlowInfoDbMapperProvider {
             if (null == version) {
                 version = 0L;
             }
-            sql.VALUES("crt_dttm", Utils.addSqlStr(DateUtils.dateTimesToStr(crtDttm)));
-            sql.VALUES("crt_user", Utils.addSqlStr(crtUser));
+            sql.VALUES("crt_dttm", SqlUtils.addSqlStr(DateUtils.dateTimesToStr(crtDttm)));
+            sql.VALUES("crt_user", SqlUtils.addSqlStr(crtUser));
             sql.VALUES("enable_flag", (enableFlag ? 1 : 0) + "");
-            sql.VALUES("last_update_dttm", Utils.addSqlStr(DateUtils.dateTimesToStr(lastUpdateDttm)));
-            sql.VALUES("last_update_user", Utils.addSqlStr(lastUpdateUser));
+            sql.VALUES("last_update_dttm", SqlUtils.addSqlStr(DateUtils.dateTimesToStr(lastUpdateDttm)));
+            sql.VALUES("last_update_user", SqlUtils.addSqlStr(lastUpdateUser));
             sql.VALUES("version", version + "");
 
             if (null != startTime) {
-                sql.VALUES("start_time", Utils.addSqlStr(DateUtils.dateTimesToStr(startTime)));
+                sql.VALUES("start_time", SqlUtils.addSqlStr(DateUtils.dateTimesToStr(startTime)));
             }
             if (null != endTime) {
-                sql.VALUES("end_time", Utils.addSqlStr(DateUtils.dateTimesToStr(endTime)));
+                sql.VALUES("end_time", SqlUtils.addSqlStr(DateUtils.dateTimesToStr(endTime)));
             }
             if (null != name) {
-                sql.VALUES("name", Utils.addSqlStr(name));
+                sql.VALUES("name", SqlUtils.addSqlStr(name));
             }
             if (null != state) {
-                sql.VALUES("state", Utils.addSqlStr(state));
+                sql.VALUES("state", SqlUtils.addSqlStr(state));
             }
             if (null != progress) {
-                sql.VALUES("progress", Utils.addSqlStr(progress));
+                sql.VALUES("progress", SqlUtils.addSqlStr(progress));
             }
             if (null != flow) {
-                sql.VALUES("fk_flow_id", Utils.addSqlStr(flow.getId()));
+                sql.VALUES("fk_flow_id", SqlUtils.addSqlStr(flow.getId()));
             }
             sqlStr = sql.toString();
         }
@@ -135,8 +135,8 @@ public class FlowInfoDbMapperProvider {
                 version = 0L;
             }
             String lastUpdateDttmStr = DateUtils.dateTimesToStr(lastUpdateDttm);
-            sql.SET("LAST_UPDATE_DTTM = " + Utils.addSqlStr(lastUpdateDttmStr));
-            sql.SET("LAST_UPDATE_USER = " + Utils.addSqlStr(lastUpdateUser));
+            sql.SET("LAST_UPDATE_DTTM = " + SqlUtils.addSqlStr(lastUpdateDttmStr));
+            sql.SET("LAST_UPDATE_USER = " + SqlUtils.addSqlStr(lastUpdateUser));
             sql.SET("VERSION = " + (version + 1));
 
             // 处理其他字段
@@ -144,31 +144,31 @@ public class FlowInfoDbMapperProvider {
                 sql.SET("ENABLE_FLAG = " + (enableFlag ? 1 : 0));
             }
             if (StringUtils.isNotBlank(state)) {
-                sql.SET("state = " + Utils.addSqlStr(state));
+                sql.SET("state = " + SqlUtils.addSqlStr(state));
             }
             if (StringUtils.isNotBlank(name)) {
-                sql.SET("NAME = " + Utils.addSqlStr(name));
+                sql.SET("NAME = " + SqlUtils.addSqlStr(name));
             }
             if (StringUtils.isNotBlank(progress)) {
-                sql.SET("progress = " + Utils.addSqlStr(progress));
+                sql.SET("progress = " + SqlUtils.addSqlStr(progress));
             }
             if (null != endTime) {
                 String endTimeStr = DateUtils.dateTimesToStr(endTime);
                 if (StringUtils.isNotBlank(endTimeStr)) {
-                    sql.SET("end_time = " + Utils.addSqlStr(endTimeStr));
+                    sql.SET("end_time = " + SqlUtils.addSqlStr(endTimeStr));
                 }
             }
             if (null != startTime) {
                 String startTimeStr = DateUtils.dateTimesToStr(startTime);
                 if (StringUtils.isNotBlank(startTimeStr)) {
-                    sql.SET("start_time = " + Utils.addSqlStr(startTimeStr));
+                    sql.SET("start_time = " + SqlUtils.addSqlStr(startTimeStr));
                 }
             }
             if (null != flow1) {
-                sql.SET("fk_flow_id = " + Utils.addSqlStr(flow1.getId()));
+                sql.SET("fk_flow_id = " + SqlUtils.addSqlStr(flow1.getId()));
             }
             sql.WHERE("VERSION = " + version);
-            sql.WHERE("ID = " + Utils.addSqlStr(id));
+            sql.WHERE("ID = " + SqlUtils.addSqlStr(id));
             sqlStr = sql.toString();
             if (StringUtils.isBlank(id)) {
                 sqlStr = "";
@@ -185,10 +185,10 @@ public class FlowInfoDbMapperProvider {
              SQL sql = new SQL();
              sql.UPDATE("flow_info");
              sql.SET("ENABLE_FLAG = 0");
-             sql.SET("last_update_user = " + Utils.addSqlStr(username) );
-             sql.SET("last_update_dttm = " + Utils.addSqlStr(DateUtils.dateTimesToStr(new Date())) );
+             sql.SET("last_update_user = " + SqlUtils.addSqlStr(username) );
+             sql.SET("last_update_dttm = " + SqlUtils.addSqlStr(DateUtils.dateTimesToStr(new Date())) );
              sql.WHERE("ENABLE_FLAG = 1");
-             sql.WHERE("id = " + Utils.addSqlStrAndReplace(id));
+             sql.WHERE("id = " + SqlUtils.addSqlStrAndReplace(id));
 
              sqlStr = sql.toString();
          }

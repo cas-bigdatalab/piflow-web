@@ -2,7 +2,7 @@ package com.nature.provider.mxGraph;
 
 import com.nature.base.util.DateUtils;
 import com.nature.base.util.SessionUserUtil;
-import com.nature.base.util.Utils;
+import com.nature.base.util.SqlUtils;
 import com.nature.base.vo.UserVo;
 import com.nature.component.mxGraph.model.MxCell;
 import com.nature.component.mxGraph.model.MxGraphModel;
@@ -64,43 +64,43 @@ public class MxCellMapperProvider {
             if (null == enableFlag) {
                 enableFlag = true;
             }
-            NewSQL.VALUES("ID", Utils.addSqlStr(id));
-            NewSQL.VALUES("CRT_DTTM", Utils.addSqlStr(DateUtils.dateTimesToStr(crtDttm)));
-            NewSQL.VALUES("CRT_USER", Utils.addSqlStr(crtUser));
-            NewSQL.VALUES("LAST_UPDATE_DTTM", Utils.addSqlStr(DateUtils.dateTimesToStr(lastUpdateDttm)));
-            NewSQL.VALUES("LAST_UPDATE_USER", Utils.addSqlStr(lastUpdateUser));
+            NewSQL.VALUES("ID", SqlUtils.addSqlStr(id));
+            NewSQL.VALUES("CRT_DTTM", SqlUtils.addSqlStr(DateUtils.dateTimesToStr(crtDttm)));
+            NewSQL.VALUES("CRT_USER", SqlUtils.addSqlStr(crtUser));
+            NewSQL.VALUES("LAST_UPDATE_DTTM", SqlUtils.addSqlStr(DateUtils.dateTimesToStr(lastUpdateDttm)));
+            NewSQL.VALUES("LAST_UPDATE_USER", SqlUtils.addSqlStr(lastUpdateUser));
             NewSQL.VALUES("VERSION", version + "");
             NewSQL.VALUES("ENABLE_FLAG", (enableFlag ? 1 : 0) + "");
 
             // 处理其他字段
             if (StringUtils.isNotBlank(pageId)) {
-                NewSQL.VALUES("MX_PAGEID", Utils.addSqlStr(pageId));
+                NewSQL.VALUES("MX_PAGEID", SqlUtils.addSqlStr(pageId));
             }
             if (StringUtils.isNotBlank(parent)) {
-                NewSQL.VALUES("MX_PARENT", Utils.addSqlStr(parent));
+                NewSQL.VALUES("MX_PARENT", SqlUtils.addSqlStr(parent));
             }
             if (StringUtils.isNotBlank(style)) {
-                NewSQL.VALUES("MX_STYLE", Utils.addSqlStr(style));
+                NewSQL.VALUES("MX_STYLE", SqlUtils.addSqlStr(style));
             }
             if (StringUtils.isNotBlank(edge)) {
-                NewSQL.VALUES("MX_EDGE", Utils.addSqlStr(edge));
+                NewSQL.VALUES("MX_EDGE", SqlUtils.addSqlStr(edge));
             }
             if (StringUtils.isNotBlank(source)) {
-                NewSQL.VALUES("MX_SOURCE", Utils.addSqlStr(source));
+                NewSQL.VALUES("MX_SOURCE", SqlUtils.addSqlStr(source));
             }
             if (StringUtils.isNotBlank(target)) {
-                NewSQL.VALUES("MX_TARGET", Utils.addSqlStr(target));
+                NewSQL.VALUES("MX_TARGET", SqlUtils.addSqlStr(target));
             }
             if (StringUtils.isNotBlank(value)) {
-                NewSQL.VALUES("MX_VALUE", Utils.addSqlStr(value));
+                NewSQL.VALUES("MX_VALUE", SqlUtils.addSqlStr(value));
             }
             if (StringUtils.isNotBlank(vertex)) {
-                NewSQL.VALUES("MX_VERTEX", Utils.addSqlStr(vertex));
+                NewSQL.VALUES("MX_VERTEX", SqlUtils.addSqlStr(vertex));
             }
             if (null != mxGraphModel) {
                 String mxGraphModelId = mxGraphModel.getId();
                 if (StringUtils.isNotBlank(mxGraphModelId)) {
-                    NewSQL.VALUES("FK_MX_GRAPH_ID", Utils.addSqlStr(mxGraphModelId));
+                    NewSQL.VALUES("FK_MX_GRAPH_ID", SqlUtils.addSqlStr(mxGraphModelId));
                 }
             }
 
@@ -150,8 +150,8 @@ public class MxCellMapperProvider {
                 version = 0L;
             }
             String lastUpdateDttmStr = DateUtils.dateTimesToStr(lastUpdateDttm);
-            newSQL.SET("LAST_UPDATE_DTTM = " + Utils.addSqlStr(lastUpdateDttmStr));
-            newSQL.SET("LAST_UPDATE_USER = " + Utils.addSqlStr(lastUpdateUser));
+            newSQL.SET("LAST_UPDATE_DTTM = " + SqlUtils.addSqlStr(lastUpdateDttmStr));
+            newSQL.SET("LAST_UPDATE_USER = " + SqlUtils.addSqlStr(lastUpdateUser));
             newSQL.SET("VERSION = " + (version + 1));
 
             // 处理其他字段
@@ -159,37 +159,37 @@ public class MxCellMapperProvider {
                 newSQL.SET("ENABLE_FLAG = " + (enableFlag ? 1 : 0));
             }
             if (StringUtils.isNotBlank(pageId)) {
-                newSQL.SET("MX_PAGEID = " + Utils.addSqlStr(pageId));
+                newSQL.SET("MX_PAGEID = " + SqlUtils.addSqlStr(pageId));
             }
             if (StringUtils.isNotBlank(parent)) {
-                newSQL.SET("MX_PARENT = " + Utils.addSqlStr(parent));
+                newSQL.SET("MX_PARENT = " + SqlUtils.addSqlStr(parent));
             }
             if (StringUtils.isNotBlank(style)) {
-                newSQL.SET("MX_STYLE = " + Utils.addSqlStr(style));
+                newSQL.SET("MX_STYLE = " + SqlUtils.addSqlStr(style));
             }
             if (StringUtils.isNotBlank(edge)) {
-                newSQL.SET("MX_EDGE = " + Utils.addSqlStr(edge));
+                newSQL.SET("MX_EDGE = " + SqlUtils.addSqlStr(edge));
             }
             if (StringUtils.isNotBlank(source)) {
-                newSQL.SET("MX_SOURCE = " + Utils.addSqlStr(source));
+                newSQL.SET("MX_SOURCE = " + SqlUtils.addSqlStr(source));
             }
             if (StringUtils.isNotBlank(target)) {
-                newSQL.SET("MX_TARGET = " + Utils.addSqlStr(target));
+                newSQL.SET("MX_TARGET = " + SqlUtils.addSqlStr(target));
             }
             if (StringUtils.isNotBlank(value)) {
-                newSQL.SET("MX_VALUE = " + Utils.addSqlStr(value));
+                newSQL.SET("MX_VALUE = " + SqlUtils.addSqlStr(value));
             }
             if (StringUtils.isNotBlank(vertex)) {
-                newSQL.SET("MX_VERTEX = " + Utils.addSqlStr(vertex));
+                newSQL.SET("MX_VERTEX = " + SqlUtils.addSqlStr(vertex));
             }
             if (null != mxGraphModel) {
                 String mxGraphModelId = mxGraphModel.getId();
                 if (StringUtils.isNotBlank(mxGraphModelId)) {
-                    newSQL.SET("FK_MX_GRAPH_ID = " + Utils.addSqlStr(mxGraphModelId));
+                    newSQL.SET("FK_MX_GRAPH_ID = " + SqlUtils.addSqlStr(mxGraphModelId));
                 }
             }
             newSQL.WHERE("VERSION = " + version);
-            newSQL.WHERE("id = " + Utils.addSqlStr(id));
+            newSQL.WHERE("id = " + SqlUtils.addSqlStr(id));
             sqlStr = newSQL.toString();
             if (StringUtils.isBlank(id)) {
                 sqlStr = "";
@@ -209,7 +209,7 @@ public class MxCellMapperProvider {
         SQL sql = new SQL();
         sql.SELECT("*");
         sql.FROM("mx_cell");
-        sql.WHERE("fk_mx_graph_id = " + Utils.addSqlStr(mxGraphId));
+        sql.WHERE("fk_mx_graph_id = " + SqlUtils.addSqlStr(mxGraphId));
         sql.WHERE("enable_flag = 1");
         sqlStr = sql.toString();
         return sqlStr;
@@ -226,7 +226,7 @@ public class MxCellMapperProvider {
         SQL sql = new SQL();
         sql.SELECT("*");
         sql.FROM("mx_cell");
-        sql.WHERE("id = " + Utils.addSqlStr(id));
+        sql.WHERE("id = " + SqlUtils.addSqlStr(id));
         sql.WHERE("enable_flag = 1");
         sqlStr = sql.toString();
         return sqlStr;
@@ -246,10 +246,10 @@ public class MxCellMapperProvider {
               SQL sql = new SQL();
               sql.UPDATE("mx_cell");
               sql.SET("ENABLE_FLAG = 0");
-              sql.SET("last_update_user = " + Utils.addSqlStr(username) );
-              sql.SET("last_update_dttm = " + Utils.addSqlStr(DateUtils.dateTimesToStr(new Date())) );
+              sql.SET("last_update_user = " + SqlUtils.addSqlStr(username) );
+              sql.SET("last_update_dttm = " + SqlUtils.addSqlStr(DateUtils.dateTimesToStr(new Date())) );
               sql.WHERE("ENABLE_FLAG = 1");
-              sql.WHERE("id = " + Utils.addSqlStrAndReplace(id));
+              sql.WHERE("id = " + SqlUtils.addSqlStrAndReplace(id));
 
               sqlStr = sql.toString();
           }

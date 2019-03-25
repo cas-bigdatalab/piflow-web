@@ -183,8 +183,8 @@ public class ProcessTransaction {
      *
      * @return
      */
-    public List<Process> getProcessListByParam(String param) {
-        return processMapper.getProcessListByParam(param);
+    public List<Process> getProcessListByParam(UserVo currentUser, String param) {
+        return processMapper.getProcessListByParam(currentUser, param);
     }
 
     /**
@@ -274,7 +274,7 @@ public class ProcessTransaction {
         return processVo;
     }
 
-    public List<String> getRunningProcess(){
+    public List<String> getRunningProcess() {
         return processMapper.getRunningProcess();
     }
 

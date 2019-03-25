@@ -1,7 +1,7 @@
 package com.nature.component.flow.service.impl;
 
 import com.nature.base.util.SessionUserUtil;
-import com.nature.base.util.Utils;
+import com.nature.base.util.SqlUtils;
 import com.nature.base.vo.UserVo;
 import com.nature.component.flow.model.Flow;
 import com.nature.component.flow.model.Paths;
@@ -106,24 +106,24 @@ public class PathsServiceImpl implements IPathsService {
         return 0;
     }
 
-	@Override
-	public int addPathsList(List<Paths> pathsList,Flow flow) {
-		UserVo user = SessionUserUtil.getCurrentUser();
-	    String username = (null != user) ? user.getUsername() : "-1";
-		List<Paths> list = new ArrayList<Paths>();
-		if (null != pathsList && pathsList.size() > 0) {
-			for (Paths paths : pathsList) {
-				if (null != paths) {
-					paths.setId(Utils.getUUID32());
-					paths.setCrtDttm(new Date());
-					paths.setFlow(flow);
-					paths.setEnableFlag(true);
-					paths.setLastUpdateDttm(new Date());
-					paths.setLastUpdateUser(username);
-					list.add(paths);
-				}
-			}
-		}
-		return pathsMapper.addPathsList(list);
-	}
+    @Override
+    public int addPathsList(List<Paths> pathsList, Flow flow) {
+        UserVo user = SessionUserUtil.getCurrentUser();
+        String username = (null != user) ? user.getUsername() : "-1";
+        List<Paths> list = new ArrayList<Paths>();
+        if (null != pathsList && pathsList.size() > 0) {
+            for (Paths paths : pathsList) {
+                if (null != paths) {
+                    paths.setId(SqlUtils.getUUID32());
+                    paths.setCrtDttm(new Date());
+                    paths.setFlow(flow);
+                    paths.setEnableFlag(true);
+                    paths.setLastUpdateDttm(new Date());
+                    paths.setLastUpdateUser(username);
+                    list.add(paths);
+                }
+            }
+        }
+        return pathsMapper.addPathsList(list);
+    }
 }

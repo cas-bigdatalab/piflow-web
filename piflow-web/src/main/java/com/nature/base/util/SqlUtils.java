@@ -1,10 +1,15 @@
 package com.nature.base.util;
 
+import com.nature.base.vo.UserVo;
+import com.nature.common.Eunm.SysRoleType;
+import com.nature.component.sysUser.model.SysRole;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.List;
 import java.util.UUID;
 
-public class Utils {
+public class SqlUtils {
     /**
      * uuid(32位的)
      *
@@ -68,6 +73,31 @@ public class Utils {
                 }
             }
         }
+        return str;
+    }
+
+    public static String addQueryByUserRole(UserVo currentUser, boolean isAddAnd) {
+        String str = "FAIL";
+        if (null != currentUser) {
+            str = "CRT_USER = '" + currentUser.getUsername() + "' ";
+            if (isAddAnd) {
+                str = ("AND " + str);
+            }
+            boolean isAdmin = false;
+            List<SysRole> roles = currentUser.getRoles();
+            if (CollectionUtils.isNotEmpty(roles)) {
+                for (SysRole sysRole : roles) {
+                    if (null != sysRole && SysRoleType.ADMIN == sysRole.getRole()) {
+                        isAdmin = true;
+                        break;
+                    }
+                }
+            }
+            if (isAdmin) {
+                str = " ";
+            }
+        }
+
         return str;
     }
 }

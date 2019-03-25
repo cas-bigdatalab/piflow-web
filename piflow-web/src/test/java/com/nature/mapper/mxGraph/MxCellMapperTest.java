@@ -1,20 +1,17 @@
 package com.nature.mapper.mxGraph;
 
-import java.util.Date;
-import java.util.List;
-
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback;
-
 import com.nature.ApplicationTests;
 import com.nature.base.util.LoggerUtil;
-import com.nature.base.util.Utils;
+import com.nature.base.util.SqlUtils;
 import com.nature.component.mxGraph.model.MxCell;
 import com.nature.component.mxGraph.model.MxGeometry;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.springframework.test.annotation.Rollback;
 
 import javax.annotation.Resource;
+import java.util.Date;
+import java.util.List;
 
 public class MxCellMapperTest extends ApplicationTests {
 
@@ -39,7 +36,7 @@ public class MxCellMapperTest extends ApplicationTests {
 	@Rollback(true)
 	public void testAddMxCell() {
 		MxCell mxCell = new MxCell();
-		mxCell.setId(Utils.getUUID32());
+		mxCell.setId(SqlUtils.getUUID32());
 		mxCell.setCrtDttm(new Date());
 		mxCell.setCrtUser("Nature");
 		mxCell.setEnableFlag(true);
@@ -55,7 +52,7 @@ public class MxCellMapperTest extends ApplicationTests {
 		mxCell.setVertex("vertex");
 
 		MxGeometry mxGeometry = new MxGeometry();
-		mxGeometry.setId(Utils.getUUID32());
+		mxGeometry.setId(SqlUtils.getUUID32());
 		mxGeometry.setCrtDttm(new Date());
 		mxGeometry.setCrtUser("Nature");
 		mxGeometry.setEnableFlag(true);

@@ -1,21 +1,20 @@
 package com.nature.mapper;
 
+import com.nature.ApplicationTests;
+import com.nature.base.util.LoggerUtil;
+import com.nature.base.util.SqlUtils;
+import com.nature.component.flow.model.Stops;
+import org.junit.Test;
+import org.slf4j.Logger;
+
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.nature.ApplicationTests;
-import com.nature.base.util.LoggerUtil;
-import com.nature.base.util.Utils;
-import com.nature.component.flow.model.Stops;
-
 public class StopMapperTest extends ApplicationTests {
 
-	@Autowired
+	@Resource
 	private StopsMapper stopMapper;
 
 	Logger logger = LoggerUtil.getLogger();
@@ -46,7 +45,7 @@ public class StopMapperTest extends ApplicationTests {
 	private Stops setStops(String num) {
 		Stops stops = new Stops();
 		// 基本信息
-		stops.setId(Utils.getUUID32());
+		stops.setId(SqlUtils.getUUID32());
 		stops.setCrtDttm(new Date());
 		stops.setCrtUser("test");
 		stops.setEnableFlag(true);

@@ -6,12 +6,6 @@ import com.nature.base.util.*;
 import com.nature.base.vo.StatefulRtnBase;
 import com.nature.base.vo.UserVo;
 import com.nature.common.Eunm.PortType;
-import com.nature.component.mxGraph.model.MxCell;
-import com.nature.component.mxGraph.model.MxGeometry;
-import com.nature.component.mxGraph.model.MxGraphModel;
-import com.nature.component.mxGraph.vo.MxCellVo;
-import com.nature.component.mxGraph.vo.MxGeometryVo;
-import com.nature.component.mxGraph.vo.MxGraphModelVo;
 import com.nature.component.flow.model.*;
 import com.nature.component.flow.service.IFlowService;
 import com.nature.component.flow.utils.FlowInfoDbUtil;
@@ -22,6 +16,12 @@ import com.nature.component.flow.vo.FlowInfoDbVo;
 import com.nature.component.flow.vo.FlowVo;
 import com.nature.component.flow.vo.PathsVo;
 import com.nature.component.flow.vo.StopsVo;
+import com.nature.component.mxGraph.model.MxCell;
+import com.nature.component.mxGraph.model.MxGeometry;
+import com.nature.component.mxGraph.model.MxGraphModel;
+import com.nature.component.mxGraph.vo.MxCellVo;
+import com.nature.component.mxGraph.vo.MxGeometryVo;
+import com.nature.component.mxGraph.vo.MxGraphModelVo;
 import com.nature.mapper.*;
 import com.nature.mapper.mxGraph.MxCellMapper;
 import com.nature.mapper.mxGraph.MxGeometryMapper;
@@ -310,7 +310,7 @@ public class FlowServiceImpl implements IFlowService {
                                                 mxCell.setValue(mxCellVo.getValue() + mxCellVo.getPageId());
                                             }
                                             // mxCell 的基本属性(创建时必填)
-                                            mxCell.setId(Utils.getUUID32());
+                                            mxCell.setId(SqlUtils.getUUID32());
                                             mxCell.setCrtDttm(new Date());
                                             mxCell.setCrtUser(username);
                                             // mxCell 的基本属性
@@ -329,7 +329,7 @@ public class FlowServiceImpl implements IFlowService {
                                                 // 将mxGeometryVo中的值copy到mxGeometry中
                                                 BeanUtils.copyProperties(mxGeometryVo, mxGeometry);
                                                 // mxGeometry 的基本属性(创建时必填)
-                                                mxGeometry.setId(Utils.getUUID32());
+                                                mxGeometry.setId(SqlUtils.getUUID32());
                                                 mxGeometry.setCrtDttm(new Date());
                                                 mxGeometry.setCrtUser(username);
                                                 // setmxGraphModel基本属性
@@ -775,7 +775,7 @@ public class FlowServiceImpl implements IFlowService {
                             stops.setLastUpdateDttm(new Date());
                             stops.setLastUpdateUser(username);
                             stops.setEnableFlag(true);
-                            stops.setId(Utils.getUUID32());
+                            stops.setId(SqlUtils.getUUID32());
                             stops.setPageId(mxCellVo.getPageId());
                             List<Property> propertiesList = null;
                             List<PropertyTemplate> propertiesTemplateList = stopsTemplate.getProperties();
@@ -784,7 +784,7 @@ public class FlowServiceImpl implements IFlowService {
                                 for (PropertyTemplate propertyTemplate : propertiesTemplateList) {
                                     Property property = new Property();
                                     BeanUtils.copyProperties(propertyTemplate, property);
-                                    property.setId(Utils.getUUID32());
+                                    property.setId(SqlUtils.getUUID32());
                                     property.setCrtDttm(new Date());
                                     property.setCrtUser(username);
                                     property.setLastUpdateDttm(new Date());

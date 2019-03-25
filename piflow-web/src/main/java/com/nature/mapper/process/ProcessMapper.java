@@ -1,5 +1,6 @@
 package com.nature.mapper.process;
 
+import com.nature.base.vo.UserVo;
 import com.nature.component.process.model.Process;
 import com.nature.provider.process.ProcessMapperProvider;
 import org.apache.ibatis.annotations.*;
@@ -57,7 +58,7 @@ public interface ProcessMapper {
     @Results({
             @Result(id = true, column = "id", property = "id"),
     })
-    public List<Process> getProcessListByParam(String param);
+    public List<Process> getProcessListByParam(@Param("currentUser") UserVo currentUser, @Param("param") String param);
 
     /**
      * 根据flowId查询正在运行的进程List(processList)

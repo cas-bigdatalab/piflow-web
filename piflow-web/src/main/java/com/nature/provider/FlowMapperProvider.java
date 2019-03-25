@@ -2,17 +2,13 @@ package com.nature.provider;
 
 import com.nature.base.util.DateUtils;
 import com.nature.base.util.SessionUserUtil;
-import com.nature.base.util.Utils;
+import com.nature.base.util.SqlUtils;
 import com.nature.base.vo.UserVo;
-import com.nature.common.Eunm.SysRoleType;
 import com.nature.component.flow.model.Flow;
-import com.nature.component.sysUser.model.SysRole;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 public class FlowMapperProvider {
@@ -70,36 +66,36 @@ public class FlowMapperProvider {
             if (null == isExample) {
                 isExample = false;
             }
-            sql.VALUES("ID", Utils.addSqlStr(id));
-            sql.VALUES("CRT_DTTM", Utils.addSqlStr(DateUtils.dateTimesToStr(crtDttm)));
-            sql.VALUES("CRT_USER", Utils.addSqlStr(crtUser));
-            sql.VALUES("LAST_UPDATE_DTTM", Utils.addSqlStr(DateUtils.dateTimesToStr(lastUpdateDttm)));
-            sql.VALUES("LAST_UPDATE_USER", Utils.addSqlStr(lastUpdateUser));
+            sql.VALUES("ID", SqlUtils.addSqlStr(id));
+            sql.VALUES("CRT_DTTM", SqlUtils.addSqlStr(DateUtils.dateTimesToStr(crtDttm)));
+            sql.VALUES("CRT_USER", SqlUtils.addSqlStr(crtUser));
+            sql.VALUES("LAST_UPDATE_DTTM", SqlUtils.addSqlStr(DateUtils.dateTimesToStr(lastUpdateDttm)));
+            sql.VALUES("LAST_UPDATE_USER", SqlUtils.addSqlStr(lastUpdateUser));
             sql.VALUES("VERSION", version + "");
             sql.VALUES("ENABLE_FLAG", (enableFlag ? 1 : 0) + "");
             sql.VALUES("IS_EXAMPLE", (isExample ? 1 : 0) + "");
 
             // 处理其他字段
             if (StringUtils.isNotBlank(description)) {
-                sql.VALUES("description", Utils.addSqlStr(description));
+                sql.VALUES("description", SqlUtils.addSqlStr(description));
             }
             if (StringUtils.isNotBlank(name)) {
-                sql.VALUES("NAME", Utils.addSqlStr(name));
+                sql.VALUES("NAME", SqlUtils.addSqlStr(name));
             }
             if (StringUtils.isNotBlank(uuid)) {
-                sql.VALUES("UUID", Utils.addSqlStr(uuid));
+                sql.VALUES("UUID", SqlUtils.addSqlStr(uuid));
             }
             if (StringUtils.isNotBlank(driverMemory)) {
-                sql.VALUES("driver_memory", Utils.addSqlStr(driverMemory));
+                sql.VALUES("driver_memory", SqlUtils.addSqlStr(driverMemory));
             }
             if (StringUtils.isNotBlank(executorCores)) {
-                sql.VALUES("executor_cores", Utils.addSqlStr(executorCores));
+                sql.VALUES("executor_cores", SqlUtils.addSqlStr(executorCores));
             }
             if (StringUtils.isNotBlank(executorMemory)) {
-                sql.VALUES("executor_memory", Utils.addSqlStr(executorMemory));
+                sql.VALUES("executor_memory", SqlUtils.addSqlStr(executorMemory));
             }
             if (StringUtils.isNotBlank(executorNumber)) {
-                sql.VALUES("executor_number", Utils.addSqlStr(executorNumber));
+                sql.VALUES("executor_number", SqlUtils.addSqlStr(executorNumber));
             }
             sqlStr = sql.toString();
         }
@@ -146,8 +142,8 @@ public class FlowMapperProvider {
                 version = 1L;
             }
             String lastUpdateDttmStr = DateUtils.dateTimesToStr(lastUpdateDttm);
-            sql.SET("LAST_UPDATE_DTTM = " + Utils.addSqlStr(lastUpdateDttmStr));
-            sql.SET("LAST_UPDATE_USER = " + Utils.addSqlStr(lastUpdateUser));
+            sql.SET("LAST_UPDATE_DTTM = " + SqlUtils.addSqlStr(lastUpdateDttmStr));
+            sql.SET("LAST_UPDATE_USER = " + SqlUtils.addSqlStr(lastUpdateUser));
             sql.SET("VERSION = " + (version + 1));
 
             // 处理其他字段
@@ -156,28 +152,28 @@ public class FlowMapperProvider {
                 sql.SET("ENABLE_FLAG = " + enableFlagInt);
             }
             if (StringUtils.isNotBlank(description)) {
-                sql.SET("description = " + Utils.addSqlStr(description));
+                sql.SET("description = " + SqlUtils.addSqlStr(description));
             }
             if (StringUtils.isNotBlank(name)) {
-                sql.SET("NAME = " + Utils.addSqlStr(name));
+                sql.SET("NAME = " + SqlUtils.addSqlStr(name));
             }
             if (StringUtils.isNotBlank(uuid)) {
-                sql.SET("UUID = " + Utils.addSqlStr(uuid));
+                sql.SET("UUID = " + SqlUtils.addSqlStr(uuid));
             }
             if (StringUtils.isNotBlank(driverMemory)) {
-                sql.SET("driver_memory = " + Utils.addSqlStr(driverMemory));
+                sql.SET("driver_memory = " + SqlUtils.addSqlStr(driverMemory));
             }
             if (StringUtils.isNotBlank(executorCores)) {
-                sql.SET("executor_cores = " + Utils.addSqlStr(executorCores));
+                sql.SET("executor_cores = " + SqlUtils.addSqlStr(executorCores));
             }
             if (StringUtils.isNotBlank(executorMemory)) {
-                sql.SET("executor_memory = " + Utils.addSqlStr(executorMemory));
+                sql.SET("executor_memory = " + SqlUtils.addSqlStr(executorMemory));
             }
             if (StringUtils.isNotBlank(executorNumber)) {
-                sql.SET("executor_number = " + Utils.addSqlStr(executorNumber));
+                sql.SET("executor_number = " + SqlUtils.addSqlStr(executorNumber));
             }
             sql.WHERE("VERSION = " + version);
-            sql.WHERE("id = " + Utils.addSqlStr(id));
+            sql.WHERE("id = " + SqlUtils.addSqlStr(id));
             sqlStr = sql.toString();
             if (StringUtils.isBlank(id)) {
                 sqlStr = "";
@@ -220,7 +216,6 @@ public class FlowMapperProvider {
             strBuf.append("ENABLE_FLAG = 1 ");
             strBuf.append("AND IS_EXAMPLE = 0 ");
 
-            boolean isAdmin = false;
             String param = (String) map.get("param");
             if (StringUtils.isNotBlank(param)) {
                 strBuf.append("AND ( ");
@@ -228,18 +223,7 @@ public class FlowMapperProvider {
                 strBuf.append("OR DESCRIPTION LIKE '%" + param + "%' ");
                 strBuf.append(") ");
             }
-            List<SysRole> roles = currentUser.getRoles();
-            if (CollectionUtils.isNotEmpty(roles)) {
-                for (SysRole sysRole : roles) {
-                    if (null != sysRole && SysRoleType.ADMIN == sysRole.getRole()) {
-                        isAdmin = true;
-                        break;
-                    }
-                }
-            }
-            if (!isAdmin) {
-                strBuf.append("AND CRT_USER = '" + currentUser.getUsername() + "' ");
-            }
+            strBuf.append(SqlUtils.addQueryByUserRole(currentUser, true));
             strBuf.append("ORDER BY CRT_DTTM DESC ");
             sqlStr = strBuf.toString();
         }
@@ -274,7 +258,7 @@ public class FlowMapperProvider {
         SQL sql = new SQL();
         sql.SELECT("*");
         sql.FROM("flow");
-        sql.WHERE("id = " + Utils.addSqlStr(id));
+        sql.WHERE("id = " + SqlUtils.addSqlStr(id));
         sql.WHERE("ENABLE_FLAG = 1");
         sqlStr = sql.toString();
         return sqlStr;
@@ -294,11 +278,11 @@ public class FlowMapperProvider {
             SQL sql = new SQL();
             sql.UPDATE("FLOW");
             sql.SET("ENABLE_FLAG = 0");
-            sql.SET("LAST_UPDATE_USER = " + Utils.addSqlStr(username));
-            sql.SET("LAST_UPDATE_DTTM = " + Utils.addSqlStr(DateUtils.dateTimesToStr(new Date())));
+            sql.SET("LAST_UPDATE_USER = " + SqlUtils.addSqlStr(username));
+            sql.SET("LAST_UPDATE_DTTM = " + SqlUtils.addSqlStr(DateUtils.dateTimesToStr(new Date())));
             sql.WHERE("ENABLE_FLAG = 1");
             sql.WHERE("IS_EXAMPLE = 0");
-            sql.WHERE("ID = " + Utils.addSqlStrAndReplace(id));
+            sql.WHERE("ID = " + SqlUtils.addSqlStrAndReplace(id));
 
             sqlStr = sql.toString();
         }

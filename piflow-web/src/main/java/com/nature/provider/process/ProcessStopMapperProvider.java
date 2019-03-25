@@ -1,7 +1,7 @@
 package com.nature.provider.process;
 
 import com.nature.base.util.DateUtils;
-import com.nature.base.util.Utils;
+import com.nature.base.util.SqlUtils;
 import com.nature.common.Eunm.PortType;
 import com.nature.common.Eunm.StopState;
 import com.nature.component.process.model.Process;
@@ -72,56 +72,56 @@ public class ProcessStopMapperProvider {
             if (null == enableFlag) {
                 enableFlag = true;
             }
-            sql.VALUES("ID", Utils.addSqlStrAndReplace(id));
-            sql.VALUES("CRT_DTTM", Utils.addSqlStrAndReplace(DateUtils.dateTimesToStr(crtDttm)));
-            sql.VALUES("CRT_USER", Utils.addSqlStrAndReplace(crtUser));
-            sql.VALUES("LAST_UPDATE_DTTM", Utils.addSqlStrAndReplace(DateUtils.dateTimesToStr(lastUpdateDttm)));
-            sql.VALUES("LAST_UPDATE_USER", Utils.addSqlStrAndReplace(lastUpdateUser));
+            sql.VALUES("ID", SqlUtils.addSqlStrAndReplace(id));
+            sql.VALUES("CRT_DTTM", SqlUtils.addSqlStrAndReplace(DateUtils.dateTimesToStr(crtDttm)));
+            sql.VALUES("CRT_USER", SqlUtils.addSqlStrAndReplace(crtUser));
+            sql.VALUES("LAST_UPDATE_DTTM", SqlUtils.addSqlStrAndReplace(DateUtils.dateTimesToStr(lastUpdateDttm)));
+            sql.VALUES("LAST_UPDATE_USER", SqlUtils.addSqlStrAndReplace(lastUpdateUser));
             sql.VALUES("VERSION", version + "");
             sql.VALUES("ENABLE_FLAG", (enableFlag ? 1 : 0) + "");
 
             // 处理其他字段
             if (null != name) {
-                sql.VALUES("NAME", Utils.addSqlStrAndReplace(name));
+                sql.VALUES("NAME", SqlUtils.addSqlStrAndReplace(name));
             }
             if (null != bundel) {
-                sql.VALUES("BUNDEL", Utils.addSqlStrAndReplace(bundel));
+                sql.VALUES("BUNDEL", SqlUtils.addSqlStrAndReplace(bundel));
             }
             if (null != groups) {
-                sql.VALUES("GROUPS", Utils.addSqlStrAndReplace(groups));
+                sql.VALUES("GROUPS", SqlUtils.addSqlStrAndReplace(groups));
             }
             if (null != owner) {
-                sql.VALUES("OWNER", Utils.addSqlStrAndReplace(owner));
+                sql.VALUES("OWNER", SqlUtils.addSqlStrAndReplace(owner));
             }
             if (null != description) {
-                sql.VALUES("DESCRIPTION", Utils.addSqlStrAndReplace(description));
+                sql.VALUES("DESCRIPTION", SqlUtils.addSqlStrAndReplace(description));
             }
             if (null != inports) {
-                sql.VALUES("INPORTS", Utils.addSqlStrAndReplace(inports));
+                sql.VALUES("INPORTS", SqlUtils.addSqlStrAndReplace(inports));
             }
             if (null != inPortType) {
-                sql.VALUES("IN_PORT_TYPE", Utils.addSqlStrAndReplace(inPortType.name()));
+                sql.VALUES("IN_PORT_TYPE", SqlUtils.addSqlStrAndReplace(inPortType.name()));
             }
             if (null != outports) {
-                sql.VALUES("OUTPORTS", Utils.addSqlStrAndReplace(outports));
+                sql.VALUES("OUTPORTS", SqlUtils.addSqlStrAndReplace(outports));
             }
             if (null != outPortType) {
-                sql.VALUES("OUT_PORT_TYPE", Utils.addSqlStrAndReplace(outPortType.name()));
+                sql.VALUES("OUT_PORT_TYPE", SqlUtils.addSqlStrAndReplace(outPortType.name()));
             }
             if (null != state) {
-                sql.VALUES("STATE", Utils.addSqlStrAndReplace(state.name()));
+                sql.VALUES("STATE", SqlUtils.addSqlStrAndReplace(state.name()));
             }
             if (null != startTime) {
-                sql.VALUES("START_TIME", Utils.addSqlStrAndReplace(DateUtils.dateTimesToStr(startTime)));
+                sql.VALUES("START_TIME", SqlUtils.addSqlStrAndReplace(DateUtils.dateTimesToStr(startTime)));
             }
             if (null != endTime) {
-                sql.VALUES("END_TIME", Utils.addSqlStrAndReplace(DateUtils.dateTimesToStr(endTime)));
+                sql.VALUES("END_TIME", SqlUtils.addSqlStrAndReplace(DateUtils.dateTimesToStr(endTime)));
             }
             if (null != pageId) {
-                sql.VALUES("PAGE_ID", Utils.addSqlStrAndReplace(pageId));
+                sql.VALUES("PAGE_ID", SqlUtils.addSqlStrAndReplace(pageId));
             }
             if (null != process) {
-                sql.VALUES("FK_FLOW_PROCESS_ID", Utils.addSqlStrAndReplace(process.getId()));
+                sql.VALUES("FK_FLOW_PROCESS_ID", SqlUtils.addSqlStrAndReplace(process.getId()));
             }
             sqlStr = sql.toString();
         }
@@ -213,27 +213,27 @@ public class ProcessStopMapperProvider {
                     }
 
                     sql.append("(");
-                    sql.append(Utils.addSqlStrAndReplace(id) + ",");
-                    sql.append(Utils.addSqlStrAndReplace(DateUtils.dateTimesToStr(crtDttm)) + ",");
-                    sql.append(Utils.addSqlStrAndReplace(crtUser) + ",");
-                    sql.append(Utils.addSqlStrAndReplace(DateUtils.dateTimesToStr(lastUpdateDttm)) + ",");
-                    sql.append(Utils.addSqlStrAndReplace(lastUpdateUser) + ",");
+                    sql.append(SqlUtils.addSqlStrAndReplace(id) + ",");
+                    sql.append(SqlUtils.addSqlStrAndReplace(DateUtils.dateTimesToStr(crtDttm)) + ",");
+                    sql.append(SqlUtils.addSqlStrAndReplace(crtUser) + ",");
+                    sql.append(SqlUtils.addSqlStrAndReplace(DateUtils.dateTimesToStr(lastUpdateDttm)) + ",");
+                    sql.append(SqlUtils.addSqlStrAndReplace(lastUpdateUser) + ",");
                     sql.append(version + ",");
                     sql.append((enableFlag ? 1 : 0) + ",");
-                    sql.append(Utils.addSqlStrAndReplace(name) + ",");
-                    sql.append(Utils.addSqlStrAndReplace(bundel) + ",");
-                    sql.append(Utils.addSqlStrAndReplace(groups) + ",");
-                    sql.append(Utils.addSqlStrAndReplace(owner) + ",");
-                    sql.append(Utils.addSqlStrAndReplace(description) + ",");
-                    sql.append(Utils.addSqlStrAndReplace(inports) + ",");
-                    sql.append(Utils.addSqlStrAndReplace((null != inPortType ? inPortType.name() : "")) + ",");
-                    sql.append(Utils.addSqlStrAndReplace(outports) + ",");
-                    sql.append(Utils.addSqlStrAndReplace((null != outPortType ? outPortType.name() : "")) + ",");
-                    sql.append(Utils.addSqlStrAndReplace((null != state ? state.name() : "")) + ",");
-//                    sql.append(Utils.addSqlStrAndReplace(DateUtils.dateTimesToStr(startTime)) + ",");
-//                    sql.append(Utils.addSqlStrAndReplace(DateUtils.dateTimesToStr(endTime)) + ",");
-                    sql.append(Utils.addSqlStrAndReplace(pageId) + ",");
-                    sql.append(Utils.addSqlStrAndReplace(process.getId()));
+                    sql.append(SqlUtils.addSqlStrAndReplace(name) + ",");
+                    sql.append(SqlUtils.addSqlStrAndReplace(bundel) + ",");
+                    sql.append(SqlUtils.addSqlStrAndReplace(groups) + ",");
+                    sql.append(SqlUtils.addSqlStrAndReplace(owner) + ",");
+                    sql.append(SqlUtils.addSqlStrAndReplace(description) + ",");
+                    sql.append(SqlUtils.addSqlStrAndReplace(inports) + ",");
+                    sql.append(SqlUtils.addSqlStrAndReplace((null != inPortType ? inPortType.name() : "")) + ",");
+                    sql.append(SqlUtils.addSqlStrAndReplace(outports) + ",");
+                    sql.append(SqlUtils.addSqlStrAndReplace((null != outPortType ? outPortType.name() : "")) + ",");
+                    sql.append(SqlUtils.addSqlStrAndReplace((null != state ? state.name() : "")) + ",");
+//                    sql.append(SqlUtils.addSqlStrAndReplace(DateUtils.dateTimesToStr(startTime)) + ",");
+//                    sql.append(SqlUtils.addSqlStrAndReplace(DateUtils.dateTimesToStr(endTime)) + ",");
+                    sql.append(SqlUtils.addSqlStrAndReplace(pageId) + ",");
+                    sql.append(SqlUtils.addSqlStrAndReplace(process.getId()));
                     if (i != processStops.size()) {
                         sql.append("),");
                     } else {
@@ -253,7 +253,7 @@ public class ProcessStopMapperProvider {
             sql.SELECT("*");
             sql.FROM("FLOW_PROCESS_STOP");
             sql.WHERE("enable_flag = 1");
-            sql.WHERE("FK_FLOW_PROCESS_ID = " + Utils.addSqlStr(processId));
+            sql.WHERE("FK_FLOW_PROCESS_ID = " + SqlUtils.addSqlStr(processId));
 
             sqlStr = sql.toString();
         }
@@ -274,8 +274,8 @@ public class ProcessStopMapperProvider {
             sql.SELECT("*");
             sql.FROM("FLOW_PROCESS_STOP");
             sql.WHERE("enable_flag = 1");
-            sql.WHERE("FK_FLOW_PROCESS_ID = " + Utils.addSqlStr(processId));
-            sql.WHERE("PAGE_ID = " + Utils.addSqlStr(pageId));
+            sql.WHERE("FK_FLOW_PROCESS_ID = " + SqlUtils.addSqlStr(processId));
+            sql.WHERE("PAGE_ID = " + SqlUtils.addSqlStr(pageId));
 
             sqlStr = sql.toString();
         }
@@ -293,7 +293,7 @@ public class ProcessStopMapperProvider {
         String[] pageIds = (String[]) map.get("pageIds");
         String sqlStr = "select 0";
         if (StringUtils.isNotBlank(processId) && null != pageIds && pageIds.length > 0) {
-            String pageIdsStr = Utils.strArrayToStr(pageIds);
+            String pageIdsStr = SqlUtils.strArrayToStr(pageIds);
             if (StringUtils.isNotBlank(pageIdsStr)) {
 
                 pageIdsStr = pageIdsStr.replace(",", "','");
@@ -302,7 +302,7 @@ public class ProcessStopMapperProvider {
                 sql.SELECT("*");
                 sql.FROM("FLOW_PROCESS_STOP");
                 sql.WHERE("enable_flag = 1");
-                sql.WHERE("FK_FLOW_PROCESS_ID = " + Utils.addSqlStr(processId));
+                sql.WHERE("FK_FLOW_PROCESS_ID = " + SqlUtils.addSqlStr(processId));
                 sql.WHERE("PAGE_ID IN ( " + pageIdsStr + ")");
 
                 sqlStr = sql.toString();
@@ -325,8 +325,8 @@ public class ProcessStopMapperProvider {
             sql.SELECT("*");
             sql.FROM("FLOW_PROCESS_STOP");
             sql.WHERE("enable_flag = 1");
-            sql.WHERE("FK_FLOW_PROCESS_ID = " + Utils.addSqlStr(processId));
-            sql.WHERE("NAME = " + Utils.addSqlStr(name));
+            sql.WHERE("FK_FLOW_PROCESS_ID = " + SqlUtils.addSqlStr(processId));
+            sql.WHERE("NAME = " + SqlUtils.addSqlStr(name));
 
             sqlStr = sql.toString();
         }
@@ -371,8 +371,8 @@ public class ProcessStopMapperProvider {
                     version = 0L;
                 }
                 String lastUpdateDttmStr = DateUtils.dateTimesToStr(lastUpdateDttm);
-                sql.SET("LAST_UPDATE_DTTM = " + Utils.addSqlStr(lastUpdateDttmStr));
-                sql.SET("LAST_UPDATE_USER = " + Utils.addSqlStr(lastUpdateUser));
+                sql.SET("LAST_UPDATE_DTTM = " + SqlUtils.addSqlStr(lastUpdateDttmStr));
+                sql.SET("LAST_UPDATE_USER = " + SqlUtils.addSqlStr(lastUpdateUser));
                 sql.SET("VERSION = " + (version + 1));
 
                 // 处理其他字段
@@ -380,54 +380,54 @@ public class ProcessStopMapperProvider {
                     sql.SET("ENABLE_FLAG = " + (enableFlag ? 1 : 0));
                 }
                 if (StringUtils.isNotBlank(name)) {
-                    sql.SET("NAME = " + Utils.addSqlStr(name));
+                    sql.SET("NAME = " + SqlUtils.addSqlStr(name));
                 }
                 if (StringUtils.isNotBlank(bundel)) {
-                    sql.SET("BUNDEL = " + Utils.addSqlStr(bundel));
+                    sql.SET("BUNDEL = " + SqlUtils.addSqlStr(bundel));
                 }
                 if (StringUtils.isNotBlank(groups)) {
-                    sql.SET("GROUPS = " + Utils.addSqlStr(groups));
+                    sql.SET("GROUPS = " + SqlUtils.addSqlStr(groups));
                 }
                 if (StringUtils.isNotBlank(owner)) {
-                    sql.SET("OWNER = " + Utils.addSqlStr(owner));
+                    sql.SET("OWNER = " + SqlUtils.addSqlStr(owner));
                 }
                 if (StringUtils.isNotBlank(description)) {
-                    sql.SET("DESCRIPTION = " + Utils.addSqlStr(description));
+                    sql.SET("DESCRIPTION = " + SqlUtils.addSqlStr(description));
                 }
                 if (StringUtils.isNotBlank(inports)) {
-                    sql.SET("INPORTS = " + Utils.addSqlStr(inports));
+                    sql.SET("INPORTS = " + SqlUtils.addSqlStr(inports));
                 }
                 if (null != inPortType) {
-                    sql.SET("IN_PORT_TYPE = " + Utils.addSqlStr(inPortType.name()));
+                    sql.SET("IN_PORT_TYPE = " + SqlUtils.addSqlStr(inPortType.name()));
                 }
                 if (StringUtils.isNotBlank(outports)) {
-                    sql.SET("OUTPORTS = " + Utils.addSqlStr(outports));
+                    sql.SET("OUTPORTS = " + SqlUtils.addSqlStr(outports));
                 }
                 if (null != outPortType) {
-                    sql.SET("OUT_PORT_TYPE = " + Utils.addSqlStr(outPortType.name()));
+                    sql.SET("OUT_PORT_TYPE = " + SqlUtils.addSqlStr(outPortType.name()));
                 }
                 if (null != state) {
-                    sql.SET("state = " + Utils.addSqlStr(state.name()));
+                    sql.SET("state = " + SqlUtils.addSqlStr(state.name()));
                 }
                 if (null != startTime) {
                     String startTimeStr = DateUtils.dateTimesToStr(startTime);
                     if (StringUtils.isNotBlank(startTimeStr)) {
-                        sql.SET("START_TIME = " + Utils.addSqlStr(startTimeStr));
+                        sql.SET("START_TIME = " + SqlUtils.addSqlStr(startTimeStr));
                     }
                 }
                 if (null != endTime) {
                     String endTimeStr = DateUtils.dateTimesToStr(endTime);
                     if (StringUtils.isNotBlank(endTimeStr)) {
-                        sql.SET("end_time = " + Utils.addSqlStr(endTimeStr));
+                        sql.SET("end_time = " + SqlUtils.addSqlStr(endTimeStr));
                     }
                 }
                 if (StringUtils.isNotBlank(pageId)) {
-                    sql.SET("PAGE_ID = " + Utils.addSqlStr(pageId));
+                    sql.SET("PAGE_ID = " + SqlUtils.addSqlStr(pageId));
                 }
 
                 sql.WHERE("ENABLE_FLAG = 1");
                 sql.WHERE("VERSION = " + version);
-                sql.WHERE("ID = " + Utils.addSqlStr(id));
+                sql.WHERE("ID = " + SqlUtils.addSqlStr(id));
 
                 sqlStr = sql.toString();
             }
@@ -440,12 +440,12 @@ public class ProcessStopMapperProvider {
         if (StringUtils.isAnyEmpty(processId, username)) {
             SQL sql = new SQL();
             sql.UPDATE("FLOW_PROCESS_STOP");
-            sql.SET("LAST_UPDATE_DTTM = " + Utils.addSqlStr(DateUtils.dateTimesToStr(new Date())));
-            sql.SET("LAST_UPDATE_USER = " + Utils.addSqlStr(username));
+            sql.SET("LAST_UPDATE_DTTM = " + SqlUtils.addSqlStr(DateUtils.dateTimesToStr(new Date())));
+            sql.SET("LAST_UPDATE_USER = " + SqlUtils.addSqlStr(username));
             sql.SET("VERSION=(VERSION+1)");
             sql.SET("enable_flag = 0");
             sql.WHERE("enable_flag = 1");
-            sql.WHERE("FK_FLOW_PROCESS_ID = " + Utils.addSqlStr(processId));
+            sql.WHERE("FK_FLOW_PROCESS_ID = " + SqlUtils.addSqlStr(processId));
 
             sqlStr = sql.toString();
         }

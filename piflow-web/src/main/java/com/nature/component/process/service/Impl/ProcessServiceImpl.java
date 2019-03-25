@@ -279,7 +279,7 @@ public class ProcessServiceImpl implements IProcessService {
      * @param appID
      * @return
      */
-    public String getAppInfoByAppId(String appID){
+    public String getAppInfoByAppId(String appID) {
         Map<String, Object> rtnMap = new HashMap<String, Object>();
         rtnMap.put("code", "0");
         if (StringUtils.isNotBlank(appID)) {
@@ -472,7 +472,7 @@ public class ProcessServiceImpl implements IProcessService {
                 Process process = processTransaction.getProcessById(processId);
                 if (null != process) {
                     processCopy = new Process();
-                    processCopy.setId(Utils.getUUID32());
+                    processCopy.setId(SqlUtils.getUUID32());
                     processCopy.setCrtUser(username);
                     processCopy.setCrtDttm(new Date());
                     processCopy.setLastUpdateUser(username);
@@ -494,7 +494,7 @@ public class ProcessServiceImpl implements IProcessService {
                         for (ProcessPath processPath : processPathList) {
                             if (null != processPath) {
                                 ProcessPath processPathCopy = new ProcessPath();
-                                processPathCopy.setId(Utils.getUUID32());
+                                processPathCopy.setId(SqlUtils.getUUID32());
                                 processPathCopy.setCrtDttm(new Date());
                                 processPathCopy.setCrtUser(username);
                                 processPathCopy.setLastUpdateDttm(new Date());
@@ -517,7 +517,7 @@ public class ProcessServiceImpl implements IProcessService {
                         for (ProcessStop processStop : processStopList) {
                             if (null != processStop) {
                                 ProcessStop processStopCopy = new ProcessStop();
-                                processStopCopy.setId(Utils.getUUID32());
+                                processStopCopy.setId(SqlUtils.getUUID32());
                                 processStopCopy.setCrtDttm(new Date());
                                 processStopCopy.setCrtUser(username);
                                 processStopCopy.setLastUpdateDttm(new Date());
@@ -540,7 +540,7 @@ public class ProcessServiceImpl implements IProcessService {
                                     for (ProcessStopProperty processStopProperty : processStopPropertyList) {
                                         if (null != processStopProperty) {
                                             ProcessStopProperty processStopPropertyCopy = new ProcessStopProperty();
-                                            processStopPropertyCopy.setId(Utils.getUUID32());
+                                            processStopPropertyCopy.setId(SqlUtils.getUUID32());
                                             processStopPropertyCopy.setCrtDttm(new Date());
                                             processStopPropertyCopy.setCrtUser(username);
                                             processStopPropertyCopy.setLastUpdateDttm(new Date());
@@ -595,7 +595,7 @@ public class ProcessServiceImpl implements IProcessService {
                 // copy flow信息到process
                 BeanUtils.copyProperties(flowById, process);
                 // set基本信息
-                process.setId(Utils.getUUID32());
+                process.setId(SqlUtils.getUUID32());
                 process.setCrtDttm(new Date());
                 process.setCrtUser(username);
                 process.setLastUpdateDttm(new Date());
@@ -623,7 +623,7 @@ public class ProcessServiceImpl implements IProcessService {
                             // copy stops的信息到processStop中
                             BeanUtils.copyProperties(stops, processStop);
                             // set基本信息
-                            processStop.setId(Utils.getUUID32());
+                            processStop.setId(SqlUtils.getUUID32());
                             processStop.setCrtDttm(new Date());
                             processStop.setCrtUser(username);
                             processStop.setLastUpdateDttm(new Date());
@@ -644,7 +644,7 @@ public class ProcessServiceImpl implements IProcessService {
                                         // Copy property information into processStopProperty
                                         BeanUtils.copyProperties(property, processStopProperty);
                                         // Set basic information
-                                        processStopProperty.setId(Utils.getUUID32());
+                                        processStopProperty.setId(SqlUtils.getUUID32());
                                         processStopProperty.setCrtDttm(new Date());
                                         processStopProperty.setCrtUser(username);
                                         processStopProperty.setLastUpdateDttm(new Date());
@@ -675,7 +675,7 @@ public class ProcessServiceImpl implements IProcessService {
                             // Copy paths information into processPath
                             BeanUtils.copyProperties(paths, processPath);
                             // Set basic information
-                            processPath.setId(Utils.getUUID32());
+                            processPath.setId(SqlUtils.getUUID32());
                             processPath.setCrtDttm(new Date());
                             processPath.setCrtUser(username);
                             processPath.setLastUpdateDttm(new Date());
@@ -777,9 +777,10 @@ public class ProcessServiceImpl implements IProcessService {
     @Override
     public String getProcessVoListPage(Integer offset, Integer limit, String param) {
         Map<String, Object> rtnMap = new HashMap<String, Object>();
+        UserVo currentUser = SessionUserUtil.getCurrentUser();
         if (null != offset && null != limit) {
             Page page = PageHelper.startPage(offset, limit);
-            processTransaction.getProcessListByParam(param);
+            processTransaction.getProcessListByParam(currentUser, param);
             rtnMap = PageHelperUtils.setDataTableParam(page, rtnMap);
         }
         return JsonUtils.toJsonNoException(rtnMap);

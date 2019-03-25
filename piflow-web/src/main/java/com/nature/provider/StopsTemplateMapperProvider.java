@@ -1,7 +1,7 @@
 package com.nature.provider;
 
 import com.nature.base.util.DateUtils;
-import com.nature.base.util.Utils;
+import com.nature.base.util.SqlUtils;
 import com.nature.component.flow.model.StopsTemplate;
 import org.apache.ibatis.jdbc.SQL;
 
@@ -37,7 +37,7 @@ public class StopsTemplateMapperProvider {
         sql.SELECT("*");
         sql.FROM("flow_stops_template");
         sql.WHERE("enable_flag = 1 ");
-        sql.WHERE("id = " + Utils.addSqlStr(id));
+        sql.WHERE("id = " + SqlUtils.addSqlStr(id));
         sqlStr = sql.toString();
         return sqlStr;
     }
@@ -54,7 +54,7 @@ public class StopsTemplateMapperProvider {
         sql.SELECT("*");
         sql.FROM("flow_stops_template");
         sql.WHERE("enable_flag = 1 ");
-        sql.WHERE("name = " + Utils.addSqlStr(stopsName));
+        sql.WHERE("name = " + SqlUtils.addSqlStr(stopsName));
         sqlStr = sql.toString();
         return sqlStr;
     }
@@ -89,22 +89,22 @@ public class StopsTemplateMapperProvider {
                 StopsTemplate stopsTemplate = stopsTemplateList.get(i);
                 if (null != stopsTemplate) {
                     sqlValuesStr.append("(");
-                    sqlValuesStr.append(Utils.addSqlStr(stopsTemplate.getId()) + ",");
-                    sqlValuesStr.append(Utils.addSqlStr(DateUtils.dateTimesToStr(stopsTemplate.getCrtDttm())) + ",");
-                    sqlValuesStr.append(Utils.addSqlStr(stopsTemplate.getCrtUser()) + ",");
+                    sqlValuesStr.append(SqlUtils.addSqlStr(stopsTemplate.getId()) + ",");
+                    sqlValuesStr.append(SqlUtils.addSqlStr(DateUtils.dateTimesToStr(stopsTemplate.getCrtDttm())) + ",");
+                    sqlValuesStr.append(SqlUtils.addSqlStr(stopsTemplate.getCrtUser()) + ",");
                     sqlValuesStr.append(stopsTemplate.getEnableFlag() ? 1 + "," : 0 + ",");
-                    sqlValuesStr.append(Utils.addSqlStr(DateUtils.dateTimesToStr(stopsTemplate.getLastUpdateDttm())) + ",");
-                    sqlValuesStr.append(Utils.addSqlStr(stopsTemplate.getLastUpdateUser()) + ",");
+                    sqlValuesStr.append(SqlUtils.addSqlStr(DateUtils.dateTimesToStr(stopsTemplate.getLastUpdateDttm())) + ",");
+                    sqlValuesStr.append(SqlUtils.addSqlStr(stopsTemplate.getLastUpdateUser()) + ",");
                     sqlValuesStr.append((null != stopsTemplate.getVersion() ? stopsTemplate.getVersion() : 0) + ",");
-                    sqlValuesStr.append(Utils.addSqlStr(stopsTemplate.getBundel()) + ",");
-                    sqlValuesStr.append(Utils.addSqlStr(stopsTemplate.getDescription().equals("null") ? "" : stopsTemplate.getDescription()) + ",");
-                    sqlValuesStr.append(Utils.addSqlStr(stopsTemplate.getGroups()) + ",");
-                    sqlValuesStr.append(Utils.addSqlStr(stopsTemplate.getName()) + ",");
-                    sqlValuesStr.append(Utils.addSqlStr(stopsTemplate.getOwner()) + ",");
-                    sqlValuesStr.append(Utils.addSqlStr(stopsTemplate.getInports()) + ",");
-                    sqlValuesStr.append(Utils.addSqlStr(null != stopsTemplate.getInPortType() ? stopsTemplate.getInPortType().name() : "") + ",");
-                    sqlValuesStr.append(Utils.addSqlStr(stopsTemplate.getOutports()) + ",");
-                    sqlValuesStr.append(Utils.addSqlStr(null != stopsTemplate.getOutPortType() ? stopsTemplate.getOutPortType().name() : "") );
+                    sqlValuesStr.append(SqlUtils.addSqlStr(stopsTemplate.getBundel()) + ",");
+                    sqlValuesStr.append(SqlUtils.addSqlStr(stopsTemplate.getDescription().equals("null") ? "" : stopsTemplate.getDescription()) + ",");
+                    sqlValuesStr.append(SqlUtils.addSqlStr(stopsTemplate.getGroups()) + ",");
+                    sqlValuesStr.append(SqlUtils.addSqlStr(stopsTemplate.getName()) + ",");
+                    sqlValuesStr.append(SqlUtils.addSqlStr(stopsTemplate.getOwner()) + ",");
+                    sqlValuesStr.append(SqlUtils.addSqlStr(stopsTemplate.getInports()) + ",");
+                    sqlValuesStr.append(SqlUtils.addSqlStr(null != stopsTemplate.getInPortType() ? stopsTemplate.getInPortType().name() : "") + ",");
+                    sqlValuesStr.append(SqlUtils.addSqlStr(stopsTemplate.getOutports()) + ",");
+                    sqlValuesStr.append(SqlUtils.addSqlStr(null != stopsTemplate.getOutPortType() ? stopsTemplate.getOutPortType().name() : "") );
                     sqlValuesStr.append(")");
                     if (i < stopsTemplateList.size() - 1) {
                         sqlValuesStr.append(",\n");

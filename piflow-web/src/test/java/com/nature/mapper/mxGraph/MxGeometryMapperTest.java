@@ -1,20 +1,19 @@
 package com.nature.mapper.mxGraph;
 
-import java.util.Date;
-
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback;
-
 import com.nature.ApplicationTests;
 import com.nature.base.util.LoggerUtil;
-import com.nature.base.util.Utils;
+import com.nature.base.util.SqlUtils;
 import com.nature.component.mxGraph.model.MxGeometry;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.springframework.test.annotation.Rollback;
+
+import javax.annotation.Resource;
+import java.util.Date;
 
 public class MxGeometryMapperTest extends ApplicationTests {
 
-	@Autowired
+	@Resource
 	private MxGeometryMapper mxGeometryMapper;
 
 	Logger logger = LoggerUtil.getLogger();
@@ -29,7 +28,7 @@ public class MxGeometryMapperTest extends ApplicationTests {
 	@Rollback(true)
 	public void testAddMxGeometry() {
 		MxGeometry mxGeometry = new MxGeometry();
-		mxGeometry.setId(Utils.getUUID32());
+		mxGeometry.setId(SqlUtils.getUUID32());
 		mxGeometry.setCrtDttm(new Date());
 		mxGeometry.setCrtUser("Nature");
 		mxGeometry.setEnableFlag(true);

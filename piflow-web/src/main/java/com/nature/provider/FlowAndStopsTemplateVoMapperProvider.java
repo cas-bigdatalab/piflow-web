@@ -1,12 +1,12 @@
 package com.nature.provider;
 
 import com.nature.base.util.DateUtils;
-import com.nature.base.util.Utils;
+import com.nature.base.util.SqlUtils;
 import com.nature.common.Eunm.PortType;
+import com.nature.component.flow.model.Template;
 import com.nature.component.template.model.FlowTemplateModel;
 import com.nature.component.template.model.PropertyTemplateModel;
 import com.nature.component.template.model.StopTemplateModel;
-import com.nature.component.flow.model.Template;
 import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
 
@@ -65,20 +65,20 @@ public class FlowAndStopsTemplateVoMapperProvider {
                 String crtUser = property.getCrtUser();
                 // 拼接时位置顺序不能错
                 sqlStrBuffer.append("(");
-                sqlStrBuffer.append(Utils.addSqlStr(Utils.replaceString(id)) + ",");
-                sqlStrBuffer.append(Utils.addSqlStr((crtDttm == null ? "" : DateUtils.dateTimesToStr(crtDttm))) + ",");
+                sqlStrBuffer.append(SqlUtils.addSqlStr(SqlUtils.replaceString(id)) + ",");
+                sqlStrBuffer.append(SqlUtils.addSqlStr((crtDttm == null ? "" : DateUtils.dateTimesToStr(crtDttm))) + ",");
                 sqlStrBuffer.append((enableFlag == null ? "1" : (enableFlag ? 1 : 0)) + ",");
-                sqlStrBuffer.append(Utils.addSqlStr((Utils.replaceString(name))) + ",");
-                sqlStrBuffer.append(Utils.addSqlStr((Utils.replaceString(displayName))) + ",");
-                sqlStrBuffer.append(Utils.addSqlStr((Utils.replaceString(description))) + ",");
-                sqlStrBuffer.append(Utils.addSqlStr((Utils.replaceString(customValue))) + ",");
-                sqlStrBuffer.append(Utils.addSqlStr((Utils.replaceString(allowableValues))) + ",");
+                sqlStrBuffer.append(SqlUtils.addSqlStr((SqlUtils.replaceString(name))) + ",");
+                sqlStrBuffer.append(SqlUtils.addSqlStr((SqlUtils.replaceString(displayName))) + ",");
+                sqlStrBuffer.append(SqlUtils.addSqlStr((SqlUtils.replaceString(description))) + ",");
+                sqlStrBuffer.append(SqlUtils.addSqlStr((SqlUtils.replaceString(customValue))) + ",");
+                sqlStrBuffer.append(SqlUtils.addSqlStr((SqlUtils.replaceString(allowableValues))) + ",");
                 sqlStrBuffer.append((required ? 1 : 0) + ",");
                 sqlStrBuffer.append((sensitive ? 1 : 0) + ",");
                 sqlStrBuffer.append((version == null ? "0" : version) + ",");
-                sqlStrBuffer.append(Utils.addSqlStr((stops == null ? "" : stops.getId())) + "," );
+                sqlStrBuffer.append(SqlUtils.addSqlStr((stops == null ? "" : stops.getId())) + "," );
                 sqlStrBuffer.append((isSelect == null ? 0 : isSelect) + ",");
-                sqlStrBuffer.append(Utils.addSqlStr((Utils.replaceString(crtUser))));
+                sqlStrBuffer.append(SqlUtils.addSqlStr((SqlUtils.replaceString(crtUser))));
                 if (i != propertyList.size()) {
                     sqlStrBuffer.append("),");
                 } else {
@@ -109,12 +109,12 @@ public class FlowAndStopsTemplateVoMapperProvider {
             // value中的第一个字符串为数据库中表对应的字段名
             // 除数字类型的字段外其他类型必须加单引号
 
-            sql.VALUES("ID", Utils.addSqlStr(id));
+            sql.VALUES("ID", SqlUtils.addSqlStr(id));
             if (StringUtils.isNotBlank(description)) {
-                sql.VALUES("description", Utils.addSqlStr(description));
+                sql.VALUES("description", SqlUtils.addSqlStr(description));
             }
             if (StringUtils.isNotBlank(name)) {
-                sql.VALUES("NAME", Utils.addSqlStr(name));
+                sql.VALUES("NAME", SqlUtils.addSqlStr(name));
             }
             sqlStr = sql.toString();
         }
@@ -160,55 +160,55 @@ public class FlowAndStopsTemplateVoMapperProvider {
             if (null == enableFlag) {
                 enableFlag = true;
             }
-            sql.VALUES("id", Utils.addSqlStr(id));
+            sql.VALUES("id", SqlUtils.addSqlStr(id));
             String crtDttmStr = DateUtils.dateTimesToStr(crtDttm);
-            sql.VALUES("crt_dttm", Utils.addSqlStr(crtDttmStr));
+            sql.VALUES("crt_dttm", SqlUtils.addSqlStr(crtDttmStr));
             sql.VALUES("version", (version + 1) + "");
             int enableFlagInt = enableFlag ? 1 : 0;
             sql.VALUES("ENABLE_FLAG", enableFlagInt + "");
 
             // 处理其他字段
             if (StringUtils.isNotBlank(bundel)) {
-                sql.VALUES("bundel", Utils.addSqlStr(bundel));
+                sql.VALUES("bundel", SqlUtils.addSqlStr(bundel));
             }
             if (StringUtils.isNotBlank(description)) {
-                sql.VALUES("description", Utils.addSqlStr(description));
+                sql.VALUES("description", SqlUtils.addSqlStr(description));
             }
             if (StringUtils.isNotBlank(name)) {
-                sql.VALUES("name", Utils.addSqlStr(name));
+                sql.VALUES("name", SqlUtils.addSqlStr(name));
             }
             if (StringUtils.isNotBlank(inports)) {
-                sql.VALUES("inports", Utils.addSqlStr(inports));
+                sql.VALUES("inports", SqlUtils.addSqlStr(inports));
             }
             if (null != inPortType) {
-                sql.VALUES("in_port_type", Utils.addSqlStr(inPortType.name()));
+                sql.VALUES("in_port_type", SqlUtils.addSqlStr(inPortType.name()));
             }
             if (StringUtils.isNotBlank(outports)) {
-                sql.VALUES("outports", Utils.addSqlStr(outports));
+                sql.VALUES("outports", SqlUtils.addSqlStr(outports));
             }
             if (null != outPortType) {
-                sql.VALUES("out_port_type", Utils.addSqlStr(outPortType.name()));
+                sql.VALUES("out_port_type", SqlUtils.addSqlStr(outPortType.name()));
             }
             if (StringUtils.isNotBlank(owner)) {
-                sql.VALUES("owner", Utils.addSqlStr(owner));
+                sql.VALUES("owner", SqlUtils.addSqlStr(owner));
             }
             if (StringUtils.isNotBlank(pageId)) {
-                sql.VALUES("page_id", Utils.addSqlStr(pageId));
+                sql.VALUES("page_id", SqlUtils.addSqlStr(pageId));
             }
             if (StringUtils.isNotBlank(crtUser)) {
-            	sql.VALUES("crt_user", Utils.addSqlStr(crtUser));
+            	sql.VALUES("crt_user", SqlUtils.addSqlStr(crtUser));
             }
             if (null != flow) {
                 String flowId = flow.getId();
                 if (StringUtils.isNotBlank(flowId)) {
-                    sql.VALUES("FK_template_ID", Utils.addSqlStr(flowId));
+                    sql.VALUES("FK_template_ID", SqlUtils.addSqlStr(flowId));
                 }
             }
             if (null != checkpoint) {
                 sql.VALUES("is_checkpoint", (checkpoint ? 1 : 0) + "");
             }
             if (StringUtils.isNotBlank(groups)) {
-                sql.VALUES("groups", Utils.addSqlStr(groups));
+                sql.VALUES("groups", SqlUtils.addSqlStr(groups));
             }
 
             sqlStr = sql.toString();

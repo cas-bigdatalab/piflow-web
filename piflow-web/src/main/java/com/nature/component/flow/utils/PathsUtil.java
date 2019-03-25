@@ -1,7 +1,7 @@
 package com.nature.component.flow.utils;
 
 import com.nature.base.util.SessionUserUtil;
-import com.nature.base.util.Utils;
+import com.nature.base.util.SqlUtils;
 import com.nature.base.vo.UserVo;
 import com.nature.component.flow.model.Paths;
 import com.nature.component.flow.vo.PathsVo;
@@ -48,7 +48,7 @@ public class PathsUtil {
                 if (null != pathsVo) {
                     Paths paths = new Paths();
                     BeanUtils.copyProperties(pathsVo, paths);
-                    paths.setId(Utils.getUUID32());
+                    paths.setId(SqlUtils.getUUID32());
                     paths.setCrtDttm(new Date());
                     paths.setCrtUser(username);
                     paths.setLastUpdateDttm(new Date());

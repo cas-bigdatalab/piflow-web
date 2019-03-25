@@ -3,15 +3,8 @@ package com.nature.controller;
 import com.nature.base.util.JsonUtils;
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.SessionUserUtil;
-import com.nature.base.util.Utils;
+import com.nature.base.util.SqlUtils;
 import com.nature.base.vo.UserVo;
-import com.nature.component.mxGraph.model.MxCell;
-import com.nature.component.mxGraph.model.MxGraphModel;
-import com.nature.component.mxGraph.service.IMxCellService;
-import com.nature.component.mxGraph.service.IMxGraphModelService;
-import com.nature.component.mxGraph.service.IMxGraphService;
-import com.nature.component.process.model.Process;
-import com.nature.component.process.service.IProcessService;
 import com.nature.component.flow.model.Flow;
 import com.nature.component.flow.model.Property;
 import com.nature.component.flow.model.Stops;
@@ -20,6 +13,13 @@ import com.nature.component.flow.service.IPathsService;
 import com.nature.component.flow.service.IPropertyService;
 import com.nature.component.flow.service.IStopsService;
 import com.nature.component.flow.vo.FlowVo;
+import com.nature.component.mxGraph.model.MxCell;
+import com.nature.component.mxGraph.model.MxGraphModel;
+import com.nature.component.mxGraph.service.IMxCellService;
+import com.nature.component.mxGraph.service.IMxGraphModelService;
+import com.nature.component.mxGraph.service.IMxGraphService;
+import com.nature.component.process.model.Process;
+import com.nature.component.process.service.IProcessService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
@@ -154,7 +154,7 @@ public class FlowCtrl {
         Flow flow = new Flow();
 
         BeanUtils.copyProperties(flowVo, flow);
-        String id = Utils.getUUID32();
+        String id = SqlUtils.getUUID32();
         flow.setId(id);
         flow.setCrtDttm(new Date());
         flow.setCrtUser(username);
@@ -165,7 +165,7 @@ public class FlowCtrl {
 
         MxGraphModel mxGraphModel = new MxGraphModel();
         mxGraphModel.setFlow(flow);
-        mxGraphModel.setId(Utils.getUUID32());
+        mxGraphModel.setId(SqlUtils.getUUID32());
         mxGraphModel.setCrtDttm(new Date());
         mxGraphModel.setCrtUser(username);
         mxGraphModel.setLastUpdateDttm(new Date());

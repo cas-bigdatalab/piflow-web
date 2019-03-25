@@ -1,15 +1,12 @@
 package com.nature.provider.sysUser;
 
 import com.nature.base.util.DateUtils;
-import com.nature.base.util.Utils;
-import com.nature.common.Eunm.ProcessState;
-import com.nature.component.process.model.Process;
+import com.nature.base.util.SqlUtils;
 import com.nature.component.sysUser.model.SysUser;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
 
 import java.util.Date;
-import java.util.Map;
 
 public class SysUserMapperProvider {
 
@@ -60,29 +57,29 @@ public class SysUserMapperProvider {
             if (null == enableFlag) {
                 enableFlag = true;
             }
-            sql.VALUES("ID", Utils.addSqlStrAndReplace(id));
-            sql.VALUES("CRT_DTTM", Utils.addSqlStrAndReplace(DateUtils.dateTimesToStr(crtDttm)));
-            sql.VALUES("CRT_USER", Utils.addSqlStrAndReplace(crtUser));
-            sql.VALUES("LAST_UPDATE_DTTM", Utils.addSqlStrAndReplace(DateUtils.dateTimesToStr(lastUpdateDttm)));
-            sql.VALUES("LAST_UPDATE_USER", Utils.addSqlStrAndReplace(lastUpdateUser));
+            sql.VALUES("ID", SqlUtils.addSqlStrAndReplace(id));
+            sql.VALUES("CRT_DTTM", SqlUtils.addSqlStrAndReplace(DateUtils.dateTimesToStr(crtDttm)));
+            sql.VALUES("CRT_USER", SqlUtils.addSqlStrAndReplace(crtUser));
+            sql.VALUES("LAST_UPDATE_DTTM", SqlUtils.addSqlStrAndReplace(DateUtils.dateTimesToStr(lastUpdateDttm)));
+            sql.VALUES("LAST_UPDATE_USER", SqlUtils.addSqlStrAndReplace(lastUpdateUser));
             sql.VALUES("VERSION", version + "");
             sql.VALUES("ENABLE_FLAG", (enableFlag ? 1 : 0) + "");
 
             // 处理其他字段
             if (null != username) {
-                sql.VALUES("USERNAME", Utils.addSqlStrAndReplace(username));
+                sql.VALUES("USERNAME", SqlUtils.addSqlStrAndReplace(username));
             }
             if (null != password) {
-                sql.VALUES("PASSWORD", Utils.addSqlStrAndReplace(password));
+                sql.VALUES("PASSWORD", SqlUtils.addSqlStrAndReplace(password));
             }
             if (null != name) {
-                sql.VALUES("NAME", Utils.addSqlStrAndReplace(name));
+                sql.VALUES("NAME", SqlUtils.addSqlStrAndReplace(name));
             }
             if (null != age) {
                 sql.VALUES("AGE", age + "");
             }
             if (null != sex) {
-                sql.VALUES("SEX", Utils.addSqlStrAndReplace(sex));
+                sql.VALUES("SEX", SqlUtils.addSqlStrAndReplace(sex));
             }
 
             sqlStr = sql.toString();
@@ -124,8 +121,8 @@ public class SysUserMapperProvider {
                 version = 0L;
             }
             String lastUpdateDttmStr = DateUtils.dateTimesToStr(lastUpdateDttm);
-            sql.SET("LAST_UPDATE_DTTM = " + Utils.addSqlStr(lastUpdateDttmStr));
-            sql.SET("LAST_UPDATE_USER = " + Utils.addSqlStr(lastUpdateUser));
+            sql.SET("LAST_UPDATE_DTTM = " + SqlUtils.addSqlStr(lastUpdateDttmStr));
+            sql.SET("LAST_UPDATE_USER = " + SqlUtils.addSqlStr(lastUpdateUser));
             sql.SET("VERSION = " + (version + 1));
 
             // 处理其他字段
@@ -133,22 +130,22 @@ public class SysUserMapperProvider {
                 sql.SET("ENABLE_FLAG=" + (enableFlag ? 1 : 0));
             }
             if (null != username) {
-                sql.SET("USERNAME=" + Utils.addSqlStrAndReplace(username));
+                sql.SET("USERNAME=" + SqlUtils.addSqlStrAndReplace(username));
             }
             if (null != password) {
-                sql.SET("PASSWORD=" + Utils.addSqlStrAndReplace(password));
+                sql.SET("PASSWORD=" + SqlUtils.addSqlStrAndReplace(password));
             }
             if (null != name) {
-                sql.SET("NAME=" + Utils.addSqlStrAndReplace(name));
+                sql.SET("NAME=" + SqlUtils.addSqlStrAndReplace(name));
             }
             if (null != age) {
                 sql.SET("AGE=" + age);
             }
             if (null != sex) {
-                sql.SET("SEX=" + Utils.addSqlStrAndReplace(sex));
+                sql.SET("SEX=" + SqlUtils.addSqlStrAndReplace(sex));
             }
             sql.WHERE("VERSION = " + version);
-            sql.WHERE("id = " + Utils.addSqlStr(id));
+            sql.WHERE("id = " + SqlUtils.addSqlStr(id));
             if (StringUtils.isNotBlank(id)) {
                 sqlStr = sql.toString();
             }
