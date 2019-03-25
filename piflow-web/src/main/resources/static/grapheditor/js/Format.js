@@ -337,7 +337,7 @@ Format.prototype.refresh = function()
 	var graph = ui.editor.graph;
 	
 	var div = document.createElement('div');
-	div.style.whiteSpace = 'nowrap';
+	// div.style.whiteSpace = 'nowrap';
 	div.style.color = 'rgb(112, 112, 112)';
 	div.style.textAlign = 'left';
 	div.style.cursor = 'default';
@@ -2270,13 +2270,20 @@ StopsBasicInfoFormatPanel.prototype.addFont = function(container)
 	//模板名称
 	var labelTemplate = document.createElement('label');
 	labelTemplate.setAttribute('id', 'labelTemplateName');
-	//stopsName
+	//stopsNameUpdate
 	var stopsNameLabel = document.createElement('input');
 	stopsNameLabel.style.border = '0px' ;
 	stopsNameLabel.style.fontWeight = '700' ;
 	stopsNameLabel.style.background = "rgb(245, 245, 245)";
 	stopsNameLabel.setAttribute('id', 'stopsNameLabel');
-	stopsNameLabel.setAttribute('readonly', 'true');
+	//stopsNameLabel.setAttribute('readonly', 'true');
+	stopsNameLabel.style.display="none";
+	//stopsName
+	var stopsNameSpan = document.createElement('span');
+	stopsNameSpan.style.border = '0px' ;
+	stopsNameSpan.style.fontWeight = '700' ;
+	stopsNameSpan.style.background = "rgb(245, 245, 245)";
+	stopsNameSpan.setAttribute('id', 'stopsNameSpan');
 	//stopsValue
 	var stopsValue = document.createElement('input');
 	stopsValue.setAttribute('id', 'stopsValueInput');
@@ -2343,6 +2350,8 @@ StopsBasicInfoFormatPanel.prototype.addFont = function(container)
 					 //pwdBtn.innerHTML ="save";
 					   pwdBtn.className = "glyphicon glyphicon-saved";
 					  $("#stopsNameLabel").removeAttr("readonly");//去除input元素的readonly属性
+					  $("#stopsNameSpan").hide();
+					  $("#stopsNameLabel").show();
 				}else{
 					//第二次save的情况
 					 var stopName = $("#stopsNameLabel").val();
@@ -2355,6 +2364,8 @@ StopsBasicInfoFormatPanel.prototype.addFont = function(container)
     					 $("#stopsNameLabel").css("border","0px");
     					 pwdBtn.className = "glyphicon glyphicon-floppy-saved";
     					 $("#stopsNameLabel").blur();
+						 $("#stopsNameSpan").show();
+						 $("#stopsNameLabel").hide();
     					 $("#stopsNameLabel").attr("readonly","readonly");//将input元素设置为readonly
     					 return;
 					 }
@@ -2410,8 +2421,10 @@ StopsBasicInfoFormatPanel.prototype.addFont = function(container)
 	 btn.style.width = '28px' ;
 	 btn.style.background = 'rgb(245, 245, 245)' ;
 	 btn.style.border = '1px solid' ;
+	 btn.style.marginLeft='10px'
 	//this.container.appendChild(hr);
     tdStopsBasic1.appendChild(span);
+    tdStopsBasic2.appendChild(stopsNameSpan);
     tdStopsBasic2.appendChild(stopsNameLabel);
     tdStopsBasic2.appendChild(stopsValue);
     tdStopsBasic2.appendChild(btn);
@@ -2442,6 +2455,13 @@ StopsBasicInfoFormatPanel.prototype.addFont = function(container)
     trStopsBasic6.appendChild(tdStopsBasic12);
     trStopsBasic7.appendChild(tdStopsBasic13);
     trStopsBasic7.appendChild(tdStopsBasic14);
+	trStopsBasic1.vAlign="top";
+	trStopsBasic2.vAlign="top";
+	trStopsBasic3.vAlign="top";
+	trStopsBasic4.vAlign="top";
+	trStopsBasic5.vAlign="top";
+	trStopsBasic6.vAlign="top";
+	trStopsBasic7.vAlign="top";
     tbodyStopsBasic.appendChild(trStopsBasic1);
     tbodyStopsBasic.appendChild(trStopsBasic2);
     tbodyStopsBasic.appendChild(trStopsBasic3);
@@ -4899,11 +4919,11 @@ DiagramFormatPanel.prototype.addView = function(div)
 	mxUtils.write(span1, 'flowName： ');
 	mxUtils.write(span2, 'createTime： ');
 	mxUtils.write(span3, 'description： ');
-    tdFlow1.appendChild(span);
-    tdFlow2.appendChild(UUID);
-    tdFlow3.appendChild(span1);
-    tdFlow4.appendChild(flowName);
-    tdFlow5.appendChild(span3);
+	tdFlow1.appendChild(span);
+	tdFlow2.appendChild(UUID);
+	tdFlow3.appendChild(span1);
+	tdFlow4.appendChild(flowName);
+	tdFlow5.appendChild(span3);
     tdFlow6.appendChild(flowDescription);
     tdFlow7.appendChild(span2);
     tdFlow8.appendChild(crtDttmString);
@@ -4915,6 +4935,11 @@ DiagramFormatPanel.prototype.addView = function(div)
     trFlow3.appendChild(tdFlow6);
     trFlow4.appendChild(tdFlow7);
     trFlow4.appendChild(tdFlow8);
+	tdFlow1.style.width="72px";
+    trFlow1.vAlign = 'top';
+    trFlow2.vAlign = 'top';
+    trFlow3.vAlign = 'top';
+    trFlow4.vAlign = 'top';
     tbodyFlow.appendChild(trFlow1);
     tbodyFlow.appendChild(trFlow2);
     tbodyFlow.appendChild(trFlow3);

@@ -40,8 +40,6 @@ public class ProcessInfoSync {
                 List<String> runningProcess = processTransaction.getRunningProcess();
                 if (CollectionUtils.isNotEmpty(runningProcess)) {
                     Runnable runnable = new Thread(new Thread() {
-                        private Logger logger = LoggerUtil.getLogger();
-
                         @Override
                         public void run() {
                             for (String appId : runningProcess) {

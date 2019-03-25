@@ -122,6 +122,7 @@ function queryStopsProperty(id) {
             if ("" != data) {
                 add(data.propertiesVo, data.id, data.checkpoint);
                 //  $("#stopsValueInput").data("result",evt);
+                document.getElementById('stopsNameSpan').innerText = data.name;
                 document.getElementById('stopsNameLabel').value = data.name;
                 document.getElementById('stopsNameLabel').name = data.id;
                 document.getElementById('stopsValueInput').value = data.name;
