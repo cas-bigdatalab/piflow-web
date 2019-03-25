@@ -80,25 +80,25 @@ public class FlowServiceImpl implements IFlowService {
      */
     @Override
     @Transient
-    public StatefulRtnBase saveOrUpdateFlowAll(MxGraphModelVo mxGraphModelVo, String flowId, String operType,boolean flag) {
+    public StatefulRtnBase saveOrUpdateFlowAll(MxGraphModelVo mxGraphModelVo, String flowId, String operType, boolean flag) {
         StatefulRtnBase statefulRtnBase = new StatefulRtnBase();
         // 参数判空
         if (!StringUtils.isAnyEmpty(flowId, operType)) {
             // mxGraphModelVo参数判空
             if (null != mxGraphModelVo) {
-                    if ("ADD".equals(operType)) {
-                        logger.info("ADD操作开始");
-                        statefulRtnBase = this.addFlowStops(mxGraphModelVo, flowId, flag);
-                    } else if ("MOVED".equals(operType)) {
-                        logger.info("MOVED操作开始");
-                        statefulRtnBase = this.updateMxGraph(mxGraphModelVo, flowId);
-                    } else if ("REMOVED".equals(operType)) {
-                        logger.info("REMOVED操作开始");
-                        statefulRtnBase = this.updateFlow(mxGraphModelVo, flowId);
-                    } else {
-                        statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("没有查询operType:" + operType + "类型");
-                        logger.warn("没有查询operType:" + operType + "类型");
-                    }
+                if ("ADD".equals(operType)) {
+                    logger.info("ADD操作开始");
+                    statefulRtnBase = this.addFlowStops(mxGraphModelVo, flowId, flag);
+                } else if ("MOVED".equals(operType)) {
+                    logger.info("MOVED操作开始");
+                    statefulRtnBase = this.updateMxGraph(mxGraphModelVo, flowId);
+                } else if ("REMOVED".equals(operType)) {
+                    logger.info("REMOVED操作开始");
+                    statefulRtnBase = this.updateFlow(mxGraphModelVo, flowId);
+                } else {
+                    statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("没有查询operType:" + operType + "类型");
+                    logger.warn("没有查询operType:" + operType + "类型");
+                }
             } else {
                 statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("传入参数mxGraphModelVo为空，保存失败");
                 logger.warn("传入参数mxGraphModelVo为空，保存失败");
@@ -182,7 +182,7 @@ public class FlowServiceImpl implements IFlowService {
                 } else {
                     if (null != oldAppId) {
                         //把之前的appId置为无效
-                      //  flowInfoDbMapper.deleteFlowInfoById(oldAppId.getId());
+                        //  flowInfoDbMapper.deleteFlowInfoById(oldAppId.getId());
                     }
                 }
             } else {
@@ -233,16 +233,16 @@ public class FlowServiceImpl implements IFlowService {
      *
      * @param mxGraphModelVo
      * @param flowId
-     * @param flag 是否添加stop信息
+     * @param flag           是否添加stop信息
      * @return
      */
     private StatefulRtnBase addFlowStops(MxGraphModelVo mxGraphModelVo, String flowId, boolean flag) {
-    	 UserVo user = SessionUserUtil.getCurrentUser();
-         String username = (null != user) ? user.getUsername() : "-1";
+        UserVo user = SessionUserUtil.getCurrentUser();
+        String username = (null != user) ? user.getUsername() : "-1";
         StatefulRtnBase statefulRtnBase = new StatefulRtnBase();
         // 根据flowId查询flow
         Flow flow = flowMapper.getFlowById(flowId);
-        if(null != flow){
+        if (null != flow) {
             // 判断mxGraphModelVo和flow是否为空
             if (null != mxGraphModelVo && null != flow) {
                 // 更新flow
@@ -307,7 +307,7 @@ public class FlowServiceImpl implements IFlowService {
                                             // 将mxCellVo中的值copy到mxCell中
                                             BeanUtils.copyProperties(mxCellVo, mxCell);
                                             if (StringUtils.isNotBlank(stopByNameAndFlowId)) {
-                                                mxCell.setValue(mxCellVo.getValue()+mxCellVo.getPageId());
+                                                mxCell.setValue(mxCellVo.getValue() + mxCellVo.getPageId());
                                             }
                                             // mxCell 的基本属性(创建时必填)
                                             mxCell.setId(Utils.getUUID32());
@@ -424,9 +424,9 @@ public class FlowServiceImpl implements IFlowService {
         String username = (null != user) ? user.getUsername() : "-1";
         StatefulRtnBase statefulRtnBase = new StatefulRtnBase();
         MxGraphModel mxGraphModel = mxGraphModelMapper.getMxGraphModelByFlowId(flowId);
-        if (null != mxGraphModel){
+        if (null != mxGraphModel) {
 
-        }else {
+        } else {
             statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("没有查询到flowId为:" + flowId + "的flow信息");
             logger.warn("没有查询到flowId为:" + flowId + "的flow信息");
         }
@@ -464,7 +464,7 @@ public class FlowServiceImpl implements IFlowService {
      * 修改Flow
      *
      * @param mxGraphModelVo 页面传出的信息
-     * @param flowId           要修改的数据
+     * @param flowId         要修改的数据
      * @return
      */
     private StatefulRtnBase updateFlow(MxGraphModelVo mxGraphModelVo, String flowId) {
@@ -724,10 +724,10 @@ public class FlowServiceImpl implements IFlowService {
             for (MxCellVo mxCellVo : objectStops) {
                 Stops stops = this.stopsTemplateToStops(mxCellVo);
                 if (null != stops) {
-                	String stopByNameAndFlowId = stopsMapper.getStopByNameAndFlowId(flow.getId(), stops.getName());
-					if (StringUtils.isNotBlank(stopByNameAndFlowId)) {
-						stops.setName(stops.getName()+stops.getPageId());
-					}
+                    String stopByNameAndFlowId = stopsMapper.getStopByNameAndFlowId(flow.getId(), stops.getName());
+                    if (StringUtils.isNotBlank(stopByNameAndFlowId)) {
+                        stops.setName(stops.getName() + stops.getPageId());
+                    }
                     stops.setFlow(flow);
                     stopsList.add(stops);
                 }
@@ -794,15 +794,15 @@ public class FlowServiceImpl implements IFlowService {
                                     property.setCustomValue(propertyTemplate.getDefaultValue());
                                     //表明是select
                                     if (propertyTemplate.getAllowableValues().contains(",") && propertyTemplate.getAllowableValues().length() > 4) {
-                                    	property.setIsSelect(true);
-                                    	//判断select中是否存在默认值
-                                    	if (!propertyTemplate.getAllowableValues().contains(propertyTemplate.getDefaultValue())) {
-                                    		//如果不存在则情况默认值
-                                    		property.setCustomValue("");
-										}
-									}else {
-										property.setIsSelect(false);
-									}
+                                        property.setIsSelect(true);
+                                        //判断select中是否存在默认值
+                                        if (!propertyTemplate.getAllowableValues().contains(propertyTemplate.getDefaultValue())) {
+                                            //如果不存在则情况默认值
+                                            property.setCustomValue("");
+                                        }
+                                    } else {
+                                        property.setIsSelect(false);
+                                    }
                                     propertiesList.add(property);
                                 }
                             }
@@ -961,37 +961,39 @@ public class FlowServiceImpl implements IFlowService {
         }
     }
 
-	@Override
-	public String getMaxStopPageId(String flowId) {
-		return flowMapper.getMaxStopPageId(flowId);
-	}
+    @Override
+    public String getMaxStopPageId(String flowId) {
+        return flowMapper.getMaxStopPageId(flowId);
+    }
 
-	@Override
-	public List<FlowVo> getFlowList() {
-		List<FlowVo> flowVoList = new ArrayList<>();
-		List<Flow> flowList = flowMapper.getFlowList();
-		  if (null != flowList && flowList.size() > 0) {
-	            for (Flow flow : flowList) {
-	                if (null != flow) {
-	                	FlowVo flowVo = new FlowVo();
-	                	 BeanUtils.copyProperties(flow, flowVo);
-	                	 flowVo.setCrtDttm(flow.getCrtDttm());
-	                	 flowVoList.add(flowVo);
-	                }
-	            }
-	        }
-		return flowVoList;
-	}
-	@Override
+    @Override
+    public List<FlowVo> getFlowList() {
+        List<FlowVo> flowVoList = new ArrayList<>();
+        List<Flow> flowList = flowMapper.getFlowList();
+        if (null != flowList && flowList.size() > 0) {
+            for (Flow flow : flowList) {
+                if (null != flow) {
+                    FlowVo flowVo = new FlowVo();
+                    BeanUtils.copyProperties(flow, flowVo);
+                    flowVo.setCrtDttm(flow.getCrtDttm());
+                    flowVoList.add(flowVo);
+                }
+            }
+        }
+        return flowVoList;
+    }
+
+    @Override
     public String getFlowListPage(Integer offset, Integer limit, String param) {
         Map<String, Object> rtnMap = new HashMap<String, Object>();
+        UserVo currentUser = SessionUserUtil.getCurrentUser();
         if (null != offset && null != limit) {
             Page page = PageHelper.startPage(offset, limit);
-            flowMapper.getFlowListParma(param);
+            flowMapper.getFlowListParma(currentUser, param);
             rtnMap = PageHelperUtils.setDataTableParam(page, rtnMap);
         }
         return JsonUtils.toJsonNoException(rtnMap);
-	}
+    }
 
     @Override
     public String getFlowExampleList() {
@@ -1000,7 +1002,7 @@ public class FlowServiceImpl implements IFlowService {
         List<FlowVo> flowVoList = new ArrayList<>();
         List<Flow> flowExampleList = flowMapper.getFlowExampleList();
         // list判空
-        if(CollectionUtils.isNotEmpty(flowExampleList)){
+        if (CollectionUtils.isNotEmpty(flowExampleList)) {
             flowExampleList.forEach(flow -> {
                 FlowVo flowVo = new FlowVo();
                 flowVo.setId(flow.getId());

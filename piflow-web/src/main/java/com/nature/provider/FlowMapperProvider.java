@@ -4,11 +4,16 @@ import com.nature.base.util.DateUtils;
 import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.Utils;
 import com.nature.base.vo.UserVo;
+import com.nature.common.Eunm.SysRoleType;
 import com.nature.component.flow.model.Flow;
+import com.nature.component.sysUser.model.SysRole;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public class FlowMapperProvider {
 
@@ -144,7 +149,7 @@ public class FlowMapperProvider {
             sql.SET("LAST_UPDATE_DTTM = " + Utils.addSqlStr(lastUpdateDttmStr));
             sql.SET("LAST_UPDATE_USER = " + Utils.addSqlStr(lastUpdateUser));
             sql.SET("VERSION = " + (version + 1));
-            
+
             // 处理其他字段
             if (null == enableFlag) {
                 int enableFlagInt = enableFlag ? 1 : 0;
@@ -186,19 +191,13 @@ public class FlowMapperProvider {
      *
      * @return
      */
-    public String getFlowList(String param) {
+    public String getFlowList() {
         String sqlStr = "";
         SQL sql = new SQL();
         sql.SELECT("*");
         sql.FROM("flow");
         sql.WHERE("ENABLE_FLAG = 1");
         sql.WHERE("IS_EXAMPLE = 0");
-        if (StringUtils.isNotBlank(param)) {
-            sql.AND();
-            String paramSql = "NAME LIKE '%" + param + "%'" + " OR " +
-                    "DESCRIPTION LIKE '%" + param + "%'";
-            sql.WHERE(paramSql);
-        }
         sql.ORDER_BY(" CRT_DTTM DESC  ");
         sqlStr = sql.toString();
         return sqlStr;
@@ -206,18 +205,44 @@ public class FlowMapperProvider {
 
     /**
      * 查詢所有工作流分页查询
-     * @param parma
+     *
+     * @param map
      * @return
      */
-    public String getFlowListParma(String parma) {
-        String sqlStr = "";
-        SQL sql = new SQL();
-        sql.SELECT("*");
-        sql.FROM("flow");
-        sql.WHERE("ENABLE_FLAG = 1");
-        sql.WHERE("IS_EXAMPLE = 0");
-        sql.ORDER_BY(" CRT_DTTM DESC  ");
-        sqlStr = sql.toString();
+    public String getFlowListParam(Map map) {
+        String sqlStr = "SELECT 0";
+        UserVo currentUser = (UserVo) map.get("currentUser");
+        if (null != currentUser) {
+            StringBuffer strBuf = new StringBuffer();
+            strBuf.append("SELECT * ");
+            strBuf.append("FROM FLOW ");
+            strBuf.append("WHERE ");
+            strBuf.append("ENABLE_FLAG = 1 ");
+            strBuf.append("AND IS_EXAMPLE = 0 ");
+
+            boolean isAdmin = false;
+            String param = (String) map.get("param");
+            if (StringUtils.isNotBlank(param)) {
+                strBuf.append("AND ( ");
+                strBuf.append("NAME LIKE '%" + param + "%' ");
+                strBuf.append("OR DESCRIPTION LIKE '%" + param + "%' ");
+                strBuf.append(") ");
+            }
+            List<SysRole> roles = currentUser.getRoles();
+            if (CollectionUtils.isNotEmpty(roles)) {
+                for (SysRole sysRole : roles) {
+                    if (null != sysRole && SysRoleType.ADMIN == sysRole.getRole()) {
+                        isAdmin = true;
+                        break;
+                    }
+                }
+            }
+            if (!isAdmin) {
+                strBuf.append("AND CRT_USER = '" + currentUser.getUsername() + "' ");
+            }
+            strBuf.append("ORDER BY CRT_DTTM DESC ");
+            sqlStr = strBuf.toString();
+        }
         return sqlStr;
     }
 
@@ -254,29 +279,30 @@ public class FlowMapperProvider {
         sqlStr = sql.toString();
         return sqlStr;
     }
-    
+
     /**
      * 根据id逻辑删除,设为无效
+     *
      * @param id
      * @return
      */
     public String updateEnableFlagById(String id) {
-      	 UserVo user = SessionUserUtil.getCurrentUser();
-           String username = (null != user) ? user.getUsername() : "-1";
-           String sqlStr = "select 0";
-          if (StringUtils.isNotBlank(id)) {
-              SQL sql = new SQL();
-              sql.UPDATE("FLOW");
-              sql.SET("ENABLE_FLAG = 0");
-              sql.SET("LAST_UPDATE_USER = " + Utils.addSqlStr(username) );
-              sql.SET("LAST_UPDATE_DTTM = " + Utils.addSqlStr(DateUtils.dateTimesToStr(new Date())) );
-              sql.WHERE("ENABLE_FLAG = 1");
-              sql.WHERE("IS_EXAMPLE = 0");
-              sql.WHERE("ID = " + Utils.addSqlStrAndReplace(id));
+        UserVo user = SessionUserUtil.getCurrentUser();
+        String username = (null != user) ? user.getUsername() : "-1";
+        String sqlStr = "select 0";
+        if (StringUtils.isNotBlank(id)) {
+            SQL sql = new SQL();
+            sql.UPDATE("FLOW");
+            sql.SET("ENABLE_FLAG = 0");
+            sql.SET("LAST_UPDATE_USER = " + Utils.addSqlStr(username));
+            sql.SET("LAST_UPDATE_DTTM = " + Utils.addSqlStr(DateUtils.dateTimesToStr(new Date())));
+            sql.WHERE("ENABLE_FLAG = 1");
+            sql.WHERE("IS_EXAMPLE = 0");
+            sql.WHERE("ID = " + Utils.addSqlStrAndReplace(id));
 
-              sqlStr = sql.toString();
-          }
-          return sqlStr;
-      }
+            sqlStr = sql.toString();
+        }
+        return sqlStr;
+    }
 
 }
