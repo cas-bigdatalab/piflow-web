@@ -1,29 +1,26 @@
 package com.nature.component.sysUser.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import com.nature.common.Eunm.SysRoleType;
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "SYS_ROLE")
 public class SysRole implements Serializable {
     @Id
     @GeneratedValue
+    @Column(name = "id", unique = true, nullable = false)
     private Integer id;
-    private String name;
 
-    public Integer getId() {
-        return id;
-    }
-    public void setId(Integer id) {
-        this.id = id;
-    }
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
+    @Enumerated(EnumType.STRING)
+    private SysRoleType role;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "FK_SYS_USER_ID")
+    private SysUser sysUser;
 }

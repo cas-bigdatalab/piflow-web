@@ -34,7 +34,6 @@ public class SysUserMapperProvider {
             String name = sysUser.getName();
             Integer age = sysUser.getAge();
             String sex = sysUser.getSex();
-            String role = sysUser.getRole();
 
             SQL sql = new SQL();
             // INSERT_INTO括号中为数据库表名
@@ -85,9 +84,6 @@ public class SysUserMapperProvider {
             if (null != sex) {
                 sql.VALUES("SEX", Utils.addSqlStrAndReplace(sex));
             }
-            if (null != role) {
-                sql.VALUES("ROLE", Utils.addSqlStrAndReplace(role));
-            }
 
             sqlStr = sql.toString();
         }
@@ -113,7 +109,6 @@ public class SysUserMapperProvider {
             String name = sysUser.getName();
             Integer age = sysUser.getAge();
             String sex = sysUser.getSex();
-            String role = sysUser.getRole();
 
             SQL sql = new SQL();
             sql.UPDATE("SYS_USER");
@@ -151,9 +146,6 @@ public class SysUserMapperProvider {
             }
             if (null != sex) {
                 sql.SET("SEX=" + Utils.addSqlStrAndReplace(sex));
-            }
-            if (null != role) {
-                sql.SET("ROLE=" + Utils.addSqlStrAndReplace(role));
             }
             sql.WHERE("VERSION = " + version);
             sql.WHERE("id = " + Utils.addSqlStr(id));

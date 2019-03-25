@@ -1,6 +1,8 @@
 package com.nature.component.sysUser.service.Impl;
 
 import com.nature.base.util.Utils;
+import com.nature.common.Eunm.SysRoleType;
+import com.nature.component.sysUser.model.SysRole;
 import com.nature.component.sysUser.model.SysUser;
 import com.nature.component.sysUser.service.ISysUserService;
 import com.nature.component.sysUser.vo.SysUserVo;
@@ -10,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -70,7 +73,11 @@ public class SysUserServiceImpl implements ISysUserService {
                 sysUser.setName(sysUserVo.getName());
                 sysUser.setAge(sysUserVo.getAge());
                 sysUser.setSex(sysUserVo.getSex());
-                sysUser.setRole("User");
+                List<SysRole> sysUsers = new ArrayList<>();
+                SysRole sysRole = new SysRole();
+                sysRole.setRole(SysRoleType.USER);
+                sysUsers.add(sysRole);
+                sysUser.setRoles(sysUsers);
                 return sysUserTransaction.addUser(sysUser);
             }
         }

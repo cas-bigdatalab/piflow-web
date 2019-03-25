@@ -1,5 +1,7 @@
 package com.nature.base.vo;
 
+import com.nature.common.Eunm.SysRoleType;
+import com.nature.component.sysUser.model.SysRole;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,7 +20,7 @@ public class UserVo implements UserDetails, Serializable {
     private String password;
     private String name;
     private Integer age;
-    private String role;
+    private List<SysRole> roles = new ArrayList<>();
     List<GrantedAuthority> grantedAuthorities = new ArrayList<GrantedAuthority>();
 
     @Override

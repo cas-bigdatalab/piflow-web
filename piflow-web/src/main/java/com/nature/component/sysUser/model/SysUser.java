@@ -3,10 +3,13 @@ package com.nature.component.sysUser.model;
 import com.nature.base.BaseHibernateModelUUIDNoCorpAgentId;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.OrderBy;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,9 +34,6 @@ public class SysUser extends BaseHibernateModelUUIDNoCorpAgentId {
 
     private String sex;
 
-    private String role;
-
-    public void s (){
-        List<SysUser> s = new ArrayList<>();
-    }
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "sysUser")
+    private List<SysRole> roles;
 }

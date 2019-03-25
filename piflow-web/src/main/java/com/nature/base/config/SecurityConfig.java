@@ -3,8 +3,11 @@ package com.nature.base.config;
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.SpringContextUtil;
 import com.nature.base.vo.UserVo;
+import com.nature.common.Eunm.SysRoleType;
+import com.nature.component.sysUser.model.SysRole;
 import com.nature.component.sysUser.model.SysUser;
 import com.nature.mapper.sysUser.SysUserMapper;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.annotation.Bean;
@@ -29,6 +32,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Configurable
 @EnableWebSecurity
@@ -41,12 +46,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     Logger logger = LoggerUtil.getLogger();
 
     @Resource
-    private  SysUserMapper sysUserMapper;
+    private SysUserMapper sysUserMapper;
 
     @Override
     public void configure(WebSecurity web) throws Exception {
         //解决静态资源被拦截的问题
-        web.ignoring().antMatchers("/charisma/**", "/bootstrap/**", "/js/**", "/css/**","/custom/css/**" , "/img/**", "/img/*");
+        web.ignoring().antMatchers("/charisma/**", "/bootstrap/**", "/js/**", "/css/**", "/custom/css/**", "/img/**", "/img/*");
     }
 
     @Override
@@ -90,8 +95,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             @Override
             public void onLogoutSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
                 try {
-                    User user = (User) authentication.getPrincipal();
-                    logger.info("USER : " + user.getUsername() + " LOGOUT SUCCESS !  ");
+                    UserVo userVo = (UserVo) authentication.getPrincipal();
+                    logger.info("USER : " + userVo.getUsername() + " LOGOUT SUCCESS !  ");
                 } catch (Exception e) {
                     logger.error("LOGOUT EXCEPTION , e : ", e);
                 }
@@ -111,17 +116,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 }
                 SysUser sysUser = sysUserMapper.findUserByUserName(username);
                 String password = "";
-                String role = null;
                 if (null != sysUser) {
                     userVo = new UserVo();
                     password = sysUser.getPassword();
-                    role = sysUser.getRole();
                     userVo.setUsername(sysUser.getUsername());
                     userVo.setPassword(sysUser.getPassword());
                     userVo.setName(sysUser.getName());
                     userVo.setAge(sysUser.getAge());
-                    userVo.setRole(role);
-                    userVo.setAuthorities(AuthorityUtils.commaSeparatedStringToAuthorityList(role));
+                    List<SysRole> sysRoleTypes = sysUser.getRoles();
+                    userVo.setRoles(sysRoleTypes);
+                    if (CollectionUtils.isNotEmpty(sysRoleTypes)) {
+                        String[] valueArray = new String[sysRoleTypes.size()];
+                        for (int i = 0; i < sysRoleTypes.size(); i++) {
+                            SysRole sysRole = sysRoleTypes.get(i);
+                            if (null != sysRole && null != sysRole.getRole()) {
+                                valueArray[i] = sysRole.getRole().getValue();
+                            }
+                        }
+                        if (valueArray.length > 0) {
+                            userVo.setAuthorities(AuthorityUtils.createAuthorityList(valueArray));
+                        }
+                    }
                 }
                 return userVo;
             }

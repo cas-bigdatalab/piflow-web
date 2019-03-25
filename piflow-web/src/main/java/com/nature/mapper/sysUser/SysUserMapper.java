@@ -3,6 +3,7 @@ package com.nature.mapper.sysUser;
 import com.nature.component.sysUser.model.SysUser;
 import com.nature.provider.sysUser.SysUserMapperProvider;
 import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.mapping.FetchType;
 
 import java.util.List;
 
@@ -15,6 +16,11 @@ public interface SysUserMapper {
     public List<SysUser> findUserByName(String name);
 
     @SelectProvider(type = SysUserMapperProvider.class, method = "findUserByUserName")
+    @Results({
+            @Result(id = true, column = "id", property = "id"),
+            @Result(column = "id", property = "roles", many = @Many(select = "com.nature.mapper.sysUser.SysRoleMapper.getSysRoleListBySysUserId", fetchType = FetchType.EAGER)),
+
+    })
     public SysUser findUserByUserName(String userName);
 
     @Select("select * from SYS_USER")
