@@ -27,9 +27,6 @@ public class ProcessInfoSync {
     private ProcessTransaction processTransaction;
 
     @Resource
-    private IGetFlowInfo getFlowInfoImpl;
-
-    @Resource
     private ScheduleConfig scheduleConfig;
 
     public void executeAsync() {
