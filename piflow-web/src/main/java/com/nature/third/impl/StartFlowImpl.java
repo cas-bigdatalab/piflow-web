@@ -48,7 +48,7 @@ public class StartFlowImpl implements IStartFlow {
             String encoding = "";
             String formatJson = JsonFormatTool.formatJson(json);
             logger.debug("\n" + formatJson);
-            String doPost = HttpUtils.doPost(SysParamsCache.FLOW_START_URL(), formatJson, 30 * 1000);
+            String doPost = HttpUtils.doPost(SysParamsCache.FLOW_START_URL(), formatJson, null);
             logger.info("Return information：" + doPost);
             if (StringUtils.isNotBlank(doPost) && !doPost.contains("Exception")) {
                 try {
