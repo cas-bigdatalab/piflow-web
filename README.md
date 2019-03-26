@@ -5,6 +5,7 @@
 * Apache Tomcat 8.5 or newer
 ## Getting Started
 To Build: mvn package -Dmaven.test.skip=true
+```c
 [INFO] 
 [INFO] ------------------------------------------------------------------------
 [INFO] Building piflow-web 0.0.1-SNAPSHOT
@@ -38,26 +39,29 @@ To Build: mvn package -Dmaven.test.skip=true
 [INFO] Finished at: 2019-03-26T10:34:00+08:00
 [INFO] Final Memory: 26M/97M
 [INFO] ------------------------------------------------------------------------
-
+```
 To Run Piflow Web：
 
-run piflow server on intellij:
+- run piflow server on intellij:
 
 execute MySQL database building table script
 edit config.properties
 build piflow to generate piflow-web.jar
 
-run piflow web by release version:
+- run piflow web by release version:
+
 download piflow_release: 
 copy the piflow-web.jar to the piflow_release folder
 copy the create database.sql to the piflow_release folder
 copy the create table.sql to the piflow_release folder
 copy the create init data.sql to the piflow_release folder
-edit config.properties
+
+- edit config.properties
+
 run app.sh start
 
 how to configure config.properties
-
+```c
 server.port=6001
 server.servlet.context-path=/piflow-web
 server.servlet.session.timeout=600
@@ -125,7 +129,7 @@ logging.level.org.springframework.security=warn
 
 # Log Coordination. XML
 #logging.config.classpath=log4j2.xml
-
+```
 
 
 
