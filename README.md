@@ -44,23 +44,20 @@ To Run Piflow Web：
 
 - run piflow server on intellij:
 
-execute MySQL database building table script
-edit config.properties
-build piflow to generate piflow-web.jar
++ execute MySQL database building table script
++ edit config.properties
++ build piflow to generate piflow-web.jar
 
 - run piflow web by release version:
 
-download piflow_release: 
-copy the piflow-web.jar to the piflow_release folder
-copy the create database.sql to the piflow_release folder
-copy the create table.sql to the piflow_release folder
-copy the create init data.sql to the piflow_release folder
-
-- edit config.properties
-
-run app.sh start
-
-how to configure config.properties
+  - download piflow_release: 
+  - copy the piflow-web.jar to the piflow_release folder
+  - copy the create database.sql to the piflow_release folder
+  - copy the create table.sql to the piflow_release folder
+  - copy the create init data.sql to the piflow_release folder
+  - edit config.properties
+  - run app.sh start
+- how to configure config.properties
 ```c
 server.port=6001
 server.servlet.context-path=/piflow-web
