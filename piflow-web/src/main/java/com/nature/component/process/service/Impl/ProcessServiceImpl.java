@@ -17,7 +17,7 @@ import com.nature.component.process.model.ProcessPath;
 import com.nature.component.process.model.ProcessStop;
 import com.nature.component.process.model.ProcessStopProperty;
 import com.nature.component.process.service.IProcessService;
-import com.nature.component.process.utils.ProcessStopUtils;
+import com.nature.component.process.utils.ProcessUtils;
 import com.nature.component.process.vo.ProcessPathVo;
 import com.nature.component.process.vo.ProcessStopVo;
 import com.nature.component.process.vo.ProcessVo;
@@ -284,12 +284,14 @@ public class ProcessServiceImpl implements IProcessService {
         rtnMap.put("code", "0");
         if (StringUtils.isNotBlank(appID)) {
             // 查询appinfo
-            ProcessVo processVoThird = this.getAppInfoByThirdAndSave(appID);
-            if (null != processVoThird) {
+            //ProcessVo processVoThird = this.getAppInfoByThirdAndSave(appID);
+            Process processById = processTransaction.getProcessByAppId(appID);
+            ProcessVo processVo = ProcessUtils.processPoToVo(processById);
+            if (null != processVo) {
                 rtnMap.put("code", "1");
-                rtnMap.put("progress", (null != processVoThird.getProgress() ? processVoThird.getProgress() : "0.00"));
-                rtnMap.put("state", (null != processVoThird.getState() ? processVoThird.getState().name() : "NO_STATE"));
-                rtnMap.put("processVo", processVoThird);
+                rtnMap.put("progress", (null != processVo.getProgress() ? processVo.getProgress() : "0.00"));
+                rtnMap.put("state", (null != processVo.getState() ? processVo.getState().name() : "NO_STATE"));
+                rtnMap.put("processVo", processVo);
             }
         } else {
             rtnMap.put("errMsg", "appID is null");
@@ -708,7 +710,7 @@ public class ProcessServiceImpl implements IProcessService {
             processVo = new ProcessVo();
             BeanUtils.copyProperties(process, processVo);
             processVo.setCrtDttm(process.getCrtDttm());
-            List<ProcessStopVo> processStopVoList = ProcessStopUtils.processStopListPoToVo(process.getProcessStopList());
+            List<ProcessStopVo> processStopVoList = ProcessUtils.processStopListPoToVo(process.getProcessStopList());
             processVo.setProcessStopVoList(processStopVoList);
             List<ProcessPath> processPathList = process.getProcessPathList();
             if (null != processPathList && processPathList.size() > 0) {

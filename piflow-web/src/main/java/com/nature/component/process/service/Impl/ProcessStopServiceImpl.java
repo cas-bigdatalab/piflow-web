@@ -3,7 +3,7 @@ package com.nature.component.process.service.Impl;
 import com.nature.base.util.LoggerUtil;
 import com.nature.component.process.model.ProcessStop;
 import com.nature.component.process.service.IProcessStopService;
-import com.nature.component.process.utils.ProcessStopUtils;
+import com.nature.component.process.utils.ProcessUtils;
 import com.nature.component.process.vo.ProcessStopVo;
 import com.nature.transaction.process.ProcessStopTransaction;
 import org.slf4j.Logger;
@@ -31,7 +31,7 @@ public class ProcessStopServiceImpl implements IProcessStopService {
         ProcessStopVo processStopVo = null;
         ProcessStop processStopByPageId = processStopTransaction.getProcessStopByPageId(processId, pageId);
         if (null != processStopByPageId) {
-            processStopVo =  ProcessStopUtils.processStopPoToVo(processStopByPageId);
+            processStopVo =  ProcessUtils.processStopPoToVo(processStopByPageId);
         }
         return processStopVo;
     }

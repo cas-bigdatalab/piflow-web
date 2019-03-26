@@ -38,7 +38,6 @@ public class StartLoader implements ApplicationRunner {
             logger.warn(new Date() + ":Loading components");
             UserVo userVo = new UserVo();
             userVo.setUsername("system");
-            //GetGroupsAndStops getGroupsAndStops = (GetGroupsAndStops) SpringContextUtil.getBean("getGroupsAndStops");
             getGroupsAndStops.addGroupAndStopsList(userVo);
             logger.warn(new Date() + ":Loading Component Completion");
         }
@@ -47,7 +46,6 @@ public class StartLoader implements ApplicationRunner {
 
     private void startSync() {
         logger.warn("Start Sync:" + new Date());
-        //ProcessInfoSync processInfoSync = (ProcessInfoSync) SpringContextUtil.getBean("processInfoSync");
         processInfoSync.executeAsync();
         logger.warn("Start Sync Completion:" + new Date());
     }

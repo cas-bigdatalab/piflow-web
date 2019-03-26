@@ -341,8 +341,8 @@ public class SvgUtils {
                                         lineSvgBuf.append("L " + (((sourceDotX - targetDotX) / 2) + targetDotX) + " " + sourceDotY + " ");
                                         lineSvgBuf.append("L " + (((sourceDotX - targetDotX) / 2) + targetDotX) + " " + targetDotY + " ");
                                     } else if (arrowDirection == ArrowDirection.RIGHT_DIRECTION) {
-                                        lineSvgBuf.append("L " + (((targetDotX - sourceDotX) / 2) + sourceDotX) + " " + sourceDotX + " ");
-                                        lineSvgBuf.append("L " + (((targetDotX - sourceDotX) / 2) + sourceDotX) + " " + targetDotX + " ");
+                                        lineSvgBuf.append("L " + (((targetDotX - sourceDotX) / 2) + sourceDotX) + " " + sourceDotY + " ");
+                                        lineSvgBuf.append("L " + (((targetDotX - sourceDotX) / 2) + sourceDotX) + " " + targetDotY + " ");
                                     }
                                     lineSvgBuf.append("L " + targetDotX + " " + targetDotY + " ");
                                     lineSvgBuf.append("' fill='none' stroke='#666666' stroke-width='1' stroke-miterlimit='10'></path>");
