@@ -298,7 +298,7 @@ public class SvgUtils {
                         sourceDotY = sourceY + (sourceHeight / 2);
                         targetDotX = targetX + (targetWidth / 2);
                         targetDotY = targetY + targetHeight;
-                        arrowDirection = ArrowDirection.DOWN_DIRECTION;
+                        arrowDirection = ArrowDirection.UP_DIRECTION;
                         breakPoint = 1;
                     } else if (sourceX < (targetX - sourceWidth) && sourceY > (targetY + targetHeight)) {
                         // H区为右出下入
@@ -307,7 +307,7 @@ public class SvgUtils {
                         sourceDotY = sourceY + (sourceHeight / 2);
                         targetDotX = targetX + (targetWidth / 2);
                         targetDotY = targetY + targetHeight;
-                        arrowDirection = ArrowDirection.DOWN_DIRECTION;
+                        arrowDirection = ArrowDirection.UP_DIRECTION;
                         breakPoint = 1;
                     } else {
                         logger.warn("没有判断出位置信息，画线失败");
