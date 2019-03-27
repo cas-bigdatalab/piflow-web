@@ -121,8 +121,9 @@ public class ProcessServiceImpl implements IProcessService {
     @Override
     public ProcessVo getProcessAllVoById(String id) {
         ProcessVo processVo = null;
+        UserVo currentUser = SessionUserUtil.getCurrentUser();
         if (StringUtils.isNotBlank(id)) {
-            Process processById = processTransaction.getProcessById(id);
+            Process processById = processTransaction.getProcessById(currentUser, id);
             processVo = this.processPoToVo(processById);
         }
         return processVo;
@@ -137,8 +138,9 @@ public class ProcessServiceImpl implements IProcessService {
     @Override
     public ProcessVo getProcessVoById(String id) {
         ProcessVo processVo = null;
+        UserVo currentUser = SessionUserUtil.getCurrentUser();
         if (StringUtils.isNotBlank(id)) {
-            Process processById = processTransaction.getProcessById(id);
+            Process processById = processTransaction.getProcessById(currentUser, id);
             if (null != processById) {
                 processVo = new ProcessVo();
                 BeanUtils.copyProperties(processById, processVo);
@@ -156,7 +158,8 @@ public class ProcessServiceImpl implements IProcessService {
      */
     @Override
     public Process getProcessById(String id) {
-        Process processById = processTransaction.getProcessById(id);
+        UserVo currentUser = SessionUserUtil.getCurrentUser();
+        Process processById = processTransaction.getProcessById(currentUser, id);
         return processById;
     }
 
@@ -412,7 +415,7 @@ public class ProcessServiceImpl implements IProcessService {
     @Override
     public int updateProcess(ProcessVo processVo, UserVo currentUser) {
         if (null != processVo && null != currentUser) {
-            Process processById = processTransaction.getProcessById(processVo.getId());
+            Process processById = processTransaction.getProcessById(currentUser, processVo.getId());
             if (null != processById) {
                 BeanUtils.copyProperties("processVo", "processById");
                 processById.setLastUpdateUser(currentUser.getUsername());
@@ -471,7 +474,7 @@ public class ProcessServiceImpl implements IProcessService {
         if (null != currentUser) {
             String username = currentUser.getUsername();
             if (!StringUtils.isAnyEmpty(processId, username)) {
-                Process process = processTransaction.getProcessById(processId);
+                Process process = processTransaction.getProcessById(currentUser, processId);
                 if (null != process) {
                     processCopy = new Process();
                     processCopy.setId(SqlUtils.getUUID32());
@@ -738,7 +741,7 @@ public class ProcessServiceImpl implements IProcessService {
     public StatefulRtnBase updateProcessEnableFlag(String processId, UserVo currentUser) {
         StatefulRtnBase statefulRtnBase = new StatefulRtnBase();
         if (StringUtils.isNotBlank(processId) && null != currentUser) {
-            Process processById = processTransaction.getProcessById(processId);
+            Process processById = processTransaction.getProcessById(currentUser, processId);
             if (null != processById) {
                 processTransaction.updateProcessEnableFlag(processId, currentUser);
             } else {
@@ -836,10 +839,11 @@ public class ProcessServiceImpl implements IProcessService {
     @Override
     public String stopProcess(String processId) {
         Map<String, String> rtnMap = new HashMap<String, String>();
+        UserVo currentUser = SessionUserUtil.getCurrentUser();
         rtnMap.put("code", "0");
         if (StringUtils.isNotBlank(processId)) {
             // Query Process by 'ProcessId'
-            Process process = processTransaction.getProcessById(processId);
+            Process process = processTransaction.getProcessById(currentUser, processId);
             // Determine whether it is empty, and determine whether the save is successful.
             if (null != process) {
                 String appId = process.getAppId();

@@ -121,7 +121,8 @@ public class FlowServiceImpl implements IFlowService {
     @Override
     @Transient
     public Flow getFlowById(String id) {
-        return flowMapper.getFlowById(id);
+        UserVo currentUser = SessionUserUtil.getCurrentUser();
+        return flowMapper.getFlowById(currentUser, id);
     }
 
     /**
@@ -134,8 +135,9 @@ public class FlowServiceImpl implements IFlowService {
     @Override
     @Transient
     public FlowVo getFlowVoById(String id) {
+        UserVo currentUser = SessionUserUtil.getCurrentUser();
         FlowVo flowVo = null;
-        Flow flowById = flowMapper.getFlowById(id);
+        Flow flowById = flowMapper.getFlowById(currentUser, id);
         if (null != flowById) {
             flowVo = new FlowVo();
             BeanUtils.copyProperties(flowById, flowVo);
@@ -170,7 +172,7 @@ public class FlowServiceImpl implements IFlowService {
         StatefulRtnBase satefulRtnBase = new StatefulRtnBase();
         if (StringUtils.isNotBlank(flowId)) {
             // 根据flowId查询flow
-            Flow flowById = flowMapper.getFlowById(flowId);
+            Flow flowById = flowMapper.getFlowById(user, flowId);
             FlowInfoDb oldAppId = flowById.getAppId();
             if (null != flowById) {
                 flowById.setAppId(appId);
@@ -218,7 +220,8 @@ public class FlowServiceImpl implements IFlowService {
 
     @Override
     public int updateFlow(Flow flow) {
-        Flow flowDb = flowMapper.getFlowById(flow.getId());
+        UserVo currentUser = SessionUserUtil.getCurrentUser();
+        Flow flowDb = flowMapper.getFlowById(currentUser, flow.getId());
         flow.setVersion(flowDb.getVersion());
         return flowMapper.updateFlow(flow);
     }
@@ -241,7 +244,7 @@ public class FlowServiceImpl implements IFlowService {
         String username = (null != user) ? user.getUsername() : "-1";
         StatefulRtnBase statefulRtnBase = new StatefulRtnBase();
         // 根据flowId查询flow
-        Flow flow = flowMapper.getFlowById(flowId);
+        Flow flow = flowMapper.getFlowById(user, flowId);
         if (null != flow) {
             // 判断mxGraphModelVo和flow是否为空
             if (null != mxGraphModelVo && null != flow) {
@@ -471,7 +474,7 @@ public class FlowServiceImpl implements IFlowService {
         UserVo user = SessionUserUtil.getCurrentUser();
         String username = (null != user) ? user.getUsername() : "-1";
         StatefulRtnBase statefulRtnBase = new StatefulRtnBase();
-        Flow flow = flowMapper.getFlowById(flowId);
+        Flow flow = flowMapper.getFlowById(user, flowId);
         if (null != flow) {
             if (null != mxGraphModelVo) {
                 // 最后更新时间

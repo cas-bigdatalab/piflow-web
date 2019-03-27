@@ -1,6 +1,7 @@
 package com.nature.transaction.process;
 
 import com.nature.base.util.LoggerUtil;
+import com.nature.base.util.SessionUserUtil;
 import com.nature.base.vo.UserVo;
 import com.nature.component.process.model.Process;
 import com.nature.component.process.model.ProcessPath;
@@ -139,11 +140,13 @@ public class ProcessTransaction {
     /**
      * 根据Id查询Process
      *
+     * @param currentUser
      * @param id
      * @return
      */
-    public Process getProcessById(String id) {
-        Process processById = processMapper.getProcessById(id);
+    public Process getProcessById(UserVo currentUser, String id) {
+        UserVo currentUser1 = SessionUserUtil.getCurrentUser();
+        Process processById = processMapper.getProcessById(currentUser, id);
         return processById;
     }
 
@@ -216,7 +219,7 @@ public class ProcessTransaction {
     public boolean updateProcessEnableFlag(String processId, UserVo currentUser) {
         int affectedLine = 0;
         if (StringUtils.isNotBlank(processId) && null != currentUser) {
-            Process processById = processMapper.getProcessById(processId);
+            Process processById = processMapper.getProcessById(currentUser, processId);
             if (null != processById) {
                 List<ProcessPath> processPathList = processById.getProcessPathList();
                 String username = currentUser.getUsername();

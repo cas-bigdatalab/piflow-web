@@ -32,7 +32,7 @@ public interface ProcessMapper {
             @Result(column = "id", property = "processPathList", many = @Many(select = "com.nature.mapper.process.ProcessPathMapper.getProcessPathByProcessId", fetchType = FetchType.LAZY))
 
     })
-    public Process getProcessById(String id);
+    public Process getProcessById(@Param("currentUser") UserVo currentUser, @Param("id") String id);
 
     /**
      * 查询进程List(processList)

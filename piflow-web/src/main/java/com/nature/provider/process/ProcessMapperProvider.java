@@ -143,19 +143,21 @@ public class ProcessMapperProvider {
     /**
      * 根据进程Id查询进程
      *
-     * @param id
+     * @param map
      * @return
      */
-    public String getProcessById(String id) {
+    public String getProcessById(Map map) {
+        String id = (String) map.get("id");
         String sqlStr = "select 0";
-        if (StringUtils.isNotBlank(id)) {
-            SQL sql = new SQL();
-            sql.SELECT("*");
-            sql.FROM("FLOW_PROCESS");
-            sql.WHERE("enable_flag = 1");
-            sql.WHERE("id = " + SqlUtils.addSqlStrAndReplace(id));
-
-            sqlStr = sql.toString();
+        UserVo currentUser = (UserVo) map.get("currentUser");
+        if (StringUtils.isNotBlank(id) && null != currentUser) {
+            StringBuffer strBuf = new StringBuffer();
+            strBuf.append("SELECT * ");
+            strBuf.append("FROM FLOW_PROCESS ");
+            strBuf.append("WHERE ENABLE_FLAG = 1 ");
+            strBuf.append("AND ID= " + SqlUtils.addSqlStrAndReplace(id));
+            strBuf.append(SqlUtils.addQueryByUserRole(currentUser, true));
+            sqlStr = strBuf.toString();
         }
         return sqlStr;
     }

@@ -250,17 +250,22 @@ public class FlowMapperProvider {
     /**
      * 根据工作流Id查询工作流
      *
-     * @param id
+     * @param map
      * @return
      */
-    public String getFlowById(String id) {
+    public String getFlowById(Map map) {
         String sqlStr = "";
-        SQL sql = new SQL();
-        sql.SELECT("*");
-        sql.FROM("flow");
-        sql.WHERE("id = " + SqlUtils.addSqlStr(id));
-        sql.WHERE("ENABLE_FLAG = 1");
-        sqlStr = sql.toString();
+        UserVo currentUser = (UserVo) map.get("currentUser");
+        String id = (String) map.get("id");
+        if (StringUtils.isNotBlank(id) && null != currentUser) {
+            StringBuffer strBuf = new StringBuffer();
+            strBuf.append("SELECT * ");
+            strBuf.append("FROM FLOW ");
+            strBuf.append("WHERE ENABLE_FLAG = 1 ");
+            strBuf.append("AND id = " + SqlUtils.addSqlStr(id));
+            strBuf.append(SqlUtils.addQueryByUserRole(currentUser, true));
+            sqlStr = strBuf.toString();
+        }
         return sqlStr;
     }
 

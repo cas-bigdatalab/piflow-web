@@ -53,7 +53,7 @@ public class StartFlowImpl implements IStartFlow {
             if (StringUtils.isNotBlank(doPost) && !doPost.contains("Exception")) {
                 try {
                     JSONObject obj = JSONObject.fromObject(doPost).getJSONObject("flow");// 将json字符串转换为json对象
-                    Process processById = processTransaction.getProcessById(process.getId());
+                    Process processById = processTransaction.getProcessById(currentUser, process.getId());
                     processById.setAppId(obj.getString("id"));
                     processById.setProcessId(obj.getString("pid"));
                     processById.setState(ProcessState.STARTED);

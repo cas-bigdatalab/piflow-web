@@ -69,7 +69,7 @@ public interface FlowMapper {
             @Result(column = "id", property = "pathsList", many = @Many(select = "com.nature.mapper.PathsMapper.getPathsListByFlowId", fetchType = FetchType.LAZY))
 
     })
-    public Flow getFlowById(String id);
+    public Flow getFlowById(@Param("currentUser") UserVo currentUser, @Param("id")String id);
 
     @UpdateProvider(type = FlowMapperProvider.class, method = "updateEnableFlagById")
     public int updateEnableFlagById(@Param("id") String id);
