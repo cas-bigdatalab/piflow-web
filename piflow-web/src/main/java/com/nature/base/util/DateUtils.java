@@ -584,7 +584,7 @@ public class DateUtils {
             SimpleDateFormat formatter = new SimpleDateFormat(EEE_MMM_dd_HH_mm_ss_zzz_yyyy, Locale.US);
             ParsePosition pos = new ParsePosition(0);
             date = formatter.parse(cstStr, pos);
-            logger.warn("转换后的值：" + date);
+            logger.debug("转换后的值：" + date);
         }
         return date;
     }

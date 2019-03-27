@@ -23,7 +23,6 @@ import com.nature.common.constant.SysParamsCache;
 
 import sun.misc.BASE64Decoder;
 
-@SuppressWarnings({ "deprecation", "restriction" })
 public class TestHttpGroup {
 
 	@Test

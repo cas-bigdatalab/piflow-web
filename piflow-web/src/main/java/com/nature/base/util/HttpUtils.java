@@ -3,9 +3,7 @@ package com.nature.base.util;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLConnection;
+import java.net.*;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.LinkedList;
 import java.util.List;
@@ -47,16 +45,18 @@ public class HttpUtils {
      */
     public static String doPost(String url, String json, Integer timeOutMS) {
         String result = "";
-        // 执行请求操作，并拿到结果（同步阻塞）
-        CloseableHttpResponse response = null;
+
+        // 创建httpclient对象
+        CloseableHttpClient httpClient = null;
+        // 创建post方式请求对象
+        HttpPost httpPost = null;
         try {
             // 创建httpclient对象
-            CloseableHttpClient httpClient = HttpClients.createDefault();
-
+            httpClient = HttpClients.createDefault();
             // 创建post方式请求对象
-            HttpPost httpPost = new HttpPost(url);
+            httpPost = new HttpPost(url);
 
-            logger.info("传入的json参数：" + json);
+            logger.debug("传入的json参数：" + json);
             // 设置参数到请求对象中
             StringEntity stringEntity = new StringEntity(json.toString(), ContentType.APPLICATION_JSON);
             stringEntity.setContentEncoding("utf-8");
@@ -72,7 +72,7 @@ public class HttpUtils {
 
             logger.info("调用" + url + "，开始");
             // 执行请求操作，并拿到结果（同步阻塞）
-            response = httpClient.execute(httpPost);
+            CloseableHttpResponse response = httpClient.execute(httpPost);
             logger.info("调用成功，返回信息：" + response.toString());
             // 获取结果实体
             // 判断网络连接状态码是否正常(0--200都数正常)
@@ -91,6 +91,9 @@ public class HttpUtils {
         } catch (IOException e) {
             logger.error("接口调用出错", e);
             result = "接口调用出错:IOException";
+        } finally {
+            // 关闭连接，释放资源
+            httpPost.releaseConnection();
         }
         return result;
     }
@@ -157,20 +160,19 @@ public class HttpUtils {
                 if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                     result = EntityUtils.toString(response.getEntity(), "utf-8");
                 }
-                logger.info("调用成功，返回报文：" + result);
                 // 释放链接
                 response.close();
             } catch (ClientProtocolException e) {
-                logger.debug("接口调用出错", e);
+                logger.error("接口调用出错", e);
                 result = "接口调用出错:ClientProtocolException";
             } catch (ParseException e) {
-                logger.debug("接口调用出错", e);
+                logger.error("接口调用出错", e);
                 result = "接口调用出错:ParseException";
             } catch (IOException e) {
-                logger.debug("接口调用出错", e);
+                logger.error("接口调用出错", e);
                 result = "接口调用出错:IOException";
             } catch (URISyntaxException e) {
-                logger.debug("接口调用出错", e);
+                logger.error("接口调用出错", e);
                 result = "接口调用出错:URISyntaxException";
             }
         }
@@ -201,7 +203,7 @@ public class HttpUtils {
                 result += line + "\n";
             }
         } catch (Exception e) {
-            System.out.println("发送GET请求出现异常！" + e);
+            logger.error("发送GET请求出现异常！" + e);
             e.printStackTrace();
         } // 使用finally来关闭输入流
         finally {
@@ -213,7 +215,7 @@ public class HttpUtils {
                 e2.printStackTrace();
             }
         }
-        logger.info("html信息：" + result);
+        logger.debug("html信息：" + result);
         return result;
     }
 }
