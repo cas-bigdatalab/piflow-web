@@ -385,18 +385,18 @@ public class ProcessMapperProvider {
     public String updateEnableFlag(String id, String username) {
         String sqlStr = "select 0";
         if (!StringUtils.isAnyEmpty(id, username)) {
-            SQL sql = new SQL();
             StringBuffer sqlStrBuf = new StringBuffer();
             sqlStrBuf.append("UPDATE FLOW_PROCESS ");
-            sqlStrBuf.append("SET LAST_UPDATE_DTTM = " + SqlUtils.addSqlStr(DateUtils.dateTimesToStr(new Date())));
-            sqlStrBuf.append("SET LAST_UPDATE_DTTM = " + SqlUtils.addSqlStr(DateUtils.dateTimesToStr(new Date())));
-            sqlStrBuf.append("SET LAST_UPDATE_USER = " + SqlUtils.addSqlStr(username));
-            sqlStrBuf.append("SET VERSION=(VERSION+1) ");
-            sqlStrBuf.append("SET ENABLE_FLAG = 0 ");
+            sqlStrBuf.append("SET ");
+            sqlStrBuf.append("LAST_UPDATE_DTTM = " + SqlUtils.addSqlStr(DateUtils.dateTimesToStr(new Date()))+", ");
+            sqlStrBuf.append("LAST_UPDATE_DTTM = " + SqlUtils.addSqlStr(DateUtils.dateTimesToStr(new Date()))+", ");
+            sqlStrBuf.append("LAST_UPDATE_USER = " + SqlUtils.addSqlStr(username)+", ");
+            sqlStrBuf.append("VERSION=(VERSION+1), ");
+            sqlStrBuf.append("ENABLE_FLAG = 0 ");
             sqlStrBuf.append("WHERE ENABLE_FLAG = 1 ");
-            sqlStrBuf.append("WHERE ID = " + SqlUtils.addSqlStrAndReplace(id));
+            sqlStrBuf.append("AND ID = " + SqlUtils.addSqlStrAndReplace(id));
 
-            sqlStr = sql.toString();
+            sqlStr = sqlStrBuf.toString();
         }
         return sqlStr;
     }

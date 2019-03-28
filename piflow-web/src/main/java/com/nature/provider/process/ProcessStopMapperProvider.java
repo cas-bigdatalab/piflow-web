@@ -437,7 +437,7 @@ public class ProcessStopMapperProvider {
 
     public String updateEnableFlagByProcessId(String processId, String username) {
         String sqlStr = "select 0";
-        if (StringUtils.isAnyEmpty(processId, username)) {
+        if (StringUtils.isNoneEmpty(processId, username)) {
             SQL sql = new SQL();
             sql.UPDATE("FLOW_PROCESS_STOP");
             sql.SET("LAST_UPDATE_DTTM = " + SqlUtils.addSqlStr(DateUtils.dateTimesToStr(new Date())));
