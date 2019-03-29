@@ -1,8 +1,8 @@
-package com.nature.mapper;
+package com.nature.mapper.flow;
 
 import com.nature.component.flow.model.Property;
 import com.nature.component.flow.model.Stops;
-import com.nature.provider.PropertyMapperProvider;
+import com.nature.provider.flow.PropertyMapperProvider;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -26,7 +26,7 @@ public interface PropertyMapper {
 	@Results({
 			@Result(id = true, column = "id", property = "id"),
 			@Result(column = "is_checkpoint", property = "checkpoint"),
-			@Result(property = "properties", column = "id", many = @Many(select = "com.nature.mapper.PropertyTemplateMapper.getPropertyBySotpsId")) })
+			@Result(property = "properties", column = "id", many = @Many(select = "com.nature.mapper.flow.PropertyTemplateMapper.getPropertyBySotpsId")) })
 	public Stops getStopGroupList(@Param("fid") String fid, @Param("id") String id);
 
 	/**

@@ -11,14 +11,15 @@ import com.nature.component.flow.model.StopsTemplate;
 import com.nature.component.flow.service.IPropertyService;
 import com.nature.component.flow.utils.StopsUtil;
 import com.nature.component.flow.vo.StopsVo;
-import com.nature.mapper.PropertyMapper;
-import com.nature.mapper.StopsMapper;
-import com.nature.mapper.StopsTemplateMapper;
+import com.nature.mapper.flow.PropertyMapper;
+import com.nature.mapper.flow.StopsMapper;
+import com.nature.mapper.flow.StopsTemplateMapper;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.*;
 
 @Service
@@ -26,13 +27,13 @@ public class PropertyServiceImpl implements IPropertyService {
 
 	Logger logger = LoggerUtil.getLogger();
 	
-	@Autowired
+	@Resource
 	PropertyMapper propertyMapper;
 	
-	@Autowired
+	@Resource
 	StopsMapper stopsMapper;
 	
-	@Autowired
+	@Resource
 	StopsTemplateMapper stopsTemplateMapper;
 	
 	@Override
@@ -108,8 +109,8 @@ public class PropertyServiceImpl implements IPropertyService {
                           	update.setName(name);
                           	update.setCrtDttm(crtDttm);
                           	update.setCrtUser(crtUser);
-                          	update.setDisplayName(SqlUtils.replaceString(displayName));
-                          	update.setDescription(SqlUtils.replaceString(description));
+                          	update.setDisplayName(displayName);
+                          	update.setDescription(description);
                           	update.setId(ptname.getId());
                           	propertyMapper.updateStopsProperty(update);
       					}else {
@@ -122,8 +123,8 @@ public class PropertyServiceImpl implements IPropertyService {
       						newProperty.setCrtDttm(new Date());
       						newProperty.setCrtUser(username);
       						newProperty.setEnableFlag(true);
-      						newProperty.setDisplayName(SqlUtils.replaceString(displayName));
-      						newProperty.setDescription(SqlUtils.replaceString(description));
+      						newProperty.setDisplayName(displayName);
+      						newProperty.setDescription(description);
       						newProperty.setStops(stopsList);
       						addPropertyList.add(newProperty);
 							} 

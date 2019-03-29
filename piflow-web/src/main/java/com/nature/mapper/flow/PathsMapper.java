@@ -1,4 +1,4 @@
-package com.nature.mapper;
+package com.nature.mapper.flow;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import org.apache.ibatis.annotations.UpdateProvider;
 import org.apache.ibatis.mapping.FetchType;
 
 import com.nature.component.flow.model.Paths;
-import com.nature.provider.PathsMapperProvider;
+import com.nature.provider.flow.PathsMapperProvider;
 
 @Mapper
 public interface PathsMapper {
@@ -68,7 +68,7 @@ public interface PathsMapper {
             @Result(column = "LINE_OUTPORT", property = "outport"),
             @Result(column = "LINE_INPORT", property = "inport"),
             @Result(column = "LINE_PORT", property = "port"),
-			@Result(column = "fk_flow_id", property = "flow", many = @Many(select = "com.nature.mapper.FlowMapper.getFlowById", fetchType = FetchType.LAZY))
+			@Result(column = "fk_flow_id", property = "flow", many = @Many(select = "com.nature.mapper.flow.FlowMapper.getFlowById", fetchType = FetchType.LAZY))
     })
     public List<Paths> getPaths(String flowId, String pageId, String from, String to);
 

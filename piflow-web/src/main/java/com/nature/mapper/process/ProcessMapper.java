@@ -32,7 +32,7 @@ public interface ProcessMapper {
             @Result(column = "id", property = "processPathList", many = @Many(select = "com.nature.mapper.process.ProcessPathMapper.getProcessPathByProcessId", fetchType = FetchType.LAZY))
 
     })
-    public Process getProcessById(@Param("currentUser") UserVo currentUser, @Param("id") String id);
+    public Process getProcessById(@Param("id") String id);
 
     /**
      * 查询进程List(processList)
@@ -58,7 +58,7 @@ public interface ProcessMapper {
     @Results({
             @Result(id = true, column = "id", property = "id"),
     })
-    public List<Process> getProcessListByParam(@Param("currentUser") UserVo currentUser, @Param("param") String param);
+    public List<Process> getProcessListByParam(@Param("param") String param);
 
     /**
      * 根据flowId查询正在运行的进程List(processList)

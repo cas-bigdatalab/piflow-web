@@ -1,4 +1,4 @@
-package com.nature.provider;
+package com.nature.provider.flow;
 
 import com.nature.base.util.DateUtils;
 import com.nature.base.util.SqlUtils;
@@ -61,21 +61,21 @@ public class PropertyTemplateMapperProvider {
                     Boolean required = (null == propertyTemplate.getRequired()) ? false : propertyTemplate.getRequired();
                     Boolean sensitive = (null == propertyTemplate.getSensitive()) ? false : propertyTemplate.getSensitive();
                     sqlValuesStr.append("(");
-                    sqlValuesStr.append(SqlUtils.addSqlStr(propertyTemplate.getId()) + ",");
-                    sqlValuesStr.append(SqlUtils.addSqlStr(DateUtils.dateTimesToStr(propertyTemplate.getCrtDttm())) + ",");
-                    sqlValuesStr.append(SqlUtils.addSqlStr(propertyTemplate.getCrtUser()) + ",");
+                    sqlValuesStr.append(SqlUtils.addSqlStrAndReplace(propertyTemplate.getId()) + ",");
+                    sqlValuesStr.append(SqlUtils.addSqlStrAndReplace(DateUtils.dateTimesToStr(propertyTemplate.getCrtDttm())) + ",");
+                    sqlValuesStr.append(SqlUtils.addSqlStrAndReplace(propertyTemplate.getCrtUser()) + ",");
                     sqlValuesStr.append(propertyTemplate.getEnableFlag() ? 1 + "," : 0 + ",");
-                    sqlValuesStr.append(SqlUtils.addSqlStr(DateUtils.dateTimesToStr(propertyTemplate.getLastUpdateDttm())) + ",");
-                    sqlValuesStr.append(SqlUtils.addSqlStr(propertyTemplate.getLastUpdateUser()) + ",");
+                    sqlValuesStr.append(SqlUtils.addSqlStrAndReplace(DateUtils.dateTimesToStr(propertyTemplate.getLastUpdateDttm())) + ",");
+                    sqlValuesStr.append(SqlUtils.addSqlStrAndReplace(propertyTemplate.getLastUpdateUser()) + ",");
                     sqlValuesStr.append((null != propertyTemplate.getVersion() ? propertyTemplate.getVersion() : 0) + ",");
-                    sqlValuesStr.append(SqlUtils.addSqlStr(propertyTemplate.getAllowableValues()) + ",");
-                    sqlValuesStr.append(SqlUtils.addSqlStr(propertyTemplate.getDefaultValue()) + ",");
-                    sqlValuesStr.append(SqlUtils.addSqlStr(propertyTemplate.getDescription().equals("null") ? "" : propertyTemplate.getDescription()) + ",");
-                    sqlValuesStr.append(SqlUtils.addSqlStr(propertyTemplate.getDisplayName()) + ",");
-                    sqlValuesStr.append(SqlUtils.addSqlStr(propertyTemplate.getName()) + ",");
+                    sqlValuesStr.append(SqlUtils.addSqlStrAndReplace(propertyTemplate.getAllowableValues()) + ",");
+                    sqlValuesStr.append(SqlUtils.addSqlStrAndReplace(propertyTemplate.getDefaultValue()) + ",");
+                    sqlValuesStr.append(SqlUtils.addSqlStrAndReplace(propertyTemplate.getDescription().equals("null") ? "" : propertyTemplate.getDescription()) + ",");
+                    sqlValuesStr.append(SqlUtils.addSqlStrAndReplace(propertyTemplate.getDisplayName()) + ",");
+                    sqlValuesStr.append(SqlUtils.addSqlStrAndReplace(propertyTemplate.getName()) + ",");
                     sqlValuesStr.append(required ? 1 + "," : 0 + ",");
                     sqlValuesStr.append(sensitive ? 1 + "," : 0 + ",");
-                    sqlValuesStr.append(SqlUtils.addSqlStr(null != propertyTemplate.getStopsTemplate() ? propertyTemplate.getStopsTemplate() : ""));
+                    sqlValuesStr.append(SqlUtils.addSqlStrAndReplace(null != propertyTemplate.getStopsTemplate() ? propertyTemplate.getStopsTemplate() : ""));
                     sqlValuesStr.append(")");
                     if (i < propertyTemplateList.size() - 1) {
                         sqlValuesStr.append(",\n");

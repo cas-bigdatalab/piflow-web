@@ -1,7 +1,7 @@
-package com.nature.mapper;
+package com.nature.mapper.flow;
 
 import com.nature.component.flow.model.StopsTemplate;
-import com.nature.provider.StopsTemplateMapperProvider;
+import com.nature.provider.flow.StopsTemplateMapperProvider;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
 
@@ -34,7 +34,7 @@ public interface StopsTemplateMapper {
 	 */
 	@SelectProvider(type = StopsTemplateMapperProvider.class, method = "getStopsTemplateById")
 	@Results({ @Result(id = true, column = "id", property = "id"),
-			@Result(property = "properties", column = "id", many = @Many(select = "com.nature.mapper.PropertyTemplateMapper.getPropertyTemplateBySotpsId")) })
+			@Result(property = "properties", column = "id", many = @Many(select = "com.nature.mapper.flow.PropertyTemplateMapper.getPropertyTemplateBySotpsId")) })
 	public StopsTemplate getStopsTemplateAndPropertyById(String id);
 
 	/**
@@ -54,7 +54,7 @@ public interface StopsTemplateMapper {
 	 */
 	@SelectProvider(type = StopsTemplateMapperProvider.class, method = "getStopsTemplateByName")
 	@Results({ @Result(id = true, column = "id", property = "id"),
-			@Result(column = "id", property = "properties", many = @Many(select = "com.nature.mapper.PropertyTemplateMapper.getPropertyTemplateBySotpsId", fetchType = FetchType.LAZY))
+			@Result(column = "id", property = "properties", many = @Many(select = "com.nature.mapper.flow.PropertyTemplateMapper.getPropertyTemplateBySotpsId", fetchType = FetchType.LAZY))
 
 	})
 	public List<StopsTemplate> getStopsTemplateByName(String stopsName);

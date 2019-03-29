@@ -12,7 +12,7 @@ import com.nature.component.flow.model.Stops;
 import com.nature.component.flow.service.IStopsService;
 import com.nature.component.flow.utils.StopsUtil;
 import com.nature.component.flow.vo.StopsVo;
-import com.nature.mapper.StopsMapper;
+import com.nature.mapper.flow.StopsMapper;
 import com.nature.mapper.mxGraph.MxCellMapper;
 import com.nature.third.vo.flowInfo.ThirdFlowInfoStopVo;
 import org.apache.commons.lang3.StringUtils;

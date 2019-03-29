@@ -12,6 +12,68 @@ import java.util.List;
 import java.util.Map;
 
 public class ProcessPathMapperProvider {
+
+    private String id;
+    private String crtUser;
+    private String crtDttmStr;
+    private String lastUpdateDttmStr;
+    private String lastUpdateUser;
+    private int enableFlag;
+    private long version;
+    private String from;
+    private String outport;
+    private String inport;
+    private String to;
+    private String pageId;
+    private String processId;
+
+    private void preventSQLInjectionProcessPath(ProcessPath processPath) {
+        if (null != processPath && StringUtils.isNotBlank(processPath.getLastUpdateUser())) {
+            // Mandatory Field
+            String id = processPath.getId();
+            String crtUser = processPath.getCrtUser();
+            String lastUpdateUser = processPath.getLastUpdateUser();
+            Boolean enableFlag = processPath.getEnableFlag();
+            Long version = processPath.getVersion();
+            Date crtDttm = processPath.getCrtDttm();
+            Date lastUpdateDttm = processPath.getLastUpdateDttm();
+            this.id = SqlUtils.preventSQLInjection(id);
+            this.crtUser = (null != crtUser ? SqlUtils.preventSQLInjection(crtUser):null);
+            this.lastUpdateUser = SqlUtils.preventSQLInjection(lastUpdateUser);
+            this.enableFlag = ((null != enableFlag && enableFlag) ? 1 : 0);
+            this.version = (null != version ? version : 0L);
+            String crtDttmStr = DateUtils.dateTimesToStr(crtDttm);
+            String lastUpdateDttmStr = DateUtils.dateTimesToStr(null != lastUpdateDttm ? lastUpdateDttm : new Date());
+            this.crtDttmStr = (null != crtDttm ? SqlUtils.preventSQLInjection(crtDttmStr):null);
+            this.lastUpdateDttmStr = SqlUtils.preventSQLInjection(lastUpdateDttmStr);
+
+            // Selection field
+            this.from = SqlUtils.preventSQLInjection(processPath.getFrom());
+            this.outport = SqlUtils.preventSQLInjection(processPath.getOutport());
+            this.inport = SqlUtils.preventSQLInjection(processPath.getInport());
+            this.to = SqlUtils.preventSQLInjection(processPath.getTo());
+            this.pageId = SqlUtils.preventSQLInjection(processPath.getPageId());
+            String processIdStr = (null != processPath.getProcess() ? processPath.getProcess().getId() : null);
+            this.processId = (null != processIdStr ? SqlUtils.preventSQLInjection(processIdStr) : null);
+        }
+    }
+
+    private void reset() {
+        this.id = null;
+        this.crtUser = null;
+        this.crtDttmStr = null;
+        this.lastUpdateDttmStr = null;
+        this.lastUpdateUser = null;
+        this.enableFlag = 1;
+        this.version = 0L;
+        this.from = null;
+        this.outport = null;
+        this.inport = null;
+        this.to = null;
+        this.pageId = null;
+        this.processId = null;
+    }
+
     /**
      * 添加 processPath
      *
@@ -20,21 +82,8 @@ public class ProcessPathMapperProvider {
      */
     public String addProcessPath(ProcessPath processPath) {
         String sqlStr = "select 0";
+        this.preventSQLInjectionProcessPath(processPath);
         if (null != processPath) {
-            String id = processPath.getId();
-            String crtUser = processPath.getCrtUser();
-            Date crtDttm = processPath.getCrtDttm();
-            String lastUpdateUser = processPath.getLastUpdateUser();
-            Date lastUpdateDttm = processPath.getLastUpdateDttm();
-            Long version = processPath.getVersion();
-            Boolean enableFlag = processPath.getEnableFlag();
-            String from = processPath.getFrom();
-            String outport = processPath.getOutport();
-            String inport = processPath.getInport();
-            String to = processPath.getTo();
-            String pageId = processPath.getPageId();
-            Process process = processPath.getProcess();
-
             SQL sql = new SQL();
 
             // INSERT_INTO括号中为数据库表名
@@ -43,53 +92,31 @@ public class ProcessPathMapperProvider {
             // 除数字类型的字段外其他类型必须加单引号
 
             //先处理修改必填字段
-            if (null == crtDttm) {
-                crtDttm = new Date();
+            if (null == crtDttmStr) {
+                String crtDttm = DateUtils.dateTimesToStr(new Date());
+                crtDttmStr = SqlUtils.preventSQLInjection(crtDttm);
             }
             if (StringUtils.isBlank(crtUser)) {
-                crtUser = "-1";
+                crtUser = SqlUtils.preventSQLInjection("-1");
             }
-            if (null == lastUpdateDttm) {
-                lastUpdateDttm = new Date();
-            }
-            if (StringUtils.isBlank(lastUpdateUser)) {
-                lastUpdateUser = "-1";
-            }
-            if (null == version) {
-                version = 0L;
-            }
-            if (null == enableFlag) {
-                enableFlag = true;
-            }
-            sql.VALUES("ID", SqlUtils.addSqlStrAndReplace(id));
-            sql.VALUES("CRT_DTTM", SqlUtils.addSqlStrAndReplace(DateUtils.dateTimesToStr(crtDttm)));
-            sql.VALUES("CRT_USER", SqlUtils.addSqlStrAndReplace(crtUser));
-            sql.VALUES("LAST_UPDATE_DTTM", SqlUtils.addSqlStrAndReplace(DateUtils.dateTimesToStr(lastUpdateDttm)));
-            sql.VALUES("LAST_UPDATE_USER", SqlUtils.addSqlStrAndReplace(lastUpdateUser));
+            sql.VALUES("ID", id);
+            sql.VALUES("CRT_DTTM", crtDttmStr);
+            sql.VALUES("CRT_USER", crtUser);
+            sql.VALUES("LAST_UPDATE_DTTM", lastUpdateDttmStr);
+            sql.VALUES("LAST_UPDATE_USER", lastUpdateUser);
             sql.VALUES("VERSION", version + "");
-            sql.VALUES("ENABLE_FLAG", (enableFlag ? 1 : 0) + "");
+            sql.VALUES("ENABLE_FLAG", enableFlag + "");
 
             // 处理其他字段
-            if (null != from) {
-                sql.VALUES("LINE_FROM", SqlUtils.addSqlStrAndReplace(from));
-            }
-            if (null != outport) {
-                sql.VALUES("LINE_OUTPORT", SqlUtils.addSqlStrAndReplace(outport));
-            }
-            if (null != inport) {
-                sql.VALUES("LINE_INPORT", SqlUtils.addSqlStrAndReplace(inport));
-            }
-            if (null != to) {
-                sql.VALUES("LINE_TO", SqlUtils.addSqlStrAndReplace(to));
-            }
-            if (null != pageId) {
-                sql.VALUES("PAGE_ID", SqlUtils.addSqlStrAndReplace(pageId));
-            }
-            if (null != process) {
-                sql.VALUES("FK_FLOW_PROCESS_ID", SqlUtils.addSqlStrAndReplace(process.getId()));
-            }
+            sql.VALUES("LINE_FROM", from);
+            sql.VALUES("LINE_OUTPORT", outport);
+            sql.VALUES("LINE_INPORT", inport);
+            sql.VALUES("LINE_TO", to);
+            sql.VALUES("PAGE_ID", pageId);
+            sql.VALUES("FK_FLOW_PROCESS_ID", processId);
             sqlStr = sql.toString();
         }
+        this.reset();
         return sqlStr;
     }
 
@@ -127,57 +154,34 @@ public class ProcessPathMapperProvider {
             for (ProcessPath processPath : processPaths) {
                 i++;
                 if (null != processPath) {
-                    String id = processPath.getId();
-                    String crtUser = processPath.getCrtUser();
-                    Date crtDttm = processPath.getCrtDttm();
-                    String lastUpdateUser = processPath.getLastUpdateUser();
-                    Date lastUpdateDttm = processPath.getLastUpdateDttm();
-                    Long version = processPath.getVersion();
-                    Boolean enableFlag = processPath.getEnableFlag();
-                    String from = processPath.getFrom();
-                    String outport = processPath.getOutport();
-                    String inport = processPath.getInport();
-                    String to = processPath.getTo();
-                    String pageId = processPath.getPageId();
-                    Process process = processPath.getProcess();
-
-                    if (null == crtDttm) {
-                        crtDttm = new Date();
+                    this.preventSQLInjectionProcessPath(processPath);
+                    if (null == crtDttmStr) {
+                        String crtDttm = DateUtils.dateTimesToStr(new Date());
+                        crtDttmStr = SqlUtils.preventSQLInjection(crtDttm);
                     }
                     if (StringUtils.isBlank(crtUser)) {
-                        crtUser = "-1";
-                    }
-                    if (null == lastUpdateDttm) {
-                        lastUpdateDttm = new Date();
-                    }
-                    if (StringUtils.isBlank(lastUpdateUser)) {
-                        lastUpdateUser = "-1";
-                    }
-                    if (null == version) {
-                        version = 0L;
-                    }
-                    if (null == enableFlag) {
-                        enableFlag = true;
+                        crtUser = SqlUtils.preventSQLInjection("-1");
                     }
                     sql.append("(");
-                    sql.append(SqlUtils.addSqlStrAndReplace(id) + ",");
-                    sql.append(SqlUtils.addSqlStrAndReplace(DateUtils.dateTimesToStr(crtDttm)) + ",");
-                    sql.append(SqlUtils.addSqlStrAndReplace(crtUser) + ",");
-                    sql.append(SqlUtils.addSqlStrAndReplace(DateUtils.dateTimesToStr(lastUpdateDttm)) + ",");
-                    sql.append(SqlUtils.addSqlStrAndReplace(lastUpdateUser) + ",");
+                    sql.append(id + ",");
+                    sql.append(crtDttmStr + ",");
+                    sql.append(crtUser + ",");
+                    sql.append(lastUpdateDttmStr + ",");
+                    sql.append(lastUpdateUser + ",");
                     sql.append(version + ",");
-                    sql.append((enableFlag ? 1 : 0) + ",");
-                    sql.append(SqlUtils.addSqlStrAndReplace(from) + ",");
-                    sql.append(SqlUtils.addSqlStrAndReplace(to) + ",");
-                    sql.append(SqlUtils.addSqlStrAndReplace(outport) + ",");
-                    sql.append(SqlUtils.addSqlStrAndReplace(inport) + ",");
-                    sql.append(SqlUtils.addSqlStrAndReplace(pageId) + ",");
-                    sql.append(SqlUtils.addSqlStrAndReplace((process == null ? "" : process.getId())));
+                    sql.append(enableFlag + ",");
+                    sql.append(from + ",");
+                    sql.append(to + ",");
+                    sql.append(outport + ",");
+                    sql.append(inport + ",");
+                    sql.append(pageId + ",");
+                    sql.append(processId);
                     if (i != processPaths.size()) {
                         sql.append("),");
                     } else {
                         sql.append(")");
                     }
+                    this.reset();
                 }
             }
 
@@ -199,7 +203,7 @@ public class ProcessPathMapperProvider {
             sql.SELECT("*");
             sql.FROM("FLOW_PROCESS_PATH");
             sql.WHERE("enable_flag = 1");
-            sql.WHERE("FK_FLOW_PROCESS_ID = " + SqlUtils.addSqlStr(processId));
+            sql.WHERE("FK_FLOW_PROCESS_ID = " + SqlUtils.preventSQLInjection(processId));
 
             sqlStr = sql.toString();
         }
@@ -220,8 +224,8 @@ public class ProcessPathMapperProvider {
             sql.SELECT("*");
             sql.FROM("FLOW_PROCESS_PATH");
             sql.WHERE("enable_flag = 1");
-            sql.WHERE("FK_FLOW_PROCESS_ID = " + SqlUtils.addSqlStr(processId));
-            sql.WHERE("PAGE_ID = " + SqlUtils.addSqlStr(pageId));
+            sql.WHERE("FK_FLOW_PROCESS_ID = " + SqlUtils.preventSQLInjection(processId));
+            sql.WHERE("PAGE_ID = " + SqlUtils.preventSQLInjection(pageId));
 
             sqlStr = sql.toString();
         }
@@ -236,66 +240,35 @@ public class ProcessPathMapperProvider {
      */
     public String updateProcessPath(ProcessPath processPath) {
         String sqlStr = "select 0";
+        this.preventSQLInjectionProcessPath(processPath);
         if (null != processPath) {
-            String id = processPath.getId();
             if (StringUtils.isNotBlank(id)) {
-                String lastUpdateUser = processPath.getLastUpdateUser();
-                Date lastUpdateDttm = processPath.getLastUpdateDttm();
-                Long version = processPath.getVersion();
-                Boolean enableFlag = processPath.getEnableFlag();
-                String to = processPath.getTo();
-                String from = processPath.getFrom();
-                String outport = processPath.getOutport();
-                String inport = processPath.getInport();
-                Process process = processPath.getProcess();
-                String pageId = processPath.getPageId();
 
                 SQL sql = new SQL();
                 sql.UPDATE("FLOW_PROCESS_PATH");
 
                 //先处理修改必填字段
-                if (null == lastUpdateDttm) {
-                    lastUpdateDttm = new Date();
-                }
-                if (StringUtils.isBlank(lastUpdateUser)) {
-                    lastUpdateUser = "-1";
-                }
-                if (null == version) {
-                    version = 0L;
-                }
-                String lastUpdateDttmStr = DateUtils.dateTimesToStr(lastUpdateDttm);
-                sql.SET("LAST_UPDATE_DTTM = " + SqlUtils.addSqlStr(lastUpdateDttmStr));
-                sql.SET("LAST_UPDATE_USER = " + SqlUtils.addSqlStr(lastUpdateUser));
+                sql.SET("LAST_UPDATE_DTTM = " + lastUpdateDttmStr);
+                sql.SET("LAST_UPDATE_USER = " + lastUpdateUser);
                 sql.SET("VERSION = " + (version + 1));
 
                 // 处理其他字段
-                if (null != enableFlag) {
-                    sql.SET("ENABLE_FLAG = " + (enableFlag ? 1 : 0));
-                }
-                if (StringUtils.isNotBlank(to)) {
-                    sql.SET("LINE_TO = " + SqlUtils.addSqlStr(to));
-                }
-                if (StringUtils.isNotBlank(from)) {
-                    sql.SET("LINE_FROM = " + SqlUtils.addSqlStr(from));
-                }
-                if (StringUtils.isNotBlank(outport)) {
-                    sql.SET("LINE_OUTPORT = " + SqlUtils.addSqlStr(outport));
-                }
-                if (StringUtils.isNotBlank(inport)) {
-                    sql.SET("LINE_INPORT = " + SqlUtils.addSqlStr(inport));
-                }
-                if (StringUtils.isNotBlank(pageId)) {
-                    sql.SET("PAGE_ID = " + SqlUtils.addSqlStr(pageId));
-                }
-                if (null != process) {
-                    sql.SET("FK_FLOW_PROCESS_ID = " + SqlUtils.addSqlStr(process.getId()));
+                sql.SET("ENABLE_FLAG = " + enableFlag);
+                sql.SET("LINE_TO = " + to);
+                sql.SET("LINE_FROM = " + from);
+                sql.SET("LINE_OUTPORT = " + outport);
+                sql.SET("LINE_INPORT = " + inport);
+                sql.SET("PAGE_ID = " + pageId);
+                if (null != processId) {
+                    sql.SET("FK_FLOW_PROCESS_ID = " + processId);
                 }
                 sql.WHERE("ENABLE_FLAG = 1");
                 sql.WHERE("VERSION = " + version);
-                sql.WHERE("ID = " + SqlUtils.addSqlStr(id));
+                sql.WHERE("ID = " + id);
                 sqlStr = sql.toString();
             }
         }
+        this.reset();
         return sqlStr;
     }
 
@@ -304,12 +277,12 @@ public class ProcessPathMapperProvider {
         if (!StringUtils.isAnyEmpty(processId, userName)) {
             SQL sql = new SQL();
             sql.UPDATE("FLOW_PROCESS_PATH");
-            sql.SET("LAST_UPDATE_DTTM = " + SqlUtils.addSqlStr(DateUtils.dateTimesToStr(new Date())));
-            sql.SET("LAST_UPDATE_USER = " + SqlUtils.addSqlStr(userName));
+            sql.SET("LAST_UPDATE_DTTM = " + SqlUtils.preventSQLInjection(DateUtils.dateTimesToStr(new Date())));
+            sql.SET("LAST_UPDATE_USER = " + SqlUtils.preventSQLInjection(userName));
             sql.SET("VERSION=(VERSION+1)");
             sql.SET("enable_flag = 0");
             sql.WHERE("enable_flag = 1");
-            sql.WHERE("FK_FLOW_PROCESS_ID = " + SqlUtils.addSqlStr(processId));
+            sql.WHERE("FK_FLOW_PROCESS_ID = " + SqlUtils.preventSQLInjection(processId));
 
             sqlStr = sql.toString();
         }

@@ -2,6 +2,7 @@ package com.nature.mapper;
 
 import java.util.List;
 
+import com.nature.mapper.flow.PathsMapper;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

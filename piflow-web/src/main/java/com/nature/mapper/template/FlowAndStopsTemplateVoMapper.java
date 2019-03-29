@@ -3,7 +3,7 @@ package com.nature.mapper.template;
 import com.nature.component.template.model.FlowTemplateModel;
 import com.nature.component.template.model.PropertyTemplateModel;
 import com.nature.component.template.model.StopTemplateModel;
-import com.nature.provider.FlowAndStopsTemplateVoMapperProvider;
+import com.nature.provider.template.FlowAndStopsTemplateVoMapperProvider;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
 

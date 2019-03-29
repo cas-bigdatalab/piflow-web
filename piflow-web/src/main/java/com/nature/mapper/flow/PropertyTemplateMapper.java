@@ -1,8 +1,8 @@
-package com.nature.mapper;
+package com.nature.mapper.flow;
 
 import com.nature.component.flow.model.Property;
 import com.nature.component.flow.model.PropertyTemplate;
-import com.nature.provider.PropertyTemplateMapperProvider;
+import com.nature.provider.flow.PropertyTemplateMapperProvider;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;

@@ -18,7 +18,7 @@ import java.util.Map;
 public class PathCtrl {
 
     /**
-     * 引入日志，注意都是"org.slf4j"包下
+     * Introducing logs, note that they are all packaged under "org.slf4j"
      */
     Logger logger = LoggerUtil.getLogger();
 

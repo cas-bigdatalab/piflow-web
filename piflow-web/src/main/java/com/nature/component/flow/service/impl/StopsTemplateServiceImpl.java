@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.nature.component.flow.model.StopsTemplate;
 import com.nature.component.flow.service.IStopsTemplateService;
-import com.nature.mapper.StopsTemplateMapper;
+import com.nature.mapper.flow.StopsTemplateMapper;
 
 @Service
 public class StopsTemplateServiceImpl implements IStopsTemplateService {

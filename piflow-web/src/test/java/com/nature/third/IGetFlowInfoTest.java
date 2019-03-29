@@ -4,7 +4,7 @@ import com.nature.ApplicationTests;
 import com.nature.base.util.DateUtils;
 import com.nature.base.util.LoggerUtil;
 import com.nature.component.flow.model.FlowInfoDb;
-import com.nature.mapper.FlowInfoDbMapper;
+import com.nature.mapper.flow.FlowInfoDbMapper;
 import com.nature.third.inf.IGetFlowInfo;
 import com.nature.third.vo.flowInfo.ThirdFlowInfoVo;
 import org.junit.Test;

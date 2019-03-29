@@ -30,7 +30,7 @@ import java.util.List;
 public class ProcessTransaction {
 
     /**
-     * 引入日志，注意都是"org.slf4j"包下
+     * Introducing logs, note that they are all packaged under "org.slf4j"
      */
     Logger logger = LoggerUtil.getLogger();
 
@@ -146,7 +146,7 @@ public class ProcessTransaction {
      */
     public Process getProcessById(UserVo currentUser, String id) {
         UserVo currentUser1 = SessionUserUtil.getCurrentUser();
-        Process processById = processMapper.getProcessById(currentUser, id);
+        Process processById = processMapper.getProcessById(id);
         return processById;
     }
 
@@ -186,8 +186,8 @@ public class ProcessTransaction {
      *
      * @return
      */
-    public List<Process> getProcessListByParam(UserVo currentUser, String param) {
-        return processMapper.getProcessListByParam(currentUser, param);
+    public List<Process> getProcessListByParam(String param) {
+        return processMapper.getProcessListByParam(param);
     }
 
     /**
@@ -219,7 +219,7 @@ public class ProcessTransaction {
     public boolean updateProcessEnableFlag(String processId, UserVo currentUser) {
         int affectedLine = 0;
         if (StringUtils.isNotBlank(processId) && null != currentUser) {
-            Process processById = processMapper.getProcessById(currentUser, processId);
+            Process processById = processMapper.getProcessById(processId);
             if (null != processById) {
                 List<ProcessPath> processPathList = processById.getProcessPathList();
                 String username = currentUser.getUsername();

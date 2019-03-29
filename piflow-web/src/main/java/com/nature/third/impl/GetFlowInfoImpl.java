@@ -14,7 +14,7 @@ import com.nature.component.flow.model.FlowInfoDb;
 import com.nature.component.process.model.Process;
 import com.nature.component.process.model.ProcessStop;
 import com.nature.component.process.vo.ProcessStopVo;
-import com.nature.mapper.FlowInfoDbMapper;
+import com.nature.mapper.flow.FlowInfoDbMapper;
 import com.nature.mapper.process.ProcessMapper;
 import com.nature.third.inf.IGetFlowInfo;
 import com.nature.third.inf.IGetFlowProgress;

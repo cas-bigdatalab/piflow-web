@@ -17,7 +17,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @Configuration
 public class WebAppConfig extends WebMvcConfigurerAdapter {
     /**
-     * 引入日志，注意都是"org.slf4j"包下
+     * Introducing logs, note that they are all packaged under "org.slf4j"
      */
     Logger logger = LoggerUtil.getLogger();
     //获取配置文件中图片的路径

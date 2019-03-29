@@ -1,4 +1,4 @@
-package com.nature.provider;
+package com.nature.provider.template;
 
 import com.nature.base.util.DateUtils;
 import com.nature.base.util.SessionUserUtil;
@@ -15,24 +15,20 @@ import java.util.Map;
 public class TemplateMapperProvider {
 
 
-    public String findTemPlateListPage(Map map) {
+    public String findTemPlateListPage(String param) {
         String sqlStr = "select 0";
-        UserVo currentUser = (UserVo) map.get("currentUser");
-        if (null != currentUser) {
-            String param = (String) map.get("param");
-            StringBuffer strBuf = new StringBuffer();
-            strBuf.append("SELECT * ");
-            strBuf.append("FROM FLOW_TEMPLATE ");
-            strBuf.append("WHERE ");
-            strBuf.append("ENABLE_FLAG = 1 ");
-            if (StringUtils.isNotBlank(param)) {
-                strBuf.append("AND NAME LIKE '%" + param + "%' ");
-            }
-            strBuf.append(SqlUtils.addQueryByUserRole(currentUser, true));
-            strBuf.append("ORDER BY CRT_DTTM DESC ");
-            sqlStr = strBuf.toString();
+        UserVo currentUser = SessionUserUtil.getCurrentUser();
+        StringBuffer strBuf = new StringBuffer();
+        strBuf.append("SELECT * ");
+        strBuf.append("FROM FLOW_TEMPLATE ");
+        strBuf.append("WHERE ");
+        strBuf.append("ENABLE_FLAG = 1 ");
+        if (StringUtils.isNotBlank(param)) {
+            strBuf.append("AND NAME LIKE '%" + param + "%' ");
         }
-
+        strBuf.append(SqlUtils.addQueryByUserRole(currentUser, true));
+        strBuf.append("ORDER BY CRT_DTTM DESC ");
+        sqlStr = strBuf.toString();
         return sqlStr;
     }
 

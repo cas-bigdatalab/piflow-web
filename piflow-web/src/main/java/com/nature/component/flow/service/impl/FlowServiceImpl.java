@@ -22,7 +22,7 @@ import com.nature.component.mxGraph.model.MxGraphModel;
 import com.nature.component.mxGraph.vo.MxCellVo;
 import com.nature.component.mxGraph.vo.MxGeometryVo;
 import com.nature.component.mxGraph.vo.MxGraphModelVo;
-import com.nature.mapper.*;
+import com.nature.mapper.flow.*;
 import com.nature.mapper.mxGraph.MxCellMapper;
 import com.nature.mapper.mxGraph.MxGeometryMapper;
 import com.nature.mapper.mxGraph.MxGraphModelMapper;
@@ -121,8 +121,18 @@ public class FlowServiceImpl implements IFlowService {
     @Override
     @Transient
     public Flow getFlowById(String id) {
+        Flow flowById = flowMapper.getFlowById(id);
+        boolean isAdmin = SessionUserUtil.isAdmin();
         UserVo currentUser = SessionUserUtil.getCurrentUser();
-        return flowMapper.getFlowById(currentUser, id);
+        if (null != flowById && !isAdmin) {
+            Boolean isExample = flowById.getIsExample();
+            String crtUser = flowById.getCrtUser();
+            String username = currentUser.getUsername();
+            if ((!isExample) && (!username.equals(crtUser))) {
+                flowById = null;
+            }
+        }
+        return flowById;
     }
 
     /**
@@ -135,9 +145,8 @@ public class FlowServiceImpl implements IFlowService {
     @Override
     @Transient
     public FlowVo getFlowVoById(String id) {
-        UserVo currentUser = SessionUserUtil.getCurrentUser();
         FlowVo flowVo = null;
-        Flow flowById = flowMapper.getFlowById(currentUser, id);
+        Flow flowById = flowMapper.getFlowById(id);
         if (null != flowById) {
             flowVo = new FlowVo();
             BeanUtils.copyProperties(flowById, flowVo);
@@ -172,7 +181,7 @@ public class FlowServiceImpl implements IFlowService {
         StatefulRtnBase satefulRtnBase = new StatefulRtnBase();
         if (StringUtils.isNotBlank(flowId)) {
             // 根据flowId查询flow
-            Flow flowById = flowMapper.getFlowById(user, flowId);
+            Flow flowById = flowMapper.getFlowById(flowId);
             FlowInfoDb oldAppId = flowById.getAppId();
             if (null != flowById) {
                 flowById.setAppId(appId);
@@ -220,8 +229,7 @@ public class FlowServiceImpl implements IFlowService {
 
     @Override
     public int updateFlow(Flow flow) {
-        UserVo currentUser = SessionUserUtil.getCurrentUser();
-        Flow flowDb = flowMapper.getFlowById(currentUser, flow.getId());
+        Flow flowDb = flowMapper.getFlowById(flow.getId());
         flow.setVersion(flowDb.getVersion());
         return flowMapper.updateFlow(flow);
     }
@@ -244,7 +252,7 @@ public class FlowServiceImpl implements IFlowService {
         String username = (null != user) ? user.getUsername() : "-1";
         StatefulRtnBase statefulRtnBase = new StatefulRtnBase();
         // 根据flowId查询flow
-        Flow flow = flowMapper.getFlowById(user, flowId);
+        Flow flow = flowMapper.getFlowById(flowId);
         if (null != flow) {
             // 判断mxGraphModelVo和flow是否为空
             if (null != mxGraphModelVo && null != flow) {
@@ -265,6 +273,7 @@ public class FlowServiceImpl implements IFlowService {
                         mxGraphModelDb.setEnableFlag(true);
                         mxGraphModelDb.setLastUpdateUser(username);
                         mxGraphModelDb.setLastUpdateDttm(new Date());
+                        mxGraphModelDb.setFlow(flow);
                         // 画板的flow外键无变化，无需更新
                         // mxGraphModelDb.setFlow(flow); 添加外键
                         // 更新mxGraphModel
@@ -474,7 +483,7 @@ public class FlowServiceImpl implements IFlowService {
         UserVo user = SessionUserUtil.getCurrentUser();
         String username = (null != user) ? user.getUsername() : "-1";
         StatefulRtnBase statefulRtnBase = new StatefulRtnBase();
-        Flow flow = flowMapper.getFlowById(user, flowId);
+        Flow flow = flowMapper.getFlowById(flowId);
         if (null != flow) {
             if (null != mxGraphModelVo) {
                 // 最后更新时间
@@ -992,7 +1001,7 @@ public class FlowServiceImpl implements IFlowService {
         UserVo currentUser = SessionUserUtil.getCurrentUser();
         if (null != offset && null != limit) {
             Page page = PageHelper.startPage(offset, limit);
-            flowMapper.getFlowListParma(currentUser, param);
+            flowMapper.getFlowListParma(param);
             rtnMap = PageHelperUtils.setDataTableParam(page, rtnMap);
         }
         return JsonUtils.toJsonNoException(rtnMap);

@@ -782,10 +782,9 @@ public class ProcessServiceImpl implements IProcessService {
     @Override
     public String getProcessVoListPage(Integer offset, Integer limit, String param) {
         Map<String, Object> rtnMap = new HashMap<String, Object>();
-        UserVo currentUser = SessionUserUtil.getCurrentUser();
         if (null != offset && null != limit) {
             Page page = PageHelper.startPage(offset, limit);
-            processTransaction.getProcessListByParam(currentUser, param);
+            processTransaction.getProcessListByParam(param);
             rtnMap = PageHelperUtils.setDataTableParam(page, rtnMap);
         }
         return JsonUtils.toJsonNoException(rtnMap);

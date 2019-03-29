@@ -1,8 +1,7 @@
-package com.nature.mapper;
+package com.nature.mapper.flow;
 
-import com.nature.base.vo.UserVo;
 import com.nature.component.flow.model.Flow;
-import com.nature.provider.FlowMapperProvider;
+import com.nature.provider.flow.FlowMapperProvider;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
 
@@ -39,12 +38,11 @@ public interface FlowMapper {
     /**
      * 查詢所有工作流分页查询
      *
-     * @param currentUser
      * @param param
      * @return
      */
     @SelectProvider(type = FlowMapperProvider.class, method = "getFlowListParam")
-    public List<Flow> getFlowListParma(@Param("currentUser") UserVo currentUser, @Param("param")String param);
+    public List<Flow> getFlowListParma(@Param("param")String param);
 
     /**
      * 查詢所有样例工作流
@@ -64,12 +62,12 @@ public interface FlowMapper {
     @Results({
             @Result(id = true, column = "id", property = "id"),
             @Result(column = "id", property = "mxGraphModel", one = @One(select = "com.nature.mapper.mxGraph.MxGraphModelMapper.getMxGraphModelByFlowId", fetchType = FetchType.LAZY)),
-            @Result(column = "id", property = "appId", one = @One(select = "com.nature.mapper.FlowInfoDbMapper.getAppByAppFlowId", fetchType = FetchType.LAZY)),
-            @Result(column = "id", property = "stopsList", many = @Many(select = "com.nature.mapper.StopsMapper.getStopsListByFlowId", fetchType = FetchType.LAZY)),
-            @Result(column = "id", property = "pathsList", many = @Many(select = "com.nature.mapper.PathsMapper.getPathsListByFlowId", fetchType = FetchType.LAZY))
+            @Result(column = "id", property = "appId", one = @One(select = "com.nature.mapper.flow.FlowInfoDbMapper.getAppByAppFlowId", fetchType = FetchType.LAZY)),
+            @Result(column = "id", property = "stopsList", many = @Many(select = "com.nature.mapper.flow.StopsMapper.getStopsListByFlowId", fetchType = FetchType.LAZY)),
+            @Result(column = "id", property = "pathsList", many = @Many(select = "com.nature.mapper.flow.PathsMapper.getPathsListByFlowId", fetchType = FetchType.LAZY))
 
     })
-    public Flow getFlowById(@Param("currentUser") UserVo currentUser, @Param("id")String id);
+    public Flow getFlowById(@Param("id")String id);
 
     @UpdateProvider(type = FlowMapperProvider.class, method = "updateEnableFlagById")
     public int updateEnableFlagById(@Param("id") String id);

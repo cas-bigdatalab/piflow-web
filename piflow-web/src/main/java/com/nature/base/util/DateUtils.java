@@ -197,7 +197,7 @@ public class DateUtils {
      * @param dateDate
      * @return
      */
-    public static String dateToStr(java.util.Date dateDate) {
+    public static String dateToStr(Date dateDate) {
         SimpleDateFormat formatter = new SimpleDateFormat(DATE_PATTERN_yyyy_MM_dd);
         String dateString = formatter.format(dateDate);
         return dateString;
@@ -209,7 +209,7 @@ public class DateUtils {
      * @param dateDate
      * @return
      */
-    public static String dateTimeToStr(java.util.Date dateDate) {
+    public static String dateTimeToStr(Date dateDate) {
         if (dateDate == null) {
             return "";
         }
@@ -224,7 +224,7 @@ public class DateUtils {
      * @param dateDate
      * @return
      */
-    public static String dateTimesToStr(java.util.Date dateDate) {
+    public static String dateTimesToStr(Date dateDate) {
         if (dateDate == null) {
             return "";
         }
@@ -239,7 +239,7 @@ public class DateUtils {
      * @param dateDate
      * @return
      */
-    public static String dateTimeSecToStr(java.util.Date dateDate) {
+    public static String dateTimeSecToStr(Date dateDate) {
         SimpleDateFormat formatter = new SimpleDateFormat(DATE_PATTERN_yyyy_MM_dd_HH_MM);
         String dateString = formatter.format(dateDate);
         return dateString;
@@ -251,7 +251,7 @@ public class DateUtils {
      * @param dateDate
      * @return
      */
-    public static String dateToHhMmStr(java.util.Date dateDate) {
+    public static String dateToHhMmStr(Date dateDate) {
         SimpleDateFormat formatter = new SimpleDateFormat(DATE_PATTERN_HH_MM);
         String dateString = formatter.format(dateDate);
         return dateString;
@@ -263,7 +263,7 @@ public class DateUtils {
      * @param dateDate
      * @return
      */
-    public static String dateToStr_YYYYMMDD(java.util.Date dateDate) {
+    public static String dateToStr_YYYYMMDD(Date dateDate) {
         SimpleDateFormat formatter = new SimpleDateFormat(DATE_PATTERN_yyyyMMdd);
         String dateString = formatter.format(dateDate);
         return dateString;
@@ -275,7 +275,7 @@ public class DateUtils {
      * @param dateDate
      * @return
      */
-    public static String dateToStr_yyyyMMddHHMMss(java.util.Date dateDate) {
+    public static String dateToStr_yyyyMMddHHMMss(Date dateDate) {
         SimpleDateFormat formatter = new SimpleDateFormat(DATE_PATTERN_yyyyMMddHHMMss);
         String dateString = formatter.format(dateDate);
         return dateString;
@@ -368,8 +368,8 @@ public class DateUtils {
             return 0;
         // 转换为标准时间
         SimpleDateFormat myFormatter = new SimpleDateFormat(DATE_PATTERN_yyyy_MM_dd);
-        java.util.Date date = null;
-        java.util.Date mydate = null;
+        Date date = null;
+        Date mydate = null;
         try {
             date = myFormatter.parse(date1);
             mydate = myFormatter.parse(date2);
@@ -548,7 +548,7 @@ public class DateUtils {
      * @param dateDate
      * @return
      */
-    public static String dateToStr_YYYY(java.util.Date dateDate) {
+    public static String dateToStr_YYYY(Date dateDate) {
         SimpleDateFormat formatter = new SimpleDateFormat(DATE_PATTERN_yyyy);
         String dateString = formatter.format(dateDate);
         return dateString;
@@ -560,7 +560,7 @@ public class DateUtils {
      * @param dateDate
      * @return
      */
-    public static String dateToStr_yy_MM(java.util.Date dateDate) {
+    public static String dateToStr_yy_MM(Date dateDate) {
         SimpleDateFormat formatter = new SimpleDateFormat(DATE_PATTERN_yyyy_MM);
         String dateString = formatter.format(dateDate);
         return dateString;

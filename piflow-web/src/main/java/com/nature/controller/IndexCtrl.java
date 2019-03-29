@@ -17,7 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 public class IndexCtrl {
 
     /**
-     * 引入日志，注意都是"org.slf4j"包下
+     * Introducing logs, note that they are all packaged under "org.slf4j"
      */
     Logger logger = LoggerUtil.getLogger();
 

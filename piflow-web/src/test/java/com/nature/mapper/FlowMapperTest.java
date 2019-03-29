@@ -4,6 +4,7 @@ import java.util.Date;
 
 import com.nature.base.util.SqlUtils;
 import com.nature.base.vo.UserVo;
+import com.nature.mapper.flow.FlowMapper;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +25,7 @@ public class FlowMapperTest extends ApplicationTests {
 
     @Test
     public void testGetFlowById() {
-        UserVo userVo = new UserVo();
-        Flow flow = flowMapper.getFlowById(userVo, "85f90a18423245b09cde371cbb333021");
+        Flow flow = flowMapper.getFlowById("85f90a18423245b09cde371cbb333021");
         if (null == flow) {
             logger.info("查询结果为空");
             flow = new Flow();

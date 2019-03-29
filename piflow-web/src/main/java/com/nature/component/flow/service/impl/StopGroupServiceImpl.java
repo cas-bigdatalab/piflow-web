@@ -7,7 +7,7 @@ import com.nature.component.flow.service.IStopGroupService;
 import com.nature.component.flow.vo.PropertyTemplateVo;
 import com.nature.component.flow.vo.StopGroupVo;
 import com.nature.component.flow.vo.StopsTemplateVo;
-import com.nature.mapper.StopGroupMapper;
+import com.nature.mapper.flow.StopGroupMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 

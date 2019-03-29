@@ -1,6 +1,8 @@
 package com.nature.base.util;
 
 import com.nature.base.vo.UserVo;
+import com.nature.common.Eunm.SysRoleType;
+import com.nature.component.sysUser.model.SysRole;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -9,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 public class SessionUserUtil {
 
@@ -22,6 +25,22 @@ public class SessionUserUtil {
             user = (UserVo) auth.getPrincipal();
         }
         return user;
+    }
+
+    public static boolean isAdmin() {
+        boolean isAdmin = false;
+        UserVo currentUser = getCurrentUser();
+        List<SysRole> roles = currentUser.getRoles();
+        for (SysRole sysRole : roles) {
+            if (null != sysRole) {
+                SysRoleType role = sysRole.getRole();
+                if (SysRoleType.ADMIN == role) {
+                    isAdmin = true;
+                    break;
+                }
+            }
+        }
+        return isAdmin;
     }
 
     //X-Forwarded-For为空，取X-Real-IP，X-Real-IP为空，取remoteAddress

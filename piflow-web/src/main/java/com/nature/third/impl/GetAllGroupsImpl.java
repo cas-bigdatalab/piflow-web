@@ -4,7 +4,7 @@ import com.nature.base.util.*;
 import com.nature.base.vo.UserVo;
 import com.nature.common.constant.SysParamsCache;
 import com.nature.component.flow.model.StopGroup;
-import com.nature.mapper.StopGroupMapper;
+import com.nature.mapper.flow.StopGroupMapper;
 import com.nature.third.inf.IGetAllGroups;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;

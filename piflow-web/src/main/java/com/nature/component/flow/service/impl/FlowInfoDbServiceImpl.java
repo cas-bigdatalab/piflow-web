@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import com.nature.component.flow.model.Flow;
 import com.nature.component.flow.model.FlowInfoDb;
 import com.nature.component.flow.service.IFlowInfoDbService;
-import com.nature.mapper.FlowInfoDbMapper;
+import com.nature.mapper.flow.FlowInfoDbMapper;
 
 @Service
 public class FlowInfoDbServiceImpl implements IFlowInfoDbService {

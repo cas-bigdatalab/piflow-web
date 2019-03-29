@@ -8,7 +8,7 @@ import com.nature.base.vo.UserVo;
 import com.nature.component.flow.model.FlowInfoDb;
 import com.nature.component.flow.service.IFlowInfoDbService;
 import com.nature.component.flow.service.IStopsService;
-import com.nature.mapper.FlowInfoDbMapper;
+import com.nature.mapper.flow.FlowInfoDbMapper;
 import com.nature.third.inf.IGetFlowInfo;
 import com.nature.third.inf.IGetFlowProgress;
 import com.nature.third.vo.flow.ThirdProgressVo;
@@ -29,7 +29,7 @@ import java.util.*;
 public class FlowInfoDbCtrl {
 
     /**
-     * 引入日志，注意都是"org.slf4j"包下
+     * Introducing logs, note that they are all packaged under "org.slf4j"
      */
     Logger logger = LoggerUtil.getLogger();
 

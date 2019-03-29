@@ -1,7 +1,7 @@
-package com.nature.mapper;
+package com.nature.mapper.flow;
 
 import com.nature.component.flow.model.Stops;
-import com.nature.provider.StopsMapperProvider;
+import com.nature.provider.flow.StopsMapperProvider;
 import com.nature.third.vo.flowInfo.ThirdFlowInfoStopVo;
 
 import org.apache.ibatis.annotations.*;
@@ -61,14 +61,14 @@ public interface StopsMapper {
 	@SelectProvider(type = StopsMapperProvider.class, method = "getStopsListByFlowId")
 	@Results({ @Result(id = true, column = "id", property = "id"),
 			@Result(column = "is_checkpoint", property = "isCheckpoint"),
-			@Result(column = "id", property = "properties", many = @Many(select = "com.nature.mapper.PropertyMapper.getPropertyListByStopsId", fetchType = FetchType.LAZY))
+			@Result(column = "id", property = "properties", many = @Many(select = "com.nature.mapper.flow.PropertyMapper.getPropertyListByStopsId", fetchType = FetchType.LAZY))
 
 	})
 	public List<Stops> getStopsListByFlowId(String flowId);
 
 	@SelectProvider(type = StopsMapperProvider.class, method = "getStopsListByFlowIdAndPageIds")
 	@Results({ @Result(id = true, column = "id", property = "id"),
-			@Result(column = "id", property = "properties", many = @Many(select = "com.nature.mapper.PropertyMapper.getPropertyListByStopsId", fetchType = FetchType.LAZY))
+			@Result(column = "id", property = "properties", many = @Many(select = "com.nature.mapper.flow.PropertyMapper.getPropertyListByStopsId", fetchType = FetchType.LAZY))
 
 	})
 	public List<Stops> getStopsListByFlowIdAndPageIds(@Param("flowId")String flowId, @Param("pageIds")String[] pageIds);
@@ -83,7 +83,7 @@ public interface StopsMapper {
 	 */
 	@SelectProvider(type = StopsMapperProvider.class, method = "getStopsById")
 	@Results({ @Result(id = true, column = "id", property = "id"),
-			@Result(column = "id", property = "properties", many = @Many(select = "com.nature.mapper.PropertyMapper.getPropertyListByStopsId", fetchType = FetchType.LAZY))
+			@Result(column = "id", property = "properties", many = @Many(select = "com.nature.mapper.flow.PropertyMapper.getPropertyListByStopsId", fetchType = FetchType.LAZY))
 
 	})
 	public Stops getStopsById(String Id);

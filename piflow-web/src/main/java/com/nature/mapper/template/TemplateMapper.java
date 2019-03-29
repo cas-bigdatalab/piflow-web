@@ -2,12 +2,11 @@ package com.nature.mapper.template;
 
 import java.util.List;
 
-import com.nature.base.vo.UserVo;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
 
 import com.nature.component.flow.model.Template;
-import com.nature.provider.TemplateMapperProvider;
+import com.nature.provider.template.TemplateMapperProvider;
 
 @Mapper
 public interface TemplateMapper {
@@ -23,7 +22,7 @@ public interface TemplateMapper {
     @Select("SELECT * FROM flow_template where enable_flag = '1' ORDER BY crt_dttm DESC ")
     @Results({
             @Result(id = true, column = "id", property = "id"),
-            @Result(column = "fk_flow_id", property = "flow", one = @One(select = "com.nature.mapper.FlowMapper.getFlowById", fetchType = FetchType.EAGER))
+            @Result(column = "fk_flow_id", property = "flow", one = @One(select = "com.nature.mapper.flow.FlowMapper.getFlowById", fetchType = FetchType.EAGER))
     })
     public List<Template> findTemPlateListAll();
 
@@ -37,7 +36,7 @@ public interface TemplateMapper {
     @Results({
             @Result(id = true, column = "id", property = "id")
     })
-    public List<Template> findTemPlateListPage(@Param("currentUser") UserVo currentUser, @Param("param") String param);
+    public List<Template> findTemPlateListPage(@Param("param") String param);
 
     /**
      * 根据id删除模板或修改模板为无效
@@ -58,7 +57,7 @@ public interface TemplateMapper {
     @Results({
             @Result(id = true, column = "id", property = "id"),
             @Result(column = "id", property = "stopsList", many = @Many(select = "com.nature.mapper.template.FlowAndStopsTemplateVoMapper.getStopsListByTemPlateId", fetchType = FetchType.EAGER)),
-            @Result(column = "fk_flow_id", property = "flow", one = @One(select = "com.nature.mapper.FlowMapper.getFlowById", fetchType = FetchType.EAGER))
+            @Result(column = "fk_flow_id", property = "flow", one = @One(select = "com.nature.mapper.flow.FlowMapper.getFlowById", fetchType = FetchType.EAGER))
 
     })
     public Template queryTemplate(String id);

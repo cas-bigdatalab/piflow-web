@@ -1,8 +1,8 @@
-package com.nature.mapper;
+package com.nature.mapper.flow;
 
 import com.nature.component.flow.model.Flow;
 import com.nature.component.flow.model.FlowInfoDb;
-import com.nature.provider.FlowInfoDbMapperProvider;
+import com.nature.provider.flow.FlowInfoDbMapperProvider;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
 
@@ -27,7 +27,7 @@ public interface FlowInfoDbMapper {
     @Select("SELECT * FROM flow where enable_flag = '1' ORDER BY crt_dttm DESC ")
     @Results({
     			@Result(id = true, column = "id", property = "id"),
-    			@Result(column = "id", property = "appId", one = @One(select = "com.nature.mapper.FlowInfoDbMapper.getAppByAppFlowId", fetchType = FetchType.LAZY))
+    			@Result(column = "id", property = "appId", one = @One(select = "com.nature.mapper.flow.FlowInfoDbMapper.getAppByAppFlowId", fetchType = FetchType.LAZY))
             })
     public List<Flow> findAppList();
 
@@ -46,7 +46,7 @@ public interface FlowInfoDbMapper {
     @Select("SELECT * FROM flow_info where enable_flag = '1' and id = #{id} ")
     @Results({
 		@Result(id = true, column = "id", property = "id"),
-		@Result(column = "fk_flow_id", property = "flow", one = @One(select = "com.nature.mapper.FlowMapper.getFlowById", fetchType = FetchType.LAZY)),
+		@Result(column = "fk_flow_id", property = "flow", one = @One(select = "com.nature.mapper.flow.FlowMapper.getFlowById", fetchType = FetchType.LAZY)),
     })
     public FlowInfoDb flowInfoDb(@Param("id") String appId);
 
@@ -77,7 +77,7 @@ public interface FlowInfoDbMapper {
             "#{id}", "</foreach>", "</script>"})
     @Results({
 		@Result(id = true, column = "id", property = "id"),
-		@Result(column = "fk_flow_id", property = "flow", one = @One(select = "com.nature.mapper.FlowMapper.getFlowById", fetchType = FetchType.LAZY)),
+		@Result(column = "fk_flow_id", property = "flow", one = @One(select = "com.nature.mapper.flow.FlowMapper.getFlowById", fetchType = FetchType.LAZY)),
     })
     public List<FlowInfoDb> getFlowInfoByIds(@Param("ids") List<String> ids);
 

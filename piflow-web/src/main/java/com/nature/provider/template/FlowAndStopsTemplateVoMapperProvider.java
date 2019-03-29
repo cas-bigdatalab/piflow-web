@@ -1,4 +1,4 @@
-package com.nature.provider;
+package com.nature.provider.template;
 
 import com.nature.base.util.DateUtils;
 import com.nature.base.util.SqlUtils;
@@ -65,20 +65,20 @@ public class FlowAndStopsTemplateVoMapperProvider {
                 String crtUser = property.getCrtUser();
                 // 拼接时位置顺序不能错
                 sqlStrBuffer.append("(");
-                sqlStrBuffer.append(SqlUtils.addSqlStr(SqlUtils.replaceString(id)) + ",");
+                sqlStrBuffer.append(SqlUtils.addSqlStrAndReplace(id) + ",");
                 sqlStrBuffer.append(SqlUtils.addSqlStr((crtDttm == null ? "" : DateUtils.dateTimesToStr(crtDttm))) + ",");
                 sqlStrBuffer.append((enableFlag == null ? "1" : (enableFlag ? 1 : 0)) + ",");
-                sqlStrBuffer.append(SqlUtils.addSqlStr((SqlUtils.replaceString(name))) + ",");
-                sqlStrBuffer.append(SqlUtils.addSqlStr((SqlUtils.replaceString(displayName))) + ",");
-                sqlStrBuffer.append(SqlUtils.addSqlStr((SqlUtils.replaceString(description))) + ",");
-                sqlStrBuffer.append(SqlUtils.addSqlStr((SqlUtils.replaceString(customValue))) + ",");
-                sqlStrBuffer.append(SqlUtils.addSqlStr((SqlUtils.replaceString(allowableValues))) + ",");
+                sqlStrBuffer.append(SqlUtils.addSqlStrAndReplace(name) + ",");
+                sqlStrBuffer.append(SqlUtils.addSqlStrAndReplace(displayName) + ",");
+                sqlStrBuffer.append(SqlUtils.addSqlStrAndReplace(description) + ",");
+                sqlStrBuffer.append(SqlUtils.addSqlStrAndReplace(customValue) + ",");
+                sqlStrBuffer.append(SqlUtils.addSqlStrAndReplace(allowableValues) + ",");
                 sqlStrBuffer.append((required ? 1 : 0) + ",");
                 sqlStrBuffer.append((sensitive ? 1 : 0) + ",");
                 sqlStrBuffer.append((version == null ? "0" : version) + ",");
-                sqlStrBuffer.append(SqlUtils.addSqlStr((stops == null ? "" : stops.getId())) + "," );
+                sqlStrBuffer.append(SqlUtils.addSqlStrAndReplace((stops == null ? "" : stops.getId())) + ",");
                 sqlStrBuffer.append((isSelect == null ? 0 : isSelect) + ",");
-                sqlStrBuffer.append(SqlUtils.addSqlStr((SqlUtils.replaceString(crtUser))));
+                sqlStrBuffer.append(SqlUtils.addSqlStrAndReplace(crtUser));
                 if (i != propertyList.size()) {
                     sqlStrBuffer.append("),");
                 } else {
@@ -196,7 +196,7 @@ public class FlowAndStopsTemplateVoMapperProvider {
                 sql.VALUES("page_id", SqlUtils.addSqlStr(pageId));
             }
             if (StringUtils.isNotBlank(crtUser)) {
-            	sql.VALUES("crt_user", SqlUtils.addSqlStr(crtUser));
+                sql.VALUES("crt_user", SqlUtils.addSqlStr(crtUser));
             }
             if (null != flow) {
                 String flowId = flow.getId();

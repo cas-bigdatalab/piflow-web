@@ -2,7 +2,7 @@ package com.nature.third;
 
 import com.nature.ApplicationTests;
 import com.nature.base.util.LoggerUtil;
-import com.nature.mapper.FlowInfoDbMapper;
+import com.nature.mapper.flow.FlowInfoDbMapper;
 import com.nature.third.inf.IGetFlowProgress;
 import com.nature.third.vo.flow.ThirdProgressVo;
 import org.junit.Test;

@@ -4,6 +4,7 @@ import com.nature.ApplicationTests;
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.SqlUtils;
 import com.nature.component.flow.model.Stops;
+import com.nature.mapper.flow.StopsMapper;
 import org.junit.Test;
 import org.slf4j.Logger;
 
