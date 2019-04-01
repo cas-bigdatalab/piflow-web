@@ -19,6 +19,7 @@ import java.sql.Statement;
 @Configuration
 @Primary //在同样的DataSource中，首先使用被标注的DataSource
 public class DataSourceConfig {
+
     private Logger logger = LoggerUtil.getLogger();
 
     @Value("${spring.datasource.url}")
@@ -31,7 +32,7 @@ public class DataSourceConfig {
     @Value("${spring.datasource.password}")
     private String password;
 
-    @Bean     //声明其为Bean实例
+    @Bean     //Declare it as a bean instance
     public DataSource dataSource(){
         DruidDataSource datasource = new DruidDataSource();
 
@@ -48,11 +49,11 @@ public class DataSourceConfig {
             String url02 = url01.substring(0,url01.lastIndexOf("/"));
 
             String datasourceName = url01.substring(url01.lastIndexOf("/")+1);
-            // 连接已经存在的数据库，如：mysql
+            // Connect to existing databases, such as MySQL
             Connection connection = DriverManager.getConnection(url02, username, password);
             Statement statement = connection.createStatement();
 
-            // 创建数据库
+            // Create a database
             statement.executeUpdate("create database if not exists `" + datasourceName + "` default character set utf8 COLLATE utf8_general_ci");
 
             statement.close();

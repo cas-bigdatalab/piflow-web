@@ -53,9 +53,13 @@ public interface StopGroupMapper {
         "</script>")
 	List<StopGroup> getStopGroupByName(@Param("group_name") List<String> groupName);
 	
-	@Delete("DELETE from association_groups_stops_template;DELETE from flow_sotps_groups;")
+	@Delete("DELETE from association_groups_stops_template")
+	int deleteGroupCorrelation();
+	@Delete("DELETE from flow_sotps_groups")
 	int deleteGroup();
-	
-	@Delete("DELETE from flow_stops_property_template;DELETE from flow_stops_template;")
+
+	@Delete("DELETE from flow_stops_property_template")
+	int deleteStopsPropertyInfo();
+	@Delete("DELETE from flow_stops_template")
 	int deleteStopsInfo();
 }

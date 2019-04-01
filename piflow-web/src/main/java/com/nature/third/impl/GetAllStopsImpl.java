@@ -47,8 +47,9 @@ public class GetAllStopsImpl implements IGetAllStops {
         UserVo user = SessionUserUtil.getCurrentUser();
         String username = (null != user) ? user.getUsername() : "-1";
         //先清空所有stop和stop属性表，重新插入
+        stopGroupMapper.deleteStopsPropertyInfo();
         int deleteStopsInfo = stopGroupMapper.deleteStopsInfo();
-        System.out.println("成功删除StopsInfo" + deleteStopsInfo + "条数据！！！");
+        logger.debug("成功删除StopsInfo" + deleteStopsInfo + "条数据！！！");
         // 1.先调stop接口获取getAllStops数据；
         HttpClientStop stops = new HttpClientStop();
         String stopList = stops.getGroupAndStopInfo("", SysParamsCache.STOP_LIST_URL());
@@ -59,7 +60,7 @@ public class GetAllStopsImpl implements IGetAllStops {
         for (String stopListInfos : stop) {
             num++;
             // 2.先根据bundle查询stopInfo
-            System.out.println("现在调用的是：" + stopListInfos);
+            logger.debug("现在调用的是：" + stopListInfos);
             String stopInfo = stops.getGroupAndStopInfo(stopListInfos, SysParamsCache.STOP_INFO_URL());
             if (stopInfo.contains("Error")) {
                 continue;
@@ -115,13 +116,13 @@ public class GetAllStopsImpl implements IGetAllStops {
                         listStopsTemplate.add(stopsTemplate);
                     }
                     int insertStopsTemplate = stopsTemplateMapper.insertStopsTemplate(listStopsTemplate);
-                    System.out.println("flow_stops_template表插入影响行数：" + insertStopsTemplate);
-                    System.out.println("=============================association_groups_stops_template=====start==================");
+                    logger.debug("flow_stops_template表插入影响行数：" + insertStopsTemplate);
+                    logger.debug("=============================association_groups_stops_template=====start==================");
                     for (StopsTemplate zjb : listStopsTemplate) {
                         String stopGroupId = zjb.getStopGroup();
                         String stopsTemplateId = zjb.getId();
                         int insertAssociationGroupsStopsTemplate = stopGroupMapper.insertAssociationGroupsStopsTemplate(stopGroupId, stopsTemplateId);
-                        System.out.println("association_groups_stops_template关联表插入影响行数：" + insertAssociationGroupsStopsTemplate);
+                        logger.debug("association_groups_stops_template关联表插入影响行数：" + insertAssociationGroupsStopsTemplate);
                     }
                     JSONArray jsonArray = JSONArray.fromObject(properties);
                     for (StopsTemplate zjb : listStopsTemplate) {
@@ -145,10 +146,10 @@ public class GetAllStopsImpl implements IGetAllStops {
                         }
                     }
                     int insertPropertyTemplate = propertyTemplateMapper.insertPropertyTemplate(listPropertyTemplate);
-                    System.out.println("flow_stops_property_template表插入影响行数：" + insertPropertyTemplate);
+                    logger.debug("flow_stops_property_template表插入影响行数：" + insertPropertyTemplate);
                 }
             }
         }
-        System.out.println(num + "次数");
+        logger.debug(num + "次数");
     }
 }

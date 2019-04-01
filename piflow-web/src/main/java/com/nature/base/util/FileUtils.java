@@ -23,169 +23,175 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class FileUtils {
-	
-	private static Logger logger = LoggerUtil.getLogger();
-	
-	
-	/**
-	 * 字符串转xml文件并保存指定路径
-	 * @param xmlStr  xml字符串
-	 * @param fileName  文件名称
-	 * @param type  文件类型(后缀)
-	 * @param path  (存放路径)
-	 * @return
-	 */
-	@SuppressWarnings("deprecation")
-	public static String createXml(String xmlStr,String fileName,String type,String path) {
-		    Document doc = strToDocument(xmlStr);
-		    String realPath = path + fileName + type;
-	        logger.info("============进入生成方法：" + new Date().toLocaleString() + "=================");
-	        try {
-	            // 判断文件是否存在，如存在就删掉它
-	            File file = new File(realPath);
-	            if (!file.getParentFile().exists()) {
-	            	//如果不存在则创建
-	            	file.getParentFile().mkdirs();
-	            	logger.info("==============文件目录不存在,新建文件==============");
-	            }
-	            /** 将document中的内容写入文件中 */
-	            TransformerFactory tFactory = TransformerFactory.newInstance();
-	            Transformer transformer = tFactory.newTransformer();
-	            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-	            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-	            DOMSource source = new DOMSource(doc);
-	            StreamResult result = new StreamResult(new FileOutputStream(realPath));
-	            transformer.transform(source, result);
-	            logger.info("--------------------------------" + "更新文件成功" + "-------------------------------------");
-	        } catch (final Exception exception) {
-	            logger.info("更新" + fileName + "出错："+exception);
-	        }
-	        logger.info("============退出生成方法：" + new Date().toLocaleString() + "=================");
-			return path + fileName + type;
-	    }
-	
-	
-	
-	 /**
-	  * 上传方法
-	  * @param file 
-	  * @param path
-	  * @return
-	  */
-	 public static String upload(MultipartFile file,String path ) {
-			Map<String, String> rtnMap = new HashMap<String, String>();
-			rtnMap.put("code", "0");
-	        if (!file.isEmpty()) {
-	        	//文件名
-	            String saveFileName = file.getOriginalFilename();
-	            File saveFile = new File(path + saveFileName);
-	            if (!saveFile.getParentFile().exists()) {
-	                saveFile.getParentFile().mkdirs();
-	            }
-	            try {
-	                BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(saveFile));
-	                out.write(file.getBytes());
-	                out.flush();
-	                out.close();
-	                logger.info(saveFile.getName() + " 上传成功");
-	                rtnMap.put("url",path + saveFileName);
-	                rtnMap.put("fileName", saveFileName);
-	                rtnMap.put("msgInfo", "上传成功");
-	                rtnMap.put("code", "1");
-	            } catch (FileNotFoundException e) {
-	                e.printStackTrace();
-	                logger.info("上传失败," + e.getMessage());
-	                rtnMap.put("msgInfo", "上传失败"+ e.getMessage());
-	            } catch (IOException e) {
-	                e.printStackTrace();
-	                rtnMap.put("msgInfo", "上传失败"+ e.getMessage());
-	            }
-	        } else {
-	            logger.info("上传失败，因为文件为空.");
-	            rtnMap.put("msgInfo", "上传失败，因为文件为空.");
-	        }
-			return JsonUtils.toJsonNoException(rtnMap);
-	    }
-	 
-	 
-	/**
-	 * 字符串转Document
-	 * @param xmlStr
-	 * @return
-	 */
-	 public static Document strToDocument(String xmlStr) {
-		  xmlStr.replace("&","&amp;");
-	        Document doc = null;
-	        StringReader sr = new StringReader(xmlStr);
-	        InputSource is = new InputSource(sr);
-	        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-	        DocumentBuilder builder;
-	        try {
-	            builder = factory.newDocumentBuilder();
-	            doc = builder.parse(is);
-	        } catch (ParserConfigurationException e) {
-	            logger.info("ParserConfiguration错误"+e);
-	        } catch (SAXException e) {
-	            logger.info("SAX错误"+e);
-	        } catch (IOException e) {
-	            logger.info("IO错误"+e);
-	        }
-	        return doc;
-	    }
-	 
-	 /**
-	  * 获取项目访问路径
-	  * @return
-	  */
-	 public static String getUrl(){
-		 	HttpServletRequest request = getRequest();
-		    String scheme = request.getScheme();//http
-		    String serverName = request.getServerName();//localhost
-		    int serverPort = request.getServerPort();//8080
-		    String contextPath = request.getContextPath();//项目名
-		    String url = scheme+"://"+serverName+":"+serverPort+contextPath;//http://127.0.0.1:8080/test
-			return url;
+
+    private static Logger logger = LoggerUtil.getLogger();
+
+
+    /**
+     * 字符串转xml文件并保存指定路径
+     *
+     * @param xmlStr   xml字符串
+     * @param fileName 文件名称
+     * @param type     文件类型(后缀)
+     * @param path     (存放路径)
+     * @return
+     */
+    @SuppressWarnings("deprecation")
+    public static String createXml(String xmlStr, String fileName, String type, String path) {
+        Document doc = strToDocument(xmlStr);
+        String realPath = path + fileName + type;
+        logger.debug("============进入生成方法：" + new Date().toLocaleString() + "=================");
+        try {
+            // 判断文件是否存在，如存在就删掉它
+            File file = new File(realPath);
+            if (!file.getParentFile().exists()) {
+                //如果不存在则创建
+                file.getParentFile().mkdirs();
+                logger.info("==============文件目录不存在,新建文件==============");
+            }
+            /** 将document中的内容写入文件中 */
+            TransformerFactory tFactory = TransformerFactory.newInstance();
+            Transformer transformer = tFactory.newTransformer();
+            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            DOMSource source = new DOMSource(doc);
+            StreamResult result = new StreamResult(new FileOutputStream(realPath));
+            transformer.transform(source, result);
+            logger.info("--------------------------------" + "更新文件成功" + "-------------------------------------");
+        } catch (final Exception exception) {
+            logger.error("更新" + fileName + "出错：", exception);
+        }
+        logger.debug("============退出生成方法：" + new Date().toLocaleString() + "=================");
+        return path + fileName + type;
     }
-	 
-	 
-	 /**
-	  * 统一获取request
-	  * @return
-	  */
-	 public static HttpServletRequest getRequest(){
-		 RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();  
-	     HttpServletRequest request = (HttpServletRequest) requestAttributes.resolveReference(RequestAttributes.REFERENCE_REQUEST);  
-		 return request;
-	 }
-	 
-	 /**
-	  * xml文件转换字符串
-	  * @param path
-	  * @return
-	  */
-	 public static String XmlFileToStr(String path){
-		 	String xmlString = "";
-			byte[] strBuffer = null;
-			InputStream in = null;
-			int flen = 0;
-			File xmlfile = new File(path);
-			try {
-			in = new FileInputStream(xmlfile);
-			flen = (int)xmlfile.length();
-			strBuffer = new byte[flen];
-			in.read(strBuffer, 0, flen);
-			in.close();
-			} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			logger.info("FileNotFound错误"+e.getMessage());
-			} catch (IOException e) {
-			logger.info("转换IO错误"+e.getMessage());
-			e.printStackTrace();
-			} 
-			xmlString = new String(strBuffer); //构建String时，可用byte[]类型，
-			logger.info("xml文件转换后的字符串："+xmlString);
-			return xmlString;
-	 }
-	    
+
+
+    /**
+     * 上传方法
+     *
+     * @param file
+     * @param path
+     * @return
+     */
+    public static String upload(MultipartFile file, String path) {
+        Map<String, String> rtnMap = new HashMap<String, String>();
+        rtnMap.put("code", "0");
+        if (!file.isEmpty()) {
+            //文件名
+            String saveFileName = file.getOriginalFilename();
+            File saveFile = new File(path + saveFileName);
+            if (!saveFile.getParentFile().exists()) {
+                saveFile.getParentFile().mkdirs();
+            }
+            try {
+                BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(saveFile));
+                out.write(file.getBytes());
+                out.flush();
+                out.close();
+                logger.debug(saveFile.getName() + " 上传成功");
+                rtnMap.put("url", path + saveFileName);
+                rtnMap.put("fileName", saveFileName);
+                rtnMap.put("msgInfo", "上传成功");
+                rtnMap.put("code", "1");
+            } catch (FileNotFoundException e) {
+                //e.printStackTrace();
+                rtnMap.put("msgInfo", "上传失败" + e.getMessage());
+                logger.error("上传失败," + e.getMessage(), e);
+            } catch (IOException e) {
+                //e.printStackTrace();
+                rtnMap.put("msgInfo", "上传失败" + e.getMessage());
+                logger.error("msgInfo", "上传失败" + e.getMessage(), e);
+            }
+        } else {
+            rtnMap.put("msgInfo", "上传失败，因为文件为空.");
+            logger.warn("上传失败，文件为空.");
+        }
+        return JsonUtils.toJsonNoException(rtnMap);
+    }
+
+
+    /**
+     * 字符串转Document
+     *
+     * @param xmlStr
+     * @return
+     */
+    public static Document strToDocument(String xmlStr) {
+        xmlStr.replace("&", "&amp;");
+        Document doc = null;
+        StringReader sr = new StringReader(xmlStr);
+        InputSource is = new InputSource(sr);
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder;
+        try {
+            builder = factory.newDocumentBuilder();
+            doc = builder.parse(is);
+        } catch (ParserConfigurationException e) {
+            logger.error("ParserConfiguration错误", e);
+        } catch (SAXException e) {
+            logger.error("SAX错误", e);
+        } catch (IOException e) {
+            logger.error("IO错误", e);
+        }
+        return doc;
+    }
+
+    /**
+     * 获取项目访问路径
+     *
+     * @return
+     */
+    public static String getUrl() {
+        HttpServletRequest request = getRequest();
+        String scheme = request.getScheme();//http
+        String serverName = request.getServerName();//localhost
+        int serverPort = request.getServerPort();//8080
+        String contextPath = request.getContextPath();//项目名
+        String url = scheme + "://" + serverName + ":" + serverPort + contextPath;//http://127.0.0.1:8080/test
+        return url;
+    }
+
+
+    /**
+     * 统一获取request
+     *
+     * @return
+     */
+    public static HttpServletRequest getRequest() {
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        HttpServletRequest request = (HttpServletRequest) requestAttributes.resolveReference(RequestAttributes.REFERENCE_REQUEST);
+        return request;
+    }
+
+    /**
+     * xml文件转换字符串
+     *
+     * @param path
+     * @return
+     */
+    public static String XmlFileToStr(String path) {
+        String xmlString = "";
+        byte[] strBuffer = null;
+        InputStream in = null;
+        int flen = 0;
+        File xmlfile = new File(path);
+        try {
+            in = new FileInputStream(xmlfile);
+            flen = (int) xmlfile.length();
+            strBuffer = new byte[flen];
+            in.read(strBuffer, 0, flen);
+            in.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            logger.info("FileNotFound错误" + e.getMessage());
+        } catch (IOException e) {
+            logger.info("转换IO错误" + e.getMessage());
+            e.printStackTrace();
+        }
+        xmlString = new String(strBuffer); //构建String时，可用byte[]类型，
+        logger.info("xml文件转换后的字符串：" + xmlString);
+        return xmlString;
+    }
+
 
 }

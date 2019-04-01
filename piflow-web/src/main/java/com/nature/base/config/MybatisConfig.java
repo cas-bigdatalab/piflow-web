@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.Properties;
 
 /**
- * 分页插件配置
+ * Paging plug-in configuration
  *
  * @author Nature
  */

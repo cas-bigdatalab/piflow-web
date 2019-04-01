@@ -75,8 +75,9 @@ public class StopsTemplateMapperTest extends ApplicationTests {
 	public void getStopGroupAndSave() {
 		UserVo user = SessionUserUtil.getCurrentUser();
 		String username = (null != user) ? user.getUsername() : "-1";
+		stopGroupMapper.deleteGroupCorrelation();
 		int deleteGroup = stopGroupMapper.deleteGroup();
-		System.out.println("成功删除Group" + deleteGroup + "条数据！！！");
+		logger.debug("成功删除Group" + deleteGroup + "条数据！！！");
 		HttpClientStop stop = new HttpClientStop();
 		String stopGroupInfo = stop.getGroupAndStopInfo("", SysParamsCache.STOP_GROUPS_URL());
 		String jsonResult = "";
@@ -99,7 +100,7 @@ public class StopsTemplateMapperTest extends ApplicationTests {
 				a += insertStopGroup;
 			}
 		}
-		System.out.println("成功插入Group" + a + "条数据！！！");
+		logger.debug("成功插入Group" + a + "条数据！！！");
 	}
 
 	@Test
@@ -108,6 +109,7 @@ public class StopsTemplateMapperTest extends ApplicationTests {
 	public void saveStopsAndProperty() {
 		UserVo user = SessionUserUtil.getCurrentUser();
 		String username = (null != user) ? user.getUsername() : "-1";
+		stopGroupMapper.deleteStopsPropertyInfo();
 		int deleteStopsInfo = stopGroupMapper.deleteStopsInfo();
 		logger.info("成功删除StopsInfo" + deleteStopsInfo + "条数据！！！");
 		// 1.先调stop接口获取getAllStops数据；

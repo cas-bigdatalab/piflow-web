@@ -37,7 +37,7 @@ import java.util.List;
 
 @Configurable
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)//允许进入页面方法前检验
+@EnableGlobalMethodSecurity(prePostEnabled = true)//Pre-Method Check for Allowing Page Entry
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     /**
@@ -50,7 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        //解决静态资源被拦截的问题
+        //Solving the problem of static resources being intercepted
         web.ignoring().antMatchers("/charisma/**", "/bootstrap/**", "/js/**", "/css/**", "/custom/css/**", "/img/**", "/img/*");
     }
 
@@ -78,7 +78,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public SavedRequestAwareAuthenticationSuccessHandler loginSuccessHandler() { //登入处理
+    public SavedRequestAwareAuthenticationSuccessHandler loginSuccessHandler() { //Login processing
         return new SavedRequestAwareAuthenticationSuccessHandler() {
             @Override
             public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -90,7 +90,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public LogoutSuccessHandler logoutSuccessHandler() { //登出处理
+    public LogoutSuccessHandler logoutSuccessHandler() { //Logout processing
         return new LogoutSuccessHandler() {
             @Override
             public void onLogoutSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
@@ -106,7 +106,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public UserDetailsService userDetailsService() {    //用户登录实现
+    public UserDetailsService userDetailsService() {    //Implementation of user login
         return new UserDetailsService() {
 
             UserVo getUserDetails(String username) {

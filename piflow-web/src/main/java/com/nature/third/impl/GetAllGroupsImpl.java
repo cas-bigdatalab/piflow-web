@@ -33,8 +33,9 @@ public class GetAllGroupsImpl implements IGetAllGroups {
         UserVo user = SessionUserUtil.getCurrentUser();
         String username = (null != user) ? user.getUsername() : "-1";
         //先清空Group表信息再插入
+        stopGroupMapper.deleteGroupCorrelation();
         int deleteGroup = stopGroupMapper.deleteGroup();
-        System.out.println("成功删除Group" + deleteGroup + "条数据！！！");
+        logger.debug("成功删除Group" + deleteGroup + "条数据！！！");
         HttpClientStop stop = new HttpClientStop();
         String stopGroupInfo = stop.getGroupAndStopInfo("", SysParamsCache.STOP_GROUPS_URL());
         String jsonResult = "";
@@ -57,7 +58,7 @@ public class GetAllGroupsImpl implements IGetAllGroups {
                 a += insertStopGroup;
             }
         }
-        System.out.println("成功插入Group" + a + "条数据！！！");
+        logger.debug("成功插入Group" + a + "条数据！！！");
     }
 
 }

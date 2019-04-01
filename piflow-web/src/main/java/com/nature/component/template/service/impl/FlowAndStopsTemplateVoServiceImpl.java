@@ -122,9 +122,9 @@ public class FlowAndStopsTemplateVoServiceImpl implements IFlowAndStopsTemplateV
 
             }
             if (null != list && list.size() > 0) {
-                System.out.println(list.size() + "属性");
+                logger.debug(list.size() + "属性");
                 addPropertyList = propertyMapper.addPropertyList(list);
-                logger.info("addStops影响行数" + addPropertyList);
+                logger.debug("addStops影响行数" + addPropertyList);
             }
         }
     }
