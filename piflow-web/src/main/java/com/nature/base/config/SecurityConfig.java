@@ -2,10 +2,12 @@ package com.nature.base.config;
 
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.SpringContextUtil;
+import com.nature.base.util.SqlUtils;
 import com.nature.base.vo.UserVo;
-import com.nature.common.Eunm.SysRoleType;
+import com.nature.component.Statistics.model.Statistics;
 import com.nature.component.sysUser.model.SysRole;
 import com.nature.component.sysUser.model.SysUser;
+import com.nature.mapper.Statistics.StatisticsMapper;
 import com.nature.mapper.sysUser.SysUserMapper;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -19,7 +21,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -32,7 +33,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Configurable
@@ -47,6 +48,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Resource
     private SysUserMapper sysUserMapper;
+
+    @Resource
+    private StatisticsMapper statisticsMapper;
 
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -83,6 +87,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             @Override
             public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
                 UserVo userDetails = (UserVo) authentication.getPrincipal();
+                String remoteAddr = request.getLocalAddr();
+                Statistics statistics = new Statistics();
+                statistics.setId(SqlUtils.getUUID32());
+                statistics.setLoginUser(userDetails.getUsername());
+                statistics.setLoginTime(new Date());
+                statistics.setLoginIp(remoteAddr);
+                statisticsMapper.addStatistics(statistics);
                 logger.info("USER : " + userDetails.getUsername() + " LOGIN SUCCESS !  ");
                 super.onAuthenticationSuccess(request, response, authentication);
             }
