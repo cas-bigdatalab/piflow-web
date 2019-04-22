@@ -43,17 +43,12 @@ To Run Piflow Web：
 
 - run piflow server on intellij:
 
-+ execute MySQL database building table script
-+ edit config.properties
-+ build piflow to generate piflow-web.jar
+  - edit config.properties
+  - build piflow to generate piflow-web.jar
 
 - run piflow web by release version:
 
-  - download piflow_release: 
-  - copy the piflow-web.jar to the piflow_release folder
-  - copy the create database.sql to the piflow_release folder
-  - copy the create table.sql to the piflow_release folder
-  - copy the create init data.sql to the piflow_release folder
+  - download piflow_release: https://github.com/cas-bigdatalab/piflow-web/releases/tag/0.5
   - edit config.properties
   - run app.sh start
 - how to configure config.properties
@@ -62,21 +57,64 @@ server.port=6001
 server.servlet.context-path=/piflow-web
 server.servlet.session.timeout=600
 
-
 syspara.videoName=exampleVideo.mp4
-syspara.imagesPath=/opt/piflowWeb/storage/image/
-syspara.videosPath=/opt/piflowWeb/storage/video/
-syspara.xmlPath=/opt/piflowWeb/storage/xml/
-syspara.interfaceUrlHead=http://10.0.88.109:8002
+syspara.imagesPath=/data/piflowWeb/storage/image/
+syspara.videosPath=/data/piflowWeb/storage/video/
+syspara.xmlPath=/data/piflowWeb/storage/xml/
+syspara.interfaceUrlHead=http://10.0.88.108:8002
 syspara.isLoadStop=true
 syspara.syncProcessCron=0/5 * * * * ?
 
+
+spring.flyway.baselineOnMigrate=true
+# Location of SQL file
+spring.flyway.locations=classpath:db/
+
 # data source
-spring.datasource.url=jdbc:mysql://192.168.254.196:3306/piflow_web?useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowMultiQueries=true&autoReconnect=true&failOverReadOnly=false
+# Basic attributes
+spring.datasource.name=dev
+spring.datasource.url=jdbc:mysql://10.0.88.109:3306/piflow_web?useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowMultiQueries=true&autoReconnect=true&failOverReadOnly=false
 spring.datasource.username=root
 spring.datasource.password=123456
+# Can not be configured, according to the URL automatic identification, recommended configuration
 spring.datasource.driver-class-name=com.mysql.jdbc.Driver
-#type: com.alibaba.druid.pool.DruidDataSource
+###################The following configuration is added for Druid###########################
+spring.datasource.type=com.alibaba.druid.pool.DruidDataSource
+# Number of initialization connection pools
+spring.datasource.initialSize=5
+# Minimum number of connection pools (no longer in use, configuration is ineffective)
+spring.datasource.minIdle=2
+# Maximum number of connection pools
+spring.datasource.maxActive=20
+# Configuration takes time to get the connection to wait for a timeout in milliseconds. Fair locks are enabled by default, and concurrency efficiency decreases.
+spring.datasource.maxWait=60000
+# How often is the configuration interval detected to detect idle connections that need to be closed in milliseconds?
+spring.datasource.timeBetweenEvictionRunsMillis=60000
+# Configure the minimum lifetime of a connection in the pool in milliseconds
+spring.datasource.minEvictableIdleTimeMillis=300000
+# The SQL used to check whether the connection is valid requires a query statement.
+# If validationQuery is null, testOnBorrow, testOnReturn, testWhileIdle will not work.
+spring.datasource.validationQuery=SELECT 1 FROM DUAL
+# It is recommended to configure true to not affect performance and ensure security.
+# When the connection is requested, if the idle time is greater than timeBetweenEvictionRunsMillis, execute validationQuery to check if the connection is valid.
+spring.datasource.testWhileIdle=true
+# When you apply for a connection, execute validationQuery to check if the connection is valid. Doing this configuration will reduce performance.
+spring.datasource.testOnBorrow=false
+# When the connection is returned, the validationQuery is executed to check if the connection is valid. Doing this configuration will reduce the performance.
+spring.datasource.testOnReturn=false
+# Open the PSCache and specify the size of the PSCache on each connection
+spring.datasource.poolPreparedStatements=true
+spring.datasource.maxPoolPreparedStatementPerConnectionSize=20
+# Configure extensions by alias, separated by multiple commas. Common plugins are:
+# for monitoring statistics filter:stat
+# for log filter:log4j
+# Defense sql injection filter:wall
+#spring.datasource.filters=stat,wall,log4j
+spring.datasource.filters=stat,log4j
+# Open the mergeSql function via the connectProperties property; slow SQL logging
+spring.datasource.connectionProperties=druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+# Merge monitoring data from multiple Druid Data Sources
+
 
 
 # template engine thymeleaf
@@ -98,17 +136,15 @@ spring.mvc.static-path-pattern=/**
 
 
 # Configuration automatic table building: updata: no table new, table update operation, console display table building statement
-
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
 spring.jpa.open-in-view=true
 
-#Springboot中Hibernate默认创建的mysql表为myisam引擎,因不支持事物所以指定为：innodb
+#Hibernate defaults to create a MySQL table in Springboot that is MyISAM engine and is specified as InnoDB because it does not support things.
 spring.jpa.database-platform=org.hibernate.dialect.MySQL5InnoDBDialect
 
 
 # integration mybatis
-
 mybatis.type-aliases-package=com.nature.**.model
 #Open Hump Mapping
 mybatis.configuration.map-underscore-to-camel-case=true
