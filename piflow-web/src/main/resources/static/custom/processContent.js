@@ -349,8 +349,10 @@ function changeUrl(key) {
                     }
                 }
                 var pre_height = window_height - 300;
+                tt = $(tt).html();
                 var ttHtml = '<pre id="preId" style="white-space: pre-wrap; height: ' + pre_height + 'px;">' + tt + '</pre>';
-                document.getElementById("customContent").innerHTML = "<div id='divPreId' style='height: " + pre_height + "px'>" + ttHtml + "</div>";
+                var htmlSave = "<div id='divPreId' style='height: " + pre_height + "px'>" + ttHtml + "</div>";
+                document.getElementById("customContent").innerHTML = htmlSave;
             }
             //alert(data);
         }
