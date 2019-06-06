@@ -50,7 +50,7 @@ To Run Piflow Web：
 
   - download piflow_release: https://github.com/cas-bigdatalab/piflow-web/releases/tag/0.5
   - edit config.properties
-  - run app.sh start
+  - run sh start.sh
 - how to configure config.properties
 ```c
 server.port=6001
