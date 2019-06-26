@@ -28,7 +28,8 @@ function selectedFormation(pageId, e) {
         queryProcessStop(processId, pageId);
     } else {
         //alert("Necessary position parameters were not obtained");
-        layer.msg("Necessary position parameters were not obtained", {icon: 2, shade: 0, time: 2000}, function () {});
+        layer.msg("Necessary position parameters were not obtained", {icon: 2, shade: 0, time: 2000}, function () {
+        });
     }
 }
 
@@ -56,7 +57,8 @@ function selectedPath(pageId, e) {
         queryProcessPath(processId, pageId);
     } else {
         //alert("必要位置参数没有获得");
-        layer.msg("Necessary position parameters were not obtained", {icon: 2, shade: 0, time: 2000}, function () {});
+        layer.msg("Necessary position parameters were not obtained", {icon: 2, shade: 0, time: 2000}, function () {
+        });
     }
 }
 
@@ -67,7 +69,8 @@ function queryProcess(processId) {
     } else {
         if (!processId || '' === processId || 'null' === processId || 'NULL' === processId) {
             //alert("Id is empty, not obtained, please check!!");
-            layer.msg("Id is empty, not obtained, please check!!", {icon: 2, shade: 0, time: 2000}, function () {});
+            layer.msg("Id is empty, not obtained, please check!!", {icon: 2, shade: 0, time: 2000}, function () {
+            });
         } else {
             $.ajax({
                 cache: true,//保留缓存数据
@@ -117,6 +120,15 @@ function queryProcessStop(processId, pageId) {
             $('#selectedRectShow').show();
             $('#selectedArrowShow').hide();
             $('#selectedPathShow').hide();
+            var sotpBundelShowText = $('#sotpBundelShow').text()
+            if (sotpBundelShowText && sotpBundelShowText.toUpperCase() === "CN.PIFLOW.BUNDLE.HTTP.OPENURL") {
+                var open_action = $('.open_action');
+                if (open_action.length === 1) {
+                    var open_action_i = $(open_action.get(0));
+                    var a_href = open_action_i.text();
+                    $(open_action.get(0)).after('&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-primary" href="' + a_href + '" style="color:#ffffff;" target="_blank">OPEN</a>');
+                }
+            }
         }
     });
 }
@@ -143,6 +155,7 @@ function queryProcessPath(processId, pageId) {
         success: function (data) {//请求成功之后的操作
             // console.log(data);
             $('#processLeft').html(data);
+            toUpperCase();
             $('#selectedArrowShow').show();
             $('#selectedPathShow').show();
             $('#selectedRectShow').hide();
@@ -166,7 +179,8 @@ function getCheckpoint() {
         error: function (request) {//请求失败之后的操作
             startFlow.show();
             //alert("Request Failed");
-            layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000}, function () {});
+            layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000}, function () {
+            });
             fullScreen.hide();
             checkpointShow.modal('hide');
             return;
@@ -176,7 +190,8 @@ function getCheckpoint() {
             $('#checkpointContent').html(data);
             if ($('#checkpointsIsNull').val()) {
                 //alert("No Checkpoint was queried");
-                layer.msg("No Checkpoint was queried", {icon: 2, shade: 0, time: 2000}, function () {});
+                layer.msg("No Checkpoint was queried", {icon: 2, shade: 0, time: 2000}, function () {
+                });
                 //checkpointShow.modal('hide');
                 runProcess(true);
             } else {
@@ -218,7 +233,8 @@ function runProcess(flag) {
         error: function (request) {//请求失败之后的操作
             startFlow.show();
             //alert("Request Failed");
-            layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000}, function () {});
+            layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000}, function () {
+            });
             fullScreen.hide();
             return;
         },
@@ -227,11 +243,13 @@ function runProcess(flag) {
             var dataMap = JSON.parse(data);
             if ('0' !== dataMap.code) {
                 //alert(dataMap.errMsg);
-                layer.msg(dataMap.errMsg, {icon: 1, shade: 0, time: 2000}, function () {});
+                layer.msg(dataMap.errMsg, {icon: 1, shade: 0, time: 2000}, function () {
+                });
                 window.location.href = "/piflow-web/process/getProcessById?processId=" + dataMap.processId;
             } else {
                 //alert(dataMap.errMsg);
-                layer.msg(dataMap.errMsg, {icon: 2, shade: 0, time: 2000}, function () {});
+                layer.msg(dataMap.errMsg, {icon: 2, shade: 0, time: 2000}, function () {
+                });
                 startFlow.show();
                 fullScreen.hide();
             }
@@ -256,7 +274,8 @@ function stopProcess() {
         error: function (request) {//请求失败之后的操作
             stopFlow.show();
             //alert("Request Failed");
-            layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000}, function () {});
+            layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000}, function () {
+            });
             fullScreen.hide();
             return;
         },
@@ -265,11 +284,13 @@ function stopProcess() {
             var dataMap = JSON.parse(data);
             if ('0' !== dataMap.code) {
                 //alert(dataMap.errMsg);
-                layer.msg(dataMap.errMsg, {icon: 1, shade: 0, time: 2000}, function () {});
+                layer.msg(dataMap.errMsg, {icon: 1, shade: 0, time: 2000}, function () {
+                });
                 startFlow.show();
             } else {
                 //alert("Stop Failed:" + dataMap.errMsg);
-                layer.msg("Stop Failed", {icon: 2, shade: 0, time: 2000}, function () {});
+                layer.msg("Stop Failed", {icon: 2, shade: 0, time: 2000}, function () {
+                });
                 stopFlow.show();
             }
             fullScreen.hide();
@@ -287,7 +308,8 @@ function getLogUrl() {
         data: {"appId": appId},
         async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
         error: function (request) {//请求失败之后的操作
-            layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000}, function () {});
+            layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000}, function () {
+            });
             return;
         },
         success: function (data) {//请求成功之后的操作

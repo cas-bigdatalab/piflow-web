@@ -2,11 +2,10 @@ package com.nature.base.config;
 
 import com.nature.base.util.LoggerUtil;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * @author Administrator
@@ -15,7 +14,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
  * @date 2017-7-11
  */
 @Configuration
-public class WebAppConfig extends WebMvcConfigurerAdapter {
+public class WebAppConfig implements WebMvcConfigurer {
     /**
      * Introducing logs, note that they are all packaged under "org.slf4j"
      */
@@ -33,6 +32,6 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
         logger.info("imagesPath=" + "file:" + mImagesPath);
         logger.info("videosPath=" + "file:" + mVideosPath);
         registry.addResourceHandler("/images/**", "/videos/**").addResourceLocations("file:" + mImagesPath, "file:" + mVideosPath);
-        super.addResourceHandlers(registry);
+        WebMvcConfigurer.super.addResourceHandlers(registry);
     }
 }

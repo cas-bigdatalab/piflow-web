@@ -55,7 +55,7 @@ public class StartFlowImpl implements IStartFlow {
                     JSONObject obj = JSONObject.fromObject(doPost).getJSONObject("flow");// 将json字符串转换为json对象
                     Process processById = processTransaction.getProcessById(currentUser, process.getId());
                     processById.setAppId(obj.getString("id"));
-                    processById.setProcessId(obj.getString("pid"));
+                    processById.setProcessId(obj.getString("id"));
                     processById.setState(ProcessState.STARTED);
                     processById.setLastUpdateUser(currentUser.getUsername());
                     processById.setLastUpdateDttm(new Date());

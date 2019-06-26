@@ -16,6 +16,7 @@ public class PageHelperUtils {
       rtnMap.put("iTotalDisplayRecords", info.getTotal());
       rtnMap.put("iTotalRecords", info.getTotal());
       rtnMap.put("pageData", info.getList());//数据集合
+      logger.debug("success");
     }
     return rtnMap;
   }

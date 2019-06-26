@@ -18,8 +18,8 @@
             <span th:text="${processStopVo.description}"/><br>
             <span>GroupName：</span></td>
             <span th:text="${processStopVo.groups}"/><br>
-            <span>Bundel：</span></td>
-            <span th:text="${processStopVo.bundel}"/><br>
+            <span >Bundel：</span></td>
+            <span id="sotpBundelShow" th:text="${processStopVo.bundel}"/><br>
             <span>Owner：</span></td>
             <span th:text="${processStopVo.owner}"/><br>
         </div>
@@ -31,7 +31,7 @@
             <span th:each="propertyVo:${processStopVo.processStopPropertyVoList}">
                 <span th:if="${propertyVo}">
                     <span th:text="${propertyVo.displayName}+ ':'"></span>
-                    <span th:text="${propertyVo.customValue}"></span>
+                    <span class="open_action" th:text="${propertyVo.customValue}"></span>
                     <br>
                 </span>
             </span>

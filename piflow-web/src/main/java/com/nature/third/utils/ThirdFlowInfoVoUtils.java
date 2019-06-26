@@ -9,6 +9,7 @@ import com.nature.third.vo.flowInfo.ThirdFlowInfoStopVo;
 import com.nature.third.vo.flowInfo.ThirdFlowInfoStopsVo;
 import com.nature.third.vo.flowInfo.ThirdFlowInfoVo;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -25,8 +26,11 @@ public class ThirdFlowInfoVoUtils {
             process.setLastUpdateUser("syncTask");
             process.setLastUpdateDttm(new Date());
             process.setProgress(thirdFlowInfoVo.getProgress());
-            process.setState(ProcessState.selectGender(thirdFlowInfoVo.getState()));
-            process.setProcessId(thirdFlowInfoVo.getPid());
+            if(StringUtils.isNotBlank(thirdFlowInfoVo.getState())){
+                process.setState(ProcessState.selectGender(thirdFlowInfoVo.getState()));
+            }
+            //process.setProcessId(thirdFlowInfoVo.getPid());
+            process.setProcessId(thirdFlowInfoVo.getId());
             process.setName(thirdFlowInfoVo.getName());
             process.setStartTime(DateUtils.strCstToDate(thirdFlowInfoVo.getStartTime()));
             process.setEndTime(DateUtils.strCstToDate(thirdFlowInfoVo.getEndTime()));

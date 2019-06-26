@@ -236,7 +236,8 @@ public class ProcessServiceImpl implements IProcessService {
                             processById.setLastUpdateDttm(new Date());
                             processById.setProgress(progressNums + "");
                             processById.setState(ProcessState.selectGender(thirdFlowInfoVo.getState()));
-                            processById.setProcessId(thirdFlowInfoVo.getPid());
+                            //processById.setProcessId(thirdFlowInfoVo.getPid());
+                            processById.setProcessId(thirdFlowInfoVo.getId());
                             processById.setName(thirdFlowInfoVo.getName());
                             processById.setStartTime(DateUtils.strCstToDate(thirdFlowInfoVo.getStartTime()));
                             processById.setEndTime(DateUtils.strCstToDate(thirdFlowInfoVo.getEndTime()));

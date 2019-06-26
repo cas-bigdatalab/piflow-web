@@ -40,9 +40,9 @@
 			<span>
 				progress：<span id="progress" th:text="${percentage} + '%'"></span>
 			</span>
-    <input id="startFlow" type="button" onclick="getCheckpoint()" value="Run"/>
-    <input id="stopFlow" type="button" onclick="stopProcess()" value="Stop"/>
-    <input type="button" class="btn-primary" data-toggle="modal" onclick="getLogUrl()" data-target="#myModal"
+    <input id="startFlow" type="button" class="btn btn-default" onclick="getCheckpoint()" value="Run"/>
+    <input id="stopFlow" type="button" class="btn btn-danger" onclick="stopProcess()" value="Stop"/>
+    <input type="button" class="btn btn-primary" data-toggle="modal" onclick="getLogUrl()" data-target="#myModal"
            value="Log"/>
 </div>
 <div id="processContent" th:onclick="'queryProcess(\''+${processId}+'\')'"
