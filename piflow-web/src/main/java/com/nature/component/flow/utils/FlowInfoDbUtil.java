@@ -9,7 +9,7 @@ public class FlowInfoDbUtil {
     /**
      * flowInfoDb实体转Vo
      *
-     * @param mxGraphModel
+     * @param flowInfoDb
      * @return
      */
     public static FlowInfoDbVo flowInfoDbToVo(FlowInfoDb flowInfoDb){

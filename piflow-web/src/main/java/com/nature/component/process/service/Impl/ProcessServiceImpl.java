@@ -433,36 +433,6 @@ public class ProcessServiceImpl implements IProcessService {
         return 0;
     }
 
-    @Override
-    public Process startFlowAndUpdateProcess(Flow flow, UserVo currentUser) {
-        Process process = null;
-        if (null != flow && null != currentUser) {
-            process = this.flowToProcessAndSave(flow.getId());
-            if (null != process) {
-                String checkpoint = "";
-                List<Stops> stopsList = flow.getStopsList();
-                for (Stops stops : stopsList) {
-                    stops.getCheckpoint();
-                    if (null != stops.getCheckpoint() && stops.getCheckpoint()) {
-                        if (StringUtils.isNotBlank(checkpoint)) {
-                            checkpoint = (checkpoint + ",");
-                        }
-                        checkpoint = (checkpoint + stops.getName());
-                    }
-                }
-                StatefulRtnBase startProcess = startFlowImpl.startProcess(process, checkpoint, currentUser);
-                if (null != startProcess && startProcess.isReqRtnStatus()) {
-                    logger.info("调用接口并保存成功");
-                } else {
-                    processTransaction.updateProcessEnableFlag(process.getId(), currentUser);
-                    logger.info("调用接口并保存失败");
-                    process = null;
-                }
-            }
-        }
-        return process;
-    }
-
     /**
      * 拷贝 process并新建
      *
@@ -589,7 +559,6 @@ public class ProcessServiceImpl implements IProcessService {
     @Override
     public Process flowToProcessAndSave(String flowId) {
         UserVo user = SessionUserUtil.getCurrentUser();
-        String username = (null != user) ? user.getUsername() : "-1";
         Process process = null;
         //flowId判空
         if (StringUtils.isNotBlank(flowId)) {
@@ -597,107 +566,15 @@ public class ProcessServiceImpl implements IProcessService {
             Flow flowById = flowTransaction.getFlowById(flowId);
             // 判空查询到的flow
             if (null != flowById) {
-                process = new Process();
-                // copy flow信息到process
-                BeanUtils.copyProperties(flowById, process);
-                // set基本信息
-                process.setId(SqlUtils.getUUID32());
-                process.setCrtDttm(new Date());
-                process.setCrtUser(username);
-                process.setLastUpdateDttm(new Date());
-                process.setLastUpdateUser(username);
-                process.setEnableFlag(true);
-                // 取出flow的画板信息
-                MxGraphModel mxGraphModel = flowById.getMxGraphModel();
-                // flow画板信息转为ViewXml
-                String viewXml = SvgUtils.mxGraphModelToViewXml(mxGraphModel);
-                // set viewXml
-                process.setViewXml(viewXml);
-                // set flowId
-                process.setFlowId(flowId);
-                // Stops to remove flow
-                List<Stops> stopsList = flowById.getStopsList();
-                // stopsList isEmpty
-                if (null != stopsList && stopsList.size() > 0) {
-                    // List of stop of process
-                    List<ProcessStop> processStopList = new ArrayList<ProcessStop>();
-                    // Loop stopsList
-                    for (Stops stops : stopsList) {
-                        // isEmpty
-                        if (null != stops) {
-                            ProcessStop processStop = new ProcessStop();
-                            // copy stops的信息到processStop中
-                            BeanUtils.copyProperties(stops, processStop);
-                            // set基本信息
-                            processStop.setId(SqlUtils.getUUID32());
-                            processStop.setCrtDttm(new Date());
-                            processStop.setCrtUser(username);
-                            processStop.setLastUpdateDttm(new Date());
-                            processStop.setLastUpdateUser(username);
-                            processStop.setEnableFlag(true);
-                            // 关联外键
-                            processStop.setProcess(process);
-                            // 取出stops的属性
-                            List<Property> properties = stops.getProperties();
-                            // stops的属性判空
-                            if (null != properties && properties.size() > 0) {
-                                List<ProcessStopProperty> processStopPropertyList = new ArrayList<ProcessStopProperty>();
-                                // Attributes of loop stops
-                                for (Property property : properties) {
-                                    // isEmpty
-                                    if (null != property) {
-                                        ProcessStopProperty processStopProperty = new ProcessStopProperty();
-                                        // Copy property information into processStopProperty
-                                        BeanUtils.copyProperties(property, processStopProperty);
-                                        // Set basic information
-                                        processStopProperty.setId(SqlUtils.getUUID32());
-                                        processStopProperty.setCrtDttm(new Date());
-                                        processStopProperty.setCrtUser(username);
-                                        processStopProperty.setLastUpdateDttm(new Date());
-                                        processStopProperty.setLastUpdateUser(username);
-                                        processStopProperty.setEnableFlag(true);
-                                        // Associated foreign key
-                                        processStopProperty.setProcessStop(processStop);
-                                        processStopPropertyList.add(processStopProperty);
-                                    }
-                                }
-                                processStop.setProcessStopPropertyList(processStopPropertyList);
-                            }
-                            processStopList.add(processStop);
-                        }
+                process = ProcessUtils.flowToProcess(flowById, user);
+                if (null != process) {
+                    int addProcess = processTransaction.addProcess(process);
+                    if (addProcess <= 0) {
+                        process = null;
+                        logger.warn("Save failed, transform failed");
                     }
-                    process.setProcessStopList(processStopList);
-                }
-                // Get the paths information of flow
-                List<Paths> pathsList = flowById.getPathsList();
-                // isEmpty
-                if (null != pathsList && pathsList.size() > 0) {
-                    List<ProcessPath> processPathList = new ArrayList<ProcessPath>();
-                    // Loop paths information
-                    for (Paths paths : pathsList) {
-                        // isEmpty
-                        if (null != paths) {
-                            ProcessPath processPath = new ProcessPath();
-                            // Copy paths information into processPath
-                            BeanUtils.copyProperties(paths, processPath);
-                            // Set basic information
-                            processPath.setId(SqlUtils.getUUID32());
-                            processPath.setCrtDttm(new Date());
-                            processPath.setCrtUser(username);
-                            processPath.setLastUpdateDttm(new Date());
-                            processPath.setLastUpdateUser(username);
-                            processPath.setEnableFlag(true);
-                            // Associated foreign key
-                            processPath.setProcess(process);
-                            processPathList.add(processPath);
-                        }
-                    }
-                    process.setProcessPathList(processPathList);
-                }
-                int addProcess = processTransaction.addProcess(process);
-                if (addProcess <= 0) {
-                    process = null;
-                    logger.warn("Save failed, transform failed");
+                } else {
+                    logger.warn("Conversion failed");
                 }
             } else {
                 logger.warn("Unable to query flow Id for'" + flowId + "'flow, the conversion failed");

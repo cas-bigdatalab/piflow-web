@@ -21,14 +21,16 @@ public class Property extends BaseHibernateModelUUIDNoCorpAgentId {
 	@JoinColumn(name = "FK_STOPS_ID")
 	private Stops stops;
 
+	@Column(columnDefinition = "varchar(255) COMMENT 'name'")
 	private String name;
 
+	@Column(columnDefinition = "varchar(255) COMMENT 'display name'")
 	private String displayName;
 
-	@Column(name = "DESCRIPTION", columnDefinition = "varchar(1024) COMMENT '描述'")
+	@Column(columnDefinition = "text(0) COMMENT 'description'")
 	private String description;
 
-	@Column(name = "CUSTOM_VALUE", columnDefinition = "varchar(1024) COMMENT '默认值'")
+	@Column(columnDefinition = "text(0) COMMENT 'custom value'")
 	private String customValue;
 
 	@Column(name = "ALLOWABLE_VALUES")

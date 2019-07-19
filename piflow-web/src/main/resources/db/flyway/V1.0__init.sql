@@ -1,17 +1,17 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : 192.168.254.196
+ Source Server         : 10.0.86.133
  Source Server Type    : MySQL
- Source Server Version : 50709
- Source Host           : 192.168.254.196:3306
+ Source Server Version : 50726
+ Source Host           : 10.0.86.133:3306
  Source Schema         : piflow_web
 
  Target Server Type    : MySQL
- Target Server Version : 50709
+ Target Server Version : 50726
  File Encoding         : 65001
 
- Date: 25/03/2019 18:11:16
+ Date: 16/07/2019 16:54:04
 */
 
 SET NAMES utf8mb4;
@@ -356,20 +356,6 @@ CREATE TABLE `flow_template`  (
 
 
 -- ----------------------------
--- Table structure for hibernate_sequence
--- ----------------------------
-DROP TABLE IF EXISTS `hibernate_sequence`;
-CREATE TABLE `hibernate_sequence`  (
-  `next_val` bigint(20) NULL DEFAULT NULL
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of hibernate_sequence
--- ----------------------------
-INSERT INTO `hibernate_sequence` VALUES (1);
-
-
--- ----------------------------
 -- Table structure for association_groups_stops_template
 -- ----------------------------
 DROP TABLE IF EXISTS `association_groups_stops_template`;
@@ -467,6 +453,17 @@ CREATE TABLE `mx_geometry`  (
   CONSTRAINT `FK6elkg2vbxxjrun0qaqaajwgfu` FOREIGN KEY (`fk_mx_cell_id`) REFERENCES `mx_cell` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = Dynamic;
 
+-- ----------------------------
+-- Table structure for statistics
+-- ----------------------------
+DROP TABLE IF EXISTS `statistics`;
+CREATE TABLE `statistics`  (
+  `id` varchar(40) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `login_ip` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `login_time` datetime(0) NULL DEFAULT NULL,
+  `login_user` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for stops_template
@@ -571,7 +568,6 @@ INSERT INTO `sys_user`(`id`, `crt_dttm`, `crt_user`, `enable_flag`, `last_update
 -- Records of sys_role
 -- ----------------------------
 INSERT INTO `sys_role`(`id`, `role`, `fk_sys_user_id`) VALUES (0, 'ADMIN', '0641076d5ae840c09d2be5b71su00001');
-
 
 -- ----------------------------
 -- Delete and reload example data
@@ -972,4 +968,3 @@ INSERT INTO `flow_path`(`id`, `crt_dttm`, `crt_user`, `enable_flag`, `last_updat
 INSERT INTO `flow_path`(`id`, `crt_dttm`, `crt_user`, `enable_flag`, `last_update_dttm`, `last_update_user`, `version`, `line_from`, `line_inport`, `line_outport`, `page_id`, `line_to`, `fk_flow_id`) VALUES ('0641076d5ae840c09d2be5b71fp00039', NOW(), 'admin', b'1', NOW(), 'admin', 0, '52', '', '', '105', '61', '0641076d5ae840c09d2be5b71fw00002');
 INSERT INTO `flow_path`(`id`, `crt_dttm`, `crt_user`, `enable_flag`, `last_update_dttm`, `last_update_user`, `version`, `line_from`, `line_inport`, `line_outport`, `page_id`, `line_to`, `fk_flow_id`) VALUES ('0641076d5ae840c09d2be5b71fp00040', NOW(), 'admin', b'1', NOW(), 'admin', 0, '88', '', '', '117', '75', '0641076d5ae840c09d2be5b71fw00002');
 INSERT INTO `flow_path`(`id`, `crt_dttm`, `crt_user`, `enable_flag`, `last_update_dttm`, `last_update_user`, `version`, `line_from`, `line_inport`, `line_outport`, `page_id`, `line_to`, `fk_flow_id`) VALUES ('0641076d5ae840c09d2be5b71fp00041', NOW(), 'admin', b'1', NOW(), 'admin', 0, '85', '', 'out7', '128', '49', '0641076d5ae840c09d2be5b71fw00002');
-

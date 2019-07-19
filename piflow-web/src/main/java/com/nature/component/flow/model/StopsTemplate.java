@@ -29,6 +29,7 @@ public class StopsTemplate extends BaseHibernateModelUUIDNoCorpAgentId {
 
     private String owner;
 
+    @Column(columnDefinition = "text(0) COMMENT 'description'")
     private String description;
 
     private String inports;

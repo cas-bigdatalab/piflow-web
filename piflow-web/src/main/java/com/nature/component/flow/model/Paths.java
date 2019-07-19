@@ -1,11 +1,15 @@
 package com.nature.component.flow.model;
 
 import com.nature.base.BaseHibernateModelUUIDNoCorpAgentId;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "FLOW_PATH")
+@Setter
+@Getter
 public class Paths extends BaseHibernateModelUUIDNoCorpAgentId {
 
 	private static final long serialVersionUID = 1L;
@@ -14,67 +18,18 @@ public class Paths extends BaseHibernateModelUUIDNoCorpAgentId {
 	@JoinColumn(name = "FK_FLOW_ID")
 	private Flow flow;
 
-	@Column(name = "LINE_FROM")
+	@Column(name = "LINE_FROM", columnDefinition="varchar(255) COMMENT 'line from'")
 	private String from;
 
-	@Column(name = "LINE_OUTPORT")
+	@Column(name = "LINE_OUTPORT", columnDefinition="varchar(255) COMMENT 'line out port'")
 	private String outport;
 
-	@Column(name = "LINE_INPORT")
+	@Column(name = "LINE_INPORT", columnDefinition="varchar(255) COMMENT 'line in port'")
 	private String inport;
 
-	@Column(name = "LINE_TO")
+	@Column(name = "LINE_TO", columnDefinition="varchar(255) COMMENT 'line to'")
 	private String to;
 
 	@Column(name = "page_id")
 	private String pageId;
-
-	public Flow getFlow() {
-		return flow;
-	}
-
-	public void setFlow(Flow flow) {
-		this.flow = flow;
-	}
-
-	public String getFrom() {
-		return from;
-	}
-
-	public void setFrom(String from) {
-		this.from = from;
-	}
-
-	public String getOutport() {
-		return outport;
-	}
-
-	public void setOutport(String outport) {
-		this.outport = outport;
-	}
-
-	public String getInport() {
-		return inport;
-	}
-
-	public void setInport(String inport) {
-		this.inport = inport;
-	}
-
-	public String getTo() {
-		return to;
-	}
-
-	public void setTo(String to) {
-		this.to = to;
-	}
-
-	public String getPageId() {
-		return pageId;
-	}
-
-	public void setPageId(String pageId) {
-		this.pageId = pageId;
-	}
-
 }

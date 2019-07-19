@@ -21,21 +21,28 @@ public class Flow extends BaseHibernateModelUUIDNoCorpAgentId {
 
 	private static final long serialVersionUID = 1L;
 
+	@Column(columnDefinition="varchar(255) COMMENT 'flow name'")
 	private String name;
 
+	@Column(columnDefinition="varchar(255) COMMENT 'flow uuid'")
 	private String uuid;
-	
+
+	@Column(columnDefinition="varchar(255) COMMENT 'driverMemory'")
 	private String driverMemory;
-	
+
+	@Column(columnDefinition="varchar(255) COMMENT 'executorNumber'")
 	private String executorNumber;
-	
+
+	@Column(columnDefinition="varchar(255) COMMENT 'executorMemory'")
 	private String executorMemory;
-	
+
+	@Column(columnDefinition="varchar(255) COMMENT 'executorCores'")
 	private String executorCores;
 	
-	@Column(name = "description",columnDefinition="varchar(1024) COMMENT '描述'")
+	@Column(name = "description",columnDefinition="text(0) COMMENT 'description'")
 	private String description;
 
+	@Column(columnDefinition="bit(1) COMMENT 'isExample'")
 	private Boolean isExample = false;
 
 	@OneToOne(fetch = FetchType.LAZY, mappedBy = "flow")

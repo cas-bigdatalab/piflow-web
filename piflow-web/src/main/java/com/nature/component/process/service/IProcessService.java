@@ -111,14 +111,6 @@ public interface IProcessService {
     public int updateProcess(ProcessVo processVo, UserVo currentUser);
 
     /**
-     * Call the start interface and save the return information
-     *
-     * @param flow
-     * @return
-     */
-    public Process startFlowAndUpdateProcess(Flow flow, UserVo currentUser);
-
-    /**
      * Copy process and create a new one
      *
      * @param processId

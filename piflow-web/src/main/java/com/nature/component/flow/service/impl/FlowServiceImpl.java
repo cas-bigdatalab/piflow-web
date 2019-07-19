@@ -22,10 +22,14 @@ import com.nature.component.mxGraph.model.MxGraphModel;
 import com.nature.component.mxGraph.vo.MxCellVo;
 import com.nature.component.mxGraph.vo.MxGeometryVo;
 import com.nature.component.mxGraph.vo.MxGraphModelVo;
+import com.nature.component.process.model.Process;
+import com.nature.component.process.utils.ProcessUtils;
 import com.nature.mapper.flow.*;
 import com.nature.mapper.mxGraph.MxCellMapper;
 import com.nature.mapper.mxGraph.MxGeometryMapper;
 import com.nature.mapper.mxGraph.MxGraphModelMapper;
+import com.nature.third.inf.IStartFlow;
+import com.nature.transaction.process.ProcessTransaction;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -69,6 +73,12 @@ public class FlowServiceImpl implements IFlowService {
 
     @Resource
     private FlowInfoDbMapper flowInfoDbMapper;
+
+    @Resource
+    private ProcessTransaction processTransaction;
+
+    @Resource
+    private IStartFlow startFlowImpl;
 
     /**
      * 向数据库添加flow
@@ -144,7 +154,9 @@ public class FlowServiceImpl implements IFlowService {
      */
     @Override
     @Transient
-    public FlowVo getFlowVoById(String id) {
+    public String getFlowVoById(String id) {
+        Map<String, Object> rtnMap = new HashMap<String, Object>();
+        rtnMap.put("code", "0");
         FlowVo flowVo = null;
         Flow flowById = flowMapper.getFlowById(id);
         if (null != flowById) {
@@ -162,7 +174,8 @@ public class FlowServiceImpl implements IFlowService {
             flowVo.setStopsVoList(stopsVoList);
             flowVo.setPathsVoList(pathsVoList);
         }
-        return flowVo;
+        rtnMap.put("flow", flowVo);
+        return JsonUtils.toJsonNoException(rtnMap);
     }
 
     /**
@@ -207,28 +220,62 @@ public class FlowServiceImpl implements IFlowService {
 
     @Override
     @Transient
-    public int addFlow(Flow flow) {
-        int isSuccess = 0;
-        if (null != flow) {
+    public String addFlow(FlowVo flowVo, UserVo user) {
+        Map<String, Object> rtnMap = new HashMap<String, Object>();
+        rtnMap.put("code", "0");
+        int optDataCount = 0;
+        if (null != flowVo) {
+            String username = (null != user) ? user.getUsername() : "-1";
+            Flow flow = new Flow();
+
+            BeanUtils.copyProperties(flowVo, flow);
+            String id = SqlUtils.getUUID32();
+            flow.setId(id);
+            flow.setCrtDttm(new Date());
+            flow.setCrtUser(username);
+            flow.setLastUpdateDttm(new Date());
+            flow.setLastUpdateUser(username);
+            flow.setEnableFlag(true);
+            flow.setUuid(id);
             int addFlow = flowMapper.addFlow(flow);
             if (addFlow > 0) {
-                MxGraphModel mxGraphModel = flow.getMxGraphModel();
+                optDataCount = addFlow;
+                MxGraphModel mxGraphModel = new MxGraphModel();
+                mxGraphModel.setFlow(flow);
+                mxGraphModel.setId(SqlUtils.getUUID32());
+                mxGraphModel.setCrtDttm(new Date());
+                mxGraphModel.setCrtUser(username);
+                mxGraphModel.setLastUpdateDttm(new Date());
+                mxGraphModel.setLastUpdateUser(username);
+                mxGraphModel.setEnableFlag(true);
                 if (null != mxGraphModel) {
                     mxGraphModel.setFlow(flow);
                     int addMxGraphModel = mxGraphModelMapper.addMxGraphModel(mxGraphModel);
                     if (addMxGraphModel > 0) {
                         flow.setMxGraphModel(mxGraphModel);
-                        isSuccess = 1;
+                        optDataCount += addMxGraphModel;
                     }
                 }
+
+            }
+
+            if (optDataCount > 0) {
+                rtnMap.put("code", "1");
+                rtnMap.put("flowId", id);
             }
         }
-
-        return isSuccess;
+        return JsonUtils.toJsonNoException(rtnMap);
     }
 
     @Override
-    public int updateFlow(Flow flow) {
+    public int updateFlow(Flow flow, UserVo user) {
+        String username = (null != user) ? user.getUsername() : "-1";
+        String id = flow.getId();
+        flow.setId(id);
+        flow.setName(flow.getName());
+        flow.setDescription(flow.getDescription());
+        flow.setLastUpdateDttm(new Date());
+        flow.setLastUpdateUser(username);
         Flow flowDb = flowMapper.getFlowById(flow.getId());
         flow.setVersion(flowDb.getVersion());
         return flowMapper.updateFlow(flow);
@@ -236,7 +283,45 @@ public class FlowServiceImpl implements IFlowService {
 
     @Override
     public int deleteFLowInfo(String id) {
-        return flowMapper.updateEnableFlagById(id);
+        int deleteFLowInfo = 0;
+        if (StringUtils.isNotBlank(id)) {
+            Flow flowById = this.getFlowById(id);
+            if (null != flowById) {
+                if (null != flowById.getStopsList())
+                    //先循环删除stop属性
+                    for (Stops stopId : flowById.getStopsList()) {
+                        if (null != stopId.getProperties())
+                            for (Property property : stopId.getProperties()) {
+                                propertyMapper.updateEnableFlagByStopId(property.getId());
+                            }
+                    }
+                //删除stop
+                stopsMapper.updateEnableFlagByFlowId(flowById.getId());
+                //删除paths
+                pathsMapper.updateEnableFlagByFlowId(flowById.getId());
+                //删除FLowInfo
+                if (flowById.getAppId() != null) {
+                    //flowInfoDbServiceImpl.deleteFlowInfoById(flowById.getAppId().getId());
+                }
+                if (null != flowById.getMxGraphModel()) {
+                    List<MxCell> root = flowById.getMxGraphModel().getRoot();
+                    if (null != root && !root.isEmpty()) {
+                        for (MxCell mxcell : root) {
+                            if (mxcell.getMxGeometry() != null) {
+                                logger.info(mxcell.getMxGeometry().getId());
+                                mxGeometryMapper.updateEnableFlagById(mxcell.getMxGeometry().getId());
+                            }
+                            mxCellMapper.updateEnableFlagById(mxcell.getId());
+
+                        }
+                    }
+                    mxGraphModelMapper.updateEnableFlagByFlowId(flowById.getId());
+                }
+                //删除FLow
+                deleteFLowInfo = flowMapper.updateEnableFlagById(id);
+            }
+        }
+        return deleteFLowInfo;
     }
 
     /**
@@ -611,6 +696,7 @@ public class FlowServiceImpl implements IFlowService {
                                                         List<Property> propertiesNew = new ArrayList<Property>();
                                                         // 循环属性
                                                         for (Property property : properties) {
+                                                            property.setStops(stops);
                                                             if ("inports".equals(property.getName())) {
                                                                 inportProperty = property;
                                                                 continue;
@@ -635,7 +721,7 @@ public class FlowServiceImpl implements IFlowService {
                                                         if (isUpdate) {
                                                             stops.setLastUpdateDttm(new Date());//最后跟新时间
                                                             stops.setLastUpdateUser(username);//最后更新人
-                                                            stops.setProperties(properties);//属性list
+                                                            stops.setProperties(propertiesNew);//属性list
                                                             stops.setFlow(flow);
                                                             updateStops.add(stops);
                                                         }
@@ -1023,6 +1109,63 @@ public class FlowServiceImpl implements IFlowService {
             });
             rtnMap.put("code", 1);
             rtnMap.put("flowExampleList", flowVoList);
+        }
+        return JsonUtils.toJsonNoException(rtnMap);
+    }
+
+    @Override
+    public String runFlow(String flowId) {
+        Map<String, String> rtnMap = new HashMap<String, String>();
+        rtnMap.put("code", "0");
+        String errMsg = "";
+        if (StringUtils.isNotBlank(flowId)) {
+            UserVo currentUser = SessionUserUtil.getCurrentUser();
+            // 根据flowId查询flow
+            Flow flowById = this.getFlowById(flowId);
+            // addFlow不为空且ReqRtnStatus的值为true,则保存成功
+            if (null != flowById) {
+                Process process = ProcessUtils.flowToProcess(flowById, currentUser);
+                if (null != process) {
+                    int addProcess = processTransaction.addProcess(process);
+                    if (addProcess > 0) {
+                        String checkpoint = "";
+                        List<Stops> stopsList = flowById.getStopsList();
+                        for (Stops stops : stopsList) {
+                            stops.getCheckpoint();
+                            if (null != stops.getCheckpoint() && stops.getCheckpoint()) {
+                                if (StringUtils.isNotBlank(checkpoint)) {
+                                    checkpoint = (checkpoint + ",");
+                                }
+                                checkpoint = (checkpoint + stops.getName());
+                            }
+                        }
+                        StatefulRtnBase startProcess = startFlowImpl.startProcess(process, checkpoint, currentUser);
+                        if (null != startProcess && startProcess.isReqRtnStatus()) {
+                            rtnMap.put("code", "1");
+                            rtnMap.put("processId", process.getId());
+                            rtnMap.put("errMsg", "保存到process成功，调用接口成功，更新成功");
+                            logger.info("调用接口并保存成功");
+                        } else {
+                            processTransaction.updateProcessEnableFlag(process.getId(), currentUser);
+                            errMsg = "调用接口并保存失败";
+                            rtnMap.put("errMsg", errMsg);
+                            logger.warn(errMsg);
+                        }
+                    } else {
+                        logger.warn("Save failed, transform failed");
+                    }
+                } else {
+                    logger.warn("Conversion failed");
+                }
+            } else {
+                errMsg = "未查询到flowId为" + flowId + "的flow";
+                rtnMap.put("errMsg", errMsg);
+                logger.warn(errMsg);
+            }
+        } else {
+            errMsg = "flowId为空";
+            rtnMap.put("errMsg", errMsg);
+            logger.warn(errMsg);
         }
         return JsonUtils.toJsonNoException(rtnMap);
     }

@@ -55,7 +55,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         //Solving the problem of static resources being intercepted
-        web.ignoring().antMatchers("/charisma/**", "/bootstrap/**", "/js/**", "/css/**", "/custom/css/**", "/img/**", "/img/*");
+        web.ignoring().antMatchers("/charisma/**", "/bootstrap/**", "/js/**", "/css/**", "/custom/css/**", "/img/**", "/img/*","/druid/**");
     }
 
     @Override

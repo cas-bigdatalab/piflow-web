@@ -100,30 +100,7 @@ public class GrapheditorCtrl {
                 return "errorPage";
             }
         } else {
-            // 生成32位UUID
-            load = SqlUtils.getUUID32();
-            Flow flow = new Flow();
-            flow.setId(load);
-            flow.setCrtDttm(new Date());
-            flow.setCrtUser(username);
-            flow.setLastUpdateDttm(new Date());
-            flow.setLastUpdateUser(username);
-            flow.setEnableFlag(true);
-            flow.setName("default");
-            MxGraphModel mxGraphModel = new MxGraphModel();
-            mxGraphModel.setId(SqlUtils.getUUID32());
-            mxGraphModel.setCrtDttm(new Date());
-            mxGraphModel.setCrtUser(username);
-            mxGraphModel.setLastUpdateDttm(new Date());
-            mxGraphModel.setLastUpdateUser(username);
-            mxGraphModel.setEnableFlag(true);
-            flow.setMxGraphModel(mxGraphModel);
-            int addFlow = flowServiceImpl.addFlow(flow);
-            if (addFlow > 0) {
-                return "redirect:/grapheditor/home?load=" + load;
-            } else {
-                return "errorPage";
-            }
+            return "errorPage";
         }
     }
 

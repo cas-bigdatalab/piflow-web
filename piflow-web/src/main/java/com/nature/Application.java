@@ -7,9 +7,11 @@ import org.slf4j.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @MapperScan(basePackages = "com.nature.mapper.*.*")
+@PropertySource(value = "classpath:baseConfig.properties",encoding = "utf-8")
 @EnableTransactionManagement
 @SpringBootApplication
 public class Application {
@@ -20,7 +22,7 @@ public class Application {
         ApplicationContext context = SpringApplication.run(Application.class, args);
         SpringContextUtil.setApplicationContext(context);
         logger.warn("***************************************************************");
-        logger.warn("******************  Spring Boot 启动成功  **************************");
+        logger.warn("***************** Spring Boot Startup Success *****************");
         logger.warn("***************************************************************");
     }
 

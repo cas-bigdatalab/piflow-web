@@ -1,12 +1,11 @@
 package com.nature.base.config;
 
 
+import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.http.StatViewServlet;
 import com.alibaba.druid.support.http.WebStatFilter;
 import com.nature.base.util.LoggerUtil;
-import com.alibaba.druid.pool.DruidDataSource;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -50,36 +49,36 @@ public class DataSourceConfig {
         // 黑名单,多个用逗号分割 (共同存在时，deny优先于allow)
         servletRegistrationBean.addInitParameter("deny", "192.168.1.110");
         // 控制台管理用户名
-        // servletRegistrationBean.addInitParameter("loginUsername", "druid");
+        servletRegistrationBean.addInitParameter("loginUsername", "druid");
         // 控制台管理密码
-        // servletRegistrationBean.addInitParameter("loginPassword", "druid");
+        servletRegistrationBean.addInitParameter("loginPassword", "druid");
         // 是否可以重置数据源，禁用HTML页面上的“Reset All”功能
         servletRegistrationBean.addInitParameter("resetEnable", "false");
-        return servletRegistrationBean ;
+        return servletRegistrationBean;
     }
 
     @Bean
     public FilterRegistrationBean filterRegistrationBean() {
-        FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean() ;
+        FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
         filterRegistrationBean.setFilter(new WebStatFilter());
         //所有请求进行监控处理
         filterRegistrationBean.addUrlPatterns("/*");
         //添加不需要忽略的格式信息
         filterRegistrationBean.addInitParameter("exclusions", "*.js,*.gif,*.jpg,*.css,/druid/*");
-        return filterRegistrationBean ;
+        return filterRegistrationBean;
     }
 
     @Bean     //Declare it as a bean instance
     @ConfigurationProperties(prefix = "spring.datasource")
-    public DataSource dataSource(){
+    public DataSource dataSource() {
         try {
             Class.forName(driverClassName);
 
-            String url01 = datasourceUrl.substring(0,datasourceUrl.indexOf("?"));
+            String url01 = datasourceUrl.substring(0, datasourceUrl.indexOf("?"));
 
-            String url02 = url01.substring(0,url01.lastIndexOf("/"));
+            String url02 = url01.substring(0, url01.lastIndexOf("/"));
 
-            String datasourceName = url01.substring(url01.lastIndexOf("/")+1);
+            String datasourceName = url01.substring(url01.lastIndexOf("/") + 1);
             // Connect to existing databases, such as MySQL
             Connection connection = DriverManager.getConnection(url02, username, password);
             Statement statement = connection.createStatement();

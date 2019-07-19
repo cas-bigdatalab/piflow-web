@@ -1,6 +1,7 @@
 package com.nature.component.flow.service;
 
 import com.nature.base.vo.StatefulRtnBase;
+import com.nature.base.vo.UserVo;
 import com.nature.component.mxGraph.vo.MxGraphModelVo;
 import com.nature.component.flow.model.Flow;
 import com.nature.component.flow.model.FlowInfoDb;
@@ -38,7 +39,7 @@ public interface IFlowService {
 	 * @return
 	 */
 	@Transient
-	public FlowVo getFlowVoById(String id);
+	public String getFlowVoById(String id);
 
 	/**
 	 * 保存appId
@@ -52,14 +53,14 @@ public interface IFlowService {
 	
 	/**
 	 * add flow(包含画板信息)
-	 * @param flow
+	 * @param flowVo
 	 * @return
 	 */
 	@Transient
-	public int addFlow(Flow flow);
+	public String addFlow(FlowVo flowVo, UserVo user);
 
 	@Transient
-	public int updateFlow(Flow flow);
+	public int updateFlow(Flow flow,UserVo user);
 
 	@Transient
 	public int deleteFLowInfo(String id);
@@ -79,5 +80,14 @@ public interface IFlowService {
 	public String getFlowListPage(Integer offset, Integer limit, String param);
 
 	public String getFlowExampleList();
+
+
+	/**
+	 * Call the start interface and save the return information
+	 *
+	 * @param flowId
+	 * @return
+	 */
+	public String runFlow(String flowId);
 
 }

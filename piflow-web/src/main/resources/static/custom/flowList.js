@@ -165,49 +165,6 @@ function runFlows(loadId) {
     });
 }
 
-function tableRow() {
-    var arrayObj = new Array();
-    var table = $("table tr").find("td:eq(1)");
-    var state = $("table tr").find("td:eq(7)");
-    for (var i = 0; i < table.length; i++) {
-        if (table[i].innerHTML != "") {
-            if (state[i].innerHTML != "No state" && state[i].innerHTML == "STARTED") {
-                arrayObj.push(table[i].innerHTML);
-            }
-        }
-    }
-    if (arrayObj.length == 0) {
-        clearInterval(c);
-        return;
-    }
-    $.ajax({
-        cache: true,
-        type: "get",
-        url: "/piflow-web/flowInfoDb/list",
-        data: {content: arrayObj},
-        async: true,
-        traditional: true,
-        error: function (request) {
-            console.log("error");
-            return;
-        },
-        success: function (data) {
-            if (null != data) {
-                var dataMap = JSON.parse(data);
-                if ('0' !== dataMap.code) {
-                    document.getElementById("" + dataMap.id + "").value = dataMap.progress;
-                    document.getElementById("" + dataMap.id + "Info").innerHTML = "进度" + dataMap.progress + "%";
-                    document.getElementById("" + dataMap.id + "state").innerHTML = dataMap.state;
-                    if (dataMap.endTime && "" !== dataMap.startTime) {
-                        document.getElementById("" + dataMap.id + "startTime").innerHTML = dataMap.startTime;
-                        document.getElementById("" + dataMap.id + "endTime").innerHTML = dataMap.endTime;
-                    }
-                }
-            }
-        }
-    });
-}
-
 function deleteFlow(id, name) {
     layer.confirm("Are you sure to delete '" + name + "' ?", {
         btn: ['confirm', 'cancel'] //按钮
@@ -339,7 +296,7 @@ function initDatatableFlowPage(testTableId, url) {
 
 //后台返回的结果
 function responseHandlerFlow(res) {
-    let resPageData = res.pageData;
+    var resPageData = res.pageData;
     var pageData = []
     if (resPageData && resPageData.length > 0) {
         for (var i = 0; i < resPageData.length; i++) {
