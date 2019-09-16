@@ -40,7 +40,9 @@ To Build: mvn package -Dmaven.test.skip=true
 [INFO] ------------------------------------------------------------------------
 ```
 To Run Piflow Web：
-
+- Note: 
+  - 1.The piflow server must be running before running piflow-web
+  - 2.Dynamically configured storage directories must be created manually(syspara.imagesPath,syspara.videosPath,syspara.xmlPath)
 - run piflow server on intellij:
 
   - edit config.properties
