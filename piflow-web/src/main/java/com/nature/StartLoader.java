@@ -36,15 +36,10 @@ public class StartLoader implements ApplicationRunner {
     @Autowired
     private IStopGroupService stopGroupServiceImpl;
 
-    @Value("${syspara.isStartUp}")
-    private boolean isStartUp;
-
     @Override
     public void run(ApplicationArguments args) throws Exception {
         startStatusRunning();
-        if (isStartUp) {
-            loadStop();
-        }
+        loadStop();
     }
 
     private void loadStop() {
