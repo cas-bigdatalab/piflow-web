@@ -7,6 +7,7 @@ import com.nature.component.process.utils.ProcessUtils;
 import com.nature.component.process.vo.ProcessStopVo;
 import com.nature.transaction.process.ProcessStopTransaction;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -16,11 +17,11 @@ public class ProcessStopServiceImpl implements IProcessStopService {
 
     Logger logger = LoggerUtil.getLogger();
 
-    @Resource
+    @Autowired
     private ProcessStopTransaction processStopTransaction;
 
     /**
-     * 根据processId和pageId查询processStop
+     * Query processStop based on processId and pageId
      *
      * @param processId
      * @param pageId

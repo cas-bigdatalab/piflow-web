@@ -5,12 +5,11 @@ import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.SqlUtils;
 import com.nature.base.vo.UserVo;
 import com.nature.component.flow.model.Flow;
-import com.nature.component.flow.model.Template;
+import com.nature.component.template.model.Template;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
 
 import java.util.Date;
-import java.util.Map;
 
 public class TemplateMapperProvider {
 
@@ -19,21 +18,21 @@ public class TemplateMapperProvider {
         String sqlStr = "select 0";
         UserVo currentUser = SessionUserUtil.getCurrentUser();
         StringBuffer strBuf = new StringBuffer();
-        strBuf.append("SELECT * ");
-        strBuf.append("FROM FLOW_TEMPLATE ");
-        strBuf.append("WHERE ");
-        strBuf.append("ENABLE_FLAG = 1 ");
+        strBuf.append("select* ");
+        strBuf.append("from flow_template ");
+        strBuf.append("where ");
+        strBuf.append("enable_flag = 1 ");
         if (StringUtils.isNotBlank(param)) {
-            strBuf.append("AND NAME LIKE '%" + param + "%' ");
+            strBuf.append("and name like '%" + param + "%' ");
         }
-        strBuf.append(SqlUtils.addQueryByUserRole(currentUser, true));
-        strBuf.append("ORDER BY CRT_DTTM DESC ");
+        strBuf.append(SqlUtils.addQueryByUserRole(true,false));
+        strBuf.append("order by crt_dttm desc ");
         sqlStr = strBuf.toString();
         return sqlStr;
     }
 
     /**
-     * 新增Template
+     * add Template
      *
      * @param template
      * @return
@@ -56,13 +55,13 @@ public class TemplateMapperProvider {
 
             SQL sql = new SQL();
 
-            // INSERT_INTO括号中为数据库表名
+            // INSERT_INTO brackets is table name
             sql.INSERT_INTO("flow_template");
-            // value中的第一个字符串为数据库中表对应的字段名
-            // 除数字类型的字段外其他类型必须加单引号
+            // The first string in the value is the field name corresponding to the table in the database.
+            // all types except numeric fields must be enclosed in single quotes
 
 
-            //先处理修改必填字段
+            //Process the required fields first
             if (null == crtDttm) {
                 crtDttm = new Date();
             }
@@ -81,20 +80,20 @@ public class TemplateMapperProvider {
             if (null == enableFlag) {
                 enableFlag = true;
             }
-            sql.VALUES("ID", SqlUtils.addSqlStr(id));
-            sql.VALUES("CRT_DTTM", SqlUtils.addSqlStr(DateUtils.dateTimesToStr(crtDttm)));
-            sql.VALUES("CRT_USER", SqlUtils.addSqlStr(crtUser));
-            sql.VALUES("LAST_UPDATE_DTTM", SqlUtils.addSqlStr(DateUtils.dateTimesToStr(lastUpdateDttm)));
-            sql.VALUES("LAST_UPDATE_USER", SqlUtils.addSqlStr(lastUpdateUser));
-            sql.VALUES("VERSION", version + "");
-            sql.VALUES("ENABLE_FLAG", (enableFlag ? 1 : 0) + "");
+            sql.VALUES("id", SqlUtils.addSqlStr(id));
+            sql.VALUES("crt_dttm", SqlUtils.addSqlStr(DateUtils.dateTimesToStr(crtDttm)));
+            sql.VALUES("crt_user", SqlUtils.addSqlStr(crtUser));
+            sql.VALUES("last_update_dttm", SqlUtils.addSqlStr(DateUtils.dateTimesToStr(lastUpdateDttm)));
+            sql.VALUES("last_update_user", SqlUtils.addSqlStr(lastUpdateUser));
+            sql.VALUES("version", version + "");
+            sql.VALUES("enable_flag", (enableFlag ? 1 : 0) + "");
 
-            // 处理其他字段
+            // handle other fields
             if (StringUtils.isNotBlank(description)) {
                 sql.VALUES("description", SqlUtils.addSqlStr(description));
             }
             if (StringUtils.isNotBlank(name)) {
-                sql.VALUES("NAME", SqlUtils.addSqlStr(name));
+                sql.VALUES("name", SqlUtils.addSqlStr(name));
             }
             if (StringUtils.isNotBlank(value)) {
                 sql.VALUES("value", SqlUtils.addSqlStr(value));
@@ -111,7 +110,7 @@ public class TemplateMapperProvider {
     }
 
     /**
-     * 根据updateEnableFlagById逻辑删除,设为无效
+     * Logical delete according to updateEnableFlagById
      *
      * @param id
      * @return
@@ -123,10 +122,10 @@ public class TemplateMapperProvider {
         if (StringUtils.isNotBlank(id)) {
             SQL sql = new SQL();
             sql.UPDATE("flow_template");
-            sql.SET("ENABLE_FLAG = 0");
+            sql.SET("enable_flag = 0");
             sql.SET("last_update_user = " + SqlUtils.addSqlStr(username));
             sql.SET("last_update_dttm = " + SqlUtils.addSqlStr(DateUtils.dateTimesToStr(new Date())));
-            sql.WHERE("ENABLE_FLAG = 1");
+            sql.WHERE("enable_flag = 1");
             sql.WHERE("id = " + SqlUtils.addSqlStrAndReplace(id));
 
             sqlStr = sql.toString();

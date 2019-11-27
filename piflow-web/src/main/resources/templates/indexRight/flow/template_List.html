@@ -1,0 +1,91 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<body th:fragment=template_List>
+    <meta th:include="Macro/csrfTokeHeadMacro :: csrfTokeHeadMacro"/>
+    <link th:href="@{/custom/css/fullScreen.css}"/>
+    <link th:href="@{/components/layui/css/layui.css}"/>
+
+    <script type="text/javascript" th:src="@{/components/layui/layui.all.js}"></script>
+
+    <!-- content starts -->
+    <div class="wrapper" style="margin: 20px;">
+        <!-- Media datatable -->
+        <div class="widget">
+            <div class="navbar">
+                <div class="navbar-inner">
+                    <h6 style="color: #1A7444">Templates</h6>
+                </div>
+            </div>
+            <div class="navbar">
+                <form id="uploadForm" enctype="multipart/form-data" method="post">
+                    <input type="file" id="templateFile" name="templateFile" style="display:none;" onchange="importFile()"/>
+                    <a class='btn' href='javascript:void(0);' th:onclick="'javascript:uploadTemplate();'"  style='background-color: #1A7444;border: 1px solid;color: #1A7444;' title="upload template">
+                        <i class="icon-upload icon-white"></i></a>
+                </form>
+            </div>
+            <div class="table-overflow">
+                <table id="templateTableId" style="width: 100%" class="table table-striped table-bordered table-checks">
+                    <thead>
+                    <tr>
+                        <th width="15%" style="color: #1A7444">Name</th>
+                        <th width="50%" style="color: #1A7444">Templatename</th>
+                        <th width="20%" style="color: #1A7444">CreateTime</th>
+                        <th width="15%" style="color: #1A7444" class="actions-column">Actions</th>
+                    </tr>
+                    </thead>
+                </table>
+                <!--<table class="table table-striped table-bordered table-checks media-table">
+                    <thead>
+                    <tr>
+                        <th style="display: none">sort</th>
+                        <th style="display: none">flowId</th>
+                        <th style="display: none">templateId</th>
+                        <th>flowName</th>
+                        <th>templateName</th>
+                        <th>createTime</th>
+                        <th class="actions-column">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody th:unless="${TemPlateList}">
+                    </tbody>
+                    <tbody th:if="${TemPlateList}">
+                    <tr th:each='list:${TemPlateList}'>
+                        <td style="display: none" th:text="${listStat.index}"></td>
+                        <td style="display: none" th:text="${list.flow?.id}"></td>
+                        <td style="display: none" th:text="${list.id}" ></td>
+                        <td class="center" th:text="${list.flow?.name} ? ${list.flow?.name} : 'no flowName'"></td>
+                        <td class="center" th:text="${list.name}"></td>
+                        <td th:text="${#dates.format(list.crtDttm, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                        <td class="center" style="white-space: nowrap;">
+                            <a class="btn" href="javascript:void(0);" style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;"
+                               th:onclick="'javascript:downloadTemplate(\''+${list.id}+'\');'"
+                               title="download template">
+                                <i class="icon-download icon-white"></i>
+                            </a>
+                            <a class="btn" href="javascript:void(0);"
+                               style="background-color: #C0C0C0;border: 1px solid;color: #6b5555;"
+                               th:onclick="'javascript:deleteTemPlate(\''+${list.id}+'\',\''+${list.name}+'\');'"
+                               title="delete template" >
+                                <i class="icon-trash icon-white"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>-->
+            </div>
+        </div>
+        <!-- /media datatable -->
+    </div>
+    <!-- content ends -->
+    <div th:include="Macro/fragmentMacro :: fullScreen"></div>
+    <script th:include="Macro/csrfTokeHeadMacro :: csrfTokeHeadMacroScript"/>
+    <script th:src="@{/custom/js/templateList.js}"></script>
+    <script th:inline="javascript">
+
+        initDatatableTemplatePage('templateTableId', "/piflow-web/template/templatePage");
+
+
+        //@ sourceURL=template_List.js
+    </script>
+</body>
+</html>

@@ -1,7 +1,9 @@
 package com.nature.component.process.model;
 
 import com.nature.base.BaseHibernateModelUUIDNoCorpAgentId;
+import com.nature.common.Eunm.ProcessParentType;
 import com.nature.common.Eunm.ProcessState;
+import com.nature.common.Eunm.RunModeType;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.OrderBy;
@@ -17,6 +19,10 @@ import java.util.List;
 @Entity
 @Table(name = "FLOW_PROCESS")
 public class Process extends BaseHibernateModelUUIDNoCorpAgentId {
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "FK_FLOW_PROCESS_GROUP_ID")
+    private ProcessGroup processGroup;
 
     @Column(columnDefinition = "varchar(255) COMMENT 'Process name'")
     private String name;
@@ -59,6 +65,17 @@ public class Process extends BaseHibernateModelUUIDNoCorpAgentId {
 
     @Column(columnDefinition = "varchar(255) COMMENT 'Process progress'")
     private String progress;
+
+    @Column(columnDefinition = "varchar(255) COMMENT 'Process RunModeType'")
+    @Enumerated(EnumType.STRING)
+    private RunModeType runModeType = RunModeType.RUN;
+
+    @Column(columnDefinition = "varchar(255) COMMENT 'Process parent type'")
+    @Enumerated(EnumType.STRING)
+    private ProcessParentType processParentType;
+
+    @Column(name = "page_id")
+    private String pageId;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "process")
     @Where(clause = "enable_flag=1")

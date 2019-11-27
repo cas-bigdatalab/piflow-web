@@ -1,11 +1,5 @@
 package com.nature.component.mxGraph.service.impl;
 
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.StatefulRtnBaseUtils;
 import com.nature.base.vo.StatefulRtnBase;
@@ -16,6 +10,11 @@ import com.nature.component.mxGraph.service.IMxGraphModelService;
 import com.nature.mapper.mxGraph.MxCellMapper;
 import com.nature.mapper.mxGraph.MxGeometryMapper;
 import com.nature.mapper.mxGraph.MxGraphModelMapper;
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class MxGraphModelServiceImpl implements IMxGraphModelService {
@@ -46,15 +45,15 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
 						mxCell.setMxGeometry(mxGeometry);
 						int addMxCell = mxCellMapper.addMxCell(mxCell);
 						if (addMxCell <= 0) {
-							statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("MxCell保存失败");
+							statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("MxCell save failed");
 						}
 					} else {
-						statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("MxGraphModel保存失败");
+						statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("MxGraphModelAttributes");
 					}
 				}
 			}
 		} else {
-			statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("MxGraphModel保存失败");
+			statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("MxGraphModel save failed");
 		}
 		return statefulRtnBase;
 	}

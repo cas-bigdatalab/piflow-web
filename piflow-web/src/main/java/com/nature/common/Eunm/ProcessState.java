@@ -5,12 +5,13 @@ import com.nature.base.TextureEnumSerializer;
 
 @JsonSerialize(using = TextureEnumSerializer.class)
 public enum ProcessState {
-    STARTED("STARTED", "启动"),
-    COMPLETED("COMPLETED", "完成"),
-    FAILED("FAILED", "失败"),
-    ABORTED("ABORTED","中止"),
-    FORK("FORK","FORK"),
-    KILLED("KILLED","停止");
+    INIT("INIT", "init"),
+    STARTED("STARTED", "started"),
+    COMPLETED("COMPLETED", "completed"),
+    FAILED("FAILED", "failed"),
+    ABORTED("ABORTED","aborted"),
+    FORK("FORK","fork"),
+    KILLED("KILLED","killed");
 
     private final String value;
     private final String text;

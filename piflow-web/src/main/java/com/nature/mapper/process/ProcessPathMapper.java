@@ -11,7 +11,7 @@ public interface ProcessPathMapper {
 
 
     /**
-     * 添加 processPath
+     * add processPath
      *
      * @param processPath
      * @return
@@ -20,7 +20,7 @@ public interface ProcessPathMapper {
     public int addProcessPath(ProcessPath processPath);
 
     /**
-     * 添加 processPath
+     * add processPath
      *
      * @param processPathList
      * @return
@@ -29,22 +29,22 @@ public interface ProcessPathMapper {
     public int addProcessPathList(@Param("processPathList") List<ProcessPath> processPathList);
 
     /**
-     * 根据进程Id查询processPath
+     * Query processPath according to process Id
      *
      * @param processId
      * @return
      */
     @SelectProvider(type = ProcessPathMapperProvider.class, method = "getProcessPathByProcessId")
     @Results({
-            @Result(column = "LINE_FROM", property = "from"),
-            @Result(column = "LINE_OUTPORT", property = "outport"),
-            @Result(column = "LINE_INPORT", property = "inport"),
-            @Result(column = "LINE_TO", property = "to")
+            @Result(column = "line_from", property = "from"),
+            @Result(column = "line_outport", property = "outport"),
+            @Result(column = "line_inport", property = "inport"),
+            @Result(column = "line_to", property = "to")
     })
     public ProcessPath getProcessPathByProcessId(String processId);
 
     /**
-     * 根据pid和pageId查询
+     * Query based on pid and pageId
      *
      * @param processId
      * @param pageId
@@ -53,15 +53,15 @@ public interface ProcessPathMapper {
     @SelectProvider(type = ProcessPathMapperProvider.class, method = "getProcessPathByPageIdAndPid")
     @Results({
             @Result(id = true, column = "id", property = "id"),
-            @Result(column = "LINE_FROM", property = "from"),
-            @Result(column = "LINE_OUTPORT", property = "outport"),
-            @Result(column = "LINE_INPORT", property = "inport"),
-            @Result(column = "LINE_TO", property = "to")
+            @Result(column = "line_from", property = "from"),
+            @Result(column = "line_outport", property = "outport"),
+            @Result(column = "line_inport", property = "inport"),
+            @Result(column = "line_to", property = "to")
     })
     public ProcessPath getProcessPathByPageIdAndPid(String processId, String pageId);
 
     /**
-     * 修改processPath
+     * update processPath
      *
      * @param processPath
      * @return
@@ -71,5 +71,22 @@ public interface ProcessPathMapper {
 
     @UpdateProvider(type = ProcessPathMapperProvider.class, method = "updateEnableFlagByProcessId")
     public int updateEnableFlagByProcessId(String processId, String userName);
+
+    /**
+     * Query based on processGroupId and pageId
+     *
+     * @param processGroupId
+     * @param pageId
+     * @return
+     */
+    @SelectProvider(type = ProcessPathMapperProvider.class, method = "getProcessPathByPageIdAndProcessGroupId")
+    @Results({
+            @Result(id = true, column = "id", property = "id"),
+            @Result(column = "line_from", property = "from"),
+            @Result(column = "line_outport", property = "outport"),
+            @Result(column = "line_inport", property = "inport"),
+            @Result(column = "line_to", property = "to")
+    })
+    public ProcessPath getProcessPathByPageIdAndProcessGroupId(String processGroupId, String pageId);
 
 }

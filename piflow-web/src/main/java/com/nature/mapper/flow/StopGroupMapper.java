@@ -1,6 +1,6 @@
 package com.nature.mapper.flow;
 
-import com.nature.component.flow.model.StopGroup;
+import com.nature.component.group.model.StopGroup;
 import com.nature.provider.flow.StopGroupMapperProvider;
 import org.apache.ibatis.annotations.*;
 
@@ -9,7 +9,7 @@ import java.util.List;
 @Mapper
 public interface StopGroupMapper {
 	/**
-	 * 查詢所有組
+	 * Query all groups
 	 * 
 	 * @return
 	 */
@@ -19,7 +19,7 @@ public interface StopGroupMapper {
 	List<StopGroup> getStopGroupList();
 
 	/**
-	 * 根据组id查询stops模板组
+	 * Query the stops template group based on the group id
 	 * 
 	 * @param stopsId
 	 * @return
@@ -30,7 +30,7 @@ public interface StopGroupMapper {
 	/**
 	 * add flow_sotps_groups
 	 * 
-	 * @param flow
+	 * @param stopGroup
 	 * @return
 	 */
 	@Insert("insert into flow_sotps_groups(id,crt_dttm,crt_user,enable_flag,last_update_dttm,last_update_user,version,group_name) values (#{id},#{crtDttm},#{crtUser},#{enableFlag},#{lastUpdateDttm},#{lastUpdateUser},#{version},#{groupName})")
@@ -53,13 +53,13 @@ public interface StopGroupMapper {
         "</script>")
 	List<StopGroup> getStopGroupByName(@Param("group_name") List<String> groupName);
 	
-	@Delete("DELETE from association_groups_stops_template")
+	@Delete("delete from association_groups_stops_template")
 	int deleteGroupCorrelation();
-	@Delete("DELETE from flow_sotps_groups")
+	@Delete("delete from flow_sotps_groups")
 	int deleteGroup();
 
-	@Delete("DELETE from flow_stops_property_template")
+	@Delete("delete from flow_stops_property_template")
 	int deleteStopsPropertyInfo();
-	@Delete("DELETE from flow_stops_template")
+	@Delete("delete from flow_stops_template")
 	int deleteStopsInfo();
 }

@@ -1,25 +1,22 @@
 package com.nature.component.template.service.impl;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.nature.base.util.JsonUtils;
+import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.PageHelperUtils;
-import com.nature.base.util.SessionUserUtil;
-import com.nature.base.vo.UserVo;
+import com.nature.component.template.model.Template;
+import com.nature.component.template.service.ITemplateService;
+import com.nature.mapper.template.TemplateMapper;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.nature.base.util.LoggerUtil;
-import com.nature.component.template.service.ITemplateService;
-import com.nature.component.flow.model.Template;
-import com.nature.mapper.template.TemplateMapper;
-
 import javax.annotation.Resource;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -27,7 +24,7 @@ public class TemplateServiceImpl implements ITemplateService {
 
     Logger logger = LoggerUtil.getLogger();
 
-    @Resource
+    @Autowired
     private TemplateMapper templateMapper;
 
     @Override

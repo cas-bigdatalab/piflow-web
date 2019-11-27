@@ -7,6 +7,7 @@ import com.nature.component.flow.model.Stops;
 import com.nature.mapper.flow.StopsMapper;
 import org.junit.Test;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ import java.util.List;
 
 public class StopMapperTest extends ApplicationTests {
 
-	@Resource
+	@Autowired
 	private StopsMapper stopMapper;
 
 	Logger logger = LoggerUtil.getLogger();
@@ -45,7 +46,7 @@ public class StopMapperTest extends ApplicationTests {
 
 	private Stops setStops(String num) {
 		Stops stops = new Stops();
-		// 基本信息
+		// The basic information
 		stops.setId(SqlUtils.getUUID32());
 		stops.setCrtDttm(new Date());
 		stops.setCrtUser("test");
@@ -53,12 +54,12 @@ public class StopMapperTest extends ApplicationTests {
 		stops.setLastUpdateDttm(new Date());
 		stops.setLastUpdateUser("test");
 
-		// 测试stops组件
+		// Test stops components
 		stops.setName("test_stops_" + num);
-		stops.setBundel("Bundel测试stops组件" + num);
-		stops.setGroups("Groups测试stops组件" + num);
-		stops.setOwner("Owner测试stops组件" + num);
-		stops.setDescription("Desc测试stops组件" + num);
+		stops.setBundel("Bundel tests stops components" + num);
+		stops.setGroups("Groups tests the stops component" + num);
+		stops.setOwner("Owner tests stops components" + num);
+		stops.setDescription("Desc tests stops components" + num);
 
 		return stops;
 	}

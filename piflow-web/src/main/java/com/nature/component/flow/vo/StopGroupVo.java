@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 组名称表
+ * Group name table
  *
  * @author Nature
  */
@@ -13,7 +13,7 @@ public class StopGroupVo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private String groupName; // 组名称
+    private String groupName; // Group name
 
     private List<StopsTemplateVo> stopsTemplateVoList = new ArrayList<StopsTemplateVo>();
 

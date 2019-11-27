@@ -7,21 +7,20 @@ import com.nature.base.vo.UserVo;
 import com.nature.component.flow.model.Flow;
 import com.nature.component.flow.model.Property;
 import com.nature.component.flow.model.Stops;
-import com.nature.component.flow.model.Template;
-import com.nature.component.template.model.FlowTemplateModel;
 import com.nature.component.template.model.PropertyTemplateModel;
 import com.nature.component.template.model.StopTemplateModel;
+import com.nature.component.template.model.Template;
 import com.nature.component.template.service.IFlowAndStopsTemplateVoService;
+import com.nature.component.template.vo.FlowTemplateModelVo;
 import com.nature.mapper.flow.PropertyMapper;
 import com.nature.mapper.flow.StopsMapper;
 import com.nature.mapper.template.FlowAndStopsTemplateVoMapper;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.annotation.Transient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -33,13 +32,13 @@ public class FlowAndStopsTemplateVoServiceImpl implements IFlowAndStopsTemplateV
     Logger logger = LoggerUtil.getLogger();
 
 
-    @Resource
+    @Autowired
     private FlowAndStopsTemplateVoMapper flowAndStopsTemplateVoMapper;
 
-    @Resource
+    @Autowired
     private StopsMapper stopsMapper;
 
-    @Resource
+    @Autowired
     private PropertyMapper propertyMapper;
 
     @Override
@@ -48,7 +47,7 @@ public class FlowAndStopsTemplateVoServiceImpl implements IFlowAndStopsTemplateV
     }
 
     @Override
-    public int addFlow(FlowTemplateModel flow) {
+    public int addFlow(FlowTemplateModelVo flow) {
         return flowAndStopsTemplateVoMapper.addFlow(flow);
     }
 
@@ -78,28 +77,28 @@ public class FlowAndStopsTemplateVoServiceImpl implements IFlowAndStopsTemplateV
     }
 
     @Override
-    @Transient
+    @Transactional
     public void addTemplateStopsToFlow(Template template, Flow flow, int maxPageId) {
         UserVo user = SessionUserUtil.getCurrentUser();
         String username = (null != user) ? user.getUsername() : "-1";
         int addPropertyList = 0;
         List<Property> list = new ArrayList<Property>();
-        // 获取stop信息
+        // Get stop information
         List<StopTemplateModel> stopsList = template.getStopsList();
-        // 开始遍历保存stop和属性信息
+        // Start traversing save stop and attribute information
         if (null != stopsList && stopsList.size() > 0) {
             for (StopTemplateModel stopsVo : stopsList) {
                 Stops stop = new Stops();
                 BeanUtils.copyProperties(stopsVo, stop);
-                //pageId最大值开始增加
+                // The pageId maximum starts to increase
                 stop.setPageId((Integer.parseInt(stopsVo.getPageId()) + maxPageId) + "");
                 stop.setId(SqlUtils.getUUID32());
                 stop.setCrtUser(username);
                 stop.setLastUpdateUser(username);
                 stop.setFlow(flow);
-                stop.setCheckpoint(stopsVo.getIsCheckpoint());
+                stop.setIsCheckpoint(stopsVo.getIsCheckpoint());
                 int addStops = stopsMapper.addStops(stop);
-                logger.info("addStops影响行数" + addStops);
+                logger.info("AddStops affects the number of rows : " + addStops);
                 if (addStops > 0) {
                     if (null != stopsVo.getProperties()) {
                         List<PropertyTemplateModel> properties = stopsVo.getProperties();
@@ -116,26 +115,26 @@ public class FlowAndStopsTemplateVoServiceImpl implements IFlowAndStopsTemplateV
                         }
                     }
                 } else {
-                    logger.error("新建保存失败propertyModel", new Exception("新建保存失败propertyModel"));
+                    logger.error("New save failed propertyModel", new Exception("New save failed propertyModel"));
                 }
 
 
             }
             if (null != list && list.size() > 0) {
-                logger.debug(list.size() + "属性");
+                logger.debug(list.size() + "attributes");
                 addPropertyList = propertyMapper.addPropertyList(list);
-                logger.debug("addStops影响行数" + addPropertyList);
+                logger.debug("AddStops affects the number of rows : " + addPropertyList);
             }
         }
     }
 
     @Override
-    @Transient
+    @Transactional
     public void addStopsList(List<Stops> stopsList, Template template) {
         UserVo user = SessionUserUtil.getCurrentUser();
         String username = (null != user) ? user.getUsername() : "-1";
         List<PropertyTemplateModel> list = new ArrayList<PropertyTemplateModel>();
-        //保存stop，属性信息
+        // Save stop, attribute information
         if (null != stopsList && stopsList.size() > 0) {
             for (Stops stops : stopsList) {
                 StopTemplateModel stopTemplate = new StopTemplateModel();
@@ -144,7 +143,7 @@ public class FlowAndStopsTemplateVoServiceImpl implements IFlowAndStopsTemplateV
                 stopTemplate.setId(SqlUtils.getUUID32());
                 stopTemplate.setCrtDttm(new Date());
                 stopTemplate.setCrtUser(username);
-                stopTemplate.setIsCheckpoint(stops.getCheckpoint());
+                stopTemplate.setIsCheckpoint(stops.getIsCheckpoint());
                 flowAndStopsTemplateVoMapper.addStops(stopTemplate);
                 if (null != stops.getProperties()) {
                     List<Property> properties = stops.getProperties();

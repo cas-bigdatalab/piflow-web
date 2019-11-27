@@ -1,21 +1,20 @@
 package com.nature.component.flow.service.impl;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.nature.component.flow.model.Flow;
 import com.nature.component.flow.model.FlowInfoDb;
 import com.nature.component.flow.service.IFlowInfoDbService;
 import com.nature.mapper.flow.FlowInfoDbMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class FlowInfoDbServiceImpl implements IFlowInfoDbService {
 
 	
 	@Autowired
-	FlowInfoDbMapper appMapper;
+	private FlowInfoDbMapper appMapper;
 	
 	@Override
 	public List<Flow> findAppList() {

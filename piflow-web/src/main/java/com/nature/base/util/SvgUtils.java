@@ -1,14 +1,16 @@
 package com.nature.base.util;
 
 import com.nature.common.Eunm.ArrowDirection;
+import com.nature.component.flow.utils.MxGraphModelUtil;
 import com.nature.component.mxGraph.model.MxCell;
 import com.nature.component.mxGraph.model.MxGeometry;
 import com.nature.component.mxGraph.model.MxGraphModel;
-import com.nature.component.flow.utils.MxGraphModelUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class SvgUtils {
@@ -17,12 +19,12 @@ public class SvgUtils {
 
 
     /**
-     * 把画板转换成svg图
+     * Convert the artboard to svg
      *
      * @param mxGraphModel
      * @return
      */
-    public static String mxGraphModelToViewXml(MxGraphModel mxGraphModel) {
+    public static String mxGraphModelToViewXml(MxGraphModel mxGraphModel, boolean isGroup, boolean isProject) {
         String viewXml = "";
         if (null != mxGraphModel) {
             StringBuffer viewXmlStrBuf = new StringBuffer();
@@ -30,85 +32,90 @@ public class SvgUtils {
             viewXmlStrBuf.append("<g>");
             List<MxCell> mxCellList = mxGraphModel.getRoot();
             if (null != mxCellList && mxCellList.size() > 0) {
-                // 把需添加addMxCellVoList中的stops和线分开
+                // Separate the stops and lines that need to be added in addMxCellVoList
                 Map<String, Object> stopsPathsMap = MxGraphModelUtil.mxCellDistinguishStopsPaths(mxCellList);
 
-                // 取出stops
+                // Take out stops
                 List<MxCell> stops = (List<MxCell>) stopsPathsMap.get("stops");
                 Map<String, MxCell> stopPageIdKeyMap = new HashMap<String, MxCell>();
                 if (null != stops && stops.size() > 0) {
-                    // 放stops的g标签开始
+                    // Put the g tag of the stops to start
                     viewXmlStrBuf.append("<g>");
-                    // stop图片的坐标
+                    // Stop image coordinates
                     double imageX = 0;
                     double imageY = 0;
                     for (MxCell mxCell : stops) {
                         if (null != mxCell) {
-                            //stop的name
+                            //stop name
                             String name = (null != mxCell.getValue() ? mxCell.getValue() : "");
-                            //取出样式
+                            //Take out style
                             String style = mxCell.getStyle();
                             String imgPath = (null != style ? StringUtils.substringAfterLast(style, "=") : "");
                             MxGeometry mxGeometry = mxCell.getMxGeometry();
                             if (null != mxGeometry) {
-                                //mxCell的x坐标
+                                //x coordinate of mxCell
                                 double mxGeometryX = (StringUtils.isNotBlank(mxGeometry.getX()) ? Double.parseDouble(mxGeometry.getX()) : 0);
-                                //mxCell的y坐标
+                                //y coordinate of mxCell
                                 double mxGeometryY = (StringUtils.isNotBlank(mxGeometry.getY()) ? Double.parseDouble(mxGeometry.getY()) : 0);
-                                //mxCell的高度
+                                //mxCell height
                                 double mxGeometryHeight = (StringUtils.isNotBlank(mxGeometry.getHeight()) ? Double.parseDouble(mxGeometry.getHeight()) : 0);
-                                //mxCell的宽度
+                                //mxCell width
                                 double mxGeometryWidth = (StringUtils.isNotBlank(mxGeometry.getWidth()) ? Double.parseDouble(mxGeometry.getWidth()) : 0);
-                                // stop 图片信息计算
-                                // stop图片的坐标
+                                // Stop picture information calculation
+                                // Stop image coordinates
                                 imageX = mxGeometryX;
                                 imageY = mxGeometryY;
 
-                                // 点击的边框
-                                viewXmlStrBuf.append("<g onclick=\"selectedFormation('" + mxCell.getPageId() + "',this)\">");//点击时选中效果坐标
+                                // Clicked border
+                                viewXmlStrBuf.append("<g ");
+                                viewXmlStrBuf.append("onclick=\"selectedFormation('" + mxCell.getPageId() + "',this)\"");//
+                                if (isGroup) {
+                                    viewXmlStrBuf.append("ondblclick=\"openProcessMonitor('" + mxCell.getPageId() + "',this)\"");//
+                                }
+                                viewXmlStrBuf.append(" >");//Select the effect coordinates when clicked
 
-                                // 开始拼接监控图标
-                                // fail图标
+                                // Start stitching monitor icon
+                                // Fail icon
                                 viewXmlStrBuf.append("<g style='visibility: visible;'>");
                                 viewXmlStrBuf.append("<image id='stopFailShow" + mxCell.getPageId() + "' style='display: none;'");
-                                viewXmlStrBuf.append("x='" + (imageX + mxGeometryWidth) + "' ");//监控的图标为图片X坐标+宽
-                                viewXmlStrBuf.append("y='" + imageY + "' ");//监控的图标为图片Y坐标
+                                viewXmlStrBuf.append("x='" + (imageX + mxGeometryWidth) + "' ");//The monitored icon is the picture X coordinate + width
+                                viewXmlStrBuf.append("y='" + imageY + "' ");//The monitored icon is the picture Y coordinate
                                 viewXmlStrBuf.append("width = '15' height = '15'");
-                                viewXmlStrBuf.append("xlink:href = '/piflow-web/img/Fail.png'");//监控图标地址
+                                viewXmlStrBuf.append("xlink:href = '/piflow-web/img/Fail.png'");//Monitor icon address
                                 viewXmlStrBuf.append(" ></image >");
                                 // ok图标
                                 viewXmlStrBuf.append("<image id='stopOkShow" + mxCell.getPageId() + "' style='display: none;'");
-                                viewXmlStrBuf.append("x='" + (imageX + mxGeometryWidth) + "' ");//监控的图标为图片X坐标+宽
-                                viewXmlStrBuf.append("y='" + imageY + "' ");//监控的图标为图片Y坐标
+                                viewXmlStrBuf.append("x='" + (imageX + mxGeometryWidth) + "' ");//The monitored icon is the picture X coordinate + width
+                                viewXmlStrBuf.append("y='" + imageY + "' ");//The monitored icon is the picture Y coordinate
                                 viewXmlStrBuf.append("width = '15' height = '15'");
-                                viewXmlStrBuf.append("xlink:href = '/piflow-web/img/Ok.png'");//监控图标地址
+                                viewXmlStrBuf.append("xlink:href = '/piflow-web/img/Ok.png'");//Monitor icon address
                                 viewXmlStrBuf.append(" ></image >");
                                 // Loading图标
                                 viewXmlStrBuf.append("<image id='stopLoadingShow" + mxCell.getPageId() + "' style='display: none;'");
-                                viewXmlStrBuf.append("x='" + (imageX + mxGeometryWidth) + "' ");//监控的图标为图片X坐标+宽
-                                viewXmlStrBuf.append("y='" + imageY + "' ");//监控的图标为图片Y坐标
+                                viewXmlStrBuf.append("x='" + (imageX + mxGeometryWidth) + "' ");//The monitored icon is the picture X coordinate + width
+                                viewXmlStrBuf.append("y='" + imageY + "' ");//The monitored icon is the picture Y coordinate
                                 viewXmlStrBuf.append("width = '15' height = '15'");
-                                viewXmlStrBuf.append("xlink:href = '/piflow-web/img/Loading.gif'");//监控图标地址
+                                viewXmlStrBuf.append("xlink:href = '/piflow-web/img/Loading.gif'");//Monitor icon address
                                 viewXmlStrBuf.append(" ></image >");
                                 viewXmlStrBuf.append("</g>");
 
                                 // 开始拼图片
                                 viewXmlStrBuf.append("<g style='visibility: visible;'>");
-                                viewXmlStrBuf.append("<image id='stopImg" + mxCell.getPageId()+"' ");
-                                viewXmlStrBuf.append("x='" + imageX + "' ");//图片X坐标
-                                viewXmlStrBuf.append("y='" + imageY + "' ");//图片Y坐标
-                                viewXmlStrBuf.append("width='" + mxGeometryWidth + "' ");//图片宽
-                                viewXmlStrBuf.append("height='" + mxGeometryHeight + "' ");//图片高
-                                viewXmlStrBuf.append("xlink:href='" + imgPath + "'");//图片地址
+                                viewXmlStrBuf.append("<image id='stopImg" + mxCell.getPageId() + "' ");
+                                viewXmlStrBuf.append("x='" + imageX + "' ");//Picture X coordinate
+                                viewXmlStrBuf.append("y='" + imageY + "' ");//Picture Y coordinate
+                                viewXmlStrBuf.append("width='" + mxGeometryWidth + "' ");//Picture width
+                                viewXmlStrBuf.append("height='" + mxGeometryHeight + "' ");//Picture height
+                                viewXmlStrBuf.append("xlink:href='" + imgPath + "'");//Image address
                                 viewXmlStrBuf.append("></image>");
                                 viewXmlStrBuf.append("</g>");
-                                // stop 文字信息计算
-                                // 字的坐标
+                                // Stop text information calculation
+                                // Word coordinates
                                 double fontX = ((mxGeometryWidth - name.length() * 6) / 2) + imageX;
                                 double fontY = imageY + mxGeometryHeight + 8;
                                 double fontWidth = name.length() * 6;
                                 double fontHeight = 12;
-                                // 开始拼字
+                                // Start spelling
                                 viewXmlStrBuf.append("<g transform='translate(" + fontX + "," + fontY + ")'>");//x和y坐标
                                 viewXmlStrBuf.append("<foreignObject style='overflow:visible;' pointer-events='all' ");
                                 viewXmlStrBuf.append("width='" + fontWidth + "' height='" + fontHeight + "'>");//宽度和高度
@@ -120,18 +127,18 @@ public class SvgUtils {
                                 viewXmlStrBuf.append("</foreignObject>");
                                 viewXmlStrBuf.append("</g>");
                                 viewXmlStrBuf.append("</g>");
-                                // 把stop的mxCell放入map用于生成线的坐标
+                                // Put the stop mxCell into the map to generate the coordinates of the line
                                 stopPageIdKeyMap.put(mxCell.getPageId(), mxCell);
                             }
                         }
                     }
-                    // 放stops的g标签结束
+                    // Put the G tag of Stops to end
                     viewXmlStrBuf.append("</g>");
                 }
-                // 取出paths
+                // Take out paths
                 List<MxCell> paths = (List<MxCell>) stopsPathsMap.get("paths");
                 if (null != paths && paths.size() > 0) {
-                    // 放paths的g标签开始
+                    // Put the g label of the path to start
                     viewXmlStrBuf.append("<g>");
                     for (MxCell mxCell : paths) {
                         if (null != mxCell) {
@@ -149,7 +156,7 @@ public class SvgUtils {
                             }
                         }
                     }
-                    // 放paths的g标签结束
+                    // Put the g label of the path to end
                     viewXmlStrBuf.append("</g>");
                 }
             }
@@ -167,7 +174,7 @@ public class SvgUtils {
 
 
     /**
-     * 根据source属性和target属性画连接线
+     * Draw a connection line based on the source attribute and the target attribute
      *
      * @param sourceMxCell
      * @param sourceMxCell
@@ -180,7 +187,7 @@ public class SvgUtils {
             MxGeometry sourceMxGeometry = sourceMxCell.getMxGeometry();
             MxGeometry targetMxGeometry = targetMxCell.getMxGeometry();
             if (null != sourceMxGeometry && null != targetMxGeometry) {
-                // 取坐标和高宽参数
+                // Take coordinates and height and width parameters
                 String sourceXStr = sourceMxGeometry.getX();
                 String sourceYStr = sourceMxGeometry.getY();
                 String sourceWidthStr = sourceMxGeometry.getWidth();
@@ -189,9 +196,9 @@ public class SvgUtils {
                 String targetYStr = targetMxGeometry.getY();
                 String targetWidthStr = targetMxGeometry.getWidth();
                 String targetHeightStr = targetMxGeometry.getHeight();
-                // 参数判空
+                // Determine if the parameter is empty
                 if (!StringUtils.isAnyEmpty(sourceXStr, sourceYStr, sourceWidthStr, sourceHeightStr, targetXStr, targetYStr, targetWidthStr, targetHeightStr)) {
-                    // 坐标和高宽参数转double
+                    // Coordinates and height and width parameters to Double
                     double sourceX = Double.parseDouble(sourceXStr);
                     double sourceY = Double.parseDouble(sourceYStr);
                     double sourceWidth = Double.parseDouble(sourceWidthStr);
@@ -200,46 +207,46 @@ public class SvgUtils {
                     double targetY = Double.parseDouble(targetYStr);
                     double targetWidth = Double.parseDouble(targetWidthStr);
                     double targetHeight = Double.parseDouble(targetHeightStr);
-                    // 线的起点坐标
+                    // Starting point coordinates of the line
                     double sourceDotX = 0;
                     double sourceDotY = 0;
-                    // 线的终点点坐标
+                    // Line end point coordinates
                     double targetDotX = 0;
                     double targetDotY = 0;
-                    // 箭头方向
+                    // Arrow direction
                     ArrowDirection arrowDirection = null;
 
-                    //线的生成规则如下：
+                    //The rules for generating lines are as follows：
                     //             ||           ||
-                    //     E区     ||    A区    ||     F区
-                    //             ||           ||
-                    //=============||===========||=============
-                    //             ||           ||
-                    //     D区     ||   target  ||     B区
+                    //   Area E    ||  Area A   ||  Area F
                     //             ||           ||
                     //=============||===========||=============
                     //             ||           ||
-                    //     H区     ||     C区   ||     G区
+                    //   Area D    ||  target  ||   Area B
+                    //             ||           ||
+                    //=============||===========||=============
+                    //             ||           ||
+                    //   Area H    ||  Area C   ||   Area G
                     //             ||           ||
                     //-----------------------------------------
-                    // 以target为中心，source的位置分布在A到H的9个区中，通过source和target的位置判断出线入线方向，以此画线
+                    // Centered on the target, the location of the source is distributed in the 9 areas from A to H. The direction of the line entry is judged by the position of the source and the target.
 
-                    // A区为下出上入，条件：sourceY < targetY 且 (targetX-source宽) <= sourceX <= (targetX+target宽)
-                    // B区为左出右入，条件：sourceX > (targetX+target宽) 且 (targetY-source高) <= sourceY <= (targetY+target高)
-                    // C区为上出下入，条件：sourceY >= targetY 且 (targetX-source宽) <= sourceX <= (targetX+target宽)
-                    // D区为右出左入，条件：sourceX < (targetX-source宽) 且 (targetY-source高) <= sourceY <= (targetY+target高)
-                    // E区为右出上入，条件：sourceX < (targetX-source宽) 且 sourceY < (targetY-source高)
-                    // F区为左出上入，条件：sourceX > (targetX+target宽) 且 sourceY < (targetY-source高)
-                    // G区为左出下入，条件：sourceX > (targetX+target宽) 且 sourceY > (targetY+target高)
-                    // H区为右出下入，条件：sourceX < (targetX-source宽) 且 sourceY > (targetY+target高)
-                    // 线的折点数,
-                    // ABCD区线的折点数为0或2，breakPoint用0表示，
-                    // EFGH区线的折点数为1,breakPoint用1表示，
+                    // Area A is down out and up in,Condition: sourceY < targetY and (targetX-source width) <= sourceX <= (targetX+target width)
+                    // Area B is left out and right in,Condition: sourceX > (targetX+target wide) and (targetY-source high) <= sourceY <= (targetY+target high)
+                    // Area C is up out and down in,Condition: sourceY >= targetY and (targetX-source width) <= sourceX <= (targetX+target width)
+                    // Area D is right out and left in,Condition: sourceX < (targetX-source wide) and (targetY-source high) <= sourceY <= (targetY+target high)
+                    // Area E is right out and up in,Condition: sourceX < (targetX-source wide) and sourceY < (targetY-source high)
+                    // Area F is left out and up in,Condition: sourceX > (targetX+target wide) and sourceY < (targetY-source high)
+                    // Area G is left out and down in,Condition: sourceX > (targetX+target wide) and sourceY > (targetY+target high)
+                    // Area H is right out and down in,Condition: sourceX < (targetX-source wide) and sourceY > (targetY+target high)
+                    // Line break point,
+                    // The number of vertices in the ABCD area is 0 or 2, and the breakPoint is represented by 0.
+                    // The number of vertices in the EFGH zone is 1, and the breakPoint is represented by 1.
                     int breakPoint = 0;
-                    // 根据A到H区的条件判断求出出线点和入线点的坐标(起点终点)
+                    // Determine the coordinates of the line point and the line point based on the conditions of the A to H area (starting point and end point)
                     if (sourceY < targetY && (targetX - sourceWidth) <= sourceX && sourceX <= (targetX + targetWidth)) {
-                        // A区 下出上入
-                        // 当source在A区时，起点为source下边的中心点，终点为target上边的中心点
+                        // Area A down out and up in
+                        // When the source is in the A area, the starting point is the center point below the source, and the ending point is the center point above the target.
                         sourceDotX = sourceX + (sourceWidth / 2);
                         sourceDotY = sourceY + sourceHeight;
                         targetDotX = targetX + (targetWidth / 2);
@@ -247,8 +254,8 @@ public class SvgUtils {
                         arrowDirection = ArrowDirection.DOWN_DIRECTION;
                         breakPoint = 0;
                     } else if (sourceX > (targetX + targetWidth) && (targetY - sourceHeight) <= sourceY && sourceY <= (targetY + targetHeight)) {
-                        // B区为左出右入
-                        // 当source在B区时，起点为source左边的中心点，终点为target右边的中心点
+                        // Area B is left out and right in
+                        // When the source is in the B area, the starting point is the center point to the left of the source, and the ending point is the center point to the right of the target.
                         sourceDotX = sourceX;
                         sourceDotY = sourceY + (sourceHeight / 2);
                         targetDotX = targetX + targetWidth;
@@ -256,8 +263,8 @@ public class SvgUtils {
                         arrowDirection = ArrowDirection.LEFT_DIRECTION;
                         breakPoint = 0;
                     } else if (sourceY >= targetY && (targetX - sourceWidth) <= sourceX && sourceX <= (targetX + targetWidth)) {
-                        // C区为上出下入
-                        // 当source在C区时，起点为source上边的中心点，终点为target下边的中心点
+                        // Area C is up out and down in
+                        // When the source is in the C area, the starting point is the center point on the source and the end point is the center point below the target.
                         sourceDotX = sourceX + (sourceWidth / 2);
                         sourceDotY = sourceY;
                         targetDotX = targetX + (targetWidth / 2);
@@ -265,8 +272,8 @@ public class SvgUtils {
                         arrowDirection = ArrowDirection.UP_DIRECTION;
                         breakPoint = 0;
                     } else if (sourceX < (targetX - sourceWidth) && (targetY - sourceHeight) <= sourceY && sourceY <= (targetY + targetHeight)) {
-                        // D区为右出左入
-                        // 当source在D区时，起点为source右边的中心点，终点为target左边的中心点
+                        // Area D is right out and left in
+                        // When the source is in the D zone, the starting point is the center point to the right of the source, and the ending point is the center point to the left of the target.
                         sourceDotX = sourceX + sourceWidth;
                         sourceDotY = sourceY + (sourceHeight / 2);
                         targetDotX = targetX;
@@ -274,8 +281,8 @@ public class SvgUtils {
                         arrowDirection = ArrowDirection.RIGHT_DIRECTION;
                         breakPoint = 0;
                     } else if (sourceX < (targetX - sourceWidth) && sourceY < (targetY - sourceHeight)) {
-                        // E区为右出上入
-                        // 当source在E区时，起点为source右边的中心点，终点为target上边的中心点
+                        // Area E is right out and up in
+                        // When the source is in the E zone, the starting point is the center point on the right side of the source, and the end point is the center point on the top side of the target.
                         sourceDotX = sourceX + sourceWidth;
                         sourceDotY = sourceY + (sourceHeight / 2);
                         targetDotX = targetX + (targetWidth / 2);
@@ -283,7 +290,7 @@ public class SvgUtils {
                         arrowDirection = ArrowDirection.DOWN_DIRECTION;
                         breakPoint = 1;
                     } else if (sourceX > (targetX + targetWidth) && sourceY < (targetY - sourceHeight)) {
-                        // F区为左出上入
+                        // Area F is left out and up in
                         // 当source在F区时，起点为source左边的中心点，终点为target上边的中心点
                         sourceDotX = sourceX;
                         sourceDotY = sourceY + (sourceHeight / 2);
@@ -292,8 +299,8 @@ public class SvgUtils {
                         arrowDirection = ArrowDirection.DOWN_DIRECTION;
                         breakPoint = 1;
                     } else if (sourceX > (targetX + targetWidth) && sourceY > (targetY + targetHeight)) {
-                        // G区为左出下入
-                        // 当source在G区时，起点为source左边的中心点，终点为target下边的中心点
+                        // Area G is left out and down in
+                        // When the source is in the G zone, the starting point is the center point to the left of the source, and the ending point is the center point below the target.
                         sourceDotX = sourceX;
                         sourceDotY = sourceY + (sourceHeight / 2);
                         targetDotX = targetX + (targetWidth / 2);
@@ -301,8 +308,8 @@ public class SvgUtils {
                         arrowDirection = ArrowDirection.UP_DIRECTION;
                         breakPoint = 1;
                     } else if (sourceX < (targetX - sourceWidth) && sourceY > (targetY + targetHeight)) {
-                        // H区为右出下入
-                        // 当source在H区时，起点为source右边的中心点，终点为target下边的中心点
+                        // Area H is right out and down in
+                        // When the source is in the H zone, the starting point is the center point on the right side of the source, and the end point is the center point below the target.
                         sourceDotX = sourceX + sourceWidth;
                         sourceDotY = sourceY + (sourceHeight / 2);
                         targetDotX = targetX + (targetWidth / 2);
@@ -310,19 +317,19 @@ public class SvgUtils {
                         arrowDirection = ArrowDirection.UP_DIRECTION;
                         breakPoint = 1;
                     } else {
-                        logger.warn("没有判断出位置信息，画线失败");
+                        logger.warn("Did not judge the location information, the line failed");
                         return lineSvg;
                     }
                     if (null != arrowDirection) {
-                        // 开始画线
+                        // Start drawing lines
                         StringBuffer lineSvgBuf = new StringBuffer();
                         lineSvgBuf.append("<g name='stopPageId" + sourceMxCell.getPageId() + "' transform='translate(0,0)' style='visibility: visible;'");
                         lineSvgBuf.append("onclick=\"selectedPath('" + pageID + "',this)\">");
-                        // 线开始计算
+                        // Line start calculation
                         switch (breakPoint) {
                             case 0:
                                 if (sourceDotX == targetDotX || sourceDotY == targetDotY) {
-                                    //无折点，直接拼线
+                                    //No breakpoint, direct line
                                     lineSvgBuf.append("<path name='pathName' d='");
                                     lineSvgBuf.append("M " + sourceDotX + " " + sourceDotY + " ");
                                     lineSvgBuf.append("L " + targetDotX + " " + targetDotY + " ");
@@ -330,7 +337,7 @@ public class SvgUtils {
                                 } else {
                                     lineSvgBuf.append("<path name='pathName' d='");
                                     lineSvgBuf.append("M " + sourceDotX + " " + sourceDotY + " ");
-                                    // 两个折点，计算折点坐标
+                                    // Two vertices, calculate the vertices coordinates
                                     if (arrowDirection == ArrowDirection.UP_DIRECTION) {
                                         lineSvgBuf.append("L " + sourceDotX + " " + (((sourceDotY - targetDotY) / 2) + targetDotY) + " ");
                                         lineSvgBuf.append("L " + targetDotX + " " + (((sourceDotY - targetDotY) / 2) + targetDotY) + " ");
@@ -349,7 +356,7 @@ public class SvgUtils {
                                 }
                                 break;
                             case 1:
-                                // 一个折点
+                                // a break point
                                 lineSvgBuf.append("<path name='pathName' d='");
                                 lineSvgBuf.append("M " + sourceDotX + " " + sourceDotY + " ");
                                 lineSvgBuf.append("L " + targetDotX + " " + sourceDotY + " ");
@@ -360,42 +367,42 @@ public class SvgUtils {
                                 break;
                         }
 
-                        // 箭头坐标开始计算
+                        // Arrow coordinates start to calculate
                         lineSvgBuf.append("<path name='arrowName' d='");
-                        // 箭头是由一个M坐标三个L坐标组成，M坐标为箭头的指向的点
+                        // The arrow is composed of one M coordinate and three L coordinates, and the M coordinate is the point pointed by the arrow.
                         lineSvgBuf.append("M " + targetDotX + " " + targetDotY + " ");
-                        // 第一个L箭头(右侧点)，
+                        // The first L arrow (the right point),
                         lineSvgBuf.append("L ");
-                        // 第一个L(右侧点)的X
+                        // The first L (right point) X
                         lineSvgBuf.append((targetDotX - (arrowDirection.getUpX() - arrowDirection.getRightX())) + " ");
-                        // 第一个L(右侧点)的Y
+                        // The first L (right point) Y
                         lineSvgBuf.append((targetDotY - (arrowDirection.getUpY() - arrowDirection.getRightY())) + " ");
-                        // 第二个L箭头(尾点)，
+                        // The second L arrow (the end point),
                         lineSvgBuf.append("L ");
-                        // 第二个L(尾点)的X
+                        // The second L (tail point) X
                         lineSvgBuf.append((targetDotX - (arrowDirection.getUpX() - arrowDirection.getDownX())) + " ");
-                        // 第二个L(尾点)的Y
+                        // The second L (tail point) Y
                         lineSvgBuf.append((targetDotY - (arrowDirection.getUpY() - arrowDirection.getDownY())) + " ");
-                        // 第三个L箭头(左侧点)，
+                        // The third L arrow (left point),
                         lineSvgBuf.append("L ");
-                        // 第三个L(左侧点)的X
+                        // The third L (left point) X
                         lineSvgBuf.append((targetDotX - (arrowDirection.getUpX() - arrowDirection.getLfetX())) + " ");
-                        // 第三个L(左侧点)的Y
+                        // The third L (tail point) Y
                         lineSvgBuf.append((targetDotY - (arrowDirection.getUpY() - arrowDirection.getLfetY())) + " ");
                         lineSvgBuf.append("Z' fill='#666666' stroke='#666666' stroke-width='1' stroke-miterlimit='10' pointer-events='all'></path>");
                         lineSvgBuf.append("</g>");
                         lineSvg = lineSvgBuf.toString();
                     } else {
-                        logger.warn("没有判断出箭头方向，箭头方向为空，画线失败");
+                        logger.warn("Did not judge the direction of the arrow, the direction of the arrow is empty, the line failed");
                     }
                 } else {
-                    logger.warn("source或target的坐标或高宽为空，画线失败");
+                    logger.warn("The coordinates or height and width of the source or target are empty, and the line fails.");
                 }
             } else {
-                logger.warn("参数有空值，画线失败");
+                logger.warn("The parameter has a null value and the line fails.");
             }
         } else {
-            logger.warn("参数有空值，画线失败");
+            logger.warn("The parameter has a null value and the line fails.");
         }
         return lineSvg;
     }

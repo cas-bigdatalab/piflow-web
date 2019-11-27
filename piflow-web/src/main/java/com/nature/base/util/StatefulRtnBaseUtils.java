@@ -7,22 +7,22 @@ public class StatefulRtnBaseUtils {
 
     private static Logger logger = LoggerUtil.getLogger();
     /**
-     * set失败信息
+     * set Failure information
      *
-     * @param errMsg
+     * @param errorMsg
      * @return
      */
-    public static StatefulRtnBase setFailedMsg(String errMsg) {
+    public static StatefulRtnBase setFailedMsg(String errorMsg) {
         StatefulRtnBase statefulRtnBase = new com.nature.base.vo.StatefulRtnBase();
-        logger.info(errMsg);
+        logger.info(errorMsg);
         statefulRtnBase.setReqRtnStatus(false);
         statefulRtnBase.setErrorCode(statefulRtnBase.ERRCODE_FAIL);
-        statefulRtnBase.setErrorMsg(errMsg);
+        statefulRtnBase.setErrorMsg(errorMsg);
         return statefulRtnBase;
     }
 
     /**
-     * set成功信息
+     * set Success message
      *
      * @param SuccessdMsg
      * @return

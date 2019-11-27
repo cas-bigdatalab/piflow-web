@@ -1,16 +1,20 @@
 package com.nature.component.mxGraph.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.*;
-
+import com.nature.base.BaseHibernateModelUUIDNoCorpAgentId;
 import com.nature.component.flow.model.Flow;
+import com.nature.component.flow.model.FlowGroup;
+import com.nature.component.flow.model.FlowProject;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.OrderBy;
 import org.hibernate.annotations.Where;
 
-import com.nature.base.BaseHibernateModelUUIDNoCorpAgentId;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
+@Setter
+@Getter
 @Entity
 @Table(name = "MX_GRAPH_MODEL")
 public class MxGraphModel extends BaseHibernateModelUUIDNoCorpAgentId {
@@ -22,6 +26,14 @@ public class MxGraphModel extends BaseHibernateModelUUIDNoCorpAgentId {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "FK_FLOW_ID")
     private Flow flow;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "FK_FLOW_GROUP_ID")
+    private FlowGroup flowGroup;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "FK_FLOW_PROJECT_ID")
+    private FlowProject flowProject;
 
     @Column(name = "MX_DX")
     private String dx;

@@ -6,6 +6,7 @@ import com.nature.base.util.SqlUtils;
 import com.nature.component.mxGraph.model.MxGraphModel;
 import org.junit.Test;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 
 import javax.annotation.Resource;
@@ -13,7 +14,7 @@ import java.util.Date;
 
 public class MxGraphModelMapperTest extends ApplicationTests {
 
-	@Resource
+	@Autowired
 	private MxGraphModelMapper mxGraphModelMapper;
 
 	Logger logger = LoggerUtil.getLogger();

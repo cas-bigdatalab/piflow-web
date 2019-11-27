@@ -4,8 +4,6 @@ import com.nature.base.util.DateUtils;
 import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.SqlUtils;
 import com.nature.base.vo.UserVo;
-import com.nature.common.Eunm.PortType;
-import com.nature.component.flow.model.Flow;
 import com.nature.component.flow.model.Stops;
 import com.nature.third.vo.flowInfo.ThirdFlowInfoStopVo;
 import org.apache.commons.lang3.StringUtils;
@@ -35,6 +33,7 @@ public class StopsMapperProvider {
     private String owner;
     private String pageId;
     private Integer checkpoint;
+    private int isCustomized;
     private String flowId;
 
     private void preventSQLInjectionStops(Stops stops) {
@@ -68,7 +67,8 @@ public class StopsMapperProvider {
             this.outPortType = SqlUtils.preventSQLInjection(null != stops.getOutPortType() ? stops.getOutPortType().name() : null);
             this.owner = SqlUtils.preventSQLInjection(stops.getOwner());
             this.pageId = SqlUtils.preventSQLInjection(stops.getPageId());
-            this.checkpoint = ((null != stops.getCheckpoint() && stops.getCheckpoint()) ? 1 : 0);
+            this.checkpoint = ((null != stops.getIsCheckpoint() && stops.getIsCheckpoint()) ? 1 : 0);
+            this.isCustomized = ((null != stops.getIsCustomized() && stops.getIsCustomized()) ? 1 : 0);
             String flowIdStr = (null != stops.getFlow() ? stops.getFlow().getId() : null);
             this.flowId = (null != flowIdStr ? SqlUtils.preventSQLInjection(flowIdStr) : null);
         }
@@ -93,11 +93,12 @@ public class StopsMapperProvider {
         this.owner = null;
         this.pageId = null;
         this.checkpoint = null;
+        this.isCustomized = 0;
         this.flowId = null;
     }
 
     /**
-     * 新增Stops
+     * add Stops
      *
      * @param stops
      * @return
@@ -110,7 +111,7 @@ public class StopsMapperProvider {
 
             sql.INSERT_INTO("flow_stops");
 
-            //先处理修改必填字段
+            //Process the required fields first
             if (null == crtDttmStr) {
                 String crtDttm = DateUtils.dateTimesToStr(new Date());
                 crtDttmStr = SqlUtils.preventSQLInjection(crtDttm);
@@ -124,9 +125,9 @@ public class StopsMapperProvider {
             sql.VALUES("last_update_dttm", lastUpdateDttmStr);
             sql.VALUES("last_update_user", lastUpdateUser);
             sql.VALUES("version", version + "");
-            sql.VALUES("ENABLE_FLAG", enableFlag + "");
+            sql.VALUES("enable_flag", enableFlag + "");
 
-            // 处理其他字段
+            // handle other fields
             sql.VALUES("bundel", bundel);
             sql.VALUES("description", description);
             sql.VALUES("groups", groups);
@@ -137,8 +138,9 @@ public class StopsMapperProvider {
             sql.VALUES("out_port_type", outPortType);
             sql.VALUES("owner", owner);
             sql.VALUES("page_id", pageId);
-            sql.VALUES("is_checkpoint", checkpoint+ "");
-            sql.VALUES("FK_FLOW_ID", flowId);
+            sql.VALUES("is_checkpoint", checkpoint + "");
+            sql.VALUES("is_customized", isCustomized + "");
+            sql.VALUES("fk_flow_id", flowId);
             sqlStr = sql.toString();
         }
         this.reset();
@@ -146,9 +148,9 @@ public class StopsMapperProvider {
     }
 
     /**
-     * 插入list<Stops> 注意拼sql的方法必须用map接 Param内容为键值
+     * Insert list<Stops> Note that the method of spelling sql must use Map to connect Param content to key value.
      *
-     * @param map (内容： 键为stopsList,值为List<Stops>)
+     * @param map (Content: The key is stopsList and the value is List<Stops>)
      * @return
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -184,6 +186,7 @@ public class StopsMapperProvider {
             sql.append("owner,");
             sql.append("page_id,");
             sql.append("is_checkpoint,");
+            sql.append("is_customized,");
             sql.append("fk_flow_id");
             sql.append(") ");
             sql.append("values");
@@ -193,7 +196,7 @@ public class StopsMapperProvider {
                 this.preventSQLInjectionStops(stops);
                 sql.append("(");
 
-                //先处理修改必填字段
+                //Process the required fields first
                 sql.append(id + ",");
                 sql.append(crtDttmStr + ",");
                 sql.append(crtUser + ",");
@@ -202,7 +205,7 @@ public class StopsMapperProvider {
                 sql.append(version + ",");
                 sql.append(enableFlag + ",");
 
-                // 处理其他字段
+                // handle other fields
                 sql.append(bundel + ",");
                 sql.append(description + ",");
                 sql.append(groups + ",");
@@ -214,6 +217,7 @@ public class StopsMapperProvider {
                 sql.append(owner + ",");
                 sql.append(pageId + ",");
                 sql.append(checkpoint + ",");
+                sql.append(isCustomized + ",");
                 sql.append(flowId);
                 if (i != stopsList.size()) {
                     sql.append("),");
@@ -228,7 +232,7 @@ public class StopsMapperProvider {
     }
 
     /**
-     * 修改stops
+     * update stops
      *
      * @param stops
      * @return
@@ -241,12 +245,12 @@ public class StopsMapperProvider {
 
             sql.UPDATE("flow_stops");
 
-            sql.SET("LAST_UPDATE_DTTM = " + lastUpdateDttmStr);
-            sql.SET("LAST_UPDATE_USER = " + lastUpdateUser);
-            sql.SET("VERSION = " + (version + 1));
+            sql.SET("last_update_dttm = " + lastUpdateDttmStr);
+            sql.SET("last_update_user = " + lastUpdateUser);
+            sql.SET("version = " + (version + 1));
 
-            // 处理其他字段
-            sql.SET("ENABLE_FLAG = " + enableFlag);
+            // handle other fields
+            sql.SET("enable_flag = " + enableFlag);
             sql.SET("bundel = " + bundel);
             sql.SET("description = " + description);
             sql.SET("groups = " + groups);
@@ -257,7 +261,7 @@ public class StopsMapperProvider {
             sql.SET("out_port_type = " + outPortType);
             sql.SET("owner = " + owner);
             sql.SET("is_checkpoint = " + checkpoint);
-            sql.WHERE("VERSION = " + version);
+            sql.WHERE("version = " + version);
             sql.WHERE("id = " + id);
             sqlStr = sql.toString();
             if (StringUtils.isBlank(id)) {
@@ -269,7 +273,7 @@ public class StopsMapperProvider {
     }
 
     /**
-     * 查询所有的stops数据
+     * Query all stops data
      *
      * @return
      */
@@ -284,7 +288,7 @@ public class StopsMapperProvider {
     }
 
     /**
-     * 根据flowId查询StopsList
+     * Query StopsList based on flowId
      *
      * @param flowId
      * @return
@@ -301,7 +305,7 @@ public class StopsMapperProvider {
     }
 
     /**
-     * 根据flowId查询StopsList
+     * Query StopsList based on flowId
      *
      * @param map
      * @return
@@ -333,7 +337,7 @@ public class StopsMapperProvider {
     }
 
     /**
-     * 根据stopsId查询
+     * Query according to stopsId
      *
      * @param Id
      * @return
@@ -350,7 +354,7 @@ public class StopsMapperProvider {
     }
 
     /**
-     * 根据flowId和name修改stops状态信息
+     * Modify the stop status information according to flowId and name
      *
      * @param stopVo
      * @return
@@ -387,10 +391,10 @@ public class StopsMapperProvider {
         if (StringUtils.isNotBlank(flowId)) {
             SQL sql = new SQL();
             sql.UPDATE("flow_stops");
-            sql.SET("ENABLE_FLAG = 0");
+            sql.SET("enable_flag = 0");
             sql.SET("last_update_user = " + SqlUtils.preventSQLInjection(username));
             sql.SET("last_update_dttm = " + SqlUtils.preventSQLInjection(DateUtils.dateTimesToStr(new Date())));
-            sql.WHERE("ENABLE_FLAG = 1");
+            sql.WHERE("enable_flag = 1");
             sql.WHERE("fk_flow_id = " + SqlUtils.preventSQLInjection(flowId));
 
             sqlStr = sql.toString();

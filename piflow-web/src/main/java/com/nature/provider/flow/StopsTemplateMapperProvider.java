@@ -2,8 +2,7 @@ package com.nature.provider.flow;
 
 import com.nature.base.util.DateUtils;
 import com.nature.base.util.SqlUtils;
-import com.nature.component.flow.model.Stops;
-import com.nature.component.flow.model.StopsTemplate;
+import com.nature.component.group.model.StopsTemplate;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
 
@@ -29,6 +28,7 @@ public class StopsTemplateMapperProvider {
     private String inPortType;
     private String outports;
     private String outPortType;
+    private int isCustomized;
 
     private void preventSQLInjectionStops(StopsTemplate stopsTemplate) {
         if (null != stopsTemplate && StringUtils.isNotBlank(stopsTemplate.getLastUpdateUser())) {
@@ -60,6 +60,7 @@ public class StopsTemplateMapperProvider {
             this.outports = SqlUtils.preventSQLInjection(stopsTemplate.getOutports());
             this.outPortType = SqlUtils.preventSQLInjection(null != stopsTemplate.getOutPortType() ? stopsTemplate.getOutPortType().name() : null);
             this.owner = SqlUtils.preventSQLInjection(stopsTemplate.getOwner());
+            this.isCustomized = ((null != stopsTemplate.getIsCustomized() && stopsTemplate.getIsCustomized()) ? 1 : 0);
         }
     }
 
@@ -80,15 +81,16 @@ public class StopsTemplateMapperProvider {
         this.outports = null;
         this.outPortType = null;
         this.owner = null;
+        this.isCustomized = 0;
     }
 
     /**
-     * 查詢所有stops模板
+     * Query all stops templates
      *
      * @return
      */
     public String getStopsTemplateList() {
-        String sqlStr = "SELECT ''";
+        String sqlStr = "select ''";
         SQL sql = new SQL();
         sql.SELECT("*");
         sql.FROM("flow_stops_template");
@@ -98,13 +100,13 @@ public class StopsTemplateMapperProvider {
     }
 
     /**
-     * 根據stops模板id查詢模板
+     * Query template based on stop template id
      *
      * @param id
      * @return
      */
     public String getStopsTemplateById(String id) {
-        String sqlStr = "SELECT 0";
+        String sqlStr = "select 0";
         SQL sql = new SQL();
         sql.SELECT("*");
         sql.FROM("flow_stops_template");
@@ -115,13 +117,13 @@ public class StopsTemplateMapperProvider {
     }
 
     /**
-     * 根据stopsName查询StopsTemplate
+     * Query StopsTemplate according to stopsName
      *
      * @param stopsName
      * @return
      */
     public String getStopsTemplateByName(String stopsName) {
-        String sqlStr = "SELECT ''";
+        String sqlStr = "select ''";
         SQL sql = new SQL();
         sql.SELECT("*");
         sql.FROM("flow_stops_template");
@@ -132,7 +134,7 @@ public class StopsTemplateMapperProvider {
     }
 
     public String insertStopsTemplate(Map map) {
-        String sqlStr = "SELECT ''";
+        String sqlStr = "select ''";
         List<StopsTemplate> stopsTemplateList = (List<StopsTemplate>) map.get("stopsTemplateList");
         if (null != stopsTemplateList && stopsTemplateList.size() > 0) {
             SQL sqlColumns = new SQL();
@@ -153,16 +155,17 @@ public class StopsTemplateMapperProvider {
                     "inports",
                     "in_port_type",
                     "outports",
-                    "out_port_type"
+                    "out_port_type",
+                    "is_customized"
             );
             StringBuffer sqlValuesStr = new StringBuffer();
-            sqlValuesStr.append("\nVALUES\n");
+            sqlValuesStr.append("\nvalues\n");
             for (int i = 0; i < stopsTemplateList.size(); i++) {
                 StopsTemplate stopsTemplate = stopsTemplateList.get(i);
                 if (null != stopsTemplate) {
                     this.preventSQLInjectionStops(stopsTemplate);
                     sqlValuesStr.append("(");
-                    //先处理修改必填字段
+                    //Process the required fields first
                     if (null == crtDttmStr) {
                         String crtDttm = DateUtils.dateTimesToStr(new Date());
                         crtDttmStr = SqlUtils.preventSQLInjection(crtDttm);
@@ -185,7 +188,8 @@ public class StopsTemplateMapperProvider {
                     sqlValuesStr.append(inports + ",");
                     sqlValuesStr.append(inPortType + ",");
                     sqlValuesStr.append(outports + ",");
-                    sqlValuesStr.append(outPortType);
+                    sqlValuesStr.append(outPortType + ",");
+                    sqlValuesStr.append(isCustomized);
                     sqlValuesStr.append(")");
                     if (i < stopsTemplateList.size() - 1) {
                         sqlValuesStr.append(",\n");

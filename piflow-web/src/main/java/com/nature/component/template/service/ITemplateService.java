@@ -1,8 +1,8 @@
 package com.nature.component.template.service;
 
-import com.nature.component.flow.model.Template;
-import org.springframework.data.annotation.Transient;
+import com.nature.component.template.model.Template;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 
@@ -10,39 +10,39 @@ import java.util.List;
 public interface ITemplateService {
 	 
 	/**
-	 * 新增Template
+	 * add Template
 	 * @param template
 	 * @return
 	 */
-	@Transient
+	@Transactional
 	public int addTemplate(Template template);
 	
 	/**
-	 * 查询所有模板列表
+	 * Query the list of all templates
 	 * @return
 	 */
 	public List<Template> findTemPlateList();
 	
 	/**
-	 * 根据id删除模板
+	 * Delete the template based on id
 	 * @param id
 	 * @return
 	 */
 	public int deleteTemplate(String id);
 	
 	/**
-	 * 根据id查询模板
+	 * Query the template by id
 	 * @param id
 	 * @return
 	 */
 	public Template queryTemplate(String id);
 
 	/**
-	 * 查询所有模板列表分页
+	 * Query all template list pagination
 	 *
-	 * @param offset 页数
-	 * @param limit 每页条数
-	 * @param param 搜索关键字
+	 * @param offset Number of pages
+	 * @param limit Number of pages per page
+	 * @param param search for the keyword
 	 * @return
 	 */
 	public String getTemplateListPage(Integer offset, Integer limit, String param);

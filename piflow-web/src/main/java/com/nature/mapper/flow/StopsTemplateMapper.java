@@ -1,6 +1,6 @@
 package com.nature.mapper.flow;
 
-import com.nature.component.flow.model.StopsTemplate;
+import com.nature.component.group.model.StopsTemplate;
 import com.nature.provider.flow.StopsTemplateMapperProvider;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
@@ -10,7 +10,7 @@ import java.util.List;
 @Mapper
 public interface StopsTemplateMapper {
 	/**
-	 * 查询所有stops模板
+	 * Query all stops templates
 	 * 
 	 * @return
 	 */
@@ -18,7 +18,7 @@ public interface StopsTemplateMapper {
 	public List<StopsTemplate> getStopsTemplateList();
 
 	/**
-	 * 根据stops模板查询模板
+	 * Query template based on the stops template
 	 * 
 	 * @param id
 	 * @return
@@ -27,7 +27,7 @@ public interface StopsTemplateMapper {
 	public StopsTemplate getStopsTemplateById(String id);
 
 	/**
-	 * 根据stops模板的id查询stops模板(包括属性list)
+	 * Query the stops template based on the id of the stops template (including the attribute list)
 	 * 
 	 * @param id
 	 * @return
@@ -38,7 +38,7 @@ public interface StopsTemplateMapper {
 	public StopsTemplate getStopsTemplateAndPropertyById(String id);
 
 	/**
-	 * 根据stops组的id查询stops模板
+	 * Query the stops template according to the id of the stops group
 	 * 
 	 * @param groupId
 	 * @return
@@ -47,7 +47,7 @@ public interface StopsTemplateMapper {
 	public List<StopsTemplate> getStopsTemplateListByGroupId(String groupId);
 
 	/**
-	 * 根据stopsName查询StopsTemplate
+	 * Query the stops template according to the id of the stops group...
 	 * 
 	 * @param stopsName
 	 * @return

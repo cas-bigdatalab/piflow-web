@@ -3,10 +3,7 @@ package com.nature.controller;
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.SessionUserUtil;
 import com.nature.base.vo.UserVo;
-import com.nature.component.flow.service.IFlowInfoDbService;
-import com.nature.component.flow.service.IFlowService;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,23 +18,29 @@ public class IndexCtrl {
      */
     Logger logger = LoggerUtil.getLogger();
 
-    @Autowired
-    IFlowInfoDbService appService;
-
-    @Autowired
-    IFlowService flowServiceImpl;
-
-    @Value("${syspara.videoName}")
-    private String videoName;
-
     @RequestMapping("/flowList")
     public ModelAndView flowList() {
         return setBaseModeAndView(new ModelAndView(), "flowList");
     }
 
+    @RequestMapping("/flowGroupList")
+    public ModelAndView flowGroupList() {
+        return setBaseModeAndView(new ModelAndView(), "flowGroupList");
+    }
+
     @RequestMapping("/processList")
     public ModelAndView processList() {
-        return setBaseModeAndView(new ModelAndView(), "getProcessList");
+        return setBaseModeAndView(new ModelAndView(), "processList");
+    }
+
+    @RequestMapping("/processGroupList")
+    public ModelAndView processGroupList() {
+        return setBaseModeAndView(new ModelAndView(), "processGroupList");
+    }
+
+    @RequestMapping("/groupTypeProcessList")
+    public ModelAndView groupTypeProcessList() {
+        return setBaseModeAndView(new ModelAndView(), "groupTypeProcessList");
     }
 
     @RequestMapping("/template")
@@ -45,11 +48,24 @@ public class IndexCtrl {
         return setBaseModeAndView(new ModelAndView(), "template");
     }
 
+    @RequestMapping("/flowGroupTemplateList")
+    public ModelAndView flowGroupTemplateList() {
+        return setBaseModeAndView(new ModelAndView(), "flowGroupTemplateList");
+    }
+
+    @RequestMapping("/dataSources")
+    public ModelAndView dataSources() {
+        return setBaseModeAndView(new ModelAndView(), "dataSources");
+    }
+
     @RequestMapping("/instructionalVideo")
     public ModelAndView instructionalVideo() {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("videoName",videoName);
-        return setBaseModeAndView(modelAndView, "instructionalVideo");
+        return setBaseModeAndView(new ModelAndView(), "instructionalVideo");
+    }
+
+    @RequestMapping("/sysScheduleList")
+    public ModelAndView sysScheduleList() {
+        return setBaseModeAndView(new ModelAndView(), "sysScheduleList");
     }
 
     @RequestMapping("/errorPage")
@@ -58,14 +74,14 @@ public class IndexCtrl {
         return modelAndView;
     }
 
-    private ModelAndView setBaseModeAndView(ModelAndView modelAndView, String rightage) {
+    private ModelAndView setBaseModeAndView(ModelAndView modelAndView, String rightPage) {
         if (null == modelAndView) {
             modelAndView = new ModelAndView();
         }
         modelAndView.setViewName("indexNew");
         UserVo currentUser = SessionUserUtil.getCurrentUser();
         modelAndView.addObject("currentUser", currentUser);
-        modelAndView.addObject("accessPath", rightage);
+        modelAndView.addObject("accessPath", rightPage);
         return modelAndView;
     }
 

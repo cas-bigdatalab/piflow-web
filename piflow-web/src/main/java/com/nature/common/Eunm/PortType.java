@@ -5,10 +5,11 @@ import com.nature.base.TextureEnumSerializer;
 
 @JsonSerialize(using = TextureEnumSerializer.class)
 public enum PortType {
-    ANY("Any", "Any", "任意数量"),
-    DEFAULT("Default", "Default", "默认数量1"),
-    USER_DEFAULT("UserDefault", "UserDefault", "stop定义端口"),
-    NONE("None", "None", "禁止");
+    ANY("Any", "Any", "Any quantity"),
+    DEFAULT("Default", "Default", "Default number 1"),
+    USER_DEFAULT("UserDefault", "UserDefault", " 'stop' defines ports"),
+    NONE("None", "None", "prohibit"),
+    ROUTE("Route", "Route", "Routing port");
 
     private final String value;
     private final String text;

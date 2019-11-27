@@ -1,14 +1,14 @@
 package com.nature.base.util;
 
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
 
 public class DateUtils {
     static Logger logger = LoggerUtil.getLogger();
@@ -59,12 +59,12 @@ public class DateUtils {
     public static final String DATE_PATTERN_yyyy_MM_dd_HH_MM = "yyyy-MM-dd HH:mm";
 
     /**
-     * 一天的开始时间点 00:00:00
+     * Beginning of the day 00:00:00
      */
     public static final String START_OF_DAY = " 00:00:00";
 
     /**
-     * 一天的结束时间点 23:59:59
+     * The end of the day 23:59:59
      */
     public static final String END_OF_DAY = " 23:59:59";
 
@@ -94,7 +94,7 @@ public class DateUtils {
     public static final String EEE_MMM_dd_HH_mm_ss_zzz_yyyy = "EEE MMM dd HH:mm:ss zzz yyyy";
 
     /**
-     * 计算第二天的开始
+     * Calculate the beginning of the next day
      *
      * @throws ParseException
      */
@@ -103,9 +103,9 @@ public class DateUtils {
     }
 
     /**
-     * 获取相对于date前后的某一天
+     * Get a date relative to "date"
      *
-     * @param i 正数获得其后某一天，负数获得之前某一天
+     * @param i One day after the positive number is obtained, and one day before the negative number is obtained.
      * @throws ParseException
      */
     public static Date anotherDay(Date date, int i) throws ParseException {
@@ -117,9 +117,9 @@ public class DateUtils {
     }
 
     /**
-     * 获取相对于date前后的某一天
+     * Get a date relative to "date"
      *
-     * @param i 正数获得其后某一天，负数获得之前某一天
+     * @param i One day after the positive number is obtained, and one day before the negative number is obtained.
      * @throws ParseException
      */
     public static String anotherDateToStr(String sdate, int i) throws ParseException {
@@ -135,7 +135,7 @@ public class DateUtils {
     }
 
     /**
-     * 构造格式为HH:mm:ss的Date时间，例如20:20:20
+     * The "Date" time in the format "HH: mm: ss", such as "20:20:20"
      */
     public static Date constructTimeByStrHhmmss(String timeStr) {
         try {
@@ -147,7 +147,7 @@ public class DateUtils {
     }
 
     /**
-     * 将短时间格式字符串转换为时间 yyyy-MM-dd
+     * Convert short-time format strings to time "yyyy-MM-dd"
      *
      * @param strDate
      * @return
@@ -163,7 +163,7 @@ public class DateUtils {
     }
 
     /**
-     * 将短时间格式字符串转换为时间 yyyy-MM-dd HH:mm:ss
+     * Convert short-time format string to time "yyyy-MM-dd HH:mm:ss"
      *
      * @param strDate
      * @return
@@ -179,7 +179,7 @@ public class DateUtils {
     }
 
     /**
-     * 将短时间格式字符串转换为时间 yyyy-MM-dd HH:mm
+     * Convert short-time format string to time "yyyy-MM-dd HH:mm"
      *
      * @param strDate
      * @return
@@ -192,7 +192,7 @@ public class DateUtils {
     }
 
     /**
-     * 将短时间格式时间转换为字符串 yyyy-MM-dd
+     * Convert short format time to string "yyyy-MM-dd"
      *
      * @param dateDate
      * @return
@@ -204,7 +204,7 @@ public class DateUtils {
     }
 
     /**
-     * 将短时间格式时间转换为字符串 yyyy-MM-dd_HH_MM_ss
+     * Convert short format time to string "yyyy-MM-dd_HH_MM_ss"
      *
      * @param dateDate
      * @return
@@ -219,7 +219,7 @@ public class DateUtils {
     }
 
     /**
-     * 将时间格式的时间转换为字符串 yyyy-MM-dd_HH_MM_ss
+     * Convert the time format to the string "yyyy-MM-dd_HH_MM_ss"
      *
      * @param dateDate
      * @return
@@ -234,7 +234,7 @@ public class DateUtils {
     }
 
     /**
-     * 将短时间格式时间转换为字符串 yyyy-MM-dd_HH_MM
+     * Convert short format time to string "yyyy-MM-dd_HH_MM"
      *
      * @param dateDate
      * @return
@@ -246,7 +246,7 @@ public class DateUtils {
     }
 
     /**
-     * 将短时间格式时间转换为字符串 yyyy-MM-dd
+     * Convert short format time to string "yyyy-MM-dd"
      *
      * @param dateDate
      * @return
@@ -258,7 +258,7 @@ public class DateUtils {
     }
 
     /**
-     * 将短时间格式时间转换为字符串 yyyyMMdd
+     * Convert short format time to string "yyyyMMdd"
      *
      * @param dateDate
      * @return
@@ -270,7 +270,7 @@ public class DateUtils {
     }
 
     /**
-     * 将短时间格式时间转换为字符串 yyyyMMddHHmmss
+     * Convert short format time to string "yyyyMMddHmmss"
      *
      * @param dateDate
      * @return
@@ -282,7 +282,7 @@ public class DateUtils {
     }
 
     /**
-     * 13位时间戳转日期格式
+     * 13-bit timestamp forwarding date format
      *
      * @param timeLong
      * @return
@@ -301,19 +301,19 @@ public class DateUtils {
     }
 
     /**
-     * 根据一个日期，返回是星期几的字符串
+     * Returns a string of days of the week based on a date
      *
      * @param sdate
      * @return
      */
     public static String getWeek(String sdate) {
-        // 再转换为时间
+        // Conversion to Time
         Date date = strToDate(sdate);
         Calendar c = Calendar.getInstance();
         c.setTime(date);
         // int hour=c.get(Calendar.DAY_OF_WEEK);
-        // hour中存的就是星期几了，其范围 1~7
-        // 1=星期日 7=星期六，其他类推
+        // What day of the week exists in "hour", which ranges from "1 to 7"
+        // 1 = Sunday 7 = Saturday, and so on.
         return new SimpleDateFormat("EEEE").format(c.getTime());
     }
 
@@ -339,23 +339,23 @@ public class DateUtils {
     }
 
     /**
-     * 根据一个日期，返回是星期几的字符串
+     * Returns a string of days of the week based on a date
      *
      * @param sdate
      * @return
      */
     public static int getWeeks(String sdate) {
-        // 再转换为时间
+        // Conversion to Time
         Date date = strToDate(sdate);
         Calendar c = Calendar.getInstance();
         c.setTime(date);
-        // 1=星期1 ......... 7=星期日，其他类推
+        // 1 = Monday... 7 = Sunday, and so on.
         int week = c.get(Calendar.DAY_OF_WEEK) - 1;
         return week = week == 0 ? 7 : week;
     }
 
     /**
-     * 计算两个时间间隔
+     * Calculate two time intervals
      *
      * @param date1
      * @param date2
@@ -366,7 +366,7 @@ public class DateUtils {
             return 0;
         if (date2 == null || date2.equals(""))
             return 0;
-        // 转换为标准时间
+        // Conversion to standard time
         SimpleDateFormat myFormatter = new SimpleDateFormat(DATE_PATTERN_yyyy_MM_dd);
         Date date = null;
         Date mydate = null;
@@ -380,7 +380,7 @@ public class DateUtils {
     }
 
     /**
-     * 添加月份
+     * Month of addition
      *
      * @param startDate
      * @param addnos
@@ -398,7 +398,7 @@ public class DateUtils {
     }
 
     /**
-     * 添加年份
+     * Year added
      *
      * @param date
      * @param addnos
@@ -416,7 +416,7 @@ public class DateUtils {
     }
 
     /**
-     * 得到当前年份
+     * Get the current year
      *
      * @return
      */
@@ -426,7 +426,7 @@ public class DateUtils {
     }
 
     /**
-     * 比较两个日期的相差天数,如果开始日期比结束日期早，则返回正数，否则返回负数。
+     * Compare the difference between the two dates. If the start date is earlier than the end date, return the positive number, otherwise return the negative number.
      *
      * @param start
      * @param end
@@ -438,10 +438,10 @@ public class DateUtils {
     }
 
     /**
-     * 比较两个日期的相差毫秒数,如果开始日期比结束日期早，则返回正数，否则返回负数。
+     * Compare the milliseconds difference between the two dates. If the start date is earlier than the end date, the positive number is returned, otherwise the negative number is returned.
      *
-     * @param start 开始日期
-     * @param end   结束日期
+     * @param start Start date
+     * @param end   End date
      * @return
      */
     public static long compareDate(Date start, Date end) {
@@ -455,11 +455,11 @@ public class DateUtils {
     }
 
     /**
-     * 给一个日期加上N天或减去N天得到一个新的日期
+     * Add N days to a date or subtract N days to get a new date
      *
-     * @param startDate 需要增加的日期时间
-     * @param addnos    添加的天数，可以是正数也可以是负数
-     * @return 操作后的日期
+     * @param startDate Date and time to be added
+     * @param addnos    The number of days added, either positive or negative
+     * @return Date after operation
      */
     public static Date AddDay(Date startDate, int addnos) {
         if (startDate == null) {
@@ -473,7 +473,7 @@ public class DateUtils {
     }
 
     /**
-     * 增加秒数
+     * Increase of seconds
      *
      * @param startDate
      * @param addnos
@@ -491,7 +491,7 @@ public class DateUtils {
     }
 
     /**
-     * 获取日期的年
+     * Year of acquisition date
      *
      * @param date
      * @return
@@ -501,7 +501,7 @@ public class DateUtils {
     }
 
     /**
-     * 获取日期月份
+     * Date and month of acquisition
      *
      * @param date
      * @return
@@ -511,7 +511,7 @@ public class DateUtils {
     }
 
     /**
-     * 获取日期天
+     * Date of acquisition
      *
      * @param date
      * @return
@@ -543,7 +543,7 @@ public class DateUtils {
     }
 
     /**
-     * 将短时间格式时间转换为字符串 yyyy
+     * Convert short format time to string "yyyy"
      *
      * @param dateDate
      * @return
@@ -555,7 +555,7 @@ public class DateUtils {
     }
 
     /**
-     * 将年月时间格式时间转换为字符串 yyyy_MM
+     * Convert the time format of year and month to the string "yyyy_MM"
      *
      * @param dateDate
      * @return
@@ -584,7 +584,7 @@ public class DateUtils {
             SimpleDateFormat formatter = new SimpleDateFormat(EEE_MMM_dd_HH_mm_ss_zzz_yyyy, Locale.US);
             ParsePosition pos = new ParsePosition(0);
             date = formatter.parse(cstStr, pos);
-            logger.debug("转换后的值：" + date);
+            logger.debug("Converted values：" + date);
         }
         return date;
     }

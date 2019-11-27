@@ -6,6 +6,8 @@ import com.nature.base.util.*;
 import com.nature.base.vo.StatefulRtnBase;
 import com.nature.base.vo.UserVo;
 import com.nature.common.Eunm.PortType;
+import com.nature.common.Eunm.ProcessState;
+import com.nature.common.Eunm.RunModeType;
 import com.nature.component.flow.model.*;
 import com.nature.component.flow.service.IFlowService;
 import com.nature.component.flow.utils.FlowInfoDbUtil;
@@ -16,6 +18,8 @@ import com.nature.component.flow.vo.FlowInfoDbVo;
 import com.nature.component.flow.vo.FlowVo;
 import com.nature.component.flow.vo.PathsVo;
 import com.nature.component.flow.vo.StopsVo;
+import com.nature.component.group.model.PropertyTemplate;
+import com.nature.component.group.model.StopsTemplate;
 import com.nature.component.mxGraph.model.MxCell;
 import com.nature.component.mxGraph.model.MxGeometry;
 import com.nature.component.mxGraph.model.MxGraphModel;
@@ -24,16 +28,20 @@ import com.nature.component.mxGraph.vo.MxGeometryVo;
 import com.nature.component.mxGraph.vo.MxGraphModelVo;
 import com.nature.component.process.model.Process;
 import com.nature.component.process.utils.ProcessUtils;
+import com.nature.domain.flow.FlowDomain;
+import com.nature.domain.flow.FlowGroupDomain;
+import com.nature.domain.mxGraph.MxCellDomain;
 import com.nature.mapper.flow.*;
 import com.nature.mapper.mxGraph.MxCellMapper;
 import com.nature.mapper.mxGraph.MxGeometryMapper;
 import com.nature.mapper.mxGraph.MxGraphModelMapper;
-import com.nature.third.inf.IStartFlow;
+import com.nature.third.service.IFlow;
 import com.nature.transaction.process.ProcessTransaction;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Transient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,6 +68,9 @@ public class FlowServiceImpl implements IFlowService {
     private MxCellMapper mxCellMapper;
 
     @Resource
+    private MxCellDomain mxCellDomain;
+
+    @Resource
     private MxGeometryMapper mxGeometryMapper;
 
     @Resource
@@ -71,17 +82,20 @@ public class FlowServiceImpl implements IFlowService {
     @Resource
     private PropertyMapper propertyMapper;
 
-    @Resource
-    private FlowInfoDbMapper flowInfoDbMapper;
-
-    @Resource
+    @Autowired
     private ProcessTransaction processTransaction;
 
-    @Resource
-    private IStartFlow startFlowImpl;
+    @Autowired
+    private IFlow flowImpl;
+
+    @Autowired
+    private FlowDomain flowDomain;
+
+    @Autowired
+    private FlowGroupDomain flowGroupDomain;
 
     /**
-     * 向数据库添加flow
+     * Add a flow to the database
      *
      * @param mxGraphModelVo
      * @param flowId
@@ -89,54 +103,48 @@ public class FlowServiceImpl implements IFlowService {
      * @return
      */
     @Override
-    @Transient
+    @Transactional
     public StatefulRtnBase saveOrUpdateFlowAll(MxGraphModelVo mxGraphModelVo, String flowId, String operType, boolean flag) {
-        StatefulRtnBase statefulRtnBase = new StatefulRtnBase();
-        // 参数判空
-        if (!StringUtils.isAnyEmpty(flowId, operType)) {
-            // mxGraphModelVo参数判空
-            if (null != mxGraphModelVo) {
-                if ("ADD".equals(operType)) {
-                    logger.info("ADD操作开始");
-                    statefulRtnBase = this.addFlowStops(mxGraphModelVo, flowId, flag);
-                } else if ("MOVED".equals(operType)) {
-                    logger.info("MOVED操作开始");
-                    statefulRtnBase = this.updateMxGraph(mxGraphModelVo, flowId);
-                } else if ("REMOVED".equals(operType)) {
-                    logger.info("REMOVED操作开始");
-                    statefulRtnBase = this.updateFlow(mxGraphModelVo, flowId);
-                } else {
-                    statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("没有查询operType:" + operType + "类型");
-                    logger.warn("没有查询operType:" + operType + "类型");
-                }
-            } else {
-                statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("传入参数mxGraphModelVo为空，保存失败");
-                logger.warn("传入参数mxGraphModelVo为空，保存失败");
-            }
-        } else {
-            statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("传入参数flowId或operType为空，保存失败");
-            logger.warn("传入参数flowId或operType为空，保存失败");
+        // Parameter null
+        if (StringUtils.isAnyEmpty(flowId, operType)) {
+            logger.warn("The incoming parameter flowId or operType is empty and the save failed.");
+            return StatefulRtnBaseUtils.setFailedMsg("The incoming parameter flowId or operType is empty and the save failed.");
         }
-
-        return statefulRtnBase;
+        // mxGraphModelVo Parameter null
+        if (null == mxGraphModelVo) {
+            logger.warn("The passed parameter mxGraphModelVo is empty and the save failed.");
+            return StatefulRtnBaseUtils.setFailedMsg("The passed parameter mxGraphModelVo is empty and the save failed.");
+        }
+        if ("ADD".equals(operType)) {
+            logger.info("ADD Operation begins");
+            return this.addFlowStops(mxGraphModelVo, flowId, flag);
+        } else if ("MOVED".equals(operType)) {
+            logger.info("MOVED Operation begins");
+            return this.updateMxGraph(mxGraphModelVo, flowId);
+        } else if ("REMOVED".equals(operType)) {
+            logger.info("REMOVED Operation begins");
+            return this.updateFlow(mxGraphModelVo, flowId);
+        } else {
+            logger.warn("Can't find operType: " + operType + " type ");
+            return StatefulRtnBaseUtils.setFailedMsg("Can't find operType:" + operType + " type ");
+        }
     }
 
     /**
-     * 根据id查询流信息
+     * Query flow information based on id
      *
      * @param id
      * @return
      * @author Nature
      */
     @Override
-    @Transient
     public Flow getFlowById(String id) {
         Flow flowById = flowMapper.getFlowById(id);
         boolean isAdmin = SessionUserUtil.isAdmin();
-        UserVo currentUser = SessionUserUtil.getCurrentUser();
         if (null != flowById && !isAdmin) {
             Boolean isExample = flowById.getIsExample();
             String crtUser = flowById.getCrtUser();
+            UserVo currentUser = SessionUserUtil.getCurrentUser();
             String username = currentUser.getUsername();
             if ((!isExample) && (!username.equals(crtUser))) {
                 flowById = null;
@@ -146,83 +154,95 @@ public class FlowServiceImpl implements IFlowService {
     }
 
     /**
-     * 根据id查询流信息
+     * Query flow information based on pageId
+     *
+     * @param fid
+     * @param pageId
+     * @return
+     */
+    @Override
+    @Transactional
+    public FlowVo getFlowByPageId(String fid, String pageId) {
+        FlowVo flowVo = null;
+        Flow flowById = flowDomain.getFlowByPageId(fid, pageId);
+        if (null != flowById) {
+            flowVo = new FlowVo();
+            BeanUtils.copyProperties(flowById, flowVo);
+        }
+        return flowVo;
+    }
+
+    /**
+     * Query flow information based on id
      *
      * @param id
      * @return
      * @author Nature
      */
     @Override
-    @Transient
+    @Transactional
     public String getFlowVoById(String id) {
-        Map<String, Object> rtnMap = new HashMap<String, Object>();
-        rtnMap.put("code", "0");
+        Map<String, Object> rtnMap = new HashMap<>();
+        rtnMap.put("code", 500);
         FlowVo flowVo = null;
-        Flow flowById = flowMapper.getFlowById(id);
+        Flow flowById = flowDomain.getFlowById(id);
         if (null != flowById) {
             flowVo = new FlowVo();
             BeanUtils.copyProperties(flowById, flowVo);
-            //取出mxGraphModel，并转为Vo
+            //Take out 'mxGraphModel' and convert to Vo
             MxGraphModelVo mxGraphModelVo = MxGraphModelUtil.mxGraphModelPoToVo(flowById.getMxGraphModel());
-            //取出stopsList，并转为Vo
+            //Take out 'stopsList' and turn it to Vo
             List<StopsVo> stopsVoList = StopsUtil.stopsListPoToVo(flowById.getStopsList());
-            //取出pathsList，并转为Vo
+            //Take out 'pathsList' and turn it to Vo
             List<PathsVo> pathsVoList = PathsUtil.pathsListPoToVo(flowById.getPathsList());
-            //取出flowInfoDb，并转为Vo
+            //Take out 'flowInfoDb' and turn it to Vo
             FlowInfoDbVo flowInfoDbVo = FlowInfoDbUtil.flowInfoDbToVo(flowById.getAppId());
             flowVo.setMxGraphModelVo(mxGraphModelVo);
             flowVo.setStopsVoList(stopsVoList);
             flowVo.setPathsVoList(pathsVoList);
         }
+        rtnMap.put("code", 200);
         rtnMap.put("flow", flowVo);
         return JsonUtils.toJsonNoException(rtnMap);
     }
 
     /**
-     * 保存appId
+     * save appId
      *
      * @param flowId
      * @param appId
      * @return
      */
-    @SuppressWarnings("unused")
     @Override
-    @Transient
+    @Transactional
     public StatefulRtnBase saveAppId(String flowId, FlowInfoDb appId) {
         UserVo user = SessionUserUtil.getCurrentUser();
         String username = (null != user) ? user.getUsername() : "-1";
         StatefulRtnBase satefulRtnBase = new StatefulRtnBase();
         if (StringUtils.isNotBlank(flowId)) {
-            // 根据flowId查询flow
-            Flow flowById = flowMapper.getFlowById(flowId);
+            // find flow by flowId
+            Flow flowById = flowDomain.getFlowById(flowId);
             FlowInfoDb oldAppId = flowById.getAppId();
             if (null != flowById) {
                 flowById.setAppId(appId);
                 flowById.setLastUpdateDttm(new Date());
                 flowById.setLastUpdateUser(username);
-                int updateFlow = flowMapper.updateFlow(flowById);
-                if (updateFlow <= 0) {
-                    satefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("AppId保存失败");
-                } else {
-                    if (null != oldAppId) {
-                        //把之前的appId置为无效
-                        //  flowInfoDbMapper.deleteFlowInfoById(oldAppId.getId());
-                    }
-                }
+                flowDomain.saveOrUpdate(flowById);
+                satefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("AppId failed to save");
             } else {
-                satefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("未查询到flowId为" + flowId + "的flow，保存失败");
+                satefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("Can't find 'flow' with ‘flowId’ as " + flowId + " , save failed");
             }
         } else {
-            satefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("flowId为空，保存失败");
+            satefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("flowId is null,save failed");
         }
         return satefulRtnBase;
     }
 
     @Override
-    @Transient
+    @Transactional
     public String addFlow(FlowVo flowVo, UserVo user) {
         Map<String, Object> rtnMap = new HashMap<String, Object>();
-        rtnMap.put("code", "0");
+        rtnMap.put("code", 500);
         int optDataCount = 0;
         if (null != flowVo) {
             String username = (null != user) ? user.getUsername() : "-1";
@@ -260,7 +280,7 @@ public class FlowServiceImpl implements IFlowService {
             }
 
             if (optDataCount > 0) {
-                rtnMap.put("code", "1");
+                rtnMap.put("code", 200);
                 rtnMap.put("flowId", id);
             }
         }
@@ -268,6 +288,7 @@ public class FlowServiceImpl implements IFlowService {
     }
 
     @Override
+    @Transactional
     public int updateFlow(Flow flow, UserVo user) {
         String username = (null != user) ? user.getUsername() : "-1";
         String id = flow.getId();
@@ -288,18 +309,18 @@ public class FlowServiceImpl implements IFlowService {
             Flow flowById = this.getFlowById(id);
             if (null != flowById) {
                 if (null != flowById.getStopsList())
-                    //先循环删除stop属性
+                    //Loop delete stop attribute
                     for (Stops stopId : flowById.getStopsList()) {
                         if (null != stopId.getProperties())
                             for (Property property : stopId.getProperties()) {
                                 propertyMapper.updateEnableFlagByStopId(property.getId());
                             }
                     }
-                //删除stop
+                // remove stop
                 stopsMapper.updateEnableFlagByFlowId(flowById.getId());
-                //删除paths
+                // remove paths
                 pathsMapper.updateEnableFlagByFlowId(flowById.getId());
-                //删除FLowInfo
+                // remove FLowInfo
                 if (flowById.getAppId() != null) {
                     //flowInfoDbServiceImpl.deleteFlowInfoById(flowById.getAppId().getId());
                 }
@@ -317,7 +338,7 @@ public class FlowServiceImpl implements IFlowService {
                     }
                     mxGraphModelMapper.updateEnableFlagByFlowId(flowById.getId());
                 }
-                //删除FLow
+                // remove FLow
                 deleteFLowInfo = flowMapper.updateEnableFlagById(id);
             }
         }
@@ -325,243 +346,235 @@ public class FlowServiceImpl implements IFlowService {
     }
 
     /**
-     * add stops和画板mxCell
+     * Add stops and artboard mxCell
      *
      * @param mxGraphModelVo
      * @param flowId
-     * @param flag           是否添加stop信息
+     * @param flag           Whether to add stop information
      * @return
      */
     private StatefulRtnBase addFlowStops(MxGraphModelVo mxGraphModelVo, String flowId, boolean flag) {
-        UserVo user = SessionUserUtil.getCurrentUser();
-        String username = (null != user) ? user.getUsername() : "-1";
         StatefulRtnBase statefulRtnBase = new StatefulRtnBase();
-        // 根据flowId查询flow
+        UserVo currentUser = SessionUserUtil.getCurrentUser();
+        if (null == currentUser) {
+            logger.warn("illegal user");
+            return StatefulRtnBaseUtils.setFailedMsg("illegal user");
+        }
+        // Query flow by flowId
         Flow flow = flowMapper.getFlowById(flowId);
-        if (null != flow) {
-            // 判断mxGraphModelVo和flow是否为空
-            if (null != mxGraphModelVo && null != flow) {
-                // 更新flow
-                flow.setLastUpdateDttm(new Date()); // 最后更新时间
-                flow.setLastUpdateUser(username);// 最后更新人
-                flow.setEnableFlag(true);// 是否有效
-                // 更新flow信息
-                int updateFlowNum = flowMapper.updateFlow(flow);
-                if (updateFlowNum > 0) {
-                    // 取出数据库存的画板
-                    MxGraphModel mxGraphModelDb = flow.getMxGraphModel();
-                    // 判断数据库存的画板是否存在
-                    if (null != mxGraphModelDb) {
-                        // 把页面的画板信息更到数据库画板中
-                        // 将mxGraphModelVo中的值copy到mxGraphModelDb中
-                        BeanUtils.copyProperties(mxGraphModelVo, mxGraphModelDb);
-                        mxGraphModelDb.setEnableFlag(true);
-                        mxGraphModelDb.setLastUpdateUser(username);
-                        mxGraphModelDb.setLastUpdateDttm(new Date());
-                        mxGraphModelDb.setFlow(flow);
-                        // 画板的flow外键无变化，无需更新
-                        // mxGraphModelDb.setFlow(flow); 添加外键
-                        // 更新mxGraphModel
-                        int updateMxGraphModel = mxGraphModelMapper.updateMxGraphModel(mxGraphModelDb);
-                        // 判断mxGraphModelDb是否更新成功
-                        if (updateMxGraphModel > 0) {
-                            // 页面传过来的数据mxCellVoList
-                            List<MxCellVo> mxCellVoList = mxGraphModelVo.getRootVo();
-                            // 存放页面传过来的数据的Map
-                            Map<String, MxCellVo> mxCellVoMap = new HashMap<String, MxCellVo>();
-                            // 页面传过来的mxCellList转map，key为pageId
-                            if (null != mxCellVoList && mxCellVoList.size() > 0) {
-                                // 页面传过来的mxCellList转map，key为pageId
-                                for (MxCellVo mxCellVo : mxCellVoList) {
-                                    if (null != mxCellVo && StringUtils.isNotBlank(mxCellVo.getPageId())) {
-                                        mxCellVoMap.put(mxCellVo.getPageId(), mxCellVo);
-                                    }
-                                }
-                            }
-                            // 循环数据库数据
-                            List<MxCell> mxCellDbRoot = mxGraphModelDb.getRoot();
-                            for (MxCell mxCell : mxCellDbRoot) {
-                                if (null != mxCell) {
-                                    // 用pageId去map去取
-                                    MxCellVo mxCellVo = mxCellVoMap.get(mxCell.getPageId());
-                                    // 取到了说明数据库中已存在不需要新增，把取到的值在map中remove掉
-                                    if (null != mxCellVo) {
-                                        mxCellVoMap.remove(mxCell.getPageId());
-                                    }
-                                }
-                            }
-                            // 判断remove后的map是否还有数据，如果有进行新增处理
-                            if (mxCellVoMap.size() > 0) {
-                                // 把MxCellVo的map转为MxCellVoList
-                                List<MxCellVo> addMxCellVoList = new ArrayList<MxCellVo>(mxCellVoMap.values());
-                                if (null != addMxCellVoList && addMxCellVoList.size() > 0) {
-                                    for (MxCellVo mxCellVo : addMxCellVoList) {
-                                        if (null != mxCellVo) {
-                                            String stopByNameAndFlowId = stopsMapper.getStopByNameAndFlowId(flow.getId(), mxCellVo.getValue());
-                                            // 保存MxCell
-                                            // 新建
-                                            MxCell mxCell = new MxCell();
-                                            // 将mxCellVo中的值copy到mxCell中
-                                            BeanUtils.copyProperties(mxCellVo, mxCell);
-                                            if (StringUtils.isNotBlank(stopByNameAndFlowId)) {
-                                                mxCell.setValue(mxCellVo.getValue() + mxCellVo.getPageId());
-                                            }
-                                            // mxCell 的基本属性(创建时必填)
-                                            mxCell.setId(SqlUtils.getUUID32());
-                                            mxCell.setCrtDttm(new Date());
-                                            mxCell.setCrtUser(username);
-                                            // mxCell 的基本属性
-                                            mxCell.setEnableFlag(true);
-                                            mxCell.setLastUpdateUser(username);
-                                            mxCell.setLastUpdateDttm(new Date());
-                                            // mxGraphModel外键
-                                            mxCell.setMxGraphModel(mxGraphModelDb);
-                                            // 保存mxCell
-                                            mxCellMapper.addMxCell(mxCell);
-                                            MxGeometryVo mxGeometryVo = mxCellVo.getMxGeometryVo();
-                                            if (null != mxGeometryVo) {
-                                                // 保存MxGeometry
-                                                // 新建
-                                                MxGeometry mxGeometry = new MxGeometry();
-                                                // 将mxGeometryVo中的值copy到mxGeometry中
-                                                BeanUtils.copyProperties(mxGeometryVo, mxGeometry);
-                                                // mxGeometry 的基本属性(创建时必填)
-                                                mxGeometry.setId(SqlUtils.getUUID32());
-                                                mxGeometry.setCrtDttm(new Date());
-                                                mxGeometry.setCrtUser(username);
-                                                // setmxGraphModel基本属性
-                                                mxGeometry.setEnableFlag(true);
-                                                mxGeometry.setLastUpdateUser(username);
-                                                mxGeometry.setLastUpdateDttm(new Date());
-                                                // mxCell外键
-                                                mxGeometry.setMxCell(mxCell);
-                                                // 保存mxGeometry
-                                                mxGeometryMapper.addMxGeometry(mxGeometry);
-                                            }
+        if (null == flow) {
+            logger.warn("Flow information with flowId: " + flowId + " is not queried");
+            return StatefulRtnBaseUtils.setFailedMsg("Flow information with flowId: " + flowId + " is not queried");
+        }
+        // Determine if 'mxGraphModelVo' and 'flow' are empty
+        if (null == mxGraphModelVo || null == flow) {
+            logger.warn("The passed parameter mxGraphModelVo is empty or the flow does not exist and the addition fails.");
+            return StatefulRtnBaseUtils.setFailedMsg("The passed parameter mxGraphModelVo is empty or the flow does not exist and the addition fails.");
+        }
+        String username = currentUser.getUsername();
+        // update flow
+        flow.setLastUpdateDttm(new Date()); // last update time
+        flow.setLastUpdateUser(username);// last update user
+        flow.setEnableFlag(true);// is it effective
+        // update flow info
+        int updateFlowNum = flowMapper.updateFlow(flow);
+        if (updateFlowNum <= 0) {
+            logger.warn("flow update failed, update failed");
+            return StatefulRtnBaseUtils.setFailedMsg("flow update failed, update failed");
+        }
+        //Take out the drawing board of the data inventory
+        MxGraphModel mxGraphModelDb = flow.getMxGraphModel();
+        //Determine if the artboard of the data inventory exists
+        if (null == mxGraphModelDb) {
+            logger.warn("Database without artboard, adding failed");
+            return StatefulRtnBaseUtils.setFailedMsg("Database without artboard, adding failed");
+        }
+        // Put the page's artboard information into the database canvas
+        //Copy the value from 'mxGraphModelVo' to 'mxGraphModelDb'
+        BeanUtils.copyProperties(mxGraphModelVo, mxGraphModelDb);
+        mxGraphModelDb.setEnableFlag(true);
+        mxGraphModelDb.setLastUpdateUser(username);
+        mxGraphModelDb.setLastUpdateDttm(new Date());
+        mxGraphModelDb.setFlow(flow);
+        //The flow's flow foreign key has no change, no need to update
+        //mxGraphModelDb.setFlow(flow); Add a foreign key
+        // update mxGraphModel
+        int updateMxGraphModel = mxGraphModelMapper.updateMxGraphModel(mxGraphModelDb);
+        //Determine if mxGraphModelDb is updated successfully
+        if (updateMxGraphModel <= 0) {
+            logger.warn("flow update failed, update failed");
+            return StatefulRtnBaseUtils.setFailedMsg("mxGraphModel update failed, update failed");
+        }
+        //The data passed from the page mxCellVoList
+        List<MxCellVo> mxCellVoList = mxGraphModelVo.getRootVo();
+        // Map of the data sent from the page
+        Map<String, MxCellVo> mxCellVoMap = new HashMap<String, MxCellVo>();
+        // The mxCellList passed to the page is transferred to the map, and the key is pageId.
+        if (null != mxCellVoList && mxCellVoList.size() > 0) {
+            // The mxCellList passed to the page is transferred to the map, and the key is pageId.
+            for (MxCellVo mxCellVo : mxCellVoList) {
+                if (null != mxCellVo && StringUtils.isNotBlank(mxCellVo.getPageId())) {
+                    mxCellVoMap.put(mxCellVo.getPageId(), mxCellVo);
+                }
+            }
+        }
+        // Loop database data
+        List<MxCell> mxCellDbRoot = mxGraphModelDb.getRoot();
+        for (MxCell mxCell : mxCellDbRoot) {
+            if (null != mxCell) {
+                // Use pageId to go to map
+                MxCellVo mxCellVo = mxCellVoMap.get(mxCell.getPageId());
+                // Get the description database already exists, do not need to add, remove the value removed in the map
+                if (null != mxCellVo) {
+                    mxCellVoMap.remove(mxCell.getPageId());
+                }
+            }
+        }
+        // Determine whether there is data in the map after remove, if there is any new processing
+        if (mxCellVoMap.size() <= 0) {
+            logger.warn("No data can be added, the addition failed");
+            return StatefulRtnBaseUtils.setFailedMsg("No data can be added, the addition failed");
+        }
+        // Convert MxCellVo map to MxCellVoList
+        List<MxCellVo> addMxCellVoList = new ArrayList<MxCellVo>(mxCellVoMap.values());
+        if (null == addMxCellVoList || addMxCellVoList.size() <= 0) {
+            logger.warn("No data can be added, the addition failed");
+            return StatefulRtnBaseUtils.setFailedMsg("No data can be added, the addition failed");
+        }
+        for (MxCellVo mxCellVo : addMxCellVoList) {
+            if (null != mxCellVo) {
+                String stopByNameAndFlowId = stopsMapper.getStopByNameAndFlowId(flow.getId(), mxCellVo.getValue());
+                // save MxCell
+                // new
+                MxCell mxCell = new MxCell();
+                // Copy the value in mxCellVo to mxCell
+                BeanUtils.copyProperties(mxCellVo, mxCell);
+                if (StringUtils.isNotBlank(stopByNameAndFlowId)) {
+                    mxCell.setValue(mxCellVo.getValue() + mxCellVo.getPageId());
+                }
+                // 'mxCell' basic properties (required when creating)
+                mxCell.setId(SqlUtils.getUUID32());
+                mxCell.setCrtDttm(new Date());
+                mxCell.setCrtUser(username);
+                // mxCell basic properties
+                mxCell.setEnableFlag(true);
+                mxCell.setLastUpdateUser(username);
+                mxCell.setLastUpdateDttm(new Date());
+                // mxGraphModel foreign key
+                mxCell.setMxGraphModel(mxGraphModelDb);
+                // save mxCell
+                mxCellMapper.addMxCell(mxCell);
+                MxGeometryVo mxGeometryVo = mxCellVo.getMxGeometryVo();
+                if (null != mxGeometryVo) {
+                    // save MxGeometry
+                    // new
+                    MxGeometry mxGeometry = new MxGeometry();
+                    // Copy the value in mxGeometryVo to mxGeometry
+                    BeanUtils.copyProperties(mxGeometryVo, mxGeometry);
+                    // mxGeometry basic properties(required when creating)
+                    mxGeometry.setId(SqlUtils.getUUID32());
+                    mxGeometry.setCrtDttm(new Date());
+                    mxGeometry.setCrtUser(username);
+                    // setmxGraphModel basic properties
+                    mxGeometry.setEnableFlag(true);
+                    mxGeometry.setLastUpdateUser(username);
+                    mxGeometry.setLastUpdateDttm(new Date());
+                    // mxCell foreign key
+                    mxGeometry.setMxCell(mxCell);
+                    // save mxGeometry
+                    mxGeometryMapper.addMxGeometry(mxGeometry);
+                }
 
-                                        }
-                                    }
+            }
+        }
 
+        //Separate 'stops' from 'path' in addMxCellVoList
+        Map<String, Object> stopsPathsMap = MxGraphModelUtil.distinguishElementsPaths(addMxCellVoList);
 
-                                    // 把需添加addMxCellVoList中的stops和线分开
-                                    Map<String, Object> stopsPathsMap = MxGraphModelUtil.distinguishStopsPaths(addMxCellVoList);
+        // Take mxCellVoList(stopsList) from the Map
+        List<MxCellVo> objectStops = (ArrayList<MxCellVo>) stopsPathsMap.get("elements");
 
-                                    // 从Map中取出mxCellVoList(stops的list)
-                                    List<MxCellVo> objectStops = (ArrayList<MxCellVo>) stopsPathsMap.get("stops");
+        // stops list
+        List<Stops> addStopsList = new ArrayList<Stops>();
+        // Generate a stopList based on the contents of the MxCellList
+        addStopsList = this.mxCellVoListToStopsList(objectStops, flow);
+        // save addStopsList
+        if (flag) {
+            this.addStopList(addStopsList);
+        }
 
-                                    // stops的list
-                                    List<Stops> addStopsList = new ArrayList<Stops>();
-                                    // 根据MxCellList中的内容生成stops的list
-                                    addStopsList = this.mxCellVoListToStopsList(objectStops, flow);
-                                    // 保存addStopsList
-                                    if (flag) {
-                                        this.addStopList(addStopsList);
-                                    }
+        // Take mxCellVoList(pathsList) from the Map
+        List<MxCellVo> objectPaths = (ArrayList<MxCellVo>) stopsPathsMap.get("paths");
 
-                                    // 从Map中取出mxCellVoList(线的list)
-                                    List<MxCellVo> objectPaths = (ArrayList<MxCellVo>) stopsPathsMap.get("paths");
+        // path list
+        List<Paths> addPathsList = new ArrayList<Paths>();
 
-                                    // 线的List
-                                    List<Paths> addPathsList = new ArrayList<Paths>();
-
-                                    // 根据MxCellList中的内容生成paths的list
-                                    addPathsList = MxGraphModelUtil.mxCellVoListToPathsList(objectPaths, flow);
-                                    if (flag) {
-                                        // 判空pathsList
-                                        if (null != addPathsList && addPathsList.size() > 0) {
-                                            // 保存 addPathsList
-                                            int addPathsListNum = pathsMapper.addPathsList(addPathsList);
-                                            if (addPathsListNum <= 0) {
-                                                logger.error("addPathsList保存失败所属流：flowId(" + flow.getId() + ")", new Exception("addPathsList保存失败"));
-                                            }
-                                        } else {
-                                            logger.info("addPathsList为空,不保存");
-                                        }
-                                    }
-                                } else {
-                                    statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("无可添加数据,添加失败");
-                                }
-                            } else {
-                                statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("无可添加数据,添加失败");
-                            }
-                        } else {
-                            StatefulRtnBaseUtils.setFailedMsg("画板mxGraphModel更新失败,更新失败");
-                            statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("画板mxGraphModel更新失败,更新失败");
-                            logger.warn("flow更新失败，添加失败");
-                        }
-                    } else {
-                        statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("数据库无画板，添加失败");
-                        logger.warn("数据库无画板，添加失败");
-                    }
-                } else {
-                    StatefulRtnBaseUtils.setFailedMsg("flow更新失败,更新失败");
-                    logger.warn("flow更新失败,更新失败");
+        // Generate a pathsList based on the contents of the MxCellList
+        addPathsList = MxGraphModelUtil.mxCellVoListToPathsList(objectPaths, flow);
+        if (flag) {
+            // Judge empty
+            if (null != addPathsList && addPathsList.size() > 0) {
+                // save addPathsList
+                int addPathsListNum = pathsMapper.addPathsList(addPathsList);
+                if (addPathsListNum <= 0) {
+                    logger.error("addPathsList Save failed flow：flowId(" + flow.getId() + ")", new Exception("addPathsList save failed"));
                 }
             } else {
-                statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("传入参数mxGraphModelVo为空或flow不存在，添加失败");
-                logger.warn("传入参数mxGraphModelVo为空或flow不存在，ADD失败");
+                logger.info("addPathsList is null,do not save");
             }
-        } else {
-            statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("没有查询到flowId为:" + flowId + "的flow信息");
-            logger.warn("没有查询到flowId为:" + flowId + "的flow信息");
         }
         return statefulRtnBase;
 
     }
 
     /**
-     * 对画板的修改
+     * Modification of the artboard
      *
      * @param mxGraphModelVo
      * @param flowId
      * @return
      */
     private StatefulRtnBase updateMxGraph(MxGraphModelVo mxGraphModelVo, String flowId) {
-        UserVo user = SessionUserUtil.getCurrentUser();
-        String username = (null != user) ? user.getUsername() : "-1";
-        StatefulRtnBase statefulRtnBase = new StatefulRtnBase();
+        UserVo currentUser = SessionUserUtil.getCurrentUser();
+        if (null == currentUser) {
+            logger.warn("illegal user");
+            return StatefulRtnBaseUtils.setFailedMsg("illegal user");
+        }
         MxGraphModel mxGraphModel = mxGraphModelMapper.getMxGraphModelByFlowId(flowId);
-        if (null != mxGraphModel) {
-
-        } else {
-            statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("没有查询到flowId为:" + flowId + "的flow信息");
-            logger.warn("没有查询到flowId为:" + flowId + "的flow信息");
+        // Determine if the incoming data is empty
+        if (null == mxGraphModelVo) {
+            return StatefulRtnBaseUtils.setFailedMsg("mxGraphModelVo is null, fail to edit");
         }
-        // 判断传入的数据是否为空
-        if (null != mxGraphModelVo) {
-            // 判断要修改的数据库数据是否为空
-            if (null != mxGraphModel) {
-                // 将mxGraphModelVo中的值copy到mxGraphModelDb中
-                BeanUtils.copyProperties(mxGraphModelVo, mxGraphModel);
-                // setmxGraphModel基本属性
-                mxGraphModel.setLastUpdateUser(username);// 最后更新人
-                mxGraphModel.setLastUpdateDttm(new Date());// 最后更新时间
-                mxGraphModel.setEnableFlag(true);// 是否有效
-                // 保存MxGraphModel
-                int updateMxGraphModel = mxGraphModelMapper.updateMxGraphModel(mxGraphModel);
-                // 判断mxGraphModel是否保存成功
-                if (updateMxGraphModel > 0) {
-                    // 页面传过来的数据MxCellVo
-                    List<MxCellVo> mxCellVoList = mxGraphModelVo.getRootVo();
-                    // 取出数据库查询出来的MxCellList信息
-                    List<MxCell> mxCellList = mxGraphModel.getRoot();
-                    // 保存并处理mxCellList
-                    statefulRtnBase = this.updateMxCellList(mxCellVoList, mxCellList);
-                }
-            } else {
-                statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("没有查询到flowId为:" + flowId + "的mxGraphModel信息为空，修改失败");
-            }
-        } else {
-            statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("mxGraphModelVo为空，修改失败");
+        // Determine if the database data to be modified is empty
+        if (null == mxGraphModel) {
+            return StatefulRtnBaseUtils.setFailedMsg("The mxGraphModel information with flowId is: " + flowId + " is not found, fail to edit");
         }
-        return statefulRtnBase;
+        String username = currentUser.getUsername();
+        // Copy the value from mxGraphModelVo to mxGraphModelDb
+        BeanUtils.copyProperties(mxGraphModelVo, mxGraphModel);
+        // setmxGraphModel basic attribute
+        mxGraphModel.setLastUpdateUser(username);// last update user
+        mxGraphModel.setLastUpdateDttm(new Date());// last update time
+        mxGraphModel.setEnableFlag(true);// is it effective
+        // save MxGraphModel
+        int updateMxGraphModel = mxGraphModelMapper.updateMxGraphModel(mxGraphModel);
+        // Determine if mxGraphModel is saved successfully
+        if (updateMxGraphModel <= 0) {
+            return StatefulRtnBaseUtils.setFailedMsg("save failed");
+        }
+        // The data passed from the page MxCellVo
+        List<MxCellVo> mxCellVoList = mxGraphModelVo.getRootVo();
+        // Take out the MxCellList information queried by the database.
+        List<MxCell> mxCellList = mxGraphModel.getRoot();
+        // Save and process mxCellList
+        return this.updateMxCellList(mxCellVoList, mxCellList);
     }
 
     /**
-     * 修改Flow
+     * Modify Flow
      *
-     * @param mxGraphModelVo 页面传出的信息
-     * @param flowId         要修改的数据
+     * @param mxGraphModelVo Information from the page
+     * @param flowId         The data to be modified
      * @return
      */
     private StatefulRtnBase updateFlow(MxGraphModelVo mxGraphModelVo, String flowId) {
@@ -571,45 +584,45 @@ public class FlowServiceImpl implements IFlowService {
         Flow flow = flowMapper.getFlowById(flowId);
         if (null != flow) {
             if (null != mxGraphModelVo) {
-                // 最后更新时间
+                // last update time
                 flow.setLastUpdateDttm(new Date());
-                // 最后更新人
+                // last update user
                 flow.setLastUpdateUser(username);
 
-                // 保存flow
+                // save flow
                 int updateFlow = flowMapper.updateFlow(flow);
-                // 判断是否保存成功
+                // Determine whether the save is successful
                 if (updateFlow > 0) {
-                    // 取出画板信息
+                    // Take out the artboard information
                     MxGraphModel mxGraphModel = flow.getMxGraphModel();
-                    // 保存修改画板信息
+                    // Save and modify the artboard information
                     StatefulRtnBase updateMxGraphRtn = this.updateMxGraph(mxGraphModelVo, flowId);
-                    // 判断mxGraphModel是否保存成功
+                    // Determine if mxGraphModel is saved successfully
                     if (null != updateMxGraphRtn && updateMxGraphRtn.isReqRtnStatus()) {
-                        // 页面的MxCellVo的list
+                        // Page of MxCellVo's list
                         List<MxCellVo> mxCellVoList = mxGraphModelVo.getRootVo();
 
-                        // 把mxCellVoList中的stops和线分开
-                        Map<String, Object> stopsPathsMap = MxGraphModelUtil.distinguishStopsPaths(mxCellVoList);
+                        // Separate the stops and path in mxCellVoList
+                        Map<String, Object> stopsPathsMap = MxGraphModelUtil.distinguishElementsPaths(mxCellVoList);
 
                         if (null != stopsPathsMap) {
-                            // 逻辑删除的线
-                            // key为from和to(就是stop的pageId) value为inport和outport
+                            // Need to delete the path
+                            // Key is from and to (that is, the pageId of stop) value is inport and outport
                             Map<String, String> pathsDelInfoMap = new HashMap<String, String>();
 
-                            // get出数据库中存的PathsList
+                            // Get out the PathsList stored in the database
                             List<Paths> pathsList = flow.getPathsList();
-                            // 判断数据库中的线的list是否为空，不为空继续下边的判断操作，否则直接添加
+                            // Determine whether the list of lines in the database is empty, do not empty to continue the judgment operation below, or directly add
                             if (null != pathsList && pathsList.size() > 0) {
-                                // 取线的mxCellVoList
+                                // Take the line of mxCellVoList
                                 List<MxCellVo> objectPaths = (ArrayList<MxCellVo>) stopsPathsMap.get("paths");
-                                // key为PathsVo的PageId(画板中所属id),value为Paths
+                                // Key is the PageId of PathsVo (the id in the artboard), and the value is Paths
                                 Map<String, MxCellVo> objectPathsMap = new HashMap<String, MxCellVo>();
 
-                                // 需修改的pathsList
+                                // The pathsList to be modified
                                 List<Paths> updatePaths = new ArrayList<Paths>();
 
-                                //判断页面传过来的objectStops是否为空
+                                //Determine if the objectStops passed from the page is empty.
                                 if (null != objectPaths) {
                                     for (MxCellVo mxCellVo : objectPaths) {
                                         if (null != mxCellVo) {
@@ -618,83 +631,83 @@ public class FlowServiceImpl implements IFlowService {
                                     }
                                 }
 
-                                // 循环数据库的数据pathsList,用stops中的pageId去转换为map后的页面传的值的map中去取，
+                                // The data pathsList of the loop database is retrieved by using the pageId in the stops to convert the map to the value of the page passed by the map.
                                 for (Paths paths : pathsList) {
                                     if (null != paths) {
                                         String pageId = paths.getPageId();
                                         MxCellVo mxCellVo = objectPathsMap.get(pageId);
-                                        // 取到了则是需要修改的，否则是要逻辑删除的
+                                        // If you get it, you need to modify it. Otherwise, it is to be deleted.
                                         if (null != mxCellVo) {
-                                            //操作画板时暂无修改stop信息的操作，可以修改属性，但立刻保存了，这里无需操作
+                                            //There is no operation to modify the stop information when you operate the artboard. You can modify the properties, but save it immediately. No operation is required here.
                                         } else {
                                             paths.setEnableFlag(false);
                                             paths.setLastUpdateUser(username);
                                             paths.setLastUpdateDttm(new Date());
                                             paths.setFlow(flow);
                                             updatePaths.add(paths);
-                                            // 把需要逻辑删除的端口信息放入pathsDelInfoMap的map中
+                                            // Put the port information that needs to be logically deleted into the map of pathsDelInfoMap
                                             pathsDelInfoMap.put("in" + paths.getTo(), paths.getInport());
                                             pathsDelInfoMap.put("out" + paths.getFrom(), paths.getOutport());
                                         }
                                     }
                                 }
-                                // 修改保存updateStops
+                                // Modify save updateStops
                                 for (Paths paths : updatePaths) {
                                     if (null != paths) {
                                         pathsMapper.updatePaths(paths);
                                     }
                                 }
                             } else {
-                                //数据库中的stopsList为空，修改失败
-                                logger.info("数据库中的pathsList为空");
+                                //The stopsList in the database is empty and the modification failed.
+                                logger.info("The pathsList in the database is empty");
                             }
 
 
-                            // get出数据库中存的Stopslist
+                            // Get out the Stopslist stored in the database
                             List<Stops> stopsList = flow.getStopsList();
 
-                            // 如果数据库中的Stops的list是否为空，则修改失败，因为此方法只处理修改的，不负责新增
+                            // If the list of Stops in the database is empty, the modification fails because this method only processes the modification and is not responsible for adding
                             if (null != stopsList && stopsList.size() > 0) {
-                                // 取stops的mxCellVoList
-                                List<MxCellVo> objectStops = (ArrayList<MxCellVo>) stopsPathsMap.get("stops");
-                                // key为mxCellVo的PageId(画板中所属id),value为mxCellVo
+                                // Take the mxCellVoList of stops
+                                List<MxCellVo> objectStops = (ArrayList<MxCellVo>) stopsPathsMap.get("elements");
+                                // Key is the PageId of mxCellVo (the id in the artboard), and the value is mxCellVo
                                 Map<String, MxCellVo> objectStopsMap = new HashMap<String, MxCellVo>();
 
-                                // 需修改的stopsList
+                                // Stopslist to be modified
                                 List<Stops> updateStops = new ArrayList<Stops>();
 
-                                // 判断页面传过来的objectStops是否为空
+                                // Determine if the objectStops passed from the page is empty.
                                 if (null != objectStops) {
-                                    // 循环 把objectStops(页面数据)转为objectStopsMap
+                                    // Loop converts objectStops (page data) to objectStopsMap
                                     for (MxCellVo mxCellVo : objectStops) {
                                         if (null != mxCellVo) {
                                             objectStopsMap.put(mxCellVo.getPageId(), mxCellVo);
                                         }
                                     }
                                 }
-                                // 循环数据库的数据stopsList,用stops中的pageId去转换为map后的页面传的值的map中去取，
+                                // The data stopsList of the loop database, using the pageId in the stops to convert to the map of the value of the page after the map is fetched,
                                 for (Stops stops : stopsList) {
                                     if (null != stops) {
                                         String pageId = stops.getPageId();
                                         MxCellVo mxCellVo = objectStopsMap.get(pageId);
-                                        // 取到了则是需要修改的，否则是要逻辑删除的
+                                        // If you get it, you need to modify it. Otherwise, it is to be deleted.
                                         if (null != mxCellVo) {
-                                            //操作画板时,当删除线时，需要判断线的两端是否有Any类型的stop，如果有要把属性中对应的端口信息删除
-                                            // 判断stops是否有Any端口
+                                            //When you operate the artboard, when you delete the line, you need to determine whether there is an Any type stop at both ends of the line. If there is any corresponding port information in the attribute, delete the corresponding port information.
+                                            // Determine if the stops have an Any port
                                             if (stops.getInPortType() == PortType.ANY || stops.getOutPortType() == PortType.ANY) {
-                                                // 根据pageId在pathsDelInfoMap中取值
+                                                // Value in the pathsDelInfoMap according to the pageId
                                                 String inprot = pathsDelInfoMap.get("in" + stops.getPageId());
                                                 String outprot = pathsDelInfoMap.get("out" + stops.getPageId());
-                                                // 如果inprot或者outprot有值，则循环属性找到对应存放端口的属性，进行修改
+                                                // If inprot or outprot has a value, the loop attribute finds the attribute of the corresponding storage port and modifies it.
                                                 if (StringUtils.isNotBlank(inprot) || StringUtils.isNotBlank(outprot)) {
-                                                    // 取出属性list
+                                                    // Take out the attribute list
                                                     List<Property> properties = stops.getProperties();
-                                                    // 判空
+                                                    // Judge
                                                     if (null != properties && properties.size() > 0) {
                                                         Property inportProperty = null;
                                                         Property outportProperty = null;
                                                         List<Property> propertiesNew = new ArrayList<Property>();
-                                                        // 循环属性
+                                                        // Loop attribute
                                                         for (Property property : properties) {
                                                             property.setStops(stops);
                                                             if ("inports".equals(property.getName())) {
@@ -719,9 +732,9 @@ public class FlowServiceImpl implements IFlowService {
                                                         }
                                                         stops.setProperties(propertiesNew);
                                                         if (isUpdate) {
-                                                            stops.setLastUpdateDttm(new Date());//最后跟新时间
-                                                            stops.setLastUpdateUser(username);//最后更新人
-                                                            stops.setProperties(propertiesNew);//属性list
+                                                            stops.setLastUpdateDttm(new Date());//Last update time
+                                                            stops.setLastUpdateUser(username);//Last update user
+                                                            stops.setProperties(propertiesNew);//Attribute list
                                                             stops.setFlow(flow);
                                                             updateStops.add(stops);
                                                         }
@@ -730,20 +743,20 @@ public class FlowServiceImpl implements IFlowService {
                                             }
 
                                         } else {
-                                            stops.setEnableFlag(false);//逻辑删除标识
-                                            stops.setLastUpdateDttm(new Date());//最后跟新时间
-                                            stops.setLastUpdateUser(username);//最后更新人
-                                            //stops的属性
+                                            stops.setEnableFlag(false);//Tombstone ID
+                                            stops.setLastUpdateDttm(new Date());//
+                                            stops.setLastUpdateUser(username);//Last update user
+                                            //stops property
                                             List<Property> properties = stops.getProperties();
-                                            // 判空
+                                            // Whether the judgment is empty
                                             if (null != properties) {
                                                 List<Property> propertyList = new ArrayList<Property>();
-                                                // 循环进行逻辑删除属性
+                                                // Loop tombstone properties
                                                 for (Property property : properties) {
                                                     if (null != property) {
-                                                        property.setEnableFlag(false);//逻辑删除标识
-                                                        property.setLastUpdateDttm(new Date());//最后跟新时间
-                                                        property.setLastUpdateUser(username);//最后更新人
+                                                        property.setEnableFlag(false);//Tombstone ID
+                                                        property.setLastUpdateDttm(new Date());//Last update time
+                                                        property.setLastUpdateUser(username);//Last update user
                                                         propertyList.add(property);
                                                     }
                                                 }
@@ -753,7 +766,7 @@ public class FlowServiceImpl implements IFlowService {
                                         }
                                     }
                                 }
-                                // 修改保存updateStops
+                                // Modify save updateStops
                                 for (Stops stops : updateStops) {
                                     if (null != stops) {
                                         int updateStopsNum = stopsMapper.updateStops(stops);
@@ -766,27 +779,27 @@ public class FlowServiceImpl implements IFlowService {
                                     }
                                 }
                             } else {
-                                // 数据库中的stops数据为空
-                                logger.info("数据库中的stops数据为空");
+                                // The stops data in the database is empty.
+                                logger.info("The stops data in the database is empty.");
                             }
                         }
                     } else {
                         statefulRtnBase = updateMxGraphRtn;
                     }
                 } else {
-                    statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("修改保存失败flow");
+                    statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("Modify save failed flow");
                 }
             } else {
-                statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("mxGraphModelVo为空，修改失败");
+                statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("mxGraphModelVo is empty, modification failed");
             }
         } else {
-            statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("flowId查不到对应的flow，修改失败");
+            statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("The flowId cannot find the corresponding flow, and the modification fails.");
         }
         return statefulRtnBase;
     }
 
     /**
-     * 替换端口属性
+     * Replace port properties
      *
      * @param prot
      * @param property
@@ -808,7 +821,7 @@ public class FlowServiceImpl implements IFlowService {
     }
 
     /**
-     * 根据MxCellVoList中的内容生成stops的list
+     * Generate a list of 'stops' based on the contents of 'MxCellVoList'
      *
      * @param objectStops
      * @param flow
@@ -818,7 +831,7 @@ public class FlowServiceImpl implements IFlowService {
         List<Stops> stopsList = null;
         if (null != objectStops && objectStops.size() > 0) {
             stopsList = new ArrayList<Stops>();
-            // 循环objectStops
+            // loop objectStops
             for (MxCellVo mxCellVo : objectStops) {
                 Stops stops = this.stopsTemplateToStops(mxCellVo);
                 if (null != stops) {
@@ -835,7 +848,7 @@ public class FlowServiceImpl implements IFlowService {
     }
 
     /**
-     * mxCellVo转stops
+     * mxCellVo to stops
      *
      * @param mxCellVo
      * @return
@@ -845,26 +858,26 @@ public class FlowServiceImpl implements IFlowService {
         String username = (null != user) ? user.getUsername() : "-1";
         Stops stops = null;
         if (null != mxCellVo) {
-            // 取出style属性(属性中有stops的name)
-            // stops的style属性例子
-            // （image;html=1;labelBackgroundColor=#ffffff;image=/grapheditor/stencils/clipart/test_stops_1_128x128.png）
-            // 我们需要的是"test_stops_1"
+            // Take out the style attribute (the name of the stop in the attribute)
+            // Example of the style attribute of stops
+            // (image;html=1;labelBackgroundColor=#ffffff;image=/grapheditor/stencils/clipart/test_stops_1_128x128.png)
+            // What we need is "test_stops_1"
             String style = mxCellVo.getStyle();
             if (StringUtils.isNotBlank(style)) {
-                // 通过截取关键字来判断是否为stops
+                // Determine whether it is a stop by intercepting keywords
                 String[] split = style.split("_128x128.");
-                // 当有且仅有一个关键字("_128x128.")时则认为是stops
+                // Think of stops when there is one and only one keyword ("_128x128.")
                 if (null != split && split.length == 2) {
-                    // 取数组第一位继续截取
+                    // Take the first bit of the array and continue to intercept
                     String string = split[0];
                     String[] split2 = string.split("/");
-                    // 判空，取数组最后一位（stops的name）
+                    // Empty, take the last bit of the array (the name of the stops)
                     if (null != split2 && split2.length > 0) {
-                        // 取到stops的名字
+                        // Get the name of the stops
                         String stopsName = split2[split2.length - 1];
-                        // 根据stops的Name查询stops模板
+                        // Query the stops template according to the name of the stops
                         StopsTemplate stopsTemplate = this.getStopsTemplate(stopsName);
-                        // 模板判空
+                        // Whether to judge whether the template is empty
                         if (null != stopsTemplate) {
                             stops = new Stops();
                             BeanUtils.copyProperties(stopsTemplate, stops);
@@ -890,12 +903,12 @@ public class FlowServiceImpl implements IFlowService {
                                     property.setEnableFlag(true);
                                     property.setStops(stops);
                                     property.setCustomValue(propertyTemplate.getDefaultValue());
-                                    //表明是select
+                                    //Indicates "select"
                                     if (propertyTemplate.getAllowableValues().contains(",") && propertyTemplate.getAllowableValues().length() > 4) {
                                         property.setIsSelect(true);
-                                        //判断select中是否存在默认值
+                                        //Determine if there is a default value in "select"
                                         if (!propertyTemplate.getAllowableValues().contains(propertyTemplate.getDefaultValue())) {
-                                            //如果不存在则情况默认值
+                                            //Default value if not present
                                             property.setCustomValue("");
                                         }
                                     } else {
@@ -914,14 +927,14 @@ public class FlowServiceImpl implements IFlowService {
     }
 
     /**
-     * 根据stopsName查询stops
+     * Query 'stops' according to 'stopsName'
      *
      * @param stopsName
      * @return
      */
     private StopsTemplate getStopsTemplate(String stopsName) {
         StopsTemplate stopsTemplate = null;
-        // 根据stops的Name查询stops模板
+        // Query the stops template according to the name of the stops
         List<StopsTemplate> stopsTemplateList = stopsTemplateMapper.getStopsTemplateByName(stopsName);
         if (null != stopsTemplateList && stopsTemplateList.size() > 0) {
             stopsTemplate = stopsTemplateList.get(0);
@@ -930,7 +943,7 @@ public class FlowServiceImpl implements IFlowService {
     }
 
     /**
-     * 保存并处理mxCellList
+     * Save and process mxCellList
      *
      * @param mxCellVoList
      * @param mxCellList
@@ -941,121 +954,121 @@ public class FlowServiceImpl implements IFlowService {
         String username = (null != user) ? user.getUsername() : "-1";
         StatefulRtnBase statefulRtnBase = new StatefulRtnBase();
 
-        // 如果mxCellList为空，则修改失败，因为此方法只处理修改的，不负责新增
+        // If the mxCellList is empty, the modification fails because this method only processes the modifications and is not responsible for adding
         if (null != mxCellList && mxCellList.size() > 0) {
 
-            // 包括修改的和逻辑删除的
+            // Including modified and tombstoned
             List<MxCell> updateMxCellList = new ArrayList<MxCell>();
-            // 将页面传过来的List转为map 键为pageId
+            // Convert the list passed to the page to map key for pageId
             Map<String, MxCellVo> mxCellVoMap = new HashMap<String, MxCellVo>();
-            // 判空
+            // Determine if it is empty
             if (null != mxCellVoList) {
                 for (MxCellVo mxCell : mxCellVoList) {
                     mxCellVoMap.put(mxCell.getPageId(), mxCell);
                 }
             }
-            // 循环页面数据 进行分类(需要修改和逻辑删除的)
+            // Loop page data for classification (requires modification and tombstone)
             for (MxCell mxCell : mxCellList) {
                 if (null != mxCell) {
-                    // 画板上的图形ID(pageId)
+                    // Graphic ID (pageId) on the artboard
                     String pageId = mxCell.getPageId();
-                    // 根据pageId去map取，
-                    // 取到说明数据库中有页面也有，做修改操作，
-                    // 否则说明数据库有页面没有，做逻辑删除
+                    // According to the pageId to go to map,
+                    // Get the description database has a page, do the modification operation,
+                    // Otherwise, the database has no pages, and the logical deletion is performed.
                     MxCellVo mxCellVo = mxCellVoMap.get(pageId);
                     if (null != mxCellVo) {
-                        // 将mxCellVo中的值copy到mxCell中
+                        // Copy the value in mxCellVo to mxCell
                         BeanUtils.copyProperties(mxCellVo, mxCell);
-                        // mxCell 的基本属性
-                        mxCell.setEnableFlag(true);// 是否有效
-                        mxCell.setLastUpdateUser(username);// 最后更新人
-                        mxCell.setLastUpdateDttm(new Date());// 最后更新时间
+                        // mxCell basic properties
+                        mxCell.setEnableFlag(true);// Tombstone ID
+                        mxCell.setLastUpdateUser(username);// last update user
+                        mxCell.setLastUpdateDttm(new Date());// last update time
 
-                        // 修改时不用处理外键，除非取消或修改外键
-                        // mxGraphModel外键
+                        // Do not handle foreign keys when modifying, unless you cancel or modify the foreign key
+                        // mxGraphModel foreign key
                         // mxCell.setMxGraphModel(mxGraphModel);
                         MxGeometryVo mxGeometryVo = mxCellVo.getMxGeometryVo();
                         MxGeometry mxGeometry = mxCell.getMxGeometry();
                         if (null != mxGeometry) {
                             if (null != mxGeometryVo) {
-                                // 将 mxGeometryVo 中的值copy到 mxGeometry 中
+                                // Copy the value from mxGeometryVo into mxGeometry
                                 BeanUtils.copyProperties(mxGeometryVo, mxGeometry);
 
-                                // setmxGraphModel基本属性
-                                mxGeometry.setLastUpdateUser(username);// 最后更新人
-                                mxGeometry.setLastUpdateDttm(new Date());// 最后更新时间
-                                mxGeometry.setEnableFlag(true);// 是否有效
+                                // setmxGraphModel basic properties
+                                mxGeometry.setLastUpdateUser(username);// last update user
+                                mxGeometry.setLastUpdateDttm(new Date());// last update time
+                                mxGeometry.setEnableFlag(true);// Tombstone ID
                                 mxGeometry.setMxCell(mxCell);
                             }
                         }
                     } else {
-                        //逻辑删
+                        //Logical deletion
                         mxCell.setEnableFlag(false);
                         mxCell.setLastUpdateDttm(new Date());
                         mxCell.setLastUpdateUser(username);
                     }
-                    // 填入修改list
+                    // Fill in the modified list
                     updateMxCellList.add(mxCell);
                 }
             }
             if (null != updateMxCellList && updateMxCellList.size() > 0) {
                 for (MxCell mxCell : updateMxCellList) {
                     if (null != mxCell) {
-                        // 保存mxCell
+                        // save mxCell
                         int updateMxCell = mxCellMapper.updateMxCell(mxCell);
                         if (updateMxCell > 0) {
                             MxGeometry mxGeometry = mxCell.getMxGeometry();
                             if (null != mxGeometry) {
-                                // 取修改保存mxGeometry
+                                // Take the modified save mxGeometry
                                 int updateMxGeometry = mxGeometryMapper.updateMxGeometry(mxGeometry);
                                 if (updateMxGeometry > 0) {
-                                    logger.info("mxGeometry保存成功ID:" + mxGeometry.getId());
+                                    logger.info("mxGeometry saves the success ID:" + mxGeometry.getId());
                                 } else {
-                                    logger.error("mxGeometryVo保存失败：对应的mxCell的pageId(" + mxCell.getPageId() + "),mxCellValue(" + mxCell.getValue() + ")", new Exception("mxGeometryVo保存失败"));
+                                    logger.error("mxGeometryVo save failed：The corresponding mxCell's pageId(" + mxCell.getPageId() + "),mxCellValue(" + mxCell.getValue() + ")", new Exception("\"mxGeometryVo save failed"));
                                 }
                             }
                         } else {
-                            logger.error("mxCellVo保存失败：pageId(" + mxCell.getPageId() + "),name(" + mxCell.getValue() + ")", new Exception("mxCellVo保存失败"));
+                            logger.error("mxGeometryVo save failed：pageId(" + mxCell.getPageId() + "),name(" + mxCell.getValue() + ")", new Exception("mxGeometryVo save failed"));
                         }
                     }
                 }
             }
         } else {
-            statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("数据库mxCellList为空，修改失败");
+            statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("The database mxCellList is empty and the modification failed.");
         }
         return statefulRtnBase;
     }
 
     /**
-     * 保存addStopsList到数据库
+     * Save addStopsList to the database
      *
      * @param addStopsList
      */
     private void addStopList(List<Stops> addStopsList) {
-        // stopsList判空
-        if (null != addStopsList && addStopsList.size() > 0) {
-            // 保存stopsList
-            int addStopsListNum = stopsMapper.addStopsList(addStopsList);
-            if (addStopsListNum > 0) {
-                for (Stops stops : addStopsList) {
-                    // 取出propertyList
-                    List<Property> propertyList = stops.getProperties();
-                    // 判空propertyList
-                    if (null != propertyList && propertyList.size() > 0) {
-                        // 保存propertyList
-                        int addPropertyList = propertyMapper.addPropertyList(propertyList);
-                        if (addPropertyList <= 0) {
-                            logger.error("Property保存失败：stopsId(" + stops.getId() + "),stopsName(" + stops.getName() + ")", new Exception("Property保存失败"));
-                        }
-                    } else {
-                        logger.info("addPropertyList为空,不保存");
-                    }
-                }
-            } else {
-                logger.error("新建保存失败addStopsList", new Exception("新建保存失败addStopsList"));
+        // Determine if the stopsList is empty
+        if (null == addStopsList || addStopsList.size() <= 0) {
+            logger.info("addStopsList is empty,do not save");
+            return;
+        }
+        // save stopsList
+        int addStopsListNum = stopsMapper.addStopsList(addStopsList);
+        if (addStopsListNum <= 0) {
+            logger.error("New save failed addStopsList", new Exception("New save failed addStopsList"));
+            return;
+        }
+        for (Stops stops : addStopsList) {
+            // Determine if the propertyList is empty
+            List<Property> propertyList = stops.getProperties();
+            // Determine if the propertyList is empty
+            if (null == propertyList || propertyList.size() <= 0) {
+                logger.info("addPropertyList is empty,do not save");
+                continue;
             }
-        } else {
-            logger.info("addStopsList为空,不保存");
+            // save propertyList
+            int addPropertyList = propertyMapper.addPropertyList(propertyList);
+            if (addPropertyList <= 0) {
+                logger.error("Property save failed：stopsId(" + stops.getId() + "),stopsName(" + stops.getName() + ")", new Exception("Property save failed"));
+            }
         }
     }
 
@@ -1087,7 +1100,7 @@ public class FlowServiceImpl implements IFlowService {
         UserVo currentUser = SessionUserUtil.getCurrentUser();
         if (null != offset && null != limit) {
             Page page = PageHelper.startPage(offset, limit);
-            flowMapper.getFlowListParma(param);
+            flowMapper.getFlowListParam(param);
             rtnMap = PageHelperUtils.setDataTableParam(page, rtnMap);
         }
         return JsonUtils.toJsonNoException(rtnMap);
@@ -1096,7 +1109,7 @@ public class FlowServiceImpl implements IFlowService {
     @Override
     public String getFlowExampleList() {
         Map<String, Object> rtnMap = new HashMap<String, Object>();
-        rtnMap.put("code", 0);
+        rtnMap.put("code", 500);
         List<FlowVo> flowVoList = new ArrayList<>();
         List<Flow> flowExampleList = flowMapper.getFlowExampleList();
         // list判空
@@ -1107,66 +1120,216 @@ public class FlowServiceImpl implements IFlowService {
                 flowVo.setName(flow.getName());
                 flowVoList.add(flowVo);
             });
-            rtnMap.put("code", 1);
+            rtnMap.put("code", 200);
             rtnMap.put("flowExampleList", flowVoList);
         }
         return JsonUtils.toJsonNoException(rtnMap);
     }
 
     @Override
-    public String runFlow(String flowId) {
-        Map<String, String> rtnMap = new HashMap<String, String>();
-        rtnMap.put("code", "0");
-        String errMsg = "";
-        if (StringUtils.isNotBlank(flowId)) {
-            UserVo currentUser = SessionUserUtil.getCurrentUser();
-            // 根据flowId查询flow
-            Flow flowById = this.getFlowById(flowId);
-            // addFlow不为空且ReqRtnStatus的值为true,则保存成功
-            if (null != flowById) {
-                Process process = ProcessUtils.flowToProcess(flowById, currentUser);
-                if (null != process) {
-                    int addProcess = processTransaction.addProcess(process);
-                    if (addProcess > 0) {
-                        String checkpoint = "";
-                        List<Stops> stopsList = flowById.getStopsList();
-                        for (Stops stops : stopsList) {
-                            stops.getCheckpoint();
-                            if (null != stops.getCheckpoint() && stops.getCheckpoint()) {
-                                if (StringUtils.isNotBlank(checkpoint)) {
-                                    checkpoint = (checkpoint + ",");
-                                }
-                                checkpoint = (checkpoint + stops.getName());
-                            }
-                        }
-                        StatefulRtnBase startProcess = startFlowImpl.startProcess(process, checkpoint, currentUser);
-                        if (null != startProcess && startProcess.isReqRtnStatus()) {
-                            rtnMap.put("code", "1");
-                            rtnMap.put("processId", process.getId());
-                            rtnMap.put("errMsg", "保存到process成功，调用接口成功，更新成功");
-                            logger.info("调用接口并保存成功");
-                        } else {
-                            processTransaction.updateProcessEnableFlag(process.getId(), currentUser);
-                            errMsg = "调用接口并保存失败";
-                            rtnMap.put("errMsg", errMsg);
-                            logger.warn(errMsg);
-                        }
-                    } else {
-                        logger.warn("Save failed, transform failed");
-                    }
-                } else {
-                    logger.warn("Conversion failed");
+    public String runFlow(String flowId, String runMode) {
+        Map<String, Object> rtnMap = new HashMap<>();
+        rtnMap.put("code", 500);
+        UserVo currentUser = SessionUserUtil.getCurrentUser();
+        if (null == currentUser) {
+            rtnMap.put("errorMsg", "illegal user");
+            logger.info("illegal user");
+            return JsonUtils.toJsonNoException(rtnMap);
+        }
+        if (StringUtils.isBlank(flowId)) {
+            rtnMap.put("errorMsg", "FlowId is null");
+            logger.warn("FlowId is null");
+            return JsonUtils.toJsonNoException(rtnMap);
+        }
+        // find flow by flowId
+        Flow flowById = this.getFlowById(flowId);
+        // addFlow is not empty and the value of ReqRtnStatus is true, then the save is successful.
+        if (null == flowById) {
+            rtnMap.put("errorMsg", "Flow with FlowId" + flowId + "was not queried");
+            logger.warn("Flow with FlowId" + flowId + "was not queried");
+            return JsonUtils.toJsonNoException(rtnMap);
+        }
+        Process process = ProcessUtils.flowToProcess(flowById, currentUser);
+        if (null == process) {
+            rtnMap.put("errorMsg", "Conversion failed");
+            logger.warn("Conversion failed");
+            return JsonUtils.toJsonNoException(rtnMap);
+        }
+        RunModeType runModeType = RunModeType.RUN;
+        if (StringUtils.isNotBlank(runMode)) {
+            runModeType = RunModeType.selectGender(runMode);
+        }
+        process.setRunModeType(runModeType);
+        int addProcess = processTransaction.addProcess(process);
+        if (addProcess <= 0) {
+            rtnMap.put("errorMsg", "Save failed, transform failed");
+            logger.warn("Save failed, transform failed");
+            return JsonUtils.toJsonNoException(rtnMap);
+        }
+        String checkpoint = "";
+        List<Stops> stopsList = flowById.getStopsList();
+        for (Stops stops : stopsList) {
+            stops.getIsCheckpoint();
+            if (null != stops.getIsCheckpoint() && stops.getIsCheckpoint()) {
+                if (StringUtils.isNotBlank(checkpoint)) {
+                    checkpoint = (checkpoint + ",");
                 }
-            } else {
-                errMsg = "未查询到flowId为" + flowId + "的flow";
-                rtnMap.put("errMsg", errMsg);
-                logger.warn(errMsg);
+                checkpoint = (checkpoint + stops.getName());
             }
-        } else {
-            errMsg = "flowId为空";
-            rtnMap.put("errMsg", errMsg);
-            logger.warn(errMsg);
+        }
+        Map<String, Object> stringObjectMap = flowImpl.startFlow(process, checkpoint, runModeType);
+        if (null == stringObjectMap || 200 != ((Integer) stringObjectMap.get("code"))) {
+            processTransaction.updateProcessEnableFlag(process.getId(), currentUser);
+            String errorMsg = (String) stringObjectMap.get("errorMsg");
+            rtnMap.put("errorMsg", errorMsg);
+            logger.warn(errorMsg);
+        }
+        Process processById = processTransaction.getProcessById(process.getId());
+        processById.setAppId((String) stringObjectMap.get("appId"));
+        processById.setProcessId((String) stringObjectMap.get("appId"));
+        processById.setState(ProcessState.STARTED);
+        processById.setLastUpdateUser(currentUser.getUsername());
+        processById.setLastUpdateDttm(new Date());
+        int updateProcess = processTransaction.updateProcess(processById);
+        if (updateProcess <= 0) {
+            rtnMap.put("errorMsg", "save process failed,update failed");
+            return JsonUtils.toJsonNoException(rtnMap);
+        }
+        rtnMap.put("code", 200);
+        rtnMap.put("processId", process.getId());
+        rtnMap.put("errorMsg", "save process success,update success");
+        logger.info("save process success,update success");
+        return JsonUtils.toJsonNoException(rtnMap);
+    }
+
+    @Override
+    @Transactional
+    public String updateFlowBaseInfo(FlowVo flowVo) {
+        Map<String, Object> rtnMap = new HashMap<>();
+        rtnMap.put("code", 500);
+        UserVo currentUser = SessionUserUtil.getCurrentUser();
+        if (null == currentUser) {
+            rtnMap.put("errorMsg", "illegal user");
+            logger.info("illegal user");
+            return JsonUtils.toJsonNoException(rtnMap);
+        }
+        if (null == flowVo || StringUtils.isBlank(flowVo.getId())) {
+            rtnMap.put("errorMsg", "Parameter passed error");
+            logger.info("Parameter passed error");
+            return JsonUtils.toJsonNoException(rtnMap);
+        }
+        Flow flowById = flowDomain.getFlowById(flowVo.getId());
+        if (null == flowById) {
+            rtnMap.put("errorMsg", "Database save failed");
+            logger.info("Database save failed");
+            return JsonUtils.toJsonNoException(rtnMap);
+        }
+        flowById.setDescription(flowVo.getDescription());
+        flowById.setDriverMemory(flowVo.getDriverMemory());
+        flowById.setExecutorCores(flowVo.getExecutorCores());
+        flowById.setExecutorMemory(flowVo.getExecutorMemory());
+        flowById.setExecutorNumber(flowVo.getExecutorNumber());
+        flowById.setLastUpdateDttm(new Date());
+        flowById.setLastUpdateUser(currentUser.getUsername());
+        flowDomain.saveOrUpdate(flowById);
+        rtnMap.put("code", 200);
+        rtnMap.put("flowVo", flowVo);
+        rtnMap.put("errorMsg", "successfully saved");
+        logger.info("The 'Flow' attribute was successfully modified.");
+        return JsonUtils.toJsonNoException(rtnMap);
+    }
+
+    @Override
+    @Transactional
+    public String updateFlowNameById(String id, String flowGroupId, String flowName, String pageId) {
+        Map<String, Object> rtnMap = new HashMap<>();
+        rtnMap.put("code", 500);
+        UserVo user = SessionUserUtil.getCurrentUser();
+        if (null == user) {
+            rtnMap.put("errorMsg", "illegal user");
+            logger.info("illegal user");
+            return JsonUtils.toJsonNoException(rtnMap);
+        }
+        if (StringUtils.isAnyEmpty(id, flowName, flowGroupId, pageId)) {
+            rtnMap.put("errorMsg", "The incoming parameter is empty");
+            logger.info("The incoming parameter is empty");
+            return JsonUtils.toJsonNoException(rtnMap);
+        }
+        FlowGroup flowGroupById = flowGroupDomain.getFlowGroupById(flowGroupId);
+        if (null == flowGroupById) {
+            rtnMap.put("errorMsg", "flow information is empty");
+            logger.info("Flow query is null,flowGroupId:" + flowGroupId);
+            return JsonUtils.toJsonNoException(rtnMap);
+        }
+        MxGraphModel mxGraphModel = flowGroupById.getMxGraphModel();
+        if (null == mxGraphModel) {
+            rtnMap.put("errorMsg", "No flow information,update failed ");
+            logger.info(flowGroupById.getId() + "No flow information,update failed");
+            return JsonUtils.toJsonNoException(rtnMap);
+        }
+        List<MxCell> root = mxGraphModel.getRoot();
+        if (null == root || root.size() <= 0) {
+            rtnMap.put("errorMsg", "No flow information,update failed ");
+            logger.info(flowGroupById.getId() + "No flow information,update failed");
+            return JsonUtils.toJsonNoException(rtnMap);
+        }
+        //Check if name is the same name
+        String checkResult = flowDomain.getFlowIdByNameAndFlowGroupId(flowGroupId, flowName);
+        if (StringUtils.isNotBlank(checkResult)) {
+            rtnMap.put("errorMsg", "Name already exists");
+            logger.info(flowName + "The name has been repeated and the save failed.");
+            return JsonUtils.toJsonNoException(rtnMap);
+        }
+        boolean updateStopsNameById = this.updateFlowNameById(id, flowName);
+        if (!updateStopsNameById) {
+            logger.info("Modify flowName failed");
+            rtnMap.put("errorMsg", "Modify flowName failed");
+            return JsonUtils.toJsonNoException(rtnMap);
+        }
+        String username = user.getUsername();
+        for (MxCell mxCell : root) {
+            if (null != mxCell) {
+                if (mxCell.getPageId().equals(pageId)) {
+                    mxCell.setValue(flowName);
+                    mxCell.setLastUpdateDttm(new Date());
+                    mxCell.setLastUpdateUser(username);
+                    mxCellDomain.saveOrUpdate(mxCell);
+                    MxGraphModelVo mxGraphModelVo = FlowXmlUtils.mxGraphModelPoToVo(mxGraphModel);
+                    // Convert the mxGraphModelVo from the query to XML
+                    String loadXml = FlowXmlUtils.mxGraphModelToXml(mxGraphModelVo);
+                    loadXml = StringUtils.isNotBlank(loadXml) ? loadXml : "";
+                    rtnMap.put("XmlData", loadXml);
+                    rtnMap.put("code", 200);
+                    rtnMap.put("errorMsg", "Successfully modified");
+                    logger.info("Successfully modified");
+                    rtnMap.put("errorMsg", "Successfully modified");
+                    break;
+                }
+            }
         }
         return JsonUtils.toJsonNoException(rtnMap);
+    }
+
+    @Override
+    @Transactional
+    public Boolean updateFlowNameById(String id, String flowName) {
+        UserVo user = SessionUserUtil.getCurrentUser();
+        String username = (null != user) ? user.getUsername() : "-1";
+        if (StringUtils.isNotBlank(id) && StringUtils.isNotBlank(flowName)) {
+            Flow flowById = flowDomain.getFlowById(id);
+            if (null != flowById) {
+                flowById.setLastUpdateUser(username);
+                flowById.setLastUpdateDttm(new Date());
+                flowById.setName(flowName);
+                flowDomain.saveOrUpdate(flowById);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public String getMaxFlowPageIdByFlowGroupId(String flowGroupId) {
+        return flowMapper.getMaxFlowPageIdByFlowGroupId(flowGroupId);
     }
 }

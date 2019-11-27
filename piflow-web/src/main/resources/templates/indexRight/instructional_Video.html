@@ -7,12 +7,12 @@
 
     <video muted autoplay="autoplay"
            loop="loop"
-           th:src="'/piflow-web/videos/' + ${videoName}"
+           src="'/piflow-web/media/sample.mp4'"
            controls="controls"
            style="height: -webkit-fill-available;">
-        您的浏览器不支持 video 标签。
+        Your browser does not support the video TAB.
     </video>
 </div>
-<script th:include="Macro/csrfTokeHeadMacroScript :: csrfTokeHeadMacroScript"/>
+<script th:include="Macro/csrfTokeHeadMacro :: csrfTokeHeadMacroScript"/>
 </body>
 </html>

@@ -5,11 +5,11 @@ import com.nature.base.TextureEnumSerializer;
 
 @JsonSerialize(using = TextureEnumSerializer.class)
 public enum StopState {
-    INIT("INIT", "初始化"),
-    STARTED("STARTED", "启动"),
-    COMPLETED("COMPLETED", "完成"),
-    FAILED("FAILED", "失败"),
-    KILLED("KILLED","停止");
+    INIT("INIT", "init"),
+    STARTED("STARTED", "started"),
+    COMPLETED("COMPLETED", "completed"),
+    FAILED("FAILED", "failed"),
+    KILLED("KILLED","killed");
 
     private final String value;
     private final String text;

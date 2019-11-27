@@ -21,7 +21,7 @@ import java.sql.Statement;
 
 
 @Configuration
-@Primary //在同样的DataSource中，首先使用被标注的DataSource
+@Primary //In the same "DataSource", first use the labeled "DataSource"
 public class DataSourceConfig {
 
     private Logger logger = LoggerUtil.getLogger();
@@ -35,24 +35,32 @@ public class DataSourceConfig {
     private String username;
     @Value("${spring.datasource.password}")
     private String password;
+    @Value("sysParam.whitelist")
+    private String whitelist;
+    @Value("sysParam.blacklist")
+    private String blacklist;
+    @Value("sysParam.druidUser")
+    private String druidUser;
+    @Value("sysParam.druidPassword")
+    private String druidPassword;
 
     /**
-     *  主要实现WEB监控的配置处理
+     *  Configuration processing of WEB monitoring
      */
     @Bean
     public ServletRegistrationBean druidServlet() {
-        // 现在要进行druid监控的配置处理操作
+        // Now we're going to do configuration processing for'druid'monitoring
         ServletRegistrationBean servletRegistrationBean = new ServletRegistrationBean(
                 new StatViewServlet(), "/druid/*");
-        // 白名单,多个用逗号分割， 如果allow没有配置或者为空，则允许所有访问
-        servletRegistrationBean.addInitParameter("allow", "192.168.254.196,127.0.0.1");
-        // 黑名单,多个用逗号分割 (共同存在时，deny优先于allow)
-        servletRegistrationBean.addInitParameter("deny", "192.168.1.110");
-        // 控制台管理用户名
-        servletRegistrationBean.addInitParameter("loginUsername", "druid");
-        // 控制台管理密码
-        servletRegistrationBean.addInitParameter("loginPassword", "druid");
-        // 是否可以重置数据源，禁用HTML页面上的“Reset All”功能
+        // White List, with multiple commas, allows all access if'allow'is not configured or empty
+        servletRegistrationBean.addInitParameter("allow", whitelist);
+        // Blacklists, multiple commas (when co-exist,'deny'takes precedence over'allow')
+        servletRegistrationBean.addInitParameter("deny", blacklist);
+        // Console Management User Name
+        servletRegistrationBean.addInitParameter("loginUsername", druidUser);
+        // Console Management Password
+        servletRegistrationBean.addInitParameter("loginPassword", druidPassword);
+        // Can you reset the data source and disable the "Reset All" function on HTML pages?
         servletRegistrationBean.addInitParameter("resetEnable", "false");
         return servletRegistrationBean;
     }
@@ -61,9 +69,9 @@ public class DataSourceConfig {
     public FilterRegistrationBean filterRegistrationBean() {
         FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
         filterRegistrationBean.setFilter(new WebStatFilter());
-        //所有请求进行监控处理
+        //All requests are monitored and processed
         filterRegistrationBean.addUrlPatterns("/*");
-        //添加不需要忽略的格式信息
+        //Add format information that you don't need to ignore
         filterRegistrationBean.addInitParameter("exclusions", "*.js,*.gif,*.jpg,*.css,/druid/*");
         return filterRegistrationBean;
     }

@@ -5,7 +5,6 @@ import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.SqlUtils;
 import com.nature.base.vo.UserVo;
 import com.nature.component.flow.model.Property;
-import com.nature.component.flow.model.Stops;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
 
@@ -31,6 +30,8 @@ public class PropertyMapperProvider {
     private Integer sensitive;
     private String stopsId;
     private Integer isSelect;
+    private Integer isLocked;
+    private long propertySort;
 
     private void preventSQLInjectionProperty(Property property) {
         if (null != property && StringUtils.isNotBlank(property.getLastUpdateUser())) {
@@ -63,6 +64,8 @@ public class PropertyMapperProvider {
             String stopsIdStr = (null != property.getStops() ? property.getStops().getId() : null);
             this.stopsId = (null != stopsIdStr ? SqlUtils.preventSQLInjection(stopsIdStr) : null);
             this.isSelect = (null == property.getIsSelect() ? null : (property.getIsSelect() ? 1 : 0));
+            this.isLocked = (null == property.getIsLocked() ? null : (property.getIsLocked() ? 1 : 0));
+            this.propertySort = (null != property.getPropertySort() ? property.getPropertySort() : 0L);
         }
     }
 
@@ -83,12 +86,14 @@ public class PropertyMapperProvider {
         this.sensitive = null;
         this.stopsId = null;
         this.isSelect = null;
+        this.isLocked = null;
+        this.propertySort = 0L;
     }
 
     /**
-     * 插入list<Property> 注意拼sql的方法必须用map接 Param内容为键值
+     * Insert list<Property> Note that the method of spelling sql must use Map to connect Param content to key value.
      *
-     * @param map (内容： 键为propertyList,值为List<Property>)
+     * @param map (Content: The key is propertyList and the value is List<Property>)
      * @return
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -114,7 +119,9 @@ public class PropertyMapperProvider {
             sqlStrBuffer.append("property_required,");
             sqlStrBuffer.append("property_sensitive,");
             sqlStrBuffer.append("fk_stops_id,");
-            sqlStrBuffer.append("is_select");
+            sqlStrBuffer.append("is_select,");
+            sqlStrBuffer.append("is_locked,");
+            sqlStrBuffer.append("property_sort");
             sqlStrBuffer.append(") ");
             sqlStrBuffer.append("values");
             int i = 0;
@@ -128,7 +135,7 @@ public class PropertyMapperProvider {
                 if (StringUtils.isBlank(crtUser)) {
                     crtUser = SqlUtils.preventSQLInjection("-1");
                 }
-                // 拼接时位置顺序不能错
+                // You can't make a mistake when you splice
                 sqlStrBuffer.append("(");
                 sqlStrBuffer.append(id + ",");
                 sqlStrBuffer.append(crtDttmStr + ",");
@@ -145,7 +152,9 @@ public class PropertyMapperProvider {
                 sqlStrBuffer.append(required + ",");
                 sqlStrBuffer.append(sensitive + ",");
                 sqlStrBuffer.append(stopsId + ",");
-                sqlStrBuffer.append(isSelect);
+                sqlStrBuffer.append(isSelect + ",");
+                sqlStrBuffer.append(isLocked + ",");
+                sqlStrBuffer.append(propertySort);
                 if (i != propertyList.size()) {
                     sqlStrBuffer.append("),");
                 } else {
@@ -172,24 +181,26 @@ public class PropertyMapperProvider {
 
             SQL sql = new SQL();
 
-            // INSERT_INTO括号中为数据库表名
+            // INSERT_INTO brackets is table name
             sql.UPDATE("flow_stops_property");
-            // SET中的第一个字符串为数据库中表对应的字段名
+            // The first string in the SET is the name of the field corresponding to the table in the database
 
-            sql.SET("LAST_UPDATE_DTTM = " + lastUpdateDttmStr);
-            sql.SET("LAST_UPDATE_USER = " + lastUpdateUser);
-            sql.SET("VERSION = " + (version + 1));
+            sql.SET("last_update_dttm = " + lastUpdateDttmStr);
+            sql.SET("last_update_user = " + lastUpdateUser);
+            sql.SET("version = " + (version + 1));
 
-            // 处理其他字段
-            sql.SET("ENABLE_FLAG = " +enableFlag);
+            // handle other fields
+            sql.SET("enable_flag = " + enableFlag);
             sql.SET("description = " + description);
-            sql.SET("NAME = " + name);
+            sql.SET("name = " + name);
             sql.SET("allowable_values = " + allowableValues);
             sql.SET("custom_value = " + customValue);
             sql.SET("display_name = " + displayName);
             sql.SET("property_required = " + required);
             sql.SET("property_sensitive = " + sensitive);
-            sql.SET("fk_stops_id = " + stopsId);
+            sql.SET("is_locked = " + isLocked);
+            sql.SET("property_sort = " + propertySort);
+            //sql.SET("fk_stops_id = " + stopsId);
             sql.WHERE("version = " + version);
             sql.WHERE("id = " + id);
             sqlStr = sql.toString();
@@ -202,7 +213,7 @@ public class PropertyMapperProvider {
     }
 
     /**
-     * 逻辑删除
+     * remove
      *
      * @param id
      * @return
@@ -214,10 +225,10 @@ public class PropertyMapperProvider {
         if (StringUtils.isNotBlank(id)) {
             SQL sql = new SQL();
             sql.UPDATE("flow_stops_property");
-            sql.SET("ENABLE_FLAG = 0");
+            sql.SET("enable_flag = 0");
             sql.SET("last_update_user = " + SqlUtils.preventSQLInjection(username));
             sql.SET("last_update_dttm = " + SqlUtils.preventSQLInjection(DateUtils.dateTimesToStr(new Date())));
-            sql.WHERE("ENABLE_FLAG = 1");
+            sql.WHERE("enable_flag = 1");
             sql.WHERE("ID = " + SqlUtils.preventSQLInjection(id));
 
             sqlStr = sql.toString();
@@ -226,7 +237,7 @@ public class PropertyMapperProvider {
     }
 
     /**
-     * 修改stop属性
+     * Modify the stop attribute
      *
      * @param id
      * @return
@@ -242,7 +253,7 @@ public class PropertyMapperProvider {
             sql.SET("last_update_user = " + SqlUtils.preventSQLInjection(username));
             sql.SET("last_update_dttm = " + SqlUtils.preventSQLInjection(DateUtils.dateTimesToStr(new Date())));
             sql.SET("version = " + 1);
-            sql.WHERE("ENABLE_FLAG = 1");
+            sql.WHERE("enable_flag = 1");
             sql.WHERE("id = " + SqlUtils.preventSQLInjection(id));
             sqlStr = sql.toString();
         }

@@ -6,6 +6,8 @@ var fullScreen = $('#fullScreen');
 var pathsCells = [];
 var flag = 0;
 var timerPath;
+var currentStopPageId;
+
 
 function initGraph() {
     var editorUiInit = EditorUi.prototype.init;
@@ -15,7 +17,7 @@ function initGraph() {
         graphGlobal = this.editor.graph;
         thisEditor = this.editor;
 
-        //监控事件
+        //Monitoring event
         graphGlobal.addListener(mxEvent.CELLS_ADDED, function (sender, evt) {
             processListener(evt, "ADD");
             //console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
@@ -61,58 +63,55 @@ function initGraph() {
         document.body.innerHTML = '<center style="margin-top:10%;">Error loading resource files. Please check browser console.</center>';
     });
     EditorUi.prototype.menubarHeight = 48;
-    EditorUi.prototype.menubarShow = true;
+    EditorUi.prototype.menubarShow = false;
     EditorUi.prototype.customToobar = true;
 }
 
-function f() {
-
-}
 
 function findBasicInfo(evt) {
     flag = 0;
     var id = null;
     var value = null;
     var ss = [];
-    //针对不同事件设置值
+    //Set values for different events
     var cells = evt.properties.cells;
     if (null != cells) {
-        //cellsAdded和cellsMoved操作走这里
+        //cellsAdded and cellsMoved operations go here
         value = cells[0].value;
         id = cells[0].id;
     } else {
         cells = evt.properties;
         if (null != cells.cell) {
-            //点击stop操作
+            //Click on the Stop operation
             value = cells.cell.value;
             id = cells.cell.id;
         } else {
-            //第一次给画板添加stop时，拖拽过程获取不到id时
-            queryStopsProperty(maxStopId);
+            //When you add a stop to the artboard for the first time, the drag process does not get the id.
+            queryStopsProperty(maxStopPageId);
         }
     }
     if (typeof (cells) != "undefined" && null != id && "" != id && "null" != id) {
         if (document.getElementById("stopsNameLabel"))
             document.getElementById('stopsNameLabel').value = value;
-        //选中是线的情况
+        //Check the case of Path
         if (cells.cell && cells.cell.edge) {
             if (cells.cell.target && cells.cell.source) {
-                //查询phth
+                //Query Path
                 queryPathInfo(id);
             }
         } else {
-            //查询stops以及属性信息；
+            //Query Stops and attribute information；
             queryStopsProperty(id);
         }
     }
 }
 
-function queryStopsProperty(id) {
+function queryStopsProperty(stopPageId) {
     $.ajax({
         cache: true,
         type: "POST",
         url: "/piflow-web/stops/queryIdInfo",
-        data: {"id": id, "fid": loadId},
+        data: {"stopPageId": stopPageId, "fid": loadId},
         async: true,
         error: function (request) {
             //alert("Jquery Ajax request error!!!");
@@ -120,34 +119,61 @@ function queryStopsProperty(id) {
         },
         success: function (data) {
             if ("" != data) {
-                add(data.propertiesVo, data.id, data.checkpoint);
+                var addParamData = {
+                    data: data.propertiesVo,
+                    stopId: data.id,
+                    isCheckpoint: data.checkpoint,
+                    stopPageId: stopPageId,
+                    isCustomized: data.isCustomized,
+                    stopsCustomizedPropertyVoList: data.stopsCustomizedPropertyVoList,
+                    stopOutPortType: data.outPortType,
+                    dataSourceVo: data.dataSourceVo
+                };
+                //add(data.propertiesVo, data.id, data.checkpoint, stopPageId, data.isCustomized, data.stopsCustomizedPropertyVoList, data.outPortType, data.dataSourceVo);
+                add(addParamData);
                 //  $("#stopsValueInput").data("result",evt);
-                document.getElementById('stopsNameSpan').innerText = data.name;
-                document.getElementById('stopsNameLabel').value = data.name;
-                document.getElementById('stopsNameLabel').name = data.id;
-                document.getElementById('stopsValueInput').value = data.name;
-                document.getElementById('stopsValueInput').name = data.pageId;
-                document.getElementById('stopsDescription').innerText = data.description;
-                document.getElementById('stopsGroups').innerText = data.groups;
-                document.getElementById('stopsBundel').innerText = data.bundel;
-                document.getElementById('stopsVersion').innerText = data.version;
-                document.getElementById('stopSowner').innerText = data.owner;
-                document.getElementById('stopCreateDate').innerText = data.crtDttmString;
+                $('#stopsNameSpan').text(data.name);
+                $('#stopsNameLabel').attr("value", data.name);
+                $('#stopsNameLabel').attr("name", data.id);
+                $('#stopsValueInput').attr("value", data.name);
+                $('#stopsValueInput').attr("name", data.pageId);
+                $('#stopsDescription').text(data.description);
+                $('#stopsGroups').text(data.groups);
+                $('#stopsBundel').text(data.bundel);
+                $('#stopsVersion').text(data.version);
+                $('#stopSowner').text(data.owner);
+                $('#stopCreateDate').text(data.crtDttmString);
+
+                //document.getElementById('stopsNameSpan').innerText = data.name;
+                //document.getElementById('stopsNameLabel').value = data.name;
+                //document.getElementById('stopsNameLabel').name = data.id;
+                //document.getElementById('stopsValueInput').value = data.name;
+                //document.getElementById('stopsValueInput').name = data.pageId;
+                //document.getElementById('stopsDescription').innerText = data.description;
+                //document.getElementById('stopsGroups').innerText = data.groups;
+                //document.getElementById('stopsBundel').innerText = data.bundel;
+                //document.getElementById('stopsVersion').innerText = data.version;
+                //document.getElementById('stopSowner').innerText = data.owner;
+                //document.getElementById('stopCreateDate').innerText = data.crtDttmString;
 
                 /* document.getElementById('stopStateId').innerText = data.state ? data.state : "No state";
                  document.getElementById('stopsStartTimeId').innerText = data.startTimes ? data.startTimes : "No startTime";
                  document.getElementById('stopEndTimeId').innerText = data.stopTimes ? data.stopTimes : "No stopTimes";*/
-                //成功的话去掉定时器
+                //Remove the timer if successful
                 window.clearTimeout(timerPath);
             } else {
-                console.log("stops属性查询null");
+                //STOP attribute query null
+                //console.log("STOP attribute query null");
+                if (!timerPath) {
+                    timerPath = window.setTimeout(queryStopsProperty(stopPageId), 500);
+                }
                 flag++;
                 if (flag > 5) {
                     window.clearTimeout(timerPath);
                     return;
                 }
-                timerPath = window.setTimeout(queryStopsProperty(id), 500);
             }
+            layer.close(layer.index);
         }
     });
 }
@@ -165,7 +191,7 @@ function queryPathInfo(id) {
         },
         success: function (data) {
             var dataMap = JSON.parse(data);
-            if ('0' != dataMap.code) {
+            if (200 === dataMap.code) {
                 var queryInfo = dataMap.queryInfo;
                 if ("" != queryInfo) {
                     $("#AttributeInfoId").hide();
@@ -193,14 +219,16 @@ function queryPathInfo(id) {
                     //document.getElementById('table_idDiv').style.display = 'none';
                 }
             } else {
-                console.log("path属性查询null");
+                console.log("Path attribute query null");
             }
         }
     });
 }
 
-function add(data, stopId, isCheckpointss) {
-    if (data != null && data.length > 0) {
+function add(addParamData) {
+//function add(data, stopId, isCheckpoint, stopPageId, isCustomized, stopsCustomizedPropertyVoList, stopOutPortType, dataSourceVo) {
+    if (addParamData.data && addParamData.data != null && addParamData.data.length > 0) {
+        var data = addParamData.data
         while (divValue.hasChildNodes()) {
             divValue.removeChild(divValue.firstChild);
         }
@@ -208,24 +236,25 @@ function add(data, stopId, isCheckpointss) {
         table.style.borderCollapse = "separate";
         table.style.borderSpacing = "0px 5px";
         table.style.marginLeft = "12px";
+        table.style.width = "97%";
         var tbody = document.createElement("tbody");
         for (var y = 0; y < data.length; y++) {
             var select = document.createElement('select');
-            select.style.width = "290px";
+            //select.style.width = "290px";
             select.style.height = "32px";
             select.setAttribute('id', '' + data[y].name + '');
             select.setAttribute('onblur', 'shiqu("' + data[y].id + '","' + data[y].name + '","select")');
             select.setAttribute('class', 'form-control');
-            if (isExample){
+            if (isExample) {
                 select.setAttribute('disabled', 'disabled');
             }
             var displayName = data[y].displayName;
             var customValue = data[y].customValue;
             var allowableValues = data[y].allowableValues;
             var isSelect = data[y].isSelect;
-            //是否必填
+            //Is it required?
             var required = data[y].required;
-            //如果大于4并且isSelect为true表示有下拉框
+            //If it is greater than 4 and isSelect is true, there is a drop-down box
             if (allowableValues.length > 4 && isSelect) {
                 var selectValue = JSON.parse(allowableValues);
                 var selectInfo = JSON.stringify(selectValue);
@@ -235,13 +264,13 @@ function add(data, stopId, isCheckpointss) {
                 optionDefault.innerHTML = '';
                 optionDefault.setAttribute('selected', 'selected');
                 select.appendChild(optionDefault);
-                //循环给select下来赋值
+                //Loop to assign value to select
                 for (i = 0; i < strs.length; i++) {
                     var option = document.createElement("option");
                     option.style.backgroundColor = "#DBDBDB";
                     option.value = strs[i].replace("\"", "").replace("\"", "").replace("\[", "").replace("\]", "");
                     option.innerHTML = strs[i].replace("\"", "").replace("\"", "").replace("\[", "").replace("\]", "");
-                    //设置默认选中项
+                    //Sets the default selection
                     if (strs[i].indexOf('' + customValue + '') != -1) {
                         option.setAttribute('selected', 'selected');
                     }
@@ -254,8 +283,9 @@ function add(data, stopId, isCheckpointss) {
             displayName.setAttribute('class', 'form-control');
             displayName.setAttribute('id', '' + data[y].id + '');
             displayName.setAttribute('name', '' + data[y].name + '');
-            displayName.setAttribute('onclick', 'stopTabTd(this)');
-            displayName.style.width = "290px";
+            displayName.setAttribute('onclick', 'stopTabTd(this,false)');
+            displayName.setAttribute('locked', data[y].isLocked);
+            // displayName.style.width = "290px";
             displayName.setAttribute('readonly', 'readonly');
             displayName.style.background = "rgb(245, 245, 245)";
             customValue = customValue == 'null' ? '' : customValue;
@@ -266,7 +296,7 @@ function add(data, stopId, isCheckpointss) {
             spanFlag.setAttribute('style', 'color:red');
             mxUtils.write(spanDisplayName, '' + data[y].name + '' + ": ");
             mxUtils.write(spanFlag, '*');
-            //端口不可编辑
+            //Port uneditable
             if ("outports" == data[y].displayName || "inports" == data[y].displayName) {
                 displayName.setAttribute('disabled', 'disabled');
             }
@@ -283,10 +313,10 @@ function add(data, stopId, isCheckpointss) {
             var td2 = document.createElement("td");
             var td3 = document.createElement("td");
             td3.style.width = "25px";
-            //开始appendchild()追加各个元素
+            //Appendchild () appends elements
             td.appendChild(spanDisplayName);
             td3.appendChild(img);
-            //本次循环大于4追加下拉,小于4默认文本框
+            //This loop is greater than 4 append drop-down, less than 4 default text box
             if (allowableValues.length > 4 && isSelect) {
                 td1.appendChild(select);
 
@@ -303,7 +333,7 @@ function add(data, stopId, isCheckpointss) {
             table.appendChild(tbody);
         }
         var btn = mxUtils.button('submit', mxUtils.bind(this, function (evt) {
-            //创建一个数组
+            //Create an array
             var arrayObj = new Array();
             for (var y = 0; y < data.length; y++) {
                 var content = document.getElementById('' + data[y].displayName + '').value;
@@ -338,26 +368,214 @@ function add(data, stopId, isCheckpointss) {
         var checkboxCheckpoint = document.createElement('input');
         checkboxCheckpoint.setAttribute('type', 'checkbox');
         checkboxCheckpoint.setAttribute('id', 'isCheckpoint');
-        if (isCheckpointss) {
+        if (addParamData.isCheckpoint) {
             checkboxCheckpoint.setAttribute('checked', 'checked');
         }
-        if (isExample){
+        if (isExample) {
             checkboxCheckpoint.setAttribute('disabled', 'disabled');
         }
-        checkboxCheckpoint.setAttribute('onclick', 'saveCheckpoints("' + stopId + '")');
+        checkboxCheckpoint.setAttribute('onclick', 'saveCheckpoints("' + addParamData.stopId + '")');
         var spanCheckpoint = document.createElement('span');
-        mxUtils.write(spanCheckpoint, '是否加Checkpoint');
+        mxUtils.write(spanCheckpoint, 'Whether to add Checkpoint');
         btn.style.width = '202px';
         btn.style.marginLeft = '18px';
         btn.style.marginTop = '10px';
+
+
+        var dataSource = '<table style="border-collapse: separate; border-spacing: 0px 5px; margin-left: 12px; width: 97%;">'
+            + '<tbody>'
+            + '<tr>'
+            + '<td style="width: 99px;"><span>dataSource: </span></td>'
+            + '<td style="width: 25px;"><img src="/piflow-web/img/descIcon.png" title="Fill Datasoure" style="cursor: pointer;"></td>'
+            + '<td id="datasourceTdElement">'
+            // + '<select id="datasourceSelectElement" onblur="alert(1);" class="form-control" style="height: 32px;">'
+            + '<select id="datasourceSelectElement" class="form-control" style="height: 32px;">'
+            + '<option value="" selected="selected"></option>'
+            + '<option value="111" style="background-color: rgb(219, 219, 219);">111</option>'
+            + '<option value="222" style="background-color: rgb(219, 219, 219);">111</option>'
+            + '</select>'
+            + '</td>'
+            + '<td><button class="btn" onclick="openDatasourceList()" style="margin-right: 2px;"><i class="glyphicon glyphicon-edit"></i></button></td>'
+            + '</tr>'
+            + '</tbody>'
+            + '</table>'
+            + '<hr>';
+
+        $(divValue).append(dataSource);
         divValue.appendChild(table);
         //divValue.appendChild(btn);
         divValue.appendChild(checkboxCheckpoint);
         divValue.appendChild(spanCheckpoint);
+        $(divValue).append('<hr>');
+        /*
+        $(divValue).append('<div id="fill_datasource_id" style="text-align: right;margin-right: 10px;">'
+            + '<input type="button" style="background: #1A8B5F;" class="btn btn-success" '
+            + 'onclick="getDatasourceList(\'' + addParamData.stopId + '\',\'' + addParamData.stopPageId + '\')" '
+            + 'value="Fill Datasource"/></div>');
+        */
+
+        getDatasourceList(addParamData.stopId, addParamData.stopPageId, addParamData.dataSourceVo);
+    }
+    if (addParamData.isCustomized) {
+        var div_obj_fill = $("#fill_datasource_id");
+        if (!div_obj_fill.html()) {
+            $(divValue).append('<div id="fill_datasource_id"></div>');
+            div_obj_fill = $("#fill_datasource_id");
+        }
+        $("#customized_id").remove();
+        var customizedTableObj = $("#customizedTableObj").clone();
+        var tr_all = "";
+        if (addParamData.stopsCustomizedPropertyVoList && addParamData.stopsCustomizedPropertyVoList.length > 0) {
+            var stopsCustomizedPropertyVoList = addParamData.stopsCustomizedPropertyVoList;
+            for (var i = 0; i < stopsCustomizedPropertyVoList.length; i++) {
+                tr_all += setCustomizedTableHtml(addParamData.stopPageId, stopsCustomizedPropertyVoList[i], addParamData.stopOutPortType);
+            }
+        }
+        customizedTableObj.find("a").attr("href", "javascript:openAddStopCustomAttrPage('" + addParamData.stopId + "');")
+        customizedTableObj.find(".trTableCustomizedStopProperty").remove();
+        customizedTableObj.find("tbody").append(tr_all);
+        var customized_obj = '<div id="customized_id">' + customizedTableObj.html() + '</div>';
+        div_obj_fill.before(customized_obj);
     }
 }
 
-// 添加操作处理
+function setCustomizedTableHtml(stopPageId, stopsCustomizedPropertyVo, stopOutPortType) {
+    var isRouter = false;
+    if (stopOutPortType && stopOutPortType.stringValue === "ROUTE") {
+        isRouter = true;
+    }
+    var table_tr = "";
+    if (stopsCustomizedPropertyVo) {
+        table_tr = '<tr class="trTableCustomizedStopProperty">'
+            + '<td style="width: 60px;">'
+            + '<span style="margin-left: 10px;">' + stopsCustomizedPropertyVo.name + ': </span>'
+            + '</td>'
+            + '<td style="width: 25px;">'
+            + '<img src="/piflow-web/img/descIcon.png" title="' + stopsCustomizedPropertyVo.description + '" style="cursor: pointer;">'
+            + '</td>'
+            + '<td>'
+            + '<input data-toggle="true"class="form-control"'
+            + 'id="' + stopsCustomizedPropertyVo.id + '"'
+            + 'name="' + stopsCustomizedPropertyVo.name + '" '
+            + 'value="' + stopsCustomizedPropertyVo.customValue + '" '
+            + 'onclick="stopTabTd(this,true)"readonly="readonly" value=""style="background: rgb(245, 245, 245);">'
+            + '</td>'
+            + '<td>'
+            + '<span style="color:red">*</span>'
+            + '<a class="btn" href="javascript:removeStopCustomProperty(\'' + stopPageId + '\',\'' + stopsCustomizedPropertyVo.id + '\',' + isRouter + ');"><i class="glyphicon glyphicon-remove" style="color: red;"></i></a>'
+            + '</td>'
+            + '</tr>';
+    }
+    return table_tr;
+
+}
+
+function getDatasourceList(stop_id, stop_page_id, dataSourceVo) {
+    $.ajax({
+        cache: true,//sava cache data
+        type: "POST",// request type
+        url: "/piflow-web/datasource/getDatasourceList",
+
+        //data:$('#loginForm').serialize(),//Form serialization
+        async: true,//open asynchronous request
+        error: function (request) {//Operation after request failure
+            return;
+        },
+        success: function (data) {//Operation after request successful
+            var dataMap = JSON.parse(data);
+            if (200 === dataMap.code) {
+                /*
+                var html = '<div class="layui-form-item" style="margin-top: 22px;">'
+                    + '<label class="layui-form-label">type</label>'
+                    + '<div class="layui-input-block">'
+                    + '<select class="layui-select" style="width: 95%;" onchange="fillDatasource(this,\'' + stop_id + '\',\'' + stop_page_id + '\')">'
+                    + '<option value="">please select type...</option>';
+                var dataSourceList = dataMap.data;
+                if (dataSourceList && dataSourceList.length > 0) {
+                    for (var i = 0; i < dataSourceList.length; i++) {
+                        html += ('<option value="' + dataSourceList[i].id + '">'
+                            + dataSourceList[i].dataSourceName + '(' + dataSourceList[i].dataSourceType + ')'
+                            + '</option>');
+                    }
+                }
+                html += ('</select></div></div>');
+                layer.open({
+                    type: 1,
+                    title: '<span style="color: #269252;">data source</span>',
+                    shadeClose: true,
+                    closeBtn: 1,
+                    resize: false,
+                    shift: 7,
+                    area: ['580px', '150px'], //Width height
+                    skin: 'layui-layer-rim', //Add borders
+                    content: html
+                });
+                */
+                var dataSourceList = dataMap.data;
+                var select_html = '<select id="datasourceSelectElement" class="form-control" style="width: 95%;" onchange="fillDatasource(this,\'' + stop_id + '\',\'' + stop_page_id + '\')">'
+                if (dataSourceList && dataSourceList.length > 0) {
+                    var option_html = '<option value="">please select datasource...</option>';
+                    var dataSourceVoId = '';
+                    if (dataSourceVo && dataSourceVo.id) {
+                        dataSourceVoId = dataSourceVo.id;
+                    }
+                    if ('' === dataSourceVoId) {
+                        option_html = '<option selected="selected" value="">please select datasource...</option>';
+                    }
+                    for (var i = 0; i < dataSourceList.length; i++) {
+                        if (dataSourceList[i].id === dataSourceVoId) {
+                            option_html += ('<option selected="selected" value="' + dataSourceList[i].id + '">');
+                        } else {
+                            option_html += ('<option value="' + dataSourceList[i].id + '">');
+                        }
+                        option_html += (dataSourceList[i].dataSourceName + '(' + dataSourceList[i].dataSourceType + ')'
+                            + '</option>');
+                    }
+                }
+                select_html += (option_html + "</select>");
+                $('#datasourceTdElement').html(select_html);
+            } else {
+                //alert(operType + " save fail");
+                layer.msg("Load fail", {icon: 2, shade: 0, time: 2000}, function () {
+                });
+                console.log("Load fail");
+            }
+        }
+    });
+}
+
+function fillDatasource(datasource, stop_id, stop_page_id) {
+    var datasourceId = $(datasource).val();
+    if (stop_id) {
+        $.ajax({
+            cache: true,//Keep cached data
+            type: "POST",//Request type post
+            url: "/piflow-web/datasource/fillDatasource",//This is the name of the file where I receive data in the background.
+            //data:$('#loginForm').serialize(),//Serialize the form
+            data: {"dataSourceId": datasourceId, "stopId": stop_id},
+            async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
+            error: function (request) {//Operation after request failure
+                return;
+            },
+            success: function (data) {//Operation after request successful
+                var dataMap = JSON.parse(data);
+                if (200 === dataMap.code) {
+                    queryStopsProperty(stop_page_id);
+                } else {
+                    //alert(operType + " save fail");
+                    layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000}, function () {
+                    });
+                    console.log(dataMap.errorMsg);
+                }
+            }
+        });
+    } else {
+        layer.msg("failed, stopId is null or datasourceId is null", {icon: 2, shade: 0, time: 2000}, function () {
+        });
+    }
+}
+
+// Adding Operational Processing
 function addCellsCustom(cells, operType) {
     var removePaths = [];
     var paths = [];
@@ -379,38 +597,40 @@ function addCellsCustom(cells, operType) {
     }
 }
 
-//保存xml文件和相关信息
+//Save XML files and related information
 function saveXml(paths, operType) {
     var getXml = thisEditor.getGraphXml();
-    var sssss = getXml.outerHTML;
-    //var waitxml = encodeURIComponent(getXml.outerHTML);//这就是要提交到后台的xml代码
+    var xml_outer_html = getXml.outerHTML;
+    //var waitxml = encodeURIComponent(getXml.outerHTML);//This is the XML code to submit to the background
 
     $.ajax({
-        cache: true,//保留缓存数据
-        type: "POST",//为post请求
-        url: "/piflow-web/grapheditor/saveData",//这是我在后台接受数据的文件名
-        //data:$('#loginForm').serialize(),//将该表单序列化
+        cache: true,//Keep cached data
+        type: "POST",//Request type post
+        url: "/piflow-web/grapheditor/saveData",//This is the name of the file where I receive data in the background.
+        //data:$('#loginForm').serialize(),//Serialize the form
         data: {
-            imageXML: sssss,
+            imageXML: xml_outer_html,
             load: loadId,
             operType: operType
         },
-        async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
-        error: function (request) {//请求失败之后的操作
+        async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
+        error: function (request) {//Operation after request failure
             return;
         },
-        success: function (data) {//请求成功之后的操作
+        success: function (data) {//Operation after request successful
             var dataMap = JSON.parse(data);
-            if (0 !== dataMap.code) {
+            if (200 === dataMap.code) {
                 console.log(operType + " save success");
                 thisEditor.setModified(false);
                 if (operType && '' !== operType) {
                     //获取port
-                    getStopsPort(paths);
+                    //getStopsPort(paths);
+                    getStopsPortNew(paths);
                 }
             } else {
                 //alert(operType + " save fail");
-                layer.msg(operType + " save fail", {icon: 2, shade: 0, time: 2000}, function () {});
+                layer.msg(operType + " save fail", {icon: 2, shade: 0, time: 2000}, function () {
+                });
                 console.log(operType + " save fail");
                 fullScreen.hide();
             }
@@ -418,25 +638,25 @@ function saveXml(paths, operType) {
     });
 }
 
-//打开xml文件
+//open xml file
 function openXml() {
     $.ajax({
-        cache: true,//保留缓存数据
-        type: "POST",//为post请求
-        url: "/piflow-web/flow/loadData",//这是我在后台接受数据的文件名
-        //data:$('#loginForm').serialize(),//将该表单序列化
-        async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
-        error: function (request) {//请求失败之后的操作
+        cache: true,//Keep cached data
+        type: "POST",//Request type post
+        url: "/piflow-web/flow/loadData",//This is the name of the file where I receive data in the background.
+        //data:$('#loginForm').serialize(),//Serialize the form
+        async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
+        error: function (request) {//Operation after request failure
             return;
         },
-        success: function (data) {//请求成功之后的操作
+        success: function (data) {//Operation after request successful
             loadXml(data);
             console.log("success");
         }
     });
 }
 
-//加载xml文件
+//load xml file
 function loadXml(loadStr) {
     var xml = mxUtils.parseXml(loadStr);
     var node = xml.documentElement;
@@ -445,27 +665,29 @@ function loadXml(loadStr) {
     eraseRecord()
 }
 
-//请求接口重新加载stops
+//Request interface to reload'stops'
 function reloadStops() {
     fullScreen.show();
     $.ajax({
         data: {"load": loadId},
-        cache: true,//保留缓存数据
-        type: "POST",//为post请求
-        url: "/piflow-web/grapheditor/reloadStops",//这是我在后台接受数据的文件名
-        error: function (request) {//请求失败之后的操作
+        cache: true,//Keep cached data
+        type: "POST",//Request type post
+        url: "/piflow-web/grapheditor/reloadStops",//This is the name of the file where I receive data in the background.
+        error: function (request) {//Operation after request failure
             fullScreen.hide();
             //alert("reload fail");
-            layer.msg("reload fail", {icon: 2, shade: 0, time: 2000}, function () {});
+            layer.msg("reload fail", {icon: 2, shade: 0, time: 2000}, function () {
+            });
             return;
         },
-        success: function (data) {//请求成功之后的操作
+        success: function (data) {//Operation after request successful
             var dataMap = JSON.parse(data);
-            if (0 !== dataMap.code) {
+            if (200 === dataMap.code) {
                 window.location.href = "/piflow-web/grapheditor/home?load=" + dataMap.load + "&_" + new Date().getTime();
             } else {
                 //alert("reload fail");
-                layer.msg("reload fail", {icon: 2, shade: 0, time: 2000}, function () {});
+                layer.msg("reload fail", {icon: 2, shade: 0, time: 2000}, function () {
+                });
                 fullScreen.hide();
             }
         }
@@ -475,16 +697,16 @@ function reloadStops() {
 function queryFlowInfo() {
     $.ajax({
         data: {"load": loadId},
-        cache: true,//保留缓存数据
-        type: "POST",//为post请求
-        url: "/piflow-web/flow/queryFlowData",//这是我在后台接受数据的文件名
-        async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
-        error: function (request) {//请求失败之后的操作
+        cache: true,//Keep cached data
+        type: "POST",//Request type post
+        url: "/piflow-web/flow/queryFlowData",//This is the name of the file where I receive data in the background.
+        async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
+        error: function (request) {//Operation after request failure
             return;
         },
-        success: function (data) {//请求成功之后的操作
+        success: function (data) {//Operation after request successful
             var dataMap = JSON.parse(data);
-            if (document.getElementById("UUID")) {//js判断元素是否存在
+            if (document.getElementById("UUID")) {//JS judges whether an element exists or not
                 var flow = dataMap.flow;
                 if (flow != null && flow != "")
                     var flowInfoDbInfo = flow.flowInfoDbVo;
@@ -505,38 +727,54 @@ function queryFlowInfo() {
     });
 }
 
-//运行
-function runFlow() {
+//run
+function runFlow(runMode) {
     fullScreen.show();
+    console.info("ss");
+    var data = {flowId: loadId}
+    if (runMode) {
+        data.runMode = runMode;
+    }
     $.ajax({
-        cache: true,//保留缓存数据
-        type: "POST",//为post请求
-        url: "/piflow-web/flow/runFlow",//这是我在后台接受数据的文件名
-        //data:$('#loginForm').serialize(),//将该表单序列化
-        data: {flowId: loadId},
-        async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
-        error: function (request) {//请求失败之后的操作
+        cache: true,//Keep cached data
+        type: "POST",//Request type post
+        url: "/piflow-web/flow/runFlow",//This is the name of the file where I receive data in the background.
+        //data:$('#loginForm').serialize(),//Serialize the form
+        data: data,
+        async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
+        error: function (request) {//Operation after request failure
             //alert("Request Failed");
-            layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000}, function () {});
-            fullScreen.hide();
+            layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000}, function () {
+                fullScreen.hide();
+            });
+
             return;
         },
-        success: function (data) {//请求成功之后的操作
+        success: function (data) {//Operation after request successful
             //console.log("success");
             var dataMap = JSON.parse(data);
-            if ('0' !== dataMap.code) {
-                window.location.href = "/piflow-web/process/getProcessById?parentAccessPath=grapheditor&processId=" + dataMap.processId;
+            if (200 === dataMap.code) {
+                layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
+                    //Jump to the monitor page after starting successfully
+                    var tempWindow = window.open('_blank');
+                    if (tempWindow == null || typeof (tempWindow) == 'undefined') {
+                        alert('The window cannot be opened. Please check your browser settings.')
+                    } else {
+                        tempWindow.location = "/piflow-web/process/getProcessById?parentAccessPath=grapheditor&processId=" + dataMap.processId;
+                    }
+                });
             } else {
-                //alert("Startup failure：" + dataMap.errMsg);
-                layer.msg("Startup failure：" + dataMap.errMsg, {icon: 2, shade: 0, time: 2000}, function () {});
+                //alert("Startup failure：" + dataMap.errorMsg);
+                layer.msg("Startup failure：" + dataMap.errorMsg, {icon: 2, shade: 0, time: 2000}, function () {
+                });
             }
             fullScreen.hide();
         }
     });
 }
 
-//获取端口
-function getStopsPort(paths) {
+//get port
+function getStopsPortNew(paths) {
     if (paths && paths.length > 0) {
         pathsCells = paths;
         if (pathsCells.length > 1) {
@@ -572,96 +810,112 @@ function getStopsPort(paths) {
                 },
                 success: function (data) {
                     var dataMap = JSON.parse(data);
-                    //alert(dataMap);
-                    if ('1' === dataMap.code) {
+                    //console.log(dataMap);
+                    if (200 === dataMap.code) {
+                        var showHtml = $('#portShowDiv').clone();
+                        showHtml.find('#protInfo1Copy').attr('id', 'protInfoR_R');
+                        showHtml.find('#sourceTitle1Copy').attr('id', 'sourceTitleR_R');
+                        showHtml.find('#sourceTitleStr1Copy').attr('id', 'sourceTitleStrR_R');
+                        showHtml.find('#sourceTitleCheckbox1Copy').attr('id', 'sourceTitleCheckboxR_R');
+                        showHtml.find('#sourceTitleBtn1Copy').attr('id', 'sourceTitleBtnR_R');
+                        showHtml.find('#sourceCrtPortId1Copy').attr('id', 'sourceCrtPortIdR_R');
+                        showHtml.find('#sourceCrtPortBtnId1Copy').attr('id', 'sourceCrtPortBtnIdR_R');
+                        showHtml.find('#sourceCrtPortBtnIdR_R').attr('onclick', 'crtAnyPort("sourceCrtPortIdR_R",true)');
+                        showHtml.find('#sourceTypeDiv1Copy').attr('id', 'sourceTypeDivR_R');
+                        showHtml.find('#sourceRouteFilterList1Copy').attr('id', 'sourceRouteFilterListR_R');
+                        showHtml.find('#sourceRouteFilterSelect1Copy').attr('id', 'sourceRouteFilterSelectR_R');
+                        showHtml.find('#sourceTitleBtnR_R').hide();
+                        showHtml.find('#sourceRouteFilterListR_R').hide();
+                        showHtml.find('#targetTitle1Copy').attr('id', 'targetTitleR_R');
+                        showHtml.find('#targetTitleStr1Copy').attr('id', 'targetTitleStrR_R');
+                        showHtml.find('#targetTitleCheckbox1Copy').attr('id', 'targetTitleCheckboxR_R');
+                        showHtml.find('#targetTitleBtn1Copy').attr('id', 'targetTitleBtnR_R');
+                        showHtml.find('#targetCrtPortId1Copy').attr('id', 'targetCrtPortIdR_R');
+                        showHtml.find('#targetCrtPortBtnId1Copy').attr('id', 'targetCrtPortBtnIdR_R');
+                        showHtml.find('#targetCrtPortBtnIdR_R').attr('onclick', 'crtAnyPort("targetCrtPortIdR_R",true)');
+                        showHtml.find('#targetTypeDiv1Copy').attr('id', 'targetTypeDivR_R');
+                        showHtml.find('#targetRouteFilterList1Copy').attr('id', 'targetRouteFilterListR_R');
+                        showHtml.find('#targetRouteFilterSelect1Copy').attr('id', 'targetRouteFilterSelectR_R');
+                        showHtml.find('#targetTitleBtnR_R').hide();
+                        showHtml.find('#targetRouteFilterListR_R').hide();
                         var sourceType = dataMap.sourceType;
                         var targetType = dataMap.targetType;
                         var sourceTypeStr = sourceType.text;
                         var targetTypeStr = targetType.text;
-                        //判断可用端口数，如果可用端口数不大于0则直接删除线
+                        //Determine the number of available ports. If the number of available ports is not greater than 0, delete the line directly
                         if (dataMap.sourceCounts > 0 && dataMap.targetCounts > 0) {
-                            // 获取source端口的详细使用情况
+                            // Get a detailed use of the source port
                             var sourcePortUsageMap = dataMap.sourcePortUsageMap;
                             if (sourcePortUsageMap) {
-                                $('#copyDivCheckbox').show();
+                                showHtml.find('#sourceTitleCheckboxR_R').html("");
                                 for (portName in sourcePortUsageMap) {
                                     var portNameVal = sourcePortUsageMap[portName];
-                                    var obj = $('#copyDivCheckbox').clone();
-                                    $(obj).removeAttr("id");
-                                    $(obj).attr('class', 'addCheckbox').attr('id', portName + 'Checkbox');
-                                    $(obj).find('input').attr('class', 'addCheckbox').attr('id', portName).attr('name', portName).attr('value', portName).attr('checked', !portNameVal).attr('disabled', !portNameVal);
-                                    $(obj).find('span').attr('class', 'addCheckbox').attr('class', portName).attr('disabled', !portNameVal);
-                                    $('#sourceTitleCheckbox').append(obj);
-                                    $('.' + portName).text(portName);
+                                    var portCheckDiv = '<div id="' + portName + 'Checkbox" class="addCheckbox">'
+                                        + '<input id="' + portName + '" name="' + portName + '" type="checkbox" class="addCheckbox" value="' + portName + '"' + (!portNameVal ? 'checked="checked" disabled="disabled"' : '') + '/>'
+                                        + '<span class="addCheckbox ' + portName + '" disabled="' + !portNameVal + '">' + portName + '</span>'
+                                        + '</div>';
+                                    showHtml.find('#sourceTitleCheckboxR_R').append(portCheckDiv);
                                 }
-                                // 当类型为Any时，添加创建按钮
+                                // Add a create button when the type is Any
                                 if ('Any' === sourceTypeStr) {
-                                    $('#copyDivCrtBtn').show();
-                                    var sourceCrtBtn = $('#copyDivCrtBtn').clone();
-                                    $(sourceCrtBtn).removeAttr("id");
-                                    $(sourceCrtBtn).attr('class', 'addCrtBtn input-group').attr('id', 'sourceCrtBtn');
-                                    $(sourceCrtBtn).find('input').attr('class', 'addCrtBtn form-control').attr('id', 'sourceCrtPort');
-                                    $(sourceCrtBtn).find('button').attr('class', 'addCrtBtn btn btn-default').attr('onclick', 'crtAnyPort("sourceCrtPort",true)');
-                                    $('#sourceTitleBtn').append(sourceCrtBtn);
-                                    $('#copyDivCrtBtn').hide();
-                                }
-                            } else {
-                                // 当类型为Default时，添加默认端口
-                                if ('Default' === sourceTypeStr) {
-                                    $('#sourceTitleCheckbox').html('<input type="checkbox" class="addCheckbox" checked="checked" disabled="disabled"/><span class="addCheckbox">default</span>');
+                                    showHtml.find('#sourceTitleBtnR_R').show();
+                                } else if ('Route' === sourceTypeStr) {
+                                    showHtml.find('#sourceRouteFilterListR_R').show();
+                                    if (dataMap.sourceFilter) {
+                                        var sourceFilters = dataMap.sourceFilter;
+                                        var selectOptionHtml = '<option value="">Please click Select Filter Country</option>';
+                                        for (var i = 0; i < sourceFilters.length; i++) {
+                                            var sourceFilter = sourceFilters[i];
+                                            selectOptionHtml += '<option value="' + sourceFilter.name + '" title="' + sourceFilter.customValue + '">' + sourceFilter.name + '</option>';
+                                        }
+                                        showHtml.find('#sourceRouteFilterSelectR_R').html(selectOptionHtml);
+                                    } else {
+                                        showHtml.find('#sourceRouteFilterSelectR_R').parent().html("Route no filter rule");
+                                    }
                                 }
                             }
-                            $('#sourceTypeDiv').html(sourceTypeStr);
-                            $('#sourceTitle').show();
-                            $('#copyDivCheckbox').hide();
-                            $('#sourceTitleStr').html('Source:' + dataMap.sourceName);
-
-                            // 获取target端口的详细使用情况
+                            showHtml.find('#sourceTypeDivR_R').html(sourceTypeStr);
+                            showHtml.find('#sourceTitleStrR_R').html('Source:' + dataMap.sourceName);
+                            // Gets the detailed use of the target port
                             var targetPortUsageMap = dataMap.targetPortUsageMap;
                             if (targetPortUsageMap) {
-                                $('#copyDivCheckbox').show();
+                                showHtml.find('#targetTitleCheckboxR_R').html("");
                                 for (portName in targetPortUsageMap) {
                                     var portNameVal = targetPortUsageMap[portName];
-                                    var obj = $('#copyDivCheckbox').clone();
-                                    $(obj).removeAttr("id");
-                                    $(obj).attr('class', 'addCheckbox').attr('id', portName + 'Checkbox');
-                                    $(obj).find('input').attr('class', 'addCheckbox').attr('id', portName).attr('name', portName).attr('value', portName).attr('checked', !portNameVal).attr('disabled', !portNameVal);
-                                    $(obj).find('span').attr('class', 'addCheckbox').attr('class', portName).attr('disabled', !portNameVal);
-                                    $('#targetTitleCheckbox').append(obj);
-                                    $('.' + portName).text(portName);
+                                    var portCheckDiv = '<div id="' + portName + 'Checkbox" class="addCheckbox">'
+                                        + '<input id="' + portName + '" name="' + portName + '" type="checkbox" class="addCheckbox" value="' + portName + '"' + (!portNameVal ? 'checked="checked" disabled="disabled"' : '') + '/>'
+                                        + '<span class="addCheckbox ' + portName + '" disabled="' + !portNameVal + '">' + portName + '</span>'
+                                        + '</div>';
+                                    showHtml.find('#targetTitleCheckboxR_R').append(portCheckDiv);
                                 }
-                                // 当类型为Any时，添加创建按钮
+                                // Add a create button when the type is Any
                                 if ('Any' === targetTypeStr) {
-                                    $('#copyDivCrtBtn').show();
-                                    var targetCrtBtn = $('#copyDivCrtBtn').clone();
-                                    $(targetCrtBtn).removeAttr("id");
-                                    $(targetCrtBtn).attr('class', 'addCrtBtn input-group').attr('id', 'targetCrtBtn');
-                                    $(targetCrtBtn).find('input').attr('class', 'addCrtBtn form-control').attr('id', 'targetCrtPort');
-                                    $(targetCrtBtn).find('button').attr('class', 'addCrtBtn btn btn-default').attr('onclick', 'crtAnyPort("targetCrtPort",false)');
-                                    $('#targetTitleBtn').append(targetCrtBtn);
-                                    $('#copyDivCrtBtn').hide();
-                                }
-                            } else {
-                                // 当类型为Default时，添加默认端口
-                                if ('Default' === targetTypeStr) {
-                                    $('#targetTitleCheckbox').html('<input type="checkbox" class="addCheckbox" checked="checked" disabled="disabled"/><span class="addCheckbox">default</span>');
+                                    showHtml.find('#targetTitleBtnR_R').show();
+                                } else if ('Route' === targetTypeStr) {
+                                    showHtml.find('#targetRouteFilterListR_R').show();
+                                    if (dataMap.targetFilter) {
+                                        var targetFilters = dataMap.targetFilter;
+                                        var selectOptionHtml = '<option value="">Please click Select Filter Country</option>';
+                                        for (var i = 0; i < targetFilters.length; i++) {
+                                            var targetFilter = targetFilters[i];
+                                            selectOptionHtml += '<option value="' + targetFilter.name + '" title="' + targetFilter.customValue + '">' + targetFilter.name + '</option>';
+                                        }
+                                        showHtml.find('#targetRouteFilterSelectR_R').html(selectOptionHtml);
+                                    } else {
+                                        showHtml.find('#targetRouteFilterSelectR_R').parent().html("Route no filter rule");
+                                    }
                                 }
                             }
-                            $('#targetTypeDiv').html(targetTypeStr);
-                            $('#targetTitle').show();
-                            $('#copyDivCheckbox').hide();
-                            $('#targetTitleStr').html('Targer:' + dataMap.targetName);
+                            showHtml.find('#targetTypeDivR_R').html(targetTypeStr);
+                            showHtml.find('#targetTitleStrR_R').html('Target:' + dataMap.targetName);
                             if ("Default" === sourceTypeStr && "Default" === targetTypeStr) {
-                                $('#myModalPort').modal('hide');
                             } else if ("None" === sourceTypeStr || "None" === targetTypeStr) {
-                                $('#myModalPort').modal('hide');
                             } else {
-                                $('#myModalPort').modal('show');
+                                layuiOpenWindowDivFunc('SET PATN PROT WINDOWS', showHtml.html());
                             }
                         } else {
                             graphGlobal.removeCells(pathsCells);
                         }
-
                     } else {
                         graphGlobal.removeCells(pathsCells);
                     }
@@ -672,117 +926,143 @@ function getStopsPort(paths) {
     }
 }
 
-// 选择端口
-function chooseProt(paths) {
-    if (1 === paths) {
-        var sourcePortVal = '';
-        var targetPortVal = '';
-        var sourceTypeDiv = $('#sourceTypeDiv');
-        var targetTypeDiv = $("#targetTypeDiv");
-        if (!sourceTypeDiv && !sourceTypeDiv) {
-            //alert("页面报错，请检查！");
-            layer.msg("页面报错，请检查！", {icon: 2, shade: 0, time: 2000}, function () {});
-            return false;
-        }
-        var sourceTitleCheckbox = $('#sourceTitleCheckbox');
-        var targetTitleCheckbox = $("#targetTitleCheckbox");
-        if (sourceTitleCheckbox) {
-            var sourceDivType = sourceTypeDiv.html();
-            if (sourceDivType === 'Default') {
-                //Default类型不校验
-            } else {
-                var sourceEffCheckbox = [];
-                sourceTitleCheckbox.find("input[type='checkbox']:checked").each(function () {
-                    if ($(this).prop("disabled") == false) {
-                        sourceEffCheckbox[sourceEffCheckbox.length] = $(this);
-                    }
+// check choose port data
+function checkChoosePort() {
+    var sourcePortVal = '';
+    var targetPortVal = '';
+    var sourceTypeDivR_R = $('#sourceTypeDivR_R');
+    var targetTypeDivR_R = $("#targetTypeDivR_R");
+    if (!sourceTypeDivR_R && !targetTypeDivR_R) {
+        layer.msg("Page error, please check!", {icon: 2, shade: 0, time: 2000}, function () {
+        });
+        return false;
+    }
+    var isSourceRoute = false;
+    var isTargetRoute = false;
+    var sourceTitleCheckboxR_R = $('#sourceTitleCheckboxR_R');
+    var targetTitleCheckboxR_R = $("#targetTitleCheckboxR_R");
+    if (sourceTitleCheckboxR_R) {
+        var sourceDivType = sourceTypeDivR_R.html();
+        if ('Default' === sourceDivType) {
+            //'default' type is not verified
+        } else if ("Route" === sourceDivType) {
+            isSourceRoute = true;
+            //'Route' type is not verified
+        } else {
+            var sourceEffCheckbox = [];
+            sourceTitleCheckboxR_R.find("input[type='checkbox']:checked").each(function () {
+                if ($(this).prop("disabled") == false) {
+                    sourceEffCheckbox[sourceEffCheckbox.length] = $(this);
+                }
+            });
+            if (sourceEffCheckbox.length > 1) {
+                layer.msg("'sourcePort'can only choose one", {icon: 2, shade: 0, time: 2000}, function () {
                 });
-                if (sourceEffCheckbox.length > 1) {
-                    //alert("sourcePort只能选一个");
-                    layer.msg("sourcePort只能选一个", {icon: 2, shade: 0, time: 2000}, function () {});
-                    return false;
-                }
-                if (sourceEffCheckbox < 1) {
-                    //alert("请选择sourcePort");
-                    layer.msg("请选择sourcePort", {icon: 2, shade: 0, time: 2000}, function () {});
-                    return false;
-                }
-                for (var i = 0; i < sourceEffCheckbox.length; i++) {
-                    var sourcecheckBoxEff = sourceEffCheckbox[i];
-                    if ('' === sourcePortVal) {
-                        sourcePortVal = sourcecheckBoxEff.val();
-                    } else {
-                        sourcePortVal = sourcePortVal + "," + sourcecheckBoxEff.val();
-                    }
-                }
+                return false;
             }
-        } else {
-            //alert("页面报错，请检查！");
-            layer.msg("页面报错，请检查！", {icon: 2, shade: 0, time: 2000}, function () {});
-            return false;
-        }
-        if (targetTitleCheckbox) {
-            var targetDivType = targetTypeDiv.html();
-            if (targetDivType === 'Default') {
-                //Default类型不校验
-            } else {
-                var targetEffCheckbox = [];
-                targetTitleCheckbox.find("input[type='checkbox']:checked").each(function () {
-                    if ($(this).prop("disabled") == false) {
-                        targetEffCheckbox[targetEffCheckbox.length] = $(this);
-                    }
+            if (sourceEffCheckbox < 1) {
+                layer.msg("Please select'sourcePort'", {icon: 2, shade: 0, time: 2000}, function () {
                 });
-                if (targetEffCheckbox.length > 1) {
-                    //alert("targetPort只能选一个");
-                    layer.msg("targetPort只能选一个", {icon: 2, shade: 0, time: 2000}, function () {});
-                    return false;
-                }
-                if (targetEffCheckbox.length < 1) {
-                    //alert("请选择targetPort");
-                    layer.msg("请选择targetPort", {icon: 2, shade: 0, time: 2000}, function () {});
-                    return false;
-                }
-                for (var i = 0; i < targetEffCheckbox.length; i++) {
-                    var targetcheckBoxEff = targetEffCheckbox[i];
-                    if ('' === targetPortVal) {
-                        targetPortVal = targetcheckBoxEff.val();
-                    } else {
-                        targetPortVal = targetPortVal + "," + targetcheckBoxEff.val();
-                    }
+                return false;
+            }
+            for (var i = 0; i < sourceEffCheckbox.length; i++) {
+                var sourcecheckBoxEff = sourceEffCheckbox[i];
+                if ('' === sourcePortVal) {
+                    sourcePortVal = sourcecheckBoxEff.val();
+                } else {
+                    sourcePortVal = sourcePortVal + "," + sourcecheckBoxEff.val();
                 }
             }
-        } else {
-            //alert("页面报错，请检查！");
-            layer.msg("页面报错，请检查！", {icon: 2, shade: 0, time: 2000}, function () {});
-            return false;
         }
-        if (pathsCells.length > 1) {
-            graphGlobal.removeCells(pathsCells);
+    } else {
+        layer.msg("Page error, please check!", {icon: 2, shade: 0, time: 2000}, function () {
+        });
+        return false;
+    }
+    if (targetTitleCheckboxR_R) {
+        var targetDivType = targetTypeDivR_R.html();
+        if ('Default' === targetDivType) {
+            //Default type not checked
+        } else if ("Route" === targetDivType) {
+            isTargetRoute = true;
+            //Route type not checked
         } else {
-            var sourceMxCellId = '';
-            var targetMxCellId = '';
-            var pathLine = pathsCells[0];
-            var pathLineId = pathLine.id;
-            var sourceMxCell = pathLine.source;
-            var targetMxCell = pathLine.target;
-            if (targetMxCell) {
-                sourceMxCellId = sourceMxCell.id;
+            var targetEffCheckbox = [];
+            targetTitleCheckboxR_R.find("input[type='checkbox']:checked").each(function () {
+                if ($(this).prop("disabled") == false) {
+                    targetEffCheckbox[targetEffCheckbox.length] = $(this);
+                }
+            });
+            if (targetEffCheckbox.length > 1) {
+                layer.msg("'targetPort'can only choose one", {icon: 2, shade: 0, time: 2000}, function () {
+                });
+                return false;
             }
-            if (targetMxCell) {
-                targetMxCellId = targetMxCell.id;
+            if (targetEffCheckbox.length < 1) {
+                layer.msg("Please select'targetPort'", {icon: 2, shade: 0, time: 2000}, function () {
+                });
+                return false;
             }
+            for (var i = 0; i < targetEffCheckbox.length; i++) {
+                var targetcheckBoxEff = targetEffCheckbox[i];
+                if ('' === targetPortVal) {
+                    targetPortVal = targetcheckBoxEff.val();
+                } else {
+                    targetPortVal = targetPortVal + "," + targetcheckBoxEff.val();
+                }
+            }
+        }
+    } else {
+        layer.msg("Page error, please check!", {icon: 2, shade: 0, time: 2000}, function () {
+        });
+        return false;
+    }
+
+    var sourceMxCellId = '';
+    var targetMxCellId = '';
+    var pathLine = pathsCells[0];
+    var pathLineId = pathLine.id;
+    var sourceMxCell = pathLine.source;
+    var targetMxCell = pathLine.target;
+    if (targetMxCell) {
+        sourceMxCellId = sourceMxCell.id;
+    }
+    if (targetMxCell) {
+        targetMxCellId = targetMxCell.id;
+    }
+    var sourceRouteFilterSelectValue = $('#sourceRouteFilterSelectR_R').val();
+    var targetRouteFilterSelectValue = $('#targetRouteFilterSelectR_R').val();
+    var reqData = {
+        "flowId": loadId,
+        "pathLineId": pathLineId,
+        "sourcePortVal": sourcePortVal,
+        "targetPortVal": targetPortVal,
+        "sourceId": sourceMxCellId,
+        "targetId": targetMxCellId,
+        "sourceFilter": sourceRouteFilterSelectValue,
+        "targetFilter": targetRouteFilterSelectValue,
+        "sourceRoute": isSourceRoute,
+        "targetRoute": isTargetRoute
+    }
+    return reqData;
+}
+
+function choosePortNew() {
+    if (pathsCells.length > 1) {
+        graphGlobal.removeCells(pathsCells);
+        layer.msg("Page error, please check!", {icon: 2, shade: 0, time: 2000}, function () {
+            layer.closeAll();
+            layer.closeAll();
+        });
+        return false;
+    } else {
+        var reqData = checkChoosePort();
+        if (reqData) {
             $.ajax({
                 cache: true,
                 type: "get",
                 url: "/piflow-web/grapheditor/savePathsPort",
-                data: {
-                    "flowId": loadId,
-                    "pathLineId": pathLineId,
-                    "sourcePortVal": sourcePortVal,
-                    "targetPortVal": targetPortVal,
-                    "sourceId": sourceMxCellId,
-                    "targetId": targetMxCellId
-                },
+                data: reqData,
                 async: true,
                 traditional: true,
                 error: function (request) {
@@ -792,26 +1072,24 @@ function chooseProt(paths) {
                 success: function (data) {
                     var dataMap = JSON.parse(data);
                     //alert(dataMap);
-                    if ('1' === dataMap.code) {
-                        //alert("端口选择保存成功");
+                    if (200 === dataMap.code) {
+                        layer.closeAll();
                     } else {
-                        //alert("端口选择保存失败");
-                        layer.msg("端口选择保存失败", {icon: 2, shade: 0, time: 2000}, function () {});
+                        //alert("Port Selection Save Failed");
+                        layer.msg("Port Selection Save Failed", {icon: 2, shade: 0, time: 2000}, function () {
+                            layer.closeAll();
+                        });
                         graphGlobal.removeCells(pathsCells);
                     }
                 }
             });
-
         }
-        //alert("提交");
-    } else {
-        graphGlobal.removeCells(pathsCells);
     }
-    $('#myModalPort').modal('hide');
-    $('.addCrtBtn').remove();
-    $('.addCheckbox').remove();
-    $('#sourceTitle').hide();
-    $('#targetTitle').hide();
+}
+
+function cancelPortAndPathNew() {
+    layer.closeAll();
+    graphGlobal.removeCells(pathsCells);
 }
 
 function crtAnyPort(crtProtInputId, isSource) {
@@ -819,26 +1097,24 @@ function crtAnyPort(crtProtInputId, isSource) {
     var portNameVal = crtProtInput.val();
     if (portNameVal && '' !== portNameVal) {
         if (!document.getElementById(portNameVal)) {
-            $('#copyDivCheckbox').show();
-            var obj = $('#copyDivCheckbox').clone();
-            $(obj).removeAttr("id");
-            $(obj).attr('class', 'addCheckbox').attr('id', portNameVal + 'Checkbox');
-            $(obj).find('input').attr('class', 'addCheckbox').attr('id', portNameVal).attr('name', portNameVal).attr('value', portNameVal);
-            $(obj).find('span').attr('class', 'addCheckbox').attr('class', portNameVal);
+            var obj = '<div style="display: block;" class="addCheckbox" id="jCheckbox">'
+                + '<input type="checkbox" class="addCheckbox" id="' + portNameVal + '" name="' + portNameVal + '" value="' + portNameVal + '">'
+                + '<span class="' + portNameVal + '">' + portNameVal + '</span>'
+                + '</div>';
             if (isSource) {
-                $('#sourceTitleCheckbox').append(obj);
+                $('#sourceTitleCheckboxR_R').append(obj);
             } else {
-                $('#targetTitleCheckbox').append(obj);
+                $('#sourceTitleCheckboxR_R').append(obj);
             }
             $('.' + portNameVal).text(portNameVal);
-            $('#copyDivCheckbox').hide();
         } else {
-            //alert("端口名称被占用！！");
-            layer.msg("端口名称被占用！！", {icon: 2, shade: 0, time: 2000}, function () {});
+            layer.msg("Port name occupied!!", {icon: 2, shade: 0, time: 2000}, function () {
+            });
         }
     } else {
-        //alert("端口名不能为空");
-        layer.msg("端口名不能为空", {icon: 2, shade: 0, time: 2000}, function () {});
+        //alert("The port name cannot be empty");
+        layer.msg("Port name cannot be empty", {icon: 2, shade: 0, time: 2000}, function () {
+        });
     }
 }
 
@@ -859,22 +1135,24 @@ function saveCheckpoints(stopId) {
         async: true,
         traditional: true,
         error: function (request) {
-            //alert("标记Checkpoint失败");
-            layer.msg("标记Checkpoint失败", {icon: 2, shade: 0, time: 2000}, function () {});
+            layer.msg("Failure to mark'Checkpoint'", {icon: 2, shade: 0, time: 2000}, function () {
+            });
             return;
         },
         success: function (data) {
             var dataMap = JSON.parse(data);
             //alert(dataMap);
-
-            //alert("端口选择保存成功");
             //console.log("attribute update success");
-            if ('1' === dataMap.code) {
-                //alert("修改标记Checkpoint成功");
-                layer.msg("修改标记Checkpoint成功", {icon: 1, shade: 0, time: 2000}, function () {});
+            if (200 === dataMap.code) {
+                layer.msg("Successful modification of the tag'Checkpoint'", {
+                    icon: 1,
+                    shade: 0,
+                    time: 2000
+                }, function () {
+                });
             } else {
-                //alert("修改标记Checkpoint失败");
-                layer.msg("修改标记Checkpoint失败", {icon: 2, shade: 0, time: 2000}, function () {});
+                layer.msg("Failed to modify the tag'Checkpoint'", {icon: 2, shade: 0, time: 2000}, function () {
+                });
             }
 
         }
@@ -883,7 +1161,7 @@ function saveCheckpoints(stopId) {
 
 function saveTemplate() {
     var getXml = thisEditor.getGraphXml();
-    var sssss = getXml.outerHTML;
+    var xml_outer_html = getXml.outerHTML;
     layer.prompt({
         title: 'please enter the template name',
         formType: 0,
@@ -891,26 +1169,26 @@ function saveTemplate() {
     }, function (text, index) {
         layer.close(index);
         $.ajax({
-            cache: true,//保留缓存数据
-            type: "POST",//为post请求
-            url: "/piflow-web/template/saveTemplate",//这是我在后台接受数据的文件名
+            cache: true,//Keep cached data
+            type: "POST",//Request type post
+            url: "/piflow-web/template/saveTemplate",//This is the name of the file where I receive data in the background.
             data: {
-                value: sssss,
+                value: xml_outer_html,
                 load: loadId,
                 name: text
             },
             async: true,
-            error: function (request) {//请求失败之后的操作
+            error: function (request) {//Operation after request failure
                 console.log(" save template error");
                 return;
             },
-            success: function (data) {//请求成功之后的操作
+            success: function (data) {//Operation after successful request
                 var dataMap = JSON.parse(data);
-                if (0 !== dataMap.code) {
-                    layer.msg(dataMap.errMsg, {icon: 1, shade: 0, time: 2000}, function () {
+                if (200 === dataMap.code) {
+                    layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
                     });
                 } else {
-                    layer.msg(dataMap.errMsg, {icon: 2, shade: 0, time: 2000}, function () {
+                    layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000}, function () {
                     });
                 }
             }
@@ -936,11 +1214,11 @@ function uploadXmlFile() {
         contentType: false,
     }).success(function (data) {
         var dataMap = JSON.parse(data);
-        if (0 !== dataMap.code) {
-            layer.msg(dataMap.errMsg, {icon: 1, shade: 0, time: 2000}, function () {
+        if (200 === dataMap.code) {
+            layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
             });
         } else {
-            layer.msg(dataMap.errMsg, {icon: 2, shade: 0, time: 2000}, function () {
+            layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000}, function () {
             });
         }
     }).error(function () {
@@ -992,9 +1270,10 @@ function showSelect() {
         if (oDiv.style.display == "block") {
             oDiv.style.display = "none";
         } else {
-            if (isExample){
-                layer.msg('This is an example, you can\'t edit', {icon: 2, shade: 0, time: 2000}, function () {});
-                    return;
+            if (isExample) {
+                layer.msg('This is an example, you can\'t edit', {icon: 2, shade: 0, time: 2000}, function () {
+                });
+                return;
             }
             loadingSelect();
             oDiv.style.display = "block";
@@ -1008,10 +1287,10 @@ function loadingSelect() {
     $.ajax({
         url: "/piflow-web/template/templateAllSelect",
         type: "post",
-        async:false,
+        async: false,
         success: function (data) {
             var dataMap = JSON.parse(data);
-            if (dataMap.code != '0') {
+            if (200 === dataMap.code) {
                 var temPlateList = dataMap.temPlateList;
                 $("#loadingXmlSelect").append("<option value='-1' >------------please choose------------</option>");
                 for (var i = 0; i < temPlateList.length; i++) {
@@ -1033,15 +1312,15 @@ function loadTemplate() {
         title: 'LoadTemplate',
         content: 'Are you sure you want to load ' + name + '？',
         btn: ['submit', 'cancel'],
-        yes: function(index, layero){
+        yes: function (index, layero) {
             loadingXml(id, loadId);
             var oDiv = document.getElementById("divloadingXml");
             oDiv.style.display = "none";
         },
-        btn2: function(index, layero){
+        btn2: function (index, layero) {
             var oDiv = document.getElementById("divloadingXml");
             oDiv.style.display = "none";
-        },cancel: function(){
+        }, cancel: function () {
             var oDiv = document.getElementById("divloadingXml");
             oDiv.style.display = "none";
         }
@@ -1067,7 +1346,12 @@ function processListener(evt, operType) {
 
     } else {
         if ('ADD' === operType || 'REMOVED' === operType) {
-            layer.msg("This is an example, you can't add, edit or delete", {icon: 2, shade: 0, time: 2000}, function () {});
+            layer.msg("This is an example, you can't add, edit or delete", {
+                icon: 2,
+                shade: 0,
+                time: 2000
+            }, function () {
+            });
         } else if ('MOVED' === operType) {
             findBasicInfo(evt);
         }
@@ -1078,19 +1362,19 @@ function processListener(evt, operType) {
 
 function prohibitEditing(isExample, operType) {
     $.ajax({
-        cache: true,//保留缓存数据
-        type: "POST",//为post请求
-        url: "/piflow-web/exampleMenu/exampleUrlList",//这是我在后台接受数据的文件名
+        cache: true,//Keep cached data
+        type: "POST",//Request type post
+        url: "/piflow-web/exampleMenu/exampleUrlList",//This is the name of the file where I receive data in the background.
         data: {},
         async: true,
-        error: function (request) {//请求失败之后的操作
+        error: function (request) {//Operation after request failure
             if ('ADD' === operType || 'REMOVED' === operType) {
                 location.reload();
             }
             eraseRecord()
             return;
         },
-        success: function (data) {//请求成功之后的操作
+        success: function (data) {//Operation after request successful
             if ('ADD' === operType || 'REMOVED' === operType) {
                 location.reload();
             }
@@ -1101,25 +1385,201 @@ function prohibitEditing(isExample, operType) {
 
 function getRunningProcessList() {
     $.ajax({
-        cache: true,//保留缓存数据
-        type: "POST",//为post请求
-        url: "/piflow-web/grapheditor/getRunningProcessList",//这是我在后台接受数据的文件名
-        data: {"flowId" : loadId},
+        cache: true,//Keep cached data
+        type: "POST",//Request type post
+        url: "/piflow-web/grapheditor/getRunningProcessList",//This is the name of the file where I receive data in the background.
+        data: {"flowId": loadId},
         async: true,
-        error: function (request) {//请求失败之后的操作
+        error: function (request) {//Operation after request failure
             return;
         },
-        success: function (data) {//请求成功之后的操作
+        success: function (data) {//Operation after request successful
             $('#runningProcessID').remove();
             $('#rightSidebarID').append(data);
         }
     });
 }
 
-//擦除画板记录
+//Erase Sketchpad records
 function eraseRecord() {
     thisEditor.lastSnapshot = new Date().getTime();
     thisEditor.undoManager.clear();
     thisEditor.ignoredChanges = 0;
     thisEditor.setModified(false);
+}
+
+function openAddStopCustomAttrPage(stopId) {
+    var addStopCustomizedAttrOpenTemplate = $("#addStopCustomizedAttrOpenTemplate").clone();
+    addStopCustomizedAttrOpenTemplate.find("form").attr("id", "openAddStopCustomAttrId");
+    addStopCustomizedAttrOpenTemplate.find("#openAddCustomizedWindowStopId").hide();
+    addStopCustomizedAttrOpenTemplate.find("#openAddCustomizedWindowStopId").attr("value", stopId);
+    layer.open({
+        type: 1,
+        title: "Add Customized Property",
+        shadeClose: true,
+        closeBtn: 1,
+        shift: 7,
+        anim: 5,//Bounce up and down
+        shade: 0.1,
+        // resize: false,//No stretch
+        // move: false,//No drag and drop
+        // offset: ['' + p.top + 'px', '' + p.left + 'px'],//coordinate
+        area: ['555px', '340px'], //Width height
+        content: addStopCustomizedAttrOpenTemplate.html()
+    });
+}
+
+
+function addStopCustomProperty(reqData) {
+    $.ajax({
+        type: "POST",//Request type post
+        url: "/piflow-web/stops/addStopCustomizedProperty",//This is the name of the file where I receive data in the background.
+        data: reqData,
+        error: function (request) {//Operation after request failure
+            return;
+        },
+        success: function (data) {//Operation after request successful
+            var dataMap = JSON.parse(data);
+            //console.log(dataMap);
+            if (200 === dataMap.code) {
+                layer.msg("add success", {icon: 1, shade: 0, time: 1000}, function () {
+                    layer.closeAll();
+                    queryStopsProperty(dataMap.stopPageId);
+                });
+            } else {
+                layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000}, function () {
+                });
+            }
+        }
+    });
+
+}
+
+function removeStopCustomProperty(stopPageId, customPropertyId, isRouter) {
+    if (isRouter) {
+        getRouterAllPaths(customPropertyId)
+    } else {
+        var reqUrl = "/piflow-web/stops/deleteStopsCustomizedProperty";
+        var reqData = {customPropertyId: customPropertyId};
+        $.ajax({
+            type: "POST",//Request type post
+            url: reqUrl,//This is the name of the file where I receive data in the background.
+            data: reqData,
+            error: function (request) {//Operation after request failure
+                return;
+            },
+            success: function (data) {//Operation after request successful
+                var dataMap = JSON.parse(data);
+                //console.log(dataMap);
+                if (200 === dataMap.code) {
+                    layer.msg("add success", {icon: 1, shade: 0, time: 1000}, function () {
+                        layer.closeAll();
+                        queryStopsProperty(stopPageId);
+                    });
+                } else {
+                    layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000}, function () {
+                    });
+                }
+            }
+        });
+    }
+}
+
+function getRouterAllPaths(customPropertyId) {
+    var reqUrl = "/piflow-web/stops/getRouterStopsCustomizedProperty";
+    var reqData = {customPropertyId: customPropertyId};
+    $.ajax({
+        type: "POST",//Request type post
+        url: reqUrl,//This is the name of the file where I receive data in the background.
+        data: reqData,
+        error: function (request) {//Operation after request failure
+            return;
+        },
+        success: function (data) {//Operation after request successful
+            var dataMap = JSON.parse(data);
+            //console.log(dataMap);
+            if (200 === dataMap.code) {
+                if (dataMap.pathsVoList) {
+                    var showPathsHtml = '<span>Deleting this rule will affect the following:</span>';
+                    layer.confirm(showPathsHtml, {icon: 1, shade: 0, time: 1000}, function () {
+                        console.log("sssssss");
+                    });
+                } else {
+                    //removeRouterStopCustomProperty(customPropertyId);
+                    console.log("failed");
+                }
+            } else {
+                layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000}, function () {
+                });
+            }
+        }
+    });
+}
+
+function removeRouterStopCustomProperty(customPropertyId) {
+    var reqUrl = "/piflow-web/stops/deleteRouterStopsCustomizedProperty";
+    var reqData = {customPropertyId: customPropertyId};
+    $.ajax({
+        type: "POST",//Request type post
+        url: reqUrl,//This is the name of the file where I receive data in the background.
+        data: reqData,
+        error: function (request) {//Operation after request failure
+            return;
+        },
+        success: function (data) {//Operation after request successful
+            var dataMap = JSON.parse(data);
+            //console.log(dataMap);
+            if (200 === dataMap.code) {
+                layer.msg("add success", {icon: 1, shade: 0, time: 1000}, function () {
+                    layer.closeAll();
+                    queryStopsProperty(stopPageId);
+                });
+            } else {
+                layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000}, function () {
+                });
+            }
+        }
+    });
+}
+
+function layuiOpenWindowDivFunc(title, contentHtml) {
+    layer.open({
+        type: 1,
+        title: '<span style="color: #269252;">' + title + '</span>',
+        shadeClose: false,
+        closeBtn: 0,
+        shift: 7,
+        area: ['580px', '520px'], //Width height
+        skin: 'layui-layer-rim', //Add borders
+        content: contentHtml
+    });
+}
+
+function closeChoosePortWindow() {
+    layer.closeAll();
+    graphGlobal.removeCells(pathsCells);
+}
+
+function openDatasourceList() {
+    var window_width = $(window).width();//Get browser window width
+    var window_height = $(window).height();//Get browser window height
+    $.ajax({
+        type: "POST",//Request type post
+        url: "/piflow-web/datasource/getDatasourceListPage",//This is the name of the file where I receive data in the background.
+        error: function (request) {//Operation after request failure
+            return;
+        },
+        success: function (data) {//Operation after request successful
+            layer.open({
+                type: 1,
+                title: '<span style="color: #269252;">DatasourceList</span>',
+                shadeClose: false,
+                closeBtn: 1,
+                shift: 7,
+                area: [(window_width - 100) + 'px', (window_height - 100) + 'px'], //Width height
+                skin: 'layui-layer-rim', //Add borders
+                content: data
+            });
+        }
+    });
 }

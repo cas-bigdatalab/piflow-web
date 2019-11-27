@@ -3,14 +3,13 @@ package com.nature.mapper.flow;
 import com.nature.component.flow.model.Stops;
 import com.nature.provider.flow.StopsMapperProvider;
 import com.nature.third.vo.flowInfo.ThirdFlowInfoStopVo;
-
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
 
 import java.util.List;
 
 /**
- * stop组建表
+ * Stop component table
  * 
  * @author Nature
  *
@@ -19,7 +18,7 @@ import java.util.List;
 public interface StopsMapper {
 
 	/**
-	 * 添加单个stops
+	 * Add a single stops
 	 * 
 	 * @param stops
 	 * @return
@@ -28,7 +27,7 @@ public interface StopsMapper {
 	public int addStops(Stops stops);
 
 	/**
-	 * 插入list<Stops> 注意拼sql的方法必须用map接 Param内容为键值
+	 * Insert list<Stops> Note that the method of spelling sql must use Map to connect Param content to key value.
 	 * 
 	 * @param stopsList
 	 * @return
@@ -37,7 +36,7 @@ public interface StopsMapper {
 	public int addStopsList(@Param("stopsList") List<Stops> stopsList);
 
 	/**
-	 * 修改stops
+	 * update stops
 	 * 
 	 * @param stops
 	 * @return
@@ -46,7 +45,7 @@ public interface StopsMapper {
 	public int updateStops(Stops stops);
 
 	/**
-	 * 查询所有的stops数据
+	 * Query all stops data
 	 * 
 	 * @return
 	 */
@@ -54,21 +53,25 @@ public interface StopsMapper {
 	public List<Stops> getStopsAll();
 
 	/**
-	 * 根据flowId查询StopsList
+	 * Query StopsList based on flowId
 	 * @param flowId
 	 * @return
 	 */
 	@SelectProvider(type = StopsMapperProvider.class, method = "getStopsListByFlowId")
 	@Results({ @Result(id = true, column = "id", property = "id"),
 			@Result(column = "is_checkpoint", property = "isCheckpoint"),
-			@Result(column = "id", property = "properties", many = @Many(select = "com.nature.mapper.flow.PropertyMapper.getPropertyListByStopsId", fetchType = FetchType.LAZY))
+			@Result(property = "dataSource", column = "fk_data_source_id", many = @Many(select = "com.nature.mapper.dataSource.DataSourceMapper.getDataSourceById", fetchType = FetchType.LAZY)),
+			@Result(column = "id", property = "properties", many = @Many(select = "com.nature.mapper.flow.PropertyMapper.getPropertyListByStopsId", fetchType = FetchType.LAZY)),
+			@Result(column = "id", property = "customizedPropertyList", many = @Many(select = "com.nature.mapper.flow.CustomizedPropertyMapper.getCustomizedPropertyListByStopsId", fetchType = FetchType.LAZY))
 
 	})
 	public List<Stops> getStopsListByFlowId(String flowId);
 
 	@SelectProvider(type = StopsMapperProvider.class, method = "getStopsListByFlowIdAndPageIds")
 	@Results({ @Result(id = true, column = "id", property = "id"),
-			@Result(column = "id", property = "properties", many = @Many(select = "com.nature.mapper.flow.PropertyMapper.getPropertyListByStopsId", fetchType = FetchType.LAZY))
+			@Result(property = "dataSource", column = "fk_data_source_id", many = @Many(select = "com.nature.mapper.dataSource.DataSourceMapper.getDataSourceById", fetchType = FetchType.LAZY)),
+			@Result(column = "id", property = "properties", many = @Many(select = "com.nature.mapper.flow.PropertyMapper.getPropertyListByStopsId", fetchType = FetchType.LAZY)),
+			@Result(column = "id", property = "customizedPropertyList", many = @Many(select = "com.nature.mapper.flow.CustomizedPropertyMapper.getCustomizedPropertyListByStopsId", fetchType = FetchType.LAZY))
 
 	})
 	public List<Stops> getStopsListByFlowIdAndPageIds(@Param("flowId")String flowId, @Param("pageIds")String[] pageIds);
@@ -77,16 +80,20 @@ public interface StopsMapper {
 	public int updateEnableFlagByFlowId(String id);
 	
 	/**
-	 * 根据stopsId 查询stop和属性信息
+	 * Query stop and attribute information based on stopsId
 	 * @param Id
 	 * @return
 	 */
 	@SelectProvider(type = StopsMapperProvider.class, method = "getStopsById")
 	@Results({ @Result(id = true, column = "id", property = "id"),
-			@Result(column = "id", property = "properties", many = @Many(select = "com.nature.mapper.flow.PropertyMapper.getPropertyListByStopsId", fetchType = FetchType.LAZY))
+			@Result(column = "id", property = "properties", many = @Many(select = "com.nature.mapper.flow.PropertyMapper.getPropertyListByStopsId", fetchType = FetchType.LAZY)),
+			@Result(column = "fk_flow_id", property = "flow", many = @Many(select = "com.nature.mapper.flow.FlowMapper.getFlowById", fetchType = FetchType.LAZY))
 
 	})
 	public Stops getStopsById(String Id);
+
+	@Select("select * from flow_stops fs where fs.fk_flow_id = #{flowId} and fs.page_id = #{stopPageId} and fs.enable_flag = 1 ")
+	public Stops getStopByFlowIdAndStopPageId(@Param("flowId") String flowId, @Param("stopPageId") String stopPageId);
 	
 	
 	@UpdateProvider(type = StopsMapperProvider.class, method = "updateStopsByFlowIdAndName")
@@ -94,7 +101,7 @@ public interface StopsMapper {
 	
 
 	/**
-	 * 校验stopname是否重名
+	 * Verify that stopname is duplicated
 	 * @param flowId
 	 * @param stopName
 	 * @return

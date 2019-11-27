@@ -5,6 +5,7 @@ import com.nature.component.process.model.ProcessPath;
 import com.nature.mapper.process.ProcessPathMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -21,7 +22,7 @@ public class ProcessPathTransaction {
      */
     Logger logger = LoggerUtil.getLogger();
 
-    @Resource
+    @Autowired
     private ProcessPathMapper processPathMapper;
 
     public ProcessPath getProcessPathByPageId(String processID, String pageID) {

@@ -1,7 +1,6 @@
 package com.nature.transaction.process;
 
 import com.nature.base.util.LoggerUtil;
-import com.nature.base.util.SessionUserUtil;
 import com.nature.base.vo.UserVo;
 import com.nature.component.process.model.Process;
 import com.nature.component.process.model.ProcessPath;
@@ -47,7 +46,7 @@ public class ProcessTransaction {
     private ProcessStopPropertyMapper processStopPropertyMapper;
 
     /**
-     * 事物的添加process
+     * Add process of things
      *
      * @param process
      * @return
@@ -57,15 +56,15 @@ public class ProcessTransaction {
         if (null != process) {
             int addProcessCounts = processMapper.addProcess(process);
             if (addProcessCounts > 0) {
-                // 存线
-                // 存入线的数目
+                // save path
+                // Number of save Paths
                 int addProcessPathCounts = 0;
                 List<ProcessPath> processPathList = process.getProcessPathList();
                 if (null != processPathList && processPathList.size() > 0) {
                     addProcessPathCounts = processPathMapper.addProcessPathList(processPathList);
                 }
-                // 存stop
-                // 存入stop的数目
+                // Save Stop
+                // Number of deposits in Stop
                 int addProcessStopCounts = 0;
                 int addProcessStopPropertyCounts = 0;
                 List<ProcessStop> processStopList = process.getProcessStopList();
@@ -85,7 +84,7 @@ public class ProcessTransaction {
     }
 
     /**
-     * 事物的修改process(仅仅修改process表)
+     * The process of modifying things (just modify the process table)
      *
      * @param process
      * @return
@@ -96,7 +95,7 @@ public class ProcessTransaction {
     }
 
     /**
-     * 事物的修改process(修改process表及所有子表)
+     * The process of modifying things (modifying the process table and all sub-tables)
      *
      * @param process
      * @return
@@ -138,20 +137,18 @@ public class ProcessTransaction {
     }
 
     /**
-     * 根据Id查询Process
+     * Query Process according to Id
      *
-     * @param currentUser
      * @param id
      * @return
      */
-    public Process getProcessById(UserVo currentUser, String id) {
-        UserVo currentUser1 = SessionUserUtil.getCurrentUser();
+    public Process getProcessById(String id) {
         Process processById = processMapper.getProcessById(id);
         return processById;
     }
 
     /**
-     * 查询ProcessList
+     * Query ProcessList
      *
      * @return
      */
@@ -162,7 +159,7 @@ public class ProcessTransaction {
     }
 
     /**
-     * 查询ProcessVoList
+     * Query ProcessVoList
      *
      * @return
      */
@@ -182,7 +179,7 @@ public class ProcessTransaction {
     }
 
     /**
-     * 查询ProcessVoList
+     * Query ProcessVoList
      *
      * @return
      */
@@ -191,7 +188,7 @@ public class ProcessTransaction {
     }
 
     /**
-     * 根据进程AppId查询进程
+     * Query process according to process AppId
      *
      * @param appID
      * @return
@@ -201,7 +198,7 @@ public class ProcessTransaction {
     }
 
     /**
-     * 根据进程AppId查询进程
+     * Query process according to process AppId
      *
      * @param appID
      * @return
@@ -211,7 +208,7 @@ public class ProcessTransaction {
     }
 
     /**
-     * 逻辑删除
+     * logically delete
      *
      * @param processId
      * @return
@@ -243,12 +240,12 @@ public class ProcessTransaction {
                 }
                 int updateEnableFlag = processMapper.updateEnableFlag(processId, username);
                 if (updateEnableFlag > 0) {
-                    logger.info("影响行数：" + affectedLine);
+                    logger.info("Number of rows affected：" + affectedLine);
                     return true;
                 }
             }
         }
-        logger.info("影响行数：" + affectedLine);
+        logger.info("Number of rows affected：" + affectedLine);
         return false;
     }
 

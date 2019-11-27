@@ -1,24 +1,16 @@
 package com.nature.mapper.flow;
 
-import java.util.List;
-
-import org.apache.ibatis.annotations.InsertProvider;
-import org.apache.ibatis.annotations.Many;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.SelectProvider;
-import org.apache.ibatis.annotations.UpdateProvider;
-import org.apache.ibatis.mapping.FetchType;
-
 import com.nature.component.flow.model.Paths;
 import com.nature.provider.flow.PathsMapperProvider;
+import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.mapping.FetchType;
+
+import java.util.List;
 
 @Mapper
 public interface PathsMapper {
     /**
-     * 插入list<Paths> 注意拼sql的方法必须用map接 Param内容为键值
+     * Insert "list<Paths>" Note that the method of spelling SQL must use "map" to connect the "Param" content to the key value.
      *
      * @param pathsList
      * @return
@@ -27,7 +19,7 @@ public interface PathsMapper {
     public int addPathsList(@Param("pathsList") List<Paths> pathsList);
 
     /**
-     * 修改paths
+     * update paths
      *
      * @param paths
      * @return
@@ -36,56 +28,78 @@ public interface PathsMapper {
     public int updatePaths(Paths paths);
 
     /**
-     * 根据flowId查询
+     * Query according to "flowId"
      *
      * @param flowId
      * @return
      */
     @SelectProvider(type = PathsMapperProvider.class, method = "getPathsListByFlowId")
     @Results({
-            @Result(column = "LINE_FROM", property = "from"),
-            @Result(column = "LINE_TO", property = "to"),
-            @Result(column = "LINE_OUTPORT", property = "outport"),
-            @Result(column = "LINE_INPORT", property = "inport")
+            @Result(column = "line_from", property = "from"),
+            @Result(column = "line_to", property = "to"),
+            @Result(column = "line_outport", property = "outport"),
+            @Result(column = "line_inport", property = "inport")
     })
     public List<Paths> getPathsListByFlowId(String flowId);
 
 
     /**
-     * 查询连线信息
+     * Query connection information
      *
-     * @param flowId 流水线Id
-     * @param pageId 线的pageID
-     * @param from   线的from
-     * @param to     线的from
+     * @param flowId flow Id
+     * @param pageId path pageID
+     * @param from   path from
+     * @param to     path to
      * @return
      */
     @SelectProvider(type = PathsMapperProvider.class, method = "getPaths")
     @Results({
 
-            @Result(column = "LINE_FROM", property = "from"),
-            @Result(column = "LINE_TO", property = "to"),
-            @Result(column = "LINE_OUTPORT", property = "outport"),
-            @Result(column = "LINE_INPORT", property = "inport"),
-            @Result(column = "LINE_PORT", property = "port"),
+            @Result(column = "line_from", property = "from"),
+            @Result(column = "line_to", property = "to"),
+            @Result(column = "line_outport", property = "outport"),
+            @Result(column = "line_inport", property = "inport"),
+            @Result(column = "line_port", property = "port"),
 			@Result(column = "fk_flow_id", property = "flow", many = @Many(select = "com.nature.mapper.flow.FlowMapper.getFlowById", fetchType = FetchType.LAZY))
     })
     public List<Paths> getPaths(String flowId, String pageId, String from, String to);
 
     /**
-     * 查询连线的数量
+     * Query connection information
      *
-     * @param flowId 流水线Id
-     * @param pageId 线的pageID
-     * @param from   线的from
-     * @param to     线的from
+     * @param flowId flow Id
+     * @param pageId path pageID
+     * @param from   path from
+     * @param to     path to
+     * @return
+     */
+    @SelectProvider(type = PathsMapperProvider.class, method = "getPaths")
+    @Results({
+
+            @Result(column = "line_from", property = "from"),
+            @Result(column = "line_to", property = "to"),
+            @Result(column = "line_outport", property = "outport"),
+            @Result(column = "line_inport", property = "inport"),
+            @Result(column = "line_port", property = "port"),
+            @Result(column = "fk_flow_id", property = "flow", many = @Many(select = "com.nature.mapper.flow.FlowMapper.getFlowById", fetchType = FetchType.LAZY))
+    })
+    public List<Paths> getPathsByFlowIdAndStopPageId(String flowId, String pageId, String from, String to);
+
+
+    /**
+     * Query the number of connections
+     *
+     * @param flowId flow Id
+     * @param pageId path pageID
+     * @param from   path from
+     * @param to     path to
      * @return
      */
     @SelectProvider(type = PathsMapperProvider.class, method = "getPathsCounts")
     public Integer getPathsCounts(String flowId, String pageId, String from, String to);
 
     /**
-     * 根据id查询paths
+     * Query paths by id
      *
      * @param id
      * @return
@@ -95,7 +109,7 @@ public interface PathsMapper {
 
     /**
      * 
-     * 根据flowId逻辑删除flowInfo
+     * Logically delete flowInfo according to flowId
      *
      * @param id
      * @return

@@ -8,31 +8,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta th:include="Macro/csrfTokeHeadMacro :: csrfTokeHeadMacro"/>
     <link rel="stylesheet" type="text/css" th:href="@{/grapheditor/styles/grapheditor.css}">
-    <link rel="stylesheet" type="text/css" th:href="@{/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/components/bootstrap/css/bootstrap.min.css}">
     <link rel="stylesheet" type="text/css" th:href='@{/custom/css/publicMacro.css}'/>
+    <link rel="stylesheet" type="text/css" th:href='@{/custom/css/publicMacro.css}'/>
+    <link rel="stylesheet" type="text/css" th:href="@{/custom/css/fullScreen.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/components/layui/css/layui.css}"/>
 
     <!--[if IE 8]>
-    <link rel="stylesheet" type="text/css" th:href='@{/index/css/ie8.css}'/>
+    <link rel="stylesheet" type="text/css" th:href='@{/css/ie8.css}'/>
     <![endif]-->
 
-    <style type="text/css">
-        /*人为制造一个占据整个屏幕的Div,其透明度为0.7且z-index为9999使之前的页面被压在底层无法点击*/
-        .fullScreen {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            left: 0;
-            top: 0;
-            opacity: 0.7;
-            background-color: black;
-            z-index: 9999;
-            text-align: center;
-        }
-    </style>
     <!-- The fav icon -->
     <link rel="shortcut icon" th:href="@{/img/logo.ico}">
-    <script type="text/javascript" th:src='@{/js/jquery/jquery.js}'></script>
-    <script th:src="@{/charisma/js/layer/layer.js}"></script>
+    <script type="text/javascript" th:src='@{/js/jquery/jquery.min.js}'></script>
+    <script type="text/javascript" th:src="@{/components/layui/layui.all.js}"></script>
 </head>
 <body class="geEditor">
 <div th:include="Macro/publicMacro :: userHeadMacro"></div>
@@ -40,10 +29,10 @@
 			<span>
 				progress：<span id="progress" th:text="${percentage} + '%'"></span>
 			</span>
-    <input id="startFlow" type="button" class="btn btn-default" onclick="getCheckpoint()" value="Run"/>
+    <input id="runFlow" type="button" class="btn btn-default" onclick="getCheckpoint()" value="Run"/>
+    <input id="debugFlow" type="button" class="btn btn-default" onclick="getCheckpoint('DEBUG')" value="Debug"/>
     <input id="stopFlow" type="button" class="btn btn-danger" onclick="stopProcess()" value="Stop"/>
-    <input type="button" class="btn btn-primary" data-toggle="modal" onclick="getLogUrl()" data-target="#myModal"
-           value="Log"/>
+    <input type="button" class="btn btn-primary" onclick="getLogUrl()" value="Log"/>
 </div>
 <div id="processContent" th:onclick="'queryProcess(\''+${processId}+'\')'"
      style="overflow: auto; position: fixed; top: 48px; bottom: 28px;left: 0%;right: 25%; z-index: 778;">
@@ -57,26 +46,47 @@
 </div>
 <!-- crumbs -->
 <div style=" width: 100%;position: fixed;z-index: 99999;left: 0px;bottom: 0px;text-align: center;height: 28px;line-height: 28px;background: #37714b;">
-    <span th:switch="${parentAccessPath}">
-            <span th:case="'grapheditor'">
-                <span style="color: #ffffff">
-                    <a style="color: #ffffff" th:href="@{/web/flowList}">FlowList</a>
-                </span>
-                <span style="color: #ffffff">&gt;&gt;</span>
-                <span style="color: #ffffff;">
-                    <a style="color: #ffffff" th:href="@{/grapheditor/home} + '?load=' + ${processVo.flowId}">FlowContent</a>
-                </span>
-            </span>
-            <span th:case="*" style="color: #ffffff">
-                <a style="color: #ffffff" th:href="@{/web/processList}">ProcessList</a>
-            </span>
+    <span id="web_flowList_navigation" style="display: none;">
+        <span style="color: #ffffff">
+            <a style="color: #ffffff" th:href="@{/web/flowList}">Flow</a>
         </span>
-    <span style="color: #ffffff">&gt;&gt;</span>
+        <span style="color: #ffffff">&gt;&gt;</span>
+    </span>
+    <span id="grapheditor_home_navigation" style="display: none;">
+        <span style="color: #ffffff;">
+            <a style="color: #ffffff" th:href="@{/grapheditor/home} + '?load=' + ${processVo.flowId}">Flow</a>
+        </span>
+        <span style="color: #ffffff">&gt;&gt;</span>
+    </span>
+    <span id="web_processGroupList_navigation" style="display: none;">
+        <span style="color: #ffffff">
+            <a style="color: #ffffff" th:href="@{/web/processGroupList}">ProcessGroupList</a>
+        </span>
+        <span style="color: #ffffff">&gt;&gt;</span>
+    </span>
+    <span id="web_getProcessGroupById_navigation" style="display: none;">
+        <span style="color: #ffffff">
+            <a style="color: #ffffff" th:href="@{/processGroup/getProcessGroupById} + '?processGroupId=' + ${processGroupId}">ProcessGroupList</a>
+        </span>
+        <span style="color: #ffffff">&gt;&gt;</span>
+    </span>
+    <span id="web_groupTypeProcessList_navigation" style="display: none;">
+        <span style="color: #ffffff">
+            <a style="color: #ffffff" th:href="@{/web/groupTypeProcessList}">FlowProcess</a>
+        </span>
+        <span style="color: #ffffff">&gt;&gt;</span>
+    </span>
+    <span id="web_processList_navigation">
+        <span style="color: #ffffff">
+            <a style="color: #ffffff" th:href="@{/web/processList}">Process</a>
+        </span>
+        <span style="color: #ffffff">&gt;&gt;</span>
+    </span>
     <span style="color: #ffffff; font-weight: bold">ProcessContent</span>
 </div>
 <!-- Modal Checkpoint -->
-<div class="modal" id="checkpointShow" aria-labelledby="myModalLabel" data-backdrop="static">
-    <div id="modalDialogPort" class="modal-dialog" role="document">
+<div class="modal" id="checkpointShow" aria-labelledby="myModalLabelPort" data-backdrop="static">
+    <div id="modalPort" class="modal-dialog" role="document">
         <div class="modal-content" style="width: 100%;  top: 77px;">
             <div class="modal-header">
                 <h4 class="modal-title" id="myModalLabelPort">Choose Checkpoint Windows</h4>
@@ -86,14 +96,15 @@
                 <input type="checkbox" value="">
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" onclick="runProcess(true)">Run</button>
-                <button type="button" class="btn btn-default" onclick="runProcess(false)">Cancel</button>
+                <button type="button" class="btn btn-default" onclick="runProcess()">Run</button>
+                <button type="button" class="btn btn-default" onclick="runProcess('DEBUG')">Debug</button>
+                <button type="button" class="btn btn-default" onclick="cancelRunProcess()">Cancel</button>
             </div>
         </div>
     </div>
 </div>
-<!-- Modal 日志 -->
-<div class="modal" id="myModal" aria-labelledby="myModalLabel" data-backdrop="static">
+<!-- Modal Log -->
+<div class="modal fade" id="myModal" aria-labelledby="myModalLabel" data-backdrop="static">
     <div id="modalDialog" class="modal-dialog" role="document">
         <div class="modal-content" style="top: 20px;">
             <div class="modal-header">
@@ -102,7 +113,7 @@
                 <h4 class="modal-title" id="myModalLabel">Log Windows</h4>
             </div>
             <div class="modal-body">
-                <!-- <div id="logTitle">加载中</div> -->
+                <!-- <div id="logTitle">loading.....</div> -->
                 <table border="1" style="width: 100%; height: 100%;">
                     <tr style="height: 90%;">
                         <td id="customContent">
@@ -110,8 +121,7 @@
                         </td>
                     </tr>
                 </table>
-                <input type="button" class="btn btn-default" onclick="changeUrl(1)" value="stdout">
-                <input type="button" class="btn btn-default" onclick="changeUrl(2)" value="stderr">
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -120,19 +130,14 @@
     </div>
 </div>
 
-<div id='fullScreen' class="fullScreen" style="display: none;">
-    <div style="margin-top: 15%;">
-        <p>
-            <img th:src="@{/img/fullScreen.gif}" alt="">
-        </p>
-    </div>
-    `
-</div>
+<div th:include="Macro/fragmentMacro :: fullScreen"></div>
+
 <script type="text/javascript" th:src="@{/js/jquery/jquery-ui.min.js}"></script>
-<script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
-<script th:include="Macro/csrfTokeHeadMacroScript :: csrfTokeHeadMacroScript"/>
-<script th:src="@{/custom/processContent.js}"></script>
+<script type="text/javascript" th:src="@{/components/bootstrap/js/bootstrap.min.js}"></script>
+<script th:include="Macro/csrfTokeHeadMacro :: csrfTokeHeadMacroScript"/>
+<script th:src="@{/custom/js/processContent.js}"></script>
 <script th:inline="javascript">
+    var parentAccessPath = [[${parentAccessPath}]];
     var xmlDate = [[${xmlDate}]];
     var processId = [[${processId}]];
     var parentProcessId = [[${parentProcessId}]];
@@ -149,13 +154,15 @@
                 processContent.prepend('<div style="position: fixed;z-index: 779;"><h1>视图丢失</h1></div>');
             }
         }
-        if (startFlow) {
+        if (runFlow) {
             if ("STARTED" === processState) {
-                startFlow.hide();
+                runFlow.hide();
+                debugFlow.hide();
                 stopFlow.show();
                 timer = window.setInterval("processMonitoring(appId)", 5000);
             } else {
-                startFlow.show();
+                runFlow.show();
+                debugFlow.show();
                 stopFlow.hide();
             }
         }
@@ -167,18 +174,36 @@
             }
         }
         //queryProcess(processId);
-        $("#modalDialog").draggable();//为模态对话框添加拖拽
-        $("#myModal").css("overflow", "hidden");//禁止模态对话框的半透明背景滚动
+        $("#modalDialog").draggable();//Add drag and drop for modal dialogs
+        $("#myModal").css("overflow", "hidden");//Disable translucent background scrolling of modal dialogs
+        if (parentAccessPath) {
+            switch (parentAccessPath) {
+                case "grapheditor":
+                    $("#web_processList_navigation").hide();
+                    $("#web_flowList_navigation").show();
+                    $("#grapheditor_home_navigation").show();
+                    break;
+                case "flowProcess":
+                    $("#web_processList_navigation").hide();
+                    $("#web_groupTypeProcessList_navigation").show();
+                    break;
+                case "processGroupList":
+                    $("#web_processList_navigation").hide();
+                    $("#web_processGroupList_navigation").show();
+                    $("#web_getProcessGroupById_navigation").show();
+                    break;
+            }
+        }
     })();
 
-    //浏览器窗口大小变化时
+    //When the browser window size changes
     $(window).resize(function () {
-        var window_width = $(window).width();//获取浏览器窗口宽度
-        var window_height = $(window).height();//获取浏览器窗口宽度
-        $('#modalDialog').height(window_height - 124);
-        $('#modalDialog').width(window_width - 124);
-        $('#preId').height(window_height - 300);
-        $('#divPreId').height(window_height - 300);
+        var window_width = $(window).width();//Get browser window width
+        var window_height = $(window).height();//Get browser window height
+        // $('#modalDialog').height(window_height - 124);
+        // $('#modalDialog').width(window_width - 124);
+        $('#textareaId').height(window_height - 300);
+        $('#divTextareaId').height(window_height - 300);
     });
     //@ sourceURL=processContent.js
 </script>

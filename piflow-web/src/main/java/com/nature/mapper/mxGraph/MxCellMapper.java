@@ -11,7 +11,7 @@ import java.util.List;
 public interface MxCellMapper {
 
 	/**
-	 * 添加mxCell
+	 * add mxCell
 	 * 
 	 * @param mxCell
 	 * @return
@@ -20,7 +20,7 @@ public interface MxCellMapper {
 	public int addMxCell(MxCell mxCell);
 
 	/**
-	 * 修改mxCell
+	 * update mxCell
 	 * 
 	 * @param mxCell
 	 * @return
@@ -29,7 +29,7 @@ public interface MxCellMapper {
 	public int updateMxCell(MxCell mxCell);
 
 	/**
-	 * 根据mxGraphId查询MxCell的list
+	 * Query MxCell's list based on mxGraphId
 	 * 
 	 * @param mxGraphId
 	 * @return
@@ -50,7 +50,7 @@ public interface MxCellMapper {
 	public List<MxCell> getMeCellByMxGraphId(String mxGraphId);
 
 	/**
-	 * 根据Id查询MxCell
+	 * Query MxCell based on Id
 	 * 
 	 * @param id
 	 * @return
@@ -73,7 +73,7 @@ public interface MxCellMapper {
 	
 	/**
      *  
-     * 根据flowId逻辑删除flowInfo
+     * Logically delete flowInfo according to flowId
      *
      * @param id
      * @return

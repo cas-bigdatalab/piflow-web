@@ -3,6 +3,7 @@ package com.nature.component.flow.service;
 import com.nature.component.flow.model.Flow;
 import com.nature.component.flow.model.Paths;
 import com.nature.component.flow.vo.PathsVo;
+
 import java.util.List;
 
 public interface IPathsService {
@@ -10,7 +11,7 @@ public interface IPathsService {
 	public int deletePathsByFlowId(String id);
 
 	/**
-	 * 根据flowId和pageid查询连线信息
+	 * Query connection information according to flowId and pageid
 	 *
 	 * @param flowId
 	 * @param pageId
@@ -19,7 +20,7 @@ public interface IPathsService {
 	public PathsVo getPathsByFlowIdAndPageId(String flowId, String pageId);
 
 	/**
-	 * 查询连线信息
+	 * Query connection information
 	 *
 	 * @param flowId
 	 * @param from
@@ -29,7 +30,7 @@ public interface IPathsService {
 	public List<PathsVo> getPaths(String flowId, String from, String to);
 
 	/**
-	 * 查询连线的数量
+	 * Query the number of connections
 	 *
 	 * @param flowId
 	 * @param from
@@ -39,7 +40,7 @@ public interface IPathsService {
 	public Integer getPathsCounts(String flowId, String from, String to);
 
 	/**
-	 * 保存更新连线信息
+	 * Save update connection information
 	 *
 	 * @param pathsVo
 	 * @return
@@ -47,10 +48,11 @@ public interface IPathsService {
 	public int upDatePathsVo(PathsVo pathsVo);
 	
 	/**
-	 * 插入list<Paths> 
+	 * Insert list<Paths>
 	 * @param pathsList
 	 * @return
 	 */
 	public int addPathsList(List<Paths> pathsList,Flow flow);
+
 
 }

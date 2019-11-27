@@ -1,9 +1,9 @@
 package com.nature.component.flow.service;
 
-import java.util.List;
-
 import com.nature.component.flow.model.Flow;
 import com.nature.component.flow.model.FlowInfoDb;
+
+import java.util.List;
 
 
 public interface IFlowInfoDbService {

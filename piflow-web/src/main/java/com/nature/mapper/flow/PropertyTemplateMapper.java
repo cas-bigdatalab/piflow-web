@@ -1,7 +1,7 @@
 package com.nature.mapper.flow;
 
 import com.nature.component.flow.model.Property;
-import com.nature.component.flow.model.PropertyTemplate;
+import com.nature.component.group.model.PropertyTemplate;
 import com.nature.provider.flow.PropertyTemplateMapperProvider;
 import org.apache.ibatis.annotations.*;
 
@@ -11,7 +11,7 @@ import java.util.List;
 public interface PropertyTemplateMapper {
 
 	/**
-	 * 根据stopsId查询对应的stops的所有属性
+	 * Query all the attributes of the corresponding stops according to the stopsId
 	 * 
 	 * @param stopsId
 	 * @return
@@ -29,8 +29,8 @@ public interface PropertyTemplateMapper {
 	 * @param id
 	 * @return
 	 */
-	@Select("select fsp.id, fsp.name, fsp.description,fsp.display_name,fsp.custom_value,fsp.version,fsp.allowable_values,fsp.property_required,fsp.is_select "
-		  + " from flow_stops_property fsp where fsp.fk_stops_id = #{id}  ORDER BY fsp.display_name ")
+	@Select("select fsp.id, fsp.name, fsp.description,fsp.display_name,fsp.custom_value,fsp.version,fsp.allowable_values,fsp.property_required,fsp.is_select,fsp.is_locked "
+		  + " from flow_stops_property fsp where fsp.fk_stops_id = #{id}  ORDER BY fsp.property_sort desc")
 	@Results({
 		@Result(id = true, column = "id", property = "id"),
         @Result(column = "property_required", property = "required"),
@@ -44,6 +44,6 @@ public interface PropertyTemplateMapper {
 	 * @return
 	 */
 	@InsertProvider(type = PropertyTemplateMapperProvider.class, method = "insertPropertyTemplate")
-	public int insertPropertyTemplate(@Param("propertyTemplateList")List<PropertyTemplate > propertyTemplateList);
+	public int insertPropertyTemplate(@Param("propertyTemplateList")List<PropertyTemplate> propertyTemplateList);
 
 }

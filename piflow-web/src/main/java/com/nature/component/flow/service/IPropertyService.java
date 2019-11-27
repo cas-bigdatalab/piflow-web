@@ -1,28 +1,25 @@
 package com.nature.component.flow.service;
 
-import java.util.List;
-
 import com.nature.component.flow.model.Property;
+import com.nature.component.flow.request.UpdatePathRequest;
 import com.nature.component.flow.vo.StopsVo;
+
+import java.util.List;
 
 
 public interface IPropertyService {
 	
 	 /**
-	  * Querying group attribute information based on ID
-	  * @param id
+	  * Querying group attribute information based on stopPageId
+	  * @param stopPageId
 	  * @return
 	  */
-	public StopsVo queryAll(String fid, String id);
+	public StopsVo queryAll(String fid, String stopPageId);
 	 
 	/**
 	 * Modify stops attribute information
 	 * @param id
 	 * @param content
-	 * @param id2 
-	 * @param version 
-	 * @param description 
-	 * @param custom_value 
 	 * @return
 	 */
 	public int updateProperty(String content,String id);
@@ -48,8 +45,10 @@ public interface IPropertyService {
 	
 	/**
 	 * check stops template 
-	 * @param stops
+	 * @param stopsId
 	 */
 	public void checkStopTemplateUpdate(String stopsId);
+
+	public String saveOrUpdateRoutePath(UpdatePathRequest updatePathRequest);
 
 }

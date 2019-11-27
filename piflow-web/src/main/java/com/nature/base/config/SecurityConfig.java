@@ -4,13 +4,19 @@ import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.SpringContextUtil;
 import com.nature.base.util.SqlUtils;
 import com.nature.base.vo.UserVo;
-import com.nature.component.Statistics.model.Statistics;
-import com.nature.component.sysUser.model.SysRole;
-import com.nature.component.sysUser.model.SysUser;
+import com.nature.common.Eunm.SysRoleType;
+import com.nature.common.constant.SysParamsCache;
+import com.nature.component.statistics.model.Statistics;
+import com.nature.component.system.model.SysMenu;
+import com.nature.component.system.model.SysRole;
+import com.nature.component.system.model.SysUser;
+import com.nature.component.system.vo.SysMenuVo;
 import com.nature.mapper.Statistics.StatisticsMapper;
-import com.nature.mapper.sysUser.SysUserMapper;
+import com.nature.mapper.system.SysMenuMapper;
+import com.nature.mapper.system.SysUserMapper;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -28,11 +34,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
-import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -46,21 +52,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      */
     Logger logger = LoggerUtil.getLogger();
 
-    @Resource
-    private SysUserMapper sysUserMapper;
-
-    @Resource
-    private StatisticsMapper statisticsMapper;
-
     @Override
     public void configure(WebSecurity web) throws Exception {
         //Solving the problem of static resources being intercepted
-        web.ignoring().antMatchers("/charisma/**", "/bootstrap/**", "/js/**", "/css/**", "/custom/css/**", "/img/**", "/img/*","/druid/**");
+        web.ignoring().antMatchers("/components/**", "/js/**", "/css/**", "/custom/css/**", "/img/**", "/img/*", "/druid/**");
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService()).passwordEncoder(new BCryptPasswordEncoder());//添加自定义的userDetailsService认证
+        auth.userDetailsService(userDetailsService()).passwordEncoder(new BCryptPasswordEncoder());//Add a custom userDetailsService certificate
         auth.eraseCredentials(false);
     }
 
@@ -79,6 +79,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutUrl("/logout")
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID").logoutSuccessHandler(logoutSuccessHandler());
+        if (SysParamsCache.IS_IFRAME) {
+            http.headers().frameOptions().disable();
+        }
     }
 
     @Bean
@@ -93,6 +96,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 statistics.setLoginUser(userDetails.getUsername());
                 statistics.setLoginTime(new Date());
                 statistics.setLoginIp(remoteAddr);
+                StatisticsMapper statisticsMapper = (StatisticsMapper) SpringContextUtil.getBean("statisticsMapper");
                 statisticsMapper.addStatistics(statistics);
                 logger.info("USER : " + userDetails.getUsername() + " LOGIN SUCCESS !  ");
                 super.onAuthenticationSuccess(request, response, authentication);
@@ -122,9 +126,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
             UserVo getUserDetails(String username) {
                 UserVo userVo = null;
-                if (null == sysUserMapper) {
-                    sysUserMapper = (SysUserMapper) SpringContextUtil.getBean("sysUserMapper");
-                }
+                SysUserMapper sysUserMapper = (SysUserMapper) SpringContextUtil.getBean("sysUserMapper");
+                SysMenuMapper sysMenuMapper = (SysMenuMapper) SpringContextUtil.getBean("sysMenuMapper");
                 SysUser sysUser = sysUserMapper.findUserByUserName(username);
                 String password = "";
                 if (null != sysUser) {
@@ -137,15 +140,35 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     List<SysRole> sysRoleTypes = sysUser.getRoles();
                     userVo.setRoles(sysRoleTypes);
                     if (CollectionUtils.isNotEmpty(sysRoleTypes)) {
+                        SysRoleType sysRoleHighest = null;
                         String[] valueArray = new String[sysRoleTypes.size()];
                         for (int i = 0; i < sysRoleTypes.size(); i++) {
                             SysRole sysRole = sysRoleTypes.get(i);
                             if (null != sysRole && null != sysRole.getRole()) {
+                                SysRoleType role = sysRole.getRole();
                                 valueArray[i] = sysRole.getRole().getValue();
+                                if (role == SysRoleType.ADMIN) {
+                                    sysRoleHighest = role;
+                                }
                             }
+
                         }
                         if (valueArray.length > 0) {
                             userVo.setAuthorities(AuthorityUtils.createAuthorityList(valueArray));
+                            if (null == sysRoleHighest) {
+                                sysRoleHighest = SysRoleType.USER;
+                            }
+                        }
+                        List<SysMenu> sysMenuList = sysMenuMapper.getSysMenuList(sysRoleHighest.getValue());
+                        if (CollectionUtils.isNotEmpty(sysMenuList)) {
+                            List<SysMenuVo> sysMenuVoList = new ArrayList<>();
+                            SysMenuVo sysMenuVo = null;
+                            for (SysMenu sysMenu : sysMenuList) {
+                                sysMenuVo = new SysMenuVo();
+                                BeanUtils.copyProperties(sysMenu, sysMenuVo);
+                                sysMenuVoList.add(sysMenuVo);
+                            }
+                            userVo.setSysMenuVoList(sysMenuVoList);
                         }
                     }
                 }

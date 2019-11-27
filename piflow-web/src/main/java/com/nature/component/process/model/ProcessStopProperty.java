@@ -1,9 +1,13 @@
 package com.nature.component.process.model;
 
 import com.nature.base.BaseHibernateModelUUIDNoCorpAgentId;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 
+@Setter
+@Getter
 @Entity
 @Table(name = "FLOW_PROCESS_STOP_PROPERTY")
 public class ProcessStopProperty extends BaseHibernateModelUUIDNoCorpAgentId {
@@ -16,7 +20,7 @@ public class ProcessStopProperty extends BaseHibernateModelUUIDNoCorpAgentId {
 
     private String displayName;
 
-    @Column(name = "description", columnDefinition = "varchar(1024) COMMENT '描述'")
+    @Column(name = "description", columnDefinition = "varchar(1024) COMMENT 'description'")
     private String description;
 
     @Column(name = "CUSTOM_VALUE")
@@ -31,67 +35,4 @@ public class ProcessStopProperty extends BaseHibernateModelUUIDNoCorpAgentId {
     @Column(name = "PROPERTY_SENSITIVE")
     private Boolean sensitive;
 
-    public ProcessStop getProcessStop() {
-        return processStop;
-    }
-
-    public void setProcessStop(ProcessStop processStop) {
-        this.processStop = processStop;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getCustomValue() {
-        return customValue;
-    }
-
-    public void setCustomValue(String customValue) {
-        this.customValue = customValue;
-    }
-
-    public String getAllowableValues() {
-        return allowableValues;
-    }
-
-    public void setAllowableValues(String allowableValues) {
-        this.allowableValues = allowableValues;
-    }
-
-    public Boolean getRequired() {
-        return required;
-    }
-
-    public void setRequired(Boolean required) {
-        this.required = required;
-    }
-
-    public Boolean getSensitive() {
-        return sensitive;
-    }
-
-    public void setSensitive(Boolean sensitive) {
-        this.sensitive = sensitive;
-    }
 }

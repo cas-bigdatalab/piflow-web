@@ -1,11 +1,11 @@
 package com.nature.component.template.service;
 
-import com.nature.component.template.model.FlowTemplateModel;
-import com.nature.component.template.model.PropertyTemplateModel;
-import com.nature.component.template.model.StopTemplateModel;
 import com.nature.component.flow.model.Flow;
 import com.nature.component.flow.model.Stops;
-import com.nature.component.flow.model.Template;
+import com.nature.component.template.model.PropertyTemplateModel;
+import com.nature.component.template.model.StopTemplateModel;
+import com.nature.component.template.model.Template;
+import com.nature.component.template.vo.FlowTemplateModelVo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.List;
 public interface IFlowAndStopsTemplateVoService {
 	 
 	/**
-	 * 添加单个stops
+	 * Add a single stops
 	 * 
 	 * @param stops
 	 * @return
@@ -23,17 +23,17 @@ public interface IFlowAndStopsTemplateVoService {
 	public int addStops(StopTemplateModel stops);
 	
 	/**
-	 * 新增Flow
+	 * add Flow
 	 * 
 	 * @param flow
 	 * @return
 	 */
-	public int addFlow(FlowTemplateModel flow);
+	public int addFlow(FlowTemplateModelVo flow);
 	
 	/**
-	 * 插入list<PropertyVo> 注意拼sql的方法必须用map接 Param内容为键值
+	 * Insert list<PropertyVo> Note that the method of spelling sql must use Map to connect Param content to key value.
 	 * 
-	 * @param propertyList (内容： 键为propertyList,值为List<PropertyVo>)
+	 * @param propertyList (Content: The key is propertyList and the value is List<PropertyVo>)
 	 * @return
 	 */
 	public int addPropertyList(@Param("propertyList") List<PropertyTemplateModel> propertyList);
@@ -43,26 +43,26 @@ public interface IFlowAndStopsTemplateVoService {
 	public int deleteStopPropertyTemByStopId(@Param("id") String stopId);
 	
 	/**
-	 * 根据模板id查询所有stop信息
+	 * Query all stop information according to the template id
 	 * @param templateId
 	 * @return
 	 */
 	public List<StopTemplateModel> getStopsListByTemPlateId(@Param("templateId") String templateId);
 	 
 	/**
-	 * 根据stopId查询所有stop属性信息
+	 * Query all stop attribute information according to stopId
 	 * @param stopsId
 	 * @return
 	 */
 	public List<PropertyTemplateModel> getPropertyListByStopsId(String stopsId);
 	
 	/**
-	 * 加载模板保存stop信息
+	 * Load template to save stop information
 	 * @param template
 	 * @param flow
-	 * @param maxPageId  flow中stop中的最大值
+	 * @param maxPageId  The maximum value in stop in flow
 	 */
-	public void addTemplateStopsToFlow(Template template,Flow flow, int maxPageId);
+	public void addTemplateStopsToFlow(Template template, Flow flow, int maxPageId);
 	
 	public void addStopsList(List<Stops> stops,Template template);
 }

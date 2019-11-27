@@ -7,6 +7,7 @@ import com.nature.component.flow.vo.StopsVo;
 import com.nature.third.vo.flowInfo.ThirdFlowInfoStopVo;
 import org.springframework.data.annotation.Transient;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 public interface IStopsService {
@@ -14,16 +15,16 @@ public interface IStopsService {
     public int deleteStopsByFlowId(String id);
 
     /**
-     * 根据flowId和pagesId查询stops
+     * Query "stops" based on "flowId" and "pagesId"
      *
-     * @param flowId  必填
-     * @param pageIds 可为空
+     * @param flowId  Required
+     * @param pageIds Can be empty
      * @return
      */
     public List<StopsVo> getStopsByFlowIdAndPageIds(String flowId, String[] pageIds);
 
     /**
-     * 修改stop
+     * update stop
      *
      * @param stopsVo
      * @return
@@ -31,7 +32,7 @@ public interface IStopsService {
     public Integer stopsUpdate(StopsVo stopsVo);
 
     /**
-     * 修改接口返回的stops个别字段
+     * Modify the "stops" individual fields returned by the interface
      *
      * @param stopVo
      * @return
@@ -39,7 +40,7 @@ public interface IStopsService {
     public int updateStopsByFlowIdAndName(ThirdFlowInfoStopVo stopVo);
 
     /**
-     * 修改isCheckpoint字段
+     * Modify the "isCheckpoint" field
      *
      * @param stopId
      * @param isCheckpoint
@@ -48,7 +49,7 @@ public interface IStopsService {
     public int updateStopsCheckpoint(String stopId, boolean isCheckpoint);
     
     /**
-     * 修改stopname根据id
+     * Modify "stopName" based on id
      * @param id
      * @param stopName
      * @return
@@ -57,8 +58,9 @@ public interface IStopsService {
 
     public String getStopByNameAndFlowId(String flowId, String stopName);
     
-	@Transient
+	@Transactional
     public StatefulRtnBase updateStopName(String stopId, Flow flow, String stopName, String pageId);
 
+	public String getStopsPort(String flowId,String sourceId,String targetId,String pathLineId);
 
 }

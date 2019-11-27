@@ -1,17 +1,17 @@
 package com.nature.transaction.sysUser;
 
 import com.nature.base.util.LoggerUtil;
-import com.nature.component.sysUser.model.SysUser;
-import com.nature.mapper.sysUser.SysRoleMapper;
-import com.nature.mapper.sysUser.SysUserMapper;
+import com.nature.component.system.model.SysUser;
+import com.nature.mapper.system.SysRoleMapper;
+import com.nature.mapper.system.SysUserMapper;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 @Component
@@ -23,10 +23,10 @@ public class SysUserTransaction {
      */
     Logger logger = LoggerUtil.getLogger();
 
-    @Resource
+    @Autowired
     private SysUserMapper sysUserMapper;
 
-    @Resource
+    @Autowired
     private SysRoleMapper sysRoleMapper;
 
 
@@ -60,7 +60,7 @@ public class SysUserTransaction {
                 int j = sysRoleMapper.addSysRoleList(user.getRoles(), user.getId());
                 if (j <= 0) {
                     rtn = 0;
-                    logger.warn("角色保存失败");
+                    logger.warn("Role save failed");
                 }
                 rtn += j;
             }

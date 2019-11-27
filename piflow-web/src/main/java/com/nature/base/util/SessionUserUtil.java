@@ -2,8 +2,8 @@ package com.nature.base.util;
 
 import com.nature.base.vo.UserVo;
 import com.nature.common.Eunm.SysRoleType;
-import com.nature.component.sysUser.model.SysRole;
-import org.apache.commons.lang.StringUtils;
+import com.nature.component.system.model.SysRole;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -43,12 +43,12 @@ public class SessionUserUtil {
         return isAdmin;
     }
 
-    //X-Forwarded-For为空，取X-Real-IP，X-Real-IP为空，取remoteAddress
+    //"X-Forwarded-For" is empty, take "X-Real-IP", "X-Real-IP" is empty, take "remoteAddress"
     public static String getIp(HttpServletRequest request) {
         String ip = request.getHeader("X-Forwarded-For");
         logger.info("X-Forwarded-For:" + ip);
         if (StringUtils.isNotEmpty(ip) && !"unKnown".equalsIgnoreCase(ip)) {
-            //多次反向代理后会有多个ip值，第一个ip才是真实ip
+            //After multiple reverse proxy, there will be multiple ip values, the first ip is true ip
             int index = ip.indexOf(",");
             logger.info("X-Forwarded-For first , index:" + index);
             if (index != -1) {
@@ -65,7 +65,7 @@ public class SessionUserUtil {
         if (StringUtils.isNotEmpty(ip) && !"unKnown".equalsIgnoreCase(ip)) {
             return ip;
         }
-        logger.info("没有发现X-Real-IP的ip，将获取RemoteAddr：" + request.getRemoteAddr());
+        logger.info("If you do not find the ip of \"X-Real-IP\", you will get \"RemoteAddr\":" + request.getRemoteAddr());
         return request.getRemoteAddr();
     }
 

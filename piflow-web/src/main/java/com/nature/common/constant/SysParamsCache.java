@@ -1,123 +1,37 @@
 package com.nature.common.constant;
 
+import com.nature.base.util.LoggerUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.nature.base.util.LoggerUtil;
-
 /**
- * 系统参数缓存类
+ * System parameter cache class
  * <p>
- * 1、系统参数有几个不需要配置，系统参数表中无需相关参数配置 2、系统参数需要数据表中配置的必须和该类的属性名保持完全一致
- * 3、参数值如果是多个，则优先以;，如果;号不能处理，则,号次之
+ * 1. There are several system parameters that do not need to be configured. The system parameter table does not need to be configured with related parameters. 2. The system parameters need to be configured in the data table and must be exactly the same as the attribute names of the class.
+ * 3. If the parameter value is more than one, it will take precedence; if the number cannot be processed, then the number is
  * <p>
- * 注： 缓存类的静态属性必须使用时进行缓存值替换的测试，确保缓存使用正确
+ * Note: The static properties of the cache class must be tested for cache value substitution, ensuring that the cache is used correctly.
  * <p>
- * 设置常量规则
- * 1、默认设置的常量值
- * 2、spring从properties文件获取设置[static不能注入，需要public的非静态set方法处理]
- * 3、数据库读取设置
+ * Set constant rules
+ * 1, the default set of constant values
+ * 2, "spring" gets the settings from the "properties" file [static can not be injected, need "public" non-static "set" method]...
+ * 3, database read settings
  *
  * @author LHG
  */
 @Component
 public class SysParamsCache {
 
-    static Logger logger = LoggerUtil.getLogger();
+    public static String DATASOURCE_TYPES;
 
-    // 接口ip和端口
-    public static String INTERFACE_URL_HEAD;
-
-    @Value("${syspara.interfaceUrlHead}")
-    public void setInterfaceUrlHead(String interfaceUrlHead) {
-        INTERFACE_URL_HEAD = interfaceUrlHead;
+    @Value("${sysParam.dataSourceTypes}")
+    public void setDatasourceTypes(String datasourceTypes) {
+        DATASOURCE_TYPES = datasourceTypes;
     }
 
-    // stops groups信息
-    public static String INTERFACE_STOPS_GROUPS = "/stop/groups";
-    // stops List信息(所有stops的bundle)
-    public static String INTERFACE_STOPS_LIST = "/stop/list";
-    // stop详细信息接口
-    public static String INTERFACE_STOPS_INFO = "/stop/info";
-    // 启动flow接口
-    public static String INTERFACE_FLOW_START = "/flow/start";
-    // 停止flow接口
-    public static String INTERFACE_FLOW_STOP = "/flow/stop";
-    // flow基本信息接口
-    public static String INTERFACE_FLOW_INFO = "/flow/info";
-    // flow日志接口
-    public static String INTERFACE_FLOW_LOG = "/flow/log";
-    // flow进度接口
-    public static String INTERFACE_FLOW_PROGRESS = "/flow/progress";
-    // flow checkpoints接口
-    public static String INTERFACE_FLOW_CHECKPOINTS = "/flow/checkpoints";
-
-    /**
-     * stops groups信息(所有)地址
-     */
-    public static String STOP_GROUPS_URL() {
-        return INTERFACE_URL_HEAD + INTERFACE_STOPS_GROUPS;
-    }
-
-    /**
-     * stops List信息(所有stops的bundle)地址
-     */
-    public static String STOP_LIST_URL() {
-        return INTERFACE_URL_HEAD + INTERFACE_STOPS_LIST;
-    }
-
-    /**
-     * stop详细信息接口地址
-     */
-    public static String STOP_INFO_URL() {
-        return INTERFACE_URL_HEAD + INTERFACE_STOPS_INFO;
-    }
-
-    /**
-     * flow启动接口地址
-     */
-    public static String FLOW_START_URL() {
-        return INTERFACE_URL_HEAD + INTERFACE_FLOW_START;
-    }
-
-    /**
-     * flow停止接口地址
-     */
-    public static String FLOW_STOP_URL() {
-        return INTERFACE_URL_HEAD + INTERFACE_FLOW_STOP;
-    }
-
-    /**
-     * flow基本信息接口地址
-     */
-    public static String FLOW_INFO_URL() {
-        return INTERFACE_URL_HEAD + INTERFACE_FLOW_INFO;
-    }
-
-    /**
-     * flow日志接口地址
-     */
-    public static String FLOW_LOG_URL() {
-        return INTERFACE_URL_HEAD + INTERFACE_FLOW_LOG;
-    }
-
-    /**
-     * flow进度接口地址
-     */
-    public static String FLOW_PROGRESS_URL() {
-        return INTERFACE_URL_HEAD + INTERFACE_FLOW_PROGRESS;
-    }
-
-    /**
-     * flow进度接口地址
-     */
-    public static String FLOW_CHECKPOINTS_URL() {
-        return INTERFACE_URL_HEAD + INTERFACE_FLOW_CHECKPOINTS;
-    }
-
-    // 图片路径(配置文件中 读取)
+    // Image path (read in configuration file)
     public static String IMAGES_PATH;
 
     @Value("${syspara.imagesPath}")
@@ -125,7 +39,7 @@ public class SysParamsCache {
         IMAGES_PATH = imagesPath;
     }
 
-    // xml文件路径(配置文件中 读取)
+    // Xml file path (read in configuration file)
     public static String XML_PATH;
 
     @Value("${syspara.xmlPath}")
@@ -133,19 +47,227 @@ public class SysParamsCache {
         XML_PATH = xmlPath;
     }
 
-    // 是否加载stops
-    public static Boolean IS_LOAD_STOP = false;
+    // is load stops
+    public static boolean IS_LOAD_STOP;
 
     @Value("${syspara.isLoadStop}")
     public void setIsLoadStop(String isLoadStop) {
         IS_LOAD_STOP = Boolean.valueOf(isLoadStop);
     }
 
-    // 定时任务Cron表达式
-    public static String SYNC_PROCESS_CRON = "0/5 * * * * ?";
+    // Whether to load stops
+    public static Boolean IS_IFRAME;
 
-    @Value("${syspara.syncProcessCron}")
-    public void setSyncProcessCron(String syncProcessCron) {
-        SYNC_PROCESS_CRON = syncProcessCron;
+    @Value("${syspara.isIframe}")
+    public void setIsIframe(String isIframe) {
+        IS_IFRAME = Boolean.valueOf(isIframe);
+    }
+
+    // Interface ip and port
+    public static String INTERFACE_URL_HEAD;
+
+    @Value("${syspara.interfaceUrlHead}")
+    public void setInterfaceUrlHead(String interfaceUrlHead) {
+        INTERFACE_URL_HEAD = interfaceUrlHead;
+    }
+
+
+    // Stops group information
+    public static String STOPS_GROUPS_URL;
+
+    @Value("${api.stopsGroupsUrl}")
+    public void setStopsGroupsUrl(String stopsGroupsUrl) {
+        STOPS_GROUPS_URL = stopsGroupsUrl;
+    }
+
+    public static String getStopsGroupsUrl() {
+        return INTERFACE_URL_HEAD + STOPS_GROUPS_URL;
+    }
+
+    // "stops List" information ("bundle" for all "stops")
+    public static String STOPS_LIST_URL;
+
+    @Value("${api.stopsListUrl}")
+    public void setStopsListUrl(String stopsListUrl) {
+        STOPS_LIST_URL = stopsListUrl;
+    }
+
+    public static String getStopsListUrl() {
+        return INTERFACE_URL_HEAD + STOPS_LIST_URL;
+    }
+
+    // "stop" detail interface
+    public static String STOPS_INFO_URL;
+
+    @Value("${api.stopsInfoUrl}")
+    public void setStopsInfoUrl(String stopsInfoUrl) {
+        STOPS_INFO_URL = stopsInfoUrl;
+    }
+
+    public static String getStopsInfoUrl() {
+        return INTERFACE_URL_HEAD + STOPS_INFO_URL;
+    }
+
+    // Start the "flow" interface
+    public static String FLOW_START_URL;
+
+    @Value("${api.flowStartUrl}")
+    public void setFlowStartUrl(String flowStartUrl) {
+        FLOW_START_URL = flowStartUrl;
+    }
+
+    public static String getFlowStartUrl() {
+        return INTERFACE_URL_HEAD + FLOW_START_URL;
+    }
+
+    // Stop the "flow" interface
+    public static String FLOW_STOP_URL;
+
+    @Value("${api.flowStopUrl}")
+    public void setFlowStopUrl(String flowStopUrl) {
+        FLOW_STOP_URL = flowStopUrl;
+    }
+
+    public static String getFlowStopUrl() {
+        return INTERFACE_URL_HEAD + FLOW_STOP_URL;
+    }
+
+    // "flow" basic information interface
+    public static String FLOW_INFO_URL;
+
+    @Value("${api.flowInfoUrl}")
+    public void setFlowInfoUrl(String flowInfoUrl) {
+        FLOW_INFO_URL = flowInfoUrl;
+    }
+
+    public static String getFlowInfoUrl() {
+        return INTERFACE_URL_HEAD + FLOW_INFO_URL;
+    }
+
+    // "flow" log interface
+    public static String FLOW_LOG_URL;
+
+    @Value("${api.flowLogUrl}")
+    public void setFlowLogUrl(String flowLogUrl) {
+        FLOW_LOG_URL = flowLogUrl;
+    }
+
+    public static String getFlowLogUrl() {
+        return INTERFACE_URL_HEAD + FLOW_LOG_URL;
+    }
+
+    // "flow" progress interface
+    public static String FLOW_PROGRESS_URL;
+
+    @Value("${api.flowProgressUrl}")
+    public void setFlowProgressUrl(String flowProgressUrl) {
+        FLOW_PROGRESS_URL = flowProgressUrl;
+    }
+
+    public static String getFlowProgressUrl() {
+        return INTERFACE_URL_HEAD + FLOW_PROGRESS_URL;
+    }
+
+    // "flow checkpoints" interface
+    public static String FLOW_CHECKPOINTS_URL;
+
+    @Value("${api.flowCheckpointsUrl}")
+    public void setFlowCheckpointsUrl(String flowCheckpointsUrl) {
+        FLOW_CHECKPOINTS_URL = flowCheckpointsUrl;
+    }
+
+    public static String getFlowCheckpointsUrl() {
+        return INTERFACE_URL_HEAD + FLOW_CHECKPOINTS_URL;
+    }
+
+    // "flow debug" interface
+    public static String FLOW_DEBUG_DATA_URL;
+
+    @Value("${api.flowDebugDataUrl}")
+    public void setFlowDebugDataUrl(String flowDebugDataUrl) {
+        FLOW_DEBUG_DATA_URL = flowDebugDataUrl;
+    }
+
+    public static String getFlowDebugDataUrl() {
+        return INTERFACE_URL_HEAD + FLOW_DEBUG_DATA_URL;
+    }
+
+    // "flow group start"  interface
+    public static String FLOW_GROUP_START_URL;
+
+    @Value("${api.flowGroupStartUrl}")
+    public void setFlowGroupStartUrl(String flowGroupStartUrl) {
+        FLOW_GROUP_START_URL = flowGroupStartUrl;
+    }
+
+    public static String getFlowGroupStartUrl() {
+        return INTERFACE_URL_HEAD + FLOW_GROUP_START_URL;
+    }
+
+    // "flow group stop"  interface
+    public static String FLOW_GROUP_STOP_URL;
+
+    @Value("${api.flowGroupStopUrl}")
+    public void setFlowGroupStopUrl(String flowGroupStopUrl) {
+        FLOW_GROUP_STOP_URL = flowGroupStopUrl;
+    }
+
+    public static String getFlowGroupStopUrl() {
+        return INTERFACE_URL_HEAD + FLOW_GROUP_STOP_URL;
+    }
+
+    public static String FLOW_GROUP_INFO_URL;
+
+    @Value("${api.flowGroupInfoUrl}")
+    public void setFlowGroupInfoUrl(String flowGroupInfoUrl) {
+        FLOW_GROUP_INFO_URL = flowGroupInfoUrl;
+    }
+
+    public static String getFlowGroupInfoUrl() {
+        return INTERFACE_URL_HEAD + FLOW_GROUP_INFO_URL;
+    }
+
+    public static String FLOW_GROUP_PROGRESS_URL;
+
+    @Value("${api.flowGroupProgressUrl}")
+    public void setFlowGroupProgressUrl(String flowGroupProgressUrl) {
+        FLOW_GROUP_PROGRESS_URL = flowGroupProgressUrl;
+    }
+
+    public static String getFlowGroupProgressUrl() {
+        return INTERFACE_URL_HEAD + FLOW_GROUP_PROGRESS_URL;
+    }
+
+    public static String PROJECT_START_URL;
+
+    @Value("${api.projectStartUrl}")
+    public void setProjectStartUrl(String projectStartUrl) {
+        PROJECT_START_URL = projectStartUrl;
+    }
+
+    public static String getProjectStartUrl() {
+        return INTERFACE_URL_HEAD + PROJECT_START_URL;
+    }
+
+    public static String PROJECT_STOP_URL;
+
+    @Value("${api.projectStopUrl}")
+    public void setProjectStopUrl(String projectStopUrl) {
+        PROJECT_STOP_URL = projectStopUrl;
+    }
+
+    public static String getProjectStopUrl() {
+        return INTERFACE_URL_HEAD + PROJECT_STOP_URL;
+    }
+
+    public static String PROJECT_INFO_URL;
+
+    @Value("${api.projectInfoUrl}")
+    public void setProjectInfoUrl(String projectInfoUrl) {
+        PROJECT_INFO_URL = projectInfoUrl;
+    }
+
+    public static String getProjectInfoUrl() {
+        return INTERFACE_URL_HEAD + PROJECT_INFO_URL;
     }
 }

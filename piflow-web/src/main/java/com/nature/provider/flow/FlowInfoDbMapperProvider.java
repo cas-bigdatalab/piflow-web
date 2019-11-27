@@ -4,7 +4,6 @@ import com.nature.base.util.DateUtils;
 import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.SqlUtils;
 import com.nature.base.vo.UserVo;
-import com.nature.component.flow.model.Flow;
 import com.nature.component.flow.model.FlowInfoDb;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
@@ -128,7 +127,7 @@ public class FlowInfoDbMapperProvider {
     }
 
     /**
-     * 修改FlowInfo
+     * update FlowInfo
      *
      * @param flow
      * @return
@@ -139,27 +138,27 @@ public class FlowInfoDbMapperProvider {
         if (null != flow) {
 
             SQL sql = new SQL();
-            // UPDATE括号中为数据库表名
+            // UPDATE parentheses for the database table name
             sql.UPDATE("flow_info");
-            // SET中的第一个字符串为数据库中表对应的字段名
-            // 除数字类型的字段外其他类型必须加单引号
+            // The first string in the SET is the name of the field corresponding to the table in the database
+            // all types except numeric fields must be enclosed in single quotes
 
-            sql.SET("LAST_UPDATE_DTTM = " + lastUpdateDttmStr);
-            sql.SET("LAST_UPDATE_USER = " + lastUpdateUser);
-            sql.SET("VERSION = " + (version + 1));
+            sql.SET("last_update_dttm = " + lastUpdateDttmStr);
+            sql.SET("last_update_user = " + lastUpdateUser);
+            sql.SET("version = " + (version + 1));
 
-            // 处理其他字段
-            sql.SET("ENABLE_FLAG = " + enableFlag);
+            // handle other fields
+            sql.SET("enable_flag = " + enableFlag);
             sql.SET("state = " + state);
-            sql.SET("NAME = " + name);
+            sql.SET("name = " + name);
             sql.SET("progress = " + progress);
             sql.SET("end_time = " + endTimeStr);
             sql.SET("start_time = " + startTimeStr);
             /*if (null != flowId) {
                 sql.SET("fk_flow_id = " + flowId);
             }*/
-            sql.WHERE("VERSION = " + version);
-            sql.WHERE("ID = " + SqlUtils.preventSQLInjection(id));
+            sql.WHERE("version = " + version);
+            sql.WHERE("id = " + SqlUtils.preventSQLInjection(id));
             sqlStr = sql.toString();
             if (StringUtils.isBlank(id)) {
                 sqlStr = "";
@@ -176,10 +175,10 @@ public class FlowInfoDbMapperProvider {
         if (StringUtils.isNotBlank(id)) {
             SQL sql = new SQL();
             sql.UPDATE("flow_info");
-            sql.SET("ENABLE_FLAG = 0");
+            sql.SET("enable_flag = 0");
             sql.SET("last_update_user = " + SqlUtils.preventSQLInjection(username));
             sql.SET("last_update_dttm = " + SqlUtils.preventSQLInjection(DateUtils.dateTimesToStr(new Date())));
-            sql.WHERE("ENABLE_FLAG = 1");
+            sql.WHERE("enable_flag = 1");
             sql.WHERE("id = " + SqlUtils.preventSQLInjection(id));
 
             sqlStr = sql.toString();

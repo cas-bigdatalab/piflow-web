@@ -23,10 +23,10 @@ public class PathCtrl {
     Logger logger = LoggerUtil.getLogger();
 
     @Autowired
-	IPathsService iPathsService;
+	private IPathsService pathsServiceImpl;
 
     /**
-     * 根据flowId 和 pageId 查询path
+     * Query'path'according to'flowId' and'pageId'
      * @param fid
      * @param id
      * @return
@@ -34,20 +34,20 @@ public class PathCtrl {
 	@RequestMapping("/queryPathInfo")
 	public String getStopGroup(String fid, String id) {
 		Map<String, Object> rtnMap = new HashMap<String, Object>();
-		rtnMap.put("code", "0");
+		rtnMap.put("code",500);
 		if (StringUtils.isNotBlank(fid) && StringUtils.isNotBlank(id)) {
-			PathsVo queryInfo = iPathsService.getPathsByFlowIdAndPageId(fid, id);
+			PathsVo queryInfo = pathsServiceImpl.getPathsByFlowIdAndPageId(fid, id);
 			if (null != queryInfo) {
-				rtnMap.put("code", "1");
+				rtnMap.put("code",200);
 				rtnMap.put("queryInfo", queryInfo);
-				rtnMap.put("errMsg", "成功");
+				rtnMap.put("errorMsg", "Success");
 			}else {
-				rtnMap.put("errMsg", "没有查询到paths的信息");
-				logger.warn("没有查询到paths的信息");
+				rtnMap.put("errorMsg", "No'paths'information was queried");
+				logger.warn("No'paths'information was queried");
 			}
 		}else {
-			rtnMap.put("errMsg", "参数fid或id为空");
-			logger.warn("参数fid或id为空");
+			rtnMap.put("errorMsg", "The parameter'fid'or'id' is empty");
+			logger.warn("The parameter'fid'or'id' is empty");
 		}
 		return JsonUtils.toJsonNoException(rtnMap);
 	}

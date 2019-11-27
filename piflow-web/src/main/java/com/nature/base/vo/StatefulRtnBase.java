@@ -3,7 +3,7 @@ package com.nature.base.vo;
 import java.io.Serializable;
 
 /**
- * 有状态的返回值
+ * Stateful return value
  * 
  * @author Nature
  *
@@ -15,23 +15,20 @@ public class StatefulRtnBase implements Serializable {
 
 	public final String ERRMSG_SUCCESS = "OK";
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * 请求处理响应默认成功
+	 * Request processing response default success
 	 */
 	private boolean reqRtnStatus = true;
 
 	/**
-	 * 请求处理失败错误码
+	 * Request processing failure error code
 	 */
 	private String errorCode = ERRCODE_SUCCESS;
 
 	/**
-	 * 请求处理失败错误信息
+	 * Request processing failure error message
 	 */
 	private String errorMsg = ERRMSG_SUCCESS;
 

@@ -9,7 +9,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
 
 import java.util.Date;
-import java.util.Map;
 
 public class FlowMapperProvider {
 
@@ -80,7 +79,7 @@ public class FlowMapperProvider {
     }
 
     /**
-     * 新增Flow
+     * add Flow
      *
      * @param flow
      * @return
@@ -91,12 +90,12 @@ public class FlowMapperProvider {
         if (null != flow) {
             SQL sql = new SQL();
 
-            // INSERT_INTO括号中为数据库表名
+            // INSERT_INTO brackets is table name
             sql.INSERT_INTO("flow");
-            // value中的第一个字符串为数据库中表对应的字段名
-            // 除数字类型的字段外其他类型必须加单引号
+            // The first string in the value is the field name corresponding to the table in the database.
+            // all types except numeric fields must be enclosed in single quotes
 
-            //先处理修改必填字段s
+            //Process the required fields firsts
             if (null == crtDttmStr) {
                 String crtDttm = DateUtils.dateTimesToStr(new Date());
                 crtDttmStr = SqlUtils.preventSQLInjection(crtDttm);
@@ -104,19 +103,19 @@ public class FlowMapperProvider {
             if (StringUtils.isBlank(crtUser)) {
                 crtUser = SqlUtils.preventSQLInjection("-1");
             }
-            sql.VALUES("ID", id);
-            sql.VALUES("CRT_DTTM", crtDttmStr);
-            sql.VALUES("CRT_USER", crtUser);
-            sql.VALUES("LAST_UPDATE_DTTM", lastUpdateDttmStr);
-            sql.VALUES("LAST_UPDATE_USER", lastUpdateUser);
-            sql.VALUES("VERSION", version + "");
-            sql.VALUES("ENABLE_FLAG", enableFlag + "");
-            sql.VALUES("IS_EXAMPLE", isExample + "");
+            sql.VALUES("id", id);
+            sql.VALUES("crt_dttm", crtDttmStr);
+            sql.VALUES("crt_user", crtUser);
+            sql.VALUES("last_update_dttm", lastUpdateDttmStr);
+            sql.VALUES("last_update_user", lastUpdateUser);
+            sql.VALUES("version", version + "");
+            sql.VALUES("enable_flag", enableFlag + "");
+            sql.VALUES("is_example", isExample + "");
 
-            // 处理其他字段
+            // handle other fields
             sql.VALUES("description", description);
-            sql.VALUES("NAME", name);
-            sql.VALUES("UUID", uuid);
+            sql.VALUES("name", name);
+            sql.VALUES("uuid", uuid);
             sql.VALUES("driver_memory", driverMemory);
             sql.VALUES("executor_cores", executorCores);
             sql.VALUES("executor_memory", executorMemory);
@@ -128,7 +127,7 @@ public class FlowMapperProvider {
     }
 
     /**
-     * 修改Flow
+     * update Flow
      *
      * @param flow
      * @return
@@ -140,23 +139,23 @@ public class FlowMapperProvider {
         if (null != flow) {
             SQL sql = new SQL();
 
-            // INSERT_INTO括号中为数据库表名
+            // INSERT_INTO brackets is table name
             sql.UPDATE("flow");
-            // SET中的第一个字符串为数据库中表对应的字段名
-            sql.SET("LAST_UPDATE_DTTM = " + lastUpdateDttmStr);
-            sql.SET("LAST_UPDATE_USER = " + lastUpdateUser);
-            sql.SET("VERSION = " + (version + 1));
+            // The first string in the SET is the name of the field corresponding to the table in the database
+            sql.SET("last_update_dttm = " + lastUpdateDttmStr);
+            sql.SET("last_update_user = " + lastUpdateUser);
+            sql.SET("version = " + (version + 1));
 
-            // 处理其他字段
-            sql.SET("ENABLE_FLAG = " + enableFlag);
+            // handle other fields
+            sql.SET("enable_flag = " + enableFlag);
             sql.SET("description = " + description);
-            sql.SET("NAME = " + name);
-            sql.SET("UUID = " + uuid);
+            sql.SET("name = " + name);
+            sql.SET("uuid = " + uuid);
             sql.SET("driver_memory = " + driverMemory);
             sql.SET("executor_cores = " + executorCores);
             sql.SET("executor_memory = " + executorMemory);
             sql.SET("executor_number = " + executorNumber);
-            sql.WHERE("VERSION = " + version);
+            sql.WHERE("version = " + version);
             sql.WHERE("id = " + id);
             sqlStr = sql.toString();
             if (StringUtils.isBlank(id)) {
@@ -168,7 +167,7 @@ public class FlowMapperProvider {
     }
 
     /**
-     * 查詢所有工作流
+     * get flow list
      *
      * @return
      */
@@ -177,59 +176,62 @@ public class FlowMapperProvider {
         SQL sql = new SQL();
         sql.SELECT("*");
         sql.FROM("flow");
-        sql.WHERE("ENABLE_FLAG = 1");
-        sql.WHERE("IS_EXAMPLE = 0");
-        sql.ORDER_BY(" CRT_DTTM DESC  ");
+        sql.WHERE("enable_flag = 1");
+        sql.WHERE("is_example = 0");
+        sql.WHERE("fk_flow_group_id = null ");
+        sql.WHERE("fk_flow_project_id = null ");
+        sql.ORDER_BY(" crt_dttm desc  ");
         sqlStr = sql.toString();
         return sqlStr;
     }
 
     /**
-     * 查詢所有工作流分页查询
+     * Query all flow paging queries
      *
      * @param param
      * @return
      */
     public String getFlowListParam(String param) {
-        String sqlStr = "SELECT 0";
-        UserVo currentUser = SessionUserUtil.getCurrentUser();
+        String sqlStr = "select 0";
         StringBuffer strBuf = new StringBuffer();
-        strBuf.append("SELECT * ");
-        strBuf.append("FROM FLOW ");
-        strBuf.append("WHERE ");
-        strBuf.append("ENABLE_FLAG = 1 ");
-        strBuf.append("AND IS_EXAMPLE = 0 ");
+        strBuf.append("select * ");
+        strBuf.append("from flow ");
+        strBuf.append("where ");
+        strBuf.append("enable_flag = 1 ");
+        strBuf.append("and is_example = 0 ");
+        strBuf.append("and fk_flow_group_id is null ");
+        strBuf.append("and fk_flow_project_id is null ");
         if (StringUtils.isNotBlank(param)) {
-            strBuf.append("AND ( ");
-            strBuf.append("NAME LIKE '%" + param + "%' ");
-            strBuf.append("OR DESCRIPTION LIKE '%" + param + "%' ");
+            strBuf.append("and ( ");
+            strBuf.append("name like '%" + param + "%' ");
+            strBuf.append("or description like '%" + param + "%' ");
             strBuf.append(") ");
         }
-        strBuf.append(SqlUtils.addQueryByUserRole(currentUser, true));
-        strBuf.append("ORDER BY CRT_DTTM DESC ");
+        strBuf.append(SqlUtils.addQueryByUserRole(true, false));
+        strBuf.append("order by crt_dttm desc ");
         sqlStr = strBuf.toString();
         return sqlStr;
     }
 
     /**
-     * 查詢所有样例工作流
+     * Query the sample flow list
      *
      * @return
      */
     public String getFlowExampleList() {
         String sqlStr = "";
         SQL sql = new SQL();
-        sql.SELECT("ID,NAME");
-        sql.FROM("FLOW");
-        sql.WHERE("ENABLE_FLAG = 1");
-        sql.WHERE("IS_EXAMPLE = 1");
-        sql.ORDER_BY(" NAME ASC  ");
+        sql.SELECT("id,name");
+        sql.FROM("flow");
+        sql.WHERE("enable_flag = 1");
+        sql.WHERE("is_example = 1");
+        sql.ORDER_BY(" name asc  ");
         sqlStr = sql.toString();
         return sqlStr;
     }
 
     /**
-     * 根据工作流Id查询工作流
+     * get flow by id
      *
      * @param id
      * @return
@@ -237,12 +239,12 @@ public class FlowMapperProvider {
     public String getFlowById(String id) {
         String sqlStr = "";
         if (StringUtils.isNotBlank(id)) {
-            UserVo currentUser = SessionUserUtil.getCurrentUser();
             StringBuffer strBuf = new StringBuffer();
-            strBuf.append("SELECT * ");
-            strBuf.append("FROM FLOW ");
-            strBuf.append("WHERE ENABLE_FLAG = 1 ");
-            strBuf.append("AND id = " + SqlUtils.preventSQLInjection(id) + " ");
+            strBuf.append("select * ");
+            strBuf.append("from flow ");
+            strBuf.append("where enable_flag = 1 ");
+            strBuf.append("and id = " + SqlUtils.preventSQLInjection(id) + " ");
+            //UserVo currentUser = SessionUserUtil.getCurrentUser();
             //strBuf.append(SqlUtils.addQueryByUserRole(currentUser, true));
             sqlStr = strBuf.toString();
         }
@@ -250,7 +252,7 @@ public class FlowMapperProvider {
     }
 
     /**
-     * 根据id逻辑删除,设为无效
+     * Delete according to id logic, set to invalid
      *
      * @param id
      * @return
@@ -261,15 +263,28 @@ public class FlowMapperProvider {
         String sqlStr = "select 0";
         if (StringUtils.isNotBlank(id)) {
             SQL sql = new SQL();
-            sql.UPDATE("FLOW");
-            sql.SET("ENABLE_FLAG = 0");
-            sql.SET("LAST_UPDATE_USER = " + SqlUtils.preventSQLInjection(username));
-            sql.SET("LAST_UPDATE_DTTM = " + SqlUtils.preventSQLInjection(DateUtils.dateTimesToStr(new Date())));
-            sql.WHERE("ENABLE_FLAG = 1");
-            sql.WHERE("IS_EXAMPLE = 0");
-            sql.WHERE("ID = " + SqlUtils.preventSQLInjection(id));
+            sql.UPDATE("flow");
+            sql.SET("enable_flag = 0");
+            sql.SET("last_update_user = " + SqlUtils.preventSQLInjection(username));
+            sql.SET("last_update_dttm = " + SqlUtils.preventSQLInjection(DateUtils.dateTimesToStr(new Date())));
+            sql.WHERE("enable_flag = 1");
+            sql.WHERE("is_example = 0");
+            sql.WHERE("id = " + SqlUtils.preventSQLInjection(id));
 
             sqlStr = sql.toString();
+        }
+        return sqlStr;
+    }
+
+    public String getFlowListGroupId(String flowGroupId){
+        String sqlStr = "select 0";
+        if (StringUtils.isNotBlank(flowGroupId)) {
+            StringBuffer strBuf = new StringBuffer();
+            strBuf.append("select * ");
+            strBuf.append("from flow ");
+            strBuf.append("where enable_flag = 1 ");
+            strBuf.append("and fk_flow_group_id = " + SqlUtils.preventSQLInjection(flowGroupId) + " ");
+            sqlStr = strBuf.toString();
         }
         return sqlStr;
     }

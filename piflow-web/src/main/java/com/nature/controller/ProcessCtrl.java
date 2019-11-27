@@ -11,12 +11,8 @@ import com.nature.component.process.model.Process;
 import com.nature.component.process.service.IProcessPathService;
 import com.nature.component.process.service.IProcessService;
 import com.nature.component.process.service.IProcessStopService;
-import com.nature.component.process.vo.ProcessPathVo;
-import com.nature.component.process.vo.ProcessStopVo;
-import com.nature.component.process.vo.ProcessVo;
-import com.nature.third.inf.*;
-import com.nature.third.vo.flowLog.ThirdAppVo;
-import com.nature.third.vo.flowLog.ThirdFlowLog;
+import com.nature.component.process.vo.*;
+import com.nature.third.service.IFlow;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +23,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,13 +40,7 @@ public class ProcessCtrl {
     IProcessService processServiceImpl;
 
     @Autowired
-    IStartFlow startFlowImpl;
-
-    @Autowired
-    IGetFlowLog getFlowLogImpl;
-
-    @Autowired
-    IFlowCheckpoints flowCheckpointsImpl;
+    IFlow flowImpl;
 
     @Autowired
     IProcessStopService processStopServiceImpl;
@@ -59,8 +48,6 @@ public class ProcessCtrl {
     @Autowired
     IProcessPathService processPathServiceImpl;
 
-    @Autowired
-    IGetFlowProgress getFlowProgressImpl;
 
     /**
      * Query and enter the process list
@@ -93,6 +80,10 @@ public class ProcessCtrl {
             // Query process by load id
             ProcessVo processVo = processServiceImpl.getProcessAllVoById(processId);
             if (null != processVo) {
+                String processGroupId = "";
+                if (null != processVo.getProcessGroupVo()) {
+                    processGroupId = processVo.getProcessGroupVo().getId();
+                }
                 String svgStr = processVo.getViewXml();
                 if (StringUtils.isNotBlank(svgStr)) {
                     modelAndView.addObject("xmlDate", svgStr);
@@ -111,6 +102,7 @@ public class ProcessCtrl {
                 modelAndView.addObject("parentProcessId", processVo.getParentProcessId());
                 modelAndView.addObject("pID", processVo.getProcessId());
                 modelAndView.addObject("processVo", processVo);
+                modelAndView.addObject("processGroupId", processGroupId);
                 modelAndView.setViewName("process/processContent");
                 return modelAndView;
             }
@@ -176,6 +168,10 @@ public class ProcessCtrl {
         modelAndView.setViewName("process/inc/process_Path_Inc");
         if (!StringUtils.isAnyEmpty(processId, pageId)) {
             ProcessPathVo processPathVoByPageId = processPathServiceImpl.getProcessPathVoByPageId(processId, pageId);
+            ProcessVo processById = processServiceImpl.getProcessById(processId);
+            if (null != processById) {
+                modelAndView.addObject("runModeType", processById.getRunModeType());
+            }
             modelAndView.addObject("processPathVo", processPathVoByPageId);
         } else {
             logger.info("Parameter passed in incorrectly");
@@ -195,8 +191,9 @@ public class ProcessCtrl {
     public String runProcess(HttpServletRequest request, Model model) {
         String id = request.getParameter("id");
         String checkpoint = request.getParameter("checkpointStr");
+        String runMode = request.getParameter("runMode");
         UserVo currentUser = SessionUserUtil.getCurrentUser();
-        return processServiceImpl.startProcess(id, checkpoint, currentUser);
+        return processServiceImpl.startProcess(id, checkpoint, runMode, currentUser);
     }
 
     /**
@@ -223,40 +220,40 @@ public class ProcessCtrl {
     @RequestMapping("/delProcess")
     @ResponseBody
     public String delProcess(HttpServletRequest request, Model model) {
-        Map<String, String> rtnMap = new HashMap<String, String>();
-        rtnMap.put("code", "0");
+        Map<String, Object> rtnMap = new HashMap<>();
+        rtnMap.put("code", 500);
         String processID = request.getParameter("processID");
         if (StringUtils.isNotBlank(processID)) {
             UserVo currentUser = SessionUserUtil.getCurrentUser();
             // Query Process by 'ProcessId'
-            Process processById = processServiceImpl.getProcessById(processID);
+            ProcessVo processById = processServiceImpl.getProcessById(processID);
             if (null != processById) {
                 if (processById.getState() != ProcessState.STARTED) {
                     StatefulRtnBase isSuccess = processServiceImpl.updateProcessEnableFlag(processID, currentUser);
                     // Determine whether the deletion is successful
                     if (null != isSuccess) {
                         if (isSuccess.isReqRtnStatus()) {
-                            rtnMap.put("code", "1");
-                            rtnMap.put("errMsg", "Successfully Deleted");
+                            rtnMap.put("code", 200);
+                            rtnMap.put("errorMsg", "Successfully Deleted");
                         } else {
                             logger.warn(isSuccess.getErrorMsg());
-                            rtnMap.put("errMsg", isSuccess.getErrorMsg());
+                            rtnMap.put("errorMsg", isSuccess.getErrorMsg());
                         }
                     } else {
                         logger.warn("Failed to delete");
-                        rtnMap.put("errMsg", "Failed to delete");
+                        rtnMap.put("errorMsg", "Failed to delete");
                     }
                 } else {
                     logger.warn("Status is STARTED, cannot be deleted");
-                    rtnMap.put("errMsg", "Status is STARTED, cannot be deleted");
+                    rtnMap.put("errorMsg", "Status is STARTED, cannot be deleted");
                 }
             } else {
                 logger.warn("No process ID is '" + processID + "' process");
-                rtnMap.put("errMsg", "No process ID is '" + processID + "' process");
+                rtnMap.put("errorMsg", "No process ID is '" + processID + "' process");
             }
         } else {
             logger.warn("processID is null");
-            rtnMap.put("errMsg", "processID is null");
+            rtnMap.put("errorMsg", "processID is null");
         }
         SessionUserUtil.getCurrentUser();
         return JsonUtils.toJsonNoException(rtnMap);
@@ -271,18 +268,18 @@ public class ProcessCtrl {
      */
     @RequestMapping("/getLogUrl")
     @ResponseBody
-    public Map<String, String> getLogUrl(HttpServletRequest request, Model model) {
-        Map<String, String> rtnMap = new HashMap<>();
-        rtnMap.put("code", "0");
+    public Map<String, Object> getLogUrl(HttpServletRequest request, Model model) {
+        Map<String, Object> rtnMap = new HashMap<>();
+        rtnMap.put("code", 500);
         String appId = request.getParameter("appId");
         if (StringUtils.isNotBlank(appId)) {
-            String amContainerLogs = getFlowLogImpl.getFlowLog(appId);
+            String amContainerLogs = flowImpl.getFlowLog(appId);
             if (StringUtils.isNotBlank(amContainerLogs)) {
-                rtnMap.put("code", "1");
+                rtnMap.put("code", 200);
                 rtnMap.put("stdoutLog", amContainerLogs + "/stdout/?start=0");
                 rtnMap.put("stderrLog", amContainerLogs + "/stderr/?start=0");
             } else {
-                rtnMap.put("code", "1");
+                rtnMap.put("code", 200);
                 rtnMap.put("stdoutLog", "Interface call failed");
                 rtnMap.put("stderrLog", "Interface call failed");
             }
@@ -359,9 +356,9 @@ public class ProcessCtrl {
         modelAndView.setViewName("process/inc/process_Checkpoint_Inc");
         String checkpoints = "";
         if (StringUtils.isNotBlank(parentProcessId) && !"null".equals(parentProcessId)) {
-            checkpoints = flowCheckpointsImpl.getCheckpoints(parentProcessId);
+            checkpoints = flowImpl.getCheckpoints(parentProcessId);
         } else if (StringUtils.isNotBlank(pID)) {
-            checkpoints = flowCheckpointsImpl.getCheckpoints(pID);
+            checkpoints = flowImpl.getCheckpoints(pID);
         }
         if (StringUtils.isNotBlank(checkpoints)) {
             String[] checkpointsSplit = checkpoints.split(",");
@@ -372,4 +369,35 @@ public class ProcessCtrl {
         return modelAndView;
     }
 
+    @RequestMapping("/getDebugDataHtml")
+    public ModelAndView getDebugDataHtml(HttpServletRequest request) {
+        ModelAndView modelAndView = new ModelAndView("process/inc/debug_Data_Inc");
+        modelAndView.addObject("appId", request.getParameter("appId"));
+        modelAndView.addObject("stopName", request.getParameter("stopName"));
+        modelAndView.addObject("portName", request.getParameter("portName"));
+        return modelAndView;
+    }
+
+    @RequestMapping("/getDebugData")
+    @ResponseBody
+    public String getDebugData(HttpServletRequest request) {
+        Map<String, Object> rtnMap = new HashMap<>();
+        rtnMap.put("code", 500);
+        String appId = request.getParameter("appId");
+        String stopName = request.getParameter("stopName");
+        String portName = request.getParameter("portName");
+        String startFileName = request.getParameter("startFileName");
+        String startLineStr = request.getParameter("startLine");
+        int startLine = 0;
+        if (StringUtils.isNotBlank(startLineStr)) {
+            startLine = Integer.parseInt(startLineStr);
+        }
+        if ("Default".equals(portName)) {
+            portName = portName.toLowerCase();
+        }
+        DebugDataResponse debugData = processServiceImpl.getDebugData(new DebugDataRequest(appId, stopName, portName, startFileName, startLine));
+        rtnMap.put("code", 200);
+        rtnMap.put("debugData", debugData);
+        return JsonUtils.toJsonNoException(rtnMap);
+    }
 }

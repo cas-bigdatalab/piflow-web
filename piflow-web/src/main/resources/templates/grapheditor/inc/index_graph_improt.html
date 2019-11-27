@@ -6,7 +6,9 @@
 	<meta name="_csrf" th:content="${_csrf.token}" />
 	<meta name="_csrf_header" th:content="${_csrf.headerName}" />
 	<link rel="stylesheet" type="text/css" th:href="@{/grapheditor/styles/grapheditor.css}">
-	<link rel="stylesheet" type="text/css" th:href="@{/bootstrap/css/bootstrap.min.css}">
+	<link rel="stylesheet" type="text/css" th:href="@{/components/bootstrap/css/bootstrap.min.css}">
+	<link rel="stylesheet" type="text/css" th:href="@{/components/layui/css/layui.css}"/>
+	<link rel="stylesheet" type="text/css" th:href="@{/css/main.css}"/>
 
 	<script type="text/javascript" th:src="@{/grapheditor/js/Init.js}"></script>
 	<script type="text/javascript" th:src="@{/grapheditor/deflate/pako.min.js}"></script>
@@ -25,12 +27,13 @@
 	<script type="text/javascript" th:src="@{/grapheditor/js/Toolbar.js}"></script>
 	<script type="text/javascript" th:src="@{/grapheditor/js/Dialogs.js}"></script>
 	<script type="text/javascript" th:src="@{/js/jquery/jquery.min.js}"></script>
-	<!--用户拖动元素，链接：http://api.jqueryui.com/draggable/#method-disable/-->
-	<script type="text/javascript" th:src="@{/charisma/js/jquery-ui.min.js}"></script>
-	<!--移动设备用户拖动元素，依赖juery-ui.min.js，链接：http://touchpunch.furf.com/-->
-	<script type="text/javascript" th:src="@{/charisma/js/jquery.ui.touch-punch.min.js}"></script>
-	<script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
-	<script th:src="@{/charisma/js/layer/layer.js}"></script>
+	<!--The user drags elements, links：http://api.jqueryui.com/draggable/#method-disable/-->
+	<script type="text/javascript" th:src="@{/js/jquery/jquery-ui.min.js}"></script>
+	<!--Mobile device users drag elements, depending on juery-ui.min.js，links：http://touchpunch.furf.com/-->
+	<script type="text/javascript" th:src="@{/js/jquery/jquery.ui.touch-punch.min.js}"></script>
+	<script type="text/javascript" th:src="@{/components/bootstrap/js/bootstrap.min.js}"></script>
+	<script type="text/javascript" th:src="@{/components/layui/layui.all.js}"></script>
+	<script type="text/javascript" th:src='@{/js/dataTables1.10.18/jquery.dataTables.min.js}'></script>
 	<script type="text/javascript">
         // Parses URL parameters. Supported parameters are:
         // - lang=xy: Specifies the language of the user interface.

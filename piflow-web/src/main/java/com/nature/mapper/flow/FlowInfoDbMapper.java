@@ -11,7 +11,7 @@ import java.util.List;
 @Mapper
 public interface FlowInfoDbMapper {
     /**
-     * 新增 FlowInfo
+     * add FlowInfo
      *
      * @param app
      * @return
@@ -20,30 +20,30 @@ public interface FlowInfoDbMapper {
     public int addFlowInfo(FlowInfoDb app);
 
     /**
-     * 查询flow以及flowinfoDb信息
+     * Query flow and flowinfoDb information
      *
      * @return
      */
-    @Select("SELECT * FROM flow where enable_flag = '1' ORDER BY crt_dttm DESC ")
+    @Select("select * from flow where enable_flag = '1' order by crt_dttm desc ")
     @Results({
     			@Result(id = true, column = "id", property = "id"),
     			@Result(column = "id", property = "appId", one = @One(select = "com.nature.mapper.flow.FlowInfoDbMapper.getAppByAppFlowId", fetchType = FetchType.LAZY))
             })
     public List<Flow> findAppList();
 
-    @Select("SELECT id,name,end_time,start_time,state,progress FROM flow_info where enable_flag = '1' and id = #{id}")
+    @Select("select id,name,end_time,start_time,state,progress from flow_info where enable_flag = '1' and id = #{id}")
     public List<FlowInfoDb> getAppByAppId(@Param("id") String appId);
 
-    @Select("SELECT id,name,end_time,start_time,state,progress FROM flow_info where enable_flag = '1' and fk_flow_id = #{flowId} ORDER BY crt_dttm desc  LIMIT 1  ")
+    @Select("select id,name,end_time,start_time,state,progress from flow_info where enable_flag = '1' and fk_flow_id = #{flowId} order by crt_dttm desc  limit 1  ")
     public List<FlowInfoDb> getAppByAppFlowId(@Param("flowId") String flowId);
 
     /**
-     * 根据appId查询
+     * get FlowInfoDb by appId
      *
      * @param appId
      * @return
      */
-    @Select("SELECT * FROM flow_info where enable_flag = '1' and id = #{id} ")
+    @Select("select * from flow_info where enable_flag = '1' and id = #{id} ")
     @Results({
 		@Result(id = true, column = "id", property = "id"),
 		@Result(column = "fk_flow_id", property = "flow", one = @One(select = "com.nature.mapper.flow.FlowMapper.getFlowById", fetchType = FetchType.LAZY)),
@@ -51,7 +51,7 @@ public interface FlowInfoDbMapper {
     public FlowInfoDb flowInfoDb(@Param("id") String appId);
 
     /**
-     * 修改
+     * update
      *
      * @param app
      * @return
@@ -60,7 +60,7 @@ public interface FlowInfoDbMapper {
     public int updateFlowInfo(FlowInfoDb app);
 
     /**
-     * 根据flowID查询appId信息
+     * get FlowInfoDb list by flowId
      *
      * @param flowId
      * @return
@@ -82,7 +82,7 @@ public interface FlowInfoDbMapper {
     public List<FlowInfoDb> getFlowInfoByIds(@Param("ids") List<String> ids);
 
     /**
-     * 根据id逻辑删除flowInfo
+     * Delete the flowInfo according to the id logic
      *
      * @param id
      * @return

@@ -11,7 +11,7 @@ import java.util.List;
 public interface ProcessStopMapper {
 
     /**
-     * 添加processStop
+     * add processStop
      *
      * @param processStop
      * @return
@@ -20,7 +20,7 @@ public interface ProcessStopMapper {
     public int addProcessStop(ProcessStop processStop);
 
     /**
-     * 添加processStopList
+     * add processStopList
      *
      * @param processStopList
      * @return
@@ -43,7 +43,7 @@ public interface ProcessStopMapper {
     public ProcessStop getProcessStopByProcessId(String processId);
 
     /**
-     * 根据pid和pageId查询
+     * Query based on pid and pageId
      *
      * @param processId
      * @param pageId
@@ -58,7 +58,7 @@ public interface ProcessStopMapper {
     public ProcessStop getProcessStopByPageIdAndPageId(String processId, String pageId);
 
     /**
-     * 根据pid和pageId查询
+     * Query based on pid and pageId
      *
      * @param processId
      * @param pageIds
@@ -97,7 +97,7 @@ public interface ProcessStopMapper {
     public int updateProcessStop(ProcessStop processStop);
 
     /**
-     * 逻辑删除
+     * logically delete
      *
      * @param processId
      * @return

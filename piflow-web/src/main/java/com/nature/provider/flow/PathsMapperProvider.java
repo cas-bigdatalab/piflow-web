@@ -4,7 +4,6 @@ import com.nature.base.util.DateUtils;
 import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.SqlUtils;
 import com.nature.base.vo.UserVo;
-import com.nature.component.flow.model.Flow;
 import com.nature.component.flow.model.Paths;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
@@ -27,26 +26,26 @@ public class PathsMapperProvider {
     private String outport;
     private String inport;
     private String pageId;
+    private String filterCondition;
     private String flowId;
 
     private void preventSQLInjectionPaths(Paths paths) {
         if (null != paths && StringUtils.isNotBlank(paths.getLastUpdateUser())) {
+            UserVo currentUser = SessionUserUtil.getCurrentUser();
             // Mandatory Field
             String id = paths.getId();
-            String crtUser = paths.getCrtUser();
-            String lastUpdateUser = paths.getLastUpdateUser();
+            String crtUser = currentUser.getUsername();
+            String lastUpdateUser = currentUser.getUsername();
             Boolean enableFlag = paths.getEnableFlag();
             Long version = paths.getVersion();
-            Date crtDttm = paths.getCrtDttm();
-            Date lastUpdateDttm = paths.getLastUpdateDttm();
             this.id = SqlUtils.preventSQLInjection(id);
             this.crtUser = (null != crtUser ? SqlUtils.preventSQLInjection(crtUser) : null);
             this.lastUpdateUser = SqlUtils.preventSQLInjection(lastUpdateUser);
             this.enableFlag = ((null != enableFlag && enableFlag) ? 1 : 0);
             this.version = (null != version ? version : 0L);
-            String crtDttmStr = DateUtils.dateTimesToStr(crtDttm);
-            String lastUpdateDttmStr = DateUtils.dateTimesToStr(null != lastUpdateDttm ? lastUpdateDttm : new Date());
-            this.crtDttmStr = (null != crtDttm ? SqlUtils.preventSQLInjection(crtDttmStr) : null);
+            String crtDttmStr = DateUtils.dateTimesToStr(new Date());
+            String lastUpdateDttmStr = DateUtils.dateTimesToStr(new Date());
+            this.crtDttmStr = SqlUtils.preventSQLInjection(crtDttmStr);
             this.lastUpdateDttmStr = SqlUtils.preventSQLInjection(lastUpdateDttmStr);
 
             // Selection field
@@ -55,6 +54,7 @@ public class PathsMapperProvider {
             this.outport = SqlUtils.preventSQLInjection(paths.getOutport());
             this.inport = SqlUtils.preventSQLInjection(paths.getInport());
             this.pageId = SqlUtils.preventSQLInjection(paths.getPageId());
+            this.filterCondition = SqlUtils.preventSQLInjection(paths.getFilterCondition());
             String flowIdStr = (null != paths.getFlow() ? paths.getFlow().getId() : null);
             this.flowId = (null != flowIdStr ? SqlUtils.preventSQLInjection(flowIdStr) : null);
         }
@@ -73,13 +73,14 @@ public class PathsMapperProvider {
         this.outport = null;
         this.inport = null;
         this.pageId = null;
+        this.filterCondition = null;
         this.flowId = null;
     }
 
     /**
-     * 插入list<Paths> 注意拼sql的方法必须用map接 Param内容为键值
+     * Insert "list<Paths>" Note that the method of spelling SQL must use "map" to connect the "Param" content to the key value.
      *
-     * @param map (内容： 键为pathsList,值为List<Paths>)
+     * @param map (Content: The key is pathsList, the value is List<Paths>)
      * @return
      */
     public String addPathsList(Map map) {
@@ -101,6 +102,7 @@ public class PathsMapperProvider {
             sql.append("line_outport,");
             sql.append("line_inport,");
             sql.append("page_id,");
+            sql.append("filter_condition,");
             sql.append("fk_flow_id");
             sql.append(") ");
             sql.append("values");
@@ -130,6 +132,7 @@ public class PathsMapperProvider {
                     sql.append(outport + ",");
                     sql.append(inport + ",");
                     sql.append(pageId + ",");
+                    sql.append(filterCondition + ",");
                     sql.append(flowId);
                     if (i != pathsList.size()) {
                         sql.append("),");
@@ -145,7 +148,7 @@ public class PathsMapperProvider {
     }
 
     /**
-     * 新增paths
+     * add paths
      *
      * @param paths
      * @return
@@ -157,7 +160,7 @@ public class PathsMapperProvider {
             SQL sql = new SQL();
             sql.INSERT_INTO("flow_path");
 
-            //先处理修改必填字段
+            //Process the required fields first
             if (null == crtDttmStr) {
                 String crtDttm = DateUtils.dateTimesToStr(new Date());
                 crtDttmStr = SqlUtils.preventSQLInjection(crtDttm);
@@ -171,14 +174,15 @@ public class PathsMapperProvider {
             sql.VALUES("last_update_dttm", lastUpdateDttmStr);
             sql.VALUES("last_update_user", lastUpdateUser);
             sql.VALUES("version", (version + 1) + "");
-            sql.VALUES("ENABLE_FLAG", enableFlag + "");
+            sql.VALUES("enable_flag", enableFlag + "");
 
-            // 处理其他字段
+            // Handling other fields
             sql.VALUES("line_from", from);
             sql.VALUES("line_to", to);
             sql.VALUES("line_outport", outport);
             sql.VALUES("line_inport", inport);
-            sql.VALUES("line_port", pageId);
+            sql.VALUES("page_id", pageId);
+            sql.VALUES("filter_condition", filterCondition);
             sql.VALUES("fk_flow_id", flowId);
             sqlStr = sql.toString();
 
@@ -188,7 +192,7 @@ public class PathsMapperProvider {
     }
 
     /**
-     * 修改paths
+     * update paths
      *
      * @param paths
      * @return
@@ -200,17 +204,18 @@ public class PathsMapperProvider {
             SQL sql = new SQL();
             sql.UPDATE("flow_path");
 
-            sql.SET("LAST_UPDATE_DTTM = " + lastUpdateDttmStr);
-            sql.SET("LAST_UPDATE_USER = " + lastUpdateUser);
-            sql.SET("VERSION = " + (version + 1));
+            sql.SET("last_update_dttm = " + lastUpdateDttmStr);
+            sql.SET("last_update_user = " + lastUpdateUser);
+            sql.SET("version = " + (version + 1));
 
-            // 处理其他字段
-            sql.SET("ENABLE_FLAG = " + enableFlag);
+            // Handling other fields
+            sql.SET("enable_flag = " + enableFlag);
             sql.SET("line_from = " + from);
             sql.SET("line_to = " + to);
             sql.SET("line_outport = " + outport);
             sql.SET("line_inport = " + inport);
-            sql.WHERE("VERSION = " + version);
+            sql.SET("filter_condition = " + filterCondition);
+            sql.WHERE("version = " + version);
             sql.WHERE("id = " + id);
             sqlStr = sql.toString();
         }
@@ -219,7 +224,7 @@ public class PathsMapperProvider {
     }
 
     /**
-     * 根据flowId查询
+     * Query according to "flowId"
      *
      * @param flowId
      * @return
@@ -236,7 +241,7 @@ public class PathsMapperProvider {
     }
 
     /**
-     * 查询连线信息
+     * Query connection information
      *
      * @param flowId
      * @param pageId
@@ -267,7 +272,7 @@ public class PathsMapperProvider {
     }
 
     /**
-     * 查询连线的数量
+     * Query the number of connections
      *
      * @param flowId
      * @param pageId
@@ -298,7 +303,7 @@ public class PathsMapperProvider {
     }
 
     /**
-     * 根据id查询paths
+     * Query paths by id
      *
      * @param id
      * @return
@@ -318,7 +323,7 @@ public class PathsMapperProvider {
 
 
     /**
-     * 根据flowId逻辑删除,设为无效
+     * Logically delete flowInfo according to flowId
      *
      * @param flowId
      * @return
@@ -330,10 +335,10 @@ public class PathsMapperProvider {
         if (StringUtils.isNotBlank(flowId)) {
             SQL sql = new SQL();
             sql.UPDATE("flow_path");
-            sql.SET("ENABLE_FLAG = 0");
+            sql.SET("enable_flag = 0");
             sql.SET("last_update_user = " + SqlUtils.preventSQLInjection(username));
             sql.SET("last_update_dttm = " + SqlUtils.preventSQLInjection(DateUtils.dateTimesToStr(new Date())));
-            sql.WHERE("ENABLE_FLAG = 1");
+            sql.WHERE("enable_flag = 1");
             sql.WHERE("fk_flow_id = " + SqlUtils.preventSQLInjection(flowId));
 
             sqlStr = sql.toString();

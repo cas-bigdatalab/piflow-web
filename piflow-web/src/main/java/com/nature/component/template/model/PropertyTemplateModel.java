@@ -2,17 +2,15 @@
 package com.nature.component.template.model;
 
 import com.nature.base.util.DateUtils;
-
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * stop的属性
+ * Stop attribute
  * 
  * @author Nature
  *
@@ -37,7 +35,7 @@ public class PropertyTemplateModel implements Serializable {
 
 	private String displayName;
 
-	@Column(name = "description", columnDefinition = "varchar(1024) COMMENT '描述'")
+	@Column(name = "description", columnDefinition = "varchar(1024) COMMENT 'description'")
 	private String description;
 
 	@Column(name = "CUSTOM_VALUE")

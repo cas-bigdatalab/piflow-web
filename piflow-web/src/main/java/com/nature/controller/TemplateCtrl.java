@@ -8,13 +8,13 @@ import com.nature.common.constant.SysParamsCache;
 import com.nature.component.flow.model.Flow;
 import com.nature.component.flow.model.Paths;
 import com.nature.component.flow.model.Stops;
-import com.nature.component.flow.model.Template;
 import com.nature.component.flow.service.IFlowService;
 import com.nature.component.flow.service.IPathsService;
-import com.nature.component.flow.service.IStopGroupService;
+import com.nature.component.group.service.IStopGroupService;
 import com.nature.component.mxGraph.model.MxGraphModel;
 import com.nature.component.mxGraph.vo.MxGraphModelVo;
 import com.nature.component.template.model.StopTemplateModel;
+import com.nature.component.template.model.Template;
 import com.nature.component.template.service.IFlowAndStopsTemplateVoService;
 import com.nature.component.template.service.ITemplateService;
 import org.apache.commons.lang3.StringUtils;
@@ -40,7 +40,7 @@ import java.util.Map;
  * template的ctrl
  */
 @RestController
-@RequestMapping("/template/")
+@RequestMapping("/template")
 public class TemplateCtrl {
 
     @Autowired
@@ -70,15 +70,15 @@ public class TemplateCtrl {
     public String saveData(HttpServletRequest request, Model model) {
         UserVo user = SessionUserUtil.getCurrentUser();
         String username = (null != user) ? user.getUsername() : "-1";
-        Map<String, String> rtnMap = new HashMap<String, String>();
-        rtnMap.put("code", "0");
+        Map<String, Object> rtnMap = new HashMap<>();
+        rtnMap.put("code", 500);
         String name = request.getParameter("name");
         String loadId = request.getParameter("load");
         String value = request.getParameter("value");
         MxGraphModelVo mxGraphModelVo = null;
         if (StringUtils.isAnyEmpty(name, loadId)) {
-            rtnMap.put("errMsg", "传入参数有空的");
-            logger.info("传入参数有空的");
+            rtnMap.put("errorMsg", "Some incoming parameters are empty");
+            logger.info("Some incoming parameters are empty");
             return JsonUtils.toJsonNoException(rtnMap);
         }
         Flow flowById = iFlowServiceImpl.getFlowById(loadId);
@@ -87,11 +87,11 @@ public class TemplateCtrl {
                 MxGraphModel mxGraphModel = flowById.getMxGraphModel();
                 if (null != mxGraphModel) {
                     mxGraphModelVo = FlowXmlUtils.mxGraphModelPoToVo(mxGraphModel);
-                    // 把查询出來的mxGraphModelVo转为XML
+                    // Convert the query mxGraphModelVo to XML
                     value = FlowXmlUtils.mxGraphModelToXml(mxGraphModelVo);
                 }
             }
-            //根据flowById 去拼接xml
+            //Concatenate the XML according to the flowById
             String flowAndStopInfoToXml = FlowXmlUtils.flowAndStopInfoToXml(flowById, value);
             logger.info(flowAndStopInfoToXml);
 
@@ -103,35 +103,35 @@ public class TemplateCtrl {
             template.setLastUpdateUser(username);
             template.setLastUpdateDttm(new Date());
             template.setName(name);
-            //数据库保存一份
+            //Keep one copy in the database
             template.setValue(value);
             template.setFlow(flowById);
-            //xml转文件并保存到指定目录
+            //XML to file and save to the specified directory
             String path = FileUtils.createXml(flowAndStopInfoToXml, name, ".xml", SysParamsCache.XML_PATH);
             template.setPath(path);
             int addTemplate = iTemplateService.addTemplate(template);
             if (addTemplate > 0) {
-                rtnMap.put("code", "1");
-                rtnMap.put("errMsg", "save template success");
-                //保存stop，属性信息
+                rtnMap.put("code", 200);
+                rtnMap.put("errorMsg", "save template success");
+                //Save the stop, property information
                 List<Stops> stopsList = flowById.getStopsList();
                 if (null != stopsList && stopsList.size() > 0) {
                     flowAndStopsTemplateVoServiceImpl.addStopsList(stopsList, template);
                 }
             } else {
-                rtnMap.put("errMsg", "failed to save template");
-                logger.info("保存模板失败");
+                rtnMap.put("errorMsg", "failed to save template");
+                logger.info("Failure to save template");
             }
             return JsonUtils.toJsonNoException(rtnMap);
         } else {
-            rtnMap.put("errMsg", "Flow信息为空");
-            logger.info("Flow信息为空,loadId：" + loadId);
+            rtnMap.put("errorMsg", "Flow information is empty");
+            logger.info("Flow information is empty,loadId：" + loadId);
             return JsonUtils.toJsonNoException(rtnMap);
         }
     }
 
     /**
-     * 根据id删除模板
+     * Delete the template based on id
      *
      * @param id
      * @return
@@ -147,13 +147,13 @@ public class TemplateCtrl {
                 List<StopTemplateModel> stopsList = template.getStopsList();
                 if (null != stopsList && stopsList.size() > 0) {
                     for (StopTemplateModel stopTemplateVo : stopsList) {
-                        //先根据stopid删除stop属性
+                        //First remove the stop attribute based on stopid
                         flowAndStopsTemplateVoServiceImpl.deleteStopPropertyTemByStopId(stopTemplateVo.getId());
                     }
-                    //先根据templateId删除stop
+                    //First delete stop based on templateId
                     flowAndStopsTemplateVoServiceImpl.deleteStopTemByTemplateId(template.getId());
                 }
-                //删除template
+                //Delete the template
                 deleteTemplate = iTemplateService.deleteTemplate(template.getId());
             }
         }
@@ -161,7 +161,7 @@ public class TemplateCtrl {
     }
 
     /**
-     * 上传xml文件并保存模板
+     * Upload xml file and save template
      *
      * @param file
      * @return
@@ -172,14 +172,14 @@ public class TemplateCtrl {
         UserVo user = SessionUserUtil.getCurrentUser();
         String username = (null != user) ? user.getUsername() : "-1";
         Map<String, Object> rtnMap = new HashMap<String, Object>();
-        rtnMap.put("code", "0");
+        rtnMap.put("code", 500);
         if (!file.isEmpty()) {
             String upload = FileUtils.upload(file, SysParamsCache.XML_PATH);
             Map<String, Object> map = JSON.parseObject(upload);
             if (!map.isEmpty() && null != map) {
-                String code = (String) map.get("code");
-                if ("0".equals(code)) {
-                    rtnMap.put("errMsg", "failed to upload file");
+                Integer code = (Integer) map.get("code");
+                if (500 == code) {
+                    rtnMap.put("errorMsg", "failed to upload file");
                     JsonUtils.toJsonNoException(rtnMap);
                 }
                 String name = (String) map.get("fileName");
@@ -194,99 +194,98 @@ public class TemplateCtrl {
                 SimpleDateFormat sdf = new SimpleDateFormat("MMddHHmmSSSS");
                 Date nowDate = new Date();
                 String fileName = sdf.format(nowDate);
-                //文件名前缀
+                //File name prefix
                 String prefix = name.substring(0, name.length() - 4);
-                //后缀.xml
+                //Suffix .xml
                 String Suffix = name.substring(name.length() - 4);
-                //添加时间戳
+                //Add timestamp
                 String uploadfileName = prefix + "-" + fileName;
                 template.setName(uploadfileName + Suffix);
                 template.setPath(path);
-                //根据保存好的文件路径读取xml文件并返回xml字符串
+                //Read the xml file according to the saved file path and return the xml string
                 String xmlFileToStr = FileUtils.XmlFileToStr(template.getPath());
                 if (StringUtils.isBlank(xmlFileToStr)) {
-                    logger.info("xml文件读取失败,上传模板失败");
-                    rtnMap.put("errMsg", "xml文件读取失败,请稍微再试");
+                    logger.info("The xml file failed to read and the template failed to be uploaded.");
+                    rtnMap.put("errorMsg", "The xml file failed to read. Please try again.");
                     return JsonUtils.toJsonNoException(rtnMap);
                 }
                 List<StopTemplateModel> stopsList = null;
-                //xml转换Template对象,包含stops和属性
+                //Xml conversion Template object, including stops and attributes
                 Template xmlToFlowStopInfo = FlowXmlUtils.xmlToFlowStopInfo(xmlFileToStr);
                 if (null != xmlToFlowStopInfo) {
                     stopsList = xmlToFlowStopInfo.getStopsList();
                 }
-                //根据xml字符串获取mxGraphModel部分保存至value
-                MxGraphModelVo xmlToMxGraphModelVo = FlowXmlUtils.allXmlToMxGraphModel(xmlFileToStr, 0);
+                //Get the mxGraphModel part from the xml string and save it to value
+                MxGraphModelVo xmlToMxGraphModelVo = FlowXmlUtils.allXmlToMxGraphModelVo(xmlFileToStr, 0);
                 if (null != xmlToMxGraphModelVo) {
-                    // 把查询出來的mxGraphModelVo转为XML
+                    // Convert the mxGraphModelVo from the query to XML
                     String loadXml = FlowXmlUtils.mxGraphModelToXml(xmlToMxGraphModelVo);
                     template.setValue(loadXml);
                 }
 
                 int addTemplate = iTemplateService.addTemplate(template);
                 if (addTemplate > 0) {
-                    //保存stop，属性信息
+                    //Save stop, attribute information
                     if (null != stopsList && stopsList.size() > 0) {
                         List<Stops> stop = FlowXmlUtils.stopTemplateVoToStop(stopsList);
                         if (null != stop && stop.size() > 0) {
                             flowAndStopsTemplateVoServiceImpl.addStopsList(stop, template);
                         }
                     }
-                    rtnMap.put("code", "1");
-                    rtnMap.put("errMsg", "successful template upload");
-                    logger.info("模板上传成功");
+                    rtnMap.put("code", 200);
+                    rtnMap.put("errorMsg", "successful template upload");
+                    logger.info("Template upload succeeded");
                 } else {
-                    rtnMap.put("errMsg", "template upload failed");
-                    logger.info("模板上传失败");
+                    rtnMap.put("errorMsg", "template upload failed");
+                    logger.info("template upload failed");
                 }
                 return JsonUtils.toJsonNoException(rtnMap);
             }
         }
-        rtnMap.put("errMsg", "上传失败,请稍后再试");
+        rtnMap.put("errorMsg", "Upload failed, please try again later");
         return JsonUtils.toJsonNoException(rtnMap);
     }
 
 
     /**
-     * 加载模板
+     * load template
      *
-     * @param model
-     * @param xmlDate
+     * @param request
      * @return
      */
     @RequestMapping("/loadingXmlPage")
     @ResponseBody
     @Transactional
-    public String loadingXml(HttpServletRequest request, Model model) {
-        Map<String, String> rtnMap = new HashMap<String, String>();
-        rtnMap.put("code", "0");
+    public String loadingXml(HttpServletRequest request) {
+        Map<String, Object> rtnMap = new HashMap<>();
+        rtnMap.put("code", 500);
         String templateId = request.getParameter("templateId");
         String loadId = request.getParameter("load");
         Flow flowById = iFlowServiceImpl.getFlowById(loadId);
         if (null == flowById) {
-            logger.info("template为空,加载模板失败");
-            rtnMap.put("errMsg", "加载失败,请稍微再试");
+            logger.info("Template is empty, loading template failed");
+            rtnMap.put("errorMsg", "Loading failed, please try again");
             return JsonUtils.toJsonNoException(rtnMap);
         }
         Template template = iTemplateService.queryTemplate(templateId);
         if (null == template) {
-            logger.info("template为空,加载模板失败");
-            rtnMap.put("errMsg", "加载失败,请稍微再试");
+            logger.info("Template is empty, loading template failed");
+            rtnMap.put("errorMsg", "Loading failed, please try again");
             return JsonUtils.toJsonNoException(rtnMap);
         }
-        //根据保存好的文件路径读取xml文件并返回
+        //Read the xml file according to the saved file path and return
         String xmlFileToStr = FileUtils.XmlFileToStr(template.getPath());
         if (StringUtils.isBlank(xmlFileToStr)) {
-            logger.info("xml文件读取失败,加载模板失败");
-            rtnMap.put("errMsg", "xml文件读取失败,请稍微再试");
+            logger.info("The xml file failed to read and the template failed to be loaded.");
+            rtnMap.put("errorMsg", "The xml file failed to read. Please try again.");
             return JsonUtils.toJsonNoException(rtnMap);
         }
-        // 获取stop 中 pageId最大值
+        // Get the maximum pageId in stop
         String maxStopPageId = iFlowServiceImpl.getMaxStopPageId(loadId);
         maxStopPageId = StringUtils.isNotBlank(maxStopPageId) ? maxStopPageId : "0";
         int maxPageId = Integer.parseInt(maxStopPageId);
         StatefulRtnBase addFlow = null;
-        MxGraphModelVo xmlToMxGraphModel = FlowXmlUtils.allXmlToMxGraphModel(xmlFileToStr, maxPageId);
+        MxGraphModelVo xmlToMxGraphModel = FlowXmlUtils.allXmlToMxGraphModelVo(xmlFileToStr, maxPageId);
         if (null != xmlToMxGraphModel) {
             xmlToMxGraphModel.getRootVo();
             addFlow = iFlowServiceImpl.saveOrUpdateFlowAll(xmlToMxGraphModel, loadId, "ADD", false);
@@ -295,43 +294,42 @@ public class TemplateCtrl {
         if (null != pathsList && pathsList.size() > 0) {
             pathsServiceImpl.addPathsList(pathsList, flowById);
         }
-        // addFlow不为空且ReqRtnStatus的值为true,则保存成功
+        // addFlow is not empty and the value of ReqRtnStatus is true, then the save is successful.
         if (null != addFlow && addFlow.isReqRtnStatus()) {
             if (null != template) {
-                //保存stops和属性信息
+                //Save stops and attribute information
                 flowAndStopsTemplateVoServiceImpl.addTemplateStopsToFlow(template, flowById, maxPageId);
             }
-            logger.info("加载模板成功");
+            logger.info("Successfully loaded template");
             return "grapheditor/index";
         } else {
-            logger.warn("加载模板失败");
+            logger.warn("Failed to load template");
             return "errorPage";
         }
     }
 
     /**
-     * 查询所有的模板下拉显示
+     * Query all templates for drop-down displays
      *
-     * @param modelAndView
      * @return
      */
     @RequestMapping("/templateAllSelect")
     @ResponseBody
     public String template() {
         Map<String, Object> rtnMap = new HashMap<String, Object>();
-        rtnMap.put("code", "0");
+        rtnMap.put("code", 500);
         List<Template> findTemPlateList = iTemplateService.findTemPlateList();
         if (null != findTemPlateList && findTemPlateList.size() > 0) {
-            rtnMap.put("code", "1");
+            rtnMap.put("code", 200);
             rtnMap.put("temPlateList", findTemPlateList);
         } else {
-            rtnMap.put("errMsg", "查询结果为空");
+            rtnMap.put("errorMsg", "The query result is empty");
         }
         return JsonUtils.toJsonNoException(rtnMap);
     }
 
     /**
-     * 模板下载
+     * Download template
      *
      * @param response
      * @param templateId
@@ -341,17 +339,17 @@ public class TemplateCtrl {
     public void downloadLocal(HttpServletResponse response, String templateId) throws Exception {
         Template template = iTemplateService.queryTemplate(templateId);
         if (null == template) {
-            logger.info("template为空,下载模板失败");
+            logger.info("Template is empty,Download template failed");
         }
-        // 下载本地文件
-        String fileName = template.getName() + ".xml".toString(); // 文件的默认保存名
-        // 读到流中
-        InputStream inStream = new FileInputStream(template.getPath());// 文件的存放路径
-        // 设置输出的格式
+        // Download local files
+        String fileName = template.getName() + ".xml".toString(); // The default save name of the file
+        // Read to the stream
+        InputStream inStream = new FileInputStream(template.getPath());// File storage path
+        // Format the output
         response.reset();
         response.setContentType("bin");
         response.addHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
-        // 循环取出流中的数据
+        // Loop out the data in the stream
         byte[] b = new byte[100];
         int len;
         try {

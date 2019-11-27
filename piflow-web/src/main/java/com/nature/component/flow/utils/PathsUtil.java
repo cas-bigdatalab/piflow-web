@@ -13,7 +13,7 @@ import java.util.List;
 
 public class PathsUtil {
     /**
-     * pathsList实体转Vo
+     * pathsList Po To Vo
      *
      * @param pathsList
      * @return
@@ -34,7 +34,7 @@ public class PathsUtil {
     }
 
     /**
-     * pathsVoList Vo转实体
+     * pathsVoList Vo To Po
      * @param pathsVoList
      * @return
      */

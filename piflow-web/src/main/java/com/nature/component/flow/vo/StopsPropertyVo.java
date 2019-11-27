@@ -1,116 +1,43 @@
 
 package com.nature.component.flow.vo;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serializable;
 
 /**
- * stop的属性
+ * Stop attribute
  * 
  * @author Nature
  *
  */
 
+@Setter
+@Getter
 public class StopsPropertyVo implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String id;
+    private String id;
 
-	private StopsVo stopsVo;
+    private StopsVo stopsVo;
 
-	private String name;
+    private String name;
 
-	private String displayName;
+    private String displayName;
 
-	private String description;
+    private String description;
 
-	private String customValue;
+    private String customValue;
 
-	private String allowableValues;
+    private String allowableValues;
 
-	private Boolean required;
+    private Boolean required;
 
-	private Boolean sensitive;
-	
-	private Boolean isSelect;
+    private Boolean sensitive;
 
-	public String getId() {
-		return id;
-	}
+    private Boolean isSelect;
 
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public StopsVo getStopsVo() {
-		return stopsVo;
-	}
-
-	public void setStopsVo(StopsVo stopsVo) {
-		this.stopsVo = stopsVo;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getDisplayName() {
-		return displayName;
-	}
-
-	public void setDisplayName(String displayName) {
-		this.displayName = displayName;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public String getCustomValue() {
-		return customValue;
-	}
-
-	public void setCustomValue(String customValue) {
-		this.customValue = customValue;
-	}
-
-	public String getAllowableValues() {
-		return allowableValues;
-	}
-
-	public void setAllowableValues(String allowableValues) {
-		this.allowableValues = allowableValues;
-	}
-
-	public Boolean getRequired() {
-		return required;
-	}
-
-	public void setRequired(Boolean required) {
-		this.required = required;
-	}
-
-	public Boolean getSensitive() {
-		return sensitive;
-	}
-
-	public void setSensitive(Boolean sensitive) {
-		this.sensitive = sensitive;
-	}
-
-	public Boolean getIsSelect() {
-		return isSelect;
-	}
-
-	public void setIsSelect(Boolean isSelect) {
-		this.isSelect = isSelect;
-	}
+    private Boolean isLocked = false;
 }

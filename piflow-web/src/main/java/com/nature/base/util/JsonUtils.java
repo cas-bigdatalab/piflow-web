@@ -7,16 +7,18 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.*;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.TimeZone;
 
 /**
- * Json工具
+ * Json utils
  * 
  * @author Administrator
  * 
@@ -30,24 +32,24 @@ public class JsonUtils {
 
 	static {
 		objectMapper = new ObjectMapper();
-		// 去掉默认的时间戳格式
+		// Remove the default timestamp format
 		objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-		// 设置为中国上海时区
+		// Set to Shanghai time zone in China
 		objectMapper.setTimeZone(TimeZone.getTimeZone("GMT+8"));
 		objectMapper.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
-		// 空值不序列化
+		// Null value not serialized
 		objectMapper.setSerializationInclusion(Include.NON_NULL);
-		// 反序列化时，属性不存在的兼容处理
-		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false); // 反序列化时，属性不存在的兼容处理
-		// 序列化时，日期的统一格式
+		// Compatible processing when attributes are not present during deserialization
+		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		// Uniform format of dates when serializing
 		objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
-		// 禁止使用int代表Enum的order()来反序列化Enum
+		// It is forbidden to deserialize "Enum" with "int" on behalf of "Enum"
 		objectMapper.configure(DeserializationFeature.FAIL_ON_NUMBERS_FOR_ENUMS, true);
 		objectMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 		// objectMapper.configure(DeserializationFeature.USE_JAVA_ARRAY_FOR_JSON_ARRAY,
 		// true);
 		objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-		// 单引号处理
+		// Single quote processing
 		objectMapper.configure(com.fasterxml.jackson.core.JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
 		// objectMapper.enableDefaultTyping(ObjectMapper.DefaultTyping.OBJECT_AND_NON_CONCRETE);
 	}
@@ -92,7 +94,7 @@ public class JsonUtils {
 	}
 
 	/**
-	 * 对象转json字符串
+	 * Object to "json" string
 	 * 
 	 * @param object
 	 * @return
@@ -103,7 +105,7 @@ public class JsonUtils {
 	}
 
 	/**
-	 * json字符串转对象
+	 * "json" string to object
 	 * 
 	 * @param jsonString
 	 * @param rspValueType
@@ -118,22 +120,22 @@ public class JsonUtils {
 	}
 
 	/**
-	 * 使用Jackson时转换JSON时，日期格式设置 Jackson两种方法设置输出的日期格式
+	 * When converting "JSON" when using "Jackson", the date format setting "Jackson" two methods set the date format of the output
 	 * 
-	 * 1.普通的方式： 默认是转成timestamps形式的，通过下面方式可以取消timestamps。
+	 * 1. Ordinary way: The default is to convert to "timestamps" form, you can cancel "timestamps" by the following way.
 	 * objectMapper.configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS,
-	 * false); 这样将使时间生成使用所谓的use a [ISO-8601 ]-compliant notation, 输出类似如下格式的时间:
-	 * "1970-01-01T00:00:00.000+0000". 当然也可以自定义输出格式：
+	 * false); This will cause the time generation to use the so-called use a [ISO-8601]-compliant notation, which outputs a time similar to the following:
+	 * "1970-01-01T00:00:00.000+0000". Of course, you can also customize the output format:
 	 * objectMapper.getSerializationConfig().setDateFormat(myDateFormat);
-	 * myDateFormat对象为java.text.DateFormat，具体使用清查java API 2.annotaion的注释方式：
-	 * 先定义自己需要的格式如下类
+	 * The myDateFormat object is java.text.DateFormat, which uses the annotation method of checking java API 2.annotaion:
+	 * First define the format you need as follows
 	 * 
-	 * 然后在你的POJO上找到日期的get方法
+	 * Then find the date get method on your POJO
 	 * 
 	 * @JsonSerialize(using = CustomDateSerializer.class) public Date getCreateAt()
 	 *                      { return createAt; }
 	 * 
-	 *                      java日期对象经过Jackson库转换成JSON日期格式化自定义类
+	 *                      "java" date object converted to "JSON" date formatted custom class via "Jackson" library
 	 * @author godfox
 	 * @date 2010-5-3
 	 */
@@ -165,5 +167,4 @@ public class JsonUtils {
 		JavaType javaType = objectMapper.getTypeFactory().constructParametricType(parametrized, parameterClasses);
 		return (T) objectMapper.readValue(toString(node), javaType);
 	}
-
 }

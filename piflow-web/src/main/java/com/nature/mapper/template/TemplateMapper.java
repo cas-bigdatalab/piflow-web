@@ -1,17 +1,16 @@
 package com.nature.mapper.template;
 
-import java.util.List;
-
+import com.nature.component.template.model.Template;
+import com.nature.provider.template.TemplateMapperProvider;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
 
-import com.nature.component.flow.model.Template;
-import com.nature.provider.template.TemplateMapperProvider;
+import java.util.List;
 
 @Mapper
 public interface TemplateMapper {
     /**
-     * 新增Template
+     * add Template
      *
      * @param template
      * @return
@@ -19,14 +18,14 @@ public interface TemplateMapper {
     @InsertProvider(type = TemplateMapperProvider.class, method = "addTemplate")
     public int addFlow(Template template);
 
-    @Select("SELECT * FROM flow_template where enable_flag = '1' ORDER BY crt_dttm DESC ")
+    @Select("select* from flow_template where enable_flag = '1' order by crt_dttm desc ")
     @Results({
             @Result(id = true, column = "id", property = "id"),
             @Result(column = "fk_flow_id", property = "flow", one = @One(select = "com.nature.mapper.flow.FlowMapper.getFlowById", fetchType = FetchType.EAGER))
     })
     public List<Template> findTemPlateListAll();
 
-    @Select("SELECT * FROM flow_template where enable_flag = '1' ORDER BY crt_dttm DESC ")
+    @Select("select* from flow_template where enable_flag = '1' order by crt_dttm desc ")
     @Results({
             @Result(id = true, column = "id", property = "id")
     })
@@ -39,7 +38,7 @@ public interface TemplateMapper {
     public List<Template> findTemPlateListPage(@Param("param") String param);
 
     /**
-     * 根据id删除模板或修改模板为无效
+     * Delete template based on id or modify template to invalid
      *
      * @param id
      * @return
@@ -48,7 +47,7 @@ public interface TemplateMapper {
     public int updateEnableFlagById(String id);
 
     /**
-     * 根据templateId查询所有template信息
+     * Query all template information according to templateId
      *
      * @param id
      * @return

@@ -9,13 +9,13 @@ import com.nature.component.flow.model.FlowInfoDb;
 import com.nature.component.flow.service.IFlowInfoDbService;
 import com.nature.component.flow.service.IStopsService;
 import com.nature.mapper.flow.FlowInfoDbMapper;
-import com.nature.third.inf.IGetFlowInfo;
-import com.nature.third.inf.IGetFlowProgress;
+import com.nature.third.service.IFlow;
+import com.nature.third.service.IGetFlowInfo;
 import com.nature.third.vo.flow.ThirdProgressVo;
 import com.nature.third.vo.flowInfo.ThirdFlowInfoStopVo;
 import com.nature.third.vo.flowInfo.ThirdFlowInfoStopsVo;
 import com.nature.third.vo.flowInfo.ThirdFlowInfoVo;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -37,7 +37,7 @@ public class FlowInfoDbCtrl {
     private IFlowInfoDbService flowInfoDbServiceImpl;
 
     @Autowired
-    private IGetFlowProgress iGetFlowProgress;
+    private IFlow flowImpl;
 
     @Autowired
     private FlowInfoDbMapper flowInfoDbMapper;
@@ -50,7 +50,7 @@ public class FlowInfoDbCtrl {
 
 
     /**
-     * 查询进度
+     * Query progress
      *
      * @param content
      * @param content
@@ -61,28 +61,28 @@ public class FlowInfoDbCtrl {
     @ResponseBody
     public String findAppInfo(String[] content) {
         List<String> list = new ArrayList<String>();
-        Map<String, String> map = new HashMap<String, String>();
-        map.put("code", "0");
+        Map<String, Object> map = new HashMap<>();
+        map.put("code", 500);
         if (null != content && content.length > 0) {
             for (String string : content) {
                 list.add(string);
             }
         }
-        //通过appId查询数据库,返回list
+        //Query the database by appId, return list
         List<FlowInfoDb> flowInfoList = flowInfoDbServiceImpl.getFlowInfoByIds(list);
         if (null == flowInfoList && flowInfoList.isEmpty()) {
             return JsonUtils.toJsonNoException(map);
         }
-        Map<String, String> progressAndUpdate = null;
+        Map<String, Object> progressAndUpdate = null;
         for (FlowInfoDb flowInfoDb : flowInfoList) {
             progressAndUpdate = getProgressAndUpdate(map, flowInfoDb);
-            progressAndUpdate.put("code", "1");
+            progressAndUpdate.put("code", 500);
         }
         return JsonUtils.toJsonNoException(progressAndUpdate);
     }
 
     /**
-     * 查询进度
+     * Query progress
      *
      * @param appid
      * @return
@@ -90,29 +90,29 @@ public class FlowInfoDbCtrl {
     @RequestMapping("/getAppInfoProgress")
     @ResponseBody
     public String getAppInfoProgress(String appid) {
-        Map<String, String> map = new HashMap<String, String>();
-        map.put("code", "0");
-        //通过appId查询数据库
+        Map<String, Object> map = new HashMap<>();
+        map.put("code", 500);
+        //Query the database by appId
         FlowInfoDb flowInfo = flowInfoDbServiceImpl.getFlowInfoById(appid);
         if (null == flowInfo) {
             return JsonUtils.toJsonNoException(map);
         }
-        Map<String, String> result = getProgressAndUpdate(map, flowInfo);
-        result.put("code", "1");
+        Map<String, Object> result = getProgressAndUpdate(map, flowInfo);
+        result.put("code", 200);
         return JsonUtils.toJsonNoException(result);
     }
 
     /**
-     * 调取接口及时更新并返回
+     * Retrieve the interface to update and return
      *
      * @param map
      * @param flowInfo
      * @return
      */
-    private Map<String, String> getProgressAndUpdate(Map<String, String> map, FlowInfoDb flowInfo) {
+    private Map<String, Object> getProgressAndUpdate(Map<String, Object> map, FlowInfoDb flowInfo) {
         UserVo user = SessionUserUtil.getCurrentUser();
         String username = (null != user) ? user.getUsername() : "-1";
-        //如果进度等于100或者状态是COMPLETED,直接返回
+        //If the progress is equal to 100 or the status is COMPLETED, return directly
         if (Float.parseFloat(flowInfo.getProgress()) == 100 || "COMPLETED".equals(flowInfo.getState())) {
             map.put("id", flowInfo.getId());
             map.put("progress", flowInfo.getProgress());
@@ -121,11 +121,11 @@ public class FlowInfoDbCtrl {
             map.put("endTime", DateUtils.dateTimeToStr(flowInfo.getEndTime()));
             return map;
         }
-        //进度接口
-        ThirdProgressVo progress = iGetFlowProgress.getFlowProgress(flowInfo.getId());
-        //再次调用flowInfo信息,获取开始和结束时间
+        //Progress interface
+        ThirdProgressVo progress = flowImpl.getFlowProgress(flowInfo.getId());
+        //Call flowInfo information again to get the start and end time
         ThirdFlowInfoVo thirdFlowInfoVo = iGetFlowInfo.getFlowInfo(flowInfo.getId());
-        //如果接口返回进度为符合100,则更新数据库并返回
+        //If the interface returns to a progress of 100, update the database and return
         if (StringUtils.isNotBlank(progress.getProgress()) || !"STARTED".equals(progress.getState()) || Float.parseFloat(progress.getProgress()) > Float.parseFloat(flowInfo.getProgress())) {
             FlowInfoDb up = new FlowInfoDb();
             if (null != thirdFlowInfoVo) {
@@ -136,7 +136,7 @@ public class FlowInfoDbCtrl {
                 if (stops.size() > 0 && !stops.isEmpty()) {
                     for (ThirdFlowInfoStopsVo thirdFlowInfoStopVo : stops) {
                         if (null != thirdFlowInfoStopVo.getStop()) {
-                            //更新stop状态信息
+                            //Update stop status information
                             ThirdFlowInfoStopVo stop = thirdFlowInfoStopVo.getStop();
                             stop.setFlowId(flowInfo.getFlow().getId());
                             sStopsServiceImpl.updateStopsByFlowIdAndName(stop);

@@ -9,13 +9,14 @@ import com.nature.component.flow.model.Stops;
 import com.nature.component.flow.service.IPathsService;
 import com.nature.component.flow.utils.PathsUtil;
 import com.nature.component.flow.vo.PathsVo;
+import com.nature.mapper.flow.FlowMapper;
 import com.nature.mapper.flow.PathsMapper;
 import com.nature.mapper.flow.PropertyMapper;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -23,10 +24,12 @@ import java.util.List;
 @Service
 public class PathsServiceImpl implements IPathsService {
 
-    @Autowired
+    @Resource
     private PathsMapper pathsMapper;
-    @Autowired
+    @Resource
     private PropertyMapper propertyMapper;
+    @Resource
+    private FlowMapper flowMapper;
 
     @Override
     public int deletePathsByFlowId(String id) {
@@ -54,13 +57,19 @@ public class PathsServiceImpl implements IPathsService {
                 if (null != stopTo) {
                     pathsVo.setStopTo(stopTo);
                 }
+                if (StringUtils.isBlank(pathsVo.getInport())) {
+                    pathsVo.setInport("default");
+                }
+                if (StringUtils.isBlank(pathsVo.getOutport())) {
+                    pathsVo.setOutport("default");
+                }
             }
         }
         return pathsVo;
     }
 
     /**
-     * 查询连线信息
+     * Query connection information
      *
      * @param flowId
      * @param from
@@ -78,7 +87,7 @@ public class PathsServiceImpl implements IPathsService {
     }
 
     /**
-     * 查询连线的数量
+     * Query the number of connections
      *
      * @param flowId
      * @param from
@@ -126,4 +135,5 @@ public class PathsServiceImpl implements IPathsService {
         }
         return pathsMapper.addPathsList(list);
     }
+
 }

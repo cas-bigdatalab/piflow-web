@@ -3,11 +3,11 @@ package com.nature.provider.template;
 import com.nature.base.util.DateUtils;
 import com.nature.base.util.SqlUtils;
 import com.nature.common.Eunm.PortType;
-import com.nature.component.flow.model.Template;
-import com.nature.component.template.model.FlowTemplateModel;
 import com.nature.component.template.model.PropertyTemplateModel;
 import com.nature.component.template.model.StopTemplateModel;
-import org.apache.commons.lang.StringUtils;
+import com.nature.component.template.model.Template;
+import com.nature.component.template.vo.FlowTemplateModelVo;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
 
 import java.util.Date;
@@ -17,9 +17,9 @@ import java.util.Map;
 public class FlowAndStopsTemplateVoMapperProvider {
 
     /**
-     * 插入list<Property> 注意拼sql的方法必须用map接 Param内容为键值
+     * Insert list<Property> Note that the method of spelling sql must use Map to connect Param content to key value.
      *
-     * @param map (内容： 键为propertyList,值为List<Property>)
+     * @param map (Content: The key is propertyList and the value is List<Property>)
      * @return
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -54,7 +54,7 @@ public class FlowAndStopsTemplateVoMapperProvider {
                 Boolean enableFlag = property.getEnableFlag();
                 String name = property.getName();
                 String displayName = property.getDisplayName();
-                String description = property.getDescription().equals("null") ? null : property.getDisplayName();
+                String description = "null".equals(property.getDescription()) ? null : property.getDisplayName();
                 String customValue = property.getCustomValue();
                 String allowableValues = property.getAllowableValues();
                 Boolean required = property.getRequired();
@@ -63,7 +63,7 @@ public class FlowAndStopsTemplateVoMapperProvider {
                 StopTemplateModel stops = property.getStopsVo();
                 Boolean isSelect = property.getIsSelect();
                 String crtUser = property.getCrtUser();
-                // 拼接时位置顺序不能错
+                // You can't make a mistake when you splice
                 sqlStrBuffer.append("(");
                 sqlStrBuffer.append(SqlUtils.addSqlStrAndReplace(id) + ",");
                 sqlStrBuffer.append(SqlUtils.addSqlStr((crtDttm == null ? "" : DateUtils.dateTimesToStr(crtDttm))) + ",");
@@ -92,29 +92,29 @@ public class FlowAndStopsTemplateVoMapperProvider {
     }
 
     /**
-     * 新增FlowTemplateVo
+     * add FlowTemplateVo
      *
      * @param flow
      * @return
      */
-    public String addFlow(FlowTemplateModel flow) {
+    public String addFlow(FlowTemplateModelVo flow) {
         String sqlStr = "";
         if (null != flow) {
             String id = flow.getId();
             String description = flow.getDescription();
             String name = flow.getName();
             SQL sql = new SQL();
-            // INSERT_INTO括号中为数据库表名
+            // INSERT_INTO brackets is table name
             sql.INSERT_INTO("flow_template");
-            // value中的第一个字符串为数据库中表对应的字段名
-            // 除数字类型的字段外其他类型必须加单引号
+            // The first string in the value is the field name corresponding to the table in the database.
+            // all types except numeric fields must be enclosed in single quotes
 
-            sql.VALUES("ID", SqlUtils.addSqlStr(id));
+            sql.VALUES("id", SqlUtils.addSqlStr(id));
             if (StringUtils.isNotBlank(description)) {
                 sql.VALUES("description", SqlUtils.addSqlStr(description));
             }
             if (StringUtils.isNotBlank(name)) {
-                sql.VALUES("NAME", SqlUtils.addSqlStr(name));
+                sql.VALUES("name", SqlUtils.addSqlStr(name));
             }
             sqlStr = sql.toString();
         }
@@ -122,7 +122,7 @@ public class FlowAndStopsTemplateVoMapperProvider {
     }
 
     /**
-     * 新增StopTemplateVo
+     * add StopTemplateVo
      *
      * @param stops
      * @return
@@ -150,7 +150,7 @@ public class FlowAndStopsTemplateVoMapperProvider {
             SQL sql = new SQL();
             sql.INSERT_INTO("stops_template");
 
-            //先处理修改必填字段
+            //Process the required fields first
             if (null == crtDttm) {
                 crtDttm = new Date();
             }
@@ -165,9 +165,9 @@ public class FlowAndStopsTemplateVoMapperProvider {
             sql.VALUES("crt_dttm", SqlUtils.addSqlStr(crtDttmStr));
             sql.VALUES("version", (version + 1) + "");
             int enableFlagInt = enableFlag ? 1 : 0;
-            sql.VALUES("ENABLE_FLAG", enableFlagInt + "");
+            sql.VALUES("enable_flag", enableFlagInt + "");
 
-            // 处理其他字段
+            // handle other fields
             if (StringUtils.isNotBlank(bundel)) {
                 sql.VALUES("bundel", SqlUtils.addSqlStr(bundel));
             }
@@ -201,7 +201,7 @@ public class FlowAndStopsTemplateVoMapperProvider {
             if (null != flow) {
                 String flowId = flow.getId();
                 if (StringUtils.isNotBlank(flowId)) {
-                    sql.VALUES("FK_template_ID", SqlUtils.addSqlStr(flowId));
+                    sql.VALUES("fk_template_id", SqlUtils.addSqlStr(flowId));
                 }
             }
             if (null != checkpoint) {

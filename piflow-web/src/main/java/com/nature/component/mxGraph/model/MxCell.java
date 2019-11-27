@@ -31,13 +31,13 @@ public class MxCell extends BaseHibernateModelUUIDNoCorpAgentId {
     private String style;
 
     @Column(name = "MX_EDGE")
-    private String edge; // 线有
+    private String edge; // Line has
 
     @Column(name = "MX_SOURCE")
-    private String source; // 线有
+    private String source; // Line has
 
     @Column(name = "MX_TARGET")
-    private String target; // 线有
+    private String target; // Line has
 
     @Column(name = "MX_VALUE")
     private String value;

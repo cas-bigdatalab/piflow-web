@@ -2,12 +2,9 @@ package com.nature.component.template.model;
 
 import com.nature.base.util.DateUtils;
 import com.nature.common.Eunm.PortType;
-import com.nature.component.flow.model.Template;
-
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -15,15 +12,15 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "stops_template")
+@Table(name = "STOPS_TEMPLATE")
 public class StopTemplateModel implements Serializable {
 	/**
-	 * stop模板
+	 * stop template
 	 */
 	private static final long serialVersionUID = 1L;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "FK_template_ID")
+    @JoinColumn(name = "FK_TEMPLATE_ID")
 	private Template template;
 	
 	@Id

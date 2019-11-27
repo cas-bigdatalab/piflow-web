@@ -2,7 +2,6 @@ package com.nature.provider.process;
 
 import com.nature.base.util.DateUtils;
 import com.nature.base.util.SqlUtils;
-import com.nature.component.process.model.ProcessStop;
 import com.nature.component.process.model.ProcessStopProperty;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
@@ -82,17 +81,17 @@ public class ProcessStopPropertyMapperProvider {
     }
 
     public String addProcessStopProperty(ProcessStopProperty processStopProperty) {
-        String sqlStr = "SELECT 0";
+        String sqlStr = "select 0";
         this.preventSQLInjectionProcessStopProperty(processStopProperty);
         if (null != processStopProperty) {
             SQL sql = new SQL();
 
-            // INSERT_INTO括号中为数据库表名
-            sql.INSERT_INTO("FLOW_PROCESS_STOP_PROPERTY");
-            // value中的第一个字符串为数据库中表对应的字段名
-            // 除数字类型的字段外其他类型必须加单引号
+            // INSERT_INTO brackets is table name
+            sql.INSERT_INTO("flow_process_stop_property");
+            // The first string in the value is the field name corresponding to the table in the database.
+            // all types except numeric fields must be enclosed in single quotes
 
-            //先处理修改必填字段
+            //Process the required fields first
             if (null == crtDttmStr) {
                 String crtDttm = DateUtils.dateTimesToStr(new Date());
                 crtDttmStr = SqlUtils.preventSQLInjection(crtDttm);
@@ -100,23 +99,23 @@ public class ProcessStopPropertyMapperProvider {
             if (StringUtils.isBlank(crtUser)) {
                 crtUser = SqlUtils.preventSQLInjection("-1");
             }
-            sql.VALUES("ID", id);
-            sql.VALUES("CRT_DTTM", crtDttmStr);
-            sql.VALUES("CRT_USER", crtUser);
-            sql.VALUES("LAST_UPDATE_DTTM", lastUpdateDttmStr);
-            sql.VALUES("LAST_UPDATE_USER", lastUpdateUser);
-            sql.VALUES("VERSION", version + "");
-            sql.VALUES("ENABLE_FLAG", enableFlag + "");
+            sql.VALUES("id", id);
+            sql.VALUES("crt_dttm", crtDttmStr);
+            sql.VALUES("crt_user", crtUser);
+            sql.VALUES("last_update_dttm", lastUpdateDttmStr);
+            sql.VALUES("last_update_user", lastUpdateUser);
+            sql.VALUES("version", version + "");
+            sql.VALUES("enable_flag", enableFlag + "");
 
-            // 处理其他字段
-            sql.VALUES("NAME", name);
-            sql.VALUES("DISPLAY_NAME", displayName);
-            sql.VALUES("DESCRIPTION", description);
-            sql.VALUES("CUSTOM_VALUE", customValue);
-            sql.VALUES("ALLOWABLE_VALUES", allowableValues);
-            sql.VALUES("PROPERTY_REQUIRED", required + "");
-            sql.VALUES("PROPERTY_SENSITIVE", sensitive + "");
-            sql.VALUES("FK_FLOW_PROCESS_STOP_ID", processStopId);
+            // handle other fields
+            sql.VALUES("name", name);
+            sql.VALUES("display_name", displayName);
+            sql.VALUES("description", description);
+            sql.VALUES("custom_value", customValue);
+            sql.VALUES("allowable_values", allowableValues);
+            sql.VALUES("property_required", required + "");
+            sql.VALUES("property_sensitive", sensitive + "");
+            sql.VALUES("fk_flow_process_stop_id", processStopId);
 
             sqlStr = sql.toString();
         }
@@ -125,32 +124,32 @@ public class ProcessStopPropertyMapperProvider {
     }
 
     public String addProcessStopProperties(Map<String, List<ProcessStopProperty>> processStopPropertyList) {
-        String sqlStr = "SELECT 0";
+        String sqlStr = "select 0";
         List<ProcessStopProperty> processStopProperties = processStopPropertyList.get("processStopPropertyList");
         if (null != processStopProperties && processStopProperties.size() > 0) {
             StringBuffer sql = new StringBuffer();
-            sql.append("INSERT INTO ");
-            sql.append("FLOW_PROCESS_STOP_PROPERTY ");
+            sql.append("insert into ");
+            sql.append("flow_process_stop_property ");
             sql.append("(");
-            sql.append("ID,");
-            sql.append("CRT_DTTM,");
-            sql.append("CRT_USER,");
-            sql.append("LAST_UPDATE_DTTM,");
-            sql.append("LAST_UPDATE_USER,");
-            sql.append("VERSION,");
-            sql.append("ENABLE_FLAG,");
-            sql.append("NAME,");
-            sql.append("DISPLAY_NAME,");
-            sql.append("DESCRIPTION,");
-            sql.append("CUSTOM_VALUE,");
-            sql.append("ALLOWABLE_VALUES,");
-            sql.append("PROPERTY_REQUIRED,");
-            sql.append("PROPERTY_SENSITIVE,");
-            sql.append("FK_FLOW_PROCESS_STOP_ID");
+            sql.append("id,");
+            sql.append("crt_dttm,");
+            sql.append("crt_user,");
+            sql.append("last_update_dttm,");
+            sql.append("last_update_user,");
+            sql.append("version,");
+            sql.append("enable_flag,");
+            sql.append("name,");
+            sql.append("display_name,");
+            sql.append("description,");
+            sql.append("custom_value,");
+            sql.append("allowable_values,");
+            sql.append("property_required,");
+            sql.append("property_sensitive,");
+            sql.append("fk_flow_process_stop_id");
             sql.append(")");
-            sql.append("VALUES");
+            sql.append("values");
 
-            // 放值时必须保证先后顺序
+            // The order must be guaranteed
             int i = 0;
             for (ProcessStopProperty processStopProperty : processStopProperties) {
                 i++;
@@ -197,9 +196,9 @@ public class ProcessStopPropertyMapperProvider {
         if (StringUtils.isNotBlank(processStopId)) {
             SQL sql = new SQL();
             sql.SELECT("*");
-            sql.FROM("FLOW_PROCESS_STOP_PROPERTY");
-            sql.WHERE("ENABLE_FLAG = 1");
-            sql.WHERE("FK_FLOW_PROCESS_STOP_ID = " + SqlUtils.preventSQLInjection(processStopId));
+            sql.FROM("flow_process_stop_property");
+            sql.WHERE("enable_flag = 1");
+            sql.WHERE("fk_flow_process_stop_id = " + SqlUtils.preventSQLInjection(processStopId));
 
             sqlStr = sql.toString();
         }
@@ -213,28 +212,28 @@ public class ProcessStopPropertyMapperProvider {
             String id = processStopProperty.getId();
             if (StringUtils.isNotBlank(id)) {
                 SQL sql = new SQL();
-                sql.UPDATE("FLOW_PROCESS_STOP_PROPERTY");
+                sql.UPDATE("flow_process_stop_property");
 
-                //先处理修改必填字段
-                sql.SET("LAST_UPDATE_DTTM = " + lastUpdateDttmStr);
-                sql.SET("LAST_UPDATE_USER = " + lastUpdateUser);
-                sql.SET("VERSION = " + (version + 1));
+                //Process the required fields first
+                sql.SET("last_update_dttm = " + lastUpdateDttmStr);
+                sql.SET("last_update_user = " + lastUpdateUser);
+                sql.SET("version = " + (version + 1));
 
-                // 处理其他字段
-                sql.SET("ENABLE_FLAG = " + enableFlag);
-                sql.SET("NAME = " + name);
-                sql.SET("DISPLAY_NAME = " + displayName);
-                sql.SET("DESCRIPTION = " + description);
-                sql.SET("CUSTOM_VALUE = " + customValue);
-                sql.SET("ALLOWABLE_VALUES = " + allowableValues);
-                sql.SET("PROPERTY_REQUIRED = " + required);
-                sql.SET("PROPERTY_SENSITIVE = " + sensitive);
+                // handle other fields
+                sql.SET("enable_flag = " + enableFlag);
+                sql.SET("name = " + name);
+                sql.SET("display_name = " + displayName);
+                sql.SET("description = " + description);
+                sql.SET("custom_value = " + customValue);
+                sql.SET("allowable_values = " + allowableValues);
+                sql.SET("property_required = " + required);
+                sql.SET("property_sensitive = " + sensitive);
                 if (null != processStopId) {
-                    sql.SET("FK_FLOW_PROCESS_STOP_ID = " + processStopId);
+                    sql.SET("fk_flow_process_stop_id = " + processStopId);
                 }
-                sql.WHERE("ENABLE_FLAG = 1");
-                sql.WHERE("VERSION = " + version);
-                sql.WHERE("ID = " + SqlUtils.preventSQLInjection(id));
+                sql.WHERE("enable_flag = 1");
+                sql.WHERE("version = " + version);
+                sql.WHERE("id = " + SqlUtils.preventSQLInjection(id));
 
                 sqlStr = sql.toString();
             }
@@ -247,13 +246,13 @@ public class ProcessStopPropertyMapperProvider {
         String sqlStr = "select 0";
         if (!StringUtils.isAnyEmpty(processStopId, username)) {
             SQL sql = new SQL();
-            sql.UPDATE("FLOW_PROCESS_STOP_PROPERTY");
-            sql.SET("LAST_UPDATE_DTTM = " + SqlUtils.preventSQLInjection(DateUtils.dateTimesToStr(new Date())));
-            sql.SET("LAST_UPDATE_USER = " + SqlUtils.preventSQLInjection(username));
-            sql.SET("VERSION=(VERSION+1)");
-            sql.SET("ENABLE_FLAG = 0");
-            sql.WHERE("ENABLE_FLAG = 1");
-            sql.WHERE("FK_FLOW_PROCESS_STOP_ID = " + SqlUtils.preventSQLInjection(processStopId));
+            sql.UPDATE("flow_process_stop_property");
+            sql.SET("last_update_dttm = " + SqlUtils.preventSQLInjection(DateUtils.dateTimesToStr(new Date())));
+            sql.SET("last_update_user = " + SqlUtils.preventSQLInjection(username));
+            sql.SET("version=(version+1)");
+            sql.SET("enable_flag = 0");
+            sql.WHERE("enable_flag = 1");
+            sql.WHERE("fk_flow_process_stop_id = " + SqlUtils.preventSQLInjection(processStopId));
 
             sqlStr = sql.toString();
         }

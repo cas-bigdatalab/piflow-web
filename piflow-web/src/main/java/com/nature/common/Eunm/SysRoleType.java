@@ -5,8 +5,8 @@ import com.nature.base.TextureEnumSerializer;
 
 @JsonSerialize(using = TextureEnumSerializer.class)
 public enum SysRoleType {
-    ADMIN("ADMIN", "ADMIN", "管理员"),
-    USER("USER", "USER", "用户");
+    ADMIN("ADMIN", "ADMIN", "admin"),
+    USER("USER", "USER", "user");
 
     private final String value;
     private final String text;

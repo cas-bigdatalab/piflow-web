@@ -1,6 +1,6 @@
 package com.nature.mapper.Statistics;
 
-import com.nature.component.Statistics.model.Statistics;
+import com.nature.component.statistics.model.Statistics;
 import com.nature.provider.Statistics.StatisticsMapperProvider;
 import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.Mapper;

@@ -1,17 +1,17 @@
 package com.nature.component.process.service;
 
 import com.nature.component.process.vo.ProcessStopVo;
-import org.springframework.data.annotation.Transient;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface IProcessStopService {
 
     /**
-     * 根据processId和pageId查询processStop
+     * Query processStop based on processId and pageId
      *
      * @param processId
      * @param pageId
      * @return
      */
-    @Transient
+    @Transactional
     public ProcessStopVo getProcessStopVoByPageId(String processId, String pageId);
 }

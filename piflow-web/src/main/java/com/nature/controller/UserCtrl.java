@@ -1,8 +1,8 @@
 package com.nature.controller;
 
 import com.nature.base.util.LoggerUtil;
-import com.nature.component.sysUser.model.SysUser;
-import com.nature.component.sysUser.service.ISysUserService;
+import com.nature.component.system.model.SysUser;
+import com.nature.component.system.service.ISysUserService;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +24,7 @@ public class UserCtrl {
 	Logger logger = LoggerUtil.getLogger();
 
 	@Autowired
-	ISysUserService userServiceImpl;
+	private ISysUserService userServiceImpl;
 
 	@RequestMapping(value = "/user")
 	@ResponseBody
@@ -41,20 +41,20 @@ public class UserCtrl {
 
 	@RequestMapping(value = "/deleteUser")
 	public String deleteUser(String id) {
-		String resultStr = "删除失败";
+		String resultStr = "failed to delete";
 		int result = userServiceImpl.deleteUser(id);
 		if (1 <= result) {
-			resultStr = "删除 成功";
+			resultStr = "successfully deleted";
 		}
 		return resultStr;
 	}
 
 	@RequestMapping(value = "/saveOrUpdate")
 	public String saveOrUpdate(SysUser user) {
-		String resultStr = "更新操作失败";
+		String resultStr = "Update operation failed";
 		int result = userServiceImpl.saveOrUpdate(user);
 		if (1 <= result) {
-			resultStr = "更新操作成功";
+			resultStr = "Update operation succeeded";
 		}
 		return resultStr;
 	}
@@ -66,4 +66,3 @@ public class UserCtrl {
 	}
 
 }
-//@RestController是对应的restful风格的控制器，@RequestMapping里面可以对应一个数组哦

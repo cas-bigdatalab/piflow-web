@@ -1,6 +1,5 @@
 package com.nature.mapper.process;
 
-import com.nature.base.vo.UserVo;
 import com.nature.component.process.model.Process;
 import com.nature.provider.process.ProcessMapperProvider;
 import org.apache.ibatis.annotations.*;
@@ -20,7 +19,7 @@ public interface ProcessMapper {
     public int addProcess(Process process);
 
     /**
-     * 根据进程Id查询进程
+     * Query process by process ID
      *
      * @param id
      * @return
@@ -28,14 +27,31 @@ public interface ProcessMapper {
     @SelectProvider(type = ProcessMapperProvider.class, method = "getProcessById")
     @Results({
             @Result(id = true, column = "id", property = "id"),
+            @Result(column = "fk_flow_process_group_id", property = "processGroup", one = @One(select = "com.nature.mapper.process.ProcessGroupMapper.getProcessGroupById", fetchType = FetchType.LAZY)),
             @Result(column = "id", property = "processStopList", many = @Many(select = "com.nature.mapper.process.ProcessStopMapper.getProcessStopByProcessId", fetchType = FetchType.LAZY)),
             @Result(column = "id", property = "processPathList", many = @Many(select = "com.nature.mapper.process.ProcessPathMapper.getProcessPathByProcessId", fetchType = FetchType.LAZY))
 
     })
     public Process getProcessById(@Param("id") String id);
 
+
     /**
-     * 查询进程List(processList)
+     * Query process by processGroup ID
+     *
+     * @param processGroupId
+     * @return
+     */
+    @SelectProvider(type = ProcessMapperProvider.class, method = "getProcessByProcessGroupId")
+    @Results({
+            @Result(id = true, column = "id", property = "id"),
+            @Result(column = "id", property = "processStopList", many = @Many(select = "com.nature.mapper.process.ProcessStopMapper.getProcessStopByProcessId", fetchType = FetchType.LAZY)),
+            @Result(column = "id", property = "processPathList", many = @Many(select = "com.nature.mapper.process.ProcessPathMapper.getProcessPathByProcessId", fetchType = FetchType.LAZY))
+
+    })
+    public List<Process> getProcessByProcessGroupId(@Param("processGroupId") String processGroupId);
+
+    /**
+     * Query process List(processList)
      *
      * @return
      */
@@ -49,7 +65,7 @@ public interface ProcessMapper {
     public List<Process> getProcessList();
 
     /**
-     * 查询进程List根据param(processList)
+     * Query process list according to param(processList)
      *
      * @param param
      * @return
@@ -61,7 +77,19 @@ public interface ProcessMapper {
     public List<Process> getProcessListByParam(@Param("param") String param);
 
     /**
-     * 根据flowId查询正在运行的进程List(processList)
+     * Query processGroup list according to param(processList)
+     *
+     * @param param
+     * @return
+     */
+    @SelectProvider(type = ProcessMapperProvider.class, method = "getProcessGroupListByParam")
+    @Results({
+            @Result(id = true, column = "id", property = "id"),
+    })
+    public List<Process> getProcessGroupListByParam(@Param("param") String param);
+
+    /**
+     * Query the running process list according to the flowid(processList)
      *
      * @return
      */
@@ -69,7 +97,7 @@ public interface ProcessMapper {
     public List<Process> getRunningProcessList(@Param("flowId") String flowId);
 
     /**
-     * 根据进程AppId查询进程
+     * Query process according to process appid
      *
      * @param appID
      * @return
@@ -84,7 +112,22 @@ public interface ProcessMapper {
     public Process getProcessByAppId(String appID);
 
     /**
-     * 根据进程AppId数组查询进程list
+     * Query process according to process appid
+     *
+     * @param appID
+     * @return
+     */
+    @SelectProvider(type = ProcessMapperProvider.class, method = "getProcessNoGroupByAppId")
+    @Results({
+            @Result(id = true, column = "id", property = "id"),
+            @Result(column = "id", property = "processStopList", many = @Many(select = "com.nature.mapper.process.ProcessStopMapper.getProcessStopByProcessId", fetchType = FetchType.LAZY)),
+            @Result(column = "id", property = "processPathList", many = @Many(select = "com.nature.mapper.process.ProcessPathMapper.getProcessPathByProcessId", fetchType = FetchType.LAZY))
+
+    })
+    public Process getProcessNoGroupByAppId(String appID);
+
+    /**
+     * Query process list according to process appid array
      *
      * @param appIDs
      * @return
@@ -99,7 +142,7 @@ public interface ProcessMapper {
     public List<Process> getProcessListByAppIDs(@Param("appIDs") String[] appIDs);
 
     /**
-     * 修改process
+     * update process
      *
      * @param process
      * @return
@@ -108,7 +151,7 @@ public interface ProcessMapper {
     public int updateProcess(Process process);
 
     /**
-     * 修改process
+     * update process EnableFlag
      *
      * @param id
      * @return
@@ -117,11 +160,43 @@ public interface ProcessMapper {
     public int updateEnableFlag(String id, String username);
 
     /**
-     * 查询需要同步的任务
+     * Query tasks that need to be synchronized
      *
      * @return
      */
     @SelectProvider(type = ProcessMapperProvider.class, method = "getRunningProcess")
     public List<String> getRunningProcess();
+
+    /**
+     * Query process by pageId
+     *
+     * @param processGroupId
+     * @param pageId
+     * @return
+     */
+    @SelectProvider(type = ProcessMapperProvider.class, method = "getProcessByPageId")
+    @Results({
+            @Result(id = true, column = "id", property = "id"),
+            @Result(column = "id", property = "processStopList", many = @Many(select = "com.nature.mapper.process.ProcessStopMapper.getProcessStopByProcessId", fetchType = FetchType.LAZY)),
+            @Result(column = "id", property = "processPathList", many = @Many(select = "com.nature.mapper.process.ProcessPathMapper.getProcessPathByProcessId", fetchType = FetchType.LAZY))
+
+    })
+    public Process getProcessByPageId(@Param("processGroupId") String processGroupId, @Param("pageId") String pageId);
+
+    /**
+     * Query process by pageIds
+     *
+     * @param processGroupId
+     * @param pageIds
+     * @return
+     */
+    @SelectProvider(type = ProcessMapperProvider.class, method = "getProcessByPageIds")
+    @Results({
+            @Result(id = true, column = "id", property = "id"),
+            @Result(column = "id", property = "processStopList", many = @Many(select = "com.nature.mapper.process.ProcessStopMapper.getProcessStopByProcessId", fetchType = FetchType.LAZY)),
+            @Result(column = "id", property = "processPathList", many = @Many(select = "com.nature.mapper.process.ProcessPathMapper.getProcessPathByProcessId", fetchType = FetchType.LAZY))
+
+    })
+    public List<Process> getProcessByPageIds(@Param("processGroupId") String processGroupId, @Param("pageIds") String[] pageIds);
 
 }

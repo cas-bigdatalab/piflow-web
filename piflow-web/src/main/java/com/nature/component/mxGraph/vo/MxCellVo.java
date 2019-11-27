@@ -16,11 +16,11 @@ public class MxCellVo implements Serializable {
 
 	private String style;
 
-	private String edge; // 线有
+	private String edge; // Line has
 
-	private String source; // 线有
+	private String source; // Line has
 
-	private String target; // 线有
+	private String target; // Line has
 
 	private String value;
 

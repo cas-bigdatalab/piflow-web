@@ -1,14 +1,5 @@
 package com.nature.base.util;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.*;
-import java.nio.charset.UnsupportedCharsetException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
 import org.apache.http.HttpVersion;
@@ -28,15 +19,26 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.charset.UnsupportedCharsetException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 /**
- * Http工具类
+ * Http tool class
  */
 public class HttpUtils {
 
     static Logger logger = LoggerUtil.getLogger();
 
     /**
-     * post请求传输json数据
+     * "post" request to transfer "json" data
      *
      * @param url
      * @param json
@@ -46,63 +48,65 @@ public class HttpUtils {
     public static String doPost(String url, String json, Integer timeOutMS) {
         String result = "";
 
-        // 创建httpclient对象
+        // Create an "httpclient" object
         CloseableHttpClient httpClient = null;
-        // 创建post方式请求对象
+        // Create a "post" mode request object
         HttpPost httpPost = null;
         try {
-            // 创建httpclient对象
+            // Create an "httpclient" object
             httpClient = HttpClients.createDefault();
-            // 创建post方式请求对象
+            // Create a "post" mode request object
             httpPost = new HttpPost(url);
 
-            logger.debug("传入的json参数：" + json);
-            // 设置参数到请求对象中
+            logger.debug("afferent json param:" + json);
+            // Set parameters to the request object
             StringEntity stringEntity = new StringEntity(json.toString(), ContentType.APPLICATION_JSON);
             stringEntity.setContentEncoding("utf-8");
             httpPost.setProtocolVersion(HttpVersion.HTTP_1_1);
             httpPost.setEntity(stringEntity);
             if (null != timeOutMS) {
-                // 设置超时时间
+                // Set timeout
                 RequestConfig requestConfig = RequestConfig.custom()
                         .setConnectTimeout(5000).setConnectionRequestTimeout(1000)
                         .setSocketTimeout(timeOutMS).build();
                 httpPost.setConfig(requestConfig);
             }
 
-            logger.info("调用" + url + "，开始");
-            // 执行请求操作，并拿到结果（同步阻塞）
+            logger.info("call '" + url + "' start");
+            // Perform the request operation and get the result (synchronous blocking)
             CloseableHttpResponse response = httpClient.execute(httpPost);
-            logger.info("调用成功，返回信息：" + response.toString());
-            // 获取结果实体
-            // 判断网络连接状态码是否正常(0--200都数正常)
+            logger.info("call succeeded,return msg:" + response.toString());
+            // Get result entity
+            // Determine whether the network connection status code is normal (0--200 are normal)
             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                 result = EntityUtils.toString(response.getEntity(), "utf-8");
+                logger.info("call succeeded,return msg:" + result);
+
             }
         } catch (UnsupportedCharsetException e) {
-            logger.error("接口调用出错", e);
-            result = "接口调用出错:UnsupportedCharsetException";
+            logger.error("Interface call error", e);
+            result = "Interface call error:UnsupportedCharsetException";
         } catch (ClientProtocolException e) {
-            logger.error("接口调用出错", e);
-            result = "接口调用出错:ClientProtocolException";
+            logger.error("Interface call error", e);
+            result = "Interface call error:ClientProtocolException";
         } catch (ParseException e) {
-            logger.error("接口调用出错", e);
-            result = "接口调用出错:ParseException";
+            logger.error("Interface call error", e);
+            result = "Interface call error:ParseException";
         } catch (IOException e) {
-            logger.error("接口调用出错", e);
-            result = "接口调用出错:IOException";
+            logger.error("Interface call error", e);
+            result = "Interface call error:IOException";
         } finally {
-            // 关闭连接，释放资源
+            // Close the connection and release the resource
             httpPost.releaseConnection();
         }
         return result;
     }
 
     /**
-     * get请求传输数据
+     * Get request to transfer data
      *
      * @param url
-     * @param map       请求传入参数(key为参数名称，value为参数值) map可为空
+     * @param map       Request incoming parameters ("key" is the parameter name, "value" is the parameter value) "map" can be empty
      * @param timeOutMS (Millisecond)
      * @return
      */
@@ -110,14 +114,14 @@ public class HttpUtils {
         String result = "";
         if (StringUtils.isNotBlank(url)) {
             try {
-                // 创建httpclient对象
+                // Create an "httpclient" object
                 CloseableHttpClient httpClient = HttpClients.createDefault();
 
-                // 创建get方式请求对象
+                // Create a "get" mode request object
                 HttpGet httpGet = null;
-                // 判断是否添加参数
+                // Determine whether to add parameters
                 if (null != map && !map.isEmpty()) {
-                    // 由于GET请求的参数都是拼装在URL地址后方，所以我们要构建一个URL，带参数
+                    // Since the parameters of the "GET" request are all assembled behind the "URL" address, we have to build a "URL" with parameters.
 
                     URIBuilder uriBuilder = new URIBuilder(url);
 
@@ -128,52 +132,53 @@ public class HttpUtils {
                     }
 
                     uriBuilder.setParameters(list);
-                    // 根据带参数的URI对象构建GET请求对象
+                    // Construct a "GET" request object from a "URI" object with parameters
                     httpGet = new HttpGet(uriBuilder.build());
                 } else {
                     httpGet = new HttpGet(url);
                 }
 
-                // 添加请求头信息
-                // 浏览器表示
+                // Add request header information
+                // Browser representation
                 // httpGet.addHeader("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 5.1;
                 // en-US; rv:1.7.6)");
-                // 传输的类型
+                // Type of transmission
                 // httpGet.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
-                // 传输的类型
+                // Type of transmission
                 httpGet.addHeader("Content-type", "application/json");
                 if (null != timeOutMS) {
-                    // 设置超时时间
+                    // Set timeout
                     RequestConfig requestConfig = RequestConfig.custom()
                             .setConnectTimeout(5000).setConnectionRequestTimeout(1000)
                             .setSocketTimeout(timeOutMS).build();
                     httpGet.setConfig(requestConfig);
                 }
 
-                logger.info("调用" + url + "，开始");
-                // 通过请求对象获取响应对象
+                logger.info("call '" + url + "' start");
+                // Get the response object by requesting the object
                 CloseableHttpResponse response = httpClient.execute(httpGet);
-                logger.info("调用成功，返回信息：" + response.toString());
-                // 获取结果实体
-                // 判断网络连接状态码是否正常(0--200都数正常)
+                logger.info("call succeeded,return msg:" + response.toString());
+                // Get result entity
+                // Determine whether the network connection status code is normal (0--200 are normal)
                 if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                     result = EntityUtils.toString(response.getEntity(), "utf-8");
+                    logger.info("call succeeded,return msg:" + result);
                 }
-                // 释放链接
+                // Release link
                 response.close();
             } catch (ClientProtocolException e) {
-                logger.error("接口调用出错", e);
-                result = "接口调用出错:ClientProtocolException";
+                logger.error("Interface call error", e);
+                result = "Interface call error:ClientProtocolException";
             } catch (ParseException e) {
-                logger.error("接口调用出错", e);
-                result = "接口调用出错:ParseException";
+                logger.error("Interface call error", e);
+                result = "Interface call error:ParseException";
             } catch (IOException e) {
-                logger.error("接口调用出错", e);
-                result = "接口调用出错:IOException";
+                logger.error("Interface call error", e);
+                result = "Interface call error:IOException";
             } catch (URISyntaxException e) {
-                logger.error("接口调用出错", e);
-                result = "接口调用出错:URISyntaxException";
+                logger.error("Interface call error", e);
+                result = "Interface call error:URISyntaxException";
             }
         }
         return result;
@@ -181,31 +186,31 @@ public class HttpUtils {
 
     public static String getHtml(String urlStr) {
 
-        // 定义即将访问的链接
+        // Define links to be accessed
         String url = urlStr;
-        // 定义一个字符串用来存储网页内容
+        // Define a string to store web content
         String result = "";
-        // 定义一个缓冲字符输入流
+        // Define a buffered character input stream
         BufferedReader in = null;
         try {
-            // 将string转成url对象
+            // Convert string to url object
             URL realUrl = new URL(url);
-            // 初始化一个链接到那个url的连接
+            // Initialize a link to the "url" link
             URLConnection connection = realUrl.openConnection();
-            // 开始实际的连接
+            // Start the actual connection
             connection.connect();
-            // 初始化 BufferedReader输入流来读取URL的响应
+            // Initialize the "BufferedReader" input stream to read the response of the "URL"
             in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            // 用来临时存储抓取到的每一行的数据
+            // Used to temporarily store data for each fetched row
             String line;
             while ((line = in.readLine()) != null) {
-                // 遍历抓取到的每一行并将其存储到result里面
+                // Traverse each row that is fetched and store it in "result"
                 result += line + "\n";
             }
         } catch (Exception e) {
-            logger.error("发送GET请求出现异常！" + e);
+            logger.error("send get request is abnormal!" + e);
             e.printStackTrace();
-        } // 使用finally来关闭输入流
+        } // Use "finally" to close the input stream
         finally {
             try {
                 if (in != null) {
@@ -215,7 +220,7 @@ public class HttpUtils {
                 e2.printStackTrace();
             }
         }
-        logger.debug("html信息：" + result);
+        logger.debug("html info:" + result);
         return result;
     }
 }

@@ -4,9 +4,9 @@ import com.nature.ApplicationTests;
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.SqlUtils;
 import com.nature.component.flow.model.Property;
-import com.nature.component.flow.model.PropertyTemplate;
 import com.nature.component.flow.model.Stops;
-import com.nature.component.flow.model.StopsTemplate;
+import com.nature.component.group.model.PropertyTemplate;
+import com.nature.component.group.model.StopsTemplate;
 import com.nature.mapper.flow.PropertyMapper;
 import com.nature.mapper.flow.StopsMapper;
 import com.nature.mapper.flow.StopsTemplateMapper;
@@ -32,7 +32,7 @@ public class PropertyMapperTest extends ApplicationTests {
 	public void testGetPropertyListByStopsId() {
 		List<Property> propertyList = propertyMapper.getPropertyListByStopsId("85f90a18423245b09cde371cbb3330sd");
 		if (null == propertyList) {
-			logger.info("查询结果为空");
+			logger.info("The query result is empty");
 		} else {
 			logger.info(propertyList.size() + "");
 		}
@@ -42,7 +42,7 @@ public class PropertyMapperTest extends ApplicationTests {
 	public void testGetStopsPropertyById() {
 		Stops stops = propertyMapper.getStopGroupList("fbb42f0d8ca14a83bfab13e0ba2d7292", "2");
 		if (null == stops) {
-			logger.info("查询结果为空");
+			logger.info("The query result is empty");
 		}
 		logger.info(stops.toString() + "         ---------------------     name：" + stops.getName());
 	}
@@ -51,9 +51,9 @@ public class PropertyMapperTest extends ApplicationTests {
 	public void updateStopsPropertyById() {
 		int update = propertyMapper.updatePropertyCustomValue("hahah", "8731612e48cc4cc89a24191e737817f2");
 		if (0 == update) {
-			logger.info("修改失败了"+",影响行数:"+update);
+			logger.info("The modification failed, affecting the number of rows:"+update);
 		}else {
-			logger.info("修改成功了"+",影响行数:"+update);
+			logger.info("The modification failed, affecting the number of rows:"+update);
 		}
 	}
 
@@ -71,21 +71,21 @@ public class PropertyMapperTest extends ApplicationTests {
 	public void updateTempleteProperyInfo() {
           Map<String, Property> PropertyMap = new HashMap<String, Property>();
           List<Property> addPropertyList = new ArrayList<Property>();
-          //获取stop信息
+          //Get stop information
           Stops stopsList = stopsMapper.getStopsById("32a3e372084d4f4eac97853c66b7b2d8");
-          //获取当前stops的StopsTemplate
+          //Gets the StopsTemplate for the current stops
           List<StopsTemplate> stopsTemplateList = stopsTemplateMapper.getStopsTemplateByName(stopsList.getName());
           StopsTemplate stopsTemplate = stopsTemplateList.get(0);
-          logger.info("stopsTemplateList记录条数:"+stopsTemplateList.size());
-            //拿到StopsTemplate的模板属性6
+          logger.info("StopsTemplateList records the number of bars:"+stopsTemplateList.size());
+            //Get the template property of the StopsTemplate
               List<PropertyTemplate> propertiesTemplateList = stopsTemplate.getProperties();
-              // 当前stop存在的属性   4
+              // The property that currently exists for stop
               List<Property> property = stopsList.getProperties();
               if (null != property && property.size()>0)  
             	  for (Property one : property) {
             		  PropertyMap.put(one.getName(),one);
       			}
-              //如果模板的数据大于stop当前的属性个数,一样的做修改操作,多了的新增stops属性
+              //If the template's data is greater than the current number of stops attributes, do the same and add more stops attributes
               if (propertiesTemplateList.size()>0 && property.size()>0) {
             	  for (PropertyTemplate pt : propertiesTemplateList) { 
         				if (null != pt) {
@@ -107,7 +107,7 @@ public class PropertyMapperTest extends ApplicationTests {
                             	update.setId(ptname.getId());
                             	propertyMapper.updateStopsProperty(update);
         					}else {
-        						logger.info("===============stop属性与模板不一致,需要添加=================");
+        						logger.info("===============The stop attribute is inconsistent with the template and needs to be added=================");
         						Property newProperty = new Property();
         						try {
 									BeanUtils.copyProperties(pt, newProperty);
@@ -127,12 +127,12 @@ public class PropertyMapperTest extends ApplicationTests {
 					propertyMapper.addPropertyList(addPropertyList);
 				}
 			} 
-          	// objectPathsMap中的所有需要修改的移除，剩下为要逻辑删除的
+          	// All the changes in the objectPathsMap that need to be modified, leaving the logic to be deleted.
               if (null != PropertyMap && PropertyMap.size()>0)  
 				for (String pageid : PropertyMap.keySet()) {
 					Property deleteProperty = PropertyMap.get(pageid);
 					if (null != deleteProperty) {
-						logger.info("===============stop属性与模板不一致,需要删除=================");
+						logger.info("===============The stop attribute is inconsistent with the template and needs to be removed=================");
 						propertyMapper.deleteStopsPropertyById(deleteProperty.getId());
 					}
 				}

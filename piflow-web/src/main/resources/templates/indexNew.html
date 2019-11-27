@@ -8,48 +8,35 @@
 
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-
-    <link rel="stylesheet" type="text/css" th:href='@{/index/css/main.css}'/>
+    <link rel="stylesheet" type="text/css" th:href="@{/custom/css/fullScreen.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/components/layui/css/layui.css}"/>
 
     <!--[if IE 8]>
-    <link rel="stylesheet" type="text/css" th:href='@{/index/css/ie8.css}'/>
+    <link rel="stylesheet" type="text/css" th:href='@{/css/ie8.css}'/>
     <![endif]-->
 
-    <script type="text/javascript" th:src='@{/index/js/jquery.min.js}'></script>
-    <script type="text/javascript" th:src='@{/index/js/jquery.easytabs.min.js}'></script>
-    <script type="text/javascript" th:src='@{/index/js/jquery.collapsible.min.js}'></script>
-    <!--<script type="text/javascript" th:src='@{/index/js/jquery.dataTables.min.js}'></script>-->
+    <script type="text/javascript" th:src='@{/js/jquery/jquery.min.js}'></script>
+    <script type="text/javascript" th:src='@{/js/jquery/jquery.easytabs.min.js}'></script>
+    <script type="text/javascript" th:src='@{/js/jquery/jquery.collapsible.min.js}'></script>
     <script type="text/javascript" th:src='@{/js/dataTables1.10.18/jquery.dataTables.min.js}'></script>
-    <script type="text/javascript" th:src='@{/index/js/functions.js}'></script>
-    <script th:src="@{/charisma/js/layer/layer.js}"></script>
+    <script type="text/javascript" th:src='@{/js/functions.js}'></script>
+    <script type="text/javascript" th:src="@{/components/layui/layui.all.js}"></script>
+    <style>
+        .paginate_button current {
+            color: #c40029;
+            background: #c40029;
+        }
 
+        .table_tr_th {
+            color: #1A7444;
+        }
+    </style>
 </head>
 
 <body>
 
 <!-- Fixed top -->
-<!--<div id="top">
-    <div class="fixed">
-        <a href="indexNew.html" title="" class="logo"><img th:src='@{/img/logo1.png}'/>烟草科技知识图谱大数据流水线系统</a>
-        <ul class="top-menu">
-            <li><a class="fullview"></a></li>
-            &lt;!&ndash;<li><a class="showmenu"></a></li>&ndash;&gt;
-            <li class="dropdown">
-                <a class="user-menu" data-toggle="dropdown">
-                    <img th:src='@{/index/img/userpic.png}' alt=""/>
-                    <span th:text="'Howdy,' + ${currentUser?.name}"><b class="caret"></b></span>
-                </a>
-                <ul class="dropdown-menu">
-                    &lt;!&ndash;<li><a href="#" title=""><i class="icon-user"></i>Profile</a></li>&ndash;&gt;
-                    <li>
-                        <a href="javascript:document.logoutForm.submit();" title="Logout"><i class="icon-remove"></i>Logout</a>
-                        <form style="display: none" name="logoutForm" th:action="@{/logout}" method="post"></form>
-                    </li>
-                </ul>
-            </li>
-        </ul>
-    </div>
-</div>-->
 <div id="top" th:include="Macro/publicMacro :: headMacro"></div>
 <!-- /fixed top -->
 
@@ -63,27 +50,8 @@
         <div id="general">
 
             <!-- Main navigation -->
-            <ul class="navigation widget">
+            <ul id="menuGroupsId" class="navigation widget">
                 <li><a th:href="@{/}" title=""><i class="icon-home"></i>Dashboard</a></li>
-                <li id="selectedMenu">
-                    <a href="#" title="" class="expand" id="current">
-                        <i class="icon-reorder"></i>Menu<strong style="background:#20794b">3</strong>
-                    </a>
-                    <ul>
-                        <li><a id="flowListMenuID" th:href="@{/web/flowList}" title="">Flows</a></li>
-                        <li><a id="getProcessListMenuID" th:href="@{/web/processList}" title="">Processes</a>
-                        </li>
-                        <li><a id="templateMenuID" th:href="@{/web/template}" title="">Templates</a></li>
-                    </ul>
-                </li>
-                <li id="exampleMenu">
-                    <a href="#" title="" class="expand">
-                        <i class="icon-reorder"></i>Example<strong id="exampleMenuCounts" style="background:#20794b">1</strong>
-                    </a>
-                    <ul>
-                        <li><a id="instructionalVideoMenuID" href="/piflow-web/web/instructionalVideo" title="">Instruction</a></li>
-                    </ul>
-                </li>
             </ul>
             <!-- /main navigation -->
 
@@ -98,19 +66,37 @@
         <!-- Content wrapper -->
         <div th:switch="${accessPath}">
             <div th:case="'indexHome'">
-                <div th:include="indexRight/process_List :: indexHome"></div>
+                <div th:include="indexRight/flow/flow_List :: flow_List"></div>
             </div>
             <div th:case="'flowList'">
-                <div th:include="indexRight/flow_List :: flow_List"></div>
+                <div th:include="indexRight/flow/flow_List :: flow_List"></div>
             </div>
-            <div th:case="'getProcessList'">
-                <div th:include="indexRight/process_List :: process_List"></div>
+            <div th:case="'processList'">
+                <div th:include="indexRight/flow/process_List :: process_List"></div>
             </div>
             <div th:case="'template'">
-                <div th:include="indexRight/template_List :: template_List"></div>
+                <div th:include="indexRight/flow/template_List :: template_List"></div>
+            </div>
+            <div th:case="'dataSources'">
+                <div th:include="indexRight/data_source_List :: data_source_List"></div>
+            </div>
+            <div th:case="'flowGroupList'">
+                <div th:include="indexRight/flowGroup/flow_group_List :: flow_group_List"></div>
+            </div>
+            <div th:case="'processGroupList'">
+                <div th:include="indexRight/flowGroup/process_group_List :: process_group_List"></div>
+            </div>
+            <div th:case="'groupTypeProcessList'">
+                <div th:include="indexRight/flowGroup/flow_process_List :: process_List"></div>
+            </div>
+            <div th:case="'flowGroupTemplateList'">
+                <div th:include="indexRight/flowGroup/flow_group_template_List :: flow_group_template_List"></div>
             </div>
             <div th:case="'instructionalVideo'">
                 <div th:include="indexRight/instructional_Video :: instructional_Video"></div>
+            </div>
+            <div th:case="'sysScheduleList'">
+                <div th:include="indexRight/sys_schedule_List :: sys_schedule_List"></div>
             </div>
         </div>
         <!-- /content wrapper -->
@@ -124,44 +110,69 @@
 <!--<div id="footer"></div>-->
 <div th:include="Macro/publicMacro :: footHeadMacro"></div>
 <!-- /footer -->
-<script type="text/javascript" th:src='@{/index/js/bootstrap.min.js}'></script>
+<script type="text/javascript" th:src='@{/components/bootstrap/js/bootstrap.min.js}'></script>
 <script th:inline="javascript">
+    var currentUser = [[${currentUser}]];
     var accessPath = [[${accessPath}]];
+    window.onload = function () {
+
+    };
     (function () {
-        // $('#selectedMenu').addClass("active");
-        $('#' + accessPath + 'MenuID').addClass("current");
-        $.ajax({
-            cache: true,//保留缓存数据
-            type: "POST",//为post请求
-            url: "/piflow-web/exampleMenu/exampleUrlList",//这是我在后台接受数据的文件名
-            data: {},
-            async: true,//设置成true，这标志着在请求开始后，其他代码依然能够执行。如果把这个选项设置成false，这意味着所有的请求都不再是异步的了，这也会导致浏览器被锁死
-            error: function (request) {//请求失败之后的操作
-                if (confirm("The sample failed to load, is it reloaded?")) {
-                    window.location.reload();
-                }
-                return;
-            },
-            success: function (data) {//请求成功之后的操作
-                var dataMap = JSON.parse(data);
-                if (0 !== dataMap.code) {
-                    var flowExampleList = dataMap.flowExampleList;
-                    if (flowExampleList && flowExampleList.length > 0) {
-                        $('#exampleMenuCounts').html(flowExampleList.length + 1);
-                        var exampleMenuUl = $('#exampleMenu ul');
-                        for (var i = 0; i < flowExampleList.length; i++) {
-                            var appendHtml = '<li><a href=\'/piflow-web/grapheditor/home?load=';
-                            appendHtml += flowExampleList[i].id;
-                            appendHtml += '\' title="">';
-                            appendHtml += flowExampleList[i].name;
-                            appendHtml += '</a></li>';
-                            exampleMenuUl.append(appendHtml);
+        if (currentUser) {
+            var sysMenuVoList = currentUser.sysMenuVoList;
+            if (sysMenuVoList && sysMenuVoList.length > 0) {
+                var menuGroupsUser = {};
+                var menuGroups = $('#menuGroupsId');
+                $.each(sysMenuVoList, function (n, value) {
+                    var menuParentHtml = "";
+                    var currentMenu = "";
+                    var valueMenuParent = value.menuParent;
+                    if (valueMenuParent) {
+                        if (menuGroupsUser[valueMenuParent]) {
+                            menuParentHtml = menuGroupsUser[valueMenuParent];
+                            var counts = parseFloat(menuParentHtml.find("strong").text());
+                            menuParentHtml.find("strong").html(counts + 1);
+                        } else {
+                            var menuParentHtmlStr = '<li id="selected' + valueMenuParent + '">'
+                                + '<a href="#" title="" class="expand">'
+                                + '<i class="icon-reorder"></i>' + valueMenuParent + '<strong style="background:#20794b">1</strong>'
+                                + '</a>'
+                                + '<ul></ul>'
+                                + '</li>';
+                            menuParentHtml = $(menuParentHtmlStr);
                         }
 
+                        currentMenu = '<li><a class="' + value.menuName + '" href="' + value.menuUrl + '" title="' + value.menuDescription + '">' + value.menuName + '</a></li>';
+                        menuParentHtml.find("ul").append(currentMenu);
+                    } else {
+                        menuParentHtml = '<li><a href="' + value.menuUrl + '" title="' + value.menuDescription + '">'
+                            + '<i class="icon-reorder"></i>' + value.menuName + ''
+                            + '</a></li>';
+                        valueMenuParent = 'no_Menu_Parent';
+                        menuParentHtml = $(menuParentHtml);
+                    }
+                    if (value.menuUrl) {
+                        var menuUrlSpits = value.menuUrl.split('/');
+                        if (accessPath == menuUrlSpits[menuUrlSpits.length - 1]) {
+                            var currentMenuId = menuUrlSpits[menuUrlSpits.length - 1] + 'MenuID';
+                            if (currentMenu && currentMenuId) {
+                                menuParentHtml.find(".expand").attr("id", "current");
+                                menuParentHtml.find("a." + value.menuName).attr("id", currentMenuId);
+                            } else {
+                                menuParentHtml.attr("class", "active");
+                            }
+                        }
+                    }
+                    menuGroupsUser[valueMenuParent] = menuParentHtml;
+                });
+                if (menuGroupsUser) {
+                    for (var p in menuGroupsUser) {
+                        menuGroups.append(menuGroupsUser[p]);
                     }
                 }
             }
-        });
+        }
+        $('#' + accessPath + 'MenuID').addClass("current");
     })();
 
     function playVideo() {

@@ -1,15 +1,14 @@
 package com.nature.mapper;
 
-import java.util.List;
-
+import com.nature.ApplicationTests;
+import com.nature.base.util.LoggerUtil;
+import com.nature.component.group.model.StopGroup;
 import com.nature.mapper.flow.StopGroupMapper;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.nature.ApplicationTests;
-import com.nature.base.util.LoggerUtil;
-import com.nature.component.flow.model.StopGroup;
+import java.util.List;
 
 public class StopGroupMapperTest extends ApplicationTests {
 
@@ -22,7 +21,7 @@ public class StopGroupMapperTest extends ApplicationTests {
 	public void testGetStopGroupList() {
 		List<StopGroup> stopGroupList = stopGroupMapper.getStopGroupList();
 		if (null == stopGroupList) {
-			logger.info("查询结果为空");
+			logger.info("The query result is empty");
 		}
 		logger.info(stopGroupList.size() + "");
 	}

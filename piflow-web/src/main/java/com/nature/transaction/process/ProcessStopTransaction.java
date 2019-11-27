@@ -1,13 +1,11 @@
 package com.nature.transaction.process;
 
 import com.nature.base.util.LoggerUtil;
-import com.nature.common.Eunm.StopState;
 import com.nature.component.process.model.ProcessStop;
-import com.nature.component.process.vo.ProcessStopVo;
-import com.nature.component.process.vo.ProcessVo;
 import com.nature.mapper.process.ProcessStopMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -25,7 +23,7 @@ public class ProcessStopTransaction {
      */
     Logger logger = LoggerUtil.getLogger();
 
-    @Resource
+    @Autowired
     private ProcessStopMapper processStopMapper;
 
     public ProcessStop getProcessStopByPageId(String processID, String pageID) {
@@ -53,7 +51,7 @@ public class ProcessStopTransaction {
     }
 
     /**
-     * 根据processId和processStop的name查询processStop
+     * Query processStop according to processId and processStop name
      * @param processID
      * @param name
      * @return

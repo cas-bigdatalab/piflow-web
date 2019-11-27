@@ -1,12 +1,17 @@
 package com.nature.component.process.model;
 
 import com.nature.base.BaseHibernateModelUUIDNoCorpAgentId;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 
+@Setter
+@Getter
 @Entity
 @Table(name = "FLOW_PROCESS_PATH")
 public class ProcessPath extends BaseHibernateModelUUIDNoCorpAgentId {
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "FK_FLOW_PROCESS_ID")
     private Process process;
@@ -26,51 +31,4 @@ public class ProcessPath extends BaseHibernateModelUUIDNoCorpAgentId {
     @Column(name = "page_id")
     private String pageId;
 
-    public Process getProcess() {
-        return process;
-    }
-
-    public void setProcess(Process process) {
-        this.process = process;
-    }
-
-    public String getFrom() {
-        return from;
-    }
-
-    public void setFrom(String from) {
-        this.from = from;
-    }
-
-    public String getOutport() {
-        return outport;
-    }
-
-    public void setOutport(String outport) {
-        this.outport = outport;
-    }
-
-    public String getInport() {
-        return inport;
-    }
-
-    public void setInport(String inport) {
-        this.inport = inport;
-    }
-
-    public String getTo() {
-        return to;
-    }
-
-    public void setTo(String to) {
-        this.to = to;
-    }
-
-    public String getPageId() {
-        return pageId;
-    }
-
-    public void setPageId(String pageId) {
-        this.pageId = pageId;
-    }
 }

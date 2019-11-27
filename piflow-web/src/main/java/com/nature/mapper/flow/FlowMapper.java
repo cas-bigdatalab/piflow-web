@@ -10,7 +10,7 @@ import java.util.List;
 @Mapper
 public interface FlowMapper {
     /**
-     * 新增Flow
+     * add flow
      *
      * @param flow
      * @return
@@ -19,7 +19,7 @@ public interface FlowMapper {
     public int addFlow(Flow flow);
 
     /**
-     * 修改Flow
+     * update flow
      *
      * @param flow
      * @return
@@ -28,7 +28,7 @@ public interface FlowMapper {
     public int updateFlow(Flow flow);
 
     /**
-     * 查詢所有工作流
+     * Query all workflows
      *
      * @return
      */
@@ -36,16 +36,16 @@ public interface FlowMapper {
     public List<Flow> getFlowList();
 
     /**
-     * 查詢所有工作流分页查询
+     * Query all workflow paging queries
      *
      * @param param
      * @return
      */
     @SelectProvider(type = FlowMapperProvider.class, method = "getFlowListParam")
-    public List<Flow> getFlowListParma(@Param("param")String param);
+    public List<Flow> getFlowListParam(@Param("param")String param);
 
     /**
-     * 查詢所有样例工作流
+     * Query all sample workflows
      *
      * @return
      */
@@ -53,7 +53,7 @@ public interface FlowMapper {
     public List<Flow> getFlowExampleList();
 
     /**
-     * 根据工作流Id查询工作流
+     * Query workflow based on workflow Id
      *
      * @param id
      * @return
@@ -61,6 +61,7 @@ public interface FlowMapper {
     @SelectProvider(type = FlowMapperProvider.class, method = "getFlowById")
     @Results({
             @Result(id = true, column = "id", property = "id"),
+            @Result(column = "fk_flow_group_id", property = "flowGroup", one = @One(select = "com.nature.mapper.flow.FlowGroupMapper.getFlowGroupById", fetchType = FetchType.LAZY)),
             @Result(column = "id", property = "mxGraphModel", one = @One(select = "com.nature.mapper.mxGraph.MxGraphModelMapper.getMxGraphModelByFlowId", fetchType = FetchType.LAZY)),
             @Result(column = "id", property = "appId", one = @One(select = "com.nature.mapper.flow.FlowInfoDbMapper.getAppByAppFlowId", fetchType = FetchType.LAZY)),
             @Result(column = "id", property = "stopsList", many = @Many(select = "com.nature.mapper.flow.StopsMapper.getStopsListByFlowId", fetchType = FetchType.LAZY)),
@@ -73,11 +74,36 @@ public interface FlowMapper {
     public int updateEnableFlagById(@Param("id") String id);
 
     /**
-     * 根据flow查询PageId最大值
+     * According to the flow query PageId maximum
      *
      * @param flowId
      * @return
      */
-    @Select("SELECT MAX(page_id) from flow_stops where fk_flow_id = #{flowId} and enable_flag = 1 ")
-    public String getMaxStopPageId(@Param("flowId") String flowId);
+    @Select("select MAX(page_id) from flow_stops where fk_flow_id = #{flowId} and enable_flag = 1 ")
+    public String getMaxStopPageId(@Param("flowId") String flowId);    /**
+     * According to the flow query PageId maximum
+     *
+     * @param flowGroupId
+     * @return
+     */
+    @Select("select MAX(page_id) from flow where enable_flag = 1 and fk_flow_group_id = #{flowGroupId} ")
+    public String getMaxFlowPageIdByFlowGroupId(@Param("flowGroupId") String flowGroupId);
+
+    @Select("select * from flow s where s.enable_flag = 1 and s.fk_flow_group_id = #{fid} and s.page_id = #{pageId}")
+    Flow getFlowByPageId(@Param("fid") String fid, @Param("pageId") String pageId);
+
+    /**
+     * Query flow by flowGroupId
+     *
+     * @param flowGroupId
+     * @return
+     */
+    @SelectProvider(type = FlowMapperProvider.class, method = "getFlowListGroupId")
+    @Results({
+            @Result(id = true, column = "id", property = "id"),
+            @Result(column = "id", property = "mxGraphModel", one = @One(select = "com.nature.mapper.mxGraph.MxGraphModelMapper.getMxGraphModelByFlowId", fetchType = FetchType.LAZY)),
+            @Result(column = "id", property = "stopsList", many = @Many(select = "com.nature.mapper.flow.StopsMapper.getStopsListByFlowId", fetchType = FetchType.LAZY)),
+            @Result(column = "id", property = "pathsList", many = @Many(select = "com.nature.mapper.flow.PathsMapper.getPathsListByFlowId", fetchType = FetchType.LAZY))
+    })
+    public List<Flow> getFlowListGroupId(String flowGroupId);
 }

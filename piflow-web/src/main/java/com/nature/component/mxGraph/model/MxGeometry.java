@@ -1,8 +1,8 @@
 package com.nature.component.mxGraph.model;
 
-import javax.persistence.*;
-
 import com.nature.base.BaseHibernateModelUUIDNoCorpAgentId;
+
+import javax.persistence.*;
 
 @Entity
 @Table(name = "MX_GEOMETRY")

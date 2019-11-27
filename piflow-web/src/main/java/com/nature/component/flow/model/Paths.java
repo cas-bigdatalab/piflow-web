@@ -32,4 +32,7 @@ public class Paths extends BaseHibernateModelUUIDNoCorpAgentId {
 
 	@Column(name = "page_id")
 	private String pageId;
+
+	@Column(name = "filter_condition")
+	private String filterCondition;
 }

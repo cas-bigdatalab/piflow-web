@@ -1,24 +1,26 @@
 package com.nature.mapper;
 
-import java.util.Date;
-
+import com.nature.ApplicationTests;
+import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.SqlUtils;
 import com.nature.base.vo.UserVo;
+import com.nature.common.Eunm.RunModeType;
+import com.nature.component.flow.model.Flow;
+import com.nature.component.process.model.Process;
+import com.nature.component.process.utils.ProcessUtils;
 import com.nature.mapper.flow.FlowMapper;
+import com.nature.third.utils.ProcessUtil;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 
-import com.nature.ApplicationTests;
-import com.nature.base.util.LoggerUtil;
-import com.nature.component.flow.model.Flow;
-
 import javax.annotation.Resource;
+import java.util.Date;
 
 public class FlowMapperTest extends ApplicationTests {
 
-    @Resource
+    @Autowired
     private FlowMapper flowMapper;
 
     Logger logger = LoggerUtil.getLogger();
@@ -27,10 +29,21 @@ public class FlowMapperTest extends ApplicationTests {
     public void testGetFlowById() {
         Flow flow = flowMapper.getFlowById("85f90a18423245b09cde371cbb333021");
         if (null == flow) {
-            logger.info("查询结果为空");
+            logger.info("The query result is empty");
             flow = new Flow();
         }
         logger.info(flow.toString());
+    }
+
+    @Test
+    public void test() {
+        Flow flow = flowMapper.getFlowById("0cbda2327bca445c809d5c3b8b14f5a2");
+        UserVo user = new UserVo();
+
+        user.setUsername("test");
+        Process process = ProcessUtils.flowToProcess(flow, user);
+        String s = ProcessUtil.processToJson(process, "", RunModeType.RUN);
+        logger.info(s);
     }
 
     @Test

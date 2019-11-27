@@ -7,6 +7,7 @@ import com.nature.component.mxGraph.model.MxCell;
 import com.nature.component.mxGraph.model.MxGeometry;
 import org.junit.Test;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 
 import javax.annotation.Resource;
@@ -15,7 +16,7 @@ import java.util.List;
 
 public class MxCellMapperTest extends ApplicationTests {
 
-	@Resource
+	@Autowired
 	private MxCellMapper mxCellMapper;
 
 	Logger logger = LoggerUtil.getLogger();

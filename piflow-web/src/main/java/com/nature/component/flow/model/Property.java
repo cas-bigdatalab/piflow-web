@@ -2,15 +2,19 @@
 package com.nature.component.flow.model;
 
 import com.nature.base.BaseHibernateModelUUIDNoCorpAgentId;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 
 /**
- * stop的属性
+ * stop property
  * 
  * @author Nature
  *
  */
+@Getter
+@Setter
 @Entity
 @Table(name = "FLOW_STOPS_PROPERTY")
 public class Property extends BaseHibernateModelUUIDNoCorpAgentId {
@@ -44,76 +48,10 @@ public class Property extends BaseHibernateModelUUIDNoCorpAgentId {
 	
 	private Boolean isSelect;
 
-	public Stops getStops() {
-		return stops;
-	}
+    @Column(name = "IS_LOCKED")
+    private Boolean isLocked = false;
 
-	public void setStops(Stops stops) {
-		this.stops = stops;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getDisplayName() {
-		return displayName;
-	}
-
-	public void setDisplayName(String displayName) {
-		this.displayName = displayName;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public String getCustomValue() {
-		return customValue;
-	}
-
-	public void setCustomValue(String customValue) {
-		this.customValue = customValue;
-	}
-
-	public String getAllowableValues() {
-		return allowableValues;
-	}
-
-	public void setAllowableValues(String allowableValues) {
-		this.allowableValues = allowableValues;
-	}
-
-	public Boolean getRequired() {
-		return required;
-	}
-
-	public void setRequired(Boolean required) {
-		this.required = required;
-	}
-
-	public Boolean getSensitive() {
-		return sensitive;
-	}
-
-	public void setSensitive(Boolean sensitive) {
-		this.sensitive = sensitive;
-	}
-
-	public Boolean getIsSelect() {
-		return isSelect;
-	}
-
-	public void setIsSelect(Boolean isSelect) {
-		this.isSelect = isSelect;
-	}
+	@Column(columnDefinition = "bigint(20) COMMENT 'property sort'")
+	private Long propertySort;
 	
 }

@@ -11,15 +11,15 @@ public class ServicesExecutor {
 
     private static Logger logger = LoggerUtil.getLogger();
 
-    /* 定义一个执行线程的执行器用于服务 */
+    /* Define an executor of the execution thread for the service */
     private static ExecutorService servicesExecutorService;
 
-    /* 定义一个执行线程的执行器用于日志 */
+    /* Define an executor of the execution thread for the log */
     private static ExecutorService          logExecutorService;
 
     private static ScheduledExecutorService scheduledThreadPool;
 
-    /* 初始化线程池 */
+    /* Initialize the thread pool */
     static {
         initServicesExecutorService();
         //initLogExecutorService();
@@ -28,29 +28,29 @@ public class ServicesExecutor {
 
     private synchronized static void initServicesExecutorService() {
         /**
-         * 创建固定固定线程数的线程池。每次提交一个任务就创建一个线程，直到线程达到线程池的最大大小。 线程池的大小一旦达到最大值就会保持不变，如果某个线程因为执行异常而结束，那么线程池会补充一个新线程。
-         * 创建一个定长线程池，可控制线程最大并发数，超出的线程会在队列中等待。定长线程池的大小最好根据系统资源进行设置。如Runtime.getRuntime().availableProcessors()
+         * Create a thread pool with a fixed number of fixed threads. Each time a task is submitted, a thread is created until the thread reaches the maximum size of the thread pool. The size of the thread pool will remain the same once it reaches its maximum value. If a thread ends because of an exception, the thread pool will be replenished with a new thread.
+         * Create a fixed-length thread pool that controls the maximum number of concurrent threads, and the excess threads wait in the queue. The size of the fixed-length thread pool is best set according to system resources. Such as "Runtime.getRuntime().availableProcessors()"
          */
         servicesExecutorService = null;
         servicesExecutorService = Executors.newFixedThreadPool(2);
-        logger.info("异步同步线程池初始化完毕...");
+        logger.info("Asynchronous synchronization thread pool is initialized...");
     }
 
     private synchronized static void initLogExecutorService() {
         /**
-         * 创建固定固定线程数的线程池。每次提交一个任务就创建一个线程，直到线程达到线程池的最大大小。 线程池的大小一旦达到最大值就会保持不变，如果某个线程因为执行异常而结束，那么线程池会补充一个新线程。
+         * Create a thread pool with a fixed number of fixed threads. Each time a task is submitted, a thread is created until the thread reaches the maximum size of the thread pool. The size of the thread pool will remain the same once it reaches its maximum value. If a thread ends because of an exception, the thread pool will be replenished with a new thread.
          */
         logExecutorService = null;
         logExecutorService = Executors.newFixedThreadPool(4);
-        logger.info("异步日志处理线程池初始化完毕...");
+        logger.info("Asynchronous log processing thread pool initialization completed...");
 
-        // 创建一个可缓存线程池，如果线程池长度超过处理需要，可灵活回收空闲线程，若无可回收，则新建线程。
+        // Create a cacheable thread pool. If the thread pool length exceeds the processing requirements, you can flexibly reclaim idle threads. If there is no reclaimable, create a new thread.
         // ExecutorService cachedThreadPool = Executors.newCachedThreadPool();
     }
 
     private synchronized static void initScheduledThreadPool() {
         /**
-         * 创建一个定长线程池，支持定时及周期性任务执行
+         * Create a fixed-length thread pool that supports scheduled and periodic task execution
          */
         scheduledThreadPool = null;
         scheduledThreadPool = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors() * 1);
@@ -58,7 +58,7 @@ public class ServicesExecutor {
     }
 
     /**
-     * 得到执行器实例，用于关闭该执行器时调用或者其他地方调用
+     * Get an executor instance that is called when the executor is closed or called elsewhere
      *
      * @return ExecutorService
      */

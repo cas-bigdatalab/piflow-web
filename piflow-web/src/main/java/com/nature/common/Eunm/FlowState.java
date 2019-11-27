@@ -5,10 +5,10 @@ import com.nature.base.TextureEnumSerializer;
 
 @JsonSerialize(using = TextureEnumSerializer.class)
 public enum FlowState {
-    STARTED("STARTED", "启动"),
-    COMPLETED("COMPLETED", "完成"),
-    HOME("FAILED", "失败"),
-    ABORTED("ABORTED","中止"),
+    STARTED("STARTED", "start up"),
+    COMPLETED("COMPLETED", "completed"),
+    HOME("FAILED", "failed"),
+    ABORTED("ABORTED","aborted"),
     FORK("FORK","FORK");
 
     private final String value;

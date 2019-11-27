@@ -2,11 +2,14 @@ package com.nature.component.process.service;
 
 import com.nature.base.vo.StatefulRtnBase;
 import com.nature.base.vo.UserVo;
-import com.nature.component.flow.model.Flow;
+import com.nature.common.Eunm.RunModeType;
 import com.nature.component.process.model.Process;
+import com.nature.component.process.vo.DebugDataRequest;
+import com.nature.component.process.vo.DebugDataResponse;
+import com.nature.component.process.vo.ProcessGroupVo;
 import com.nature.component.process.vo.ProcessVo;
-import org.springframework.data.annotation.Transient;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 public interface IProcessService {
@@ -16,7 +19,7 @@ public interface IProcessService {
      *
      * @return
      */
-    @Transient
+    @Transactional
     public List<ProcessVo> getProcessAllVoList();
 
     /**
@@ -24,7 +27,7 @@ public interface IProcessService {
      *
      * @return
      */
-    @Transient
+    @Transactional
     public List<ProcessVo> getProcessVoList();
 
     /**
@@ -33,7 +36,7 @@ public interface IProcessService {
      * @param id
      * @return
      */
-    @Transient
+    @Transactional
     public ProcessVo getProcessAllVoById(String id);
 
     /**
@@ -42,7 +45,7 @@ public interface IProcessService {
      * @param id
      * @return
      */
-    @Transient
+    @Transactional
     public ProcessVo getProcessVoById(String id);
 
     /**
@@ -51,8 +54,8 @@ public interface IProcessService {
      * @param id
      * @return
      */
-    @Transient
-    public Process getProcessById(String id);
+    @Transactional
+    public ProcessVo getProcessById(String id);
 
     /**
      * Query process according to Appid
@@ -116,7 +119,7 @@ public interface IProcessService {
      * @param processId
      * @return
      */
-    public Process processCopyProcessAndAdd(String processId, UserVo currentUser);
+    public Process processCopyProcessAndAdd(String processId, UserVo currentUser, RunModeType runModeType);
 
     /**
      * Generate Process from flowId and save it
@@ -124,8 +127,8 @@ public interface IProcessService {
      * @param flowId
      * @return
      */
-    @Transient
-    public Process flowToProcessAndSave(String flowId);
+    @Transactional
+    public ProcessVo flowToProcessAndSave(String flowId);
 
     /**
      * Logical deletion
@@ -133,7 +136,7 @@ public interface IProcessService {
      * @param processId
      * @return
      */
-    @Transient
+    @Transactional
     public StatefulRtnBase updateProcessEnableFlag(String processId, UserVo currentUser);
 
     /**
@@ -152,8 +155,18 @@ public interface IProcessService {
      * @param param
      * @return
      */
-    @Transient
+    @Transactional
     public String getProcessVoListPage(Integer offset, Integer limit, String param);
+
+    /**
+     * Query processVoList (parameter space-time non-paging)
+     *
+     * @param offset
+     * @param limit
+     * @param param
+     * @return
+     */
+    public String getProcessGroupVoListPage(Integer offset, Integer limit, String param);
 
     /**
      * Start processes
@@ -163,8 +176,8 @@ public interface IProcessService {
      * @param currentUser
      * @return
      */
-    @Transient
-    public String startProcess(String processId, String checkpoint, UserVo currentUser);
+    @Transactional
+    public String startProcess(String processId, String checkpoint, String runMode, UserVo currentUser);
 
     /**
      * Stop running processes
@@ -172,6 +185,23 @@ public interface IProcessService {
      * @param processId
      * @return
      */
-    @Transient
+    @Transactional
     public String stopProcess(String processId);
+
+    /**
+     * get debug data
+     *
+     * @param debugDataRequest
+     * @return
+     */
+    public DebugDataResponse getDebugData(DebugDataRequest debugDataRequest);
+
+    /**
+     * Query process based on processId and pageId
+     *
+     * @param processGroupId
+     * @param pageId
+     * @return
+     */
+    public ProcessVo getProcessVoByPageId(String processGroupId, String pageId);
 }

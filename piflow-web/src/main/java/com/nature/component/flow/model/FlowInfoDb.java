@@ -1,12 +1,11 @@
 package com.nature.component.flow.model;
 
-import java.util.Date;
-
-import javax.persistence.*;
-
 import com.nature.base.BaseHibernateModelUUIDNoCorpAgentId;
 import lombok.Getter;
 import lombok.Setter;
+
+import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name =  "flow_info")

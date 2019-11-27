@@ -2,7 +2,7 @@ package com.nature.provider.flow;
 
 import com.nature.base.util.DateUtils;
 import com.nature.base.util.SqlUtils;
-import com.nature.component.flow.model.PropertyTemplate;
+import com.nature.component.group.model.PropertyTemplate;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
 
@@ -26,6 +26,7 @@ public class PropertyTemplateMapperProvider {
     private String name;
     private Integer required;
     private Integer sensitive;
+    private Long propertySort;
     private String stopsTemplateId;
 
     private void preventSQLInjectionPropertyTemplate(PropertyTemplate propertyTemplate) {
@@ -56,6 +57,7 @@ public class PropertyTemplateMapperProvider {
             this.name = SqlUtils.preventSQLInjection(propertyTemplate.getName());
             this.required = (null == propertyTemplate.getRequired() ? 0 : (propertyTemplate.getRequired() ? 1 : 0));
             this.sensitive = (null == propertyTemplate.getSensitive() ? 0 : (propertyTemplate.getSensitive() ? 1 : 0));
+            this.propertySort =  (null != propertyTemplate.getPropertySort() ? propertyTemplate.getPropertySort() : 0L);
             this.stopsTemplateId = SqlUtils.preventSQLInjection(propertyTemplate.getStopsTemplate());
         }
     }
@@ -75,6 +77,7 @@ public class PropertyTemplateMapperProvider {
         this.name = null;
         this.required = null;
         this.sensitive = null;
+        this.propertySort = 0L;
         this.stopsTemplateId = null;
     }
 
@@ -99,7 +102,7 @@ public class PropertyTemplateMapperProvider {
     }
 
     public String insertPropertyTemplate(Map map) {
-        String sqlStr = "SELECT 0";
+        String sqlStr = "select 0";
         List<PropertyTemplate> propertyTemplateList = (List<PropertyTemplate>) map.get("propertyTemplateList");
         if (null != propertyTemplateList && propertyTemplateList.size() > 0) {
             SQL sqlColumns = new SQL();
@@ -119,10 +122,11 @@ public class PropertyTemplateMapperProvider {
                     "name",
                     "property_required",
                     "property_sensitive",
+                    "property_sort",
                     "fk_stops_id"
             );
             StringBuffer sqlValuesStr = new StringBuffer();
-            sqlValuesStr.append("\nVALUES\n");
+            sqlValuesStr.append("\nvalues\n");
             for (int i = 0; i < propertyTemplateList.size(); i++) {
                 PropertyTemplate propertyTemplate = propertyTemplateList.get(i);
                 if (null != propertyTemplate) {
@@ -149,6 +153,7 @@ public class PropertyTemplateMapperProvider {
                     sqlValuesStr.append(name + ",");
                     sqlValuesStr.append(required + ",");
                     sqlValuesStr.append(sensitive + ",");
+                    sqlValuesStr.append(propertySort + ",");
                     sqlValuesStr.append(stopsTemplateId);
                     sqlValuesStr.append(")");
                     if (i < propertyTemplateList.size() - 1) {

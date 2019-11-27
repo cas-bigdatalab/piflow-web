@@ -1,22 +1,20 @@
 package com.nature.transaction.flow;
 
-import com.nature.base.util.SessionUserUtil;
-import com.nature.base.vo.UserVo;
 import com.nature.component.flow.model.Flow;
 import com.nature.mapper.flow.FlowMapper;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.annotation.Transient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
+import javax.transaction.Transactional;
 
 @Component
 public class FlowTransaction {
 
-    @Resource
+    @Autowired
     private FlowMapper flowMapper;
 
-    @Transient
+    @Transactional
     public Flow getFlowById(String id) {
         Flow flowById = null;
         if (StringUtils.isNotBlank(id)) {

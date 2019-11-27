@@ -2,16 +2,17 @@ package com.nature.base.util;
 
 import com.nature.base.vo.UserVo;
 import com.nature.common.Eunm.SysRoleType;
-import com.nature.component.sysUser.model.SysRole;
+import com.nature.component.system.model.SysRole;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class SqlUtils {
     /**
-     * uuid(32位的)
+     * uuid(32-bit)
      *
      * @return
      */
@@ -20,7 +21,7 @@ public class SqlUtils {
     }
 
     /**
-     * str(给字符串加单引)
+     * str(Add a single quote to a string)
      *
      * @param str
      * @return
@@ -34,7 +35,20 @@ public class SqlUtils {
     }
 
     /**
-     * str(给字符串加单引,并替换字符串中的单引为双单引)
+     * str(Replace the single quote in the string as a double single quote)
+     *
+     * @param str
+     * @return
+     */
+    public static String replaceString(String str) {
+        if (null != str) {
+            str = str.replace("'", "''");
+        }
+        return str;
+    }
+
+    /**
+     * str(Add a single quote to the string and replace the single quote in the string with a double quote)
      *
      * @param str
      * @return
@@ -48,16 +62,17 @@ public class SqlUtils {
     }
 
     /**
-     * str(替换字符串中的单引为双单引)
+     * str(Add a single quote to the string and replace the single quote in the string with a double quote)
      *
      * @param str
      * @return
      */
-    public static String replaceString(String str) {
-        if (null != str) {
-            str = str.replace("'", "''");
+    public static String addSqlStrLikeAndReplace(String str) {
+        if (StringUtils.isNotBlank(str)) {
+            return "'%" + replaceString(str) + "%' ";
+        } else {
+            return "'' ";
         }
-        return str;
     }
 
     public static String strArrayToStr(String[] strArray) {
@@ -75,11 +90,15 @@ public class SqlUtils {
         return str;
     }
 
-    public static String addQueryByUserRole(UserVo currentUser, boolean isAddAnd) {
+    public static String addQueryByUserRole(boolean beforeAddAnd, boolean afterAddAnd) {
+        UserVo currentUser = SessionUserUtil.getCurrentUser();
         String str = "FAIL";
         if (null != currentUser) {
             str = "CRT_USER = '" + currentUser.getUsername() + "' ";
-            if (isAddAnd) {
+            if (beforeAddAnd) {
+                str = ("AND " + str);
+            }
+            if (afterAddAnd) {
                 str = ("AND " + str);
             }
             boolean isAdmin = false;
@@ -107,5 +126,23 @@ public class SqlUtils {
             sqlStr = "'" + replace + "'";
         }
         return sqlStr;
+    }
+
+    public static String strListToStr(List<String> strArray) {
+        String str = "";
+        if (null != strArray && strArray.size() > 0) {
+            for (int i = 0; i < strArray.size(); i++) {
+                if (StringUtils.isNotBlank(strArray.get(i))) {
+                    String replaceString = replaceString(strArray.get(i));
+                    if (null != replaceString) {
+                        str += addSqlStr(strArray.get(i));
+                    }
+                    if (i < strArray.size() - 1) {
+                        str += ",";
+                    }
+                }
+            }
+        }
+        return str;
     }
 }

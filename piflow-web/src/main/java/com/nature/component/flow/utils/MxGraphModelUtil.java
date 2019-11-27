@@ -4,6 +4,8 @@ import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.SqlUtils;
 import com.nature.base.vo.UserVo;
 import com.nature.component.flow.model.Flow;
+import com.nature.component.flow.model.FlowGroup;
+import com.nature.component.flow.model.FlowGroupPaths;
 import com.nature.component.flow.model.Paths;
 import com.nature.component.mxGraph.model.MxCell;
 import com.nature.component.mxGraph.model.MxGeometry;
@@ -18,7 +20,7 @@ import java.util.*;
 
 public class MxGraphModelUtil {
     /**
-     * mxGraphModel实体转Vo
+     * mxGraphModel entity to Vo
      *
      * @param mxGraphModel
      * @return
@@ -35,7 +37,7 @@ public class MxGraphModelUtil {
     }
 
     /**
-     * mxCellList实体转Vo
+     * mxCellList entity to Vo
      *
      * @param mxCellList
      * @return
@@ -55,7 +57,7 @@ public class MxGraphModelUtil {
     }
 
     /**
-     * mxCell实体转Vo
+     * mxCell entity to Vo
      *
      * @param mxCell
      * @return
@@ -76,44 +78,44 @@ public class MxGraphModelUtil {
     }
 
     /**
-     * 区分stop和path
+     * Distinguish between 'element' and 'path'
      *
      * @param root
-     * @return 返回map中有stops和paths的Mxcell型的List(键为 ： paths和stops)
+     * @return Returns a list of Mxcell types with elements and paths in the map (keys: paths and elements)
      */
-    public static Map<String, Object> distinguishStopsPaths(List<MxCellVo> root) {
+    public static Map<String, Object> distinguishElementsPaths(List<MxCellVo> root) {
         Map<String, Object> map = null;
         if (null != root && root.size() > 0) {
             map = new HashMap<String, Object>();
             List<MxCellVo> pathsList = new ArrayList<MxCellVo>();
-            List<MxCellVo> stopsList = new ArrayList<MxCellVo>();
-            // 循环root
+            List<MxCellVo> elementsList = new ArrayList<MxCellVo>();
+            // Loop root
             for (MxCellVo mxCellVo : root) {
                 if (null != mxCellVo) {
-                    // 取出style属性
+                    // Take out the style attribute
                     String style = mxCellVo.getStyle();
-                    // 判空
+                    // Judge whether it is empty
                     if (StringUtils.isNotBlank(style)) {
-                        // 取出线特有的属性判断是否为空
+                        // Take out the line-specific attributes to determine if it is empty.
                         String edge = mxCellVo.getEdge();
                         if (StringUtils.isNotBlank(edge)) {
                             pathsList.add(mxCellVo);
                         } else {
-                            stopsList.add(mxCellVo);
+                            elementsList.add(mxCellVo);
                         }
                     }
                 }
             }
-            map.put("stops", stopsList);
+            map.put("elements", elementsList);
             map.put("paths", pathsList);
         }
         return map;
     }
     /**
-     * 区分stop和path
+     * Distinguish between stop and path
      *
      * @param root
-     * @return 返回map中有stops和paths的MxCell型的List(键为 ： paths和stops)
+     * @return Returns a list of MxCell types with stops and paths in the map (keys: paths and stops)
      */
     public static Map<String, Object> mxCellDistinguishStopsPaths(List<MxCell> root) {
         Map<String, Object> map = null;
@@ -121,10 +123,10 @@ public class MxGraphModelUtil {
             map = new HashMap<String, Object>();
             List<MxCell> pathsList = new ArrayList<MxCell>();
             List<MxCell> stopsList = new ArrayList<MxCell>();
-            // 循环root
+            // Loop root
             for (MxCell mxCell : root) {
                 if (null != mxCell) {
-                    // 取出线特有的属性判断是否为空
+                    // Take out the line-specific attributes to determine if it is empty.
                     String edge = mxCell.getEdge();
                     if (StringUtils.isNotBlank(edge)) {
                         pathsList.add(mxCell);
@@ -140,7 +142,7 @@ public class MxGraphModelUtil {
     }
 
     /**
-     * 根据MxCellList中的内容生成paths的list
+     * Generate a list of paths based on the contents of the MxCellList
      *
      * @param objectPaths
      * @param flow
@@ -150,7 +152,7 @@ public class MxGraphModelUtil {
         List<Paths> pathsList = null;
         if (null != objectPaths && objectPaths.size() > 0) {
             pathsList = new ArrayList<Paths>();
-            // 循环objectPaths
+            // Loop objectPaths
             for (MxCellVo mxCellVo : objectPaths) {
                 Paths paths = mxCellToPaths(mxCellVo);
                 if (null != paths) {
@@ -163,7 +165,30 @@ public class MxGraphModelUtil {
     }
 
     /**
-     * mxCellVo转Paths
+     * Generate a list of paths based on the contents of the MxCellList
+     *
+     * @param objectPaths
+     * @param flowGroup
+     * @return
+     */
+    public static List<FlowGroupPaths> mxCellVoListToFlowGroupPathsList(List<MxCellVo> objectPaths, FlowGroup flowGroup) {
+        List<FlowGroupPaths> flowGroupPathsList = null;
+        if (null != objectPaths && objectPaths.size() > 0) {
+            flowGroupPathsList = new ArrayList<>();
+            // Loop objectPaths
+            for (MxCellVo mxCellVo : objectPaths) {
+                FlowGroupPaths flowGroupPaths = mxCellToFlowGroupPaths(mxCellVo);
+                if (null != flowGroupPaths) {
+                    flowGroupPaths.setFlowGroup(flowGroup);
+                    flowGroupPathsList.add(flowGroupPaths);
+                }
+            }
+        }
+        return flowGroupPathsList;
+    }
+
+    /**
+     * mxCellVo to Paths
      *
      * @param mxCellVo
      * @return
@@ -185,5 +210,30 @@ public class MxGraphModelUtil {
             paths.setPageId(mxCellVo.getPageId());
         }
         return paths;
+    }
+
+    /**
+     * mxCellVo to Paths
+     *
+     * @param mxCellVo
+     * @return
+     */
+    public static FlowGroupPaths mxCellToFlowGroupPaths(MxCellVo mxCellVo) {
+        UserVo user = SessionUserUtil.getCurrentUser();
+        String username = (null != user) ? user.getUsername() : "-1";
+        FlowGroupPaths flowGroupPaths = null;
+        if (null != mxCellVo) {
+            flowGroupPaths = new FlowGroupPaths();
+            flowGroupPaths.setId(SqlUtils.getUUID32());
+            flowGroupPaths.setCrtDttm(new Date());
+            flowGroupPaths.setCrtUser(username);
+            flowGroupPaths.setLastUpdateDttm(new Date());
+            flowGroupPaths.setLastUpdateUser(username);
+            flowGroupPaths.setEnableFlag(true);
+            flowGroupPaths.setFrom(mxCellVo.getSource());
+            flowGroupPaths.setTo(mxCellVo.getTarget());
+            flowGroupPaths.setPageId(mxCellVo.getPageId());
+        }
+        return flowGroupPaths;
     }
 }

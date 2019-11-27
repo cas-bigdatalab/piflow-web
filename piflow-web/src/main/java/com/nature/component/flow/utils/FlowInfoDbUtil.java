@@ -1,13 +1,12 @@
 package com.nature.component.flow.utils;
 
-import org.springframework.beans.BeanUtils;
-
 import com.nature.component.flow.model.FlowInfoDb;
 import com.nature.component.flow.vo.FlowInfoDbVo;
+import org.springframework.beans.BeanUtils;
 
 public class FlowInfoDbUtil {
     /**
-     * flowInfoDb实体转Vo
+     * flowInfoDb Po To Vo
      *
      * @param flowInfoDb
      * @return

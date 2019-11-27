@@ -28,28 +28,28 @@ public class FileUtils {
 
 
     /**
-     * 字符串转xml文件并保存指定路径
+     * String to "xml" file and save the specified path
      *
-     * @param xmlStr   xml字符串
-     * @param fileName 文件名称
-     * @param type     文件类型(后缀)
-     * @param path     (存放路径)
+     * @param xmlStr   xml string
+     * @param fileName File name
+     * @param type     File type (suffix)
+     * @param path     (Storage path)
      * @return
      */
     @SuppressWarnings("deprecation")
     public static String createXml(String xmlStr, String fileName, String type, String path) {
         Document doc = strToDocument(xmlStr);
         String realPath = path + fileName + type;
-        logger.debug("============进入生成方法：" + new Date().toLocaleString() + "=================");
+        logger.debug("============Entry Generation Method：" + new Date().toLocaleString() + "=================");
         try {
-            // 判断文件是否存在，如存在就删掉它
+            // Determine if the file exists, delete it if it exists
             File file = new File(realPath);
             if (!file.getParentFile().exists()) {
-                //如果不存在则创建
+                //Create if it does not exist
                 file.getParentFile().mkdirs();
-                logger.info("==============文件目录不存在,新建文件==============");
+                logger.info("==============File directory does not exist, new file==============");
             }
-            /** 将document中的内容写入文件中 */
+            /** Write the contents of the document to the file */
             TransformerFactory tFactory = TransformerFactory.newInstance();
             Transformer transformer = tFactory.newTransformer();
             transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
@@ -57,25 +57,25 @@ public class FileUtils {
             DOMSource source = new DOMSource(doc);
             StreamResult result = new StreamResult(new FileOutputStream(realPath));
             transformer.transform(source, result);
-            logger.info("--------------------------------" + "更新文件成功" + "-------------------------------------");
+            logger.info("--------------------------------" + "Update file successfully" + "-------------------------------------");
         } catch (final Exception exception) {
-            logger.error("更新" + fileName + "出错：", exception);
+            logger.error("update " + fileName + " error ：", exception);
         }
-        logger.debug("============退出生成方法：" + new Date().toLocaleString() + "=================");
+        logger.debug("============Exit Generation Method：" + new Date().toLocaleString() + "=================");
         return path + fileName + type;
     }
 
 
     /**
-     * 上传方法
+     * Uploading method
      *
      * @param file
      * @param path
      * @return
      */
     public static String upload(MultipartFile file, String path) {
-        Map<String, String> rtnMap = new HashMap<String, String>();
-        rtnMap.put("code", "0");
+        Map<String, Object> rtnMap = new HashMap<>();
+        rtnMap.put("code", 500);
         if (!file.isEmpty()) {
             //文件名
             String saveFileName = file.getOriginalFilename();
@@ -88,30 +88,30 @@ public class FileUtils {
                 out.write(file.getBytes());
                 out.flush();
                 out.close();
-                logger.debug(saveFile.getName() + " 上传成功");
+                logger.debug(saveFile.getName() + " Upload success");
                 rtnMap.put("url", path + saveFileName);
                 rtnMap.put("fileName", saveFileName);
-                rtnMap.put("msgInfo", "上传成功");
-                rtnMap.put("code", "1");
+                rtnMap.put("msgInfo", "Upload success");
+                rtnMap.put("code", 200);
             } catch (FileNotFoundException e) {
                 //e.printStackTrace();
-                rtnMap.put("msgInfo", "上传失败" + e.getMessage());
-                logger.error("上传失败," + e.getMessage(), e);
+                rtnMap.put("msgInfo", "Upload failure" + e.getMessage());
+                logger.error("Upload failure," + e.getMessage(), e);
             } catch (IOException e) {
                 //e.printStackTrace();
-                rtnMap.put("msgInfo", "上传失败" + e.getMessage());
-                logger.error("msgInfo", "上传失败" + e.getMessage(), e);
+                rtnMap.put("msgInfo", "Upload failure" + e.getMessage());
+                logger.error("msgInfo", "Upload failure" + e.getMessage(), e);
             }
         } else {
-            rtnMap.put("msgInfo", "上传失败，因为文件为空.");
-            logger.warn("上传失败，文件为空.");
+            rtnMap.put("msgInfo", "The upload failed because the file was empty.");
+            logger.warn("The upload failed and the file was empty.");
         }
         return JsonUtils.toJsonNoException(rtnMap);
     }
 
 
     /**
-     * 字符串转Document
+     * String to "Document"
      *
      * @param xmlStr
      * @return
@@ -137,7 +137,7 @@ public class FileUtils {
     }
 
     /**
-     * 获取项目访问路径
+     * Get project access path
      *
      * @return
      */
@@ -153,7 +153,7 @@ public class FileUtils {
 
 
     /**
-     * 统一获取request
+     * Unified access to "request"
      *
      * @return
      */
@@ -164,7 +164,7 @@ public class FileUtils {
     }
 
     /**
-     * xml文件转换字符串
+     * "xml" file conversion string
      *
      * @param path
      * @return
@@ -183,13 +183,13 @@ public class FileUtils {
             in.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-            logger.info("FileNotFound错误" + e.getMessage());
+            logger.info("FileNotFound Error" + e.getMessage());
         } catch (IOException e) {
-            logger.info("转换IO错误" + e.getMessage());
+            logger.info("Conversion IO Error" + e.getMessage());
             e.printStackTrace();
         }
-        xmlString = new String(strBuffer); //构建String时，可用byte[]类型，
-        logger.info("xml文件转换后的字符串：" + xmlString);
+        xmlString = new String(strBuffer); //When constructing ‘String’, you can use the ‘byte[]’ type.
+        logger.info("'xml' file converted string：" + xmlString);
         return xmlString;
     }
 

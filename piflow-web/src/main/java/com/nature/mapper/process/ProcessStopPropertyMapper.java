@@ -16,17 +16,17 @@ public interface ProcessStopPropertyMapper {
     public int addProcessStopProperties(@Param("processStopPropertyList") List<ProcessStopProperty> processStopPropertyList);
 
     /**
-     * 根据processStopId查询processStop属性
+     * Query processStop attribute based on processStopId
      *
      * @param processStopId
      * @return
      */
     @SelectProvider(type = ProcessStopPropertyMapperProvider.class, method = "getStopPropertyByProcessStopId")
     @Results({
-            @Result(column = "CUSTOM_VALUE", property = "customValue"),
-            @Result(column = "ALLOWABLE_VALUES", property = "allowableValues"),
-            @Result(column = "PROPERTY_REQUIRED", property = "required"),
-            @Result(column = "PROPERTY_SENSITIVE", property = "sensitive")
+            @Result(column = "custom_value", property = "customValue"),
+            @Result(column = "allowable_values", property = "allowableValues"),
+            @Result(column = "property_required", property = "required"),
+            @Result(column = "property_sensitive", property = "sensitive")
     })
     public ProcessStopProperty getStopPropertyByProcessStopId(String processStopId);
 

@@ -4,7 +4,6 @@ import com.nature.base.util.DateUtils;
 import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.SqlUtils;
 import com.nature.base.vo.UserVo;
-import com.nature.component.mxGraph.model.MxCell;
 import com.nature.component.mxGraph.model.MxGeometry;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
@@ -79,7 +78,7 @@ public class MxGeometryMapperProvider {
     }
 
     /**
-     * 新增MxGeometry
+     * add MxGeometry
      *
      * @param mxGeometry
      * @return
@@ -90,12 +89,12 @@ public class MxGeometryMapperProvider {
         if (null != mxGeometry) {
             SQL sql = new SQL();
 
-            // INSERT_INTO括号中为数据库表名
+            // INSERT_INTO brackets is table name
             sql.INSERT_INTO("mx_geometry");
-            // value中的第一个字符串为数据库中表对应的字段名
-            // 除数字类型的字段外其他类型必须加单引号
+            // The first string in the value is the field name corresponding to the table in the database.
+            // all types except numeric fields must be enclosed in single quotes
 
-            //先处理修改必填字段
+            //Process the required fields first
             if (null == crtDttmStr) {
                 String crtDttm = DateUtils.dateTimesToStr(new Date());
                 crtDttmStr = SqlUtils.preventSQLInjection(crtDttm);
@@ -104,22 +103,22 @@ public class MxGeometryMapperProvider {
                 crtUser = SqlUtils.preventSQLInjection("-1");
             }
 
-            sql.VALUES("ID", id);
-            sql.VALUES("CRT_DTTM", crtDttmStr);
-            sql.VALUES("CRT_USER", crtUser);
-            sql.VALUES("LAST_UPDATE_DTTM", lastUpdateDttmStr);
-            sql.VALUES("LAST_UPDATE_USER", lastUpdateUser);
-            sql.VALUES("ENABLE_FLAG", enableFlag + "");
-            sql.VALUES("VERSION", version + "");
+            sql.VALUES("id", id);
+            sql.VALUES("crt_dttm", crtDttmStr);
+            sql.VALUES("crt_user", crtUser);
+            sql.VALUES("last_update_dttm", lastUpdateDttmStr);
+            sql.VALUES("last_update_user", lastUpdateUser);
+            sql.VALUES("enable_flag", enableFlag + "");
+            sql.VALUES("version", version + "");
 
-            // 处理其他字段
-            sql.VALUES("MX_AS", as);
-            sql.VALUES("MX_RELATIVE", relative);
-            sql.VALUES("MX_HEIGHT", height);
-            sql.VALUES("MX_WIDTH", width);
-            sql.VALUES("MX_X", x);
-            sql.VALUES("MX_Y", y);
-            sql.VALUES("FK_MX_CELL_ID", mxCellId);
+            // handle other fields
+            sql.VALUES("mx_as", as);
+            sql.VALUES("mx_relative", relative);
+            sql.VALUES("mx_height", height);
+            sql.VALUES("mx_width", width);
+            sql.VALUES("mx_x", x);
+            sql.VALUES("mx_y", y);
+            sql.VALUES("fk_mx_cell_id", mxCellId);
             sqlStr = sql.toString();
         }
         this.reset();
@@ -127,7 +126,7 @@ public class MxGeometryMapperProvider {
     }
 
     /**
-     * 修改MxGeometry
+     * update MxGeometry
      *
      * @param mxGeometry
      * @return
@@ -137,29 +136,29 @@ public class MxGeometryMapperProvider {
         this.preventSQLInjectionMxGeometry(mxGeometry);
         if (null != mxGeometry) {
             SQL sql = new SQL();
-            // UPDATE括号中为数据库表名
+            // UPDATE parentheses for the database table name
             sql.UPDATE("mx_geometry");
-            // SET中的第一个字符串为数据库中表对应的字段名
-            // 除数字类型的字段外其他类型必须加单引号
+            // The first string in the SET is the name of the field corresponding to the table in the database
+            // all types except numeric fields must be enclosed in single quotes
 
-            //先处理修改必填字段
-            sql.SET("LAST_UPDATE_DTTM = " + lastUpdateDttmStr);
-            sql.SET("LAST_UPDATE_USER = " + lastUpdateUser);
-            sql.SET("VERSION = " + (version + 1));
+            //Process the required fields first
+            sql.SET("last_update_dttm = " + lastUpdateDttmStr);
+            sql.SET("last_update_user = " + lastUpdateUser);
+            sql.SET("version = " + (version + 1));
 
-            // 处理其他字段
-            sql.SET("ENABLE_FLAG = " + enableFlag);
-            sql.SET("MX_AS = " + as);
-            sql.SET("MX_RELATIVE = " + relative);
-            sql.SET("MX_HEIGHT = " + height);
-            sql.SET("MX_WIDTH = " + width);
-            sql.SET("MX_X = " + x);
-            sql.SET("MX_Y = " + y);
+            // handle other fields
+            sql.SET("enable_flag = " + enableFlag);
+            sql.SET("mx_as = " + as);
+            sql.SET("mx_relative = " + relative);
+            sql.SET("mx_height = " + height);
+            sql.SET("mx_width = " + width);
+            sql.SET("mx_x = " + x);
+            sql.SET("mx_y = " + y);
             if (null != mxCellId) {
-                sql.SET("FK_MX_CELL_ID = " + mxCellId);
+                sql.SET("fk_mx_cell_id = " + mxCellId);
             }
-            sql.WHERE("VERSION = " + version);
-            sql.WHERE("ID = " + id);
+            sql.WHERE("version = " + version);
+            sql.WHERE("id = " + id);
             sqlStr = sql.toString();
             if (StringUtils.isBlank(id)) {
                 sqlStr = "";
@@ -170,7 +169,7 @@ public class MxGeometryMapperProvider {
     }
 
     /**
-     * 根据id查询MxGeometry
+     * Query MxGeometry based on id
      *
      * @param id
      * @return
@@ -182,7 +181,7 @@ public class MxGeometryMapperProvider {
             sql.SELECT("*");
             sql.FROM("mx_geometry");
             sql.WHERE("id = " + SqlUtils.preventSQLInjection(id));
-            sql.WHERE("ENABLE_FLAG = 1");
+            sql.WHERE("enable_flag = 1");
             sqlStr = sql.toString();
         }
 
@@ -190,7 +189,7 @@ public class MxGeometryMapperProvider {
     }
 
     /**
-     * 根据flowId查询MxGeometry
+     * Query MxGeometry based on flowId
      *
      * @param flowId
      * @return
@@ -201,8 +200,8 @@ public class MxGeometryMapperProvider {
             SQL sql = new SQL();
             sql.SELECT("*");
             sql.FROM("mx_geometry");
-            sql.WHERE("FK_MX_CELL_ID = " + SqlUtils.preventSQLInjection(flowId));
-            sql.WHERE("ENABLE_FLAG = 1");
+            sql.WHERE("fk_mx_cell_id = " + SqlUtils.preventSQLInjection(flowId));
+            sql.WHERE("enable_flag = 1");
             sqlStr = sql.toString();
         }
 
@@ -210,7 +209,7 @@ public class MxGeometryMapperProvider {
     }
 
     /**
-     * 根据id逻辑删除,设为无效
+     * Delete according to id logic, set to invalid
      *
      * @param id
      * @return
@@ -222,10 +221,10 @@ public class MxGeometryMapperProvider {
         if (StringUtils.isNotBlank(id)) {
             SQL sql = new SQL();
             sql.UPDATE("mx_geometry");
-            sql.SET("ENABLE_FLAG = 0");
+            sql.SET("enable_flag = 0");
             sql.SET("last_update_user = " + SqlUtils.preventSQLInjection(username));
             sql.SET("last_update_dttm = " + SqlUtils.preventSQLInjection(DateUtils.dateTimesToStr(new Date())));
-            sql.WHERE("ENABLE_FLAG = 1");
+            sql.WHERE("enable_flag = 1");
             sql.WHERE("id = " + SqlUtils.preventSQLInjection(id));
 
             sqlStr = sql.toString();

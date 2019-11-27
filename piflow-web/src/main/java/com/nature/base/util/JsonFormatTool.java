@@ -1,7 +1,7 @@
 package com.nature.base.util;
 
 /**
- * 格式化输入工具类
+ * Format input tool class
  * 
  * @author lizhgb
  * @date 2015-10-14
@@ -11,13 +11,10 @@ package com.nature.base.util;
 public class JsonFormatTool {
 
 	/**
-	 * 格式化
+	 * format
 	 * 
 	 * @param jsonStr
 	 * @return
-	 * @author lizhgb
-	 * @Date 2015-10-14 下午1:17:35
-	 * @Modified 2017-04-28 下午8:55:35
 	 */
 	public static String formatJson(String jsonStr) {
 		if (null == jsonStr || "".equals(jsonStr))
@@ -71,12 +68,10 @@ public class JsonFormatTool {
 	}
 
 	/**
-	 * 添加space
+	 * add space
 	 * 
 	 * @param sb
 	 * @param indent
-	 * @author lizhgb
-	 * @Date 2015-10-14 上午10:38:04
 	 */
 	private static void addIndentBlank(StringBuilder sb, int indent) {
 		for (int i = 0; i < indent; i++) {

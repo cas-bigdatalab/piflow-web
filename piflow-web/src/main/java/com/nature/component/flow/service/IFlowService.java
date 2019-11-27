@@ -2,92 +2,110 @@ package com.nature.component.flow.service;
 
 import com.nature.base.vo.StatefulRtnBase;
 import com.nature.base.vo.UserVo;
-import com.nature.component.mxGraph.vo.MxGraphModelVo;
 import com.nature.component.flow.model.Flow;
 import com.nature.component.flow.model.FlowInfoDb;
 import com.nature.component.flow.vo.FlowVo;
-import org.springframework.data.annotation.Transient;
+import com.nature.component.mxGraph.vo.MxGraphModelVo;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 public interface IFlowService {
-	/**
-	 * 向数据库修改或添加flow中stops和paths信息
-	 * 
-	 * @param mxGraphModelVo
-	 * @param flowId
-	 * @param operType 操作类型（添加，移动，删除）
-	 * @param flag 是否添加stop信息
-	 * @return
-	 */
-	@Transient
-	public StatefulRtnBase saveOrUpdateFlowAll(MxGraphModelVo mxGraphModelVo, String flowId,String operType,boolean flag);
+    /**
+     * Modify or add 'stops' and 'paths' information to 'flow' to the database
+     *
+     * @param mxGraphModelVo
+     * @param flowId
+     * @param operType       Operation type (add, move, delete)
+     * @param flag           Whether to add 'stop' information
+     * @return
+     */
+    @Transactional
+    public StatefulRtnBase saveOrUpdateFlowAll(MxGraphModelVo mxGraphModelVo, String flowId, String operType, boolean flag);
 
-	/**
-	 * 根据id查询流信息
-	 *
-	 * @param id
-	 * @return
-	 */
-	@Transient
-	public Flow getFlowById(String id);
+    /**
+     * Query flow information based on id
+     *
+     * @param id
+     * @return
+     */
+    @Transactional
+    public Flow getFlowById(String id);
 
-	/**
-	 * 根据id查询流信息
-	 *
-	 * @param id
-	 * @return
-	 */
-	@Transient
-	public String getFlowVoById(String id);
+    /**
+     * Query flow information based on pageId
+     *
+     * @param fid
+     * @param pageId
+     * @return
+     */
+    @Transactional
+    public FlowVo getFlowByPageId(String fid, String pageId);
 
-	/**
-	 * 保存appId
-	 * 
-	 * @param flowId
-	 * @param startFlow
-	 * @return
-	 */
-	@Transient
-	public StatefulRtnBase saveAppId(String flowId, FlowInfoDb startFlow);
-	
-	/**
-	 * add flow(包含画板信息)
-	 * @param flowVo
-	 * @return
-	 */
-	@Transient
-	public String addFlow(FlowVo flowVo, UserVo user);
+    /**
+     * Query flow information based on id
+     *
+     * @param id
+     * @return
+     */
+    @Transactional
+    public String getFlowVoById(String id);
 
-	@Transient
-	public int updateFlow(Flow flow,UserVo user);
+    /**
+     * save appId
+     *
+     * @param flowId
+     * @param startFlow
+     * @return
+     */
+    @Transactional
+    public StatefulRtnBase saveAppId(String flowId, FlowInfoDb startFlow);
 
-	@Transient
-	public int deleteFLowInfo(String id);
-	
-	public String getMaxStopPageId(String flowId);
-	
-	public List<FlowVo> getFlowList();
+    /**
+     * add flow(Contains artboard information)
+     *
+     * @param flowVo
+     * @return
+     */
+    @Transactional
+    public String addFlow(FlowVo flowVo, UserVo user);
 
-	/**
-	 * 分页查询flow
-	 *
-	 * @param offset 页数
-	 * @param limit 每页条数
-	 * @param param 搜索关键字
-	 * @return
-	 */
-	public String getFlowListPage(Integer offset, Integer limit, String param);
+    @Transactional
+    public int updateFlow(Flow flow, UserVo user);
 
-	public String getFlowExampleList();
+    @Transactional
+    public int deleteFLowInfo(String id);
+
+    public String getMaxStopPageId(String flowId);
+
+    public List<FlowVo> getFlowList();
+
+    /**
+     * Paging query flow
+     *
+     * @param offset Number of pages
+     * @param limit  Number of pages per page
+     * @param param  search for the keyword
+     * @return
+     */
+    public String getFlowListPage(Integer offset, Integer limit, String param);
+
+    public String getFlowExampleList();
 
 
-	/**
-	 * Call the start interface and save the return information
-	 *
-	 * @param flowId
-	 * @return
-	 */
-	public String runFlow(String flowId);
+    /**
+     * Call the start interface and save the return information
+     *
+     * @param flowId
+     * @return
+     */
+    public String runFlow(String flowId, String runMode);
 
+    public String updateFlowBaseInfo(FlowVo flowVo);
+
+    public String updateFlowNameById(String id, String flowGroupId, String flowName, String pageId);
+
+    public Boolean updateFlowNameById(String id, String flowName);
+
+    public String getMaxFlowPageIdByFlowGroupId(String flowGroupId);
 }

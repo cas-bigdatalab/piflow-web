@@ -4,12 +4,18 @@ import com.nature.base.util.DateUtils;
 import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.SqlUtils;
 import com.nature.base.vo.UserVo;
+import com.nature.common.Eunm.ProcessParentType;
 import com.nature.common.Eunm.ProcessState;
+import com.nature.common.Eunm.RunModeType;
+import com.nature.common.Eunm.SysRoleType;
 import com.nature.component.process.model.Process;
+import com.nature.component.system.model.SysRole;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 public class ProcessMapperProvider {
@@ -35,7 +41,9 @@ public class ProcessMapperProvider {
     private String endTimeStr;
     private String progress;
     private String flowId;
+    private String runModeTypeStr;
     private String parentProcessId;
+    private String processParentType;
 
     private void preventSQLInjectionProcess(Process process) {
         if (null != process && StringUtils.isNotBlank(process.getLastUpdateUser())) {
@@ -74,7 +82,9 @@ public class ProcessMapperProvider {
             this.endTimeStr = SqlUtils.preventSQLInjection(endTime);
             this.progress = SqlUtils.preventSQLInjection(process.getProgress());
             this.flowId = SqlUtils.preventSQLInjection(process.getFlowId());
+            this.runModeTypeStr = SqlUtils.preventSQLInjection(null != process.getRunModeType() ? process.getRunModeType().name() : null);
             this.parentProcessId = SqlUtils.preventSQLInjection(process.getParentProcessId());
+            this.processParentType = SqlUtils.preventSQLInjection(null != process.getProcessParentType() ? process.getProcessParentType().name() : null);
         }
     }
 
@@ -101,6 +111,7 @@ public class ProcessMapperProvider {
         this.progress = null;
         this.flowId = null;
         this.parentProcessId = null;
+        this.processParentType = null;
     }
 
     /**
@@ -114,10 +125,10 @@ public class ProcessMapperProvider {
         this.preventSQLInjectionProcess(process);
         if (null != process) {
             SQL sql = new SQL();
-            // INSERT_INTO括号中为数据库表名
-            sql.INSERT_INTO("FLOW_PROCESS");
-            // value中的第一个字符串为数据库中表对应的字段名
-            //先处理修改必填字段
+            // INSERT_INTO brackets is table name
+            sql.INSERT_INTO("flow_process");
+            // The first string in the value is the field name corresponding to the table in the database.
+            // Process the required fields first
             if (null == crtDttmStr) {
                 String crtDttm = DateUtils.dateTimesToStr(new Date());
                 crtDttmStr = SqlUtils.preventSQLInjection(crtDttm);
@@ -125,30 +136,32 @@ public class ProcessMapperProvider {
             if (StringUtils.isBlank(crtUser)) {
                 crtUser = SqlUtils.preventSQLInjection("-1");
             }
-            sql.VALUES("ID", id);
-            sql.VALUES("CRT_DTTM", crtDttmStr);
-            sql.VALUES("CRT_USER", crtUser);
-            sql.VALUES("LAST_UPDATE_DTTM", lastUpdateDttmStr);
-            sql.VALUES("LAST_UPDATE_USER", lastUpdateUser);
-            sql.VALUES("VERSION", version + "");
-            sql.VALUES("ENABLE_FLAG", enableFlag + "");
+            sql.VALUES("id", id);
+            sql.VALUES("crt_dttm", crtDttmStr);
+            sql.VALUES("crt_user", crtUser);
+            sql.VALUES("last_update_dttm", lastUpdateDttmStr);
+            sql.VALUES("last_update_user", lastUpdateUser);
+            sql.VALUES("version", version + "");
+            sql.VALUES("enable_flag", enableFlag + "");
 
-            // 处理其他字段
-            sql.VALUES("NAME", name);
-            sql.VALUES("DRIVER_MEMORY", driverMemory);
-            sql.VALUES("EXECUTOR_NUMBER", executorNumber);
-            sql.VALUES("EXECUTOR_MEMORY", executorMemory);
-            sql.VALUES("EXECUTOR_CORES", executorCores);
+            // handle other fields
+            sql.VALUES("name", name);
+            sql.VALUES("driver_memory", driverMemory);
+            sql.VALUES("executor_number", executorNumber);
+            sql.VALUES("executor_memory", executorMemory);
+            sql.VALUES("executor_cores", executorCores);
             sql.VALUES("view_xml", viewXml);
-            sql.VALUES("DESCRIPTION", description);
-            sql.VALUES("APP_ID", appId);
-            sql.VALUES("PROCESS_ID", processId);
-            sql.VALUES("STATE", stateName);
-            sql.VALUES("START_TIME", startTimeStr);
-            sql.VALUES("END_TIME", endTimeStr);
+            sql.VALUES("description", description);
+            sql.VALUES("app_id", appId);
+            sql.VALUES("process_id", processId);
+            sql.VALUES("state", stateName);
+            sql.VALUES("start_time", startTimeStr);
+            sql.VALUES("end_time", endTimeStr);
             sql.VALUES("progress", progress);
             sql.VALUES("flow_id", flowId);
+            sql.VALUES("run_mode_type", runModeTypeStr);
             sql.VALUES("parent_process_id", parentProcessId);
+            sql.VALUES("process_parent_type", processParentType);
             sqlStr = sql.toString();
         }
         this.reset();
@@ -156,7 +169,7 @@ public class ProcessMapperProvider {
     }
 
     /**
-     * 根据进程Id查询进程
+     * Query process by process ID
      *
      * @param id
      * @return
@@ -166,80 +179,129 @@ public class ProcessMapperProvider {
         if (StringUtils.isNotBlank(id)) {
             UserVo currentUser = SessionUserUtil.getCurrentUser();
             StringBuffer strBuf = new StringBuffer();
-            strBuf.append("SELECT * ");
-            strBuf.append("FROM FLOW_PROCESS ");
-            strBuf.append("WHERE ENABLE_FLAG = 1 ");
-            strBuf.append("AND ID= " + SqlUtils.preventSQLInjection(id));
-            strBuf.append(SqlUtils.addQueryByUserRole(currentUser, true));
+            strBuf.append("select * ");
+            strBuf.append("from flow_process ");
+            strBuf.append("where enable_flag = 1 ");
+            strBuf.append("and id= " + SqlUtils.preventSQLInjection(id));
+            strBuf.append(SqlUtils.addQueryByUserRole(true, false));
             sqlStr = strBuf.toString();
         }
         return sqlStr;
     }
 
     /**
-     * 查询进程List(processList)
+     * Query process by processGroup ID
+     *
+     * @param processGroupId
+     * @return
+     */
+    public String getProcessByProcessGroupId(String processGroupId) {
+        String sqlStr = "select 0";
+        if (StringUtils.isNotBlank(processGroupId)) {
+            UserVo currentUser = SessionUserUtil.getCurrentUser();
+            StringBuffer strBuf = new StringBuffer();
+            strBuf.append("select * ");
+            strBuf.append("from flow_process ");
+            strBuf.append("where enable_flag = 1 ");
+            strBuf.append("and fk_flow_process_group_id= " + SqlUtils.preventSQLInjection(processGroupId));
+            strBuf.append(SqlUtils.addQueryByUserRole(true, false));
+            sqlStr = strBuf.toString();
+        }
+        return sqlStr;
+    }
+
+    /**
+     * Query process list(processList)
      *
      * @return
      */
     public String getProcessList() {
         SQL sql = new SQL();
         sql.SELECT("*");
-        sql.FROM("FLOW_PROCESS");
-        sql.WHERE("ENABLE_FLAG = 1");
-        sql.WHERE("APP_ID IS NOT null");
-        sql.ORDER_BY("CRT_DTTM DESC,LAST_UPDATE_DTTM DESC");
+        sql.FROM("flow_process");
+        sql.WHERE("enable_flag = 1");
+        sql.WHERE("app_id is not null");
+        sql.ORDER_BY("crt_dttm desc", "last_update_dttm desc");
         return sql.toString();
     }
 
     /**
-     * 查询进程List根据param(processList)
+     * Query process list according to param(processList)
      *
      * @param param
      * @return
      */
     public String getProcessListByParam(String param) {
-        String sqlStr = "SELECT 0";
-        UserVo currentUser = SessionUserUtil.getCurrentUser();
         StringBuffer strBuf = new StringBuffer();
-        strBuf.append("SELECT * ");
-        strBuf.append("FROM FLOW_PROCESS ");
-        strBuf.append("WHERE ");
-        strBuf.append("ENABLE_FLAG = 1 ");
-        strBuf.append("AND APP_ID IS NOT null ");
+        strBuf.append("select * ");
+        strBuf.append("from flow_process ");
+        strBuf.append("where ");
+        strBuf.append("enable_flag = 1 ");
+        strBuf.append("and app_id is not null ");
+        strBuf.append("and process_parent_type = " + SqlUtils.addSqlStrAndReplace(ProcessParentType.PROCESS.name()));
+        strBuf.append("and fk_flow_process_group_id is null ");
         if (StringUtils.isNotBlank(param)) {
-            strBuf.append("AND ( ");
-            strBuf.append("APP_ID LIKE '%" + param + "%' ");
-            strBuf.append("OR NAME LIKE '%" + param + "%' ");
-            strBuf.append("OR STATE LIKE '%" + param + "%' ");
-            strBuf.append("OR DESCRIPTION LIKE '%" + param + "%' ");
+            strBuf.append("and ( ");
+            strBuf.append("app_id like '%" + param + "%' ");
+            strBuf.append("or name like '%" + param + "%' ");
+            strBuf.append("or state like '%" + param + "%' ");
+            strBuf.append("or description like '%" + param + "%' ");
             strBuf.append(") ");
         }
-        strBuf.append(SqlUtils.addQueryByUserRole(currentUser, true));
-        strBuf.append("ORDER BY CRT_DTTM DESC,LAST_UPDATE_DTTM DESC ");
-        sqlStr = strBuf.toString();
+        strBuf.append(SqlUtils.addQueryByUserRole(true, false));
+        strBuf.append("order by crt_dttm desc,last_update_dttm desc ");
 
-        return sqlStr;
+        return strBuf.toString();
     }
 
     /**
-     * 根据flowId查询正在运行的进程List(processList)
+     * Query processGroup list according to param(processList)
+     *
+     * @param param
+     * @return
+     */
+    public String getProcessGroupListByParam(String param) {
+        StringBuffer strBuf = new StringBuffer();
+        strBuf.append("select * ");
+        strBuf.append("from flow_process ");
+        strBuf.append("where ");
+        strBuf.append("enable_flag = 1 ");
+        strBuf.append("and app_id is not null ");
+        strBuf.append("and process_parent_type = " + SqlUtils.addSqlStrAndReplace(ProcessParentType.GROUP.name()));
+        strBuf.append("and fk_flow_process_group_id is null ");
+        if (StringUtils.isNotBlank(param)) {
+            strBuf.append("and ( ");
+            strBuf.append("app_id like '%" + param + "%' ");
+            strBuf.append("or name like '%" + param + "%' ");
+            strBuf.append("or state like '%" + param + "%' ");
+            strBuf.append("or description like '%" + param + "%' ");
+            strBuf.append(") ");
+        }
+        strBuf.append(SqlUtils.addQueryByUserRole(true, false));
+        strBuf.append("order by crt_dttm desc,last_update_dttm desc ");
+
+        return strBuf.toString();
+    }
+
+    /**
+     * Query the running process list according to flowId(processList)
      *
      * @return
      */
     public String getRunningProcessList(String flowId) {
         SQL sql = new SQL();
         sql.SELECT("*");
-        sql.FROM("FLOW_PROCESS");
-        sql.WHERE("APP_ID IS NOT null");
-        sql.WHERE("ENABLE_FLAG = 1");
-        sql.WHERE("FLOW_ID = " + SqlUtils.preventSQLInjection(flowId));
-        sql.WHERE("STATE = " + SqlUtils.preventSQLInjection(ProcessState.STARTED.name()));
-        sql.ORDER_BY("CRT_DTTM DESC,LAST_UPDATE_DTTM DESC");
+        sql.FROM("flow_process");
+        sql.WHERE("app_id is not null");
+        sql.WHERE("enable_flag = 1");
+        sql.WHERE("flow_id = " + SqlUtils.preventSQLInjection(flowId));
+        sql.WHERE("state = " + SqlUtils.preventSQLInjection(ProcessState.STARTED.name()));
+        sql.ORDER_BY("crt_dttm desc", "last_update_dttm desc");
         return sql.toString();
     }
 
     /**
-     * 根据进程appId查询进程
+     * Query process according to process appId
      *
      * @param appID
      * @return
@@ -249,16 +311,36 @@ public class ProcessMapperProvider {
         if (StringUtils.isNotBlank(appID)) {
             SQL sql = new SQL();
             sql.SELECT("*");
-            sql.FROM("FLOW_PROCESS");
-            sql.WHERE("ENABLE_FLAG = 1");
-            sql.WHERE("APP_ID = " + SqlUtils.preventSQLInjection(appID));
+            sql.FROM("flow_process");
+            sql.WHERE("enable_flag = 1");
+            sql.WHERE("app_id = " + SqlUtils.preventSQLInjection(appID));
             sqlStr = sql.toString();
         }
         return sqlStr;
     }
 
     /**
-     * 根据进程AppId数组查询进程list
+     * Query process according to process appId
+     *
+     * @param appID
+     * @return
+     */
+    public String getProcessNoGroupByAppId(String appID) {
+        String sqlStr = "select 0";
+        if (StringUtils.isNotBlank(appID)) {
+            SQL sql = new SQL();
+            sql.SELECT("*");
+            sql.FROM("flow_process");
+            sql.WHERE("enable_flag = 1");
+            sql.WHERE("fk_flow_process_group_id is null");
+            sql.WHERE("app_id = " + SqlUtils.preventSQLInjection(appID));
+            sqlStr = sql.toString();
+        }
+        return sqlStr;
+    }
+
+    /**
+     * Query process list according to the process AppId array
      *
      * @param map
      * @return
@@ -274,7 +356,7 @@ public class ProcessMapperProvider {
                 appIDsStr = "'" + appIDsStr + "'";
 
                 sql.SELECT("*");
-                sql.FROM("FLOW_PROCESS");
+                sql.FROM("flow_process");
                 sql.WHERE("enable_flag = 1");
                 sql.WHERE("app_id in (" + appIDsStr + ")");
 
@@ -285,39 +367,40 @@ public class ProcessMapperProvider {
     }
 
     /**
-     * 修改process
+     * update process
      *
      * @param process
      * @return
      */
     public String updateProcess(Process process) {
-        String sqlStr = "SELECT 0";
+        String sqlStr = "select 0";
         this.preventSQLInjectionProcess(process);
         if (null != process) {
             SQL sql = new SQL();
-            sql.UPDATE("FLOW_PROCESS");
+            sql.UPDATE("flow_process");
 
-            //先处理修改必填字段
-            sql.SET("LAST_UPDATE_DTTM = " + lastUpdateDttmStr);
-            sql.SET("LAST_UPDATE_USER = " + lastUpdateUser);
-            sql.SET("VERSION = " + (version + 1));
+            //Process the required fields first
+            sql.SET("last_update_dttm = " + lastUpdateDttmStr);
+            sql.SET("last_update_user = " + lastUpdateUser);
+            sql.SET("version = " + (version + 1));
 
-            // 处理其他字段
-            sql.SET("ENABLE_FLAG=" + enableFlag);
-            sql.SET("NAME=" + name);
-            sql.SET("DRIVER_MEMORY=" + driverMemory);
-            sql.SET("EXECUTOR_NUMBER=" + executorNumber);
-            sql.SET("EXECUTOR_MEMORY=" + executorMemory);
-            sql.SET("EXECUTOR_CORES=" + executorCores);
+            // handle other fields
+            sql.SET("enable_flag=" + enableFlag);
+            sql.SET("name=" + name);
+            sql.SET("driver_memory=" + driverMemory);
+            sql.SET("executor_number=" + executorNumber);
+            sql.SET("executor_memory=" + executorMemory);
+            sql.SET("executor_cores=" + executorCores);
             sql.SET("view_xml=" + viewXml);
-            sql.SET("DESCRIPTION=" + description);
-            sql.SET("APP_ID=" + appId);
-            sql.SET("PROCESS_ID=" + processId);
-            sql.SET("STATE=" + stateName);
-            sql.SET("START_TIME=" + startTimeStr);
-            sql.SET("END_TIME=" + endTimeStr);
+            sql.SET("description=" + description);
+            sql.SET("app_id=" + appId);
+            sql.SET("process_id=" + processId);
+            sql.SET("state=" + stateName);
+            sql.SET("start_time=" + startTimeStr);
+            sql.SET("end_time=" + endTimeStr);
             sql.SET("progress=" + progress);
-            sql.WHERE("VERSION = " + version);
+            sql.SET("run_mode_type=" + runModeTypeStr);
+            sql.WHERE("version = " + version);
             sql.WHERE("id = " + id);
             if (StringUtils.isNotBlank(id)) {
                 sqlStr = sql.toString();
@@ -328,7 +411,7 @@ public class ProcessMapperProvider {
     }
 
     /**
-     * 逻辑删除
+     * Tombstone
      *
      * @param id
      * @return
@@ -337,15 +420,15 @@ public class ProcessMapperProvider {
         String sqlStr = "select 0";
         if (!StringUtils.isAnyEmpty(id, username)) {
             StringBuffer sqlStrBuf = new StringBuffer();
-            sqlStrBuf.append("UPDATE FLOW_PROCESS ");
-            sqlStrBuf.append("SET ");
-            sqlStrBuf.append("LAST_UPDATE_DTTM = " + SqlUtils.preventSQLInjection(DateUtils.dateTimesToStr(new Date())) + ", ");
-            sqlStrBuf.append("LAST_UPDATE_DTTM = " + SqlUtils.preventSQLInjection(DateUtils.dateTimesToStr(new Date())) + ", ");
-            sqlStrBuf.append("LAST_UPDATE_USER = " + SqlUtils.preventSQLInjection(username) + ", ");
-            sqlStrBuf.append("VERSION=(VERSION+1), ");
-            sqlStrBuf.append("ENABLE_FLAG = 0 ");
-            sqlStrBuf.append("WHERE ENABLE_FLAG = 1 ");
-            sqlStrBuf.append("AND ID = " + SqlUtils.preventSQLInjection(id));
+            sqlStrBuf.append("update flow_process ");
+            sqlStrBuf.append("set ");
+            sqlStrBuf.append("last_update_dttm = " + SqlUtils.preventSQLInjection(DateUtils.dateTimesToStr(new Date())) + ", ");
+            sqlStrBuf.append("last_update_dttm = " + SqlUtils.preventSQLInjection(DateUtils.dateTimesToStr(new Date())) + ", ");
+            sqlStrBuf.append("last_update_user = " + SqlUtils.preventSQLInjection(username) + ", ");
+            sqlStrBuf.append("version=(version+1), ");
+            sqlStrBuf.append("enable_flag = 0 ");
+            sqlStrBuf.append("where enable_flag = 1 ");
+            sqlStrBuf.append("and id = " + SqlUtils.preventSQLInjection(id));
 
             sqlStr = sqlStrBuf.toString();
         }
@@ -353,28 +436,78 @@ public class ProcessMapperProvider {
     }
 
     /**
-     * 查询需要同步的任务
+     * Query tasks that need to be synchronized
      *
      * @return
      */
     public String getRunningProcess() {
         StringBuffer sqlStrBuf = new StringBuffer();
-        sqlStrBuf.append("SELECT APP_ID ");
-        sqlStrBuf.append("FROM FLOW_PROCESS ");
-        sqlStrBuf.append("WHERE ENABLE_FLAG = 1 ");
-        sqlStrBuf.append("AND ");
-        sqlStrBuf.append("APP_ID IS NOT NULL ");
-        sqlStrBuf.append("AND ");
+        sqlStrBuf.append("select app_id ");
+        sqlStrBuf.append("from flow_process ");
+        sqlStrBuf.append("where enable_flag = 1 ");
+        sqlStrBuf.append("and ");
+        sqlStrBuf.append("app_id is not null ");
+        sqlStrBuf.append("and ");
         sqlStrBuf.append("( ");
-        sqlStrBuf.append("STATE = " + SqlUtils.preventSQLInjection(ProcessState.STARTED.getText()));
-        sqlStrBuf.append("OR ");
+        sqlStrBuf.append("state = " + SqlUtils.preventSQLInjection(ProcessState.STARTED.getText()));
+        sqlStrBuf.append("or ");
         sqlStrBuf.append("( ");
-        sqlStrBuf.append("STATE = " + SqlUtils.preventSQLInjection(ProcessState.COMPLETED.getText()));
-        sqlStrBuf.append("AND ");
-        sqlStrBuf.append("END_TIME IS NULL ");
+        sqlStrBuf.append("state = " + SqlUtils.preventSQLInjection(ProcessState.COMPLETED.getText()));
+        sqlStrBuf.append("and ");
+        sqlStrBuf.append("end_time is null ");
         sqlStrBuf.append(") ");
         sqlStrBuf.append(") ");
         return sqlStrBuf.toString();
+    }
+
+    /**
+     * Query process by processGroup ID
+     *
+     * @param processGroupId
+     * @return
+     */
+    public String getProcessByPageId(String processGroupId, String pageId) {
+        String sqlStr = "select 0";
+        if (StringUtils.isNotBlank(processGroupId) && StringUtils.isNotBlank(pageId)) {
+            StringBuffer strBuf = new StringBuffer();
+            strBuf.append("select * ");
+            strBuf.append("from flow_process ");
+            strBuf.append("where enable_flag = 1 ");
+            strBuf.append("and page_id= " + pageId + " ");
+            strBuf.append("and fk_flow_process_group_id= " + SqlUtils.preventSQLInjection(processGroupId));
+            strBuf.append(SqlUtils.addQueryByUserRole(true, false));
+            sqlStr = strBuf.toString();
+        }
+        return sqlStr;
+    }
+
+    /**
+     * Query based on pid and pageIds
+     *
+     * @param map
+     * @return
+     */
+    public String getProcessByPageIds(Map map) {
+        String processId = (String) map.get("processGroupId");
+        String[] pageIds = (String[]) map.get("pageIds");
+        String sqlStr = "select 0";
+        if (StringUtils.isNotBlank(processId) && null != pageIds && pageIds.length > 0) {
+            String pageIdsStr = SqlUtils.strArrayToStr(pageIds);
+            if (StringUtils.isNotBlank(pageIdsStr)) {
+
+                pageIdsStr = pageIdsStr.replace(",", "','");
+                pageIdsStr = "'" + pageIdsStr + "'";
+                SQL sql = new SQL();
+                sql.SELECT("*");
+                sql.FROM("flow_process");
+                sql.WHERE("enable_flag = 1");
+                sql.WHERE("fk_flow_process_group_id = " + SqlUtils.preventSQLInjection(processId));
+                sql.WHERE("page_id in ( " + pageIdsStr + ")");
+
+                sqlStr = sql.toString();
+            }
+        }
+        return sqlStr;
     }
 
 }

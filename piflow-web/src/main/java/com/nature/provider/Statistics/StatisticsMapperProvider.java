@@ -1,17 +1,11 @@
 package com.nature.provider.Statistics;
 
 import com.nature.base.util.DateUtils;
-import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.SqlUtils;
-import com.nature.base.vo.UserVo;
-import com.nature.common.Eunm.ProcessState;
-import com.nature.component.Statistics.model.Statistics;
-import com.nature.component.process.model.Process;
-import org.apache.commons.lang3.StringUtils;
+import com.nature.component.statistics.model.Statistics;
 import org.apache.ibatis.jdbc.SQL;
 
 import java.util.Date;
-import java.util.Map;
 
 public class StatisticsMapperProvider {
 
@@ -53,13 +47,13 @@ public class StatisticsMapperProvider {
         this.preventSQLInjectionStatistics(statistics);
         if (null != statistics) {
             SQL sql = new SQL();
-            // INSERT_INTO括号中为数据库表名
-            sql.INSERT_INTO("STATISTICS");
+            // INSERT_INTO brackets is table name
+            sql.INSERT_INTO("statistics");
 
-            sql.VALUES("ID", id);
-            sql.VALUES("LOGIN_IP", loginIp);
-            sql.VALUES("LOGIN_USER", loginUser);
-            sql.VALUES("LOGIN_TIME", loginTimeStr);
+            sql.VALUES("id", id);
+            sql.VALUES("login_ip", loginIp);
+            sql.VALUES("login_user", loginUser);
+            sql.VALUES("login_time", loginTimeStr);
             sqlStr = sql.toString();
         }
         this.reset();

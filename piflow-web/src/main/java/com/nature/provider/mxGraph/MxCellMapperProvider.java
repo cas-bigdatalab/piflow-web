@@ -5,7 +5,6 @@ import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.SqlUtils;
 import com.nature.base.vo.UserVo;
 import com.nature.component.mxGraph.model.MxCell;
-import com.nature.component.mxGraph.model.MxGraphModel;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
 
@@ -84,7 +83,7 @@ public class MxCellMapperProvider {
 
 
     /**
-     * 添加mxCell
+     * add mxCell
      *
      * @param mxCell
      * @return
@@ -95,9 +94,9 @@ public class MxCellMapperProvider {
         if (null != lastUpdateUser) {
             SQL NewSQL = new SQL();
 
-            // INSERT_INTO括号中为数据库表名
+            // INSERT_INTO brackets is table name
             NewSQL.INSERT_INTO("mx_cell");
-            // value中的第一个字符串为数据库中表对应的字段名
+            // The first string in the value is the field name corresponding to the table in the database.
 
             if (null == crtUser) {
                 crtUser = SqlUtils.addSqlStr("-1");
@@ -106,24 +105,24 @@ public class MxCellMapperProvider {
                 String nowTimeStr = DateUtils.dateTimesToStr(new Date());
                 crtDttmStr = SqlUtils.addSqlStr(nowTimeStr);
             }
-            NewSQL.VALUES("ID", id);
-            NewSQL.VALUES("CRT_DTTM", crtDttmStr);
-            NewSQL.VALUES("CRT_USER", crtUser);
-            NewSQL.VALUES("LAST_UPDATE_DTTM", lastUpdateDttmStr);
-            NewSQL.VALUES("LAST_UPDATE_USER", lastUpdateUser);
-            NewSQL.VALUES("VERSION", version + "");
-            NewSQL.VALUES("ENABLE_FLAG", enableFlag + "");
+            NewSQL.VALUES("id", id);
+            NewSQL.VALUES("crt_dttm", crtDttmStr);
+            NewSQL.VALUES("crt_user", crtUser);
+            NewSQL.VALUES("last_update_dttm", lastUpdateDttmStr);
+            NewSQL.VALUES("last_update_user", lastUpdateUser);
+            NewSQL.VALUES("version", version + "");
+            NewSQL.VALUES("enable_flag", enableFlag + "");
 
-            // 处理其他字段
-            NewSQL.VALUES("MX_PAGEID", pageId);
-            NewSQL.VALUES("MX_PARENT", parent);
-            NewSQL.VALUES("MX_STYLE", style);
-            NewSQL.VALUES("MX_EDGE", edge);
-            NewSQL.VALUES("MX_SOURCE", source);
-            NewSQL.VALUES("MX_TARGET", target);
-            NewSQL.VALUES("MX_VALUE", value);
-            NewSQL.VALUES("MX_VERTEX", vertex);
-            NewSQL.VALUES("FK_MX_GRAPH_ID", mxGraphModelId);
+            // handle other fields
+            NewSQL.VALUES("mx_pageid", pageId);
+            NewSQL.VALUES("mx_parent", parent);
+            NewSQL.VALUES("mx_style", style);
+            NewSQL.VALUES("mx_edge", edge);
+            NewSQL.VALUES("mx_source", source);
+            NewSQL.VALUES("mx_target", target);
+            NewSQL.VALUES("mx_value", value);
+            NewSQL.VALUES("mx_vertex", vertex);
+            NewSQL.VALUES("fk_mx_graph_id", mxGraphModelId);
             sqlStr = NewSQL.toString();
         }
         this.reset();
@@ -131,7 +130,7 @@ public class MxCellMapperProvider {
     }
 
     /**
-     * 修改mxCell
+     * update mxCell
      *
      * @param mxCell
      * @return
@@ -141,28 +140,28 @@ public class MxCellMapperProvider {
         this.preventSQLInjectionMxCell(mxCell);
         if (null != lastUpdateUser) {
             SQL newSQL = new SQL();
-            // UPDATE括号中为数据库表名
+            // UPDATE parentheses for the database table name
             newSQL.UPDATE("mx_cell");
-            // set中的第一个字符串为数据库中表对应的字段名
+            // The first string in the SET is the name of the field corresponding to the table in the database
 
-            newSQL.SET("LAST_UPDATE_DTTM = " + lastUpdateDttmStr);
-            newSQL.SET("LAST_UPDATE_USER = " + lastUpdateUser);
-            newSQL.SET("VERSION = " + (version + 1));
+            newSQL.SET("last_update_dttm = " + lastUpdateDttmStr);
+            newSQL.SET("last_update_user = " + lastUpdateUser);
+            newSQL.SET("version = " + (version + 1));
 
-            // 处理其他字段
-            newSQL.SET("ENABLE_FLAG = " + enableFlag);
-            newSQL.SET("MX_PAGEID = " + pageId);
-            newSQL.SET("MX_PARENT = " + parent);
-            newSQL.SET("MX_STYLE = " + style);
-            newSQL.SET("MX_EDGE = " + edge);
-            newSQL.SET("MX_SOURCE = " + source);
-            newSQL.SET("MX_TARGET = " + target);
-            newSQL.SET("MX_VALUE = " + value);
-            newSQL.SET("MX_VERTEX = " + vertex);
+            // handle other fields
+            newSQL.SET("enable_flag = " + enableFlag);
+            newSQL.SET("mx_pageid = " + pageId);
+            newSQL.SET("mx_parent = " + parent);
+            newSQL.SET("mx_style = " + style);
+            newSQL.SET("mx_edge = " + edge);
+            newSQL.SET("mx_source = " + source);
+            newSQL.SET("mx_target = " + target);
+            newSQL.SET("mx_value = " + value);
+            newSQL.SET("mx_vertex = " + vertex);
             if (null != mxGraphModelId) {
-                newSQL.SET("FK_MX_GRAPH_ID = " + mxGraphModelId);
+                newSQL.SET("fk_mx_graph_id = " + mxGraphModelId);
             }
-            newSQL.WHERE("VERSION = " + version);
+            newSQL.WHERE("version = " + version);
             newSQL.WHERE("id = " + id);
             sqlStr = newSQL.toString();
             if (StringUtils.isBlank(id)) {
@@ -174,7 +173,7 @@ public class MxCellMapperProvider {
     }
 
     /**
-     * 根据mxGraphId查询MxCell的list
+     * Query MxCell's list based on mxGraphId
      *
      * @param mxGraphId
      * @return
@@ -191,7 +190,7 @@ public class MxCellMapperProvider {
     }
 
     /**
-     * 根据Id查询MxCell
+     * Query MxCell based on Id
      *
      * @param id
      * @return
@@ -209,7 +208,7 @@ public class MxCellMapperProvider {
 
 
     /**
-     * 根据id逻辑删除,设为无效
+     * Delete according to id logic, set to invalid
      *
      * @param id
      * @return
@@ -221,10 +220,10 @@ public class MxCellMapperProvider {
         if (StringUtils.isNotBlank(id)) {
             SQL sql = new SQL();
             sql.UPDATE("mx_cell");
-            sql.SET("ENABLE_FLAG = 0");
+            sql.SET("enable_flag = 0");
             sql.SET("last_update_user = " + SqlUtils.preventSQLInjection(username));
             sql.SET("last_update_dttm = " + SqlUtils.addSqlStr(DateUtils.dateTimesToStr(new Date())));
-            sql.WHERE("ENABLE_FLAG = 1");
+            sql.WHERE("enable_flag = 1");
             sql.WHERE("id = " + SqlUtils.preventSQLInjection(id));
 
             sqlStr = sql.toString();

@@ -1,8 +1,8 @@
 package com.nature.mapper.template;
 
-import com.nature.component.template.model.FlowTemplateModel;
 import com.nature.component.template.model.PropertyTemplateModel;
 import com.nature.component.template.model.StopTemplateModel;
+import com.nature.component.template.vo.FlowTemplateModelVo;
 import com.nature.provider.template.FlowAndStopsTemplateVoMapperProvider;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
@@ -10,7 +10,7 @@ import org.apache.ibatis.mapping.FetchType;
 import java.util.List;
 
 /**
- * stop组建表
+ * Stop component table
  * 
  * @author Nature
  *
@@ -19,7 +19,7 @@ import java.util.List;
 public interface FlowAndStopsTemplateVoMapper {
 
 	/**
-	 * 添加单个stops
+	 * Add a single stops
 	 * 
 	 * @param stops
 	 * @return
@@ -28,25 +28,25 @@ public interface FlowAndStopsTemplateVoMapper {
 	public int addStops(StopTemplateModel stops);
 	
 	/**
-	 * 新增Flow
+	 * add Flow
 	 * 
 	 * @param flow
 	 * @return
 	 */
 	@InsertProvider(type = FlowAndStopsTemplateVoMapperProvider.class, method = "addFlow")
-	public int addFlow(FlowTemplateModel flow);
+	public int addFlow(FlowTemplateModelVo flow);
 	
 	/**
-	 * 插入list<PropertyVo> 注意拼sql的方法必须用map接 Param内容为键值
+	 * Insert list<PropertyVo> Note that the method of spelling sql must use Map to connect Param content to key value.
 	 * 
-	 * @param propertyList (内容： 键为propertyList,值为List<PropertyVo>)
+	 * @param propertyList (Content: The key is propertyList and the value is List<PropertyVo>)
 	 * @return
 	 */
 	@InsertProvider(type = FlowAndStopsTemplateVoMapperProvider.class, method = "addPropertyList")
 	public int addPropertyList(@Param("propertyList") List<PropertyTemplateModel> propertyList);
 
 	/**
-	 * 根据templateId修改无效或删除stop
+	 * Invalid or delete stop according to templateId
 	 * @param templateId
 	 * @return
 	 */
@@ -54,7 +54,7 @@ public interface FlowAndStopsTemplateVoMapper {
 	public int deleteStopTemByTemplateId(@Param("id") String templateId);
 	
 	/**
-	 * 根据stopId修改无效或删除stop属性信息
+	 * Modify invalid or delete stop attribute information according to stopId
 	 * @param stopId
 	 * @return
 	 */
@@ -62,7 +62,7 @@ public interface FlowAndStopsTemplateVoMapper {
 	public int deleteStopPropertyTemByStopId(@Param("id") String stopId);
 	
 	/**
-	 * 根据模板id查询所有stop信息
+	 * Query all stop information according to the template id
 	 * @param templateId
 	 * @return
 	 */
@@ -75,8 +75,8 @@ public interface FlowAndStopsTemplateVoMapper {
 	
 	
 	/**
-	 * 根据stopId查询所有stop属性信息
-	 * @param templateId
+	 * Query all stop attribute information according to stopId
+	 * @param stopsId
 	 * @return
 	 */
 	@Select("select * from property_template where fk_stops_id = #{stopsId} and enable_flag = 1 ")
