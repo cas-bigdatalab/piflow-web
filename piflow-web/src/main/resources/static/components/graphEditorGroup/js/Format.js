@@ -2025,7 +2025,7 @@ FlowBasicInfoFormatPanel.prototype.addFont = function (container) {
     flowCreateDate.setAttribute('id', 'flowCreateDate');
 
 
-    //通过id来显示属性
+    //Displaying attributes by id
     var flowNameTitleSpan = document.createElement('span');
     flowNameTitleSpan.setAttribute('id', 'flowNameID');
     var flowDescriptionTitleSpan = document.createElement('span');
@@ -2051,7 +2051,7 @@ FlowBasicInfoFormatPanel.prototype.addFont = function (container) {
     var btn = mxUtils.button('', mxUtils.bind(this, function (evt) {
         var pwdBtn = document.getElementById("updateFlowNameBtn");
         var classname = pwdBtn.className;
-        //根据className来判断点击的是第几次,true为第一次,即显示input并save
+        //According to the className to determine the number of clicks, true is the first time, that is, input is displayed and saved
         if (classname == 'glyphicon glyphicon-floppy-saved') {
             $("#flowNameLabel").css("background-color", "");
             $("#flowNameLabel").css("border", "1px solid");
@@ -2061,12 +2061,12 @@ FlowBasicInfoFormatPanel.prototype.addFont = function (container) {
             $("#flowNameSpan").hide();
             $("#flowNameLabel").show();
         } else {
-            //第二次save的情况
+            //The second save situation
             var flowName = $("#flowNameLabel").val();
             var stopId = $("#flowNameLabel").attr('name');
             var flowValue = $("#flowValueInput").val();
             var pageId = $("#flowValueInput").attr('name');
-            //判断input的值是否有变化,如果无变化则去除input,并不做任何操作
+            //Determine whether the value of the input has changed.If there is no change, remove the input and do nothing.
             if (flowName == flowValue) {
                 $("#flowNameLabel").css("background-color", "rgb(245, 245, 245)");
                 $("#flowNameLabel").css("border", "0px");
@@ -2074,10 +2074,10 @@ FlowBasicInfoFormatPanel.prototype.addFont = function (container) {
                 $("#flowNameLabel").blur();
                 $("#flowNameSpan").show();
                 $("#flowNameLabel").hide();
-                $("#flowNameLabel").attr("readonly", "readonly");//将input元素设置为readonly
+                $("#flowNameLabel").attr("readonly", "readonly");//Set input element to readonly
                 return;
             }
-            //开始修改name
+            //Start update name
             $.ajax({
                 cache: true,
                 type: "POST",
@@ -2092,22 +2092,22 @@ FlowBasicInfoFormatPanel.prototype.addFont = function (container) {
                 success: function (data) {
                     var dataMap = JSON.parse(data);
                     if (200 === dataMap.code) {
-                        //重新加载xml
+                        //reload xml
                         var xml = mxUtils.parseXml(dataMap.XmlData);
                         var node = xml.documentElement;
                         var dec = new mxCodec(node.ownerDocument);
                         dec.decode(node, graphGlobal.getModel());
-                        //修改成功后页面赋值给cell.value,防止拖拽时更新name与stopname不一致
+                        //After the modification is successful, the page is assigned to cell.value to prevent the update name and stopname from being inconsistent when dragging
                         /* var results = $("#flowValueInput").data("result");
                                     results.properties.cell.value =  flowName ;*/
-                        //动态记录新的stopname，用来做对比下次修改是否有差异
+                        //Dynamically record the new stopname for comparison if there is a difference in the next modification
                         $("#flowValueInput").val(flowName);
-                        // 修改成功后隐藏input并恢复update按钮
+                        // Hide input and restore update button after successful modification
                         $("#flowNameLabel").css("background-color", "rgb(245, 245, 245)");
                         $("#flowNameLabel").css("border", "0px");
                         pwdBtn.className = "glyphicon glyphicon-floppy-saved";
                         $("#flowNameLabel").blur();
-                        $("#flowNameLabel").attr("readonly", "readonly");// 将input元素设置为readonly
+                        $("#flowNameLabel").attr("readonly", "readonly");// Set input element to readonly
                         layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
                             // findBasicInfo(results);
                         });
@@ -2119,7 +2119,7 @@ FlowBasicInfoFormatPanel.prototype.addFont = function (container) {
             });
         }
     }));
-    //示例数据不可编辑,此处将btn隐藏
+    //Sample data is not editable, btn is hidden here
     if (isExample) {
         btn.style.display = 'none';
     }
@@ -4562,7 +4562,7 @@ function shiqu(id, data, type) {
     if (data != null && data.length > 0 && id.length > 0) {
         var content = document.getElementById('' + data + '').value;
         var classname = $('#' + data).attr('data-toggle');
-        //如果修改内容为空并且是文本框的话,将不执行修改操作；
+        //If the modification is empty and it is a text box, the modification operation will not be performed;
         if (content == "" && type == "input" && classname == 'true') {
             // $("#"+data+"").focus();
             $("#" + data + "").css("background-color", "#FFD39B");
@@ -4613,12 +4613,12 @@ function stopTabTd(e) {
         shadeClose: true,
         closeBtn: 1,
         shift: 7,
-        anim: 5,//由上往下弹出
+        anim: 5,//Pop up from top
         shade: 0.1,
-        resize: false,//禁止拉伸
-        //move: false,//禁止拖拽
-        offset: ['' + p.top + 'px', '' + p.left + 'px'],//坐标
-        area: ['290px', '204px'], //宽高
+        resize: false,//No stretching
+        //move: false,//No dragging
+        offset: ['' + p.top + 'px', '' + p.left + 'px'],//coordinate
+        area: ['290px', '204px'], //Width Height
         content: stopOpenTemplateClone.html()
         // content: $("#stopOpenTemplate")
     });

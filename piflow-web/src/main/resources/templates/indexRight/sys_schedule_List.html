@@ -86,10 +86,20 @@
 <script th:include="Macro/csrfTokeHeadMacro :: csrfTokeHeadMacroScript"/>
 <script th:src="@{/custom/js/sysScheduleList.js}"></script>
 <script th:inline="javascript">
-    initDatatableSchedulePage('scheduleTableId', "/piflow-web/sysSchedule/getScheduleListPage");
+    function addContextPath(url) {
+        if (url) {
+            url = ('/' !== url.substr(0, 1) ? ("/" + url) : url);
+            return [[${#httpServletRequest.getContextPath()}]] + url;
+        }
+        return '';
+    }
+
+    var contextPath = [[${#httpServletRequest.getContextPath()}]];
+    initDatatableSchedulePage('scheduleTableId', addContextPath("/sysSchedule/getScheduleListPage"));
     /*$(document).ready(function () {
 
     });*/
+
     //@ sourceURL=table_right.js
 </script>
 </body>

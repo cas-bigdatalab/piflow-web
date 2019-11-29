@@ -31,6 +31,10 @@
         .table_tr_th {
             color: #1A7444;
         }
+
+        .error_class {
+            border-color: #FF5722 !important;
+        }
     </style>
 </head>
 
@@ -177,12 +181,12 @@
 
     function playVideo() {
         $('#content').html('Vodeo Loading');
-        window.location.href = "/piflow-web/web/instructionalVideo";
+        window.location.href = ([[${#httpServletRequest.getContextPath()}]] + "/web/instructionalVideo");
     }
 
     function exampleView(exampleId) {
         $('#content').html("Example " + exampleId + " loading");
-        window.location.href = "/piflow-web/grapheditor/home?load=" + exampleId;
+        window.location.href = ([[${#httpServletRequest.getContextPath()}]] + "/grapheditor/home?load=" + exampleId);
     }
 
     //@ sourceURL=index.js

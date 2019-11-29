@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
-@RequestMapping("/sysSchedule/")
+@RequestMapping("/sysSchedule")
 public class QuartzController {
 
     @Autowired
@@ -25,10 +25,22 @@ public class QuartzController {
         return sysScheduleServiceImpl.getScheduleListPage(start / length + 1, length, extra_search);
     }
 
+    @RequestMapping("/getScheduleById")
+    @ResponseBody
+    public String getScheduleById(HttpServletRequest request, String scheduleId) {
+        return sysScheduleServiceImpl.getScheduleById(scheduleId);
+    }
+
     @RequestMapping("/createTask")
     @ResponseBody
     public String createTask(SysScheduleVo sysScheduleVo) {
         return sysScheduleServiceImpl.createJob(sysScheduleVo);
+    }
+
+    @RequestMapping("/runOnceTask")
+    @ResponseBody
+    public String runOnceTask(String sysScheduleId) {
+        return sysScheduleServiceImpl.runOnce(sysScheduleId);
     }
 
     @RequestMapping("/startTask")
@@ -37,10 +49,10 @@ public class QuartzController {
         return sysScheduleServiceImpl.startJob(sysScheduleId);
     }
 
-    @RequestMapping("/runOnceTask")
+    @RequestMapping("/stopTask")
     @ResponseBody
-    public String runOnceTask(String sysScheduleId) {
-        return sysScheduleServiceImpl.runOnce(sysScheduleId);
+    public String stopTask(String sysScheduleId) {
+        return sysScheduleServiceImpl.stopJob(sysScheduleId);
     }
 
     @RequestMapping("/pauseTask")
@@ -59,5 +71,11 @@ public class QuartzController {
     @ResponseBody
     public String updateTask(SysScheduleVo sysScheduleVo) {
         return sysScheduleServiceImpl.update(sysScheduleVo);
+    }
+
+    @RequestMapping("/deleteTask")
+    @ResponseBody
+    public String deleteTask(String sysScheduleId) {
+        return sysScheduleServiceImpl.deleteTask(sysScheduleId);
     }
 }

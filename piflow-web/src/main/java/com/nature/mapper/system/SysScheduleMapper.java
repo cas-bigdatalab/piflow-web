@@ -1,6 +1,7 @@
 package com.nature.mapper.system;
 
 import com.nature.component.system.model.SysSchedule;
+import com.nature.component.system.vo.SysScheduleVo;
 import com.nature.provider.system.SysScheduleMapperProvider;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -18,7 +19,10 @@ public interface SysScheduleMapper {
      * @return
      */
     @SelectProvider(type = SysScheduleMapperProvider.class, method = "getSysScheduleList")
-    public List<SysSchedule> getSysScheduleList(@Param("param") String param);
-    
+    public List<SysScheduleVo> getSysScheduleList(@Param("param") String param);
+
+    @SelectProvider(type = SysScheduleMapperProvider.class, method = "getSysScheduleById")
+    public SysScheduleVo getSysScheduleById(String id);
+
 
 }

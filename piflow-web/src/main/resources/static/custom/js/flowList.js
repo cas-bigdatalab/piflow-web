@@ -160,7 +160,7 @@ function runFlows(loadId, runMode) {
             var dataMap = JSON.parse(data);
             if (200 === dataMap.code) {
                 layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
-                    //启动成功后跳转至监控页面
+                    //Jump to monitoring page after successful startup
                     var tempWindow = window.open('_blank');
                     if (tempWindow == null || typeof(tempWindow)=='undefined'){
                         alert('The window cannot be opened. Please check your browser settings.')
@@ -181,7 +181,7 @@ function runFlows(loadId, runMode) {
 
 function deleteFlow(id, name) {
     layer.confirm("Are you sure to delete '" + name + "' ?", {
-        btn: ['confirm', 'cancel'] //按钮
+        btn: ['confirm', 'cancel'] //Button
         , title: 'Confirmation prompt'
     }, function () {
         $.ajax({

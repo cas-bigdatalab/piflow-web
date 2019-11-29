@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.*;
 
 public class IFlowTest extends ApplicationTests {
@@ -27,7 +28,7 @@ public class IFlowTest extends ApplicationTests {
     @Autowired
     private IFlow flowImpl;
 
-    @Autowired
+    @Resource
     private FlowMapper flowMapper;
 
     Logger logger = LoggerUtil.getLogger();
@@ -40,7 +41,7 @@ public class IFlowTest extends ApplicationTests {
         Process process = ProcessUtils.flowToProcess(flowById, null);
         //flowImpl.startFlow(processById,null, RunModeType.RUN);
         String s = ProcessUtil.processToJson(process, null, RunModeType.DEBUG);
-        System.out.println(s);
+        logger.info(s);
     }
 
     @Test

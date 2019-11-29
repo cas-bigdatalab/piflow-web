@@ -43,7 +43,7 @@ public class HdfsUtils {
             // int k = 0;
             while ((line = br.readLine()) != null) {
                 json.append(line);
-                System.out.println(line);
+                logger.debug(line);
             }
             logger.warn("end time : " + DateUtils.dateTimesToStr(new Date()));
         } catch (IOException e) {

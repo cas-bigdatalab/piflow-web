@@ -59,54 +59,56 @@ function responseHandlerSchedule(res) {
                     'title="' + resPageData[i].description + '">' +
                     resPageData[i].description +
                     '</div>';
-                var actionsHtmlStr = '<div style="width: 100%; text-align: center" >'
-                    + '<a class="btn" '
-                    + 'title="Run this timed task" '
-                    + 'href="javascript:void(0);" '
-                    + 'onclick="javascript:runSchedules(\'' + resPageData[i].id + '\');" '
-                    + 'style="margin-right: 2px;">'
-                    + '<i class="icon-play icon-white"></i>'
-                    + '</a>'
-                    + '<a class="btn" '
-                    + 'title="Pause this timed task" '
-                    + 'href="javascript:void(0);" '
-                    + 'onclick="javascript:runSchedules(\'' + resPageData[i].id + '\');" '
-                    + 'style="margin-right: 2px;">'
-                    + '<i class="icon-pause icon-white"></i>'
-                    + '</a>'
-                    + '<a class="btn" '
+                var actions_btn_1 = '<a class="btn" '
                     + 'title="Run this timed task once" '
                     + 'href="javascript:void(0);" '
-                    + 'onclick="javascript:runSchedules(\'' + resPageData[i].id + '\',\'DEBUG\');" '
+                    + 'onclick="javascript:onceTask(\'' + resPageData[i].id + '\');" '
                     + 'style="margin-right: 2px;">'
                     + '<i class="icon-tag icon-white"></i>'
-                    + '</a>'
-                    + '<a class="btn" '
-                    + 'title="Edit this timed task" '
+                    + '</a>';
+                var actions_btn_2 = '<a class="btn" '
+                    + 'title="Run this timed task" '
                     + 'href="javascript:void(0);" '
-                    + 'onclick="javascript:runSchedules(\'' + resPageData[i].id + '\');" '
+                    + 'onclick="javascript:startTask(\'' + resPageData[i].id + '\');" '
                     + 'style="margin-right: 2px;">'
-                    + '<i class="icon-edit icon-white"></i>'
-                    + '</a>'
-                    + '<a class="btn" '
-                    + 'title="Edit this timed task" '
+                    + '<i class="icon-play icon-white"></i>'
+                    + '</a>';
+                var actions_btn_3 = '<a class="btn" '
+                    + 'title="Stop this timed task" '
                     + 'href="javascript:void(0);" '
-                    + 'onclick="javascript:deleteSchedule(\'' + resPageData[i].id + '\',\'' + resPageData[i].name + '\');" '
+                    + 'onclick="javascript:stopTask(\'' + resPageData[i].id + '\');" '
                     + 'style="margin-right: 2px;">'
-                    + '<i class="icon-trash icon-white"></i>'
-                    + '</a>'
-                    /*
-                    + '<a class="btn" '
+                    + '<i class="icon-stop icon-white"></i>'
+                    + '</a>';
+                var actions_btn_4 = '<a class="btn" '
+                    + 'title="Pause this timed task" '
+                    + 'href="javascript:void(0);" '
+                    + 'onclick="javascript:pauseTask(\'' + resPageData[i].id + '\');" '
+                    + 'style="margin-right: 2px;">'
+                    + '<i class="icon-pause icon-white"></i>'
+                    + '</a>';
+                var actions_btn_5 = '<a class="btn" '
                     + 'title="Reply to this scheduled task" '
                     + 'href="javascript:void(0);" '
-                    + 'onclick="javascript:saveTableTemplate(\''
-                    + resPageData[i].id + '\',\''
-                    + resPageData[i].name + '\');" '
+                    + 'onclick="javascript:resumeTask(\'' + resPageData[i].id + '\');" '
                     + 'style="margin-right: 2px;">'
                     + '<i class="icon-repeat icon-white"></i>'
-                    + '</a>'
-                    */
-                    + '</div>';
+                    + '</a>';
+                var actions_btn_6 = '<a class="btn" '
+                    + 'title="Edit this timed task" '
+                    + 'href="javascript:void(0);" '
+                    + 'onclick="javascript:newScheduleWindow(\'' + resPageData[i].id + '\');" '
+                    + 'style="margin-right: 2px;">'
+                    + '<i class="icon-edit icon-white"></i>'
+                    + '</a>';
+                var actions_btn_7 = '<a class="btn" '
+                    + 'title="Remove this timed task" '
+                    + 'href="javascript:void(0);" '
+                    + 'onclick="javascript:deleteTask(\'' + resPageData[i].id + '\',\'' + resPageData[i].name + '\');" '
+                    + 'style="margin-right: 2px;">'
+                    + '<i class="icon-trash icon-white"></i>'
+                    + '</a>';
+                var actionsHtmlStr = '';
                 if (resPageData[i].jobName) {
                     data1.name = resPageData[i].jobName;
                 }
@@ -118,6 +120,19 @@ function responseHandlerSchedule(res) {
                 }
                 if (resPageData[i].status) {
                     data1.status = resPageData[i].status.text;
+                    if ('RUNNING' === data1.status) {
+                        actionsHtmlStr = '<div style="width: 100%; text-align: center" >'
+                            + actions_btn_3
+                            + actions_btn_6
+                            + actions_btn_7
+                            + '</div>';
+                    } else {
+                        actionsHtmlStr = '<div style="width: 100%; text-align: center" >'
+                            + actions_btn_2
+                            + actions_btn_6
+                            + actions_btn_7
+                            + '</div>';
+                    }
                 }
                 if (resPageData[i].crtDttmString) {
                     data1.crtDttm = resPageData[i].crtDttmString;
@@ -136,62 +151,84 @@ function searchSchedulePage() {
     flowTable.ajax.reload();
 }
 
-function newScheduleWindow() {
+function newScheduleWindow(id) {
     $("#buttonSchedule").attr("onclick", "");
-    $("#buttonSchedule").attr("onclick", "createSchedule()");
-    $("#scheduleId").val("");
-    $("#scheduleName").val("");
-    $("#scheduleClass").val("");
-    $("#scheduleCron").val("");
-    layer.open({
-        type: 1,
-        title: '<span style="color: #269252;">create schedule</span>',
-        shadeClose: true,
-        closeBtn: 1,
-        shift: 7,
-        area: ['580px', '520px'], //Width height
-        skin: 'layui-layer-rim', //Add borders
-        content: $("#SubmitPage")
-    });
-}
-
-function update(id, updateName, updateDescription, driverMemory, executorNumber, executorMemory, executorCores) {
-    $("#buttonSchedule").attr("onclick", "");
-    $("#buttonSchedule").attr("onclick", "updateSchedule()");
-    $("#scheduleId").val(id);
-    $("#scheduleName").val(updateName);
-    $("#description").val(updateDescription);
-    $("#driverMemory").val(driverMemory);
-    $("#executorNumber").val(executorNumber);
-    $("#executorMemory").val(executorMemory);
-    $("#executorCores").val(executorCores);
-    layer.open({
-        type: 1,
-        title: '<span style="color: #269252;">update schedule</span>',
-        shadeClose: true,
-        closeBtn: false,
-        shift: 7,
-        closeBtn: 1,
-        area: ['580px', '520px'], //Width height
-        skin: 'layui-layer-rim', //Add borders
-        content: $("#SubmitPage")
-    });
+    if (id) {
+        $.ajax({
+            cache: true,//Keep cached data
+            type: "get",//Request type post
+            url: contextPath + "/sysSchedule/getScheduleById",//This is the name of the file where I receive data in the background.
+            data: {scheduleId: id},
+            async: false,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
+            error: function (request) {//Operation after request failure
+                layer.closeAll('page');
+                layer.msg('open failed ', {icon: 2, shade: 0, time: 2000}, function () {
+                });
+                return;
+            },
+            success: function (data) {//Operation after request successful
+                var dataMap = JSON.parse(data);
+                if (200 === dataMap.code) {
+                    console.log(dataMap);
+                    var sysScheduleVo = dataMap.sysScheduleVo;
+                    $("#buttonSchedule").attr("onclick", "updateSchedule()");
+                    $("#scheduleId").val(id);
+                    $("#scheduleName").val(sysScheduleVo.jobName);
+                    $("#scheduleClass").val(sysScheduleVo.jobClass);
+                    $("#scheduleCron").val(sysScheduleVo.cronExpression);
+                    layer.open({
+                        type: 1,
+                        title: '<span style="color: #269252;">update schedule</span>',
+                        shadeClose: true,
+                        closeBtn: false,
+                        shift: 7,
+                        closeBtn: 1,
+                        area: ['580px', '520px'], //Width height
+                        skin: 'layui-layer-rim', //Add borders
+                        content: $("#SubmitPage")
+                    });
+                } else {
+                    layer.msg('open failed', {icon: 2, shade: 0, time: 2000}, function () {
+                    });
+                }
+            }
+        });
+    } else {
+        $("#buttonSchedule").attr("onclick", "createTask()");
+        $("#scheduleId").val("");
+        $("#scheduleName").val("");
+        $("#scheduleClass").val("");
+        $("#scheduleCron").val("");
+        layer.open({
+            type: 1,
+            title: '<span style="color: #269252;">create schedule</span>',
+            shadeClose: true,
+            closeBtn: 1,
+            shift: 7,
+            area: ['580px', '520px'], //Width height
+            skin: 'layui-layer-rim', //Add borders
+            content: $("#SubmitPage")
+        });
+    }
 }
 
 function checkScheduleInput(scheduleName, scheduleClass, scheduleCron, description) {
+    $('#scheduleName').removeClass('error_class');
+    $('#scheduleClass').removeClass('error_class');
+    $('#scheduleCron').removeClass('error_class');
     if (scheduleName == '') {
-        layer.msg('scheduleName Can not be empty', {icon: 2, shade: 0, time: 2000});
-        document.getElementById('scheduleName').focus();
+        layer.msg('name Can not be empty', {icon: 2, shade: 0, time: 2000});
+        $('#scheduleName').addClass('error_class');
         return false;
     }
     if (scheduleClass == '') {
-        layer.msg('scheduleClass Can not be empty', {icon: 2, shade: 0, time: 2000});
-        document.getElementById('scheduleClass').focus();
+        layer.msg('class Can not be empty', {icon: 2, shade: 0, time: 2000});
+        $('#scheduleClass').addClass('error_class');
         return false;
     }
     if (scheduleCron == '') {
-        layer.msg('scheduleCron Can not be empty', {icon: 2, shade: 0, time: 2000});
-        document.getElementById('scheduleCron').focus();
+        layer.msg('cron Can not be empty', {icon: 2, shade: 0, time: 2000});
+        $('#scheduleCron').addClass('error_class');
         return false;
     }
     /*if (description == '') {
@@ -202,7 +239,7 @@ function checkScheduleInput(scheduleName, scheduleClass, scheduleCron, descripti
     return true;
 }
 
-function createSchedule() {
+function createTask() {
     var scheduleName = $("#scheduleName").val();
     var scheduleClass = $("#scheduleClass").val();
     var scheduleCron = $("#scheduleCron").val();
@@ -210,7 +247,7 @@ function createSchedule() {
         $.ajax({
             cache: true,//Keep cached data
             type: "get",//Request type post
-            url: "/piflow-web/sysSchedule/createSchedule",//This is the name of the file where I receive data in the background.
+            url: addContextPath("sysSchedule/createTask"),//This is the name of the file where I receive data in the background.
             data: {
                 jobName: scheduleName,
                 jobClass: scheduleClass,
@@ -241,16 +278,14 @@ function createSchedule() {
 function updateSchedule() {
     var id = $("#scheduleId").val();
     var scheduleName = $("#scheduleName").val();
-    var description = $("#description").val();
-    var driverMemory = $("#driverMemory").val();
-    var executorNumber = $("#executorNumber").val();
-    var executorMemory = $("#executorMemory").val();
-    var executorCores = $("#executorCores").val();
-    if (checkScheduleInput(scheduleName, description, driverMemory, executorNumber, executorMemory, executorCores))
+    var scheduleClass = $("#scheduleClass").val();
+    var scheduleCron = $("#scheduleCron").val();
+
+    if (checkScheduleInput(scheduleName, scheduleClass, scheduleCron))
         $.ajax({
             cache: true,//Keep cached data
             type: "get",//Request type post
-            url: "/piflow-web/schedule/updateScheduleInfo",//This is the name of the file where I receive data in the background.
+            url: addContextPath("sysSchedule/updateScheduleInfo"),//This is the name of the file where I receive data in the background.
             data: {
                 id: id,
                 name: scheduleName,
@@ -279,39 +314,33 @@ function updateSchedule() {
         });
 }
 
+function onceTask(id) {
+    developmentFunc();
+}
+
 //run
-function runSchedules(loadId, runMode) {
+function startTask(id) {
     $('#fullScreen').show();
-    var data = {scheduleId: loadId}
-    if (runMode) {
-        data.runMode = runMode;
-    }
     $.ajax({
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: "/piflow-web/schedule/runSchedule",//This is the name of the file where I receive data in the background.
-        //data:$('#loginForm').serialize(),//Serialize the form
-        data: data,
+        url: addContextPath("sysSchedule/startTask"),//This is the name of the file where I receive data in the background.
+        data: {sysScheduleId: id},
         async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
         error: function (request) {//Operation after request failure
             //alert("Request Failed");
             layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000}, function () {
                 $('#fullScreen').hide();
             });
-
             return;
         },
         success: function (data) {//Operation after request successful
-            //console.log("success");
             var dataMap = JSON.parse(data);
             if (200 === dataMap.code) {
                 layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
-                    //启动成功后跳转至监控页面
-                    var tempwindow = window.open('_blank');
-                    tempwindow.location = "/piflow-web/process/getProcessById?processId=" + dataMap.processId;
+                    location.reload();
                 });
             } else {
-                //alert("Startup failure：" + dataMap.errorMsg);
                 layer.msg("Startup failure：" + dataMap.errorMsg, {icon: 2, shade: 0, time: 2000}, function () {
                     location.reload();
                 });
@@ -321,15 +350,54 @@ function runSchedules(loadId, runMode) {
     });
 }
 
-function deleteSchedule(id, name) {
+function stopTask(id) {
+    $('#fullScreen').show();
+    $.ajax({
+        cache: true,//Keep cached data
+        type: "POST",//Request type post
+        url: addContextPath("sysSchedule/stopTask"),//This is the name of the file where I receive data in the background.
+        data: {sysScheduleId: id},
+        async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
+        error: function (request) {//Operation after request failure
+            //alert("Request Failed");
+            layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000}, function () {
+                $('#fullScreen').hide();
+            });
+            return;
+        },
+        success: function (data) {//Operation after request successful
+            var dataMap = JSON.parse(data);
+            if (200 === dataMap.code) {
+                layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
+                    location.reload();
+                });
+            } else {
+                layer.msg("Stop failure：" + dataMap.errorMsg, {icon: 2, shade: 0, time: 2000}, function () {
+                    location.reload();
+                });
+            }
+            $('#fullScreen').hide();
+        }
+    });
+}
+
+function pauseTask(id) {
+    developmentFunc();
+}
+
+function resumeTask(id) {
+    developmentFunc();
+}
+
+function deleteTask(id, name) {
     layer.confirm("Are you sure to delete '" + name + "' ?", {
-        btn: ['confirm', 'cancel'] //按钮
+        btn: ['confirm', 'cancel'] //button
         , title: 'Confirmation prompt'
     }, function () {
         $.ajax({
             cache: true,//Keep cached data
             type: "get",//Request type post
-            url: "/piflow-web/flow/deleteSchedule",//This is the name of the file where I receive data in the background.
+            url: addContextPath("flow/deleteSchedule"),//This is the name of the file where I receive data in the background.
             data: {id: id},
             async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
             error: function (request) {//Operation after request failure
@@ -350,34 +418,8 @@ function deleteSchedule(id, name) {
     });
 }
 
-function saveTableTemplate(id, name) {
-    layer.prompt({
-        title: 'please enter the template name',
-        formType: 0,
-        btn: ['submit', 'cancel']
-    }, function (text, index) {
-        layer.close(index);
-        $.ajax({
-            cache: true,//Keep cached data
-            type: "get",//Request type post
-            url: "/pischedule-web/template/saveTemplate",//This is the name of the file where I receive data in the background.
-            data: {load: id, name: text},
-            async: true,
-            error: function (request) {//Operation after request failure
-                console.log(" save template error");
-                return;
-            },
-            success: function (data) {//Operation after request successful
-                var dataMap = JSON.parse(data);
-                if (200 === dataMap.code) {
-                    layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
-                    });
-                } else {
-                    layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000}, function () {
-                    });
-                }
-            }
-        });
+function developmentFunc() {
+    layer.msg("Functional development", {icon: 5, shade: 0, time: 2000}, function () {
     });
 }
 

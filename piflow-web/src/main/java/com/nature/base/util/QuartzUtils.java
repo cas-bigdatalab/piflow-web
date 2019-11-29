@@ -62,7 +62,7 @@ public class QuartzUtils {
         try {
             scheduler.resumeJob(jobKey);
         } catch (SchedulerException e) {
-            System.out.println("Error resuming scheduled task:" + e.getMessage());
+            logger.error("Error resuming scheduled task:", e);
         }
     }
 
@@ -78,7 +78,7 @@ public class QuartzUtils {
         try {
             scheduler.triggerJob(jobKey);
         } catch (SchedulerException e) {
-            System.out.println("Error running scheduled task：" + e.getMessage());
+            logger.error("Error running scheduled task：", e);
         }
     }
 
@@ -101,7 +101,7 @@ public class QuartzUtils {
             //Reset the corresponding job
             scheduler.rescheduleJob(triggerKey, trigger);
         } catch (SchedulerException e) {
-            System.out.println("Update timing task error:" + e.getMessage());
+            logger.error("Update timing task error:", e);
         }
     }
 
@@ -117,7 +117,7 @@ public class QuartzUtils {
         try {
             scheduler.deleteJob(jobKey);
         } catch (SchedulerException e) {
-            System.out.println("Error deleting scheduled task：" + e.getMessage());
+            logger.error("Error deleting scheduled task：", e);
         }
     }
 }
