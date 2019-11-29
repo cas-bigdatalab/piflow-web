@@ -2025,7 +2025,7 @@ StopsBasicInfoFormatPanel.prototype.addFont = function (container) {
     createDate.setAttribute('id', 'stopCreateDate');
 
 
-    //通过id来显示属性
+    //Displaying attributes by id
     var span3 = document.createElement('label');
     span3.setAttribute('id', 'pContent');
     var span = document.createElement('span');
@@ -2053,7 +2053,7 @@ StopsBasicInfoFormatPanel.prototype.addFont = function (container) {
     var btn = mxUtils.button('', mxUtils.bind(this, function (evt) {
         var pwdBtn = document.getElementById("updateStopNameBtn");
         var classname = pwdBtn.className;
-        //根据className来判断点击的是第几次,true为第一次,即显示input并save
+        //According to the className to determine the number of clicks, true is the first time, that is, input is displayed and saved
         if (classname == 'glyphicon glyphicon-floppy-saved') {
             $("#stopsNameLabel").css("background-color", "");
             $("#stopsNameLabel").css("border", "1px solid");
@@ -2063,12 +2063,12 @@ StopsBasicInfoFormatPanel.prototype.addFont = function (container) {
             $("#stopsNameSpan").hide();
             $("#stopsNameLabel").show();
         } else {
-            //第二次save的情况
+            //The second save situation
             var stopName = $("#stopsNameLabel").val();
             var stopId = $("#stopsNameLabel").attr('name');
             var stopsValue = $("#stopsValueInput").val();
             var pageId = $("#stopsValueInput").attr('name');
-            //判断input的值是否有变化,如果无变化则去除input,并不做任何操作
+            //Determine whether the value of the input has changed.If there is no change, remove the input and do nothing.
             if (stopName == stopsValue) {
                 $("#stopsNameLabel").css("background-color", "rgb(245, 245, 245)");
                 $("#stopsNameLabel").css("border", "0px");
@@ -2076,10 +2076,10 @@ StopsBasicInfoFormatPanel.prototype.addFont = function (container) {
                 $("#stopsNameLabel").blur();
                 $("#stopsNameSpan").show();
                 $("#stopsNameLabel").hide();
-                $("#stopsNameLabel").attr("readonly", "readonly");//将input元素设置为readonly
+                $("#stopsNameLabel").attr("readonly", "readonly");//Set input element to readonly
                 return;
             }
-            //开始修改name
+            //Start update name
             $.ajax({
                 cache: true,
                 type: "POST",
@@ -2099,17 +2099,17 @@ StopsBasicInfoFormatPanel.prototype.addFont = function (container) {
                         var node = xml.documentElement;
                         var dec = new mxCodec(node.ownerDocument);
                         dec.decode(node, graphGlobal.getModel());
-                        //修改成功后页面赋值给cell.value,防止拖拽时更新name与stopname不一致
+                        //After the modification is successful, the page is assigned to cell.value to prevent the update name and stopname from being inconsistent when dragging
                         /* var results = $("#stopsValueInput").data("result");
                                     results.properties.cell.value =  stopName ;*/
-                        //动态记录新的stopname，用来做对比下次修改是否有差异
+                        //Dynamically record the new stopname for comparison if there is a difference in the next modification
                         $("#stopsValueInput").val(stopName);
-                        // 修改成功后隐藏input并恢复update按钮
+                        // Hide input and restore update button after successful modification
                         $("#stopsNameLabel").css("background-color", "rgb(245, 245, 245)");
                         $("#stopsNameLabel").css("border", "0px");
                         pwdBtn.className = "glyphicon glyphicon-floppy-saved";
                         $("#stopsNameLabel").blur();
-                        $("#stopsNameLabel").attr("readonly", "readonly");// 将input元素设置为readonly
+                        $("#stopsNameLabel").attr("readonly", "readonly");// Set input element to readonly
                         layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
                             // findBasicInfo(results);
                         });
@@ -2121,7 +2121,7 @@ StopsBasicInfoFormatPanel.prototype.addFont = function (container) {
             });
         }
     }));
-    //示例数据不可编辑,此处将btn隐藏
+    //Sample data is not editable, btn is hidden here
     if (isExample) {
         btn.style.display = 'none';
     }
@@ -4783,7 +4783,7 @@ function shiqu(id, data, type) {
     if (data != null && data.length > 0 && id.length > 0) {
         var content = document.getElementById('' + data + '').value;
         var classname = $('#' + data).attr('data-toggle');
-        //如果修改内容为空并且是文本框的话,将不执行修改操作；
+        //If the modification is empty and it is a text box, the modification operation will not be performed;
         if (content == "" && type == "input" && classname == 'true') {
             // $("#"+data+"").focus();
             $("#" + data + "").css("background-color", "#FFD39B");
