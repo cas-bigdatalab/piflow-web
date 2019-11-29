@@ -38,8 +38,8 @@ public class StartLoader implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        startStatusRunning();
         loadStop();
+        startStatusRunning();
     }
 
     private void loadStop() {
