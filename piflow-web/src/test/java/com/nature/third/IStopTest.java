@@ -161,9 +161,9 @@ public class IStopTest extends ApplicationTests {
                 "}" +
                 "}";
         String url = "http://10.0.86.191:8002/flowGroup/start";
-        System.out.println(reqJson);
+        logger.info(reqJson);
         String doPost = HttpUtils.doPost(url, reqJson, null);
-        System.out.println(doPost);
+        logger.info(doPost);
     }
 
 }

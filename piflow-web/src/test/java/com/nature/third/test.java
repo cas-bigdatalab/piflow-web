@@ -1,11 +1,16 @@
 package com.nature.third;
 
 import com.nature.base.util.HttpUtils;
+import com.nature.base.util.LoggerUtil;
+import org.slf4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class test {
+
+    static Logger logger = LoggerUtil.getLogger();
+
     public static void main(String[] args) {
         //testFlowGroup();
     }
@@ -17,9 +22,9 @@ public class test {
         param.put("groupId","group_fe835872-8301-45b7-85ac-942a6a23980a");
         String doGet0 = HttpUtils.doGet(url_progress, param, 50000);
         String doGet1 = HttpUtils.doGet(url_info, param, 50000);
-        System.out.println("-------------------------doGet0------------------------------------");
-        System.out.println(doGet0);
-        System.out.println("-------------------------doGet1------------------------------------");
-        System.out.println(doGet1);
+        logger.info("-------------------------doGet0------------------------------------");
+        logger.info(doGet0);
+        logger.info("-------------------------doGet1------------------------------------");
+        logger.info(doGet1);
     }
 }
