@@ -29,9 +29,9 @@ public class ThirdFlowInfoVoUtils {
             if(StringUtils.isNotBlank(thirdFlowInfoVo.getState())){
                 process.setState(ProcessState.selectGender(thirdFlowInfoVo.getState()));
             }
+            //process.setName(thirdFlowInfoVo.getName());
             //process.setProcessId(thirdFlowInfoVo.getPid());
             process.setProcessId(thirdFlowInfoVo.getId());
-            process.setName(thirdFlowInfoVo.getName());
             process.setStartTime(DateUtils.strCstToDate(thirdFlowInfoVo.getStartTime()));
             process.setEndTime(DateUtils.strCstToDate(thirdFlowInfoVo.getEndTime()));
             List<ProcessStop> processStopList = process.getProcessStopList();
