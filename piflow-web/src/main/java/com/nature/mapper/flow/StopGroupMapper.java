@@ -46,7 +46,7 @@ public interface StopGroupMapper {
 	 * @return
 	 */
 	@Select("<script>" +
-            "select id from flow_sotps_groups where enable_flag = '1' and group_name in " +
+            "select id from flow_sotps_groups where enable_flag = 1 and group_name in " +
             "<foreach item='groupName' index='index' collection='group_name' open='(' separator=', ' close=')'>" +
                 "#{groupName}" +
             "</foreach>" +

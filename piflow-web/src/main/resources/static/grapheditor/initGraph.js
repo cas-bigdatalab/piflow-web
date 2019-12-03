@@ -1263,7 +1263,6 @@ function loadingXml(id, loadId) {
 }
 
 function showSelect() {
-
     var bt = document.getElementById("loadingXml");
     bt.onclick = function () {
         var oDiv = document.getElementById("divloadingXml");
@@ -1277,7 +1276,6 @@ function showSelect() {
             }
             loadingSelect();
             oDiv.style.display = "block";
-
         }
     }
 }
@@ -1301,13 +1299,65 @@ function loadingSelect() {
     });
 }
 
+function openTemplateList() {
+    if (isExample) {
+        layer.msg('This is an example, you can\'t edit', {icon: 2, shade: 0, time: 2000}, function () {
+        });
+        return;
+    }
+    $.ajax({
+        url: "/piflow-web/template/templateAllSelect",
+        type: "post",
+        async: false,
+        success: function (data) {
+            var dataMap = JSON.parse(data);
+            if (200 === dataMap.code) {
+                var temPlateList = dataMap.temPlateList;
+                var showSelectDivHtml = '<div style="width: 100%;height: 146px;position: relative;">';
+                var showOptionHtml = '';
+                for (var i = 0; i < temPlateList.length; i++) {
+                    showOptionHtml += ("<option value=" + temPlateList[i].id + " >" + temPlateList[i].name + "</option>");
+                }
+                var showSelectHtml = 'There is no template, please create';
+                var loadTemplateBtn = '';
+                if (showOptionHtml) {
+                    showSelectHtml = ('<div style="width: 100%;text-align: center;">'
+                        + '<select name="loadingXmlSelect" id="loadingXmlSelectNew" style="width: 80%;margin-top: 15px;">'
+                        + '<option value=\'-1\' >------------please choose------------</option>'
+                        + showOptionHtml
+                        + '</select>'
+                        + '</div>');
+                    loadTemplateBtn = '<div style="position: absolute;bottom: 12px;right: 10px;">'
+                        + '<input type="button" class="btn" value="Submit" onclick="loadTemplate()"/>'
+                        + '</div>';
+                }
+                showSelectDivHtml += (showSelectHtml + loadTemplateBtn + '</div>');
+                layer.open({
+                    type: 1,
+                    title: '<span style="color: #269252;">Please choose</span>',
+                    shadeClose: false,
+                    resize: false,
+                    closeBtn: 1,
+                    shift: 7,
+                    area: ['500px', '200px'], //Width height
+                    skin: 'layui-layer-rim', //Add borders
+                    content: showSelectDivHtml
+                });
+            }
+        }
+    });
+}
+
 function loadTemplate() {
-    var id = $("#loadingXmlSelect").val();
+    debugger;
+    var id = $("#loadingXmlSelectNew").val();
     if (id == '-1') {
+        layer.msg('Please choose template', {icon: 2, shade: 0, time: 2000}, function () {
+        });
         return;
     }
 
-    var name = $("#loadingXmlSelect option:selected").text();
+    var name = $("#loadingXmlSelectNew option:selected").text();
     layer.open({
         title: 'LoadTemplate',
         content: 'Are you sure you want to load ' + name + '？',

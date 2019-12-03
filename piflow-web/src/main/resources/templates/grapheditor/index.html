@@ -87,15 +87,18 @@
                 <li>
                     <a id="reloadStops" href='javascript:void(0);' onclick="reloadStops()" title="reload Stops">reloadStops </a>
                 </li>
-                <li role="separator" class="divider"></li>
+                <!--<li role="separator" class="divider"></li>-->
+                <li role="separator" class=""></li>
                 <li>
                     <a id="saveTemplate" href='javascript:void(0);' onclick="saveTemplate()" title="save Template">saveTemplate</a>
                 </li>
-                <li role="separator" class="divider"></li>
+                <!--<li role="separator" class="divider"></li>-->
+                <li role="separator" class=""></li>
                 <li><a id="uploadTemplate" href='javascript:void(0);' onclick="uploadTemplate()" title="uploadTemplate">uploadTemplate </a>
                 </li>
-                <li role="separator" class="divider"></li>
-                <li><a id="loadingXml" href='javascript:void(0);'>LoadTemplate</a></li>
+                <!--<li role="separator" class="divider"></li>-->
+                <li role="separator" class=""></li>
+                <li><a id="loadingXml" href='javascript:void(0);' onclick="openTemplateList()">LoadTemplate</a></li>
             </ul>
         </div>
         <div id="divloadingXml" style="display:none;">
@@ -348,7 +351,7 @@
             }
         }
     });
-    window.onload = showSelect;
+    //window.onload = showSelect;
     //@ sourceURL=grapheditorIndex.js
 </script>
 </body>
