@@ -358,7 +358,7 @@ function responseHandlerFlow(res) {
                     'href="javascript:void(0);" ' +
                     'onclick="javascript:runFlows(\'' + resPageData[i].id + '\',\'DEBUG\');" ' +
                     'style="margin-right: 2px;">' +
-                    '<i class="icon-hdd icon-white"></i>' +
+                    '<i class="fa-bug icon-white"></i>' +
                     '</a>' +
                     '<a class="btn" ' +
                     'href="javascript:void(0);" ' +

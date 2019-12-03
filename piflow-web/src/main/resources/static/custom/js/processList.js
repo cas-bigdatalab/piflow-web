@@ -316,8 +316,7 @@ function responseHandler(res) {
                     'href="javascript:void(0);" ' +
                     'onclick="javascript:getCheckpointList(\'' + resPageData[i].id + '\',\'' + resPageData[i].parentProcessId + '\',\'null\',\'DEBUG\');"' +
                     'style="margin-right: 2px;">' +
-                    '<i class="icon-hdd icon-white"></i>' +
-                    // '<img style="width: 15px;margin-bottom: 1px;" th:src="@{/img/debug-black.png}"></img>' +
+                    '<i class="fa-bug icon-white"></i>' +
                     '</a>' +
                     '<a class="btn" ' +
                     'href="javascript:void(0);" ' +

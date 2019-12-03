@@ -11,6 +11,7 @@
     <link rel="stylesheet" type="text/css" th:href="@{/components/bootstrap/css/bootstrap.min.css}">
     <link rel="stylesheet" type="text/css" th:href='@{/custom/css/publicMacro.css}'/>
     <link rel="stylesheet" type="text/css" th:href="@{/custom/css/fullScreen.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/components/font-awesome-4.7.0/css/font-awesome.min.css}"/>
     <link rel="shortcut icon" th:href="@{/img/logo.ico}">
 
     <script th:inline="javascript">
@@ -29,6 +30,32 @@
         }
     </script>
     <meta th:include="grapheditor/inc/index_graph_improt :: index_graph_improt"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}"/>
+    <style>
+        .customize_btn_css {
+            display: inline-block;
+            padding: 6px 12px;
+            margin-bottom: 0;
+            font-size: 14px;
+            font-weight: 400;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            touch-action: manipulation;
+            cursor: pointer;
+            user-select: none;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            background: #1A8B5F;
+            color: #ffffff;
+            height: 34px;
+            text-decoration:none;
+        }
+        a.customize_btn_css:hover {
+            color: #ffffff;
+            text-decoration: none;
+        }
+    </style>
 </head>
 <body class="geEditor">
 <div th:include="Macro/fragmentMacro :: fullScreen"></div>
@@ -37,19 +64,22 @@
 <div style="width: 45.2%; float: right;">
     <div style="position: fixed; margin-top: 48px; z-index: 999;text-align: right; width:45%;">
         <div class="btn-group">
-            <a class="btn" style="background: #1A8B5F; color: #ffffff" href='javascript:void(0);' onclick="runFlow()"
-               title="Run flow">
-                <i class="glyphicon glyphicon-play icon-white"></i>
+            <a class="customize_btn_css" href='javascript:void(0);' style="padding: 9px 12px;"
+               onclick="runFlow()"
+               title="Run flow"
+               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="icon-play icon-white"></i>
             </a>
         </div>
         <div class="btn-group">
-            <a class="btn" style="background: #1A8B5F; color: #ffffff" href='javascript:void(0);'
+            <a class="customize_btn_css" href='javascript:void(0);'style="padding: 9px 12px;"
                onclick="runFlow('DEBUG')" title="Debug flow">
-                <img style="width: 15px;margin-bottom: 1px;" th:src="@{/img/debug-white.png}"></img>
+                <i class="fa-bug icon-white"></i>
             </a>
         </div>
-        <div class="btn-group">
-            <a class="btn" style="background: #F14D50; color: #ffffff" href='javascript:void(0);' title="menu"
+        <div class="btn-group" style="margin-right: 5px;">
+            <a class="customize_btn_css" style="background: #F14D50;color: #ffffff;border: 1px solid #f14d50;"
+               href='javascript:void(0);' title="menu"
                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class='glyphicon glyphicon-cog'></i>
             </a>
@@ -87,7 +117,8 @@
     </span>
     <span id="grapheditor_groupDrawingBoard_navigation" style="display: none;">
         <span style="color: #ffffff">
-            <a style="color: #ffffff" th:href="@{/grapheditor/groupDrawingBoard} + '?load=' + ${flowGroupId}">FlowGroup</a>
+            <a style="color: #ffffff"
+               th:href="@{/grapheditor/groupDrawingBoard} + '?load=' + ${flowGroupId}">FlowGroup</a>
         </span>
         <span style="color: #ffffff">>></span>
     </span>
