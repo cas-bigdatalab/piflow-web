@@ -401,7 +401,9 @@ function changeUrl(key) {
                         }
                     }
                 }
-                preHtml = (preHtml === '') ? content_td.html() : preHtml;
+                var content_td_html = '';
+                content_td_html = ((content_td !== '') ? content_td.html() : content_td)
+                preHtml = (preHtml === '') ? content_td_html : preHtml;
                 showLogHtml += (preHtml + '</pre>');
             } else {
                 showLogHtml += 'Load Log Filed</pre>';
@@ -644,7 +646,7 @@ function changePageNo(switchNo) {
             }
         }
     }
-    if(switchNo == 1 && switchNo == div_table_list_obj.children().length && isEnd){// Determine whether it is both the first page and the last page
+    if (switchNo == 1 && switchNo == div_table_list_obj.children().length && isEnd) {// Determine whether it is both the first page and the last page
         $("#debug_data_prev").attr("href", "javascript:void(0);");
         $("#debug_data_prev").addClass("layui-disabled");
         $("#debug_data_next").addClass("layui-disabled");

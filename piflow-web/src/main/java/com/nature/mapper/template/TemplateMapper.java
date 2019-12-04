@@ -18,14 +18,14 @@ public interface TemplateMapper {
     @InsertProvider(type = TemplateMapperProvider.class, method = "addTemplate")
     public int addFlow(Template template);
 
-    @Select("select* from flow_template where enable_flag = '1' order by crt_dttm desc ")
+    @Select("select* from flow_template where enable_flag = 1 order by crt_dttm desc ")
     @Results({
             @Result(id = true, column = "id", property = "id"),
             @Result(column = "fk_flow_id", property = "flow", one = @One(select = "com.nature.mapper.flow.FlowMapper.getFlowById", fetchType = FetchType.EAGER))
     })
     public List<Template> findTemPlateListAll();
 
-    @Select("select* from flow_template where enable_flag = '1' order by crt_dttm desc ")
+    @Select("select* from flow_template where enable_flag = 1 order by crt_dttm desc ")
     @Results({
             @Result(id = true, column = "id", property = "id")
     })
@@ -52,7 +52,7 @@ public interface TemplateMapper {
      * @param id
      * @return
      */
-    @Select("select * from flow_template where enable_flag = '1' and id = #{id} ")
+    @Select("select * from flow_template where enable_flag = 1 and id = #{id} ")
     @Results({
             @Result(id = true, column = "id", property = "id"),
             @Result(column = "id", property = "stopsList", many = @Many(select = "com.nature.mapper.template.FlowAndStopsTemplateVoMapper.getStopsListByTemPlateId", fetchType = FetchType.EAGER)),

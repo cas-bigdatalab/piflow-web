@@ -24,17 +24,17 @@ public interface FlowInfoDbMapper {
      *
      * @return
      */
-    @Select("select * from flow where enable_flag = '1' order by crt_dttm desc ")
+    @Select("select * from flow where enable_flag = 1 order by crt_dttm desc ")
     @Results({
     			@Result(id = true, column = "id", property = "id"),
     			@Result(column = "id", property = "appId", one = @One(select = "com.nature.mapper.flow.FlowInfoDbMapper.getAppByAppFlowId", fetchType = FetchType.LAZY))
             })
     public List<Flow> findAppList();
 
-    @Select("select id,name,end_time,start_time,state,progress from flow_info where enable_flag = '1' and id = #{id}")
+    @Select("select id,name,end_time,start_time,state,progress from flow_info where enable_flag = 1 and id = #{id}")
     public List<FlowInfoDb> getAppByAppId(@Param("id") String appId);
 
-    @Select("select id,name,end_time,start_time,state,progress from flow_info where enable_flag = '1' and fk_flow_id = #{flowId} order by crt_dttm desc  limit 1  ")
+    @Select("select id,name,end_time,start_time,state,progress from flow_info where enable_flag = 1 and fk_flow_id = #{flowId} order by crt_dttm desc  limit 1  ")
     public List<FlowInfoDb> getAppByAppFlowId(@Param("flowId") String flowId);
 
     /**
@@ -43,7 +43,7 @@ public interface FlowInfoDbMapper {
      * @param appId
      * @return
      */
-    @Select("select * from flow_info where enable_flag = '1' and id = #{id} ")
+    @Select("select * from flow_info where enable_flag = 1 and id = #{id} ")
     @Results({
 		@Result(id = true, column = "id", property = "id"),
 		@Result(column = "fk_flow_id", property = "flow", one = @One(select = "com.nature.mapper.flow.FlowMapper.getFlowById", fetchType = FetchType.LAZY)),

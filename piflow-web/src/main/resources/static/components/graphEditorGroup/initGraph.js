@@ -117,7 +117,6 @@ function findBasicInfo(evt) {
         } else {
             //When you add a stop to the artboard for the first time, the drag process does not get the id.
             queryFlowProperty(maxFlowPageId);
-            console.log(1);
         }
     }
     if (typeof (cells) != "undefined" && null != id && "" != id && "null" != id) {
@@ -132,7 +131,6 @@ function findBasicInfo(evt) {
         } else {
             //Query stops and attribute information;
             queryFlowProperty(id);
-            console.log(2);
         }
     }
 }

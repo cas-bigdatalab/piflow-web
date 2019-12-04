@@ -1183,6 +1183,7 @@ public class FlowServiceImpl implements IFlowService {
             String errorMsg = (String) stringObjectMap.get("errorMsg");
             rtnMap.put("errorMsg", errorMsg);
             logger.warn(errorMsg);
+            return JsonUtils.toJsonNoException(rtnMap);
         }
         Process processById = processTransaction.getProcessById(process.getId());
         processById.setAppId((String) stringObjectMap.get("appId"));
