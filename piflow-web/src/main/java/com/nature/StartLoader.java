@@ -1,5 +1,6 @@
 package com.nature;
 
+import com.nature.base.util.CheckPathUtils;
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.QuartzUtils;
 import com.nature.base.vo.UserVo;
@@ -11,13 +12,11 @@ import com.nature.domain.system.SysScheduleDomain;
 import org.quartz.Scheduler;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -38,6 +37,13 @@ public class StartLoader implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
+        String storagePathHead = System.getProperty("user.dir");
+        CheckPathUtils.isChartPathExist(storagePathHead + "/storage/image/");
+        CheckPathUtils.isChartPathExist(storagePathHead + "/storage/video/");
+        CheckPathUtils.isChartPathExist(storagePathHead + "/storage/xml/");
+        SysParamsCache.setImagesPath(storagePathHead + "/storage/image/");
+        SysParamsCache.setVideosPath(storagePathHead + "/storage/image/");
+        SysParamsCache.setXmlPath(storagePathHead + "/storage/image/");
         loadStop();
         startStatusRunning();
     }

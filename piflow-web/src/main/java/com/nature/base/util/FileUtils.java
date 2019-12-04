@@ -38,6 +38,7 @@ public class FileUtils {
      */
     @SuppressWarnings("deprecation")
     public static String createXml(String xmlStr, String fileName, String type, String path) {
+        CheckPathUtils.isChartPathExist(path);
         Document doc = strToDocument(xmlStr);
         String realPath = path + fileName + type;
         logger.debug("============Entry Generation Method：" + new Date().toLocaleString() + "=================");
@@ -77,7 +78,8 @@ public class FileUtils {
         Map<String, Object> rtnMap = new HashMap<>();
         rtnMap.put("code", 500);
         if (!file.isEmpty()) {
-            //文件名
+            CheckPathUtils.isChartPathExist(path);
+            //file name
             String saveFileName = file.getOriginalFilename();
             File saveFile = new File(path + saveFileName);
             if (!saveFile.getParentFile().exists()) {
