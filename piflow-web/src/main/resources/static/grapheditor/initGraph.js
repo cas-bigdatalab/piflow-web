@@ -287,6 +287,7 @@ function add(addParamData) {
             displayName.setAttribute('locked', data[y].isLocked);
             // displayName.style.width = "290px";
             displayName.setAttribute('readonly', 'readonly');
+            displayName.style.cursor = "pointer";
             displayName.style.background = "rgb(245, 245, 245)";
             customValue = customValue == 'null' ? '' : customValue;
             displayName.setAttribute('value', '' + customValue + '');

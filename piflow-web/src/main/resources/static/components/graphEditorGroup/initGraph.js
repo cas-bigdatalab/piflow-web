@@ -261,6 +261,7 @@ function add(flowId, addDatas) {
             displayName.setAttribute('name', '' + addData_i.name + '');
             displayName.setAttribute('onclick', 'stopTabTd(this)');
             displayName.setAttribute('readonly', 'readonly');
+            displayName.style.cursor = "pointer";
             displayName.style.background = "rgb(245, 245, 245)";
             var customValue = (addData_i.value == 'null' ? '' : addData_i.value);
             displayName.setAttribute('value', '' + customValue + '');
