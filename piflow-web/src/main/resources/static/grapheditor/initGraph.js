@@ -1349,7 +1349,6 @@ function openTemplateList() {
 }
 
 function loadTemplate() {
-    debugger;
     var id = $("#loadingXmlSelectNew").val();
     if (id == '-1') {
         layer.msg('Please choose template', {icon: 2, shade: 0, time: 2000}, function () {
