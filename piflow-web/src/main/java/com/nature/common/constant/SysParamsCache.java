@@ -1,8 +1,5 @@
 package com.nature.common.constant;
 
-import com.nature.base.util.LoggerUtil;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -34,16 +31,21 @@ public class SysParamsCache {
     // Image path (read in configuration file)
     public static String IMAGES_PATH;
 
-    @Value("${syspara.imagesPath}")
-    public void setImagesPath(String imagesPath) {
+    public static void setImagesPath(String imagesPath) {
         IMAGES_PATH = imagesPath;
+    }
+
+    // Videos path (read in configuration file)
+    public static String VIDEOS_PATH;
+
+    public static void setVideosPath(String videosPath) {
+        VIDEOS_PATH = videosPath;
     }
 
     // Xml file path (read in configuration file)
     public static String XML_PATH;
 
-    @Value("${syspara.xmlPath}")
-    public void setXmlPath(String xmlPath) {
+    public static void setXmlPath(String xmlPath) {
         XML_PATH = xmlPath;
     }
 
