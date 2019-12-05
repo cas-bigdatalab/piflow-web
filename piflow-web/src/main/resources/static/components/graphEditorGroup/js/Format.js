@@ -1962,6 +1962,7 @@ FlowBasicInfoFormatPanel.prototype.addFont = function (container) {
     var trFlowBasic5 = document.createElement("tr");
     var trFlowBasic6 = document.createElement("tr");
     var trFlowBasic7 = document.createElement("tr");
+    var trFlowBasic8 = document.createElement("tr");
     var tdFlowBasic1_1 = document.createElement("td");
     var tdFlowBasic1_2 = document.createElement("td");
     var tdFlowBasic2_1 = document.createElement("td");
@@ -1976,6 +1977,8 @@ FlowBasicInfoFormatPanel.prototype.addFont = function (container) {
     var tdFlowBasic6_2 = document.createElement("td");
     var tdFlowBasic7_1 = document.createElement("td");
     var tdFlowBasic7_2 = document.createElement("td");
+    var tdFlowBasic8_1 = document.createElement("td");
+    var tdFlowBasic8_2 = document.createElement("td");
 
     //模板名称
     var labelTemplate = document.createElement('label');
@@ -2023,6 +2026,9 @@ FlowBasicInfoFormatPanel.prototype.addFont = function (container) {
     // create date
     var flowCreateDate = document.createElement('label');
     flowCreateDate.setAttribute('id', 'flowCreateDate');
+    // stop quantity
+    var stopQuantity = document.createElement('label');
+    stopQuantity.setAttribute('id', 'stopQuantity');
 
 
     //Displaying attributes by id
@@ -2040,6 +2046,8 @@ FlowBasicInfoFormatPanel.prototype.addFont = function (container) {
     flowExecutorNumberTitleSpan.setAttribute('id', 'executorNumberID');
     var flowCreateDateTitleSpan = document.createElement('span');
     flowCreateDateTitleSpan.setAttribute('id', 'createDateID');
+    var stopQuantityTitleSpan = document.createElement('span');
+    stopQuantityTitleSpan.setAttribute('id', 'flowQuantityID');
     var hr = document.createElement('hr');
     mxUtils.write(flowNameTitleSpan, 'flowName： ');
     mxUtils.write(flowDescriptionTitleSpan, 'description： ');
@@ -2048,6 +2056,7 @@ FlowBasicInfoFormatPanel.prototype.addFont = function (container) {
     mxUtils.write(flowExecutorMemoryTitleSpan, 'executorMemory： ');
     mxUtils.write(flowExecutorNumberTitleSpan, 'executorNumber： ');
     mxUtils.write(flowCreateDateTitleSpan, 'createDate： ');
+    mxUtils.write(stopQuantityTitleSpan, 'stops： ');
     var btn = mxUtils.button('', mxUtils.bind(this, function (evt) {
         var pwdBtn = document.getElementById("updateFlowNameBtn");
         var classname = pwdBtn.className;
@@ -2149,6 +2158,8 @@ FlowBasicInfoFormatPanel.prototype.addFont = function (container) {
     tdFlowBasic6_2.appendChild(flowExecutorNumber);
     tdFlowBasic7_1.appendChild(flowCreateDateTitleSpan);
     tdFlowBasic7_2.appendChild(flowCreateDate);
+    tdFlowBasic8_1.appendChild(stopQuantityTitleSpan);
+    tdFlowBasic8_2.appendChild(stopQuantity);
     trFlowBasic1.appendChild(tdFlowBasic1_1);
     trFlowBasic1.appendChild(tdFlowBasic1_2);
     trFlowBasic2.appendChild(tdFlowBasic2_1);
@@ -2163,6 +2174,8 @@ FlowBasicInfoFormatPanel.prototype.addFont = function (container) {
     trFlowBasic6.appendChild(tdFlowBasic6_2);
     trFlowBasic7.appendChild(tdFlowBasic7_1);
     trFlowBasic7.appendChild(tdFlowBasic7_2);
+    trFlowBasic8.appendChild(tdFlowBasic8_1);
+    trFlowBasic8.appendChild(tdFlowBasic8_2);
     trFlowBasic1.vAlign = "top";
     trFlowBasic2.vAlign = "top";
     trFlowBasic3.vAlign = "top";
@@ -2170,6 +2183,7 @@ FlowBasicInfoFormatPanel.prototype.addFont = function (container) {
     trFlowBasic5.vAlign = "top";
     trFlowBasic6.vAlign = "top";
     trFlowBasic7.vAlign = "top";
+    trFlowBasic8.vAlign = "top";
     tbodyFlowBasic.appendChild(trFlowBasic1);
     tbodyFlowBasic.appendChild(trFlowBasic2);
     tbodyFlowBasic.appendChild(trFlowBasic3);
@@ -2177,6 +2191,7 @@ FlowBasicInfoFormatPanel.prototype.addFont = function (container) {
     tbodyFlowBasic.appendChild(trFlowBasic5);
     tbodyFlowBasic.appendChild(trFlowBasic6);
     tbodyFlowBasic.appendChild(trFlowBasic7);
+    tbodyFlowBasic.appendChild(trFlowBasic8);
     tableFlowBasic.appendChild(tbodyFlowBasic);
     this.container.appendChild(tableFlowBasic);
     var hrhr = document.createElement('hr');
@@ -4235,6 +4250,7 @@ DiagramFormatPanel.prototype.addView = function (div) {
     var trFlow2 = document.createElement("tr");
     var trFlow3 = document.createElement("tr");
     var trFlow4 = document.createElement("tr");
+    var trFlow5 = document.createElement("tr");
     var tdFlow1 = document.createElement("td");
     var tdFlow2 = document.createElement("td");
     var tdFlow3 = document.createElement("td");
@@ -4243,6 +4259,8 @@ DiagramFormatPanel.prototype.addView = function (div) {
     var tdFlow6 = document.createElement("td");
     var tdFlow7 = document.createElement("td");
     var tdFlow8 = document.createElement("td");
+    var tdFlow9 = document.createElement("td");
+    var tdFlow10 = document.createElement("td");
 
 
     //UUID
@@ -4257,16 +4275,21 @@ DiagramFormatPanel.prototype.addView = function (div) {
     //flowDescription
     var flowDescription = document.createElement('label');
     flowDescription.setAttribute('id', 'flowGroupDescription');
+    //crtDttm
+    var flowQuantity = document.createElement('label');
+    flowQuantity.setAttribute('id', 'flowQuantity');
 
     var span = document.createElement('span');
     var span1 = document.createElement('span');
     var span2 = document.createElement('span');
     var span3 = document.createElement('span');
+    var span4 = document.createElement('span');
     var hr = document.createElement('hr');
     mxUtils.write(span, 'UUID： ');
     mxUtils.write(span1, 'flowGroupName： ');
     mxUtils.write(span2, 'createTime： ');
     mxUtils.write(span3, 'flowDescription： ');
+    mxUtils.write(span4, 'flows： ');
     tdFlow1.appendChild(span);
     tdFlow2.appendChild(UUID);
     tdFlow3.appendChild(span1);
@@ -4275,6 +4298,8 @@ DiagramFormatPanel.prototype.addView = function (div) {
     tdFlow6.appendChild(flowDescription);
     tdFlow7.appendChild(span2);
     tdFlow8.appendChild(crtDttmString);
+    tdFlow9.appendChild(span4);
+    tdFlow10.appendChild(flowQuantity);
     trFlow1.appendChild(tdFlow1);
     trFlow1.appendChild(tdFlow2);
     trFlow2.appendChild(tdFlow3);
@@ -4283,15 +4308,19 @@ DiagramFormatPanel.prototype.addView = function (div) {
     trFlow3.appendChild(tdFlow6);
     trFlow4.appendChild(tdFlow7);
     trFlow4.appendChild(tdFlow8);
+    trFlow5.appendChild(tdFlow9);
+    trFlow5.appendChild(tdFlow10);
     tdFlow1.style.width = "105spx";
     trFlow1.vAlign = 'top';
     trFlow2.vAlign = 'top';
     trFlow3.vAlign = 'top';
     trFlow4.vAlign = 'top';
+    trFlow5.vAlign = 'top';
     tbodyFlow.appendChild(trFlow1);
     tbodyFlow.appendChild(trFlow2);
     tbodyFlow.appendChild(trFlow3);
     tbodyFlow.appendChild(trFlow4);
+    tbodyFlow.appendChild(trFlow5);
     tableFlow.appendChild(tbodyFlow);
     div.appendChild(tableFlow);
     // Grid

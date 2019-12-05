@@ -126,6 +126,8 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
         if (null != flowGroupById) {
             flowGroupVo = new FlowGroupVo();
             BeanUtils.copyProperties(flowGroupById, flowGroupVo);
+            List<FlowVo> flowVoList = FlowUtil.flowListPoToVo(flowGroupById.getFlowList());
+            flowGroupVo.setFlowVoList(flowVoList);
         }
         rtnMap.put("code", 200);
         rtnMap.put("flowGroupVo", flowGroupVo);
