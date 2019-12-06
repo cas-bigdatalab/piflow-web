@@ -4292,6 +4292,7 @@ DiagramFormatPanel.prototype.addView = function (div) {
     var trFlow2 = document.createElement("tr");
     var trFlow3 = document.createElement("tr");
     var trFlow4 = document.createElement("tr");
+    var trFlow5 = document.createElement("tr");
     var tdFlow1 = document.createElement("td");
     var tdFlow2 = document.createElement("td");
     var tdFlow3 = document.createElement("td");
@@ -4300,6 +4301,8 @@ DiagramFormatPanel.prototype.addView = function (div) {
     var tdFlow6 = document.createElement("td");
     var tdFlow7 = document.createElement("td");
     var tdFlow8 = document.createElement("td");
+    var tdFlow9 = document.createElement("td");
+    var tdFlow10 = document.createElement("td");
 
 
     //UUID
@@ -4315,15 +4318,20 @@ DiagramFormatPanel.prototype.addView = function (div) {
     var flowDescription = document.createElement('label');
     flowDescription.setAttribute('id', 'flowDescription');
 
+    var stopQuantity = document.createElement('label');
+    stopQuantity.setAttribute('id', 'stopQuantity');
+
     var span = document.createElement('span');
     var span1 = document.createElement('span');
     var span2 = document.createElement('span');
     var span3 = document.createElement('span');
+    var span4 = document.createElement('span');
     var hr = document.createElement('hr');
     mxUtils.write(span, 'UUID： ');
     mxUtils.write(span1, 'flowName： ');
     mxUtils.write(span2, 'createTime： ');
     mxUtils.write(span3, 'description： ');
+    mxUtils.write(span4, 'stops： ');
     tdFlow1.appendChild(span);
     tdFlow2.appendChild(UUID);
     tdFlow3.appendChild(span1);
@@ -4332,6 +4340,8 @@ DiagramFormatPanel.prototype.addView = function (div) {
     tdFlow6.appendChild(flowDescription);
     tdFlow7.appendChild(span2);
     tdFlow8.appendChild(crtDttmString);
+    tdFlow9.appendChild(span4);
+    tdFlow10.appendChild(stopQuantity);
     trFlow1.appendChild(tdFlow1);
     trFlow1.appendChild(tdFlow2);
     trFlow2.appendChild(tdFlow3);
@@ -4340,15 +4350,19 @@ DiagramFormatPanel.prototype.addView = function (div) {
     trFlow3.appendChild(tdFlow6);
     trFlow4.appendChild(tdFlow7);
     trFlow4.appendChild(tdFlow8);
-    tdFlow1.style.width = "72px";
+    trFlow5.appendChild(tdFlow9);
+    trFlow5.appendChild(tdFlow10);
+    tdFlow1.style.width = "76px";
     trFlow1.vAlign = 'top';
     trFlow2.vAlign = 'top';
     trFlow3.vAlign = 'top';
     trFlow4.vAlign = 'top';
+    trFlow5.vAlign = 'top';
     tbodyFlow.appendChild(trFlow1);
     tbodyFlow.appendChild(trFlow2);
     tbodyFlow.appendChild(trFlow3);
     tbodyFlow.appendChild(trFlow4);
+    tbodyFlow.appendChild(trFlow5);
     tableFlow.appendChild(tbodyFlow);
     div.appendChild(tableFlow);
     // Grid

@@ -86,7 +86,7 @@ function openDrawingBoard(evt) {
                 if (200 === dataMap.code) {
                     var flow_obj = dataMap.flow
                     var tempWindow = window.open("/piflow-web/grapheditor/home?load=" + flow_obj.id + "&parentAccessPath=flowGroupList");
-                    if (tempWindow == null || typeof(tempWindow)=='undefined'){
+                    if (tempWindow == null || typeof (tempWindow) == 'undefined') {
                         alert('The window cannot be opened. Please check your browser settings.')
                     }
                 } else {
@@ -157,6 +157,7 @@ function queryFlowProperty(flowPageId) {
                 var dataExecutorNumber = (null == data.executorNumber ? "" : data.executorNumber);
                 var dataDescription = (null != data.description ? data.description : "");
                 var dataCrtDttmString = (null == data.crtDttmString ? "" : data.crtDttmString);
+                var stopQuantity = (data.stopsVoList ? data.stopsVoList.length : "0");
                 $('#flowNameSpan').text(dataName);
                 $('#flowNameLabel').attr("value", dataName);
                 $('#flowNameLabel').attr("name", dataId);
@@ -168,6 +169,7 @@ function queryFlowProperty(flowPageId) {
                 $('#flowExecutorMemory').text(dataExecutorMemory);
                 $('#flowExecutorNumber').text(dataExecutorNumber);
                 $('#flowCreateDate').text(dataCrtDttmString);
+                $('#stopQuantity').text(stopQuantity);
                 add();
                 var addDatas = [
                     {id: "id0", name: "driverMemory", value: dataDriverMemory, description: "driverMemory"},
@@ -417,11 +419,13 @@ function queryFlowGroup() {
                         document.getElementById('flowGroupName').innerText = flowGroupVo.name ? flowGroupVo.name : "No content";
                         document.getElementById('flowGroupDescription').innerText = flowGroupVo.description ? flowGroupVo.description : "No content";
                         document.getElementById('createTime').innerText = flowGroupVo.crtDttmString ? flowGroupVo.crtDttmString : "No content";
+                        document.getElementById('flowQuantity').innerText = flowGroupVo.flowVoList ? flowGroupVo.flowVoList.length : "0";
                     } else {
                         document.getElementById('UUID').innerText = "No content";
                         document.getElementById('flowName').innerText = "No content";
                         document.getElementById('flowDescription').innerText = "No content";
                         document.getElementById('createTime').innerText = "No content";
+                        document.getElementById('flowQuantity').innerText = "0";
                     }
                 getRunningProcessList();
             }
@@ -460,7 +464,7 @@ function runFlowGroup(runMode) {
                     //Jump to the monitoring page after starting successfully
                     var windowOpen = window.open("/piflow-web/processGroup/getProcessGroupById?parentAccessPath=groupDrawingBoard&processGroupId=" + dataMap.processGroupId);
                     //var tempwindow = window.open('_blank');
-                    if (windowOpen == null || typeof(windowOpen)=='undefined'){
+                    if (windowOpen == null || typeof (windowOpen) == 'undefined') {
                         alert('The window cannot be opened. Please check your browser settings.')
                     }
                     //tempwindow.location = "/piflow-web/processGroup/getProcessGroupById?parentAccessPath=grapheditor&processGroupId=" + dataMap.processGroupId;

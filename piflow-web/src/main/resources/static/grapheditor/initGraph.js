@@ -716,11 +716,13 @@ function queryFlowInfo() {
                     document.getElementById('flowName').innerText = flow.name ? flow.name : "No content";
                     document.getElementById('flowDescription').innerText = flow.description ? flow.description : "No content";
                     document.getElementById('createTime').innerText = flow.crtDttmString ? flow.crtDttmString : "No content";
+                    document.getElementById('stopQuantity').innerText = flow.stopsVoList ? flow.stopsVoList.length : "0";
                 } else {
                     document.getElementById('UUID').innerText = "No content";
                     document.getElementById('flowName').innerText = "No content";
                     document.getElementById('flowDescription').innerText = "No content";
                     document.getElementById('createTime').innerText = "No content";
+                    document.getElementById('stopQuantity').innerText = "0";
                 }
                 getRunningProcessList();
             }
