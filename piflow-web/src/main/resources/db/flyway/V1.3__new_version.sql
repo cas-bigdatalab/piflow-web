@@ -364,4 +364,4 @@ INSERT INTO `sys_schedule`(`id`, `crt_dttm`, `crt_user`, `enable_flag`, `last_up
 -- ----------------------------
 -- update Example1
 -- ----------------------------
-update `flow_stops_property` SET custom_value = replace(custom_value,'10.0.86.89','10.0.86.191') WHERE id in('0641076d5ae840c09d2be5b71fsp0011','0641076d5ae840c09d2be5b71fsp0077','0641076d5ae840c09d2be5b71fsp0080','0641076d5ae840c09d2be5b71fsp0086');
+update `flow_stops_property` SET custom_value = replace(custom_value,'10.0.86.89','10.0.86.191') WHERE id in('1a98eb8872864f29862807e87af14aa9','ded789f2a7c94fb7b90f9e9762cdc211','e35b30dd1aba478d84cb26f3da3a8476','fb679cb8ccd149018a50c7d9a2986d02');
