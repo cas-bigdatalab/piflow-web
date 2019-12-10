@@ -82,7 +82,6 @@ function openProcessMonitor(pageId, e) {
             if (data) {
                 var dataMap = JSON.parse(data);
                 if (200 === dataMap.code) {
-                    console.log("1111111");
                     var tempWindow = window.open("/piflow-web/process/getProcessById?processId=" + dataMap.processId + "&parentAccessPath=processGroupList");
                     if (tempWindow == null || typeof(tempWindow)=='undefined'){
                         alert('The window cannot be opened. Please check your browser settings.')

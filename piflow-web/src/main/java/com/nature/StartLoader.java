@@ -42,8 +42,8 @@ public class StartLoader implements ApplicationRunner {
         CheckPathUtils.isChartPathExist(storagePathHead + "/storage/video/");
         CheckPathUtils.isChartPathExist(storagePathHead + "/storage/xml/");
         SysParamsCache.setImagesPath(storagePathHead + "/storage/image/");
-        SysParamsCache.setVideosPath(storagePathHead + "/storage/image/");
-        SysParamsCache.setXmlPath(storagePathHead + "/storage/image/");
+        SysParamsCache.setVideosPath(storagePathHead + "/storage/video/");
+        SysParamsCache.setXmlPath(storagePathHead + "/storage/xml/");
         loadStop();
         startStatusRunning();
     }
