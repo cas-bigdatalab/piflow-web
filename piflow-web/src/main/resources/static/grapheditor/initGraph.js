@@ -1265,6 +1265,7 @@ function loadingXml(id, loadId) {
     });
 }
 
+/*
 function showSelect() {
     var bt = document.getElementById("loadingXml");
     bt.onclick = function () {
@@ -1301,6 +1302,7 @@ function loadingSelect() {
         }
     });
 }
+*/
 
 function openTemplateList() {
     if (isExample) {
@@ -1346,6 +1348,8 @@ function openTemplateList() {
                     skin: 'layui-layer-rim', //Add borders
                     content: showSelectDivHtml
                 });
+            } else {
+                layer.msg("No template, please create", {time: 2000});
             }
         }
     });
