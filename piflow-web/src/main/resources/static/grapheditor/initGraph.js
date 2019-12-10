@@ -388,15 +388,20 @@ function add(addParamData) {
             + '<tr>'
             + '<td style="width: 99px;"><span>dataSource: </span></td>'
             + '<td style="width: 25px;"><img src="/piflow-web/img/descIcon.png" title="Fill Datasoure" style="cursor: pointer;"></td>'
-            + '<td id="datasourceTdElement">'
+            + '<td>'
             // + '<select id="datasourceSelectElement" onblur="alert(1);" class="form-control" style="height: 32px;">'
+            + '<div id="datasourceDivElement" style="float: left;width: 98%;">'
             + '<select id="datasourceSelectElement" class="form-control" style="height: 32px;">'
             + '<option value="" selected="selected"></option>'
-            + '<option value="111" style="background-color: rgb(219, 219, 219);">111</option>'
-            + '<option value="222" style="background-color: rgb(219, 219, 219);">111</option>'
             + '</select>'
+            + '</div>'
+            + '<div style="float: left;width: 2%;">'
+            + '<button class="btn" onclick="openDatasourceList()" style="margin-left: 2px;"><i class="glyphicon glyphicon-edit"></i></button>'
+            + '</div>'
             + '</td>'
-            + '<td><button class="btn" onclick="openDatasourceList()" style="margin-right: 2px;"><i class="glyphicon glyphicon-edit"></i></button></td>'
+            + '<td style="width: 37px;text-align: right;">'
+            + ''
+            + '</td>'
             + '</tr>'
             + '</tbody>'
             + '</table>'
@@ -513,7 +518,7 @@ function getDatasourceList(stop_id, stop_page_id, dataSourceVo) {
                 });
                 */
                 var dataSourceList = dataMap.data;
-                var select_html = '<select id="datasourceSelectElement" class="form-control" style="width: 95%;" onchange="fillDatasource(this,\'' + stop_id + '\',\'' + stop_page_id + '\')">'
+                var select_html = '<select id="datasourceSelectElement" class="form-control" style="width: 100%;" onchange="fillDatasource(this,\'' + stop_id + '\',\'' + stop_page_id + '\')">'
                 if (dataSourceList && dataSourceList.length > 0) {
                     var option_html = '<option value="">please select datasource...</option>';
                     var dataSourceVoId = '';
@@ -533,8 +538,8 @@ function getDatasourceList(stop_id, stop_page_id, dataSourceVo) {
                             + '</option>');
                     }
                 }
-                select_html += (option_html + "</select>");
-                $('#datasourceTdElement').html(select_html);
+                select_html += (option_html + "</select></div>");
+                $('#datasourceDivElement').html(select_html);
             } else {
                 //alert(operType + " save fail");
                 layer.msg("Load fail", {icon: 2, shade: 0, time: 2000}, function () {
@@ -1369,7 +1374,9 @@ function loadTemplate() {
         content: 'Are you sure you want to load ' + name + '？',
         btn: ['submit', 'cancel'],
         yes: function (index, layero) {
+            fullScreen.show();
             loadingXml(id, loadId);
+            fullScreen.hide();
             var oDiv = document.getElementById("divloadingXml");
             oDiv.style.display = "none";
         },

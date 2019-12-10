@@ -603,7 +603,6 @@ function showSelect() {
         }
     }
 }
-*/
 
 function loadingSelect() {
     $("#loadingXmlSelect").html("");
@@ -623,6 +622,7 @@ function loadingSelect() {
         }
     });
 }
+*/
 
 function openTemplateList() {
     if (isExample) {
@@ -653,7 +653,7 @@ function openTemplateList() {
                         + '</select>'
                         + '</div>');
                     loadTemplateBtn = '<div style="position: absolute;bottom: 12px;right: 10px;">'
-                        + '<input type="button" class="btn" value="Submit" onclick="loadTemplate()"/>'
+                        + '<input type="button" class="btn" value="Submit" onclick="loadFlowGroupTemplate()"/>'
                         + '</div>';
                 }
                 showSelectDivHtml += (showSelectHtml + loadTemplateBtn + '</div>');
@@ -687,7 +687,9 @@ function loadFlowGroupTemplate() {
         content: 'Are you sure you want to load ' + name + '？',
         btn: ['submit', 'cancel'],
         yes: function (index, layero) {
+            fullScreen.show();
             loadingXml(id, loadId);
+            fullScreen.hide();
             var oDiv = document.getElementById("divloadingXml");
             oDiv.style.display = "none";
         },
