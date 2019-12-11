@@ -173,7 +173,8 @@ function getCheckpoint(runMode) {
         url: "/piflow-web/process/getCheckpoint",//This is the name of the file where I receive data in the background.
         //data:$('#loginForm').serialize(),//Serialize the form
         data: {
-            pID: pID,
+            //pID: pID,
+            pID: "application_1575450875082_0065",
             parentProcessId: parentProcessId
         },
         async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
@@ -190,18 +191,46 @@ function getCheckpoint(runMode) {
         success: function (data) {//Operation after request successful
             //console.log("success");
             $('#checkpointContent').html(data);
+            $('#checkpointContentNew').html(data);
             if ($('#checkpointsIsNull').val()) {
                 //alert("No Checkpoint was queried");
                 //layer.msg("No Checkpoint was queried", {icon: 2, shade: 0, time: 2000}, function () {
                 //});
                 //checkpointShow.modal('hide');
+
                 runProcess(runMode);
             } else {
                 checkpointShow.modal('show');
                 runFlow.show();
                 debugFlow.show();
                 fullScreen.hide();
+                if ("DEBUG" === runMode) {
+                    $("#debug_checkpoint").show();
+                    $("#run_checkpoint").hide();
+
+                    $("#debug_checkpoint_new").show();
+                    $("#run_checkpoint_new").hide();
+                } else {
+                    $("#debug_checkpoint").hide();
+                    $("#run_checkpoint").show();
+
+                    $("#debug_checkpoint_new").hide();
+                    $("#run_checkpoint_new").show();
+                }
+                /*
+                layer.open({
+                    type: 1,
+                    title: '<span style="color: #269252;">Choose Checkpoint Windows</span>',
+                    shadeClose: true,
+                    closeBtn: 1,
+                    shift: 7,
+                    area: ['500px', '200px'], //Width height
+                    skin: 'layui-layer-rim', //Add borders
+                    content: $("#layer_open_checkpoint")
+                });
+                */
             }
+            // Choose Checkpoint Windows
         }
     });
 

@@ -569,6 +569,7 @@ function FileTypeCheck() {
 }
 
 function loadingXml(id, loadId) {
+    fullScreen.show();
     $.ajax({
         type: 'post',
         data: {
@@ -580,6 +581,7 @@ function loadingXml(id, loadId) {
     }).success(function (data) {
         window.location.reload();
     }).error(function () {
+        fullScreen.hide();
     });
 }
 
@@ -676,7 +678,7 @@ function openTemplateList() {
 }
 
 function loadFlowGroupTemplate() {
-    var id = $("#loadingXmlSelect").val();
+    var id = $("#loadingXmlSelectNew").val();
     if (id == '-1') {
         return;
     }
@@ -687,9 +689,7 @@ function loadFlowGroupTemplate() {
         content: 'Are you sure you want to load ' + name + '？',
         btn: ['submit', 'cancel'],
         yes: function (index, layero) {
-            fullScreen.show();
             loadingXml(id, loadId);
-            fullScreen.hide();
             var oDiv = document.getElementById("divloadingXml");
             oDiv.style.display = "none";
         },
