@@ -831,9 +831,9 @@ public class FlowXmlUtils {
                         String displayName = propertyValue.attributeValue("displayName");
                         String propertyId = propertyValue.attributeValue("id");
                         String propertyName = propertyValue.attributeValue("name");
-                        Boolean required = propertyValue.attributeValue("required").equals("1") ? true : false;
-                        Boolean sensitive = propertyValue.attributeValue("sensitive").equals("1") ? true : false;
-                        Boolean isSelect = propertyValue.attributeValue("isSelect").equals("1") ? true : false;
+                        Boolean required = propertyValue.attributeValue("required").equals("true") ? true : false;
+                        Boolean sensitive = propertyValue.attributeValue("sensitive").equals("true") ? true : false;
+                        Boolean isSelect = propertyValue.attributeValue("isSelect").equals("true") ? true : false;
                         propertyVo.setAllowableValues(allowableValues);
                         propertyVo.setCustomValue(customValue);
                         propertyVo.setDescription(propertyDescription);
@@ -1437,9 +1437,9 @@ public class FlowXmlUtils {
                     String displayName = propertyValue.attributeValue("displayName");
                     String propertyId = propertyValue.attributeValue("id");
                     String propertyName = propertyValue.attributeValue("name");
-                    Boolean required = propertyValue.attributeValue("required").equals("1") ? true : false;
-                    Boolean sensitive = propertyValue.attributeValue("sensitive").equals("1") ? true : false;
-                    Boolean isSelect = propertyValue.attributeValue("isSelect").equals("1") ? true : false;
+                    Boolean required = propertyValue.attributeValue("required").equals("true") ? true : false;
+                    Boolean sensitive = propertyValue.attributeValue("sensitive").equals("true") ? true : false;
+                    Boolean isSelect = propertyValue.attributeValue("isSelect").equals("true") ? true : false;
                     property.setCrtDttm(new Date());
                     property.setCrtUser(username);
                     property.setLastUpdateDttm(new Date());
