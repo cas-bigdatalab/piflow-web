@@ -173,8 +173,7 @@ function getCheckpoint(runMode) {
         url: "/piflow-web/process/getCheckpoint",//This is the name of the file where I receive data in the background.
         //data:$('#loginForm').serialize(),//Serialize the form
         data: {
-            //pID: pID,
-            pID: "application_1575450875082_0065",
+            pID: pID,
             parentProcessId: parentProcessId
         },
         async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
@@ -230,7 +229,6 @@ function getCheckpoint(runMode) {
                 });
                 */
             }
-            // Choose Checkpoint Windows
         }
     });
 
