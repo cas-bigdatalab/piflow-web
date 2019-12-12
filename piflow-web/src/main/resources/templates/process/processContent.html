@@ -48,7 +48,7 @@
 <div style=" width: 100%;position: fixed;z-index: 99999;left: 0px;bottom: 0px;text-align: center;height: 28px;line-height: 28px;background: #37714b;">
     <span id="web_flowList_navigation" style="display: none;">
         <span style="color: #ffffff">
-            <a style="color: #ffffff" th:href="@{/web/flowList}">Flow</a>
+            <a style="color: #ffffff" th:href="@{/web/flowList}">FlowList</a>
         </span>
         <span style="color: #ffffff">&gt;&gt;</span>
     </span>
@@ -89,17 +89,30 @@
     <div id="modalPort" class="modal-dialog" role="document">
         <div class="modal-content" style="width: 100%;  top: 77px;">
             <div class="modal-header">
-                <h4 class="modal-title" id="myModalLabelPort">Choose Checkpoint Windows</h4>
+                <h4 class="modal-title" id="myModalLabelPort">Please select Checkpoint or submit directly</h4>
             </div>
             <div id="checkpointContent" class="modal-body">
                 No checkpoint information was queried
                 <input type="checkbox" value="">
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" onclick="runProcess()">Run</button>
-                <button type="button" class="btn btn-default" onclick="runProcess('DEBUG')">Debug</button>
+                <button id="run_checkpoint" type="button" class="btn btn-default" onclick="runProcess()">Submit</button>
+                <button id="debug_checkpoint" type="button" class="btn btn-default" onclick="runProcess('DEBUG')">Submit</button>
                 <button type="button" class="btn btn-default" onclick="cancelRunProcess()">Cancel</button>
             </div>
+        </div>
+    </div>
+</div>
+<div style="z-index: 0;position: fixed;/*display: none;*/">
+    <div id="layer_open_checkpoint">
+        <div id="checkpointContentNew" style="width: 100%; margin-left: 10px;margin-top: 10px;">
+            No checkpoint information was queried
+            <input type="checkbox" value="">
+        </div>
+        <hr>
+        <div style="text-align: right;">
+            <button id="run_checkpoint_new" type="button" class="btn btn-default" onclick="runProcess()">Submit1</button>
+            <button id="debug_checkpoint_new" type="button" class="btn btn-default" onclick="runProcess('DEBUG')">Submit2</button>
         </div>
     </div>
 </div>

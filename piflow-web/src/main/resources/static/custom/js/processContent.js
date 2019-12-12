@@ -190,17 +190,44 @@ function getCheckpoint(runMode) {
         success: function (data) {//Operation after request successful
             //console.log("success");
             $('#checkpointContent').html(data);
+            $('#checkpointContentNew').html(data);
             if ($('#checkpointsIsNull').val()) {
                 //alert("No Checkpoint was queried");
                 //layer.msg("No Checkpoint was queried", {icon: 2, shade: 0, time: 2000}, function () {
                 //});
                 //checkpointShow.modal('hide');
+
                 runProcess(runMode);
             } else {
                 checkpointShow.modal('show');
                 runFlow.show();
                 debugFlow.show();
                 fullScreen.hide();
+                if ("DEBUG" === runMode) {
+                    $("#debug_checkpoint").show();
+                    $("#run_checkpoint").hide();
+
+                    $("#debug_checkpoint_new").show();
+                    $("#run_checkpoint_new").hide();
+                } else {
+                    $("#debug_checkpoint").hide();
+                    $("#run_checkpoint").show();
+
+                    $("#debug_checkpoint_new").hide();
+                    $("#run_checkpoint_new").show();
+                }
+                /*
+                layer.open({
+                    type: 1,
+                    title: '<span style="color: #269252;">Choose Checkpoint Windows</span>',
+                    shadeClose: true,
+                    closeBtn: 1,
+                    shift: 7,
+                    area: ['500px', '200px'], //Width height
+                    skin: 'layui-layer-rim', //Add borders
+                    content: $("#layer_open_checkpoint")
+                });
+                */
             }
         }
     });

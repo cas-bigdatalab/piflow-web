@@ -1,4 +1,5 @@
 var dataSourceTable;
+var newDatasourceWindow;
 
 // Replace the contents of the attribute
 function updateSAttributes(updateHtmlStr, findType, attrName, oldContent, newContent) {
@@ -75,7 +76,7 @@ function dataSourceOpen(dataSourceId) {
             return;
         },
         success: function (data) {//Operation after request successful
-            layer.open({
+            newDatasourceWindow = layer.open({
                 type: 1,
                 title: '<span style="color: #269252;">data source</span>',
                 shadeClose: true,
@@ -193,11 +194,13 @@ function changeDataSourceType(select) {
             var completedHtml = replaceContent(datasourcePropertyHtml, "1Copy", 0);
             $('#custom_property_list').html(completedHtml);
             $('#template_type_id').val("other");
+            $("#layui-layer" + newDatasourceWindow).css("height", "520px");
         } else {
             $('#customOtherDatasource').hide();
             loadDataSourceById(select.value);
         }
     } else {
+        $("#layui-layer" + newDatasourceWindow).css("height", "580px");
         $('#typeContentId').hide();
     }
 }
@@ -222,6 +225,10 @@ function loadDataSourceById(dataSourceId) {
                 var dataSourcePropertyVoList = template.dataSourcePropertyVoList;
                 var datasourcePropertyHtml = '';
                 if (dataSourcePropertyVoList && dataSourcePropertyVoList.length > 0) {
+                    var dataSourcePropertyVoListLength = dataSourcePropertyVoList.length;
+                    var newDatasourceWindow_jq_obj = $("#layui-layer" + newDatasourceWindow);
+                    newDatasourceWindow_jq_obj.css("height", (dataSourcePropertyVoListLength * 43 + 427) + "px");
+                    newDatasourceWindow_jq_obj.find(".layui-layer-content").css("height", (dataSourcePropertyVoListLength * 43 + 384) + "px");
                     for (var j = 0; j < dataSourcePropertyVoList.length; j++) {
                         var dataSourcePropertyVo = dataSourcePropertyVoList[j];
                         datasourcePropertyHtml += ('<div class="layui-form-item layui-form-text">'

@@ -25,7 +25,6 @@ function initDatatableFlowGroupTemplatePage(testTableId, url) {
             "dataSrc": responseHandlerTemplate
         },
         "columns": [
-            {"mDataProp": "flowName"},
             {"mDataProp": "templateName"},
             {"mDataProp": "createTime"},
             {"mDataProp": "actions"}
@@ -41,7 +40,6 @@ function responseHandlerTemplate(res) {
     if (resPageData && resPageData.length > 0) {
         for (var i = 0; i < resPageData.length; i++) {
             var data1 = {
-                "flowName": "no flowName",
                 "templateName": "",
                 "createTime": "",
                 "actions": ""
@@ -60,9 +58,6 @@ function responseHandlerTemplate(res) {
                     '<i class="icon-trash icon-white"></i>' +
                     '</a>' +
                     '</div>';
-                if (resPageData[i].flow && resPageData[i].flow.name) {
-                    data1.flowName = resPageData[i].flow.name;
-                }
                 if (resPageData[i].name) {
                     data1.templateName = resPageData[i].name;
                 }

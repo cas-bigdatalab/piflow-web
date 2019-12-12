@@ -569,6 +569,7 @@ function FileTypeCheck() {
 }
 
 function loadingXml(id, loadId) {
+    fullScreen.show();
     $.ajax({
         type: 'post',
         data: {
@@ -580,6 +581,7 @@ function loadingXml(id, loadId) {
     }).success(function (data) {
         window.location.reload();
     }).error(function () {
+        fullScreen.hide();
     });
 }
 
@@ -603,7 +605,6 @@ function showSelect() {
         }
     }
 }
-*/
 
 function loadingSelect() {
     $("#loadingXmlSelect").html("");
@@ -623,6 +624,7 @@ function loadingSelect() {
         }
     });
 }
+*/
 
 function openTemplateList() {
     if (isExample) {
@@ -653,7 +655,7 @@ function openTemplateList() {
                         + '</select>'
                         + '</div>');
                     loadTemplateBtn = '<div style="position: absolute;bottom: 12px;right: 10px;">'
-                        + '<input type="button" class="btn" value="Submit" onclick="loadTemplate()"/>'
+                        + '<input type="button" class="btn" value="Submit" onclick="loadFlowGroupTemplate()"/>'
                         + '</div>';
                 }
                 showSelectDivHtml += (showSelectHtml + loadTemplateBtn + '</div>');
@@ -676,7 +678,7 @@ function openTemplateList() {
 }
 
 function loadFlowGroupTemplate() {
-    var id = $("#loadingXmlSelect").val();
+    var id = $("#loadingXmlSelectNew").val();
     if (id == '-1') {
         return;
     }
