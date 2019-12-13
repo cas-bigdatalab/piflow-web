@@ -1,4 +1,4 @@
-package com.nature.repository.DataSource;
+package com.nature.repository.dataSource;
 
 import com.nature.component.dataSource.model.DataSource;
 import org.springframework.data.jpa.repository.JpaRepository;

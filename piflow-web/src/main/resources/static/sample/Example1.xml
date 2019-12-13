@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<flow description="parse xml and csv file， and put data into csv、json and hive table" driverMemory="1g" executorCores="1" executorMemory="1g" executorNumber="1" id="0c4fdee973824a999e1569770677c020" name="Example1"> 
+<stop bundel="cn.piflow.bundle.common.Merge" crtUser="admin" description="Merge data into one stop." groups="CommonGroup" id="033e870e49a842e08f08f8f201921b0d" inPortType="ANY" inports="Any" isCheckpoint="1" name="Merge" outPortType="DEFAULT" outports="Default" owner="xjzhu@cnic.cn" pageId="6"> 
+<property allowableValues="[]" crtUser="admin" customValue="data1,data2" description="inports" displayName="inports" id="9398a13aaf7c4e888fd83fc0753398ad" isSelect="false" name="inports" required="false" sensitive="false"/> 
+</stop> 
+<stop bundel="cn.piflow.bundle.csv.CsvSave" crtUser="admin" description="Save data into csv file." groups="CsvGroup" id="229a334908e1441b91391e2983803f91" inPortType="DEFAULT" inports="Default" isCheckpoint="0" name="CsvSave" outPortType="NONE" outports="None" owner="xjzhu@cnic.cn" pageId="13"> 
+<property allowableValues="[]" crtUser="admin" customValue="true" description="header" displayName="header" id="3ac11df60a3449408c2dfad5eeef4db3" isSelect="false" name="header" required="false" sensitive="false"/> 
+<property allowableValues="[]" crtUser="admin" customValue="hdfs://10.0.86.191:9000/xjzhu/phdthesis_result.csv" description="csvSavePath" displayName="csvSavePath" id="e35b30dd1aba478d84cb26f3da3a8476" isSelect="false" name="csvSavePath" required="false" sensitive="false"/> 
+<property allowableValues="[]" crtUser="admin" customValue="," description="delimiter" displayName="delimiter" id="e6f8ce9416004d5aa3e50afad32d78b5" isSelect="false" name="delimiter" required="false" sensitive="false"/> 
+</stop> 
+<stop bundel="cn.piflow.bundle.xml.XmlParser" crtUser="admin" description="Parse xml file." groups="XmlGroup" id="30e18a027f4b47d7a504d76fe9672502" inPortType="NONE" inports="None" isCheckpoint="0" name="XmlParser" outPortType="DEFAULT" outports="Default" owner="xjzhu@cnic.cn" pageId="2"> 
+<property allowableValues="[]" crtUser="admin" customValue="hdfs://10.0.86.191:9000/xjzhu/dblp.mini.xml" description="xmlpath" displayName="xmlpath" id="1a98eb8872864f29862807e87af14aa9" isSelect="false" name="xmlpath" required="false" sensitive="false"/> 
+<property allowableValues="[]" crtUser="admin" customValue="phdthesis" description="rowTag" displayName="rowTag" id="7ff7a628598842c8b59bb4c241b74448" isSelect="false" name="rowTag" required="false" sensitive="false"/> 
+</stop> 
+<stop bundel="cn.piflow.bundle.json.JsonSave" crtUser="admin" description="Save data into json file." groups="JsonGroup" id="827637466cf94b95a1ab9cce7105c3b3" inPortType="DEFAULT" inports="Default" isCheckpoint="0" name="JsonSave" outPortType="NONE" outports="None" owner="xjzhu@cnic.cn" pageId="15"> 
+<property allowableValues="[]" crtUser="admin" customValue="hdfs://10.0.86.191:9000/xjzhu/phdthesis.json" description="jsonSavePath" displayName="jsonSavePath" id="fb679cb8ccd149018a50c7d9a2986d02" isSelect="false" name="jsonSavePath" required="false" sensitive="false"/> 
+</stop> 
+<stop bundel="cn.piflow.bundle.common.Fork" crtUser="admin" description="Fork data into diffenrent stop." groups="CommonGroup" id="b258c2e02fd74e008535cd83284f49a0" inPortType="DEFAULT" inports="Default" isCheckpoint="0" name="Fork" outPortType="ANY" outports="Any" owner="xjzhu@cnic.cn" pageId="9"> 
+<property allowableValues="[]" crtUser="admin" customValue="out1,out2,out3" description="outports" displayName="outports" id="b09be05c1173493dad5730b160643503" isSelect="false" name="outports" required="false" sensitive="false"/> 
+</stop> 
+<stop bundel="cn.piflow.bundle.csv.CsvParser" crtUser="admin" description="Parse csv file." groups="CsvGroup" id="d2266c3179de4c5385cef17985c03933" inPortType="NONE" inports="None" isCheckpoint="0" name="CsvParser" outPortType="DEFAULT" outports="Default" owner="xjzhu@cnic.cn" pageId="5"> 
+<property allowableValues="[]" crtUser="admin" customValue="title,author,pages" description="schema" displayName="schema" id="17ac919707a14b2fa545aa2789ec3d97" isSelect="false" name="schema" required="false" sensitive="false"/> 
+<property allowableValues="[]" crtUser="admin" customValue="false" description="header" displayName="header" id="28a34932134b49a682dc20b507cd448b" isSelect="false" name="header" required="false" sensitive="false"/> 
+<property allowableValues="[]" crtUser="admin" customValue="hdfs://10.0.86.191:9000/xjzhu/phdthesis.csv" description="csvPath" displayName="csvPath" id="ded789f2a7c94fb7b90f9e9762cdc211" isSelect="false" name="csvPath" required="false" sensitive="false"/> 
+<property allowableValues="[]" crtUser="admin" customValue="," description="delimiter" displayName="delimiter" id="e7bbf9f4c65a451f827701654aede47d" isSelect="false" name="delimiter" required="false" sensitive="false"/> 
+</stop> 
+<stop bundel="cn.piflow.bundle.hive.PutHiveStreaming" crtUser="admin" description="Save data into hive." groups="HiveGroup" id="d68f29590a2845e1a8a944bccaf6b311" inPortType="DEFAULT" inports="Default" isCheckpoint="0" name="PutHiveStreaming" outPortType="NONE" outports="None" owner="xjzhu@cnic.cn" pageId="11"> 
+<property allowableValues="[]" crtUser="admin" customValue="sparktest" description="DataBase" displayName="DataBase" id="616062f81dee442cbde226860c950983" isSelect="false" name="database" required="false" sensitive="false"/> 
+<property allowableValues="[]" crtUser="admin" customValue="dblp_phdthesis" description="Table" displayName="Table" id="e0c889f149a547fea414186f52bddbc9" isSelect="false" name="table" required="false" sensitive="false"/> 
+</stop> 
+<stop bundel="cn.piflow.bundle.common.SelectField" crtUser="admin" description="Select data field." groups="CommonGroup" id="da9bc38d76ef4c20bcb26cf2f3c62300" inPortType="DEFAULT" inports="Default" isCheckpoint="1" name="SelectField" outPortType="DEFAULT" outports="Default" owner="xjzhu@cnic.cn" pageId="3"> 
+<property allowableValues="[]" crtUser="admin" customValue="title,author,pages" description="schema" displayName="schema" id="df4d78d49a5b4d48839b30374c9fae2c" isSelect="false" name="schema" required="false" sensitive="false"/> 
+</stop> 
+<paths crtUser="Add" from="5" inport="data2" pageId="8" to="6"/> 
+<paths crtUser="Add" from="9" outport="out2" pageId="14" to="13"/> 
+<paths crtUser="Add" from="2" pageId="4" to="3"/> 
+<paths crtUser="Add" from="3" inport="data1" pageId="7" to="6"/> 
+<paths crtUser="Add" from="9" outport="out1" pageId="12" to="11"/> 
+<paths crtUser="Add" from="6" pageId="10" to="9"/> 
+<paths crtUser="Add" from="9" outport="out3" pageId="16" to="15"/> 
+<mxGraphModel arrows="1" background="#ffffff" connect="1" dx="969" dy="594" fold="1" grid="1" gridSize="10" guides="1" page="1" pageHeight="1169" pageScale="1" pageWidth="827" tooltips="1">
+<root>
+<mxCell id="0"/>
+<mxCell id="1" parent="0"/>
+<mxCell id="3" parent="1" style="image;html=1;labelBackgroundColor=#ffffff;image=/piflow-web/images/SelectField_128x128.png" value="SelectField" vertex="1">
+<mxGeometry as="geometry" height="66" width="66" x="451.5" y="196"/>
+</mxCell>
+<mxCell edge="1" id="14" parent="1" source="9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;noEdgeStyle=1;orthogonal=1;" target="13">
+<mxGeometry as="geometry" relative="1"/>
+</mxCell>
+<mxCell edge="1" id="7" parent="1" source="3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;noEdgeStyle=1;orthogonal=1;" target="6">
+<mxGeometry as="geometry" relative="1"/>
+</mxCell>
+<mxCell edge="1" id="8" parent="1" source="5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;noEdgeStyle=1;orthogonal=1;" target="6">
+<mxGeometry as="geometry" relative="1"/>
+</mxCell>
+<mxCell edge="1" id="4" parent="1" source="2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;noEdgeStyle=1;orthogonal=1;" target="3">
+<mxGeometry as="geometry" relative="1"/>
+</mxCell>
+<mxCell edge="1" id="12" parent="1" source="9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;noEdgeStyle=1;orthogonal=1;" target="11">
+<mxGeometry as="geometry" relative="1"/>
+</mxCell>
+<mxCell id="11" parent="1" style="image;html=1;labelBackgroundColor=#ffffff;image=/piflow-web/images/PutHiveStreaming_128x128.png" value="PutHiveStreaming" vertex="1">
+<mxGeometry as="geometry" height="66" width="66" x="484.5" y="754"/>
+</mxCell>
+<mxCell id="13" parent="1" style="image;html=1;labelBackgroundColor=#ffffff;image=/piflow-web/images/CsvSave_128x128.png" value="CsvSave" vertex="1">
+<mxGeometry as="geometry" height="66" width="66" x="373" y="754"/>
+</mxCell>
+<mxCell id="5" parent="1" style="image;html=1;labelBackgroundColor=#ffffff;image=/piflow-web/images/CsvParser_128x128.png" value="CsvParser" vertex="1">
+<mxGeometry as="geometry" height="66" width="66" x="300.5" y="196"/>
+</mxCell>
+<mxCell id="2" parent="1" style="image;html=1;labelBackgroundColor=#ffffff;image=/piflow-web/images/XmlParser_128x128.png" value="XmlParser" vertex="1">
+<mxGeometry as="geometry" height="66" width="66" x="436.5" y="10"/>
+</mxCell>
+<mxCell id="6" parent="1" style="image;html=1;labelBackgroundColor=#ffffff;image=/piflow-web/images/Merge_128x128.png" value="Merge" vertex="1">
+<mxGeometry as="geometry" height="66" width="66" x="376.625" y="382"/>
+</mxCell>
+<mxCell edge="1" id="16" parent="1" source="9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;noEdgeStyle=1;orthogonal=1;" target="15">
+<mxGeometry as="geometry" relative="1"/>
+</mxCell>
+<mxCell edge="1" id="10" parent="1" source="6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;noEdgeStyle=1;orthogonal=1;exitX=0.5;exitY=1;" target="9">
+<mxGeometry as="geometry" relative="1"/>
+</mxCell>
+<mxCell id="15" parent="1" style="image;html=1;labelBackgroundColor=#ffffff;image=/piflow-web/images/JsonSave_128x128.png" value="JsonSave" vertex="1">
+<mxGeometry as="geometry" height="66" width="66" x="277" y="754"/>
+</mxCell>
+<mxCell id="9" parent="1" style="image;html=1;labelBackgroundColor=#ffffff;image=/piflow-web/images/Fork_128x128.png" value="Fork" vertex="1">
+<mxGeometry as="geometry" height="66" width="66" x="376.875" y="568"/>
+</mxCell>
+</root>
+</mxGraphModel>
+</flow>

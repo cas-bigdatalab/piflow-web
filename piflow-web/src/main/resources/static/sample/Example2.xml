@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<flow description="dblp parser" driverMemory="4g" executorCores="6" executorMemory="4g" executorNumber="3" id="c9c77d24b65942fb9665fbdbe8710236" name="Example2"> 
+<stop bundel="cn.piflow.bundle.hdfs.UnzipFilesOnHDFS" crtUser="admin" description="Unzip files on HDFS" groups="Hdfs" id="00e6321fcb7e414e823841b9d234d6bd" inPortType="DEFAULT" inports="Default" isCheckpoint="0" name="UnzipFilesOnHDFS137" outPortType="DEFAULT" outports="Default" owner="yangqidong@cnic.cn" pageId="137"> 
+<property allowableValues="[]" crtUser="admin" description="isCustomize" displayName="isCustomize" id="29b41f51f1c54e4d80d2634d3f5e050c" isSelect="false" name="isCustomize" required="false" sensitive="false"/> 
+<property allowableValues="[]" crtUser="admin" description="hdfsUrl" displayName="hdfsUrl" id="69e80ab46c464cc693da551baef20158" isSelect="false" name="hdfsUrl" required="false" sensitive="false"/> 
+<property allowableValues="[]" crtUser="admin" description="savePath" displayName="savePath" id="93f315ab3dc0497da89912a4d63ed256" isSelect="false" name="savePath" required="false" sensitive="false"/> 
+<property allowableValues="[]" crtUser="admin" description="filePath" displayName="filePath" id="cc6eb6517352468eb6f9af56a203910b" isSelect="false" name="filePath" required="false" sensitive="false"/> 
+</stop> 
+<stop bundel="cn.piflow.bundle.xml.XmlParser" crtUser="admin" description="Parse xml file." groups="Xml" id="08c040037c4447a09afe56c0a6df45f5" inPortType="DEFAULT" inports="Default" isCheckpoint="0" name="XmlParser_incollection" outPortType="DEFAULT" outports="Default" owner="xjzhu@cnic.cn" pageId="59"> 
+<property allowableValues="[]" crtUser="admin" customValue="hdfs://10.0.88.109:8020/web/dblp/dblp.xml" description="xmlpath" displayName="xmlpath" id="21e3415835b8466187a007027d17faee" isSelect="false" name="xmlpath" required="false" sensitive="false"/> 
+<property allowableValues="[]" crtUser="admin" customValue="incollection" description="rowTag" displayName="rowTag" id="4f7987a2135240cc8bb6f0dccc701265" isSelect="false" name="rowTag" required="false" sensitive="false"/> 
+</stop> 
+<stop bundel="cn.piflow.bundle.xml.XmlParser" crtUser="admin" description="Parse xml file." groups="Xml" id="14b56561d2314467bfa0cf2c565216f7" inPortType="DEFAULT" inports="Default" isCheckpoint="0" name="XmlParser_phdthesis" outPortType="DEFAULT" outports="Default" owner="xjzhu@cnic.cn" pageId="67"> 
+<property allowableValues="[]" crtUser="admin" customValue="phdthesis" description="rowTag" displayName="rowTag" id="2fc7d24e7f37436db75dd08f1d5284eb" isSelect="false" name="rowTag" required="false" sensitive="false"/> 
+<property allowableValues="[]" crtUser="admin" customValue="hdfs://10.0.88.109:8020/web/dblp/dblp.xml" description="xmlpath" displayName="xmlpath" id="c3cb096e0c384e0a8ee50f4a3b763163" isSelect="false" name="xmlpath" required="false" sensitive="false"/> 
+</stop> 
+<stop bundel="cn.piflow.bundle.hive.PutHiveStreaming" crtUser="admin" description="Save data into hive." groups="Hive" id="17e2c1a803d4453a818ae6c8f745b915" inPortType="DEFAULT" inports="Default" isCheckpoint="0" name="PutHiveStreaming_www" outPortType="NONE" outports="None" owner="xjzhu@cnic.cn" pageId="48"> 
+<property allowableValues="[]" crtUser="admin" customValue="www" description="Table" displayName="Table" id="243b23a50661486b965fee5951235ce1" isSelect="false" name="table" required="false" sensitive="false"/> 
+<property allowableValues="[]" crtUser="admin" customValue="dblp" description="DataBase" displayName="DataBase" id="6f74b91d2d3d4f84b0be4679d4eeed39" isSelect="false" name="database" required="false" sensitive="false"/> 
+</stop> 
+<stop bundel="cn.piflow.bundle.hive.PutHiveStreaming" crtUser="admin" description="Save data into hive." groups="Hive" id="18d23fcb6dda488bade2c2ff6445ac50" inPortType="DEFAULT" inports="Default" isCheckpoint="0" name="PutHiveStreaming_phdthesis" outPortType="NONE" outports="None" owner="xjzhu@cnic.cn" pageId="73"> 
+<property allowableValues="[]" crtUser="admin" customValue="dblp" description="DataBase" displayName="DataBase" id="c24f69311129498f9def02ac35a36d13" isSelect="false" name="database" required="false" sensitive="false"/> 
+<property allowableValues="[]" crtUser="admin" customValue="phdthesis" description="Table" displayName="Table" id="f27f9a429ced45ee8993d5917655f6a7" isSelect="false" name="table" required="false" sensitive="false"/> 
+</stop> 
+<stop bundel="cn.piflow.bundle.xml.XmlParser" crtUser="admin" description="Parse xml file." groups="Xml" id="1f089b0ea2b94ad5b68f5c1e07ae186e" inPortType="DEFAULT" inports="Default" isCheckpoint="0" name="XmlParser_inproceedings" outPortType="DEFAULT" outports="Default" owner="xjzhu@cnic.cn" pageId="49"> 
+<property allowableValues="[]" crtUser="admin" customValue="hdfs://10.0.88.109:8020/web/dblp/dblp.xml" description="xmlpath" displayName="xmlpath" id="4cb438f1f18448518d96b83668287e6b" isSelect="false" name="xmlpath" required="false" sensitive="false"/> 
+<property allowableValues="[]" crtUser="admin" customValue="inproceedings" description="rowTag" displayName="rowTag" id="c189d6b50a40454bb4736ab54a7ea9c5" isSelect="false" name="rowTag" required="false" sensitive="false"/> 
+</stop> 
+<stop bundel="cn.piflow.bundle.common.SelectField" crtUser="admin" description="Select data field." groups="Common" id="229a980a8c2541cf817b4f07cb1aeaaf" inPortType="DEFAULT" inports="Default" isCheckpoint="0" name="SelectField_inproceedings" outPortType="DEFAULT" outports="Default" owner="xjzhu@cnic.cn" pageId="87"> 
+<property allowableValues="[]" crtUser="admin" customValue="corrupt_record,key,mdate,publtype,author,booktitle,cdrom,cite,crossref,editor,ee,i,note,number,pages,sub,sup,title,tt,url,year" description="schema" displayName="schema" id="8684273ce2b043c289d33fa1afc4ea8b" isSelect="false" name="schema" required="false" sensitive="false"/> 
+</stop> 
+<stop bundel="cn.piflow.bundle.xml.XmlParser" crtUser="admin" description="Parse xml file." groups="Xml" id="27dd6e671508412789e18daba785d13a" inPortType="DEFAULT" inports="Default" isCheckpoint="0" name="XmlParser_proceedings" outPortType="DEFAULT" outports="Default" owner="xjzhu@cnic.cn" pageId="70"> 
+<property allowableValues="[]" crtUser="admin" customValue="proceedings" description="rowTag" displayName="rowTag" id="078230bd33cb4baa93624e8b0c02fdbb" isSelect="false" name="rowTag" required="false" sensitive="false"/> 
+<property allowableValues="[]" crtUser="admin" customValue="hdfs://10.0.88.109:8020/web/dblp/dblp.xml" description="xmlpath" displayName="xmlpath" id="fe59df7ea7d749699576d57e33e43905" isSelect="false" name="xmlpath" required="false" sensitive="false"/> 
+</stop> 
+<stop bundel="cn.piflow.bundle.common.ConvertSchema" crtUser="admin" description="Transform field name" groups="Common" id="2857b4727b174c3f825443bd7674d615" inPortType="DEFAULT" inports="Default" isCheckpoint="0" name="ConvertSchema_incollection" outPortType="DEFAULT" outports="Default" owner="yangqidong@cnic.cn" pageId="69"> 
+<property allowableValues="[]" crtUser="admin" customValue="_corrupt_record-&gt;corrupt_record,_key-&gt;key,_mdate-&gt;mdate,_publtype-&gt;publtype" description="schema" displayName="schema" id="032fe151270c4239885f4e2ddfce09be" isSelect="false" name="schema" required="false" sensitive="false"/> 
+</stop> 
+<stop bundel="cn.piflow.bundle.common.ConvertSchema" crtUser="admin" description="Transform field name" groups="Common" id="319053908d1a4f6eb0636bea49758a28" inPortType="DEFAULT" inports="Default" isCheckpoint="0" name="ConvertSchema_www" outPortType="DEFAULT" outports="Default" owner="yangqidong@cnic.cn" pageId="66"> 
+<property allowableValues="[]" crtUser="admin" customValue="_corrupt_record-&gt;corrupt_record,_key-&gt;key,_mdate-&gt;mdate,_publtype-&gt;publtype" description="schema" displayName="schema" id="b9f625787b424a1996be60996e756703" isSelect="false" name="schema" required="false" sensitive="false"/> 
+</stop> 
+<stop bundel="cn.piflow.bundle.hive.PutHiveStreaming" crtUser="admin" description="Save data into hive." groups="Hive" id="3abb221b73504713a2cdaddd3e1b674b" inPortType="DEFAULT" inports="Default" isCheckpoint="0" name="PutHiveStreaming_article" outPortType="NONE" outports="None" owner="xjzhu@cnic.cn" pageId="51"> 
+<property allowableValues="[]" crtUser="admin" customValue="dblp" description="DataBase" displayName="DataBase" id="3d98277044c94887ba49ce965d446d50" isSelect="false" name="database" required="false" sensitive="false"/> 
+<property allowableValues="[]" crtUser="admin" customValue="article" description="Table" displayName="Table" id="a1c3555d59294699a69068e0477d4d53" isSelect="false" name="table" required="false" sensitive="false"/> 
+</stop> 
+<stop bundel="cn.piflow.bundle.common.ConvertSchema" crtUser="admin" description="Transform field name" groups="Common" id="41a55c9b3b204d42aadfb2b22cbfd1a7" inPortType="DEFAULT" inports="Default" isCheckpoint="0" name="ConvertSchema_article" outPortType="DEFAULT" outports="Default" owner="yangqidong@cnic.cn" pageId="88"> 
+<property allowableValues="[]" crtUser="admin" customValue="_corrupt_record-&gt;corrupt_record,_key-&gt;key,_mdate-&gt;mdate,_publtype-&gt;publtype" description="schema" displayName="schema" id="8fb32d4d9d4e43cc8440b35d78e5582f" isSelect="false" name="schema" required="false" sensitive="false"/> 
+</stop> 
+<stop bundel="cn.piflow.bundle.common.SelectField" crtUser="admin" description="Select data field." groups="Common" id="4e647aa066f44f548eeff0c78d64e9ef" inPortType="DEFAULT" inports="Default" isCheckpoint="0" name="SelectField_proceedings" outPortType="DEFAULT" outports="Default" owner="xjzhu@cnic.cn" pageId="65"> 
+<property allowableValues="[]" crtUser="admin" customValue="corrupt_record,key,mdate,author,booktitle,cite,crossref,editor,ee,i,isbn,journal,note,number,pages,publisher,series,sup,title,url,volume,year" description="schema" displayName="schema" id="1c101f10133b4422bfd94803593fc932" isSelect="false" name="schema" required="false" sensitive="false"/> 
+</stop> 
+<stop bundel="cn.piflow.bundle.hdfs.UnzipFilesOnHDFS" crtUser="admin" description="Unzip files on HDFS" groups="Hdfs" id="57cf60f9f7914d1e8c771c2a0865b7e6" inPortType="DEFAULT" inports="Default" isCheckpoint="0" name="UnzipFilesOnHDFS134" outPortType="DEFAULT" outports="Default" owner="yangqidong@cnic.cn" pageId="134"> 
+<property allowableValues="[]" crtUser="admin" description="isCustomize" displayName="isCustomize" id="4dca7203783049f785a2aa9832a23246" isSelect="false" name="isCustomize" required="false" sensitive="false"/> 
+<property allowableValues="[]" crtUser="admin" description="filePath" displayName="filePath" id="9a764580459046fab51d3d56699b928d" isSelect="false" name="filePath" required="false" sensitive="false"/> 
+<property allowableValues="[]" crtUser="admin" description="hdfsUrl" displayName="hdfsUrl" id="c5f45d48a7a74e0b8ce25e01e5f302a5" isSelect="false" name="hdfsUrl" required="false" sensitive="false"/> 
+<property allowableValues="[]" crtUser="admin" description="savePath" displayName="savePath" id="fc317c34d2e6460d9ca950a65fb96c61" isSelect="false" name="savePath" required="false" sensitive="false"/> 
+</stop> 
+<stop bundel="cn.piflow.bundle.common.SelectField" crtUser="admin" description="Select data field." groups="Common" id="59595573a5554f428389e5469d292894" inPortType="DEFAULT" inports="Default" isCheckpoint="0" name="SelectField_www" outPortType="DEFAULT" outports="Default" owner="xjzhu@cnic.cn" pageId="74"> 
+<property allowableValues="[]" crtUser="admin" customValue="corrupt_record,key,mdate,publtype,author,booktitle,cite,crossref,editor,note,title,url,year" description="schema" displayName="schema" id="430b7bb0bd8c459ca78405c63689d59c" isSelect="false" name="schema" required="false" sensitive="false"/> 
+</stop> 
+<stop bundel="cn.piflow.bundle.hive.PutHiveStreaming" crtUser="admin" description="Save data into hive." groups="Hive" id="6234c3e144bd4fdbb9c171b7c923ced9" inPortType="DEFAULT" inports="Default" isCheckpoint="0" name="PutHiveStreaming_proceedings" outPortType="NONE" outports="None" owner="xjzhu@cnic.cn" pageId="86"> 
+<property allowableValues="[]" crtUser="admin" customValue="dblp" description="DataBase" displayName="DataBase" id="af05ca8bf7634a3a9d903c3d7bd39cf7" isSelect="false" name="database" required="false" sensitive="false"/> 
+<property allowableValues="[]" crtUser="admin" customValue="proceedings" description="Table" displayName="Table" id="db2b7d1c632a4b55a3c2d87b3135a131" isSelect="false" name="table" required="false" sensitive="false"/> 
+</stop> 
+<stop bundel="cn.piflow.bundle.hdfs.UnzipFilesOnHDFS" crtUser="admin" description="Unzip files on HDFS" groups="Hdfs" id="6dc3a6b04d2d4ed988c045d7a0d8e956" inPortType="DEFAULT" inports="Default" isCheckpoint="0" name="UnzipFilesOnHDFS135" outPortType="DEFAULT" outports="Default" owner="yangqidong@cnic.cn" pageId="135"> 
+<property allowableValues="[]" crtUser="admin" description="hdfsUrl" displayName="hdfsUrl" id="55a8b556026e43ff8565c5c40495bfbc" isSelect="false" name="hdfsUrl" required="false" sensitive="false"/> 
+<property allowableValues="[]" crtUser="admin" description="savePath" displayName="savePath" id="66bfeee0be93443b9827bbde7ac2b726" isSelect="false" name="savePath" required="false" sensitive="false"/> 
+<property allowableValues="[]" crtUser="admin" description="isCustomize" displayName="isCustomize" id="89147909820947a7ab56e3869f15489c" isSelect="false" name="isCustomize" required="false" sensitive="false"/> 
+<property allowableValues="[]" crtUser="admin" description="filePath" displayName="filePath" id="8bfa8a4f6a1043a2ae86229b4d593112" isSelect="false" name="filePath" required="false" sensitive="false"/> 
+</stop> 
+<stop bundel="cn.piflow.bundle.xml.XmlParser" crtUser="admin" description="Parse xml file." groups="Xml" id="724c4783e52f4b22ad87d9ffc7a520e7" inPortType="DEFAULT" inports="Default" isCheckpoint="0" name="XmlParser_book" outPortType="DEFAULT" outports="Default" owner="xjzhu@cnic.cn" pageId="89"> 
+<property allowableValues="[]" crtUser="admin" customValue="book" description="rowTag" displayName="rowTag" id="cc26b11f24e9409a8cb5fa8ddc472175" isSelect="false" name="rowTag" required="false" sensitive="false"/> 
+<property allowableValues="[]" crtUser="admin" customValue="hdfs://10.0.88.109:8020/web/dblp/dblp.xml" description="xmlpath" displayName="xmlpath" id="d80d3291cd5a475f8c72904164dbe767" isSelect="false" name="xmlpath" required="false" sensitive="false"/> 
+</stop> 
+<stop bundel="cn.piflow.bundle.hdfs.UnzipFilesOnHDFS" crtUser="admin" description="Unzip files on HDFS" groups="Hdfs" id="730826073d3d4fc38880eb731c9d966f" inPortType="DEFAULT" inports="Default" isCheckpoint="0" name="UnzipFilesOnHDFS133" outPortType="DEFAULT" outports="Default" owner="yangqidong@cnic.cn" pageId="133"> 
+<property allowableValues="[]" crtUser="admin" description="filePath" displayName="filePath" id="280377a41fc64b9893ce7f0bd5d082c1" isSelect="false" name="filePath" required="false" sensitive="false"/> 
+<property allowableValues="[]" crtUser="admin" description="isCustomize" displayName="isCustomize" id="2ddd0c3c43bf4f398b1dee35c38a99d5" isSelect="false" name="isCustomize" required="false" sensitive="false"/> 
+<property allowableValues="[]" crtUser="admin" description="savePath" displayName="savePath" id="427db6551aed41be8afb005d5d609cd2" isSelect="false" name="savePath" required="false" sensitive="false"/> 
+<property allowableValues="[]" crtUser="admin" description="hdfsUrl" displayName="hdfsUrl" id="5806e150fc6548f688caafa347f49801" isSelect="false" name="hdfsUrl" required="false" sensitive="false"/> 
+</stop> 
+<stop bundel="cn.piflow.bundle.common.Fork" crtUser="admin" description="Fork data into diffenrent stop." groups="Common" id="81f100fb0af84e9cae91c43f3a25241b" inPortType="DEFAULT" inports="Default" isCheckpoint="0" name="Fork" outPortType="ANY" outports="Any" owner="xjzhu@cnic.cn" pageId="85"> 
+<property allowableValues="[]" crtUser="admin" customValue="out1,out2,out3,out4,out5,out6,out7,out8" description="outports" displayName="outports" id="c57f2d9666674f8e870f82ff3a444786" isSelect="false" name="outports" required="false" sensitive="false"/> 
+</stop> 
+<stop bundel="cn.piflow.bundle.xml.XmlParser" crtUser="admin" description="Parse xml file." groups="Xml" id="872a894641a440b58ca9f129c5ceff0f" inPortType="DEFAULT" inports="Default" isCheckpoint="0" name="XmlParser_www" outPortType="DEFAULT" outports="Default" owner="xjzhu@cnic.cn" pageId="60"> 
+<property allowableValues="[]" crtUser="admin" customValue="hdfs://10.0.88.109:8020/web/dblp/dblp.xml" description="xmlpath" displayName="xmlpath" id="89c0757750b54c8b97d9bbef8cb4d32a" isSelect="false" name="xmlpath" required="false" sensitive="false"/> 
+<property allowableValues="[]" crtUser="admin" customValue="www" description="rowTag" displayName="rowTag" id="d60f0d3c6d6d4e0a8e035966b6a7d7ac" isSelect="false" name="rowTag" required="false" sensitive="false"/> 
+</stop> 
+<stop bundel="cn.piflow.bundle.common.SelectField" crtUser="admin" description="Select data field." groups="Common" id="8ec234c86ed74f19bb8875a7c3b0fcd2" inPortType="DEFAULT" inports="Default" isCheckpoint="0" name="SelectField_mastersthesis" outPortType="DEFAULT" outports="Default" owner="xjzhu@cnic.cn" pageId="72"> 
+<property allowableValues="[]" crtUser="admin" customValue="corrupt_record,key,mdate,author,school,title,year" description="schema" displayName="schema" id="0bc641857a48441b9371a705812f97c5" isSelect="false" name="schema" required="false" sensitive="false"/> 
+</stop> 
+<stop bundel="cn.piflow.bundle.common.SelectField" crtUser="admin" description="Select data field." groups="Common" id="9791a63b506948e091bc457ce59c2f34" inPortType="DEFAULT" inports="Default" isCheckpoint="0" name="SelectField_book" outPortType="DEFAULT" outports="Default" owner="xjzhu@cnic.cn" pageId="68"> 
+<property allowableValues="[]" crtUser="admin" customValue="corrupt_record,key,mdate,publtype,author,booktitle,editor,ee,isbn,note,pages,publisher,school,series,sub,sup,title,url,volume,year" description="schema" displayName="schema" id="c258b1c39075481897423269a1ccb6b1" isSelect="false" name="schema" required="false" sensitive="false"/> 
+</stop> 
+<stop bundel="cn.piflow.bundle.hive.PutHiveStreaming" crtUser="admin" description="Save data into hive." groups="Hive" id="9837c8660ebb4a7aa9be3f66a9a9b3df" inPortType="DEFAULT" inports="Default" isCheckpoint="0" name="PutHiveStreaming_inproceedings" outPortType="NONE" outports="None" owner="xjzhu@cnic.cn" pageId="54"> 
+<property allowableValues="[]" crtUser="admin" customValue="dblp" description="DataBase" displayName="DataBase" id="0c11cdf8c6694672863b4dc3dc377341" isSelect="false" name="database" required="false" sensitive="false"/> 
+<property allowableValues="[]" crtUser="admin" customValue="inproceedings" description="Table" displayName="Table" id="6e6f46e814f84fb58f74545f198c5c51" isSelect="false" name="table" required="false" sensitive="false"/> 
+</stop> 
+<stop bundel="cn.piflow.bundle.hdfs.UnzipFilesOnHDFS" crtUser="admin" description="Unzip files on HDFS" groups="Hdfs" id="9b66467045bd403699eea6dd5e8e3b01" inPortType="DEFAULT" inports="Default" isCheckpoint="0" name="UnzipFilesOnHDFS" outPortType="DEFAULT" outports="Default" owner="yangqidong@cnic.cn" pageId="64"> 
+<property allowableValues="[]" crtUser="admin" customValue="true" description="isCustomize" displayName="isCustomize" id="041892d54e3b4ef8849274cdc0262fa7" isSelect="false" name="isCustomize" required="false" sensitive="false"/> 
+<property allowableValues="[]" crtUser="admin" customValue="/web/dblp/dblp.xml.gz" description="filePath" displayName="filePath" id="115a29865bf74e808a3887d1449fc256" isSelect="false" name="filePath" required="false" sensitive="false"/> 
+<property allowableValues="[]" crtUser="admin" customValue="hdfs://10.0.88.109:8020" description="hdfsUrl" displayName="hdfsUrl" id="14aa08c8974645c2a18f0359a6e43c6b" isSelect="false" name="hdfsUrl" required="false" sensitive="false"/> 
+<property allowableValues="[]" crtUser="admin" customValue="/web/dblp/" description="savePath" displayName="savePath" id="896b6782dfc34eefa35d79b403285704" isSelect="false" name="savePath" required="false" sensitive="false"/> 
+</stop> 
+<stop bundel="cn.piflow.bundle.common.SelectField" crtUser="admin" description="Select data field." groups="Common" id="ae5987691aa5495198caa56bb6247802" inPortType="DEFAULT" inports="Default" isCheckpoint="0" name="SelectField_incollection" outPortType="DEFAULT" outports="Default" owner="xjzhu@cnic.cn" pageId="52"> 
+<property allowableValues="[]" crtUser="admin" customValue="corrupt_record,key,mdate,publtype,author,booktitle,crossref,ee,i,pages,sub,sup,title,url,year" description="schema" displayName="schema" id="ae0d2967278c45349e75690ed1e349fa" isSelect="false" name="schema" required="false" sensitive="false"/> 
+</stop> 
+<stop bundel="cn.piflow.bundle.common.SelectField" crtUser="admin" description="Select data field." groups="Common" id="b109d6a9aed34c48b2377f5f1c5895bf" inPortType="DEFAULT" inports="Default" isCheckpoint="0" name="SelectField_article" outPortType="DEFAULT" outports="Default" owner="xjzhu@cnic.cn" pageId="75"> 
+<property allowableValues="[]" crtUser="admin" customValue="corrupt_record,key,mdate,publtype,author,booktitle,cdrom,cite,crossref,editor,ee,i,journal,month,note,number,pages,publisher,sub,sup,title,tt,url,volume,year" description="schema" displayName="schema" id="5ee51578c82342a1b3f73aea5d605f37" isSelect="false" name="schema" required="false" sensitive="false"/> 
+</stop> 
+<stop bundel="cn.piflow.bundle.common.ConvertSchema" crtUser="admin" description="Transform field name" groups="Common" id="b283f13b89534e8ba8182833680b4134" inPortType="DEFAULT" inports="Default" isCheckpoint="0" name="ConvertSchema_proceedings" outPortType="DEFAULT" outports="Default" owner="yangqidong@cnic.cn" pageId="56"> 
+<property allowableValues="[]" crtUser="admin" customValue="_corrupt_record-&gt;corrupt_record,_key-&gt;key,_mdate-&gt;mdate,_publtype-&gt;publtype" description="schema" displayName="schema" id="cd1d1663153f4f1a9cca94e8a8617350" isSelect="false" name="schema" required="false" sensitive="false"/> 
+</stop> 
+<stop bundel="cn.piflow.bundle.hive.PutHiveStreaming" crtUser="admin" description="Save data into hive." groups="Hive" id="ce465f4a525a4d0cac2b7b24bd89e30c" inPortType="DEFAULT" inports="Default" isCheckpoint="0" name="PutHiveStreaming_mastersthesis" outPortType="NONE" outports="None" owner="xjzhu@cnic.cn" pageId="50"> 
+<property allowableValues="[]" crtUser="admin" customValue="dblp" description="DataBase" displayName="DataBase" id="27487bd637c444e48612886df8a712b5" isSelect="false" name="database" required="false" sensitive="false"/> 
+<property allowableValues="[]" crtUser="admin" customValue="mastersthesis" description="Table" displayName="Table" id="4512a2b46ef74aa39992c0715247127f" isSelect="false" name="table" required="false" sensitive="false"/> 
+</stop> 
+<stop bundel="cn.piflow.bundle.common.ConvertSchema" crtUser="admin" description="Transform field name" groups="Common" id="d11a78d504d741a6a21b77e3803afd2f" inPortType="DEFAULT" inports="Default" isCheckpoint="0" name="ConvertSchema_mastersthesis" outPortType="DEFAULT" outports="Default" owner="yangqidong@cnic.cn" pageId="58"> 
+<property allowableValues="[]" crtUser="admin" customValue="_corrupt_record-&gt;corrupt_record,_key-&gt;key,_mdate-&gt;mdate,_publtype-&gt;publtype" description="schema" displayName="schema" id="fd5c79c99a3740499199d602d2580cf6" isSelect="false" name="schema" required="false" sensitive="false"/> 
+</stop> 
+<stop bundel="cn.piflow.bundle.common.SelectField" crtUser="admin" description="Select data field." groups="Common" id="d5cc3ff19360423696e08d449bd80130" inPortType="DEFAULT" inports="Default" isCheckpoint="0" name="SelectField_phdthesis" outPortType="DEFAULT" outports="Default" owner="xjzhu@cnic.cn" pageId="91"> 
+<property allowableValues="[]" crtUser="admin" customValue="corrupt_record,key,mdate,publtype,author,ee,i,isbn,month,note,number,pages,publisher,school,series,sub,sup,title,url,volume,year" description="schema" displayName="schema" id="fa550f9ec8ef42278a6edada205af9b4" isSelect="false" name="schema" required="false" sensitive="false"/> 
+</stop> 
+<stop bundel="cn.piflow.bundle.http.FileDownHDFS" crtUser="admin" description="Download the network link to HDFS" groups="Http" id="d9a9adb003b94ce8a30d2c0acf9b7103" inPortType="NONE" inports="None" isCheckpoint="0" name="FileDownHDFS" outPortType="DEFAULT" outports="Default" owner="yangqidong@cnic.cn" pageId="130"> 
+<property allowableValues="[]" crtUser="admin" customValue="hdfs://10.0.88.109:8020/web/dblp/dblp.xml.gz" description="savePath" displayName="savePath" id="0ab7810a6ed74edcbd2c3872e4d81456" isSelect="false" name="savePath" required="false" sensitive="false"/> 
+<property allowableValues="[]" crtUser="admin" customValue="https://dblp.dagstuhl.de/xml/dblp.xml.gz" description="URL" displayName="URL" id="82080376269240329f68608bf8c56a62" isSelect="false" name="url_str" required="false" sensitive="false"/> 
+</stop> 
+<stop bundel="cn.piflow.bundle.common.ConvertSchema" crtUser="admin" description="Transform field name" groups="Common" id="e27dd03beb4a4e31a341efa778e1d8d8" inPortType="DEFAULT" inports="Default" isCheckpoint="0" name="ConvertSchema_book" outPortType="DEFAULT" outports="Default" owner="yangqidong@cnic.cn" pageId="90"> 
+<property allowableValues="[]" crtUser="admin" customValue="_corrupt_record-&gt;corrupt_record,_key-&gt;key,_mdate-&gt;mdate,_publtype-&gt;publtype" description="schema" displayName="schema" id="3bce8f772b954467b9da3c496e6db7ef" isSelect="false" name="schema" required="false" sensitive="false"/> 
+</stop> 
+<stop bundel="cn.piflow.bundle.hive.PutHiveStreaming" crtUser="admin" description="Save data into hive." groups="Hive" id="e40689a3afde4e9b9946a91949d6e9ac" inPortType="DEFAULT" inports="Default" isCheckpoint="0" name="PutHiveStreaming_book" outPortType="NONE" outports="None" owner="xjzhu@cnic.cn" pageId="62"> 
+<property allowableValues="[]" crtUser="admin" customValue="book" description="Table" displayName="Table" id="2a8e7fe373c440f58d519374d6f05411" isSelect="false" name="table" required="false" sensitive="false"/> 
+<property allowableValues="[]" crtUser="admin" customValue="dblp" description="DataBase" displayName="DataBase" id="c59696b38708474e9547377dec5cd158" isSelect="false" name="database" required="false" sensitive="false"/> 
+</stop> 
+<stop bundel="cn.piflow.bundle.xml.XmlParser" crtUser="admin" description="Parse xml file." groups="Xml" id="e6e59ad9d63d4249887c49703fe2f8cd" inPortType="DEFAULT" inports="Default" isCheckpoint="0" name="XmlParser_article" outPortType="DEFAULT" outports="Default" owner="xjzhu@cnic.cn" pageId="76"> 
+<property allowableValues="[]" crtUser="admin" customValue="article" description="rowTag" displayName="rowTag" id="b0e7e6f1be124666b6f9edc220df0b24" isSelect="false" name="rowTag" required="false" sensitive="false"/> 
+<property allowableValues="[]" crtUser="admin" customValue="hdfs://10.0.88.109:8020/web/dblp/dblp.xml" description="xmlpath" displayName="xmlpath" id="da94207c29bf48cd962ff4ccc701a233" isSelect="false" name="xmlpath" required="false" sensitive="false"/> 
+</stop> 
+<stop bundel="cn.piflow.bundle.xml.XmlParser" crtUser="admin" description="Parse xml file." groups="Xml" id="edcdbdb75ad24ea5a28d25c3bd594032" inPortType="DEFAULT" inports="Default" isCheckpoint="0" name="XmlParser_mastersthesis" outPortType="DEFAULT" outports="Default" owner="xjzhu@cnic.cn" pageId="55"> 
+<property allowableValues="[]" crtUser="admin" customValue="mastersthesis" description="rowTag" displayName="rowTag" id="6c04ee856cb1422ea4d76ffa15af526a" isSelect="false" name="rowTag" required="false" sensitive="false"/> 
+<property allowableValues="[]" crtUser="admin" customValue="hdfs://10.0.88.109:8020/web/dblp/dblp.xml" description="xmlpath" displayName="xmlpath" id="fd634ff2bbbe43938bd89228dd3c216f" isSelect="false" name="xmlpath" required="false" sensitive="false"/> 
+</stop> 
+<stop bundel="cn.piflow.bundle.hdfs.UnzipFilesOnHDFS" crtUser="admin" description="Unzip files on HDFS" groups="Hdfs" id="ee674c0e2c3f48ffb8320251af2457db" inPortType="DEFAULT" inports="Default" isCheckpoint="0" name="UnzipFilesOnHDFS136" outPortType="DEFAULT" outports="Default" owner="yangqidong@cnic.cn" pageId="136"> 
+<property allowableValues="[]" crtUser="admin" description="savePath" displayName="savePath" id="4a34f2a397204f128614f538ef07a433" isSelect="false" name="savePath" required="false" sensitive="false"/> 
+<property allowableValues="[]" crtUser="admin" description="isCustomize" displayName="isCustomize" id="55aaa330cb554fb692178373c4e52d2e" isSelect="false" name="isCustomize" required="false" sensitive="false"/> 
+<property allowableValues="[]" crtUser="admin" description="hdfsUrl" displayName="hdfsUrl" id="659db8335e5a4c3d88b6f7e5f8531e15" isSelect="false" name="hdfsUrl" required="false" sensitive="false"/> 
+<property allowableValues="[]" crtUser="admin" description="filePath" displayName="filePath" id="f84227b4a27545e3b8b5041b5bced29c" isSelect="false" name="filePath" required="false" sensitive="false"/> 
+</stop> 
+<stop bundel="cn.piflow.bundle.common.ConvertSchema" crtUser="admin" description="Transform field name" groups="Common" id="f6634da9669042f0854aa1fb8e7c4a50" inPortType="DEFAULT" inports="Default" isCheckpoint="0" name="ConvertSchema_inproceedings" outPortType="DEFAULT" outports="Default" owner="yangqidong@cnic.cn" pageId="71"> 
+<property allowableValues="[]" crtUser="admin" customValue="_corrupt_record-&gt;corrupt_record,_key-&gt;key,_mdate-&gt;mdate,_publtype-&gt;publtype" description="schema" displayName="schema" id="010dd611535c4dab970636df6a2b8533" isSelect="false" name="schema" required="false" sensitive="false"/> 
+</stop> 
+<stop bundel="cn.piflow.bundle.hive.PutHiveStreaming" crtUser="admin" description="Save data into hive." groups="Hive" id="fc717ae990584851bd34454413c3dd9c" inPortType="DEFAULT" inports="Default" isCheckpoint="0" name="PutHiveStreaming_incollection" outPortType="NONE" outports="None" owner="xjzhu@cnic.cn" pageId="61"> 
+<property allowableValues="[]" crtUser="admin" customValue="dblp" description="DataBase" displayName="DataBase" id="366cab581d584b17aa02a55fd8a6fe6b" isSelect="false" name="database" required="false" sensitive="false"/> 
+<property allowableValues="[]" crtUser="admin" customValue="incollection" description="Table" displayName="Table" id="ca272aff99044f62ad51be5adce6d3ac" isSelect="false" name="table" required="false" sensitive="false"/> 
+</stop> 
+<stop bundel="cn.piflow.bundle.common.ConvertSchema" crtUser="admin" description="Transform field name" groups="Common" id="fddab1b14a404644af6263b33de3b8c8" inPortType="DEFAULT" inports="Default" isCheckpoint="0" name="ConvertSchema_phdthesis" outPortType="DEFAULT" outports="Default" owner="yangqidong@cnic.cn" pageId="57"> 
+<property allowableValues="[]" crtUser="admin" customValue="_corrupt_record-&gt;corrupt_record,_key-&gt;key,_mdate-&gt;mdate,_publtype-&gt;publtype" description="schema" displayName="schema" id="c0c262871881417ea7dd6ae821f1945b" isSelect="false" name="schema" required="false" sensitive="false"/> 
+</stop> 
+<paths crtUser="admin" from="56" pageId="111" to="65"/> 
+<paths crtUser="admin" from="90" pageId="108" to="68"/> 
+<paths crtUser="admin" from="91" pageId="94" to="73"/> 
+<paths crtUser="admin" from="55" pageId="95" to="58"/> 
+<paths crtUser="admin" from="68" pageId="109" to="62"/> 
+<paths crtUser="admin" from="87" pageId="115" to="54"/> 
+<paths crtUser="admin" from="85" outport="out6" pageId="127" to="70"/> 
+<paths crtUser="admin" from="59" pageId="103" to="69"/> 
+<paths crtUser="admin" from="76" pageId="116" to="88"/> 
+<paths crtUser="admin" from="71" pageId="114" to="87"/> 
+<paths crtUser="admin" from="85" outport="out3" pageId="124" to="60"/> 
+<paths crtUser="admin" from="72" pageId="97" to="50"/> 
+<paths crtUser="admin" from="58" pageId="96" to="72"/> 
+<paths crtUser="admin" from="64" pageId="63" to="85"/> 
+<paths crtUser="admin" from="74" pageId="100" to="48"/> 
+<paths crtUser="admin" from="67" pageId="92" to="57"/> 
+<paths crtUser="admin" from="85" outport="out5" pageId="126" to="89"/> 
+<paths crtUser="admin" from="85" outport="out4" pageId="125" to="59"/> 
+<paths crtUser="admin" from="85" outport="out8" pageId="129" to="76"/> 
+<paths crtUser="admin" from="49" pageId="113" to="71"/> 
+<paths crtUser="admin" from="70" pageId="110" to="56"/> 
+<paths crtUser="admin" from="57" pageId="93" to="91"/> 
+<paths crtUser="admin" from="75" pageId="118" to="51"/> 
+<paths crtUser="admin" from="65" pageId="112" to="86"/> 
+<paths crtUser="admin" from="69" pageId="104" to="52"/> 
+<paths crtUser="admin" from="66" pageId="99" to="74"/> 
+<paths crtUser="admin" from="60" pageId="98" to="66"/> 
+<paths crtUser="admin" from="130" pageId="138" to="64"/> 
+<paths crtUser="admin" from="89" pageId="106" to="90"/> 
+<paths crtUser="admin" from="85" outport="out2" pageId="123" to="55"/> 
+<paths crtUser="admin" from="85" outport="out1" pageId="122" to="67"/> 
+<paths crtUser="admin" from="52" pageId="105" to="61"/> 
+<paths crtUser="admin" from="88" pageId="117" to="75"/> 
+<paths crtUser="admin" from="85" outport="out7" pageId="128" to="49"/> 
+<mxGraphModel arrows="1" background="#ffffff" connect="1" dx="1116" dy="594" fold="1" grid="1" gridSize="10" guides="1" page="1" pageHeight="1169" pageScale="1" pageWidth="827" tooltips="1">
+<root>
+<mxCell id="0"/>
+<mxCell id="1" parent="0"/>
+<mxCell edge="1" id="106" parent="1" source="89" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;" target="90">
+<mxGeometry as="geometry" relative="1"/>
+</mxCell>
+<mxCell id="86" parent="1" style="image;html=1;labelBackgroundColor=#ffffff00;image=/piflow-web/images/PutHiveStreaming_128x128.png" value="PutHiveStreaming_proceedings" vertex="1">
+<mxGeometry as="geometry" height="66" width="66" x="1000" y="990"/>
+</mxCell>
+<mxCell edge="1" id="100" parent="1" source="74" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;" target="48">
+<mxGeometry as="geometry" relative="1"/>
+</mxCell>
+<mxCell edge="1" id="108" parent="1" source="90" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;" target="68">
+<mxGeometry as="geometry" relative="1"/>
+</mxCell>
+<mxCell edge="1" id="117" parent="1" source="88" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;" target="75">
+<mxGeometry as="geometry" relative="1"/>
+</mxCell>
+<mxCell id="59" parent="1" style="image;html=1;labelBackgroundColor=#ffffff00;image=/piflow-web/images/XmlParser_128x128.png" value="XmlParser_incollection" vertex="1">
+<mxGeometry as="geometry" height="66" width="66" x="550" y="400"/>
+</mxCell>
+<mxCell edge="1" id="109" parent="1" source="68" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;" target="62">
+<mxGeometry as="geometry" relative="1"/>
+</mxCell>
+<mxCell edge="1" id="113" parent="1" source="49" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;" target="71">
+<mxGeometry as="geometry" relative="1"/>
+</mxCell>
+<mxCell id="66" parent="1" style="image;html=1;labelBackgroundColor=#ffffff00;image=/piflow-web/images/ConvertSchema_128x128.png" value="ConvertSchema_www" vertex="1">
+<mxGeometry as="geometry" height="66" width="66" x="400" y="600"/>
+</mxCell>
+<mxCell id="61" parent="1" style="image;html=1;labelBackgroundColor=#ffffff00;image=/piflow-web/images/PutHiveStreaming_128x128.png" value="PutHiveStreaming_incollection" vertex="1">
+<mxGeometry as="geometry" height="66" width="66" x="550" y="1000"/>
+</mxCell>
+<mxCell edge="1" id="95" parent="1" source="55" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;" target="58">
+<mxGeometry as="geometry" relative="1"/>
+</mxCell>
+<mxCell id="50" parent="1" style="image;html=1;labelBackgroundColor=#ffffff00;image=/piflow-web/images/PutHiveStreaming_128x128.png" value="PutHiveStreaming_mastersthesis" vertex="1">
+<mxGeometry as="geometry" height="66" width="66" x="250" y="1000"/>
+</mxCell>
+<mxCell id="65" parent="1" style="image;html=1;labelBackgroundColor=#ffffff00;image=/piflow-web/images/SelectField_128x128.png" value="SelectField_proceedings" vertex="1">
+<mxGeometry as="geometry" height="66" width="66" x="1000" y="800"/>
+</mxCell>
+<mxCell id="60" parent="1" style="image;html=1;labelBackgroundColor=#ffffff00;image=/piflow-web/images/XmlParser_128x128.png" value="XmlParser_www" vertex="1">
+<mxGeometry as="geometry" height="66" width="66" x="400" y="400"/>
+</mxCell>
+<mxCell id="68" parent="1" style="image;html=1;labelBackgroundColor=#ffffff00;image=/piflow-web/images/SelectField_128x128.png" value="SelectField_book" vertex="1">
+<mxGeometry as="geometry" height="66" width="66" x="850" y="800"/>
+</mxCell>
+<mxCell edge="1" id="129" parent="1" source="85" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;" target="76">
+<mxGeometry as="geometry" relative="1"/>
+</mxCell>
+<mxCell edge="1" id="103" parent="1" source="59" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;" target="69">
+<mxGeometry as="geometry" relative="1"/>
+</mxCell>
+<mxCell edge="1" id="110" parent="1" source="70" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;" target="56">
+<mxGeometry as="geometry" relative="1"/>
+</mxCell>
+<mxCell id="48" parent="1" style="image;html=1;labelBackgroundColor=#ffffff00;image=/piflow-web/images/PutHiveStreaming_128x128.png" value="PutHiveStreaming_www" vertex="1">
+<mxGeometry as="geometry" height="66" width="66" x="400" y="1000"/>
+</mxCell>
+<mxCell id="70" parent="1" style="image;html=1;labelBackgroundColor=#ffffff00;image=/piflow-web/images/XmlParser_128x128.png" value="XmlParser_proceedings" vertex="1">
+<mxGeometry as="geometry" height="66" width="66" x="1000" y="400"/>
+</mxCell>
+<mxCell edge="1" id="126" parent="1" source="85" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;" target="89">
+<mxGeometry as="geometry" relative="1"/>
+</mxCell>
+<mxCell edge="1" id="63" parent="1" source="64" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;" target="85">
+<mxGeometry as="geometry" relative="1"/>
+</mxCell>
+<mxCell edge="1" id="105" parent="1" source="52" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;" target="61">
+<mxGeometry as="geometry" relative="1"/>
+</mxCell>
+<mxCell edge="1" id="128" parent="1" source="85" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;" target="49">
+<mxGeometry as="geometry" relative="1"/>
+</mxCell>
+<mxCell id="64" parent="1" style="image;html=1;labelBackgroundColor=#ffffff00;image=/piflow-web/images/UnzipFilesOnHDFS_128x128.png" value="UnzipFilesOnHDFS" vertex="1">
+<mxGeometry as="geometry" height="70" width="70" x="698" y="120"/>
+</mxCell>
+<mxCell id="85" parent="1" style="image;html=1;labelBackgroundColor=#ffffff00;image=/piflow-web/images/Fork_128x128.png" value="Fork" vertex="1">
+<mxGeometry as="geometry" height="66" width="66" x="700" y="240"/>
+</mxCell>
+<mxCell id="89" parent="1" style="image;html=1;labelBackgroundColor=#ffffff00;image=/piflow-web/images/XmlParser_128x128.png" value="XmlParser_book" vertex="1">
+<mxGeometry as="geometry" height="66" width="66" x="850" y="400"/>
+</mxCell>
+<mxCell edge="1" id="118" parent="1" source="75" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;" target="51">
+<mxGeometry as="geometry" relative="1"/>
+</mxCell>
+<mxCell id="49" parent="1" style="image;html=1;labelBackgroundColor=#ffffff00;image=/piflow-web/images/XmlParser_128x128.png" value="XmlParser_inproceedings" vertex="1">
+<mxGeometry as="geometry" height="66" width="66" x="1150" y="400"/>
+</mxCell>
+<mxCell edge="1" id="98" parent="1" source="60" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;" target="66">
+<mxGeometry as="geometry" relative="1"/>
+</mxCell>
+<mxCell edge="1" id="125" parent="1" source="85" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;" target="59">
+<mxGeometry as="geometry" relative="1"/>
+</mxCell>
+<mxCell id="56" parent="1" style="image;html=1;labelBackgroundColor=#ffffff00;image=/piflow-web/images/ConvertSchema_128x128.png" value="ConvertSchema_proceedings" vertex="1">
+<mxGeometry as="geometry" height="66" width="66" x="1000" y="600"/>
+</mxCell>
+<mxCell id="76" parent="1" style="image;html=1;labelBackgroundColor=#ffffff00;image=/piflow-web/images/XmlParser_128x128.png" value="XmlParser_article" vertex="1">
+<mxGeometry as="geometry" height="66" width="66" x="1300" y="400"/>
+</mxCell>
+<mxCell edge="1" id="94" parent="1" source="91" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;" target="73">
+<mxGeometry as="geometry" relative="1"/>
+</mxCell>
+<mxCell id="71" parent="1" style="image;html=1;labelBackgroundColor=#ffffff00;image=/piflow-web/images/ConvertSchema_128x128.png" value="ConvertSchema_inproceedings" vertex="1">
+<mxGeometry as="geometry" height="66" width="66" x="1150" y="600"/>
+</mxCell>
+<mxCell edge="1" id="115" parent="1" source="87" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;" target="54">
+<mxGeometry as="geometry" relative="1"/>
+</mxCell>
+<mxCell id="54" parent="1" style="image;html=1;labelBackgroundColor=#ffffff00;image=/piflow-web/images/PutHiveStreaming_128x128.png" value="PutHiveStreaming_inproceedings" vertex="1">
+<mxGeometry as="geometry" height="66" width="66" x="1150" y="990"/>
+</mxCell>
+<mxCell id="58" parent="1" style="image;html=1;labelBackgroundColor=#ffffff00;image=/piflow-web/images/ConvertSchema_128x128.png" value="ConvertSchema_mastersthesis" vertex="1">
+<mxGeometry as="geometry" height="66" width="66" x="250" y="600"/>
+</mxCell>
+<mxCell edge="1" id="104" parent="1" source="69" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;" target="52">
+<mxGeometry as="geometry" relative="1"/>
+</mxCell>
+<mxCell edge="1" id="114" parent="1" source="71" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;" target="87">
+<mxGeometry as="geometry" relative="1"/>
+</mxCell>
+<mxCell id="51" parent="1" style="image;html=1;labelBackgroundColor=#ffffff00;image=/piflow-web/images/PutHiveStreaming_128x128.png" value="PutHiveStreaming_article" vertex="1">
+<mxGeometry as="geometry" height="66" width="66" x="1300" y="990"/>
+</mxCell>
+<mxCell id="88" parent="1" style="image;html=1;labelBackgroundColor=#ffffff00;image=/piflow-web/images/ConvertSchema_128x128.png" value="ConvertSchema_article" vertex="1">
+<mxGeometry as="geometry" height="66" width="66" x="1300" y="600"/>
+</mxCell>
+<mxCell edge="1" id="124" parent="1" source="85" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;" target="60">
+<mxGeometry as="geometry" relative="1"/>
+</mxCell>
+<mxCell id="62" parent="1" style="image;html=1;labelBackgroundColor=#ffffff00;image=/piflow-web/images/PutHiveStreaming_128x128.png" value="PutHiveStreaming_book" vertex="1">
+<mxGeometry as="geometry" height="66" width="66" x="850" y="990"/>
+</mxCell>
+<mxCell id="87" parent="1" style="image;html=1;labelBackgroundColor=#ffffff00;image=/piflow-web/images/SelectField_128x128.png" value="SelectField_inproceedings" vertex="1">
+<mxGeometry as="geometry" height="66" width="66" x="1150" y="800"/>
+</mxCell>
+<mxCell id="130" parent="1" style="image;html=1;labelBackgroundColor=#ffffff00;image=/piflow-web/images/FileDownHDFS_128x128.png" value="FileDownHDFS" vertex="1">
+<mxGeometry as="geometry" height="70" width="70" x="698" y="10"/>
+</mxCell>
+<mxCell edge="1" id="96" parent="1" source="58" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;" target="72">
+<mxGeometry as="geometry" relative="1"/>
+</mxCell>
+<mxCell id="74" parent="1" style="image;html=1;labelBackgroundColor=#ffffff00;image=/piflow-web/images/SelectField_128x128.png" value="SelectField_www" vertex="1">
+<mxGeometry as="geometry" height="66" width="66" x="400" y="800"/>
+</mxCell>
+<mxCell id="57" parent="1" style="image;html=1;labelBackgroundColor=#ffffff00;image=/piflow-web/images/ConvertSchema_128x128.png" value="ConvertSchema_phdthesis" vertex="1">
+<mxGeometry as="geometry" height="66" width="66" x="100" y="600"/>
+</mxCell>
+<mxCell edge="1" id="112" parent="1" source="65" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;" target="86">
+<mxGeometry as="geometry" relative="1"/>
+</mxCell>
+<mxCell edge="1" id="111" parent="1" source="56" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;" target="65">
+<mxGeometry as="geometry" relative="1"/>
+</mxCell>
+<mxCell edge="1" id="138" parent="1" source="130" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;" target="64">
+<mxGeometry as="geometry" relative="1"/>
+</mxCell>
+<mxCell id="73" parent="1" style="image;html=1;labelBackgroundColor=#ffffff00;image=/piflow-web/images/PutHiveStreaming_128x128.png" value="PutHiveStreaming_phdthesis" vertex="1">
+<mxGeometry as="geometry" height="66" width="66" x="100" y="1000"/>
+</mxCell>
+<mxCell id="52" parent="1" style="image;html=1;labelBackgroundColor=#ffffff00;image=/piflow-web/images/SelectField_128x128.png" value="SelectField_incollection" vertex="1">
+<mxGeometry as="geometry" height="66" width="66" x="550" y="800"/>
+</mxCell>
+<mxCell id="90" parent="1" style="image;html=1;labelBackgroundColor=#ffffff00;image=/piflow-web/images/ConvertSchema_128x128.png" value="ConvertSchema_book" vertex="1">
+<mxGeometry as="geometry" height="66" width="66" x="850" y="600"/>
+</mxCell>
+<mxCell edge="1" id="123" parent="1" source="85" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;" target="55">
+<mxGeometry as="geometry" relative="1"/>
+</mxCell>
+<mxCell id="75" parent="1" style="image;html=1;labelBackgroundColor=#ffffff00;image=/piflow-web/images/SelectField_128x128.png" value="SelectField_article" vertex="1">
+<mxGeometry as="geometry" height="66" width="66" x="1300" y="800"/>
+</mxCell>
+<mxCell edge="1" id="99" parent="1" source="66" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;" target="74">
+<mxGeometry as="geometry" relative="1"/>
+</mxCell>
+<mxCell edge="1" id="97" parent="1" source="72" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;" target="50">
+<mxGeometry as="geometry" relative="1"/>
+</mxCell>
+<mxCell id="72" parent="1" style="image;html=1;labelBackgroundColor=#ffffff00;image=/piflow-web/images/SelectField_128x128.png" value="SelectField_mastersthesis" vertex="1">
+<mxGeometry as="geometry" height="66" width="66" x="250" y="800"/>
+</mxCell>
+<mxCell edge="1" id="122" parent="1" source="85" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;" target="67">
+<mxGeometry as="geometry" relative="1"/>
+</mxCell>
+<mxCell id="91" parent="1" style="image;html=1;labelBackgroundColor=#ffffff00;image=/piflow-web/images/SelectField_128x128.png" value="SelectField_phdthesis" vertex="1">
+<mxGeometry as="geometry" height="66" width="66" x="100" y="800"/>
+</mxCell>
+<mxCell edge="1" id="127" parent="1" source="85" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;" target="70">
+<mxGeometry as="geometry" relative="1"/>
+</mxCell>
+<mxCell edge="1" id="116" parent="1" source="76" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;" target="88">
+<mxGeometry as="geometry" relative="1"/>
+</mxCell>
+<mxCell edge="1" id="93" parent="1" source="57" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;" target="91">
+<mxGeometry as="geometry" relative="1"/>
+</mxCell>
+<mxCell edge="1" id="92" parent="1" source="67" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;" target="57">
+<mxGeometry as="geometry" relative="1"/>
+</mxCell>
+<mxCell id="55" parent="1" style="image;html=1;labelBackgroundColor=#ffffff00;image=/piflow-web/images/XmlParser_128x128.png" value="XmlParser_mastersthesis" vertex="1">
+<mxGeometry as="geometry" height="66" width="66" x="250" y="400"/>
+</mxCell>
+<mxCell id="69" parent="1" style="image;html=1;labelBackgroundColor=#ffffff00;image=/piflow-web/images/ConvertSchema_128x128.png" value="ConvertSchema_incollection" vertex="1">
+<mxGeometry as="geometry" height="66" width="66" x="550" y="600"/>
+</mxCell>
+<mxCell id="67" parent="1" style="image;html=1;labelBackgroundColor=#ffffff00;image=/piflow-web/images/XmlParser_128x128.png" value="XmlParser_phdthesis" vertex="1">
+<mxGeometry as="geometry" height="66" width="66" x="100" y="400"/>
+</mxCell>
+</root>
+</mxGraphModel>
+</flow>

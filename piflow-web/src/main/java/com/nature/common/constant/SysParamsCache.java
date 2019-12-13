@@ -21,13 +21,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class SysParamsCache {
 
-    public static String DATASOURCE_TYPES;
-
-    @Value("${sysParam.dataSourceTypes}")
-    public void setDatasourceTypes(String datasourceTypes) {
-        DATASOURCE_TYPES = datasourceTypes;
-    }
-
     // Image path (read in configuration file)
     public static String IMAGES_PATH;
 

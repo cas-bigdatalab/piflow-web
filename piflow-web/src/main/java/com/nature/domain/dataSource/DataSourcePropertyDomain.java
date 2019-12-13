@@ -2,7 +2,7 @@ package com.nature.domain.dataSource;
 
 import com.nature.component.dataSource.model.DataSource;
 import com.nature.component.dataSource.model.DataSourceProperty;
-import com.nature.repository.DataSource.DataSourcePropertyJpaRepository;
+import com.nature.repository.dataSource.DataSourcePropertyJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;

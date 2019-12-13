@@ -11,7 +11,7 @@ import com.nature.component.system.model.SysMenu;
 import com.nature.component.system.model.SysRole;
 import com.nature.component.system.model.SysUser;
 import com.nature.component.system.vo.SysMenuVo;
-import com.nature.mapper.Statistics.StatisticsMapper;
+import com.nature.domain.statistics.StatisticsDomain;
 import com.nature.mapper.system.SysMenuMapper;
 import com.nature.mapper.system.SysUserMapper;
 import org.apache.commons.collections.CollectionUtils;
@@ -96,8 +96,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 statistics.setLoginUser(userDetails.getUsername());
                 statistics.setLoginTime(new Date());
                 statistics.setLoginIp(remoteAddr);
-                StatisticsMapper statisticsMapper = (StatisticsMapper) SpringContextUtil.getBean("statisticsMapper");
-                statisticsMapper.addStatistics(statistics);
+                StatisticsDomain statisticsDomain = (StatisticsDomain) SpringContextUtil.getBean("statisticsDomain");
+                statisticsDomain.saveOrUpdate(statistics);
                 logger.info("USER : " + userDetails.getUsername() + " LOGIN SUCCESS !  ");
                 super.onAuthenticationSuccess(request, response, authentication);
             }
