@@ -2,7 +2,9 @@ package com.nature.base.config;
 
 import com.nature.base.util.LoggerUtil;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -19,6 +21,13 @@ public class WebAppConfig implements WebMvcConfigurer {
      */
     Logger logger = LoggerUtil.getLogger();
 
+    /**
+     * Inject the first defined interceptor
+     */
+    @Autowired
+    private ConfigInterceptor configInterceptor;
+
+
     //Method of accessing pictures and videos
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -29,5 +38,10 @@ public class WebAppConfig implements WebMvcConfigurer {
         logger.info("videosPath=" + "file:" + videosPath);
         registry.addResourceHandler("/images/**", "/videos/**").addResourceLocations("file:" + imagesPath, "file:" + videosPath);
         WebMvcConfigurer.super.addResourceHandlers(registry);
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(configInterceptor);
     }
 }

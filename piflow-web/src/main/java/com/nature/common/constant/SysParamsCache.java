@@ -21,6 +21,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class SysParamsCache {
 
+    public static Boolean IS_INIT = true;
+
+    public static void setIsInit(boolean isInit) {
+        IS_INIT = isInit;
+    }
+
     // Image path (read in configuration file)
     public static String IMAGES_PATH;
 

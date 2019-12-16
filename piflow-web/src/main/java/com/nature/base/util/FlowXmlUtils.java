@@ -1522,7 +1522,7 @@ public class FlowXmlUtils {
             flow.setLastUpdateDttm(new Date());
             flow.setLastUpdateUser(username);
             flow.setVersion(0L);
-            flow.setPageId((Integer.parseInt(flowPageId) + maxPageId) + "");
+            flow.setPageId(null != flowPageId ? (Integer.parseInt(flowPageId) + maxPageId) + "" : "");
             flow.setDriverMemory(driverMemory);
             flow.setExecutorCores(executorCores);
             flow.setExecutorMemory(executorMemory);

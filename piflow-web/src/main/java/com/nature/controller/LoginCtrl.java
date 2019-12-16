@@ -32,6 +32,21 @@ public class LoginCtrl {
      */
     Logger logger = LoggerUtil.getLogger();
 
+    @RequestMapping("/")
+    public ModelAndView indexHome(ModelAndView modelAndView) {
+        modelAndView.setViewName("jump");
+        UserVo user = SessionUserUtil.getCurrentUser();
+        if (null != user) {
+            logger.info("user " + user.getUsername() + " login successfully jump home page");
+        }
+        return modelAndView;
+    }
+
+    @RequestMapping("/initPage")
+    public ModelAndView initPage(ModelAndView modelAndView) {
+        return new ModelAndView("initPage");
+    }
+
     @RequestMapping("/login")
     public ModelAndView login(ModelAndView modelAndView) {
         UserVo user = SessionUserUtil.getCurrentUser();
@@ -42,16 +57,6 @@ public class LoginCtrl {
             modelAndView.setViewName("login");
         }
         modelAndView.addObject("now", "say hello spring boot !!!!!");
-        return modelAndView;
-    }
-
-    @RequestMapping("/")
-    public ModelAndView indexHome(ModelAndView modelAndView) {
-        modelAndView.setViewName("jump");
-        UserVo user = SessionUserUtil.getCurrentUser();
-        if (null != user) {
-            logger.info("user " + user.getUsername() + " login successfully jump home page");
-        }
         return modelAndView;
     }
 
