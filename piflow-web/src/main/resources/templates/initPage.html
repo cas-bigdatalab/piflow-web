@@ -2,21 +2,81 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <title>index</title>
+    <title>Piflow-Web</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Charisma, a fully featured, responsive, HTML5, Bootstrap admin template.">
-    <meta name="author" content="Muhammad Usman">
+    <meta th:include="Macro/csrfTokeHeadMacro :: csrfTokeHeadMacro"/>
+    <link id="bs-css" th:href="@{/components/bootstrap/css/bootstrap-cerulean.min.css}" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" th:href='@{/custom/css/publicMacro.css}'/>
+    <link rel="stylesheet" type="text/css" th:href="@{/components/layui/css/layui.css}"/>
+    <!-- The fav icon -->
+    <link rel="shortcut icon" th:href="@{/img/logo.ico}">
+    <script type="text/javascript" th:src='@{/js/jquery/jquery.min.js}'></script>
+    <script type="text/javascript" th:src='@{/js/jquery.form.3.51.0/jquery.form.js}'></script>
+    <script type="text/javascript" th:src="@{/js/jquery.validate.1.13.1/jquery.validate.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jquery.validate.1.13.1/jquery.validate.addMethod.js}"></script>
+    <script type="text/javascript" th:src="@{/components/layui/layui.all.js}"></script>
+    <link th:href="@{/custom/css/fullScreen.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/components/jquery.steps/css/normalize.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/components/jquery.steps/css/main.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/components/jquery.steps/css/jquery.steps.css}"/>
     <!-- jQuery -->
     <script th:src="@{/js/jquery/jquery.min.js}"></script>
+    <script th:src="@{/components/jquery.steps/js/jquery.steps.js}"></script>
     <!-- The fav icon -->
     <link rel="shortcut icon" th:href="@{/img/logo.ico}">
 </head>
 <body>
-<span>Boot page</span>
-<input type="button" value="SKIP" onclick="home()">
+<div th:include="Macro/publicMacro :: loginHeadMacro"></div>
+<div>
+    <div style="height: 100px; text-align: center;">
+        <span style="line-height: 58px;"></span>
+        <br>
+        <span style="font-size: 20px;">Boot page</span>
+    </div>
+    <div id="example-basic">
+        <h3>Keyboard</h3>
+        <section>
+            <p>Try the keyboard navigation by clicking arrow left or right!</p>
+        </section>
+        <h3>Effects</h3>
+        <section>
+            <p>Wonderful transition effects.</p>
+        </section>
+        <h3>Pager</h3>
+        <section>
+            <p>The next and previous buttons help you to navigate through your content.</p>
+        </section>
+    </div>
+</div>
 <script>
+    $(function () {
+        $("#example-basic").steps({
+            headerTag: "h3",
+            bodyTag: "section",
+            transitionEffect: "slideLeft",
+            autoFocus: true,
+            onStepChanging: function (event, currentIndex, newIndex) {
+                if (currentIndex < newIndex) {
+                    console.log("--------------------------------");
+                }
+                return true;
+            },
+            onStepChanged: function (event, currentIndex, priorIndex) {
+                console.log("priorIndex：" + priorIndex);
+                console.log("currentIndex：" + currentIndex);
+            },
+            onFinishing: function (event, currentIndex) {
+                return true;
+            },
+            onFinished: function (event, currentIndex) {
+                console.log("Submitted!");
+                home();
+            }
+        });
+    });
+
     function home() {
-        window.location.href = "/piflow-web/web/flowList";
+        window.location.href = "/piflow-web/";
     }
 </script>
 </body>
