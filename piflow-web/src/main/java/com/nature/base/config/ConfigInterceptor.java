@@ -25,16 +25,16 @@ public class ConfigInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String requestURI = request.getRequestURI();
-        if (requestURI.startsWith("/piflow-web/initPage") && SysParamsCache.IS_INIT) {
+        if (requestURI.startsWith("/piflow-web/bootPage") && SysParamsCache.IS_INIT) {
             SysInitRecords sysInitRecordsLastNew = sysInitRecordsDomain.getSysInitRecordsLastNew(1);
             if (null == sysInitRecordsLastNew || !sysInitRecordsLastNew.getIsSucceed()) {
                 log.info("No initialization, enter the boot page");
                 SysParamsCache.setIsInit(false);
             }
         } else if (SysParamsCache.IS_INIT) {
-            response.sendRedirect("/piflow-web/initPage"); // Redirect to the boot page
+            response.sendRedirect("/piflow-web/bootPage/initPage"); // Redirect to the boot page
             return false;
-        } else if (requestURI.startsWith("/piflow-web/initPage")) {
+        } else if (requestURI.startsWith("/piflow-web/bootPage")) {
             response.sendRedirect("/piflow-web/"); // Redirect to the boot page
         }
         return true;

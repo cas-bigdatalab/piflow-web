@@ -42,11 +42,6 @@ public class LoginCtrl {
         return modelAndView;
     }
 
-    @RequestMapping("/initPage")
-    public ModelAndView initPage(ModelAndView modelAndView) {
-        return new ModelAndView("initPage");
-    }
-
     @RequestMapping("/login")
     public ModelAndView login(ModelAndView modelAndView) {
         UserVo user = SessionUserUtil.getCurrentUser();
