@@ -15,7 +15,7 @@ public interface IFlow {
      * @param process
      * @return
      */
-    public Map<String,Object> startFlow(Process process, String checkpoint, RunModeType runModeType);
+    public Map<String, Object> startFlow(Process process, String checkpoint, RunModeType runModeType);
 
     /**
      * stopFlow
@@ -27,6 +27,7 @@ public interface IFlow {
 
     /**
      * getFlowProgress
+     *
      * @param appId
      * @return
      */
@@ -48,6 +49,6 @@ public interface IFlow {
      */
     public String getCheckpoints(String appID);
 
-    public String getDebugData(String appID,String stopName,String portName);
+    public String getDebugData(String appID, String stopName, String portName);
 
 }

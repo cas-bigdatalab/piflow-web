@@ -10,73 +10,76 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name =  "flow_template")
+@Table(name = "flow_template")
 public class Template extends BaseHibernateModelUUIDNoCorpAgentId {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@OneToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "FK_FLOW_ID")
-	private Flow flow; 
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "FK_FLOW_ID")
+    private Flow flow;
 
-	private String name;
-	
-	@Column(name = "description",columnDefinition="varchar(1024) COMMENT 'description'")
-	private String description;
-	
-	@Lob @Basic(fetch = FetchType.LAZY) @Type(type="text") @Column(name="value", nullable=true)
-	private String value;
-	
-	private String path;
-	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "template")
-	private List<StopTemplateModel> stopsList = new ArrayList<StopTemplateModel>();
+    private String name;
 
- 	public Flow getFlow() {
-		return flow;
-	}
+    @Column(name = "description", columnDefinition = "varchar(1024) COMMENT 'description'")
+    private String description;
 
-	public void setFlow(Flow flow) {
-		this.flow = flow;
-	} 
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Type(type = "text")
+    @Column(name = "value", nullable = true)
+    private String value;
 
-	public String getName() {
-		return name;
-	}
+    private String path;
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "template")
+    private List<StopTemplateModel> stopsList = new ArrayList<StopTemplateModel>();
 
-	public String getValue() {
-		return value;
-	}
+    public Flow getFlow() {
+        return flow;
+    }
 
-	public void setValue(String value) {
-		this.value = value;
-	}
+    public void setFlow(Flow flow) {
+        this.flow = flow;
+    }
 
-	public String getPath() {
-		return path;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setPath(String path) {
-		this.path = path;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public String getValue() {
+        return value;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setValue(String value) {
+        this.value = value;
+    }
 
-	public List<StopTemplateModel> getStopsList() {
-		return stopsList;
-	}
+    public String getPath() {
+        return path;
+    }
 
-	public void setStopsList(List<StopTemplateModel> stopsList) {
-		this.stopsList = stopsList;
-	}
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public List<StopTemplateModel> getStopsList() {
+        return stopsList;
+    }
+
+    public void setStopsList(List<StopTemplateModel> stopsList) {
+        this.stopsList = stopsList;
+    }
 }

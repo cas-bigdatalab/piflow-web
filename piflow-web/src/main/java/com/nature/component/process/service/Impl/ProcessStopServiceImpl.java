@@ -32,7 +32,7 @@ public class ProcessStopServiceImpl implements IProcessStopService {
         ProcessStopVo processStopVo = null;
         ProcessStop processStopByPageId = processStopTransaction.getProcessStopByPageId(processId, pageId);
         if (null != processStopByPageId) {
-            processStopVo =  ProcessUtils.processStopPoToVo(processStopByPageId);
+            processStopVo = ProcessUtils.processStopPoToVo(processStopByPageId);
         }
         return processStopVo;
     }

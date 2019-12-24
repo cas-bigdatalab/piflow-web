@@ -9,8 +9,8 @@ import java.io.Serializable;
 @Getter
 public class ThirdFlowStopInfoResponse implements Serializable {
 
-	private String name;
-	private String state;
-	private String startTime;
-	private String endTime;
+    private String name;
+    private String state;
+    private String startTime;
+    private String endTime;
 }

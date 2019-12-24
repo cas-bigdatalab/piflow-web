@@ -8,8 +8,8 @@ public enum FlowState {
     STARTED("STARTED", "start up"),
     COMPLETED("COMPLETED", "completed"),
     HOME("FAILED", "failed"),
-    ABORTED("ABORTED","aborted"),
-    FORK("FORK","FORK");
+    ABORTED("ABORTED", "aborted"),
+    FORK("FORK", "FORK");
 
     private final String value;
     private final String text;

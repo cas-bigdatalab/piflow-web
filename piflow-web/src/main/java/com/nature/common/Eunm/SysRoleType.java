@@ -38,6 +38,7 @@ public enum SysRoleType {
         }
         return null;
     }
+
     public static SysRoleType selectGenderByValue(String value) {
         for (SysRoleType portType : SysRoleType.values()) {
             if (value.equalsIgnoreCase(portType.value)) {

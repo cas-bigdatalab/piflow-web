@@ -42,7 +42,7 @@ public interface FlowMapper {
      * @return
      */
     @SelectProvider(type = FlowMapperProvider.class, method = "getFlowListParam")
-    public List<Flow> getFlowListParam(@Param("param")String param);
+    public List<Flow> getFlowListParam(@Param("param") String param);
 
     /**
      * Query all sample workflows
@@ -68,7 +68,7 @@ public interface FlowMapper {
             @Result(column = "id", property = "pathsList", many = @Many(select = "com.nature.mapper.flow.PathsMapper.getPathsListByFlowId", fetchType = FetchType.LAZY))
 
     })
-    public Flow getFlowById(@Param("id")String id);
+    public Flow getFlowById(@Param("id") String id);
 
     @UpdateProvider(type = FlowMapperProvider.class, method = "updateEnableFlagById")
     public int updateEnableFlagById(@Param("id") String id);
@@ -80,7 +80,9 @@ public interface FlowMapper {
      * @return
      */
     @Select("select MAX(page_id) from flow_stops where fk_flow_id = #{flowId} and enable_flag = 1 ")
-    public String getMaxStopPageId(@Param("flowId") String flowId);    /**
+    public String getMaxStopPageId(@Param("flowId") String flowId);
+
+    /**
      * According to the flow query PageId maximum
      *
      * @param flowGroupId

@@ -67,7 +67,7 @@ public class ThirdFlowGroupInfoResponseUtils {
             process.setLastUpdateUser("syncTask");
             process.setLastUpdateDttm(new Date());
             process.setProgress(flowInfoResponse.getProgress());
-            if(StringUtils.isNotBlank(flowInfoResponse.getState())){
+            if (StringUtils.isNotBlank(flowInfoResponse.getState())) {
                 process.setState(ProcessState.selectGender(flowInfoResponse.getState()));
             }
             //process.setProcessId(flowInfoResponse.getPid());

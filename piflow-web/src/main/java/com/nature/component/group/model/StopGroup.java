@@ -11,9 +11,8 @@ import java.util.List;
 
 /**
  * Group name table
- * 
- * @author Nature
  *
+ * @author Nature
  */
 @Entity
 @Setter
@@ -21,13 +20,13 @@ import java.util.List;
 @Table(name = "FLOW_SOTPS_GROUPS")
 public class StopGroup extends BaseHibernateModelUUIDNoCorpAgentId {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String groupName; // Group name
+    private String groupName; // Group name
 
-	// Group contains stop
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "association_groups_stops_template", joinColumns = @JoinColumn(name = "groups_id"), inverseJoinColumns = @JoinColumn(name = "stops_template_id"))
-	@Where(clause = "enable_flag=1")
-	private List<StopsTemplate> stopsTemplateList = new ArrayList<StopsTemplate>();
+    // Group contains stop
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "association_groups_stops_template", joinColumns = @JoinColumn(name = "groups_id"), inverseJoinColumns = @JoinColumn(name = "stops_template_id"))
+    @Where(clause = "enable_flag=1")
+    private List<StopsTemplate> stopsTemplateList = new ArrayList<StopsTemplate>();
 }

@@ -23,34 +23,35 @@ public class PathCtrl {
     Logger logger = LoggerUtil.getLogger();
 
     @Autowired
-	private IPathsService pathsServiceImpl;
+    private IPathsService pathsServiceImpl;
 
     /**
      * Query'path'according to'flowId' and'pageId'
+     *
      * @param fid
      * @param id
      * @return
      */
-	@RequestMapping("/queryPathInfo")
-	public String getStopGroup(String fid, String id) {
-		Map<String, Object> rtnMap = new HashMap<String, Object>();
-		rtnMap.put("code",500);
-		if (StringUtils.isNotBlank(fid) && StringUtils.isNotBlank(id)) {
-			PathsVo queryInfo = pathsServiceImpl.getPathsByFlowIdAndPageId(fid, id);
-			if (null != queryInfo) {
-				rtnMap.put("code",200);
-				rtnMap.put("queryInfo", queryInfo);
-				rtnMap.put("errorMsg", "Success");
-			}else {
-				rtnMap.put("errorMsg", "No'paths'information was queried");
-				logger.warn("No'paths'information was queried");
-			}
-		}else {
-			rtnMap.put("errorMsg", "The parameter'fid'or'id' is empty");
-			logger.warn("The parameter'fid'or'id' is empty");
-		}
-		return JsonUtils.toJsonNoException(rtnMap);
-	}
-     
-     
+    @RequestMapping("/queryPathInfo")
+    public String getStopGroup(String fid, String id) {
+        Map<String, Object> rtnMap = new HashMap<String, Object>();
+        rtnMap.put("code", 500);
+        if (StringUtils.isNotBlank(fid) && StringUtils.isNotBlank(id)) {
+            PathsVo queryInfo = pathsServiceImpl.getPathsByFlowIdAndPageId(fid, id);
+            if (null != queryInfo) {
+                rtnMap.put("code", 200);
+                rtnMap.put("queryInfo", queryInfo);
+                rtnMap.put("errorMsg", "Success");
+            } else {
+                rtnMap.put("errorMsg", "No'paths'information was queried");
+                logger.warn("No'paths'information was queried");
+            }
+        } else {
+            rtnMap.put("errorMsg", "The parameter'fid'or'id' is empty");
+            logger.warn("The parameter'fid'or'id' is empty");
+        }
+        return JsonUtils.toJsonNoException(rtnMap);
+    }
+
+
 }

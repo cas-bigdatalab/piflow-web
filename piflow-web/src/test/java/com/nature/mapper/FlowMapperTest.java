@@ -20,7 +20,7 @@ import java.util.Date;
 
 public class FlowMapperTest extends ApplicationTests {
 
-    @Autowired
+    @Resource
     private FlowMapper flowMapper;
 
     Logger logger = LoggerUtil.getLogger();

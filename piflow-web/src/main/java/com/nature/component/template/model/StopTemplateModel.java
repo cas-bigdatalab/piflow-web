@@ -14,37 +14,37 @@ import java.util.List;
 @Entity
 @Table(name = "STOPS_TEMPLATE")
 public class StopTemplateModel implements Serializable {
-	/**
-	 * stop template
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     * stop template
+     */
+    private static final long serialVersionUID = 1L;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "FK_TEMPLATE_ID")
-	private Template template;
-	
-	@Id
-	@GenericGenerator(name = "idGenerator", strategy = "uuid")
-	@GeneratedValue(generator = "idGenerator")
-	@Column(length = 40)
-	private String id;
-	
-	@Column(name = "page_id")
-	private String pageId;
+    private Template template;
 
-	private String name;
+    @Id
+    @GenericGenerator(name = "idGenerator", strategy = "uuid")
+    @GeneratedValue(generator = "idGenerator")
+    @Column(length = 40)
+    private String id;
 
-	private String bundel;
+    @Column(name = "page_id")
+    private String pageId;
 
-	private String owner;
+    private String name;
 
-	private String description;
-	
-	private String inports;
-	
-	@Column(nullable = false)
-	private Boolean enableFlag = Boolean.TRUE;
-   
+    private String bundel;
+
+    private String owner;
+
+    private String description;
+
+    private String inports;
+
+    @Column(nullable = false)
+    private Boolean enableFlag = Boolean.TRUE;
+
     @Enumerated(EnumType.STRING)
     private PortType inPortType;
 
@@ -52,171 +52,171 @@ public class StopTemplateModel implements Serializable {
 
     @Enumerated(EnumType.STRING)
     private PortType outPortType;
-    
+
     private Boolean isCheckpoint;
-    
+
     private String groups;
-    
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(nullable = false, updatable = false)
-	private Date crtDttm = new Date();
-	
-	@Version
-	@Column
-	private Long version;
-	
-	private String crtUser;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false, updatable = false)
+    private Date crtDttm = new Date();
+
+    @Version
+    @Column
+    private Long version;
+
+    private String crtUser;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "stopsVo")
     private List<PropertyTemplateModel> properties = new ArrayList<PropertyTemplateModel>();
-    
-	public Template getTemplate() {
-		return template;
-	}
 
-	public void setTemplate(Template template) {
-		this.template = template;
-	}
+    public Template getTemplate() {
+        return template;
+    }
 
-	public String getPageId() {
-		return pageId;
-	}
+    public void setTemplate(Template template) {
+        this.template = template;
+    }
 
-	public void setPageId(String pageId) {
-		this.pageId = pageId;
-	}
+    public String getPageId() {
+        return pageId;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public void setPageId(String pageId) {
+        this.pageId = pageId;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getBundel() {
-		return bundel;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setBundel(String bundel) {
-		this.bundel = bundel;
-	}
+    public String getBundel() {
+        return bundel;
+    }
 
-	public String getOwner() {
-		return owner;
-	}
+    public void setBundel(String bundel) {
+        this.bundel = bundel;
+    }
 
-	public void setOwner(String owner) {
-		this.owner = owner;
-	}
+    public String getOwner() {
+        return owner;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public String getId() {
-		return id;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public String getInports() {
-		return inports;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public void setInports(String inports) {
-		this.inports = inports;
-	}
+    public String getInports() {
+        return inports;
+    }
 
-	public PortType getInPortType() {
-		return inPortType;
-	}
+    public void setInports(String inports) {
+        this.inports = inports;
+    }
 
-	public void setInPortType(PortType inPortType) {
-		this.inPortType = inPortType;
-	}
+    public PortType getInPortType() {
+        return inPortType;
+    }
 
-	public String getOutports() {
-		return outports;
-	}
+    public void setInPortType(PortType inPortType) {
+        this.inPortType = inPortType;
+    }
 
-	public void setOutports(String outports) {
-		this.outports = outports;
-	}
+    public String getOutports() {
+        return outports;
+    }
 
-	public PortType getOutPortType() {
-		return outPortType;
-	}
+    public void setOutports(String outports) {
+        this.outports = outports;
+    }
 
-	public void setOutPortType(PortType outPortType) {
-		this.outPortType = outPortType;
-	}
+    public PortType getOutPortType() {
+        return outPortType;
+    }
 
-	public Boolean getEnableFlag() {
-		return enableFlag;
-	}
+    public void setOutPortType(PortType outPortType) {
+        this.outPortType = outPortType;
+    }
 
-	public void setEnableFlag(Boolean enableFlag) {
-		this.enableFlag = enableFlag;
-	}
+    public Boolean getEnableFlag() {
+        return enableFlag;
+    }
 
-	public List<PropertyTemplateModel> getProperties() {
-		return properties;
-	}
+    public void setEnableFlag(Boolean enableFlag) {
+        this.enableFlag = enableFlag;
+    }
 
-	public void setProperties(List<PropertyTemplateModel> properties) {
-		this.properties = properties;
-	}
+    public List<PropertyTemplateModel> getProperties() {
+        return properties;
+    }
 
-	public Boolean getIsCheckpoint() {
-		return isCheckpoint;
-	}
+    public void setProperties(List<PropertyTemplateModel> properties) {
+        this.properties = properties;
+    }
 
-	public void setIsCheckpoint(Boolean isCheckpoint) {
-		this.isCheckpoint = isCheckpoint;
-	}
+    public Boolean getIsCheckpoint() {
+        return isCheckpoint;
+    }
 
-	public Date getCrtDttm() {
-		return crtDttm;
-	}
+    public void setIsCheckpoint(Boolean isCheckpoint) {
+        this.isCheckpoint = isCheckpoint;
+    }
 
-	public void setCrtDttm(Date crtDttm) {
-		this.crtDttm = crtDttm;
-	}
+    public Date getCrtDttm() {
+        return crtDttm;
+    }
 
-	public Long getVersion() {
-		return version;
-	}
+    public void setCrtDttm(Date crtDttm) {
+        this.crtDttm = crtDttm;
+    }
 
-	public void setVersion(Long version) {
-		this.version = version;
-	}
-	
-	public String getCrtDttmString() {
-		SimpleDateFormat sdf = new SimpleDateFormat(DateUtils.DATE_PATTERN_yyyy_MM_dd_HH_MM_ss);
-		return crtDttm != null ? sdf.format(crtDttm) : "";
-	}
+    public Long getVersion() {
+        return version;
+    }
 
-	public String getGroups() {
-		return groups;
-	}
+    public void setVersion(Long version) {
+        this.version = version;
+    }
 
-	public void setGroups(String groups) {
-		this.groups = groups;
-	}
+    public String getCrtDttmString() {
+        SimpleDateFormat sdf = new SimpleDateFormat(DateUtils.DATE_PATTERN_yyyy_MM_dd_HH_MM_ss);
+        return crtDttm != null ? sdf.format(crtDttm) : "";
+    }
 
-	public String getCrtUser() {
-		return crtUser;
-	}
+    public String getGroups() {
+        return groups;
+    }
 
-	public void setCrtUser(String crtUser) {
-		this.crtUser = crtUser;
-	}
-	
+    public void setGroups(String groups) {
+        this.groups = groups;
+    }
+
+    public String getCrtUser() {
+        return crtUser;
+    }
+
+    public void setCrtUser(String crtUser) {
+        this.crtUser = crtUser;
+    }
+
 }

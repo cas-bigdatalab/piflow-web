@@ -21,10 +21,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class SysParamsCache {
 
-    public static Boolean IS_INIT = true;
+    public static Boolean IS_BOOT_COMPLETE = false;
 
-    public static void setIsInit(boolean isInit) {
-        IS_INIT = isInit;
+    public static void setIsBootComplete(boolean isBootComplete) {
+        IS_BOOT_COMPLETE = isBootComplete;
     }
 
     // Image path (read in configuration file)
@@ -46,14 +46,6 @@ public class SysParamsCache {
 
     public static void setXmlPath(String xmlPath) {
         XML_PATH = xmlPath;
-    }
-
-    // is load stops
-    public static boolean IS_LOAD_STOP;
-
-    @Value("${syspara.isLoadStop}")
-    public void setIsLoadStop(String isLoadStop) {
-        IS_LOAD_STOP = Boolean.valueOf(isLoadStop);
     }
 
     // Whether to load stops

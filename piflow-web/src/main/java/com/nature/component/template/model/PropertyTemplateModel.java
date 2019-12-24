@@ -11,175 +11,174 @@ import java.util.Date;
 
 /**
  * Stop attribute
- * 
- * @author Nature
  *
+ * @author Nature
  */
 @Entity
 @Table(name = "property_template")
 public class PropertyTemplateModel implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "FK_STOPS_ID")
-	private StopTemplateModel stopsVo;
-	
-	@Id
-	@GenericGenerator(name = "idGenerator", strategy = "uuid")
-	@GeneratedValue(generator = "idGenerator")
-	@Column(length = 40)
-	private String id;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "FK_STOPS_ID")
+    private StopTemplateModel stopsVo;
 
-	private String name;
+    @Id
+    @GenericGenerator(name = "idGenerator", strategy = "uuid")
+    @GeneratedValue(generator = "idGenerator")
+    @Column(length = 40)
+    private String id;
 
-	private String displayName;
+    private String name;
 
-	@Column(name = "description", columnDefinition = "varchar(1024) COMMENT 'description'")
-	private String description;
+    private String displayName;
 
-	@Column(name = "CUSTOM_VALUE")
-	private String customValue;
+    @Column(name = "description", columnDefinition = "varchar(1024) COMMENT 'description'")
+    private String description;
 
-	@Column(name = "ALLOWABLE_VALUES")
-	private String allowableValues;
+    @Column(name = "CUSTOM_VALUE")
+    private String customValue;
 
-	@Column(name = "PROPERTY_REQUIRED")
-	private Boolean required;
+    @Column(name = "ALLOWABLE_VALUES")
+    private String allowableValues;
 
-	@Column(name = "PROPERTY_SENSITIVE")
-	private Boolean sensitive;
-	
-	@Column(nullable = false)
-	private Boolean enableFlag = Boolean.TRUE;
-	
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(nullable = false, updatable = false)
-	private Date crtDttm = new Date();
-	
-	@Version
-	@Column
-	private Long version;
-	
-	private Boolean isSelect;
-	
-	private String crtUser;
+    @Column(name = "PROPERTY_REQUIRED")
+    private Boolean required;
 
-	public String getId() {
-		return id;
-	}
+    @Column(name = "PROPERTY_SENSITIVE")
+    private Boolean sensitive;
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    @Column(nullable = false)
+    private Boolean enableFlag = Boolean.TRUE;
 
-	public StopTemplateModel getStopsVo() {
-		return stopsVo;
-	}
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false, updatable = false)
+    private Date crtDttm = new Date();
 
-	public void setStopsVo(StopTemplateModel stopsVo) {
-		this.stopsVo = stopsVo;
-	}
+    @Version
+    @Column
+    private Long version;
 
-	public String getName() {
-		return name;
-	}
+    private Boolean isSelect;
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    private String crtUser;
 
-	public String getDisplayName() {
-		return displayName;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public void setDisplayName(String displayName) {
-		this.displayName = displayName;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public StopTemplateModel getStopsVo() {
+        return stopsVo;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setStopsVo(StopTemplateModel stopsVo) {
+        this.stopsVo = stopsVo;
+    }
 
-	public String getCustomValue() {
-		return customValue;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setCustomValue(String customValue) {
-		this.customValue = customValue;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getAllowableValues() {
-		return allowableValues;
-	}
+    public String getDisplayName() {
+        return displayName;
+    }
 
-	public void setAllowableValues(String allowableValues) {
-		this.allowableValues = allowableValues;
-	}
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
 
-	public Boolean getRequired() {
-		return required;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public Boolean getEnableFlag() {
-		return enableFlag;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public void setEnableFlag(Boolean enableFlag) {
-		this.enableFlag = enableFlag;
-	}
+    public String getCustomValue() {
+        return customValue;
+    }
 
-	public void setRequired(Boolean required) {
-		this.required = required;
-	}
+    public void setCustomValue(String customValue) {
+        this.customValue = customValue;
+    }
 
-	public Boolean getSensitive() {
-		return sensitive;
-	}
+    public String getAllowableValues() {
+        return allowableValues;
+    }
 
-	public void setSensitive(Boolean sensitive) {
-		this.sensitive = sensitive;
-	}
+    public void setAllowableValues(String allowableValues) {
+        this.allowableValues = allowableValues;
+    }
 
-	public Date getCrtDttm() {
-		return crtDttm;
-	}
+    public Boolean getRequired() {
+        return required;
+    }
 
-	public void setCrtDttm(Date crtDttm) {
-		this.crtDttm = crtDttm;
-	}
+    public Boolean getEnableFlag() {
+        return enableFlag;
+    }
 
-	public Long getVersion() {
-		return version;
-	}
+    public void setEnableFlag(Boolean enableFlag) {
+        this.enableFlag = enableFlag;
+    }
 
-	public void setVersion(Long version) {
-		this.version = version;
-	}
-	
-	public String getCrtDttmString() {
-		SimpleDateFormat sdf = new SimpleDateFormat(DateUtils.DATE_PATTERN_yyyy_MM_dd_HH_MM_ss);
-		return crtDttm != null ? sdf.format(crtDttm) : "";
-	}
+    public void setRequired(Boolean required) {
+        this.required = required;
+    }
 
-	public Boolean getIsSelect() {
-		return isSelect;
-	}
+    public Boolean getSensitive() {
+        return sensitive;
+    }
 
-	public void setIsSelect(Boolean isSelect) {
-		this.isSelect = isSelect;
-	}
+    public void setSensitive(Boolean sensitive) {
+        this.sensitive = sensitive;
+    }
 
-	public String getCrtUser() {
-		return crtUser;
-	}
+    public Date getCrtDttm() {
+        return crtDttm;
+    }
 
-	public void setCrtUser(String crtUser) {
-		this.crtUser = crtUser;
-	}
-	
+    public void setCrtDttm(Date crtDttm) {
+        this.crtDttm = crtDttm;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
+    }
+
+    public String getCrtDttmString() {
+        SimpleDateFormat sdf = new SimpleDateFormat(DateUtils.DATE_PATTERN_yyyy_MM_dd_HH_MM_ss);
+        return crtDttm != null ? sdf.format(crtDttm) : "";
+    }
+
+    public Boolean getIsSelect() {
+        return isSelect;
+    }
+
+    public void setIsSelect(Boolean isSelect) {
+        this.isSelect = isSelect;
+    }
+
+    public String getCrtUser() {
+        return crtUser;
+    }
+
+    public void setCrtUser(String crtUser) {
+        this.crtUser = crtUser;
+    }
+
 }

@@ -32,21 +32,24 @@
         <span style="font-size: 20px;">Boot page</span>
     </div>
     <div id="example-basic">
-        <h3>Keyboard</h3>
+        <h3>Init Stops</h3>
         <section>
-            <p>Try the keyboard navigation by clicking arrow left or right!</p>
+            <p>Please try to click next to initialize the related Stops!</p>
         </section>
-        <h3>Effects</h3>
+        <h3>Init Sample</h3>
         <section>
-            <p>Wonderful transition effects.</p>
+            <p>Please try clicking the next step to initialize the related samples!</p>
         </section>
-        <h3>Pager</h3>
+        <h3>Jump Home</h3>
         <section>
-            <p>The next and previous buttons help you to navigate through your content.</p>
+            <p>Click Finish to jump to the homepage.</p>
         </section>
     </div>
 </div>
+<div th:include="Macro/fragmentMacro :: fullScreen"></div>
 <script type="text/javascript">
+    var isInitStopsSuccessfully = false;
+    var isInitSampleSuccessfully = false;
     window.onload = function () {
         $("#example-basic").steps({
             headerTag: "h3",
@@ -54,9 +57,35 @@
             transitionEffect: "slideLeft",
             autoFocus: true,
             onStepChanging: function (event, currentIndex, newIndex) {
+                $('#fullScreen').show();
                 if (currentIndex < newIndex) {
                     console.log("----------------00000----------------");
+                    switch (currentIndex) {
+                        case 0: {
+                            if (!isInitStopsSuccessfully) {
+                                if (initStops()) {
+                                    isInitStopsSuccessfully = true;
+                                } else {
+                                    isInitStopsSuccessfully = false;
+                                }
+                                return isInitStopsSuccessfully;
+                            }
+                        }
+                            break;
+                        case 1: {
+                            if (!isInitSampleSuccessfully) {
+                                if (initSample()) {
+                                    isInitSampleSuccessfully = true;
+                                } else {
+                                    isInitSampleSuccessfully = false;
+                                }
+                                return isInitSampleSuccessfully;
+                            }
+                        }
+                            break;
+                    }
                 }
+                $('#fullScreen').hide();
                 return true;
             },
             onStepChanged: function (event, currentIndex, priorIndex) {
@@ -64,7 +93,12 @@
                 console.log("currentIndex：" + currentIndex);
             },
             onFinishing: function (event, currentIndex) {
-                return true;
+                if (isInitSampleSuccessfully && isInitSampleSuccessfully) {
+                    if (bootComplete()) {
+                        return true;
+                    }
+                }
+                return false;
             },
             onFinished: function (event, currentIndex) {
                 console.log("Submitted!");
@@ -77,33 +111,100 @@
         window.location.href = "/piflow-web/";
     }
 
-    function loadStops() {
+    function initStops() {
         $('#fullScreen').show();
+        var isSuccessfully = false;
         $.ajax({
-            data: {"load": loadId},
             cache: true,//Keep cached data
-            type: "POST",//Request type post
-            url: "/piflow-web/bootPage/loadStops",//This is the name of the file where I receive data in the background.
+            type: "GET",//Request type post
+            async: false,
+            url: "/piflow-web/bootPage/initStops",//This is the name of the file where I receive data in the background.
             error: function (request) {//Operation after request failure
                 $('#fullScreen').hide();
                 //alert("reload fail");
-                layer.msg("reload fail", {icon: 2, shade: 0, time: 2000}, function () {
+                layer.msg("reload fail,please try again", {icon: 2, shade: 0, time: 2000}, function () {
                 });
-                return;
             },
             success: function (data) {//Operation after request successful
                 var dataMap = JSON.parse(data);
+                $('#fullScreen').hide();
                 if (200 === dataMap.code) {
-                    window.location.href = "/piflow-web/grapheditor/home?load=" + dataMap.load + "&_" + new Date().getTime();
+                    // isInitStopsSuccessfully = true;
+                    isSuccessfully = true;
                 } else {
-                    //alert("reload fail");
-                    layer.msg("reload fail", {icon: 2, shade: 0, time: 2000}, function () {
+                    // alert("reload fail");
+                    layer.msg("reload fail,please try again", {icon: 2, shade: 0, time: 2000}, function () {
+                        // return false;
                     });
-                    $('#fullScreen').hide();
                 }
             }
         });
+        return isSuccessfully;
     }
+
+    function initSample() {
+        $('#fullScreen').show();
+        var isSuccessfully = false;
+        $.ajax({
+            type: "GET",//Request type post
+            async: false,
+            url: "/piflow-web/bootPage/initSample",//This is the name of the file where I receive data in the background.
+            error: function (request) {//Operation after request failure
+                // $('#fullScreen').hide();
+                //alert("reload fail");
+                layer.msg("reload fail", {icon: 2, shade: 0, time: 2000}, function () {
+                });
+                isSuccessfully = false;
+            },
+            success: function (data) {//Operation after request successful
+                var dataMap = JSON.parse(data);
+                $('#fullScreen').hide();
+                if (200 === dataMap.code) {
+                    // isInitSampleSuccessfully = true;
+                    isSuccessfully = true;
+                } else {
+                    //alert("reload fail");
+                    layer.msg("reload fail", {icon: 2, shade: 0, time: 2000}, function () {
+                        isSuccessfully = false;
+                    });
+                }
+            }
+        });
+        return isSuccessfully;
+    }
+
+    function bootComplete() {
+        $('#fullScreen').show();
+        var isSuccessfully = false;
+        $.ajax({
+            type: "GET",//Request type post
+            async: false,
+            url: "/piflow-web/bootPage/bootComplete",//This is the name of the file where I receive data in the background.
+            error: function (request) {//Operation after request failure
+                // $('#fullScreen').hide();
+                //alert("reload fail");
+                layer.msg("Jump failed, please try again", {icon: 2, shade: 0, time: 2000}, function () {
+                });
+                isSuccessfully = false;
+            },
+            success: function (data) {//Operation after request successful
+                var dataMap = JSON.parse(data);
+                $('#fullScreen').hide();
+                if (200 === dataMap.code) {
+                    // isInitSampleSuccessfully = true;
+                    isSuccessfully = true;
+                } else {
+                    //alert("reload fail");
+                    layer.msg("Jump failed, please try again", {icon: 2, shade: 0, time: 2000}, function () {
+                        isSuccessfully = false;
+                    });
+                }
+            }
+        });
+        return isSuccessfully;
+    }
+
+    //@ sourceURL=initPage.js
 </script>
 </body>
 </html>

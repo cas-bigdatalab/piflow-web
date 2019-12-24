@@ -13,7 +13,7 @@ import java.util.List;
 
 @Setter
 @Getter
-public class ProcessGroupVo  implements Serializable {
+public class ProcessGroupVo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

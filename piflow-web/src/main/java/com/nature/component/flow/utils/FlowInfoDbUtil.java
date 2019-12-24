@@ -11,10 +11,10 @@ public class FlowInfoDbUtil {
      * @param flowInfoDb
      * @return
      */
-    public static FlowInfoDbVo flowInfoDbToVo(FlowInfoDb flowInfoDb){
-    	FlowInfoDbVo flowInfoDbVo = null;
-        if(null!=flowInfoDb){
-        	flowInfoDbVo = new FlowInfoDbVo();
+    public static FlowInfoDbVo flowInfoDbToVo(FlowInfoDb flowInfoDb) {
+        FlowInfoDbVo flowInfoDbVo = null;
+        if (null != flowInfoDb) {
+            flowInfoDbVo = new FlowInfoDbVo();
             BeanUtils.copyProperties(flowInfoDb, flowInfoDbVo);
         }
         return flowInfoDbVo;

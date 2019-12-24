@@ -11,16 +11,16 @@ import java.util.List;
 @Setter
 public class ThirdFlowInfoVo implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String id;
-	private String pid;
-	private String name;
-	private String state;
-	private String startTime;
-	private String endTime;
-	private String progress;
+    private String id;
+    private String pid;
+    private String name;
+    private String state;
+    private String startTime;
+    private String endTime;
+    private String progress;
 
-	List<ThirdFlowInfoStopsVo> stops = new ArrayList<ThirdFlowInfoStopsVo>();
+    List<ThirdFlowInfoStopsVo> stops = new ArrayList<ThirdFlowInfoStopsVo>();
 
 }

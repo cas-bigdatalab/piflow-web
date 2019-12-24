@@ -9,7 +9,6 @@ import org.apache.ibatis.annotations.*;
 public interface ProcessGroupPathMapper {
 
 
-
     /**
      * Query processGroupPath according to processGroup Id
      *

@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 public class StatefulRtnBaseUtils {
 
     private static Logger logger = LoggerUtil.getLogger();
+
     /**
      * set Failure information
      *

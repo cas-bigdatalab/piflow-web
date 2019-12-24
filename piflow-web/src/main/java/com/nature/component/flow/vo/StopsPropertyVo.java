@@ -8,9 +8,8 @@ import java.io.Serializable;
 
 /**
  * Stop attribute
- * 
- * @author Nature
  *
+ * @author Nature
  */
 
 @Setter

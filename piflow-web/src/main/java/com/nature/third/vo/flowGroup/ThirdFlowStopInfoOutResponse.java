@@ -9,5 +9,5 @@ import java.io.Serializable;
 @Getter
 public class ThirdFlowStopInfoOutResponse implements Serializable {
 
-	private ThirdFlowStopInfoResponse stop;
+    private ThirdFlowStopInfoResponse stop;
 }

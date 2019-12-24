@@ -276,7 +276,7 @@ public class FlowMapperProvider {
         return sqlStr;
     }
 
-    public String getFlowListGroupId(String flowGroupId){
+    public String getFlowListGroupId(String flowGroupId) {
         String sqlStr = "select 0";
         if (StringUtils.isNotBlank(flowGroupId)) {
             StringBuffer strBuf = new StringBuffer();

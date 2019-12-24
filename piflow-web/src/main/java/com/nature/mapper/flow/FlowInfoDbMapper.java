@@ -26,9 +26,9 @@ public interface FlowInfoDbMapper {
      */
     @Select("select * from flow where enable_flag = 1 order by crt_dttm desc ")
     @Results({
-    			@Result(id = true, column = "id", property = "id"),
-    			@Result(column = "id", property = "appId", one = @One(select = "com.nature.mapper.flow.FlowInfoDbMapper.getAppByAppFlowId", fetchType = FetchType.LAZY))
-            })
+            @Result(id = true, column = "id", property = "id"),
+            @Result(column = "id", property = "appId", one = @One(select = "com.nature.mapper.flow.FlowInfoDbMapper.getAppByAppFlowId", fetchType = FetchType.LAZY))
+    })
     public List<Flow> findAppList();
 
     @Select("select id,name,end_time,start_time,state,progress from flow_info where enable_flag = 1 and id = #{id}")
@@ -45,8 +45,8 @@ public interface FlowInfoDbMapper {
      */
     @Select("select * from flow_info where enable_flag = 1 and id = #{id} ")
     @Results({
-		@Result(id = true, column = "id", property = "id"),
-		@Result(column = "fk_flow_id", property = "flow", one = @One(select = "com.nature.mapper.flow.FlowMapper.getFlowById", fetchType = FetchType.LAZY)),
+            @Result(id = true, column = "id", property = "id"),
+            @Result(column = "fk_flow_id", property = "flow", one = @One(select = "com.nature.mapper.flow.FlowMapper.getFlowById", fetchType = FetchType.LAZY)),
     })
     public FlowInfoDb flowInfoDb(@Param("id") String appId);
 
@@ -76,8 +76,8 @@ public interface FlowInfoDbMapper {
             "<foreach collection='ids' item='id' open='(' separator=',' close=')'>",
             "#{id}", "</foreach>", "</script>"})
     @Results({
-		@Result(id = true, column = "id", property = "id"),
-		@Result(column = "fk_flow_id", property = "flow", one = @One(select = "com.nature.mapper.flow.FlowMapper.getFlowById", fetchType = FetchType.LAZY)),
+            @Result(id = true, column = "id", property = "id"),
+            @Result(column = "fk_flow_id", property = "flow", one = @One(select = "com.nature.mapper.flow.FlowMapper.getFlowById", fetchType = FetchType.LAZY)),
     })
     public List<FlowInfoDb> getFlowInfoByIds(@Param("ids") List<String> ids);
 

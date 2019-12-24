@@ -145,6 +145,7 @@ public class ProcessStopVo implements Serializable {
     public void setProcessStopPropertyVoList(List<ProcessStopPropertyVo> processStopPropertyVoList) {
         this.processStopPropertyVoList = processStopPropertyVoList;
     }
+
     public String getStartTimeStr() {
         return DateUtils.dateTimesToStr(this.startTime);
     }

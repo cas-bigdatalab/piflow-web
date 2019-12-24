@@ -60,7 +60,7 @@ public interface PathsMapper {
             @Result(column = "line_outport", property = "outport"),
             @Result(column = "line_inport", property = "inport"),
             @Result(column = "line_port", property = "port"),
-			@Result(column = "fk_flow_id", property = "flow", many = @Many(select = "com.nature.mapper.flow.FlowMapper.getFlowById", fetchType = FetchType.LAZY))
+            @Result(column = "fk_flow_id", property = "flow", many = @Many(select = "com.nature.mapper.flow.FlowMapper.getFlowById", fetchType = FetchType.LAZY))
     })
     public List<Paths> getPaths(String flowId, String pageId, String from, String to);
 
@@ -108,7 +108,6 @@ public interface PathsMapper {
     public Paths getPathsById(String id);
 
     /**
-     * 
      * Logically delete flowInfo according to flowId
      *
      * @param id

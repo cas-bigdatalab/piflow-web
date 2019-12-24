@@ -68,16 +68,18 @@ public interface IFlowGroupService {
      */
     public String saveOrUpdateFlowGroupAll(String imageXML, String loadId, String operType, boolean flag);
 
-	/**
-	 * run flow group
-	 * @param flowGroupId
-	 * @param runMode
-	 * @return
-	 */
+    /**
+     * run flow group
+     *
+     * @param flowGroupId
+     * @param runMode
+     * @return
+     */
     public String runFlowGroup(String flowGroupId, String runMode);
 
     /**
      * delete FLowGroup info
+     *
      * @param id
      * @return
      */

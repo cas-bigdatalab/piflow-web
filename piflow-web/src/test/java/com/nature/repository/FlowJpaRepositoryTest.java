@@ -2,10 +2,7 @@ package com.nature.repository;
 
 import com.nature.ApplicationTests;
 import com.nature.base.util.LoggerUtil;
-import com.nature.base.util.SqlUtils;
 import com.nature.component.flow.model.Flow;
-import com.nature.component.flow.model.Stops;
-import com.nature.mapper.flow.StopsMapper;
 import com.nature.repository.flow.FlowJpaRepository;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -16,10 +13,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
 
 public class FlowJpaRepositoryTest extends ApplicationTests {
 

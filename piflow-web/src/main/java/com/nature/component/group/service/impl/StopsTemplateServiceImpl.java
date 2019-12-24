@@ -11,17 +11,17 @@ import javax.annotation.Resource;
 @Service
 public class StopsTemplateServiceImpl implements IStopsTemplateService {
 
-	@Autowired
-	private StopsTemplateMapper stopsTemplateMapper;
+    @Autowired
+    private StopsTemplateMapper stopsTemplateMapper;
 
-	@Override
-	public StopsTemplate getStopsTemplateById(String id) {
-		return stopsTemplateMapper.getStopsTemplateById(id);
-	}
+    @Override
+    public StopsTemplate getStopsTemplateById(String id) {
+        return stopsTemplateMapper.getStopsTemplateById(id);
+    }
 
-	@Override
-	public StopsTemplate getStopsPropertyById(String id) {
-		return stopsTemplateMapper.getStopsTemplateAndPropertyById(id);
-	}
+    @Override
+    public StopsTemplate getStopsPropertyById(String id) {
+        return stopsTemplateMapper.getStopsTemplateAndPropertyById(id);
+    }
 
 }

@@ -6,16 +6,11 @@ import com.nature.base.util.SqlUtils;
 import com.nature.base.vo.UserVo;
 import com.nature.common.Eunm.ProcessParentType;
 import com.nature.common.Eunm.ProcessState;
-import com.nature.common.Eunm.RunModeType;
-import com.nature.common.Eunm.SysRoleType;
 import com.nature.component.process.model.Process;
-import com.nature.component.system.model.SysRole;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 public class ProcessMapperProvider {

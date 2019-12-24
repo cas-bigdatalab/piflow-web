@@ -19,6 +19,7 @@ public interface MxGraphModelMapper {
 
     /**
      * Modify mxgraphmodel
+     *
      * @param mxGraphModel
      * @return
      */

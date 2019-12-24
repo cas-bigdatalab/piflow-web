@@ -47,20 +47,21 @@ public interface IStopsService {
      * @return
      */
     public int updateStopsCheckpoint(String stopId, boolean isCheckpoint);
-    
+
     /**
      * Modify "stopName" based on id
+     *
      * @param id
      * @param stopName
      * @return
      */
-    public int updateStopsNameById(String id,String stopName);
+    public int updateStopsNameById(String id, String stopName);
 
     public String getStopByNameAndFlowId(String flowId, String stopName);
-    
-	@Transactional
+
+    @Transactional
     public StatefulRtnBase updateStopName(String stopId, Flow flow, String stopName, String pageId);
 
-	public String getStopsPort(String flowId,String sourceId,String targetId,String pathLineId);
+    public String getStopsPort(String flowId, String sourceId, String targetId, String pathLineId);
 
 }

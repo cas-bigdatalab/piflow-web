@@ -10,6 +10,7 @@ public class UpperTableStrategy extends PhysicalNamingStrategyStandardImpl {
      *
      */
     private static final long serialVersionUID = 1L;
+
     @Override
     public Identifier toPhysicalTableName(Identifier name, JdbcEnvironment context) {
         // Convert all table names to uppercase

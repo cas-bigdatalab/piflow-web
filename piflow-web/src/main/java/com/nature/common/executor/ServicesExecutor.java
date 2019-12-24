@@ -15,7 +15,7 @@ public class ServicesExecutor {
     private static ExecutorService servicesExecutorService;
 
     /* Define an executor of the execution thread for the log */
-    private static ExecutorService          logExecutorService;
+    private static ExecutorService logExecutorService;
 
     private static ScheduledExecutorService scheduledThreadPool;
 

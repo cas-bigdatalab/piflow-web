@@ -4,9 +4,12 @@ import com.nature.base.util.JsonUtils;
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.SessionUserUtil;
 import com.nature.base.vo.UserVo;
+import com.nature.common.constant.SysParamsCache;
 import com.nature.component.dataSource.service.IDataSource;
 import com.nature.component.dataSource.vo.DataSourceVo;
 import com.nature.component.group.service.IStopGroupService;
+import com.nature.component.system.service.ISysInitRecordsService;
+import com.nature.component.template.service.ITemplateService;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,20 +34,35 @@ public class BootPageCtrl {
     @Autowired
     private IStopGroupService stopGroupServiceImpl;
 
+    @Autowired
+    private ISysInitRecordsService sysInitRecordsServiceImpl;
+
     @RequestMapping("/initPage")
-    public ModelAndView initPage(ModelAndView modelAndView) {
+    public ModelAndView initPage() {
         return new ModelAndView("initPage");
     }
 
-    @RequestMapping("/loadStops")
+    @RequestMapping("/initStops")
     @ResponseBody
-    public String loadStops(ModelAndView modelAndView) {
+    public String initStops() {
         UserVo user = SessionUserUtil.getCurrentUser();
         Map<String, Object> rtnMap = new HashMap<>();
         rtnMap.put("code", 500);
         stopGroupServiceImpl.addGroupAndStopsList(user);
         rtnMap.put("code", 200);
         return JsonUtils.toJsonNoException(rtnMap);
+    }
+
+    @RequestMapping("/initSample")
+    @ResponseBody
+    public String initSample() {
+        return sysInitRecordsServiceImpl.initSample();
+    }
+
+    @RequestMapping("/bootComplete")
+    @ResponseBody
+    public String bootComplete() {
+        return sysInitRecordsServiceImpl.addSysInitRecords();
     }
 
 

@@ -26,7 +26,7 @@ public class ThirdFlowInfoVoUtils {
             process.setLastUpdateUser("syncTask");
             process.setLastUpdateDttm(new Date());
             process.setProgress(thirdFlowInfoVo.getProgress());
-            if(StringUtils.isNotBlank(thirdFlowInfoVo.getState())){
+            if (StringUtils.isNotBlank(thirdFlowInfoVo.getState())) {
                 process.setState(ProcessState.selectGender(thirdFlowInfoVo.getState()));
             }
             //process.setName(thirdFlowInfoVo.getName());

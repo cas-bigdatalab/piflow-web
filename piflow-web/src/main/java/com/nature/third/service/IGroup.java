@@ -17,7 +17,7 @@ public interface IGroup {
      * @param processGroup
      * @return
      */
-    public Map<String,Object> startFlowGroup(ProcessGroup processGroup, RunModeType runModeType);
+    public Map<String, Object> startFlowGroup(ProcessGroup processGroup, RunModeType runModeType);
 
     /**
      * stopFlowGroup

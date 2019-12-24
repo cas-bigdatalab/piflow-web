@@ -16,32 +16,32 @@ import java.util.List;
 @Table(name = "FLOW_PROJECT")
 public class FlowProject extends BaseHibernateModelUUIDNoCorpAgentId {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Column(columnDefinition="varchar(255) COMMENT 'flow name'")
-	private String name;
+    @Column(columnDefinition = "varchar(255) COMMENT 'flow name'")
+    private String name;
 
-	@Column(columnDefinition="varchar(255) COMMENT 'flow uuid'")
-	private String uuid;
-	
-	@Column(name = "description",columnDefinition="text(0) COMMENT 'description'")
-	private String description;
+    @Column(columnDefinition = "varchar(255) COMMENT 'flow uuid'")
+    private String uuid;
 
-	@Column(columnDefinition="bit(1) COMMENT 'isExample'")
-	private Boolean isExample = false;
+    @Column(name = "description", columnDefinition = "text(0) COMMENT 'description'")
+    private String description;
 
-	@OneToOne(fetch = FetchType.LAZY, mappedBy = "flowProject")
-	@Where(clause = "enable_flag=1")
-	private MxGraphModel mxGraphModel;
+    @Column(columnDefinition = "bit(1) COMMENT 'isExample'")
+    private Boolean isExample = false;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "flowProject")
-	@Where(clause = "enable_flag=1")
-	@org.hibernate.annotations.OrderBy(clause = "lastUpdateDttm desc")
-	private List<Flow> flowList = new ArrayList<>();
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "flowProject")
+    @Where(clause = "enable_flag=1")
+    private MxGraphModel mxGraphModel;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "flowProject")
-	@Where(clause = "enable_flag=1")
-	@org.hibernate.annotations.OrderBy(clause = "lastUpdateDttm desc")
-	private List<FlowGroup> flowGroupList = new ArrayList<>();
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "flowProject")
+    @Where(clause = "enable_flag=1")
+    @org.hibernate.annotations.OrderBy(clause = "lastUpdateDttm desc")
+    private List<Flow> flowList = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "flowProject")
+    @Where(clause = "enable_flag=1")
+    @org.hibernate.annotations.OrderBy(clause = "lastUpdateDttm desc")
+    private List<FlowGroup> flowGroupList = new ArrayList<>();
 
 }

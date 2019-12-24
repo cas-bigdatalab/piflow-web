@@ -38,6 +38,7 @@ public enum RunModeType {
         }
         return null;
     }
+
     public static RunModeType selectGenderByValue(String value) {
         for (RunModeType portType : RunModeType.values()) {
             if (value.equalsIgnoreCase(portType.value)) {

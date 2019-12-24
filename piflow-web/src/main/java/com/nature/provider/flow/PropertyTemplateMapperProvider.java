@@ -57,7 +57,7 @@ public class PropertyTemplateMapperProvider {
             this.name = SqlUtils.preventSQLInjection(propertyTemplate.getName());
             this.required = (null == propertyTemplate.getRequired() ? 0 : (propertyTemplate.getRequired() ? 1 : 0));
             this.sensitive = (null == propertyTemplate.getSensitive() ? 0 : (propertyTemplate.getSensitive() ? 1 : 0));
-            this.propertySort =  (null != propertyTemplate.getPropertySort() ? propertyTemplate.getPropertySort() : 0L);
+            this.propertySort = (null != propertyTemplate.getPropertySort() ? propertyTemplate.getPropertySort() : 0L);
             this.stopsTemplateId = SqlUtils.preventSQLInjection(propertyTemplate.getStopsTemplate());
         }
     }

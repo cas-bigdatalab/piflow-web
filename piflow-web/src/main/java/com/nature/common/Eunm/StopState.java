@@ -9,7 +9,7 @@ public enum StopState {
     STARTED("STARTED", "started"),
     COMPLETED("COMPLETED", "completed"),
     FAILED("FAILED", "failed"),
-    KILLED("KILLED","killed");
+    KILLED("KILLED", "killed");
 
     private final String value;
     private final String text;

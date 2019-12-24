@@ -4,9 +4,7 @@ import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.SqlUtils;
 import com.nature.base.vo.UserVo;
 import com.nature.component.flow.model.FlowGroupPaths;
-import com.nature.component.flow.model.Paths;
 import com.nature.component.flow.vo.FlowGroupPathsVo;
-import com.nature.component.flow.vo.PathsVo;
 import org.springframework.beans.BeanUtils;
 
 import java.util.ArrayList;
@@ -37,6 +35,7 @@ public class FlowGroupPathsUtil {
 
     /**
      * pathsVoList Vo To Po
+     *
      * @param flowGroupPathsVoList
      * @return
      */

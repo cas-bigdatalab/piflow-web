@@ -2,13 +2,8 @@ package com.nature.provider.system;
 
 import com.nature.base.util.SqlUtils;
 import com.nature.common.Eunm.SysRoleType;
-import com.nature.component.system.model.SysMenu;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
-
-import java.util.List;
-import java.util.Map;
 
 public class SysMenuMapperProvider {
 

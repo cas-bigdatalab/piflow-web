@@ -9,9 +9,9 @@ public enum ProcessState {
     STARTED("STARTED", "started"),
     COMPLETED("COMPLETED", "completed"),
     FAILED("FAILED", "failed"),
-    ABORTED("ABORTED","aborted"),
-    FORK("FORK","fork"),
-    KILLED("KILLED","killed");
+    ABORTED("ABORTED", "aborted"),
+    FORK("FORK", "fork"),
+    KILLED("KILLED", "killed");
 
     private final String value;
     private final String text;

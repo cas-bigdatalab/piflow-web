@@ -37,13 +37,13 @@ public class ProcessPathMapperProvider {
             Date crtDttm = processPath.getCrtDttm();
             Date lastUpdateDttm = processPath.getLastUpdateDttm();
             this.id = SqlUtils.preventSQLInjection(id);
-            this.crtUser = (null != crtUser ? SqlUtils.preventSQLInjection(crtUser):null);
+            this.crtUser = (null != crtUser ? SqlUtils.preventSQLInjection(crtUser) : null);
             this.lastUpdateUser = SqlUtils.preventSQLInjection(lastUpdateUser);
             this.enableFlag = ((null != enableFlag && enableFlag) ? 1 : 0);
             this.version = (null != version ? version : 0L);
             String crtDttmStr = DateUtils.dateTimesToStr(crtDttm);
             String lastUpdateDttmStr = DateUtils.dateTimesToStr(null != lastUpdateDttm ? lastUpdateDttm : new Date());
-            this.crtDttmStr = (null != crtDttm ? SqlUtils.preventSQLInjection(crtDttmStr):null);
+            this.crtDttmStr = (null != crtDttm ? SqlUtils.preventSQLInjection(crtDttmStr) : null);
             this.lastUpdateDttmStr = SqlUtils.preventSQLInjection(lastUpdateDttmStr);
 
             // Selection field

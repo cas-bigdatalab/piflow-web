@@ -72,6 +72,7 @@ public class DataSourcePropertyDomain {
     public void delete(DataSourceProperty dataSourceProperty) {
         dataSourcePropertyJpaRepository.delete(dataSourceProperty);
     }
+
     public void delete(List<DataSourceProperty> dataSourcePropertyList) {
         dataSourcePropertyJpaRepository.deleteAll(dataSourcePropertyList);
     }

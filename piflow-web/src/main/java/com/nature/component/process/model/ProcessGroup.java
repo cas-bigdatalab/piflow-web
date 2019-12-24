@@ -63,7 +63,7 @@ public class ProcessGroup extends BaseHibernateModelUUIDNoCorpAgentId {
     @Column(columnDefinition = "varchar(255) COMMENT 'Process parent type'")
     @Enumerated(EnumType.STRING)
     private ProcessParentType processParentType;
-    
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "processGroup")
     @Where(clause = "enable_flag=1")
     @OrderBy(clause = "lastUpdateDttm desc")

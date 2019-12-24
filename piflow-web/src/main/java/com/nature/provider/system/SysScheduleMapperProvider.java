@@ -2,9 +2,7 @@ package com.nature.provider.system;
 
 import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.SqlUtils;
-import com.nature.common.Eunm.SysRoleType;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.jdbc.SQL;
 
 public class SysScheduleMapperProvider {
 

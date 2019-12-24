@@ -2,7 +2,7 @@ package com.nature.component.flow.vo;
 
 import java.io.Serializable;
 
-public class PropertyTemplateVo  implements Serializable {
+public class PropertyTemplateVo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

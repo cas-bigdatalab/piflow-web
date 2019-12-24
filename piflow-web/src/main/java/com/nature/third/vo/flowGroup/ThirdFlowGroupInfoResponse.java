@@ -13,14 +13,14 @@ import java.util.List;
 @Setter
 public class ThirdFlowGroupInfoResponse implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-	private String id;
-	private String name;
-	private String state;
-	private String startTime;
-	private String endTime;
-	private String progress;
+    private static final long serialVersionUID = 1L;
+    private String id;
+    private String name;
+    private String state;
+    private String startTime;
+    private String endTime;
+    private String progress;
 
-	List<ThirdFlowInfoOutResponse> flows = new ArrayList<>();
+    List<ThirdFlowInfoOutResponse> flows = new ArrayList<>();
 
 }

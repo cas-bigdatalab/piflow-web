@@ -117,7 +117,7 @@ public class HdfsUtils {
                         lastReadFileLine = currentLine;
                     }
                     last = ((next = br.readLine()) == null);
-                    if (last && (i+1)==status.length) {
+                    if (last && (i + 1) == status.length) {
                         debugDataResponse.setEnd(true);
                     }
                     // After reaching the limit, jump out

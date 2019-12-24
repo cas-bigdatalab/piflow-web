@@ -32,4 +32,4 @@ public class SysSchedule extends BaseHibernateModelUUIDNoCorpAgentId {
     @Column(columnDefinition = "varchar(255) COMMENT 'cron'")
     private String cronExpression;
 
-  }
+}

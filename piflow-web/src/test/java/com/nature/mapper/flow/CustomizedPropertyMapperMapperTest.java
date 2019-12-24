@@ -2,22 +2,17 @@ package com.nature.mapper.flow;
 
 import com.nature.ApplicationTests;
 import com.nature.base.util.LoggerUtil;
-import com.nature.base.util.SqlUtils;
 import com.nature.component.flow.model.CustomizedProperty;
-import com.nature.component.flow.model.Property;
-import com.nature.component.flow.model.Stops;
-import com.nature.component.group.model.PropertyTemplate;
-import com.nature.component.group.model.StopsTemplate;
 import org.junit.Test;
 import org.slf4j.Logger;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.annotation.Resource;
 import java.util.*;
 
 public class CustomizedPropertyMapperMapperTest extends ApplicationTests {
 
-	@Autowired
+	@Resource
 	private CustomizedPropertyMapper customizedPropertyMapper;
 
 

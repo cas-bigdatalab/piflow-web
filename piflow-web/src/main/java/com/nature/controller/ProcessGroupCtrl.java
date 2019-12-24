@@ -246,7 +246,7 @@ public class ProcessGroupCtrl {
     public String getProcessIdByPageId(HttpServletRequest request) {
         String processGroupId = request.getParameter("processGroupId");
         String pageId = request.getParameter("pageId");
-        return processGroupServiceImpl.getProcessIdByPageId(processGroupId,pageId);
+        return processGroupServiceImpl.getProcessIdByPageId(processGroupId, pageId);
     }
 
 }

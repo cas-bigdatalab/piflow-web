@@ -1,6 +1,9 @@
 package com.nature.third.service.impl;
 
-import com.nature.base.util.*;
+import com.nature.base.util.HttpUtils;
+import com.nature.base.util.ImageUtils;
+import com.nature.base.util.LoggerUtil;
+import com.nature.base.util.SqlUtils;
 import com.nature.base.vo.UserVo;
 import com.nature.common.Eunm.PortType;
 import com.nature.common.constant.SysParamsCache;
@@ -13,7 +16,6 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -24,7 +26,7 @@ public class StopImpl implements IStop {
 
     Logger logger = LoggerUtil.getLogger();
 
-    @Autowired
+    @Resource
     private StopGroupMapper stopGroupMapper;
 
     @Override
@@ -107,7 +109,7 @@ public class StopImpl implements IStop {
                             outPortType = PortType.USER_DEFAULT;
                         }
                     }
-                    if(StringUtils.isNotBlank(icon)){
+                    if (StringUtils.isNotBlank(icon)) {
                         ImageUtils.generateImage(icon, name + "_128x128", "png", SysParamsCache.IMAGES_PATH);
                     }
                     // There are multiple groups in a stop, so I need to deal with it here.

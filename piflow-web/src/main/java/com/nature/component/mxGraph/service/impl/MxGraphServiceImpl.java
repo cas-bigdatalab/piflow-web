@@ -10,14 +10,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class MxGraphServiceImpl implements IMxGraphService {
 
-	Logger logger = LoggerUtil.getLogger();
+    Logger logger = LoggerUtil.getLogger();
 
-	@Autowired
-	private MxGeometryMapper mxGeometryMapper;
+    @Autowired
+    private MxGeometryMapper mxGeometryMapper;
 
-	@Override
-	public int deleteMxGraphById(String id){
-		return mxGeometryMapper.updateEnableFlagById(id);
-	}
- 
+    @Override
+    public int deleteMxGraphById(String id) {
+        return mxGeometryMapper.updateEnableFlagById(id);
+    }
+
 }

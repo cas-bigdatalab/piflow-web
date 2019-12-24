@@ -19,47 +19,47 @@ import java.util.List;
 @Service
 public class MxGraphModelServiceImpl implements IMxGraphModelService {
 
-	Logger logger = LoggerUtil.getLogger();
+    Logger logger = LoggerUtil.getLogger();
 
-	@Autowired
-	private MxGraphModelMapper mxGraphModelMapper;
+    @Autowired
+    private MxGraphModelMapper mxGraphModelMapper;
 
-	@Autowired
-	private MxCellMapper mxCellMapper;
+    @Autowired
+    private MxCellMapper mxCellMapper;
 
-	@Autowired
-	private MxGeometryMapper mxGeometryMapper;
+    @Autowired
+    private MxGeometryMapper mxGeometryMapper;
 
-	@Override
-	public StatefulRtnBase addMxGraphModel(MxGraphModel mxGraphModel) {
-		StatefulRtnBase statefulRtnBase = new StatefulRtnBase();
-		int addMxGraphModel = mxGraphModelMapper.addMxGraphModel(mxGraphModel);
-		if (addMxGraphModel > 0) {
-			List<MxCell> mxCellList = mxGraphModel.getRoot();
-			for (MxCell mxCell : mxCellList) {
-				MxGeometry mxGeometry = mxCell.getMxGeometry();
-				if (null != mxGeometry) {
-					int addMxGeometry = mxGeometryMapper.addMxGeometry(mxGeometry);
-					if (addMxGeometry > 0) {
-						mxCell.setMxGraphModel(mxGraphModel);
-						mxCell.setMxGeometry(mxGeometry);
-						int addMxCell = mxCellMapper.addMxCell(mxCell);
-						if (addMxCell <= 0) {
-							statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("MxCell save failed");
-						}
-					} else {
-						statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("MxGraphModelAttributes");
-					}
-				}
-			}
-		} else {
-			statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("MxGraphModel save failed");
-		}
-		return statefulRtnBase;
-	}
+    @Override
+    public StatefulRtnBase addMxGraphModel(MxGraphModel mxGraphModel) {
+        StatefulRtnBase statefulRtnBase = new StatefulRtnBase();
+        int addMxGraphModel = mxGraphModelMapper.addMxGraphModel(mxGraphModel);
+        if (addMxGraphModel > 0) {
+            List<MxCell> mxCellList = mxGraphModel.getRoot();
+            for (MxCell mxCell : mxCellList) {
+                MxGeometry mxGeometry = mxCell.getMxGeometry();
+                if (null != mxGeometry) {
+                    int addMxGeometry = mxGeometryMapper.addMxGeometry(mxGeometry);
+                    if (addMxGeometry > 0) {
+                        mxCell.setMxGraphModel(mxGraphModel);
+                        mxCell.setMxGeometry(mxGeometry);
+                        int addMxCell = mxCellMapper.addMxCell(mxCell);
+                        if (addMxCell <= 0) {
+                            statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("MxCell save failed");
+                        }
+                    } else {
+                        statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("MxGraphModelAttributes");
+                    }
+                }
+            }
+        } else {
+            statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("MxGraphModel save failed");
+        }
+        return statefulRtnBase;
+    }
 
-	@Override
-	public int deleteMxGraphModelById(String id) {
-		return mxGraphModelMapper.updateEnableFlagByFlowId(id);
-	}
+    @Override
+    public int deleteMxGraphModelById(String id) {
+        return mxGraphModelMapper.updateEnableFlagByFlowId(id);
+    }
 }

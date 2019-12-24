@@ -41,7 +41,6 @@ public interface DataSourcePropertyMapper {
     public List<DataSourceProperty> getDataSourcePropertyListByDataSourceId(String dataSourceId);
 
     /**
-     *
      * Delete dataSourceProperty according to Id logic
      *
      * @param id
@@ -49,8 +48,8 @@ public interface DataSourcePropertyMapper {
      */
     @UpdateProvider(type = DataSourcePropertyMapperProvider.class, method = "updateEnableFlagById")
     public int updateEnableFlagById(String id);
+
     /**
-     *
      * Delete the dataSourceProperty according to the datasourceId logic
      *
      * @param id

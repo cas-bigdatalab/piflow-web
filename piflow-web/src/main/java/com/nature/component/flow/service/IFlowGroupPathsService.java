@@ -8,13 +8,13 @@ import java.util.List;
 
 public interface IFlowGroupPathsService {
 
-	/**
-	 * Query connection information according to flowGroupId and pageid
-	 *
-	 * @param flowGroupId
-	 * @param pageId
-	 * @return
-	 */
-	public String queryPathInfoFlowGroup(String flowGroupId, String pageId);
+    /**
+     * Query connection information according to flowGroupId and pageid
+     *
+     * @param flowGroupId
+     * @param pageId
+     * @return
+     */
+    public String queryPathInfoFlowGroup(String flowGroupId, String pageId);
 
 }

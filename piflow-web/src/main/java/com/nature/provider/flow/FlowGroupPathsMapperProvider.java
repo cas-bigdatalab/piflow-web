@@ -1,16 +1,8 @@
 package com.nature.provider.flow;
 
-import com.nature.base.util.DateUtils;
-import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.SqlUtils;
-import com.nature.base.vo.UserVo;
-import com.nature.component.flow.model.Paths;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 public class FlowGroupPathsMapperProvider {
 

@@ -42,7 +42,7 @@ public class SysUserMapperProvider {
             if (null == crtDttm) {
                 crtDttm = new Date();
             }
-            if (StringUtils.isBlank(crtUser) ) {
+            if (StringUtils.isBlank(crtUser)) {
                 crtUser = "-1";
             }
             if (null == lastUpdateDttm) {

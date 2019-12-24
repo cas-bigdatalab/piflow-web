@@ -11,17 +11,16 @@ import java.io.Serializable;
 
 /**
  * stop property
- * 
- * @author Nature
  *
+ * @author Nature
  */
 @Getter
 @Setter
 public class StopsCustomizedPropertyVo implements Serializable {
 
-	private String id;
-	private String name;
-	private String customValue;
-	private String description;
-	private String stopId;
+    private String id;
+    private String name;
+    private String customValue;
+    private String description;
+    private String stopId;
 }

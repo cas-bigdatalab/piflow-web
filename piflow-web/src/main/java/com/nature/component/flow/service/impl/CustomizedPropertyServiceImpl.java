@@ -6,13 +6,11 @@ import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.SqlUtils;
 import com.nature.base.vo.UserVo;
 import com.nature.component.flow.model.CustomizedProperty;
-import com.nature.component.flow.model.Flow;
 import com.nature.component.flow.model.Paths;
 import com.nature.component.flow.model.Stops;
 import com.nature.component.flow.service.ICustomizedPropertyService;
 import com.nature.component.flow.vo.PathsVo;
 import com.nature.component.flow.vo.StopsCustomizedPropertyVo;
-import com.nature.component.mxGraph.model.MxGraphModel;
 import com.nature.mapper.flow.CustomizedPropertyMapper;
 import com.nature.mapper.flow.PathsMapper;
 import com.nature.mapper.flow.StopsMapper;
@@ -23,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.*;
 
 @Service
@@ -30,13 +29,13 @@ public class CustomizedPropertyServiceImpl implements ICustomizedPropertyService
 
     Logger logger = LoggerUtil.getLogger();
 
-    @Autowired
+    @Resource
     private CustomizedPropertyMapper customizedPropertyMapper;
 
-    @Autowired
+    @Resource
     private StopsMapper stopsMapper;
 
-    @Autowired
+    @Resource
     private PathsMapper pathsMapper;
 
     @Override

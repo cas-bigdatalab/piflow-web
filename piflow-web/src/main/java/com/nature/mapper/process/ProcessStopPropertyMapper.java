@@ -34,6 +34,6 @@ public interface ProcessStopPropertyMapper {
     public int updateProcessStopProperty(ProcessStopProperty processStopProperty);
 
     @UpdateProvider(type = ProcessStopPropertyMapperProvider.class, method = "updateEnableFlagByProcessStopId")
-    public int updateEnableFlagByProcessStopId(String processStopId,String username);
+    public int updateEnableFlagByProcessStopId(String processStopId, String username);
 
 }

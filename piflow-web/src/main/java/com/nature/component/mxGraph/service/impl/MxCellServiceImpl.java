@@ -11,20 +11,20 @@ import org.springframework.stereotype.Service;
 @Service
 public class MxCellServiceImpl implements IMxCellService {
 
-	Logger logger = LoggerUtil.getLogger();
+    Logger logger = LoggerUtil.getLogger();
 
-	@Autowired
-	private MxCellMapper mxCellMapper;
+    @Autowired
+    private MxCellMapper mxCellMapper;
 
-	@Override
-	public int deleteMxCellById(String id) {
-		return mxCellMapper.updateEnableFlagById(id);
-	}
+    @Override
+    public int deleteMxCellById(String id) {
+        return mxCellMapper.updateEnableFlagById(id);
+    }
 
-	@Override
-	public MxCell getMeCellById(String id){
-		MxCell meCellById = mxCellMapper.getMeCellById(id);
-		return meCellById;
-	}
- 
+    @Override
+    public MxCell getMeCellById(String id) {
+        MxCell meCellById = mxCellMapper.getMeCellById(id);
+        return meCellById;
+    }
+
 }

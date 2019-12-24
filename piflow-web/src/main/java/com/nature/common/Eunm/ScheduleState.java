@@ -8,7 +8,7 @@ public enum ScheduleState {
     INIT("INIT", "Init"),
     RUNNING("RUNNING", "Running"),
     SUSPEND("PAUSE", "Pause"),
-    STOP("STOP","Stop");
+    STOP("STOP", "Stop");
 
     private final String value;
     private final String text;

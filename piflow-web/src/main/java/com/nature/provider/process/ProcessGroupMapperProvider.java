@@ -27,7 +27,7 @@ public class ProcessGroupMapperProvider {
             strBuf.append("from flow_process_group ");
             strBuf.append("where enable_flag = 1 ");
             strBuf.append("and id= " + SqlUtils.preventSQLInjection(processGroupId));
-            strBuf.append(SqlUtils.addQueryByUserRole(true,false));
+            strBuf.append(SqlUtils.addQueryByUserRole(true, false));
             sqlStr = strBuf.toString();
         }
         return sqlStr;
@@ -39,7 +39,7 @@ public class ProcessGroupMapperProvider {
      * @param processGroupId
      * @return
      */
-    public String getRunModeTypeById(String processGroupId){
+    public String getRunModeTypeById(String processGroupId) {
         String sqlStr = "select 0";
         if (StringUtils.isNotBlank(processGroupId)) {
             UserVo currentUser = SessionUserUtil.getCurrentUser();
@@ -48,7 +48,7 @@ public class ProcessGroupMapperProvider {
             strBuf.append("from flow_process_group ");
             strBuf.append("where enable_flag = 1 ");
             strBuf.append("and id= " + SqlUtils.preventSQLInjection(processGroupId));
-            strBuf.append(SqlUtils.addQueryByUserRole(true,false));
+            strBuf.append(SqlUtils.addQueryByUserRole(true, false));
             sqlStr = strBuf.toString();
         }
         return sqlStr;
@@ -100,7 +100,7 @@ public class ProcessGroupMapperProvider {
         return sqlStr;
     }
 
-    public String getRunningProcessGroup(){
+    public String getRunningProcessGroup() {
         StringBuffer sqlStrBuf = new StringBuffer();
         sqlStrBuf.append("select ");
         sqlStrBuf.append("app_id ");

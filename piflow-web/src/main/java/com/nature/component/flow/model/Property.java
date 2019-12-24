@@ -9,9 +9,8 @@ import javax.persistence.*;
 
 /**
  * stop property
- * 
- * @author Nature
  *
+ * @author Nature
  */
 @Getter
 @Setter
@@ -19,39 +18,39 @@ import javax.persistence.*;
 @Table(name = "FLOW_STOPS_PROPERTY")
 public class Property extends BaseHibernateModelUUIDNoCorpAgentId {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "FK_STOPS_ID")
-	private Stops stops;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "FK_STOPS_ID")
+    private Stops stops;
 
-	@Column(columnDefinition = "varchar(255) COMMENT 'name'")
-	private String name;
+    @Column(columnDefinition = "varchar(255) COMMENT 'name'")
+    private String name;
 
-	@Column(columnDefinition = "varchar(255) COMMENT 'display name'")
-	private String displayName;
+    @Column(columnDefinition = "varchar(255) COMMENT 'display name'")
+    private String displayName;
 
-	@Column(columnDefinition = "text(0) COMMENT 'description'")
-	private String description;
+    @Column(columnDefinition = "text(0) COMMENT 'description'")
+    private String description;
 
-	@Column(columnDefinition = "text(0) COMMENT 'custom value'")
-	private String customValue;
+    @Column(columnDefinition = "text(0) COMMENT 'custom value'")
+    private String customValue;
 
-	@Column(name = "ALLOWABLE_VALUES")
-	private String allowableValues;
+    @Column(name = "ALLOWABLE_VALUES")
+    private String allowableValues;
 
-	@Column(name = "PROPERTY_REQUIRED")
-	private Boolean required;
+    @Column(name = "PROPERTY_REQUIRED")
+    private Boolean required;
 
-	@Column(name = "PROPERTY_SENSITIVE")
-	private Boolean sensitive;
-	
-	private Boolean isSelect;
+    @Column(name = "PROPERTY_SENSITIVE")
+    private Boolean sensitive;
+
+    private Boolean isSelect;
 
     @Column(name = "IS_LOCKED")
     private Boolean isLocked = false;
 
-	@Column(columnDefinition = "bigint(20) COMMENT 'property sort'")
-	private Long propertySort;
-	
+    @Column(columnDefinition = "bigint(20) COMMENT 'property sort'")
+    private Long propertySort;
+
 }

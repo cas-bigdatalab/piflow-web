@@ -11,55 +11,55 @@ import java.util.List;
 
 public interface IFlowGroupTemplateService {
 
-	/**
-	 * add FlowGroupTemplate
-	 *
-	 * @param name
-	 * @param loadId
-	 * @param value
-	 * @return
-	 */
+    /**
+     * add FlowGroupTemplate
+     *
+     * @param name
+     * @param loadId
+     * @param value
+     * @return
+     */
     public String addFlowGroupTemplate(String name, String loadId, String value);
 
-	/**
-	 * Query all flowGroupTemplate list pagination
-	 *
-	 * @param offset Number of pages
-	 * @param limit Number of pages per page
-	 * @param param search for the keyword
-	 * @return
-	 */
-	public String getFlowGroupTemplateListPage(Integer offset, Integer limit, String param);
+    /**
+     * Query all flowGroupTemplate list pagination
+     *
+     * @param offset Number of pages
+     * @param limit  Number of pages per page
+     * @param param  search for the keyword
+     * @return
+     */
+    public String getFlowGroupTemplateListPage(Integer offset, Integer limit, String param);
 
-	/**
-	 * Delete the template based on id
-	 *
-	 * @param id
-	 * @return
-	 */
-	public int deleteFlowGroupTemplate(String id);
+    /**
+     * Delete the template based on id
+     *
+     * @param id
+     * @return
+     */
+    public int deleteFlowGroupTemplate(String id);
 
-	/**
-	 * Download template
-	 *
-	 * @param flowGroupTemplateId
-	 */
-	public void templateDownload(HttpServletResponse response, String flowGroupTemplateId);
+    /**
+     * Download template
+     *
+     * @param flowGroupTemplateId
+     */
+    public void templateDownload(HttpServletResponse response, String flowGroupTemplateId);
 
-	/**
-	 * Query all templates for drop-down displays
-	 *
-	 * @return
-	 */
-	public String flowGroupTemplateAllSelect();
+    /**
+     * Query all templates for drop-down displays
+     *
+     * @return
+     */
+    public String flowGroupTemplateAllSelect();
 
-	/**
-	 * Upload xml file and save flowGroupTemplate
-	 *
-	 * @param file
-	 * @return
-	 */
-	public String uploadXmlFile(MultipartFile file);
+    /**
+     * Upload xml file and save flowGroupTemplate
+     *
+     * @param file
+     * @return
+     */
+    public String uploadXmlFile(MultipartFile file);
 
-	public String loadFlowGroupTemplate(String templateId,String loadId);
+    public String loadFlowGroupTemplate(String templateId, String loadId);
 }

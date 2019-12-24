@@ -111,6 +111,7 @@ public class MxGraphModelUtil {
         }
         return map;
     }
+
     /**
      * Distinguish between stop and path
      *

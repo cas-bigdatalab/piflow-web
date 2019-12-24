@@ -7,11 +7,11 @@ import java.util.List;
 
 public interface IStopGroupService {
 
-	public List<StopGroupVo> getStopGroupAll();
+    public List<StopGroupVo> getStopGroupAll();
 
-	/**
-	 * Call getAllStops and Group to manage, and save the stop attribute information
-	 */
-	public void addGroupAndStopsList(UserVo user);
+    /**
+     * Call getAllStops and Group to manage, and save the stop attribute information
+     */
+    public void addGroupAndStopsList(UserVo user);
 
 }

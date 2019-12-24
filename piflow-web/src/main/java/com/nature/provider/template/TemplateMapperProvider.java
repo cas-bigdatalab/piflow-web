@@ -25,7 +25,7 @@ public class TemplateMapperProvider {
         if (StringUtils.isNotBlank(param)) {
             strBuf.append("and name like '%" + param + "%' ");
         }
-        strBuf.append(SqlUtils.addQueryByUserRole(true,false));
+        strBuf.append(SqlUtils.addQueryByUserRole(true, false));
         strBuf.append("order by crt_dttm desc ");
         sqlStr = strBuf.toString();
         return sqlStr;

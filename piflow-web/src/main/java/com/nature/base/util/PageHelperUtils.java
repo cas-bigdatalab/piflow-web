@@ -8,17 +8,17 @@ import java.util.Map;
 
 public class PageHelperUtils {
 
-  static Logger logger = LoggerUtil.getLogger();
+    static Logger logger = LoggerUtil.getLogger();
 
-  @SuppressWarnings("unchecked")
-  public static Map setDataTableParam(Page page, Map<String, Object> rtnMap) {
-    if (null !=page && null != rtnMap) {
-      PageInfo info = new PageInfo(page.getResult());
-      rtnMap.put("iTotalDisplayRecords", info.getTotal());
-      rtnMap.put("iTotalRecords", info.getTotal());
-      rtnMap.put("pageData", info.getList());//Data collection
-      logger.debug("success");
+    @SuppressWarnings("unchecked")
+    public static Map setDataTableParam(Page page, Map<String, Object> rtnMap) {
+        if (null != page && null != rtnMap) {
+            PageInfo info = new PageInfo(page.getResult());
+            rtnMap.put("iTotalDisplayRecords", info.getTotal());
+            rtnMap.put("iTotalRecords", info.getTotal());
+            rtnMap.put("pageData", info.getList());//Data collection
+            logger.debug("success");
+        }
+        return rtnMap;
     }
-    return rtnMap;
-  }
 }

@@ -41,6 +41,7 @@ public enum PortType {
         }
         return null;
     }
+
     public static PortType selectGenderByValue(String value) {
         for (PortType portType : PortType.values()) {
             if (value.equalsIgnoreCase(portType.value)) {

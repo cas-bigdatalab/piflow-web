@@ -8,21 +8,21 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name =  "flow_info")
+@Table(name = "flow_info")
 @Setter
 @Getter
 public class FlowInfoDb extends BaseHibernateModelUUIDNoCorpAgentId {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "FK_FLOW_ID")
-	private Flow flow;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "FK_FLOW_ID")
+    private Flow flow;
 
-	private String name;
-	private String state;
-	private Date startTime;
-	private Date endTime;
-	private String progress;
+    private String name;
+    private String state;
+    private Date startTime;
+    private Date endTime;
+    private String progress;
 
 }

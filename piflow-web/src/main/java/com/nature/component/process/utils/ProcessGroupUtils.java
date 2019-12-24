@@ -3,14 +3,11 @@ package com.nature.component.process.utils;
 import com.nature.base.util.SqlUtils;
 import com.nature.base.util.SvgUtils;
 import com.nature.base.vo.UserVo;
-import com.nature.common.Eunm.ProcessState;
-import com.nature.common.Eunm.RunModeType;
 import com.nature.component.flow.model.*;
 import com.nature.component.mxGraph.model.MxGraphModel;
 import com.nature.component.process.model.Process;
 import com.nature.component.process.model.*;
 import com.nature.component.process.vo.*;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 

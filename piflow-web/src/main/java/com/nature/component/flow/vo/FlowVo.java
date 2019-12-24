@@ -13,34 +13,34 @@ import java.util.List;
 @Getter
 public class FlowVo implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String id;
-	
-	private String name;
+    private String id;
 
-	private String uuid;
+    private String name;
 
-	private String crtDttmString;
-	
-	private String description; //description
+    private String uuid;
 
-	private String driverMemory;
+    private String crtDttmString;
 
-	private String executorNumber;
+    private String description; //description
 
-	private String executorMemory;
+    private String driverMemory;
 
-	private String executorCores;
-	
-	private Date crtDttm;
+    private String executorNumber;
 
-	private String pageId;
+    private String executorMemory;
 
-	private MxGraphModelVo mxGraphModelVo;//Artboard information
+    private String executorCores;
 
-	private List<StopsVo> stopsVoList = new ArrayList<StopsVo>();//Current stream all stops
+    private Date crtDttm;
 
-	private List<PathsVo> pathsVoList = new ArrayList<PathsVo>();//Current stream all paths
+    private String pageId;
+
+    private MxGraphModelVo mxGraphModelVo;//Artboard information
+
+    private List<StopsVo> stopsVoList = new ArrayList<StopsVo>();//Current stream all stops
+
+    private List<PathsVo> pathsVoList = new ArrayList<PathsVo>();//Current stream all paths
 
 }

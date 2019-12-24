@@ -160,7 +160,7 @@ public class PropertyServiceImpl implements IPropertyService {
             rtnMap.put("errorMsg", "Required field is empty");
             logger.info("Required field is empty");
             return JsonUtils.toJsonNoException(rtnMap);
-        }  else {
+        } else {
             String flowId = updatePathRequest.getFlowId();
             String pathLineId = updatePathRequest.getPathLineId();
             String sourceId = updatePathRequest.getSourceId();
