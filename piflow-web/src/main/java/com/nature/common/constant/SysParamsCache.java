@@ -21,10 +21,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class SysParamsCache {
 
-    public static Boolean IS_BOOT_COMPLETE = false;
+    public static String SYS_CONTEXT_PATH;
 
-    public static void setIsBootComplete(boolean isBootComplete) {
-        IS_BOOT_COMPLETE = isBootComplete;
+    @Value("${server.servlet.context-path}")
+    public void setSysContextPath(String sysContextPath) {
+        SYS_CONTEXT_PATH = sysContextPath;
     }
 
     // Image path (read in configuration file)
@@ -48,12 +49,17 @@ public class SysParamsCache {
         XML_PATH = xmlPath;
     }
 
-    // Whether to load stops
     public static Boolean IS_IFRAME;
 
     @Value("${syspara.isIframe}")
     public void setIsIframe(String isIframe) {
         IS_IFRAME = Boolean.valueOf(isIframe);
+    }
+
+    public static Boolean IS_BOOT_COMPLETE = false;
+
+    public static void setIsBootComplete(boolean isBootComplete) {
+        IS_BOOT_COMPLETE = isBootComplete;
     }
 
     // Interface ip and port

@@ -31,7 +31,7 @@
         <br>
         <span style="font-size: 20px;">Boot page</span>
     </div>
-    <div id="example-basic">
+    <div id="boot-div">
         <h3>Init Stops</h3>
         <section>
             <p>Please try to click next to initialize the related Stops!</p>
@@ -48,71 +48,19 @@
 </div>
 <div th:include="Macro/fragmentMacro :: fullScreen"></div>
 <script type="text/javascript">
-    var isInitStopsSuccessfully = false;
-    var isInitSampleSuccessfully = false;
+    var eeeeeee;
+    var isInitStopsSuccessfully;
+    var isInitSampleSuccessfully;
+    var isBootCompleteSuccessfully;
+    var timer = "";
+    var timer_finish = "";
     window.onload = function () {
-        $("#example-basic").steps({
-            headerTag: "h3",
-            bodyTag: "section",
-            transitionEffect: "slideLeft",
-            autoFocus: true,
-            onStepChanging: function (event, currentIndex, newIndex) {
-                $('#fullScreen').show();
-                if (currentIndex < newIndex) {
-                    console.log("----------------00000----------------");
-                    switch (currentIndex) {
-                        case 0: {
-                            if (!isInitStopsSuccessfully) {
-                                if (initStops()) {
-                                    isInitStopsSuccessfully = true;
-                                } else {
-                                    isInitStopsSuccessfully = false;
-                                }
-                                return isInitStopsSuccessfully;
-                            }
-                        }
-                            break;
-                        case 1: {
-                            if (!isInitSampleSuccessfully) {
-                                if (initSample()) {
-                                    isInitSampleSuccessfully = true;
-                                } else {
-                                    isInitSampleSuccessfully = false;
-                                }
-                                return isInitSampleSuccessfully;
-                            }
-                        }
-                            break;
-                    }
-                }
-                $('#fullScreen').hide();
-                return true;
-            },
-            onStepChanged: function (event, currentIndex, priorIndex) {
-                console.log("priorIndex：" + priorIndex);
-                console.log("currentIndex：" + currentIndex);
-            },
-            onFinishing: function (event, currentIndex) {
-                if (isInitSampleSuccessfully && isInitSampleSuccessfully) {
-                    if (bootComplete()) {
-                        return true;
-                    }
-                }
-                return false;
-            },
-            onFinished: function (event, currentIndex) {
-                console.log("Submitted!");
-                home();
-            }
-        });
-    }
-
-    function home() {
-        window.location.href = "/piflow-web/";
+        initSteps();
+        //initOnClick();
     }
 
     function initStops() {
-        $('#fullScreen').show();
+        //$('#fullScreen').show();
         var isSuccessfully = false;
         $.ajax({
             cache: true,//Keep cached data
@@ -120,14 +68,14 @@
             async: false,
             url: "/piflow-web/bootPage/initStops",//This is the name of the file where I receive data in the background.
             error: function (request) {//Operation after request failure
-                $('#fullScreen').hide();
+                //$('#fullScreen').hide();
                 //alert("reload fail");
                 layer.msg("reload fail,please try again", {icon: 2, shade: 0, time: 2000}, function () {
                 });
             },
             success: function (data) {//Operation after request successful
                 var dataMap = JSON.parse(data);
-                $('#fullScreen').hide();
+                //$('#fullScreen').hide();
                 if (200 === dataMap.code) {
                     // isInitStopsSuccessfully = true;
                     isSuccessfully = true;
@@ -137,20 +85,22 @@
                         // return false;
                     });
                 }
+
             }
         });
+        $('#fullScreen').hide();
         return isSuccessfully;
     }
 
     function initSample() {
-        $('#fullScreen').show();
+        // $('#fullScreen').show();
         var isSuccessfully = false;
         $.ajax({
             type: "GET",//Request type post
             async: false,
             url: "/piflow-web/bootPage/initSample",//This is the name of the file where I receive data in the background.
             error: function (request) {//Operation after request failure
-                // $('#fullScreen').hide();
+                $('#fullScreen').hide();
                 //alert("reload fail");
                 layer.msg("reload fail", {icon: 2, shade: 0, time: 2000}, function () {
                 });
@@ -202,6 +152,131 @@
             }
         });
         return isSuccessfully;
+    }
+
+    function home() {
+        window.location.href = "/piflow-web/";
+    }
+
+    function initSteps() {
+        $("#boot-div").steps({
+            headerTag: "h3",
+            bodyTag: "section",
+            transitionEffect: "slideLeft",
+            autoFocus: true,
+            onStepChanging: function (event, currentIndex, newIndex) {
+                if (currentIndex < newIndex) {
+                    switch (currentIndex) {
+                        case 0: {
+                            if (!isInitStopsSuccessfully) {
+                                $('#fullScreen').show();
+                                if (initStops()) {
+                                    isInitStopsSuccessfully = true;
+                                } else {
+                                    isInitStopsSuccessfully = false;
+                                }
+                                return isInitStopsSuccessfully;
+                            }
+                        }
+                            break;
+                        case 1: {
+                            if (!isInitSampleSuccessfully) {
+                                if (initSample()) {
+                                    isInitSampleSuccessfully = true;
+                                } else {
+                                    isInitSampleSuccessfully = false;
+                                }
+                                while (undefined === isInitSampleSuccessfully) {
+                                }
+                                return isInitSampleSuccessfully;
+                            }
+                        }
+                            break;
+                    }
+                }
+                $('#fullScreen').hide();
+                return true;
+            },
+            onStepChanged: function (event, currentIndex, priorIndex) {
+                console.log("priorIndex：" + priorIndex);
+                console.log("currentIndex：" + currentIndex);
+            },
+            onFinishing: function (event, currentIndex) {
+                if (isInitSampleSuccessfully && isInitSampleSuccessfully) {
+                    if (bootComplete()) {
+                        isBootCompleteSuccessfully = true;
+                    } else {
+                        isBootCompleteSuccessfully = false;
+                    }
+                } else {
+                    isBootCompleteSuccessfully = false;
+                }
+                return isBootCompleteSuccessfully;
+            },
+            onFinished: function (event, currentIndex) {
+                console.log("Submitted!");
+                home();
+            }
+        });
+    }
+
+    function initOnClick() {
+        var a_label_arrays = $(".actions.clearfix").find("a");
+        if (a_label_arrays) {
+            $.each(a_label_arrays, function (i, item) {
+                var item_jq_obj = $(item);
+                var item_jq_obj_href = item_jq_obj.attr("href");
+                if ("#next" === item_jq_obj_href) {
+                    item_jq_obj.on("click", function () {
+                        clearInterval(timer);
+                        timer = "";
+                        if (undefined !== isInitStopsSuccessfully && undefined !== isInitSampleSuccessfully) {
+                            return;
+                        }
+                        $('#fullScreen').show();
+                        console.log("open");
+                        var boot_div_t_0_parent = $("#boot-div-t-0").parent();
+                        var boot_div_t_1_parent = $("#boot-div-t-1").parent();
+                        var boot_div_t_0_parent_class = $(boot_div_t_0_parent).attr('class');
+                        var boot_div_t_1_parent_class = $(boot_div_t_1_parent).attr('class');
+                        if (boot_div_t_0_parent_class.indexOf("current") >= 0) {
+                            timer = window.setInterval(function () {
+                                console.log("close1");
+                                if (undefined !== isInitStopsSuccessfully) {
+                                    $('#fullScreen').hide();
+                                    clearInterval(timer);
+                                }
+                            }, 0);
+                        } else if (boot_div_t_1_parent_class.indexOf("current") >= 0) {
+                            timer = window.setInterval(function () {
+                                console.log("close2");
+                                if (undefined !== isInitSampleSuccessfully) {
+                                    $('#fullScreen').hide();
+                                    clearInterval(timer);
+                                }
+                            }, 0);
+                        }
+
+                    });
+                }
+                if ("#finish" === item_jq_obj_href) {
+                    item_jq_obj.on("click", function () {
+                        clearInterval(timer);
+                        timer = "";
+                        if (true !== isInitStopsSuccessfully || true !== isInitSampleSuccessfully) {
+                            return;
+                        }
+                        $('#fullScreen').show();
+                        timer_finish = window.setInterval(function () {
+                            if (undefined !== isInitStopsSuccessfully) {
+                                $('#fullScreen').hide();
+                                clearInterval(timer_finish);
+                            }
+                        }, 0);
+                    });
+                }
+            });
+        }
     }
 
     //@ sourceURL=initPage.js

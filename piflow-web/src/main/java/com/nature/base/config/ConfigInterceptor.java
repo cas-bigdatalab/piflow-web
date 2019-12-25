@@ -24,20 +24,27 @@ public class ConfigInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        String contextPath = (null == SysParamsCache.SYS_CONTEXT_PATH ? "" : SysParamsCache.SYS_CONTEXT_PATH);
         String requestURI = request.getRequestURI();
-        if (requestURI.startsWith("/piflow-web/bootPage") && !SysParamsCache.IS_BOOT_COMPLETE) {
+        // Determine if the boot flag is true
+        if (!SysParamsCache.IS_BOOT_COMPLETE) {
+            // Query is boot record
             SysInitRecords sysInitRecordsLastNew = sysInitRecordsDomain.getSysInitRecordsLastNew(1);
-            if (null == sysInitRecordsLastNew || !sysInitRecordsLastNew.getIsSucceed()) {
-                log.info("No initialization, enter the boot page");
+            if (null != sysInitRecordsLastNew && sysInitRecordsLastNew.getIsSucceed()) {
+                SysParamsCache.setIsBootComplete(true);
+                if (requestURI.startsWith(contextPath + "/bootPage")) {
+                    response.sendRedirect(contextPath); // Redirect to the boot page
+                    return false;
+                }
             } else {
-                response.sendRedirect("/piflow-web/"); // Redirect to the boot page
-                return false;
+                if (!requestURI.startsWith(contextPath + "/bootPage")) {
+                    response.sendRedirect(contextPath + "/bootPage/initPage"); // Redirect to the boot page
+                    return false;
+                }
+                log.info("No initialization, enter the boot page");
             }
-        } else if (!SysParamsCache.IS_BOOT_COMPLETE) {
-            response.sendRedirect("/piflow-web/bootPage/initPage"); // Redirect to the boot page
-            return false;
-        } else if (requestURI.startsWith("/piflow-web/bootPage")) {
-            response.sendRedirect("/piflow-web/"); // Redirect to the boot page
+        } else if (requestURI.startsWith(contextPath + "/bootPage")) {
+            response.sendRedirect(contextPath); // Redirect to the boot page
             return false;
         }
         return true;

@@ -116,7 +116,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 } catch (Exception e) {
                     logger.error("LOGOUT EXCEPTION , e : ", e);
                 }
-                httpServletResponse.sendRedirect("/piflow-web/login");
+                httpServletResponse.sendRedirect(SysParamsCache.SYS_CONTEXT_PATH + "/login");
             }
         };
     }
