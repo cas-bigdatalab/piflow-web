@@ -1,6 +1,5 @@
 package com.nature.mapper.system;
 
-import com.nature.component.system.model.SysSchedule;
 import com.nature.component.system.vo.SysScheduleVo;
 import com.nature.provider.system.SysScheduleMapperProvider;
 import org.apache.ibatis.annotations.Mapper;

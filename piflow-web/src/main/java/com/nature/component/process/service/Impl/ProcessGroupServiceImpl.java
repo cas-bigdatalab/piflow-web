@@ -88,7 +88,6 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
     @Override
     public ProcessGroupVo getProcessAllVoById(String id) {
         ProcessGroupVo processGroupVo = null;
-        UserVo currentUser = SessionUserUtil.getCurrentUser();
         if (StringUtils.isNotBlank(id)) {
             ProcessGroup processGroupById = processGroupMapper.getProcessGroupById(id);
             processGroupVo = ProcessGroupUtils.processGroupPoToVo(processGroupById);
@@ -234,7 +233,7 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
     public String getProcessGroupVoListPage(Integer offset, Integer limit, String param) {
         Map<String, Object> rtnMap = new HashMap<String, Object>();
         if (null != offset && null != limit) {
-            Page page = PageHelper.startPage(offset, limit);
+            Page<ProcessGroup> page = PageHelper.startPage(offset, limit);
             processGroupMapper.getProcessGroupListByParam(param);
             rtnMap = PageHelperUtils.setDataTableParam(page, rtnMap);
         }
@@ -250,7 +249,6 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
     @Override
     public String stopProcessGroup(String processGroupId) {
         Map<String, Object> rtnMap = new HashMap<>();
-        UserVo currentUser = SessionUserUtil.getCurrentUser();
         rtnMap.put("code", 500);
         if (StringUtils.isNotBlank(processGroupId)) {
             // Query Process by 'processGroupId'

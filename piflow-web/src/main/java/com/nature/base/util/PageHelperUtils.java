@@ -10,8 +10,9 @@ public class PageHelperUtils {
 
     static Logger logger = LoggerUtil.getLogger();
 
-    @SuppressWarnings("unchecked")
-    public static Map setDataTableParam(Page page, Map<String, Object> rtnMap) {
+    
+    @SuppressWarnings({"rawtypes", "unchecked" })
+	public static Map<String, Object> setDataTableParam(Page page, Map<String, Object> rtnMap) {
         if (null != page && null != rtnMap) {
             PageInfo info = new PageInfo(page.getResult());
             rtnMap.put("iTotalDisplayRecords", info.getTotal());

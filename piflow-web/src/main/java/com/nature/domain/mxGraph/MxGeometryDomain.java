@@ -20,6 +20,8 @@ public class MxGeometryDomain {
 
     private Specification<MxGeometry> addEnableFlagParam() {
         Specification<MxGeometry> specification = new Specification<MxGeometry>() {
+        	private static final long serialVersionUID = 1L;
+        	
             @Override
             public Predicate toPredicate(Root<MxGeometry> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
                 //root.get("enableFlag") means to get the field name of enableFlag
@@ -31,6 +33,8 @@ public class MxGeometryDomain {
 
     private Specification<MxGeometry> addParam(String key, String value) {
         Specification<MxGeometry> specification = new Specification<MxGeometry>() {
+        	private static final long serialVersionUID = 1L;
+        	
             @Override
             public Predicate toPredicate(Root<MxGeometry> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
                 //root.get(key) means to get the name of the key field

@@ -1,5 +1,6 @@
 package com.nature.common.constant;
 
+import org.apache.tomcat.util.threads.ThreadPoolExecutor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -269,4 +270,6 @@ public class SysParamsCache {
     public static String getProjectInfoUrl() {
         return INTERFACE_URL_HEAD + PROJECT_INFO_URL;
     }
+
+    public static ThreadPoolExecutor THREAD_POOL_EXECUTOR;
 }

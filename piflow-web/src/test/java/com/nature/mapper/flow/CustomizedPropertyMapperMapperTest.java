@@ -5,7 +5,6 @@ import com.nature.base.util.LoggerUtil;
 import com.nature.component.flow.model.CustomizedProperty;
 import org.junit.Test;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Resource;
 import java.util.*;

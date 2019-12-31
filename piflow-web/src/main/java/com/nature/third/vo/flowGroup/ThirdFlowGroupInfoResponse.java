@@ -1,9 +1,7 @@
 package com.nature.third.vo.flowGroup;
 
-import com.nature.third.vo.flowInfo.ThirdFlowInfoStopsVo;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.web.servlet.resource.HttpResource;
 
 import java.io.Serializable;
 import java.util.ArrayList;

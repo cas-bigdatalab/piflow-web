@@ -48,8 +48,8 @@ public class FlowInfoDbMapperProvider {
             this.lastUpdateDttmStr = SqlUtils.preventSQLInjection(lastUpdateDttmStr);
 
             // Selection field
-            String startTime = (null != flowInfoDb.getStartTime() ? DateUtils.dateTimesToStr(flowInfoDb.getStartTime()) : null);
-            String endTime = (null != flowInfoDb.getEndTime() ? DateUtils.dateTimesToStr(flowInfoDb.getEndTime()) : null);
+            //String startTime = (null != flowInfoDb.getStartTime() ? DateUtils.dateTimesToStr(flowInfoDb.getStartTime()) : null);
+            //String endTime = (null != flowInfoDb.getEndTime() ? DateUtils.dateTimesToStr(flowInfoDb.getEndTime()) : null);
             this.name = SqlUtils.preventSQLInjection(flowInfoDb.getName());
             this.state = SqlUtils.preventSQLInjection(flowInfoDb.getState());
             this.progress = SqlUtils.preventSQLInjection(flowInfoDb.getProgress());

@@ -20,21 +20,12 @@ public class ProcessGroupPathDomain {
 
     private Specification<ProcessGroupPath> addEnableFlagParam() {
         Specification<ProcessGroupPath> specification = new Specification<ProcessGroupPath>() {
+        	private static final long serialVersionUID = 1L;
+        	
             @Override
             public Predicate toPredicate(Root<ProcessGroupPath> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
                 //root.get("enableFlag") means to get the field name of enableFlag
                 return criteriaBuilder.equal(root.get("enableFlag"), 1);
-            }
-        };
-        return specification;
-    }
-
-    private Specification<ProcessGroupPath> addParam(String key, String value) {
-        Specification<ProcessGroupPath> specification = new Specification<ProcessGroupPath>() {
-            @Override
-            public Predicate toPredicate(Root<ProcessGroupPath> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-                //root.get(key) means to get the name of the key field
-                return criteriaBuilder.equal(root.get(key), value);
             }
         };
         return specification;

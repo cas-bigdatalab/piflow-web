@@ -4,14 +4,14 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 @Setter
 @Getter
 public class DebugDataRequest implements Serializable {
 
-    public DebugDataRequest(String appID, String stopName, String portName, String startFileName, int startLine) {
+	private static final long serialVersionUID = 1L;
+	
+	public DebugDataRequest(String appID, String stopName, String portName, String startFileName, int startLine) {
         this.appID = appID;
         this.stopName = stopName;
         this.portName = portName;

@@ -1,7 +1,6 @@
 package com.nature.repository.flow;
 
 import com.nature.component.flow.model.FlowGroupPaths;
-import com.nature.component.flow.model.Paths;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;

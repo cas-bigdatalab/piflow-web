@@ -26,6 +26,8 @@ public class ProcessGroupDomain {
 
     private Specification<ProcessGroup> addEnableFlagParam() {
         Specification<ProcessGroup> specification = new Specification<ProcessGroup>() {
+        	private static final long serialVersionUID = 1L;
+        	
             @Override
             public Predicate toPredicate(Root<ProcessGroup> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
                 //root.get("enableFlag") means to get the field name of enableFlag
@@ -37,6 +39,8 @@ public class ProcessGroupDomain {
 
     private Specification<ProcessGroup> addParam(String key, String value) {
         Specification<ProcessGroup> specification = new Specification<ProcessGroup>() {
+        	private static final long serialVersionUID = 1L;
+        	
             @Override
             public Predicate toPredicate(Root<ProcessGroup> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
                 //root.get(key) means to get the name of the key field

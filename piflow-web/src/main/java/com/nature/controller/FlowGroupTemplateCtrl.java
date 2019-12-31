@@ -1,25 +1,6 @@
 package com.nature.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.nature.base.util.*;
-import com.nature.base.vo.StatefulRtnBase;
-import com.nature.base.vo.UserVo;
-import com.nature.common.constant.SysParamsCache;
-import com.nature.component.flow.model.Flow;
-import com.nature.component.flow.model.Paths;
-import com.nature.component.flow.model.Stops;
-import com.nature.component.flow.service.IFlowService;
-import com.nature.component.flow.service.IPathsService;
-import com.nature.component.group.service.IStopGroupService;
-import com.nature.component.mxGraph.model.MxGraphModel;
-import com.nature.component.mxGraph.vo.MxGraphModelVo;
-import com.nature.component.template.model.StopTemplateModel;
-import com.nature.component.template.model.Template;
-import com.nature.component.template.service.IFlowAndStopsTemplateVoService;
 import com.nature.component.template.service.IFlowGroupTemplateService;
-import com.nature.component.template.service.ITemplateService;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -28,14 +9,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * FlowGroupTemplateCtrl
@@ -46,9 +19,6 @@ public class FlowGroupTemplateCtrl {
 
     @Autowired
     private IFlowGroupTemplateService flowGroupTemplateServiceImpl;
-
-    @Autowired
-    private ITemplateService iTemplateService;
 
 
     @RequestMapping("/saveFlowGroupTemplate")

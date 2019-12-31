@@ -1,8 +1,6 @@
 package com.nature.mapper.flow;
 
-import com.nature.component.flow.model.Flow;
 import com.nature.component.flow.model.FlowGroup;
-import com.nature.component.flow.vo.FlowGroupVo;
 import com.nature.provider.flow.FlowGroupMapperProvider;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;

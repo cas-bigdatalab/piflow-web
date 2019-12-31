@@ -277,11 +277,10 @@ public class DataSourceImpl implements IDataSource {
     @Override
     public String getDataSourceVoListPage(Integer offset, Integer limit, String param) {
         Map<String, Object> rtnMap = new HashMap<String, Object>();
-        UserVo currentUser = SessionUserUtil.getCurrentUser();
         if (null != offset && null != limit) {
-            Page page = PageHelper.startPage(offset, limit);
+            Page<DataSource> page = PageHelper.startPage(offset, limit);
             dataSourceMapper.getDataSourceListParam(param);
-            PageInfo info = new PageInfo(page.getResult());
+            PageInfo<DataSource> info = new PageInfo<DataSource>(page);
             List<DataSourceVo> dataSourceVoList = new ArrayList<>();
             List<DataSource> infoList = info.getList();
             if (null != infoList && infoList.size() > 0) {

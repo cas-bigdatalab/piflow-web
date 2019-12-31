@@ -1,14 +1,10 @@
 package com.nature.component.template.model;
 
 import com.nature.base.BaseHibernateModelUUIDNoCorpAgentId;
-import com.nature.component.flow.model.Flow;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter

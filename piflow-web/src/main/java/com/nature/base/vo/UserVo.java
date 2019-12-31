@@ -16,7 +16,9 @@ import java.util.List;
 @Setter
 public class UserVo implements UserDetails, Serializable {
 
-    private String username;
+	private static final long serialVersionUID = 1L;
+	
+	private String username;
     private String password;
     private String name;
     private Integer age;

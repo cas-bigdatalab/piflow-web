@@ -20,21 +20,12 @@ public class PropertyDomain {
 
     private Specification<Property> addEnableFlagParam() {
         Specification<Property> specification = new Specification<Property>() {
+        	private static final long serialVersionUID = 1L;
+        	
             @Override
             public Predicate toPredicate(Root<Property> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
                 //root.get("enableFlag") means to get the field name of enableFlag
                 return criteriaBuilder.equal(root.get("enableFlag"), 1);
-            }
-        };
-        return specification;
-    }
-
-    private Specification<Property> addParam(String key, String value) {
-        Specification<Property> specification = new Specification<Property>() {
-            @Override
-            public Predicate toPredicate(Root<Property> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-                //root.get(key) means to get the name of the key field
-                return criteriaBuilder.equal(root.get(key), value);
             }
         };
         return specification;

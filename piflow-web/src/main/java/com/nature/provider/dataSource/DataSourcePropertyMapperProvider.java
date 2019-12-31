@@ -119,7 +119,8 @@ public class DataSourcePropertyMapperProvider {
      * @param map (Content: dataSourcePropertyList, the value is List<datasourceproperty></datasourceproperty>)
      * @return
      */
-    public String addDataSourcePropertyList(Map map) {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	public String addDataSourcePropertyList(Map map) {
         List<DataSourceProperty> dataSourcePropertyList = (List<DataSourceProperty>) map.get("dataSourcePropertyList");
         StringBuffer sql = new StringBuffer();
         if (null != dataSourcePropertyList && dataSourcePropertyList.size() > 0) {

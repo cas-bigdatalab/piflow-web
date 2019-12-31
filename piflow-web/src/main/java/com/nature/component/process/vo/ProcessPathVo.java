@@ -4,7 +4,9 @@ import java.io.Serializable;
 
 public class ProcessPathVo implements Serializable {
 
-    private ProcessVo processVo;
+	private static final long serialVersionUID = 1L;
+	
+	private ProcessVo processVo;
     private String from;
     private String outport;
     private String inport;

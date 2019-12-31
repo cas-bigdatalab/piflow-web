@@ -101,7 +101,8 @@ public class PropertyTemplateMapperProvider {
         return sqlStr;
     }
 
-    public String insertPropertyTemplate(Map map) {
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	public String insertPropertyTemplate(Map map) {
         String sqlStr = "select 0";
         List<PropertyTemplate> propertyTemplateList = (List<PropertyTemplate>) map.get("propertyTemplateList");
         if (null != propertyTemplateList && propertyTemplateList.size() > 0) {

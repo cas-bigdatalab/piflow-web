@@ -24,7 +24,8 @@ public class SvgUtils {
      * @param mxGraphModel
      * @return
      */
-    public static String mxGraphModelToViewXml(MxGraphModel mxGraphModel, boolean isGroup, boolean isProject) {
+    @SuppressWarnings("unchecked")
+	public static String mxGraphModelToViewXml(MxGraphModel mxGraphModel, boolean isGroup, boolean isProject) {
         String viewXml = "";
         if (null != mxGraphModel) {
             StringBuffer viewXmlStrBuf = new StringBuffer();

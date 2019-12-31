@@ -3,7 +3,6 @@ package com.nature.component.system.service;
 import com.nature.component.system.vo.SysScheduleVo;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 @Service
 public interface ISysScheduleService {

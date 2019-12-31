@@ -7,7 +7,6 @@ import com.nature.base.util.SessionUserUtil;
 import com.nature.base.vo.StatefulRtnBase;
 import com.nature.base.vo.UserVo;
 import com.nature.common.Eunm.ProcessState;
-import com.nature.component.process.model.Process;
 import com.nature.component.process.service.IProcessPathService;
 import com.nature.component.process.service.IProcessService;
 import com.nature.component.process.service.IProcessStopService;

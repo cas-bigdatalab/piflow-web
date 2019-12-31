@@ -4,7 +4,6 @@ import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.SpringContextUtil;
 import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
@@ -37,7 +36,8 @@ public class Application {
         logger.warn("***************************************************************");
     }
 
-    public static void createDatabase() {
+    @SuppressWarnings("resource")
+	public static void createDatabase() {
         String path = System.getProperty("user.dir") + "/src/main/resources/application.properties";
         String path_msql = System.getProperty("user.dir") + "/src/main/resources/application-mysql.properties";
         String driverClassName = null;

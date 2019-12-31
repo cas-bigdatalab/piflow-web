@@ -10,11 +10,9 @@ import com.nature.common.Eunm.ProcessState;
 import com.nature.common.Eunm.RunModeType;
 import com.nature.component.flow.model.*;
 import com.nature.component.flow.service.IFlowService;
-import com.nature.component.flow.utils.FlowInfoDbUtil;
 import com.nature.component.flow.utils.MxGraphModelUtil;
 import com.nature.component.flow.utils.PathsUtil;
 import com.nature.component.flow.utils.StopsUtil;
-import com.nature.component.flow.vo.FlowInfoDbVo;
 import com.nature.component.flow.vo.FlowVo;
 import com.nature.component.flow.vo.PathsVo;
 import com.nature.component.flow.vo.StopsVo;
@@ -195,7 +193,7 @@ public class FlowServiceImpl implements IFlowService {
             //Take out 'pathsList' and turn it to Vo
             List<PathsVo> pathsVoList = PathsUtil.pathsListPoToVo(flowById.getPathsList());
             //Take out 'flowInfoDb' and turn it to Vo
-            FlowInfoDbVo flowInfoDbVo = FlowInfoDbUtil.flowInfoDbToVo(flowById.getAppId());
+            //FlowInfoDbVo flowInfoDbVo = FlowInfoDbUtil.flowInfoDbToVo(flowById.getAppId());
             flowVo.setMxGraphModelVo(mxGraphModelVo);
             flowVo.setStopsVoList(stopsVoList);
             flowVo.setPathsVoList(pathsVoList);
@@ -221,7 +219,7 @@ public class FlowServiceImpl implements IFlowService {
         if (StringUtils.isNotBlank(flowId)) {
             // find flow by flowId
             Flow flowById = flowDomain.getFlowById(flowId);
-            FlowInfoDb oldAppId = flowById.getAppId();
+            //FlowInfoDb oldAppId = flowById.getAppId();
             if (null != flowById) {
                 flowById.setAppId(appId);
                 flowById.setLastUpdateDttm(new Date());
@@ -352,7 +350,8 @@ public class FlowServiceImpl implements IFlowService {
      * @param flag           Whether to add stop information
      * @return
      */
-    private StatefulRtnBase addFlowStops(MxGraphModelVo mxGraphModelVo, String flowId, boolean flag) {
+    @SuppressWarnings("unchecked")
+	private StatefulRtnBase addFlowStops(MxGraphModelVo mxGraphModelVo, String flowId, boolean flag) {
         StatefulRtnBase statefulRtnBase = new StatefulRtnBase();
         UserVo currentUser = SessionUserUtil.getCurrentUser();
         if (null == currentUser) {
@@ -576,7 +575,8 @@ public class FlowServiceImpl implements IFlowService {
      * @param flowId         The data to be modified
      * @return
      */
-    private StatefulRtnBase updateFlow(MxGraphModelVo mxGraphModelVo, String flowId) {
+    @SuppressWarnings("unchecked")
+	private StatefulRtnBase updateFlow(MxGraphModelVo mxGraphModelVo, String flowId) {
         UserVo user = SessionUserUtil.getCurrentUser();
         String username = (null != user) ? user.getUsername() : "-1";
         StatefulRtnBase statefulRtnBase = new StatefulRtnBase();
@@ -592,8 +592,6 @@ public class FlowServiceImpl implements IFlowService {
                 int updateFlow = flowMapper.updateFlow(flow);
                 // Determine whether the save is successful
                 if (updateFlow > 0) {
-                    // Take out the artboard information
-                    MxGraphModel mxGraphModel = flow.getMxGraphModel();
                     // Save and modify the artboard information
                     StatefulRtnBase updateMxGraphRtn = this.updateMxGraph(mxGraphModelVo, flowId);
                     // Determine if mxGraphModel is saved successfully
@@ -1096,9 +1094,8 @@ public class FlowServiceImpl implements IFlowService {
     @Override
     public String getFlowListPage(Integer offset, Integer limit, String param) {
         Map<String, Object> rtnMap = new HashMap<String, Object>();
-        UserVo currentUser = SessionUserUtil.getCurrentUser();
         if (null != offset && null != limit) {
-            Page page = PageHelper.startPage(offset, limit);
+            Page<Flow> page = PageHelper.startPage(offset, limit);
             flowMapper.getFlowListParam(param);
             rtnMap = PageHelperUtils.setDataTableParam(page, rtnMap);
         }

@@ -8,10 +8,8 @@ import com.nature.base.vo.StatefulRtnBase;
 import com.nature.base.vo.UserVo;
 import com.nature.common.Eunm.PortType;
 import com.nature.component.flow.model.*;
-import com.nature.component.flow.service.IPathsService;
 import com.nature.component.flow.service.IStopsService;
 import com.nature.component.flow.utils.StopsUtil;
-import com.nature.component.flow.vo.PathsVo;
 import com.nature.component.flow.vo.StopsVo;
 import com.nature.component.mxGraph.model.MxCell;
 import com.nature.component.mxGraph.model.MxGraphModel;
@@ -138,7 +136,7 @@ public class StopsServiceImpl implements IStopsService {
                 root = mxGraphModel.getRoot();
             }
         }
-        if (null == root && root.size() == 0) {
+        if (null == root || root.size() == 0) {
             statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("No flow information,update failed ");
             logger.info(flowById.getId() + "The artboard information is empty and the update failed.");
             return statefulRtnBase;
@@ -173,7 +171,9 @@ public class StopsServiceImpl implements IStopsService {
         return statefulRtnBase;
     }
 
-    public String getStopsPort(String flowId, String sourceId, String targetId, String pathLineId) {
+   
+	@SuppressWarnings("unchecked")
+	public String getStopsPort(String flowId, String sourceId, String targetId, String pathLineId) {
         Map<String, Object> rtnMap = new HashMap<>();
         rtnMap.put("code", 500);
         // The parameter is judged empty, and it is judged whether each parameter is available. If there is, it returns directly.
@@ -229,7 +229,7 @@ public class StopsServiceImpl implements IStopsService {
         // 2, key : 'isSourceStop', value : whether it is 'source'
         // 3, key: 'portUsageMap', value: port details 'map' (key: port name, value: whether available 'boolean')
         // Query the occupancy of the ‘sourceStop’ interface
-        Map sourcePortUsageMap = stopPortUsage(true, flowId, sourceStop, pathLineId);
+        Map<String, Object> sourcePortUsageMap = stopPortUsage(true, flowId, sourceStop, pathLineId);
         if (null == sourcePortUsageMap) {
             logger.warn("Query the occupation of the sourceStop interface.");
             rtnMap.put("errorMsg", "Query the occupation of the sourceStop interface.");
@@ -244,7 +244,7 @@ public class StopsServiceImpl implements IStopsService {
             return JsonUtils.toJsonNoException(rtnMap);
         }
         // Query the occupancy of the targetStop interface
-        Map targetPortUsageMap = stopPortUsage(false, flowId, targetStop, pathLineId);
+        Map<String, Object> targetPortUsageMap = stopPortUsage(false, flowId, targetStop, pathLineId);
         if (null == targetPortUsageMap) {
             logger.warn("Query the occupancy of the targetStop interface.");
             rtnMap.put("errorMsg", "Query the occupancy of the targetStop interface.");
@@ -290,7 +290,7 @@ public class StopsServiceImpl implements IStopsService {
      * 2, key : 'isSourceStop', value : whether it is 'source'
      * 3, key: 'portUsageMap', value: port details 'map' (key: port name, value: whether available 'boolean')
      */
-    private Map stopPortUsage(boolean isSourceStop, String flowId, Stops stop, String pathLineId) {
+	private Map<String, Object> stopPortUsage(boolean isSourceStop, String flowId, Stops stop, String pathLineId) {
         // Map for return
         // Map content
         // 1, key: 'stop' port type enumeration 'text' attribute, value: port can use the quantity ‘Integer’
@@ -299,10 +299,6 @@ public class StopsServiceImpl implements IStopsService {
         Map<String, Object> stopPortUsageMap = null;
         if (null != stop) {
             stopPortUsageMap = new HashMap<String, Object>();
-            // Number of used ports
-            Integer usedPathsCounts = 0;
-            // Number of available ports
-            Integer availablePathsCounts = 0;
             // List of used interfaces
             List<Paths> usedPathsList = null;
 
@@ -347,7 +343,7 @@ public class StopsServiceImpl implements IStopsService {
      * @param stopPortUsageMap
      * @param portUsageMap
      */
-    private void stopTypeAny(boolean isSourceStop, String flowId, Stops stop, String pathLineId, Map<String, Object> stopPortUsageMap, Map<String, Boolean> portUsageMap) {
+	private void stopTypeAny(boolean isSourceStop, String flowId, Stops stop, String pathLineId, Map<String, Object> stopPortUsageMap, Map<String, Boolean> portUsageMap) {
         List<Paths> usedPathsList;// stopVo all ports
         String stopVoPortsAny = "";
 
@@ -609,14 +605,17 @@ public class StopsServiceImpl implements IStopsService {
      * @param stopVoPorts   Port information in stop, all ports
      * @return
      */
-    private Map portStrToMap(Map<String, Boolean> portUsageMap, Boolean isSourceStop, List<Paths> usedPathsList, String stopVoPorts) {
+	private Map<String, Boolean> portStrToMap(Map<String, Boolean> portUsageMap, Boolean isSourceStop, List<Paths> usedPathsList, String stopVoPorts) {
         if (null != portUsageMap) {
             if (null != usedPathsList && usedPathsList.size() > 0) {
                 String currentPathsId = "";
-                Paths currentPaths = null;//pathsServiceImpl.getPathsByFlowIdAndPageId(flowId, pathLineId);
+                /*
+                Paths currentPaths = null;
+                // Paths currentPaths = pathsServiceImpl.getPathsByFlowIdAndPageId(flowId, pathLineId);
                 if (null != currentPaths) {
                     currentPathsId = currentPaths.getId();
                 }
+                */
                 if (null != isSourceStop && isSourceStop) {
                     // Put the port that has been found into the map
                     for (Paths paths : usedPathsList) {

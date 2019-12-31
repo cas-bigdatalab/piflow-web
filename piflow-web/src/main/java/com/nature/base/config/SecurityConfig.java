@@ -130,10 +130,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 SysUserMapper sysUserMapper = (SysUserMapper) SpringContextUtil.getBean("sysUserMapper");
                 SysMenuMapper sysMenuMapper = (SysMenuMapper) SpringContextUtil.getBean("sysMenuMapper");
                 SysUser sysUser = sysUserMapper.findUserByUserName(username);
-                String password = "";
                 if (null != sysUser) {
                     userVo = new UserVo();
-                    password = sysUser.getPassword();
                     userVo.setUsername(sysUser.getUsername());
                     userVo.setPassword(sysUser.getPassword());
                     userVo.setName(sysUser.getName());

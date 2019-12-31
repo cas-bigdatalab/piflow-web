@@ -20,21 +20,13 @@ public class DataSourceDomain {
 
     private Specification<DataSource> addEnableFlagParam() {
         Specification<DataSource> specification = new Specification<DataSource>() {
-            @Override
+ 
+			private static final long serialVersionUID = 1L;
+
+			@Override
             public Predicate toPredicate(Root<DataSource> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
                 //root.get("enableFlag") means to get the field name of enableFlag
                 return criteriaBuilder.equal(root.get("enableFlag"), 1);
-            }
-        };
-        return specification;
-    }
-
-    private Specification<DataSource> addParam(String key, String value) {
-        Specification<DataSource> specification = new Specification<DataSource>() {
-            @Override
-            public Predicate toPredicate(Root<DataSource> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-                //root.get(key) means to get the name of the key field
-                return criteriaBuilder.equal(root.get(key), value);
             }
         };
         return specification;

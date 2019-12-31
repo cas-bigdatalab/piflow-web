@@ -5,7 +5,6 @@ import com.nature.base.vo.StatefulRtnBase;
 import com.nature.component.flow.model.Flow;
 import com.nature.component.flow.vo.StopsVo;
 import com.nature.third.vo.flowInfo.ThirdFlowInfoStopVo;
-import org.springframework.data.annotation.Transient;
 
 import javax.transaction.Transactional;
 import java.util.List;

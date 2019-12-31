@@ -8,13 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import java.util.List;
 
 @Component
@@ -22,28 +17,6 @@ public class FlowDomain {
 
     @Autowired
     private FlowJpaRepository flowJpaRepository;
-
-    private Specification<Flow> addEnableFlagParam() {
-        Specification<Flow> specification = new Specification<Flow>() {
-            @Override
-            public Predicate toPredicate(Root<Flow> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-                //Root.get("enableFlag") means to get the name of the enableFlag field.
-                return criteriaBuilder.equal(root.get("enableFlag"), 1);
-            }
-        };
-        return specification;
-    }
-
-    private Specification<Flow> addParam(String key, String value) {
-        Specification<Flow> specification = new Specification<Flow>() {
-            @Override
-            public Predicate toPredicate(Root<Flow> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-                //Root.get(key) means to get the name of the key field.
-                return criteriaBuilder.equal(root.get(key), value);
-            }
-        };
-        return specification;
-    }
 
     public Flow getFlowById(String id) {
         Flow flow = flowJpaRepository.getOne(id);

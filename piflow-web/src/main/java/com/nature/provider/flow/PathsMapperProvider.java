@@ -83,7 +83,8 @@ public class PathsMapperProvider {
      * @param map (Content: The key is pathsList, the value is List<Paths>)
      * @return
      */
-    public String addPathsList(Map map) {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	public String addPathsList(Map map) {
         List<Paths> pathsList = (List<Paths>) map.get("pathsList");
         StringBuffer sql = new StringBuffer();
         if (null != pathsList && pathsList.size() > 0) {

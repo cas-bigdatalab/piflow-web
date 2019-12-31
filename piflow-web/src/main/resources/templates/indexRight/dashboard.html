@@ -1,0 +1,13 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<body th:fragment=index_Home>
+<div th:include="Macro/fragmentMacro :: fullScreen"></div>
+<script th:include="Macro/csrfTokeHeadMacro :: csrfTokeHeadMacroScript"/>
+<script th:inline="javascript">
+    function jumpHome() {
+        console.log("qqqqqqqqqqqqqqqq");
+    }
+    //@ sourceURL=dashboard.js
+</script>
+</body>
+</html>

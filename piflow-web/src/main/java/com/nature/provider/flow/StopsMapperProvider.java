@@ -310,7 +310,8 @@ public class StopsMapperProvider {
      * @param map
      * @return
      */
-    public String getStopsListByFlowIdAndPageIds(Map map) {
+    @SuppressWarnings("rawtypes")
+	public String getStopsListByFlowIdAndPageIds(Map map) {
         String flowId = (String) map.get("flowId");
         String[] pageIds = (String[]) map.get("pageIds");
         String sqlStr = "";

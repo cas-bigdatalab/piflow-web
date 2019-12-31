@@ -1,10 +1,7 @@
 package com.nature.controller;
 
-import com.nature.base.util.QuartzUtils;
-import com.nature.component.system.model.SysSchedule;
 import com.nature.component.system.service.ISysScheduleService;
 import com.nature.component.system.vo.SysScheduleVo;
-import org.quartz.Scheduler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

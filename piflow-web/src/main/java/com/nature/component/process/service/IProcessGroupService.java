@@ -1,17 +1,10 @@
 package com.nature.component.process.service;
 
-import com.nature.base.vo.StatefulRtnBase;
 import com.nature.base.vo.UserVo;
-import com.nature.common.Eunm.RunModeType;
-import com.nature.component.process.model.Process;
-import com.nature.component.process.model.ProcessGroup;
 import com.nature.component.process.vo.DebugDataRequest;
 import com.nature.component.process.vo.DebugDataResponse;
 import com.nature.component.process.vo.ProcessGroupVo;
-import com.nature.component.process.vo.ProcessVo;
 
-import javax.transaction.Transactional;
-import java.util.List;
 
 public interface IProcessGroupService {
 

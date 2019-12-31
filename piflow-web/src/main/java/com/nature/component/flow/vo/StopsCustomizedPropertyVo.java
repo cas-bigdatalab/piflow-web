@@ -1,12 +1,9 @@
 
 package com.nature.component.flow.vo;
 
-import com.nature.base.BaseHibernateModelUUIDNoCorpAgentId;
-import com.nature.component.flow.model.Stops;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
 import java.io.Serializable;
 
 /**
@@ -18,7 +15,9 @@ import java.io.Serializable;
 @Setter
 public class StopsCustomizedPropertyVo implements Serializable {
 
-    private String id;
+	private static final long serialVersionUID = 1L;
+
+	private String id;
     private String name;
     private String customValue;
     private String description;

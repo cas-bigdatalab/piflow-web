@@ -28,7 +28,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-
+@SuppressWarnings("rawtypes")
 public class FlowXmlUtils {
 
     static Logger logger = LoggerUtil.getLogger();
@@ -1236,7 +1236,6 @@ public class FlowXmlUtils {
             Document document = DocumentHelper.parseText(xmlData);
             String strXml = document.getRootElement().asXML();
             String transformation = "<fg>" + strXml + "</fg>";
-            MxGraphModelVo mxGraphModelVo = new MxGraphModelVo();
             InputSource in = new InputSource(new StringReader(transformation));
             in.setEncoding("UTF-8");
             SAXReader reader = new SAXReader();
@@ -1388,8 +1387,6 @@ public class FlowXmlUtils {
             InputSource in = new InputSource(new StringReader(transformation));
             in.setEncoding("UTF-8");
             SAXReader reader = new SAXReader();
-            List<StopTemplateModel> stopVoList = new ArrayList<StopTemplateModel>();
-            Template template = new Template();
             document = reader.read(in);
             // Get all nodes with "autoSaveNode" attribute
             Element rootElt = document.getRootElement(); // Get the root node
@@ -1593,7 +1590,6 @@ public class FlowXmlUtils {
             Document document = DocumentHelper.parseText(flowGroupXmlStr);
             String strXml = document.getRootElement().asXML();
             String transformation = "<fg>" + strXml + "</fg>";
-            MxGraphModelVo mxGraphModelVo = new MxGraphModelVo();
             InputSource in = new InputSource(new StringReader(transformation));
             in.setEncoding("UTF-8");
             SAXReader reader = new SAXReader();

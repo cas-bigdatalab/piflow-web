@@ -1,12 +1,8 @@
 package com.nature.component.template.service;
 
-import com.nature.component.template.model.Template;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.transaction.Transactional;
-import java.io.FileNotFoundException;
-import java.util.List;
 
 
 public interface IFlowGroupTemplateService {

@@ -4,7 +4,9 @@ import java.io.Serializable;
 
 public class ProcessStopPropertyVo implements Serializable {
 
-    private ProcessStopVo processStopVo;
+	private static final long serialVersionUID = 1L;
+	
+	private ProcessStopVo processStopVo;
     private String name;
     private String displayName;
     private String description;

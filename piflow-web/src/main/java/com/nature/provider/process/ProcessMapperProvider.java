@@ -1,9 +1,7 @@
 package com.nature.provider.process;
 
 import com.nature.base.util.DateUtils;
-import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.SqlUtils;
-import com.nature.base.vo.UserVo;
 import com.nature.common.Eunm.ProcessParentType;
 import com.nature.common.Eunm.ProcessState;
 import com.nature.component.process.model.Process;
@@ -172,7 +170,6 @@ public class ProcessMapperProvider {
     public String getProcessById(String id) {
         String sqlStr = "select 0";
         if (StringUtils.isNotBlank(id)) {
-            UserVo currentUser = SessionUserUtil.getCurrentUser();
             StringBuffer strBuf = new StringBuffer();
             strBuf.append("select * ");
             strBuf.append("from flow_process ");
@@ -193,7 +190,6 @@ public class ProcessMapperProvider {
     public String getProcessByProcessGroupId(String processGroupId) {
         String sqlStr = "select 0";
         if (StringUtils.isNotBlank(processGroupId)) {
-            UserVo currentUser = SessionUserUtil.getCurrentUser();
             StringBuffer strBuf = new StringBuffer();
             strBuf.append("select * ");
             strBuf.append("from flow_process ");
@@ -482,7 +478,8 @@ public class ProcessMapperProvider {
      * @param map
      * @return
      */
-    public String getProcessByPageIds(Map map) {
+    @SuppressWarnings("rawtypes")
+	public String getProcessByPageIds(Map map) {
         String processId = (String) map.get("processGroupId");
         String[] pageIds = (String[]) map.get("pageIds");
         String sqlStr = "select 0";

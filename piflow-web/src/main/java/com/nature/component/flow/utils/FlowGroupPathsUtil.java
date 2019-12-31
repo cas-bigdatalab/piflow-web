@@ -43,7 +43,7 @@ public class FlowGroupPathsUtil {
         UserVo user = SessionUserUtil.getCurrentUser();
         String username = (null != user) ? user.getUsername() : "-1";
         List<FlowGroupPaths> flowGroupPathsList = null;
-        if (null != flowGroupPathsList && flowGroupPathsList.size() > 0) {
+        if (null != flowGroupPathsVoList && flowGroupPathsVoList.size() > 0) {
             flowGroupPathsList = new ArrayList<>();
             for (FlowGroupPathsVo flowGroupPathsVo : flowGroupPathsVoList) {
                 if (null != flowGroupPathsVo) {

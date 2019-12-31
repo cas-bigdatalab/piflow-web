@@ -12,7 +12,6 @@ import com.nature.mapper.flow.FlowMapper;
 import com.nature.third.utils.ProcessUtil;
 import org.junit.Test;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 
 import javax.annotation.Resource;

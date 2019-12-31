@@ -1,13 +1,8 @@
 package com.nature.domain.mxGraph;
 
-import com.nature.base.util.SessionUserUtil;
-import com.nature.base.vo.UserVo;
 import com.nature.component.mxGraph.model.MxGraphModel;
 import com.nature.repository.mxGraph.MxGraphModelJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +20,8 @@ public class MxGraphModelDomain {
 
     private Specification<MxGraphModel> addEnableFlagParam() {
         Specification<MxGraphModel> specification = new Specification<MxGraphModel>() {
+        	private static final long serialVersionUID = 1L;
+        	
             @Override
             public Predicate toPredicate(Root<MxGraphModel> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
                 //root.get("enableFlag") means to get the field name of enableFlag
@@ -36,6 +33,8 @@ public class MxGraphModelDomain {
 
     private Specification<MxGraphModel> addParam(String key, String value) {
         Specification<MxGraphModel> specification = new Specification<MxGraphModel>() {
+        	private static final long serialVersionUID = 1L;
+        	
             @Override
             public Predicate toPredicate(Root<MxGraphModel> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
                 //root.get(key) means to get the name of the key field

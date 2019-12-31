@@ -14,6 +14,8 @@ import javax.persistence.*;
 @Entity
 @Table(name = "SYS_SCHEDULE")
 public class SysSchedule extends BaseHibernateModelUUIDNoCorpAgentId {
+	
+	private static final long serialVersionUID = 1L;
 
     @Column(columnDefinition = "varchar(255) COMMENT 'job name'")
     private String jobName;

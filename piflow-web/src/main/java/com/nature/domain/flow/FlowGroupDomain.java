@@ -25,21 +25,13 @@ public class FlowGroupDomain {
 
     private Specification<FlowGroup> addEnableFlagParam() {
         Specification<FlowGroup> specification = new Specification<FlowGroup>() {
+        	
+        	private static final long serialVersionUID = 1L;
+        	
             @Override
             public Predicate toPredicate(Root<FlowGroup> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
                 //root.get("enableFlag") means to get the field name of enableFlag
                 return criteriaBuilder.equal(root.get("enableFlag"), 1);
-            }
-        };
-        return specification;
-    }
-
-    private Specification<FlowGroup> addParam(String key, String value) {
-        Specification<FlowGroup> specification = new Specification<FlowGroup>() {
-            @Override
-            public Predicate toPredicate(Root<FlowGroup> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-                //root.get(key) means to get the name of the key field
-                return criteriaBuilder.equal(root.get(key), value);
             }
         };
         return specification;
@@ -51,6 +43,9 @@ public class FlowGroupDomain {
         }
         final String search = param;
         Specification<FlowGroup> specification = new Specification<FlowGroup>() {
+        	
+        	private static final long serialVersionUID = 1L;
+        	
             @Override
             public Predicate toPredicate(Root<FlowGroup> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
                 //root.get("country")表示获取country这个字段名称,like表示执行like查询,%param%表示值

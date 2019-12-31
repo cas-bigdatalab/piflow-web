@@ -21,6 +21,8 @@ import java.util.List;
 @Entity
 @Table(name = "SYS_USER")
 public class SysUser extends BaseHibernateModelUUIDNoCorpAgentId {
+	
+	private static final long serialVersionUID = 1L;
 
     private String username;
 

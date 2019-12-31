@@ -1,24 +1,15 @@
 package com.nature.controller;
 
-import com.nature.base.util.JsonUtils;
 import com.nature.base.util.LoggerUtil;
-import com.nature.base.util.SessionUserUtil;
-import com.nature.base.vo.UserVo;
-import com.nature.component.flow.model.Flow;
-import com.nature.component.flow.model.FlowGroup;
 import com.nature.component.flow.service.IFlowGroupService;
-import com.nature.component.flow.service.IFlowService;
 import com.nature.component.flow.vo.FlowGroupVo;
-import com.nature.component.flow.vo.FlowVo;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.transaction.Transactional;
 import java.util.HashMap;
 import java.util.Map;
 

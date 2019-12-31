@@ -1,7 +1,6 @@
 package com.nature.component.flow.model;
 
 import com.nature.base.BaseHibernateModelUUIDNoCorpAgentId;
-import com.nature.common.Eunm.RunModeType;
 import com.nature.component.mxGraph.model.MxGraphModel;
 import lombok.Getter;
 import lombok.Setter;

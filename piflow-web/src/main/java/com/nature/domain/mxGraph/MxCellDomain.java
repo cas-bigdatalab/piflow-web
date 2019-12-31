@@ -20,6 +20,8 @@ public class MxCellDomain {
 
     private Specification<MxCell> addEnableFlagParam() {
         Specification<MxCell> specification = new Specification<MxCell>() {
+        	private static final long serialVersionUID = 1L;
+        	
             @Override
             public Predicate toPredicate(Root<MxCell> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
                 //root.get("enableFlag") means to get the field name of enableFlag
@@ -31,6 +33,8 @@ public class MxCellDomain {
 
     private Specification<MxCell> addParam(String key, String value) {
         Specification<MxCell> specification = new Specification<MxCell>() {
+        	private static final long serialVersionUID = 1L;
+        	
             @Override
             public Predicate toPredicate(Root<MxCell> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
                 //root.get(key) means to get the name of the key field

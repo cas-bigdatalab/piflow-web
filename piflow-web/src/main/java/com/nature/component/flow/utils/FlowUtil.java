@@ -1,9 +1,6 @@
 package com.nature.component.flow.utils;
 
-import com.nature.component.flow.model.CustomizedProperty;
 import com.nature.component.flow.model.Flow;
-import com.nature.component.flow.model.Property;
-import com.nature.component.flow.model.Stops;
 import com.nature.component.flow.vo.*;
 import org.springframework.beans.BeanUtils;
 

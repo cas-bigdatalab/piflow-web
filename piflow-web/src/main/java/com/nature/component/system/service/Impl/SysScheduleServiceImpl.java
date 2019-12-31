@@ -51,7 +51,7 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
     public String getScheduleListPage(Integer offset, Integer limit, String param) {
         Map<String, Object> rtnMap = new HashMap<String, Object>();
         if (null != offset && null != limit) {
-            Page page = PageHelper.startPage(offset, limit);
+			Page<SysScheduleVo> page = PageHelper.startPage(offset, limit);
             sysScheduleMapper.getSysScheduleList(param);
             rtnMap = PageHelperUtils.setDataTableParam(page, rtnMap);
         }

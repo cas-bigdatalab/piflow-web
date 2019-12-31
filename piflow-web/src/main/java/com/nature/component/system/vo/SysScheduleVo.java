@@ -14,7 +14,9 @@ import java.util.Date;
 @Setter
 public class SysScheduleVo implements Serializable {
 
-    private String id;
+	private static final long serialVersionUID = 1L;
+	
+	private String id;
     private Date crtDttm;
     private Date lastUpdateDttm;
     private String jobName;

@@ -1,7 +1,6 @@
 package com.nature.component.flow.vo;
 
 import com.nature.base.util.DateUtils;
-import com.nature.component.flow.model.Flow;
 import com.nature.component.flow.model.Stops;
 import lombok.Getter;
 import lombok.Setter;

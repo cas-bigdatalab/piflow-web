@@ -4,7 +4,6 @@ import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.SessionUserUtil;
 import com.nature.base.vo.UserVo;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -66,12 +65,6 @@ public class IndexCtrl {
     @RequestMapping("/sysScheduleList")
     public ModelAndView sysScheduleList() {
         return setBaseModeAndView(new ModelAndView(), "sysScheduleList");
-    }
-
-    @RequestMapping("/errorPage")
-    public ModelAndView error(ModelAndView modelAndView) {
-        modelAndView.setViewName("errorPage");
-        return modelAndView;
     }
 
     private ModelAndView setBaseModeAndView(ModelAndView modelAndView, String rightPage) {

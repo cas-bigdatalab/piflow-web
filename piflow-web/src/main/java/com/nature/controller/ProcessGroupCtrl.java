@@ -1,20 +1,12 @@
 package com.nature.controller;
 
-import com.nature.base.util.HttpUtils;
-import com.nature.base.util.JsonUtils;
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.SessionUserUtil;
-import com.nature.base.vo.StatefulRtnBase;
 import com.nature.base.vo.UserVo;
 import com.nature.common.Eunm.ProcessState;
-import com.nature.common.Eunm.RunModeType;
-import com.nature.component.process.model.ProcessGroup;
 import com.nature.component.process.service.IProcessGroupService;
-import com.nature.component.process.service.IProcessPathService;
 import com.nature.component.process.service.IProcessService;
-import com.nature.component.process.service.IProcessStopService;
 import com.nature.component.process.vo.*;
-import com.nature.third.service.IFlow;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/processGroup")

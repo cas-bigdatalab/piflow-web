@@ -10,7 +10,6 @@ import com.nature.component.flow.model.*;
 import com.nature.component.mxGraph.model.MxCell;
 import com.nature.component.mxGraph.model.MxGeometry;
 import com.nature.component.mxGraph.model.MxGraphModel;
-import com.nature.component.mxGraph.vo.MxGraphModelVo;
 import com.nature.component.template.model.FlowGroupTemplate;
 import com.nature.component.template.service.IFlowGroupTemplateService;
 import com.nature.component.template.vo.FlowGroupTemplateVo;
@@ -97,7 +96,6 @@ public class FlowGroupTemplateServiceImpl implements IFlowGroupTemplateService {
         String username = (null != user) ? user.getUsername() : "-1";
         Map<String, Object> rtnMap = new HashMap<>();
         rtnMap.put("code", 500);
-        MxGraphModelVo mxGraphModelVo = null;
         if (StringUtils.isAnyEmpty(name, loadId)) {
             rtnMap.put("errorMsg", "Some parameters passed in are empty");
             logger.info("Some parameters passed in are empty");
@@ -135,7 +133,7 @@ public class FlowGroupTemplateServiceImpl implements IFlowGroupTemplateService {
     public String getFlowGroupTemplateListPage(Integer offset, Integer limit, String param) {
         Map<String, Object> rtnMap = new HashMap<String, Object>();
         if (null != offset && null != limit) {
-            Page page = PageHelper.startPage(offset, limit);
+            Page<FlowGroupTemplateVo> page = PageHelper.startPage(offset, limit);
             flowGroupTemplateMapper.getFlowGroupTemplateVoListPage(param);
             rtnMap = PageHelperUtils.setDataTableParam(page, rtnMap);
         }

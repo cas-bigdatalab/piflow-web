@@ -29,7 +29,8 @@ public class SysRoleMapperProvider {
         return strSql;
     }
 
-    public String addSysRoleList(Map map) {
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	public String addSysRoleList(Map map) {
         String strSql = "select 0";
         List<SysRole> list = (List<SysRole>) map.get("list");
         String sysUserId = (String) map.get("sysUserId");

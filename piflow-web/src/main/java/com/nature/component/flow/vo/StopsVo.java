@@ -2,7 +2,6 @@ package com.nature.component.flow.vo;
 
 import com.nature.base.util.DateUtils;
 import com.nature.common.Eunm.PortType;
-import com.nature.component.dataSource.model.DataSource;
 import com.nature.component.dataSource.vo.DataSourceVo;
 import lombok.Getter;
 import lombok.Setter;

@@ -2,7 +2,6 @@ package com.nature.mapper.flow;
 
 import com.nature.component.flow.model.FlowGroupPaths;
 import com.nature.provider.flow.FlowGroupPathsMapperProvider;
-import com.nature.provider.flow.PathsMapperProvider;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
 

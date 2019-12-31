@@ -12,7 +12,9 @@ import javax.persistence.*;
 @Table(name = "FLOW_PROCESS_PATH")
 public class ProcessPath extends BaseHibernateModelUUIDNoCorpAgentId {
 
-    @ManyToOne(fetch = FetchType.LAZY)
+	private static final long serialVersionUID = 1L;
+
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "FK_FLOW_PROCESS_ID")
     private Process process;
 

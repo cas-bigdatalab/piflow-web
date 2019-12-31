@@ -1,18 +1,12 @@
 package com.nature.controller;
 
-import com.nature.base.util.JsonUtils;
 import com.nature.base.util.LoggerUtil;
 import com.nature.component.flow.service.IFlowGroupPathsService;
-import com.nature.component.flow.service.IPathsService;
-import com.nature.component.flow.vo.PathsVo;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/flowGroupPath/")

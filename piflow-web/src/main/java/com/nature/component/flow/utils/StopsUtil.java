@@ -55,7 +55,7 @@ public class StopsUtil {
                 stopsVo.setDataSourceVo(dataSourceVo);
                 List<DataSourceProperty> dataSourcePropertyList = dataSource.getDataSourcePropertyList();
                 // Determine whether the Datasource attribute whose ID is "dataSourceId" is empty. Returns if it is empty, otherwise it is converted to Map.
-                if (null != dataSourcePropertyList || dataSourcePropertyList.size() > 0) {
+                if (null != dataSourcePropertyList && dataSourcePropertyList.size() > 0) {
                     // Loop "datasource" attribute to map
                     for (DataSourceProperty dataSourceProperty : dataSourcePropertyList) {
                         // "datasource" attribute name

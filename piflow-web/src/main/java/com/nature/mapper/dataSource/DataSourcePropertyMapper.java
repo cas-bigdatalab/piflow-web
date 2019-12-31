@@ -1,8 +1,6 @@
 package com.nature.mapper.dataSource;
 
 import com.nature.component.dataSource.model.DataSourceProperty;
-import com.nature.component.flow.model.Stops;
-import com.nature.provider.dataSource.DataSourceMapperProvider;
 import com.nature.provider.dataSource.DataSourcePropertyMapperProvider;
 import org.apache.ibatis.annotations.*;
 

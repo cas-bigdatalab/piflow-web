@@ -7,7 +7,6 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
-import java.util.Date;
 
 public class StopComponentSync extends QuartzJobBean {
 

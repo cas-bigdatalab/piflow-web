@@ -14,7 +14,9 @@ import java.util.Date;
 @Table(name = "SYS_INIT_RECORDS")
 public class SysInitRecords implements Serializable {
 
-    @Id
+	private static final long serialVersionUID = 1L;
+
+	@Id
     @GenericGenerator(name = "idGenerator", strategy = "uuid")
     @GeneratedValue(generator = "idGenerator")
     @Column(length = 40)

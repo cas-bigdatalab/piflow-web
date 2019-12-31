@@ -61,7 +61,6 @@ public class StopImpl implements IStop {
         StopsTemplate stopsTemplate = null;
         UserVo user = null; //SessionUserUtil.getCurrentUser();
         String username = (null != user) ? user.getUsername() : "-1";
-        String stopInfo = null;
         if (StringUtils.isNotBlank(bundleStr)) {
             Map<String, String> map = new HashMap<String, String>();
             map.put("bundle", bundleStr);

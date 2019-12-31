@@ -133,7 +133,8 @@ public class StopsTemplateMapperProvider {
         return sqlStr;
     }
 
-    public String insertStopsTemplate(Map map) {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	public String insertStopsTemplate(Map map) {
         String sqlStr = "select ''";
         List<StopsTemplate> stopsTemplateList = (List<StopsTemplate>) map.get("stopsTemplateList");
         if (null != stopsTemplateList && stopsTemplateList.size() > 0) {

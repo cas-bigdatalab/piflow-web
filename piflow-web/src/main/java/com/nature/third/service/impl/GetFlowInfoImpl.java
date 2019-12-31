@@ -51,7 +51,8 @@ public class GetFlowInfoImpl implements IGetFlowInfo {
     /**
      * Send post request
      */
-    @Override
+    @SuppressWarnings("rawtypes")
+	@Override
     public ThirdFlowInfoVo getFlowInfo(String appid) {
         ThirdFlowInfoVo jb = null;
         Map<String, String> map = new HashMap<String, String>();

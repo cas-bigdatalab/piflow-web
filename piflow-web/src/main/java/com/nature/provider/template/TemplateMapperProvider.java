@@ -16,7 +16,6 @@ public class TemplateMapperProvider {
 
     public String findTemPlateListPage(String param) {
         String sqlStr = "select 0";
-        UserVo currentUser = SessionUserUtil.getCurrentUser();
         StringBuffer strBuf = new StringBuffer();
         strBuf.append("select* ");
         strBuf.append("from flow_template ");

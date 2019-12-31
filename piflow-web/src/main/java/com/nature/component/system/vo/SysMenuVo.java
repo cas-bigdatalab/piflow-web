@@ -9,7 +9,9 @@ import java.io.Serializable;
 @Setter
 public class SysMenuVo implements Serializable {
 
-    private String menuName;
+	private static final long serialVersionUID = 1L;
+
+	private String menuName;
     private String menuUrl;
     private String menuParent;
     private String menuDescription;

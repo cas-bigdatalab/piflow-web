@@ -17,7 +17,9 @@ import java.util.List;
 @Getter
 public class DataSource extends BaseHibernateModelUUIDNoCorpAgentId {
 
-    @Column(columnDefinition = "varchar(255) COMMENT 'dataSourceType'")
+    private static final long serialVersionUID = 1L;
+	
+	@Column(columnDefinition = "varchar(255) COMMENT 'dataSourceType'")
     private String dataSourceType;
     @Column(columnDefinition = "varchar(255) COMMENT 'dataSourceName'")
     private String dataSourceName;

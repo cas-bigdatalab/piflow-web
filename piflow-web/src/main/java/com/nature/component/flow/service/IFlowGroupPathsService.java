@@ -1,11 +1,5 @@
 package com.nature.component.flow.service;
 
-import com.nature.component.flow.model.Flow;
-import com.nature.component.flow.model.Paths;
-import com.nature.component.flow.vo.PathsVo;
-
-import java.util.List;
-
 public interface IFlowGroupPathsService {
 
     /**

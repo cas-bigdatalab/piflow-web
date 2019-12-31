@@ -1,34 +1,24 @@
 package com.nature.third.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.nature.base.util.DateUtils;
 import com.nature.base.util.HttpUtils;
 import com.nature.base.util.JsonFormatTool;
 import com.nature.base.util.LoggerUtil;
-import com.nature.common.Eunm.ProcessState;
 import com.nature.common.Eunm.RunModeType;
-import com.nature.common.Eunm.StopState;
 import com.nature.common.constant.SysParamsCache;
-import com.nature.component.process.model.Process;
 import com.nature.component.process.model.ProcessGroup;
-import com.nature.component.process.model.ProcessStop;
 import com.nature.domain.process.ProcessGroupDomain;
 import com.nature.third.service.IGroup;
 import com.nature.third.utils.ProcessUtil;
 import com.nature.third.utils.ThirdFlowGroupInfoResponseUtils;
-import com.nature.third.utils.ThirdFlowInfoVoUtils;
 import com.nature.third.vo.flowGroup.*;
-import com.nature.third.vo.flowInfo.ThirdFlowInfoVo;
 import net.sf.json.JSONObject;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.Transient;
 import javax.transaction.Transactional;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -97,7 +87,8 @@ public class GroupImpl implements IGroup {
         return rtnStr;
     }
 
-    @Override
+    @SuppressWarnings("rawtypes")
+	@Override
     public ThirdFlowGroupInfoResponse getFlowGroupInfo(String groupId) {
         ThirdFlowGroupInfoResponse thirdFlowGroupInfoResponse = null;
         String doGet = getFlowGroupInfoStr(groupId);
@@ -113,7 +104,7 @@ public class GroupImpl implements IGroup {
             ThirdFlowGroupInfoOutResponse thirdFlowGroupInfoOutResponse = (ThirdFlowGroupInfoOutResponse) JSONObject.toBean(obj, ThirdFlowGroupInfoOutResponse.class, classMap);
             if (null != thirdFlowGroupInfoOutResponse) {
                 thirdFlowGroupInfoResponse = thirdFlowGroupInfoOutResponse.getGroup();
-                if (null != thirdFlowGroupInfoOutResponse) {
+                if (null != thirdFlowGroupInfoResponse) {
                     String progressNums = thirdFlowGroupInfoResponse.getProgress();
                     if (StringUtils.isNotBlank(progressNums)) {
                         try {
@@ -143,7 +134,6 @@ public class GroupImpl implements IGroup {
      * @return
      */
     public Double getFlowGroupProgress(String groupId) {
-        Integer flowGroupProgress = null;
         if (StringUtils.isBlank(groupId)) {
             logger.warn("groupId is null");
             return null;

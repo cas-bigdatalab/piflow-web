@@ -12,7 +12,9 @@ import javax.persistence.*;
 @Table(name = "FLOW_PROCESS_STOP_PROPERTY")
 public class ProcessStopProperty extends BaseHibernateModelUUIDNoCorpAgentId {
 
-    @ManyToOne(fetch = FetchType.LAZY)
+	private static final long serialVersionUID = 1L;
+
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "FK_FLOW_PROCESS_STOP_ID")
     private ProcessStop processStop;
 

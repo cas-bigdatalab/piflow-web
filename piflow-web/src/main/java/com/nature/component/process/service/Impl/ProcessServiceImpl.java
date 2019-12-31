@@ -73,6 +73,7 @@ public class ProcessServiceImpl implements IProcessService {
         List<ProcessVo> processVoList = null;
         List<Process> processList = processTransaction.getProcessList();
         if (null != processList && processList.size() > 0) {
+        	processVoList = new ArrayList<>();
             for (Process process : processList) {
                 if (null != process) {
                     ProcessVo processVo = this.processPoToVo(process);
@@ -116,7 +117,6 @@ public class ProcessServiceImpl implements IProcessService {
     @Override
     public ProcessVo getProcessAllVoById(String id) {
         ProcessVo processVo = null;
-        UserVo currentUser = SessionUserUtil.getCurrentUser();
         if (StringUtils.isNotBlank(id)) {
             Process processById = processTransaction.getProcessById(id);
             processVo = this.processPoToVo(processById);
@@ -139,7 +139,6 @@ public class ProcessServiceImpl implements IProcessService {
     @Override
     public ProcessVo getProcessVoById(String id) {
         ProcessVo processVo = null;
-        UserVo currentUser = SessionUserUtil.getCurrentUser();
         if (StringUtils.isNotBlank(id)) {
             Process processById = processTransaction.getProcessById(id);
             if (null != processById) {
@@ -160,7 +159,6 @@ public class ProcessServiceImpl implements IProcessService {
     @Override
     public ProcessVo getProcessById(String id) {
         ProcessVo processVo = null;
-        UserVo currentUser = SessionUserUtil.getCurrentUser();
         Process processById = processTransaction.getProcessById(id);
         if (null != processById) {
             processVo = this.processPoToVo(processById);
@@ -257,7 +255,6 @@ public class ProcessServiceImpl implements IProcessService {
                                         ThirdFlowInfoStopVo thirdFlowInfoStopVo = thirdFlowInfoStopsVo.getStop();
                                         if (null != thirdFlowInfoStopVo) {
                                             ProcessStop processStopByNameAndPid = processStopTransaction.getProcessStopByNameAndPid(processById.getId(), thirdFlowInfoStopVo.getName());
-                                            ProcessStopVo processStopVo = new ProcessStopVo();
                                             processStopByNameAndPid.setName(thirdFlowInfoStopVo.getName());
                                             processStopByNameAndPid.setState(StopState.selectGender(thirdFlowInfoStopVo.getState()));
                                             processStopByNameAndPid.setStartTime(DateUtils.strCstToDate(thirdFlowInfoStopVo.getStartTime()));
@@ -573,7 +570,7 @@ public class ProcessServiceImpl implements IProcessService {
     public String getProcessVoListPage(Integer offset, Integer limit, String param) {
         Map<String, Object> rtnMap = new HashMap<String, Object>();
         if (null != offset && null != limit) {
-            Page page = PageHelper.startPage(offset, limit);
+            Page<Process> page = PageHelper.startPage(offset, limit);
             processMapper.getProcessListByParam(param);
             rtnMap = PageHelperUtils.setDataTableParam(page, rtnMap);
         }
@@ -592,7 +589,7 @@ public class ProcessServiceImpl implements IProcessService {
     public String getProcessGroupVoListPage(Integer offset, Integer limit, String param) {
         Map<String, Object> rtnMap = new HashMap<String, Object>();
         if (null != offset && null != limit) {
-            Page page = PageHelper.startPage(offset, limit);
+            Page<Process> page = PageHelper.startPage(offset, limit);
             processMapper.getProcessGroupListByParam(param);
             rtnMap = PageHelperUtils.setDataTableParam(page, rtnMap);
         }
@@ -663,7 +660,6 @@ public class ProcessServiceImpl implements IProcessService {
     @Override
     public String stopProcess(String processId) {
         Map<String, Object> rtnMap = new HashMap<>();
-        UserVo currentUser = SessionUserUtil.getCurrentUser();
         rtnMap.put("code", 500);
         if (StringUtils.isNotBlank(processId)) {
             // Query Process by 'ProcessId'

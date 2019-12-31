@@ -43,7 +43,7 @@ public class PathsUtil {
         UserVo user = SessionUserUtil.getCurrentUser();
         String username = (null != user) ? user.getUsername() : "-1";
         List<Paths> pathsList = null;
-        if (null != pathsList && pathsList.size() > 0) {
+        if (null != pathsVoList && pathsVoList.size() > 0) {
             pathsList = new ArrayList<Paths>();
             for (PathsVo pathsVo : pathsVoList) {
                 if (null != pathsVo) {

@@ -1,9 +1,7 @@
 package com.nature.provider.process;
 
 import com.nature.base.util.DateUtils;
-import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.SqlUtils;
-import com.nature.base.vo.UserVo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
 
@@ -21,7 +19,6 @@ public class ProcessGroupMapperProvider {
     public String getProcessGroupById(String processGroupId) {
         String sqlStr = "select 0";
         if (StringUtils.isNotBlank(processGroupId)) {
-            UserVo currentUser = SessionUserUtil.getCurrentUser();
             StringBuffer strBuf = new StringBuffer();
             strBuf.append("select * ");
             strBuf.append("from flow_process_group ");
@@ -42,7 +39,6 @@ public class ProcessGroupMapperProvider {
     public String getRunModeTypeById(String processGroupId) {
         String sqlStr = "select 0";
         if (StringUtils.isNotBlank(processGroupId)) {
-            UserVo currentUser = SessionUserUtil.getCurrentUser();
             StringBuffer strBuf = new StringBuffer();
             strBuf.append("select run_mode_type ");
             strBuf.append("from flow_process_group ");

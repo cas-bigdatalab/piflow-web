@@ -2,7 +2,6 @@
 package com.nature.component.process.model;
 
 import com.nature.base.BaseHibernateModelUUIDNoCorpAgentId;
-import com.nature.component.flow.model.Stops;
 import lombok.Getter;
 import lombok.Setter;
 

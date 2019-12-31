@@ -17,7 +17,6 @@ import com.nature.mapper.flow.StopsMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -156,7 +155,6 @@ public class CustomizedPropertyServiceImpl implements ICustomizedPropertyService
     public String getRouterStopsCustomizedProperty(String customPropertyId) {
         Map<String, Object> rtnMap = new HashMap<String, Object>();
         rtnMap.put("code", 500);
-        int optDataCount = 0;
         CustomizedProperty customizedPropertyById = customizedPropertyMapper.getCustomizedPropertyById(customPropertyId);
         if (null != customizedPropertyById) {
             Stops stops = customizedPropertyById.getStops();

@@ -13,8 +13,6 @@ import com.nature.component.flow.service.IFlowGroupService;
 import com.nature.component.flow.service.IFlowService;
 import com.nature.component.flow.service.IPropertyService;
 import com.nature.component.flow.service.IStopsService;
-import com.nature.component.flow.vo.FlowGroupVo;
-import com.nature.component.flow.vo.FlowVo;
 import com.nature.component.flow.vo.StopGroupVo;
 import com.nature.component.group.service.IStopGroupService;
 import com.nature.component.mxGraph.model.MxGraphModel;
@@ -227,7 +225,6 @@ public class GrapheditorCtrl {
     @RequestMapping("/groupDrawingBoard")
     public String GroupDrawingBoard(Model model, String load) {
         UserVo user = SessionUserUtil.getCurrentUser();
-        String username = (null != user) ? user.getUsername() : "-1";
         model.addAttribute("currentUser", user);
         // Query by loading'id'
         FlowGroup flowGroupById = flowGroupServiceImpl.getFlowGroupById(load);

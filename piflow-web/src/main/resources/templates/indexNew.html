@@ -71,7 +71,7 @@
         <!-- Content wrapper -->
         <div th:switch="${accessPath}">
             <div th:case="'indexHome'">
-                <div th:include="indexRight/flow/flow_List :: flow_List"></div>
+                <div th:include="indexRight/dashboard :: index_Home"></div>
             </div>
             <div th:case="'flowList'">
                 <div th:include="indexRight/flow/flow_List :: flow_List"></div>
@@ -120,7 +120,11 @@
     var currentUser = [[${currentUser}]];
     var accessPath = [[${accessPath}]];
     window.onload = function () {
-
+        if ("indexHome" === accessPath) {
+            setTimeout(function () {
+                window.location.href = "/piflow-web/web/flowList";
+            }, 3000);
+        }
     };
     (function () {
         if (currentUser) {

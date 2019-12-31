@@ -37,7 +37,6 @@ public class ProcessUtil {
 
         // all stops
         Map<String, ProcessStop> stopsMap = new HashMap<>();
-        Map<String, List<Map<String, String>>> stopsRoutePort = new HashMap<>();
 
         List<Map<String, Object>> processStopMapList = new ArrayList<>();
         List<ProcessStop> processStopList = process.getProcessStopList();

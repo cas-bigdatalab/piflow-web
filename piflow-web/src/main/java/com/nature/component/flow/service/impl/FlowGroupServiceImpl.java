@@ -173,7 +173,6 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
     @Override
     public String getFlowGroupListPage(Integer offset, Integer limit, String param) {
         Map<String, Object> rtnMap = new HashMap<String, Object>();
-        UserVo currentUser = SessionUserUtil.getCurrentUser();
         if (null != offset && null != limit) {
             Page<FlowGroup> flowGroupListPage = flowGroupDomain.getFlowGroupListPage(offset - 1, limit, param);
             List<FlowGroupVo> contentVo = new ArrayList<>();
@@ -355,7 +354,8 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
      * @param flag           Whether to add stop information
      * @return
      */
-    private StatefulRtnBase addFlows(MxGraphModelVo mxGraphModelVo, String flowGroupId, boolean flag, String username) {
+    @SuppressWarnings("unchecked")
+	private StatefulRtnBase addFlows(MxGraphModelVo mxGraphModelVo, String flowGroupId, boolean flag, String username) {
         StatefulRtnBase statefulRtnBase = new StatefulRtnBase();
         // Query 'flowGroup' according to 'flowGroupId'
         FlowGroup flowGroup = flowGroupDomain.getFlowGroupById(flowGroupId);
@@ -572,7 +572,8 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
      * @param flowGroupId    The data to be modified
      * @return
      */
-    private StatefulRtnBase updateFlowGroup(MxGraphModelVo mxGraphModelVo, String flowGroupId) {
+    @SuppressWarnings("unchecked")
+	private StatefulRtnBase updateFlowGroup(MxGraphModelVo mxGraphModelVo, String flowGroupId) {
         UserVo user = SessionUserUtil.getCurrentUser();
         String username = (null != user) ? user.getUsername() : "-1";
         StatefulRtnBase statefulRtnBase = new StatefulRtnBase();
@@ -586,9 +587,6 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
 
                 // save flowGroup
                 flowGroup = flowGroupDomain.saveOrUpdate(flowGroup);
-
-                // Take out the artboard information
-                MxGraphModel mxGraphModel = flowGroup.getMxGraphModel();
                 // Save and modify the artboard information
                 StatefulRtnBase updateMxGraphRtn = this.updateMxGraph(mxGraphModelVo, flowGroupId, username);
                 // Determine if mxGraphModel is saved successfully

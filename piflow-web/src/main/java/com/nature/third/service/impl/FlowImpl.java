@@ -4,25 +4,17 @@ import com.alibaba.fastjson.JSON;
 import com.nature.base.util.HttpUtils;
 import com.nature.base.util.JsonFormatTool;
 import com.nature.base.util.LoggerUtil;
-import com.nature.base.util.StatefulRtnBaseUtils;
-import com.nature.base.vo.StatefulRtnBase;
-import com.nature.base.vo.UserVo;
-import com.nature.common.Eunm.ProcessState;
 import com.nature.common.Eunm.RunModeType;
 import com.nature.common.constant.SysParamsCache;
 import com.nature.component.process.model.Process;
-import com.nature.component.process.model.ProcessGroup;
 import com.nature.third.service.IFlow;
 import com.nature.third.utils.ProcessUtil;
 import com.nature.third.vo.flow.ThirdProgressVo;
-import com.nature.transaction.process.ProcessTransaction;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -161,7 +153,6 @@ public class FlowImpl implements IFlow {
 
     @Override
     public String getDebugData(String appID, String stopName, String portName) {
-        String jb = null;
         Map<String, String> map = new HashMap<String, String>();
         map.put("appID", appID);
         map.put("stopName", stopName);

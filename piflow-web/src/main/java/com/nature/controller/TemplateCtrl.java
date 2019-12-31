@@ -10,7 +10,6 @@ import com.nature.component.flow.model.Paths;
 import com.nature.component.flow.model.Stops;
 import com.nature.component.flow.service.IFlowService;
 import com.nature.component.flow.service.IPathsService;
-import com.nature.component.group.service.IStopGroupService;
 import com.nature.component.mxGraph.model.MxGraphModel;
 import com.nature.component.mxGraph.vo.MxGraphModelVo;
 import com.nature.component.template.model.StopTemplateModel;
@@ -48,9 +47,6 @@ public class TemplateCtrl {
 
     @Autowired
     private ITemplateService iTemplateService;
-
-    @Autowired
-    private IStopGroupService stopGroupServiceImpl;
 
     @Autowired
     private IFlowAndStopsTemplateVoService flowAndStopsTemplateVoServiceImpl;
