@@ -45,12 +45,6 @@ public class LoginCtrl {
         return modelAndView;
     }
 
-    @RequestMapping("/errorPage")
-    public ModelAndView error(ModelAndView modelAndView) {
-        modelAndView.setViewName("errorPage");
-        return modelAndView;
-    }
-
     @RequestMapping("/login")
     public ModelAndView login(ModelAndView modelAndView) {
         UserVo user = SessionUserUtil.getCurrentUser();

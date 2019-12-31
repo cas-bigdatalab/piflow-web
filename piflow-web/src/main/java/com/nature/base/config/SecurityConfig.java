@@ -55,7 +55,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         //Solving the problem of static resources being intercepted
-        web.ignoring().antMatchers("/components/**", "/js/**", "/css/**", "/custom/css/**", "/img/**", "/img/*", "/druid/**");
+        web.ignoring().antMatchers("/components/**", "/js/**", "/css/**", "/custom/**", "/img/**", "/img/*");
     }
 
     @Override
@@ -67,8 +67,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/bootPage/**").permitAll()
-                .antMatchers("/").permitAll()
+                //.antMatchers("/").permitAll()
+                .antMatchers("/error").permitAll()
                 .antMatchers("/register").permitAll()
                 .antMatchers("/checkUserName").permitAll()
                 .anyRequest()//all others request authentication

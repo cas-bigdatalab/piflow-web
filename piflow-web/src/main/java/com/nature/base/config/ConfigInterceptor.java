@@ -25,6 +25,12 @@ public class ConfigInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String contextPath = (null == SysParamsCache.SYS_CONTEXT_PATH ? "" : SysParamsCache.SYS_CONTEXT_PATH);
         String requestURI = request.getRequestURI();
+        if (requestURI.startsWith(contextPath + "/error")) {
+            return true;
+        }
+        if (requestURI.startsWith(contextPath + "/login")) {
+            return true;
+        }
         // Determine if the boot flag is true
         if (!SysParamsCache.IS_BOOT_COMPLETE) {
             // Query is boot record
@@ -37,7 +43,7 @@ public class ConfigInterceptor implements HandlerInterceptor {
                 }
             } else {
                 if (!requestURI.startsWith(contextPath + "/bootPage")) {
-                    response.sendRedirect(contextPath + "/bootPage/initPage"); // Redirect to the boot page
+                    response.sendRedirect(contextPath + "/bootPage/index"); // Redirect to the boot page
                     return false;
                 }
                 log.info("No initialization, enter the boot page");

@@ -2,12 +2,12 @@ package com.nature.base.config;
 
 import com.nature.base.util.LoggerUtil;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import javax.annotation.Resource;
 import java.util.Arrays;
 
 /**
@@ -26,7 +26,7 @@ public class WebAppConfig implements WebMvcConfigurer {
     /**
      * Inject the first defined interceptor
      */
-    @Autowired
+    @Resource
     private ConfigInterceptor configInterceptor;
 
 
@@ -44,6 +44,6 @@ public class WebAppConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(configInterceptor).excludePathPatterns(Arrays.asList("/components/**", "/js/**", "/css/**", "/custom/css/**", "/img/**", "/img/*", "/druid/**"));
+        registry.addInterceptor(configInterceptor).excludePathPatterns(Arrays.asList("/components/**", "/js/**", "/css/**", "/custom/**", "/img/**", "/img/*"));
     }
 }

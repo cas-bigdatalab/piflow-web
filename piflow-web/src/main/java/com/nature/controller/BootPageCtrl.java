@@ -13,6 +13,11 @@ public class BootPageCtrl {
     @Autowired
     private ISysInitRecordsService sysInitRecordsServiceImpl;
 
+    @RequestMapping("/index")
+    public String index() {
+        return "bootPage";
+    }
+
     @RequestMapping("/initComponents")
     @ResponseBody
     public String initComponents() {
