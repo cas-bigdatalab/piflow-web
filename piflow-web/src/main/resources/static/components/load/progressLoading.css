@@ -1,0 +1,566 @@
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline
+}
+
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
+    display: block
+}
+
+body {
+    line-height: 1
+}
+
+ol, ul {
+    list-style: none
+}
+
+blockquote, q {
+    quotes: none
+}
+
+blockquote:before, blockquote:after, q:before, q:after {
+    content: '';
+    content: none
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0
+}
+
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:300);
+*, *:before, *:after {
+    box-sizing: border-box;
+}
+
+body {
+    font-size: 100%;
+    font-family: "Open sans", Arial, sans-serif;
+    color: white;
+    background: #0C0C0C;
+}
+
+.container {
+    margin: 3rem auto;
+    max-width: 600px;
+}
+
+@media (max-width: 610px) {
+    .container {
+        padding: 0 5%;
+    }
+}
+
+.bar {
+    height: 40px;
+    width: 0;
+    transition: width 1.2s ease-in-out;
+    position: relative;
+    /*margin: 0.5rem 0;*/
+    border-radius: 4px;
+}
+
+@media (max-width: 350px) {
+    .bar {
+        margin: 2.5rem 0 0.5rem;
+    }
+}
+
+.bar.mint {
+    background-color: #14c3a2;
+    background-image: repeating-linear-gradient(-45deg, #14c3a2, #14c3a2 30px, #22e8c3 30px, #22e8c3 60px);
+    background-size: 600px 100%;
+    animation: barberpole 12s linear infinite;
+    /*border-bottom: 0.2rem solid #0d7e68;*/
+}
+
+.bar.red {
+    background-color: #cf4647;
+    background-image: repeating-linear-gradient(-45deg, #cf4647, #cf4647 30px, #da6e6f 30px, #da6e6f 60px);
+    background-size: 600px 100%;
+    animation: barberpole 12s linear infinite;
+    border-bottom: 0.2rem solid #9f292a;
+}
+
+.bar.orange {
+    background-color: #eb7b59;
+    background-image: repeating-linear-gradient(-45deg, #eb7b59, #eb7b59 30px, #f09f87 30px, #f09f87 60px);
+    background-size: 600px 100%;
+    animation: barberpole 12s linear infinite;
+    border-bottom: 0.2rem solid #dd481b;
+}
+
+.bar.lila {
+    background-color: #524656;
+    background-image: repeating-linear-gradient(-45deg, #524656, #524656 30px, #6d5d72 30px, #6d5d72 60px);
+    background-size: 600px 100%;
+    animation: barberpole 12s linear infinite;
+    border-bottom: 0.2rem solid #2a242c;
+}
+
+.bar.gray {
+    background-color: #595b5a;
+    background-image: repeating-linear-gradient(-45deg, #595b5a, #595b5a 30px, #727574 30px, #727574 60px);
+    background-size: 600px 100%;
+    animation: barberpole 12s linear infinite;
+    border-bottom: 0.2rem solid #333434;
+}
+
+.bar.active:after, .bar.active:before {
+    opacity: 1;
+}
+
+.bar:before {
+    content: attr(data-skill);
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 10px;
+    height: 40px;
+    font-style: italic;
+    opacity: 0;
+    transition: opacity 2s 0.6s;
+}
+
+@media (max-width: 350px) {
+    .bar:before {
+        top: -100%;
+        color: black;
+        padding: 10px 0 0;
+    }
+}
+
+.bar:after {
+    content: attr(data-percent) "%";
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 40px;
+    padding: 10px;
+    opacity: 0;
+    transition: opacity 2s 0.6s;
+}
+
+@media (max-width: 350px) {
+    .bar:after {
+        left: 0;
+    }
+}
+
+@keyframes barberpole {
+    from {
+        background-position: 0% 0%;
+    }
+
+    to {
+        background-position: 600px 0%;
+    }
+}
+
+.bar.active[data-percent="1"] {
+    width: 1%;
+}
+
+.bar.active[data-percent="2"] {
+    width: 2%;
+}
+
+.bar.active[data-percent="3"] {
+    width: 3%;
+}
+
+.bar.active[data-percent="4"] {
+    width: 4%;
+}
+
+.bar.active[data-percent="5"] {
+    width: 5%;
+}
+
+.bar.active[data-percent="6"] {
+    width: 6%;
+}
+
+.bar.active[data-percent="7"] {
+    width: 7%;
+}
+
+.bar.active[data-percent="8"] {
+    width: 8%;
+}
+
+.bar.active[data-percent="9"] {
+    width: 9%;
+}
+
+.bar.active[data-percent="10"] {
+    width: 10%;
+}
+
+.bar.active[data-percent="11"] {
+    width: 11%;
+}
+
+.bar.active[data-percent="12"] {
+    width: 12%;
+}
+
+.bar.active[data-percent="13"] {
+    width: 13%;
+}
+
+.bar.active[data-percent="14"] {
+    width: 14%;
+}
+
+.bar.active[data-percent="15"] {
+    width: 15%;
+}
+
+.bar.active[data-percent="16"] {
+    width: 16%;
+}
+
+.bar.active[data-percent="17"] {
+    width: 17%;
+}
+
+.bar.active[data-percent="18"] {
+    width: 18%;
+}
+
+.bar.active[data-percent="19"] {
+    width: 19%;
+}
+
+.bar.active[data-percent="20"] {
+    width: 20%;
+}
+
+.bar.active[data-percent="21"] {
+    width: 21%;
+}
+
+.bar.active[data-percent="22"] {
+    width: 22%;
+}
+
+.bar.active[data-percent="23"] {
+    width: 23%;
+}
+
+.bar.active[data-percent="24"] {
+    width: 24%;
+}
+
+.bar.active[data-percent="25"] {
+    width: 25%;
+}
+
+.bar.active[data-percent="26"] {
+    width: 26%;
+}
+
+.bar.active[data-percent="27"] {
+    width: 27%;
+}
+
+.bar.active[data-percent="28"] {
+    width: 28%;
+}
+
+.bar.active[data-percent="29"] {
+    width: 29%;
+}
+
+.bar.active[data-percent="30"] {
+    width: 30%;
+}
+
+.bar.active[data-percent="31"] {
+    width: 31%;
+}
+
+.bar.active[data-percent="32"] {
+    width: 32%;
+}
+
+.bar.active[data-percent="33"] {
+    width: 33%;
+}
+
+.bar.active[data-percent="34"] {
+    width: 34%;
+}
+
+.bar.active[data-percent="35"] {
+    width: 35%;
+}
+
+.bar.active[data-percent="36"] {
+    width: 36%;
+}
+
+.bar.active[data-percent="37"] {
+    width: 37%;
+}
+
+.bar.active[data-percent="38"] {
+    width: 38%;
+}
+
+.bar.active[data-percent="39"] {
+    width: 39%;
+}
+
+.bar.active[data-percent="40"] {
+    width: 40%;
+}
+
+.bar.active[data-percent="41"] {
+    width: 41%;
+}
+
+.bar.active[data-percent="42"] {
+    width: 42%;
+}
+
+.bar.active[data-percent="43"] {
+    width: 43%;
+}
+
+.bar.active[data-percent="44"] {
+    width: 44%;
+}
+
+.bar.active[data-percent="45"] {
+    width: 45%;
+}
+
+.bar.active[data-percent="46"] {
+    width: 46%;
+}
+
+.bar.active[data-percent="47"] {
+    width: 47%;
+}
+
+.bar.active[data-percent="48"] {
+    width: 48%;
+}
+
+.bar.active[data-percent="49"] {
+    width: 49%;
+}
+
+.bar.active[data-percent="50"] {
+    width: 50%;
+}
+
+.bar.active[data-percent="51"] {
+    width: 51%;
+}
+
+.bar.active[data-percent="52"] {
+    width: 52%;
+}
+
+.bar.active[data-percent="53"] {
+    width: 53%;
+}
+
+.bar.active[data-percent="54"] {
+    width: 54%;
+}
+
+.bar.active[data-percent="55"] {
+    width: 55%;
+}
+
+.bar.active[data-percent="56"] {
+    width: 56%;
+}
+
+.bar.active[data-percent="57"] {
+    width: 57%;
+}
+
+.bar.active[data-percent="58"] {
+    width: 58%;
+}
+
+.bar.active[data-percent="59"] {
+    width: 59%;
+}
+
+.bar.active[data-percent="60"] {
+    width: 60%;
+}
+
+.bar.active[data-percent="61"] {
+    width: 61%;
+}
+
+.bar.active[data-percent="62"] {
+    width: 62%;
+}
+
+.bar.active[data-percent="63"] {
+    width: 63%;
+}
+
+.bar.active[data-percent="64"] {
+    width: 64%;
+}
+
+.bar.active[data-percent="65"] {
+    width: 65%;
+}
+
+.bar.active[data-percent="66"] {
+    width: 66%;
+}
+
+.bar.active[data-percent="67"] {
+    width: 67%;
+}
+
+.bar.active[data-percent="68"] {
+    width: 68%;
+}
+
+.bar.active[data-percent="69"] {
+    width: 69%;
+}
+
+.bar.active[data-percent="70"] {
+    width: 70%;
+}
+
+.bar.active[data-percent="71"] {
+    width: 71%;
+}
+
+.bar.active[data-percent="72"] {
+    width: 72%;
+}
+
+.bar.active[data-percent="73"] {
+    width: 73%;
+}
+
+.bar.active[data-percent="74"] {
+    width: 74%;
+}
+
+.bar.active[data-percent="75"] {
+    width: 75%;
+}
+
+.bar.active[data-percent="76"] {
+    width: 76%;
+}
+
+.bar.active[data-percent="77"] {
+    width: 77%;
+}
+
+.bar.active[data-percent="78"] {
+    width: 78%;
+}
+
+.bar.active[data-percent="79"] {
+    width: 79%;
+}
+
+.bar.active[data-percent="80"] {
+    width: 80%;
+}
+
+.bar.active[data-percent="81"] {
+    width: 81%;
+}
+
+.bar.active[data-percent="82"] {
+    width: 82%;
+}
+
+.bar.active[data-percent="83"] {
+    width: 83%;
+}
+
+.bar.active[data-percent="84"] {
+    width: 84%;
+}
+
+.bar.active[data-percent="85"] {
+    width: 85%;
+}
+
+.bar.active[data-percent="86"] {
+    width: 86%;
+}
+
+.bar.active[data-percent="87"] {
+    width: 87%;
+}
+
+.bar.active[data-percent="88"] {
+    width: 88%;
+}
+
+.bar.active[data-percent="89"] {
+    width: 89%;
+}
+
+.bar.active[data-percent="90"] {
+    width: 90%;
+}
+
+.bar.active[data-percent="91"] {
+    width: 91%;
+}
+
+.bar.active[data-percent="92"] {
+    width: 92%;
+}
+
+.bar.active[data-percent="93"] {
+    width: 93%;
+}
+
+.bar.active[data-percent="94"] {
+    width: 94%;
+}
+
+.bar.active[data-percent="95"] {
+    width: 95%;
+}
+
+.bar.active[data-percent="96"] {
+    width: 96%;
+}
+
+.bar.active[data-percent="97"] {
+    width: 97%;
+}
+
+.bar.active[data-percent="98"] {
+    width: 98%;
+}
+
+.bar.active[data-percent="99"] {
+    width: 99%;
+}
+
+.bar.active[data-percent="100"] {
+    width: 100%;
+}
+

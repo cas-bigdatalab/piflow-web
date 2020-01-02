@@ -2,205 +2,94 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
+
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <link rel="shortcut icon" th:href="@{/favicon.ico}">
+    <link rel="stylesheet" type="text/css" th:href="@{/components/load/progressLoading.css}"/>
     <title>PiFlow-Web</title>
+
     <!-- jQuery -->
     <script th:src="@{/js/jquery/jquery.min.js}"></script>
-    <script th:src="@{/components/load/follow.js}"></script>
-    <!-- The fav icon -->
-    <link rel="shortcut icon" th:href="@{/img/logo.ico}">
-    <style>
-        body, html {
-            margin: 0px;
-            padding: 0px;
-            overflow: hidden;
-        }
-    </style>
+    <script th:src="@{/components/load/prefixfree.min.js}"></script>
+    <script th:src="@{/components/layui/layui.all.js}"></script>
 </head>
 <body>
-<!--<div style="text-align:center; position: fixed;">
-    <span>Component loading, please wait...</span>
-</div>-->
-<canvas id="canvas"></canvas>
+<div id="container_div" class='container'>
+    <div style="text-align: center; font-size: large">
+        <span>Component loading, please wait...</span>
+    </div>
+    <br>
+    <div style="border:1px solid #0ef5ca;border-radius: 4px;">
+        <div id="bar_div" class='bar mint' data-percent='10' data-skill=''></div>
+    </div>
+</div>
+<script th:src="@{/components/load/progressLoading.js}"></script>
 <script th:inline="javascript">
+    var timer;
+    var canvasW = $(document).width(),
+        canvasH = $(document).height();
+    $("#container_div").css("margin-top", (canvasH - (canvasH / 3)) + "px");
     $(function () {
-
-        //Indention is a bit f*d up
-
-        //Set animation frame
-        window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
-
-
-        var canvas = $('#canvas')[0],
-            ctx = canvas.getContext('2d'),
-            canvasW = $(document).width(),
-            canvasH = $(document).height();
-
-        ctx.fillStyle = 'black';
-
-        canvas.width = canvasW;
-        canvas.height = canvasH;
-
-        var mouse = {
-            x: canvasW / 2,
-            y: canvasH / 2,
-            dx: 0,
-            dy: 0
-        };
-
-        var emitter = {
-            h: 50,
-            x: canvasW / 2 - 250,
-            y: canvasH / 2,
-            vx: 5,
-            vy: 5,
-            v: 0.05,
-            dx: 0,
-            dy: 0
-        };
-
-        var stops = [50, 150, 160, 300, 500],
-            stopIndex = 0,
-            delay = 0,
-            prog = 0;
-
-        var circle = {
-            radius: 125,
-            angle: 0
-        };
-
-        var particles = new Array();
-
-        var rate = 2,
-            time = 0,
-            frameIndex = rate;
-
-        var simplex = new SimplexNoise(),
-            simplexVal = 0,
-            simplexStart = 20;
-
-        //Start loop
-        draw();
-
-        //Draw
-        function draw() {
-
-            ctx.globalCompositeOperation = 'source-over';
-            ctx.fillStyle = 'rgba(0,0,0,0.5)';
-            ctx.fillRect(0, 0, canvasW, canvasH);
-            ctx.globalCompositeOperation = 'lighter';
-
-            //Draw loading
-            ctx.fillStyle = '#000';
-            ctx.fillRect(canvasW / 2 - 250, emitter.y - emitter.h / 2, 500, emitter.h);
-            ctx.strokeStyle = 'rgba(0,255,0,0.5)';
-            ctx.strokeRect(canvasW / 2 - 250, emitter.y - emitter.h / 2, 500, emitter.h);
-            ctx.font = '20pt Arial';
-            ctx.fillStyle = 'rgba(0,255,0,0.5)';
-            ctx.fillText(Math.floor(prog / 5) + '%', canvasW / 2 - 20, canvasH / 2 + 10);
-
-            //Move emitter
-            //console.log(stops[stopIndex]+' '+prog+' '+delay);
-            if (stops[stopIndex] == prog) {
-                stopIndex++;
-                delay = 50;
-            } else {
-                if (delay == 0 && prog < stops[stopIndex]) {
-                    emitter.dx = -1;
-                    emitter.x += 2;
-                    prog += 2;
+        $.ajax({
+            cache: true,
+            type: "GET",
+            url: "/piflow-web/bootPage/initComponents",
+            // data: {"stopPageId": stopPageId, "fid": loadId},
+            async: true,
+            error: function (request) {
+                //alert("Jquery Ajax request error!!!");
+                layer.msg("Initialization failed, refresh the page and reinitialize after 1 second", {icon: 2, shade: 0, time: 1000}, function () {
+                    window.location.reload();
+                });
+                return;
+            },
+            success: function (data) {
+                var dataMap = JSON.parse(data);
+                if (200 === dataMap.code) {
+                    timer = window.setInterval("loading()", 500);
                 } else {
-                    emitter.dx = 0;
-                    delay--;
+                    layer.msg("Initialization failed, refresh the page and reinitialize after 1 second", {icon: 2, shade: 0, time: 1000}, function () {
+                        window.location.reload();
+                    });
                 }
             }
-
-            //Draw emitter
-            ctx.fillStyle = '#0f0';
-            ctx.fillRect(emitter.x, emitter.y - emitter.h / 2, 1, emitter.h);
-
-            //Draw particles
-            var i = 0;
-            for (i in particles) {
-                var p = particles[i];
-
-                //Check if die
-                if (time > p.die) {
-                    p.o -= 0.01;
-                    if (p.o < 0) {
-                        particles.splice(i, 1);
-                    }
-                }
-
-                //Add v
-                p.x += p.vx;
-                p.y += p.vy;
-
-                //Add source move
-                p.x += p.sourcedx / 10;
-                p.y += p.sourcedy / 10;
-
-                //Simplex noise
-                if (p.simplexIndex > simplexStart) {
-                    p.simplexVal = simplex.noise3D(p.x / 100, p.y / 100, time / 100);
-                }
-
-                p.simplexIndex++;
-                p.x += p.simplexVal;
-                p.y += p.simplexVal;
-
-                //If (almost) outside canvas
-                if (p.x < 0 + 20 || p.x > canvasW - 20) {
-                    p.vx *= -1.015;
-                }
-                if (p.y < 0 + 20 || p.y > canvasH - 20) {
-                    p.vy *= -1.015;
-                }
-
-                ctx.beginPath();
-                ctx.fillStyle = 'rgba(0, ' + p.green + ', 0, ' + p.o + ')';
-                ctx.arc(p.x, p.y, p.r, 0, 2 * Math.PI, true);
-                ctx.fill();
-                ctx.save();
-            }
-
-            //if emitter is moving
-            if (emitter.dx !== 0) {
-                for (var i = 0; i < rate; i++) {
-                    //Create particle
-                    var particle = {
-                        x: emitter.x,
-                        y: emitter.y + (Math.random() * emitter.h - emitter.h / 2),
-                        r: Math.random() + 0.5,
-                        vx: (Math.random() * -2),
-                        vy: (Math.random() - 0.5),
-                        o: 1,
-                        birth: time,
-                        die: time + (Math.random() * 50 + 50),//1+1),
-                        sourcedx: emitter.dx,
-                        sourcedy: emitter.dy,
-                        red: Math.round(Math.random() * 255),
-                        green: Math.round(Math.random() * 255),
-                        blue: Math.round(Math.random() * 255),
-                        simplexVal: 0,
-                        simplexIndex: 0
-                    };
-
-                    particles.push(particle);
-                }
-            }
-
-            time++;
-            window.requestAnimationFrame(draw);
-
-        }
-        $(window).mousemove(function (e) {
-            mouse.dx = e.pageX - mouse.x;
-            mouse.dy = e.pageY - mouse.y;
-
-            mouse.x = e.pageX;
-            mouse.y = e.pageY;
         });
     });
+
+    function loading() {
+        var progressNum = $("#bar_div").attr("data-percent");
+        if ("100" == progressNum) {
+            console.log("------------------------------------------------------");
+            window.clearInterval(timer);
+            return;
+        }
+        /*var randomNun = Math.floor(Math.random() * 101);
+        if (randomNun > progressNum) {
+            $("#bar_div").attr("data-percent", randomNun);
+        }
+        console.log(randomNun);*/
+        $.ajax({
+            cache: true,
+            type: "GET",
+            url: "/piflow-web/bootPage/threadMonitoring",
+            async: true,
+            error: function (request) {
+                //alert("Jquery Ajax request error!!!");
+                return;
+            },
+            success: function (data) {
+                var dataMap = JSON.parse(data);
+                if (200 === dataMap.code) {
+                    if (dataMap.progress > progressNum) {
+                        $("#bar_div").attr("data-percent", dataMap.progress);
+                    }
+                }
+            }
+        });
+    }
+
+    //@ sourceURL=bootPage.js
 </script>
 </body>
 </html>

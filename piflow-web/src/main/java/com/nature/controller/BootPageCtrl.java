@@ -23,6 +23,11 @@ public class BootPageCtrl {
     public String initComponents() {
         return sysInitRecordsServiceImpl.initComponents();
     }
+    @RequestMapping("/threadMonitoring")
+    @ResponseBody
+    public String threadMonitoring() {
+        return sysInitRecordsServiceImpl.threadMonitoring();
+    }
 
 
 

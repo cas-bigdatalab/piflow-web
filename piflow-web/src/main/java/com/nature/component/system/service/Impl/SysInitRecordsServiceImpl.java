@@ -92,7 +92,7 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
                 new LinkedBlockingQueue<Runnable>(100000));
         UserVo currentUser = SessionUserUtil.getCurrentUser();
         es.execute(() -> {
-            loadSample();
+            //loadSample();
         });
         es.execute(() -> {
             loadStopGroup(currentUser.getUsername());
@@ -114,8 +114,21 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
             rtnMap.put("code", 200);
         }
         es.execute(() -> {
-            addSysInitRecordsAndSave();
+            //addSysInitRecordsAndSave();
         });
+        SysParamsCache.THREAD_POOL_EXECUTOR = ((ThreadPoolExecutor) es);
+        return JsonUtils.toJsonNoException(rtnMap);
+    }
+
+    @Override
+    public String threadMonitoring() {
+        Map<String, Object> rtnMap = new HashMap<>();
+        rtnMap.put("code", 500);
+        //Total number of threads
+        long taskCount = SysParamsCache.THREAD_POOL_EXECUTOR.getTaskCount();
+        //Number of execution completion threads
+        long completedTaskCount = SysParamsCache.THREAD_POOL_EXECUTOR.getCompletedTaskCount();
+        rtnMap.put("progress", (completedTaskCount / taskCount) * 100);
         rtnMap.put("code", 200);
         return JsonUtils.toJsonNoException(rtnMap);
     }
@@ -251,5 +264,5 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
         return true;
     }
 
-    
+
 }

@@ -4,4 +4,6 @@ public interface ISysInitRecordsService {
 
     public String initComponents();
 
+    public String threadMonitoring();
+
 }
