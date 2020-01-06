@@ -22,8 +22,8 @@ public class SysScheduleDomain {
 
     private Specification<SysSchedule> addEnableFlagParam() {
         Specification<SysSchedule> specification = new Specification<SysSchedule>() {
-        	private static final long serialVersionUID = 1L;
-        	
+            private static final long serialVersionUID = 1L;
+
             @Override
             public Predicate toPredicate(Root<SysSchedule> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
                 //root.get("enableFlag") means to get the field name of enableFlag

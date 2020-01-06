@@ -79,7 +79,7 @@ public class SqlUtils {
         if (null != strArray && strArray.length > 0) {
             for (int i = 0; i < strArray.length; i++) {
                 if (StringUtils.isNotBlank(strArray[i])) {
-                    str += strArray[i];
+                    str += addSqlStrAndReplace(strArray[i]);
                     if (i < strArray.length - 1) {
                         str += ",";
                     }

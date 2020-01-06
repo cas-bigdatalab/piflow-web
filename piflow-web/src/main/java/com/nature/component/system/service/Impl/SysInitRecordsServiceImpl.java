@@ -29,6 +29,7 @@ import com.nature.domain.system.SysMenuDomain;
 import com.nature.mapper.flow.PropertyTemplateMapper;
 import com.nature.mapper.flow.StopGroupMapper;
 import com.nature.mapper.flow.StopsTemplateMapper;
+import com.nature.mapper.system.SysMenuMapper;
 import com.nature.third.service.IStop;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.threads.ThreadPoolExecutor;
@@ -50,30 +51,6 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
     private SysInitRecordsDomain sysInitRecordsDomain;
 
     @Resource
-    private FlowDomain flowDomain;
-
-    @Resource
-    private MxGraphModelDomain mxGraphModelDomain;
-
-    @Resource
-    private MxCellDomain mxCellDomain;
-
-    @Resource
-    private MxGeometryDomain mxGeometryDomain;
-
-    @Resource
-    private PathsDomain pathsDomain;
-
-    @Resource
-    private StopsDomain stopsDomain;
-
-    @Resource
-    private PropertyDomain propertyDomain;
-
-    @Resource
-    private SysMenuDomain sysMenuDomain;
-
-    @Resource
     private IStop stopImpl;
 
     @Resource
@@ -92,31 +69,27 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
                 new LinkedBlockingQueue<Runnable>(100000));
         UserVo currentUser = SessionUserUtil.getCurrentUser();
         es.execute(() -> {
-            //loadSample();
         });
-        es.execute(() -> {
-            loadStopGroup(currentUser.getUsername());
-        });
-        String[] stopNameList = stopImpl.getAllStops();
-        // The call is successful, empty the "Stop" message and insert
-        stopGroupMapper.deleteStopsPropertyInfo();
-        int deleteStopsInfo = stopGroupMapper.deleteStopsInfo();
-        logger.info("Successful deletion StopsInfo" + deleteStopsInfo + "piece of data!!!");
-        if (null != stopNameList && stopNameList.length > 0) {
-            for (String stopListInfos : stopNameList) {
-                es.execute(() -> {
-                    Boolean aBoolean1 = loadStop(stopListInfos);
-                    if (!aBoolean1) {
-                        logger.warn("stop load failed, bundel : " + stopListInfos);
-                    }
-                });
+        Boolean aBoolean = loadStopGroup(currentUser.getUsername());
+        if (aBoolean) {
+            String[] stopNameList = stopImpl.getAllStops();
+            // The call is successful, empty the "Stop" message and insert
+            stopGroupMapper.deleteStopsPropertyInfo();
+            int deleteStopsInfo = stopGroupMapper.deleteStopsInfo();
+            logger.info("Successful deletion StopsInfo" + deleteStopsInfo + "piece of data!!!");
+            if (null != stopNameList && stopNameList.length > 0) {
+                for (String stopListInfos : stopNameList) {
+                    es.execute(() -> {
+                        Boolean aBoolean1 = loadStop(stopListInfos);
+                        if (!aBoolean1) {
+                            logger.warn("stop load failed, bundel : " + stopListInfos);
+                        }
+                    });
+                }
             }
-            rtnMap.put("code", 200);
         }
-        es.execute(() -> {
-            //addSysInitRecordsAndSave();
-        });
         SysParamsCache.THREAD_POOL_EXECUTOR = ((ThreadPoolExecutor) es);
+        rtnMap.put("code", 200);
         return JsonUtils.toJsonNoException(rtnMap);
     }
 
@@ -124,84 +97,25 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
     public String threadMonitoring() {
         Map<String, Object> rtnMap = new HashMap<>();
         rtnMap.put("code", 500);
+        if (null == SysParamsCache.THREAD_POOL_EXECUTOR) {
+            return JsonUtils.toJsonNoException(rtnMap);
+        }
         //Total number of threads
-        long taskCount = SysParamsCache.THREAD_POOL_EXECUTOR.getTaskCount();
+        double taskCount = SysParamsCache.THREAD_POOL_EXECUTOR.getTaskCount();
         //Number of execution completion threads
-        long completedTaskCount = SysParamsCache.THREAD_POOL_EXECUTOR.getCompletedTaskCount();
-        rtnMap.put("progress", (completedTaskCount / taskCount) * 100);
+        double completedTaskCount = SysParamsCache.THREAD_POOL_EXECUTOR.getCompletedTaskCount();
+        double progressNum = ((completedTaskCount / taskCount) * 40);
+        if (39 < progressNum && progressNum < 40) {
+            progressNum = 39;
+        }
+        long progressNumLong = (long) Math.ceil(progressNum) + 60;
+
+        if (100 == progressNumLong) {
+            addSysInitRecordsAndSave();
+        }
+        rtnMap.put("progress", progressNumLong);
         rtnMap.put("code", 200);
         return JsonUtils.toJsonNoException(rtnMap);
-    }
-
-    private Boolean loadSample() {
-        String storagePathHead = System.getProperty("user.dir") + "/src/main/resources/static/sample/";
-        String[] exampleNames = new String[]{"Example1.xml", "Example2.xml"};
-        for (int i = 0; i < exampleNames.length; i++) {
-            String exampleName = exampleNames[i];
-            //The XML file is read and returned according to the saved file path
-            String xmlFileToStr = FileUtils.XmlFileToStr(storagePathHead + exampleName);
-            if (StringUtils.isBlank(xmlFileToStr)) {
-                //logger.warn("XML file read failed, loading template failed");
-                continue;
-            }
-            Flow flowXml = FlowXmlUtils.xmlToFlow(xmlFileToStr, 2, "system");
-            if (null != flowXml) {
-                List<Stops> stopsListXml = flowXml.getStopsList();
-                List<Paths> pathsListXml = flowXml.getPathsList();
-                MxGraphModel flowMxGraphModelXml = flowXml.getMxGraphModel();
-                flowXml.setName(exampleName);
-                flowXml.setMxGraphModel(null);
-                flowXml.setIsExample(true);
-                flowXml = flowDomain.saveOrUpdate(flowXml);
-                if (null != flowMxGraphModelXml) {
-                    List<MxCell> root = flowMxGraphModelXml.getRoot();
-                    flowMxGraphModelXml.setRoot(null);
-                    flowMxGraphModelXml.setFlow(flowXml);
-                    flowMxGraphModelXml = mxGraphModelDomain.saveOrUpdate(flowMxGraphModelXml);
-                    for (MxCell mxCell : root) {
-                        MxGeometry flowMxGeometryXml = mxCell.getMxGeometry();
-                        mxCell.setMxGeometry(null);
-                        mxCell.setMxGraphModel(flowMxGraphModelXml);
-                        mxCell = mxCellDomain.saveOrUpdate(mxCell);
-                        if (null != flowMxGeometryXml) {
-                            flowMxGeometryXml.setMxCell(mxCell);
-                            mxGeometryDomain.saveOrUpdate(flowMxGeometryXml);
-                        }
-                    }
-                }
-                if (null != pathsListXml && pathsListXml.size() > 0) {
-                    for (Paths paths : pathsListXml) {
-                        paths.setFlow(flowXml);
-                    }
-                    pathsDomain.saveOrUpdate(pathsListXml);
-                }
-                if (null != stopsListXml && stopsListXml.size() > 0) {
-                    for (Stops stops : stopsListXml) {
-                        List<Property> propertyListXml = stops.getProperties();
-                        stops.setProperties(null);
-                        stops.setFlow(flowXml);
-                        stops = stopsDomain.saveOrUpdate(stops);
-                        for (Property property : propertyListXml) {
-                            property.setStops(stops);
-                        }
-                        propertyDomain.saveOrUpdate(propertyListXml);
-                    }
-                }
-            }
-            SysMenu sysMenu = new SysMenu();
-            sysMenu.setCrtDttm(new Date());
-            sysMenu.setCrtUser("system");
-            sysMenu.setLastUpdateDttm(new Date());
-            sysMenu.setLastUpdateUser("system");
-            sysMenu.setMenuJurisdiction(SysRoleType.USER);
-            sysMenu.setMenuParent("Example");
-            sysMenu.setMenuName(flowXml.getName());
-            sysMenu.setMenuDescription(flowXml.getName());
-            sysMenu.setMenuUrl("/piflow-web/grapheditor/home?load=" + flowXml.getId());
-            sysMenu.setMenuSort(50002 + i);
-            sysMenuDomain.saveOrUpdate(sysMenu);
-        }
-        return true;
     }
 
     private Boolean loadStopGroup(String currentUser) {
@@ -259,7 +173,7 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
         sysInitRecords.setId(SqlUtils.getUUID32());
         sysInitRecords.setInitDate(new Date());
         sysInitRecords.setIsSucceed(true);
-        //sysInitRecordsDomain.saveOrUpdate(sysInitRecords);
+        sysInitRecordsDomain.saveOrUpdate(sysInitRecords);
         SysParamsCache.setIsBootComplete(true);
         return true;
     }

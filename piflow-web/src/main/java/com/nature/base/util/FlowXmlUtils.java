@@ -1514,6 +1514,7 @@ public class FlowXmlUtils {
             String executorMemory = flowElement.attributeValue("executorMemory");
             String executorNumber = flowElement.attributeValue("executorNumber");
             String name = flowElement.attributeValue("name");
+            String description = flowElement.attributeValue("description");
             flow.setCrtDttm(new Date());
             flow.setCrtUser(username);
             flow.setLastUpdateDttm(new Date());
@@ -1525,6 +1526,7 @@ public class FlowXmlUtils {
             flow.setExecutorMemory(executorMemory);
             flow.setExecutorNumber(executorNumber);
             flow.setName(name + maxPageId);
+            flow.setDescription(description);
             // mxGraphModel
             Element mxGraphModelElement = flowElement.element("mxGraphModel");
             MxGraphModel mxGraphModel = xmlToMxGraphModel(mxGraphModelElement.asXML(), maxPageId, username);

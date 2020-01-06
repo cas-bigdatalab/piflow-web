@@ -22,38 +22,45 @@ public class SysUserServiceImpl implements ISysUserService {
     @Autowired
     private SysUserTransaction sysUserTransaction;
 
-    public SysUser findByUsername(String username) {
+    @Override
+	public SysUser findByUsername(String username) {
         return sysUserTransaction.findUserByUserName(username);
     }
 
-    public List<SysUser> findByName(String name) {
+    @Override
+	public List<SysUser> findByName(String name) {
         if (StringUtils.isBlank(name)) {
             name = "";
         }
         return sysUserTransaction.findUserByName(name);
     }
 
-    public List<SysUser> getUserList() {
+    @Override
+	public List<SysUser> getUserList() {
         List<SysUser> listUser = sysUserTransaction.getUserList();
         return listUser;
     }
 
-    public SysUser addUser(SysUser user) {
+    @Override
+	public SysUser addUser(SysUser user) {
         sysUserTransaction.addUser(user);
         return user;
     }
 
-    public int saveOrUpdate(SysUser user) {
+    @Override
+	public int saveOrUpdate(SysUser user) {
         int update = sysUserTransaction.saveOrUpdate(user);
         return update;
     }
 
-    public int deleteUser(String id) {
+    @Override
+	public int deleteUser(String id) {
         int delete = sysUserTransaction.deleteUser(id);
         return delete;
     }
 
-    public int registerUser(SysUserVo sysUserVo) {
+    @Override
+	public int registerUser(SysUserVo sysUserVo) {
         if (null != sysUserVo) {
             String username = sysUserVo.getUsername();
             String password = sysUserVo.getPassword();

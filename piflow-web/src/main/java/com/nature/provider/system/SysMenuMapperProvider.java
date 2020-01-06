@@ -5,6 +5,8 @@ import com.nature.common.Eunm.SysRoleType;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
 
+import java.util.Map;
+
 public class SysMenuMapperProvider {
 
 
@@ -27,6 +29,38 @@ public class SysMenuMapperProvider {
             sql.ORDER_BY("menu_sort asc", "last_update_dttm desc");
             sqlStr = sql.toString();
         }
+        return sqlStr;
+    }
+
+    /**
+     * getSampleMenuList
+     *
+     * @return
+     */
+    public String getSampleMenuList() {
+        String sqlStr = "select 0";
+        SQL sql = new SQL();
+        sql.SELECT("*");
+        sql.FROM("sys_menu");
+        sql.WHERE("enable_flag = 1");
+        sql.WHERE("menu_parent = 'Example'");
+        sqlStr = sql.toString();
+        return sqlStr;
+    }
+
+    public static String deleteSampleMenuListByIds(Map<String, String[]> map) {
+        String sqlStr = "select 0";
+        if (null == map) {
+            return sqlStr;
+        }
+        String[] ids = map.get("ids");
+        if (null == ids || ids.length <= 0) {
+            return sqlStr;
+        }
+        SQL sql = new SQL();
+        sql.DELETE_FROM("sys_menu");
+        sql.WHERE("id in (" + SqlUtils.strArrayToStr(ids) + ")");
+        sqlStr = sql.toString();
         return sqlStr;
     }
 }

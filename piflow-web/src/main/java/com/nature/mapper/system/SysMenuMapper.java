@@ -20,5 +20,11 @@ public interface SysMenuMapper {
     @SelectProvider(type = SysMenuMapperProvider.class, method = "getSysMenuList")
     public List<SysMenu> getSysMenuList(@Param("role") String role);
 
+    @SelectProvider(type = SysMenuMapperProvider.class, method = "getSampleMenuList")
+    public List<SysMenu> getSampleMenuList();
+
+    @SelectProvider(type = SysMenuMapperProvider.class, method = "deleteSampleMenuListByIds")
+    public List<SysMenu> deleteSampleMenuListByIds(@Param("ids") String[] ids);
+
 
 }
