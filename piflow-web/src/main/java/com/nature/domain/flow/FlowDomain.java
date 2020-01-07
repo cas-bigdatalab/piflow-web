@@ -26,17 +26,6 @@ public class FlowDomain {
         return flow;
     }
 
-    public Page<Flow> getFlowListPage(int page, int size, String param) {
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "crtDttm"));
-        boolean isAdmin = SessionUserUtil.isAdmin();
-        if (isAdmin) {
-            return flowJpaRepository.getFlowListPage(null == param ? "" : param, pageRequest);
-        } else {
-            UserVo currentUser = SessionUserUtil.getCurrentUser();
-            return flowJpaRepository.getFlowListPage(currentUser.getUsername(), null == param ? "" : param, pageRequest);
-        }
-    }
-
     public Flow saveOrUpdate(Flow flow) {
         return flowJpaRepository.save(flow);
     }

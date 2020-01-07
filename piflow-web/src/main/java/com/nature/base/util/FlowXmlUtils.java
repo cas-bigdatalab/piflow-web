@@ -1189,6 +1189,7 @@ public class FlowXmlUtils {
                 }
                 mxCell.setValue(value);
                 mxCell.setVertex(vertex);
+                mxCell.setMxGraphModel(mxGraphModel);
                 if (StringUtils.isNotBlank(style)) {
                     MxGeometry mxGeometry = new MxGeometry();
                     Element mxGeometryXml = recordEle.element("mxGeometry");
@@ -1209,6 +1210,7 @@ public class FlowXmlUtils {
                     mxGeometry.setY(y);
                     mxGeometry.setWidth(width);
                     mxGeometry.setHeight(height);
+                    mxGeometry.setMxCell(mxCell);
                     mxCell.setMxGeometry(mxGeometry);
                 }
                 rootList.add(mxCell);
@@ -1355,7 +1357,7 @@ public class FlowXmlUtils {
      * @param username
      * @return
      */
-    public static List<Paths> xmlListToPathsList(List<String> xmlDataList, int maxPageId, String username) {
+    public static List<Paths> xmlListToPathsList(List<String> xmlDataList, int maxPageId, String username, Flow flow) {
         if (null == xmlDataList || xmlDataList.size() <= 0) {
             return null;
         }
@@ -1363,6 +1365,7 @@ public class FlowXmlUtils {
         for (String xmlData : xmlDataList) {
             Paths paths = xmlToPathsOne(xmlData, maxPageId, username);
             if (null != paths) {
+                paths.setFlow(flow);
                 pathsList.add(paths);
             }
         }
@@ -1450,6 +1453,7 @@ public class FlowXmlUtils {
                     property.setRequired(required);
                     property.setSensitive(sensitive);
                     property.setIsSelect(isSelect);
+                    property.setStops(stops);
                     propertyList.add(property);
                 }
                 stops.setProperties(propertyList);
@@ -1469,7 +1473,7 @@ public class FlowXmlUtils {
      * @param username
      * @return
      */
-    public static List<Stops> xmlListToStopsList(List<String> xmlDataList, int maxPageId, String username) {
+    public static List<Stops> xmlListToStopsList(List<String> xmlDataList, int maxPageId, String username, Flow flow) {
         if (null == xmlDataList || xmlDataList.size() <= 0) {
             return null;
         }
@@ -1477,6 +1481,7 @@ public class FlowXmlUtils {
         for (String xmlData : xmlDataList) {
             Stops stops = xmlToStops(xmlData, maxPageId, username);
             if (null != stops) {
+                stops.setFlow(flow);
                 stopsList.add(stops);
             }
         }
@@ -1530,6 +1535,7 @@ public class FlowXmlUtils {
             // mxGraphModel
             Element mxGraphModelElement = flowElement.element("mxGraphModel");
             MxGraphModel mxGraphModel = xmlToMxGraphModel(mxGraphModelElement.asXML(), maxPageId, username);
+            mxGraphModel.setFlow(flow);
             flow.setMxGraphModel(mxGraphModel);
             // paths
             Iterator pathXmlIterator = flowElement.elementIterator("paths");
@@ -1538,7 +1544,7 @@ public class FlowXmlUtils {
                 Element recordEle = (Element) pathXmlIterator.next();
                 pathXmlStrArr.add(recordEle.asXML());
             }
-            List<Paths> pathsList = xmlListToPathsList(pathXmlStrArr, maxPageId, username);
+            List<Paths> pathsList = xmlListToPathsList(pathXmlStrArr, maxPageId, username, flow);
             flow.setPathsList(pathsList);
             // stop
             Iterator stopXmlIterator = flowElement.elementIterator("stop");
@@ -1547,7 +1553,7 @@ public class FlowXmlUtils {
                 Element recordEle = (Element) stopXmlIterator.next();
                 stopXmlStrArr.add(recordEle.asXML());
             }
-            List<Stops> stopsList = xmlListToStopsList(stopXmlStrArr, maxPageId, username);
+            List<Stops> stopsList = xmlListToStopsList(stopXmlStrArr, maxPageId, username, flow);
             flow.setStopsList(stopsList);
         } catch (Exception e) {
             logger.error("Conversion failed", e);

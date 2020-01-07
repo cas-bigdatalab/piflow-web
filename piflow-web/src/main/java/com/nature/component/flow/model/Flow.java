@@ -58,16 +58,16 @@ public class Flow extends BaseHibernateModelUUIDNoCorpAgentId {
     @JoinColumn(name = "FK_FLOW_PROJECT_ID")
     private FlowProject flowProject;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "flow")
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "flow")
     @Where(clause = "enable_flag=1")
     private MxGraphModel mxGraphModel;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "flow")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "flow")
     @Where(clause = "enable_flag=1")
     @OrderBy(clause = "lastUpdateDttm desc")
     private List<Stops> stopsList = new ArrayList<Stops>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "flow")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "flow")
     @Where(clause = "enable_flag=1")
     @OrderBy(clause = "lastUpdateDttm desc")
     private List<Paths> pathsList = new ArrayList<Paths>();

@@ -70,12 +70,12 @@ public class Stops extends BaseHibernateModelUUIDNoCorpAgentId {
     @JoinColumn(name = "FK_DATA_SOURCE_ID")
     private DataSource dataSource;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stops")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "stops")
     @Where(clause = "enable_flag=1")
     @OrderBy(clause = "lastUpdateDttm desc")
     private List<Property> properties = new ArrayList<Property>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stops")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "stops")
     @Where(clause = "enable_flag=1")
     @OrderBy(clause = "lastUpdateDttm desc")
     private List<CustomizedProperty> customizedPropertyList = new ArrayList<>();

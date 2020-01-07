@@ -45,7 +45,7 @@ public class MxCell extends BaseHibernateModelUUIDNoCorpAgentId {
     @Column(name = "MX_VERTEX")
     private String vertex;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "mxCell")
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "mxCell")
     @Where(clause = "enable_flag=1")
     private MxGeometry mxGeometry;
 

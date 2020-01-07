@@ -49,24 +49,24 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
         ExecutorService es = new ThreadPoolExecutor(1, 5, 0L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<Runnable>(100000));
         UserVo currentUser = SessionUserUtil.getCurrentUser();
-        Boolean aBoolean = loadStopGroup(currentUser.getUsername());
-        if (aBoolean) {
-            String[] stopNameList = stopImpl.getAllStops();
-            // The call is successful, empty the "Stop" message and insert
-            stopGroupMapper.deleteStopsPropertyInfo();
-            int deleteStopsInfo = stopGroupMapper.deleteStopsInfo();
-            logger.info("Successful deletion StopsInfo" + deleteStopsInfo + "piece of data!!!");
-            if (null != stopNameList && stopNameList.length > 0) {
-                for (String stopListInfos : stopNameList) {
-                    es.execute(() -> {
-                        Boolean aBoolean1 = loadStop(stopListInfos);
-                        if (!aBoolean1) {
-                            logger.warn("stop load failed, bundel : " + stopListInfos);
-                        }
-                    });
-                }
-            }
-        }
+//        Boolean aBoolean = loadStopGroup(currentUser.getUsername());
+//        if (aBoolean) {
+//            String[] stopNameList = stopImpl.getAllStops();
+//            // The call is successful, empty the "Stop" message and insert
+//            stopGroupMapper.deleteStopsPropertyInfo();
+//            int deleteStopsInfo = stopGroupMapper.deleteStopsInfo();
+//            logger.info("Successful deletion StopsInfo" + deleteStopsInfo + "piece of data!!!");
+//            if (null != stopNameList && stopNameList.length > 0) {
+//                for (String stopListInfos : stopNameList) {
+//                    es.execute(() -> {
+//                        Boolean aBoolean1 = loadStop(stopListInfos);
+//                        if (!aBoolean1) {
+//                            logger.warn("stop load failed, bundel : " + stopListInfos);
+//                        }
+//                    });
+//                }
+//            }
+//        }
         SysParamsCache.THREAD_POOL_EXECUTOR = ((ThreadPoolExecutor) es);
         rtnMap.put("code", 200);
         return JsonUtils.toJsonNoException(rtnMap);
@@ -84,6 +84,7 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
         //Number of execution completion threads
         double completedTaskCount = SysParamsCache.THREAD_POOL_EXECUTOR.getCompletedTaskCount();
         double progressNum = ((completedTaskCount / taskCount) * 40);
+        progressNum = 40;
         if (39 < progressNum && progressNum < 40) {
             progressNum = 39;
         }

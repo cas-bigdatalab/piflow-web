@@ -43,10 +43,10 @@ public class StartLoader implements ApplicationRunner {
 
     Logger logger = LoggerUtil.getLogger();
 
-    @Autowired
+    @Resource
     private SysScheduleDomain sysScheduleDomain;
 
-    @Autowired
+    @Resource
     private Scheduler scheduler;
 
     @Resource
@@ -81,11 +81,10 @@ public class StartLoader implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         checkStoragePath();
         startStatusRunning();
-        loadSample();
+        loadSampleNew();
     }
 
     private Boolean loadSample() {
-        sysMenuMapper.deleteSampleMenuListByIds(new String[]{"0641076d5ae840c09d2be5bmenu00015", "0641076d5ae840c09d2be5bmenu00016"});
         List<SysMenu> sampleMenuList = sysMenuMapper.getSampleMenuList();
         boolean loadExample1 = true;
         boolean loadExample2 = true;
@@ -161,6 +160,61 @@ public class StartLoader implements ApplicationRunner {
                         propertyDomain.saveOrUpdate(propertyListXml);
                     }
                 }
+            }
+            SysMenu sysMenu = new SysMenu();
+            sysMenu.setCrtDttm(new Date());
+            sysMenu.setCrtUser("system");
+            sysMenu.setLastUpdateDttm(new Date());
+            sysMenu.setLastUpdateUser("system");
+            sysMenu.setMenuJurisdiction(SysRoleType.USER);
+            sysMenu.setMenuParent("Example");
+            sysMenu.setMenuName(flowXml.getName());
+            sysMenu.setMenuDescription(flowXml.getName());
+            sysMenu.setMenuUrl("/piflow-web/grapheditor/home?load=" + flowXml.getId());
+            sysMenu.setMenuSort(500002 + i);
+            sysMenuDomain.saveOrUpdate(sysMenu);
+        }
+        return true;
+    }
+
+    private Boolean loadSampleNew() {
+        List<SysMenu> sampleMenuList = sysMenuMapper.getSampleMenuList();
+        boolean loadExample1 = true;
+        boolean loadExample2 = true;
+        if (null != sampleMenuList && sampleMenuList.size() > 0) {
+            for (SysMenu sysMenu : sampleMenuList) {
+                if ("Example1".equals(sysMenu.getMenuName())) {
+                    loadExample1 = false;
+                } else if ("Example2".equals(sysMenu.getMenuName())) {
+                    loadExample2 = false;
+                }
+            }
+        }
+        String storagePathHead = System.getProperty("user.dir") + "/src/main/resources/static/sample/";
+        List<String> exampleNames = new ArrayList<>();
+        if (loadExample1) {
+            exampleNames.add("Example1");
+        }
+        if (loadExample2) {
+            exampleNames.add("Example2");
+        }
+        for (int i = 0; i < exampleNames.size(); i++) {
+            String exampleName = exampleNames.get(i);
+            if (StringUtils.isBlank(exampleName)) {
+                continue;
+            }
+            //The XML file is read and returned according to the saved file path
+            String xmlFileToStr = FileUtils.XmlFileToStr(storagePathHead + exampleName + ".xml");
+            if (StringUtils.isBlank(xmlFileToStr)) {
+                //logger.warn("XML file read failed, loading template failed");
+                continue;
+            }
+            Flow flowXml = FlowXmlUtils.xmlToFlow(xmlFileToStr, 2, "system");
+            if (null != flowXml) {
+                flowXml.setId(null);
+                flowXml.setName(exampleName);
+                flowXml.setIsExample(true);
+                flowXml = flowDomain.saveOrUpdate(flowXml);
             }
             SysMenu sysMenu = new SysMenu();
             sysMenu.setCrtDttm(new Date());
