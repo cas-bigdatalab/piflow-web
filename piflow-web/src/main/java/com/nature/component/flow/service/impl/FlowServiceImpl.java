@@ -33,6 +33,7 @@ import com.nature.mapper.flow.*;
 import com.nature.mapper.mxGraph.MxCellMapper;
 import com.nature.mapper.mxGraph.MxGeometryMapper;
 import com.nature.mapper.mxGraph.MxGraphModelMapper;
+import com.nature.mapper.process.ProcessMapper;
 import com.nature.third.service.IFlow;
 import com.nature.transaction.process.ProcessTransaction;
 import org.apache.commons.collections.CollectionUtils;
@@ -54,6 +55,9 @@ public class FlowServiceImpl implements IFlowService {
 
     @Resource
     private FlowMapper flowMapper;
+
+    @Resource
+    private ProcessMapper processMapper;
 
     @Resource
     private StopsTemplateMapper stopsTemplateMapper;
@@ -1181,7 +1185,7 @@ public class FlowServiceImpl implements IFlowService {
             logger.warn(errorMsg);
             return JsonUtils.toJsonNoException(rtnMap);
         }
-        Process processById = processTransaction.getProcessById(process.getId());
+        Process processById = processMapper.getProcessById(process.getId());
         processById.setAppId((String) stringObjectMap.get("appId"));
         processById.setProcessId((String) stringObjectMap.get("appId"));
         processById.setState(ProcessState.STARTED);

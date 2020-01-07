@@ -2,36 +2,17 @@ package com.nature.component.system.service.Impl;
 
 import com.nature.base.util.*;
 import com.nature.base.vo.UserVo;
-import com.nature.common.Eunm.SysRoleType;
 import com.nature.common.constant.SysParamsCache;
-import com.nature.component.flow.model.Flow;
-import com.nature.component.flow.model.Paths;
-import com.nature.component.flow.model.Property;
-import com.nature.component.flow.model.Stops;
 import com.nature.component.group.model.PropertyTemplate;
 import com.nature.component.group.model.StopGroup;
 import com.nature.component.group.model.StopsTemplate;
-import com.nature.component.mxGraph.model.MxCell;
-import com.nature.component.mxGraph.model.MxGeometry;
-import com.nature.component.mxGraph.model.MxGraphModel;
 import com.nature.component.system.model.SysInitRecords;
-import com.nature.component.system.model.SysMenu;
 import com.nature.component.system.service.ISysInitRecordsService;
-import com.nature.domain.flow.FlowDomain;
-import com.nature.domain.flow.PathsDomain;
-import com.nature.domain.flow.PropertyDomain;
-import com.nature.domain.flow.StopsDomain;
-import com.nature.domain.mxGraph.MxCellDomain;
-import com.nature.domain.mxGraph.MxGeometryDomain;
-import com.nature.domain.mxGraph.MxGraphModelDomain;
 import com.nature.domain.system.SysInitRecordsDomain;
-import com.nature.domain.system.SysMenuDomain;
 import com.nature.mapper.flow.PropertyTemplateMapper;
 import com.nature.mapper.flow.StopGroupMapper;
 import com.nature.mapper.flow.StopsTemplateMapper;
-import com.nature.mapper.system.SysMenuMapper;
 import com.nature.third.service.IStop;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.threads.ThreadPoolExecutor;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
@@ -68,8 +49,6 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
         ExecutorService es = new ThreadPoolExecutor(1, 5, 0L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<Runnable>(100000));
         UserVo currentUser = SessionUserUtil.getCurrentUser();
-        es.execute(() -> {
-        });
         Boolean aBoolean = loadStopGroup(currentUser.getUsername());
         if (aBoolean) {
             String[] stopNameList = stopImpl.getAllStops();

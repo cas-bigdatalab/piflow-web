@@ -9,28 +9,29 @@ import com.nature.common.Eunm.ProcessState;
 import com.nature.common.Eunm.RunModeType;
 import com.nature.common.Eunm.StopState;
 import com.nature.component.flow.model.Flow;
-import com.nature.component.process.model.*;
 import com.nature.component.process.model.Process;
+import com.nature.component.process.model.ProcessGroup;
+import com.nature.component.process.model.ProcessPath;
+import com.nature.component.process.model.ProcessStop;
 import com.nature.component.process.service.IProcessService;
 import com.nature.component.process.utils.ProcessUtils;
 import com.nature.component.process.vo.*;
 import com.nature.domain.process.ProcessDomain;
+import com.nature.mapper.flow.FlowMapper;
 import com.nature.mapper.process.ProcessMapper;
+import com.nature.mapper.process.ProcessStopMapper;
 import com.nature.third.service.IFlow;
 import com.nature.third.service.IGetFlowInfo;
 import com.nature.third.vo.flow.ThirdProgressVo;
 import com.nature.third.vo.flowInfo.ThirdFlowInfoStopVo;
 import com.nature.third.vo.flowInfo.ThirdFlowInfoStopsVo;
 import com.nature.third.vo.flowInfo.ThirdFlowInfoVo;
-import com.nature.transaction.flow.FlowTransaction;
-import com.nature.transaction.process.ProcessStopTransaction;
 import com.nature.transaction.process.ProcessTransaction;
 import net.sf.json.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -45,22 +46,22 @@ public class ProcessServiceImpl implements IProcessService {
     @Resource
     private ProcessMapper processMapper;
 
-    @Autowired
+    @Resource
     private ProcessTransaction processTransaction;
 
-    @Autowired
-    private ProcessStopTransaction processStopTransaction;
+    @Resource
+    private ProcessStopMapper processStopMapper;
 
-    @Autowired
-    private FlowTransaction flowTransaction;
+    @Resource
+    private FlowMapper flowMapper;
 
-    @Autowired
+    @Resource
     private IFlow flowImpl;
 
-    @Autowired
+    @Resource
     private IGetFlowInfo getFlowInfoImpl;
 
-    @Autowired
+    @Resource
     private ProcessDomain processDomain;
 
     /**
@@ -71,7 +72,7 @@ public class ProcessServiceImpl implements IProcessService {
     @Override
     public List<ProcessVo> getProcessAllVoList() {
         List<ProcessVo> processVoList = null;
-        List<Process> processList = processTransaction.getProcessList();
+        List<Process> processList = processMapper.getProcessList();
         if (null != processList && processList.size() > 0) {
         	processVoList = new ArrayList<>();
             for (Process process : processList) {
@@ -93,7 +94,7 @@ public class ProcessServiceImpl implements IProcessService {
     @Override
     public List<ProcessVo> getProcessVoList() {
         List<ProcessVo> processVoList = null;
-        List<Process> processList = processTransaction.getProcessList();
+        List<Process> processList = processMapper.getProcessList();
         if (null != processList && processList.size() > 0) {
             processVoList = new ArrayList<>();
             for (Process process : processList) {
@@ -118,7 +119,7 @@ public class ProcessServiceImpl implements IProcessService {
     public ProcessVo getProcessAllVoById(String id) {
         ProcessVo processVo = null;
         if (StringUtils.isNotBlank(id)) {
-            Process processById = processTransaction.getProcessById(id);
+            Process processById = processMapper.getProcessById(id);
             processVo = this.processPoToVo(processById);
             ProcessGroup processGroup = processById.getProcessGroup();
             if (null != processGroup) {
@@ -140,7 +141,7 @@ public class ProcessServiceImpl implements IProcessService {
     public ProcessVo getProcessVoById(String id) {
         ProcessVo processVo = null;
         if (StringUtils.isNotBlank(id)) {
-            Process processById = processTransaction.getProcessById(id);
+            Process processById = processMapper.getProcessById(id);
             if (null != processById) {
                 processVo = new ProcessVo();
                 BeanUtils.copyProperties(processById, processVo);
@@ -159,7 +160,7 @@ public class ProcessServiceImpl implements IProcessService {
     @Override
     public ProcessVo getProcessById(String id) {
         ProcessVo processVo = null;
-        Process processById = processTransaction.getProcessById(id);
+        Process processById = processMapper.getProcessById(id);
         if (null != processById) {
             processVo = this.processPoToVo(processById);
         }
@@ -176,7 +177,7 @@ public class ProcessServiceImpl implements IProcessService {
     public ProcessVo getProcessVoByAppId(String appId) {
         ProcessVo processVo = null;
         if (StringUtils.isNotBlank(appId)) {
-            Process processById = processTransaction.getProcessByAppId(appId);
+            Process processById = processMapper.getProcessByAppId(appId);
             if (null != processById) {
                 processVo = this.processPoToVo(processById);
             }
@@ -203,7 +204,7 @@ public class ProcessServiceImpl implements IProcessService {
     @Override
     public ProcessVo getAppInfoByThirdAndSave(String appID) {
         ProcessVo processVo = new ProcessVo();
-        Process processById = processTransaction.getProcessByAppId(appID);
+        Process processById = processMapper.getProcessByAppId(appID);
         if (null != processById) {
             // If the status is STARTED, the interface is removed. Otherwise, it indicates that the startup is complete and returns directly.
             ProcessState state = processById.getState();
@@ -254,12 +255,12 @@ public class ProcessServiceImpl implements IProcessService {
                                     if (null != thirdFlowInfoStopsVo) {
                                         ThirdFlowInfoStopVo thirdFlowInfoStopVo = thirdFlowInfoStopsVo.getStop();
                                         if (null != thirdFlowInfoStopVo) {
-                                            ProcessStop processStopByNameAndPid = processStopTransaction.getProcessStopByNameAndPid(processById.getId(), thirdFlowInfoStopVo.getName());
+                                            ProcessStop processStopByNameAndPid = processStopMapper.getProcessStopByNameAndPid(processById.getId(), thirdFlowInfoStopVo.getName());
                                             processStopByNameAndPid.setName(thirdFlowInfoStopVo.getName());
                                             processStopByNameAndPid.setState(StopState.selectGender(thirdFlowInfoStopVo.getState()));
                                             processStopByNameAndPid.setStartTime(DateUtils.strCstToDate(thirdFlowInfoStopVo.getStartTime()));
                                             processStopByNameAndPid.setEndTime(DateUtils.strCstToDate(thirdFlowInfoStopVo.getEndTime()));
-                                            int updateProcessStop = processStopTransaction.updateProcessStop(processStopByNameAndPid);
+                                            int updateProcessStop = processStopMapper.updateProcessStop(processStopByNameAndPid);
                                             if (updateProcessStop > 0) {
                                                 processStopListNew.add(processStopByNameAndPid);
                                             }
@@ -268,7 +269,7 @@ public class ProcessServiceImpl implements IProcessService {
                                 }
                                 processById.setProcessStopList(processStopListNew);
                             }
-                            processById = processTransaction.getProcessByAppId(appID);
+                            processById = processMapper.getProcessByAppId(appID);
                         }
                     }
                 }
@@ -292,7 +293,7 @@ public class ProcessServiceImpl implements IProcessService {
         if (StringUtils.isNotBlank(appID)) {
             // 查询appinfo
             //ProcessVo processVoThird = this.getAppInfoByThirdAndSave(appID);
-            Process processById = processTransaction.getProcessByAppId(appID);
+            Process processById = processMapper.getProcessByAppId(appID);
             ProcessVo processVo = ProcessUtils.processPoToVo(processById);
             if (null != processVo) {
                 rtnMap.put("code", 200);
@@ -318,7 +319,7 @@ public class ProcessServiceImpl implements IProcessService {
         rtnMap.put("code", 500);
         List<ProcessVo> processVoList = null;
         if (null != appIDs && appIDs.length > 0) {
-            List<Process> processListByAppIDs = processTransaction.getProcessListByAppIDs(appIDs);
+            List<Process> processListByAppIDs = processMapper.getProcessListByAppIDs(appIDs);
             if (null != processListByAppIDs && processListByAppIDs.size() > 0) {
                 processVoList = new ArrayList<>();
                 for (Process process : processListByAppIDs) {
@@ -394,7 +395,7 @@ public class ProcessServiceImpl implements IProcessService {
         Map<String, Object> rtnMap = new HashMap<String, Object>();
         rtnMap.put("code", 500);
         if (null != appIDs && appIDs.length > 0) {
-            List<Process> processListByAppIDs = processTransaction.getProcessListByAppIDs(appIDs);
+            List<Process> processListByAppIDs = processMapper.getProcessListByAppIDs(appIDs);
             if (CollectionUtils.isNotEmpty(processListByAppIDs)) {
                 rtnMap.put("code", 200);
                 for (Process process : processListByAppIDs) {
@@ -419,7 +420,7 @@ public class ProcessServiceImpl implements IProcessService {
     @Override
     public int updateProcess(ProcessVo processVo, UserVo currentUser) {
         if (null != processVo && null != currentUser) {
-            Process processById = processTransaction.getProcessById(processVo.getId());
+            Process processById = processMapper.getProcessById(processVo.getId());
             if (null != processById) {
                 BeanUtils.copyProperties("processVo", "processById");
                 processById.setLastUpdateUser(currentUser.getUsername());
@@ -471,7 +472,7 @@ public class ProcessServiceImpl implements IProcessService {
         //Determine if the flowId is empty
         if (StringUtils.isNotBlank(flowId)) {
             // Query flow according to Id
-            Flow flowById = flowTransaction.getFlowById(flowId);
+            Flow flowById = flowMapper.getFlowById(flowId);
             // Determine if the queryed flow is empty
             if (null != flowById) {
                 Process process = ProcessUtils.flowToProcess(flowById, user);
@@ -528,7 +529,7 @@ public class ProcessServiceImpl implements IProcessService {
     public StatefulRtnBase updateProcessEnableFlag(String processId, UserVo currentUser) {
         StatefulRtnBase statefulRtnBase = new StatefulRtnBase();
         if (StringUtils.isNotBlank(processId) && null != currentUser) {
-            Process processById = processTransaction.getProcessById(processId);
+            Process processById = processMapper.getProcessById(processId);
             if (null != processById) {
                 processTransaction.updateProcessEnableFlag(processId, currentUser);
             } else {
@@ -550,12 +551,18 @@ public class ProcessServiceImpl implements IProcessService {
      */
     @Override
     public List<ProcessVo> getRunningProcessVoList(String flowId) {
-        List<ProcessVo> processVoList = processTransaction.getRunningProcessList(flowId);
-        if (CollectionUtils.isEmpty(processVoList)) {
+        List<Process> processList = processMapper.getRunningProcessList(flowId);
+        if (CollectionUtils.isEmpty(processList)) {
             return null;
-        } else {
-            return processVoList;
         }
+        List<ProcessVo> processVoList = new ArrayList<ProcessVo>();
+        for (Process process : processList) {
+            ProcessVo processVo = ProcessUtils.processOnePoToVo(process);
+            if (null != processVo) {
+                processVoList.add(processVo);
+            }
+        }
+        return processVoList;
     }
 
     /**
@@ -663,7 +670,7 @@ public class ProcessServiceImpl implements IProcessService {
         rtnMap.put("code", 500);
         if (StringUtils.isNotBlank(processId)) {
             // Query Process by 'ProcessId'
-            Process process = processTransaction.getProcessById(processId);
+            Process process = processMapper.getProcessById(processId);
             // Determine whether it is empty, and determine whether the save is successful.
             if (null != process) {
                 String appId = process.getAppId();

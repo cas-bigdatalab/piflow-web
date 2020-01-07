@@ -9,11 +9,9 @@ import com.nature.component.process.service.IProcessPathService;
 import com.nature.component.process.vo.ProcessPathVo;
 import com.nature.mapper.process.ProcessMapper;
 import com.nature.mapper.process.ProcessPathMapper;
-import com.nature.transaction.process.ProcessPathTransaction;
-import com.nature.transaction.process.ProcessStopTransaction;
+import com.nature.mapper.process.ProcessStopMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -30,11 +28,8 @@ public class ProcessPathServiceImpl implements IProcessPathService {
     @Resource
     private ProcessPathMapper processPathMapper;
 
-    @Autowired
-    private ProcessPathTransaction processPathTransaction;
-
-    @Autowired
-    private ProcessStopTransaction processStopTransaction;
+    @Resource
+    private ProcessStopMapper processStopMapper;
 
     /**
      * Query processPath based on processId and pageId
@@ -45,37 +40,43 @@ public class ProcessPathServiceImpl implements IProcessPathService {
      */
     @Override
     public ProcessPathVo getProcessPathVoByPageId(String processId, String pageId) {
-        ProcessPathVo processStopVo = null;
-        ProcessPath processPathByPageId = processPathTransaction.getProcessPathByPageId(processId, pageId);
-        if (null != processPathByPageId) {
-            processPathByPageId.getPageId();
-            String[] pageIds = new String[2];
-            String pathTo = processPathByPageId.getTo();
-            String pathFrom = processPathByPageId.getFrom();
-            if (StringUtils.isNotBlank(pathFrom)) {
-                pageIds[0] = pathFrom;
-            }
-            if (StringUtils.isNotBlank(pathTo)) {
-                pageIds[1] = pathTo;
-            }
-            List<ProcessStop> processStopByPageIds = processStopTransaction.getProcessStopByPageIds(processId, pageIds);
-            if (null != processStopByPageIds && processStopByPageIds.size() > 0) {
-                processStopVo = new ProcessPathVo();
-                pathTo = (null == pathTo ? "" : pathTo);
-                pathFrom = (null == pathTo ? "" : pathFrom);
-                for (ProcessStop processStop : processStopByPageIds) {
-                    if (null != processStop) {
-                        if (pathTo.equals(processStop.getPageId())) {
-                            processStopVo.setTo(processStop.getName());
-                        } else if (pathFrom.equals(processStop.getPageId())) {
-                            processStopVo.setFrom(processStop.getName());
-                        }
-                    }
+        if (StringUtils.isAnyEmpty(processId, pageId)) {
+            return null;
+        }
+        ProcessPath processPathByPageId = processPathMapper.getProcessPathByPageIdAndPid(processId, pageId);
+        if (null == processPathByPageId) {
+            return null;
+        }
+        String[] pageIds = new String[2];
+        String pathTo = processPathByPageId.getTo();
+        String pathFrom = processPathByPageId.getFrom();
+        if (StringUtils.isNotBlank(pathFrom)) {
+            pageIds[0] = pathFrom;
+        }
+        if (StringUtils.isNotBlank(pathTo)) {
+            pageIds[1] = pathTo;
+        }
+        if (StringUtils.isNotBlank(processId) && null != pageIds && pageIds.length > 0) {
+            return null;
+        }
+        List<ProcessStop> processStopByPageIds = processStopMapper.getProcessStopByPageIdAndPageIds(processId, pageIds);
+        if (null == processStopByPageIds || processStopByPageIds.size() <= 0) {
+            return null;
+        }
+        ProcessPathVo processStopVo = new ProcessPathVo();
+        pathTo = (null == pathTo ? "" : pathTo);
+        pathFrom = (null == pathTo ? "" : pathFrom);
+        for (ProcessStop processStop : processStopByPageIds) {
+            if (null != processStop) {
+                if (pathTo.equals(processStop.getPageId())) {
+                    processStopVo.setTo(processStop.getName());
+                } else if (pathFrom.equals(processStop.getPageId())) {
+                    processStopVo.setFrom(processStop.getName());
                 }
-                processStopVo.setInport(StringUtils.isNotBlank(processPathByPageId.getInport()) ? processPathByPageId.getInport() : PortType.DEFAULT.getText());
-                processStopVo.setOutport(StringUtils.isNotBlank(processPathByPageId.getOutport()) ? processPathByPageId.getOutport() : PortType.DEFAULT.getText());
             }
         }
+        processStopVo.setInport(StringUtils.isNotBlank(processPathByPageId.getInport()) ? processPathByPageId.getInport() : PortType.DEFAULT.getText());
+        processStopVo.setOutport(StringUtils.isNotBlank(processPathByPageId.getOutport()) ? processPathByPageId.getOutport() : PortType.DEFAULT.getText());
         return processStopVo;
     }
 

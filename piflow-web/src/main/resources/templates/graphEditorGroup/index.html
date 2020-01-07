@@ -13,7 +13,6 @@
     <link rel="stylesheet" type="text/css" th:href="@{/custom/css/fullScreen.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{/components/font-awesome-4.7.0/css/font-awesome.min.css}"/>
     <link rel="shortcut icon" th:href="@{/img/logo.ico}">
-
     <script th:inline="javascript">
         var xmlDate = [[${xmlDate}]];
         var xmlDateStr = [[${xmlDateStr}]];
@@ -107,6 +106,10 @@
             color: #ffffff;
             text-decoration: none;
         }
+        a.customize_btn_css:focus {
+            color: #ffffff;
+            text-decoration: none;
+        }
     </style>
 </head>
 <body class="geEditor">
@@ -117,12 +120,19 @@
     <div style="position: fixed; margin-top: 48px; z-index: 999;text-align: right; width:45%;">
         <div class="btn-group">
             <a class="customize_btn_css" href='javascript:void(0);' style="padding: 9px 12px;"
+               onclick="getFlowList()"
+               title="Import flow">
+                <i class="fa-binoculars icon-white"></i>
+            </a>
+        </div>
+        <div class="btn-group">
+            <a class="customize_btn_css" href='javascript:void(0);' style="padding: 9px 12px;"
                onclick="runFlowGroup()"
                title="Run flow group">
                 <i class="icon-play icon-white"></i>
             </a>
         </div>
-        <div class="btn-group" style="display: none;">
+        <div class="btn-group" style="/*display: block;*/">
             <a class="customize_btn_css" href='javascript:void(0);' style="padding: 9px 12px;"
                onclick="runFlowGroup('DEBUG')" title="Debug flow">
                 <i class="fa-bug icon-white"></i>
@@ -186,7 +196,6 @@
     </form>
 </div>
 <!--stop Property edit popover ends-->
-
 
 <!-- 'stop' custom attribute table start-->
 <div id="customizedTableObj">
@@ -294,7 +303,7 @@
         });
         $(".btn-group").mouseleave(function () {
             $(this).removeClass("open");
-        })
+        });
         initGraph();
         layui.form.on('submit(component-form-submit)', function (data) {
             addStopCustomProperty(data.field);

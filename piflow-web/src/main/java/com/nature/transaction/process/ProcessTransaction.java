@@ -6,22 +6,18 @@ import com.nature.component.process.model.Process;
 import com.nature.component.process.model.ProcessPath;
 import com.nature.component.process.model.ProcessStop;
 import com.nature.component.process.model.ProcessStopProperty;
-import com.nature.component.process.vo.ProcessVo;
 import com.nature.mapper.process.ProcessMapper;
 import com.nature.mapper.process.ProcessPathMapper;
 import com.nature.mapper.process.ProcessStopMapper;
 import com.nature.mapper.process.ProcessStopPropertyMapper;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -137,77 +133,6 @@ public class ProcessTransaction {
     }
 
     /**
-     * Query Process according to Id
-     *
-     * @param id
-     * @return
-     */
-    public Process getProcessById(String id) {
-        Process processById = processMapper.getProcessById(id);
-        return processById;
-    }
-
-    /**
-     * Query ProcessList
-     *
-     * @return
-     */
-    public List<Process> getProcessList() {
-        List<Process> processList = null;
-        processList = processMapper.getProcessList();
-        return processList;
-    }
-
-    /**
-     * Query ProcessVoList
-     *
-     * @return
-     */
-    public List<ProcessVo> getProcessVoList() {
-        List<Process> processList = null;
-        processList = processMapper.getProcessList();
-        List<ProcessVo> processVoList = new ArrayList<ProcessVo>();
-        if (null != processList && processList.size() > 0) {
-            for (Process process : processList) {
-                ProcessVo processVo = processPoToVo(process);
-                if (null != processVo) {
-                    processVoList.add(processVo);
-                }
-            }
-        }
-        return processVoList;
-    }
-
-    /**
-     * Query ProcessVoList
-     *
-     * @return
-     */
-    public List<Process> getProcessListByParam(String param) {
-        return processMapper.getProcessListByParam(param);
-    }
-
-    /**
-     * Query process according to process AppId
-     *
-     * @param appID
-     * @return
-     */
-    public Process getProcessByAppId(String appID) {
-        return processMapper.getProcessByAppId(appID);
-    }
-
-    /**
-     * Query process according to process AppId
-     *
-     * @param appID
-     * @return
-     */
-    public List<Process> getProcessListByAppIDs(String[] appID) {
-        return processMapper.getProcessListByAppIDs(appID);
-    }
-
-    /**
      * logically delete
      *
      * @param processId
@@ -247,35 +172,6 @@ public class ProcessTransaction {
         }
         logger.info("Number of rows affected：" + affectedLine);
         return false;
-    }
-
-    public List<ProcessVo> getRunningProcessList(String flowId) {
-        List<ProcessVo> processVoList = null;
-        List<Process> processList = processMapper.getRunningProcessList(flowId);
-        if (CollectionUtils.isNotEmpty(processList)) {
-            processVoList = new ArrayList<ProcessVo>();
-            for (Process process : processList) {
-                ProcessVo processVo = processPoToVo(process);
-                if (null != processVo) {
-                    processVoList.add(processVo);
-                }
-            }
-        }
-        return processVoList;
-    }
-
-    private ProcessVo processPoToVo(Process process) {
-        ProcessVo processVo = null;
-        if (null != process) {
-            processVo = new ProcessVo();
-            BeanUtils.copyProperties(process, processVo);
-            processVo.setCrtDttm(process.getCrtDttm());
-        }
-        return processVo;
-    }
-
-    public List<String> getRunningProcess() {
-        return processMapper.getRunningProcess();
     }
 
 }

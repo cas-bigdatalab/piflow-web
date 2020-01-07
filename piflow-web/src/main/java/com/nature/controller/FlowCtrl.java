@@ -37,6 +37,16 @@ public class FlowCtrl {
     private IFlowGroupService flowGroupServiceImpl;
 
     /**
+     * getFlowListHtml
+     *
+     * @return
+     */
+    @RequestMapping("/getFlowListHtml")
+    public String getFlowListHtml() {
+        return "/graphEditorGroup/flow_List";
+    }
+
+    /**
      * flowList page query
      *
      * @param request

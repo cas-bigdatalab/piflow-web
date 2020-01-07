@@ -26,12 +26,4 @@ public interface SysUserMapper {
     @Select("select * from sys_user")
     public List<SysUser> getUserList();
 
-    @InsertProvider(type = SysUserMapperProvider.class, method = "addSysUser")
-    public int addSysUser(SysUser sysUser);
-
-    @UpdateProvider(type = SysUserMapperProvider.class, method = "updateSysUser")
-    public int updateSysUser(SysUser sysUser);
-
-    @Delete("delete from sys_user where id=#{id}")
-    public int deleteUser(String id);
 }

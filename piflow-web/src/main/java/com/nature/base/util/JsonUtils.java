@@ -77,6 +77,19 @@ public class JsonUtils {
         return null;
     }
 
+    public static <T> String toFormatJsonNoException(T entity) {
+        try {
+            return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(entity);
+        } catch (JsonGenerationException e) {
+            logger.error(e.getMessage(), e);
+        } catch (JsonMappingException e) {
+            logger.error(e.getMessage(), e);
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return null;
+    }
+
     public static <T> T toCollectionNoException(String json, TypeReference<T> typeReference) {
         try {
             return objectMapper.readValue(json, typeReference);

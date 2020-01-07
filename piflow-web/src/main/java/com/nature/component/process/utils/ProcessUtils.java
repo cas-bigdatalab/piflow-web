@@ -24,6 +24,16 @@ import java.util.*;
 
 public class ProcessUtils {
 
+    public static ProcessVo processOnePoToVo(Process process) {
+        ProcessVo processVo = null;
+        if (null != process) {
+            processVo = new ProcessVo();
+            BeanUtils.copyProperties(process, processVo);
+            processVo.setCrtDttm(process.getCrtDttm());
+        }
+        return processVo;
+    }
+
     public static ProcessVo processPoToVo(Process process) {
         ProcessVo processVo = null;
         if (null != process) {

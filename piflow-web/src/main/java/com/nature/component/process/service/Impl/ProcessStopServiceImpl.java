@@ -5,18 +5,20 @@ import com.nature.component.process.model.ProcessStop;
 import com.nature.component.process.service.IProcessStopService;
 import com.nature.component.process.utils.ProcessUtils;
 import com.nature.component.process.vo.ProcessStopVo;
-import com.nature.transaction.process.ProcessStopTransaction;
+import com.nature.mapper.process.ProcessStopMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
 
 @Service
 public class ProcessStopServiceImpl implements IProcessStopService {
 
     Logger logger = LoggerUtil.getLogger();
 
-    @Autowired
-    private ProcessStopTransaction processStopTransaction;
+    @Resource
+    private ProcessStopMapper processStopMapper;
 
     /**
      * Query processStop based on processId and pageId
@@ -27,11 +29,13 @@ public class ProcessStopServiceImpl implements IProcessStopService {
      */
     @Override
     public ProcessStopVo getProcessStopVoByPageId(String processId, String pageId) {
-        ProcessStopVo processStopVo = null;
-        ProcessStop processStopByPageId = processStopTransaction.getProcessStopByPageId(processId, pageId);
-        if (null != processStopByPageId) {
-            processStopVo = ProcessUtils.processStopPoToVo(processStopByPageId);
+        if (StringUtils.isAnyEmpty(processId, pageId)) {
+            return null;
         }
-        return processStopVo;
+        ProcessStop processStopByPageId = processStopMapper.getProcessStopByPageIdAndPageId(processId, pageId);
+        if (null == processStopByPageId) {
+            return null;
+        }
+        return ProcessUtils.processStopPoToVo(processStopByPageId);
     }
 }

@@ -16,12 +16,12 @@ public class ProcessUtil {
 
     public static String processToJson(Process process, String checkpoint, RunModeType runModeType) {
         Map<String, Object> flowVoMap = processToMap(process, checkpoint, runModeType);
-        return JsonUtils.toJsonNoException(flowVoMap);
+        return JsonUtils.toFormatJsonNoException(flowVoMap);
     }
 
     public static String processGroupToJson(ProcessGroup processGroup, RunModeType runModeType) {
         Map<String, Object> flowGroupVoMap = processGroupToMap(processGroup, runModeType);
-        return JsonUtils.toJsonNoException(flowGroupVoMap);
+        return JsonUtils.toFormatJsonNoException(flowGroupVoMap);
     }
 
     public static Map<String, Object> processToMap(Process process, String checkpoint, RunModeType runModeType) {

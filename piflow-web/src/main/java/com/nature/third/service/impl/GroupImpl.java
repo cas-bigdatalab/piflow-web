@@ -2,7 +2,6 @@ package com.nature.third.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.nature.base.util.HttpUtils;
-import com.nature.base.util.JsonFormatTool;
 import com.nature.base.util.LoggerUtil;
 import com.nature.common.Eunm.RunModeType;
 import com.nature.common.constant.SysParamsCache;
@@ -11,7 +10,10 @@ import com.nature.domain.process.ProcessGroupDomain;
 import com.nature.third.service.IGroup;
 import com.nature.third.utils.ProcessUtil;
 import com.nature.third.utils.ThirdFlowGroupInfoResponseUtils;
-import com.nature.third.vo.flowGroup.*;
+import com.nature.third.vo.flowGroup.ThirdFlowGroupInfoOutResponse;
+import com.nature.third.vo.flowGroup.ThirdFlowGroupInfoResponse;
+import com.nature.third.vo.flowGroup.ThirdFlowInfoOutResponse;
+import com.nature.third.vo.flowGroup.ThirdFlowStopInfoOutResponse;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -36,8 +38,9 @@ public class GroupImpl implements IGroup {
         Map<String, Object> rtnMap = new HashMap<>();
         rtnMap.put("code", 500);
         if (null != processGroup) {
-            String json = ProcessUtil.processGroupToJson(processGroup, runModeType);
-            String formatJson = JsonFormatTool.formatJson(json);
+            /*String json = ProcessUtil.processGroupToJson(processGroup, runModeType);
+            String formatJson = JsonFormatTool.formatJson(json);*/
+            String formatJson = ProcessUtil.processGroupToJson(processGroup, runModeType);
             logger.info("\n" + formatJson);
             String doPost = HttpUtils.doPost(SysParamsCache.getFlowGroupStartUrl(), formatJson, null);
             logger.info("Return information：" + doPost);
