@@ -84,7 +84,6 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
         //Number of execution completion threads
         double completedTaskCount = SysParamsCache.THREAD_POOL_EXECUTOR.getCompletedTaskCount();
         double progressNum = ((completedTaskCount / taskCount) * 40);
-        progressNum = 40;
         if (39 < progressNum && progressNum < 40) {
             progressNum = 39;
         }

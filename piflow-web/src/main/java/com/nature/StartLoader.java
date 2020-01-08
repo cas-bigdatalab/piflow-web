@@ -81,103 +81,10 @@ public class StartLoader implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         checkStoragePath();
         startStatusRunning();
-        loadSampleNew();
+        loadSample();
     }
 
     private Boolean loadSample() {
-        List<SysMenu> sampleMenuList = sysMenuMapper.getSampleMenuList();
-        boolean loadExample1 = true;
-        boolean loadExample2 = true;
-        if (null != sampleMenuList && sampleMenuList.size() > 0) {
-            for (SysMenu sysMenu : sampleMenuList) {
-                if ("Example1".equals(sysMenu.getMenuName())) {
-                    loadExample1 = false;
-                } else if ("Example2".equals(sysMenu.getMenuName())) {
-                    loadExample2 = false;
-                }
-            }
-        }
-        String storagePathHead = System.getProperty("user.dir") + "/src/main/resources/static/sample/";
-        List<String> exampleNames = new ArrayList<>();
-        if (loadExample1) {
-            exampleNames.add("Example1");
-        }
-        if (loadExample2) {
-            exampleNames.add("Example2");
-        }
-        for (int i = 0; i < exampleNames.size(); i++) {
-            String exampleName = exampleNames.get(i);
-            if (StringUtils.isBlank(exampleName)) {
-                continue;
-            }
-            //The XML file is read and returned according to the saved file path
-            String xmlFileToStr = FileUtils.XmlFileToStr(storagePathHead + exampleName + ".xml");
-            if (StringUtils.isBlank(xmlFileToStr)) {
-                //logger.warn("XML file read failed, loading template failed");
-                continue;
-            }
-            Flow flowXml = FlowXmlUtils.xmlToFlow(xmlFileToStr, 2, "system");
-            if (null != flowXml) {
-                List<Stops> stopsListXml = flowXml.getStopsList();
-                List<Paths> pathsListXml = flowXml.getPathsList();
-                MxGraphModel flowMxGraphModelXml = flowXml.getMxGraphModel();
-                flowXml.setName(exampleName);
-                flowXml.setMxGraphModel(null);
-                flowXml.setIsExample(true);
-                flowXml.setId(null);
-                flowXml = flowDomain.saveOrUpdate(flowXml);
-                if (null != flowMxGraphModelXml) {
-                    List<MxCell> root = flowMxGraphModelXml.getRoot();
-                    flowMxGraphModelXml.setRoot(null);
-                    flowMxGraphModelXml.setFlow(flowXml);
-                    flowMxGraphModelXml = mxGraphModelDomain.saveOrUpdate(flowMxGraphModelXml);
-                    for (MxCell mxCell : root) {
-                        MxGeometry flowMxGeometryXml = mxCell.getMxGeometry();
-                        mxCell.setMxGeometry(null);
-                        mxCell.setMxGraphModel(flowMxGraphModelXml);
-                        mxCell = mxCellDomain.saveOrUpdate(mxCell);
-                        if (null != flowMxGeometryXml) {
-                            flowMxGeometryXml.setMxCell(mxCell);
-                            mxGeometryDomain.saveOrUpdate(flowMxGeometryXml);
-                        }
-                    }
-                }
-                if (null != pathsListXml && pathsListXml.size() > 0) {
-                    for (Paths paths : pathsListXml) {
-                        paths.setFlow(flowXml);
-                    }
-                    pathsDomain.saveOrUpdate(pathsListXml);
-                }
-                if (null != stopsListXml && stopsListXml.size() > 0) {
-                    for (Stops stops : stopsListXml) {
-                        List<Property> propertyListXml = stops.getProperties();
-                        stops.setProperties(null);
-                        stops.setFlow(flowXml);
-                        stops = stopsDomain.saveOrUpdate(stops);
-                        for (Property property : propertyListXml) {
-                            property.setStops(stops);
-                        }
-                        propertyDomain.saveOrUpdate(propertyListXml);
-                    }
-                }
-            }
-            SysMenu sysMenu = new SysMenu();
-            sysMenu.setCrtDttm(new Date());
-            sysMenu.setCrtUser("system");
-            sysMenu.setLastUpdateDttm(new Date());
-            sysMenu.setLastUpdateUser("system");
-            sysMenu.setMenuJurisdiction(SysRoleType.USER);
-            sysMenu.setMenuParent("Example");
-            sysMenu.setMenuName(flowXml.getName());
-            sysMenu.setMenuDescription(flowXml.getName());
-            sysMenu.setMenuUrl("/piflow-web/grapheditor/home?load=" + flowXml.getId());
-            sysMenu.setMenuSort(500002 + i);
-            sysMenuDomain.saveOrUpdate(sysMenu);
-        }
-        return true;
-    }
-
-    private Boolean loadSampleNew() {
         List<SysMenu> sampleMenuList = sysMenuMapper.getSampleMenuList();
         boolean loadExample1 = true;
         boolean loadExample2 = true;
