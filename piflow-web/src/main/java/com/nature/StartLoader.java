@@ -201,21 +201,51 @@ public class StartLoader implements ApplicationRunner {
         for (int i = 0; i < exampleNames.size(); i++) {
             String exampleName = exampleNames.get(i);
             if (StringUtils.isBlank(exampleName)) {
-                continue;
+                return false;
             }
             //The XML file is read and returned according to the saved file path
             String xmlFileToStr = FileUtils.XmlFileToStr(storagePathHead + exampleName + ".xml");
             if (StringUtils.isBlank(xmlFileToStr)) {
                 //logger.warn("XML file read failed, loading template failed");
-                continue;
+                return false;
             }
             Flow flowXml = FlowXmlUtils.xmlToFlow(xmlFileToStr, 2, "system");
-            if (null != flowXml) {
-                flowXml.setId(null);
-                flowXml.setName(exampleName);
-                flowXml.setIsExample(true);
-                flowXml = flowDomain.saveOrUpdate(flowXml);
+            if (null == flowXml) {
+                return false;
             }
+            MxGraphModel mxGraphModel = flowXml.getMxGraphModel();
+            if (null == mxGraphModel) {
+                return false;
+            }
+            List<MxCell> root = mxGraphModel.getRoot();
+            if (null == root) {
+                root = new ArrayList<>();
+            }
+            MxCell mxCell0 = new MxCell();
+            mxCell0.setMxGraphModel(mxGraphModel);
+            mxCell0.setCrtDttm(new Date());
+            mxCell0.setCrtUser("system");
+            mxCell0.setLastUpdateDttm(new Date());
+            mxCell0.setLastUpdateUser("system");
+            mxCell0.setPageId("0");
+            root.add(mxCell0);
+            MxCell mxCell1 = new MxCell();
+            mxCell1.setMxGraphModel(mxGraphModel);
+            mxCell1.setCrtDttm(new Date());
+            mxCell1.setCrtUser("system");
+            mxCell1.setLastUpdateDttm(new Date());
+            mxCell1.setLastUpdateUser("system");
+            mxCell1.setPageId("1");
+            mxCell1.setParent("0");
+            root.add(mxCell1);
+            mxGraphModel.setRoot(root);
+
+            flowXml.setId(null);
+            flowXml.setName(exampleName);
+            flowXml.setIsExample(true);
+            flowXml.setMxGraphModel(mxGraphModel);
+            flowXml = flowDomain.saveOrUpdate(flowXml);
+
             SysMenu sysMenu = new SysMenu();
             sysMenu.setCrtDttm(new Date());
             sysMenu.setCrtUser("system");
