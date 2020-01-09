@@ -50,7 +50,7 @@ public class FlowXmlUtils {
             List<MxCell> root = mxGraphModel.getRoot();
             // Judge empty
             if (null != root && root.size() > 0) {
-                List<MxCellVo> mxCellVoList = new ArrayList<MxCellVo>();
+                List<MxCellVo> mxCellVoList = new ArrayList<>();
                 // Loop copy
                 for (MxCell mxCell : root) {
                     if (null != mxCell) {

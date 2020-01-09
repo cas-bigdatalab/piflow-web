@@ -11,7 +11,10 @@ public class CheckPathUtils {
     public static void isChartPathExist(String dirPath) {
         File file = new File(dirPath);
         if (!file.exists()) {
-            file.mkdirs();
+            boolean mkdirs = file.mkdirs();
+            if(!mkdirs){
+                logger.warn("Create failed");
+            }
         }
     }
 }

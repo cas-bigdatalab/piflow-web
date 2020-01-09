@@ -53,7 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     Logger logger = LoggerUtil.getLogger();
 
     @Override
-    public void configure(WebSecurity web) throws Exception {
+    public void configure(WebSecurity web) {
         //Solving the problem of static resources being intercepted
         web.ignoring().antMatchers("/components/**", "/js/**", "/css/**", "/custom/**", "/img/**", "/img/*");
     }
@@ -161,7 +161,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         List<SysMenu> sysMenuList = sysMenuMapper.getSysMenuList(sysRoleHighest.getValue());
                         if (CollectionUtils.isNotEmpty(sysMenuList)) {
                             List<SysMenuVo> sysMenuVoList = new ArrayList<>();
-                            SysMenuVo sysMenuVo = null;
+                            SysMenuVo sysMenuVo;
                             for (SysMenu sysMenu : sysMenuList) {
                                 sysMenuVo = new SysMenuVo();
                                 BeanUtils.copyProperties(sysMenu, sysMenuVo);

@@ -8,6 +8,7 @@ import com.nature.component.flow.model.Paths;
 import com.nature.component.flow.model.Stops;
 import com.nature.component.flow.service.IPathsService;
 import com.nature.component.flow.utils.PathsUtil;
+import com.nature.component.flow.vo.FlowVo;
 import com.nature.component.flow.vo.PathsVo;
 import com.nature.mapper.flow.FlowMapper;
 import com.nature.mapper.flow.PathsMapper;
@@ -26,10 +27,9 @@ public class PathsServiceImpl implements IPathsService {
 
     @Resource
     private PathsMapper pathsMapper;
+
     @Resource
     private PropertyMapper propertyMapper;
-    @Resource
-    private FlowMapper flowMapper;
 
     @Override
     public int deletePathsByFlowId(String id) {
@@ -49,8 +49,15 @@ public class PathsServiceImpl implements IPathsService {
                     stopFrom = propertyMapper.getStopGroupList(flowId, paths.getFrom());
                     stopTo = propertyMapper.getStopGroupList(flowId, paths.getTo());
                 }
+
                 pathsVo = new PathsVo();
                 BeanUtils.copyProperties(paths, pathsVo);
+                Flow flow = paths.getFlow();
+                if (null != flow) {
+                    FlowVo flowVo = new FlowVo();
+                    BeanUtils.copyProperties(flow, flowVo);
+                    pathsVo.setFlowVo(flowVo);
+                }
                 if (null != stopFrom) {
                     pathsVo.setStopFrom(stopFrom);
                 }

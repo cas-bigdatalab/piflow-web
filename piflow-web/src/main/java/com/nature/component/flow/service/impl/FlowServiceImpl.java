@@ -354,8 +354,7 @@ public class FlowServiceImpl implements IFlowService {
      * @param flag           Whether to add stop information
      * @return
      */
-    @SuppressWarnings("unchecked")
-	private StatefulRtnBase addFlowStops(MxGraphModelVo mxGraphModelVo, String flowId, boolean flag) {
+    private StatefulRtnBase addFlowStops(MxGraphModelVo mxGraphModelVo, String flowId, boolean flag) {
         StatefulRtnBase statefulRtnBase = new StatefulRtnBase();
         UserVo currentUser = SessionUserUtil.getCurrentUser();
         if (null == currentUser) {
@@ -491,10 +490,10 @@ public class FlowServiceImpl implements IFlowService {
         }
 
         //Separate 'stops' from 'path' in addMxCellVoList
-        Map<String, Object> stopsPathsMap = MxGraphModelUtil.distinguishElementsPaths(addMxCellVoList);
+        Map<String, List<MxCellVo>> stopsPathsMap = MxGraphModelUtil.distinguishElementsPaths(addMxCellVoList);
 
         // Take mxCellVoList(stopsList) from the Map
-        List<MxCellVo> objectStops = (ArrayList<MxCellVo>) stopsPathsMap.get("elements");
+        List<MxCellVo> objectStops = stopsPathsMap.get("elements");
 
         // stops list
         List<Stops> addStopsList = new ArrayList<Stops>();
@@ -506,7 +505,7 @@ public class FlowServiceImpl implements IFlowService {
         }
 
         // Take mxCellVoList(pathsList) from the Map
-        List<MxCellVo> objectPaths = (ArrayList<MxCellVo>) stopsPathsMap.get("paths");
+        List<MxCellVo> objectPaths = stopsPathsMap.get("paths");
 
         // path list
         List<Paths> addPathsList = new ArrayList<Paths>();
@@ -579,8 +578,7 @@ public class FlowServiceImpl implements IFlowService {
      * @param flowId         The data to be modified
      * @return
      */
-    @SuppressWarnings("unchecked")
-	private StatefulRtnBase updateFlow(MxGraphModelVo mxGraphModelVo, String flowId) {
+    private StatefulRtnBase updateFlow(MxGraphModelVo mxGraphModelVo, String flowId) {
         UserVo user = SessionUserUtil.getCurrentUser();
         String username = (null != user) ? user.getUsername() : "-1";
         StatefulRtnBase statefulRtnBase = new StatefulRtnBase();
@@ -604,7 +602,7 @@ public class FlowServiceImpl implements IFlowService {
                         List<MxCellVo> mxCellVoList = mxGraphModelVo.getRootVo();
 
                         // Separate the stops and path in mxCellVoList
-                        Map<String, Object> stopsPathsMap = MxGraphModelUtil.distinguishElementsPaths(mxCellVoList);
+                        Map<String, List<MxCellVo>> stopsPathsMap = MxGraphModelUtil.distinguishElementsPaths(mxCellVoList);
 
                         if (null != stopsPathsMap) {
                             // Need to delete the path
@@ -616,7 +614,7 @@ public class FlowServiceImpl implements IFlowService {
                             // Determine whether the list of lines in the database is empty, do not empty to continue the judgment operation below, or directly add
                             if (null != pathsList && pathsList.size() > 0) {
                                 // Take the line of mxCellVoList
-                                List<MxCellVo> objectPaths = (ArrayList<MxCellVo>) stopsPathsMap.get("paths");
+                                List<MxCellVo> objectPaths = stopsPathsMap.get("paths");
                                 // Key is the PageId of PathsVo (the id in the artboard), and the value is Paths
                                 Map<String, MxCellVo> objectPathsMap = new HashMap<String, MxCellVo>();
 
@@ -670,7 +668,7 @@ public class FlowServiceImpl implements IFlowService {
                             // If the list of Stops in the database is empty, the modification fails because this method only processes the modification and is not responsible for adding
                             if (null != stopsList && stopsList.size() > 0) {
                                 // Take the mxCellVoList of stops
-                                List<MxCellVo> objectStops = (ArrayList<MxCellVo>) stopsPathsMap.get("elements");
+                                List<MxCellVo> objectStops = stopsPathsMap.get("elements");
                                 // Key is the PageId of mxCellVo (the id in the artboard), and the value is mxCellVo
                                 Map<String, MxCellVo> objectStopsMap = new HashMap<String, MxCellVo>();
 

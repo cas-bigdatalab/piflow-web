@@ -26,9 +26,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -332,29 +329,14 @@ public class TemplateCtrl {
      * @throws Exception
      */
     @RequestMapping("/templateDownload")
-    public void downloadLocal(HttpServletResponse response, String templateId) throws Exception {
+    public void downloadLocal(HttpServletResponse response, String templateId) {
         Template template = iTemplateService.queryTemplate(templateId);
         if (null == template) {
             logger.info("Template is empty,Download template failed");
         }
-        // Download local files
         String fileName = template.getName() + ".xml".toString(); // The default save name of the file
-        // Read to the stream
-        InputStream inStream = new FileInputStream(template.getPath());// File storage path
-        // Format the output
-        response.reset();
-        response.setContentType("bin");
-        response.addHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
-        // Loop out the data in the stream
-        byte[] b = new byte[100];
-        int len;
-        try {
-            while ((len = inStream.read(b)) > 0)
-                response.getOutputStream().write(b, 0, len);
-            inStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        String filePath = template.getPath();// File storage path
+        FileUtils.downloadFileResponse(response, fileName, filePath);
     }
 
     @RequestMapping("/templatePage")

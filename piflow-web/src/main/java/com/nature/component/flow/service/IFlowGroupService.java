@@ -76,5 +76,14 @@ public interface IFlowGroupService {
      */
     public int deleteFLowGroupInfo(String id);
 
+    /**
+     * Copy flow to group
+     *
+     * @param flowId
+     * @param flowGroupId
+     * @return
+     */
+    public String copyFlowToGroup(String flowId, String flowGroupId);
+
 
 }

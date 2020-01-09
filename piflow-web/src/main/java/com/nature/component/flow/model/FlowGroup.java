@@ -31,7 +31,7 @@ public class FlowGroup extends BaseHibernateModelUUIDNoCorpAgentId {
     @Column(columnDefinition = "bit(1) COMMENT 'isExample'")
     private Boolean isExample = false;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "flowGroup")
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "flowGroup")
     @Where(clause = "enable_flag=1")
     private MxGraphModel mxGraphModel;
 
@@ -39,12 +39,12 @@ public class FlowGroup extends BaseHibernateModelUUIDNoCorpAgentId {
     @JoinColumn(name = "FK_FLOW_PROJECT_ID")
     private FlowProject flowProject;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "flowGroup")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "flowGroup")
     @Where(clause = "enable_flag=1")
     @OrderBy(clause = "lastUpdateDttm desc")
     private List<Flow> flowList = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "flowGroup")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "flowGroup")
     @Where(clause = "enable_flag=1")
     @OrderBy(clause = "lastUpdateDttm desc")
     private List<FlowGroupPaths> flowGroupPathsList = new ArrayList<>();

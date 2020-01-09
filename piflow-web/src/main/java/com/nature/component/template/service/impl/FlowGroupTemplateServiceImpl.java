@@ -22,16 +22,12 @@ import com.nature.mapper.flow.FlowMapper;
 import com.nature.mapper.template.FlowGroupTemplateMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -50,34 +46,34 @@ public class FlowGroupTemplateServiceImpl implements IFlowGroupTemplateService {
     @Resource
     private FlowMapper flowMapper;
 
-    @Autowired
+    @Resource
     private FlowGroupTemplateDomain flowGroupTemplateDomain;
 
-    @Autowired
+    @Resource
     private FlowGroupDomain flowGroupDomain;
 
-    @Autowired
+    @Resource
     private MxGraphModelDomain mxGraphModelDomain;
 
-    @Autowired
+    @Resource
     private MxCellDomain mxCellDomain;
 
-    @Autowired
+    @Resource
     private MxGeometryDomain mxGeometryDomain;
 
-    @Autowired
+    @Resource
     private FlowGroupPathsDomain flowGroupPathsDomain;
 
-    @Autowired
+    @Resource
     private FlowDomain flowDomain;
 
-    @Autowired
+    @Resource
     private StopsDomain stopsDomain;
 
-    @Autowired
+    @Resource
     private PropertyDomain propertyDomain;
 
-    @Autowired
+    @Resource
     private PathsDomain pathsDomain;
 
 
@@ -90,7 +86,6 @@ public class FlowGroupTemplateServiceImpl implements IFlowGroupTemplateService {
      * @return
      */
     @Override
-    @Transactional
     public String addFlowGroupTemplate(String name, String loadId, String value) {
         UserVo user = SessionUserUtil.getCurrentUser();
         String username = (null != user) ? user.getUsername() : "-1";
@@ -147,7 +142,6 @@ public class FlowGroupTemplateServiceImpl implements IFlowGroupTemplateService {
      * @return
      */
     @Override
-    @Transactional
     public int deleteFlowGroupTemplate(String id) {
         int deleteTemplate = 0;
         if (StringUtils.isNoneBlank(id)) {
@@ -167,25 +161,9 @@ public class FlowGroupTemplateServiceImpl implements IFlowGroupTemplateService {
         if (null == flowGroupTemplateVo) {
             logger.info("Template is empty,Download template failed");
         } else {
-            try {
-                // Download local files
-                String fileName = flowGroupTemplateVo.getName() + ".xml".toString(); // 文件的默认保存名
-                // Read to the stream
-                InputStream inStream = new FileInputStream(flowGroupTemplateVo.getPath());// 文件的存放路径
-                // Format the output
-                response.reset();
-                response.setContentType("bin");
-                response.addHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
-                // Loop out the data in the stream
-                byte[] b = new byte[100];
-                int len;
-
-                while ((len = inStream.read(b)) > 0)
-                    response.getOutputStream().write(b, 0, len);
-                inStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            String fileName = flowGroupTemplateVo.getName() + ".xml".toString(); // The default save name of the file
+            String filePath = flowGroupTemplateVo.getPath();// File storage path
+            FileUtils.downloadFileResponse(response, fileName, filePath);
         }
 
     }
@@ -197,7 +175,6 @@ public class FlowGroupTemplateServiceImpl implements IFlowGroupTemplateService {
      * @return
      */
     @Override
-    @Transactional
     public String uploadXmlFile(MultipartFile file) {
         UserVo user = SessionUserUtil.getCurrentUser();
         String username = (null != user) ? user.getUsername() : "-1";
@@ -266,7 +243,6 @@ public class FlowGroupTemplateServiceImpl implements IFlowGroupTemplateService {
     }
 
     @Override
-    @Transactional
     public String loadFlowGroupTemplate(String templateId, String loadId) {
         Map<String, Object> rtnMap = new HashMap<>();
         rtnMap.put("code", 500);

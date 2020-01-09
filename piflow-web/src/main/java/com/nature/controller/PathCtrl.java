@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/path/*")
+@RequestMapping("/path")
 public class PathCtrl {
 
     /**

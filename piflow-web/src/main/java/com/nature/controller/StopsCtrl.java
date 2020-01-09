@@ -116,7 +116,7 @@ public class StopsCtrl {
             if (updateStopsCheckpoint > 0) {
                 rtnMap.put("code", 200);
                 rtnMap.put("errorMsg", "Saved successfully");
-                logger.info("保存成功");
+                logger.info("Saved successfully");
             } else {
                 rtnMap.put("errorMsg", "Database save failed");
                 logger.info("Database save failed");

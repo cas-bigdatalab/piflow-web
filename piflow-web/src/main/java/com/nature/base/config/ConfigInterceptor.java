@@ -4,10 +4,10 @@ import com.nature.common.constant.SysParamsCache;
 import com.nature.component.system.model.SysInitRecords;
 import com.nature.domain.system.SysInitRecordsDomain;
 import lombok.extern.log4j.Log4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 @Log4j
 public class ConfigInterceptor implements HandlerInterceptor {
 
-    @Autowired
+    @Resource
     private SysInitRecordsDomain sysInitRecordsDomain;
 
     @Override

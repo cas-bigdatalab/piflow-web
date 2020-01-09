@@ -1,5 +1,6 @@
 package com.nature.base.util;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -9,6 +10,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -47,10 +49,13 @@ public class FileUtils {
             File file = new File(realPath);
             if (!file.getParentFile().exists()) {
                 //Create if it does not exist
-                file.getParentFile().mkdirs();
+                boolean mkdirs = file.getParentFile().mkdirs();
+                if (mkdirs) {
+                    logger.info("File created successfully");
+                }
                 logger.info("==============File directory does not exist, new file==============");
             }
-            /** Write the contents of the document to the file */
+            // Write the contents of the document to the file
             TransformerFactory tFactory = TransformerFactory.newInstance();
             Transformer transformer = tFactory.newTransformer();
             transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
@@ -83,7 +88,10 @@ public class FileUtils {
             String saveFileName = file.getOriginalFilename();
             File saveFile = new File(path + saveFileName);
             if (!saveFile.getParentFile().exists()) {
-                saveFile.getParentFile().mkdirs();
+                boolean mkdirs = saveFile.getParentFile().mkdirs();
+                if (mkdirs) {
+                    logger.info("File created successfully");
+                }
             }
             try {
                 BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(saveFile));
@@ -97,12 +105,12 @@ public class FileUtils {
                 rtnMap.put("code", 200);
             } catch (FileNotFoundException e) {
                 //e.printStackTrace();
-                rtnMap.put("msgInfo", "Upload failure" + e.getMessage());
-                logger.error("Upload failure," + e.getMessage(), e);
+                rtnMap.put("msgInfo", "Upload failure");
+                logger.error("Upload failure,", e);
             } catch (IOException e) {
                 //e.printStackTrace();
-                rtnMap.put("msgInfo", "Upload failure" + e.getMessage());
-                logger.error("msgInfo", "Upload failure" + e.getMessage(), e);
+                rtnMap.put("msgInfo", "Upload failure");
+                logger.error("Upload failure", e);
             }
         } else {
             rtnMap.put("msgInfo", "The upload failed because the file was empty.");
@@ -119,8 +127,11 @@ public class FileUtils {
      * @return
      */
     public static Document strToDocument(String xmlStr) {
-        xmlStr.replace("&", "&amp;");
         Document doc = null;
+        if (StringUtils.isBlank(xmlStr)) {
+            return null;
+        }
+        xmlStr = xmlStr.replace("&", "&amp;");
         StringReader sr = new StringReader(xmlStr);
         InputSource is = new InputSource(sr);
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -129,11 +140,11 @@ public class FileUtils {
             builder = factory.newDocumentBuilder();
             doc = builder.parse(is);
         } catch (ParserConfigurationException e) {
-            logger.error("ParserConfiguration错误", e);
+            logger.error("ParserConfiguration Error", e);
         } catch (SAXException e) {
-            logger.error("SAX错误", e);
+            logger.error("SAX Error", e);
         } catch (IOException e) {
-            logger.error("IO错误", e);
+            logger.error("IO Error", e);
         }
         return doc;
     }
@@ -148,9 +159,8 @@ public class FileUtils {
         String scheme = request.getScheme();//http
         String serverName = request.getServerName();//localhost
         int serverPort = request.getServerPort();//8080
-        String contextPath = request.getContextPath();//项目名
-        String url = scheme + "://" + serverName + ":" + serverPort + contextPath;//http://127.0.0.1:8080/test
-        return url;
+        String contextPath = request.getContextPath();//projectName
+        return scheme + "://" + serverName + ":" + serverPort + contextPath;
     }
 
 
@@ -161,8 +171,10 @@ public class FileUtils {
      */
     public static HttpServletRequest getRequest() {
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-        HttpServletRequest request = (HttpServletRequest) requestAttributes.resolveReference(RequestAttributes.REFERENCE_REQUEST);
-        return request;
+        if (requestAttributes != null) {
+            return (HttpServletRequest) requestAttributes.resolveReference(RequestAttributes.REFERENCE_REQUEST);
+        }
+        return null;
     }
 
     /**
@@ -174,8 +186,8 @@ public class FileUtils {
     public static String XmlFileToStr(String path) {
         String xmlString = "";
         byte[] strBuffer = null;
-        InputStream in = null;
-        int flen = 0;
+        InputStream in;
+        int flen;
         File xmlfile = new File(path);
         try {
             in = new FileInputStream(xmlfile);
@@ -185,14 +197,37 @@ public class FileUtils {
             in.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-            logger.info("FileNotFound Error" + e.getMessage());
+            logger.error("FileNotFound Error", e);
         } catch (IOException e) {
-            logger.info("Conversion IO Error" + e.getMessage());
+            logger.error("Conversion IO Error", e);
             e.printStackTrace();
         }
-        xmlString = new String(strBuffer); //When constructing ‘String’, you can use the ‘byte[]’ type.
-        logger.info("'xml' file converted string：" + xmlString);
+        if (null != strBuffer) {
+            xmlString = new String(strBuffer); //When constructing ‘String’, you can use the ‘byte[]’ type.
+            logger.info("'xml' file converted string：" + xmlString);
+        }
         return xmlString;
+    }
+
+    public static void downloadFileResponse(HttpServletResponse response, String fileName, String filePath) {
+        try {
+            // Download local files
+            // Read to the stream
+            InputStream inStream = new FileInputStream(filePath);// File storage path
+            // Format the output
+            response.reset();
+            response.setContentType("bin");
+            response.addHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+            // Loop out the data in the stream
+            byte[] b = new byte[100];
+            int len;
+
+            while ((len = inStream.read(b)) > 0)
+                response.getOutputStream().write(b, 0, len);
+            inStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 

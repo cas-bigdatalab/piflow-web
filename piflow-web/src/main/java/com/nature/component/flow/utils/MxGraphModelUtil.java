@@ -83,10 +83,10 @@ public class MxGraphModelUtil {
      * @param root
      * @return Returns a list of Mxcell types with elements and paths in the map (keys: paths and elements)
      */
-    public static Map<String, Object> distinguishElementsPaths(List<MxCellVo> root) {
-        Map<String, Object> map = null;
+    public static Map<String, List<MxCellVo>> distinguishElementsPaths(List<MxCellVo> root) {
+        Map<String, List<MxCellVo>> map = null;
         if (null != root && root.size() > 0) {
-            map = new HashMap<String, Object>();
+            map = new HashMap<>();
             List<MxCellVo> pathsList = new ArrayList<MxCellVo>();
             List<MxCellVo> elementsList = new ArrayList<MxCellVo>();
             // Loop root
@@ -225,7 +225,6 @@ public class MxGraphModelUtil {
         FlowGroupPaths flowGroupPaths = null;
         if (null != mxCellVo) {
             flowGroupPaths = new FlowGroupPaths();
-            flowGroupPaths.setId(SqlUtils.getUUID32());
             flowGroupPaths.setCrtDttm(new Date());
             flowGroupPaths.setCrtUser(username);
             flowGroupPaths.setLastUpdateDttm(new Date());

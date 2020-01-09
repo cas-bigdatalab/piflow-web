@@ -96,4 +96,17 @@ public class FlowGroupCtrl {
         return flowGroupServiceImpl.deleteFLowGroupInfo(id);
     }
 
+    /**
+     * Copy flow to group
+     *
+     * @param flowId
+     * @param flowGroupId
+     * @return
+     */
+    @RequestMapping("/copyFlowToGroup")
+    @ResponseBody
+    public String copyFlowToGroup(String flowId, String flowGroupId) {
+        return flowGroupServiceImpl.copyFlowToGroup(flowId, flowGroupId);
+    }
+
 }
