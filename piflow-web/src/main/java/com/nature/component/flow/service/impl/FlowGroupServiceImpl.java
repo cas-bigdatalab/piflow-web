@@ -29,6 +29,7 @@ import com.nature.domain.mxGraph.MxGeometryDomain;
 import com.nature.domain.mxGraph.MxGraphModelDomain;
 import com.nature.domain.process.*;
 import com.nature.mapper.flow.FlowGroupMapper;
+import com.nature.mapper.flow.FlowMapper;
 import com.nature.third.service.IGroup;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -50,6 +51,9 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
 
     @Resource
     private FlowDomain flowDomain;
+
+    @Resource
+    private FlowMapper flowMapper;
 
     @Resource
     private MxGraphModelDomain mxGraphModelDomain;
@@ -1071,12 +1075,89 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
             rtnMap = ReturnMapUtils.setFailedMsg("Save failed, flowGroup is empty");
             return JsonUtils.toJsonNoException(rtnMap);
         }
-        Flow flow = flowDomain.getFlowById(flowId);
+        Flow flow = flowMapper.getFlowById(flowId);
         if (null == flow) {
             rtnMap = ReturnMapUtils.setFailedMsg("Save failed, Flow is empty");
             return JsonUtils.toJsonNoException(rtnMap);
         }
-        Flow newFlow = FlowUtil.copyCreateFlow(flow, currentUser.getUsername());
+        Flow flowNew = FlowUtil.copyCreateFlow(flow, currentUser.getUsername());
+        if (null == flowNew) {
+            rtnMap = ReturnMapUtils.setFailedMsg("Save failed, Copy failed");
+            return JsonUtils.toJsonNoException(rtnMap);
+        }
+        MxGraphModel mxGraphModel = flowGroupById.getMxGraphModel();
+        if (null == mxGraphModel) {
+            rtnMap = ReturnMapUtils.setFailedMsg("Save failed, MxGraphModel is empty");
+            return JsonUtils.toJsonNoException(rtnMap);
+        }
+        List<MxCell> root = mxGraphModel.getRoot();
+        if (null == root) {
+            root = new ArrayList<>();
+        }
+        if (root.size() <= 0) {
+            MxCell mxCell0 = new MxCell();
+            mxCell0.setMxGraphModel(mxGraphModel);
+            mxCell0.setCrtDttm(new Date());
+            mxCell0.setCrtUser(currentUser.getUsername());
+            mxCell0.setLastUpdateDttm(new Date());
+            mxCell0.setLastUpdateUser(currentUser.getUsername());
+            mxCell0.setPageId("0");
+            root.add(mxCell0);
+            MxCell mxCell1 = new MxCell();
+            mxCell1.setMxGraphModel(mxGraphModel);
+            mxCell1.setCrtDttm(new Date());
+            mxCell1.setCrtUser(currentUser.getUsername());
+            mxCell1.setLastUpdateDttm(new Date());
+            mxCell1.setLastUpdateUser(currentUser.getUsername());
+            mxCell1.setPageId("1");
+            mxCell1.setParent("0");
+            root.add(mxCell1);
+        }
+        // Get the maximum value of pageid in stop
+        String maxStopPageIdByFlowGroupId = flowMapper.getMaxFlowPageIdByFlowGroupId(flowGroupId);
+        maxStopPageIdByFlowGroupId = StringUtils.isNotBlank(maxStopPageIdByFlowGroupId) ? maxStopPageIdByFlowGroupId : "1";
+        int maxPageId = Integer.parseInt(maxStopPageIdByFlowGroupId);
+
+        flowNew.setPageId((maxPageId + 1) + "");
+
+        MxCell mxCell = new MxCell();
+        mxCell.setMxGraphModel(mxGraphModel);
+        mxCell.setCrtDttm(new Date());
+        mxCell.setCrtUser(currentUser.getUsername());
+        mxCell.setLastUpdateDttm(new Date());
+        mxCell.setLastUpdateUser(currentUser.getUsername());
+        mxCell.setPageId((maxPageId + 1) + "");
+        mxCell.setParent("1");
+        mxCell.setStyle("image;html=1;labelBackgroundColor=#ffffff00;image=/piflow-web/img/flow_02_128x128.png");
+        mxCell.setValue(flowNew.getName() + (maxPageId + 1));
+        mxCell.setVertex("1");
+
+        MxGeometry mxGeometry = new MxGeometry();
+        mxGeometry.setMxCell(mxCell);
+        mxGeometry.setCrtDttm(new Date());
+        mxGeometry.setCrtUser(currentUser.getUsername());
+        mxGeometry.setLastUpdateDttm(new Date());
+        mxGeometry.setLastUpdateUser(currentUser.getUsername());
+        mxGeometry.setAs("geometry");
+        mxGeometry.setHeight("66");
+        mxGeometry.setWidth("66");
+        mxGeometry.setX("200");
+        mxGeometry.setY("200");
+
+        mxCell.setMxGeometry(mxGeometry);
+        root.add(mxCell);
+        mxGraphModel.setRoot(root);
+        flowGroupById.setMxGraphModel(mxGraphModel);
+
+        List<Flow> flowList = flowGroupById.getFlowList();
+        if (null == flowList) {
+            flowList = new ArrayList<>();
+        }
+        //flowNew = flowDomain.saveOrUpdate(flowNew);
+        flowNew.setFlowGroup(flowGroupById);
+        flowList.add(flowNew);
+        flowGroupById.setFlowList(flowList);
+        flowGroupDomain.saveOrUpdate(flowGroupById);
         return JsonUtils.toJsonNoException(ReturnMapUtils.setFailedMsg("failed"));
     }
 

@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import javax.transaction.Transactional;
 import java.io.Serializable;
 
 public interface ProcessJpaRepository extends JpaRepository<Process, String>, JpaSpecificationExecutor<Process>, Serializable {
@@ -28,6 +29,7 @@ public interface ProcessJpaRepository extends JpaRepository<Process, String>, Jp
     @Query("select c from Process c where c.enableFlag=1 and c.crtUser=:userName and (c.name like CONCAT('%',:param,'%') or c.description like CONCAT('%',:param,'%'))")
     Page<Process> getProcessListPage(@Param("userName") String userName, @Param("param") String param, Pageable pageable);
 
+    @Transactional
     @Modifying
     @Query("update Process c set c.enableFlag = :enableFlag where c.id = :id")
     int updateEnableFlagById(@Param("id") String id, @Param("enableFlag") boolean enableFlag);

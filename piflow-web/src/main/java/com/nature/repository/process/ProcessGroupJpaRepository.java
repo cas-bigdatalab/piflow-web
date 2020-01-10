@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import javax.transaction.Transactional;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -29,6 +30,7 @@ public interface ProcessGroupJpaRepository extends JpaRepository<ProcessGroup, S
     @Query("select c from ProcessGroup c where c.enableFlag=1 and c.crtUser=:userName and (c.name like CONCAT('%',:param,'%') or c.description like CONCAT('%',:param,'%'))")
     Page<ProcessGroup> getProcessGroupListPageByUser(@Param("userName") String userName, @Param("param") String param, Pageable pageable);
 
+    @Transactional
     @Modifying
     @Query("update ProcessGroup c set c.enableFlag = :enableFlag, c.lastUpdateUser = :lastUpdateUser, c.lastUpdateDttm = :lastUpdateDttm where c.id = :id")
     int updateEnableFlagById(@Param("id") String id, @Param("lastUpdateUser") String lastUpdateUser, @Param("lastUpdateDttm") Date lastUpdateDttm, @Param("enableFlag") boolean enableFlag);

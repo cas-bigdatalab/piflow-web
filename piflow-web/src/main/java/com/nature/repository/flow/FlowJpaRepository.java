@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import javax.transaction.Transactional;
 import java.io.Serializable;
 
 public interface FlowJpaRepository extends JpaRepository<Flow, String>, JpaSpecificationExecutor<Flow>, Serializable {
@@ -28,6 +29,7 @@ public interface FlowJpaRepository extends JpaRepository<Flow, String>, JpaSpeci
     @Query("select c from Flow c where c.enableFlag=1 and c.isExample<>1 and c.crtUser=:userName and (c.name like CONCAT('%',:param,'%') or c.description like CONCAT('%',:param,'%'))")
     Page<Flow> getFlowListPage(@Param("userName") String userName, @Param("param") String param, Pageable pageable);
 
+    @Transactional
     @Modifying
     @Query("update Flow c set c.enableFlag = :enableFlag where c.id = :id")
     int updateEnableFlagById(@Param("id") String id, @Param("enableFlag") boolean enableFlag);
