@@ -1061,34 +1061,27 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
     @Override
     public String copyFlowToGroup(String flowId, String flowGroupId) {
         UserVo currentUser = SessionUserUtil.getCurrentUser();
-        Map<String, Object> rtnMap;
         if (null == currentUser) {
-            rtnMap = ReturnMapUtils.setFailedMsg("Illegal user, Load failed");
-            return JsonUtils.toJsonNoException(rtnMap);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal user, Load failed");
         }
         if (StringUtils.isBlank(flowGroupId) || StringUtils.isBlank(flowId)) {
-            rtnMap = ReturnMapUtils.setFailedMsg("flowGroupId or flowId is empty");
-            return JsonUtils.toJsonNoException(rtnMap);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("flowGroupId or flowId is empty");
         }
         FlowGroup flowGroupById = flowGroupDomain.getFlowGroupById(flowGroupId);
         if (null == flowGroupById) {
-            rtnMap = ReturnMapUtils.setFailedMsg("Save failed, flowGroup is empty");
-            return JsonUtils.toJsonNoException(rtnMap);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Save failed, flowGroup is empty");
         }
         Flow flow = flowMapper.getFlowById(flowId);
         if (null == flow) {
-            rtnMap = ReturnMapUtils.setFailedMsg("Save failed, Flow is empty");
-            return JsonUtils.toJsonNoException(rtnMap);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Save failed, Flow is empty");
         }
         Flow flowNew = FlowUtil.copyCreateFlow(flow, currentUser.getUsername());
         if (null == flowNew) {
-            rtnMap = ReturnMapUtils.setFailedMsg("Save failed, Copy failed");
-            return JsonUtils.toJsonNoException(rtnMap);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Save failed, Copy failed");
         }
         MxGraphModel mxGraphModel = flowGroupById.getMxGraphModel();
         if (null == mxGraphModel) {
-            rtnMap = ReturnMapUtils.setFailedMsg("Save failed, MxGraphModel is empty");
-            return JsonUtils.toJsonNoException(rtnMap);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Save failed, MxGraphModel is empty");
         }
         List<MxCell> root = mxGraphModel.getRoot();
         if (null == root) {
@@ -1157,8 +1150,14 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
         flowNew.setFlowGroup(flowGroupById);
         flowList.add(flowNew);
         flowGroupById.setFlowList(flowList);
-        flowGroupDomain.saveOrUpdate(flowGroupById);
-        return JsonUtils.toJsonNoException(ReturnMapUtils.setFailedMsg("failed"));
+        flowGroupById = flowGroupDomain.saveOrUpdate(flowGroupById);
+        MxGraphModel mxGraphModelNew = flowGroupById.getMxGraphModel();
+        MxGraphModelVo mxGraphModelVo = FlowXmlUtils.mxGraphModelPoToVo(mxGraphModelNew);
+        // Change the query'mxGraphModelVo'to'XML'
+        String loadXml = FlowXmlUtils.mxGraphModelToXml(mxGraphModelVo);
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg("success");
+        rtnMap.put("xmlStr",loadXml);
+        return JsonUtils.toFormatJsonNoException(rtnMap);
     }
 
 }

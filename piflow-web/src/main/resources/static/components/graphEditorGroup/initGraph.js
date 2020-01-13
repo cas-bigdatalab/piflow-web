@@ -755,10 +755,11 @@ function getFlowList() {
             layer.open({
                 type: 1,
                 title: '<span style="color: #269252;">Flows</span>',
+                shade: 0,
                 shadeClose: false,
                 closeBtn: 1,
                 shift: 7,
-                area: [(window_width - 100) + 'px', (window_height - 100) + 'px'], //Width height
+                area: [(window_width / 2) + 'px', (window_height - 100) + 'px'], //Width height
                 skin: 'layui-layer-rim', //Add borders
                 content: data
             });

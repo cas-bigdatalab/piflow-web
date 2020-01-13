@@ -18,43 +18,78 @@ public class ReturnMapUtils {
     /**
      * set Failure information
      *
-     * @param errorMsg
-     * @return
+     * @param errorMsg Custom failure message
+     * @return Map
      */
     public static Map<String, Object> setFailedMsg(String errorMsg) {
         errorMsg = (StringUtils.isNotBlank(errorMsg) ? errorMsg : ERROR_MSG);
         logger.warn(errorMsg);
         Map<String, Object> rtnMap = new HashMap<>();
-        rtnMap.put("code", ReturnMapUtils.ERROR_CODE);
+        rtnMap.put("code", ERROR_CODE);
         rtnMap.put("errorMsg", errorMsg);
         return rtnMap;
     }
 
     /**
+     * set Failure information
+     *
+     * @param errorMsg Custom failure message
+     * @return JsonStr
+     */
+    public static String setFailedMsgRtnJsonStr(String errorMsg) {
+        Map<String, Object> stringObjectMap = setFailedMsg(errorMsg);
+        return JsonUtils.toJsonNoException(stringObjectMap);
+    }
+
+    /**
      * set Success message
      *
-     * @param succeededMsg
-     * @return
+     * @param succeededMsg Custom success message
+     * @return Map
      */
     public static Map<String, Object> setSucceededMsg(String succeededMsg) {
         succeededMsg = (StringUtils.isNotBlank(succeededMsg) ? succeededMsg : SUCCEEDED_MSG);
         logger.info(succeededMsg);
         Map<String, Object> rtnMap = new HashMap<>();
-        rtnMap.put("code", ReturnMapUtils.SUCCEEDED_CODE);
+        rtnMap.put("code", SUCCEEDED_CODE);
         rtnMap.put("errorMsg", succeededMsg);
         return rtnMap;
     }
 
     /**
+     * set Success information
+     *
+     * @param succeededMsg Custom success message
+     * @return JsonStr
+     */
+    public static String setSucceededMsgRtnJsonStr(String succeededMsg) {
+        Map<String, Object> stringObjectMap = setSucceededMsg(succeededMsg);
+        return JsonUtils.toJsonNoException(stringObjectMap);
+    }
+
+    /**
      * set code and message
      *
-     * @param msg
-     * @return
+     * @param code status code
+     * @param msg Custom message
+     * @return Map
      */
     public static Map<String, Object> setCodeAndMsg(Integer code, String msg) {
         Map<String, Object> rtnMap = new HashMap<>();
         rtnMap.put("code", code);
         rtnMap.put("errorMsg", msg);
         return rtnMap;
+    }
+
+    /**
+     * set code and message
+     *
+     * @param code status code
+     * @param msg Custom message
+     * @return JsonStr
+     */
+    public static String setCodeAndMsgRtnJsonStr(Integer code, String msg) {
+        Map<String, Object> stringObjectMap = setCodeAndMsg(code, msg);
+        return JsonUtils.toJsonNoException(stringObjectMap);
     }
 }

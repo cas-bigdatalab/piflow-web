@@ -94,6 +94,7 @@ function importFlow(flowId) {
         success: function (data) {
             var dataMap = JSON.parse(data);
             if (200 === dataMap.code) {
+                loadXml(dataMap.xmlStr);
                 alert("cheng_gong cheng_gong cheng_gong cheng_gong cheng_gong cheng_gong cheng_gong cheng_gong");
             } else {
                 alert(dataMap.errorMsg);
