@@ -10,7 +10,6 @@ import com.nature.component.flow.service.IPathsService;
 import com.nature.component.flow.utils.PathsUtil;
 import com.nature.component.flow.vo.FlowVo;
 import com.nature.component.flow.vo.PathsVo;
-import com.nature.mapper.flow.FlowMapper;
 import com.nature.mapper.flow.PathsMapper;
 import com.nature.mapper.flow.PropertyMapper;
 import org.apache.commons.lang3.StringUtils;

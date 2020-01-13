@@ -10,12 +10,6 @@ import com.nature.component.mxGraph.model.MxGraphModel;
 import com.nature.component.system.model.SysMenu;
 import com.nature.component.system.model.SysSchedule;
 import com.nature.domain.flow.FlowDomain;
-import com.nature.domain.flow.PathsDomain;
-import com.nature.domain.flow.PropertyDomain;
-import com.nature.domain.flow.StopsDomain;
-import com.nature.domain.mxGraph.MxCellDomain;
-import com.nature.domain.mxGraph.MxGeometryDomain;
-import com.nature.domain.mxGraph.MxGraphModelDomain;
 import com.nature.domain.system.SysMenuDomain;
 import com.nature.domain.system.SysScheduleDomain;
 import com.nature.mapper.system.SysMenuMapper;
@@ -26,8 +20,10 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ResourceUtils;
 
 import javax.annotation.Resource;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -51,24 +47,6 @@ public class StartLoader implements ApplicationRunner {
     private FlowDomain flowDomain;
 
     @Resource
-    private MxGraphModelDomain mxGraphModelDomain;
-
-    @Resource
-    private MxCellDomain mxCellDomain;
-
-    @Resource
-    private MxGeometryDomain mxGeometryDomain;
-
-    @Resource
-    private PathsDomain pathsDomain;
-
-    @Resource
-    private StopsDomain stopsDomain;
-
-    @Resource
-    private PropertyDomain propertyDomain;
-
-    @Resource
     private SysMenuDomain sysMenuDomain;
 
 
@@ -79,7 +57,7 @@ public class StartLoader implements ApplicationRunner {
         loadSample();
     }
 
-    private Boolean loadSample() {
+    private Boolean loadSample() throws FileNotFoundException {
         List<SysMenu> sampleMenuList = sysMenuMapper.getSampleMenuList();
         boolean loadExample1 = true;
         boolean loadExample2 = true;
@@ -92,7 +70,8 @@ public class StartLoader implements ApplicationRunner {
                 }
             }
         }
-        String storagePathHead = System.getProperty("user.dir") + "/src/main/resources/static/sample/";
+        //String storagePathHead = System.getProperty("user.dir") + "/static/sample/";
+        String storagePathHead = ResourceUtils.getURL("classpath:").getPath() + "/static/sample/";
         List<String> exampleNames = new ArrayList<>();
         if (loadExample1) {
             exampleNames.add("Example1");

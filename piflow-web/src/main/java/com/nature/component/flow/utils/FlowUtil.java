@@ -1,17 +1,13 @@
 package com.nature.component.flow.utils;
 
-import com.nature.common.Eunm.PortType;
-import com.nature.component.dataSource.model.DataSource;
 import com.nature.component.flow.model.*;
 import com.nature.component.flow.vo.*;
 import com.nature.component.mxGraph.model.MxCell;
 import com.nature.component.mxGraph.model.MxGeometry;
 import com.nature.component.mxGraph.model.MxGraphModel;
 import org.apache.commons.collections.CollectionUtils;
-import org.hibernate.annotations.Where;
 import org.springframework.beans.BeanUtils;
 
-import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
