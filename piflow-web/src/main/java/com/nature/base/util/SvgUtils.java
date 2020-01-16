@@ -1,7 +1,7 @@
 package com.nature.base.util;
 
 import com.nature.common.Eunm.ArrowDirection;
-import com.nature.component.flow.utils.MxGraphModelUtil;
+import com.nature.component.mxGraph.utils.MxGraphModelUtil;
 import com.nature.component.mxGraph.model.MxCell;
 import com.nature.component.mxGraph.model.MxGeometry;
 import com.nature.component.mxGraph.model.MxGraphModel;

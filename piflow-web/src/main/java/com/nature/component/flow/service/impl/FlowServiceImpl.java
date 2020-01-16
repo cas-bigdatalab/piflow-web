@@ -10,7 +10,7 @@ import com.nature.common.Eunm.ProcessState;
 import com.nature.common.Eunm.RunModeType;
 import com.nature.component.flow.model.*;
 import com.nature.component.flow.service.IFlowService;
-import com.nature.component.flow.utils.MxGraphModelUtil;
+import com.nature.component.mxGraph.utils.MxGraphModelUtil;
 import com.nature.component.flow.utils.PathsUtil;
 import com.nature.component.flow.utils.StopsUtil;
 import com.nature.component.flow.vo.FlowVo;

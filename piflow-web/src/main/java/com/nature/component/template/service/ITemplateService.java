@@ -49,4 +49,6 @@ public interface ITemplateService {
      * @return
      */
     public String getTemplateListPage(Integer offset, Integer limit, String param);
+
+    public String loadTemplateToFlow(String flowId,String templateId);
 }

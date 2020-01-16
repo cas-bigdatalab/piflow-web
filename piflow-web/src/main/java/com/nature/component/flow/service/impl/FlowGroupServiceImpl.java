@@ -9,7 +9,7 @@ import com.nature.component.flow.model.*;
 import com.nature.component.flow.service.IFlowGroupService;
 import com.nature.component.flow.utils.FlowGroupPathsUtil;
 import com.nature.component.flow.utils.FlowUtil;
-import com.nature.component.flow.utils.MxGraphModelUtil;
+import com.nature.component.mxGraph.utils.MxGraphModelUtil;
 import com.nature.component.flow.vo.FlowGroupPathsVo;
 import com.nature.component.flow.vo.FlowGroupVo;
 import com.nature.component.flow.vo.FlowVo;

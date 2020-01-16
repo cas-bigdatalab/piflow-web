@@ -1,5 +1,6 @@
 package com.nature.component.flow.utils;
 
+import com.nature.base.util.SqlUtils;
 import com.nature.component.flow.model.*;
 import com.nature.component.flow.vo.*;
 import com.nature.component.mxGraph.model.MxCell;
@@ -13,6 +14,23 @@ import java.util.Date;
 import java.util.List;
 
 public class FlowUtil {
+
+    public static Flow setFlowBasicInformation(Flow flow, boolean isSetId, String username) {
+        if (null == flow) {
+            flow = new Flow();
+        }
+        if (isSetId) {
+            flow.setId(SqlUtils.getUUID32());
+        }
+        //set MxGraphModel basic information
+        flow.setCrtDttm(new Date());
+        flow.setCrtUser(username);
+        flow.setLastUpdateDttm(new Date());
+        flow.setLastUpdateUser(username);
+        flow.setVersion(0L);
+        return flow;
+    }
+
     /**
      * stopsList Po To Vo
      *

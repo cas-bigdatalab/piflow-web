@@ -2,6 +2,7 @@ package com.nature.base.util;
 
 import com.nature.common.Eunm.PortType;
 import com.nature.component.flow.model.*;
+import com.nature.component.flow.utils.FlowUtil;
 import com.nature.component.mxGraph.model.MxCell;
 import com.nature.component.mxGraph.model.MxGeometry;
 import com.nature.component.mxGraph.model.MxGraphModel;
@@ -23,10 +24,7 @@ import org.springframework.beans.BeanUtils;
 import org.xml.sax.InputSource;
 
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 @SuppressWarnings("rawtypes")
 public class FlowXmlUtils {
@@ -36,8 +34,8 @@ public class FlowXmlUtils {
     /**
      * mxGraphModel to mxGraphModelVo
      *
-     * @param mxGraphModel
-     * @return
+     * @param mxGraphModel mxGraphModel
+     * @return MxGraphModelVo
      */
     public static MxGraphModelVo mxGraphModelPoToVo(MxGraphModel mxGraphModel) {
         MxGraphModelVo mxGraphModelVo = null;
@@ -77,8 +75,8 @@ public class FlowXmlUtils {
     /**
      * "MxGraphModel" to string "xml"
      *
-     * @param mxGraphModelVo
-     * @return
+     * @param mxGraphModelVo mxGraphModelVo
+     * @return String
      */
     public static String mxGraphModelToXml(MxGraphModelVo mxGraphModelVo) {
         //Fight 'xml' note must write spaces
@@ -100,46 +98,46 @@ public class FlowXmlUtils {
             String background = mxGraphModelVo.getBackground();
             xmlStrSb.append("<mxGraphModel ");
             if (StringUtils.isNotBlank(dx)) {
-                xmlStrSb.append("dx=\"" + dx + "\" ");
+                xmlStrSb.append(spliceStr("dx", dx));
             }
             if (StringUtils.isNotBlank(dy)) {
-                xmlStrSb.append("dy=\"" + dy + "\" ");
+                xmlStrSb.append(spliceStr("dy", dy));
             }
             if (StringUtils.isNotBlank(grid)) {
-                xmlStrSb.append("grid=\"" + grid + "\" ");
+                xmlStrSb.append(spliceStr("grid", grid));
             }
             if (StringUtils.isNotBlank(gridSize)) {
-                xmlStrSb.append("gridSize=\"" + gridSize + "\" ");
+                xmlStrSb.append(spliceStr("gridSize", gridSize));
             }
             if (StringUtils.isNotBlank(guides)) {
-                xmlStrSb.append("guides=\"" + guides + "\" ");
+                xmlStrSb.append(spliceStr("guides", guides));
             }
             if (StringUtils.isNotBlank(tooltips)) {
-                xmlStrSb.append("tooltips=\"" + tooltips + "\" ");
+                xmlStrSb.append(spliceStr("tooltips", tooltips));
             }
             if (StringUtils.isNotBlank(connect)) {
-                xmlStrSb.append("connect=\"" + connect + "\" ");
+                xmlStrSb.append(spliceStr("connect", connect));
             }
             if (StringUtils.isNotBlank(arrows)) {
-                xmlStrSb.append("arrows=\"" + arrows + "\" ");
+                xmlStrSb.append(spliceStr("arrows", arrows));
             }
             if (StringUtils.isNotBlank(fold)) {
-                xmlStrSb.append("fold=\"" + fold + "\" ");
+                xmlStrSb.append(spliceStr("fold", fold));
             }
             if (StringUtils.isNotBlank(page)) {
-                xmlStrSb.append("page=\"" + page + "\" ");
+                xmlStrSb.append(spliceStr("page", page));
             }
             if (StringUtils.isNotBlank(pageScale)) {
-                xmlStrSb.append("pageScale=\"" + pageScale + "\" ");
+                xmlStrSb.append(spliceStr("pageScale", pageScale));
             }
             if (StringUtils.isNotBlank(pageWidth)) {
-                xmlStrSb.append("pageWidth=\"" + pageWidth + "\" ");
+                xmlStrSb.append(spliceStr("pageWidth", pageWidth));
             }
             if (StringUtils.isNotBlank(pageHeight)) {
-                xmlStrSb.append("pageHeight=\"" + pageHeight + "\" ");
+                xmlStrSb.append(spliceStr("pageHeight", pageHeight));
             }
             if (StringUtils.isNotBlank(background)) {
-                xmlStrSb.append("background=\"" + background + "\" ");
+                xmlStrSb.append(spliceStr("background", background));
             }
             xmlStrSb.append("><root>");
             List<MxCellVo> rootVoList = mxGraphModelVo.getRootVo();
@@ -156,28 +154,28 @@ public class FlowXmlUtils {
                     MxGeometryVo mxGeometryVo = mxCellVo.getMxGeometryVo();
                     xmlStrSb.append("<mxCell ");
                     if (StringUtils.isNotBlank(id)) {
-                        xmlStrSb.append("id=\"" + id + "\" ");
+                        xmlStrSb.append(spliceStr("id", id));
                     }
                     if (StringUtils.isNotBlank(value)) {
-                        xmlStrSb.append("value=\"" + value + "\" ");
+                        xmlStrSb.append(spliceStr("value", value));
                     }
                     if (StringUtils.isNotBlank(style)) {
-                        xmlStrSb.append("style=\"" + style + "\" ");
+                        xmlStrSb.append(spliceStr("style", style));
                     }
                     if (StringUtils.isNotBlank(parent)) {
-                        xmlStrSb.append("parent=\"" + parent + "\" ");
+                        xmlStrSb.append(spliceStr("parent", parent));
                     }
                     if (StringUtils.isNotBlank(source)) {
-                        xmlStrSb.append("source=\"" + source + "\" ");
+                        xmlStrSb.append(spliceStr("source", source));
                     }
                     if (StringUtils.isNotBlank(target)) {
-                        xmlStrSb.append("target=\"" + target + "\" ");
+                        xmlStrSb.append(spliceStr("target", target));
                     }
                     if (StringUtils.isNotBlank(vertex)) {
-                        xmlStrSb.append("vertex=\"" + vertex + "\" ");
+                        xmlStrSb.append(spliceStr("vertex", vertex));
                     }
                     if (StringUtils.isNotBlank(edge)) {
-                        xmlStrSb.append("edge=\"" + edge + "\" ");
+                        xmlStrSb.append(spliceStr("edge", edge));
                     }
                     if (null != mxGeometryVo) {
                         String relative = mxGeometryVo.getRelative();
@@ -188,22 +186,22 @@ public class FlowXmlUtils {
                         String height = mxGeometryVo.getHeight();
                         xmlStrSb.append("><mxGeometry ");
                         if (StringUtils.isNotBlank(x)) {
-                            xmlStrSb.append("x=\"" + x + "\" ");
+                            xmlStrSb.append(spliceStr("x", x));
                         }
                         if (StringUtils.isNotBlank(y)) {
-                            xmlStrSb.append("y=\"" + y + "\" ");
+                            xmlStrSb.append(spliceStr("y", y));
                         }
                         if (StringUtils.isNotBlank(width)) {
-                            xmlStrSb.append("width=\"" + width + "\" ");
+                            xmlStrSb.append(spliceStr("width", width));
                         }
                         if (StringUtils.isNotBlank(height)) {
-                            xmlStrSb.append("height=\"" + height + "\" ");
+                            xmlStrSb.append(spliceStr("height", height));
                         }
                         if (StringUtils.isNotBlank(relative)) {
-                            xmlStrSb.append("relative=\"" + relative + "\" ");
+                            xmlStrSb.append(spliceStr("relative", relative));
                         }
                         if (StringUtils.isNotBlank(as)) {
-                            xmlStrSb.append("as=\"" + as + "\" ");
+                            xmlStrSb.append(spliceStr("as", as));
                         }
                         xmlStrSb.append("/></mxCell>");
                     } else {
@@ -222,8 +220,8 @@ public class FlowXmlUtils {
     /**
      * "MxGraphModel" to string "xml"
      *
-     * @param mxGraphModel
-     * @return
+     * @param mxGraphModel mxGraphModel
+     * @return String
      */
     public static String mxGraphModelToXml(MxGraphModel mxGraphModel) {
         //Fight 'xml' note must write spaces
@@ -245,46 +243,46 @@ public class FlowXmlUtils {
             String background = mxGraphModel.getBackground();
             xmlStrSb.append("<mxGraphModel ");
             if (StringUtils.isNotBlank(dx)) {
-                xmlStrSb.append("dx=\"" + dx + "\" ");
+                xmlStrSb.append(spliceStr("dx", dx));
             }
             if (StringUtils.isNotBlank(dy)) {
-                xmlStrSb.append("dy=\"" + dy + "\" ");
+                xmlStrSb.append(spliceStr("dy", dy));
             }
             if (StringUtils.isNotBlank(grid)) {
-                xmlStrSb.append("grid=\"" + grid + "\" ");
+                xmlStrSb.append(spliceStr("grid", grid));
             }
             if (StringUtils.isNotBlank(gridSize)) {
-                xmlStrSb.append("gridSize=\"" + gridSize + "\" ");
+                xmlStrSb.append(spliceStr("gridSize", gridSize));
             }
             if (StringUtils.isNotBlank(guides)) {
-                xmlStrSb.append("guides=\"" + guides + "\" ");
+                xmlStrSb.append(spliceStr("guides", guides));
             }
             if (StringUtils.isNotBlank(tooltips)) {
-                xmlStrSb.append("tooltips=\"" + tooltips + "\" ");
+                xmlStrSb.append(spliceStr("tooltips", tooltips));
             }
             if (StringUtils.isNotBlank(connect)) {
-                xmlStrSb.append("connect=\"" + connect + "\" ");
+                xmlStrSb.append(spliceStr("connect", connect));
             }
             if (StringUtils.isNotBlank(arrows)) {
-                xmlStrSb.append("arrows=\"" + arrows + "\" ");
+                xmlStrSb.append(spliceStr("arrows", arrows));
             }
             if (StringUtils.isNotBlank(fold)) {
-                xmlStrSb.append("fold=\"" + fold + "\" ");
+                xmlStrSb.append(spliceStr("fold", fold));
             }
             if (StringUtils.isNotBlank(page)) {
-                xmlStrSb.append("page=\"" + page + "\" ");
+                xmlStrSb.append(spliceStr("page", page));
             }
             if (StringUtils.isNotBlank(pageScale)) {
-                xmlStrSb.append("pageScale=\"" + pageScale + "\" ");
+                xmlStrSb.append(spliceStr("pageScale", pageScale));
             }
             if (StringUtils.isNotBlank(pageWidth)) {
-                xmlStrSb.append("pageWidth=\"" + pageWidth + "\" ");
+                xmlStrSb.append(spliceStr("pageWidth", pageWidth));
             }
             if (StringUtils.isNotBlank(pageHeight)) {
-                xmlStrSb.append("pageHeight=\"" + pageHeight + "\" ");
+                xmlStrSb.append(spliceStr("pageHeight", pageHeight));
             }
             if (StringUtils.isNotBlank(background)) {
-                xmlStrSb.append("background=\"" + background + "\" ");
+                xmlStrSb.append(spliceStr("background", background));
             }
             xmlStrSb.append("><root>");
             List<MxCell> rootList = mxGraphModel.getRoot();
@@ -301,28 +299,28 @@ public class FlowXmlUtils {
                     MxGeometry mxGeometry = mxCell.getMxGeometry();
                     xmlStrSb.append("<mxCell ");
                     if (StringUtils.isNotBlank(id)) {
-                        xmlStrSb.append("id=\"" + id + "\" ");
+                        xmlStrSb.append(spliceStr("id", id));
                     }
                     if (StringUtils.isNotBlank(value)) {
-                        xmlStrSb.append("value=\"" + value + "\" ");
+                        xmlStrSb.append(spliceStr("value", value));
                     }
                     if (StringUtils.isNotBlank(style)) {
-                        xmlStrSb.append("style=\"" + style + "\" ");
+                        xmlStrSb.append(spliceStr("style", style));
                     }
                     if (StringUtils.isNotBlank(parent)) {
-                        xmlStrSb.append("parent=\"" + parent + "\" ");
+                        xmlStrSb.append(spliceStr("parent", parent));
                     }
                     if (StringUtils.isNotBlank(source)) {
-                        xmlStrSb.append("source=\"" + source + "\" ");
+                        xmlStrSb.append(spliceStr("source", source));
                     }
                     if (StringUtils.isNotBlank(target)) {
-                        xmlStrSb.append("target=\"" + target + "\" ");
+                        xmlStrSb.append(spliceStr("target", target));
                     }
                     if (StringUtils.isNotBlank(vertex)) {
-                        xmlStrSb.append("vertex=\"" + vertex + "\" ");
+                        xmlStrSb.append(spliceStr("vertex", vertex));
                     }
                     if (StringUtils.isNotBlank(edge)) {
-                        xmlStrSb.append("edge=\"" + edge + "\" ");
+                        xmlStrSb.append(spliceStr("edge", edge));
                     }
                     if (null != mxGeometry) {
                         String relative = mxGeometry.getRelative();
@@ -333,22 +331,22 @@ public class FlowXmlUtils {
                         String height = mxGeometry.getHeight();
                         xmlStrSb.append("><mxGeometry ");
                         if (StringUtils.isNotBlank(x)) {
-                            xmlStrSb.append("x=\"" + x + "\" ");
+                            xmlStrSb.append(spliceStr("x", x));
                         }
                         if (StringUtils.isNotBlank(y)) {
-                            xmlStrSb.append("y=\"" + y + "\" ");
+                            xmlStrSb.append(spliceStr("y", y));
                         }
                         if (StringUtils.isNotBlank(width)) {
-                            xmlStrSb.append("width=\"" + width + "\" ");
+                            xmlStrSb.append(spliceStr("width", width));
                         }
                         if (StringUtils.isNotBlank(height)) {
-                            xmlStrSb.append("height=\"" + height + "\" ");
+                            xmlStrSb.append(spliceStr("height", height));
                         }
                         if (StringUtils.isNotBlank(relative)) {
-                            xmlStrSb.append("relative=\"" + relative + "\" ");
+                            xmlStrSb.append(spliceStr("relative", relative));
                         }
                         if (StringUtils.isNotBlank(as)) {
-                            xmlStrSb.append("as=\"" + as + "\" ");
+                            xmlStrSb.append(spliceStr("as", as));
                         }
                         xmlStrSb.append("/></mxCell>");
                     } else {
@@ -367,8 +365,8 @@ public class FlowXmlUtils {
     /**
      * Flow to string xml
      *
-     * @param flow
-     * @return
+     * @param flow flow
+     * @return String
      */
     public static String flowAndStopInfoToXml(Flow flow, String xmlStr) {
         // Spell xml note must write spaces
@@ -384,28 +382,28 @@ public class FlowXmlUtils {
             String flowPageId = flow.getPageId();
             xmlStrSb.append("<flow ");
             if (StringUtils.isNotBlank(id)) {
-                xmlStrSb.append("id=\"" + StringEscapeUtils.escapeHtml(id) + "\" ");
+                xmlStrSb.append(spliceStr("id", StringEscapeUtils.escapeHtml(id)));
             }
             if (StringUtils.isNotBlank(name)) {
-                xmlStrSb.append("name=\"" + StringEscapeUtils.escapeHtml(name) + "\" ");
+                xmlStrSb.append(spliceStr("name", StringEscapeUtils.escapeHtml(name)));
             }
             if (StringUtils.isNotBlank(description)) {
-                xmlStrSb.append("description=\"" + StringEscapeUtils.escapeHtml(description) + "\" ");
+                xmlStrSb.append(spliceStr("description", StringEscapeUtils.escapeHtml(description)));
             }
             if (StringUtils.isNotBlank(driverMemory)) {
-                xmlStrSb.append("driverMemory=\"" + StringEscapeUtils.escapeHtml(driverMemory) + "\" ");
+                xmlStrSb.append(spliceStr("driverMemory", StringEscapeUtils.escapeHtml(driverMemory)));
             }
             if (StringUtils.isNotBlank(executorCores)) {
-                xmlStrSb.append("executorCores=\"" + StringEscapeUtils.escapeHtml(executorCores) + "\" ");
+                xmlStrSb.append(spliceStr("executorCores", StringEscapeUtils.escapeHtml(executorCores)));
             }
             if (StringUtils.isNotBlank(executorMemory)) {
-                xmlStrSb.append("executorMemory=\"" + StringEscapeUtils.escapeHtml(executorMemory) + "\" ");
+                xmlStrSb.append(spliceStr("executorMemory", StringEscapeUtils.escapeHtml(executorMemory)));
             }
             if (StringUtils.isNotBlank(executorNumber)) {
-                xmlStrSb.append("executorNumber=\"" + StringEscapeUtils.escapeHtml(executorNumber) + "\" ");
+                xmlStrSb.append(spliceStr("executorNumber", StringEscapeUtils.escapeHtml(executorNumber)));
             }
             if (StringUtils.isNotBlank(flowPageId)) {
-                xmlStrSb.append("pageId=\"" + StringEscapeUtils.escapeHtml(flowPageId) + "\" ");
+                xmlStrSb.append(spliceStr("pageId", StringEscapeUtils.escapeHtml(flowPageId)));
             }
             xmlStrSb.append("> \n");
             List<Stops> stopsVoList = flow.getStopsList();
@@ -427,46 +425,45 @@ public class FlowXmlUtils {
                     String crtUser = stopVo.getCrtUser();
                     xmlStrSb.append("<stop ");
                     if (StringUtils.isNotBlank(stopId)) {
-                        xmlStrSb.append("id=\"" + StringEscapeUtils.escapeHtml(stopId) + "\" ");
+                        xmlStrSb.append(spliceStr("id", StringEscapeUtils.escapeHtml(stopId)));
                     }
                     if (StringUtils.isNotBlank(pageId)) {
-                        xmlStrSb.append("pageId=\"" + StringEscapeUtils.escapeHtml(pageId) + "\" ");
+                        xmlStrSb.append(spliceStr("pageId", StringEscapeUtils.escapeHtml(pageId)));
                     }
                     if (StringUtils.isNotBlank(stopName)) {
-                        xmlStrSb.append("name=\"" + StringEscapeUtils.escapeHtml(stopName) + "\" ");
+                        xmlStrSb.append(spliceStr("name", StringEscapeUtils.escapeHtml(stopName)));
                     }
                     if (StringUtils.isNotBlank(bundel)) {
-                        xmlStrSb.append("bundel=\"" + StringEscapeUtils.escapeHtml(bundel) + "\" ");
+                        xmlStrSb.append(spliceStr("bundel", StringEscapeUtils.escapeHtml(bundel)));
                     }
                     if (StringUtils.isNotBlank(stopDescription)) {
                         stopDescription = stopDescription.replace("&", "&amp;");
-                        xmlStrSb.append("description=\"" + StringEscapeUtils.escapeHtml(stopDescription) + "\" ");
+                        xmlStrSb.append(spliceStr("description", StringEscapeUtils.escapeHtml(stopDescription)));
                     }
                     if (null != checkpoint) {
-                        int ischeckpoint = checkpoint ? 1 : 0;
-                        xmlStrSb.append("isCheckpoint=\"" + ischeckpoint + "\" ");
+                        xmlStrSb.append(spliceStr("isCheckpoint", (checkpoint ? 1 : 0)));
                     }
                     if (StringUtils.isNotBlank(inports)) {
-                        xmlStrSb.append("inports=\"" + StringEscapeUtils.escapeHtml(inports) + "\" ");
+                        xmlStrSb.append(spliceStr("inports", StringEscapeUtils.escapeHtml(inports)));
                     }
 
                     if (StringUtils.isNotBlank(outports)) {
-                        xmlStrSb.append("outports=\"" + StringEscapeUtils.escapeHtml(outports) + "\" ");
+                        xmlStrSb.append(spliceStr("outports", StringEscapeUtils.escapeHtml(outports)));
                     }
                     if (StringUtils.isNotBlank(owner)) {
-                        xmlStrSb.append("owner=\"" + StringEscapeUtils.escapeHtml(owner) + "\" ");
+                        xmlStrSb.append(spliceStr("owner", StringEscapeUtils.escapeHtml(owner)));
                     }
                     if (null != inPortType) {
-                        xmlStrSb.append("inPortType=\"" + inPortType + "\" ");
+                        xmlStrSb.append(spliceStr("inPortType", inPortType));
                     }
                     if (null != outPortType) {
-                        xmlStrSb.append("outPortType=\"" + outPortType + "\" ");
+                        xmlStrSb.append(spliceStr("outPortType", outPortType));
                     }
                     if (StringUtils.isNotBlank(groups)) {
-                        xmlStrSb.append("groups=\"" + StringEscapeUtils.escapeHtml(groups) + "\" ");
+                        xmlStrSb.append(spliceStr("groups", StringEscapeUtils.escapeHtml(groups)));
                     }
                     if (StringUtils.isNotBlank(crtUser)) {
-                        xmlStrSb.append("crtUser=\"" + StringEscapeUtils.escapeHtml(crtUser) + "\" ");
+                        xmlStrSb.append(spliceStr("crtUser", StringEscapeUtils.escapeHtml(crtUser)));
                     }
                     List<Property> property = stopVo.getProperties();
                     if (null != property && property.size() > 0) {
@@ -479,34 +476,34 @@ public class FlowXmlUtils {
                             String customValue = propertyVo.getCustomValue();
                             String propertyDescription = propertyVo.getDescription();
                             String allowableValues = propertyVo.getAllowableValues();
-                            Boolean required = propertyVo.getRequired();
-                            Boolean sensitive = propertyVo.getSensitive();
-                            Boolean isSelect = propertyVo.getIsSelect();
+                            boolean required = propertyVo.getRequired();
+                            boolean sensitive = propertyVo.getSensitive();
+                            boolean isSelect = propertyVo.getIsSelect();
                             String propertyVocrtUser = propertyVo.getCrtUser();
                             if (StringUtils.isNotBlank(propertyId)) {
-                                xmlStrSb.append("id=\"" + StringEscapeUtils.escapeHtml(propertyId) + "\" ");
+                                xmlStrSb.append(spliceStr("id", StringEscapeUtils.escapeHtml(id)));
                             }
                             if (StringUtils.isNotBlank(displayName)) {
-                                xmlStrSb.append("displayName=\"" + StringEscapeUtils.escapeHtml(displayName) + "\" ");
+                                xmlStrSb.append(spliceStr("displayName", StringEscapeUtils.escapeHtml(displayName)));
                             }
                             if (StringUtils.isNotBlank(propertyName)) {
-                                xmlStrSb.append("name=\"" + StringEscapeUtils.escapeHtml(propertyName) + "\" ");
+                                xmlStrSb.append(spliceStr("name", StringEscapeUtils.escapeHtml(propertyName)));
                             }
                             if (StringUtils.isNotBlank(propertyDescription)) {
-                                xmlStrSb.append("description=\"" + StringEscapeUtils.escapeHtml(propertyDescription) + "\" ");
+                                xmlStrSb.append(spliceStr("description", StringEscapeUtils.escapeHtml(propertyDescription)));
                             }
                             if (StringUtils.isNotBlank(allowableValues)) {
-                                xmlStrSb.append("allowableValues=\"" + allowableValues.replaceAll("\"", "") + "\" ");
+                                xmlStrSb.append(spliceStr("allowableValues", allowableValues.replaceAll("\"", "")));
                             }
                             if (StringUtils.isNotBlank(customValue)) {
-                                xmlStrSb.append("customValue=\"" + StringEscapeUtils.escapeHtml(customValue) + "\" ");
+                                xmlStrSb.append(spliceStr("customValue", StringEscapeUtils.escapeHtml(customValue)));
                             }
                             if (StringUtils.isNotBlank(propertyVocrtUser)) {
-                                xmlStrSb.append("crtUser=\"" + StringEscapeUtils.escapeHtml(propertyVocrtUser) + "\" ");
+                                xmlStrSb.append(spliceStr("crtUser", StringEscapeUtils.escapeHtml(propertyVocrtUser)));
                             }
-                            xmlStrSb.append("required=\"" + required + "\" ");
-                            xmlStrSb.append("sensitive=\"" + sensitive + "\" ");
-                            xmlStrSb.append("isSelect=\"" + isSelect + "\" ");
+                            xmlStrSb.append(spliceStr("required", required));
+                            xmlStrSb.append(spliceStr("sensitive", sensitive));
+                            xmlStrSb.append(spliceStr("isSelect", isSelect));
                             xmlStrSb.append("/> \n");
                         }
                         xmlStrSb.append("</stop> \n");
@@ -525,25 +522,25 @@ public class FlowXmlUtils {
                         String pageId = paths.getPageId();
                         String filterCondition = paths.getFilterCondition();
                         if (StringUtils.isNotBlank(crtUser)) {
-                            xmlStrSb.append("crtUser=\"" + StringEscapeUtils.escapeHtml(crtUser) + "\" ");
+                            xmlStrSb.append(spliceStr("crtUser", StringEscapeUtils.escapeHtml(crtUser)));
                         }
                         if (StringUtils.isNotBlank(from)) {
-                            xmlStrSb.append("from=\"" + StringEscapeUtils.escapeHtml(from) + "\" ");
+                            xmlStrSb.append(spliceStr("from", StringEscapeUtils.escapeHtml(from)));
                         }
                         if (StringUtils.isNotBlank(to)) {
-                            xmlStrSb.append("to=\"" + StringEscapeUtils.escapeHtml(to) + "\" ");
+                            xmlStrSb.append(spliceStr("to", StringEscapeUtils.escapeHtml(to)));
                         }
                         if (StringUtils.isNotBlank(inport)) {
-                            xmlStrSb.append("inport=\"" + StringEscapeUtils.escapeHtml(inport) + "\" ");
+                            xmlStrSb.append(spliceStr("inport", StringEscapeUtils.escapeHtml(inport)));
                         }
                         if (StringUtils.isNotBlank(outport)) {
-                            xmlStrSb.append("outport=\"" + StringEscapeUtils.escapeHtml(outport) + "\" ");
+                            xmlStrSb.append(spliceStr("outport", StringEscapeUtils.escapeHtml(outport)));
                         }
                         if (StringUtils.isNotBlank(pageId)) {
-                            xmlStrSb.append("pageId=\"" + StringEscapeUtils.escapeHtml(pageId) + "\" ");
+                            xmlStrSb.append(spliceStr("pageId", StringEscapeUtils.escapeHtml(pageId)));
                         }
                         if (StringUtils.isNotBlank(filterCondition)) {
-                            xmlStrSb.append("filterCondition=\"" + StringEscapeUtils.escapeHtml(filterCondition) + "\" ");
+                            xmlStrSb.append(spliceStr("filterCondition", StringEscapeUtils.escapeHtml(filterCondition)));
                         }
                         xmlStrSb.append(" /> \n");
                     }
@@ -562,11 +559,11 @@ public class FlowXmlUtils {
     /**
      * flowList to xml
      *
-     * @param flowList
-     * @return
+     * @param flowList flowList
+     * @return String
      */
     public static String flowListToXmlStr(List<Flow> flowList) {
-        StringBuffer xmlStrBuf = new StringBuffer();
+        StringBuilder xmlStrBuf = new StringBuilder();
         if (null != flowList && flowList.size() > 0) {
             for (Flow flow : flowList) {
                 MxGraphModel mxGraphModel = flow.getMxGraphModel();
@@ -583,11 +580,11 @@ public class FlowXmlUtils {
     /**
      * flowGroupPathsList to xml
      *
-     * @param flowGroupPathsList
-     * @return
+     * @param flowGroupPathsList flowGroupPathsList
+     * @return String
      */
     public static String flowGroupPathsListToXmlStr(List<FlowGroupPaths> flowGroupPathsList) {
-        StringBuffer xmlStrBuf = new StringBuffer();
+        StringBuilder xmlStrBuf = new StringBuilder();
         if (null != flowGroupPathsList && flowGroupPathsList.size() > 0) {
             for (FlowGroupPaths flowGroupPaths : flowGroupPathsList) {
                 xmlStrBuf.append("<flowGroupPaths ");
@@ -597,19 +594,19 @@ public class FlowXmlUtils {
                 String outport = flowGroupPaths.getOutport();
                 String pageId = flowGroupPaths.getPageId();
                 if (StringUtils.isNotBlank(from)) {
-                    xmlStrBuf.append("from=\"" + StringEscapeUtils.escapeHtml(from) + "\" ");
+                    xmlStrBuf.append(spliceStr("from", StringEscapeUtils.escapeHtml(from)));
                 }
                 if (StringUtils.isNotBlank(to)) {
-                    xmlStrBuf.append("to=\"" + StringEscapeUtils.escapeHtml(to) + "\" ");
+                    xmlStrBuf.append(spliceStr("to", StringEscapeUtils.escapeHtml(to)));
                 }
                 if (StringUtils.isNotBlank(inport)) {
-                    xmlStrBuf.append("inport=\"" + StringEscapeUtils.escapeHtml(inport) + "\" ");
+                    xmlStrBuf.append(spliceStr("inport", StringEscapeUtils.escapeHtml(inport)));
                 }
                 if (StringUtils.isNotBlank(outport)) {
-                    xmlStrBuf.append("outport=\"" + StringEscapeUtils.escapeHtml(outport) + "\" ");
+                    xmlStrBuf.append(spliceStr("outport", StringEscapeUtils.escapeHtml(outport)));
                 }
                 if (StringUtils.isNotBlank(pageId)) {
-                    xmlStrBuf.append("pageId=\"" + StringEscapeUtils.escapeHtml(pageId) + "\" ");
+                    xmlStrBuf.append(spliceStr("pageId", StringEscapeUtils.escapeHtml(pageId)));
                 }
                 xmlStrBuf.append(" /> \n");
             }
@@ -620,11 +617,11 @@ public class FlowXmlUtils {
     /**
      * flowGroup to xml
      *
-     * @param flowGroup
-     * @return
+     * @param flowGroup flowGroup
+     * @return String
      */
     public static String flowGroupToXmlStr(FlowGroup flowGroup) {
-        StringBuffer xmlStrBuf = new StringBuffer();
+        StringBuilder xmlStrBuf = new StringBuilder();
         if (null != flowGroup) {
             xmlStrBuf.append("<flowGroup ");
             String id = flowGroup.getId();
@@ -632,16 +629,16 @@ public class FlowXmlUtils {
             String description = flowGroup.getDescription();
             String flowGroupPageId = flowGroup.getPageId();
             if (StringUtils.isNotBlank(id)) {
-                xmlStrBuf.append("id=\"" + StringEscapeUtils.escapeHtml(id) + "\" ");
+                xmlStrBuf.append(spliceStr("id", StringEscapeUtils.escapeHtml(id)));
             }
             if (StringUtils.isNotBlank(name)) {
-                xmlStrBuf.append("name=\"" + StringEscapeUtils.escapeHtml(name) + "\" ");
+                xmlStrBuf.append(spliceStr("name", StringEscapeUtils.escapeHtml(name)));
             }
             if (StringUtils.isNotBlank(description)) {
-                xmlStrBuf.append("description=\"" + StringEscapeUtils.escapeHtml(description) + "\" ");
+                xmlStrBuf.append(spliceStr("description", StringEscapeUtils.escapeHtml(description)));
             }
             if (StringUtils.isNotBlank(flowGroupPageId)) {
-                xmlStrBuf.append("pageId=\"" + StringEscapeUtils.escapeHtml(flowGroupPageId) + "\" ");
+                xmlStrBuf.append(spliceStr("pageId", StringEscapeUtils.escapeHtml(flowGroupPageId)));
             }
             xmlStrBuf.append("> \n");
             String mxGraphModelXml = mxGraphModelToXml(flowGroup.getMxGraphModel());
@@ -661,38 +658,39 @@ public class FlowXmlUtils {
         return xmlStrBuf.toString();
     }
 
+    private static String spliceStr(String key, Object value) {
+        return key + "=\"" + value + "\" ";
+    }
+
     /**
      * String type "xml" to "MxGraphModel"
      *
-     * @param xmldata
-     * @return
+     * @param xmlData xml string data
+     * @return MxGraphModelVo
      */
-    public static MxGraphModelVo xmlToMxGraphModel(String xmldata) {
-        String transformation = "<nature>" + xmldata + "</nature>";
-        MxGraphModelVo mxGraphModelVo = new MxGraphModelVo();
-        InputSource in = new InputSource(new StringReader(transformation));
-        in.setEncoding("UTF-8");
-        SAXReader reader = new SAXReader();
-        Document document;
+    public static MxGraphModelVo xmlToMxGraphModel(String xmlData) {
+
         try {
-            document = reader.read(in);
-            // Get all "mxCell" nodes with "autoSaveNode" attribute
-            Element rootElt = document.getRootElement(); // Get the root node
-            Element mxGraphModel = rootElt.element("mxGraphModel");
-            String dx = mxGraphModel.attributeValue("dx");
-            String dy = mxGraphModel.attributeValue("dy");
-            String grid = mxGraphModel.attributeValue("grid");
-            String gridSize = mxGraphModel.attributeValue("gridSize");
-            String guides = mxGraphModel.attributeValue("guides");
-            String tooltips = mxGraphModel.attributeValue("tooltips");
-            String connect = mxGraphModel.attributeValue("connect");
-            String arrows = mxGraphModel.attributeValue("arrows");
-            String fold = mxGraphModel.attributeValue("fold");
-            String page = mxGraphModel.attributeValue("page");
-            String pageScale = mxGraphModel.attributeValue("pageScale");
-            String pageWidth = mxGraphModel.attributeValue("pageWidth");
-            String pageHeight = mxGraphModel.attributeValue("pageHeight");
-            String background = mxGraphModel.attributeValue("background");
+            Element mxGraphModelXml = xmlStrToElementGetByKey(xmlData, false, "mxGraphModel");
+            if (null == mxGraphModelXml) {
+                return null;
+            }
+            String dx = mxGraphModelXml.attributeValue("dx");
+            String dy = mxGraphModelXml.attributeValue("dy");
+            String grid = mxGraphModelXml.attributeValue("grid");
+            String gridSize = mxGraphModelXml.attributeValue("gridSize");
+            String guides = mxGraphModelXml.attributeValue("guides");
+            String tooltips = mxGraphModelXml.attributeValue("tooltips");
+            String connect = mxGraphModelXml.attributeValue("connect");
+            String arrows = mxGraphModelXml.attributeValue("arrows");
+            String fold = mxGraphModelXml.attributeValue("fold");
+            String page = mxGraphModelXml.attributeValue("page");
+            String pageScale = mxGraphModelXml.attributeValue("pageScale");
+            String pageWidth = mxGraphModelXml.attributeValue("pageWidth");
+            String pageHeight = mxGraphModelXml.attributeValue("pageHeight");
+            String background = mxGraphModelXml.attributeValue("background");
+
+            MxGraphModelVo mxGraphModelVo = new MxGraphModelVo();
             mxGraphModelVo.setDx(dx);
             mxGraphModelVo.setDy(dy);
             mxGraphModelVo.setGrid(grid);
@@ -707,8 +705,8 @@ public class FlowXmlUtils {
             mxGraphModelVo.setPageWidth(pageWidth);
             mxGraphModelVo.setPageHeight(pageHeight);
             mxGraphModelVo.setBackground(background);
-            List<MxCellVo> rootVoList = new ArrayList<MxCellVo>();
-            Element rootjd = mxGraphModel.element("root");
+            List<MxCellVo> rootVoList = new ArrayList<>();
+            Element rootjd = mxGraphModelXml.element("root");
             Iterator rootiter = rootjd.elementIterator("mxCell"); // Get the child node mxCell under the root node
             while (rootiter.hasNext()) {
                 MxCellVo mxCellVo = new MxCellVo();
@@ -755,43 +753,30 @@ public class FlowXmlUtils {
                 rootVoList.add(mxCellVo);
             }
             mxGraphModelVo.setRootVo(rootVoList);
+            return mxGraphModelVo;
         } catch (Exception e) {
             logger.error("Conversion failed", e);
             return null;
         }
-        return mxGraphModelVo;
     }
 
     /**
      * String type xml to "stop" and other information
      *
-     * @param xmlData
-     * @return
-     * @throws DocumentException
+     * @param xmlData xml string data
+     * @return Template
      */
     public static Template xmlToFlowStopInfo(String xmlData) {
-        Document document = null;
         try {
-            document = DocumentHelper.parseText(StringEscapeUtils.unescapeHtml(xmlData));
-        } catch (DocumentException e1) {
-            e1.printStackTrace();
-        }
-        String strXml = document.getRootElement().asXML();
-        String transformation = "<sdds>" + strXml + "</sdds>";
-        InputSource in = new InputSource(new StringReader(transformation));
-        in.setEncoding("UTF-8");
-        SAXReader reader = new SAXReader();
-        List<StopTemplateModel> stopVoList = new ArrayList<StopTemplateModel>();
-
-        Template template = new Template();
-        try {
-            document = reader.read(in);
-            // Get all "mxCell" nodes with "autoSaveNode" attribute
-            Element rootElt = document.getRootElement(); // Get the root node
-            Element flow = rootElt.element("flow");
+            Element flow = xmlStrToElementGetByKey(xmlData, false, "flow");
+            if (null == flow) {
+                return null;
+            }
+            Template template = new Template();
+            List<StopTemplateModel> stopVoList = new ArrayList<>();
             Iterator rootiter = flow.elementIterator("stop"); // Get the child node "stop" under the root node
             while (rootiter.hasNext()) {
-                List<PropertyTemplateModel> propertyList = new ArrayList<PropertyTemplateModel>();
+                List<PropertyTemplateModel> propertyList = new ArrayList<>();
                 StopTemplateModel stopVo = new StopTemplateModel();
                 Element recordEle = (Element) rootiter.next();
                 String bundel = recordEle.attributeValue("bundel");
@@ -816,8 +801,7 @@ public class FlowXmlUtils {
                 stopVo.setOutPortType(PortType.selectGender(outPortType));
                 stopVo.setInPortType(PortType.selectGenderByValue(inPortType));
                 stopVo.setGroups(groups);
-                Boolean Checkpoint = false;
-                Checkpoint = "0".equals(isCheckpoint) ? false : true;
+                Boolean Checkpoint = "0".equals(isCheckpoint);
                 stopVo.setIsCheckpoint(Checkpoint);
                 stopVo.setOwner(owner);
                 Iterator property = recordEle.elementIterator("property");
@@ -831,9 +815,25 @@ public class FlowXmlUtils {
                         String displayName = propertyValue.attributeValue("displayName");
                         String propertyId = propertyValue.attributeValue("id");
                         String propertyName = propertyValue.attributeValue("name");
-                        Boolean required = propertyValue.attributeValue("required").equals("true") ? true : false;
-                        Boolean sensitive = propertyValue.attributeValue("sensitive").equals("true") ? true : false;
-                        Boolean isSelect = propertyValue.attributeValue("isSelect").equals("true") ? true : false;
+                        boolean required = "true".equals(propertyValue.attributeValue("required"));
+                        boolean sensitive = "true".equals(propertyValue.attributeValue("sensitive"));
+                        boolean isSelect = "true".equals(propertyValue.attributeValue("isSelect"));
+                        if (isSelect && null != allowableValues && allowableValues.length() > 1) {
+                            String temp = allowableValues.substring(1, allowableValues.length() - 1);
+                            String[] tempArray = temp.split(",");
+                            StringBuilder tempStringBuffer = new StringBuilder();
+                            tempStringBuffer.append("[");
+                            for (int i = 0; i < tempArray.length; i++) {
+                                tempStringBuffer.append("\"");
+                                tempStringBuffer.append(tempArray[i]);
+                                tempStringBuffer.append("\"");
+                                if (i + 1 != tempArray.length) {
+                                    tempStringBuffer.append(",");
+                                }
+                            }
+                            tempStringBuffer.append("]");
+                            allowableValues = tempStringBuffer.toString();
+                        }
                         propertyVo.setAllowableValues(allowableValues);
                         propertyVo.setCustomValue(customValue);
                         propertyVo.setDescription(propertyDescription);
@@ -851,36 +851,25 @@ public class FlowXmlUtils {
                 stopVoList.add(stopVo);
             }
             template.setStopsList(stopVoList);
+            return template;
         } catch (Exception e) {
             logger.error("Conversion failed", e);
             return null;
         }
-        return template;
     }
 
     /**
      * String type xml to MxGraphModel
      *
-     * @param xmldata
-     * @return
+     * @param xmlData xml string data
+     * @return MxGraphModelVo
      */
-    public static MxGraphModelVo allXmlToMxGraphModelVo(String xmldata, int PageId) {
-        Document document = null;
+    public static MxGraphModelVo allXmlToMxGraphModelVo(String xmlData, int PageId) {
         try {
-            document = DocumentHelper.parseText(xmldata);
-        } catch (DocumentException e1) {
-            e1.printStackTrace();
-        }
-        String strXml = document.getRootElement().asXML();
-        String transformation = "<sdds>" + strXml + "</sdds>";
-        MxGraphModelVo mxGraphModelVo = new MxGraphModelVo();
-        InputSource in = new InputSource(new StringReader(transformation));
-        in.setEncoding("UTF-8");
-        SAXReader reader = new SAXReader();
-        try {
-            document = reader.read(in);
-            // Get all "mxCell" nodes with "autoSaveNode" attribute
-            Element rootElt = document.getRootElement(); // Get the root node
+            Element rootElt = xmlStrToElement(xmlData, false);
+            if (null == rootElt) {
+                return null;
+            }
             Element flow = rootElt.element("flow");
             Element mxGraphModel = flow.element("mxGraphModel");
             String dx = mxGraphModel.attributeValue("dx");
@@ -897,6 +886,8 @@ public class FlowXmlUtils {
             String pageWidth = mxGraphModel.attributeValue("pageWidth");
             String pageHeight = mxGraphModel.attributeValue("pageHeight");
             String background = mxGraphModel.attributeValue("background");
+
+            MxGraphModelVo mxGraphModelVo = new MxGraphModelVo();
             mxGraphModelVo.setDx(dx);
             mxGraphModelVo.setDy(dy);
             mxGraphModelVo.setGrid(grid);
@@ -911,7 +902,7 @@ public class FlowXmlUtils {
             mxGraphModelVo.setPageWidth(pageWidth);
             mxGraphModelVo.setPageHeight(pageHeight);
             mxGraphModelVo.setBackground(background);
-            List<MxCellVo> rootVoList = new ArrayList<MxCellVo>();
+            List<MxCellVo> rootVoList = new ArrayList<>();
             Element rootjd = mxGraphModel.element("root");
             Iterator rootiter = rootjd.elementIterator("mxCell"); // Get the child node "mxCell" under the root node
             while (rootiter.hasNext()) {
@@ -966,21 +957,21 @@ public class FlowXmlUtils {
                 rootVoList.add(mxCellVo);
             }
             mxGraphModelVo.setRootVo(rootVoList);
+            return mxGraphModelVo;
         } catch (Exception e) {
             logger.error("Conversion failed", e);
             return null;
         }
-        return mxGraphModelVo;
     }
 
     /**
      * List<StopTemplateModel>  to  List<Stops>
      *
-     * @param stopsListTemplate
-     * @return
+     * @param stopsListTemplate stopsList template
+     * @return List<Stops>
      */
     public static List<Stops> stopTemplateVoToStop(List<StopTemplateModel> stopsListTemplate) {
-        List<Stops> stopsList = new ArrayList<Stops>();
+        List<Stops> stopsList = new ArrayList<>();
         // 判空
         if (null != stopsListTemplate && stopsListTemplate.size() > 0) {
             // Loop copy
@@ -992,7 +983,7 @@ public class FlowXmlUtils {
                     stops.setIsCheckpoint(stopTemplate.getIsCheckpoint());
                     List<PropertyTemplateModel> propertyTemplateModel = stopTemplate.getProperties();
                     if (null != propertyTemplateModel && propertyTemplateModel.size() > 0) {
-                        List<Property> propertyList = new ArrayList<Property>();
+                        List<Property> propertyList = new ArrayList<>();
                         for (PropertyTemplateModel propertyTemplate : propertyTemplateModel) {
                             if (null != propertyTemplate) {
                                 Property property = new Property();
@@ -1012,108 +1003,20 @@ public class FlowXmlUtils {
     }
 
     /**
-     * xmlToPaths
-     *
-     * @param xmldata
-     * @return
-     */
-    public static List<Paths> xmlToPaths(String xmldata) {
-        Document document = null;
-        try {
-            document = DocumentHelper.parseText(xmldata);
-        } catch (DocumentException e1) {
-            e1.printStackTrace();
-        }
-        String strXml = document.getRootElement().asXML();
-        String transformation = "<sdds>" + strXml + "</sdds>";
-        InputSource in = new InputSource(new StringReader(transformation));
-        in.setEncoding("UTF-8");
-        SAXReader reader = new SAXReader();
-        List<Paths> PathsList = new ArrayList<Paths>();
-        try {
-            document = reader.read(in);
-            // Get all "mxCell" nodes with "autoSaveNode" attribute
-            Element rootElt = document.getRootElement(); // Get the root node
-            Element flow = rootElt.element("flow");
-            Iterator rootiter = flow.elementIterator("paths"); // Get the child node "paths" under the root node
-            while (rootiter.hasNext()) {
-                Paths paths = new Paths();
-                Element recordEle = (Element) rootiter.next();
-                String crtUser = recordEle.attributeValue("crtUser");
-                String from = recordEle.attributeValue("from");
-                String to = recordEle.attributeValue("to");
-                String outport = recordEle.attributeValue("outport");
-                String pageId = recordEle.attributeValue("pageId");
-                String inport = recordEle.attributeValue("inport");
-                paths.setCrtUser(crtUser);
-                paths.setFrom(from);
-                paths.setTo(to);
-                paths.setOutport(outport);
-                paths.setInport(inport);
-                paths.setPageId(pageId);
-                PathsList.add(paths);
-            }
-        } catch (Exception e) {
-            logger.error("Conversion failed", e);
-            return null;
-        }
-        return PathsList;
-    }
-
-    /**
      * String type xml to MxGraphModel
      *
-     * @param xmlData
-     * @return
-     */
-    public static MxGraphModel allXmlToMxGraphModel(String xmlData, int maxPageId, String username) {
-        Document document = null;
-        try {
-            document = DocumentHelper.parseText(xmlData);
-        } catch (DocumentException e1) {
-            e1.printStackTrace();
-        }
-        String strXml = document.getRootElement().asXML();
-        String transformation = "<sdds>" + strXml + "</sdds>";
-        MxGraphModel mxGraphModel = new MxGraphModel();
-        InputSource in = new InputSource(new StringReader(transformation));
-        in.setEncoding("UTF-8");
-        SAXReader reader = new SAXReader();
-        try {
-            document = reader.read(in);
-            // Get all "mxCell" nodes with "autoSaveNode" attribute
-            Element rootElt = document.getRootElement(); // Get the root node
-            Element flow = rootElt.element("flow");
-            Element mxGraphModelXml = flow.element("mxGraphModel");
-            mxGraphModel = xmlToMxGraphModel(mxGraphModelXml.asXML(), maxPageId, username);
-        } catch (Exception e) {
-            logger.error("Conversion failed", e);
-            return null;
-        }
-        return mxGraphModel;
-    }
-
-    /**
-     * String type xml to MxGraphModel
-     *
-     * @param xmlData
-     * @return
+     * @param xmlData xml string data
+     * @return MxGraphModel
      */
     public static MxGraphModel xmlToMxGraphModel(String xmlData, int maxPageId, String username) {
         if (StringUtils.isBlank(xmlData)) {
             return null;
         }
         try {
-            Document document = DocumentHelper.parseText(xmlData);
-            String strXml = document.getRootElement().asXML();
-            String transformation = "<sdds>" + strXml + "</sdds>";
-            MxGraphModel mxGraphModel = new MxGraphModel();
-            InputSource in = new InputSource(new StringReader(transformation));
-            in.setEncoding("UTF-8");
-            SAXReader reader = new SAXReader();
-            document = reader.read(in);
-            // Get all "mxCell" nodes with "autoSaveNode" attribute
-            Element rootElt = document.getRootElement(); // Get the root node
+            Element rootElt = xmlStrToElement(xmlData, false);
+            if (null == rootElt) {
+                return null;
+            }
             Element mxGraphModelXml = rootElt.element("mxGraphModel");
             String dx = mxGraphModelXml.attributeValue("dx");
             String dy = mxGraphModelXml.attributeValue("dy");
@@ -1130,6 +1033,7 @@ public class FlowXmlUtils {
             String pageHeight = mxGraphModelXml.attributeValue("pageHeight");
             String background = mxGraphModelXml.attributeValue("background");
 
+            MxGraphModel mxGraphModel = new MxGraphModel();
             mxGraphModel.setCrtDttm(new Date());
             mxGraphModel.setCrtUser(username);
             mxGraphModel.setLastUpdateDttm(new Date());
@@ -1226,104 +1130,66 @@ public class FlowXmlUtils {
     /**
      * String type xml to FlowGroupPaths
      *
-     * @param xmlData
-     * @param maxPageId
-     * @return
+     * @param xmlData   xml string data
+     * @param maxPageId Maximum PageId of FlowGroupPaths
+     * @return FlowGroupPaths
      */
     public static FlowGroupPaths xmlToFlowGroupPaths(String xmlData, int maxPageId, String username) {
         if (StringUtils.isBlank(xmlData)) {
             return null;
         }
-        try {
-            Document document = DocumentHelper.parseText(xmlData);
-            String strXml = document.getRootElement().asXML();
-            String transformation = "<fg>" + strXml + "</fg>";
-            InputSource in = new InputSource(new StringReader(transformation));
-            in.setEncoding("UTF-8");
-            SAXReader reader = new SAXReader();
-
-            document = reader.read(in);
-            // Get all "mxCell" nodes with "autoSaveNode" attribute
-            Element rootElt = document.getRootElement(); // Get the root node
-            FlowGroupPaths flowGroupPaths = new FlowGroupPaths();
-            Element flowGroupPathsElement = rootElt.element("flowGroupPaths");
-            String from = flowGroupPathsElement.attributeValue("from");
-            String to = flowGroupPathsElement.attributeValue("to");
-            String outPort = flowGroupPathsElement.attributeValue("outport");
-            String inPort = flowGroupPathsElement.attributeValue("inport");
-            String pageId = flowGroupPathsElement.attributeValue("pageId");
-            flowGroupPaths.setCrtDttm(new Date());
-            flowGroupPaths.setCrtUser(username);
-            flowGroupPaths.setLastUpdateDttm(new Date());
-            flowGroupPaths.setLastUpdateUser(username);
-            flowGroupPaths.setVersion(0L);
-            if (StringUtils.isNotBlank(from)) {
-                flowGroupPaths.setFrom(from);
-            }
-            if (StringUtils.isNotBlank(to)) {
-                flowGroupPaths.setTo(to);
-            }
-            if (StringUtils.isNotBlank(outPort)) {
-                flowGroupPaths.setOutport(outPort);
-            }
-            if (StringUtils.isNotBlank(inPort)) {
-                flowGroupPaths.setInport(inPort);
-            }
-            if (StringUtils.isNotBlank(pageId)) {
-                flowGroupPaths.setPageId((Integer.parseInt(pageId) + maxPageId) + "");
-            }
-            return flowGroupPaths;
-        } catch (DocumentException e) {
-            logger.error("Conversion failed", e);
+        Element rootElt = xmlStrToElement(xmlData, false);
+        if (null == rootElt) {
             return null;
         }
-
-    }
-
-    /**
-     * xmlToFlowGroupPathsList
-     *
-     * @param xmlDataList
-     * @param maxPageId
-     * @param username
-     * @return
-     */
-    public static List<FlowGroupPaths> xmlListToFlowGroupPathsList(List<String> xmlDataList, int maxPageId, String username) {
-        if (null == xmlDataList || xmlDataList.size() <= 0) {
-            return null;
+        FlowGroupPaths flowGroupPaths = new FlowGroupPaths();
+        Element flowGroupPathsElement = rootElt.element("flowGroupPaths");
+        String from = flowGroupPathsElement.attributeValue("from");
+        String to = flowGroupPathsElement.attributeValue("to");
+        String outPort = flowGroupPathsElement.attributeValue("outport");
+        String inPort = flowGroupPathsElement.attributeValue("inport");
+        String pageId = flowGroupPathsElement.attributeValue("pageId");
+        flowGroupPaths.setCrtDttm(new Date());
+        flowGroupPaths.setCrtUser(username);
+        flowGroupPaths.setLastUpdateDttm(new Date());
+        flowGroupPaths.setLastUpdateUser(username);
+        flowGroupPaths.setVersion(0L);
+        if (StringUtils.isNotBlank(from)) {
+            flowGroupPaths.setFrom(from);
         }
-        List<FlowGroupPaths> flowGroupPathsList = new ArrayList<>();
-        for (String xmlData : xmlDataList) {
-            FlowGroupPaths flowGroupPaths = xmlToFlowGroupPaths(xmlData, maxPageId, username);
-            if (null != flowGroupPaths) {
-                flowGroupPathsList.add(flowGroupPaths);
-            }
+        if (StringUtils.isNotBlank(to)) {
+            flowGroupPaths.setTo(to);
         }
-        return flowGroupPathsList;
+        if (StringUtils.isNotBlank(outPort)) {
+            flowGroupPaths.setOutport(outPort);
+        }
+        if (StringUtils.isNotBlank(inPort)) {
+            flowGroupPaths.setInport(inPort);
+        }
+        if (StringUtils.isNotBlank(pageId)) {
+            flowGroupPaths.setPageId((Integer.parseInt(pageId) + maxPageId) + "");
+        }
+        return flowGroupPaths;
+
     }
 
     /**
      * xmlToPathsOne
      *
-     * @param xmlData
-     * @param maxPageId
-     * @param username
-     * @return
+     * @param xmlData   xml string data
+     * @param maxPageId Maximum PageId of Paths
+     * @param username  Operator username
+     * @return Paths
      */
     public static Paths xmlToPathsOne(String xmlData, int maxPageId, String username) {
         if (StringUtils.isBlank(xmlData)) {
             return null;
         }
         try {
-            Document document = DocumentHelper.parseText(xmlData);
-            String strXml = document.getRootElement().asXML();
-            String transformation = "<fg>" + strXml + "</fg>";
-            InputSource in = new InputSource(new StringReader(transformation));
-            in.setEncoding("UTF-8");
-            SAXReader reader = new SAXReader();
-            document = reader.read(in);
-            // Get all nodes with "autoSaveNode" attribute
-            Element rootElt = document.getRootElement(); // Get the root node
+            Element rootElt = xmlStrToElement(xmlData, false);
+            if (null == rootElt) {
+                return null;
+            }
             Element pathsElement = rootElt.element("paths"); // Get the child node "paths" under the root node
             Paths paths = new Paths();
             String from = pathsElement.attributeValue("from");
@@ -1350,49 +1216,20 @@ public class FlowXmlUtils {
     }
 
     /**
-     * xmlToPathsList
-     *
-     * @param xmlDataList
-     * @param maxPageId
-     * @param username
-     * @return
-     */
-    public static List<Paths> xmlListToPathsList(List<String> xmlDataList, int maxPageId, String username, Flow flow) {
-        if (null == xmlDataList || xmlDataList.size() <= 0) {
-            return null;
-        }
-        List<Paths> pathsList = new ArrayList<>();
-        for (String xmlData : xmlDataList) {
-            Paths paths = xmlToPathsOne(xmlData, maxPageId, username);
-            if (null != paths) {
-                paths.setFlow(flow);
-                pathsList.add(paths);
-            }
-        }
-        return pathsList;
-    }
-
-    /**
      * String type xml to "stop"
      *
-     * @param xmlData
-     * @return
-     * @throws DocumentException
+     * @param xmlData xml string data
+     * @return Stops
      */
     public static Stops xmlToStops(String xmlData, int maxPageId, String username) {
         if (StringUtils.isBlank(xmlData)) {
             return null;
         }
         try {
-            Document document = DocumentHelper.parseText(StringEscapeUtils.unescapeHtml(xmlData));
-            String strXml = document.getRootElement().asXML();
-            String transformation = "<fg>" + strXml + "</fg>";
-            InputSource in = new InputSource(new StringReader(transformation));
-            in.setEncoding("UTF-8");
-            SAXReader reader = new SAXReader();
-            document = reader.read(in);
-            // Get all nodes with "autoSaveNode" attribute
-            Element rootElt = document.getRootElement(); // Get the root node
+            Element rootElt = xmlStrToElement(xmlData, true);
+            if (null == rootElt) {
+                return null;
+            }
             Element stopElement = rootElt.element("stop");
             Stops stops = new Stops();
             String bundel = stopElement.attributeValue("bundel");
@@ -1421,8 +1258,7 @@ public class FlowXmlUtils {
             stops.setOutPortType(PortType.selectGender(outPortType));
             stops.setInPortType(PortType.selectGenderByValue(inPortType));
             stops.setGroups(groups);
-            Boolean Checkpoint = false;
-            Checkpoint = "0".equals(isCheckpoint) ? false : true;
+            Boolean Checkpoint = "0".equals(isCheckpoint);
             stops.setIsCheckpoint(Checkpoint);
             stops.setOwner(owner);
             Iterator propertyXmlIterator = stopElement.elementIterator("property");
@@ -1437,9 +1273,25 @@ public class FlowXmlUtils {
                     String displayName = propertyValue.attributeValue("displayName");
                     String propertyId = propertyValue.attributeValue("id");
                     String propertyName = propertyValue.attributeValue("name");
-                    Boolean required = propertyValue.attributeValue("required").equals("true") ? true : false;
-                    Boolean sensitive = propertyValue.attributeValue("sensitive").equals("true") ? true : false;
-                    Boolean isSelect = propertyValue.attributeValue("isSelect").equals("true") ? true : false;
+                    boolean required = "true".equals(propertyValue.attributeValue("required"));
+                    boolean sensitive = "true".equals(propertyValue.attributeValue("sensitive"));
+                    boolean isSelect = "true".equals(propertyValue.attributeValue("isSelect"));
+                    if (isSelect && null != allowableValues && allowableValues.length() > 1) {
+                        String temp = allowableValues.substring(1, allowableValues.length() - 1);
+                        String[] tempArray = temp.split(",");
+                        StringBuilder tempStringBuffer = new StringBuilder();
+                        tempStringBuffer.append("[");
+                        for (int i = 0; i < tempArray.length; i++) {
+                            tempStringBuffer.append("\"");
+                            tempStringBuffer.append(tempArray[i]);
+                            tempStringBuffer.append("\"");
+                            if (i + 1 != tempArray.length) {
+                                tempStringBuffer.append(",");
+                            }
+                        }
+                        tempStringBuffer.append("]");
+                        allowableValues = tempStringBuffer.toString();
+                    }
                     property.setCrtDttm(new Date());
                     property.setCrtUser(username);
                     property.setLastUpdateDttm(new Date());
@@ -1466,53 +1318,21 @@ public class FlowXmlUtils {
     }
 
     /**
-     * xmlToStopsList
-     *
-     * @param xmlDataList
-     * @param maxPageId
-     * @param username
-     * @return
-     */
-    public static List<Stops> xmlListToStopsList(List<String> xmlDataList, int maxPageId, String username, Flow flow) {
-        if (null == xmlDataList || xmlDataList.size() <= 0) {
-            return null;
-        }
-        List<Stops> stopsList = new ArrayList<>();
-        for (String xmlData : xmlDataList) {
-            Stops stops = xmlToStops(xmlData, maxPageId, username);
-            if (null != stops) {
-                stops.setFlow(flow);
-                stopsList.add(stops);
-            }
-        }
-        return stopsList;
-    }
-
-    /**
      * String type xml to FlowGroupPaths
      *
-     * @param xmlData
-     * @param maxPageId
-     * @return
+     * @param xmlData   xml string data
+     * @param maxPageId Maximum PageId of Flow
+     * @return Flow
      */
     public static Flow xmlToFlow(String xmlData, int maxPageId, String username) {
-        Flow flow = null;
         if (StringUtils.isBlank(xmlData)) {
-            return flow;
+            return null;
         }
         try {
-            Document document = DocumentHelper.parseText(xmlData);
-            String strXml = document.getRootElement().asXML();
-            String transformation = "<fg>" + strXml + "</fg>";
-            InputSource in = new InputSource(new StringReader(transformation));
-            in.setEncoding("UTF-8");
-            SAXReader reader = new SAXReader();
-            flow = new Flow();
-
-            document = reader.read(in);
-            // Get all "mxCell" nodes with "autoSaveNode" attribute
-            Element rootElt = document.getRootElement(); // Get the root node
-            Element flowElement = rootElt.element("flow");
+            Element flowElement = xmlStrToElementGetByKey(xmlData, false, "flow");
+            if (null == flowElement) {
+                return null;
+            }
             String flowPageId = flowElement.attributeValue("pageId");
             String driverMemory = flowElement.attributeValue("driverMemory");
             String executorCores = flowElement.attributeValue("executorCores");
@@ -1520,6 +1340,8 @@ public class FlowXmlUtils {
             String executorNumber = flowElement.attributeValue("executorNumber");
             String name = flowElement.attributeValue("name");
             String description = flowElement.attributeValue("description");
+
+            Flow flow = new Flow();
             flow.setCrtDttm(new Date());
             flow.setCrtUser(username);
             flow.setLastUpdateDttm(new Date());
@@ -1535,80 +1357,60 @@ public class FlowXmlUtils {
             // mxGraphModel
             Element mxGraphModelElement = flowElement.element("mxGraphModel");
             MxGraphModel mxGraphModel = xmlToMxGraphModel(mxGraphModelElement.asXML(), maxPageId, username);
-            mxGraphModel.setFlow(flow);
+            if (null != mxGraphModel) {
+                mxGraphModel.setFlow(flow);
+            }
             flow.setMxGraphModel(mxGraphModel);
             // paths
             Iterator pathXmlIterator = flowElement.elementIterator("paths");
-            List<String> pathXmlStrArr = new ArrayList<>();
+            List<Paths> pathsList = new ArrayList<>();
             while (pathXmlIterator.hasNext()) {
                 Element recordEle = (Element) pathXmlIterator.next();
-                pathXmlStrArr.add(recordEle.asXML());
+                Paths paths = xmlToPathsOne(recordEle.asXML(), maxPageId, username);
+                if (null != paths) {
+                    paths.setFlow(flow);
+                    pathsList.add(paths);
+                }
             }
-            List<Paths> pathsList = xmlListToPathsList(pathXmlStrArr, maxPageId, username, flow);
             flow.setPathsList(pathsList);
             // stop
             Iterator stopXmlIterator = flowElement.elementIterator("stop");
-            List<String> stopXmlStrArr = new ArrayList<>();
+            List<Stops> stopsList = new ArrayList<>();
             while (stopXmlIterator.hasNext()) {
                 Element recordEle = (Element) stopXmlIterator.next();
-                stopXmlStrArr.add(recordEle.asXML());
+                Stops stops = xmlToStops(recordEle.asXML(), maxPageId, username);
+                if (null != stops) {
+                    stops.setFlow(flow);
+                    stopsList.add(stops);
+                }
             }
-            List<Stops> stopsList = xmlListToStopsList(stopXmlStrArr, maxPageId, username, flow);
             flow.setStopsList(stopsList);
+            return flow;
         } catch (Exception e) {
             logger.error("Conversion failed", e);
             return null;
         }
-        return flow;
-    }
-
-    /**
-     * xmlListToFlowList
-     *
-     * @param xmlDataList
-     * @param maxPageId
-     * @param username
-     * @return
-     */
-    public static List<Flow> xmlListToFlowList(List<String> xmlDataList, int maxPageId, String username) {
-        if (null == xmlDataList || xmlDataList.size() <= 0) {
-            return null;
-        }
-        List<Flow> flowList = new ArrayList<>();
-        for (String xmlData : xmlDataList) {
-            Flow flow = xmlToFlow(xmlData, maxPageId, username);
-            if (null != flow) {
-                flowList.add(flow);
-            }
-        }
-        return flowList;
     }
 
     /**
      * flowGroup to xml
      *
-     * @param flowGroupXmlStr
-     * @return
+     * @param flowGroupXmlStr xml string data
+     * @return FlowGroup
      */
     public static FlowGroup XmlStrToFlowGroup(String flowGroupXmlStr, int maxPageId, String username) {
         if (StringUtils.isBlank(flowGroupXmlStr)) {
             return null;
         }
         try {
-            Document document = DocumentHelper.parseText(flowGroupXmlStr);
-            String strXml = document.getRootElement().asXML();
-            String transformation = "<fg>" + strXml + "</fg>";
-            InputSource in = new InputSource(new StringReader(transformation));
-            in.setEncoding("UTF-8");
-            SAXReader reader = new SAXReader();
-            FlowGroup flowGroup = new FlowGroup();
-
-            document = reader.read(in);
-            // Get all nodes with "autoSaveNode" attribute
-            Element rootElt = document.getRootElement(); // Get the root node
-            Element flowGroupElement = rootElt.element("flowGroup");
+            Element flowGroupElement = xmlStrToElementGetByKey(flowGroupXmlStr, false, "flowGroup");
+            if (null == flowGroupElement) {
+                return null;
+            }
             String name = flowGroupElement.attributeValue("name");
             String description = flowGroupElement.attributeValue("description");
+
+            FlowGroup flowGroup = new FlowGroup();
             flowGroup.setCrtDttm(new Date());
             flowGroup.setCrtUser(username);
             flowGroup.setLastUpdateDttm(new Date());
@@ -1625,22 +1427,26 @@ public class FlowXmlUtils {
 
             // flow list
             Iterator flowXmlIterator = flowGroupElement.elementIterator("flow");
-            List<String> flowXmlStrArr = new ArrayList<>();
+            List<Flow> flowList = new ArrayList<>();
             while (flowXmlIterator.hasNext()) {
                 Element recordEle = (Element) flowXmlIterator.next();
-                flowXmlStrArr.add(recordEle.asXML());
+                Flow flow = xmlToFlow(recordEle.asXML(), maxPageId, username);
+                if (null != flow) {
+                    flowList.add(flow);
+                }
             }
-            List<Flow> flowList = xmlListToFlowList(flowXmlStrArr, maxPageId, username);
             flowGroup.setFlowList(flowList);
 
             //flowGroupPaths
             Iterator flowGroupPathsXmlIterator = flowGroupElement.elementIterator("flowGroupPaths");
-            List<String> flowGroupPathsXmlStrArr = new ArrayList<>();
+            List<FlowGroupPaths> flowGroupPathsList = new ArrayList<>();
             while (flowGroupPathsXmlIterator.hasNext()) {
                 Element recordEle = (Element) flowGroupPathsXmlIterator.next();
-                flowGroupPathsXmlStrArr.add(recordEle.asXML());
+                FlowGroupPaths flowGroupPaths = xmlToFlowGroupPaths(recordEle.asXML(), maxPageId, username);
+                if (null != flowGroupPaths) {
+                    flowGroupPathsList.add(flowGroupPaths);
+                }
             }
-            List<FlowGroupPaths> flowGroupPathsList = xmlListToFlowGroupPathsList(flowGroupPathsXmlStrArr, maxPageId, username);
             flowGroup.setFlowGroupPathsList(flowGroupPathsList);
             return flowGroup;
         } catch (Exception e) {
@@ -1648,4 +1454,401 @@ public class FlowXmlUtils {
             return null;
         }
     }
+
+    /**
+     * TemplateXml to Flow
+     *
+     * @param templateXml xml string data
+     * @param username    Operator username
+     * @return Flow
+     */
+    public static Flow templateXmlToFlow(String templateXml, String username, String stopMaxPageId, String flowMaxPageId) {
+        if (StringUtils.isBlank(templateXml)) {
+            return null;
+        }
+        if (StringUtils.isBlank(username)) {
+            return null;
+        }
+        if (StringUtils.isBlank(stopMaxPageId)) {
+            stopMaxPageId = "1";
+        }
+        try {
+            Integer flowMaxPageIdInt = null;
+            int stopMaxPageIdInt = Integer.parseInt(stopMaxPageId);
+            if (StringUtils.isNotBlank(flowMaxPageId)) {
+                flowMaxPageIdInt = Integer.parseInt(flowMaxPageId);
+            }
+            Element flowElement = xmlStrToElementGetByKey(templateXml, false, "flow");
+            if (null == flowElement) {
+                return null;
+            }
+            String driverMemory = flowElement.attributeValue("driverMemory");
+            String executorCores = flowElement.attributeValue("executorCores");
+            String executorMemory = flowElement.attributeValue("executorMemory");
+            String executorNumber = flowElement.attributeValue("executorNumber");
+            String name = flowElement.attributeValue("name");
+            String description = flowElement.attributeValue("description");
+            String flowPageId = flowElement.attributeValue("pageId");
+            if (StringUtils.isNotBlank(flowPageId) && null != flowMaxPageIdInt) {
+                flowPageId = (Integer.parseInt(flowPageId) + flowMaxPageIdInt) + "";
+            }
+            Flow flow = FlowUtil.setFlowBasicInformation(null, false, username);
+            flow.setPageId(flowPageId);
+            flow.setDriverMemory(driverMemory);
+            flow.setExecutorCores(executorCores);
+            flow.setExecutorMemory(executorMemory);
+            flow.setExecutorNumber(executorNumber);
+            flow.setName(name + System.currentTimeMillis());
+            flow.setDescription(description);
+
+            // stop
+            Iterator stopXmlIterator = flowElement.elementIterator("stop");
+            List<Stops> stopsList = new ArrayList<>();
+            while (stopXmlIterator.hasNext()) {
+                Element recordEle = (Element) stopXmlIterator.next();
+                Stops stops = xmlToStopsNew(recordEle.asXML(), stopMaxPageIdInt, username);
+                if (null != stops) {
+                    stops.setFlow(flow);
+                    stopsList.add(stops);
+                }
+            }
+            flow.setStopsList(stopsList);
+
+            // paths
+            Iterator pathXmlIterator = flowElement.elementIterator("paths");
+            List<Paths> pathsList = new ArrayList<>();
+            while (pathXmlIterator.hasNext()) {
+                Element recordEle = (Element) pathXmlIterator.next();
+                Paths paths = xmlToPathsOne(recordEle.asXML(), stopMaxPageIdInt, username);
+                if (null != paths) {
+                    paths.setFlow(flow);
+                    pathsList.add(paths);
+                }
+            }
+            flow.setPathsList(pathsList);
+            // mxGraphModel
+            Element mxGraphModelElement = flowElement.element("mxGraphModel");
+            MxGraphModel mxGraphModel = xmlToMxGraphModelNew(mxGraphModelElement.asXML(), stopMaxPageIdInt, username, flow);
+            flow.setMxGraphModel(mxGraphModel);
+            return flow;
+        } catch (Exception e) {
+            logger.error("Conversion failed", e);
+            return null;
+        }
+    }
+
+    /**
+     * String type xml to "stop"
+     *
+     * @param xmlData xml string data
+     * @return Stops
+     */
+    public static Stops xmlToStopsNew(String xmlData, int maxPageId, String username) {
+        if (StringUtils.isBlank(xmlData)) {
+            return null;
+        }
+        try {
+            Element stopElement = xmlStrToElementGetByKey(xmlData, true, "stop");
+            if (null == stopElement) {
+                return null;
+            }
+            Stops stops = new Stops();
+            String bundel = stopElement.attributeValue("bundel");
+            String description = stopElement.attributeValue("description");
+            String id = stopElement.attributeValue("id");
+            String name = stopElement.attributeValue("name");
+            String pageId = stopElement.attributeValue("pageId");
+            String inPortType = stopElement.attributeValue("inPortType");
+            String inports = stopElement.attributeValue("inports");
+            String outPortType = stopElement.attributeValue("outPortType");
+            String outports = stopElement.attributeValue("outports");
+            String isCheckpoint = stopElement.attributeValue("isCheckpoint");
+            String owner = stopElement.attributeValue("owner");
+            String groups = stopElement.attributeValue("groups");
+            stops.setCrtDttm(new Date());
+            stops.setCrtUser(username);
+            stops.setLastUpdateDttm(new Date());
+            stops.setLastUpdateUser(username);
+            stops.setPageId((Integer.parseInt(pageId) + maxPageId) + "");
+            stops.setName(name + System.currentTimeMillis());
+            stops.setDescription(description);
+            stops.setBundel(bundel);
+            stops.setId(id);
+            stops.setInports(inports);
+            stops.setOutports(outports);
+            stops.setOutPortType(PortType.selectGender(outPortType));
+            stops.setInPortType(PortType.selectGenderByValue(inPortType));
+            stops.setGroups(groups);
+            Boolean Checkpoint = "0".equals(isCheckpoint);
+            stops.setIsCheckpoint(Checkpoint);
+            stops.setOwner(owner);
+            Iterator propertyXmlIterator = stopElement.elementIterator("property");
+            if (null != propertyXmlIterator) {
+                List<Property> propertyList = new ArrayList<>();
+                while (propertyXmlIterator.hasNext()) {
+                    Element propertyValue = (Element) propertyXmlIterator.next();
+                    Property property = new Property();
+                    String allowableValues = propertyValue.attributeValue("allowableValues");
+                    String customValue = propertyValue.attributeValue("customValue");
+                    String propertyDescription = propertyValue.attributeValue("description");
+                    String displayName = propertyValue.attributeValue("displayName");
+                    String propertyId = propertyValue.attributeValue("id");
+                    String propertyName = propertyValue.attributeValue("name");
+                    boolean required = "true".equals(propertyValue.attributeValue("required"));
+                    boolean sensitive = "true".equals(propertyValue.attributeValue("sensitive"));
+                    boolean isSelect = "true".equals(propertyValue.attributeValue("isSelect"));
+                    if (isSelect && null != allowableValues && allowableValues.length() > 1) {
+                        String temp = allowableValues.substring(1, allowableValues.length() - 1);
+                        String[] tempArray = temp.split(",");
+                        StringBuilder tempStringBuffer = new StringBuilder();
+                        tempStringBuffer.append("[");
+                        for (int i = 0; i < tempArray.length; i++) {
+                            tempStringBuffer.append("\"");
+                            tempStringBuffer.append(tempArray[i]);
+                            tempStringBuffer.append("\"");
+                            if (i + 1 != tempArray.length) {
+                                tempStringBuffer.append(",");
+                            }
+                        }
+                        tempStringBuffer.append("]");
+                        allowableValues = tempStringBuffer.toString();
+                    }
+                    property.setCrtDttm(new Date());
+                    property.setCrtUser(username);
+                    property.setLastUpdateDttm(new Date());
+                    property.setLastUpdateUser(username);
+                    property.setAllowableValues(allowableValues);
+                    property.setCustomValue(customValue);
+                    property.setDescription(propertyDescription);
+                    property.setDisplayName(displayName);
+                    property.setId(propertyId);
+                    property.setName(propertyName);
+                    property.setRequired(required);
+                    property.setSensitive(sensitive);
+                    property.setIsSelect(isSelect);
+                    property.setStops(stops);
+                    propertyList.add(property);
+                }
+                stops.setProperties(propertyList);
+            }
+            return stops;
+        } catch (Exception e) {
+            logger.error("Conversion failed", e);
+            return null;
+        }
+    }
+
+    /**
+     * String type xml to MxGraphModel
+     *
+     * @param xmlData xml string data
+     * @return MxGraphModel
+     */
+    public static MxGraphModel xmlToMxGraphModelNew(String xmlData, int maxPageId, String username, Flow flow) {
+        if (StringUtils.isBlank(xmlData)) {
+            return null;
+        }
+        try {
+            Element mxGraphModelXml = xmlStrToElementGetByKey(xmlData, false, "mxGraphModel");
+            if (null == mxGraphModelXml) {
+                return null;
+            }
+            String dx = mxGraphModelXml.attributeValue("dx");
+            String dy = mxGraphModelXml.attributeValue("dy");
+            String grid = mxGraphModelXml.attributeValue("grid");
+            String gridSize = mxGraphModelXml.attributeValue("gridSize");
+            String guides = mxGraphModelXml.attributeValue("guides");
+            String tooltips = mxGraphModelXml.attributeValue("tooltips");
+            String connect = mxGraphModelXml.attributeValue("connect");
+            String arrows = mxGraphModelXml.attributeValue("arrows");
+            String fold = mxGraphModelXml.attributeValue("fold");
+            String page = mxGraphModelXml.attributeValue("page");
+            String pageScale = mxGraphModelXml.attributeValue("pageScale");
+            String pageWidth = mxGraphModelXml.attributeValue("pageWidth");
+            String pageHeight = mxGraphModelXml.attributeValue("pageHeight");
+            String background = mxGraphModelXml.attributeValue("background");
+
+            MxGraphModel mxGraphModel = new MxGraphModel();
+            mxGraphModel.setCrtDttm(new Date());
+            mxGraphModel.setCrtUser(username);
+            mxGraphModel.setLastUpdateDttm(new Date());
+            mxGraphModel.setLastUpdateUser(username);
+            mxGraphModel.setVersion(0L);
+            mxGraphModel.setDx(dx);
+            mxGraphModel.setDy(dy);
+            mxGraphModel.setGrid(grid);
+            mxGraphModel.setGridSize(gridSize);
+            mxGraphModel.setGuides(guides);
+            mxGraphModel.setTooltips(tooltips);
+            mxGraphModel.setConnect(connect);
+            mxGraphModel.setArrows(arrows);
+            mxGraphModel.setFold(fold);
+            mxGraphModel.setPage(page);
+            mxGraphModel.setPageScale(pageScale);
+            mxGraphModel.setPageWidth(pageWidth);
+            mxGraphModel.setPageHeight(pageHeight);
+            mxGraphModel.setBackground(background);
+
+            //Take out all Stop Name and PageId
+            Map<String, String> stopsNamesMap = new HashMap<>();
+            if (null != flow && null != flow.getStopsList()) {
+                List<Stops> stopsList = flow.getStopsList();
+                //Loop take out all Stop Name and PageId
+                for (Stops stops : stopsList) {
+                    if (null != stops) {
+                        stopsNamesMap.put(stops.getPageId(), stops.getName());
+                    }
+                }
+            }
+            List<MxCell> rootList = new ArrayList<>();
+            Element rootjd = mxGraphModelXml.element("root");
+            Iterator rootiter = rootjd.elementIterator("mxCell"); // Get the child node "mxCell" under the root node
+            while (rootiter.hasNext()) {
+                Element recordEle = (Element) rootiter.next();
+                MxCell mxCell = xmlToMxCellNew(recordEle.asXML(), maxPageId, username, mxGraphModel);
+                if (null != mxCell) {
+                    String mxCellValue = stopsNamesMap.get(mxCell.getPageId());
+                    // Canvas composition name synchronized with Stop
+                    if (StringUtils.isNotBlank(mxCellValue)) {
+                        mxCell.setValue(mxCellValue);
+                    }
+                    rootList.add(mxCell);
+                }
+            }
+            mxGraphModel.setRoot(rootList);
+            mxGraphModel.setFlow(flow);
+            return mxGraphModel;
+        } catch (Exception e) {
+            logger.error("Conversion failed", e);
+            return null;
+        }
+    }
+
+    /**
+     * XML to MxCell
+     *
+     * @param xmlData      xml string data
+     * @param maxPageId    Maximum PageId of MxCell
+     * @param username     Operator username
+     * @param mxGraphModel link MxGraphModel
+     * @return MxCell
+     */
+    public static MxCell xmlToMxCellNew(String xmlData, int maxPageId, String username, MxGraphModel mxGraphModel) {
+        if (StringUtils.isBlank(xmlData)) {
+            return null;
+        }
+        Element recordEle = xmlStrToElementGetByKey(xmlData, false, "mxCell");
+        if (null == recordEle) {
+            return null;
+        }
+        MxCell mxCell = new MxCell();
+        String pageId = recordEle.attributeValue("id");
+        String parent = recordEle.attributeValue("parent");
+        String style = recordEle.attributeValue("style");
+        String edge = recordEle.attributeValue("edge");
+        String source = recordEle.attributeValue("source");
+        String target = recordEle.attributeValue("target");
+        String value = recordEle.attributeValue("value");
+        String vertex = recordEle.attributeValue("vertex");
+        if (maxPageId >= 1) {
+            if (Integer.parseInt(pageId) < 2) {
+                return null;
+            }
+        }
+        if ("1".equals(edge)) {
+            if (StringUtils.isBlank(source) || StringUtils.isBlank(target)) {
+                return null;
+            }
+        }
+        mxCell.setCrtDttm(new Date());
+        mxCell.setCrtUser(username);
+        mxCell.setLastUpdateDttm(new Date());
+        mxCell.setLastUpdateUser(username);
+        mxCell.setVersion(0L);
+        mxCell.setPageId((Integer.parseInt(pageId) + maxPageId) + "");
+        mxCell.setParent(parent);
+        mxCell.setStyle(style);
+        mxCell.setEdge(edge);
+        if (StringUtils.isNotBlank(source) && StringUtils.isNotBlank(target)) {
+            mxCell.setSource((Integer.parseInt(source) + maxPageId) + "");
+            mxCell.setTarget((Integer.parseInt(target) + maxPageId) + "");
+        }
+        mxCell.setValue(value);
+        mxCell.setVertex(vertex);
+        if (StringUtils.isNotBlank(style)) {
+            MxGeometry mxGeometry = new MxGeometry();
+            Element mxGeometryXml = recordEle.element("mxGeometry");
+            String relative = mxGeometryXml.attributeValue("relative");
+            String as = mxGeometryXml.attributeValue("as");
+            String x = mxGeometryXml.attributeValue("x");
+            String y = mxGeometryXml.attributeValue("y");
+            String width = mxGeometryXml.attributeValue("width");
+            String height = mxGeometryXml.attributeValue("height");
+            mxGeometry.setCrtDttm(new Date());
+            mxGeometry.setCrtUser(username);
+            mxGeometry.setLastUpdateDttm(new Date());
+            mxGeometry.setLastUpdateUser(username);
+            mxGeometry.setVersion(0L);
+            mxGeometry.setRelative(relative);
+            mxGeometry.setAs(as);
+            mxGeometry.setX(x);
+            mxGeometry.setY(y);
+            mxGeometry.setWidth(width);
+            mxGeometry.setHeight(height);
+            mxGeometry.setMxCell(mxCell);
+            mxCell.setMxGeometry(mxGeometry);
+        }
+        mxCell.setMxGraphModel(mxGraphModel);
+        return mxCell;
+    }
+
+    /**
+     * xmlStrToElement
+     *
+     * @param xmlData  xml string data
+     * @param isEscape is escape
+     * @return Element
+     */
+    private static Element xmlStrToElement(String xmlData, boolean isEscape) {
+        try {
+            String xmlStr;
+            if (isEscape) {
+                xmlStr = StringEscapeUtils.unescapeHtml(xmlData);
+            } else {
+                xmlStr = xmlData;
+            }
+            Document document = DocumentHelper.parseText(xmlStr);
+            String strXml = document.getRootElement().asXML();
+            String transformation = "<fg>" + strXml + "</fg>";
+            InputSource in = new InputSource(new StringReader(transformation));
+            in.setEncoding("UTF-8");
+            SAXReader reader = new SAXReader();
+            document = reader.read(in);
+            // Get all nodes with "autoSaveNode" attribute
+            return document.getRootElement(); // Get the root node
+        } catch (DocumentException e) {
+            logger.error("Conversion failed", e);
+            return null;
+        }
+    }
+
+    /**
+     * xmlStrToElement
+     *
+     * @param xmlData  xml string data
+     * @param isEscape is escape
+     * @param key      The key of the data to be fetched
+     * @return Element
+     */
+    private static Element xmlStrToElementGetByKey(String xmlData, boolean isEscape, String key) {
+        if (StringUtils.isBlank(key)) {
+            return xmlStrToElement(xmlData, isEscape);
+        }
+        Element element = xmlStrToElement(xmlData, isEscape);
+        if (null == element) {
+            return null;
+        }
+        return element.element(key);
+    }
+
 }

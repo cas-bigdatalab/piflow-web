@@ -43,6 +43,14 @@ public class SessionUserUtil {
         return isAdmin;
     }
 
+    public static String getCurrentUsername() {
+        UserVo currentUser = getCurrentUser();
+        if (null == currentUser) {
+            return null;
+        }
+        return currentUser.getUsername();
+    }
+
     //"X-Forwarded-For" is empty, take "X-Real-IP", "X-Real-IP" is empty, take "remoteAddress"
     public static String getIp(HttpServletRequest request) {
         String ip = request.getHeader("X-Forwarded-For");

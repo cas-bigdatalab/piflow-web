@@ -18,11 +18,11 @@ import com.nature.component.template.service.IFlowAndStopsTemplateVoService;
 import com.nature.component.template.service.ITemplateService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
@@ -39,16 +39,16 @@ import java.util.Map;
 @RequestMapping("/template")
 public class TemplateCtrl {
 
-    @Autowired
+    @Resource
     private IFlowService iFlowServiceImpl;
 
-    @Autowired
+    @Resource
     private ITemplateService iTemplateService;
 
-    @Autowired
+    @Resource
     private IFlowAndStopsTemplateVoService flowAndStopsTemplateVoServiceImpl;
 
-    @Autowired
+    @Resource
     private IPathsService pathsServiceImpl;
 
 
@@ -248,12 +248,13 @@ public class TemplateCtrl {
      */
     @RequestMapping("/loadingXmlPage")
     @ResponseBody
-    @Transactional
     public String loadingXml(HttpServletRequest request) {
-        Map<String, Object> rtnMap = new HashMap<>();
-        rtnMap.put("code", 500);
         String templateId = request.getParameter("templateId");
         String loadId = request.getParameter("load");
+/*
+
+        Map<String, Object> rtnMap = new HashMap<>();
+        rtnMap.put("code", 500);
         Flow flowById = iFlowServiceImpl.getFlowById(loadId);
         if (null == flowById) {
             logger.info("Template is empty, loading template failed");
@@ -299,6 +300,9 @@ public class TemplateCtrl {
             logger.warn("Failed to load template");
             return "errorPage";
         }
+*/
+
+        return iTemplateService.loadTemplateToFlow(loadId, templateId);
     }
 
     /**

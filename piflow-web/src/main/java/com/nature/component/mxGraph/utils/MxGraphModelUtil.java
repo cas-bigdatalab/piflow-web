@@ -1,4 +1,4 @@
-package com.nature.component.flow.utils;
+package com.nature.component.mxGraph.utils;
 
 import com.nature.base.util.SessionUserUtil;
 import com.nature.base.util.SqlUtils;
@@ -19,6 +19,30 @@ import org.springframework.beans.BeanUtils;
 import java.util.*;
 
 public class MxGraphModelUtil {
+
+    public static MxGraphModel setMxGraphModelBasicInformation(MxGraphModel mxGraphModel, boolean isSetId, String username) {
+        if (null == mxGraphModel) {
+            mxGraphModel = new MxGraphModel();
+        }
+        if (isSetId) {
+            mxGraphModel.setId(SqlUtils.getUUID32());
+        }
+        //set MxGraphModel basic information
+        mxGraphModel.setCrtDttm(new Date());
+        mxGraphModel.setCrtUser(username);
+        mxGraphModel.setVersion(0L);
+        return updateMxGraphModelBasicInformation(mxGraphModel,username);
+    }
+
+    public static MxGraphModel updateMxGraphModelBasicInformation(MxGraphModel mxGraphModel, String username) {
+        if (null == mxGraphModel) {
+            return null;
+        }
+        mxGraphModel.setLastUpdateDttm(new Date());
+        mxGraphModel.setLastUpdateUser(username);
+        return mxGraphModel;
+    }
+
     /**
      * mxGraphModel entity to Vo
      *

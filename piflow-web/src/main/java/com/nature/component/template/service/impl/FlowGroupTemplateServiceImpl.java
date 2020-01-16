@@ -10,6 +10,7 @@ import com.nature.component.flow.model.*;
 import com.nature.component.mxGraph.model.MxCell;
 import com.nature.component.mxGraph.model.MxGeometry;
 import com.nature.component.mxGraph.model.MxGraphModel;
+import com.nature.component.mxGraph.utils.MxCellUtils;
 import com.nature.component.template.model.FlowGroupTemplate;
 import com.nature.component.template.service.IFlowGroupTemplateService;
 import com.nature.component.template.vo.FlowGroupTemplateVo;
@@ -29,7 +30,10 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -299,7 +303,7 @@ public class FlowGroupTemplateServiceImpl implements IFlowGroupTemplateService {
                 mxGraphModel = mxGraphModelDomain.saveOrUpdate(mxGraphModel);
             }
             if (null == mxGraphModel.getRoot() || mxGraphModel.getRoot().size() <= 1) {
-                List<MxCell> mxCellList = initMxCell(username, mxGraphModel);
+                List<MxCell> mxCellList = MxCellUtils.initMxCell(username, mxGraphModel);
                 if (null != mxCellList) {
                     mxCellDomain.saveOrUpdate(mxCellList);
                 }
@@ -386,35 +390,6 @@ public class FlowGroupTemplateServiceImpl implements IFlowGroupTemplateService {
         rtnMap.put("code", 200);
         rtnMap.put("errorMsg", "success");
         return JsonUtils.toJsonNoException(rtnMap);
-    }
-
-    private List<MxCell> initMxCell(String username, MxGraphModel mxGraphModel) {
-        if (StringUtils.isBlank(username) && null == mxGraphModel) {
-            return null;
-        }
-        List<MxCell> pMxCellList = new ArrayList<>();
-        MxCell mxCell0 = new MxCell();
-        mxCell0.setCrtDttm(new Date());
-        mxCell0.setCrtUser(username);
-        mxCell0.setEnableFlag(true);
-        mxCell0.setLastUpdateDttm(new Date());
-        mxCell0.setLastUpdateUser(username);
-        mxCell0.setVersion(0L);
-        mxCell0.setPageId("0");
-        mxCell0.setMxGraphModel(mxGraphModel);
-        pMxCellList.add(mxCell0);
-        MxCell mxCell1 = new MxCell();
-        mxCell1.setCrtDttm(new Date());
-        mxCell1.setCrtUser(username);
-        mxCell1.setEnableFlag(true);
-        mxCell1.setLastUpdateDttm(new Date());
-        mxCell1.setLastUpdateUser(username);
-        mxCell1.setVersion(0L);
-        mxCell1.setParent("0");
-        mxCell1.setPageId("1");
-        mxCell1.setMxGraphModel(mxGraphModel);
-        pMxCellList.add(mxCell1);
-        return pMxCellList;
     }
 
 }
