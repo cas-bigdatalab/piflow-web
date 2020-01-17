@@ -56,7 +56,7 @@ public class ProcessPathServiceImpl implements IProcessPathService {
         if (StringUtils.isNotBlank(pathTo)) {
             pageIds[1] = pathTo;
         }
-        if (StringUtils.isNotBlank(processId) && null != pageIds && pageIds.length > 0) {
+        if (StringUtils.isBlank(processId) || null == pageIds || pageIds.length <= 0) {
             return null;
         }
         List<ProcessStop> processStopByPageIds = processStopMapper.getProcessStopByPageIdAndPageIds(processId, pageIds);

@@ -2,11 +2,9 @@ package com.nature.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.nature.base.util.*;
-import com.nature.base.vo.StatefulRtnBase;
 import com.nature.base.vo.UserVo;
 import com.nature.common.constant.SysParamsCache;
 import com.nature.component.flow.model.Flow;
-import com.nature.component.flow.model.Paths;
 import com.nature.component.flow.model.Stops;
 import com.nature.component.flow.service.IFlowService;
 import com.nature.component.flow.service.IPathsService;
@@ -251,57 +249,6 @@ public class TemplateCtrl {
     public String loadingXml(HttpServletRequest request) {
         String templateId = request.getParameter("templateId");
         String loadId = request.getParameter("load");
-/*
-
-        Map<String, Object> rtnMap = new HashMap<>();
-        rtnMap.put("code", 500);
-        Flow flowById = iFlowServiceImpl.getFlowById(loadId);
-        if (null == flowById) {
-            logger.info("Template is empty, loading template failed");
-            rtnMap.put("errorMsg", "Loading failed, please try again");
-            return JsonUtils.toJsonNoException(rtnMap);
-        }
-        Template template = iTemplateService.queryTemplate(templateId);
-        if (null == template) {
-            logger.info("Template is empty, loading template failed");
-            rtnMap.put("errorMsg", "Loading failed, please try again");
-            return JsonUtils.toJsonNoException(rtnMap);
-        }
-        //Read the xml file according to the saved file path and return
-        String xmlFileToStr = FileUtils.XmlFileToStr(template.getPath());
-        if (StringUtils.isBlank(xmlFileToStr)) {
-            logger.info("The xml file failed to read and the template failed to be loaded.");
-            rtnMap.put("errorMsg", "The xml file failed to read. Please try again.");
-            return JsonUtils.toJsonNoException(rtnMap);
-        }
-        // Get the maximum pageId in stop
-        String maxStopPageId = iFlowServiceImpl.getMaxStopPageId(loadId);
-        maxStopPageId = StringUtils.isNotBlank(maxStopPageId) ? maxStopPageId : "0";
-        int maxPageId = Integer.parseInt(maxStopPageId);
-        StatefulRtnBase addFlow = null;
-        MxGraphModelVo xmlToMxGraphModel = FlowXmlUtils.allXmlToMxGraphModelVo(xmlFileToStr, maxPageId);
-        if (null != xmlToMxGraphModel) {
-            xmlToMxGraphModel.getRootVo();
-            addFlow = iFlowServiceImpl.saveOrUpdateFlowAll(xmlToMxGraphModel, loadId, "ADD", false);
-        }
-        List<Paths> pathsList = FlowXmlUtils.xmlToPaths(xmlFileToStr);
-        if (null != pathsList && pathsList.size() > 0) {
-            pathsServiceImpl.addPathsList(pathsList, flowById);
-        }
-        // addFlow is not empty and the value of ReqRtnStatus is true, then the save is successful.
-        if (null != addFlow && addFlow.isReqRtnStatus()) {
-            if (null != template) {
-                //Save stops and attribute information
-                flowAndStopsTemplateVoServiceImpl.addTemplateStopsToFlow(template, flowById, maxPageId);
-            }
-            logger.info("Successfully loaded template");
-            return "grapheditor/index";
-        } else {
-            logger.warn("Failed to load template");
-            return "errorPage";
-        }
-*/
-
         return iTemplateService.loadTemplateToFlow(loadId, templateId);
     }
 

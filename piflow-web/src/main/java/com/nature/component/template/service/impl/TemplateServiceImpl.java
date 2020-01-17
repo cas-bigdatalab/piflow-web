@@ -3,7 +3,6 @@ package com.nature.component.template.service.impl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.nature.base.util.*;
-import com.nature.base.vo.StatefulRtnBase;
 import com.nature.component.flow.model.Flow;
 import com.nature.component.flow.model.Paths;
 import com.nature.component.flow.model.Stops;
@@ -100,7 +99,6 @@ public class TemplateServiceImpl implements ITemplateService {
         }
         // Get the maximum pageId in stop
         String maxStopPageId = flowMapper.getMaxStopPageId(flowId);
-        StatefulRtnBase addFlow = null;
         Flow templateXmlToFlow = FlowXmlUtils.templateXmlToFlow(xmlFileToStr, currentUsername, maxStopPageId, null);
         if (null == templateXmlToFlow) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Conversion failure");

@@ -289,20 +289,14 @@ public class ProcessStopMapperProvider {
         String[] pageIds = (String[]) map.get("pageIds");
         String sqlStr = "select 0";
         if (StringUtils.isNotBlank(processId) && null != pageIds && pageIds.length > 0) {
-            String pageIdsStr = SqlUtils.strArrayToStr(pageIds);
-            if (StringUtils.isNotBlank(pageIdsStr)) {
+            SQL sql = new SQL();
+            sql.SELECT("*");
+            sql.FROM("flow_process_stop");
+            sql.WHERE("enable_flag = 1");
+            sql.WHERE("fk_flow_process_id = " + SqlUtils.preventSQLInjection(processId));
+            sql.WHERE("page_id in ( " + SqlUtils.strArrayToStr(pageIds) + ")");
 
-                pageIdsStr = pageIdsStr.replace(",", "','");
-                pageIdsStr = "'" + pageIdsStr + "'";
-                SQL sql = new SQL();
-                sql.SELECT("*");
-                sql.FROM("flow_process_stop");
-                sql.WHERE("enable_flag = 1");
-                sql.WHERE("fk_flow_process_id = " + SqlUtils.preventSQLInjection(processId));
-                sql.WHERE("page_id in ( " + pageIdsStr + ")");
-
-                sqlStr = sql.toString();
-            }
+            sqlStr = sql.toString();
         }
         return sqlStr;
     }
