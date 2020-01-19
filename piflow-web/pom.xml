@@ -102,6 +102,11 @@
             <artifactId>fastjson</artifactId>
             <version>1.2.25</version>
         </dependency>
+        <!-- Dbcp2 database connection pool -->
+		<dependency>
+		    <groupId>org.apache.commons</groupId>
+		    <artifactId>commons-dbcp2</artifactId>
+		</dependency>
         <!-- MySQL connection driver dependency -->
         <dependency>
             <groupId>mysql</groupId>
