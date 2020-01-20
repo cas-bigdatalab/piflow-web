@@ -343,15 +343,14 @@ function getLogUrl() {
     var window_height = $(window).height();//Get browser window width
     var open_window_width = (window_width > 300 ? window_width - 200 : window_width);
     var open_window_height = (window_height > 300 ? window_height - 150 : window_height);
-    var logContent = '<div style="height: ' + (open_window_height - 90) + 'px;width: 100%;">'
-        + '<div id="divPreId" style="height: ' + (open_window_height - 115) + 'px;margin-top: 10px;">'
+    var logContent = '<div id="divPreId" style="height: ' + (open_window_height - 121) + 'px;width: 100%;">'
         + '<div style="font-size: 90px;text-align: center;margin-top: 15px;"><span>loading....</span></div>'
-        + '</div>'
-        + '<div style="margin-top: 5px;margin-bottom: 5px;margin-left: 10px;">'
-        + '<input type="button" class="btn btn-default" onclick="changeUrl(1)" value="stdout">'
-        + '<input type="button" class="btn btn-default" onclick="changeUrl(2)" value="stderr">'
-        + '</div>'
         + '</div>';
+    // + '<div style="margin-top: 5px;margin-bottom: 5px;margin-left: 10px;">'
+    // + '<input type="button" class="btn btn-default" onclick="changeUrl(1)" value="stdout">'
+    // + '<input type="button" class="btn btn-default" onclick="changeUrl(2)" value="stderr">'
+    // + '</div>';
+
     $.ajax({
         cache: true,//Keep cached data
         type: "POST",//Request type post
@@ -373,7 +372,25 @@ function getLogUrl() {
                 shift: 7,
                 area: [open_window_width + 'px', open_window_height + 'px'], //Width height
                 skin: 'layui-layer-rim', //Add borders
-                content: logContent
+                btn: ['stdout', 'stderr'], //button
+                btn1: function (index, layero) {
+                    changeUrl(1);
+                    return false;
+                },
+                btn2: function (index, layero) {
+                    changeUrl(2);
+                    return false;
+                },
+                content: logContent,
+                success: function (layero) {
+                    layero.find('.layui-layer-btn').css('text-align', 'left');
+                    var bleBtn0 = layero.find('.layui-layer-btn0');
+                    var bleBtn1 = layero.find('.layui-layer-btn1');
+                    bleBtn0.removeClass('layui-layer-btn0');
+                    bleBtn1.removeClass('layui-layer-btn1');
+                    bleBtn0.addClass('layui-layer-btn1');
+                    bleBtn1.addClass('layui-layer-btn1');
+                }
             });
             if (200 === data.code) {
                 stdoutLog = data.stdoutLog;
@@ -408,37 +425,15 @@ function changeUrl(key) {
         },
         success: function (data) {//Operation after request successful
             console.log("success");
-            var showLogHtmlWidth = $("#divPreId").width() - 20;
-            var showLogHtml = ('<pre id="preId" style="height: 100%; width: ' + showLogHtmlWidth + 'px; margin: 0 auto;">');
             if ('' !== data) {
-                var all_td = $(data).find('td');
-                var content_td = '';
-                for (var i = 0; i < all_td.length; i++) {
-                    if ($(all_td[i]).attr('class') === 'content') {
-                        content_td = $(all_td[i]);
-                        break;
-                    }
-                }
-                var content_td_pres = (('' !== content_td) ? content_td.find('pre') : '');
-                var preHtml = '';
-                if ('' !== content_td_pres) {
-                    for (var i = 0; i < content_td_pres.length; i++) {
-                        if (content_td_pres[i]) {
-                            preHtml += $(content_td_pres[i]).text();
-                        }
-                    }
-                }
-                var content_td_html = '';
-                content_td_html = ((content_td !== '') ? content_td.html() : content_td)
-                preHtml = (preHtml === '') ? content_td_html : preHtml;
-                showLogHtml += (preHtml + '</pre>');
+                var content_td = $(data).find('.content')[0].innerHTML;
+                var content_td_html = (('' !== content_td) ? content_td[0] : '');
+                var showLogHtml = ('<div id="preId" style="height: 100%; margin: 6px 6px 6px 6px;background-color: #f5f5f5;">') + (content_td) + ('</div>');
+                $("#divPreId").html(showLogHtml);
+                $("#preId").scrollTop($("#preId")[0].scrollHeight);
             } else {
-                showLogHtml += 'Load Log Filed</pre>';
+                $("#divPreId").html('<div id="preId" style="height: 100%; margin: 6px 6px 6px 6px;background-color: #f5f5f5;text-align: center;"><span style="font-size: 90px;margin-top: 15px;">Load Log Filed</span></div>');
             }
-            //alert(data);
-            //console.log(showLogHtml);
-            $("#divPreId").html(showLogHtml);
-            $("#preId").scrollTop($("#preId")[0].scrollHeight)
         }
     });
 }
