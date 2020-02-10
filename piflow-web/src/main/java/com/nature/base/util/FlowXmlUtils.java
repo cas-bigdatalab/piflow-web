@@ -12,7 +12,6 @@ import com.nature.component.mxGraph.vo.MxGraphModelVo;
 import com.nature.component.template.model.PropertyTemplateModel;
 import com.nature.component.template.model.StopTemplateModel;
 import com.nature.component.template.model.Template;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -382,28 +381,36 @@ public class FlowXmlUtils {
             String flowPageId = flow.getPageId();
             xmlStrSb.append("<flow ");
             if (StringUtils.isNotBlank(id)) {
-                xmlStrSb.append(spliceStr("id", StringEscapeUtils.escapeHtml(id)));
+                //xmlStrSb.append(spliceStr("id", StringEscapeUtils.escapeHtml(id)));
+                xmlStrSb.append(spliceStr("id", id));
             }
             if (StringUtils.isNotBlank(name)) {
-                xmlStrSb.append(spliceStr("name", StringEscapeUtils.escapeHtml(name)));
+                //xmlStrSb.append(spliceStr("name", StringEscapeUtils.escapeHtml(name)));
+                xmlStrSb.append(spliceStr("name", name));
             }
             if (StringUtils.isNotBlank(description)) {
-                xmlStrSb.append(spliceStr("description", StringEscapeUtils.escapeHtml(description)));
+                //xmlStrSb.append(spliceStr("description", StringEscapeUtils.escapeHtml(description)));
+                xmlStrSb.append(spliceStr("description", description));
             }
             if (StringUtils.isNotBlank(driverMemory)) {
-                xmlStrSb.append(spliceStr("driverMemory", StringEscapeUtils.escapeHtml(driverMemory)));
+                //xmlStrSb.append(spliceStr("driverMemory", StringEscapeUtils.escapeHtml(driverMemory)));
+                xmlStrSb.append(spliceStr("driverMemory", driverMemory));
             }
             if (StringUtils.isNotBlank(executorCores)) {
-                xmlStrSb.append(spliceStr("executorCores", StringEscapeUtils.escapeHtml(executorCores)));
+                //xmlStrSb.append(spliceStr("executorCores", StringEscapeUtils.escapeHtml(executorCores)));
+                xmlStrSb.append(spliceStr("executorCores", executorCores));
             }
             if (StringUtils.isNotBlank(executorMemory)) {
-                xmlStrSb.append(spliceStr("executorMemory", StringEscapeUtils.escapeHtml(executorMemory)));
+                //xmlStrSb.append(spliceStr("executorMemory", StringEscapeUtils.escapeHtml(executorMemory)));
+                xmlStrSb.append(spliceStr("executorMemory", executorMemory));
             }
             if (StringUtils.isNotBlank(executorNumber)) {
-                xmlStrSb.append(spliceStr("executorNumber", StringEscapeUtils.escapeHtml(executorNumber)));
+                //xmlStrSb.append(spliceStr("executorNumber", StringEscapeUtils.escapeHtml(executorNumber)));
+                xmlStrSb.append(spliceStr("executorNumber", executorNumber));
             }
             if (StringUtils.isNotBlank(flowPageId)) {
-                xmlStrSb.append(spliceStr("pageId", StringEscapeUtils.escapeHtml(flowPageId)));
+                //xmlStrSb.append(spliceStr("pageId", StringEscapeUtils.escapeHtml(flowPageId)));
+                xmlStrSb.append(spliceStr("pageId", flowPageId));
             }
             xmlStrSb.append("> \n");
             List<Stops> stopsVoList = flow.getStopsList();
@@ -425,33 +432,41 @@ public class FlowXmlUtils {
                     String crtUser = stopVo.getCrtUser();
                     xmlStrSb.append("<stop ");
                     if (StringUtils.isNotBlank(stopId)) {
-                        xmlStrSb.append(spliceStr("id", StringEscapeUtils.escapeHtml(stopId)));
+                        //xmlStrSb.append(spliceStr("id", StringEscapeUtils.escapeHtml(stopId)));
+                        xmlStrSb.append(spliceStr("id", stopId));
                     }
                     if (StringUtils.isNotBlank(pageId)) {
-                        xmlStrSb.append(spliceStr("pageId", StringEscapeUtils.escapeHtml(pageId)));
+                        //xmlStrSb.append(spliceStr("pageId", StringEscapeUtils.escapeHtml(pageId)));
+                        xmlStrSb.append(spliceStr("pageId", pageId));
                     }
                     if (StringUtils.isNotBlank(stopName)) {
-                        xmlStrSb.append(spliceStr("name", StringEscapeUtils.escapeHtml(stopName)));
+                        //xmlStrSb.append(spliceStr("name", StringEscapeUtils.escapeHtml(stopName)));
+                        xmlStrSb.append(spliceStr("name", stopName));
                     }
                     if (StringUtils.isNotBlank(bundel)) {
-                        xmlStrSb.append(spliceStr("bundel", StringEscapeUtils.escapeHtml(bundel)));
+                        //xmlStrSb.append(spliceStr("bundel", StringEscapeUtils.escapeHtml(bundel)));
+                        xmlStrSb.append(spliceStr("bundel", bundel));
                     }
                     if (StringUtils.isNotBlank(stopDescription)) {
-                        stopDescription = stopDescription.replace("&", "&amp;");
-                        xmlStrSb.append(spliceStr("description", StringEscapeUtils.escapeHtml(stopDescription)));
+                        //stopDescription = stopDescription.replace("&", "&amp;");
+                        //xmlStrSb.append(spliceStr("description", StringEscapeUtils.escapeHtml(stopDescription)));
+                        xmlStrSb.append(spliceStr("description", stopDescription));
                     }
                     if (null != checkpoint) {
                         xmlStrSb.append(spliceStr("isCheckpoint", (checkpoint ? 1 : 0)));
                     }
                     if (StringUtils.isNotBlank(inports)) {
-                        xmlStrSb.append(spliceStr("inports", StringEscapeUtils.escapeHtml(inports)));
+                        //xmlStrSb.append(spliceStr("inports", StringEscapeUtils.escapeHtml(inports)));
+                        xmlStrSb.append(spliceStr("inports", inports));
                     }
 
                     if (StringUtils.isNotBlank(outports)) {
-                        xmlStrSb.append(spliceStr("outports", StringEscapeUtils.escapeHtml(outports)));
+                        //xmlStrSb.append(spliceStr("outports", StringEscapeUtils.escapeHtml(outports)));
+                        xmlStrSb.append(spliceStr("outports", outports));
                     }
                     if (StringUtils.isNotBlank(owner)) {
-                        xmlStrSb.append(spliceStr("owner", StringEscapeUtils.escapeHtml(owner)));
+                        //xmlStrSb.append(spliceStr("owner", StringEscapeUtils.escapeHtml(owner)));
+                        xmlStrSb.append(spliceStr("owner", owner));
                     }
                     if (null != inPortType) {
                         xmlStrSb.append(spliceStr("inPortType", inPortType));
@@ -460,10 +475,12 @@ public class FlowXmlUtils {
                         xmlStrSb.append(spliceStr("outPortType", outPortType));
                     }
                     if (StringUtils.isNotBlank(groups)) {
-                        xmlStrSb.append(spliceStr("groups", StringEscapeUtils.escapeHtml(groups)));
+                        //xmlStrSb.append(spliceStr("groups", StringEscapeUtils.escapeHtml(groups)));
+                        xmlStrSb.append(spliceStr("groups", groups));
                     }
                     if (StringUtils.isNotBlank(crtUser)) {
-                        xmlStrSb.append(spliceStr("crtUser", StringEscapeUtils.escapeHtml(crtUser)));
+                        //xmlStrSb.append(spliceStr("crtUser", StringEscapeUtils.escapeHtml(crtUser)));
+                        xmlStrSb.append(spliceStr("crtUser", crtUser));
                     }
                     List<Property> property = stopVo.getProperties();
                     if (null != property && property.size() > 0) {
@@ -481,25 +498,31 @@ public class FlowXmlUtils {
                             boolean isSelect = propertyVo.getIsSelect();
                             String propertyVocrtUser = propertyVo.getCrtUser();
                             if (StringUtils.isNotBlank(propertyId)) {
-                                xmlStrSb.append(spliceStr("id", StringEscapeUtils.escapeHtml(id)));
+                                //xmlStrSb.append(spliceStr("id", StringEscapeUtils.escapeHtml(id)));
+                                xmlStrSb.append(spliceStr("id", id));
                             }
                             if (StringUtils.isNotBlank(displayName)) {
-                                xmlStrSb.append(spliceStr("displayName", StringEscapeUtils.escapeHtml(displayName)));
+                                //xmlStrSb.append(spliceStr("displayName", StringEscapeUtils.escapeHtml(displayName)));
+                                xmlStrSb.append(spliceStr("displayName", displayName));
                             }
                             if (StringUtils.isNotBlank(propertyName)) {
-                                xmlStrSb.append(spliceStr("name", StringEscapeUtils.escapeHtml(propertyName)));
+                                //xmlStrSb.append(spliceStr("name", StringEscapeUtils.escapeHtml(propertyName)));
+                                xmlStrSb.append(spliceStr("name", propertyName));
                             }
                             if (StringUtils.isNotBlank(propertyDescription)) {
-                                xmlStrSb.append(spliceStr("description", StringEscapeUtils.escapeHtml(propertyDescription)));
+                                //xmlStrSb.append(spliceStr("description", StringEscapeUtils.escapeHtml(propertyDescription)));
+                                xmlStrSb.append(spliceStr("description", propertyDescription));
                             }
                             if (StringUtils.isNotBlank(allowableValues)) {
                                 xmlStrSb.append(spliceStr("allowableValues", allowableValues.replaceAll("\"", "")));
                             }
                             if (StringUtils.isNotBlank(customValue)) {
-                                xmlStrSb.append(spliceStr("customValue", StringEscapeUtils.escapeHtml(customValue)));
+                                //xmlStrSb.append(spliceStr("customValue", StringEscapeUtils.escapeHtml(customValue)));
+                                xmlStrSb.append(spliceStr("customValue", customValue));
                             }
                             if (StringUtils.isNotBlank(propertyVocrtUser)) {
-                                xmlStrSb.append(spliceStr("crtUser", StringEscapeUtils.escapeHtml(propertyVocrtUser)));
+                                //xmlStrSb.append(spliceStr("crtUser", StringEscapeUtils.escapeHtml(propertyVocrtUser)));
+                                xmlStrSb.append(spliceStr("crtUser", propertyVocrtUser));
                             }
                             xmlStrSb.append(spliceStr("required", required));
                             xmlStrSb.append(spliceStr("sensitive", sensitive));
@@ -522,25 +545,32 @@ public class FlowXmlUtils {
                         String pageId = paths.getPageId();
                         String filterCondition = paths.getFilterCondition();
                         if (StringUtils.isNotBlank(crtUser)) {
-                            xmlStrSb.append(spliceStr("crtUser", StringEscapeUtils.escapeHtml(crtUser)));
+                            //xmlStrSb.append(spliceStr("crtUser", StringEscapeUtils.escapeHtml(crtUser)));
+                            xmlStrSb.append(spliceStr("crtUser", crtUser));
                         }
                         if (StringUtils.isNotBlank(from)) {
-                            xmlStrSb.append(spliceStr("from", StringEscapeUtils.escapeHtml(from)));
+                            //xmlStrSb.append(spliceStr("from", StringEscapeUtils.escapeHtml(from)));
+                            xmlStrSb.append(spliceStr("from", from));
                         }
                         if (StringUtils.isNotBlank(to)) {
-                            xmlStrSb.append(spliceStr("to", StringEscapeUtils.escapeHtml(to)));
+                            //xmlStrSb.append(spliceStr("to", StringEscapeUtils.escapeHtml(to)));
+                            xmlStrSb.append(spliceStr("to", to));
                         }
                         if (StringUtils.isNotBlank(inport)) {
-                            xmlStrSb.append(spliceStr("inport", StringEscapeUtils.escapeHtml(inport)));
+                            //xmlStrSb.append(spliceStr("inport", StringEscapeUtils.escapeHtml(inport)));
+                            xmlStrSb.append(spliceStr("inport", inport));
                         }
                         if (StringUtils.isNotBlank(outport)) {
-                            xmlStrSb.append(spliceStr("outport", StringEscapeUtils.escapeHtml(outport)));
+                            //xmlStrSb.append(spliceStr("outport", StringEscapeUtils.escapeHtml(outport)));
+                            xmlStrSb.append(spliceStr("outport", outport));
                         }
                         if (StringUtils.isNotBlank(pageId)) {
-                            xmlStrSb.append(spliceStr("pageId", StringEscapeUtils.escapeHtml(pageId)));
+                            //xmlStrSb.append(spliceStr("pageId", StringEscapeUtils.escapeHtml(pageId)));
+                            xmlStrSb.append(spliceStr("pageId", pageId));
                         }
                         if (StringUtils.isNotBlank(filterCondition)) {
-                            xmlStrSb.append(spliceStr("filterCondition", StringEscapeUtils.escapeHtml(filterCondition)));
+                            //xmlStrSb.append(spliceStr("filterCondition", StringEscapeUtils.escapeHtml(filterCondition)));
+                            xmlStrSb.append(spliceStr("filterCondition", filterCondition));
                         }
                         xmlStrSb.append(" /> \n");
                     }
@@ -594,19 +624,24 @@ public class FlowXmlUtils {
                 String outport = flowGroupPaths.getOutport();
                 String pageId = flowGroupPaths.getPageId();
                 if (StringUtils.isNotBlank(from)) {
-                    xmlStrBuf.append(spliceStr("from", StringEscapeUtils.escapeHtml(from)));
+                    //xmlStrBuf.append(spliceStr("from", StringEscapeUtils.escapeHtml(from)));
+                    xmlStrBuf.append(spliceStr("from", from));
                 }
                 if (StringUtils.isNotBlank(to)) {
-                    xmlStrBuf.append(spliceStr("to", StringEscapeUtils.escapeHtml(to)));
+                    //xmlStrBuf.append(spliceStr("to", StringEscapeUtils.escapeHtml(to)));
+                    xmlStrBuf.append(spliceStr("to", to));
                 }
                 if (StringUtils.isNotBlank(inport)) {
-                    xmlStrBuf.append(spliceStr("inport", StringEscapeUtils.escapeHtml(inport)));
+                    //xmlStrBuf.append(spliceStr("inport", StringEscapeUtils.escapeHtml(inport)));
+                    xmlStrBuf.append(spliceStr("inport", inport));
                 }
                 if (StringUtils.isNotBlank(outport)) {
-                    xmlStrBuf.append(spliceStr("outport", StringEscapeUtils.escapeHtml(outport)));
+                    //xmlStrBuf.append(spliceStr("outport", StringEscapeUtils.escapeHtml(outport)));
+                    xmlStrBuf.append(spliceStr("outport", outport));
                 }
                 if (StringUtils.isNotBlank(pageId)) {
-                    xmlStrBuf.append(spliceStr("pageId", StringEscapeUtils.escapeHtml(pageId)));
+                    //xmlStrBuf.append(spliceStr("pageId", StringEscapeUtils.escapeHtml(pageId)));
+                    xmlStrBuf.append(spliceStr("pageId", pageId));
                 }
                 xmlStrBuf.append(" /> \n");
             }
@@ -629,16 +664,20 @@ public class FlowXmlUtils {
             String description = flowGroup.getDescription();
             String flowGroupPageId = flowGroup.getPageId();
             if (StringUtils.isNotBlank(id)) {
-                xmlStrBuf.append(spliceStr("id", StringEscapeUtils.escapeHtml(id)));
+                //xmlStrBuf.append(spliceStr("id", StringEscapeUtils.escapeHtml(id)));
+                xmlStrBuf.append(spliceStr("id", id));
             }
             if (StringUtils.isNotBlank(name)) {
-                xmlStrBuf.append(spliceStr("name", StringEscapeUtils.escapeHtml(name)));
+                //xmlStrBuf.append(spliceStr("name", StringEscapeUtils.escapeHtml(name)));
+                xmlStrBuf.append(spliceStr("name", name));
             }
             if (StringUtils.isNotBlank(description)) {
-                xmlStrBuf.append(spliceStr("description", StringEscapeUtils.escapeHtml(description)));
+                //xmlStrBuf.append(spliceStr("description", StringEscapeUtils.escapeHtml(description)));
+                xmlStrBuf.append(spliceStr("description", description));
             }
             if (StringUtils.isNotBlank(flowGroupPageId)) {
-                xmlStrBuf.append(spliceStr("pageId", StringEscapeUtils.escapeHtml(flowGroupPageId)));
+                //xmlStrBuf.append(spliceStr("pageId", StringEscapeUtils.escapeHtml(flowGroupPageId)));
+                xmlStrBuf.append(spliceStr("pageId", flowGroupPageId));
             }
             xmlStrBuf.append("> \n");
             String mxGraphModelXml = mxGraphModelToXml(flowGroup.getMxGraphModel());
@@ -1811,11 +1850,10 @@ public class FlowXmlUtils {
      */
     private static Element xmlStrToElement(String xmlData, boolean isEscape) {
         try {
-            String xmlStr;
+            String xmlStr = xmlData;
             if (isEscape) {
-                xmlStr = StringEscapeUtils.unescapeHtml(xmlData);
-            } else {
-                xmlStr = xmlData;
+                logger.debug("test");
+                //xmlStr = StringEscapeUtils.unescapeHtml(xmlData);
             }
             Document document = DocumentHelper.parseText(xmlStr);
             String strXml = document.getRootElement().asXML();
