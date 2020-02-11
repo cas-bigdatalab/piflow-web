@@ -29,7 +29,7 @@ public class DataSourceConfig {
     private String username;
     @Value("${spring.datasource.password}")
     private String password;
-    @Value("${spring.profiles.active}")
+    @Value("${sysParam.datasource.type}")
     private String profilesType;
     
     @Bean //Declare it as a bean instance

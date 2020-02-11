@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 public class ProcessGroupMapperProvider {
@@ -82,8 +83,8 @@ public class ProcessGroupMapperProvider {
             SQL sql = new SQL();
             String appIDsStr = SqlUtils.strArrayToStr(appIDs);
             if (StringUtils.isNotBlank(appIDsStr)) {
-                appIDsStr = appIDsStr.replace(",", "','");
-                appIDsStr = "'" + appIDsStr + "'";
+                //appIDsStr = appIDsStr.replace(",", "','");
+                //appIDsStr = "'" + appIDsStr + "'";
 
                 sql.SELECT("*");
                 sql.FROM("flow_process_group");

@@ -343,8 +343,8 @@ public class ProcessMapperProvider {
             SQL sql = new SQL();
             String appIDsStr = SqlUtils.strArrayToStr(appIDs);
             if (StringUtils.isNotBlank(appIDsStr)) {
-                appIDsStr = appIDsStr.replace(",", "','");
-                appIDsStr = "'" + appIDsStr + "'";
+                //appIDsStr = appIDsStr.replace(",", "','");
+                //appIDsStr = "'" + appIDsStr + "'";
 
                 sql.SELECT("*");
                 sql.FROM("flow_process");
@@ -487,8 +487,8 @@ public class ProcessMapperProvider {
             String pageIdsStr = SqlUtils.strArrayToStr(pageIds);
             if (StringUtils.isNotBlank(pageIdsStr)) {
 
-                pageIdsStr = pageIdsStr.replace(",", "','");
-                pageIdsStr = "'" + pageIdsStr + "'";
+                //pageIdsStr = pageIdsStr.replace(",", "','");
+                //pageIdsStr = "'" + pageIdsStr + "'";
                 SQL sql = new SQL();
                 sql.SELECT("*");
                 sql.FROM("flow_process");
