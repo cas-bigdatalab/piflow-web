@@ -1194,10 +1194,10 @@ public class FlowXmlUtils {
         flowGroupPaths.setLastUpdateUser(username);
         flowGroupPaths.setVersion(0L);
         if (StringUtils.isNotBlank(from)) {
-            flowGroupPaths.setFrom(from);
+            flowGroupPaths.setFrom((Integer.parseInt(from) + maxPageId) + "");
         }
         if (StringUtils.isNotBlank(to)) {
-            flowGroupPaths.setTo(to);
+            flowGroupPaths.setTo((Integer.parseInt(to) + maxPageId) + "");
         }
         if (StringUtils.isNotBlank(outPort)) {
             flowGroupPaths.setOutport(outPort);
@@ -1241,8 +1241,12 @@ public class FlowXmlUtils {
             paths.setCrtUser(username);
             paths.setLastUpdateDttm(new Date());
             paths.setLastUpdateUser(username);
-            paths.setFrom(from);
-            paths.setTo(to);
+            if (StringUtils.isNotBlank(from)) {
+                paths.setFrom((Integer.parseInt(from) + maxPageId) + "");
+            }
+            if (StringUtils.isNotBlank(to)) {
+                paths.setTo((Integer.parseInt(to) + maxPageId) + "");
+            }
             paths.setOutport(outport);
             paths.setInport(inport);
             paths.setPageId((Integer.parseInt(pageId) + maxPageId) + "");
@@ -1386,12 +1390,12 @@ public class FlowXmlUtils {
             flow.setLastUpdateDttm(new Date());
             flow.setLastUpdateUser(username);
             flow.setVersion(0L);
-            flow.setPageId(null != flowPageId ? (Integer.parseInt(flowPageId) + maxPageId) + "" : "");
+            flow.setPageId((null != flowPageId) ? ((Integer.parseInt(flowPageId) + maxPageId) + "") : null);
             flow.setDriverMemory(driverMemory);
             flow.setExecutorCores(executorCores);
             flow.setExecutorMemory(executorMemory);
             flow.setExecutorNumber(executorNumber);
-            flow.setName(name + maxPageId);
+            flow.setName(name);
             flow.setDescription(description);
             // mxGraphModel
             Element mxGraphModelElement = flowElement.element("mxGraphModel");
@@ -1437,14 +1441,17 @@ public class FlowXmlUtils {
      * @param flowGroupXmlStr xml string data
      * @return FlowGroup
      */
-    public static FlowGroup XmlStrToFlowGroup(String flowGroupXmlStr, int maxPageId, String username) {
+    public static Map<String, Object> XmlStrToFlowGroup(String flowGroupXmlStr, int maxPageId, String username, String[] flowNames) {
         if (StringUtils.isBlank(flowGroupXmlStr)) {
-            return null;
+            return ReturnMapUtils.setFailedMsg("flowGroupXmlStr is null");
+        }
+        if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsg("username is null");
         }
         try {
             Element flowGroupElement = xmlStrToElementGetByKey(flowGroupXmlStr, false, "flowGroup");
             if (null == flowGroupElement) {
-                return null;
+                return ReturnMapUtils.setFailedMsg("No flowGroup node");
             }
             String name = flowGroupElement.attributeValue("name");
             String description = flowGroupElement.attributeValue("description");
@@ -1458,21 +1465,24 @@ public class FlowXmlUtils {
             flowGroup.setName(name);
             flowGroup.setDescription(description);
 
-            // mxGraphModel
-            Element mxGraphModelXml = flowGroupElement.element("mxGraphModel");
-            String mxGraphModelXmlAsXML = mxGraphModelXml.asXML();
-            MxGraphModel mxGraphModel = xmlToMxGraphModel(mxGraphModelXmlAsXML, maxPageId, username);
-            flowGroup.setMxGraphModel(mxGraphModel);
-
             // flow list
             Iterator flowXmlIterator = flowGroupElement.elementIterator("flow");
             List<Flow> flowList = new ArrayList<>();
+            String duplicateFlowName = "";
             while (flowXmlIterator.hasNext()) {
                 Element recordEle = (Element) flowXmlIterator.next();
                 Flow flow = xmlToFlow(recordEle.asXML(), maxPageId, username);
                 if (null != flow) {
+                    String flowName = flow.getName();
+                    if (Arrays.asList(flowNames).contains(flowName)) {
+                        duplicateFlowName += (flowName + ",");
+                    }
                     flowList.add(flow);
                 }
+            }
+            // If there are duplicate FlowNames, directly return null
+            if (StringUtils.isNotBlank(duplicateFlowName)) {
+                return ReturnMapUtils.setFailedMsg("Duplicate FlowName");
             }
             flowGroup.setFlowList(flowList);
 
@@ -1487,10 +1497,17 @@ public class FlowXmlUtils {
                 }
             }
             flowGroup.setFlowGroupPathsList(flowGroupPathsList);
-            return flowGroup;
+
+            // mxGraphModel
+            Element mxGraphModelXml = flowGroupElement.element("mxGraphModel");
+            String mxGraphModelXmlAsXML = mxGraphModelXml.asXML();
+            MxGraphModel mxGraphModel = xmlToMxGraphModelNew(mxGraphModelXmlAsXML, maxPageId, username, null, flowGroup);
+            flowGroup.setMxGraphModel(mxGraphModel);
+
+            return ReturnMapUtils.setSucceededCustomParam("flowGroup", flowGroup);
         } catch (Exception e) {
             logger.error("Conversion failed", e);
-            return null;
+            return ReturnMapUtils.setFailedMsg("Conversion failed");
         }
     }
 
@@ -1501,12 +1518,12 @@ public class FlowXmlUtils {
      * @param username    Operator username
      * @return Flow
      */
-    public static Flow templateXmlToFlow(String templateXml, String username, String stopMaxPageId, String flowMaxPageId) {
+    public static Map<String, Object> templateXmlToFlow(String templateXml, String username, String stopMaxPageId, String flowMaxPageId, String[] stopNames) {
         if (StringUtils.isBlank(templateXml)) {
-            return null;
+            return ReturnMapUtils.setFailedMsg("templateXml is null");
         }
         if (StringUtils.isBlank(username)) {
-            return null;
+            return ReturnMapUtils.setFailedMsg("username is null");
         }
         if (StringUtils.isBlank(stopMaxPageId)) {
             stopMaxPageId = "1";
@@ -1519,7 +1536,7 @@ public class FlowXmlUtils {
             }
             Element flowElement = xmlStrToElementGetByKey(templateXml, false, "flow");
             if (null == flowElement) {
-                return null;
+                return ReturnMapUtils.setFailedMsg("No flow node");
             }
             String driverMemory = flowElement.attributeValue("driverMemory");
             String executorCores = flowElement.attributeValue("executorCores");
@@ -1543,13 +1560,23 @@ public class FlowXmlUtils {
             // stop
             Iterator stopXmlIterator = flowElement.elementIterator("stop");
             List<Stops> stopsList = new ArrayList<>();
+            String duplicateStopName = null;
             while (stopXmlIterator.hasNext()) {
                 Element recordEle = (Element) stopXmlIterator.next();
                 Stops stops = xmlToStopsNew(recordEle.asXML(), stopMaxPageIdInt, username);
                 if (null != stops) {
+                    String stopName = stops.getName();
+
+                    if (Arrays.asList(stopNames).contains(stopName)) {
+                        duplicateStopName += (stopName + ",");
+                    }
                     stops.setFlow(flow);
                     stopsList.add(stops);
                 }
+            }
+            // If there are duplicate StopNames, directly return null
+            if (StringUtils.isNotBlank(duplicateStopName)) {
+                return ReturnMapUtils.setFailedMsg("Duplicate StopName");
             }
             flow.setStopsList(stopsList);
 
@@ -1567,12 +1594,12 @@ public class FlowXmlUtils {
             flow.setPathsList(pathsList);
             // mxGraphModel
             Element mxGraphModelElement = flowElement.element("mxGraphModel");
-            MxGraphModel mxGraphModel = xmlToMxGraphModelNew(mxGraphModelElement.asXML(), stopMaxPageIdInt, username, flow);
+            MxGraphModel mxGraphModel = xmlToMxGraphModelNew(mxGraphModelElement.asXML(), stopMaxPageIdInt, username, flow, null);
             flow.setMxGraphModel(mxGraphModel);
-            return flow;
+            return ReturnMapUtils.setSucceededCustomParam("flow", flow);
         } catch (Exception e) {
             logger.error("Conversion failed", e);
-            return null;
+            return ReturnMapUtils.setFailedMsg("Conversion failed");
         }
     }
 
@@ -1609,7 +1636,7 @@ public class FlowXmlUtils {
             stops.setLastUpdateDttm(new Date());
             stops.setLastUpdateUser(username);
             stops.setPageId((Integer.parseInt(pageId) + maxPageId) + "");
-            stops.setName(name + System.currentTimeMillis());
+            stops.setName(name);
             stops.setDescription(description);
             stops.setBundel(bundel);
             stops.setId(id);
@@ -1683,7 +1710,7 @@ public class FlowXmlUtils {
      * @param xmlData xml string data
      * @return MxGraphModel
      */
-    public static MxGraphModel xmlToMxGraphModelNew(String xmlData, int maxPageId, String username, Flow flow) {
+    public static MxGraphModel xmlToMxGraphModelNew(String xmlData, int maxPageId, String username, Flow flow, FlowGroup flowGroup) {
         if (StringUtils.isBlank(xmlData)) {
             return null;
         }
@@ -1728,14 +1755,22 @@ public class FlowXmlUtils {
             mxGraphModel.setPageHeight(pageHeight);
             mxGraphModel.setBackground(background);
 
-            //Take out all Stop Name and PageId
-            Map<String, String> stopsNamesMap = new HashMap<>();
+            //Take out all Stop(Flow) Name and PageId
+            Map<String, String> stopOrFlowNamesMap = new HashMap<>();
             if (null != flow && null != flow.getStopsList()) {
                 List<Stops> stopsList = flow.getStopsList();
                 //Loop take out all Stop Name and PageId
                 for (Stops stops : stopsList) {
                     if (null != stops) {
-                        stopsNamesMap.put(stops.getPageId(), stops.getName());
+                        stopOrFlowNamesMap.put(stops.getPageId(), stops.getName());
+                    }
+                }
+            } else if (null != flowGroup && null != flowGroup.getFlowList()) {
+                List<Flow> flowList = flowGroup.getFlowList();
+                //Loop take out all Stop(Flow) Name and PageId
+                for (Flow flowOne : flowList) {
+                    if (null != flowOne) {
+                        stopOrFlowNamesMap.put(flowOne.getPageId(), flowOne.getName());
                     }
                 }
             }
@@ -1746,7 +1781,7 @@ public class FlowXmlUtils {
                 Element recordEle = (Element) rootiter.next();
                 MxCell mxCell = xmlToMxCellNew(recordEle.asXML(), maxPageId, username, mxGraphModel);
                 if (null != mxCell) {
-                    String mxCellValue = stopsNamesMap.get(mxCell.getPageId());
+                    String mxCellValue = stopOrFlowNamesMap.get(mxCell.getPageId());
                     // Canvas composition name synchronized with Stop
                     if (StringUtils.isNotBlank(mxCellValue)) {
                         mxCell.setValue(mxCellValue);
@@ -1756,6 +1791,7 @@ public class FlowXmlUtils {
             }
             mxGraphModel.setRoot(rootList);
             mxGraphModel.setFlow(flow);
+            mxGraphModel.setFlowGroup(flowGroup);
             return mxGraphModel;
         } catch (Exception e) {
             logger.error("Conversion failed", e);

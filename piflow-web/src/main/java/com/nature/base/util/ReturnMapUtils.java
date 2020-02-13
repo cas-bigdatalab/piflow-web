@@ -3,6 +3,7 @@ package com.nature.base.util;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,6 +15,9 @@ public class ReturnMapUtils {
     public static Integer ERROR_CODE = 500;
     public static String ERROR_MSG = "Failed";
     public static String SUCCEEDED_MSG = "Failed";
+    public static String KEY_CODE = "code";
+    public static String KEY_ERROR_Msg = "errorMsg";
+
 
     /**
      * set Failure information
@@ -25,8 +29,8 @@ public class ReturnMapUtils {
         errorMsg = (StringUtils.isNotBlank(errorMsg) ? errorMsg : ERROR_MSG);
         logger.warn(errorMsg);
         Map<String, Object> rtnMap = new HashMap<>();
-        rtnMap.put("code", ERROR_CODE);
-        rtnMap.put("errorMsg", errorMsg);
+        rtnMap.put(KEY_CODE, ERROR_CODE);
+        rtnMap.put(KEY_ERROR_Msg, errorMsg);
         return rtnMap;
     }
 
@@ -51,8 +55,23 @@ public class ReturnMapUtils {
         succeededMsg = (StringUtils.isNotBlank(succeededMsg) ? succeededMsg : SUCCEEDED_MSG);
         logger.info(succeededMsg);
         Map<String, Object> rtnMap = new HashMap<>();
-        rtnMap.put("code", SUCCEEDED_CODE);
-        rtnMap.put("errorMsg", succeededMsg);
+        rtnMap.put(KEY_CODE, SUCCEEDED_CODE);
+        rtnMap.put(KEY_ERROR_Msg, succeededMsg);
+        return rtnMap;
+    }
+
+    /**
+     * set Success message
+     *
+     * @param key Custom param
+     * @param value Custom param
+     * @return Map
+     */
+    public static Map<String, Object> setSucceededCustomParam(String key, Object value) {
+        Map<String, Object> rtnMap = new HashMap<>();
+        rtnMap.put(KEY_CODE, SUCCEEDED_CODE);
+        rtnMap.put(KEY_ERROR_Msg, SUCCEEDED_MSG);
+        rtnMap.put(key, value);
         return rtnMap;
     }
 
@@ -71,13 +90,13 @@ public class ReturnMapUtils {
      * set code and message
      *
      * @param code status code
-     * @param msg Custom message
+     * @param msg  Custom message
      * @return Map
      */
     public static Map<String, Object> setCodeAndMsg(Integer code, String msg) {
         Map<String, Object> rtnMap = new HashMap<>();
-        rtnMap.put("code", code);
-        rtnMap.put("errorMsg", msg);
+        rtnMap.put(KEY_CODE, code);
+        rtnMap.put(KEY_ERROR_Msg, msg);
         return rtnMap;
     }
 
@@ -85,7 +104,7 @@ public class ReturnMapUtils {
      * set code and message
      *
      * @param code status code
-     * @param msg Custom message
+     * @param msg  Custom message
      * @return JsonStr
      */
     public static String setCodeAndMsgRtnJsonStr(Integer code, String msg) {

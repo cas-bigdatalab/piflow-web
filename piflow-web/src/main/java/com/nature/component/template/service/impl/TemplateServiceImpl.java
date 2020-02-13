@@ -99,7 +99,13 @@ public class TemplateServiceImpl implements ITemplateService {
         }
         // Get the maximum pageId in stop
         String maxStopPageId = flowMapper.getMaxStopPageId(flowId);
-        Flow templateXmlToFlow = FlowXmlUtils.templateXmlToFlow(xmlFileToStr, currentUsername, maxStopPageId, null);
+        // Get the current flow containing all stop names
+        String[] stopNamesByFlowId = flowMapper.getStopNamesByFlowId(flowId);
+        Map<String, Object> templateXmlToFlowRtnMap = FlowXmlUtils.templateXmlToFlow(xmlFileToStr, currentUsername, maxStopPageId, null, stopNamesByFlowId);
+        if (200 != (Integer) templateXmlToFlowRtnMap.get("code")) {
+            return JsonUtils.toJsonNoException(templateXmlToFlowRtnMap);
+        }
+        Flow templateXmlToFlow = (Flow) templateXmlToFlowRtnMap.get("flow");
         if (null == templateXmlToFlow) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Conversion failure");
         }

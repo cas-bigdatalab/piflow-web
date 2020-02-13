@@ -280,11 +280,15 @@ public class FlowGroupTemplateServiceImpl implements IFlowGroupTemplateService {
         maxStopPageIdByFlowGroupId = StringUtils.isNotBlank(maxStopPageIdByFlowGroupId) ? maxStopPageIdByFlowGroupId : "0";
         int maxPageId = Integer.parseInt(maxStopPageIdByFlowGroupId);
         String username = currentUser.getUsername();
-        FlowGroup flowGroupXml = FlowXmlUtils.XmlStrToFlowGroup(xmlFileToStr, maxPageId, username);
+        // Get the current flowGroup containing all flow names
+        String[] flowNamesByFlowGroupId = flowMapper.getFlowNamesByFlowGroupId(loadId);
+        Map<String, Object> XmlStrToFlowGroupRtnMap = FlowXmlUtils.XmlStrToFlowGroup(xmlFileToStr, maxPageId, username, flowNamesByFlowGroupId);
+        if (200 != (Integer) XmlStrToFlowGroupRtnMap.get("code")) {
+            return JsonUtils.toJsonNoException(XmlStrToFlowGroupRtnMap);
+        }
+        FlowGroup flowGroupXml = (FlowGroup) XmlStrToFlowGroupRtnMap.get("flowGroup");
         if (null == flowGroupXml) {
-            logger.info("Conversion failure");
-            rtnMap.put("errorMsg", "Conversion failure");
-            return JsonUtils.toJsonNoException(rtnMap);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Conversion failure");
         }
         // Added processing artboard data
         // Fetch the artboard data to be added

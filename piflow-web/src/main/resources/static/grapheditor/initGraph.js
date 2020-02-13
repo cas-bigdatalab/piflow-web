@@ -1266,7 +1266,15 @@ function loadingXml(id, loadId) {
         async: true,
         url: "/piflow-web/template/loadingXmlPage",
     }).success(function (data) {
-        window.location.reload();
+        var dataMap = JSON.parse(data);
+        var icon_code = 2;
+        if (200 === dataMap.code) {
+            icon_code = 1;
+        }
+        fullScreen.hide();
+        layer.msg(dataMap.errorMsg, {icon: icon_code, shade: 0.7, time: 2000}, function () {
+            window.location.reload();
+        });
     }).error(function () {
         fullScreen.hide();
     });

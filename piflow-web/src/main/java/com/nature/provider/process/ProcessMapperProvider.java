@@ -414,7 +414,6 @@ public class ProcessMapperProvider {
             sqlStrBuf.append("update flow_process ");
             sqlStrBuf.append("set ");
             sqlStrBuf.append("last_update_dttm = " + SqlUtils.preventSQLInjection(DateUtils.dateTimesToStr(new Date())) + ", ");
-            sqlStrBuf.append("last_update_dttm = " + SqlUtils.preventSQLInjection(DateUtils.dateTimesToStr(new Date())) + ", ");
             sqlStrBuf.append("last_update_user = " + SqlUtils.preventSQLInjection(username) + ", ");
             sqlStrBuf.append("version=(version+1), ");
             sqlStrBuf.append("enable_flag = 0 ");
