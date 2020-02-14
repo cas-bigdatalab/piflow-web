@@ -344,8 +344,11 @@ function getLogUrl() {
     var open_window_width = (window_width > 300 ? window_width - 200 : window_width);
     var open_window_height = (window_height > 300 ? window_height - 150 : window_height);
     var logContent = '<div id="divPreId" style="height: ' + (open_window_height - 121) + 'px;width: 100%;">'
-        + '<div style="font-size: 90px;text-align: center;margin-top: 15px;"><span>loading....</span></div>'
+        + '<div id="preId" style="height: 100%; margin: 6px 6px 6px 6px;background-color: #f5f5f5;text-align: center;">'
+        + '<span span style="font-size: 90px;margin-top: 15px;">loading....</span>'
+        + '</div>'
         + '</div>';
+
     // + '<div style="margin-top: 5px;margin-bottom: 5px;margin-left: 10px;">'
     // + '<input type="button" class="btn btn-default" onclick="changeUrl(1)" value="stdout">'
     // + '<input type="button" class="btn btn-default" onclick="changeUrl(2)" value="stderr">'
@@ -430,7 +433,7 @@ function changeUrl(key) {
                 var content_td_html = (('' !== content_td) ? content_td[0] : '');
                 var showLogHtml = ('<div id="preId" style="height: 100%; margin: 6px 6px 6px 6px;background-color: #f5f5f5;">') + (content_td) + ('</div>');
                 $("#divPreId").html(showLogHtml);
-                $("#preId").scrollTop($("#preId")[0].scrollHeight);
+                $(".layui-layer-content").scrollTop($(".layui-layer-content")[0].scrollHeight);
             } else {
                 $("#divPreId").html('<div id="preId" style="height: 100%; margin: 6px 6px 6px 6px;background-color: #f5f5f5;text-align: center;"><span style="font-size: 90px;margin-top: 15px;">Load Log Filed</span></div>');
             }

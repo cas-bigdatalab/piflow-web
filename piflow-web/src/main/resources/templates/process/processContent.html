@@ -144,7 +144,255 @@
 </div>
 
 <div th:include="Macro/fragmentMacro :: fullScreen"></div>
+<div id="pre_test">
+    <pre>{
+  "flow" : {
+    "executorNumber" : "1",
+    "checkpoint" : "Merge,SelectField",
+    "driverMemory" : "1g",
+    "executorMemory" : "1g",
+    "executorCores" : "1",
+    "paths" : [ {
+      "inport" : "data2",
+      "from" : "CsvParser",
+      "to" : "Merge",
+      "outport" : ""
+    }, {
+      "inport" : "",
+      "from" : "Fork",
+      "to" : "CsvSave",
+      "outport" : "out2"
+    }, {
+      "inport" : "",
+      "from" : "XmlParser",
+      "to" : "SelectField",
+      "outport" : ""
+    }, {
+      "inport" : "data1",
+      "from" : "SelectField",
+      "to" : "Merge",
+      "outport" : ""
+    }, {
+      "inport" : "",
+      "from" : "Fork",
+      "to" : "PutHiveStreaming",
+      "outport" : "out1"
+    }, {
+      "inport" : "",
+      "from" : "Merge",
+      "to" : "Fork",
+      "outport" : ""
+    }, {
+      "inport" : "",
+      "from" : "Fork",
+      "to" : "JsonSave",
+      "outport" : "out3"
+    } ],
+    "name" : "Example1",
+    "stops" : [ {
+      "customizedProperties" : { },
+      "name" : "PutHiveStreaming",
+      "uuid" : "bdfee70edd8644edbe9308f3104c648a",
+      "bundle" : "cn.piflow.bundle.hive.PutHiveStreaming",
+      "properties" : {
+        "database" : "sparktest",
+        "table" : "dblp_phdthesis"
+      }
+    }, {
+      "customizedProperties" : { },
+      "name" : "CsvSave",
+      "uuid" : "6e2c2d5da8ff4d5cb9074cb71bcab136",
+      "bundle" : "cn.piflow.bundle.csv.CsvSave",
+      "properties" : {
+        "csvSavePath" : "hdfs://10.0.86.89:9000/xjzhu/phdthesis_result.csv",
+        "delimiter" : ",",
+        "header" : "true"
+      }
+    }, {
+      "customizedProperties" : { },
+      "name" : "XmlParser",
+      "uuid" : "3b4761ff9085427694f0a5ba91321feb",
+      "bundle" : "cn.piflow.bundle.xml.XmlParser",
+      "properties" : {
+        "rowTag" : "phdthesis",
+        "xmlpath" : "hdfs://10.0.86.89:9000/xjzhu/dblp.mini.xml"
+      }
+    }, {
+      "customizedProperties" : { },
+      "name" : "SelectField",
+      "uuid" : "dd038cebc27149bbb8d9d0913ebf5324",
+      "bundle" : "cn.piflow.bundle.common.SelectField",
+      "properties" : {
+        "schema" : "title,author,pages"
+      }
+    }, {
+      "customizedProperties" : { },
+      "name" : "JsonSave",
+      "uuid" : "293081d6ed65407b98da1cbf74201ddd",
+      "bundle" : "cn.piflow.bundle.json.JsonSave",
+      "properties" : {
+        "jsonSavePath" : "hdfs://10.0.86.89:9000/xjzhu/phdthesis.json"
+      }
+    }, {
+      "customizedProperties" : { },
+      "name" : "CsvParser",
+      "uuid" : "63182a0e62424f958a3f2358536fb0dd",
+      "bundle" : "cn.piflow.bundle.csv.CsvParser",
+      "properties" : {
+        "schema" : "title,author,pages",
+        "csvPath" : "hdfs://10.0.86.191:9000/xjzhu/phdthesis.csv",
+        "delimiter" : ",",
+        "header" : "false"
+      }
+    }, {
+      "customizedProperties" : { },
+      "name" : "Merge",
+      "uuid" : "e9d5971c74d6446ca7f0f0504ee4878e",
+      "bundle" : "cn.piflow.bundle.common.Merge",
+      "properties" : {
+        "inports" : "data1,data2"
+      }
+    }, {
+      "customizedProperties" : { },
+      "name" : "Fork",
+      "uuid" : "db94146429654bb8af626bfd8168e7f0",
+      "bundle" : "cn.piflow.bundle.common.Fork",
+      "properties" : {
+        "outports" : "out1,out2,out3"
+      }
+    } ],
+    "uuid" : "7462b3027979468290eba19cecdf743d"
+  }
+}
+Map(flow -&gt; Map(name -&gt; Example1, executorMemory -&gt; 1g, executorNumber -&gt; 1, uuid -&gt; 7462b3027979468290eba19cecdf743d, paths -&gt; List(Map(inport -&gt; data2, from -&gt; CsvParser, to -&gt; Merge, outport -&gt; ), Map(inport -&gt; , from -&gt; Fork, to -&gt; CsvSave, outport -&gt; out2), Map(inport -&gt; , from -&gt; XmlParser, to -&gt; SelectField, outport -&gt; ), Map(inport -&gt; data1, from -&gt; SelectField, to -&gt; Merge, outport -&gt; ), Map(inport -&gt; , from -&gt; Fork, to -&gt; PutHiveStreaming, outport -&gt; out1), Map(inport -&gt; , from -&gt; Merge, to -&gt; Fork, outport -&gt; ), Map(inport -&gt; , from -&gt; Fork, to -&gt; JsonSave, outport -&gt; out3)), executorCores -&gt; 1, checkpoint -&gt; Merge,SelectField, driverMemory -&gt; 1g, stops -&gt; List(Map(name -&gt; PutHiveStreaming, bundle -&gt; cn.piflow.bundle.hive.PutHiveStreaming, uuid -&gt; bdfee70edd8644edbe9308f3104c648a, properties -&gt; Map(database -&gt; sparktest, table -&gt; dblp_phdthesis), customizedProperties -&gt; Map()), Map(name -&gt; CsvSave, bundle -&gt; cn.piflow.bundle.csv.CsvSave, uuid -&gt; 6e2c2d5da8ff4d5cb9074cb71bcab136, properties -&gt; Map(csvSavePath -&gt; hdfs://10.0.86.89:9000/xjzhu/phdthesis_result.csv, delimiter -&gt; ,, header -&gt; true), customizedProperties -&gt; Map()), Map(name -&gt; XmlParser, bundle -&gt; cn.piflow.bundle.xml.XmlParser, uuid -&gt; 3b4761ff9085427694f0a5ba91321feb, properties -&gt; Map(rowTag -&gt; phdthesis, xmlpath -&gt; hdfs://10.0.86.89:9000/xjzhu/dblp.mini.xml), customizedProperties -&gt; Map()), Map(name -&gt; SelectField, bundle -&gt; cn.piflow.bundle.common.SelectField, uuid -&gt; dd038cebc27149bbb8d9d0913ebf5324, properties -&gt; Map(schema -&gt; title,author,pages), customizedProperties -&gt; Map()), Map(name -&gt; JsonSave, bundle -&gt; cn.piflow.bundle.json.JsonSave, uuid -&gt; 293081d6ed65407b98da1cbf74201ddd, properties -&gt; Map(jsonSavePath -&gt; hdfs://10.0.86.89:9000/xjzhu/phdthesis.json), customizedProperties -&gt; Map()), Map(name -&gt; CsvParser, bundle -&gt; cn.piflow.bundle.csv.CsvParser, uuid -&gt; 63182a0e62424f958a3f2358536fb0dd, properties -&gt; Map(schema -&gt; title,author,pages, csvPath -&gt; hdfs://10.0.86.191:9000/xjzhu/phdthesis.csv, delimiter -&gt; ,, header -&gt; false), customizedProperties -&gt; Map()), Map(name -&gt; Merge, bundle -&gt; cn.piflow.bundle.common.Merge, uuid -&gt; e9d5971c74d6446ca7f0f0504ee4878e, properties -&gt; Map(inports -&gt; data1,data2), customizedProperties -&gt; Map()), Map(name -&gt; Fork, bundle -&gt; cn.piflow.bundle.common.Fork, uuid -&gt; db94146429654bb8af626bfd8168e7f0, properties -&gt; Map(outports -&gt; out1,out2,out3), customizedProperties -&gt; Map()))))
+find ConfigurableStop by Class.forName: cn.piflow.bundle.common.Fork
+find ConfigurableStop by Class.forName: cn.piflow.bundle.common.Merge
+find ConfigurableStop by Class.forName: cn.piflow.bundle.csv.CsvParser
+find ConfigurableStop by Class.forName: cn.piflow.bundle.json.JsonSave
+find ConfigurableStop by Class.forName: cn.piflow.bundle.common.SelectField
+find ConfigurableStop by Class.forName: cn.piflow.bundle.xml.XmlParser
+find ConfigurableStop by Class.forName: cn.piflow.bundle.csv.CsvSave
+find ConfigurableStop by Class.forName: cn.piflow.bundle.hive.PutHiveStreaming
+hive.metastore.uris=thrift://10.0.88.71:9083!!!!!!!
+jdbc:h2:tcp://10.0.86.191:50002/~/piflow;AUTO_SERVER=true
+[Fork]-(out3)-()-[JsonSave]
+[Merge]-()-()-[Fork]
+[Fork]-(out1)-()-[PutHiveStreaming]
+[SelectField]-()-(data1)-[Merge]
+[XmlParser]-()-()-[SelectField]
+[Fork]-(out2)-()-[CsvSave]
+[CsvParser]-()-(data2)-[Merge]
+process started: process_213df18a-e89d-4875-8c3e-f737c79ea35f_1, flow: cn.piflow.FlowImpl@28b574d9, time: Fri Feb 14 12:26:24 CST 2020
+update flow set state='STARTED' where id='application_1562293222869_0442'
+job initialized: PutHiveStreaming, time: Fri Feb 14 12:26:24 CST 2020
+job initialized: SelectField, time: Fri Feb 14 12:26:24 CST 2020
+job initialized: CsvSave, time: Fri Feb 14 12:26:24 CST 2020
+job initialized: Fork, time: Fri Feb 14 12:26:24 CST 2020
+job initialized: XmlParser, time: Fri Feb 14 12:26:24 CST 2020
+job initialized: JsonSave, time: Fri Feb 14 12:26:24 CST 2020
+job initialized: CsvParser, time: Fri Feb 14 12:26:24 CST 2020
+job initialized: Merge, time: Fri Feb 14 12:26:24 CST 2020
+job started: job_5, stop: XmlParser, time: Fri Feb 14 12:26:24 CST 2020
+Visit process XmlParser!!!!!!!!!!!!!
+default port:
++----------------+----------+----------------+--------------------+-----------------+-----+--------------------+--------------------+--------------------+----+
+|            _key|    _mdate|          author|                  ee|             isbn|pages|              school|               title|                 url|year|
++----------------+----------+----------------+--------------------+-----------------+-----+--------------------+--------------------+--------------------+----+
+|phd/dk/Heine2010|2016-05-04|    Carmen Heine|[http://d-nb.info...|978-3-86596-263-8|1-315|   Aarhus University|Modell zur Produk...|                null|2010|
+|    phd/Hoff2002|2017-01-06|       Gerd Hoff|[http://ubt.opus....|             null| null|University of Tri...|Ein Verfahren zur...|                null|2002|
+|   phd/Seltzer92|2015-05-21|Margo I. Seltzer|                null|             null| null|University of Cal...|File System Perfo...|http://db.cs.berk...|1992|
++----------------+----------+----------------+--------------------+-----------------+-----+--------------------+--------------------+--------------------+----+
 
+job completed: XmlParser, time: Fri Feb 14 12:26:31 CST 2020
+job started: job_2, stop: SelectField, time: Fri Feb 14 12:26:31 CST 2020
+Visit process SelectField!!!!!!!!!!!!!
+MakeCheckPoint Path: hdfs://10.0.86.191:9000/user/piflow/checkpoints/application_1562293222869_0442/SelectField/default
+default port:
++--------------------+----------------+-----+
+|               title|          author|pages|
++--------------------+----------------+-----+
+|Modell zur Produk...|    Carmen Heine|1-315|
+|Ein Verfahren zur...|       Gerd Hoff| null|
+|File System Perfo...|Margo I. Seltzer| null|
++--------------------+----------------+-----+
+
+job completed: SelectField, time: Fri Feb 14 12:26:35 CST 2020
+job started: job_7, stop: CsvParser, time: Fri Feb 14 12:26:35 CST 2020
+Visit process CsvParser!!!!!!!!!!!!!
+default port:
++--------------+---------+--------+
+|         title|   author|   pages|
++--------------+---------+--------+
+|Effective Java|    xjzhu| 100-200|
+|        Python| xiaoxiao| 200-300|
++--------------+---------+--------+
+
+job completed: CsvParser, time: Fri Feb 14 12:26:36 CST 2020
+job started: job_8, stop: Merge, time: Fri Feb 14 12:26:36 CST 2020
+Visit process Merge!!!!!!!!!!!!!
+MakeCheckPoint Path: hdfs://10.0.86.191:9000/user/piflow/checkpoints/application_1562293222869_0442/Merge/default
+default port:
++--------------------+----------------+--------+
+|               title|          author|   pages|
++--------------------+----------------+--------+
+|Modell zur Produk...|    Carmen Heine|   1-315|
+|Ein Verfahren zur...|       Gerd Hoff|    null|
+|File System Perfo...|Margo I. Seltzer|    null|
+|      Effective Java|           xjzhu| 100-200|
+|              Python|        xiaoxiao| 200-300|
++--------------------+----------------+--------+
+
+job completed: Merge, time: Fri Feb 14 12:26:40 CST 2020
+job started: job_4, stop: Fork, time: Fri Feb 14 12:26:40 CST 2020
+Visit process Fork!!!!!!!!!!!!!
+out1 port:
++--------------------+----------------+--------+
+|               title|          author|   pages|
++--------------------+----------------+--------+
+|Modell zur Produk...|    Carmen Heine|   1-315|
+|Ein Verfahren zur...|       Gerd Hoff|    null|
+|File System Perfo...|Margo I. Seltzer|    null|
+|      Effective Java|           xjzhu| 100-200|
+|              Python|        xiaoxiao| 200-300|
++--------------------+----------------+--------+
+
+out3 port:
++--------------------+----------------+--------+
+|               title|          author|   pages|
++--------------------+----------------+--------+
+|Modell zur Produk...|    Carmen Heine|   1-315|
+|Ein Verfahren zur...|       Gerd Hoff|    null|
+|File System Perfo...|Margo I. Seltzer|    null|
+|      Effective Java|           xjzhu| 100-200|
+|              Python|        xiaoxiao| 200-300|
++--------------------+----------------+--------+
+
+out2 port:
++--------------------+----------------+--------+
+|               title|          author|   pages|
++--------------------+----------------+--------+
+|Modell zur Produk...|    Carmen Heine|   1-315|
+|Ein Verfahren zur...|       Gerd Hoff|    null|
+|File System Perfo...|Margo I. Seltzer|    null|
+|      Effective Java|           xjzhu| 100-200|
+|              Python|        xiaoxiao| 200-300|
++--------------------+----------------+--------+
+
+job completed: Fork, time: Fri Feb 14 12:26:41 CST 2020
+job started: job_1, stop: PutHiveStreaming, time: Fri Feb 14 12:26:41 CST 2020
+Visit process PutHiveStreaming!!!!!!!!!!!!!
+job completed: PutHiveStreaming, time: Fri Feb 14 12:26:45 CST 2020
+job started: job_3, stop: CsvSave, time: Fri Feb 14 12:26:45 CST 2020
+Visit process CsvSave!!!!!!!!!!!!!
+job completed: CsvSave, time: Fri Feb 14 12:26:46 CST 2020
+job started: job_6, stop: JsonSave, time: Fri Feb 14 12:26:46 CST 2020
+Visit process JsonSave!!!!!!!!!!!!!
+job completed: JsonSave, time: Fri Feb 14 12:26:46 CST 2020
+process completed: process_213df18a-e89d-4875-8c3e-f737c79ea35f_1, time: Fri Feb 14 12:26:46 CST 2020
+update flow set state='COMPLETED' where id='application_1562293222869_0442'
+update flow set endTime='Fri Feb 14 12:26:46 CST 2020' where id='application_1562293222869_0442'
+</pre>
+</div>
 <script type="text/javascript" th:src="@{/js/jquery/jquery-ui.min.js}"></script>
 <script type="text/javascript" th:src="@{/components/bootstrap/js/bootstrap.min.js}"></script>
 <script th:include="Macro/csrfTokeHeadMacro :: csrfTokeHeadMacroScript"/>

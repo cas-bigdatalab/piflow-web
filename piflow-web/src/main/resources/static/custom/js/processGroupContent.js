@@ -342,6 +342,7 @@ function openLogWindow() {
             }
             $("#divPreId").html(showLogHtml);
             $("#preId").scrollTop($("#preId")[0].scrollHeight);
+            $(".layui-layer-content").scrollTop($(".layui-layer-content")[0].scrollHeight);
         }
     });
 }
