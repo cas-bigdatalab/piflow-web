@@ -1112,6 +1112,7 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
         int maxPageId = Integer.parseInt(maxStopPageIdByFlowGroupId);
 
         flowNew.setPageId((maxPageId + 1) + "");
+        flowNew.setName(flowNew.getName() + (maxPageId + 1));
 
         MxCell mxCell = new MxCell();
         mxCell.setMxGraphModel(mxGraphModel);
@@ -1122,7 +1123,7 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
         mxCell.setPageId((maxPageId + 1) + "");
         mxCell.setParent("1");
         mxCell.setStyle("image;html=1;labelBackgroundColor=#ffffff00;image=/piflow-web/img/flow_02_128x128.png");
-        mxCell.setValue(flowNew.getName() + (maxPageId + 1));
+        mxCell.setValue(flowNew.getName());
         mxCell.setVertex("1");
 
         MxGeometry mxGeometry = new MxGeometry();
@@ -1134,8 +1135,8 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
         mxGeometry.setAs("geometry");
         mxGeometry.setHeight("66");
         mxGeometry.setWidth("66");
-        mxGeometry.setX("200");
-        mxGeometry.setY("200");
+        mxGeometry.setX("0");
+        mxGeometry.setY("0");
 
         mxCell.setMxGeometry(mxGeometry);
         root.add(mxCell);
