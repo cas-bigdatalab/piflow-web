@@ -483,9 +483,9 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
         // Judge empty pathsList
         if (null != addFlowGroupPathsList && addFlowGroupPathsList.size() > 0) {
             List<FlowGroupPaths> flowGroupPathsList = flowGroup.getFlowGroupPathsList();
-            for (FlowGroupPaths flowGroupPaths : flowGroupPathsList) {
-                flowGroupPaths.setFlowGroup(flowGroup);
-                flowGroupPathsList.add(flowGroupPaths);
+            for (FlowGroupPaths addFlowGroupPaths : addFlowGroupPathsList) {
+                addFlowGroupPaths.setFlowGroup(flowGroup);
+                flowGroupPathsList.add(addFlowGroupPaths);
             }
         }
 

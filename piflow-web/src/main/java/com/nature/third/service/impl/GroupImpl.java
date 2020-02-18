@@ -58,6 +58,7 @@ public class GroupImpl implements IGroup {
                     rtnMap.put("errorMsg", "Error : Interface call succeeded, conversion error");
                 }
             } else {
+                logger.warn("Return information：" + doPost);
                 rtnMap.put("errorMsg", "Error : Interface call failed");
             }
         }

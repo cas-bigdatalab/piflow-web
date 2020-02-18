@@ -210,8 +210,9 @@ public class FlowGroupTemplateServiceImpl implements IFlowGroupTemplateService {
                 //Suffix .xml
                 String Suffix = name.substring(name.length() - 4);
                 //Add timestamp
-                String uploadfileName = prefix + "-" + fileName;
-                flowGroupTemplate.setName(uploadfileName + Suffix);
+                //String uploadFileName = prefix + "-" + fileName;
+                String uploadFileName = prefix;
+                flowGroupTemplate.setName(uploadFileName + Suffix);
                 flowGroupTemplate.setPath(path);
                 //Read the XML file according to the saved file path and return the XML string
                 String xmlFileToStr = FileUtils.XmlFileToStr(flowGroupTemplate.getPath());
@@ -361,6 +362,7 @@ public class FlowGroupTemplateServiceImpl implements IFlowGroupTemplateService {
                             }
                         }
                     }
+                    /*
                     if (null != pathsListXml && pathsListXml.size() > 0) {
                         for (Paths paths : pathsListXml) {
                             paths.setFlow(flowXml);
@@ -379,6 +381,7 @@ public class FlowGroupTemplateServiceImpl implements IFlowGroupTemplateService {
                             propertyDomain.saveOrUpdate(propertyListXml);
                         }
                     }
+                    */
                 }
             }
         }
