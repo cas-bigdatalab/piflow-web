@@ -93,7 +93,7 @@ public class TemplateServiceImpl implements ITemplateService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Template is empty, loading template failed");
         }
         //Read the xml file according to the saved file path and return
-        String xmlFileToStr = FileUtils.XmlFileToStr(template.getPath());
+        String xmlFileToStr = FileUtils.XmlFileToStrByAbsolutePath(template.getPath());
         if (StringUtils.isBlank(xmlFileToStr)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("The xml file failed to read and the template failed to be loaded.");
         }

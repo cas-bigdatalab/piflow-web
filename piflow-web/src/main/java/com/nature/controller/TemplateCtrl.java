@@ -194,7 +194,7 @@ public class TemplateCtrl {
                 template.setName(uploadfileName + Suffix);
                 template.setPath(path);
                 //Read the xml file according to the saved file path and return the xml string
-                String xmlFileToStr = FileUtils.XmlFileToStr(template.getPath());
+                String xmlFileToStr = FileUtils.XmlFileToStrByAbsolutePath(template.getPath());
                 if (StringUtils.isBlank(xmlFileToStr)) {
                     logger.info("The xml file failed to read and the template failed to be uploaded.");
                     rtnMap.put("errorMsg", "The xml file failed to read. Please try again.");

@@ -215,7 +215,7 @@ public class FlowGroupTemplateServiceImpl implements IFlowGroupTemplateService {
                 flowGroupTemplate.setName(uploadFileName + Suffix);
                 flowGroupTemplate.setPath(path);
                 //Read the XML file according to the saved file path and return the XML string
-                String xmlFileToStr = FileUtils.XmlFileToStr(flowGroupTemplate.getPath());
+                String xmlFileToStr = FileUtils.XmlFileToStrByAbsolutePath(flowGroupTemplate.getPath());
                 if (StringUtils.isBlank(xmlFileToStr)) {
                     logger.info("XML file read failed, upload template failed");
                     rtnMap.put("errorMsg", "XML file read failed, upload template failed");
@@ -270,7 +270,7 @@ public class FlowGroupTemplateServiceImpl implements IFlowGroupTemplateService {
             return JsonUtils.toJsonNoException(rtnMap);
         }
         //The XML file is read and returned according to the saved file path
-        String xmlFileToStr = FileUtils.XmlFileToStr(flowGroupTemplateVo.getPath());
+        String xmlFileToStr = FileUtils.XmlFileToStrByAbsolutePath(flowGroupTemplateVo.getPath());
         if (StringUtils.isBlank(xmlFileToStr)) {
             logger.info("XML file read failed, loading template failed");
             rtnMap.put("errorMsg", "XML file read failed, loading template failed");

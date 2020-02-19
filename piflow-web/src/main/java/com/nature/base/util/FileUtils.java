@@ -2,6 +2,7 @@ package com.nature.base.util;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.multipart.MultipartFile;
@@ -177,21 +178,17 @@ public class FileUtils {
         return null;
     }
 
-    /**
-     * "xml" file conversion string
-     *
-     * @param path
-     * @return
-     */
-    public static String XmlFileToStr(String path) {
+    public static String fileToString(File xmlFile) {
         String xmlString = "";
+        if (null == xmlFile) {
+            return xmlString;
+        }
         byte[] strBuffer = null;
         InputStream in;
-        int flen;
-        File xmlfile = new File(path);
         try {
-            in = new FileInputStream(xmlfile);
-            flen = (int) xmlfile.length();
+            int flen;
+            in = new FileInputStream(xmlFile);
+            flen = (int) xmlFile.length();
             strBuffer = new byte[flen];
             in.read(strBuffer, 0, flen);
             in.close();
@@ -206,6 +203,33 @@ public class FileUtils {
             xmlString = new String(strBuffer); //When constructing ‘String’, you can use the ‘byte[]’ type.
             logger.info("'xml' file converted string：" + xmlString);
         }
+        return xmlString;
+    }
+
+    /**
+     * "xml" file conversion string
+     *
+     * @param path
+     * @return
+     */
+    public static String XmlFileToStrByAbsolutePath(String path) {
+        if (StringUtils.isBlank(path)) {
+            return null;
+        }
+        File xmlFile = new File(path);
+        return fileToString(xmlFile);
+    }
+
+    public static String XmlFileToStrByRelativePath(String path) {
+        String xmlString = "";
+        try {
+            File xmlFile = ResourceUtils.getFile("classpath:" + path);
+            xmlString = fileToString(xmlFile);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            logger.error("FileNotFound Error", e);
+        }
+        logger.info("'xml' file converted string：" + xmlString);
         return xmlString;
     }
 
