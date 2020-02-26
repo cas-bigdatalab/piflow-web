@@ -81,7 +81,7 @@ function saveFlow() {
                         if (tempWindow == null || typeof(tempWindow)=='undefined'){
                             alert('The window cannot be opened. Please check your browser settings.')
                         } else {
-                            tempWindow.location = "/piflow-web/grapheditor/home?load=" + dataMap.flowId;
+                            tempWindow.location = "/piflow-web/mxGraph/drawingBoard?drawingBoardType=TASK&load=" + dataMap.flowId;
                         }
                     });
                 } else {
@@ -330,7 +330,7 @@ function responseHandlerFlow(res) {
                     '</div>';
                 var actionsHtmlStr = '<div style="width: 100%; text-align: center" >' +
                     '<a class="btn" ' +
-                    'href="/piflow-web/grapheditor/home?load=' + resPageData[i].id + '"' +
+                    'href="/piflow-web/mxGraph/drawingBoard?drawingBoardType=TASK&load=' + resPageData[i].id + '"' +
                     'target="_blank" ' +
                     'style="margin-right: 2px;">' +
                     '<i class="icon-share-alt icon-white"></i>' +
@@ -408,7 +408,7 @@ function reloadStopsList() {
         data: {"load": ''},
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: "/piflow-web/grapheditor/reloadStops",//This is the name of the file where I receive data in the background.
+        url: "/piflow-web/stops/reloadStops",//This is the name of the file where I receive data in the background.
         error: function (request) {//Operation after request failure
             //fullScreen.hide();
             //alert("reload fail");

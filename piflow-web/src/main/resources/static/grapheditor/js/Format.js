@@ -393,12 +393,12 @@ Format.prototype.refresh = function () {
         var label5 = label4.cloneNode(false);
 
         // Workaround for ignored background in IE
-        /*	label2.style.backgroundColor = this.inactiveTabBackgroundColor;
-		label3.style.backgroundColor = this.inactiveTabBackgroundColor;
-		label4.style.backgroundColor = this.inactiveTabBackgroundColor;
-		label5.style.backgroundColor = this.inactiveTabBackgroundColor;*/
+        // label2.style.backgroundColor = this.inactiveTabBackgroundColor;
+        // label3.style.backgroundColor = this.inactiveTabBackgroundColor;
+        // label4.style.backgroundColor = this.inactiveTabBackgroundColor;
+        // label5.style.backgroundColor = this.inactiveTabBackgroundColor;
 
-        //开始设置stops基础信息
+        //Start setting up stop basic information
         label5.style.borderLeftWidth = '0px';
         label5.setAttribute('id', 'basicInfoId');
         mxUtils.write(label5, "basicInfo");
@@ -409,7 +409,7 @@ Format.prototype.refresh = function () {
         this.container.appendChild(StopsBasicInfo);
         addClickHandler(label5, StopsBasicInfo, idx++);
 
-        //开始设置stops属性
+        //Start setting up stop property
         label4.style.borderLeftWidth = '0px';
         label4.setAttribute('id', 'AttributeInfoId');
         mxUtils.write(label4, "AttributeInfo");

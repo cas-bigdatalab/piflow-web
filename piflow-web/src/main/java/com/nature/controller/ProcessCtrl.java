@@ -14,13 +14,13 @@ import com.nature.component.process.vo.*;
 import com.nature.third.service.IFlow;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
@@ -35,16 +35,16 @@ public class ProcessCtrl {
      */
     Logger logger = LoggerUtil.getLogger();
 
-    @Autowired
+    @Resource
     IProcessService processServiceImpl;
 
-    @Autowired
+    @Resource
     IFlow flowImpl;
 
-    @Autowired
+    @Resource
     IProcessStopService processStopServiceImpl;
 
-    @Autowired
+    @Resource
     IProcessPathService processPathServiceImpl;
 
 
@@ -398,5 +398,20 @@ public class ProcessCtrl {
         rtnMap.put("code", 200);
         rtnMap.put("debugData", debugData);
         return JsonUtils.toJsonNoException(rtnMap);
+    }
+
+    /**
+     * Get the `list'running under `flow'
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping("/getRunningProcessList")
+    public ModelAndView getRunningProcessList(HttpServletRequest request, ModelAndView modelAndView) {
+        modelAndView.setViewName("mxGraph/rightPage/runningProcess");
+        String flowId = request.getParameter("flowId");
+        List<ProcessVo> runningProcessVoList = processServiceImpl.getRunningProcessVoList(flowId);
+        modelAndView.addObject("runningProcessVoList", runningProcessVoList);
+        return modelAndView;
     }
 }

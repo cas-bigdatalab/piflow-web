@@ -85,7 +85,7 @@ function openDrawingBoard(evt) {
                 var dataMap = JSON.parse(data);
                 if (200 === dataMap.code) {
                     var flow_obj = dataMap.flow
-                    var tempWindow = window.open("/piflow-web/grapheditor/home?load=" + flow_obj.id + "&parentAccessPath=flowGroupList");
+                    var tempWindow = window.open("/piflow-web/mxGraph/drawingBoard?drawingBoardType=TASK&parentAccessPath=flowGroupList&load=" + flow_obj.id);
                     if (tempWindow == null || typeof (tempWindow) == 'undefined') {
                         alert('The window cannot be opened. Please check your browser settings.')
                     }
@@ -729,7 +729,7 @@ function getRunningProcessList() {
     $.ajax({
         cache: true,//Keep cached data
         type: "POST",//post request
-        url: "/piflow-web/grapheditor/getRunningProcessList",
+        url: "/piflow-web/process/getRunningProcessList",
         data: {"flowId": loadId},
         async: true,
         error: function (request) {//Operation after request failure

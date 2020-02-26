@@ -124,7 +124,7 @@ function responseHandlerFlow(res) {
 }
 
 function openFlowGroup(flowGroupId) {
-    var windowOpen = window.open('/piflow-web/grapheditor/groupDrawingBoard?load=' + flowGroupId + '');
+    var windowOpen = window.open('/piflow-web/mxGraph/drawingBoard?drawingBoardType=GROUP&load=' + flowGroupId + '');
     if (windowOpen == null || typeof(windowOpen)=='undefined'){
         alert('The window cannot be opened. Please check your browser settings.')
     }
@@ -175,7 +175,7 @@ function saveOrUpdateFlowGroup() {
                 var dataMap = JSON.parse(data);
                 if (200 === dataMap.code) {
                     layer.msg('success ', {icon: 1, shade: 0, time: 2000}, function () {
-                        var windowOpen = window.open("/piflow-web/grapheditor/groupDrawingBoard?load=" + dataMap.flowGroupId);
+                        var windowOpen = window.open("/piflow-web/mxGraph/drawingBoard?drawingBoardType=GROUP&load=" + dataMap.flowGroupId);
                         if (windowOpen == null || typeof(windowOpen)=='undefined'){
                             alert('The window cannot be opened. Please check your browser settings.')
                         }

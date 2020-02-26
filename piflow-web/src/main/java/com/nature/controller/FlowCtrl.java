@@ -43,7 +43,7 @@ public class FlowCtrl {
      */
     @RequestMapping("/getFlowListHtml")
     public String getFlowListHtml() {
-        return "graphEditorGroup/flow_List";
+        return "mxGraph/flow_List";
     }
 
     /**

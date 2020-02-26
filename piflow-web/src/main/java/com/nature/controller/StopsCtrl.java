@@ -3,7 +3,9 @@ package com.nature.controller;
 import com.nature.base.util.FlowXmlUtils;
 import com.nature.base.util.JsonUtils;
 import com.nature.base.util.LoggerUtil;
+import com.nature.base.util.SessionUserUtil;
 import com.nature.base.vo.StatefulRtnBase;
+import com.nature.base.vo.UserVo;
 import com.nature.component.flow.model.Flow;
 import com.nature.component.flow.service.ICustomizedPropertyService;
 import com.nature.component.flow.service.IFlowService;
@@ -11,14 +13,17 @@ import com.nature.component.flow.service.IPropertyService;
 import com.nature.component.flow.service.IStopsService;
 import com.nature.component.flow.vo.StopsCustomizedPropertyVo;
 import com.nature.component.flow.vo.StopsVo;
+import com.nature.component.group.service.IStopGroupService;
 import com.nature.component.mxGraph.model.MxGraphModel;
 import com.nature.component.mxGraph.vo.MxGraphModelVo;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,17 +34,38 @@ public class StopsCtrl {
 
     Logger logger = LoggerUtil.getLogger();
 
-    @Autowired
+    @Resource
+    private IStopGroupService stopGroupServiceImpl;
+
+    @Resource
     private IPropertyService propertyServiceImpl;
 
-    @Autowired
+    @Resource
     private IStopsService stopsServiceImpl;
 
-    @Autowired
+    @Resource
     private IFlowService flowServiceImpl;
 
-    @Autowired
+    @Resource
     private ICustomizedPropertyService customizedPropertyServiceImpl;
+
+    /**
+     * 'stops'and'groups' on the left of'reload'
+     *
+     * @param load
+     * @return
+     */
+    @RequestMapping("/reloadStops")
+    @ResponseBody
+    public String reloadStops(String load) {
+        UserVo user = SessionUserUtil.getCurrentUser();
+        Map<String, Object> rtnMap = new HashMap<>();
+        rtnMap.put("code", 500);
+        stopGroupServiceImpl.addGroupAndStopsList(user);
+        rtnMap.put("code", 200);
+        rtnMap.put("load", load);
+        return JsonUtils.toJsonNoException(rtnMap);
+    }
 
     @RequestMapping("/queryIdInfo")
     public StopsVo getStopGroup(String fid, String stopPageId) {
@@ -52,6 +78,28 @@ public class StopsCtrl {
             }
         }
         return null;
+    }
+
+    /**
+     * Get the usage of the current connection port
+     *
+     * @param request
+     * @param model
+     * @return
+     */
+    @RequestMapping("/getStopsPort")
+    @ResponseBody
+    public String getStopsPort(HttpServletRequest request, Model model) {
+        //Take parameters
+        //flowId
+        String flowId = request.getParameter("flowId");
+        //PageId of output's stop
+        String sourceId = request.getParameter("sourceId");
+        //PageId of input stop
+        String targetId = request.getParameter("targetId");
+        // ID of path
+        String pathLineId = request.getParameter("pathLineId");
+        return stopsServiceImpl.getStopsPort(flowId, sourceId, targetId, pathLineId);
     }
 
     /**

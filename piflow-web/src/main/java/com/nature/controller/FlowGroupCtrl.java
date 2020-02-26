@@ -62,8 +62,6 @@ public class FlowGroupCtrl {
     @RequestMapping("/saveFlowGroupData")
     @ResponseBody
     public String saveFlowGroupData(HttpServletRequest request) {
-        Map<String, Object> rtnMap = new HashMap<>();
-        rtnMap.put("code", 500);
         String imageXML = request.getParameter("imageXML");
         String loadId = request.getParameter("load");
         String operType = request.getParameter("operType");

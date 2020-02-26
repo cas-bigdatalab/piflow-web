@@ -76,7 +76,7 @@ public class SysUserServiceImpl implements ISysUserService {
                 //Encrypted password
                 password = new BCryptPasswordEncoder().encode(password);
                 SysUser sysUser = new SysUser();
-                sysUser.setId(SqlUtils.getUUID32());
+                //sysUser.setId(SqlUtils.getUUID32());
                 sysUser.setCrtDttm(new Date());
                 sysUser.setCrtUser("system");
                 sysUser.setLastUpdateDttm(new Date());

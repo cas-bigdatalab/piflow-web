@@ -2,14 +2,17 @@ package com.nature.controller;
 
 import com.nature.base.util.JsonUtils;
 import com.nature.base.util.LoggerUtil;
+import com.nature.component.flow.request.UpdatePathRequest;
 import com.nature.component.flow.service.IPathsService;
+import com.nature.component.flow.service.IPropertyService;
 import com.nature.component.flow.vo.PathsVo;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,7 +25,10 @@ public class PathCtrl {
      */
     Logger logger = LoggerUtil.getLogger();
 
-    @Autowired
+    @Resource
+    private IPropertyService propertyServiceImpl;
+
+    @Resource
     private IPathsService pathsServiceImpl;
 
     /**
@@ -51,6 +57,18 @@ public class PathCtrl {
             logger.warn("The parameter'fid'or'id' is empty");
         }
         return JsonUtils.toJsonNoException(rtnMap);
+    }
+
+    /**
+     * Save user-selected ports
+     *
+     * @param updatePathRequest
+     * @return
+     */
+    @RequestMapping("/savePathsPort")
+    @ResponseBody
+    public String savePathsPort(UpdatePathRequest updatePathRequest) {
+        return propertyServiceImpl.saveOrUpdateRoutePath(updatePathRequest);
     }
 
 

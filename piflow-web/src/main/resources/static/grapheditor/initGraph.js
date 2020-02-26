@@ -20,12 +20,10 @@ function initGraph() {
         //Monitoring event
         graphGlobal.addListener(mxEvent.CELLS_ADDED, function (sender, evt) {
             processListener(evt, "ADD");
-            //console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
             //console.log(evt);
         });
         graphGlobal.addListener(mxEvent.CELLS_MOVED, function (sender, evt) {
             processListener(evt, "MOVED");
-            //console.log("uuuuuuuuuuuuuuu");
             //console.log(evt);
 
         });
@@ -612,7 +610,7 @@ function saveXml(paths, operType) {
     $.ajax({
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: "/piflow-web/grapheditor/saveData",//This is the name of the file where I receive data in the background.
+        url: "/piflow-web/mxGraph/saveDataForTask",//This is the name of the file where I receive data in the background.
         //data:$('#loginForm').serialize(),//Serialize the form
         data: {
             imageXML: xml_outer_html,
@@ -678,7 +676,7 @@ function reloadStops() {
         data: {"load": loadId},
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: "/piflow-web/grapheditor/reloadStops",//This is the name of the file where I receive data in the background.
+        url: "/piflow-web/stops/reloadStops",//This is the name of the file where I receive data in the background.
         error: function (request) {//Operation after request failure
             fullScreen.hide();
             //alert("reload fail");
@@ -689,7 +687,7 @@ function reloadStops() {
         success: function (data) {//Operation after request successful
             var dataMap = JSON.parse(data);
             if (200 === dataMap.code) {
-                window.location.href = "/piflow-web/grapheditor/home?load=" + dataMap.load + "&_" + new Date().getTime();
+                window.location.href = "/piflow-web/mxGraph/drawingBoard?drawingBoardType=TASK&load=" + dataMap.load + "&_" + new Date().getTime();
             } else {
                 //alert("reload fail");
                 layer.msg("reload fail", {icon: 2, shade: 0, time: 2000}, function () {
@@ -803,7 +801,7 @@ function getStopsPortNew(paths) {
             $.ajax({
                 cache: true,
                 type: "get",
-                url: "/piflow-web/grapheditor/getStopsPort",
+                url: "/piflow-web/stops/getStopsPort",
                 data: {
                     "flowId": loadId,
                     "sourceId": sourceMxCellId,
@@ -1069,7 +1067,7 @@ function choosePortNew() {
             $.ajax({
                 cache: true,
                 type: "get",
-                url: "/piflow-web/grapheditor/savePathsPort",
+                url: "/piflow-web/path/savePathsPort",
                 data: reqData,
                 async: true,
                 traditional: true,
@@ -1458,7 +1456,7 @@ function getRunningProcessList() {
     $.ajax({
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: "/piflow-web/grapheditor/getRunningProcessList",//This is the name of the file where I receive data in the background.
+        url: "/piflow-web/process/getRunningProcessList",//This is the name of the file where I receive data in the background.
         data: {"flowId": loadId},
         async: true,
         error: function (request) {//Operation after request failure

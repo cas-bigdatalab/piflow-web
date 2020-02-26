@@ -1,0 +1,318 @@
+<!--[if IE]>
+<meta http-equiv="X-UA-Compatible" content="IE=5,IE=9"><![endif]-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>piflow-web</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta th:include="Macro/csrfTokeHeadMacro :: csrfTokeHeadMacro"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/components/mxGraph/styles/grapheditor.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/components/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href='@{/custom/css/publicMacro.css}'/>
+    <link rel="stylesheet" type="text/css" th:href="@{/custom/css/fullScreen.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/components/font-awesome-4.7.0/css/font-awesome.min.css}"/>
+    <link rel="shortcut icon" th:href="@{/img/logo.ico}">
+    <script th:inline="javascript">
+        var xmlDate = [[${xmlDate}]];
+        var xmlDateStr = [[${xmlDateStr}]];
+        var loadId = [[${load}]];
+        var isExample = [[${isExample}]];
+        var maxFlowPageId = [[${maxFlowPageId}]];
+        var divValue = null;
+        var flowGroupData = {
+            groupName: "component",
+            flowList:[
+                {
+                    name:"Flow",
+                    img_name:"flow_01_128x128.png",
+                    description:'flow component'
+                },{
+                    name:"Flow",
+                    img_name:"flow_02_128x128.png",
+                    description:'flow component'
+                },{
+                    name:"Flow",
+                    img_name:"flow_03_128x128.png",
+                    description:'flow component'
+                },{
+                    name:"Flow",
+                    img_name:"flow_04_128x128.png",
+                    description:'flow component'
+                },{
+                    name:"Flow",
+                    img_name:"flow_05_128x128.png",
+                    description:'flow component'
+                },{
+                    name:"Flow",
+                    img_name:"flow_06_128x128.png",
+                    description:'flow component'
+                },{
+                    name:"Flow",
+                    img_name:"flow_07_128x128.png",
+                    description:'flow component'
+                },{
+                    name:"Flow",
+                    img_name:"flow_08_128x128.png",
+                    description:'flow component'
+                },{
+                    name:"Flow",
+                    img_name:"flow_09_128x128.png",
+                    description:'flow component'
+                },{
+                    name:"Flow",
+                    img_name:"flow_10_128x128.png",
+                    description:'flow component'
+                },{
+                    name:"Flow",
+                    img_name:"flow_11_128x128.png",
+                    description:'flow component'
+                },{
+                    name:"Flow",
+                    img_name:"flow_12_128x128.png",
+                    description:'flow component'
+                }
+
+            ]
+        };
+
+        function divAppend(divAppend) {
+            divValue = divAppend;
+        }
+    </script>
+    <meta th:include="mxGraph/inc/index_graph_improt :: index_graph_improt"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}"/>
+    <style>
+        .customize_btn_css {
+            display: inline-block;
+            padding: 6px 12px;
+            margin-bottom: 0;
+            font-size: 14px;
+            font-weight: 400;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            touch-action: manipulation;
+            cursor: pointer;
+            user-select: none;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            background: #1A8B5F;
+            color: #ffffff;
+            height: 34px;
+            text-decoration:none;
+        }
+        a.customize_btn_css:hover {
+            color: #ffffff;
+            text-decoration: none;
+        }
+        a.customize_btn_css:focus {
+            color: #ffffff;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body class="geEditor">
+<div th:include="Macro/fragmentMacro :: fullScreen"></div>
+<div th:include="Macro/publicMacro :: userHeadMacro"></div>
+
+<div style="width: 45.2%; float: right;">
+    <div style="position: fixed; margin-top: 48px; z-index: 999;text-align: right; width:45%;">
+        <div class="btn-group">
+            <a class="customize_btn_css" href='javascript:void(0);' style="padding: 9px 12px;"
+               onclick="getFlowList()"
+               title="Import flow">
+                <i class="fa-binoculars icon-white"></i>
+            </a>
+        </div>
+        <div class="btn-group">
+            <a class="customize_btn_css" href='javascript:void(0);' style="padding: 9px 12px;"
+               onclick="runFlowGroup()"
+               title="Run flow group">
+                <i class="icon-play icon-white"></i>
+            </a>
+        </div>
+        <div class="btn-group" style="display: none;">
+            <a class="customize_btn_css" href='javascript:void(0);' style="padding: 9px 12px;"
+               onclick="runFlowGroup('DEBUG')" title="Debug flow">
+                <i class="fa-bug icon-white"></i>
+            </a>
+        </div>
+        <div class="btn-group">
+            <a class="customize_btn_css" style="background: #F14D50; color: #ffffff" href='javascript:void(0);' title="menu"
+               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class='glyphicon glyphicon-cog'></i>
+            </a>
+            <ul class="dropdown-menu pull-right" style="margin-top: 0px">
+                <li>
+                    <a id="saveTemplate" href='javascript:void(0);' onclick="saveFlowGroupTemplate()" title="save Template">saveTemplate</a>
+                </li>
+                <!--<li role="separator" class="divider"></li>-->
+                <li role="separator" class=""></li>
+                <li><a id="uploadTemplate" href='javascript:void(0);' onclick="uploadFlowGroupTemplateBtn()" title="uploadTemplate">uploadTemplate </a>
+                </li>
+                <!--<li role="separator" class="divider"></li>-->
+                <li role="separator" class=""></li>
+                <!--<li><a id="loadingXml" href='javascript:void(0);'>LoadTemplate</a></li>-->
+                <li><a id="loadingXml" href='javascript:void(0);' onclick="openTemplateList();">LoadTemplate</a></li>
+            </ul>
+        </div>
+        <div id="divloadingXml" style="display:none;">
+            <select name="loadingXmlSelect" id="loadingXmlSelect" onchange="loadFlowGroupTemplate()"
+                    style="width: 218px;"></select>
+        </div>
+        <form id="uploadForm" enctype="multipart/form-data" method="post">
+            <input type="file" id="flowGroupTemplateFile" name="flowGroupTemplateFile" style="display:none;" onchange="uploadFlowGroupTemplate()"/>
+        </form>
+    </div>
+</div>
+<!-- crumbs -->
+<div style="width: 100%;position: fixed;z-index: 99999;float: left;left: 0px;bottom: 0px;text-align: center;height: 28px;line-height: 28px; background: #37714b;">
+    <span id="web_flowGroupList_navigation">
+        <span style="color: #ffffff">
+            <a style="color: #ffffff" th:href="@{/web/flowGroupList}">FlowGroupList</a>
+        </span>
+        <span style="color: #ffffff">>></span>
+    </span>
+    <span style="color: #ffffff; font-weight: bold">FlowGroupContent</span>
+</div>
+
+<!--Initializes the artboard-->
+<!--stop Property edit popover starts-->
+<div style="display: none;" id="stopOpenTemplate">
+    <form class="layui-form" action="">
+        <div class="layui-form-item layui-form-text">
+            <div class="layui-input-block">
+                <textarea id="stopValue" placeholder="please input ..." class="layui-textarea"
+                          style="width: 272px;margin-left: -100px;resize:none;"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item" style="text-align: center;margin-right: 90px;margin-top: -8px;">
+            <div class="layui-input-block">
+                <button type="button" class="layui-btn layui-btn-primary" id="buttonStop">save
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+<!--stop Property edit popover ends-->
+
+<!-- 'stop' custom attribute table start-->
+<div id="customizedTableObj">
+    <div style="border-collapse: separate; border-spacing: 0px 5px; width: 100%;">
+        <div style="margin-left:10px;float: left;line-height: 34px;">Add Custom Property</div>
+        <div style="margin-right:10px;float: right;text-align: right;">
+            <a class="btn" href="javascript:openAddStopCustomAttrPage();"><i class="glyphicon glyphicon-plus"></i></a>
+        </div>
+    </div>
+    <hr>
+    <table style="border-collapse: separate; border-spacing: 0px 5px;width: 100%;">
+        <tbody>
+        <tr class="trTableStop" style="border: 1px solid #e2e2e2;">
+            <th colspan="2" style="border-bottom: 1px solid #e2e2e2; width: 85px;text-align: center;"><span>key </span>
+            </th>
+            <th colspan="2" style="border-bottom: 1px solid #e2e2e2;">Value</th>
+        </tr>
+        <tr class="trTableStop">
+            <td style="width: 60px;"></td>
+            <td style="width: 25px;"></td>
+            <td></td>
+            <td></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<!-- 'stop' custom attribute table end -->
+
+<!-- 'stop' custom attribute add popup start -->
+<div style="display: none;" id="addStopCustomizedAttrOpenTemplate">
+    <form class="layui-form" action="" style="margin: 10px;" method="post">
+        <input id="openAddCustomizedWindowStopId" name="stopId"/>
+        <div class="layui-form-item">
+            <label class="layui-form-label">Key</label>
+            <div class="layui-input-block">
+                <input type="text"
+                       style="width: 95%;"
+                       name="name"
+                       lay-verify="required"
+                       placeholder="please input key ..."
+                       class="layui-input"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">CustomValue</label>
+            <div class="layui-input-block">
+                <input type="text"
+                       style="width: 95%;"
+                       name="customValue"
+                       lay-verify="required"
+                       placeholder="please input customValue ..."
+                       class="layui-input"/>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">SDescription</label>
+            <div class="layui-input-block">
+                    <textarea name="description"
+                              style="width: 95%;"
+                              lay-verify="required"
+                              placeholder="please input description ..."
+                              class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item" style="text-align: center;margin-right: 90px;margin-top: -8px;">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit="" lay-filter="component-form-submit">save</button>
+            </div>
+        </div>
+    </form>
+</div>
+<!-- 'stop' custom attribute add popup end -->
+
+<!-- 'stop' custom attribute editing popup start -->
+<div style="display: none;" id="stopCustomizedAttrOpenTemplate">
+    <form class="layui-form" action="">
+        <div class="layui-form-item layui-form-text">
+            <div class="layui-input-block">
+                <textarea id="stopCustomizedAttrValueTemplate" placeholder="please input ..." class="layui-textarea"
+                          style="width: 272px;margin-left: -100px;resize:none;"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item" style="text-align: center;margin-right: 90px;margin-top: -8px;">
+            <div class="layui-input-block">
+                <button type="button" class="layui-btn layui-btn-primary" id="buttonStopCustomizedAttrTemplate">
+                    save
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+<!-- 'stop' custom attribute editing popup end -->
+
+<script th:include="Macro/csrfTokeHeadMacro :: csrfTokeHeadMacroScript"/>
+<script type="text/javascript" th:src="@{/components/mxGraph/initGraph.js}"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#myModalPort").draggable();//Add drag and drop for modal dialogs
+        $("#myModalPort").css("overflow", "hidden");//Disable translucent background scrolling of modal dialogs
+        $(".btn-group").mouseover(function () {
+            $(this).addClass("open");
+            var oDiv = document.getElementById("divloadingXml");
+            oDiv.style.display = "none";
+        });
+        $(".btn-group").mouseleave(function () {
+            $(this).removeClass("open");
+        });
+        initGraph();
+        layui.form.on('submit(component-form-submit)', function (data) {
+            addStopCustomProperty(data.field);
+            //console.log(data.field);
+            return false;
+        });
+    });
+    //window.onload = showSelect;
+    //@ sourceURL=mxGraphIndex.js
+</script>
+</body>
+</html>

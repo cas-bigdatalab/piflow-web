@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 画板的ctrl
+ * grapheditorCtrl
  */
 @Controller
 @RequestMapping("/grapheditor")

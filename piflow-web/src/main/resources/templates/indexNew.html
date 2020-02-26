@@ -191,7 +191,7 @@
 
     function exampleView(exampleId) {
         $('#content').html("Example " + exampleId + " loading");
-        window.location.href = ([[${#httpServletRequest.getContextPath()}]] + "/grapheditor/home?load=" + exampleId);
+        window.location.href = ([[${#httpServletRequest.getContextPath()}]] + "/drawingBoard?drawingBoardType=TASK&?load=" + exampleId);
     }
 
     //@ sourceURL=index.js
