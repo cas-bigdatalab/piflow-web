@@ -5,23 +5,11 @@ import com.nature.base.vo.UserVo;
 import com.nature.component.flow.model.Flow;
 import com.nature.component.flow.model.FlowInfoDb;
 import com.nature.component.flow.vo.FlowVo;
-import com.nature.component.mxGraph.vo.MxGraphModelVo;
 
 import javax.transaction.Transactional;
 import java.util.List;
 
 public interface IFlowService {
-    /**
-     * Modify or add 'stops' and 'paths' information to 'flow' to the database
-     *
-     * @param mxGraphModelVo
-     * @param flowId
-     * @param operType       Operation type (add, move, delete)
-     * @param flag           Whether to add 'stop' information
-     * @return
-     */
-    @Transactional
-    public StatefulRtnBase saveOrUpdateFlowAll(MxGraphModelVo mxGraphModelVo, String flowId, String operType, boolean flag);
 
     /**
      * Query flow information based on id
@@ -108,4 +96,18 @@ public interface IFlowService {
     public Boolean updateFlowNameById(String id, String flowName);
 
     public String getMaxFlowPageIdByFlowGroupId(String flowGroupId);
+	
+//    /**
+//     * Modify or add 'stops' and 'paths' information to 'flow' to the database
+//     *
+//     * @param mxGraphModelVo
+//     * @param flowId
+//     * @param operType       Operation type (add, move, delete)
+//     * @param flag           Whether to add 'stop' information
+//     * @return
+//     */
+//    @Transactional
+//    public StatefulRtnBase saveOrUpdateFlowAll(MxGraphModelVo mxGraphModelVo, String flowId, String operType, boolean flag);
+
+	
 }

@@ -199,7 +199,7 @@ public class MxGraphCtrl {
         String imageXML = request.getParameter("imageXML");
         String loadId = request.getParameter("load");
         String operType = request.getParameter("operType");
-        return flowGroupServiceImpl.saveOrUpdateFlowGroupAll(imageXML, loadId, operType, true);
+        return mxGraphModelServiceImpl.saveDataForGroup(imageXML, loadId, operType, true);
     }
 
 }

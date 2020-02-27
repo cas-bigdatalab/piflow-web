@@ -1,6 +1,5 @@
 package com.nature.component.system.service.Impl;
 
-import com.nature.base.util.SqlUtils;
 import com.nature.common.Eunm.SysRoleType;
 import com.nature.component.system.model.SysRole;
 import com.nature.component.system.model.SysUser;

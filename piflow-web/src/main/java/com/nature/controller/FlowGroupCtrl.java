@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/flowGroup")
@@ -54,21 +52,6 @@ public class FlowGroupCtrl {
     }
 
     /**
-     * save data
-     *
-     * @param request
-     * @return
-     */
-    @RequestMapping("/saveFlowGroupData")
-    @ResponseBody
-    public String saveFlowGroupData(HttpServletRequest request) {
-        String imageXML = request.getParameter("imageXML");
-        String loadId = request.getParameter("load");
-        String operType = request.getParameter("operType");
-        return flowGroupServiceImpl.saveOrUpdateFlowGroupAll(imageXML, loadId, operType, true);
-    }
-
-    /**
      * run Flow Group
      *
      * @param request
@@ -106,5 +89,20 @@ public class FlowGroupCtrl {
     public String copyFlowToGroup(String flowId, String flowGroupId) {
         return flowGroupServiceImpl.copyFlowToGroup(flowId, flowGroupId);
     }
+
+//    /**
+//     * save data
+//     *
+//     * @param request
+//     * @return
+//     */
+//    @RequestMapping("/saveFlowGroupData")
+//    @ResponseBody
+//    public String saveFlowGroupData(HttpServletRequest request) {
+//        String imageXML = request.getParameter("imageXML");
+//        String loadId = request.getParameter("load");
+//        String operType = request.getParameter("operType");
+//        return flowGroupServiceImpl.saveOrUpdateFlowGroupAll(imageXML, loadId, operType, true);
+//    }
 
 }

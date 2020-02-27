@@ -340,7 +340,7 @@ function saveXml(paths, operType) {
     $.ajax({
         cache: true,//Keep cached data
         type: "POST",//post request
-        url: "/piflow-web/flowGroup/saveFlowGroupData",
+        url: "/piflow-web/mxGraph/saveDataForGroup",
         //data:$('#loginForm').serialize(),//Serialize the form
         data: {
             imageXML: xml_outer_html,

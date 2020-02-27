@@ -393,12 +393,12 @@ Format.prototype.refresh = function () {
         var label5 = label4.cloneNode(false);
 
         // Workaround for ignored background in IE
-        /*	label2.style.backgroundColor = this.inactiveTabBackgroundColor;
-		label3.style.backgroundColor = this.inactiveTabBackgroundColor;
-		label4.style.backgroundColor = this.inactiveTabBackgroundColor;
-		label5.style.backgroundColor = this.inactiveTabBackgroundColor;*/
+        // label2.style.backgroundColor = this.inactiveTabBackgroundColor;
+        // label3.style.backgroundColor = this.inactiveTabBackgroundColor;
+        // label4.style.backgroundColor = this.inactiveTabBackgroundColor;
+        // label5.style.backgroundColor = this.inactiveTabBackgroundColor;
 
-        //Start setting up flow basic information
+        //Start setting up customize basic information
         label5.style.borderLeftWidth = '0px';
         label5.setAttribute('id', 'basicInfoId');
         mxUtils.write(label5, "basicInfo");
@@ -3308,7 +3308,7 @@ StyleFormatPanel.prototype.addFill = function (container) {
     gradientSelect.style.right = (mxClient.IS_QUIRKS) ? '52px' : '72px';
     gradientSelect.style.width = '70px';
 
-    // flow events from bubbling to color option event handler
+    // nodes events from bubbling to color option event handler
     mxEvent.addListener(gradientSelect, 'click', function (evt) {
         mxEvent.consume(evt);
     });
@@ -3443,7 +3443,7 @@ StyleFormatPanel.prototype.addStroke = function (container) {
         mxEvent.consume(evt);
     });
 
-    // Flow events from bubbling to color option event handler
+    // nodes events from bubbling to color option event handler
     mxEvent.addListener(styleSelect, 'click', function (evt) {
         mxEvent.consume(evt);
     });
@@ -4039,7 +4039,7 @@ StyleFormatPanel.prototype.addLineJumps = function (container) {
             mxEvent.consume(evt);
         });
 
-        // Flow events from bubbling to color option event handler
+        // nodes events from bubbling to color option event handler
         mxEvent.addListener(styleSelect, 'click', function (evt) {
             mxEvent.consume(evt);
         });
@@ -4325,6 +4325,70 @@ DiagramFormatPanel.prototype.addView = function (div) {
     div.appendChild(tableFlow);
     // Grid
     this.addGridOption(div);
+    // if (graph.isEnabled()) {
+    //     // Page View
+    //     if (DiagramFormatPanel.showPageView) {
+    //         div.appendChild(this.createOption(mxResources.get('pageView'), function () {
+    //                 return graph.pageVisible;
+    //             }, function (checked) {
+    //                 ui.actions.get('pageView').funct();
+    //             },
+    //             {
+    //                 install: function (apply) {
+    //                     this.listener = function () {
+    //                         apply(graph.pageVisible);
+    //                     };
+    //
+    //                     ui.addListener('pageViewChanged', this.listener);
+    //                 },
+    //                 destroy: function () {
+    //                     ui.removeListener(this.listener);
+    //                 }
+    //             }));
+    //     }
+    //
+    //     // Background
+    //     var bg = this.createColorOption(mxResources.get('background'), function () {
+    //             return graph.background;
+    //         }, function (color) {
+    //             var change = new ChangePageSetup(ui, color);
+    //             change.ignoreImage = true;
+    //
+    //             graph.model.execute(change);
+    //         }, '#ffffff',
+    //         {
+    //             install: function (apply) {
+    //                 this.listener = function () {
+    //                     apply(graph.background);
+    //                 };
+    //
+    //                 ui.addListener('backgroundColorChanged', this.listener);
+    //             },
+    //             destroy: function () {
+    //                 ui.removeListener(this.listener);
+    //             }
+    //         });
+    //
+    //     if (this.showBackgroundImageOption) {
+    //         var btn = mxUtils.button(mxResources.get('image'), function (evt) {
+    //             ui.showBackgroundImageDialog();
+    //             mxEvent.consume(evt);
+    //         })
+    //
+    //         btn.style.position = 'absolute';
+    //         btn.className = 'geColorBtn';
+    //         btn.style.marginTop = '-4px';
+    //         btn.style.paddingBottom = (document.documentMode == 11 || mxClient.IS_MT) ? '0px' : '2px';
+    //         btn.style.height = '22px';
+    //         btn.style.right = (mxClient.IS_QUIRKS) ? '52px' : '72px';
+    //         btn.style.width = '56px';
+    //
+    //         bg.appendChild(btn);
+    //     }
+    //
+    //     div.appendChild(bg);
+    // }
+
     return div;
 };
 
@@ -4370,6 +4434,64 @@ DiagramFormatPanel.prototype.addOptions = function (div) {
     div.appendChild(document.createElement('br'));
     div.appendChild(span2);
     div.appendChild(crtDttmString);
+    // if (graph.isEnabled()) {
+    //     // Connection arrows
+    //     div.appendChild(this.createOption(mxResources.get('connectionArrows'), function () {
+    //             return graph.connectionArrowsEnabled;
+    //         }, function (checked) {
+    //             ui.actions.get('connectionArrows').funct();
+    //         },
+    //         {
+    //             install: function (apply) {
+    //                 this.listener = function () {
+    //                     apply(graph.connectionArrowsEnabled);
+    //                 };
+    //
+    //                 ui.addListener('connectionArrowsChanged', this.listener);
+    //             },
+    //             destroy: function () {
+    //                 ui.removeListener(this.listener);
+    //             }
+    //         }));
+    //
+    //     // Connection points
+    //     div.appendChild(this.createOption(mxResources.get('connectionPoints'), function () {
+    //             return graph.connectionHandler.isEnabled();
+    //         }, function (checked) {
+    //             ui.actions.get('connectionPoints').funct();
+    //         },
+    //         {
+    //             install: function (apply) {
+    //                 this.listener = function () {
+    //                     apply(graph.connectionHandler.isEnabled());
+    //                 };
+    //
+    //                 ui.addListener('connectionPointsChanged', this.listener);
+    //             },
+    //             destroy: function () {
+    //                 ui.removeListener(this.listener);
+    //             }
+    //         }));
+    //
+    //     // Guides
+    //     div.appendChild(this.createOption(mxResources.get('guides'), function () {
+    //             return graph.graphHandler.guidesEnabled;
+    //         }, function (checked) {
+    //             ui.actions.get('guides').funct();
+    //         },
+    //         {
+    //             install: function (apply) {
+    //                 this.listener = function () {
+    //                     apply(graph.graphHandler.guidesEnabled);
+    //                 };
+    //
+    //                 ui.addListener('guidesEnabledChanged', this.listener);
+    //             },
+    //             destroy: function () {
+    //                 ui.removeListener(this.listener);
+    //             }
+    //         }));
+    // }
     this.addGridOption(div);
     return div;
 };
@@ -4571,6 +4693,17 @@ DiagramFormatPanel.prototype.addStyleOps = function (div) {
     btn.setAttribute('title', mxResources.get('editData') + ' (' + this.editorUi.actions.get('editData').shortcut + ')');
     btn.style.width = '202px';
     btn.style.marginBottom = '2px';
+    //div.appendChild(btn);
+
+    //mxUtils.br(div);
+
+    //btn = mxUtils.button(mxResources.get('clearDefaultStyle'), mxUtils.bind(this, function (evt) {
+    //    this.editorUi.actions.get('clearDefaultStyle').funct();
+    //}));
+
+    //btn.setAttribute('title', mxResources.get('clearDefaultStyle') + ' (' + this.editorUi.actions.get('clearDefaultStyle').shortcut + ')');
+    //btn.style.width = '202px';
+    //div.appendChild(btn);
 
     return div;
 };

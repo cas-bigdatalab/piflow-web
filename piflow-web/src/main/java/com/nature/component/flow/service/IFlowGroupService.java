@@ -49,17 +49,6 @@ public interface IFlowGroupService {
     public String saveOrUpdate(FlowGroupVo flowGroupVo);
 
     /**
-     * save or add flowGroup
-     *
-     * @param imageXML
-     * @param loadId
-     * @param operType
-     * @param flag
-     * @return
-     */
-    public String saveOrUpdateFlowGroupAll(String imageXML, String loadId, String operType, boolean flag);
-
-    /**
      * run flow group
      *
      * @param flowGroupId
@@ -85,5 +74,15 @@ public interface IFlowGroupService {
      */
     public String copyFlowToGroup(String flowId, String flowGroupId);
 
+//    /**
+//     * save or add flowGroup
+//     *
+//     * @param imageXML
+//     * @param loadId
+//     * @param operType
+//     * @param flag
+//     * @return
+//     */
+//    public String saveOrUpdateFlowGroupAll(String imageXML, String loadId, String operType, boolean flag);
 
 }

@@ -40,7 +40,7 @@ public interface ProcessJpaRepository extends JpaRepository<Process, String>, Jp
     @Query(value = "select s.id from process s where s.enable_flag = 1 and s.fk_process_group_id = :fid and s.name = :processName", nativeQuery = true)
     String getProcessIdByNameAndProcessGroupId(@Param("fid") String fid, @Param("processName") String processName);
 
-    @Query(value = "select MAX(s.page_id) from process s where s.enable_flag = 1 and s.fk_process_group_id = :processGroupId", nativeQuery = true)
+    @Query(value = "select MAX(s.page_id+0) from process s where s.enable_flag = 1 and s.fk_process_group_id = :processGroupId", nativeQuery = true)
     String getMaxStopPageIdByProcessGroupId(@Param("processGroupId") String processGroupId);
 
 }

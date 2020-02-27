@@ -29,7 +29,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -202,13 +201,14 @@ public class FlowGroupTemplateServiceImpl implements IFlowGroupTemplateService {
                 flowGroupTemplate.setEnableFlag(true);
                 flowGroupTemplate.setLastUpdateUser(username);
                 flowGroupTemplate.setLastUpdateDttm(new Date());
-                SimpleDateFormat sdf = new SimpleDateFormat("MMddHHmmSSSS");
-                Date nowDate = new Date();
-                String fileName = sdf.format(nowDate);
+
                 //File name prefix
                 String prefix = name.substring(0, name.length() - 4);
                 //Suffix .xml
                 String Suffix = name.substring(name.length() - 4);
+                //SimpleDateFormat sdf = new SimpleDateFormat("MMddHHmmSSSS");
+                //Date nowDate = new Date();
+                //String fileName = sdf.format(nowDate);
                 //Add timestamp
                 //String uploadFileName = prefix + "-" + fileName;
                 String uploadFileName = prefix;
@@ -339,8 +339,6 @@ public class FlowGroupTemplateServiceImpl implements IFlowGroupTemplateService {
         if (null != flowListXml && flowListXml.size() > 0) {
             for (Flow flowXml : flowListXml) {
                 if (null != flowXml) {
-                    List<Stops> stopsListXml = flowXml.getStopsList();
-                    List<Paths> pathsListXml = flowXml.getPathsList();
                     MxGraphModel flowMxGraphModelXml = flowXml.getMxGraphModel();
 
                     flowXml.setFlowGroup(flowGroupById);
@@ -363,12 +361,14 @@ public class FlowGroupTemplateServiceImpl implements IFlowGroupTemplateService {
                         }
                     }
                     /*
+                    List<Paths> pathsListXml = flowXml.getPathsList();
                     if (null != pathsListXml && pathsListXml.size() > 0) {
                         for (Paths paths : pathsListXml) {
                             paths.setFlow(flowXml);
                         }
                         pathsDomain.saveOrUpdate(pathsListXml);
                     }
+                    List<Stops> stopsListXml = flowXml.getStopsList();
                     if (null != stopsListXml && stopsListXml.size() > 0) {
                         for (Stops stops : stopsListXml) {
                             List<Property> propertyListXml = stops.getProperties();

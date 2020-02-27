@@ -6,7 +6,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 public class ProcessGroupMapperProvider {

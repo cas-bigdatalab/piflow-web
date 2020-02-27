@@ -79,7 +79,7 @@ public interface FlowMapper {
      * @param flowId
      * @return
      */
-    @Select("select MAX(page_id) from flow_stops where fk_flow_id = #{flowId} and enable_flag = 1 ")
+    @Select("select MAX(page_id+0) from flow_stops where fk_flow_id = #{flowId} and enable_flag = 1 ")
     public String getMaxStopPageId(@Param("flowId") String flowId);
 
     /**
@@ -97,7 +97,7 @@ public interface FlowMapper {
      * @param flowGroupId
      * @return
      */
-    @Select("select MAX(page_id) from flow where enable_flag = 1 and fk_flow_group_id = #{flowGroupId} ")
+    @Select("select MAX(page_id+0) from flow where enable_flag = 1 and fk_flow_group_id = #{flowGroupId} ")
     public String getMaxFlowPageIdByFlowGroupId(@Param("flowGroupId") String flowGroupId);
 
     /**
