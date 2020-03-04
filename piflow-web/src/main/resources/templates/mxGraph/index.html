@@ -13,67 +13,70 @@
     <link rel="stylesheet" type="text/css" th:href="@{/custom/css/fullScreen.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{/components/font-awesome-4.7.0/css/font-awesome.min.css}"/>
     <link rel="shortcut icon" th:href="@{/img/logo.ico}">
+
     <script th:inline="javascript">
-        var drawingBoardType = [[${drawingBoardType}]];
+        var parentAccessPath = [[${parentAccessPath}]];
+        var flowGroupId = [[${flowGroupId}]];
+        var stopsGroupData = [[${groupsVoList}]];
         var xmlDate = [[${xmlDate}]];
         var xmlDateStr = [[${xmlDateStr}]];
         var loadId = [[${load}]];
         var isExample = [[${isExample}]];
+        var maxStopPageId = [[${maxStopPageId}]];
         var maxFlowPageId = [[${maxFlowPageId}]];
         var divValue = null;
         var flowGroupData = {
             groupName: "component",
-            flowList:[
+            flowList: [
                 {
-                    name:"Flow",
-                    img_name:"flow_01_128x128.png",
-                    description:'flow component'
-                },{
-                    name:"Flow",
-                    img_name:"flow_02_128x128.png",
-                    description:'flow component'
-                },{
-                    name:"Flow",
-                    img_name:"flow_03_128x128.png",
-                    description:'flow component'
-                },{
-                    name:"Flow",
-                    img_name:"flow_04_128x128.png",
-                    description:'flow component'
-                },{
-                    name:"Flow",
-                    img_name:"flow_05_128x128.png",
-                    description:'flow component'
-                },{
-                    name:"Flow",
-                    img_name:"flow_06_128x128.png",
-                    description:'flow component'
-                },{
-                    name:"Flow",
-                    img_name:"flow_07_128x128.png",
-                    description:'flow component'
-                },{
-                    name:"Flow",
-                    img_name:"flow_08_128x128.png",
-                    description:'flow component'
-                },{
-                    name:"Flow",
-                    img_name:"flow_09_128x128.png",
-                    description:'flow component'
-                },{
-                    name:"Flow",
-                    img_name:"flow_10_128x128.png",
-                    description:'flow component'
-                },{
-                    name:"Flow",
-                    img_name:"flow_11_128x128.png",
-                    description:'flow component'
-                },{
-                    name:"Flow",
-                    img_name:"flow_12_128x128.png",
-                    description:'flow component'
+                    name: "Flow",
+                    img_name: "flow_01_128x128.png",
+                    description: 'flow component'
+                }, {
+                    name: "Flow",
+                    img_name: "flow_02_128x128.png",
+                    description: 'flow component'
+                }, {
+                    name: "Flow",
+                    img_name: "flow_03_128x128.png",
+                    description: 'flow component'
+                }, {
+                    name: "Flow",
+                    img_name: "flow_04_128x128.png",
+                    description: 'flow component'
+                }, {
+                    name: "Flow",
+                    img_name: "flow_05_128x128.png",
+                    description: 'flow component'
+                }, {
+                    name: "Flow",
+                    img_name: "flow_06_128x128.png",
+                    description: 'flow component'
+                }, {
+                    name: "Flow",
+                    img_name: "flow_07_128x128.png",
+                    description: 'flow component'
+                }, {
+                    name: "Flow",
+                    img_name: "flow_08_128x128.png",
+                    description: 'flow component'
+                }, {
+                    name: "Flow",
+                    img_name: "flow_09_128x128.png",
+                    description: 'flow component'
+                }, {
+                    name: "Flow",
+                    img_name: "flow_10_128x128.png",
+                    description: 'flow component'
+                }, {
+                    name: "Flow",
+                    img_name: "flow_11_128x128.png",
+                    description: 'flow component'
+                }, {
+                    name: "Flow",
+                    img_name: "flow_12_128x128.png",
+                    description: 'flow component'
                 }
-
             ]
         };
 
@@ -101,12 +104,14 @@
             background: #1A8B5F;
             color: #ffffff;
             height: 34px;
-            text-decoration:none;
+            text-decoration: none;
         }
+
         a.customize_btn_css:hover {
             color: #ffffff;
             text-decoration: none;
         }
+
         a.customize_btn_css:focus {
             color: #ffffff;
             text-decoration: none;
@@ -114,68 +119,104 @@
     </style>
 </head>
 <body class="geEditor">
+<input id="drawingBoardType" style="display: none;" th:value="${drawingBoardType}">
 <div th:include="Macro/fragmentMacro :: fullScreen"></div>
 <div th:include="Macro/publicMacro :: userHeadMacro"></div>
 
 <div style="width: 45.2%; float: right;">
-    <div style="position: fixed; margin-top: 48px; z-index: 999;text-align: right; width:45%;">
-        <div class="btn-group">
-            <a class="customize_btn_css" href='javascript:void(0);' style="padding: 9px 12px;"
-               onclick="getFlowList()"
-               title="Import flow">
-                <i class="fa-binoculars icon-white"></i>
-            </a>
+    <div th:switch="${drawingBoardType?.value}">
+        <div th:case="'TASK'">
+            <div th:include="/mxGraph/inc/task_graphEditor_menus :: task_graphEditor_menus"></div>
         </div>
-        <div class="btn-group">
-            <a class="customize_btn_css" href='javascript:void(0);' style="padding: 9px 12px;"
-               onclick="runFlowGroup()"
-               title="Run flow group">
-                <i class="icon-play icon-white"></i>
-            </a>
+        <div th:case="'GROUP'">
+            <div th:include="/mxGraph/inc/group_graphEditor_menus :: group_graphEditor_menus"></div>
         </div>
-        <div class="btn-group" style="display: none;">
-            <a class="customize_btn_css" href='javascript:void(0);' style="padding: 9px 12px;"
-               onclick="runFlowGroup('DEBUG')" title="Debug flow">
-                <i class="fa-bug icon-white"></i>
-            </a>
-        </div>
-        <div class="btn-group">
-            <a class="customize_btn_css" style="background: #F14D50; color: #ffffff" href='javascript:void(0);' title="menu"
-               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class='glyphicon glyphicon-cog'></i>
-            </a>
-            <ul class="dropdown-menu pull-right" style="margin-top: 0px">
-                <li>
-                    <a id="saveTemplate" href='javascript:void(0);' onclick="saveFlowGroupTemplate()" title="save Template">saveTemplate</a>
-                </li>
-                <!--<li role="separator" class="divider"></li>-->
-                <li role="separator" class=""></li>
-                <li><a id="uploadTemplate" href='javascript:void(0);' onclick="uploadFlowGroupTemplateBtn()" title="uploadTemplate">uploadTemplate </a>
-                </li>
-                <!--<li role="separator" class="divider"></li>-->
-                <li role="separator" class=""></li>
-                <!--<li><a id="loadingXml" href='javascript:void(0);'>LoadTemplate</a></li>-->
-                <li><a id="loadingXml" href='javascript:void(0);' onclick="openTemplateList();">LoadTemplate</a></li>
-            </ul>
-        </div>
-        <div id="divloadingXml" style="display:none;">
-            <select name="loadingXmlSelect" id="loadingXmlSelect" onchange="loadFlowGroupTemplate()"
-                    style="width: 218px;"></select>
-        </div>
-        <form id="uploadForm" enctype="multipart/form-data" method="post">
-            <input type="file" id="flowGroupTemplateFile" name="flowGroupTemplateFile" style="display:none;" onchange="uploadFlowGroupTemplate()"/>
-        </form>
     </div>
 </div>
 <!-- crumbs -->
 <div style="width: 100%;position: fixed;z-index: 99999;float: left;left: 0px;bottom: 0px;text-align: center;height: 28px;line-height: 28px; background: #37714b;">
-    <span id="web_flowGroupList_navigation">
-        <span style="color: #ffffff">
-            <a style="color: #ffffff" th:href="@{/web/flowGroupList}">FlowGroupList</a>
-        </span>
-        <span style="color: #ffffff">>></span>
-    </span>
-    <span style="color: #ffffff; font-weight: bold">FlowGroupContent</span>
+    <div th:switch="${drawingBoardType?.value}">
+        <div th:case="'TASK'">
+            <div th:include="/mxGraph/inc/task_graphEditor_crumbs :: task_graphEditor_crumbs"></div>
+        </div>
+        <div th:case="'GROUP'">
+            <div th:include="/mxGraph/inc/group_graphEditor_crumbs :: group_graphEditor_crumbs"></div>
+        </div>
+    </div>
+</div>
+
+<div id="portShowDiv" class="modal-content" style="display:none;width: 100%;  top: 77px">
+    <div class="modal-body">
+        <from id="protInfo">
+            <div id="sourceTitle1Copy">
+                <span id="sourceTitleStr1Copy" style="font-size: 20px">Source:</span>
+                <div id="sourceTitleCheckbox1Copy">
+                    <input type="checkbox" class="addCheckbox" checked="checked" disabled="disabled">
+                    <span class="addCheckbox">default</span>
+                </div>
+                <div class="layui-row" id="sourceTitleBtn1Copy">
+                    <div class="layui-col-xs7">
+                        <input type="text" class="addCrtBtn form-control" id="sourceCrtPortId1Copy">
+                    </div>
+                    <div class="layui-col-xs5">
+                           <span class="input-group-btn">
+                                <button id="sourceCrtPortBtnId1Copy" type="button" class="addCrtBtn btn btn-default"
+                                        onclick="crtAnyPort('sourceCrtPortId1Copy',true)">
+                                    CrtPort
+                                </button>
+                            </span>
+                    </div>
+                </div>
+                <div class="layui-row" id="sourceRouteFilterList1Copy">
+                    <div class="layui-col-xs7">
+                        <select id="sourceRouteFilterSelect1Copy" class="form-control" style="width: 100%;">
+                            <option value="">Please click Select Filter Country</option>
+                        </select>
+                    </div>
+                    <div class="layui-col-xs5">
+                    </div>
+                </div>
+                <div id="sourceTypeDiv1Copy" style="display: none;"></div>
+            </div>
+            <hr/>
+            <div id="targetTitle1Copy">
+                <span id="targetTitleStr1Copy" style="font-size: 20px">Target:</span>
+                <div id="targetTitleCheckbox1Copy">
+                    <input type="checkbox" class="addCheckbox" checked="checked" disabled="disabled">
+                    <span class="addCheckbox">default</span>
+                </div>
+                <div class="layui-row" id="targetTitleBtn1Copy">
+                    <div>
+                        <div class="layui-col-xs7">
+                            <input type="text" class="addCrtBtn form-control" id="targetCrtPortId1Copy">
+                        </div>
+                        <div class="layui-col-xs5">
+                           <span class="input-group-btn">
+                                <button id="targetCrtPortBtnId1Copy" type="button" class="addCrtBtn btn btn-default"
+                                        onclick="crtAnyPort('targetCrtPortId',true)">
+                                    CrtPort
+                                </button>
+                           </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-row" id="targetRouteFilterList1Copy">
+                    <div class="layui-col-xs7">
+                        <select id="targetRouteFilterSelect1Copy" class="form-control" style="width: 100%;">
+                            <option value="">Please click Select Filter Country</option>
+                        </select>
+                    </div>
+                    <div class="layui-col-xs5">
+                    </div>
+                </div>
+                <div id="targetTypeDiv1Copy" style="display: none;"></div>
+            </div>
+        </from>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" onclick="choosePortNew()">Submit</button>
+        <button type="button" class="btn btn-default" onclick="cancelPortAndPathNew()">Cancel</button>
+    </div>
 </div>
 
 <!--Initializes the artboard-->
@@ -311,6 +352,20 @@
             //console.log(data.field);
             return false;
         });
+        if (parentAccessPath) {
+            switch (parentAccessPath) {
+                case "flowGroupList":
+                    $("#web_flowGroupList_navigation").show();
+                    $("#grapheditor_groupDrawingBoard_navigation").show();
+                    $("#web_flowList_navigation").hide();
+                    break;
+            }
+        }
+        var graphEditorPageType = $("#drawingBoardType").val();
+        if ('TASK' === graphEditorPageType) {
+            $("#graphEditor_task_menus_id").show();
+        } else if ('GROUP' === graphEditorPageType) {
+        }
     });
     //window.onload = showSelect;
     //@ sourceURL=mxGraphIndex.js

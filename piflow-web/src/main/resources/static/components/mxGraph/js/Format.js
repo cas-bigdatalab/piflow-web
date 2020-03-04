@@ -27,6 +27,54 @@ Format.prototype.showCloseButton = true;
 Format.prototype.inactiveTabBackgroundColor = '#d7d7d7';
 
 /**
+ *
+ * Drawing Board Type param
+ */
+Format.customizeType = 'TASK';
+Format.customizeTypeAttr = {};
+/**
+ *
+ * Drawing Board Type param
+ */
+Format.customizeTypeAttr_init = function () {
+    if ('TASK' === Format.customizeType) {
+        Format.customizeTypeAttr.property = 'stops';
+        Format.customizeTypeAttr.updateNameUrl = '/piflow-web/stops/updateStopsNameById';
+        Format.drawingBoardDescription_title = "Flow Line Info";
+        Format.customizeTypeAttr.drawingBoardDescription_td_1_1_span_value = 'UUID： ';
+        Format.customizeTypeAttr.drawingBoardDescription_td_2_1_span_value = 'flowName： ';
+        Format.customizeTypeAttr.drawingBoardDescription_td_3_1_span_value = 'description： ';
+        Format.customizeTypeAttr.drawingBoardDescription_td_4_1_span_value = 'createTime： ';
+        Format.customizeTypeAttr.drawingBoardDescription_td_5_1_span_value = 'stops： ';
+        Format.customizeTypeAttr.customizeBasic_td_1_1_span_value = 'stopsName： ';
+        Format.customizeTypeAttr.customizeBasic_td_3_1_span_value = 'GroupName： ';
+        Format.customizeTypeAttr.customizeBasic_td_2_1_span_value = 'description： ';
+        Format.customizeTypeAttr.customizeBasic_td_4_1_span_value = 'bundel： ';
+        Format.customizeTypeAttr.customizeBasic_td_5_1_span_value = 'version： ';
+        Format.customizeTypeAttr.customizeBasic_td_6_1_span_value = 'owner： ';
+        Format.customizeTypeAttr.customizeBasic_td_7_1_span_value = 'createDate： ';
+        Format.customizeTypeAttr.customizeBasic_td_8_1_span_value = '';
+    } else if ('GROUP' === Format.customizeType) {
+        Format.customizeTypeAttr.property = 'flow';
+        Format.customizeTypeAttr.updateNameUrl = '/piflow-web/flow/updateFlowNameById';
+        Format.drawingBoardDescription_title = "Flow Group Info";
+        Format.customizeTypeAttr.drawingBoardDescription_td_1_1_span_value = 'UUID： ';
+        Format.customizeTypeAttr.drawingBoardDescription_td_2_1_span_value = 'flowGroupName： ';
+        Format.customizeTypeAttr.drawingBoardDescription_td_3_1_span_value = 'flowDescription： ';
+        Format.customizeTypeAttr.drawingBoardDescription_td_4_1_span_value = 'createTime： ';
+        Format.customizeTypeAttr.drawingBoardDescription_td_5_1_span_value = 'flows： ';
+        Format.customizeTypeAttr.customizeBasic_td_1_1_span_value = 'flowName： ';
+        Format.customizeTypeAttr.customizeBasic_td_2_1_span_value = 'description： ';
+        Format.customizeTypeAttr.customizeBasic_td_3_1_span_value = 'driverMemory： ';
+        Format.customizeTypeAttr.customizeBasic_td_4_1_span_value = 'executorCores： ';
+        Format.customizeTypeAttr.customizeBasic_td_5_1_span_value = 'executorMemory： ';
+        Format.customizeTypeAttr.customizeBasic_td_6_1_span_value = 'executorNumber： ';
+        Format.customizeTypeAttr.customizeBasic_td_7_1_span_value = 'createDate： ';
+        Format.customizeTypeAttr.customizeBasic_td_8_1_span_value = 'stops： ';
+    }
+};
+
+/**
  * Adds the label menu items to the given menu and parent.
  */
 Format.prototype.init = function () {
@@ -403,22 +451,22 @@ Format.prototype.refresh = function () {
         label5.setAttribute('id', 'basicInfoId');
         mxUtils.write(label5, "basicInfo");
         div.appendChild(label5);
-        var FlowBasicInfo = div.cloneNode(false);
-        FlowBasicInfo.style.display = 'none';
-        this.panels.push(new FlowBasicInfoFormatPanel(this, ui, FlowBasicInfo));
-        this.container.appendChild(FlowBasicInfo);
-        addClickHandler(label5, FlowBasicInfo, idx++);
+        var CustomizeBasicInfo = div.cloneNode(false);
+        CustomizeBasicInfo.style.display = 'none';
+        this.panels.push(new CustomizeBasicInfoFormatPanel(this, ui, CustomizeBasicInfo));
+        this.container.appendChild(CustomizeBasicInfo);
+        addClickHandler(label5, CustomizeBasicInfo, idx++);
 
-        //
+        //Start setting up property
         label4.style.borderLeftWidth = '0px';
         label4.setAttribute('id', 'AttributeInfoId');
         mxUtils.write(label4, "AttributeInfo");
         div.appendChild(label4);
-        var FlowTextAttribute = div.cloneNode(false);
-        FlowTextAttribute.style.display = 'none';
-        this.panels.push(new FlowAttributeFormatPanel(this, ui, FlowTextAttribute));
-        this.container.appendChild(FlowTextAttribute);
-        addClickHandler(label4, FlowTextAttribute, idx++);
+        var CustomizeTextAttribute = div.cloneNode(false);
+        CustomizeTextAttribute.style.display = 'none';
+        this.panels.push(new CustomizeAttributeFormatPanel(this, ui, CustomizeTextAttribute));
+        this.container.appendChild(CustomizeTextAttribute);
+        addClickHandler(label4, CustomizeTextAttribute, idx++);
 
         // Style
         if (containsLabel) {
@@ -1896,26 +1944,26 @@ ArrangePanel.prototype.addEdgeGeometry = function (container) {
     listener();
 };
 
-/*Add flow attribute tab  start*/
+/*Add customize attribute tab  start */
 /**
  * Adds the label menu items to the given menu and parent.
  */
-FlowAttributeFormatPanel = function (format, editorUi, container) {
+CustomizeAttributeFormatPanel = function (format, editorUi, container) {
     BaseFormatPanel.call(this, format, editorUi, container);
     this.init();
 };
 
-mxUtils.extend(FlowAttributeFormatPanel, BaseFormatPanel);
+mxUtils.extend(CustomizeAttributeFormatPanel, BaseFormatPanel);
 
 /**
  * Adds the label menu items to the given menu and parent.
  */
-FlowAttributeFormatPanel.prototype.init = function () {
+CustomizeAttributeFormatPanel.prototype.init = function () {
     this.container.style.borderBottom = 'none';
     this.addFont(this.container);
 };
 
-FlowAttributeFormatPanel.prototype.addFont = function (container) {
+CustomizeAttributeFormatPanel.prototype.addFont = function (container) {
     var ui = this.editorUi;
     var editor = ui.editor;
     var graph = editor.graph;
@@ -1923,175 +1971,183 @@ FlowAttributeFormatPanel.prototype.addFont = function (container) {
     divAppend(this.container);
     return container;
 };
-/*Add Flow attribute tab  flow*/
+/*Add customize attribute tab stop */
 
-/*Add FlowBasicInfo tab  start*/
+/*Add CustomizeBasicInfo tab  start */
 /**
  * Adds the label menu items to the given menu and parent.
  */
-FlowBasicInfoFormatPanel = function (format, editorUi, container) {
+CustomizeBasicInfoFormatPanel = function (format, editorUi, container) {
     BaseFormatPanel.call(this, format, editorUi, container);
     this.init();
 };
 
-mxUtils.extend(FlowBasicInfoFormatPanel, BaseFormatPanel);
+mxUtils.extend(CustomizeBasicInfoFormatPanel, BaseFormatPanel);
 
 /**
  * Adds the label menu items to the given menu and parent.
  */
-FlowBasicInfoFormatPanel.prototype.init = function () {
+CustomizeBasicInfoFormatPanel.prototype.init = function () {
     this.container.style.borderBottom = 'none';
     this.addFont(this.container);
 };
 
-FlowBasicInfoFormatPanel.prototype.addFont = function (container) {
+CustomizeBasicInfoFormatPanel.prototype.addFont = function (container) {
     var ui = this.editorUi;
     var editor = ui.editor;
     var graph = editor.graph;
     var ss = this.format.getSelectionState();
 
-    var tableFlowBasic = document.createElement("table");
-    tableFlowBasic.style.borderCollapse = "separate";
-    tableFlowBasic.style.borderSpacing = "0px 0px";
-    tableFlowBasic.style.marginLeft = "10px";
-    var tbodyFlowBasic = document.createElement("tbody");
-    var trFlowBasic1 = document.createElement("tr");
-    var trFlowBasic2 = document.createElement("tr");
-    var trFlowBasic3 = document.createElement("tr");
-    var trFlowBasic4 = document.createElement("tr");
-    var trFlowBasic5 = document.createElement("tr");
-    var trFlowBasic6 = document.createElement("tr");
-    var trFlowBasic7 = document.createElement("tr");
-    var trFlowBasic8 = document.createElement("tr");
-    var tdFlowBasic1_1 = document.createElement("td");
-    var tdFlowBasic1_2 = document.createElement("td");
-    var tdFlowBasic2_1 = document.createElement("td");
-    var tdFlowBasic2_2 = document.createElement("td");
-    var tdFlowBasic3_1 = document.createElement("td");
-    var tdFlowBasic3_2 = document.createElement("td");
-    var tdFlowBasic4_1 = document.createElement("td");
-    var tdFlowBasic4_2 = document.createElement("td");
-    var tdFlowBasic5_1 = document.createElement("td");
-    var tdFlowBasic5_2 = document.createElement("td");
-    var tdFlowBasic6_1 = document.createElement("td");
-    var tdFlowBasic6_2 = document.createElement("td");
-    var tdFlowBasic7_1 = document.createElement("td");
-    var tdFlowBasic7_2 = document.createElement("td");
-    var tdFlowBasic8_1 = document.createElement("td");
-    var tdFlowBasic8_2 = document.createElement("td");
+    var customizeBasicInto_table = document.createElement("table");
+    customizeBasicInto_table.style.borderCollapse = "separate";
+    customizeBasicInto_table.style.borderSpacing = "0px 0px";
+    customizeBasicInto_table.style.marginLeft = "10px";
+    var customizeBasicInto_tbody = document.createElement("tbody");
+    var customizeBasic_tr_1 = document.createElement("tr");
+    var customizeBasic_tr_2 = document.createElement("tr");
+    var customizeBasic_tr_3 = document.createElement("tr");
+    var customizeBasic_tr_4 = document.createElement("tr");
+    var customizeBasic_tr_5 = document.createElement("tr");
+    var customizeBasic_tr_6 = document.createElement("tr");
+    var customizeBasic_tr_7 = document.createElement("tr");
+    var customizeBasic_tr_8 = document.createElement("tr");
+    var customizeBasic_td_1_1 = document.createElement("td");
+    var customizeBasic_td_1_2 = document.createElement("td");
+    var customizeBasic_td_2_1 = document.createElement("td");
+    var customizeBasic_td_2_2 = document.createElement("td");
+    var customizeBasic_td_3_1 = document.createElement("td");
+    var customizeBasic_td_3_2 = document.createElement("td");
+    var customizeBasic_td_4_1 = document.createElement("td");
+    var customizeBasic_td_4_2 = document.createElement("td");
+    var customizeBasic_td_5_1 = document.createElement("td");
+    var customizeBasic_td_5_2 = document.createElement("td");
+    var customizeBasic_td_6_1 = document.createElement("td");
+    var customizeBasic_td_6_2 = document.createElement("td");
+    var customizeBasic_td_7_1 = document.createElement("td");
+    var customizeBasic_td_7_2 = document.createElement("td");
+    var customizeBasic_td_8_1 = document.createElement("td");
+    var customizeBasic_td_8_2 = document.createElement("td");
 
-    //模板名称
+    //template name
     var labelTemplate = document.createElement('label');
     labelTemplate.setAttribute('id', 'labelTemplateName');
-    //flowNameUpdate
-    var flowNameLabel = document.createElement('input');
-    flowNameLabel.style.border = '0px';
-    flowNameLabel.style.fontWeight = '700';
-    flowNameLabel.style.background = "rgb(245, 245, 245)";
-    flowNameLabel.setAttribute('id', 'flowNameLabel');
-    //flowNameLabel.setAttribute('readonly', 'true');
-    flowNameLabel.style.display = "none";
-    //flowName
-    var flowNameSpan = document.createElement('span');
-    flowNameSpan.style.border = '0px';
-    flowNameSpan.style.fontWeight = '700';
-    flowNameSpan.style.background = "rgb(245, 245, 245)";
-    flowNameSpan.setAttribute('id', 'flowNameSpan');
-    //flowValue
-    var flowValue = document.createElement('input');
-    flowValue.setAttribute('id', 'flowValueInput');
-    flowValue.setAttribute('type', 'hidden');
-    //flow description
-    var flowDescription = document.createElement('SPAN');
-    flowDescription.setAttribute('id', 'flowDescription');
-    flowDescription.style.fontWeight = "700";
-    flowDescription.style.wordBreak = "normal";
-    flowDescription.style.width = "auto";
-    flowDescription.style.display = "block";
-    flowDescription.style.whiteSpace = "pre-wrap";
-    flowDescription.style.wordWrap = "break-word";
-    flowDescription.style.overflow = "hidden";
-    //flow Driver Memory
-    var flowDriverMemory = document.createElement('label');
-    flowDriverMemory.setAttribute('id', 'flowDriverMemory');
-    //flow Executor Cores
-    var flowExecutorCores = document.createElement('label');
-    flowExecutorCores.setAttribute('id', 'flowExecutorCores');
-    //flow Executor Memory
-    var flowExecutorMemory = document.createElement('label');
-    flowExecutorMemory.setAttribute('id', 'flowExecutorMemory');
-    //flow Executor Number
-    var flowExecutorNumber = document.createElement('label');
-    flowExecutorNumber.setAttribute('id', 'flowExecutorNumber');
-    // create date
-    var flowCreateDate = document.createElement('label');
-    flowCreateDate.setAttribute('id', 'flowCreateDate');
-    // stop quantity
-    var stopQuantity = document.createElement('label');
-    stopQuantity.setAttribute('id', 'stopQuantity');
+    //customize name update
+    var customizeBasic_td_1_2_input1 = document.createElement('input');
+    customizeBasic_td_1_2_input1.style.border = '0px';
+    customizeBasic_td_1_2_input1.style.fontWeight = '700';
+    customizeBasic_td_1_2_input1.style.background = "rgb(245, 245, 245)";
+    customizeBasic_td_1_2_input1.setAttribute('id', 'customizeBasic_td_1_2_input1_id');
+    //customizeBasic_td_1_2_input1.setAttribute('readonly', 'true');
+    customizeBasic_td_1_2_input1.style.display = "none";
+    var customizeBasic_td_1_2_span = document.createElement('span');
+    customizeBasic_td_1_2_span.style.border = '0px';
+    customizeBasic_td_1_2_span.style.fontWeight = '700';
+    customizeBasic_td_1_2_span.style.background = "rgb(245, 245, 245)";
+    customizeBasic_td_1_2_span.setAttribute('id', 'customizeBasic_td_1_2_span_id');
+    var customizeBasic_td_1_2_input2 = document.createElement('input');
+    customizeBasic_td_1_2_input2.setAttribute('id', 'customizeBasic_td_1_2_input2_id');
+    customizeBasic_td_1_2_input2.setAttribute('type', 'hidden');
+    var customizeBasic_td_2_2_span = document.createElement('SPAN');
+    customizeBasic_td_2_2_span.setAttribute('id', 'customizeBasic_td_2_2_span_id');
+    customizeBasic_td_2_2_span.style.fontWeight = "700";
+    customizeBasic_td_2_2_span.style.wordBreak = "normal";
+    customizeBasic_td_2_2_span.style.width = "auto";
+    customizeBasic_td_2_2_span.style.display = "block";
+    customizeBasic_td_2_2_span.style.whiteSpace = "pre-wrap";
+    customizeBasic_td_2_2_span.style.wordWrap = "break-word";
+    customizeBasic_td_2_2_span.style.overflow = "hidden";
+    var customizeBasic_td_3_2_label = document.createElement('label');
+    customizeBasic_td_3_2_label.setAttribute('id', 'customizeBasic_td_3_2_label_id');
+    var customizeBasic_td_4_2_label = document.createElement('label');
+    customizeBasic_td_4_2_label.setAttribute('id', 'customizeBasic_td_4_2_label_id');
+    var customizeBasic_td_5_2_label = document.createElement('label');
+    customizeBasic_td_5_2_label.setAttribute('id', 'customizeBasic_td_5_2_label_id');
+    var customizeBasic_td_6_2_label = document.createElement('label');
+    customizeBasic_td_6_2_label.setAttribute('id', 'customizeBasic_td_6_2_label_id');
+    var customizeBasic_td_7_2_label = document.createElement('label');
+    customizeBasic_td_7_2_label.setAttribute('id', 'customizeBasic_td_7_2_label_id');
+    var customizeBasic_td_8_2_label = document.createElement('label');
+    customizeBasic_td_8_2_label.setAttribute('id', 'customizeBasic_td_8_2_label_id');
 
 
     //Displaying attributes by id
-    var flowNameTitleSpan = document.createElement('span');
-    flowNameTitleSpan.setAttribute('id', 'flowNameID');
-    var flowDescriptionTitleSpan = document.createElement('span');
-    flowDescriptionTitleSpan.setAttribute('id', 'descriptionID');
-    var flowDriverMemoryTitleSpan = document.createElement('span');
-    flowDriverMemoryTitleSpan.setAttribute('id', 'driverMemoryID');
-    var flowExecutorCoresTitleSpan = document.createElement('span');
-    flowExecutorCoresTitleSpan.setAttribute('id', 'executorCoresID');
-    var flowExecutorMemoryTitleSpan = document.createElement('span');
-    flowExecutorMemoryTitleSpan.setAttribute('id', 'executorMemoryID');
-    var flowExecutorNumberTitleSpan = document.createElement('span');
-    flowExecutorNumberTitleSpan.setAttribute('id', 'executorNumberID');
-    var flowCreateDateTitleSpan = document.createElement('span');
-    flowCreateDateTitleSpan.setAttribute('id', 'createDateID');
-    var stopQuantityTitleSpan = document.createElement('span');
-    stopQuantityTitleSpan.setAttribute('id', 'flowQuantityID');
+    var customizeBasic_td_1_1_span = document.createElement('span');
+    customizeBasic_td_1_1_span.setAttribute('id', 'customizeBasic_td_1_1_span_id');
+    var customizeBasic_td_2_1_span = document.createElement('span');
+    customizeBasic_td_2_1_span.setAttribute('id', 'customizeBasic_td_2_1_span_id');
+    var customizeBasic_td_3_1_span = document.createElement('span');
+    customizeBasic_td_3_1_span.setAttribute('id', 'customizeBasic_td_3_1_span_id');
+    // var customizeBasic_td_4_1_label = document.createElement('label');
+    // customizeBasic_td_4_1_label.setAttribute('id', 'pContent');
+    var customizeBasic_td_4_1_span = document.createElement('span');
+    customizeBasic_td_4_1_span.setAttribute('id', 'customizeBasic_td_4_1_span_id');
+    var customizeBasic_td_5_1_span = document.createElement('span');
+    customizeBasic_td_5_1_span.setAttribute('id', 'customizeBasic_td_5_1_span_id');
+    var customizeBasic_td_6_1_span = document.createElement('span');
+    customizeBasic_td_6_1_span.setAttribute('id', 'customizeBasic_td_6_1_span_id');
+    var customizeBasic_td_7_1_span = document.createElement('span');
+    customizeBasic_td_7_1_span.setAttribute('id', 'customizeBasic_td_7_1_span_id');
+    var customizeBasic_td_8_1_span = document.createElement('span');
+    customizeBasic_td_8_1_span.setAttribute('id', 'customizeBasic_td_8_1_span');
     var hr = document.createElement('hr');
-    mxUtils.write(flowNameTitleSpan, 'flowName： ');
-    mxUtils.write(flowDescriptionTitleSpan, 'description： ');
-    mxUtils.write(flowDriverMemoryTitleSpan, 'driverMemory： ');
-    mxUtils.write(flowExecutorCoresTitleSpan, 'executorCores： ');
-    mxUtils.write(flowExecutorMemoryTitleSpan, 'executorMemory： ');
-    mxUtils.write(flowExecutorNumberTitleSpan, 'executorNumber： ');
-    mxUtils.write(flowCreateDateTitleSpan, 'createDate： ');
-    mxUtils.write(stopQuantityTitleSpan, 'stops： ');
-    var btn = mxUtils.button('', mxUtils.bind(this, function (evt) {
-        var pwdBtn = document.getElementById("updateFlowNameBtn");
+    mxUtils.write(customizeBasic_td_1_1_span, Format.customizeTypeAttr.customizeBasic_td_1_1_span_value);
+    mxUtils.write(customizeBasic_td_2_1_span, Format.customizeTypeAttr.customizeBasic_td_2_1_span_value);
+    mxUtils.write(customizeBasic_td_3_1_span, Format.customizeTypeAttr.customizeBasic_td_3_1_span_value);
+    mxUtils.write(customizeBasic_td_4_1_span, Format.customizeTypeAttr.customizeBasic_td_4_1_span_value);
+    mxUtils.write(customizeBasic_td_5_1_span, Format.customizeTypeAttr.customizeBasic_td_5_1_span_value);
+    mxUtils.write(customizeBasic_td_6_1_span, Format.customizeTypeAttr.customizeBasic_td_6_1_span_value);
+    mxUtils.write(customizeBasic_td_7_1_span, Format.customizeTypeAttr.customizeBasic_td_7_1_span_value);
+    mxUtils.write(customizeBasic_td_8_1_span, Format.customizeTypeAttr.customizeBasic_td_8_1_span_value);
+    var customizeBasic_td_1_2_button = mxUtils.button('', mxUtils.bind(this, function (evt) {
+        var pwdBtn = document.getElementById("customizeBasic_td_1_2_button_id");
         var classname = pwdBtn.className;
         //According to the className to determine the number of clicks, true is the first time, that is, input is displayed and saved
         if (classname == 'glyphicon glyphicon-floppy-saved') {
-            $("#flowNameLabel").css("background-color", "");
-            $("#flowNameLabel").css("border", "1px solid");
+            $("#customizeBasic_td_1_2_input1_id").css("background-color", "");
+            $("#customizeBasic_td_1_2_input1_id").css("border", "1px solid");
             //pwdBtn.innerHTML ="save";
             pwdBtn.className = "glyphicon glyphicon-saved";
-            $("#flowNameLabel").removeAttr("readonly");//去除input元素的readonly属性
-            $("#flowNameSpan").hide();
-            $("#flowNameLabel").show();
+            $("#customizeBasic_td_1_2_input1_id").removeAttr("readonly");//Remove the readonly attribute from the input element
+            $("#customizeBasic_td_1_2_span_id").hide();
+            $("#customizeBasic_td_1_2_input1_id").show();
         } else {
             //The second save situation
-            var flowName = $("#flowNameLabel").val();
-            var stopId = $("#flowNameLabel").attr('name');
-            var flowValue = $("#flowValueInput").val();
-            var pageId = $("#flowValueInput").attr('name');
+            var customizeBasic_td_1_2_input1_value = $("#customizeBasic_td_1_2_input1_id").val();
+            var customizeBasic_td_1_2_input2_value = $("#customizeBasic_td_1_2_input2_id").val();
             //Determine whether the value of the input has changed.If there is no change, remove the input and do nothing.
-            if (flowName == flowValue) {
-                $("#flowNameLabel").css("background-color", "rgb(245, 245, 245)");
-                $("#flowNameLabel").css("border", "0px");
+            if (customizeBasic_td_1_2_input1_value == customizeBasic_td_1_2_input2_value) {
+                $("#customizeBasic_td_1_2_input1_id").css("background-color", "rgb(245, 245, 245)");
+                $("#customizeBasic_td_1_2_input1_id").css("border", "0px");
                 pwdBtn.className = "glyphicon glyphicon-floppy-saved";
-                $("#flowNameLabel").blur();
-                $("#flowNameSpan").show();
-                $("#flowNameLabel").hide();
-                $("#flowNameLabel").attr("readonly", "readonly");//Set input element to readonly
+                $("#customizeBasic_td_1_2_input1_id").blur();
+                $("#customizeBasic_td_1_2_span_id").show();
+                $("#customizeBasic_td_1_2_input1_id").hide();
+                $("#customizeBasic_td_1_2_input1_id").attr("readonly", "readonly");//Set input element to readonly
                 return;
+            }
+            var requestDataParam = {};
+            if ('TASK' === Format.customizeType) {
+                requestDataParam = {
+                    flowId: loadId,
+                    stopId: $("#customizeBasic_td_1_2_input1_id").attr('name'),
+                    pageId: $("#customizeBasic_td_1_2_input2_id").attr('name'),
+                    name: customizeBasic_td_1_2_input1_value
+                };
+
+            } else if ('GROUP' === Format.customizeType) {
+                requestDataParam = {
+                    flowGroupId: loadId,
+                    flowId: $("#customizeBasic_td_1_2_input1_id").attr('name'),
+                    pageId: $("#customizeBasic_td_1_2_input2_id").attr('name'),
+                    name: customizeBasic_td_1_2_input1_value
+                };
             }
             //Start update name
             $.ajax({
                 cache: true,
                 type: "POST",
-                url: "/piflow-web/flow/updateFlowNameById",
-                data: {stopId: stopId, flowId: loadId, name: flowName, pageId: pageId},
+                url: Format.customizeTypeAttr.updateNameUrl,
+                data: requestDataParam,
                 async: true,
                 traditional: true,
                 error: function (request) {
@@ -2107,21 +2163,21 @@ FlowBasicInfoFormatPanel.prototype.addFont = function (container) {
                         var dec = new mxCodec(node.ownerDocument);
                         dec.decode(node, graphGlobal.getModel());
                         //After the modification is successful, the page is assigned to cell.value to prevent the update name and stopname from being inconsistent when dragging
-                        /* var results = $("#flowValueInput").data("result");
-                                    results.properties.cell.value =  flowName ;*/
+                        // var results = $("#customizeBasic_td_1_2_input2_id").data("result");
+                        // results.properties.cell.value = customizeBasic_td_1_2_input1_value;
                         //Dynamically record the new stopname for comparison if there is a difference in the next modification
-                        $("#flowValueInput").val(flowName);
+                        $("#customizeBasic_td_1_2_input2_id").val(customizeBasic_td_1_2_input1_value);
                         // Hide input and restore update button after successful modification
-                        $("#flowNameLabel").css("background-color", "rgb(245, 245, 245)");
-                        $("#flowNameLabel").css("border", "0px");
+                        $("#customizeBasic_td_1_2_input1_id").css("background-color", "rgb(245, 245, 245)");
+                        $("#customizeBasic_td_1_2_input1_id").css("border", "0px");
                         pwdBtn.className = "glyphicon glyphicon-floppy-saved";
-                        $("#flowNameLabel").blur();
-                        $("#flowNameLabel").attr("readonly", "readonly");// Set input element to readonly
+                        $("#customizeBasic_td_1_2_input1_id").blur();
+                        $("#customizeBasic_td_1_2_input1_id").attr("readonly", "readonly");// Set input element to readonly
                         layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
                             // findBasicInfo(results);
                         });
                     } else {
-                        layer.msg(dataMap.errMsg, {icon: 2, shade: 0, time: 2000}, function () {
+                        layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000}, function () {
                         });
                     }
                 }
@@ -2130,77 +2186,78 @@ FlowBasicInfoFormatPanel.prototype.addFont = function (container) {
     }));
     //Sample data is not editable, btn is hidden here
     if (isExample) {
-        btn.style.display = 'none';
+        customizeBasic_td_1_2_button.style.display = 'none';
     }
-    btn.setAttribute('id', 'updateFlowNameBtn');
-    btn.setAttribute('title', 'update FlowName');
-    btn.setAttribute('class', 'glyphicon glyphicon-floppy-saved');
-    btn.style.height = '28px';
-    btn.style.width = '28px';
-    btn.style.background = 'rgb(245, 245, 245)';
-    btn.style.border = '1px solid';
-    btn.style.marginLeft = '10px'
+    customizeBasic_td_1_2_button.setAttribute('id', 'customizeBasic_td_1_2_button_id');
+    customizeBasic_td_1_2_button.setAttribute('title', 'Update name');
+    customizeBasic_td_1_2_button.setAttribute('class', 'glyphicon glyphicon-floppy-saved');
+    customizeBasic_td_1_2_button.style.height = '28px';
+    customizeBasic_td_1_2_button.style.width = '28px';
+    customizeBasic_td_1_2_button.style.background = 'rgb(245, 245, 245)';
+    customizeBasic_td_1_2_button.style.border = '1px solid';
+    customizeBasic_td_1_2_button.style.marginLeft = '10px'
     //this.container.appendChild(hr);
-    tdFlowBasic1_1.appendChild(flowNameTitleSpan);
-    tdFlowBasic1_2.appendChild(flowNameSpan);
-    tdFlowBasic1_2.appendChild(flowNameLabel);
-    tdFlowBasic1_2.appendChild(flowValue);
-    tdFlowBasic1_2.appendChild(btn);
-    tdFlowBasic2_1.appendChild(flowDescriptionTitleSpan);
-    tdFlowBasic2_2.appendChild(flowDescription);
-    tdFlowBasic3_1.appendChild(flowDriverMemoryTitleSpan);
-    tdFlowBasic3_2.appendChild(flowDriverMemory);
-    tdFlowBasic4_1.appendChild(flowExecutorCoresTitleSpan);
-    tdFlowBasic4_2.appendChild(flowExecutorCores);
-    tdFlowBasic5_1.appendChild(flowExecutorMemoryTitleSpan);
-    tdFlowBasic5_2.appendChild(flowExecutorMemory);
-    tdFlowBasic6_1.appendChild(flowExecutorNumberTitleSpan);
-    tdFlowBasic6_2.appendChild(flowExecutorNumber);
-    tdFlowBasic7_1.appendChild(flowCreateDateTitleSpan);
-    tdFlowBasic7_2.appendChild(flowCreateDate);
-    tdFlowBasic8_1.appendChild(stopQuantityTitleSpan);
-    tdFlowBasic8_2.appendChild(stopQuantity);
-    trFlowBasic1.appendChild(tdFlowBasic1_1);
-    trFlowBasic1.appendChild(tdFlowBasic1_2);
-    trFlowBasic2.appendChild(tdFlowBasic2_1);
-    trFlowBasic2.appendChild(tdFlowBasic2_2);
-    trFlowBasic3.appendChild(tdFlowBasic3_1);
-    trFlowBasic3.appendChild(tdFlowBasic3_2);
-    trFlowBasic4.appendChild(tdFlowBasic4_1);
-    trFlowBasic4.appendChild(tdFlowBasic4_2);
-    trFlowBasic5.appendChild(tdFlowBasic5_1);
-    trFlowBasic5.appendChild(tdFlowBasic5_2);
-    trFlowBasic6.appendChild(tdFlowBasic6_1);
-    trFlowBasic6.appendChild(tdFlowBasic6_2);
-    trFlowBasic7.appendChild(tdFlowBasic7_1);
-    trFlowBasic7.appendChild(tdFlowBasic7_2);
-    trFlowBasic8.appendChild(tdFlowBasic8_1);
-    trFlowBasic8.appendChild(tdFlowBasic8_2);
-    trFlowBasic1.vAlign = "top";
-    trFlowBasic2.vAlign = "top";
-    trFlowBasic3.vAlign = "top";
-    trFlowBasic4.vAlign = "top";
-    trFlowBasic5.vAlign = "top";
-    trFlowBasic6.vAlign = "top";
-    trFlowBasic7.vAlign = "top";
-    trFlowBasic8.vAlign = "top";
-    tbodyFlowBasic.appendChild(trFlowBasic1);
-    tbodyFlowBasic.appendChild(trFlowBasic2);
-    tbodyFlowBasic.appendChild(trFlowBasic3);
-    tbodyFlowBasic.appendChild(trFlowBasic4);
-    tbodyFlowBasic.appendChild(trFlowBasic5);
-    tbodyFlowBasic.appendChild(trFlowBasic6);
-    tbodyFlowBasic.appendChild(trFlowBasic7);
-    tbodyFlowBasic.appendChild(trFlowBasic8);
-    tableFlowBasic.appendChild(tbodyFlowBasic);
-    this.container.appendChild(tableFlowBasic);
+    customizeBasic_td_1_1.appendChild(customizeBasic_td_1_1_span);
+    customizeBasic_td_1_2.appendChild(customizeBasic_td_1_2_span);
+    customizeBasic_td_1_2.appendChild(customizeBasic_td_1_2_input1);
+    customizeBasic_td_1_2.appendChild(customizeBasic_td_1_2_input2);
+    customizeBasic_td_1_2.appendChild(customizeBasic_td_1_2_button);
+    customizeBasic_td_2_1.appendChild(customizeBasic_td_2_1_span);
+    customizeBasic_td_2_2.appendChild(customizeBasic_td_2_2_span);
+    customizeBasic_td_3_1.appendChild(customizeBasic_td_3_1_span);
+    customizeBasic_td_3_2.appendChild(customizeBasic_td_3_2_label);
+    customizeBasic_td_4_1.appendChild(customizeBasic_td_4_1_span);
+    customizeBasic_td_4_2.appendChild(customizeBasic_td_4_2_label);
+    customizeBasic_td_5_1.appendChild(customizeBasic_td_5_1_span);
+    customizeBasic_td_5_2.appendChild(customizeBasic_td_5_2_label);
+    customizeBasic_td_6_1.appendChild(customizeBasic_td_6_1_span);
+    customizeBasic_td_6_2.appendChild(customizeBasic_td_6_2_label);
+    customizeBasic_td_7_1.appendChild(customizeBasic_td_7_1_span);
+    customizeBasic_td_7_2.appendChild(customizeBasic_td_7_2_label);
+    customizeBasic_td_8_1.appendChild(customizeBasic_td_8_1_span);
+    customizeBasic_td_8_2.appendChild(customizeBasic_td_8_2_label);
+    customizeBasic_tr_1.appendChild(customizeBasic_td_1_1);
+    customizeBasic_tr_1.appendChild(customizeBasic_td_1_2);
+    customizeBasic_tr_2.appendChild(customizeBasic_td_2_1);
+    customizeBasic_tr_2.appendChild(customizeBasic_td_2_2);
+    customizeBasic_tr_3.appendChild(customizeBasic_td_3_1);
+    customizeBasic_tr_3.appendChild(customizeBasic_td_3_2);
+    customizeBasic_tr_4.appendChild(customizeBasic_td_4_1);
+    customizeBasic_tr_4.appendChild(customizeBasic_td_4_2);
+    customizeBasic_tr_5.appendChild(customizeBasic_td_5_1);
+    customizeBasic_tr_5.appendChild(customizeBasic_td_5_2);
+    customizeBasic_tr_6.appendChild(customizeBasic_td_6_1);
+    customizeBasic_tr_6.appendChild(customizeBasic_td_6_2);
+    customizeBasic_tr_7.appendChild(customizeBasic_td_7_1);
+    customizeBasic_tr_7.appendChild(customizeBasic_td_7_2);
+    customizeBasic_tr_8.appendChild(customizeBasic_td_8_1);
+    customizeBasic_tr_8.appendChild(customizeBasic_td_8_2);
+    customizeBasic_tr_1.vAlign = "top";
+    customizeBasic_tr_2.vAlign = "top";
+    customizeBasic_tr_3.vAlign = "top";
+    customizeBasic_tr_4.vAlign = "top";
+    customizeBasic_tr_5.vAlign = "top";
+    customizeBasic_tr_6.vAlign = "top";
+    customizeBasic_tr_7.vAlign = "top";
+    customizeBasic_tr_8.vAlign = "top";
+    customizeBasicInto_tbody.appendChild(customizeBasic_tr_1);
+    customizeBasicInto_tbody.appendChild(customizeBasic_tr_2);
+    customizeBasicInto_tbody.appendChild(customizeBasic_tr_3);
+    customizeBasicInto_tbody.appendChild(customizeBasic_tr_4);
+    customizeBasicInto_tbody.appendChild(customizeBasic_tr_5);
+    customizeBasicInto_tbody.appendChild(customizeBasic_tr_6);
+    customizeBasicInto_tbody.appendChild(customizeBasic_tr_7);
+    customizeBasicInto_tbody.appendChild(customizeBasic_tr_8);
+    customizeBasicInto_table.appendChild(customizeBasicInto_tbody);
+    this.container.appendChild(customizeBasicInto_table);
     var hrhr = document.createElement('hr');
     hrhr.style.border = "0.6px solid rgb(192, 192, 192)";
     this.container.appendChild(hrhr);
     this.container.setAttribute('id', 'containerID');
     return container;
 };
-/*Add FlowBasicInfo tab  stop*/
+
+/*Add customize basicInfo tab stop*/
 
 /**
  * Adds the label menu items to the given menu and parent.
@@ -4235,94 +4292,93 @@ DiagramFormatPanel.prototype.addView = function (div) {
     var ui = this.editorUi;
     var editor = ui.editor;
     var graph = editor.graph;
-    queryFlowGroup();
-    div.appendChild(this.createTitle('Flow Group Info'));
+    if ('TASK' === Format.customizeType) {
+        queryFlowInfo();
+    } else if ('GROUP' === Format.customizeType) {
+        queryFlowGroup();
+    }
+    div.appendChild(this.createTitle(Format.drawingBoardDescription_title));
 
-    var tableFlow = document.createElement("table");
-    tableFlow.style.borderCollapse = "separate";
-    tableFlow.style.borderSpacing = "0px 5px";
-    tableFlow.style.width = "98%";
-    tableFlow.style.wordWrap = "break-word";
-    tableFlow.style.wordBreak = "break-all";
-    tableFlow.setAttribute('id', 'flowGroupTableId');
-    var tbodyFlow = document.createElement("tbody");
-    var trFlow1 = document.createElement("tr");
-    var trFlow2 = document.createElement("tr");
-    var trFlow3 = document.createElement("tr");
-    var trFlow4 = document.createElement("tr");
-    var trFlow5 = document.createElement("tr");
-    var tdFlow1 = document.createElement("td");
-    var tdFlow2 = document.createElement("td");
-    var tdFlow3 = document.createElement("td");
-    var tdFlow4 = document.createElement("td");
-    var tdFlow5 = document.createElement("td");
-    var tdFlow6 = document.createElement("td");
-    var tdFlow7 = document.createElement("td");
-    var tdFlow8 = document.createElement("td");
-    var tdFlow9 = document.createElement("td");
-    var tdFlow10 = document.createElement("td");
+    var drawingBoardDescription_table = document.createElement("table");
+    drawingBoardDescription_table.style.borderCollapse = "separate";
+    drawingBoardDescription_table.style.borderSpacing = "0px 5px";
+    drawingBoardDescription_table.style.width = "98%";
+    drawingBoardDescription_table.style.wordWrap = "break-word";
+    drawingBoardDescription_table.style.wordBreak = "break-all";
+    drawingBoardDescription_table.setAttribute('id', 'drawingBoardDescription_table_id');
+    var drawingBoardDescription_tbody = document.createElement("tbody");
+    var drawingBoardDescription_tr_1 = document.createElement("tr");
+    var drawingBoardDescription_tr_2 = document.createElement("tr");
+    var drawingBoardDescription_tr_3 = document.createElement("tr");
+    var drawingBoardDescription_tr_4 = document.createElement("tr");
+    var drawingBoardDescription_tr_5 = document.createElement("tr");
+    var drawingBoardDescription_td_1_1 = document.createElement("td");
+    var drawingBoardDescription_td_1_2 = document.createElement("td");
+    var drawingBoardDescription_td_2_1 = document.createElement("td");
+    var drawingBoardDescription_td_2_2 = document.createElement("td");
+    var drawingBoardDescription_td_3_1 = document.createElement("td");
+    var drawingBoardDescription_td_3_2 = document.createElement("td");
+    var drawingBoardDescription_td_4_1 = document.createElement("td");
+    var drawingBoardDescription_td_4_2 = document.createElement("td");
+    var drawingBoardDescription_td_5_1 = document.createElement("td");
+    var drawingBoardDescription_td_5_2 = document.createElement("td");
 
+    var drawingBoardDescription_td_1_2_label = document.createElement('label');
+    var drawingBoardDescription_td_2_2_label = document.createElement('label');
+    var drawingBoardDescription_td_3_2_label = document.createElement('label');
+    var drawingBoardDescription_td_4_2_label = document.createElement('label');
+    var drawingBoardDescription_td_5_2_label = document.createElement('label');
+    drawingBoardDescription_td_1_2_label.setAttribute('id', 'drawingBoardDescription_td_1_2_label_id');
+    drawingBoardDescription_td_2_2_label.setAttribute('id', 'drawingBoardDescription_td_2_2_label_id');
+    drawingBoardDescription_td_3_2_label.setAttribute('id', 'drawingBoardDescription_td_3_2_label_id');
+    drawingBoardDescription_td_4_2_label.setAttribute('id', 'drawingBoardDescription_td_4_2_label_id');
+    drawingBoardDescription_td_5_2_label.setAttribute('id', 'drawingBoardDescription_td_5_2_label_id');
 
-    //UUID
-    var UUID = document.createElement('label');
-    UUID.setAttribute('id', 'UUID');
-    //flowName
-    var flowName = document.createElement('label');
-    flowName.setAttribute('id', 'flowGroupName');
-    //crtDttm
-    var crtDttmString = document.createElement('label');
-    crtDttmString.setAttribute('id', 'createTime');
-    //flowDescription
-    var flowDescription = document.createElement('label');
-    flowDescription.setAttribute('id', 'flowGroupDescription');
-    //crtDttm
-    var flowQuantity = document.createElement('label');
-    flowQuantity.setAttribute('id', 'flowQuantity');
-
-    var span = document.createElement('span');
-    var span1 = document.createElement('span');
-    var span2 = document.createElement('span');
-    var span3 = document.createElement('span');
-    var span4 = document.createElement('span');
+    var drawingBoardDescription_td_1_1_span = document.createElement('span');
+    var drawingBoardDescription_td_2_1_span = document.createElement('span');
+    var drawingBoardDescription_td_3_1_span = document.createElement('span');
+    var drawingBoardDescription_td_4_1_span = document.createElement('span');
+    var drawingBoardDescription_td_5_1_span = document.createElement('span');
     var hr = document.createElement('hr');
-    mxUtils.write(span, 'UUID： ');
-    mxUtils.write(span1, 'flowGroupName： ');
-    mxUtils.write(span2, 'createTime： ');
-    mxUtils.write(span3, 'flowDescription： ');
-    mxUtils.write(span4, 'flows： ');
-    tdFlow1.appendChild(span);
-    tdFlow2.appendChild(UUID);
-    tdFlow3.appendChild(span1);
-    tdFlow4.appendChild(flowName);
-    tdFlow5.appendChild(span3);
-    tdFlow6.appendChild(flowDescription);
-    tdFlow7.appendChild(span2);
-    tdFlow8.appendChild(crtDttmString);
-    tdFlow9.appendChild(span4);
-    tdFlow10.appendChild(flowQuantity);
-    trFlow1.appendChild(tdFlow1);
-    trFlow1.appendChild(tdFlow2);
-    trFlow2.appendChild(tdFlow3);
-    trFlow2.appendChild(tdFlow4);
-    trFlow3.appendChild(tdFlow5);
-    trFlow3.appendChild(tdFlow6);
-    trFlow4.appendChild(tdFlow7);
-    trFlow4.appendChild(tdFlow8);
-    trFlow5.appendChild(tdFlow9);
-    trFlow5.appendChild(tdFlow10);
-    tdFlow1.style.width = "105spx";
-    trFlow1.vAlign = 'top';
-    trFlow2.vAlign = 'top';
-    trFlow3.vAlign = 'top';
-    trFlow4.vAlign = 'top';
-    trFlow5.vAlign = 'top';
-    tbodyFlow.appendChild(trFlow1);
-    tbodyFlow.appendChild(trFlow2);
-    tbodyFlow.appendChild(trFlow3);
-    tbodyFlow.appendChild(trFlow4);
-    tbodyFlow.appendChild(trFlow5);
-    tableFlow.appendChild(tbodyFlow);
-    div.appendChild(tableFlow);
+    mxUtils.write(drawingBoardDescription_td_1_1_span, Format.customizeTypeAttr.drawingBoardDescription_td_1_1_span_value);
+    mxUtils.write(drawingBoardDescription_td_2_1_span, Format.customizeTypeAttr.drawingBoardDescription_td_2_1_span_value);
+    mxUtils.write(drawingBoardDescription_td_3_1_span, Format.customizeTypeAttr.drawingBoardDescription_td_3_1_span_value);
+    mxUtils.write(drawingBoardDescription_td_4_1_span, Format.customizeTypeAttr.drawingBoardDescription_td_4_1_span_value);
+    mxUtils.write(drawingBoardDescription_td_5_1_span, Format.customizeTypeAttr.drawingBoardDescription_td_5_1_span_value);
+
+    drawingBoardDescription_td_1_1.appendChild(drawingBoardDescription_td_1_1_span);
+    drawingBoardDescription_td_1_2.appendChild(drawingBoardDescription_td_1_2_label);
+    drawingBoardDescription_td_2_1.appendChild(drawingBoardDescription_td_2_1_span);
+    drawingBoardDescription_td_2_2.appendChild(drawingBoardDescription_td_2_2_label);
+    drawingBoardDescription_td_3_1.appendChild(drawingBoardDescription_td_3_1_span);
+    drawingBoardDescription_td_3_2.appendChild(drawingBoardDescription_td_3_2_label);
+    drawingBoardDescription_td_4_1.appendChild(drawingBoardDescription_td_4_1_span);
+    drawingBoardDescription_td_4_2.appendChild(drawingBoardDescription_td_4_2_label);
+    drawingBoardDescription_td_5_1.appendChild(drawingBoardDescription_td_5_1_span);
+    drawingBoardDescription_td_5_2.appendChild(drawingBoardDescription_td_5_2_label);
+    drawingBoardDescription_tr_1.appendChild(drawingBoardDescription_td_1_1);
+    drawingBoardDescription_tr_1.appendChild(drawingBoardDescription_td_1_2);
+    drawingBoardDescription_tr_2.appendChild(drawingBoardDescription_td_2_1);
+    drawingBoardDescription_tr_2.appendChild(drawingBoardDescription_td_2_2);
+    drawingBoardDescription_tr_3.appendChild(drawingBoardDescription_td_3_1);
+    drawingBoardDescription_tr_3.appendChild(drawingBoardDescription_td_3_2);
+    drawingBoardDescription_tr_4.appendChild(drawingBoardDescription_td_4_1);
+    drawingBoardDescription_tr_4.appendChild(drawingBoardDescription_td_4_2);
+    drawingBoardDescription_tr_5.appendChild(drawingBoardDescription_td_5_1);
+    drawingBoardDescription_tr_5.appendChild(drawingBoardDescription_td_5_2);
+    drawingBoardDescription_td_1_1.style.width = "105px";
+    drawingBoardDescription_tr_1.vAlign = 'top';
+    drawingBoardDescription_tr_2.vAlign = 'top';
+    drawingBoardDescription_tr_3.vAlign = 'top';
+    drawingBoardDescription_tr_4.vAlign = 'top';
+    drawingBoardDescription_tr_5.vAlign = 'top';
+    drawingBoardDescription_tbody.appendChild(drawingBoardDescription_tr_1);
+    drawingBoardDescription_tbody.appendChild(drawingBoardDescription_tr_2);
+    drawingBoardDescription_tbody.appendChild(drawingBoardDescription_tr_3);
+    drawingBoardDescription_tbody.appendChild(drawingBoardDescription_tr_4);
+    drawingBoardDescription_tbody.appendChild(drawingBoardDescription_tr_5);
+    drawingBoardDescription_table.appendChild(drawingBoardDescription_tbody);
+    div.appendChild(drawingBoardDescription_table);
     // Grid
     this.addGridOption(div);
     // if (graph.isEnabled()) {
@@ -4410,9 +4466,9 @@ DiagramFormatPanel.prototype.addOptions = function (div) {
     //crtDttm
     var crtDttmString = document.createElement('label');
     crtDttmString.setAttribute('id', 'progressData');
-    //flowDescription
-    var flowDescription = document.createElement('label');
-    flowDescription.setAttribute('id', 'state');
+    //customize description
+    var customizeDescription = document.createElement('label');
+    customizeDescription.setAttribute('id', 'state');
 
     var span = document.createElement('span');
     var span1 = document.createElement('span');
@@ -4430,7 +4486,7 @@ DiagramFormatPanel.prototype.addOptions = function (div) {
     div.appendChild(flowName);
     div.appendChild(document.createElement('br'));
     div.appendChild(span3);
-    div.appendChild(flowDescription);
+    div.appendChild(customizeDescription);
     div.appendChild(document.createElement('br'));
     div.appendChild(span2);
     div.appendChild(crtDttmString);
@@ -4697,13 +4753,13 @@ DiagramFormatPanel.prototype.addStyleOps = function (div) {
 
     //mxUtils.br(div);
 
-    //btn = mxUtils.button(mxResources.get('clearDefaultStyle'), mxUtils.bind(this, function (evt) {
-    //    this.editorUi.actions.get('clearDefaultStyle').funct();
-    //}));
+    // btn = mxUtils.button(mxResources.get('clearDefaultStyle'), mxUtils.bind(this, function (evt) {
+    //     this.editorUi.actions.get('clearDefaultStyle').funct();
+    // }));
 
-    //btn.setAttribute('title', mxResources.get('clearDefaultStyle') + ' (' + this.editorUi.actions.get('clearDefaultStyle').shortcut + ')');
-    //btn.style.width = '202px';
-    //div.appendChild(btn);
+    // btn.setAttribute('title', mxResources.get('clearDefaultStyle') + ' (' + this.editorUi.actions.get('clearDefaultStyle').shortcut + ')');
+    // btn.style.width = '202px';
+    // div.appendChild(btn);
 
     return div;
 };
@@ -4753,11 +4809,12 @@ function shiqu(id, data, type) {
     }
 }
 
-function stopTabTd(e) {
+function stopTabTd(e, isCustomized) {
     var stopOpenTemplateClone = $("#stopOpenTemplate").clone();
     stopOpenTemplateClone.find("#stopValue").attr("id", "stopAttributesValue");
     stopOpenTemplateClone.find("#buttonStop").attr("id", "stopAttributesValueBtn");
-    if (isExample) {
+    var locked = e.getAttribute('locked');
+    if (isExample || 'true' == locked) {
         stopOpenTemplateClone.find("#stopAttributesValue").attr("disabled", "disabled");
         stopOpenTemplateClone.find("#stopAttributesValueBtn").hide();
     }
@@ -4767,7 +4824,15 @@ function stopTabTd(e) {
     stopOpenTemplateClone.find("#stopAttributesValue").css("background-color", "");
     stopOpenTemplateClone.find("#stopAttributesValue").attr('name', name);
     stopOpenTemplateClone.find("#stopAttributesValue").text(value);
-    stopOpenTemplateClone.find("#stopAttributesValueBtn").attr("onclick", "updateFlow('" + id + "','stopAttributesValue',this);");
+    if ('TASK' === Format.customizeType) {
+        if (isCustomized) {
+            stopOpenTemplateClone.find("#stopAttributesValueBtn").attr("onclick", "updateStopsCustomizedProperty('" + id + "','stopAttributesValue',this);");
+        } else {
+            stopOpenTemplateClone.find("#stopAttributesValueBtn").attr("onclick", "updateStops('" + id + "','stopAttributesValue',this);");
+        }
+    } else if ('GROUP' === Format.customizeType) {
+        stopOpenTemplateClone.find("#stopAttributesValueBtn").attr("onclick", "updateFlow('" + id + "','stopAttributesValue',this);");
+    }
     var p = $(e).offset();
     layer.open({
         type: 1,
@@ -4785,6 +4850,98 @@ function stopTabTd(e) {
         // content: $("#stopOpenTemplate")
     });
     $("#stopValue").focus();
+}
+
+function updateStops(id, name, e) {
+    var p = $(e).offset();
+    var content = document.getElementById('' + name + '').value;
+    var classname = $('#' + id).attr('data-toggle');
+    if (content == "") {
+        if (classname == 'true') {
+            $("#" + name + "").css("background-color", "#FFD39B");
+            $("#" + name + "").focus();
+        }
+        return;
+    }
+    $.ajax({
+        cache: true,
+        type: "POST",
+        url: "/piflow-web/stops/updateStopsOne",
+        data: {
+            "id": id,
+            "content": content
+        },
+        async: true,
+        traditional: true,
+        error: function (request) {
+            console.log("attribute update error");
+            return;
+        },
+        success: function (data) {
+            var dataMap = JSON.parse(data);
+            if (200 === dataMap.code) {
+                layer.msg('success', {
+                    icon: 1,
+                    shade: 0,
+                    time: 2000,
+                    offset: ['' + p.top - 30 + 'px', '' + p.left + 50 + 'px']
+                }, function () {
+                });
+                $("#" + id).val(dataMap.value);
+            } else {
+                layer.msg('', {icon: 2, shade: 0, time: 2000}, function () {
+                });
+            }
+            layer.closeAll('page');
+            console.log("attribute update success");
+        }
+    });
+}
+
+function updateStopsCustomizedProperty(id, name, e) {
+    var p = $(e).offset();
+    var content = document.getElementById('' + name + '').value;
+    var classname = $('#' + id).attr('data-toggle');
+    if (content == "") {
+        if (classname == 'true') {
+            $("#" + name + "").css("background-color", "#FFD39B");
+            $("#" + name + "").focus();
+        }
+        return;
+    }
+    $.ajax({
+        cache: true,
+        type: "POST",
+        url: "/piflow-web/stops/updateStopsCustomizedProperty",
+        data: {
+            "id": id,
+            "customValue": content
+        },
+        async: true,
+        traditional: true,
+        error: function (request) {
+            console.log("attribute update error");
+            return;
+        },
+        success: function (data) {
+            var dataMap = JSON.parse(data);
+            if (200 === dataMap.code) {
+                layer.msg('success', {
+                    icon: 1,
+                    shade: 0,
+                    time: 2000,
+                    offset: ['' + p.top - 30 + 'px', '' + p.left + 50 + 'px']
+                }, function () {
+                });
+                $("#" + id).val(dataMap.value);
+            } else {
+                layer.msg('', {icon: 2, shade: 0, time: 2000}, function () {
+                });
+            }
+            layer.closeAll('page');
+            console.log("attribute update success");
+        }
+    });
 }
 
 function updateFlow(id, name, e) {
@@ -4836,57 +4993,11 @@ function updateFlow(id, name, e) {
                 executorNumberObj.val(flowVo.executorNumber);
                 descriptionObj.val(flowVo.description)
                 //baseInfo
-                $('#flowDescription').text(flowVo.description);
-                $('#flowDriverMemory').text(flowVo.driverMemory);
-                $('#flowExecutorCores').text(flowVo.executorCores);
-                $('#flowExecutorMemory').text(flowVo.executorMemory);
-                $('#flowExecutorNumber').text(flowVo.executorNumber);
-            } else {
-                layer.msg('', {icon: 2, shade: 0, time: 2000}, function () {
-                });
-            }
-            layer.closeAll('page');
-            console.log("attribute update success");
-        }
-    });
-}
-
-function updateFlowCustomizedProperty(id, name, e) {
-    var p = $(e).offset();
-    var content = document.getElementById('' + name + '').value;
-    var classname = $('#' + id).attr('data-toggle');
-    if (content == "") {
-        if (classname == 'true') {
-            $("#" + name + "").css("background-color", "#FFD39B");
-            $("#" + name + "").focus();
-        }
-        return;
-    }
-    $.ajax({
-        cache: true,
-        type: "POST",
-        url: "/piflow-web/stops/updateStopsCustomizedProperty",
-        data: {
-            "id": id,
-            "customValue": content
-        },
-        async: true,
-        traditional: true,
-        error: function (request) {
-            console.log("attribute update error");
-            return;
-        },
-        success: function (data) {
-            var dataMap = JSON.parse(data);
-            if (200 === dataMap.code) {
-                layer.msg('success', {
-                    icon: 1,
-                    shade: 0,
-                    time: 2000,
-                    offset: ['' + p.top - 30 + 'px', '' + p.left + 50 + 'px']
-                }, function () {
-                });
-                $("#" + id).val(dataMap.value);
+                $('#customizeBasic_td_2_2_span_id').text(flowVo.description);
+                $('#customizeBasic_td_3_2_label_id').text(flowVo.driverMemory);
+                $('#customizeBasic_td_4_2_label_id').text(flowVo.executorCores);
+                $('#customizeBasic_td_5_2_label_id').text(flowVo.executorMemory);
+                $('#customizeBasic_td_6_2_label_id').text(flowVo.executorNumber);
             } else {
                 layer.msg('', {icon: 2, shade: 0, time: 2000}, function () {
                 });

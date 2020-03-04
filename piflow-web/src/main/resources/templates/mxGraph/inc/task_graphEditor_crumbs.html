@@ -1,0 +1,30 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+
+<div th:fragment=task_graphEditor_crumbs>
+    <span id="web_flowGroupList_navigation" style="display: none;">
+        <span style="color: #ffffff">
+            <a style="color: #ffffff" th:href="@{/web/flowGroupList}">FlowGroupList</a>
+        </span>
+        <span style="color: #ffffff">>></span>
+    </span>
+    <span id="grapheditor_groupDrawingBoard_navigation" style="display: none;">
+        <span style="color: #ffffff">
+            <a style="color: #ffffff"
+               th:href="@{/mxGraph/drawingBoard} + '?drawingBoardType=GROUP&load=' + ${flowGroupId}">FlowGroup</a>
+        </span>
+        <span style="color: #ffffff">>></span>
+    </span>
+    <span id="web_flowList_navigation">
+        <span style="color: #ffffff">
+            <a style="color: #ffffff" th:href="@{/web/flowList}">FlowList</a>
+        </span>
+        <span style="color: #ffffff">>></span>
+    </span>
+    <span style="color: #ffffff; font-weight: bold">FlowContent</span>
+</div>
+
+</body>
+</html>

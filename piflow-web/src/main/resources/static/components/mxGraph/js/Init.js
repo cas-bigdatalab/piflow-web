@@ -9,12 +9,12 @@ window.MAX_AREA = window.MAX_AREA || 15000 * 15000;
 window.EXPORT_URL = window.EXPORT_URL || '/export';
 window.SAVE_URL = window.SAVE_URL || '/save';
 window.OPEN_URL = window.OPEN_URL || 'open';
-window.RESOURCES_PATH = window.RESOURCES_PATH || '/piflow-web/grapheditor/resources';
+window.RESOURCES_PATH = window.RESOURCES_PATH || '/piflow-web/components/mxGraph/resources';
 window.RESOURCE_BASE = window.RESOURCE_BASE || window.RESOURCES_PATH + '/grapheditor';
-window.STENCIL_PATH = window.STENCIL_PATH || '/piflow-web/grapheditor/stencils';
-window.IMAGE_PATH = window.IMAGE_PATH || '/piflow-web/grapheditor/images';
-window.STYLE_PATH = window.STYLE_PATH || '/piflow-web/grapheditor/styles';
-window.CSS_PATH = window.CSS_PATH || '/piflow-web/grapheditor/styles';
+window.STENCIL_PATH = window.STENCIL_PATH || '/piflow-web/components/mxGraph/stencils';
+window.IMAGE_PATH = window.IMAGE_PATH || '/piflow-web/components/mxGraph/images';
+window.STYLE_PATH = window.STYLE_PATH || '/piflow-web/components/mxGraph/styles';
+window.CSS_PATH = window.CSS_PATH || '/piflow-web/components/mxGraph/styles';
 window.OPEN_FORM = window.OPEN_FORM || 'open';
 
 // Sets the base path, the UI language via URL param and configures the
@@ -24,6 +24,6 @@ window.OPEN_FORM = window.OPEN_FORM || 'open';
 // files (the special bundle and the default bundle) is disabled to
 // save a GET request. This requires that all resources be present in
 // each properties file since only one file is loaded.
-window.mxBasePath = window.mxBasePath || '/piflow-web/grapheditor';
+window.mxBasePath = window.mxBasePath || '/piflow-web/components/mxGraph';
 window.mxLanguage = window.mxLanguage || urlParams['lang'];
 window.mxLanguages = window.mxLanguages || ['de'];

@@ -94,7 +94,7 @@ public class MxGraphCtrl {
                 Model taskHandleModel = taskHandle(model, load);
                 if (null != taskHandleModel) {
                     model = taskHandleModel;
-                    pagePath = "grapheditor/index";
+                    pagePath = "mxGraph/index";
                 }
                 break;
             }

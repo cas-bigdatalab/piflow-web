@@ -77,26 +77,55 @@ function Sidebar(editorUi, container) {
  */
 Sidebar.prototype.init = function () {
     var dir = STENCIL_PATH;
-    //搜索
-    this.addSearchPalette(false);
-    var flowGroup = flowGroupData;
-    if (flowGroup && '' !== flowGroup) {
-        var flowNameList = new Array();
-        var flowDescList = new Array();
-        var flowImageList = new Array();
-        var flowList = flowGroup.flowList;
-        if (flowList && flowList.length > 0) {
-            for (var j = 0; j < flowList.length; j++) {
-                var flowElement = flowList[j];
-                if (flowElement && '' !== flowElement) {
-                    flowNameList.push(flowElement.name);
-                    flowDescList.push(flowElement.description);
-                    flowImageList.push(flowElement.img_name);
+    if ('TASK' === Format.customizeType) {
+        //search
+        this.addSearchPalette(true);
+        var stopsGroupList = stopsGroupData;
+        if (null != stopsGroupList) {
+            for (var i = 0; i < stopsGroupList.length; i++) {
+                var stopsGroup = stopsGroupList[i];
+                if (stopsGroup && '' !== stopsGroup) {
+                    var stopsNameList = new Array();
+                    var stopsDescList = new Array();
+                    var stopsImageList = new Array();
+                    stopsVoList = stopsGroup.stopsTemplateVoList;
+                    if (stopsVoList && stopsVoList.length > 0) {
+                        for (var j = 0; j < stopsVoList.length; j++) {
+                            var stops = stopsVoList[j];
+                            if (stops && '' !== stops) {
+                                stopsNameList.push(stops.name);
+                                stopsDescList.push(stops.description);
+                                stopsImageList.push(stops.name + '_128x128.png');
+                            }
+                        }
+                    }
+                    this.addImagePalette('clipart', stopsGroup.groupName, '/piflow-web/images/', stopsImageList, stopsNameList, stopsDescList, stopsNameList, stopsNameList);
                 }
             }
         }
-        this.addImagePalette('general', flowGroup.groupName, '/piflow-web/img/', flowImageList, flowNameList, flowDescList, flowNameList, flowNameList);
+    } else if ('GROUP' === Format.customizeType) {
+        //search
+        this.addSearchPalette(false);
+        var flowGroup = flowGroupData;
+        if (flowGroup && '' !== flowGroup) {
+            var flowNameList = new Array();
+            var flowDescList = new Array();
+            var flowImageList = new Array();
+            var flowList = flowGroup.flowList;
+            if (flowList && flowList.length > 0) {
+                for (var j = 0; j < flowList.length; j++) {
+                    var flowElement = flowList[j];
+                    if (flowElement && '' !== flowElement) {
+                        flowNameList.push(flowElement.name);
+                        flowDescList.push(flowElement.description);
+                        flowImageList.push(flowElement.img_name);
+                    }
+                }
+            }
+            this.addImagePalette('general', flowGroup.groupName, '/piflow-web/img/', flowImageList, flowNameList, flowDescList, flowNameList, flowNameList);
+        }
     }
+
 };
 
 /**
@@ -2202,7 +2231,11 @@ Sidebar.prototype.addImagePalette = function (id, title, prefix, imgArray, items
         }))(items[i], (titles != null) ? values[i] + "#" + titles[i] : null, (values != null) ? (values[i].length > 10) ? values[i].substring(0, 10) + "..." : values[i] : '', (tags != null) ? tags[items[i]] : null);
     }
 
-    this.addPaletteFunctions(id, title, true, fns);
+    if ('TASK' === Format.customizeType) {
+        this.addPaletteFunctions(id, title, false, fns);
+    } else if ('GROUP' === Format.customizeType) {
+        this.addPaletteFunctions(id, title, true, fns);
+    }
 };
 
 /**

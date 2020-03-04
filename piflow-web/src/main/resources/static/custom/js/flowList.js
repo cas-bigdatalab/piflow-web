@@ -408,7 +408,7 @@ function reloadStopsList() {
         data: {"load": ''},
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: "/piflow-web/stops/reloadStops",//This is the name of the file where I receive data in the background.
+        url: "/piflow-web/stops/reloadStops",
         error: function (request) {//Operation after request failure
             //fullScreen.hide();
             //alert("reload fail");

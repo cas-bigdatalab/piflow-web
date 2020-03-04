@@ -515,8 +515,8 @@ public class FlowServiceImpl implements IFlowService {
             logger.info(flowName + "The name has been repeated and the save failed.");
             return JsonUtils.toJsonNoException(rtnMap);
         }
-        boolean updateStopsNameById = this.updateFlowNameById(id, flowName);
-        if (!updateStopsNameById) {
+        boolean updateFlowNameById = this.updateFlowNameById(id, flowName);
+        if (!updateFlowNameById) {
             logger.info("Modify flowName failed");
             rtnMap.put("errorMsg", "Modify flowName failed");
             return JsonUtils.toJsonNoException(rtnMap);

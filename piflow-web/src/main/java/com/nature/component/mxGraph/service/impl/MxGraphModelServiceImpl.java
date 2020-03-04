@@ -385,7 +385,6 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
         int updateFlow = flowMapper.updateFlow(flow);
         // Determine whether the save is successful
         if (updateFlow <= 0) {
-        } else {
             return ReturnMapUtils.setFailedMsg("Modify save failed flow");
         }
 

@@ -152,11 +152,13 @@ public class FlowCtrl {
     @RequestMapping("/updateFlowNameById")
     @ResponseBody
     public String updateFlowNameById(HttpServletRequest request) {
-        String id = request.getParameter("stopId");
+        //String id = request.getParameter("stopId");
+        //String flowId = request.getParameter("flowId");
         String flowId = request.getParameter("flowId");
-        String stopName = request.getParameter("name");
+        String flowGroupId = request.getParameter("flowGroupId");
+        String flowName = request.getParameter("flowName");
         String pageId = request.getParameter("pageId");
-        return flowServiceImpl.updateFlowNameById(id, flowId, stopName, pageId);
+        return flowServiceImpl.updateFlowNameById(flowId, flowGroupId, flowName, pageId);
     }
 
     /**

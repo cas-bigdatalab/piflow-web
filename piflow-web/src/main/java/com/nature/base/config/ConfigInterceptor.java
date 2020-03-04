@@ -167,7 +167,7 @@ public class ConfigInterceptor implements HandlerInterceptor {
                 sysMenu.setMenuParent("Example");
                 sysMenu.setMenuName(flowXml.getName());
                 sysMenu.setMenuDescription(flowXml.getName());
-                sysMenu.setMenuUrl("/piflow-web/grapheditor/home?load=" + flowXml.getId());
+                sysMenu.setMenuUrl("/piflow-web/mxGraph/drawingBoard?drawingBoardType=TASK&load=" + flowXml.getId());
                 sysMenu.setMenuSort(500002 + i);
                 sysMenuDomain.saveOrUpdate(sysMenu);
             }
