@@ -4820,7 +4820,7 @@ function stopTabTd(e, isCustomized) {
     }
     var id = e.getAttribute('id');
     var name = e.getAttribute('name');
-    var value = e.getAttribute('value');
+    var value = e.value;
     stopOpenTemplateClone.find("#stopAttributesValue").css("background-color", "");
     stopOpenTemplateClone.find("#stopAttributesValue").attr('name', name);
     stopOpenTemplateClone.find("#stopAttributesValue").text(value);
