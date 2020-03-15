@@ -1,274 +1,233 @@
 -- ----------------------------
 -- Table structure for menu
 -- ----------------------------
-CREATE TABLE IF NOT EXISTS `SYS_MENU`  (
-    `ID` VARCHAR(40) PRIMARY KEY NOT NULL,
-    `CRT_DTTM` DATETIME NOT NULL,
-    `CRT_USER` VARCHAR(255) NOT NULL,
-    `ENABLE_FLAG` BIT NOT NULL,
-    `LAST_UPDATE_DTTM` DATETIME NOT NULL,
-    `LAST_UPDATE_USER` VARCHAR(255) NOT NULL,
-    `VERSION` BIGINT,
-    `MENU_DESCRIPTION` VARCHAR(1024) COMMENT 'description',
-    `MENU_JURISDICTION` VARCHAR(255) COMMENT 'task status',
-    `MENU_NAME` VARCHAR(255) COMMENT 'menu name',
-    `MENU_PARENT` VARCHAR(255) COMMENT 'task status',
-    `MENU_URL` VARCHAR(255) COMMENT 'menu url',
-    `MENU_SORT` INTEGER COMMENT 'menu sort'
-);
-
--- ----------------------------
--- Table structure for schedule
--- ----------------------------
-CREATE TABLE IF NOT EXISTS  `SCHEDULE`  (
-    `ID` VARCHAR(40) PRIMARY KEY NOT NULL,
-    `CRT_DTTM` DATETIME NOT NULL,
-    `CRT_USER` VARCHAR(255) NOT NULL,
-    `ENABLE_FLAG` BIT NOT NULL,
-    `LAST_UPDATE_DTTM` DATETIME NOT NULL,
-    `LAST_UPDATE_USER` VARCHAR(255) NOT NULL,
-    `VERSION` BIGINT,
-    `CLASS_NAME` VARCHAR(255),
-    `CRON` VARCHAR(255),
-    `DESCRIPTION` VARCHAR(1024) COMMENT 'description',
-    `METHOD_NAME` VARCHAR(255),
-    `TASK_NAME` VARCHAR(255),
-    `TASK_STATE` VARCHAR(255) COMMENT 'task status'
+CREATE TABLE IF NOT EXISTS `sys_menu`  (
+    `id` VARCHAR(40) PRIMARY KEY NOT NULL COMMENT 'Primary key id',
+    `crt_dttm` DATETIME NOT NULL COMMENT 'Create date time',
+     `crt_user` VARCHAR(255) NOT NULL COMMENT 'Create user',
+    `enable_flag` BIT NOT NULL COMMENT 'Enable flag',
+    `last_update_dttm` DATETIME NOT NULL COMMENT 'Last update date time',
+    `last_update_user` VARCHAR(255) NOT NULL COMMENT 'Last update user',
+    `version` BIGINT COMMENT 'Version',
+    `menu_description` VARCHAR(1024) COMMENT 'Menu description',
+    `menu_jurisdiction` VARCHAR(255) COMMENT 'Menu jurisdiction',
+    `menu_name` VARCHAR(255) COMMENT 'Menu name',
+    `menu_parent` VARCHAR(255) COMMENT 'Menu parent',
+    `menu_url` VARCHAR(255) COMMENT 'Menu url',
+    `menu_sort` INTEGER COMMENT 'Menu sort'
 );
 
 -- ----------------------------
 -- Table structure for data_source
 -- ----------------------------
-CREATE TABLE IF NOT EXISTS `DATA_SOURCE`  (
-    `ID` VARCHAR(40) PRIMARY KEY NOT NULL,
-    `CRT_DTTM` DATETIME NOT NULL,
-    `CRT_USER` VARCHAR(255) NOT NULL,
-    `ENABLE_FLAG` BIT NOT NULL,
-    `LAST_UPDATE_DTTM` DATETIME NOT NULL,
-    `LAST_UPDATE_USER` VARCHAR(255) NOT NULL,
-    `VERSION` BIGINT,
-    `DATA_SOURCE_DESCRIPTION` TEXT(0) NULL COMMENT 'dataSourceDescription',
-    `DATA_SOURCE_NAME` VARCHAR(255) COMMENT 'dataSourceName',
-    `DATA_SOURCE_TYPE` VARCHAR(255) COMMENT 'dataSourceType',
-    `IS_TEMPLATE` BIT COMMENT 'isTemplate'
+CREATE TABLE IF NOT EXISTS `data_source`  (
+    `id` VARCHAR(40) PRIMARY KEY NOT NULL COMMENT 'Primary key id',
+    `crt_dttm` DATETIME NOT NULL COMMENT 'Create date time',
+     `crt_user` VARCHAR(255) NOT NULL COMMENT 'Create user',
+    `enable_flag` BIT NOT NULL COMMENT 'Enable flag',
+    `last_update_dttm` DATETIME NOT NULL COMMENT 'Last update date time',
+    `last_update_user` VARCHAR(255) NOT NULL COMMENT 'Last update user',
+    `version` BIGINT COMMENT 'Version',
+    `data_source_description` TEXT(0) NULL COMMENT 'dataSourceDescription',
+    `data_source_name` VARCHAR(255) COMMENT 'dataSourceName',
+    `data_source_type` VARCHAR(255) COMMENT 'dataSourceType',
+    `is_template` BIT COMMENT 'isTemplate'
 );
 
 -- ----------------------------
 -- Table structure for data_source_property
 -- ----------------------------
-CREATE TABLE IF NOT EXISTS `DATA_SOURCE_PROPERTY`  (
-    `ID` VARCHAR(40) PRIMARY KEY NOT NULL,
-    `CRT_DTTM` DATETIME NOT NULL,
-    `CRT_USER` VARCHAR(255) NOT NULL,
-    `ENABLE_FLAG` BIT NOT NULL,
-    `LAST_UPDATE_DTTM` DATETIME NOT NULL,
-    `LAST_UPDATE_USER` VARCHAR(255) NOT NULL,
-    `VERSION` BIGINT,
+CREATE TABLE IF NOT EXISTS `data_source_property`  (
+    `id` VARCHAR(40) PRIMARY KEY NOT NULL COMMENT 'Primary key id',
+    `crt_dttm` DATETIME NOT NULL COMMENT 'Create date time',
+     `crt_user` VARCHAR(255) NOT NULL COMMENT 'Create user',
+    `enable_flag` BIT NOT NULL COMMENT 'Enable flag',
+    `last_update_dttm` DATETIME NOT NULL COMMENT 'Last update date time',
+    `last_update_user` VARCHAR(255) NOT NULL COMMENT 'Last update user',
+    `version` BIGINT COMMENT 'Version',
     `DESCRIPTION` TEXT(0) NULL COMMENT 'description',
     `NAME` VARCHAR(255) COMMENT 'name',
     `VALUE` VARCHAR(255) COMMENT 'value',
-    `FK_DATA_SOURCE_ID` VARCHAR(40)
+    `fk_data_source_id` VARCHAR(40) COMMENT 'Foreign key fk_data_source_id'
 );
-ALTER TABLE `DATA_SOURCE_PROPERTY` ADD CONSTRAINT `FKmu1sbq6pael97442xi5bwdmu0` FOREIGN KEY (`FK_DATA_SOURCE_ID`) REFERENCES `DATA_SOURCE` (`ID`) ON DELETE RESTRICT ON UPDATE RESTRICT;
-
--- ----------------------------
--- Table structure for flow_project
--- ----------------------------
-CREATE TABLE IF NOT EXISTS `FLOW_PROJECT` (
-    `ID` VARCHAR(40) PRIMARY KEY NOT NULL,
-    `CRT_DTTM` DATETIME NOT NULL,
-    `CRT_USER` VARCHAR(255) NOT NULL,
-    `ENABLE_FLAG` BIT NOT NULL,
-    `LAST_UPDATE_DTTM` DATETIME NOT NULL,
-    `LAST_UPDATE_USER` VARCHAR(255) NOT NULL,
-    `VERSION` BIGINT,
-    `DESCRIPTION` TEXT(0) COMMENT 'description',
-    `IS_EXAMPLE` BIT COMMENT 'isExample',
-    `NAME` VARCHAR(255) COMMENT 'flow name',
-    `UUID` VARCHAR(255) COMMENT 'flow uuid'
-);
+ALTER TABLE `data_source_property` ADD CONSTRAINT `FKmu1sbq6pael97442xi5bwdmu0` FOREIGN KEY (`fk_data_source_id`) REFERENCES `data_source` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 -- ----------------------------
 -- Table structure for flow_group
 -- ----------------------------
-CREATE TABLE IF NOT EXISTS `FLOW_GROUP` (
-    `ID` VARCHAR(40) PRIMARY KEY NOT NULL,
-    `CRT_DTTM` DATETIME NOT NULL,
-    `CRT_USER` VARCHAR(255) NOT NULL,
-    `ENABLE_FLAG` BIT NOT NULL,
-    `LAST_UPDATE_DTTM` DATETIME NOT NULL,
-    `LAST_UPDATE_USER` VARCHAR(255) NOT NULL,
-    `VERSION` BIGINT,
-    `DESCRIPTION` TEXT(0) COMMENT 'description',
-    `IS_EXAMPLE` BIT COMMENT 'isExample',
-    `NAME` VARCHAR(255) COMMENT 'flow name',
-    `UUID` VARCHAR(255) COMMENT 'flow uuid',
-    `FK_FLOW_PROJECT_ID` VARCHAR(40)
+CREATE TABLE IF NOT EXISTS `flow_group` (
+    `id` VARCHAR(40) PRIMARY KEY NOT NULL COMMENT 'Primary key id',
+    `crt_dttm` DATETIME NOT NULL COMMENT 'Create date time',
+     `crt_user` VARCHAR(255) NOT NULL COMMENT 'Create user',
+    `enable_flag` BIT NOT NULL COMMENT 'Enable flag',
+    `last_update_dttm` DATETIME NOT NULL COMMENT 'Last update date time',
+    `last_update_user` VARCHAR(255) NOT NULL COMMENT 'Last update user',
+    `version` BIGINT COMMENT 'Version',
+    `description` TEXT(0) COMMENT 'description',
+    `is_example` BIT COMMENT 'isExample',
+    `name` VARCHAR(255) COMMENT 'flow name',
+    `uuid` VARCHAR(255) COMMENT 'flow uuid'
 );
-ALTER TABLE `FLOW_GROUP` ADD CONSTRAINT `FKd0sfu1rtmctw8qess69c1qhaw` FOREIGN KEY (`FK_FLOW_PROJECT_ID`) REFERENCES `FLOW_PROJECT` (`ID`);
+
 -- ----------------------------
 -- Table structure for flow_group_path
 -- ----------------------------
-CREATE TABLE IF NOT EXISTS `FLOW_GROUP_PATH` (
-    `ID` VARCHAR(40) PRIMARY KEY NOT NULL,
-    `CRT_DTTM` DATETIME NOT NULL,
-    `CRT_USER` VARCHAR(255) NOT NULL,
-    `ENABLE_FLAG` BIT NOT NULL,
-    `LAST_UPDATE_DTTM` DATETIME NOT NULL,
-    `LAST_UPDATE_USER` VARCHAR(255) NOT NULL,
-    `VERSION` BIGINT,
-    `FILTER_CONDITION` VARCHAR(255),
-    `LINE_FROM` VARCHAR(255) COMMENT 'line from',
-    `LINE_INPORT` VARCHAR(255) COMMENT 'line in port',
-    `LINE_OUTPORT` VARCHAR(255) COMMENT 'line out port',
-    `PAGE_ID` VARCHAR(255) DEFAULT NULL,
-    `LINE_TO` VARCHAR(255) COMMENT 'line to',
-    `FK_FLOW_GROUP_ID` VARCHAR(40)
+CREATE TABLE IF NOT EXISTS `flow_group_path` (
+    `id` VARCHAR(40) PRIMARY KEY NOT NULL COMMENT 'Primary key id',
+    `crt_dttm` DATETIME NOT NULL COMMENT 'Create date time',
+     `crt_user` VARCHAR(255) NOT NULL COMMENT 'Create user',
+    `enable_flag` BIT NOT NULL COMMENT 'Enable flag',
+    `last_update_dttm` DATETIME NOT NULL COMMENT 'Last update date time',
+    `last_update_user` VARCHAR(255) NOT NULL COMMENT 'Last update user',
+    `version` BIGINT COMMENT 'Version',
+    `filter_condition` VARCHAR(255) COMMENT 'filter_condition',
+    `line_from` VARCHAR(255) COMMENT 'line from',
+    `line_inport` VARCHAR(255) COMMENT 'line in port',
+    `line_outport` VARCHAR(255) COMMENT 'line out port',
+    `page_id` VARCHAR(255) DEFAULT NULL COMMENT 'page_id',
+    `line_to` VARCHAR(255) COMMENT 'line to',
+    `fk_flow_group_id` VARCHAR(40) COMMENT 'Foreign key fk_flow_group_id'
 );
-ALTER TABLE `FLOW_GROUP_PATH` ADD CONSTRAINT `FKluqls1o7ynyiinor8ttdc6wdd` FOREIGN KEY (`FK_FLOW_GROUP_ID`) REFERENCES `FLOW_GROUP` (`ID`);
+ALTER TABLE `flow_group_path` ADD CONSTRAINT `FKluqls1o7ynyiinor8ttdc6wdd` FOREIGN KEY (`fk_flow_group_id`) REFERENCES `flow_group` (`id`);
 
 -- ----------------------------
 -- Table structure for flow_process_group
 -- ----------------------------
-CREATE TABLE IF NOT EXISTS `FLOW_PROCESS_GROUP` (
-    `ID` VARCHAR(40) PRIMARY KEY NOT NULL,
-    `CRT_DTTM` DATETIME NOT NULL,
-    `CRT_USER` VARCHAR(255) NOT NULL,
-    `ENABLE_FLAG` BIT NOT NULL,
-    `LAST_UPDATE_DTTM` DATETIME NOT NULL,
-    `LAST_UPDATE_USER` VARCHAR(255) NOT NULL,
-    `VERSION` BIGINT,
-    `APP_ID` VARCHAR(255) COMMENT 'The id returned when calling runProcess',
-    `DESCRIPTION` VARCHAR(1024) COMMENT 'description',
-    `END_TIME` DATETIME COMMENT 'End time of the process',
-    `FLOW_ID` VARCHAR(255) COMMENT 'flowId',
-    `NAME` VARCHAR(255) COMMENT 'Process name',
-    `PARENT_PROCESS_ID` VARCHAR(255) COMMENT 'third parentProcessId',
-    `PROCESS_ID` VARCHAR(255) COMMENT 'third processId',
-    `PROGRESS` VARCHAR(255) COMMENT 'Process progress',
-    `RUN_MODE_TYPE` VARCHAR(255) COMMENT 'Process RunModeType',
-    `START_TIME` datetime COMMENT 'Process startup time',
-    `STATE` VARCHAR(255) COMMENT 'Process status',
-    `VIEW_XML` TEXT(0) COMMENT 'Process view xml string',
-    `PROCESS_PARENT_TYPE` VARCHAR(255) COMMENT 'Process parent type'
+CREATE TABLE IF NOT EXISTS `flow_process_group` (
+    `id` VARCHAR(40) PRIMARY KEY NOT NULL COMMENT 'Primary key id',
+    `crt_dttm` DATETIME NOT NULL COMMENT 'Create date time',
+     `crt_user` VARCHAR(255) NOT NULL COMMENT 'Create user',
+    `enable_flag` BIT NOT NULL COMMENT 'Enable flag',
+    `last_update_dttm` DATETIME NOT NULL COMMENT 'Last update date time',
+    `last_update_user` VARCHAR(255) NOT NULL COMMENT 'Last update user',
+    `version` BIGINT COMMENT 'Version',
+    `app_id` VARCHAR(255) COMMENT 'The id returned when calling runProcess',
+    `description` VARCHAR(1024) COMMENT 'description',
+    `end_time` DATETIME COMMENT 'End time of the process',
+    `flow_id` VARCHAR(255) COMMENT 'flowId',
+    `name` VARCHAR(255) COMMENT 'Process name',
+    `parent_process_id` VARCHAR(255) COMMENT 'Third parentProcessId',
+    `process_id` VARCHAR(255) COMMENT 'Third processId',
+    `progress` VARCHAR(255) COMMENT 'Process progress',
+    `run_mode_type` VARCHAR(255) COMMENT 'Process RunModeType',
+    `start_time` datetime COMMENT 'Process startup time',
+    `state` VARCHAR(255) COMMENT 'Process status',
+    `view_xml` TEXT(0) COMMENT 'Process view xml string',
+    `process_parent_type` VARCHAR(255) COMMENT 'Process parent type'
 );
 
 -- ----------------------------
 -- Table structure for flow_process_group_path
 -- ----------------------------
-CREATE TABLE IF NOT EXISTS `FLOW_PROCESS_GROUP_PATH` (
-    `ID` VARCHAR(40) PRIMARY KEY NOT NULL,
-    `CRT_DTTM` DATETIME NOT NULL,
-    `CRT_USER` VARCHAR(255) NOT NULL,
-    `ENABLE_FLAG` BIT NOT NULL,
-    `LAST_UPDATE_DTTM` DATETIME NOT NULL,
-    `LAST_UPDATE_USER` VARCHAR(255) NOT NULL,
-    `VERSION` BIGINT,
-    `LINE_FROM` VARCHAR(255) DEFAULT NULL,
-    `LINE_INPORT` VARCHAR(255) DEFAULT NULL,
-    `LINE_OUTPORT` VARCHAR(255) DEFAULT NULL,
-    `PAGE_ID` VARCHAR(255) DEFAULT NULL,
-    `LINE_TO` VARCHAR(255) DEFAULT NULL,
-    `FK_FLOW_PROCESS_GROUP_ID` VARCHAR(40) DEFAULT NULL
+CREATE TABLE IF NOT EXISTS `flow_process_group_path` (
+    `id` VARCHAR(40) PRIMARY KEY NOT NULL COMMENT 'Primary key id',
+    `crt_dttm` DATETIME NOT NULL COMMENT 'Create date time',
+     `crt_user` VARCHAR(255) NOT NULL COMMENT 'Create user',
+    `enable_flag` BIT NOT NULL COMMENT 'Enable flag',
+    `last_update_dttm` DATETIME NOT NULL COMMENT 'Last update date time',
+    `last_update_user` VARCHAR(255) NOT NULL COMMENT 'Last update user',
+    `version` BIGINT COMMENT 'Version',
+    `line_from` VARCHAR(255) DEFAULT NULL COMMENT 'line_from',
+    `line_inport` VARCHAR(255) DEFAULT NULL COMMENT 'line_inport',
+    `line_outport` VARCHAR(255) DEFAULT NULL COMMENT 'line_outport',
+    `page_id` VARCHAR(255) DEFAULT NULL COMMENT 'page_id',
+    `line_to` VARCHAR(255) DEFAULT NULL COMMENT 'line_to',
+    `fk_flow_process_group_id` VARCHAR(40) DEFAULT NULL COMMENT 'Foreign key fk_flow_process_group_id'
 );
-ALTER TABLE `FLOW_PROCESS_GROUP_PATH` ADD CONSTRAINT `FKirc18h7dj5ti11wlnifjwiyyh` FOREIGN KEY (`FK_FLOW_PROCESS_GROUP_ID`) REFERENCES `FLOW_PROCESS_GROUP` (`ID`);
+ALTER TABLE `flow_process_group_path` ADD CONSTRAINT `FKirc18h7dj5ti11wlnifjwiyyh` FOREIGN KEY (`fk_flow_process_group_id`) REFERENCES `flow_process_group` (`id`);
 
 -- ----------------------------
 -- Table structure for flow_stops_customized_property
 -- ----------------------------
-CREATE TABLE IF NOT EXISTS `FLOW_STOPS_CUSTOMIZED_PROPERTY` (
-    `ID` VARCHAR(40) PRIMARY KEY NOT NULL,
-    `CRT_DTTM` DATETIME NOT NULL,
-    `CRT_USER` VARCHAR(255) NOT NULL,
-    `ENABLE_FLAG` BIT NOT NULL,
-    `LAST_UPDATE_DTTM` DATETIME NOT NULL,
-    `LAST_UPDATE_USER` VARCHAR(255) NOT NULL,
-    `VERSION` BIGINT,
-    `CUSTOM_VALUE` TEXT(0) COMMENT 'custom value',
-    `DESCRIPTION` TEXT(0) COMMENT 'description',
-    `NAME` VARCHAR(255) COMMENT 'name',
-    `FK_STOPS_ID` VARCHAR(40) DEFAULT NULL
+CREATE TABLE IF NOT EXISTS `flow_stops_customized_property` (
+    `id` VARCHAR(40) PRIMARY KEY NOT NULL COMMENT 'Primary key id',
+    `crt_dttm` DATETIME NOT NULL COMMENT 'Create date time',
+     `crt_user` VARCHAR(255) NOT NULL COMMENT 'Create user',
+    `enable_flag` BIT NOT NULL COMMENT 'Enable flag',
+    `last_update_dttm` DATETIME NOT NULL COMMENT 'Last update date time',
+    `last_update_user` VARCHAR(255) NOT NULL COMMENT 'Last update user',
+    `version` BIGINT COMMENT 'Version',
+    `custom_value` TEXT(0) COMMENT 'custom value',
+    `description` TEXT(0) COMMENT 'description',
+    `name` VARCHAR(255) COMMENT 'name',
+    `fk_stops_id` VARCHAR(40) DEFAULT NULL COMMENT 'Foreign key fk_stops_id'
 );
-ALTER TABLE `FLOW_STOPS_CUSTOMIZED_PROPERTY` ADD CONSTRAINT `FK92yilfng8y5k7psuevts911c7` FOREIGN KEY (`fk_stops_id`) REFERENCES `flow_stops` (`id`);
+ALTER TABLE `flow_stops_customized_property` ADD CONSTRAINT `FK92yilfng8y5k7psuevts911c7` FOREIGN KEY (`fk_stops_id`) REFERENCES `flow_stops` (`id`);
 
 -- ----------------------------
 -- Table structure for process_stops_customized_property
 -- ----------------------------
-CREATE TABLE IF NOT EXISTS `PROCESS_STOPS_CUSTOMIZED_PROPERTY` (
-    `ID` VARCHAR(40) PRIMARY KEY NOT NULL,
-    `CRT_DTTM` DATETIME NOT NULL,
-    `CRT_USER` VARCHAR(255) NOT NULL,
-    `ENABLE_FLAG` BIT NOT NULL,
-    `LAST_UPDATE_DTTM` DATETIME NOT NULL,
-    `LAST_UPDATE_USER` VARCHAR(255) NOT NULL,
-    `VERSION` BIGINT,
-    `CUSTOM_VALUE` TEXT(0) COMMENT 'custom value',
-    `DESCRIPTION` TEXT(0) COMMENT 'description',
-    `NAME` VARCHAR(255) COMMENT 'name',
-    `FK_FLOW_PROCESS_STOP_ID` VARCHAR(40) DEFAULT NULL
+CREATE TABLE IF NOT EXISTS `process_stops_customized_property` (
+    `id` VARCHAR(40) PRIMARY KEY NOT NULL COMMENT 'Primary key id',
+    `crt_dttm` DATETIME NOT NULL COMMENT 'Create date time',
+     `crt_user` VARCHAR(255) NOT NULL COMMENT 'Create user',
+    `enable_flag` BIT NOT NULL COMMENT 'Enable flag',
+    `last_update_dttm` DATETIME NOT NULL COMMENT 'Last update date time',
+    `last_update_user` VARCHAR(255) NOT NULL COMMENT 'Last update user',
+    `version` BIGINT COMMENT 'Version',
+    `custom_value` TEXT(0) COMMENT 'custom value',
+    `description` TEXT(0) COMMENT 'description',
+    `name` VARCHAR(255) COMMENT 'name',
+    `fk_flow_process_stop_id` VARCHAR(40) DEFAULT NULL COMMENT 'Foreign key fk_flow_process_stop_id'
 );
-ALTER TABLE `PROCESS_STOPS_CUSTOMIZED_PROPERTY` ADD CONSTRAINT `FK1ql9h2ueevqxg1xjnt06repqv` FOREIGN KEY (`fk_flow_process_stop_id`) REFERENCES `flow_process_stop` (`id`);
+ALTER TABLE `process_stops_customized_property` ADD CONSTRAINT `FK1ql9h2ueevqxg1xjnt06repqv` FOREIGN KEY (`fk_flow_process_stop_id`) REFERENCES `flow_process_stop` (`id`);
 -- ----------------------------
 -- Table structure for flow_group_template
 -- ----------------------------
-CREATE TABLE IF NOT EXISTS `FLOW_GROUP_TEMPLATE` (
-    `ID` VARCHAR(40) PRIMARY KEY NOT NULL,
-    `CRT_DTTM` DATETIME NOT NULL,
-    `CRT_USER` VARCHAR(255) NOT NULL,
-    `ENABLE_FLAG` BIT NOT NULL,
-    `LAST_UPDATE_DTTM` DATETIME NOT NULL,
-    `LAST_UPDATE_USER` VARCHAR(255) NOT NULL,
-    `VERSION` BIGINT,
-    `DESCRIPTION` VARCHAR(1024) COMMENT 'description',
-    `FLOW_GROUP_NAME` VARCHAR(255) DEFAULT NULL,
-    `NAME` VARCHAR(255) DEFAULT NULL,
-    `PATH` VARCHAR(255) DEFAULT NULL
+CREATE TABLE IF NOT EXISTS `flow_group_template` (
+    `id` VARCHAR(40) PRIMARY KEY NOT NULL COMMENT 'Primary key id',
+    `crt_dttm` DATETIME NOT NULL COMMENT 'Create date time',
+     `crt_user` VARCHAR(255) NOT NULL COMMENT 'Create user',
+    `enable_flag` BIT NOT NULL COMMENT 'Enable flag',
+    `last_update_dttm` DATETIME NOT NULL COMMENT 'Last update date time',
+    `last_update_user` VARCHAR(255) NOT NULL COMMENT 'Last update user',
+    `version` BIGINT COMMENT 'Version',
+    `description` VARCHAR(1024) COMMENT 'description',
+    `flow_group_name` VARCHAR(255) DEFAULT NULL COMMENT 'flow_group_name',
+    `name` VARCHAR(255) DEFAULT NULL COMMENT 'name',
+    `path` VARCHAR(255) DEFAULT NULL COMMENT 'path'
 );
 
 CREATE TABLE IF NOT EXISTS `sys_schedule` (
-    `ID` VARCHAR(40) PRIMARY KEY NOT NULL,
-    `CRT_DTTM` DATETIME NOT NULL,
-    `CRT_USER` VARCHAR(255) NOT NULL,
-    `ENABLE_FLAG` BIT NOT NULL,
-    `LAST_UPDATE_DTTM` DATETIME NOT NULL,
-    `LAST_UPDATE_USER` VARCHAR(255) NOT NULL,
-    `VERSION` BIGINT,
-    `CRON_EXPRESSION` VARCHAR(255) COMMENT 'cron',
-    `JOB_CLASS` VARCHAR(255) COMMENT 'job class',
-    `JOB_NAME` VARCHAR(255) COMMENT 'job name',
-    `STATUS` VARCHAR(255) COMMENT 'task status'
+    `id` VARCHAR(40) PRIMARY KEY NOT NULL COMMENT 'Primary key id',
+    `crt_dttm` DATETIME NOT NULL COMMENT 'Create date time',
+     `crt_user` VARCHAR(255) NOT NULL COMMENT 'Create user',
+    `enable_flag` BIT NOT NULL COMMENT 'Enable flag',
+    `last_update_dttm` DATETIME NOT NULL COMMENT 'Last update date time',
+    `last_update_user` VARCHAR(255) NOT NULL COMMENT 'Last update user',
+    `version` BIGINT COMMENT 'Version',
+    `cron_expression` VARCHAR(255) COMMENT 'Cron expression',
+    `job_class` VARCHAR(255) COMMENT 'job class',
+    `job_name` VARCHAR(255) COMMENT 'job name',
+    `status` VARCHAR(255) COMMENT 'task status'
 );
 
 -- add table column
-ALTER TABLE FLOW_GROUP ADD COLUMN PAGE_ID VARCHAR(255);
-ALTER TABLE FLOW ADD COLUMN PAGE_ID VARCHAR(255);
-ALTER TABLE FLOW ADD COLUMN FK_FLOW_GROUP_ID VARCHAR(40);
-ALTER TABLE FLOW ADD COLUMN FK_FLOW_PROJECT_ID VARCHAR(40);
-ALTER TABLE FLOW_PATH ADD COLUMN FILTER_CONDITION VARCHAR(255);
-ALTER TABLE FLOW_STOPS ADD COLUMN IS_CUSTOMIZED BIT;
-ALTER TABLE FLOW_STOPS ADD COLUMN FK_DATA_SOURCE_ID VARCHAR(40);
-alter table FLOW_STOPS_PROPERTY add column IS_LOCKED BIT;
-ALTER TABLE FLOW_STOPS_PROPERTY ADD COLUMN PROPERTY_SORT BIGINT(20) COMMENT 'property sort';
-ALTER TABLE FLOW_STOPS_TEMPLATE ADD COLUMN IS_CUSTOMIZED BIT;
-ALTER TABLE FLOW_STOPS_PROPERTY_TEMPLATE ADD COLUMN PROPERTY_SORT BIGINT(20) COMMENT 'property sort';
-ALTER TABLE FLOW_PROCESS ADD COLUMN PAGE_ID VARCHAR(255);
-ALTER TABLE FLOW_PROCESS ADD COLUMN FK_FLOW_PROCESS_GROUP_ID VARCHAR(40);
-ALTER TABLE FLOW_PROCESS ADD COLUMN RUN_MODE_TYPE VARCHAR(255) COMMENT 'Process RunModeType';
-ALTER TABLE FLOW_PROCESS ADD COLUMN PROCESS_PARENT_TYPE VARCHAR(255) COMMENT 'Process parent type';
-ALTER TABLE MX_GRAPH_MODEL ADD COLUMN FK_FLOW_GROUP_ID VARCHAR(40);
-ALTER TABLE MX_GRAPH_MODEL ADD COLUMN FK_FLOW_PROJECT_ID VARCHAR(40);
+ALTER TABLE flow_group ADD COLUMN page_id VARCHAR(255) COMMENT 'page_id';
+ALTER TABLE flow ADD COLUMN page_id VARCHAR(255) COMMENT 'page_id';
+ALTER TABLE flow ADD COLUMN fk_flow_group_id VARCHAR(40) COMMENT 'fk_flow_group_id';
+ALTER TABLE flow_path ADD COLUMN filter_condition VARCHAR(255) COMMENT 'filter_condition';
+ALTER TABLE flow_stops ADD COLUMN is_customized BIT COMMENT 'is_customized';
+ALTER TABLE flow_stops ADD COLUMN fk_data_source_id VARCHAR(40) COMMENT 'fk_data_source_id';
+alter table flow_stops_property ADD COLUMN is_locked BIT COMMENT 'is_locked';
+ALTER TABLE flow_stops_property ADD COLUMN property_sort BIGINT(20) COMMENT 'property sort';
+ALTER TABLE flow_stops_template ADD COLUMN is_customized BIT COMMENT 'is_customized';
+ALTER TABLE flow_stops_property_template ADD COLUMN property_sort BIGINT(20) COMMENT 'property sort';
+ALTER TABLE flow_process ADD COLUMN page_id VARCHAR(255) COMMENT 'page_id';
+ALTER TABLE flow_process ADD COLUMN fk_flow_process_group_id VARCHAR(40) COMMENT 'fk_flow_process_group_id';
+ALTER TABLE flow_process ADD COLUMN run_mode_type VARCHAR(255) COMMENT 'Process RunModeType';
+ALTER TABLE flow_process ADD COLUMN process_parent_type VARCHAR(255) COMMENT 'Process parent type';
+ALTER TABLE mx_graph_model ADD COLUMN fk_flow_group_id VARCHAR(40) COMMENT 'fk_flow_group_id';
 
 -- ADD FOREIGN KEY
-ALTER TABLE FLOW ADD CONSTRAINT FK3e62cxjsjbtola3f8hcp1my1o FOREIGN KEY (FK_FLOW_GROUP_ID) REFERENCES FLOW_GROUP (ID);
-ALTER TABLE FLOW ADD CONSTRAINT FKg80q2a1d63pkfbayl55cuydcj FOREIGN KEY (FK_FLOW_PROJECT_ID) REFERENCES FLOW_PROJECT (ID);
-ALTER TABLE FLOW_STOPS ADD CONSTRAINT FKr5de1px70o0uj1hlob7ilc90c FOREIGN KEY (FK_DATA_SOURCE_ID) REFERENCES DATA_SOURCE (ID);
-ALTER TABLE FLOW_PROCESS ADD CONSTRAINT FKgvr5o5p4n6dbfx010h7wbjgku FOREIGN KEY (FK_FLOW_PROCESS_GROUP_ID) REFERENCES FLOW_PROCESS_GROUP (ID);
-ALTER TABLE MX_GRAPH_MODEL ADD CONSTRAINT FKbwxper47v5e1ii4wjrcrhi63e FOREIGN KEY (FK_FLOW_GROUP_ID) REFERENCES FLOW_GROUP (ID);
-ALTER TABLE MX_GRAPH_MODEL ADD CONSTRAINT FK37dhc2jlml6pyvv1srdihtiky FOREIGN KEY (FK_FLOW_PROJECT_ID) REFERENCES FLOW_PROJECT (ID);
+ALTER TABLE flow ADD CONSTRAINT FK3e62cxjsjbtola3f8hcp1my1o FOREIGN KEY (fk_flow_group_id) REFERENCES flow_group (id);
+ALTER TABLE flow_stops ADD CONSTRAINT FKr5de1px70o0uj1hlob7ilc90c FOREIGN KEY (fk_data_source_id) REFERENCES data_source (id);
+ALTER TABLE flow_process ADD CONSTRAINT FKgvr5o5p4n6dbfx010h7wbjgku FOREIGN KEY (fk_flow_process_group_id) REFERENCES flow_process_group (id);
+ALTER TABLE mx_graph_model ADD CONSTRAINT FKbwxper47v5e1ii4wjrcrhi63e FOREIGN KEY (fk_flow_group_id) REFERENCES flow_group (id);
 
 -- update table column
-ALTER TABLE FLOW_STOPS_PROPERTY_TEMPLATE MODIFY COLUMN ALLOWABLE_VALUES TEXT(0);
-ALTER TABLE FLOW_STOPS_PROPERTY_TEMPLATE MODIFY COLUMN DEFAULT_VALUE TEXT(0);
-ALTER TABLE FLOW_STOPS_PROPERTY_TEMPLATE MODIFY COLUMN DESCRIPTION TEXT(0) COMMENT 'Defaults';
-ALTER TABLE FLOW_STOPS_PROPERTY_TEMPLATE MODIFY COLUMN DISPLAY_NAME TEXT(0) COMMENT 'description';
+ALTER TABLE flow_stops_property_template MODIFY COLUMN allowable_values TEXT(0) COMMENT 'Allowable_values';
+ALTER TABLE flow_stops_property_template MODIFY COLUMN default_value TEXT(0) COMMENT 'Default_value';
+ALTER TABLE flow_stops_property_template MODIFY COLUMN description TEXT(0) COMMENT 'Defaults';
+ALTER TABLE flow_stops_property_template MODIFY COLUMN display_name TEXT(0) COMMENT 'Description';
 

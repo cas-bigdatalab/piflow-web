@@ -2088,7 +2088,7 @@ CustomizeBasicInfoFormatPanel.prototype.addFont = function (container) {
     var customizeBasic_td_7_1_span = document.createElement('span');
     customizeBasic_td_7_1_span.setAttribute('id', 'customizeBasic_td_7_1_span_id');
     var customizeBasic_td_8_1_span = document.createElement('span');
-    customizeBasic_td_8_1_span.setAttribute('id', 'customizeBasic_td_8_1_span');
+    customizeBasic_td_8_1_span.setAttribute('id', 'customizeBasic_td_8_1_span_id');
     var hr = document.createElement('hr');
     mxUtils.write(customizeBasic_td_1_1_span, Format.customizeTypeAttr.customizeBasic_td_1_1_span_value);
     mxUtils.write(customizeBasic_td_2_1_span, Format.customizeTypeAttr.customizeBasic_td_2_1_span_value);
@@ -2139,6 +2139,7 @@ CustomizeBasicInfoFormatPanel.prototype.addFont = function (container) {
                     flowGroupId: loadId,
                     flowId: $("#customizeBasic_td_1_2_input1_id").attr('name'),
                     pageId: $("#customizeBasic_td_1_2_input2_id").attr('name'),
+                    updateType: $('#customizeBasic_td_1_2_input2_id').data("updateType"),
                     name: customizeBasic_td_1_2_input1_value
                 };
             }
@@ -4809,7 +4810,7 @@ function shiqu(id, data, type) {
     }
 }
 
-function stopTabTd(e, isCustomized) {
+function attributeTabTd(e, isCustomized, nodeType) {
     var stopOpenTemplateClone = $("#stopOpenTemplate").clone();
     stopOpenTemplateClone.find("#stopValue").attr("id", "stopAttributesValue");
     stopOpenTemplateClone.find("#buttonStop").attr("id", "stopAttributesValueBtn");
@@ -4824,15 +4825,21 @@ function stopTabTd(e, isCustomized) {
     stopOpenTemplateClone.find("#stopAttributesValue").css("background-color", "");
     stopOpenTemplateClone.find("#stopAttributesValue").attr('name', name);
     stopOpenTemplateClone.find("#stopAttributesValue").text(value);
+    var funcStr = '';
     if ('TASK' === Format.customizeType) {
         if (isCustomized) {
-            stopOpenTemplateClone.find("#stopAttributesValueBtn").attr("onclick", "updateStopsCustomizedProperty('" + id + "','stopAttributesValue',this);");
+            funcStr = "updateStopsCustomizedProperty('" + id + "','stopAttributesValue',this);";
         } else {
-            stopOpenTemplateClone.find("#stopAttributesValueBtn").attr("onclick", "updateStops('" + id + "','stopAttributesValue',this);");
+            funcStr = "onclick", "updateStops('" + id + "','stopAttributesValue',this);";
         }
     } else if ('GROUP' === Format.customizeType) {
-        stopOpenTemplateClone.find("#stopAttributesValueBtn").attr("onclick", "updateFlow('" + id + "','stopAttributesValue',this);");
+        if ('flow' === nodeType) {
+            funcStr = "updateFlowAttributes('" + id + "','stopAttributesValue',this);";
+        } else if ('flowGroup' === nodeType) {
+            funcStr = "updateFlowGroupAttributes('" + id + "','stopAttributesValue',this);";
+        }
     }
+    stopOpenTemplateClone.find("#stopAttributesValueBtn").attr("onclick", funcStr);
     var p = $(e).offset();
     layer.open({
         type: 1,
@@ -4842,7 +4849,7 @@ function stopTabTd(e, isCustomized) {
         shift: 7,
         anim: 5,//Pop up from top
         shade: 0.1,
-        resize: false,//No stretching
+        resize: true,//No stretching
         //move: false,//No dragging
         offset: ['' + p.top + 'px', '' + p.left + 'px'],//coordinate
         area: ['290px', '204px'], //Width Height
@@ -4944,7 +4951,7 @@ function updateStopsCustomizedProperty(id, name, e) {
     });
 }
 
-function updateFlow(id, name, e) {
+function updateFlowAttributes(id, name, e) {
     var p = $(e).offset();
     var content = document.getElementById('' + name + '').value;
     if (!content) {
@@ -4998,6 +5005,54 @@ function updateFlow(id, name, e) {
                 $('#customizeBasic_td_4_2_label_id').text(flowVo.executorCores);
                 $('#customizeBasic_td_5_2_label_id').text(flowVo.executorMemory);
                 $('#customizeBasic_td_6_2_label_id').text(flowVo.executorNumber);
+            } else {
+                layer.msg('', {icon: 2, shade: 0, time: 2000}, function () {
+                });
+            }
+            layer.closeAll('page');
+            console.log("attribute update success");
+        }
+    });
+}
+
+function updateFlowGroupAttributes(id, name, e) {
+    var p = $(e).offset();
+    var content = document.getElementById('' + name + '').value;
+    if (!content) {
+        $("#" + name + "").css("background-color", "#FFD39B");
+        $("#" + name + "").focus();
+        return;
+    }
+    $('#' + id).val(content);
+    var descriptionObj = $("#id0");
+    $.ajax({
+        cache: true,
+        type: "POST",
+        url: "/piflow-web/flowGroup/updateFlowGroupBaseInfo",
+        data: {
+            "id": $("#updateFlowId").val(),
+            "description": descriptionObj.val()
+        },
+        async: true,
+        traditional: true,
+        error: function (request) {
+            console.log("attribute update error");
+            return;
+        },
+        success: function (data) {
+            var dataMap = JSON.parse(data);
+            if (200 === dataMap.code) {
+                layer.msg('success', {
+                    icon: 1,
+                    shade: 0,
+                    time: 2000,
+                    offset: ['' + p.top - 30 + 'px', '' + p.left + 50 + 'px']
+                }, function () {
+                });
+                var flowGroupVo = dataMap.flowGroupVo;
+                descriptionObj.val(flowGroupVo.description)
+                //baseInfo
+                $('#customizeBasic_td_2_2_span_id').text(flowGroupVo.description);
             } else {
                 layer.msg('', {icon: 2, shade: 0, time: 2000}, function () {
                 });

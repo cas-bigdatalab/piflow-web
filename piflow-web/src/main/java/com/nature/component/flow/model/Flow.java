@@ -46,17 +46,9 @@ public class Flow extends BaseHibernateModelUUIDNoCorpAgentId {
     @Column(columnDefinition = "bit(1) COMMENT 'isExample'")
     private Boolean isExample = false;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "flow")
-    @Where(clause = "enable_flag=1")
-    private FlowInfoDb appId;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "FK_FLOW_GROUP_ID")
     private FlowGroup flowGroup;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "FK_FLOW_PROJECT_ID")
-    private FlowProject flowProject;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "flow")
     @Where(clause = "enable_flag=1")

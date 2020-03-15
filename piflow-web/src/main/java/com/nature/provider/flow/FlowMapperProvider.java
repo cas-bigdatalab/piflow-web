@@ -179,7 +179,6 @@ public class FlowMapperProvider {
         sql.WHERE("enable_flag = 1");
         sql.WHERE("is_example = 0");
         sql.WHERE("fk_flow_group_id = null ");
-        sql.WHERE("fk_flow_project_id = null ");
         sql.ORDER_BY(" crt_dttm desc  ");
         sqlStr = sql.toString();
         return sqlStr;
@@ -200,7 +199,6 @@ public class FlowMapperProvider {
         strBuf.append("enable_flag = 1 ");
         strBuf.append("and is_example = 0 ");
         strBuf.append("and fk_flow_group_id is null ");
-        strBuf.append("and fk_flow_project_id is null ");
         if (StringUtils.isNotBlank(param)) {
             strBuf.append("and ( ");
             strBuf.append("name like '%" + param + "%' ");

@@ -5,10 +5,6 @@ import com.nature.component.mxGraph.model.MxGraphModel;
 
 public interface IMxGraphModelService {
 
-    public StatefulRtnBase addMxGraphModel(MxGraphModel mxGraphModel);
-
-    public int deleteMxGraphModelById(String id);
-
     public String saveDataForTask(String imageXML,String loadId,String operType);
 
     /**
@@ -21,7 +17,5 @@ public interface IMxGraphModelService {
      * @return
      */
     public String saveDataForGroup(String imageXML, String loadId, String operType, boolean flag);
-
-    public String saveDataForFlow();
 
 }

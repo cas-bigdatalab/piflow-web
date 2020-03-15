@@ -35,10 +35,6 @@ public class FlowGroup extends BaseHibernateModelUUIDNoCorpAgentId {
     @Where(clause = "enable_flag=1")
     private MxGraphModel mxGraphModel;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "FK_FLOW_PROJECT_ID")
-    private FlowProject flowProject;
-
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "flowGroup")
     @Where(clause = "enable_flag=1")
     @OrderBy(clause = "lastUpdateDttm desc")
@@ -48,5 +44,14 @@ public class FlowGroup extends BaseHibernateModelUUIDNoCorpAgentId {
     @Where(clause = "enable_flag=1")
     @OrderBy(clause = "lastUpdateDttm desc")
     private List<FlowGroupPaths> flowGroupPathsList = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "FK_FLOW_GROUP_ID")
+    private FlowGroup flowGroup;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "flowGroup")
+    @Where(clause = "enable_flag=1")
+    @OrderBy(clause = "lastUpdateDttm desc")
+    private List<FlowGroup> flowGroupList = new ArrayList<>();
 
 }

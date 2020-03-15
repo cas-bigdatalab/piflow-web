@@ -2,6 +2,9 @@ package com.nature.component.flow.service;
 
 import com.nature.component.flow.model.FlowGroup;
 import com.nature.component.flow.vo.FlowGroupVo;
+import com.nature.component.flow.vo.FlowVo;
+
+import javax.transaction.Transactional;
 
 public interface IFlowGroupService {
 
@@ -74,15 +77,42 @@ public interface IFlowGroupService {
      */
     public String copyFlowToGroup(String flowId, String flowGroupId);
 
-//    /**
-//     * save or add flowGroup
-//     *
-//     * @param imageXML
-//     * @param loadId
-//     * @param operType
-//     * @param flag
-//     * @return
-//     */
-//    public String saveOrUpdateFlowGroupAll(String imageXML, String loadId, String operType, boolean flag);
+    /**
+     * Query FlowGroupVo information based on pageId
+     *
+     * @param fid
+     * @param pageId
+     * @return
+     */
+    @Transactional
+    public FlowGroupVo getFlowGroupByPageId(String fid, String pageId);
+
+    /**
+     * updateFlowGroupNameById
+     *
+     * @param id
+     * @param parentsId
+     * @param flowGroupName
+     * @param pageId
+     * @return
+     */
+    public String updateFlowGroupNameById(String id, String parentsId, String flowGroupName, String pageId);
+
+    /**
+     * updateFlowGroupNameById
+     *
+     * @param id
+     * @param flowGroupName
+     * @return
+     */
+    public Boolean updateFlowGroupNameById(String id, String flowGroupName);
+
+    /**
+     * updateFlowGroupBaseInfo
+     *
+     * @param flowGroupVo
+     * @return
+     */
+    public String updateFlowGroupBaseInfo(FlowGroupVo flowGroupVo);
 
 }

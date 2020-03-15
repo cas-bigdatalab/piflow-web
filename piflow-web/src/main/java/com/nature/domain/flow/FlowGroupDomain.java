@@ -2,6 +2,7 @@ package com.nature.domain.flow;
 
 import com.nature.base.util.SessionUserUtil;
 import com.nature.base.vo.UserVo;
+import com.nature.component.flow.model.Flow;
 import com.nature.component.flow.model.FlowGroup;
 import com.nature.repository.flow.FlowGroupJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -25,9 +28,9 @@ public class FlowGroupDomain {
 
     private Specification<FlowGroup> addEnableFlagParam() {
         Specification<FlowGroup> specification = new Specification<FlowGroup>() {
-        	
-        	private static final long serialVersionUID = 1L;
-        	
+
+            private static final long serialVersionUID = 1L;
+
             @Override
             public Predicate toPredicate(Root<FlowGroup> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
                 //root.get("enableFlag") means to get the field name of enableFlag
@@ -43,9 +46,9 @@ public class FlowGroupDomain {
         }
         final String search = param;
         Specification<FlowGroup> specification = new Specification<FlowGroup>() {
-        	
-        	private static final long serialVersionUID = 1L;
-        	
+
+            private static final long serialVersionUID = 1L;
+
             @Override
             public Predicate toPredicate(Root<FlowGroup> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
                 //root.get("country")表示获取country这个字段名称,like表示执行like查询,%param%表示值
@@ -60,11 +63,7 @@ public class FlowGroupDomain {
     }
 
     public FlowGroup getFlowGroupById(String id) {
-        FlowGroup flowGroup = flowGroupJpaRepository.getOne(id);
-        if (null == flowGroup || !flowGroup.getEnableFlag()) {
-            flowGroup = null;
-        }
-        return flowGroup;
+        return flowGroupJpaRepository.getFlowGroupByIdAndEnAndEnableFlag(id, true);
     }
 
     public Page<FlowGroup> getFlowGroupListPage(int page, int size, String param) {
@@ -88,5 +87,13 @@ public class FlowGroupDomain {
 
     public int updateEnableFlagById(String id, boolean enableFlag) {
         return flowGroupJpaRepository.updateEnableFlagById(id, enableFlag);
+    }
+
+    public FlowGroup getFlowByPageId(String fid, String pageId) {
+        return flowGroupJpaRepository.getFlowGroupByPageId(fid, pageId);
+    }
+
+    public String getFlowIdByNameAndFlowGroupId(String fid, String flowGroupName) {
+        return flowGroupJpaRepository.getFlowGroupIdByNameAndFid(fid, flowGroupName);
     }
 }

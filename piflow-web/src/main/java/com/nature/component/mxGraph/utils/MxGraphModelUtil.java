@@ -31,7 +31,7 @@ public class MxGraphModelUtil {
         mxGraphModel.setCrtDttm(new Date());
         mxGraphModel.setCrtUser(username);
         mxGraphModel.setVersion(0L);
-        return updateMxGraphModelBasicInformation(mxGraphModel,username);
+        return updateMxGraphModelBasicInformation(mxGraphModel, username);
     }
 
     public static MxGraphModel updateMxGraphModelBasicInformation(MxGraphModel mxGraphModel, String username) {
@@ -260,4 +260,112 @@ public class MxGraphModelUtil {
         }
         return flowGroupPaths;
     }
+
+    /**
+     * Generate a list of flows based on the contents of MxCellVoList
+     *
+     * @param mxCellVoList
+     * @param flowGroup
+     * @param username
+     * @return
+     */
+    public static Map<String, List> mxCellVoListToFlowAndFlowGroups(List<MxCellVo> mxCellVoList, FlowGroup flowGroup, String username) {
+        Map<String, List> rtnMapData = new HashMap<>();
+        List<Flow> flowList = new ArrayList<>();
+        List<FlowGroup> flowGroupList = new ArrayList<>();
+        if (null != mxCellVoList && mxCellVoList.size() > 0) {
+            // Loop mxCellVoList
+            for (MxCellVo mxCellVo : mxCellVoList) {
+                if (null == mxCellVo) {
+                    continue;
+                }
+                String mxCellVoStyle = mxCellVo.getStyle();
+                String[] mxCellVoStyle_arrays = mxCellVoStyle.split("/");
+                if (mxCellVoStyle_arrays.length <= 0) {
+                    continue;
+                }
+                String imageName = mxCellVoStyle_arrays[mxCellVoStyle_arrays.length - 1];
+                String typeName = imageName.split("_")[0];
+                if ("flow".equals(typeName)) {
+                    Flow flowNew = mxCellVoToFlow(mxCellVo, flowGroup, username);
+                    if (null != flowNew) {
+                        flowList.add(flowNew);
+                    }
+                } else if ("group".equals(typeName)) {
+                    FlowGroup flowGroupNew = mxCellVoToGroup(mxCellVo, flowGroup, username);
+                    if (null != flowGroupNew) {
+                        flowGroupList.add(flowGroupNew);
+                    }
+                }
+            }
+        }
+        rtnMapData.put("flows", flowList);
+        rtnMapData.put("flowGroups", flowGroupList);
+        return rtnMapData;
+    }
+
+    /**
+     * Content generation Flow based on mxCellVo
+     *
+     * @param mxCellVo
+     * @param parentsFlowGroup
+     * @param username
+     * @return
+     */
+    public static Flow mxCellVoToFlow(MxCellVo mxCellVo, FlowGroup parentsFlowGroup, String username) {
+        Flow flow = null;
+        if (null != mxCellVo) {
+            flow = new Flow();
+            flow.setCrtDttm(new Date());
+            flow.setCrtUser(username);
+            flow.setLastUpdateDttm(new Date());
+            flow.setLastUpdateUser(username);
+            flow.setEnableFlag(true);
+            flow.setPageId(mxCellVo.getPageId());
+            flow.setName("flow" + mxCellVo.getPageId());
+            MxGraphModel mxGraphModel = new MxGraphModel();
+            mxGraphModel.setFlow(flow);
+            mxGraphModel.setCrtDttm(new Date());
+            mxGraphModel.setCrtUser(username);
+            mxGraphModel.setLastUpdateDttm(new Date());
+            mxGraphModel.setLastUpdateUser(username);
+            mxGraphModel.setEnableFlag(true);
+            flow.setMxGraphModel(mxGraphModel);
+            flow.setFlowGroup(parentsFlowGroup);
+        }
+        return flow;
+    }
+
+    /**
+     * Content generation FlowGroup based on mxCellVo
+     *
+     * @param mxCellVo
+     * @param parentsFlowGroup
+     * @param username
+     * @return
+     */
+    public static FlowGroup mxCellVoToGroup(MxCellVo mxCellVo, FlowGroup parentsFlowGroup, String username) {
+        FlowGroup flowGroup = null;
+        if (null != mxCellVo) {
+            flowGroup = new FlowGroup();
+            flowGroup.setCrtDttm(new Date());
+            flowGroup.setCrtUser(username);
+            flowGroup.setLastUpdateDttm(new Date());
+            flowGroup.setLastUpdateUser(username);
+            flowGroup.setEnableFlag(true);
+            flowGroup.setPageId(mxCellVo.getPageId());
+            flowGroup.setName("flowGroup" + mxCellVo.getPageId());
+            MxGraphModel mxGraphModel = new MxGraphModel();
+            mxGraphModel.setFlowGroup(flowGroup);
+            mxGraphModel.setCrtDttm(new Date());
+            mxGraphModel.setCrtUser(username);
+            mxGraphModel.setLastUpdateDttm(new Date());
+            mxGraphModel.setLastUpdateUser(username);
+            mxGraphModel.setEnableFlag(true);
+            flowGroup.setMxGraphModel(mxGraphModel);
+            flowGroup.setFlowGroup(parentsFlowGroup);
+        }
+        return flowGroup;
+    }
+
 }

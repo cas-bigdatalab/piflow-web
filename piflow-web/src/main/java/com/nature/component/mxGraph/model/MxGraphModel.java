@@ -3,7 +3,6 @@ package com.nature.component.mxGraph.model;
 import com.nature.base.BaseHibernateModelUUIDNoCorpAgentId;
 import com.nature.component.flow.model.Flow;
 import com.nature.component.flow.model.FlowGroup;
-import com.nature.component.flow.model.FlowProject;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.OrderBy;
@@ -30,10 +29,6 @@ public class MxGraphModel extends BaseHibernateModelUUIDNoCorpAgentId {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "FK_FLOW_GROUP_ID")
     private FlowGroup flowGroup;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "FK_FLOW_PROJECT_ID")
-    private FlowProject flowProject;
 
     @Column(name = "MX_DX")
     private String dx;
@@ -77,9 +72,9 @@ public class MxGraphModel extends BaseHibernateModelUUIDNoCorpAgentId {
     @Column(name = "MX_BACKGROUND")
     private String background;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "mxGraphModel")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "mxGraphModel")
     @Where(clause = "enable_flag=1")
     @OrderBy(clause = "lastUpdateDttm desc")
-    private List<MxCell> root = new ArrayList<MxCell>();
+    private List<MxCell> root = new ArrayList<>();
 
 }

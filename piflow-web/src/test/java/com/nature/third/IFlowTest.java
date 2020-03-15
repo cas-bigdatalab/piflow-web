@@ -8,7 +8,6 @@ import com.nature.component.process.model.Process;
 import com.nature.component.process.utils.ProcessUtils;
 import com.nature.mapper.flow.FlowMapper;
 import com.nature.third.service.IFlow;
-import com.nature.third.utils.ProcessUtil;
 import com.nature.third.vo.flow.ThirdProgressVo;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -35,7 +34,7 @@ public class IFlowTest extends ApplicationTests {
         Flow flowById = flowMapper.getFlowById("0641076d5ae840c09d2be5b71fw00001");
         Process process = ProcessUtils.flowToProcess(flowById, null);
         //flowImpl.startFlow(processById,null, RunModeType.RUN);
-        String s = ProcessUtil.processToJson(process, null, RunModeType.DEBUG);
+        String s = ProcessUtils.processToJson(process, null, RunModeType.DEBUG);
         logger.info(s);
     }
 

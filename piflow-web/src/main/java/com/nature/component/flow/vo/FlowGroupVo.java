@@ -20,6 +20,9 @@ public class FlowGroupVo implements Serializable {
     private String id;
     private String name;
     private String description;
+    private String pageId;
+    private int flowQuantity;
+    private int flowGroupQuantity;
     private Boolean isExample = false;
     private MxGraphModelVo mxGraphModelVo;
     private FlowProjectVo flowProjectVo;

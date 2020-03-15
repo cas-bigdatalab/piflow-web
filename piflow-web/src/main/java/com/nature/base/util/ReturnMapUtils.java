@@ -60,9 +60,20 @@ public class ReturnMapUtils {
     }
 
     /**
+     * set Success information
+     *
+     * @param succeededMsg Custom success message
+     * @return JsonStr
+     */
+    public static String setSucceededMsgRtnJsonStr(String succeededMsg) {
+        Map<String, Object> stringObjectMap = setSucceededMsg(succeededMsg);
+        return JsonUtils.toJsonNoException(stringObjectMap);
+    }
+
+    /**
      * set Success message
      *
-     * @param key Custom param
+     * @param key   Custom param
      * @param value Custom param
      * @return Map
      */
@@ -75,14 +86,14 @@ public class ReturnMapUtils {
     }
 
     /**
-     * set Success information
+     * set Success message
      *
-     * @param succeededMsg Custom success message
+     * @param key   Custom param
+     * @param value Custom param
      * @return JsonStr
      */
-    public static String setSucceededMsgRtnJsonStr(String succeededMsg) {
-        Map<String, Object> stringObjectMap = setSucceededMsg(succeededMsg);
-        return JsonUtils.toJsonNoException(stringObjectMap);
+    public static String setSucceededCustomParamRtnJsonStr(String key, Object value) {
+        return JsonUtils.toJsonNoException(setSucceededCustomParam(key, value));
     }
 
     /**

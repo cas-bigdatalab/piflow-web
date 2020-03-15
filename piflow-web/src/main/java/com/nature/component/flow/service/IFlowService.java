@@ -1,9 +1,7 @@
 package com.nature.component.flow.service;
 
-import com.nature.base.vo.StatefulRtnBase;
 import com.nature.base.vo.UserVo;
 import com.nature.component.flow.model.Flow;
-import com.nature.component.flow.model.FlowInfoDb;
 import com.nature.component.flow.vo.FlowVo;
 
 import javax.transaction.Transactional;
@@ -38,16 +36,6 @@ public interface IFlowService {
      */
     @Transactional
     public String getFlowVoById(String id);
-
-    /**
-     * save appId
-     *
-     * @param flowId
-     * @param startFlow
-     * @return
-     */
-    @Transactional
-    public StatefulRtnBase saveAppId(String flowId, FlowInfoDb startFlow);
 
     /**
      * add flow(Contains artboard information)
@@ -96,18 +84,5 @@ public interface IFlowService {
     public Boolean updateFlowNameById(String id, String flowName);
 
     public String getMaxFlowPageIdByFlowGroupId(String flowGroupId);
-	
-//    /**
-//     * Modify or add 'stops' and 'paths' information to 'flow' to the database
-//     *
-//     * @param mxGraphModelVo
-//     * @param flowId
-//     * @param operType       Operation type (add, move, delete)
-//     * @param flag           Whether to add 'stop' information
-//     * @return
-//     */
-//    @Transactional
-//    public StatefulRtnBase saveOrUpdateFlowAll(MxGraphModelVo mxGraphModelVo, String flowId, String operType, boolean flag);
-
 	
 }

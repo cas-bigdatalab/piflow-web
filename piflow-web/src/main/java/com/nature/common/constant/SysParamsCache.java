@@ -238,6 +238,28 @@ public class SysParamsCache {
         return INTERFACE_URL_HEAD + FLOW_GROUP_PROGRESS_URL;
     }
 
+    public static String SCHEDULE_START_URL;
+
+    @Value("${api.scheduleStartUrl}")
+    public void setScheduleStartUrl(String scheduleStartUrl) {
+        SCHEDULE_START_URL = scheduleStartUrl;
+    }
+
+    public static String getScheduleStartUrl() {
+        return INTERFACE_URL_HEAD + SCHEDULE_START_URL;
+    }
+
+    public static String SCHEDULE_STOP_URL;
+
+    @Value("${api.scheduleStopUrl}")
+    public void setScheduleStopUrl(String scheduleStopUrl) {
+        SCHEDULE_STOP_URL = scheduleStopUrl;
+    }
+
+    public static String getScheduleStopUrl() {
+        return INTERFACE_URL_HEAD + SCHEDULE_STOP_URL;
+    }
+
     public static String PROJECT_START_URL;
 
     @Value("${api.projectStartUrl}")

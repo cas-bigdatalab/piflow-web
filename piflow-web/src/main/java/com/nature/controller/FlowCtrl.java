@@ -2,20 +2,22 @@ package com.nature.controller;
 
 import com.nature.base.util.JsonUtils;
 import com.nature.base.util.LoggerUtil;
+import com.nature.base.util.ReturnMapUtils;
 import com.nature.base.util.SessionUserUtil;
 import com.nature.base.vo.UserVo;
 import com.nature.component.flow.model.Flow;
 import com.nature.component.flow.service.IFlowGroupService;
 import com.nature.component.flow.service.IFlowService;
+import com.nature.component.flow.vo.FlowGroupVo;
 import com.nature.component.flow.vo.FlowVo;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.util.HashMap;
@@ -30,10 +32,10 @@ public class FlowCtrl {
      */
     Logger logger = LoggerUtil.getLogger();
 
-    @Autowired
+    @Resource
     private IFlowService flowServiceImpl;
 
-    @Autowired
+    @Resource
     private IFlowGroupService flowGroupServiceImpl;
 
     /**
@@ -131,16 +133,24 @@ public class FlowCtrl {
 
     @RequestMapping("/queryIdInfo")
     @ResponseBody
-    public FlowVo getStopGroup(String fid, String flowPageId) {
-        if (StringUtils.isNotBlank(fid) && StringUtils.isNotBlank(flowPageId)) {
-            FlowVo queryInfo = flowServiceImpl.getFlowByPageId(fid, flowPageId);
-            if (null != queryInfo) {
-                //Compare the stops template properties and make changes
-                //propertyServiceImpl.checkStopTemplateUpdate(queryInfo.getId());
-                return queryInfo;
-            }
+    public String queryIdInfo(String fid, String flowPageId) {
+        if (StringUtils.isBlank(fid) || StringUtils.isBlank(flowPageId)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Missing parameters");
         }
-        return null;
+        Map<String, Object> rtnMap = new HashMap<>();
+        FlowVo flowVo = flowServiceImpl.getFlowByPageId(fid, flowPageId);
+        FlowGroupVo flowGroupVo = flowGroupServiceImpl.getFlowGroupByPageId(fid, flowPageId);
+        if (null != flowVo) {
+            //Compare the stops template properties and make changes
+            //propertyServiceImpl.checkStopTemplateUpdate(queryInfo.getId());
+            rtnMap.put("nodeType", "flow");
+        } else if (null != flowGroupVo) {
+            rtnMap.put("nodeType", "flowGroup");
+        }
+        rtnMap.put(ReturnMapUtils.KEY_CODE, ReturnMapUtils.SUCCEEDED_CODE);
+        rtnMap.put("flowVo", flowVo);
+        rtnMap.put("flowGroupVo", flowGroupVo);
+        return JsonUtils.toJsonNoException(rtnMap);
     }
 
     @RequestMapping("/updateFlowBaseInfo")
@@ -156,9 +166,13 @@ public class FlowCtrl {
         //String flowId = request.getParameter("flowId");
         String flowId = request.getParameter("flowId");
         String flowGroupId = request.getParameter("flowGroupId");
-        String flowName = request.getParameter("flowName");
+        String name = request.getParameter("name");
         String pageId = request.getParameter("pageId");
-        return flowServiceImpl.updateFlowNameById(flowId, flowGroupId, flowName, pageId);
+        String updateType = request.getParameter("updateType");
+        if ("flowGroup".equals(updateType)) {
+            return flowGroupServiceImpl.updateFlowGroupNameById(flowId, flowGroupId, name, pageId);
+        }
+        return flowServiceImpl.updateFlowNameById(flowId, flowGroupId, name, pageId);
     }
 
     /**
@@ -173,13 +187,16 @@ public class FlowCtrl {
     public String findFlowByGroup(String fId, String flowPageId) {
         Map<String, Object> rtnMap = new HashMap<>();
         rtnMap.put("code", 500);
-        FlowVo flowByPageId = flowServiceImpl.getFlowByPageId(fId, flowPageId);
-        if (null != flowByPageId) {
-            rtnMap.put("code", 200);
-            rtnMap.put("flow", flowByPageId);
-        } else {
-            rtnMap.put("errorMsg", "data is null");
+        FlowVo flowVo = flowServiceImpl.getFlowByPageId(fId, flowPageId);
+        FlowGroupVo flowGroupVo = flowGroupServiceImpl.getFlowGroupByPageId(fId, flowPageId);
+        if (null != flowVo) {
+            rtnMap.put("nodeType", "flow");
+        } else if (null != flowGroupVo) {
+            rtnMap.put("nodeType", "flowGroup");
         }
+        rtnMap.put(ReturnMapUtils.KEY_CODE, ReturnMapUtils.SUCCEEDED_CODE);
+        rtnMap.put("flowVo", flowVo);
+        rtnMap.put("flowGroupVo", flowGroupVo);
         return JsonUtils.toJsonNoException(rtnMap);
     }
 }

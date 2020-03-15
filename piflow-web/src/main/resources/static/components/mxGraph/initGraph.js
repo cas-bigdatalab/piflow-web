@@ -90,10 +90,12 @@ function openDrawingBoard(evt) {
             success: function (data) {
                 var dataMap = JSON.parse(data);
                 if (200 === dataMap.code) {
-                    var flow_obj = dataMap.flow
-                    var tempWindow = window.open("/piflow-web/mxGraph/drawingBoard?drawingBoardType=TASK&parentAccessPath=flowGroupList&load=" + flow_obj.id);
-                    if (tempWindow == null || typeof (tempWindow) == 'undefined') {
-                        alert('The window cannot be opened. Please check your browser settings.')
+                    if ('flow' === dataMap.nodeType) {
+                        var flow_obj = dataMap.flowVo;
+                        window.location.href = "/piflow-web/mxGraph/drawingBoard?drawingBoardType=TASK&parentAccessPath=flowGroupList&load=" + flow_obj.id;
+                    } else if ('flowGroup' === dataMap.nodeType) {
+                        var flowGroup_obj = dataMap.flowGroupVo;
+                        window.location.href = "/piflow-web/mxGraph/drawingBoard?drawingBoardType=GROUP&parentAccessPath=flowGroupList&load=" + flowGroup_obj.id;
                     }
                 } else {
                     console.log(dataMap.errorMsg);
@@ -125,7 +127,7 @@ function findBasicInfo(evt) {
             if ('TASK' === Format.customizeType) {
                 queryStopsProperty(maxStopPageId);
             } else if ('GROUP' === Format.customizeType) {
-                queryFlowProperty(maxFlowPageId);
+                queryFlowOrFlowGroupProperty(maxFlowPageId);
             }
         }
     }
@@ -143,7 +145,7 @@ function findBasicInfo(evt) {
             if ('TASK' === Format.customizeType) {
                 queryStopsProperty(id);
             } else if ('GROUP' === Format.customizeType) {
-                queryFlowProperty(id);
+                queryFlowOrFlowGroupProperty(id);
             }
         }
     }
@@ -206,7 +208,10 @@ function queryStopsProperty(stopPageId) {
     });
 }
 
-function queryFlowProperty(flowPageId) {
+function queryFlowOrFlowGroupProperty(flowPageId) {
+    if (!flowPageId || !loadId) {
+        return;
+    }
     $.ajax({
         cache: true,
         type: "POST",
@@ -218,53 +223,101 @@ function queryFlowProperty(flowPageId) {
             return;
         },
         success: function (data) {
-            if ("" != data) {
-                var dataId = (null != data.id ? data.id : "");
-                var dataName = (null != data.name ? data.name : "");
-                var dataPageId = (null != data.pageId ? data.pageId : "");
-                var dataDriverMemory = (null != data.driverMemory ? data.driverMemory : "");
-                var dataExecutorCores = (null != data.executorCores ? data.executorCores : "");
-                var dataExecutorMemory = (null == data.executorMemory ? "" : data.executorMemory);
-                var dataExecutorNumber = (null == data.executorNumber ? "" : data.executorNumber);
-                var dataDescription = (null != data.description ? data.description : "");
-                var dataCrtDttmString = (null == data.crtDttmString ? "" : data.crtDttmString);
-                var stopQuantity = (data.stopsVoList ? data.stopsVoList.length : "0");
-                $('#customizeBasic_td_1_2_span_id').text(dataName);
-                $('#customizeBasic_td_1_2_input1_id').attr("value", dataName);
-                $('#customizeBasic_td_1_2_input1_id').attr("name", dataId);
-                $('#customizeBasic_td_1_2_input2_id').attr("value", dataName);
-                $('#customizeBasic_td_1_2_input2_id').attr("name", dataPageId);
-                $('#customizeBasic_td_2_2_span_id').text(dataDescription);
-                $('#customizeBasic_td_3_2_label_id').text(dataDriverMemory);
-                $('#customizeBasic_td_4_2_label_id').text(dataExecutorCores);
-                $('#customizeBasic_td_5_2_label_id').text(dataExecutorMemory);
-                $('#customizeBasic_td_6_2_label_id').text(dataExecutorNumber);
-                $('#customizeBasic_td_7_2_label_id').text(dataCrtDttmString);
-                $('#customizeBasic_td_8_2_label_id').text(stopQuantity);
-                add();
-                var addDatas = [
-                    {id: "id0", name: "driverMemory", value: dataDriverMemory, description: "driverMemory"},
-                    {id: "id1", name: "executorCores", value: dataExecutorCores, description: "executorCores"},
-                    {id: "id2", name: "executorMemory", value: dataExecutorMemory, description: "executorMemory"},
-                    {id: "id3", name: "executorNumber", value: dataExecutorNumber, description: "executorNumber"},
-                    {id: "id4", name: "description", value: dataDescription, description: "description"}
-                ];
-                add(addDatas, dataId);
+            var dataMap = JSON.parse(data);
+            if (200 === dataMap.code && dataMap.nodeType) {
+                var flowVoNodeData = dataMap.flowVo;
+                var flowGroupVoNodeData = dataMap.flowGroupVo;
+                if ("" != flowVoNodeData && "flow" === dataMap.nodeType) {
+                    var dataId = (null != flowVoNodeData.id ? flowVoNodeData.id : "");
+                    var dataName = (null != flowVoNodeData.name ? flowVoNodeData.name : "");
+                    var dataPageId = (null != flowVoNodeData.pageId ? flowVoNodeData.pageId : "");
+                    var dataDriverMemory = (null != flowVoNodeData.driverMemory ? flowVoNodeData.driverMemory : "");
+                    var dataExecutorCores = (null != flowVoNodeData.executorCores ? flowVoNodeData.executorCores : "");
+                    var dataExecutorMemory = (null == flowVoNodeData.executorMemory ? "" : flowVoNodeData.executorMemory);
+                    var dataExecutorNumber = (null == flowVoNodeData.executorNumber ? "" : flowVoNodeData.executorNumber);
+                    var dataDescription = (null != flowVoNodeData.description ? flowVoNodeData.description : "");
+                    var dataCrtDttmString = (null == flowVoNodeData.crtDttmString ? "" : flowVoNodeData.crtDttmString);
+                    var stopQuantity = flowVoNodeData.stopQuantity;
+                    $('#customizeBasic_td_1_2_span_id').text(dataName);
+                    $('#customizeBasic_td_1_2_input1_id').attr("value", dataName);
+                    $('#customizeBasic_td_1_2_input1_id').attr("name", dataId);
+                    $('#customizeBasic_td_1_2_input2_id').attr("value", dataName);
+                    $('#customizeBasic_td_1_2_input2_id').attr("name", dataPageId);
+                    $('#customizeBasic_td_2_2_span_id').text(dataDescription);
+                    $('#customizeBasic_td_3_2_label_id').text(dataDriverMemory);
+                    $('#customizeBasic_td_4_2_label_id').text(dataExecutorCores);
+                    $('#customizeBasic_td_5_2_label_id').text(dataExecutorMemory);
+                    $('#customizeBasic_td_6_2_label_id').text(dataExecutorNumber);
+                    $('#customizeBasic_td_7_2_label_id').text(dataCrtDttmString);
+                    $('#customizeBasic_td_8_2_label_id').text(stopQuantity);
 
-                //Remove the timer if successful
-                window.clearTimeout(timerPath);
-            } else {
-                if (!timerPath) {
-                    timerPath = window.setTimeout(queryFlowProperty(flowPageId), 500);
-                    console.log(3);
-                }
-                flag++;
-                if (flag > 5) {
+                    var addDatas = [
+                        {id: "id0", name: "driverMemory", value: dataDriverMemory, description: "driverMemory"},
+                        {id: "id1", name: "executorCores", value: dataExecutorCores, description: "executorCores"},
+                        {id: "id2", name: "executorMemory", value: dataExecutorMemory, description: "executorMemory"},
+                        {id: "id3", name: "executorNumber", value: dataExecutorNumber, description: "executorNumber"},
+                        {id: "id4", name: "description", value: dataDescription, description: "description"}
+                    ];
+                    add();
+                    add(addDatas, dataId, dataMap.nodeType);
+
+                    //Remove the timer if successful
                     window.clearTimeout(timerPath);
-                    return;
+                } else if ("" != flowGroupVoNodeData && "flowGroup" === dataMap.nodeType) {
+                    var dataId = (null != flowGroupVoNodeData.id ? flowGroupVoNodeData.id : "");
+                    var dataName = (null != flowGroupVoNodeData.name ? flowGroupVoNodeData.name : "");
+                    var dataPageId = (null != flowGroupVoNodeData.pageId ? flowGroupVoNodeData.pageId : "");
+                    var dataDescription = (null != flowGroupVoNodeData.description ? flowGroupVoNodeData.description : "");
+                    var dataCrtDttmString = (null == flowGroupVoNodeData.crtDttmString ? "" : flowGroupVoNodeData.crtDttmString);
+                    var flowGroupQuantity = flowGroupVoNodeData.flowGroupQuantity;
+                    var flowQuantity = flowGroupVoNodeData.flowQuantity;
+                    $('#customizeBasic_td_1_2_span_id').text(dataName);
+                    $('#customizeBasic_td_1_2_input1_id').attr("value", dataName);
+                    $('#customizeBasic_td_1_2_input1_id').attr("name", dataId);
+                    $('#customizeBasic_td_1_2_input2_id').attr("value", dataName);
+                    $('#customizeBasic_td_1_2_input2_id').attr("name", dataPageId);
+                    $('#customizeBasic_td_1_2_input2_id').data("updateType", dataMap.nodeType);
+                    $('#customizeBasic_td_2_2_span_id').text(dataDescription);
+                    $('#customizeBasic_td_3_2_label_id').text(dataCrtDttmString);
+                    $('#customizeBasic_td_4_2_label_id').text(flowGroupQuantity);
+                    $('#customizeBasic_td_5_2_label_id').text(flowQuantity);
+                    $('#customizeBasic_td_6_2_label_id').hide();
+                    $('#customizeBasic_td_7_2_label_id').hide();
+                    $('#customizeBasic_td_8_2_label_id').hide();
+
+                    $('#customizeBasic_td_1_1_span_id').text("flowGroupName： ");
+                    $('#customizeBasic_td_2_1_span_id').text("flowDescription： ");
+                    $('#customizeBasic_td_3_1_span_id').text("createTime： ");
+                    $('#customizeBasic_td_4_1_span_id').text("groups： ");
+                    $('#customizeBasic_td_5_1_span_id').text("flows： ");
+                    $('#customizeBasic_td_6_1_span_id').hide();
+                    $('#customizeBasic_td_7_1_span_id').hide();
+                    $('#customizeBasic_td_8_1_span_id').hide();
+
+                    var addDatas = [
+                        {id: "id0", name: "description", value: dataDescription, description: "description"}
+                    ];
+                    add();
+                    add(addDatas, dataId, dataMap.nodeType);
+
+                    //Remove the timer if successful
+                    window.clearTimeout(timerPath);
+                } else {
+                    if (!timerPath) {
+                        timerPath = window.setTimeout(queryFlowOrFlowGroupProperty(flowPageId), 500);
+                        console.log(3);
+                    }
+                    flag++;
+                    if (flag > 5) {
+                        window.clearTimeout(timerPath);
+                        return;
+                    }
                 }
+            } else {
+                layer.msg("Load fail,Please click again to reload", {icon: 2, shade: 0, time: 2000}, function () {
+                });
             }
-            layer.close(layer.index);
+            //layer.close(layer.index);
         }
     });
 }
@@ -337,11 +390,11 @@ function queryPathInfo(id) {
     });
 }
 
-function add(addParamData, flowId) {
+function add(addParamData, flowId, nodeType) {
     if ('TASK' === Format.customizeType) {
         taskAdd(addParamData);
     } else if ('GROUP' === Format.customizeType) {
-        groupAdd(addParamData, flowId)
+        groupAdd(addParamData, flowId, nodeType)
     }
 }
 
@@ -403,7 +456,7 @@ function taskAdd(addParamData) {
             displayName.setAttribute('class', 'form-control');
             displayName.setAttribute('id', '' + data[y].id + '');
             displayName.setAttribute('name', '' + data[y].name + '');
-            displayName.setAttribute('onclick', 'stopTabTd(this,false)');
+            displayName.setAttribute('onclick', 'attributeTabTd(this,false,null)');
             displayName.setAttribute('locked', data[y].isLocked);
             // displayName.style.width = "290px";
             displayName.setAttribute('readonly', 'readonly');
@@ -558,7 +611,7 @@ function taskAdd(addParamData) {
     }
 }
 
-function groupAdd(addParamData, flowId) {
+function groupAdd(addParamData, flowId, nodeType) {
     if (flowId && addParamData && addParamData.length > 0 && divValue) {
         var table = document.createElement("table");
         table.style.borderCollapse = "separate";
@@ -573,7 +626,7 @@ function groupAdd(addParamData, flowId) {
             displayName.setAttribute('class', 'form-control');
             displayName.setAttribute('id', '' + addData_i.id + '');
             displayName.setAttribute('name', '' + addData_i.name + '');
-            displayName.setAttribute('onclick', 'stopTabTd(this)');
+            displayName.setAttribute('onclick', 'attributeTabTd(this,false,"' + nodeType + '")');
             displayName.setAttribute('readonly', 'readonly');
             displayName.style.cursor = "pointer";
             displayName.style.background = "rgb(245, 245, 245)";
@@ -640,7 +693,7 @@ function setCustomizedTableHtml(stopPageId, stopsCustomizedPropertyVo, stopOutPo
             + 'id="' + stopsCustomizedPropertyVo.id + '"'
             + 'name="' + stopsCustomizedPropertyVo.name + '" '
             + 'value="' + stopsCustomizedPropertyVo.customValue + '" '
-            + 'onclick="stopTabTd(this,true)"readonly="readonly" value=""style="background: rgb(245, 245, 245);">'
+            + 'onclick="attributeTabTd(this,true,null)"readonly="readonly" value=""style="background: rgb(245, 245, 245);">'
             + '</td>'
             + '<td>'
             + '<span style="color:red">*</span>'
@@ -905,20 +958,19 @@ function queryFlowGroup() {
             var dataMap = JSON.parse(data);
             if (document.getElementById("drawingBoardDescription_td_1_2_label_id")) {
                 var flowGroupVo = dataMap.flowGroupVo;
-                if (flowGroupVo != null && flowGroupVo != "")
-                    if (flowGroupVo != null && flowGroupVo != "") {
-                        document.getElementById('drawingBoardDescription_td_1_2_label_id').innerText = flowGroupVo.id ? flowGroupVo.id : "No content";
-                        document.getElementById('drawingBoardDescription_td_2_2_label_id').innerText = flowGroupVo.name ? flowGroupVo.name : "No content";
-                        document.getElementById('drawingBoardDescription_td_3_2_label_id').innerText = flowGroupVo.description ? flowGroupVo.description : "No content";
-                        document.getElementById('drawingBoardDescription_td_4_2_label_id').innerText = flowGroupVo.crtDttmString ? flowGroupVo.crtDttmString : "No content";
-                        document.getElementById('drawingBoardDescription_td_5_2_label_id').innerText = flowGroupVo.flowVoList ? flowGroupVo.flowVoList.length : "0";
-                    } else {
-                        document.getElementById('drawingBoardDescription_td_1_2_label_id').innerText = "No content";
-                        document.getElementById('drawingBoardDescription_td_2_2_label_id').innerText = "No content";
-                        document.getElementById('drawingBoardDescription_td_3_2_label_id').innerText = "No content";
-                        document.getElementById('drawingBoardDescription_td_4_2_label_id').innerText = "No content";
-                        document.getElementById('drawingBoardDescription_td_5_2_label_id').innerText = "0";
-                    }
+                if (flowGroupVo != null && flowGroupVo != "") {
+                    document.getElementById('drawingBoardDescription_td_1_2_label_id').innerText = flowGroupVo.id ? flowGroupVo.id : "No content";
+                    document.getElementById('drawingBoardDescription_td_2_2_label_id').innerText = flowGroupVo.name ? flowGroupVo.name : "No content";
+                    document.getElementById('drawingBoardDescription_td_3_2_label_id').innerText = flowGroupVo.description ? flowGroupVo.description : "No content";
+                    document.getElementById('drawingBoardDescription_td_4_2_label_id').innerText = flowGroupVo.crtDttmString ? flowGroupVo.crtDttmString : "No content";
+                    document.getElementById('drawingBoardDescription_td_5_2_label_id').innerText = flowGroupVo.flowVoList ? flowGroupVo.flowVoList.length : "0";
+                } else {
+                    document.getElementById('drawingBoardDescription_td_1_2_label_id').innerText = "No content";
+                    document.getElementById('drawingBoardDescription_td_2_2_label_id').innerText = "No content";
+                    document.getElementById('drawingBoardDescription_td_3_2_label_id').innerText = "No content";
+                    document.getElementById('drawingBoardDescription_td_4_2_label_id').innerText = "No content";
+                    document.getElementById('drawingBoardDescription_td_5_2_label_id').innerText = "0";
+                }
                 getRunningProcessList();
             }
         }

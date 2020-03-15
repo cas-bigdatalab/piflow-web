@@ -33,7 +33,7 @@ public class DataSource extends BaseHibernateModelUUIDNoCorpAgentId {
     @OrderBy(clause = "lastUpdateDttm desc")
     private List<Stops> stopsList = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "dataSource")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "dataSource")
     @Where(clause = "enable_flag=1")
     @OrderBy(clause = "lastUpdateDttm desc")
     private List<DataSourceProperty> dataSourcePropertyList = new ArrayList<>();

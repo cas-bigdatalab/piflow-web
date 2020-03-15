@@ -63,7 +63,6 @@ public interface FlowMapper {
             @Result(id = true, column = "id", property = "id"),
             @Result(column = "fk_flow_group_id", property = "flowGroup", one = @One(select = "com.nature.mapper.flow.FlowGroupMapper.getFlowGroupById", fetchType = FetchType.LAZY)),
             @Result(column = "id", property = "mxGraphModel", one = @One(select = "com.nature.mapper.mxGraph.MxGraphModelMapper.getMxGraphModelByFlowId", fetchType = FetchType.LAZY)),
-            @Result(column = "id", property = "appId", one = @One(select = "com.nature.mapper.flow.FlowInfoDbMapper.getAppByAppFlowId", fetchType = FetchType.LAZY)),
             @Result(column = "id", property = "stopsList", many = @Many(select = "com.nature.mapper.flow.StopsMapper.getStopsListByFlowId", fetchType = FetchType.LAZY)),
             @Result(column = "id", property = "pathsList", many = @Many(select = "com.nature.mapper.flow.PathsMapper.getPathsListByFlowId", fetchType = FetchType.LAZY))
 

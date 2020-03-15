@@ -77,52 +77,65 @@ function Sidebar(editorUi, container) {
  */
 Sidebar.prototype.init = function () {
     var dir = STENCIL_PATH;
+    var component_data = [];
+    var component_prefix = "";
+    var addImagePaletteId = "";
     if ('TASK' === Format.customizeType) {
         //search
         this.addSearchPalette(true);
-        var stopsGroupList = stopsGroupData;
-        if (null != stopsGroupList) {
-            for (var i = 0; i < stopsGroupList.length; i++) {
-                var stopsGroup = stopsGroupList[i];
-                if (stopsGroup && '' !== stopsGroup) {
-                    var stopsNameList = new Array();
-                    var stopsDescList = new Array();
-                    var stopsImageList = new Array();
-                    stopsVoList = stopsGroup.stopsTemplateVoList;
-                    if (stopsVoList && stopsVoList.length > 0) {
-                        for (var j = 0; j < stopsVoList.length; j++) {
-                            var stops = stopsVoList[j];
-                            if (stops && '' !== stops) {
-                                stopsNameList.push(stops.name);
-                                stopsDescList.push(stops.description);
-                                stopsImageList.push(stops.name + '_128x128.png');
-                            }
-                        }
-                    }
-                    this.addImagePalette('clipart', stopsGroup.groupName, '/piflow-web/images/', stopsImageList, stopsNameList, stopsDescList, stopsNameList, stopsNameList);
+        component_prefix = "/piflow-web/images/";
+        addImagePaletteId = 'clipart';
+        if (null != stopsGroupData && stopsGroupData.length > 0) {
+            for (var i = 0; i < stopsGroupData.length; i++) {
+                var stopsGroupData_i = stopsGroupData[i];
+                if (stopsGroupData_i && '' !== stopsGroupData_i) {
+                    component_data.push({
+                        component_name: stopsGroupData_i.groupName,
+                        component_group: stopsGroupData_i.stopsTemplateVoList
+                    });
                 }
             }
         }
     } else if ('GROUP' === Format.customizeType) {
         //search
         this.addSearchPalette(false);
-        var flowGroup = flowGroupData;
-        if (flowGroup && '' !== flowGroup) {
-            var flowNameList = new Array();
-            var flowDescList = new Array();
-            var flowImageList = new Array();
-            var flowList = flowGroup.flowList;
-            if (flowList && flowList.length > 0) {
-                for (var j = 0; j < flowList.length; j++) {
-                    var flowElement = flowList[j];
-                    if (flowElement && '' !== flowElement) {
-                        flowNameList.push(flowElement.name);
-                        flowDescList.push(flowElement.description);
-                        flowImageList.push(flowElement.img_name);
-                    }
+        component_prefix = "/piflow-web/img/";
+        addImagePaletteId = 'general';
+        if (null != flowGroupData && flowGroupData.length > 0) {
+            for (var i = 0; i < flowGroupData.length; i++) {
+                var flowGroupData_i = flowGroupData[i];
+                if (flowGroupData_i && '' !== flowGroupData_i) {
+                    component_data.push({
+                        component_name: flowGroupData_i.groupName,
+                        component_group: flowGroupData_i.dataList
+                    });
                 }
             }
-            this.addImagePalette('general', flowGroup.groupName, '/piflow-web/img/', flowImageList, flowNameList, flowDescList, flowNameList, flowNameList);
+        }
+    }
+    if (null != component_data && component_data.length > 0) {
+        for (var i = 0; i < component_data.length; i++) {
+            var component_i = component_data[i];
+            if (component_i && '' !== component_i) {
+                var component_name_arrays = new Array();
+                var component_desc_arrays = new Array();
+                var component_img_arrays = new Array();
+                var component_i_group = component_i.component_group;
+                if (component_i_group && component_i_group.length > 0) {
+                    for (var j = 0; j < component_i_group.length; j++) {
+                        var component_i_group_j = component_i_group[j];
+                        if (component_i_group_j && '' !== component_i_group_j) {
+                            if (!component_i_group_j.img_name) {
+                                component_i_group_j.img_name = "_128x128.png";
+                            }
+                            component_name_arrays.push(component_i_group_j.name);
+                            component_desc_arrays.push(component_i_group_j.description);
+                            component_img_arrays.push(component_i_group_j.name + component_i_group_j.img_name);
+                        }
+                    }
+                }
+                this.addImagePalette(addImagePaletteId, component_i.component_name, component_prefix, component_img_arrays, component_name_arrays, component_desc_arrays, component_name_arrays, component_name_arrays);
+            }
         }
     }
 

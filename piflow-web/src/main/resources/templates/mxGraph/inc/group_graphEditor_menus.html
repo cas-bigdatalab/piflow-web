@@ -1,10 +1,8 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<body>
+<body th:fragment=group_graphEditor_menus>
 
-
-<div th:fragment=group_graphEditor_menus
-     style="position: fixed; margin-top: 48px; z-index: 999;text-align: right; width:45%;">
+<div>
     <div class="btn-group">
         <a class="customize_btn_css" href='javascript:void(0);' style="padding: 9px 12px;" onclick="getFlowList()"
            title="Import flow">

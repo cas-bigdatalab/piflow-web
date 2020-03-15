@@ -6,8 +6,8 @@ import com.nature.base.util.LoggerUtil;
 import com.nature.common.Eunm.RunModeType;
 import com.nature.common.constant.SysParamsCache;
 import com.nature.component.process.model.Process;
+import com.nature.component.process.utils.ProcessUtils;
 import com.nature.third.service.IFlow;
-import com.nature.third.utils.ProcessUtil;
 import com.nature.third.vo.flow.ThirdProgressVo;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
@@ -35,7 +35,7 @@ public class FlowImpl implements IFlow {
         if (null != process) {
             /*String json = ProcessUtil.processToJson(process, checkpoint, runModeType);
             String formatJson = JsonFormatTool.formatJson(json);*/
-            String formatJson = ProcessUtil.processToJson(process, checkpoint, runModeType);
+            String formatJson = ProcessUtils.processToJson(process, checkpoint, runModeType);
             logger.info("\n" + formatJson);
             String doPost = HttpUtils.doPost(SysParamsCache.getFlowStartUrl(), formatJson, null);
             logger.info("Return information：" + doPost);

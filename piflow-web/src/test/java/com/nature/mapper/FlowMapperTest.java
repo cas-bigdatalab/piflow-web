@@ -9,7 +9,6 @@ import com.nature.component.flow.model.Flow;
 import com.nature.component.process.model.Process;
 import com.nature.component.process.utils.ProcessUtils;
 import com.nature.mapper.flow.FlowMapper;
-import com.nature.third.utils.ProcessUtil;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.springframework.test.annotation.Rollback;
@@ -41,7 +40,7 @@ public class FlowMapperTest extends ApplicationTests {
 
         user.setUsername("test");
         Process process = ProcessUtils.flowToProcess(flow, user);
-        String s = ProcessUtil.processToJson(process, "", RunModeType.RUN);
+        String s = ProcessUtils.processToJson(process, "", RunModeType.RUN);
         logger.info(s);
     }
 

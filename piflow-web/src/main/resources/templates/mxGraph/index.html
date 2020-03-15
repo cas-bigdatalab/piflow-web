@@ -25,60 +25,91 @@
         var maxStopPageId = [[${maxStopPageId}]];
         var maxFlowPageId = [[${maxFlowPageId}]];
         var divValue = null;
-        var flowGroupData = {
-            groupName: "component",
-            flowList: [
-                {
-                    name: "Flow",
-                    img_name: "flow_01_128x128.png",
-                    description: 'flow component'
-                }, {
-                    name: "Flow",
-                    img_name: "flow_02_128x128.png",
-                    description: 'flow component'
-                }, {
-                    name: "Flow",
-                    img_name: "flow_03_128x128.png",
-                    description: 'flow component'
-                }, {
-                    name: "Flow",
-                    img_name: "flow_04_128x128.png",
-                    description: 'flow component'
-                }, {
-                    name: "Flow",
-                    img_name: "flow_05_128x128.png",
-                    description: 'flow component'
-                }, {
-                    name: "Flow",
-                    img_name: "flow_06_128x128.png",
-                    description: 'flow component'
-                }, {
-                    name: "Flow",
-                    img_name: "flow_07_128x128.png",
-                    description: 'flow component'
-                }, {
-                    name: "Flow",
-                    img_name: "flow_08_128x128.png",
-                    description: 'flow component'
-                }, {
-                    name: "Flow",
-                    img_name: "flow_09_128x128.png",
-                    description: 'flow component'
-                }, {
-                    name: "Flow",
-                    img_name: "flow_10_128x128.png",
-                    description: 'flow component'
-                }, {
-                    name: "Flow",
-                    img_name: "flow_11_128x128.png",
-                    description: 'flow component'
-                }, {
-                    name: "Flow",
-                    img_name: "flow_12_128x128.png",
-                    description: 'flow component'
-                }
-            ]
-        };
+        var flowGroupData = [
+            {
+                groupName: "Group",
+                dataList: [
+                    {
+                        name: "group",
+                        img_name: "_01_128x128.png",
+                        description: 'group component'
+                    }, {
+                        name: "group",
+                        img_name: "_02_128x128.png",
+                        description: 'group component'
+                    }, {
+                        name: "group",
+                        img_name: "_03_128x128.png",
+                        description: 'group component'
+                    }, {
+                        name: "group",
+                        img_name: "_04_128x128.png",
+                        description: 'group component'
+                    }, {
+                        name: "group",
+                        img_name: "_05_128x128.png",
+                        description: 'group component'
+                    }, {
+                        name: "group",
+                        img_name: "_06_128x128.png",
+                        description: 'group component'
+                    }
+                ]
+            }, {
+                groupName: "Task",
+                dataList: [
+                    {
+                        name: "flow",
+                        img_name: "_01_128x128.png",
+                        description: 'flow component'
+                    }, {
+                        name: "flow",
+                        img_name: "_02_128x128.png",
+                        description: 'flow component'
+                    }, {
+                        name: "flow",
+                        img_name: "_03_128x128.png",
+                        description: 'flow component'
+                    }, {
+                        name: "flow",
+                        img_name: "_04_128x128.png",
+                        description: 'flow component'
+                    }, {
+                        name: "flow",
+                        img_name: "_05_128x128.png",
+                        description: 'flow component'
+                    }, {
+                        name: "flow",
+                        img_name: "_06_128x128.png",
+                        description: 'flow component'
+                    }, {
+                        name: "flow",
+                        img_name: "_07_128x128.png",
+                        description: 'flow component'
+                    }, {
+                        name: "flow",
+                        img_name: "_08_128x128.png",
+                        description: 'flow component'
+                    }, {
+                        name: "flow",
+                        img_name: "_09_128x128.png",
+                        description: 'flow component'
+                    }, {
+                        name: "flow",
+                        img_name: "_10_128x128.png",
+                        description: 'flow component'
+                    }, {
+                        name: "flow",
+                        img_name: "_11_128x128.png",
+                        description: 'flow component'
+                    }, {
+                        name: "flow",
+                        img_name: "_12_128x128.png",
+                        description: 'flow component'
+                    }
+                ]
+            }
+        ];
 
         function divAppend(divAppend) {
             divValue = divAppend;
@@ -124,24 +155,17 @@
 <div th:include="Macro/publicMacro :: userHeadMacro"></div>
 
 <div style="width: 45.2%; float: right;">
-    <div th:switch="${drawingBoardType?.value}">
-        <div th:case="'TASK'">
-            <div th:include="/mxGraph/inc/task_graphEditor_menus :: task_graphEditor_menus"></div>
-        </div>
-        <div th:case="'GROUP'">
-            <div th:include="/mxGraph/inc/group_graphEditor_menus :: group_graphEditor_menus"></div>
-        </div>
+    <div th:switch="${drawingBoardType?.value}"
+         style="position: fixed; margin-top: 48px; z-index: 999;text-align: right; width:45%;">
+        <div th:case="'TASK'" th:include="mxGraph/inc/task_graphEditor_menus :: task_graphEditor_menus"></div>
+        <div th:case="'GROUP'" th:include="mxGraph/inc/group_graphEditor_menus :: group_graphEditor_menus"></div>
     </div>
 </div>
 <!-- crumbs -->
 <div style="width: 100%;position: fixed;z-index: 99999;float: left;left: 0px;bottom: 0px;text-align: center;height: 28px;line-height: 28px; background: #37714b;">
     <div th:switch="${drawingBoardType?.value}">
-        <div th:case="'TASK'">
-            <div th:include="/mxGraph/inc/task_graphEditor_crumbs :: task_graphEditor_crumbs"></div>
-        </div>
-        <div th:case="'GROUP'">
-            <div th:include="/mxGraph/inc/group_graphEditor_crumbs :: group_graphEditor_crumbs"></div>
-        </div>
+        <div th:case="'TASK'" th:include="mxGraph/inc/task_graphEditor_crumbs :: task_graphEditor_crumbs"></div>
+        <div th:case="'GROUP'" th:include="mxGraph/inc/group_graphEditor_crumbs :: group_graphEditor_crumbs"></div>
     </div>
 </div>
 
@@ -222,20 +246,15 @@
 <!--Initializes the artboard-->
 <!--stop Property edit popover starts-->
 <div style="display: none;" id="stopOpenTemplate">
-    <form class="layui-form" action="">
-        <div class="layui-form-item layui-form-text">
-            <div class="layui-input-block">
+    <div style="height: 90%;">
+        <form class="layui-form" action="" style="height: 100%;">
+            <div class="layui-form-text" style="margin-left: 12px; text-align: center;height: 100%;">
                 <textarea id="stopValue" placeholder="please input ..." class="layui-textarea"
-                          style="width: 272px;margin-left: -100px;resize:none;"></textarea>
+                          style="margin-left: -6px;margin-bottom: 6px;resize:none;height: 80%;"></textarea>
+                <button type="button" class="layui-btn layui-btn-primary" id="buttonStop" style="height: 20%;">save</button>
             </div>
-        </div>
-        <div class="layui-form-item" style="text-align: center;margin-right: 90px;margin-top: -8px;">
-            <div class="layui-input-block">
-                <button type="button" class="layui-btn layui-btn-primary" id="buttonStop">save
-                </button>
-            </div>
-        </div>
-    </form>
+        </form>
+    </div>
 </div>
 <!--stop Property edit popover ends-->
 

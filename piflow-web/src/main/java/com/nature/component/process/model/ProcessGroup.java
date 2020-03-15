@@ -4,6 +4,7 @@ import com.nature.base.BaseHibernateModelUUIDNoCorpAgentId;
 import com.nature.common.Eunm.ProcessParentType;
 import com.nature.common.Eunm.ProcessState;
 import com.nature.common.Eunm.RunModeType;
+import com.nature.component.flow.model.FlowGroup;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.OrderBy;
@@ -73,5 +74,14 @@ public class ProcessGroup extends BaseHibernateModelUUIDNoCorpAgentId {
     @Where(clause = "enable_flag=1")
     @OrderBy(clause = "lastUpdateDttm desc")
     private List<ProcessGroupPath> processGroupPathList = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "FK_FLOW_PROCESS_GROUP_ID")
+    private ProcessGroup processGroup;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "processGroup")
+    @Where(clause = "enable_flag=1")
+    @OrderBy(clause = "lastUpdateDttm desc")
+    private List<ProcessGroup> processGroupList = new ArrayList<>();
 
 }

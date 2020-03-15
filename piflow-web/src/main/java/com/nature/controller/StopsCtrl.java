@@ -206,7 +206,7 @@ public class StopsCtrl {
                 }
             } else {
                 rtnMap.put("errorMsg", "flow information is empty");
-                logger.info("flow查询为null,flowId:" + flowId);
+                logger.warn("fflow information is empty,flowId:" + flowId);
             }
         } else {
             rtnMap.put("errorMsg", "The incoming parameter is empty");

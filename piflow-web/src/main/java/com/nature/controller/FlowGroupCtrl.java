@@ -1,8 +1,10 @@
 package com.nature.controller;
 
 import com.nature.base.util.LoggerUtil;
+import com.nature.component.flow.model.FlowGroup;
 import com.nature.component.flow.service.IFlowGroupService;
 import com.nature.component.flow.vo.FlowGroupVo;
+import com.nature.component.flow.vo.FlowVo;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -90,19 +92,10 @@ public class FlowGroupCtrl {
         return flowGroupServiceImpl.copyFlowToGroup(flowId, flowGroupId);
     }
 
-//    /**
-//     * save data
-//     *
-//     * @param request
-//     * @return
-//     */
-//    @RequestMapping("/saveFlowGroupData")
-//    @ResponseBody
-//    public String saveFlowGroupData(HttpServletRequest request) {
-//        String imageXML = request.getParameter("imageXML");
-//        String loadId = request.getParameter("load");
-//        String operType = request.getParameter("operType");
-//        return flowGroupServiceImpl.saveOrUpdateFlowGroupAll(imageXML, loadId, operType, true);
-//    }
+    @RequestMapping("/updateFlowGroupBaseInfo")
+    @ResponseBody
+    public String updateFlowGroupBaseInfo(FlowGroupVo flowGroupVo) {
+        return flowGroupServiceImpl.updateFlowGroupBaseInfo(flowGroupVo);
+    }
 
 }

@@ -3,12 +3,13 @@ package com.nature.third.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.nature.base.util.HttpUtils;
 import com.nature.base.util.LoggerUtil;
+import com.nature.base.util.ReturnMapUtils;
 import com.nature.common.Eunm.RunModeType;
 import com.nature.common.constant.SysParamsCache;
 import com.nature.component.process.model.ProcessGroup;
+import com.nature.component.process.utils.ProcessUtils;
 import com.nature.domain.process.ProcessGroupDomain;
 import com.nature.third.service.IGroup;
-import com.nature.third.utils.ProcessUtil;
 import com.nature.third.utils.ThirdFlowGroupInfoResponseUtils;
 import com.nature.third.vo.flowGroup.ThirdFlowGroupInfoOutResponse;
 import com.nature.third.vo.flowGroup.ThirdFlowGroupInfoResponse;
@@ -17,9 +18,9 @@ import com.nature.third.vo.flowGroup.ThirdFlowStopInfoOutResponse;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import javax.transaction.Transactional;
 import java.util.HashMap;
 import java.util.List;
@@ -30,39 +31,36 @@ public class GroupImpl implements IGroup {
 
     Logger logger = LoggerUtil.getLogger();
 
-    @Autowired
+    @Resource
     private ProcessGroupDomain processGroupDomain;
 
     @Override
     public Map<String, Object> startFlowGroup(ProcessGroup processGroup, RunModeType runModeType) {
-        Map<String, Object> rtnMap = new HashMap<>();
-        rtnMap.put("code", 500);
-        if (null != processGroup) {
-            /*String json = ProcessUtil.processGroupToJson(processGroup, runModeType);
-            String formatJson = JsonFormatTool.formatJson(json);*/
-            String formatJson = ProcessUtil.processGroupToJson(processGroup, runModeType);
-            logger.info("\n" + formatJson);
-            String doPost = HttpUtils.doPost(SysParamsCache.getFlowGroupStartUrl(), formatJson, null);
-            logger.info("Return information：" + doPost);
-            if (StringUtils.isNotBlank(doPost) && !doPost.contains("Exception")) {
-                try {
-                    JSONObject obj = JSONObject.fromObject(doPost).getJSONObject("flowGroup");// Convert a json string to a json object
-                    String groupId = obj.getString("id");
-                    if (StringUtils.isNotBlank(groupId)) {
-                        rtnMap.put("appId", groupId);
-                        rtnMap.put("code", 200);
-                    } else {
-                        rtnMap.put("errorMsg", "Error : Interface return value is null");
-                    }
-                } catch (Exception e) {
-                    rtnMap.put("errorMsg", "Error : Interface call succeeded, conversion error");
-                }
-            } else {
-                logger.warn("Return information：" + doPost);
-                rtnMap.put("errorMsg", "Error : Interface call failed");
-            }
+        if (null == processGroup) {
+            return ReturnMapUtils.setFailedMsg("processGroup is null");
         }
-        return rtnMap;
+        // String json = ProcessUtil.processGroupToJson(processGroup, runModeType);
+        // String formatJson = JsonFormatTool.formatJson(json);
+        String formatJson = ProcessUtils.processGroupToJson(processGroup, runModeType);
+        logger.info("\n" + formatJson);
+        String doPost = "";//HttpUtils.doPost(SysParamsCache.getFlowGroupStartUrl(), formatJson, null);
+        logger.info("Return information：" + doPost);
+        if (StringUtils.isNotBlank(doPost) && !doPost.contains("Exception")) {
+            try {
+                JSONObject obj = JSONObject.fromObject(doPost).getJSONObject("flowGroup");// Convert a json string to a json object
+                String groupId = obj.getString("id");
+                if (StringUtils.isNotBlank(groupId)) {
+                    return ReturnMapUtils.setSucceededCustomParam("appId", groupId);
+                } else {
+                    return ReturnMapUtils.setFailedMsg("Error : Interface return value is null");
+                }
+            } catch (Exception e) {
+                return ReturnMapUtils.setFailedMsg("Error : Interface call succeeded, conversion error");
+            }
+        } else {
+            logger.warn("Return information：" + doPost);
+            return ReturnMapUtils.setFailedMsg("Error : Interface call failed");
+        }
     }
 
     @Override
@@ -92,7 +90,7 @@ public class GroupImpl implements IGroup {
     }
 
     @SuppressWarnings("rawtypes")
-	@Override
+    @Override
     public ThirdFlowGroupInfoResponse getFlowGroupInfo(String groupId) {
         ThirdFlowGroupInfoResponse thirdFlowGroupInfoResponse = null;
         String doGet = getFlowGroupInfoStr(groupId);
