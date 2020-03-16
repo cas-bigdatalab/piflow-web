@@ -30,7 +30,7 @@ public class IGroupTest extends ApplicationTests {
     @Test
     @Transactional
     public void testStartFlowGroup() {
-        String id = "8a80d5d270cab4a80170cab688980001";
+        String id = "8a80d5d270e0a92d0170e0b86bba0000";
         FlowGroup flowGroup = flowGroupDomain.getFlowGroupById(id);
         ProcessGroup test = ProcessGroupUtils.flowGroupToProcessGroup(flowGroup, "test", RunModeType.RUN);
 		Map<String, Object> stringObjectMap = groupImpl.startFlowGroup(test, RunModeType.RUN);

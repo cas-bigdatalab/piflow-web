@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -26,8 +27,8 @@ public class ProcessGroupDomain {
 
     private Specification<ProcessGroup> addEnableFlagParam() {
         Specification<ProcessGroup> specification = new Specification<ProcessGroup>() {
-        	private static final long serialVersionUID = 1L;
-        	
+            private static final long serialVersionUID = 1L;
+
             @Override
             public Predicate toPredicate(Root<ProcessGroup> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
                 //root.get("enableFlag") means to get the field name of enableFlag
@@ -39,8 +40,8 @@ public class ProcessGroupDomain {
 
     private Specification<ProcessGroup> addParam(String key, String value) {
         Specification<ProcessGroup> specification = new Specification<ProcessGroup>() {
-        	private static final long serialVersionUID = 1L;
-        	
+            private static final long serialVersionUID = 1L;
+
             @Override
             public Predicate toPredicate(Root<ProcessGroup> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
                 //root.get(key) means to get the name of the key field
@@ -99,4 +100,13 @@ public class ProcessGroupDomain {
         UserVo currentUser = SessionUserUtil.getCurrentUser();
         return processGroupJpaRepository.updateEnableFlagById(id, currentUser.getUsername(), new Date(), enableFlag);
     }
+
+    public ProcessGroup getProcessGroupByPageId(String fid, String pageId) {
+        return processGroupJpaRepository.getProcessGroupByPageId(fid, pageId);
+    }
+
+    public String getProcessIdGroupByPageId(String fid, String pageId) {
+        return processGroupJpaRepository.getProcessGroupIdByPageId(fid, pageId);
+    }
+
 }

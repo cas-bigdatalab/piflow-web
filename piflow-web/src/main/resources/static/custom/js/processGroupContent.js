@@ -82,9 +82,17 @@ function openProcessMonitor(pageId, e) {
             if (data) {
                 var dataMap = JSON.parse(data);
                 if (200 === dataMap.code) {
-                    var tempWindow = window.open("/piflow-web/process/getProcessById?processId=" + dataMap.processId + "&parentAccessPath=processGroupList");
-                    if (tempWindow == null || typeof(tempWindow)=='undefined'){
-                        alert('The window cannot be opened. Please check your browser settings.')
+                    var urlPath = "";
+                    if ('flow' === dataMap.nodeType) {
+                        urlPath = "/piflow-web/process/getProcessById?parentAccessPath=processGroupList&processId=" + dataMap.processId;
+                    } else if ('flowGroup' === dataMap.nodeType) {
+                        urlPath = "/piflow-web/processGroup/getProcessGroupById?parentAccessPath=processGroupList&processGroupId=" + dataMap.processGroupId;
+                    }
+                    if (urlPath) {
+                        var tempWindow = window.open(urlPath);
+                        if (tempWindow == null || typeof (tempWindow) == 'undefined') {
+                            alert('The window cannot be opened. Please check your browser settings.')
+                        }
                     }
                 }
             } else {
@@ -250,7 +258,7 @@ function runProcessGroup(runMode) {
                 //alert(dataMap.errorMsg);
                 window.location.reload();
                 var tempWindow = window.open("/piflow-web/processGroup/getProcessGroupById?processGroupId=" + dataMap.processGroupId);
-                if (tempWindow == null || typeof(tempWindow)=='undefined'){
+                if (tempWindow == null || typeof (tempWindow) == 'undefined') {
                     alert('The window cannot be opened. Please check your browser settings.')
                 }
             } else {
@@ -387,7 +395,7 @@ function processGroupMonitoring(appId) {
                             var processVo = processVoList[i];
                             if (processVo && '' != processVo) {
                                 var sotpNameDB = processVo.name;
-                                var sotpNameVal = $("#sotpNameShow").text();
+                                var sotpNameVal = $("#stopNameShow").text();
                                 if (sotpNameDB === sotpNameVal) {
                                     $("#stopStartTimeShow").html(processVo.startTime);
                                     $("#stopStopTimeShow").html(processVo.endTime);

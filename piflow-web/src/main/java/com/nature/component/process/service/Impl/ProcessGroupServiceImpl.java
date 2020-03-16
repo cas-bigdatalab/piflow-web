@@ -1,5 +1,6 @@
 package com.nature.component.process.service.Impl;
 
+import ch.qos.logback.core.joran.util.beans.BeanUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.nature.base.util.*;
@@ -7,6 +8,8 @@ import com.nature.base.vo.UserVo;
 import com.nature.common.Eunm.ProcessParentType;
 import com.nature.common.Eunm.ProcessState;
 import com.nature.common.Eunm.RunModeType;
+import com.nature.component.flow.model.Flow;
+import com.nature.component.flow.model.FlowGroup;
 import com.nature.component.process.model.*;
 import com.nature.component.process.model.Process;
 import com.nature.component.process.service.IProcessGroupService;
@@ -23,6 +26,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -86,10 +90,11 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
      * @return
      */
     @Override
+    @Transactional
     public ProcessGroupVo getProcessAllVoById(String id) {
         ProcessGroupVo processGroupVo = null;
         if (StringUtils.isNotBlank(id)) {
-            ProcessGroup processGroupById = processGroupMapper.getProcessGroupById(id);
+            ProcessGroup processGroupById = processGroupDomain.getProcessGroupById(id);
             processGroupVo = ProcessGroupUtils.processGroupPoToVo(processGroupById);
         }
         return processGroupVo;
@@ -368,6 +373,7 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
      * @param processGroupAppID
      * @return
      */
+    @Override
     public String getGroupLogData(String processGroupAppID) {
         Map<String, Object> rtnMap = new HashMap<>();
         rtnMap.put("code", 500);
@@ -391,28 +397,25 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
     /**
      * getProcessIdByPageId
      *
-     * @param processGroupId
+     * @param fId
      * @param pageId
      * @return
      */
-    public String getProcessIdByPageId(String processGroupId, String pageId) {
-        Map<String, Object> rtnMap = new HashMap<>();
-        rtnMap.put("code", 500);
-        if (StringUtils.isNotBlank(processGroupId) && StringUtils.isNotBlank(pageId)) {
-            // Query groupLogData by 'processGroupAppID'
-            Process processByPageId = processMapper.getProcessByPageId(processGroupId, pageId);
-            if (null != processByPageId) {
-                rtnMap.put("code", 200);
-                rtnMap.put("processId", processByPageId.getId());
-            } else {
-                logger.warn("No query found");
-                rtnMap.put("errorMsg", "No query found");
-            }
-        } else {
-            logger.warn("processGroupID is null");
-            rtnMap.put("errorMsg", "processGroupID is null");
-        }
-        return JsonUtils.toJsonNoException(rtnMap);
+    @Override
+    public String getProcessIdByPageId(String fId, String pageId) {
+        return processDomain.getProcessIdByPageId(fId, pageId);
+    }
+
+    /**
+     * getProcessIdByPageId
+     *
+     * @param fId
+     * @param pageId
+     * @return
+     */
+    @Override
+    public String getProcessGroupIdByPageId(String fId, String pageId) {
+        return processGroupDomain.getProcessIdGroupByPageId(fId, pageId);
     }
 
     private ProcessGroup copyProcessGroupAndNewCreate(ProcessGroup processGroup, UserVo currentUser, RunModeType runModeType) {
@@ -589,6 +592,33 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
             }
         }
         return processCopy;
+    }
+
+    /**
+     * getProcessGroupVoByPageId
+     *
+     * @param processGroupId
+     * @param pageId
+     * @return
+     */
+    @Override
+    @Transactional
+    public ProcessGroupVo getProcessGroupVoByPageId(String processGroupId, String pageId) {
+        ProcessGroupVo processGroupVo = null;
+        ProcessGroup processGroup = processGroupDomain.getProcessGroupByPageId(processGroupId, pageId);
+        if (null != processGroup) {
+            processGroupVo = new ProcessGroupVo();
+            BeanUtils.copyProperties(processGroup, processGroupVo);
+            // List<ProcessGroup> processGroupList = processGroup.getProcessGroupList();
+            // List<Process> processList = processGroup.getProcessList();
+            // if (null != processGroupList) {
+            //     processGroupVo.setFlowGroupQuantity(processGroupList.size());
+            // }
+            // if (null != processList) {
+            //     processGroupVo.setFlowQuantity(processList.size());
+            // }
+        }
+        return processGroupVo;
     }
 
 }

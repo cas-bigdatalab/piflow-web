@@ -481,7 +481,7 @@ function processMonitoring(appId) {
                             var processStopVo = processStopVoList[i];
                             if (processStopVo && '' != processStopVo) {
                                 var sotpNameDB = processStopVo.name;
-                                var sotpNameVal = $("#sotpNameShow").text();
+                                var sotpNameVal = $("#stopNameShow").text();
                                 if (sotpNameDB === sotpNameVal) {
                                     $("#stopStartTimeShow").html(processStopVo.startTime);
                                     $("#stopStopTimeShow").html(processStopVo.endTime);

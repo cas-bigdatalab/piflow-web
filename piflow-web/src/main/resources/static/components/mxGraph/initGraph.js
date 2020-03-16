@@ -224,7 +224,7 @@ function queryFlowOrFlowGroupProperty(flowPageId) {
         },
         success: function (data) {
             var dataMap = JSON.parse(data);
-            if (200 === dataMap.code && dataMap.nodeType) {
+            if (200 === dataMap.code) {
                 var flowVoNodeData = dataMap.flowVo;
                 var flowGroupVoNodeData = dataMap.flowGroupVo;
                 if ("" != flowVoNodeData && "flow" === dataMap.nodeType) {
@@ -1605,7 +1605,7 @@ function openTemplateList() {
     var url = "";
     var functionNameStr = "";
     if ('TASK' === Format.customizeType) {
-        url = "/piflow-web/template/loadingXmlPage";
+        url = "/piflow-web/template/templateAllSelect";
         functionNameStr = "loadTemplate()";
     } else if ('GROUP' === Format.customizeType) {
         url = "/piflow-web/flowGroupTemplate/flowGroupTemplateAllSelect";
@@ -1667,7 +1667,9 @@ function loadFlowGroupTemplate() {
 }
 
 function loadTemplateFun() {
-    var id = $("#loadingXmlSelect").val();
+    var id = $("#loadingXmlSelectNew").val();
+    console.log("loadingXmlSelect");
+    console.log(id);
     if (id == '-1') {
         layer.msg('Please choose template', {icon: 2, shade: 0, time: 2000}, function () {
         });

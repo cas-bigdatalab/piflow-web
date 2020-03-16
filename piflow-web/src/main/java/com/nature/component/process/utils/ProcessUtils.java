@@ -522,6 +522,7 @@ public class ProcessUtils {
 
         // all process
         Map<String, Process> processesMap = new HashMap<>();
+        Map<String, ProcessGroup> processGroupsMap = new HashMap<>();
 
         List<Process> processList = processGroup.getProcessList();
         if (null != processList && processList.size() > 0) {
@@ -534,18 +535,40 @@ public class ProcessUtils {
             flowGroupVoMap.put("flows", processesListMap);
         }
 
+        List<ProcessGroup> processGroupList = processGroup.getProcessGroupList();
+        if (null != processGroupList && processGroupList.size() > 0) {
+            List<Map<String, Object>> processesGroupListMap = new ArrayList<>();
+            for (ProcessGroup processGroupNew : processGroupList) {
+                processGroupsMap.put(processGroupNew.getPageId(), processGroupNew);
+                Map<String, Object> processGroupMap = processGroupToMap(processGroupNew, runModeType);
+                processesGroupListMap.add(processGroupMap);
+            }
+            flowGroupVoMap.put("groups", processesGroupListMap);
+
+        }
+
         List<ProcessGroupPath> processGroupPathList = processGroup.getProcessGroupPathList();
         if (null != processGroupPathList && processGroupPathList.size() > 0) {
             List<Map<String, Object>> pathListMap = new ArrayList<>();
             for (ProcessGroupPath processGroupPath : processGroupPathList) {
                 if (null != processGroupPath) {
                     Map<String, Object> pathMap = new HashMap<>();
+                    String formName = "";
+                    String toName = "";
                     String from = processGroupPath.getFrom();
                     String to = processGroupPath.getTo();
-                    Process processFrom = processesMap.get(from);
-                    Process processTo = processesMap.get(to);
-                    pathMap.put("after", null != processFrom ? processFrom.getName() : "");
-                    pathMap.put("entry", null != processTo ? processTo.getName() : "");
+                    if (null != processesMap.get(from)) {
+                        formName = processesMap.get(from).getName();
+                    } else if (null != processGroupsMap.get(from)) {
+                        formName = processGroupsMap.get(from).getName();
+                    }
+                    if (null != processesMap.get(to)) {
+                        formName = processesMap.get(to).getName();
+                    } else if (null != processGroupsMap.get(to)) {
+                        toName = processGroupsMap.get(to).getName();
+                    }
+                    pathMap.put("after", formName);
+                    pathMap.put("entry", toName);
                     pathListMap.add(pathMap);
                 }
             }

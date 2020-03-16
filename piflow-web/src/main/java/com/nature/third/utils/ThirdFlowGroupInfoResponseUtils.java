@@ -20,8 +20,6 @@ public class ThirdFlowGroupInfoResponseUtils {
     public static ProcessGroup setProcessGroup(ProcessGroup processGroup, ThirdFlowGroupInfoResponse thirdFlowGroupInfoResponse) {
 
         if (null != thirdFlowGroupInfoResponse && null != processGroup) {
-            Map<String, ThirdFlowInfoResponse> flowInfoResponseMap = new HashMap<>();
-            List<ThirdFlowInfoOutResponse> flows = thirdFlowGroupInfoResponse.getFlows();
             processGroup.setLastUpdateUser("syncTask");
             processGroup.setLastUpdateDttm(new Date());
             processGroup.setProgress(thirdFlowGroupInfoResponse.getProgress());
@@ -33,6 +31,9 @@ public class ThirdFlowGroupInfoResponseUtils {
             processGroup.setName(thirdFlowGroupInfoResponse.getName());
             processGroup.setStartTime(DateUtils.strCstToDate(thirdFlowGroupInfoResponse.getStartTime()));
             processGroup.setEndTime(DateUtils.strCstToDate(thirdFlowGroupInfoResponse.getEndTime()));
+
+            Map<String, ThirdFlowInfoResponse> flowInfoResponseMap = new HashMap<>();
+            List<ThirdFlowInfoOutResponse> flows = thirdFlowGroupInfoResponse.getFlows();
             List<Process> processList = processGroup.getProcessList();
             if (CollectionUtils.isNotEmpty(flows) && CollectionUtils.isNotEmpty(processList)) {
                 for (ThirdFlowInfoOutResponse thirdFlowInfoOutResponse : flows) {
@@ -48,6 +49,28 @@ public class ThirdFlowGroupInfoResponseUtils {
                         ThirdFlowInfoResponse flowInfoResponse = flowInfoResponseMap.get(process.getName());
                         if (null != flowInfoResponse) {
                             setProcess(process, flowInfoResponse);
+                        }
+                    }
+                }
+            }
+
+            Map<String, ThirdFlowGroupInfoResponse> flowGrpupInfoResponseMap = new HashMap<>();
+            List<ThirdFlowGroupInfoOutResponse> flowGroups = thirdFlowGroupInfoResponse.getGroups();
+            List<ProcessGroup> processGroupList = processGroup.getProcessGroupList();
+            if (CollectionUtils.isNotEmpty(flowGroups) && CollectionUtils.isNotEmpty(processGroupList)) {
+                for (ThirdFlowGroupInfoOutResponse thirdFlowGroupInfoOutResponse_i : flowGroups) {
+                    if (null != thirdFlowGroupInfoOutResponse_i) {
+                        ThirdFlowGroupInfoResponse thirdFlowGroupInfoResponse_i = thirdFlowGroupInfoOutResponse_i.getGroup();
+                        if (null != thirdFlowGroupInfoResponse_i) {
+                            flowGrpupInfoResponseMap.put(thirdFlowGroupInfoResponse_i.getName(), thirdFlowGroupInfoResponse_i);
+                        }
+                    }
+                }
+                for (ProcessGroup processGroup_i : processGroupList) {
+                    if (null != processGroup_i) {
+                        ThirdFlowGroupInfoResponse thirdFlowGroupInfoResponse_copy = flowGrpupInfoResponseMap.get(processGroup_i.getName());
+                        if (null != thirdFlowGroupInfoResponse_copy) {
+                            setProcessGroup(processGroup_i, thirdFlowGroupInfoResponse_copy);
                         }
                     }
                 }

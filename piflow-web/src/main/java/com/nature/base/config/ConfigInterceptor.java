@@ -7,6 +7,7 @@ import com.nature.common.constant.SysParamsCache;
 import com.nature.component.flow.model.Flow;
 import com.nature.component.mxGraph.model.MxCell;
 import com.nature.component.mxGraph.model.MxGraphModel;
+import com.nature.component.mxGraph.utils.MxCellUtils;
 import com.nature.component.system.model.SysInitRecords;
 import com.nature.component.system.model.SysMenu;
 import com.nature.domain.flow.FlowDomain;
@@ -133,23 +134,8 @@ public class ConfigInterceptor implements HandlerInterceptor {
                 if (null == root) {
                     root = new ArrayList<>();
                 }
-                MxCell mxCell0 = new MxCell();
-                mxCell0.setMxGraphModel(mxGraphModel);
-                mxCell0.setCrtDttm(new Date());
-                mxCell0.setCrtUser("system");
-                mxCell0.setLastUpdateDttm(new Date());
-                mxCell0.setLastUpdateUser("system");
-                mxCell0.setPageId("0");
-                root.add(mxCell0);
-                MxCell mxCell1 = new MxCell();
-                mxCell1.setMxGraphModel(mxGraphModel);
-                mxCell1.setCrtDttm(new Date());
-                mxCell1.setCrtUser("system");
-                mxCell1.setLastUpdateDttm(new Date());
-                mxCell1.setLastUpdateUser("system");
-                mxCell1.setPageId("1");
-                mxCell1.setParent("0");
-                root.add(mxCell1);
+                List<MxCell> initMxCellList = MxCellUtils.initMxCell("system", mxGraphModel);
+                root.addAll(initMxCellList);
                 mxGraphModel.setRoot(root);
 
                 flowXml.setId(null);

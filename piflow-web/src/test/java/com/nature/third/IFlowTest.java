@@ -9,6 +9,7 @@ import com.nature.component.process.utils.ProcessUtils;
 import com.nature.mapper.flow.FlowMapper;
 import com.nature.third.service.IFlow;
 import com.nature.third.vo.flow.ThirdProgressVo;
+import com.nature.third.vo.flowInfo.ThirdFlowInfoVo;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,6 +70,13 @@ public class IFlowTest extends ApplicationTests {
         String getDebugData = flowImpl.getDebugData("application_1562293222869_0031", "XmlParser", "default");
         //String getDebugData = flowImpl.getDebugData("application_1562293222869_0031","Fork","out2");
         logger.info("Test return information：" + getDebugData);
+    }
+
+    @Test
+    public void testGetFlowInfo() {
+        String appId = "application_1544066083705_0409";
+        ThirdFlowInfoVo startFlow2 = flowImpl.getFlowInfo(appId);
+        logger.info("Test return information：" + startFlow2);
     }
 
 }

@@ -34,4 +34,11 @@ public interface ProcessGroupJpaRepository extends JpaRepository<ProcessGroup, S
     @Modifying
     @Query("update ProcessGroup c set c.enableFlag = :enableFlag, c.lastUpdateUser = :lastUpdateUser, c.lastUpdateDttm = :lastUpdateDttm where c.id = :id")
     int updateEnableFlagById(@Param("id") String id, @Param("lastUpdateUser") String lastUpdateUser, @Param("lastUpdateDttm") Date lastUpdateDttm, @Param("enableFlag") boolean enableFlag);
+
+    @Transactional
+    @Query(value = "select * from flow_process_group s where s.enable_flag = 1 and s.fk_flow_process_group_id = :fid and s.page_id = :pageId", nativeQuery = true)
+    ProcessGroup getProcessGroupByPageId(@Param("fid") String fid, @Param("pageId") String pageId);
+
+    @Query(value = "select s.id from flow_process_group s where s.enable_flag = 1 and s.fk_flow_process_group_id = :fid and s.page_id = :pageId", nativeQuery = true)
+    String getProcessGroupIdByPageId(@Param("fid") String fid, @Param("pageId") String pageId);
 }

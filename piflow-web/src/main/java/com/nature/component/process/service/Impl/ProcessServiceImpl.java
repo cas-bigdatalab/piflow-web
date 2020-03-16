@@ -21,7 +21,6 @@ import com.nature.mapper.flow.FlowMapper;
 import com.nature.mapper.process.ProcessMapper;
 import com.nature.mapper.process.ProcessStopMapper;
 import com.nature.third.service.IFlow;
-import com.nature.third.service.IGetFlowInfo;
 import com.nature.third.vo.flow.ThirdProgressVo;
 import com.nature.third.vo.flowInfo.ThirdFlowInfoStopVo;
 import com.nature.third.vo.flowInfo.ThirdFlowInfoStopsVo;
@@ -57,9 +56,6 @@ public class ProcessServiceImpl implements IProcessService {
 
     @Resource
     private IFlow flowImpl;
-
-    @Resource
-    private IGetFlowInfo getFlowInfoImpl;
 
     @Resource
     private ProcessDomain processDomain;
@@ -209,7 +205,7 @@ public class ProcessServiceImpl implements IProcessService {
             // If the status is STARTED, the interface is removed. Otherwise, it indicates that the startup is complete and returns directly.
             ProcessState state = processById.getState();
             if (ProcessState.STARTED == state || null == processById.getStartTime()) {
-                ThirdFlowInfoVo thirdFlowInfoVo = getFlowInfoImpl.getFlowInfo(appID);
+                ThirdFlowInfoVo thirdFlowInfoVo = flowImpl.getFlowInfo(appID);
                 if (null != thirdFlowInfoVo) {
                     processById.getProcessStopList();
                     //Determine if the progress returned by the interface is empty

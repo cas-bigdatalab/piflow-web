@@ -55,12 +55,12 @@ public class ProcessStop extends BaseHibernateModelUUIDNoCorpAgentId {
     @Column(name = "page_id")
     private String pageId;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "processStop")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "processStop")
     @Where(clause = "enable_flag=1")
     @OrderBy(clause = "lastUpdateDttm desc")
     private List<ProcessStopProperty> processStopPropertyList = new ArrayList<ProcessStopProperty>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "processStop")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "processStop")
     @Where(clause = "enable_flag=1")
     @OrderBy(clause = "lastUpdateDttm desc")
     private List<ProcessStopCustomizedProperty> processStopCustomizedPropertyList = new ArrayList<>();

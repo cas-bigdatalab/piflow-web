@@ -9,6 +9,7 @@ import com.nature.component.flow.model.*;
 import com.nature.component.flow.service.IFlowGroupService;
 import com.nature.component.flow.utils.FlowGroupPathsUtil;
 import com.nature.component.flow.utils.FlowUtil;
+import com.nature.component.mxGraph.utils.MxCellUtils;
 import com.nature.component.mxGraph.utils.MxGraphModelUtil;
 import com.nature.component.flow.vo.FlowGroupPathsVo;
 import com.nature.component.flow.vo.FlowGroupVo;
@@ -19,6 +20,7 @@ import com.nature.component.mxGraph.model.MxGraphModel;
 import com.nature.component.mxGraph.vo.MxGraphModelVo;
 import com.nature.component.process.model.Process;
 import com.nature.component.process.model.*;
+import com.nature.component.process.utils.ProcessGroupUtils;
 import com.nature.domain.flow.FlowGroupDomain;
 import com.nature.domain.mxGraph.MxCellDomain;
 import com.nature.domain.process.*;
@@ -311,7 +313,9 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
         if (StringUtils.isNotBlank(runMode)) {
             runModeType = RunModeType.selectGender(runMode);
         }
-        ProcessGroup processGroup = flowGroupToProcessGroup(flowGroupById, username, runModeType);
+        //ProcessGroup processGroup = flowGroupToProcessGroup(flowGroupById, username, runModeType);
+        ProcessGroup processGroup = ProcessGroupUtils.flowGroupToProcessGroup(flowGroupById, username, runModeType);
+        processGroup = processGroupDomain.saveOrUpdate(processGroup);
 
         Map<String, Object> stringObjectMap = groupImpl.startFlowGroup(processGroup, runModeType);
 
@@ -579,23 +583,8 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
             root = new ArrayList<>();
         }
         if (root.size() <= 0) {
-            MxCell mxCell0 = new MxCell();
-            mxCell0.setMxGraphModel(mxGraphModel);
-            mxCell0.setCrtDttm(new Date());
-            mxCell0.setCrtUser(currentUser.getUsername());
-            mxCell0.setLastUpdateDttm(new Date());
-            mxCell0.setLastUpdateUser(currentUser.getUsername());
-            mxCell0.setPageId("0");
-            root.add(mxCell0);
-            MxCell mxCell1 = new MxCell();
-            mxCell1.setMxGraphModel(mxGraphModel);
-            mxCell1.setCrtDttm(new Date());
-            mxCell1.setCrtUser(currentUser.getUsername());
-            mxCell1.setLastUpdateDttm(new Date());
-            mxCell1.setLastUpdateUser(currentUser.getUsername());
-            mxCell1.setPageId("1");
-            mxCell1.setParent("0");
-            root.add(mxCell1);
+            root.addAll(MxCellUtils.initMxCell(currentUser.getUsername(),mxGraphModel));
+
         }
         // Get the maximum value of pageid in stop
         String maxStopPageIdByFlowGroupId = flowMapper.getMaxFlowPageIdByFlowGroupId(flowGroupId);

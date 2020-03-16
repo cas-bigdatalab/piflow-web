@@ -46,10 +46,6 @@ public class TemplateCtrl {
     @Resource
     private IFlowAndStopsTemplateVoService flowAndStopsTemplateVoServiceImpl;
 
-    @Resource
-    private IPathsService pathsServiceImpl;
-
-
     /**
      * Introducing logs, note that they are all packaged under "org.slf4j"
      */

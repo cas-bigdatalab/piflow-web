@@ -80,12 +80,12 @@ public class Process extends BaseHibernateModelUUIDNoCorpAgentId {
     @Column(name = "page_id")
     private String pageId;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "process")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "process")
     @Where(clause = "enable_flag=1")
     @OrderBy(clause = "lastUpdateDttm desc")
     private List<ProcessStop> processStopList = new ArrayList<ProcessStop>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "process")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "process")
     @Where(clause = "enable_flag=1")
     @OrderBy(clause = "lastUpdateDttm desc")
     private List<ProcessPath> processPathList = new ArrayList<ProcessPath>();

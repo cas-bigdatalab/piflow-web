@@ -1,12 +1,16 @@
 package com.nature.controller;
 
+import com.nature.base.util.JsonUtils;
 import com.nature.base.util.LoggerUtil;
+import com.nature.base.util.ReturnMapUtils;
 import com.nature.base.util.SessionUserUtil;
 import com.nature.base.vo.UserVo;
 import com.nature.common.Eunm.ProcessState;
+import com.nature.component.process.model.Process;
 import com.nature.component.process.service.IProcessGroupService;
 import com.nature.component.process.service.IProcessService;
-import com.nature.component.process.vo.*;
+import com.nature.component.process.vo.ProcessGroupVo;
+import com.nature.component.process.vo.ProcessVo;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +21,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/processGroup")
@@ -90,6 +96,10 @@ public class ProcessGroupCtrl {
                 if (null != processVoList && processVoList.size() > 0) {
                     modelAndView.addObject("processVoListInit", processVoList);
                 }
+                List<ProcessGroupVo> processGroupVoList = processGroupVo.getProcessGroupVoList();
+                if (null != processGroupVoList && processGroupVoList.size() > 0) {
+                    modelAndView.addObject("processGroupVoListInit", processGroupVoList);
+                }
                 modelAndView.addObject("percentage", (null != processGroupVo.getProgress() ? processGroupVo.getProgress() : 0.00));
                 modelAndView.addObject("appId", processGroupVo.getAppId());
                 modelAndView.addObject("processGroupId", processGroupId);
@@ -137,13 +147,25 @@ public class ProcessGroupCtrl {
     public ModelAndView queryProcess(HttpServletRequest request, ModelAndView modelAndView) {
         String processGroupId = request.getParameter("processGroupId");
         String pageId = request.getParameter("pageId");
-        modelAndView.setViewName("processGroup/inc/process_property_inc");
+        String nodeType = "flow";
+        String viewName = "processGroup/inc/process_property_inc";
         if (!StringUtils.isAnyEmpty(processGroupId, pageId)) {
-            ProcessVo processVoByPageId = processServiceImpl.getProcessVoByPageId(processGroupId, pageId);
-            modelAndView.addObject("processVo", processVoByPageId);
+            ProcessVo processVo = processServiceImpl.getProcessVoByPageId(processGroupId, pageId);
+            ProcessGroupVo processGroupVo = processGroupServiceImpl.getProcessGroupVoByPageId(processGroupId, pageId);
+            if (null != processVo) {
+                nodeType = "flow";
+                viewName = "processGroup/inc/process_property_inc";
+            } else if (null != processGroupVo) {
+                nodeType = "flowGroup";
+                viewName = "processGroup/inc/process_group_info_inc";
+            }
+            modelAndView.addObject("processVo", processVo);
+            modelAndView.addObject("processGroupVo", processGroupVo);
         } else {
             logger.warn("Parameter passed in incorrectly");
         }
+        modelAndView.addObject("nodeType", nodeType);
+        modelAndView.setViewName(viewName);
         return modelAndView;
     }
 
@@ -234,9 +256,27 @@ public class ProcessGroupCtrl {
     @RequestMapping("/getProcessIdByPageId")
     @ResponseBody
     public String getProcessIdByPageId(HttpServletRequest request) {
-        String processGroupId = request.getParameter("processGroupId");
+        String fId = request.getParameter("processGroupId");
         String pageId = request.getParameter("pageId");
-        return processGroupServiceImpl.getProcessIdByPageId(processGroupId, pageId);
+        if (StringUtils.isBlank(fId) || StringUtils.isBlank(pageId)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("processGroupID is null");
+        }
+        String processId = processGroupServiceImpl.getProcessIdByPageId(fId, pageId);
+        String processGroupId = processGroupServiceImpl.getProcessGroupIdByPageId(fId, pageId);
+        Map<String, Object> rtnMap = new HashMap<>();
+        String nodeType = "flow";
+        if (StringUtils.isNotBlank(processId)) {
+            rtnMap.put("nodeType", "flow");
+        } else if (StringUtils.isNotBlank(processGroupId)) {
+            rtnMap.put("nodeType", "flowGroup");
+        } else {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("No query found");
+        }
+        rtnMap.put("processId", processId);
+        rtnMap.put("processGroupId", processGroupId);
+        rtnMap.put("code", 200);
+        return JsonUtils.toJsonNoException(rtnMap);
+
     }
 
 }

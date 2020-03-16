@@ -13,9 +13,9 @@ public class ReturnMapUtils {
     public static Integer SUCCEEDED_CODE = 200;
     public static Integer ERROR_CODE = 500;
     public static String ERROR_MSG = "Failed";
-    public static String SUCCEEDED_MSG = "Failed";
+    public static String SUCCEEDED_MSG = "Succeeded";
     public static String KEY_CODE = "code";
-    public static String KEY_ERROR_Msg = "errorMsg";
+    public static String KEY_ERROR_MSG = "errorMsg";
 
 
     /**
@@ -29,7 +29,7 @@ public class ReturnMapUtils {
         logger.warn(errorMsg);
         Map<String, Object> rtnMap = new HashMap<>();
         rtnMap.put(KEY_CODE, ERROR_CODE);
-        rtnMap.put(KEY_ERROR_Msg, errorMsg);
+        rtnMap.put(KEY_ERROR_MSG, errorMsg);
         return rtnMap;
     }
 
@@ -55,7 +55,7 @@ public class ReturnMapUtils {
         logger.info(succeededMsg);
         Map<String, Object> rtnMap = new HashMap<>();
         rtnMap.put(KEY_CODE, SUCCEEDED_CODE);
-        rtnMap.put(KEY_ERROR_Msg, succeededMsg);
+        rtnMap.put(KEY_ERROR_MSG, succeededMsg);
         return rtnMap;
     }
 
@@ -80,7 +80,7 @@ public class ReturnMapUtils {
     public static Map<String, Object> setSucceededCustomParam(String key, Object value) {
         Map<String, Object> rtnMap = new HashMap<>();
         rtnMap.put(KEY_CODE, SUCCEEDED_CODE);
-        rtnMap.put(KEY_ERROR_Msg, SUCCEEDED_MSG);
+        rtnMap.put(KEY_ERROR_MSG, SUCCEEDED_MSG);
         rtnMap.put(key, value);
         return rtnMap;
     }
@@ -106,7 +106,7 @@ public class ReturnMapUtils {
     public static Map<String, Object> setCodeAndMsg(Integer code, String msg) {
         Map<String, Object> rtnMap = new HashMap<>();
         rtnMap.put(KEY_CODE, code);
-        rtnMap.put(KEY_ERROR_Msg, msg);
+        rtnMap.put(KEY_ERROR_MSG, msg);
         return rtnMap;
     }
 

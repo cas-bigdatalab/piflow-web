@@ -43,11 +43,11 @@ public class GroupImpl implements IGroup {
         // String formatJson = JsonFormatTool.formatJson(json);
         String formatJson = ProcessUtils.processGroupToJson(processGroup, runModeType);
         logger.info("\n" + formatJson);
-        String doPost = "";//HttpUtils.doPost(SysParamsCache.getFlowGroupStartUrl(), formatJson, null);
+        String doPost = HttpUtils.doPost(SysParamsCache.getFlowGroupStartUrl(), formatJson, null);
         logger.info("Return information：" + doPost);
         if (StringUtils.isNotBlank(doPost) && !doPost.contains("Exception")) {
             try {
-                JSONObject obj = JSONObject.fromObject(doPost).getJSONObject("flowGroup");// Convert a json string to a json object
+                JSONObject obj = JSONObject.fromObject(doPost).getJSONObject("group");// Convert a json string to a json object
                 String groupId = obj.getString("id");
                 if (StringUtils.isNotBlank(groupId)) {
                     return ReturnMapUtils.setSucceededCustomParam("appId", groupId);
@@ -102,6 +102,7 @@ public class GroupImpl implements IGroup {
             // Key is the name of the List in jsonObj, and the value is a generic class of list
             classMap.put("flows", ThirdFlowInfoOutResponse.class);
             classMap.put("stops", ThirdFlowStopInfoOutResponse.class);
+            classMap.put("groups", ThirdFlowGroupInfoOutResponse.class);
             // Convert a json object to a java object
             ThirdFlowGroupInfoOutResponse thirdFlowGroupInfoOutResponse = (ThirdFlowGroupInfoOutResponse) JSONObject.toBean(obj, ThirdFlowGroupInfoOutResponse.class, classMap);
             if (null != thirdFlowGroupInfoOutResponse) {

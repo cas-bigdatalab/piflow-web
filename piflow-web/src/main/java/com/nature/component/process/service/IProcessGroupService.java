@@ -103,10 +103,28 @@ public interface IProcessGroupService {
     /**
      * getProcessIdByPageId
      *
+     * @param fId
+     * @param pageId
+     * @return
+     */
+    public String getProcessIdByPageId(String fId, String pageId);
+
+    /**
+     * getProcessGroupIdByPageId
+     *
+     * @param fId
+     * @param pageId
+     * @return
+     */
+    public String getProcessGroupIdByPageId(String fId, String pageId);
+
+    /**
+     * getProcessGroupVoByPageId
+     *
      * @param processGroupId
      * @param pageId
      * @return
      */
-    public String getProcessIdByPageId(String processGroupId, String pageId);
+    public ProcessGroupVo getProcessGroupVoByPageId(String processGroupId, String pageId);
 
 }

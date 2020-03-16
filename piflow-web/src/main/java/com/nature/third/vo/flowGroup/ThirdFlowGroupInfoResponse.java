@@ -20,5 +20,6 @@ public class ThirdFlowGroupInfoResponse implements Serializable {
     private String progress;
 
     List<ThirdFlowInfoOutResponse> flows = new ArrayList<>();
+    List<ThirdFlowGroupInfoOutResponse> groups = new ArrayList<>();
 
 }

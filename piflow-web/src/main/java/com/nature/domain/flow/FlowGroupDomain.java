@@ -85,6 +85,10 @@ public class FlowGroupDomain {
         return flowGroupJpaRepository.save(flowGroup);
     }
 
+    public List<FlowGroup> saveOrUpdate(List<FlowGroup> flowGroupList) {
+        return flowGroupJpaRepository.saveAll(flowGroupList);
+    }
+
     public int updateEnableFlagById(String id, boolean enableFlag) {
         return flowGroupJpaRepository.updateEnableFlagById(id, enableFlag);
     }

@@ -4,7 +4,7 @@ import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.SpringContextUtil;
 import com.nature.common.executor.ServicesExecutor;
 import com.nature.mapper.process.ProcessMapper;
-import com.nature.third.service.IGetFlowInfo;
+import com.nature.third.service.IFlow;
 import org.apache.commons.collections.CollectionUtils;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -35,7 +35,7 @@ public class RunningProcessSync extends QuartzJobBean {
                 @Override
                 public void run() {
                     for (String appId : runningProcess) {
-                        IGetFlowInfo getFlowInfoImpl = (IGetFlowInfo) SpringContextUtil.getBean("getFlowInfoImpl");
+                        IFlow getFlowInfoImpl = (IFlow) SpringContextUtil.getBean("flowImpl");
                         getFlowInfoImpl.getProcessInfoAndSave(appId);
                     }
                 }

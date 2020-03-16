@@ -21,6 +21,7 @@ public class ProcessGroupVo implements Serializable {
     private String name;
     private String viewXml;
     private String description;
+    private String pageId;
     private String flowId;
     private String appId;
     private String parentProcessId;
@@ -34,6 +35,7 @@ public class ProcessGroupVo implements Serializable {
 
     private List<ProcessVo> processVoList = new ArrayList<>();
     private List<ProcessGroupPathVo> processGroupPathVoList = new ArrayList<>();
+    private List<ProcessGroupVo> processGroupVoList = new ArrayList<>();
 
     public String getCrtDttmStr() {
         return DateUtils.dateTimesToStr(this.crtDttm);

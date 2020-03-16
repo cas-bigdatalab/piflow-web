@@ -3,6 +3,7 @@ package com.nature.third.service;
 import com.nature.common.Eunm.RunModeType;
 import com.nature.component.process.model.Process;
 import com.nature.third.vo.flow.ThirdProgressVo;
+import com.nature.third.vo.flowInfo.ThirdFlowInfoVo;
 
 import java.util.Map;
 
@@ -49,5 +50,9 @@ public interface IFlow {
     public String getCheckpoints(String appID);
 
     public String getDebugData(String appID, String stopName, String portName);
+
+    public ThirdFlowInfoVo getFlowInfo(String appid);
+
+    public void getProcessInfoAndSave(String appid);
 
 }

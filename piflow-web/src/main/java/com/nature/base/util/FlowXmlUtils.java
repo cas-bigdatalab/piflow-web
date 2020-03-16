@@ -6,6 +6,7 @@ import com.nature.component.flow.utils.FlowUtil;
 import com.nature.component.mxGraph.model.MxCell;
 import com.nature.component.mxGraph.model.MxGeometry;
 import com.nature.component.mxGraph.model.MxGraphModel;
+import com.nature.component.mxGraph.utils.MxCellUtils;
 import com.nature.component.mxGraph.vo.MxCellVo;
 import com.nature.component.mxGraph.vo.MxGeometryVo;
 import com.nature.component.mxGraph.vo.MxGraphModelVo;
@@ -692,7 +693,24 @@ public class FlowXmlUtils {
             if (StringUtils.isNotBlank(flowGroupPathsListXmlStr)) {
                 xmlStrBuf.append(flowGroupPathsListXmlStr);
             }
+            String flowGroupListToXmlStr = flowGroupListToXmlStr(flowGroup.getFlowGroupList());
+            if (StringUtils.isNotBlank(flowGroupListToXmlStr)) {
+                xmlStrBuf.append(flowGroupListToXmlStr);
+            }
             xmlStrBuf.append("</flowGroup> \n");
+        }
+        return xmlStrBuf.toString();
+    }
+
+    public static String flowGroupListToXmlStr(List<FlowGroup> flowGroupList) {
+        StringBuilder xmlStrBuf = new StringBuilder();
+        if (null != flowGroupList && flowGroupList.size() > 0) {
+            for (FlowGroup flowGroup : flowGroupList) {
+                String flowGroupToXmlStr = flowGroupToXmlStr(flowGroup);
+                if (StringUtils.isNotBlank(flowGroupToXmlStr)) {
+                    xmlStrBuf.append(flowGroupToXmlStr);
+                }
+            }
         }
         return xmlStrBuf.toString();
     }
@@ -1441,7 +1459,7 @@ public class FlowXmlUtils {
      * @param flowGroupXmlStr xml string data
      * @return FlowGroup
      */
-    public static Map<String, Object> XmlStrToFlowGroup(String flowGroupXmlStr, int maxPageId, String username, String[] flowNames) {
+    public static Map<String, Object> XmlStrToFlowGroup(String flowGroupXmlStr, int maxPageId, String username, String[] flowNames, boolean isChildren) {
         if (StringUtils.isBlank(flowGroupXmlStr)) {
             return ReturnMapUtils.setFailedMsg("flowGroupXmlStr is null");
         }
@@ -1455,6 +1473,7 @@ public class FlowXmlUtils {
             }
             String name = flowGroupElement.attributeValue("name");
             String description = flowGroupElement.attributeValue("description");
+            String flowGroupPageId = flowGroupElement.attributeValue("pageId");
 
             FlowGroup flowGroup = new FlowGroup();
             flowGroup.setCrtDttm(new Date());
@@ -1464,6 +1483,7 @@ public class FlowXmlUtils {
             flowGroup.setVersion(0L);
             flowGroup.setName(name);
             flowGroup.setDescription(description);
+            flowGroup.setPageId(flowGroupPageId);
 
             // flow list
             Iterator flowXmlIterator = flowGroupElement.elementIterator("flow");
@@ -1477,6 +1497,16 @@ public class FlowXmlUtils {
                     if (Arrays.asList(flowNames).contains(flowName)) {
                         duplicateFlowName += (flowName + ",");
                     }
+                    if (isChildren) {
+                        MxGraphModel mxGraphModel_temp = flow.getMxGraphModel();
+                        if (null != mxGraphModel_temp) {
+                            List<MxCell> root_temp = mxGraphModel_temp.getRoot();
+                            root_temp.addAll(MxCellUtils.initMxCell(username, mxGraphModel_temp));
+                            mxGraphModel_temp.setRoot(root_temp);
+                        }
+                        flow.setMxGraphModel(mxGraphModel_temp);
+                    }
+                    flow.setFlowGroup(flowGroup);
                     flowList.add(flow);
                 }
             }
@@ -1498,10 +1528,33 @@ public class FlowXmlUtils {
             }
             flowGroup.setFlowGroupPathsList(flowGroupPathsList);
 
+            //flowGroupList
+            Iterator flowGroupListXmlIterator = flowGroupElement.elementIterator("flowGroup");
+            List<FlowGroup> flowGroupList = new ArrayList<>();
+            while (flowGroupListXmlIterator.hasNext()) {
+                Element recordEle = (Element) flowGroupListXmlIterator.next();
+                Map<String, Object> stringObjectMap = XmlStrToFlowGroup(recordEle.asXML(), 1, username, new String[]{}, true);
+                if (200 == (Integer) stringObjectMap.get("code")) {
+                    FlowGroup flowGroupXml = (FlowGroup) stringObjectMap.get("flowGroup");
+                    if (null != flowGroupXml) {
+                        flowGroupXml.setFlowGroup(flowGroup);
+                        flowGroupList.add(flowGroupXml);
+                    }
+                }
+            }
+            flowGroup.setFlowGroupList(flowGroupList);
+
             // mxGraphModel
             Element mxGraphModelXml = flowGroupElement.element("mxGraphModel");
             String mxGraphModelXmlAsXML = mxGraphModelXml.asXML();
             MxGraphModel mxGraphModel = xmlToMxGraphModelNew(mxGraphModelXmlAsXML, maxPageId, username, null, flowGroup);
+            if (isChildren) {
+                List<MxCell> root = mxGraphModel.getRoot();
+                if (null != root) {
+                    root.addAll(MxCellUtils.initMxCell(username, mxGraphModel));
+                }
+                mxGraphModel.setRoot(root);
+            }
             flowGroup.setMxGraphModel(mxGraphModel);
 
             return ReturnMapUtils.setSucceededCustomParam("flowGroup", flowGroup);

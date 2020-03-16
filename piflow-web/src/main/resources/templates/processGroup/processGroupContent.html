@@ -150,6 +150,13 @@
                 processGroupMonitor(processVoInit.pageId, processVoInit.state);
             }
         }
+        var processGroupVoListInit = [[${processGroupVoListInit}]];
+        if (processGroupVoListInit && '' != processGroupVoListInit) {
+            for (var i = 0; i < processGroupVoListInit.length; i++) {
+                var processGroupVoInit = processGroupVoListInit[i];
+                processGroupMonitor(processGroupVoInit.pageId, processGroupVoInit.state);
+            }
+        }
         //queryProcess(processId);
         $("#modalDialog").draggable();//Add drag and drop for modal dialogs
         $("#myModal").css("overflow", "hidden");//Disable translucent background scrolling of modal dialogs

@@ -4,7 +4,7 @@
 <div th:fragment=process_group_info_inc>
     <div th:unless="${processGroupVo}" style="line-height: 25px;">
         <div style="position: absolute;top: 49%;width: 100%;text-align: center;">
-            <span style="font-size: 60px;">Load Fail</span>
+            <span style="font-size: 60px;">Load Fail------------------</span>
         </div>
     </div>
     <div th:if="${processGroupVo}" style="line-height: 25px;">
@@ -15,13 +15,13 @@
             <table style="border-collapse: separate; border-spacing: 0px 5px;">
                 <tbody>
                 <tr>
-                    <td valign="top" style="width: 80px">
+                    <td valign="top" style="width: 82px">
                         <span>UUID ：</span>
                     </td>
                     <td valign="top"><span th:text="${processGroupVo.id}"/></td>
                 </tr>
                 <tr>
-                    <td valign="top"><span>FlowName ：</span></td>
+                    <td valign="top"><span>GroupName ：</span></td>
                     <td valign="top"><span th:text="${processGroupVo.name}"/></td>
                 </tr>
                 <tr>

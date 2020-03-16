@@ -32,6 +32,9 @@ public class ProcessGroup extends BaseHibernateModelUUIDNoCorpAgentId {
     @Column(columnDefinition = "varchar(1024) COMMENT 'description'")
     private String description;
 
+    @Column(name = "page_id")
+    private String pageId;
+
     @Column(columnDefinition = "varchar(255) COMMENT 'flowId'")
     private String flowId;
 
@@ -65,12 +68,12 @@ public class ProcessGroup extends BaseHibernateModelUUIDNoCorpAgentId {
     @Enumerated(EnumType.STRING)
     private ProcessParentType processParentType;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "processGroup")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "processGroup")
     @Where(clause = "enable_flag=1")
     @OrderBy(clause = "lastUpdateDttm desc")
     private List<Process> processList = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "processGroup")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "processGroup")
     @Where(clause = "enable_flag=1")
     @OrderBy(clause = "lastUpdateDttm desc")
     private List<ProcessGroupPath> processGroupPathList = new ArrayList<>();

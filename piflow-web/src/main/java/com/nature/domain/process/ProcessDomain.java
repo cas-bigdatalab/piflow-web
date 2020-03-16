@@ -53,6 +53,10 @@ public class ProcessDomain {
         return processJpaRepository.getProcessByPageId(fid, pageId);
     }
 
+    public String getProcessIdByPageId(String fid, String pageId) {
+        return processJpaRepository.getProcessIdByPageId(fid, pageId);
+    }
+
     public String getProcessIdByNameAndProcessGroupId(String fid, String processName) {
         return processJpaRepository.getProcessIdByNameAndProcessGroupId(fid, processName);
     }

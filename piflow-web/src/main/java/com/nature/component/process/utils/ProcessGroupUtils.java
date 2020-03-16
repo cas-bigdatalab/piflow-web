@@ -24,7 +24,7 @@ public class ProcessGroupUtils {
         // copy FlowGroup to ProcessGroup
         BeanUtils.copyProperties(flowGroup, processGroup);
         // set base info
-        processGroup.setId(SqlUtils.getUUID32());
+        // processGroup.setId(SqlUtils.getUUID32());
         processGroup.setCrtDttm(new Date());
         processGroup.setCrtUser(username);
         processGroup.setLastUpdateDttm(new Date());
@@ -55,7 +55,7 @@ public class ProcessGroupUtils {
                     // Copy flowGroupPaths information into processGroupPath
                     BeanUtils.copyProperties(flowGroupPaths, processGroupPath);
                     // Set basic information
-                    processGroupPath.setId(SqlUtils.getUUID32());
+                    // processGroupPath.setId(SqlUtils.getUUID32());
                     processGroupPath.setCrtDttm(new Date());
                     processGroupPath.setCrtUser(username);
                     processGroupPath.setLastUpdateDttm(new Date());
@@ -86,7 +86,7 @@ public class ProcessGroupUtils {
                 // copy flow to process
                 BeanUtils.copyProperties(flow, process);
                 // set base info
-                process.setId(SqlUtils.getUUID32());
+                // process.setId(SqlUtils.getUUID32());
                 process.setCrtDttm(new Date());
                 process.setCrtUser(username);
                 process.setLastUpdateDttm(new Date());
@@ -116,7 +116,7 @@ public class ProcessGroupUtils {
                             // copy stops的信息到processStop中
                             BeanUtils.copyProperties(stops, processStop);
                             // set base info
-                            processStop.setId(SqlUtils.getUUID32());
+                            // processStop.setId(SqlUtils.getUUID32());
                             processStop.setCrtDttm(new Date());
                             processStop.setCrtUser(username);
                             processStop.setLastUpdateDttm(new Date());
@@ -137,7 +137,7 @@ public class ProcessGroupUtils {
                                         // Copy property information into processStopProperty
                                         BeanUtils.copyProperties(property, processStopProperty);
                                         // Set basic information
-                                        processStopProperty.setId(SqlUtils.getUUID32());
+                                        // processStopProperty.setId(SqlUtils.getUUID32());
                                         processStopProperty.setCrtDttm(new Date());
                                         processStopProperty.setCrtUser(username);
                                         processStopProperty.setLastUpdateDttm(new Date());
@@ -164,7 +164,7 @@ public class ProcessGroupUtils {
                                         // Copy customizedProperty information into processStopCustomizedProperty
                                         BeanUtils.copyProperties(customizedProperty, processStopCustomizedProperty);
                                         // Set basic information
-                                        processStopCustomizedProperty.setId(SqlUtils.getUUID32());
+                                        // processStopCustomizedProperty.setId(SqlUtils.getUUID32());
                                         processStopCustomizedProperty.setCrtDttm(new Date());
                                         processStopCustomizedProperty.setCrtUser(username);
                                         processStopCustomizedProperty.setLastUpdateDttm(new Date());
@@ -195,7 +195,7 @@ public class ProcessGroupUtils {
                             // Copy paths information into processPath
                             BeanUtils.copyProperties(paths, processPath);
                             // Set basic information
-                            processPath.setId(SqlUtils.getUUID32());
+                            // processPath.setId(SqlUtils.getUUID32());
                             processPath.setCrtDttm(new Date());
                             processPath.setCrtUser(username);
                             processPath.setLastUpdateDttm(new Date());
@@ -222,6 +222,7 @@ public class ProcessGroupUtils {
             for (FlowGroup flowGroupList_i : flowGroupList) {
                 ProcessGroup processGroupNew = flowGroupToProcessGroup(flowGroupList_i, username, runModeType);
                 if (null != processGroupNew) {
+                    processGroupNew.setProcessGroup(processGroup);
                     processGroupList.add(processGroupNew);
                 }
             }
@@ -260,6 +261,17 @@ public class ProcessGroupUtils {
                     }
                 }
                 processGroupVo.setProcessGroupPathVoList(processGroupPathVoList);
+            }
+            List<ProcessGroup> processGroupList = processGroup.getProcessGroupList();
+            if (null != processGroupList && processGroupList.size() > 0) {
+                List<ProcessGroupVo> processGroupVoList = new ArrayList<>();
+                for (ProcessGroup processGroup_i : processGroupList) {
+                    ProcessGroupVo processGroupVo_copy = processGroupPoToVo(processGroup_i);
+                    if (null != processGroupVo_copy) {
+                        processGroupVoList.add(processGroupVo_copy);
+                    }
+                }
+                processGroupVo.setProcessGroupVoList(processGroupVoList);
             }
         }
         return processGroupVo;

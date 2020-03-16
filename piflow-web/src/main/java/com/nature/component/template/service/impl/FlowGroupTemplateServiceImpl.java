@@ -89,6 +89,7 @@ public class FlowGroupTemplateServiceImpl implements IFlowGroupTemplateService {
      * @return
      */
     @Override
+    @Transactional
     public String addFlowGroupTemplate(String name, String loadId, String value) {
         UserVo user = SessionUserUtil.getCurrentUser();
         String username = (null != user) ? user.getUsername() : "-1";
@@ -99,7 +100,7 @@ public class FlowGroupTemplateServiceImpl implements IFlowGroupTemplateService {
             logger.info("Some parameters passed in are empty");
             return JsonUtils.toJsonNoException(rtnMap);
         }
-        FlowGroup flowGroupById = flowGroupMapper.getFlowGroupById(loadId);
+        FlowGroup flowGroupById = flowGroupDomain.getFlowGroupById(loadId);
         if (null != flowGroupById) {
             //Splicing XML according to flowById
             String flowGroupXmlStr = FlowXmlUtils.flowGroupToXmlStr(flowGroupById);
@@ -283,7 +284,7 @@ public class FlowGroupTemplateServiceImpl implements IFlowGroupTemplateService {
         String username = currentUser.getUsername();
         // Get the current flowGroup containing all flow names
         String[] flowNamesByFlowGroupId = flowMapper.getFlowNamesByFlowGroupId(loadId);
-        Map<String, Object> XmlStrToFlowGroupRtnMap = FlowXmlUtils.XmlStrToFlowGroup(xmlFileToStr, maxPageId, username, flowNamesByFlowGroupId);
+        Map<String, Object> XmlStrToFlowGroupRtnMap = FlowXmlUtils.XmlStrToFlowGroup(xmlFileToStr, maxPageId, username, flowNamesByFlowGroupId, false);
         if (200 != (Integer) XmlStrToFlowGroupRtnMap.get("code")) {
             return JsonUtils.toJsonNoException(XmlStrToFlowGroupRtnMap);
         }
@@ -360,28 +361,6 @@ public class FlowGroupTemplateServiceImpl implements IFlowGroupTemplateService {
                             }
                         }
                     }
-                    /*
-                    List<Paths> pathsListXml = flowXml.getPathsList();
-                    if (null != pathsListXml && pathsListXml.size() > 0) {
-                        for (Paths paths : pathsListXml) {
-                            paths.setFlow(flowXml);
-                        }
-                        pathsDomain.saveOrUpdate(pathsListXml);
-                    }
-                    List<Stops> stopsListXml = flowXml.getStopsList();
-                    if (null != stopsListXml && stopsListXml.size() > 0) {
-                        for (Stops stops : stopsListXml) {
-                            List<Property> propertyListXml = stops.getProperties();
-                            stops.setProperties(null);
-                            stops.setFlow(flowXml);
-                            stops = stopsDomain.saveOrUpdate(stops);
-                            for (Property property : propertyListXml) {
-                                property.setStops(stops);
-                            }
-                            propertyDomain.saveOrUpdate(propertyListXml);
-                        }
-                    }
-                    */
                 }
             }
         }
@@ -393,6 +372,16 @@ public class FlowGroupTemplateServiceImpl implements IFlowGroupTemplateService {
                 flowGroupPathsXml.setFlowGroup(flowGroupById);
             }
             flowGroupPathsDomain.saveOrUpdate(flowGroupPathsListXml);
+        }
+
+        // Added processing of flowGroupPath data
+        List<FlowGroup> flowGroupListXml = flowGroupXml.getFlowGroupList();
+        if (null != flowGroupListXml && flowGroupListXml.size() > 0) {
+            for (FlowGroup flowGroupListXml_i : flowGroupListXml) {
+                flowGroupXml.setFlowGroupList(null);
+                flowGroupListXml_i.setFlowGroup(flowGroupById);
+            }
+            flowGroupDomain.saveOrUpdate(flowGroupListXml);
         }
         rtnMap.put("code", 200);
         rtnMap.put("errorMsg", "success");
