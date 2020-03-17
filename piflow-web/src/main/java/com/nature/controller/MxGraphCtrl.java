@@ -9,6 +9,7 @@ import com.nature.component.flow.model.Flow;
 import com.nature.component.flow.model.FlowGroup;
 import com.nature.component.flow.service.IFlowGroupService;
 import com.nature.component.flow.service.IFlowService;
+import com.nature.component.flow.vo.FlowGroupVo;
 import com.nature.component.flow.vo.StopGroupVo;
 import com.nature.component.group.service.IStopGroupService;
 import com.nature.component.mxGraph.model.MxGraphModel;
@@ -124,6 +125,10 @@ public class MxGraphCtrl {
         if (null == flowGroupById) {
             return null;
         }
+        FlowGroup flowGroup = flowGroupById.getFlowGroup();
+        if (null != flowGroup) {
+            model.addAttribute("parentsId", flowGroup.getId());
+        }
         String maxStopPageId = flowServiceImpl.getMaxFlowPageIdByFlowGroupId(load);
         //'maxStopPageId'defaults to 2 if it's empty, otherwise'maxStopPageId'+1
         maxStopPageId = StringUtils.isBlank(maxStopPageId) ? "2" : (Integer.parseInt(maxStopPageId) + 1) + "";
@@ -149,8 +154,8 @@ public class MxGraphCtrl {
             return null;
         }
         if (null != flowById.getFlowGroup()) {
-            String flowGroupId = flowById.getFlowGroup().getId();
-            model.addAttribute("flowGroupId", flowGroupId);
+            String parentsId = flowById.getFlowGroup().getId();
+            model.addAttribute("parentsId", parentsId);
         }
         // Group on the left and'stops'
         List<StopGroupVo> groupsVoList = stopGroupServiceImpl.getStopGroupAll();

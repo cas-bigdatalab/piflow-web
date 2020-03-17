@@ -109,4 +109,8 @@ public class ProcessGroupDomain {
         return processGroupJpaRepository.getProcessGroupIdByPageId(fid, pageId);
     }
 
+    public ProcessGroup getProcessGroupByAppId(String appId) {
+        return processGroupJpaRepository.getProcessGroupByAppId(appId);
+    }
+
 }

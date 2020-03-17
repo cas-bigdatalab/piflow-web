@@ -14,6 +14,7 @@ import com.nature.component.process.model.*;
 import com.nature.component.process.model.Process;
 import com.nature.component.process.service.IProcessGroupService;
 import com.nature.component.process.utils.ProcessGroupUtils;
+import com.nature.component.process.utils.ProcessUtils;
 import com.nature.component.process.vo.*;
 import com.nature.domain.process.*;
 import com.nature.mapper.process.ProcessGroupMapper;
@@ -96,6 +97,12 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
         if (StringUtils.isNotBlank(id)) {
             ProcessGroup processGroupById = processGroupDomain.getProcessGroupById(id);
             processGroupVo = ProcessGroupUtils.processGroupPoToVo(processGroupById);
+            ProcessGroup processGroup_parents = processGroupById.getProcessGroup();
+            if (null != processGroup_parents) {
+                ProcessGroupVo processGroupVo_parents = new ProcessGroupVo();
+                BeanUtils.copyProperties(processGroup_parents, processGroupVo_parents);
+                processGroupVo.setProcessGroupVo(processGroupVo_parents);
+            }
         }
         return processGroupVo;
     }
@@ -132,7 +139,7 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
         rtnMap.put("code", 500);
         if (StringUtils.isNotBlank(appID)) {
             // find appinfo
-            ProcessGroup processGroupByAppId = processGroupMapper.getProcessGroupByAppId(appID);
+            ProcessGroup processGroupByAppId = processGroupDomain.getProcessGroupByAppId(appID);
             ProcessGroupVo processGroupVo = ProcessGroupUtils.processGroupPoToVo(processGroupByAppId);
             if (null != processGroupVo) {
                 rtnMap.put("code", 200);
@@ -192,10 +199,12 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
         }
         if (StringUtils.isNotBlank(processGroupId) && null != currentUser) {
             // Query Process by 'processGroupId'
-            ProcessGroup processGroupById = processGroupMapper.getProcessGroupById(processGroupId);
+            ProcessGroup processGroupById = processGroupDomain.getProcessGroupById(processGroupId);
             // copy and Create
-            ProcessGroup processGroupCopy = this.copyProcessGroupAndNewCreate(processGroupById, currentUser, runModeType);
-            //processGroupCopy = null;
+            ProcessGroup processGroupCopy = ProcessGroupUtils.copyProcessGroup(processGroupById, currentUser, runModeType);
+            // ProcessGroup processGroupCopy = this.copyProcessGroupAndNewCreate(processGroupById, currentUser, runModeType);
+            processGroupCopy = processGroupDomain.saveOrUpdate(processGroupCopy);
+
             if (null != processGroupCopy) {
                 Map<String, Object> stringObjectMap = groupImpl.startFlowGroup(processGroupCopy, runModeType);
                 if (200 == (Integer) stringObjectMap.get("code")) {
@@ -395,6 +404,29 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
     }
 
     /**
+     * getStartGroupJson
+     *
+     * @param processGroupId
+     * @return
+     */
+    @Override
+    @Transactional
+    public String getStartGroupJson(String processGroupId) {
+        Map<String, Object> rtnMap = new HashMap<>();
+        rtnMap.put("code", 500);
+        if (StringUtils.isBlank(processGroupId)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("processGroupID is null");
+        }
+        // Query groupLogData by 'processGroupId'
+        ProcessGroup processGroup = processGroupDomain.getProcessGroupById(processGroupId);
+        if (null == processGroup) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("No process ID is '" + processGroupId + "' process");
+        }
+        String formatJson = ProcessUtils.processGroupToJson(processGroup, processGroup.getRunModeType());
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("data", formatJson);
+    }
+
+    /**
      * getProcessIdByPageId
      *
      * @param fId
@@ -424,7 +456,6 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
             String username = currentUser.getUsername();
             if (null != processGroup) {
                 processGroupCopy = new ProcessGroup();
-                processGroupCopy.setId(SqlUtils.getUUID32());
                 processGroupCopy.setCrtUser(username);
                 processGroupCopy.setCrtDttm(new Date());
                 processGroupCopy.setLastUpdateUser(username);
@@ -445,7 +476,6 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
                     for (ProcessGroupPath processGroupPath : processGroupPathList) {
                         if (null != processGroupPath) {
                             ProcessGroupPath processGroupPathCopy = new ProcessGroupPath();
-                            processGroupPathCopy.setId(SqlUtils.getUUID32());
                             processGroupPathCopy.setCrtDttm(new Date());
                             processGroupPathCopy.setCrtUser(username);
                             processGroupPathCopy.setLastUpdateDttm(new Date());

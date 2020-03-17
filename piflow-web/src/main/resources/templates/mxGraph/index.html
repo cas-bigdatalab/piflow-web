@@ -16,6 +16,7 @@
 
     <script th:inline="javascript">
         var parentAccessPath = [[${parentAccessPath}]];
+        var parentsId = [[${parentsId}]];
         var flowGroupId = [[${flowGroupId}]];
         var stopsGroupData = [[${groupsVoList}]];
         var xmlDate = [[${xmlDate}]];
@@ -154,18 +155,19 @@
 <div th:include="Macro/fragmentMacro :: fullScreen"></div>
 <div th:include="Macro/publicMacro :: userHeadMacro"></div>
 
+<!-- menus -->
 <div style="width: 45.2%; float: right;">
     <div th:switch="${drawingBoardType?.value}"
          style="position: fixed; margin-top: 48px; z-index: 999;text-align: right; width:45%;">
-        <div th:case="'TASK'" th:include="mxGraph/inc/task_graphEditor_menus :: task_graphEditor_menus"></div>
-        <div th:case="'GROUP'" th:include="mxGraph/inc/group_graphEditor_menus :: group_graphEditor_menus"></div>
+        <div th:case="'TASK'" th:include="mxGraph/inc/graphEditor_menus_task :: graphEditor_menus_task"></div>
+        <div th:case="'GROUP'" th:include="mxGraph/inc/graphEditor_menus_group :: graphEditor_menus_group"></div>
     </div>
 </div>
 <!-- crumbs -->
 <div style="width: 100%;position: fixed;z-index: 99999;float: left;left: 0px;bottom: 0px;text-align: center;height: 28px;line-height: 28px; background: #37714b;">
     <div th:switch="${drawingBoardType?.value}">
-        <div th:case="'TASK'" th:include="mxGraph/inc/task_graphEditor_crumbs :: task_graphEditor_crumbs"></div>
-        <div th:case="'GROUP'" th:include="mxGraph/inc/group_graphEditor_crumbs :: group_graphEditor_crumbs"></div>
+        <div th:case="'TASK'" th:include="mxGraph/inc/graphEditor_crumbs_task :: graphEditor_crumbs_task"></div>
+        <div th:case="'GROUP'" th:include="mxGraph/inc/graphEditor_crumbs_group :: graphEditor_crumbs_group"></div>
     </div>
 </div>
 
@@ -251,7 +253,8 @@
             <div class="layui-form-text" style="margin-left: 12px; text-align: center;height: 100%;">
                 <textarea id="stopValue" placeholder="please input ..." class="layui-textarea"
                           style="margin-left: -6px;margin-bottom: 6px;resize:none;height: 80%;"></textarea>
-                <button type="button" class="layui-btn layui-btn-primary" id="buttonStop" style="height: 20%;">save</button>
+                <button type="button" class="layui-btn layui-btn-primary" id="buttonStop" style="height: 20%;">save
+                </button>
             </div>
         </form>
     </div>
@@ -368,16 +371,18 @@
         initGraph();
         layui.form.on('submit(component-form-submit)', function (data) {
             addStopCustomProperty(data.field);
-            //console.log(data.field);
             return false;
         });
-        if (parentAccessPath) {
-            switch (parentAccessPath) {
-                case "flowGroupList":
-                    $("#web_flowGroupList_navigation").show();
-                    $("#grapheditor_groupDrawingBoard_navigation").show();
-                    $("#web_flowList_navigation").hide();
-                    break;
+        console.log("--------------------------------------------------------");
+        console.log(parentAccessPath);
+        console.log("--------------------------------------------------------");
+        if ("flowGroupList" === parentAccessPath) {
+            $("#web_flowGroupList_navigation").show();
+            $("#web_flowList_navigation").hide();
+            if (parentsId) {
+                $("#grapheditor_groupDrawingBoard_navigation").show();
+            } else {
+                $("#grapheditor_groupDrawingBoard_navigation").hide();
             }
         }
         var graphEditorPageType = $("#drawingBoardType").val();

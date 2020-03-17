@@ -89,7 +89,7 @@ function openProcessMonitor(pageId, e) {
                         urlPath = "/piflow-web/processGroup/getProcessGroupById?parentAccessPath=processGroupList&processGroupId=" + dataMap.processGroupId;
                     }
                     if (urlPath) {
-                        var tempWindow = window.open(urlPath);
+                        var tempWindow = window.location.href = urlPath;
                         if (tempWindow == null || typeof (tempWindow) == 'undefined') {
                             alert('The window cannot be opened. Please check your browser settings.')
                         }
@@ -308,21 +308,50 @@ function openLogWindow() {
     var window_height = $(window).height();//Get browser window width
     var open_window_width = (window_width > 300 ? window_width - 200 : window_width);
     var open_window_height = (window_height > 300 ? window_height - 150 : window_height);
-    var logContent = '<div style="height: ' + (open_window_height - 90) + 'px;width: 100%;">'
-        + '<div id="divPreId" style="height: ' + (open_window_height - 115) + 'px;margin-top: 10px;">'
-        + '<div style="font-size: 90px;text-align: center;margin-top: 15px;"><span>loading....</span></div>'
+    var logContent = '<div id="divPreId" style="height: ' + (open_window_height - 121) + 'px;width: 100%;">'
+        + '<div id="preId" style="height: 100%; margin: 6px 6px 6px 6px;background-color: #f5f5f5;text-align: center;">'
+        + '<span span style="font-size: 90px;margin-top: 15px;">loading....</span>'
         + '</div>'
-        // + '<div style="margin-top: 5px;margin-bottom: 5px;margin-left: 10px;">'
-        // + '<input type="button" class="btn btn-default" onclick="changeUrl(1)" value="stdout">'
-        // + '<input type="button" class="btn btn-default" onclick="changeUrl(2)" value="stderr">'
-        // + '</div>'
         + '</div>';
+    layer.open({
+        type: 1,
+        title: '<span style="color: #269252;">Log Windows</span>',
+        shadeClose: true,
+        closeBtn: 1,
+        shift: 7,
+        area: [open_window_width + 'px', open_window_height + 'px'], //Width height
+        skin: 'layui-layer-rim', //Add borders
+        btn: ['log', 'requestJson'], //button
+        btn1: function (index, layero) {
+            changeLogData("/piflow-web/processGroup/getGroupLogData", {"appId": appId});
+            return false;
+        },
+        btn2: function (index, layero) {
+            changeLogData("/piflow-web/processGroup/getStartGroupJson", {"processGroupId": processGroupId});
+            return false;
+        },
+        content: logContent,
+        success: function (layero) {
+            layero.find('.layui-layer-btn').css('text-align', 'left');
+            var bleBtn0 = layero.find('.layui-layer-btn0');
+            var bleBtn1 = layero.find('.layui-layer-btn1');
+            bleBtn0.removeClass('layui-layer-btn0');
+            bleBtn1.removeClass('layui-layer-btn1');
+            bleBtn0.addClass('layui-layer-btn1');
+            bleBtn1.addClass('layui-layer-btn1');
+        }
+    });
+    changeLogData("/piflow-web/processGroup/getGroupLogData", {"appId": appId});
+
+}
+
+function changeLogData(url, requestParam) {
     $.ajax({
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: "/piflow-web/processGroup/getGroupLogData",//This is the name of the file where I receive data in the background.
+        url: url,//This is the name of the file where I receive data in the background.
         //data:$('#loginForm').serialize(),//Serialize the form
-        data: {"appId": appId},
+        data: requestParam,
         async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
         error: function (request) {//Operation after request failure
             layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000}, function () {
@@ -331,16 +360,7 @@ function openLogWindow() {
         },
         success: function (data) {//Operation after request successful
             var dataMap = JSON.parse(data);
-            layer.open({
-                type: 1,
-                title: '<span style="color: #269252;">Log Windows</span>',
-                shadeClose: true,
-                closeBtn: 1,
-                shift: 7,
-                area: [open_window_width + 'px', open_window_height + 'px'], //Width height
-                skin: 'layui-layer-rim', //Add borders
-                content: logContent
-            });
+
             var showLogHtmlWidth = $("#divPreId").width() - 20;
             var showLogHtml = ('<pre id="preId" style="height: 100%; width: ' + showLogHtmlWidth + 'px; margin: 0 auto;">');
             if (200 === dataMap.code) {
@@ -388,7 +408,7 @@ function processGroupMonitoring(appId) {
                     $("#processStopTimeShow").html(processGroupVo.endTime);
                     $("#processStateShow").html(dataMap.state);
                     $("#processProgressShow").html(dataMap.progress + "%");
-                    // stop
+                    // task
                     var processVoList = processGroupVo.processVoList;
                     if (processVoList && '' != processVoList) {
                         for (var i = 0; i < processVoList.length; i++) {
@@ -401,9 +421,27 @@ function processGroupMonitoring(appId) {
                                     $("#stopStopTimeShow").html(processVo.endTime);
                                     $("#stopStateShow").html(processVo.state);
                                 }
-                                var pageId = processVo.pageId;
-                                var processVoState = processVo.state;
-                                processGroupMonitor(pageId, processVoState)
+                                processGroupMonitor(processVo.pageId, processVo.state)
+                            }
+                        }
+                    }
+                    // group
+                    var processGroupVoList = processGroupVo.processGroupVoList;
+                    if (processGroupVoList && '' != processGroupVoList) {
+                        for (var i = 0; i < processGroupVoList.length; i++) {
+                            var processGroupVo = processGroupVoList[i];
+                            if (processGroupVo && '' != processGroupVo) {
+                                var sotpNameDB = processGroupVo.name;
+                                var sotpNameVal = $("#stopNameShow").text();
+                                if (sotpNameDB === sotpNameVal) {
+                                    $("#processStartTimeShow").html(processGroupVo.startTime);
+                                    $("#processStopTimeShow").html(processGroupVo.endTime);
+                                    $("#processStateShow").html(processGroupVo.state);
+                                    $("#processStateShow").html(processGroupVo.state);
+                                    $("#processStateShow").html(processGroupVo.state);
+                                    $("#processStateShow").html(processGroupVo.state);
+                                }
+                                processGroupMonitor(processGroupVo.pageId, processGroupVo.state)
                             }
                         }
                     }

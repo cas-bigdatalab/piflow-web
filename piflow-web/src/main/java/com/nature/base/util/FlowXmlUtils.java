@@ -1523,6 +1523,7 @@ public class FlowXmlUtils {
                 Element recordEle = (Element) flowGroupPathsXmlIterator.next();
                 FlowGroupPaths flowGroupPaths = xmlToFlowGroupPaths(recordEle.asXML(), maxPageId, username);
                 if (null != flowGroupPaths) {
+                    flowGroupPaths.setFlowGroup(flowGroup);
                     flowGroupPathsList.add(flowGroupPaths);
                 }
             }

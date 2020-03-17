@@ -52,7 +52,18 @@
             </span>
             <span style="color: #ffffff">&gt;&gt;</span>
             <span style="color: #ffffff;">
-                <a style="color: #ffffff" th:href="@{/mxGraph/drawingBoard} + '?drawingBoardType=GROUP&load=' + ${processGroupId}">FlowGroupContent</a>
+                <a style="color: #ffffff"
+                   th:href="@{/mxGraph/drawingBoard} + '?drawingBoardType=GROUP&load=' + ${processGroupId}">FlowGroupContent</a>
+            </span>
+        </span>
+        <span th:case="'processGroupList'">
+            <span style="color: #ffffff">
+                <a style="color: #ffffff" th:href="@{/web/processGroupList}">ProcessGroupList</a>
+            </span>
+            <span style="color: #ffffff">...</span>
+            <span style="color: #ffffff">&gt;&gt;</span>
+            <span style="color: #ffffff">
+                <a style="color: #ffffff" th:href="@{/processGroup/getProcessGroupById} + '?processGroupId=' + ${parentsId}">ProcessGroup</a>
             </span>
         </span>
         <span th:case="*" style="color: #ffffff">
@@ -115,6 +126,7 @@
 <script th:include="Macro/csrfTokeHeadMacro :: csrfTokeHeadMacroScript"/>
 <script th:src="@{/custom/js/processGroupContent.js}"></script>
 <script th:inline="javascript">
+    var parentAccessPath = [[${parentAccessPath}]];
     var xmlDate = [[${xmlDate}]];
     var processGroupId = [[${processGroupId}]];
     var parentProcessId = [[${parentProcessId}]];
@@ -128,7 +140,7 @@
             if (xmlDate) {
                 processContent.append(xmlDate);
             } else {
-                processContent.prepend('<div style="position: fixed;z-index: 779;"><h1>视图丢失</h1></div>');
+                processContent.prepend('<div style="position: fixed;z-index: 779;"><h1>View missing</h1></div>');
             }
         }
         if (runFlow) {
@@ -160,6 +172,11 @@
         //queryProcess(processId);
         $("#modalDialog").draggable();//Add drag and drop for modal dialogs
         $("#myModal").css("overflow", "hidden");//Disable translucent background scrolling of modal dialogs
+        if ("processGroupList" === parentAccessPath) {
+            $("#web_processList_navigation").hide();
+            $("#web_processGroupList_navigation").show();
+            $("#web_getProcessGroupById_navigation").show();
+        }
     })();
 
     //When the browser window size changes

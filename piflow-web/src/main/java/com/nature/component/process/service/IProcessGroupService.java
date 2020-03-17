@@ -101,6 +101,14 @@ public interface IProcessGroupService {
     public String getGroupLogData(String processGroupAppID);
 
     /**
+     * getStartGroupJson
+     *
+     * @param processGroupId
+     * @return
+     */
+    public String getStartGroupJson(String processGroupId);
+
+    /**
      * getProcessIdByPageId
      *
      * @param fId

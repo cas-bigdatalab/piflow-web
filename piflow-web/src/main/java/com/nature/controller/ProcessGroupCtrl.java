@@ -100,6 +100,10 @@ public class ProcessGroupCtrl {
                 if (null != processGroupVoList && processGroupVoList.size() > 0) {
                     modelAndView.addObject("processGroupVoListInit", processGroupVoList);
                 }
+                ProcessGroupVo processGroupVo_parents = processGroupVo.getProcessGroupVo();
+                if (null != processGroupVo_parents) {
+                    modelAndView.addObject("parentsId", processGroupVo_parents.getId());
+                }
                 modelAndView.addObject("percentage", (null != processGroupVo.getProgress() ? processGroupVo.getProgress() : 0.00));
                 modelAndView.addObject("appId", processGroupVo.getAppId());
                 modelAndView.addObject("processGroupId", processGroupId);
@@ -224,6 +228,19 @@ public class ProcessGroupCtrl {
     public String getGroupLogData(HttpServletRequest request) {
         String appId = request.getParameter("appId");
         return processGroupServiceImpl.getGroupLogData(appId);
+    }
+
+    /**
+     * Get log data of group
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping("/getStartGroupJson")
+    @ResponseBody
+    public String getStartGroupJson(HttpServletRequest request) {
+        String processGroupId = request.getParameter("processGroupId");
+        return processGroupServiceImpl.getStartGroupJson(processGroupId);
     }
 
     /**

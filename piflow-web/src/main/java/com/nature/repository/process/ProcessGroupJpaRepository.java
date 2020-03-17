@@ -27,7 +27,7 @@ public interface ProcessGroupJpaRepository extends JpaRepository<ProcessGroup, S
      *
      * @return
      */
-    @Query("select c from ProcessGroup c where c.enableFlag=1 and c.crtUser=:userName and (c.name like CONCAT('%',:param,'%') or c.description like CONCAT('%',:param,'%'))")
+    @Query("select c from ProcessGroup c where c.enableFlag=true and c.crtUser=:userName and (c.name like CONCAT('%',:param,'%') or c.description like CONCAT('%',:param,'%'))")
     Page<ProcessGroup> getProcessGroupListPageByUser(@Param("userName") String userName, @Param("param") String param, Pageable pageable);
 
     @Transactional
@@ -41,4 +41,7 @@ public interface ProcessGroupJpaRepository extends JpaRepository<ProcessGroup, S
 
     @Query(value = "select s.id from flow_process_group s where s.enable_flag = 1 and s.fk_flow_process_group_id = :fid and s.page_id = :pageId", nativeQuery = true)
     String getProcessGroupIdByPageId(@Param("fid") String fid, @Param("pageId") String pageId);
+
+    @Query(value = "select s from ProcessGroup s where s.enableFlag=true and s.appId=:appId")
+    ProcessGroup getProcessGroupByAppId(@Param("appId") String appId);
 }

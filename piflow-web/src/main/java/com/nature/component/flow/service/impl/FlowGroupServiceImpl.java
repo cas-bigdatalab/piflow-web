@@ -87,12 +87,11 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
      */
     @Override
     public FlowGroup getFlowGroupById(String flowGroupId) {
-        FlowGroup flowGroup = null;
         //Determine whether there is a flowGroup id (flowGroupId)
-        if (StringUtils.isNotBlank(flowGroupId)) {
-            flowGroup = flowGroupMapper.getFlowGroupById(flowGroupId);
+        if (StringUtils.isBlank(flowGroupId)) {
+            return null;
         }
-        return flowGroup;
+        return flowGroupDomain.getFlowGroupById(flowGroupId);
     }
 
     /**
@@ -583,7 +582,7 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
             root = new ArrayList<>();
         }
         if (root.size() <= 0) {
-            root.addAll(MxCellUtils.initMxCell(currentUser.getUsername(),mxGraphModel));
+            root.addAll(MxCellUtils.initMxCell(currentUser.getUsername(), mxGraphModel));
 
         }
         // Get the maximum value of pageid in stop

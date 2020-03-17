@@ -27,6 +27,7 @@ public class FlowGroupVo implements Serializable {
     private MxGraphModelVo mxGraphModelVo;
     private FlowProjectVo flowProjectVo;
     private Date crtDttm;
+    private FlowGroupVo flowGroupVo;
     private List<FlowVo> flowVoList = new ArrayList<>();
     private List<FlowGroupPathsVo> flowGroupPathsVoList = new ArrayList<>();
 

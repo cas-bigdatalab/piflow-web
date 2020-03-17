@@ -32,6 +32,7 @@ public class ProcessGroupVo implements Serializable {
     private String progress;
     private RunModeType runModeType = RunModeType.RUN;
     private Date crtDttm;
+    private ProcessGroupVo processGroupVo;
 
     private List<ProcessVo> processVoList = new ArrayList<>();
     private List<ProcessGroupPathVo> processGroupPathVoList = new ArrayList<>();

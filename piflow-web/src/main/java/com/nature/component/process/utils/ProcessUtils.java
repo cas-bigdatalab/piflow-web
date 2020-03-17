@@ -563,7 +563,7 @@ public class ProcessUtils {
                         formName = processGroupsMap.get(from).getName();
                     }
                     if (null != processesMap.get(to)) {
-                        formName = processesMap.get(to).getName();
+                        toName = processesMap.get(to).getName();
                     } else if (null != processGroupsMap.get(to)) {
                         toName = processGroupsMap.get(to).getName();
                     }
