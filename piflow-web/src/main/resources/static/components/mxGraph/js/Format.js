@@ -4830,7 +4830,7 @@ function attributeTabTd(e, isCustomized, nodeType) {
         if (isCustomized) {
             funcStr = "updateStopsCustomizedProperty('" + id + "','stopAttributesValue',this);";
         } else {
-            funcStr = "onclick", "updateStops('" + id + "','stopAttributesValue',this);";
+            funcStr = "updateStops('" + id + "','stopAttributesValue',this);";
         }
     } else if ('GROUP' === Format.customizeType) {
         if ('flow' === nodeType) {

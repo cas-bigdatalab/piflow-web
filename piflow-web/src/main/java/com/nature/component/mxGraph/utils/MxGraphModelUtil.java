@@ -354,7 +354,7 @@ public class MxGraphModelUtil {
             flowGroup.setLastUpdateUser(username);
             flowGroup.setEnableFlag(true);
             flowGroup.setPageId(mxCellVo.getPageId());
-            flowGroup.setName("flowGroup" + mxCellVo.getPageId());
+            flowGroup.setName("group" + mxCellVo.getPageId());
             MxGraphModel mxGraphModel = new MxGraphModel();
             mxGraphModel.setFlowGroup(flowGroup);
             mxGraphModel.setCrtDttm(new Date());
