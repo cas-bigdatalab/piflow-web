@@ -31,6 +31,9 @@ public class ThirdFlowGroupInfoResponseUtils {
             processGroup.setName(thirdFlowGroupInfoResponse.getName());
             processGroup.setStartTime(DateUtils.strCstToDate(thirdFlowGroupInfoResponse.getStartTime()));
             processGroup.setEndTime(DateUtils.strCstToDate(thirdFlowGroupInfoResponse.getEndTime()));
+            if (StringUtils.isBlank(processGroup.getAppId())) {
+                processGroup.setAppId(thirdFlowGroupInfoResponse.getId());
+            }
 
             Map<String, ThirdFlowInfoResponse> flowInfoResponseMap = new HashMap<>();
             List<ThirdFlowInfoOutResponse> flows = thirdFlowGroupInfoResponse.getFlows();
