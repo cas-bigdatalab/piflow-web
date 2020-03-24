@@ -19,7 +19,7 @@ public interface ProcessGroupJpaRepository extends JpaRepository<ProcessGroup, S
      *
      * @return
      */
-    @Query("select c from ProcessGroup c where c.enableFlag=1 and (c.name like CONCAT('%',:param,'%') or c.description like CONCAT('%',:param,'%'))")
+    @Query("select c from ProcessGroup c where c.enableFlag=true and (c.name like CONCAT('%',:param,'%') or c.description like CONCAT('%',:param,'%'))")
     Page<ProcessGroup> getProcessGroupListPage(@Param("param") String param, Pageable pageable);
 
     /**

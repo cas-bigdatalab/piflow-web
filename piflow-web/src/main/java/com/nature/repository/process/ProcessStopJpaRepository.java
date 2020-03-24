@@ -18,7 +18,7 @@ public interface ProcessStopJpaRepository extends JpaRepository<ProcessStop, Str
      *
      * @return
      */
-    @Query("select c from ProcessStop c where c.enableFlag=1 and (c.name like CONCAT('%',:param,'%') or c.description like CONCAT('%',:param,'%'))")
+    @Query("select c from ProcessStop c where c.enableFlag=true and (c.name like CONCAT('%',:param,'%') or c.description like CONCAT('%',:param,'%'))")
     Page<ProcessStop> getProcessStopListPage(@Param("param") String param, Pageable pageable);
 
     /**
@@ -26,7 +26,7 @@ public interface ProcessStopJpaRepository extends JpaRepository<ProcessStop, Str
      *
      * @return
      */
-    @Query("select c from ProcessStop c where c.enableFlag=1 and c.crtUser=:userName and (c.name like CONCAT('%',:param,'%') or c.description like CONCAT('%',:param,'%'))")
+    @Query("select c from ProcessStop c where c.enableFlag=true and c.crtUser=:userName and (c.name like CONCAT('%',:param,'%') or c.description like CONCAT('%',:param,'%'))")
     Page<ProcessStop> getProcessStopListPage(@Param("userName") String userName, @Param("param") String param, Pageable pageable);
 
     @Transactional
