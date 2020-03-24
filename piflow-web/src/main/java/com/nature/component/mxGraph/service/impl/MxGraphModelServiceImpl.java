@@ -1,7 +1,6 @@
 package com.nature.component.mxGraph.service.impl;
 
 import com.nature.base.util.*;
-import com.nature.base.vo.StatefulRtnBase;
 import com.nature.base.vo.UserVo;
 import com.nature.common.Eunm.PortType;
 import com.nature.component.flow.model.*;

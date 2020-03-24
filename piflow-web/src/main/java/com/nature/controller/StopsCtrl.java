@@ -1,9 +1,6 @@
 package com.nature.controller;
 
-import com.nature.base.util.FlowXmlUtils;
-import com.nature.base.util.JsonUtils;
-import com.nature.base.util.LoggerUtil;
-import com.nature.base.util.SessionUserUtil;
+import com.nature.base.util.*;
 import com.nature.base.vo.StatefulRtnBase;
 import com.nature.base.vo.UserVo;
 import com.nature.component.flow.model.Flow;
@@ -178,40 +175,33 @@ public class StopsCtrl {
 
     @RequestMapping("/updateStopsNameById")
     public String updateStopsNameById(HttpServletRequest request) {
-        Map<String, Object> rtnMap = new HashMap<>();
-        rtnMap.put("code", 500);
         String id = request.getParameter("stopId");
         String flowId = request.getParameter("flowId");
         String stopName = request.getParameter("name");
         String pageId = request.getParameter("pageId");
-        if (!StringUtils.isAnyEmpty(id, stopName, flowId, pageId)) {
-            Flow flowById = flowServiceImpl.getFlowById(flowId);
-            if (null != flowById) {
-                StatefulRtnBase updateStopName = stopsServiceImpl.updateStopName(id, flowById, stopName, pageId);
-                // addFlow is not empty and the value of ReqRtnStatus is true, then the save is successful.
-                if (null != updateStopName && updateStopName.isReqRtnStatus()) {
-                    MxGraphModelVo mxGraphModelVo = null;
-                    MxGraphModel mxGraphModel = flowById.getMxGraphModel();
-                    if (null != mxGraphModel) {
-                        mxGraphModelVo = FlowXmlUtils.mxGraphModelPoToVo(mxGraphModel);
-                        // Convert the mxGraphModelVo from the query to XML
-                        String loadXml = FlowXmlUtils.mxGraphModelToXml(mxGraphModelVo);
-                        loadXml = StringUtils.isNotBlank(loadXml) ? loadXml : "";
-                        rtnMap.put("XmlData", loadXml);
-                    }
-                    rtnMap.put("code", 200);
-                    rtnMap.put("errorMsg", updateStopName.getErrorMsg());
-                } else {
-                    rtnMap.put("errorMsg", updateStopName.getErrorMsg());
-                }
-            } else {
-                rtnMap.put("errorMsg", "flow information is empty");
-                logger.warn("fflow information is empty,flowId:" + flowId);
-            }
-        } else {
-            rtnMap.put("errorMsg", "The incoming parameter is empty");
-            logger.info("Partial incoming parameters are empty");
+        if (StringUtils.isAnyEmpty(id, stopName, flowId, pageId)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("The incoming parameter is empty");
         }
+        Flow flowById = flowServiceImpl.getFlowById(flowId);
+        if (null == flowById) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("flow information is empty");
+        }
+        StatefulRtnBase updateStopName = stopsServiceImpl.updateStopName(id, flowById, stopName, pageId);
+        // addFlow is not empty and the value of ReqRtnStatus is true, then the save is successful.
+        if (null == updateStopName || !updateStopName.isReqRtnStatus()) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(updateStopName.getErrorMsg());
+        }
+        Map<String, Object> rtnMap = new HashMap<>();
+        MxGraphModel mxGraphModel = flowById.getMxGraphModel();
+        if (null != mxGraphModel) {
+            MxGraphModelVo mxGraphModelVo = FlowXmlUtils.mxGraphModelPoToVo(mxGraphModel);
+            // Convert the mxGraphModelVo from the query to XML
+            String loadXml = MxGraphUtils.mxGraphModelToMxGraphXml(mxGraphModelVo);
+            loadXml = StringUtils.isNotBlank(loadXml) ? loadXml : "";
+            rtnMap.put("XmlData", loadXml);
+        }
+        rtnMap.put("code", 200);
+        rtnMap.put("errorMsg", updateStopName.getErrorMsg());
         return JsonUtils.toJsonNoException(rtnMap);
     }
 

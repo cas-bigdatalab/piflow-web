@@ -9,14 +9,14 @@ import com.nature.component.flow.model.*;
 import com.nature.component.flow.service.IFlowGroupService;
 import com.nature.component.flow.utils.FlowGroupPathsUtil;
 import com.nature.component.flow.utils.FlowUtil;
-import com.nature.component.mxGraph.utils.MxCellUtils;
-import com.nature.component.mxGraph.utils.MxGraphModelUtil;
 import com.nature.component.flow.vo.FlowGroupPathsVo;
 import com.nature.component.flow.vo.FlowGroupVo;
 import com.nature.component.flow.vo.FlowVo;
 import com.nature.component.mxGraph.model.MxCell;
 import com.nature.component.mxGraph.model.MxGeometry;
 import com.nature.component.mxGraph.model.MxGraphModel;
+import com.nature.component.mxGraph.utils.MxCellUtils;
+import com.nature.component.mxGraph.utils.MxGraphModelUtil;
 import com.nature.component.mxGraph.vo.MxGraphModelVo;
 import com.nature.component.process.model.Process;
 import com.nature.component.process.model.*;
@@ -634,7 +634,7 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
         MxGraphModel mxGraphModelNew = flowGroupById.getMxGraphModel();
         MxGraphModelVo mxGraphModelVo = FlowXmlUtils.mxGraphModelPoToVo(mxGraphModelNew);
         // Change the query'mxGraphModelVo'to'XML'
-        String loadXml = FlowXmlUtils.mxGraphModelToXml(mxGraphModelVo);
+        String loadXml = MxGraphUtils.mxGraphModelToMxGraphXml(mxGraphModelVo);
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg("success");
         rtnMap.put("xmlStr", loadXml);
         return JsonUtils.toFormatJsonNoException(rtnMap);
@@ -685,7 +685,7 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
                     mxCellDomain.saveOrUpdate(mxCell);
                     MxGraphModelVo mxGraphModelVo = FlowXmlUtils.mxGraphModelPoToVo(mxGraphModel);
                     // Convert the mxGraphModelVo from the query to XML
-                    String loadXml = FlowXmlUtils.mxGraphModelToXml(mxGraphModelVo);
+                    String loadXml = MxGraphUtils.mxGraphModelToMxGraphXml(mxGraphModelVo);
                     loadXml = StringUtils.isNotBlank(loadXml) ? loadXml : "";
                     rtnMap.put("XmlData", loadXml);
                     rtnMap.put("code", 200);

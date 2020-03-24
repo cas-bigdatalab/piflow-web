@@ -2,6 +2,7 @@ package com.nature.controller;
 
 import com.nature.base.util.FlowXmlUtils;
 import com.nature.base.util.LoggerUtil;
+import com.nature.base.util.MxGraphUtils;
 import com.nature.base.util.SessionUserUtil;
 import com.nature.base.vo.UserVo;
 import com.nature.common.Eunm.DrawingBoardType;
@@ -9,7 +10,6 @@ import com.nature.component.flow.model.Flow;
 import com.nature.component.flow.model.FlowGroup;
 import com.nature.component.flow.service.IFlowGroupService;
 import com.nature.component.flow.service.IFlowService;
-import com.nature.component.flow.vo.FlowGroupVo;
 import com.nature.component.flow.vo.StopGroupVo;
 import com.nature.component.group.service.IStopGroupService;
 import com.nature.component.mxGraph.model.MxGraphModel;
@@ -137,7 +137,7 @@ public class MxGraphCtrl {
         MxGraphModel mxGraphModel = flowGroupById.getMxGraphModel();
         mxGraphModelVo = FlowXmlUtils.mxGraphModelPoToVo(mxGraphModel);
         // Change the query'mxGraphModelVo'to'XML'
-        String loadXml = FlowXmlUtils.mxGraphModelToXml(mxGraphModelVo);
+        String loadXml = MxGraphUtils.mxGraphModelToMxGraphXml(mxGraphModelVo);
         model.addAttribute("xmlDate", loadXml);
         model.addAttribute("load", load);
         model.addAttribute("isExample", (null == flowGroupById.getIsExample() ? false : flowGroupById.getIsExample()));
@@ -168,7 +168,7 @@ public class MxGraphCtrl {
         MxGraphModel mxGraphModel = flowById.getMxGraphModel();
         mxGraphModelVo = FlowXmlUtils.mxGraphModelPoToVo(mxGraphModel);
         // Change the query'mxGraphModelVo'to'XML'
-        String loadXml = FlowXmlUtils.mxGraphModelToXml(mxGraphModelVo);
+        String loadXml = MxGraphUtils.mxGraphModelToMxGraphXml(mxGraphModelVo);
         model.addAttribute("xmlDate", loadXml);
         model.addAttribute("load", load);
         model.addAttribute("isExample", (null == flowById.getIsExample() ? false : flowById.getIsExample()));

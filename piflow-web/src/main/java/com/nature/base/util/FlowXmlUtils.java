@@ -31,6 +31,59 @@ public class FlowXmlUtils {
 
     static Logger logger = LoggerUtil.getLogger();
 
+    private static String spliceStr(String key, Object value) {
+        return key + "=\"" + value + "\" ";
+    }
+
+
+    /**
+     * xmlStrToElement
+     *
+     * @param xmlData  xml string data
+     * @param isEscape is escape
+     * @return Element
+     */
+    private static Element xmlStrToElement(String xmlData, boolean isEscape) {
+        try {
+            String xmlStr = xmlData;
+            if (isEscape) {
+                logger.debug("test");
+                //xmlStr = StringEscapeUtils.unescapeHtml(xmlData);
+            }
+            Document document = DocumentHelper.parseText(xmlStr);
+            String strXml = document.getRootElement().asXML();
+            String transformation = "<fg>" + strXml + "</fg>";
+            InputSource in = new InputSource(new StringReader(transformation));
+            in.setEncoding("UTF-8");
+            SAXReader reader = new SAXReader();
+            document = reader.read(in);
+            // Get all nodes with "autoSaveNode" attribute
+            return document.getRootElement(); // Get the root node
+        } catch (DocumentException e) {
+            logger.error("Conversion failed", e);
+            return null;
+        }
+    }
+
+    /**
+     * xmlStrToElement
+     *
+     * @param xmlData  xml string data
+     * @param isEscape is escape
+     * @param key      The key of the data to be fetched
+     * @return Element
+     */
+    private static Element xmlStrToElementGetByKey(String xmlData, boolean isEscape, String key) {
+        if (StringUtils.isBlank(key)) {
+            return xmlStrToElement(xmlData, isEscape);
+        }
+        Element element = xmlStrToElement(xmlData, isEscape);
+        if (null == element) {
+            return null;
+        }
+        return element.element(key);
+    }
+
     /**
      * mxGraphModel to mxGraphModelVo
      *
@@ -82,20 +135,20 @@ public class FlowXmlUtils {
         //Fight 'xml' note must write spaces
         if (null != mxGraphModelVo) {
             StringBuffer xmlStrSb = new StringBuffer();
-            String dx = mxGraphModelVo.getDx();
-            String dy = mxGraphModelVo.getDy();
-            String grid = mxGraphModelVo.getGrid();
-            String gridSize = mxGraphModelVo.getGridSize();
-            String guides = mxGraphModelVo.getGuides();
-            String tooltips = mxGraphModelVo.getTooltips();
-            String connect = mxGraphModelVo.getConnect();
-            String arrows = mxGraphModelVo.getArrows();
-            String fold = mxGraphModelVo.getFold();
-            String page = mxGraphModelVo.getPage();
-            String pageScale = mxGraphModelVo.getPageScale();
-            String pageWidth = mxGraphModelVo.getPageWidth();
-            String pageHeight = mxGraphModelVo.getPageHeight();
-            String background = mxGraphModelVo.getBackground();
+            String dx = StringCustomUtils.replaceSpecialSymbolsXml(mxGraphModelVo.getDx());
+            String dy = StringCustomUtils.replaceSpecialSymbolsXml(mxGraphModelVo.getDy());
+            String grid = StringCustomUtils.replaceSpecialSymbolsXml(mxGraphModelVo.getGrid());
+            String gridSize = StringCustomUtils.replaceSpecialSymbolsXml(mxGraphModelVo.getGridSize());
+            String guides = StringCustomUtils.replaceSpecialSymbolsXml(mxGraphModelVo.getGuides());
+            String tooltips = StringCustomUtils.replaceSpecialSymbolsXml(mxGraphModelVo.getTooltips());
+            String connect = StringCustomUtils.replaceSpecialSymbolsXml(mxGraphModelVo.getConnect());
+            String arrows = StringCustomUtils.replaceSpecialSymbolsXml(mxGraphModelVo.getArrows());
+            String fold = StringCustomUtils.replaceSpecialSymbolsXml(mxGraphModelVo.getFold());
+            String page = StringCustomUtils.replaceSpecialSymbolsXml(mxGraphModelVo.getPage());
+            String pageScale = StringCustomUtils.replaceSpecialSymbolsXml(mxGraphModelVo.getPageScale());
+            String pageWidth = StringCustomUtils.replaceSpecialSymbolsXml(mxGraphModelVo.getPageWidth());
+            String pageHeight = StringCustomUtils.replaceSpecialSymbolsXml(mxGraphModelVo.getPageHeight());
+            String background = StringCustomUtils.replaceSpecialSymbolsXml(mxGraphModelVo.getBackground());
             xmlStrSb.append("<mxGraphModel ");
             if (StringUtils.isNotBlank(dx)) {
                 xmlStrSb.append(spliceStr("dx", dx));
@@ -143,14 +196,14 @@ public class FlowXmlUtils {
             List<MxCellVo> rootVoList = mxGraphModelVo.getRootVo();
             if (null != rootVoList && rootVoList.size() > 0) {
                 for (MxCellVo mxCellVo : rootVoList) {
-                    String id = mxCellVo.getPageId();
-                    String parent = mxCellVo.getParent();
-                    String style = mxCellVo.getStyle();
-                    String value = mxCellVo.getValue();
-                    String vertex = mxCellVo.getVertex();
-                    String edge = mxCellVo.getEdge();
-                    String source = mxCellVo.getSource();
-                    String target = mxCellVo.getTarget();
+                    String id = StringCustomUtils.replaceSpecialSymbolsXml(mxCellVo.getPageId());
+                    String parent = StringCustomUtils.replaceSpecialSymbolsXml(mxCellVo.getParent());
+                    String style = StringCustomUtils.replaceSpecialSymbolsXml(mxCellVo.getStyle());
+                    String value = StringCustomUtils.replaceSpecialSymbolsXml(mxCellVo.getValue());
+                    String vertex = StringCustomUtils.replaceSpecialSymbolsXml(mxCellVo.getVertex());
+                    String edge = StringCustomUtils.replaceSpecialSymbolsXml(mxCellVo.getEdge());
+                    String source = StringCustomUtils.replaceSpecialSymbolsXml(mxCellVo.getSource());
+                    String target = StringCustomUtils.replaceSpecialSymbolsXml(mxCellVo.getTarget());
                     MxGeometryVo mxGeometryVo = mxCellVo.getMxGeometryVo();
                     xmlStrSb.append("<mxCell ");
                     if (StringUtils.isNotBlank(id)) {
@@ -178,12 +231,12 @@ public class FlowXmlUtils {
                         xmlStrSb.append(spliceStr("edge", edge));
                     }
                     if (null != mxGeometryVo) {
-                        String relative = mxGeometryVo.getRelative();
-                        String as = mxGeometryVo.getAs();
-                        String x = mxGeometryVo.getX();
-                        String y = mxGeometryVo.getY();
-                        String width = mxGeometryVo.getWidth();
-                        String height = mxGeometryVo.getHeight();
+                        String relative = StringCustomUtils.replaceSpecialSymbolsXml(mxGeometryVo.getRelative());
+                        String as = StringCustomUtils.replaceSpecialSymbolsXml(mxGeometryVo.getAs());
+                        String x = StringCustomUtils.replaceSpecialSymbolsXml(mxGeometryVo.getX());
+                        String y = StringCustomUtils.replaceSpecialSymbolsXml(mxGeometryVo.getY());
+                        String width = StringCustomUtils.replaceSpecialSymbolsXml(mxGeometryVo.getWidth());
+                        String height = StringCustomUtils.replaceSpecialSymbolsXml(mxGeometryVo.getHeight());
                         xmlStrSb.append("><mxGeometry ");
                         if (StringUtils.isNotBlank(x)) {
                             xmlStrSb.append(spliceStr("x", x));
@@ -227,20 +280,20 @@ public class FlowXmlUtils {
         //Fight 'xml' note must write spaces
         if (null != mxGraphModel) {
             StringBuffer xmlStrSb = new StringBuffer();
-            String dx = mxGraphModel.getDx();
-            String dy = mxGraphModel.getDy();
-            String grid = mxGraphModel.getGrid();
-            String gridSize = mxGraphModel.getGridSize();
-            String guides = mxGraphModel.getGuides();
-            String tooltips = mxGraphModel.getTooltips();
-            String connect = mxGraphModel.getConnect();
-            String arrows = mxGraphModel.getArrows();
-            String fold = mxGraphModel.getFold();
-            String page = mxGraphModel.getPage();
-            String pageScale = mxGraphModel.getPageScale();
-            String pageWidth = mxGraphModel.getPageWidth();
-            String pageHeight = mxGraphModel.getPageHeight();
-            String background = mxGraphModel.getBackground();
+            String dx = StringCustomUtils.replaceSpecialSymbolsXml(mxGraphModel.getDx());
+            String dy = StringCustomUtils.replaceSpecialSymbolsXml(mxGraphModel.getDy());
+            String grid = StringCustomUtils.replaceSpecialSymbolsXml(mxGraphModel.getGrid());
+            String gridSize = StringCustomUtils.replaceSpecialSymbolsXml(mxGraphModel.getGridSize());
+            String guides = StringCustomUtils.replaceSpecialSymbolsXml(mxGraphModel.getGuides());
+            String tooltips = StringCustomUtils.replaceSpecialSymbolsXml(mxGraphModel.getTooltips());
+            String connect = StringCustomUtils.replaceSpecialSymbolsXml(mxGraphModel.getConnect());
+            String arrows = StringCustomUtils.replaceSpecialSymbolsXml(mxGraphModel.getArrows());
+            String fold = StringCustomUtils.replaceSpecialSymbolsXml(mxGraphModel.getFold());
+            String page = StringCustomUtils.replaceSpecialSymbolsXml(mxGraphModel.getPage());
+            String pageScale = StringCustomUtils.replaceSpecialSymbolsXml(mxGraphModel.getPageScale());
+            String pageWidth = StringCustomUtils.replaceSpecialSymbolsXml(mxGraphModel.getPageWidth());
+            String pageHeight = StringCustomUtils.replaceSpecialSymbolsXml(mxGraphModel.getPageHeight());
+            String background = StringCustomUtils.replaceSpecialSymbolsXml(mxGraphModel.getBackground());
             xmlStrSb.append("<mxGraphModel ");
             if (StringUtils.isNotBlank(dx)) {
                 xmlStrSb.append(spliceStr("dx", dx));
@@ -288,15 +341,14 @@ public class FlowXmlUtils {
             List<MxCell> rootList = mxGraphModel.getRoot();
             if (null != rootList && rootList.size() > 0) {
                 for (MxCell mxCell : rootList) {
-                    String id = mxCell.getPageId();
-                    String parent = mxCell.getParent();
-                    String style = mxCell.getStyle();
-                    String value = mxCell.getValue();
-                    String vertex = mxCell.getVertex();
-                    String edge = mxCell.getEdge();
-                    String source = mxCell.getSource();
-                    String target = mxCell.getTarget();
-                    MxGeometry mxGeometry = mxCell.getMxGeometry();
+                    String id = StringCustomUtils.replaceSpecialSymbolsXml(mxCell.getPageId());
+                    String parent = StringCustomUtils.replaceSpecialSymbolsXml(mxCell.getParent());
+                    String style = StringCustomUtils.replaceSpecialSymbolsXml(mxCell.getStyle());
+                    String value = StringCustomUtils.replaceSpecialSymbolsXml(mxCell.getValue());
+                    String vertex = StringCustomUtils.replaceSpecialSymbolsXml(mxCell.getVertex());
+                    String edge = StringCustomUtils.replaceSpecialSymbolsXml(mxCell.getEdge());
+                    String source = StringCustomUtils.replaceSpecialSymbolsXml(mxCell.getSource());
+                    String target = StringCustomUtils.replaceSpecialSymbolsXml(mxCell.getTarget());
                     xmlStrSb.append("<mxCell ");
                     if (StringUtils.isNotBlank(id)) {
                         xmlStrSb.append(spliceStr("id", id));
@@ -322,13 +374,14 @@ public class FlowXmlUtils {
                     if (StringUtils.isNotBlank(edge)) {
                         xmlStrSb.append(spliceStr("edge", edge));
                     }
+                    MxGeometry mxGeometry = mxCell.getMxGeometry();
                     if (null != mxGeometry) {
-                        String relative = mxGeometry.getRelative();
-                        String as = mxGeometry.getAs();
-                        String x = mxGeometry.getX();
-                        String y = mxGeometry.getY();
-                        String width = mxGeometry.getWidth();
-                        String height = mxGeometry.getHeight();
+                        String relative = StringCustomUtils.replaceSpecialSymbolsXml(mxGeometry.getRelative());
+                        String as = StringCustomUtils.replaceSpecialSymbolsXml(mxGeometry.getAs());
+                        String x = StringCustomUtils.replaceSpecialSymbolsXml(mxGeometry.getX());
+                        String y = StringCustomUtils.replaceSpecialSymbolsXml(mxGeometry.getY());
+                        String width = StringCustomUtils.replaceSpecialSymbolsXml(mxGeometry.getWidth());
+                        String height = StringCustomUtils.replaceSpecialSymbolsXml(mxGeometry.getHeight());
                         xmlStrSb.append("><mxGeometry ");
                         if (StringUtils.isNotBlank(x)) {
                             xmlStrSb.append(spliceStr("x", x));
@@ -372,101 +425,83 @@ public class FlowXmlUtils {
         // Spell xml note must write spaces
         if (null != flow) {
             StringBuffer xmlStrSb = new StringBuffer();
-            String id = flow.getId();
-            String name = flow.getName();
-            String description = flow.getDescription();
-            String driverMemory = flow.getDriverMemory();
-            String executorCores = flow.getExecutorCores();
-            String executorMemory = flow.getExecutorMemory();
-            String executorNumber = flow.getExecutorNumber();
-            String flowPageId = flow.getPageId();
+            String id = StringCustomUtils.replaceSpecialSymbolsXml(flow.getId());
+            String name = StringCustomUtils.replaceSpecialSymbolsXml(flow.getName());
+            String description = StringCustomUtils.replaceSpecialSymbolsXml(flow.getDescription());
+            String driverMemory = StringCustomUtils.replaceSpecialSymbolsXml(flow.getDriverMemory());
+            String executorCores = StringCustomUtils.replaceSpecialSymbolsXml(flow.getExecutorCores());
+            String executorMemory = StringCustomUtils.replaceSpecialSymbolsXml(flow.getExecutorMemory());
+            String executorNumber = StringCustomUtils.replaceSpecialSymbolsXml(flow.getExecutorNumber());
+            String flowPageId = StringCustomUtils.replaceSpecialSymbolsXml(flow.getPageId());
             xmlStrSb.append("<flow ");
             if (StringUtils.isNotBlank(id)) {
-                //xmlStrSb.append(spliceStr("id", StringEscapeUtils.escapeHtml(id)));
                 xmlStrSb.append(spliceStr("id", id));
             }
             if (StringUtils.isNotBlank(name)) {
-                //xmlStrSb.append(spliceStr("name", StringEscapeUtils.escapeHtml(name)));
                 xmlStrSb.append(spliceStr("name", name));
             }
             if (StringUtils.isNotBlank(description)) {
-                //xmlStrSb.append(spliceStr("description", StringEscapeUtils.escapeHtml(description)));
                 xmlStrSb.append(spliceStr("description", description));
             }
             if (StringUtils.isNotBlank(driverMemory)) {
-                //xmlStrSb.append(spliceStr("driverMemory", StringEscapeUtils.escapeHtml(driverMemory)));
                 xmlStrSb.append(spliceStr("driverMemory", driverMemory));
             }
             if (StringUtils.isNotBlank(executorCores)) {
-                //xmlStrSb.append(spliceStr("executorCores", StringEscapeUtils.escapeHtml(executorCores)));
                 xmlStrSb.append(spliceStr("executorCores", executorCores));
             }
             if (StringUtils.isNotBlank(executorMemory)) {
-                //xmlStrSb.append(spliceStr("executorMemory", StringEscapeUtils.escapeHtml(executorMemory)));
                 xmlStrSb.append(spliceStr("executorMemory", executorMemory));
             }
             if (StringUtils.isNotBlank(executorNumber)) {
-                //xmlStrSb.append(spliceStr("executorNumber", StringEscapeUtils.escapeHtml(executorNumber)));
                 xmlStrSb.append(spliceStr("executorNumber", executorNumber));
             }
             if (StringUtils.isNotBlank(flowPageId)) {
-                //xmlStrSb.append(spliceStr("pageId", StringEscapeUtils.escapeHtml(flowPageId)));
                 xmlStrSb.append(spliceStr("pageId", flowPageId));
             }
             xmlStrSb.append("> \n");
             List<Stops> stopsVoList = flow.getStopsList();
-            List<Paths> pathsList = flow.getPathsList();
             if (null != stopsVoList && stopsVoList.size() > 0) {
                 for (Stops stopVo : stopsVoList) {
-                    String stopId = stopVo.getId();
-                    String pageId = stopVo.getPageId();
-                    String stopName = stopVo.getName();
-                    String bundel = stopVo.getBundel();
-                    String stopDescription = stopVo.getDescription();
+                    String stopId = StringCustomUtils.replaceSpecialSymbolsXml(stopVo.getId());
+                    String pageId = StringCustomUtils.replaceSpecialSymbolsXml(stopVo.getPageId());
+                    String stopName = StringCustomUtils.replaceSpecialSymbolsXml(stopVo.getName());
+                    String bundel = StringCustomUtils.replaceSpecialSymbolsXml(stopVo.getBundel());
+                    String stopDescription = StringCustomUtils.replaceSpecialSymbolsXml(stopVo.getDescription());
                     Boolean checkpoint = stopVo.getIsCheckpoint();
-                    String inports = stopVo.getInports();
+                    String inports = StringCustomUtils.replaceSpecialSymbolsXml(stopVo.getInports());
                     PortType inPortType = stopVo.getInPortType();
-                    String outports = stopVo.getOutports();
+                    String outports = StringCustomUtils.replaceSpecialSymbolsXml(stopVo.getOutports());
                     PortType outPortType = stopVo.getOutPortType();
-                    String owner = stopVo.getOwner();
-                    String groups = stopVo.getGroups();
-                    String crtUser = stopVo.getCrtUser();
+                    String owner = StringCustomUtils.replaceSpecialSymbolsXml(stopVo.getOwner());
+                    String groups = StringCustomUtils.replaceSpecialSymbolsXml(stopVo.getGroups());
+                    String crtUser = StringCustomUtils.replaceSpecialSymbolsXml(stopVo.getCrtUser());
                     xmlStrSb.append("<stop ");
                     if (StringUtils.isNotBlank(stopId)) {
-                        //xmlStrSb.append(spliceStr("id", StringEscapeUtils.escapeHtml(stopId)));
                         xmlStrSb.append(spliceStr("id", stopId));
                     }
                     if (StringUtils.isNotBlank(pageId)) {
-                        //xmlStrSb.append(spliceStr("pageId", StringEscapeUtils.escapeHtml(pageId)));
                         xmlStrSb.append(spliceStr("pageId", pageId));
                     }
                     if (StringUtils.isNotBlank(stopName)) {
-                        //xmlStrSb.append(spliceStr("name", StringEscapeUtils.escapeHtml(stopName)));
                         xmlStrSb.append(spliceStr("name", stopName));
                     }
                     if (StringUtils.isNotBlank(bundel)) {
-                        //xmlStrSb.append(spliceStr("bundel", StringEscapeUtils.escapeHtml(bundel)));
                         xmlStrSb.append(spliceStr("bundel", bundel));
                     }
                     if (StringUtils.isNotBlank(stopDescription)) {
-                        //stopDescription = stopDescription.replace("&", "&amp;");
-                        //xmlStrSb.append(spliceStr("description", StringEscapeUtils.escapeHtml(stopDescription)));
                         xmlStrSb.append(spliceStr("description", stopDescription));
                     }
                     if (null != checkpoint) {
                         xmlStrSb.append(spliceStr("isCheckpoint", (checkpoint ? 1 : 0)));
                     }
                     if (StringUtils.isNotBlank(inports)) {
-                        //xmlStrSb.append(spliceStr("inports", StringEscapeUtils.escapeHtml(inports)));
                         xmlStrSb.append(spliceStr("inports", inports));
                     }
 
                     if (StringUtils.isNotBlank(outports)) {
-                        //xmlStrSb.append(spliceStr("outports", StringEscapeUtils.escapeHtml(outports)));
                         xmlStrSb.append(spliceStr("outports", outports));
                     }
                     if (StringUtils.isNotBlank(owner)) {
-                        //xmlStrSb.append(spliceStr("owner", StringEscapeUtils.escapeHtml(owner)));
                         xmlStrSb.append(spliceStr("owner", owner));
                     }
                     if (null != inPortType) {
@@ -476,11 +511,9 @@ public class FlowXmlUtils {
                         xmlStrSb.append(spliceStr("outPortType", outPortType));
                     }
                     if (StringUtils.isNotBlank(groups)) {
-                        //xmlStrSb.append(spliceStr("groups", StringEscapeUtils.escapeHtml(groups)));
                         xmlStrSb.append(spliceStr("groups", groups));
                     }
                     if (StringUtils.isNotBlank(crtUser)) {
-                        //xmlStrSb.append(spliceStr("crtUser", StringEscapeUtils.escapeHtml(crtUser)));
                         xmlStrSb.append(spliceStr("crtUser", crtUser));
                     }
                     List<Property> property = stopVo.getProperties();
@@ -488,41 +521,35 @@ public class FlowXmlUtils {
                         xmlStrSb.append("> \n");
                         for (Property propertyVo : property) {
                             xmlStrSb.append("<property ");
-                            String propertyId = propertyVo.getId();
-                            String displayName = propertyVo.getDisplayName();
-                            String propertyName = propertyVo.getName();
-                            String customValue = propertyVo.getCustomValue();
-                            String propertyDescription = propertyVo.getDescription();
-                            String allowableValues = propertyVo.getAllowableValues();
+                            String propertyId = StringCustomUtils.replaceSpecialSymbolsXml(propertyVo.getId());
+                            String displayName = StringCustomUtils.replaceSpecialSymbolsXml(propertyVo.getDisplayName());
+                            String propertyName = StringCustomUtils.replaceSpecialSymbolsXml(propertyVo.getName());
+                            String customValue = StringCustomUtils.replaceSpecialSymbolsXml(propertyVo.getCustomValue());
+                            String propertyDescription = StringCustomUtils.replaceSpecialSymbolsXml(propertyVo.getDescription());
+                            String allowableValues = StringCustomUtils.replaceSpecialSymbolsXml(propertyVo.getAllowableValues());
                             boolean required = propertyVo.getRequired();
                             boolean sensitive = propertyVo.getSensitive();
                             boolean isSelect = propertyVo.getIsSelect();
-                            String propertyVocrtUser = propertyVo.getCrtUser();
+                            String propertyVocrtUser = StringCustomUtils.replaceSpecialSymbolsXml(propertyVo.getCrtUser());
                             if (StringUtils.isNotBlank(propertyId)) {
-                                //xmlStrSb.append(spliceStr("id", StringEscapeUtils.escapeHtml(id)));
                                 xmlStrSb.append(spliceStr("id", id));
                             }
                             if (StringUtils.isNotBlank(displayName)) {
-                                //xmlStrSb.append(spliceStr("displayName", StringEscapeUtils.escapeHtml(displayName)));
                                 xmlStrSb.append(spliceStr("displayName", displayName));
                             }
                             if (StringUtils.isNotBlank(propertyName)) {
-                                //xmlStrSb.append(spliceStr("name", StringEscapeUtils.escapeHtml(propertyName)));
                                 xmlStrSb.append(spliceStr("name", propertyName));
                             }
                             if (StringUtils.isNotBlank(propertyDescription)) {
-                                //xmlStrSb.append(spliceStr("description", StringEscapeUtils.escapeHtml(propertyDescription)));
                                 xmlStrSb.append(spliceStr("description", propertyDescription));
                             }
                             if (StringUtils.isNotBlank(allowableValues)) {
                                 xmlStrSb.append(spliceStr("allowableValues", allowableValues.replaceAll("\"", "")));
                             }
                             if (StringUtils.isNotBlank(customValue)) {
-                                //xmlStrSb.append(spliceStr("customValue", StringEscapeUtils.escapeHtml(customValue)));
                                 xmlStrSb.append(spliceStr("customValue", customValue));
                             }
                             if (StringUtils.isNotBlank(propertyVocrtUser)) {
-                                //xmlStrSb.append(spliceStr("crtUser", StringEscapeUtils.escapeHtml(propertyVocrtUser)));
                                 xmlStrSb.append(spliceStr("crtUser", propertyVocrtUser));
                             }
                             xmlStrSb.append(spliceStr("required", required));
@@ -535,42 +562,36 @@ public class FlowXmlUtils {
                         xmlStrSb.append("/> \n");
                     }
                 }
+                List<Paths> pathsList = flow.getPathsList();
                 if (null != pathsList && pathsList.size() > 0) {
                     for (Paths paths : pathsList) {
                         xmlStrSb.append("<paths ");
-                        String crtUser = paths.getCrtUser();
-                        String from = paths.getFrom();
-                        String to = paths.getTo();
-                        String inport = paths.getInport();
-                        String outport = paths.getOutport();
-                        String pageId = paths.getPageId();
-                        String filterCondition = paths.getFilterCondition();
+                        String crtUser = StringCustomUtils.replaceSpecialSymbolsXml(paths.getCrtUser());
+                        String from = StringCustomUtils.replaceSpecialSymbolsXml(paths.getFrom());
+                        String to = StringCustomUtils.replaceSpecialSymbolsXml(paths.getTo());
+                        String inport = StringCustomUtils.replaceSpecialSymbolsXml(paths.getInport());
+                        String outport = StringCustomUtils.replaceSpecialSymbolsXml(paths.getOutport());
+                        String pageId = StringCustomUtils.replaceSpecialSymbolsXml(paths.getPageId());
+                        String filterCondition = StringCustomUtils.replaceSpecialSymbolsXml(paths.getFilterCondition());
                         if (StringUtils.isNotBlank(crtUser)) {
-                            //xmlStrSb.append(spliceStr("crtUser", StringEscapeUtils.escapeHtml(crtUser)));
                             xmlStrSb.append(spliceStr("crtUser", crtUser));
                         }
                         if (StringUtils.isNotBlank(from)) {
-                            //xmlStrSb.append(spliceStr("from", StringEscapeUtils.escapeHtml(from)));
                             xmlStrSb.append(spliceStr("from", from));
                         }
                         if (StringUtils.isNotBlank(to)) {
-                            //xmlStrSb.append(spliceStr("to", StringEscapeUtils.escapeHtml(to)));
                             xmlStrSb.append(spliceStr("to", to));
                         }
                         if (StringUtils.isNotBlank(inport)) {
-                            //xmlStrSb.append(spliceStr("inport", StringEscapeUtils.escapeHtml(inport)));
                             xmlStrSb.append(spliceStr("inport", inport));
                         }
                         if (StringUtils.isNotBlank(outport)) {
-                            //xmlStrSb.append(spliceStr("outport", StringEscapeUtils.escapeHtml(outport)));
                             xmlStrSb.append(spliceStr("outport", outport));
                         }
                         if (StringUtils.isNotBlank(pageId)) {
-                            //xmlStrSb.append(spliceStr("pageId", StringEscapeUtils.escapeHtml(pageId)));
                             xmlStrSb.append(spliceStr("pageId", pageId));
                         }
                         if (StringUtils.isNotBlank(filterCondition)) {
-                            //xmlStrSb.append(spliceStr("filterCondition", StringEscapeUtils.escapeHtml(filterCondition)));
                             xmlStrSb.append(spliceStr("filterCondition", filterCondition));
                         }
                         xmlStrSb.append(" /> \n");
@@ -619,29 +640,24 @@ public class FlowXmlUtils {
         if (null != flowGroupPathsList && flowGroupPathsList.size() > 0) {
             for (FlowGroupPaths flowGroupPaths : flowGroupPathsList) {
                 xmlStrBuf.append("<flowGroupPaths ");
-                String from = flowGroupPaths.getFrom();
-                String to = flowGroupPaths.getTo();
-                String inport = flowGroupPaths.getInport();
-                String outport = flowGroupPaths.getOutport();
-                String pageId = flowGroupPaths.getPageId();
+                String from = StringCustomUtils.replaceSpecialSymbolsXml(flowGroupPaths.getFrom());
+                String to = StringCustomUtils.replaceSpecialSymbolsXml(flowGroupPaths.getTo());
+                String inport = StringCustomUtils.replaceSpecialSymbolsXml(flowGroupPaths.getInport());
+                String outport = StringCustomUtils.replaceSpecialSymbolsXml(flowGroupPaths.getOutport());
+                String pageId = StringCustomUtils.replaceSpecialSymbolsXml(flowGroupPaths.getPageId());
                 if (StringUtils.isNotBlank(from)) {
-                    //xmlStrBuf.append(spliceStr("from", StringEscapeUtils.escapeHtml(from)));
                     xmlStrBuf.append(spliceStr("from", from));
                 }
                 if (StringUtils.isNotBlank(to)) {
-                    //xmlStrBuf.append(spliceStr("to", StringEscapeUtils.escapeHtml(to)));
                     xmlStrBuf.append(spliceStr("to", to));
                 }
                 if (StringUtils.isNotBlank(inport)) {
-                    //xmlStrBuf.append(spliceStr("inport", StringEscapeUtils.escapeHtml(inport)));
                     xmlStrBuf.append(spliceStr("inport", inport));
                 }
                 if (StringUtils.isNotBlank(outport)) {
-                    //xmlStrBuf.append(spliceStr("outport", StringEscapeUtils.escapeHtml(outport)));
                     xmlStrBuf.append(spliceStr("outport", outport));
                 }
                 if (StringUtils.isNotBlank(pageId)) {
-                    //xmlStrBuf.append(spliceStr("pageId", StringEscapeUtils.escapeHtml(pageId)));
                     xmlStrBuf.append(spliceStr("pageId", pageId));
                 }
                 xmlStrBuf.append(" /> \n");
@@ -660,24 +676,20 @@ public class FlowXmlUtils {
         StringBuilder xmlStrBuf = new StringBuilder();
         if (null != flowGroup) {
             xmlStrBuf.append("<flowGroup ");
-            String id = flowGroup.getId();
-            String name = flowGroup.getName();
-            String description = flowGroup.getDescription();
-            String flowGroupPageId = flowGroup.getPageId();
+            String id = StringCustomUtils.replaceSpecialSymbolsXml(flowGroup.getId());
+            String name = StringCustomUtils.replaceSpecialSymbolsXml(flowGroup.getName());
+            String description = StringCustomUtils.replaceSpecialSymbolsXml(flowGroup.getDescription());
+            String flowGroupPageId = StringCustomUtils.replaceSpecialSymbolsXml(flowGroup.getPageId());
             if (StringUtils.isNotBlank(id)) {
-                //xmlStrBuf.append(spliceStr("id", StringEscapeUtils.escapeHtml(id)));
                 xmlStrBuf.append(spliceStr("id", id));
             }
             if (StringUtils.isNotBlank(name)) {
-                //xmlStrBuf.append(spliceStr("name", StringEscapeUtils.escapeHtml(name)));
                 xmlStrBuf.append(spliceStr("name", name));
             }
             if (StringUtils.isNotBlank(description)) {
-                //xmlStrBuf.append(spliceStr("description", StringEscapeUtils.escapeHtml(description)));
                 xmlStrBuf.append(spliceStr("description", description));
             }
             if (StringUtils.isNotBlank(flowGroupPageId)) {
-                //xmlStrBuf.append(spliceStr("pageId", StringEscapeUtils.escapeHtml(flowGroupPageId)));
                 xmlStrBuf.append(spliceStr("pageId", flowGroupPageId));
             }
             xmlStrBuf.append("> \n");
@@ -715,10 +727,6 @@ public class FlowXmlUtils {
         return xmlStrBuf.toString();
     }
 
-    private static String spliceStr(String key, Object value) {
-        return key + "=\"" + value + "\" ";
-    }
-
     /**
      * String type "xml" to "MxGraphModel"
      *
@@ -732,20 +740,20 @@ public class FlowXmlUtils {
             if (null == mxGraphModelXml) {
                 return null;
             }
-            String dx = mxGraphModelXml.attributeValue("dx");
-            String dy = mxGraphModelXml.attributeValue("dy");
-            String grid = mxGraphModelXml.attributeValue("grid");
-            String gridSize = mxGraphModelXml.attributeValue("gridSize");
-            String guides = mxGraphModelXml.attributeValue("guides");
-            String tooltips = mxGraphModelXml.attributeValue("tooltips");
-            String connect = mxGraphModelXml.attributeValue("connect");
-            String arrows = mxGraphModelXml.attributeValue("arrows");
-            String fold = mxGraphModelXml.attributeValue("fold");
-            String page = mxGraphModelXml.attributeValue("page");
-            String pageScale = mxGraphModelXml.attributeValue("pageScale");
-            String pageWidth = mxGraphModelXml.attributeValue("pageWidth");
-            String pageHeight = mxGraphModelXml.attributeValue("pageHeight");
-            String background = mxGraphModelXml.attributeValue("background");
+            String dx = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModelXml.attributeValue("dx"));
+            String dy = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModelXml.attributeValue("dy"));
+            String grid = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModelXml.attributeValue("grid"));
+            String gridSize = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModelXml.attributeValue("gridSize"));
+            String guides = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModelXml.attributeValue("guides"));
+            String tooltips = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModelXml.attributeValue("tooltips"));
+            String connect = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModelXml.attributeValue("connect"));
+            String arrows = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModelXml.attributeValue("arrows"));
+            String fold = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModelXml.attributeValue("fold"));
+            String page = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModelXml.attributeValue("page"));
+            String pageScale = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModelXml.attributeValue("pageScale"));
+            String pageWidth = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModelXml.attributeValue("pageWidth"));
+            String pageHeight = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModelXml.attributeValue("pageHeight"));
+            String background = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModelXml.attributeValue("background"));
 
             MxGraphModelVo mxGraphModelVo = new MxGraphModelVo();
             mxGraphModelVo.setDx(dx);
@@ -769,14 +777,14 @@ public class FlowXmlUtils {
                 MxCellVo mxCellVo = new MxCellVo();
                 MxGeometryVo mxGeometryVo = null;
                 Element recordEle = (Element) rootiter.next();
-                String mxCellId = recordEle.attributeValue("id");
-                String parent = recordEle.attributeValue("parent");
-                String style = recordEle.attributeValue("style");
-                String edge = recordEle.attributeValue("edge");
-                String source = recordEle.attributeValue("source");
-                String target = recordEle.attributeValue("target");
-                String value = recordEle.attributeValue("value");
-                String vertex = recordEle.attributeValue("vertex");
+                String mxCellId = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("id"));
+                String parent = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("parent"));
+                String style = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("style"));
+                String edge = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("edge"));
+                String source = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("source"));
+                String target = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("target"));
+                String value = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("value"));
+                String vertex = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("vertex"));
                 if ("1".equals(edge)) {
                     if (StringUtils.isBlank(source) || StringUtils.isBlank(target)) {
                         continue;
@@ -793,12 +801,12 @@ public class FlowXmlUtils {
                 if (StringUtils.isNotBlank(style)) {
                     mxGeometryVo = new MxGeometryVo();
                     Element mxGeometry = recordEle.element("mxGeometry");
-                    String relative = mxGeometry.attributeValue("relative");
-                    String as = mxGeometry.attributeValue("as");
-                    String x = mxGeometry.attributeValue("x");
-                    String y = mxGeometry.attributeValue("y");
-                    String width = mxGeometry.attributeValue("width");
-                    String height = mxGeometry.attributeValue("height");
+                    String relative = StringCustomUtils.recoverSpecialSymbolsXml(mxGeometry.attributeValue("relative"));
+                    String as = StringCustomUtils.recoverSpecialSymbolsXml(mxGeometry.attributeValue("as"));
+                    String x = StringCustomUtils.recoverSpecialSymbolsXml(mxGeometry.attributeValue("x"));
+                    String y = StringCustomUtils.recoverSpecialSymbolsXml(mxGeometry.attributeValue("y"));
+                    String width = StringCustomUtils.recoverSpecialSymbolsXml(mxGeometry.attributeValue("width"));
+                    String height = StringCustomUtils.recoverSpecialSymbolsXml(mxGeometry.attributeValue("height"));
                     mxGeometryVo.setRelative(relative);
                     mxGeometryVo.setAs(as);
                     mxGeometryVo.setX(x);
@@ -836,18 +844,18 @@ public class FlowXmlUtils {
                 List<PropertyTemplateModel> propertyList = new ArrayList<>();
                 StopTemplateModel stopVo = new StopTemplateModel();
                 Element recordEle = (Element) rootiter.next();
-                String bundel = recordEle.attributeValue("bundel");
-                String description = recordEle.attributeValue("description");
-                String id = recordEle.attributeValue("id");
-                String name = recordEle.attributeValue("name");
-                String pageId = recordEle.attributeValue("pageId");
-                String inPortType = recordEle.attributeValue("inPortType");
-                String inports = recordEle.attributeValue("inports");
-                String outPortType = recordEle.attributeValue("outPortType");
-                String outports = recordEle.attributeValue("outports");
-                String isCheckpoint = recordEle.attributeValue("isCheckpoint");
-                String owner = recordEle.attributeValue("owner");
-                String groups = recordEle.attributeValue("groups");
+                String bundel = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("bundel"));
+                String description = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("description"));
+                String id = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("id"));
+                String name = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("name"));
+                String pageId = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("pageId"));
+                String inPortType = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("inPortType"));
+                String inports = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("inports"));
+                String outPortType = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("outPortType"));
+                String outports = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("outports"));
+                String isCheckpoint = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("isCheckpoint"));
+                String owner = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("owner"));
+                String groups = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("groups"));
                 stopVo.setPageId(pageId);
                 stopVo.setName(name);
                 stopVo.setDescription(description);
@@ -858,7 +866,7 @@ public class FlowXmlUtils {
                 stopVo.setOutPortType(PortType.selectGender(outPortType));
                 stopVo.setInPortType(PortType.selectGenderByValue(inPortType));
                 stopVo.setGroups(groups);
-                Boolean Checkpoint = "0".equals(isCheckpoint);
+                Boolean Checkpoint = "1".equals(isCheckpoint);
                 stopVo.setIsCheckpoint(Checkpoint);
                 stopVo.setOwner(owner);
                 Iterator property = recordEle.elementIterator("property");
@@ -866,12 +874,12 @@ public class FlowXmlUtils {
                     while (property.hasNext()) {
                         Element propertyValue = (Element) property.next();
                         PropertyTemplateModel propertyVo = new PropertyTemplateModel();
-                        String allowableValues = propertyValue.attributeValue("allowableValues");
-                        String customValue = propertyValue.attributeValue("customValue");
-                        String propertyDescription = propertyValue.attributeValue("description");
-                        String displayName = propertyValue.attributeValue("displayName");
-                        String propertyId = propertyValue.attributeValue("id");
-                        String propertyName = propertyValue.attributeValue("name");
+                        String allowableValues = StringCustomUtils.recoverSpecialSymbolsXml(propertyValue.attributeValue("allowableValues"));
+                        String customValue = StringCustomUtils.recoverSpecialSymbolsXml(propertyValue.attributeValue("customValue"));
+                        String propertyDescription = StringCustomUtils.recoverSpecialSymbolsXml(propertyValue.attributeValue("description"));
+                        String displayName = StringCustomUtils.recoverSpecialSymbolsXml(propertyValue.attributeValue("displayName"));
+                        String propertyId = StringCustomUtils.recoverSpecialSymbolsXml(propertyValue.attributeValue("id"));
+                        String propertyName = StringCustomUtils.recoverSpecialSymbolsXml(propertyValue.attributeValue("name"));
                         boolean required = "true".equals(propertyValue.attributeValue("required"));
                         boolean sensitive = "true".equals(propertyValue.attributeValue("sensitive"));
                         boolean isSelect = "true".equals(propertyValue.attributeValue("isSelect"));
@@ -929,20 +937,20 @@ public class FlowXmlUtils {
             }
             Element flow = rootElt.element("flow");
             Element mxGraphModel = flow.element("mxGraphModel");
-            String dx = mxGraphModel.attributeValue("dx");
-            String dy = mxGraphModel.attributeValue("dy");
-            String grid = mxGraphModel.attributeValue("grid");
-            String gridSize = mxGraphModel.attributeValue("gridSize");
-            String guides = mxGraphModel.attributeValue("guides");
-            String tooltips = mxGraphModel.attributeValue("tooltips");
-            String connect = mxGraphModel.attributeValue("connect");
-            String arrows = mxGraphModel.attributeValue("arrows");
-            String fold = mxGraphModel.attributeValue("fold");
-            String page = mxGraphModel.attributeValue("page");
-            String pageScale = mxGraphModel.attributeValue("pageScale");
-            String pageWidth = mxGraphModel.attributeValue("pageWidth");
-            String pageHeight = mxGraphModel.attributeValue("pageHeight");
-            String background = mxGraphModel.attributeValue("background");
+            String dx = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModel.attributeValue("dx"));
+            String dy = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModel.attributeValue("dy"));
+            String grid = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModel.attributeValue("grid"));
+            String gridSize = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModel.attributeValue("gridSize"));
+            String guides = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModel.attributeValue("guides"));
+            String tooltips = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModel.attributeValue("tooltips"));
+            String connect = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModel.attributeValue("connect"));
+            String arrows = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModel.attributeValue("arrows"));
+            String fold = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModel.attributeValue("fold"));
+            String page = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModel.attributeValue("page"));
+            String pageScale = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModel.attributeValue("pageScale"));
+            String pageWidth = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModel.attributeValue("pageWidth"));
+            String pageHeight = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModel.attributeValue("pageHeight"));
+            String background = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModel.attributeValue("background"));
 
             MxGraphModelVo mxGraphModelVo = new MxGraphModelVo();
             mxGraphModelVo.setDx(dx);
@@ -966,14 +974,14 @@ public class FlowXmlUtils {
                 MxCellVo mxCellVo = new MxCellVo();
                 MxGeometryVo mxGeometryVo = null;
                 Element recordEle = (Element) rootiter.next();
-                String mxCellId = recordEle.attributeValue("id");
-                String parent = recordEle.attributeValue("parent");
-                String style = recordEle.attributeValue("style");
-                String edge = recordEle.attributeValue("edge");
-                String source = recordEle.attributeValue("source");
-                String target = recordEle.attributeValue("target");
-                String value = recordEle.attributeValue("value");
-                String vertex = recordEle.attributeValue("vertex");
+                String mxCellId = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("id"));
+                String parent = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("parent"));
+                String style = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("style"));
+                String edge = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("edge"));
+                String source = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("source"));
+                String target = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("target"));
+                String value = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("value"));
+                String vertex = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("vertex"));
                 if (PageId >= 1) {
                     if (Integer.parseInt(mxCellId) < 2) {
                         continue;
@@ -997,12 +1005,12 @@ public class FlowXmlUtils {
                 if (StringUtils.isNotBlank(style)) {
                     mxGeometryVo = new MxGeometryVo();
                     Element mxGeometry = recordEle.element("mxGeometry");
-                    String relative = mxGeometry.attributeValue("relative");
-                    String as = mxGeometry.attributeValue("as");
-                    String x = mxGeometry.attributeValue("x");
-                    String y = mxGeometry.attributeValue("y");
-                    String width = mxGeometry.attributeValue("width");
-                    String height = mxGeometry.attributeValue("height");
+                    String relative = StringCustomUtils.recoverSpecialSymbolsXml(mxGeometry.attributeValue("relative"));
+                    String as = StringCustomUtils.recoverSpecialSymbolsXml(mxGeometry.attributeValue("as"));
+                    String x = StringCustomUtils.recoverSpecialSymbolsXml(mxGeometry.attributeValue("x"));
+                    String y = StringCustomUtils.recoverSpecialSymbolsXml(mxGeometry.attributeValue("y"));
+                    String width = StringCustomUtils.recoverSpecialSymbolsXml(mxGeometry.attributeValue("width"));
+                    String height = StringCustomUtils.recoverSpecialSymbolsXml(mxGeometry.attributeValue("height"));
                     mxGeometryVo.setRelative(relative);
                     mxGeometryVo.setAs(as);
                     mxGeometryVo.setX(x);
@@ -1075,20 +1083,20 @@ public class FlowXmlUtils {
                 return null;
             }
             Element mxGraphModelXml = rootElt.element("mxGraphModel");
-            String dx = mxGraphModelXml.attributeValue("dx");
-            String dy = mxGraphModelXml.attributeValue("dy");
-            String grid = mxGraphModelXml.attributeValue("grid");
-            String gridSize = mxGraphModelXml.attributeValue("gridSize");
-            String guides = mxGraphModelXml.attributeValue("guides");
-            String tooltips = mxGraphModelXml.attributeValue("tooltips");
-            String connect = mxGraphModelXml.attributeValue("connect");
-            String arrows = mxGraphModelXml.attributeValue("arrows");
-            String fold = mxGraphModelXml.attributeValue("fold");
-            String page = mxGraphModelXml.attributeValue("page");
-            String pageScale = mxGraphModelXml.attributeValue("pageScale");
-            String pageWidth = mxGraphModelXml.attributeValue("pageWidth");
-            String pageHeight = mxGraphModelXml.attributeValue("pageHeight");
-            String background = mxGraphModelXml.attributeValue("background");
+            String dx = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModelXml.attributeValue("dx"));
+            String dy = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModelXml.attributeValue("dy"));
+            String grid = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModelXml.attributeValue("grid"));
+            String gridSize = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModelXml.attributeValue("gridSize"));
+            String guides = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModelXml.attributeValue("guides"));
+            String tooltips = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModelXml.attributeValue("tooltips"));
+            String connect = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModelXml.attributeValue("connect"));
+            String arrows = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModelXml.attributeValue("arrows"));
+            String fold = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModelXml.attributeValue("fold"));
+            String page = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModelXml.attributeValue("page"));
+            String pageScale = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModelXml.attributeValue("pageScale"));
+            String pageWidth = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModelXml.attributeValue("pageWidth"));
+            String pageHeight = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModelXml.attributeValue("pageHeight"));
+            String background = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModelXml.attributeValue("background"));
 
             MxGraphModel mxGraphModel = new MxGraphModel();
             mxGraphModel.setCrtDttm(new Date());
@@ -1117,14 +1125,14 @@ public class FlowXmlUtils {
                 MxCell mxCell = new MxCell();
 
                 Element recordEle = (Element) rootiter.next();
-                String mxCellId = recordEle.attributeValue("id");
-                String parent = recordEle.attributeValue("parent");
-                String style = recordEle.attributeValue("style");
-                String edge = recordEle.attributeValue("edge");
-                String source = recordEle.attributeValue("source");
-                String target = recordEle.attributeValue("target");
-                String value = recordEle.attributeValue("value");
-                String vertex = recordEle.attributeValue("vertex");
+                String mxCellId = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("id"));
+                String parent = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("parent"));
+                String style = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("style"));
+                String edge = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("edge"));
+                String source = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("source"));
+                String target = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("target"));
+                String value = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("value"));
+                String vertex = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("vertex"));
                 if (maxPageId >= 1) {
                     if (Integer.parseInt(mxCellId) < 2) {
                         continue;
@@ -1154,12 +1162,12 @@ public class FlowXmlUtils {
                 if (StringUtils.isNotBlank(style)) {
                     MxGeometry mxGeometry = new MxGeometry();
                     Element mxGeometryXml = recordEle.element("mxGeometry");
-                    String relative = mxGeometryXml.attributeValue("relative");
-                    String as = mxGeometryXml.attributeValue("as");
-                    String x = mxGeometryXml.attributeValue("x");
-                    String y = mxGeometryXml.attributeValue("y");
-                    String width = mxGeometryXml.attributeValue("width");
-                    String height = mxGeometryXml.attributeValue("height");
+                    String relative = StringCustomUtils.recoverSpecialSymbolsXml(mxGeometryXml.attributeValue("relative"));
+                    String as = StringCustomUtils.recoverSpecialSymbolsXml(mxGeometryXml.attributeValue("as"));
+                    String x = StringCustomUtils.recoverSpecialSymbolsXml(mxGeometryXml.attributeValue("x"));
+                    String y = StringCustomUtils.recoverSpecialSymbolsXml(mxGeometryXml.attributeValue("y"));
+                    String width = StringCustomUtils.recoverSpecialSymbolsXml(mxGeometryXml.attributeValue("width"));
+                    String height = StringCustomUtils.recoverSpecialSymbolsXml(mxGeometryXml.attributeValue("height"));
                     mxGeometry.setCrtDttm(new Date());
                     mxGeometry.setCrtUser(username);
                     mxGeometry.setLastUpdateDttm(new Date());
@@ -1201,11 +1209,11 @@ public class FlowXmlUtils {
         }
         FlowGroupPaths flowGroupPaths = new FlowGroupPaths();
         Element flowGroupPathsElement = rootElt.element("flowGroupPaths");
-        String from = flowGroupPathsElement.attributeValue("from");
-        String to = flowGroupPathsElement.attributeValue("to");
-        String outPort = flowGroupPathsElement.attributeValue("outport");
-        String inPort = flowGroupPathsElement.attributeValue("inport");
-        String pageId = flowGroupPathsElement.attributeValue("pageId");
+        String from = StringCustomUtils.recoverSpecialSymbolsXml(flowGroupPathsElement.attributeValue("from"));
+        String to = StringCustomUtils.recoverSpecialSymbolsXml(flowGroupPathsElement.attributeValue("to"));
+        String outPort = StringCustomUtils.recoverSpecialSymbolsXml(flowGroupPathsElement.attributeValue("outport"));
+        String inPort = StringCustomUtils.recoverSpecialSymbolsXml(flowGroupPathsElement.attributeValue("inport"));
+        String pageId = StringCustomUtils.recoverSpecialSymbolsXml(flowGroupPathsElement.attributeValue("pageId"));
         flowGroupPaths.setCrtDttm(new Date());
         flowGroupPaths.setCrtUser(username);
         flowGroupPaths.setLastUpdateDttm(new Date());
@@ -1249,12 +1257,12 @@ public class FlowXmlUtils {
             }
             Element pathsElement = rootElt.element("paths"); // Get the child node "paths" under the root node
             Paths paths = new Paths();
-            String from = pathsElement.attributeValue("from");
-            String to = pathsElement.attributeValue("to");
-            String outport = pathsElement.attributeValue("outport");
-            String inport = pathsElement.attributeValue("inport");
-            String pageId = pathsElement.attributeValue("pageId");
-            String filterCondition = pathsElement.attributeValue("filterCondition");
+            String from = StringCustomUtils.recoverSpecialSymbolsXml(pathsElement.attributeValue("from"));
+            String to = StringCustomUtils.recoverSpecialSymbolsXml(pathsElement.attributeValue("to"));
+            String outport = StringCustomUtils.recoverSpecialSymbolsXml(pathsElement.attributeValue("outport"));
+            String inport = StringCustomUtils.recoverSpecialSymbolsXml(pathsElement.attributeValue("inport"));
+            String pageId = StringCustomUtils.recoverSpecialSymbolsXml(pathsElement.attributeValue("pageId"));
+            String filterCondition = StringCustomUtils.recoverSpecialSymbolsXml(pathsElement.attributeValue("filterCondition"));
             paths.setCrtDttm(new Date());
             paths.setCrtUser(username);
             paths.setLastUpdateDttm(new Date());
@@ -1293,18 +1301,18 @@ public class FlowXmlUtils {
             }
             Element stopElement = rootElt.element("stop");
             Stops stops = new Stops();
-            String bundel = stopElement.attributeValue("bundel");
-            String description = stopElement.attributeValue("description");
-            String id = stopElement.attributeValue("id");
-            String name = stopElement.attributeValue("name");
-            String pageId = stopElement.attributeValue("pageId");
-            String inPortType = stopElement.attributeValue("inPortType");
-            String inports = stopElement.attributeValue("inports");
-            String outPortType = stopElement.attributeValue("outPortType");
-            String outports = stopElement.attributeValue("outports");
-            String isCheckpoint = stopElement.attributeValue("isCheckpoint");
-            String owner = stopElement.attributeValue("owner");
-            String groups = stopElement.attributeValue("groups");
+            String bundel = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("bundel"));
+            String description = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("description"));
+            String id = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("id"));
+            String name = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("name"));
+            String pageId = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("pageId"));
+            String inPortType = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("inPortType"));
+            String inports = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("inports"));
+            String outPortType = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("outPortType"));
+            String outports = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("outports"));
+            String isCheckpoint = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("isCheckpoint"));
+            String owner = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("owner"));
+            String groups = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("groups"));
             stops.setCrtDttm(new Date());
             stops.setCrtUser(username);
             stops.setLastUpdateDttm(new Date());
@@ -1328,12 +1336,12 @@ public class FlowXmlUtils {
                 while (propertyXmlIterator.hasNext()) {
                     Element propertyValue = (Element) propertyXmlIterator.next();
                     Property property = new Property();
-                    String allowableValues = propertyValue.attributeValue("allowableValues");
-                    String customValue = propertyValue.attributeValue("customValue");
-                    String propertyDescription = propertyValue.attributeValue("description");
-                    String displayName = propertyValue.attributeValue("displayName");
-                    String propertyId = propertyValue.attributeValue("id");
-                    String propertyName = propertyValue.attributeValue("name");
+                    String allowableValues = StringCustomUtils.recoverSpecialSymbolsXml(propertyValue.attributeValue("allowableValues"));
+                    String customValue = StringCustomUtils.recoverSpecialSymbolsXml(propertyValue.attributeValue("customValue"));
+                    String propertyDescription = StringCustomUtils.recoverSpecialSymbolsXml(propertyValue.attributeValue("description"));
+                    String displayName = StringCustomUtils.recoverSpecialSymbolsXml(propertyValue.attributeValue("displayName"));
+                    String propertyId = StringCustomUtils.recoverSpecialSymbolsXml(propertyValue.attributeValue("id"));
+                    String propertyName = StringCustomUtils.recoverSpecialSymbolsXml(propertyValue.attributeValue("name"));
                     boolean required = "true".equals(propertyValue.attributeValue("required"));
                     boolean sensitive = "true".equals(propertyValue.attributeValue("sensitive"));
                     boolean isSelect = "true".equals(propertyValue.attributeValue("isSelect"));
@@ -1394,13 +1402,13 @@ public class FlowXmlUtils {
             if (null == flowElement) {
                 return null;
             }
-            String flowPageId = flowElement.attributeValue("pageId");
-            String driverMemory = flowElement.attributeValue("driverMemory");
-            String executorCores = flowElement.attributeValue("executorCores");
-            String executorMemory = flowElement.attributeValue("executorMemory");
-            String executorNumber = flowElement.attributeValue("executorNumber");
-            String name = flowElement.attributeValue("name");
-            String description = flowElement.attributeValue("description");
+            String flowPageId = StringCustomUtils.recoverSpecialSymbolsXml(flowElement.attributeValue("pageId"));
+            String driverMemory = StringCustomUtils.recoverSpecialSymbolsXml(flowElement.attributeValue("driverMemory"));
+            String executorCores = StringCustomUtils.recoverSpecialSymbolsXml(flowElement.attributeValue("executorCores"));
+            String executorMemory = StringCustomUtils.recoverSpecialSymbolsXml(flowElement.attributeValue("executorMemory"));
+            String executorNumber = StringCustomUtils.recoverSpecialSymbolsXml(flowElement.attributeValue("executorNumber"));
+            String name = StringCustomUtils.recoverSpecialSymbolsXml(flowElement.attributeValue("name"));
+            String description = StringCustomUtils.recoverSpecialSymbolsXml(flowElement.attributeValue("description"));
 
             Flow flow = new Flow();
             flow.setCrtDttm(new Date());
@@ -1471,9 +1479,9 @@ public class FlowXmlUtils {
             if (null == flowGroupElement) {
                 return ReturnMapUtils.setFailedMsg("No flowGroup node");
             }
-            String name = flowGroupElement.attributeValue("name");
-            String description = flowGroupElement.attributeValue("description");
-            String flowGroupPageId = flowGroupElement.attributeValue("pageId");
+            String name = StringCustomUtils.recoverSpecialSymbolsXml(flowGroupElement.attributeValue("name"));
+            String description = StringCustomUtils.recoverSpecialSymbolsXml(flowGroupElement.attributeValue("description"));
+            String flowGroupPageId = StringCustomUtils.recoverSpecialSymbolsXml(flowGroupElement.attributeValue("pageId"));
 
             FlowGroup flowGroup = new FlowGroup();
             flowGroup.setCrtDttm(new Date());
@@ -1592,13 +1600,13 @@ public class FlowXmlUtils {
             if (null == flowElement) {
                 return ReturnMapUtils.setFailedMsg("No flow node");
             }
-            String driverMemory = flowElement.attributeValue("driverMemory");
-            String executorCores = flowElement.attributeValue("executorCores");
-            String executorMemory = flowElement.attributeValue("executorMemory");
-            String executorNumber = flowElement.attributeValue("executorNumber");
-            String name = flowElement.attributeValue("name");
-            String description = flowElement.attributeValue("description");
-            String flowPageId = flowElement.attributeValue("pageId");
+            String driverMemory = StringCustomUtils.recoverSpecialSymbolsXml(flowElement.attributeValue("driverMemory"));
+            String executorCores = StringCustomUtils.recoverSpecialSymbolsXml(flowElement.attributeValue("executorCores"));
+            String executorMemory = StringCustomUtils.recoverSpecialSymbolsXml(flowElement.attributeValue("executorMemory"));
+            String executorNumber = StringCustomUtils.recoverSpecialSymbolsXml(flowElement.attributeValue("executorNumber"));
+            String name = StringCustomUtils.recoverSpecialSymbolsXml(flowElement.attributeValue("name"));
+            String description = StringCustomUtils.recoverSpecialSymbolsXml(flowElement.attributeValue("description"));
+            String flowPageId = StringCustomUtils.recoverSpecialSymbolsXml(flowElement.attributeValue("pageId"));
             if (StringUtils.isNotBlank(flowPageId) && null != flowMaxPageIdInt) {
                 flowPageId = (Integer.parseInt(flowPageId) + flowMaxPageIdInt) + "";
             }
@@ -1673,18 +1681,18 @@ public class FlowXmlUtils {
                 return null;
             }
             Stops stops = new Stops();
-            String bundel = stopElement.attributeValue("bundel");
-            String description = stopElement.attributeValue("description");
-            String id = stopElement.attributeValue("id");
-            String name = stopElement.attributeValue("name");
-            String pageId = stopElement.attributeValue("pageId");
-            String inPortType = stopElement.attributeValue("inPortType");
-            String inports = stopElement.attributeValue("inports");
-            String outPortType = stopElement.attributeValue("outPortType");
-            String outports = stopElement.attributeValue("outports");
-            String isCheckpoint = stopElement.attributeValue("isCheckpoint");
-            String owner = stopElement.attributeValue("owner");
-            String groups = stopElement.attributeValue("groups");
+            String bundel = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("bundel"));
+            String description = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("description"));
+            String id = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("id"));
+            String name = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("name"));
+            String pageId = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("pageId"));
+            String inPortType = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("inPortType"));
+            String inports = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("inports"));
+            String outPortType = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("outPortType"));
+            String outports = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("outports"));
+            String isCheckpoint = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("isCheckpoint"));
+            String owner = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("owner"));
+            String groups = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("groups"));
             stops.setCrtDttm(new Date());
             stops.setCrtUser(username);
             stops.setLastUpdateDttm(new Date());
@@ -1708,12 +1716,12 @@ public class FlowXmlUtils {
                 while (propertyXmlIterator.hasNext()) {
                     Element propertyValue = (Element) propertyXmlIterator.next();
                     Property property = new Property();
-                    String allowableValues = propertyValue.attributeValue("allowableValues");
-                    String customValue = propertyValue.attributeValue("customValue");
-                    String propertyDescription = propertyValue.attributeValue("description");
-                    String displayName = propertyValue.attributeValue("displayName");
-                    String propertyId = propertyValue.attributeValue("id");
-                    String propertyName = propertyValue.attributeValue("name");
+                    String allowableValues = StringCustomUtils.recoverSpecialSymbolsXml(propertyValue.attributeValue("allowableValues"));
+                    String customValue = StringCustomUtils.recoverSpecialSymbolsXml(propertyValue.attributeValue("customValue"));
+                    String propertyDescription = StringCustomUtils.recoverSpecialSymbolsXml(propertyValue.attributeValue("description"));
+                    String displayName = StringCustomUtils.recoverSpecialSymbolsXml(propertyValue.attributeValue("displayName"));
+                    String propertyId = StringCustomUtils.recoverSpecialSymbolsXml(propertyValue.attributeValue("id"));
+                    String propertyName = StringCustomUtils.recoverSpecialSymbolsXml(propertyValue.attributeValue("name"));
                     boolean required = "true".equals(propertyValue.attributeValue("required"));
                     boolean sensitive = "true".equals(propertyValue.attributeValue("sensitive"));
                     boolean isSelect = "true".equals(propertyValue.attributeValue("isSelect"));
@@ -1773,20 +1781,20 @@ public class FlowXmlUtils {
             if (null == mxGraphModelXml) {
                 return null;
             }
-            String dx = mxGraphModelXml.attributeValue("dx");
-            String dy = mxGraphModelXml.attributeValue("dy");
-            String grid = mxGraphModelXml.attributeValue("grid");
-            String gridSize = mxGraphModelXml.attributeValue("gridSize");
-            String guides = mxGraphModelXml.attributeValue("guides");
-            String tooltips = mxGraphModelXml.attributeValue("tooltips");
-            String connect = mxGraphModelXml.attributeValue("connect");
-            String arrows = mxGraphModelXml.attributeValue("arrows");
-            String fold = mxGraphModelXml.attributeValue("fold");
-            String page = mxGraphModelXml.attributeValue("page");
-            String pageScale = mxGraphModelXml.attributeValue("pageScale");
-            String pageWidth = mxGraphModelXml.attributeValue("pageWidth");
-            String pageHeight = mxGraphModelXml.attributeValue("pageHeight");
-            String background = mxGraphModelXml.attributeValue("background");
+            String dx = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModelXml.attributeValue("dx"));
+            String dy = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModelXml.attributeValue("dy"));
+            String grid = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModelXml.attributeValue("grid"));
+            String gridSize = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModelXml.attributeValue("gridSize"));
+            String guides = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModelXml.attributeValue("guides"));
+            String tooltips = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModelXml.attributeValue("tooltips"));
+            String connect = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModelXml.attributeValue("connect"));
+            String arrows = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModelXml.attributeValue("arrows"));
+            String fold = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModelXml.attributeValue("fold"));
+            String page = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModelXml.attributeValue("page"));
+            String pageScale = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModelXml.attributeValue("pageScale"));
+            String pageWidth = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModelXml.attributeValue("pageWidth"));
+            String pageHeight = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModelXml.attributeValue("pageHeight"));
+            String background = StringCustomUtils.recoverSpecialSymbolsXml(mxGraphModelXml.attributeValue("background"));
 
             MxGraphModel mxGraphModel = new MxGraphModel();
             mxGraphModel.setCrtDttm(new Date());
@@ -1871,14 +1879,14 @@ public class FlowXmlUtils {
             return null;
         }
         MxCell mxCell = new MxCell();
-        String pageId = recordEle.attributeValue("id");
-        String parent = recordEle.attributeValue("parent");
-        String style = recordEle.attributeValue("style");
-        String edge = recordEle.attributeValue("edge");
-        String source = recordEle.attributeValue("source");
-        String target = recordEle.attributeValue("target");
-        String value = recordEle.attributeValue("value");
-        String vertex = recordEle.attributeValue("vertex");
+        String pageId = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("id"));
+        String parent = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("parent"));
+        String style = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("style"));
+        String edge = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("edge"));
+        String source = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("source"));
+        String target = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("target"));
+        String value = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("value"));
+        String vertex = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("vertex"));
         if (maxPageId >= 1) {
             if (Integer.parseInt(pageId) < 2) {
                 return null;
@@ -1907,12 +1915,12 @@ public class FlowXmlUtils {
         if (StringUtils.isNotBlank(style)) {
             MxGeometry mxGeometry = new MxGeometry();
             Element mxGeometryXml = recordEle.element("mxGeometry");
-            String relative = mxGeometryXml.attributeValue("relative");
-            String as = mxGeometryXml.attributeValue("as");
-            String x = mxGeometryXml.attributeValue("x");
-            String y = mxGeometryXml.attributeValue("y");
-            String width = mxGeometryXml.attributeValue("width");
-            String height = mxGeometryXml.attributeValue("height");
+            String relative = StringCustomUtils.recoverSpecialSymbolsXml(mxGeometryXml.attributeValue("relative"));
+            String as = StringCustomUtils.recoverSpecialSymbolsXml(mxGeometryXml.attributeValue("as"));
+            String x = StringCustomUtils.recoverSpecialSymbolsXml(mxGeometryXml.attributeValue("x"));
+            String y = StringCustomUtils.recoverSpecialSymbolsXml(mxGeometryXml.attributeValue("y"));
+            String width = StringCustomUtils.recoverSpecialSymbolsXml(mxGeometryXml.attributeValue("width"));
+            String height = StringCustomUtils.recoverSpecialSymbolsXml(mxGeometryXml.attributeValue("height"));
             mxGeometry.setCrtDttm(new Date());
             mxGeometry.setCrtUser(username);
             mxGeometry.setLastUpdateDttm(new Date());
@@ -1929,54 +1937,6 @@ public class FlowXmlUtils {
         }
         mxCell.setMxGraphModel(mxGraphModel);
         return mxCell;
-    }
-
-    /**
-     * xmlStrToElement
-     *
-     * @param xmlData  xml string data
-     * @param isEscape is escape
-     * @return Element
-     */
-    private static Element xmlStrToElement(String xmlData, boolean isEscape) {
-        try {
-            String xmlStr = xmlData;
-            if (isEscape) {
-                logger.debug("test");
-                //xmlStr = StringEscapeUtils.unescapeHtml(xmlData);
-            }
-            Document document = DocumentHelper.parseText(xmlStr);
-            String strXml = document.getRootElement().asXML();
-            String transformation = "<fg>" + strXml + "</fg>";
-            InputSource in = new InputSource(new StringReader(transformation));
-            in.setEncoding("UTF-8");
-            SAXReader reader = new SAXReader();
-            document = reader.read(in);
-            // Get all nodes with "autoSaveNode" attribute
-            return document.getRootElement(); // Get the root node
-        } catch (DocumentException e) {
-            logger.error("Conversion failed", e);
-            return null;
-        }
-    }
-
-    /**
-     * xmlStrToElement
-     *
-     * @param xmlData  xml string data
-     * @param isEscape is escape
-     * @param key      The key of the data to be fetched
-     * @return Element
-     */
-    private static Element xmlStrToElementGetByKey(String xmlData, boolean isEscape, String key) {
-        if (StringUtils.isBlank(key)) {
-            return xmlStrToElement(xmlData, isEscape);
-        }
-        Element element = xmlStrToElement(xmlData, isEscape);
-        if (null == element) {
-            return null;
-        }
-        return element.element(key);
     }
 
 }

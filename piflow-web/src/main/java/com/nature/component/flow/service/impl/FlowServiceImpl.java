@@ -494,7 +494,7 @@ public class FlowServiceImpl implements IFlowService {
                     mxCellDomain.saveOrUpdate(mxCell);
                     MxGraphModelVo mxGraphModelVo = FlowXmlUtils.mxGraphModelPoToVo(mxGraphModel);
                     // Convert the mxGraphModelVo from the query to XML
-                    String loadXml = FlowXmlUtils.mxGraphModelToXml(mxGraphModelVo);
+                    String loadXml = MxGraphUtils.mxGraphModelToMxGraphXml(mxGraphModelVo);
                     loadXml = StringUtils.isNotBlank(loadXml) ? loadXml : "";
                     rtnMap.put("XmlData", loadXml);
                     rtnMap.put("code", 200);

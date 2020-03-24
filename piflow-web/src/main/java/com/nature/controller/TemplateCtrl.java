@@ -57,63 +57,54 @@ public class TemplateCtrl {
     public String saveData(HttpServletRequest request, Model model) {
         UserVo user = SessionUserUtil.getCurrentUser();
         String username = (null != user) ? user.getUsername() : "-1";
-        Map<String, Object> rtnMap = new HashMap<>();
-        rtnMap.put("code", 500);
         String name = request.getParameter("name");
         String loadId = request.getParameter("load");
         String value = request.getParameter("value");
         MxGraphModelVo mxGraphModelVo = null;
         if (StringUtils.isAnyEmpty(name, loadId)) {
-            rtnMap.put("errorMsg", "Some incoming parameters are empty");
-            logger.info("Some incoming parameters are empty");
-            return JsonUtils.toJsonNoException(rtnMap);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Some incoming parameters are empty");
         }
         Flow flowById = iFlowServiceImpl.getFlowById(loadId);
-        if (null != flowById) {
-            if (StringUtils.isBlank(value)) {
-                MxGraphModel mxGraphModel = flowById.getMxGraphModel();
-                if (null != mxGraphModel) {
-                    mxGraphModelVo = FlowXmlUtils.mxGraphModelPoToVo(mxGraphModel);
-                    // Convert the query mxGraphModelVo to XML
-                    value = FlowXmlUtils.mxGraphModelToXml(mxGraphModelVo);
-                }
-            }
-            //Concatenate the XML according to the flowById
-            String flowAndStopInfoToXml = FlowXmlUtils.flowAndStopInfoToXml(flowById, value);
-            logger.info(flowAndStopInfoToXml);
+        if (null == flowById) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Flow information is empty");
+        }
 
-            Template template = new Template();
-            template.setId(SqlUtils.getUUID32());
-            template.setCrtDttm(new Date());
-            template.setCrtUser(username);
-            template.setEnableFlag(true);
-            template.setLastUpdateUser(username);
-            template.setLastUpdateDttm(new Date());
-            template.setName(name);
-            //Keep one copy in the database
-            template.setValue(value);
-            template.setFlow(flowById);
-            //XML to file and save to the specified directory
-            String path = FileUtils.createXml(flowAndStopInfoToXml, name, ".xml", SysParamsCache.XML_PATH);
-            template.setPath(path);
-            int addTemplate = iTemplateService.addTemplate(template);
-            if (addTemplate > 0) {
-                rtnMap.put("code", 200);
-                rtnMap.put("errorMsg", "save template success");
-                //Save the stop, property information
-                List<Stops> stopsList = flowById.getStopsList();
-                if (null != stopsList && stopsList.size() > 0) {
-                    flowAndStopsTemplateVoServiceImpl.addStopsList(stopsList, template);
-                }
-            } else {
-                rtnMap.put("errorMsg", "failed to save template");
-                logger.info("Failure to save template");
+        if (StringUtils.isBlank(value)) {
+            MxGraphModel mxGraphModel = flowById.getMxGraphModel();
+            if (null != mxGraphModel) {
+                mxGraphModelVo = FlowXmlUtils.mxGraphModelPoToVo(mxGraphModel);
+                // Convert the query mxGraphModelVo to XML
+                value = FlowXmlUtils.mxGraphModelToXml(mxGraphModelVo);
             }
-            return JsonUtils.toJsonNoException(rtnMap);
+        }
+        //Concatenate the XML according to the flowById
+        String flowAndStopInfoToXml = FlowXmlUtils.flowAndStopInfoToXml(flowById, value);
+        logger.info(flowAndStopInfoToXml);
+
+        Template template = new Template();
+        template.setId(SqlUtils.getUUID32());
+        template.setCrtDttm(new Date());
+        template.setCrtUser(username);
+        template.setEnableFlag(true);
+        template.setLastUpdateUser(username);
+        template.setLastUpdateDttm(new Date());
+        template.setName(name);
+        //Keep one copy in the database
+        template.setValue(value);
+        template.setFlow(flowById);
+        //XML to file and save to the specified directory
+        String path = FileUtils.createXml(flowAndStopInfoToXml, name, ".xml", SysParamsCache.XML_PATH);
+        template.setPath(path);
+        int addTemplate = iTemplateService.addTemplate(template);
+        if (addTemplate > 0) {
+            //Save the stop, property information
+            List<Stops> stopsList = flowById.getStopsList();
+            if (null != stopsList && stopsList.size() > 0) {
+                flowAndStopsTemplateVoServiceImpl.addStopsList(stopsList, template);
+            }
+            return ReturnMapUtils.setSucceededMsgRtnJsonStr("save template success");
         } else {
-            rtnMap.put("errorMsg", "Flow information is empty");
-            logger.info("Flow information is empty,loadId：" + loadId);
-            return JsonUtils.toJsonNoException(rtnMap);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("failed to save template");
         }
     }
 
@@ -158,79 +149,70 @@ public class TemplateCtrl {
     public String upload(@RequestParam("templateFile") MultipartFile file) {
         UserVo user = SessionUserUtil.getCurrentUser();
         String username = (null != user) ? user.getUsername() : "-1";
-        Map<String, Object> rtnMap = new HashMap<String, Object>();
-        rtnMap.put("code", 500);
-        if (!file.isEmpty()) {
-            String upload = FileUtils.upload(file, SysParamsCache.XML_PATH);
-            Map<String, Object> map = JSON.parseObject(upload);
-            if (!map.isEmpty() && null != map) {
-                Integer code = (Integer) map.get("code");
-                if (500 == code) {
-                    rtnMap.put("errorMsg", "failed to upload file");
-                    JsonUtils.toJsonNoException(rtnMap);
-                }
-                String name = (String) map.get("fileName");
-                String path = (String) map.get("url");
-                Template template = new Template();
-                template.setId(SqlUtils.getUUID32());
-                template.setCrtDttm(new Date());
-                template.setCrtUser(username);
-                template.setEnableFlag(true);
-                template.setLastUpdateUser(username);
-                template.setLastUpdateDttm(new Date());
-                SimpleDateFormat sdf = new SimpleDateFormat("MMddHHmmSSSS");
-                Date nowDate = new Date();
-                String fileName = sdf.format(nowDate);
-                //File name prefix
-                String prefix = name.substring(0, name.length() - 4);
-                //Suffix .xml
-                String Suffix = name.substring(name.length() - 4);
-                //Add timestamp
-                String uploadfileName = prefix + "-" + fileName;
-                template.setName(uploadfileName + Suffix);
-                template.setPath(path);
-                //Read the xml file according to the saved file path and return the xml string
-                String xmlFileToStr = FileUtils.XmlFileToStrByAbsolutePath(template.getPath());
-                if (StringUtils.isBlank(xmlFileToStr)) {
-                    logger.info("The xml file failed to read and the template failed to be uploaded.");
-                    rtnMap.put("errorMsg", "The xml file failed to read. Please try again.");
-                    return JsonUtils.toJsonNoException(rtnMap);
-                }
-                List<StopTemplateModel> stopsList = null;
-                //Xml conversion Template object, including stops and attributes
-                Template xmlToFlowStopInfo = FlowXmlUtils.xmlToFlowStopInfo(xmlFileToStr);
-                if (null != xmlToFlowStopInfo) {
-                    stopsList = xmlToFlowStopInfo.getStopsList();
-                }
-                //Get the mxGraphModel part from the xml string and save it to value
-                MxGraphModelVo xmlToMxGraphModelVo = FlowXmlUtils.allXmlToMxGraphModelVo(xmlFileToStr, 0);
-                if (null != xmlToMxGraphModelVo) {
-                    // Convert the mxGraphModelVo from the query to XML
-                    String loadXml = FlowXmlUtils.mxGraphModelToXml(xmlToMxGraphModelVo);
-                    template.setValue(loadXml);
-                }
-
-                int addTemplate = iTemplateService.addTemplate(template);
-                if (addTemplate > 0) {
-                    //Save stop, attribute information
-                    if (null != stopsList && stopsList.size() > 0) {
-                        List<Stops> stop = FlowXmlUtils.stopTemplateVoToStop(stopsList);
-                        if (null != stop && stop.size() > 0) {
-                            flowAndStopsTemplateVoServiceImpl.addStopsList(stop, template);
-                        }
-                    }
-                    rtnMap.put("code", 200);
-                    rtnMap.put("errorMsg", "successful template upload");
-                    logger.info("Template upload succeeded");
-                } else {
-                    rtnMap.put("errorMsg", "template upload failed");
-                    logger.info("template upload failed");
-                }
-                return JsonUtils.toJsonNoException(rtnMap);
-            }
+        if (file.isEmpty()) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Upload failed, please try again later");
         }
-        rtnMap.put("errorMsg", "Upload failed, please try again later");
-        return JsonUtils.toJsonNoException(rtnMap);
+        String upload = FileUtils.upload(file, SysParamsCache.XML_PATH);
+        Map<String, Object> map = JSON.parseObject(upload);
+        if (null == map || map.isEmpty()) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Upload failed, please try again later");
+        }
+        Integer code = (Integer) map.get("code");
+        if (500 == code) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("failed to upload file");
+        }
+        String name = (String) map.get("fileName");
+        String path = (String) map.get("url");
+        Template template = new Template();
+        template.setId(SqlUtils.getUUID32());
+        template.setCrtDttm(new Date());
+        template.setCrtUser(username);
+        template.setEnableFlag(true);
+        template.setLastUpdateUser(username);
+        template.setLastUpdateDttm(new Date());
+        SimpleDateFormat sdf = new SimpleDateFormat("MMddHHmmSSSS");
+        Date nowDate = new Date();
+        String fileName = sdf.format(nowDate);
+        //File name prefix
+        String prefix = name.substring(0, name.length() - 4);
+        //Suffix .xml
+        String Suffix = name.substring(name.length() - 4);
+        //Add timestamp
+        String uploadfileName = prefix + "-" + fileName;
+        template.setName(uploadfileName + Suffix);
+        template.setPath(path);
+        //Read the xml file according to the saved file path and return the xml string
+        String xmlFileToStr = FileUtils.XmlFileToStrByAbsolutePath(template.getPath());
+        if (StringUtils.isBlank(xmlFileToStr)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("The xml file failed to read. Please try again.");
+        }
+        List<StopTemplateModel> stopsList = null;
+        //Xml conversion Template object, including stops and attributes
+        Template xmlToFlowStopInfo = FlowXmlUtils.xmlToFlowStopInfo(xmlFileToStr);
+        if (null != xmlToFlowStopInfo) {
+            stopsList = xmlToFlowStopInfo.getStopsList();
+        }
+        //Get the mxGraphModel part from the xml string and save it to value
+        MxGraphModelVo xmlToMxGraphModelVo = FlowXmlUtils.allXmlToMxGraphModelVo(xmlFileToStr, 0);
+        if (null != xmlToMxGraphModelVo) {
+            // Convert the mxGraphModelVo from the query to XML
+            String loadXml = FlowXmlUtils.mxGraphModelToXml(xmlToMxGraphModelVo);
+            template.setValue(loadXml);
+        }
+
+        int addTemplate = iTemplateService.addTemplate(template);
+        if (addTemplate > 0) {
+            //Save stop, attribute information
+            if (null != stopsList && stopsList.size() > 0) {
+                List<Stops> stop = FlowXmlUtils.stopTemplateVoToStop(stopsList);
+                if (null != stop && stop.size() > 0) {
+                    flowAndStopsTemplateVoServiceImpl.addStopsList(stop, template);
+                }
+            }
+            return ReturnMapUtils.setSucceededMsgRtnJsonStr("Template upload succeeded");
+        } else {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("template upload failed");
+        }
     }
 
 
