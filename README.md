@@ -7,7 +7,7 @@
 [![GitHub stars](https://img.shields.io/github/stars/cas-bigdatalab/piflow-web.svg)](https://github.com/cas-bigdatalab/piflow-web/stargazers)
 [![GitHub license](https://img.shields.io/github/license/cas-bigdatalab/piflow-web.svg)](https://github.com/cas-bigdatalab/piflow-web/blob/master/LICENSE)
 ## Requirements
-* JDK 1.8 or newer
+* JDK 1.8
 * MySQL 5.7
 ## Getting Started
 To Build: mvn package -Dmaven.test.skip=true
