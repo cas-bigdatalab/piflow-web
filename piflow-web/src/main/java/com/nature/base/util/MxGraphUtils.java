@@ -5,7 +5,9 @@ import com.nature.component.mxGraph.vo.MxGeometryVo;
 import com.nature.component.mxGraph.vo.MxGraphModelVo;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MxGraphUtils {
 
@@ -83,6 +85,7 @@ public class MxGraphUtils {
             }
             xmlStrSb.append("><root>");
             List<MxCellVo> rootVoList = mxGraphModelVo.getRootVo();
+            Map<String, String> mxCellPageIds = new HashMap<>();
             if (null != rootVoList && rootVoList.size() > 0) {
                 for (MxCellVo mxCellVo : rootVoList) {
                     String id = StringCustomUtils.replaceSpecialSymbolsPage(mxCellVo.getPageId());
@@ -94,10 +97,16 @@ public class MxGraphUtils {
                     String source = StringCustomUtils.replaceSpecialSymbolsPage(mxCellVo.getSource());
                     String target = StringCustomUtils.replaceSpecialSymbolsPage(mxCellVo.getTarget());
                     MxGeometryVo mxGeometryVo = mxCellVo.getMxGeometryVo();
-                    xmlStrSb.append("<mxCell ");
-                    if (StringUtils.isNotBlank(id)) {
-                        xmlStrSb.append(spliceStr("id", id));
+                    if (StringUtils.isBlank(id)) {
+                        continue;
                     }
+                    String isSplicedId = mxCellPageIds.get(id);
+                    if (StringUtils.isNotBlank(isSplicedId)) {
+                        continue;
+                    }
+                    mxCellPageIds.put(id, id);
+                    xmlStrSb.append("<mxCell ");
+                    xmlStrSb.append(spliceStr("id", id));
                     if (StringUtils.isNotBlank(value)) {
                         xmlStrSb.append(spliceStr("value", value));
                     }
