@@ -2,7 +2,6 @@ package com.nature.component.flow.service;
 
 import com.nature.component.flow.model.FlowGroup;
 import com.nature.component.flow.vo.FlowGroupVo;
-import com.nature.component.flow.vo.FlowVo;
 
 import javax.transaction.Transactional;
 

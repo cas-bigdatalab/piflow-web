@@ -3,19 +3,16 @@ package com.nature.base.util;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
-import java.lang.reflect.Field;
-import java.util.Arrays;
-
 public class StringCustomUtils {
 
     static Logger logger = LoggerUtil.getLogger();
 
     private static String EXCLUSIVE_STR = "[PiFlow]";
-    private static String SPECIAL_SYMBOLS_1 = "&";
-    private static String SPECIAL_SYMBOLS_2 = "<";
-    private static String SPECIAL_SYMBOLS_3 = ">";
-    private static String SPECIAL_SYMBOLS_4 = "'";
-    private static String SPECIAL_SYMBOLS_5 = "\"";
+    //private static String SPECIAL_SYMBOLS_1 = "&";
+    //private static String SPECIAL_SYMBOLS_2 = "<";
+    //private static String SPECIAL_SYMBOLS_3 = ">";
+    //private static String SPECIAL_SYMBOLS_4 = "'";
+    //private static String SPECIAL_SYMBOLS_5 = "\"";
 
 
     /**

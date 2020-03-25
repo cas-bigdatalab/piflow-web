@@ -4,7 +4,6 @@ import com.nature.base.BaseHibernateModelUUIDNoCorpAgentId;
 import com.nature.common.Eunm.ProcessParentType;
 import com.nature.common.Eunm.ProcessState;
 import com.nature.common.Eunm.RunModeType;
-import com.nature.component.flow.model.FlowGroup;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.OrderBy;

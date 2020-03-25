@@ -2,7 +2,6 @@ package com.nature.domain.flow;
 
 import com.nature.base.util.SessionUserUtil;
 import com.nature.base.vo.UserVo;
-import com.nature.component.flow.model.Flow;
 import com.nature.component.flow.model.FlowGroup;
 import com.nature.repository.flow.FlowGroupJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +9,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.criteria.CriteriaBuilder;

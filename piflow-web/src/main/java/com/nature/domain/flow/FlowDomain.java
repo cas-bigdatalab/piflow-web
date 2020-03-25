@@ -58,7 +58,8 @@ public class FlowDomain {
      * @param param
      * @return
      */
-    public List<Flow> getFlowListParam(String param) {
+    @SuppressWarnings("unchecked")
+	public List<Flow> getFlowListParam(String param) {
         String sqlStr = "select 0";
         StringBuffer strBuf = new StringBuffer();
         strBuf.append("select * ");

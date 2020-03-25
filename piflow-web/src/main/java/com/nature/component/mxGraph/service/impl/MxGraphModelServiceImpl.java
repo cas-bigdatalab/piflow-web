@@ -873,7 +873,8 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
      * @param flowGroupId
      * @return
      */
-    private Map<String, Object> addGroupFlows(MxGraphModelVo mxGraphModelVo, String flowGroupId, UserVo currentUser) {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	private Map<String, Object> addGroupFlows(MxGraphModelVo mxGraphModelVo, String flowGroupId, UserVo currentUser) {
         if (null == currentUser) {
             return ReturnMapUtils.setFailedMsg("Illegal operation");
         }
@@ -909,7 +910,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
         // Convert MxCellVo map to MxCellVoList
         List<MxCellVo> addMxCellVoList = this.filterNewMxCell(mxGraphModelVo.getRootVo(), mxCellDbRoot);
         ;
-        if (null != addMxCellVoList && addMxCellVoList.size() <= 0) {
+        if (null == addMxCellVoList || addMxCellVoList.size() <= 0) {
             return ReturnMapUtils.setFailedMsg("No data can be added, the addition failed");
         }
 

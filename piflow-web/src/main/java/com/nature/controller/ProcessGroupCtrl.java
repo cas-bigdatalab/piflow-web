@@ -6,7 +6,6 @@ import com.nature.base.util.ReturnMapUtils;
 import com.nature.base.util.SessionUserUtil;
 import com.nature.base.vo.UserVo;
 import com.nature.common.Eunm.ProcessState;
-import com.nature.component.process.model.Process;
 import com.nature.component.process.service.IProcessGroupService;
 import com.nature.component.process.service.IProcessService;
 import com.nature.component.process.vo.ProcessGroupVo;
@@ -283,7 +282,7 @@ public class ProcessGroupCtrl {
         Map<String, Object> rtnMap = new HashMap<>();
         String nodeType = "flow";
         if (StringUtils.isNotBlank(processId)) {
-            rtnMap.put("nodeType", "flow");
+            rtnMap.put("nodeType", nodeType);
         } else if (StringUtils.isNotBlank(processGroupId)) {
             rtnMap.put("nodeType", "flowGroup");
         } else {

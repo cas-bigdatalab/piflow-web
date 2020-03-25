@@ -269,7 +269,8 @@ public class MxGraphModelUtil {
      * @param username
      * @return
      */
-    public static Map<String, List> mxCellVoListToFlowAndFlowGroups(List<MxCellVo> mxCellVoList, FlowGroup flowGroup, String username) {
+    @SuppressWarnings("rawtypes")
+	public static Map<String, List> mxCellVoListToFlowAndFlowGroups(List<MxCellVo> mxCellVoList, FlowGroup flowGroup, String username) {
         Map<String, List> rtnMapData = new HashMap<>();
         List<Flow> flowList = new ArrayList<>();
         List<FlowGroup> flowGroupList = new ArrayList<>();

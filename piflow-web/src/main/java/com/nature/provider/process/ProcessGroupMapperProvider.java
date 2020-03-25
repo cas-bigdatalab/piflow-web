@@ -175,25 +175,4 @@ public class ProcessGroupMapperProvider {
         return sqlStr;
     }
 
-    public static void main(String[] args) {
-        String test = test();
-        System.out.println(test);
-    }
-
-    public static String test() {
-        StringBuffer sqlStrBuf = new StringBuffer();
-        sqlStrBuf.append("select ");
-        sqlStrBuf.append("app_id ");
-        sqlStrBuf.append("from ");
-        sqlStrBuf.append("flow_process_group ");
-        sqlStrBuf.append("where ");
-        sqlStrBuf.append("enable_flag = 1 ");
-        sqlStrBuf.append("and app_id is not null ");
-        sqlStrBuf.append("and ( ");
-        sqlStrBuf.append("state = 'STARTED' ");
-        sqlStrBuf.append("or ( state = 'COMPLETED'and end_time is null ) ");
-        sqlStrBuf.append(") ");
-        return sqlStrBuf.toString();
-    }
-
 }

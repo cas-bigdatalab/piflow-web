@@ -18,7 +18,6 @@ import com.nature.component.mxGraph.model.MxGraphModel;
 import com.nature.component.mxGraph.utils.MxCellUtils;
 import com.nature.component.mxGraph.utils.MxGraphModelUtil;
 import com.nature.component.mxGraph.vo.MxGraphModelVo;
-import com.nature.component.process.model.Process;
 import com.nature.component.process.model.*;
 import com.nature.component.process.utils.ProcessGroupUtils;
 import com.nature.domain.flow.FlowGroupDomain;
@@ -332,6 +331,7 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
         }
     }
 
+/*
     private ProcessGroup flowGroupToProcessGroup(FlowGroup flowGroup, String username, RunModeType runModeType) {
         ProcessGroup processGroup = new ProcessGroup();
         // copy flowGroup信息到processGroup
@@ -535,6 +535,7 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
         }
         return processGroup;
     }
+*/
 
     @Override
     public int deleteFLowGroupInfo(String id) {

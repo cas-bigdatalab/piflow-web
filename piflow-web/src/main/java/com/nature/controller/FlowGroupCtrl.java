@@ -1,10 +1,8 @@
 package com.nature.controller;
 
 import com.nature.base.util.LoggerUtil;
-import com.nature.component.flow.model.FlowGroup;
 import com.nature.component.flow.service.IFlowGroupService;
 import com.nature.component.flow.vo.FlowGroupVo;
-import com.nature.component.flow.vo.FlowVo;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

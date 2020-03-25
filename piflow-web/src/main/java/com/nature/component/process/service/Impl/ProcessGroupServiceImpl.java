@@ -1,6 +1,5 @@
 package com.nature.component.process.service.Impl;
 
-import ch.qos.logback.core.joran.util.beans.BeanUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.nature.base.util.*;
@@ -8,10 +7,7 @@ import com.nature.base.vo.UserVo;
 import com.nature.common.Eunm.ProcessParentType;
 import com.nature.common.Eunm.ProcessState;
 import com.nature.common.Eunm.RunModeType;
-import com.nature.component.flow.model.Flow;
-import com.nature.component.flow.model.FlowGroup;
 import com.nature.component.process.model.*;
-import com.nature.component.process.model.Process;
 import com.nature.component.process.service.IProcessGroupService;
 import com.nature.component.process.utils.ProcessGroupUtils;
 import com.nature.component.process.utils.ProcessUtils;
@@ -27,7 +23,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,20 +37,10 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
     @Autowired
     private ProcessGroupDomain processGroupDomain;
 
-    @Autowired
-    private ProcessGroupPathDomain processGroupPathDomain;
+    
 
     @Autowired
     private ProcessDomain processDomain;
-
-    @Autowired
-    private ProcessStopDomain processStopDomain;
-
-    @Autowired
-    private ProcessStopPropertyDomain processStopPropertyDomain;
-
-    @Autowired
-    private ProcessPathDomain processPathDomain;
 
     @Resource
     private ProcessGroupMapper processGroupMapper;
@@ -68,7 +53,18 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
 
     @Autowired
     private IFlow flowImpl;
-
+//
+//    @Autowired
+//    private ProcessStopDomain processStopDomain;
+//
+//    @Autowired
+//    private ProcessStopPropertyDomain processStopPropertyDomain;
+//
+//    @Autowired
+//    private ProcessPathDomain processPathDomain;
+//    
+//    @Autowired
+//    private ProcessGroupPathDomain processGroupPathDomain;
 
     /**
      * Query processGroup based on id
@@ -450,6 +446,7 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
         return processGroupDomain.getProcessIdGroupByPageId(fId, pageId);
     }
 
+/*
     private ProcessGroup copyProcessGroupAndNewCreate(ProcessGroup processGroup, UserVo currentUser, RunModeType runModeType) {
         ProcessGroup processGroupCopy = null;
         if (null != currentUser) {
@@ -500,7 +497,9 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
         }
         return processGroupCopy;
     }
+*/
 
+/*
     private List<Process> copyProcessListAndNewCreate(List<Process> processList, UserVo currentUser, RunModeType runModeType, ProcessGroup processGroup) {
         List<Process> processListCopy = null;
         if (null != processList && processList.size() > 0) {
@@ -512,7 +511,9 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
         }
         return processListCopy;
     }
+*/
 
+/*
     private Process copyProcessAndNewCreate(Process process, UserVo currentUser, RunModeType runModeType, ProcessGroup processGroup) {
         Process processCopy = null;
         if (null != currentUser) {
@@ -623,6 +624,7 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
         }
         return processCopy;
     }
+*/
 
     /**
      * getProcessGroupVoByPageId

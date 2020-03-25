@@ -308,13 +308,13 @@ public class FlowGroupTemplateServiceImpl implements IFlowGroupTemplateService {
                 mxGraphModel.setEnableFlag(true);
                 mxGraphModel = mxGraphModelDomain.saveOrUpdate(mxGraphModel);
             }
-            if (null == mxGraphModel.getRoot() || mxGraphModel.getRoot().size() <= 1) {
+            List<MxCell> rootXml = mxGraphModelXml.getRoot();
+            if (null == rootXml || rootXml.size() <= 1) {
                 List<MxCell> mxCellList = MxCellUtils.initMxCell(username, mxGraphModel);
                 if (null != mxCellList) {
                     mxCellDomain.saveOrUpdate(mxCellList);
                 }
             }
-            List<MxCell> rootXml = mxGraphModelXml.getRoot();
             if (null != rootXml && rootXml.size() > 0) {
                 for (MxCell mxCell : rootXml) {
                     if (null != mxCell) {

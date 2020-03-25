@@ -1,6 +1,5 @@
 package com.nature.repository.flow;
 
-import com.nature.component.flow.model.Flow;
 import com.nature.component.flow.model.FlowGroup;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
