@@ -63,32 +63,36 @@ To Run Piflow Web：
 - how to configure config.properties
 ```c
 server.port=6001
-server.servlet.context-path=/piflow-web
 server.servlet.session.timeout=3600
 
-syspara.imagesPath=/data/piflowWeb/storage/image/
-syspara.videosPath=/data/piflowWeb/storage/video/
-syspara.xmlPath=/data/piflowWeb/storage/xml/
 syspara.interfaceUrlHead=http://10.0.88.108:8002
-syspara.isLoadStop=true
 syspara.isIframe=true
-syspara.isStartUp=true
 
 
 # data source
-# Basic attributes
-spring.datasource.name=dev
-spring.datasource.url=jdbc:mysql://10.0.88.109:3306/piflow_web?useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowMultiQueries=true&autoReconnect=true&failOverReadOnly=false
+sysParam.datasource.type=mysql
+# MySQL Configuration
+#Configure the connection address of MySQL
+spring.datasource.url = jdbc:mysql://10.0.88.109:3306/piflow_web?useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowMultiQueries=true&autoReconnect=true&failOverReadOnly=false
+#Configure database user name
 spring.datasource.username=root
+#Configuration database password
 spring.datasource.password=123456
+#Configure JDBC Driver
 # Can not be configured, according to the URL automatic identification, recommended configuration
 spring.datasource.driver-class-name=com.mysql.jdbc.Driver
 
+spring.flyway.locations=classpath:db/flyway-mysql/
+
+
+
 # Log Coordination Standard
+logging.level.org.flywaydb=debug
 logging.level.com.nature.mapper=debug
 logging.level.root=info
 logging.level.org.springframework.security=info
 logging.level.org.hibernate.SQL=DEBUG
+
 
 ```
 
