@@ -100,15 +100,17 @@ public interface FlowMapper {
     public String getMaxFlowPageIdByFlowGroupId(@Param("flowGroupId") String flowGroupId);
 
     /**
-     *
      * @param flowGroupId
      * @return
      */
     @Select("SELECT f.name from flow f WHERE f.enable_flag=1 and f.fk_flow_group_id = #{flowGroupId}")
     public String[] getFlowNamesByFlowGroupId(@Param("flowGroupId") String flowGroupId);
 
-    @Select("select * from flow s where s.enable_flag = 1 and s.fk_flow_group_id = #{fid} and s.page_id = #{pageId}")
-    Flow getFlowByPageId(@Param("fid") String fid, @Param("pageId") String pageId);
+    @Select("select name from flow s where s.enable_flag = 1 and s.fk_flow_group_id = #{fid} and s.page_id = #{pageId}")
+    String getFlowNameByPageId(@Param("fid") String fid, @Param("pageId") String pageId);
+
+    @Select("select name from flow_group s where s.enable_flag = 1 and s.fk_flow_group_id = #{fid} and s.page_id = #{pageId}")
+    String getFlowGroupNameByPageId(@Param("fid") String fid, @Param("pageId") String pageId);
 
     /**
      * Query flow by flowGroupId

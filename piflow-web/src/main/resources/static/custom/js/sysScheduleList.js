@@ -1,6 +1,6 @@
 var scheduleTable;
 
-function initDatatableSchedulePage(testTableId, url) {
+function initDatatableSchedulePageOld(testTableId, url) {
     scheduleTable = $('#' + testTableId).DataTable({
         "pagingType": "full_numbers",//Set the mode of the paging control
         "searching": true,//Query the query box for datatales
@@ -149,6 +149,116 @@ function responseHandlerSchedule(res) {
 
 function searchSchedulePage() {
     flowTable.ajax.reload();
+}
+
+function initDatatableSchedulePage(testTableId, url, searchInputId) {
+    var table = "";
+    layui.use('table', function () {
+        table = layui.table;
+
+        //Method-level rendering
+        table.render({
+            elem: '#' + testTableId
+            , url: url
+            , cols: [[
+                {field: 'jobName', title: 'Name', sort: true},
+                {field: 'jobClass', title: 'Class', sort: true},
+                {field: 'cronExpression', title: 'Cron', sort: true},
+                {
+                    field: 'dataSourceType', title: 'Status', sort: true, templet: function (data) {
+                        return data.status.text
+                    }
+                },
+                {field: 'crtDttmString', title: 'CreateTime', sort: true},
+                {
+                    field: 'right', title: 'Actions', sort: true, height: 100, templet: function (data) {
+                        return sss(data);
+                    }
+                }
+            ]]
+            , id: testTableId
+            , page: true
+        });
+    });
+
+    $("#" + searchInputId).bind('input propertychange', function () {
+        searchMonitor(table, testTableId, searchInputId);
+    });
+}
+
+
+//Results returned in the background
+function sss(res) {
+    var actionsHtmlStr = "";
+    if (res) {
+
+        var actions_btn_1 = '<a class="btn" '
+            + 'title="Run this timed task once" '
+            + 'href="javascript:void(0);" '
+            + 'onclick="javascript:onceTask(\'' + res.id + '\');" '
+            + 'style="margin-right: 2px;">'
+            + '<i class="icon-tag icon-white"></i>'
+            + '</a>';
+        var actions_btn_2 = '<a class="btn" '
+            + 'title="Run this timed task" '
+            + 'href="javascript:void(0);" '
+            + 'onclick="javascript:startTask(\'' + res.id + '\');" '
+            + 'style="margin-right: 2px;">'
+            + '<i class="icon-play icon-white"></i>'
+            + '</a>';
+        var actions_btn_3 = '<a class="btn" '
+            + 'title="Stop this timed task" '
+            + 'href="javascript:void(0);" '
+            + 'onclick="javascript:stopTask(\'' + res.id + '\');" '
+            + 'style="margin-right: 2px;">'
+            + '<i class="icon-stop icon-white"></i>'
+            + '</a>';
+        var actions_btn_4 = '<a class="btn" '
+            + 'title="Pause this timed task" '
+            + 'href="javascript:void(0);" '
+            + 'onclick="javascript:pauseTask(\'' + res.id + '\');" '
+            + 'style="margin-right: 2px;">'
+            + '<i class="icon-pause icon-white"></i>'
+            + '</a>';
+        var actions_btn_5 = '<a class="btn" '
+            + 'title="Reply to this scheduled task" '
+            + 'href="javascript:void(0);" '
+            + 'onclick="javascript:resumeTask(\'' + res.id + '\');" '
+            + 'style="margin-right: 2px;">'
+            + '<i class="icon-repeat icon-white"></i>'
+            + '</a>';
+        var actions_btn_6 = '<a class="btn" '
+            + 'title="Edit this timed task" '
+            + 'href="javascript:void(0);" '
+            + 'onclick="javascript:newScheduleWindow(\'' + res.id + '\');" '
+            + 'style="margin-right: 2px;">'
+            + '<i class="icon-edit icon-white"></i>'
+            + '</a>';
+        var actions_btn_7 = '<a class="btn" '
+            + 'title="Remove this timed task" '
+            + 'href="javascript:void(0);" '
+            + 'onclick="javascript:deleteTask(\'' + res.id + '\',\'' + res.name + '\');" '
+            + 'style="margin-right: 2px;">'
+            + '<i class="icon-trash icon-white"></i>'
+            + '</a>';
+        if (res.status) {
+            res.status = res.status.text;
+            if ('RUNNING' === res.status) {
+                actionsHtmlStr = '<div style="width: 100%; text-align: center" >'
+                    + actions_btn_3
+                    + actions_btn_6
+                    + actions_btn_7
+                    + '</div>';
+            } else {
+                actionsHtmlStr = '<div style="width: 100%; text-align: center" >'
+                    + actions_btn_2
+                    + actions_btn_6
+                    + actions_btn_7
+                    + '</div>';
+            }
+        }
+    }
+    return actionsHtmlStr;
 }
 
 function newScheduleWindow(id) {

@@ -1,142 +1,114 @@
-var processTable;
 var isTableLoading = true;
 
-function initDatatablePage(testTableId, url) {
-    processTable = $('#' + testTableId).DataTable({
-        "pagingType": "full_numbers",//Set the mode of the paging control
-        "searching": true,//Query the query box for datatales
-        "aLengthMenu": [10, 20, 50, 100],//Set one page to display 10 records
-        "bAutoWidth": true,
-        "bLengthChange": true,//A drop-down list of how many records are displayed on a page of a blocked table
-        "ordering": false, // Prohibit sorting
-        "oLanguage": {
-            "sSearch": "<span>Filter records:</span> _INPUT_",
-            "sLengthMenu": "<span>Show entries:</span> _MENU_",
-            "oPaginate": {"sFirst": "First", "sLast": "Last", "sNext": ">", "sPrevious": "<"}
-        },
-        "processing": true, //Open wait effect when data is loaded
-        "serverSide": true,//Open background paging
-        "ajax": {
-            "url": url,
-            "data": function (d) {
-                var level1 = $('#level1').val();
-                //Add additional parameters to the server
-                d.extra_search = d.search.value;
-            },
-            "dataSrc": responseHandler
-        },
-        "columns": [
-            {"mDataProp": "appId",},
-            {"mDataProp": "name"},
-            {"mDataProp": "description",},
-            {"mDataProp": "startTime",},
-            {"mDataProp": "endTime",},
-            {"mDataProp": "progress",},
-            {"mDataProp": "state",},
-            {"mDataProp": "actions",}
-        ]
+function initProcessGroupDatatablePage(testTableId, url, searchInputId) {
+    var table = "";
+    layui.use('table', function () {
+        table = layui.table;
 
+        //Method-level rendering
+        table.render({
+            elem: '#' + testTableId
+            , url: url
+            , cols: [[
+                {
+                    field: 'appId', title: 'ProcessGroupId', sort: true, templet: function (data) {
+                        return ('<div name="processAppId">' + data.appId + '</div>');
+                    }
+                },
+                {field: 'name', title: 'Name', sort: true},
+                {field: 'description', title: 'Description', sort: true},
+                {
+                    field: 'startTime', title: 'StartTime', sort: true, templet: function (data) {
+                        data.startTime = data.startTime ? data.startTime : "";
+                        return ('<div id="' + data.id + 'startTime" name="processStartTime" >' + data.startTime + '</div>');
+                    }
+                },
+                {
+                    field: 'endTime', title: 'EndTime', sort: true, templet: function (data) {
+                        data.endTime = data.endTime ? data.endTime : "";
+                        return ('<div id="' + data.id + 'endTime" name="processEndTime">' + data.endTime + '</div>');
+                    }
+                },
+                {
+                    field: 'description', title: 'Progress', sort: true, templet: function (data) {
+                        var progressHtmlStr = '<div>' +
+                            '<p id="' + data.id + 'Info">progress:' +
+                            (data.progress ? (data.progress + '%') : '0.00%') +
+                            '</p>' +
+                            '<progress id="' + data.id + '" max="100" value="' +
+                            (data.progress ? (data.progress) : '0.00')
+                            + '">' +
+                            '</progress>' +
+                            '</div>';
+                        return progressHtmlStr;
+                    }
+                },
+                {
+                    field: 'state', title: 'Status', sort: true, templet: function (data) {
+                        return (data.state ? data.state.text : '');
+                    }
+                },
+                {
+                    field: 'right', title: 'Actions', sort: true, height: 100, templet: function (data) {
+                        return responseActionHandler(data);
+                    }
+                }
+            ]]
+            , id: testTableId
+            , page: true
+        });
+    });
+
+    $("#" + searchInputId).bind('input propertychange', function () {
+        searchMonitor(table, testTableId, searchInputId);
     });
 }
 
 //Results returned in the background
-function responseHandler(res) {
-    var resPageData = res.pageData;
-    var pageData = []
-    if (resPageData && resPageData.length > 0) {
-        for (var i = 0; i < resPageData.length; i++) {
-            var data1 = {
-                "appId": "<div name='processAppId'></div>",
-                "name": "",
-                "description": "",
-                "startTime": "<div id='" + resPageData[i].id + "startTime' name='processStartTime'></div>",
-                "endTime": "<div id='" + resPageData[i].id + "endTime' name='processEndTime'></div>",
-                "progress": "",
-                "state": "<div name='processState'>No State</div>",
-                "actions": ""
-            }
-
-            if (resPageData[i]) {
-                var progressHtmlStr = '<div>' +
-                    '<p id="' + resPageData[i].id + 'Info">progress:' +
-                    (resPageData[i].progress ? (resPageData[i].progress + '%') : '0.00%') +
-                    '</p>' +
-                    '<progress id="' + resPageData[i].id + '" max="100" value="' +
-                    (resPageData[i].progress ? (resPageData[i].progress) : '0.00')
-                    + '">' +
-                    '</progress>' +
-                    '</div>';
-
-                var actionsHtmlStr = '<p style="width: 100%; text-align: center" >' +
-                    '<a class="btn" ' +
-                    'href="javascript:void(0);" ' +
-                    'onclick="javascript:openProcessGroup(\'' + resPageData[i].id + '\');" ' +
-                    'style="margin-right: 2px;">' +
-                    '<i class="icon-share-alt icon-white"></i>' +
-                    '</a>' +
-                    '<a class="btn" ' +
-                    'href="javascript:void(0);" ' +
-                    'onclick="javascript:selectRunMode(\'' + resPageData[i].id + '\',\'' + resPageData[i].parentProcessId + '\',\'null\');" ' +
-                    'style="margin-right: 2px;">' +
-                    '<i class="icon-play icon-white"></i>' +
-                    '</a>' +
-                    '<a class="btn" ' +
-                    'href="javascript:void(0);" ' +
-                    'onclick="javascript:listStopProcessGroup(\'' + resPageData[i].id + '\');" ' +
-                    'style="margin-right: 2px;">' +
-                    '<i class="icon-stop icon-white"></i>' +
-                    '</a>' +
-                    '<a class="btn" ' +
-                    'href="javascript:void(0);" ' +
-                    'onclick="javascript:delProcessGroup(\'' + resPageData[i].id + '\');" ' +
-                    'style="margin-right: 2px;">' +
-                    '<i class="icon-trash icon-white"></i>' +
-                    '</a>' +
-                    '</p>';
-                if (resPageData[i].appId) {
-                    data1.appId = '<div name="processAppId" style="word-wrap: break-word;">' + resPageData[i].appId + '</div>';
-                }
-                if (resPageData[i].name) {
-                    data1.name = resPageData[i].name;
-                }
-                if (resPageData[i].startTime) {
-                    data1.startTime = '<div id="' + resPageData[i].id + 'startTime" name="processStartTime" style="word-wrap: break-word;">' +
-                        resPageData[i].startTime +
-                        '</div>';
-                }
-                if (resPageData[i].endTime) {
-                    data1.endTime = '<div id="' + resPageData[i].id + 'endTime" name="processEndTime" style="word-wrap: break-word;">' +
-                        resPageData[i].endTime + '</div>';
-                }
-                if (resPageData[i].state) {
-                    data1.state = '<div id="' + resPageData[i].id + 'state" name="processState" style="word-wrap: break-word;">' +
-                        resPageData[i].state.text + '</div>';
-                }
-                if (resPageData[i].description) {
-                    var descriptionHtmlStr = '<div ' +
-                        'style="width: 85px;overflow: hidden;text-overflow:ellipsis;white-space:nowrap;" ' +
-                        'data-toggle="tooltip" ' +
-                        'data-placement="top" ' +
-                        'title="' + resPageData[i].description + '">' +
-                        resPageData[i].description +
-                        '</div>';
-                    data1.description = descriptionHtmlStr;
-                }
-                if (progressHtmlStr) {
-                    data1.progress = progressHtmlStr;
-                }
-                if (actionsHtmlStr) {
-                    data1.actions = actionsHtmlStr;
-                }
-            }
-            pageData.push(data1);
-        }
+function responseActionHandler(res) {
+    if (res) {
+        var actionsHtmlStr = '<p style="width: 100%; text-align: center" >' +
+            '<a class="btn" ' +
+            'href="javascript:void(0);" ' +
+            'onclick="javascript:openProcessGroup(\'' + res.id + '\');" ' +
+            'style="margin-right: 2px;">' +
+            '<i class="icon-share-alt icon-white"></i>' +
+            '</a>' +
+            '<a class="btn" ' +
+            'href="javascript:void(0);" ' +
+            'onclick="javascript:selectRunMode(\'' + res.id + '\',\'' + res.parentProcessId + '\',\'null\');" ' +
+            'style="margin-right: 2px;">' +
+            '<i class="icon-play icon-white"></i>' +
+            '</a>' +
+            '<a class="btn" ' +
+            'href="javascript:void(0);" ' +
+            'onclick="javascript:listStopProcessGroup(\'' + res.id + '\');" ' +
+            'style="margin-right: 2px;">' +
+            '<i class="icon-stop icon-white"></i>' +
+            '</a>' +
+            '<a class="btn" ' +
+            'href="javascript:void(0);" ' +
+            'onclick="javascript:delProcessGroup(\'' + res.id + '\');" ' +
+            'style="margin-right: 2px;">' +
+            '<i class="icon-trash icon-white"></i>' +
+            '</a>' +
+            '</p>';
+        return actionsHtmlStr;
     }
-    return pageData;
+    return "";
+}
+
+function searchMonitor(layui_table, layui_table_id, searchInputId) {
+    //Perform overload
+    layui_table.reload(layui_table_id, {
+        page: {
+            curr: 1 //Start again on page 1
+        }
+        , where: {param: $('#' + searchInputId).val()}
+    }, 'data');
 }
 
 function processGroupListMonitoring() {
-    console.log("--------");
     var arrayObj = new Array();
     var processAppIds = $("div[name='processAppId']");
     var processStartTimes = $("div[name='processStartTime']");
@@ -268,7 +240,7 @@ function listRunProcessGroup(id, runMode) {
                 //alert(dataMap.errorMsg);
                 window.location.reload();
                 var windowOpen = window.open("/piflow-web/processGroup/getProcessGroupById?processGroupId=" + dataMap.processGroupId);
-                if (windowOpen == null || typeof(windowOpen)=='undefined'){
+                if (windowOpen == null || typeof (windowOpen) == 'undefined') {
                     alert('The window cannot be opened. Please check your browser settings.')
                 }
             } else {
@@ -342,13 +314,10 @@ function delProcessGroup(processGroupID) {
     });
 }
 
-function search1() {
-    processTable.ajax.reload();
-}
-
 function openProcessGroup(processGroupId) {
     var windowOpen = window.open('/piflow-web/processGroup/getProcessGroupById?processGroupId=' + processGroupId);
-    if (windowOpen == null || typeof(windowOpen)=='undefined'){
+    //var windowOpen = window.open('/piflow-web/mxGraph/drawingBoard?drawingBoardType=PROCESS&load=' + processGroupId);
+    if (windowOpen == null || typeof (windowOpen) == 'undefined') {
         alert('The window cannot be opened. Please check your browser settings.')
     }
 }

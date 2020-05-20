@@ -8,7 +8,7 @@ function deleteTemPlate(id, name) {
         $.ajax({
             cache: true,//Keep cached data
             type: "get",//Request type post
-            url: "/piflow-web/template/deleteTemplate",//This is the name of the file where I receive data in the background.
+            url: "/piflow-web/flowTemplate/deleteFlowTemplate",//This is the name of the file where I receive data in the background.
             data: {id: id},
             async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
             error: function (request) {//Operation after request failure
@@ -44,7 +44,7 @@ function importFile() {
     var formData = new FormData($('#uploadForm')[0]);
     $.ajax({
         type: 'post',
-        url: "/piflow-web/template/upload",
+        url: "/piflow-web/flowTemplate/uploadXmlFile",
         data: formData,
         cache: false,
         processData: false,
@@ -86,7 +86,7 @@ function FileTypeCheck() {
 }
 
 function downloadTemplate(id) {
-    window.location.href = "/piflow-web/template/templateDownload?templateId=" + id;
+    window.location.href = "/piflow-web/flowTemplate/templateDownload?flowTemplateId=" + id;
 }
 
 function initDatatableTemplatePage(testTableId, url) {

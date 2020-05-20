@@ -1,7 +1,7 @@
 package com.nature.schedule;
 
 import com.nature.base.vo.UserVo;
-import com.nature.component.group.service.IStopGroupService;
+import com.nature.component.stopsComponent.service.IStopGroupService;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;

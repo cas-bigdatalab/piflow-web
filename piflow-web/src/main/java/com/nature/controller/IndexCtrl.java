@@ -42,6 +42,11 @@ public class IndexCtrl {
         return setBaseModeAndView(new ModelAndView(), "groupTypeProcessList");
     }
 
+    @RequestMapping("/processAndProcessGroup")
+    public ModelAndView processAndProcessGroup() {
+        return setBaseModeAndView(new ModelAndView(), "processAndProcessGroup");
+    }
+
     @RequestMapping("/template")
     public ModelAndView template() {
         return setBaseModeAndView(new ModelAndView(), "template");
@@ -50,6 +55,11 @@ public class IndexCtrl {
     @RequestMapping("/flowGroupTemplateList")
     public ModelAndView flowGroupTemplateList() {
         return setBaseModeAndView(new ModelAndView(), "flowGroupTemplateList");
+    }
+
+    @RequestMapping("/flowTemplateList")
+    public ModelAndView flowTemplateList() {
+        return setBaseModeAndView(new ModelAndView(), "flowTemplateList");
     }
 
     @RequestMapping("/dataSources")

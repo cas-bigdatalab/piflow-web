@@ -11,7 +11,9 @@ public enum ProcessState {
     FAILED("FAILED", "failed"),
     ABORTED("ABORTED", "aborted"),
     FORK("FORK", "fork"),
-    KILLED("KILLED", "killed");
+    KILLED("KILLED", "killed"),
+    SUBMITTED("SUBMITTED", "submitted"),
+    ACCEPTED("ACCEPTED", "accepted");
 
     private final String value;
     private final String text;

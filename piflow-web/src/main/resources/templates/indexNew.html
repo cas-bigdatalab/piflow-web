@@ -36,6 +36,11 @@
         .error_class {
             border-color: #FF5722 !important;
         }
+
+        .layui-table-cell{
+            height:36px;
+            line-height: 36px;
+        }
     </style>
 </head>
 
@@ -82,8 +87,11 @@
             <div th:case="'template'">
                 <div th:include="indexRight/flow/template_List :: template_List"></div>
             </div>
+            <div th:case="'flowTemplateList'">
+                <div th:include="indexRight/flow/flow_template_List :: flow_template_List"></div>
+            </div>
             <div th:case="'dataSources'">
-                <div th:include="indexRight/data_source_List :: data_source_List"></div>
+                <div th:include="indexRight/flow/data_source_List :: data_source_List"></div>
             </div>
             <div th:case="'flowGroupList'">
                 <div th:include="indexRight/flowGroup/flow_group_List :: flow_group_List"></div>
@@ -94,14 +102,17 @@
             <div th:case="'groupTypeProcessList'">
                 <div th:include="indexRight/flowGroup/flow_process_List :: process_List"></div>
             </div>
+            <div th:case="'processAndProcessGroup'">
+                <div th:include="indexRight/cuutom/process_processGroup_list :: process_processGroup_list"></div>
+            </div>
             <div th:case="'flowGroupTemplateList'">
                 <div th:include="indexRight/flowGroup/flow_group_template_List :: flow_group_template_List"></div>
             </div>
             <div th:case="'instructionalVideo'">
-                <div th:include="indexRight/instructional_Video :: instructional_Video"></div>
+                <div th:include="indexRight/example/instructional_Video :: instructional_Video"></div>
             </div>
             <div th:case="'sysScheduleList'">
-                <div th:include="indexRight/sys_schedule_List :: sys_schedule_List"></div>
+                <div th:include="indexRight/admin/sys_schedule_List :: sys_schedule_List"></div>
             </div>
         </div>
         <!-- /content wrapper -->
@@ -119,6 +130,7 @@
 <script th:inline="javascript">
     var currentUser = [[${currentUser}]];
     var accessPath = [[${accessPath}]];
+    var projectContextPath = [[${#httpServletRequest.getContextPath()}]];
     window.onload = function () {
         if ("indexHome" === accessPath) {
             setTimeout(function () {
@@ -130,58 +142,11 @@
         if (currentUser) {
             var sysMenuVoList = currentUser.sysMenuVoList;
             if (sysMenuVoList && sysMenuVoList.length > 0) {
-                var menuGroupsUser = {};
-                var menuGroups = $('#menuGroupsId');
-                $.each(sysMenuVoList, function (n, value) {
-                    var menuParentHtml = "";
-                    var currentMenu = "";
-                    var valueMenuParent = value.menuParent;
-                    if (valueMenuParent) {
-                        if (menuGroupsUser[valueMenuParent]) {
-                            menuParentHtml = menuGroupsUser[valueMenuParent];
-                            var counts = parseFloat(menuParentHtml.find("strong").text());
-                            menuParentHtml.find("strong").html(counts + 1);
-                        } else {
-                            var menuParentHtmlStr = '<li id="selected' + valueMenuParent + '">'
-                                + '<a href="#" title="" class="expand">'
-                                + '<i class="icon-reorder"></i>' + valueMenuParent + '<strong style="background:#20794b">1</strong>'
-                                + '</a>'
-                                + '<ul></ul>'
-                                + '</li>';
-                            menuParentHtml = $(menuParentHtmlStr);
-                        }
-
-                        currentMenu = '<li><a class="' + value.menuName + '" href="' + value.menuUrl + '" title="' + value.menuDescription + '">' + value.menuName + '</a></li>';
-                        menuParentHtml.find("ul").append(currentMenu);
-                    } else {
-                        menuParentHtml = '<li><a href="' + value.menuUrl + '" title="' + value.menuDescription + '">'
-                            + '<i class="icon-reorder"></i>' + value.menuName + ''
-                            + '</a></li>';
-                        valueMenuParent = 'no_Menu_Parent';
-                        menuParentHtml = $(menuParentHtml);
-                    }
-                    if (value.menuUrl) {
-                        var menuUrlSpits = value.menuUrl.split('/');
-                        if (accessPath == menuUrlSpits[menuUrlSpits.length - 1]) {
-                            var currentMenuId = menuUrlSpits[menuUrlSpits.length - 1] + 'MenuID';
-                            if (currentMenu && currentMenuId) {
-                                menuParentHtml.find(".expand").attr("id", "current");
-                                menuParentHtml.find("a." + value.menuName).attr("id", currentMenuId);
-                            } else {
-                                menuParentHtml.attr("class", "active");
-                            }
-                        }
-                    }
-                    menuGroupsUser[valueMenuParent] = menuParentHtml;
-                });
-                if (menuGroupsUser) {
-                    for (var p in menuGroupsUser) {
-                        menuGroups.append(menuGroupsUser[p]);
-                    }
-                }
+                initMenuFunc(sysMenuVoList);
             }
         }
-        $('#' + accessPath + 'MenuID').addClass("current");
+        var currentUrlId = window.location.pathname.replace(new RegExp("/", "gm"), "_") + '_menu_id';
+        $('a[menu_id=' + currentUrlId + ']').addClass("current");
     })();
 
     function playVideo() {
@@ -191,7 +156,82 @@
 
     function exampleView(exampleId) {
         $('#content').html("Example " + exampleId + " loading");
-        window.location.href = ([[${#httpServletRequest.getContextPath()}]] + "/mxGraph/drawingBoard?drawingBoardType=TASK&load=" + exampleId);
+        window.location.href = (projectContextPath + "/mxGraph/drawingBoard?drawingBoardType=TASK&load=" + exampleId);
+    }
+
+    function initMenuFunc(sysMenuVoList) {
+        var menuGroupsUser = {};
+        var menuGroups = $('#menuGroupsId');
+        var currentPathArray = window.location.pathname.split(projectContextPath);
+        var currentPath = "";
+        if (currentPathArray.length == 1) {
+            currentPath = currentPathArray[0];
+        } else {
+            currentPath = currentPathArray[currentPathArray.length - 1];
+        }
+        $.each(sysMenuVoList, function (n, value) {
+            var menuParentHtml = "";
+            var active_li_id = "";
+            var valueMenuParent = value.menuParent;
+            if (valueMenuParent) {
+                menuParentHtml = menuGroupsUser[valueMenuParent];
+                if (!menuParentHtml) {
+                    active_li_id = 'active_li_' + valueMenuParent;
+                    menuParentHtml = '<li id="' + active_li_id + '">'
+                        + '<a id="active_a_' + valueMenuParent + '" href="#" title="' + value.menuDescription + '" class="expand">'
+                        + '<i class="icon-reorder"></i>'
+                        + valueMenuParent
+                        + '<strong style="background:#20794b">0</strong>'
+                        + '</a>'
+                        + '<ul></ul>'
+                        + '</li>';
+                    menuParentHtml = $(menuParentHtml);
+                }
+                var counts = parseFloat(menuParentHtml.find("strong").text());
+                menuParentHtml.find("strong").html(counts + 1);
+                var currentMenu = '<li>'
+                    + '<a class="' + value.menuName + '" href="' + value.menuUrl + '" title="' + value.menuDescription + '">'
+                    + value.menuName
+                    + '</a>'
+                    + '</li>';
+                menuParentHtml.find("ul").append(currentMenu);
+            } else {
+                valueMenuParent = 'one_menu_' + value.id;
+                active_li_id = 'active_li_' + valueMenuParent;
+                menuParentHtml = '<li id="' + active_li_id + '">'
+                    + '<a href="' + value.menuUrl + '" title="' + value.menuDescription + '">'
+                    + '<i class="icon-reorder"></i>'
+                    + value.menuName + ''
+                    + '</a>'
+                    + '</li>';
+                menuParentHtml = $(menuParentHtml);
+            }
+            if (value.menuUrl) {
+                var menuUrlSpits = value.menuUrl.split(projectContextPath);
+                var menuActiveMenuId = "";
+                if (menuUrlSpits.length == 1) {
+                    menuActiveMenuId = menuUrlSpits[0];
+                } else {
+                    menuActiveMenuId = menuUrlSpits[menuUrlSpits.length - 1];
+                }
+                if (currentMenu) {
+                    var menu_id_str = value.menuUrl.replace(new RegExp("/", "gm"), "_");
+                    menuParentHtml.find("a." + value.menuName).attr("menu_id", menu_id_str + '_menu_id');
+                    menuParentHtml.find("a." + value.menuName).attr("active_li_id", active_li_id);
+                }
+                if (currentPath == menuActiveMenuId) {
+                    menuParentHtml.attr("class", "active");
+                    menuParentHtml.find(".expand").attr("id", "current");
+                    menuParentHtml.find(".expand").addClass("current");
+                }
+            }
+            menuGroupsUser[valueMenuParent] = menuParentHtml;
+        });
+        if (menuGroupsUser) {
+            for (var p in menuGroupsUser) {
+                menuGroups.append(menuGroupsUser[p]);
+            }
+        }
     }
 
     //@ sourceURL=index.js

@@ -86,7 +86,7 @@ function deleteFlowGroupTemPlate(id, name) {
         $.ajax({
             cache: true,//Keep cached data
             type: "get",//Request type post
-            url: "/piflow-web/flowGroupTemplate/deleteFlowGroupTemplate",//This is the name of the file where I receive data in the background.
+            url: "/piflow-web/flowTemplate/deleteFlowTemplate",//This is the name of the file where I receive data in the background.
             data: {id: id},
             async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
             error: function (request) {//Operation after request failure
@@ -112,7 +112,7 @@ function initAll(url) {
 }
 
 function listUploadFlowGroupTemplateBtn() {
-    document.getElementById("flowGroupTemplateFile").click();
+    document.getElementById("flowTemplateFile").click();
 }
 
 function listUploadFlowGroupTemplate() {
@@ -122,7 +122,7 @@ function listUploadFlowGroupTemplate() {
     var formData = new FormData($('#uploadForm')[0]);
     $.ajax({
         type: 'post',
-        url: "/piflow-web/flowGroupTemplate/uploadXmlFile",
+        url: "/piflow-web/flowTemplate/uploadXmlFile",
         data: formData,
         cache: false,
         processData: false,
@@ -144,7 +144,7 @@ function listUploadFlowGroupTemplate() {
 }
 
 function listFileTypeCheck() {
-    var obj = document.getElementById('flowGroupTemplateFile');
+    var obj = document.getElementById('flowTemplateFile');
     if (obj.value == null || obj.value == '') {
         layer.msg('please upload the XML file', {icon: 2, shade: 0, time: 2000}, function () {
         });
@@ -164,6 +164,6 @@ function listFileTypeCheck() {
 }
 
 function downloadFlowGroupTemplate(id) {
-    window.location.href = "/piflow-web/flowGroupTemplate/templateDownload?flowGroupTemplateId=" + id;
+    window.location.href = "/piflow-web/flowTemplate/templateDownload?flowTemplateId=" + id;
 }
 

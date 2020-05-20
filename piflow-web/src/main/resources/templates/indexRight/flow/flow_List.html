@@ -10,28 +10,38 @@
         <div class="navbar">
             <div class="navbar-inner">
                 <h6 style="color: #1A7444">Flows</h6>
+                <div class="btn-position" style="float: right;margin-right: 8px">
+                    <a class='btn' href='javascript:void(0);' onclick="newPath();"
+                       style='background-color: #C0C0C0;border: 1px solid;color: #21794c;' title="create flow">
+                        <i class='icon-plus-sign icon-white'></i>
+                    </a>
+                    <button style="display: none;" id="reloadStops" type="button" onclick="reloadStopsList()"
+                            title="reload Stops">reloadStops
+                    </button>
+                </div>
             </div>
         </div>
         <div class="navbar">
-            <a class='btn' href='javascript:void(0);' onclick="newPath();"
-               style='background-color: #C0C0C0;border: 1px solid;color: #21794c;' title="create flow">
-                <i class='icon-plus-sign icon-white'></i>
-            </a>
-            <button style="display: none;" id="reloadStops" type="button" onclick="reloadStopsList()"
-                    title="reload Stops">reloadStops
-            </button>
+<!--            <a class='btn' href='javascript:void(0);' onclick="newPath();"-->
+<!--               style='background-color: #C0C0C0;border: 1px solid;color: #21794c;' title="create flow">-->
+<!--                <i class='icon-plus-sign icon-white'></i>-->
+<!--            </a>-->
+<!--            <button style="display: none;" id="reloadStops" type="button" onclick="reloadStopsList()"-->
+<!--                    title="reload Stops">reloadStops-->
+<!--            </button>-->
+            <div class="demoTable">
+                <div style="margin-top: 6px">
+<!--                    Search:-->
+                    <div class="layui-inline">
+                        <i class="fa fa-search fa-2x" style="position:absolute;top:8px ;left:8px;font-size:18px"></i>
+                        <input class="layui-input" name="param" id="search_input_id" autocomplete="off" style="padding-left:30px">
+                    </div>
+                </div>
+
+            </div>
         </div>
         <div class="table-overflow">
-            <table id="flowTableId" style="width: 100%" class="table table-striped table-bordered table-checks">
-                <thead>
-                <tr>
-                    <th class="table_tr_th">Name</th>
-                    <th class="table_tr_th">Description</th>
-                    <th class="table_tr_th">CreateTime</th>
-                    <th class="table_tr_th actions-column" style="min-width:245px;">Actions</th>
-                </tr>
-                </thead>
-            </table>
+            <table class="layui-hide" id="flowTableId" lay-filter="user"></table>
         </div>
     </div>
     <!-- /media datatable -->
@@ -98,10 +108,7 @@
 <script th:include="Macro/csrfTokeHeadMacro :: csrfTokeHeadMacroScript"/>
 <script th:src="@{/custom/js/flowList.js}"></script>
 <script th:inline="javascript">
-    initDatatableFlowPage('flowTableId', "/piflow-web/flow/getFlowListPage");
-    /*$(document).ready(function () {
-       // c = window.setInterval("tableRow()", 5000);
-    });*/
+    initDatatableFlowPage('flowTableId', "/piflow-web/flow/getFlowListPage", "search_input_id");
     //@ sourceURL=table_right.js
 </script>
 </body>

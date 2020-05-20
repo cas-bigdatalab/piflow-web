@@ -1,7 +1,7 @@
 var fullScreen = $('#fullScreen');
-var runFlow = $('#runFlow');
-var debugFlow = $('#debugFlow');
-var stopFlow = $('#stopFlow');
+var runFlowGroupBtn = $('#runFlowGroup');
+var debugFlowGroupBtn = $('#debugFlowGroup');
+var stopFlowGroupBtn = $('#stopFlowGroup');
 var processContent = $('#processContent');
 var checkpointShow = $('#checkpointShow');
 var isLoadProcessInfo = true;
@@ -231,10 +231,18 @@ function cancelRunProcessGroup() {
 }
 
 //run
+function getQueryString(name) {
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+    var r = window.location.search.substr(1).match(reg);
+    if (r != null) return unescape(r[2]);
+    return null;
+}
+
 function runProcessGroup(runMode) {
     fullScreen.show();
+    var id = getQueryString("load")
     var data = {
-        id: processGroupId,
+        id: id,
     }
     if (runMode) {
         data.runMode = runMode;
@@ -256,8 +264,10 @@ function runProcessGroup(runMode) {
             var dataMap = JSON.parse(data);
             if (200 === dataMap.code) {
                 //alert(dataMap.errorMsg);
-                window.location.reload();
-                var tempWindow = window.open("/piflow-web/processGroup/getProcessGroupById?processGroupId=" + dataMap.processGroupId);
+                window.location.reload();  //   drawingBoardType=PROCESS&processType=PROCESS_GROUP        &processType=PROCESS
+                // var tempWindow = window.open("/piflow-web/processGroup/getProcessGroupById?processGroupId=" + dataMap.processGroupId);
+                var tempWindow = window.open("/piflow-web/mxGraph/drawingBoard?drawingBoardType=PROCESS&processType=PROCESS_GROUP&load=" + dataMap.processGroupId);
+
                 if (tempWindow == null || typeof (tempWindow) == 'undefined') {
                     alert('The window cannot be opened. Please check your browser settings.')
                 }
@@ -272,7 +282,7 @@ function runProcessGroup(runMode) {
 
 //stop
 function stopProcessGroup() {
-    stopFlow.hide();
+    stopFlowBtn.hide();
     fullScreen.show();
     $.ajax({
         cache: true,//Keep cached data
@@ -394,16 +404,18 @@ function processGroupMonitoring(appId) {
             var dataMap = JSON.parse(data);
             if (200 === dataMap.code) {
                 if (dataMap.state && "" !== dataMap.state) {
-                    if ('STARTED' !== dataMap.state) {
+                    if ('STARTED' !== dataMap.state && '100.00' === dataMap.progress) {
+                        console.log(dataMap);
                         window.clearInterval(timer);
-                        runFlow.show();
-                        debugFlow.show();
-                        stopFlow.hide();
+                        runFlowGroupBtn.show();
+                        debugFlowGroupBtn.show();
+                        stopFlowGroupBtn.hide();
                     }
                 }
                 var processGroupVo = dataMap.processGroupVo;
                 if (processGroupVo && '' != processGroupVo) {
-                    $("#progress").html(dataMap.progress + "%");
+                    $("#groupProgress").html(dataMap.progress + "%");
+                    $("#groupProgress").css({'width': dataMap.progress + "%"});
                     $("#processStartTimeShow").html(processGroupVo.startTime);
                     $("#processStopTimeShow").html(processGroupVo.endTime);
                     $("#processStateShow").html(dataMap.state);

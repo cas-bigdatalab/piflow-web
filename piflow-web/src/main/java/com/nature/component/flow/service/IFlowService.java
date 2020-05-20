@@ -38,7 +38,7 @@ public interface IFlowService {
     public String getFlowVoById(String id);
 
     /**
-     * add flow(Contains artboard information)
+     * add flow(Contains drawing board information)
      *
      * @param flowVo
      * @return

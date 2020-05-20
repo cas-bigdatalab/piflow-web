@@ -9,7 +9,7 @@ import com.nature.base.vo.UserVo;
 import com.nature.common.Eunm.PortType;
 import com.nature.component.flow.model.*;
 import com.nature.component.flow.service.IStopsService;
-import com.nature.component.flow.utils.StopsUtil;
+import com.nature.component.flow.utils.StopsUtils;
 import com.nature.component.flow.vo.StopsVo;
 import com.nature.component.mxGraph.model.MxCell;
 import com.nature.component.mxGraph.model.MxGraphModel;
@@ -20,21 +20,21 @@ import com.nature.third.vo.flowInfo.ThirdFlowInfoStopVo;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.*;
 
 @Service
 public class StopsServiceImpl implements IStopsService {
 
-    @Autowired
+    @Resource
     private StopsMapper stopsMapper;
 
-    @Autowired
+    @Resource
     private MxCellMapper mxCellMapper;
 
-    @Autowired
+    @Resource
     private PathsMapper pathsMapper;
 
     Logger logger = LoggerUtil.getLogger();
@@ -54,7 +54,7 @@ public class StopsServiceImpl implements IStopsService {
     @Override
     public List<StopsVo> getStopsByFlowIdAndPageIds(String flowId, String[] pageIds) {
         List<Stops> stopsList = stopsMapper.getStopsListByFlowIdAndPageIds(flowId, pageIds);
-        List<StopsVo> stopsVoList = StopsUtil.stopsListPoToVo(stopsList);
+        List<StopsVo> stopsVoList = StopsUtils.stopsListPoToVo(stopsList);
         return stopsVoList;
     }
 
@@ -138,7 +138,7 @@ public class StopsServiceImpl implements IStopsService {
         }
         if (null == root || root.size() == 0) {
             statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("No flow information,update failed ");
-            logger.info(flowById.getId() + "The artboard information is empty and the update failed.");
+            logger.info(flowById.getId() + "The drawing board information is empty and the update failed.");
             return statefulRtnBase;
         }
         //Check if name is the same name
@@ -171,9 +171,9 @@ public class StopsServiceImpl implements IStopsService {
         return statefulRtnBase;
     }
 
-   
-	@SuppressWarnings("unchecked")
-	public String getStopsPort(String flowId, String sourceId, String targetId, String pathLineId) {
+
+    @SuppressWarnings("unchecked")
+    public String getStopsPort(String flowId, String sourceId, String targetId, String pathLineId) {
         Map<String, Object> rtnMap = new HashMap<>();
         rtnMap.put("code", 500);
         // The parameter is judged empty, and it is judged whether each parameter is available. If there is, it returns directly.
@@ -290,7 +290,7 @@ public class StopsServiceImpl implements IStopsService {
      * 2, key : 'isSourceStop', value : whether it is 'source'
      * 3, key: 'portUsageMap', value: port details 'map' (key: port name, value: whether available 'boolean')
      */
-	private Map<String, Object> stopPortUsage(boolean isSourceStop, String flowId, Stops stop, String pathLineId) {
+    private Map<String, Object> stopPortUsage(boolean isSourceStop, String flowId, Stops stop, String pathLineId) {
         // Map for return
         // Map content
         // 1, key: 'stop' port type enumeration 'text' attribute, value: port can use the quantity ‘Integer’
@@ -343,7 +343,7 @@ public class StopsServiceImpl implements IStopsService {
      * @param stopPortUsageMap
      * @param portUsageMap
      */
-	private void stopTypeAny(boolean isSourceStop, String flowId, Stops stop, String pathLineId, Map<String, Object> stopPortUsageMap, Map<String, Boolean> portUsageMap) {
+    private void stopTypeAny(boolean isSourceStop, String flowId, Stops stop, String pathLineId, Map<String, Object> stopPortUsageMap, Map<String, Boolean> portUsageMap) {
         List<Paths> usedPathsList;// stopVo all ports
         String stopVoPortsAny = "";
 
@@ -605,7 +605,7 @@ public class StopsServiceImpl implements IStopsService {
      * @param stopVoPorts   Port information in stop, all ports
      * @return
      */
-	private Map<String, Boolean> portStrToMap(Map<String, Boolean> portUsageMap, Boolean isSourceStop, List<Paths> usedPathsList, String stopVoPorts) {
+    private Map<String, Boolean> portStrToMap(Map<String, Boolean> portUsageMap, Boolean isSourceStop, List<Paths> usedPathsList, String stopVoPorts) {
         if (null != portUsageMap) {
             if (null != usedPathsList && usedPathsList.size() > 0) {
                 String currentPathsId = "";

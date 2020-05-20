@@ -11,20 +11,13 @@
             </div>
         </div>
         <div class="table-overflow">
-            <table id="testTableId" class="table table-striped table-bordered table-checks" style="width: 100%;">
-                <thead>
-                <tr>
-                    <th class="table_tr_th">ProcessGroupId</th>
-                    <th class="table_tr_th">Name</th>
-                    <th class="table_tr_th">Description</th>
-                    <th class="table_tr_th">StartTime</th>
-                    <th class="table_tr_th">EndTime</th>
-                    <th class="table_tr_th">Progress</th>
-                    <th class="table_tr_th">Status</th>
-                    <th class="table_tr_th actions-column"style="min-width:245px;">Actions</th>
-                </tr>
-                </thead>
-            </table>
+            <div class="demoTable">
+                Search:
+                <div class="layui-inline">
+                    <input class="layui-input" name="param" id="search_input_id" autocomplete="off">
+                </div>
+            </div>
+            <table class="layui-hide" id="testTableId" lay-filter="user"></table>
         </div>
     </div>
     <!-- /media datatable -->
@@ -55,7 +48,7 @@
 <script th:include="Macro/csrfTokeHeadMacro :: csrfTokeHeadMacroScript"/>
 <script th:src="@{/custom/js/processGroupList.js}"></script>
 <script th:inline="javascript">
-    initDatatablePage("testTableId", "/piflow-web/processGroup/processGroupListPage");
+    initProcessGroupDatatablePage("testTableId", "/piflow-web/processGroup/processGroupListPage", "search_input_id");
     (function () {
         timer = window.setInterval("processGroupListMonitoring()", 5000);
     })();

@@ -2,8 +2,8 @@ package com.nature.component.system.service;
 
 public interface ISysInitRecordsService {
 
-    public String initComponents();
+    public String initComponents(String currentUser);
 
-    public String threadMonitoring();
+    public String threadMonitoring(String currentUser);
 
 }

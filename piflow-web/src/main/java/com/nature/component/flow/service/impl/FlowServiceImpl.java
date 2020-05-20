@@ -1,27 +1,29 @@
 package com.nature.component.flow.service.impl;
 
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
 import com.nature.base.util.*;
 import com.nature.base.vo.UserVo;
 import com.nature.common.Eunm.ProcessState;
 import com.nature.common.Eunm.RunModeType;
-import com.nature.component.flow.model.*;
+import com.nature.component.flow.model.Flow;
+import com.nature.component.flow.model.FlowGroup;
+import com.nature.component.flow.model.Property;
+import com.nature.component.flow.model.Stops;
 import com.nature.component.flow.service.IFlowService;
 import com.nature.component.flow.utils.PathsUtil;
-import com.nature.component.flow.utils.StopsUtil;
+import com.nature.component.flow.utils.StopsUtils;
 import com.nature.component.flow.vo.FlowVo;
 import com.nature.component.flow.vo.PathsVo;
 import com.nature.component.flow.vo.StopsVo;
 import com.nature.component.mxGraph.model.MxCell;
 import com.nature.component.mxGraph.model.MxGraphModel;
-import com.nature.component.mxGraph.utils.MxGraphModelUtil;
+import com.nature.component.mxGraph.utils.MxGraphModelUtils;
 import com.nature.component.mxGraph.vo.MxGraphModelVo;
 import com.nature.component.process.model.Process;
 import com.nature.component.process.utils.ProcessUtils;
 import com.nature.domain.flow.FlowDomain;
 import com.nature.domain.flow.FlowGroupDomain;
 import com.nature.domain.mxGraph.MxCellDomain;
+import com.nature.domain.process.ProcessDomain;
 import com.nature.mapper.flow.FlowMapper;
 import com.nature.mapper.flow.PathsMapper;
 import com.nature.mapper.flow.PropertyMapper;
@@ -36,6 +38,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -77,6 +80,9 @@ public class FlowServiceImpl implements IFlowService {
 
     @Resource
     private ProcessTransaction processTransaction;
+
+    @Resource
+    private ProcessDomain processDomain;
 
     @Resource
     private IFlow flowImpl;
@@ -151,9 +157,9 @@ public class FlowServiceImpl implements IFlowService {
             flowVo = new FlowVo();
             BeanUtils.copyProperties(flowById, flowVo);
             //Take out 'mxGraphModel' and convert to Vo
-            MxGraphModelVo mxGraphModelVo = MxGraphModelUtil.mxGraphModelPoToVo(flowById.getMxGraphModel());
+            MxGraphModelVo mxGraphModelVo = MxGraphModelUtils.mxGraphModelPoToVo(flowById.getMxGraphModel());
             //Take out 'stopsList' and turn it to Vo
-            List<StopsVo> stopsVoList = StopsUtil.stopsListPoToVo(flowById.getStopsList());
+            List<StopsVo> stopsVoList = StopsUtils.stopsListPoToVo(flowById.getStopsList());
             //Take out 'pathsList' and turn it to Vo
             List<PathsVo> pathsVoList = PathsUtil.pathsListPoToVo(flowById.getPathsList());
             //Take out 'flowInfoDb' and turn it to Vo
@@ -294,11 +300,33 @@ public class FlowServiceImpl implements IFlowService {
 
     @Override
     public String getFlowListPage(Integer offset, Integer limit, String param) {
-        Map<String, Object> rtnMap = new HashMap<String, Object>();
+        Map<String, Object> rtnMap = new HashMap<>();
         if (null != offset && null != limit) {
-            Page<Flow> page = PageHelper.startPage(offset, limit);
-            flowMapper.getFlowListParam(param);
-            rtnMap = PageHelperUtils.setDataTableParam(page, rtnMap);
+            boolean admin = SessionUserUtil.isAdmin();
+            String currentUsername = SessionUserUtil.getCurrentUsername();
+            Page<Flow> flowListPage = null;
+            if (admin) {
+                flowListPage = flowDomain.getFlowListPage(offset - 1, limit, param);
+            } else {
+                flowListPage = flowDomain.getFlowListPageByUser(offset - 1, limit, param, currentUsername);
+            }
+            List<FlowVo> contentVo = new ArrayList<>();
+            List<Flow> content = flowListPage.getContent();
+            if (content.size() > 0) {
+                for (Flow flow : content) {
+                    if (null == flow) {
+                        continue;
+                    }
+                    FlowVo flowVo = new FlowVo();
+                    BeanUtils.copyProperties(flow, flowVo);
+                    contentVo.add(flowVo);
+                }
+            }
+            rtnMap.put(ReturnMapUtils.KEY_CODE, ReturnMapUtils.SUCCEEDED_CODE);
+            rtnMap.put("msg", "");
+            rtnMap.put("count", flowListPage.getTotalElements());
+            rtnMap.put("data", contentVo);//Data collection
+            rtnMap.put(ReturnMapUtils.KEY_CODE, ReturnMapUtils.SUCCEEDED_CODE);
         }
         return JsonUtils.toJsonNoException(rtnMap);
     }
@@ -325,43 +353,31 @@ public class FlowServiceImpl implements IFlowService {
 
     @Override
     public String runFlow(String flowId, String runMode) {
-        Map<String, Object> rtnMap = new HashMap<>();
-        rtnMap.put("code", 500);
-        UserVo currentUser = SessionUserUtil.getCurrentUser();
-        if (null == currentUser) {
-            rtnMap.put("errorMsg", "illegal user");
-            logger.info("illegal user");
-            return JsonUtils.toJsonNoException(rtnMap);
+        String currentUsername = SessionUserUtil.getCurrentUsername();
+        if (StringUtils.isBlank(currentUsername)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
         }
         if (StringUtils.isBlank(flowId)) {
-            rtnMap.put("errorMsg", "FlowId is null");
-            logger.warn("FlowId is null");
-            return JsonUtils.toJsonNoException(rtnMap);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("FlowId is null");
         }
         // find flow by flowId
         Flow flowById = this.getFlowById(flowId);
         // addFlow is not empty and the value of ReqRtnStatus is true, then the save is successful.
         if (null == flowById) {
-            rtnMap.put("errorMsg", "Flow with FlowId" + flowId + "was not queried");
-            logger.warn("Flow with FlowId" + flowId + "was not queried");
-            return JsonUtils.toJsonNoException(rtnMap);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Flow with FlowId" + flowId + "was not queried");
         }
-        Process process = ProcessUtils.flowToProcess(flowById, currentUser);
+        Process process = ProcessUtils.flowToProcess(flowById, currentUsername);
         if (null == process) {
-            rtnMap.put("errorMsg", "Conversion failed");
-            logger.warn("Conversion failed");
-            return JsonUtils.toJsonNoException(rtnMap);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Conversion failed");
         }
         RunModeType runModeType = RunModeType.RUN;
         if (StringUtils.isNotBlank(runMode)) {
             runModeType = RunModeType.selectGender(runMode);
         }
         process.setRunModeType(runModeType);
-        int addProcess = processTransaction.addProcess(process);
-        if (addProcess <= 0) {
-            rtnMap.put("errorMsg", "Save failed, transform failed");
-            logger.warn("Save failed, transform failed");
-            return JsonUtils.toJsonNoException(rtnMap);
+        process = processDomain.saveOrUpdate(process);
+        if (null == process) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Save failed, transform failed");
         }
         String checkpoint = "";
         List<Stops> stopsList = flowById.getStopsList();
@@ -376,27 +392,20 @@ public class FlowServiceImpl implements IFlowService {
         }
         Map<String, Object> stringObjectMap = flowImpl.startFlow(process, checkpoint, runModeType);
         if (null == stringObjectMap || 200 != ((Integer) stringObjectMap.get("code"))) {
-            processTransaction.updateProcessEnableFlag(process.getId(), currentUser);
-            String errorMsg = (String) stringObjectMap.get("errorMsg");
-            rtnMap.put("errorMsg", errorMsg);
-            logger.warn(errorMsg);
-            return JsonUtils.toJsonNoException(rtnMap);
+            process.setEnableFlag(false);
+            process.setLastUpdateDttm(new Date());
+            process.setLastUpdateUser(currentUsername);
+            processDomain.saveOrUpdate(process);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr((String) stringObjectMap.get("errorMsg"));
         }
-        Process processById = processMapper.getProcessById(process.getId());
-        processById.setAppId((String) stringObjectMap.get("appId"));
-        processById.setProcessId((String) stringObjectMap.get("appId"));
-        processById.setState(ProcessState.STARTED);
-        processById.setLastUpdateUser(currentUser.getUsername());
-        processById.setLastUpdateDttm(new Date());
-        int updateProcess = processTransaction.updateProcess(processById);
-        if (updateProcess <= 0) {
-            rtnMap.put("errorMsg", "save process failed,update failed");
-            return JsonUtils.toJsonNoException(rtnMap);
-        }
-        rtnMap.put("code", 200);
+        process.setAppId((String) stringObjectMap.get("appId"));
+        process.setProcessId((String) stringObjectMap.get("appId"));
+        process.setState(ProcessState.STARTED);
+        process.setLastUpdateUser(currentUsername);
+        process.setLastUpdateDttm(new Date());
+        processDomain.saveOrUpdate(process);
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg("save process success,update success");
         rtnMap.put("processId", process.getId());
-        rtnMap.put("errorMsg", "save process success,update success");
-        logger.info("save process success,update success");
         return JsonUtils.toJsonNoException(rtnMap);
     }
 

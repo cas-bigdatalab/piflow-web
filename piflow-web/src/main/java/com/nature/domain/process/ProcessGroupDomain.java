@@ -15,8 +15,10 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class ProcessGroupDomain {
@@ -95,11 +97,7 @@ public class ProcessGroupDomain {
         return processGroupJpaRepository.save(processGroup);
     }
 
-    public int updateEnableFlagById(String id, boolean enableFlag) {
-        UserVo currentUser = SessionUserUtil.getCurrentUser();
-        return processGroupJpaRepository.updateEnableFlagById(id, currentUser.getUsername(), new Date(), enableFlag);
-    }
-
+    @Transactional
     public ProcessGroup getProcessGroupByPageId(String fid, String pageId) {
         return processGroupJpaRepository.getProcessGroupByPageId(fid, pageId);
     }
@@ -110,6 +108,14 @@ public class ProcessGroupDomain {
 
     public ProcessGroup getProcessGroupByAppId(String appId) {
         return processGroupJpaRepository.getProcessGroupByAppId(appId);
+    }
+
+    public List<Map<String, Object>> getProcessGroupNamesAndPageIdsByPageIds(String fid, List<String> pageIds) {
+        return processGroupJpaRepository.getProcessGroupNamesAndPageIdsByPageIds(fid, pageIds);
+    }
+
+    public List<String> getRunningProcessGroupAppId() {
+        return processGroupJpaRepository.getRunningProcessGroupAppId();
     }
 
 }

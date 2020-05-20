@@ -45,10 +45,6 @@ public class ProcessDomain {
         return processJpaRepository.saveAll(processList);
     }
 
-    public int updateEnableFlagById(String id, boolean enableFlag) {
-        return processJpaRepository.updateEnableFlagById(id, enableFlag);
-    }
-
     public Process getProcessByPageId(String fid, String pageId) {
         return processJpaRepository.getProcessByPageId(fid, pageId);
     }
@@ -65,5 +61,12 @@ public class ProcessDomain {
         return processJpaRepository.getMaxStopPageIdByProcessGroupId(processGroupId);
     }
 
+    public Process getProcessNoGroupByAppId(String appId) {
+        return processJpaRepository.getProcessNoGroupByAppId(appId);
+    }
+
+    public List<String> getRunningProcessAppId() {
+        return processJpaRepository.getRunningProcessAppId();
+    }
 
 }

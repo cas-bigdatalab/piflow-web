@@ -3,6 +3,8 @@ package com.nature.component.process.vo;
 import com.nature.base.util.DateUtils;
 import com.nature.common.Eunm.ProcessState;
 import com.nature.common.Eunm.RunModeType;
+import com.nature.component.mxGraph.model.MxGraphModel;
+import com.nature.component.mxGraph.vo.MxGraphModelVo;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,9 +17,9 @@ import java.util.List;
 @Getter
 public class ProcessVo implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-	
-	private String id;
+    private static final long serialVersionUID = 1L;
+
+    private String id;
     private Date crtDttm;
     private String name;
     private String driverMemory;
@@ -37,6 +39,7 @@ public class ProcessVo implements Serializable {
     private String pageId;
     private String viewXml;
     private ProcessGroupVo processGroupVo;
+    private MxGraphModelVo mxGraphModelVo;
     private List<ProcessStopVo> processStopVoList = new ArrayList<ProcessStopVo>();
     private List<ProcessPathVo> processPathVoList = new ArrayList<ProcessPathVo>();
 

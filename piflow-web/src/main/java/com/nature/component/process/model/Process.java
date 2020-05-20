@@ -4,6 +4,7 @@ import com.nature.base.BaseHibernateModelUUIDNoCorpAgentId;
 import com.nature.common.Eunm.ProcessParentType;
 import com.nature.common.Eunm.ProcessState;
 import com.nature.common.Eunm.RunModeType;
+import com.nature.component.mxGraph.model.MxGraphModel;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.OrderBy;
@@ -20,12 +21,7 @@ import java.util.List;
 @Table(name = "FLOW_PROCESS")
 public class Process extends BaseHibernateModelUUIDNoCorpAgentId {
 
-	private static final long serialVersionUID = 1L;
-	
-
-	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "FK_FLOW_PROCESS_GROUP_ID")
-    private ProcessGroup processGroup;
+    private static final long serialVersionUID = 1L;
 
     @Column(columnDefinition = "varchar(255) COMMENT 'Process name'")
     private String name;
@@ -43,6 +39,9 @@ public class Process extends BaseHibernateModelUUIDNoCorpAgentId {
 
     @Column(columnDefinition = "varchar(1024) COMMENT 'description'")
     private String description;
+
+    @Column(name = "page_id")
+    private String pageId;
 
     @Column(columnDefinition = "varchar(255) COMMENT 'flowId'")
     private String flowId;
@@ -77,8 +76,13 @@ public class Process extends BaseHibernateModelUUIDNoCorpAgentId {
     @Enumerated(EnumType.STRING)
     private ProcessParentType processParentType;
 
-    @Column(name = "page_id")
-    private String pageId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "FK_FLOW_PROCESS_GROUP_ID")
+    private ProcessGroup processGroup;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "process")
+    @Where(clause = "enable_flag=1")
+    private MxGraphModel mxGraphModel;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "process")
     @Where(clause = "enable_flag=1")

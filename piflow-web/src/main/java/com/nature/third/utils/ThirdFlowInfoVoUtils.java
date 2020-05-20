@@ -26,8 +26,18 @@ public class ThirdFlowInfoVoUtils {
             process.setLastUpdateUser("syncTask");
             process.setLastUpdateDttm(new Date());
             process.setProgress(thirdFlowInfoVo.getProgress());
-            if (StringUtils.isNotBlank(thirdFlowInfoVo.getState())) {
-                process.setState(ProcessState.selectGender(thirdFlowInfoVo.getState()));
+            String thirdFlowInfoVoState = thirdFlowInfoVo.getState();
+            if (StringUtils.isNotBlank(thirdFlowInfoVoState)) {
+                ProcessState processState = null;
+                if ("NEW".equals(thirdFlowInfoVoState) || "NEW_SAVING".equals(thirdFlowInfoVoState)) {
+                    processState = ProcessState.INIT;
+                } else if ("RUNNING".equals(thirdFlowInfoVoState)) {
+                    processState = ProcessState.SUBMITTED;
+                } else {
+                    processState = ProcessState.selectGender(thirdFlowInfoVoState);
+                }
+
+                process.setState(processState);
             }
             //process.setName(thirdFlowInfoVo.getName());
             //process.setProcessId(thirdFlowInfoVo.getPid());

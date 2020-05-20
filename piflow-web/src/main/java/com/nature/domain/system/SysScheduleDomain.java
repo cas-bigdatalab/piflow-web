@@ -1,9 +1,15 @@
 package com.nature.domain.system;
 
+import com.nature.base.util.SessionUserUtil;
+import com.nature.base.vo.UserVo;
 import com.nature.common.Eunm.ScheduleState;
+import com.nature.component.flow.model.FlowGroup;
 import com.nature.component.system.model.SysSchedule;
 import com.nature.repository.system.SysScheduleJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
@@ -63,6 +69,11 @@ public class SysScheduleDomain {
 
     public List<SysSchedule> getSysScheduleByStatus(ScheduleState scheduleState) {
         return sysScheduleJpaRepository.getSysSchedulesByStatus(scheduleState);
+    }
+
+    public Page<SysSchedule> getSysScheduleListPage(int page, int size, String param) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "crtDttm"));
+        return sysScheduleJpaRepository.getSysScheduleListPage(null == param ? "" : param, pageRequest);
     }
 
 }

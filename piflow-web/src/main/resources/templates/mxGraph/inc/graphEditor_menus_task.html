@@ -27,7 +27,7 @@
             </li>
             <li role="separator" class=""></li>
             <li>
-                <a id="saveTemplate_Task" href='javascript:void(0);' onclick="saveTemplate()" title="save Template">saveTemplate</a>
+                <a id="saveTemplate_Task" href='javascript:void(0);' onclick="saveTemplateFun()" title="save Template">saveTemplate</a>
             </li>
             <li role="separator" class=""></li>
             <li>
@@ -41,11 +41,11 @@
         </ul>
     </div>
     <div id="divloadingXml" style="display:none;">
-        <select name="loadingXmlSelect" id="loadingXmlSelect" onchange="loadTemplate()"
+        <select name="loadingXmlSelect" id="loadingXmlSelect" onchange="loadTemplateFun()"
                 style="width: 218px;"></select>
     </div>
     <form id="uploadForm" enctype="multipart/form-data" method="post">
-        <input type="file" id="uploadFile" name="templateFile" style="display:none;" onchange="uploadXmlFile()"/>
+        <input type="file" id="uploadFile" name="file" style="display:none;" onchange="uploadTemplateFile(this)"/>
     </form>
 </div>
 

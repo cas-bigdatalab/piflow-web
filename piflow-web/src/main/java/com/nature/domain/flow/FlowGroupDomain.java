@@ -63,15 +63,15 @@ public class FlowGroupDomain {
         return flowGroupJpaRepository.getFlowGroupByIdAndEnAndEnableFlag(id, true);
     }
 
-    public Page<FlowGroup> getFlowGroupListPage(int page, int size, String param) {
+    public Page<FlowGroup> userGetFlowGroupListPage(int page, int size, String param,String username) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "crtDttm"));
+        return flowGroupJpaRepository.getFlowGroupListPageByCrtUser(username, null == param ? "" : param, pageRequest);
+    }
+
+    public Page<FlowGroup> adminGetFlowGroupListPage(int page, int size, String param) {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "crtDttm"));
         boolean isAdmin = SessionUserUtil.isAdmin();
-        if (isAdmin) {
-            return flowGroupJpaRepository.getFlowGroupListPage(null == param ? "" : param, pageRequest);
-        } else {
-            UserVo currentUser = SessionUserUtil.getCurrentUser();
-            return flowGroupJpaRepository.getFlowGroupListPage(currentUser.getUsername(), null == param ? "" : param, pageRequest);
-        }
+        return flowGroupJpaRepository.getFlowGroupListPage(null == param ? "" : param, pageRequest);
     }
 
     public List<FlowGroup> getFlowGroupList(String param) {
@@ -90,8 +90,12 @@ public class FlowGroupDomain {
         return flowGroupJpaRepository.updateEnableFlagById(id, enableFlag);
     }
 
-    public FlowGroup getFlowByPageId(String fid, String pageId) {
+    public FlowGroup getFlowGroupByPageId(String fid, String pageId) {
         return flowGroupJpaRepository.getFlowGroupByPageId(fid, pageId);
+    }
+
+    public String getFlowGroupIdByPageId(String fid, String pageId) {
+        return flowGroupJpaRepository.getFlowGroupIdByPageId(fid, pageId);
     }
 
     public String getFlowIdByNameAndFlowGroupId(String fid, String flowGroupName) {

@@ -42,44 +42,6 @@ public class ProcessTransaction {
     private ProcessStopPropertyMapper processStopPropertyMapper;
 
     /**
-     * Add process of things
-     *
-     * @param process
-     * @return
-     */
-    public int addProcess(Process process) {
-        int influenceCounts = 0;
-        if (null != process) {
-            int addProcessCounts = processMapper.addProcess(process);
-            if (addProcessCounts > 0) {
-                // save path
-                // Number of save Paths
-                int addProcessPathCounts = 0;
-                List<ProcessPath> processPathList = process.getProcessPathList();
-                if (null != processPathList && processPathList.size() > 0) {
-                    addProcessPathCounts = processPathMapper.addProcessPathList(processPathList);
-                }
-                // Save Stop
-                // Number of deposits in Stop
-                int addProcessStopCounts = 0;
-                int addProcessStopPropertyCounts = 0;
-                List<ProcessStop> processStopList = process.getProcessStopList();
-                if (null != processStopList && processStopList.size() > 0) {
-                    addProcessStopCounts = processStopMapper.addProcessStopList(processStopList);
-                    for (ProcessStop processStop : processStopList) {
-                        List<ProcessStopProperty> processStopPropertyList = processStop.getProcessStopPropertyList();
-                        if (null != processStopPropertyList && processStopPropertyList.size() > 0) {
-                            addProcessStopPropertyCounts += processStopPropertyMapper.addProcessStopProperties(processStopPropertyList);
-                        }
-                    }
-                }
-                influenceCounts = (addProcessPathCounts + addProcessStopCounts + addProcessStopPropertyCounts);
-            }
-        }
-        return influenceCounts;
-    }
-
-    /**
      * The process of modifying things (just modify the process table)
      *
      * @param process

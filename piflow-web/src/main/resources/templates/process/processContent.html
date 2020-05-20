@@ -87,24 +87,6 @@
     <span style="color: #ffffff; font-weight: bold">ProcessContent</span>
 </div>
 <!-- Modal Checkpoint -->
-<div class="modal" id="checkpointShow" aria-labelledby="myModalLabelPort" data-backdrop="static">
-    <div id="modalPort" class="modal-dialog" role="document">
-        <div class="modal-content" style="width: 100%;  top: 77px;">
-            <div class="modal-header">
-                <h4 class="modal-title" id="myModalLabelPort">Please select Checkpoint or submit directly</h4>
-            </div>
-            <div id="checkpointContent" class="modal-body">
-                No checkpoint information was queried
-                <input type="checkbox" value="">
-            </div>
-            <div class="modal-footer">
-                <button id="run_checkpoint" type="button" class="btn btn-default" onclick="runProcess()">Submit</button>
-                <button id="debug_checkpoint" type="button" class="btn btn-default" onclick="runProcess('DEBUG')">Submit</button>
-                <button type="button" class="btn btn-default" onclick="cancelRunProcess()">Cancel</button>
-            </div>
-        </div>
-    </div>
-</div>
 <div style="z-index: 0;position: fixed;/*display: none;*/">
     <div id="layer_open_checkpoint">
         <div id="checkpointContentNew" style="width: 100%; margin-left: 10px;margin-top: 10px;">

@@ -3,7 +3,7 @@ package com.nature.schedule;
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.SpringContextUtil;
 import com.nature.common.executor.ServicesExecutor;
-import com.nature.mapper.process.ProcessMapper;
+import com.nature.domain.process.ProcessDomain;
 import com.nature.third.service.IFlow;
 import org.apache.commons.collections.CollectionUtils;
 import org.quartz.JobExecutionContext;
@@ -23,13 +23,13 @@ public class RunningProcessSync extends QuartzJobBean {
     Logger logger = LoggerUtil.getLogger();
 
     @Resource
-    private ProcessMapper processMapper;
+    private ProcessDomain processDomain;
 
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss:SSS");
         logger.info("processSync start : " + formatter.format(new Date()));
-        List<String> runningProcess = processMapper.getRunningProcess();
+        List<String> runningProcess = processDomain.getRunningProcessAppId();
         if (CollectionUtils.isNotEmpty(runningProcess)) {
             Runnable runnable = new Thread(new Thread() {
                 @Override

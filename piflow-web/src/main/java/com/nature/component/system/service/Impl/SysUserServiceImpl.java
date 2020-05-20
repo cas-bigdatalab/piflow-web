@@ -1,5 +1,7 @@
 package com.nature.component.system.service.Impl;
 
+import com.nature.base.util.ReturnMapUtils;
+import com.nature.base.util.SqlUtils;
 import com.nature.common.Eunm.SysRoleType;
 import com.nature.component.system.model.SysRole;
 import com.nature.component.system.model.SysUser;
@@ -13,8 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class SysUserServiceImpl implements ISysUserService {
@@ -31,6 +32,19 @@ public class SysUserServiceImpl implements ISysUserService {
     @Override
     public SysUser findByUsername(String username) {
         return sysUserMapper.findUserByUserName(username);
+    }
+
+    @Override
+    public String checkUserName(String username){
+        if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Username can not be empty");
+        }
+        String addUser = sysUserDomain.checkUsername(username);
+        if (StringUtils.isNotBlank(addUser)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Username is already taken");
+        } else {
+            return ReturnMapUtils.setSucceededMsgRtnJsonStr("Username is available");
+        }
     }
 
     @Override
@@ -66,34 +80,40 @@ public class SysUserServiceImpl implements ISysUserService {
     }
 
     @Override
-    public int registerUser(SysUserVo sysUserVo) {
-        if (null != sysUserVo) {
-            String username = sysUserVo.getUsername();
-            String password = sysUserVo.getPassword();
-            // Determine if it is empty
-            if (!StringUtils.isAnyEmpty(username, password)) {
-                //Encrypted password
-                password = new BCryptPasswordEncoder().encode(password);
-                SysUser sysUser = new SysUser();
-                //sysUser.setId(SqlUtils.getUUID32());
-                sysUser.setCrtDttm(new Date());
-                sysUser.setCrtUser("system");
-                sysUser.setLastUpdateDttm(new Date());
-                sysUser.setLastUpdateUser("system");
-                sysUser.setEnableFlag(true);
-                sysUser.setUsername(username);
-                sysUser.setPassword(password);
-                sysUser.setName(sysUserVo.getName());
-                sysUser.setAge(sysUserVo.getAge());
-                sysUser.setSex(sysUserVo.getSex());
-                sysUser = sysUserDomain.saveOrUpdate(sysUser);
-                SysRole sysRole = new SysRole();
-                sysRole.setRole(SysRoleType.USER);
-                sysRole.setSysUser(sysUser);
-                sysRoleDomain.saveOrUpdate(sysRole);
-                return 1;
-            }
+    public String registerUser(SysUserVo sysUserVo) {
+        if (null == sysUserVo) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Registration failed, username or password is empty");
         }
-        return 0;
+        String username = sysUserVo.getUsername();
+        String password = sysUserVo.getPassword();
+        // Determine if it is empty
+        if (StringUtils.isAllEmpty(username, password)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Registration failed, username or password is empty");
+        }
+        //Encrypted password
+        password = new BCryptPasswordEncoder().encode(password);
+        SysUser sysUser = new SysUser();
+        sysUser.setId(SqlUtils.getUUID32());
+        sysUser.setCrtDttm(new Date());
+        sysUser.setCrtUser("system");
+        sysUser.setLastUpdateDttm(new Date());
+        sysUser.setLastUpdateUser("system");
+        sysUser.setEnableFlag(true);
+        sysUser.setUsername(username);
+        sysUser.setPassword(password);
+        sysUser.setName(sysUserVo.getName());
+        sysUser.setAge(sysUserVo.getAge());
+        sysUser.setSex(sysUserVo.getSex());
+
+        List<SysRole> sysRoleList = new ArrayList<>();
+        SysRole sysRole = new SysRole();
+        sysRole.setRole(SysRoleType.USER);
+        sysRole.setSysUser(sysUser);
+
+        sysRoleList.add(sysRole);
+        sysUser.setRoles(sysRoleList);
+
+        sysUserDomain.saveOrUpdate(sysUser);
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr("Congratulations, registration is successful");
     }
 }

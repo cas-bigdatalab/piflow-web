@@ -3,7 +3,7 @@ package com.nature.third;
 import com.nature.ApplicationTests;
 import com.nature.base.util.HttpUtils;
 import com.nature.base.util.LoggerUtil;
-import com.nature.component.group.model.StopsTemplate;
+import com.nature.component.stopsComponent.model.StopsTemplate;
 import com.nature.third.service.IStop;
 import org.junit.Test;
 import org.slf4j.Logger;

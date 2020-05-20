@@ -22,7 +22,7 @@ public class StopMapperTest extends ApplicationTests {
 
 	@Test
 	public void testGetStopsAll() {
-		List<Stops> stopsAll = stopMapper.getStopsAll();
+		List<Stops> stopsAll = stopMapper.getStopsList();
 		logger.info(stopsAll + "");
 	}
 

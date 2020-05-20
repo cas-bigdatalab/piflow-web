@@ -3,6 +3,8 @@ package com.nature.component.mxGraph.model;
 import com.nature.base.BaseHibernateModelUUIDNoCorpAgentId;
 import com.nature.component.flow.model.Flow;
 import com.nature.component.flow.model.FlowGroup;
+import com.nature.component.process.model.Process;
+import com.nature.component.process.model.ProcessGroup;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.OrderBy;
@@ -29,6 +31,14 @@ public class MxGraphModel extends BaseHibernateModelUUIDNoCorpAgentId {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "FK_FLOW_GROUP_ID")
     private FlowGroup flowGroup;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "FK_PROCESS_ID")
+    private Process process;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "FK_PROCESS_GROUP_ID")
+    private ProcessGroup processGroup;
 
     @Column(name = "MX_DX")
     private String dx;

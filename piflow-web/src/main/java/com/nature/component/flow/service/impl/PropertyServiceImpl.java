@@ -8,20 +8,24 @@ import com.nature.component.flow.model.Property;
 import com.nature.component.flow.model.Stops;
 import com.nature.component.flow.request.UpdatePathRequest;
 import com.nature.component.flow.service.IPropertyService;
-import com.nature.component.flow.utils.StopsUtil;
+import com.nature.component.flow.utils.StopsUtils;
 import com.nature.component.flow.vo.StopsVo;
-import com.nature.component.group.model.PropertyTemplate;
-import com.nature.component.group.model.StopsTemplate;
+import com.nature.component.stopsComponent.model.PropertyTemplate;
+import com.nature.component.stopsComponent.model.StopsTemplate;
+import com.nature.domain.flow.PropertyDomain;
+import com.nature.domain.flow.StopsDomain;
+import com.nature.domain.process.ProcessDomain;
 import com.nature.mapper.flow.PathsMapper;
 import com.nature.mapper.flow.PropertyMapper;
 import com.nature.mapper.flow.StopsMapper;
-import com.nature.mapper.flow.StopsTemplateMapper;
+import com.nature.mapper.stopsComponent.StopsTemplateMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.transaction.Transactional;
 import java.util.*;
 
 @Service
@@ -41,10 +45,16 @@ public class PropertyServiceImpl implements IPropertyService {
     @Resource
     private PathsMapper pathsMapper;
 
+    @Resource
+    private StopsDomain stopsDomain;
+
+    @Resource
+    private PropertyDomain propertyDomain;
+
     @Override
     public StopsVo queryAll(String fid, String stopPageId) {
-        Stops stops = propertyMapper.getStopGroupList(fid, stopPageId);
-        StopsVo stopsVo = StopsUtil.stopPoToVo(stops);
+        Stops stops = stopsDomain.getStopsByPageId(fid, stopPageId);
+        StopsVo stopsVo = StopsUtils.stopPoToVo(stops);
         return stopsVo;
     }
 
@@ -253,6 +263,22 @@ public class PropertyServiceImpl implements IPropertyService {
                 }
             }
         }
+    }
+
+    /**
+     * deleteLastReloadDataByStopsId
+     *
+     * @param stopId
+     * @return
+     */
+    @Transactional
+    @Override
+    public String deleteLastReloadDataByStopsId(String stopId){
+        int i = propertyDomain.deletePropertiesByIsOldDataAndStopsId(stopId);
+        if(i > 0){
+            return ReturnMapUtils.setSucceededMsgRtnJsonStr("successfully deleted");
+        }
+        return ReturnMapUtils.setFailedMsgRtnJsonStr("Failed to delete");
     }
 
 }

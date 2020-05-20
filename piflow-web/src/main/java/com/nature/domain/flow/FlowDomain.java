@@ -1,8 +1,15 @@
 package com.nature.domain.flow;
 
+import com.nature.base.util.SessionUserUtil;
+import com.nature.base.vo.UserVo;
 import com.nature.component.flow.model.Flow;
 import com.nature.repository.flow.FlowJpaRepository;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -13,9 +20,6 @@ import java.util.List;
 
 @Component
 public class FlowDomain {
-
-    @PersistenceContext
-    private EntityManager entityManager;
 
     @Resource
     private FlowJpaRepository flowJpaRepository;
@@ -44,41 +48,34 @@ public class FlowDomain {
         return flowJpaRepository.getFlowByPageId(fid, pageId);
     }
 
+    public String getFlowIdByPageId(String fid, String pageId) {
+        return flowJpaRepository.getFlowIdByPageId(fid, pageId);
+    }
+
     public String getFlowIdByNameAndFlowGroupId(String fid, String flowName) {
         return flowJpaRepository.getFlowIdByNameAndFlowGroupId(fid, flowName);
     }
 
-    public String getMaxStopPageIdByFlowGroupId(String flowGroupId) {
-        return flowJpaRepository.getMaxStopPageIdByFlowGroupId(flowGroupId);
+    public Integer getMaxFlowPageIdByFlowGroupId(String flowGroupId) {
+        return flowJpaRepository.getMaxFlowPageIdByFlowGroupId(flowGroupId);
     }
 
-    /**
-     * Query all flow paging queries
-     *
-     * @param param
-     * @return
-     */
-    @SuppressWarnings("unchecked")
-	public List<Flow> getFlowListParam(String param) {
-        String sqlStr = "select 0";
-        StringBuffer strBuf = new StringBuffer();
-        strBuf.append("select * ");
-        strBuf.append("from flow ");
-        strBuf.append("where ");
-        strBuf.append("enable_flag = 1 ");
-        strBuf.append("and is_example = 0 ");
-        strBuf.append("and fk_flow_group_id is null ");
-        if (StringUtils.isNotBlank(param)) {
-            strBuf.append("and ( ");
-            strBuf.append("name like '%" + param + "%' ");
-            strBuf.append("or description like '%" + param + "%' ");
-            strBuf.append(") ");
-        }
-        //strBuf.append(SqlUtils.addQueryByUserRole(true, false));
-        strBuf.append("order by crt_dttm desc ");
-        sqlStr = strBuf.toString();
-        Query query = entityManager.createNativeQuery(sqlStr,Flow.class);
-        return query.getResultList();
+    public Page<Flow> getFlowListPage(int page, int size, String param) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "crtDttm"));
+        return flowJpaRepository.getFlowListPage(null == param ? "" : param, pageRequest);
+    }
+
+    public Page<Flow> getFlowListPageByUser(int page, int size, String param,String username) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "crtDttm"));
+        return flowJpaRepository.getFlowListPage(username, null == param ? "" : param, pageRequest);
+    }
+
+    public String[] getFlowNamesByFlowGroupId(String flowGroupId){
+        return flowJpaRepository.getFlowNamesByFlowGroupId(flowGroupId);
+    }
+
+    public String[] getFlowAndGroupNamesByFlowGroupId(String flowGroupId){
+        return flowJpaRepository.getFlowAndGroupNamesByFlowGroupId(flowGroupId);
     }
 
 }

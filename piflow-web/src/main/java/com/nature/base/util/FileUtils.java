@@ -35,15 +35,14 @@ public class FileUtils {
      *
      * @param xmlStr   xml string
      * @param fileName File name
-     * @param type     File type (suffix)
      * @param path     (Storage path)
      * @return
      */
     @SuppressWarnings("deprecation")
-    public static String createXml(String xmlStr, String fileName, String type, String path) {
+    public static String createXml(String xmlStr, String fileName, String path) {
         CheckPathUtils.isChartPathExist(path);
         Document doc = strToDocument(xmlStr);
-        String realPath = path + fileName + type;
+        String realPath = path + fileName + ".xml";
         logger.debug("============Entry Generation Method：" + new Date().toLocaleString() + "=================");
         try {
             // Determine if the file exists, delete it if it exists
@@ -69,7 +68,7 @@ public class FileUtils {
             logger.error("update " + fileName + " error ：", exception);
         }
         logger.debug("============Exit Generation Method：" + new Date().toLocaleString() + "=================");
-        return path + fileName + type;
+        return realPath;
     }
 
 
@@ -81,45 +80,55 @@ public class FileUtils {
      * @return
      */
     public static String upload(MultipartFile file, String path) {
-        Map<String, Object> rtnMap = new HashMap<>();
-        rtnMap.put("code", 500);
-        if (!file.isEmpty()) {
-            CheckPathUtils.isChartPathExist(path);
-            //file name
-            String saveFileName = file.getOriginalFilename();
-            File saveFile = new File(path + saveFileName);
-            if (!saveFile.getParentFile().exists()) {
-                boolean mkdirs = saveFile.getParentFile().mkdirs();
-                if (mkdirs) {
-                    logger.info("File created successfully");
-                }
-            }
-            try {
-                BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(saveFile));
-                out.write(file.getBytes());
-                out.flush();
-                out.close();
-                logger.debug(saveFile.getName() + " Upload success");
-                rtnMap.put("url", path + saveFileName);
-                rtnMap.put("fileName", saveFileName);
-                rtnMap.put("msgInfo", "Upload success");
-                rtnMap.put("code", 200);
-            } catch (FileNotFoundException e) {
-                //e.printStackTrace();
-                rtnMap.put("msgInfo", "Upload failure");
-                logger.error("Upload failure,", e);
-            } catch (IOException e) {
-                //e.printStackTrace();
-                rtnMap.put("msgInfo", "Upload failure");
-                logger.error("Upload failure", e);
-            }
-        } else {
-            rtnMap.put("msgInfo", "The upload failed because the file was empty.");
-            logger.warn("The upload failed and the file was empty.");
-        }
-        return JsonUtils.toJsonNoException(rtnMap);
+        return JsonUtils.toJsonNoException(uploadRtnMap(file, path));
     }
 
+    public static Map<String, Object> uploadRtnMap(MultipartFile file, String path) {
+        if (file.isEmpty()) {
+            return ReturnMapUtils.setFailedMsg("The upload failed and the file was empty.");
+        }
+        CheckPathUtils.isChartPathExist(path);
+        //file name
+        String fileName = file.getOriginalFilename();
+        String[] fileNameSplit = fileName.split("\\.");
+        String saveFileName = null;
+        if (fileNameSplit.length > 0) {
+            saveFileName = UUIDUtils.getUUID32() + "." + fileNameSplit[fileNameSplit.length - 1];
+        }
+        if (StringUtils.isBlank(saveFileName)) {
+            saveFileName = UUIDUtils.getUUID32();
+        }
+        File saveFile = new File(path + saveFileName);
+        if (!saveFile.getParentFile().exists()) {
+            boolean mkdirs = saveFile.getParentFile().mkdirs();
+            if (mkdirs) {
+                logger.info("File created successfully");
+            }
+        }
+        Map<String, Object> rtnMap = new HashMap<>();
+        rtnMap.put("code", 500);
+        try {
+            BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(saveFile));
+            out.write(file.getBytes());
+            out.flush();
+            out.close();
+            logger.debug(saveFile.getName() + " Upload success");
+            rtnMap.put("fileName", fileName);
+            rtnMap.put("saveFileName", saveFileName);
+            rtnMap.put("path", path + saveFileName);
+            rtnMap.put("msgInfo", "Upload success");
+            rtnMap.put("code", 200);
+        } catch (FileNotFoundException e) {
+            //e.printStackTrace();
+            rtnMap.put("msgInfo", "Upload failure");
+            logger.error("Upload failure,", e);
+        } catch (IOException e) {
+            //e.printStackTrace();
+            rtnMap.put("msgInfo", "Upload failure");
+            logger.error("Upload failure", e);
+        }
+        return rtnMap;
+    }
 
     /**
      * String to "Document"
@@ -254,5 +263,49 @@ public class FileUtils {
         }
     }
 
+    /**
+     * Delete folder (force delete)
+     *
+     * @param path
+     */
+    public static void deleteAllFilesOfDir(File path) {
+        if (null != path) {
+            if (!path.exists())
+                return;
+            if (path.isFile()) {
+                boolean result = path.delete();
+                int tryCount = 0;
+                while (!result && tryCount++ < 10) {
+                    System.gc(); // Recycling resources
+                    result = path.delete();
+                }
+            }
+            File[] files = path.listFiles();
+            if (null != files) {
+                for (int i = 0; i < files.length; i++) {
+                    deleteAllFilesOfDir(files[i]);
+                }
+            }
+            path.delete();
+        }
+    }
+
+    /**
+     * deleteFile
+     *
+     * @param pathname
+     * @return
+     * @throws IOException
+     */
+    public static boolean deleteFile(String pathname) {
+        boolean result = false;
+        File file = new File(pathname);
+        if (file.exists()) {
+            file.delete();
+            result = true;
+            System.out.println("The file has been deleted successfully");
+        }
+        return result;
+    }
 
 }

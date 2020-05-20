@@ -7,6 +7,7 @@ import com.nature.common.Eunm.RunModeType;
 import com.nature.common.constant.SysParamsCache;
 import com.nature.component.process.model.Process;
 import com.nature.component.process.utils.ProcessUtils;
+import com.nature.domain.process.ProcessDomain;
 import com.nature.mapper.process.ProcessMapper;
 import com.nature.third.service.IFlow;
 import com.nature.third.utils.ThirdFlowInfoVoUtils;
@@ -18,6 +19,7 @@ import net.sf.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
@@ -30,6 +32,9 @@ public class FlowImpl implements IFlow {
 
     @Resource
     private ProcessMapper processMapper;
+
+    @Resource
+    private ProcessDomain processDomain;
 
     @Resource
     private ProcessTransaction processTransaction;
@@ -214,14 +219,16 @@ public class FlowImpl implements IFlow {
     }
 
     @Override
+    @Transactional
     public void getProcessInfoAndSave(String appid) {
         ThirdFlowInfoVo thirdFlowInfoVo = getFlowInfo(appid);
         //Determine if the progress returned by the interface is empty
         if (null != thirdFlowInfoVo) {
-            Process processByAppId = processMapper.getProcessNoGroupByAppId(appid);
+            Process processByAppId = processDomain.getProcessNoGroupByAppId(appid);
             processByAppId = ThirdFlowInfoVoUtils.setProcess(processByAppId, thirdFlowInfoVo);
-            processByAppId.setProcessPathList(null);
-            processTransaction.updateProcessAll(processByAppId);
+            if(null!=processByAppId){
+                processDomain.saveOrUpdate(processByAppId);
+            }
         }
 
     }

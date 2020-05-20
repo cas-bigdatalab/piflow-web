@@ -11,6 +11,8 @@ public interface ISysUserService {
 
     public SysUser findByUsername(String username);
 
+    public String checkUserName(String username);
+
     public List<SysUser> findByName(String name);
 
     public List<SysUser> getUserList();
@@ -21,5 +23,5 @@ public interface ISysUserService {
 
     public int deleteUser(String id);
 
-    public int registerUser(SysUserVo sysUserVo);
+    public String registerUser(SysUserVo sysUserVo);
 }

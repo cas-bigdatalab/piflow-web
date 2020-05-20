@@ -3,6 +3,7 @@ package com.nature.component.process.vo;
 import com.nature.base.util.DateUtils;
 import com.nature.common.Eunm.ProcessState;
 import com.nature.common.Eunm.RunModeType;
+import com.nature.component.mxGraph.vo.MxGraphModelVo;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -32,6 +33,7 @@ public class ProcessGroupVo implements Serializable {
     private String progress;
     private RunModeType runModeType = RunModeType.RUN;
     private Date crtDttm;
+    private MxGraphModelVo mxGraphModelVo;
     private ProcessGroupVo processGroupVo;
 
     private List<ProcessVo> processVoList = new ArrayList<>();

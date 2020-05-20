@@ -122,7 +122,7 @@ public class ConfigInterceptor implements HandlerInterceptor {
                     //logger.warn("XML file read failed, loading template failed");
                     return false;
                 }
-                Flow flowXml = FlowXmlUtils.xmlToFlow(xmlFileToStr, 2, "system");
+                Flow flowXml = FlowXmlUtils.xmlToFlow(xmlFileToStr, 2, "system", false);
                 if (null == flowXml) {
                     return false;
                 }

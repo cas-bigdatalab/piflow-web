@@ -62,7 +62,7 @@ public class FlowUtil {
         if (null != flow) {
             flowVo = new FlowVo();
             BeanUtils.copyProperties(flow, flowVo);
-            List<StopsVo> stopsVoList = StopsUtil.stopsListPoToVo(flow.getStopsList());
+            List<StopsVo> stopsVoList = StopsUtils.stopsListPoToVo(flow.getStopsList());
             List<PathsVo> pathsVoList = PathsUtil.pathsListPoToVo(flow.getPathsList());
             flowVo.setStopsVoList(stopsVoList);
             flowVo.setPathsVoList(pathsVoList);

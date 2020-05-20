@@ -1,8 +1,13 @@
 package com.nature.domain.dataSource;
 
+import com.nature.base.util.SessionUserUtil;
+import com.nature.base.vo.UserVo;
 import com.nature.component.dataSource.model.DataSource;
 import com.nature.repository.dataSource.DataSourceJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
@@ -54,6 +59,17 @@ public class DataSourceDomain {
 
     public int updateEnableFlagById(String id, boolean enableFlag) {
         return dataSourceJpaRepository.updateEnableFlagById(id, enableFlag);
+    }
+
+    public Page<DataSource> getDataSourceListPage(int page, int size, String param) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "crtDttm"));
+        boolean isAdmin = SessionUserUtil.isAdmin();
+        if (isAdmin) {
+            return dataSourceJpaRepository.getDataSourceListPageByParam(null == param ? "" : param, pageRequest);
+        } else {
+            UserVo currentUser = SessionUserUtil.getCurrentUser();
+            return dataSourceJpaRepository.getDataSourceListPageByParamAndCrtUser(currentUser.getUsername(), null == param ? "" : param, pageRequest);
+        }
     }
 
 }

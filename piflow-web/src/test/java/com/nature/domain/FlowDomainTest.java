@@ -20,12 +20,12 @@ public class FlowDomainTest extends ApplicationTests {
 
     @Test
     public void testGetFlowListParam() {
-		List<Flow> flowListParam = flowDomain.getFlowListParam(null);
-        List<Flow> flowListParam1 = flowDomain.getFlowListParam("dd");
-        Flow flow = flowListParam.get(0);
+		//List<Flow> flowListParam = flowDomain.getFlowListParam(null);
+        //List<Flow> flowListParam1 = flowDomain.getFlowListParam("dd");
+        //Flow flow = flowListParam.get(0);
 
-        logger.info(flow.getStopsList().size() + "");
-		logger.info(flowListParam1 + "");
+        //logger.info(flow.getStopsList().size() + "");
+		//logger.info(flowListParam1 + "");
     }
 
 }

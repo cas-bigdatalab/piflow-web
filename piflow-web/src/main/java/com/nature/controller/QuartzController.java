@@ -18,8 +18,8 @@ public class QuartzController {
 
     @RequestMapping("/getScheduleListPage")
     @ResponseBody
-    public String getScheduleListPage(HttpServletRequest request, Integer start, Integer length, Integer draw, String extra_search) {
-        return sysScheduleServiceImpl.getScheduleListPage(start / length + 1, length, extra_search);
+    public String getScheduleListPage(Integer page, Integer limit, String param) {
+        return sysScheduleServiceImpl.getScheduleListPage(page, limit, param);
     }
 
     @RequestMapping("/getScheduleById")

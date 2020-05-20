@@ -65,14 +65,6 @@ public interface IProcessService {
     public ProcessVo getProcessVoByAppId(String appId);
 
     /**
-     * Query process based on array Appid
-     *
-     * @param appIDs
-     * @return
-     */
-    public List<ProcessVo> getProcessVoByAppIds(String appIDs);
-
-    /**
      * Query appInfo at third-party interface according to appID and save it
      *
      * @param appID
@@ -113,14 +105,6 @@ public interface IProcessService {
     public int updateProcess(ProcessVo processVo, UserVo currentUser);
 
     /**
-     * Copy process and create a new one
-     *
-     * @param processId
-     * @return
-     */
-    public Process processCopyProcessAndAdd(String processId, UserVo currentUser, RunModeType runModeType);
-
-    /**
      * Generate Process from flowId and save it
      *
      * @param flowId
@@ -136,7 +120,7 @@ public interface IProcessService {
      * @return
      */
     @Transactional
-    public StatefulRtnBase updateProcessEnableFlag(String processId, UserVo currentUser);
+    public String delProcess(String processId);
 
     /**
      * Query the running process List (process List) according to flowId

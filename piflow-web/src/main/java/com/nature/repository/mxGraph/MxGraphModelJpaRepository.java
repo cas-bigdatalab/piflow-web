@@ -18,6 +18,6 @@ public interface MxGraphModelJpaRepository extends JpaRepository<MxGraphModel, S
     @Query("update MxGraphModel c set c.enableFlag = :enableFlag where c.id = :id")
     int updateEnableFlagById(@Param("id") String id, @Param("enableFlag") boolean enableFlag);
 
-    @Query(value = "select * from mx_graph_model s where s.enable_flag = 1 and s.fk_flow_group_id = :flowGroupId", nativeQuery = true)
+    @Query(nativeQuery = true, value = "select * from mx_graph_model s where s.enable_flag = 1 and s.fk_flow_group_id = :flowGroupId")
     MxGraphModel getMxGraphModelByFlowGroupId(@Param("flowGroupId") String flowGroupId);
 }

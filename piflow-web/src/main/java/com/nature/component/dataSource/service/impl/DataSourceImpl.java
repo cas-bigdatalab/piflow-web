@@ -1,17 +1,11 @@
 package com.nature.component.dataSource.service.impl;
 
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
-import com.nature.base.util.JsonUtils;
-import com.nature.base.util.LoggerUtil;
-import com.nature.base.util.SessionUserUtil;
-import com.nature.base.util.SqlUtils;
+import com.nature.base.util.*;
 import com.nature.base.vo.UserVo;
 import com.nature.component.dataSource.model.DataSource;
 import com.nature.component.dataSource.model.DataSourceProperty;
 import com.nature.component.dataSource.service.IDataSource;
-import com.nature.component.dataSource.utils.DataSourceUtil;
+import com.nature.component.dataSource.utils.DataSourceUtils;
 import com.nature.component.dataSource.vo.DataSourcePropertyVo;
 import com.nature.component.dataSource.vo.DataSourceVo;
 import com.nature.component.flow.model.Property;
@@ -25,6 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -231,7 +226,7 @@ public class DataSourceImpl implements IDataSource {
         if (StringUtils.isNotBlank(id)) {
             DataSource dataSourceById = dataSourceMapper.getDataSourceById(id);
             if (null != dataSourceById) {
-                dataSourceVo = DataSourceUtil.dataSourcePoToVo(dataSourceById, true);
+                dataSourceVo = DataSourceUtils.dataSourcePoToVo(dataSourceById, true);
             }
         }
         return dataSourceVo;
@@ -261,7 +256,7 @@ public class DataSourceImpl implements IDataSource {
         } else {
             dataSourceList = dataSourceMapper.getDataSourceList();
         }
-        List<DataSourceVo> dataSourceVoList = DataSourceUtil.dataSourceListPoToVo(dataSourceList, false);
+        List<DataSourceVo> dataSourceVoList = DataSourceUtils.dataSourceListPoToVo(dataSourceList, false);
         if (null != dataSourceVoList && dataSourceVoList.size() > 0) {
             rtnMap.put("data", dataSourceVoList);
         }
@@ -271,30 +266,31 @@ public class DataSourceImpl implements IDataSource {
 
     @Override
     public List<DataSourceVo> getDataSourceTemplateList() {
-        return DataSourceUtil.dataSourceListPoToVo(dataSourceMapper.getDataSourceTemplateList(), true);
+        return DataSourceUtils.dataSourceListPoToVo(dataSourceMapper.getDataSourceTemplateList(), true);
     }
 
     @Override
     public String getDataSourceVoListPage(Integer offset, Integer limit, String param) {
-        Map<String, Object> rtnMap = new HashMap<String, Object>();
+        Map<String, Object> rtnMap = new HashMap<>();
         if (null != offset && null != limit) {
-            Page<DataSource> page = PageHelper.startPage(offset, limit);
-            dataSourceMapper.getDataSourceListParam(param);
-            PageInfo<DataSource> info = new PageInfo<DataSource>(page);
+
+            Page<DataSource> dataSourceListPage = dataSourceDomain.getDataSourceListPage(offset - 1, limit, param);
             List<DataSourceVo> dataSourceVoList = new ArrayList<>();
-            List<DataSource> infoList = info.getList();
-            if (null != infoList && infoList.size() > 0) {
+            List<DataSource> dataSourceList = dataSourceListPage.getContent();
+            if (null != dataSourceList && dataSourceList.size() > 0) {
                 dataSourceVoList = new ArrayList<>();
                 DataSourceVo dataSourceVo = null;
-                for (DataSource dataSource : infoList) {
+                for (DataSource dataSource : dataSourceList) {
                     dataSourceVo = new DataSourceVo();
                     BeanUtils.copyProperties(dataSource, dataSourceVo);
                     dataSourceVoList.add(dataSourceVo);
                 }
             }
-            rtnMap.put("iTotalDisplayRecords", info.getTotal());
-            rtnMap.put("iTotalRecords", info.getTotal());
-            rtnMap.put("pageData", dataSourceVoList);//Data collection
+
+            rtnMap.put(ReturnMapUtils.KEY_CODE, ReturnMapUtils.SUCCEEDED_CODE);
+            rtnMap.put("msg", "");
+            rtnMap.put("count", dataSourceListPage.getTotalElements());
+            rtnMap.put("data", dataSourceVoList);//Data collection
         }
         return JsonUtils.toJsonNoException(rtnMap);
     }

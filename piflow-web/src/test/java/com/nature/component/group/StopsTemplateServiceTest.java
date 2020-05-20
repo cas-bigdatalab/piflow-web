@@ -2,8 +2,8 @@ package com.nature.component.group;
 
 import com.nature.ApplicationTests;
 import com.nature.base.util.LoggerUtil;
-import com.nature.component.group.model.StopsTemplate;
-import com.nature.component.group.service.IStopsTemplateService;
+import com.nature.component.stopsComponent.model.StopsTemplate;
+import com.nature.component.stopsComponent.service.IStopsTemplateService;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

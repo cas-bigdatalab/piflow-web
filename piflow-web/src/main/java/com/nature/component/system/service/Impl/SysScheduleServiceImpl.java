@@ -1,7 +1,5 @@
 package com.nature.component.system.service.Impl;
 
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
 import com.nature.base.util.*;
 import com.nature.base.vo.UserVo;
 import com.nature.common.Eunm.ScheduleRunResultType;
@@ -16,6 +14,7 @@ import org.quartz.Scheduler;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -51,9 +50,11 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
     public String getScheduleListPage(Integer offset, Integer limit, String param) {
         Map<String, Object> rtnMap = new HashMap<String, Object>();
         if (null != offset && null != limit) {
-			Page<SysScheduleVo> page = PageHelper.startPage(offset, limit);
-            sysScheduleMapper.getSysScheduleList(param);
-            rtnMap = PageHelperUtils.setDataTableParam(page, rtnMap);
+            Page<SysSchedule> sysScheduleListPage = sysScheduleDomain.getSysScheduleListPage(offset - 1, limit, param);
+            rtnMap.put(ReturnMapUtils.KEY_CODE, ReturnMapUtils.SUCCEEDED_CODE);
+            rtnMap.put("msg", "");
+            rtnMap.put("count", sysScheduleListPage.getTotalElements());
+            rtnMap.put("data", sysScheduleListPage.getContent());//Data collection
         }
         return JsonUtils.toJsonNoException(rtnMap);
     }

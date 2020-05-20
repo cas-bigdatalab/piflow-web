@@ -20,8 +20,8 @@ public class ProcessGroupPathDomain {
 
     private Specification<ProcessGroupPath> addEnableFlagParam() {
         Specification<ProcessGroupPath> specification = new Specification<ProcessGroupPath>() {
-        	private static final long serialVersionUID = 1L;
-        	
+            private static final long serialVersionUID = 1L;
+
             @Override
             public Predicate toPredicate(Root<ProcessGroupPath> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
                 //root.get("enableFlag") means to get the field name of enableFlag
@@ -53,6 +53,10 @@ public class ProcessGroupPathDomain {
 
     public int updateEnableFlagById(String id, boolean enableFlag) {
         return processGroupPathJpaRepository.updateEnableFlagById(id, enableFlag);
+    }
+
+    public ProcessGroupPath getProcessGroupPathByPageId(String fid, String pageId) {
+        return processGroupPathJpaRepository.getProcessGroupPathByPageId(fid, pageId);
     }
 
 }

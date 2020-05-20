@@ -45,21 +45,20 @@ public class GroupImpl implements IGroup {
         logger.info("\n" + formatJson);
         String doPost = HttpUtils.doPost(SysParamsCache.getFlowGroupStartUrl(), formatJson, null);
         logger.info("Return information：" + doPost);
-        if (StringUtils.isNotBlank(doPost) && !doPost.contains("Exception")) {
-            try {
-                JSONObject obj = JSONObject.fromObject(doPost).getJSONObject("group");// Convert a json string to a json object
-                String groupId = obj.getString("id");
-                if (StringUtils.isNotBlank(groupId)) {
-                    return ReturnMapUtils.setSucceededCustomParam("appId", groupId);
-                } else {
-                    return ReturnMapUtils.setFailedMsg("Error : Interface return value is null");
-                }
-            } catch (Exception e) {
-                return ReturnMapUtils.setFailedMsg("Error : Interface call succeeded, conversion error");
-            }
-        } else {
+        if (StringUtils.isBlank(doPost) || doPost.contains("Exception")) {
             logger.warn("Return information：" + doPost);
             return ReturnMapUtils.setFailedMsg("Error : Interface call failed");
+        }
+        try {
+            JSONObject obj = JSONObject.fromObject(doPost).getJSONObject("group");// Convert a json string to a json object
+            String groupId = obj.getString("id");
+            if (StringUtils.isNotBlank(groupId)) {
+                return ReturnMapUtils.setSucceededCustomParam("appId", groupId);
+            } else {
+                return ReturnMapUtils.setFailedMsg("Error : Interface return value is null");
+            }
+        } catch (Exception e) {
+            return ReturnMapUtils.setFailedMsg("Error : Interface call succeeded, conversion error");
         }
     }
 
@@ -94,37 +93,37 @@ public class GroupImpl implements IGroup {
     public ThirdFlowGroupInfoResponse getFlowGroupInfo(String groupId) {
         ThirdFlowGroupInfoResponse thirdFlowGroupInfoResponse = null;
         String doGet = getFlowGroupInfoStr(groupId);
-        if (StringUtils.isNotBlank(doGet) && !doGet.contains("Exception")) {
-            // Also convert the json string to a json object, and then convert the json object to a java object, as shown below.
-            JSONObject obj = JSONObject.fromObject(doGet);// Convert a json string to a json object
-            // Needed when there is a List in jsonObj
-            Map<String, Class> classMap = new HashMap<String, Class>();
-            // Key is the name of the List in jsonObj, and the value is a generic class of list
-            classMap.put("flows", ThirdFlowInfoOutResponse.class);
-            classMap.put("stops", ThirdFlowStopInfoOutResponse.class);
-            classMap.put("groups", ThirdFlowGroupInfoOutResponse.class);
-            // Convert a json object to a java object
-            ThirdFlowGroupInfoOutResponse thirdFlowGroupInfoOutResponse = (ThirdFlowGroupInfoOutResponse) JSONObject.toBean(obj, ThirdFlowGroupInfoOutResponse.class, classMap);
-            if (null != thirdFlowGroupInfoOutResponse) {
-                thirdFlowGroupInfoResponse = thirdFlowGroupInfoOutResponse.getGroup();
-                if (null != thirdFlowGroupInfoResponse) {
-                    String progressNums = thirdFlowGroupInfoResponse.getProgress();
-                    if (StringUtils.isNotBlank(progressNums)) {
-                        try {
-                            double progressNumsD = Double.parseDouble(progressNums);
-                            thirdFlowGroupInfoResponse.setProgress(String.format("%.2f", progressNumsD));
-                        } catch (Throwable e) {
-                            logger.warn("Progress conversion failed");
-                        }
-                    }
-                } else {
-                    logger.warn("conversion exception");
-                }
-            } else {
-                logger.warn("conversion exception");
-            }
-        } else {
+        if (StringUtils.isBlank(doGet) || doGet.contains("Exception")) {
             logger.warn("Interface exception");
+            return null;
+        }
+        // Also convert the json string to a json object, and then convert the json object to a java object, as shown below.
+        JSONObject obj = JSONObject.fromObject(doGet);// Convert a json string to a json object
+        // Needed when there is a List in jsonObj
+        Map<String, Class> classMap = new HashMap<>();
+        // Key is the name of the List in jsonObj, and the value is a generic class of list
+        classMap.put("flows", ThirdFlowInfoOutResponse.class);
+        classMap.put("stops", ThirdFlowStopInfoOutResponse.class);
+        classMap.put("groups", ThirdFlowGroupInfoOutResponse.class);
+        // Convert a json object to a java object
+        ThirdFlowGroupInfoOutResponse thirdFlowGroupInfoOutResponse = (ThirdFlowGroupInfoOutResponse) JSONObject.toBean(obj, ThirdFlowGroupInfoOutResponse.class, classMap);
+        if (null == thirdFlowGroupInfoOutResponse) {
+            logger.warn("conversion exception");
+            return null;
+        }
+        thirdFlowGroupInfoResponse = thirdFlowGroupInfoOutResponse.getGroup();
+        if (null == thirdFlowGroupInfoResponse) {
+            logger.warn("conversion exception");
+            return null;
+        }
+        String progressNums = thirdFlowGroupInfoResponse.getProgress();
+        if (StringUtils.isNotBlank(progressNums)) {
+            try {
+                double progressNumsD = Double.parseDouble(progressNums);
+                thirdFlowGroupInfoResponse.setProgress(String.format("%.2f", progressNumsD));
+            } catch (Throwable e) {
+                logger.warn("Progress conversion failed");
+            }
         }
         return thirdFlowGroupInfoResponse;
 
@@ -167,17 +166,21 @@ public class GroupImpl implements IGroup {
         ThirdFlowGroupInfoResponse thirdFlowGroupInfoResponse = getFlowGroupInfo(groupId);
         Double flowGroupProgress = getFlowGroupProgress(groupId);
         //Determine if the progress returned by the interface is empty
-        if (null != thirdFlowGroupInfoResponse) {
-            ProcessGroup processGroupByGroupId = processGroupDomain.getProcessGroupByGroupId(groupId);
-            processGroupByGroupId = ThirdFlowGroupInfoResponseUtils.setProcessGroup(processGroupByGroupId, thirdFlowGroupInfoResponse);
-            if (null == flowGroupProgress || Double.isNaN(flowGroupProgress)) {
-                flowGroupProgress = 0.0;
-            } else if (Double.isInfinite(flowGroupProgress)) {
-                flowGroupProgress = 100.0;
-            }
-            processGroupByGroupId.setProgress(String.format("%.2f", flowGroupProgress));
-            processGroupDomain.saveOrUpdateSyncTask(processGroupByGroupId);
+        if (null == thirdFlowGroupInfoResponse) {
+            return;
         }
+        ProcessGroup processGroupByGroupId = processGroupDomain.getProcessGroupByGroupId(groupId);
+        if (null == processGroupByGroupId) {
+            return;
+        }
+        processGroupByGroupId = ThirdFlowGroupInfoResponseUtils.setProcessGroup(processGroupByGroupId, thirdFlowGroupInfoResponse);
+        if (null == flowGroupProgress || Double.isNaN(flowGroupProgress)) {
+            flowGroupProgress = 0.0;
+        } else if (Double.isInfinite(flowGroupProgress)) {
+            flowGroupProgress = 100.0;
+        }
+        processGroupByGroupId.setProgress(String.format("%.2f", flowGroupProgress));
+        processGroupDomain.saveOrUpdateSyncTask(processGroupByGroupId);
     }
 
     /**

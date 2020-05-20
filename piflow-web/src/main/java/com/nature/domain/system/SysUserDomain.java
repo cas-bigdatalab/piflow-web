@@ -60,4 +60,8 @@ public class SysUserDomain {
         sysUserJpaRepository.deleteById(id);
     }
 
+    public String checkUsername(String username){
+        return sysUserJpaRepository.checkUsername(username);
+    }
+
 }

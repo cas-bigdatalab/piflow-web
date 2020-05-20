@@ -51,11 +51,17 @@ public class FlowGroupPathsServiceImpl implements IFlowGroupPathsService {
             return JsonUtils.toJsonNoException(rtnMap);
         }
         FlowGroupPaths flowGroupPaths = flowGroupPathsList.get(0);
-        Flow flowFrom = null;
-        Flow flowTo = null;
+        String fromName = null;
+        String toName = null;
         if (StringUtils.isNotBlank(flowGroupPaths.getFrom()) && StringUtils.isNotBlank(flowGroupPaths.getTo())) {
-            flowFrom = flowMapper.getFlowByPageId(flowGroupId, flowGroupPaths.getFrom());
-            flowTo = flowMapper.getFlowByPageId(flowGroupId, flowGroupPaths.getTo());
+            fromName = flowMapper.getFlowNameByPageId(flowGroupId, flowGroupPaths.getFrom());
+            if (StringUtils.isBlank(fromName)) {
+                fromName = flowMapper.getFlowGroupNameByPageId(flowGroupId, flowGroupPaths.getFrom());
+            }
+            toName = flowMapper.getFlowNameByPageId(flowGroupId, flowGroupPaths.getTo());
+            if (StringUtils.isBlank(toName)) {
+                toName = flowMapper.getFlowGroupNameByPageId(flowGroupId, flowGroupPaths.getTo());
+            }
         }
         FlowGroupPathsVo flowGroupPathsVo = new FlowGroupPathsVo();
         BeanUtils.copyProperties(flowGroupPaths, flowGroupPathsVo);
@@ -65,12 +71,8 @@ public class FlowGroupPathsServiceImpl implements IFlowGroupPathsService {
             BeanUtils.copyProperties(flowGroup, flowGroupVo);
             flowGroupPathsVo.setFlowGroupVo(flowGroupVo);
         }
-        if (null != flowFrom) {
-            flowGroupPathsVo.setFlowFrom(flowFrom.getName());
-        }
-        if (null != flowTo) {
-            flowGroupPathsVo.setFlowTo(flowTo.getName());
-        }
+        flowGroupPathsVo.setFlowFrom(fromName);
+        flowGroupPathsVo.setFlowTo(toName);
         if (StringUtils.isBlank(flowGroupPathsVo.getInport())) {
             flowGroupPathsVo.setInport("default");
         }

@@ -5,7 +5,7 @@ import com.nature.base.util.SqlUtils;
 import com.nature.common.Eunm.PortType;
 import com.nature.component.template.model.PropertyTemplateModel;
 import com.nature.component.template.model.StopTemplateModel;
-import com.nature.component.template.model.Template;
+import com.nature.component.template.model.FlowTemplate;
 import com.nature.component.template.vo.FlowTemplateModelVo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
@@ -140,7 +140,7 @@ public class FlowAndStopsTemplateVoMapperProvider {
             PortType outPortType = stops.getOutPortType();
             String owner = stops.getOwner();
             String pageId = stops.getPageId();
-            Template flow = stops.getTemplate();
+            FlowTemplate flow = stops.getFlowTemplate();
             Boolean enableFlag = stops.getEnableFlag();
             Date crtDttm = stops.getCrtDttm();
             Long version = stops.getVersion();

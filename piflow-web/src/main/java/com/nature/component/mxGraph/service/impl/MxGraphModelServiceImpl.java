@@ -4,16 +4,20 @@ import com.nature.base.util.*;
 import com.nature.base.vo.UserVo;
 import com.nature.common.Eunm.PortType;
 import com.nature.component.flow.model.*;
-import com.nature.component.group.model.PropertyTemplate;
-import com.nature.component.group.model.StopsTemplate;
+import com.nature.component.flow.utils.PropertyUtils;
+import com.nature.component.flow.utils.StopsUtils;
+import com.nature.component.stopsComponent.model.PropertyTemplate;
+import com.nature.component.stopsComponent.model.StopsTemplate;
 import com.nature.component.mxGraph.model.MxCell;
 import com.nature.component.mxGraph.model.MxGeometry;
 import com.nature.component.mxGraph.model.MxGraphModel;
 import com.nature.component.mxGraph.service.IMxGraphModelService;
-import com.nature.component.mxGraph.utils.MxGraphModelUtil;
+import com.nature.component.mxGraph.utils.MxCellUtils;
+import com.nature.component.mxGraph.utils.MxGraphModelUtils;
 import com.nature.component.mxGraph.vo.MxCellVo;
 import com.nature.component.mxGraph.vo.MxGeometryVo;
 import com.nature.component.mxGraph.vo.MxGraphModelVo;
+import com.nature.component.mxGraph.vo.MxGraphVo;
 import com.nature.domain.flow.FlowDomain;
 import com.nature.domain.flow.FlowGroupDomain;
 import com.nature.domain.flow.FlowGroupPathsDomain;
@@ -24,6 +28,7 @@ import com.nature.mapper.flow.*;
 import com.nature.mapper.mxGraph.MxCellMapper;
 import com.nature.mapper.mxGraph.MxGeometryMapper;
 import com.nature.mapper.mxGraph.MxGraphModelMapper;
+import com.nature.mapper.stopsComponent.StopsTemplateMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
@@ -109,7 +114,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
     }
 
     /**
-     * Add stops and artboard mxCell
+     * Add stops and drawing board mxCell
      *
      * @param mxGraphModelVo
      * @param flowId
@@ -142,11 +147,11 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
         }
         //Take out the drawing board of the data inventory
         MxGraphModel mxGraphModelDb = flow.getMxGraphModel();
-        //Determine if the artboard of the data inventory exists
+        //Determine if the drawing board of the data inventory exists
         if (null == mxGraphModelDb) {
-            return ReturnMapUtils.setFailedMsg("Database without artboard, adding failed");
+            return ReturnMapUtils.setFailedMsg("Database without drawing board, adding failed");
         }
-        // Put the page's artboard information into the database canvas
+        // Put the page's drawing board information into the database canvas
         //Copy the value from 'mxGraphModelVo' to 'mxGraphModelDb'
         BeanUtils.copyProperties(mxGraphModelVo, mxGraphModelDb);
         mxGraphModelDb.setEnableFlag(true);
@@ -191,7 +196,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
             return ReturnMapUtils.setSucceededMsg("No data can be added, the addition failed");
         }
         // Convert MxCellVo map to MxCellVoList
-        List<MxCellVo> addMxCellVoList = new ArrayList<MxCellVo>(mxCellVoMap.values());
+        List<MxCellVo> addMxCellVoList = new ArrayList<>(mxCellVoMap.values());
         if (null == addMxCellVoList || addMxCellVoList.size() <= 0) {
             return ReturnMapUtils.setSucceededMsg("No data can be added, the addition failed");
         }
@@ -243,15 +248,15 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
         }
 
         //Separate 'stops' from 'path' in addMxCellVoList
-        Map<String, List<MxCellVo>> stopsPathsMap = MxGraphModelUtil.distinguishElementsPaths(addMxCellVoList);
+        Map<String, List<MxCellVo>> stopsPathsMap = MxGraphModelUtils.distinguishElementsPaths(addMxCellVoList);
 
         // Take mxCellVoList(stopsList) from the Map
         List<MxCellVo> objectStops = stopsPathsMap.get("elements");
 
         // stops list
-        List<Stops> addStopsList = new ArrayList<Stops>();
+
         // Generate a stopList based on the contents of the MxCellList
-        addStopsList = this.mxCellVoListToStopsList(objectStops, flow);
+        List<Stops> addStopsList = this.mxCellVoListToStopsList(objectStops, flow, username);
         // save addStopsList
         if (flag) {
             this.addStopList(addStopsList);
@@ -264,7 +269,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
         List<Paths> addPathsList = new ArrayList<Paths>();
 
         // Generate a pathsList based on the contents of the MxCellList
-        addPathsList = MxGraphModelUtil.mxCellVoListToPathsList(objectPaths, flow);
+        addPathsList = MxGraphModelUtils.mxCellVoListToPathsList(objectPaths, flow);
         if (flag) {
             // Judge empty
             if (null != addPathsList && addPathsList.size() > 0) {
@@ -282,7 +287,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
     }
 
     /**
-     * Modification of the artboard
+     * Modification of the drawing board
      *
      * @param mxGraphModelVo
      * @param flowId
@@ -353,7 +358,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
             return ReturnMapUtils.setFailedMsg("Modify save failed flow");
         }
 
-        // Save and modify the artboard information
+        // Save and modify the drawing board information
         Map<String, Object> updateMxGraphRtnMap = this.updateFlowMxGraph(mxGraphModelVo, flowId);
         // Determine if mxGraphModel is saved successfully
         if (null == updateMxGraphRtnMap || 200 != (int) updateMxGraphRtnMap.get(ReturnMapUtils.KEY_CODE)) {
@@ -364,7 +369,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
         List<MxCellVo> mxCellVoList = mxGraphModelVo.getRootVo();
 
         // Separate the stops and path in mxCellVoList
-        Map<String, List<MxCellVo>> stopsPathsMap = MxGraphModelUtil.distinguishElementsPaths(mxCellVoList);
+        Map<String, List<MxCellVo>> stopsPathsMap = MxGraphModelUtils.distinguishElementsPaths(mxCellVoList);
 
         if (null == stopsPathsMap) {
             return ReturnMapUtils.setSucceededMsg("");
@@ -380,7 +385,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
         if (null != pathsList && pathsList.size() > 0) {
             // Take the line of mxCellVoList
             List<MxCellVo> objectPaths = stopsPathsMap.get("paths");
-            // Key is the PageId of PathsVo (the id in the artboard), and the value is Paths
+            // Key is the PageId of PathsVo (the id in the drawing board), and the value is Paths
             Map<String, MxCellVo> objectPathsMap = new HashMap<String, MxCellVo>();
 
             // The pathsList to be modified
@@ -402,7 +407,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
                     MxCellVo mxCellVo = objectPathsMap.get(pageId);
                     // If you get it, you need to modify it. Otherwise, it is to be deleted.
                     if (null != mxCellVo) {
-                        //There is no operation to modify the stop information when you operate the artboard. You can modify the properties, but save it immediately. No operation is required here.
+                        //There is no operation to modify the stop information when you operate the drawing board. You can modify the properties, but save it immediately. No operation is required here.
                     } else {
                         paths.setEnableFlag(false);
                         paths.setLastUpdateUser(username);
@@ -434,7 +439,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
         if (null != stopsList && stopsList.size() > 0) {
             // Take the mxCellVoList of stops
             List<MxCellVo> objectStops = stopsPathsMap.get("elements");
-            // Key is the PageId of mxCellVo (the id in the artboard), and the value is mxCellVo
+            // Key is the PageId of mxCellVo (the id in the drawing board), and the value is mxCellVo
             Map<String, MxCellVo> objectStopsMap = new HashMap<String, MxCellVo>();
 
             // Stopslist to be modified
@@ -456,7 +461,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
                     MxCellVo mxCellVo = objectStopsMap.get(pageId);
                     // If you get it, you need to modify it. Otherwise, it is to be deleted.
                     if (null != mxCellVo) {
-                        //When you operate the artboard, when you delete the line, you need to determine whether there is an Any type stop at both ends of the line. If there is any corresponding port information in the attribute, delete the corresponding port information.
+                        //When you operate the drawing board, when you delete the line, you need to determine whether there is an Any type stop at both ends of the line. If there is any corresponding port information in the attribute, delete the corresponding port information.
                         // Determine if the stops have an Any port
                         if (stops.getInPortType() == PortType.ANY || stops.getOutPortType() == PortType.ANY) {
                             // Value in the pathsDelInfoMap according to the pageId
@@ -485,12 +490,12 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
                                     }
                                     boolean isUpdate = false;
                                     if (null != inportProperty && StringUtils.isNotBlank(inprot)) {
-                                        inportProperty = this.replaceProtValue(inprot, inportProperty);
+                                        inportProperty = this.replacePortValue(inprot, inportProperty);
                                         propertiesNew.add(inportProperty);
                                         isUpdate = true;
                                     }
                                     if (null != outportProperty && StringUtils.isNotBlank(outprot)) {
-                                        outportProperty = this.replaceProtValue(outprot, outportProperty);
+                                        outportProperty = this.replacePortValue(outprot, outportProperty);
                                         propertiesNew.add(outportProperty);
                                         isUpdate = true;
                                     }
@@ -589,13 +594,13 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
      * @param flow
      * @return
      */
-    private List<Stops> mxCellVoListToStopsList(List<MxCellVo> objectStops, Flow flow) {
+    private List<Stops> mxCellVoListToStopsList(List<MxCellVo> objectStops, Flow flow, String username) {
         List<Stops> stopsList = null;
         if (null != objectStops && objectStops.size() > 0) {
-            stopsList = new ArrayList<Stops>();
+            stopsList = new ArrayList<>();
             // loop objectStops
             for (MxCellVo mxCellVo : objectStops) {
-                Stops stops = this.stopsTemplateToStops(mxCellVo);
+                Stops stops = this.stopsTemplateToStops(mxCellVo, username);
                 if (null != stops) {
                     String stopByNameAndFlowId = stopsMapper.getStopByNameAndFlowId(flow.getId(), stops.getName());
                     if (StringUtils.isNotBlank(stopByNameAndFlowId)) {
@@ -613,78 +618,73 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
      * mxCellVo to stops
      *
      * @param mxCellVo
+     * @param username
      * @return
      */
-    private Stops stopsTemplateToStops(MxCellVo mxCellVo) {
-        UserVo user = SessionUserUtil.getCurrentUser();
-        String username = (null != user) ? user.getUsername() : "-1";
+    private Stops stopsTemplateToStops(MxCellVo mxCellVo, String username) {
         Stops stops = null;
-        if (null != mxCellVo) {
-            // Take out the style attribute (the name of the stop in the attribute)
-            // Example of the style attribute of stops
-            // (image;html=1;labelBackgroundColor=#ffffff;image=/grapheditor/stencils/clipart/test_stops_1_128x128.png)
-            // What we need is "test_stops_1"
-            String style = mxCellVo.getStyle();
-            if (StringUtils.isNotBlank(style)) {
-                // Determine whether it is a stop by intercepting keywords
-                String[] split = style.split("_128x128.");
-                // Think of stops when there is one and only one keyword ("_128x128.")
-                if (null != split && split.length == 2) {
-                    // Take the first bit of the array and continue to intercept
-                    String string = split[0];
-                    String[] split2 = string.split("/");
-                    // Empty, take the last bit of the array (the name of the stops)
-                    if (null != split2 && split2.length > 0) {
-                        // Get the name of the stops
-                        String stopsName = split2[split2.length - 1];
-                        // Query the stops template according to the name of the stops
-                        StopsTemplate stopsTemplate = this.getStopsTemplate(stopsName);
-                        // Whether to judge whether the template is empty
-                        if (null != stopsTemplate) {
-                            stops = new Stops();
-                            BeanUtils.copyProperties(stopsTemplate, stops);
-                            stops.setCrtDttm(new Date());
-                            stops.setCrtUser(username);
-                            stops.setLastUpdateDttm(new Date());
-                            stops.setLastUpdateUser(username);
-                            stops.setEnableFlag(true);
-                            stops.setId(SqlUtils.getUUID32());
-                            stops.setPageId(mxCellVo.getPageId());
-                            List<Property> propertiesList = null;
-                            List<PropertyTemplate> propertiesTemplateList = stopsTemplate.getProperties();
-                            if (null != propertiesTemplateList && propertiesTemplateList.size() > 0) {
-                                propertiesList = new ArrayList<Property>();
-                                for (PropertyTemplate propertyTemplate : propertiesTemplateList) {
-                                    Property property = new Property();
-                                    BeanUtils.copyProperties(propertyTemplate, property);
-                                    property.setId(SqlUtils.getUUID32());
-                                    property.setCrtDttm(new Date());
-                                    property.setCrtUser(username);
-                                    property.setLastUpdateDttm(new Date());
-                                    property.setLastUpdateUser(username);
-                                    property.setEnableFlag(true);
-                                    property.setStops(stops);
-                                    property.setCustomValue(propertyTemplate.getDefaultValue());
-                                    //Indicates "select"
-                                    if (propertyTemplate.getAllowableValues().contains(",") && propertyTemplate.getAllowableValues().length() > 4) {
-                                        property.setIsSelect(true);
-                                        //Determine if there is a default value in "select"
-                                        if (!propertyTemplate.getAllowableValues().contains(propertyTemplate.getDefaultValue())) {
-                                            //Default value if not present
-                                            property.setCustomValue("");
-                                        }
-                                    } else {
-                                        property.setIsSelect(false);
-                                    }
-                                    propertiesList.add(property);
-                                }
-                            }
-                            stops.setProperties(propertiesList);
-                        }
+        if (null == mxCellVo) {
+            return null;
+        }
+        // Take out the style attribute (the name of the stop in the attribute)
+        // Example of the style attribute of stops
+        // (image;html=1;labelBackgroundColor=#ffffff;image=/grapheditor/stencils/clipart/test_stops_1_128x128.png)
+        // What we need is "test_stops_1"
+        String style = mxCellVo.getStyle();
+        if (StringUtils.isBlank(style)) {
+            return null;
+        }
+        // Determine whether it is a stop by intercepting keywords
+        String[] split = style.split("_128x128.");
+        // Think of stops when there is one and only one keyword ("_128x128.")
+        if (null == split || split.length != 2) {
+            return null;
+        }
+        // Take the first bit of the array and continue to intercept
+        String string = split[0];
+        String[] split2 = string.split("/");
+        // Empty, take the last bit of the array (the name of the stops)
+        if (null == split2 || split2.length <= 0) {
+            return null;
+        }
+        // Get the name of the stops
+        String stopsName = split2[split2.length - 1];
+        // Query the stops template according to the name of the stops
+        StopsTemplate stopsTemplate = this.getStopsTemplate(stopsName);
+        // Whether to judge whether the template is empty
+        if (null == stopsTemplate) {
+            return null;
+        }
+        stops = new Stops();
+        BeanUtils.copyProperties(stopsTemplate, stops);
+        StopsUtils.initStopsBasicPropertiesNoId(stops, username);
+        stops.setId(SqlUtils.getUUID32());
+        stops.setPageId(mxCellVo.getPageId());
+        List<Property> propertiesList = null;
+        List<PropertyTemplate> propertiesTemplateList = stopsTemplate.getProperties();
+        if (null != propertiesTemplateList && propertiesTemplateList.size() > 0) {
+            propertiesList = new ArrayList<>();
+            for (PropertyTemplate propertyTemplate : propertiesTemplateList) {
+                Property property = PropertyUtils.propertyNewNoId(username);
+                BeanUtils.copyProperties(propertyTemplate, property);
+                property.setId(SqlUtils.getUUID32());
+                property.setStops(stops);
+                property.setCustomValue(propertyTemplate.getDefaultValue());
+                //Indicates "select"
+                if (propertyTemplate.getAllowableValues().contains(",") && propertyTemplate.getAllowableValues().length() > 4) {
+                    property.setIsSelect(true);
+                    //Determine if there is a default value in "select"
+                    if (!propertyTemplate.getAllowableValues().contains(propertyTemplate.getDefaultValue())) {
+                        //Default value if not present
+                        property.setCustomValue("");
                     }
+                } else {
+                    property.setIsSelect(false);
                 }
+                propertiesList.add(property);
             }
         }
+        stops.setProperties(propertiesList);
         return stops;
     }
 
@@ -720,7 +720,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
             return ReturnMapUtils.setFailedMsg("The database mxCellList is empty and the modification failed.");
         }
         // Including modified and tombstoned
-        List<MxCell> updateMxCellList = new ArrayList<MxCell>();
+        List<MxCell> updateMxCellList = new ArrayList<>();
         // Convert the list passed to the page to map key for pageId
         Map<String, MxCellVo> mxCellVoMap = new HashMap<String, MxCellVo>();
         // Determine if it is empty
@@ -732,7 +732,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
         // Loop page data for classification (requires modification and tombstone)
         for (MxCell mxCell : mxCellList) {
             if (null != mxCell) {
-                // Graphic ID (pageId) on the artboard
+                // Graphic ID (pageId) on the drawing board
                 String pageId = mxCell.getPageId();
                 // According to the pageId to go to map,
                 // Get the description database has a page, do the modification operation,
@@ -808,7 +808,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
      * @param property
      * @return
      */
-    private Property replaceProtValue(String prot, Property property) {
+    private Property replacePortValue(String prot, Property property) {
         String customValue = property.getCustomValue();
         if (null != customValue) {
             if (customValue.contains(prot + ",")) {
@@ -873,8 +873,8 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
      * @param flowGroupId
      * @return
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-	private Map<String, Object> addGroupFlows(MxGraphModelVo mxGraphModelVo, String flowGroupId, UserVo currentUser) {
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private Map<String, Object> addGroupFlows(MxGraphModelVo mxGraphModelVo, String flowGroupId, UserVo currentUser) {
         if (null == currentUser) {
             return ReturnMapUtils.setFailedMsg("Illegal operation");
         }
@@ -894,11 +894,11 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
 
         // Take out the drawing board of the data inventory
         MxGraphModel mxGraphModel = flowGroup.getMxGraphModel();
-        // Determine if the artboard of the data inventory exists
+        // Determine if the drawing board of the data inventory exists
         if (null == mxGraphModel) {
-            return ReturnMapUtils.setFailedMsg("Database without artboard, adding failed");
+            return ReturnMapUtils.setFailedMsg("Database without drawing board, adding failed");
         }
-        // Put the page's artboard information into the database canvas
+        // Put the page's drawing board information into the database canvas
         // Copy the value from 'mxGraphModelVo' to 'mxGraphModelDb'
         BeanUtils.copyProperties(mxGraphModelVo, mxGraphModel);
         mxGraphModel.setEnableFlag(true);
@@ -960,56 +960,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
         mxGraphModel = mxGraphModelDomain.saveOrUpdate(mxGraphModel);
         flowGroup.setMxGraphModel(mxGraphModel);
 
-        // Separate the flows and lines that need to be added in addMxCellVoList
-        Map<String, List<MxCellVo>> flowsPathsMap = MxGraphModelUtil.distinguishElementsPaths(addMxCellVoList);
-
-        // Take mxCellVoList (list of elements) from Map
-        List<MxCellVo> objectElements = flowsPathsMap.get("elements");
-
-        // Generate a list of elements based on the contents of the MxCellList
-        Map<String, List> addFlowAndFlowGroupsMap = MxGraphModelUtil.mxCellVoListToFlowAndFlowGroups(objectElements, flowGroup, currentUser.getUsername());
-        List<Flow> addFlowsList = addFlowAndFlowGroupsMap.get("flows");
-
-        List<Flow> flowList = flowGroup.getFlowList();
-        if (null != addFlowsList && addFlowsList.size() > 0) {
-            if (null == flowList) {
-                flowList = new ArrayList<>();
-            }
-            for (Flow flow : addFlowsList) {
-                flow.setFlowGroup(flowGroup);
-                flowList.add(flow);
-            }
-            //flowList = flowDomain.saveOrUpdate(flowList);
-            flowGroup.setFlowList(flowList);
-        }
-
-        List<FlowGroup> addFlowGroupList = addFlowAndFlowGroupsMap.get("flowGroups");
-
-        List<FlowGroup> flowGroupList = flowGroup.getFlowGroupList();
-        if (null != addFlowGroupList && addFlowGroupList.size() > 0) {
-            if (null == flowGroupList) {
-                flowGroupList = new ArrayList<>();
-            }
-            for (FlowGroup addFlowGroup : addFlowGroupList) {
-                addFlowGroup.setFlowGroup(flowGroup);
-                flowGroupList.add(addFlowGroup);
-            }
-            flowGroup.setFlowGroupList(flowGroupList);
-        }
-
-        // Take "mxCellVoList" from the "Map" (array of lines)
-        List<MxCellVo> objectPaths = flowsPathsMap.get("paths");
-
-        // Generate a list of paths based on the contents of the MxCellList
-        List<FlowGroupPaths> addFlowGroupPathsList = MxGraphModelUtil.mxCellVoListToFlowGroupPathsList(objectPaths, flowGroup);
-        // Judge empty pathsList
-        if (null != addFlowGroupPathsList && addFlowGroupPathsList.size() > 0) {
-            List<FlowGroupPaths> flowGroupPathsList = flowGroup.getFlowGroupPathsList();
-            for (FlowGroupPaths addFlowGroupPaths : addFlowGroupPathsList) {
-                addFlowGroupPaths.setFlowGroup(flowGroup);
-                flowGroupPathsList.add(addFlowGroupPaths);
-            }
-        }
+        flowGroup = addFlowGroupNodeAndEdge(flowGroup, addMxCellVoList, currentUser.getUsername());
 
         // Update flow information
         flowGroupDomain.saveOrUpdate(flowGroup);
@@ -1017,7 +968,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
     }
 
     /**
-     * Modification of the artboard
+     * Modification of the drawing board
      *
      * @param mxGraphModelVo
      * @param flowGroupId
@@ -1064,21 +1015,14 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
         if (null == user) {
             return ReturnMapUtils.setFailedMsg("Illegal operation");
         }
+        if (null == mxGraphModelVo) {
+            return ReturnMapUtils.setFailedMsg("mxGraphModelVo is empty, modification failed");
+        }
         FlowGroup flowGroup = flowGroupDomain.getFlowGroupById(flowGroupId);
         if (null == flowGroup) {
             return ReturnMapUtils.setFailedMsg("The flowGroupId cannot find the corresponding flowGroup, and the modification fails.");
         }
-        if (null == mxGraphModelVo) {
-            return ReturnMapUtils.setFailedMsg("mxGraphModelVo is empty, modification failed");
-        }
-        // Last update time
-        flowGroup.setLastUpdateDttm(new Date());
-        // Last updater
-        flowGroup.setLastUpdateUser(user.getUsername());
-
-        // save flowGroup
-        flowGroup = flowGroupDomain.saveOrUpdate(flowGroup);
-        // Save and modify the artboard information
+        // Save and modify the drawing board information
         Map<String, Object> map = this.updateGroupMxGraph(mxGraphModelVo, flowGroupId, user);
         // Determine if mxGraphModel is saved successfully
         if (null != map) {
@@ -1089,105 +1033,108 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
         } else {
             return ReturnMapUtils.setFailedMsg("failed, Near 'updateMxGraph' ");
         }
+        flowGroup = flowGroupDomain.getFlowGroupById(flowGroupId);
+        // Last update time
+        flowGroup.setLastUpdateDttm(new Date());
+        // Last updater
+        flowGroup.setLastUpdateUser(user.getUsername());
+
+        // save flowGroup
+        //flowGroup = flowGroupDomain.saveOrUpdate(flowGroup);
+
 
         // MxCellVo's list from the page
         List<MxCellVo> mxCellVoList = mxGraphModelVo.getRootVo();
 
         // Separate the flow and lines in the mxCellVoList
-        Map<String, List<MxCellVo>> stopsPathsMap = MxGraphModelUtil.distinguishElementsPaths(mxCellVoList);
+        Map<String, List<MxCellVo>> elementsAndPathsMap = MxGraphModelUtils.distinguishElementsPaths(mxCellVoList);
 
-        if (null != stopsPathsMap) {
+        if (null != elementsAndPathsMap) {
+            // Take the line of mxCellVoList and to map
+            Map<String, MxCellVo> pathsMxCellVoMap = stopsMxCellVoListToMap(elementsAndPathsMap.get("paths"));
             // Get out the PathsList stored in the database
             List<FlowGroupPaths> flowGroupPathsList = flowGroup.getFlowGroupPathsList();
-            // Determine whether the list of lines in the database is empty, do not empty to continue the judgment operation below, or directly add
+            // Determine whether the list of lines in the database is empty
             if (null != flowGroupPathsList && flowGroupPathsList.size() > 0) {
-                // Take the line of mxCellVoList
-                List<MxCellVo> objectPaths = stopsPathsMap.get("paths");
-                // Key is the PageId of PathsVo (the id in the artboard), and the value is Paths
-                Map<String, MxCellVo> objectPathsMap = new HashMap<>();
-
-                // The pathsList to be modified
-                List<FlowGroupPaths> updatePaths = new ArrayList<>();
-                //Determine if the objectStops passed from the page is empty.
-                if (null != objectPaths) {
-                    for (MxCellVo mxCellVo : objectPaths) {
-                        if (null != mxCellVo) {
-                            objectPathsMap.put(mxCellVo.getPageId(), mxCellVo);
-                        }
-                    }
-                }
-
                 // The data pathsList of the loop database is retrieved by using the pageId in the stops to convert the map to the value of the page passed by the map.
                 for (FlowGroupPaths flowGroupPaths : flowGroupPathsList) {
-                    if (null != flowGroupPaths) {
-                        String pageId = flowGroupPaths.getPageId();
-                        MxCellVo mxCellVo = objectPathsMap.get(pageId);
-                        // If you get it, you need to modify it. Otherwise, it is to be deleted.
-                        if (null == mxCellVo) {
-                            flowGroupPaths.setEnableFlag(false);
-                            flowGroupPaths.setLastUpdateUser(user.getUsername());
-                            flowGroupPaths.setLastUpdateDttm(new Date());
-                            flowGroupPaths.setFlowGroup(flowGroup);
-                            updatePaths.add(flowGroupPaths);
-                        }
+                    if (null == flowGroupPaths) {
+                        continue;
                     }
+                    String pageId = flowGroupPaths.getPageId();
+                    MxCellVo mxCellVo = pathsMxCellVoMap.get(pageId);
+                    // If you get it, you need to modify it. Otherwise, it is to be deleted.
+                    if (null != mxCellVo) {
+                        continue;
+                    }
+                    flowGroupPaths.setEnableFlag(false);
+                    flowGroupPaths.setLastUpdateUser(user.getUsername());
+                    flowGroupPaths.setLastUpdateDttm(new Date());
                 }
-                // save update updateStops
-                if (updatePaths.size() > 0) {
-                    flowGroupPathsDomain.saveOrUpdate(updatePaths);
-                }
-            } else {
-                //The stopsList in the database is empty and the modification failed.
-                logger.info("The pathsList in the database is empty");
+                flowGroup.setFlowGroupPathsList(flowGroupPathsList);
             }
 
-
+            //Take the flow of mxCellVoList and to map
+            Map<String, MxCellVo> stopsMxCellVoMap = stopsMxCellVoListToMap(elementsAndPathsMap.get("elements"));
             // Get out the flowList stored in the database
             List<Flow> flowList = flowGroup.getFlowList();
-
-            // If the flowList in the database is empty, the modification fails because this method only processes the modifications, and is not responsible for adding
+            // If the flowList in the database is empty
             if (null != flowList && flowList.size() > 0) {
-                //Take the flow of mxCellVoList
-                List<MxCellVo> objectStops = stopsPathsMap.get("elements");
-                // Key is the PageId of mxCellVo (the id in the artboard), and the value is mxCellVo
-                Map<String, MxCellVo> objectStopsMap = new HashMap<>();
-
-                // FlowList to be modified
-                List<Flow> updateFlowList = new ArrayList<>();
-
-                // Determine if the objectStops passed from the page is empty.
-                if (null != objectStops) {
-                    // Loop Convert objectStops (page data) to objectStopsMap
-                    for (MxCellVo mxCellVo : objectStops) {
-                        if (null != mxCellVo) {
-                            objectStopsMap.put(mxCellVo.getPageId(), mxCellVo);
-                        }
-                    }
-                }
-                // The data flowList of the loop database is converted to the map of the value passed by the page after the map is converted by the pageId in the flow.
                 for (Flow flow : flowList) {
-                    if (null != flow) {
-                        String pageId = flow.getPageId();
-                        MxCellVo mxCellVo = objectStopsMap.get(pageId);
-                        // If you get it, you need to modify it. Otherwise, it is to be deleted.
-                        if (null == mxCellVo) {
-                            flow.setEnableFlag(false);//logically delete
-                            flow.setLastUpdateDttm(new Date());//Last update time
-                            flow.setLastUpdateUser(user.getUsername());//Last updater
-                            updateFlowList.add(flow);
-                        }
+                    if (null == flow) {
+                        continue;
                     }
+                    String pageId = flow.getPageId();
+                    MxCellVo mxCellVo = stopsMxCellVoMap.get(pageId);
+                    // If you get it, you need to modify it. Otherwise, it is to be deleted.
+                    if (null != mxCellVo) {
+                        continue;
+                    }
+                    flow.setEnableFlag(false);//logically delete
+                    flow.setLastUpdateDttm(new Date());//Last update time
+                    flow.setLastUpdateUser(user.getUsername());//Last updater
                 }
-                if (updateFlowList.size() > 0) {
-                    // update save updateFlowList
-                    flowDomain.saveOrUpdate(updateFlowList);
-                }
-            } else {
-                // The stops data in the database is empty.
-                logger.info("The stops data in the database is empty.");
+                flowGroup.setFlowList(flowList);
             }
+            // Get out the flowGroupList stored in the database
+            List<FlowGroup> flowGroupList = flowGroup.getFlowGroupList();
+            // If the flowGroupList in the database is empty
+            if (null != flowGroupList && flowGroupList.size() > 0) {
+                for (FlowGroup flowGroup_i : flowGroupList) {
+                    if (null == flowGroup_i) {
+                        continue;
+                    }
+                    String pageId = flowGroup_i.getPageId();
+                    MxCellVo mxCellVo = stopsMxCellVoMap.get(pageId);
+                    // If you get it, you need to modify it. Otherwise, it is to be deleted.
+                    if (null != mxCellVo) {
+                        continue;
+                    }
+                    flowGroup_i.setEnableFlag(false);//logically delete
+                    flowGroup_i.setLastUpdateDttm(new Date());//Last update time
+                    flowGroup_i.setLastUpdateUser(user.getUsername());//Last updater
+                }
+                flowGroup.setFlowGroupList(flowGroupList);
+            }
+            // save flowGroup
+            flowGroupDomain.saveOrUpdate(flowGroup);
         }
         return ReturnMapUtils.setSucceededMsg("Succeeded");
+    }
+
+    private Map<String, MxCellVo> stopsMxCellVoListToMap(List<MxCellVo> mxCellVoList) {
+        Map<String, MxCellVo> stopsMxCellVoMap = new HashMap<>();
+        // Determine if the mxCellVoList passed from the page is empty.
+        if (null != mxCellVoList && mxCellVoList.size() > 0) {
+            // Loop Convert stopsMxCellVo (page data) to stopsMxCellVoMap
+            for (MxCellVo stopsMxCellVo : mxCellVoList) {
+                if (null == stopsMxCellVo) {
+                    continue;
+                }
+                stopsMxCellVoMap.put(stopsMxCellVo.getPageId(), stopsMxCellVo);
+            }
+        }
+        return stopsMxCellVoMap;
     }
 
     /**
@@ -1215,7 +1162,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
         // Loop page data for classification (requires modification and tombstone)
         for (MxCell mxCell : mxCellList) {
             if (null != mxCell) {
-                // Graphic ID (pageId) on the artboard
+                // Graphic ID (pageId) on the drawing board
                 String pageId = mxCell.getPageId();
                 // According to the pageId to go to map,
                 // Get the description database has a page, do the modification operation,
@@ -1306,6 +1253,157 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
             rtnMxCellVoList = new ArrayList<>(mxCellVoMap.values());
         }
         return rtnMxCellVoList;
+    }
+
+    public String addMxCellAndData(MxGraphVo mxGraphVo, String username) {
+        if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
+        }
+        if (null == mxGraphVo) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("param is null");
+        }
+        String loadId = mxGraphVo.getLoadId();
+        if (StringUtils.isBlank(loadId)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("loadId is null");
+        }
+        FlowGroup flowGroup = flowGroupDomain.getFlowGroupById(loadId);
+
+        // update flow
+        flowGroup.setLastUpdateDttm(new Date()); // last update date time
+        flowGroup.setLastUpdateUser(username);// last update user
+        flowGroup.setEnableFlag(true);// is it effective
+
+        // Take out the drawing board of the data inventory
+        MxGraphModel mxGraphModel = flowGroup.getMxGraphModel();
+        // Determine if the drawing board of the data inventory exists
+        if (null == mxGraphModel) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Database without drawing board, adding failed");
+        }
+        // Put the page's drawing board information into the database canvas
+        mxGraphModel.setEnableFlag(true);
+        mxGraphModel.setLastUpdateUser(username);
+        mxGraphModel.setLastUpdateDttm(new Date());
+        mxGraphModel.setFlowGroup(flowGroup);
+
+        List<MxCell> mxCellDbRoot = mxGraphModel.getRoot();
+        // Convert MxCellVo map to MxCellVoList
+        List<MxCellVo> addMxCellVoList = mxGraphVo.getMxCellVoList();
+        ;
+        if (null == addMxCellVoList || addMxCellVoList.size() <= 0) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("No data can be added, the addition failed");
+        }
+        if (null == mxCellDbRoot || mxCellDbRoot.size() <= 0) {
+            mxCellDbRoot = MxCellUtils.initMxCell(username,mxGraphModel);
+        }
+        for (MxCellVo mxCellVo : addMxCellVoList) {
+            if (null != mxCellVo) {
+                // save MxCell
+                // new
+                MxCell mxCell = new MxCell();
+                // Copy the value in mxCellVo to mxCell
+                BeanUtils.copyProperties(mxCellVo, mxCell);
+                if (null != mxCellVo.getValue()) {
+                    mxCell.setValue(mxCellVo.getValue() + mxCellVo.getPageId());
+                }
+                mxCell.setVertex(("true".equals(mxCellVo.getVertex()) ? 1 : 0) + "");
+                mxCell.setEdge(("false".equals(mxCellVo.getEdge()) ? 0 : 1) + "");
+                // Basic properties of mxCell (Required when creating)
+                mxCell.setCrtDttm(new Date());
+                mxCell.setCrtUser(username);
+                // Basic properties of mxCell
+                mxCell.setEnableFlag(true);
+                mxCell.setLastUpdateUser(username);
+                mxCell.setLastUpdateDttm(new Date());
+                // mxGraphModel Foreign key
+                mxCell.setMxGraphModel(mxGraphModel);
+
+                MxGeometryVo mxGeometryVo = mxCellVo.getMxGeometryVo();
+                if (null != mxGeometryVo) {
+                    // save MxGeometry
+                    // new
+                    MxGeometry mxGeometry = new MxGeometry();
+                    // Copy the value from mxGeometryVo to mxGeometry
+                    BeanUtils.copyProperties(mxGeometryVo, mxGeometry);
+                    mxGeometry.setRelative("false".equals(mxGeometryVo.getRelative()) ? null : "1");
+                    // Basic properties of mxGeometry (required when creating)
+                    mxGeometry.setCrtDttm(new Date());
+                    mxGeometry.setCrtUser(username);
+                    // Set mxGraphModel basic properties
+                    mxGeometry.setEnableFlag(true);
+                    mxGeometry.setLastUpdateUser(username);
+                    mxGeometry.setLastUpdateDttm(new Date());
+                    // mxCell Foreign key
+                    mxGeometry.setMxCell(mxCell);
+
+                    mxCell.setMxGeometry(mxGeometry);
+                }
+                mxCellDbRoot.add(mxCell);
+            }
+        }
+        mxGraphModel.setRoot(mxCellDbRoot);
+        flowGroup.setMxGraphModel(mxGraphModel);
+        flowGroup = addFlowGroupNodeAndEdge(flowGroup, addMxCellVoList, username);
+        flowGroupDomain.saveOrUpdate(flowGroup);
+
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr("test");
+    }
+
+    private FlowGroup addFlowGroupNodeAndEdge(FlowGroup flowGroup, List<MxCellVo> addMxCellVo, String username) {
+        if (null == flowGroup) {
+            return null;
+        }
+        // Separate the flows and lines that need to be added in addMxCellVoList
+        Map<String, List<MxCellVo>> flowsPathsMap = MxGraphModelUtils.distinguishElementsPaths(addMxCellVo);
+
+        // Take mxCellVoList (list of elements) from Map
+        List<MxCellVo> objectElements = flowsPathsMap.get("elements");
+
+        // Generate a list of elements based on the contents of the MxCellList
+        Map<String, List> addFlowAndFlowGroupsMap = MxGraphModelUtils.mxCellVoListToFlowAndFlowGroups(objectElements, flowGroup, username);
+        List<Flow> addFlowsList = addFlowAndFlowGroupsMap.get("flows");
+
+        List<Flow> flowList = flowGroup.getFlowList();
+        if (null != addFlowsList && addFlowsList.size() > 0) {
+            if (null == flowList) {
+                flowList = new ArrayList<>();
+            }
+            for (Flow flow : addFlowsList) {
+                flow.setFlowGroup(flowGroup);
+                flowList.add(flow);
+            }
+            //flowList = flowDomain.saveOrUpdate(flowList);
+            flowGroup.setFlowList(flowList);
+        }
+
+        List<FlowGroup> addFlowGroupList = addFlowAndFlowGroupsMap.get("flowGroups");
+
+        List<FlowGroup> flowGroupList = flowGroup.getFlowGroupList();
+        if (null != addFlowGroupList && addFlowGroupList.size() > 0) {
+            if (null == flowGroupList) {
+                flowGroupList = new ArrayList<>();
+            }
+            for (FlowGroup addFlowGroup : addFlowGroupList) {
+                addFlowGroup.setFlowGroup(flowGroup);
+                flowGroupList.add(addFlowGroup);
+            }
+            flowGroup.setFlowGroupList(flowGroupList);
+        }
+
+        // Take "mxCellVoList" from the "Map" (array of lines)
+        List<MxCellVo> objectPaths = flowsPathsMap.get("paths");
+
+        // Generate a list of paths based on the contents of the MxCellList
+        List<FlowGroupPaths> addFlowGroupPathsList = MxGraphModelUtils.mxCellVoListToFlowGroupPathsList(objectPaths, flowGroup);
+        // Judge empty pathsList
+        if (null != addFlowGroupPathsList && addFlowGroupPathsList.size() > 0) {
+            List<FlowGroupPaths> flowGroupPathsList = flowGroup.getFlowGroupPathsList();
+            for (FlowGroupPaths addFlowGroupPaths : addFlowGroupPathsList) {
+                addFlowGroupPaths.setFlowGroup(flowGroup);
+                flowGroupPathsList.add(addFlowGroupPaths);
+            }
+        }
+
+        return flowGroup;
     }
 
 }

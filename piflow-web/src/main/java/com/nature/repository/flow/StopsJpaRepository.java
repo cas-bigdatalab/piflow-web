@@ -3,18 +3,28 @@ package com.nature.repository.flow;
 import com.nature.component.flow.model.Stops;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import javax.transaction.Transactional;
 import java.io.Serializable;
+import java.util.List;
 
 public interface StopsJpaRepository extends JpaRepository<Stops, String>, JpaSpecificationExecutor<Stops>, Serializable {
 
-    @Transactional
-    @Modifying
-    @Query("update Stops c set c.enableFlag = :enableFlag where c.id = :id")
-    int updateEnableFlagById(@Param("id") String id, @Param("enableFlag") boolean enableFlag);
+    @Query("select c from Stops c where c.enableFlag=true and c.id=:id")
+    Stops getStopsById(@Param("id") String id);
+
+    @Query(nativeQuery = true, value = "select MAX(page_id+0) from flow_stops where enable_flag=1 and fk_flow_id=:flowId ")
+    Integer getMaxStopPageIdByFlowId(@Param("flowId") String flowId);
+
+    @Query(nativeQuery = true, value = "SELECT fs.name from flow_stops fs WHERE fs.enable_flag=1 and fs.fk_flow_id =:flowId")
+    String[] getStopNamesByFlowId(@Param("flowId") String flowId);
+
+    @Query(nativeQuery = true, value = "select * from flow_stops where enable_flag=1 and fk_flow_id=:fid and page_id=:stopPageId  limit 1")
+    Stops getStopsByPageId(@Param("fid") String fid, @Param("stopPageId") String stopPageId);
+
+    @Query(value = "select id from Stops where enableFlag=true")
+    List<String> getStopsIdList();
 
 }

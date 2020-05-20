@@ -34,11 +34,13 @@ public class WebAppConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         String storagePathHead = System.getProperty("user.dir");
-        String imagesPath = (storagePathHead + "/storage/image/");
-        String videosPath = (storagePathHead + "/storage/video/");
-        logger.info("imagesPath=" + "file:" + imagesPath);
-        logger.info("videosPath=" + "file:" + videosPath);
-        registry.addResourceHandler("/images/**", "/videos/**").addResourceLocations("file:" + imagesPath, "file:" + videosPath);
+        String imagesPath = ("file:" + storagePathHead + "/storage/image/");
+        String videosPath = ("file:" + storagePathHead + "/storage/video/");
+        String xmlPath = ("file:" + storagePathHead + "/storage/xml/");
+        logger.info("imagesPath=" + imagesPath);
+        logger.info("videosPath=" + videosPath);
+        logger.info("xmlPath=" + xmlPath);
+        registry.addResourceHandler("/images/**", "/videos/**", "/xml/**").addResourceLocations(imagesPath, videosPath, xmlPath);
         WebMvcConfigurer.super.addResourceHandlers(registry);
     }
 

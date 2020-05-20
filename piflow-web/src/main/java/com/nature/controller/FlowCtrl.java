@@ -51,17 +51,15 @@ public class FlowCtrl {
     /**
      * flowList page query
      *
-     * @param request
-     * @param start
-     * @param length
-     * @param draw
-     * @param extra_search
+     * @param page
+     * @param limit
+     * @param param
      * @return
      */
     @RequestMapping("/getFlowListPage")
     @ResponseBody
-    public String getFlowListPage(HttpServletRequest request, Integer start, Integer length, Integer draw, String extra_search) {
-        return flowServiceImpl.getFlowListPage(start / length + 1, length, extra_search);
+    public String getFlowListPage(Integer page, Integer limit, String param) {
+        return flowServiceImpl.getFlowListPage(page, limit, param);
     }
 
     /**

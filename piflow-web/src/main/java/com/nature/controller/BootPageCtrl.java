@@ -1,5 +1,6 @@
 package com.nature.controller;
 
+import com.nature.base.util.SessionUserUtil;
 import com.nature.component.system.service.ISysInitRecordsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -9,7 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping("/bootPage")
 public class BootPageCtrl {
-   
+
     @Autowired
     private ISysInitRecordsService sysInitRecordsServiceImpl;
 
@@ -21,15 +22,16 @@ public class BootPageCtrl {
     @RequestMapping("/initComponents")
     @ResponseBody
     public String initComponents() {
-        return sysInitRecordsServiceImpl.initComponents();
+        String currentUsername = SessionUserUtil.getCurrentUsername();
+        return sysInitRecordsServiceImpl.initComponents(currentUsername);
     }
+
     @RequestMapping("/threadMonitoring")
     @ResponseBody
     public String threadMonitoring() {
-        return sysInitRecordsServiceImpl.threadMonitoring();
+        String currentUsername = SessionUserUtil.getCurrentUsername();
+        return sysInitRecordsServiceImpl.threadMonitoring(currentUsername);
     }
-
-
 
 
 }

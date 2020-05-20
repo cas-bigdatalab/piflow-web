@@ -432,20 +432,22 @@ public class ProcessMapperProvider {
      */
     public String getRunningProcess() {
         StringBuffer sqlStrBuf = new StringBuffer();
-        sqlStrBuf.append("select app_id ");
-        sqlStrBuf.append("from flow_process ");
-        sqlStrBuf.append("where enable_flag = 1 ");
+        sqlStrBuf.append("select app_id from flow_process ");
+        sqlStrBuf.append("where ");
+        sqlStrBuf.append("enable_flag=1 ");
         sqlStrBuf.append("and ");
         sqlStrBuf.append("app_id is not null ");
         sqlStrBuf.append("and ");
         sqlStrBuf.append("( ");
-        sqlStrBuf.append("state = " + SqlUtils.preventSQLInjection(ProcessState.STARTED.getText()));
-        sqlStrBuf.append("or ");
         sqlStrBuf.append("( ");
-        sqlStrBuf.append("state = " + SqlUtils.preventSQLInjection(ProcessState.COMPLETED.getText()));
+        sqlStrBuf.append("state!=" + SqlUtils.preventSQLInjection(ProcessState.COMPLETED.name()) + " ");
         sqlStrBuf.append("and ");
-        sqlStrBuf.append("end_time is null ");
+        sqlStrBuf.append("state!=" + SqlUtils.preventSQLInjection(ProcessState.FAILED.name()) + "  ");
+        sqlStrBuf.append("and ");
+        sqlStrBuf.append("state!=" + SqlUtils.preventSQLInjection(ProcessState.KILLED.name()) + " ");
         sqlStrBuf.append(") ");
+        sqlStrBuf.append("or ");
+        sqlStrBuf.append("state is null ");
         sqlStrBuf.append(") ");
         return sqlStrBuf.toString();
     }

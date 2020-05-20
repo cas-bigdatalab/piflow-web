@@ -26,17 +26,15 @@ public class FlowGroupCtrl {
     /**
      * ‘flowGroupList’ paged query
      *
-     * @param request
-     * @param start
-     * @param length
-     * @param draw
-     * @param extra_search
+     * @param page
+     * @param limit
+     * @param param
      * @return
      */
     @RequestMapping("/getFlowGroupListPage")
     @ResponseBody
-    public String getFlowGroupListPage(HttpServletRequest request, Integer start, Integer length, Integer draw, String extra_search) {
-        return flowGroupServiceImpl.getFlowGroupListPage(start / length + 1, length, extra_search);
+    public String getFlowGroupListPage(Integer page, Integer limit, String param) {
+        return flowGroupServiceImpl.getFlowGroupListPage(page, limit, param);
     }
 
     /**

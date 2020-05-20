@@ -3,6 +3,7 @@ package com.nature.schedule;
 import com.nature.base.util.LoggerUtil;
 import com.nature.base.util.SpringContextUtil;
 import com.nature.common.executor.ServicesExecutor;
+import com.nature.domain.process.ProcessGroupDomain;
 import com.nature.mapper.process.ProcessGroupMapper;
 import com.nature.third.service.IGroup;
 import org.apache.commons.collections.CollectionUtils;
@@ -23,13 +24,13 @@ public class RunningProcessGroupSync extends QuartzJobBean {
     Logger logger = LoggerUtil.getLogger();
 
     @Resource
-    private ProcessGroupMapper processGroupMapper;
+    private ProcessGroupDomain processGroupDomain;
 
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss:SSS");
         logger.info("processGroupSync start : " + formatter.format(new Date()));
-        List<String> runningProcessGroup = processGroupMapper.getRunningProcessGroup();
+        List<String> runningProcessGroup = processGroupDomain.getRunningProcessGroupAppId();
         if (CollectionUtils.isNotEmpty(runningProcessGroup)) {
             Runnable runnable = new Thread(new Thread() {
                 @Override

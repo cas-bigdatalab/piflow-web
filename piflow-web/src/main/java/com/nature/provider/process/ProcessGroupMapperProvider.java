@@ -2,6 +2,7 @@ package com.nature.provider.process;
 
 import com.nature.base.util.DateUtils;
 import com.nature.base.util.SqlUtils;
+import com.nature.common.Eunm.ProcessState;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
 
@@ -98,16 +99,16 @@ public class ProcessGroupMapperProvider {
 
     public String getRunningProcessGroup() {
         StringBuffer sqlStrBuf = new StringBuffer();
-        sqlStrBuf.append("select ");
-        sqlStrBuf.append("app_id ");
-        sqlStrBuf.append("from ");
-        sqlStrBuf.append("flow_process_group ");
+        sqlStrBuf.append("select app_id from flow_process_group ");
         sqlStrBuf.append("where ");
         sqlStrBuf.append("enable_flag = 1 ");
         sqlStrBuf.append("and app_id is not null ");
         sqlStrBuf.append("and ( ");
-        sqlStrBuf.append("state = 'STARTED' ");
-        sqlStrBuf.append("or ( state = 'COMPLETED'and end_time is null ) ");
+        sqlStrBuf.append("state!=" + SqlUtils.preventSQLInjection(ProcessState.COMPLETED.name()) + " ");
+        sqlStrBuf.append("and ");
+        sqlStrBuf.append("state!=" + SqlUtils.preventSQLInjection(ProcessState.FAILED.name()) + "  ");
+        sqlStrBuf.append("and ");
+        sqlStrBuf.append("state!=" + SqlUtils.preventSQLInjection(ProcessState.KILLED.name()) + " ");
         sqlStrBuf.append(") ");
         return sqlStrBuf.toString();
     }

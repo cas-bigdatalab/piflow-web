@@ -48,8 +48,15 @@ public interface StopsMapper {
      *
      * @return
      */
-    @SelectProvider(type = StopsMapperProvider.class, method = "getStopsAll")
-    public List<Stops> getStopsAll();
+    @SelectProvider(type = StopsMapperProvider.class, method = "getStopsList")
+    @Results({@Result(id = true, column = "id", property = "id"),
+            @Result(column = "is_checkpoint", property = "isCheckpoint"),
+            @Result(property = "dataSource", column = "fk_data_source_id", many = @Many(select = "com.nature.mapper.dataSource.DataSourceMapper.getDataSourceById", fetchType = FetchType.LAZY)),
+            @Result(column = "id", property = "properties", many = @Many(select = "com.nature.mapper.flow.PropertyMapper.getPropertyListByStopsId", fetchType = FetchType.LAZY)),
+            @Result(column = "id", property = "customizedPropertyList", many = @Many(select = "com.nature.mapper.flow.CustomizedPropertyMapper.getCustomizedPropertyListByStopsId", fetchType = FetchType.LAZY))
+
+    })
+    public List<Stops> getStopsList();
 
     /**
      * Query StopsList based on flowId

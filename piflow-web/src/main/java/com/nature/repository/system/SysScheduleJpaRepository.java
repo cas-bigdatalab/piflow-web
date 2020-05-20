@@ -2,6 +2,8 @@ package com.nature.repository.system;
 
 import com.nature.common.Eunm.ScheduleState;
 import com.nature.component.system.model.SysSchedule;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -20,5 +22,13 @@ public interface SysScheduleJpaRepository extends JpaRepository<SysSchedule, Str
     int updateEnableFlagById(@Param("id") String id, @Param("enableFlag") boolean enableFlag);
 
     List<SysSchedule> getSysSchedulesByStatus(@Param("status") ScheduleState status);
+
+    /**
+     * Paging query
+     *
+     * @return
+     */
+    @Query("select c from SysSchedule c where c.enableFlag=true and (c.jobClass like CONCAT('%',:param,'%') or c.jobName like CONCAT('%',:param,'%') or c.cronExpression like CONCAT('%',:param,'%'))")
+    Page<SysSchedule> getSysScheduleListPage(@Param("param") String param, Pageable pageable);
 
 }

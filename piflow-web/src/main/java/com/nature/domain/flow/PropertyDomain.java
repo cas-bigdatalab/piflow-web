@@ -20,8 +20,8 @@ public class PropertyDomain {
 
     private Specification<Property> addEnableFlagParam() {
         Specification<Property> specification = new Specification<Property>() {
-        	private static final long serialVersionUID = 1L;
-        	
+            private static final long serialVersionUID = 1L;
+
             @Override
             public Predicate toPredicate(Root<Property> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
                 //root.get("enableFlag") means to get the field name of enableFlag
@@ -51,12 +51,12 @@ public class PropertyDomain {
         return propertyJpaRepository.saveAll(propertyList);
     }
 
-    public int updateEnableFlagById(String id, boolean enableFlag) {
-        return propertyJpaRepository.updateEnableFlagById(id, enableFlag);
-    }
-
     public List<Property> getPropertyListByStopsId(String stopId) {
         return propertyJpaRepository.getPropertyListByStopsId(stopId);
+    }
+
+    public int deletePropertiesByIsOldDataAndStopsId(String stopId) {
+        return propertyJpaRepository.deletePropertiesByIsOldDataAndStopsId(stopId);
     }
 
 }

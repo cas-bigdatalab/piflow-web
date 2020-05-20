@@ -32,6 +32,7 @@ public class PropertyMapperProvider {
     private Integer isSelect;
     private Integer isLocked;
     private long propertySort;
+    private Integer isOldData;
 
     private void preventSQLInjectionProperty(Property property) {
         if (null != property && StringUtils.isNotBlank(property.getLastUpdateUser())) {
@@ -66,6 +67,7 @@ public class PropertyMapperProvider {
             this.isSelect = (null == property.getIsSelect() ? null : (property.getIsSelect() ? 1 : 0));
             this.isLocked = (null == property.getIsLocked() ? null : (property.getIsLocked() ? 1 : 0));
             this.propertySort = (null != property.getPropertySort() ? property.getPropertySort() : 0L);
+            this.isOldData = (null == property.getIsOldData() ? null : (property.getIsOldData() ? 1 : 0));
         }
     }
 
@@ -88,6 +90,7 @@ public class PropertyMapperProvider {
         this.isSelect = null;
         this.isLocked = null;
         this.propertySort = 0L;
+        this.isOldData = null;
     }
 
     /**
@@ -121,7 +124,8 @@ public class PropertyMapperProvider {
             sqlStrBuffer.append("fk_stops_id,");
             sqlStrBuffer.append("is_select,");
             sqlStrBuffer.append("is_locked,");
-            sqlStrBuffer.append("property_sort");
+            sqlStrBuffer.append("property_sort,");
+            sqlStrBuffer.append("is_old_data");
             sqlStrBuffer.append(") ");
             sqlStrBuffer.append("values");
             int i = 0;
@@ -154,7 +158,8 @@ public class PropertyMapperProvider {
                 sqlStrBuffer.append(stopsId + ",");
                 sqlStrBuffer.append(isSelect + ",");
                 sqlStrBuffer.append(isLocked + ",");
-                sqlStrBuffer.append(propertySort);
+                sqlStrBuffer.append(propertySort + ",");
+                sqlStrBuffer.append(isOldData);
                 if (i != propertyList.size()) {
                     sqlStrBuffer.append("),");
                 } else {
@@ -200,6 +205,7 @@ public class PropertyMapperProvider {
             sql.SET("property_sensitive = " + sensitive);
             sql.SET("is_locked = " + isLocked);
             sql.SET("property_sort = " + propertySort);
+            sql.SET("is_old_data = " + isOldData);
             //sql.SET("fk_stops_id = " + stopsId);
             sql.WHERE("version = " + version);
             sql.WHERE("id = " + id);

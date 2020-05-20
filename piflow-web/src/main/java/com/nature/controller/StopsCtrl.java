@@ -10,7 +10,7 @@ import com.nature.component.flow.service.IPropertyService;
 import com.nature.component.flow.service.IStopsService;
 import com.nature.component.flow.vo.StopsCustomizedPropertyVo;
 import com.nature.component.flow.vo.StopsVo;
-import com.nature.component.group.service.IStopGroupService;
+import com.nature.component.stopsComponent.service.IStopGroupService;
 import com.nature.component.mxGraph.model.MxGraphModel;
 import com.nature.component.mxGraph.vo.MxGraphModelVo;
 import org.apache.commons.lang3.StringUtils;
@@ -75,6 +75,10 @@ public class StopsCtrl {
             }
         }
         return null;
+    }
+    @RequestMapping("/deleteLastReloadData")
+    public String deleteLastReloadData(String stopId) {
+        return propertyServiceImpl.deleteLastReloadDataByStopsId(stopId);
     }
 
     /**

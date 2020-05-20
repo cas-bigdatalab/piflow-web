@@ -22,7 +22,7 @@ public class ThirdFlowGroupInfoResponseUtils {
         if (null != thirdFlowGroupInfoResponse && null != processGroup) {
             processGroup.setLastUpdateUser("syncTask");
             processGroup.setLastUpdateDttm(new Date());
-            processGroup.setProgress(thirdFlowGroupInfoResponse.getProgress());
+            //processGroup.setProgress(thirdFlowGroupInfoResponse.getProgress());
             if (StringUtils.isNotBlank(thirdFlowGroupInfoResponse.getState())) {
                 processGroup.setState(ProcessState.selectGender(thirdFlowGroupInfoResponse.getState()));
             }

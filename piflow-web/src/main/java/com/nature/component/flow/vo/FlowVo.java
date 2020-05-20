@@ -39,7 +39,7 @@ public class FlowVo implements Serializable {
 
     private int stopQuantity;
 
-    private MxGraphModelVo mxGraphModelVo;//Artboard information
+    private MxGraphModelVo mxGraphModelVo;//Drawing board information
 
     private List<StopsVo> stopsVoList = new ArrayList<StopsVo>();//Current stream all stops
 

@@ -57,4 +57,12 @@ public interface IPropertyService {
 
     public String saveOrUpdateRoutePath(UpdatePathRequest updatePathRequest);
 
+    /**
+     * deleteLastReloadDataByStopsId
+     *
+     * @param stopId
+     * @return
+     */
+    public String deleteLastReloadDataByStopsId(String stopId);
+
 }

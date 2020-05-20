@@ -26,7 +26,7 @@ public class DataSourceCtrl {
 
     @RequestMapping("/getDatasourceListPage")
     public String getDatasourceListPage() {
-        return "indexRight/data_source_List";
+        return "indexRight/flow/data_source_List";
     }
 
     @RequestMapping("/getDatasourceList")
@@ -37,8 +37,8 @@ public class DataSourceCtrl {
 
     @RequestMapping("/getDataSourceListPagination")
     @ResponseBody
-    public String getDataSourceListPagination(HttpServletRequest request, Integer start, Integer length, Integer draw, String extra_search) {
-        return dataSourceImpl.getDataSourceVoListPage(start / length + 1, length, extra_search);
+    public String getDataSourceListPagination(Integer page, Integer limit, String param) {
+        return dataSourceImpl.getDataSourceVoListPage(page, limit, param);
     }
 
     @RequestMapping("/getDatasourceById")

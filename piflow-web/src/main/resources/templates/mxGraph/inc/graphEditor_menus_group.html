@@ -3,6 +3,28 @@
 <body th:fragment=graphEditor_menus_group>
 
 <div>
+    <div style="">
+        <!-- group按钮-->
+        <div class="btn-group" id="group-drag-click" style="float:left;position: fixed;top:90px;left:0">
+        </div>
+        <div class="btn-group" id="task-drag-click" style="float:left;position: fixed;top:187px;left:0">
+        </div>
+        <div  id="text-drag-click" style="float:left;position: fixed;top:284px;left:0">
+        </div>
+        <!--   label按钮提示   -->
+<!--        <div class="btn-group"  style="float:left;position: fixed;top:320px;left:15px;width:60px;height:60px;background:#fff">-->
+<!--            <a  href='javascript:void(0);' style="padding: 9px 12px; float:left"-->
+<!--               title="双击画板创建标签">-->
+<!--                <img style="display:block;width:100%;height:100%" src="../../../static/img/text.png" th:src="@{/img/text.png}">-->
+
+<!--            </a>-->
+<!--        </div>-->
+    </div>
+
+
+
+
+
     <div class="btn-group">
         <a class="customize_btn_css" href='javascript:void(0);' style="padding: 9px 12px;" onclick="getFlowList()"
            title="Import flow">
@@ -28,7 +50,7 @@
         </a>
         <ul class="dropdown-menu pull-right" style="margin-top: 0px">
             <li>
-                <a id="saveTemplate_Group" href='javascript:void(0);' onclick="saveFlowGroupTemplate()"
+                <a id="saveTemplate_Group" href='javascript:void(0);' onclick="saveTemplateFun()"
                    title="save Template">saveTemplate</a>
             </li>
             <li role="separator" class=""></li>
@@ -43,12 +65,12 @@
         </ul>
     </div>
     <div id="divloadingXml" style="display:none;">
-        <select name="loadingXmlSelect" id="loadingXmlSelect" onchange="loadFlowGroupTemplate()"
+        <select name="loadingXmlSelect" id="loadingXmlSelect" onchange="loadTemplateFun()"
                 style="width: 218px;"></select>
     </div>
     <form id="uploadForm" enctype="multipart/form-data" method="post">
-        <input type="file" id="flowGroupTemplateFile" name="flowGroupTemplateFile" style="display:none;"
-               onchange="uploadFlowGroupTemplate()"/>
+        <input type="file" id="flowTemplateFile" name="file" style="display:none;"
+               onchange="uploadTemplateFile(this)"/>
     </form>
 </div>
 

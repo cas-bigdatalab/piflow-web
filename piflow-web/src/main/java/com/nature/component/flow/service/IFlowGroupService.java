@@ -114,4 +114,14 @@ public interface IFlowGroupService {
      */
     public String updateFlowGroupBaseInfo(FlowGroupVo flowGroupVo);
 
+    /**
+     * Right click to run
+     *
+     * @param pId
+     * @param nodeId
+     * @param nodeType
+     * @return
+     */
+    public String rightRun(String pId, String nodeId, String nodeType);
+
 }

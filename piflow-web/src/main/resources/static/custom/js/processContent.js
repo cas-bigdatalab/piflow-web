@@ -1,7 +1,7 @@
 var fullScreen = $('#fullScreen');
-var runFlow = $('#runFlow');
-var debugFlow = $('#debugFlow');
-var stopFlow = $('#stopFlow');
+var runFlowBtn = $('#runFlow');
+var debugFlowBtn = $('#debugFlow');
+var stopFlowBtn = $('#stopFlow');
 var processContent = $('#processContent');
 var checkpointShow = $('#checkpointShow');
 var isLoadProcessInfo = true;
@@ -178,8 +178,8 @@ function getCheckpoint(runMode) {
         },
         async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
         error: function (request) {//Operation after request failure
-            runFlow.show();
-            debugFlow.show();
+            runFlowBtn.show();
+            debugFlowBtn.show();
             //alert("Request Failed");
             layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000}, function () {
             });
@@ -188,46 +188,34 @@ function getCheckpoint(runMode) {
             return;
         },
         success: function (data) {//Operation after request successful
-            //console.log("success");
-            $('#checkpointContent').html(data);
+            console.log("success");
             $('#checkpointContentNew').html(data);
             if ($('#checkpointsIsNull').val()) {
-                //alert("No Checkpoint was queried");
-                //layer.msg("No Checkpoint was queried", {icon: 2, shade: 0, time: 2000}, function () {
-                //});
-                //checkpointShow.modal('hide');
-
                 runProcess(runMode);
             } else {
-                checkpointShow.modal('show');
-                runFlow.show();
-                debugFlow.show();
+                runFlowBtn.show();
+                debugFlowBtn.show();
                 fullScreen.hide();
-                if ("DEBUG" === runMode) {
-                    $("#debug_checkpoint").show();
-                    $("#run_checkpoint").hide();
 
+                if ("DEBUG" === runMode) {
                     $("#debug_checkpoint_new").show();
                     $("#run_checkpoint_new").hide();
                 } else {
-                    $("#debug_checkpoint").hide();
-                    $("#run_checkpoint").show();
-
                     $("#debug_checkpoint_new").hide();
                     $("#run_checkpoint_new").show();
                 }
-                /*
                 layer.open({
                     type: 1,
-                    title: '<span style="color: #269252;">Choose Checkpoint Windows</span>',
+                    title: '<span style="color: #269252;">Select Run Mode</span>',
                     shadeClose: true,
                     closeBtn: 1,
                     shift: 7,
-                    area: ['500px', '200px'], //Width height
+                    //area: ['600px', '200px'], //Width height
                     skin: 'layui-layer-rim', //Add borders
-                    content: $("#layer_open_checkpoint")
+                    area: ['600px', ($("#layer_open_checkpoint").height() + 73) + 'px'], //Width Height
+                    content: $("#layer_open_checkpoint").html()
                 });
-                */
+
             }
         }
     });
@@ -244,10 +232,10 @@ function cancelRunProcess() {
 function runProcess(runMode) {
     fullScreen.show();
     checkpointShow.modal('hide');
-    runFlow.hide();
-    debugFlow.hide();
+    runFlowBtn.hide();
+    debugFlowBtn.hide();
     var checkpointStr = '';
-    $('#checkpointContent').find("input[type='checkbox']:checked").each(function () {
+    $(".layui-layer-content").find("#checkpointContentNew").find("input[type='checkbox']:checked").each(function () {
         if ('' !== checkpointStr) {
             checkpointStr = (checkpointStr + ',');
         }
@@ -268,8 +256,8 @@ function runProcess(runMode) {
         data: data,
         async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
         error: function (request) {//Operation after request failure
-            runFlow.show();
-            debugFlow.show();
+            runFlowBtn.show();
+            debugFlowBtn.show();
             //alert("Request Failed");
             layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000}, function () {
             });
@@ -283,13 +271,14 @@ function runProcess(runMode) {
                 //alert(dataMap.errorMsg);
                 layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
                 });
-                window.location.href = "/piflow-web/process/getProcessById?processId=" + dataMap.processId;
+                // window.location.href = "/piflow-web/process/getProcessById?processId=" + dataMap.processId;
+                window.location.href = "/piflow-web/mxGraph/drawingBoard?drawingBoardType=PROCESS&processType=PROCESS&load=" + dataMap.processId;
             } else {
                 //alert(dataMap.errorMsg);
                 layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000}, function () {
                 });
-                runFlow.show();
-                debugFlow.show();
+                runFlowBtn.show();
+                debugFlowBtn.show();
                 fullScreen.hide();
             }
 
@@ -299,7 +288,7 @@ function runProcess(runMode) {
 
 //stop
 function stopProcess() {
-    stopFlow.hide();
+    stopFlowBtn.hide();
     fullScreen.show();
     $.ajax({
         cache: true,//Keep cached data
@@ -325,8 +314,8 @@ function stopProcess() {
                 //alert(dataMap.errorMsg);
                 layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
                 });
-                runFlow.show();
-                debugFlow.show();
+                runFlowBtn.show();
+                debugFlowBtn.show();
             } else {
                 //alert("Stop Failed:" + dataMap.errorMsg);
                 layer.msg("Stop Failed", {icon: 2, shade: 0, time: 2000}, function () {
@@ -460,11 +449,11 @@ function processMonitoring(appId) {
             var dataMap = JSON.parse(data);
             if (200 === dataMap.code) {
                 if (dataMap.state && "" !== dataMap.state) {
-                    if ('STARTED' !== dataMap.state) {
+                    if ("COMPLETED" === dataMap.state || "FAILED" === dataMap.state || "KILLED" === dataMap.state) {
                         window.clearInterval(timer);
-                        runFlow.show();
-                        debugFlow.show();
-                        stopFlow.hide();
+                        runFlowBtn.show();
+                        debugFlowBtn.show();
+                        stopFlowBtn.hide();
                     }
                 }
                 var processVo = dataMap.processVo;

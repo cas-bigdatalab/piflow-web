@@ -5,8 +5,10 @@ import com.nature.base.vo.UserVo;
 import com.nature.common.Eunm.ProcessParentType;
 import com.nature.common.Eunm.ProcessState;
 import com.nature.common.Eunm.RunModeType;
-import com.nature.component.flow.model.*;
+import com.nature.component.flow.model.Flow;
+import com.nature.component.flow.model.FlowGroup;
 import com.nature.component.flow.service.IFlowGroupService;
+import com.nature.component.flow.service.IFlowService;
 import com.nature.component.flow.utils.FlowGroupPathsUtil;
 import com.nature.component.flow.utils.FlowUtil;
 import com.nature.component.flow.vo.FlowGroupPathsVo;
@@ -16,15 +18,17 @@ import com.nature.component.mxGraph.model.MxCell;
 import com.nature.component.mxGraph.model.MxGeometry;
 import com.nature.component.mxGraph.model.MxGraphModel;
 import com.nature.component.mxGraph.utils.MxCellUtils;
-import com.nature.component.mxGraph.utils.MxGraphModelUtil;
+import com.nature.component.mxGraph.utils.MxGraphModelUtils;
 import com.nature.component.mxGraph.vo.MxGraphModelVo;
-import com.nature.component.process.model.*;
+import com.nature.component.process.model.ProcessGroup;
 import com.nature.component.process.utils.ProcessGroupUtils;
+import com.nature.domain.flow.FlowDomain;
 import com.nature.domain.flow.FlowGroupDomain;
 import com.nature.domain.mxGraph.MxCellDomain;
-import com.nature.domain.process.*;
+import com.nature.domain.process.ProcessGroupDomain;
 import com.nature.mapper.flow.FlowGroupMapper;
 import com.nature.mapper.flow.FlowMapper;
+import com.nature.third.service.IFlow;
 import com.nature.third.service.IGroup;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -51,24 +55,6 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
     private ProcessGroupDomain processGroupDomain;
 
     @Resource
-    private ProcessDomain processDomain;
-
-    @Resource
-    private ProcessPathDomain processPathDomain;
-
-    @Resource
-    private ProcessGroupPathDomain processGroupPathDomain;
-
-    @Resource
-    private ProcessStopDomain processStopDomain;
-
-    @Resource
-    private ProcessStopPropertyDomain processStopPropertyDomain;
-
-    @Resource
-    private ProcessStopCustomizedPropertyDomain processStopCustomizedPropertyDomain;
-
-    @Resource
     private IGroup groupImpl;
 
     @Resource
@@ -76,6 +62,12 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
 
     @Resource
     private MxCellDomain mxCellDomain;
+
+    @Resource
+    private FlowDomain flowDomain;
+
+    @Resource
+    private IFlowService flowServiceImpl;
 
 
     /**
@@ -126,7 +118,7 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
     @Override
     public FlowGroupVo getFlowGroupByPageId(String fid, String pageId) {
         FlowGroupVo flowGroupVo = null;
-        FlowGroup flowGroup = flowGroupDomain.getFlowByPageId(fid, pageId);
+        FlowGroup flowGroup = flowGroupDomain.getFlowGroupByPageId(fid, pageId);
         if (null != flowGroup) {
             flowGroupVo = new FlowGroupVo();
             BeanUtils.copyProperties(flowGroup, flowGroupVo);
@@ -158,7 +150,7 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
             flowGroupVo = new FlowGroupVo();
             BeanUtils.copyProperties(flowGroupById, flowGroupVo);
             //取出mxGraphModel，并转为Vo
-            MxGraphModelVo mxGraphModelVo = MxGraphModelUtil.mxGraphModelPoToVo(flowGroupById.getMxGraphModel());
+            MxGraphModelVo mxGraphModelVo = MxGraphModelUtils.mxGraphModelPoToVo(flowGroupById.getMxGraphModel());
             //取出flowVoList，并转为Vo
             List<FlowVo> flowVoList = FlowUtil.flowListPoToVo(flowGroupById.getFlowList());
             //取出pathsList，并转为Vo
@@ -184,7 +176,14 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
     public String getFlowGroupListPage(Integer offset, Integer limit, String param) {
         Map<String, Object> rtnMap = new HashMap<>();
         if (null != offset && null != limit) {
-            Page<FlowGroup> flowGroupListPage = flowGroupDomain.getFlowGroupListPage(offset - 1, limit, param);
+            Page<FlowGroup> flowGroupListPage;
+            boolean isAdmin = SessionUserUtil.isAdmin();
+            String username = SessionUserUtil.getCurrentUsername();
+            if (isAdmin) {
+                flowGroupListPage = flowGroupDomain.adminGetFlowGroupListPage(offset - 1, limit, param);
+            } else {
+                flowGroupListPage = flowGroupDomain.userGetFlowGroupListPage(offset - 1, limit, param, username);
+            }
             List<FlowGroupVo> contentVo = new ArrayList<>();
             List<FlowGroup> content = flowGroupListPage.getContent();
             if (content.size() > 0) {
@@ -196,9 +195,10 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
                     }
                 }
             }
-            rtnMap.put("iTotalDisplayRecords", flowGroupListPage.getTotalElements());
-            rtnMap.put("iTotalRecords", flowGroupListPage.getTotalElements());
-            rtnMap.put("pageData", contentVo);//Data collection
+            rtnMap.put(ReturnMapUtils.KEY_CODE, ReturnMapUtils.SUCCEEDED_CODE);
+            rtnMap.put("msg", "");
+            rtnMap.put("count", flowGroupListPage.getTotalElements());
+            rtnMap.put("data", contentVo);//Data collection
             logger.debug("success");
         }
         return JsonUtils.toJsonNoException(rtnMap);
@@ -316,226 +316,21 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
         processGroup = processGroupDomain.saveOrUpdate(processGroup);
 
         Map<String, Object> stringObjectMap = groupImpl.startFlowGroup(processGroup, runModeType);
-
+        processGroup.setLastUpdateDttm(new Date());
+        processGroup.setLastUpdateUser(username);
         if (200 == ((Integer) stringObjectMap.get("code"))) {
-            ProcessGroup processGroupById = processGroupDomain.getProcessGroupById(processGroup.getId());
-            processGroupById.setAppId((String) stringObjectMap.get("appId"));
-            processGroupById.setProcessId((String) stringObjectMap.get("appId"));
-            processGroupById.setState(ProcessState.STARTED);
-            processGroupById.setProcessParentType(ProcessParentType.GROUP);
-            processGroupDomain.saveOrUpdate(processGroupById);
+            processGroup.setAppId((String) stringObjectMap.get("appId"));
+            processGroup.setProcessId((String) stringObjectMap.get("appId"));
+            processGroup.setState(ProcessState.STARTED);
+            processGroup.setProcessParentType(ProcessParentType.GROUP);
+            processGroupDomain.saveOrUpdate(processGroup);
             return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("processGroupId", processGroup.getId());
         } else {
-            processGroupDomain.updateEnableFlagById(processGroup.getId(), false);
+            processGroup.setEnableFlag(false);
+            processGroupDomain.saveOrUpdate(processGroup);
             return ReturnMapUtils.setFailedMsgRtnJsonStr(stringObjectMap.get("errorMsg").toString());
         }
     }
-
-/*
-    private ProcessGroup flowGroupToProcessGroup(FlowGroup flowGroup, String username, RunModeType runModeType) {
-        ProcessGroup processGroup = new ProcessGroup();
-        // copy flowGroup信息到processGroup
-        BeanUtils.copyProperties(flowGroup, processGroup);
-        // set base info
-        processGroup.setId(SqlUtils.getUUID32());
-        processGroup.setCrtDttm(new Date());
-        processGroup.setCrtUser(username);
-        processGroup.setLastUpdateDttm(new Date());
-        processGroup.setLastUpdateUser(username);
-        processGroup.setEnableFlag(true);
-        // Take out the sketchpad information of 'flowgroup'
-        MxGraphModel mxGraphModel = flowGroup.getMxGraphModel();
-        // The 'flowGroup' palette information changes to 'viewXml'
-        String viewXml = SvgUtils.mxGraphModelToViewXml(mxGraphModel, true, false);
-        // set viewXml
-        processGroup.setViewXml(viewXml);
-        // set flowGroupId
-        processGroup.setFlowId(flowGroup.getId());
-
-        processGroup.setRunModeType(runModeType);
-        processGroup.setProcessParentType(ProcessParentType.GROUP);
-        processGroup = processGroupDomain.saveOrUpdate(processGroup);
-
-        // Get the paths information of flow
-        List<FlowGroupPaths> flowGroupPathsList = flowGroup.getFlowGroupPathsList();
-        // isEmpty
-        if (null != flowGroupPathsList && flowGroupPathsList.size() > 0) {
-            List<ProcessGroupPath> processGroupPathList = new ArrayList<>();
-            // Loop paths information
-            for (FlowGroupPaths flowGroupPaths : flowGroupPathsList) {
-                // isEmpty
-                if (null != flowGroupPaths) {
-                    ProcessGroupPath processGroupPath = new ProcessGroupPath();
-                    // Copy flowGroupPaths information into processGroupPath
-                    BeanUtils.copyProperties(flowGroupPaths, processGroupPath);
-                    // Set basic information
-                    processGroupPath.setId(SqlUtils.getUUID32());
-                    processGroupPath.setCrtDttm(new Date());
-                    processGroupPath.setCrtUser(username);
-                    processGroupPath.setLastUpdateDttm(new Date());
-                    processGroupPath.setLastUpdateUser(username);
-                    processGroupPath.setEnableFlag(true);
-                    // Associated foreign key
-                    processGroupPath.setProcessGroup(processGroup);
-                    processGroupPathList.add(processGroupPath);
-                }
-            }
-            processGroupPathList = processGroupPathDomain.saveOrUpdate(processGroupPathList);
-            processGroup.setProcessGroupPathList(processGroupPathList);
-        }
-
-        // flow to remove flowGroup
-        List<Flow> flowList = flowGroup.getFlowList();
-        // flowList isEmpty
-        if (null != flowList && flowList.size() > 0) {
-            // List of stop of process
-            List<Process> processList = new ArrayList<>();
-            // Loop flowList
-            for (Flow flow : flowList) {
-                // isEmpty
-                if (null == flow) {
-                    continue;
-                }
-
-                Process process = new Process();
-                // copy flow to process
-                BeanUtils.copyProperties(flow, process);
-                // set base info
-                process.setId(SqlUtils.getUUID32());
-                process.setCrtDttm(new Date());
-                process.setCrtUser(username);
-                process.setLastUpdateDttm(new Date());
-                process.setLastUpdateUser(username);
-                process.setEnableFlag(true);
-                // Take out flow's Sketchpad information
-                MxGraphModel flowMxGraphModel = flow.getMxGraphModel();
-                // Flow Sketchpad information to viewxml
-                String processViewXml = SvgUtils.mxGraphModelToViewXml(flowMxGraphModel, false, false);
-                // set viewXml
-                process.setViewXml(processViewXml);
-                // set flowId
-                process.setFlowId(flow.getId());
-                process.setProcessParentType(ProcessParentType.GROUP);
-                process.setRunModeType(runModeType);
-                process = processDomain.saveOrUpdate(process);
-                // Stops to remove flow
-                List<Stops> stopsList = flow.getStopsList();
-                // stopsList isEmpty
-                if (null != stopsList && stopsList.size() > 0) {
-                    // List of stop of process
-                    List<ProcessStop> processStopList = new ArrayList<>();
-                    // Loop stopsList
-                    for (Stops stops : stopsList) {
-                        // isEmpty
-                        if (null != stops) {
-                            ProcessStop processStop = new ProcessStop();
-                            // copy stops的信息到processStop中
-                            BeanUtils.copyProperties(stops, processStop);
-                            // set base info
-                            processStop.setId(SqlUtils.getUUID32());
-                            processStop.setCrtDttm(new Date());
-                            processStop.setCrtUser(username);
-                            processStop.setLastUpdateDttm(new Date());
-                            processStop.setLastUpdateUser(username);
-                            processStop.setEnableFlag(true);
-                            // link foreign key
-                            processStop.setProcess(process);
-                            processStop = processStopDomain.saveOrUpdate(processStop);
-                            // Take out the stops attribute
-                            List<Property> properties = stops.getProperties();
-                            // Empty attribute of stops
-                            if (null != properties && properties.size() > 0) {
-                                List<ProcessStopProperty> processStopPropertyList = new ArrayList<>();
-                                // Attributes of loop stops
-                                for (Property property : properties) {
-                                    // isEmpty
-                                    if (null != property) {
-                                        ProcessStopProperty processStopProperty = new ProcessStopProperty();
-                                        // Copy property information into processStopProperty
-                                        BeanUtils.copyProperties(property, processStopProperty);
-                                        // Set basic information
-                                        processStopProperty.setId(SqlUtils.getUUID32());
-                                        processStopProperty.setCrtDttm(new Date());
-                                        processStopProperty.setCrtUser(username);
-                                        processStopProperty.setLastUpdateDttm(new Date());
-                                        processStopProperty.setLastUpdateUser(username);
-                                        processStopProperty.setEnableFlag(true);
-                                        // Associated foreign key
-                                        processStopProperty.setProcessStop(processStop);
-                                        processStopPropertyList.add(processStopProperty);
-                                    }
-                                }
-                                List<ProcessStopProperty> processStopProperties = processStopPropertyDomain.saveOrUpdate(processStopPropertyList);
-                                processStop.setProcessStopPropertyList(processStopProperties);
-                            }
-
-                            // 取出stops的自定义属性
-                            List<CustomizedProperty> customizedPropertyList = stops.getCustomizedPropertyList();
-                            // stops的属性判空
-                            if (null != customizedPropertyList && customizedPropertyList.size() > 0) {
-                                List<ProcessStopCustomizedProperty> processStopCustomizedPropertyList = new ArrayList<>();
-                                // Attributes of loop stops
-                                for (CustomizedProperty customizedProperty : customizedPropertyList) {
-                                    // isEmpty
-                                    if (null != customizedProperty) {
-                                        ProcessStopCustomizedProperty processStopCustomizedProperty = new ProcessStopCustomizedProperty();
-                                        // Copy customizedProperty information into processStopCustomizedProperty
-                                        BeanUtils.copyProperties(customizedProperty, processStopCustomizedProperty);
-                                        // Set basic information
-                                        processStopCustomizedProperty.setId(SqlUtils.getUUID32());
-                                        processStopCustomizedProperty.setCrtDttm(new Date());
-                                        processStopCustomizedProperty.setCrtUser(username);
-                                        processStopCustomizedProperty.setLastUpdateDttm(new Date());
-                                        processStopCustomizedProperty.setLastUpdateUser(username);
-                                        processStopCustomizedProperty.setEnableFlag(true);
-                                        // Associated foreign key
-                                        processStopCustomizedProperty.setProcessStop(processStop);
-                                        processStopCustomizedPropertyList.add(processStopCustomizedProperty);
-                                    }
-                                }
-                                processStopCustomizedPropertyList = processStopCustomizedPropertyDomain.saveOrUpdate(processStopCustomizedPropertyList);
-                                processStop.setProcessStopCustomizedPropertyList(processStopCustomizedPropertyList);
-                            }
-                            processStopList.add(processStop);
-                        }
-                    }
-                    process.setProcessStopList(processStopList);
-                }
-                // Get the paths information of flow
-                List<Paths> pathsList = flow.getPathsList();
-                // isEmpty
-                if (null != pathsList && pathsList.size() > 0) {
-                    List<ProcessPath> processPathList = new ArrayList<>();
-                    // Loop paths information
-                    for (Paths paths : pathsList) {
-                        // isEmpty
-                        if (null != paths) {
-                            ProcessPath processPath = new ProcessPath();
-                            // Copy paths information into processPath
-                            BeanUtils.copyProperties(paths, processPath);
-                            // Set basic information
-                            processPath.setId(SqlUtils.getUUID32());
-                            processPath.setCrtDttm(new Date());
-                            processPath.setCrtUser(username);
-                            processPath.setLastUpdateDttm(new Date());
-                            processPath.setLastUpdateUser(username);
-                            processPath.setEnableFlag(true);
-                            // Associated foreign key
-                            processPath.setProcess(process);
-                            processPathList.add(processPath);
-                        }
-                    }
-                    processPathDomain.saveOrUpdate(processPathList);
-                    process.setProcessPathList(processPathList);
-                }
-                process.setProcessGroup(processGroup);
-                processList.add(process);
-            }
-            processGroup.setProcessList(processList);
-        }
-        return processGroup;
-    }
-*/
 
     @Override
     public int deleteFLowGroupInfo(String id) {
@@ -602,7 +397,7 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
         mxCell.setLastUpdateUser(currentUser.getUsername());
         mxCell.setPageId((maxPageId + 1) + "");
         mxCell.setParent("1");
-        mxCell.setStyle("image;html=1;labelBackgroundColor=#ffffff00;image=/piflow-web/img/flow_02_128x128.png");
+        mxCell.setStyle("image;html=1;labelBackgroundColor=#ffffff00;image=/piflow-web/img/flow.png");
         mxCell.setValue(flowNew.getName());
         mxCell.setVertex("1");
 
@@ -737,6 +532,32 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
         flowGroupById.setLastUpdateUser(currentUser.getUsername());
         flowGroupDomain.saveOrUpdate(flowGroupById);
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("flowGroupVo", flowGroupVo);
+    }
+
+    public String rightRun(String pId, String nodeId, String nodeType) {
+        if (StringUtils.isBlank(pId)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("pId is null");
+        }
+        if (StringUtils.isBlank(nodeId)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("nodeId is null");
+        }
+        String flowGroupId = null;
+        String flowId = null;
+        if (StringUtils.isBlank(nodeType)) {
+            flowId = flowDomain.getFlowIdByPageId(pId, nodeId);
+            flowGroupId = flowGroupDomain.getFlowGroupIdByPageId(pId, nodeId);
+        } else if ("TASK".equals(nodeType)) {
+            flowId = flowDomain.getFlowIdByPageId(pId, nodeId);
+        } else if ("GROUP".equals(nodeType)) {
+            flowGroupId = flowGroupDomain.getFlowGroupIdByPageId(pId, nodeId);
+        }
+        if (StringUtils.isNotBlank(flowId)) {
+            return flowServiceImpl.runFlow(flowId, null);
+        } else if (StringUtils.isNotBlank(flowGroupId)) {
+            return runFlowGroup(flowGroupId, null);
+        } else {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("No data found for this node (" + nodeId + ")");
+        }
     }
 
 }

@@ -53,4 +53,7 @@ public class Property extends BaseHibernateModelUUIDNoCorpAgentId {
     @Column(columnDefinition = "bigint(20) COMMENT 'property sort'")
     private Long propertySort;
 
+    @Column(columnDefinition = "bit(1) COMMENT 'Has it been updated'")
+    private Boolean isOldData = false;
+
 }

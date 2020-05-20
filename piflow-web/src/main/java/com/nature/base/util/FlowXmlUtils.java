@@ -12,7 +12,7 @@ import com.nature.component.mxGraph.vo.MxGeometryVo;
 import com.nature.component.mxGraph.vo.MxGraphModelVo;
 import com.nature.component.template.model.PropertyTemplateModel;
 import com.nature.component.template.model.StopTemplateModel;
-import com.nature.component.template.model.Template;
+import com.nature.component.template.model.FlowTemplate;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -43,7 +43,7 @@ public class FlowXmlUtils {
      * @param isEscape is escape
      * @return Element
      */
-    private static Element xmlStrToElement(String xmlData, boolean isEscape) {
+    public static Element xmlStrToElement(String xmlData, boolean isEscape) {
         try {
             String xmlStr = xmlData;
             if (isEscape) {
@@ -826,104 +826,6 @@ public class FlowXmlUtils {
     }
 
     /**
-     * String type xml to "stop" and other information
-     *
-     * @param xmlData xml string data
-     * @return Template
-     */
-    public static Template xmlToFlowStopInfo(String xmlData) {
-        try {
-            Element flow = xmlStrToElementGetByKey(xmlData, false, "flow");
-            if (null == flow) {
-                return null;
-            }
-            Template template = new Template();
-            List<StopTemplateModel> stopVoList = new ArrayList<>();
-            Iterator rootiter = flow.elementIterator("stop"); // Get the child node "stop" under the root node
-            while (rootiter.hasNext()) {
-                List<PropertyTemplateModel> propertyList = new ArrayList<>();
-                StopTemplateModel stopVo = new StopTemplateModel();
-                Element recordEle = (Element) rootiter.next();
-                String bundel = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("bundel"));
-                String description = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("description"));
-                String id = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("id"));
-                String name = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("name"));
-                String pageId = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("pageId"));
-                String inPortType = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("inPortType"));
-                String inports = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("inports"));
-                String outPortType = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("outPortType"));
-                String outports = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("outports"));
-                String isCheckpoint = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("isCheckpoint"));
-                String owner = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("owner"));
-                String groups = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("groups"));
-                stopVo.setPageId(pageId);
-                stopVo.setName(name);
-                stopVo.setDescription(description);
-                stopVo.setBundel(bundel);
-                stopVo.setId(id);
-                stopVo.setInports(inports);
-                stopVo.setOutports(outports);
-                stopVo.setOutPortType(PortType.selectGender(outPortType));
-                stopVo.setInPortType(PortType.selectGenderByValue(inPortType));
-                stopVo.setGroups(groups);
-                Boolean Checkpoint = "1".equals(isCheckpoint);
-                stopVo.setIsCheckpoint(Checkpoint);
-                stopVo.setOwner(owner);
-                Iterator property = recordEle.elementIterator("property");
-                if (null != property) {
-                    while (property.hasNext()) {
-                        Element propertyValue = (Element) property.next();
-                        PropertyTemplateModel propertyVo = new PropertyTemplateModel();
-                        String allowableValues = StringCustomUtils.recoverSpecialSymbolsXml(propertyValue.attributeValue("allowableValues"));
-                        String customValue = StringCustomUtils.recoverSpecialSymbolsXml(propertyValue.attributeValue("customValue"));
-                        String propertyDescription = StringCustomUtils.recoverSpecialSymbolsXml(propertyValue.attributeValue("description"));
-                        String displayName = StringCustomUtils.recoverSpecialSymbolsXml(propertyValue.attributeValue("displayName"));
-                        String propertyId = StringCustomUtils.recoverSpecialSymbolsXml(propertyValue.attributeValue("id"));
-                        String propertyName = StringCustomUtils.recoverSpecialSymbolsXml(propertyValue.attributeValue("name"));
-                        boolean required = "true".equals(propertyValue.attributeValue("required"));
-                        boolean sensitive = "true".equals(propertyValue.attributeValue("sensitive"));
-                        boolean isSelect = "true".equals(propertyValue.attributeValue("isSelect"));
-                        if (isSelect && null != allowableValues && allowableValues.length() > 1) {
-                            String temp = allowableValues.substring(1, allowableValues.length() - 1);
-                            String[] tempArray = temp.split(",");
-                            StringBuilder tempStringBuffer = new StringBuilder();
-                            tempStringBuffer.append("[");
-                            for (int i = 0; i < tempArray.length; i++) {
-                                tempStringBuffer.append("\"");
-                                tempStringBuffer.append(tempArray[i]);
-                                tempStringBuffer.append("\"");
-                                if (i + 1 != tempArray.length) {
-                                    tempStringBuffer.append(",");
-                                }
-                            }
-                            tempStringBuffer.append("]");
-                            allowableValues = tempStringBuffer.toString();
-                        }
-                        propertyVo.setAllowableValues(allowableValues);
-                        propertyVo.setCustomValue(customValue);
-                        propertyVo.setDescription(propertyDescription);
-                        propertyVo.setDisplayName(displayName);
-                        propertyVo.setId(propertyId);
-                        propertyVo.setName(propertyName);
-                        propertyVo.setRequired(required);
-                        propertyVo.setSensitive(sensitive);
-                        propertyVo.setStopsVo(stopVo);
-                        propertyVo.setIsSelect(isSelect);
-                        propertyList.add(propertyVo);
-                    }
-                }
-                stopVo.setProperties(propertyList);
-                stopVoList.add(stopVo);
-            }
-            template.setStopsList(stopVoList);
-            return template;
-        } catch (Exception e) {
-            logger.error("Conversion failed", e);
-            return null;
-        }
-    }
-
-    /**
      * String type xml to MxGraphModel
      *
      * @param xmlData xml string data
@@ -1073,7 +975,7 @@ public class FlowXmlUtils {
      * @param xmlData xml string data
      * @return MxGraphModel
      */
-    public static MxGraphModel xmlToMxGraphModel(String xmlData, int maxPageId, String username) {
+    public static MxGraphModel xmlToMxGraphModel(String xmlData, int maxPageId, String username, Boolean isAppend) {
         if (StringUtils.isBlank(xmlData)) {
             return null;
         }
@@ -1119,10 +1021,14 @@ public class FlowXmlUtils {
             mxGraphModel.setPageHeight(pageHeight);
             mxGraphModel.setBackground(background);
             List<MxCell> rootList = new ArrayList<>();
+            if (isAppend) {
+                rootList = new ArrayList<>();
+            } else {
+                rootList = MxCellUtils.initMxCell(username, mxGraphModel);
+            }
             Element rootjd = mxGraphModelXml.element("root");
             Iterator rootiter = rootjd.elementIterator("mxCell"); // Get the child node "mxCell" under the root node
             while (rootiter.hasNext()) {
-                MxCell mxCell = new MxCell();
 
                 Element recordEle = (Element) rootiter.next();
                 String mxCellId = StringCustomUtils.recoverSpecialSymbolsXml(recordEle.attributeValue("id"));
@@ -1143,11 +1049,8 @@ public class FlowXmlUtils {
                         continue;
                     }
                 }
-                mxCell.setCrtDttm(new Date());
-                mxCell.setCrtUser(username);
-                mxCell.setLastUpdateDttm(new Date());
-                mxCell.setLastUpdateUser(username);
-                mxCell.setVersion(0L);
+
+                MxCell mxCell = MxCellUtils.mxCellNewNoId(username);
                 mxCell.setPageId((Integer.parseInt(mxCellId) + maxPageId) + "");
                 mxCell.setParent(parent);
                 mxCell.setStyle(style);
@@ -1327,7 +1230,7 @@ public class FlowXmlUtils {
             stops.setOutPortType(PortType.selectGender(outPortType));
             stops.setInPortType(PortType.selectGenderByValue(inPortType));
             stops.setGroups(groups);
-            Boolean Checkpoint = "0".equals(isCheckpoint);
+            Boolean Checkpoint = "1".equals(isCheckpoint);
             stops.setIsCheckpoint(Checkpoint);
             stops.setOwner(owner);
             Iterator propertyXmlIterator = stopElement.elementIterator("property");
@@ -1393,7 +1296,7 @@ public class FlowXmlUtils {
      * @param maxPageId Maximum PageId of Flow
      * @return Flow
      */
-    public static Flow xmlToFlow(String xmlData, int maxPageId, String username) {
+    public static Flow xmlToFlow(String xmlData, int maxPageId, String username, Boolean isAppend) {
         if (StringUtils.isBlank(xmlData)) {
             return null;
         }
@@ -1409,6 +1312,7 @@ public class FlowXmlUtils {
             String executorNumber = StringCustomUtils.recoverSpecialSymbolsXml(flowElement.attributeValue("executorNumber"));
             String name = StringCustomUtils.recoverSpecialSymbolsXml(flowElement.attributeValue("name"));
             String description = StringCustomUtils.recoverSpecialSymbolsXml(flowElement.attributeValue("description"));
+            flowPageId = (StringUtils.isNotBlank(flowPageId) ? flowPageId : "1");
 
             Flow flow = new Flow();
             flow.setCrtDttm(new Date());
@@ -1425,7 +1329,7 @@ public class FlowXmlUtils {
             flow.setDescription(description);
             // mxGraphModel
             Element mxGraphModelElement = flowElement.element("mxGraphModel");
-            MxGraphModel mxGraphModel = xmlToMxGraphModel(mxGraphModelElement.asXML(), maxPageId, username);
+            MxGraphModel mxGraphModel = xmlToMxGraphModel(mxGraphModelElement.asXML(), maxPageId, username, isAppend);
             if (null != mxGraphModel) {
                 mxGraphModel.setFlow(flow);
             }
@@ -1482,7 +1386,7 @@ public class FlowXmlUtils {
             String name = StringCustomUtils.recoverSpecialSymbolsXml(flowGroupElement.attributeValue("name"));
             String description = StringCustomUtils.recoverSpecialSymbolsXml(flowGroupElement.attributeValue("description"));
             String flowGroupPageId = StringCustomUtils.recoverSpecialSymbolsXml(flowGroupElement.attributeValue("pageId"));
-
+            flowGroupPageId = StringUtils.isNotBlank(flowGroupPageId) ? ((Integer.parseInt(flowGroupPageId) + maxPageId) + "") : "";
             FlowGroup flowGroup = new FlowGroup();
             flowGroup.setCrtDttm(new Date());
             flowGroup.setCrtUser(username);
@@ -1499,20 +1403,11 @@ public class FlowXmlUtils {
             String duplicateFlowName = "";
             while (flowXmlIterator.hasNext()) {
                 Element recordEle = (Element) flowXmlIterator.next();
-                Flow flow = xmlToFlow(recordEle.asXML(), maxPageId, username);
+                Flow flow = xmlToFlow(recordEle.asXML(), maxPageId, username, false);
                 if (null != flow) {
                     String flowName = flow.getName();
                     if (Arrays.asList(flowNames).contains(flowName)) {
                         duplicateFlowName += (flowName + ",");
-                    }
-                    if (isChildren) {
-                        MxGraphModel mxGraphModel_temp = flow.getMxGraphModel();
-                        if (null != mxGraphModel_temp) {
-                            List<MxCell> root_temp = mxGraphModel_temp.getRoot();
-                            root_temp.addAll(MxCellUtils.initMxCell(username, mxGraphModel_temp));
-                            mxGraphModel_temp.setRoot(root_temp);
-                        }
-                        flow.setMxGraphModel(mxGraphModel_temp);
                     }
                     flow.setFlowGroup(flowGroup);
                     flowList.add(flow);
@@ -1580,7 +1475,7 @@ public class FlowXmlUtils {
      * @param username    Operator username
      * @return Flow
      */
-    public static Map<String, Object> templateXmlToFlow(String templateXml, String username, String stopMaxPageId, String flowMaxPageId, String[] stopNames) {
+    public static Map<String, Object> flowTemplateXmlToFlow(String templateXml, String username, String stopMaxPageId, String flowMaxPageId, String[] stopNames) {
         if (StringUtils.isBlank(templateXml)) {
             return ReturnMapUtils.setFailedMsg("templateXml is null");
         }
@@ -1621,26 +1516,11 @@ public class FlowXmlUtils {
 
             // stop
             Iterator stopXmlIterator = flowElement.elementIterator("stop");
-            List<Stops> stopsList = new ArrayList<>();
-            String duplicateStopName = null;
-            while (stopXmlIterator.hasNext()) {
-                Element recordEle = (Element) stopXmlIterator.next();
-                Stops stops = xmlToStopsNew(recordEle.asXML(), stopMaxPageIdInt, username);
-                if (null != stops) {
-                    String stopName = stops.getName();
-
-                    if (Arrays.asList(stopNames).contains(stopName)) {
-                        duplicateStopName += (stopName + ",");
-                    }
-                    stops.setFlow(flow);
-                    stopsList.add(stops);
-                }
+            Map<String, Object> xmlToStopsMap = xmlToStopsList(stopXmlIterator, stopMaxPageIdInt, username, stopNames, flow);
+            if (200 != (Integer) xmlToStopsMap.get(ReturnMapUtils.KEY_CODE)) {
+                return xmlToStopsMap;
             }
-            // If there are duplicate StopNames, directly return null
-            if (StringUtils.isNotBlank(duplicateStopName)) {
-                return ReturnMapUtils.setFailedMsg("Duplicate StopName");
-            }
-            flow.setStopsList(stopsList);
+            flow.setStopsList((List<Stops>) xmlToStopsMap.get("xmlToStopsList"));
 
             // paths
             Iterator pathXmlIterator = flowElement.elementIterator("paths");
@@ -1937,6 +1817,29 @@ public class FlowXmlUtils {
         }
         mxCell.setMxGraphModel(mxGraphModel);
         return mxCell;
+    }
+
+    public static Map<String, Object> xmlToStopsList(Iterator stopXmlIterator, int stopMaxPageIdInt, String username, String[] stopNames, Flow flow) {
+        List<Stops> stopsList = new ArrayList<>();
+        String duplicateStopName = null;
+        while (stopXmlIterator.hasNext()) {
+            Element recordEle = (Element) stopXmlIterator.next();
+            Stops stops = xmlToStopsNew(recordEle.asXML(), stopMaxPageIdInt, username);
+            if (null != stops) {
+                String stopName = stops.getName();
+
+                if (Arrays.asList(stopNames).contains(stopName)) {
+                    duplicateStopName += (stopName + ",");
+                }
+                stops.setFlow(flow);
+                stopsList.add(stops);
+            }
+        }
+        // If there are duplicate StopNames, directly return null
+        if (StringUtils.isNotBlank(duplicateStopName)) {
+            return ReturnMapUtils.setFailedMsg("Duplicate StopName");
+        }
+        return ReturnMapUtils.setSucceededCustomParam("xmlToStopsList", stopsList);
     }
 
 }

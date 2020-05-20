@@ -61,52 +61,22 @@ public class LoginCtrl {
     @RequestMapping(value = "/register")
     @ResponseBody
     public String register(HttpServletRequest request) {
-        Map<String, Object> rtnMap = new HashMap<>();
-        rtnMap.put("code", 500);
         String username = request.getParameter("username");
         String pw = request.getParameter("pw");
         String name = request.getParameter("name");
         String sex = request.getParameter("sex");
-        if (!StringUtils.isAnyEmpty(username, pw)) {
-            SysUserVo sysUserVo = new SysUserVo();
-            sysUserVo.setUsername(username);
-            sysUserVo.setPassword(pw);
-            sysUserVo.setSex(sex);
-            sysUserVo.setName(name);
-            int addUser = sysUserServiceImpl.registerUser(sysUserVo);
-            if (addUser > 0) {
-                rtnMap.put("code", 200);
-                rtnMap.put("errorMsg", "Congratulations, registration is successful");
-            } else {
-                rtnMap.put("errorMsg", "Registration failed, save failed");
-                logger.info("Registration failed, save failed");
-            }
-        } else {
-            rtnMap.put("errorMsg", "Registration failed, username or password is empty");
-            logger.info("Registration failed, username or password is empty");
-        }
-        return JsonUtils.toJsonNoException(rtnMap);
+        SysUserVo sysUserVo = new SysUserVo();
+        sysUserVo.setUsername(username);
+        sysUserVo.setPassword(pw);
+        sysUserVo.setSex(sex);
+        sysUserVo.setName(name);
+        return sysUserServiceImpl.registerUser(sysUserVo);
     }
 
     @RequestMapping(value = "/checkUserName")
     @ResponseBody
     public String checkUserName(HttpServletRequest request) {
-        Map<String, Object> rtnMap = new HashMap<>();
-        rtnMap.put("code", 500);
         String username = request.getParameter("userName");
-        if (StringUtils.isNotBlank(username)) {
-            SysUser addUser = sysUserServiceImpl.findByUsername(username);
-            if (null != addUser) {
-                rtnMap.put("errorMsg", "Username is already taken");
-                logger.info("Username is already taken");
-            } else {
-                rtnMap.put("code", 200);
-                rtnMap.put("errorMsg", "Username is available");
-            }
-        } else {
-            rtnMap.put("errorMsg", "Username can not be empty");
-            logger.info("Username can not be empty");
-        }
-        return JsonUtils.toJsonNoException(rtnMap);
+        return sysUserServiceImpl.checkUserName(username);
     }
 }

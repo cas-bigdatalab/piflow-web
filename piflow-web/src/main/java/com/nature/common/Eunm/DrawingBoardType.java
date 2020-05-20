@@ -8,7 +8,8 @@ public enum DrawingBoardType {
 
     TASK("TASK","Task"),
     GROUP("GROUP","Group"),
-    FLOW("FLOW","Flow");
+    FLOW("FLOW","Flow"),
+    PROCESS ("PROCESS","Process");
 
     private final String value;
     private final String text;

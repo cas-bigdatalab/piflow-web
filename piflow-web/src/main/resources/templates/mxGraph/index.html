@@ -13,6 +13,16 @@
     <link rel="stylesheet" type="text/css" th:href="@{/custom/css/fullScreen.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{/components/font-awesome-4.7.0/css/font-awesome.min.css}"/>
     <link rel="shortcut icon" th:href="@{/img/logo.ico}">
+    <style>
+        .btn-position {
+            float: right;
+            margin-right: 8px
+        }
+
+        .btn-position .btn {
+            margin: 6px 6px 2px 0 !important;
+        }
+    </style>
 
     <script th:inline="javascript">
         var parentAccessPath = [[${parentAccessPath}]];
@@ -26,33 +36,22 @@
         var maxStopPageId = [[${maxStopPageId}]];
         var maxFlowPageId = [[${maxFlowPageId}]];
         var divValue = null;
+        //-------------------------------------------------------------------------
+        //-------------------------------------------------------------------------
+        //-------------------------------------------------------------------------
+        var nodeArr = [[${nodeArr}]];
+        var processType = [[${processType}]];
+        //-------------------------------------------------------------------------
+        //-------------------------------------------------------------------------
+        //-------------------------------------------------------------------------
         var flowGroupData = [
             {
                 groupName: "Group",
                 dataList: [
                     {
                         name: "group",
-                        img_name: "_01_128x128.png",
-                        description: 'group component'
-                    }, {
-                        name: "group",
-                        img_name: "_02_128x128.png",
-                        description: 'group component'
-                    }, {
-                        name: "group",
-                        img_name: "_03_128x128.png",
-                        description: 'group component'
-                    }, {
-                        name: "group",
-                        img_name: "_04_128x128.png",
-                        description: 'group component'
-                    }, {
-                        name: "group",
-                        img_name: "_05_128x128.png",
-                        description: 'group component'
-                    }, {
-                        name: "group",
-                        img_name: "_06_128x128.png",
+                        img_name: "group",
+                        img_type: ".png",
                         description: 'group component'
                     }
                 ]
@@ -61,52 +60,20 @@
                 dataList: [
                     {
                         name: "flow",
-                        img_name: "_01_128x128.png",
-                        description: 'flow component'
-                    }, {
-                        name: "flow",
-                        img_name: "_02_128x128.png",
-                        description: 'flow component'
-                    }, {
-                        name: "flow",
-                        img_name: "_03_128x128.png",
-                        description: 'flow component'
-                    }, {
-                        name: "flow",
-                        img_name: "_04_128x128.png",
-                        description: 'flow component'
-                    }, {
-                        name: "flow",
-                        img_name: "_05_128x128.png",
-                        description: 'flow component'
-                    }, {
-                        name: "flow",
-                        img_name: "_06_128x128.png",
-                        description: 'flow component'
-                    }, {
-                        name: "flow",
-                        img_name: "_07_128x128.png",
-                        description: 'flow component'
-                    }, {
-                        name: "flow",
-                        img_name: "_08_128x128.png",
-                        description: 'flow component'
-                    }, {
-                        name: "flow",
-                        img_name: "_09_128x128.png",
-                        description: 'flow component'
-                    }, {
-                        name: "flow",
-                        img_name: "_10_128x128.png",
-                        description: 'flow component'
-                    }, {
-                        name: "flow",
-                        img_name: "_11_128x128.png",
-                        description: 'flow component'
-                    }, {
-                        name: "flow",
-                        img_name: "_12_128x128.png",
-                        description: 'flow component'
+                        img_name: "flow",
+                        img_type: ".png",
+                        description: 'Task component'
+                    }
+                ]
+            },
+            {
+                groupName: "Text",
+                dataList: [
+                    {
+                        name: "text",
+                        img_name: "",
+                        img_type: "",
+                        description: 'Text'
                     }
                 ]
             }
@@ -141,12 +108,10 @@
 
         a.customize_btn_css:hover {
             color: #ffffff;
-            text-decoration: none;
         }
 
         a.customize_btn_css:focus {
             color: #ffffff;
-            text-decoration: none;
         }
     </style>
 </head>
@@ -156,20 +121,66 @@
 <div th:include="Macro/publicMacro :: userHeadMacro"></div>
 
 <!-- menus -->
-<div style="width: 45.2%; float: right;">
+<!--<div style="width: 45.2%; float: right;">-->
+<!--    <div th:switch="${drawingBoardType?.value}"-->
+<!--         style="position: fixed; margin-top: 48px; z-index: 999;text-align: right; width:45%;">-->
+<!--        <div th:case="'TASK'" th:include="mxGraph/inc/graphEditor_menus_task :: graphEditor_menus_task"></div>-->
+<!--        <div th:case="'GROUP'" th:include="mxGraph/inc/graphEditor_menus_group :: graphEditor_menus_group"></div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<div style="width: 30.2%;float: right">
     <div th:switch="${drawingBoardType?.value}"
-         style="position: fixed; margin-top: 48px; z-index: 999;text-align: right; width:45%;">
+         style="position: fixed;margin-top: 50px;z-index: 999;text-align: right;width: 30%">
         <div th:case="'TASK'" th:include="mxGraph/inc/graphEditor_menus_task :: graphEditor_menus_task"></div>
         <div th:case="'GROUP'" th:include="mxGraph/inc/graphEditor_menus_group :: graphEditor_menus_group"></div>
     </div>
 </div>
+
+
 <!-- crumbs -->
 <div style="width: 100%;position: fixed;z-index: 99999;float: left;left: 0px;bottom: 0px;text-align: center;height: 28px;line-height: 28px; background: #37714b;">
     <div th:switch="${drawingBoardType?.value}">
         <div th:case="'TASK'" th:include="mxGraph/inc/graphEditor_crumbs_task :: graphEditor_crumbs_task"></div>
         <div th:case="'GROUP'" th:include="mxGraph/inc/graphEditor_crumbs_group :: graphEditor_crumbs_group"></div>
+        <div th:case="'PROCESS'">
+            <div th:switch="${processType}">
+                <div th:case="'TASK'" th:include="mxGraph/inc/proccess_crumbs_task :: proccess_crumbs_task"></div>
+                <div th:case="'GROUP'" th:include="mxGraph/inc/proccess_crumbs_group :: proccess_crumbs_group"></div>
+            </div>
+        </div>
     </div>
 </div>
+
+<!-- Modal Checkpoint -->
+<div th:switch="${drawingBoardType?.value}">
+    <div th:case="'PROCESS'">
+        <div th:switch="${processType}">
+            <div th:case="'TASK'">
+                <div style="z-index: 0;position: fixed;/*display: none;*/">
+                    <div id="layer_open_checkpoint">
+                        <div id="checkpointContentNew" style="margin-left: 10px;margin-top: 10px;">
+                            No checkpoint information was queried
+                            <input type="checkbox" value="">
+                        </div>
+                        <hr>
+                        <div style="text-align: right;">
+                            <button id="run_checkpoint_new" type="button" class="btn btn-default" onclick="runProcess()"
+                                    style="margin-right: 10px;">
+                                Submit
+                            </button>
+                            <button id="debug_checkpoint_new" type="button" class="btn btn-default"
+                                    onclick="runProcess('DEBUG')" style="margin-right: 10px;">
+                                Submit
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <div id="portShowDiv" class="modal-content" style="display:none;width: 100%;  top: 77px">
     <div class="modal-body">
@@ -245,7 +256,7 @@
     </div>
 </div>
 
-<!--Initializes the artboard-->
+<!--Initializes the drawing board-->
 <!--stop Property edit popover starts-->
 <div style="display: none;" id="stopOpenTemplate">
     <div style="height: 90%;">
@@ -354,7 +365,176 @@
         </div>
     </form>
 </div>
-<!-- 'stop' custom attribute editing popup end -->
+
+<div id="precessrun" class="precessrun" style="position: fixed; z-index: 779;text-align: right;right: 10px;top: 50px;">
+
+    <div id="processflow" style="display: none">
+                <span>
+                    progress：<span id="progress" th:text="${percentage} + '%'"></span>
+                </span>
+        <!--        <div class="progress">-->
+        <!--            <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">-->
+        <!--                <span id="progress" th:text="${percentage} + '%'"></span>-->
+        <!--            </div>-->
+        <!--        </div>-->
+        <input id="runFlow" type="button" class="btn btn-default" onclick="getCheckpoint()" value="Run"/>
+        <input id="debugFlow" type="button" class="btn btn-default" onclick="getCheckpoint('DEBUG')" value="Debug"/>
+        <input id="stopFlow" type="button" class="btn btn-danger" onclick="stopProcess()" value="Stop"/>
+        <input type="button" class="btn btn-primary" onclick="getLogUrl()" value="Log"/>
+    </div>
+
+
+    <div id="processgroup" style="display: none">
+         <span>
+				progress：<span id="groupProgress" th:text="${percentage} + '%'"></span>
+			</span>
+        <!--        <div class="progress">-->
+        <!--            <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">-->
+        <!--                <span id="progress" th:text="${percentage} + '%'"></span>-->
+        <!--            </div>-->
+        <!--        </div>-->
+        <input id="runFlowGroup" type="button" class="btn btn-default" onclick="selectRunMode()" value="Run"/>
+        <input id="stopFlowGroup" type="button" class="btn btn-danger" onclick="stopProcessGroup()" value="Stop"/>
+        <input type="button" class="btn btn-primary" onclick="openLogWindow()" value="Log"/>
+    </div>
+
+</div>
+
+<script th:src="@{/custom/js/processGroupContent.js}"></script>
+<script th:src="@{/custom/js/processContent.js}"></script>
+<script th:inline="javascript">
+    var parentAccessPath = [[${parentAccessPath}]];
+    var xmlDate = [[${xmlDate}]];
+    var processGroupId = [[${processGroupId}]];
+    var parentProcessId = [[${parentProcessId}]];
+    var pID = [[${pID}]];
+    var appId = [[${appId}]];
+    var processState = [[${processState}]];
+    var stdoutLog = [[${stdoutLog}]];
+    var stderrLog = [[${stderrLog}]];
+    var processId = [[${processId}]];
+    if (processType === "GROUP") {
+
+        (function () {
+            // console.log(processType,"processStateprocessState")
+            $('#processflow')[0].style.display = "none"
+            $('#processgroup')[0].style.display = "block"
+            if (processContent) {
+                if (xmlDate) {
+                    processContent.append(xmlDate);
+                } else {
+                    processContent.prepend('<div style="position: fixed;z-index: 779;"><h1>View missing</h1></div>');
+                }
+            }
+            if (runFlowGroupBtn) {
+                if ("COMPLETED" !== processState && "FAILED" !== processState && "KILLED" !== processState) {
+                    runFlowGroupBtn.hide();
+                    debugFlowGroupBtn.hide();
+                    stopFlowGroupBtn.show();
+                    timer = window.setInterval("processGroupMonitoring(appId)", 5000);
+                } else {
+                    runFlowGroupBtn.show();
+                    debugFlowGroupBtn.show();
+                    stopFlowGroupBtn.hide();
+                }
+            }
+            var processVoListInit = [[${processVoListInit}]];
+            if (processVoListInit && '' != processVoListInit) {
+                for (var i = 0; i < processVoListInit.length; i++) {
+                    var processVoInit = processVoListInit[i];
+                    processGroupMonitor(processVoInit.pageId, processVoInit.state);
+                }
+            }
+            var processGroupVoListInit = [[${processGroupVoListInit}]];
+            if (processGroupVoListInit && '' != processGroupVoListInit) {
+                for (var i = 0; i < processGroupVoListInit.length; i++) {
+                    var processGroupVoInit = processGroupVoListInit[i];
+                    processGroupMonitor(processGroupVoInit.pageId, processGroupVoInit.state);
+                }
+            }
+            //queryProcess(processId);
+            $("#modalDialog").draggable();//Add drag and drop for modal dialogs
+            $("#myModal").css("overflow", "hidden");//Disable translucent background scrolling of modal dialogs
+            if ("processGroupList" === parentAccessPath) {
+                $("#web_processList_navigation").hide();
+                $("#web_processGroupList_navigation").show();
+                $("#web_getProcessGroupById_navigation").show();
+            }
+        })();
+        //When the browser window size changes
+        $(window).resize(function () {
+            var window_width = $(window).width();//Get browser window width
+            var window_height = $(window).height();//Get browser window width
+            // $('#modalDialog').height(window_height - 124);
+            // $('#modalDialog').width(window_width - 124);
+            $('#textareaId').height(window_height - 300);
+            $('#divTextareaId').height(window_height - 300);
+        });
+        //@ sourceURL=processContent.js
+    } else if (processType === "TASK") {
+        (function () {
+            $('#processflow')[0].style.display = "block"
+            $('#processgroup')[0].style.display = "none"
+            if (processContent) {
+                if (xmlDate) {
+                    processContent.append(xmlDate);
+                } else {
+                    processContent.prepend('<div style="position: fixed;z-index: 779;"><h1>视图丢失</h1></div>');
+                }
+            }
+            if (runFlowBtn) {
+                if ("COMPLETED" !== processState && "FAILED" !== processState && "KILLED" !== processState) {
+                    runFlowBtn.hide();
+                    debugFlowBtn.hide();
+                    stopFlowBtn.show();
+                    timer = window.setInterval("processMonitoring(appId)", 5000);
+                } else {
+                    runFlowBtn.show();
+                    debugFlowBtn.show();
+                    stopFlowBtn.hide();
+                }
+            }
+            var processStopVoListInit = [[${processStopVoListInit}]];
+            if (processStopVoListInit && '' != processStopVoListInit) {
+                for (var i = 0; i < processStopVoListInit.length; i++) {
+                    var processStopVoInit = processStopVoListInit[i];
+                    monitor(processStopVoInit.pageId, processStopVoInit.state);
+                }
+            }
+            //queryProcess(processId);
+            $("#modalDialog").draggable();//Add drag and drop for modal dialogs
+            $("#myModal").css("overflow", "hidden");//Disable translucent background scrolling of modal dialogs
+            if (parentAccessPath) {
+                switch (parentAccessPath) {
+                    case "grapheditor":
+                        $("#web_processList_navigation").hide();
+                        $("#web_flowList_navigation").show();
+                        $("#grapheditor_home_navigation").show();
+                        break;
+                    case "flowProcess":
+                        $("#web_processList_navigation").hide();
+                        $("#web_groupTypeProcessList_navigation").show();
+                        break;
+                    case "processGroupList":
+                        $("#web_processList_navigation").hide();
+                        $("#web_processGroupList_navigation").show();
+                        $("#web_getProcessGroupById_navigation").show();
+                        break;
+                }
+            }
+        })();
+        $(window).resize(function () {
+            var window_width = $(window).width();//Get browser window width
+            var window_height = $(window).height();//Get browser window height
+            // $('#modalDialog').height(window_height - 124);
+            // $('#modalDialog').width(window_width - 124);
+            $('#textareaId').height(window_height - 300);
+            $('#divTextareaId').height(window_height - 300);
+        });
+    }
+
+
+</script>
 
 <script th:include="Macro/csrfTokeHeadMacro :: csrfTokeHeadMacroScript"/>
 <script type="text/javascript" th:src="@{/components/mxGraph/initGraph.js}"></script>
@@ -375,9 +555,6 @@
             addStopCustomProperty(data.field);
             return false;
         });
-        console.log("--------------------------------------------------------");
-        console.log(parentAccessPath);
-        console.log("--------------------------------------------------------");
         if ("flowGroupList" === parentAccessPath) {
             $("#web_flowGroupList_navigation").show();
             $("#web_flowList_navigation").hide();
@@ -396,5 +573,121 @@
     //window.onload = showSelect;
     //@ sourceURL=mxGraphIndex.js
 </script>
+
+<div style="display: none;" id="SubmitPage">
+    <br>
+    <form class="layui-form" action="" style="position: relative">
+        <div class="layui-form-item">
+            <label class="layui-form-label">flowGroupName</label>
+            <div class="layui-input-block">
+                <input type="hidden" id="flowGroupId"/>
+                <input id="flowGroupName" placeholder="please input flowGroupName..." autocomplete="off"
+                       class="layui-input"
+                       style="width: 400px;margin-left: 20px;">
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">description</label>
+            <div class="layui-input-block">
+                <textarea id="description1" placeholder="please input description..." class="layui-textarea"
+                          style="width: 400px;margin-left: 20px;"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item" style="text-align: center;position: absolute;right: 36px">
+            <button id="buttonGroupCancel" type="button" class="layui-btn layui-btn-primary" onclick="cancelGroup()"
+                    style="color: #333333;border-color: #2f7600;">
+                Cancel
+            </button>
+            <button id="buttonGroup" type="button" class="layui-btn layui-btn-primary" onclick='saveOrUpdateFlowGroup()'
+                    style="color: #ffffff;background-color: #2f7600;border-color: #2f7600;" >
+                Submit
+            </button>
+        </div>
+    </form>
+</div>
+
+<div style="display: none;" id="SubmitPageFlow">
+    <form class="layui-form" action="" style="position: relative">
+        <div class="layui-form-item">
+            <label class="layui-form-label">flowName</label>
+            <div class="layui-input-block">
+                <input type="hidden" id="flowId"/>
+                <input id="flowName" placeholder="please input flowName..." autocomplete="off" class="layui-input"
+                       style="width: 400px;margin-left: 20px;">
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">description</label>
+            <div class="layui-input-block">
+                <textarea id="description" placeholder="please input description..." class="layui-textarea"
+                          style="width: 400px;margin-left: 20px;"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">driverMemory</label>
+            <div class="layui-input-block">
+                <input id="driverMemory" autocomplete="off" class="layui-input" style="width: 400px;margin-left: 20px;"
+                       value="1g">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">executorNumber</label>
+            <div class="layui-input-block">
+                <input id="executorNumber" autocomplete="off" class="layui-input"
+                       style="width: 400px;margin-left: 20px;" value="1">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">executorMemory</label>
+            <div class="layui-input-block">
+                <input id="executorMemory" autocomplete="off" class="layui-input"
+                       style="width: 400px;margin-left: 20px;" value="1g">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">executorCores</label>
+            <div class="layui-input-block">
+                <input id="executorCores" autocomplete="off" class="layui-input" style="width: 400px;margin-left: 20px;"
+                       value="1">
+            </div>
+        </div>
+        <div class="layui-form-item" style="text-align: center;position: absolute;right: 36px">
+            <button type="button" class="layui-btn layui-btn-primary" onclick="cancelFlow()"
+                    style="color: #333333;border-color: #2f7600;" id="buttonFlowCancel">
+                cancel
+            </button>
+            <button type="button" class="layui-btn layui-btn-primary" onclick='saveFlow()'
+                    style="color: #ffffff;background-color: #2f7600;border-color: #2f7600;" id="buttonFlow">
+                Submit
+            </button>
+        </div>
+    </form>
+</div>
+
+<div style="display: none;;padding:20px" id="changeimage">
+    <br>
+    <p>已有现存可选择更改的图片</p>
+    <!--    <form class="layui-form" action="">-->
+    <div id="nowimage" style="width:100%;height:220px;overflow-y:auto"></div>
+    <div style="width:100%;height:1px;border-bottom:1px solid #000;margin:10px 0"></div>
+    <button type="button" class="layui-btn" id="uploadimage">
+        <i class="layui-icon">&#xe67c;</i>上传图片
+    </button>
+    <!--    </form>-->
+</div>
+
+<div id="rightproupwrap" style="position:absolute;right:0;top:86px;width:25%;;height:88%;transition: 2s">
+    <div class="ExpandSidebar">
+        <div class="triggerSlider">
+            <i style="color: white" class="fa fa-angle-left fa-2x"></i>
+            <!--                <span ></span>-->
+            <!--                <span ></span>-->
+            <!--                <span ></span>-->
+        </div>
+    </div>
+    <!--    <div id="rightproup" style="overflow:auto;position:absolute;right:0;top:0px;width:260px;transition:2s;height:544px;border:1px solid #ccc;background:#fff;z-index:1000;"></div>-->
+    <div id="rightproup" class="rightproup"></div>
+</div>
+
 </body>
 </html>

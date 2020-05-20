@@ -219,43 +219,8 @@ public class ProcessCtrl {
     @RequestMapping("/delProcess")
     @ResponseBody
     public String delProcess(HttpServletRequest request, Model model) {
-        Map<String, Object> rtnMap = new HashMap<>();
-        rtnMap.put("code", 500);
         String processID = request.getParameter("processID");
-        if (StringUtils.isNotBlank(processID)) {
-            UserVo currentUser = SessionUserUtil.getCurrentUser();
-            // Query Process by 'ProcessId'
-            ProcessVo processById = processServiceImpl.getProcessById(processID);
-            if (null != processById) {
-                if (processById.getState() != ProcessState.STARTED) {
-                    StatefulRtnBase isSuccess = processServiceImpl.updateProcessEnableFlag(processID, currentUser);
-                    // Determine whether the deletion is successful
-                    if (null != isSuccess) {
-                        if (isSuccess.isReqRtnStatus()) {
-                            rtnMap.put("code", 200);
-                            rtnMap.put("errorMsg", "Successfully Deleted");
-                        } else {
-                            logger.warn(isSuccess.getErrorMsg());
-                            rtnMap.put("errorMsg", isSuccess.getErrorMsg());
-                        }
-                    } else {
-                        logger.warn("Failed to delete");
-                        rtnMap.put("errorMsg", "Failed to delete");
-                    }
-                } else {
-                    logger.warn("Status is STARTED, cannot be deleted");
-                    rtnMap.put("errorMsg", "Status is STARTED, cannot be deleted");
-                }
-            } else {
-                logger.warn("No process ID is '" + processID + "' process");
-                rtnMap.put("errorMsg", "No process ID is '" + processID + "' process");
-            }
-        } else {
-            logger.warn("processID is null");
-            rtnMap.put("errorMsg", "processID is null");
-        }
-        SessionUserUtil.getCurrentUser();
-        return JsonUtils.toJsonNoException(rtnMap);
+        return processServiceImpl.delProcess(processID);
     }
 
     /**

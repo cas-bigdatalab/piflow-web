@@ -13,8 +13,6 @@ import java.io.Serializable;
 
 public interface MxCellJpaRepository extends JpaRepository<MxCell, String>, JpaSpecificationExecutor<MxCell>, Serializable {
 
-    @Transactional
-    @Modifying
-    @Query("update MxCell c set c.enableFlag = :enableFlag where c.id = :id")
-    int updateEnableFlagById(@Param("id") String id, @Param("enableFlag") boolean enableFlag);
+    @Query(nativeQuery = true, value = "select MAX(s.mx_pageid+0) from mx_cell s where s.enable_flag=1 and s.fk_mx_graph_id=:mxGraphModelId")
+    Integer getMaxPageIdByMxGraphModelId(@Param("mxGraphModelId") String mxGraphModelId);
 }

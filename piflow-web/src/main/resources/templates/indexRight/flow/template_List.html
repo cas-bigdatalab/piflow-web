@@ -18,7 +18,7 @@
             </div>
             <div class="navbar">
                 <form id="uploadForm" enctype="multipart/form-data" method="post">
-                    <input type="file" id="templateFile" name="templateFile" style="display:none;" onchange="importFile()"/>
+                    <input type="file" id="templateFile" name="file" style="display:none;" onchange="importFile()"/>
                     <a class='btn' href='javascript:void(0);' th:onclick="'javascript:uploadTemplate();'"  style='background-color: #1A7444;border: 1px solid;color: #1A7444;' title="upload template">
                         <i class="icon-upload icon-white"></i></a>
                 </form>
@@ -81,7 +81,7 @@
     <script th:src="@{/custom/js/templateList.js}"></script>
     <script th:inline="javascript">
 
-        initDatatableTemplatePage('templateTableId', "/piflow-web/template/templatePage");
+        initDatatableTemplatePage('templateTableId', "/piflow-web/flowTemplate/flowTemplatePage");
 
 
         //@ sourceURL=template_List.js

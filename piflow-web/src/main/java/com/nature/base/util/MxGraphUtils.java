@@ -1,20 +1,78 @@
 package com.nature.base.util;
 
+import com.nature.common.Eunm.TemplateType;
 import com.nature.component.mxGraph.vo.MxCellVo;
 import com.nature.component.mxGraph.vo.MxGeometryVo;
 import com.nature.component.mxGraph.vo.MxGraphModelVo;
 import org.apache.commons.lang3.StringUtils;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
+import org.slf4j.Logger;
+import org.xml.sax.InputSource;
 
+import java.io.StringReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class MxGraphUtils {
 
+    static Logger logger = LoggerUtil.getLogger();
+
     private static String spliceStr(String key, Object value) {
         return key + "=\"" + value + "\" ";
     }
 
+    /**
+     * xmlStrToElement
+     *
+     * @param xmlData  xml string data
+     * @param isEscape is escape
+     * @return Element
+     */
+    private static Element xmlStrToElement(String xmlData, boolean isEscape) {
+        try {
+            String xmlStr = xmlData;
+            if (isEscape) {
+                logger.debug("test");
+                //xmlStr = StringEscapeUtils.unescapeHtml(xmlData);
+            }
+            Document document = DocumentHelper.parseText(xmlStr);
+            String strXml = document.getRootElement().asXML();
+            String transformation = "<fg>" + strXml + "</fg>";
+            InputSource in = new InputSource(new StringReader(transformation));
+            in.setEncoding("UTF-8");
+            SAXReader reader = new SAXReader();
+            document = reader.read(in);
+            // Get all nodes with "autoSaveNode" attribute
+            return document.getRootElement(); // Get the root node
+        } catch (DocumentException e) {
+            logger.error("Conversion failed", e);
+            return null;
+        }
+    }
+
+    /**
+     * xmlStrToElement
+     *
+     * @param xmlData  xml string data
+     * @param isEscape is escape
+     * @param key      The key of the data to be fetched
+     * @return Element
+     */
+    private static Element xmlStrToElementGetByKey(String xmlData, boolean isEscape, String key) {
+        if (StringUtils.isBlank(key)) {
+            return xmlStrToElement(xmlData, isEscape);
+        }
+        Element element = xmlStrToElement(xmlData, isEscape);
+        if (null == element) {
+            return null;
+        }
+        return element.element(key);
+    }
 
     /**
      * "MxGraphModel" to string "xml"
@@ -164,6 +222,21 @@ public class MxGraphUtils {
             xmlStrSb.append("</mxGraphModel>");
 
             return new String(xmlStrSb);
+        }
+        return null;
+    }
+
+    public static TemplateType determineTemplateType(String xmlTemplateStr) {
+        if (StringUtils.isBlank(xmlTemplateStr)) {
+            return null;
+        }
+        Element flowGroupRecordEle = xmlStrToElementGetByKey(xmlTemplateStr, false, "flowGroup");
+        if (null != flowGroupRecordEle) {
+            return TemplateType.GROUP;
+        }
+        Element flowRecordEle = xmlStrToElementGetByKey(xmlTemplateStr, false, "flow");
+        if (null != flowRecordEle) {
+            return TemplateType.TASK;
         }
         return null;
     }

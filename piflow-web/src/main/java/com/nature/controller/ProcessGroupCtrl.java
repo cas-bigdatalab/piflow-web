@@ -8,7 +8,9 @@ import com.nature.base.vo.UserVo;
 import com.nature.common.Eunm.ProcessState;
 import com.nature.component.process.service.IProcessGroupService;
 import com.nature.component.process.service.IProcessService;
+import com.nature.component.process.vo.ProcessGroupPathVo;
 import com.nature.component.process.vo.ProcessGroupVo;
+import com.nature.component.process.vo.ProcessPathVo;
 import com.nature.component.process.vo.ProcessVo;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
@@ -33,23 +36,25 @@ public class ProcessGroupCtrl {
      */
     Logger logger = LoggerUtil.getLogger();
 
-    @Autowired
+    @Resource
     private IProcessGroupService processGroupServiceImpl;
 
-    @Autowired
+    @Resource
     private IProcessService processServiceImpl;
 
 
     /**
      * Query and enter the process list
      *
-     * @param request
+     * @param page
+     * @param limit
+     * @param param
      * @return
      */
     @RequestMapping("/processGroupListPage")
     @ResponseBody
-    public String processGroupListPage(HttpServletRequest request, Integer start, Integer length, Integer draw, String extra_search) {
-        return processGroupServiceImpl.getProcessGroupVoListPage(start / length + 1, length, extra_search);
+    public String processGroupListPage(Integer page, Integer limit, String param) {
+        return processGroupServiceImpl.getProcessGroupVoListPage(page, limit, param);
     }
 
     /**
@@ -81,7 +86,7 @@ public class ProcessGroupCtrl {
         // Determine whether there is a flow id (load), if it exists, load it, otherwise generate UUID to return to the return page
         if (StringUtils.isNotBlank(processGroupId)) {
             // Query process by load id
-            ProcessGroupVo processGroupVo = processGroupServiceImpl.getProcessAllVoById(processGroupId);
+            ProcessGroupVo processGroupVo = processGroupServiceImpl.getProcessGroupVoAllById(processGroupId);
             if (null != processGroupVo) {
                 String svgStr = processGroupVo.getViewXml();
                 if (StringUtils.isNotBlank(svgStr)) {
@@ -169,6 +174,27 @@ public class ProcessGroupCtrl {
         }
         modelAndView.addObject("nodeType", nodeType);
         modelAndView.setViewName(viewName);
+        return modelAndView;
+    }
+
+    /**
+     * Query ProcessPath basic information
+     *
+     * @param request
+     * @param modelAndView
+     * @return
+     */
+    @RequestMapping("/queryProcessGroupPath")
+    public ModelAndView queryProcessGroupPath(HttpServletRequest request, ModelAndView modelAndView) {
+        String processGroupId = request.getParameter("processGroupId");
+        String pageId = request.getParameter("pageId");
+        modelAndView.setViewName("processGroup/inc/process_path_inc");
+        if (!StringUtils.isAnyEmpty(processGroupId, pageId)) {
+            ProcessGroupPathVo processGroupPathVo = processGroupServiceImpl.getProcessGroupPathVoByPageId(processGroupId, pageId);
+            modelAndView.addObject("processGroupPathVo", processGroupPathVo);
+        } else {
+            logger.info("Parameter passed in incorrectly");
+        }
         return modelAndView;
     }
 

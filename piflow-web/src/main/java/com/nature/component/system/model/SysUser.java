@@ -4,10 +4,7 @@ import com.nature.base.BaseHibernateModelUUIDNoCorpAgentId;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.List;
 
 /**
@@ -21,8 +18,8 @@ import java.util.List;
 @Entity
 @Table(name = "SYS_USER")
 public class SysUser extends BaseHibernateModelUUIDNoCorpAgentId {
-	
-	private static final long serialVersionUID = 1L;
+
+    private static final long serialVersionUID = 1L;
 
     private String username;
 
@@ -34,6 +31,6 @@ public class SysUser extends BaseHibernateModelUUIDNoCorpAgentId {
 
     private String sex;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "sysUser")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "sysUser")
     private List<SysRole> roles;
 }

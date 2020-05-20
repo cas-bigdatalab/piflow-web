@@ -18,7 +18,7 @@
             </div>
             <div class="navbar">
                 <form id="uploadForm" enctype="multipart/form-data" method="post">
-                    <input type="file" id="flowGroupTemplateFile" name="flowGroupTemplateFile" style="display:none;" onchange="listUploadFlowGroupTemplate()"/>
+                    <input type="file" id="flowTemplateFile" name="flowGroupTemplateFile" style="display:none;" onchange="listUploadFlowGroupTemplate()"/>
                     <a class='btn' href='javascript:void(0);' onclick="javascript:listUploadFlowGroupTemplateBtn();"  style='background-color: #1A7444;border: 1px solid;color: #1A7444;' title="upload template">
                         <i class="icon-upload icon-white"></i></a>
                 </form>
@@ -43,7 +43,7 @@
     <script th:src="@{/custom/js/flowGroupTemplateList.js}"></script>
     <script th:inline="javascript">
 
-        initDatatableFlowGroupTemplatePage('flowGroupTemplateTableId', "/piflow-web/flowGroupTemplate/flowGroupTemplatePage");
+        initDatatableFlowGroupTemplatePage('flowGroupTemplateTableId', "/piflow-web/flowTemplate/flowTemplatePage");
 
 
         //@ sourceURL=flow_group_template_List.js

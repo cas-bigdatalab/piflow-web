@@ -57,7 +57,9 @@ public class StopsVo implements Serializable {
 
     private DataSourceVo dataSourceVo;
 
-    private List<StopsPropertyVo> propertiesVo = new ArrayList<StopsPropertyVo>();
+    private List<StopsPropertyVo> propertiesVo = new ArrayList<>();
+
+    private List<StopsPropertyVo> oldPropertiesVo = new ArrayList<>();
 
     private List<StopsCustomizedPropertyVo> stopsCustomizedPropertyVoList = new ArrayList<>();
 

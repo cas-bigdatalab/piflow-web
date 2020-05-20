@@ -277,7 +277,7 @@ public class StopsMapperProvider {
      *
      * @return
      */
-    public String getStopsAll() {
+    public String getStopsList() {
         String sqlStr = "";
         SQL sql = new SQL();
         sql.SELECT("*");

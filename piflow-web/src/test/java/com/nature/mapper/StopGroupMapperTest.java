@@ -2,8 +2,8 @@ package com.nature.mapper;
 
 import com.nature.ApplicationTests;
 import com.nature.base.util.LoggerUtil;
-import com.nature.component.group.model.StopGroup;
-import com.nature.mapper.flow.StopGroupMapper;
+import com.nature.component.stopsComponent.model.StopGroup;
+import com.nature.mapper.stopsComponent.StopGroupMapper;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

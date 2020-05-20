@@ -1,10 +1,10 @@
 package com.nature.base.util;
 
 import com.nature.common.Eunm.ArrowDirection;
-import com.nature.component.mxGraph.utils.MxGraphModelUtil;
 import com.nature.component.mxGraph.model.MxCell;
 import com.nature.component.mxGraph.model.MxGeometry;
 import com.nature.component.mxGraph.model.MxGraphModel;
+import com.nature.component.mxGraph.utils.MxGraphModelUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
@@ -19,7 +19,7 @@ public class SvgUtils {
 
 
     /**
-     * Convert the artboard to svg
+     * Convert the drawing board to svg
      *
      * @param mxGraphModel
      * @return
@@ -34,7 +34,7 @@ public class SvgUtils {
             List<MxCell> mxCellList = mxGraphModel.getRoot();
             if (null != mxCellList && mxCellList.size() > 0) {
                 // Separate the stops and lines that need to be added in addMxCellVoList
-                Map<String, Object> stopsPathsMap = MxGraphModelUtil.mxCellDistinguishStopsPaths(mxCellList);
+                Map<String, Object> stopsPathsMap = MxGraphModelUtils.mxCellDistinguishStopsPaths(mxCellList);
 
                 // Take out stops
                 List<MxCell> stops = (List<MxCell>) stopsPathsMap.get("stops");
