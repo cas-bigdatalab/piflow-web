@@ -209,7 +209,12 @@ function queryPathInfo(id) {
                     $("#ownerID").html('to：');
                     $("#createDateID").html('createTime：');
                     $("#updateStopNameBtn").hide();
-                    document.getElementById('stopsDescription').innerText = queryInfo.flow.name;
+                    var flowName = '';
+                    if(queryInfo.flow){
+                        var flowName = queryInfo.flow.name;
+                    }
+                    document.getElementById('stopsDescription').innerText = flowName;
+                    document.getElementById('stopsNameSpan').innerText = queryInfo.pageId;
                     document.getElementById('stopsNameLabel').value = queryInfo.pageId;
                     document.getElementById('stopsGroups').innerText = queryInfo.inport;
                     document.getElementById('stopsBundel').innerText = queryInfo.outport;
@@ -840,7 +845,7 @@ function getStopsPortNew(paths) {
                         showHtml.find('#targetTitleBtn1Copy').attr('id', 'targetTitleBtnR_R');
                         showHtml.find('#targetCrtPortId1Copy').attr('id', 'targetCrtPortIdR_R');
                         showHtml.find('#targetCrtPortBtnId1Copy').attr('id', 'targetCrtPortBtnIdR_R');
-                        showHtml.find('#targetCrtPortBtnIdR_R').attr('onclick', 'crtAnyPort("targetCrtPortIdR_R",true)');
+                        showHtml.find('#targetCrtPortBtnIdR_R').attr('onclick', 'crtAnyPort("targetCrtPortIdR_R",false)');
                         showHtml.find('#targetTypeDiv1Copy').attr('id', 'targetTypeDivR_R');
                         showHtml.find('#targetRouteFilterList1Copy').attr('id', 'targetRouteFilterListR_R');
                         showHtml.find('#targetRouteFilterSelect1Copy').attr('id', 'targetRouteFilterSelectR_R');
@@ -1100,8 +1105,8 @@ function cancelPortAndPathNew() {
     graphGlobal.removeCells(pathsCells);
 }
 
-function crtAnyPort(crtProtInputId, isSource) {
-    var crtProtInput = $('#' + crtProtInputId);
+function crtAnyPort(crtPortInputId, isSource) {
+    var crtProtInput = $('#' + crtPortInputId);
     var portNameVal = crtProtInput.val();
     if (portNameVal && '' !== portNameVal) {
         if (!document.getElementById(portNameVal)) {
@@ -1112,7 +1117,7 @@ function crtAnyPort(crtProtInputId, isSource) {
             if (isSource) {
                 $('#sourceTitleCheckboxR_R').append(obj);
             } else {
-                $('#sourceTitleCheckboxR_R').append(obj);
+                $('#targetTitleCheckboxR_R').append(obj);
             }
             $('.' + portNameVal).text(portNameVal);
         } else {
