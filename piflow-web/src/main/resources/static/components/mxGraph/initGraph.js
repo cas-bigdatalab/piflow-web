@@ -330,7 +330,7 @@ function initGraph() {
 }
 
 function prohibitEditing(evt, operationType) {
-    if ('ADD' === operationType || 'REMOVED' === operToperationTypeype) {
+    if ('ADD' === operationType || 'REMOVED' === operationType) {
         layer.msg("This is an example, you can't add, edit or delete", {
             icon: 2,
             shade: 0,
