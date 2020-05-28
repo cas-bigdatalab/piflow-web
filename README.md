@@ -50,7 +50,7 @@ To Run Piflow Web：
 - Note: 
   - 1.The piflow server must be running before running piflow-web
   - 2.This version can choose any of "H2DB" and "MySQL" database
-- run piflow server on intellij:
+- run piflow web on intellij:
 
   - edit config.properties
   - build piflow to generate piflow-web.jar
