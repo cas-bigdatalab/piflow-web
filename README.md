@@ -50,7 +50,7 @@ To Run Piflow Web：
 - Note: 
   - 1.The piflow server must be running before running piflow-web
   - 2.This version can choose any of "H2DB" and "MySQL" database
-- run piflow server on intellij:
+- run piflow web on intellij:
 
   - edit config.properties
   - build piflow to generate piflow-web.jar
@@ -59,7 +59,7 @@ To Run Piflow Web：
 
   - download piflow_release: https://github.com/cas-bigdatalab/piflow-web/releases/tag/v0.7
   - edit config.properties
-  - run sh start.sh
+  - sh start.sh
 - how to configure config.properties
 ```c
 server.port=6001
