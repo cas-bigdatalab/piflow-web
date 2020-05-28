@@ -192,7 +192,7 @@ public class MxGraphModelUtils {
                 }
                 if (style.indexOf("image;") == 0) {
                     elementsList.add(mxCellVo);
-                } else if (style.indexOf("edgeStyle") == 0) {
+                } else if ("1".equals(mxCellVo.getEdge())) {
                     pathsList.add(mxCellVo);
                 }
             }
