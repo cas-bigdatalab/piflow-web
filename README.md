@@ -49,7 +49,7 @@ To Build: mvn package -Dmaven.test.skip=true
 To Run Piflow Web：
 - Note: 
   - 1.The piflow server must be running before running piflow-web
-  - 2.Dynamically configured storage directories must be created manually(syspara.imagesPath,syspara.videosPath,syspara.xmlPath)
+  - 2.This version can choose any of "H2DB" and "MySQL" database
 - run piflow server on intellij:
 
   - edit config.properties
@@ -57,7 +57,7 @@ To Run Piflow Web：
 
 - run piflow web by release version:
 
-  - download piflow_release: https://github.com/cas-bigdatalab/piflow-web/releases/tag/v0.5
+  - download piflow_release: https://github.com/cas-bigdatalab/piflow-web/releases/tag/v0.7
   - edit config.properties
   - run sh start.sh
 - how to configure config.properties
@@ -65,10 +65,10 @@ To Run Piflow Web：
 server.port=6001
 server.servlet.session.timeout=3600
 
-syspara.interfaceUrlHead=http://10.0.88.108:8002
+syspara.interfaceUrlHead=http://10.0.86.191:8002
 syspara.isIframe=true
 
-
+#If you want to use the H2DB database, please comment MySQL here
 # data source
 sysParam.datasource.type=mysql
 # MySQL Configuration
@@ -84,6 +84,29 @@ spring.datasource.driver-class-name=com.mysql.jdbc.Driver
 
 spring.flyway.locations=classpath:db/flyway-mysql/
 
+#If you want to use H2DB database, please open the note here
+# data source
+#sysParam.datasource.type=h2
+# h2 Configuration
+#Configure the connection address of H2DB
+#spring.datasource.url=jdbc:h2:file:/media/nature/linux_disk_0/PiFlow_DB/piflow_web
+#Configure database user name
+#spring.datasource.username=Admin
+#Configuration database password
+#spring.datasource.password=Admin
+#Configure JDBC Driver
+# Can not be configured, according to the URL automatic identification, recommended configuration
+#spring.datasource.driver-class-name=org.h2.Driver
+##H2DB web console settings
+#spring.datasource.platform=h2
+#After this configuration, h2 web consloe can be accessed remotely. Otherwise it can only be accessed locally.
+#spring.h2.console.settings.web-allow-others=true
+#With this configuration, you can access h2 web consloe through YOUR_URL / h2. YOUR_URL is the access URL of your program.
+#spring.h2.console.path=/h2
+#With this configuration, h2 web consloe will start when the program starts. Of course this is the default. If you #don't want to start h2 web consloe when you start the program, then set it to false.
+#spring.h2.console.enabled=true
+
+#spring.flyway.locations=classpath:db/flyway-h2db/
 
 
 # Log Coordination Standard
@@ -92,7 +115,6 @@ logging.level.com.nature.mapper=debug
 logging.level.root=info
 logging.level.org.springframework.security=info
 logging.level.org.hibernate.SQL=DEBUG
-
 
 ```
 
