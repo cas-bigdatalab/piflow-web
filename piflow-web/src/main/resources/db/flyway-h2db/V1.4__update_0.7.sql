@@ -60,6 +60,7 @@ ALTER TABLE `MX_GRAPH_MODEL` ADD CONSTRAINT FKnugg3p8uvupfu3mso2iax2g8t FOREIGN 
 -- ----------------------------
 UPDATE SYS_SCHEDULE SS SET SS.LAST_RUN_RESULT='SUCCEED';
 UPDATE `SYS_MENU` SS SET SS.ENABLE_FLAG=0;
+UPDATE `flow_stops_property` fsp SET fsp.is_old_data=0;
 
 -- ----------------------------
 -- Insert Data
