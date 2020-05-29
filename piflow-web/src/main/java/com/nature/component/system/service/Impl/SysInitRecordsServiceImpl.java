@@ -85,7 +85,7 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
             List<Stops> stopsList = stopsMapper.getStopsList();
             if (null != stopsList && stopsList.size() > 0) {
                 for (Stops stops : stopsList) {
-                    if (null != stops) {
+                    if (null == stops) {
                         continue;
                     }
                     es.execute(() -> {
@@ -212,7 +212,6 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
             }
         }
         List<Property> properties = stops.getProperties();
-        List<Property> addProperties = stops.getProperties();
         if (null != properties && properties.size() > 0) {
             for (Property property : properties) {
                 if (null == property) {
@@ -227,6 +226,7 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
                     propertyMapper.updateStopsProperty(property);
                     continue;
                 }
+                /*
                 // Whether the comparison has changed
                 List<Map<String, Object>> listMaps = ComparedUtils.compareTwoClass(property, propertyTemplate);
                 // If there is data, there is a change, marking the current stop attribute
@@ -236,9 +236,11 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
                     propertyMapper.updateStopsProperty(property);
                     continue;
                 }
+                */
                 propertiesTemplateMap.remove(property.getName());
             }
         }
+        List<Property> addProperties = new ArrayList<>();
         // If there is still data in the map, it means that these are to be added
         if (propertiesTemplateMap.keySet().size() > 0) {
             for (String key : propertiesTemplateMap.keySet()) {
