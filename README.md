@@ -111,7 +111,7 @@ spring.flyway.locations=classpath:db/flyway-mysql/
 
 # Log Coordination Standard
 logging.level.org.flywaydb=debug
-logging.level.com.nature.mapper=debug
+logging.level.cn.cnic.mapper=debug
 logging.level.root=info
 logging.level.org.springframework.security=info
 logging.level.org.hibernate.SQL=DEBUG
