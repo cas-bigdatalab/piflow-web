@@ -2,7 +2,7 @@ package cn.cnic.mapper.mxGraph;
 
 import cn.cnic.ApplicationTests;
 import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.base.util.SqlUtils;
+import cn.cnic.base.util.UUIDUtils;
 import cn.cnic.component.mxGraph.model.MxGraphModel;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -28,7 +28,7 @@ public class MxGraphModelMapperTest extends ApplicationTests {
 	@Rollback(true)
 	public void testAddMxGraphModel() {
 		MxGraphModel mxGraphModel = new MxGraphModel();
-		mxGraphModel.setId(SqlUtils.getUUID32());
+		mxGraphModel.setId(UUIDUtils.getUUID32());
 		mxGraphModel.setCrtDttm(new Date());
 		mxGraphModel.setCrtUser("Nature");
 		mxGraphModel.setEnableFlag(true);

@@ -3,7 +3,7 @@ package cn.cnic.component.flow.service.impl;
 import cn.cnic.base.util.JsonUtils;
 import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.base.util.SessionUserUtil;
-import cn.cnic.base.util.SqlUtils;
+import cn.cnic.base.util.UUIDUtils;
 import cn.cnic.base.vo.UserVo;
 import cn.cnic.component.flow.model.CustomizedProperty;
 import cn.cnic.component.flow.model.Paths;
@@ -54,7 +54,7 @@ public class CustomizedPropertyServiceImpl implements ICustomizedPropertyService
                         String username = currentUser.getUsername();
                         CustomizedProperty customizedProperty = new CustomizedProperty();
                         BeanUtils.copyProperties(stopsCustomizedPropertyVo, customizedProperty);
-                        String id = SqlUtils.getUUID32();
+                        String id = UUIDUtils.getUUID32();
                         customizedProperty.setId(id);
                         customizedProperty.setCrtDttm(new Date());
                         customizedProperty.setCrtUser(username);

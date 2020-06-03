@@ -1,7 +1,7 @@
 package cn.cnic.component.flow.utils;
 
 import cn.cnic.base.util.SessionUserUtil;
-import cn.cnic.base.util.SqlUtils;
+import cn.cnic.base.util.UUIDUtils;
 import cn.cnic.base.vo.UserVo;
 import cn.cnic.component.flow.model.FlowGroupPaths;
 import cn.cnic.component.flow.vo.FlowGroupPathsVo;
@@ -49,7 +49,7 @@ public class FlowGroupPathsUtil {
                 if (null != flowGroupPathsVo) {
                     FlowGroupPaths flowGroupPaths = new FlowGroupPaths();
                     BeanUtils.copyProperties(flowGroupPathsVo, flowGroupPaths);
-                    flowGroupPaths.setId(SqlUtils.getUUID32());
+                    flowGroupPaths.setId(UUIDUtils.getUUID32());
                     flowGroupPaths.setCrtDttm(new Date());
                     flowGroupPaths.setCrtUser(username);
                     flowGroupPaths.setLastUpdateDttm(new Date());

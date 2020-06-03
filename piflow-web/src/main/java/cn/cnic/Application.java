@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
         @PropertySource(value = "classpath:apiConfig.properties", encoding = "utf-8"),
         @PropertySource(value = "classpath:baseConfig.properties", encoding = "utf-8")
 })
-@MapperScan(basePackages = "cn.cnic.mapper.*.*")
+@MapperScan(basePackages = "cn.cnic.**.mapper.*.*")
 @EnableTransactionManagement
 @SpringBootApplication
 public class Application {

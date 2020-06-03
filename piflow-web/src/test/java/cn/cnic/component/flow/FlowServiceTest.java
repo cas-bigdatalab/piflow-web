@@ -2,7 +2,7 @@ package cn.cnic.component.flow;
 
 import cn.cnic.ApplicationTests;
 import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.base.util.SqlUtils;
+import cn.cnic.base.util.UUIDUtils;
 import cn.cnic.component.flow.model.Flow;
 import cn.cnic.component.flow.service.IFlowService;
 import org.junit.Test;
@@ -32,7 +32,7 @@ public class FlowServiceTest extends ApplicationTests {
 	@Rollback(false)
 	public void testAddFlow() {
 		Flow flow = new Flow();
-		flow.setId(SqlUtils.getUUID32());
+		flow.setId(UUIDUtils.getUUID32());
 		//flow.setAppId("kongkong");
 		flow.setCrtUser("Nature");
 		flow.setLastUpdateUser("Nature");

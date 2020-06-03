@@ -3,67 +3,69 @@ package cn.cnic.mapper;
 import cn.cnic.ApplicationTests;
 import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.base.util.SessionUserUtil;
-import cn.cnic.base.util.SqlUtils;
+import cn.cnic.base.util.UUIDUtils;
 import cn.cnic.base.vo.UserVo;
-import cn.cnic.component.stopsComponent.mapper.PropertyTemplateMapper;
-import cn.cnic.component.stopsComponent.mapper.StopGroupMapper;
-import cn.cnic.component.stopsComponent.mapper.StopsTemplateMapper;
-import cn.cnic.component.stopsComponent.model.PropertyTemplate;
+import cn.cnic.component.stopsComponent.mapper.StopsComponentPropertyMapper;
+import cn.cnic.component.stopsComponent.mapper.StopsComponentGroupMapper;
+import cn.cnic.component.stopsComponent.mapper.StopsComponentMapper;
+import cn.cnic.component.stopsComponent.model.StopsComponentProperty;
+import cn.cnic.component.stopsComponent.model.StopsComponent;
 import cn.cnic.component.stopsComponent.model.StopsComponentGroup;
-import cn.cnic.component.stopsComponent.model.StopsTemplate;
+import cn.cnic.component.stopsComponent.utils.StopsComponentUtils;
 import cn.cnic.third.service.IStop;
+import cn.cnic.third.vo.stop.ThirdStopsComponentVo;
 import org.junit.Test;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
+import javax.annotation.Resource;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-public class StopsTemplateMapperTest extends ApplicationTests {
+public class StopsComponentMapperTest extends ApplicationTests {
 
-    @Autowired
-    private StopsTemplateMapper stopsTemplateMapper;
-    @Autowired
-    private StopGroupMapper stopGroupMapper;
-    @Autowired
-    private PropertyTemplateMapper propertyTemplateMapper;
+    @Resource
+    private StopsComponentMapper stopsComponentMapper;
+    @Resource
+    private StopsComponentGroupMapper stopsComponentGroupMapper;
+    @Resource
+    private StopsComponentPropertyMapper stopsComponentPropertyMapper;
 
-    @Autowired
+    @Resource
     private IStop stopImpl;
 
     Logger logger = LoggerUtil.getLogger();
 
     @Test
     public void testGetStopsTemplateById() {
-        StopsTemplate stopsTemplate = stopsTemplateMapper.getStopsTemplateById("fbb42f0d8ca14a83bfab13e0ba2d7293");
-        if (null == stopsTemplate) {
+        StopsComponent stopsComponent = stopsComponentMapper.getStopsComponentById("fbb42f0d8ca14a83bfab13e0ba2d7293");
+        if (null == stopsComponent) {
             logger.info("The query result is empty");
-            stopsTemplate = new StopsTemplate();
+            stopsComponent = new StopsComponent();
         }
-        logger.info(stopsTemplate.toString());
+        logger.info(stopsComponent.toString());
     }
 
     @Test
     public void testGetStopsPropertyById() {
-        StopsTemplate stopsTemplate = stopsTemplateMapper.getStopsTemplateAndPropertyById("fbb42f0d8ca14a83bfab13e0ba2d7293");
-        if (null == stopsTemplate) {
+        StopsComponent stopsComponent = stopsComponentMapper.getStopsComponentAndPropertyById("fbb42f0d8ca14a83bfab13e0ba2d7293");
+        if (null == stopsComponent) {
             logger.info("The query result is empty");
-            stopsTemplate = new StopsTemplate();
+            stopsComponent = new StopsComponent();
         }
-        logger.info(stopsTemplate.toString());
+        logger.info(stopsComponent.toString());
     }
 
     @Test
     public void testGetStopsTemplateListByGroupId() {
-        List<StopsTemplate> stopsTemplateList = stopsTemplateMapper
-                .getStopsTemplateListByGroupId("fbb42f0d8ca14a83bfab13e0ba2d7290");
-        if (null == stopsTemplateList) {
+        List<StopsComponent> stopsComponentList = stopsComponentMapper
+                .getStopsComponentListByGroupId("fbb42f0d8ca14a83bfab13e0ba2d7290");
+        if (null == stopsComponentList) {
             logger.info("The query result is empty");
         }
-        logger.info(stopsTemplateList.size() + "");
+        logger.info(stopsComponentList.size() + "");
     }
 
     /**
@@ -79,21 +81,21 @@ public class StopsTemplateMapperTest extends ApplicationTests {
         String[] group = stopImpl.getAllGroup();
 		if (null != group && group.length > 0) {
 			// The call is successful, the group table information is cleared and then inserted.
-			stopGroupMapper.deleteGroupCorrelation();
-			int deleteGroup = stopGroupMapper.deleteGroup();
+			stopsComponentGroupMapper.deleteGroupCorrelation();
+			int deleteGroup = stopsComponentGroupMapper.deleteGroup();
 			logger.debug("Group" + deleteGroup + "data was successfully deleted！！！");
 			int a = 0;
 			for (String string : group) {
 				if (string.length() > 0) {
 					StopsComponentGroup stopGroup = new StopsComponentGroup();
-					stopGroup.setId(SqlUtils.getUUID32());
+					stopGroup.setId(UUIDUtils.getUUID32());
 					stopGroup.setCrtDttm(new Date());
 					stopGroup.setCrtUser(username);
 					stopGroup.setLastUpdateUser(username);
 					stopGroup.setEnableFlag(true);
 					stopGroup.setLastUpdateDttm(new Date());
 					stopGroup.setGroupName(string);
-					int insertStopGroup = stopGroupMapper.insertStopGroup(stopGroup);
+					int insertStopGroup = stopsComponentGroupMapper.insertStopGroup(stopGroup);
 					a += insertStopGroup;
 				}
 			}
@@ -110,30 +112,35 @@ public class StopsTemplateMapperTest extends ApplicationTests {
 		String[] stopNameList = stopImpl.getAllStops();
 		if (null != stopNameList && stopNameList.length > 0) {
 			// The call is successful and the Stop message is cleared before insertion
-			stopGroupMapper.deleteStopsPropertyInfo();
-			int deleteStopsInfo = stopGroupMapper.deleteStopsInfo();
+			stopsComponentPropertyMapper.deleteStopsComponentProperty();
+			int deleteStopsInfo = stopsComponentMapper.deleteStopsComponent();
 			logger.info("Successful deletion StopsInfo" + deleteStopsInfo + "piece of data!!!");
 			int num = 0;
 			for (String stopListInfos : stopNameList) {
 				num++;
 				// 2.Start by querting stopInfo against the bundle
 				logger.info("Now the call is：" + stopListInfos);
-				StopsTemplate stopsTemplate = stopImpl.getStopInfo(stopListInfos);
-				if (null != stopsTemplate) {
-					List<StopsTemplate> listStopsTemplate = new ArrayList<>();
-					listStopsTemplate.add(stopsTemplate);
-					int insertStopsTemplate = stopsTemplateMapper.insertStopsTemplate(listStopsTemplate);
+				ThirdStopsComponentVo thirdStopsComponentVo = stopImpl.getStopInfo(stopListInfos);
+				List<String> list = null;
+				if (null != thirdStopsComponentVo) {
+					list = Arrays.asList(thirdStopsComponentVo.getGroups().split(","));
+				}
+				// Query group information according to groupName in stops
+				List<StopsComponentGroup> stopGroupByName = stopsComponentGroupMapper.getStopGroupByNameList(list);
+				StopsComponent stopsComponent = StopsComponentUtils.thirdStopsComponentVoToStopsTemplate("init", thirdStopsComponentVo, stopGroupByName);
+				if (null != stopsComponent) {
+					int insertStopsTemplate = stopsComponentMapper.insertStopsComponent(stopsComponent);
 					logger.info("flow_stops_template affects the number of rows : " + insertStopsTemplate);
 					logger.info("=============================association_groups_stops_template=====start==================");
-					List<StopsComponentGroup> stopGroupList = stopsTemplate.getStopGroupList();
+					List<StopsComponentGroup> stopGroupList = stopsComponent.getStopGroupList();
 					for (StopsComponentGroup stopGroup : stopGroupList) {
 						String stopGroupId = stopGroup.getId();
-						String stopsTemplateId = stopsTemplate.getId();
-						int insertAssociationGroupsStopsTemplate = stopGroupMapper.insertAssociationGroupsStopsTemplate(stopGroupId, stopsTemplateId);
+						String stopsTemplateId = stopsComponent.getId();
+						int insertAssociationGroupsStopsTemplate = stopsComponentGroupMapper.insertAssociationGroupsStopsTemplate(stopGroupId, stopsTemplateId);
 						logger.info("association_groups_stops_template Association table insertion affects the number of rows : " + insertAssociationGroupsStopsTemplate);
 					}
-					List<PropertyTemplate> properties = stopsTemplate.getProperties();
-					int insertPropertyTemplate = propertyTemplateMapper.insertPropertyTemplate(properties);
+					List<StopsComponentProperty> properties = stopsComponent.getProperties();
+					int insertPropertyTemplate = stopsComponentPropertyMapper.insertStopsComponentProperty(properties);
 					logger.info("flow_stops_property_template affects the number of rows : " + insertPropertyTemplate);
 				}
 			}

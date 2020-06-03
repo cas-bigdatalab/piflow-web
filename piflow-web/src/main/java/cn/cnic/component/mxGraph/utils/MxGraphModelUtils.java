@@ -1,7 +1,7 @@
 package cn.cnic.component.mxGraph.utils;
 
 import cn.cnic.base.util.SessionUserUtil;
-import cn.cnic.base.util.SqlUtils;
+import cn.cnic.base.util.UUIDUtils;
 import cn.cnic.base.vo.UserVo;
 import cn.cnic.component.flow.model.Flow;
 import cn.cnic.component.flow.model.FlowGroup;
@@ -92,7 +92,7 @@ public class MxGraphModelUtils {
             mxGraphModel = new MxGraphModel();
         }
         if (isSetId) {
-            mxGraphModel.setId(SqlUtils.getUUID32());
+            mxGraphModel.setId(UUIDUtils.getUUID32());
         }
         //set MxGraphModel basic information
         mxGraphModel.setCrtDttm(new Date());
@@ -292,7 +292,7 @@ public class MxGraphModelUtils {
         Paths paths = null;
         if (null != mxCellVo) {
             paths = new Paths();
-            paths.setId(SqlUtils.getUUID32());
+            paths.setId(UUIDUtils.getUUID32());
             paths.setCrtDttm(new Date());
             paths.setCrtUser(username);
             paths.setLastUpdateDttm(new Date());

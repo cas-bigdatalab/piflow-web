@@ -2,7 +2,7 @@ package cn.cnic.mapper;
 
 import cn.cnic.ApplicationTests;
 import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.base.util.SqlUtils;
+import cn.cnic.base.util.UUIDUtils;
 import cn.cnic.common.Eunm.RunModeType;
 import cn.cnic.component.flow.model.Flow;
 import cn.cnic.component.process.model.Process;
@@ -44,7 +44,7 @@ public class FlowMapperTest extends ApplicationTests {
     @Rollback(true)
     public void testAddFlow() {
         Flow flow = new Flow();
-        flow.setId(SqlUtils.getUUID32());
+        flow.setId(UUIDUtils.getUUID32());
         flow.setCrtUser("Nature");
         flow.setCrtDttm(new Date());
         flow.setLastUpdateUser("Nature");

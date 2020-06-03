@@ -23,7 +23,7 @@ alter table `flow_process` convert to CHARACTER SET  utf8 COLLATE utf8_general_c
 alter table `flow_process_path` convert to CHARACTER SET  utf8 COLLATE utf8_general_ci;
 alter table `flow_process_stop` convert to CHARACTER SET  utf8 COLLATE utf8_general_ci;
 alter table `flow_process_stop_property` convert to CHARACTER SET  utf8 COLLATE utf8_general_ci;
-alter table `flow_sotps_groups` convert to CHARACTER SET  utf8 COLLATE utf8_general_ci;
+alter table `flow_stops_groups` convert to CHARACTER SET  utf8 COLLATE utf8_general_ci;
 alter table `flow_stops` convert to CHARACTER SET  utf8 COLLATE utf8_general_ci;
 alter table `flow_stops_property` convert to CHARACTER SET  utf8 COLLATE utf8_general_ci;
 alter table `flow_stops_template` convert to CHARACTER SET  utf8 COLLATE utf8_general_ci;
@@ -49,7 +49,7 @@ ALTER TABLE `flow_stops` ADD CONSTRAINT `FK11mku3yphyjswbtwj9df79k44` FOREIGN KE
 ALTER TABLE `flow_stops_property` ADD CONSTRAINT `FKsjcg9klyumklhkpl8408v6uuq` FOREIGN KEY (`fk_stops_id`) REFERENCES `flow_stops` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 ALTER TABLE `flow_stops_property_template` ADD CONSTRAINT `FKhtnjkpgjkx21r2qf4r3q3mjr9` FOREIGN KEY (`fk_stops_id`) REFERENCES `flow_stops_template` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 ALTER TABLE `flow_template` ADD CONSTRAINT `FKkcg573sjiknyhppuc0q62a0kj` FOREIGN KEY (`fk_flow_id`) REFERENCES `flow` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
-ALTER TABLE `association_groups_stops_template` ADD CONSTRAINT `FK5ceurc1karlogl9ppecmkcp7e` FOREIGN KEY (`groups_id`) REFERENCES `flow_sotps_groups` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+ALTER TABLE `association_groups_stops_template` ADD CONSTRAINT `FK5ceurc1karlogl9ppecmkcp7e` FOREIGN KEY (`groups_id`) REFERENCES `flow_stops_groups` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 ALTER TABLE `association_groups_stops_template` ADD CONSTRAINT `FKqwv1iytgkhhgnjdvhqbskncf4` FOREIGN KEY (`stops_template_id`) REFERENCES `flow_stops_template` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 ALTER TABLE `mx_graph_model` ADD CONSTRAINT `FKktpy5kv5fgya1gn012g7395l9` FOREIGN KEY (`fk_flow_id`) REFERENCES `flow` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 ALTER TABLE `mx_cell` ADD CONSTRAINT `FK4s2gnt8t7e5ok1v7r3v99pji5` FOREIGN KEY (`fk_mx_graph_id`) REFERENCES `mx_graph_model` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;

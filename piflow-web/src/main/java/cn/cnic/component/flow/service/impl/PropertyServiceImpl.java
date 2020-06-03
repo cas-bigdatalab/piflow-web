@@ -10,9 +10,9 @@ import cn.cnic.component.flow.request.UpdatePathRequest;
 import cn.cnic.component.flow.service.IPropertyService;
 import cn.cnic.component.flow.utils.StopsUtils;
 import cn.cnic.component.flow.vo.StopsVo;
-import cn.cnic.component.stopsComponent.mapper.StopsTemplateMapper;
-import cn.cnic.component.stopsComponent.model.PropertyTemplate;
-import cn.cnic.component.stopsComponent.model.StopsTemplate;
+import cn.cnic.component.stopsComponent.mapper.StopsComponentMapper;
+import cn.cnic.component.stopsComponent.model.StopsComponentProperty;
+import cn.cnic.component.stopsComponent.model.StopsComponent;
 import cn.cnic.domain.flow.PropertyDomain;
 import cn.cnic.domain.flow.StopsDomain;
 import cn.cnic.mapper.flow.PathsMapper;
@@ -39,7 +39,7 @@ public class PropertyServiceImpl implements IPropertyService {
     private StopsMapper stopsMapper;
 
     @Resource
-    private StopsTemplateMapper stopsTemplateMapper;
+    private StopsComponentMapper stopsComponentMapper;
 
     @Resource
     private PathsMapper pathsMapper;
@@ -89,16 +89,16 @@ public class PropertyServiceImpl implements IPropertyService {
         //Get stop information
         Stops stopsList = stopsMapper.getStopsById(id);
         //Get the StopsTemplate of the current stops
-        List<StopsTemplate> stopsTemplateList = stopsTemplateMapper.getStopsTemplateByName(stopsList.getName());
-        StopsTemplate stopsTemplate = null;
-        List<PropertyTemplate> propertiesTemplateList = null;
-        if (null != stopsTemplateList && !stopsTemplateList.isEmpty()) {
-            stopsTemplate = stopsTemplateList.get(0);
-            logger.info("'stopsTemplateList' record number:" + stopsTemplateList.size());
+        List<StopsComponent> stopsComponentList = stopsComponentMapper.getStopsComponentByName(stopsList.getName());
+        StopsComponent stopsComponent = null;
+        List<StopsComponentProperty> propertiesTemplateList = null;
+        if (null != stopsComponentList && !stopsComponentList.isEmpty()) {
+            stopsComponent = stopsComponentList.get(0);
+            logger.info("'stopsTemplateList' record number:" + stopsComponentList.size());
         }
         //Get the template attribute of 'StopsTemplate'
-        if (null != stopsTemplate) {
-            propertiesTemplateList = stopsTemplate.getProperties();
+        if (null != stopsComponent) {
+            propertiesTemplateList = stopsComponent.getProperties();
         }
         // Current 'stop' attribute
         List<Property> property = stopsList.getProperties();
@@ -109,7 +109,7 @@ public class PropertyServiceImpl implements IPropertyService {
         // If the data of the template is larger than the current number of attributes of 'stop',
         // the same modification operation is performed, and the new 'stops' attribute is added.
         if (propertiesTemplateList.size() > 0 && property.size() > 0) {
-            for (PropertyTemplate pt : propertiesTemplateList) {
+            for (StopsComponentProperty pt : propertiesTemplateList) {
                 if (null != pt) {
                     Property ptname = PropertyMap.get(pt.getName());
                     if (ptname != null) {
@@ -134,7 +134,7 @@ public class PropertyServiceImpl implements IPropertyService {
                         String displayName = pt.getDisplayName();
                         String description = pt.getDescription();
                         BeanUtils.copyProperties(pt, newProperty);
-                        newProperty.setId(SqlUtils.getUUID32());
+                        newProperty.setId(UUIDUtils.getUUID32());
                         newProperty.setCrtDttm(new Date());
                         newProperty.setCrtUser(username);
                         newProperty.setEnableFlag(true);

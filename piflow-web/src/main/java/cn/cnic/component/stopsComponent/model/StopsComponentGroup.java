@@ -17,7 +17,7 @@ import java.util.List;
 @Setter
 @Getter
 @Entity
-@Table(name = "FLOW_SOTPS_GROUPS")
+@Table(name = "FLOW_STOPS_GROUPS")
 public class StopsComponentGroup extends BaseHibernateModelUUIDNoCorpAgentId {
 
     private static final long serialVersionUID = 1L;
@@ -28,5 +28,5 @@ public class StopsComponentGroup extends BaseHibernateModelUUIDNoCorpAgentId {
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "association_groups_stops_template", joinColumns = @JoinColumn(name = "groups_id"), inverseJoinColumns = @JoinColumn(name = "stops_template_id"))
     @Where(clause = "enable_flag=1")
-    private List<StopsTemplate> stopsTemplateList = new ArrayList<StopsTemplate>();
+    private List<StopsComponent> stopsComponentList = new ArrayList<StopsComponent>();
 }

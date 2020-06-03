@@ -1,16 +1,9 @@
 package cn.cnic.third.service.impl;
 
 import cn.cnic.base.util.HttpUtils;
-import cn.cnic.base.util.ImageUtils;
 import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.base.util.SqlUtils;
-import cn.cnic.base.vo.UserVo;
-import cn.cnic.common.Eunm.PortType;
 import cn.cnic.common.constant.SysParamsCache;
-import cn.cnic.component.stopsComponent.mapper.StopGroupMapper;
-import cn.cnic.component.stopsComponent.model.PropertyTemplate;
-import cn.cnic.component.stopsComponent.model.StopsComponentGroup;
-import cn.cnic.component.stopsComponent.model.StopsTemplate;
+import cn.cnic.component.stopsComponent.mapper.StopsComponentGroupMapper;
 import cn.cnic.third.service.IStop;
 import cn.cnic.third.vo.stop.ThirdStopsComponentPropertyVo;
 import cn.cnic.third.vo.stop.ThirdStopsComponentVo;
@@ -29,7 +22,7 @@ public class StopImpl implements IStop {
     Logger logger = LoggerUtil.getLogger();
 
     @Resource
-    private StopGroupMapper stopGroupMapper;
+    private StopsComponentGroupMapper stopsComponentGroupMapper;
 
     @Override
     public String[] getAllGroup() {
@@ -56,125 +49,6 @@ public class StopImpl implements IStop {
             stop = jsonResult.split(",");
         }
         return stop;
-    }
-
-    @Override
-    public StopsTemplate getStopInfo(String bundleStr) {
-        StopsTemplate stopsTemplate = null;
-        UserVo user = null; //SessionUserUtil.getCurrentUser();
-        String username = (null != user) ? user.getUsername() : "-1";
-        if (StringUtils.isNotBlank(bundleStr)) {
-            Map<String, String> map = new HashMap<>();
-            map.put("bundle", bundleStr);
-            String sendGetData = HttpUtils.doGet(SysParamsCache.getStopsInfoUrl(), map, 30 * 1000);
-            logger.info("return msg：" + sendGetData);
-            if (StringUtils.isNotBlank(sendGetData)) {
-                if (sendGetData.contains("Error")) {
-                    logger.warn("return err");
-                } else {
-                    JSONObject jsonObject = JSONObject.fromObject(sendGetData);
-                    JSONObject stopInfoJson = jsonObject.getJSONObject("StopInfo");
-                    List<String> list = new ArrayList<>();
-                    String bundle = stopInfoJson.getString("bundle") + "";
-                    String owner = stopInfoJson.getString("owner") + "";
-                    String groups = stopInfoJson.getString("groups") + "";
-                    String properties = stopInfoJson.getString("properties") + "";
-                    String name = stopInfoJson.getString("name") + "";
-                    String description = stopInfoJson.getString("description") + "";
-                    String icon = stopInfoJson.getString("icon") + "";
-                    String inports = stopInfoJson.getString("inports") + "";
-                    boolean isCustomized = stopInfoJson.getBoolean("isCustomized");
-                    PortType inPortType = null;
-                    if (StringUtils.isNotBlank(inports)) {
-                        inPortType = null;
-                        for (PortType value : PortType.values()) {
-                            if (inports.equalsIgnoreCase(value.getValue())) {
-                                inPortType = value;
-                            }
-                        }
-                        if (null == inPortType) {
-                            inPortType = PortType.USER_DEFAULT;
-                        }
-                    }
-                    PortType.selectGenderByValue(inports);
-                    String outports = stopInfoJson.getString("outports") + "";
-                    PortType outPortType = null;
-                    if (StringUtils.isNotBlank(outports)) {
-                        outPortType = null;
-                        for (PortType value : PortType.values()) {
-                            if (outports.equalsIgnoreCase(value.getValue())) {
-                                outPortType = value;
-                            }
-                        }
-                        if (null == outPortType) {
-                            outPortType = PortType.USER_DEFAULT;
-                        }
-                    }
-                    if (StringUtils.isNotBlank(icon)) {
-                        ImageUtils.generateImage(icon, name + "_128x128", "png", SysParamsCache.IMAGES_PATH);
-                    }
-                    // There are multiple groups in a stop, so I need to deal with it here.
-                    if (groups.contains(",")) {
-                        String[] split = groups.split(",");
-                        for (int i = 0; i < split.length; i++) {
-                            if (!"".equals(split[i]) && split[i] != null)
-                                list.add(split[i]);
-                        }
-                    } else {
-                        list.add(groups);
-                    }
-                    // Query group information according to groupName in stops
-                    List<StopsComponentGroup> stopGroupByName = stopGroupMapper.getStopGroupByName(list);
-                    stopsTemplate = new StopsTemplate();
-                    stopsTemplate.setId(SqlUtils.getUUID32());
-                    stopsTemplate.setCrtDttm(new Date());
-                    stopsTemplate.setCrtUser(username);
-                    stopsTemplate.setEnableFlag(true);
-                    stopsTemplate.setLastUpdateUser(username);
-                    stopsTemplate.setLastUpdateDttm(new Date());
-                    stopsTemplate.setBundel(bundle);
-                    stopsTemplate.setDescription(description);
-                    stopsTemplate.setGroups(groups);
-                    stopsTemplate.setName(name);
-                    stopsTemplate.setInports(inports);
-                    stopsTemplate.setInPortType(inPortType);
-                    stopsTemplate.setOutports(outports);
-                    stopsTemplate.setOutPortType(outPortType);
-                    stopsTemplate.setOwner(owner);
-                    stopsTemplate.setIsCustomized(isCustomized);
-                    stopsTemplate.setStopGroupList(stopGroupByName);
-                    JSONArray jsonArray = JSONArray.fromObject(properties);
-                    if (null != jsonArray && !jsonArray.isEmpty()) {
-                        List<PropertyTemplate> listPropertyTemplate = new ArrayList<>();
-                        for (int i = 0; i < jsonArray.size(); i++) {
-                            PropertyTemplate PropertyTemplate = new PropertyTemplate();
-                            PropertyTemplate.setId(SqlUtils.getUUID32());
-                            PropertyTemplate.setCrtDttm(new Date());
-                            PropertyTemplate.setCrtUser(username);
-                            PropertyTemplate.setEnableFlag(true);
-                            PropertyTemplate.setLastUpdateUser(username);
-                            PropertyTemplate.setLastUpdateDttm(new Date());
-                            PropertyTemplate.setDefaultValue(jsonArray.getJSONObject(i).getString("defaultValue"));
-                            PropertyTemplate.setAllowableValues(jsonArray.getJSONObject(i).getString("allowableValues"));
-                            PropertyTemplate.setDescription(jsonArray.getJSONObject(i).getString("description"));
-                            PropertyTemplate.setDisplayName(jsonArray.getJSONObject(i).getString("displayName"));
-                            PropertyTemplate.setName(jsonArray.getJSONObject(i).getString("name"));
-                            PropertyTemplate.setRequired(jsonArray.getJSONObject(i).getString("required").equals("true") ? true : false);
-                            PropertyTemplate.setSensitive(jsonArray.getJSONObject(i).getString("sensitive").equals("true") ? true : false);
-                            PropertyTemplate.setStopsTemplate(stopsTemplate.getId());
-                            PropertyTemplate.setPropertySort((long) i);
-                            listPropertyTemplate.add(PropertyTemplate);
-                        }
-                        stopsTemplate.setProperties(listPropertyTemplate);
-                    }
-                }
-            } else {
-                logger.warn("Interface return value is null");
-            }
-        } else {
-            logger.warn("bundleStr value is null");
-        }
-        return stopsTemplate;
     }
 
     @Override
@@ -205,7 +79,7 @@ public class StopImpl implements IStop {
     }
 
     @Override
-    public ThirdStopsComponentVo getStopInfoNew(String bundleStr) {
+    public ThirdStopsComponentVo getStopInfo(String bundleStr) {
         if (StringUtils.isBlank(bundleStr)) {
             logger.warn("bundleStr value is null");
             return null;
@@ -229,9 +103,37 @@ public class StopImpl implements IStop {
         Map<String, Class> classMap = new HashMap<>();
         // Key is the name of the List in jsonObj, and the value is a generic class of list
         classMap.put("properties", ThirdStopsComponentPropertyVo.class);
-        //classMap.put("allowableValues", ThirdAllowableValuesVo.class);
         // Convert a json object to a java object
-        thirdStopsComponentVo = (ThirdStopsComponentVo) JSONObject.toBean(jsonObject, ThirdStopsComponentVo.class, classMap);
+        thirdStopsComponentVo.setName(jsonObject.getString("name"));
+        thirdStopsComponentVo.setBundle(jsonObject.getString("bundle"));
+        thirdStopsComponentVo.setOwner(jsonObject.getString("owner"));
+        thirdStopsComponentVo.setOwner(jsonObject.getString("owner"));
+        thirdStopsComponentVo.setInports(jsonObject.getString("inports"));
+        thirdStopsComponentVo.setOutports(jsonObject.getString("outports"));
+        thirdStopsComponentVo.setGroups(jsonObject.getString("groups"));
+        thirdStopsComponentVo.setCustomized(jsonObject.getBoolean("isCustomized"));
+        thirdStopsComponentVo.setDescription(jsonObject.getString("description"));
+        thirdStopsComponentVo.setIcon(jsonObject.getString("icon"));
+        JSONArray jsonArray = jsonObject.getJSONArray("properties");
+        if (null != jsonArray && jsonArray.size() > 0) {
+            List<ThirdStopsComponentPropertyVo> thirdStopsComponentPropertyVoList = new ArrayList<>();
+            ThirdStopsComponentPropertyVo thirdStopsComponentPropertyVo;
+            for (int i = 0; i < jsonArray.size(); i++) {
+                JSONObject propertyJsonObject = jsonArray.getJSONObject(i);
+                if(null==propertyJsonObject){continue;}
+                thirdStopsComponentPropertyVo = new ThirdStopsComponentPropertyVo();
+                thirdStopsComponentPropertyVo.setName(propertyJsonObject.getString("name"));
+                thirdStopsComponentPropertyVo.setDisplayName(propertyJsonObject.getString("displayName"));
+                thirdStopsComponentPropertyVo.setDescription(propertyJsonObject.getString("description"));
+                thirdStopsComponentPropertyVo.setDefaultValue(propertyJsonObject.getString("defaultValue"));
+                thirdStopsComponentPropertyVo.setAllowableValues(propertyJsonObject.getString("allowableValues"));
+                thirdStopsComponentPropertyVo.setRequired(propertyJsonObject.getString("required"));
+                thirdStopsComponentPropertyVo.setSensitive(propertyJsonObject.getBoolean("sensitive"));
+                thirdStopsComponentPropertyVo.setExample(propertyJsonObject.getString("example"));
+            }
+            thirdStopsComponentVo.setProperties(thirdStopsComponentPropertyVoList);
+        }
+
 
         return thirdStopsComponentVo;
     }

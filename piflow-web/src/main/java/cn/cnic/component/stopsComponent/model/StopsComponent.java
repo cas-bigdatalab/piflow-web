@@ -19,7 +19,7 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = "FLOW_STOPS_TEMPLATE")
-public class StopsTemplate extends BaseHibernateModelUUIDNoCorpAgentId {
+public class StopsComponent extends BaseHibernateModelUUIDNoCorpAgentId {
 
     private static final long serialVersionUID = 1L;
 
@@ -50,7 +50,7 @@ public class StopsTemplate extends BaseHibernateModelUUIDNoCorpAgentId {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "stopsTemplate")
     @Where(clause = "enable_flag=1")
-    private List<PropertyTemplate> properties = new ArrayList<PropertyTemplate>();
+    private List<StopsComponentProperty> properties = new ArrayList<StopsComponentProperty>();
 
     //	@ManyToMany(mappedBy = "stopsTemplateList")
     @Transient

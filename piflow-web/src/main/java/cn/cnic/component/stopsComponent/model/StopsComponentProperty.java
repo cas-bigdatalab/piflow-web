@@ -12,7 +12,7 @@ import javax.persistence.Table;
 @Setter
 @Entity
 @Table(name = "FLOW_STOPS_PROPERTY_TEMPLATE")
-public class PropertyTemplate extends BaseHibernateModelUUIDNoCorpAgentId {
+public class StopsComponentProperty extends BaseHibernateModelUUIDNoCorpAgentId {
 
     private static final long serialVersionUID = 1L;
 

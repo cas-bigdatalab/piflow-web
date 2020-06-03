@@ -2,7 +2,7 @@ package cn.cnic.mapper.mxGraph;
 
 import cn.cnic.ApplicationTests;
 import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.base.util.SqlUtils;
+import cn.cnic.base.util.UUIDUtils;
 import cn.cnic.component.mxGraph.model.MxGeometry;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -28,7 +28,7 @@ public class MxGeometryMapperTest extends ApplicationTests {
 	@Rollback(true)
 	public void testAddMxGeometry() {
 		MxGeometry mxGeometry = new MxGeometry();
-		mxGeometry.setId(SqlUtils.getUUID32());
+		mxGeometry.setId(UUIDUtils.getUUID32());
 		mxGeometry.setCrtDttm(new Date());
 		mxGeometry.setCrtUser("Nature");
 		mxGeometry.setEnableFlag(true);

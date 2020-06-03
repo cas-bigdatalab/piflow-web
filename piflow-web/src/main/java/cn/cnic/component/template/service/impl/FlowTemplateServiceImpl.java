@@ -106,7 +106,7 @@ public class FlowTemplateServiceImpl implements IFlowTemplateService {
         String path = FileUtils.createXml(templateXmlStr, saveFileName, SysParamsCache.XML_PATH);
 
         FlowTemplate flowTemplate = FlowTemplateUtils.newFlowTemplateNoId(username);
-        //flowTemplate.setId(SqlUtils.getUUID32());
+        //flowTemplate.setId(UUIDUtils.getUUID32());
         flowTemplate.setName(name);
         //XML to file and save to specified directory
         flowTemplate.setPath(path);
@@ -197,7 +197,7 @@ public class FlowTemplateServiceImpl implements IFlowTemplateService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("There is a problem with the template, please check and try again");
         }
         FlowTemplate flowTemplate = FlowTemplateUtils.newFlowTemplateNoId(username);
-        flowTemplate.setId(SqlUtils.getUUID32());
+        flowTemplate.setId(UUIDUtils.getUUID32());
         flowTemplate.setName(fileName);
         flowTemplate.setPath(path);
         flowTemplate.setUrl("/xml/" + saveFileName);
@@ -301,7 +301,7 @@ public class FlowTemplateServiceImpl implements IFlowTemplateService {
                 if (null == mxGraphModel) {
                     mxGraphModel = MxGraphModelUtils.mxGraphModelNewNoId(username);
                     mxGraphModel.setFlowGroup(flowGroupById);
-                    mxGraphModel.setId(SqlUtils.getUUID32());
+                    mxGraphModel.setId(UUIDUtils.getUUID32());
                     //mxGraphModel = mxGraphModelDomain.saveOrUpdate(mxGraphModel);
                 }
                 List<MxCell> rootDb = mxGraphModel.getRoot();

@@ -3,7 +3,6 @@ package cn.cnic.third;
 import cn.cnic.ApplicationTests;
 import cn.cnic.base.util.HttpUtils;
 import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.component.stopsComponent.model.StopsTemplate;
 import cn.cnic.third.service.IStop;
 import cn.cnic.third.vo.stop.ThirdStopsComponentVo;
 import org.junit.Test;
@@ -43,26 +42,15 @@ public class IStopTest extends ApplicationTests {
     }
 
     @Test
-    public void testGetStopInfo() {
-        String bundle = "cn.piflow.bundle.common.Route";
-        StopsTemplate stopInfo = stopImpl.getStopInfo(bundle);
-        if (null != stopInfo) {
-            logger.info("return value is not null");
-        } else {
-            logger.warn("return value is null");
-        }
-    }
-
-    @Test
     public void testGetStopsListWithGroup() {
         Map<String, List<String>> stopsListWithGroup = stopImpl.getStopsListWithGroup();
         logger.debug("test");
     }
 
     @Test
-    public void testGetStopInfoNew() {
-        String bundle = "cn.piflow.bundle.nsfc.distinct.HivePSNDistinct";
-        ThirdStopsComponentVo thirdStopsComponentVo = stopImpl.getStopInfoNew(bundle);
+    public void testGetStopInfo() {
+        String bundle = "cn.piflow.bundle.elasticsearch.QueryElasticsearch";
+        ThirdStopsComponentVo thirdStopsComponentVo = stopImpl.getStopInfo(bundle);
         if (null != thirdStopsComponentVo) {
             logger.info("return value is not null");
         } else {

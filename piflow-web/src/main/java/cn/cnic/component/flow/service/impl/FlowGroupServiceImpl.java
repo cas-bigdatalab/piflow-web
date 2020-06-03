@@ -235,7 +235,7 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
 
                 MxGraphModel mxGraphModel = new MxGraphModel();
                 mxGraphModel.setFlowGroup(flowGroup);
-                mxGraphModel.setId(SqlUtils.getUUID32());
+                mxGraphModel.setId(UUIDUtils.getUUID32());
                 mxGraphModel.setCrtDttm(new Date());
                 mxGraphModel.setCrtUser(username);
                 mxGraphModel.setLastUpdateDttm(new Date());

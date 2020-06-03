@@ -2,7 +2,7 @@ package cn.cnic.mapper.mxGraph;
 
 import cn.cnic.ApplicationTests;
 import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.base.util.SqlUtils;
+import cn.cnic.base.util.UUIDUtils;
 import cn.cnic.component.mxGraph.model.MxCell;
 import cn.cnic.component.mxGraph.model.MxGeometry;
 import org.junit.Test;
@@ -36,7 +36,7 @@ public class MxCellMapperTest extends ApplicationTests {
 	@Rollback(true)
 	public void testAddMxCell() {
 		MxCell mxCell = new MxCell();
-		mxCell.setId(SqlUtils.getUUID32());
+		mxCell.setId(UUIDUtils.getUUID32());
 		mxCell.setCrtDttm(new Date());
 		mxCell.setCrtUser("Nature");
 		mxCell.setEnableFlag(true);
@@ -52,7 +52,7 @@ public class MxCellMapperTest extends ApplicationTests {
 		mxCell.setVertex("vertex");
 
 		MxGeometry mxGeometry = new MxGeometry();
-		mxGeometry.setId(SqlUtils.getUUID32());
+		mxGeometry.setId(UUIDUtils.getUUID32());
 		mxGeometry.setCrtDttm(new Date());
 		mxGeometry.setCrtUser("Nature");
 		mxGeometry.setEnableFlag(true);

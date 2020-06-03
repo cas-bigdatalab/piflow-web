@@ -1,7 +1,7 @@
 package cn.cnic.component.system.service.Impl;
 
 import cn.cnic.base.util.ReturnMapUtils;
-import cn.cnic.base.util.SqlUtils;
+import cn.cnic.base.util.UUIDUtils;
 import cn.cnic.common.Eunm.SysRoleType;
 import cn.cnic.component.system.model.SysRole;
 import cn.cnic.component.system.model.SysUser;
@@ -15,7 +15,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class SysUserServiceImpl implements ISysUserService {
@@ -93,7 +95,7 @@ public class SysUserServiceImpl implements ISysUserService {
         //Encrypted password
         password = new BCryptPasswordEncoder().encode(password);
         SysUser sysUser = new SysUser();
-        sysUser.setId(SqlUtils.getUUID32());
+        sysUser.setId(UUIDUtils.getUUID32());
         sysUser.setCrtDttm(new Date());
         sysUser.setCrtUser("system");
         sysUser.setLastUpdateDttm(new Date());

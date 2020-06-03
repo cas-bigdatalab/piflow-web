@@ -1,23 +1,17 @@
 package cn.cnic.base.util;
 
+import cn.cnic.base.BaseHibernateModelUUIDNoCorpAgentId;
 import cn.cnic.base.vo.UserVo;
 import cn.cnic.common.Eunm.SysRoleType;
 import cn.cnic.component.system.model.SysRole;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 public class SqlUtils {
-    /**
-     * uuid(32-bit)
-     *
-     * @return
-     */
-    public static String getUUID32() {
-        return UUID.randomUUID().toString().replace("-", "").toLowerCase();
-    }
 
     /**
      * str(Add a single quote to a string)
@@ -74,6 +68,36 @@ public class SqlUtils {
         }
     }
 
+    public static String baseFieldName() {
+        return " id, crt_dttm, crt_user, last_update_dttm, last_update_user, enable_flag, version ";
+    }
+
+    public static String baseFieldValues(BaseHibernateModelUUIDNoCorpAgentId baseInfo) {
+        if (null == baseInfo) {
+            return " ";
+        }
+        StringBuffer valueStringBuffer = new StringBuffer();
+        String id = baseInfo.getId();
+        String crtUser = StringUtils.isNotBlank(baseInfo.getCrtUser()) ? baseInfo.getCrtUser() : "-1";
+        String lastUpdateUser = baseInfo.getLastUpdateUser();
+        Boolean enableFlag = baseInfo.getEnableFlag();
+        Long version = baseInfo.getVersion();
+        Date crtDttm = (null == baseInfo.getCrtDttm()) ? new Date() : baseInfo.getCrtDttm();
+        String crtDttmStr = DateUtils.dateTimesToStr(crtDttm);
+        Date lastUpdateDttm = (null == baseInfo.getLastUpdateDttm()) ? new Date() : baseInfo.getLastUpdateDttm();
+        String lastUpdateDttmStr = DateUtils.dateTimesToStr(null != lastUpdateDttm ? lastUpdateDttm : new Date());
+
+
+        valueStringBuffer.append(SqlUtils.preventSQLInjection(id) + ",");
+        valueStringBuffer.append(SqlUtils.preventSQLInjection(crtDttmStr) + ",");
+        valueStringBuffer.append(SqlUtils.preventSQLInjection(crtUser) + ",");
+        valueStringBuffer.append(SqlUtils.preventSQLInjection(lastUpdateDttmStr) + ",");
+        valueStringBuffer.append(SqlUtils.preventSQLInjection(lastUpdateUser) + ",");
+        valueStringBuffer.append(((null != enableFlag && enableFlag) ? 1 : 0) + ",");
+        valueStringBuffer.append((null != version ? version : 0L) + " ");
+        return valueStringBuffer.toString();
+    }
+
     public static String strArrayToStr(String[] strArray) {
         String str = "";
         if (null != strArray && strArray.length > 0) {
@@ -81,6 +105,33 @@ public class SqlUtils {
                 if (StringUtils.isNotBlank(strArray[i])) {
                     str += addSqlStrAndReplace(strArray[i]);
                     if (i < strArray.length - 1) {
+                        str += ",";
+                    }
+                }
+            }
+        }
+        return str;
+    }
+
+    public static String preventSQLInjection(String str) {
+        String sqlStr = "null";
+        if (null != str) {
+            String replace = str.replace("'", "''");
+            sqlStr = "'" + replace + "'";
+        }
+        return sqlStr;
+    }
+
+    public static String strListToStr(List<String> strArray) {
+        String str = "";
+        if (null != strArray && strArray.size() > 0) {
+            for (int i = 0; i < strArray.size(); i++) {
+                if (StringUtils.isNotBlank(strArray.get(i))) {
+                    String replaceString = replaceString(strArray.get(i));
+                    if (null != replaceString) {
+                        str += addSqlStr(strArray.get(i));
+                    }
+                    if (i < strArray.size() - 1) {
                         str += ",";
                     }
                 }
@@ -115,33 +166,6 @@ public class SqlUtils {
             }
         }
 
-        return str;
-    }
-
-    public static String preventSQLInjection(String str) {
-        String sqlStr = "null";
-        if (null != str) {
-            String replace = str.replace("'", "''");
-            sqlStr = "'" + replace + "'";
-        }
-        return sqlStr;
-    }
-
-    public static String strListToStr(List<String> strArray) {
-        String str = "";
-        if (null != strArray && strArray.size() > 0) {
-            for (int i = 0; i < strArray.size(); i++) {
-                if (StringUtils.isNotBlank(strArray.get(i))) {
-                    String replaceString = replaceString(strArray.get(i));
-                    if (null != replaceString) {
-                        str += addSqlStr(strArray.get(i));
-                    }
-                    if (i < strArray.size() - 1) {
-                        str += ",";
-                    }
-                }
-            }
-        }
         return str;
     }
 }

@@ -2,7 +2,7 @@ package cn.cnic.mapper;
 
 import cn.cnic.ApplicationTests;
 import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.base.util.SqlUtils;
+import cn.cnic.base.util.UUIDUtils;
 import cn.cnic.component.flow.model.Stops;
 import cn.cnic.mapper.flow.StopsMapper;
 import org.junit.Test;
@@ -46,7 +46,7 @@ public class StopMapperTest extends ApplicationTests {
 	private Stops setStops(String num) {
 		Stops stops = new Stops();
 		// The basic information
-		stops.setId(SqlUtils.getUUID32());
+		stops.setId(UUIDUtils.getUUID32());
 		stops.setCrtDttm(new Date());
 		stops.setCrtUser("test");
 		stops.setEnableFlag(true);

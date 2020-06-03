@@ -2,23 +2,29 @@ package cn.cnic.component.system.service.Impl;
 
 import cn.cnic.base.util.JsonUtils;
 import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.base.util.SqlUtils;
+import cn.cnic.base.util.UUIDUtils;
 import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.component.flow.model.Property;
 import cn.cnic.component.flow.model.Stops;
 import cn.cnic.component.flow.utils.PropertyUtils;
-import cn.cnic.component.stopsComponent.mapper.PropertyTemplateMapper;
-import cn.cnic.component.stopsComponent.mapper.StopGroupMapper;
-import cn.cnic.component.stopsComponent.mapper.StopsTemplateMapper;
-import cn.cnic.component.stopsComponent.model.PropertyTemplate;
+import cn.cnic.component.stopsComponent.mapper.StopsComponentPropertyMapper;
+import cn.cnic.component.stopsComponent.mapper.StopsComponentGroupMapper;
+import cn.cnic.component.stopsComponent.mapper.StopsComponentMapper;
+import cn.cnic.component.stopsComponent.model.StopsComponentProperty;
+import cn.cnic.component.stopsComponent.model.StopsComponent;
 import cn.cnic.component.stopsComponent.model.StopsComponentGroup;
-import cn.cnic.component.stopsComponent.model.StopsTemplate;
+import cn.cnic.component.stopsComponent.transactional.StopsComponentGroupTransactional;
+import cn.cnic.component.stopsComponent.transactional.StopsComponentTransactional;
+import cn.cnic.component.stopsComponent.utils.StopsComponentGroupUtils;
+import cn.cnic.component.stopsComponent.utils.StopsComponentUtils;
 import cn.cnic.component.system.model.SysInitRecords;
 import cn.cnic.component.system.service.ISysInitRecordsService;
 import cn.cnic.domain.system.SysInitRecordsDomain;
 import cn.cnic.mapper.flow.PropertyMapper;
 import cn.cnic.mapper.flow.StopsMapper;
 import cn.cnic.third.service.IStop;
+import cn.cnic.third.vo.stop.ThirdStopsComponentVo;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.threads.ThreadPoolExecutor;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
@@ -43,13 +49,13 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
     private IStop stopImpl;
 
     @Resource
-    private StopGroupMapper stopGroupMapper;
+    private StopsComponentGroupMapper stopsComponentGroupMapper;
 
     @Resource
-    private StopsTemplateMapper stopsTemplateMapper;
+    private StopsComponentMapper stopsComponentMapper;
 
     @Resource
-    private PropertyTemplateMapper propertyTemplateMapper;
+    private StopsComponentPropertyMapper stopsComponentPropertyMapper;
 
     @Resource
     private StopsMapper stopsMapper;
@@ -57,25 +63,26 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
     @Resource
     private PropertyMapper propertyMapper;
 
+    @Resource
+    private StopsComponentGroupTransactional stopsComponentGroupTransactional;
+
+    @Resource
+    private StopsComponentTransactional stopsComponentTransactional;
+
     @Transactional
     @Override
     public String initComponents(String currentUser) {
         Map<String, Object> rtnMap = new HashMap<>();
         ExecutorService es = new ThreadPoolExecutor(1, 5, 0L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<Runnable>(100000));
-        Boolean aBoolean = loadStopGroup(currentUser);
-        if (aBoolean) {
-            String[] stopNameList = stopImpl.getAllStops();
-            // The call is successful, empty the "Stop" message and insert
-            stopGroupMapper.deleteStopsPropertyInfo();
-            int deleteStopsInfo = stopGroupMapper.deleteStopsInfo();
-            logger.info("Successful deletion StopsInfo" + deleteStopsInfo + "piece of data!!!");
-            if (null != stopNameList && stopNameList.length > 0) {
-                for (String stopListInfos : stopNameList) {
+        List<String> stopsBundleList = loadStopGroup(currentUser);
+        if (null != stopsBundleList && !stopsBundleList.isEmpty()) {
+            if (null != stopsBundleList && stopsBundleList.size() > 0) {
+                for (String stopListInfos : stopsBundleList) {
                     es.execute(() -> {
                         Boolean aBoolean1 = loadStop(stopListInfos);
                         if (!aBoolean1) {
-                            logger.warn("stop load failed, bundel : " + stopListInfos);
+                            logger.warn("stop load failed, bundle : " + stopListInfos);
                         }
                     });
                 }
@@ -128,51 +135,67 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
         return JsonUtils.toJsonNoException(rtnMap);
     }
 
-    private Boolean loadStopGroup(String currentUser) {
-        String[] group = stopImpl.getAllGroup();
-        if (null != group && group.length > 0) {
-            // The call is successful, the group table information is cleared and then inserted.
-            stopGroupMapper.deleteGroupCorrelation();
-            int deleteGroup = stopGroupMapper.deleteGroup();
-            logger.debug("Successful deletion Group" + deleteGroup + "piece of data!!!");
-            int a = 0;
-            for (String string : group) {
-                if (string.length() > 0) {
-                    StopsComponentGroup stopGroup = new StopsComponentGroup();
-                    stopGroup.setId(SqlUtils.getUUID32());
-                    stopGroup.setCrtDttm(new Date());
-                    stopGroup.setCrtUser(currentUser);
-                    stopGroup.setLastUpdateUser(currentUser);
-                    stopGroup.setEnableFlag(true);
-                    stopGroup.setLastUpdateDttm(new Date());
-                    stopGroup.setGroupName(string);
-                    int insertStopGroup = stopGroupMapper.insertStopGroup(stopGroup);
-                    a += insertStopGroup;
-                }
-            }
-            logger.debug("Successful insert Group" + a + "piece of data!!!");
+    private List<String> loadStopGroup(String currentUser) {
+        Map<String, List<String>> stopsListWithGroup = stopImpl.getStopsListWithGroup();
+        if (null == stopsListWithGroup || stopsListWithGroup.isEmpty()) {
+            return null;
         }
-        return true;
+        // The call is successful, empty the "StopsComponentGroup" and "StopsComponent" message and insert
+        int deleteGroup = stopsComponentGroupTransactional.deleteStopsComponentGroup();
+        logger.debug("Successful deletion Group" + deleteGroup + "piece of data!!!");
+        int deleteStopsInfo = stopsComponentTransactional.deleteStopsComponent();
+        logger.info("Successful deletion StopsInfo" + deleteStopsInfo + "piece of data!!!");
+
+        int addStopsComponentGroupRows = 0;
+        // StopsComponent bundle list
+        List<String> stopsBundleList = new ArrayList<>();
+        // StopsComponentGroup Map key is GroupName
+        Map<String, StopsComponentGroup> stopsComponentGroupMap = new HashMap<>();
+        // Loop stopsListWithGroup
+        for (String groupName : stopsListWithGroup.keySet()) {
+            if (StringUtils.isBlank(groupName)) {
+                continue;
+            }
+            // add group info
+            StopsComponentGroup stopsComponentGroup = StopsComponentGroupUtils.stopsComponentGroupNewNoId(currentUser);
+            stopsComponentGroup.setId(UUIDUtils.getUUID32());
+            stopsComponentGroup.setGroupName(groupName);
+            addStopsComponentGroupRows += stopsComponentGroupTransactional.addStopsComponentGroup(stopsComponentGroup);
+            // get current group stops bundle list
+            List<String> list = stopsListWithGroup.get(groupName);
+            stopsBundleList.addAll(list);
+        }
+        logger.debug("Successful insert Group" + addStopsComponentGroupRows + "piece of data!!!");
+        // Deduplication
+        HashSet stopsBundleListDeduplication = new HashSet(stopsBundleList);
+        stopsBundleList.clear();
+        stopsBundleList.addAll(stopsBundleListDeduplication);
+        return stopsBundleList;
     }
 
     private Boolean loadStop(String stopListInfos) {
         logger.info("Now the call is：" + stopListInfos);
-        StopsTemplate stopsTemplate = stopImpl.getStopInfo(stopListInfos);
-        if (null != stopsTemplate) {
-            List<StopsTemplate> listStopsTemplate = new ArrayList<>();
-            listStopsTemplate.add(stopsTemplate);
-            int insertStopsTemplate = stopsTemplateMapper.insertStopsTemplate(listStopsTemplate);
+        ThirdStopsComponentVo thirdStopsComponentVo = stopImpl.getStopInfo(stopListInfos);
+        List<String> list = null;
+        if (null != thirdStopsComponentVo) {
+            list = Arrays.asList(thirdStopsComponentVo.getGroups().split(","));
+        }
+        // Query group information according to groupName in stops
+        List<StopsComponentGroup> stopGroupByName = stopsComponentGroupMapper.getStopGroupByNameList(list);
+        StopsComponent stopsComponent = StopsComponentUtils.thirdStopsComponentVoToStopsTemplate("init", thirdStopsComponentVo, stopGroupByName);
+        if (null != stopsComponent) {
+            int insertStopsTemplate = stopsComponentMapper.insertStopsComponent(stopsComponent);
             logger.info("flow_stops_template affects the number of rows : " + insertStopsTemplate);
             logger.info("=============================association_groups_stops_template=====start==================");
-            List<StopsComponentGroup> stopGroupList = stopsTemplate.getStopGroupList();
+            List<StopsComponentGroup> stopGroupList = stopsComponent.getStopGroupList();
             for (StopsComponentGroup stopGroup : stopGroupList) {
                 String stopGroupId = stopGroup.getId();
-                String stopsTemplateId = stopsTemplate.getId();
-                int insertAssociationGroupsStopsTemplate = stopGroupMapper.insertAssociationGroupsStopsTemplate(stopGroupId, stopsTemplateId);
+                String stopsTemplateId = stopsComponent.getId();
+                int insertAssociationGroupsStopsTemplate = stopsComponentGroupMapper.insertAssociationGroupsStopsTemplate(stopGroupId, stopsTemplateId);
                 logger.info("association_groups_stops_template Association table insertion affects the number of rows : " + insertAssociationGroupsStopsTemplate);
             }
-            List<PropertyTemplate> properties = stopsTemplate.getProperties();
-            int insertPropertyTemplate = propertyTemplateMapper.insertPropertyTemplate(properties);
+            List<StopsComponentProperty> properties = stopsComponent.getProperties();
+            int insertPropertyTemplate = stopsComponentPropertyMapper.insertStopsComponentProperty(properties);
             logger.info("flow_stops_property_template affects the number of rows : " + insertPropertyTemplate);
         }
         return true;
@@ -180,7 +203,7 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
 
     private Boolean addSysInitRecordsAndSave() {
         SysInitRecords sysInitRecords = new SysInitRecords();
-        sysInitRecords.setId(SqlUtils.getUUID32());
+        sysInitRecords.setId(UUIDUtils.getUUID32());
         sysInitRecords.setInitDate(new Date());
         sysInitRecords.setIsSucceed(true);
         sysInitRecordsDomain.saveOrUpdate(sysInitRecords);
@@ -193,20 +216,20 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
             return;
         }
         String bundle = stops.getBundel();
-        StopsTemplate stopsTemplateByBundle = stopsTemplateMapper.getStopsTemplateByBundle(bundle);
-        if (null == stopsTemplateByBundle) {
+        StopsComponent stopsComponentByBundle = stopsComponentMapper.getStopsComponentByBundle(bundle);
+        if (null == stopsComponentByBundle) {
             logger.info("The Stops component (" + bundle + ") has been deleted");
             return;
         }
         // propertiesTemplate to map
-        List<PropertyTemplate> propertiesTemplate = stopsTemplateByBundle.getProperties();
-        Map<String, PropertyTemplate> propertiesTemplateMap = new HashMap<>();
+        List<StopsComponentProperty> propertiesTemplate = stopsComponentByBundle.getProperties();
+        Map<String, StopsComponentProperty> propertiesTemplateMap = new HashMap<>();
         if (null != propertiesTemplate && propertiesTemplate.size() > 0) {
-            for (PropertyTemplate propertyTemplate : propertiesTemplate) {
-                if (null == propertyTemplate) {
+            for (StopsComponentProperty stopsComponentProperty : propertiesTemplate) {
+                if (null == stopsComponentProperty) {
                     continue;
                 }
-                propertiesTemplateMap.put(propertyTemplate.getName(), propertyTemplate);
+                propertiesTemplateMap.put(stopsComponentProperty.getName(), stopsComponentProperty);
             }
         }
         List<Property> properties = stops.getProperties();
@@ -218,8 +241,8 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
                 //Use name to get the value in the propertiesTemplateMap.
                 // If it is, it means that it has the same property.
                 // If it is not, it means the property is deleted.
-                PropertyTemplate propertyTemplate = propertiesTemplateMap.get(property.getName());
-                if (null == propertyTemplate) {
+                StopsComponentProperty stopsComponentProperty = propertiesTemplateMap.get(property.getName());
+                if (null == stopsComponentProperty) {
                     property.setIsOldData(true);
                     propertyMapper.updateStopsProperty(property);
                     continue;
@@ -242,17 +265,17 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
         // If there is still data in the map, it means that these are to be added
         if (propertiesTemplateMap.keySet().size() > 0) {
             for (String key : propertiesTemplateMap.keySet()) {
-                PropertyTemplate propertyTemplate = propertiesTemplateMap.get(key);
+                StopsComponentProperty stopsComponentProperty = propertiesTemplateMap.get(key);
                 Property property = PropertyUtils.propertyNewNoId(currentUser);
-                BeanUtils.copyProperties(propertyTemplate, property);
-                property.setId(SqlUtils.getUUID32());
+                BeanUtils.copyProperties(stopsComponentProperty, property);
+                property.setId(UUIDUtils.getUUID32());
                 property.setStops(stops);
-                property.setCustomValue(propertyTemplate.getDefaultValue());
+                property.setCustomValue(stopsComponentProperty.getDefaultValue());
                 //Indicates "select"
-                if (propertyTemplate.getAllowableValues().contains(",") && propertyTemplate.getAllowableValues().length() > 4) {
+                if (stopsComponentProperty.getAllowableValues().contains(",") && stopsComponentProperty.getAllowableValues().length() > 4) {
                     property.setIsSelect(true);
                     //Determine if there is a default value in "select"
-                    if (!propertyTemplate.getAllowableValues().contains(propertyTemplate.getDefaultValue())) {
+                    if (!stopsComponentProperty.getAllowableValues().contains(stopsComponentProperty.getDefaultValue())) {
                         //Default value if not present
                         property.setCustomValue("");
                     }

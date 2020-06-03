@@ -1,8 +1,10 @@
 package cn.cnic.component.flow.utils;
 
-import cn.cnic.base.util.SqlUtils;
+import cn.cnic.base.util.UUIDUtils;
 import cn.cnic.component.flow.model.*;
-import cn.cnic.component.flow.vo.*;
+import cn.cnic.component.flow.vo.FlowVo;
+import cn.cnic.component.flow.vo.PathsVo;
+import cn.cnic.component.flow.vo.StopsVo;
 import cn.cnic.component.mxGraph.model.MxCell;
 import cn.cnic.component.mxGraph.model.MxGeometry;
 import cn.cnic.component.mxGraph.model.MxGraphModel;
@@ -20,7 +22,7 @@ public class FlowUtil {
             flow = new Flow();
         }
         if (isSetId) {
-            flow.setId(SqlUtils.getUUID32());
+            flow.setId(UUIDUtils.getUUID32());
         }
         //set MxGraphModel basic information
         flow.setCrtDttm(new Date());

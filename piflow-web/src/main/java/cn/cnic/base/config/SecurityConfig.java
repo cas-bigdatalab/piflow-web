@@ -3,6 +3,7 @@ package cn.cnic.base.config;
 import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.base.util.SpringContextUtil;
 import cn.cnic.base.util.SqlUtils;
+import cn.cnic.base.util.UUIDUtils;
 import cn.cnic.base.vo.UserVo;
 import cn.cnic.common.Eunm.SysRoleType;
 import cn.cnic.common.constant.SysParamsCache;
@@ -93,7 +94,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 UserVo userDetails = (UserVo) authentication.getPrincipal();
                 String remoteAddr = request.getLocalAddr();
                 Statistics statistics = new Statistics();
-                statistics.setId(SqlUtils.getUUID32());
+                statistics.setId(UUIDUtils.getUUID32());
                 statistics.setLoginUser(userDetails.getUsername());
                 statistics.setLoginTime(new Date());
                 statistics.setLoginIp(remoteAddr);

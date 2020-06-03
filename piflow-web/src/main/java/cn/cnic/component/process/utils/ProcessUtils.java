@@ -1,7 +1,7 @@
 package cn.cnic.component.process.utils;
 
 import cn.cnic.base.util.JsonUtils;
-import cn.cnic.base.util.SqlUtils;
+import cn.cnic.base.util.UUIDUtils;
 import cn.cnic.base.util.SvgUtils;
 import cn.cnic.base.vo.UserVo;
 import cn.cnic.common.Eunm.*;
@@ -161,7 +161,7 @@ public class ProcessUtils {
             BeanUtils.copyProperties(flow, process);
             // Set basic information
             process = initProcessBasicPropertiesNoId(process, username);
-            process.setId(SqlUtils.getUUID32());
+            process.setId(UUIDUtils.getUUID32());
             FlowGroup flowGroup = flow.getFlowGroup();
             //Set default
             process.setProcessParentType(ProcessParentType.PROCESS);
@@ -205,7 +205,7 @@ public class ProcessUtils {
                     BeanUtils.copyProperties(stops, processStop);
                     // Set basic information
                     processStop = ProcessStopUtils.initProcessStopBasicPropertiesNoId(processStop, username);
-                    processStop.setId(SqlUtils.getUUID32());
+                    processStop.setId(UUIDUtils.getUUID32());
                     // Associate foreign key
                     processStop.setProcess(process);
                     // Remove the properties of stops
@@ -225,7 +225,7 @@ public class ProcessUtils {
                             BeanUtils.copyProperties(property, processStopProperty);
                             // Set basic information
                             processStopProperty = ProcessStopPropertyUtils.initProcessStopPropertyBasicPropertiesNoId(processStopProperty, username);
-                            processStopProperty.setId(SqlUtils.getUUID32());
+                            processStopProperty.setId(UUIDUtils.getUUID32());
                             // "stop" attribute name
                             String name = property.getName();
                             // Judge empty
@@ -261,7 +261,7 @@ public class ProcessUtils {
                             BeanUtils.copyProperties(customizedProperty, processStopCustomizedProperty);
                             // Set basic information
                             processStopCustomizedProperty = ProcessStopCustomizedPropertyUtils.initProcessStopCustomizedPropertyBasicPropertiesNoId(processStopCustomizedProperty, username);
-                            processStopCustomizedProperty.setId(SqlUtils.getUUID32());
+                            processStopCustomizedProperty.setId(UUIDUtils.getUUID32());
                             // Associated foreign key
                             processStopCustomizedProperty.setProcessStop(processStop);
                             processStopCustomizedPropertyList.add(processStopCustomizedProperty);
@@ -288,7 +288,7 @@ public class ProcessUtils {
                     BeanUtils.copyProperties(paths, processPath);
                     // Set basic information
                     processPath = ProcessPathUtils.initProcessPathBasicPropertiesNoId(processPath, username);
-                    processPath.setId(SqlUtils.getUUID32());
+                    processPath.setId(UUIDUtils.getUUID32());
                     // Associated foreign key
                     processPath.setProcess(process);
                     processPathList.add(processPath);

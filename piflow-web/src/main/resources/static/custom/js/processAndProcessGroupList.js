@@ -249,7 +249,11 @@ function runProcessOrProcessGroup(processType, id, runMode) {
             if (200 === dataMap.code) {
                 //alert(dataMap.errorMsg);
                 window.location.reload();
-                var windowOpen = window.open("/piflow-web/processGroup/getProcessGroupById?processGroupId=" + dataMap.processGroupId);
+                var openUrl = "/piflow-web/mxGraph/drawingBoard?drawingBoardType=PROCESS&processType=PROCESS_GROUP&load=" + dataMap.processGroupId;
+                if ("PROCESS" === processType) {
+                    openUrl = "/piflow-web/mxGraph/drawingBoard?drawingBoardType=PROCESS&processType=PROCESS&load=" + dataMap.processId;
+                }
+                var windowOpen = window.open(openUrl);
                 if (windowOpen == null || typeof (windowOpen) == 'undefined') {
                     alert('The window cannot be opened. Please check your browser settings.')
                 }

@@ -184,7 +184,7 @@ public class FlowServiceImpl implements IFlowService {
             Flow flow = new Flow();
 
             BeanUtils.copyProperties(flowVo, flow);
-            String id = SqlUtils.getUUID32();
+            String id = UUIDUtils.getUUID32();
             flow.setId(id);
             flow.setCrtDttm(new Date());
             flow.setCrtUser(username);
@@ -197,7 +197,7 @@ public class FlowServiceImpl implements IFlowService {
                 optDataCount = addFlow;
                 MxGraphModel mxGraphModel = new MxGraphModel();
                 mxGraphModel.setFlow(flow);
-                mxGraphModel.setId(SqlUtils.getUUID32());
+                mxGraphModel.setId(UUIDUtils.getUUID32());
                 mxGraphModel.setCrtDttm(new Date());
                 mxGraphModel.setCrtUser(username);
                 mxGraphModel.setLastUpdateDttm(new Date());

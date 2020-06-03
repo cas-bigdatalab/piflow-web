@@ -1,21 +1,21 @@
 package cn.cnic.component.stopsComponent.mapper;
 
-import cn.cnic.component.stopsComponent.model.StopsTemplate;
-import cn.cnic.component.stopsComponent.mapper.provider.StopsTemplateMapperProvider;
+import cn.cnic.component.stopsComponent.model.StopsComponent;
+import cn.cnic.component.stopsComponent.mapper.provider.StopsComponentMapperProvider;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
 
 import java.util.List;
 
 @Mapper
-public interface StopsTemplateMapper {
+public interface StopsComponentMapper {
     /**
      * Query all stops templates
      *
      * @return
      */
-    @SelectProvider(type = StopsTemplateMapperProvider.class, method = "getStopsTemplateList")
-    public List<StopsTemplate> getStopsTemplateList();
+    @SelectProvider(type = StopsComponentMapperProvider.class, method = "getStopsComponentList")
+    public List<StopsComponent> getStopsComponentList();
 
     /**
      * Query template based on the stops template
@@ -23,8 +23,8 @@ public interface StopsTemplateMapper {
      * @param id
      * @return
      */
-    @SelectProvider(type = StopsTemplateMapperProvider.class, method = "getStopsTemplateById")
-    public StopsTemplate getStopsTemplateById(String id);
+    @SelectProvider(type = StopsComponentMapperProvider.class, method = "getStopsComponentById")
+    public StopsComponent getStopsComponentById(String id);
 
     /**
      * Query the stops template based on the id of the stops template (including the attribute list)
@@ -32,10 +32,10 @@ public interface StopsTemplateMapper {
      * @param id
      * @return
      */
-    @SelectProvider(type = StopsTemplateMapperProvider.class, method = "getStopsTemplateById")
+    @SelectProvider(type = StopsComponentMapperProvider.class, method = "getStopsComponentById")
     @Results({@Result(id = true, column = "id", property = "id"),
             @Result(property = "properties", column = "id", many = @Many(select = "cn.cnic.component.stopsComponent.mapper.PropertyTemplateMapper.getPropertyTemplateBySotpsId"))})
-    public StopsTemplate getStopsTemplateAndPropertyById(String id);
+    public StopsComponent getStopsComponentAndPropertyById(String id);
 
     /**
      * Query the stops template according to the id of the stops group
@@ -44,7 +44,7 @@ public interface StopsTemplateMapper {
      * @return
      */
     @Select("select * from flow_stops_template where id in (select agst.stops_template_id from association_groups_stops_template agst where agst.groups_id = #{groupId})")
-    public List<StopsTemplate> getStopsTemplateListByGroupId(String groupId);
+    public List<StopsComponent> getStopsComponentListByGroupId(String groupId);
 
     /**
      * Query the stops template according to the id of the stops group...
@@ -52,24 +52,24 @@ public interface StopsTemplateMapper {
      * @param stopsName
      * @return
      */
-    @SelectProvider(type = StopsTemplateMapperProvider.class, method = "getStopsTemplateByName")
+    @SelectProvider(type = StopsComponentMapperProvider.class, method = "getStopsComponentByName")
     @Results({@Result(id = true, column = "id", property = "id"),
             @Result(column = "id", property = "properties", many = @Many(select = "cn.cnic.component.stopsComponent.mapper.PropertyTemplateMapper.getPropertyTemplateBySotpsId", fetchType = FetchType.LAZY))
 
     })
-    public List<StopsTemplate> getStopsTemplateByName(String stopsName);
+    public List<StopsComponent> getStopsComponentByName(String stopsName);
 
     /**
-     * Add more than one FLOW_STOPS_TEMPLATE List.
+     * Add more than one FLOW_STOPS_TEMPLATE.
      *
-     * @param stopsTemplateList
+     * @param stopsComponent
      * @return
      */
-    @InsertProvider(type = StopsTemplateMapperProvider.class, method = "insertStopsTemplate")
-    public int insertStopsTemplate(@Param("stopsTemplateList") List<StopsTemplate> stopsTemplateList);
+    @InsertProvider(type = StopsComponentMapperProvider.class, method = "insertStopsComponent")
+    public int insertStopsComponent(@Param("stopsComponent") StopsComponent stopsComponent);
 
     /**
-     * getStopsTemplateByBundle
+     * getStopsComponentByBundle
      *
      * @param bundle
      * @return
@@ -79,5 +79,8 @@ public interface StopsTemplateMapper {
             @Result(column = "id", property = "properties", many = @Many(select = "cn.cnic.component.stopsComponent.mapper.PropertyTemplateMapper.getPropertyTemplateBySotpsId", fetchType = FetchType.LAZY))
 
     })
-    public StopsTemplate getStopsTemplateByBundle(@Param("bundle") String bundle);
+    public StopsComponent getStopsComponentByBundle(@Param("bundle") String bundle);
+
+    @Delete("delete from flow_stops_template")
+    int deleteStopsComponent();
 }

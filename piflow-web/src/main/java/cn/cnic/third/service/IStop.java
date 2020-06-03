@@ -1,6 +1,5 @@
 package cn.cnic.third.service;
 
-import cn.cnic.component.stopsComponent.model.StopsTemplate;
 import cn.cnic.third.vo.stop.ThirdStopsComponentVo;
 
 import java.util.List;
@@ -16,10 +15,8 @@ public interface IStop {
 
     public String[] getAllStops();
 
-    public StopsTemplate getStopInfo(String bundle);
-
     public Map<String, List<String>> getStopsListWithGroup();
 
-    public ThirdStopsComponentVo getStopInfoNew(String bundleStr);
+    public ThirdStopsComponentVo getStopInfo(String bundleStr);
 
 }

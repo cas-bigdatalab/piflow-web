@@ -1,7 +1,7 @@
 package cn.cnic.component.flow.service.impl;
 
 import cn.cnic.base.util.SessionUserUtil;
-import cn.cnic.base.util.SqlUtils;
+import cn.cnic.base.util.UUIDUtils;
 import cn.cnic.base.vo.UserVo;
 import cn.cnic.component.flow.model.Flow;
 import cn.cnic.component.flow.model.Paths;
@@ -129,7 +129,7 @@ public class PathsServiceImpl implements IPathsService {
         if (null != pathsList && pathsList.size() > 0) {
             for (Paths paths : pathsList) {
                 if (null != paths) {
-                    paths.setId(SqlUtils.getUUID32());
+                    paths.setId(UUIDUtils.getUUID32());
                     paths.setCrtDttm(new Date());
                     paths.setFlow(flow);
                     paths.setEnableFlag(true);

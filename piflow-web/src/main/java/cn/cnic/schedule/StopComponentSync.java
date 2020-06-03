@@ -15,8 +15,6 @@ public class StopComponentSync extends QuartzJobBean {
 
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        UserVo userVo = new UserVo();
-        userVo.setUsername("systemSync");
-        stopGroupServiceImpl.addGroupAndStopsList(userVo);
+        stopGroupServiceImpl.updateGroupAndStopsListByServer("systemSync");
     }
 }

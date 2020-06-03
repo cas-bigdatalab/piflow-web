@@ -2,7 +2,7 @@ package cn.cnic.component.stopsComponent.mapper.provider;
 
 import cn.cnic.base.util.DateUtils;
 import cn.cnic.base.util.SqlUtils;
-import cn.cnic.component.stopsComponent.model.PropertyTemplate;
+import cn.cnic.component.stopsComponent.model.StopsComponentProperty;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
 
@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class PropertyTemplateMapperProvider {
+public class StopsComponentPropertyMapperProvider {
 
     private String id;
     private String crtUser;
@@ -29,16 +29,16 @@ public class PropertyTemplateMapperProvider {
     private Long propertySort;
     private String stopsTemplateId;
 
-    private void preventSQLInjectionPropertyTemplate(PropertyTemplate propertyTemplate) {
-        if (null != propertyTemplate && StringUtils.isNotBlank(propertyTemplate.getLastUpdateUser())) {
+    private void preventSQLInjectionStopsComponentProperty(StopsComponentProperty stopsComponentProperty) {
+        if (null != stopsComponentProperty && StringUtils.isNotBlank(stopsComponentProperty.getLastUpdateUser())) {
             // Mandatory Field
-            String id = propertyTemplate.getId();
-            String crtUser = propertyTemplate.getCrtUser();
-            String lastUpdateUser = propertyTemplate.getLastUpdateUser();
-            Boolean enableFlag = propertyTemplate.getEnableFlag();
-            Long version = propertyTemplate.getVersion();
-            Date crtDttm = propertyTemplate.getCrtDttm();
-            Date lastUpdateDttm = propertyTemplate.getLastUpdateDttm();
+            String id = stopsComponentProperty.getId();
+            String crtUser = stopsComponentProperty.getCrtUser();
+            String lastUpdateUser = stopsComponentProperty.getLastUpdateUser();
+            Boolean enableFlag = stopsComponentProperty.getEnableFlag();
+            Long version = stopsComponentProperty.getVersion();
+            Date crtDttm = stopsComponentProperty.getCrtDttm();
+            Date lastUpdateDttm = stopsComponentProperty.getLastUpdateDttm();
             this.id = SqlUtils.preventSQLInjection(id);
             this.crtUser = (null != crtUser ? SqlUtils.preventSQLInjection(crtUser) : null);
             this.lastUpdateUser = SqlUtils.preventSQLInjection(lastUpdateUser);
@@ -50,15 +50,15 @@ public class PropertyTemplateMapperProvider {
             this.lastUpdateDttmStr = SqlUtils.preventSQLInjection(lastUpdateDttmStr);
 
             // Selection field
-            this.allowableValues = SqlUtils.preventSQLInjection(propertyTemplate.getAllowableValues());
-            this.defaultValue = SqlUtils.preventSQLInjection(propertyTemplate.getDefaultValue());
-            this.description = SqlUtils.preventSQLInjection(propertyTemplate.getDescription());
-            this.displayName = SqlUtils.preventSQLInjection(propertyTemplate.getDisplayName());
-            this.name = SqlUtils.preventSQLInjection(propertyTemplate.getName());
-            this.required = (null == propertyTemplate.getRequired() ? 0 : (propertyTemplate.getRequired() ? 1 : 0));
-            this.sensitive = (null == propertyTemplate.getSensitive() ? 0 : (propertyTemplate.getSensitive() ? 1 : 0));
-            this.propertySort = (null != propertyTemplate.getPropertySort() ? propertyTemplate.getPropertySort() : 0L);
-            this.stopsTemplateId = SqlUtils.preventSQLInjection(propertyTemplate.getStopsTemplate());
+            this.allowableValues = SqlUtils.preventSQLInjection(stopsComponentProperty.getAllowableValues());
+            this.defaultValue = SqlUtils.preventSQLInjection(stopsComponentProperty.getDefaultValue());
+            this.description = SqlUtils.preventSQLInjection(stopsComponentProperty.getDescription());
+            this.displayName = SqlUtils.preventSQLInjection(stopsComponentProperty.getDisplayName());
+            this.name = SqlUtils.preventSQLInjection(stopsComponentProperty.getName());
+            this.required = (null == stopsComponentProperty.getRequired() ? 0 : (stopsComponentProperty.getRequired() ? 1 : 0));
+            this.sensitive = (null == stopsComponentProperty.getSensitive() ? 0 : (stopsComponentProperty.getSensitive() ? 1 : 0));
+            this.propertySort = (null != stopsComponentProperty.getPropertySort() ? stopsComponentProperty.getPropertySort() : 0L);
+            this.stopsTemplateId = SqlUtils.preventSQLInjection(stopsComponentProperty.getStopsTemplate());
         }
     }
 
@@ -87,7 +87,7 @@ public class PropertyTemplateMapperProvider {
      * @param stopsId
      * @return
      */
-    public String getPropertyTemplateBySotpsId(String stopsId) {
+    public String getStopsComponentPropertyByStopsId(String stopsId) {
 
         String sqlStr = "select 0";
         if (null != stopsId) {
@@ -102,10 +102,10 @@ public class PropertyTemplateMapperProvider {
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-	public String insertPropertyTemplate(Map map) {
+	public String insertStopsComponentProperty(Map map) {
         String sqlStr = "select 0";
-        List<PropertyTemplate> propertyTemplateList = (List<PropertyTemplate>) map.get("propertyTemplateList");
-        if (null != propertyTemplateList && propertyTemplateList.size() > 0) {
+        List<StopsComponentProperty> stopsComponentPropertyList = (List<StopsComponentProperty>) map.get("stopsComponentPropertyList");
+        if (null != stopsComponentPropertyList && stopsComponentPropertyList.size() > 0) {
             SQL sqlColumns = new SQL();
             sqlColumns.INSERT_INTO("flow_stops_property_template");
             sqlColumns.INTO_COLUMNS(
@@ -128,10 +128,10 @@ public class PropertyTemplateMapperProvider {
             );
             StringBuffer sqlValuesStr = new StringBuffer();
             sqlValuesStr.append("\nvalues\n");
-            for (int i = 0; i < propertyTemplateList.size(); i++) {
-                PropertyTemplate propertyTemplate = propertyTemplateList.get(i);
-                if (null != propertyTemplate) {
-                    this.preventSQLInjectionPropertyTemplate(propertyTemplate);
+            for (int i = 0; i < stopsComponentPropertyList.size(); i++) {
+                StopsComponentProperty stopsComponentProperty = stopsComponentPropertyList.get(i);
+                if (null != stopsComponentProperty) {
+                    this.preventSQLInjectionStopsComponentProperty(stopsComponentProperty);
                     if (null == crtDttmStr) {
                         String crtDttm = DateUtils.dateTimesToStr(new Date());
                         crtDttmStr = SqlUtils.preventSQLInjection(crtDttm);
@@ -157,7 +157,7 @@ public class PropertyTemplateMapperProvider {
                     sqlValuesStr.append(propertySort + ",");
                     sqlValuesStr.append(stopsTemplateId);
                     sqlValuesStr.append(")");
-                    if (i < propertyTemplateList.size() - 1) {
+                    if (i < stopsComponentPropertyList.size() - 1) {
                         sqlValuesStr.append(",\n");
                     }
                     this.reset();

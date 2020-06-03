@@ -55,10 +55,10 @@ public class StopsCtrl {
     @RequestMapping("/reloadStops")
     @ResponseBody
     public String reloadStops(String load) {
-        UserVo user = SessionUserUtil.getCurrentUser();
+        String username = SessionUserUtil.getCurrentUsername();
         Map<String, Object> rtnMap = new HashMap<>();
         rtnMap.put("code", 500);
-        stopGroupServiceImpl.addGroupAndStopsList(user);
+        stopGroupServiceImpl.updateGroupAndStopsListByServer(username);
         rtnMap.put("code", 200);
         rtnMap.put("load", load);
         return JsonUtils.toJsonNoException(rtnMap);

@@ -16,9 +16,9 @@ import cn.cnic.component.mxGraph.vo.MxCellVo;
 import cn.cnic.component.mxGraph.vo.MxGeometryVo;
 import cn.cnic.component.mxGraph.vo.MxGraphModelVo;
 import cn.cnic.component.mxGraph.vo.MxGraphVo;
-import cn.cnic.component.stopsComponent.mapper.StopsTemplateMapper;
-import cn.cnic.component.stopsComponent.model.PropertyTemplate;
-import cn.cnic.component.stopsComponent.model.StopsTemplate;
+import cn.cnic.component.stopsComponent.mapper.StopsComponentMapper;
+import cn.cnic.component.stopsComponent.model.StopsComponentProperty;
+import cn.cnic.component.stopsComponent.model.StopsComponent;
 import cn.cnic.domain.flow.FlowDomain;
 import cn.cnic.domain.flow.FlowGroupDomain;
 import cn.cnic.domain.flow.FlowGroupPathsDomain;
@@ -62,7 +62,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
     private FlowMapper flowMapper;
 
     @Resource
-    private StopsTemplateMapper stopsTemplateMapper;
+    private StopsComponentMapper stopsComponentMapper;
 
     @Resource
     private PathsMapper pathsMapper;
@@ -215,7 +215,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
                     mxCell.setValue(mxCellVo.getValue() + mxCellVo.getPageId());
                 }
                 // 'mxCell' basic properties (required when creating)
-                mxCell.setId(SqlUtils.getUUID32());
+                mxCell.setId(UUIDUtils.getUUID32());
                 mxCell.setCrtDttm(new Date());
                 mxCell.setCrtUser(username);
                 // mxCell basic properties
@@ -234,7 +234,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
                     // Copy the value in mxGeometryVo to mxGeometry
                     BeanUtils.copyProperties(mxGeometryVo, mxGeometry);
                     // mxGeometry basic properties(required when creating)
-                    mxGeometry.setId(SqlUtils.getUUID32());
+                    mxGeometry.setId(UUIDUtils.getUUID32());
                     mxGeometry.setCrtDttm(new Date());
                     mxGeometry.setCrtUser(username);
                     // setmxGraphModel basic properties
@@ -653,31 +653,31 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
         // Get the name of the stops
         String stopsName = split2[split2.length - 1];
         // Query the stops template according to the name of the stops
-        StopsTemplate stopsTemplate = this.getStopsTemplate(stopsName);
+        StopsComponent stopsComponent = this.getStopsTemplate(stopsName);
         // Whether to judge whether the template is empty
-        if (null == stopsTemplate) {
+        if (null == stopsComponent) {
             return null;
         }
         stops = new Stops();
-        BeanUtils.copyProperties(stopsTemplate, stops);
+        BeanUtils.copyProperties(stopsComponent, stops);
         StopsUtils.initStopsBasicPropertiesNoId(stops, username);
-        stops.setId(SqlUtils.getUUID32());
+        stops.setId(UUIDUtils.getUUID32());
         stops.setPageId(mxCellVo.getPageId());
         List<Property> propertiesList = null;
-        List<PropertyTemplate> propertiesTemplateList = stopsTemplate.getProperties();
+        List<StopsComponentProperty> propertiesTemplateList = stopsComponent.getProperties();
         if (null != propertiesTemplateList && propertiesTemplateList.size() > 0) {
             propertiesList = new ArrayList<>();
-            for (PropertyTemplate propertyTemplate : propertiesTemplateList) {
+            for (StopsComponentProperty stopsComponentProperty : propertiesTemplateList) {
                 Property property = PropertyUtils.propertyNewNoId(username);
-                BeanUtils.copyProperties(propertyTemplate, property);
-                property.setId(SqlUtils.getUUID32());
+                BeanUtils.copyProperties(stopsComponentProperty, property);
+                property.setId(UUIDUtils.getUUID32());
                 property.setStops(stops);
-                property.setCustomValue(propertyTemplate.getDefaultValue());
+                property.setCustomValue(stopsComponentProperty.getDefaultValue());
                 //Indicates "select"
-                if (propertyTemplate.getAllowableValues().contains(",") && propertyTemplate.getAllowableValues().length() > 4) {
+                if (stopsComponentProperty.getAllowableValues().contains(",") && stopsComponentProperty.getAllowableValues().length() > 4) {
                     property.setIsSelect(true);
                     //Determine if there is a default value in "select"
-                    if (!propertyTemplate.getAllowableValues().contains(propertyTemplate.getDefaultValue())) {
+                    if (!stopsComponentProperty.getAllowableValues().contains(stopsComponentProperty.getDefaultValue())) {
                         //Default value if not present
                         property.setCustomValue("");
                     }
@@ -697,14 +697,14 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
      * @param stopsName
      * @return
      */
-    private StopsTemplate getStopsTemplate(String stopsName) {
-        StopsTemplate stopsTemplate = null;
+    private StopsComponent getStopsTemplate(String stopsName) {
+        StopsComponent stopsComponent = null;
         // Query the stops template according to the name of the stops
-        List<StopsTemplate> stopsTemplateList = stopsTemplateMapper.getStopsTemplateByName(stopsName);
-        if (null != stopsTemplateList && stopsTemplateList.size() > 0) {
-            stopsTemplate = stopsTemplateList.get(0);
+        List<StopsComponent> stopsComponentList = stopsComponentMapper.getStopsComponentByName(stopsName);
+        if (null != stopsComponentList && stopsComponentList.size() > 0) {
+            stopsComponent = stopsComponentList.get(0);
         }
-        return stopsTemplate;
+        return stopsComponent;
     }
 
     /**

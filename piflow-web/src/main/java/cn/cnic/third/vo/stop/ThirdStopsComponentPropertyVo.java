@@ -12,7 +12,7 @@ public class ThirdStopsComponentPropertyVo implements Serializable {
     private String displayName;
     private String description;
     private String defaultValue;
-    private String[] allowableValues;
+    private String allowableValues;
     private String required;
     private boolean sensitive;
     private String example;

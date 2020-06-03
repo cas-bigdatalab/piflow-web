@@ -2,12 +2,12 @@ package cn.cnic.mapper;
 
 import cn.cnic.ApplicationTests;
 import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.base.util.SqlUtils;
+import cn.cnic.base.util.UUIDUtils;
 import cn.cnic.component.flow.model.Property;
 import cn.cnic.component.flow.model.Stops;
-import cn.cnic.component.stopsComponent.mapper.StopsTemplateMapper;
-import cn.cnic.component.stopsComponent.model.PropertyTemplate;
-import cn.cnic.component.stopsComponent.model.StopsTemplate;
+import cn.cnic.component.stopsComponent.mapper.StopsComponentMapper;
+import cn.cnic.component.stopsComponent.model.StopsComponentProperty;
+import cn.cnic.component.stopsComponent.model.StopsComponent;
 import cn.cnic.mapper.flow.PropertyMapper;
 import cn.cnic.mapper.flow.StopsMapper;
 import org.junit.Test;
@@ -24,7 +24,7 @@ public class PropertyMapperTest extends ApplicationTests {
 	@Autowired
 	private StopsMapper stopsMapper;
 	@Autowired
-	private StopsTemplateMapper stopsTemplateMapper;
+	private StopsComponentMapper stopsComponentMapper;
 
 	Logger logger = LoggerUtil.getLogger();
 
@@ -74,11 +74,11 @@ public class PropertyMapperTest extends ApplicationTests {
           //Get stop information
           Stops stopsList = stopsMapper.getStopsById("32a3e372084d4f4eac97853c66b7b2d8");
           //Gets the StopsTemplate for the current stops
-          List<StopsTemplate> stopsTemplateList = stopsTemplateMapper.getStopsTemplateByName(stopsList.getName());
-          StopsTemplate stopsTemplate = stopsTemplateList.get(0);
-          logger.info("StopsTemplateList records the number of bars:"+stopsTemplateList.size());
+          List<StopsComponent> stopsComponentList = stopsComponentMapper.getStopsComponentByName(stopsList.getName());
+          StopsComponent stopsComponent = stopsComponentList.get(0);
+          logger.info("StopsTemplateList records the number of bars:"+ stopsComponentList.size());
             //Get the template property of the StopsTemplate
-              List<PropertyTemplate> propertiesTemplateList = stopsTemplate.getProperties();
+              List<StopsComponentProperty> propertiesTemplateList = stopsComponent.getProperties();
               // The property that currently exists for stop
               List<Property> property = stopsList.getProperties();
               if (null != property && property.size()>0)  
@@ -87,7 +87,7 @@ public class PropertyMapperTest extends ApplicationTests {
       			}
               //If the template's data is greater than the current number of stops attributes, do the same and add more stops attributes
               if (propertiesTemplateList.size()>0 && property.size()>0) {
-            	  for (PropertyTemplate pt : propertiesTemplateList) { 
+            	  for (StopsComponentProperty pt : propertiesTemplateList) {
         				if (null != pt) {
         					Property ptname = PropertyMap.get(pt.getName());
         					if (ptname!=null) {
@@ -114,7 +114,7 @@ public class PropertyMapperTest extends ApplicationTests {
 								} catch (Exception e) {
 									e.printStackTrace();
 								}  
-        						newProperty.setId(SqlUtils.getUUID32());
+        						newProperty.setId(UUIDUtils.getUUID32());
         						newProperty.setCrtDttm(new Date());
         						newProperty.setCrtUser("Nature");
         						newProperty.setEnableFlag(true);

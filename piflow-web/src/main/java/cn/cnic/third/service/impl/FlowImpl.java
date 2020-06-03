@@ -1,7 +1,5 @@
 package cn.cnic.third.service.impl;
 
-import cn.cnic.third.vo.flow.ThirdFlowInfoStopsVo;
-import cn.cnic.third.vo.flow.ThirdFlowInfoVo;
 import com.alibaba.fastjson.JSON;
 import cn.cnic.base.util.HttpUtils;
 import cn.cnic.base.util.LoggerUtil;
@@ -14,6 +12,8 @@ import cn.cnic.mapper.process.ProcessMapper;
 import cn.cnic.third.service.IFlow;
 import cn.cnic.third.utils.ThirdFlowInfoVoUtils;
 import cn.cnic.third.vo.flow.ThirdProgressVo;
+import cn.cnic.third.vo.flow.ThirdFlowInfoStopsVo;
+import cn.cnic.third.vo.flow.ThirdFlowInfoVo;
 import cn.cnic.transaction.process.ProcessTransaction;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;

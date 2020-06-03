@@ -1,12 +1,12 @@
 package cn.cnic.component.stopsComponent.utils;
 
 import cn.cnic.base.util.ImageUtils;
-import cn.cnic.base.util.SqlUtils;
+import cn.cnic.base.util.UUIDUtils;
 import cn.cnic.common.Eunm.PortType;
 import cn.cnic.common.constant.SysParamsCache;
-import cn.cnic.component.stopsComponent.model.PropertyTemplate;
+import cn.cnic.component.stopsComponent.model.StopsComponentProperty;
+import cn.cnic.component.stopsComponent.model.StopsComponent;
 import cn.cnic.component.stopsComponent.model.StopsComponentGroup;
-import cn.cnic.component.stopsComponent.model.StopsTemplate;
 import cn.cnic.third.vo.stop.ThirdStopsComponentVo;
 import org.apache.commons.lang3.StringUtils;
 
@@ -15,9 +15,9 @@ import java.util.List;
 
 public class StopsComponentUtils {
 
-    public static StopsTemplate stopsComponentNewNoId(String username) {
+    public static StopsComponent stopsComponentNewNoId(String username) {
 
-        StopsTemplate stopsComponent = new StopsTemplate();
+        StopsComponent stopsComponent = new StopsComponent();
         // basic properties (required when creating)
         stopsComponent.setCrtDttm(new Date());
         stopsComponent.setCrtUser(username);
@@ -29,7 +29,7 @@ public class StopsComponentUtils {
         return stopsComponent;
     }
 
-    public static StopsTemplate initStopsComponentBasicPropertiesNoId(StopsTemplate stopsComponent, String username) {
+    public static StopsComponent initStopsComponentBasicPropertiesNoId(StopsComponent stopsComponent, String username) {
         if (null == stopsComponent) {
             return stopsComponentNewNoId(username);
         }
@@ -44,14 +44,14 @@ public class StopsComponentUtils {
         return stopsComponent;
     }
 
-    public static StopsTemplate thirdStopsComponentVoToStopsTemplate(String username, ThirdStopsComponentVo thirdStopsComponentVo, List<StopsComponentGroup> stopGroupByName) {
+    public static StopsComponent thirdStopsComponentVoToStopsTemplate(String username, ThirdStopsComponentVo thirdStopsComponentVo, List<StopsComponentGroup> stopGroupByName) {
         if (null == thirdStopsComponentVo) {
             return null;
         }
         if (StringUtils.isBlank(username)) {
             return null;
         }
-        if (null == stopGroupByName || stopGroupByName.size() > 0) {
+        if (null == stopGroupByName || stopGroupByName.size() <= 0) {
             return null;
         }
         String inports = thirdStopsComponentVo.getInports();
@@ -83,22 +83,22 @@ public class StopsComponentUtils {
         if (StringUtils.isNotBlank(icon)) {
             ImageUtils.generateImage(icon, thirdStopsComponentVo.getName() + "_128x128", "png", SysParamsCache.IMAGES_PATH);
         }
-        StopsTemplate stopsTemplate = stopsComponentNewNoId(username);
-        stopsTemplate.setId(SqlUtils.getUUID32());
-        stopsTemplate.setBundel(thirdStopsComponentVo.getBundle());
-        stopsTemplate.setDescription(thirdStopsComponentVo.getDescription());
-        stopsTemplate.setGroups(thirdStopsComponentVo.getGroups());
-        stopsTemplate.setName(thirdStopsComponentVo.getName());
-        stopsTemplate.setInports(inports);
-        stopsTemplate.setInPortType(inPortType);
-        stopsTemplate.setOutports(outports);
-        stopsTemplate.setOutPortType(outPortType);
-        stopsTemplate.setOwner(thirdStopsComponentVo.getOwner());
-        stopsTemplate.setIsCustomized(thirdStopsComponentVo.isCustomized());
-        stopsTemplate.setStopGroupList(stopGroupByName);
-        List<PropertyTemplate> listPropertyTemplate = StopsComponentPropertyVoUtils.thirdStopsComponentPropertyVoListToStopsComponentProperty(username, thirdStopsComponentVo.getProperties(), stopsTemplate);
-        stopsTemplate.setProperties(listPropertyTemplate);
-        return stopsTemplate;
+        StopsComponent stopsComponent = stopsComponentNewNoId(username);
+        stopsComponent.setId(UUIDUtils.getUUID32());
+        stopsComponent.setBundel(thirdStopsComponentVo.getBundle());
+        stopsComponent.setDescription(thirdStopsComponentVo.getDescription());
+        stopsComponent.setGroups(thirdStopsComponentVo.getGroups());
+        stopsComponent.setName(thirdStopsComponentVo.getName());
+        stopsComponent.setInports(inports);
+        stopsComponent.setInPortType(inPortType);
+        stopsComponent.setOutports(outports);
+        stopsComponent.setOutPortType(outPortType);
+        stopsComponent.setOwner(thirdStopsComponentVo.getOwner());
+        stopsComponent.setIsCustomized(thirdStopsComponentVo.isCustomized());
+        stopsComponent.setStopGroupList(stopGroupByName);
+        List<StopsComponentProperty> listStopsComponentProperty = StopsComponentPropertyUtils.thirdStopsComponentPropertyVoListToStopsComponentProperty(username, thirdStopsComponentVo.getProperties(), stopsComponent);
+        stopsComponent.setProperties(listStopsComponentProperty);
+        return stopsComponent;
     }
 
 }

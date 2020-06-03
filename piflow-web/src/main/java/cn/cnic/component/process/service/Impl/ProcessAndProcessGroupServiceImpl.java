@@ -1,13 +1,12 @@
 package cn.cnic.component.process.service.Impl;
 
-import cn.cnic.base.util.JsonUtils;
-import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.base.util.ReturnMapUtils;
-import cn.cnic.base.util.SessionUserUtil;
+import cn.cnic.base.util.*;
 import cn.cnic.component.process.service.IProcessAndProcessGroupService;
-import cn.cnic.domain.custom.ProcessAndProcessGroupDomain;
+import cn.cnic.mapper.custom.ProcessAndProcessGroupMapper;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import org.slf4j.Logger;
-import org.springframework.data.domain.Page;
+
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -19,7 +18,7 @@ public class ProcessAndProcessGroupServiceImpl implements IProcessAndProcessGrou
     Logger logger = LoggerUtil.getLogger();
 
     @Resource
-    private ProcessAndProcessGroupDomain processAndProcessGroupDomain;
+    private ProcessAndProcessGroupMapper processAndProcessGroupMapper;
 
     /**
      * Query ProcessAndProcessGroupList (parameter space-time non-paging)
@@ -34,17 +33,15 @@ public class ProcessAndProcessGroupServiceImpl implements IProcessAndProcessGrou
         if (null == offset || null == limit) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.ERROR_MSG);
         }
-        Page<Map<String, Object>> processGroupListPage;
+        Page<Process> page = PageHelper.startPage(offset, limit);
         if (SessionUserUtil.isAdmin()) {
-            processGroupListPage = processAndProcessGroupDomain.getProcessAndProcessGroupListPage(offset - 1, limit, param);
+            processAndProcessGroupMapper.getProcessAndProcessGroupList(param);
         } else {
             String currentUsername = SessionUserUtil.getCurrentUsername();
-            processGroupListPage = processAndProcessGroupDomain.getProcessAndProcessGroupListPageByUser(currentUsername, offset - 1, limit, param);
+            processAndProcessGroupMapper.getProcessAndProcessGroupListByUser(param, currentUsername);
         }
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(ReturnMapUtils.SUCCEEDED_MSG);
-        rtnMap.put("msg", "");
-        rtnMap.put("count", processGroupListPage.getTotalElements());
-        rtnMap.put("data", processGroupListPage.getContent());//Data collection
+        rtnMap = PageHelperUtils.setLayTableParam(page, rtnMap);
         return JsonUtils.toJsonNoException(rtnMap);
     }
 

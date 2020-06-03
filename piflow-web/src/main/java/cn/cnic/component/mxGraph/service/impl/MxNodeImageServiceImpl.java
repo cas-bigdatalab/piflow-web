@@ -50,7 +50,7 @@ public class MxNodeImageServiceImpl implements IMxNodeImageService {
         String fileName = (String) uploadMap.get("fileName");
         String path = (String) uploadMap.get("path");
         MxNodeImage mxNodeImage = MxNodeImageUtils.newMxNodeImageNoId(username);
-        mxNodeImage.setId(SqlUtils.getUUID32());
+        mxNodeImage.setId(UUIDUtils.getUUID32());
         mxNodeImage.setImageName(fileName);
         mxNodeImage.setImagePath(path);
         mxNodeImage.setImageUrl("/images/" + saveFileName);
