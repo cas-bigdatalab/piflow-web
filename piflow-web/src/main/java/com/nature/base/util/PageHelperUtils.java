@@ -26,4 +26,18 @@ public class PageHelperUtils {
         }
         return rtnMap;
     }
+
+    public static Map<String, Object> setLayTableParam(Page page, Map<String, Object> rtnMap) {
+        if (null == rtnMap) {
+            rtnMap = new HashMap<>();
+        }
+        if (null == page) {
+            return rtnMap;
+        }
+        PageInfo info = new PageInfo(page.getResult());
+        rtnMap.put("count", info.getTotal());
+        rtnMap.put("data", info.getList());//Data collection
+        logger.debug("success");
+        return rtnMap;
+    }
 }
