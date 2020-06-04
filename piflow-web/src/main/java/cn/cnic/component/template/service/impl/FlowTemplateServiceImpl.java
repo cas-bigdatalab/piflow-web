@@ -53,6 +53,7 @@ public class FlowTemplateServiceImpl implements IFlowTemplateService {
     /**
      * add FlowTemplate
      *
+     * @param username
      * @param name
      * @param loadId
      * @param templateType
@@ -60,8 +61,10 @@ public class FlowTemplateServiceImpl implements IFlowTemplateService {
      */
     @Override
     @Transactional
-    public String addFlowTemplate(String name, String loadId, String templateType) {
-        String username = SessionUserUtil.getCurrentUsername();
+    public String addFlowTemplate(String username, String name, String loadId, String templateType) {
+        if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
+        }
         if (StringUtils.isBlank(name)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("param name is empty");
         }
@@ -118,10 +121,10 @@ public class FlowTemplateServiceImpl implements IFlowTemplateService {
     }
 
     @Override
-    public String getFlowTemplateListPage(Integer offset, Integer limit, String param) {
+    public String getFlowTemplateListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param) {
         Map<String, Object> rtnMap = new HashMap<String, Object>();
         if (null != offset && null != limit) {
-            Page<FlowTemplate> flowTemplateListPage = flowTemplateDomain.getFlowTemplateListPage(offset - 1, limit, param);
+            Page<FlowTemplate> flowTemplateListPage = flowTemplateDomain.getFlowTemplateListPage(username, isAdmin, offset - 1, limit, param);
             rtnMap.put(ReturnMapUtils.KEY_CODE, ReturnMapUtils.SUCCEEDED_CODE);
             rtnMap.put("msg", "");
             rtnMap.put("count", flowTemplateListPage.getTotalElements());
@@ -170,8 +173,10 @@ public class FlowTemplateServiceImpl implements IFlowTemplateService {
      * @return
      */
     @Override
-    public String uploadXmlFile(MultipartFile file) {
-        String username = SessionUserUtil.getCurrentUsername();
+    public String uploadXmlFile(String username, MultipartFile file) {
+        if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
+        }
         if (file.isEmpty()) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Upload failed, please try again later");
         }
@@ -208,8 +213,8 @@ public class FlowTemplateServiceImpl implements IFlowTemplateService {
     }
 
     @Override
-    public String flowTemplateList() {
-        List<FlowTemplate> findTemPlateList = flowTemplateDomain.getFlowTemplateList();
+    public String flowTemplateList(String username, boolean isAdmin) {
+        List<FlowTemplate> findTemPlateList = flowTemplateDomain.getFlowTemplateList(username, isAdmin);
         if (null == findTemPlateList || findTemPlateList.size() <= 0) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Query result is empty");
         }
@@ -225,8 +230,7 @@ public class FlowTemplateServiceImpl implements IFlowTemplateService {
     }
 
     @Override
-    public String loadGroupTemplate(String templateId, String loadId) {
-        String username = SessionUserUtil.getCurrentUsername();
+    public String loadGroupTemplate(String username, String templateId, String loadId) {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal user, Load failed");
         }
@@ -371,9 +375,8 @@ public class FlowTemplateServiceImpl implements IFlowTemplateService {
     }
 
     @Override
-    public String loadTaskTemplate(String templateId, String flowId) {
-        String currentUsername = SessionUserUtil.getCurrentUsername();
-        if (StringUtils.isBlank(currentUsername)) {
+    public String loadTaskTemplate(String username, String templateId, String flowId) {
+        if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal user, Load failed");
         }
         if (null == flowId) {
@@ -403,7 +406,7 @@ public class FlowTemplateServiceImpl implements IFlowTemplateService {
         maxStopPageId = null == maxStopPageId ? 2 : maxStopPageId;
         // Get the current flow containing all stop names
         String[] stopNamesByFlowId = stopsDomain.getStopNamesByFlowId(flowId);
-        Map<String, Object> flowTemplateXmlToFlowRtnMap = FlowXmlUtils.flowTemplateXmlToFlow(xmlFileToStr, currentUsername, maxStopPageId + "", null, stopNamesByFlowId);
+        Map<String, Object> flowTemplateXmlToFlowRtnMap = FlowXmlUtils.flowTemplateXmlToFlow(xmlFileToStr, username, maxStopPageId + "", null, stopNamesByFlowId);
         if (200 != (Integer) flowTemplateXmlToFlowRtnMap.get("code")) {
             return JsonUtils.toJsonNoException(flowTemplateXmlToFlowRtnMap);
         }
@@ -417,17 +420,17 @@ public class FlowTemplateServiceImpl implements IFlowTemplateService {
         if (null != mxGraphModelXml) {
             MxGraphModel mxGraphModel = flowById.getMxGraphModel();
             if (null == mxGraphModel) {
-                mxGraphModel = MxGraphModelUtils.setMxGraphModelBasicInformation(null, false, currentUsername);
+                mxGraphModel = MxGraphModelUtils.setMxGraphModelBasicInformation(null, false, username);
             } else {
                 // Update basic information
-                mxGraphModel = MxGraphModelUtils.updateMxGraphModelBasicInformation(mxGraphModel, currentUsername);
+                mxGraphModel = MxGraphModelUtils.updateMxGraphModelBasicInformation(mxGraphModel, username);
             }
             // link flow
             mxGraphModel.setFlow(flowById);
 
             List<MxCell> mxCellList = null;
             if (null == mxGraphModel.getRoot() || mxGraphModel.getRoot().size() <= 1) {
-                mxCellList = MxCellUtils.initMxCell(currentUsername, mxGraphModel);
+                mxCellList = MxCellUtils.initMxCell(username, mxGraphModel);
             }
             if (null == mxCellList) {
                 mxCellList = new ArrayList<>();

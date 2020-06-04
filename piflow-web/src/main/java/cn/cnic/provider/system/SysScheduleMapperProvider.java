@@ -1,6 +1,5 @@
 package cn.cnic.provider.system;
 
-import cn.cnic.base.util.SessionUserUtil;
 import cn.cnic.base.util.SqlUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -10,13 +9,13 @@ public class SysScheduleMapperProvider {
     /**
      * getSysScheduleList
      *
+     * @param isAdmin
      * @param param
      * @return
      */
-    public String getSysScheduleList(String param) {
+    public String getSysScheduleList(boolean isAdmin, String param) {
         String sqlStr = "select 0";
-        boolean admin = SessionUserUtil.isAdmin();
-        if (admin) {
+        if (isAdmin) {
             StringBuffer sqlStrbuf = new StringBuffer();
             sqlStrbuf.append("SELECT * ");
             sqlStrbuf.append("FROM sys_schedule ");
@@ -43,10 +42,9 @@ public class SysScheduleMapperProvider {
      * @param id
      * @return
      */
-    public String getSysScheduleById(String id) {
+    public String getSysScheduleById(boolean isAdmin, String id) {
         String sqlStr = "select 0";
-        boolean admin = SessionUserUtil.isAdmin();
-        if (admin && StringUtils.isNotBlank(id)) {
+        if (isAdmin && StringUtils.isNotBlank(id)) {
             StringBuffer sqlStrbuf = new StringBuffer();
             sqlStrbuf.append("SELECT * ");
             sqlStrbuf.append("FROM sys_schedule ");

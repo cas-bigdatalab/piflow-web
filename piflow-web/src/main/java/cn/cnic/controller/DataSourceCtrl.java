@@ -89,7 +89,8 @@ public class DataSourceCtrl {
     @RequestMapping("/fillDatasource")
     @ResponseBody
     public String fillDatasource(String dataSourceId, String stopId) {
-        return stopsServiceImpl.fillDatasource(dataSourceId, stopId);
+        String username = SessionUserUtil.getCurrentUsername();
+        return stopsServiceImpl.fillDatasource(username, dataSourceId, stopId);
     }
 
 

@@ -1,8 +1,6 @@
 package cn.cnic.component.flow.utils;
 
-import cn.cnic.base.util.SessionUserUtil;
 import cn.cnic.base.util.UUIDUtils;
-import cn.cnic.base.vo.UserVo;
 import cn.cnic.component.flow.model.FlowGroupPaths;
 import cn.cnic.component.flow.vo.FlowGroupPathsVo;
 import org.springframework.beans.BeanUtils;
@@ -39,9 +37,7 @@ public class FlowGroupPathsUtil {
      * @param flowGroupPathsVoList
      * @return
      */
-    public static List<FlowGroupPaths> flowGroupPathsListVoToPo(List<FlowGroupPathsVo> flowGroupPathsVoList) {
-        UserVo user = SessionUserUtil.getCurrentUser();
-        String username = (null != user) ? user.getUsername() : "-1";
+    public static List<FlowGroupPaths> flowGroupPathsListVoToPo(String username, List<FlowGroupPathsVo> flowGroupPathsVoList) {
         List<FlowGroupPaths> flowGroupPathsList = null;
         if (null != flowGroupPathsVoList && flowGroupPathsVoList.size() > 0) {
             flowGroupPathsList = new ArrayList<>();

@@ -2,6 +2,7 @@ package cn.cnic.component.flow;
 
 import cn.cnic.ApplicationTests;
 import cn.cnic.base.util.LoggerUtil;
+import cn.cnic.base.util.SessionUserUtil;
 import cn.cnic.base.util.UUIDUtils;
 import cn.cnic.component.flow.model.Flow;
 import cn.cnic.component.flow.service.IFlowService;
@@ -20,7 +21,7 @@ public class FlowServiceTest extends ApplicationTests {
 	@Test
 	@Rollback(false)
 	public void testGetFlowById() {
-		Flow flow = flowService.getFlowById("85f90a18423245b09cde371cbb333021");
+		Flow flow = flowService.getFlowById("admin",true,"85f90a18423245b09cde371cbb333021");
 		if (null == flow) {
 			logger.info("The query result is empty");
 			flow = new Flow();

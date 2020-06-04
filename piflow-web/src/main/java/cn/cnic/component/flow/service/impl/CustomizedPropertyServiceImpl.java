@@ -2,9 +2,8 @@ package cn.cnic.component.flow.service.impl;
 
 import cn.cnic.base.util.JsonUtils;
 import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.base.util.SessionUserUtil;
+import cn.cnic.base.util.ReturnMapUtils;
 import cn.cnic.base.util.UUIDUtils;
-import cn.cnic.base.vo.UserVo;
 import cn.cnic.component.flow.model.CustomizedProperty;
 import cn.cnic.component.flow.model.Paths;
 import cn.cnic.component.flow.model.Stops;
@@ -39,92 +38,71 @@ public class CustomizedPropertyServiceImpl implements ICustomizedPropertyService
 
     @Override
     @Transactional
-    public String addStopCustomizedProperty(StopsCustomizedPropertyVo stopsCustomizedPropertyVo) {
-        Map<String, Object> rtnMap = new HashMap<String, Object>();
-        rtnMap.put("code", 500);
-        int optDataCount = 0;
-        UserVo currentUser = SessionUserUtil.getCurrentUser();
-        if (null != stopsCustomizedPropertyVo && null != currentUser) {
-            String stopId = stopsCustomizedPropertyVo.getStopId();
-            if (StringUtils.isNotBlank(stopId)) {
-                List<CustomizedProperty> customizedPropertyListByStopsIdAndName = customizedPropertyMapper.getCustomizedPropertyListByStopsIdAndName(stopId, stopsCustomizedPropertyVo.getName());
-                if (null == customizedPropertyListByStopsIdAndName || customizedPropertyListByStopsIdAndName.size() <= 0) {
-                    Stops stopsById = stopsMapper.getStopsById(stopId);
-                    if (null != stopsById) {
-                        String username = currentUser.getUsername();
-                        CustomizedProperty customizedProperty = new CustomizedProperty();
-                        BeanUtils.copyProperties(stopsCustomizedPropertyVo, customizedProperty);
-                        String id = UUIDUtils.getUUID32();
-                        customizedProperty.setId(id);
-                        customizedProperty.setCrtDttm(new Date());
-                        customizedProperty.setCrtUser(username);
-                        customizedProperty.setLastUpdateDttm(new Date());
-                        customizedProperty.setLastUpdateUser(username);
-                        customizedProperty.setEnableFlag(true);
-
-                        customizedProperty.setStops(stopsById);
-                        optDataCount = customizedPropertyMapper.addCustomizedProperty(customizedProperty);
-                        if (optDataCount > 0) {
-                            rtnMap.put("code", 200);
-                            rtnMap.put("stopPageId", stopsById.getPageId());
-                        } else {
-                            logger.warn("save failed");
-                            rtnMap.put("errorMsg", "save failed");
-                        }
-                    } else {
-                        logger.warn("Can't find ‘stop’ with id " + stopsById);
-                        rtnMap.put("errorMsg", "Can't find ‘stop’ with id " + stopsById);
-                    }
-                } else {
-                    logger.warn("Key repeat, please re-enter");
-                    rtnMap.put("errorMsg", "Key repeat, please re-enter");
-                }
-
-            } else {
-                logger.warn("stopId is null");
-                rtnMap.put("errorMsg", "stopId is null");
-            }
-        } else {
-            logger.warn("Incorrect param or illegal operation");
-            rtnMap.put("errorMsg", "Incorrect param or illegal operation");
+    public String addStopCustomizedProperty(String username, StopsCustomizedPropertyVo stopsCustomizedPropertyVo) {
+        if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal operation");
         }
-        return JsonUtils.toJsonNoException(rtnMap);
+        if (null == stopsCustomizedPropertyVo) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Incorrect param");
+        }
+        String stopId = stopsCustomizedPropertyVo.getStopId();
+        if (StringUtils.isBlank(stopId)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("stopId is null");
+        }
+        List<CustomizedProperty> customizedPropertyListByStopsIdAndName = customizedPropertyMapper.getCustomizedPropertyListByStopsIdAndName(stopId, stopsCustomizedPropertyVo.getName());
+        if (null != customizedPropertyListByStopsIdAndName && customizedPropertyListByStopsIdAndName.size() > 0) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Key repeat, please re-enter");
+        }
+        Stops stopsById = stopsMapper.getStopsById(stopId);
+        if (null == stopsById) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Can't find ‘stop’ with id " + stopsById);
+        }
+        CustomizedProperty customizedProperty = new CustomizedProperty();
+        BeanUtils.copyProperties(stopsCustomizedPropertyVo, customizedProperty);
+        String id = UUIDUtils.getUUID32();
+        customizedProperty.setId(id);
+        customizedProperty.setCrtDttm(new Date());
+        customizedProperty.setCrtUser(username);
+        customizedProperty.setLastUpdateDttm(new Date());
+        customizedProperty.setLastUpdateUser(username);
+        customizedProperty.setEnableFlag(true);
+
+        customizedProperty.setStops(stopsById);
+        int optDataCount = customizedPropertyMapper.addCustomizedProperty(customizedProperty);
+        if (optDataCount > 0) {
+            return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("stopPageId", stopsById.getPageId());
+        } else {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("save failed");
+        }
+
     }
 
     @Override
-    public String updateStopsCustomizedProperty(StopsCustomizedPropertyVo stopsCustomizedPropertyVo) {
-        Map<String, Object> rtnMap = new HashMap<String, Object>();
-        rtnMap.put("code", 500);
-        int optDataCount = 0;
-        UserVo currentUser = SessionUserUtil.getCurrentUser();
-        if (null != stopsCustomizedPropertyVo && null != currentUser) {
-            String id = stopsCustomizedPropertyVo.getId();
-            if (StringUtils.isNotBlank(id)) {
-                optDataCount = customizedPropertyMapper.updateCustomizedPropertyCustomValue(stopsCustomizedPropertyVo.getCustomValue(), id);
-                if (optDataCount > 0) {
-                    rtnMap.put("code", 200);
-                    rtnMap.put("value", stopsCustomizedPropertyVo.getCustomValue());
-                } else {
-                    logger.warn("save failed");
-                    rtnMap.put("errorMsg", "save failed");
-                }
-            } else {
-                logger.warn("stopId is null");
-                rtnMap.put("errorMsg", "stopId is null");
-            }
-        } else {
-            logger.warn("Incorrect param or illegal operation");
-            rtnMap.put("errorMsg", "Incorrect param or illegal operation");
+    public String updateStopsCustomizedProperty(String username, StopsCustomizedPropertyVo stopsCustomizedPropertyVo) {
+        if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
         }
-        return JsonUtils.toJsonNoException(rtnMap);
+        if (null == stopsCustomizedPropertyVo) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Incorrect param");
+        }
+        String id = stopsCustomizedPropertyVo.getId();
+        if (StringUtils.isBlank(id)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("stopId is null");
+        }
+        int optDataCount = customizedPropertyMapper.updateCustomizedPropertyCustomValue(username, stopsCustomizedPropertyVo.getCustomValue(), id);
+        if (optDataCount > 0) {
+            return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("value", stopsCustomizedPropertyVo.getCustomValue());
+        } else {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("save failed");
+        }
     }
 
     @Override
-    public String deleteStopsCustomizedProperty(String customPropertyId) {
+    public String deleteStopsCustomizedProperty(String username, String customPropertyId) {
         Map<String, Object> rtnMap = new HashMap<String, Object>();
         rtnMap.put("code", 500);
         int optDataCount = 0;
-        optDataCount = customizedPropertyMapper.updateEnableFlagByStopId(customPropertyId);
+        optDataCount = customizedPropertyMapper.updateEnableFlagByStopId(username, customPropertyId);
         if (optDataCount > 0) {
             rtnMap.put("code", 200);
         } else {

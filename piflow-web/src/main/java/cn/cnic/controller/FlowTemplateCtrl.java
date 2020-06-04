@@ -1,6 +1,7 @@
 package cn.cnic.controller;
 
 import cn.cnic.base.util.ReturnMapUtils;
+import cn.cnic.base.util.SessionUserUtil;
 import cn.cnic.component.template.service.IFlowTemplateService;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -29,13 +30,16 @@ public class FlowTemplateCtrl {
         String name = request.getParameter("name");
         String loadId = request.getParameter("load");
         String templateType = request.getParameter("templateType");
-        return flowTemplateServiceImpl.addFlowTemplate(name, loadId, templateType);
+        String username = SessionUserUtil.getCurrentUsername();
+        return flowTemplateServiceImpl.addFlowTemplate(username, name, loadId, templateType);
     }
 
     @RequestMapping("/flowTemplatePage")
     @ResponseBody
     public String templatePage(Integer page, Integer limit, String param) {
-        return flowTemplateServiceImpl.getFlowTemplateListPage(page, limit, param);
+        String username = SessionUserUtil.getCurrentUsername();
+        boolean isAdmin = SessionUserUtil.isAdmin();
+        return flowTemplateServiceImpl.getFlowTemplateListPage(username, isAdmin, page, limit, param);
     }
 
     /**
@@ -71,7 +75,8 @@ public class FlowTemplateCtrl {
     @RequestMapping(value = "/uploadXmlFile", method = RequestMethod.POST)
     @ResponseBody
     public String uploadXmlFile(@RequestParam("file") MultipartFile file) {
-        return flowTemplateServiceImpl.uploadXmlFile(file);
+        String username = SessionUserUtil.getCurrentUsername();
+        return flowTemplateServiceImpl.uploadXmlFile(username, file);
     }
 
     /**
@@ -82,7 +87,9 @@ public class FlowTemplateCtrl {
     @RequestMapping("/flowTemplateList")
     @ResponseBody
     public String flowTemplateList() {
-        return flowTemplateServiceImpl.flowTemplateList();
+        String username = SessionUserUtil.getCurrentUsername();
+        boolean isAdmin = SessionUserUtil.isAdmin();
+        return flowTemplateServiceImpl.flowTemplateList(username, isAdmin);
     }
 
     /**
@@ -98,10 +105,11 @@ public class FlowTemplateCtrl {
         String templateId = request.getParameter("templateId");
         String loadId = request.getParameter("load");
         String loadType = request.getParameter("loadType");
+        String username = SessionUserUtil.getCurrentUsername();
         if ("TASK".equals(loadType)) {
-            return flowTemplateServiceImpl.loadTaskTemplate(templateId, loadId);
+            return flowTemplateServiceImpl.loadTaskTemplate(username, templateId, loadId);
         } else if ("GROUP".equals(loadType)) {
-            return flowTemplateServiceImpl.loadGroupTemplate(templateId, loadId);
+            return flowTemplateServiceImpl.loadGroupTemplate(username, templateId, loadId);
         } else {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("loadType is null");
         }

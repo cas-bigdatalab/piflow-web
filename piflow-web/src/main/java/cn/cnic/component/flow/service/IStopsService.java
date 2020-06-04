@@ -28,7 +28,7 @@ public interface IStopsService {
      * @param stopsVo
      * @return
      */
-    public Integer stopsUpdate(StopsVo stopsVo);
+    public Integer stopsUpdate(String username,StopsVo stopsVo);
 
     /**
      * Modify the "stops" individual fields returned by the interface
@@ -45,7 +45,7 @@ public interface IStopsService {
      * @param isCheckpoint
      * @return
      */
-    public int updateStopsCheckpoint(String stopId, boolean isCheckpoint);
+    public int updateStopsCheckpoint(String username, String stopId, boolean isCheckpoint);
 
     /**
      * Modify "stopName" based on id
@@ -54,12 +54,12 @@ public interface IStopsService {
      * @param stopName
      * @return
      */
-    public int updateStopsNameById(String id, String stopName);
+    public int updateStopsNameById(String username, String id, String stopName);
 
     public String getStopByNameAndFlowId(String flowId, String stopName);
 
     @Transactional
-    public StatefulRtnBase updateStopName(String stopId, Flow flow, String stopName, String pageId);
+    public StatefulRtnBase updateStopName(String username, String stopId, Flow flow, String stopName, String pageId);
 
     public String getStopsPort(String flowId, String sourceId, String targetId, String pathLineId);
 
@@ -70,6 +70,6 @@ public interface IStopsService {
      * @param stopId
      * @return
      */
-    public String fillDatasource(String dataSourceId, String stopId);
+    public String fillDatasource(String username, String dataSourceId, String stopId);
 
 }

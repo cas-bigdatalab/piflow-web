@@ -18,10 +18,10 @@ public interface SysScheduleMapper {
      * @return
      */
     @SelectProvider(type = SysScheduleMapperProvider.class, method = "getSysScheduleList")
-    public List<SysScheduleVo> getSysScheduleList(@Param("param") String param);
+    public List<SysScheduleVo> getSysScheduleList(@Param("isAdmin") boolean isAdmin, @Param("param") String param);
 
     @SelectProvider(type = SysScheduleMapperProvider.class, method = "getSysScheduleById")
-    public SysScheduleVo getSysScheduleById(String id);
+    public SysScheduleVo getSysScheduleById(boolean isAdmin, String id);
 
 
 }

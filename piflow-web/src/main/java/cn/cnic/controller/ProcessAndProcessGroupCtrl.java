@@ -45,7 +45,9 @@ public class ProcessAndProcessGroupCtrl {
     @RequestMapping("/processAndProcessGroupListPage")
     @ResponseBody
     public String processAndProcessGroupListPage(Integer page, Integer limit, String param) {
-        return processAndProcessGroupServiceImpl.getProcessAndProcessGroupListPage(page, limit, param);
+        String username = SessionUserUtil.getCurrentUsername();
+        boolean isAdmin = SessionUserUtil.isAdmin();
+        return processAndProcessGroupServiceImpl.getProcessAndProcessGroupListPage(username, isAdmin, page, limit, param);
     }
 
     /**
@@ -98,10 +100,11 @@ public class ProcessAndProcessGroupCtrl {
     public String delProcessGroup(HttpServletRequest request) {
         String id = request.getParameter("id");
         String processType = request.getParameter("processType");
+        String username = SessionUserUtil.getCurrentUsername();
         if ("PROCESS".equals(processType)) {
-            return processServiceImpl.delProcess(id);
+            return processServiceImpl.delProcess(username, id);
         } else {
-            return processGroupServiceImpl.delProcessGroup(id);
+            return processGroupServiceImpl.delProcessGroup(username, id);
         }
     }
 

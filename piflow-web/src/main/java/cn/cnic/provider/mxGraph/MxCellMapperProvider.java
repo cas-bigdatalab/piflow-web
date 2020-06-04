@@ -1,9 +1,7 @@
 package cn.cnic.provider.mxGraph;
 
 import cn.cnic.base.util.DateUtils;
-import cn.cnic.base.util.SessionUserUtil;
 import cn.cnic.base.util.SqlUtils;
-import cn.cnic.base.vo.UserVo;
 import cn.cnic.component.mxGraph.model.MxCell;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
@@ -213,22 +211,22 @@ public class MxCellMapperProvider {
      * @param id
      * @return
      */
-    public String updateEnableFlagById(String id) {
-        UserVo user = SessionUserUtil.getCurrentUser();
-        String username = (null != user) ? user.getUsername() : "-1";
-        String sqlStr = "select 0";
-        if (StringUtils.isNotBlank(id)) {
-            SQL sql = new SQL();
-            sql.UPDATE("mx_cell");
-            sql.SET("enable_flag = 0");
-            sql.SET("last_update_user = " + SqlUtils.preventSQLInjection(username));
-            sql.SET("last_update_dttm = " + SqlUtils.addSqlStr(DateUtils.dateTimesToStr(new Date())));
-            sql.WHERE("enable_flag = 1");
-            sql.WHERE("id = " + SqlUtils.preventSQLInjection(id));
-
-            sqlStr = sql.toString();
+    public String updateEnableFlagById(String username, String id) {
+        if (StringUtils.isBlank(username)) {
+            return "select 0";
         }
-        return sqlStr;
+        if (StringUtils.isBlank(id)) {
+            return "select 0";
+        }
+        SQL sql = new SQL();
+        sql.UPDATE("mx_cell");
+        sql.SET("enable_flag = 0");
+        sql.SET("last_update_user = " + SqlUtils.preventSQLInjection(username));
+        sql.SET("last_update_dttm = " + SqlUtils.addSqlStr(DateUtils.dateTimesToStr(new Date())));
+        sql.WHERE("enable_flag = 1");
+        sql.WHERE("id = " + SqlUtils.preventSQLInjection(id));
+
+        return sql.toString();
     }
 
 }

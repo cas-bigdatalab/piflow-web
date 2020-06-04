@@ -78,6 +78,6 @@ public interface MxCellMapper {
      * @return
      */
     @UpdateProvider(type = MxCellMapperProvider.class, method = "updateEnableFlagById")
-    public int updateEnableFlagById(String id);
+    public int updateEnableFlagById(String username, String id);
 
 }

@@ -219,7 +219,8 @@ public class ProcessCtrl {
     @ResponseBody
     public String delProcess(HttpServletRequest request, Model model) {
         String processID = request.getParameter("processID");
-        return processServiceImpl.delProcess(processID);
+        String username = SessionUserUtil.getCurrentUsername();
+        return processServiceImpl.delProcess(username, processID);
     }
 
     /**

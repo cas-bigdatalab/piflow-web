@@ -11,6 +11,6 @@ public interface IProcessAndProcessGroupService {
      * @param param  Search content
      * @return json
      */
-    public String getProcessAndProcessGroupListPage(Integer offset, Integer limit, String param);
+    public String getProcessAndProcessGroupListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param);
 
 }

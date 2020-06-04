@@ -1,6 +1,9 @@
 package cn.cnic.component.mxGraph.service.impl;
 
-import cn.cnic.base.util.*;
+import cn.cnic.base.util.FileUtils;
+import cn.cnic.base.util.LoggerUtil;
+import cn.cnic.base.util.ReturnMapUtils;
+import cn.cnic.base.util.UUIDUtils;
 import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.component.mxGraph.model.MxNodeImage;
 import cn.cnic.component.mxGraph.service.IMxNodeImageService;
@@ -27,8 +30,7 @@ public class MxNodeImageServiceImpl implements IMxNodeImageService {
     private MxNodeImageDomain mxNodeImageDomain;
 
     @Override
-    public String uploadNodeImage(MultipartFile file, String imageType) {
-        String username = SessionUserUtil.getCurrentUsername();
+    public String uploadNodeImage(String username,MultipartFile file, String imageType) {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
         }
@@ -60,8 +62,7 @@ public class MxNodeImageServiceImpl implements IMxNodeImageService {
     }
 
     @Override
-    public String getMxNodeImageList(String imageType) {
-        String username = SessionUserUtil.getCurrentUsername();
+    public String getMxNodeImageList(String username,String imageType) {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
         }

@@ -1,10 +1,5 @@
 package cn.cnic.component.process.service.Impl;
 
-import cn.cnic.third.vo.flow.ThirdFlowInfoStopVo;
-import cn.cnic.third.vo.flow.ThirdFlowInfoStopsVo;
-import cn.cnic.third.vo.flow.ThirdFlowInfoVo;
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
 import cn.cnic.base.util.*;
 import cn.cnic.base.vo.UserVo;
 import cn.cnic.common.Eunm.ProcessState;
@@ -25,8 +20,13 @@ import cn.cnic.domain.process.ProcessDomain;
 import cn.cnic.mapper.process.ProcessMapper;
 import cn.cnic.mapper.process.ProcessStopMapper;
 import cn.cnic.third.service.IFlow;
+import cn.cnic.third.vo.flow.ThirdFlowInfoStopVo;
+import cn.cnic.third.vo.flow.ThirdFlowInfoStopsVo;
+import cn.cnic.third.vo.flow.ThirdFlowInfoVo;
 import cn.cnic.third.vo.flow.ThirdProgressVo;
 import cn.cnic.transaction.process.ProcessTransaction;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import net.sf.json.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -431,8 +431,7 @@ public class ProcessServiceImpl implements IProcessService {
      * @return
      */
     @Override
-    public ProcessVo flowToProcessAndSave(String flowId) {
-        String user = SessionUserUtil.getCurrentUsername();
+    public ProcessVo flowToProcessAndSave(String username, String flowId) {
         //Determine if the flowId is empty
         if (StringUtils.isBlank(flowId)) {
             logger.warn("The parameter'flowId'is empty and the conversion fails");
@@ -445,7 +444,7 @@ public class ProcessServiceImpl implements IProcessService {
             logger.warn("Unable to query flow Id for'" + flowId + "'flow, the conversion failed");
             return null;
         }
-        Process process = ProcessUtils.flowToProcess(flowById, user);
+        Process process = ProcessUtils.flowToProcess(flowById, username);
         if (null == process) {
             logger.warn("Conversion failed");
             return null;
@@ -467,8 +466,7 @@ public class ProcessServiceImpl implements IProcessService {
      * @return
      */
     @Override
-    public String delProcess(String processId) {
-        String username = SessionUserUtil.getCurrentUsername();
+    public String delProcess(String username,String processId) {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
         }

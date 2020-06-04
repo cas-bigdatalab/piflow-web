@@ -1,9 +1,7 @@
 package cn.cnic.provider.mxGraph;
 
 import cn.cnic.base.util.DateUtils;
-import cn.cnic.base.util.SessionUserUtil;
 import cn.cnic.base.util.SqlUtils;
-import cn.cnic.base.vo.UserVo;
 import cn.cnic.component.mxGraph.model.MxGraphModel;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
@@ -260,22 +258,22 @@ public class MxGraphModelProvider {
      * @param flowId
      * @return
      */
-    public String updateEnableFlagByFlowId(String flowId) {
-        UserVo user = SessionUserUtil.getCurrentUser();
-        String username = (null != user) ? user.getUsername() : "-1";
-        String sqlStr = "select 0";
-        if (StringUtils.isNotBlank(flowId)) {
-            SQL sql = new SQL();
-            sql.UPDATE("mx_graph_model");
-            sql.SET("enable_flag = 0");
-            sql.SET("last_update_user = " + SqlUtils.preventSQLInjection(username));
-            sql.SET("last_update_dttm = " + SqlUtils.preventSQLInjection(DateUtils.dateTimesToStr(new Date())));
-            sql.WHERE("enable_flag = 1");
-            sql.WHERE("fk_flow_id = " + SqlUtils.preventSQLInjection(flowId));
-
-            sqlStr = sql.toString();
+    public String updateEnableFlagByFlowId(String username, String flowId) {
+        if (StringUtils.isBlank(username)) {
+            return "select 0";
         }
-        return sqlStr;
+        if (StringUtils.isBlank(flowId)) {
+            return "select 0";
+        }
+        SQL sql = new SQL();
+        sql.UPDATE("mx_graph_model");
+        sql.SET("enable_flag = 0");
+        sql.SET("last_update_user = " + SqlUtils.preventSQLInjection(username));
+        sql.SET("last_update_dttm = " + SqlUtils.preventSQLInjection(DateUtils.dateTimesToStr(new Date())));
+        sql.WHERE("enable_flag = 1");
+        sql.WHERE("fk_flow_id = " + SqlUtils.preventSQLInjection(flowId));
+
+        return sql.toString();
     }
 
 }

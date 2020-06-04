@@ -107,6 +107,6 @@ public interface MxGraphModelMapper {
 
 
     @UpdateProvider(type = MxGraphModelProvider.class, method = "updateEnableFlagByFlowId")
-    public int updateEnableFlagByFlowId(@Param("flowId") String flowId);
+    public int updateEnableFlagByFlowId(@Param("username") String username,@Param("flowId") String flowId);
 
 }

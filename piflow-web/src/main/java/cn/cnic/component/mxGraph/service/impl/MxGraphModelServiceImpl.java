@@ -1,7 +1,6 @@
 package cn.cnic.component.mxGraph.service.impl;
 
 import cn.cnic.base.util.*;
-import cn.cnic.base.vo.UserVo;
 import cn.cnic.common.Eunm.PortType;
 import cn.cnic.component.flow.model.*;
 import cn.cnic.component.flow.utils.PropertyUtils;
@@ -17,11 +16,9 @@ import cn.cnic.component.mxGraph.vo.MxGeometryVo;
 import cn.cnic.component.mxGraph.vo.MxGraphModelVo;
 import cn.cnic.component.mxGraph.vo.MxGraphVo;
 import cn.cnic.component.stopsComponent.mapper.StopsComponentMapper;
-import cn.cnic.component.stopsComponent.model.StopsComponentProperty;
 import cn.cnic.component.stopsComponent.model.StopsComponent;
-import cn.cnic.domain.flow.FlowDomain;
+import cn.cnic.component.stopsComponent.model.StopsComponentProperty;
 import cn.cnic.domain.flow.FlowGroupDomain;
-import cn.cnic.domain.flow.FlowGroupPathsDomain;
 import cn.cnic.domain.mxGraph.MxCellDomain;
 import cn.cnic.domain.mxGraph.MxGeometryDomain;
 import cn.cnic.domain.mxGraph.MxGraphModelDomain;
@@ -71,9 +68,6 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
     private PropertyMapper propertyMapper;
 
     @Resource
-    private FlowDomain flowDomain;
-
-    @Resource
     private FlowGroupDomain flowGroupDomain;
 
     @Resource
@@ -85,12 +79,9 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
     @Resource
     private MxGeometryDomain mxGeometryDomain;
 
-    @Resource
-    private FlowGroupPathsDomain flowGroupPathsDomain;
-
     @Override
     @Transactional
-    public String saveDataForTask(String imageXML, String loadId, String operType) {
+    public String saveDataForTask(String username, String imageXML, String loadId, String operType) {
         if (StringUtils.isAnyEmpty(imageXML, loadId, operType)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("The incoming parameters are empty");
         }
@@ -103,13 +94,13 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
         }
         if ("ADD".equals(operType)) {
             logger.info("ADD Operation begins");
-            return JsonUtils.toJsonNoException(this.addFlowStops(xmlToMxGraphModel, loadId, true));
+            return JsonUtils.toJsonNoException(this.addFlowStops(username, xmlToMxGraphModel, loadId, true));
         } else if ("MOVED".equals(operType)) {
             logger.info("MOVED Operation begins");
-            return JsonUtils.toJsonNoException(this.updateFlowMxGraph(xmlToMxGraphModel, loadId));
+            return JsonUtils.toJsonNoException(this.updateFlowMxGraph(username, xmlToMxGraphModel, loadId));
         } else if ("REMOVED".equals(operType)) {
             logger.info("REMOVED Operation begins");
-            return JsonUtils.toJsonNoException(this.updateFlow(xmlToMxGraphModel, loadId));
+            return JsonUtils.toJsonNoException(this.updateFlow(username, xmlToMxGraphModel, loadId));
         } else {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Can't find operType:" + operType + " type ");
         }
@@ -124,9 +115,8 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
      * @param flag           Whether to add stop information
      * @return
      */
-    private Map<String, Object> addFlowStops(MxGraphModelVo mxGraphModelVo, String flowId, boolean flag) {
-        UserVo currentUser = SessionUserUtil.getCurrentUser();
-        if (null == currentUser) {
+    private Map<String, Object> addFlowStops(String username, MxGraphModelVo mxGraphModelVo, String flowId, boolean flag) {
+        if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsg("illegal user");
         }
         // Query flow by flowId
@@ -138,7 +128,6 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
         if (null == mxGraphModelVo || null == flow) {
             return ReturnMapUtils.setFailedMsg("The passed parameter mxGraphModelVo is empty or the flow does not exist and the addition fails.");
         }
-        String username = currentUser.getUsername();
         // update flow
         flow.setLastUpdateDttm(new Date()); // last update time
         flow.setLastUpdateUser(username);// last update user
@@ -272,12 +261,12 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
         List<Paths> addPathsList = new ArrayList<Paths>();
 
         // Generate a pathsList based on the contents of the MxCellList
-        addPathsList = MxGraphModelUtils.mxCellVoListToPathsList(objectPaths, flow);
+        addPathsList = MxGraphModelUtils.mxCellVoListToPathsList(username, objectPaths, flow);
         if (flag) {
             // Judge empty
             if (null != addPathsList && addPathsList.size() > 0) {
                 // save addPathsList
-                int addPathsListNum = pathsMapper.addPathsList(addPathsList);
+                int addPathsListNum = pathsMapper.addPathsList(username, addPathsList);
                 if (addPathsListNum <= 0) {
                     logger.error("addPathsList Save failed flow：flowId(" + flow.getId() + ")", new Exception("addPathsList save failed"));
                 }
@@ -296,9 +285,8 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
      * @param flowId
      * @return
      */
-    private Map<String, Object> updateFlowMxGraph(MxGraphModelVo mxGraphModelVo, String flowId) {
-        UserVo currentUser = SessionUserUtil.getCurrentUser();
-        if (null == currentUser) {
+    private Map<String, Object> updateFlowMxGraph(String username, MxGraphModelVo mxGraphModelVo, String flowId) {
+        if (StringUtils.isBlank(username)) {
             logger.warn("illegal user");
             return ReturnMapUtils.setFailedMsg("illegal user");
         }
@@ -311,7 +299,6 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
         if (null == mxGraphModel) {
             return ReturnMapUtils.setFailedMsg("The mxGraphModel information with flowId is: " + flowId + " is not found, fail to edit");
         }
-        String username = currentUser.getUsername();
         // Copy the value from mxGraphModelVo to mxGraphModelDb
         BeanUtils.copyProperties(mxGraphModelVo, mxGraphModel);
         // setmxGraphModel basic attribute
@@ -329,7 +316,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
         // Take out the MxCellList information queried by the database.
         List<MxCell> mxCellList = mxGraphModel.getRoot();
         // Save and process mxCellList
-        return this.updateMxCellList(mxCellVoList, mxCellList);
+        return this.updateMxCellList(username, mxCellVoList, mxCellList);
     }
 
     /**
@@ -339,9 +326,11 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
      * @param flowId         The data to be modified
      * @return
      */
-    private Map<String, Object> updateFlow(MxGraphModelVo mxGraphModelVo, String flowId) {
-        UserVo user = SessionUserUtil.getCurrentUser();
-        String username = (null != user) ? user.getUsername() : "-1";
+    private Map<String, Object> updateFlow(String username, MxGraphModelVo mxGraphModelVo, String flowId) {
+        if (StringUtils.isBlank(username)) {
+            logger.warn("illegal user");
+            return ReturnMapUtils.setFailedMsg("illegal user");
+        }
         Flow flow = flowMapper.getFlowById(flowId);
         if (null == flow) {
             return ReturnMapUtils.setFailedMsg("The flowId cannot find the corresponding flow, and the modification fails.");
@@ -362,7 +351,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
         }
 
         // Save and modify the drawing board information
-        Map<String, Object> updateMxGraphRtnMap = this.updateFlowMxGraph(mxGraphModelVo, flowId);
+        Map<String, Object> updateMxGraphRtnMap = this.updateFlowMxGraph(username, mxGraphModelVo, flowId);
         // Determine if mxGraphModel is saved successfully
         if (null == updateMxGraphRtnMap || 200 != (int) updateMxGraphRtnMap.get(ReturnMapUtils.KEY_CODE)) {
             return updateMxGraphRtnMap;
@@ -426,7 +415,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
             // Modify save updateStops
             for (Paths paths : updatePaths) {
                 if (null != paths) {
-                    pathsMapper.updatePaths(paths);
+                    pathsMapper.updatePaths(username, paths);
                 }
             }
         } else {
@@ -714,10 +703,11 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
      * @param mxCellList
      * @return
      */
-    private Map<String, Object> updateMxCellList(List<MxCellVo> mxCellVoList, List<MxCell> mxCellList) {
-        UserVo user = SessionUserUtil.getCurrentUser();
-        String username = (null != user) ? user.getUsername() : "-1";
-
+    private Map<String, Object> updateMxCellList(String username, List<MxCellVo> mxCellVoList, List<MxCell> mxCellList) {
+        if (StringUtils.isBlank(username)) {
+            logger.warn("illegal user");
+            return ReturnMapUtils.setFailedMsg("illegal user");
+        }
         // If the mxCellList is empty, the modification fails because this method only processes the modifications and is not responsible for adding
         if (null == mxCellList || mxCellList.size() <= 0) {
             return ReturnMapUtils.setFailedMsg("The database mxCellList is empty and the modification failed.");
@@ -837,9 +827,9 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
      */
     @Override
     @Transactional
-    public String saveDataForGroup(String imageXML, String loadId, String operType, boolean flag) {
-        UserVo currentUser = SessionUserUtil.getCurrentUser();
-        if (null == currentUser) {
+    public String saveDataForGroup(String username, String imageXML, String loadId, String operType, boolean flag) {
+        if (StringUtils.isBlank(username)) {
+            logger.warn("illegal user");
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal operation");
         }
         if (StringUtils.isAnyEmpty(imageXML, loadId, operType)) {
@@ -857,13 +847,13 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
         }
         if ("ADD".equals(operType)) {
             logger.info("ADD Operation begins");
-            return JsonUtils.toJsonNoException(this.addGroupFlows(mxGraphModelVo, loadId, currentUser));
+            return JsonUtils.toJsonNoException(this.addGroupFlows(username, mxGraphModelVo, loadId));
         } else if ("MOVED".equals(operType)) {
             logger.info("MOVED Operation begins");
-            return JsonUtils.toJsonNoException(this.updateGroupMxGraph(mxGraphModelVo, loadId, currentUser));
+            return JsonUtils.toJsonNoException(this.updateGroupMxGraph(username, mxGraphModelVo, loadId));
         } else if ("REMOVED".equals(operType)) {
             logger.info("REMOVED Operation begins");
-            return JsonUtils.toJsonNoException(this.updateFlowGroup(mxGraphModelVo, loadId));
+            return JsonUtils.toJsonNoException(this.updateFlowGroup(username, mxGraphModelVo, loadId));
         } else {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("No operType:" + operType + "type");
         }
@@ -877,8 +867,8 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
      * @return
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
-    private Map<String, Object> addGroupFlows(MxGraphModelVo mxGraphModelVo, String flowGroupId, UserVo currentUser) {
-        if (null == currentUser) {
+    private Map<String, Object> addGroupFlows(String username, MxGraphModelVo mxGraphModelVo, String flowGroupId) {
+        if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsg("Illegal operation");
         }
         // Query 'flowGroup' according to 'flowGroupId'
@@ -892,7 +882,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
         }
         // update flow
         flowGroup.setLastUpdateDttm(new Date()); // last update date time
-        flowGroup.setLastUpdateUser(currentUser.getUsername());// last update user
+        flowGroup.setLastUpdateUser(username);// last update user
         flowGroup.setEnableFlag(true);// is it effective
 
         // Take out the drawing board of the data inventory
@@ -905,7 +895,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
         // Copy the value from 'mxGraphModelVo' to 'mxGraphModelDb'
         BeanUtils.copyProperties(mxGraphModelVo, mxGraphModel);
         mxGraphModel.setEnableFlag(true);
-        mxGraphModel.setLastUpdateUser(currentUser.getUsername());
+        mxGraphModel.setLastUpdateUser(username);
         mxGraphModel.setLastUpdateDttm(new Date());
         mxGraphModel.setFlowGroup(flowGroup);
 
@@ -929,10 +919,10 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
                 }
                 // Basic properties of mxCell (Required when creating)
                 mxCell.setCrtDttm(new Date());
-                mxCell.setCrtUser(currentUser.getUsername());
+                mxCell.setCrtUser(username);
                 // Basic properties of mxCell
                 mxCell.setEnableFlag(true);
-                mxCell.setLastUpdateUser(currentUser.getUsername());
+                mxCell.setLastUpdateUser(username);
                 mxCell.setLastUpdateDttm(new Date());
                 // mxGraphModel Foreign key
                 mxCell.setMxGraphModel(mxGraphModel);
@@ -946,10 +936,10 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
                     BeanUtils.copyProperties(mxGeometryVo, mxGeometry);
                     // Basic properties of mxGeometry (required when creating)
                     mxGeometry.setCrtDttm(new Date());
-                    mxGeometry.setCrtUser(currentUser.getUsername());
+                    mxGeometry.setCrtUser(username);
                     // Set mxGraphModel basic properties
                     mxGeometry.setEnableFlag(true);
-                    mxGeometry.setLastUpdateUser(currentUser.getUsername());
+                    mxGeometry.setLastUpdateUser(username);
                     mxGeometry.setLastUpdateDttm(new Date());
                     // mxCell Foreign key
                     mxGeometry.setMxCell(mxCell);
@@ -963,7 +953,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
         mxGraphModel = mxGraphModelDomain.saveOrUpdate(mxGraphModel);
         flowGroup.setMxGraphModel(mxGraphModel);
 
-        flowGroup = addFlowGroupNodeAndEdge(flowGroup, addMxCellVoList, currentUser.getUsername());
+        flowGroup = addFlowGroupNodeAndEdge(flowGroup, addMxCellVoList, username);
 
         // Update flow information
         flowGroupDomain.saveOrUpdate(flowGroup);
@@ -977,8 +967,8 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
      * @param flowGroupId
      * @return
      */
-    private Map<String, Object> updateGroupMxGraph(MxGraphModelVo mxGraphModelVo, String flowGroupId, UserVo currentUser) {
-        if (null == currentUser) {
+    private Map<String, Object> updateGroupMxGraph(String username, MxGraphModelVo mxGraphModelVo, String flowGroupId) {
+        if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsg("Illegal operation");
         }
         // Determine if the incoming data is empty
@@ -993,7 +983,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
         // Copy the value from mxGraphModelVo to mxGraphModelDb
         BeanUtils.copyProperties(mxGraphModelVo, mxGraphModel);
         // setmxGraphModel basic properties
-        mxGraphModel.setLastUpdateUser(currentUser.getUsername());// Last updater
+        mxGraphModel.setLastUpdateUser(username);// Last updater
         mxGraphModel.setLastUpdateDttm(new Date());// Last update time
         mxGraphModel.setEnableFlag(true);// is it effective
         // save MxGraphModel
@@ -1003,7 +993,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
         // Take out the MxCellList information queried by the database.
         List<MxCell> mxCellList = mxGraphModel.getRoot();
         // Save and process mxCellList
-        return this.updateGroupMxCellList(mxCellVoList, mxCellList, currentUser.getUsername());
+        return this.updateGroupMxCellList(mxCellVoList, mxCellList, username);
     }
 
     /**
@@ -1013,9 +1003,8 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
      * @param flowGroupId    The data to be modified
      * @return
      */
-    private Map<String, Object> updateFlowGroup(MxGraphModelVo mxGraphModelVo, String flowGroupId) {
-        UserVo user = SessionUserUtil.getCurrentUser();
-        if (null == user) {
+    private Map<String, Object> updateFlowGroup(String username, MxGraphModelVo mxGraphModelVo, String flowGroupId) {
+        if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsg("Illegal operation");
         }
         if (null == mxGraphModelVo) {
@@ -1026,7 +1015,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
             return ReturnMapUtils.setFailedMsg("The flowGroupId cannot find the corresponding flowGroup, and the modification fails.");
         }
         // Save and modify the drawing board information
-        Map<String, Object> map = this.updateGroupMxGraph(mxGraphModelVo, flowGroupId, user);
+        Map<String, Object> map = this.updateGroupMxGraph(username, mxGraphModelVo, flowGroupId);
         // Determine if mxGraphModel is saved successfully
         if (null != map) {
             Object code = map.get("code");
@@ -1040,7 +1029,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
         // Last update time
         flowGroup.setLastUpdateDttm(new Date());
         // Last updater
-        flowGroup.setLastUpdateUser(user.getUsername());
+        flowGroup.setLastUpdateUser(username);
 
         // save flowGroup
         //flowGroup = flowGroupDomain.saveOrUpdate(flowGroup);
@@ -1071,7 +1060,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
                         continue;
                     }
                     flowGroupPaths.setEnableFlag(false);
-                    flowGroupPaths.setLastUpdateUser(user.getUsername());
+                    flowGroupPaths.setLastUpdateUser(username);
                     flowGroupPaths.setLastUpdateDttm(new Date());
                 }
                 flowGroup.setFlowGroupPathsList(flowGroupPathsList);
@@ -1095,7 +1084,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
                     }
                     flow.setEnableFlag(false);//logically delete
                     flow.setLastUpdateDttm(new Date());//Last update time
-                    flow.setLastUpdateUser(user.getUsername());//Last updater
+                    flow.setLastUpdateUser(username);//Last updater
                 }
                 flowGroup.setFlowList(flowList);
             }
@@ -1115,7 +1104,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
                     }
                     flowGroup_i.setEnableFlag(false);//logically delete
                     flowGroup_i.setLastUpdateDttm(new Date());//Last update time
-                    flowGroup_i.setLastUpdateUser(user.getUsername());//Last updater
+                    flowGroup_i.setLastUpdateUser(username);//Last updater
                 }
                 flowGroup.setFlowGroupList(flowGroupList);
             }
@@ -1296,7 +1285,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("No data can be added, the addition failed");
         }
         if (null == mxCellDbRoot || mxCellDbRoot.size() <= 0) {
-            mxCellDbRoot = MxCellUtils.initMxCell(username,mxGraphModel);
+            mxCellDbRoot = MxCellUtils.initMxCell(username, mxGraphModel);
         }
         for (MxCellVo mxCellVo : addMxCellVoList) {
             if (null != mxCellVo) {
@@ -1396,7 +1385,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
         List<MxCellVo> objectPaths = flowsPathsMap.get("paths");
 
         // Generate a list of paths based on the contents of the MxCellList
-        List<FlowGroupPaths> addFlowGroupPathsList = MxGraphModelUtils.mxCellVoListToFlowGroupPathsList(objectPaths, flowGroup);
+        List<FlowGroupPaths> addFlowGroupPathsList = MxGraphModelUtils.mxCellVoListToFlowGroupPathsList(username, objectPaths, flowGroup);
         // Judge empty pathsList
         if (null != addFlowGroupPathsList && addFlowGroupPathsList.size() > 0) {
             List<FlowGroupPaths> flowGroupPathsList = flowGroup.getFlowGroupPathsList();

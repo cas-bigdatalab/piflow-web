@@ -59,7 +59,9 @@ public class FlowCtrl {
     @RequestMapping("/getFlowListPage")
     @ResponseBody
     public String getFlowListPage(Integer page, Integer limit, String param) {
-        return flowServiceImpl.getFlowListPage(page, limit, param);
+        boolean isAdmin = SessionUserUtil.isAdmin();
+        String username = SessionUserUtil.getCurrentUsername();
+        return flowServiceImpl.getFlowListPage(username, isAdmin, page, limit, param);
     }
 
     /**
@@ -74,7 +76,9 @@ public class FlowCtrl {
     public String runFlow(HttpServletRequest request, Model model) {
         String flowId = request.getParameter("flowId");
         String runMode = request.getParameter("runMode");
-        return flowServiceImpl.runFlow(flowId, runMode);
+        String username = SessionUserUtil.getCurrentUsername();
+        boolean isAdmin = SessionUserUtil.isAdmin();
+        return flowServiceImpl.runFlow(username, isAdmin, flowId, runMode);
     }
 
     @RequestMapping("/queryFlowData")
@@ -120,7 +124,9 @@ public class FlowCtrl {
     @ResponseBody
     @Transactional
     public int deleteFlow(String id) {
-        return flowServiceImpl.deleteFLowInfo(id);
+        String username = SessionUserUtil.getCurrentUsername();
+        boolean isAdmin = SessionUserUtil.isAdmin();
+        return flowServiceImpl.deleteFLowInfo(username, isAdmin, id);
     }
 
     @RequestMapping("/queryFlowGroupData")
@@ -154,23 +160,23 @@ public class FlowCtrl {
     @RequestMapping("/updateFlowBaseInfo")
     @ResponseBody
     public String updateFlowBaseInfo(FlowVo flowVo) {
-        return flowServiceImpl.updateFlowBaseInfo(flowVo);
+        String username = SessionUserUtil.getCurrentUsername();
+        return flowServiceImpl.updateFlowBaseInfo(username, flowVo);
     }
 
     @RequestMapping("/updateFlowNameById")
     @ResponseBody
     public String updateFlowNameById(HttpServletRequest request) {
-        //String id = request.getParameter("stopId");
-        //String flowId = request.getParameter("flowId");
         String flowId = request.getParameter("flowId");
         String flowGroupId = request.getParameter("flowGroupId");
         String name = request.getParameter("name");
         String pageId = request.getParameter("pageId");
         String updateType = request.getParameter("updateType");
+        String username = SessionUserUtil.getCurrentUsername();
         if ("flowGroup".equals(updateType)) {
-            return flowGroupServiceImpl.updateFlowGroupNameById(flowId, flowGroupId, name, pageId);
+            return flowGroupServiceImpl.updateFlowGroupNameById(username, flowId, flowGroupId, name, pageId);
         }
-        return flowServiceImpl.updateFlowNameById(flowId, flowGroupId, name, pageId);
+        return flowServiceImpl.updateFlowNameById(username, flowId, flowGroupId, name, pageId);
     }
 
     /**

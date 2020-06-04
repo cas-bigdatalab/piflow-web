@@ -12,11 +12,12 @@ public interface PathsMapper {
     /**
      * Insert "list<Paths>" Note that the method of spelling SQL must use "map" to connect the "Param" content to the key value.
      *
+     * @param username
      * @param pathsList
      * @return
      */
     @InsertProvider(type = PathsMapperProvider.class, method = "addPathsList")
-    public int addPathsList(@Param("pathsList") List<Paths> pathsList);
+    public int addPathsList(@Param("username") String username, @Param("pathsList") List<Paths> pathsList);
 
     /**
      * update paths
@@ -25,7 +26,7 @@ public interface PathsMapper {
      * @return
      */
     @UpdateProvider(type = PathsMapperProvider.class, method = "updatePaths")
-    public int updatePaths(Paths paths);
+    public int updatePaths(String username, Paths paths);
 
     /**
      * Query according to "flowId"
@@ -114,5 +115,5 @@ public interface PathsMapper {
      * @return
      */
     @UpdateProvider(type = PathsMapperProvider.class, method = "updateEnableFlagByFlowId")
-    public int updateEnableFlagByFlowId(String id);
+    public int updateEnableFlagByFlowId(String username, String id);
 }

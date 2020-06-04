@@ -1,8 +1,6 @@
 package cn.cnic.component.mxGraph.utils;
 
-import cn.cnic.base.util.SessionUserUtil;
 import cn.cnic.base.util.UUIDUtils;
-import cn.cnic.base.vo.UserVo;
 import cn.cnic.component.flow.model.Flow;
 import cn.cnic.component.flow.model.FlowGroup;
 import cn.cnic.component.flow.model.FlowGroupPaths;
@@ -240,14 +238,14 @@ public class MxGraphModelUtils {
      * @param flow
      * @return
      */
-    public static List<Paths> mxCellVoListToPathsList(List<MxCellVo> objectPaths, Flow flow) {
+    public static List<Paths> mxCellVoListToPathsList(String username, List<MxCellVo> objectPaths, Flow flow) {
         if (null == objectPaths || objectPaths.size() <= 0) {
             return null;
         }
         List<Paths> pathsList = new ArrayList<>();
         // Loop objectPaths
         for (MxCellVo mxCellVo : objectPaths) {
-            Paths paths = mxCellToPaths(mxCellVo);
+            Paths paths = mxCellToPaths(username, mxCellVo);
             if (null == paths) {
                 continue;
             }
@@ -264,13 +262,13 @@ public class MxGraphModelUtils {
      * @param flowGroup
      * @return
      */
-    public static List<FlowGroupPaths> mxCellVoListToFlowGroupPathsList(List<MxCellVo> objectPaths, FlowGroup flowGroup) {
+    public static List<FlowGroupPaths> mxCellVoListToFlowGroupPathsList(String username, List<MxCellVo> objectPaths, FlowGroup flowGroup) {
         List<FlowGroupPaths> flowGroupPathsList = null;
         if (null != objectPaths && objectPaths.size() > 0) {
             flowGroupPathsList = new ArrayList<>();
             // Loop objectPaths
             for (MxCellVo mxCellVo : objectPaths) {
-                FlowGroupPaths flowGroupPaths = mxCellToFlowGroupPaths(mxCellVo);
+                FlowGroupPaths flowGroupPaths = mxCellToFlowGroupPaths(username, mxCellVo);
                 if (null != flowGroupPaths) {
                     flowGroupPaths.setFlowGroup(flowGroup);
                     flowGroupPathsList.add(flowGroupPaths);
@@ -286,9 +284,7 @@ public class MxGraphModelUtils {
      * @param mxCellVo
      * @return
      */
-    public static Paths mxCellToPaths(MxCellVo mxCellVo) {
-        UserVo user = SessionUserUtil.getCurrentUser();
-        String username = (null != user) ? user.getUsername() : "-1";
+    public static Paths mxCellToPaths(String username, MxCellVo mxCellVo) {
         Paths paths = null;
         if (null != mxCellVo) {
             paths = new Paths();
@@ -311,9 +307,7 @@ public class MxGraphModelUtils {
      * @param mxCellVo
      * @return
      */
-    public static FlowGroupPaths mxCellToFlowGroupPaths(MxCellVo mxCellVo) {
-        UserVo user = SessionUserUtil.getCurrentUser();
-        String username = (null != user) ? user.getUsername() : "-1";
+    public static FlowGroupPaths mxCellToFlowGroupPaths(String username, MxCellVo mxCellVo) {
         FlowGroupPaths flowGroupPaths = null;
         if (null != mxCellVo) {
             flowGroupPaths = new FlowGroupPaths();

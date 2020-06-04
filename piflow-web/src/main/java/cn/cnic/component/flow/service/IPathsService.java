@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface IPathsService {
 
-    public int deletePathsByFlowId(String id);
+    public int deletePathsByFlowId(String username, String id);
 
     /**
      * Query connection information according to flowId and pageid
@@ -45,7 +45,7 @@ public interface IPathsService {
      * @param pathsVo
      * @return
      */
-    public int upDatePathsVo(PathsVo pathsVo);
+    public int upDatePathsVo(String username, PathsVo pathsVo);
 
     /**
      * Insert list<Paths>
@@ -53,7 +53,7 @@ public interface IPathsService {
      * @param pathsList
      * @return
      */
-    public int addPathsList(List<Paths> pathsList, Flow flow);
+    public int addPathsList(String username, List<Paths> pathsList, Flow flow);
 
 
 }

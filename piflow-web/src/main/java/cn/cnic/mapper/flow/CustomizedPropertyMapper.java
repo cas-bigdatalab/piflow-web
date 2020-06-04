@@ -38,10 +38,10 @@ public interface CustomizedPropertyMapper {
     public int updateStopsCustomizedProperty(@Param("customizedProperty") CustomizedProperty customizedProperty);
 
     @UpdateProvider(type = CustomizedPropertyMapperProvider.class, method = "updateEnableFlagByStopId")
-    public int updateEnableFlagByStopId(@Param("id") String id);
+    public int updateEnableFlagByStopId(@Param("username") String username, @Param("id") String id);
 
     @UpdateProvider(type = CustomizedPropertyMapperProvider.class, method = "updateCustomizedPropertyCustomValue")
-    public int updateCustomizedPropertyCustomValue(String content, String id);
+    public int updateCustomizedPropertyCustomValue(String username, String content, String id);
 
 
 }

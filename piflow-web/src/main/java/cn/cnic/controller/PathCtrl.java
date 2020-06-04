@@ -2,6 +2,7 @@ package cn.cnic.controller;
 
 import cn.cnic.base.util.JsonUtils;
 import cn.cnic.base.util.LoggerUtil;
+import cn.cnic.base.util.SessionUserUtil;
 import cn.cnic.component.flow.request.UpdatePathRequest;
 import cn.cnic.component.flow.service.IPathsService;
 import cn.cnic.component.flow.service.IPropertyService;
@@ -68,7 +69,8 @@ public class PathCtrl {
     @RequestMapping("/savePathsPort")
     @ResponseBody
     public String savePathsPort(UpdatePathRequest updatePathRequest) {
-        return propertyServiceImpl.saveOrUpdateRoutePath(updatePathRequest);
+        String username = SessionUserUtil.getCurrentUsername();
+        return propertyServiceImpl.saveOrUpdateRoutePath(username, updatePathRequest);
     }
 
 

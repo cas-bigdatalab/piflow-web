@@ -76,6 +76,7 @@ public class StopsCtrl {
         }
         return null;
     }
+
     @RequestMapping("/deleteLastReloadData")
     public String deleteLastReloadData(String stopId) {
         return propertyServiceImpl.deleteLastReloadDataByStopsId(stopId);
@@ -156,12 +157,13 @@ public class StopsCtrl {
         rtnMap.put("code", 500);
         String id = request.getParameter("stopId");
         String isCheckpointStr = request.getParameter("isCheckpoint");
+        String username = SessionUserUtil.getCurrentUsername();
         if (!StringUtils.isAnyEmpty(id, isCheckpointStr)) {
             boolean isCheckpoint = false;
             if ("1".equals(isCheckpointStr)) {
                 isCheckpoint = true;
             }
-            int updateStopsCheckpoint = stopsServiceImpl.updateStopsCheckpoint(id, isCheckpoint);
+            int updateStopsCheckpoint = stopsServiceImpl.updateStopsCheckpoint(username, id, isCheckpoint);
             if (updateStopsCheckpoint > 0) {
                 rtnMap.put("code", 200);
                 rtnMap.put("errorMsg", "Saved successfully");
@@ -183,14 +185,16 @@ public class StopsCtrl {
         String flowId = request.getParameter("flowId");
         String stopName = request.getParameter("name");
         String pageId = request.getParameter("pageId");
+        String username = SessionUserUtil.getCurrentUsername();
+        boolean isAdmin = SessionUserUtil.isAdmin();
         if (StringUtils.isAnyEmpty(id, stopName, flowId, pageId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("The incoming parameter is empty");
         }
-        Flow flowById = flowServiceImpl.getFlowById(flowId);
+        Flow flowById = flowServiceImpl.getFlowById(username, isAdmin, flowId);
         if (null == flowById) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("flow information is empty");
         }
-        StatefulRtnBase updateStopName = stopsServiceImpl.updateStopName(id, flowById, stopName, pageId);
+        StatefulRtnBase updateStopName = stopsServiceImpl.updateStopName(username, id, flowById, stopName, pageId);
         // addFlow is not empty and the value of ReqRtnStatus is true, then the save is successful.
         if (null == updateStopName || !updateStopName.isReqRtnStatus()) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(updateStopName.getErrorMsg());
@@ -211,17 +215,20 @@ public class StopsCtrl {
 
     @RequestMapping("/addStopCustomizedProperty")
     public String addStopCustomizedProperty(StopsCustomizedPropertyVo stopsCustomizedPropertyVo) {
-        return customizedPropertyServiceImpl.addStopCustomizedProperty(stopsCustomizedPropertyVo);
+        String username = SessionUserUtil.getCurrentUsername();
+        return customizedPropertyServiceImpl.addStopCustomizedProperty(username, stopsCustomizedPropertyVo);
     }
 
     @RequestMapping("/updateStopsCustomizedProperty")
     public String updateStopsCustomizedProperty(StopsCustomizedPropertyVo stopsCustomizedPropertyVo) {
-        return customizedPropertyServiceImpl.updateStopsCustomizedProperty(stopsCustomizedPropertyVo);
+        String username = SessionUserUtil.getCurrentUsername();
+        return customizedPropertyServiceImpl.updateStopsCustomizedProperty(username, stopsCustomizedPropertyVo);
     }
 
     @RequestMapping("/deleteStopsCustomizedProperty")
     public String deleteStopsCustomizedProperty(String customPropertyId) {
-        return customizedPropertyServiceImpl.deleteStopsCustomizedProperty(customPropertyId);
+        String username = SessionUserUtil.getCurrentUsername();
+        return customizedPropertyServiceImpl.deleteStopsCustomizedProperty(username, customPropertyId);
     }
 
     @RequestMapping("/deleteRouterStopsCustomizedProperty")

@@ -23,7 +23,7 @@ public interface ISysScheduleService {
      * @param scheduleId
      * @return
      */
-    public String getScheduleById(String scheduleId);
+    public String getScheduleById(boolean isAdmin, String scheduleId);
 
     /**
      * Add SysSchedule
@@ -31,15 +31,16 @@ public interface ISysScheduleService {
      * @param sysScheduleVo
      * @return
      */
-    public String createJob(SysScheduleVo sysScheduleVo);
+    public String createJob(String username, SysScheduleVo sysScheduleVo);
 
     /**
      * Run once timed task
      *
+     * @param username
      * @param sysScheduleId
      * @return
      */
-    public String runOnce(String sysScheduleId);
+    public String runOnce(String username, String sysScheduleId);
 
     /**
      * Start timed task
@@ -47,7 +48,7 @@ public interface ISysScheduleService {
      * @param sysScheduleId
      * @return
      */
-    public String startJob(String sysScheduleId);
+    public String startJob(String username, String sysScheduleId);
 
     /**
      * Stop timed task
@@ -55,7 +56,7 @@ public interface ISysScheduleService {
      * @param sysScheduleId
      * @return
      */
-    public String stopJob(String sysScheduleId);
+    public String stopJob(String username, String sysScheduleId);
 
     /**
      * Pause timed task
@@ -63,7 +64,7 @@ public interface ISysScheduleService {
      * @param sysScheduleId
      * @return
      */
-    public String pauseJob(String sysScheduleId);
+    public String pauseJob(String username, String sysScheduleId);
 
     /**
      * Resume timed task
@@ -71,7 +72,7 @@ public interface ISysScheduleService {
      * @param sysScheduleId
      * @return
      */
-    public String resume(String sysScheduleId);
+    public String resume(String username, String sysScheduleId);
 
     /**
      * Update timed task
@@ -79,7 +80,7 @@ public interface ISysScheduleService {
      * @param sysScheduleVo
      * @return
      */
-    public String update(SysScheduleVo sysScheduleVo);
+    public String update(String username, SysScheduleVo sysScheduleVo);
 
     /**
      * Delete timed task
@@ -87,6 +88,6 @@ public interface ISysScheduleService {
      * @param sysScheduleId
      * @return
      */
-    public String deleteTask(String sysScheduleId);
+    public String deleteTask(String username, String sysScheduleId);
 
 }

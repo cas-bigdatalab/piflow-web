@@ -1,7 +1,6 @@
 package cn.cnic.component.flow.service.impl;
 
 import cn.cnic.base.util.*;
-import cn.cnic.base.vo.UserVo;
 import cn.cnic.common.Eunm.PortType;
 import cn.cnic.component.flow.model.Paths;
 import cn.cnic.component.flow.model.Property;
@@ -11,8 +10,8 @@ import cn.cnic.component.flow.service.IPropertyService;
 import cn.cnic.component.flow.utils.StopsUtils;
 import cn.cnic.component.flow.vo.StopsVo;
 import cn.cnic.component.stopsComponent.mapper.StopsComponentMapper;
-import cn.cnic.component.stopsComponent.model.StopsComponentProperty;
 import cn.cnic.component.stopsComponent.model.StopsComponent;
+import cn.cnic.component.stopsComponent.model.StopsComponentProperty;
 import cn.cnic.domain.flow.PropertyDomain;
 import cn.cnic.domain.flow.StopsDomain;
 import cn.cnic.mapper.flow.PathsMapper;
@@ -81,9 +80,10 @@ public class PropertyServiceImpl implements IPropertyService {
      * Compare the 'stops' template if it is different
      */
     @Override
-    public void checkStopTemplateUpdate(String id) {
-        UserVo user = SessionUserUtil.getCurrentUser();
-        String username = (null != user) ? user.getUsername() : "-1";
+    public void checkStopTemplateUpdate(String username, String id) {
+        if (StringUtils.isBlank(username)) {
+            return;
+        }
         Map<String, Property> PropertyMap = new HashMap<String, Property>();
         List<Property> addPropertyList = new ArrayList<Property>();
         //Get stop information
@@ -161,7 +161,7 @@ public class PropertyServiceImpl implements IPropertyService {
     }
 
     @Override
-    public String saveOrUpdateRoutePath(UpdatePathRequest updatePathRequest) {
+    public String saveOrUpdateRoutePath(String username, UpdatePathRequest updatePathRequest) {
         Map<String, Object> rtnMap = new HashMap<>();
         rtnMap.put("code", 500);
         String[] checkFields = new String[]{"flowId", "pathLineId", "sourceId", "targetId"};
@@ -216,7 +216,7 @@ public class PropertyServiceImpl implements IPropertyService {
             }
             currentPaths.setLastUpdateDttm(new Date());
             currentPaths.setLastUpdateUser("-1");
-            int i = pathsMapper.updatePaths(currentPaths);
+            int i = pathsMapper.updatePaths(username, currentPaths);
             if (i <= 0) {
                 rtnMap.put("code", 500);
                 rtnMap.put("errorMsg", "Save failed");
@@ -272,9 +272,9 @@ public class PropertyServiceImpl implements IPropertyService {
      */
     @Transactional
     @Override
-    public String deleteLastReloadDataByStopsId(String stopId){
+    public String deleteLastReloadDataByStopsId(String stopId) {
         int i = propertyDomain.deletePropertiesByIsOldDataAndStopsId(stopId);
-        if(i > 0){
+        if (i > 0) {
             return ReturnMapUtils.setSucceededMsgRtnJsonStr("successfully deleted");
         }
         return ReturnMapUtils.setFailedMsgRtnJsonStr("Failed to delete");

@@ -2,10 +2,9 @@ package cn.cnic.component.flow.service.impl;
 
 import cn.cnic.base.util.JsonUtils;
 import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.base.util.SessionUserUtil;
+import cn.cnic.base.util.ReturnMapUtils;
 import cn.cnic.base.util.StatefulRtnBaseUtils;
 import cn.cnic.base.vo.StatefulRtnBase;
-import cn.cnic.base.vo.UserVo;
 import cn.cnic.common.Eunm.PortType;
 import cn.cnic.component.dataSource.domain.DataSourceDomain;
 import cn.cnic.component.dataSource.model.DataSource;
@@ -79,20 +78,21 @@ public class StopsServiceImpl implements IStopsService {
     }
 
     @Override
-    public Integer stopsUpdate(StopsVo stopsVo) {
-        UserVo user = SessionUserUtil.getCurrentUser();
-        String username = (null != user) ? user.getUsername() : "-1";
-        if (null != stopsVo) {
-            Stops stopsById = stopsMapper.getStopsById(stopsVo.getId());
-            if (null != stopsById) {
-                BeanUtils.copyProperties(stopsVo, stopsById);
-                stopsById.setLastUpdateDttm(new Date());
-                stopsById.setLastUpdateUser(username);
-                int i = stopsMapper.updateStops(stopsById);
-                return i;
-            }
+    public Integer stopsUpdate(String username, StopsVo stopsVo) {
+        if (StringUtils.isBlank(username)) {
+            return 0;
         }
-        return 0;
+        if (null == stopsVo) {
+            return 0;
+        }
+        Stops stopsById = stopsMapper.getStopsById(stopsVo.getId());
+        if (null == stopsById) {
+            return 0;
+        }
+        BeanUtils.copyProperties(stopsVo, stopsById);
+        stopsById.setLastUpdateDttm(new Date());
+        stopsById.setLastUpdateUser(username);
+        return stopsMapper.updateStops(stopsById);
     }
 
     @Override
@@ -108,35 +108,39 @@ public class StopsServiceImpl implements IStopsService {
      * @return
      */
     @Override
-    public int updateStopsCheckpoint(String stopId, boolean isCheckpoint) {
-        UserVo user = SessionUserUtil.getCurrentUser();
-        String username = (null != user) ? user.getUsername() : "-1";
-        if (StringUtils.isNotBlank(stopId)) {
-            Stops stopsById = stopsMapper.getStopsById(stopId);
-            if (null != stopsById) {
-                stopsById.setLastUpdateUser(username);
-                stopsById.setLastUpdateDttm(new Date());
-                stopsById.setIsCheckpoint(isCheckpoint);
-                return stopsMapper.updateStops(stopsById);
-            }
+    public int updateStopsCheckpoint(String username, String stopId, boolean isCheckpoint) {
+        if (StringUtils.isBlank(username)) {
+            return 0;
         }
-        return 0;
+        if (StringUtils.isBlank(stopId)) {
+            return 0;
+        }
+        Stops stopsById = stopsMapper.getStopsById(stopId);
+        if (null == stopsById) {
+            return 0;
+        }
+        stopsById.setLastUpdateUser(username);
+        stopsById.setLastUpdateDttm(new Date());
+        stopsById.setIsCheckpoint(isCheckpoint);
+        return stopsMapper.updateStops(stopsById);
     }
 
     @Override
-    public int updateStopsNameById(String id, String stopName) {
-        UserVo user = SessionUserUtil.getCurrentUser();
-        String username = (null != user) ? user.getUsername() : "-1";
-        if (StringUtils.isNotBlank(id) && StringUtils.isNotBlank(stopName)) {
-            Stops stopsById = stopsMapper.getStopsById(id);
-            if (null != stopsById) {
-                stopsById.setLastUpdateUser(username);
-                stopsById.setLastUpdateDttm(new Date());
-                stopsById.setName(stopName);
-                return stopsMapper.updateStops(stopsById);
-            }
+    public int updateStopsNameById(String username, String id, String stopName) {
+        if (StringUtils.isBlank(username)) {
+            return 0;
         }
-        return 0;
+        if (StringUtils.isBlank(id) || StringUtils.isBlank(stopName)) {
+            return 0;
+        }
+        Stops stopsById = stopsMapper.getStopsById(id);
+        if (null == stopsById) {
+            return 0;
+        }
+        stopsById.setLastUpdateUser(username);
+        stopsById.setLastUpdateDttm(new Date());
+        stopsById.setName(stopName);
+        return stopsMapper.updateStops(stopsById);
     }
 
     @Override
@@ -145,10 +149,13 @@ public class StopsServiceImpl implements IStopsService {
     }
 
     @Override
-    public StatefulRtnBase updateStopName(String stopId, Flow flowById, String stopName, String pageId) {
-        UserVo user = SessionUserUtil.getCurrentUser();
-        String username = (null != user) ? user.getUsername() : "-1";
+    public StatefulRtnBase updateStopName(String username, String stopId, Flow flowById, String stopName, String pageId) {
         StatefulRtnBase statefulRtnBase = new StatefulRtnBase();
+        if (StringUtils.isBlank(username)) {
+            statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("Illegal users");
+            logger.info("Illegal users");
+            return statefulRtnBase;
+        }
         List<MxCell> root = null;
         if (null != flowById) {
             MxGraphModel mxGraphModel = flowById.getMxGraphModel();
@@ -167,7 +174,7 @@ public class StopsServiceImpl implements IStopsService {
             statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("Name already exists");
             logger.info(stopName + "The name has been repeated and the save failed.");
         } else {
-            int updateStopsNameById = this.updateStopsNameById(stopId, stopName);
+            int updateStopsNameById = this.updateStopsNameById(username, stopId, stopName);
             if (updateStopsNameById > 0) {
                 for (MxCell mxCell : root) {
                     if (null != mxCell) {
@@ -684,53 +691,39 @@ public class StopsServiceImpl implements IStopsService {
 
     @Override
     @Transactional
-    public String fillDatasource(String dataSourceId, String stopId) {
-        Map<String, Object> rtnMap = new HashMap<String, Object>();
-        rtnMap.put("code", 500);
+    public String fillDatasource(String username, String dataSourceId, String stopId) {
+
         // Get current user
-        UserVo currentUser = SessionUserUtil.getCurrentUser();
-        if (null == currentUser) {
-            rtnMap.put("errorMsg", "Illegal users");
-            logger.warn("Illegal users");
-            return JsonUtils.toJsonNoException(rtnMap);
+        if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
         }
         // Determine if StopId is empty, if it is, then return, otherwise continue
         if (StringUtils.isBlank(stopId)) {
-            rtnMap.put("errorMsg", "fill failed,stopId is null");
-            logger.warn("fill failed,stopId is null");
-            return JsonUtils.toJsonNoException(rtnMap);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("fill failed,stopId is null");
         }
         // Query Stops by "stopId"
         Stops stopsById = stopsDomain.getStopsById(stopId);
         if (null == stopsById) {
-            rtnMap.put("errorMsg", "fill failed,Cannot find Stops with id " + stopId);
-            logger.warn("fill failed,Cannot find Stops with id " + stopId);
-            return JsonUtils.toJsonNoException(rtnMap);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("fill failed,Cannot find Stops with id " + stopId);
         }
         // Get Stops all attributes
         List<Property> propertyList = stopsById.getProperties();
         // Determine if the "stop" attribute with ID "stopId" is empty. Returns if it is empty, otherwise continues.
         if (null == propertyList || propertyList.size() <= 0) {
-            rtnMap.put("errorMsg", "fill failed,stop property is null");
-            logger.warn("fill failed,stop property is null");
-            return JsonUtils.toJsonNoException(rtnMap);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("fill failed,stop property is null");
         }
         // datasource Property Map(Key is the attribute name)
         Map<String, String> dataSourcePropertyMap = new HashMap<>();
         if (StringUtils.isNotBlank(dataSourceId)) {
             DataSource dataSourceById = dataSourceDomain.getDataSourceById(dataSourceId);
             if (null == dataSourceById) {
-                rtnMap.put("errorMsg", "fill failed,Cannot find Datasource with id " + dataSourceId);
-                logger.warn("fill failed,Cannot find Datasource with id " + dataSourceId);
-                return JsonUtils.toJsonNoException(rtnMap);
+                return ReturnMapUtils.setFailedMsgRtnJsonStr("fill failed,Cannot find Datasource with id " + dataSourceId);
             }
             // Get Database all attributes
             List<DataSourceProperty> dataSourcePropertyList = dataSourceById.getDataSourcePropertyList();
             // Determine whether the Datasource attribute whose ID is "dataSourceId" is empty. Returns if it is empty, otherwise it is converted to Map.
             if (null == dataSourcePropertyList || dataSourcePropertyList.size() <= 0) {
-                rtnMap.put("errorMsg", "fill failed,dataSource property is null");
-                logger.warn("fill failed,dataSource property is null");
-                return JsonUtils.toJsonNoException(rtnMap);
+                return ReturnMapUtils.setFailedMsgRtnJsonStr("fill failed,dataSource property is null");
             }
             stopsById.setDataSource(dataSourceById);
             // Loop "datasource" attribute to map
@@ -757,7 +750,7 @@ public class StopsServiceImpl implements IStopsService {
                         property.setCustomValue(value);
                         property.setIsLocked(true);
                         property.setLastUpdateDttm(new Date());
-                        property.setLastUpdateUser(currentUser.getUsername());
+                        property.setLastUpdateUser(username);
                     }
                 }
             }
@@ -772,13 +765,15 @@ public class StopsServiceImpl implements IStopsService {
                     property.setCustomValue("");
                     property.setIsLocked(false);
                     property.setLastUpdateDttm(new Date());
-                    property.setLastUpdateUser(currentUser.getUsername());
+                    property.setLastUpdateUser(username);
                 }
             }
             stopsById.setDataSource(null);
         }
         stopsById.setProperties(propertyList);
         stopsDomain.saveOrUpdate(stopsById);
+        Map<String, Object> rtnMap = new HashMap<String, Object>();
+        rtnMap.put("code", 500);
         rtnMap.put("code", 200);
         rtnMap.put("errorMsg", "fill success");
 

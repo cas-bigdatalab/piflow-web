@@ -1,7 +1,6 @@
 package cn.cnic.component.flow.service.impl;
 
 import cn.cnic.base.util.*;
-import cn.cnic.base.vo.UserVo;
 import cn.cnic.common.Eunm.ProcessParentType;
 import cn.cnic.common.Eunm.ProcessState;
 import cn.cnic.common.Eunm.RunModeType;
@@ -172,12 +171,10 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
      * @return
      */
     @Override
-    public String getFlowGroupListPage(Integer offset, Integer limit, String param) {
+    public String getFlowGroupListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param) {
         Map<String, Object> rtnMap = new HashMap<>();
         if (null != offset && null != limit) {
             Page<FlowGroup> flowGroupListPage;
-            boolean isAdmin = SessionUserUtil.isAdmin();
-            String username = SessionUserUtil.getCurrentUsername();
             if (isAdmin) {
                 flowGroupListPage = flowGroupDomain.adminGetFlowGroupListPage(offset - 1, limit, param);
             } else {
@@ -204,14 +201,16 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
     }
 
     @Override
-    public String saveOrUpdate(FlowGroupVo flowGroupVo) {
+    public String saveOrUpdate(String username, FlowGroupVo flowGroupVo) {
+        if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
+        }
         if (null != flowGroupVo) {
             String id = flowGroupVo.getId();
-            UserVo currentUser = SessionUserUtil.getCurrentUser();
             if (StringUtils.isBlank(id)) {
-                return this.insert(flowGroupVo, currentUser.getUsername());
+                return this.insert(flowGroupVo, username);
             } else {
-                return this.update(flowGroupVo, currentUser.getUsername());
+                return this.update(flowGroupVo, username);
             }
         } else {
             return null;
@@ -294,13 +293,14 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
      */
     @Override
     @Transactional
-    public String runFlowGroup(String flowGroupId, String runMode) {
+    public String runFlowGroup(String username, String flowGroupId, String runMode) {
         RunModeType runModeType = RunModeType.RUN;
+        if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
+        }
         if (StringUtils.isBlank(flowGroupId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("FlowGroupId is null");
         }
-        UserVo currentUser = SessionUserUtil.getCurrentUser();
-        String username = currentUser.getUsername();
         // find flow by flowId
         FlowGroup flowGroupById = flowGroupDomain.getFlowGroupById(flowGroupId);
         // addFlow is not empty and the value of ReqRtnStatus is true, then the save is successful.
@@ -312,7 +312,7 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
         }
         //ProcessGroup processGroup = flowGroupToProcessGroup(flowGroupById, username, runModeType);
         ProcessGroup processGroup = ProcessGroupUtils.flowGroupToProcessGroup(flowGroupById, username, runModeType);
-        processGroup = processGroupDomain.saveOrUpdate(processGroup);
+        processGroup = processGroupDomain.saveOrUpdate(username,processGroup);
 
         Map<String, Object> stringObjectMap = groupImpl.startFlowGroup(processGroup, runModeType);
         processGroup.setLastUpdateDttm(new Date());
@@ -322,11 +322,11 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
             processGroup.setProcessId((String) stringObjectMap.get("appId"));
             processGroup.setState(ProcessState.STARTED);
             processGroup.setProcessParentType(ProcessParentType.GROUP);
-            processGroupDomain.saveOrUpdate(processGroup);
+            processGroupDomain.saveOrUpdate(username,processGroup);
             return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("processGroupId", processGroup.getId());
         } else {
             processGroup.setEnableFlag(false);
-            processGroupDomain.saveOrUpdate(processGroup);
+            processGroupDomain.saveOrUpdate(username,processGroup);
             return ReturnMapUtils.setFailedMsgRtnJsonStr(stringObjectMap.get("errorMsg").toString());
         }
     }
@@ -348,9 +348,8 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
      * @return
      */
     @Override
-    public String copyFlowToGroup(String flowId, String flowGroupId) {
-        UserVo currentUser = SessionUserUtil.getCurrentUser();
-        if (null == currentUser) {
+    public String copyFlowToGroup(String username, String flowId, String flowGroupId) {
+        if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal user, Load failed");
         }
         if (StringUtils.isBlank(flowGroupId) || StringUtils.isBlank(flowId)) {
@@ -364,7 +363,7 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
         if (null == flow) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Save failed, Flow is empty");
         }
-        Flow flowNew = FlowUtil.copyCreateFlow(flow, currentUser.getUsername());
+        Flow flowNew = FlowUtil.copyCreateFlow(flow, username);
         if (null == flowNew) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Save failed, Copy failed");
         }
@@ -377,7 +376,7 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
             root = new ArrayList<>();
         }
         if (root.size() <= 0) {
-            root.addAll(MxCellUtils.initMxCell(currentUser.getUsername(), mxGraphModel));
+            root.addAll(MxCellUtils.initMxCell(username, mxGraphModel));
 
         }
         // Get the maximum value of pageid in stop
@@ -391,9 +390,9 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
         MxCell mxCell = new MxCell();
         mxCell.setMxGraphModel(mxGraphModel);
         mxCell.setCrtDttm(new Date());
-        mxCell.setCrtUser(currentUser.getUsername());
+        mxCell.setCrtUser(username);
         mxCell.setLastUpdateDttm(new Date());
-        mxCell.setLastUpdateUser(currentUser.getUsername());
+        mxCell.setLastUpdateUser(username);
         mxCell.setPageId((maxPageId + 1) + "");
         mxCell.setParent("1");
         mxCell.setStyle("image;html=1;labelBackgroundColor=#ffffff00;image=/piflow-web/img/flow.png");
@@ -403,9 +402,9 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
         MxGeometry mxGeometry = new MxGeometry();
         mxGeometry.setMxCell(mxCell);
         mxGeometry.setCrtDttm(new Date());
-        mxGeometry.setCrtUser(currentUser.getUsername());
+        mxGeometry.setCrtUser(username);
         mxGeometry.setLastUpdateDttm(new Date());
-        mxGeometry.setLastUpdateUser(currentUser.getUsername());
+        mxGeometry.setLastUpdateUser(username);
         mxGeometry.setAs("geometry");
         mxGeometry.setHeight("66");
         mxGeometry.setWidth("66");
@@ -436,11 +435,10 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
     }
 
     @Override
-    public String updateFlowGroupNameById(String id, String parentsId, String flowGroupName, String pageId) {
+    public String updateFlowGroupNameById(String username, String id, String parentsId, String flowGroupName, String pageId) {
         Map<String, Object> rtnMap = new HashMap<>();
         rtnMap.put("code", 500);
-        UserVo user = SessionUserUtil.getCurrentUser();
-        if (null == user) {
+        if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
         }
         if (StringUtils.isAnyEmpty(id, flowGroupName, parentsId, pageId)) {
@@ -464,13 +462,12 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
         if (StringUtils.isNotBlank(checkResult)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("The name '" + flowGroupName + "' has been repeated and the save failed.");
         }
-        boolean updateFlowNameById = this.updateFlowGroupNameById(id, flowGroupName);
+        boolean updateFlowNameById = this.updateFlowGroupNameById(username, id, flowGroupName);
         if (!updateFlowNameById) {
             logger.info("Modify flowName failed");
             rtnMap.put("errorMsg", "Modify flowName failed");
             return JsonUtils.toJsonNoException(rtnMap);
         }
-        String username = user.getUsername();
         for (MxCell mxCell : root) {
             if (null != mxCell) {
                 if (mxCell.getPageId().equals(pageId)) {
@@ -496,27 +493,28 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
 
     @Override
     @Transactional
-    public Boolean updateFlowGroupNameById(String id, String flowGroupName) {
-        UserVo user = SessionUserUtil.getCurrentUser();
-        String username = (null != user) ? user.getUsername() : "-1";
-        if (StringUtils.isNotBlank(id) && StringUtils.isNotBlank(flowGroupName)) {
-            FlowGroup flowGroupById = flowGroupDomain.getFlowGroupById(id);
-            if (null != flowGroupById) {
-                flowGroupById.setLastUpdateUser(username);
-                flowGroupById.setLastUpdateDttm(new Date());
-                flowGroupById.setName(flowGroupName);
-                flowGroupDomain.saveOrUpdate(flowGroupById);
-                return true;
-            }
+    public Boolean updateFlowGroupNameById(String username, String id, String flowGroupName) {
+        if (StringUtils.isBlank(username)) {
+            return false;
         }
-        return false;
+        if (StringUtils.isBlank(id) || StringUtils.isBlank(flowGroupName)) {
+            return false;
+        }
+        FlowGroup flowGroupById = flowGroupDomain.getFlowGroupById(id);
+        if (null == flowGroupById) {
+            return false;
+        }
+        flowGroupById.setLastUpdateUser(username);
+        flowGroupById.setLastUpdateDttm(new Date());
+        flowGroupById.setName(flowGroupName);
+        flowGroupDomain.saveOrUpdate(flowGroupById);
+        return true;
     }
 
     @Override
     @Transactional
-    public String updateFlowGroupBaseInfo(FlowGroupVo flowGroupVo) {
-        UserVo currentUser = SessionUserUtil.getCurrentUser();
-        if (null == currentUser) {
+    public String updateFlowGroupBaseInfo(String username, FlowGroupVo flowGroupVo) {
+        if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
         }
         if (null == flowGroupVo || StringUtils.isBlank(flowGroupVo.getId())) {
@@ -528,12 +526,13 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
         }
         flowGroupById.setDescription(flowGroupVo.getDescription());
         flowGroupById.setLastUpdateDttm(new Date());
-        flowGroupById.setLastUpdateUser(currentUser.getUsername());
+        flowGroupById.setLastUpdateUser(username);
         flowGroupDomain.saveOrUpdate(flowGroupById);
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("flowGroupVo", flowGroupVo);
     }
 
-    public String rightRun(String pId, String nodeId, String nodeType) {
+    @Override
+    public String rightRun(String username, boolean isAdmin, String pId, String nodeId, String nodeType) {
         if (StringUtils.isBlank(pId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("pId is null");
         }
@@ -551,9 +550,9 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
             flowGroupId = flowGroupDomain.getFlowGroupIdByPageId(pId, nodeId);
         }
         if (StringUtils.isNotBlank(flowId)) {
-            return flowServiceImpl.runFlow(flowId, null);
+            return flowServiceImpl.runFlow(username, isAdmin, flowId, null);
         } else if (StringUtils.isNotBlank(flowGroupId)) {
-            return runFlowGroup(flowGroupId, null);
+            return runFlowGroup(username, flowGroupId, null);
         } else {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("No data found for this node (" + nodeId + ")");
         }

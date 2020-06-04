@@ -4,20 +4,21 @@ import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.component.mxGraph.service.IMxGraphService;
 import cn.cnic.mapper.mxGraph.MxGeometryMapper;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
 
 @Service
 public class MxGraphServiceImpl implements IMxGraphService {
 
     Logger logger = LoggerUtil.getLogger();
 
-    @Autowired
+    @Resource
     private MxGeometryMapper mxGeometryMapper;
 
     @Override
-    public int deleteMxGraphById(String id) {
-        return mxGeometryMapper.updateEnableFlagById(id);
+    public int deleteMxGraphById(String username, String id) {
+        return mxGeometryMapper.updateEnableFlagById(username, id);
     }
 
 }

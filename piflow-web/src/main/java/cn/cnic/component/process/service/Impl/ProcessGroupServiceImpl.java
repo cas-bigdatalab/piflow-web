@@ -1,6 +1,9 @@
 package cn.cnic.component.process.service.Impl;
 
-import cn.cnic.base.util.*;
+import cn.cnic.base.util.HdfsUtils;
+import cn.cnic.base.util.JsonUtils;
+import cn.cnic.base.util.LoggerUtil;
+import cn.cnic.base.util.ReturnMapUtils;
 import cn.cnic.base.vo.UserVo;
 import cn.cnic.common.Eunm.PortType;
 import cn.cnic.common.Eunm.ProcessParentType;
@@ -11,7 +14,10 @@ import cn.cnic.component.process.model.ProcessGroupPath;
 import cn.cnic.component.process.service.IProcessGroupService;
 import cn.cnic.component.process.utils.ProcessGroupUtils;
 import cn.cnic.component.process.utils.ProcessUtils;
-import cn.cnic.component.process.vo.*;
+import cn.cnic.component.process.vo.DebugDataRequest;
+import cn.cnic.component.process.vo.DebugDataResponse;
+import cn.cnic.component.process.vo.ProcessGroupPathVo;
+import cn.cnic.component.process.vo.ProcessGroupVo;
 import cn.cnic.domain.process.ProcessDomain;
 import cn.cnic.domain.process.ProcessGroupDomain;
 import cn.cnic.domain.process.ProcessGroupPathDomain;
@@ -174,7 +180,7 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
         }
         // copy and Create
         ProcessGroup copyProcessGroup = ProcessGroupUtils.copyProcessGroup(processGroupById, currentUser, runModeType);
-        copyProcessGroup = processGroupDomain.saveOrUpdate(copyProcessGroup);
+        copyProcessGroup = processGroupDomain.saveOrUpdate(currentUser.getUsername(), copyProcessGroup);
 
         Map<String, Object> rtnMap = new HashMap<>();
         Map<String, Object> stringObjectMap = groupImpl.startFlowGroup(copyProcessGroup, runModeType);
@@ -185,7 +191,7 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
             copyProcessGroup.setProcessId((String) stringObjectMap.get("appId"));
             copyProcessGroup.setState(ProcessState.STARTED);
             copyProcessGroup.setProcessParentType(ProcessParentType.GROUP);
-            processGroupDomain.saveOrUpdate(copyProcessGroup);
+            processGroupDomain.saveOrUpdate(currentUser.getUsername(), copyProcessGroup);
             rtnMap.put("processGroupId", copyProcessGroup.getId());
             rtnMap.put("errorMsg", "Successful startup");
             rtnMap.put(ReturnMapUtils.KEY_CODE, ReturnMapUtils.SUCCEEDED_CODE);
@@ -195,7 +201,7 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
             rtnMap.put(ReturnMapUtils.KEY_CODE, ReturnMapUtils.ERROR_CODE);
             rtnMap.put("errorMsg", "Calling interface failed, startup failed");
             logger.warn("Calling interface failed, startup failed");
-            processGroupDomain.saveOrUpdate(copyProcessGroup);
+            processGroupDomain.saveOrUpdate(currentUser.getUsername(), copyProcessGroup);
         }
         return JsonUtils.toJsonNoException(rtnMap);
     }
@@ -203,17 +209,19 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
     /**
      * Query processGroupVoList (parameter space-time non-paging)
      *
-     * @param offset Number of pages
-     * @param limit  Number each page
-     * @param param  Search content
+     * @param username username
+     * @param isAdmin  isAdmin
+     * @param offset   Number of pages
+     * @param limit    Number each page
+     * @param param    Search content
      * @return json
      */
     @Override
-    public String getProcessGroupVoListPage(Integer offset, Integer limit, String param) {
+    public String getProcessGroupVoListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param) {
         if (null == offset || null == limit) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.ERROR_MSG);
         }
-        Page<ProcessGroup> processGroupListPage = processGroupDomain.getProcessGroupListPage(offset - 1, limit, param);
+        Page<ProcessGroup> processGroupListPage = processGroupDomain.getProcessGroupListPage(username, isAdmin, offset - 1, limit, param);
         List<ProcessGroup> content = processGroupListPage.getContent();
         List<ProcessGroupVo> processGroupVoList = null;
         if (null != content && content.size() > 0) {
@@ -324,37 +332,26 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
      * @return json
      */
     @Override
-    public String delProcessGroup(String processGroupID) {
-        Map<String, Object> rtnMap = new HashMap<>();
-        rtnMap.put("code", 500);
-        if (StringUtils.isNotBlank(processGroupID)) {
-            UserVo currentUser = SessionUserUtil.getCurrentUser();
-            // Query Process by 'processGroupID'
-            ProcessGroup processGroupById = processGroupMapper.getProcessGroupById(processGroupID);
-            if (null != processGroupById) {
-                if (processGroupById.getState() != ProcessState.STARTED) {
-                    int updateEnableFlagById = processGroupMapper.updateEnableFlagById(processGroupID, currentUser.getUsername());
-                    // Determine whether the deletion is successful
-                    if (updateEnableFlagById > 0) {
-                        rtnMap.put("code", 200);
-                        rtnMap.put("errorMsg", "Successfully Deleted");
-                    } else {
-                        logger.warn("Failed to delete");
-                        rtnMap.put("errorMsg", "Failed to delete");
-                    }
-                } else {
-                    logger.warn("Status is STARTED, cannot be deleted");
-                    rtnMap.put("errorMsg", "Status is STARTED, cannot be deleted");
-                }
-            } else {
-                logger.warn("No process ID is '" + processGroupID + "' process");
-                rtnMap.put("errorMsg", "No process ID is '" + processGroupID + "' process");
-            }
-        } else {
-            logger.warn("processGroupID is null");
-            rtnMap.put("errorMsg", "processGroupID is null");
+    public String delProcessGroup(String username, String processGroupID) {
+        if (StringUtils.isBlank(processGroupID)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("processGroupID is null");
         }
-        return JsonUtils.toJsonNoException(rtnMap);
+        // Query Process by 'processGroupID'
+        ProcessGroup processGroupById = processGroupMapper.getProcessGroupById(processGroupID);
+        if (null == processGroupById) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("No process ID is '" + processGroupID + "' process");
+        }
+        if (processGroupById.getState() == ProcessState.STARTED) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Status is STARTED, cannot be deleted");
+        }
+        int updateEnableFlagById = processGroupMapper.updateEnableFlagById(processGroupID, username);
+        // Determine whether the deletion is successful
+        if (updateEnableFlagById > 0) {
+            return ReturnMapUtils.setSucceededMsgRtnJsonStr("Successfully Deleted");
+        } else {
+            logger.warn("Failed to delete");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Failed to delete");
+        }
     }
 
     /**

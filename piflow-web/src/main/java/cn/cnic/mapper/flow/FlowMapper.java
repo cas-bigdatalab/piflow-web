@@ -70,7 +70,7 @@ public interface FlowMapper {
     public Flow getFlowById(@Param("id") String id);
 
     @UpdateProvider(type = FlowMapperProvider.class, method = "updateEnableFlagById")
-    public int updateEnableFlagById(@Param("id") String id);
+    public int updateEnableFlagById(@Param("username") String username, @Param("id") String id);
 
     /**
      * According to the flow query PageId maximum

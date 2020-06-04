@@ -16,7 +16,7 @@ public class IProcessServiceTest extends ApplicationTests {
 
     @Test
     public void testFlowToProcessAndSave() {
-        processServiceImpl.flowToProcessAndSave("d97aa10691db4b8da2680cb5b56a7ea0");
+        processServiceImpl.flowToProcessAndSave("admin","d97aa10691db4b8da2680cb5b56a7ea0");
     }
 
 

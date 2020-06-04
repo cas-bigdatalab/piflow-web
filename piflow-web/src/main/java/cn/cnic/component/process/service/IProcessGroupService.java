@@ -44,12 +44,14 @@ public interface IProcessGroupService {
     /**
      * Query processGroupVoList (parameter space-time non-paging)
      *
-     * @param offset Number of pages
-     * @param limit Number each page
-     * @param param Search content
+     * @param username username
+     * @param isAdmin  isAdmin
+     * @param offset   Number of pages
+     * @param limit    Number each page
+     * @param param    Search content
      * @return json
      */
-    public String getProcessGroupVoListPage(Integer offset, Integer limit, String param);
+    public String getProcessGroupVoListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param);
 
     /**
      * Start processesGroup
@@ -83,7 +85,7 @@ public interface IProcessGroupService {
      * @param processGroupID ProcessGroup Id
      * @return json
      */
-    public String delProcessGroup(String processGroupID);
+    public String delProcessGroup(String username, String processGroupID);
 
     /**
      * getGroupLogData

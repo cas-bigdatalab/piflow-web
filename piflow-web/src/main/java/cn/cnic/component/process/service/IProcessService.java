@@ -108,7 +108,7 @@ public interface IProcessService {
      * @return
      */
     @Transactional
-    public ProcessVo flowToProcessAndSave(String flowId);
+    public ProcessVo flowToProcessAndSave(String username, String flowId);
 
     /**
      * Logical deletion
@@ -117,7 +117,7 @@ public interface IProcessService {
      * @return
      */
     @Transactional
-    public String delProcess(String processId);
+    public String delProcess(String username, String processId);
 
     /**
      * Query the running process List (process List) according to flowId

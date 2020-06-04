@@ -70,14 +70,12 @@ public class ProcessGroupDomain {
         return processGroup;
     }
 
-    public Page<ProcessGroup> getProcessGroupListPage(int page, int size, String param) {
+    public Page<ProcessGroup> getProcessGroupListPage(String username, boolean isAdmin, int page, int size, String param) {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "crtDttm"));
-        boolean isAdmin = SessionUserUtil.isAdmin();
         if (isAdmin) {
             return processGroupJpaRepository.getProcessGroupListPage(null == param ? "" : param, pageRequest);
         } else {
-            UserVo currentUser = SessionUserUtil.getCurrentUser();
-            return processGroupJpaRepository.getProcessGroupListPageByUser(currentUser.getUsername(), null == param ? "" : param, pageRequest);
+            return processGroupJpaRepository.getProcessGroupListPageByUser(username, null == param ? "" : param, pageRequest);
         }
     }
 
@@ -85,10 +83,9 @@ public class ProcessGroupDomain {
         return processGroupJpaRepository.findAll(addEnableFlagParam());
     }
 
-    public ProcessGroup saveOrUpdate(ProcessGroup processGroup) {
-        UserVo currentUser = SessionUserUtil.getCurrentUser();
+    public ProcessGroup saveOrUpdate(String username, ProcessGroup processGroup) {
         processGroup.setLastUpdateDttm(new Date());
-        processGroup.setLastUpdateUser(currentUser.getUsername());
+        processGroup.setLastUpdateUser(username);
         return processGroupJpaRepository.save(processGroup);
     }
 

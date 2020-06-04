@@ -1,6 +1,7 @@
 package cn.cnic.controller;
 
 import cn.cnic.base.util.LoggerUtil;
+import cn.cnic.base.util.SessionUserUtil;
 import cn.cnic.component.flow.service.IFlowGroupService;
 import cn.cnic.component.flow.vo.FlowGroupVo;
 import org.slf4j.Logger;
@@ -34,7 +35,9 @@ public class FlowGroupCtrl {
     @RequestMapping("/getFlowGroupListPage")
     @ResponseBody
     public String getFlowGroupListPage(Integer page, Integer limit, String param) {
-        return flowGroupServiceImpl.getFlowGroupListPage(page, limit, param);
+        String username = SessionUserUtil.getCurrentUsername();
+        boolean isAdmin = SessionUserUtil.isAdmin();
+        return flowGroupServiceImpl.getFlowGroupListPage(username, isAdmin, page, limit, param);
     }
 
     /**
@@ -46,7 +49,8 @@ public class FlowGroupCtrl {
     @RequestMapping("/saveOrUpdateFlowGroup")
     @ResponseBody
     public String saveOrUpdateFlowGroup(FlowGroupVo flowGroupVo) {
-        return flowGroupServiceImpl.saveOrUpdate(flowGroupVo);
+        String username = SessionUserUtil.getCurrentUsername();
+        return flowGroupServiceImpl.saveOrUpdate(username, flowGroupVo);
     }
 
     /**
@@ -60,7 +64,8 @@ public class FlowGroupCtrl {
     public String runFlowGroup(HttpServletRequest request) {
         String flowGroupId = request.getParameter("flowGroupId");
         String runMode = request.getParameter("runMode");
-        return flowGroupServiceImpl.runFlowGroup(flowGroupId, runMode);
+        String username = SessionUserUtil.getCurrentUsername();
+        return flowGroupServiceImpl.runFlowGroup(username, flowGroupId, runMode);
     }
 
     /**
@@ -85,13 +90,15 @@ public class FlowGroupCtrl {
     @RequestMapping("/copyFlowToGroup")
     @ResponseBody
     public String copyFlowToGroup(String flowId, String flowGroupId) {
-        return flowGroupServiceImpl.copyFlowToGroup(flowId, flowGroupId);
+        String username = SessionUserUtil.getCurrentUsername();
+        return flowGroupServiceImpl.copyFlowToGroup(username, flowId, flowGroupId);
     }
 
     @RequestMapping("/updateFlowGroupBaseInfo")
     @ResponseBody
     public String updateFlowGroupBaseInfo(FlowGroupVo flowGroupVo) {
-        return flowGroupServiceImpl.updateFlowGroupBaseInfo(flowGroupVo);
+        String username = SessionUserUtil.getCurrentUsername();
+        return flowGroupServiceImpl.updateFlowGroupBaseInfo(username, flowGroupVo);
     }
 
 }

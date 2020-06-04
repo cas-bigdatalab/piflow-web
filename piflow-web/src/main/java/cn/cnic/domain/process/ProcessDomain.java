@@ -26,14 +26,12 @@ public class ProcessDomain {
         return process;
     }
 
-    public Page<Process> getProcessListPage(int page, int size, String param) {
+    public Page<Process> getProcessListPage(String username, boolean isAdmin, int page, int size, String param) {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "crtDttm"));
-        boolean isAdmin = SessionUserUtil.isAdmin();
         if (isAdmin) {
             return processJpaRepository.getProcessListPage(null == param ? "" : param, pageRequest);
         } else {
-            UserVo currentUser = SessionUserUtil.getCurrentUser();
-            return processJpaRepository.getProcessListPage(currentUser.getUsername(), null == param ? "" : param, pageRequest);
+            return processJpaRepository.getProcessListPage(username, null == param ? "" : param, pageRequest);
         }
     }
 

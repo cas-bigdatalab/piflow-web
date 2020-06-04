@@ -31,9 +31,7 @@ import cn.cnic.mapper.flow.StopsMapper;
 import cn.cnic.mapper.mxGraph.MxCellMapper;
 import cn.cnic.mapper.mxGraph.MxGeometryMapper;
 import cn.cnic.mapper.mxGraph.MxGraphModelMapper;
-import cn.cnic.mapper.process.ProcessMapper;
 import cn.cnic.third.service.IFlow;
-import cn.cnic.transaction.process.ProcessTransaction;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -53,9 +51,6 @@ public class FlowServiceImpl implements IFlowService {
 
     @Resource
     private FlowMapper flowMapper;
-
-    @Resource
-    private ProcessMapper processMapper;
 
     @Resource
     private MxGraphModelMapper mxGraphModelMapper;
@@ -79,9 +74,6 @@ public class FlowServiceImpl implements IFlowService {
     private PropertyMapper propertyMapper;
 
     @Resource
-    private ProcessTransaction processTransaction;
-
-    @Resource
     private ProcessDomain processDomain;
 
     @Resource
@@ -101,14 +93,11 @@ public class FlowServiceImpl implements IFlowService {
      * @author Nature
      */
     @Override
-    public Flow getFlowById(String id) {
+    public Flow getFlowById(String username, boolean isAdmin, String id) {
         Flow flowById = flowMapper.getFlowById(id);
-        boolean isAdmin = SessionUserUtil.isAdmin();
         if (null != flowById && !isAdmin) {
             Boolean isExample = flowById.getIsExample();
             String crtUser = flowById.getCrtUser();
-            UserVo currentUser = SessionUserUtil.getCurrentUser();
-            String username = currentUser.getUsername();
             if ((!isExample) && (!username.equals(crtUser))) {
                 flowById = null;
             }
@@ -238,41 +227,44 @@ public class FlowServiceImpl implements IFlowService {
     }
 
     @Override
-    public int deleteFLowInfo(String id) {
+    public int deleteFLowInfo(String username, boolean isAdmin, String id) {
         int deleteFLowInfo = 0;
-        if (StringUtils.isNotBlank(id)) {
-            Flow flowById = this.getFlowById(id);
-            if (null != flowById) {
-                if (null != flowById.getStopsList())
-                    //Loop delete stop attribute
-                    for (Stops stopId : flowById.getStopsList()) {
-                        if (null != stopId.getProperties())
-                            for (Property property : stopId.getProperties()) {
-                                propertyMapper.updateEnableFlagByStopId(property.getId());
-                            }
+        if (StringUtils.isBlank(id)) {
+            return 0;
+        }
+        Flow flowById = this.getFlowById(username, isAdmin, id);
+        if (null == flowById) {
+            return 0;
+        }
+        if (null != flowById.getStopsList()) {
+            //Loop delete stop attribute
+            for (Stops stopId : flowById.getStopsList()) {
+                if (null != stopId.getProperties())
+                    for (Property property : stopId.getProperties()) {
+                        propertyMapper.updateEnableFlagByStopId(property.getId());
                     }
-                // remove stop
-                stopsMapper.updateEnableFlagByFlowId(flowById.getId());
-                // remove paths
-                pathsMapper.updateEnableFlagByFlowId(flowById.getId());
-                if (null != flowById.getMxGraphModel()) {
-                    List<MxCell> root = flowById.getMxGraphModel().getRoot();
-                    if (null != root && !root.isEmpty()) {
-                        for (MxCell mxcell : root) {
-                            if (mxcell.getMxGeometry() != null) {
-                                logger.info(mxcell.getMxGeometry().getId());
-                                mxGeometryMapper.updateEnableFlagById(mxcell.getMxGeometry().getId());
-                            }
-                            mxCellMapper.updateEnableFlagById(mxcell.getId());
-
-                        }
-                    }
-                    mxGraphModelMapper.updateEnableFlagByFlowId(flowById.getId());
-                }
-                // remove FLow
-                deleteFLowInfo = flowMapper.updateEnableFlagById(id);
             }
         }
+        // remove stop
+        stopsMapper.updateEnableFlagByFlowId(flowById.getId());
+        // remove paths
+        pathsMapper.updateEnableFlagByFlowId(username, flowById.getId());
+        if (null != flowById.getMxGraphModel()) {
+            List<MxCell> root = flowById.getMxGraphModel().getRoot();
+            if (null != root && !root.isEmpty()) {
+                for (MxCell mxcell : root) {
+                    if (mxcell.getMxGeometry() != null) {
+                        logger.info(mxcell.getMxGeometry().getId());
+                        mxGeometryMapper.updateEnableFlagById(username, mxcell.getMxGeometry().getId());
+                    }
+                    mxCellMapper.updateEnableFlagById(username, mxcell.getId());
+
+                }
+            }
+            mxGraphModelMapper.updateEnableFlagByFlowId(username, flowById.getId());
+        }
+        // remove FLow
+        deleteFLowInfo = flowMapper.updateEnableFlagById(username, id);
         return deleteFLowInfo;
     }
 
@@ -299,16 +291,14 @@ public class FlowServiceImpl implements IFlowService {
     }
 
     @Override
-    public String getFlowListPage(Integer offset, Integer limit, String param) {
+    public String getFlowListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param) {
         Map<String, Object> rtnMap = new HashMap<>();
         if (null != offset && null != limit) {
-            boolean admin = SessionUserUtil.isAdmin();
-            String currentUsername = SessionUserUtil.getCurrentUsername();
             Page<Flow> flowListPage = null;
-            if (admin) {
+            if (isAdmin) {
                 flowListPage = flowDomain.getFlowListPage(offset - 1, limit, param);
             } else {
-                flowListPage = flowDomain.getFlowListPageByUser(offset - 1, limit, param, currentUsername);
+                flowListPage = flowDomain.getFlowListPageByUser(offset - 1, limit, param, username);
             }
             List<FlowVo> contentVo = new ArrayList<>();
             List<Flow> content = flowListPage.getContent();
@@ -352,21 +342,20 @@ public class FlowServiceImpl implements IFlowService {
     }
 
     @Override
-    public String runFlow(String flowId, String runMode) {
-        String currentUsername = SessionUserUtil.getCurrentUsername();
-        if (StringUtils.isBlank(currentUsername)) {
+    public String runFlow(String username, boolean isAdmin, String flowId, String runMode) {
+        if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
         }
         if (StringUtils.isBlank(flowId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("FlowId is null");
         }
         // find flow by flowId
-        Flow flowById = this.getFlowById(flowId);
+        Flow flowById = this.getFlowById(username, isAdmin, flowId);
         // addFlow is not empty and the value of ReqRtnStatus is true, then the save is successful.
         if (null == flowById) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Flow with FlowId" + flowId + "was not queried");
         }
-        Process process = ProcessUtils.flowToProcess(flowById, currentUsername);
+        Process process = ProcessUtils.flowToProcess(flowById, username);
         if (null == process) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Conversion failed");
         }
@@ -394,14 +383,14 @@ public class FlowServiceImpl implements IFlowService {
         if (null == stringObjectMap || 200 != ((Integer) stringObjectMap.get("code"))) {
             process.setEnableFlag(false);
             process.setLastUpdateDttm(new Date());
-            process.setLastUpdateUser(currentUsername);
+            process.setLastUpdateUser(username);
             processDomain.saveOrUpdate(process);
             return ReturnMapUtils.setFailedMsgRtnJsonStr((String) stringObjectMap.get("errorMsg"));
         }
         process.setAppId((String) stringObjectMap.get("appId"));
         process.setProcessId((String) stringObjectMap.get("appId"));
         process.setState(ProcessState.STARTED);
-        process.setLastUpdateUser(currentUsername);
+        process.setLastUpdateUser(username);
         process.setLastUpdateDttm(new Date());
         processDomain.saveOrUpdate(process);
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg("save process success,update success");
@@ -411,25 +400,16 @@ public class FlowServiceImpl implements IFlowService {
 
     @Override
     @Transactional
-    public String updateFlowBaseInfo(FlowVo flowVo) {
-        Map<String, Object> rtnMap = new HashMap<>();
-        rtnMap.put("code", 500);
-        UserVo currentUser = SessionUserUtil.getCurrentUser();
-        if (null == currentUser) {
-            rtnMap.put("errorMsg", "illegal user");
-            logger.info("illegal user");
-            return JsonUtils.toJsonNoException(rtnMap);
+    public String updateFlowBaseInfo(String username, FlowVo flowVo) {
+        if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
         }
         if (null == flowVo || StringUtils.isBlank(flowVo.getId())) {
-            rtnMap.put("errorMsg", "Parameter passed error");
-            logger.info("Parameter passed error");
-            return JsonUtils.toJsonNoException(rtnMap);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Parameter passed error");
         }
         Flow flowById = flowDomain.getFlowById(flowVo.getId());
         if (null == flowById) {
-            rtnMap.put("errorMsg", "Database save failed");
-            logger.info("Database save failed");
-            return JsonUtils.toJsonNoException(rtnMap);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Database save failed");
         }
         flowById.setDescription(flowVo.getDescription());
         flowById.setDriverMemory(flowVo.getDriverMemory());
@@ -437,8 +417,9 @@ public class FlowServiceImpl implements IFlowService {
         flowById.setExecutorMemory(flowVo.getExecutorMemory());
         flowById.setExecutorNumber(flowVo.getExecutorNumber());
         flowById.setLastUpdateDttm(new Date());
-        flowById.setLastUpdateUser(currentUser.getUsername());
+        flowById.setLastUpdateUser(username);
         flowDomain.saveOrUpdate(flowById);
+        Map<String, Object> rtnMap = new HashMap<>();
         rtnMap.put("code", 200);
         rtnMap.put("flowVo", flowVo);
         rtnMap.put("errorMsg", "successfully saved");
@@ -448,70 +429,55 @@ public class FlowServiceImpl implements IFlowService {
 
     @Override
     @Transactional
-    public String updateFlowNameById(String id, String flowGroupId, String flowName, String pageId) {
-        Map<String, Object> rtnMap = new HashMap<>();
-        rtnMap.put("code", 500);
-        UserVo user = SessionUserUtil.getCurrentUser();
-        if (null == user) {
-            rtnMap.put("errorMsg", "illegal user");
-            logger.info("illegal user");
-            return JsonUtils.toJsonNoException(rtnMap);
+    public String updateFlowNameById(String username, String id, String flowGroupId, String flowName, String pageId) {
+        if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
         }
         if (StringUtils.isAnyEmpty(id, flowName, flowGroupId, pageId)) {
-            rtnMap.put("errorMsg", "The incoming parameter is empty");
-            logger.info("The incoming parameter is empty");
-            return JsonUtils.toJsonNoException(rtnMap);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("The incoming parameter is empty");
         }
         FlowGroup flowGroupById = flowGroupDomain.getFlowGroupById(flowGroupId);
         if (null == flowGroupById) {
-            rtnMap.put("errorMsg", "flow information is empty");
-            logger.info("Flow query is null,flowGroupId:" + flowGroupId);
-            return JsonUtils.toJsonNoException(rtnMap);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Flow query is null,flowGroupId:" + flowGroupId);
         }
         MxGraphModel mxGraphModel = flowGroupById.getMxGraphModel();
         if (null == mxGraphModel) {
-            rtnMap.put("errorMsg", "No flow information,update failed ");
-            logger.info(flowGroupById.getId() + "No flow information,update failed");
-            return JsonUtils.toJsonNoException(rtnMap);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(flowGroupById.getId() + "No flow information,update failed");
         }
         List<MxCell> root = mxGraphModel.getRoot();
         if (null == root || root.size() <= 0) {
-            rtnMap.put("errorMsg", "No flow information,update failed ");
-            logger.info(flowGroupById.getId() + "No flow information,update failed");
-            return JsonUtils.toJsonNoException(rtnMap);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(flowGroupById.getId() + "No flow information,update failed");
         }
         //Check if name is the same name
         String checkResult = flowDomain.getFlowIdByNameAndFlowGroupId(flowGroupId, flowName);
         if (StringUtils.isNotBlank(checkResult)) {
-            rtnMap.put("errorMsg", "Name already exists");
-            logger.info(flowName + "The name has been repeated and the save failed.");
-            return JsonUtils.toJsonNoException(rtnMap);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(flowName + "The name has been repeated and the save failed.");
         }
-        boolean updateFlowNameById = this.updateFlowNameById(id, flowName);
+        boolean updateFlowNameById = this.updateFlowNameById(username, id, flowName);
         if (!updateFlowNameById) {
-            logger.info("Modify flowName failed");
-            rtnMap.put("errorMsg", "Modify flowName failed");
-            return JsonUtils.toJsonNoException(rtnMap);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Modify flowName failed");
         }
-        String username = user.getUsername();
+        Map<String, Object> rtnMap = new HashMap<>();
+        rtnMap.put("code", 500);
         for (MxCell mxCell : root) {
-            if (null != mxCell) {
-                if (mxCell.getPageId().equals(pageId)) {
-                    mxCell.setValue(flowName);
-                    mxCell.setLastUpdateDttm(new Date());
-                    mxCell.setLastUpdateUser(username);
-                    mxCellDomain.saveOrUpdate(mxCell);
-                    MxGraphModelVo mxGraphModelVo = FlowXmlUtils.mxGraphModelPoToVo(mxGraphModel);
-                    // Convert the mxGraphModelVo from the query to XML
-                    String loadXml = MxGraphUtils.mxGraphModelToMxGraphXml(mxGraphModelVo);
-                    loadXml = StringUtils.isNotBlank(loadXml) ? loadXml : "";
-                    rtnMap.put("XmlData", loadXml);
-                    rtnMap.put("code", 200);
-                    rtnMap.put("errorMsg", "Successfully modified");
-                    logger.info("Successfully modified");
-                    rtnMap.put("errorMsg", "Successfully modified");
-                    break;
-                }
+            if (null == mxCell) {
+                continue;
+            }
+            if (mxCell.getPageId().equals(pageId)) {
+                mxCell.setValue(flowName);
+                mxCell.setLastUpdateDttm(new Date());
+                mxCell.setLastUpdateUser(username);
+                mxCellDomain.saveOrUpdate(mxCell);
+                MxGraphModelVo mxGraphModelVo = FlowXmlUtils.mxGraphModelPoToVo(mxGraphModel);
+                // Convert the mxGraphModelVo from the query to XML
+                String loadXml = MxGraphUtils.mxGraphModelToMxGraphXml(mxGraphModelVo);
+                loadXml = StringUtils.isNotBlank(loadXml) ? loadXml : "";
+                rtnMap.put("XmlData", loadXml);
+                rtnMap.put("code", 200);
+                rtnMap.put("errorMsg", "Successfully modified");
+                logger.info("Successfully modified");
+                rtnMap.put("errorMsg", "Successfully modified");
+                break;
             }
         }
         return JsonUtils.toJsonNoException(rtnMap);
@@ -519,20 +485,22 @@ public class FlowServiceImpl implements IFlowService {
 
     @Override
     @Transactional
-    public Boolean updateFlowNameById(String id, String flowName) {
-        UserVo user = SessionUserUtil.getCurrentUser();
-        String username = (null != user) ? user.getUsername() : "-1";
-        if (StringUtils.isNotBlank(id) && StringUtils.isNotBlank(flowName)) {
-            Flow flowById = flowDomain.getFlowById(id);
-            if (null != flowById) {
-                flowById.setLastUpdateUser(username);
-                flowById.setLastUpdateDttm(new Date());
-                flowById.setName(flowName);
-                flowDomain.saveOrUpdate(flowById);
-                return true;
-            }
+    public Boolean updateFlowNameById(String username, String id, String flowName) {
+        if (StringUtils.isBlank(username)) {
+            return false;
         }
-        return false;
+        if (StringUtils.isBlank(id) || StringUtils.isBlank(flowName)) {
+            return false;
+        }
+        Flow flowById = flowDomain.getFlowById(id);
+        if (null == flowById) {
+            return false;
+        }
+        flowById.setLastUpdateUser(username);
+        flowById.setLastUpdateDttm(new Date());
+        flowById.setName(flowName);
+        flowDomain.saveOrUpdate(flowById);
+        return true;
     }
 
     @Override

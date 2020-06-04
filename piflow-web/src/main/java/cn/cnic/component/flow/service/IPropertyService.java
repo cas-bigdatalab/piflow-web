@@ -51,11 +51,12 @@ public interface IPropertyService {
     /**
      * check stops template
      *
+     * @param username
      * @param stopsId
      */
-    public void checkStopTemplateUpdate(String stopsId);
+    public void checkStopTemplateUpdate(String username, String stopsId);
 
-    public String saveOrUpdateRoutePath(UpdatePathRequest updatePathRequest);
+    public String saveOrUpdateRoutePath(String username, UpdatePathRequest updatePathRequest);
 
     /**
      * deleteLastReloadDataByStopsId

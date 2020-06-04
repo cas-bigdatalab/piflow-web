@@ -45,7 +45,7 @@ public interface DataSourcePropertyMapper {
      * @return
      */
     @UpdateProvider(type = DataSourcePropertyMapperProvider.class, method = "updateEnableFlagById")
-    public int updateEnableFlagById(String id);
+    public int updateEnableFlagById(String username, String id);
 
     /**
      * Delete the dataSourceProperty according to the datasourceId logic
@@ -54,6 +54,6 @@ public interface DataSourcePropertyMapper {
      * @return
      */
     @UpdateProvider(type = DataSourcePropertyMapperProvider.class, method = "updateEnableFlagByDatasourceId")
-    public int updateEnableFlagByDatasourceId(String id);
+    public int updateEnableFlagByDatasourceId(String username, String id);
 
 }

@@ -45,13 +45,11 @@ public class FlowTemplateDomain {
         return flowTemplate;
     }
 
-    public List<FlowTemplate> getFlowTemplateList() {
-        boolean isAdmin = SessionUserUtil.isAdmin();
+    public List<FlowTemplate> getFlowTemplateList(String username, boolean isAdmin) {
         if (isAdmin) {
             return flowTemplateJpaRepository.findAll(addEnableFlagParam(), Sort.by(Sort.Order.desc("crtDttm")));
         } else {
-            UserVo currentUser = SessionUserUtil.getCurrentUser();
-            return flowTemplateJpaRepository.getFlowTemplateByCrtUser(currentUser.getUsername());
+            return flowTemplateJpaRepository.getFlowTemplateByCrtUser(username);
         }
     }
 
@@ -67,14 +65,12 @@ public class FlowTemplateDomain {
         return flowTemplateJpaRepository.updateEnableFlagById(id, enableFlag);
     }
 
-    public Page<FlowTemplate> getFlowTemplateListPage(int page, int size, String param) {
+    public Page<FlowTemplate> getFlowTemplateListPage(String username, boolean isAdmin, int page, int size, String param) {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "crtDttm"));
-        boolean isAdmin = SessionUserUtil.isAdmin();
         if (isAdmin) {
             return flowTemplateJpaRepository.getFlowTemplateListPageByParam(null == param ? "" : param, pageRequest);
         } else {
-            UserVo currentUser = SessionUserUtil.getCurrentUser();
-            return flowTemplateJpaRepository.getFlowTemplateListPageByParamAndCrtUser(currentUser.getUsername(), null == param ? "" : param, pageRequest);
+            return flowTemplateJpaRepository.getFlowTemplateListPageByParamAndCrtUser(username, null == param ? "" : param, pageRequest);
         }
     }
 

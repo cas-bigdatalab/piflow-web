@@ -1,5 +1,6 @@
 package cn.cnic.controller;
 
+import cn.cnic.base.util.SessionUserUtil;
 import cn.cnic.component.system.service.ISysScheduleService;
 import cn.cnic.component.system.vo.SysScheduleVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,54 +26,63 @@ public class QuartzController {
     @RequestMapping("/getScheduleById")
     @ResponseBody
     public String getScheduleById(HttpServletRequest request, String scheduleId) {
-        return sysScheduleServiceImpl.getScheduleById(scheduleId);
+        boolean isAdmin = SessionUserUtil.isAdmin();
+        return sysScheduleServiceImpl.getScheduleById(isAdmin, scheduleId);
     }
 
     @RequestMapping("/createTask")
     @ResponseBody
     public String createTask(SysScheduleVo sysScheduleVo) {
-        return sysScheduleServiceImpl.createJob(sysScheduleVo);
+        String username = SessionUserUtil.getCurrentUsername();
+        return sysScheduleServiceImpl.createJob(username, sysScheduleVo);
     }
 
     @RequestMapping("/runOnceTask")
     @ResponseBody
     public String runOnceTask(String sysScheduleId) {
-        return sysScheduleServiceImpl.runOnce(sysScheduleId);
+        String username = SessionUserUtil.getCurrentUsername();
+        return sysScheduleServiceImpl.runOnce(username, sysScheduleId);
     }
 
     @RequestMapping("/startTask")
     @ResponseBody
     public String startTask(String sysScheduleId) {
-        return sysScheduleServiceImpl.startJob(sysScheduleId);
+        String username = SessionUserUtil.getCurrentUsername();
+        return sysScheduleServiceImpl.startJob(username, sysScheduleId);
     }
 
     @RequestMapping("/stopTask")
     @ResponseBody
     public String stopTask(String sysScheduleId) {
-        return sysScheduleServiceImpl.stopJob(sysScheduleId);
+        String username = SessionUserUtil.getCurrentUsername();
+        return sysScheduleServiceImpl.stopJob(username, sysScheduleId);
     }
 
     @RequestMapping("/pauseTask")
     @ResponseBody
     public String pauseTask(String sysScheduleId) {
-        return sysScheduleServiceImpl.pauseJob(sysScheduleId);
+        String username = SessionUserUtil.getCurrentUsername();
+        return sysScheduleServiceImpl.pauseJob(username, sysScheduleId);
     }
 
     @RequestMapping("/resumeTask")
     @ResponseBody
     public String resumeTask(String sysScheduleId) {
-        return sysScheduleServiceImpl.resume(sysScheduleId);
+        String username = SessionUserUtil.getCurrentUsername();
+        return sysScheduleServiceImpl.resume(username, sysScheduleId);
     }
 
     @RequestMapping("/updateTask")
     @ResponseBody
     public String updateTask(SysScheduleVo sysScheduleVo) {
-        return sysScheduleServiceImpl.update(sysScheduleVo);
+        String username = SessionUserUtil.getCurrentUsername();
+        return sysScheduleServiceImpl.update(username, sysScheduleVo);
     }
 
     @RequestMapping("/deleteTask")
     @ResponseBody
     public String deleteTask(String sysScheduleId) {
-        return sysScheduleServiceImpl.deleteTask(sysScheduleId);
+        String username = SessionUserUtil.getCurrentUsername();
+        return sysScheduleServiceImpl.deleteTask(username, sysScheduleId);
     }
 }

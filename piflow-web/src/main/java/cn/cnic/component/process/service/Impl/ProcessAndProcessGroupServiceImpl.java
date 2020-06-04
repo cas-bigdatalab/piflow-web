@@ -1,12 +1,14 @@
 package cn.cnic.component.process.service.Impl;
 
-import cn.cnic.base.util.*;
+import cn.cnic.base.util.JsonUtils;
+import cn.cnic.base.util.LoggerUtil;
+import cn.cnic.base.util.PageHelperUtils;
+import cn.cnic.base.util.ReturnMapUtils;
 import cn.cnic.component.process.service.IProcessAndProcessGroupService;
 import cn.cnic.mapper.custom.ProcessAndProcessGroupMapper;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.slf4j.Logger;
-
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -29,16 +31,15 @@ public class ProcessAndProcessGroupServiceImpl implements IProcessAndProcessGrou
      * @return json
      */
     @Override
-    public String getProcessAndProcessGroupListPage(Integer offset, Integer limit, String param) {
+    public String getProcessAndProcessGroupListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param) {
         if (null == offset || null == limit) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.ERROR_MSG);
         }
         Page<Process> page = PageHelper.startPage(offset, limit);
-        if (SessionUserUtil.isAdmin()) {
+        if (isAdmin) {
             processAndProcessGroupMapper.getProcessAndProcessGroupList(param);
         } else {
-            String currentUsername = SessionUserUtil.getCurrentUsername();
-            processAndProcessGroupMapper.getProcessAndProcessGroupListByUser(param, currentUsername);
+            processAndProcessGroupMapper.getProcessAndProcessGroupListByUser(param, username);
         }
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(ReturnMapUtils.SUCCEEDED_MSG);
         rtnMap = PageHelperUtils.setLayTableParam(page, rtnMap);

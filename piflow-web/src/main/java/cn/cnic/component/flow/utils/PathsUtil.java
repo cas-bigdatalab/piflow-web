@@ -1,8 +1,6 @@
 package cn.cnic.component.flow.utils;
 
-import cn.cnic.base.util.SessionUserUtil;
 import cn.cnic.base.util.UUIDUtils;
-import cn.cnic.base.vo.UserVo;
 import cn.cnic.component.flow.model.Paths;
 import cn.cnic.component.flow.vo.PathsVo;
 import org.springframework.beans.BeanUtils;
@@ -39,9 +37,7 @@ public class PathsUtil {
      * @param pathsVoList
      * @return
      */
-    public static List<Paths> pathsListVoToPo(List<PathsVo> pathsVoList) {
-        UserVo user = SessionUserUtil.getCurrentUser();
-        String username = (null != user) ? user.getUsername() : "-1";
+    public static List<Paths> pathsListVoToPo(String username, List<PathsVo> pathsVoList) {
         List<Paths> pathsList = null;
         if (null != pathsVoList && pathsVoList.size() > 0) {
             pathsList = new ArrayList<Paths>();

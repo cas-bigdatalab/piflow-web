@@ -40,24 +40,26 @@ public interface IFlowGroupService {
      * @param param  search for the keyword
      * @return
      */
-    public String getFlowGroupListPage(Integer offset, Integer limit, String param);
+    public String getFlowGroupListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param);
 
     /**
      * save or update flowGroupVo
      *
+     * @param username
      * @param flowGroupVo
      * @return
      */
-    public String saveOrUpdate(FlowGroupVo flowGroupVo);
+    public String saveOrUpdate(String username, FlowGroupVo flowGroupVo);
 
     /**
      * run flow group
      *
+     * @param username
      * @param flowGroupId
      * @param runMode
      * @return
      */
-    public String runFlowGroup(String flowGroupId, String runMode);
+    public String runFlowGroup(String username, String flowGroupId, String runMode);
 
     /**
      * delete FLowGroup info
@@ -70,11 +72,12 @@ public interface IFlowGroupService {
     /**
      * Copy flow to group
      *
+     * @param username
      * @param flowId
      * @param flowGroupId
      * @return
      */
-    public String copyFlowToGroup(String flowId, String flowGroupId);
+    public String copyFlowToGroup(String username, String flowId, String flowGroupId);
 
     /**
      * Query FlowGroupVo information based on pageId
@@ -89,13 +92,14 @@ public interface IFlowGroupService {
     /**
      * updateFlowGroupNameById
      *
+     * @param username
      * @param id
      * @param parentsId
      * @param flowGroupName
      * @param pageId
      * @return
      */
-    public String updateFlowGroupNameById(String id, String parentsId, String flowGroupName, String pageId);
+    public String updateFlowGroupNameById(String username, String id, String parentsId, String flowGroupName, String pageId);
 
     /**
      * updateFlowGroupNameById
@@ -104,24 +108,27 @@ public interface IFlowGroupService {
      * @param flowGroupName
      * @return
      */
-    public Boolean updateFlowGroupNameById(String id, String flowGroupName);
+    public Boolean updateFlowGroupNameById(String username, String id, String flowGroupName);
 
     /**
      * updateFlowGroupBaseInfo
      *
+     * @param username
      * @param flowGroupVo
      * @return
      */
-    public String updateFlowGroupBaseInfo(FlowGroupVo flowGroupVo);
+    public String updateFlowGroupBaseInfo(String username, FlowGroupVo flowGroupVo);
 
     /**
      * Right click to run
      *
+     * @param username
+     * @param isAdmin
      * @param pId
      * @param nodeId
      * @param nodeType
      * @return
      */
-    public String rightRun(String pId, String nodeId, String nodeType);
+    public String rightRun(String username, boolean isAdmin, String pId, String nodeId, String nodeType);
 
 }

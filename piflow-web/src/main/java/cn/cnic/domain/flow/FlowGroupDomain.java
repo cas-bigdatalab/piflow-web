@@ -69,7 +69,6 @@ public class FlowGroupDomain {
 
     public Page<FlowGroup> adminGetFlowGroupListPage(int page, int size, String param) {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "crtDttm"));
-        boolean isAdmin = SessionUserUtil.isAdmin();
         return flowGroupJpaRepository.getFlowGroupListPage(null == param ? "" : param, pageRequest);
     }
 

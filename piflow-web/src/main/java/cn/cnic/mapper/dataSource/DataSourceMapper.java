@@ -64,7 +64,7 @@ public interface DataSourceMapper {
     DataSource getDataSourceById(@Param("id") String id);
 
     @UpdateProvider(type = DataSourceMapperProvider.class, method = "updateEnableFlagById")
-    public int updateEnableFlagById(@Param("id") String id);
+    public int updateEnableFlagById(@Param("username") String username, @Param("id") String id);
 
 
 }

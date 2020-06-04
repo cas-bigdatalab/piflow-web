@@ -29,13 +29,12 @@ public class PathsMapperProvider {
     private String filterCondition;
     private String flowId;
 
-    private void preventSQLInjectionPaths(Paths paths) {
+    private void preventSQLInjectionPaths(String username, Paths paths) {
         if (null != paths && StringUtils.isNotBlank(paths.getLastUpdateUser())) {
-            UserVo currentUser = SessionUserUtil.getCurrentUser();
             // Mandatory Field
             String id = paths.getId();
-            String crtUser = currentUser.getUsername();
-            String lastUpdateUser = currentUser.getUsername();
+            String crtUser = username;
+            String lastUpdateUser = username;
             Boolean enableFlag = paths.getEnableFlag();
             Long version = paths.getVersion();
             this.id = SqlUtils.preventSQLInjection(id);
@@ -83,8 +82,9 @@ public class PathsMapperProvider {
      * @param map (Content: The key is pathsList, the value is List<Paths>)
      * @return
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-	public String addPathsList(Map map) {
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public String addPathsList(Map map) {
+        String username = (String) map.get("username");
         List<Paths> pathsList = (List<Paths>) map.get("pathsList");
         StringBuffer sql = new StringBuffer();
         if (null != pathsList && pathsList.size() > 0) {
@@ -111,7 +111,7 @@ public class PathsMapperProvider {
             for (Paths paths : pathsList) {
                 i++;
                 if (null != paths) {
-                    this.preventSQLInjectionPaths(paths);
+                    this.preventSQLInjectionPaths(username, paths);
 
                     if (null == crtDttmStr) {
                         String crtDttm = DateUtils.dateTimesToStr(new Date());
@@ -154,9 +154,9 @@ public class PathsMapperProvider {
      * @param paths
      * @return
      */
-    public String addPaths(Paths paths) {
+    public String addPaths(String username, Paths paths) {
         String sqlStr = "";
-        this.preventSQLInjectionPaths(paths);
+        this.preventSQLInjectionPaths(username, paths);
         if (null != paths) {
             SQL sql = new SQL();
             sql.INSERT_INTO("flow_path");
@@ -198,9 +198,9 @@ public class PathsMapperProvider {
      * @param paths
      * @return
      */
-    public String updatePaths(Paths paths) {
+    public String updatePaths(String username, Paths paths) {
         String sqlStr = "";
-        this.preventSQLInjectionPaths(paths);
+        this.preventSQLInjectionPaths(username, paths);
         if (null != paths) {
             SQL sql = new SQL();
             sql.UPDATE("flow_path");
@@ -329,21 +329,21 @@ public class PathsMapperProvider {
      * @param flowId
      * @return
      */
-    public String updateEnableFlagByFlowId(String flowId) {
-        UserVo user = SessionUserUtil.getCurrentUser();
-        String username = (null != user) ? user.getUsername() : "-1";
-        String sqlStr = "select 0";
-        if (StringUtils.isNotBlank(flowId)) {
-            SQL sql = new SQL();
-            sql.UPDATE("flow_path");
-            sql.SET("enable_flag = 0");
-            sql.SET("last_update_user = " + SqlUtils.preventSQLInjection(username));
-            sql.SET("last_update_dttm = " + SqlUtils.preventSQLInjection(DateUtils.dateTimesToStr(new Date())));
-            sql.WHERE("enable_flag = 1");
-            sql.WHERE("fk_flow_id = " + SqlUtils.preventSQLInjection(flowId));
-
-            sqlStr = sql.toString();
+    public String updateEnableFlagByFlowId(String username, String flowId) {
+        if (StringUtils.isBlank(username)) {
+            return "select 0";
         }
-        return sqlStr;
+        if (StringUtils.isBlank(flowId)) {
+            return "select 0";
+        }
+        SQL sql = new SQL();
+        sql.UPDATE("flow_path");
+        sql.SET("enable_flag = 0");
+        sql.SET("last_update_user = " + SqlUtils.preventSQLInjection(username));
+        sql.SET("last_update_dttm = " + SqlUtils.preventSQLInjection(DateUtils.dateTimesToStr(new Date())));
+        sql.WHERE("enable_flag = 1");
+        sql.WHERE("fk_flow_id = " + SqlUtils.preventSQLInjection(flowId));
+
+        return sql.toString();
     }
 }

@@ -295,8 +295,10 @@ public class MxGraphCtrl {
         if (null == model) {
             return null;
         }
+        String username = SessionUserUtil.getCurrentUsername();
+        boolean isAdmin = SessionUserUtil.isAdmin();
         // Query by loading'id'
-        Flow flowById = flowServiceImpl.getFlowById(load);
+        Flow flowById = flowServiceImpl.getFlowById(username, isAdmin, load);
         if (null == flowById) {
             return null;
         }
@@ -335,7 +337,8 @@ public class MxGraphCtrl {
         String imageXML = request.getParameter("imageXML");
         String loadId = request.getParameter("load");
         String operType = request.getParameter("operType");
-        return mxGraphModelServiceImpl.saveDataForTask(imageXML, loadId, operType);
+        String username = SessionUserUtil.getCurrentUsername();
+        return mxGraphModelServiceImpl.saveDataForTask(username, imageXML, loadId, operType);
     }
 
     /**
@@ -351,7 +354,8 @@ public class MxGraphCtrl {
         String imageXML = request.getParameter("imageXML");
         String loadId = request.getParameter("load");
         String operType = request.getParameter("operType");
-        return mxGraphModelServiceImpl.saveDataForGroup(imageXML, loadId, operType, true);
+        String username = SessionUserUtil.getCurrentUsername();
+        return mxGraphModelServiceImpl.saveDataForGroup(username, imageXML, loadId, operType, true);
     }
 
     @RequestMapping("/addMxCellAndData")
@@ -364,19 +368,23 @@ public class MxGraphCtrl {
     @RequestMapping("/uploadNodeImage")
     @ResponseBody
     public String uploadNodeImage(@RequestParam("file") MultipartFile file, String imageType) {
-        return mxNodeImageServiceImpl.uploadNodeImage(file, imageType);
+        String username = SessionUserUtil.getCurrentUsername();
+        return mxNodeImageServiceImpl.uploadNodeImage(username, file, imageType);
     }
 
     @RequestMapping("/nodeImageList")
     @ResponseBody
     public String nodeImageList(String imageType) {
-        return mxNodeImageServiceImpl.getMxNodeImageList(imageType);
+        String username = SessionUserUtil.getCurrentUsername();
+        return mxNodeImageServiceImpl.getMxNodeImageList(username, imageType);
     }
 
     @RequestMapping("/groupRightRun")
     @ResponseBody
     public String groupRightRun(String pId, String nodeId, String nodeType) {
-        return flowGroupServiceImpl.rightRun(pId, nodeId, nodeType);
+        String username = SessionUserUtil.getCurrentUsername();
+        boolean isAdmin = SessionUserUtil.isAdmin();
+        return flowGroupServiceImpl.rightRun(username, isAdmin, pId, nodeId, nodeType);
     }
 
 }

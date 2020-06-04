@@ -26,14 +26,12 @@ public class ProcessStopDomain {
         return processStop;
     }
 
-    public Page<ProcessStop> getProcessStopListPage(int page, int size, String param) {
+    public Page<ProcessStop> getProcessStopListPage(String username, boolean isAdmin, int page, int size, String param) {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "crtDttm"));
-        boolean isAdmin = SessionUserUtil.isAdmin();
         if (isAdmin) {
             return processStopJpaRepository.getProcessStopListPage(null == param ? "" : param, pageRequest);
         } else {
-            UserVo currentUser = SessionUserUtil.getCurrentUser();
-            return processStopJpaRepository.getProcessStopListPage(currentUser.getUsername(), null == param ? "" : param, pageRequest);
+            return processStopJpaRepository.getProcessStopListPage(username, null == param ? "" : param, pageRequest);
         }
     }
 

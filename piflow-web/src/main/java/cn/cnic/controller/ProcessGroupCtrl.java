@@ -52,7 +52,9 @@ public class ProcessGroupCtrl {
     @RequestMapping("/processGroupListPage")
     @ResponseBody
     public String processGroupListPage(Integer page, Integer limit, String param) {
-        return processGroupServiceImpl.getProcessGroupVoListPage(page, limit, param);
+        String username = SessionUserUtil.getCurrentUsername();
+        boolean isAdmin = SessionUserUtil.isAdmin();
+        return processGroupServiceImpl.getProcessGroupVoListPage(username, isAdmin, page, limit, param);
     }
 
     /**
@@ -237,7 +239,8 @@ public class ProcessGroupCtrl {
     @ResponseBody
     public String delProcessGroup(HttpServletRequest request) {
         String processGroupID = request.getParameter("processGroupId");
-        return processGroupServiceImpl.delProcessGroup(processGroupID);
+        String username = SessionUserUtil.getCurrentUsername();
+        return processGroupServiceImpl.delProcessGroup(username, processGroupID);
     }
 
     /**
