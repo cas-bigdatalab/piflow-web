@@ -1,6 +1,5 @@
 package cn.cnic.component.flow.service;
 
-import cn.cnic.base.vo.UserVo;
 import cn.cnic.component.flow.model.Flow;
 import cn.cnic.component.flow.vo.FlowVo;
 
@@ -44,10 +43,10 @@ public interface IFlowService {
      * @return
      */
     @Transactional
-    public String addFlow(FlowVo flowVo, UserVo user);
+    public String addFlow(String username, FlowVo flowVo);
 
     @Transactional
-    public int updateFlow(Flow flow, UserVo user);
+    public int updateFlow(String username, Flow flow);
 
     @Transactional
     public int deleteFLowInfo(String username, boolean isAdmin, String id);

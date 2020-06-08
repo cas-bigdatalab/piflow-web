@@ -1,9 +1,7 @@
 package cn.cnic.provider.dataSource;
 
 import cn.cnic.base.util.DateUtils;
-import cn.cnic.base.util.SessionUserUtil;
 import cn.cnic.base.util.SqlUtils;
-import cn.cnic.base.vo.UserVo;
 import cn.cnic.component.dataSource.model.DataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
@@ -151,14 +149,16 @@ public class DataSourceMapperProvider {
      *
      * @return
      */
-    public String getDataSourceList() {
+    public String getDataSourceList(String username, boolean isAdmin) {
         String sqlStr = "select 0";
         StringBuffer strBuf = new StringBuffer();
         strBuf.append("select * ");
         strBuf.append("from data_source ");
         strBuf.append("where enable_flag = 1 ");
         strBuf.append("and is_template = 0 ");
-        strBuf.append(SqlUtils.addQueryByUserRole(true, false));
+        if (!isAdmin) {
+            strBuf.append("and crt_user = " + SqlUtils.preventSQLInjection(username));
+        }
         strBuf.append("order by crt_dttm desc ");
         sqlStr = strBuf.toString();
         return sqlStr;
@@ -169,7 +169,7 @@ public class DataSourceMapperProvider {
      *
      * @return
      */
-    public String getDataSourceListParam(String param) {
+    public String getDataSourceListParam(String username, boolean isAdmin, String param) {
         String sqlStr = "select 0";
         StringBuffer strBuf = new StringBuffer();
         strBuf.append("select * ");
@@ -182,7 +182,9 @@ public class DataSourceMapperProvider {
             strBuf.append("or data_source_type like '%" + param + "%' ");
             strBuf.append(") ");
         }
-        strBuf.append(SqlUtils.addQueryByUserRole(true, false));
+        if (!isAdmin) {
+            strBuf.append("and crt_user = " + SqlUtils.preventSQLInjection(username));
+        }
         strBuf.append("order by crt_dttm desc ");
         sqlStr = strBuf.toString();
         return sqlStr;
@@ -219,8 +221,6 @@ public class DataSourceMapperProvider {
             strBuf.append("from data_source ");
             strBuf.append("where enable_flag = 1 ");
             strBuf.append("and id = " + SqlUtils.preventSQLInjection(id) + " ");
-            //UserVo currentUser = SessionUserUtil.getCurrentUser();
-            //strBuf.append(SqlUtils.addQueryByUserRole(currentUser, true));
             sqlStr = strBuf.toString();
         }
         return sqlStr;

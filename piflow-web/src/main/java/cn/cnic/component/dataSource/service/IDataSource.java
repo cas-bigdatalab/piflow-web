@@ -12,7 +12,7 @@ public interface IDataSource {
      * @param dataSourceVo
      * @return
      */
-    public String saveOrUpdate(boolean isAdmin, String username, DataSourceVo dataSourceVo);
+    public String saveOrUpdate(String username, boolean isAdmin, DataSourceVo dataSourceVo);
 
     /**
      * Query DataSourceVo according to ID (query contains its subtable)
@@ -20,7 +20,7 @@ public interface IDataSource {
      * @param id
      * @return
      */
-    public DataSourceVo dataSourceVoById(boolean isAdmin, String username, String id);
+    public DataSourceVo dataSourceVoById(String username, boolean isAdmin, String id);
 
     /**
      * Query DataSourceVo according to ID (query contains its subtable)
@@ -28,15 +28,16 @@ public interface IDataSource {
      * @param id
      * @return
      */
-    public String getDataSourceVoById(boolean isAdmin, String username, String id);
+    public String getDataSourceVoById(String username, boolean isAdmin, String id);
 
     /**
      * getDataSourceVoList
      *
-     * @param isTemplate
+     * @param isAdmin
+     * @param username
      * @return
      */
-    public String getDataSourceVoList(boolean isAdmin, String username);
+    public String getDataSourceVoList(String username, boolean isAdmin);
 
     /**
      * getDataSourceTemplateList
@@ -54,7 +55,7 @@ public interface IDataSource {
      * @param param
      * @return
      */
-    public String getDataSourceVoListPage(boolean isAdmin, String username, Integer offset, Integer limit, String param);
+    public String getDataSourceVoListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param);
 
     /**
      * delete DataSource By Id
@@ -62,7 +63,9 @@ public interface IDataSource {
      * @param id
      * @return
      */
-    public String deleteDataSourceById(boolean isAdmin, String username,String id);
+    public String deleteDataSourceById(String username, boolean isAdmin, String id);
+
+    public String getDataSourceInputPageData(String username, boolean isAdmin, String dataSourceId);
 
 
 }

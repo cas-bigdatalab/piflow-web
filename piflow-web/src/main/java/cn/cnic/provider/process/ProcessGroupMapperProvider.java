@@ -4,6 +4,7 @@ import cn.cnic.base.util.DateUtils;
 import cn.cnic.base.util.SqlUtils;
 import cn.cnic.common.Eunm.ProcessState;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.jdbc.SQL;
 
 import java.util.Date;
@@ -17,18 +18,19 @@ public class ProcessGroupMapperProvider {
      * @param processGroupId
      * @return
      */
-    public String getProcessGroupById(String processGroupId) {
-        String sqlStr = "select 0";
-        if (StringUtils.isNotBlank(processGroupId)) {
-            StringBuffer strBuf = new StringBuffer();
-            strBuf.append("select * ");
-            strBuf.append("from flow_process_group ");
-            strBuf.append("where enable_flag = 1 ");
-            strBuf.append("and id= " + SqlUtils.preventSQLInjection(processGroupId));
-            strBuf.append(SqlUtils.addQueryByUserRole(true, false));
-            sqlStr = strBuf.toString();
+    public String getProcessGroupById(String username, boolean isAdmin, String processGroupId) {
+        if (StringUtils.isBlank(processGroupId)) {
+            return "select 0";
         }
-        return sqlStr;
+        StringBuffer strBuf = new StringBuffer();
+        strBuf.append("select * ");
+        strBuf.append("from flow_process_group ");
+        strBuf.append("where enable_flag = 1 ");
+        strBuf.append("and id= " + SqlUtils.preventSQLInjection(processGroupId));
+        if (!isAdmin) {
+            strBuf.append("and crt_user = " + SqlUtils.preventSQLInjection(username));
+        }
+        return strBuf.toString();
     }
 
     /**
@@ -37,18 +39,19 @@ public class ProcessGroupMapperProvider {
      * @param processGroupId
      * @return
      */
-    public String getRunModeTypeById(String processGroupId) {
-        String sqlStr = "select 0";
-        if (StringUtils.isNotBlank(processGroupId)) {
-            StringBuffer strBuf = new StringBuffer();
-            strBuf.append("select run_mode_type ");
-            strBuf.append("from flow_process_group ");
-            strBuf.append("where enable_flag = 1 ");
-            strBuf.append("and id= " + SqlUtils.preventSQLInjection(processGroupId));
-            strBuf.append(SqlUtils.addQueryByUserRole(true, false));
-            sqlStr = strBuf.toString();
+    public String getRunModeTypeById(String username, boolean isAdmin, String processGroupId) {
+        if (StringUtils.isBlank(processGroupId)) {
+            return "select 0";
         }
-        return sqlStr;
+        StringBuffer strBuf = new StringBuffer();
+        strBuf.append("select run_mode_type ");
+        strBuf.append("from flow_process_group ");
+        strBuf.append("where enable_flag = 1 ");
+        strBuf.append("and id= " + SqlUtils.preventSQLInjection(processGroupId));
+        if (!isAdmin) {
+            strBuf.append("and crt_user = " + SqlUtils.preventSQLInjection(username));
+        }
+        return strBuf.toString();
     }
 
     /**
@@ -119,7 +122,7 @@ public class ProcessGroupMapperProvider {
      * @param param
      * @return
      */
-    public String getProcessGroupListByParam(String param) {
+    public String getProcessGroupListByParam(String username, boolean isAdmin, String param) {
         StringBuffer strBuf = new StringBuffer();
         strBuf.append("select * ");
         strBuf.append("from flow_process_group ");
@@ -135,7 +138,9 @@ public class ProcessGroupMapperProvider {
             strBuf.append("or description like '%" + param + "%' ");
             strBuf.append(") ");
         }
-        strBuf.append(SqlUtils.addQueryByUserRole(true, false));
+        if (!isAdmin) {
+            strBuf.append("and crt_user = " + SqlUtils.preventSQLInjection(username));
+        }
         strBuf.append("order by crt_dttm desc,last_update_dttm desc ");
 
         return strBuf.toString();
@@ -146,14 +151,16 @@ public class ProcessGroupMapperProvider {
      *
      * @return
      */
-    public String getProcessGroupList() {
+    public String getProcessGroupList(String username, boolean isAdmin) {
         StringBuffer strBuf = new StringBuffer();
         strBuf.append("select * ");
         strBuf.append("from flow_process_group ");
         strBuf.append("where ");
         strBuf.append("enable_flag = 1 ");
         strBuf.append("and app_id is not null ");
-        strBuf.append(SqlUtils.addQueryByUserRole(true, false));
+        if (!isAdmin) {
+            strBuf.append("and crt_user = " + SqlUtils.preventSQLInjection(username));
+        }
         strBuf.append("order by crt_dttm desc,last_update_dttm desc ");
 
         return strBuf.toString();

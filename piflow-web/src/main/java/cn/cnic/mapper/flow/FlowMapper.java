@@ -42,7 +42,7 @@ public interface FlowMapper {
      * @return
      */
     @SelectProvider(type = FlowMapperProvider.class, method = "getFlowListParam")
-    public List<Flow> getFlowListParam(@Param("param") String param);
+    public List<Flow> getFlowListParam(@Param("username") String username, @Param("isAdmin") boolean isAdmin, @Param("param") String param);
 
     /**
      * Query all sample workflows

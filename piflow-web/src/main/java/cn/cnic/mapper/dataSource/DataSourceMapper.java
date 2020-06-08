@@ -33,10 +33,10 @@ public interface DataSourceMapper {
      * @return
      */
     @SelectProvider(type = DataSourceMapperProvider.class, method = "getDataSourceList")
-    public List<DataSource> getDataSourceList();
+    public List<DataSource> getDataSourceList(@Param("username") String username, @Param("isAdmin") boolean isAdmin);
 
     @SelectProvider(type = DataSourceMapperProvider.class, method = "getDataSourceListParam")
-    public List<DataSource> getDataSourceListParam(String param);
+    public List<DataSource> getDataSourceListParam(@Param("username") String username, @Param("isAdmin") boolean isAdmin, String param);
 
     /**
      * query all TemplateDataSource

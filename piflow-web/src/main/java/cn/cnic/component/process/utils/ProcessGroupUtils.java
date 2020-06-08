@@ -148,12 +148,12 @@ public class ProcessGroupUtils {
         return processGroupNew;
     }
 
-    public static List<ProcessGroup> copyProcessGroupList(List<ProcessGroup> processGroupList, ProcessGroup processGroup, UserVo currentUser, RunModeType runModeType) {
+    public static List<ProcessGroup> copyProcessGroupList(List<ProcessGroup> processGroupList, ProcessGroup processGroup, String username, RunModeType runModeType) {
         List<ProcessGroup> copyProcessGroupList = null;
         if (null != processGroupList && processGroupList.size() > 0) {
             copyProcessGroupList = new ArrayList<>();
             for (ProcessGroup processGroup_new : processGroupList) {
-                ProcessGroup copyProcessGroup = copyProcessGroup(processGroup_new, currentUser, runModeType);
+                ProcessGroup copyProcessGroup = copyProcessGroup(processGroup_new, username, runModeType);
                 if (null != copyProcessGroup) {
                     copyProcessGroup.setProcessGroup(processGroup);
                     copyProcessGroupList.add(copyProcessGroup);
@@ -163,11 +163,10 @@ public class ProcessGroupUtils {
         return copyProcessGroupList;
     }
 
-    public static ProcessGroup copyProcessGroup(ProcessGroup processGroup, UserVo currentUser, RunModeType runModeType) {
-        if (null == currentUser) {
+    public static ProcessGroup copyProcessGroup(ProcessGroup processGroup, String username, RunModeType runModeType) {
+        if (StringUtils.isBlank(username)) {
             return null;
         }
-        String username = currentUser.getUsername();
         if (null == processGroup) {
             return null;
         }
@@ -199,11 +198,11 @@ public class ProcessGroupUtils {
         copyProcessGroup.setProcessGroupPathList(copyProcessGroupPathList(processGroupPathList, copyProcessGroup, username));
         // processList
         List<Process> processList = processGroup.getProcessList();
-        List<Process> copyProcessList = ProcessUtils.copyProcessList(processList, currentUser, runModeType, copyProcessGroup);
+        List<Process> copyProcessList = ProcessUtils.copyProcessList(processList, username, runModeType, copyProcessGroup);
         copyProcessGroup.setProcessList(copyProcessList);
         // processGroupList
         List<ProcessGroup> processGroupList = processGroup.getProcessGroupList();
-        List<ProcessGroup> copyProcessGroupList = copyProcessGroupList(processGroupList, copyProcessGroup, currentUser, runModeType);
+        List<ProcessGroup> copyProcessGroupList = copyProcessGroupList(processGroupList, copyProcessGroup, username, runModeType);
         copyProcessGroup.setProcessGroupList(copyProcessGroupList);
         return copyProcessGroup;
     }

@@ -56,12 +56,12 @@ public interface IProcessGroupService {
     /**
      * Start processesGroup
      *
+     * @param username       currentUser
      * @param processGroupId Run ProcessGroup Id
-     * @param checkpoint checkpoint
-     * @param currentUser currentUser
+     * @param checkpoint     checkpoint
      * @return json
      */
-    public String startProcessGroup(String processGroupId, String checkpoint, String runMode, UserVo currentUser);
+    public String startProcessGroup(String username, String processGroupId, String checkpoint, String runMode);
 
     /**
      * Stop running processGroup
@@ -69,7 +69,7 @@ public interface IProcessGroupService {
      * @param processGroupId ProcessGroup Id
      * @return json
      */
-    public String stopProcessGroup(String processGroupId);
+    public String stopProcessGroup(String username, boolean isAdmin, String processGroupId);
 
     /**
      * get debug data
@@ -85,7 +85,7 @@ public interface IProcessGroupService {
      * @param processGroupID ProcessGroup Id
      * @return json
      */
-    public String delProcessGroup(String username, String processGroupID);
+    public String delProcessGroup(String username, boolean isAdmin, String processGroupID);
 
     /**
      * getGroupLogData
@@ -106,7 +106,7 @@ public interface IProcessGroupService {
     /**
      * getProcessIdByPageId
      *
-     * @param fId Parents Id
+     * @param fId    Parents Id
      * @param pageId MxGraph PageId
      * @return json
      */
@@ -115,7 +115,7 @@ public interface IProcessGroupService {
     /**
      * getProcessGroupIdByPageId
      *
-     * @param fId Parents Id
+     * @param fId    Parents Id
      * @param pageId MxGraph PageId
      * @return json
      */
@@ -125,7 +125,7 @@ public interface IProcessGroupService {
      * getProcessGroupVoByPageId
      *
      * @param processGroupId ProcessGroup Id
-     * @param pageId MxGraph PageId
+     * @param pageId         MxGraph PageId
      * @return json
      */
     public ProcessGroupVo getProcessGroupVoByPageId(String processGroupId, String pageId);
@@ -134,7 +134,7 @@ public interface IProcessGroupService {
      * getProcessGroupPathVoByPageId
      *
      * @param processGroupId ProcessGroup Id
-     * @param pageId MxGraph PageId
+     * @param pageId         MxGraph PageId
      * @return json
      */
     public ProcessGroupPathVo getProcessGroupPathVoByPageId(String processGroupId, String pageId);

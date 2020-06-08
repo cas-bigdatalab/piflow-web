@@ -1,9 +1,6 @@
 package cn.cnic.controller;
 
-import cn.cnic.base.util.FlowXmlUtils;
-import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.base.util.MxGraphUtils;
-import cn.cnic.base.util.SessionUserUtil;
+import cn.cnic.base.util.*;
 import cn.cnic.base.vo.UserVo;
 import cn.cnic.common.Eunm.DrawingBoardType;
 import cn.cnic.common.Eunm.ProcessState;
@@ -90,8 +87,8 @@ public class MxGraphCtrl {
         String parentAccessPath = request.getParameter("parentAccessPath");
         model.addAttribute("parentAccessPath", parentAccessPath);
         // set current user
-        UserVo user = SessionUserUtil.getCurrentUser();
-        model.addAttribute("currentUser", user);
+        UserVo currentUser = SessionUserUtil.getCurrentUser();
+        model.addAttribute("currentUser", currentUser);
         //set drawingBoardType
         model.addAttribute("drawingBoardType", drawingBoardType);
 
@@ -385,6 +382,15 @@ public class MxGraphCtrl {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
         return flowGroupServiceImpl.rightRun(username, isAdmin, pId, nodeId, nodeType);
+    }
+
+    @RequestMapping("/eraseRecord")
+    @ResponseBody
+    public String eraseRecord(){
+        Map<String, Object> rtnMap = new HashMap<String, Object>();
+        rtnMap.put("code", 200);
+        rtnMap.put("flag", true);
+        return JsonUtils.toJsonNoException(rtnMap);
     }
 
 }

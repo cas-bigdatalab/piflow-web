@@ -5,23 +5,18 @@ import cn.cnic.base.util.SessionUserUtil;
 import cn.cnic.component.flow.service.IFlowGroupService;
 import cn.cnic.component.flow.vo.FlowGroupVo;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping("/flowGroup")
 public class FlowGroupCtrl {
 
-    /**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
-    Logger logger = LoggerUtil.getLogger();
-
-    @Autowired
+    @Resource
     private IFlowGroupService flowGroupServiceImpl;
 
     /**

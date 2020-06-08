@@ -2,20 +2,17 @@ package cn.cnic.controller;
 
 import cn.cnic.base.util.*;
 import cn.cnic.base.vo.StatefulRtnBase;
-import cn.cnic.base.vo.UserVo;
 import cn.cnic.component.flow.model.Flow;
 import cn.cnic.component.flow.service.ICustomizedPropertyService;
 import cn.cnic.component.flow.service.IFlowService;
 import cn.cnic.component.flow.service.IPropertyService;
 import cn.cnic.component.flow.service.IStopsService;
 import cn.cnic.component.flow.vo.StopsCustomizedPropertyVo;
-import cn.cnic.component.flow.vo.StopsVo;
-import cn.cnic.component.stopsComponent.service.IStopGroupService;
 import cn.cnic.component.mxGraph.model.MxGraphModel;
 import cn.cnic.component.mxGraph.vo.MxGraphModelVo;
+import cn.cnic.component.stopsComponent.service.IStopGroupService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -56,28 +53,18 @@ public class StopsCtrl {
     @ResponseBody
     public String reloadStops(String load) {
         String username = SessionUserUtil.getCurrentUsername();
-        Map<String, Object> rtnMap = new HashMap<>();
-        rtnMap.put("code", 500);
         stopGroupServiceImpl.updateGroupAndStopsListByServer(username);
-        rtnMap.put("code", 200);
-        rtnMap.put("load", load);
-        return JsonUtils.toJsonNoException(rtnMap);
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("load", load);
     }
 
     @RequestMapping("/queryIdInfo")
-    public StopsVo getStopGroup(String fid, String stopPageId) {
-        if (StringUtils.isNotBlank(fid) && StringUtils.isNotBlank(stopPageId)) {
-            StopsVo queryInfo = propertyServiceImpl.queryAll(fid, stopPageId);
-            if (null != queryInfo) {
-                //Compare the stops template properties and make changes
-                //propertyServiceImpl.checkStopTemplateUpdate(queryInfo.getId());
-                return queryInfo;
-            }
-        }
-        return null;
+    @ResponseBody
+    public String getStopGroup(String fid, String stopPageId) {
+        return propertyServiceImpl.queryAll(fid, stopPageId);
     }
 
     @RequestMapping("/deleteLastReloadData")
+    @ResponseBody
     public String deleteLastReloadData(String stopId) {
         return propertyServiceImpl.deleteLastReloadDataByStopsId(stopId);
     }
@@ -86,12 +73,11 @@ public class StopsCtrl {
      * Get the usage of the current connection port
      *
      * @param request
-     * @param model
      * @return
      */
     @RequestMapping("/getStopsPort")
     @ResponseBody
-    public String getStopsPort(HttpServletRequest request, Model model) {
+    public String getStopsPort(HttpServletRequest request) {
         //Take parameters
         //flowId
         String flowId = request.getParameter("flowId");
@@ -112,7 +98,9 @@ public class StopsCtrl {
      * @return
      */
     @RequestMapping("/updateStops")
-    public Integer updateStops(String[] content, String id) {
+    @ResponseBody
+    public Integer updateStops(HttpServletRequest request, String[] content, String id) {
+        String username = SessionUserUtil.getUsername(request);
         int updateStops = 0;
         if (null != content && content.length > 0) {
             for (String string : content) {
@@ -121,7 +109,7 @@ public class StopsCtrl {
                 if (null != split && split.length == 2) {
                     String updateContent = split[0];
                     String updateId = split[1];
-                    updateStops = propertyServiceImpl.updateProperty(updateContent, updateId);
+                    updateStops = propertyServiceImpl.updateProperty(username, updateContent, updateId);
                 }
             }
         }
@@ -134,11 +122,13 @@ public class StopsCtrl {
     }
 
     @RequestMapping("/updateStopsOne")
-    public String updateStops(String content, String id) {
+    @ResponseBody
+    public String updateStops(HttpServletRequest request, String content, String id) {
+        String username = SessionUserUtil.getUsername(request);
         Map<String, Object> rtnMap = new HashMap<>();
         rtnMap.put("code", 500);
         int updateStops = 0;
-        updateStops = propertyServiceImpl.updateProperty(content, id);
+        updateStops = propertyServiceImpl.updateProperty(username, content, id);
         if (updateStops > 0) {
             rtnMap.put("code", 200);
             rtnMap.put("errorMsg", "Saved successfully");
@@ -152,6 +142,7 @@ public class StopsCtrl {
     }
 
     @RequestMapping("/updateStopsById")
+    @ResponseBody
     public String updateStopsById(HttpServletRequest request) {
         Map<String, Object> rtnMap = new HashMap<>();
         rtnMap.put("code", 500);
@@ -180,6 +171,7 @@ public class StopsCtrl {
     }
 
     @RequestMapping("/updateStopsNameById")
+    @ResponseBody
     public String updateStopsNameById(HttpServletRequest request) {
         String id = request.getParameter("stopId");
         String flowId = request.getParameter("flowId");
@@ -214,29 +206,34 @@ public class StopsCtrl {
     }
 
     @RequestMapping("/addStopCustomizedProperty")
+    @ResponseBody
     public String addStopCustomizedProperty(StopsCustomizedPropertyVo stopsCustomizedPropertyVo) {
         String username = SessionUserUtil.getCurrentUsername();
         return customizedPropertyServiceImpl.addStopCustomizedProperty(username, stopsCustomizedPropertyVo);
     }
 
     @RequestMapping("/updateStopsCustomizedProperty")
+    @ResponseBody
     public String updateStopsCustomizedProperty(StopsCustomizedPropertyVo stopsCustomizedPropertyVo) {
         String username = SessionUserUtil.getCurrentUsername();
         return customizedPropertyServiceImpl.updateStopsCustomizedProperty(username, stopsCustomizedPropertyVo);
     }
 
     @RequestMapping("/deleteStopsCustomizedProperty")
+    @ResponseBody
     public String deleteStopsCustomizedProperty(String customPropertyId) {
         String username = SessionUserUtil.getCurrentUsername();
         return customizedPropertyServiceImpl.deleteStopsCustomizedProperty(username, customPropertyId);
     }
 
     @RequestMapping("/deleteRouterStopsCustomizedProperty")
+    @ResponseBody
     public String deleteRouterStopsCustomizedProperty(String customPropertyId) {
         return customizedPropertyServiceImpl.deleteRouterStopsCustomizedProperty(customPropertyId);
     }
 
     @RequestMapping("/getRouterStopsCustomizedProperty")
+    @ResponseBody
     public String getRouterStopsCustomizedProperty(String customPropertyId) {
         return customizedPropertyServiceImpl.getRouterStopsCustomizedProperty(customPropertyId);
     }

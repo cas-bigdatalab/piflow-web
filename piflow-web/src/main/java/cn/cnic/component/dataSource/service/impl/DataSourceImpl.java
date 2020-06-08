@@ -28,7 +28,7 @@ public class DataSourceImpl implements IDataSource {
 
     @Override
     @Transactional
-    public String saveOrUpdate(boolean isAdmin, String username, DataSourceVo dataSourceVo) {
+    public String saveOrUpdate(String username, boolean isAdmin, DataSourceVo dataSourceVo) {
         // Determine if the incoming parameter is empty
         if (null != dataSourceVo) {
             String id = dataSourceVo.getId();
@@ -36,7 +36,7 @@ public class DataSourceImpl implements IDataSource {
             if (StringUtils.isBlank(id)) {
                 return addDataSource(username, dataSourceVo);
             } else {
-                return updateDataSource(isAdmin, username, dataSourceVo);
+                return updateDataSource(username, isAdmin, dataSourceVo);
             }
         }
         return null;
@@ -93,7 +93,7 @@ public class DataSourceImpl implements IDataSource {
         return ReturnMapUtils.setSucceededMsgRtnJsonStr("add success.");
     }
 
-    private String updateDataSource(boolean isAdmin, String username, DataSourceVo dataSourceVo) {
+    private String updateDataSource(String username, boolean isAdmin, DataSourceVo dataSourceVo) {
         // Determine if current user obtained are empty
         if (!isAdmin || StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("user Illegality");
@@ -187,7 +187,7 @@ public class DataSourceImpl implements IDataSource {
     }
 
     @Override
-    public DataSourceVo dataSourceVoById(boolean isAdmin, String username, String id) {
+    public DataSourceVo dataSourceVoById(String username, boolean isAdmin, String id) {
         if (!isAdmin && StringUtils.isBlank(username)) {
             return null;
         }
@@ -208,7 +208,7 @@ public class DataSourceImpl implements IDataSource {
     }
 
     @Override
-    public String getDataSourceVoById(boolean isAdmin, String username, String id) {
+    public String getDataSourceVoById(String username, boolean isAdmin, String id) {
         if (!isAdmin && StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
         }
@@ -233,7 +233,7 @@ public class DataSourceImpl implements IDataSource {
     }
 
     @Override
-    public String getDataSourceVoList(boolean isAdmin, String username) {
+    public String getDataSourceVoList(String username, boolean isAdmin) {
         if (!isAdmin && StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
         }
@@ -253,7 +253,7 @@ public class DataSourceImpl implements IDataSource {
     }
 
     @Override
-    public String getDataSourceVoListPage(boolean isAdmin, String username, Integer offset, Integer limit, String param) {
+    public String getDataSourceVoListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param) {
         if (!isAdmin && StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
         }
@@ -287,7 +287,7 @@ public class DataSourceImpl implements IDataSource {
 
     @Override
     @Transactional
-    public String deleteDataSourceById(boolean isAdmin, String username, String id) {
+    public String deleteDataSourceById(String username, boolean isAdmin, String id) {
         // Determine if current user obtained are empty
         if (!isAdmin || StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("user Illegality");
@@ -313,5 +313,26 @@ public class DataSourceImpl implements IDataSource {
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("counts", 1);
     }
 
+    @Override
+    public String getDataSourceInputPageData(String username, boolean isAdmin, String dataSourceId) {
+        Map<String, Object> rtnMap = new HashMap<>();
+        DataSource dataSourceById;
+        if (isAdmin) {
+            dataSourceById = dataSourceDomain.getDataSourceById(dataSourceId);
+        } else {
+            dataSourceById = dataSourceDomain.getDataSourceByIdAndCreateUser(dataSourceId, username);
+        }
+        DataSourceVo dataSourceVo = null;
+        if (null != dataSourceById) {
+            dataSourceVo = DataSourceUtils.dataSourcePoToVo(dataSourceById, true);
+        }
+        if (null != dataSourceVo) {
+            rtnMap.put("dataSourceVo", dataSourceVo);
+        }
+        List<DataSourceVo> dataSourceTemplateList = DataSourceUtils.dataSourceListPoToVo(dataSourceDomain.getDataSourceTemplateList(), true);
+        rtnMap.put("templateList", dataSourceTemplateList);
+        rtnMap.put(ReturnMapUtils.KEY_CODE, ReturnMapUtils.SUCCEEDED_CODE);
+        return JsonUtils.toFormatJsonNoException(rtnMap);
+    }
 
 }

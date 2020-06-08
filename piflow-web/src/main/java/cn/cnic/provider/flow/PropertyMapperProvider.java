@@ -1,9 +1,7 @@
 package cn.cnic.provider.flow;
 
 import cn.cnic.base.util.DateUtils;
-import cn.cnic.base.util.SessionUserUtil;
 import cn.cnic.base.util.SqlUtils;
-import cn.cnic.base.vo.UserVo;
 import cn.cnic.component.flow.model.Property;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
@@ -224,22 +222,23 @@ public class PropertyMapperProvider {
      * @param id
      * @return
      */
-    public String updateEnableFlagByStopId(String id) {
-        UserVo user = SessionUserUtil.getCurrentUser();
-        String username = (null != user) ? user.getUsername() : "-1";
-        String sqlStr = "select 0";
-        if (StringUtils.isNotBlank(id)) {
-            SQL sql = new SQL();
-            sql.UPDATE("flow_stops_property");
-            sql.SET("enable_flag = 0");
-            sql.SET("last_update_user = " + SqlUtils.preventSQLInjection(username));
-            sql.SET("last_update_dttm = " + SqlUtils.preventSQLInjection(DateUtils.dateTimesToStr(new Date())));
-            sql.WHERE("enable_flag = 1");
-            sql.WHERE("ID = " + SqlUtils.preventSQLInjection(id));
-
-            sqlStr = sql.toString();
+    public String updateEnableFlagByStopId(String username, String id) {
+        if (StringUtils.isBlank(username)) {
+            return "select 0";
         }
-        return sqlStr;
+        if (StringUtils.isBlank(id)) {
+            return "select 0";
+        }
+
+        SQL sql = new SQL();
+        sql.UPDATE("flow_stops_property");
+        sql.SET("enable_flag = 0");
+        sql.SET("last_update_user = " + SqlUtils.preventSQLInjection(username));
+        sql.SET("last_update_dttm = " + SqlUtils.preventSQLInjection(DateUtils.dateTimesToStr(new Date())));
+        sql.WHERE("enable_flag = 1");
+        sql.WHERE("ID = " + SqlUtils.preventSQLInjection(id));
+
+        return sql.toString();
     }
 
     /**
@@ -248,22 +247,18 @@ public class PropertyMapperProvider {
      * @param id
      * @return
      */
-    public String updatePropertyCustomValue(String content, String id) {
-        UserVo user = SessionUserUtil.getCurrentUser();
-        String username = (null != user) ? user.getUsername() : "-1";
-        String sqlStr = "select 0";
-        if (StringUtils.isNotBlank(id)) {
-            SQL sql = new SQL();
-            sql.UPDATE("flow_stops_property");
-            sql.SET("custom_value = " + SqlUtils.preventSQLInjection(content));
-            sql.SET("last_update_user = " + SqlUtils.preventSQLInjection(username));
-            sql.SET("last_update_dttm = " + SqlUtils.preventSQLInjection(DateUtils.dateTimesToStr(new Date())));
-            sql.SET("version = " + 1);
-            sql.WHERE("enable_flag = 1");
-            sql.WHERE("id = " + SqlUtils.preventSQLInjection(id));
-            sqlStr = sql.toString();
-        }
-        return sqlStr;
+    public String updatePropertyCustomValue(String username, String content, String id) {
+        if(StringUtils.isBlank(username)){return "select 0";}
+        if(StringUtils.isBlank(id)){return "select 0";}
+        SQL sql = new SQL();
+        sql.UPDATE("flow_stops_property");
+        sql.SET("custom_value = " + SqlUtils.preventSQLInjection(content));
+        sql.SET("last_update_user = " + SqlUtils.preventSQLInjection(username));
+        sql.SET("last_update_dttm = " + SqlUtils.preventSQLInjection(DateUtils.dateTimesToStr(new Date())));
+        sql.SET("version = " + 1);
+        sql.WHERE("enable_flag = 1");
+        sql.WHERE("id = " + SqlUtils.preventSQLInjection(id));
+        return sql.toString();
     }
 
 }

@@ -1,14 +1,13 @@
 package cn.cnic.component.system.service.Impl;
 
 import cn.cnic.base.util.*;
-import cn.cnic.base.vo.UserVo;
 import cn.cnic.common.Eunm.ScheduleRunResultType;
 import cn.cnic.common.Eunm.ScheduleState;
 import cn.cnic.component.system.model.SysSchedule;
 import cn.cnic.component.system.service.ISysScheduleService;
 import cn.cnic.component.system.vo.SysScheduleVo;
 import cn.cnic.domain.system.SysScheduleDomain;
-import cn.cnic.mapper.system.SysScheduleMapper;
+import cn.cnic.component.system.mapper.SysScheduleMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.quartz.Scheduler;
 import org.slf4j.Logger;

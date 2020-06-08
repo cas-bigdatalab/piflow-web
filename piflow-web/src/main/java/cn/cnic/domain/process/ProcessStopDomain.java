@@ -1,7 +1,5 @@
 package cn.cnic.domain.process;
 
-import cn.cnic.base.util.SessionUserUtil;
-import cn.cnic.base.vo.UserVo;
 import cn.cnic.component.process.model.ProcessStop;
 import cn.cnic.repository.process.ProcessStopJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;

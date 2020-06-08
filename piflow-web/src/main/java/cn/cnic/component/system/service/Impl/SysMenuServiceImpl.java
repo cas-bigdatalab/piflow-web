@@ -7,7 +7,7 @@ import cn.cnic.component.system.model.SysMenu;
 import cn.cnic.component.system.model.SysRole;
 import cn.cnic.component.system.service.ISysMenuService;
 import cn.cnic.component.system.vo.SysMenuVo;
-import cn.cnic.mapper.system.SysMenuMapper;
+import cn.cnic.component.system.mapper.SysMenuMapper;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;

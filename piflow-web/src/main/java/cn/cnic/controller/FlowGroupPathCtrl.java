@@ -1,23 +1,16 @@
 package cn.cnic.controller;
 
-import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.component.flow.service.IFlowGroupPathsService;
-import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 
 @RestController
 @RequestMapping("/flowGroupPath/")
 public class FlowGroupPathCtrl {
 
-    /**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
-    Logger logger = LoggerUtil.getLogger();
-
-    @Autowired
+    @Resource
     private IFlowGroupPathsService flowGroupPathsServiceImpl;
 
     /**

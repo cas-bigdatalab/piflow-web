@@ -35,7 +35,7 @@ public interface PropertyMapper {
      * Modify stops attribute information
      */
     @UpdateProvider(type = PropertyMapperProvider.class, method = "updatePropertyCustomValue")
-    public int updatePropertyCustomValue(String content, String id);
+    public int updatePropertyCustomValue(String username, String content, String id);
 
     /**
      * update property Method
@@ -90,5 +90,5 @@ public interface PropertyMapper {
      * @return
      */
     @UpdateProvider(type = PropertyMapperProvider.class, method = "updateEnableFlagByStopId")
-    public int updateEnableFlagByStopId(String id);
+    public int updateEnableFlagByStopId(String username, String id);
 }

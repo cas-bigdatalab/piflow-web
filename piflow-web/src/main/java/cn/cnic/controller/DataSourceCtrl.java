@@ -7,12 +7,10 @@ import cn.cnic.component.dataSource.vo.DataSourceVo;
 import cn.cnic.component.flow.service.IStopsService;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 @Controller
 @RequestMapping("/datasource")
@@ -28,17 +26,12 @@ public class DataSourceCtrl {
     @Resource
     private IStopsService stopsServiceImpl;
 
-    @RequestMapping("/getDatasourceListPage")
-    public String getDatasourceListPage() {
-        return "indexRight/flow/data_source_List";
-    }
-
     @RequestMapping("/getDatasourceList")
     @ResponseBody
     public String getDatasourceList() {
         String currentUsername = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
-        return dataSourceImpl.getDataSourceVoList(isAdmin, currentUsername);
+        return dataSourceImpl.getDataSourceVoList(currentUsername, isAdmin);
     }
 
     @RequestMapping("/getDataSourceListPagination")
@@ -46,7 +39,7 @@ public class DataSourceCtrl {
     public String getDataSourceListPagination(Integer page, Integer limit, String param) {
         String currentUsername = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
-        return dataSourceImpl.getDataSourceVoListPage(isAdmin, currentUsername, page, limit, param);
+        return dataSourceImpl.getDataSourceVoListPage(currentUsername, isAdmin, page, limit, param);
     }
 
     @RequestMapping("/getDatasourceById")
@@ -54,7 +47,7 @@ public class DataSourceCtrl {
     public String getDatasourceById(String id) {
         String currentUsername = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
-        return dataSourceImpl.getDataSourceVoById(isAdmin, currentUsername, id);
+        return dataSourceImpl.getDataSourceVoById(currentUsername, isAdmin, id);
     }
 
     @RequestMapping("/saveOrUpdate")
@@ -62,20 +55,15 @@ public class DataSourceCtrl {
     public String saveOrUpdate(DataSourceVo dataSourceVo) {
         String currentUsername = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
-        return dataSourceImpl.saveOrUpdate(isAdmin, currentUsername, dataSourceVo);
+        return dataSourceImpl.saveOrUpdate(currentUsername, isAdmin, dataSourceVo);
     }
 
-    @RequestMapping("/getDataSourceInputPage")
-    public String getDataSourceInputPage(Model model, String dataSourceId) {
-        String currentUsername = SessionUserUtil.getCurrentUsername();
+    @RequestMapping("/getDataSourceInputData")
+    @ResponseBody
+    public String getDataSourceInputPageData(String dataSourceId) {
+        String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
-        DataSourceVo dataSourceVo = dataSourceImpl.dataSourceVoById(isAdmin, currentUsername, dataSourceId);
-        if (null != dataSourceVo) {
-            model.addAttribute("dataSourceVo", dataSourceVo);
-        }
-        List<DataSourceVo> dataSourceTemplateList = dataSourceImpl.getDataSourceTemplateList();
-        model.addAttribute("templateList", dataSourceTemplateList);
-        return "dataSource/dataSourceInput";
+        return dataSourceImpl.getDataSourceInputPageData(username, isAdmin, dataSourceId);
     }
 
     @RequestMapping("/deleteDataSource")
@@ -83,7 +71,7 @@ public class DataSourceCtrl {
     public String deleteDataSource(String dataSourceId) {
         String currentUsername = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
-        return dataSourceImpl.deleteDataSourceById(isAdmin, currentUsername, dataSourceId);
+        return dataSourceImpl.deleteDataSourceById(currentUsername, isAdmin, dataSourceId);
     }
 
     @RequestMapping("/fillDatasource")

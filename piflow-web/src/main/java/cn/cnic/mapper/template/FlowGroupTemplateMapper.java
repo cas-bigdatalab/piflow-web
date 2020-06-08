@@ -13,13 +13,13 @@ public interface FlowGroupTemplateMapper {
     @Results({
             @Result(id = true, column = "id", property = "id")
     })
-    public List<FlowGroupTemplateVo> getFlowGroupTemplateVoListPage(@Param("param") String param);
+    public List<FlowGroupTemplateVo> getFlowGroupTemplateVoListPage(@Param("username") String username, @Param("isAdmin") boolean isAdmin, @Param("param") String param);
 
     @SelectProvider(type = FlowGroupTemplateMapperProvider.class, method = "getFlowGroupTemplateVoById")
     @Results({
             @Result(id = true, column = "id", property = "id")
     })
-    public FlowGroupTemplateVo getFlowGroupTemplateVoById(@Param("id") String id);
+    public FlowGroupTemplateVo getFlowGroupTemplateVoById(@Param("username") String username, @Param("isAdmin") boolean isAdmin, @Param("id") String id);
 
 
 }

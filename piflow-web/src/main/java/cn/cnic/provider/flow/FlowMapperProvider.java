@@ -1,9 +1,7 @@
 package cn.cnic.provider.flow;
 
 import cn.cnic.base.util.DateUtils;
-import cn.cnic.base.util.SessionUserUtil;
 import cn.cnic.base.util.SqlUtils;
-import cn.cnic.base.vo.UserVo;
 import cn.cnic.component.flow.model.Flow;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
@@ -190,7 +188,7 @@ public class FlowMapperProvider {
      * @param param
      * @return
      */
-    public String getFlowListParam(String param) {
+    public String getFlowListParam(String username, boolean isAdmin, String param) {
         String sqlStr = "select 0";
         StringBuffer strBuf = new StringBuffer();
         strBuf.append("select * ");
@@ -205,7 +203,9 @@ public class FlowMapperProvider {
             strBuf.append("or description like '%" + param + "%' ");
             strBuf.append(") ");
         }
-        strBuf.append(SqlUtils.addQueryByUserRole(true, false));
+        if (!isAdmin) {
+            strBuf.append("and crt_user = " + SqlUtils.preventSQLInjection(username));
+        }
         strBuf.append("order by crt_dttm desc ");
         sqlStr = strBuf.toString();
         return sqlStr;
@@ -242,8 +242,6 @@ public class FlowMapperProvider {
             strBuf.append("from flow ");
             strBuf.append("where enable_flag = 1 ");
             strBuf.append("and id = " + SqlUtils.preventSQLInjection(id) + " ");
-            //UserVo currentUser = SessionUserUtil.getCurrentUser();
-            //strBuf.append(SqlUtils.addQueryByUserRole(currentUser, true));
             sqlStr = strBuf.toString();
         }
         return sqlStr;

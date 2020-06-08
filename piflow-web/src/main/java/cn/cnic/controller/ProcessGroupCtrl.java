@@ -66,7 +66,9 @@ public class ProcessGroupCtrl {
     @RequestMapping("/processListPage")
     @ResponseBody
     public String processListPage(HttpServletRequest request, Integer start, Integer length, Integer draw, String extra_search) {
-        return processServiceImpl.getProcessGroupVoListPage(start / length + 1, length, extra_search);
+        String username = SessionUserUtil.getCurrentUsername();
+        boolean isAdmin = SessionUserUtil.isAdmin();
+        return processServiceImpl.getProcessGroupVoListPage(username, isAdmin, start / length + 1, length, extra_search);
     }
 
     /**
@@ -158,7 +160,9 @@ public class ProcessGroupCtrl {
         String nodeType = "flow";
         String viewName = "processGroup/inc/process_property_inc";
         if (!StringUtils.isAnyEmpty(processGroupId, pageId)) {
-            ProcessVo processVo = processServiceImpl.getProcessVoByPageId(processGroupId, pageId);
+            String username = SessionUserUtil.getCurrentUsername();
+            boolean isAdmin = SessionUserUtil.isAdmin();
+            ProcessVo processVo = processServiceImpl.getProcessVoByPageId(username, isAdmin, processGroupId, pageId);
             ProcessGroupVo processGroupVo = processGroupServiceImpl.getProcessGroupVoByPageId(processGroupId, pageId);
             if (null != processVo) {
                 nodeType = "flow";
@@ -211,8 +215,8 @@ public class ProcessGroupCtrl {
         String id = request.getParameter("id");
         String checkpoint = request.getParameter("checkpointStr");
         String runMode = request.getParameter("runMode");
-        UserVo currentUser = SessionUserUtil.getCurrentUser();
-        return processGroupServiceImpl.startProcessGroup(id, checkpoint, runMode, currentUser);
+        String username = SessionUserUtil.getCurrentUsername();
+        return processGroupServiceImpl.startProcessGroup(username, id, checkpoint, runMode);
     }
 
     /**
@@ -226,7 +230,7 @@ public class ProcessGroupCtrl {
     @ResponseBody
     public String stopProcessGroup(HttpServletRequest request, Model model) {
         String processGroupId = request.getParameter("processGroupId");
-        return processGroupServiceImpl.stopProcessGroup(processGroupId);
+        return processGroupServiceImpl.stopProcessGroup(SessionUserUtil.getCurrentUsername(), SessionUserUtil.isAdmin(), processGroupId);
     }
 
     /**
@@ -239,8 +243,7 @@ public class ProcessGroupCtrl {
     @ResponseBody
     public String delProcessGroup(HttpServletRequest request) {
         String processGroupID = request.getParameter("processGroupId");
-        String username = SessionUserUtil.getCurrentUsername();
-        return processGroupServiceImpl.delProcessGroup(username, processGroupID);
+        return processGroupServiceImpl.delProcessGroup(SessionUserUtil.getCurrentUsername(), SessionUserUtil.isAdmin(), processGroupID);
     }
 
     /**

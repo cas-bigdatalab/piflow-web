@@ -1,4 +1,4 @@
-package cn.cnic.provider.system;
+package cn.cnic.component.system.mapper.provider;
 
 import cn.cnic.base.util.SqlUtils;
 import org.apache.commons.lang3.StringUtils;

@@ -299,13 +299,13 @@ public class ProcessUtils {
         return process;
     }
 
-    public static List<Process> copyProcessList(List<Process> processList, UserVo currentUser, RunModeType runModeType, ProcessGroup processGroup) {
+    public static List<Process> copyProcessList(List<Process> processList, String username, RunModeType runModeType, ProcessGroup processGroup) {
         List<Process> copyProcessList = null;
         if (null != processList && processList.size() > 0) {
             copyProcessList = new ArrayList<>();
             Process copyProcess;
             for (Process process : processList) {
-                copyProcess = copyProcess(process, currentUser, runModeType);
+                copyProcess = copyProcess(process, username, runModeType);
                 if (null == copyProcess) {
                     continue;
                 }
@@ -317,11 +317,7 @@ public class ProcessUtils {
         return copyProcessList;
     }
 
-    public static Process copyProcess(Process process, UserVo currentUser, RunModeType runModeType) {
-        if (null == currentUser) {
-            return null;
-        }
-        String username = currentUser.getUsername();
+    public static Process copyProcess(Process process, String username, RunModeType runModeType) {
         if (StringUtils.isBlank(username) || null == process) {
             return null;
         }

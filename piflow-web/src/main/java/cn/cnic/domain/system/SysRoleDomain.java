@@ -25,4 +25,8 @@ public class SysRoleDomain {
         sysRoleJpaRepository.deleteById(id);
     }
 
+    public long getMaxId(){
+        return sysRoleJpaRepository.getMaxId();
+    }
+
 }

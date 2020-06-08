@@ -1,7 +1,5 @@
 package cn.cnic.domain.process;
 
-import cn.cnic.base.util.SessionUserUtil;
-import cn.cnic.base.vo.UserVo;
 import cn.cnic.component.process.model.ProcessGroup;
 import cn.cnic.repository.process.ProcessGroupJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;

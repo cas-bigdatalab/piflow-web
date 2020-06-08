@@ -6,10 +6,10 @@ import cn.cnic.common.Eunm.SysRoleType;
 import cn.cnic.component.system.model.SysRole;
 import cn.cnic.component.system.model.SysUser;
 import cn.cnic.component.system.service.ISysUserService;
+import cn.cnic.component.system.transactional.SysUserTransactional;
 import cn.cnic.component.system.vo.SysUserVo;
-import cn.cnic.domain.system.SysRoleDomain;
 import cn.cnic.domain.system.SysUserDomain;
-import cn.cnic.mapper.system.SysUserMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,25 +19,23 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@Slf4j
 @Service
 public class SysUserServiceImpl implements ISysUserService {
-
-    @Resource
-    private SysUserMapper sysUserMapper;
 
     @Resource
     private SysUserDomain sysUserDomain;
 
     @Resource
-    private SysRoleDomain sysRoleDomain;
+    private SysUserTransactional sysUserTransactional;
 
     @Override
     public SysUser findByUsername(String username) {
-        return sysUserMapper.findUserByUserName(username);
+        return sysUserTransactional.findUserByUserName(username);
     }
 
     @Override
-    public String checkUserName(String username){
+    public String checkUserName(String username) {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Username can not be empty");
         }
@@ -54,12 +52,12 @@ public class SysUserServiceImpl implements ISysUserService {
         if (StringUtils.isBlank(name)) {
             name = "";
         }
-        return sysUserMapper.findUserByName(name);
+        return sysUserTransactional.findUserByName(name);
     }
 
     @Override
     public List<SysUser> getUserList() {
-        List<SysUser> listUser = sysUserMapper.getUserList();
+        List<SysUser> listUser = sysUserTransactional.getUserList();
         return listUser;
     }
 
@@ -109,13 +107,20 @@ public class SysUserServiceImpl implements ISysUserService {
 
         List<SysRole> sysRoleList = new ArrayList<>();
         SysRole sysRole = new SysRole();
+        long maxId = sysUserTransactional.getSysRoleMaxId();
+        sysRole.setId(maxId + 1);
         sysRole.setRole(SysRoleType.USER);
         sysRole.setSysUser(sysUser);
 
         sysRoleList.add(sysRole);
         sysUser.setRoles(sysRoleList);
 
-        sysUserDomain.saveOrUpdate(sysUser);
-        return ReturnMapUtils.setSucceededMsgRtnJsonStr("Congratulations, registration is successful");
+        try {
+            sysUserTransactional.addSysUser(sysUser);
+            return ReturnMapUtils.setSucceededMsgRtnJsonStr("Congratulations, registration is successful");
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("save failed");
+        }
     }
 }

@@ -1,6 +1,5 @@
 package cn.cnic.domain.flow;
 
-import cn.cnic.base.util.SessionUserUtil;
 import cn.cnic.component.flow.model.FlowGroup;
 import cn.cnic.repository.flow.FlowGroupJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;

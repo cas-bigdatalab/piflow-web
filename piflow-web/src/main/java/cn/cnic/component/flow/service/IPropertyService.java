@@ -15,7 +15,7 @@ public interface IPropertyService {
      * @param stopPageId
      * @return
      */
-    public StopsVo queryAll(String fid, String stopPageId);
+    public String queryAll(String fid, String stopPageId);
 
     /**
      * Modify stops attribute information
@@ -24,7 +24,7 @@ public interface IPropertyService {
      * @param content
      * @return
      */
-    public int updateProperty(String content, String id);
+    public int updateProperty(String username, String content, String id);
 
     /**
      * query All StopsProperty List;
@@ -39,13 +39,6 @@ public interface IPropertyService {
      * @return
      */
     public int deleteStopsPropertyById(String id);
-
-    /**
-     * delete StopsProperty according to StopId;
-     *
-     * @return
-     */
-    public int deleteStopsPropertyByStopId(String id);
 
 
     /**

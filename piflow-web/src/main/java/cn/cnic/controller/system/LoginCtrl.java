@@ -1,4 +1,4 @@
-package cn.cnic.controller;
+package cn.cnic.controller.system;
 
 import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.base.util.SessionUserUtil;
@@ -29,12 +29,11 @@ public class LoginCtrl {
     @RequestMapping("/")
     public ModelAndView indexHome(ModelAndView modelAndView) {
         modelAndView.setViewName("jump");
-        UserVo user = SessionUserUtil.getCurrentUser();
-        if (null != user) {
-            logger.info("user " + user.getUsername() + " login successfully jump home page");
+        UserVo currentUser = SessionUserUtil.getCurrentUser();
+        if (null != currentUser) {
+            logger.info("user " + currentUser.getUsername() + " login successfully jump home page");
         }
         modelAndView.setViewName("indexNew");
-        UserVo currentUser = SessionUserUtil.getCurrentUser();
         modelAndView.addObject("currentUser", currentUser);
         modelAndView.addObject("accessPath", "indexHome");
         return modelAndView;

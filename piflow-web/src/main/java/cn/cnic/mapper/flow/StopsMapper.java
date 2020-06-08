@@ -84,7 +84,7 @@ public interface StopsMapper {
     public List<Stops> getStopsListByFlowIdAndPageIds(@Param("flowId") String flowId, @Param("pageIds") String[] pageIds);
 
     @UpdateProvider(type = StopsMapperProvider.class, method = "updateEnableFlagByFlowId")
-    public int updateEnableFlagByFlowId(String id);
+    public int updateEnableFlagByFlowId(String username, String id);
 
     /**
      * Query stop and attribute information based on stopsId

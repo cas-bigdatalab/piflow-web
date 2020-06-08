@@ -113,10 +113,10 @@ public class ProcessServiceImpl implements IProcessService {
      * @return
      */
     @Override
-    public ProcessVo getProcessAllVoById(String id) {
+    public ProcessVo getProcessAllVoById(String username, boolean isAdmin, String id) {
         ProcessVo processVo = null;
         if (StringUtils.isNotBlank(id)) {
-            Process processById = processMapper.getProcessById(id);
+            Process processById = processMapper.getProcessById(username, isAdmin, id);
             processVo = ProcessUtils.processPoToVo(processById);
             ProcessGroup processGroup = processById.getProcessGroup();
             if (null != processGroup) {
@@ -135,10 +135,10 @@ public class ProcessServiceImpl implements IProcessService {
      * @return
      */
     @Override
-    public ProcessVo getProcessVoById(String id) {
+    public ProcessVo getProcessVoById(String username, boolean isAdmin, String id) {
         ProcessVo processVo = null;
         if (StringUtils.isNotBlank(id)) {
-            Process processById = processMapper.getProcessById(id);
+            Process processById = processMapper.getProcessById(username, isAdmin, id);
             if (null != processById) {
                 processVo = new ProcessVo();
                 BeanUtils.copyProperties(processById, processVo);
@@ -405,23 +405,27 @@ public class ProcessServiceImpl implements IProcessService {
      * @return
      */
     @Override
-    public int updateProcess(ProcessVo processVo, UserVo currentUser) {
-        if (null != processVo && null != currentUser) {
-            Process processById = processMapper.getProcessById(processVo.getId());
-            if (null != processById) {
-                BeanUtils.copyProperties("processVo", "processById");
-                processById.setLastUpdateUser(currentUser.getUsername());
-                processById.setLastUpdateDttm(new Date());
-                processById.setState(processVo.getState());
-                processById.setProgress(processVo.getProgress());
-                processById.setStartTime(processVo.getStartTime());
-                processById.setEndTime(processVo.getEndTime());
-                processById.setProcessId(processVo.getProcessId());
-                processById.setName(processVo.getName());
-                return processTransaction.updateProcess(processById);
-            }
+    public int updateProcess(String username, boolean isAdmin, ProcessVo processVo) {
+        if (StringUtils.isBlank(username)) {
+            return 0;
         }
-        return 0;
+        if (null == processVo) {
+            return 0;
+        }
+        Process processById = processMapper.getProcessById(username, isAdmin, processVo.getId());
+        if (null == processById) {
+            return 0;
+        }
+        BeanUtils.copyProperties("processVo", "processById");
+        processById.setLastUpdateUser(username);
+        processById.setLastUpdateDttm(new Date());
+        processById.setState(processVo.getState());
+        processById.setProgress(processVo.getProgress());
+        processById.setStartTime(processVo.getStartTime());
+        processById.setEndTime(processVo.getEndTime());
+        processById.setProcessId(processVo.getProcessId());
+        processById.setName(processVo.getName());
+        return processTransaction.updateProcess(processById);
     }
 
     /**
@@ -466,7 +470,7 @@ public class ProcessServiceImpl implements IProcessService {
      * @return
      */
     @Override
-    public String delProcess(String username,String processId) {
+    public String delProcess(String username, String processId) {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
         }
@@ -519,11 +523,11 @@ public class ProcessServiceImpl implements IProcessService {
      * @return
      */
     @Override
-    public String getProcessVoListPage(Integer offset, Integer limit, String param) {
+    public String getProcessVoListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param) {
         Map<String, Object> rtnMap = new HashMap<String, Object>();
         if (null != offset && null != limit) {
             Page<Process> page = PageHelper.startPage(offset, limit);
-            processMapper.getProcessListByParam(param);
+            processMapper.getProcessListByParam(username, isAdmin, param);
             rtnMap = PageHelperUtils.setDataTableParam(page, rtnMap);
         }
         return JsonUtils.toJsonNoException(rtnMap);
@@ -538,11 +542,11 @@ public class ProcessServiceImpl implements IProcessService {
      * @return
      */
     @Override
-    public String getProcessGroupVoListPage(Integer offset, Integer limit, String param) {
+    public String getProcessGroupVoListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param) {
         Map<String, Object> rtnMap = new HashMap<String, Object>();
         if (null != offset && null != limit) {
             Page<Process> page = PageHelper.startPage(offset, limit);
-            processMapper.getProcessGroupListByParam(param);
+            processMapper.getProcessGroupListByParam(username, isAdmin, param);
             rtnMap = PageHelperUtils.setDataTableParam(page, rtnMap);
         }
         return JsonUtils.toJsonNoException(rtnMap);
@@ -551,18 +555,21 @@ public class ProcessServiceImpl implements IProcessService {
     /**
      * Start processes
      *
+     * @param username
      * @param processId
      * @param checkpoint
-     * @param currentUser
      * @return
      */
     @Override
-    public String startProcess(String processId, String checkpoint, String runMode, UserVo currentUser) {
+    public String startProcess(String username, String processId, String checkpoint, String runMode) {
+        if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
+        }
         RunModeType runModeType = RunModeType.RUN;
         if (StringUtils.isNotBlank(runMode)) {
             runModeType = RunModeType.selectGender(runMode);
         }
-        if (StringUtils.isBlank(processId) || null == currentUser) {
+        if (StringUtils.isBlank(processId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("processId is null");
         }
         if (StringUtils.isBlank(processId)) {
@@ -572,12 +579,12 @@ public class ProcessServiceImpl implements IProcessService {
         if (null == process) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("No data by process Id:'" + processId + "'");
         }
-        Process processCopy = ProcessUtils.copyProcess(process, currentUser, runModeType);
+        Process processCopy = ProcessUtils.copyProcess(process, username, runModeType);
         if (null != processCopy) {
             processCopy = processDomain.saveOrUpdate(processCopy);
         }
         Map<String, Object> stringObjectMap = flowImpl.startFlow(processCopy, checkpoint, runModeType);
-        processCopy.setLastUpdateUser(currentUser.getUsername());
+        processCopy.setLastUpdateUser(username);
         processCopy.setLastUpdateDttm(new Date());
         if (200 == (Integer) stringObjectMap.get("code")) {
             processCopy.setAppId((String) stringObjectMap.get("appId"));
@@ -599,12 +606,12 @@ public class ProcessServiceImpl implements IProcessService {
      * @return
      */
     @Override
-    public String stopProcess(String processId) {
+    public String stopProcess(String username, boolean isAdmin, String processId) {
         Map<String, Object> rtnMap = new HashMap<>();
         rtnMap.put("code", 500);
         if (StringUtils.isNotBlank(processId)) {
             // Query Process by 'ProcessId'
-            Process process = processMapper.getProcessById(processId);
+            Process process = processMapper.getProcessById(username, isAdmin, processId);
             // Determine whether it is empty, and determine whether the save is successful.
             if (null != process) {
                 String appId = process.getAppId();
@@ -682,10 +689,10 @@ public class ProcessServiceImpl implements IProcessService {
      * @return
      */
     @Override
-    public ProcessVo getProcessVoByPageId(String processGroupId, String pageId) {
+    public ProcessVo getProcessVoByPageId(String username, boolean isAdmin, String processGroupId, String pageId) {
         ProcessVo processVo = null;
         if (StringUtils.isNotBlank(processGroupId) && StringUtils.isNotBlank(pageId)) {
-            Process processByPageId = processMapper.getProcessByPageId(processGroupId, pageId);
+            Process processByPageId = processMapper.getProcessByPageId(username, isAdmin, processGroupId, pageId);
             processVo = ProcessUtils.processPoToVo(processByPageId);
         }
         return processVo;

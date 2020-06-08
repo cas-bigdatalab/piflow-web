@@ -33,7 +33,7 @@ public interface IProcessService {
      * @return
      */
     @Transactional
-    public ProcessVo getProcessAllVoById(String id);
+    public ProcessVo getProcessAllVoById(String username, boolean isAdmin, String id);
 
     /**
      * Query processVo according to ID (query process table only)
@@ -42,7 +42,7 @@ public interface IProcessService {
      * @return
      */
     @Transactional
-    public ProcessVo getProcessVoById(String id);
+    public ProcessVo getProcessVoById(String username, boolean isAdmin, String id);
 
     /**
      * Query process according to ID
@@ -99,7 +99,7 @@ public interface IProcessService {
      * @param processVo
      * @return
      */
-    public int updateProcess(ProcessVo processVo, UserVo currentUser);
+    public int updateProcess(String username, boolean isAdmin, ProcessVo processVo);
 
     /**
      * Generate Process from flowId and save it
@@ -136,7 +136,7 @@ public interface IProcessService {
      * @return
      */
     @Transactional
-    public String getProcessVoListPage(Integer offset, Integer limit, String param);
+    public String getProcessVoListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param);
 
     /**
      * Query processVoList (parameter space-time non-paging)
@@ -146,18 +146,18 @@ public interface IProcessService {
      * @param param
      * @return
      */
-    public String getProcessGroupVoListPage(Integer offset, Integer limit, String param);
+    public String getProcessGroupVoListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param);
 
     /**
      * Start processes
      *
+     * @param username
      * @param processId
      * @param checkpoint
-     * @param currentUser
      * @return
      */
     @Transactional
-    public String startProcess(String processId, String checkpoint, String runMode, UserVo currentUser);
+    public String startProcess(String username, String processId, String checkpoint, String runMode);
 
     /**
      * Stop running processes
@@ -166,7 +166,7 @@ public interface IProcessService {
      * @return
      */
     @Transactional
-    public String stopProcess(String processId);
+    public String stopProcess(String username, boolean isAdmin, String processId);
 
     /**
      * get debug data
@@ -183,5 +183,5 @@ public interface IProcessService {
      * @param pageId
      * @return
      */
-    public ProcessVo getProcessVoByPageId(String processGroupId, String pageId);
+    public ProcessVo getProcessVoByPageId(String username, boolean isAdmin, String processGroupId, String pageId);
 }

@@ -49,7 +49,7 @@ public class PropertyMapperTest extends ApplicationTests {
 
 	@Test
 	public void updateStopsPropertyById() {
-		int update = propertyMapper.updatePropertyCustomValue("hahah", "8731612e48cc4cc89a24191e737817f2");
+		int update = propertyMapper.updatePropertyCustomValue("user","hahah", "8731612e48cc4cc89a24191e737817f2");
 		if (0 == update) {
 			logger.info("The modification failed, affecting the number of rows:"+update);
 		}else {

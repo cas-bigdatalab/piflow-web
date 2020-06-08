@@ -344,7 +344,7 @@ function prohibitEditing(evt, operationType) {
     $.ajax({
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: "/piflow-web/exampleMenu/exampleUrlList",
+        url: "/piflow-web/mxGraph/eraseRecord",
         data: {},
         async: true,
         error: function (request) {//Operation after request failure
@@ -789,33 +789,34 @@ function queryStopsProperty(stopPageId) {
             return;
         },
         success: function (data) {
-            if ("" != data) {
+            var dataMap = JSON.parse(data);
+            if (200 === dataMap.code) {
+                var stopsVoData = data.stopsVo;
                 var addParamData = {
-                    data: data.propertiesVo,
-                    stopId: data.id,
-                    isCheckpoint: data.isCheckpoint,
+                    data: stopsVoData.propertiesVo,
+                    stopId: stopsVoData.id,
+                    isCheckpoint: stopsVoData.isCheckpoint,
                     stopPageId: stopPageId,
-                    isCustomized: data.isCustomized,
-                    stopsCustomizedPropertyVoList: data.stopsCustomizedPropertyVoList,
-                    stopOutPortType: data.outPortType,
-                    dataSourceVo: data.dataSourceVo
+                    isCustomized: stopsVoData.isCustomized,
+                    stopsCustomizedPropertyVoList: stopsVoData.stopsCustomizedPropertyVoList,
+                    stopOutPortType: stopsVoData.outPortType,
+                    dataSourceVo: stopsVoData.dataSourceVo
                 };
                 getImagesType(data, "TASK")
-                //add(data.propertiesVo, data.id, data.checkpoint, stopPageId, data.isCustomized, data.stopsCustomizedPropertyVoList, data.outPortType, data.dataSourceVo);
                 add(addParamData);
                 //  $("#customizeBasic_td_1_2_input2_id").data("result",evt);
-                $('#customizeBasic_td_1_2_span_id').text(data.name);
-                $('#customizeBasic_td_1_2_input1_id').attr("value", data.name);
-                $('#customizeBasic_td_1_2_input1_id').attr("name", data.id);
-                $('#customizeBasic_td_1_2_input2_id').attr("value", data.name);
-                $('#customizeBasic_td_1_2_input2_id').attr("name", data.pageId);
-                $('#customizeBasic_td_2_2_span_id').text(data.description);
-                $('#customizeBasic_td_3_2_label_id').text(data.groups);
-                $('#customizeBasic_td_4_2_label_id').text(data.bundel);
-                $('#customizeBasic_td_5_2_label_id').text(data.version);
-                $('#customizeBasic_td_6_2_label_id').text(data.owner);
-                $('#customizeBasic_td_7_2_label_id').text(data.crtDttmString);
-                var oldPropertiesVo = data.oldPropertiesVo;
+                $('#customizeBasic_td_1_2_span_id').text(stopsVoData.name);
+                $('#customizeBasic_td_1_2_input1_id').attr("value", stopsVoData.name);
+                $('#customizeBasic_td_1_2_input1_id').attr("name", stopsVoData.id);
+                $('#customizeBasic_td_1_2_input2_id').attr("value", stopsVoData.name);
+                $('#customizeBasic_td_1_2_input2_id').attr("name", stopsVoData.pageId);
+                $('#customizeBasic_td_2_2_span_id').text(stopsVoData.description);
+                $('#customizeBasic_td_3_2_label_id').text(stopsVoData.groups);
+                $('#customizeBasic_td_4_2_label_id').text(stopsVoData.bundel);
+                $('#customizeBasic_td_5_2_label_id').text(stopsVoData.version);
+                $('#customizeBasic_td_6_2_label_id').text(stopsVoData.owner);
+                $('#customizeBasic_td_7_2_label_id').text(stopsVoData.crtDttmString);
+                var oldPropertiesVo = stopsVoData.oldPropertiesVo;
                 if (oldPropertiesVo && oldPropertiesVo.length > 0) {
                     var table = document.createElement("table");
                     table.style.borderCollapse = "separate";
@@ -916,7 +917,7 @@ function queryStopsProperty(stopPageId) {
                     }
                     var old_data_div = '<div id="del_last_reload_div" style="line-height: 27px;margin-left: 10px;font-size: 20px;">'
                         + '<span>last reload data</span>'
-                        + '<button class="btn" style="margin-left: 2px;" onclick="deleteLastReloadData(\'' + data.id + '\')"><i class="icon-trash"></i></button>'
+                        + '<button class="btn" style="margin-left: 2px;" onclick="deleteLastReloadData(\'' + stopsVoData.id + '\')"><i class="icon-trash"></i></button>'
                         + '</div>';
                     table.setAttribute('id', 'del_last_reload_table');
                     var attributeInfoDivObj = $("#isCheckpoint").parent();

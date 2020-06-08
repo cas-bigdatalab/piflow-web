@@ -100,40 +100,41 @@ public class ProcessTransaction {
      * @param processId
      * @return
      */
-    public boolean updateProcessEnableFlag(String processId, UserVo currentUser) {
+    public boolean updateProcessEnableFlag(String username, boolean isAdmin, String processId) {
         int affectedLine = 0;
-        if (StringUtils.isNotBlank(processId) && null != currentUser) {
-            Process processById = processMapper.getProcessById(processId);
-            if (null != processById) {
-                List<ProcessPath> processPathList = processById.getProcessPathList();
-                String username = currentUser.getUsername();
-                if (null != processPathList && processPathList.size() > 0) {
-                    int updateEnableFlagByProcessId = processPathMapper.updateEnableFlagByProcessId(processId, username);
-                    affectedLine += updateEnableFlagByProcessId;
-                }
-                List<ProcessStop> processStopList = processById.getProcessStopList();
-                if (null != processStopList && processStopList.size() > 0) {
-                    for (ProcessStop processStop : processStopList) {
-                        if (null != processStop) {
-                            List<ProcessStopProperty> processStopPropertyList = processStop.getProcessStopPropertyList();
-                            if (null != processStopPropertyList && processStopPropertyList.size() > 0) {
-                                int updateEnableFlagByProcessStopId = processStopPropertyMapper.updateEnableFlagByProcessStopId(processStop.getId(), username);
-                                affectedLine += updateEnableFlagByProcessStopId;
-                            }
-                        }
+        if (StringUtils.isBlank(processId) || StringUtils.isBlank(username)) {
+            logger.info("Number of rows affected：" + affectedLine);
+            return false;
+        }
+        Process processById = processMapper.getProcessById(username, isAdmin, processId);
+        if (null == processById) {
+            return false;
+        }
+        List<ProcessPath> processPathList = processById.getProcessPathList();
+        if (null != processPathList && processPathList.size() > 0) {
+            int updateEnableFlagByProcessId = processPathMapper.updateEnableFlagByProcessId(processId, username);
+            affectedLine += updateEnableFlagByProcessId;
+        }
+        List<ProcessStop> processStopList = processById.getProcessStopList();
+        if (null != processStopList && processStopList.size() > 0) {
+            for (ProcessStop processStop : processStopList) {
+                if (null != processStop) {
+                    List<ProcessStopProperty> processStopPropertyList = processStop.getProcessStopPropertyList();
+                    if (null != processStopPropertyList && processStopPropertyList.size() > 0) {
+                        int updateEnableFlagByProcessStopId = processStopPropertyMapper.updateEnableFlagByProcessStopId(processStop.getId(), username);
+                        affectedLine += updateEnableFlagByProcessStopId;
                     }
-                    int updateEnableFlagByProcessId = processStopMapper.updateEnableFlagByProcessId(processId, username);
-                    affectedLine += updateEnableFlagByProcessId;
-                }
-                int updateEnableFlag = processMapper.updateEnableFlag(processId, username);
-                if (updateEnableFlag > 0) {
-                    logger.info("Number of rows affected：" + affectedLine);
-                    return true;
                 }
             }
+            int updateEnableFlagByProcessId = processStopMapper.updateEnableFlagByProcessId(processId, username);
+            affectedLine += updateEnableFlagByProcessId;
+        }
+        int updateEnableFlag = processMapper.updateEnableFlag(processId, username);
+        if (updateEnableFlag <= 0) {
+            return false;
         }
         logger.info("Number of rows affected：" + affectedLine);
-        return false;
+        return true;
     }
 
 }

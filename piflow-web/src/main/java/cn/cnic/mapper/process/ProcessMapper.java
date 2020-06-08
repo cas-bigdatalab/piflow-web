@@ -32,7 +32,7 @@ public interface ProcessMapper {
             @Result(column = "id", property = "processPathList", many = @Many(select = "cn.cnic.mapper.process.ProcessPathMapper.getProcessPathByProcessId", fetchType = FetchType.LAZY))
 
     })
-    public Process getProcessById(@Param("id") String id);
+    public Process getProcessById(@Param("username") String username, @Param("isAdmin") boolean isAdmin, @Param("id") String id);
 
 
     /**
@@ -48,7 +48,7 @@ public interface ProcessMapper {
             @Result(column = "id", property = "processPathList", many = @Many(select = "cn.cnic.mapper.process.ProcessPathMapper.getProcessPathByProcessId", fetchType = FetchType.LAZY))
 
     })
-    public List<Process> getProcessByProcessGroupId(@Param("processGroupId") String processGroupId);
+    public List<Process> getProcessByProcessGroupId(@Param("username") String username, @Param("isAdmin") boolean isAdmin, @Param("processGroupId") String processGroupId);
 
     /**
      * Query process List(processList)
@@ -74,7 +74,7 @@ public interface ProcessMapper {
     @Results({
             @Result(id = true, column = "id", property = "id"),
     })
-    public List<Process> getProcessListByParam(@Param("param") String param);
+    public List<Process> getProcessListByParam(@Param("username") String username, @Param("isAdmin") boolean isAdmin, @Param("param") String param);
 
     /**
      * Query processGroup list according to param(processList)
@@ -86,7 +86,7 @@ public interface ProcessMapper {
     @Results({
             @Result(id = true, column = "id", property = "id"),
     })
-    public List<Process> getProcessGroupListByParam(@Param("param") String param);
+    public List<Process> getProcessGroupListByParam(@Param("username") String username, @Param("isAdmin") boolean isAdmin, @Param("param") String param);
 
     /**
      * Query the running process list according to the flowid(processList)
@@ -181,7 +181,7 @@ public interface ProcessMapper {
             @Result(column = "id", property = "processPathList", many = @Many(select = "cn.cnic.mapper.process.ProcessPathMapper.getProcessPathByProcessId", fetchType = FetchType.LAZY))
 
     })
-    public Process getProcessByPageId(@Param("processGroupId") String processGroupId, @Param("pageId") String pageId);
+    public Process getProcessByPageId(@Param("username") String username, @Param("isAdmin") boolean isAdmin, @Param("processGroupId") String processGroupId, @Param("pageId") String pageId);
 
     /**
      * Query process by pageIds

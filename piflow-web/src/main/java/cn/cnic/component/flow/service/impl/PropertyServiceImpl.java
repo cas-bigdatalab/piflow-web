@@ -50,15 +50,24 @@ public class PropertyServiceImpl implements IPropertyService {
     private PropertyDomain propertyDomain;
 
     @Override
-    public StopsVo queryAll(String fid, String stopPageId) {
+    public String queryAll(String fid, String stopPageId) {
+        if (StringUtils.isBlank(fid)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("flowId is null");
+        }
+        if (StringUtils.isBlank(stopPageId)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("stopPageId is null");
+        }
         Stops stops = stopsDomain.getStopsByPageId(fid, stopPageId);
         StopsVo stopsVo = StopsUtils.stopPoToVo(stops);
-        return stopsVo;
+        if (null == stopsVo) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("data is null");
+        }
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("stopsVo", stopsVo);
     }
 
     @Override
-    public int updateProperty(String content, String id) {
-        return propertyMapper.updatePropertyCustomValue(content, id);
+    public int updateProperty(String username, String content, String id) {
+        return propertyMapper.updatePropertyCustomValue(username, content, id);
     }
 
     @Override
@@ -69,11 +78,6 @@ public class PropertyServiceImpl implements IPropertyService {
     @Override
     public int deleteStopsPropertyById(String id) {
         return propertyMapper.deleteStopsPropertyById(id);
-    }
-
-    @Override
-    public int deleteStopsPropertyByStopId(String id) {
-        return propertyMapper.updateEnableFlagByStopId(id);
     }
 
     /**
@@ -208,11 +212,11 @@ public class PropertyServiceImpl implements IPropertyService {
                 }
             } else if (StringUtils.isNotBlank(sourcePortVal)) {
                 currentPaths.setOutport(sourcePortVal);
-                updatePropertyBypaths(sourcePortVal, sourceStop, "outports");
+                updatePropertyBypaths(username, sourcePortVal, sourceStop, "outports");
             }
             if (StringUtils.isNotBlank(targetPortVal)) {
                 currentPaths.setInport(targetPortVal);
-                updatePropertyBypaths(targetPortVal, targetStop, "inports");
+                updatePropertyBypaths(username, targetPortVal, targetStop, "inports");
             }
             currentPaths.setLastUpdateDttm(new Date());
             currentPaths.setLastUpdateUser("-1");
@@ -235,7 +239,7 @@ public class PropertyServiceImpl implements IPropertyService {
      * @param stops
      * @param propertyName
      */
-    private void updatePropertyBypaths(String sourcePortVal, Stops stops, String propertyName) {
+    private void updatePropertyBypaths(String username, String sourcePortVal, Stops stops, String propertyName) {
         if (null != stops) {
             if (PortType.ANY == stops.getInPortType() || PortType.ANY == stops.getOutPortType()) {
                 List<Property> propertyList = stops.getProperties();
@@ -257,7 +261,7 @@ public class PropertyServiceImpl implements IPropertyService {
                         if (StringUtils.isNotBlank(ports)) {
                             ports = ports + ",";
                         }
-                        propertyMapper.updatePropertyCustomValue((ports + sourcePortVal), propertySave.getId());
+                        propertyMapper.updatePropertyCustomValue(username, (ports + sourcePortVal), propertySave.getId());
                     }
                 }
             }

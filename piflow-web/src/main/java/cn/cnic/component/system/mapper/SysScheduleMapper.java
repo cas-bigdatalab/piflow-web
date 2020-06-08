@@ -1,7 +1,7 @@
-package cn.cnic.mapper.system;
+package cn.cnic.component.system.mapper;
 
 import cn.cnic.component.system.vo.SysScheduleVo;
-import cn.cnic.provider.system.SysScheduleMapperProvider;
+import cn.cnic.component.system.mapper.provider.SysScheduleMapperProvider;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.SelectProvider;

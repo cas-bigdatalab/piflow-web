@@ -1,7 +1,6 @@
 package cn.cnic.component.flow.service.impl;
 
 import cn.cnic.base.util.*;
-import cn.cnic.base.vo.UserVo;
 import cn.cnic.common.Eunm.ProcessState;
 import cn.cnic.common.Eunm.RunModeType;
 import cn.cnic.component.flow.model.Flow;
@@ -138,83 +137,82 @@ public class FlowServiceImpl implements IFlowService {
     @Override
     @Transactional
     public String getFlowVoById(String id) {
-        Map<String, Object> rtnMap = new HashMap<>();
-        rtnMap.put("code", 500);
-        FlowVo flowVo = null;
+        if (StringUtils.isBlank(id)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("id is null");
+        }
         Flow flowById = flowDomain.getFlowById(id);
-        if (null != flowById) {
-            flowVo = new FlowVo();
-            BeanUtils.copyProperties(flowById, flowVo);
-            //Take out 'mxGraphModel' and convert to Vo
-            MxGraphModelVo mxGraphModelVo = MxGraphModelUtils.mxGraphModelPoToVo(flowById.getMxGraphModel());
-            //Take out 'stopsList' and turn it to Vo
-            List<StopsVo> stopsVoList = StopsUtils.stopsListPoToVo(flowById.getStopsList());
-            //Take out 'pathsList' and turn it to Vo
-            List<PathsVo> pathsVoList = PathsUtil.pathsListPoToVo(flowById.getPathsList());
-            //Take out 'flowInfoDb' and turn it to Vo
-            //FlowInfoDbVo flowInfoDbVo = FlowInfoDbUtil.flowInfoDbToVo(flowById.getAppId());
-            flowVo.setMxGraphModelVo(mxGraphModelVo);
-            flowVo.setStopsVoList(stopsVoList);
-            flowVo.setPathsVoList(pathsVoList);
+        if (null == flowById) {
+            return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("flow", null);
         }
-        rtnMap.put("code", 200);
-        rtnMap.put("flow", flowVo);
-        return JsonUtils.toJsonNoException(rtnMap);
+        FlowVo flowVo = new FlowVo();
+        BeanUtils.copyProperties(flowById, flowVo);
+        //Take out 'mxGraphModel' and convert to Vo
+        MxGraphModelVo mxGraphModelVo = MxGraphModelUtils.mxGraphModelPoToVo(flowById.getMxGraphModel());
+        //Take out 'stopsList' and turn it to Vo
+        List<StopsVo> stopsVoList = StopsUtils.stopsListPoToVo(flowById.getStopsList());
+        //Take out 'pathsList' and turn it to Vo
+        List<PathsVo> pathsVoList = PathsUtil.pathsListPoToVo(flowById.getPathsList());
+        //Take out 'flowInfoDb' and turn it to Vo
+        //FlowInfoDbVo flowInfoDbVo = FlowInfoDbUtil.flowInfoDbToVo(flowById.getAppId());
+        flowVo.setMxGraphModelVo(mxGraphModelVo);
+        flowVo.setStopsVoList(stopsVoList);
+        flowVo.setPathsVoList(pathsVoList);
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("flow", flowVo);
     }
 
     @Override
     @Transactional
-    public String addFlow(FlowVo flowVo, UserVo user) {
-        Map<String, Object> rtnMap = new HashMap<String, Object>();
-        rtnMap.put("code", 500);
-        int optDataCount = 0;
-        if (null != flowVo) {
-            String username = (null != user) ? user.getUsername() : "-1";
-            Flow flow = new Flow();
-
-            BeanUtils.copyProperties(flowVo, flow);
-            String id = UUIDUtils.getUUID32();
-            flow.setId(id);
-            flow.setCrtDttm(new Date());
-            flow.setCrtUser(username);
-            flow.setLastUpdateDttm(new Date());
-            flow.setLastUpdateUser(username);
-            flow.setEnableFlag(true);
-            flow.setUuid(id);
-            int addFlow = flowMapper.addFlow(flow);
-            if (addFlow > 0) {
-                optDataCount = addFlow;
-                MxGraphModel mxGraphModel = new MxGraphModel();
-                mxGraphModel.setFlow(flow);
-                mxGraphModel.setId(UUIDUtils.getUUID32());
-                mxGraphModel.setCrtDttm(new Date());
-                mxGraphModel.setCrtUser(username);
-                mxGraphModel.setLastUpdateDttm(new Date());
-                mxGraphModel.setLastUpdateUser(username);
-                mxGraphModel.setEnableFlag(true);
-                if (null != mxGraphModel) {
-                    mxGraphModel.setFlow(flow);
-                    int addMxGraphModel = mxGraphModelMapper.addMxGraphModel(mxGraphModel);
-                    if (addMxGraphModel > 0) {
-                        flow.setMxGraphModel(mxGraphModel);
-                        optDataCount += addMxGraphModel;
-                    }
-                }
-
-            }
-
-            if (optDataCount > 0) {
-                rtnMap.put("code", 200);
-                rtnMap.put("flowId", id);
+    public String addFlow(String username, FlowVo flowVo) {
+        if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
+        }
+        if (null == flowVo) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("param is null");
+        }
+        Flow flow = new Flow();
+        BeanUtils.copyProperties(flowVo, flow);
+        String id = UUIDUtils.getUUID32();
+        flow.setId(id);
+        flow.setCrtDttm(new Date());
+        flow.setCrtUser(username);
+        flow.setLastUpdateDttm(new Date());
+        flow.setLastUpdateUser(username);
+        flow.setEnableFlag(true);
+        flow.setUuid(id);
+        int addFlow = flowMapper.addFlow(flow);
+        if (addFlow <= 0) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("add failed");
+        }
+        int optDataCount = addFlow;
+        MxGraphModel mxGraphModel = new MxGraphModel();
+        mxGraphModel.setFlow(flow);
+        mxGraphModel.setId(UUIDUtils.getUUID32());
+        mxGraphModel.setCrtDttm(new Date());
+        mxGraphModel.setCrtUser(username);
+        mxGraphModel.setLastUpdateDttm(new Date());
+        mxGraphModel.setLastUpdateUser(username);
+        mxGraphModel.setEnableFlag(true);
+        if (null != mxGraphModel) {
+            mxGraphModel.setFlow(flow);
+            int addMxGraphModel = mxGraphModelMapper.addMxGraphModel(mxGraphModel);
+            if (addMxGraphModel > 0) {
+                flow.setMxGraphModel(mxGraphModel);
+                optDataCount += addMxGraphModel;
             }
         }
-        return JsonUtils.toJsonNoException(rtnMap);
+        if (optDataCount > 0) {
+            return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("flowId", id);
+        } else {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("add failed");
+        }
     }
 
     @Override
     @Transactional
-    public int updateFlow(Flow flow, UserVo user) {
-        String username = (null != user) ? user.getUsername() : "-1";
+    public int updateFlow(String username, Flow flow) {
+        if (StringUtils.isBlank(username)) {
+            return 0;
+        }
         String id = flow.getId();
         flow.setId(id);
         flow.setName(flow.getName());
@@ -241,12 +239,12 @@ public class FlowServiceImpl implements IFlowService {
             for (Stops stopId : flowById.getStopsList()) {
                 if (null != stopId.getProperties())
                     for (Property property : stopId.getProperties()) {
-                        propertyMapper.updateEnableFlagByStopId(property.getId());
+                        propertyMapper.updateEnableFlagByStopId(username, property.getId());
                     }
             }
         }
         // remove stop
-        stopsMapper.updateEnableFlagByFlowId(flowById.getId());
+        stopsMapper.updateEnableFlagByFlowId(username, flowById.getId());
         // remove paths
         pathsMapper.updateEnableFlagByFlowId(username, flowById.getId());
         if (null != flowById.getMxGraphModel()) {

@@ -167,7 +167,7 @@ public class ProcessMapperProvider {
      * @param id
      * @return
      */
-    public String getProcessById(String id) {
+    public String getProcessById(String username, boolean isAdmin, String id) {
         String sqlStr = "select 0";
         if (StringUtils.isNotBlank(id)) {
             StringBuffer strBuf = new StringBuffer();
@@ -175,7 +175,9 @@ public class ProcessMapperProvider {
             strBuf.append("from flow_process ");
             strBuf.append("where enable_flag = 1 ");
             strBuf.append("and id= " + SqlUtils.preventSQLInjection(id));
-            strBuf.append(SqlUtils.addQueryByUserRole(true, false));
+            if (!isAdmin) {
+                strBuf.append("and crt_user = " + SqlUtils.preventSQLInjection(username));
+            }
             sqlStr = strBuf.toString();
         }
         return sqlStr;
@@ -187,7 +189,7 @@ public class ProcessMapperProvider {
      * @param processGroupId
      * @return
      */
-    public String getProcessByProcessGroupId(String processGroupId) {
+    public String getProcessByProcessGroupId(String username, boolean isAdmin, String processGroupId) {
         String sqlStr = "select 0";
         if (StringUtils.isNotBlank(processGroupId)) {
             StringBuffer strBuf = new StringBuffer();
@@ -195,7 +197,9 @@ public class ProcessMapperProvider {
             strBuf.append("from flow_process ");
             strBuf.append("where enable_flag = 1 ");
             strBuf.append("and fk_flow_process_group_id= " + SqlUtils.preventSQLInjection(processGroupId));
-            strBuf.append(SqlUtils.addQueryByUserRole(true, false));
+            if (!isAdmin) {
+                strBuf.append("and crt_user = " + SqlUtils.preventSQLInjection(username));
+            }
             sqlStr = strBuf.toString();
         }
         return sqlStr;
@@ -222,7 +226,7 @@ public class ProcessMapperProvider {
      * @param param
      * @return
      */
-    public String getProcessListByParam(String param) {
+    public String getProcessListByParam(String username, boolean isAdmin, String param) {
         StringBuffer strBuf = new StringBuffer();
         strBuf.append("select * ");
         strBuf.append("from flow_process ");
@@ -239,7 +243,9 @@ public class ProcessMapperProvider {
             strBuf.append("or description like '%" + param + "%' ");
             strBuf.append(") ");
         }
-        strBuf.append(SqlUtils.addQueryByUserRole(true, false));
+        if (!isAdmin) {
+            strBuf.append("and crt_user = " + SqlUtils.preventSQLInjection(username));
+        }
         strBuf.append("order by crt_dttm desc,last_update_dttm desc ");
 
         return strBuf.toString();
@@ -251,7 +257,7 @@ public class ProcessMapperProvider {
      * @param param
      * @return
      */
-    public String getProcessGroupListByParam(String param) {
+    public String getProcessGroupListByParam(String username, boolean isAdmin, String param) {
         StringBuffer strBuf = new StringBuffer();
         strBuf.append("select * ");
         strBuf.append("from flow_process ");
@@ -268,7 +274,9 @@ public class ProcessMapperProvider {
             strBuf.append("or description like '%" + param + "%' ");
             strBuf.append(") ");
         }
-        strBuf.append(SqlUtils.addQueryByUserRole(true, false));
+        if (!isAdmin) {
+            strBuf.append("and crt_user = " + SqlUtils.preventSQLInjection(username));
+        }
         strBuf.append("order by crt_dttm desc,last_update_dttm desc ");
 
         return strBuf.toString();
@@ -458,7 +466,7 @@ public class ProcessMapperProvider {
      * @param processGroupId
      * @return
      */
-    public String getProcessByPageId(String processGroupId, String pageId) {
+    public String getProcessByPageId(String username, boolean isAdmin, String processGroupId, String pageId) {
         String sqlStr = "select 0";
         if (StringUtils.isNotBlank(processGroupId) && StringUtils.isNotBlank(pageId)) {
             StringBuffer strBuf = new StringBuffer();
@@ -467,7 +475,9 @@ public class ProcessMapperProvider {
             strBuf.append("where enable_flag = 1 ");
             strBuf.append("and page_id= " + pageId + " ");
             strBuf.append("and fk_flow_process_group_id= " + SqlUtils.preventSQLInjection(processGroupId));
-            strBuf.append(SqlUtils.addQueryByUserRole(true, false));
+            if (!isAdmin) {
+                strBuf.append("and crt_user = " + SqlUtils.preventSQLInjection(username));
+            }
             sqlStr = strBuf.toString();
         }
         return sqlStr;
@@ -480,7 +490,7 @@ public class ProcessMapperProvider {
      * @return
      */
     @SuppressWarnings("rawtypes")
-	public String getProcessByPageIds(Map map) {
+    public String getProcessByPageIds(Map map) {
         String processId = (String) map.get("processGroupId");
         String[] pageIds = (String[]) map.get("pageIds");
         String sqlStr = "select 0";

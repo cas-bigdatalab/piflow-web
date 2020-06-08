@@ -1,9 +1,9 @@
 package cn.cnic.controller;
 
 import cn.cnic.base.util.JsonUtils;
-import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.base.util.ReturnMapUtils;
 import cn.cnic.base.util.SessionUserUtil;
+import cn.cnic.base.util.SqlUtils;
 import cn.cnic.base.vo.UserVo;
 import cn.cnic.component.flow.model.Flow;
 import cn.cnic.component.flow.service.IFlowGroupService;
@@ -11,9 +11,7 @@ import cn.cnic.component.flow.service.IFlowService;
 import cn.cnic.component.flow.vo.FlowGroupVo;
 import cn.cnic.component.flow.vo.FlowVo;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -27,26 +25,11 @@ import java.util.Map;
 @RequestMapping("/flow")
 public class FlowCtrl {
 
-    /**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
-    Logger logger = LoggerUtil.getLogger();
-
     @Resource
     private IFlowService flowServiceImpl;
 
     @Resource
     private IFlowGroupService flowGroupServiceImpl;
-
-    /**
-     * getFlowListHtml
-     *
-     * @return
-     */
-    @RequestMapping("/getFlowListHtml")
-    public String getFlowListHtml() {
-        return "mxGraph/flow_List";
-    }
 
     /**
      * flowList page query
@@ -68,12 +51,11 @@ public class FlowCtrl {
      * run Flow
      *
      * @param request
-     * @param model
      * @return
      */
     @RequestMapping("/runFlow")
     @ResponseBody
-    public String runFlow(HttpServletRequest request, Model model) {
+    public String runFlow(HttpServletRequest request) {
         String flowId = request.getParameter("flowId");
         String runMode = request.getParameter("runMode");
         String username = SessionUserUtil.getCurrentUsername();
@@ -96,8 +78,8 @@ public class FlowCtrl {
     @RequestMapping("/saveFlowInfo")
     @ResponseBody
     public String saveFlowInfo(FlowVo flowVo) {
-        UserVo user = SessionUserUtil.getCurrentUser();
-        return flowServiceImpl.addFlow(flowVo, user);
+        String username = SessionUserUtil.getCurrentUsername();
+        return flowServiceImpl.addFlow(username, flowVo);
     }
 
     /**
@@ -109,8 +91,8 @@ public class FlowCtrl {
     @RequestMapping("/updateFlowInfo")
     @ResponseBody
     public int updateFlowInfo(Flow flow) {
-        UserVo user = SessionUserUtil.getCurrentUser();
-        int result = flowServiceImpl.updateFlow(flow, user);
+        String username = SessionUserUtil.getCurrentUsername();
+        int result = flowServiceImpl.updateFlow(username, flow);
         return result;
     }
 

@@ -1,15 +1,10 @@
 package cn.cnic.base.util;
 
 import cn.cnic.base.BaseHibernateModelUUIDNoCorpAgentId;
-import cn.cnic.base.vo.UserVo;
-import cn.cnic.common.Eunm.SysRoleType;
-import cn.cnic.component.system.model.SysRole;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 public class SqlUtils {
 
@@ -140,32 +135,4 @@ public class SqlUtils {
         return str;
     }
 
-    public static String addQueryByUserRole(boolean beforeAddAnd, boolean afterAddAnd) {
-        UserVo currentUser = SessionUserUtil.getCurrentUser();
-        String str = "FAIL";
-        if (null != currentUser) {
-            str = "CRT_USER = '" + currentUser.getUsername() + "' ";
-            if (beforeAddAnd) {
-                str = ("AND " + str);
-            }
-            if (afterAddAnd) {
-                str = ("AND " + str);
-            }
-            boolean isAdmin = false;
-            List<SysRole> roles = currentUser.getRoles();
-            if (CollectionUtils.isNotEmpty(roles)) {
-                for (SysRole sysRole : roles) {
-                    if (null != sysRole && SysRoleType.ADMIN == sysRole.getRole()) {
-                        isAdmin = true;
-                        break;
-                    }
-                }
-            }
-            if (isAdmin) {
-                str = " ";
-            }
-        }
-
-        return str;
-    }
 }

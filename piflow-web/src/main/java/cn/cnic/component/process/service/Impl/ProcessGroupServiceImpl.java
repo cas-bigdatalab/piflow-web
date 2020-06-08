@@ -152,15 +152,15 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
     /**
      * Start processesGroup
      *
+     * @param username       currentUser
      * @param processGroupId Run ProcessGroup Id
      * @param checkpoint     checkpoint
-     * @param currentUser    currentUser
      * @return json
      */
     @Override
     @Transactional
-    public String startProcessGroup(String processGroupId, String checkpoint, String runMode, UserVo currentUser) {
-        if (null == currentUser) {
+    public String startProcessGroup(String username, String processGroupId, String checkpoint, String runMode) {
+        if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
         }
         if (StringUtils.isBlank(processGroupId)) {
@@ -179,19 +179,19 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("No data by process group Id'" + processGroupId + "'");
         }
         // copy and Create
-        ProcessGroup copyProcessGroup = ProcessGroupUtils.copyProcessGroup(processGroupById, currentUser, runModeType);
-        copyProcessGroup = processGroupDomain.saveOrUpdate(currentUser.getUsername(), copyProcessGroup);
+        ProcessGroup copyProcessGroup = ProcessGroupUtils.copyProcessGroup(processGroupById, username, runModeType);
+        copyProcessGroup = processGroupDomain.saveOrUpdate(username, copyProcessGroup);
 
         Map<String, Object> rtnMap = new HashMap<>();
         Map<String, Object> stringObjectMap = groupImpl.startFlowGroup(copyProcessGroup, runModeType);
-        copyProcessGroup.setLastUpdateUser(currentUser.getUsername());
+        copyProcessGroup.setLastUpdateUser(username);
         copyProcessGroup.setLastUpdateDttm(new Date());
         if (200 == (Integer) stringObjectMap.get("code")) {
             copyProcessGroup.setAppId((String) stringObjectMap.get("appId"));
             copyProcessGroup.setProcessId((String) stringObjectMap.get("appId"));
             copyProcessGroup.setState(ProcessState.STARTED);
             copyProcessGroup.setProcessParentType(ProcessParentType.GROUP);
-            processGroupDomain.saveOrUpdate(currentUser.getUsername(), copyProcessGroup);
+            processGroupDomain.saveOrUpdate(username, copyProcessGroup);
             rtnMap.put("processGroupId", copyProcessGroup.getId());
             rtnMap.put("errorMsg", "Successful startup");
             rtnMap.put(ReturnMapUtils.KEY_CODE, ReturnMapUtils.SUCCEEDED_CODE);
@@ -201,7 +201,7 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
             rtnMap.put(ReturnMapUtils.KEY_CODE, ReturnMapUtils.ERROR_CODE);
             rtnMap.put("errorMsg", "Calling interface failed, startup failed");
             logger.warn("Calling interface failed, startup failed");
-            processGroupDomain.saveOrUpdate(currentUser.getUsername(), copyProcessGroup);
+            processGroupDomain.saveOrUpdate(username, copyProcessGroup);
         }
         return JsonUtils.toJsonNoException(rtnMap);
     }
@@ -250,12 +250,12 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
      * @return json
      */
     @Override
-    public String stopProcessGroup(String processGroupId) {
+    public String stopProcessGroup(String username, boolean isAdmin, String processGroupId) {
         Map<String, Object> rtnMap = new HashMap<>();
         rtnMap.put("code", 500);
         if (StringUtils.isNotBlank(processGroupId)) {
             // Query Process by 'processGroupId'
-            ProcessGroup processGroup = processGroupMapper.getProcessGroupById(processGroupId);
+            ProcessGroup processGroup = processGroupMapper.getProcessGroupById(username, isAdmin, processGroupId);
             // Determine whether it is empty, and determine whether the save is successful.
             if (null != processGroup) {
                 String appId = processGroup.getAppId();
@@ -332,12 +332,12 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
      * @return json
      */
     @Override
-    public String delProcessGroup(String username, String processGroupID) {
+    public String delProcessGroup(String username, boolean isAdmin, String processGroupID) {
         if (StringUtils.isBlank(processGroupID)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("processGroupID is null");
         }
         // Query Process by 'processGroupID'
-        ProcessGroup processGroupById = processGroupMapper.getProcessGroupById(processGroupID);
+        ProcessGroup processGroupById = processGroupMapper.getProcessGroupById(username, isAdmin, processGroupID);
         if (null == processGroupById) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("No process ID is '" + processGroupID + "' process");
         }

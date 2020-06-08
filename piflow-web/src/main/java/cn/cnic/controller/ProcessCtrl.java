@@ -56,7 +56,9 @@ public class ProcessCtrl {
     @RequestMapping("/processListPage")
     @ResponseBody
     public String processListPage(HttpServletRequest request, Integer start, Integer length, Integer draw, String extra_search) {
-        return processServiceImpl.getProcessVoListPage(start / length + 1, length, extra_search);
+        String username = SessionUserUtil.getCurrentUsername();
+        boolean isAdmin = SessionUserUtil.isAdmin();
+        return processServiceImpl.getProcessVoListPage(username, isAdmin, start / length + 1, length, extra_search);
     }
 
     /**
@@ -76,7 +78,7 @@ public class ProcessCtrl {
         // Determine whether there is a flow id (load), if it exists, load it, otherwise generate UUID to return to the return page
         if (StringUtils.isNotBlank(processId)) {
             // Query process by load id
-            ProcessVo processVo = processServiceImpl.getProcessAllVoById(processId);
+            ProcessVo processVo = processServiceImpl.getProcessAllVoById(currentUser.getUsername(), SessionUserUtil.isAdmin(), processId);
             if (null != processVo) {
                 String processGroupId = "";
                 if (null != processVo.getProcessGroupVo()) {
@@ -123,7 +125,9 @@ public class ProcessCtrl {
         if (StringUtils.isNotBlank(processId)) {
             // Query process by load id
             // logger.info("Query process by load id");
-            ProcessVo processVo = processServiceImpl.getProcessVoById(processId);
+            String username = SessionUserUtil.getCurrentUsername();
+            boolean isAdmin = SessionUserUtil.isAdmin();
+            ProcessVo processVo = processServiceImpl.getProcessVoById(username, isAdmin, processId);
             modelAndView.addObject("processVo", processVo);
         } else {
             logger.warn("Parameter passed in incorrectly");
@@ -190,8 +194,8 @@ public class ProcessCtrl {
         String id = request.getParameter("id");
         String checkpoint = request.getParameter("checkpointStr");
         String runMode = request.getParameter("runMode");
-        UserVo currentUser = SessionUserUtil.getCurrentUser();
-        return processServiceImpl.startProcess(id, checkpoint, runMode, currentUser);
+        String username = SessionUserUtil.getCurrentUsername();
+        return processServiceImpl.startProcess(username, id, checkpoint, runMode);
     }
 
     /**
@@ -205,7 +209,9 @@ public class ProcessCtrl {
     @ResponseBody
     public String stopProcess(HttpServletRequest request, Model model) {
         String processId = request.getParameter("processId");
-        return processServiceImpl.stopProcess(processId);
+        String username = SessionUserUtil.getCurrentUsername();
+        boolean isAdmin = SessionUserUtil.isAdmin();
+        return processServiceImpl.stopProcess(username, isAdmin, processId);
     }
 
     /**

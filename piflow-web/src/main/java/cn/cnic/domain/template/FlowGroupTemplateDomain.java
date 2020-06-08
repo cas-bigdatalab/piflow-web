@@ -1,7 +1,5 @@
 package cn.cnic.domain.template;
 
-import cn.cnic.base.util.SessionUserUtil;
-import cn.cnic.base.vo.UserVo;
 import cn.cnic.component.template.model.FlowGroupTemplate;
 import cn.cnic.repository.template.FlowGroupTemplateJpaRepository;
 import org.springframework.data.domain.Page;

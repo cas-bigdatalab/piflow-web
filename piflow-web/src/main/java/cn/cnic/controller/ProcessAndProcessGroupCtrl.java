@@ -63,11 +63,11 @@ public class ProcessAndProcessGroupCtrl {
         String runMode = request.getParameter("runMode");
         String processType = request.getParameter("processType");
         String checkpoint = request.getParameter("checkpointStr");
-        UserVo currentUser = SessionUserUtil.getCurrentUser();
+        String username = SessionUserUtil.getCurrentUsername();
         if ("PROCESS".equals(processType)) {
-            return processServiceImpl.startProcess(id, checkpoint, runMode, currentUser);
+            return processServiceImpl.startProcess(username, id, checkpoint, runMode);
         } else {
-            return processGroupServiceImpl.startProcessGroup(id, checkpoint, runMode, currentUser);
+            return processGroupServiceImpl.startProcessGroup(username, id, checkpoint, runMode);
         }
     }
 
@@ -82,10 +82,12 @@ public class ProcessAndProcessGroupCtrl {
     public String stopProcessOrProcessGroup(HttpServletRequest request) {
         String id = request.getParameter("id");
         String processType = request.getParameter("processType");
+        String username = SessionUserUtil.getCurrentUsername();
+        boolean isAdmin = SessionUserUtil.isAdmin();
         if ("PROCESS".equals(processType)) {
-            return processServiceImpl.stopProcess(id);
+            return processServiceImpl.stopProcess(username, isAdmin, id);
         } else {
-            return processGroupServiceImpl.stopProcessGroup(id);
+            return processGroupServiceImpl.stopProcessGroup(SessionUserUtil.getCurrentUsername(), SessionUserUtil.isAdmin(), id);
         }
     }
 
@@ -101,10 +103,11 @@ public class ProcessAndProcessGroupCtrl {
         String id = request.getParameter("id");
         String processType = request.getParameter("processType");
         String username = SessionUserUtil.getCurrentUsername();
+        boolean isAdmin = SessionUserUtil.isAdmin();
         if ("PROCESS".equals(processType)) {
             return processServiceImpl.delProcess(username, id);
         } else {
-            return processGroupServiceImpl.delProcessGroup(username, id);
+            return processGroupServiceImpl.delProcessGroup(username, isAdmin, id);
         }
     }
 

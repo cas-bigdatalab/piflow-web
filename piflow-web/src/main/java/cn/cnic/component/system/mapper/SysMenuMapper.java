@@ -1,7 +1,7 @@
-package cn.cnic.mapper.system;
+package cn.cnic.component.system.mapper;
 
 import cn.cnic.component.system.model.SysMenu;
-import cn.cnic.provider.system.SysMenuMapperProvider;
+import cn.cnic.component.system.mapper.provider.SysMenuMapperProvider;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.SelectProvider;
