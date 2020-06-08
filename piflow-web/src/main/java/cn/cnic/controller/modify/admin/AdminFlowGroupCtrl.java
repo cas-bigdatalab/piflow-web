@@ -27,7 +27,7 @@ public class AdminFlowGroupCtrl {
      */
     @RequestMapping("/getFlowGroupListPage")
     @ResponseBody
-    public String getFlowGroupListPage(HttpServletRequest request,Integer page, Integer limit, String param) {
+    public String getFlowGroupListPage(HttpServletRequest request, Integer page, Integer limit, String param) {
         String username = SessionUserUtil.getUsername(request);
         return flowGroupServiceImpl.getFlowGroupListPage(username, true, page, limit, param);
     }
@@ -40,7 +40,7 @@ public class AdminFlowGroupCtrl {
      */
     @RequestMapping("/saveOrUpdateFlowGroup")
     @ResponseBody
-    public String saveOrUpdateFlowGroup(HttpServletRequest request,FlowGroupVo flowGroupVo) {
+    public String saveOrUpdateFlowGroup(HttpServletRequest request, FlowGroupVo flowGroupVo) {
         String username = SessionUserUtil.getUsername(request);
         return flowGroupServiceImpl.saveOrUpdate(username, flowGroupVo);
     }
@@ -68,8 +68,8 @@ public class AdminFlowGroupCtrl {
      */
     @RequestMapping("/deleteFlowGroup")
     @ResponseBody
-    public int deleteFlowGroup(String id) {
-        return flowGroupServiceImpl.deleteFLowGroupInfo(id);
+    public String deleteFlowGroup(HttpServletRequest request, String id) {
+        return flowGroupServiceImpl.deleteFLowGroupInfo(SessionUserUtil.getUsername(request), id);
     }
 
     /**
@@ -81,14 +81,14 @@ public class AdminFlowGroupCtrl {
      */
     @RequestMapping("/copyFlowToGroup")
     @ResponseBody
-    public String copyFlowToGroup(HttpServletRequest request,String flowId, String flowGroupId) {
+    public String copyFlowToGroup(HttpServletRequest request, String flowId, String flowGroupId) {
         String username = SessionUserUtil.getUsername(request);
         return flowGroupServiceImpl.copyFlowToGroup(username, flowId, flowGroupId);
     }
 
     @RequestMapping("/updateFlowGroupBaseInfo")
     @ResponseBody
-    public String updateFlowGroupBaseInfo(HttpServletRequest request,FlowGroupVo flowGroupVo) {
+    public String updateFlowGroupBaseInfo(HttpServletRequest request, FlowGroupVo flowGroupVo) {
         String username = SessionUserUtil.getUsername(request);
         return flowGroupServiceImpl.updateFlowGroupBaseInfo(username, flowGroupVo);
     }

@@ -26,7 +26,6 @@ public class FlowTemplateCtrl {
     @RequestMapping("/saveFlowTemplate")
     @ResponseBody
     public String saveFlowTemplate(HttpServletRequest request, Model model) {
-
         String name = request.getParameter("name");
         String loadId = request.getParameter("load");
         String templateType = request.getParameter("templateType");

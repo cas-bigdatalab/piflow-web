@@ -67,7 +67,7 @@ public interface IFlowGroupService {
      * @param id
      * @return
      */
-    public int deleteFLowGroupInfo(String id);
+    public String deleteFLowGroupInfo(String username, String id);
 
     /**
      * Copy flow to group
@@ -130,5 +130,14 @@ public interface IFlowGroupService {
      * @return
      */
     public String rightRun(String username, boolean isAdmin, String pId, String nodeId, String nodeType);
+
+    /**
+     * Query FlowGroupVo or FlowVo information based on pageId
+     *
+     * @param fid
+     * @param pageId
+     * @return
+     */
+    public String queryIdInfo(String fid, String pageId);
 
 }

@@ -66,8 +66,49 @@ public class PropertyServiceImpl implements IPropertyService {
     }
 
     @Override
-    public int updateProperty(String username, String content, String id) {
-        return propertyMapper.updatePropertyCustomValue(username, content, id);
+    public String updatePropertyList(String username, String[] content) {
+        if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("user Illegality");
+        }
+        if (null == content || content.length <= 0) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("param is null");
+        }
+        int updateStops = 0;
+        for (String string : content) {
+            //Use the #id# tag to intercept the data, the first is the content, and the second is the id of the record to be modified.
+            String[] split = string.split("#id#");
+            if (null == split || split.length != 2) {
+                continue;
+            }
+            String updateContent = split[0];
+            String updateId = split[1];
+            updateStops += propertyMapper.updatePropertyCustomValue(username, updateContent, updateId);
+        }
+        if (updateStops > 0) {
+            return ReturnMapUtils.setSucceededMsgRtnJsonStr("The stops attribute was successfully modified. counts:" + updateStops);
+        } else {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("update failed");
+        }
+    }
+
+    @Override
+    public String updateProperty(String username, String content, String id) {
+        if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("user Illegality");
+        }
+        if (StringUtils.isBlank(content)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("content is null");
+        }
+        if (StringUtils.isBlank(id)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("id is null");
+        }
+        int updateStops = propertyMapper.updatePropertyCustomValue(username, content, id);
+        if (updateStops > 0) {
+            logger.info("The stops attribute was successfully modified:" + updateStops);
+            return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("value", content);
+        } else {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Database save failed");
+        }
     }
 
     @Override

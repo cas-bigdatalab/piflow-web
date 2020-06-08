@@ -104,25 +104,33 @@ public class StopsServiceImpl implements IStopsService {
      * Modify the isCheckpoint field
      *
      * @param stopId
-     * @param isCheckpoint
+     * @param isCheckpointStr
      * @return
      */
     @Override
-    public int updateStopsCheckpoint(String username, String stopId, boolean isCheckpoint) {
-        if (StringUtils.isBlank(username)) {
-            return 0;
-        }
-        if (StringUtils.isBlank(stopId)) {
-            return 0;
+    public String updateStopsCheckpoint(String username, String stopId, String isCheckpointStr) {
+
+        if (!StringUtils.isAnyEmpty(stopId, isCheckpointStr)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Partial incoming parameters are empty");
         }
         Stops stopsById = stopsMapper.getStopsById(stopId);
         if (null == stopsById) {
-            return 0;
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Data is null");
+        }
+        boolean isCheckpoint = false;
+        if ("1".equals(isCheckpointStr)) {
+            isCheckpoint = true;
         }
         stopsById.setLastUpdateUser(username);
         stopsById.setLastUpdateDttm(new Date());
         stopsById.setIsCheckpoint(isCheckpoint);
-        return stopsMapper.updateStops(stopsById);
+        int updateStopsCheckpoint = stopsMapper.updateStops(stopsById);
+        if (updateStopsCheckpoint > 0) {
+            return ReturnMapUtils.setSucceededMsgRtnJsonStr("Saved successfully");
+        } else {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Database save failed");
+        }
+
     }
 
     @Override

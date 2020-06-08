@@ -117,23 +117,7 @@ public class AdminFlowCtrl {
     @RequestMapping("/queryIdInfo")
     @ResponseBody
     public String queryIdInfo(String fid, String flowPageId) {
-        if (StringUtils.isBlank(fid) || StringUtils.isBlank(flowPageId)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Missing parameters");
-        }
-        Map<String, Object> rtnMap = new HashMap<>();
-        FlowVo flowVo = flowServiceImpl.getFlowByPageId(fid, flowPageId);
-        FlowGroupVo flowGroupVo = flowGroupServiceImpl.getFlowGroupByPageId(fid, flowPageId);
-        if (null != flowVo) {
-            //Compare the stops template properties and make changes
-            //propertyServiceImpl.checkStopTemplateUpdate(queryInfo.getId());
-            rtnMap.put("nodeType", "flow");
-        } else if (null != flowGroupVo) {
-            rtnMap.put("nodeType", "flowGroup");
-        }
-        rtnMap.put(ReturnMapUtils.KEY_CODE, ReturnMapUtils.SUCCEEDED_CODE);
-        rtnMap.put("flowVo", flowVo);
-        rtnMap.put("flowGroupVo", flowGroupVo);
-        return JsonUtils.toJsonNoException(rtnMap);
+        return flowGroupServiceImpl.queryIdInfo(fid,flowPageId);
     }
 
     @RequestMapping("/updateFlowBaseInfo")
@@ -168,18 +152,6 @@ public class AdminFlowCtrl {
     @RequestMapping("/findFlowByGroup")
     @ResponseBody
     public String findFlowByGroup(String fId, String flowPageId) {
-        Map<String, Object> rtnMap = new HashMap<>();
-        rtnMap.put("code", 500);
-        FlowVo flowVo = flowServiceImpl.getFlowByPageId(fId, flowPageId);
-        FlowGroupVo flowGroupVo = flowGroupServiceImpl.getFlowGroupByPageId(fId, flowPageId);
-        if (null != flowVo) {
-            rtnMap.put("nodeType", "flow");
-        } else if (null != flowGroupVo) {
-            rtnMap.put("nodeType", "flowGroup");
-        }
-        rtnMap.put(ReturnMapUtils.KEY_CODE, ReturnMapUtils.SUCCEEDED_CODE);
-        rtnMap.put("flowVo", flowVo);
-        rtnMap.put("flowGroupVo", flowGroupVo);
-        return JsonUtils.toJsonNoException(rtnMap);
+        return flowGroupServiceImpl.queryIdInfo(fId,flowPageId);
     }
 }

@@ -42,10 +42,10 @@ public interface IStopsService {
      * Modify the "isCheckpoint" field
      *
      * @param stopId
-     * @param isCheckpoint
+     * @param isCheckpointStr
      * @return
      */
-    public int updateStopsCheckpoint(String username, String stopId, boolean isCheckpoint);
+    public String updateStopsCheckpoint(String username, String stopId, String isCheckpointStr);
 
     /**
      * Modify "stopName" based on id

@@ -20,11 +20,20 @@ public interface IPropertyService {
     /**
      * Modify stops attribute information
      *
+     * @param content
+     * @return
+     */
+    public String updatePropertyList(String username, String[] content);
+
+    /**
+     * Modify stops attribute information
+     *
      * @param id
      * @param content
      * @return
      */
-    public int updateProperty(String username, String content, String id);
+    public String updateProperty(String username, String content, String id);
+
 
     /**
      * query All StopsProperty List;

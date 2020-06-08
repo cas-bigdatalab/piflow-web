@@ -99,46 +99,16 @@ public class AdminStopsCtrl {
      */
     @RequestMapping("/updateStops")
     @ResponseBody
-    public Integer updateStops(HttpServletRequest request, String[] content, String id) {
+    public String updateStops(HttpServletRequest request, String[] content, String id) {
         String username = SessionUserUtil.getUsername(request);
-        int updateStops = 0;
-        if (null != content && content.length > 0) {
-            for (String string : content) {
-                //Use the #id# tag to intercept the data, the first is the content, and the second is the id of the record to be modified.
-                String[] split = string.split("#id#");
-                if (null != split && split.length == 2) {
-                    String updateContent = split[0];
-                    String updateId = split[1];
-                    updateStops = propertyServiceImpl.updateProperty(username, updateContent, updateId);
-                }
-            }
-        }
-        if (updateStops > 0) {
-            logger.info("The stops attribute was successfully modified.:" + updateStops);
-            return updateStops;
-        } else {
-            return 0;
-        }
+        return propertyServiceImpl.updatePropertyList(username, content);
     }
 
     @RequestMapping("/updateStopsOne")
     @ResponseBody
     public String updateStops(HttpServletRequest request, String content, String id) {
         String username = SessionUserUtil.getUsername(request);
-        Map<String, Object> rtnMap = new HashMap<>();
-        rtnMap.put("code", 500);
-        int updateStops = 0;
-        updateStops = propertyServiceImpl.updateProperty(username, content, id);
-        if (updateStops > 0) {
-            rtnMap.put("code", 200);
-            rtnMap.put("errorMsg", "Saved successfully");
-            rtnMap.put("value", content);
-            logger.info("The stops attribute was successfully modified:" + updateStops);
-        } else {
-            rtnMap.put("errorMsg", "Database save failed");
-            logger.info("Database save failed");
-        }
-        return JsonUtils.toJsonNoException(rtnMap);
+        return propertyServiceImpl.updateProperty(username, content, id);
     }
 
     @RequestMapping("/updateStopsById")
@@ -149,25 +119,7 @@ public class AdminStopsCtrl {
         String id = request.getParameter("stopId");
         String isCheckpointStr = request.getParameter("isCheckpoint");
         String username = SessionUserUtil.getUsername(request);
-        if (!StringUtils.isAnyEmpty(id, isCheckpointStr)) {
-            boolean isCheckpoint = false;
-            if ("1".equals(isCheckpointStr)) {
-                isCheckpoint = true;
-            }
-            int updateStopsCheckpoint = stopsServiceImpl.updateStopsCheckpoint(username, id, isCheckpoint);
-            if (updateStopsCheckpoint > 0) {
-                rtnMap.put("code", 200);
-                rtnMap.put("errorMsg", "Saved successfully");
-                logger.info("Saved successfully");
-            } else {
-                rtnMap.put("errorMsg", "Database save failed");
-                logger.info("Database save failed");
-            }
-        } else {
-            rtnMap.put("errorMsg", "Partial incoming parameters are empty");
-            logger.info("Partial incoming parameters are empty");
-        }
-        return JsonUtils.toJsonNoException(rtnMap);
+        return stopsServiceImpl.updateStopsCheckpoint(username, id, isCheckpointStr);
     }
 
     @RequestMapping("/updateStopsNameById")

@@ -71,8 +71,8 @@ public class FlowGroupCtrl {
      */
     @RequestMapping("/deleteFlowGroup")
     @ResponseBody
-    public int deleteFlowGroup(String id) {
-        return flowGroupServiceImpl.deleteFLowGroupInfo(id);
+    public String deleteFlowGroup(String id) {
+        return flowGroupServiceImpl.deleteFLowGroupInfo(SessionUserUtil.getCurrentUsername(), id);
     }
 
     /**

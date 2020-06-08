@@ -1,4 +1,3 @@
-
 function newFlowGroup() {
     $("#buttonFlowGroup").attr("onclick", "");
     $("#buttonFlowGroup").attr("onclick", "saveOrUpdateFlowGroup()");
@@ -277,7 +276,8 @@ function deleteFlowGroup(id, name) {
                 return;
             },
             success: function (data) {//Operation after request successful
-                if (data > 0) {
+                var dataMap = JSON.parse(data);
+                if (200 === dataMap.code) {
                     layer.msg('Delete Success', {icon: 1, shade: 0, time: 2000}, function () {
                         location.reload();
                     });

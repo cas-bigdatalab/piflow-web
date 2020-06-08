@@ -312,7 +312,7 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
         }
         //ProcessGroup processGroup = flowGroupToProcessGroup(flowGroupById, username, runModeType);
         ProcessGroup processGroup = ProcessGroupUtils.flowGroupToProcessGroup(flowGroupById, username, runModeType);
-        processGroup = processGroupDomain.saveOrUpdate(username,processGroup);
+        processGroup = processGroupDomain.saveOrUpdate(username, processGroup);
 
         Map<String, Object> stringObjectMap = groupImpl.startFlowGroup(processGroup, runModeType);
         processGroup.setLastUpdateDttm(new Date());
@@ -322,22 +322,29 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
             processGroup.setProcessId((String) stringObjectMap.get("appId"));
             processGroup.setState(ProcessState.STARTED);
             processGroup.setProcessParentType(ProcessParentType.GROUP);
-            processGroupDomain.saveOrUpdate(username,processGroup);
+            processGroupDomain.saveOrUpdate(username, processGroup);
             return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("processGroupId", processGroup.getId());
         } else {
             processGroup.setEnableFlag(false);
-            processGroupDomain.saveOrUpdate(username,processGroup);
+            processGroupDomain.saveOrUpdate(username, processGroup);
             return ReturnMapUtils.setFailedMsgRtnJsonStr(stringObjectMap.get("errorMsg").toString());
         }
     }
 
     @Override
-    public int deleteFLowGroupInfo(String id) {
-        int deleteFLowInfo = 0;
-        if (StringUtils.isNotBlank(id)) {
-            deleteFLowInfo = flowGroupDomain.updateEnableFlagById(id, false);
+    public String deleteFLowGroupInfo(String username, String id) {
+        if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal user");
         }
-        return deleteFLowInfo;
+        if (StringUtils.isBlank(id)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("id is null");
+        }
+        FlowGroup flowGroupById = flowGroupDomain.getFlowGroupById(id);
+        flowGroupById.setLastUpdateDttm(new Date());
+        flowGroupById.setLastUpdateUser(username);
+        flowGroupById.setEnableFlag(false);
+        flowGroupDomain.updateEnableFlagById(id, false);
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr("delete succeed");
     }
 
     /**
@@ -556,6 +563,35 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
         } else {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("No data found for this node (" + nodeId + ")");
         }
+    }
+
+    /**
+     * Query FlowGroupVo or FlowVo information based on pageId
+     *
+     * @param fid
+     * @param pageId
+     * @return
+     */
+    public String queryIdInfo(String fid, String pageId) {
+        if (StringUtils.isBlank(fid) || StringUtils.isBlank(pageId)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Missing parameters");
+        }
+        Map<String, Object> rtnMap = new HashMap<>();
+        FlowVo flowVo = flowServiceImpl.getFlowByPageId(fid, pageId);
+        if (null != flowVo) {
+            rtnMap.put("nodeType", "flow");
+            rtnMap.put("flowVo", flowVo);
+            rtnMap.put(ReturnMapUtils.KEY_CODE, ReturnMapUtils.SUCCEEDED_CODE);
+            return JsonUtils.toJsonNoException(rtnMap);
+        }
+        FlowGroupVo flowGroupVo = this.getFlowGroupByPageId(fid, pageId);
+        if (null != flowGroupVo) {
+            rtnMap.put("nodeType", "flowGroup");
+            rtnMap.put("flowGroupVo", flowGroupVo);
+            rtnMap.put(ReturnMapUtils.KEY_CODE, ReturnMapUtils.SUCCEEDED_CODE);
+            return JsonUtils.toJsonNoException(rtnMap);
+        }
+        return ReturnMapUtils.setFailedMsgRtnJsonStr("no Data");
     }
 
 }
