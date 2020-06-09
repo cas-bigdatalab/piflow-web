@@ -1,9 +1,6 @@
 package cn.cnic.component.flow.service.impl;
 
-import cn.cnic.base.util.JsonUtils;
-import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.base.util.ReturnMapUtils;
-import cn.cnic.base.util.StatefulRtnBaseUtils;
+import cn.cnic.base.util.*;
 import cn.cnic.base.vo.StatefulRtnBase;
 import cn.cnic.common.Eunm.PortType;
 import cn.cnic.component.dataSource.domain.DataSourceDomain;
@@ -15,7 +12,9 @@ import cn.cnic.component.flow.utils.StopsUtils;
 import cn.cnic.component.flow.vo.StopsVo;
 import cn.cnic.component.mxGraph.model.MxCell;
 import cn.cnic.component.mxGraph.model.MxGraphModel;
+import cn.cnic.component.mxGraph.vo.MxGraphModelVo;
 import cn.cnic.domain.flow.StopsDomain;
+import cn.cnic.mapper.flow.FlowMapper;
 import cn.cnic.mapper.flow.PathsMapper;
 import cn.cnic.mapper.flow.StopsMapper;
 import cn.cnic.mapper.mxGraph.MxCellMapper;
@@ -48,6 +47,9 @@ public class StopsServiceImpl implements IStopsService {
 
     @Resource
     private StopsDomain stopsDomain;
+
+    @Resource
+    private FlowMapper flowMapper;
 
     @Override
     public int deleteStopsByFlowId(String id) {
@@ -157,53 +159,86 @@ public class StopsServiceImpl implements IStopsService {
     }
 
     @Override
-    public StatefulRtnBase updateStopName(String username, String stopId, Flow flowById, String stopName, String pageId) {
-        StatefulRtnBase statefulRtnBase = new StatefulRtnBase();
+    @javax.transaction.Transactional
+    public String updateStopName(String username, boolean isAdmin, String stopId, String flowId, String stopName, String pageId) {
         if (StringUtils.isBlank(username)) {
-            statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("Illegal users");
-            logger.info("Illegal users");
-            return statefulRtnBase;
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
         }
+        if (StringUtils.isAnyEmpty(stopId, stopName, flowId, pageId)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("The incoming parameter is empty");
+        }
+        // find flow
+        Flow flowById = flowMapper.getFlowById(flowId);
+        if (null == flowById) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("flow information is empty");
+        }
+        // Judge whether it is an example
+        boolean isExample = flowById.getIsExample();
+        if (isExample) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Example cannot be modified");
+        }
+        // Determine whether to be an administrator or create a user
+        String crtUser = flowById.getCrtUser();
+        if (!isAdmin && (!username.equals(crtUser))) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("No permission to modify, please contact the administrator");
+        }
+        // Determine whether the Sketchpad node exists
         List<MxCell> root = null;
-        if (null != flowById) {
-            MxGraphModel mxGraphModel = flowById.getMxGraphModel();
-            if (null != mxGraphModel) {
-                root = mxGraphModel.getRoot();
-            }
+        MxGraphModel mxGraphModel = flowById.getMxGraphModel();
+        if (null != mxGraphModel) {
+            root = mxGraphModel.getRoot();
         }
-        if (null == root || root.size() == 0) {
-            statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("No flow information,update failed ");
-            logger.info(flowById.getId() + "The drawing board information is empty and the update failed.");
-            return statefulRtnBase;
+        if (null == root || root.isEmpty()) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Flow '" + flowById.getId() + "' The drawing board information is empty and the update failed.");
+        }
+        // Determine whether the 'Stops' exists
+        List<Stops> stopsList = flowById.getStopsList();
+        if (null == stopsList || stopsList.isEmpty()) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Flow '" + flowById.getId() + "' The Stops is empty and the update failed.");
         }
         //Check if name is the same name
         String checkResult = this.getStopByNameAndFlowId(flowById.getId(), stopName);
         if (StringUtils.isNotBlank(checkResult)) {
-            statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("Name already exists");
-            logger.info(stopName + "The name has been repeated and the save failed.");
-        } else {
-            int updateStopsNameById = this.updateStopsNameById(username, stopId, stopName);
-            if (updateStopsNameById > 0) {
-                for (MxCell mxCell : root) {
-                    if (null != mxCell) {
-                        if (mxCell.getPageId().equals(pageId)) {
-                            mxCell.setValue(stopName);
-                            mxCell.setLastUpdateDttm(new Date());
-                            mxCell.setLastUpdateUser(username);
-                            int updateMxCell = mxCellMapper.updateMxCell(mxCell);
-                            if (updateMxCell > 0) {
-                                logger.info("Successfully modified");
-                                statefulRtnBase = StatefulRtnBaseUtils.setSuccessdMsg("Update success");
-                            }
-                        }
-                    }
-                }
-            } else {
-                statefulRtnBase = StatefulRtnBaseUtils.setFailedMsg("Update failed");
-                logger.info("Modify stopName failed");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("The name '" + stopName + "' has been repeated and the save failed.");
+        }
+        // Get the MxCell node to be modified
+        MxCell mxCellUpdate = null;
+        for (MxCell mxCell : root) {
+            if (null == mxCell) {
+                continue;
+            }
+            if (mxCell.getPageId().equals(pageId)) {
+                mxCellUpdate = mxCell;
+                break;
             }
         }
-        return statefulRtnBase;
+        if (null == mxCellUpdate) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("The Stops node you want to modify does not exist");
+        }
+        // modify Stops
+        int updateStopsNameById = this.updateStopsNameById(username, stopId, stopName);
+        if (updateStopsNameById <= 0) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("update failed");
+        }
+        // modify MxCell
+        mxCellUpdate.setValue(stopName);
+        mxCellUpdate.setLastUpdateDttm(new Date());
+        mxCellUpdate.setLastUpdateUser(username);
+        int updateMxCell = mxCellMapper.updateMxCell(mxCellUpdate);
+        if (updateMxCell <= 0) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("update failed");
+        }
+        Map<String, Object> rtnMap = new HashMap<>();
+        if (null != mxGraphModel) {
+            MxGraphModelVo mxGraphModelVo = FlowXmlUtils.mxGraphModelPoToVo(mxGraphModel);
+            // Convert the mxGraphModelVo from the query to XML
+            String loadXml = MxGraphUtils.mxGraphModelToMxGraphXml(mxGraphModelVo);
+            loadXml = StringUtils.isNotBlank(loadXml) ? loadXml : "";
+            rtnMap.put("XmlData", loadXml);
+        }
+        rtnMap.put("code", 200);
+        rtnMap.put("errorMsg", "Successfully modified");
+        return JsonUtils.toJsonNoException(rtnMap);
     }
 
 

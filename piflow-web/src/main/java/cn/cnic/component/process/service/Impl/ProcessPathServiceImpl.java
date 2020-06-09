@@ -1,12 +1,16 @@
 package cn.cnic.component.process.service.Impl;
 
+import cn.cnic.base.util.JsonUtils;
 import cn.cnic.base.util.LoggerUtil;
+import cn.cnic.base.util.ReturnMapUtils;
 import cn.cnic.common.Eunm.PortType;
+import cn.cnic.common.Eunm.RunModeType;
 import cn.cnic.component.process.model.Process;
 import cn.cnic.component.process.model.ProcessPath;
 import cn.cnic.component.process.model.ProcessStop;
 import cn.cnic.component.process.service.IProcessPathService;
 import cn.cnic.component.process.vo.ProcessPathVo;
+import cn.cnic.component.process.vo.ProcessVo;
 import cn.cnic.mapper.process.ProcessMapper;
 import cn.cnic.mapper.process.ProcessPathMapper;
 import cn.cnic.mapper.process.ProcessStopMapper;
@@ -15,7 +19,9 @@ import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ProcessPathServiceImpl implements IProcessPathService {
@@ -39,14 +45,16 @@ public class ProcessPathServiceImpl implements IProcessPathService {
      * @return
      */
     @Override
-    public ProcessPathVo getProcessPathVoByPageId(String processId, String pageId) {
+    public String getProcessPathVoByPageId(String processId, String pageId) {
         if (StringUtils.isAnyEmpty(processId, pageId)) {
-            return null;
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Parameter passed in incorrectly");
         }
+        // Find ProcessPath
         ProcessPath processPathByPageId = processPathMapper.getProcessPathByPageIdAndPid(processId, pageId);
         if (null == processPathByPageId) {
-            return null;
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("No Data");
         }
+        // get from PageId and to PageId
         String[] pageIds = new String[2];
         String pathTo = processPathByPageId.getTo();
         String pathFrom = processPathByPageId.getFrom();
@@ -59,25 +67,36 @@ public class ProcessPathServiceImpl implements IProcessPathService {
         if (StringUtils.isBlank(processId) || null == pageIds || pageIds.length <= 0) {
             return null;
         }
+        // Find from ProcessStop and to ProcessStop
         List<ProcessStop> processStopByPageIds = processStopMapper.getProcessStopByPageIdAndPageIds(processId, pageIds);
         if (null == processStopByPageIds || processStopByPageIds.size() <= 0) {
             return null;
         }
-        ProcessPathVo processStopVo = new ProcessPathVo();
+        ProcessPathVo processPathVo = new ProcessPathVo();
         pathTo = (null == pathTo ? "" : pathTo);
         pathFrom = (null == pathTo ? "" : pathFrom);
         for (ProcessStop processStop : processStopByPageIds) {
             if (null != processStop) {
                 if (pathTo.equals(processStop.getPageId())) {
-                    processStopVo.setTo(processStop.getName());
+                    processPathVo.setTo(processStop.getName());
                 } else if (pathFrom.equals(processStop.getPageId())) {
-                    processStopVo.setFrom(processStop.getName());
+                    processPathVo.setFrom(processStop.getName());
                 }
             }
         }
-        processStopVo.setInport(StringUtils.isNotBlank(processPathByPageId.getInport()) ? processPathByPageId.getInport() : PortType.DEFAULT.getText());
-        processStopVo.setOutport(StringUtils.isNotBlank(processPathByPageId.getOutport()) ? processPathByPageId.getOutport() : PortType.DEFAULT.getText());
-        return processStopVo;
+        processPathVo.setInport(StringUtils.isNotBlank(processPathByPageId.getInport()) ? processPathByPageId.getInport() : PortType.DEFAULT.getText());
+        processPathVo.setOutport(StringUtils.isNotBlank(processPathByPageId.getOutport()) ? processPathByPageId.getOutport() : PortType.DEFAULT.getText());
+
+        // Find Process RunModeType
+        RunModeType runModeType = processMapper.getProcessRunModeTypeById(processId);
+        Map<String, Object> rtnMap = new HashMap<>();
+        rtnMap.put(ReturnMapUtils.KEY_CODE, ReturnMapUtils.SUCCEEDED_CODE);
+        if (null != runModeType) {
+            rtnMap.put("runModeType", runModeType);
+        }
+        rtnMap.put("processPathVo", processPathVo);
+
+        return JsonUtils.toJsonNoException(rtnMap);
     }
 
     /**

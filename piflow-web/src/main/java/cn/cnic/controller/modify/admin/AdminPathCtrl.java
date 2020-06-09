@@ -1,4 +1,4 @@
-package cn.cnic.controller;
+package cn.cnic.controller.modify.admin;
 
 import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.base.util.SessionUserUtil;
@@ -11,10 +11,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
-@RequestMapping("/path")
-public class PathCtrl {
+@RequestMapping("/admin/path")
+public class AdminPathCtrl {
 
     /**
      * Introducing logs, note that they are all packaged under "org.slf4j"
@@ -35,6 +36,7 @@ public class PathCtrl {
      * @return
      */
     @RequestMapping("/queryPathInfo")
+    @ResponseBody
     public String getStopGroup(String fid, String id) {
         return pathsServiceImpl.getPathsByFlowIdAndPageId(fid, id);
     }
@@ -47,8 +49,8 @@ public class PathCtrl {
      */
     @RequestMapping("/savePathsPort")
     @ResponseBody
-    public String savePathsPort(UpdatePathRequest updatePathRequest) {
-        String username = SessionUserUtil.getCurrentUsername();
+    public String savePathsPort(HttpServletRequest request, UpdatePathRequest updatePathRequest) {
+        String username = SessionUserUtil.getUsername(request);
         return propertyServiceImpl.saveOrUpdateRoutePath(username, updatePathRequest);
     }
 

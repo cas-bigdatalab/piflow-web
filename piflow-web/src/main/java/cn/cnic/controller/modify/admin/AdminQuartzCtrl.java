@@ -26,8 +26,7 @@ public class AdminQuartzCtrl {
     @RequestMapping("/getScheduleById")
     @ResponseBody
     public String getScheduleById(HttpServletRequest request, String scheduleId) {
-        boolean isAdmin = SessionUserUtil.isAdmin();
-        return sysScheduleServiceImpl.getScheduleById(isAdmin, scheduleId);
+        return sysScheduleServiceImpl.getScheduleById(true, scheduleId);
     }
 
     @RequestMapping("/createTask")

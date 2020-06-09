@@ -1,6 +1,7 @@
 package cn.cnic.component.process.service.Impl;
 
 import cn.cnic.base.util.LoggerUtil;
+import cn.cnic.base.util.ReturnMapUtils;
 import cn.cnic.component.process.model.ProcessStop;
 import cn.cnic.component.process.service.IProcessStopService;
 import cn.cnic.component.process.utils.ProcessUtils;
@@ -28,14 +29,12 @@ public class ProcessStopServiceImpl implements IProcessStopService {
      * @return
      */
     @Override
-    public ProcessStopVo getProcessStopVoByPageId(String processId, String pageId) {
+    public String getProcessStopVoByPageId(String processId, String pageId) {
         if (StringUtils.isAnyEmpty(processId, pageId)) {
-            return null;
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Parameter passed in incorrectly");
         }
         ProcessStop processStopByPageId = processStopMapper.getProcessStopByPageIdAndPageId(processId, pageId);
-        if (null == processStopByPageId) {
-            return null;
-        }
-        return ProcessUtils.processStopPoToVo(processStopByPageId);
+        ProcessStopVo processStopVo = ProcessUtils.processStopPoToVo(processStopByPageId);
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("processStopVo", processStopVo);
     }
 }

@@ -13,5 +13,5 @@ public interface IProcessStopService {
      * @return
      */
     @Transactional
-    public ProcessStopVo getProcessStopVoByPageId(String processId, String pageId);
+    public String getProcessStopVoByPageId(String processId, String pageId);
 }

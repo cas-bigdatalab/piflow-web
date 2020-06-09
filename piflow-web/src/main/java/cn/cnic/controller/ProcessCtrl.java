@@ -115,70 +115,43 @@ public class ProcessCtrl {
      * Query Process basic information
      *
      * @param request
-     * @param modelAndView
      * @return
      */
-    @RequestMapping("/queryProcess")
-    public ModelAndView queryProcess(HttpServletRequest request, ModelAndView modelAndView) {
+    @RequestMapping("/queryProcessData")
+    @ResponseBody
+    public String queryProcessData(HttpServletRequest request) {
         String processId = request.getParameter("processId");
-        modelAndView.setViewName("process/inc/process_Info_Inc");
-        if (StringUtils.isNotBlank(processId)) {
-            // Query process by load id
-            // logger.info("Query process by load id");
-            String username = SessionUserUtil.getCurrentUsername();
-            boolean isAdmin = SessionUserUtil.isAdmin();
-            ProcessVo processVo = processServiceImpl.getProcessVoById(username, isAdmin, processId);
-            modelAndView.addObject("processVo", processVo);
-        } else {
-            logger.warn("Parameter passed in incorrectly");
-        }
-        return modelAndView;
+        String username = SessionUserUtil.getCurrentUsername();
+        boolean isAdmin = SessionUserUtil.isAdmin();
+        return processServiceImpl.getProcessVoById(username, isAdmin, processId);
     }
 
     /**
      * Query ProcessStop basic information
      *
      * @param request
-     * @param modelAndView
      * @return
      */
-    @RequestMapping("/queryProcessStop")
-    public ModelAndView queryProcessStop(HttpServletRequest request, ModelAndView modelAndView) {
+    @RequestMapping("/queryProcessStopData")
+    @ResponseBody
+    public String queryProcessStopData(HttpServletRequest request) {
         String processId = request.getParameter("processId");
         String pageId = request.getParameter("pageId");
-        modelAndView.setViewName("process/inc/process_Property_Inc");
-        if (!StringUtils.isAnyEmpty(processId, pageId)) {
-            ProcessStopVo processStopVoByPageId = processStopServiceImpl.getProcessStopVoByPageId(processId, pageId);
-            modelAndView.addObject("processStopVo", processStopVoByPageId);
-        } else {
-            logger.warn("Parameter passed in incorrectly");
-        }
-        return modelAndView;
+        return processStopServiceImpl.getProcessStopVoByPageId(processId, pageId);
     }
 
     /**
      * Query ProcessPath basic information
      *
      * @param request
-     * @param modelAndView
      * @return
      */
-    @RequestMapping("/queryProcessPath")
-    public ModelAndView queryProcessPath(HttpServletRequest request, ModelAndView modelAndView) {
+    @RequestMapping("/queryProcessPathData")
+    @ResponseBody
+    public String queryProcessPathData(HttpServletRequest request) {
         String processId = request.getParameter("processId");
         String pageId = request.getParameter("pageId");
-        modelAndView.setViewName("process/inc/process_Path_Inc");
-        if (!StringUtils.isAnyEmpty(processId, pageId)) {
-            ProcessPathVo processPathVoByPageId = processPathServiceImpl.getProcessPathVoByPageId(processId, pageId);
-            ProcessVo processById = processServiceImpl.getProcessById(processId);
-            if (null != processById) {
-                modelAndView.addObject("runModeType", processById.getRunModeType());
-            }
-            modelAndView.addObject("processPathVo", processPathVoByPageId);
-        } else {
-            logger.info("Parameter passed in incorrectly");
-        }
-        return modelAndView;
+        return processPathServiceImpl.getProcessPathVoByPageId(processId, pageId);
     }
 
     /**

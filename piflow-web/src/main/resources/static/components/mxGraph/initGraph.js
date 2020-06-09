@@ -69,7 +69,7 @@ function getrightinfo(cell) {
                     return;
                 },
                 success: function (data) {
-                    $("#rightproup")[0].innerHTML = data
+                    $("#rightproup").html(data);
                 }
             })
         }
@@ -87,7 +87,7 @@ function getrightinfo(cell) {
                 return;
             },
             success: function (data) {
-                $("#rightproup")[0].innerHTML = data
+                $("#rightproup").html(data);
             }
         })
         //    path
@@ -117,7 +117,7 @@ function getrightinfo(cell) {
                     return;
                 },
                 success: function (data) {
-                    $("#rightproup")[0].innerHTML = data
+                    $("#rightproup").html(data);
                 }
             })
         }
@@ -1089,56 +1089,58 @@ function queryPathInfo(id) {
         param_values.url = "/piflow-web/flowGroupPath/queryPathInfoFlowGroup";
         param_values.customizeBasic_td_2_1_span_children = 'flowGroupName：';
     }
-    $.ajax({
-        cache: true,
-        type: "POST",
-        url: param_values.url,
-        data: {"id": id, "fid": loadId},
-        async: true,
-        error: function (request) {
-            //alert("Jquery Ajax request error!!!");
-            return;
-        },
-        success: function (data) {
-            var dataMap = JSON.parse(data);
-            if (200 === dataMap.code) {
-                var queryInfo = dataMap.queryInfo;
-                if ("" != queryInfo) {
-                    $("#AttributeInfoId").hide();
-                    $("#containerID").show();
-                    $("#basicInfoId").html('path info');
-                    $('#basicInfoId').css('text-align', '');
-                    $('#basicInfoId').css('background-color', '');
-                    $('#basicInfoId').css('border-style', '');
-                    $('#basicInfoId').css('height', '27px');
-                    $("#customizeBasic_td_1_1_span_id").html(param_values.customizeBasic_td_1_1_span_children);
-                    $("#customizeBasic_td_2_1_span_id").html(param_values.customizeBasic_td_2_1_span_children);
-                    $("#customizeBasic_td_3_1_span_id").html(param_values.customizeBasic_td_3_1_span_children);
-                    $("#customizeBasic_td_4_1_span_id").html(param_values.customizeBasic_td_4_1_span_children);
-                    $("#customizeBasic_td_5_1_span_id").html(param_values.customizeBasic_td_5_1_span_children);
-                    $("#customizeBasic_td_6_1_span_id").html(param_values.customizeBasic_td_6_1_span_children);
-                    $("#customizeBasic_td_7_1_span_id").html(param_values.customizeBasic_td_7_1_span_children);
-                    $("#customizeBasic_td_1_2_button_id").hide();
-                    $("#customizeBasic_td_3_2_label_id").html(queryInfo.inport);
-                    $("#customizeBasic_td_4_2_label_id").html(queryInfo.outport);
-                    $("#customizeBasic_td_7_2_label_id").html(queryInfo.crtDttmString);
-                    if ('TASK' === Format.customizeType) {
-                        $("#customizeBasic_td_1_2_input1_id").val(queryInfo.pageId);
-                        $("#customizeBasic_td_2_2_span_id").html(queryInfo.flowVo.name);
-                        $("#customizeBasic_td_5_2_label_id").html(queryInfo.stopFrom.name);
-                        $("#customizeBasic_td_6_2_label_id").html(queryInfo.stopTo.name);
-                    } else if ('GROUP' === Format.customizeType) {
-                        $("#customizeBasic_td_1_2_span_id").html(queryInfo.pageId);
-                        $("#customizeBasic_td_2_2_span_id").html(queryInfo.flowGroupVo.name);
-                        $("#customizeBasic_td_5_2_label_id").html(queryInfo.flowFrom);
-                        $("#customizeBasic_td_6_2_label_id").html(queryInfo.flowTo);
+    if (param_values.url) {
+        $.ajax({
+            cache: true,
+            type: "POST",
+            url: param_values.url,
+            data: {"id": id, "fid": loadId},
+            async: true,
+            error: function (request) {
+                //alert("Jquery Ajax request error!!!");
+                return;
+            },
+            success: function (data) {
+                var dataMap = JSON.parse(data);
+                if (200 === dataMap.code) {
+                    var queryInfo = dataMap.queryInfo;
+                    if ("" != queryInfo) {
+                        $("#AttributeInfoId").hide();
+                        $("#containerID").show();
+                        $("#basicInfoId").html('path info');
+                        $('#basicInfoId').css('text-align', '');
+                        $('#basicInfoId').css('background-color', '');
+                        $('#basicInfoId').css('border-style', '');
+                        $('#basicInfoId').css('height', '27px');
+                        $("#customizeBasic_td_1_1_span_id").html(param_values.customizeBasic_td_1_1_span_children);
+                        $("#customizeBasic_td_2_1_span_id").html(param_values.customizeBasic_td_2_1_span_children);
+                        $("#customizeBasic_td_3_1_span_id").html(param_values.customizeBasic_td_3_1_span_children);
+                        $("#customizeBasic_td_4_1_span_id").html(param_values.customizeBasic_td_4_1_span_children);
+                        $("#customizeBasic_td_5_1_span_id").html(param_values.customizeBasic_td_5_1_span_children);
+                        $("#customizeBasic_td_6_1_span_id").html(param_values.customizeBasic_td_6_1_span_children);
+                        $("#customizeBasic_td_7_1_span_id").html(param_values.customizeBasic_td_7_1_span_children);
+                        $("#customizeBasic_td_1_2_button_id").hide();
+                        $("#customizeBasic_td_3_2_label_id").html(queryInfo.inport);
+                        $("#customizeBasic_td_4_2_label_id").html(queryInfo.outport);
+                        $("#customizeBasic_td_7_2_label_id").html(queryInfo.crtDttmString);
+                        if ('TASK' === Format.customizeType) {
+                            $("#customizeBasic_td_1_2_input1_id").val(queryInfo.pageId);
+                            $("#customizeBasic_td_2_2_span_id").html(queryInfo.flowVo.name);
+                            $("#customizeBasic_td_5_2_label_id").html(queryInfo.stopFrom.name);
+                            $("#customizeBasic_td_6_2_label_id").html(queryInfo.stopTo.name);
+                        } else if ('GROUP' === Format.customizeType) {
+                            $("#customizeBasic_td_1_2_span_id").html(queryInfo.pageId);
+                            $("#customizeBasic_td_2_2_span_id").html(queryInfo.flowGroupVo.name);
+                            $("#customizeBasic_td_5_2_label_id").html(queryInfo.flowFrom);
+                            $("#customizeBasic_td_6_2_label_id").html(queryInfo.flowTo);
+                        }
                     }
+                } else {
+                    console.log("Path attribute query null");
                 }
-            } else {
-                console.log("Path attribute query null");
             }
-        }
-    });
+        });
+    }
 }
 
 function add(addParamData, flowId, nodeType) {

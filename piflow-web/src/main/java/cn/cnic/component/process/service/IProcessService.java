@@ -42,7 +42,7 @@ public interface IProcessService {
      * @return
      */
     @Transactional
-    public ProcessVo getProcessVoById(String username, boolean isAdmin, String id);
+    public String getProcessVoById(String username, boolean isAdmin, String id);
 
     /**
      * Query process according to ID

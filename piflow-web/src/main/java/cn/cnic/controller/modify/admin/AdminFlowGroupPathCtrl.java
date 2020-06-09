@@ -2,6 +2,7 @@ package cn.cnic.controller.modify.admin;
 
 import cn.cnic.component.flow.service.IFlowGroupPathsService;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -22,6 +23,7 @@ public class AdminFlowGroupPathCtrl {
      * @return
      */
     @RequestMapping("/queryPathInfoFlowGroup")
+    @ResponseBody
     public String queryPathInfoFlowGroup(String fid, String id) {
         return flowGroupPathsServiceImpl.queryPathInfoFlowGroup(fid, id);
     }

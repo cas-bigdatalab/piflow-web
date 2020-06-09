@@ -135,17 +135,22 @@ public class ProcessServiceImpl implements IProcessService {
      * @return
      */
     @Override
-    public ProcessVo getProcessVoById(String username, boolean isAdmin, String id) {
-        ProcessVo processVo = null;
-        if (StringUtils.isNotBlank(id)) {
-            Process processById = processMapper.getProcessById(username, isAdmin, id);
-            if (null != processById) {
-                processVo = new ProcessVo();
-                BeanUtils.copyProperties(processById, processVo);
-                processVo.setCrtDttm(processById.getCrtDttm());
-            }
+    public String getProcessVoById(String username, boolean isAdmin, String id) {
+        // Determine if current user obtained are empty
+        if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("user Illegality");
         }
-        return processVo;
+        if (StringUtils.isBlank(id)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Parameter passed in incorrectly");
+        }
+        ProcessVo processVo = null;
+        Process processById = processMapper.getProcessById(username, isAdmin, id);
+        if (null != processById) {
+            processVo = new ProcessVo();
+            BeanUtils.copyProperties(processById, processVo);
+            processVo.setCrtDttm(processById.getCrtDttm());
+        }
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("processVo", processVo);
     }
 
     /**

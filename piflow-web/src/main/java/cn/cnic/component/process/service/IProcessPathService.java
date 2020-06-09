@@ -11,7 +11,7 @@ public interface IProcessPathService {
      * @param pageId
      * @return
      */
-    public ProcessPathVo getProcessPathVoByPageId(String processId, String pageId);
+    public String getProcessPathVoByPageId(String processId, String pageId);
 
     /**
      * Query processGroupPath based on processId and pageId

@@ -1,17 +1,13 @@
 package cn.cnic.controller.modify.admin;
 
-import cn.cnic.base.util.*;
-import cn.cnic.base.vo.StatefulRtnBase;
-import cn.cnic.component.flow.model.Flow;
+import cn.cnic.base.util.LoggerUtil;
+import cn.cnic.base.util.ReturnMapUtils;
+import cn.cnic.base.util.SessionUserUtil;
 import cn.cnic.component.flow.service.ICustomizedPropertyService;
-import cn.cnic.component.flow.service.IFlowService;
 import cn.cnic.component.flow.service.IPropertyService;
 import cn.cnic.component.flow.service.IStopsService;
 import cn.cnic.component.flow.vo.StopsCustomizedPropertyVo;
-import cn.cnic.component.mxGraph.model.MxGraphModel;
-import cn.cnic.component.mxGraph.vo.MxGraphModelVo;
 import cn.cnic.component.stopsComponent.service.IStopGroupService;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -19,8 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/admin/stops")
@@ -36,9 +30,6 @@ public class AdminStopsCtrl {
 
     @Resource
     private IStopsService stopsServiceImpl;
-
-    @Resource
-    private IFlowService flowServiceImpl;
 
     @Resource
     private ICustomizedPropertyService customizedPropertyServiceImpl;
@@ -114,8 +105,6 @@ public class AdminStopsCtrl {
     @RequestMapping("/updateStopsById")
     @ResponseBody
     public String updateStopsById(HttpServletRequest request) {
-        Map<String, Object> rtnMap = new HashMap<>();
-        rtnMap.put("code", 500);
         String id = request.getParameter("stopId");
         String isCheckpointStr = request.getParameter("isCheckpoint");
         String username = SessionUserUtil.getUsername(request);
@@ -130,30 +119,7 @@ public class AdminStopsCtrl {
         String stopName = request.getParameter("name");
         String pageId = request.getParameter("pageId");
         String username = SessionUserUtil.getUsername(request);
-        if (StringUtils.isAnyEmpty(id, stopName, flowId, pageId)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("The incoming parameter is empty");
-        }
-        Flow flowById = flowServiceImpl.getFlowById(username, true, flowId);
-        if (null == flowById) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("flow information is empty");
-        }
-        StatefulRtnBase updateStopName = stopsServiceImpl.updateStopName(username, id, flowById, stopName, pageId);
-        // addFlow is not empty and the value of ReqRtnStatus is true, then the save is successful.
-        if (null == updateStopName || !updateStopName.isReqRtnStatus()) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(updateStopName.getErrorMsg());
-        }
-        Map<String, Object> rtnMap = new HashMap<>();
-        MxGraphModel mxGraphModel = flowById.getMxGraphModel();
-        if (null != mxGraphModel) {
-            MxGraphModelVo mxGraphModelVo = FlowXmlUtils.mxGraphModelPoToVo(mxGraphModel);
-            // Convert the mxGraphModelVo from the query to XML
-            String loadXml = MxGraphUtils.mxGraphModelToMxGraphXml(mxGraphModelVo);
-            loadXml = StringUtils.isNotBlank(loadXml) ? loadXml : "";
-            rtnMap.put("XmlData", loadXml);
-        }
-        rtnMap.put("code", 200);
-        rtnMap.put("errorMsg", updateStopName.getErrorMsg());
-        return JsonUtils.toJsonNoException(rtnMap);
+        return stopsServiceImpl.updateStopName(username, true, id, flowId, stopName, pageId);
     }
 
     @RequestMapping("/addStopCustomizedProperty")

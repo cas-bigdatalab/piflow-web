@@ -1,5 +1,6 @@
 package cn.cnic.component.flow.service.impl;
 
+import cn.cnic.base.util.ReturnMapUtils;
 import cn.cnic.base.util.UUIDUtils;
 import cn.cnic.component.flow.model.Flow;
 import cn.cnic.component.flow.model.Paths;
@@ -34,14 +35,17 @@ public class PathsServiceImpl implements IPathsService {
     }
 
     @Override
-    public PathsVo getPathsByFlowIdAndPageId(String flowId, String pageId) {
+    public String getPathsByFlowIdAndPageId(String flowId, String pageId) {
+        if (StringUtils.isBlank(flowId) || StringUtils.isBlank(pageId)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("The parameter'fid'or'id' is empty");
+        }
         List<Paths> pathsList = pathsMapper.getPaths(flowId, pageId, null, null);
         if (null == pathsList || pathsList.isEmpty()) {
-            return null;
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("No'paths'information was queried");
         }
         Paths paths = pathsList.get(0);
         if (null == paths) {
-            return null;
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("No'paths'information was queried");
         }
         Stops stopFrom = null;
         Stops stopTo = null;
@@ -69,7 +73,7 @@ public class PathsServiceImpl implements IPathsService {
         if (StringUtils.isBlank(pathsVo.getOutport())) {
             pathsVo.setOutport("default");
         }
-        return pathsVo;
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("queryInfo", pathsVo);
     }
 
     /**

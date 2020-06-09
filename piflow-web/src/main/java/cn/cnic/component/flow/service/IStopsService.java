@@ -28,7 +28,7 @@ public interface IStopsService {
      * @param stopsVo
      * @return
      */
-    public Integer stopsUpdate(String username,StopsVo stopsVo);
+    public Integer stopsUpdate(String username, StopsVo stopsVo);
 
     /**
      * Modify the "stops" individual fields returned by the interface
@@ -58,8 +58,7 @@ public interface IStopsService {
 
     public String getStopByNameAndFlowId(String flowId, String stopName);
 
-    @Transactional
-    public StatefulRtnBase updateStopName(String username, String stopId, Flow flow, String stopName, String pageId);
+    public String updateStopName(String username, boolean isAdmin, String stopId, String flowId, String stopName, String pageId);
 
     public String getStopsPort(String flowId, String sourceId, String targetId, String pathLineId);
 

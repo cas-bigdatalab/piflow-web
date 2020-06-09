@@ -1,5 +1,6 @@
 package cn.cnic.mapper.process;
 
+import cn.cnic.common.Eunm.RunModeType;
 import cn.cnic.component.process.model.Process;
 import cn.cnic.provider.process.ProcessMapperProvider;
 import org.apache.ibatis.annotations.*;
@@ -33,7 +34,6 @@ public interface ProcessMapper {
 
     })
     public Process getProcessById(@Param("username") String username, @Param("isAdmin") boolean isAdmin, @Param("id") String id);
-
 
     /**
      * Query process by processGroup ID
@@ -198,5 +198,8 @@ public interface ProcessMapper {
 
     })
     public List<Process> getProcessByPageIds(@Param("processGroupId") String processGroupId, @Param("pageIds") String[] pageIds);
+
+    @Select("select fp.run_mode_type from flow_process fp where fp.enable_flag = 1 and fp.id=#{id}")
+    public RunModeType getProcessRunModeTypeById(String id);
 
 }

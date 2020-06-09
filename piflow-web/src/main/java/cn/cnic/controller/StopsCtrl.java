@@ -129,30 +129,7 @@ public class StopsCtrl {
         String pageId = request.getParameter("pageId");
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
-        if (StringUtils.isAnyEmpty(id, stopName, flowId, pageId)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("The incoming parameter is empty");
-        }
-        Flow flowById = flowServiceImpl.getFlowById(username, isAdmin, flowId);
-        if (null == flowById) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("flow information is empty");
-        }
-        StatefulRtnBase updateStopName = stopsServiceImpl.updateStopName(username, id, flowById, stopName, pageId);
-        // addFlow is not empty and the value of ReqRtnStatus is true, then the save is successful.
-        if (null == updateStopName || !updateStopName.isReqRtnStatus()) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(updateStopName.getErrorMsg());
-        }
-        Map<String, Object> rtnMap = new HashMap<>();
-        MxGraphModel mxGraphModel = flowById.getMxGraphModel();
-        if (null != mxGraphModel) {
-            MxGraphModelVo mxGraphModelVo = FlowXmlUtils.mxGraphModelPoToVo(mxGraphModel);
-            // Convert the mxGraphModelVo from the query to XML
-            String loadXml = MxGraphUtils.mxGraphModelToMxGraphXml(mxGraphModelVo);
-            loadXml = StringUtils.isNotBlank(loadXml) ? loadXml : "";
-            rtnMap.put("XmlData", loadXml);
-        }
-        rtnMap.put("code", 200);
-        rtnMap.put("errorMsg", updateStopName.getErrorMsg());
-        return JsonUtils.toJsonNoException(rtnMap);
+        return stopsServiceImpl.updateStopName(username, isAdmin, id, flowId, stopName, pageId);
     }
 
     @RequestMapping("/addStopCustomizedProperty")

@@ -160,8 +160,8 @@ function queryProcessStop(processGroupId, pageId) {
             $('#selectedRectShow').show();
             $('#selectedArrowShow').hide();
             $('#selectedPathShow').hide();
-            var sotpBundelShowText = $('#sotpBundelShow').text()
-            if (sotpBundelShowText && sotpBundelShowText.toUpperCase() === "CN.PIFLOW.BUNDLE.HTTP.OPENURL") {
+            var stopsBundleShowText = $('#stopsBundleShow').text()
+            if (stopsBundleShowText && stopsBundleShowText.toUpperCase() === "CN.PIFLOW.BUNDLE.HTTP.OPENURL") {
                 var open_action = $('.open_action');
                 if (open_action.length === 1) {
                     var open_action_i = $(open_action.get(0));

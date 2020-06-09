@@ -17,7 +17,7 @@ public interface IPathsService {
      * @param pageId
      * @return
      */
-    public PathsVo getPathsByFlowIdAndPageId(String flowId, String pageId);
+    public String getPathsByFlowIdAndPageId(String flowId, String pageId);
 
     /**
      * Query connection information
