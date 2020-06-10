@@ -791,7 +791,7 @@ function queryStopsProperty(stopPageId) {
         success: function (data) {
             var dataMap = JSON.parse(data);
             if (200 === dataMap.code) {
-                var stopsVoData = data.stopsVo;
+                var stopsVoData = dataMap.stopsVo;
                 var addParamData = {
                     data: stopsVoData.propertiesVo,
                     stopId: stopsVoData.id,

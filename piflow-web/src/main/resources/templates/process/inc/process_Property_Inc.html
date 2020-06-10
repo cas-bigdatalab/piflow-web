@@ -59,7 +59,7 @@
         $.ajax({
             cache: true,//Keep cached data
             type: "get",//Request for get
-            url: "/piflow-web/process/queryProcessStopData",//This is the name of the file where I receive data in the background.
+            url: "/piflow-web/process/getRunningProcessListData",//This is the name of the file where I receive data in the background.
             //data:$('#loginForm').serialize(),//Serialize the form
             data: {
                 processId: processID,

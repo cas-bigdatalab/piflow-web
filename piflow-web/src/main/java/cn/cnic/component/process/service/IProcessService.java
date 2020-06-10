@@ -125,7 +125,7 @@ public interface IProcessService {
      * @param flowId
      * @return
      */
-    public List<ProcessVo> getRunningProcessVoList(String flowId);
+    public String getRunningProcessVoList(String flowId);
 
     /**
      * Query processVoList (parameter space-time non-paging)

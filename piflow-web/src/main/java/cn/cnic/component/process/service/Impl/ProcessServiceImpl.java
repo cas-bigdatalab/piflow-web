@@ -504,10 +504,13 @@ public class ProcessServiceImpl implements IProcessService {
      * @return
      */
     @Override
-    public List<ProcessVo> getRunningProcessVoList(String flowId) {
+    public String getRunningProcessVoList(String flowId) {
+        if(StringUtils.isBlank(flowId)){
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("FlowId is null");
+        }
         List<Process> processList = processMapper.getRunningProcessList(flowId);
         if (CollectionUtils.isEmpty(processList)) {
-            return null;
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("No data");
         }
         List<ProcessVo> processVoList = new ArrayList<ProcessVo>();
         for (Process process : processList) {
@@ -516,7 +519,7 @@ public class ProcessServiceImpl implements IProcessService {
                 processVoList.add(processVo);
             }
         }
-        return processVoList;
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("runningProcessVoList", processVoList);
     }
 
     /**

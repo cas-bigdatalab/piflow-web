@@ -9,7 +9,10 @@ import cn.cnic.common.Eunm.ProcessState;
 import cn.cnic.component.process.service.IProcessPathService;
 import cn.cnic.component.process.service.IProcessService;
 import cn.cnic.component.process.service.IProcessStopService;
-import cn.cnic.component.process.vo.*;
+import cn.cnic.component.process.vo.DebugDataRequest;
+import cn.cnic.component.process.vo.DebugDataResponse;
+import cn.cnic.component.process.vo.ProcessStopVo;
+import cn.cnic.component.process.vo.ProcessVo;
 import cn.cnic.third.service.IFlow;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -206,12 +209,11 @@ public class ProcessCtrl {
      * Get the address of the log of the flow
      *
      * @param request
-     * @param model
      * @return
      */
     @RequestMapping("/getLogUrl")
     @ResponseBody
-    public Map<String, Object> getLogUrl(HttpServletRequest request, Model model) {
+    public Map<String, Object> getLogUrl(HttpServletRequest request) {
         Map<String, Object> rtnMap = new HashMap<>();
         rtnMap.put("code", 500);
         String appId = request.getParameter("appId");
@@ -236,12 +238,11 @@ public class ProcessCtrl {
      * Climb to the log by the address of the flow log
      *
      * @param request
-     * @param model
      * @return
      */
     @RequestMapping("/getLog")
     @ResponseBody
-    public String getLog(HttpServletRequest request, Model model) {
+    public String getLog(HttpServletRequest request) {
         String rtnMsg = "";
         String urlStr = request.getParameter("url");
         if (StringUtils.isNotBlank(urlStr)) {
@@ -280,7 +281,6 @@ public class ProcessCtrl {
     @ResponseBody
     public String getAppInfoList(HttpServletRequest request) {
         String[] arrayObj = request.getParameterValues("arrayObj");
-        //return processServiceImpl.getProgressByThirdAndSave(arrayObj);
         return processServiceImpl.getProgressByAppIds(arrayObj);
     }
 
@@ -309,15 +309,6 @@ public class ProcessCtrl {
         } else {
             logger.warn("No checkpoints found");
         }
-        return modelAndView;
-    }
-
-    @RequestMapping("/getDebugDataHtml")
-    public ModelAndView getDebugDataHtml(HttpServletRequest request) {
-        ModelAndView modelAndView = new ModelAndView("process/inc/debug_Data_Inc");
-        modelAndView.addObject("appId", request.getParameter("appId"));
-        modelAndView.addObject("stopName", request.getParameter("stopName"));
-        modelAndView.addObject("portName", request.getParameter("portName"));
         return modelAndView;
     }
 
@@ -350,12 +341,10 @@ public class ProcessCtrl {
      * @param request
      * @return
      */
-    @RequestMapping("/getRunningProcessList")
-    public ModelAndView getRunningProcessList(HttpServletRequest request, ModelAndView modelAndView) {
-        modelAndView.setViewName("mxGraph/rightPage/runningProcess");
+    @RequestMapping("/getRunningProcessListData")
+    @ResponseBody
+    public String getRunningProcessList(HttpServletRequest request, ModelAndView modelAndView) {
         String flowId = request.getParameter("flowId");
-        List<ProcessVo> runningProcessVoList = processServiceImpl.getRunningProcessVoList(flowId);
-        modelAndView.addObject("runningProcessVoList", runningProcessVoList);
-        return modelAndView;
+        return processServiceImpl.getRunningProcessVoList(flowId);
     }
 }

@@ -1,4 +1,4 @@
-package cn.cnic.controller;
+package cn.cnic.controller.page;
 
 import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.base.util.SessionUserUtil;
