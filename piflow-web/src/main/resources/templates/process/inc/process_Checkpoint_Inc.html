@@ -5,13 +5,6 @@
     <div id="checkpointsContentDiv">
         <input id="checkpointsIsNull" style="display: none" value="isNull"/>
     </div>
-    <div th:if="${checkpointsSplit}">
-            <span th:each=" checkpoint : ${checkpointsSplit}">
-                <input type="checkbox" th:value="${checkpoint}"/>
-                <span th:text="${checkpoint}"></span>
-                </br>
-            </span>
-    </div>
 </div>
 <script th:inline="javascript">
     var pID = [[${pID}]];
@@ -27,24 +20,26 @@
                 pID: pID,
                 parentProcessId: parentProcessId,
             },
-            async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
+            async: false,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
             error: function (request) {//Operation after request failure
                 alert("Request Failed");
                 return;
             },
             success: function (data) {//Operation after request successful
                 var dataMap = JSON.parse(data);
+                console.log(dataMap);
                 if (200 === dataMap.code) {
                     var checkpointsSplitArray = dataMap.checkpointsSplit;
                     if (checkpointsSplitArray) {
-                        var ss = "";
+                        var checkpointsContentCheckBoxHtml = "";
                         for (var i = 0; i < checkpointsSplitArray.length; i++) {
-                            ss += ('<span>'
+                            checkpointsContentCheckBoxHtml += ('<span>'
                                 + '<input type="checkbox" th:value="' + checkpointsSplitArray[i] + '"/>'
                                 + '<span>' + checkpointsSplitArray[i] + '</span>'
                                 + '</br>'
                                 + '</span>');
                         }
+                        $("#checkpointsContentDiv").html(checkpointsContentCheckBoxHtml);
                     }
                 }
                 $('#fullScreen').hide();

@@ -269,12 +269,11 @@ public class ProcessCtrl {
      * Call the interface to return Checkpoint for the user to choose
      *
      * @param request
-     * @param modelAndView
      * @return
      */
     @RequestMapping("/getCheckpointData")
     @ResponseBody
-    public String getCheckpoint(HttpServletRequest request, ModelAndView modelAndView) {
+    public String getCheckpoint(HttpServletRequest request) {
         String pID = request.getParameter("pID");
         String parentProcessId = request.getParameter("parentProcessId");
         return processServiceImpl.getCheckpoints(parentProcessId, pID);

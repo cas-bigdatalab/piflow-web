@@ -95,6 +95,7 @@ function responseActionHandler(data) {
     if (!data) {
         return "";
     }
+    data.parentProcessId = (data.parentProcessId ? data.parentProcessId : '');
     var openProcessBtn = '<a class="btn" ' +
         'href="javascript:void(0);" ' +
         'onclick="javascript:openProcess(\'' + data.id + '\');" ' +
@@ -103,13 +104,13 @@ function responseActionHandler(data) {
         '</a>';
     var runProcessBtn = '<a class="btn" ' +
         'href="javascript:void(0);" ' +
-        'onclick="javascript:getCheckpointList(\'' + data.id + '\',\'' + data.parentProcessId + '\',\'null\');"' +
+        'onclick="javascript:getCheckpointList(\'' + data.id + '\',\'' + data.appId + '\',\'' + data.parentProcessId + '\');"' +
         'style="margin-right: 2px;">' +
         '<i class="icon-play icon-white"></i>' +
         '</a>';
     var debugProcessBtn = '<a class="btn" ' +
         'href="javascript:void(0);" ' +
-        'onclick="javascript:getCheckpointList(\'' + data.id + '\',\'' + data.parentProcessId + '\',\'null\',\'DEBUG\');"' +
+        'onclick="javascript:getCheckpointList(\'' + data.id + '\',\'' + data.appId + '\',\'' + data.parentProcessId + ',\'DEBUG\');"' +
         'style="margin-right: 2px;">' +
         '<i class="fa-bug icon-white"></i>' +
         '</a>';
@@ -235,13 +236,13 @@ function getCheckpointList(id, processId, parentProcessId, runMode) {
             $('#runProcessBtn').attr('onclick', 'listRunProcess("' + id + '")');
             $('#debugProcessBtn').attr('onclick', 'listRunProcess("' + id + '","DEBUG")');
             $('#cancelProcessBtn').attr('onclick', 'cancelListRunProcess("' + id + '")');
+            console.log("=====================================");
             if ($('#checkpointsIsNull').val()) {
-                console.log("No Checkpoint was queried");
-                //listRunProcess(id, runMode);
+                //console.log("No Checkpoint was queried");
+                listRunProcess(id, runMode);
             } else {
                 $('#checkpointListShow').modal('show');
             }
-
         }
     });
 }
