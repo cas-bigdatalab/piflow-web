@@ -1,5 +1,6 @@
 package cn.cnic.controller.page;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -59,6 +60,12 @@ public class ReturnPageCtrl {
         model.addAttribute("processId", request.getParameter("processId"));
         model.addAttribute("pageId", request.getParameter("pageId"));
         return "process/inc/process_Path_Inc";
+    }
+    @RequestMapping("/process/getCheckpoint")
+    public String getCheckpoint(HttpServletRequest request, Model model) {
+        model.addAttribute("pID",request.getParameter("pID"));
+        model.addAttribute("parentProcessId",request.getParameter("parentProcessId"));
+        return "process/inc/process_Checkpoint_Inc";
     }
 
     @RequestMapping("/process/getDebugDataHtml")

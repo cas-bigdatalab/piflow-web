@@ -174,7 +174,7 @@ public interface IProcessService {
      * @param debugDataRequest
      * @return
      */
-    public DebugDataResponse getDebugData(DebugDataRequest debugDataRequest);
+    public String getDebugData(DebugDataRequest debugDataRequest);
 
     /**
      * Query process based on processId and pageId
@@ -184,4 +184,21 @@ public interface IProcessService {
      * @return
      */
     public ProcessVo getProcessVoByPageId(String username, boolean isAdmin, String processGroupId, String pageId);
+
+    /**
+     * getCheckpoints
+     *
+     * @param parentProcessId
+     * @param pID
+     * @return
+     */
+    public String getCheckpoints(String parentProcessId, String pID);
+
+    /**
+     * getLogUrl
+     *
+     * @param appId
+     * @return
+     */
+    public String getLogUrl(String appId);
 }

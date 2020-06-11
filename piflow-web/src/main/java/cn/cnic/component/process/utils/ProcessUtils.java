@@ -2,16 +2,14 @@ package cn.cnic.component.process.utils;
 
 import cn.cnic.base.util.JsonUtils;
 import cn.cnic.base.util.UUIDUtils;
-import cn.cnic.base.util.SvgUtils;
-import cn.cnic.base.vo.UserVo;
 import cn.cnic.common.Eunm.*;
 import cn.cnic.component.dataSource.utils.DataSourceUtils;
 import cn.cnic.component.flow.model.*;
 import cn.cnic.component.mxGraph.model.MxGraphModel;
 import cn.cnic.component.mxGraph.utils.MxGraphModelUtils;
 import cn.cnic.component.mxGraph.vo.MxGraphModelVo;
-import cn.cnic.component.process.model.*;
 import cn.cnic.component.process.model.Process;
+import cn.cnic.component.process.model.*;
 import cn.cnic.component.process.vo.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -170,16 +168,6 @@ public class ProcessUtils {
             }
             // Take out the flow board information of the flow
             MxGraphModel mxGraphModel = flow.getMxGraphModel();
-//----------------------------------------------------------------------------------------------------
-//----------------------------------------------------------------------------------------------------
-//----------------------------------------------------------------------------------------------------
-            // Flow drawing board information is converted to ViewXml
-            String viewXml = SvgUtils.mxGraphModelToViewXml(mxGraphModel, false, false);
-            // set viewXml
-            process.setViewXml(viewXml);
-//----------------------------------------------------------------------------------------------------
-//----------------------------------------------------------------------------------------------------
-//----------------------------------------------------------------------------------------------------
             MxGraphModel mxGraphModelProcess = MxGraphModelUtils.copyMxGraphModelAndNewNoIdAndUnlink(mxGraphModel);
             mxGraphModelProcess = MxGraphModelUtils.initMxGraphModelBasicPropertiesNoId(mxGraphModelProcess, username);
             // add link

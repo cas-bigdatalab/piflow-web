@@ -1,5 +1,132 @@
-var processTable;
 var isTableLoading = true;
+
+function initProcessDatatablePage(testTableId, url, searchInputId) {
+    var table = "";
+    layui.use('table', function () {
+        table = layui.table;
+
+        //Method-level rendering
+        table.render({
+            elem: '#' + testTableId
+            , url: url
+            , cols: [[
+                {
+                    field: 'appId', title: 'ProcessId', sort: true, templet: function (data) {
+                        return responseFieldHandler('appId', data);
+                    }
+                },
+                {field: 'name', title: 'Name', sort: true},
+                {field: 'description', title: 'Description', sort: true},
+                {
+                    field: 'startTime', title: 'StartTime', sort: true, width: 170, templet: function (data) {
+                        return responseFieldHandler('startTime', data);
+                    }
+                },
+                {
+                    field: 'endTime', title: 'EndTime', sort: true, width: 170, templet: function (data) {
+                        return responseFieldHandler('endTime', data);
+                    }
+                },
+                {
+                    field: 'progress', title: 'Progress', sort: true, width: 220, templet: function (data) {
+                        return responseFieldHandler('progress', data);
+                    }
+                },
+                {
+                    field: 'state', title: 'Status', sort: true, width: 120, templet: function (data) {
+                        return responseFieldHandler('state', data);
+                    }
+                },
+                {
+                    field: 'right', title: 'Actions', sort: true, width: 240, templet: function (data) {
+                        return responseActionHandler(data);
+                    }
+                }
+            ]]
+            , id: testTableId
+            , page: true
+        });
+    });
+
+    $("#" + searchInputId).bind('input propertychange', function () {
+        searchMonitor(table, testTableId, searchInputId);
+    });
+}
+
+function responseFieldHandler(fileName, data) {
+    var responseShowHtml = "";
+    switch (fileName) {
+        case 'appId': {
+            responseShowHtml = ('<div name="processAppId">' + data.appId + '</div>');
+            break;
+        }
+        case 'startTime': {
+            data.startTime = data.startTime ? data.startTime : "";
+            responseShowHtml = ('<div id="' + data.id + 'startTime" name="processStartTime" >' + data.startTime + '</div>');
+            break;
+        }
+        case 'endTime': {
+            data.endTime = data.endTime ? data.endTime : "";
+            responseShowHtml = ('<div id="' + data.id + 'endTime" name="processEndTime">' + data.endTime + '</div>');
+            break;
+        }
+        case 'progress': {
+            responseShowHtml = '<div>' +
+                '<p id="' + data.id + 'Info">' +
+                '<progress id="' + data.id + '" max="100" value="' +
+                (data.progress ? (data.progress) : '0.00')
+                + '">' +
+                '</progress> ' +
+                (data.progress ? (data.progress + '%') : '0.00%') +
+                '</p>' +
+                '</div>';
+            break;
+        }
+        case 'state': {
+            responseShowHtml = (null != data.state ? data.state.text : '')
+            break;
+        }
+
+    }
+    return responseShowHtml;
+}
+
+function responseActionHandler(data) {
+    if (!data) {
+        return "";
+    }
+    var openProcessBtn = '<a class="btn" ' +
+        'href="javascript:void(0);" ' +
+        'onclick="javascript:openProcess(\'' + data.id + '\');" ' +
+        'style="margin-right: 2px;">' +
+        '<i class="icon-share-alt icon-white"></i>' +
+        '</a>';
+    var runProcessBtn = '<a class="btn" ' +
+        'href="javascript:void(0);" ' +
+        'onclick="javascript:getCheckpointList(\'' + data.id + '\',\'' + data.parentProcessId + '\',\'null\');"' +
+        'style="margin-right: 2px;">' +
+        '<i class="icon-play icon-white"></i>' +
+        '</a>';
+    var debugProcessBtn = '<a class="btn" ' +
+        'href="javascript:void(0);" ' +
+        'onclick="javascript:getCheckpointList(\'' + data.id + '\',\'' + data.parentProcessId + '\',\'null\',\'DEBUG\');"' +
+        'style="margin-right: 2px;">' +
+        '<i class="fa-bug icon-white"></i>' +
+        '</a>';
+    var stopProcessBtn = '<a class="btn" ' +
+        'href="javascript:void(0);" ' +
+        'onclick="javascript:stopProcess(\'' + data.id + '\');"' +
+        'style="margin-right: 2px;">' +
+        '<i class="icon-stop icon-white"></i>' +
+        '</a>';
+    var delProcessBtn = '<a class="btn" ' +
+        'href="javascript:void(0);" ' +
+        'onclick="javascript:delProcess(\'' + data.id + '\');"' +
+        'style="margin-right: 2px;">' +
+        '<i class="icon-trash icon-white"></i>' +
+        '</a>';
+    return '<p style="width: 100%; text-align: center" >' + openProcessBtn + runProcessBtn + debugProcessBtn + stopProcessBtn + delProcessBtn + '</p>';
+}
 
 function processListMonitoring() {
     var arrayObj = new Array();
@@ -109,8 +236,8 @@ function getCheckpointList(id, processId, parentProcessId, runMode) {
             $('#debugProcessBtn').attr('onclick', 'listRunProcess("' + id + '","DEBUG")');
             $('#cancelProcessBtn').attr('onclick', 'cancelListRunProcess("' + id + '")');
             if ($('#checkpointsIsNull').val()) {
-                //alert("No Checkpoint was queried");
-                listRunProcess(id, runMode);
+                console.log("No Checkpoint was queried");
+                //listRunProcess(id, runMode);
             } else {
                 $('#checkpointListShow').modal('show');
             }
@@ -160,9 +287,9 @@ function listRunProcess(id, runMode) {
             var dataMap = JSON.parse(data);
             if (200 === dataMap.code) {
                 //alert(dataMap.errorMsg);
-                window.location.reload();
-                var windowOpen = window.open("/piflow-web/process/getProcessById?processId=" + dataMap.processId);
-                if (windowOpen == null || typeof(windowOpen)=='undefined'){
+                //window.location.reload();
+                var windowOpen = window.open("/piflow-web/mxGraph/drawingBoard?drawingBoardType=PROCESS&processType=PROCESS&load=" + dataMap.processId);
+                if (windowOpen == null || typeof (windowOpen) == 'undefined') {
                     alert('The window cannot be opened. Please check your browser settings.')
                 }
             } else {
@@ -236,143 +363,10 @@ function delProcess(processID) {
     });
 }
 
-function initDatatablePage(testTableId, url) {
-    processTable = $('#' + testTableId).DataTable({
-        "pagingType": "full_numbers",//Set the mode of the paging control
-        "searching": true,//Query the query box for datatales
-        "aLengthMenu": [10, 20, 50, 100],//Set one page to display 10 records
-        "bAutoWidth": true,
-        "bLengthChange": true,//A drop-down list of how many records are displayed on a page of a blocked table
-        "ordering": false, // Prohibit sorting
-        "oLanguage": {
-            "sSearch": "<span>Filter records:</span> _INPUT_",
-            "sLengthMenu": "<span>Show entries:</span> _MENU_",
-            "oPaginate": {"sFirst": "First", "sLast": "Last", "sNext": ">", "sPrevious": "<"}
-        },
-        "processing": true, //Open wait effect when data is loaded
-        "serverSide": true,//Open background paging
-        "ajax": {
-            "url": url,
-            "data": function (d) {
-                var level1 = $('#level1').val();
-                //Add additional parameters to the server
-                d.extra_search = d.search.value;
-            },
-            "dataSrc": responseHandler
-        },
-        "columns": [
-            {"mDataProp": "appId",},
-            {"mDataProp": "name"},
-            {"mDataProp": "description",},
-            {"mDataProp": "startTime",},
-            {"mDataProp": "endTime",},
-            {"mDataProp": "progress",},
-            {"mDataProp": "state",},
-            {"mDataProp": "actions",}
-        ]
-
-    });
-}
-
-//Results returned in the background
-function responseHandler(res) {
-    var resPageData = res.pageData;
-    var pageData = []
-    if (resPageData && resPageData.length > 0) {
-        for (var i = 0; i < resPageData.length; i++) {
-            var data1 = {
-                "appId": "<div name='processAppId'></div>",
-                "name": "",
-                "description": "",
-                "startTime": "<div id='" + resPageData[i].id + "startTime' name='processStartTime'></div>",
-                "endTime": "<div id='" + resPageData[i].id + "endTime' name='processEndTime'></div>",
-                "progress": "",
-                "state": "<div name='processState'>No State</div>",
-                "actions": ""
-            }
-
-            if (resPageData[i]) {
-                var progressHtmlStr = '<div id="d">' +
-                    '<p id="' + resPageData[i].id + 'Info">progress:' +
-                    (resPageData[i].progress ? (resPageData[i].progress + '%') : '0%') +
-                    '</p>' +
-                    '<progress id="' + resPageData[i].id + '" max="100" value="' + resPageData[i].progress + '">' +
-                    '</progress>' +
-                    '</div>';
-
-                var actionsHtmlStr = '<p style="width: 100%; text-align: center" >' +
-                    '<a class="btn" ' +
-                    'href="/piflow-web/process/getProcessById?processId=' + resPageData[i].id + '" ' +
-                    'style="margin-right: 2px;">' +
-                    '<i class="icon-share-alt icon-white"></i>' +
-                    '</a>' +
-                    '<a class="btn" ' +
-                    'href="javascript:void(0);" ' +
-                    'onclick="javascript:getCheckpointList(\'' + resPageData[i].id + '\',\'' + resPageData[i].parentProcessId + '\',\'null\');"' +
-                    'style="margin-right: 2px;">' +
-                    '<i class="icon-play icon-white"></i>' +
-                    '</a>' +
-                    '<a class="btn" ' +
-                    'href="javascript:void(0);" ' +
-                    'onclick="javascript:getCheckpointList(\'' + resPageData[i].id + '\',\'' + resPageData[i].parentProcessId + '\',\'null\',\'DEBUG\');"' +
-                    'style="margin-right: 2px;">' +
-                    '<i class="fa-bug icon-white"></i>' +
-                    '</a>' +
-                    '<a class="btn" ' +
-                    'href="javascript:void(0);" ' +
-                    'onclick="javascript:stopProcess(\'' + resPageData[i].id + '\');"' +
-                    'style="margin-right: 2px;">' +
-                    '<i class="icon-stop icon-white"></i>' +
-                    '</a>' +
-                    '<a class="btn" ' +
-                    'href="javascript:void(0);" ' +
-                    'onclick="javascript:delProcess(\'' + resPageData[i].id + '\');"' +
-                    'style="margin-right: 2px;">' +
-                    '<i class="icon-trash icon-white"></i>' +
-                    '</a>' +
-                    '</p>';
-                if (resPageData[i].appId) {
-                    data1.appId = '<div name="processAppId" style="word-wrap: break-word;">' + resPageData[i].appId + '</div>';
-                }
-                if (resPageData[i].name) {
-                    data1.name = resPageData[i].name;
-                }
-                if (resPageData[i].startTime) {
-                    data1.startTime = '<div id="' + resPageData[i].id + 'startTime" name="processStartTime" style="word-wrap: break-word;">' +
-                        resPageData[i].startTime +
-                        '</div>';
-                }
-                if (resPageData[i].endTime) {
-                    data1.endTime = '<div id="' + resPageData[i].id + 'endTime" name="processEndTime" style="word-wrap: break-word;">' +
-                        resPageData[i].endTime + '</div>';
-                }
-                if (resPageData[i].state) {
-                    data1.state = '<div id="' + resPageData[i].id + 'state" name="processState" style="word-wrap: break-word;">' +
-                        resPageData[i].state.text + '</div>';
-                }
-                if (resPageData[i].description) {
-                    var descriptionHtmlStr = '<div ' +
-                        'style="width: 85px;overflow: hidden;text-overflow:ellipsis;white-space:nowrap;" ' +
-                        'data-toggle="tooltip" ' +
-                        'data-placement="top" ' +
-                        'title="' + resPageData[i].description + '">' +
-                        resPageData[i].description +
-                        '</div>';
-                    data1.description = descriptionHtmlStr;
-                }
-                if (progressHtmlStr) {
-                    data1.progress = progressHtmlStr;
-                }
-                if (actionsHtmlStr) {
-                    data1.actions = actionsHtmlStr;
-                }
-            }
-            pageData.push(data1);
-        }
+// open
+function openProcess(loadId) {
+    var windowOpen = window.open('/piflow-web/mxGraph/drawingBoard?drawingBoardType=PROCESS&processType=PROCESS&load=' + loadId);
+    if (windowOpen == null || typeof (windowOpen) == 'undefined') {
+        alert('The window cannot be opened. Please check your browser settings.');
     }
-    return pageData;
-}
-
-function search1() {
-    processTable.ajax.reload();
 }

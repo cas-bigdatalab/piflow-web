@@ -64,44 +64,6 @@ function selectedPath(pageId, e) {
     }
 }
 
-function openProcessMonitor(pageId, e) {
-    $.ajax({
-        cache: true,//Keep cached data
-        type: "POST",//Request type post
-        url: "/piflow-web/processGroup/getProcessIdByPageId",//This is the name of the file where I receive data in the background.
-        data: {
-            processGroupId: processGroupId,
-            pageId: pageId
-        },
-        async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
-        error: function (request) {//Operation after request failure
-            layer.msg(' failed', {icon: 2, shade: 0, time: 1000});
-            return;
-        },
-        success: function (data) {//Operation after request successful
-            if (data) {
-                var dataMap = JSON.parse(data);
-                if (200 === dataMap.code) {
-                    var urlPath = "";
-                    if ('flow' === dataMap.nodeType) {
-                        urlPath = "/piflow-web/process/getProcessById?parentAccessPath=processGroupList&processId=" + dataMap.processId;
-                    } else if ('flowGroup' === dataMap.nodeType) {
-                        urlPath = "/piflow-web/processGroup/getProcessGroupById?parentAccessPath=processGroupList&processGroupId=" + dataMap.processGroupId;
-                    }
-                    if (urlPath) {
-                        var tempWindow = window.location.href = urlPath;
-                        if (tempWindow == null || typeof (tempWindow) == 'undefined') {
-                            alert('The window cannot be opened. Please check your browser settings.')
-                        }
-                    }
-                }
-            } else {
-                layer.msg(' failed', {icon: 2, shade: 0, time: 1000});
-            }
-        }
-    });
-}
-
 // Query basic information of process
 function queryProcessGroup(processGroupId) {
     if (!isLoadProcessInfo) {

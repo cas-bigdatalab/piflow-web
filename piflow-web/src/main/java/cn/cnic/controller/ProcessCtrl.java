@@ -1,7 +1,6 @@
 package cn.cnic.controller;
 
 import cn.cnic.base.util.HttpUtils;
-import cn.cnic.base.util.JsonUtils;
 import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.base.util.SessionUserUtil;
 import cn.cnic.base.vo.UserVo;
@@ -10,14 +9,12 @@ import cn.cnic.component.process.service.IProcessPathService;
 import cn.cnic.component.process.service.IProcessService;
 import cn.cnic.component.process.service.IProcessStopService;
 import cn.cnic.component.process.vo.DebugDataRequest;
-import cn.cnic.component.process.vo.DebugDataResponse;
 import cn.cnic.component.process.vo.ProcessStopVo;
 import cn.cnic.component.process.vo.ProcessVo;
 import cn.cnic.third.service.IFlow;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
@@ -53,15 +50,17 @@ public class ProcessCtrl {
     /**
      * Query and enter the process list
      *
-     * @param request
+     * @param page
+     * @param limit
+     * @param param
      * @return
      */
     @RequestMapping("/processListPage")
     @ResponseBody
-    public String processListPage(HttpServletRequest request, Integer start, Integer length, Integer draw, String extra_search) {
+    public String processAndProcessGroupListPage(Integer page, Integer limit, String param) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
-        return processServiceImpl.getProcessVoListPage(username, isAdmin, start / length + 1, length, extra_search);
+        return processServiceImpl.getProcessVoListPage(username, isAdmin, page, limit, param);
     }
 
     /**
@@ -161,12 +160,11 @@ public class ProcessCtrl {
      * Start Process
      *
      * @param request
-     * @param model
      * @return
      */
     @RequestMapping("/runProcess")
     @ResponseBody
-    public String runProcess(HttpServletRequest request, Model model) {
+    public String runProcess(HttpServletRequest request) {
         String id = request.getParameter("id");
         String checkpoint = request.getParameter("checkpointStr");
         String runMode = request.getParameter("runMode");
@@ -178,12 +176,11 @@ public class ProcessCtrl {
      * Stop Process
      *
      * @param request
-     * @param model
      * @return
      */
     @RequestMapping("/stopProcess")
     @ResponseBody
-    public String stopProcess(HttpServletRequest request, Model model) {
+    public String stopProcess(HttpServletRequest request) {
         String processId = request.getParameter("processId");
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
@@ -194,12 +191,11 @@ public class ProcessCtrl {
      * Delete Process
      *
      * @param request
-     * @param model
      * @return
      */
     @RequestMapping("/delProcess")
     @ResponseBody
-    public String delProcess(HttpServletRequest request, Model model) {
+    public String delProcess(HttpServletRequest request) {
         String processID = request.getParameter("processID");
         String username = SessionUserUtil.getCurrentUsername();
         return processServiceImpl.delProcess(username, processID);
@@ -213,25 +209,9 @@ public class ProcessCtrl {
      */
     @RequestMapping("/getLogUrl")
     @ResponseBody
-    public Map<String, Object> getLogUrl(HttpServletRequest request) {
-        Map<String, Object> rtnMap = new HashMap<>();
-        rtnMap.put("code", 500);
+    public String getLogUrl(HttpServletRequest request) {
         String appId = request.getParameter("appId");
-        if (StringUtils.isNotBlank(appId)) {
-            String amContainerLogs = flowImpl.getFlowLog(appId);
-            if (StringUtils.isNotBlank(amContainerLogs)) {
-                rtnMap.put("code", 200);
-                rtnMap.put("stdoutLog", amContainerLogs + "/stdout/?start=0");
-                rtnMap.put("stderrLog", amContainerLogs + "/stderr/?start=0");
-            } else {
-                rtnMap.put("code", 200);
-                rtnMap.put("stdoutLog", "Interface call failed");
-                rtnMap.put("stderrLog", "Interface call failed");
-            }
-        } else {
-            logger.warn("appId is null");
-        }
-        return rtnMap;
+        return processServiceImpl.getLogUrl(appId);
     }
 
     /**
@@ -292,24 +272,12 @@ public class ProcessCtrl {
      * @param modelAndView
      * @return
      */
-    @RequestMapping("/getCheckpoint")
-    public ModelAndView getCheckpoint(HttpServletRequest request, ModelAndView modelAndView) {
+    @RequestMapping("/getCheckpointData")
+    @ResponseBody
+    public String getCheckpoint(HttpServletRequest request, ModelAndView modelAndView) {
         String pID = request.getParameter("pID");
         String parentProcessId = request.getParameter("parentProcessId");
-        modelAndView.setViewName("process/inc/process_Checkpoint_Inc");
-        String checkpoints = "";
-        if (StringUtils.isNotBlank(parentProcessId) && !"null".equals(parentProcessId)) {
-            checkpoints = flowImpl.getCheckpoints(parentProcessId);
-        } else if (StringUtils.isNotBlank(pID)) {
-            checkpoints = flowImpl.getCheckpoints(pID);
-        }
-        if (StringUtils.isNotBlank(checkpoints)) {
-            String[] checkpointsSplit = checkpoints.split(",");
-            modelAndView.addObject("checkpointsSplit", checkpointsSplit);
-        } else {
-            logger.warn("No checkpoints found");
-        }
-        return modelAndView;
+        return processServiceImpl.getCheckpoints(parentProcessId, pID);
     }
 
     @RequestMapping("/getDebugData")
@@ -329,10 +297,7 @@ public class ProcessCtrl {
         if ("Default".equals(portName)) {
             portName = portName.toLowerCase();
         }
-        DebugDataResponse debugData = processServiceImpl.getDebugData(new DebugDataRequest(appId, stopName, portName, startFileName, startLine));
-        rtnMap.put("code", 200);
-        rtnMap.put("debugData", debugData);
-        return JsonUtils.toJsonNoException(rtnMap);
+        return processServiceImpl.getDebugData(new DebugDataRequest(appId, stopName, portName, startFileName, startLine));
     }
 
     /**
@@ -343,7 +308,7 @@ public class ProcessCtrl {
      */
     @RequestMapping("/getRunningProcessListData")
     @ResponseBody
-    public String getRunningProcessList(HttpServletRequest request, ModelAndView modelAndView) {
+    public String getRunningProcessList(HttpServletRequest request) {
         String flowId = request.getParameter("flowId");
         return processServiceImpl.getRunningProcessVoList(flowId);
     }

@@ -1,7 +1,5 @@
 package cn.cnic.component.process.utils;
 
-import cn.cnic.base.util.SvgUtils;
-import cn.cnic.base.vo.UserVo;
 import cn.cnic.common.Eunm.ProcessParentType;
 import cn.cnic.common.Eunm.ProcessState;
 import cn.cnic.common.Eunm.RunModeType;
@@ -12,7 +10,8 @@ import cn.cnic.component.mxGraph.model.MxGraphModel;
 import cn.cnic.component.mxGraph.utils.MxGraphModelUtils;
 import cn.cnic.component.mxGraph.vo.MxGraphModelVo;
 import cn.cnic.component.process.model.Process;
-import cn.cnic.component.process.model.*;
+import cn.cnic.component.process.model.ProcessGroup;
+import cn.cnic.component.process.model.ProcessGroupPath;
 import cn.cnic.component.process.vo.ProcessGroupPathVo;
 import cn.cnic.component.process.vo.ProcessGroupVo;
 import cn.cnic.component.process.vo.ProcessVo;
@@ -62,16 +61,6 @@ public class ProcessGroupUtils {
 
         // Take out the sketchpad information of 'flowGroup'
         MxGraphModel flowGroupMxGraphModel = flowGroup.getMxGraphModel();
-//----------------------------------------------------------------------------------------------------
-//----------------------------------------------------------------------------------------------------
-//----------------------------------------------------------------------------------------------------
-        // The 'flowGroup' palette information changes to 'viewXml'
-        String viewXml = SvgUtils.mxGraphModelToViewXml(flowGroupMxGraphModel, true, false);
-        // set viewXml
-        processGroupNew.setViewXml(viewXml);
-//----------------------------------------------------------------------------------------------------
-//----------------------------------------------------------------------------------------------------
-//----------------------------------------------------------------------------------------------------
         MxGraphModel mxGraphModelProcessGroup = MxGraphModelUtils.copyMxGraphModelAndNewNoIdAndUnlink(flowGroupMxGraphModel);
         mxGraphModelProcessGroup = MxGraphModelUtils.initMxGraphModelBasicPropertiesNoId(mxGraphModelProcessGroup, username);
         // add link

@@ -21,25 +21,18 @@
     <!-- Media datatable -->
     <div class="widget">
         <div class="navbar">
-            <div class="navbar-inner">
-                <h6 style="color: #1A7444">Processes</h6>
+            <div class="demoTable">
+                <div style="margin-top: 6px">
+                    <!--                    Search:-->
+                    <div class="layui-inline">
+                        <i class="fa fa-search fa-2x" style="position:absolute;top:8px ;left:8px;font-size:18px"></i>
+                        <input class="layui-input" name="param" id="search_input_id" autocomplete="off" style="padding-left:30px">
+                    </div>
+                </div>
             </div>
         </div>
         <div class="table-overflow">
-            <table id="testTableId" class="table table-striped table-bordered table-checks" style="width: 100%;">
-                <thead>
-                <tr>
-                    <th class="table_tr_th">ProcessId</th>
-                    <th class="table_tr_th">Name</th>
-                    <th class="table_tr_th">Description</th>
-                    <th class="table_tr_th">StartTime</th>
-                    <th class="table_tr_th">EndTime</th>
-                    <th class="table_tr_th">Progress</th>
-                    <th class="table_tr_th">Status</th>
-                    <th class="table_tr_th actions-column"style="min-width:245px;">Actions</th>
-                </tr>
-                </thead>
-            </table>
+            <table class="layui-hide" id="processTableId" lay-filter="user"></table>
         </div>
     </div>
     <!-- /media datatable -->
@@ -70,8 +63,8 @@
 <script th:include="Macro/csrfTokeHeadMacro :: csrfTokeHeadMacroScript"/>
 <script th:src="@{/custom/js/processList.js}"></script>
 <script th:inline="javascript">
-    initDatatablePage("testTableId", "/piflow-web/process/processListPage");
-    window.onload=function() {
+    initProcessDatatablePage("processTableId", "/piflow-web/process/processListPage", "search_input_id");
+    window.onload = function () {
         timer = window.setInterval("processListMonitoring()", 5000);
         //$(".paginate_button.current")[0].style.backgroundColor="red";
     };

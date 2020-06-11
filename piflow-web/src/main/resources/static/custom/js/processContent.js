@@ -384,9 +384,10 @@ function getLogUrl() {
                     bleBtn1.addClass('layui-layer-btn1');
                 }
             });
-            if (200 === data.code) {
-                stdoutLog = data.stdoutLog;
-                stderrLog = data.stderrLog;
+            var dataMap = JSON.parse(data);
+            if (200 === dataMap.code) {
+                stdoutLog = dataMap.stdoutLog;
+                stderrLog = dataMap.stderrLog;
                 changeUrl(1);
             }
         }

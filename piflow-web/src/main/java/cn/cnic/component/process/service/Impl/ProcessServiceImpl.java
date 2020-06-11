@@ -1,7 +1,6 @@
 package cn.cnic.component.process.service.Impl;
 
 import cn.cnic.base.util.*;
-import cn.cnic.base.vo.UserVo;
 import cn.cnic.common.Eunm.ProcessState;
 import cn.cnic.common.Eunm.RunModeType;
 import cn.cnic.common.Eunm.StopState;
@@ -505,7 +504,7 @@ public class ProcessServiceImpl implements IProcessService {
      */
     @Override
     public String getRunningProcessVoList(String flowId) {
-        if(StringUtils.isBlank(flowId)){
+        if (StringUtils.isBlank(flowId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("FlowId is null");
         }
         List<Process> processList = processMapper.getRunningProcessList(flowId);
@@ -532,12 +531,14 @@ public class ProcessServiceImpl implements IProcessService {
      */
     @Override
     public String getProcessVoListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param) {
-        Map<String, Object> rtnMap = new HashMap<String, Object>();
-        if (null != offset && null != limit) {
-            Page<Process> page = PageHelper.startPage(offset, limit);
-            processMapper.getProcessListByParam(username, isAdmin, param);
-            rtnMap = PageHelperUtils.setDataTableParam(page, rtnMap);
+        Map<String, Object> rtnMap = new HashMap<>();
+        if (null == offset || null == limit) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("param is null");
         }
+        Page<Process> page = PageHelper.startPage(offset, limit);
+        processMapper.getProcessListByParam(username, isAdmin, param);
+        rtnMap = PageHelperUtils.setLayTableParam(page, rtnMap);
+        rtnMap.put(ReturnMapUtils.KEY_CODE, ReturnMapUtils.SUCCEEDED_CODE);
         return JsonUtils.toJsonNoException(rtnMap);
     }
 
@@ -660,33 +661,36 @@ public class ProcessServiceImpl implements IProcessService {
      * @return
      */
     @Override
-    public DebugDataResponse getDebugData(DebugDataRequest debugDataRequest) {
-        DebugDataResponse debugDataResponse = null;
-        if (null != debugDataRequest) {
-            // (isNoneEmpty returns false whenever there is a value)
-            if (StringUtils.isNoneEmpty(debugDataRequest.getAppID(), debugDataRequest.getStopName(), debugDataRequest.getPortName())) {
-                String debugData = flowImpl.getDebugData(debugDataRequest.getAppID(), debugDataRequest.getStopName(), debugDataRequest.getPortName());
-                if (StringUtils.isNotBlank(debugData)) {
-                    JSONObject obj = JSONObject.fromObject(debugData);
-                    String schema = (String) obj.get("schema");
-                    String debugDataPath = (String) obj.get("debugDataPath");
-                    if (StringUtils.isNotBlank(schema) && StringUtils.isNotBlank(debugDataPath)) {
-                        String[] schemaSplit = schema.split(",");
-                        debugDataResponse = HdfsUtils.readPath(debugDataPath, debugDataRequest.getStartFileName(), debugDataRequest.getStartLine(), 10);
-                        if (null != debugDataResponse) {
-                            debugDataResponse.setSchema(Arrays.asList(schemaSplit));
-                        }
-                    }
-                } else {
-                    logger.warn("Interface call failed");
-                }
-            } else {
-                logger.warn("param is null");
-            }
-        } else {
-            logger.warn("param is null");
+    public String getDebugData(DebugDataRequest debugDataRequest) {
+        if (null == debugDataRequest) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("param is null");
         }
-        return debugDataResponse;
+        // (all parameters have values, and isanyempty returns false)
+        if (StringUtils.isAnyBlank(debugDataRequest.getAppID(), debugDataRequest.getStopName(), debugDataRequest.getPortName())) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("param is null");
+        }
+        String debugData = flowImpl.getDebugData(debugDataRequest.getAppID(), debugDataRequest.getStopName(), debugDataRequest.getPortName());
+        if (StringUtils.isBlank(debugData)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Interface call failed");
+        }
+        JSONObject obj = JSONObject.fromObject(debugData);
+        String schema = (String) obj.get("schema");
+        String debugDataPath = (String) obj.get("debugDataPath");
+
+        if (StringUtils.isBlank(schema)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("schema is null");
+        }
+        if (StringUtils.isBlank(debugDataPath)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("debugDataPath is null");
+        }
+        DebugDataResponse debugDataResponse = HdfsUtils.readPath(debugDataPath, debugDataRequest.getStartFileName(), debugDataRequest.getStartLine(), 10);
+        if (null == debugDataResponse) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Hdfs read failed");
+        }
+        String[] schemaSplit = schema.split(",");
+        debugDataResponse.setSchema(Arrays.asList(schemaSplit));
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("debugData", debugDataResponse);
+
     }
 
     /**
@@ -705,4 +709,56 @@ public class ProcessServiceImpl implements IProcessService {
         }
         return processVo;
     }
+
+    /**
+     * getCheckpoints
+     *
+     * @param parentProcessId
+     * @return
+     */
+    @Override
+    public String getCheckpoints(String parentProcessId, String pID) {
+        if (StringUtils.isAllBlank(parentProcessId, pID)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("param is null");
+        }
+        String checkpoints = null;
+        String[] checkpointsSplit = null;
+        if (StringUtils.isNotBlank(parentProcessId) && !"null".equals(parentProcessId)) {
+            checkpoints = flowImpl.getCheckpoints(parentProcessId);
+        } else if (StringUtils.isNotBlank(pID)) {
+            checkpoints = flowImpl.getCheckpoints(pID);
+        }
+        if (StringUtils.isNotBlank(checkpoints)) {
+            checkpointsSplit = checkpoints.split(",");
+        } else {
+            logger.warn("No checkpoints found");
+        }
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("checkpointsSplit", checkpointsSplit);
+    }
+
+    /**
+     * getLogUrl
+     *
+     * @param appId
+     * @return
+     */
+    @Override
+    public String getLogUrl(String appId) {
+        if (StringUtils.isBlank(appId)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("appId is null");
+        }
+        String amContainerLogs = flowImpl.getFlowLog(appId);
+        Map<String, Object> rtnMap = new HashMap<>();
+        if (StringUtils.isNotBlank(amContainerLogs)) {
+            rtnMap.put("code", 200);
+            rtnMap.put("stdoutLog", amContainerLogs + "/stdout/?start=0");
+            rtnMap.put("stderrLog", amContainerLogs + "/stderr/?start=0");
+        } else {
+            rtnMap.put("code", 200);
+            rtnMap.put("stdoutLog", "Interface call failed");
+            rtnMap.put("stderrLog", "Interface call failed");
+        }
+        return JsonUtils.toJsonNoException(rtnMap);
+    }
+
 }
