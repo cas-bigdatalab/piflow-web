@@ -35,7 +35,6 @@
 <script th:inline="javascript">
     var flowId = [[${flowId}]];
     $("#runningProcessID").hide();
-
     function initRunningProcessPageData(flowId) {
         $.ajax({
             cache: true,//Keep cached data

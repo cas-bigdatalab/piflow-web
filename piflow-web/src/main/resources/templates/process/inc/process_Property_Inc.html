@@ -6,10 +6,12 @@
         <div id="process_property_inc_loading" style="position: absolute;top: 49%;width: 100%;text-align: center;">
             <span style="font-size: 60px;">Loading</span>
         </div>
-        <div id="process_property_inc_load_fail" style="position: absolute;top: 49%;width: 100%;text-align: center;display: none;">
+        <div id="process_property_inc_load_fail"
+             style="position: absolute;top: 49%;width: 100%;text-align: center;display: none;">
             <span style="font-size: 60px;">Load Fail</span>
         </div>
-        <div id="process_property_inc_no_data" style="position: absolute;top: 49%;width: 100%;text-align: center;display: none;">
+        <div id="process_property_inc_no_data"
+             style="position: absolute;top: 49%;width: 100%;text-align: center;display: none;">
             <span style="font-size: 60px;">No Data</span>
         </div>
         <div id="process_property_inc_load_data" style="display: none;">
@@ -59,7 +61,7 @@
         $.ajax({
             cache: true,//Keep cached data
             type: "get",//Request for get
-            url: "/piflow-web/process/getRunningProcessListData",//This is the name of the file where I receive data in the background.
+            url: "/piflow-web/process/queryProcessStopData",//This is the name of the file where I receive data in the background.
             //data:$('#loginForm').serialize(),//Serialize the form
             data: {
                 processId: processID,
@@ -74,6 +76,9 @@
             },
             success: function (data) {//Operation after request successful
                 var dataMap = JSON.parse(data);
+                console.log("=====================================");
+                console.log(dataMap);
+                console.log("=====================================");
                 $('#process_property_inc_loading').hide();
                 if (200 === dataMap.code) {
                     var processStopVo = dataMap.processStopVo;
@@ -90,17 +95,10 @@
                         //Stop Property Information
                         var processStopPropertyVoList = processStopVo.processStopPropertyVoList;
                         if (processStopPropertyVoList) {
-                            // <span th:each="propertyVo:${processStopVo.processStopPropertyVoList}">
-                            // <span th:if="${propertyVo}">
-                            // <span th:text="${propertyVo.displayName}+ ':'"></span>
-                            // <span class="open_action" th:text="${propertyVo.customValue}"></span>
-                            // <br>
-                            // </span>
-                            // </span>
                             var processStopPropertyVoListHtml = '<span>';
                             processStopPropertyVoList.forEach(item => {
                                 if (item) {
-                                    var processStopPropertyVo = '<span>' + item.displayName + ':</span><span class="open_action">item.customValue</span><br>';
+                                    var processStopPropertyVo = '<span>' + item.displayName + ':</span><span class="open_action">' + item.customValue + '</span><br>';
                                     processStopPropertyVoListHtml += processStopPropertyVo;
                                 }
                             });

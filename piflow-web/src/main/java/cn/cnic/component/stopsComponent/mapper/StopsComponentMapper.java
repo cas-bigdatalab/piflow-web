@@ -34,7 +34,7 @@ public interface StopsComponentMapper {
      */
     @SelectProvider(type = StopsComponentMapperProvider.class, method = "getStopsComponentById")
     @Results({@Result(id = true, column = "id", property = "id"),
-            @Result(property = "properties", column = "id", many = @Many(select = "cn.cnic.component.stopsComponent.mapper.PropertyTemplateMapper.getPropertyTemplateBySotpsId"))})
+            @Result(property = "properties", column = "id", many = @Many(select = "cn.cnic.component.stopsComponent.mapper.StopsComponentPropertyMapper.getStopsComponentPropertyByStopsId"))})
     public StopsComponent getStopsComponentAndPropertyById(String id);
 
     /**
@@ -54,7 +54,7 @@ public interface StopsComponentMapper {
      */
     @SelectProvider(type = StopsComponentMapperProvider.class, method = "getStopsComponentByName")
     @Results({@Result(id = true, column = "id", property = "id"),
-            @Result(column = "id", property = "properties", many = @Many(select = "cn.cnic.component.stopsComponent.mapper.PropertyTemplateMapper.getPropertyTemplateBySotpsId", fetchType = FetchType.LAZY))
+            @Result(column = "id", property = "properties", many = @Many(select = "cn.cnic.component.stopsComponent.mapper.StopsComponentPropertyMapper.getStopsComponentPropertyByStopsId", fetchType = FetchType.LAZY))
 
     })
     public List<StopsComponent> getStopsComponentByName(String stopsName);
@@ -76,7 +76,7 @@ public interface StopsComponentMapper {
      */
     @Select("select fst.* from flow_stops_template fst where fst.bundel=#{bundle}")
     @Results({@Result(id = true, column = "id", property = "id"),
-            @Result(column = "id", property = "properties", many = @Many(select = "cn.cnic.component.stopsComponent.mapper.PropertyTemplateMapper.getPropertyTemplateBySotpsId", fetchType = FetchType.LAZY))
+            @Result(column = "id", property = "properties", many = @Many(select = "cn.cnic.component.stopsComponent.mapper.StopsComponentPropertyMapper.getStopsComponentPropertyByStopsId", fetchType = FetchType.LAZY))
 
     })
     public StopsComponent getStopsComponentByBundle(@Param("bundle") String bundle);

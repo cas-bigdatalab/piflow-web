@@ -112,7 +112,7 @@ public class StopsServiceImpl implements IStopsService {
     @Override
     public String updateStopsCheckpoint(String username, String stopId, String isCheckpointStr) {
 
-        if (!StringUtils.isAnyEmpty(stopId, isCheckpointStr)) {
+        if (StringUtils.isAnyEmpty(stopId, isCheckpointStr)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Partial incoming parameters are empty");
         }
         Stops stopsById = stopsMapper.getStopsById(stopId);
