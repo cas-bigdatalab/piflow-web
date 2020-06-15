@@ -74,8 +74,64 @@ function responseHandlerTemplate(res) {
     return pageData;
 }
 
-function searchTemplatePage() {
-    flowGroupTemplateTable.ajax.reload();
+
+function initLayerTableFlowGroupTemplatePage(testTableId, url, searchInputId) {
+    var table = "";
+    layui.use('table', function () {
+        table = layui.table;
+
+        //Method-level rendering
+        table.render({
+            elem: '#' + testTableId
+            , url: url
+            , cols: [[
+                {field: 'name', title: 'TemplateName', sort: true},
+                {field: 'crtDttm', title: 'CreateTime', sort: true},
+                {
+                    field: 'right', title: 'Actions', sort: true, height: 100, templet: function (data) {
+                        return responseHandlerFlowGroupTemplate(data);
+                    }
+                }
+            ]]
+            , id: testTableId
+            , page: true
+        });
+    });
+
+    $("#" + searchInputId).bind('input propertychange', function () {
+        searchMonitor(table, testTableId, searchInputId);
+    });
+}
+
+function searchMonitor(layui_table, layui_table_id, searchInputId) {
+    //Perform overload
+    layui_table.reload(layui_table_id, {
+        page: {
+            curr: 1 //Start again on page 1
+        }
+        , where: {param: $('#' + searchInputId).val()}
+    }, 'data');
+}
+
+//Results returned in the background
+function responseHandlerFlowGroupTemplate(data) {
+    if (!data) {
+        return "";
+    }
+    var downloadHtmlStr = '<a class="btn" ' +
+        'href="javascript:void(0);" ' +
+        'onclick="javascript:downloadFlowGroupTemplate(\'' + data.id + '\');" ' +
+        'title="download template">' +
+        '<i class="icon-download icon-white"></i>' +
+        '</a>';
+
+    var delHtmlStr = '<a class="btn" href="javascript:void(0);" ' +
+        'onclick="javascript:deleteFlowGroupTemPlate(\'' + data.id + '\',\'' + data.name + '\'); "' +
+        'title="delete template" > ' +
+        '<i class="icon-trash icon-white"></i>' +
+        '</a>';
+
+    return '<div style="width: 100%; text-align: center">' + downloadHtmlStr + delHtmlStr + '</div>';
 }
 
 function deleteFlowGroupTemPlate(id, name) {

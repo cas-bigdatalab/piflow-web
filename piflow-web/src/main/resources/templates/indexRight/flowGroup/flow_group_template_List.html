@@ -24,15 +24,16 @@
                 </form>
             </div>
             <div class="table-overflow">
-                <table id="flowGroupTemplateTableId" style="width: 100%" class="table table-striped table-bordered table-checks">
-                    <thead>
-                    <tr>
-                        <th width="50%" style="color: #1A7444">TemplateName</th>
-                        <th width="20%" style="color: #1A7444">CreateTime</th>
-                        <th width="15%" style="color: #1A7444" class="actions-column">Actions</th>
-                    </tr>
-                    </thead>
-                </table>
+                <div class="demoTable">
+                    <div style="margin-top: 6px">
+                        <div class="layui-inline">
+                            <i class="fa fa-search fa-2x" style="position:absolute;top:8px ;left:8px;font-size:18px"></i>
+                            <input class="layui-input" name="param" id="search_input_id" autocomplete="off"
+                                   style="padding-left:30px">
+                        </div>
+                    </div>
+                </div>
+                <table class="layui-hide" id="flowGroupTemplateTableId" lay-filter="user"></table>
             </div>
         </div>
         <!-- /media datatable -->
@@ -42,10 +43,7 @@
     <script th:include="Macro/csrfTokeHeadMacro :: csrfTokeHeadMacroScript"/>
     <script th:src="@{/custom/js/flowGroupTemplateList.js}"></script>
     <script th:inline="javascript">
-
-        initDatatableFlowGroupTemplatePage('flowGroupTemplateTableId', "/piflow-web/flowTemplate/flowTemplatePage");
-
-
+        initLayerTableFlowGroupTemplatePage('flowGroupTemplateTableId', "/piflow-web/flowTemplate/flowTemplatePage","search_input_id");
         //@ sourceURL=flow_group_template_List.js
     </script>
 </body>
