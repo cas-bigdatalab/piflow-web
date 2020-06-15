@@ -271,7 +271,6 @@ function runProcess(runMode) {
                 //alert(dataMap.errorMsg);
                 layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
                 });
-                // window.location.href = "/piflow-web/process/getProcessById?processId=" + dataMap.processId;
                 window.location.href = "/piflow-web/mxGraph/drawingBoard?drawingBoardType=PROCESS&processType=PROCESS&load=" + dataMap.processId;
             } else {
                 //alert(dataMap.errorMsg);

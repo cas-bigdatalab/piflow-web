@@ -89,80 +89,61 @@ function downloadTemplate(id) {
     window.location.href = "/piflow-web/flowTemplate/templateDownload?flowTemplateId=" + id;
 }
 
-function initDatatableTemplatePage(testTableId, url) {
-    templateTable = $('#' + testTableId).DataTable({
-        "pagingType": "full_numbers",//Set the mode of the paging control
-        "searching": true,//Query the query box for datatales
-        "aLengthMenu": [10, 20, 50, 100],//Set one page to display 10 records
-        "bAutoWidth": true,
-        "bLengthChange": true,//A drop-down list of how many records are displayed on a page of a blocked table
-        "ordering": false, // Prohibit sorting
-        "oLanguage": {
-            "sSearch": "<span>Filter records:</span> _INPUT_",
-            "sLengthMenu": "<span>Show entries:</span> _MENU_",
-            "oPaginate": {"sFirst": "First", "sLast": "Last", "sNext": ">", "sPrevious": "<"}
-        },
-        "processing": true, //Open wait effect when data is loaded
-        "serverSide": true,//Open background paging
-        "ajax": {
-            "url": url,
-            "data": function (d) {
-                var level1 = $('#level1').val();
-                //Add additional parameters to the server
-                d.extra_search = d.search.value;
-            },
-            "dataSrc": responseHandlerTemplate
-        },
-        "columns": [
-            {"mDataProp": "templateName"},
-            {"mDataProp": "createTime"},
-            {"mDataProp": "actions"}
-        ]
+function initLayerTableFlowTemplatePage(testTableId, url, searchInputId) {
+    var table = "";
+    layui.use('table', function () {
+        table = layui.table;
 
+        //Method-level rendering
+        table.render({
+            elem: '#' + testTableId
+            , url: url
+            , cols: [[
+                {field: 'name', title: 'TemplateName', sort: true},
+                {field: 'crtDttm', title: 'CreateTime', sort: true},
+                {
+                    field: 'right', title: 'Actions', sort: true, height: 100, templet: function (data) {
+                        return responseHandlerFlowTemplate(data);
+                    }
+                }
+            ]]
+            , id: testTableId
+            , page: true
+        });
+    });
+
+    $("#" + searchInputId).bind('input propertychange', function () {
+        searchMonitor(table, testTableId, searchInputId);
     });
 }
 
-//Results returned in the background
-function responseHandlerTemplate(res) {
-    var resPageData = res.pageData;
-    var pageData = []
-    if (resPageData && resPageData.length > 0) {
-        for (var i = 0; i < resPageData.length; i++) {
-            var data1 = {
-                "templateName": "",
-                "createTime": "",
-                "actions": ""
-            }
-            if (resPageData[i]) {
-                var actionsHtmlStr = '<div style="width: 100%; text-align: center" >' +
-                    '<a class="btn" ' +
-                    'href="javascript:void(0);" ' +
-                    'onclick="javascript:downloadTemplate(\'' + resPageData[i].id + '\');" ' +
-                    'title="download template">' +
-                    '<i class="icon-download icon-white"></i>' +
-                    '</a>' +
-                    '<a class="btn" href="javascript:void(0);" ' +
-                    'onclick="javascript:deleteTemPlate(\'' + resPageData[i].id + '\',\'' + resPageData[i].name + '\'); "' +
-                    'title="delete template" > ' +
-                    '<i class="icon-trash icon-white"></i>' +
-                    '</a>' +
-                    '</div>';
-                if (resPageData[i].name) {
-                    data1.templateName = resPageData[i].name;
-                }
-                if (resPageData[i].crtDttm) {
-                    data1.createTime = resPageData[i].crtDttm;
-                }
-                if (actionsHtmlStr) {
-                    data1.actions = actionsHtmlStr;
-                }
-            }
-            pageData.push(data1);
+function searchMonitor(layui_table, layui_table_id, searchInputId) {
+    //Perform overload
+    layui_table.reload(layui_table_id, {
+        page: {
+            curr: 1 //Start again on page 1
         }
-    }
-    return pageData;
+        , where: {param: $('#' + searchInputId).val()}
+    }, 'data');
 }
 
-function searchTemplatePage() {
-    templateTable.ajax.reload();
+//Results returned in the background
+function responseHandlerFlowTemplate(data) {
+    if (!data) {
+        return "";
+    }
+    var downloadHtmlStr = '<a class="btn" ' +
+        'href="javascript:void(0);" ' +
+        'onclick="javascript:downloadTemplate(\'' + data.id + '\');" ' +
+        'title="download template">' +
+        '<i class="icon-download icon-white"></i>' +
+        '</a>';
+
+    var delHtmlStr = '<a class="btn" href="javascript:void(0);" ' +
+        'onclick="javascript:deleteTemPlate(\'' + data.id + '\',\'' + data.name + '\'); "' +
+        'title="delete template" > ' +
+        '<i class="icon-trash icon-white"></i>' +
+        '</a>';
+
+    return '<div style="width: 100%; text-align: center">' + downloadHtmlStr + delHtmlStr + '</div>';
 }

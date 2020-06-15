@@ -184,6 +184,16 @@ function initDatatableSchedulePage(testTableId, url, searchInputId) {
     $("#" + searchInputId).bind('input propertychange', function () {
         searchMonitor(table, testTableId, searchInputId);
     });
+
+    function searchMonitor(layui_table, layui_table_id, searchInputId) {
+        //Perform overload
+        layui_table.reload(layui_table_id, {
+            page: {
+                curr: 1 //Start again on page 1
+            }
+            , where: {param: $('#' + searchInputId).val()}
+        }, 'data');
+    }
 }
 
 

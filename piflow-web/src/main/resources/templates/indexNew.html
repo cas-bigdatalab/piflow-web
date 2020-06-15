@@ -88,10 +88,10 @@
                 <div th:include="indexRight/flow/template_List :: template_List"></div>
             </div>
             <div th:case="'flowTemplateList'">
-                <div th:include="indexRight/flow/flow_template_List :: flow_template_List"></div>
+                <div th:include="indexRight/custom/flow_template_List :: flow_template_List"></div>
             </div>
             <div th:case="'dataSources'">
-                <div th:include="indexRight/flow/data_source_List :: data_source_List"></div>
+                <div th:include="indexRight/datasource/data_source_List :: data_source_List"></div>
             </div>
             <div th:case="'flowGroupList'">
                 <div th:include="indexRight/flowGroup/flow_group_List :: flow_group_List"></div>
@@ -99,11 +99,8 @@
             <div th:case="'processGroupList'">
                 <div th:include="indexRight/flowGroup/process_group_List :: process_group_List"></div>
             </div>
-            <div th:case="'groupTypeProcessList'">
-                <div th:include="indexRight/flowGroup/flow_process_List :: process_List"></div>
-            </div>
             <div th:case="'processAndProcessGroup'">
-                <div th:include="indexRight/cuutom/process_processGroup_list :: process_processGroup_list"></div>
+                <div th:include="indexRight/custom/process_processGroup_list :: process_processGroup_list"></div>
             </div>
             <div th:case="'flowGroupTemplateList'">
                 <div th:include="indexRight/flowGroup/flow_group_template_List :: flow_group_template_List"></div>

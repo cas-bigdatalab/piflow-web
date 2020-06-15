@@ -1,4 +1,4 @@
-package cn.cnic.controller;
+package cn.cnic.controller.modify.user;
 
 import cn.cnic.base.util.HttpUtils;
 import cn.cnic.base.util.LoggerUtil;
@@ -20,8 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/process")
-public class ProcessCtrl {
+@RequestMapping("/user/process")
+public class UserProcessCtrl {
 
     /**
      * Introduce the log, note that all are under the "org.slf4j" package
@@ -51,10 +51,9 @@ public class ProcessCtrl {
      */
     @RequestMapping("/processListPage")
     @ResponseBody
-    public String processAndProcessGroupListPage(Integer page, Integer limit, String param) {
-        String username = SessionUserUtil.getCurrentUsername();
-        boolean isAdmin = SessionUserUtil.isAdmin();
-        return processServiceImpl.getProcessVoListPage(username, isAdmin, page, limit, param);
+    public String processAndProcessGroupListPage(HttpServletRequest request, Integer page, Integer limit, String param) {
+        String username = SessionUserUtil.getUsername(request);
+        return processServiceImpl.getProcessVoListPage(username, false, page, limit, param);
     }
 
     /**
@@ -67,9 +66,8 @@ public class ProcessCtrl {
     @ResponseBody
     public String queryProcessData(HttpServletRequest request) {
         String processId = request.getParameter("processId");
-        String username = SessionUserUtil.getCurrentUsername();
-        boolean isAdmin = SessionUserUtil.isAdmin();
-        return processServiceImpl.getProcessVoById(username, isAdmin, processId);
+        String username = SessionUserUtil.getUsername(request);
+        return processServiceImpl.getProcessVoById(username, false, processId);
     }
 
     /**
@@ -112,7 +110,7 @@ public class ProcessCtrl {
         String id = request.getParameter("id");
         String checkpoint = request.getParameter("checkpointStr");
         String runMode = request.getParameter("runMode");
-        String username = SessionUserUtil.getCurrentUsername();
+        String username = SessionUserUtil.getUsername(request);
         return processServiceImpl.startProcess(username, id, checkpoint, runMode);
     }
 
@@ -126,9 +124,8 @@ public class ProcessCtrl {
     @ResponseBody
     public String stopProcess(HttpServletRequest request) {
         String processId = request.getParameter("processId");
-        String username = SessionUserUtil.getCurrentUsername();
-        boolean isAdmin = SessionUserUtil.isAdmin();
-        return processServiceImpl.stopProcess(username, isAdmin, processId);
+        String username = SessionUserUtil.getUsername(request);
+        return processServiceImpl.stopProcess(username, false, processId);
     }
 
     /**
@@ -141,7 +138,7 @@ public class ProcessCtrl {
     @ResponseBody
     public String delProcess(HttpServletRequest request) {
         String processID = request.getParameter("processID");
-        String username = SessionUserUtil.getCurrentUsername();
+        String username = SessionUserUtil.getUsername(request);
         return processServiceImpl.delProcess(username, processID);
     }
 

@@ -10,38 +10,14 @@ function initProcessDatatablePage(testTableId, url, searchInputId) {
             elem: '#' + testTableId
             , url: url
             , cols: [[
-                {
-                    field: 'appId', title: 'ProcessId', sort: true, templet: function (data) {
-                        return responseFieldHandler('appId', data);
-                    }
-                },
+                {field: 'appId', title: 'ProcessId', sort: true, templet: function (data) {return responseFieldHandler('appId', data);}},
                 {field: 'name', title: 'Name', sort: true},
                 {field: 'description', title: 'Description', sort: true},
-                {
-                    field: 'startTime', title: 'StartTime', sort: true, width: 170, templet: function (data) {
-                        return responseFieldHandler('startTime', data);
-                    }
-                },
-                {
-                    field: 'endTime', title: 'EndTime', sort: true, width: 170, templet: function (data) {
-                        return responseFieldHandler('endTime', data);
-                    }
-                },
-                {
-                    field: 'progress', title: 'Progress', sort: true, width: 220, templet: function (data) {
-                        return responseFieldHandler('progress', data);
-                    }
-                },
-                {
-                    field: 'state', title: 'Status', sort: true, width: 120, templet: function (data) {
-                        return responseFieldHandler('state', data);
-                    }
-                },
-                {
-                    field: 'right', title: 'Actions', sort: true, width: 240, templet: function (data) {
-                        return responseActionHandler(data);
-                    }
-                }
+                {field: 'startTime', title: 'StartTime', sort: true, width: 170, templet: function (data) {return responseFieldHandler('startTime', data);}},
+                {field: 'endTime', title: 'EndTime', sort: true, width: 170, templet: function (data) {return responseFieldHandler('endTime', data);}},
+                {field: 'progress', title: 'Progress', sort: true, width: 220, templet: function (data) {return responseFieldHandler('progress', data);}},
+                {field: 'state', title: 'Status', sort: true, width: 120, templet: function (data) {return responseFieldHandler('state', data);}},
+                {field: 'right', title: 'Actions', sort: true, width: 240, templet: function (data) {return responseActionHandler(data);}}
             ]]
             , id: testTableId
             , page: true
@@ -51,6 +27,16 @@ function initProcessDatatablePage(testTableId, url, searchInputId) {
     $("#" + searchInputId).bind('input propertychange', function () {
         searchMonitor(table, testTableId, searchInputId);
     });
+}
+
+function searchMonitor(layui_table, layui_table_id, searchInputId) {
+    //Perform overload
+    layui_table.reload(layui_table_id, {
+        page: {
+            curr: 1 //Start again on page 1
+        }
+        , where: {param: $('#' + searchInputId).val()}
+    }, 'data');
 }
 
 function responseFieldHandler(fileName, data) {

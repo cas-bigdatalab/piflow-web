@@ -552,12 +552,13 @@ public class ProcessServiceImpl implements IProcessService {
      */
     @Override
     public String getProcessGroupVoListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param) {
-        Map<String, Object> rtnMap = new HashMap<String, Object>();
-        if (null != offset && null != limit) {
-            Page<Process> page = PageHelper.startPage(offset, limit);
-            processMapper.getProcessGroupListByParam(username, isAdmin, param);
-            rtnMap = PageHelperUtils.setDataTableParam(page, rtnMap);
+        if (null == offset || null == limit) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.ERROR_MSG);
         }
+        Page<Process> page = PageHelper.startPage(offset, limit);
+        processMapper.getProcessGroupListByParam(username, isAdmin, param);
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(ReturnMapUtils.SUCCEEDED_MSG);
+        rtnMap = PageHelperUtils.setLayTableParam(page, rtnMap);
         return JsonUtils.toJsonNoException(rtnMap);
     }
 

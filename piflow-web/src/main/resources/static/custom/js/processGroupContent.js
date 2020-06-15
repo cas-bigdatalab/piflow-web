@@ -227,7 +227,6 @@ function runProcessGroup(runMode) {
             if (200 === dataMap.code) {
                 //alert(dataMap.errorMsg);
                 window.location.reload();  //   drawingBoardType=PROCESS&processType=PROCESS_GROUP        &processType=PROCESS
-                // var tempWindow = window.open("/piflow-web/processGroup/getProcessGroupById?processGroupId=" + dataMap.processGroupId);
                 var tempWindow = window.open("/piflow-web/mxGraph/drawingBoard?drawingBoardType=PROCESS&processType=PROCESS_GROUP&load=" + dataMap.processGroupId);
 
                 if (tempWindow == null || typeof (tempWindow) == 'undefined') {

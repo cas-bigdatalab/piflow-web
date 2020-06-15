@@ -33,11 +33,7 @@ function initDatatableFlowPage(testTableId, url, searchInputId) {
                 {field: 'name', title: 'Name', sort: true},
                 {field: 'description', title: 'Description', sort: true},
                 {field: 'crtDttm', title: 'CreateTime', sort: true},
-                {
-                    field: 'right', title: 'Actions', sort: true, height: 100, templet: function (data) {
-                        return responseHandlerFlow(data);
-                    }
-                }
+                {field: 'right', title: 'Actions', sort: true, height: 100, templet: function (data) {return responseHandlerFlow(data);}}
             ]]
             , id: testTableId
             , page: true
@@ -275,7 +271,7 @@ function runFlows(loadId, runMode) {
                     if (tempWindow == null || typeof (tempWindow) == 'undefined') {
                         alert('The window cannot be opened. Please check your browser settings.')
                     } else {
-                        tempWindow.location = "/piflow-web/process/getProcessById?processId=" + dataMap.processId;
+                        tempWindow.location = "/piflow-web/mxGraph/drawingBoard?drawingBoardType=PROCESS&processType=PROCESS&load=" + dataMap.processId;
                     }
                 });
             } else {

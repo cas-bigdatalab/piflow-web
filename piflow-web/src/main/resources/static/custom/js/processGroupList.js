@@ -11,45 +11,34 @@ function initProcessGroupDatatablePage(testTableId, url, searchInputId) {
             , url: url
             , cols: [[
                 {
-                    field: 'appId', title: 'ProcessGroupId', sort: true, templet: function (data) {
-                        return ('<div name="processAppId">' + data.appId + '</div>');
+                    field: 'appId', title: 'ProcessId', sort: true, templet: function (data) {
+                        return responseFieldHandler('appId', data);
                     }
                 },
                 {field: 'name', title: 'Name', sort: true},
                 {field: 'description', title: 'Description', sort: true},
                 {
-                    field: 'startTime', title: 'StartTime', sort: true, templet: function (data) {
-                        data.startTime = data.startTime ? data.startTime : "";
-                        return ('<div id="' + data.id + 'startTime" name="processStartTime" >' + data.startTime + '</div>');
+                    field: 'startTime', title: 'StartTime', sort: true, width: 170, templet: function (data) {
+                        return responseFieldHandler('startTime', data);
                     }
                 },
                 {
-                    field: 'endTime', title: 'EndTime', sort: true, templet: function (data) {
-                        data.endTime = data.endTime ? data.endTime : "";
-                        return ('<div id="' + data.id + 'endTime" name="processEndTime">' + data.endTime + '</div>');
+                    field: 'endTime', title: 'EndTime', sort: true, width: 170, templet: function (data) {
+                        return responseFieldHandler('endTime', data);
                     }
                 },
                 {
-                    field: 'description', title: 'Progress', sort: true, templet: function (data) {
-                        var progressHtmlStr = '<div>' +
-                            '<p id="' + data.id + 'Info">progress:' +
-                            (data.progress ? (data.progress + '%') : '0.00%') +
-                            '</p>' +
-                            '<progress id="' + data.id + '" max="100" value="' +
-                            (data.progress ? (data.progress) : '0.00')
-                            + '">' +
-                            '</progress>' +
-                            '</div>';
-                        return progressHtmlStr;
+                    field: 'progress', title: 'Progress', sort: true, width: 220, templet: function (data) {
+                        return responseFieldHandler('progress', data);
                     }
                 },
                 {
-                    field: 'state', title: 'Status', sort: true, templet: function (data) {
-                        return (data.state ? data.state.text : '');
+                    field: 'state', title: 'Status', sort: true, width: 120, templet: function (data) {
+                        return responseFieldHandler('state', data);
                     }
                 },
                 {
-                    field: 'right', title: 'Actions', sort: true, height: 100, templet: function (data) {
+                    field: 'right', title: 'Actions', sort: true, width: 240, templet: function (data) {
                         return responseActionHandler(data);
                     }
                 }
@@ -64,38 +53,75 @@ function initProcessGroupDatatablePage(testTableId, url, searchInputId) {
     });
 }
 
+function responseFieldHandler(fileName, data) {
+    var responseShowHtml = "";
+    switch (fileName) {
+        case 'appId': {
+            responseShowHtml = ('<div name="processAppId">' + data.appId + '</div>');
+            break;
+        }
+        case 'startTime': {
+            data.startTime = data.startTime ? data.startTime : "";
+            responseShowHtml = ('<div id="' + data.id + 'startTime" name="processStartTime" >' + data.startTime + '</div>');
+            break;
+        }
+        case 'endTime': {
+            data.endTime = data.endTime ? data.endTime : "";
+            responseShowHtml = ('<div id="' + data.id + 'endTime" name="processEndTime">' + data.endTime + '</div>');
+            break;
+        }
+        case 'progress': {
+            responseShowHtml = '<div>' +
+                '<p id="' + data.id + 'Info">' +
+                '<progress id="' + data.id + '" max="100" value="' +
+                (data.progress ? (data.progress) : '0.00')
+                + '">' +
+                '</progress> ' +
+                (data.progress ? (data.progress + '%') : '0.00%') +
+                '</p>' +
+                '</div>';
+            break;
+        }
+        case 'state': {
+            responseShowHtml = (null != data.state ? data.state.text : '')
+            break;
+        }
+
+    }
+    return responseShowHtml;
+}
+
 //Results returned in the background
 function responseActionHandler(res) {
-    if (res) {
-        var actionsHtmlStr = '<p style="width: 100%; text-align: center" >' +
-            '<a class="btn" ' +
-            'href="javascript:void(0);" ' +
-            'onclick="javascript:openProcessGroup(\'' + res.id + '\');" ' +
-            'style="margin-right: 2px;">' +
-            '<i class="icon-share-alt icon-white"></i>' +
-            '</a>' +
-            '<a class="btn" ' +
-            'href="javascript:void(0);" ' +
-            'onclick="javascript:selectRunMode(\'' + res.id + '\',\'' + res.parentProcessId + '\',\'null\');" ' +
-            'style="margin-right: 2px;">' +
-            '<i class="icon-play icon-white"></i>' +
-            '</a>' +
-            '<a class="btn" ' +
-            'href="javascript:void(0);" ' +
-            'onclick="javascript:listStopProcessGroup(\'' + res.id + '\');" ' +
-            'style="margin-right: 2px;">' +
-            '<i class="icon-stop icon-white"></i>' +
-            '</a>' +
-            '<a class="btn" ' +
-            'href="javascript:void(0);" ' +
-            'onclick="javascript:delProcessGroup(\'' + res.id + '\');" ' +
-            'style="margin-right: 2px;">' +
-            '<i class="icon-trash icon-white"></i>' +
-            '</a>' +
-            '</p>';
-        return actionsHtmlStr;
+    if (!res) {
+        return "";
     }
-    return "";
+    var openProcessBtn = '<a class="btn" ' +
+        'href="javascript:void(0);" ' +
+        'onclick="javascript:openProcessGroup(\'' + res.id + '\');" ' +
+        'style="margin-right: 2px;">' +
+        '<i class="icon-share-alt icon-white"></i>' +
+        '</a>';
+    var runProcessBtn = '<a class="btn" ' +
+        'href="javascript:void(0);" ' +
+        'onclick="javascript:selectRunMode(\'' + res.id + '\',\'' + res.parentProcessId + '\',\'null\');" ' +
+        'style="margin-right: 2px;">' +
+        '<i class="icon-play icon-white"></i>' +
+        '</a>';
+    var stopProcessBtn = '<a class="btn" ' +
+        'href="javascript:void(0);" ' +
+        'onclick="javascript:listStopProcessGroup(\'' + res.id + '\');" ' +
+        'style="margin-right: 2px;">' +
+        '<i class="icon-stop icon-white"></i>' +
+        '</a>';
+
+    var delProcessBtn = '<a class="btn" ' +
+        'href="javascript:void(0);" ' +
+        'onclick="javascript:delProcessGroup(\'' + res.id + '\');" ' +
+        'style="margin-right: 2px;">' +
+        '<i class="icon-trash icon-white"></i>' +
+        '</a>';
+    return '<p style="width: 100%; text-align: center" >' + openProcessBtn + runProcessBtn + stopProcessBtn + delProcessBtn + '</p>';
 }
 
 function searchMonitor(layui_table, layui_table_id, searchInputId) {

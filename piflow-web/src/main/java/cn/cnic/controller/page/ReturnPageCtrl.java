@@ -23,7 +23,7 @@ public class ReturnPageCtrl {
     //DatasourceCtrl ---------------------------------------------- Start ----------------------------------------------
     @RequestMapping("/datasource/getDatasourceListPage")
     public String getDatasourceListPage() {
-        return "indexRight/flow/data_source_List";
+        return "indexRight/datasource/data_source_List";
     }
 
     @RequestMapping("/datasource/getDataSourceInputPage")
