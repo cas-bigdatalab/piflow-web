@@ -40,7 +40,7 @@ alter table `sys_user` convert to CHARACTER SET  utf8 COLLATE utf8_general_ci;
 alter table `sys_role` convert to CHARACTER SET  utf8 COLLATE utf8_general_ci;
 
 
-ALTER TABLE `flow_info` ADD CONSTRAINT `FKdjb71fwj4i1m5cvijp2ayykkh` FOREIGN KEY (`FK_FLOW_ID`) REFERENCES `FLOW` (`ID`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+ALTER TABLE `flow_info` ADD CONSTRAINT `FKdjb71fwj4i1m5cvijp2ayykkh` FOREIGN KEY (`fk_flow_id`) REFERENCES `flow` (`ID`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 ALTER TABLE `flow_path` ADD CONSTRAINT `FK33rp96r4290eonsirbwrp8h0f` FOREIGN KEY (`fk_flow_id`) REFERENCES `flow` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 ALTER TABLE `flow_process_path` ADD CONSTRAINT `FKad4n0sl8j977awtec5beyrphy` FOREIGN KEY (`fk_flow_process_id`) REFERENCES `flow_process` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 ALTER TABLE `flow_process_stop` ADD CONSTRAINT `FK6rvjgxm3smnh3jjjnxnqiwl1p` FOREIGN KEY (`fk_flow_process_id`) REFERENCES `flow_process` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
