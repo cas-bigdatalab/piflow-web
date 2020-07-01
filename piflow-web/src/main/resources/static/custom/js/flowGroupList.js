@@ -104,7 +104,7 @@ function openFlowBaseInfo(id) {
     $.ajax({
         cache: true,//Keep cached data
         type: "get",//Request type post
-        url: "/piflow-web/flow/queryFlowData",//This is the name of the file where I receive data in the background.
+        url: "/piflow-web/flow/queryFlowGroupData",//This is the name of the file where I receive data in the background.
         data: {load: id},
         async: false,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
         error: function (request) {//Operation after request failure
@@ -117,11 +117,12 @@ function openFlowBaseInfo(id) {
             layer.closeAll('page');
             var dataMap = JSON.parse(data);
             if (200 === dataMap.code) {
+                var flowGroupVo = dataMap.flowGroupVo;
                 $("#buttonFlowGroup").attr("onclick", "");
                 $("#buttonFlowGroup").attr("onclick", "updateFlowGroup()");
                 $("#flowGroupId").val(id);
-                $("#flowGroupName").val(updateName);
-                $("#description").val(updateDescription);
+                $("#flowGroupName").val(flowGroupVo.name);
+                $("#description").val(flowGroupVo.description);
                 layer.open({
                     type: 1,
                     title: '<span style="color: #269252;">update flow group</span>',
