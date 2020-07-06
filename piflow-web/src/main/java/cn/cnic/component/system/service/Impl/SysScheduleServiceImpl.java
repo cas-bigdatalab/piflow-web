@@ -310,14 +310,21 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
         if (null == sysScheduleById) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("The task for which the current Id does not exist");
         }
-        sysScheduleById.setLastUpdateDttm(new Date());
-        sysScheduleById.setLastUpdateUser(username);
-        sysScheduleById.setJobName(sysScheduleVo.getJobName());
-        sysScheduleById.setJobClass(sysScheduleVo.getJobClass());
-        sysScheduleById.setCronExpression(sysScheduleVo.getCronExpression());
+        String jobName = sysScheduleById.getJobName();
+        if (StringUtils.isBlank(jobName)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Task name is empty");
+        }
         try {
-            QuartzUtils.updateScheduleJob(scheduler, sysScheduleById);
+            QuartzUtils.deleteScheduleJob(scheduler, jobName);
+            sysScheduleById.setLastUpdateDttm(new Date());
+            sysScheduleById.setLastUpdateUser(username);
+            sysScheduleById.setJobName(sysScheduleVo.getJobName());
+            sysScheduleById.setJobClass(sysScheduleVo.getJobClass());
+            sysScheduleById.setCronExpression(sysScheduleVo.getCronExpression());
             sysScheduleDomain.saveOrUpdate(sysScheduleById);
+            if (ScheduleState.RUNNING == sysScheduleById.getStatus()) {
+                QuartzUtils.createScheduleJob(scheduler, sysScheduleById);
+            }
             return ReturnMapUtils.setSucceededMsgRtnJsonStr("Started successfully");
         } catch (Exception e) {
             logger.error("Started failed", e);

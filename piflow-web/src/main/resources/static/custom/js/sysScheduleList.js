@@ -405,15 +405,12 @@ function updateSchedule() {
         $.ajax({
             cache: true,//Keep cached data
             type: "get",//Request type post
-            url: addContextPath("sysSchedule/updateScheduleInfo"),//This is the name of the file where I receive data in the background.
+            url: addContextPath("sysSchedule/updateTask"),//This is the name of the file where I receive data in the background.
             data: {
                 id: id,
-                name: scheduleName,
-                description: description,
-                driverMemory: driverMemory,
-                executorNumber: executorNumber,
-                executorMemory: executorMemory,
-                executorCores: executorCores
+                jobName: scheduleName,
+                jobClass: scheduleClass,
+                cronExpression: scheduleCron
             },
             async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
             error: function (request) {//Operation after request failure
@@ -424,10 +421,14 @@ function updateSchedule() {
                 return;
             },
             success: function (data) {//Operation after request successful
-                if (data > 0) {
+                var dataMap = JSON.parse(data);
+                if (200 === dataMap.code) {
                     layer.closeAll('page');
                     layer.msg('update success', {icon: 1, shade: 0, time: 2000}, function () {
                         location.reload();
+                    });
+                } else {
+                    layer.msg('update failed ', {icon: 2, shade: 0, time: 2000}, function () {
                     });
                 }
             }
