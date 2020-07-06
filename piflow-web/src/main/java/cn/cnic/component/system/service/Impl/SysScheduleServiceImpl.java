@@ -355,11 +355,13 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
         if (StringUtils.isBlank(jobName)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Task name is empty");
         }
-        sysScheduleById.setLastUpdateDttm(new Date());
-        sysScheduleById.setLastUpdateUser(username);
         try {
-            QuartzUtils.resumeScheduleJob(scheduler, jobName);
-            sysScheduleById.setStatus(ScheduleState.RUNNING);
+            if (ScheduleState.RUNNING == sysScheduleById.getStatus()) {
+                QuartzUtils.deleteScheduleJob(scheduler, jobName);
+            }
+            sysScheduleById.setEnableFlag(false);
+            sysScheduleById.setLastUpdateDttm(new Date());
+            sysScheduleById.setLastUpdateUser(username);
             sysScheduleDomain.saveOrUpdate(sysScheduleById);
             return ReturnMapUtils.setSucceededMsgRtnJsonStr("Started successfully");
         } catch (Exception e) {
