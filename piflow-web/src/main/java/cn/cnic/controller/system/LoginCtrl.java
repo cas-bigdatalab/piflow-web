@@ -8,6 +8,7 @@ import cn.cnic.component.system.vo.SysUserVo;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
@@ -50,6 +51,12 @@ public class LoginCtrl {
         }
         modelAndView.addObject("now", "say hello spring boot !!!!!");
         return modelAndView;
+    }
+
+    @PostMapping(value = "/jwtLogin")
+    @ResponseBody
+    public String login(String username,String password){
+        return sysUserServiceImpl.jwtLogin(username, password);
     }
 
     @RequestMapping(value = "/register")

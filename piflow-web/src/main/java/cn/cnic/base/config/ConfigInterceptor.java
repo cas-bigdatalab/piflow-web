@@ -35,6 +35,9 @@ public class ConfigInterceptor implements HandlerInterceptor {
         if (requestURI.startsWith(contextPath + "/login")) {
             return true;
         }
+        if (requestURI.startsWith(contextPath + "/jwtLogin")) {
+            return true;
+        }
         // Determine if the boot flag is true
         if (!SysParamsCache.IS_BOOT_COMPLETE) {
             // Query is boot record

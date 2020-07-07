@@ -24,4 +24,6 @@ public interface ISysUserService {
     public int deleteUser(String id);
 
     public String registerUser(SysUserVo sysUserVo);
+
+    public String jwtLogin(String username, String password);
 }
