@@ -1,0 +1,126 @@
+<!--[if IE]>
+<meta http-equiv="X-UA-Compatible" content="IE=5,IE=9"><![endif]-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>piflow-web</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta th:include="Macro/csrfTokeHeadMacro :: csrfTokeHeadMacro"/>
+    <link rel="stylesheet" type="text/css" href="/piflow-web/components/mxGraph/styles/grapheditor.css">
+    <link rel="stylesheet" type="text/css" href="/piflow-web/components/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href='/piflow-web/custom/css/publicMacro.css'/>
+    <link rel="stylesheet" type="text/css" href="/piflow-web/custom/css/fullScreen.css"/>
+    <link rel="stylesheet" type="text/css" href="/piflow-web/components/font-awesome-4.7.0/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/piflow-web/css/main.css"/>
+    <link rel="shortcut icon" href="/piflow-web/img/logo.ico">
+    <style>
+        .btn-position {
+            float: right;
+            margin-right: 8px
+        }
+
+        .btn-position .btn {
+            margin: 6px 6px 2px 0 !important;
+        }
+
+        .customize_btn_css {
+            display: inline-block;
+            padding: 6px 12px;
+            margin-bottom: 0;
+            font-size: 14px;
+            font-weight: 400;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            touch-action: manipulation;
+            cursor: pointer;
+            user-select: none;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            background: #1A8B5F;
+            color: #ffffff;
+            height: 34px;
+            text-decoration: none;
+        }
+
+        a.customize_btn_css:hover {
+            color: #ffffff;
+        }
+
+        a.customize_btn_css:focus {
+            color: #ffffff;
+        }
+    </style>
+    <meta th:include="mxGraph/inc/index_graph_improt :: index_graph_improt"/>
+</head>
+<body class="geEditor">
+<div th:include="Macro/fragmentMacro :: fullScreen"></div>
+<div th:include="Macro/publicMacro :: userHeadMacro"></div>
+
+<!--operation_button-->
+<div id="precess-run" class="precess-run"
+     style="position: fixed; z-index: 779;text-align: right;right: 10px;top: 50px;">
+    <div th:include="process/inc/proccess_operation_button :: proccess_operation_button"></div>
+</div>
+
+<!-- crumbs -->
+<div style="width: 100%;position: fixed;z-index: 99999;float: left;left: 0px;bottom: 0px;text-align: center;height: 28px;line-height: 28px; background: #37714b;">
+    <div th:include="process/inc/proccess_crumbs_task :: proccess_crumbs_task"></div>
+</div>
+<!--Initializes the drawing board-->
+
+<!--Attribute div levitation-->
+<div id="right-group-wrap" style="position:absolute;right:0;top:86px;width:25%;;height:88%;transition: 2s">
+    <div class="ExpandSidebar">
+        <div class="triggerSlider">
+            <i style="color: white" class="fa fa-angle-left fa-2x"></i>
+        </div>
+    </div>
+    <div id="right-group" class="right-group"></div>
+</div>
+
+<!--checkpoint open window-->
+<div style="display: none;">
+    <div id="layer_open_checkpoint">
+        <div id="checkpointContentNew" style="width: 100%; margin-left: 10px;margin-top: 10px;">
+            No checkpoint information was queried
+            <input type="checkbox" value="">
+        </div>
+        <hr>
+        <div style="text-align: right;">
+            <button id="run_checkpoint_new" type="button" class="btn btn-default" onclick="runProcess()">Submit1
+            </button>
+            <button id="debug_checkpoint_new" type="button" class="btn btn-default" onclick="runProcess('DEBUG')">
+                Submit2
+            </button>
+        </div>
+    </div>
+</div>
+
+<script th:include="Macro/csrfTokeHeadMacro :: csrfTokeHeadMacroScript"/>
+<script type="text/javascript" src="/piflow-web/custom/js/processContent.js"></script>
+<script type="text/javascript" src="/piflow-web/custom/js/process/initProcessGraph.js"></script>
+<script th:inline="javascript">
+    var parentAccessPath = [[${parentAccessPath}]];
+    var loadId = [[${load}]];
+
+
+    //---------------------------------------------------
+    var stdoutLog = [[${stdoutLog}]];
+    var stderrLog = [[${stderrLog}]];
+    //---------------------------------------------------
+
+    (function () {
+        initProcessDrawingBoardData(loadId, parentAccessPath);
+        initProcessContentPage(nodeArr);
+        initCrumbs(parentAccessPath);
+    })();
+    $(document).ready(function () {
+        initGraph();
+    });
+    //@ sourceURL=mxGraphIndex.js
+</script>
+
+</body>
+</html>

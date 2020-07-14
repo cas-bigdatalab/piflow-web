@@ -1,0 +1,32 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<body th:fragment=flow_List>
+
+<!-- content starts -->
+<div class="wrapper" style="margin: 20px;">
+    <!-- Media datatable -->
+    <div class="widget">
+        <div class="table-overflow">
+            <div class="demoTable">
+                Search:
+                <div class="layui-inline">
+                    <input class="layui-input" name="param" id="search_input_id" autocomplete="off">
+                </div>
+            </div>
+            <table class="layui-hide" id="flowTableId" lay-filter="user"></table>
+        </div>
+    </div>
+    <!-- /media datatable -->
+</div>
+<!-- content ends -->
+
+<div th:include="Macro/fragmentMacro :: fullScreen"></div>
+
+<script th:include="Macro/csrfTokeHeadMacro :: csrfTokeHeadMacroScript"/>
+<script th:src="@{/components/mxGraph/flowList.js}"></script>
+<script th:inline="javascript">
+    initDatatableFlowPage('flowTableId', "/piflow-web/flow/getFlowListPage", "search_input_id");
+    //@ sourceURL=table_right.js
+</script>
+</body>
+</html>
