@@ -1,6 +1,7 @@
 package cn.cnic.mapper.dataSource;
 
 import cn.cnic.component.dataSource.model.DataSource;
+import cn.cnic.component.dataSource.vo.DataSourceVo;
 import cn.cnic.provider.dataSource.DataSourceMapperProvider;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
@@ -37,6 +38,9 @@ public interface DataSourceMapper {
 
     @SelectProvider(type = DataSourceMapperProvider.class, method = "getDataSourceListParam")
     public List<DataSource> getDataSourceListParam(@Param("username") String username, @Param("isAdmin") boolean isAdmin, String param);
+
+    @SelectProvider(type = DataSourceMapperProvider.class, method = "getDataSourceListParam")
+    public List<DataSourceVo> getDataSourceVoListParam(@Param("username") String username, @Param("isAdmin") boolean isAdmin, String param);
 
     /**
      * query all TemplateDataSource

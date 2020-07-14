@@ -8,10 +8,12 @@ import cn.cnic.component.dataSource.service.IDataSource;
 import cn.cnic.component.dataSource.utils.DataSourceUtils;
 import cn.cnic.component.dataSource.vo.DataSourcePropertyVo;
 import cn.cnic.component.dataSource.vo.DataSourceVo;
+import cn.cnic.mapper.dataSource.DataSourceMapper;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +27,9 @@ public class DataSourceImpl implements IDataSource {
 
     @Resource
     private DataSourceDomain dataSourceDomain;
+
+    @Resource
+    private DataSourceMapper dataSourceMapper;
 
     @Override
     @Transactional
@@ -237,12 +242,7 @@ public class DataSourceImpl implements IDataSource {
         if (!isAdmin && StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
         }
-        List<DataSource> dataSourceList = null;
-        if (isAdmin) {
-            dataSourceList = dataSourceDomain.getDataSourceList();
-        } else {
-            dataSourceList = dataSourceDomain.getDataSourceListByCreateUser(username);
-        }
+        List<DataSource> dataSourceList = dataSourceMapper.getDataSourceList(username, isAdmin);
         List<DataSourceVo> dataSourceVoList = DataSourceUtils.dataSourceListPoToVo(dataSourceList, false);
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("data", dataSourceVoList);
     }
@@ -257,31 +257,13 @@ public class DataSourceImpl implements IDataSource {
         if (!isAdmin && StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
         }
-        Map<String, Object> rtnMap = new HashMap<>();
-        if (null != offset && null != limit) {
-            Page<DataSource> dataSourceListPage;
-            if (isAdmin) {
-                dataSourceListPage = dataSourceDomain.adminGetDataSourceListPage(offset - 1, limit, param);
-            } else {
-                dataSourceListPage = dataSourceDomain.userGetDataSourceListPage(username, offset - 1, limit, param);
-            }
-            List<DataSourceVo> dataSourceVoList = new ArrayList<>();
-            List<DataSource> dataSourceList = dataSourceListPage.getContent();
-            if (null != dataSourceList && dataSourceList.size() > 0) {
-                dataSourceVoList = new ArrayList<>();
-                DataSourceVo dataSourceVo = null;
-                for (DataSource dataSource : dataSourceList) {
-                    dataSourceVo = new DataSourceVo();
-                    BeanUtils.copyProperties(dataSource, dataSourceVo);
-                    dataSourceVoList.add(dataSourceVo);
-                }
-            }
-
-            rtnMap.put(ReturnMapUtils.KEY_CODE, ReturnMapUtils.SUCCEEDED_CODE);
-            rtnMap.put("msg", "");
-            rtnMap.put("count", dataSourceListPage.getTotalElements());
-            rtnMap.put("data", dataSourceVoList);//Data collection
+        if (null == offset || null == limit) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("param is error");
         }
+        Page<DataSourceVo> page = PageHelper.startPage(offset, limit);
+        dataSourceMapper.getDataSourceVoListParam(username, isAdmin, param);
+        Map<String, Object> rtnMap = PageHelperUtils.setLayTableParam(page, null);
+        rtnMap.put(ReturnMapUtils.KEY_CODE, ReturnMapUtils.SUCCEEDED_CODE);
         return JsonUtils.toJsonNoException(rtnMap);
     }
 

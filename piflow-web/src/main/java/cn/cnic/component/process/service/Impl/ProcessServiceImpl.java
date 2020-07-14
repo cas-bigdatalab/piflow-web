@@ -1,10 +1,14 @@
 package cn.cnic.component.process.service.Impl;
 
 import cn.cnic.base.util.*;
+import cn.cnic.base.vo.UserVo;
 import cn.cnic.common.Eunm.ProcessState;
 import cn.cnic.common.Eunm.RunModeType;
 import cn.cnic.common.Eunm.StopState;
 import cn.cnic.component.flow.model.Flow;
+import cn.cnic.component.mxGraph.utils.MxCellUtils;
+import cn.cnic.component.mxGraph.vo.MxCellVo;
+import cn.cnic.component.mxGraph.vo.MxGraphModelVo;
 import cn.cnic.component.process.model.Process;
 import cn.cnic.component.process.model.ProcessGroup;
 import cn.cnic.component.process.model.ProcessStop;
@@ -159,9 +163,9 @@ public class ProcessServiceImpl implements IProcessService {
      * @return
      */
     @Override
-    public ProcessVo getProcessById(String id) {
+    public ProcessVo getProcessById(String username, boolean isAdmin, String id) {
         ProcessVo processVo = null;
-        Process processById = processDomain.getProcessById(id);
+        Process processById = processMapper.getProcessById(username, isAdmin, id);
         if (null != processById) {
             processVo = ProcessUtils.processPoToVo(processById);
         }
@@ -759,6 +763,104 @@ public class ProcessServiceImpl implements IProcessService {
             rtnMap.put("stdoutLog", "Interface call failed");
             rtnMap.put("stderrLog", "Interface call failed");
         }
+        return JsonUtils.toJsonNoException(rtnMap);
+    }
+
+    /**
+     * drawingBoard Data
+     *
+     * @param username
+     * @param isAdmin
+     * @param loadId
+     * @param parentAccessPath
+     * @return
+     */
+    @Override
+    public String drawingBoardData(String username, boolean isAdmin, String loadId, String parentAccessPath) {
+        if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
+        }
+        if (StringUtils.isBlank(loadId)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("param 'load' is null");
+        }
+
+        Process process = processMapper.getProcessById(username, isAdmin, loadId);
+        if (null == process) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("No data with ID : " + loadId);
+        }
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(ReturnMapUtils.SUCCEEDED_MSG);
+        // set current user
+        UserVo currentUser = new UserVo();
+        currentUser.setUsername(username);
+        rtnMap.put("currentUser", currentUser);
+        //set parentAccessPath
+        rtnMap.put("parentAccessPath", parentAccessPath);
+        rtnMap.put("load", loadId);
+        rtnMap.put("processType", "TASK");
+        rtnMap.put("processId", process.getId());
+
+        List<Map<String, String>> nodePageIdAndStates = new ArrayList<>();
+        // processStopList
+        List<ProcessStop> processStopList = process.getProcessStopList();
+        if (null != processStopList && processStopList.size() > 0) {
+            Map<String, String> stopNode;
+            for (ProcessStop processStop_i : processStopList) {
+                if (null == processStop_i) {
+                    continue;
+                }
+                stopNode = new HashMap<>();
+                stopNode.put("pageId", processStop_i.getPageId());
+                stopNode.put("state", null != processStop_i.getState() ? processStop_i.getState().name() : "");
+                nodePageIdAndStates.add(stopNode);
+            }
+        }
+        rtnMap.put("nodeArr", nodePageIdAndStates);
+        ProcessVo processVo = ProcessUtils.processPoToVo(process);
+        rtnMap.put("percentage", (StringUtils.isNotBlank(processVo.getProgress()) ? processVo.getProgress() : 0.00) + "%");
+        rtnMap.put("appId", processVo.getAppId());
+        rtnMap.put("parentProcessId", processVo.getParentProcessId());
+        rtnMap.put("pID", processVo.getProcessId());
+
+        ProcessGroupVo parentsProcessGroupVo = processVo.getProcessGroupVo();
+        if (null != parentsProcessGroupVo) {
+            rtnMap.put("processGroupId", parentsProcessGroupVo.getId());
+        }
+        ProcessState processState = processVo.getState();
+        if (null == processState) {
+            processState = ProcessState.INIT;
+        }
+        rtnMap.put("processState", processState.name());
+        MxGraphModelVo mxGraphModelVo = processVo.getMxGraphModelVo();
+        if (null != mxGraphModelVo) {
+            List<MxCellVo> rootVo = mxGraphModelVo.getRootVo();
+            if (null != rootVo && rootVo.size() > 0) {
+                List<MxCellVo> iconTranslate = new ArrayList<>();
+                MxCellVo iconMxCellVo;
+                for (MxCellVo mxCellVo : rootVo) {
+                    if (null == mxCellVo) {
+                        continue;
+                    }
+                    String style = mxCellVo.getStyle();
+                    if (StringUtils.isBlank(style) || style.indexOf("image;") != 0) {
+                        continue;
+                    }
+                    if (null == mxCellVo.getMxGeometryVo()) {
+                        continue;
+                    }
+                    iconMxCellVo = MxCellUtils.initIconMxCellVo(mxCellVo);
+                    if (null == iconMxCellVo) {
+                        continue;
+                    }
+                    iconTranslate.add(iconMxCellVo);
+                }
+                rootVo.addAll(iconTranslate);
+            }
+            mxGraphModelVo.setRootVo(rootVo);
+        }
+
+        String loadXml = MxGraphUtils.mxGraphModelToMxGraphXml(mxGraphModelVo);
+        rtnMap.put("xmlDate", loadXml);
+
         return JsonUtils.toJsonNoException(rtnMap);
     }
 

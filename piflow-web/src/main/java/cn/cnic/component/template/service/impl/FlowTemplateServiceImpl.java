@@ -71,6 +71,9 @@ public class FlowTemplateServiceImpl implements IFlowTemplateService {
         if (StringUtils.isBlank(loadId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("param 'loadId' is empty");
         }
+        if (StringUtils.isBlank(templateType)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("param 'templateType' is empty");
+        }
         String templateXmlStr = "";
         TemplateType saveTemplateType = null;
         switch (templateType) {

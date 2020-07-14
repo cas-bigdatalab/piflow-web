@@ -8,7 +8,7 @@
  * Extends <mxEventSource> to implement a view for a graph. This class is in
  * charge of computing the absolute coordinates for the relative child
  * geometries, the points for perimeters and edge styles and keeping them
- * cached in <mxCelllStates> for faster retrieval. The states are updated
+ * cached in <mxCellStates> for faster retrieval. The states are updated
  * whenever the model or the view state (translate, scale) changes. The scale
  * and translate are honoured in the bounds.
  * 

@@ -1,17 +1,19 @@
 package cn.cnic.controller;
 
-import cn.cnic.base.util.JsonUtils;
-import cn.cnic.base.util.ReturnMapUtils;
-import cn.cnic.base.util.SessionUserUtil;
-import cn.cnic.base.util.SqlUtils;
+import cn.cnic.base.util.*;
 import cn.cnic.base.vo.UserVo;
+import cn.cnic.common.Eunm.DrawingBoardType;
 import cn.cnic.component.flow.model.Flow;
 import cn.cnic.component.flow.service.IFlowGroupService;
 import cn.cnic.component.flow.service.IFlowService;
 import cn.cnic.component.flow.vo.FlowGroupVo;
 import cn.cnic.component.flow.vo.FlowVo;
+import cn.cnic.component.mxGraph.model.MxGraphModel;
+import cn.cnic.component.mxGraph.vo.MxGraphModelVo;
+import cn.cnic.component.stopsComponent.vo.StopGroupVo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -19,6 +21,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -45,6 +48,23 @@ public class FlowCtrl {
         boolean isAdmin = SessionUserUtil.isAdmin();
         String username = SessionUserUtil.getCurrentUsername();
         return flowServiceImpl.getFlowListPage(username, isAdmin, page, limit, param);
+    }
+
+    /**
+     * Enter the front page of the drawing board
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping("/drawingBoardData")
+    @ResponseBody
+    public String drawingBoardData(HttpServletRequest request) {
+        String load = request.getParameter("load");
+        //set parentAccessPath
+        String parentAccessPath = request.getParameter("parentAccessPath");
+        String username = SessionUserUtil.getCurrentUsername();
+        boolean isAdmin = SessionUserUtil.isAdmin();
+        return flowServiceImpl.drawingBoardData(username, isAdmin, load, parentAccessPath);
     }
 
     /**
@@ -155,6 +175,6 @@ public class FlowCtrl {
     @RequestMapping("/findFlowByGroup")
     @ResponseBody
     public String findFlowByGroup(String fId, String flowPageId) {
-        return flowGroupServiceImpl.queryIdInfo(fId,flowPageId);
+        return flowGroupServiceImpl.queryIdInfo(fId, flowPageId);
     }
 }

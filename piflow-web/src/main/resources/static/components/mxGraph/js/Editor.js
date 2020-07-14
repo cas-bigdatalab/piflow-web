@@ -4,10 +4,8 @@
 /**
  * Editor constructor executed on page load.
  */
-var groupdragclass
 Editor = function(chromeless, themes, model, graph, editable)
 {
-	var groupdragclass=document.getElementById("group-drag-click")
 	mxEventSource.call(this);
 	this.chromeless = (chromeless != null) ? chromeless : this.chromeless;
 	this.initStencilRegistry();
@@ -903,7 +901,7 @@ function Dialog(editorUi, elt, w, h, modal, closable, onClose, noScroll, transpa
 		var pos = this.getPosition(left, top, w, h);
 		left = pos.x;
 		top = pos.y;
-
+		
 		div.style.left = left + 'px';
 		div.style.top = top + 'px';
 		div.style.width = w + 'px';
@@ -2075,23 +2073,20 @@ PageSetupDialog.getFormats = function()
 			graph.view.backgroundPageShape.node.style.backgroundPosition = position;
 			graph.view.backgroundPageShape.node.style.backgroundImage = image;
 			graph.view.backgroundPageShape.node.style.backgroundColor = color;
-			// graph.view.backgroundPageShape.node.style.width = '1200px';
 			graph.container.className = 'geDiagramContainer geDiagramBackdrop';
 			canvas.style.backgroundImage = 'none';
 			canvas.style.backgroundColor = '';
-			//group中设置画板左边距=============
-
-			if(groupdragclass!=null){
-				graph.container.style.left="0"
-
+//------------------------------ Custom modification content 001 start ------------------------------
+			//In group, set whether the left margin of the Sketchpad is hidden or not
+			if (EditorUi.prototype.hideLeft)
+			{
+				graph.container.style.left="0";
 			}
-			if( Format.customizeType=="PROCESS"){
-				graph.container.style.left="0"
-				graph.container.style.right="0"
+			if (EditorUi.prototype.noEditing)
+			{
+				graph.container.style.left="0";
 			}
-
-
-//===================
+//------------------------------ Custom modification content 001 end   ------------------------------
 		}
 		else
 		{
@@ -2330,7 +2325,6 @@ PageSetupDialog.getFormats = function()
 	var mxPopupMenuAddItem = mxPopupMenu.prototype.addItem;
 	mxPopupMenu.prototype.addItem = function(title, image, funct, parent, iconCls, enabled)
 	{
-
 		var result = mxPopupMenuAddItem.apply(this, arguments);
 		
 		if (enabled != null && !enabled)

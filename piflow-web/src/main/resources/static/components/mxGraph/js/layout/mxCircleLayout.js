@@ -200,5 +200,4 @@ mxCircleLayout.prototype.circle = function(vertices, r, left, top)
 				Math.round(top + r + r * Math.cos(i * phi)));
 		}
 	}
-
 };

@@ -138,7 +138,7 @@ public class MxGraphCtrl {
         List<Map<String, String>> nodePageIdAndStates = new ArrayList<>();
         ProcessState processState = ProcessState.INIT;
         if ("PROCESS".equals(processType)) {
-            ProcessVo processVo = processServiceImpl.getProcessById(load);
+            ProcessVo processVo = processServiceImpl.getProcessById(SessionUserUtil.getCurrentUsername(),SessionUserUtil.isAdmin(),load);
             if (null == processVo) {
                 return null;
             }

@@ -51,7 +51,7 @@ public interface IProcessService {
      * @return
      */
     @Transactional
-    public ProcessVo getProcessById(String id);
+    public ProcessVo getProcessById(String username, boolean isAdmin, String id);
 
     /**
      * Query process according to Appid
@@ -201,4 +201,15 @@ public interface IProcessService {
      * @return
      */
     public String getLogUrl(String appId);
+
+    /**
+     * drawingBoard Data
+     *
+     * @param username
+     * @param isAdmin
+     * @param loadId
+     * @param parentAccessPath
+     * @return
+     */
+    public String drawingBoardData(String username, boolean isAdmin, String loadId, String parentAccessPath);
 }

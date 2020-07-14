@@ -35,6 +35,7 @@ public class PageHelperUtils {
             return rtnMap;
         }
         PageInfo info = new PageInfo(page.getResult());
+        rtnMap.put("msg", "success");
         rtnMap.put("count", info.getTotal());
         rtnMap.put("data", info.getList());//Data collection
         logger.debug("success");

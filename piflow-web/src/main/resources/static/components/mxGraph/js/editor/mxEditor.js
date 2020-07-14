@@ -1685,6 +1685,7 @@ mxEditor.prototype.createSwimlaneManager = function (graph)
 	{
 		return this.maintainSwimlanes;
 	});
+	
 	return swimlaneMgr;
 };
 

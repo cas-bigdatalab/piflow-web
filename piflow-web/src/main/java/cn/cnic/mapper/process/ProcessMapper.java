@@ -28,9 +28,10 @@ public interface ProcessMapper {
     @SelectProvider(type = ProcessMapperProvider.class, method = "getProcessById")
     @Results({
             @Result(id = true, column = "id", property = "id"),
-            @Result(column = "fk_flow_process_group_id", property = "processGroup", one = @One(select = "cn.cnic.mapper.process.ProcessGroupMapper.getProcessGroupById", fetchType = FetchType.LAZY)),
+            @Result(column = "id", property = "mxGraphModel", many = @Many(select = "cn.cnic.mapper.mxGraph.MxGraphModelMapper.getMxGraphModelByProcessId", fetchType = FetchType.LAZY)),
+            @Result(column = "id", property = "processPathList", many = @Many(select = "cn.cnic.mapper.process.ProcessPathMapper.getProcessPathByProcessId", fetchType = FetchType.LAZY)),
             @Result(column = "id", property = "processStopList", many = @Many(select = "cn.cnic.mapper.process.ProcessStopMapper.getProcessStopByProcessId", fetchType = FetchType.LAZY)),
-            @Result(column = "id", property = "processPathList", many = @Many(select = "cn.cnic.mapper.process.ProcessPathMapper.getProcessPathByProcessId", fetchType = FetchType.LAZY))
+            @Result(column = "fk_flow_process_group_id", property = "processGroup", one = @One(select = "cn.cnic.mapper.process.ProcessGroupMapper.getProcessGroupById", fetchType = FetchType.LAZY))
 
     })
     public Process getProcessById(@Param("username") String username, @Param("isAdmin") boolean isAdmin, @Param("id") String id);

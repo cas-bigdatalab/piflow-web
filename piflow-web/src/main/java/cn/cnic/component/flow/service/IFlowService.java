@@ -86,4 +86,6 @@ public interface IFlowService {
 
     public String getMaxFlowPageIdByFlowGroupId(String flowGroupId);
 
+    public String drawingBoardData(String username, boolean isAdmin, String load, String parentAccessPath);
+
 }

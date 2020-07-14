@@ -4,22 +4,23 @@
  *
  * Constructs the actions object for the given UI.
  */
-var rundata={}
-
 function Actions(editorUi)
 {
 	this.editorUi = editorUi;
 	this.actions = new Object();
 	this.init();
-}
-function getNodeId(flowGroupdata,type) {
-	if(flowGroupdata!=undefined){
-		flowGroupdata.type=type
-	}
-	rundata=flowGroupdata
+};
 
-	// return  flowGroupdata
+//------------------------------ Custom modification content 001 start ------------------------------
+Actions.prototype.RunCells = function(includeEdges)
+{
+	alert("Please initialize the method (Actions.prototype.RunCells)");
 }
+Actions.prototype.RunAll = function()
+{
+	alert("Please initialize the method (Actions.prototype.RunAll)");
+}
+//------------------------------ Custom modification content 001 end   ------------------------------
 
 /**
  * Adds the default actions.
@@ -239,71 +240,22 @@ Actions.prototype.init = function()
 			}
 		}
 	};
-	function getQueryString(name){
-		var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
-		var r = window.location.search.substr(1).match(reg);
-		if(r!=null)return  unescape(r[2]); return null;
-	}
-
-	function RunCells(includeEdges) {
-		// console.log(rundata,"typetype")
-		var fullScreen = $('#fullScreen');
-		// console.log(fullScreen,"fullScreenfullScreenfullScreenfullScreen")
-		var data = {pId: getQueryString("load"),nodeId:rundata.pageId};
-		// console.log(data,"Data")
-		fullScreen.show();
-
-		$.ajax({
-			type: "post",//Request type post
-			url: "/piflow-web/mxGraph/groupRightRun",
-			data: data,
-			async: true,//Synchronous Asynchronous
-			error: function (request) {//Operation after request failure
-				fullScreen.hide();
-				return;
-			},
-			success: function (data) {//After the request is successful
-				fullScreen.hide();
-				var dataMap = JSON.parse(data);
-				if (200 === dataMap.code) {
-					layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
-						//Jump to the monitor page after starting successfully
-						var tempWindow = window.open('_blank');
-						if (tempWindow == null || typeof (tempWindow) == 'undefined') {
-							alert('The window cannot be opened. Please check your browser settings.')
-						} else {
-							if(flowGroupdata.type=="GROUP"){
-								tempWindow.location = "/piflow-web/mxGraph/drawingBoard?drawingBoardType=PROCESS&processType=PROCESS_GROUP&load=" + dataMap.processGroupId;
-							}else{
-								tempWindow.location = "/piflow-web/mxGraph/drawingBoard?drawingBoardType=PROCESS&processType=PROCESS&load=" + dataMap.processId;
-							}
-
-						}
-					});
-				} else {
-					//alert("Startup failure：" + dataMap.errorMsg);
-					layer.msg("Startup failure：" + dataMap.errorMsg, {icon: 2, shade: 0, time: 2000}, function () {
-					});
-				}
-			}
-		})
-		// console.log('RUN……')
-	}
 	
 	this.addAction('delete', function(evt)
 	{
 		deleteCells(evt != null && mxEvent.isShiftDown(evt));
 	}, null, null, 'Delete');
-
+//------------------------------ Custom modification content 002 start ------------------------------
+	//add right menu 'Run'
 	this.addAction('run', function(evt)
 	{
-		RunCells(evt != null && mxEvent.isShiftDown(evt));
+		Actions.prototype.RunCells(evt != null && mxEvent.isShiftDown(evt));
 	}, null, null, 'Run');
-
+	//add right menu 'RunAll'
 	this.addAction('runAll', function() {
-		runFlowGroup();
-		// console.log("Run All")
+		Actions.prototype.RunAll();
 	},null, null, '');
+//------------------------------ Custom modification content 002 end   ------------------------------
 	this.addAction('deleteAll', function()
 	{
 		deleteCells(true);
@@ -1357,9 +1309,8 @@ Actions.prototype.init = function()
 			        		
 			        		// Sets shape only if not already shape with image (label or image)
 			        		var state = graph.view.getState(cells[0]);
-			        		var state = graph.view.getState(cells[0]);
 			        		var style = (state != null) ? state.style : graph.getCellStyle(cells[0]);
-
+			        		
 			        		if (style[mxConstants.STYLE_SHAPE] != 'image' && style[mxConstants.STYLE_SHAPE] != 'label')
 			        		{
 			        			graph.setCellStyles(mxConstants.STYLE_SHAPE, 'image', cells);

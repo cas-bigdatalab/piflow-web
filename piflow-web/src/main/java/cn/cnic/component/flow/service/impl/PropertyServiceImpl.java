@@ -96,9 +96,6 @@ public class PropertyServiceImpl implements IPropertyService {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("user Illegality");
         }
-        if (StringUtils.isBlank(content)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("content is null");
-        }
         if (StringUtils.isBlank(id)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("id is null");
         }

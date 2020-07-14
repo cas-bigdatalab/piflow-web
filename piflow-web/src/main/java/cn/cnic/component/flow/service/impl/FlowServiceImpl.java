@@ -1,6 +1,7 @@
 package cn.cnic.component.flow.service.impl;
 
 import cn.cnic.base.util.*;
+import cn.cnic.base.vo.UserVo;
 import cn.cnic.common.Eunm.ProcessState;
 import cn.cnic.common.Eunm.RunModeType;
 import cn.cnic.component.flow.model.Flow;
@@ -19,6 +20,9 @@ import cn.cnic.component.mxGraph.utils.MxGraphModelUtils;
 import cn.cnic.component.mxGraph.vo.MxGraphModelVo;
 import cn.cnic.component.process.model.Process;
 import cn.cnic.component.process.utils.ProcessUtils;
+import cn.cnic.component.process.vo.ProcessVo;
+import cn.cnic.component.stopsComponent.service.IStopGroupService;
+import cn.cnic.component.stopsComponent.vo.StopGroupVo;
 import cn.cnic.domain.flow.FlowDomain;
 import cn.cnic.domain.flow.FlowGroupDomain;
 import cn.cnic.domain.mxGraph.MxCellDomain;
@@ -30,6 +34,7 @@ import cn.cnic.mapper.flow.StopsMapper;
 import cn.cnic.mapper.mxGraph.MxCellMapper;
 import cn.cnic.mapper.mxGraph.MxGeometryMapper;
 import cn.cnic.mapper.mxGraph.MxGraphModelMapper;
+import cn.cnic.mapper.process.ProcessMapper;
 import cn.cnic.third.service.IFlow;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -38,6 +43,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -73,6 +79,9 @@ public class FlowServiceImpl implements IFlowService {
     private PropertyMapper propertyMapper;
 
     @Resource
+    private ProcessMapper processMapper;
+
+    @Resource
     private ProcessDomain processDomain;
 
     @Resource
@@ -83,6 +92,9 @@ public class FlowServiceImpl implements IFlowService {
 
     @Resource
     private FlowGroupDomain flowGroupDomain;
+
+    @Resource
+    private IStopGroupService stopGroupServiceImpl;
 
     /**
      * Query flow information based on id
@@ -144,6 +156,7 @@ public class FlowServiceImpl implements IFlowService {
         if (null == flowById) {
             return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("flow", null);
         }
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(ReturnMapUtils.SUCCEEDED_MSG);
         FlowVo flowVo = new FlowVo();
         BeanUtils.copyProperties(flowById, flowVo);
         //Take out 'mxGraphModel' and convert to Vo
@@ -157,7 +170,26 @@ public class FlowServiceImpl implements IFlowService {
         flowVo.setMxGraphModelVo(mxGraphModelVo);
         flowVo.setStopsVoList(stopsVoList);
         flowVo.setPathsVoList(pathsVoList);
-        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("flow", flowVo);
+        if (null != stopsVoList) {
+            flowVo.setStopQuantity(stopsVoList.size());
+        }
+        rtnMap.put("flow", flowVo);
+
+        List<Process> processList = processMapper.getRunningProcessList(id);
+        if (CollectionUtils.isNotEmpty(processList)) {
+            List<ProcessVo> processVoList = new ArrayList<ProcessVo>();
+            ProcessVo processVo;
+            for (Process process : processList) {
+                if (null == process) {
+                    continue;
+                }
+                processVo = new ProcessVo();
+                BeanUtils.copyProperties(process, processVo);
+                processVoList.add(processVo);
+            }
+            rtnMap.put("runningProcessVoList", processVoList);
+        }
+        return JsonUtils.toJsonNoException(rtnMap);
     }
 
     @Override
@@ -504,5 +536,50 @@ public class FlowServiceImpl implements IFlowService {
     @Override
     public String getMaxFlowPageIdByFlowGroupId(String flowGroupId) {
         return flowMapper.getMaxFlowPageIdByFlowGroupId(flowGroupId);
+    }
+
+    @Override
+    public String drawingBoardData(String username, boolean isAdmin, String load, String parentAccessPath) {
+        if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
+        }
+        if (StringUtils.isBlank(load)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("param 'load' is null");
+        }
+        // Query by loading'id'
+        Flow flowById = this.getFlowById(username, isAdmin, load);
+        if (null == flowById) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("No data with ID : " + load);
+        }
+
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(ReturnMapUtils.SUCCEEDED_MSG);
+
+        rtnMap.put("parentAccessPath", parentAccessPath);
+        // set current user
+        UserVo currentUser = SessionUserUtil.getCurrentUser();
+        rtnMap.put("currentUser", currentUser);
+        //set drawingBoardType
+        //rtnMap.put("drawingBoardType", "TASK");
+
+        if (null != flowById.getFlowGroup()) {
+            String parentsId = flowById.getFlowGroup().getId();
+            rtnMap.put("parentsId", parentsId);
+        }
+        // Group on the left and'stops'
+        List<StopGroupVo> groupsVoList = stopGroupServiceImpl.getStopGroupAll();
+        rtnMap.put("groupsVoList", groupsVoList);
+        String maxStopPageId = this.getMaxStopPageId(load);
+        //'maxStopPageId'defaults to 2 if it's empty, otherwise'maxStopPageId'+1
+        maxStopPageId = StringUtils.isBlank(maxStopPageId) ? "2" : (Integer.parseInt(maxStopPageId) + 1) + "";
+        rtnMap.put("maxStopPageId", maxStopPageId);
+        MxGraphModelVo mxGraphModelVo = null;
+        MxGraphModel mxGraphModel = flowById.getMxGraphModel();
+        mxGraphModelVo = FlowXmlUtils.mxGraphModelPoToVo(mxGraphModel);
+        // Change the query'mxGraphModelVo'to'XML'
+        String loadXml = MxGraphUtils.mxGraphModelToMxGraphXml(mxGraphModelVo);
+        rtnMap.put("xmlDate", loadXml);
+        rtnMap.put("load", load);
+        rtnMap.put("isExample", (null == flowById.getIsExample() ? false : flowById.getIsExample()));
+        return JsonUtils.toJsonNoException(rtnMap);
     }
 }

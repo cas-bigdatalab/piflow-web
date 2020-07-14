@@ -7,6 +7,27 @@ var checkpointShow = $('#checkpointShow');
 var isLoadProcessInfo = true;
 var isEnd = false;
 
+function initProcessContentPage(nodeArr) {
+    if (runFlowBtn) {
+        if ("COMPLETED" !== processState && "FAILED" !== processState && "KILLED" !== processState) {
+            runFlowBtn.hide();
+            debugFlowBtn.hide();
+            stopFlowBtn.show();
+            timer = window.setInterval("processMonitoring(appId)", 5000);
+        } else {
+            runFlowBtn.show();
+            debugFlowBtn.show();
+            stopFlowBtn.hide();
+        }
+    }
+    if (nodeArr && '' != nodeArr) {
+        for (var i = 0; i < nodeArr.length; i++) {
+            var processStopVoInit = nodeArr[i];
+            monitor(processStopVoInit.pageId, processStopVoInit.state);
+        }
+    }
+}
+
 function selectedFormation(pageId, e) {
     if (isLoadProcessInfo) {
         isLoadProcessInfo = false;
@@ -165,7 +186,7 @@ function queryProcessPath(processId, pageId) {
 }
 
 //  Get Checkpoint points
-function getCheckpoint(runMode) {
+function getCheckpoint(pID, parentProcessId, processId, runMode) {
     fullScreen.show();
     $.ajax({
         cache: true,//Keep cached data
@@ -188,10 +209,10 @@ function getCheckpoint(runMode) {
             return;
         },
         success: function (data) {//Operation after request successful
-            console.log("success");
+            console.log(data);
             $('#checkpointContentNew').html(data);
             if ($('#checkpointsIsNull').val()) {
-                runProcess(runMode);
+                runProcess(processId, runMode);
             } else {
                 runFlowBtn.show();
                 debugFlowBtn.show();
@@ -229,7 +250,7 @@ function cancelRunProcess() {
 }
 
 //run
-function runProcess(runMode) {
+function runProcess(processId, runMode) {
     fullScreen.show();
     checkpointShow.modal('hide');
     runFlowBtn.hide();

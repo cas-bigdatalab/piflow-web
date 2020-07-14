@@ -9,14 +9,14 @@ var timerPath;
 var currentStopPageId;
 var drawingBoardType = $("#drawingBoardType").val();
 var statusgroup, flowPageIdcha, flowGroupdata, cellprecess, flowdatas, removegroupPaths, flowsPagesId
-getrightinfo()
+getRightInfo()
 var index = true
 
-function getrightinfo(cell) {
+function getRightInfo(cell) {
     var processGroupId = getQueryString("load")
     var pageId, value, data
     if (index) {
-        $(".rightproup").toggleClass("openright");
+        $(".right-group").toggleClass("open-right");
         $(".ExpandSidebar").toggleClass("ExpandSidebar-open");
         index = false
     }
@@ -39,7 +39,7 @@ function getrightinfo(cell) {
                 return;
             },
             success: function (data) {
-                $("#rightproup")[0].innerHTML = data
+                $("#right-group")[0].innerHTML = data
             }
         })
         //info
@@ -55,7 +55,7 @@ function getrightinfo(cell) {
                     return;
                 },
                 success: function (data) {
-                    $("#rightproup")[0].innerHTML = data
+                    $("#right-group")[0].innerHTML = data
                 }
             })
         } else if (processType == "TASK") {
@@ -69,7 +69,7 @@ function getrightinfo(cell) {
                     return;
                 },
                 success: function (data) {
-                    $("#rightproup").html(data);
+                    $("#right-group").html(data);
                 }
             })
         }
@@ -87,7 +87,7 @@ function getrightinfo(cell) {
                 return;
             },
             success: function (data) {
-                $("#rightproup").html(data);
+                $("#right-group").html(data);
             }
         })
         //    path
@@ -103,7 +103,7 @@ function getrightinfo(cell) {
                     return;
                 },
                 success: function (data) {
-                    $("#rightproup")[0].innerHTML = data
+                    $("#right-group")[0].innerHTML = data
                 }
             })
         } else if (processType == "TASK") {
@@ -117,7 +117,7 @@ function getrightinfo(cell) {
                     return;
                 },
                 success: function (data) {
-                    $("#rightproup").html(data);
+                    $("#right-group").html(data);
                 }
             })
         }
@@ -133,22 +133,25 @@ function getQueryString(name) {
 }
 
 function initGraph() {
+    if("PROCESS"==drawingBoardType){
+        EditorUi.prototype.noEditing = true;
+    }
     Format.customizeType = drawingBoardType;
     Format.customizeTypeAttr_init();
     var editorUiInit = EditorUi.prototype.init;
-    if (Format.customizeType == "PROCESS") {
-        $("#rightproupwrap")[0].style.display = "block";
-        $("#precessrun")[0].style.display = "block";
+    if (EditorUi.prototype.noEditing) {
+        $("#right-group-wrap")[0].style.display = "block";
+        $("#precess-run")[0].style.display = "block";
     } else {
-        $("#rightproupwrap")[0].style.display = "none";
-        $("#precessrun")[0].style.display = "none";
+        $("#right-group-wrap")[0].style.display = "none";
+        $("#precess-run")[0].style.display = "none";
     }
 
     EditorUi.prototype.init = function () {
         editorUiInit.apply(this, arguments);
         graphGlobal = this.editor.graph;
         thisEditor = this.editor;
-        if (Format.customizeType == "PROCESS") {
+        if (EditorUi.prototype.noEditing) {
             setTimeout(() => {
                 console.log("svg_element")
                 var svg_element = document.getElementsByClassName('geDiagramBackdrop geDiagramContainer')[0].getElementsByTagName("svg")[0];
@@ -257,12 +260,12 @@ function initGraph() {
         graphGlobal.addListener(mxEvent.CLICK, function (sender, evt) {
             findBasicInfo(evt);
             console.log(evt)
-            if (Format.customizeType == "PROCESS") {
-                getrightinfo(evt.properties.cell)
+            if (EditorUi.prototype.noEditing) {
+                getRightInfo(evt.properties.cell)
             }
         });
         graphGlobal.addListener(mxEvent.SIZE, function (sender, evt) {
-            if (Format.customizeType == "PROCESS") {
+            if (EditorUi.prototype.noEditing) {
                 changIconTranslate();
             }
         });
@@ -2309,24 +2312,25 @@ function getStopsPortNew(paths) {
                         showHtml.find('#sourceTitleBtn1Copy').attr('id', 'sourceTitleBtnR_R');
                         showHtml.find('#sourceCrtPortId1Copy').attr('id', 'sourceCrtPortIdR_R');
                         showHtml.find('#sourceCrtPortBtnId1Copy').attr('id', 'sourceCrtPortBtnIdR_R');
-                        showHtml.find('#sourceCrtPortBtnIdR_R').attr('onclick', 'crtAnyPort("sourceCrtPortIdR_R",true)');
                         showHtml.find('#sourceTypeDiv1Copy').attr('id', 'sourceTypeDivR_R');
                         showHtml.find('#sourceRouteFilterList1Copy').attr('id', 'sourceRouteFilterListR_R');
                         showHtml.find('#sourceRouteFilterSelect1Copy').attr('id', 'sourceRouteFilterSelectR_R');
-                        showHtml.find('#sourceTitleBtnR_R').hide();
-                        showHtml.find('#sourceRouteFilterListR_R').hide();
                         showHtml.find('#targetTitle1Copy').attr('id', 'targetTitleR_R');
                         showHtml.find('#targetTitleStr1Copy').attr('id', 'targetTitleStrR_R');
                         showHtml.find('#targetTitleCheckbox1Copy').attr('id', 'targetTitleCheckboxR_R');
                         showHtml.find('#targetTitleBtn1Copy').attr('id', 'targetTitleBtnR_R');
                         showHtml.find('#targetCrtPortId1Copy').attr('id', 'targetCrtPortIdR_R');
                         showHtml.find('#targetCrtPortBtnId1Copy').attr('id', 'targetCrtPortBtnIdR_R');
-                        showHtml.find('#targetCrtPortBtnIdR_R').attr('onclick', 'crtAnyPort("targetCrtPortIdR_R",false)');
                         showHtml.find('#targetTypeDiv1Copy').attr('id', 'targetTypeDivR_R');
                         showHtml.find('#targetRouteFilterList1Copy').attr('id', 'targetRouteFilterListR_R');
                         showHtml.find('#targetRouteFilterSelect1Copy').attr('id', 'targetRouteFilterSelectR_R');
+
+                        showHtml.find('#sourceCrtPortBtnIdR_R').attr('onclick', 'crtAnyPort("sourceCrtPortIdR_R",true)');
+                        showHtml.find('#targetCrtPortBtnIdR_R').attr('onclick', 'crtAnyPort("targetCrtPortIdR_R",false)');
                         showHtml.find('#targetTitleBtnR_R').hide();
                         showHtml.find('#targetRouteFilterListR_R').hide();
+                        showHtml.find('#sourceTitleBtnR_R').hide();
+                        showHtml.find('#sourceRouteFilterListR_R').hide();
                         var sourceType = dataMap.sourceType;
                         var targetType = dataMap.targetType;
                         var sourceTypeStr = sourceType.text;
@@ -3115,7 +3119,7 @@ function ClickSlider() {
         else
             $(".triggerSlider i").removeClass("fa fa-angle-right fa-2x").toggleClass("fa fa-angle-left fa-2x");
 
-        $(".rightproup").toggleClass("openright");
+        $(".right-group").toggleClass("open-right");
         $(".ExpandSidebar").toggleClass("ExpandSidebar-open");
         $(this).toggleClass("triggerSlider-open");
         index = !index
