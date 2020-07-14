@@ -149,8 +149,6 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
         int addStopsComponentGroupRows = 0;
         // StopsComponent bundle list
         List<String> stopsBundleList = new ArrayList<>();
-        // StopsComponentGroup Map key is GroupName
-        Map<String, StopsComponentGroup> stopsComponentGroupMap = new HashMap<>();
         // Loop stopsListWithGroup
         for (String groupName : stopsListWithGroup.keySet()) {
             if (StringUtils.isBlank(groupName)) {
@@ -167,7 +165,7 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
         }
         logger.debug("Successful insert Group" + addStopsComponentGroupRows + "piece of data!!!");
         // Deduplication
-        HashSet stopsBundleListDeduplication = new HashSet(stopsBundleList);
+        HashSet<String> stopsBundleListDeduplication = new HashSet<String>(stopsBundleList);
         stopsBundleList.clear();
         stopsBundleList.addAll(stopsBundleListDeduplication);
         return stopsBundleList;

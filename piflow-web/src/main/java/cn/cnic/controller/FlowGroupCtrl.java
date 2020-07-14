@@ -1,16 +1,15 @@
 package cn.cnic.controller;
 
-import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.base.util.SessionUserUtil;
-import cn.cnic.component.flow.service.IFlowGroupService;
-import cn.cnic.component.flow.vo.FlowGroupVo;
-import org.slf4j.Logger;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
+import cn.cnic.base.util.SessionUserUtil;
+import cn.cnic.component.flow.service.IFlowGroupService;
+import cn.cnic.component.flow.vo.FlowGroupVo;
 
 @Controller
 @RequestMapping("/flowGroup")

@@ -1,6 +1,28 @@
 package cn.cnic.controller;
 
-import cn.cnic.base.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+import cn.cnic.base.util.FlowXmlUtils;
+import cn.cnic.base.util.JsonUtils;
+import cn.cnic.base.util.LoggerUtil;
+import cn.cnic.base.util.MxGraphUtils;
+import cn.cnic.base.util.SessionUserUtil;
 import cn.cnic.base.vo.UserVo;
 import cn.cnic.common.Eunm.DrawingBoardType;
 import cn.cnic.common.Eunm.ProcessState;
@@ -22,22 +44,6 @@ import cn.cnic.component.process.vo.ProcessStopVo;
 import cn.cnic.component.process.vo.ProcessVo;
 import cn.cnic.component.stopsComponent.service.IStopGroupService;
 import cn.cnic.component.stopsComponent.vo.StopGroupVo;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * grapheditorctrl
@@ -122,6 +128,8 @@ public class MxGraphCtrl {
                 }
                 break;
             }
+		default:
+			break;
         }
         return pagePath;
     }

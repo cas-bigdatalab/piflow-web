@@ -1,28 +1,18 @@
 package cn.cnic.controller;
 
-import cn.cnic.base.util.*;
-import cn.cnic.base.vo.UserVo;
-import cn.cnic.common.Eunm.DrawingBoardType;
-import cn.cnic.component.flow.model.Flow;
-import cn.cnic.component.flow.service.IFlowGroupService;
-import cn.cnic.component.flow.service.IFlowService;
-import cn.cnic.component.flow.vo.FlowGroupVo;
-import cn.cnic.component.flow.vo.FlowVo;
-import cn.cnic.component.mxGraph.model.MxGraphModel;
-import cn.cnic.component.mxGraph.vo.MxGraphModelVo;
-import cn.cnic.component.stopsComponent.vo.StopGroupVo;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import cn.cnic.base.util.SessionUserUtil;
+import cn.cnic.component.flow.model.Flow;
+import cn.cnic.component.flow.service.IFlowGroupService;
+import cn.cnic.component.flow.service.IFlowService;
+import cn.cnic.component.flow.vo.FlowVo;
 
 @Controller
 @RequestMapping("/flow")
@@ -110,10 +100,9 @@ public class FlowCtrl {
      */
     @RequestMapping("/updateFlowInfo")
     @ResponseBody
-    public int updateFlowInfo(Flow flow) {
+    public String updateFlowInfo(Flow flow) {
         String username = SessionUserUtil.getCurrentUsername();
-        int result = flowServiceImpl.updateFlow(username, flow);
-        return result;
+        return flowServiceImpl.updateFlow(username, flow);
     }
 
     /**
@@ -125,7 +114,7 @@ public class FlowCtrl {
     @RequestMapping("/deleteFlow")
     @ResponseBody
     @Transactional
-    public int deleteFlow(String id) {
+    public String deleteFlow(String id) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
         return flowServiceImpl.deleteFLowInfo(username, isAdmin, id);

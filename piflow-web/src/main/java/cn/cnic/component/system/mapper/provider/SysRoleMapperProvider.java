@@ -30,7 +30,8 @@ public class SysRoleMapperProvider {
         return strSql;
     }
 
-    public String insertSysRoleList(Map map) {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	public String insertSysRoleList(Map map) {
         List<SysRole> roles = (List<SysRole>) map.get("roles");
         String userId = (String) map.get("userId");
         if (null == roles || roles.isEmpty() || StringUtils.isBlank(userId)) {

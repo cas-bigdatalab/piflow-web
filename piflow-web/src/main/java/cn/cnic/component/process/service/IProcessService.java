@@ -1,12 +1,11 @@
 package cn.cnic.component.process.service;
 
-import cn.cnic.base.vo.UserVo;
-import cn.cnic.component.process.vo.DebugDataRequest;
-import cn.cnic.component.process.vo.DebugDataResponse;
-import cn.cnic.component.process.vo.ProcessVo;
+import java.util.List;
 
 import javax.transaction.Transactional;
-import java.util.List;
+
+import cn.cnic.component.process.vo.DebugDataRequest;
+import cn.cnic.component.process.vo.ProcessVo;
 
 public interface IProcessService {
 

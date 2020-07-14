@@ -29,7 +29,8 @@ public class UserVo implements UserDetails, Serializable {
     private List<SysMenuVo> sysMenuVoList;
     private List<SysRole> roles = new ArrayList<>();
     List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-    private Collection<? extends GrantedAuthority> authorities;
+    @SuppressWarnings("unused")
+	private Collection<? extends GrantedAuthority> authorities;
 
     public UserVo() {
     }

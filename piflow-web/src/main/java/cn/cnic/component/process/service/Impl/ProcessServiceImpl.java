@@ -387,21 +387,20 @@ public class ProcessServiceImpl implements IProcessService {
      */
     @Override
     public String getProgressByAppIds(String[] appIDs) {
-        Map<String, Object> rtnMap = new HashMap<String, Object>();
-        rtnMap.put("code", 500);
-        if (null != appIDs && appIDs.length > 0) {
-            List<Process> processListByAppIDs = processMapper.getProcessListByAppIDs(appIDs);
-            if (CollectionUtils.isNotEmpty(processListByAppIDs)) {
-                rtnMap.put("code", 200);
-                for (Process process : processListByAppIDs) {
-                    if (null != process) {
-                        ProcessVo processVo = ProcessUtils.processPoToVo(process);
-                        if (null != process) {
-                            rtnMap.put(processVo.getAppId(), processVo);
-                        }
-                    }
-                }
+        if (null == appIDs || appIDs.length <= 0) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("appId is null");
+        }
+        List<Process> processListByAppIDs = processMapper.getProcessListByAppIDs(appIDs);
+        if (CollectionUtils.isEmpty(processListByAppIDs)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("data is null ");
+        }
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(ReturnMapUtils.SUCCEEDED_MSG);
+        for (Process process : processListByAppIDs) {
+            ProcessVo processVo = ProcessUtils.processPoToVo(process);
+            if (null == processVo) {
+                continue;
             }
+            rtnMap.put(processVo.getAppId(), processVo);
         }
         return JsonUtils.toJsonNoException(rtnMap);
     }

@@ -383,11 +383,11 @@ public class StopsMapperProvider {
     }
 
 
-    public String updateEnableFlagByFlowId(String username, String flowId) {
+    public String updateEnableFlagByFlowId(String username, String id) {
         if (StringUtils.isBlank(username)) {
             return "select 0";
         }
-        if (StringUtils.isBlank(flowId)) {
+        if (StringUtils.isBlank(id)) {
             return "select 0";
         }
         SQL sql = new SQL();
@@ -396,7 +396,7 @@ public class StopsMapperProvider {
         sql.SET("last_update_user = " + SqlUtils.preventSQLInjection(username));
         sql.SET("last_update_dttm = " + SqlUtils.preventSQLInjection(DateUtils.dateTimesToStr(new Date())));
         sql.WHERE("enable_flag = 1");
-        sql.WHERE("fk_flow_id = " + SqlUtils.preventSQLInjection(flowId));
+        sql.WHERE("fk_flow_id = " + SqlUtils.preventSQLInjection(id));
 
         return sql.toString();
     }

@@ -1474,7 +1474,8 @@ public class FlowXmlUtils {
      * @param username    Operator username
      * @return Flow
      */
-    public static Map<String, Object> flowTemplateXmlToFlow(String templateXml, String username, String stopMaxPageId, String flowMaxPageId, String[] stopNames) {
+    @SuppressWarnings("unchecked")
+	public static Map<String, Object> flowTemplateXmlToFlow(String templateXml, String username, String stopMaxPageId, String flowMaxPageId, String[] stopNames) {
         if (StringUtils.isBlank(templateXml)) {
             return ReturnMapUtils.setFailedMsg("templateXml is null");
         }

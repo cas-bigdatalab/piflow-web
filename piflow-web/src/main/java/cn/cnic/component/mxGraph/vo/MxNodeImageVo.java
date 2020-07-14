@@ -9,7 +9,9 @@ import java.io.Serializable;
 @Getter
 public class MxNodeImageVo implements Serializable {
 
-    private String id;
+	private static final long serialVersionUID = -5345043212647460732L;
+	
+	private String id;
     private String imageName;
     private String imagePath;
     private String imageUrl;

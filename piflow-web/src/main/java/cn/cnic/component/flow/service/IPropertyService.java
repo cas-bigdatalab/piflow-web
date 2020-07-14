@@ -1,10 +1,9 @@
 package cn.cnic.component.flow.service;
 
+import java.util.List;
+
 import cn.cnic.component.flow.model.Property;
 import cn.cnic.component.flow.request.UpdatePathRequest;
-import cn.cnic.component.flow.vo.StopsVo;
-
-import java.util.List;
 
 
 public interface IPropertyService {

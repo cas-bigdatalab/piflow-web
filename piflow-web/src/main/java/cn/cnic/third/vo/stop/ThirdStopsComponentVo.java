@@ -9,7 +9,10 @@ import java.util.List;
 @Getter
 @Setter
 public class ThirdStopsComponentVo implements Serializable {
-    private String name;
+
+	private static final long serialVersionUID = 1L;
+	
+	private String name;
     private String bundle;
     private String owner;
     private String inports;

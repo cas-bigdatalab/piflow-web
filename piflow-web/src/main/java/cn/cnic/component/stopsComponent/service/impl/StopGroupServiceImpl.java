@@ -99,9 +99,7 @@ public class StopGroupServiceImpl implements IStopGroupService {
 
         int addStopsComponentGroupRows = 0;
         // StopsComponent bundle list
-        List<String> stopsBundleList = new ArrayList<>();
-        // StopsComponentGroup Map key is GroupName
-        Map<String, StopsComponentGroup> stopsComponentGroupMap = new HashMap<>();
+        List<String> stopsBundleList = new ArrayList<>();        
         // Loop stopsListWithGroup
         for (String groupName : stopsListWithGroup.keySet()) {
             if (StringUtils.isBlank(groupName)) {
@@ -123,7 +121,7 @@ public class StopGroupServiceImpl implements IStopGroupService {
             return;
         }
         // Deduplication
-        HashSet stopsBundleListDeduplication = new HashSet(stopsBundleList);
+        HashSet<String> stopsBundleListDeduplication = new HashSet<String>(stopsBundleList);
         stopsBundleList.clear();
         stopsBundleList.addAll(stopsBundleListDeduplication);
         int updateStopsComponentNum = 0;
@@ -145,7 +143,7 @@ public class StopGroupServiceImpl implements IStopGroupService {
             }
             stopsComponentTransactional.addStopsComponentAndChildren(stopsComponent);
             logger.debug("=============================association_groups_stops_template=====start==================");
-            List<StopsComponentGroup> stopGroupList = stopsComponent.getStopGroupList();
+            stopsComponent.getStopGroupList();
             stopsComponentTransactional.stopsComponentLinkStopsComponentGroupList(stopsComponent, stopsComponent.getStopGroupList());
             updateStopsComponentNum++;
         }

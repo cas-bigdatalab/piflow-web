@@ -1,63 +1,23 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <body>
-<script th:inline="javascript">
-    var dataSourceVoObj = [[${dataSourceVo}]];
-    layui.use(['form'], function () {
-        var $ = layui.$
-            , element = layui.element
-            , form = layui.form
-            , layer = layui.layer;
-
-        form.render(null, 'component-form-element');
-        element.render('breadcrumb', 'breadcrumb');
-
-        form.on('submit(component-form-submit)', function (data) {
-            // layer.msg(JSON.stringify(data.field));
-            // layer.alert(JSON.stringify(data.field), {
-            //   title: 'Final submission information'
-            // });
-            console.info(data.field);
-            console.info("--------------------------------");
-            saveOrUpdateDataSource(data.field);
-            return false;
-        });
-    });
-    if (dataSourceVoObj) {
-        $('#typeContentId').show();
-    } else {
-        $('#typeContentId').hide();
-    }
-    $("#type_select_id").val($("#type_select_id option:contains(jdbc temolate)").val());
-    $("#type_select_id").change();
-</script>
 <form class="layui-form" action="" lay-filter="component-form-group" method="post" style="height: 100%">
     <div style="position: absolute;left: 10px;right: 10px; top: 10px;">
-        <div class="layui-form-item" th:unless="${dataSourceVo}">
+        <div id="selectTypeDivId" class="layui-form-item">
             <label class="layui-form-label">type</label>
             <div class="layui-input-block">
                 <select id="type_select_id" class="layui-select" style="display: block; width: 95%;"
                         onchange="changeDataSourceType(this)">
-                    <option value="">please select type...</option>
-                    <option th:each="template:${templateList}" th:value="${template.id}"
-                            th:text="${template.dataSourceName}"></option>
-                    <option value="other" th:text="Other"></option>
                 </select>
             </div>
         </div>
         <div id="typeContentId" class="layui-form-item">
-            <input style="display: none" name="id" th:value="${dataSourceVo?.id}"/>
+            <input style="display: none" id="updateDatasourceId" name="id" value=""/>
             <div id="template_type_div_id" class="layui-form-item">
                 <label class="layui-form-label">type</label>
                 <div class="layui-input-block">
-                    <input id="template_type_id"
-                           placeholder="please input name..."
-                           autocomplete="off"
-                           class="layui-input"
-                           style="width: 95%;"
-                           name="dataSourceType"
-                           readonly="readonly"
-                           th:value="${dataSourceVo?.dataSourceType}"/>
+                    <input id="template_type_id" placeholder="please input name..." autocomplete="off"
+                           class="layui-input" style="width: 95%;" name="dataSourceType" readonly="readonly" value=""/>
                 </div>
             </div>
             <div class="layui-form-item">
@@ -69,20 +29,15 @@
                            class="layui-input dataSource1Copy"
                            style="width: 95%;"
                            name="dataSourceName"
-                           th:value="${dataSourceVo?.dataSourceName}"/>
+                           value=""/>
                 </div>
             </div>
             <div class="layui-form-item layui-form-text">
                 <label class="layui-form-label">description</label>
                 <div class="layui-input-block">
-                    <textarea id="dataSourceDescription"
-                              placeholder="please input description..."
-                              class="layui-textarea dataSource1Copy"
-                              style="width: 95%;"
-                              name="dataSourceDescription"
-                              th:text="${dataSourceVo?.dataSourceDescription}">
-
-                    </textarea>
+                    <textarea id="dataSourceDescription" placeholder="please input description..."
+                              class="layui-textarea dataSource1Copy" style="width: 95%;"
+                              name="dataSourceDescription"></textarea>
                 </div>
             </div>
             <div id="customOtherDatasource" style="display: none;">
@@ -103,31 +58,12 @@
                 </div>
             </div>
             <div id="typeId" class="layui-form-item layui-form-text">
-                <div class="layui-form-item layui-form-text"
-                     th:each="dataSourcePropertyVo:${dataSourceVo?.dataSourcePropertyVoList}">
-                    <label class="layui-form-label" th:text="${dataSourcePropertyVo.name}"></label>
-                    <input style="display: none;"
-                           th:name="dataSourcePropertyVoList[+${dataSourcePropertyVoStat?.index}+].id"
-                           th:value="${dataSourcePropertyVo.id}">
-                    <input style="display: none;"
-                           th:name="dataSourcePropertyVoList[+${dataSourcePropertyVoStat?.index}+].name"
-                           th:value="${dataSourcePropertyVo.name}">
-                    <div class="layui-input-block">
-                        <input class="layui-input"
-                               autocomplete="off"
-                               placeholder="please input name..."
-                               style="width: 95%;"
-                               th:name="dataSourcePropertyVoList[+${dataSourcePropertyVoStat?.index}+].value"
-                               th:value="${dataSourcePropertyVo.value}"/>
-                    </div>
-                </div>
             </div>
             <div class="layui-form-item layui-footer" style="text-align: right;">
-                <button class="layui-btn layui-btn-primary"
+                <button id="submitBtnId" class="layui-btn layui-btn-primary"
                         lay-submit="" lay-filter="component-form-submit"
                         style="color: #ffffff;background-color: #2f7600;border-color: #2f7600;">
-                    <span th:unless="${dataSourceVo}">Create</span>
-                    <span th:if="${dataSourceVo}">Update</span>
+                    <span id="submitBtnSpan">Create</span>
                 </button>
             </div>
         </div>
@@ -151,19 +87,32 @@
                        placeholder="please input name..."
                        style="width: 95%;"/>
             </div>
-            <a style="position: absolute;right: 7px;margin-top: -26px;" onclick="removeCustomModule('customProperty1Copy','custom_property_list')">
+            <a style="position: absolute;right: 7px;margin-top: -26px;"
+               onclick="removeCustomModule('customProperty1Copy','custom_property_list')">
                 <i class="icon-trash icon-white"></i>
             </a>
         </div>
     </div>
 </div>
 <script>
-    $(function() {
-        $("#type_select_id").val("other");
-        $("#type_select_id").change();
+    layui.use(['form'], function () {
+        var $ = layui.$
+            , element = layui.element
+            , form = layui.form
+            , layer = layui.layer;
+
+        form.render(null, 'component-form-element');
+        element.render('breadcrumb', 'breadcrumb');
+
+        form.on('submit(component-form-submit)', function (data) {
+            console.info(data.field);
+            console.info("--------------------------------");
+            saveOrUpdateDataSource(data.field);
+            $("submitBtnId").removeAttr("lay-submit");
+            return false;
+        });
     });
-
-
+    onloadPageData();
 </script>
 </body>
 </html>

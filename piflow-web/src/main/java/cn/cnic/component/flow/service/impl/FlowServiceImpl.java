@@ -1,6 +1,28 @@
 package cn.cnic.component.flow.service.impl;
 
-import cn.cnic.base.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import cn.cnic.base.util.FlowXmlUtils;
+import cn.cnic.base.util.JsonUtils;
+import cn.cnic.base.util.LoggerUtil;
+import cn.cnic.base.util.MxGraphUtils;
+import cn.cnic.base.util.ReturnMapUtils;
+import cn.cnic.base.util.SessionUserUtil;
+import cn.cnic.base.util.UUIDUtils;
 import cn.cnic.base.vo.UserVo;
 import cn.cnic.common.Eunm.ProcessState;
 import cn.cnic.common.Eunm.RunModeType;
@@ -36,17 +58,6 @@ import cn.cnic.mapper.mxGraph.MxGeometryMapper;
 import cn.cnic.mapper.mxGraph.MxGraphModelMapper;
 import cn.cnic.mapper.process.ProcessMapper;
 import cn.cnic.third.service.IFlow;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.beans.BeanUtils;
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.Model;
-
-import javax.annotation.Resource;
-import java.util.*;
 
 @Service
 @Transactional
@@ -241,9 +252,9 @@ public class FlowServiceImpl implements IFlowService {
 
     @Override
     @Transactional
-    public int updateFlow(String username, Flow flow) {
+    public String updateFlow(String username, Flow flow) {
         if (StringUtils.isBlank(username)) {
-            return 0;
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
         }
         String id = flow.getId();
         flow.setId(id);
@@ -253,18 +264,24 @@ public class FlowServiceImpl implements IFlowService {
         flow.setLastUpdateUser(username);
         Flow flowDb = flowMapper.getFlowById(flow.getId());
         flow.setVersion(flowDb.getVersion());
-        return flowMapper.updateFlow(flow);
+        int i = flowMapper.updateFlow(flow);
+        if (i > 0) {
+            return ReturnMapUtils.setSucceededMsgRtnJsonStr(ReturnMapUtils.SUCCEEDED_MSG);
+        }
+        return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.ERROR_MSG);
     }
 
     @Override
-    public int deleteFLowInfo(String username, boolean isAdmin, String id) {
-        int deleteFLowInfo = 0;
+    public String deleteFLowInfo(String username, boolean isAdmin, String id) {
+        if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
+        }
         if (StringUtils.isBlank(id)) {
-            return 0;
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("id is null");
         }
         Flow flowById = this.getFlowById(username, isAdmin, id);
         if (null == flowById) {
-            return 0;
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Data does not exist");
         }
         if (null != flowById.getStopsList()) {
             //Loop delete stop attribute
@@ -294,8 +311,12 @@ public class FlowServiceImpl implements IFlowService {
             mxGraphModelMapper.updateEnableFlagByFlowId(username, flowById.getId());
         }
         // remove FLow
-        deleteFLowInfo = flowMapper.updateEnableFlagById(username, id);
-        return deleteFLowInfo;
+        int deleteFLowInfo = flowMapper.updateEnableFlagById(username, id);
+        if (deleteFLowInfo > 0) {
+            return ReturnMapUtils.setSucceededMsgRtnJsonStr(ReturnMapUtils.SUCCEEDED_MSG);
+        } else {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.ERROR_MSG);
+        }
     }
 
     @Override

@@ -1,13 +1,15 @@
 package cn.cnic.third.vo.stop;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.Setter;
-
-import java.io.Serializable;
-import java.util.List;
 
 @Getter
 @Setter
 public class ThirdAllowableValuesVo implements Serializable {
-    private String name;
+    
+	private static final long serialVersionUID = 1L;
+	
+	private String name;
 }

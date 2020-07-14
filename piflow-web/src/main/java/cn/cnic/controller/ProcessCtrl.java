@@ -1,35 +1,25 @@
 package cn.cnic.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import cn.cnic.base.util.HttpUtils;
 import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.base.util.MxGraphUtils;
 import cn.cnic.base.util.SessionUserUtil;
-import cn.cnic.base.vo.UserVo;
-import cn.cnic.common.Eunm.ProcessState;
-import cn.cnic.component.mxGraph.utils.MxCellUtils;
-import cn.cnic.component.mxGraph.vo.MxCellVo;
-import cn.cnic.component.mxGraph.vo.MxGraphModelVo;
 import cn.cnic.component.process.service.IProcessPathService;
 import cn.cnic.component.process.service.IProcessService;
 import cn.cnic.component.process.service.IProcessStopService;
 import cn.cnic.component.process.vo.DebugDataRequest;
-import cn.cnic.component.process.vo.ProcessGroupVo;
-import cn.cnic.component.process.vo.ProcessStopVo;
-import cn.cnic.component.process.vo.ProcessVo;
 import cn.cnic.third.service.IFlow;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/process")

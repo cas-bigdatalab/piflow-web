@@ -1,12 +1,19 @@
 package cn.cnic.component.system.mapper;
 
-import cn.cnic.component.stopsComponent.mapper.provider.StopsComponentMapperProvider;
-import cn.cnic.component.system.model.SysUser;
-import cn.cnic.component.system.mapper.provider.SysUserMapperProvider;
-import org.apache.ibatis.annotations.*;
+import java.util.List;
+
+import org.apache.ibatis.annotations.InsertProvider;
+import org.apache.ibatis.annotations.Many;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Result;
+import org.apache.ibatis.annotations.Results;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.mapping.FetchType;
 
-import java.util.List;
+import cn.cnic.component.system.mapper.provider.SysUserMapperProvider;
+import cn.cnic.component.system.model.SysUser;
 
 @Mapper
 public interface SysUserMapper {

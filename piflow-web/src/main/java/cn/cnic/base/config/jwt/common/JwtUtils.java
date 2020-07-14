@@ -194,7 +194,7 @@ public class JwtUtils {
         return generateToken(subject, claims, access_token_expiration);
     }
 
-    private List authoritiesToArray(Collection<? extends GrantedAuthority> authorities) {
+    private List<String> authoritiesToArray(Collection<? extends GrantedAuthority> authorities) {
         List<String> list = new ArrayList<>();
         for (GrantedAuthority ga : authorities) {
             list.add(ga.getAuthority());

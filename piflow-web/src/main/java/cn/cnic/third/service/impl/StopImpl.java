@@ -100,7 +100,8 @@ public class StopImpl implements IStop {
         // Also convert the json string to a json object, and then convert the json object to a java object, as shown below.
         JSONObject jsonObject = JSONObject.fromObject(sendGetData).getJSONObject("StopInfo");// Convert a json string to a json object
         // Needed when there is a List in jsonObj
-        Map<String, Class> classMap = new HashMap<>();
+        @SuppressWarnings("rawtypes")
+		Map<String, Class> classMap = new HashMap<>();
         // Key is the name of the List in jsonObj, and the value is a generic class of list
         classMap.put("properties", ThirdStopsComponentPropertyVo.class);
         // Convert a json object to a java object

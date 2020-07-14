@@ -60,6 +60,7 @@ public class ProcessDomainTest extends ApplicationTests {
     @Rollback(value = false)
     public void testSave() {
         ThirdFlowInfoVo flowInfo = flowImpl.getFlowInfo("application_1562293222869_0585");
+        logger.info(flowInfo.getId());
         logger.info("===================================================================================");
         Process process = processDomain.getProcessNoGroupByAppId("application_1562293222869_0585");
         //processByAppId = ThirdFlowInfoVoUtils.setProcess(processByAppId, flowInfo);

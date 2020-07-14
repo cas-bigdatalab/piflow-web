@@ -44,7 +44,7 @@ public class IStopTest extends ApplicationTests {
     @Test
     public void testGetStopsListWithGroup() {
         Map<String, List<String>> stopsListWithGroup = stopImpl.getStopsListWithGroup();
-        logger.debug("test");
+        logger.debug(stopsListWithGroup.toString());
     }
 
     @Test

@@ -1,6 +1,6 @@
 package cn.cnic.controller.modify.admin;
 
-import cn.cnic.base.util.SessionUserUtil;
+import cn.cnic.controller.modify.utils.UserUtils;
 import cn.cnic.component.flow.model.Flow;
 import cn.cnic.component.flow.service.IFlowGroupService;
 import cn.cnic.component.flow.service.IFlowService;
@@ -35,7 +35,7 @@ public class AdminFlowCtrl {
     @RequestMapping("/getFlowListPage")
     @ResponseBody
     public String getFlowListPage(HttpServletRequest request,Integer page, Integer limit, String param) {
-        String username = SessionUserUtil.getUsername(request);
+        String username = UserUtils.getUsername(request);
         return flowServiceImpl.getFlowListPage(username, true, page, limit, param);
     }
 
@@ -51,7 +51,7 @@ public class AdminFlowCtrl {
     public String runFlow(HttpServletRequest request, Model model) {
         String flowId = request.getParameter("flowId");
         String runMode = request.getParameter("runMode");
-        String username = SessionUserUtil.getUsername(request);
+        String username = UserUtils.getUsername(request);
         return flowServiceImpl.runFlow(username, true, flowId, runMode);
     }
 
@@ -70,7 +70,7 @@ public class AdminFlowCtrl {
     @RequestMapping("/saveFlowInfo")
     @ResponseBody
     public String saveFlowInfo(HttpServletRequest request,FlowVo flowVo) {
-        String username = SessionUserUtil.getUsername(request);
+        String username = UserUtils.getUsername(request);
         return flowServiceImpl.addFlow(username, flowVo);
     }
 
@@ -82,10 +82,9 @@ public class AdminFlowCtrl {
      */
     @RequestMapping("/updateFlowInfo")
     @ResponseBody
-    public int updateFlowInfo(HttpServletRequest request,Flow flow) {
-        String username = SessionUserUtil.getUsername(request);
-        int result = flowServiceImpl.updateFlow(username, flow);
-        return result;
+    public String updateFlowInfo(HttpServletRequest request,Flow flow) {
+        String username = UserUtils.getUsername(request);
+        return flowServiceImpl.updateFlow(username, flow);
     }
 
     /**
@@ -97,8 +96,8 @@ public class AdminFlowCtrl {
     @RequestMapping("/deleteFlow")
     @ResponseBody
     @Transactional
-    public int deleteFlow(HttpServletRequest request,String id) {
-        String username = SessionUserUtil.getUsername(request);
+    public String deleteFlow(HttpServletRequest request,String id) {
+        String username = UserUtils.getUsername(request);
         return flowServiceImpl.deleteFLowInfo(username, true, id);
     }
 
@@ -117,7 +116,7 @@ public class AdminFlowCtrl {
     @RequestMapping("/updateFlowBaseInfo")
     @ResponseBody
     public String updateFlowBaseInfo(HttpServletRequest request,FlowVo flowVo) {
-        String username = SessionUserUtil.getUsername(request);
+        String username = UserUtils.getUsername(request);
         return flowServiceImpl.updateFlowBaseInfo(username, flowVo);
     }
 
@@ -129,7 +128,7 @@ public class AdminFlowCtrl {
         String name = request.getParameter("name");
         String pageId = request.getParameter("pageId");
         String updateType = request.getParameter("updateType");
-        String username = SessionUserUtil.getUsername(request);
+        String username = UserUtils.getUsername(request);
         if ("flowGroup".equals(updateType)) {
             return flowGroupServiceImpl.updateFlowGroupNameById(username, flowId, flowGroupId, name, pageId);
         }

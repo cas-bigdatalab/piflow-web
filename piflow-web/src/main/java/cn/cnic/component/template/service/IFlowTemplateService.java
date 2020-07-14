@@ -37,7 +37,7 @@ public interface IFlowTemplateService {
      * @param id
      * @return
      */
-    public int deleteFlowTemplate(String id);
+    public String deleteFlowTemplate(String id);
 
     /**
      * Download template

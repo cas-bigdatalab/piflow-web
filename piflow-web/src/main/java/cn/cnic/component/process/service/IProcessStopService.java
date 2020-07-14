@@ -1,6 +1,5 @@
 package cn.cnic.component.process.service;
 
-import cn.cnic.component.process.vo.ProcessStopVo;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface IProcessStopService {

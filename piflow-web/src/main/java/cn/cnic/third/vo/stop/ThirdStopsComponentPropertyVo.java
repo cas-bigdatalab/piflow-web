@@ -8,7 +8,10 @@ import java.io.Serializable;
 @Getter
 @Setter
 public class ThirdStopsComponentPropertyVo implements Serializable {
-    private String name;
+    
+	private static final long serialVersionUID = 1L;
+	
+	private String name;
     private String displayName;
     private String description;
     private String defaultValue;

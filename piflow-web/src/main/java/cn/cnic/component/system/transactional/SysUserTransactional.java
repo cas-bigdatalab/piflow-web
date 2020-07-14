@@ -1,17 +1,18 @@
 package cn.cnic.component.system.transactional;
 
-import cn.cnic.component.system.mapper.SysRoleMapper;
-import cn.cnic.component.system.mapper.SysUserMapper;
-import cn.cnic.component.system.model.SysRole;
-import cn.cnic.component.system.model.SysUser;
-import org.apache.commons.lang3.StringUtils;
+import java.util.List;
+
+import javax.annotation.Resource;
+
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
-import java.util.List;
+import cn.cnic.component.system.mapper.SysRoleMapper;
+import cn.cnic.component.system.mapper.SysUserMapper;
+import cn.cnic.component.system.model.SysRole;
+import cn.cnic.component.system.model.SysUser;
 
 @Component
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)

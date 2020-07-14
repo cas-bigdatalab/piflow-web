@@ -71,7 +71,7 @@ public class MxNodeImageServiceImpl implements IMxNodeImageService {
         }
         List<MxNodeImageVo> mxNodeImageVoList = new ArrayList<>();
         List<MxNodeImage> mxNodeImageList = mxNodeImageDomain.userGetMxNodeImageListByImageType(username, imageType);
-        if (null == mxNodeImageList && mxNodeImageList.size() <= 0) {
+        if (null == mxNodeImageList || mxNodeImageList.size() <= 0) {
             return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("nodeImageList", mxNodeImageList);
         }
         MxNodeImageVo mxNodeImageVo;

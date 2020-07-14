@@ -1,7 +1,7 @@
 package cn.cnic.controller.modify.admin;
 
 import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.base.util.SessionUserUtil;
+import cn.cnic.controller.modify.utils.UserUtils;
 import cn.cnic.component.process.service.IProcessAndProcessGroupService;
 import cn.cnic.component.process.service.IProcessGroupService;
 import cn.cnic.component.process.service.IProcessService;
@@ -44,7 +44,7 @@ public class AdminProcessAndProcessGroupCtrl {
     @RequestMapping("/processAndProcessGroupListPage")
     @ResponseBody
     public String processAndProcessGroupListPage(HttpServletRequest request, Integer page, Integer limit, String param) {
-        String username = SessionUserUtil.getUsername(request);
+        String username = UserUtils.getUsername(request);
         return processAndProcessGroupServiceImpl.getProcessAndProcessGroupListPage(username, true, page, limit, param);
     }
 
@@ -61,7 +61,7 @@ public class AdminProcessAndProcessGroupCtrl {
         String runMode = request.getParameter("runMode");
         String processType = request.getParameter("processType");
         String checkpoint = request.getParameter("checkpointStr");
-        String username = SessionUserUtil.getUsername(request);
+        String username = UserUtils.getUsername(request);
         if ("PROCESS".equals(processType)) {
             return processServiceImpl.startProcess(username, id, checkpoint, runMode);
         } else {
@@ -80,7 +80,7 @@ public class AdminProcessAndProcessGroupCtrl {
     public String stopProcessOrProcessGroup(HttpServletRequest request) {
         String id = request.getParameter("id");
         String processType = request.getParameter("processType");
-        String username = SessionUserUtil.getUsername(request);
+        String username = UserUtils.getUsername(request);
         if ("PROCESS".equals(processType)) {
             return processServiceImpl.stopProcess(username, true, id);
         } else {
@@ -99,12 +99,20 @@ public class AdminProcessAndProcessGroupCtrl {
     public String delProcessGroup(HttpServletRequest request) {
         String id = request.getParameter("id");
         String processType = request.getParameter("processType");
-        String username = SessionUserUtil.getUsername(request);
+        String username = UserUtils.getUsername(request);
         if ("PROCESS".equals(processType)) {
             return processServiceImpl.delProcess(username, id);
         } else {
             return processGroupServiceImpl.delProcessGroup(username, true, id);
         }
+    }
+
+    @RequestMapping("/getAppInfoList")
+    @ResponseBody
+    public String getAppInfoList(HttpServletRequest request) {
+        String[] taskAppIds = request.getParameterValues("taskAppIds");
+        String[] groupAppIds = request.getParameterValues("groupAppIds");
+        return processAndProcessGroupServiceImpl.getAppInfoList(taskAppIds, groupAppIds);
     }
 
 }

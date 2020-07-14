@@ -1,6 +1,6 @@
 package cn.cnic.controller.modify.admin;
 
-import cn.cnic.base.util.SessionUserUtil;
+import cn.cnic.controller.modify.utils.UserUtils;
 import cn.cnic.component.flow.service.IFlowGroupService;
 import cn.cnic.component.flow.vo.FlowGroupVo;
 import org.springframework.stereotype.Controller;
@@ -28,7 +28,7 @@ public class AdminFlowGroupCtrl {
     @RequestMapping("/getFlowGroupListPage")
     @ResponseBody
     public String getFlowGroupListPage(HttpServletRequest request, Integer page, Integer limit, String param) {
-        String username = SessionUserUtil.getUsername(request);
+        String username = UserUtils.getUsername(request);
         return flowGroupServiceImpl.getFlowGroupListPage(username, true, page, limit, param);
     }
 
@@ -41,7 +41,7 @@ public class AdminFlowGroupCtrl {
     @RequestMapping("/saveOrUpdateFlowGroup")
     @ResponseBody
     public String saveOrUpdateFlowGroup(HttpServletRequest request, FlowGroupVo flowGroupVo) {
-        String username = SessionUserUtil.getUsername(request);
+        String username = UserUtils.getUsername(request);
         return flowGroupServiceImpl.saveOrUpdate(username, flowGroupVo);
     }
 
@@ -56,7 +56,7 @@ public class AdminFlowGroupCtrl {
     public String runFlowGroup(HttpServletRequest request) {
         String flowGroupId = request.getParameter("flowGroupId");
         String runMode = request.getParameter("runMode");
-        String username = SessionUserUtil.getUsername(request);
+        String username = UserUtils.getUsername(request);
         return flowGroupServiceImpl.runFlowGroup(username, flowGroupId, runMode);
     }
 
@@ -69,7 +69,7 @@ public class AdminFlowGroupCtrl {
     @RequestMapping("/deleteFlowGroup")
     @ResponseBody
     public String deleteFlowGroup(HttpServletRequest request, String id) {
-        return flowGroupServiceImpl.deleteFLowGroupInfo(SessionUserUtil.getUsername(request), id);
+        return flowGroupServiceImpl.deleteFLowGroupInfo(UserUtils.getUsername(request), id);
     }
 
     /**
@@ -82,14 +82,14 @@ public class AdminFlowGroupCtrl {
     @RequestMapping("/copyFlowToGroup")
     @ResponseBody
     public String copyFlowToGroup(HttpServletRequest request, String flowId, String flowGroupId) {
-        String username = SessionUserUtil.getUsername(request);
+        String username = UserUtils.getUsername(request);
         return flowGroupServiceImpl.copyFlowToGroup(username, flowId, flowGroupId);
     }
 
     @RequestMapping("/updateFlowGroupBaseInfo")
     @ResponseBody
     public String updateFlowGroupBaseInfo(HttpServletRequest request, FlowGroupVo flowGroupVo) {
-        String username = SessionUserUtil.getUsername(request);
+        String username = UserUtils.getUsername(request);
         return flowGroupServiceImpl.updateFlowGroupBaseInfo(username, flowGroupVo);
     }
 

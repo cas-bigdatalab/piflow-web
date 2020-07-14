@@ -1,6 +1,17 @@
 package cn.cnic.base.config.jwt;
 
-import cn.cnic.base.util.SpringContextUtil;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Component;
+
 import cn.cnic.base.vo.UserVo;
 import cn.cnic.common.Eunm.SysRoleType;
 import cn.cnic.component.system.mapper.SysMenuMapper;
@@ -9,16 +20,6 @@ import cn.cnic.component.system.model.SysMenu;
 import cn.cnic.component.system.model.SysRole;
 import cn.cnic.component.system.model.SysUser;
 import cn.cnic.component.system.vo.SysMenuVo;
-import org.apache.commons.collections.CollectionUtils;
-import org.springframework.beans.BeanUtils;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 登陆身份认证

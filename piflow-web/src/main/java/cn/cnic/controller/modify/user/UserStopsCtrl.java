@@ -2,7 +2,7 @@ package cn.cnic.controller.modify.user;
 
 import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.base.util.ReturnMapUtils;
-import cn.cnic.base.util.SessionUserUtil;
+import cn.cnic.controller.modify.utils.UserUtils;
 import cn.cnic.component.flow.service.ICustomizedPropertyService;
 import cn.cnic.component.flow.service.IPropertyService;
 import cn.cnic.component.flow.service.IStopsService;
@@ -43,7 +43,7 @@ public class UserStopsCtrl {
     @RequestMapping("/reloadStops")
     @ResponseBody
     public String reloadStops(HttpServletRequest request, String load) {
-        String username = SessionUserUtil.getUsername(request);
+        String username = UserUtils.getUsername(request);
         stopGroupServiceImpl.updateGroupAndStopsListByServer(username);
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("load", load);
     }
@@ -91,14 +91,14 @@ public class UserStopsCtrl {
     @RequestMapping("/updateStops")
     @ResponseBody
     public String updateStops(HttpServletRequest request, String[] content, String id) {
-        String username = SessionUserUtil.getUsername(request);
+        String username = UserUtils.getUsername(request);
         return propertyServiceImpl.updatePropertyList(username, content);
     }
 
     @RequestMapping("/updateStopsOne")
     @ResponseBody
     public String updateStops(HttpServletRequest request, String content, String id) {
-        String username = SessionUserUtil.getUsername(request);
+        String username = UserUtils.getUsername(request);
         return propertyServiceImpl.updateProperty(username, content, id);
     }
 
@@ -107,7 +107,7 @@ public class UserStopsCtrl {
     public String updateStopsById(HttpServletRequest request) {
         String id = request.getParameter("stopId");
         String isCheckpointStr = request.getParameter("isCheckpoint");
-        String username = SessionUserUtil.getUsername(request);
+        String username = UserUtils.getUsername(request);
         return stopsServiceImpl.updateStopsCheckpoint(username, id, isCheckpointStr);
     }
 
@@ -118,28 +118,28 @@ public class UserStopsCtrl {
         String flowId = request.getParameter("flowId");
         String stopName = request.getParameter("name");
         String pageId = request.getParameter("pageId");
-        String username = SessionUserUtil.getUsername(request);
+        String username = UserUtils.getUsername(request);
         return stopsServiceImpl.updateStopName(username, false, id, flowId, stopName, pageId);
     }
 
     @RequestMapping("/addStopCustomizedProperty")
     @ResponseBody
     public String addStopCustomizedProperty(HttpServletRequest request, StopsCustomizedPropertyVo stopsCustomizedPropertyVo) {
-        String username = SessionUserUtil.getUsername(request);
+        String username = UserUtils.getUsername(request);
         return customizedPropertyServiceImpl.addStopCustomizedProperty(username, stopsCustomizedPropertyVo);
     }
 
     @RequestMapping("/updateStopsCustomizedProperty")
     @ResponseBody
     public String updateStopsCustomizedProperty(HttpServletRequest request, StopsCustomizedPropertyVo stopsCustomizedPropertyVo) {
-        String username = SessionUserUtil.getUsername(request);
+        String username = UserUtils.getUsername(request);
         return customizedPropertyServiceImpl.updateStopsCustomizedProperty(username, stopsCustomizedPropertyVo);
     }
 
     @RequestMapping("/deleteStopsCustomizedProperty")
     @ResponseBody
     public String deleteStopsCustomizedProperty(HttpServletRequest request, String customPropertyId) {
-        String username = SessionUserUtil.getUsername(request);
+        String username = UserUtils.getUsername(request);
         return customizedPropertyServiceImpl.deleteStopsCustomizedProperty(username, customPropertyId);
     }
 

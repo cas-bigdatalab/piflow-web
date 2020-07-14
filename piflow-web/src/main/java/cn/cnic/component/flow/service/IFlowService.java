@@ -46,10 +46,10 @@ public interface IFlowService {
     public String addFlow(String username, FlowVo flowVo);
 
     @Transactional
-    public int updateFlow(String username, Flow flow);
+    public String updateFlow(String username, Flow flow);
 
     @Transactional
-    public int deleteFLowInfo(String username, boolean isAdmin, String id);
+    public String deleteFLowInfo(String username, boolean isAdmin, String id);
 
     public String getMaxStopPageId(String flowId);
 

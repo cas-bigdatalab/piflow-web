@@ -1,18 +1,18 @@
 package cn.cnic.controller;
 
-import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.base.util.SessionUserUtil;
-import cn.cnic.base.vo.UserVo;
-import cn.cnic.component.process.service.IProcessAndProcessGroupService;
-import cn.cnic.component.process.service.IProcessGroupService;
-import cn.cnic.component.process.service.IProcessService;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
+import cn.cnic.base.util.LoggerUtil;
+import cn.cnic.base.util.SessionUserUtil;
+import cn.cnic.component.process.service.IProcessAndProcessGroupService;
+import cn.cnic.component.process.service.IProcessGroupService;
+import cn.cnic.component.process.service.IProcessService;
 
 
 @Controller
@@ -109,6 +109,14 @@ public class ProcessAndProcessGroupCtrl {
         } else {
             return processGroupServiceImpl.delProcessGroup(username, isAdmin, id);
         }
+    }
+
+    @RequestMapping("/getAppInfoList")
+    @ResponseBody
+    public String getAppInfoList(HttpServletRequest request) {
+        String[] taskAppIds = request.getParameterValues("taskAppIds");
+        String[] groupAppIds = request.getParameterValues("groupAppIds");
+        return processAndProcessGroupServiceImpl.getAppInfoList(taskAppIds, groupAppIds);
     }
 
 }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  */
 @RestControllerAdvice
 @Slf4j
+@SuppressWarnings("rawtypes")
 public class DefaultExceptionHandler {
 
     /**
@@ -22,7 +23,7 @@ public class DefaultExceptionHandler {
      * @param e
      * @return
      */
-    @ExceptionHandler(CustomException.class)
+	@ExceptionHandler(CustomException.class)
     public ResultJson handleCustomException(CustomException e){
         log.error(e.getResultJson().getMsg().toString());
         return e.getResultJson();

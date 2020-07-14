@@ -1,12 +1,33 @@
 package cn.cnic.component.flow.service.impl;
 
-import cn.cnic.base.util.*;
-import cn.cnic.base.vo.StatefulRtnBase;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import cn.cnic.base.util.FlowXmlUtils;
+import cn.cnic.base.util.JsonUtils;
+import cn.cnic.base.util.LoggerUtil;
+import cn.cnic.base.util.MxGraphUtils;
+import cn.cnic.base.util.ReturnMapUtils;
 import cn.cnic.common.Eunm.PortType;
 import cn.cnic.component.dataSource.domain.DataSourceDomain;
 import cn.cnic.component.dataSource.model.DataSource;
 import cn.cnic.component.dataSource.model.DataSourceProperty;
-import cn.cnic.component.flow.model.*;
+import cn.cnic.component.flow.model.CustomizedProperty;
+import cn.cnic.component.flow.model.Flow;
+import cn.cnic.component.flow.model.Paths;
+import cn.cnic.component.flow.model.Property;
+import cn.cnic.component.flow.model.Stops;
 import cn.cnic.component.flow.service.IStopsService;
 import cn.cnic.component.flow.utils.StopsUtils;
 import cn.cnic.component.flow.vo.StopsVo;
@@ -19,14 +40,6 @@ import cn.cnic.mapper.flow.PathsMapper;
 import cn.cnic.mapper.flow.StopsMapper;
 import cn.cnic.mapper.mxGraph.MxCellMapper;
 import cn.cnic.third.vo.flow.ThirdFlowInfoStopVo;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-import java.util.*;
 
 @Service
 public class StopsServiceImpl implements IStopsService {

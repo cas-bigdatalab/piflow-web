@@ -1,6 +1,5 @@
 package cn.cnic.component.process.service;
 
-import cn.cnic.base.vo.UserVo;
 import cn.cnic.component.process.vo.DebugDataRequest;
 import cn.cnic.component.process.vo.DebugDataResponse;
 import cn.cnic.component.process.vo.ProcessGroupPathVo;

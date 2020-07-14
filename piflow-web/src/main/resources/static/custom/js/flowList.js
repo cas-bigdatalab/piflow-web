@@ -229,10 +229,14 @@ function updateFlow() {
                 return;
             },
             success: function (data) {//Operation after request successful
-                if (data > 0) {
+                var dataMap = JSON.parse(data);
+                if (200 === dataMap.code) {
                     layer.closeAll('page');
                     layer.msg('update success', {icon: 1, shade: 0, time: 2000}, function () {
                         location.reload();
+                    });
+                }else {
+                    layer.msg('update failed ', {icon: 2, shade: 0, time: 2000}, function () {
                     });
                 }
             }

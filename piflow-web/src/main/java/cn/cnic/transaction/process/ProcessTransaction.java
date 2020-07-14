@@ -1,7 +1,17 @@
 package cn.cnic.transaction.process;
 
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
 import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.base.vo.UserVo;
 import cn.cnic.component.process.model.Process;
 import cn.cnic.component.process.model.ProcessPath;
 import cn.cnic.component.process.model.ProcessStop;
@@ -10,15 +20,6 @@ import cn.cnic.mapper.process.ProcessMapper;
 import cn.cnic.mapper.process.ProcessPathMapper;
 import cn.cnic.mapper.process.ProcessStopMapper;
 import cn.cnic.mapper.process.ProcessStopPropertyMapper;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-import java.util.List;
 
 @Component
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)

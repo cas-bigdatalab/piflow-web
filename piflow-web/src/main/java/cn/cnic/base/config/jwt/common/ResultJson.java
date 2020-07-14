@@ -11,6 +11,7 @@ import java.io.Serializable;
  * Created at 2018/3/8.
  */
 @Data
+@SuppressWarnings("rawtypes")
 public class ResultJson<T> implements Serializable{
 
     private static final long serialVersionUID = 783015033603078674L;
@@ -18,11 +19,12 @@ public class ResultJson<T> implements Serializable{
     private String msg;
     private T data;
 
-    public static ResultJson ok() {
+	public static ResultJson ok() {
         return ok("");
     }
 
-    public static ResultJson ok(Object o) {
+    @SuppressWarnings("unchecked")
+	public static ResultJson ok(Object o) {
         return new ResultJson(ResultCode.SUCCESS, o);
     }
 
@@ -30,7 +32,8 @@ public class ResultJson<T> implements Serializable{
         return failure(code, "");
     }
 
-    public static ResultJson failure(ResultCode code, Object o) {
+    @SuppressWarnings("unchecked")
+	public static ResultJson failure(ResultCode code, Object o) {
         return new ResultJson(code, o);
     }
 

@@ -13,4 +13,13 @@ public interface IProcessAndProcessGroupService {
      */
     public String getProcessAndProcessGroupListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param);
 
+    /**
+     * getAppInfoList
+     *
+     * @param taskAppIds task appId array
+     * @param groupAppIds group appId array
+     * @return json
+     */
+    public String getAppInfoList(String[] taskAppIds,String[] groupAppIds);
+
 }

@@ -1,5 +1,4 @@
-var dataSourceTable;
-var newDatasourceWindow;
+var newDatasourceWindow, openDatasourceId;
 
 // Replace the contents of the attribute
 function updateSAttributes(updateHtmlStr, findType, attrName, oldContent, newContent) {
@@ -63,6 +62,7 @@ function removeCustomModule(removeId, listId) {
 }
 
 function dataSourceOpen(dataSourceId) {
+    openDatasourceId = dataSourceId;
     $.ajax({
         cache: true,//Keep cached data
         type: "POST",//Request type post
@@ -269,6 +269,86 @@ function delDataSource(datasourceId) {
                 });
             }
 
+        }
+    });
+}
+
+function onloadPageData() {
+    $.ajax({
+        cache: true,//Keep cached data
+        type: "POST",//Request type post
+        url: "/piflow-web/datasource/getDataSourceInputData",//This is the name of the file where I receive data in the background.
+        //data:$('#loginForm').serialize(),//Serialize the form
+        data: {"dataSourceId": openDatasourceId},
+        async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
+        error: function (request) {//Operation after request failure
+            layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000}, function () {
+            });
+            return;
+        },
+        success: function (data) {//Operation after request successful
+            openDatasourceId = '';
+            var dataMap = JSON.parse(data);
+            if (200 === dataMap.code) {
+                var dataSourceVoObj = dataMap.dataSourceVo;
+                var templateListObj = dataMap.templateList;
+                if (dataSourceVoObj) {
+                    $("#selectTypeDivId").hide();
+                    $("#submitBtnSpan").text('Update');
+                    $("#updateDatasourceId").val(dataSourceVoObj.id);
+                    $("#template_type_id").val(dataSourceVoObj.dataSourceType);
+                    $("#dataSourceName").val(dataSourceVoObj.dataSourceName);
+                    $("#dataSourceDescription").val(dataSourceVoObj.dataSourceDescription);
+                    var dataSourcePropertyVoList = dataSourceVoObj.dataSourcePropertyVoList
+                    if (dataSourcePropertyVoList) {
+                        var typeId_element = $("#typeId");
+                        typeId_element.html("");
+                        dataSourcePropertyVoList.forEach((dataSourcePropertyVo, index) => {
+                            var html = '<div class="layui-form-item layui-form-text">' +
+                                '<label class="layui-form-label">' + dataSourcePropertyVo.name + '</label>' +
+                                '<input style="display: none;"' +
+                                'name="dataSourcePropertyVoList[' + index + '].id"' +
+                                'value="' + dataSourcePropertyVo.id + '">' +
+                                '<input style="display: none;"' +
+                                'name="dataSourcePropertyVoList[' + index + '].name"' +
+                                'value="' + dataSourcePropertyVo.name + '">' +
+                                '<div class="layui-input-block">' +
+                                '<input class="layui-input"' +
+                                'autocomplete="off"' +
+                                'placeholder="please input name..."' +
+                                'style="width: 95%;"' +
+                                'name="dataSourcePropertyVoList[' + index + '].value"' +
+                                'value="' + dataSourcePropertyVo.value + '"/>' +
+                                '</div>' +
+                                '</div>';
+                            typeId_element.append(html);
+                        });
+                    }
+                    $('#typeContentId').show();
+                } else {
+                    $("#selectTypeDivId").show();
+                    $("#submitBtnSpan").text('Create');
+                    if (templateListObj) {
+                        $('#type_select_id').html("");
+                        $('#type_select_id').append('<option value="">please select type...</option>');
+                        templateListObj.forEach((template, index) => {
+                            var htmlOption = '<option value="' + template.id + '"' + '>' + template.dataSourceName + '</option>';
+                            $('#type_select_id').append(htmlOption);
+                        });
+                        $('#type_select_id').append('<option value="other">Other</option>');
+                    }
+                    $('#typeContentId').hide();
+                    //please select type...
+                    $("#type_select_id").val($("#type_select_id option:contains(jdbc temolate)").val());
+                    $("#type_select_id").change();
+                    //other
+                    $("#type_select_id").val("other");
+                    $("#type_select_id").change();
+                }
+            } else {
+                layer.msg("failed " + dataMap.errorMsg, {icon: 2, shade: 0, time: 1000}, function () {
+                });
+            }
         }
     });
 }

@@ -1,8 +1,31 @@
 package cn.cnic.component.mxGraph.service.impl;
 
-import cn.cnic.base.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import cn.cnic.base.util.FlowXmlUtils;
+import cn.cnic.base.util.JsonUtils;
+import cn.cnic.base.util.LoggerUtil;
+import cn.cnic.base.util.ReturnMapUtils;
+import cn.cnic.base.util.UUIDUtils;
 import cn.cnic.common.Eunm.PortType;
-import cn.cnic.component.flow.model.*;
+import cn.cnic.component.flow.model.Flow;
+import cn.cnic.component.flow.model.FlowGroup;
+import cn.cnic.component.flow.model.FlowGroupPaths;
+import cn.cnic.component.flow.model.Paths;
+import cn.cnic.component.flow.model.Property;
+import cn.cnic.component.flow.model.Stops;
 import cn.cnic.component.flow.utils.PropertyUtils;
 import cn.cnic.component.flow.utils.StopsUtils;
 import cn.cnic.component.mxGraph.model.MxCell;
@@ -29,14 +52,6 @@ import cn.cnic.mapper.flow.StopsMapper;
 import cn.cnic.mapper.mxGraph.MxCellMapper;
 import cn.cnic.mapper.mxGraph.MxGeometryMapper;
 import cn.cnic.mapper.mxGraph.MxGraphModelMapper;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-import java.util.*;
 
 @Service
 public class MxGraphModelServiceImpl implements IMxGraphModelService {
@@ -866,7 +881,6 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
      * @param flowGroupId
      * @return
      */
-    @SuppressWarnings({"unchecked", "rawtypes"})
     private Map<String, Object> addGroupFlows(String username, MxGraphModelVo mxGraphModelVo, String flowGroupId) {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsg("Illegal operation");
@@ -1340,7 +1354,8 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
         return ReturnMapUtils.setSucceededMsgRtnJsonStr("test");
     }
 
-    private FlowGroup addFlowGroupNodeAndEdge(FlowGroup flowGroup, List<MxCellVo> addMxCellVo, String username) {
+    @SuppressWarnings({ "unchecked", "rawtypes"})
+	private FlowGroup addFlowGroupNodeAndEdge(FlowGroup flowGroup, List<MxCellVo> addMxCellVo, String username) {
         if (null == flowGroup) {
             return null;
         }

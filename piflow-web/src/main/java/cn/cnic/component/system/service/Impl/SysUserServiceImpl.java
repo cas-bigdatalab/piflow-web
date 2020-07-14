@@ -38,11 +38,12 @@ import java.util.Map;
 
 @Slf4j
 @Service
+@SuppressWarnings("unused")
 public class SysUserServiceImpl implements ISysUserService {
 
 
     private final AuthenticationManager authenticationManager;
-    private final UserDetailsService userDetailsService;
+	private final UserDetailsService userDetailsService;
     private final JwtUtils jwtTokenUtil;
 
     @Value("${jwt.tokenHead}")

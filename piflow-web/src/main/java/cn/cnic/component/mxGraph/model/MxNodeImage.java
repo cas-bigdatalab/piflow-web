@@ -13,6 +13,8 @@ import javax.persistence.Table;
 @Table(name = "MX_NODE_IMAGE")
 public class MxNodeImage extends BaseHibernateModelUUIDNoCorpAgentId {
 
+	private static final long serialVersionUID = 1L;
+	
     private String imageName;
     private String imagePath;
     private String imageUrl;

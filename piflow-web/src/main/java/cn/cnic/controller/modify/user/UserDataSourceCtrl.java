@@ -1,7 +1,7 @@
 package cn.cnic.controller.modify.user;
 
 import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.base.util.SessionUserUtil;
+import cn.cnic.controller.modify.utils.UserUtils;
 import cn.cnic.component.dataSource.service.IDataSource;
 import cn.cnic.component.dataSource.vo.DataSourceVo;
 import cn.cnic.component.flow.service.IStopsService;
@@ -30,49 +30,49 @@ public class UserDataSourceCtrl {
     @RequestMapping("/getDatasourceList")
     @ResponseBody
     public String getDatasourceList(HttpServletRequest request) {
-        String currentUsername = SessionUserUtil.getUsername(request);
+        String currentUsername = UserUtils.getUsername(request);
         return dataSourceImpl.getDataSourceVoList(currentUsername, false);
     }
 
     @RequestMapping("/getDataSourceListPagination")
     @ResponseBody
     public String getDataSourceListPagination(HttpServletRequest request, Integer page, Integer limit, String param) {
-        String currentUsername = SessionUserUtil.getUsername(request);
+        String currentUsername = UserUtils.getUsername(request);
         return dataSourceImpl.getDataSourceVoListPage(currentUsername, false, page, limit, param);
     }
 
     @RequestMapping("/getDatasourceById")
     @ResponseBody
     public String getDatasourceById(HttpServletRequest request, String id) {
-        String currentUsername = SessionUserUtil.getUsername(request);
+        String currentUsername = UserUtils.getUsername(request);
         return dataSourceImpl.getDataSourceVoById(currentUsername, false, id);
     }
 
     @RequestMapping("/saveOrUpdate")
     @ResponseBody
     public String saveOrUpdate(HttpServletRequest request, DataSourceVo dataSourceVo) {
-        String currentUsername = SessionUserUtil.getUsername(request);
+        String currentUsername = UserUtils.getUsername(request);
         return dataSourceImpl.saveOrUpdate(currentUsername, false, dataSourceVo);
     }
 
     @RequestMapping("/getDataSourceInputData")
     @ResponseBody
     public String getDataSourceInputPageData(HttpServletRequest request, String dataSourceId) {
-        String username = SessionUserUtil.getUsername(request);
+        String username = UserUtils.getUsername(request);
         return dataSourceImpl.getDataSourceInputPageData(username, false, dataSourceId);
     }
 
     @RequestMapping("/deleteDataSource")
     @ResponseBody
     public String deleteDataSource(HttpServletRequest request, String dataSourceId) {
-        String currentUsername = SessionUserUtil.getUsername(request);
+        String currentUsername = UserUtils.getUsername(request);
         return dataSourceImpl.deleteDataSourceById(currentUsername, false, dataSourceId);
     }
 
     @RequestMapping("/fillDatasource")
     @ResponseBody
     public String fillDatasource(HttpServletRequest request, String dataSourceId, String stopId) {
-        String username = SessionUserUtil.getUsername(request);
+        String username = UserUtils.getUsername(request);
         return stopsServiceImpl.fillDatasource(username, dataSourceId, stopId);
     }
 

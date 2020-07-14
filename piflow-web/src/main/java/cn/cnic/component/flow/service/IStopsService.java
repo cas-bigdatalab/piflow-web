@@ -1,13 +1,10 @@
 package cn.cnic.component.flow.service;
 
 
-import cn.cnic.base.vo.StatefulRtnBase;
-import cn.cnic.component.flow.model.Flow;
+import java.util.List;
+
 import cn.cnic.component.flow.vo.StopsVo;
 import cn.cnic.third.vo.flow.ThirdFlowInfoStopVo;
-
-import javax.transaction.Transactional;
-import java.util.List;
 
 public interface IStopsService {
 

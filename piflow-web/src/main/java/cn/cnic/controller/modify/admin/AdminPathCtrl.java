@@ -1,7 +1,7 @@
 package cn.cnic.controller.modify.admin;
 
 import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.base.util.SessionUserUtil;
+import cn.cnic.controller.modify.utils.UserUtils;
 import cn.cnic.component.flow.request.UpdatePathRequest;
 import cn.cnic.component.flow.service.IPathsService;
 import cn.cnic.component.flow.service.IPropertyService;
@@ -50,7 +50,7 @@ public class AdminPathCtrl {
     @RequestMapping("/savePathsPort")
     @ResponseBody
     public String savePathsPort(HttpServletRequest request, UpdatePathRequest updatePathRequest) {
-        String username = SessionUserUtil.getUsername(request);
+        String username = UserUtils.getUsername(request);
         return propertyServiceImpl.saveOrUpdateRoutePath(username, updatePathRequest);
     }
 

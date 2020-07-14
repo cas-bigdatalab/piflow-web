@@ -27,6 +27,7 @@ public class PageHelperUtils {
         return rtnMap;
     }
 
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public static Map<String, Object> setLayTableParam(Page page, Map<String, Object> rtnMap) {
         if (null == rtnMap) {
             rtnMap = new HashMap<>();

@@ -1,7 +1,7 @@
 package cn.cnic.controller.modify.user;
 
 import cn.cnic.base.util.ReturnMapUtils;
-import cn.cnic.base.util.SessionUserUtil;
+import cn.cnic.controller.modify.utils.UserUtils;
 import cn.cnic.component.template.service.IFlowTemplateService;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -29,14 +29,14 @@ public class UserFlowTemplateCtrl {
         String name = request.getParameter("name");
         String loadId = request.getParameter("load");
         String templateType = request.getParameter("templateType");
-        String username = SessionUserUtil.getUsername(request);
+        String username = UserUtils.getUsername(request);
         return flowTemplateServiceImpl.addFlowTemplate(username, name, loadId, templateType);
     }
 
     @RequestMapping("/flowTemplatePage")
     @ResponseBody
     public String templatePage(HttpServletRequest request, Integer page, Integer limit, String param) {
-        String username = SessionUserUtil.getUsername(request);
+        String username = UserUtils.getUsername(request);
         return flowTemplateServiceImpl.getFlowTemplateListPage(username, false, page, limit, param);
     }
 
@@ -48,7 +48,7 @@ public class UserFlowTemplateCtrl {
      */
     @RequestMapping("/deleteFlowTemplate")
     @ResponseBody
-    public int deleteFlowTemplate(String id) {
+    public String deleteFlowTemplate(String id) {
         return flowTemplateServiceImpl.deleteFlowTemplate(id);
     }
 
@@ -73,7 +73,7 @@ public class UserFlowTemplateCtrl {
     @RequestMapping(value = "/uploadXmlFile", method = RequestMethod.POST)
     @ResponseBody
     public String uploadXmlFile(HttpServletRequest request, @RequestParam("file") MultipartFile file) {
-        String username = SessionUserUtil.getUsername(request);
+        String username = UserUtils.getUsername(request);
         return flowTemplateServiceImpl.uploadXmlFile(username, file);
     }
 
@@ -85,7 +85,7 @@ public class UserFlowTemplateCtrl {
     @RequestMapping("/flowTemplateList")
     @ResponseBody
     public String flowTemplateList(HttpServletRequest request) {
-        String username = SessionUserUtil.getUsername(request);
+        String username = UserUtils.getUsername(request);
         return flowTemplateServiceImpl.flowTemplateList(username, false);
     }
 
@@ -102,7 +102,7 @@ public class UserFlowTemplateCtrl {
         String templateId = request.getParameter("templateId");
         String loadId = request.getParameter("load");
         String loadType = request.getParameter("loadType");
-        String username = SessionUserUtil.getUsername(request);
+        String username = UserUtils.getUsername(request);
         if ("TASK".equals(loadType)) {
             return flowTemplateServiceImpl.loadTaskTemplate(username, templateId, loadId);
         } else if ("GROUP".equals(loadType)) {

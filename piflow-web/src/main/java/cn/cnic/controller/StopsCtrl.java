@@ -1,26 +1,22 @@
 package cn.cnic.controller;
 
-import cn.cnic.base.util.*;
-import cn.cnic.base.vo.StatefulRtnBase;
-import cn.cnic.component.flow.model.Flow;
-import cn.cnic.component.flow.service.ICustomizedPropertyService;
-import cn.cnic.component.flow.service.IFlowService;
-import cn.cnic.component.flow.service.IPropertyService;
-import cn.cnic.component.flow.service.IStopsService;
-import cn.cnic.component.flow.vo.StopsCustomizedPropertyVo;
-import cn.cnic.component.mxGraph.model.MxGraphModel;
-import cn.cnic.component.mxGraph.vo.MxGraphModelVo;
-import cn.cnic.component.stopsComponent.service.IStopGroupService;
-import org.apache.commons.lang3.StringUtils;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.Map;
+import cn.cnic.base.util.LoggerUtil;
+import cn.cnic.base.util.ReturnMapUtils;
+import cn.cnic.base.util.SessionUserUtil;
+import cn.cnic.component.flow.service.ICustomizedPropertyService;
+import cn.cnic.component.flow.service.IFlowService;
+import cn.cnic.component.flow.service.IPropertyService;
+import cn.cnic.component.flow.service.IStopsService;
+import cn.cnic.component.flow.vo.StopsCustomizedPropertyVo;
+import cn.cnic.component.stopsComponent.service.IStopGroupService;
 
 @RestController
 @RequestMapping("/stops")

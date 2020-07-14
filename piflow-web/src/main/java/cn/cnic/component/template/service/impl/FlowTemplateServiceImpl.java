@@ -143,12 +143,16 @@ public class FlowTemplateServiceImpl implements IFlowTemplateService {
      * @return
      */
     @Override
-    public int deleteFlowTemplate(String id) {
-        int deleteTemplate = 0;
-        if (StringUtils.isNoneBlank(id)) {
-            deleteTemplate = flowTemplateDomain.updateEnableFlagById(id, false);
+    public String deleteFlowTemplate(String id) {
+        if (StringUtils.isBlank(id)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("id is null");
         }
-        return deleteTemplate;
+        int deleteTemplate = flowTemplateDomain.updateEnableFlagById(id, false);
+        if (deleteTemplate > 0) {
+            return ReturnMapUtils.setSucceededMsgRtnJsonStr(ReturnMapUtils.SUCCEEDED_MSG);
+        } else {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.ERROR_MSG);
+        }
     }
 
     /**

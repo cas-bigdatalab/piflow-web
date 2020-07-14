@@ -115,5 +115,5 @@ public interface PathsMapper {
      * @return
      */
     @UpdateProvider(type = PathsMapperProvider.class, method = "updateEnableFlagByFlowId")
-    public int updateEnableFlagByFlowId(String username, String id);
+    public int updateEnableFlagByFlowId(String username, String flowId);
 }

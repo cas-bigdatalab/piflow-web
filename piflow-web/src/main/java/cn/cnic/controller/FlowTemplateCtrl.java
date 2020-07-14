@@ -49,7 +49,7 @@ public class FlowTemplateCtrl {
      */
     @RequestMapping("/deleteFlowTemplate")
     @ResponseBody
-    public int deleteFlowTemplate(String id) {
+    public String deleteFlowTemplate(String id) {
         return flowTemplateServiceImpl.deleteFlowTemplate(id);
     }
 

@@ -1,9 +1,8 @@
 package cn.cnic.component.stopsComponent.service;
 
-import cn.cnic.base.vo.UserVo;
-import cn.cnic.component.stopsComponent.vo.StopGroupVo;
-
 import java.util.List;
+
+import cn.cnic.component.stopsComponent.vo.StopGroupVo;
 
 public interface IStopGroupService {
 
