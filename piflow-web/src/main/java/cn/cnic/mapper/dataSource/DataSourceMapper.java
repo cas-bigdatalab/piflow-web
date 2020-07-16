@@ -65,7 +65,7 @@ public interface DataSourceMapper {
             @Result(id = true, column = "id", property = "id"),
             @Result(column = "id", property = "dataSourcePropertyList", many = @Many(select = "cn.cnic.mapper.dataSource.DataSourcePropertyMapper.getDataSourcePropertyListByDataSourceId", fetchType = FetchType.LAZY))
     })
-    DataSource getDataSourceById(@Param("id") String id);
+    DataSource getDataSourceById(@Param("username") String username, @Param("isAdmin") boolean isAdmin, @Param("id") String id);
 
     @UpdateProvider(type = DataSourceMapperProvider.class, method = "updateEnableFlagById")
     public int updateEnableFlagById(@Param("username") String username, @Param("id") String id);

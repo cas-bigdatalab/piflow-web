@@ -4,6 +4,7 @@ import cn.cnic.base.util.DateUtils;
 import cn.cnic.base.util.SqlUtils;
 import cn.cnic.component.dataSource.model.DataSource;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.jdbc.SQL;
 
 import java.util.Date;
@@ -213,7 +214,7 @@ public class DataSourceMapperProvider {
      * @param id
      * @return
      */
-    public String getDataSourceById(String id) {
+    public String getDataSourceById(String username, boolean isAdmin, String id) {
         String sqlStr = "";
         if (StringUtils.isNotBlank(id)) {
             StringBuffer strBuf = new StringBuffer();
@@ -221,6 +222,9 @@ public class DataSourceMapperProvider {
             strBuf.append("from data_source ");
             strBuf.append("where enable_flag = 1 ");
             strBuf.append("and id = " + SqlUtils.preventSQLInjection(id) + " ");
+            if (!isAdmin) {
+                strBuf.append("and crt_user = " + SqlUtils.preventSQLInjection(username));
+            }
             sqlStr = strBuf.toString();
         }
         return sqlStr;

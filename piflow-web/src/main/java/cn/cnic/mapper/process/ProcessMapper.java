@@ -49,7 +49,7 @@ public interface ProcessMapper {
             @Result(column = "id", property = "processPathList", many = @Many(select = "cn.cnic.mapper.process.ProcessPathMapper.getProcessPathByProcessId", fetchType = FetchType.LAZY))
 
     })
-    public List<Process> getProcessByProcessGroupId(@Param("username") String username, @Param("isAdmin") boolean isAdmin, @Param("processGroupId") String processGroupId);
+    public List<Process> getProcessByProcessGroupId(@Param("processGroupId") String processGroupId);
 
     /**
      * Query process List(processList)

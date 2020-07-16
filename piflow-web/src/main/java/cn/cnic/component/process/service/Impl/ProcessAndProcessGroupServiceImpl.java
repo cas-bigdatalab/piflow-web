@@ -52,7 +52,7 @@ public class ProcessAndProcessGroupServiceImpl implements IProcessAndProcessGrou
         if (null == offset || null == limit) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.ERROR_MSG);
         }
-        Page<Process> page = PageHelper.startPage(offset, limit);
+        Page<Process> page = PageHelper.startPage(offset, limit,"crt_dttm desc");
         if (isAdmin) {
             processAndProcessGroupMapper.getProcessAndProcessGroupList(param);
         } else {

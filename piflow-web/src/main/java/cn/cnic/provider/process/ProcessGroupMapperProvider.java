@@ -79,9 +79,9 @@ public class ProcessGroupMapperProvider {
      * @param map
      * @return
      */
-    public String getProcessGroupListByAppIDs(Map<String, String[]> map) {
+    public String getProcessGroupListByAppIDs(Map map) {
         String sqlStr = "select 0";
-        String[] appIDs = map.get("appIDs");
+        String[] appIDs = (String[])map.get("appIDs");
         if (null != appIDs && appIDs.length > 0) {
             SQL sql = new SQL();
             String appIDsStr = SqlUtils.strArrayToStr(appIDs);

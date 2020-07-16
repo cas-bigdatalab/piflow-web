@@ -189,7 +189,7 @@ public class ProcessMapperProvider {
      * @param processGroupId
      * @return
      */
-    public String getProcessByProcessGroupId(String username, boolean isAdmin, String processGroupId) {
+    public String getProcessByProcessGroupId(String processGroupId) {
         String sqlStr = "select 0";
         if (StringUtils.isNotBlank(processGroupId)) {
             StringBuffer strBuf = new StringBuffer();
@@ -197,9 +197,6 @@ public class ProcessMapperProvider {
             strBuf.append("from flow_process ");
             strBuf.append("where enable_flag = 1 ");
             strBuf.append("and fk_flow_process_group_id= " + SqlUtils.preventSQLInjection(processGroupId));
-            if (!isAdmin) {
-                strBuf.append("and crt_user = " + SqlUtils.preventSQLInjection(username));
-            }
             sqlStr = strBuf.toString();
         }
         return sqlStr;

@@ -22,7 +22,7 @@ public class DataSourceConfig {
     private Logger logger = LoggerUtil.getLogger();
 
     @Value("${spring.datasource.url}")
-    private String datasourceUrlourceUrl;
+    private String datasourceUrl;
     @Value("${spring.datasource.driver-class-name}")
     private String driverClassName;
     @Value("${spring.datasource.username}")
@@ -37,7 +37,7 @@ public class DataSourceConfig {
     	createDatabase();
     	DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName(driverClassName);
-        dataSource.setUrl(datasourceUrlourceUrl);
+        dataSource.setUrl(datasourceUrl);
         dataSource.setUsername(username);
         dataSource.setPassword(password);
         return dataSource;
@@ -48,7 +48,7 @@ public class DataSourceConfig {
     		try {
                 Class.forName(driverClassName);
                 //jdbc:mysql://127.0.0.1:3306/insight?useUnicode=true&characterEncoding=utf8&failOverReadOnly=false&allowMultiQueries=true
-                String url01 = datasourceUrlourceUrl.substring(0, datasourceUrlourceUrl.indexOf("?"));
+                String url01 = datasourceUrl.substring(0, datasourceUrl.indexOf("?"));
 
                 String url02 = url01.substring(0, url01.lastIndexOf("/"));
 

@@ -22,7 +22,6 @@ public interface ProcessGroupMapper {
             @Result(id = true, column = "id", property = "id"),
             @Result(column = "id", property = "processList", many = @Many(select = "cn.cnic.mapper.process.ProcessMapper.getProcessByProcessGroupId", fetchType = FetchType.LAZY)),
             @Result(column = "id", property = "processGroupPathList", many = @Many(select = "cn.cnic.mapper.process.ProcessGroupPathMapper.getProcessPathByProcessGroupId", fetchType = FetchType.LAZY))
-
     })
     public ProcessGroup getProcessGroupById(@Param("username") String username, @Param("isAdmin") boolean isAdmin, @Param("processGroupId") String processGroupId);
 

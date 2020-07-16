@@ -2,6 +2,7 @@ package cn.cnic.component.dataSource.service.impl;
 
 import cn.cnic.base.util.*;
 import cn.cnic.component.dataSource.domain.DataSourceDomain;
+import cn.cnic.component.dataSource.domain.DataSourceTransaction;
 import cn.cnic.component.dataSource.model.DataSource;
 import cn.cnic.component.dataSource.model.DataSourceProperty;
 import cn.cnic.component.dataSource.service.IDataSource;
@@ -30,6 +31,9 @@ public class DataSourceImpl implements IDataSource {
 
     @Resource
     private DataSourceMapper dataSourceMapper;
+
+    @Resource
+    private DataSourceTransaction dataSourceTransaction;
 
     @Override
     @Transactional
@@ -94,8 +98,14 @@ public class DataSourceImpl implements IDataSource {
             dataSource.setDataSourcePropertyList(dataSourcePropertyList);
         }
         // save "datasource"
-        dataSourceDomain.saveOrUpdate(dataSource);
-        return ReturnMapUtils.setSucceededMsgRtnJsonStr("add success.");
+        try {
+            dataSourceTransaction.insertDataSource(dataSource);
+            return ReturnMapUtils.setSucceededMsgRtnJsonStr("add success.");
+        } catch (Exception e) {
+            logger.error("save failed:", e);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.ERROR_MSG);
+        }
+
     }
 
     private String updateDataSource(String username, boolean isAdmin, DataSourceVo dataSourceVo) {
@@ -113,13 +123,7 @@ public class DataSourceImpl implements IDataSource {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Id is empty and cannot be updated");
         }
         // Query "datasource" by id
-        DataSource dataSourceById = null;
-        if (isAdmin) {
-            username = StringUtils.isNotBlank(username) ? username : "admin";
-            dataSourceById = dataSourceDomain.getDataSourceById(id);
-        } else {
-            dataSourceById = dataSourceDomain.getDataSourceByIdAndCreateUser(id, username);
-        }
+        DataSource dataSourceById = dataSourceMapper.getDataSourceById(username, isAdmin, id);
         // Judge empty
         if (null == dataSourceById) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Cannot find data with id '" + id + "'");
@@ -186,9 +190,15 @@ public class DataSourceImpl implements IDataSource {
                 dataSourcePropertyList = new ArrayList<>();
             }
             dataSourcePropertyList.addAll(dataSourcePropertyListAdd);
+            dataSourceById.setDataSourcePropertyList(dataSourcePropertyList);
         }
-        dataSourceDomain.saveOrUpdate(dataSourceById);
-        return ReturnMapUtils.setSucceededMsgRtnJsonStr("update success.");
+        try {
+            dataSourceTransaction.updateDataSource(dataSourceById);
+            return ReturnMapUtils.setSucceededMsgRtnJsonStr("update success.");
+        } catch (Exception e) {
+            logger.error("save failed:", e);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.ERROR_MSG);
+        }
     }
 
     @Override

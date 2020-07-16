@@ -2,6 +2,7 @@ package cn.cnic.base.config.jwt.common;
 
 import cn.cnic.base.vo.UserVo;
 import cn.cnic.common.Eunm.SysRoleType;
+import cn.cnic.component.system.model.SysRole;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.CompressionCodecs;
 import io.jsonwebtoken.Jwts;
@@ -49,6 +50,11 @@ public class JwtUtils {
             String roleName = claims.get(CLAIM_KEY_AUTHORITIES).toString();
             SysRoleType role = SysRoleType.selectGender(roleName);
             userVo = new UserVo(userId, username, role, "");
+            ArrayList<SysRole> sysRoles = new ArrayList<>();
+            SysRole sysRole = new SysRole();
+            sysRole.setRole(role);
+            sysRoles.add(sysRole);
+            userVo.setRoles(sysRoles);
         } catch (Exception e) {
             userVo = null;
         }
