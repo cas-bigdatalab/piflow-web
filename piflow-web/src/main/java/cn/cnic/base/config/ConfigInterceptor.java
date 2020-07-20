@@ -50,7 +50,7 @@ public class ConfigInterceptor implements HandlerInterceptor {
                 }
             } else {
                 if (!requestURI.startsWith(contextPath + "/bootPage")) {
-                    response.sendRedirect(contextPath + "/bootPage/index"); // Redirect to the boot page
+                    response.sendRedirect(contextPath + "/page/bootPage/index"); // Redirect to the boot page
                     return false;
                 }
                 log.info("No initialization, enter the boot page");

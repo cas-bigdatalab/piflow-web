@@ -9,66 +9,6 @@ var pathsCells = [];
 var thisEditor = null;
 var graphGlobal = null;
 
-/**
- * ajax工具js
- * @param requestType 请求类型(get,post)
- * @param url 请求url
- * @param async 是否异步
- * @param requestData 请求参数
- * @param backFunc 请求成功后回调方法
- * @param errBackFunc 请求失败后回调方法
- */
-function ajaxRequest(param) {
-    if (!param.url) {
-        throw "url is null"
-    }
-    var requestType = param.type ? param.type : "GET";
-    var url = param.url;
-    var cache = param.cache ? true : false;
-    var async = param.async ? true : false;
-    var traditional = param.traditional ? true : false;
-    var requestData = param.data ? param.data : {};
-    var backFunc = param.success;
-    var errBackFunc = param.error;
-    var processData = true;
-    if (undefined !== param.processData) {
-        processData = param.processData ? true : false;
-    }
-    $.ajax({
-        cache: cache,
-        type: requestType,
-        async: async,
-        url: web_header_prefix + url,
-        data: requestData,
-        traditional: traditional,
-        processData: processData,
-        // dataType: 'json',
-        // beforeSend: function (request) {
-        //     request.setRequestHeader("token", tokenInfo);
-        // },
-        // xhrFields: {
-        //     withCredentials: true
-        // },
-        success: function (data) {
-            //data =  JSON.parse(data);
-            // if (data.code === 403) {
-            //     //  alert(data.errMsg);
-            //     window.location.href = '/login';
-            //     return;
-            // }
-            if (backFunc && $.isFunction(backFunc)) {
-                backFunc(data);
-            }
-        },
-        error: function (request) {//请求失败之后的操作
-            if (errBackFunc && $.isFunction(errBackFunc)) {
-                errBackFunc(request);
-            }
-            return;
-        }
-    });
-};
-
 //init data
 function initFlowDrawingBoardData(loadId, parentAccessPath) {
     $('#fullScreen').show();
@@ -305,7 +245,7 @@ function queryFlowInfo(loadId) {
                         for (var i = 0; i < runningProcessVoList.length; i++) {
                             tableAllTd += ('<tr>'
                                 + '<td style="border: 1px solid #e8e8e8; width: 50%;">'
-                                + '<a href="' + web_header_prefix + '/process/drawingBoard?drawingBoardType=PROCESS&processType=PROCESS&load=' + runningProcessVoList[i].id + '">' + runningProcessVoList[i].name + '</a>'
+                                + '<a href="' + web_header_prefix + '/page/process/drawingBoard?drawingBoardType=PROCESS&processType=PROCESS&load=' + runningProcessVoList[i].id + '">' + runningProcessVoList[i].name + '</a>'
                                 + '</td>'
                                 + '<td style="border: 1px solid #e8e8e8; width: 50%;"><span>' + runningProcessVoList[i].startTime + '</span></td>'
                                 + '</tr>');
@@ -706,7 +646,7 @@ function openDatasourceList() {
     var window_height = $(window).height();//Get browser window height
     ajaxRequest({
         type: "POST",//Request type post
-        url: "/datasource/getDatasourceListPage",
+        url: "/page/datasource/getDatasourceListPage",
         error: function (request) {//Operation after request failure
             return;
         },
@@ -1743,7 +1683,7 @@ function reloadStops() {
         success: function (data) {//Operation after request successful
             var dataMap = JSON.parse(data);
             if (200 === dataMap.code) {
-                window.location.href = (web_header_prefix + "/flow/drawingBoard?drawingBoardType=TASK&load=" + dataMap.load + "&_" + new Date().getTime());
+                window.location.href = (web_header_prefix + "/page/flow/drawingBoard?drawingBoardType=TASK&load=" + dataMap.load + "&_" + new Date().getTime());
             } else {
                 //alert("reload fail");
                 layer.msg("reload fail", {icon: 2, shade: 0, time: 2000}, function () {

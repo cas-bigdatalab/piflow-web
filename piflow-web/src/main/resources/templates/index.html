@@ -4,25 +4,23 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
     <title>piflow-web</title>
-    <link rel="shortcut icon" th:href="@{/favicon.ico}">
+    <link rel="shortcut icon" href="/piflow-web/favicon.ico">
 
-    <meta name="_csrf" th:content="${_csrf.token}"/>
-    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{/custom/css/fullScreen.css}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{/components/layui/css/layui.css}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{/components/font-awesome-4.7.0/css/font-awesome.min.css}"/>
+    <link rel="stylesheet" type="text/css" href="/piflow-web/custom/css/fullScreen.css"/>
+    <link rel="stylesheet" type="text/css" href="/piflow-web/css/main.css"/>
+    <link rel="stylesheet" type="text/css" href="/piflow-web/components/layui/css/layui.css"/>
+    <link rel="stylesheet" type="text/css" href="/piflow-web/components/font-awesome-4.7.0/css/font-awesome.min.css"/>
 
     <!--[if IE 8]>
-    <link rel="stylesheet" type="text/css" th:href='@{/css/ie8.css}'/>
+    <link rel="stylesheet" type="text/css" href='/piflow-web/css/ie8.css'/>
     <![endif]-->
 
-    <script type="text/javascript" th:src='@{/js/jquery/jquery.min.js}'></script>
-    <script type="text/javascript" th:src='@{/js/jquery/jquery.easytabs.min.js}'></script>
-    <script type="text/javascript" th:src='@{/js/jquery/jquery.collapsible.min.js}'></script>
-    <script type="text/javascript" th:src='@{/js/dataTables1.10.18/jquery.dataTables.min.js}'></script>
-    <script type="text/javascript" th:src='@{/js/functions.js}'></script>
-    <script type="text/javascript" th:src="@{/components/layui/layui.all.js}"></script>
+    <script type="text/javascript" src="/piflow-web/js/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/piflow-web/js/jquery/jquery.easytabs.min.js"></script>
+    <script type="text/javascript" src="/piflow-web/js/jquery/jquery.collapsible.min.js"></script>
+    <script type="text/javascript" src="/piflow-web/js/dataTables1.10.18/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="/piflow-web/js/functions.js"></script>
+    <script type="text/javascript" src="/piflow-web/components/layui/layui.all.js"></script>
     <style>
         .paginate_button current {
             color: #c40029;
@@ -37,17 +35,16 @@
             border-color: #FF5722 !important;
         }
 
-        .layui-table-cell{
-            height:36px;
+        .layui-table-cell {
+            height: 36px;
             line-height: 36px;
         }
     </style>
 </head>
 
 <body>
-
 <!-- Fixed top -->
-<div id="top" th:include="macro/publicMacro :: headMacro"></div>
+<div id="top"></div>
 <!-- /fixed top -->
 
 
@@ -61,7 +58,7 @@
 
             <!-- Main navigation -->
             <ul id="menuGroupsId" class="navigation widget">
-                <li><a th:href="@{/}" title=""><i class="icon-home"></i>Dashboard</a></li>
+                <li><a th:href="@{/index}" title=""><i class="icon-home"></i>Dashboard</a></li>
             </ul>
             <!-- /main navigation -->
 
@@ -73,49 +70,47 @@
 
     <!-- Content -->
     <div id="content">
-        <!-- Content wrapper -->
-        <div th:switch="${accessPath}">
-            <div th:case="'indexHome'">
-                <div th:include="indexRight/dashboard :: index_Home"></div>
-            </div>
-            <div th:case="'flowList'">
-                <div th:include="indexRight/flow/flow_List :: flow_List"></div>
-            </div>
-            <div th:case="'processList'">
-                <div th:include="indexRight/flow/process_List :: process_List"></div>
-            </div>
-            <div th:case="'template'">
-                <div th:include="indexRight/flow/template_List :: template_List"></div>
-            </div>
-            <div th:case="'flowGroupList'">
-                <div th:include="indexRight/flowGroup/flow_group_List :: flow_group_List"></div>
-            </div>
-            <div th:case="'processGroupList'">
-                <div th:include="indexRight/flowGroup/process_group_List :: process_group_List"></div>
-            </div>
-            <div th:case="'flowGroupTemplateList'">
-                <div th:include="indexRight/flowGroup/flow_group_template_List :: flow_group_template_List"></div>
-            </div>
-            <div th:case="'dataSources'">
-                <div th:include="indexRight/datasource/data_source_List :: data_source_List"></div>
-            </div>
 
-            <div th:case="'processAndProcessGroup'">
-                <div th:include="indexRight/custom/process_processGroup_list :: process_processGroup_list"></div>
-            </div>
-            <div th:case="'flowTemplateList'">
-                <div th:include="indexRight/custom/flow_template_List :: flow_template_List"></div>
-            </div>
-            <div th:case="'instructionalVideo'">
-                <div th:include="indexRight/example/instructional_Video :: instructional_Video"></div>
-            </div>
-            <div th:case="'sysScheduleList'">
-                <div th:include="indexRight/admin/sys_schedule_List :: sys_schedule_List"></div>
-            </div>
-        </div>
-        <!-- /content wrapper -->
     </div>
     <!-- /content -->
+    <!--
+        <div id="div_indexHome_id" style="display: none;">
+            <div id="div_indexHome_content_id"></div>
+        </div>
+        <div id="div_flowList_id" style="display: none;" case="'flowList'">
+            <div id="div_flowList_content_id"></div>
+        </div>
+        <div style="display: none;" case="'processList'">
+            <div th:include="indexRight/flow/process_List :: process_List"></div>
+        </div>
+        <div style="display: none;" case="'template'">
+            <div th:include="indexRight/flow/template_List :: template_List"></div>
+        </div>
+        <div style="display: none;" case="'flowGroupList'">
+            <div th:include="indexRight/flowGroup/flow_group_List :: flow_group_List"></div>
+        </div>
+        <div style="display: none;" case="'processGroupList'">
+            <div th:include="indexRight/flowGroup/process_group_List :: process_group_List"></div>
+        </div>
+        <div style="display: none;" case="'flowGroupTemplateList'">
+            <div th:include="indexRight/flowGroup/flow_group_template_List :: flow_group_template_List"></div>
+        </div>
+        <div style="display: none;" case="'dataSources'">
+            <div th:include="indexRight/datasource/data_source_List :: data_source_List"></div>
+        </div>
+        <div style="display: none;" case="'processAndProcessGroup'">
+            <div th:include="indexRight/custom/process_processGroup_list :: process_processGroup_list"></div>
+        </div>
+        <div style="display: none;" case="'flowTemplateList'">
+            <div th:include="indexRight/custom/flow_template_List :: flow_template_List"></div>
+        </div>
+        <div style="display: none;" case="'instructionalVideo'">
+            <div th:include="indexRight/example/instructional_Video :: instructional_Video"></div>
+        </div>
+        <div style="display: none;" case="'sysScheduleList'">
+            <div th:include="indexRight/admin/sys_schedule_List :: sys_schedule_List"></div>
+        </div>
+        -->
 </div>
 <!-- /content container -->
 
@@ -123,44 +118,50 @@
 <!-- Footer -->
 <!--<div id="footer"></div>-->
 <div th:include="macro/publicMacro :: footHeadMacro"></div>
+
+
+<div th:include="macro/fragmentMacro :: fullScreen"></div>
 <!-- /footer -->
 <script type="text/javascript" th:src='@{/components/bootstrap/js/bootstrap.min.js}'></script>
+<script th:src="@{/js/ajaxUtils.js}"></script>
 <script th:inline="javascript">
-    var currentUser = [[${currentUser}]];
-    var accessPath = [[${accessPath}]];
-    var projectContextPath = [[${#httpServletRequest.getContextPath()}]];
-    window.onload = function () {
-        if ("indexHome" === accessPath) {
-            setTimeout(function () {
-                window.location.href = "/piflow-web/index?accessPath=flowList";
-            }, 500);
-        }
-    };
+    var urlParams = getUrlParams(window.location.href);
+    var currentUser = JSON.parse(localStorage.jwtUser);
+    var accessPath = urlParams.accessPath;
+    var projectContextPath = "/piflow-web";
+    var projectContextPath_test = [[${#httpServletRequest.getContextPath()}]];
+
     (function () {
+        $("#top").load("/piflow-web/page/macro/headMacro.html", function () {
+            $("#span_username_id").html('Howdy,' + currentUser.username + '<b class="caret"></b>');
+        });
         if (currentUser) {
             var sysMenuVoList = currentUser.sysMenuVoList;
             if (sysMenuVoList && sysMenuVoList.length > 0) {
                 initMenuFunc(sysMenuVoList);
             }
         }
-        var currentUrlId = window.location.pathname.replace(new RegExp("/", "gm"), "_") + '_menu_id';
-        $('a[menu_id=' + currentUrlId + ']').addClass("current");
+        if (accessPath && 'indexHome' !== accessPath) {
+            switch (accessPath) {
+                case 'flowList':
+                    $("#content").load("/piflow-web/page/flowList");
+                    break;
+                case 'flowGroupList':
+                    $("#content").load("/piflow-web/page/flowGroupList");
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            $("#content").load("/piflow-web/page/dashboard");
+        }
     })();
-
-    function playVideo() {
-        $('#content').html('Vodeo Loading');
-        window.location.href = ([[${#httpServletRequest.getContextPath()}]] + "/web/instructionalVideo");
-    }
-
-    function exampleView(exampleId) {
-        $('#content').html("Example " + exampleId + " loading");
-        window.location.href = (projectContextPath + "/mxGraph/drawingBoard?drawingBoardType=TASK&load=" + exampleId);
-    }
 
     function initMenuFunc(sysMenuVoList) {
         var menuGroupsUser = {};
         var menuGroups = $('#menuGroupsId');
         var currentPathArray = window.location.pathname.split(projectContextPath);
+        var currentPathParam = window.location.search;
         var currentPath = "";
         if (currentPathArray.length == 1) {
             currentPath = currentPathArray[0];
@@ -205,6 +206,7 @@
                 menuParentHtml = $(menuParentHtml);
             }
             if (value.menuUrl) {
+                console.log("gggggg");
                 var menuUrlSpits = value.menuUrl.split(projectContextPath);
                 var menuActiveMenuId = "";
                 if (menuUrlSpits.length == 1) {
@@ -217,19 +219,17 @@
                     menuParentHtml.find("a." + value.menuName).attr("menu_id", menu_id_str + '_menu_id');
                     menuParentHtml.find("a." + value.menuName).attr("active_li_id", active_li_id);
                 }
-                if (currentPath == menuActiveMenuId) {
+                if ((currentPath + currentPathParam).indexOf(menuActiveMenuId) === 0) {
                     menuParentHtml.attr("class", "active");
                     menuParentHtml.find(".expand").attr("id", "current");
                     menuParentHtml.find(".expand").addClass("current");
                 }
             }
             menuGroupsUser[valueMenuParent] = menuParentHtml;
+            menuGroups.append(menuParentHtml);
         });
-        if (menuGroupsUser) {
-            for (var p in menuGroupsUser) {
-                menuGroups.append(menuGroupsUser[p]);
-            }
-        }
+        var currentUrlId = window.location.pathname.replace(new RegExp("/", "gm"), "_") + '_menu_id';
+        $('a[menu_id=' + currentUrlId + ']').addClass("current");
     }
 
     //@ sourceURL=index.js

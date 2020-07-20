@@ -98,7 +98,7 @@ function queryProcess(processId) {
             $.ajax({
                 cache: true,//Keep cached data
                 type: "POST",//Request type post
-                url: "/piflow-web/process/queryProcess",//This is the name of the file where I receive data in the background.
+                url: "/piflow-web/page/process/queryProcess",//This is the name of the file where I receive data in the background.
                 //data:$('#loginForm').serialize(),//Serialize the form
                 data: {
                     processId: processId
@@ -126,7 +126,7 @@ function queryProcessStop(processId, pageId) {
     $.ajax({
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: "/piflow-web/process/queryProcessStop",//This is the name of the file where I receive data in the background.
+        url: "/piflow-web/page/process/queryProcessStop",//This is the name of the file where I receive data in the background.
         //data:$('#loginForm').serialize(),//Serialize the form
         data: {
             processId: processId,
@@ -164,7 +164,7 @@ function queryProcessPath(processId, pageId) {
     $.ajax({
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: "/piflow-web/process/queryProcessPath",//This is the name of the file where I receive data in the background.
+        url: "/piflow-web/page/process/queryProcessPath",//This is the name of the file where I receive data in the background.
         //data:$('#loginForm').serialize(),//Serialize the form
         data: {
             processId: processId,
@@ -191,7 +191,7 @@ function getCheckpoint(pID, parentProcessId, processId, runMode) {
     $.ajax({
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: "/piflow-web/process/getCheckpoint",//This is the name of the file where I receive data in the background.
+        url: "/piflow-web/page/process/getCheckpoint",//This is the name of the file where I receive data in the background.
         //data:$('#loginForm').serialize(),//Serialize the form
         data: {
             pID: pID,
@@ -564,7 +564,7 @@ function getDebugData(stopName, portName) {
     $.ajax({
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: "/piflow-web/process/getDebugDataHtml",//This is the name of the file where I receive data in the background.
+        url: "/piflow-web/page/process/getDebugDataHtml",//This is the name of the file where I receive data in the background.
         //data:$('#loginForm').serialize(),//Serialize the form
         data: jsonData,
         async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.

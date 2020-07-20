@@ -203,7 +203,7 @@ function getCheckpointList(id, processId, parentProcessId, runMode) {
     $.ajax({
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: "/piflow-web/process/getCheckpoint",//This is the name of the file where I receive data in the background.
+        url: "/piflow-web/page/process/getCheckpoint",//This is the name of the file where I receive data in the background.
         //data:$('#loginForm').serialize(),//Serialize the form
         data: {
             pID: processId,

@@ -1,18 +1,11 @@
 package cn.cnic.component.dataSource.domain;
 
 import cn.cnic.base.util.LoggerUtil;
+import cn.cnic.base.util.UUIDUtils;
 import cn.cnic.component.dataSource.model.DataSource;
 import cn.cnic.component.dataSource.model.DataSourceProperty;
-import cn.cnic.component.process.model.Process;
-import cn.cnic.component.process.model.ProcessPath;
-import cn.cnic.component.process.model.ProcessStop;
-import cn.cnic.component.process.model.ProcessStopProperty;
 import cn.cnic.mapper.dataSource.DataSourceMapper;
 import cn.cnic.mapper.dataSource.DataSourcePropertyMapper;
-import cn.cnic.mapper.process.ProcessMapper;
-import cn.cnic.mapper.process.ProcessPathMapper;
-import cn.cnic.mapper.process.ProcessStopMapper;
-import cn.cnic.mapper.process.ProcessStopPropertyMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -101,7 +94,8 @@ public class DataSourceTransaction {
                     continue;
                 }
                 dataSourceProperty.setDataSource(dataSource);
-                if (StringUtils.isBlank(dataSource.getId())) {
+                if (StringUtils.isBlank(dataSourceProperty.getId())) {
+                    dataSourceProperty.setId(UUIDUtils.getUUID32());
                     addDataSourcePropertyList = dataSourcePropertyMapper.addDataSourceProperty(dataSourceProperty);
                 } else {
                     addDataSourcePropertyList = dataSourcePropertyMapper.updateDataSourceProperty(dataSourceProperty);

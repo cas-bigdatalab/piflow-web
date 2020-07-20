@@ -4,25 +4,23 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
     <title>piflow-web</title>
-    <link rel="shortcut icon" th:href="@{/favicon.ico}">
+    <link rel="shortcut icon" href="/piflow-web/favicon.ico">
 
-    <meta name="_csrf" th:content="${_csrf.token}"/>
-    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{/custom/css/fullScreen.css}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{/components/layui/css/layui.css}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{/components/font-awesome-4.7.0/css/font-awesome.min.css}"/>
+    <link rel="stylesheet" type="text/css" href="/piflow-web/custom/css/fullScreen.css"/>
+    <link rel="stylesheet" type="text/css" href="/piflow-web/css/main.css"/>
+    <link rel="stylesheet" type="text/css" href="/piflow-web/components/layui/css/layui.css"/>
+    <link rel="stylesheet" type="text/css" href="/piflow-web/components/font-awesome-4.7.0/css/font-awesome.min.css"/>
 
     <!--[if IE 8]>
-    <link rel="stylesheet" type="text/css" th:href='@{/css/ie8.css}'/>
+    <link rel="stylesheet" type="text/css" href='/piflow-web/css/ie8.css'/>
     <![endif]-->
 
-    <script type="text/javascript" th:src='@{/js/jquery/jquery.min.js}'></script>
-    <script type="text/javascript" th:src='@{/js/jquery/jquery.easytabs.min.js}'></script>
-    <script type="text/javascript" th:src='@{/js/jquery/jquery.collapsible.min.js}'></script>
-    <script type="text/javascript" th:src='@{/js/dataTables1.10.18/jquery.dataTables.min.js}'></script>
-    <script type="text/javascript" th:src='@{/js/functions.js}'></script>
-    <script type="text/javascript" th:src="@{/components/layui/layui.all.js}"></script>
+    <script type="text/javascript" src="/piflow-web/js/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/piflow-web/js/jquery/jquery.easytabs.min.js"></script>
+    <script type="text/javascript" src="/piflow-web/js/jquery/jquery.collapsible.min.js"></script>
+    <script type="text/javascript" src="/piflow-web/js/dataTables1.10.18/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="/piflow-web/js/functions.js"></script>
+    <script type="text/javascript" src="/piflow-web/components/layui/layui.all.js"></script>
     <style>
         .paginate_button current {
             color: #c40029;
@@ -37,17 +35,18 @@
             border-color: #FF5722 !important;
         }
 
-        .layui-table-cell{
-            height:36px;
+        .layui-table-cell {
+            height: 36px;
             line-height: 36px;
         }
     </style>
 </head>
 
 <body>
-
 <!-- Fixed top -->
-<div id="top" th:include="macro/publicMacro :: headMacro"></div>
+<div id="top">
+
+</div>
 <!-- /fixed top -->
 
 
@@ -122,34 +121,44 @@
 
 <!-- Footer -->
 <!--<div id="footer"></div>-->
-<div th:include="macro/publicMacro :: footHeadMacro"></div>
+<div th:include="Macro/publicMacro :: footHeadMacro"></div>
 <!-- /footer -->
 <script type="text/javascript" th:src='@{/components/bootstrap/js/bootstrap.min.js}'></script>
 <script th:inline="javascript">
-    var currentUser = [[${currentUser}]];
-    var accessPath = [[${accessPath}]];
-    var projectContextPath = [[${#httpServletRequest.getContextPath()}]];
+    var currentUser = JSON.parse(localStorage.jwtUser);
+    var accessPath = "[[${accessPath}]]";
+    //var projectContextPath = [[${#httpServletRequest.getContextPath()}]];
+    var projectContextPath = "/piflow-web";
+    $("#top").load("/piflow-web/page/macro/headMacro.html", function () {
+        $("#span_username_id").html('Howdy,' + currentUser.username + '<b class="caret"></b>');
+
+    });
     window.onload = function () {
         if ("indexHome" === accessPath) {
             setTimeout(function () {
-                window.location.href = "/piflow-web/index?accessPath=flowList";
+                window.location.href = "/piflow-web/web/flowList";
             }, 500);
         }
     };
     (function () {
+        console.log("------------------------------");
+        $("#top").load("/piflow-web/page/macro/headMacro.html", function () {
+            $("#span_username_id").html('Howdy,' + currentUser.username + '<b class="caret"></b>');
+
+        });
         if (currentUser) {
             var sysMenuVoList = currentUser.sysMenuVoList;
             if (sysMenuVoList && sysMenuVoList.length > 0) {
                 initMenuFunc(sysMenuVoList);
             }
         }
-        var currentUrlId = window.location.pathname.replace(new RegExp("/", "gm"), "_") + '_menu_id';
+        var currentUrlId = window.location.pathname.replace(new RegExp("/", "gm"), "_").replace(new RegExp("\.", "gm"), "_") + '_menu_id';
         $('a[menu_id=' + currentUrlId + ']').addClass("current");
     })();
 
     function playVideo() {
         $('#content').html('Vodeo Loading');
-        window.location.href = ([[${#httpServletRequest.getContextPath()}]] + "/web/instructionalVideo");
+        window.location.href = (projectContextPath + "/web/instructionalVideo");
     }
 
     function exampleView(exampleId) {

@@ -11,10 +11,12 @@ public interface IFlowGroupService {
     /**
      * getFlowGroupById
      *
+     * @param username
+     * @param isAdmin
      * @param flowGroupId
      * @return
      */
-    public FlowGroup getFlowGroupById(String flowGroupId);
+    public FlowGroup getFlowGroupById(String username, boolean isAdmin, String flowGroupId);
 
     /**
      * getFlowGroupVoById
@@ -139,5 +141,16 @@ public interface IFlowGroupService {
      * @return
      */
     public String queryIdInfo(String fid, String pageId);
+
+    /**
+     * drawingBoard Data
+     *
+     * @param username
+     * @param isAdmin
+     * @param load
+     * @param parentAccessPath
+     * @return
+     */
+    public String drawingBoardData(String username, boolean isAdmin, String load, String parentAccessPath);
 
 }

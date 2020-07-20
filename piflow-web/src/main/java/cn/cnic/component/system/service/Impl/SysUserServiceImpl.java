@@ -169,6 +169,7 @@ public class SysUserServiceImpl implements ISysUserService {
         //存储token
         jwtTokenUtil.putToken(username, token);
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededCustomParam("token", token);
+        userVo.setPassword("");
         rtnMap.put("jwtUser", userVo);
         return JsonUtils.toJsonNoException(rtnMap);
     }

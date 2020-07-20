@@ -24,6 +24,9 @@ function initDatatableFlowGroupPage(testTableId, url, searchInputId) {
         //Method-level rendering
         table.render({
             elem: '#' + testTableId
+            , headers: {
+                Authorization: ("Bearer " + token)
+            }
             , url: url
             , cols: [[
                 {field: 'name', title: 'Name', sort: true},
@@ -93,7 +96,7 @@ function responseActionsFlow(res) {
 }
 
 function openFlowGroup(flowGroupId) {
-    var windowOpen = window.open('/piflow-web/mxGraph/drawingBoard?drawingBoardType=GROUP&load=' + flowGroupId + '');
+    var windowOpen = window.open('/piflow-web/page/flowGroup/drawingBoard?drawingBoardType=GROUP&load=' + flowGroupId + '');
     if (windowOpen == null || typeof (windowOpen) == 'undefined') {
         alert('The window cannot be opened. Please check your browser settings.')
     }

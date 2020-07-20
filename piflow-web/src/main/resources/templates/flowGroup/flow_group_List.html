@@ -19,13 +19,8 @@
             </div>
         </div>
         <div class="navbar">
-<!--            <a class='btn' href='javascript:void(0);' onclick="newFlowGroup();"-->
-<!--               style='background-color: #C0C0C0;border: 1px solid;color: #21794c;' title="create flow group">-->
-<!--                <i class='icon-plus-sign icon-white'></i>-->
-<!--            </a>-->
             <div class="demoTable">
                 <div style="margin-top: 6px">
-<!--                    Search:-->
                     <div class="layui-inline">
                         <i class="fa fa-search fa-2x" style="position:absolute;top:8px ;left:8px;font-size:18px"></i>
                         <input class="layui-input" name="param" id="search_input_id" autocomplete="off" style="padding-left:30px">
@@ -70,12 +65,10 @@
     </form>
 </div>
 <div th:include="Macro/fragmentMacro :: fullScreen"></div>
-
-<script th:include="Macro/csrfTokeHeadMacro :: csrfTokeHeadMacroScript"/>
-<script th:src="@{/custom/js/flowGroupList.js}"></script>
+<script th:src="@{/my_js/flowGroup/flowGroupList.js}"></script>
+<script th:src="@{/js/ajaxUtils.js}"></script>
 <script th:inline="javascript">
     initDatatableFlowGroupPage('flowGroupTableId', "/piflow-web/flowGroup/getFlowGroupListPage", "search_input_id");
-
     //@ sourceURL=table_right.js
 </script>
 </body>

@@ -104,22 +104,6 @@ public class MxGraphCtrl {
             return "errorPage";
         }
         switch (drawingBoardType) {
-            case GROUP: {
-                Model groupHandleModel = groupHandle(model, load);
-                if (null != groupHandleModel) {
-                    model = groupHandleModel;
-                    pagePath = "mxGraph/index";
-                }
-                break;
-            }
-            case TASK: {
-                Model taskHandleModel = taskHandle(model, load);
-                if (null != taskHandleModel) {
-                    model = taskHandleModel;
-                    pagePath = "mxGraph/index";
-                }
-                break;
-            }
             case PROCESS: {
                 Model processHandleModel = processHandle(model, load, processType);
                 if (null != processHandleModel) {
@@ -262,70 +246,6 @@ public class MxGraphCtrl {
         model.addAttribute("xmlDate", loadXml);
         model.addAttribute("load", load);
         model.addAttribute("nodeArr", nodePageIdAndStates);
-        return model;
-    }
-
-    private Model groupHandle(Model model, String load) {
-        if (StringUtils.isBlank(load)) {
-            return null;
-        }
-        if (null == model) {
-            return null;
-        }
-        // Query by loading'id'
-        FlowGroup flowGroupById = flowGroupServiceImpl.getFlowGroupById(load);
-        if (null == flowGroupById) {
-            return null;
-        }
-        FlowGroup flowGroup = flowGroupById.getFlowGroup();
-        if (null != flowGroup) {
-            model.addAttribute("parentsId", flowGroup.getId());
-        }
-        String maxStopPageId = flowServiceImpl.getMaxFlowPageIdByFlowGroupId(load);
-        //'maxStopPageId'defaults to 2 if it's empty, otherwise'maxStopPageId'+1
-        maxStopPageId = StringUtils.isBlank(maxStopPageId) ? "2" : (Integer.parseInt(maxStopPageId) + 1) + "";
-        model.addAttribute("maxStopPageId", maxStopPageId);
-        MxGraphModelVo mxGraphModelVo = null;
-        MxGraphModel mxGraphModel = flowGroupById.getMxGraphModel();
-        mxGraphModelVo = FlowXmlUtils.mxGraphModelPoToVo(mxGraphModel);
-        // Change the query'mxGraphModelVo'to'XML'
-        String loadXml = MxGraphUtils.mxGraphModelToMxGraphXml(mxGraphModelVo);
-        model.addAttribute("xmlDate", loadXml);
-        model.addAttribute("load", load);
-        model.addAttribute("isExample", (null == flowGroupById.getIsExample() ? false : flowGroupById.getIsExample()));
-        return model;
-    }
-
-    private Model taskHandle(Model model, String load) {
-        if (null == model) {
-            return null;
-        }
-        String username = SessionUserUtil.getCurrentUsername();
-        boolean isAdmin = SessionUserUtil.isAdmin();
-        // Query by loading'id'
-        Flow flowById = flowServiceImpl.getFlowById(username, isAdmin, load);
-        if (null == flowById) {
-            return null;
-        }
-        if (null != flowById.getFlowGroup()) {
-            String parentsId = flowById.getFlowGroup().getId();
-            model.addAttribute("parentsId", parentsId);
-        }
-        // Group on the left and'stops'
-        List<StopGroupVo> groupsVoList = stopGroupServiceImpl.getStopGroupAll();
-        model.addAttribute("groupsVoList", groupsVoList);
-        String maxStopPageId = flowServiceImpl.getMaxStopPageId(load);
-        //'maxStopPageId'defaults to 2 if it's empty, otherwise'maxStopPageId'+1
-        maxStopPageId = StringUtils.isBlank(maxStopPageId) ? "2" : (Integer.parseInt(maxStopPageId) + 1) + "";
-        model.addAttribute("maxStopPageId", maxStopPageId);
-        MxGraphModelVo mxGraphModelVo = null;
-        MxGraphModel mxGraphModel = flowById.getMxGraphModel();
-        mxGraphModelVo = FlowXmlUtils.mxGraphModelPoToVo(mxGraphModel);
-        // Change the query'mxGraphModelVo'to'XML'
-        String loadXml = MxGraphUtils.mxGraphModelToMxGraphXml(mxGraphModelVo);
-        model.addAttribute("xmlDate", loadXml);
-        model.addAttribute("load", load);
-        model.addAttribute("isExample", (null == flowById.getIsExample() ? false : flowById.getIsExample()));
         return model;
     }
 

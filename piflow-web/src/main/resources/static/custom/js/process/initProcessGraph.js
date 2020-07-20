@@ -27,7 +27,7 @@ function getRightInfo(cell) {
         $.ajax({
             cache: true,
             type: "POST",
-            url: "/piflow-web/process/queryProcess",
+            url: "/piflow-web/page/process/queryProcess",
             data: {processId: processGroupId},
             async: true,
             error: function (request) {
@@ -44,7 +44,7 @@ function getRightInfo(cell) {
         $.ajax({
             cache: true,
             type: "POST",
-            url: "/piflow-web/process/queryProcessStop",
+            url: "/piflow-web/page/process/queryProcessStop",
             data: {processId: processGroupId, pageId: cell.id},
             async: true,
             error: function (request) {
@@ -59,7 +59,7 @@ function getRightInfo(cell) {
         $.ajax({
             cache: true,
             type: "POST",
-            url: "/piflow-web/process/queryProcessPath",
+            url: "/piflow-web/page/process/queryProcessPath",
             data: {processId: processGroupId, pageId: cell.id},
             async: true,
             error: function (request) {
@@ -286,7 +286,7 @@ function initProcessDrawingBoardData(loadId, parentAccessPath) {
     $.ajax({
         cache: true,//Keep cached data
         type: "get",//Request for get
-        url: "/piflow-web/process/drawingBoardData",//This is the name of the file where I receive data in the background.
+        url: "/piflow-web/page/process/drawingBoardData",//This is the name of the file where I receive data in the background.
         //data:$('#loginForm').serialize(),//Serialize the form
         data: {
             loadId: loadId,

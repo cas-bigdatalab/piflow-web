@@ -1,29 +1,6 @@
 package cn.cnic.component.flow.service.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.beans.BeanUtils;
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import cn.cnic.base.util.FlowXmlUtils;
-import cn.cnic.base.util.JsonUtils;
-import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.base.util.MxGraphUtils;
-import cn.cnic.base.util.ReturnMapUtils;
-import cn.cnic.base.util.SessionUserUtil;
-import cn.cnic.base.util.UUIDUtils;
-import cn.cnic.base.vo.UserVo;
+import cn.cnic.base.util.*;
 import cn.cnic.common.Eunm.ProcessState;
 import cn.cnic.common.Eunm.RunModeType;
 import cn.cnic.component.flow.model.Flow;
@@ -58,6 +35,16 @@ import cn.cnic.mapper.mxGraph.MxGeometryMapper;
 import cn.cnic.mapper.mxGraph.MxGraphModelMapper;
 import cn.cnic.mapper.process.ProcessMapper;
 import cn.cnic.third.service.IFlow;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.util.*;
 
 @Service
 @Transactional
@@ -576,11 +563,6 @@ public class FlowServiceImpl implements IFlowService {
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(ReturnMapUtils.SUCCEEDED_MSG);
 
         rtnMap.put("parentAccessPath", parentAccessPath);
-        // set current user
-        UserVo currentUser = SessionUserUtil.getCurrentUser();
-        rtnMap.put("currentUser", currentUser);
-        //set drawingBoardType
-        //rtnMap.put("drawingBoardType", "TASK");
 
         if (null != flowById.getFlowGroup()) {
             String parentsId = flowById.getFlowGroup().getId();

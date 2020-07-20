@@ -3,7 +3,11 @@ package cn.cnic.controller;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import cn.cnic.base.vo.UserVo;
+import cn.cnic.common.Eunm.DrawingBoardType;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -45,6 +49,25 @@ public class FlowGroupCtrl {
     public String saveOrUpdateFlowGroup(FlowGroupVo flowGroupVo) {
         String username = SessionUserUtil.getCurrentUsername();
         return flowGroupServiceImpl.saveOrUpdate(username, flowGroupVo);
+    }
+
+    /**
+     * Enter the front page of the drawing board
+     *
+     * @param request
+     * @param model
+     * @param drawingBoardType
+     * @return
+     */
+    @RequestMapping("/drawingBoardData")
+    @ResponseBody
+    public String drawingBoardData(HttpServletRequest request, Model model, DrawingBoardType drawingBoardType, String processType) {
+        String load = request.getParameter("load");
+        //set parentAccessPath
+        String parentAccessPath = request.getParameter("parentAccessPath");
+        String username = SessionUserUtil.getCurrentUsername();
+        boolean isAdmin = SessionUserUtil.isAdmin();
+        return flowGroupServiceImpl.drawingBoardData(username, isAdmin, load, parentAccessPath);
     }
 
     /**

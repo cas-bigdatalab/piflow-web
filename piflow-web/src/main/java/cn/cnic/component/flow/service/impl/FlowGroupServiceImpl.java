@@ -69,13 +69,15 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
 
 
     /**
-     * group Drawing Board
+     * get FlowGroup by id
      *
+     * @param username
+     * @param isAdmin
      * @param flowGroupId
      * @return
      */
     @Override
-    public FlowGroup getFlowGroupById(String flowGroupId) {
+    public FlowGroup getFlowGroupById(String username, boolean isAdmin, String flowGroupId) {
         //Determine whether there is a flowGroup id (flowGroupId)
         if (StringUtils.isBlank(flowGroupId)) {
             return null;
@@ -592,6 +594,42 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
             return JsonUtils.toJsonNoException(rtnMap);
         }
         return ReturnMapUtils.setFailedMsgRtnJsonStr("no Data");
+    }
+
+    @Override
+    public String drawingBoardData(String username, boolean isAdmin, String load, String parentAccessPath) {
+        if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
+        }
+        if (StringUtils.isBlank(load)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("param 'load' is null");
+        }
+        // Query by loading'id'
+        FlowGroup flowGroupById = this.getFlowGroupById(username, isAdmin, load);
+        if (null == flowGroupById) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("No data with ID : " + load);
+        }
+
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(ReturnMapUtils.SUCCEEDED_MSG);
+
+        rtnMap.put("parentAccessPath", parentAccessPath);
+
+        if (null != flowGroupById.getFlowGroup()) {
+            String parentsId = flowGroupById.getFlowGroup().getId();
+            rtnMap.put("parentsId", parentsId);
+        }
+        //set drawingBoardType
+        rtnMap.put("drawingBoardType", "GROUP");
+
+        MxGraphModel mxGraphModel = flowGroupById.getMxGraphModel();
+        MxGraphModelVo mxGraphModelVo = FlowXmlUtils.mxGraphModelPoToVo(mxGraphModel);
+        // Change the query'mxGraphModelVo'to'XML'
+        String loadXml = MxGraphUtils.mxGraphModelToMxGraphXml(mxGraphModelVo);
+        rtnMap.put("xmlDate", loadXml);
+        rtnMap.put("load", load);
+        rtnMap.put("isExample", (null == flowGroupById.getIsExample() ? false : flowGroupById.getIsExample()));
+
+        return JsonUtils.toJsonNoException(rtnMap);
     }
 
 }

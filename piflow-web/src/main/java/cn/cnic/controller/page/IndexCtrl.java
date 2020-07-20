@@ -17,11 +17,6 @@ public class IndexCtrl {
      */
     Logger logger = LoggerUtil.getLogger();
 
-    @RequestMapping("/flowList")
-    public ModelAndView flowList() {
-        return setBaseModeAndView(new ModelAndView(), "flowList");
-    }
-
     @RequestMapping("/flowGroupList")
     public ModelAndView flowGroupList() {
         return setBaseModeAndView(new ModelAndView(), "flowGroupList");

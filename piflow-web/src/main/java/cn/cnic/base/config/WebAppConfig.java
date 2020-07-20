@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.annotation.Resource;
@@ -47,5 +48,51 @@ public class WebAppConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(configInterceptor).excludePathPatterns(Arrays.asList("/components/**", "/js/**", "/css/**", "/custom/**", "/img/**", "/img/*"));
+    }
+
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        // system
+        registry.addViewController("/index").setViewName("index");
+        registry.addViewController("/page/error/404").setViewName("errorPage");
+        registry.addViewController("/page/bootPage/index").setViewName("bootPage");
+
+        // datasource
+        registry.addViewController("/page/datasource/getDatasourceListPage").setViewName("indexRight/datasource/data_source_List");
+        registry.addViewController("/page/datasource/getDataSourceInputPage").setViewName("dataSource/dataSourceInput");
+
+        // flow
+        registry.addViewController("/page/flow/drawingBoard").setViewName("flow/mxGraph/index");
+        registry.addViewController("/page/flow/getFlowListHtml").setViewName("flow/flow_List");
+        registry.addViewController("/page/flow/inc/graphEditor_menus_task").setViewName("flow/inc/graphEditor_menus_task");
+        registry.addViewController("/page/flow/inc/graphEditor_crumbs_task").setViewName("flow/inc/graphEditor_crumbs_task");
+        registry.addViewController("/page/flow/inc/graphEditor_crumbs_task").setViewName("flow/inc/graphEditor_crumbs_task");
+        registry.addViewController("/page/flow/inc/flow_info_inc").setViewName("flow/inc/flow_info_inc");
+        registry.addViewController("/page/flow/inc/flow_path_inc").setViewName("flow/inc/flow_path_inc");
+        registry.addViewController("/page/flow/inc/flow_property_inc").setViewName("flow/inc/flow_property_inc");
+
+        //process
+        registry.addViewController("/page/process/drawingBoard").setViewName("process/mxGraph/index");
+        registry.addViewController("/page/process/queryProcess").setViewName("process/inc/process_info_inc");
+        registry.addViewController("/page/process/queryProcessStop").setViewName("process/inc/process_property_inc");
+        registry.addViewController("/page/process/queryProcessPath").setViewName("process/inc/process_path_inc");
+        registry.addViewController("/page/process/getCheckpoint").setViewName("process/inc/process_checkpoint_inc");
+        registry.addViewController("/page/process/getDebugDataHtml").setViewName("process/inc/debug_data_inc");
+
+        //flow group
+        registry.addViewController("/page/flowGroup/drawingBoard").setViewName("flowGroup/mxGraph/index");
+
+        //index
+        registry.addViewController("/page/dashboard").setViewName("dashboard");
+        registry.addViewController("/page/flowList").setViewName("flow/flow_List");
+        registry.addViewController("/page/flowGroupList").setViewName("flowGroup/flow_group_List");
+
+        //macro
+        registry.addViewController("/page/macro/fragmentMacro").setViewName("macro/fragmentMacro");
+        registry.addViewController("/page/macro/graphHeadMacro").setViewName("macro/graphHeadMacro");
+        registry.addViewController("/page/macro/headMacro").setViewName("macro/headMacro");
+
+
+
     }
 }

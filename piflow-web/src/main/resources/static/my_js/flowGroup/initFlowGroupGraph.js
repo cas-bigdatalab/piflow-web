@@ -9,8 +9,9 @@ var timerPath;
 var currentStopPageId;
 var drawingBoardType = $("#drawingBoardType").val();
 var statusgroup, flowPageIdcha, flowGroupdata, cellprecess, flowdatas, removegroupPaths, flowsPagesId
-getRightInfo()
+//getRightInfo()
 var index = true
+
 
 function getRightInfo(cell) {
     var processGroupId = getQueryString("load")
@@ -133,11 +134,9 @@ function getQueryString(name) {
 }
 
 function initGraph() {
-    if("PROCESS"==drawingBoardType){
-        EditorUi.prototype.noEditing = true;
-    }
-    Format.customizeType = drawingBoardType;
-    Format.customizeTypeAttr_init();
+    EditorUi.prototype.saveGraphData = saveXml;
+    Format.hideSidebar(true, true);
+    Format.customizeType = "GROUP";
     var editorUiInit = EditorUi.prototype.init;
     if (EditorUi.prototype.noEditing) {
         $("#right-group-wrap")[0].style.display = "block";
@@ -3154,6 +3153,51 @@ function deleteLastReloadData(stopId) {
 
                 });
             }
+        }
+    });
+}
+
+
+function initFlowGroupDrawingBoardData(loadId, parentAccessPath) {
+    $('#fullScreen').show();
+    ajaxRequest({
+        type: "get",
+        url: "/flowGroup/drawingBoardData",
+        async: false,
+        data: {
+            load: loadId,
+            parentAccessPath: parentAccessPath
+        },
+        success: function (data) {//Operation after request successful
+            var dataMap = JSON.parse(data);
+            if (200 === dataMap.code) {
+                parentsId = dataMap.parentsId;
+                xmlDate = dataMap.xmlDate;
+                maxStopPageId = dataMap.maxStopPageId;
+                isExample = dataMap.isExample;
+                if (dataMap.groupsVoList) {
+                    if (dataMap.groupsVoList && dataMap.groupsVoList.length > 0) {
+                        for (var i = 0; i < dataMap.groupsVoList.length; i++) {
+                            var groupsVoList_i = dataMap.groupsVoList[i];
+                            if (groupsVoList_i && '' !== groupsVoList_i) {
+                                Sidebar.prototype.component_data.push({
+                                    component_name: groupsVoList_i.groupName,
+                                    component_group: groupsVoList_i.stopsTemplateVoList,
+                                    component_prefix: (web_header_prefix + "/images/"),
+                                    addImagePaletteId: 'clipart'
+                                });
+                            }
+                        }
+                    }
+                }
+            } else {
+                //window.location.href = (web_header_prefix + "/error/404");
+            }
+            $('#fullScreen').hide();
+        },
+        error: function (request) {//Operation after request failure
+            //window.location.href = (web_header_prefix + "/error/404");
+            return;
         }
     });
 }

@@ -24,16 +24,22 @@ function initDatatableFlowPage(testTableId, url, searchInputId) {
     var table = "";
     layui.use('table', function () {
         table = layui.table;
-
         //Method-level rendering
         table.render({
             elem: '#' + testTableId
+            , headers: {
+                Authorization: ("Bearer " + token)
+            }
             , url: url
             , cols: [[
                 {field: 'name', title: 'Name', sort: true},
                 {field: 'description', title: 'Description', sort: true},
                 {field: 'crtDttm', title: 'CreateTime', sort: true},
-                {field: 'right', title: 'Actions', sort: true, height: 100, templet: function (data) {return responseHandlerFlow(data);}}
+                {
+                    field: 'right', title: 'Actions', sort: true, height: 100, templet: function (data) {
+                        return responseHandlerFlow(data);
+                    }
+                }
             ]]
             , id: testTableId
             , page: true
@@ -59,7 +65,7 @@ function searchMonitor(layui_table, layui_table_id, searchInputId) {
 function responseHandlerFlow(res) {
     if (res) {
         var openHtmlStr = '<a class="btn" ' +
-            'href="/piflow-web/mxGraph/drawingBoard?drawingBoardType=TASK&load=' + res.id + '"' +
+            'href="/piflow-web/page/flow/drawingBoard?drawingBoardType=TASK&load=' + res.id + '"' +
             'target="_blank" ' +
             'style="margin-right: 2px;">' +
             '<i class="icon-share-alt icon-white"></i>' +
@@ -235,7 +241,7 @@ function updateFlow() {
                     layer.msg('update success', {icon: 1, shade: 0, time: 2000}, function () {
                         location.reload();
                     });
-                }else {
+                } else {
                     layer.msg('update failed ', {icon: 2, shade: 0, time: 2000}, function () {
                     });
                 }
