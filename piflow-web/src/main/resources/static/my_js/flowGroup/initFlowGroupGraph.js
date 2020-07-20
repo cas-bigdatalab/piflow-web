@@ -140,10 +140,8 @@ function initGraph() {
     var editorUiInit = EditorUi.prototype.init;
     if (EditorUi.prototype.noEditing) {
         $("#right-group-wrap")[0].style.display = "block";
-        $("#precess-run")[0].style.display = "block";
     } else {
         $("#right-group-wrap")[0].style.display = "none";
-        $("#precess-run")[0].style.display = "none";
     }
 
     EditorUi.prototype.init = function () {

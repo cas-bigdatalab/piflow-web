@@ -6,13 +6,12 @@
     <title>piflow-web</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta th:include="Macro/csrfTokeHeadMacro :: csrfTokeHeadMacro"/>
-    <link rel="stylesheet" type="text/css" th:href="@{/components/mxGraph/styles/grapheditor.css}">
-    <link rel="stylesheet" type="text/css" th:href="@{/components/bootstrap/css/bootstrap.min.css}">
-    <link rel="stylesheet" type="text/css" th:href='@{/custom/css/publicMacro.css}'/>
-    <link rel="stylesheet" type="text/css" th:href="@{/custom/css/fullScreen.css}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{/components/font-awesome-4.7.0/css/font-awesome.min.css}"/>
-    <link rel="shortcut icon" th:href="@{/img/logo.ico}">
+    <link rel="stylesheet" type="text/css" href="/piflow-web/components/mxGraph/styles/grapheditor.css">
+    <link rel="stylesheet" type="text/css" href="/piflow-web/components/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href='/piflow-web/custom/css/publicMacro.css'/>
+    <link rel="stylesheet" type="text/css" href="/piflow-web/custom/css/fullScreen.css"/>
+    <link rel="stylesheet" type="text/css" href="/piflow-web/components/font-awesome-4.7.0/css/font-awesome.min.css"/>
+    <link rel="shortcut icon" href="/piflow-web/img/logo.ico">
 
     <script type="text/javascript" src="/piflow-web/components/mxGraph/js/Init.js"></script>
     <script type="text/javascript" src="/piflow-web/components/mxGraph/deflate/pako.min.js"></script>
@@ -75,12 +74,11 @@
             color: #ffffff;
         }
     </style>
-    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}"/>
+    <link rel="stylesheet" type="text/css" href="/piflow-web/css/main.css"/>
 </head>
 <body class="geEditor">
-<input id="drawingBoardType" style="display: none;" th:value="${drawingBoardType}">
-<div th:include="Macro/fragmentMacro :: fullScreen"></div>
-<div th:include="Macro/publicMacro :: userHeadMacro"></div>
+<div id="fullScreen_load_id"></div>
+<div id="publicUserHeadMacro_load_id"></div>
 
 <!-- run button -->
 <div style="width: 30.2%;top: 48px;right: 0px;height: 50px;position: absolute;z-index: 1001;">
@@ -279,40 +277,6 @@
     </form>
 </div>
 
-<div id="precessrun" class="precessrun" style="position: fixed; z-index: 779;text-align: right;right: 10px;top: 50px;">
-
-    <div id="processflow" style="display: none">
-                <span>
-                    progress：<span id="progress" th:text="${percentage} + '%'"></span>
-                </span>
-        <!--        <div class="progress">-->
-        <!--            <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">-->
-        <!--                <span id="progress" th:text="${percentage} + '%'"></span>-->
-        <!--            </div>-->
-        <!--        </div>-->
-        <input id="runFlow" type="button" class="btn btn-default" onclick="getCheckpoint()" value="Run"/>
-        <input id="debugFlow" type="button" class="btn btn-default" onclick="getCheckpoint('DEBUG')" value="Debug"/>
-        <input id="stopFlow" type="button" class="btn btn-danger" onclick="stopProcess()" value="Stop"/>
-        <input type="button" class="btn btn-primary" onclick="getLogUrl()" value="Log"/>
-    </div>
-
-
-    <div id="processgroup" style="display: none">
-         <span>
-				progress：<span id="groupProgress" th:text="${percentage} + '%'"></span>
-			</span>
-        <!--        <div class="progress">-->
-        <!--            <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">-->
-        <!--                <span id="progress" th:text="${percentage} + '%'"></span>-->
-        <!--            </div>-->
-        <!--        </div>-->
-        <input id="runFlowGroup" type="button" class="btn btn-default" onclick="selectRunMode()" value="Run"/>
-        <input id="stopFlowGroup" type="button" class="btn btn-danger" onclick="stopProcessGroup()" value="Stop"/>
-        <input type="button" class="btn btn-primary" onclick="openLogWindow()" value="Log"/>
-    </div>
-
-</div>
-
 <div style="display: none;" id="SubmitPage">
     <br>
     <form class="layui-form" action="" style="position: relative">
@@ -415,7 +379,7 @@
     <!--    </form>-->
 </div>
 
-<div id="rightproupwrap" style="position:absolute;right:0;top:86px;width:25%;;height:88%;transition: 2s">
+<div id="right-group-wrap" style="position:absolute;right:0;top:86px;width:25%;;height:88%;transition: 2s">
     <div class="ExpandSidebar">
         <div class="triggerSlider">
             <i style="color: white" class="fa fa-angle-left fa-2x"></i>
@@ -429,8 +393,8 @@
 </div>
 
 
-<script th:include="Macro/csrfTokeHeadMacro :: csrfTokeHeadMacroScript"/>
 <script type="text/javascript" th:src="@{/my_js/flowGroup/initFlowGroupGraph.js}"></script>
+<script type="text/javascript" src="/piflow-web/js/ajaxUtils.js"></script>
 
 <script type="text/javascript">
     var parentAccessPath = '[[${parentAccessPath}]]';
@@ -494,129 +458,11 @@
     var stdoutLog = '[[${stdoutLog}]]';
     var stderrLog = '[[${stderrLog}]]';
     var processId = '[[${processId}]]';
-    if (processType === "GROUP") {
 
-        (function () {
-            // console.log(processType,"processStateprocessState")
-            $('#processflow')[0].style.display = "none"
-            $('#processgroup')[0].style.display = "block"
-            if (processContent) {
-                if (xmlDate) {
-                    processContent.append(xmlDate);
-                } else {
-                    processContent.prepend('<div style="position: fixed;z-index: 779;"><h1>View missing</h1></div>');
-                }
-            }
-            if (runFlowGroupBtn) {
-                if ("COMPLETED" !== processState && "FAILED" !== processState && "KILLED" !== processState) {
-                    runFlowGroupBtn.hide();
-                    debugFlowGroupBtn.hide();
-                    stopFlowGroupBtn.show();
-                    timer = window.setInterval("processGroupMonitoring(appId)", 5000);
-                } else {
-                    runFlowGroupBtn.show();
-                    debugFlowGroupBtn.show();
-                    stopFlowGroupBtn.hide();
-                }
-            }
-            var processVoListInit = '[[${processVoListInit}]]';
-            if (processVoListInit && '' != processVoListInit) {
-                for (var i = 0; i < processVoListInit.length; i++) {
-                    var processVoInit = processVoListInit[i];
-                    processGroupMonitor(processVoInit.pageId, processVoInit.state);
-                }
-            }
-            var processGroupVoListInit = '[[${processGroupVoListInit}]]';
-            if (processGroupVoListInit && '' != processGroupVoListInit) {
-                for (var i = 0; i < processGroupVoListInit.length; i++) {
-                    var processGroupVoInit = processGroupVoListInit[i];
-                    processGroupMonitor(processGroupVoInit.pageId, processGroupVoInit.state);
-                }
-            }
-            //queryProcess(processId);
-            $("#modalDialog").draggable();//Add drag and drop for modal dialogs
-            $("#myModal").css("overflow", "hidden");//Disable translucent background scrolling of modal dialogs
-            if ("processGroupList" === parentAccessPath) {
-                $("#web_processList_navigation").hide();
-                $("#web_processGroupList_navigation").show();
-                $("#web_getProcessGroupById_navigation").show();
-            }
-        })();
-        //When the browser window size changes
-        $(window).resize(function () {
-            var window_width = $(window).width();//Get browser window width
-            var window_height = $(window).height();//Get browser window width
-            // $('#modalDialog').height(window_height - 124);
-            // $('#modalDialog').width(window_width - 124);
-            $('#textareaId').height(window_height - 300);
-            $('#divTextareaId').height(window_height - 300);
-        });
-        //@ sourceURL=processContent.js
-    } else if (processType === "TASK") {
-        (function () {
-            $('#processflow')[0].style.display = "block"
-            $('#processgroup')[0].style.display = "none"
-            if (processContent) {
-                if (xmlDate) {
-                    processContent.append(xmlDate);
-                } else {
-                    processContent.prepend('<div style="position: fixed;z-index: 779;"><h1>视图丢失</h1></div>');
-                }
-            }
-            if (runFlowBtn) {
-                if ("COMPLETED" !== processState && "FAILED" !== processState && "KILLED" !== processState) {
-                    runFlowBtn.hide();
-                    debugFlowBtn.hide();
-                    stopFlowBtn.show();
-                    timer = window.setInterval("processMonitoring(appId)", 5000);
-                } else {
-                    runFlowBtn.show();
-                    debugFlowBtn.show();
-                    stopFlowBtn.hide();
-                }
-            }
-            var processStopVoListInit = '[[${processStopVoListInit}]]';
-            if (processStopVoListInit && '' != processStopVoListInit) {
-                for (var i = 0; i < processStopVoListInit.length; i++) {
-                    var processStopVoInit = processStopVoListInit[i];
-                    monitor(processStopVoInit.pageId, processStopVoInit.state);
-                }
-            }
-            //queryProcess(processId);
-            $("#modalDialog").draggable();//Add drag and drop for modal dialogs
-            $("#myModal").css("overflow", "hidden");//Disable translucent background scrolling of modal dialogs
-            if (parentAccessPath) {
-                switch (parentAccessPath) {
-                    case "grapheditor":
-                        $("#web_processList_navigation").hide();
-                        $("#web_flowList_navigation").show();
-                        $("#grapheditor_home_navigation").show();
-                        break;
-                    case "flowProcess":
-                        $("#web_processList_navigation").hide();
-                        $("#web_groupTypeProcessList_navigation").show();
-                        break;
-                    case "processGroupList":
-                        $("#web_processList_navigation").hide();
-                        $("#web_processGroupList_navigation").show();
-                        $("#web_getProcessGroupById_navigation").show();
-                        break;
-                }
-            }
-        })();
-        $(window).resize(function () {
-            var window_width = $(window).width();//Get browser window width
-            var window_height = $(window).height();//Get browser window height
-            // $('#modalDialog').height(window_height - 124);
-            // $('#modalDialog').width(window_width - 124);
-            $('#textareaId').height(window_height - 300);
-            $('#divTextareaId').height(window_height - 300);
-        });
-    }
+    var currentUser = JSON.parse(localStorage.jwtUser);
 
-    $(document).ready(function () {
-        $("#myModalPort").draggable();//Add drag and drop for modal dialogs
-        $("#myModalPort").css("overflow", "hidden");//Disable translucent background scrolling of modal dialogs
+
+    $(function () {
         $(".btn-group").mouseover(function () {
             $(this).addClass("open");
             var oDiv = document.getElementById("divloadingXml");
@@ -625,7 +471,6 @@
         $(".btn-group").mouseleave(function () {
             $(this).removeClass("open");
         });
-        initGraph();
         layui.form.on('submit(component-form-submit)', function (data) {
             addStopCustomProperty(data.field);
             return false;
@@ -639,11 +484,15 @@
                 $("#grapheditor_groupDrawingBoard_navigation").hide();
             }
         }
-        var graphEditorPageType = $("#drawingBoardType").val();
-        if ('TASK' === graphEditorPageType) {
-            $("#graphEditor_task_menus_id").show();
-        } else if ('GROUP' === graphEditorPageType) {
-        }
+        $("#fullScreen_load_id").load("/piflow-web/page/macro/fragmentMacro");
+        $("#publicUserHeadMacro_load_id").load("/piflow-web/page/macro/graphHeadMacro" ,function () {
+            $("#span_username_id").html('Howdy,' + currentUser.username + '<b class="caret"></b>');
+        });
+        initFlowGroupDrawingBoardData(loadId, parentAccessPath);
+        initGraph();
+    });
+    $(document).ready(function () {
+
     });
     //window.onload = showSelect;
     //@ sourceURL=mxGraphIndex.js
