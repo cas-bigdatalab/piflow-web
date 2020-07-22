@@ -11,6 +11,7 @@
     <link rel="stylesheet" type="text/css" href='/piflow-web/custom/css/publicMacro.css'/>
     <link rel="stylesheet" type="text/css" href="/piflow-web/custom/css/fullScreen.css"/>
     <link rel="stylesheet" type="text/css" href="/piflow-web/components/font-awesome-4.7.0/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/piflow-web/components/layui/css/layui.css"/>
     <link rel="shortcut icon" href="/piflow-web/img/logo.ico">
 
     <script type="text/javascript" src="/piflow-web/components/mxGraph/js/Init.js"></script>
@@ -72,6 +73,10 @@
 
         a.customize_btn_css:focus {
             color: #ffffff;
+        }
+        .layui-table-cell {
+            height: 36px;
+            line-height: 36px;
         }
     </style>
     <link rel="stylesheet" type="text/css" href="/piflow-web/css/main.css"/>
@@ -169,14 +174,14 @@
 
 <!--Initializes the drawing board-->
 <!--stop Property edit popover starts-->
-<div style="display: none;" id="stopOpenTemplate">
+<div style="display: none;" id="updateCellsPropertyTemplate">
     <div style="height: 90%;">
         <form class="layui-form" action="" style="height: 100%;">
             <div class="layui-form-text" style="margin-left: 12px; text-align: center;height: 100%;">
-                <textarea id="stopValue" placeholder="please input ..." class="layui-textarea"
+                <textarea id="cellsValue" placeholder="please input ..." class="layui-textarea"
                           style="margin-left: -6px;margin-bottom: 6px;resize:none;height: 80%;"></textarea>
                 <div style="height: 20%;">
-                    <button type="button" class="layui-btn layui-btn-primary" id="buttonStop">save
+                    <button type="button" class="layui-btn layui-btn-primary" id="buttonCells">save
                     </button>
                 </div>
             </div>
@@ -186,7 +191,7 @@
 <!--stop Property edit popover ends-->
 
 <!-- 'stop' custom attribute table start-->
-<div id="customizedTableObj">
+<div style="display: none;" id="customizedTableObj">
     <div style="border-collapse: separate; border-spacing: 0px 5px; width: 100%;">
         <div style="margin-left:10px;float: left;line-height: 34px;">Add Custom Property</div>
         <div style="margin-right:10px;float: right;text-align: right;">
@@ -383,86 +388,52 @@
     <div class="ExpandSidebar">
         <div class="triggerSlider">
             <i style="color: white" class="fa fa-angle-left fa-2x"></i>
-            <!--                <span ></span>-->
-            <!--                <span ></span>-->
-            <!--                <span ></span>-->
         </div>
     </div>
-    <!--    <div id="rightproup" style="overflow:auto;position:absolute;right:0;top:0px;width:260px;transition:2s;height:544px;border:1px solid #ccc;background:#fff;z-index:1000;"></div>-->
-    <div id="rightproup" class="rightproup"></div>
+    <div id="right-group" class="right-group">
+        <!--flow info -->
+        <div id="flowGroup_info_inc_id" style="display: none;"></div>
+        <!--path info -->
+        <div id="flowGroup_path_inc_id" style="display: none;"></div>
+        <!--cell info -->
+        <div id="flowGroup_property_inc_id" style="display: none;"></div>
+    </div>
 </div>
 
 
-<script type="text/javascript" th:src="@{/my_js/flowGroup/initFlowGroupGraph.js}"></script>
+<script type="text/javascript" src="/piflow-web/my_js/flowGroup/initFlowGroupGraph.js"></script>
 <script type="text/javascript" src="/piflow-web/js/ajaxUtils.js"></script>
 
 <script type="text/javascript">
-    var parentAccessPath = '[[${parentAccessPath}]]';
+    var urlParams = getUrlParams(window.location.href);
+    var loadId = urlParams.load
+    var parentAccessPath = urlParams.parentAccessPath;
+    var currentUser = JSON.parse(localStorage.jwtUser);
+
     var parentsId = '[[${parentsId}]]';
     var flowGroupId = '[[${flowGroupId}]]';
     var stopsGroupData = '[[${groupsVoList}]]';
     var xmlDate = '[[${xmlDate}]]';
     var xmlDateStr = '[[${xmlDateStr}]]';
-    var loadId = "[[${load}]]";
     var isExample = '[[${isExample}]]';
     var maxStopPageId = '[[${maxStopPageId}]]';
     var maxFlowPageId = '[[${maxFlowPageId}]]';
-    var divValue = null;
-    var nodeArr = '[[${nodeArr}]]';
     var processType = '[[${processType}]]';
-    var flowGroupData = [
-        {
-            groupName: "Group",
-            dataList: [
-                {
-                    name: "group",
-                    img_name: "group",
-                    img_type: ".png",
-                    description: 'group component'
-                }
-            ]
-        }, {
-            groupName: "Task",
-            dataList: [
-                {
-                    name: "flow",
-                    img_name: "flow",
-                    img_type: ".png",
-                    description: 'Task component'
-                }
-            ]
-        },
-        {
-            groupName: "Text",
-            dataList: [
-                {
-                    name: "text",
-                    img_name: "",
-                    img_type: "",
-                    description: 'Text'
-                }
-            ]
-        }
-    ];
-
-    function divAppend(divAppend) {
-        divValue = divAppend;
-    }
     var parentAccessPath = '[[${parentAccessPath}]]';
     var xmlDate = '[[${xmlDate}]]';
-    var processGroupId = '[[${processGroupId}]]';
-    var parentProcessId = '[[${parentProcessId}]]';
     var pID = '[[${pID}]]';
     var appId = '[[${appId}]]';
-    var processState = '[[${processState}]]';
-    var stdoutLog = '[[${stdoutLog}]]';
-    var stderrLog = '[[${stderrLog}]]';
-    var processId = '[[${processId}]]';
 
-    var currentUser = JSON.parse(localStorage.jwtUser);
 
 
     $(function () {
+        $("#flowGroup_info_inc_id").load("/piflow-web/page/flowGroup/inc/flowGroup_info_inc");
+        $("#flowGroup_property_inc_id").load("/piflow-web/page/flowGroup/inc/flowGroup_property_inc",function () {
+            $("#tab>li").click(function () {
+                $(this).removeAttr("style").siblings("li").attr("style", "background-color: rgb(218,218,218); border-color: rgb(192,192,192);");
+                $("#tab_content" + $(this).val()).show().siblings("div").hide();
+            });
+        });
         $(".btn-group").mouseover(function () {
             $(this).addClass("open");
             var oDiv = document.getElementById("divloadingXml");

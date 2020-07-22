@@ -38,6 +38,9 @@ Menus.prototype.defaultMenuItems = ['file', 'edit', 'view', 'arrange', 'extras',
 Menus.prototype.defaultFonts = ['Helvetica', 'Verdana', 'Times New Roman', 'Garamond', 'Comic Sans MS',
            		             'Courier New', 'Georgia', 'Lucida Console', 'Tahoma'];
 
+Menus.prototype.customMxGraphRightMenu=[];
+Menus.prototype.customCellRightMenu=[];
+
 /**
  * Adds the label menu items to the given menu and parent.
  */
@@ -1051,39 +1054,39 @@ Menus.prototype.createPopupMenu = function(menu, cell, evt)
 	if (graph.isSelectionEmpty())
 	{
 //------------------------------ Custom modification content 004 start ------------------------------
-		if(EditorUi.prototype.noEditing)
+		if(!EditorUi.prototype.noEditing)
 		{
-		}
-		else
-		{
-			this.addMenuItems(menu, ['undo', 'redo', 'pasteHere'], null, evt);
+		this.addMenuItems(menu, ['undo', 'redo', 'pasteHere'], null, evt);
 		}
 //------------------------------ Custom modification content 004 end  ------------------------------
 	}
 	else
 	{
 //------------------------------ Custom modification content 005 start ------------------------------
-		if(EditorUi.prototype.noEditing)
+		if(!EditorUi.prototype.noEditing)
 		{
-		}
-		else if('TASK' === Format.customizeType)
-		{
-			this.addMenuItems(menu, ['delete', '-',], null, evt);
-		}
-		else if ('GROUP' === Format.customizeType) 
-		{
-			if (cell.style && (cell.style).indexOf("text\;") === 0)
+			console.log("--------------------------------------------------");
+			if (cell.style && (cell.style).indexOf("image\;") === 0)
 			{
-				this.addMenuItems(menu, ['delete', '-', ], null, evt);
+				var cellMenuArray = ['delete'];
+				if (Menus.prototype.customCellRightMenu && Menus.prototype.customCellRightMenu.length > 0)
+				{
+					Menus.prototype.customCellRightMenu.forEach((item,index)=>{
+						cellMenuArray.push(item);
+					});
+				}
+				cellMenuArray.push('-');
+				this.addMenuItems(menu, cellMenuArray, null, evt);
+			}
+			else if (cell.style && (cell.style).indexOf("text\;") === 0)
+			{
+				this.addMenuItems(menu, ['delete', '-'], null, evt);
 			}
 			else
 			{
-				this.addMenuItems(menu, ['delete','run', '-', ], null, evt);
+				this.addMenuItems(menu, ['delete', '-'], null, evt);
 			}
-		}
-		else
-		{
-			this.addMenuItems(menu, ['delete','run', '-', 'cut', 'copy', '-', 'duplicate'], null, evt);
+			//this.addMenuItems(menu, ['delete','run', '-', 'cut', 'copy', '-', 'duplicate'], null, evt);
 		}
 //------------------------------ Custom modification content 005 end   ------------------------------
 	}
@@ -1130,13 +1133,10 @@ Menus.prototype.createPopupMenu = function(menu, cell, evt)
 				
 				menu.addSeparator();
 //------------------------------ Custom modification content 008 start ------------------------------
-				if(EditorUi.prototype.noEditing)
+				if(!EditorUi.prototype.noEditing)
 				{
-				}
-				else
-				{
-					this.addMenuItem(menu, 'turn', null, evt, null, mxResources.get('reverse'));
-					this.addMenuItems(menu, [(isWaypoint) ? 'removeWaypoint' : 'addWaypoint'], null, evt);
+				this.addMenuItem(menu, 'turn', null, evt, null, mxResources.get('reverse'));
+				this.addMenuItems(menu, [(isWaypoint) ? 'removeWaypoint' : 'addWaypoint'], null, evt);
 				}
 //------------------------------ Custom modification content 008 end   ------------------------------
 				
@@ -1149,12 +1149,9 @@ Menus.prototype.createPopupMenu = function(menu, cell, evt)
 				graph.getModel().getEdgeCount(cell) > 0)))
 			{
 //------------------------------ Custom modification content 009 start ------------------------------
-				if (EditorUi.prototype.noEditing)
+				if (!EditorUi.prototype.noEditing)
 				{
-				}
-				else
-				{
-					this.addMenuItems(menu, ['clearWaypoints'], null, evt);
+				this.addMenuItems(menu, ['clearWaypoints'], null, evt);
 				}
 //------------------------------ Custom modification content 009 end   ------------------------------
 			}
@@ -1183,12 +1180,9 @@ Menus.prototype.createPopupMenu = function(menu, cell, evt)
 				{
 					menu.addSeparator();
 //------------------------------ Custom modification content 011 start ------------------------------
-					if (EditorUi.prototype.noEditing)
+					if (!EditorUi.prototype.noEditing)
 					{
-					}
-					else
-					{
-						this.addMenuItem(menu, 'image', null, evt).firstChild.nextSibling.innerHTML = mxResources.get('editImage') + '...';
+					this.addMenuItem(menu, 'image', null, evt).firstChild.nextSibling.innerHTML = mxResources.get('editImage') + '...';
 					}
 //------------------------------ Custom modification content 011 end   ------------------------------
 				}
@@ -1198,14 +1192,18 @@ Menus.prototype.createPopupMenu = function(menu, cell, evt)
 	else
 	{
 //------------------------------ Custom modification content 012 start ------------------------------
-		if ('GROUP' === Format.customizeType)
+		var publicMenuArray = ['-', 'selectVertices', 'selectEdges', 'selectAll', '-'];
+		var publicMenuOne = '-';
+		var publicMenuTwo = 'clearDefaultStyle';
+		if (Menus.prototype.customMxGraphRightMenu && Menus.prototype.customMxGraphRightMenu.length > 0)
 		{
-			this.addMenuItems(menu, ['-', 'selectVertices', 'selectEdges', 'selectAll', '-', 'runAll', '-', 'clearDefaultStyle'], null, evt);
+			Menus.prototype.customMxGraphRightMenu.forEach((item,index)=>{
+				publicMenuArray.push(item);
+			});
 		}
-		else if ('TASK' === Format.customizeType)
-		{
-			this.addMenuItems(menu, ['-', 'selectVertices', 'selectEdges', 'selectAll', '-', '-', 'clearDefaultStyle'], null, evt);
-		}
+		publicMenuArray.push(publicMenuOne);
+		publicMenuArray.push(publicMenuTwo);
+		this.addMenuItems(menu, publicMenuArray, null, evt);
 //------------------------------ Custom modification content 012 end   ------------------------------
 	}
 };

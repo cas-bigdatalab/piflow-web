@@ -63,7 +63,7 @@ public class WebAppConfig implements WebMvcConfigurer {
 
         // flow
         registry.addViewController("/page/flow/drawingBoard").setViewName("flow/mxGraph/index");
-        registry.addViewController("/page/flow/getFlowListHtml").setViewName("flow/flow_List");
+        registry.addViewController("/page/flow/getFlowListImport").setViewName("flow/flow_list_import");
         registry.addViewController("/page/flow/inc/graphEditor_menus_task").setViewName("flow/inc/graphEditor_menus_task");
         registry.addViewController("/page/flow/inc/graphEditor_crumbs_task").setViewName("flow/inc/graphEditor_crumbs_task");
         registry.addViewController("/page/flow/inc/graphEditor_crumbs_task").setViewName("flow/inc/graphEditor_crumbs_task");
@@ -75,17 +75,20 @@ public class WebAppConfig implements WebMvcConfigurer {
         registry.addViewController("/page/process/drawingBoard").setViewName("process/mxGraph/index");
         registry.addViewController("/page/process/queryProcess").setViewName("process/inc/process_info_inc");
         registry.addViewController("/page/process/queryProcessStop").setViewName("process/inc/process_property_inc");
-        registry.addViewController("/page/process/queryProcessPath").setViewName("process/inc/process_path_inc");
+        registry.addViewController("`/page/process/queryProcessPath`").setViewName("process/inc/process_path_inc");
         registry.addViewController("/page/process/getCheckpoint").setViewName("process/inc/process_checkpoint_inc");
         registry.addViewController("/page/process/getDebugDataHtml").setViewName("process/inc/debug_data_inc");
 
         //flow group
         registry.addViewController("/page/flowGroup/drawingBoard").setViewName("flowGroup/mxGraph/index");
+        registry.addViewController("/page/flowGroup/inc/flowGroup_info_inc").setViewName("flowGroup/inc/flowGroup_info_inc");
+        registry.addViewController("/page/flowGroup/inc/flowGroup_property_inc").setViewName("flowGroup/inc/flowGroup_property_inc");
 
         //index
         registry.addViewController("/page/dashboard").setViewName("dashboard");
         registry.addViewController("/page/flowList").setViewName("flow/flow_List");
         registry.addViewController("/page/flowGroupList").setViewName("flowGroup/flow_group_List");
+        registry.addViewController("/page/process_processGroup_list").setViewName("processAndProcessGroup/process_processGroup_list");
 
         //macro
         registry.addViewController("/page/macro/fragmentMacro").setViewName("macro/fragmentMacro");

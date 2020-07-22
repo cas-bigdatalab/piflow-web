@@ -54,13 +54,145 @@ function initFlowDrawingBoardData(loadId, parentAccessPath) {
     });
 }
 
+function imageAjax() {
+    var loading
+    ajaxRequest({
+        type: "post",//Request type post
+        url: "/mxGraph/nodeImageList",
+        data: {imageType: "TASK"},
+        async: true,//Synchronous Asynchronous
+        error: function (request) {//Operation after request failure
+            return;
+        },
+        beforeSend: function () {
+            loading = layer.load(0, {
+                shade: false,
+                success: function (layerContentStyle) {
+                    layerContentStyle.find('.layui-layer-content').css({
+                        'padding-top': '35px',
+                        'text-align': 'left',
+                        'width': '120px',
+                    });
+                },
+                icon: 2,
+                // time: 100*1000
+            });
+        },
+        success: function (data) {//After the request is successful
+            layer.close(loading)
+            var nowimage = $("#nowimage")[0];
+            nowimage.innerHTML = "";
+            var nodeImageList = JSON.parse(data).nodeImageList;
+            nodeImageList.forEach(item => {
+                var div = document.createElement("div");
+                div.className = "imgwrap";
+                var image = document.createElement("img");
+                image.className = "imageimg"
+                image.style = "width:100%;height:100%";
+                image.src = item.imageUrl;
+
+                div.appendChild(image);
+                nowimage.appendChild(div);
+                div.onclick = function (e) {
+                    e.stopPropagation();
+                    for (var i = 0; i < imgwrap1.length; i++) {
+                        imgwrap1[i].style.backgroundColor = "#fff"
+                    }
+                    e.toElement.style = "background-color:#009688;width:100%;height:100%"
+                    imagSrc = e.toElement.src
+                }
+            })
+            var imgwrap1 = $(".imageimg")
+
+        }
+    });
+}
+
+function updateMxGraphCellImage(cellEditor, selState, newValue, fn) {
+    //   Change picture
+    layui.use('upload', function () {
+        var upload = layui.upload;
+        var loading
+        //执行实例
+        var uploadInst = upload.render({
+            elem: '#uploadimage' //绑定元素
+            , url: '/piflow-web/mxGraph/uploadNodeImage' //上传接口
+            , headers: {
+                Authorization: ("Bearer " + token)
+            }
+            , before: function (obj) {
+                this.data = {imageType: "TASK"};
+                loading = layer.load(0, {
+                    shade: false,
+                    success: function (layerContentStyle) {
+                        layerContentStyle.find('.layui-layer-content').css({
+                            'padding-top': '35px',
+                            'text-align': 'left',
+                            'width': '120px',
+                        });
+                    },
+                    icon: 2,
+                    // time: 100*1000
+                });
+            }
+            , done: function (res) {
+                //上传完毕回调
+                console.log("upload success")
+                imageAjax();
+                layer.close(loading);
+            }
+            , error: function () {
+                //请求异常回调
+                console.log("upload error")
+            }
+        });
+    });
+    layer.open({
+        type: 1,
+        title: '',
+        shadeClose: true,
+        shade: 0.3,
+        closeBtn: 1,
+        shift: 7,
+        btn: ['YES', 'NO'],
+        area: ['620px', '520px'], //Width height
+        skin: 'layui-layer-rim', //Add borders
+        content: $("#changeimage"),
+        success: function () {
+            imageAjax()
+        },
+        //YES BUTTON
+        btn1: function (index, layero) {
+            var newValue = imagSrc;
+            imagSrc = null
+            EditorUi.prototype.saveImageUpdate(cellEditor, selState, newValue, fn, 66, 66);
+            layer.close(index)
+            setTimeout(() => {
+                saveXml(null, "MOVED")
+            }, 300)
+
+        },
+        //NO BUTTON
+        btn2: function (index, layero) {
+            imagSrc = null
+            layer.close(index)
+        },
+        //close function
+        cancel: function (index, layero) {
+            layer.close(index)
+            return false;
+        }
+    });
+}
+
 //init mxGraph
 function initGraph() {
     Actions.prototype.RunAll = runFlow;
     EditorUi.prototype.saveGraphData = saveXml;
+    EditorUi.prototype.customUpdeteImg = updateMxGraphCellImage;
+    Menus.prototype.customRightMenu = ['runAll'];
     Format.hideSidebar(false, true);
     //EditorUi.prototype.formatWidth = 0;
-    Format.customizeType = "TASK";
     $("#right-group-wrap")[0].style.display = "block";
     var editorUiInit = EditorUi.prototype.init;
     EditorUi.prototype.init = function () {
@@ -91,6 +223,7 @@ function initGraph() {
                 removeMxCellOperation(evt);
             }
         });
+
         graphGlobal.addListener(mxEvent.CLICK, function (sender, evt) {
             consumedFlag = evt.consumed ? true : false;
             mxEventClickFunc(evt.properties.cell, consumedFlag);

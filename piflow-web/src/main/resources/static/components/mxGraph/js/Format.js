@@ -22,6 +22,7 @@ Format.hideSidebar = function(left, right)
         EditorUi.prototype.formatWidth = 0;
     }
 };
+Format.prototype.isShowTextCell = false;
 //------------------------------ Custom modification content 001 end   ------------------------------
 
 /**

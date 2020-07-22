@@ -102,7 +102,7 @@ public class UserFlowCtrl {
     @RequestMapping("/queryFlowGroupData")
     @ResponseBody
     public String queryFlowGroupData(String load) {
-        return flowGroupServiceImpl.getFlowGroupVoById(load);
+        return flowGroupServiceImpl.getFlowGroupVoInfoById(load);
     }
 
     @RequestMapping("/queryIdInfo")

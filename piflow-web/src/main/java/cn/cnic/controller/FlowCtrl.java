@@ -21,9 +21,6 @@ public class FlowCtrl {
     @Resource
     private IFlowService flowServiceImpl;
 
-    @Resource
-    private IFlowGroupService flowGroupServiceImpl;
-
     /**
      * flowList page query
      *
@@ -120,18 +117,6 @@ public class FlowCtrl {
         return flowServiceImpl.deleteFLowInfo(username, isAdmin, id);
     }
 
-    @RequestMapping("/queryFlowGroupData")
-    @ResponseBody
-    public String queryFlowGroupData(String load) {
-        return flowGroupServiceImpl.getFlowGroupVoById(load);
-    }
-
-    @RequestMapping("/queryIdInfo")
-    @ResponseBody
-    public String queryIdInfo(String fid, String flowPageId) {
-        return flowGroupServiceImpl.queryIdInfo(fid, flowPageId);
-    }
-
     @RequestMapping("/updateFlowBaseInfo")
     @ResponseBody
     public String updateFlowBaseInfo(FlowVo flowVo) {
@@ -139,31 +124,4 @@ public class FlowCtrl {
         return flowServiceImpl.updateFlowBaseInfo(username, flowVo);
     }
 
-    @RequestMapping("/updateFlowNameById")
-    @ResponseBody
-    public String updateFlowNameById(HttpServletRequest request) {
-        String flowId = request.getParameter("flowId");
-        String flowGroupId = request.getParameter("flowGroupId");
-        String name = request.getParameter("name");
-        String pageId = request.getParameter("pageId");
-        String updateType = request.getParameter("updateType");
-        String username = SessionUserUtil.getCurrentUsername();
-        if ("flowGroup".equals(updateType)) {
-            return flowGroupServiceImpl.updateFlowGroupNameById(username, flowId, flowGroupId, name, pageId);
-        }
-        return flowServiceImpl.updateFlowNameById(username, flowId, flowGroupId, name, pageId);
-    }
-
-    /**
-     * findFlowByGroup
-     *
-     * @param fId
-     * @param flowPageId
-     * @return
-     */
-    @RequestMapping("/findFlowByGroup")
-    @ResponseBody
-    public String findFlowByGroup(String fId, String flowPageId) {
-        return flowGroupServiceImpl.queryIdInfo(fId, flowPageId);
-    }
 }

@@ -659,8 +659,8 @@ function openProcessMonitor(evt) {
         $.ajax({
             cache: true,
             type: "POST",
-            url: "/piflow-web/flow/findFlowByGroup",
-            data: {"flowPageId": cellFor.id, "fId": loadId},
+            url: "/piflow-web/flowGroup/findFlowByGroup",
+            data: {"pageId": cellFor.id, "fId": loadId},
             async: true,
             error: function (request) {
                 //alert("Jquery Ajax request error!!!");
@@ -958,8 +958,8 @@ function queryFlowOrFlowGroupProperty(flowPageId) {
     $.ajax({
         cache: true,
         type: "POST",
-        url: "/piflow-web/flow/queryIdInfo",
-        data: {"flowPageId": flowPageId, "fid": loadId},
+        url: "/piflow-web/flowGroup/queryIdInfo",
+        data: {"flowPageId": pageId, "fId": loadId},
         async: true,
         error: function (request) {
             return;
@@ -2150,7 +2150,7 @@ function queryFlowGroup() {
         data: {"load": loadId},
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: "/piflow-web/flow/queryFlowGroupData",
+        url: "/piflow-web/flowGroup/queryFlowGroupData",
         async: true,//Synchronous Asynchronous
         error: function (request) {//Operation after request failure
             return;

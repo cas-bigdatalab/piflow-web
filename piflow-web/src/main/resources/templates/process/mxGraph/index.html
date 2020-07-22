@@ -6,7 +6,6 @@
     <title>piflow-web</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta th:include="Macro/csrfTokeHeadMacro :: csrfTokeHeadMacro"/>
     <link rel="stylesheet" type="text/css" href="/piflow-web/components/mxGraph/styles/grapheditor.css">
     <link rel="stylesheet" type="text/css" href="/piflow-web/components/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href='/piflow-web/custom/css/publicMacro.css'/>
@@ -14,6 +13,32 @@
     <link rel="stylesheet" type="text/css" href="/piflow-web/components/font-awesome-4.7.0/css/font-awesome.min.css"/>
     <link rel="stylesheet" type="text/css" href="/piflow-web/css/main.css"/>
     <link rel="shortcut icon" href="/piflow-web/img/logo.ico">
+
+    <script type="text/javascript" src="/piflow-web/components/mxGraph/js/Init.js"></script>
+    <script type="text/javascript" src="/piflow-web/components/mxGraph/deflate/pako.min.js"></script>
+    <script type="text/javascript" src="/piflow-web/components/mxGraph/deflate/base64.js"></script>
+    <script type="text/javascript" src="/piflow-web/components/mxGraph/jscolor/jscolor.js"></script>
+    <script type="text/javascript" src="/piflow-web/components/mxGraph/sanitizer/sanitizer.min.js"></script>
+    <script type="text/javascript" src="/piflow-web/components/mxGraph/js/mxClient.js"></script>
+    <script type="text/javascript" src="/piflow-web/components/mxGraph/js/EditorUi.js"></script>
+    <script type="text/javascript" src="/piflow-web/components/mxGraph/js/Editor.js"></script>
+    <script type="text/javascript" src="/piflow-web/components/mxGraph/js/Sidebar.js"></script>
+    <script type="text/javascript" src="/piflow-web/components/mxGraph/js/Graph.js"></script>
+    <script type="text/javascript" src="/piflow-web/components/mxGraph/js/Shapes.js"></script>
+    <script type="text/javascript" src="/piflow-web/components/mxGraph/js/Actions.js"></script>
+    <script type="text/javascript" src="/piflow-web/components/mxGraph/js/Menus.js"></script>
+    <script type="text/javascript" src="/piflow-web/components/mxGraph/js/Format.js"></script>
+    <script type="text/javascript" src="/piflow-web/components/mxGraph/js/Toolbar.js"></script>
+    <script type="text/javascript" src="/piflow-web/components/mxGraph/js/Dialogs.js"></script>
+    <script type="text/javascript" src="/piflow-web/js/jquery/jquery.min.js"></script>
+    <!--The user drags elements, links：http://api.jqueryui.com/draggable/#method-disable/-->
+    <script type="text/javascript" src="/piflow-web/js/jquery/jquery-ui.min.js"></script>
+    <!--Mobile device users drag elements, depending on juery-ui.min.js，links：http://touchpunch.furf.com/-->
+    <script type="text/javascript" src="/piflow-web/js/jquery/jquery.ui.touch-punch.min.js"></script>
+    <script type="text/javascript" src="/piflow-web/components/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/piflow-web/components/layui/layui.all.js"></script>
+    <script type="text/javascript" src='/piflow-web/js/dataTables1.10.18/jquery.dataTables.min.js'></script>
+
     <style>
         .btn-position {
             float: right;
@@ -52,7 +77,6 @@
             color: #ffffff;
         }
     </style>
-    <meta th:include="mxGraph/inc/index_graph_improt :: index_graph_improt"/>
 </head>
 <body class="geEditor">
 <div th:include="Macro/fragmentMacro :: fullScreen"></div>
@@ -77,7 +101,11 @@
             <i style="color: white" class="fa fa-angle-left fa-2x"></i>
         </div>
     </div>
-    <div id="right-group" class="right-group"></div>
+    <div id="right-group" class="right-group">
+        <div id="div_process_info_inc_id" style="display: none;"></div>
+        <div id="div_process_path_inc_id"style="display: none;"></div>
+        <div id="div_process_property_inc_id" style="display: none;"></div>
+    </div>
 </div>
 
 <!--checkpoint open window-->
@@ -98,12 +126,13 @@
     </div>
 </div>
 
-<script th:include="Macro/csrfTokeHeadMacro :: csrfTokeHeadMacroScript"/>
+<script type="text/javascript" src="/piflow-web/js/ajaxUtils.js"></script>
 <script type="text/javascript" src="/piflow-web/custom/js/processContent.js"></script>
 <script type="text/javascript" src="/piflow-web/custom/js/process/initProcessGraph.js"></script>
 <script th:inline="javascript">
-    var parentAccessPath = [[${parentAccessPath}]];
-    var loadId = [[${load}]];
+    var urlParams = getUrlParams(window.location.href);
+    var parentAccessPath = urlParams.parentAccessPath;
+    var loadId = urlParams.load;
 
 
     //---------------------------------------------------
@@ -111,13 +140,15 @@
     var stderrLog = [[${stderrLog}]];
     //---------------------------------------------------
 
-    (function () {
-        initProcessDrawingBoardData(loadId, parentAccessPath);
-        initProcessContentPage(nodeArr);
+    $(function () {
+        $("#div_process_property_inc_id").load("/piflow-web/page/process/queryProcessStop");
+        $("#div_process_path_inc_id").load("/piflow-web/page/process/queryProcessPath");
+        $("#div_process_info_inc_id").load("/piflow-web/page/process/queryProcess", function () {
+            initProcessDrawingBoardData(loadId, parentAccessPath);
+            initProcessContentPage(nodeArr);
+            initGraph();
+        });
         initCrumbs(parentAccessPath);
-    })();
-    $(document).ready(function () {
-        initGraph();
     });
     //@ sourceURL=mxGraphIndex.js
 </script>

@@ -9,6 +9,9 @@ function initProcessAndProcessGroupDatatablePage(testTableId, url, searchInputId
         table.render({
             elem: '#' + testTableId
             , url: url
+            , headers: {
+                Authorization: ("Bearer " + token)
+            }
             , cols: [[
                 {
                     field: 'appId', title: 'ProcessGroupId', sort: true, templet: function (data) {
@@ -147,10 +150,10 @@ function processGroupListMonitoring() {
             window.clearInterval(timer);
             return;
         }
-        $.ajax({
+        ajaxRequest({
             cache: true,
             type: "get",
-            url: "/piflow-web/processGroup/getAppInfoList",
+            url: "/processGroup/getAppInfoList",
             data: {arrayObj: arrayObj},
             async: true,
             traditional: true,
@@ -231,10 +234,10 @@ function runProcessOrProcessGroup(processType, id, runMode) {
     if (runMode) {
         data.runMode = runMode;
     }
-    $.ajax({
+    ajaxRequest({
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: "/piflow-web/processAndProcessGroup/runProcessOrProcessGroup",//This is the name of the file where I receive data in the background.
+        url: "/processAndProcessGroup/runProcessOrProcessGroup",//This is the name of the file where I receive data in the background.
         //data:$('#loginForm').serialize(),//Serialize the form
         data: data,
         async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
@@ -249,9 +252,9 @@ function runProcessOrProcessGroup(processType, id, runMode) {
             if (200 === dataMap.code) {
                 //alert(dataMap.errorMsg);
                 window.location.reload();
-                var openUrl = "/piflow-web/mxGraph/drawingBoard?drawingBoardType=PROCESS&processType=PROCESS_GROUP&load=" + dataMap.processGroupId;
+                var openUrl = "/piflow-web/page/process/drawingBoard?drawingBoardType=PROCESS&processType=PROCESS_GROUP&load=" + dataMap.processGroupId;
                 if ("PROCESS" === processType) {
-                    openUrl = "/piflow-web/mxGraph/drawingBoard?drawingBoardType=PROCESS&processType=PROCESS&load=" + dataMap.processId;
+                    openUrl = "/piflow-web/page/process/drawingBoard?drawingBoardType=PROCESS&processType=PROCESS&load=" + dataMap.processId;
                 }
                 var windowOpen = window.open(openUrl);
                 if (windowOpen == null || typeof (windowOpen) == 'undefined') {
@@ -269,10 +272,10 @@ function runProcessOrProcessGroup(processType, id, runMode) {
 //stop
 function stopProcessOrProcessGroup(processType, id) {
     $('#fullScreen').show();
-    $.ajax({
+    ajaxRequest({
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: "/piflow-web/processAndProcessGroup/stopProcessOrProcessGroup",//This is the name of the file where I receive data in the background.
+        url: "/processAndProcessGroup/stopProcessOrProcessGroup",//This is the name of the file where I receive data in the background.
         //data:$('#loginForm').serialize(),//Serialize the form
         data: {processType: processType, id: id},
         async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
@@ -299,10 +302,10 @@ function stopProcessOrProcessGroup(processType, id) {
 //remove
 function delProcessOrProcessGroup(processType, id) {
     $('#fullScreen').show();
-    $.ajax({
+    ajaxRequest({
         cache: true,//Keep cached data
         type: "get",//get
-        url: "/piflow-web/processAndProcessGroup/delProcessOrProcessGroup",//This is the name of the file where I receive data in the background.
+        url: "/processAndProcessGroup/delProcessOrProcessGroup",//This is the name of the file where I receive data in the background.
         //data:$('#loginForm').serialize(),//Serialize the form
         data: {processType: processType, id: id},
         async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
@@ -325,7 +328,7 @@ function delProcessOrProcessGroup(processType, id) {
 }
 
 function openProcessOrProcessGroup(loadId, processType) {
-    var windowOpen = window.open('/piflow-web/mxGraph/drawingBoard?drawingBoardType=PROCESS&processType=' + processType + '&load=' + loadId);
+    var windowOpen = window.open('/piflow-web/page/process/drawingBoard?drawingBoardType=PROCESS&processType=' + processType + '&load=' + loadId);
     if (windowOpen == null || typeof (windowOpen) == 'undefined') {
         alert('The window cannot be opened. Please check your browser settings.');
     }

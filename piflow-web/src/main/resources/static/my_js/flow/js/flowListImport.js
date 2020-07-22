@@ -1,6 +1,6 @@
 var flowTable;
 
-function initDatatableFlowPage(testTableId, url, searchInputId) {
+function initDatatableFlowImportPage(testTableId, url, searchInputId) {
     var table = "";
     layui.use('table', function () {
         table = layui.table;
@@ -9,6 +9,9 @@ function initDatatableFlowPage(testTableId, url, searchInputId) {
         table.render({
             elem: '#' + testTableId
             , url: url
+            , headers: {
+                Authorization: ("Bearer " + token)
+            }
             , cols: [[
                 {field: 'name', title: 'Name', sort: true},
                 {field: 'description', title: 'Description', sort: true},
@@ -51,10 +54,10 @@ function searchMonitor(layui_table, layui_table_id, searchInputId) {
 }
 
 function importFlow(flowId) {
-    $.ajax({
+    ajaxRequest({
         cache: true,
         type: "POST",
-        url: "/piflow-web/flowGroup/copyFlowToGroup",
+        url: "/flowGroup/copyFlowToGroup",
         data: {"flowId": flowId, "flowGroupId": loadId},
         async: true,
         error: function (request) {

@@ -92,7 +92,7 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
      * @return
      */
     @Override
-    public String getFlowGroupVoById(String flowGroupId) {
+    public String getFlowGroupVoInfoById(String flowGroupId) {
         Map<String, Object> rtnMap = new HashMap<>();
         rtnMap.put("code", 500);
         FlowGroupVo flowGroupVo = null;
@@ -100,8 +100,8 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
         if (null != flowGroupById) {
             flowGroupVo = new FlowGroupVo();
             BeanUtils.copyProperties(flowGroupById, flowGroupVo);
-            List<FlowVo> flowVoList = FlowUtil.flowListPoToVo(flowGroupById.getFlowList());
-            flowGroupVo.setFlowVoList(flowVoList);
+            flowGroupVo.setFlowQuantity((null != flowGroupById.getFlowList() ? flowGroupById.getFlowList().size() : 0));
+            flowGroupVo.setFlowGroupQuantity((null != flowGroupById.getFlowGroupList() ? flowGroupById.getFlowGroupList().size() : 0));
         }
         rtnMap.put("code", 200);
         rtnMap.put("flowGroupVo", flowGroupVo);

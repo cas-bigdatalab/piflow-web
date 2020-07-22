@@ -115,21 +115,7 @@ Sidebar.prototype.init = function()
 		 {'Wireless_Router_N': 'wireless router switch wap wifi access point wlan',
 		  'Router_Icon': 'router switch'});
    */
-	if ('GROUP' === Format.customizeType) {
-		if (null != flowGroupData && flowGroupData.length > 0) {
-			for (var i = 0; i < flowGroupData.length; i++) {
-				var flowGroupData_i = flowGroupData[i];
-				if (flowGroupData_i && '' !== flowGroupData_i) {
-					Sidebar.prototype.component_data.push({
-						component_name: flowGroupData_i.groupName,
-						component_group: flowGroupData_i.dataList,
-						component_prefix: "/piflow-web/img/",
-						addImagePaletteId: "general"
-					});
-				}
-			}
-		}
-	}
+
 	//search
 	this.addSearchPalette(true);
 	if (null != Sidebar.prototype.component_data && Sidebar.prototype.component_data.length > 0) {
@@ -2044,7 +2030,7 @@ Sidebar.prototype.createThumb = function(cells, width, height, parent, title, sh
 		parent.style.backgroundImage = 'url(' + this.editorUi.editor.transparentImage + ')';
 	}
 	
-  //svg属性设置
+	//svg属性设置
 	node.style.position = 'relative';
 	node.style.overflow = 'hidden';
 	node.style.left = this.thumbBorder + 'px';
@@ -3736,14 +3722,10 @@ Sidebar.prototype.addImagePalette = function (id, title, prefix, imgArray, items
                 tmpTags = item.substring((slash >= 0) ? slash + 1 : 0, (dot >= 0) ? dot : item.length).replace(/[-_]/g, ' ');
             }
             if (item[i] == "t") {
-                if ('TASK' === Format.customizeType) {
-
-                } else {
+                if (Format.prototype.isShowTextCell) {
                     fns.push(this.createVertexTemplateEntry('text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;labelBackgroundColor=#ffffff00;',
                         70, 30, 'Label', 'Text', null, null, 'text textbox textarea label'));
                 }
-
-
             } else {
                 fns.push(this.createVertexTemplateEntry('image;html=1;labelBackgroundColor=#ffffff00;image=' + prefix + imgArray[i],
                     this.defaultImageWidth, this.defaultImageHeight, value, title, title != null, null, this.filterTags(tmpTags)));
@@ -3753,13 +3735,7 @@ Sidebar.prototype.addImagePalette = function (id, title, prefix, imgArray, items
         }))(items[i], (titles != null) ? values[i] + "#" + titles[i] : null, (values != null) ? (values[i].length > 10) ? values[i].substring(0, 10) + "..." : values[i] : '', (tags != null) ? tags[items[i]] : null);
     }
 
-    if ('TASK' === Format.customizeType) {
-        this.addPaletteFunctions(id, title, false, fns);
-    } else if ('GROUP' === Format.customizeType) {
-        this.addPaletteFunctions(id, title, true, fns);
-    } else {
-	      this.addPaletteFunctions(id, title, false, fns);
-    }
+     this.addPaletteFunctions(id, title, Format.prototype.isShowTextCell, fns);
 };
 //------------------------------ Custom modification content 017 end   ------------------------------
 

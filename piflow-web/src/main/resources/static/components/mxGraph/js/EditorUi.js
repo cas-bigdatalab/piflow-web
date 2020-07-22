@@ -1149,6 +1149,7 @@ EditorUi.prototype.saveGraphData = function(paths, operType)
 {
 	alert("Please initialize the method (Actions.prototype.RunAll)");
 }
+EditorUi.prototype.customUpdeteImg = '';
 //------------------------------ Custom modification content 004 end   ------------------------------
 
 /**
@@ -3140,7 +3141,7 @@ EditorUi.prototype.updateActionStates = function()
 			}
 		}
 	}
-	
+
 //------------------------------ Custom modification content 005 start ------------------------------
 	// Updates action states
 	var actions = ['cut', 'copy', 'bold', 'italic', 'underline', 'delete','run','duplicate',
@@ -3149,7 +3150,7 @@ EditorUi.prototype.updateActionStates = function()
 	               'dotted', 'fillColor', 'gradientColor', 'shadow', 'fontColor',
 	               'formattedText', 'rounded', 'toggleRounded', 'sharp', 'strokeColor'];
 //------------------------------ Custom modification content 005 end   ------------------------------
-	
+
 	for (var i = 0; i < actions.length; i++)
 	{
 		this.actions.get(actions[i]).setEnabled(selected);
@@ -4020,64 +4021,8 @@ EditorUi.prototype.executeLayout = function(exec, animate, post)
 	EditorUi.prototype.saveGraphData(null, "MOVED");
 //------------------------------ Custom modification content 007 end   ------------------------------
 };
+
 //------------------------------ Custom modification content 008 start ------------------------------
-function imageajax(){
-	console.log(ImagesType,"ImagesTypeImagesTypeImagesType")
-	var data = {imageType:ImagesType.type};
-	var loading
-	$.ajax({
-		type: "post",//Request type post
-		url: "/piflow-web/mxGraph/nodeImageList",
-		data: data,
-		async: true,//Synchronous Asynchronous
-		error: function (request) {//Operation after request failure
-			return;
-		},
-		beforeSend:function(){
-		loading = layer.load(0, {
-			shade: false,
-			success: function (layerContentStyle) {
-				layerContentStyle.find('.layui-layer-content').css({
-					'padding-top': '35px',
-					'text-align': 'left',
-					'width':'120px',
-				});
-			},
-			icon:2,
-			// time: 100*1000
-		});
-		},
-		success: function (data) {//After the request is successful
-			layer.close(loading)
-			var nowimage = $("#nowimage")[0];
-			nowimage.innerHTML="";
-			var nodeImageList=JSON.parse(data).nodeImageList;
-			nodeImageList.forEach(item=>{
-				var div=document.createElement("div");
-				div.className="imgwrap";
-				var image= document.createElement("img");
-				image.className="imageimg"
-				image.style="width:100%;height:100%";
-				image.src=item.imageUrl;
-
-				div.appendChild(image);
-				nowimage.appendChild(div);
-				div.onclick=function(e){
-					e.stopPropagation();
-					for(var i=0;i<imgwrap1.length;i++){
-						imgwrap1[i].style.backgroundColor="#fff"
-					}
-					e.toElement.style="background-color:#009688;width:100%;height:100%"
-					imagSrc=e.toElement.src
-				}
-			})
-			var imgwrap1=$(".imageimg")
-
-		}
-	});
-}
-//------------------------------ Custom modification content 008 end   ------------------------------
-
 /**
  * Hides the current menu.
  */
@@ -4085,62 +4030,20 @@ EditorUi.prototype.showImageDialog = function(title, value, fn, ignoreExisting)
 {
 	var cellEditor = this.editor.graph.cellEditor;
 	var selState = cellEditor.saveSelection();
-//------------------------------ Custom modification content 009 start ------------------------------
-	//   Change picture
-	layui.use('upload', function(){
-		var upload = layui.upload;
-		var loading
-		//执行实例
-		var uploadInst = upload.render({
-			elem: '#uploadimage' //绑定元素
-			,url: '/piflow-web/mxGraph/uploadNodeImage' //上传接口
-			, before: function(obj){
-				this.data={imageType:ImagesType.type};
-				loading = layer.load(0, {
-					shade: false,
-					success: function (layerContentStyle) {
-						layerContentStyle.find('.layui-layer-content').css({
-							'padding-top': '35px',
-							'text-align': 'left',
-							'width': '120px',
-						});
-					},
-					icon:2,
-					// time: 100*1000
-				});
-			}
-			,done: function(res){
-				//上传完毕回调
-				console.log("upload success")
-				imageajax();
-				layer.close(loading);
-			}
-			,error: function(){
-				//请求异常回调
-				console.log("upload error")
-			}
-		});
-	});
-	layer.open({
-		type: 1,
-		title: '',
-		shadeClose: true,
-		shade:0.3,
-		closeBtn: 1,
-		shift: 7,
-		btn: ['YES', 'NO'],
-		area: ['620px', '520px'], //Width height
-		skin: 'layui-layer-rim', //Add borders
-		content: $("#changeimage"),
-		success:function(){
-			imageajax()
-		},
-		//YES BUTTON
-		btn1: function(index, layero){
-			var newValue = imagSrc;
-			imagSrc=null
-			// var newValue = mxUtils.prompt(title, value);
-//------------------------------ Custom modification content 009 end   ------------------------------
+	if (EditorUi.prototype.customUpdeteImg) {
+        EditorUi.prototype.customUpdeteImg(cellEditor, selState, newValue, fn, 66, 66);
+	} else {
+		var newValue = mxUtils.prompt(title, value);
+		EditorUi.prototype.saveImageUpdate(cellEditor, selState, newValue, fn);
+	}
+
+};
+
+/**
+ * save image update
+ */
+EditorUi.prototype.saveImageUpdate = function(cellEditor, selState, newValue, fn, imgWidth, imgHeight)
+{
 	cellEditor.restoreSelection(selState);
 	
 	if (newValue != null && newValue.length > 0)
@@ -4149,10 +4052,13 @@ EditorUi.prototype.showImageDialog = function(title, value, fn, ignoreExisting)
 		
 		img.onload = function()
 		{
-//------------------------------ Custom modification content 010 start ------------------------------
-			// fn(newValue, img.width, img.height);
-			fn(newValue, 66, 66);
-//------------------------------ Custom modification content 010 end   ------------------------------
+			if(imgWidth && imgHeight){
+				fn(newValue, imgWidth, imgHeight);
+			}
+			else
+			{
+				fn(newValue, img.width, img.height);
+			}
 		};
 		img.onerror = function()
 		{
@@ -4166,26 +4072,8 @@ EditorUi.prototype.showImageDialog = function(title, value, fn, ignoreExisting)
 	{
 		fn(null);
 	}
-//------------------------------ Custom modification content 012 start ------------------------------
-			layer.close(index)
-			setTimeout(()=>{
-				saveXml(null, "MOVED")
-			},300)
-
-		},
-		//NO BUTTON
-		btn2: function(index, layero){
-			imagSrc=null
-			layer.close(index)
-		},
-		//close function
-		cancel: function(index, layero){
-			layer.close(index)
-			return false;
-		}
-	});
-//------------------------------ Custom modification content 012 end   ------------------------------
 };
+//------------------------------ Custom modification content 008 end   ------------------------------
 
 /**
  * Hides the current menu.

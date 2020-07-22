@@ -24,7 +24,7 @@ public interface IFlowGroupService {
      * @param flowGroupId
      * @return
      */
-    public String getFlowGroupVoById(String flowGroupId);
+    public String getFlowGroupVoInfoById(String flowGroupId);
 
     /**
      * getFlowGroupVoAllById

@@ -1,131 +1,57 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <body>
-<div th:fragment=process_Property_Inc>
-    <div style="line-height: 25px;">
-        <div id="process_property_inc_loading" style="position: absolute;top: 49%;width: 100%;text-align: center;">
-            <span style="font-size: 60px;">Loading</span>
-        </div>
-        <div id="process_property_inc_load_fail"
-             style="position: absolute;top: 49%;width: 100%;text-align: center;display: none;">
-            <span style="font-size: 60px;">Load Fail</span>
-        </div>
-        <div id="process_property_inc_no_data"
-             style="position: absolute;top: 49%;width: 100%;text-align: center;display: none;">
-            <span style="font-size: 60px;">No Data</span>
-        </div>
-        <div id="process_property_inc_load_data" style="display: none;">
-            <div style="padding: 12px 0px 12px 18px; border-bottom: 1px solid rgb(192, 192, 192);">
-                <div style="padding: 0px 0px 6px; white-space: nowrap; overflow: hidden; width: 200px; font-weight: bold;">
-                    Stop Basic Information
-                </div>
-                <span>SotpName：</span>
-                <span id="stopNameShow"/><br>
-                <span>Description：</span>
-                <span id="span_processStopVo_description"/><br>
-                <span>GroupName：</span>
-                <span id="span_processStopVo_groups"/><br>
-                <span>Bundel：</span>
-                <span id="stopsBundleShow"/><br>
-                <span>Owner：</span>
-                <span id="span_processStopVo_owner"/><br>
+
+<div style="line-height: 25px;">
+    <div id="process_property_inc_loading" style="position: absolute;top: 49%;width: 100%;text-align: center;">
+        <span style="font-size: 60px;">Loading</span>
+    </div>
+    <div id="process_property_inc_load_fail"
+         style="position: absolute;top: 49%;width: 100%;text-align: center;display: none;">
+        <span style="font-size: 60px;">Load Fail</span>
+    </div>
+    <div id="process_property_inc_no_data"
+         style="position: absolute;top: 49%;width: 100%;text-align: center;display: none;">
+        <span style="font-size: 60px;">No Data</span>
+    </div>
+    <div id="process_property_inc_load_data" style="display: none;">
+        <div style="padding: 12px 0px 12px 18px; border-bottom: 1px solid rgb(192, 192, 192);">
+            <div style="padding: 0px 0px 6px; white-space: nowrap; overflow: hidden; width: 200px; font-weight: bold;">
+                Stop Basic Information
             </div>
-            <div id="div_processStopVo_processStopPropertyVoList"
-                 style="padding: 12px 0px 12px 18px; border-bottom: 1px solid rgb(192, 192, 192);display:none;">
-                <div style="padding: 0px 0px 6px; white-space: nowrap; overflow: hidden; width: 200px; font-weight: bold;">
-                    Stop Property Information
-                </div>
+            <span>SotpName：</span>
+            <span id="stopNameShow"/><br>
+            <span>Description：</span>
+            <span id="span_processStopVo_description"/><br>
+            <span>GroupName：</span>
+            <span id="span_processStopVo_groups"/><br>
+            <span>Bundel：</span>
+            <span id="stopsBundleShow"/><br>
+            <span>Owner：</span>
+            <span id="span_processStopVo_owner"/><br>
+        </div>
+        <div id="div_processStopVo_processStopPropertyVoList" style="padding: 12px 0px 12px 18px; border-bottom: 1px solid rgb(192, 192, 192);display:none;">
+            <div style="padding: 0px 0px 6px; white-space: nowrap; overflow: hidden; width: 200px; font-weight: bold;">
+                Stop Property Information
             </div>
-            <div style="padding: 12px 0px 12px 18px; border-bottom: 1px solid rgb(192, 192, 192);">
-                <div style="padding: 0px 0px 6px; white-space: nowrap; overflow: hidden; width: 200px; font-weight: bold;">
-                    Stop Running Information
-                </div>
-                <span>Start time ：</span>
-                <span id="stopStartTimeShow"/>
-                <br>
-                <span>Stop time ：</span>
-                <span id="stopStopTimeShow"/>
-                <br>
-                <span>state ：</span>
-                <span id="stopStateShow"/>
-                <br>
+            <div id="div_processStopVo_processStopPropertyVo"></div>
+        </div>
+        <div style="padding: 12px 0px 12px 18px; border-bottom: 1px solid rgb(192, 192, 192);">
+            <div style="padding: 0px 0px 6px; white-space: nowrap; overflow: hidden; width: 200px; font-weight: bold;">
+                Stop Running Information
             </div>
+            <span>Start time ：</span>
+            <span id="stopStartTimeShow"/>
+            <br>
+            <span>Stop time ：</span>
+            <span id="stopStopTimeShow"/>
+            <br>
+            <span>state ：</span>
+            <span id="stopStateShow"/>
+            <br>
         </div>
     </div>
 </div>
-<script th:inline="javascript">
-    var processID = [[${processId}]];
-    var pageID = [[${pageId}]];
 
-    function initProcessPropertyIncPageData(processID, pageID) {
-        $.ajax({
-            cache: true,//Keep cached data
-            type: "get",//Request for get
-            url: "/piflow-web/process/queryProcessStopData",//This is the name of the file where I receive data in the background.
-            //data:$('#loginForm').serialize(),//Serialize the form
-            data: {
-                processId: processID,
-                pageId: pageID
-            },
-            async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
-            error: function (request) {//Operation after request failure
-                $('#process_property_inc_loading').hide();
-                $('#process_property_inc_load_fail').show();
-                alert("Request Failed");
-                return;
-            },
-            success: function (data) {//Operation after request successful
-                var dataMap = JSON.parse(data);
-                console.log("=====================================");
-                console.log(dataMap);
-                console.log("=====================================");
-                $('#process_property_inc_loading').hide();
-                if (200 === dataMap.code) {
-                    var processStopVo = dataMap.processStopVo;
-                    if (!processStopVo) {
-                        $('#process_property_inc_no_data').show();
-                    } else {
-                        // Stop Basic Information
-                        $("#stopNameShow").text(processStopVo.name);
-                        $("#span_processStopVo_description").text(processStopVo.description);
-                        $("#span_processStopVo_groups").text(processStopVo.groups);
-                        $("#stopsBundleShow").text(processStopVo.bundel);
-                        $("#span_processStopVo_owner").text(processStopVo.owner);
-
-                        //Stop Property Information
-                        var processStopPropertyVoList = processStopVo.processStopPropertyVoList;
-                        if (processStopPropertyVoList) {
-                            var processStopPropertyVoListHtml = '<span>';
-                            processStopPropertyVoList.forEach(item => {
-                                if (item) {
-                                    var processStopPropertyVo = '<span>' + item.displayName + ':</span><span class="open_action">' + item.customValue + '</span><br>';
-                                    processStopPropertyVoListHtml += processStopPropertyVo;
-                                }
-                            });
-                            processStopPropertyVoListHtml += '</span>';
-                            $("#div_processStopVo_processStopPropertyVoList").append(processStopPropertyVoListHtml);
-                            $("#div_processStopVo_processStopPropertyVoList").show();
-                        }
-                        //Stop Running Information
-                        $("#stopStartTimeShow").text(processStopVo.startTimeStr);
-                        $("#stopStopTimeShow").text(processStopVo.endTimeStr);
-                        var processStopVo_state_text = (null !== processStopVo.state) ? processStopVo.state : "INIT";
-                        $("#stopStateShow").text(processStopVo_state_text);
-
-                        $('#process_property_inc_load_data').show();
-                    }
-                } else {
-                    $('#process_property_inc_load_fail').show();
-                    //alert("Load Failed" + dataMap.errorMsg);
-                }
-                $('#fullScreen').hide();
-            }
-        });
-    }
-
-    $(document).ready(function () {
-        initProcessPropertyIncPageData(processID, pageID);
-    });
-</script>
 </body>
 </html>

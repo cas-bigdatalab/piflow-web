@@ -126,9 +126,12 @@
 <script th:src="@{/js/ajaxUtils.js}"></script>
 <script th:inline="javascript">
     var urlParams = getUrlParams(window.location.href);
-    var currentUser = JSON.parse(localStorage.jwtUser);
     var accessPath = urlParams.accessPath;
     var projectContextPath = "/piflow-web";
+    var currentUser = {username: "tourist"};
+    if (localStorage.jwtUser) {
+        currentUser = JSON.parse(localStorage.jwtUser);
+    }
     var projectContextPath_test = [[${#httpServletRequest.getContextPath()}]];
 
     (function () {
@@ -148,6 +151,9 @@
                     break;
                 case 'flowGroupList':
                     $("#content").load("/piflow-web/page/flowGroupList");
+                    break;
+                case 'processAndProcessGroup':
+                    $("#content").load("/piflow-web/page/process_processGroup_list");
                     break;
                 default:
                     break;

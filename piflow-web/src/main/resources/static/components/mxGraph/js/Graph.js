@@ -3372,7 +3372,7 @@ HoverIcons.prototype.tolerance = (mxClient.IS_TOUCH) ? 6 : 0;
 HoverIcons.prototype.init = function()
 {
 //------------------------------ Custom modification content 001 start ------------------------------
-	//禁止编辑
+	//No editing
 	if(EditorUi.prototype.noEditing)
 	{
 		this.elts = [];

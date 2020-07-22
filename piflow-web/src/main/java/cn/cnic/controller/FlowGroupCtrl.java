@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import cn.cnic.base.vo.UserVo;
 import cn.cnic.common.Eunm.DrawingBoardType;
+import cn.cnic.component.flow.service.IFlowService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,6 +22,9 @@ public class FlowGroupCtrl {
 
     @Resource
     private IFlowGroupService flowGroupServiceImpl;
+
+    @Resource
+    private IFlowService flowServiceImpl;
 
     /**
      * ‘flowGroupList’ paged query
@@ -49,6 +53,31 @@ public class FlowGroupCtrl {
     public String saveOrUpdateFlowGroup(FlowGroupVo flowGroupVo) {
         String username = SessionUserUtil.getCurrentUsername();
         return flowGroupServiceImpl.saveOrUpdate(username, flowGroupVo);
+    }
+
+    @RequestMapping("/queryFlowGroupData")
+    @ResponseBody
+    public String queryFlowGroupData(String load) {
+        return flowGroupServiceImpl.getFlowGroupVoInfoById(load);
+    }
+
+    @RequestMapping("/queryIdInfo")
+    @ResponseBody
+    public String queryIdInfo(String fId, String pageId) {
+        return flowGroupServiceImpl.queryIdInfo(fId, pageId);
+    }
+
+    /**
+     * findFlowByGroup
+     *
+     * @param fId
+     * @param pageId
+     * @return
+     */
+    @RequestMapping("/findFlowByGroup")
+    @ResponseBody
+    public String findFlowByGroup(String fId, String pageId) {
+        return flowGroupServiceImpl.queryIdInfo(fId, pageId);
     }
 
     /**
@@ -116,6 +145,21 @@ public class FlowGroupCtrl {
     public String updateFlowGroupBaseInfo(FlowGroupVo flowGroupVo) {
         String username = SessionUserUtil.getCurrentUsername();
         return flowGroupServiceImpl.updateFlowGroupBaseInfo(username, flowGroupVo);
+    }
+
+    @RequestMapping("/updateFlowNameById")
+    @ResponseBody
+    public String updateFlowNameById(HttpServletRequest request) {
+        String flowId = request.getParameter("flowId");
+        String flowGroupId = request.getParameter("flowGroupId");
+        String name = request.getParameter("name");
+        String pageId = request.getParameter("pageId");
+        String updateType = request.getParameter("updateType");
+        String username = SessionUserUtil.getCurrentUsername();
+        if ("flowGroup".equals(updateType)) {
+            return flowGroupServiceImpl.updateFlowGroupNameById(username, flowId, flowGroupId, name, pageId);
+        }
+        return flowServiceImpl.updateFlowNameById(username, flowId, flowGroupId, name, pageId);
     }
 
 }

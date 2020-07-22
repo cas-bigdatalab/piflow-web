@@ -3,86 +3,77 @@ var graphGlobal = null;
 var thisEditor = null;
 var fullScreen = $('#fullScreen');
 var drawingBoardType = "PROCESS"
-getRightInfo()
 var index = true
 var nodeArr, xmlDate, parentsId, processType, processGroupId, parentProcessId, pID, appId, processState;
 
-function getRightInfo(cell) {
-    var processGroupId = getQueryString("load")
-    var pageId, value, data
-    if (index) {
-        $(".right-group").toggleClass("open-right");
-        $(".ExpandSidebar").toggleClass("ExpandSidebar-open");
-        index = false
+function initCrumbs(parentAccessPath) {
+    if (parentAccessPath) {
+        switch (parentAccessPath) {
+            case "grapheditor":
+                $("#web_processList_navigation").hide();
+                $("#web_flowList_navigation").show();
+                $("#grapheditor_home_navigation").show();
+                break;
+            case "flowProcess":
+                $("#web_processList_navigation").hide();
+                $("#web_groupTypeProcessList_navigation").show();
+                break;
+            case "processGroupList":
+                $("#web_processList_navigation").hide();
+                $("#web_processGroupList_navigation").show();
+                $("#web_getProcessGroupById_navigation").show();
+                break;
+        }
     }
-    if (cell == undefined) {
-        data = {processGroupId}
-    } else {
-        pageId = cell.id
-        value = cell.value
-        data = {pageId, processGroupId}
-    }
-    //info
-    if (cell == undefined || cell && cell.style && (cell.style).indexOf("text\;") === 0) {
-        $.ajax({
-            cache: true,
-            type: "POST",
-            url: "/piflow-web/page/process/queryProcess",
-            data: {processId: processGroupId},
-            async: true,
-            error: function (request) {
-                return;
-            },
-            success: function (data) {
-                $("#right-group").html(data);
-            }
-        });
-
-
-        //task
-    } else if (cell && cell.style && (cell.style).indexOf("image\;") === 0) {
-        $.ajax({
-            cache: true,
-            type: "POST",
-            url: "/piflow-web/page/process/queryProcessStop",
-            data: {processId: processGroupId, pageId: cell.id},
-            async: true,
-            error: function (request) {
-                return;
-            },
-            success: function (data) {
-                $("#right-group").html(data);
-            }
-        });
-        //    path
-    } else {
-        $.ajax({
-            cache: true,
-            type: "POST",
-            url: "/piflow-web/page/process/queryProcessPath",
-            data: {processId: processGroupId, pageId: cell.id},
-            async: true,
-            error: function (request) {
-                return;
-            },
-            success: function (data) {
-                $("#right-group").html(data);
-            }
-        })
-    }
-
 }
 
-function getQueryString(name) {
-    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
-    var r = window.location.search.substr(1).match(reg);
-    if (r != null) return unescape(r[2]);
-    return null;
+function initProcessDrawingBoardData(loadId, parentAccessPath) {
+    $('#fullScreen').show();
+    ajaxRequest({
+        cache: true,//Keep cached data
+        type: "get",//Request for get
+        url: "/process/drawingBoardData",//This is the name of the file where I receive data in the background.
+        //data:$('#loginForm').serialize(),//Serialize the form
+        data: {
+            loadId: loadId,
+            parentAccessPath: parentAccessPath
+        },
+        async: false,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
+        error: function (request) {//Operation after request failure
+            // window.location.href = "/piflow-web/error/404";
+            return;
+        },
+        success: function (data) {//Operation after request successful
+            var dataMap = JSON.parse(data);
+            if (200 === dataMap.code) {
+                processId = dataMap.processId;
+                processType = dataMap.processType;
+                nodeArr = dataMap.nodeArr;
+                xmlDate = dataMap.xmlDate;
+                processGroupId = dataMap.processGroupId;
+                parentsId = dataMap.processGroupId;
+                appId = dataMap.appId;
+                parentProcessId = dataMap.parentProcessId;
+                pID = dataMap.pID;
+                processState = dataMap.processState;
+                $("#progress").text(dataMap.percentage);
+                var getCheckpointParam = "'" + (dataMap.pID ? dataMap.pID : "") + "','" + (dataMap.parentProcessId ? dataMap.parentProcessId : "") + "', '" + (dataMap.processId ? dataMap.processId : "") + "'";
+                $("#runFlow").attr("onclick", "getCheckpoint(" + getCheckpointParam + ")");
+                $("#debugFlow").attr("onclick", "getCheckpoint(" + getCheckpointParam + ",'DEBUG')");
+                $("#run_checkpoint_new").attr("onclick", "getCheckpoint(" + getCheckpointParam + ")");
+                $("#debug_checkpoint_new").attr("onclick", "getCheckpoint(" + getCheckpointParam + ",'DEBUG')");
+            } else {
+                //window.location.href = "/piflow-web/error/404";
+            }
+            $('#fullScreen').hide();
+        }
+    });
 }
 
 function initGraph() {
+    processMxEventClick();
     Format.noEditing(true);
-    Format.customizeType = "PROCESS";
+    //Format.customizeType = "PROCESS";
     var editorUiInit = EditorUi.prototype.init;
     $("#right-group-wrap")[0].style.display = "block";
     $("#precess-run")[0].style.display = "block";
@@ -95,7 +86,7 @@ function initGraph() {
         this.actions.get('export').setEnabled(false);
         //Monitoring event
         graphGlobal.addListener(mxEvent.CLICK, function (sender, evt) {
-            getRightInfo(evt.properties.cell);
+            processMxEventClick(evt.properties.cell);
         });
         graphGlobal.addListener(mxEvent.SIZE, function (sender, evt) {
             changIconTranslate();
@@ -137,6 +128,197 @@ function initGraph() {
     EditorUi.prototype.menubarShow = false;
     EditorUi.prototype.customToobar = true;
     ClickSlider();
+}
+
+function processMxEventClick(cell) {
+    if (index) {
+        $(".right-group").toggleClass("open-right");
+        $(".ExpandSidebar").toggleClass("ExpandSidebar-open");
+        index = false
+    }
+    if (cell == undefined || cell && cell.style && (cell.style).indexOf("text\;") === 0) {
+        //info
+        queryProcessInfo(loadId);
+    } else if (cell && cell.style && (cell.style).indexOf("image\;") === 0) {
+        //stops
+        queryProcessStopsProperty(loadId, cell.id);
+    } else {
+        //path
+        queryProcessPathInfo(loadId,cell.id);
+    }
+
+}
+
+function queryProcessInfo(processId) {
+    $("#div_process_info_inc_id").show();
+    $("#div_process_path_inc_id").hide();
+    $("#div_process_property_inc_id").hide();
+    ajaxRequest({
+        cache: true,//Keep cached data
+        type: "get",//Request for get
+        url: "/process/queryProcessData",//This is the name of the file where I receive data in the background.
+        //data:$('#loginForm').serialize(),//Serialize the form
+        data: {
+            processId: processId
+        },
+        async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
+        error: function (request) {//Operation after request failure
+            $('#process_info_inc_loading').hide();
+            $('#process_info_inc_load_fail').show();
+            alert("Request Failed");
+            return;
+        },
+        success: function (data) {//Operation after request successful
+            var dataMap = JSON.parse(data);
+            $('#process_info_inc_loading').hide();
+            if (200 === dataMap.code) {
+                var processVo = dataMap.processVo;
+                if (!processVo) {
+                    $('#process_info_inc_no_data').show();
+                } else {
+                    //Process Basic Information
+                    $("#span_processVo_id").text(processVo.id);
+                    $("#span_processVo_name").text(processVo.name);
+                    $("#span_processVo_description").text(processVo.description);
+                    $("#span_processVo_crtDttmStr").text(processVo.crtDttmStr);
+                    //Process Running Information
+                    $("#processStartTimeShow").text(processVo.startTimeStr);
+                    $("#processStopTimeShow").text(processVo.endTimeStr);
+                    var processVo_state_text = (null !== processVo.state) ? processVo.state.stringValue : "INIT";
+                    $("#processStateShow").text(processVo_state_text);
+                    if (processVo.progress) {
+                        $("#processProgressShow").text(processVo.progress + "%");
+                    } else {
+                        $("#processProgressShow").text("0.00%");
+                    }
+
+
+                    $('#process_info_inc_load_data').show();
+                }
+            } else {
+                $('#process_info_inc_load_fail').show();
+                //alert("Load Failed" + dataMap.errorMsg);
+            }
+            $('#fullScreen').hide();
+        }
+    });
+}
+
+function queryProcessPathInfo(processId,pageId) {
+    $("#div_process_info_inc_id").hide();
+    $("#div_process_path_inc_id").show();
+    $("#div_process_property_inc_id").hide();
+    ajaxRequest({
+        cache: true,//Keep cached data
+        type: "get",//Request for get
+        url: "/process/queryProcessPathData",//This is the name of the file where I receive data in the background.
+        //data:$('#loginForm').serialize(),//Serialize the form
+        data: {
+            processId: processId,
+            pageId: pageId
+        },
+        async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
+        error: function (request) {//Operation after request failure
+            $('#process_path_inc_loading').hide();
+            $('#process_path_inc_load_fail').show();
+            alert("Request Failed");
+            return;
+        },
+        success: function (data) {//Operation after request successful
+            var dataMap = JSON.parse(data);
+            $('#process_path_inc_loading').hide();
+            if (200 === dataMap.code) {
+                var processPathVo = dataMap.processPathVo;
+                if (!processPathVo) {
+                    $('#process_path_inc_no_data').show();
+                } else {
+                    // Process Path Information
+                    $("#span_processPathVo_from").text(processPathVo.from);
+                    $("#span_processPathVo_outport").text(processPathVo.outport);
+                    $("#span_processPathVo_inport").text(processPathVo.inport);
+                    $("#span_processPathVo_to").text(processPathVo.to);
+
+                    if (dataMap.runModeType && dataMap.runModeType.value === 'DEBUG') {
+                        $("#div_view_flow_data").html('<input type="button" class="btn btn-primary" onclick="getDebugData(\'' + processPathVo.from + '\',\'' + processPathVo.outport + '\')" value="View Flow Data">');
+                    }
+
+                    $('#process_path_inc_load_data').show();
+                }
+            } else {
+                $('#process_path_inc_load_fail').show();
+                //alert("Load Failed" + dataMap.errorMsg);
+            }
+            $('#fullScreen').hide();
+        }
+    });
+}
+
+function queryProcessStopsProperty(processId, pageId) {
+    $("#div_process_info_inc_id").hide();
+    $("#div_process_path_inc_id").hide();
+    $("#div_process_property_inc_id").show();
+    ajaxRequest({
+        cache: true,//Keep cached data
+        type: "get",//Request for get
+        url: "/process/queryProcessStopData",//This is the name of the file where I receive data in the background.
+        //data:$('#loginForm').serialize(),//Serialize the form
+        data: {
+            processId: processId,
+            pageId: pageId
+        },
+        async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
+        error: function (request) {//Operation after request failure
+            $('#process_property_inc_loading').hide();
+            $('#process_property_inc_load_fail').show();
+            alert("Request Failed");
+            return;
+        },
+        success: function (data) {//Operation after request successful
+            var dataMap = JSON.parse(data);
+            $('#process_property_inc_loading').hide();
+            $("#div_processStopVo_processStopPropertyVo").html("");
+            if (200 === dataMap.code) {
+                var processStopVo = dataMap.processStopVo;
+                if (!processStopVo) {
+                    $('#process_property_inc_no_data').show();
+                } else {
+
+                    // Stop Basic Information
+                    $("#stopNameShow").text(processStopVo.name);
+                    $("#span_processStopVo_description").text(processStopVo.description);
+                    $("#span_processStopVo_groups").text(processStopVo.groups);
+                    $("#stopsBundleShow").text(processStopVo.bundel);
+                    $("#span_processStopVo_owner").text(processStopVo.owner);
+
+                    //Stop Property Information
+                    var processStopPropertyVoList = processStopVo.processStopPropertyVoList;
+                    if (processStopPropertyVoList) {
+                        var processStopPropertyVoListHtml = '<span>';
+                        processStopPropertyVoList.forEach(item => {
+                            if (item) {
+                                var processStopPropertyVo = '<span>' + item.displayName + ':</span><span class="open_action">' + item.customValue + '</span><br>';
+                                processStopPropertyVoListHtml += processStopPropertyVo;
+                            }
+                        });
+                        processStopPropertyVoListHtml += '</span>';
+                        $("#div_processStopVo_processStopPropertyVo").append(processStopPropertyVoListHtml);
+                        $("#div_processStopVo_processStopPropertyVoList").show();
+                    }
+                    //Stop Running Information
+                    $("#stopStartTimeShow").text(processStopVo.startTimeStr);
+                    $("#stopStopTimeShow").text(processStopVo.endTimeStr);
+                    var processStopVo_state_text = (null !== processStopVo.state) ? processStopVo.state : "INIT";
+                    $("#stopStateShow").text(processStopVo_state_text);
+
+                    $('#process_property_inc_load_data').show();
+                }
+            } else {
+                $('#process_property_inc_load_fail').show();
+                //alert("Load Failed" + dataMap.errorMsg);
+            }
+            $('#fullScreen').hide();
+        }
+    });
 }
 
 //Erase drawing board records
@@ -260,66 +442,4 @@ function ClickSlider() {
     });
 }
 
-function initCrumbs(parentAccessPath) {
-    if (parentAccessPath) {
-        switch (parentAccessPath) {
-            case "grapheditor":
-                $("#web_processList_navigation").hide();
-                $("#web_flowList_navigation").show();
-                $("#grapheditor_home_navigation").show();
-                break;
-            case "flowProcess":
-                $("#web_processList_navigation").hide();
-                $("#web_groupTypeProcessList_navigation").show();
-                break;
-            case "processGroupList":
-                $("#web_processList_navigation").hide();
-                $("#web_processGroupList_navigation").show();
-                $("#web_getProcessGroupById_navigation").show();
-                break;
-        }
-    }
-}
 
-function initProcessDrawingBoardData(loadId, parentAccessPath) {
-    $('#fullScreen').show();
-    $.ajax({
-        cache: true,//Keep cached data
-        type: "get",//Request for get
-        url: "/piflow-web/page/process/drawingBoardData",//This is the name of the file where I receive data in the background.
-        //data:$('#loginForm').serialize(),//Serialize the form
-        data: {
-            loadId: loadId,
-            parentAccessPath: parentAccessPath
-        },
-        async: false,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
-        error: function (request) {//Operation after request failure
-            window.location.href = "/piflow-web/error/404";
-            return;
-        },
-        success: function (data) {//Operation after request successful
-            var dataMap = JSON.parse(data);
-            if (200 === dataMap.code) {
-                processId = dataMap.processId;
-                processType = dataMap.processType;
-                nodeArr = dataMap.nodeArr;
-                xmlDate = dataMap.xmlDate;
-                processGroupId = dataMap.processGroupId;
-                parentsId = dataMap.processGroupId;
-                appId = dataMap.appId;
-                parentProcessId = dataMap.parentProcessId;
-                pID = dataMap.pID;
-                processState = dataMap.processState;
-                $("#progress").text(dataMap.percentage);
-                var getCheckpointParam = "'" + (dataMap.pID ? dataMap.pID : "") + "','" + (dataMap.parentProcessId ? dataMap.parentProcessId : "") + "', '" + (dataMap.processId ? dataMap.processId : "") + "'";
-                $("#runFlow").attr("onclick", "getCheckpoint(" + getCheckpointParam + ")");
-                $("#debugFlow").attr("onclick", "getCheckpoint(" + getCheckpointParam + ",'DEBUG')");
-                $("#run_checkpoint_new").attr("onclick", "getCheckpoint(" + getCheckpointParam + ")");
-                $("#debug_checkpoint_new").attr("onclick", "getCheckpoint(" + getCheckpointParam + ",'DEBUG')");
-            } else {
-                window.location.href = "/piflow-web/error/404";
-            }
-            $('#fullScreen').hide();
-        }
-    });
-}
