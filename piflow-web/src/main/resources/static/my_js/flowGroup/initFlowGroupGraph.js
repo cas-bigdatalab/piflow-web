@@ -3002,7 +3002,7 @@ function openUpdateCellsProperty(e, cellType) {
     console.log(openWindowCoordinate);
     layer.open({
         type: 1,
-        title: name,
+        title: e.name,
         shadeClose: true,
         closeBtn: 0,
         shift: 7,
