@@ -112,8 +112,8 @@ public class MxGraphCtrl {
                 }
                 break;
             }
-		default:
-			break;
+            default:
+                break;
         }
         return pagePath;
     }
@@ -130,7 +130,7 @@ public class MxGraphCtrl {
         List<Map<String, String>> nodePageIdAndStates = new ArrayList<>();
         ProcessState processState = ProcessState.INIT;
         if ("PROCESS".equals(processType)) {
-            ProcessVo processVo = processServiceImpl.getProcessById(SessionUserUtil.getCurrentUsername(),SessionUserUtil.isAdmin(),load);
+            ProcessVo processVo = processServiceImpl.getProcessById(SessionUserUtil.getCurrentUsername(), SessionUserUtil.isAdmin(), load);
             if (null == processVo) {
                 return null;
             }
@@ -314,7 +314,7 @@ public class MxGraphCtrl {
 
     @RequestMapping("/eraseRecord")
     @ResponseBody
-    public String eraseRecord(){
+    public String eraseRecord() {
         Map<String, Object> rtnMap = new HashMap<String, Object>();
         rtnMap.put("code", 200);
         rtnMap.put("flag", true);

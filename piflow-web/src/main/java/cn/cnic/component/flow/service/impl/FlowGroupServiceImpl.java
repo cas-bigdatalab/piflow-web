@@ -489,6 +489,7 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
                     String loadXml = MxGraphUtils.mxGraphModelToMxGraphXml(mxGraphModelVo);
                     loadXml = StringUtils.isNotBlank(loadXml) ? loadXml : "";
                     rtnMap.put("XmlData", loadXml);
+                    rtnMap.put("nameContent", flowGroupName);
                     rtnMap.put("code", 200);
                     rtnMap.put("errorMsg", "Successfully modified");
                     logger.info("Successfully modified");

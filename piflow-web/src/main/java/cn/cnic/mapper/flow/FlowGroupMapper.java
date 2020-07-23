@@ -23,4 +23,12 @@ public interface FlowGroupMapper {
     })
     public FlowGroup getFlowGroupById(@Param("id") String id);
 
+    /**
+     * Query FlowGroup based on FlowGroup Id
+     *
+     * @param id
+     * @return
+     */
+    @SelectProvider(type = FlowGroupMapperProvider.class, method = "getFlowGroupById")
+    public FlowGroup getFlowGroupBaseInfoById(@Param("id") String id);
 }

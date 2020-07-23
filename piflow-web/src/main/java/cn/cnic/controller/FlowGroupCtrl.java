@@ -150,16 +150,16 @@ public class FlowGroupCtrl {
     @RequestMapping("/updateFlowNameById")
     @ResponseBody
     public String updateFlowNameById(HttpServletRequest request) {
-        String flowId = request.getParameter("flowId");
-        String flowGroupId = request.getParameter("flowGroupId");
-        String name = request.getParameter("name");
-        String pageId = request.getParameter("pageId");
         String updateType = request.getParameter("updateType");
+        String parentId = request.getParameter("parentId");
+        String currentNodeId = request.getParameter("currentNodeId");
+        String currentNodePageId = request.getParameter("currentNodePageId");
+        String name = request.getParameter("name");
         String username = SessionUserUtil.getCurrentUsername();
         if ("flowGroup".equals(updateType)) {
-            return flowGroupServiceImpl.updateFlowGroupNameById(username, flowId, flowGroupId, name, pageId);
+            return flowGroupServiceImpl.updateFlowGroupNameById(username, currentNodeId, parentId, name, currentNodePageId);
         }
-        return flowServiceImpl.updateFlowNameById(username, flowId, flowGroupId, name, pageId);
+        return flowServiceImpl.updateFlowNameById(username, currentNodeId, parentId, name, currentNodePageId);
     }
 
 }
