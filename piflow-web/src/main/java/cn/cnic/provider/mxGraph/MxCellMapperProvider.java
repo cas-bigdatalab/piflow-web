@@ -4,6 +4,7 @@ import cn.cnic.base.util.DateUtils;
 import cn.cnic.base.util.SqlUtils;
 import cn.cnic.component.mxGraph.model.MxCell;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.jdbc.SQL;
 
 import java.util.Date;
@@ -202,6 +203,29 @@ public class MxCellMapperProvider {
         sql.WHERE("enable_flag = 1");
         sqlStr = sql.toString();
         return sqlStr;
+    }
+
+    /**
+     * Query MxCell based on mxGraphId and pageId
+     *
+     * @param mxGraphId
+     * @param pageId
+     * @return
+     */
+    public String getMxCellByMxGraphIdAndPageId(String mxGraphId, String pageId) {
+        if (StringUtils.isBlank(mxGraphId)) {
+            return "select 0";
+        }
+        if (StringUtils.isBlank(pageId)) {
+            return "select 0";
+        }
+        SQL sql = new SQL();
+        sql.SELECT("*");
+        sql.FROM("mx_cell");
+        sql.WHERE("fk_mx_graph_id = " + SqlUtils.preventSQLInjection(mxGraphId));
+        sql.WHERE("mx_pageid = " + SqlUtils.preventSQLInjection(pageId));
+        sql.WHERE("enable_flag = 1");
+        return sql.toString();
     }
 
 

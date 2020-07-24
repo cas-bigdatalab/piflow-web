@@ -31,4 +31,10 @@ public interface FlowGroupMapper {
      */
     @SelectProvider(type = FlowGroupMapperProvider.class, method = "getFlowGroupById")
     public FlowGroup getFlowGroupBaseInfoById(@Param("id") String id);
+
+    @Select("select name from flow_group s where s.enable_flag = 1 and s.fk_flow_group_id = #{fid} and s.page_id = #{pageId}")
+    String getFlowGroupNameByPageId(@Param("fid") String fid, @Param("pageId") String pageId);
+
+    @Select("select s.id from flow_group s where s.enable_flag = 1 and s.fk_flow_group_id = #{fid} and s.page_id = #{pageId}")
+    String getFlowGroupIdByPageId(@Param("fid") String fid, @Param("pageId") String pageId);
 }

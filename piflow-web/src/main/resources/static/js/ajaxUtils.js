@@ -31,6 +31,10 @@ function ajaxRequest(param) {
     if (undefined !== param.processData) {
         processData = param.processData ? true : false;
     }
+    var contentType = "application/x-www-form-urlencoded;charset=UTF-8";
+    if (undefined !== param.contentType) {
+        contentType = param.contentType
+    }
     $.ajax({
         cache: cache,
         type: requestType,
@@ -38,6 +42,7 @@ function ajaxRequest(param) {
         url: web_header_prefix + url,
         data: requestData,
         traditional: traditional,
+        contentType: contentType,
         processData: processData,
         headers: {
             Authorization: ("Bearer " + token)
@@ -69,7 +74,7 @@ function ajaxRequest(param) {
     });
 };
 
-function getUrlParams (url) {
+function getUrlParams(url) {
     var result = new Object();
     var idx = url.lastIndexOf('?');
 

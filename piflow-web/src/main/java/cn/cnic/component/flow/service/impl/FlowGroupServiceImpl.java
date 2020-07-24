@@ -17,6 +17,7 @@ import cn.cnic.component.mxGraph.model.MxCell;
 import cn.cnic.component.mxGraph.model.MxGeometry;
 import cn.cnic.component.mxGraph.model.MxGraphModel;
 import cn.cnic.component.mxGraph.utils.MxCellUtils;
+import cn.cnic.component.mxGraph.utils.MxGraphComponentVoUtils;
 import cn.cnic.component.mxGraph.utils.MxGraphModelUtils;
 import cn.cnic.component.mxGraph.vo.MxGraphModelVo;
 import cn.cnic.component.process.model.ProcessGroup;
@@ -435,9 +436,8 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
         flowGroupById.setFlowList(flowList);
         flowGroupById = flowGroupDomain.saveOrUpdate(flowGroupById);
         MxGraphModel mxGraphModelNew = flowGroupById.getMxGraphModel();
-        MxGraphModelVo mxGraphModelVo = FlowXmlUtils.mxGraphModelPoToVo(mxGraphModelNew);
-        // Change the query'mxGraphModelVo'to'XML'
-        String loadXml = MxGraphUtils.mxGraphModelToMxGraphXml(mxGraphModelVo);
+        // Change the query'mxGraphModelNew'to'XML'
+        String loadXml = MxGraphUtils.mxGraphModelToMxGraphXml(mxGraphModelNew);
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg("success");
         rtnMap.put("xmlStr", loadXml);
         return JsonUtils.toFormatJsonNoException(rtnMap);
@@ -484,9 +484,8 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
                     mxCell.setLastUpdateDttm(new Date());
                     mxCell.setLastUpdateUser(username);
                     mxCellDomain.saveOrUpdate(mxCell);
-                    MxGraphModelVo mxGraphModelVo = FlowXmlUtils.mxGraphModelPoToVo(mxGraphModel);
-                    // Convert the mxGraphModelVo from the query to XML
-                    String loadXml = MxGraphUtils.mxGraphModelToMxGraphXml(mxGraphModelVo);
+                    // Convert the mxGraphModel from the query to XML
+                    String loadXml = MxGraphUtils.mxGraphModelToMxGraphXml(mxGraphModel);
                     loadXml = StringUtils.isNotBlank(loadXml) ? loadXml : "";
                     rtnMap.put("XmlData", loadXml);
                     rtnMap.put("nameContent", flowGroupName);
@@ -621,11 +620,11 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
         }
         //set drawingBoardType
         rtnMap.put("drawingBoardType", "GROUP");
+        rtnMap.put("mxGraphComponentList", MxGraphComponentVoUtils.InitDefaultGroupMxGraphComponentList());
 
         MxGraphModel mxGraphModel = flowGroupById.getMxGraphModel();
-        MxGraphModelVo mxGraphModelVo = FlowXmlUtils.mxGraphModelPoToVo(mxGraphModel);
-        // Change the query'mxGraphModelVo'to'XML'
-        String loadXml = MxGraphUtils.mxGraphModelToMxGraphXml(mxGraphModelVo);
+        // Change the query'mxGraphModel'to'XML'
+        String loadXml = MxGraphUtils.mxGraphModelToMxGraphXml(mxGraphModel);
         rtnMap.put("xmlDate", loadXml);
         rtnMap.put("load", load);
         rtnMap.put("isExample", (null == flowGroupById.getIsExample() ? false : flowGroupById.getIsExample()));

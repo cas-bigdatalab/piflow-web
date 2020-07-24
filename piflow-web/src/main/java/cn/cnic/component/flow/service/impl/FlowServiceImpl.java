@@ -26,10 +26,7 @@ import cn.cnic.domain.flow.FlowDomain;
 import cn.cnic.domain.flow.FlowGroupDomain;
 import cn.cnic.domain.mxGraph.MxCellDomain;
 import cn.cnic.domain.process.ProcessDomain;
-import cn.cnic.mapper.flow.FlowMapper;
-import cn.cnic.mapper.flow.PathsMapper;
-import cn.cnic.mapper.flow.PropertyMapper;
-import cn.cnic.mapper.flow.StopsMapper;
+import cn.cnic.mapper.flow.*;
 import cn.cnic.mapper.mxGraph.MxCellMapper;
 import cn.cnic.mapper.mxGraph.MxGeometryMapper;
 import cn.cnic.mapper.mxGraph.MxGraphModelMapper;
@@ -78,6 +75,9 @@ public class FlowServiceImpl implements IFlowService {
 
     @Resource
     private ProcessMapper processMapper;
+
+    @Resource
+    private FlowGroupMapper flowGroupMapper;
 
     @Resource
     private ProcessDomain processDomain;
@@ -438,7 +438,7 @@ public class FlowServiceImpl implements IFlowService {
 
     @Override
     @Transactional
-    public String updateFlowBaseInfo(String username, FlowVo flowVo) {
+    public String updateFlowBaseInfo(String username, String fId, FlowVo flowVo) {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
         }
@@ -448,6 +448,9 @@ public class FlowServiceImpl implements IFlowService {
         Flow flowById = flowDomain.getFlowById(flowVo.getId());
         if (null == flowById) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Database save failed");
+        }
+        if(StringUtils.isNotBlank(flowVo.getName())){
+            flowById.setName(flowVo.getName());
         }
         flowById.setDescription(flowVo.getDescription());
         flowById.setDriverMemory(flowVo.getDriverMemory());
@@ -462,6 +465,28 @@ public class FlowServiceImpl implements IFlowService {
         rtnMap.put("flowVo", flowVo);
         rtnMap.put("errorMsg", "successfully saved");
         logger.info("The 'Flow' attribute was successfully modified.");
+        FlowGroup flowGroup = flowGroupMapper.getFlowGroupById(fId);
+        if (null == flowGroup) {
+            return JsonUtils.toJsonNoException(rtnMap);
+        }
+        MxGraphModel mxGraphModel = flowGroup.getMxGraphModel();
+        if (null == mxGraphModel) {
+            return JsonUtils.toJsonNoException(rtnMap);
+        }
+        MxCell meCellByMxGraphIdAndPageId = mxCellMapper.getMxCellByMxGraphIdAndPageId(mxGraphModel.getId(), flowVo.getPageId());
+        if (null == meCellByMxGraphIdAndPageId) {
+            return JsonUtils.toJsonNoException(rtnMap);
+        }
+        meCellByMxGraphIdAndPageId.setValue(flowVo.getName());
+        int i = mxCellMapper.updateMxCell(meCellByMxGraphIdAndPageId);
+        if (i <= 0) {
+            return JsonUtils.toJsonNoException(rtnMap);
+        }
+        MxGraphModel mxGraphModelById = mxGraphModelMapper.getMxGraphModelById(mxGraphModel.getId());
+        // Convert the mxGraphModelById from the query to XML
+        String loadXml = MxGraphUtils.mxGraphModelToMxGraphXml(mxGraphModelById);
+        loadXml = StringUtils.isNotBlank(loadXml) ? loadXml : "";
+        rtnMap.put("XmlData", loadXml);
         return JsonUtils.toJsonNoException(rtnMap);
     }
 
@@ -506,9 +531,8 @@ public class FlowServiceImpl implements IFlowService {
                 mxCell.setLastUpdateDttm(new Date());
                 mxCell.setLastUpdateUser(username);
                 mxCellDomain.saveOrUpdate(mxCell);
-                MxGraphModelVo mxGraphModelVo = FlowXmlUtils.mxGraphModelPoToVo(mxGraphModel);
-                // Convert the mxGraphModelVo from the query to XML
-                String loadXml = MxGraphUtils.mxGraphModelToMxGraphXml(mxGraphModelVo);
+                // Convert the mxGraphModel from the query to XML
+                String loadXml = MxGraphUtils.mxGraphModelToMxGraphXml(mxGraphModel);
                 loadXml = StringUtils.isNotBlank(loadXml) ? loadXml : "";
                 rtnMap.put("XmlData", loadXml);
                 rtnMap.put("nameContent", flowName);
@@ -576,11 +600,8 @@ public class FlowServiceImpl implements IFlowService {
         //'maxStopPageId'defaults to 2 if it's empty, otherwise'maxStopPageId'+1
         maxStopPageId = StringUtils.isBlank(maxStopPageId) ? "2" : (Integer.parseInt(maxStopPageId) + 1) + "";
         rtnMap.put("maxStopPageId", maxStopPageId);
-        MxGraphModelVo mxGraphModelVo = null;
-        MxGraphModel mxGraphModel = flowById.getMxGraphModel();
-        mxGraphModelVo = FlowXmlUtils.mxGraphModelPoToVo(mxGraphModel);
         // Change the query'mxGraphModelVo'to'XML'
-        String loadXml = MxGraphUtils.mxGraphModelToMxGraphXml(mxGraphModelVo);
+        String loadXml = MxGraphUtils.mxGraphModelToMxGraphXml(flowById.getMxGraphModel());
         rtnMap.put("xmlDate", loadXml);
         rtnMap.put("load", load);
         rtnMap.put("isExample", (null == flowById.getIsExample() ? false : flowById.getIsExample()));

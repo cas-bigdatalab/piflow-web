@@ -70,6 +70,28 @@ public interface MxCellMapper {
     })
     public MxCell getMeCellById(String id);
 
+    /**
+     * Query MxCell based on mxGraphId and pageId
+     *
+     * @param mxGraphId
+     * @param pageId
+     * @return
+     */
+    @SelectProvider(type = MxCellMapperProvider.class, method = "getMxCellByMxGraphIdAndPageId")
+    @Results({
+            @Result(column = "ID", property = "id"),
+            @Result(column = "MX_PAGEID", property = "pageId"),
+            @Result(column = "MX_PARENT", property = "parent"),
+            @Result(column = "MX_STYLE", property = "style"),
+            @Result(column = "MX_EDGE", property = "edge"),
+            @Result(column = "MX_SOURCE", property = "source"),
+            @Result(column = "MX_TARGET", property = "target"),
+            @Result(column = "MX_VALUE", property = "value"),
+            @Result(column = "MX_VERTEX", property = "vertex"),
+            @Result(column = "id", property = "mxGeometry", one = @One(select = "cn.cnic.mapper.mxGraph.MxGeometryMapper.getMxGeometryById", fetchType = FetchType.LAZY))
+    })
+    public MxCell getMxCellByMxGraphIdAndPageId(@Param("mxGraphId") String mxGraphId, @Param("pageId") String pageId);
+
 
     /**
      * Logically delete flowInfo according to flowId

@@ -242,7 +242,7 @@ public class MxGraphCtrl {
             }
             mxGraphModelVo.setRootVo(rootVo);
         }
-        String loadXml = MxGraphUtils.mxGraphModelToMxGraphXml(mxGraphModelVo);
+        String loadXml = MxGraphUtils.mxGraphModelVoToMxGraphXml(mxGraphModelVo);
         model.addAttribute("xmlDate", loadXml);
         model.addAttribute("load", load);
         model.addAttribute("nodeArr", nodePageIdAndStates);

@@ -119,9 +119,9 @@ public class FlowCtrl {
 
     @RequestMapping("/updateFlowBaseInfo")
     @ResponseBody
-    public String updateFlowBaseInfo(FlowVo flowVo) {
+    public String updateFlowBaseInfo(String fId, FlowVo flowVo) {
         String username = SessionUserUtil.getCurrentUsername();
-        return flowServiceImpl.updateFlowBaseInfo(username, flowVo);
+        return flowServiceImpl.updateFlowBaseInfo(username, fId, flowVo);
     }
 
 }

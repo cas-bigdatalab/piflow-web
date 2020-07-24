@@ -78,7 +78,7 @@ public interface IFlowService {
      */
     public String runFlow(String username, boolean isAdmin, String flowId, String runMode);
 
-    public String updateFlowBaseInfo(String username, FlowVo flowVo);
+    public String updateFlowBaseInfo(String username, String fId, FlowVo flowVo);
 
     public String updateFlowNameById(String username, String id, String flowGroupId, String flowName, String pageId);
 

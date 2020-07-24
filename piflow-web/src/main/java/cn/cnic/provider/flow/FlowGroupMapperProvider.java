@@ -15,7 +15,7 @@ public class FlowGroupMapperProvider {
         String sqlStr = "";
         if (StringUtils.isNotBlank(id)) {
             StringBuffer strBuf = new StringBuffer();
-            strBuf.append("select* ");
+            strBuf.append("select * ");
             strBuf.append("from flow_group ");
             strBuf.append("where enable_flag = 1 ");
             strBuf.append("and id = " + SqlUtils.preventSQLInjection(id) + " ");

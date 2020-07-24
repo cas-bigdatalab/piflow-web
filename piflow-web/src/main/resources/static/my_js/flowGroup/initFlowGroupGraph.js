@@ -77,6 +77,8 @@ function add(addParamData, flowId, nodeType) {
 }
 
 function cancelFlow() {
+    $("#input_node_flow_id").val("");
+    $("#input_node_pageId").val("");
     graphGlobal.removeCells(removegroupPaths);
     layer.closeAll()
 }
@@ -101,215 +103,7 @@ function checkGroupInput(flowName) {
     return true;
 };
 
-function saveOrUpdateFlowGroup() {
-    if (flowGroupdata == undefined) {
-        alert("Please click the close button and drag it again to create")
-        return
-    }
-    var id = $("#flowGroupId").val();
-    var flowGroupName = $("#flowGroupName").val();
-    var description = $("#description1").val();
-    if (!checkGroupInput(flowGroupName)) {
-        // layer.closeAll()
-        // layer.msg('flowName Can not be empty', {icon: 2, shade: 0, time: 2000});
-        alert("flowName Can not be empty")
-    } else {
-        // if (flowGroupdata == undefined || "") {
-        //     layer.closeAll()
-        //     layer.msg("Network Anomaly", {icon: 5})
-        // } else {
-        var requestDataParam = {
-            flowGroupId: loadId,
-            flowId: flowGroupdata.id,
-            pageId: flowGroupdata.pageId,
-            updateType: "flowGroup",
-            name: flowGroupName
-        };
-        var msgtrue = false
-        ajaxRequest({
-            cache: true,
-            type: "POST",
-            url: Format.customizeTypeAttr.updateNameUrl,
-            data: requestDataParam,
-            async: true,
-            traditional: true,
-            error: function (request) {
-                console.log("attribute update error");
-                return;
-            },
-            success: function (data) {
-                var dataMap = JSON.parse(data);
-                if (200 === dataMap.code) {
-                    //reload xml
-                    var xml = mxUtils.parseXml(dataMap.XmlData);
-                    var node = xml.documentElement;
-                    var dec = new mxCodec(node.ownerDocument);
-                    dec.decode(node, graphGlobal.getModel());
-                    $("#customizeBasic_td_1_2_input2_id").val(flowGroupName);
-                    layer.closeAll()
-                    msgtrue = true
-                    layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
-                        // findBasicInfo(results);
-                    });
-
-                } else {
-                    // layer.closeAll()
-                    layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000}, function () {
-                    });
-                    alert(dataMap.errorMsg)
-                    msgtrue = false
-                }
-                ajaxRequest({
-                    cache: true,
-                    type: "POST",
-                    url: "/flowGroup/updateFlowGroupBaseInfo",
-                    data: {
-                        id: flowGroupdata.id,
-                        description: description,
-                        name: flowGroupName
-                    },
-                    async: true,
-                    traditional: true,
-                    error: function (request) {
-                        console.log("attribute update error");
-                        return;
-                    },
-                    success: function (data) {
-                        var dataMap = JSON.parse(data);
-                        if (200 === dataMap.code) {
-                            var flowGroupVo = dataMap.flowGroupVo;
-                            // descriptionObj.val(flowGroupVo.description)
-                            //baseInfo
-                            $('#customizeBasic_td_2_2_span_id').text(flowGroupVo.description);
-                        } else {
-                            layer.msg('', {icon: 2, shade: 0, time: 2000}, function () {
-                            });
-                        }
-                        if (msgtrue) {
-                            layer.closeAll();
-                        }
-
-                        console.log("attribute update success");
-                    }
-                });
-
-            }
-        });
-
-
-    }
-
-}
-
 //弹框------------------end---------------------------
-
-//flow Information popup-----
-function saveFlow() {
-
-    if (flowdatas == undefined) {
-        alert("Please click the close button and drag it again to create")
-        return
-    }
-    // queryFlowOrFlowGroupProperty(flowsPagesId)
-    var flowName = $("#flowName").val();
-    var description = $("#description").val();
-    var driverMemory = $("#driverMemory").val();
-    var executorNumber = $("#executorNumber").val();
-    var executorMemory = $("#executorMemory").val();
-    var executorCores = $("#executorCores").val();
-    if (!checkFlowInput(flowName, description, driverMemory, executorNumber, executorMemory, executorCores)) {
-        // layer.closeAll()
-        // layer.msg('flowName Can not be empty', {icon: 2, shade: 0, time: 2000});
-        alert("flowName Can not be empty")
-    } else {
-        // if (flowdatas == undefined || "") {
-        //     layer.closeAll()
-        //     layer.msg("Network Anomaly", {icon: 5})
-        // } else {
-
-        var requestDataParam = {
-            flowGroupId: loadId,
-            flowId: flowdatas.id,
-            pageId: flowdatas.pageId,
-            updateType: "flow",
-            name: flowName
-        };
-        ajaxRequest({
-            cache: true,
-            type: "POST",
-            url: Format.customizeTypeAttr.updateNameUrl,
-            data: requestDataParam,
-            async: true,
-            traditional: true,
-            error: function (request) {
-                console.log("attribute update error");
-                return;
-            },
-            success: function (data) {
-                var dataMap = JSON.parse(data);
-                var msgtrue = false
-                if (200 === dataMap.code) {
-                    //reload xml
-                    var xml = mxUtils.parseXml(dataMap.XmlData);
-                    var node = xml.documentElement;
-                    var dec = new mxCodec(node.ownerDocument);
-                    dec.decode(node, graphGlobal.getModel());
-                    $("#customizeBasic_td_1_2_input2_id").val(flowName);
-                    layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
-                        // findBasicInfo(results);
-                    });
-                    layer.closeAll()
-                } else {
-                    // layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000}, function () {
-                    // });
-                    alert(dataMap.errorMsg)
-                    msgtrue = false
-
-                }
-
-                ajaxRequest({
-                    cache: true,
-                    type: "POST",
-                    url: "/flow/updateFlowBaseInfo",
-                    data: {
-                        id: flowdatas.id,
-                        driverMemory: driverMemory,
-                        executorCores: executorCores,
-                        executorMemory: executorMemory,
-                        executorNumber: executorNumber,
-                        description: description
-                    },
-                    async: true,
-                    traditional: true,
-                    error: function (request) {
-                        console.log("attribute update error");
-                        return;
-                    },
-                    success: function (data) {
-                        var dataMap = JSON.parse(data);
-                        if (200 === dataMap.code) {
-                            var flowVo = dataMap.flowVo;
-                            //baseInfo
-                            $('#customizeBasic_td_2_2_span_id').text(flowVo.description);
-                            $('#customizeBasic_td_3_2_label_id').text(flowVo.driverMemory);
-                            $('#customizeBasic_td_4_2_label_id').text(flowVo.executorCores);
-                            $('#customizeBasic_td_5_2_label_id').text(flowVo.executorMemory);
-                            $('#customizeBasic_td_6_2_label_id').text(flowVo.executorNumber);
-                        } else {
-                            layer.msg('', {icon: 2, shade: 0, time: 2000}, function () {
-                            });
-                        }
-                        console.log("attribute update success");
-                        if (msgtrue) {
-                            layer.closeAll('page');
-                        }
-                    }
-                });
-
-            }
-        });
-    }
-};
 
 function checkFlowInput(flowName, description, driverMemory, executorNumber, executorMemory, executorCores) {
     if (flowName == '') {
@@ -909,58 +703,6 @@ function getRunningProcessList() {
     });
 }
 
-function getRouterAllPaths(customPropertyId) {
-    ajaxRequest({
-        type: "POST",//Request type post
-        url: "/stops/getRouterStopsCustomizedProperty",//This is the name of the file where I receive data in the background.
-        data: {customPropertyId: customPropertyId},
-        error: function (request) {//Operation after request failure
-            return;
-        },
-        success: function (data) {//Operation after request successful
-            var dataMap = JSON.parse(data);
-            //console.log(dataMap);
-            if (200 === dataMap.code) {
-                if (dataMap.pathsVoList) {
-                    var showPathsHtml = '<span>Deleting this rule will affect the following:</span>';
-                    layer.confirm(showPathsHtml, {icon: 1, shade: 0, time: 1000}, function () {
-                    });
-                } else {
-                    //removeRouterStopCustomProperty(customPropertyId);
-                    console.log("failed");
-                }
-            } else {
-                layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000}, function () {
-                });
-            }
-        }
-    });
-}
-
-function removeRouterStopCustomProperty(customPropertyId) {
-    ajaxRequest({
-        type: "POST",//Request type post
-        url: "/stops/deleteRouterStopsCustomizedProperty",//This is the name of the file where I receive data in the background.
-        data: {customPropertyId: customPropertyId},
-        error: function (request) {//Operation after request failure
-            return;
-        },
-        success: function (data) {//Operation after request successful
-            var dataMap = JSON.parse(data);
-            //console.log(dataMap);
-            if (200 === dataMap.code) {
-                layer.msg("add success", {icon: 1, shade: 0, time: 1000}, function () {
-                    layer.closeAll();
-                    queryStopsProperty(stopPageId);
-                });
-            } else {
-                layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000}, function () {
-                });
-            }
-        }
-    });
-}
-
 function layuiOpenWindowDivFunc(title, contentHtml) {
     layer.open({
         type: 1,
@@ -1041,47 +783,22 @@ function initFlowGroupDrawingBoardData(loadId, parentAccessPath) {
                 xmlDate = dataMap.xmlDate;
                 maxStopPageId = dataMap.maxStopPageId;
                 isExample = dataMap.isExample;
-                if (dataMap.groupsVoList) {
-                    if (dataMap.groupsVoList && dataMap.groupsVoList.length > 0) {
-                        for (var i = 0; i < dataMap.groupsVoList.length; i++) {
-                            var groupsVoList_i = dataMap.groupsVoList[i];
-                            if (groupsVoList_i && '' !== groupsVoList_i) {
-                                Sidebar.prototype.component_data.push({
-                                    component_name: groupsVoList_i.groupName,
-                                    component_group: groupsVoList_i.stopsTemplateVoList,
-                                    component_prefix: (web_header_prefix + "/images/"),
-                                    addImagePaletteId: 'clipart'
-                                });
-                            }
-                        }
-                    }
+                if (dataMap.mxGraphComponentList) {
+                    Sidebar.prototype.component_data = dataMap.mxGraphComponentList
                 }
             } else {
-                //window.location.href = (web_header_prefix + "/error/404");
+                window.location.href = (web_header_prefix + "/error/404");
             }
             $('#fullScreen').hide();
         },
         error: function (request) {//Operation after request failure
-            //window.location.href = (web_header_prefix + "/error/404");
+            window.location.href = (web_header_prefix + "/error/404");
             return;
         }
     });
 }
 
 function initGraph() {
-    if (null != flowGroupData && flowGroupData.length > 0) {
-        for (var i = 0; i < flowGroupData.length; i++) {
-            var flowGroupData_i = flowGroupData[i];
-            if (flowGroupData_i && '' !== flowGroupData_i) {
-                Sidebar.prototype.component_data.push({
-                    component_name: flowGroupData_i.groupName,
-                    component_group: flowGroupData_i.dataList,
-                    component_prefix: "/piflow-web/img/",
-                    addImagePaletteId: "general"
-                });
-            }
-        }
-    }
     Format.prototype.isShowTextCell = true;
     Menus.prototype.customRightMenu = ['runAll'];
     Menus.prototype.customCellRightMenu = ['run'];
@@ -1215,6 +932,17 @@ function eraseRecord() {
     thisEditor.setModified(false);
 }
 
+function selectCellByPageId(pageId, isClick) {
+    if (!pageId) {
+        return;
+    }
+    var s_cell = graphGlobal.getModel().getCell(pageId);
+    graphGlobal.addSelectionCell(s_cell);
+    if (isClick) {
+        mxEventClickFunc(s_cell, true);
+    }
+}
+
 //load xml file
 function loadXml(loadStr) {
     var xml = mxUtils.parseXml(loadStr);
@@ -1268,15 +996,10 @@ function addMxCellOperation(evt) {
             cache: true,//Keep cached data
             type: "POST",//Request type post
             url: "/mxGraph/addMxCellAndData",
-            data: {
+            data: JSON.stringify({
                 mxCellVoList: mxCellArrayAdd,
                 loadId: loadId
-            },
-            // data: JSON.stringify({
-            //     mxCellVoList: mxCellArrayAdd,
-            //     loadId: loadId
-            // }),
-            //contentType: 'application/x-www-form-urlencoded;charset=UTF-8',
+            }),
             contentType: 'application/json;charset=utf-8',
             async: true,//Synchronous Asynchronous
             error: function (request) {//Operation after request failure
@@ -1288,19 +1011,23 @@ function addMxCellOperation(evt) {
             },
             success: function (data) {//After the request is successful
                 var dataMap = JSON.parse(data);
+                console.log(dataMap);
                 if (200 === dataMap.code) {
-                    //console.log(operType + " save success");
-                    console.log("Add save success");
-                    if (statusgroup == "group") {
-                        openNewFlowGroupWindow();
-                    } else if (statusgroup == "flow") {
-                        openNewFlowWindow();
-                    } else {
-                        if (graphGlobal.isEnabled()) {
-                            graphGlobal.startEditingAtCell();
+                    var addNodeIdAndPageIdList = dataMap.addNodeIdAndPageIdList;
+                    var flagA = true;
+                    if (addNodeIdAndPageIdList && addNodeIdAndPageIdList.length === 1) {
+                        var addNodeIdAndPageId = addNodeIdAndPageIdList[0];
+                        if ("flow" === addNodeIdAndPageId.type) {
+                            openNewFlowWindow(addNodeIdAndPageId.id, addNodeIdAndPageId.pageId);
+                        } else if ("flowGroup" === addNodeIdAndPageId.type) {
+                            openNewFlowGroupWindow(addNodeIdAndPageId.id, addNodeIdAndPageId.pageId);
                         }
                     }
+                    if (flagA && graphGlobal.isEnabled()) {
+                        graphGlobal.startEditingAtCell();
+                    }
                     thisEditor.setModified(false);
+                    console.log("Add save success");
                 } else {
                     layer.msg("Add save fail", {icon: 2, shade: 0, time: 2000}, function () {
                     });
@@ -1457,7 +1184,7 @@ function saveXml(paths, operType) {
                     $("#buttonGroup").attr("onclick", "saveOrUpdateFlowGroup()");
                     $("#flowGroupId").val("");
                     $("#flowGroupName").val("");
-                    $("#description1").val("");
+                    $("#flowGroup_description").val("");
                     layer.open({
                         type: 1,
                         title: '<span style="color: #269252;">create flow group</span>',
@@ -1467,7 +1194,7 @@ function saveXml(paths, operType) {
                         shift: 7,
                         area: ['580px', '520px'], //Width height
                         skin: 'layui-layer-rim', //Add borders
-                        content: $("#SubmitPage"),
+                        content: $("#flowGroup_SubmitPage"),
                         success: function () {
                             $(".layui-layer-page").css("z-index", "1998910151");
 
@@ -1524,7 +1251,7 @@ function saveXml(paths, operType) {
                         shift: 7,
                         area: ['580px', '520px'], //Width height
                         skin: 'layui-layer-rim', //Add borders
-                        content: $("#SubmitPageFlow"),
+                        content: $("#flow_SubmitPage"),
                         success: function () {
                             queryFlowOrFlowGroupProperty(flowsPagesId)
 
@@ -1580,9 +1307,9 @@ function saveXml(paths, operType) {
     });
 }
 
-function openNewFlowWindow() {
-    var time, time1;
-    $("#flowId").val("");
+function openNewFlowWindow(id, pageId) {
+    $("#input_node_flow_id").val(id);
+    $("#input_node_flow_pageId").val(pageId);
     $("#flowName").val("");
     $("#description").val("");
     $("#driverMemory").val('1g');
@@ -1594,96 +1321,29 @@ function openNewFlowWindow() {
         title: '<span style="color: #269252;">Create Flow</span>',
         shadeClose: false,
         shade: 0.3,
-        closeBtn: 1,
+        closeBtn: 0,
         shift: 7,
         area: ['580px', '520px'], //Width height
         skin: 'layui-layer-rim', //Add borders
-        content: $("#SubmitPageFlow"),
-        success: function () {
-            queryFlowOrFlowGroupProperty(flowsPagesId)
-
-
-            setTimeout(() => {
-                if (flowdatas == undefined) {
-                    var index2 = 0
-                    clearInterval(time)
-                    clearInterval(time1)
-                    time1 = setInterval(() => {
-                        if (index2 < 4) {
-                            queryFlowOrFlowGroupProperty(flowsPagesId)
-                            index2++
-                        } else if (index2 >= 4) {
-                            // layer.msg("Network Anomaly", {icon: 5})
-                            alert("Network Anomaly")
-                            clearInterval(time1)
-                            index2 = 0
-                        } else {
-                            clearInterval(time)
-                            clearInterval(time1)
-                        }
-                    }, 300)
-                }
-            }, 500)
-        },
-
-        cancel: function (index, layero) {
-            graphGlobal.removeCells(removegroupPaths);
-            getRunningProcessList()
-            layer.close(index)
-            return false;
-        }
+        content: $("#flow_SubmitPage")
     });
 }
 
-function openNewFlowGroupWindow() {
-    var time, time1;
-    $("#flowGroupId").val("");
+function openNewFlowGroupWindow(id, pageId) {
+    $("#input_node_flowGroup_id").val(id);
+    $("#input_node_flowGroup_pageId").val(pageId);
     $("#flowGroupName").val("");
-    $("#description1").val("");
+    $("#flowGroup_description").val("");
     layer.open({
         type: 1,
         title: '<span style="color: #269252;">create flow group</span>',
         shadeClose: false,
         shade: 0.3,
-        closeBtn: 1,
+        closeBtn: 0,
         shift: 7,
         area: ['580px', '520px'], //Width height
         skin: 'layui-layer-rim', //Add borders
-        content: $("#SubmitPage"),
-        success: function () {
-            $(".layui-layer-page").css("z-index", "1998910151");
-
-            queryFlowOrFlowGroupProperty(flowsPagesId);
-
-            setTimeout(() => {
-                if (flowGroupdata == undefined) {
-                    var index2 = 0
-                    clearInterval(time)
-                    clearInterval(time1)
-                    time1 = setInterval(() => {
-                        if (index2 < 4) {
-                            queryFlowOrFlowGroupProperty(flowsPagesId)
-                            index2++
-                        } else if (index2 >= 4) {
-                            // layer.msg("Network Anomaly", {icon: 5})
-                            alert("Network Anomaly")
-                            clearInterval(time1)
-                            index2 = 0
-                        } else {
-                            clearInterval(time)
-                            clearInterval(time1)
-                        }
-                    }, 300)
-                }
-            }, 500)
-
-        },
-        cancel: function (index, layero) {
-            graphGlobal.removeCells(removegroupPaths);
-            layer.close(index)
-
-            return false;
-        }
+        content: $("#flowGroup_SubmitPage")
     });
 }
 
@@ -1956,8 +1616,7 @@ function updateFlowGroupCellsNameById(selectNodesType) {
                 //reload xml
                 loadXml(dataMap.XmlData);
 
-                var s_cell = graphGlobal.getModel().getCell(requestDataParam.currentNodePageId);
-                graphGlobal.addSelectionCell(s_cell);
+                selectCellByPageId(requestDataParam.currentNodePageId, false);
                 layer.msg("attribute update success", {icon: 1, shade: 0, time: 2000}, function () {
                 });
                 if ('flow' === selectNodesType) {
@@ -2144,5 +1803,165 @@ function updateFlowGroupAttributes(flowGroupId, propertyId, updateContentId, e) 
             console.log("attribute update success");
         }
     });
+}
+
+//flow Information popup-----
+function saveFlow() {
+    var currentId = $("#input_node_flow_id").val();
+    var currentPageId = $("#input_node_flow_pageId").val();
+    if (!currentId && !currentPageId) {
+        alert("Please click the close button and drag it again to create");
+        return
+    }
+    var flowName = $("#flowName").val();
+    var description = $("#description").val();
+    var driverMemory = $("#driverMemory").val();
+    var executorNumber = $("#executorNumber").val();
+    var executorMemory = $("#executorMemory").val();
+    var executorCores = $("#executorCores").val();
+    if (!checkFlowInput(flowName, description, driverMemory, executorNumber, executorMemory, executorCores)) {
+        // layer.closeAll()
+        // layer.msg('flowName Can not be empty', {icon: 2, shade: 0, time: 2000});
+        alert("flowName Can not be empty")
+    } else {
+        ajaxRequest({
+            cache: true,
+            type: "POST",
+            url: "/flow/updateFlowBaseInfo",
+            data: {
+                fId: loadId,
+                id: currentId,
+                pageId: currentPageId,
+                name: flowName,
+                driverMemory: driverMemory,
+                executorCores: executorCores,
+                executorMemory: executorMemory,
+                executorNumber: executorNumber,
+                description: description
+            },
+            async: true,
+            traditional: true,
+            error: function (request) {
+                console.log("attribute update error");
+                return;
+            },
+            success: function (data) {
+                var dataMap = JSON.parse(data);
+                var msgtrue = false
+                if (200 === dataMap.code) {
+                    $("#input_node_flow_id").val("");
+                    $("#input_node_flow_pageId").val("");
+
+                    //reload xml
+                    var xml = mxUtils.parseXml(dataMap.XmlData);
+                    loadXml(dataMap.XmlData);
+                    layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
+                        selectCellByPageId(currentPageId, true);
+                        queryFlowOrFlowGroupProperty(currentPageId, loadId);
+                        layer.closeAll();
+                    });
+                } else {
+                    layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000}, function () {
+                    });
+                }
+            }
+        });
+    }
+};
+
+//flowGroup Information popup-----
+function saveOrUpdateFlowGroup() {
+    var currentId = $("#input_node_flowGroup_id").val();
+    var currentPageId = $("#input_node_flowGroup_pageId").val();
+    if (!currentId && !currentPageId) {
+        alert("Please click the close button and drag it again to create")
+        return
+    }
+    var flowGroupName = $("#flowGroupName").val();
+    var description = $("#flowGroup_description").val();
+    if (!checkGroupInput(flowGroupName)) {
+        layer.msg('flowName Can not be empty', {icon: 2, shade: 0, time: 2000});
+    } else {
+        var requestDataParam = {
+            flowGroupId: loadId,
+            flowId: flowGroupdata.id,
+            pageId: flowGroupdata.pageId,
+            updateType: "flowGroup",
+            name: flowGroupName
+        };
+        var msgtrue = false
+        ajaxRequest({
+            cache: true,
+            type: "POST",
+            url: Format.customizeTypeAttr.updateNameUrl,
+            data: requestDataParam,
+            async: true,
+            traditional: true,
+            error: function (request) {
+                console.log("attribute update error");
+                return;
+            },
+            success: function (data) {
+                var dataMap = JSON.parse(data);
+                if (200 === dataMap.code) {
+                    //reload xml
+                    var xml = mxUtils.parseXml(dataMap.XmlData);
+                    var node = xml.documentElement;
+                    var dec = new mxCodec(node.ownerDocument);
+                    dec.decode(node, graphGlobal.getModel());
+                    $("#customizeBasic_td_1_2_input2_id").val(flowGroupName);
+                    layer.closeAll()
+                    msgtrue = true
+                    layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
+                        // findBasicInfo(results);
+                    });
+
+                } else {
+                    // layer.closeAll()
+                    layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000}, function () {
+                    });
+                    alert(dataMap.errorMsg)
+                    msgtrue = false
+                }
+                ajaxRequest({
+                    cache: true,
+                    type: "POST",
+                    url: "/flowGroup/updateFlowGroupBaseInfo",
+                    data: {
+                        id: flowGroupdata.id,
+                        description: description,
+                        name: flowGroupName
+                    },
+                    async: true,
+                    traditional: true,
+                    error: function (request) {
+                        console.log("attribute update error");
+                        return;
+                    },
+                    success: function (data) {
+                        var dataMap = JSON.parse(data);
+                        if (200 === dataMap.code) {
+                            var flowGroupVo = dataMap.flowGroupVo;
+                            // descriptionObj.val(flowGroupVo.description)
+                            //baseInfo
+                            $('#customizeBasic_td_2_2_span_id').text(flowGroupVo.description);
+                        } else {
+                            layer.msg('', {icon: 2, shade: 0, time: 2000}, function () {
+                            });
+                        }
+                        if (msgtrue) {
+                            layer.closeAll();
+                        }
+
+                        console.log("attribute update success");
+                    }
+                });
+
+            }
+        });
+
+
+    }
+
 }
 

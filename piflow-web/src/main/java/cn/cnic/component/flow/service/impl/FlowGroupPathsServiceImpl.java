@@ -7,6 +7,7 @@ import cn.cnic.component.flow.model.FlowGroupPaths;
 import cn.cnic.component.flow.service.IFlowGroupPathsService;
 import cn.cnic.component.flow.vo.FlowGroupPathsVo;
 import cn.cnic.component.flow.vo.FlowGroupVo;
+import cn.cnic.mapper.flow.FlowGroupMapper;
 import cn.cnic.mapper.flow.FlowGroupPathsMapper;
 import cn.cnic.mapper.flow.FlowMapper;
 import org.apache.commons.lang3.StringUtils;
@@ -29,6 +30,8 @@ public class FlowGroupPathsServiceImpl implements IFlowGroupPathsService {
 
     @Resource
     private FlowGroupPathsMapper flowGroupPathsMapper;
+    @Resource
+    private FlowGroupMapper flowGroupMapper;
     @Resource
     private FlowMapper flowMapper;
 
@@ -55,11 +58,11 @@ public class FlowGroupPathsServiceImpl implements IFlowGroupPathsService {
         if (StringUtils.isNotBlank(flowGroupPaths.getFrom()) && StringUtils.isNotBlank(flowGroupPaths.getTo())) {
             fromName = flowMapper.getFlowNameByPageId(flowGroupId, flowGroupPaths.getFrom());
             if (StringUtils.isBlank(fromName)) {
-                fromName = flowMapper.getFlowGroupNameByPageId(flowGroupId, flowGroupPaths.getFrom());
+                fromName = flowGroupMapper.getFlowGroupNameByPageId(flowGroupId, flowGroupPaths.getFrom());
             }
             toName = flowMapper.getFlowNameByPageId(flowGroupId, flowGroupPaths.getTo());
             if (StringUtils.isBlank(toName)) {
-                toName = flowMapper.getFlowGroupNameByPageId(flowGroupId, flowGroupPaths.getTo());
+                toName = flowGroupMapper.getFlowGroupNameByPageId(flowGroupId, flowGroupPaths.getTo());
             }
         }
         FlowGroupPathsVo flowGroupPathsVo = new FlowGroupPathsVo();

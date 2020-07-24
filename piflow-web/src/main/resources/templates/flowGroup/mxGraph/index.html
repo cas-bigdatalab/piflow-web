@@ -282,9 +282,11 @@
     </form>
 </div>
 
-<div style="display: none;" id="SubmitPage">
+<div style="display: none;" id="flowGroup_SubmitPage">
     <br>
     <form class="layui-form" action="" style="position: relative">
+        <input id="input_node_flowGroup_id" type="hidden" />
+        <input id="input_node_flowGroup_pageId" type="hidden"/>
         <div class="layui-form-item">
             <label class="layui-form-label">flowGroupName</label>
             <div class="layui-input-block">
@@ -297,7 +299,7 @@
         <div class="layui-form-item layui-form-text">
             <label class="layui-form-label">description</label>
             <div class="layui-input-block">
-                <textarea id="description1" placeholder="please input description..." class="layui-textarea"
+                <textarea id="flowGroup_description" placeholder="please input description..." class="layui-textarea"
                           style="width: 400px;margin-left: 20px;"></textarea>
             </div>
         </div>
@@ -314,12 +316,13 @@
     </form>
 </div>
 
-<div style="display: none;" id="SubmitPageFlow">
+<div style="display: none;" id="flow_SubmitPage">
     <form class="layui-form" action="" style="position: relative">
+        <input id="input_node_flow_id" type="hidden" />
+        <input id="input_node_flow_pageId" type="hidden"/>
         <div class="layui-form-item">
             <label class="layui-form-label">flowName</label>
             <div class="layui-input-block">
-                <input type="hidden" id="flowId"/>
                 <input id="flowName" placeholder="please input flowName..." autocomplete="off" class="layui-input"
                        style="width: 400px;margin-left: 20px;">
             </div>

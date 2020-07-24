@@ -113,9 +113,9 @@ public class UserFlowCtrl {
 
     @RequestMapping("/updateFlowBaseInfo")
     @ResponseBody
-    public String updateFlowBaseInfo(HttpServletRequest request, FlowVo flowVo) {
+    public String updateFlowBaseInfo(HttpServletRequest request, String fId, FlowVo flowVo) {
         String username = UserUtils.getUsername(request);
-        return flowServiceImpl.updateFlowBaseInfo(username, flowVo);
+        return flowServiceImpl.updateFlowBaseInfo(username, fId, flowVo);
     }
 
     @RequestMapping("/updateFlowNameById")
@@ -143,6 +143,6 @@ public class UserFlowCtrl {
     @RequestMapping("/findFlowByGroup")
     @ResponseBody
     public String findFlowByGroup(String fId, String flowPageId) {
-        return flowGroupServiceImpl.queryIdInfo(fId,flowPageId);
+        return flowGroupServiceImpl.queryIdInfo(fId, flowPageId);
     }
 }

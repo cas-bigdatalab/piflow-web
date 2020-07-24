@@ -857,7 +857,7 @@ public class ProcessServiceImpl implements IProcessService {
             mxGraphModelVo.setRootVo(rootVo);
         }
 
-        String loadXml = MxGraphUtils.mxGraphModelToMxGraphXml(mxGraphModelVo);
+        String loadXml = MxGraphUtils.mxGraphModelVoToMxGraphXml(mxGraphModelVo);
         rtnMap.put("xmlDate", loadXml);
 
         return JsonUtils.toJsonNoException(rtnMap);
