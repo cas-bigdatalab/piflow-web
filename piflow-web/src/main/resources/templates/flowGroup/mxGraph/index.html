@@ -171,7 +171,7 @@
         <button type="button" class="btn btn-default" onclick="cancelPortAndPathNew()">Cancel</button>
     </div>
 </div>
-
+  <!-- ======================== new ======================================= -->
 <!--Initializes the drawing board-->
 <!--stop Property edit popover starts-->
 <div style="display: none;" id="updateCellsPropertyTemplate">
@@ -189,98 +189,6 @@
     </div>
 </div>
 <!--stop Property edit popover ends-->
-
-<!-- 'stop' custom attribute table start-->
-<div style="display: none;" id="customizedTableObj">
-    <div style="border-collapse: separate; border-spacing: 0px 5px; width: 100%;">
-        <div style="margin-left:10px;float: left;line-height: 34px;">Add Custom Property</div>
-        <div style="margin-right:10px;float: right;text-align: right;">
-            <a class="btn" href="javascript:openAddStopCustomAttrPage();"><i class="glyphicon glyphicon-plus"></i></a>
-        </div>
-    </div>
-    <hr>
-    <table style="border-collapse: separate; border-spacing: 0px 5px;width: 100%;">
-        <tbody>
-        <tr class="trTableStop" style="border: 1px solid #e2e2e2;">
-            <th colspan="2" style="border-bottom: 1px solid #e2e2e2; width: 85px;text-align: center;"><span>key </span>
-            </th>
-            <th colspan="2" style="border-bottom: 1px solid #e2e2e2;">Value</th>
-        </tr>
-        <tr class="trTableStop">
-            <td style="width: 60px;"></td>
-            <td style="width: 25px;"></td>
-            <td></td>
-            <td></td>
-        </tr>
-        </tbody>
-    </table>
-</div>
-<!-- 'stop' custom attribute table end -->
-
-<!-- 'stop' custom attribute add popup start -->
-<div style="display: none;" id="addStopCustomizedAttrOpenTemplate">
-    <form class="layui-form" action="" style="margin: 10px;" method="post">
-        <input id="openAddCustomizedWindowStopId" name="stopId"/>
-        <div class="layui-form-item">
-            <label class="layui-form-label">Key</label>
-            <div class="layui-input-block">
-                <input type="text"
-                       style="width: 95%;"
-                       name="name"
-                       lay-verify="required"
-                       placeholder="please input key ..."
-                       class="layui-input"/>
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">CustomValue</label>
-            <div class="layui-input-block">
-                <input type="text"
-                       style="width: 95%;"
-                       name="customValue"
-                       lay-verify="required"
-                       placeholder="please input customValue ..."
-                       class="layui-input"/>
-            </div>
-        </div>
-
-        <div class="layui-form-item">
-            <label class="layui-form-label">SDescription</label>
-            <div class="layui-input-block">
-                    <textarea name="description"
-                              style="width: 95%;"
-                              lay-verify="required"
-                              placeholder="please input description ..."
-                              class="layui-textarea"></textarea>
-            </div>
-        </div>
-        <div class="layui-form-item" style="text-align: center;margin-right: 90px;margin-top: -8px;">
-            <div class="layui-input-block">
-                <button class="layui-btn" lay-submit="" lay-filter="component-form-submit">save</button>
-            </div>
-        </div>
-    </form>
-</div>
-<!-- 'stop' custom attribute add popup end -->
-
-<!-- 'stop' custom attribute editing popup start -->
-<div style="display: none;" id="stopCustomizedAttrOpenTemplate">
-    <form class="layui-form" action="">
-        <div class="layui-form-item layui-form-text">
-            <div class="layui-input-block">
-                <textarea id="stopCustomizedAttrValueTemplate" placeholder="please input ..." class="layui-textarea"
-                          style="width: 272px;margin-left: -100px;resize:none;"></textarea>
-            </div>
-        </div>
-        <div class="layui-form-item" style="text-align: center;margin-right: 90px;margin-top: -8px;">
-            <div class="layui-input-block">
-                <button type="button" class="layui-btn layui-btn-primary" id="buttonStopCustomizedAttrTemplate">
-                    save
-                </button>
-            </div>
-        </div>
-    </form>
-</div>
 
 <div style="display: none;" id="flowGroup_SubmitPage">
     <br>
