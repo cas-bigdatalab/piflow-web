@@ -42,7 +42,7 @@
 <!-- content ends -->
 <div th:include="Macro/fragmentMacro :: fullScreen"></div>
 <script th:include="Macro/csrfTokeHeadMacro :: csrfTokeHeadMacroScript"/>
-<script th:src="@{/custom/js/dataSourceList.js}"></script>
+<script th:src="@{/my_js/dataSourceList.js}"></script>
 <script th:inline="javascript">
     initDataTablePage("testTableId", "/piflow-web/datasource/getDataSourceListPagination", "search_input_id");
     window.onload = function () {

@@ -130,8 +130,7 @@ function newScheduleWindow(id) {
             async: false,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
             error: function (request) {//Operation after request failure
                 layer.closeAll('page');
-                layer.msg('open failed ', {icon: 2, shade: 0, time: 2000}, function () {
-                });
+                layer.msg('open failed ', {icon: 2, shade: 0, time: 2000});
                 return;
             },
             success: function (data) {//Operation after request successful
@@ -156,8 +155,7 @@ function newScheduleWindow(id) {
                         content: $("#SubmitPage")
                     });
                 } else {
-                    layer.msg('open failed', {icon: 2, shade: 0, time: 2000}, function () {
-                    });
+                    layer.msg('open failed', {icon: 2, shade: 0, time: 2000});
                 }
             }
         });
@@ -224,8 +222,7 @@ function createTask() {
             async: false,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
             error: function (request) {//Operation after request failure
                 layer.closeAll('page');
-                layer.msg('creation failed ', {icon: 2, shade: 0, time: 2000}, function () {
-                });
+                layer.msg('creation failed ', {icon: 2, shade: 0, time: 2000});
                 return;
             },
             success: function (data) {//Operation after request successful
@@ -236,8 +233,7 @@ function createTask() {
                         location.reload();
                     });
                 } else {
-                    layer.msg('creation failed', {icon: 2, shade: 0, time: 2000}, function () {
-                    });
+                    layer.msg('creation failed', {icon: 2, shade: 0, time: 2000});
                 }
             }
         });
@@ -276,8 +272,7 @@ function updateSchedule() {
                         location.reload();
                     });
                 } else {
-                    layer.msg('update failed ', {icon: 2, shade: 0, time: 2000}, function () {
-                    });
+                    layer.msg('update failed ', {icon: 2, shade: 0, time: 2000});
                 }
             }
         });
@@ -381,8 +376,7 @@ function deleteTask(id, name) {
                         location.reload();
                     });
                 } else {
-                    layer.msg('Delete failed', {icon: 2, shade: 0, time: 2000}, function () {
-                    });
+                    layer.msg('Delete failed', {icon: 2, shade: 0, time: 2000});
                 }
             }
         });

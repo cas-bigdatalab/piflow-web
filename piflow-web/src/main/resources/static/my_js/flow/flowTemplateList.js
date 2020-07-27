@@ -78,8 +78,7 @@ function deleteFlowTemPlate(id, name) {
                         location.reload();
                     });
                 } else {
-                    layer.msg('Delete failed', {icon: 2, shade: 0, time: 2000}, function () {
-                    });
+                    layer.msg('Delete failed', {icon: 2, shade: 0, time: 2000});
                 }
             }
         });
@@ -114,20 +113,17 @@ function listUploadFlowTemplate() {
                 location.reload();
             });
         } else {
-            layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000}, function () {
-            });
+            layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
         }
     }).error(function () {
-        layer.msg("Upload failure", {icon: 2, shade: 0, time: 2000}, function () {
-        });
+        layer.msg("Upload failure", {icon: 2, shade: 0, time: 2000});
     });
 }
 
 function listFileTypeCheck() {
     var obj = document.getElementById('flowTemplateFile');
     if (obj.value == null || obj.value == '') {
-        layer.msg('please upload the XML file', {icon: 2, shade: 0, time: 2000}, function () {
-        });
+        layer.msg('please upload the XML file', {icon: 2, shade: 0, time: 2000});
         this.focus()
         return false;
     }
@@ -135,8 +131,7 @@ function listFileTypeCheck() {
     var charindex = obj.value.lastIndexOf(".");
     var ExtentName = obj.value.substring(charindex, charindex + 4);
     if (!(ExtentName == ".xml")) {
-        layer.msg('please upload the XML file', {icon: 2, shade: 0, time: 2000}, function () {
-        });
+        layer.msg('please upload the XML file', {icon: 2, shade: 0, time: 2000});
         this.focus()
         return false;
     }

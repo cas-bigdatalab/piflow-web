@@ -142,9 +142,9 @@ public class FlowGroupCtrl {
 
     @RequestMapping("/updateFlowGroupBaseInfo")
     @ResponseBody
-    public String updateFlowGroupBaseInfo(FlowGroupVo flowGroupVo) {
+    public String updateFlowGroupBaseInfo(String fId, FlowGroupVo flowGroupVo) {
         String username = SessionUserUtil.getCurrentUsername();
-        return flowGroupServiceImpl.updateFlowGroupBaseInfo(username, flowGroupVo);
+        return flowGroupServiceImpl.updateFlowGroupBaseInfo(username, fId, flowGroupVo);
     }
 
     @RequestMapping("/updateFlowNameById")

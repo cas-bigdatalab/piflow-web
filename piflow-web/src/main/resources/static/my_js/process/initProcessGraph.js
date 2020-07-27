@@ -6,10 +6,12 @@ var drawingBoardType = "PROCESS"
 var index = true
 var nodeArr, xmlDate, parentsId, processType, processGroupId, parentProcessId, pID, appId, processState;
 
+var web_baseUrl ="/piflow-web";
+
 function initCrumbs(parentAccessPath) {
     if (parentAccessPath) {
         switch (parentAccessPath) {
-            case "grapheditor":
+            case "flow":
                 $("#web_processList_navigation").hide();
                 $("#web_flowList_navigation").show();
                 $("#grapheditor_home_navigation").show();
@@ -40,7 +42,7 @@ function initProcessDrawingBoardData(loadId, parentAccessPath) {
         },
         async: false,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
         error: function (request) {//Operation after request failure
-            // window.location.href = "/piflow-web/error/404";
+            // window.location.href = (web_baseUrl + "/error/404");
             return;
         },
         success: function (data) {//Operation after request successful
@@ -63,7 +65,7 @@ function initProcessDrawingBoardData(loadId, parentAccessPath) {
                 $("#run_checkpoint_new").attr("onclick", "getCheckpoint(" + getCheckpointParam + ")");
                 $("#debug_checkpoint_new").attr("onclick", "getCheckpoint(" + getCheckpointParam + ",'DEBUG')");
             } else {
-                //window.location.href = "/piflow-web/error/404";
+                //window.location.href = (web_baseUrl + "/error/404");
             }
             $('#fullScreen').hide();
         }
@@ -77,6 +79,9 @@ function initGraph() {
     var editorUiInit = EditorUi.prototype.init;
     $("#right-group-wrap")[0].style.display = "block";
     $("#precess-run")[0].style.display = "block";
+    EditorUi.prototype.menubarHeight = 48;
+    EditorUi.prototype.menubarShow = false;
+    EditorUi.prototype.customToobar = true;
 
     EditorUi.prototype.init = function () {
         editorUiInit.apply(this, arguments);
@@ -124,13 +129,13 @@ function initGraph() {
     }, function () {
         document.body.innerHTML = '<center style="margin-top:10%;">Error loading resource files. Please check browser console.</center>';
     });
-    EditorUi.prototype.menubarHeight = 48;
-    EditorUi.prototype.menubarShow = false;
-    EditorUi.prototype.customToobar = true;
     ClickSlider();
 }
 
 function processMxEventClick(cell) {
+    $("#process_info_inc_load_id").hide();
+    $("#process_path_inc_load_id").hide();
+    $("#process_property_inc_load_id").hide();
     if (index) {
         $(".right-group").toggleClass("open-right");
         $(".ExpandSidebar").toggleClass("ExpandSidebar-open");
@@ -144,12 +149,13 @@ function processMxEventClick(cell) {
         queryProcessStopsProperty(loadId, cell.id);
     } else {
         //path
-        queryProcessPathInfo(loadId,cell.id);
+        queryProcessPathInfo(loadId, cell.id);
     }
 
 }
 
 function queryProcessInfo(processId) {
+    $("#process_info_inc_load_id").show();
     $("#div_process_info_inc_id").show();
     $("#div_process_path_inc_id").hide();
     $("#div_process_property_inc_id").hide();
@@ -204,7 +210,8 @@ function queryProcessInfo(processId) {
     });
 }
 
-function queryProcessPathInfo(processId,pageId) {
+function queryProcessPathInfo(processId, pageId) {
+    $("#process_path_inc_load_id").show();
     $("#div_process_info_inc_id").hide();
     $("#div_process_path_inc_id").show();
     $("#div_process_property_inc_id").hide();
@@ -254,6 +261,7 @@ function queryProcessPathInfo(processId,pageId) {
 }
 
 function queryProcessStopsProperty(processId, pageId) {
+    $("#process_property_inc_load_id").show();
     $("#div_process_info_inc_id").hide();
     $("#div_process_path_inc_id").hide();
     $("#div_process_property_inc_id").show();
@@ -341,7 +349,7 @@ function initMonitorIcon() {
             img_element_init.setAttribute("width", 20);
             img_element_init.setAttribute("height", 20);
             img_element_init.setAttribute("PiFlow_IMG", "IMG");
-            img_element_init.href.baseVal = "/piflow-web/img/Loading.gif";
+            img_element_init.href.baseVal = (web_baseUrl + "/img/Loading.gif");
             img_element_init.setAttribute("id", "stopLoadingShow" + item.pageId);
 
             var img_element_ok = document.createElementNS("http://www.w3.org/2000/svg", "image");
@@ -350,7 +358,7 @@ function initMonitorIcon() {
             img_element_ok.setAttribute("width", 20);
             img_element_ok.setAttribute("height", 20);
             img_element_ok.setAttribute("PiFlow_IMG", "IMG");
-            img_element_ok.href.baseVal = "/piflow-web/img/Ok.png";
+            img_element_ok.href.baseVal = (web_baseUrl + "/img/Ok.png");
             img_element_ok.setAttribute("id", "stopOkShow" + item.pageId);
 
             var img_element_fail = document.createElementNS("http://www.w3.org/2000/svg", "image");
@@ -359,7 +367,7 @@ function initMonitorIcon() {
             img_element_fail.setAttribute("width", 20);
             img_element_fail.setAttribute("height", 20);
             img_element_fail.setAttribute("PiFlow_IMG", "IMG");
-            img_element_fail.href.baseVal = "/piflow-web/img/Fail.png";
+            img_element_fail.href.baseVal = (web_baseUrl + "/img/Fail.png");
             img_element_fail.setAttribute("id", "stopFailShow" + item.pageId);
             img_element_init.style.display = "none";
             img_element_fail.style.display = "none";

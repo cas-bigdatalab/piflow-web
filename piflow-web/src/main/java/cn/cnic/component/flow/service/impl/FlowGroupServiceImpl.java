@@ -28,6 +28,8 @@ import cn.cnic.domain.mxGraph.MxCellDomain;
 import cn.cnic.domain.process.ProcessGroupDomain;
 import cn.cnic.mapper.flow.FlowGroupMapper;
 import cn.cnic.mapper.flow.FlowMapper;
+import cn.cnic.mapper.mxGraph.MxCellMapper;
+import cn.cnic.mapper.mxGraph.MxGraphModelMapper;
 import cn.cnic.third.service.IGroup;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -58,6 +60,12 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
 
     @Resource
     private FlowGroupMapper flowGroupMapper;
+
+    @Resource
+    private MxGraphModelMapper mxGraphModelMapper;
+
+    @Resource
+    private MxCellMapper mxCellMapper;
 
     @Resource
     private MxCellDomain mxCellDomain;
@@ -522,7 +530,7 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
 
     @Override
     @Transactional
-    public String updateFlowGroupBaseInfo(String username, FlowGroupVo flowGroupVo) {
+    public String updateFlowGroupBaseInfo(String username, String fId, FlowGroupVo flowGroupVo) {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
         }
@@ -533,11 +541,35 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
         if (null == flowGroupById) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Database save failed");
         }
+        flowGroupById.setName(flowGroupVo.getName());
         flowGroupById.setDescription(flowGroupVo.getDescription());
         flowGroupById.setLastUpdateDttm(new Date());
         flowGroupById.setLastUpdateUser(username);
         flowGroupDomain.saveOrUpdate(flowGroupById);
-        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("flowGroupVo", flowGroupVo);
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededCustomParam("flowGroupVo", flowGroupVo);
+        FlowGroup flowGroup = flowGroupMapper.getFlowGroupById(fId);
+        if (null == flowGroup) {
+            return JsonUtils.toJsonNoException(rtnMap);
+        }
+        MxGraphModel mxGraphModel = flowGroup.getMxGraphModel();
+        if (null == mxGraphModel) {
+            return JsonUtils.toJsonNoException(rtnMap);
+        }
+        MxCell meCellByMxGraphIdAndPageId = mxCellMapper.getMxCellByMxGraphIdAndPageId(mxGraphModel.getId(), flowGroupVo.getPageId());
+        if (null == meCellByMxGraphIdAndPageId) {
+            return JsonUtils.toJsonNoException(rtnMap);
+        }
+        meCellByMxGraphIdAndPageId.setValue(flowGroupVo.getName());
+        int i = mxCellMapper.updateMxCell(meCellByMxGraphIdAndPageId);
+        if (i <= 0) {
+            return JsonUtils.toJsonNoException(rtnMap);
+        }
+        MxGraphModel mxGraphModelById = mxGraphModelMapper.getMxGraphModelById(mxGraphModel.getId());
+        // Convert the mxGraphModelById from the query to XML
+        String loadXml = MxGraphUtils.mxGraphModelToMxGraphXml(mxGraphModelById);
+        loadXml = StringUtils.isNotBlank(loadXml) ? loadXml : "";
+        rtnMap.put("XmlData", loadXml);
+        return JsonUtils.toJsonNoException(rtnMap);
     }
 
     @Override

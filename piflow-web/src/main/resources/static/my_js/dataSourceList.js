@@ -71,8 +71,7 @@ function dataSourceOpen(dataSourceId) {
         data: {"dataSourceId": dataSourceId},
         async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
         error: function (request) {//Operation after request failure
-            layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000}, function () {
-            });
+            layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000});
             return;
         },
         success: function (data) {//Operation after request successful
@@ -182,8 +181,7 @@ function loadDataSourceById(dataSourceId) {
         data: {"id": dataSourceId},
         async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
         error: function (request) {//Operation after request failure
-            layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000}, function () {
-            });
+            layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000});
             return;
         },
         success: function (data) {//Operation after request successful
@@ -229,8 +227,7 @@ function saveOrUpdateDataSource(data) {
         data: data,
         async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
         error: function (request) {//Operation after request failure
-            layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000}, function () {
-            });
+            layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000});
             return;
         },
         success: function (data) {//Operation after request successful
@@ -257,8 +254,7 @@ function delDataSource(datasourceId) {
         data: {"dataSourceId": datasourceId},
         async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
         error: function (request) {//Operation after request failure
-            layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000}, function () {
-            });
+            layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000});
             return;
         },
         success: function (data) {//Operation after request successful
@@ -282,8 +278,7 @@ function onloadPageData() {
         data: {"dataSourceId": openDatasourceId},
         async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
         error: function (request) {//Operation after request failure
-            layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000}, function () {
-            });
+            layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000});
             return;
         },
         success: function (data) {//Operation after request successful

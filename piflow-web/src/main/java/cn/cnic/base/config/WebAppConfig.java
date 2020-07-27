@@ -47,7 +47,7 @@ public class WebAppConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(configInterceptor).excludePathPatterns(Arrays.asList("/components/**", "/js/**", "/css/**", "/custom/**", "/img/**", "/img/*"));
+        registry.addInterceptor(configInterceptor).excludePathPatterns(Arrays.asList("/components/**", "/js/**", "/css/**", "/img/**", "/img/*"));
     }
 
     @Override
@@ -73,15 +73,16 @@ public class WebAppConfig implements WebMvcConfigurer {
 
         //process
         registry.addViewController("/page/process/drawingBoard").setViewName("process/mxGraph/index");
-        registry.addViewController("/page/process/queryProcess").setViewName("process/inc/process_info_inc");
-        registry.addViewController("/page/process/queryProcessStop").setViewName("process/inc/process_property_inc");
-        registry.addViewController("`/page/process/queryProcessPath`").setViewName("process/inc/process_path_inc");
+        registry.addViewController("/page/process/inc/process_info_inc").setViewName("process/inc/process_info_inc");
+        registry.addViewController("/page/process/inc/process_property_inc").setViewName("process/inc/process_property_inc");
+        registry.addViewController("/page/process/inc/process_path_inc").setViewName("process/inc/process_path_inc");
         registry.addViewController("/page/process/getCheckpoint").setViewName("process/inc/process_checkpoint_inc");
         registry.addViewController("/page/process/getDebugDataHtml").setViewName("process/inc/debug_data_inc");
 
         //flow group
         registry.addViewController("/page/flowGroup/drawingBoard").setViewName("flowGroup/mxGraph/index");
         registry.addViewController("/page/flowGroup/inc/flowGroup_info_inc").setViewName("flowGroup/inc/flowGroup_info_inc");
+        registry.addViewController("/page/flowGroup/inc/flowGroup_path_inc").setViewName("flowGroup/inc/flowGroup_path_inc");
         registry.addViewController("/page/flowGroup/inc/flowGroup_property_inc").setViewName("flowGroup/inc/flowGroup_property_inc");
 
         //index

@@ -1,6 +1,5 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<script src="../../../static/custom/js/sysScheduleList.js"></script>
 <body th:fragment=sys_schedule_List>
 
 <!-- content starts -->
@@ -89,7 +88,7 @@
 <div th:include="Macro/fragmentMacro :: fullScreen"></div>
 
 <script th:include="Macro/csrfTokeHeadMacro :: csrfTokeHeadMacroScript"/>
-<script th:src="@{/custom/js/sysScheduleList.js}"></script>
+<script th:src="@{/my_js/sysScheduleList.js}"></script>
 <script th:inline="javascript">
     var contextPath = [[${#httpServletRequest.getContextPath()}]];
     function addContextPath(url) {

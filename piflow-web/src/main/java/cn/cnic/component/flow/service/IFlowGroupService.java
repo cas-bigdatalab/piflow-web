@@ -119,7 +119,7 @@ public interface IFlowGroupService {
      * @param flowGroupVo
      * @return
      */
-    public String updateFlowGroupBaseInfo(String username, FlowGroupVo flowGroupVo);
+    public String updateFlowGroupBaseInfo(String username,  String fId,FlowGroupVo flowGroupVo);
 
     /**
      * Right click to run

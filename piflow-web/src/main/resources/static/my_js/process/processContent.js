@@ -1,11 +1,32 @@
 var fullScreen = $('#fullScreen');
-var runFlowGroupBtn = $('#runFlowGroup');
-var debugFlowGroupBtn = $('#debugFlowGroup');
-var stopFlowGroupBtn = $('#stopFlowGroup');
+var runFlowBtn = $('#runFlow');
+var debugFlowBtn = $('#debugFlow');
+var stopFlowBtn = $('#stopFlow');
 var processContent = $('#processContent');
 var checkpointShow = $('#checkpointShow');
 var isLoadProcessInfo = true;
 var isEnd = false;
+
+function initProcessContentPage(nodeArr) {
+    if (runFlowBtn) {
+        if ("COMPLETED" !== processState && "FAILED" !== processState && "KILLED" !== processState) {
+            runFlowBtn.hide();
+            debugFlowBtn.hide();
+            stopFlowBtn.show();
+            timer = window.setInterval("processMonitoring(appId)", 5000);
+        } else {
+            runFlowBtn.show();
+            debugFlowBtn.show();
+            stopFlowBtn.hide();
+        }
+    }
+    if (nodeArr && '' != nodeArr) {
+        for (var i = 0; i < nodeArr.length; i++) {
+            var processStopVoInit = nodeArr[i];
+            monitor(processStopVoInit.pageId, processStopVoInit.state);
+        }
+    }
+}
 
 function selectedFormation(pageId, e) {
     if (isLoadProcessInfo) {
@@ -27,11 +48,10 @@ function selectedFormation(pageId, e) {
             }
             selectedRectShow.attr('x', imgStyleX).attr('y', imgStyleY).attr('width', imgStyleWidth).attr('height', imgStyleHeight);
         }
-        queryProcessStop(processGroupId, pageId);
+        queryProcessStop(processId, pageId);
     } else {
         //alert("Necessary position parameters were not obtained");
-        layer.msg("Necessary position parameters were not obtained", {icon: 2, shade: 0, time: 2000}, function () {
-        });
+        layer.msg("Necessary position parameters were not obtained", {icon: 2, shade: 0, time: 2000});
     }
 }
 
@@ -56,31 +76,29 @@ function selectedPath(pageId, e) {
             selectedArrowShow.show();
             //selectedPolygonShow.attr('x', x).attr('y', y).attr('width', width).attr('height', height);
         }
-        queryProcessGroupPath(processGroupId, pageId);
+        queryProcessPath(processId, pageId);
     } else {
-        //alert("必要位置参数没有获得");
-        layer.msg("Necessary position parameters were not obtained", {icon: 2, shade: 0, time: 2000}, function () {
-        });
+        //alert("The necessary position parameters are not obtained");
+        layer.msg("Necessary position parameters were not obtained", {icon: 2, shade: 0, time: 2000});
     }
 }
 
-// Query basic information of process
-function queryProcessGroup(processGroupId) {
+// Query process basic information
+function queryProcess(processId) {
     if (!isLoadProcessInfo) {
         isLoadProcessInfo = true;
     } else {
-        if (!processGroupId || '' === processGroupId || 'null' === processGroupId || 'NULL' === processGroupId) {
+        if (!processId || '' === processId || 'null' === processId || 'NULL' === processId) {
             //alert("Id is empty, not obtained, please check!!");
-            layer.msg("Id is empty, not obtained, please check!!", {icon: 2, shade: 0, time: 2000}, function () {
-            });
+            layer.msg("Id is empty, not obtained, please check!!", {icon: 2, shade: 0, time: 2000});
         } else {
-            $.ajax({
+            ajaxRequest({
                 cache: true,//Keep cached data
                 type: "POST",//Request type post
-                url: "/piflow-web/processGroup/queryProcessGroup",//This is the name of the file where I receive data in the background.
+                url: "/page/process/inc/process_info_inc",//This is the name of the file where I receive data in the background.
                 //data:$('#loginForm').serialize(),//Serialize the form
                 data: {
-                    processGroupId: processGroupId
+                    processId: processId
                 },
                 async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
                 error: function (request) {//Operation after request failure
@@ -101,14 +119,14 @@ function queryProcessGroup(processGroupId) {
 }
 
 //Query basic information about stops
-function queryProcessStop(processGroupId, pageId) {
-    $.ajax({
+function queryProcessStop(processId, pageId) {
+    ajaxRequest({
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: "/piflow-web/processGroup/queryProcess",//This is the name of the file where I receive data in the background.
+        url: "/page/process/inc/process_property_inc",//This is the name of the file where I receive data in the background.
         //data:$('#loginForm').serialize(),//Serialize the form
         data: {
-            processGroupId: processGroupId,
+            processId: processId,
             pageId: pageId
         },
         async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
@@ -135,18 +153,18 @@ function queryProcessStop(processGroupId, pageId) {
     });
 }
 
-//Query path basic information
-function queryProcessGroupPath(processGroupId, pageId) {
+//Query Path basic information
+function queryProcessPath(processId, pageId) {
     if (isLoadProcessInfo) {
         isLoadProcessInfo = false;
     }
-    $.ajax({
+    ajaxRequest({
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: "/piflow-web/processGroup/queryProcessPath",//This is the name of the file where I receive data in the background.
+        url: "/page/process/inc/process_path_inc",//This is the name of the file where I receive data in the background.
         //data:$('#loginForm').serialize(),//Serialize the form
         data: {
-            processGroupId: processGroupId,
+            processId: processId,
             pageId: pageId
         },
         async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
@@ -164,60 +182,101 @@ function queryProcessGroupPath(processGroupId, pageId) {
     });
 }
 
-//Select run mode
-function selectRunMode(runMode) {
-    var runModeContent = '<div style="width: 100%;">'
-        + '<div style="width: 210px;height: 50px;line-height: 50px;overflow: hidden;text-align: center;">'
-        + '<button type="button" class="btn btn-default" onclick="runProcessGroup()">Run</button>&nbsp;'
-        // + '<button type="button" class="btn btn-default" onclick="runProcessGroup(\'DEBUG\')">Debug</button>&nbsp;'
-        + '<button type="button" class="btn btn-default" onclick="cancelRunProcessGroup()">Cancel</button>'
-        + '</div>'
-        + '</div>';
-    layer.open({
-        type: 1,
-        title: '<span style="color: #269252;">Select Run Mode</span>',
-        shadeClose: true,
-        closeBtn: 1,
-        shift: 7,
-        //area: ['600px', '200px'], //Width height
-        skin: 'layui-layer-rim', //Add borders
-        content: runModeContent
+//  Get Checkpoint points
+function getCheckpoint(pID, parentProcessId, processId, runMode) {
+    fullScreen.show();
+    ajaxRequest({
+        cache: true,//Keep cached data
+        type: "POST",//Request type post
+        url: "/page/process/getCheckpoint",//This is the name of the file where I receive data in the background.
+        //data:$('#loginForm').serialize(),//Serialize the form
+        data: {
+            pID: pID,
+            parentProcessId: parentProcessId
+        },
+        async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
+        error: function (request) {//Operation after request failure
+            runFlowBtn.show();
+            debugFlowBtn.show();
+            //alert("Request Failed");
+            layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000});
+            fullScreen.hide();
+            checkpointShow.modal('hide');
+            return;
+        },
+        success: function (data) {//Operation after request successful
+            console.log(data);
+            $('#checkpointContentNew').html(data);
+            if ($('#checkpointsIsNull').val()) {
+                runProcess(processId, runMode);
+            } else {
+                runFlowBtn.show();
+                debugFlowBtn.show();
+                fullScreen.hide();
+
+                if ("DEBUG" === runMode) {
+                    $("#debug_checkpoint_new").show();
+                    $("#run_checkpoint_new").hide();
+                } else {
+                    $("#debug_checkpoint_new").hide();
+                    $("#run_checkpoint_new").show();
+                }
+                layer.open({
+                    type: 1,
+                    title: '<span style="color: #269252;">Select Run Mode</span>',
+                    shadeClose: true,
+                    closeBtn: 1,
+                    shift: 7,
+                    //area: ['600px', '200px'], //Width height
+                    skin: 'layui-layer-rim', //Add borders
+                    area: ['600px', ($("#layer_open_checkpoint").height() + 73) + 'px'], //Width Height
+                    content: $("#layer_open_checkpoint").html()
+                });
+
+            }
+        }
     });
 
 }
 
-function cancelRunProcessGroup() {
-    layer.closeAll();
+function cancelRunProcess() {
+    checkpointShow.modal('hide');
     fullScreen.hide();
     return;
 }
 
 //run
-function getQueryString(name) {
-    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
-    var r = window.location.search.substr(1).match(reg);
-    if (r != null) return unescape(r[2]);
-    return null;
-}
-
-function runProcessGroup(runMode) {
+function runProcess(processId, runMode) {
     fullScreen.show();
-    var id = getQueryString("load")
+    checkpointShow.modal('hide');
+    runFlowBtn.hide();
+    debugFlowBtn.hide();
+    var checkpointStr = '';
+    $(".layui-layer-content").find("#checkpointContentNew").find("input[type='checkbox']:checked").each(function () {
+        if ('' !== checkpointStr) {
+            checkpointStr = (checkpointStr + ',');
+        }
+        checkpointStr = (checkpointStr + $(this).val());
+    });
     var data = {
-        id: id,
-    }
+        id: processId,
+        checkpointStr: checkpointStr
+    };
     if (runMode) {
         data.runMode = runMode;
     }
-    $.ajax({
+    ajaxRequest({
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: "/piflow-web/processGroup/runProcessGroup",//This is the name of the file where I receive data in the background.
+        url: "/process/runProcess",//This is the name of the file where I receive data in the background.
         //data:$('#loginForm').serialize(),//Serialize the form
         data: data,
         async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
         error: function (request) {//Operation after request failure
-            alert("Request Failed");
+            runFlowBtn.show();
+            debugFlowBtn.show();
+            //alert("Request Failed");
+            layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000});
             fullScreen.hide();
             return;
         },
@@ -226,14 +285,13 @@ function runProcessGroup(runMode) {
             var dataMap = JSON.parse(data);
             if (200 === dataMap.code) {
                 //alert(dataMap.errorMsg);
-                window.location.reload();  //   drawingBoardType=PROCESS&processType=PROCESS_GROUP        &processType=PROCESS
-                var tempWindow = window.open("/piflow-web/mxGraph/drawingBoard?drawingBoardType=PROCESS&processType=PROCESS_GROUP&load=" + dataMap.processGroupId);
-
-                if (tempWindow == null || typeof (tempWindow) == 'undefined') {
-                    alert('The window cannot be opened. Please check your browser settings.')
-                }
+                layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000});
+                window.location.href = "/piflow-web/mxGraph/drawingBoard?drawingBoardType=PROCESS&processType=PROCESS&load=" + dataMap.processId;
             } else {
-                alert("Startup Failed");
+                //alert(dataMap.errorMsg);
+                layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
+                runFlowBtn.show();
+                debugFlowBtn.show();
                 fullScreen.hide();
             }
 
@@ -242,20 +300,22 @@ function runProcessGroup(runMode) {
 }
 
 //stop
-function stopProcessGroup() {
+function stopProcess() {
     stopFlowBtn.hide();
     fullScreen.show();
-    $.ajax({
+    ajaxRequest({
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: "/piflow-web/processGroup/stopProcessGroup",//This is the name of the file where I receive data in the background.
+        url: "/process/stopProcess",//This is the name of the file where I receive data in the background.
         //data:$('#loginForm').serialize(),//Serialize the form
         data: {
-            processGroupId: processGroupId
+            processId: processId
         },
         async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
         error: function (request) {//Operation after request failure
-            alert("Request Failed");
+            stopFlow.show();
+            //alert("Request Failed");
+            layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000});
             fullScreen.hide();
             return;
         },
@@ -263,18 +323,21 @@ function stopProcessGroup() {
             //console.log("success");
             var dataMap = JSON.parse(data);
             if (200 === dataMap.code) {
-                alert(dataMap.errorMsg);
-                window.location.reload();
+                //alert(dataMap.errorMsg);
+                layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000});
+                runFlowBtn.show();
+                debugFlowBtn.show();
             } else {
-                alert("Stop Failed:" + dataMap.errorMsg);
+                //alert("Stop Failed:" + dataMap.errorMsg);
+                layer.msg("Stop Failed", {icon: 2, shade: 0, time: 2000});
+                stopFlow.show();
             }
             fullScreen.hide();
-
         }
     });
 }
 
-function openLogWindow() {
+function getLogUrl() {
     var window_width = $(window).width();//Get browser window width
     var window_height = $(window).height();//Get browser window width
     var open_window_width = (window_width > 300 ? window_width - 200 : window_width);
@@ -284,76 +347,107 @@ function openLogWindow() {
         + '<span span style="font-size: 90px;margin-top: 15px;">loading....</span>'
         + '</div>'
         + '</div>';
-    layer.open({
-        type: 1,
-        title: '<span style="color: #269252;">Log Windows</span>',
-        shadeClose: true,
-        closeBtn: 1,
-        shift: 7,
-        area: [open_window_width + 'px', open_window_height + 'px'], //Width height
-        skin: 'layui-layer-rim', //Add borders
-        btn: ['log', 'requestJson'], //button
-        btn1: function (index, layero) {
-            changeLogData("/piflow-web/processGroup/getGroupLogData", {"appId": appId});
-            return false;
-        },
-        btn2: function (index, layero) {
-            changeLogData("/piflow-web/processGroup/getStartGroupJson", {"processGroupId": processGroupId});
-            return false;
-        },
-        content: logContent,
-        success: function (layero) {
-            layero.find('.layui-layer-btn').css('text-align', 'left');
-            var bleBtn0 = layero.find('.layui-layer-btn0');
-            var bleBtn1 = layero.find('.layui-layer-btn1');
-            bleBtn0.removeClass('layui-layer-btn0');
-            bleBtn1.removeClass('layui-layer-btn1');
-            bleBtn0.addClass('layui-layer-btn1');
-            bleBtn1.addClass('layui-layer-btn1');
-        }
-    });
-    changeLogData("/piflow-web/processGroup/getGroupLogData", {"appId": appId});
 
-}
+    // + '<div style="margin-top: 5px;margin-bottom: 5px;margin-left: 10px;">'
+    // + '<input type="button" class="btn btn-default" onclick="changeUrl(1)" value="stdout">'
+    // + '<input type="button" class="btn btn-default" onclick="changeUrl(2)" value="stderr">'
+    // + '</div>';
 
-function changeLogData(url, requestParam) {
-    $.ajax({
+    ajaxRequest({
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: url,//This is the name of the file where I receive data in the background.
+        url: "/process/getLogUrl",//This is the name of the file where I receive data in the background.
         //data:$('#loginForm').serialize(),//Serialize the form
-        data: requestParam,
+        data: {"appId": appId},
         async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
         error: function (request) {//Operation after request failure
-            layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000}, function () {
-            });
+            layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000});
             return;
         },
         success: function (data) {//Operation after request successful
+            layer.open({
+                type: 1,
+                title: '<span style="color: #269252;">Log Windows</span>',
+                shadeClose: true,
+                closeBtn: 1,
+                shift: 7,
+                area: [open_window_width + 'px', open_window_height + 'px'], //Width height
+                skin: 'layui-layer-rim', //Add borders
+                btn: ['stdout', 'stderr'], //button
+                btn1: function (index, layero) {
+                    changeUrl(1);
+                    return false;
+                },
+                btn2: function (index, layero) {
+                    changeUrl(2);
+                    return false;
+                },
+                content: logContent,
+                success: function (layero) {
+                    layero.find('.layui-layer-btn').css('text-align', 'left');
+                    var bleBtn0 = layero.find('.layui-layer-btn0');
+                    var bleBtn1 = layero.find('.layui-layer-btn1');
+                    bleBtn0.removeClass('layui-layer-btn0');
+                    bleBtn1.removeClass('layui-layer-btn1');
+                    bleBtn0.addClass('layui-layer-btn1');
+                    bleBtn1.addClass('layui-layer-btn1');
+                }
+            });
             var dataMap = JSON.parse(data);
-
-            var showLogHtmlWidth = $("#divPreId").width() - 20;
-            var showLogHtml = ('<pre id="preId" style="height: 100%; width: ' + showLogHtmlWidth + 'px; margin: 0 auto;">');
             if (200 === dataMap.code) {
-                showLogHtml += dataMap.data + '</pre>';
-            } else {
-                showLogHtml += 'Load Log Filed, ' + dataMap.errorMsg + '</pre>';
+                stdoutLog = dataMap.stdoutLog;
+                stderrLog = dataMap.stderrLog;
+                changeUrl(1);
             }
-            $("#divPreId").html(showLogHtml);
-            $("#preId").scrollTop($("#preId")[0].scrollHeight);
-            $(".layui-layer-content").scrollTop($(".layui-layer-content")[0].scrollHeight);
         }
     });
 }
 
-function processGroupMonitoring(appId) {
+function changeUrl(key) {
+    var url
+    switch (key) {
+        case 1:
+            url = stdoutLog;
+            break;
+        case 2:
+            url = stderrLog;
+            break;
+        default:
+            break;
+    }
+    ajaxRequest({
+        cache: true,//Keep cached data
+        type: "POST",//Request type post
+        url: "/process/getLog",//This is the name of the file where I receive data in the background.
+        //data:$('#loginForm').serialize(),//Serialize the form
+        data: {url: url},
+        async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
+        error: function (request) {//Operation after request failure
+            return;
+        },
+        success: function (data) {//Operation after request successful
+            console.log("success");
+            if ('' !== data) {
+                var content_td = $(data).find('.content')[0].innerHTML;
+                var content_td_html = (('' !== content_td) ? content_td[0] : '');
+                var showLogHtml = ('<div id="preId" style="height: 100%; margin: 6px 6px 6px 6px;background-color: #f5f5f5;">') + (content_td) + ('</div>');
+                $("#divPreId").html(showLogHtml);
+                $(".layui-layer-content").scrollTop($(".layui-layer-content")[0].scrollHeight);
+            } else {
+                $("#divPreId").html('<div id="preId" style="height: 100%; margin: 6px 6px 6px 6px;background-color: #f5f5f5;text-align: center;"><span style="font-size: 90px;margin-top: 15px;">Load Log Filed</span></div>');
+            }
+        }
+    });
+}
+
+function processMonitoring(appId) {
     if (appId === '') {
         return;
     }
-    $.ajax({
+    ajaxRequest({
         cache: true,
         type: "get",
-        url: "/piflow-web/processGroup/getAppInfo",
+        url: "/process/getAppInfo",
         data: {appid: appId},
         async: true,
         traditional: true,
@@ -365,56 +459,36 @@ function processGroupMonitoring(appId) {
             var dataMap = JSON.parse(data);
             if (200 === dataMap.code) {
                 if (dataMap.state && "" !== dataMap.state) {
-                    if ('STARTED' !== dataMap.state && '100.00' === dataMap.progress) {
-                        console.log(dataMap);
+                    if ("COMPLETED" === dataMap.state || "FAILED" === dataMap.state || "KILLED" === dataMap.state) {
                         window.clearInterval(timer);
-                        runFlowGroupBtn.show();
-                        debugFlowGroupBtn.show();
-                        stopFlowGroupBtn.hide();
+                        runFlowBtn.show();
+                        debugFlowBtn.show();
+                        stopFlowBtn.hide();
                     }
                 }
-                var processGroupVo = dataMap.processGroupVo;
-                if (processGroupVo && '' != processGroupVo) {
-                    $("#groupProgress").html(dataMap.progress + "%");
-                    $("#groupProgress").css({'width': dataMap.progress + "%"});
-                    $("#processStartTimeShow").html(processGroupVo.startTime);
-                    $("#processStopTimeShow").html(processGroupVo.endTime);
+                var processVo = dataMap.processVo;
+                if (processVo && '' != processVo) {
+                    $("#progress").html(dataMap.progress + "%");
+                    $("#processStartTimeShow").html(processVo.startTime);
+                    $("#processStopTimeShow").html(processVo.endTime);
                     $("#processStateShow").html(dataMap.state);
                     $("#processProgressShow").html(dataMap.progress + "%");
-                    // task
-                    var processVoList = processGroupVo.processVoList;
-                    if (processVoList && '' != processVoList) {
-                        for (var i = 0; i < processVoList.length; i++) {
-                            var processVo = processVoList[i];
-                            if (processVo && '' != processVo) {
-                                var sotpNameDB = processVo.name;
+                    // stop
+                    var processStopVoList = processVo.processStopVoList;
+                    if (processStopVoList && '' != processStopVoList) {
+                        for (var i = 0; i < processStopVoList.length; i++) {
+                            var processStopVo = processStopVoList[i];
+                            if (processStopVo && '' != processStopVo) {
+                                var sotpNameDB = processStopVo.name;
                                 var sotpNameVal = $("#stopNameShow").text();
                                 if (sotpNameDB === sotpNameVal) {
-                                    $("#stopStartTimeShow").html(processVo.startTime);
-                                    $("#stopStopTimeShow").html(processVo.endTime);
-                                    $("#stopStateShow").html(processVo.state);
+                                    $("#stopStartTimeShow").html(processStopVo.startTime);
+                                    $("#stopStopTimeShow").html(processStopVo.endTime);
+                                    $("#stopStateShow").html(processStopVo.state);
                                 }
-                                processGroupMonitor(processVo.pageId, processVo.state)
-                            }
-                        }
-                    }
-                    // group
-                    var processGroupVoList = processGroupVo.processGroupVoList;
-                    if (processGroupVoList && '' != processGroupVoList) {
-                        for (var i = 0; i < processGroupVoList.length; i++) {
-                            var processGroupVo = processGroupVoList[i];
-                            if (processGroupVo && '' != processGroupVo) {
-                                var sotpNameDB = processGroupVo.name;
-                                var sotpNameVal = $("#stopNameShow").text();
-                                if (sotpNameDB === sotpNameVal) {
-                                    $("#processStartTimeShow").html(processGroupVo.startTime);
-                                    $("#processStopTimeShow").html(processGroupVo.endTime);
-                                    $("#processStateShow").html(processGroupVo.state);
-                                    $("#processStateShow").html(processGroupVo.state);
-                                    $("#processStateShow").html(processGroupVo.state);
-                                    $("#processStateShow").html(processGroupVo.state);
-                                }
-                                processGroupMonitor(processGroupVo.pageId, processGroupVo.state)
+                                var pageId = processStopVo.pageId;
+                                var processStopVoState = processStopVo.state;
+                                monitor(pageId, processStopVoState)
                             }
                         }
                     }
@@ -424,27 +498,23 @@ function processGroupMonitoring(appId) {
     });
 }
 
-function processGroupMonitor(pageId, processStopVoState) {
+function monitor(pageId, processStopVoState) {
     var stopFailShow = $("#stopFailShow" + pageId);
     var stopOkShow = $("#stopOkShow" + pageId);
     var stopLoadingShow = $("#stopLoadingShow" + pageId);
     var stopImgChange = $("#stopImg" + pageId);
     if (processStopVoState) {
-        if (processStopVoState.stringValue !== "INIT") {
+        if (processStopVoState !== "INIT") {
             stopImgChange.attr('opacity', 1);
-            if (processStopVoState && (processStopVoState.stringValue === "STARTED")) {
+            if (processStopVoState && (processStopVoState === "STARTED")) {
                 stopFailShow.hide();
                 stopOkShow.hide();
                 stopLoadingShow.show();
-            } else if (processStopVoState && processStopVoState.stringValue === "COMPLETED") {
+            } else if (processStopVoState && processStopVoState === "COMPLETED") {
                 stopFailShow.hide();
                 stopLoadingShow.hide();
                 stopOkShow.show();
-            } else if (processStopVoState && processStopVoState.stringValue === "FAILED") {
-                stopOkShow.hide();
-                stopLoadingShow.hide();
-                stopFailShow.show();
-            } else if (processStopVoState && processStopVoState.stringValue === "KILLED") {
+            } else if (processStopVoState && processStopVoState === "FAILED") {
                 stopOkShow.hide();
                 stopLoadingShow.hide();
                 stopFailShow.show();
@@ -455,22 +525,40 @@ function processGroupMonitor(pageId, processStopVoState) {
     } else {
         stopImgChange.attr('opacity', 0.4);
     }
+
+    /*
+    var stopPath = $('g[name="stopPageId' + pageId + '"]');
+    if (stopPath.length > 0) {
+        for (var i = 0; i < stopPath.length; i++) {
+            var pathName = $(stopPath[i]).find('path[name="pathName"]');
+            var arrowName = $(stopPath[i]).find('path[name="arrowName"]');
+            if (processStopVoState && (processStopVoState === "STARTED")) {
+
+            } else if (processStopVoState && processStopVoState === "COMPLETED") {
+                $(pathName).attr('stroke', 'green');
+                $(arrowName).attr('stroke', 'green').attr('fill', 'green');
+            } else if (processStopVoState && processStopVoState === "FAILED") {
+                $(pathName).attr('stroke', 'red');
+                $(arrowName).attr('stroke', 'red').attr('fill', 'red');
+            }
+        }
+    }
+    */
 }
 
 function getDebugData(stopName, portName) {
     var window_width = $(window).width();//Get browser window width
     var window_height = $(window).height();//Get browser window width
     var jsonData = {"appId": appId, "stopName": stopName, "portName": portName};
-    $.ajax({
+    ajaxRequest({
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: "/piflow-web/page/process/getDebugDataHtml",//This is the name of the file where I receive data in the background.
+        url: "/page/process/getDebugDataHtml",//This is the name of the file where I receive data in the background.
         //data:$('#loginForm').serialize(),//Serialize the form
         data: jsonData,
         async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
         error: function (request) {//Operation after request failure
-            layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000}, function () {
-            });
+            layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000});
             return;
         },
         success: function (data) {//Operation after request successful
@@ -496,10 +584,10 @@ function loadDebugData() {
     var debug_port_name = $("#debug_port_name");
     var debug_data_last_read_line = $("#debug_data_last_read_line");
     var debug_data_last_file_name = $("#debug_data_last_file_name");
-    $.ajax({
+    ajaxRequest({
         type: "POST",
         async: false,
-        url: '/piflow-web/process/getDebugData', //Actual use, please change to the server real interface
+        url: '/process/getDebugData', //Actual use, please change to the server real interface
         data: {
             "appId": debug_app_id.html(),
             "stopName": debug_stop_name.html(),

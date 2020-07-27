@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <body th:fragment=flow_group_template_List>
     <meta th:include="Macro/csrfTokeHeadMacro :: csrfTokeHeadMacro"/>
-    <link th:href="@{/custom/css/fullScreen.css}"/>
+    <link th:href="@{/my_css/fullScreen.css}"/>
     <link th:href="@{/components/layui/css/layui.css}"/>
 
     <script type="text/javascript" th:src="@{/components/layui/layui.all.js}"></script>
@@ -41,7 +41,7 @@
     <!-- content ends -->
     <div th:include="Macro/fragmentMacro :: fullScreen"></div>
     <script th:include="Macro/csrfTokeHeadMacro :: csrfTokeHeadMacroScript"/>
-    <script th:src="@{/custom/js/flowGroupTemplateList.js}"></script>
+    <script th:src="@{/my_js/flowGroupTemplateList.js}"></script>
     <script th:inline="javascript">
         initLayerTableFlowGroupTemplatePage('flowGroupTemplateTableId', "/piflow-web/flowTemplate/flowTemplatePage","search_input_id");
         //@ sourceURL=flow_group_template_List.js

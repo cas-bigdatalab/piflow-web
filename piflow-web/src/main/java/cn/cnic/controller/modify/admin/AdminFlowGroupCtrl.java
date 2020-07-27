@@ -88,9 +88,9 @@ public class AdminFlowGroupCtrl {
 
     @RequestMapping("/updateFlowGroupBaseInfo")
     @ResponseBody
-    public String updateFlowGroupBaseInfo(HttpServletRequest request, FlowGroupVo flowGroupVo) {
+    public String updateFlowGroupBaseInfo(HttpServletRequest request, String fId, FlowGroupVo flowGroupVo) {
         String username = UserUtils.getUsername(request);
-        return flowGroupServiceImpl.updateFlowGroupBaseInfo(username, flowGroupVo);
+        return flowGroupServiceImpl.updateFlowGroupBaseInfo(username, fId, flowGroupVo);
     }
 
 }

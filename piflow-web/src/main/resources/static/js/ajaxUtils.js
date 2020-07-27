@@ -1,7 +1,4 @@
 var web_header_prefix = "/piflow-web";
-var prefixHttpUrl = location.protocol + "//" + location.hostname + ':8001';
-var rbacUrl = location.protocol + '//10.0.88.137:81';
-
 
 var token = localStorage.getItem("token");
 
@@ -56,11 +53,12 @@ function ajaxRequest(param) {
         // },
         success: function (data) {
             //data =  JSON.parse(data);
-            // if (data.code === 403) {
-            //     //  alert(data.errMsg);
-            //     window.location.href = '/login';
-            //     return;
-            // }
+            if (data.code === 403 || data.code === 401) {
+                //  alert(data.errMsg);
+                console.log(data);
+                window.location.href = "/piflow-web/login";
+                return;
+            }
             if (backFunc && $.isFunction(backFunc)) {
                 backFunc(data);
             }

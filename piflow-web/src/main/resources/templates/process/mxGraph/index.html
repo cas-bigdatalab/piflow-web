@@ -2,14 +2,15 @@
 <meta http-equiv="X-UA-Compatible" content="IE=5,IE=9"><![endif]-->
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <title>piflow-web</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="stylesheet" type="text/css" href="/piflow-web/components/mxGraph/styles/grapheditor.css">
     <link rel="stylesheet" type="text/css" href="/piflow-web/components/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href='/piflow-web/custom/css/publicMacro.css'/>
-    <link rel="stylesheet" type="text/css" href="/piflow-web/custom/css/fullScreen.css"/>
+    <link rel="stylesheet" type="text/css" href='/piflow-web/my_css/publicMacro.css'/>
+    <link rel="stylesheet" type="text/css" href="/piflow-web/my_css/fullScreen.css"/>
     <link rel="stylesheet" type="text/css" href="/piflow-web/components/font-awesome-4.7.0/css/font-awesome.min.css"/>
     <link rel="stylesheet" type="text/css" href="/piflow-web/css/main.css"/>
     <link rel="shortcut icon" href="/piflow-web/img/logo.ico">
@@ -78,19 +79,20 @@
         }
     </style>
 </head>
+
 <body class="geEditor">
-<div th:include="Macro/fragmentMacro :: fullScreen"></div>
-<div th:include="Macro/publicMacro :: userHeadMacro"></div>
+<div id="publicUserHeadMacro_load_id"></div>
+<div id="fullScreen_load_id"></div>
 
 <!--operation_button-->
 <div id="precess-run" class="precess-run"
      style="position: fixed; z-index: 779;text-align: right;right: 10px;top: 50px;">
-    <div th:include="process/inc/proccess_operation_button :: proccess_operation_button"></div>
+    <div id="process_operation_button_load_id"></div>
 </div>
 
 <!-- crumbs -->
 <div style="width: 100%;position: fixed;z-index: 99999;float: left;left: 0px;bottom: 0px;text-align: center;height: 28px;line-height: 28px; background: #37714b;">
-    <div th:include="process/inc/proccess_crumbs_task :: proccess_crumbs_task"></div>
+    <div id="process_crumbs_task_load_id"></div>
 </div>
 <!--Initializes the drawing board-->
 
@@ -102,9 +104,9 @@
         </div>
     </div>
     <div id="right-group" class="right-group">
-        <div id="div_process_info_inc_id" style="display: none;"></div>
-        <div id="div_process_path_inc_id"style="display: none;"></div>
-        <div id="div_process_property_inc_id" style="display: none;"></div>
+        <div id="div_process_info_inc_load_id" style="display: none;"></div>
+        <div id="div_process_path_inc_load_id" style="display: none;"></div>
+        <div id="div_process_property_inc_load_id" style="display: none;"></div>
     </div>
 </div>
 
@@ -127,30 +129,39 @@
 </div>
 
 <script type="text/javascript" src="/piflow-web/js/ajaxUtils.js"></script>
-<script type="text/javascript" src="/piflow-web/custom/js/processContent.js"></script>
-<script type="text/javascript" src="/piflow-web/custom/js/process/initProcessGraph.js"></script>
-<script th:inline="javascript">
-    var urlParams = getUrlParams(window.location.href);
-    var parentAccessPath = urlParams.parentAccessPath;
+<script type="text/javascript" src="/piflow-web//my_js/process/processContent.js"></script>
+<script type="text/javascript" src="/piflow-web/my_js/process/initProcessGraph.js"></script>
+<script type="text/javascript">
+    var urlParams = getUrlParams(window.location.href)
+	// Default resources are included in grapheditor resources;
+    mxLoadResources = false;
     var loadId = urlParams.load;
+    var parentAccessPath = urlParams.parentAccessPath;
 
 
     //---------------------------------------------------
-    var stdoutLog = [[${stdoutLog}]];
-    var stderrLog = [[${stderrLog}]];
+    var stdoutLog = "[[${stdoutLog}]]";
+    var stderrLog = "[[${stderrLog}]]";
     //---------------------------------------------------
 
     $(function () {
-        $("#div_process_property_inc_id").load("/piflow-web/page/process/queryProcessStop");
-        $("#div_process_path_inc_id").load("/piflow-web/page/process/queryProcessPath");
-        $("#div_process_info_inc_id").load("/piflow-web/page/process/queryProcess", function () {
+        $("#fullScreen_load_id").load("/piflow-web/page/macro/fragmentMacro");
+        $("#publicUserHeadMacro_load_id").load("/piflow-web/page/macro/publicUserHeadMacro");
+        $("#process_operation_button_load_id").load("/piflow-web/page/inc/process_operation_button", function () {
             initProcessDrawingBoardData(loadId, parentAccessPath);
             initProcessContentPage(nodeArr);
             initGraph();
+            $("#process_crumbs_task_load_id").load("./inc/process_crumbs_task.html", function () {
+                initCrumbs(parentAccessPath);
+            });
         });
-        initCrumbs(parentAccessPath);
+        $("#div_process_info_inc_load_id").load("/piflow-web/page/process/inc/process_info_inc", function () {
+            getRightInfo();
+        });
+        $("#div_process_path_inc_load_id").load("/piflow-web/page/process/inc/process_path_inc");
+        $("#div_process_property_inc_load_id").load("/piflow-web/page/process/inc/process_property_inc");
     });
-    //@ sourceURL=mxGraphIndex.js
+    //@ sourceURL=processMxGraphIndex.js
 </script>
 
 </body>

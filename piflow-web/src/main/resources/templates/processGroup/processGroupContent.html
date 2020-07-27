@@ -9,9 +9,8 @@
     <meta th:include="Macro/csrfTokeHeadMacro :: csrfTokeHeadMacro"/>
     <link rel="stylesheet" type="text/css" th:href="@{/components/mxGraph/styles/grapheditor.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/components/bootstrap/css/bootstrap.min.css}">
-    <link rel="stylesheet" type="text/css" th:href='@{/custom/css/publicMacro.css}'/>
-    <link rel="stylesheet" type="text/css" th:href='@{/custom/css/publicMacro.css}'/>
-    <link rel="stylesheet" type="text/css" th:href="@{/custom/css/fullScreen.css}"/>
+    <link rel="stylesheet" type="text/css" th:href='@{/my_css/publicMacro.css}'/>
+    <link rel="stylesheet" type="text/css" th:href="@{/my_css/fullScreen.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{/components/layui/css/layui.css}"/>
 
     <!--[if IE 8]>
@@ -129,7 +128,7 @@
 <script type="text/javascript" th:src="@{/js/jquery/jquery-ui.min.js}"></script>
 <script type="text/javascript" th:src="@{/components/bootstrap/js/bootstrap.min.js}"></script>
 <script th:include="Macro/csrfTokeHeadMacro :: csrfTokeHeadMacroScript"/>
-<script th:src="@{/custom/js/processGroupContent.js}"></script>
+<script th:src="@{/my_js/processGroupContent.js}"></script>
 <script th:inline="javascript">
     var parentAccessPath = [[${parentAccessPath}]];
     var xmlDate = [[${xmlDate}]];

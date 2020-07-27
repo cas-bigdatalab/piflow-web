@@ -72,8 +72,7 @@ function importFlow(flowId) {
                     window.location.reload();
                 });
             } else {
-                layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000}, function () {
-                });
+                layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
             }
         }
     });

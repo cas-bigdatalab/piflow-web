@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta th:include="macro/csrfTokeHeadMacro :: csrfTokeHeadMacro"/>
     <link id="bs-css" th:href="@{/components/bootstrap/css/bootstrap-cerulean.min.css}" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" th:href='@{/custom/css/publicMacro.css}'/>
+    <link rel="stylesheet" type="text/css" th:href='@{/my_css/publicMacro.css}'/>
     <link rel="stylesheet" type="text/css" th:href="@{/components/layui/css/layui.css}"/>
     <!-- The fav icon -->
     <link rel="shortcut icon" th:href="@{/img/logo.ico}">
@@ -15,7 +15,7 @@
     <script type="text/javascript" th:src="@{/js/jquery.validate.1.13.1/jquery.validate.min.js}"></script>
     <script type="text/javascript" th:src="@{/js/jquery.validate.1.13.1/jquery.validate.addMethod.js}"></script>
     <script type="text/javascript" th:src="@{/components/layui/layui.all.js}"></script>
-    <link th:href="@{/custom/css/fullScreen.css}"/>
+    <link th:href="@{/my_css/fullScreen.css}"/>
     <style type="text/css">
         .error {
             color: #ff0000;
@@ -233,8 +233,7 @@
             async: true,
             error: function (request) {
                 //alert("Jquery Ajax request error!!!");
-                layer.msg("Jquery Ajax request error!!!", {icon: 2, shade: 0, time: 2000}, function () {
-                });
+                layer.msg("Jquery Ajax request error!!!", {icon: 2, shade: 0, time: 2000});
                 return;
             },
             success: function (data) {
@@ -247,8 +246,7 @@
                     });
                 } else {
                     //alert(dataMap.errorMsg);
-                    layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000}, function () {
-                    });
+                    layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
                 }
                 $("#fullScreen").hide();
             }
@@ -277,8 +275,7 @@
             async: true,
             error: function (request) {
                 //alert("Jquery Ajax request error!!!");
-                layer.msg("Jquery Ajax request error!!!", {icon: 2, shade: 0, time: 2000}, function () {
-                });
+                layer.msg("Jquery Ajax request error!!!", {icon: 2, shade: 0, time: 2000});
                 return;
             },
             success: function (data) {
@@ -289,8 +286,7 @@
                     window.location.href="/piflow-web/index"
                 } else {
                     //alert(dataMap.errorMsg);
-                    layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000}, function () {
-                    });
+                    layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
                 }
             }
         });

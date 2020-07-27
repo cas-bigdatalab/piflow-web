@@ -61,7 +61,7 @@
 </div>
 <div th:include="Macro/fragmentMacro :: fullScreen"></div>
 <script th:include="Macro/csrfTokeHeadMacro :: csrfTokeHeadMacroScript"/>
-<script th:src="@{/custom/js/processList.js}"></script>
+<script th:src="@{/my_js/processList.js}"></script>
 <script th:inline="javascript">
     initProcessDatatablePage("processTableId", "/piflow-web/process/processListPage", "search_input_id");
     window.onload = function () {

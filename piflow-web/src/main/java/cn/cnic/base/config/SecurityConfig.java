@@ -49,7 +49,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) {
         //Solving the problem of static resources being intercepted
-        web.ignoring().antMatchers("/components/**", "/js/**", "/css/**", "/my_js/*","/my_js/**","/custom/**", "/img/**", "/img/*", "/images/**", "/images/*");
+        web.ignoring().antMatchers("/components/**", "/js/**", "/css/**", "/my_js/*", "/my_js/**", "/my_css/*", "/my_css/**", "/img/**", "/img/*", "/images/**", "/images/*");
     }
 
     @Override
@@ -72,7 +72,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // 对于获取token的rest api要允许匿名访问
                 //.antMatchers("/api/v1/auth", "/api/v1/signout", "/error/**", "/api/**").permitAll()
                 .antMatchers("/register", "/checkUserName", "/jwtLogin", "/error", "/login").permitAll()
-                //.antMatchers("/components/**", "/js/**", "/css/**", "/custom/**", "/img/**", "/img/*").permitAll()
                 .antMatchers("/index").permitAll()
                 .antMatchers("/page/**").permitAll()
                 .antMatchers().permitAll()
