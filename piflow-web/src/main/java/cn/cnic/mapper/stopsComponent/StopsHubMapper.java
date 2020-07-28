@@ -45,4 +45,6 @@ public interface StopsHubMapper {
     public StopsHub getStopsHubListById(@Param("username") String username, @Param("isAdmin") boolean isAdmin, String id);
 
 
+    @UpdateProvider(type = StopsHubMapperProvider.class, method = "updateEnableFlagById")
+    public int deleteStopsHubById(@Param("username") String username, @Param("id") String id);
 }

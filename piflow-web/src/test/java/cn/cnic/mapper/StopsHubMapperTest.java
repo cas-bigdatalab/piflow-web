@@ -67,7 +67,33 @@ public class StopsHubMapperTest extends ApplicationTests {
         List<StopsHub> result = stopsHubMapper.getStopsHubList("Nature",false);
         for(int i=0; i<result.size(); i++){
             StopsHub s = result.get(i);
-            System.out.println(s.toString());
+            logger.info(s.toString());
         }
+    }
+
+    @Test
+    public void testGetStopsHubByName() {
+        List<StopsHub> result = stopsHubMapper.getStopsHubListByName("Nature",false, "piflowexternal");
+        for(int i=0; i<result.size(); i++){
+            StopsHub s = result.get(i);
+            logger.info(s.toString());
+        }
+    }
+
+    @Test
+    public void testGetStopsHubById() {
+        StopsHub s = stopsHubMapper.getStopsHubListById("Nature",false, "d6850e11266b42c9bdeab7595921a647");
+        if(s != null)
+         logger.info(s.toString());
+        else
+            logger.info("No StopsHub found!");
+    }
+
+    @Test
+    public void testDeleteStopsHub() {
+        int result = stopsHubMapper.deleteStopsHubById("Nature","1afa70ebe67e446bafe76b3626408575");
+
+        logger.info("Delete StopsHub result: " + result);
+
     }
 }
