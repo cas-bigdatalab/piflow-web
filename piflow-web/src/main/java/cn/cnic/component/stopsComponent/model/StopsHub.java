@@ -1,16 +1,11 @@
 package cn.cnic.component.stopsComponent.model;
 
 import cn.cnic.base.BaseHibernateModelUUIDNoCorpAgentId;
-import cn.cnic.common.Eunm.PortType;
-import cn.cnic.common.Eunm.ScheduleState;
-import cn.cnic.common.Eunm.StopsHueState;
+import cn.cnic.common.Eunm.StopsHubState;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Stop component table
@@ -33,6 +28,6 @@ public class StopsHub extends BaseHibernateModelUUIDNoCorpAgentId {
 
     @Column(columnDefinition = "varchar(255) COMMENT 'StopsHue status'")
     @Enumerated(EnumType.STRING)
-    private StopsHueState status;
+    private StopsHubState status;
 
 }

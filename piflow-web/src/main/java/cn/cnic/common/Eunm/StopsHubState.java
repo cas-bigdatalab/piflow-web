@@ -4,14 +4,14 @@ import cn.cnic.base.TextureEnumSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 @JsonSerialize(using = TextureEnumSerializer.class)
-public enum StopsHueState {
+public enum StopsHubState {
     MOUNT("MOUNT", "MOUNT"),
     UNMOUNT("UNMOUNT", "UNMOUNT");
 
     private final String value;
     private final String text;
 
-    private StopsHueState(String text, String value) {
+    private StopsHubState(String text, String value) {
         this.text = text;
         this.value = value;
     }
@@ -24,8 +24,8 @@ public enum StopsHueState {
         return value;
     }
 
-    public static StopsHueState selectGender(String name) {
-        for (StopsHueState portType : StopsHueState.values()) {
+    public static StopsHubState selectGender(String name) {
+        for (StopsHubState portType : StopsHubState.values()) {
             if (name.equalsIgnoreCase(portType.name())) {
                 return portType;
             }
