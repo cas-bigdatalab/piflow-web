@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -29,5 +30,17 @@ public class Schedule extends BaseHibernateModelUUIDNoCorpAgentId {
 
     @Column(columnDefinition = "varchar(255) COMMENT 'cron expression'")
     private String cronExpression;
+
+    @Column(columnDefinition = "datetime COMMENT 'plan start time'")
+    private Date planStartTime;
+
+    @Column(columnDefinition = "datetime COMMENT 'plan end time'")
+    private Date planEndTime;
+
+    @Column(columnDefinition = "varchar(255) COMMENT 'Template ID for generating Process'")
+    private String scheduleProcessTemplateId;
+
+    @Column(columnDefinition = "varchar(255) COMMENT 'Start template ID'")
+    private String scheduleRunTemplateId;
 
 }

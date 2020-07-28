@@ -5,6 +5,7 @@ import cn.cnic.common.Eunm.ProcessParentType;
 import cn.cnic.common.Eunm.ProcessState;
 import cn.cnic.common.Eunm.RunModeType;
 import cn.cnic.component.mxGraph.model.MxGraphModel;
+import cn.cnic.component.schedule.model.Schedule;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.OrderBy;
@@ -75,6 +76,10 @@ public class Process extends BaseHibernateModelUUIDNoCorpAgentId {
     @Column(columnDefinition = "varchar(255) COMMENT 'Process parent type'")
     @Enumerated(EnumType.STRING)
     private ProcessParentType processParentType;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "FK_GROUP_SCHEDULE_ID")
+    private Schedule schedule;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "FK_FLOW_PROCESS_GROUP_ID")
