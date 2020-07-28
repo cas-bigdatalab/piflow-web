@@ -101,7 +101,7 @@ public class StopImpl implements IStop {
         JSONObject jsonObject = JSONObject.fromObject(sendGetData).getJSONObject("StopInfo");// Convert a json string to a json object
         // Needed when there is a List in jsonObj
         @SuppressWarnings("rawtypes")
-		Map<String, Class> classMap = new HashMap<>();
+        Map<String, Class> classMap = new HashMap<>();
         // Key is the name of the List in jsonObj, and the value is a generic class of list
         classMap.put("properties", ThirdStopsComponentPropertyVo.class);
         // Convert a json object to a java object
@@ -121,7 +121,9 @@ public class StopImpl implements IStop {
             ThirdStopsComponentPropertyVo thirdStopsComponentPropertyVo;
             for (int i = 0; i < jsonArray.size(); i++) {
                 JSONObject propertyJsonObject = jsonArray.getJSONObject(i);
-                if(null==propertyJsonObject){continue;}
+                if (null == propertyJsonObject) {
+                    continue;
+                }
                 thirdStopsComponentPropertyVo = new ThirdStopsComponentPropertyVo();
                 thirdStopsComponentPropertyVo.setName(propertyJsonObject.getString("name"));
                 thirdStopsComponentPropertyVo.setDisplayName(propertyJsonObject.getString("displayName"));
@@ -131,6 +133,7 @@ public class StopImpl implements IStop {
                 thirdStopsComponentPropertyVo.setRequired(propertyJsonObject.getString("required"));
                 thirdStopsComponentPropertyVo.setSensitive(propertyJsonObject.getBoolean("sensitive"));
                 thirdStopsComponentPropertyVo.setExample(propertyJsonObject.getString("example"));
+                thirdStopsComponentPropertyVoList.add(thirdStopsComponentPropertyVo);
             }
             thirdStopsComponentVo.setProperties(thirdStopsComponentPropertyVoList);
         }

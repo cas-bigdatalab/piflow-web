@@ -46,7 +46,7 @@ public class StopsComponentPropertyUtils {
         if (StringUtils.isBlank(username)) {
             return null;
         }
-        if (null == properties || properties.size() > 0) {
+        if (null == properties || properties.size() <= 0) {
             return null;
         }
         List<StopsComponentProperty> stopsComponentPropertyList = new ArrayList<>();

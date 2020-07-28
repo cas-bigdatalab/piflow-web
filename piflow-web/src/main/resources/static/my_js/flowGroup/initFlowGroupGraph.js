@@ -1080,7 +1080,7 @@ function openProcessMonitor(evt) {
                         window_location_href("/page/flow/drawingBoard?drawingBoardType=TASK&parentAccessPath=flowGroupList&load=" + flow_obj.id);
                     } else if ('flowGroup' === dataMap.nodeType) {
                         var flowGroup_obj = dataMap.flowGroupVo;
-                        window_location_href("/page/flowGroup/flowGroup?drawingBoardType=GROUP&parentAccessPath=flowGroupList&load=" + flowGroup_obj.id);
+                        window_location_href("/page/flowGroup/drawingBoard?drawingBoardType=GROUP&parentAccessPath=flowGroupList&load=" + flowGroup_obj.id);
                     }
                 } else {
                     console.log(dataMap.errorMsg);

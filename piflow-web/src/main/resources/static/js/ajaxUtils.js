@@ -28,6 +28,10 @@ function ajaxRequest(param) {
     if (undefined !== param.processData) {
         processData = param.processData ? true : false;
     }
+    var async = true;
+    if (undefined !== param.async) {
+        async = param.async ? true : false;
+    }
     var contentType = "application/x-www-form-urlencoded;charset=UTF-8";
     if (undefined !== param.contentType) {
         contentType = param.contentType
@@ -88,9 +92,8 @@ function ajaxLoad(elementId, requestUrl, backFunc, errBackFunc) {
                 window.location.href = (web_header_prefix + "/login");
                 return;
             }
+            $("#" + elementId).html(data);
             if (backFunc && $.isFunction(backFunc)) {
-                $("#" + elementId).html(data);
-                console.log("ooooooooooooooooooooooooooooo");
                 backFunc(data);
             }
         },

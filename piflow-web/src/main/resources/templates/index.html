@@ -73,44 +73,6 @@
 
     </div>
     <!-- /content -->
-    <!--
-        <div id="div_indexHome_id" style="display: none;">
-            <div id="div_indexHome_content_id"></div>
-        </div>
-        <div id="div_flowList_id" style="display: none;" case="'flowList'">
-            <div id="div_flowList_content_id"></div>
-        </div>
-        <div style="display: none;" case="'processList'">
-            <div th:include="indexRight/flow/process_List :: process_List"></div>
-        </div>
-        <div style="display: none;" case="'template'">
-            <div th:include="indexRight/flow/template_List :: template_List"></div>
-        </div>
-        <div style="display: none;" case="'flowGroupList'">
-            <div th:include="indexRight/flowGroup/flow_group_List :: flow_group_List"></div>
-        </div>
-        <div style="display: none;" case="'processGroupList'">
-            <div th:include="indexRight/flowGroup/process_group_List :: process_group_List"></div>
-        </div>
-        <div style="display: none;" case="'flowGroupTemplateList'">
-            <div th:include="indexRight/flowGroup/flow_group_template_List :: flow_group_template_List"></div>
-        </div>
-        <div style="display: none;" case="'dataSources'">
-            <div th:include="indexRight/datasource/data_source_List :: data_source_List"></div>
-        </div>
-        <div style="display: none;" case="'processAndProcessGroup'">
-            <div th:include="indexRight/custom/process_processGroup_list :: process_processGroup_list"></div>
-        </div>
-        <div style="display: none;" case="'flowTemplateList'">
-            <div th:include="indexRight/custom/flow_template_List :: flow_template_List"></div>
-        </div>
-        <div style="display: none;" case="'instructionalVideo'">
-            <div th:include="indexRight/example/instructional_Video :: instructional_Video"></div>
-        </div>
-        <div style="display: none;" case="'sysScheduleList'">
-            <div th:include="indexRight/admin/sys_schedule_List :: sys_schedule_List"></div>
-        </div>
-        -->
 </div>
 <!-- /content container -->
 
@@ -145,7 +107,6 @@
             }
         }
         if (accessPath && 'indexHome' !== accessPath) {
-            console.log("sssssssssssssssssss");
             switch (accessPath) {
                 case 'flowList':
                     ajaxLoad("content", "/page/flowList");
@@ -213,7 +174,6 @@
                 menuParentHtml = $(menuParentHtml);
             }
             if (value.menuUrl) {
-                console.log("gggggg");
                 var menuUrlSpits = value.menuUrl.split(projectContextPath);
                 var menuActiveMenuId = "";
                 if (menuUrlSpits.length == 1) {

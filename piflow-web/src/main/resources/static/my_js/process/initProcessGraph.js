@@ -132,9 +132,9 @@ function initProcessGraph() {
 }
 
 function processMxEventClick(cell) {
-    $("#process_info_inc_load_id").hide();
-    $("#process_path_inc_load_id").hide();
-    $("#process_property_inc_load_id").hide();
+    $("#div_process_info_inc_load_id").hide();
+    $("#div_process_path_inc_load_id").hide();
+    $("#div_process_property_inc_load_id").hide();
     if (index) {
         $(".right-group").toggleClass("open-right");
         $(".ExpandSidebar").toggleClass("ExpandSidebar-open");
@@ -154,7 +154,7 @@ function processMxEventClick(cell) {
 }
 
 function queryProcessInfo(processId) {
-    $("#process_info_inc_load_id").show();
+    $("#div_process_info_inc_load_id").show();
     $("#div_process_info_inc_id").show();
     $("#div_process_path_inc_id").hide();
     $("#div_process_property_inc_id").hide();
@@ -210,7 +210,7 @@ function queryProcessInfo(processId) {
 }
 
 function queryProcessPathInfo(processId, pageId) {
-    $("#process_path_inc_load_id").show();
+    $("#div_process_path_inc_load_id").show();
     $("#div_process_info_inc_id").hide();
     $("#div_process_path_inc_id").show();
     $("#div_process_property_inc_id").hide();
@@ -260,7 +260,7 @@ function queryProcessPathInfo(processId, pageId) {
 }
 
 function queryProcessStopsProperty(processId, pageId) {
-    $("#process_property_inc_load_id").show();
+    $("#div_process_property_inc_load_id").show();
     $("#div_process_info_inc_id").hide();
     $("#div_process_path_inc_id").hide();
     $("#div_process_property_inc_id").show();
