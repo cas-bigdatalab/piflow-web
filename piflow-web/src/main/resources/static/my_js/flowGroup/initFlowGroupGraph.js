@@ -11,700 +11,6 @@ var drawingBoardType = $("#drawingBoardType").val();
 var flowPageIdcha, flowGroupdata, cellprecess, flowdatas, removegroupPaths, flowsPagesId;
 var index = true;
 
-
-function add(addParamData, flowId, nodeType) {
-
-    if (flowId && addParamData && addParamData.length > 0 && divValue) {
-        var table = document.createElement("table");
-        table.style.borderCollapse = "separate";
-        table.style.borderSpacing = "0px 5px";
-        table.style.marginLeft = "12px";
-        table.style.width = "97%";
-        var tbody = document.createElement("tbody");
-        for (var i = 0; i < addParamData.length; i++) {
-            var addData_i = addParamData[i];
-            var displayName = document.createElement('input');
-            displayName.setAttribute('data-toggle', 'true');
-            displayName.setAttribute('class', 'form-control');
-            displayName.setAttribute('id', '' + addData_i.id + '');
-            displayName.setAttribute('name', '' + addData_i.name + '');
-            displayName.setAttribute('onclick', 'attributeTabTd(this,false,"' + nodeType + '")');
-            displayName.setAttribute('readonly', 'readonly');
-            displayName.style.cursor = "pointer";
-            displayName.style.background = "rgb(245, 245, 245)";
-            var customValue = (addData_i.value == 'null' ? '' : addData_i.value);
-            displayName.setAttribute('value', '' + customValue + '');
-            var spanDisplayName = document.createElement('span');
-            var spanFlag = document.createElement('span');
-            spanFlag.setAttribute('style', 'color:red');
-            mxUtils.write(spanDisplayName, '' + addData_i.name + '' + ": ");
-            mxUtils.write(spanFlag, '*');
-            var img = document.createElement("img");
-            img.setAttribute('src', '/piflow-web/img/descIcon.png');
-            img.style.cursor = "pointer";
-            img.setAttribute('title', '' + addData_i.description + '');
-            var tr_1 = document.createElement("tr");
-            tr_1.setAttribute('class', 'trTableStop');
-            var td1_1 = document.createElement("td");
-            var td1_2 = document.createElement("td");
-            var td1_3 = document.createElement("td");
-            var td1_4 = document.createElement("td");
-            td1_1.style.width = "60px";
-            td1_2.style.width = "25px";
-            //开始appendchild()追加各个元素
-            td1_1.appendChild(spanDisplayName);
-            td1_2.appendChild(img);
-            td1_3.appendChild(displayName);
-            td1_4.appendChild(spanFlag);
-            tr_1.appendChild(td1_1);
-            tr_1.appendChild(td1_2);
-            tr_1.appendChild(td1_3);
-            tr_1.appendChild(td1_4);
-            tbody.appendChild(tr_1);
-        }
-        table.appendChild(tbody);
-        divValue.appendChild(table);
-        var flowIdInput = document.createElement("input");
-        flowIdInput.setAttribute("id", "updateFlowId")
-        flowIdInput.setAttribute("value", flowId);
-        flowIdInput.setAttribute("style", "display:none;");
-        divValue.appendChild(flowIdInput);
-    } else {
-        while (divValue && divValue.hasChildNodes()) {
-            divValue.removeChild(divValue.firstChild);
-        }
-    }
-}
-
-function cancelFlow() {
-    $("#input_node_flow_id").val("");
-    $("#input_node_pageId").val("");
-    graphGlobal.removeCells(removegroupPaths);
-    layer.closeAll()
-}
-
-function cancelGroup() {
-    graphGlobal.removeCells(removegroupPaths);
-    layer.closeAll()
-}
-
-//弹框------------------start---------------------------
-function checkGroupInput(flowName) {
-    if (flowName == '') {
-        layer.msg('flowName Can not be empty', {icon: 2, shade: 0, time: 2000});
-        document.getElementById('flowName').focus();
-        return false;
-    }
-    /*  if (description == '') {
-         layer.msg('description不能为空！', {icon: 2, shade: 0, time: 2000});
-         document.getElementById('description').focus();
-         return false;
-     } */
-    return true;
-};
-
-//弹框------------------end---------------------------
-
-function checkFlowInput(flowName, description, driverMemory, executorNumber, executorMemory, executorCores) {
-    if (flowName == '') {
-        layer.msg('flowName Can not be empty', {icon: 2, shade: 0, time: 2000});
-        document.getElementById('flowName').focus();
-        return false;
-    }
-
-    /*  if (description == '') {
-         layer.msg('description不能为空！', {icon: 2, shade: 0, time: 2000});
-         document.getElementById('description').focus();
-         return false;
-     } */
-    if (driverMemory == '') {
-        layer.msg('driverMemory Can not be empty', {icon: 2, shade: 0, time: 2000});
-        document.getElementById('driverMemory').focus();
-        return false;
-    }
-    if (executorNumber == '') {
-        layer.msg('executorNumber Can not be empty', {icon: 2, shade: 0, time: 2000});
-        document.getElementById('executorNumber').focus();
-        return false;
-    }
-    if (executorMemory == '') {
-        layer.msg('executorMemory Can not be empty', {icon: 2, shade: 0, time: 2000});
-        document.getElementById('executorMemory').focus();
-        return false;
-    }
-    if (executorCores == '') {
-        layer.msg('executorCores Can not be empty', {icon: 2, shade: 0, time: 2000});
-        document.getElementById('executorCores').focus();
-        return false;
-    }
-    return true;
-}
-
-//open xml file
-function openXml() {
-    ajaxRequest({
-        cache: true,//Keep cached data
-        type: "POST",//Request type post
-        url: "/flow/loadData",
-        //data:$('#loginForm').serialize(),//Serialize the form
-        async: true,//Synchronous Asynchronous
-        error: function (request) {//Operation after request failure
-            return;
-        },
-        success: function (data) {//After the request is successful
-            loadXml(data);
-            console.log("success");
-        }
-    });
-}
-
-//run
-function runFlow(runMode) {
-    fullScreen.show();
-    // console.info("ss");
-    var data = {flowId: loadId}
-    if (runMode) {
-        data.runMode = runMode;
-    }
-    ajaxRequest({
-        cache: true,//Keep cached data
-        type: "POST",//Request type post
-        url: "/flow/runFlow",
-        //data:$('#loginForm').serialize(),//Serialize the form
-        data: data,
-        async: true,//Synchronous Asynchronous
-        error: function (request) {//Operation after request failure
-            //alert("Request Failed");
-            layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000}, function () {
-                fullScreen.hide();
-            });
-
-            return;
-        },
-        success: function (data) {//After the request is successful
-            var dataMap = JSON.parse(data);
-            if (200 === dataMap.code) {
-                layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
-                    //Jump to the monitor page after starting successfully
-                    var tempWindow = window.open('');
-                    if (tempWindow == null || typeof (tempWindow) == 'undefined') {
-                        alert('The window cannot be opened. Please check your browser settings.')
-                    } else {
-                        tempWindow.location = "/mxGraph/drawingBoard?drawingBoardType=PROCESS&processType=PROCESS&load=" + dataMap.processId;
-                    }
-                });
-            } else {
-                //alert("Startup failure：" + dataMap.errorMsg);
-                layer.msg("Startup failure：" + dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
-            }
-            fullScreen.hide();
-        }
-    });
-}
-
-//run
-function runFlowGroup(runMode) {
-    fullScreen.show();
-    var data = {flowGroupId: loadId}
-    if (runMode) {
-        data.runMode = runMode;
-    }
-    ajaxRequest({
-        cache: true,//Keep cached data
-        type: "POST",//Request type post
-        url: "/flowGroup/runFlowGroup",
-        //data:$('#loginForm').serialize(),//Serialize the form
-        data: data,
-        async: true,//Synchronous Asynchronous
-        error: function (request) {//Operation after request failure
-            //alert("Request Failed");
-            layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000}, function () {
-                fullScreen.hide();
-            });
-
-            return;
-        },
-        success: function (data) {//After the request is successful
-            var dataMap = JSON.parse(data);
-            if (200 === dataMap.code) {
-                layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
-                    //Jump to the monitoring page after starting successfully
-                    window_open("/page/process/drawingBoard?drawingBoardType=PROCESS&processType=PROCESS_GROUP&load=" + dataMap.processGroupId, '_blank');
-                });
-            } else {
-                //alert("Startup failure：" + dataMap.errorMsg);
-                layer.msg("Startup failure：" + dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
-            }
-            fullScreen.hide();
-        }
-    });
-}
-
-// check choose port data
-function checkChoosePort() {
-    var sourcePortVal = '';
-    var targetPortVal = '';
-    var sourceTypeDivR_R = $('#sourceTypeDivR_R');
-    var targetTypeDivR_R = $("#targetTypeDivR_R");
-    if (!sourceTypeDivR_R && !targetTypeDivR_R) {
-        layer.msg("Page error, please check!", {icon: 2, shade: 0, time: 2000});
-        return false;
-    }
-    var isSourceRoute = false;
-    var isTargetRoute = false;
-    var sourceTitleCheckboxR_R = $('#sourceTitleCheckboxR_R');
-    var targetTitleCheckboxR_R = $("#targetTitleCheckboxR_R");
-    if (sourceTitleCheckboxR_R) {
-        var sourceDivType = sourceTypeDivR_R.html();
-        if ('Default' === sourceDivType) {
-            //'default' type is not verified
-        } else if ("Route" === sourceDivType) {
-            isSourceRoute = true;
-            //'Route' type is not verified
-        } else {
-            var sourceEffCheckbox = [];
-            sourceTitleCheckboxR_R.find("input[type='checkbox']:checked").each(function () {
-                if ($(this).prop("disabled") == false) {
-                    sourceEffCheckbox[sourceEffCheckbox.length] = $(this);
-                }
-            });
-            if (sourceEffCheckbox.length > 1) {
-                layer.msg("'sourcePort'can only choose one", {icon: 2, shade: 0, time: 2000});
-                return false;
-            }
-            if (sourceEffCheckbox < 1) {
-                layer.msg("Please select'sourcePort'", {icon: 2, shade: 0, time: 2000});
-                return false;
-            }
-            for (var i = 0; i < sourceEffCheckbox.length; i++) {
-                var sourcecheckBoxEff = sourceEffCheckbox[i];
-                if ('' === sourcePortVal) {
-                    sourcePortVal = sourcecheckBoxEff.val();
-                } else {
-                    sourcePortVal = sourcePortVal + "," + sourcecheckBoxEff.val();
-                }
-            }
-        }
-    } else {
-        layer.msg("Page error, please check!", {icon: 2, shade: 0, time: 2000});
-        return false;
-    }
-    if (targetTitleCheckboxR_R) {
-        var targetDivType = targetTypeDivR_R.html();
-        if ('Default' === targetDivType) {
-            //Default type not checked
-        } else if ("Route" === targetDivType) {
-            isTargetRoute = true;
-            //Route type not checked
-        } else {
-            var targetEffCheckbox = [];
-            targetTitleCheckboxR_R.find("input[type='checkbox']:checked").each(function () {
-                if ($(this).prop("disabled") == false) {
-                    targetEffCheckbox[targetEffCheckbox.length] = $(this);
-                }
-            });
-            if (targetEffCheckbox.length > 1) {
-                layer.msg("'targetPort'can only choose one", {icon: 2, shade: 0, time: 2000});
-                return false;
-            }
-            if (targetEffCheckbox.length < 1) {
-                layer.msg("Please select'targetPort'", {icon: 2, shade: 0, time: 2000});
-                return false;
-            }
-            for (var i = 0; i < targetEffCheckbox.length; i++) {
-                var targetcheckBoxEff = targetEffCheckbox[i];
-                if ('' === targetPortVal) {
-                    targetPortVal = targetcheckBoxEff.val();
-                } else {
-                    targetPortVal = targetPortVal + "," + targetcheckBoxEff.val();
-                }
-            }
-        }
-    } else {
-        layer.msg("Page error, please check!", {icon: 2, shade: 0, time: 2000});
-        return false;
-    }
-
-    var sourceMxCellId = '';
-    var targetMxCellId = '';
-    var pathLine = pathsCells[0];
-    var pathLineId = pathLine.id;
-    var sourceMxCell = pathLine.source;
-    var targetMxCell = pathLine.target;
-    if (targetMxCell) {
-        sourceMxCellId = sourceMxCell.id;
-    }
-    if (targetMxCell) {
-        targetMxCellId = targetMxCell.id;
-    }
-    var sourceRouteFilterSelectValue = $('#sourceRouteFilterSelectR_R').val();
-    var targetRouteFilterSelectValue = $('#targetRouteFilterSelectR_R').val();
-    var reqData = {
-        "flowId": loadId,
-        "pathLineId": pathLineId,
-        "sourcePortVal": sourcePortVal,
-        "targetPortVal": targetPortVal,
-        "sourceId": sourceMxCellId,
-        "targetId": targetMxCellId,
-        "sourceFilter": sourceRouteFilterSelectValue,
-        "targetFilter": targetRouteFilterSelectValue,
-        "sourceRoute": isSourceRoute,
-        "targetRoute": isTargetRoute
-    }
-    return reqData;
-}
-
-function choosePortNew() {
-    if (pathsCells.length > 1) {
-        graphGlobal.removeCells(pathsCells);
-        layer.msg("Page error, please check!", {icon: 2, shade: 0, time: 2000}, function () {
-            layer.closeAll();
-            layer.closeAll();
-        });
-        return false;
-    } else {
-        var reqData = checkChoosePort();
-        if (reqData) {
-            ajaxRequest({
-                cache: true,
-                type: "get",
-                url: "/path/savePathsPort",
-                data: reqData,
-                async: true,
-                traditional: true,
-                error: function (request) {
-                    console.log("error");
-                    return;
-                },
-                success: function (data) {
-                    var dataMap = JSON.parse(data);
-                    //alert(dataMap);
-                    if (200 === dataMap.code) {
-                        layer.closeAll();
-                    } else {
-                        //alert("Port Selection Save Failed");
-                        layer.msg("Port Selection Save Failed", {icon: 2, shade: 0, time: 2000}, function () {
-                            layer.closeAll();
-                        });
-                        graphGlobal.removeCells(pathsCells);
-                    }
-                }
-            });
-        }
-    }
-}
-
-function cancelPortAndPathNew() {
-    layer.closeAll();
-    graphGlobal.removeCells(pathsCells);
-}
-
-function crtAnyPort(crtProtInputId, isSource) {
-    var crtProtInput = $('#' + crtProtInputId);
-    var portNameVal = crtProtInput.val();
-    if (portNameVal && '' !== portNameVal) {
-        if (!document.getElementById(portNameVal)) {
-            var obj = '<div style="display: block;" class="addCheckbox" id="jCheckbox">'
-                + '<input type="checkbox" class="addCheckbox" id="' + portNameVal + '" name="' + portNameVal + '" value="' + portNameVal + '">'
-                + '<span class="' + portNameVal + '">' + portNameVal + '</span>'
-                + '</div>';
-            if (isSource) {
-                $('#sourceTitleCheckboxR_R').append(obj);
-            } else {
-                $('#targetTitleCheckboxR_R').append(obj);
-            }
-            $('.' + portNameVal).text(portNameVal);
-        } else {
-            layer.msg("Port name occupied!!", {icon: 2, shade: 0, time: 2000});
-        }
-    } else {
-        //alert("The port name cannot be empty");
-        layer.msg("Port name cannot be empty", {icon: 2, shade: 0, time: 2000});
-    }
-}
-
-function saveCheckpoints(stopId) {
-    //alert("ssss");
-    var isCheckpoint = 0;
-    if ($('#isCheckpoint').is(':checked')) {
-        isCheckpoint = 1;
-    }
-    ajaxRequest({
-        cache: true,
-        type: "POST",
-        url: "/stops/updateStopsById",
-        data: {
-            stopId: stopId,
-            isCheckpoint: isCheckpoint
-        },
-        async: true,
-        traditional: true,
-        error: function (request) {
-            layer.msg("Failure to mark'Checkpoint'", {icon: 2, shade: 0, time: 2000});
-            return;
-        },
-        success: function (data) {
-            var dataMap = JSON.parse(data);
-            //alert(dataMap);
-            //console.log("attribute update success");
-            if (200 === dataMap.code) {
-                layer.msg("Successful modification of the tag'Checkpoint'", {
-                    icon: 1,
-                    shade: 0,
-                    time: 2000
-                }, function () {
-                });
-            } else {
-                layer.msg("Failed to modify the tag'Checkpoint'", {icon: 2, shade: 0, time: 2000});
-            }
-
-        }
-    });
-}
-
-function saveTemplateFun(url) {
-    var templateType = drawingBoardType;
-    var getXml = thisEditor.getGraphXml();
-    var xml_outer_html = getXml.outerHTML;
-    layer.prompt({
-        title: 'please enter the template name',
-        formType: 0,
-        btn: ['submit', 'cancel']
-    }, function (text, index) {
-        layer.close(index);
-        ajaxRequest({
-            cache: true,//Keep cached data
-            type: "POST",//Request type post
-            url: "/flowTemplate/saveFlowTemplate",
-            data: {
-                value: xml_outer_html,
-                load: loadId,
-                name: text,
-                templateType: templateType
-            },
-            async: true,
-            error: function (request) {//Operation after request failure
-                console.log(" save template error");
-                return;
-            },
-            success: function (data) {//After the request is successful
-                var dataMap = JSON.parse(data);
-                if (200 === dataMap.code) {
-                    layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
-                    });
-                } else {
-                    layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
-                }
-            }
-        });
-    });
-}
-
-function uploadTemplate() {
-    document.getElementById("uploadFile").click();
-}
-
-function uploadFlowGroupTemplateBtn() {
-    document.getElementById("flowTemplateFile").click();
-}
-
-function uploadTemplateFile(element) {
-    if (!FileTypeCheck(element)) {
-        return false;
-    }
-    if (url) {
-        return false;
-    }
-    var formData = new FormData($('#uploadForm')[0]);
-    ajaxRequest({
-        type: 'post',
-        url: '/flowTemplate/uploadXmlFile',
-        data: formData,
-        cache: false,
-        processData: false,
-        contentType: false,
-    }).success(function (data) {
-        var dataMap = JSON.parse(data);
-        if (200 === dataMap.code) {
-            layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
-            });
-        } else {
-            layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
-        }
-    }).error(function () {
-        layer.msg("Upload failure", {icon: 2, shade: 0, time: 2000});
-    });
-}
-
-function FileTypeCheck(element) {
-    if (element.value == null || element.value == '') {
-        layer.msg('please upload the XML file', {icon: 2, shade: 0, time: 2000});
-        this.focus()
-        return false;
-    }
-    var length = element.value.length;
-    var charindex = element.value.lastIndexOf(".");
-    var ExtentName = element.value.substring(charindex, charindex + 4);
-    if (!(ExtentName == ".xml")) {
-        layer.msg('please upload the XML file', {icon: 2, shade: 0, time: 2000});
-        this.focus()
-        return false;
-    }
-    return true;
-}
-
-function loadingXml(id, loadId) {
-    var loadType = Format.customizeType;
-    fullScreen.show();
-    ajaxRequest({
-        type: 'post',
-        data: {
-            templateId: id,
-            loadType: loadType,
-            load: loadId
-        },
-        async: true,
-        url: "/flowTemplate/loadingXmlPage",
-    }).success(function (data) {
-        var dataMap = JSON.parse(data);
-        var icon_code = 2;
-        if (200 === dataMap.code) {
-            icon_code = 1;
-        }
-        fullScreen.hide();
-        layer.msg(dataMap.errorMsg, {icon: icon_code, shade: 0.7, time: 2000}, function () {
-            window.location.reload();
-        });
-    }).error(function () {
-        fullScreen.hide();
-    });
-}
-
-function openTemplateList() {
-    if (isExample) {
-        layer.msg('This is an example, you can\'t edit', {icon: 2, shade: 0, time: 2000});
-        return;
-    }
-    var url = "";
-    var functionNameStr = "";
-    if ('TASK' !== Format.customizeType && 'GROUP' !== Format.customizeType) {
-        return;
-    }
-    ajaxRequest({
-        url: "/flowTemplate/flowTemplateList",
-        type: "post",
-        async: false,
-        success: function (data) {
-            var dataMap = JSON.parse(data);
-            if (200 === dataMap.code) {
-                var temPlateList = dataMap.temPlateList;
-                var showSelectDivHtml = '<div style="width: 100%;height: 146px;position: relative;">';
-                var showOptionHtml = '';
-                for (var i = 0; i < temPlateList.length; i++) {
-                    showOptionHtml += ("<option value=" + temPlateList[i].id + " >" + temPlateList[i].name + "</option>");
-                }
-                var showSelectHtml = 'There is no template, please create';
-                var loadTemplateBtn = '';
-                if (showOptionHtml) {
-                    showSelectHtml = ('<div style="width: 100%;text-align: center;">'
-                        + '<select name="loadingXmlSelect" id="loadingXmlSelectNew" style="width: 80%;margin-top: 15px;">'
-                        + '<option value=\'-1\' >------------please choose------------</option>'
-                        + showOptionHtml
-                        + '</select>'
-                        + '</div>');
-                    loadTemplateBtn = '<div style="position: absolute;bottom: 12px;right: 10px;">'
-                        + '<input type="button" class="btn" value="Submit" onclick="loadTemplateFun()"/>'
-                        + '</div>';
-                }
-                showSelectDivHtml += (showSelectHtml + loadTemplateBtn + '</div>');
-                layer.open({
-                    type: 1,
-                    title: '<span style="color: #269252;">Please choose</span>',
-                    shadeClose: false,
-                    resize: false,
-                    closeBtn: 1,
-                    shift: 7,
-                    area: ['500px', '200px'], //Width height
-                    skin: 'layui-layer-rim', //Add borders
-                    content: showSelectDivHtml
-                });
-            } else {
-                layer.msg("No template, please create", {time: 2000});
-            }
-        }
-    });
-}
-
-function loadTemplateFun() {
-    var id = $("#loadingXmlSelectNew").val();
-    if (id == '-1') {
-        layer.msg('Please choose template', {icon: 2, shade: 0, time: 2000});
-        return;
-    }
-
-    var name = $("#loadingXmlSelect option:selected").text();
-    layer.open({
-        title: 'LoadTemplate',
-        content: 'Are you sure you want to load ' + name + '？',
-        btn: ['submit', 'cancel'],
-        yes: function (index, layero) {
-            loadingXml(id, loadId);
-            var oDiv = document.getElementById("divloadingXml");
-            oDiv.style.display = "none";
-        },
-        btn2: function (index, layero) {
-            var oDiv = document.getElementById("divloadingXml");
-            oDiv.style.display = "none";
-        }, cancel: function () {
-            var oDiv = document.getElementById("divloadingXml");
-            oDiv.style.display = "none";
-        }
-    });
-}
-
-function getRunningProcessList() {
-    ajaxRequest({
-        cache: true,//Keep cached data
-        type: "POST",//Request type post
-        url: "/process/getRunningProcessListData",
-        data: {"flowId": loadId},
-        async: true,
-        error: function (request) {//Operation after request failure
-            return;
-        },
-        success: function (data) {//
-            $('#runningProcessID').remove();
-            $('#rightSidebarID').append(data);
-        }
-    });
-}
-
-function layuiOpenWindowDivFunc(title, contentHtml) {
-    layer.open({
-        type: 1,
-        title: '<span style="color: #269252;">' + title + '</span>',
-        shadeClose: false,
-        closeBtn: 0,
-        shift: 7,
-        area: ['580px', '520px'], //Width height
-        skin: 'layui-layer-rim', //Add borders
-        content: contentHtml
-    });
-}
-
-function closeChoosePortWindow() {
-    layer.closeAll();
-    graphGlobal.removeCells(pathsCells);
-}
-
-//***************************************************************************************************************
-//***************************************************************************************************************
-//***************************************************************************************************************
-//***************************************************************************************************************
-//***************************************************************************************************************
-//***************************************************************************************************************
-//***************************************************************************************************************
-
 var consumedFlag;
 
 function initFlowGroupDrawingBoardData(loadId, parentAccessPath) {
@@ -739,10 +45,142 @@ function initFlowGroupDrawingBoardData(loadId, parentAccessPath) {
     });
 }
 
+function imageAjax() {
+    var loading
+    ajaxRequest({
+        type: "post",//Request type post
+        url: "/mxGraph/nodeImageList",
+        data: {imageType: "TASK"},
+        async: true,//Synchronous Asynchronous
+        error: function (request) {//Operation after request failure
+            return;
+        },
+        beforeSend: function () {
+            loading = layer.load(0, {
+                shade: false,
+                success: function (layerContentStyle) {
+                    layerContentStyle.find('.layui-layer-content').css({
+                        'padding-top': '35px',
+                        'text-align': 'left',
+                        'width': '120px',
+                    });
+                },
+                icon: 2,
+                // time: 100*1000
+            });
+        },
+        success: function (data) {//After the request is successful
+            layer.close(loading)
+            var nowimage = $("#nowimage")[0];
+            nowimage.innerHTML = "";
+            var nodeImageList = JSON.parse(data).nodeImageList;
+            nodeImageList.forEach(item => {
+                var div = document.createElement("div");
+                div.className = "imgwrap";
+                var image = document.createElement("img");
+                image.className = "imageimg"
+                image.style = "width:100%;height:100%";
+                image.src = item.imageUrl;
+
+                div.appendChild(image);
+                nowimage.appendChild(div);
+                div.onclick = function (e) {
+                    e.stopPropagation();
+                    for (var i = 0; i < imgwrap1.length; i++) {
+                        imgwrap1[i].style.backgroundColor = "#fff"
+                    }
+                    e.toElement.style = "background-color:#009688;width:100%;height:100%"
+                    imagSrc = e.toElement.src
+                }
+            })
+            var imgwrap1 = $(".imageimg")
+
+        }
+    });
+}
+
+function updateMxGraphCellImage(cellEditor, selState, newValue, fn) {
+    //   Change picture
+    layui.use('upload', function () {
+        var upload = layui.upload;
+        var loading
+        //执行实例
+        var uploadInst = upload.render({
+            elem: '#uploadimage' //绑定元素
+            , url: '/piflow-web/mxGraph/uploadNodeImage' //上传接口
+            , headers: {
+                Authorization: ("Bearer " + token)
+            }
+            , before: function (obj) {
+                this.data = {imageType: "TASK"};
+                loading = layer.load(0, {
+                    shade: false,
+                    success: function (layerContentStyle) {
+                        layerContentStyle.find('.layui-layer-content').css({
+                            'padding-top': '35px',
+                            'text-align': 'left',
+                            'width': '120px',
+                        });
+                    },
+                    icon: 2,
+                    // time: 100*1000
+                });
+            }
+            , done: function (res) {
+                //上传完毕回调
+                console.log("upload success")
+                imageAjax();
+                layer.close(loading);
+            }
+            , error: function () {
+                //请求异常回调
+                console.log("upload error")
+            }
+        });
+    });
+    layer.open({
+        type: 1,
+        title: '',
+        shadeClose: true,
+        shade: 0.3,
+        closeBtn: 1,
+        shift: 7,
+        btn: ['YES', 'NO'],
+        area: ['620px', '520px'], //Width height
+        skin: 'layui-layer-rim', //Add borders
+        content: $("#changeimage"),
+        success: function () {
+            imageAjax()
+        },
+        //YES BUTTON
+        btn1: function (index, layero) {
+            var newValue = imagSrc;
+            imagSrc = null
+            EditorUi.prototype.saveImageUpdate(cellEditor, selState, newValue, fn, 66, 66);
+            layer.close(index)
+            setTimeout(() => {
+                saveXml(null, "MOVED")
+            }, 300)
+
+        },
+        //NO BUTTON
+        btn2: function (index, layero) {
+            imagSrc = null
+            layer.close(index)
+        },
+        //close function
+        cancel: function (index, layero) {
+            layer.close(index)
+            return false;
+        }
+    });
+}
+
 function initFlowGroupGraph() {
     Format.prototype.isShowTextCell = true;
     Menus.prototype.customRightMenu = ['runAll'];
     Menus.prototype.customCellRightMenu = ['run'];
+    EditorUi.prototype.customUpdeteImg = updateMxGraphCellImage;
     Actions.prototype.RunAll = runFlowGroup;
     EditorUi.prototype.saveGraphData = saveXml;
     Format.hideSidebar(true, true);
@@ -1613,6 +1051,42 @@ function updateFlowGroupAttributes(flowGroupId, propertyId, updateContentId, e) 
     });
 }
 
+// check flow required
+function checkFlowInput(flowName, description, driverMemory, executorNumber, executorMemory, executorCores) {
+    if (flowName == '') {
+        layer.msg('flowName Can not be empty', {icon: 2, shade: 0, time: 2000});
+        document.getElementById('flowName').focus();
+        return false;
+    }
+
+    /*  if (description == '') {
+         layer.msg('description不能为空！', {icon: 2, shade: 0, time: 2000});
+         document.getElementById('description').focus();
+         return false;
+     } */
+    if (driverMemory == '') {
+        layer.msg('driverMemory Can not be empty', {icon: 2, shade: 0, time: 2000});
+        document.getElementById('driverMemory').focus();
+        return false;
+    }
+    if (executorNumber == '') {
+        layer.msg('executorNumber Can not be empty', {icon: 2, shade: 0, time: 2000});
+        document.getElementById('executorNumber').focus();
+        return false;
+    }
+    if (executorMemory == '') {
+        layer.msg('executorMemory Can not be empty', {icon: 2, shade: 0, time: 2000});
+        document.getElementById('executorMemory').focus();
+        return false;
+    }
+    if (executorCores == '') {
+        layer.msg('executorCores Can not be empty', {icon: 2, shade: 0, time: 2000});
+        document.getElementById('executorCores').focus();
+        return false;
+    }
+    return true;
+}
+
 //flow Information popup-----
 function saveFlow() {
     var currentId = $("#input_node_flow_id").val();
@@ -1676,6 +1150,29 @@ function saveFlow() {
     });
 };
 
+//cancel Flow
+function cancelFlow() {
+    $("#input_node_flow_id").val("");
+    $("#input_node_pageId").val("");
+    graphGlobal.removeCells(removegroupPaths);
+    layer.closeAll()
+}
+
+// check flowGroup required
+function checkGroupInput(flowName) {
+    if (flowName == '') {
+        layer.msg('flowName Can not be empty', {icon: 2, shade: 0, time: 2000});
+        document.getElementById('flowName').focus();
+        return false;
+    }
+    /*  if (description == '') {
+         layer.msg('description不能为空！', {icon: 2, shade: 0, time: 2000});
+         document.getElementById('description').focus();
+         return false;
+     } */
+    return true;
+};
+
 //flowGroup Information popup-----
 function saveOrUpdateFlowGroup() {
     var currentId = $("#input_node_flowGroup_id").val();
@@ -1731,5 +1228,296 @@ function saveOrUpdateFlowGroup() {
 
     }
 
+}
+
+//cancel Group
+function cancelGroup() {
+    graphGlobal.removeCells(removegroupPaths);
+    layer.closeAll()
+}
+
+// save template
+function saveTemplateFun() {
+    var templateType = drawingBoardType;
+    var getXml = thisEditor.getGraphXml();
+    var xml_outer_html = getXml.outerHTML;
+    layer.prompt({
+        title: 'please enter the template name',
+        formType: 0,
+        btn: ['submit', 'cancel']
+    }, function (text, index) {
+        layer.close(index);
+        ajaxRequest({
+            cache: true,//Keep cached data
+            type: "POST",//Request type post
+            url: "/flowTemplate/saveFlowTemplate",
+            data: {
+                value: xml_outer_html,
+                load: loadId,
+                name: text,
+                templateType: templateType
+            },
+            async: true,
+            error: function (request) {//Operation after request failure
+                console.log(" save template error");
+                return;
+            },
+            success: function (data) {//After the request is successful
+                var dataMap = JSON.parse(data);
+                if (200 === dataMap.code) {
+                    layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
+                    });
+                } else {
+                    layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
+                }
+            }
+        });
+    });
+}
+
+// upload template
+function uploadFlowGroupTemplateBtn() {
+    document.getElementById("flowTemplateFile").click();
+}
+
+// upload template
+function uploadTemplateFile(element) {
+    if (!FileTypeCheck(element)) {
+        return false;
+    }
+    if (url) {
+        return false;
+    }
+    var formData = new FormData($('#uploadForm')[0]);
+    ajaxRequest({
+        type: 'post',
+        url: '/flowTemplate/uploadXmlFile',
+        data: formData,
+        cache: false,
+        processData: false,
+        contentType: false,
+    }).success(function (data) {
+        var dataMap = JSON.parse(data);
+        if (200 === dataMap.code) {
+            layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
+            });
+        } else {
+            layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
+        }
+    }).error(function () {
+        layer.msg("Upload failure", {icon: 2, shade: 0, time: 2000});
+    });
+}
+
+// check file type
+function FileTypeCheck(element) {
+    if (element.value == null || element.value == '') {
+        layer.msg('please upload the XML file', {icon: 2, shade: 0, time: 2000});
+        this.focus()
+        return false;
+    }
+    var length = element.value.length;
+    var charindex = element.value.lastIndexOf(".");
+    var ExtentName = element.value.substring(charindex, charindex + 4);
+    if (!(ExtentName == ".xml")) {
+        layer.msg('please upload the XML file', {icon: 2, shade: 0, time: 2000});
+        this.focus()
+        return false;
+    }
+    return true;
+}
+
+function loadingXml(id, loadId) {
+    var loadType = Format.customizeType;
+    fullScreen.show();
+    ajaxRequest({
+        type: 'post',
+        data: {
+            templateId: id,
+            loadType: loadType,
+            load: loadId
+        },
+        async: true,
+        url: "/flowTemplate/loadingXmlPage",
+    }).success(function (data) {
+        var dataMap = JSON.parse(data);
+        var icon_code = 2;
+        if (200 === dataMap.code) {
+            icon_code = 1;
+        }
+        fullScreen.hide();
+        layer.msg(dataMap.errorMsg, {icon: icon_code, shade: 0.7, time: 2000}, function () {
+            window.location.reload();
+        });
+    }).error(function () {
+        fullScreen.hide();
+    });
+}
+
+// open template list
+function openTemplateList() {
+    console.log("openTemplateListopenTemplateListopenTemplateListopenTemplateListopenTemplateListopenTemplateListopenTemplateList");
+    if (isExample) {
+        layer.msg('This is an example, you can\'t edit', {icon: 2, shade: 0, time: 2000});
+        return;
+    }
+    var url = "";
+    var functionNameStr = "";
+    if ('TASK' !== Format.customizeType && 'GROUP' !== Format.customizeType) {
+        return;
+    }
+    ajaxRequest({
+        url: "/flowTemplate/flowTemplateList",
+        type: "post",
+        async: false,
+        success: function (data) {
+            var dataMap = JSON.parse(data);
+            if (200 === dataMap.code) {
+                var temPlateList = dataMap.temPlateList;
+                var showSelectDivHtml = '<div style="width: 100%;height: 146px;position: relative;">';
+                var showOptionHtml = '';
+                for (var i = 0; i < temPlateList.length; i++) {
+                    showOptionHtml += ("<option value=" + temPlateList[i].id + " >" + temPlateList[i].name + "</option>");
+                }
+                var showSelectHtml = 'There is no template, please create';
+                var loadTemplateBtn = '';
+                if (showOptionHtml) {
+                    showSelectHtml = ('<div style="width: 100%;text-align: center;">'
+                        + '<select name="loadingXmlSelect" id="loadingXmlSelectNew" style="width: 80%;margin-top: 15px;">'
+                        + '<option value=\'-1\' >------------please choose------------</option>'
+                        + showOptionHtml
+                        + '</select>'
+                        + '</div>');
+                    loadTemplateBtn = '<div style="position: absolute;bottom: 12px;right: 10px;">'
+                        + '<input type="button" class="btn" value="Submit" onclick="loadTemplateFun()"/>'
+                        + '</div>';
+                }
+                showSelectDivHtml += (showSelectHtml + loadTemplateBtn + '</div>');
+                layer.open({
+                    type: 1,
+                    title: '<span style="color: #269252;">Please choose</span>',
+                    shadeClose: false,
+                    resize: false,
+                    closeBtn: 1,
+                    shift: 7,
+                    area: ['500px', '200px'], //Width height
+                    skin: 'layui-layer-rim', //Add borders
+                    content: showSelectDivHtml
+                });
+            } else {
+                layer.msg("No template, please create", {time: 2000});
+            }
+        }
+    });
+}
+
+// load template
+function loadTemplateFun() {
+    var id = $("#loadingXmlSelectNew").val();
+    if (id == '-1') {
+        layer.msg('Please choose template', {icon: 2, shade: 0, time: 2000});
+        return;
+    }
+
+    var name = $("#loadingXmlSelect option:selected").text();
+    layer.open({
+        title: 'LoadTemplate',
+        content: 'Are you sure you want to load ' + name + '？',
+        btn: ['submit', 'cancel'],
+        yes: function (index, layero) {
+            loadingXml(id, loadId);
+            var oDiv = document.getElementById("divloadingXml");
+            oDiv.style.display = "none";
+        },
+        btn2: function (index, layero) {
+            var oDiv = document.getElementById("divloadingXml");
+            oDiv.style.display = "none";
+        }, cancel: function () {
+            var oDiv = document.getElementById("divloadingXml");
+            oDiv.style.display = "none";
+        }
+    });
+}
+
+//run flowGroup
+function runFlowGroup(runMode) {
+    fullScreen.show();
+    var data = {flowGroupId: loadId}
+    if (runMode) {
+        data.runMode = runMode;
+    }
+    ajaxRequest({
+        cache: true,//Keep cached data
+        type: "POST",//Request type post
+        url: "/flowGroup/runFlowGroup",
+        //data:$('#loginForm').serialize(),//Serialize the form
+        data: data,
+        async: true,//Synchronous Asynchronous
+        error: function (request) {//Operation after request failure
+            //alert("Request Failed");
+            layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000}, function () {
+                fullScreen.hide();
+            });
+
+            return;
+        },
+        success: function (data) {//After the request is successful
+            var dataMap = JSON.parse(data);
+            if (200 === dataMap.code) {
+                layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
+                    //Jump to the monitoring page after starting successfully
+                    window_open("/page/process/drawingBoard?drawingBoardType=PROCESS&processType=PROCESS_GROUP&load=" + dataMap.processGroupId, '_blank');
+                });
+            } else {
+                //alert("Startup failure：" + dataMap.errorMsg);
+                layer.msg("Startup failure：" + dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
+            }
+            fullScreen.hide();
+        }
+    });
+}
+
+//run flow
+function runFlow(runMode) {
+    fullScreen.show();
+    // console.info("ss");
+    var data = {flowId: loadId}
+    if (runMode) {
+        data.runMode = runMode;
+    }
+    ajaxRequest({
+        cache: true,//Keep cached data
+        type: "POST",//Request type post
+        url: "/flow/runFlow",
+        //data:$('#loginForm').serialize(),//Serialize the form
+        data: data,
+        async: true,//Synchronous Asynchronous
+        error: function (request) {//Operation after request failure
+            //alert("Request Failed");
+            layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000}, function () {
+                fullScreen.hide();
+            });
+
+            return;
+        },
+        success: function (data) {//After the request is successful
+            var dataMap = JSON.parse(data);
+            if (200 === dataMap.code) {
+                layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
+                    //Jump to the monitor page after starting successfully
+                    var tempWindow = window.open('');
+                    if (tempWindow == null || typeof (tempWindow) == 'undefined') {
+                        alert('The window cannot be opened. Please check your browser settings.')
+                    } else {
+                        tempWindow.location = "/mxGraph/drawingBoard?drawingBoardType=PROCESS&processType=PROCESS&load=" + dataMap.processId;
+                    }
+                });
+            } else {
+                //alert("Startup failure：" + dataMap.errorMsg);
+                layer.msg("Startup failure：" + dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
+            }
+            fullScreen.hide();
+        }
+    });
 }
 
