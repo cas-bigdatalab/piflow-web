@@ -229,11 +229,7 @@ function runFlowGroup(runMode) {
             if (200 === dataMap.code) {
                 layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
                     //Jump to the monitoring page after starting successfully
-                    var windowOpen = window.open("/piflow-web/mxGraph/drawingBoard?drawingBoardType=PROCESS&processType=PROCESS_GROUP&load=" + dataMap.processGroupId, '_blank');
-                    //var tempwindow = window.open('_blank');
-                    if (windowOpen == null || typeof (windowOpen) == 'undefined') {
-                        alert('The window cannot be opened. Please check your browser settings.');
-                    }
+                    window_open("/page/process/drawingBoard?drawingBoardType=PROCESS&processType=PROCESS_GROUP&load=" + dataMap.processGroupId, '_blank');
                 });
             } else {
                 //alert("Startup failure：" + dataMap.errorMsg);
@@ -743,7 +739,7 @@ function initFlowGroupDrawingBoardData(loadId, parentAccessPath) {
     });
 }
 
-function initGraph() {
+function initFlowGroupGraph() {
     Format.prototype.isShowTextCell = true;
     Menus.prototype.customRightMenu = ['runAll'];
     Menus.prototype.customCellRightMenu = ['run'];
@@ -1081,10 +1077,10 @@ function openProcessMonitor(evt) {
                 if (200 === dataMap.code) {
                     if ('flow' === dataMap.nodeType) {
                         var flow_obj = dataMap.flowVo;
-                        window.location.href = "/piflow-web/mxGraph/drawingBoard?drawingBoardType=TASK&parentAccessPath=flowGroupList&load=" + flow_obj.id;
+                        window_location_href("/page/flow/drawingBoard?drawingBoardType=TASK&parentAccessPath=flowGroupList&load=" + flow_obj.id);
                     } else if ('flowGroup' === dataMap.nodeType) {
                         var flowGroup_obj = dataMap.flowGroupVo;
-                        window.location.href = "/piflow-web/mxGraph/drawingBoard?drawingBoardType=GROUP&parentAccessPath=flowGroupList&load=" + flowGroup_obj.id;
+                        window_location_href("/page/flowGroup/flowGroup?drawingBoardType=GROUP&parentAccessPath=flowGroupList&load=" + flowGroup_obj.id);
                     }
                 } else {
                     console.log(dataMap.errorMsg);
@@ -1221,7 +1217,6 @@ function queryPathInfo(id, loadId) {
     $('#flowGroup_path_inc_load_data').hide();
     $('#flowGroup_path_inc_no_data').hide();
     $('#flowGroup_path_inc_load_fail').hide();
-
     ajaxRequest({
         cache: true,
         type: "POST",
@@ -1230,39 +1225,32 @@ function queryPathInfo(id, loadId) {
         async: true,
         error: function (request) {
             //alert("Jquery Ajax request error!!!");
+            $('#flowGroup_path_inc_load_fail').show();
             return;
         },
         success: function (data) {
             var dataMap = JSON.parse(data);
             console.log(dataMap);
+            $('#flowGroup_path_inc_loading').hide();
             if (200 === dataMap.code) {
                 //var queryInfo = dataMap.queryInfo;
-                var queryInfo;
+                var queryInfo = dataMap.queryInfo;
                 if (queryInfo) {
-                    $("#AttributeInfoId").hide();
-                    $("#containerID").show();
-                    $("#basicInfoId").html('path info');
-                    $('#basicInfoId').css('text-align', '');
-                    $('#basicInfoId').css('background-color', '');
-                    $('#basicInfoId').css('border-style', '');
-                    $('#basicInfoId').css('height', '27px');
-                    $("#customizeBasic_td_1_1_span_id").html(param_values.customizeBasic_td_1_1_span_children);
-                    $("#customizeBasic_td_2_1_span_id").html(param_values.customizeBasic_td_2_1_span_children);
-                    $("#customizeBasic_td_3_1_span_id").html(param_values.customizeBasic_td_3_1_span_children);
-                    $("#customizeBasic_td_4_1_span_id").html(param_values.customizeBasic_td_4_1_span_children);
-                    $("#customizeBasic_td_5_1_span_id").html(param_values.customizeBasic_td_5_1_span_children);
-                    $("#customizeBasic_td_6_1_span_id").html(param_values.customizeBasic_td_6_1_span_children);
-                    $("#customizeBasic_td_7_1_span_id").html(param_values.customizeBasic_td_7_1_span_children);
-                    $("#customizeBasic_td_1_2_button_id").hide();
-                    $("#customizeBasic_td_3_2_label_id").html(queryInfo.inport);
-                    $("#customizeBasic_td_4_2_label_id").html(queryInfo.outport);
-                    $("#customizeBasic_td_7_2_label_id").html(queryInfo.crtDttmString);
-                    $("#customizeBasic_td_1_2_span_id").html(queryInfo.pageId);
-                    $("#customizeBasic_td_2_2_span_id").html(queryInfo.flowGroupVo.name);
-                    $("#customizeBasic_td_5_2_label_id").html(queryInfo.flowFrom);
-                    $("#customizeBasic_td_6_2_label_id").html(queryInfo.flowTo);
+                    var flowGroupVo = queryInfo.flowGroupVo;
+                    var flowGroupVo_name = flowGroupVo ? flowGroupVo.name : '';
+                    $("#span_flowGroupPathVo_flowName").text(flowGroupVo_name);
+                    $("#span_flowGroupPathVo_pageId").text(queryInfo.pageId);
+                    $("#span_flowGroupPathVo_inport").text(queryInfo.inport);
+                    $("#span_flowGroupPathVo_outport").text(queryInfo.outport);
+                    $("#span_flowGroupPathVo_from").text(queryInfo.flowFrom);
+                    $("#span_flowGroupPathVo_to").text(queryInfo.flowTo);
+                    $("#span_flowGroupPathVo_crtDttmStr").text(queryInfo.crtDttmString);
+                    $('#flowGroup_path_inc_load_data').show();
+                } else {
+                    $('#flowGroup_path_inc_no_data').show();
                 }
             } else {
+                $('#flowGroup_path_inc_load_fail').show();
                 console.log("Path attribute query null");
             }
         }
@@ -1378,26 +1366,7 @@ function queryFlowOrFlowGroupProperty(pageId, loadId) {
 function getFlowList() {
     var window_width = $(window).width();//Get browser window width
     var window_height = $(window).height();//Get browser window height
-    ajaxRequest({
-        type: "GET",//Request type post
-        url: "/page/flow/getFlowListImport",//This is the name of the file where I receive data in the background.
-        error: function (request) {//Operation after request failure
-            return;
-        },
-        success: function (data) {//Operation after request successful
-            layer.open({
-                type: 1,
-                title: '<span style="color: #269252;">Flows</span>',
-                shade: 0,
-                shadeClose: false,
-                closeBtn: 1,
-                shift: 7,
-                area: [(window_width / 2) + 'px', (window_height - 100) + 'px'], //Width height
-                skin: 'layui-layer-rim', //Add borders
-                content: data
-            });
-        }
-    });
+    openLayerWindowLoadUrl("/page/flow/getFlowListImport", (window_width / 2), (window_height - 100), "Flows");
 }
 
 // ClickSlider

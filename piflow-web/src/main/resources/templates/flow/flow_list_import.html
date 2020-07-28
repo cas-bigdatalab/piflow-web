@@ -1,7 +1,9 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<body th:fragment=flow_List>
-
+<body>
+<head>
+    <link rel="stylesheet" type="text/css" href="/piflow-web/components/layui/css/layui.css"/>
+</head>
 <!-- content starts -->
 <div class="wrapper" style="margin: 20px;">
     <!-- Media datatable -->
@@ -20,10 +22,10 @@
 </div>
 <!-- content ends -->
 
-<div th:include="Macro/fragmentMacro :: fullScreen"></div>
-
-<script th:src="@{/my_js/flow/flowListImport.js}"></script>
-<script th:inline="javascript">
+<script type="text/javascript" src="/piflow-web/js/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="/piflow-web/components/layui/layui.all.js"></script>
+<script type="text/javascript" src="/piflow-web/my_js/flow/flowListImport.js"></script>
+<script type="text/javascript" >
     initDatatableFlowImportPage('flowTableId', "/piflow-web/flow/getFlowListPage", "search_input_id");
     //@ sourceURL=table_right.js
 </script>

@@ -135,7 +135,7 @@
     var projectContextPath_test = [[${#httpServletRequest.getContextPath()}]];
 
     (function () {
-        $("#top").load("/piflow-web/page/macro/headMacro.html", function () {
+        ajaxLoad("top", "/page/macro/headMacro", function () {
             $("#span_username_id").html('Howdy,' + currentUser.username + '<b class="caret"></b>');
         });
         if (currentUser) {
@@ -145,21 +145,22 @@
             }
         }
         if (accessPath && 'indexHome' !== accessPath) {
+            console.log("sssssssssssssssssss");
             switch (accessPath) {
                 case 'flowList':
-                    $("#content").load("/piflow-web/page/flowList");
+                    ajaxLoad("content", "/page/flowList");
                     break;
                 case 'flowGroupList':
-                    $("#content").load("/piflow-web/page/flowGroupList");
+                    ajaxLoad("content", "/page/flowGroupList");
                     break;
                 case 'processAndProcessGroup':
-                    $("#content").load("/piflow-web/page/process_processGroup_list");
+                    ajaxLoad("content", "/page/process_processGroup_list");
                     break;
                 default:
                     break;
             }
         } else {
-            $("#content").load("/piflow-web/page/dashboard");
+            ajaxLoad("content", "/page/dashboard");
         }
     })();
 

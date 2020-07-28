@@ -129,14 +129,15 @@
 </div>
 
 <script type="text/javascript" src="/piflow-web/js/ajaxUtils.js"></script>
-<script type="text/javascript" src="/piflow-web//my_js/process/processContent.js"></script>
+<script type="text/javascript" src="/piflow-web/my_js/process/processContent.js"></script>
 <script type="text/javascript" src="/piflow-web/my_js/process/initProcessGraph.js"></script>
 <script type="text/javascript">
     var urlParams = getUrlParams(window.location.href)
-	// Default resources are included in grapheditor resources;
+    // Default resources are included in grapheditor resources;
     mxLoadResources = false;
     var loadId = urlParams.load;
     var parentAccessPath = urlParams.parentAccessPath;
+    var currentUser = JSON.parse(localStorage.jwtUser);
 
 
     //---------------------------------------------------
@@ -145,21 +146,24 @@
     //---------------------------------------------------
 
     $(function () {
-        $("#fullScreen_load_id").load("/piflow-web/page/macro/fragmentMacro");
-        $("#publicUserHeadMacro_load_id").load("/piflow-web/page/macro/publicUserHeadMacro");
-        $("#process_operation_button_load_id").load("/piflow-web/page/inc/process_operation_button", function () {
+        ajaxLoad("fullScreen_load_id", "/page/macro/fragmentMacro");
+        //Header
+        ajaxLoad("publicUserHeadMacro_load_id", "/page/macro/graphHeadMacro", function () {
+            $("#span_username_id").html('Howdy,' + currentUser.username + '<b class="caret"></b>');
+        });
+        ajaxLoad("process_operation_button_load_id", "/page/process/inc/process_operation_button", function () {
             initProcessDrawingBoardData(loadId, parentAccessPath);
             initProcessContentPage(nodeArr);
-            initGraph();
-            $("#process_crumbs_task_load_id").load("./inc/process_crumbs_task.html", function () {
+            initProcessGraph();
+            ajaxLoad("process_crumbs_task_load_id", "/page/process/inc/process_crumbs_task", function () {
                 initCrumbs(parentAccessPath);
             });
         });
-        $("#div_process_info_inc_load_id").load("/piflow-web/page/process/inc/process_info_inc", function () {
-            getRightInfo();
+        ajaxLoad("div_process_info_inc_load_id", "/page/process/inc/process_info_inc", function () {
+            processMxEventClick();
         });
-        $("#div_process_path_inc_load_id").load("/piflow-web/page/process/inc/process_path_inc");
-        $("#div_process_property_inc_load_id").load("/piflow-web/page/process/inc/process_property_inc");
+        ajaxLoad("div_process_path_inc_load_id", "/page/process/inc/process_path_inc");
+        ajaxLoad("div_process_property_inc_load_id", "/page/process/inc/process_property_inc");
     });
     //@ sourceURL=processMxGraphIndex.js
 </script>

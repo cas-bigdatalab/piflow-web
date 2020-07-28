@@ -72,8 +72,7 @@ function initProcessDrawingBoardData(loadId, parentAccessPath) {
     });
 }
 
-function initGraph() {
-    processMxEventClick();
+function initProcessGraph() {
     Format.noEditing(true);
     //Format.customizeType = "PROCESS";
     var editorUiInit = EditorUi.prototype.init;

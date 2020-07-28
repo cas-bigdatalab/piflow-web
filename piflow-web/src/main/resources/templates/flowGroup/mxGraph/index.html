@@ -47,6 +47,7 @@
         .btn-position .btn {
             margin: 6px 6px 2px 0 !important;
         }
+
         .customize_btn_css {
             display: inline-block;
             padding: 6px 12px;
@@ -74,6 +75,7 @@
         a.customize_btn_css:focus {
             color: #ffffff;
         }
+
         .layui-table-cell {
             height: 36px;
             line-height: 36px;
@@ -171,7 +173,7 @@
         <button type="button" class="btn btn-default" onclick="cancelPortAndPathNew()">Cancel</button>
     </div>
 </div>
-  <!-- ======================== new ======================================= -->
+<!-- ======================== new ======================================= -->
 <!--Initializes the drawing board-->
 <!--stop Property edit popover starts-->
 <div style="display: none;" id="updateCellsPropertyTemplate">
@@ -193,7 +195,7 @@
 <div style="display: none;" id="flowGroup_SubmitPage">
     <br>
     <form class="layui-form" action="" style="position: relative">
-        <input id="input_node_flowGroup_id" type="hidden" />
+        <input id="input_node_flowGroup_id" type="hidden"/>
         <input id="input_node_flowGroup_pageId" type="hidden"/>
         <div class="layui-form-item">
             <label class="layui-form-label">flowGroupName</label>
@@ -217,7 +219,7 @@
                 Cancel
             </button>
             <button id="buttonGroup" type="button" class="layui-btn layui-btn-primary" onclick='saveOrUpdateFlowGroup()'
-                    style="color: #ffffff;background-color: #2f7600;border-color: #2f7600;" >
+                    style="color: #ffffff;background-color: #2f7600;border-color: #2f7600;">
                 Submit
             </button>
         </div>
@@ -226,7 +228,7 @@
 
 <div style="display: none;" id="flow_SubmitPage">
     <form class="layui-form" action="" style="position: relative">
-        <input id="input_node_flow_id" type="hidden" />
+        <input id="input_node_flow_id" type="hidden"/>
         <input id="input_node_flow_pageId" type="hidden"/>
         <div class="layui-form-item">
             <label class="layui-form-label">flowName</label>
@@ -323,7 +325,6 @@
 
     var parentsId = '[[${parentsId}]]';
     var flowGroupId = '[[${flowGroupId}]]';
-    var stopsGroupData = '[[${groupsVoList}]]';
     var xmlDate = '[[${xmlDate}]]';
     var xmlDateStr = '[[${xmlDateStr}]]';
     var isExample = '[[${isExample}]]';
@@ -336,15 +337,14 @@
     var appId = '[[${appId}]]';
 
 
-
     $(function () {
-        $("#fullScreen_load_id").load("/piflow-web/page/macro/fragmentMacro");
-        $("#publicUserHeadMacro_load_id").load("/piflow-web/page/macro/graphHeadMacro" ,function () {
+        ajaxLoad("fullScreen_load_id", "/page/macro/fragmentMacro");
+        ajaxLoad("publicUserHeadMacro_load_id","/page/macro/graphHeadMacro", function () {
             $("#span_username_id").html('Howdy,' + currentUser.username + '<b class="caret"></b>');
         });
-        $("#flowGroup_info_inc_id").load("/piflow-web/page/flowGroup/inc/flowGroup_info_inc");
-        $("#flowGroup_path_inc_id").load("/piflow-web/page/flowGroup/inc/flowGroup_path_inc");
-        $("#flowGroup_property_inc_id").load("/piflow-web/page/flowGroup/inc/flowGroup_property_inc",function () {
+        ajaxLoad("flowGroup_info_inc_id","/page/flowGroup/inc/flowGroup_info_inc");
+        ajaxLoad("flowGroup_path_inc_id","/page/flowGroup/inc/flowGroup_path_inc");
+        ajaxLoad("flowGroup_property_inc_id","/page/flowGroup/inc/flowGroup_property_inc", function () {
             $("#tab>li").click(function () {
                 $(this).removeAttr("style").siblings("li").attr("style", "background-color: rgb(218,218,218); border-color: rgb(192,192,192);");
                 $("#tab_content" + $(this).val()).show().siblings("div").hide();
@@ -368,14 +368,13 @@
             }
         }
         initFlowGroupDrawingBoardData(loadId, parentAccessPath);
-        initGraph();
+        initFlowGroupGraph();
     });
     $(document).ready(function () {
 
     });
     //@ sourceURL=mxGraphIndex.js
 </script>
-
 
 
 </body>

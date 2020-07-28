@@ -78,6 +78,8 @@ public class WebAppConfig implements WebMvcConfigurer {
         registry.addViewController("/page/process/inc/process_path_inc").setViewName("process/inc/process_path_inc");
         registry.addViewController("/page/process/getCheckpoint").setViewName("process/inc/process_checkpoint_inc");
         registry.addViewController("/page/process/getDebugDataHtml").setViewName("process/inc/debug_data_inc");
+        registry.addViewController("/page/process/inc/process_crumbs_task").setViewName("process/inc/process_crumbs_task");
+        registry.addViewController("/page/process/inc/process_operation_button").setViewName("process/inc/process_operation_button");
 
         //flow group
         registry.addViewController("/page/flowGroup/drawingBoard").setViewName("flowGroup/mxGraph/index");
@@ -94,6 +96,7 @@ public class WebAppConfig implements WebMvcConfigurer {
         //macro
         registry.addViewController("/page/macro/fragmentMacro").setViewName("macro/fragmentMacro");
         registry.addViewController("/page/macro/graphHeadMacro").setViewName("macro/graphHeadMacro");
+        registry.addViewController("/page/macro/publicUserHeadMacro").setViewName("macro/publicUserHeadMacro");
         registry.addViewController("/page/macro/headMacro").setViewName("macro/headMacro");
 
 

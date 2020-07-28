@@ -118,7 +118,7 @@
                     <div class="layui-col-xs5">
                         <span class="input-group-btn">
                             <button id="sourceCrtPortBtnId1Copy" type="button" class="addCrtBtn btn btn-default"
-                                onclick="crtAnyPort('sourceCrtPortId1Copy',true)">
+                                    onclick="crtAnyPort('sourceCrtPortId1Copy',true)">
                                 CrtPort
                             </button>
                         </span>
@@ -134,7 +134,7 @@
                 </div>
                 <div id="sourceTypeDiv1Copy" style="display: none;"></div>
             </div>
-            <hr />
+            <hr/>
             <div id="targetTitle1Copy">
                 <span id="targetTitleStr1Copy" style="font-size: 20px">Target:</span>
                 <div id="targetTitleCheckbox1Copy">
@@ -149,7 +149,7 @@
                         <div class="layui-col-xs5">
                             <span class="input-group-btn">
                                 <button id="targetCrtPortBtnId1Copy" type="button" class="addCrtBtn btn btn-default"
-                                    onclick="crtAnyPort('targetCrtPortId',true)">
+                                        onclick="crtAnyPort('targetCrtPortId',true)">
                                     CrtPort
                                 </button>
                             </span>
@@ -182,7 +182,7 @@
         <form class="layui-form" action="" style="height: 100%;">
             <div class="layui-form-text" style="margin-left: 12px; text-align: center;height: 100%;">
                 <textarea id="stopValue" placeholder="please input ..." class="layui-textarea"
-                    style="margin-left: -6px;margin-bottom: 6px;resize:none;height: 80%;"></textarea>
+                          style="margin-left: -6px;margin-bottom: 6px;resize:none;height: 80%;"></textarea>
                 <div style="height: 20%;">
                     <button type="button" class="layui-btn layui-btn-primary" id="buttonStop">save
                     </button>
@@ -196,19 +196,19 @@
 <!-- 'stop' custom attribute add popup start -->
 <div style="display: none;" id="addStopCustomizedAttrOpenTemplate">
     <form class="layui-form" action="" style="margin: 10px;" method="post">
-        <input id="openAddCustomizedWindowStopId" name="stopId" />
+        <input id="openAddCustomizedWindowStopId" name="stopId"/>
         <div class="layui-form-item">
             <label class="layui-form-label">Key</label>
             <div class="layui-input-block">
                 <input type="text" style="width: 95%;" name="name" lay-verify="required"
-                    placeholder="please input key ..." class="layui-input" />
+                       placeholder="please input key ..." class="layui-input"/>
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">CustomValue</label>
             <div class="layui-input-block">
                 <input type="text" style="width: 95%;" name="customValue" lay-verify="required"
-                    placeholder="please input customValue ..." class="layui-input" />
+                       placeholder="please input customValue ..." class="layui-input"/>
             </div>
         </div>
 
@@ -216,7 +216,7 @@
             <label class="layui-form-label">SDescription</label>
             <div class="layui-input-block">
                 <textarea name="description" style="width: 95%;" lay-verify="required"
-                    placeholder="please input description ..." class="layui-textarea"></textarea>
+                          placeholder="please input description ..." class="layui-textarea"></textarea>
             </div>
         </div>
         <div class="layui-form-item" style="text-align: center;margin-right: 90px;margin-top: -8px;">
@@ -234,7 +234,7 @@
         <div class="layui-form-item layui-form-text">
             <div class="layui-input-block">
                 <textarea id="stopCustomizedAttrValueTemplate" placeholder="please input ..." class="layui-textarea"
-                    style="width: 272px;margin-left: -100px;resize:none;"></textarea>
+                          style="width: 272px;margin-left: -100px;resize:none;"></textarea>
             </div>
         </div>
         <div class="layui-form-item" style="text-align: center;margin-right: 90px;margin-top: -8px;">
@@ -286,16 +286,16 @@
     mxLoadResources = false;
     var loadId = urlParams.load
     var parentAccessPath = urlParams.parentAccessPath;
-        // console.log(urlParams);
-        var currentUser = JSON.parse(localStorage.jwtUser);
+    // console.log(urlParams);
+    var currentUser = JSON.parse(localStorage.jwtUser);
 
     $(function () {
         // operation menus button
-        $("#graphEditor_menus_task_load_id").load("/piflow-web/page/flow/inc/graphEditor_menus_task");
+        ajaxLoad("graphEditor_menus_task_load_id", "/page/flow/inc/graphEditor_menus_task");
         //fullScreen
-        $("#fullScreen_load_id").load("/piflow-web/page/macro/fragmentMacro");
+        ajaxLoad("fullScreen_load_id", "/page/macro/fragmentMacro");
         //Header
-        $("#publicUserHeadMacro_load_id").load("/piflow-web/page/macro/graphHeadMacro", function () {
+        ajaxLoad("publicUserHeadMacro_load_id", "/page/macro/graphHeadMacro", function () {
             $("#span_username_id").html('Howdy,' + currentUser.username + '<b class="caret"></b>');
         });
 
@@ -303,7 +303,7 @@
         initFlowDrawingBoardData(loadId, parentAccessPath);
         initFlowGraph();
         //crumbs
-        $("#graphEditor_crumbs_task_load_id").load("/piflow-web/page/flow/inc/graphEditor_crumbs_task",function () {
+        ajaxLoad("graphEditor_crumbs_task_load_id", "/page/flow/inc/graphEditor_crumbs_task", function () {
             if ("flowGroupList" === parentAccessPath) {
                 $("#web_flowGroupList_navigation").show();
                 $("#web_flowList_navigation").hide();
@@ -314,12 +314,12 @@
                 }
             }
         });
-        
-        $("#flow_info_inc_id").load("/piflow-web/page/flow/inc/flow_info_inc", function () {
+
+        ajaxLoad("flow_info_inc_id", "/page/flow/inc/flow_info_inc", function () {
             flowMxEventClickFunc();
         });
-        $("#flow_path_inc_id").load("/piflow-web/page/flow/inc/flow_path_inc");
-        $("#flow_property_inc_id").load("/piflow-web/page/flow/inc/flow_property_inc",function () {
+        ajaxLoad("flow_path_inc_id", "/page/flow/inc/flow_path_inc");
+        ajaxLoad("flow_property_inc_id", "/page/flow/inc/flow_property_inc", function () {
             $("#tab>li").click(function () {
                 $(this).removeAttr("style").siblings("li").attr("style", "background-color: rgb(218,218,218); border-color: rgb(192,192,192);");
                 $("#tab_content" + $(this).val()).show().siblings("div").hide();

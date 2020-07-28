@@ -56,7 +56,7 @@ function ajaxRequest(param) {
             if (data.code === 403 || data.code === 401) {
                 //  alert(data.errMsg);
                 console.log(data);
-                window.location.href = "/piflow-web/login";
+                window.location.href = (web_header_prefix + "/login");
                 return;
             }
             if (backFunc && $.isFunction(backFunc)) {
@@ -71,6 +71,42 @@ function ajaxRequest(param) {
         }
     });
 };
+
+function ajaxLoad(elementId, requestUrl, backFunc, errBackFunc) {
+    $.ajax({
+        type: "GET",
+        async: true,
+        url: web_header_prefix + requestUrl,
+        headers: {
+            Authorization: ("Bearer " + token)
+        },
+        success: function (data) {
+            //data =  JSON.parse(data);
+            if (data.code === 403 || data.code === 401) {
+                //  alert(data.errMsg);
+                console.log(data);
+                window.location.href = (web_header_prefix + "/login");
+                return;
+            }
+            if (backFunc && $.isFunction(backFunc)) {
+                $("#" + elementId).html(data);
+                console.log("ooooooooooooooooooooooooooooo");
+                backFunc(data);
+            }
+        },
+        error: function (request) {//请求失败之后的操作
+            if (errBackFunc && $.isFunction(errBackFunc)) {
+                errBackFunc(request);
+            }
+            return;
+        }
+    });
+    // if (backFunc && $.isFunction(backFunc)) {
+    //     $("#" + elementId).load(web_header_prefix + requestUrl, backFunc());
+    // } else {
+    //     $("#" + elementId).load(web_header_prefix + requestUrl);
+    // }
+}
 
 function getUrlParams(url) {
     var result = new Object();
@@ -88,5 +124,49 @@ function getUrlParams(url) {
         }
     }
     return result;
+}
+
+function openLayerWindowLoadHtml(htmlStr, window_width, window_height, title) {
+    layer.open({
+        type: 1,
+        title: '<span style="color: #269252;">' + title + '</span>',
+        shade: 0,
+        shadeClose: false,
+        closeBtn: 1,
+        shift: 7,
+        area: [window_width + 'px', window_height + 'px'], //Width height
+        skin: 'layui-layer-rim', //Add borders
+        content: htmlStr
+    });
+}
+
+function openLayerWindowLoadUrl(url, window_width, window_height, title) {
+    layer.open({
+        type: 2,
+        title: '<span style="color: #269252;">' + title + '</span>',
+        shade: 0,
+        shadeClose: false,
+        closeBtn: 1,
+        shift: 7,
+        area: [window_width + 'px', window_height + 'px'], //Width height
+        skin: 'layui-layer-rim', //Add borders
+        content: (web_header_prefix + url)
+    });
+}
+
+function window_location_href(url) {
+    window.location.href = (web_header_prefix + url);
+}
+
+function window_open(url, isNewWindow) {
+    var windowOpen = "";
+    if (isNewWindow) {
+        windowOpen = window.open(web_header_prefix + url, '_blank');
+    } else {
+        windowOpen = window.open(web_header_prefix + url);
+    }
+    if (windowOpen == null || typeof (windowOpen) == 'undefined') {
+        alert('The window cannot be opened. Please check your browser settings.');
+    }
 }
 
