@@ -142,4 +142,24 @@ public class StopImpl implements IStop {
         return thirdStopsComponentVo;
     }
 
+    @Override
+    public String getPluginPath() {
+
+        Map<String, String> map = new HashMap<>();
+        //map.put("bundle", bundleStr);
+        String sendGetData = HttpUtils.doGet(SysParamsCache.getStopsInfoUrl(), map, 30 * 1000);
+        logger.info("return msg：" + sendGetData);
+        if (StringUtils.isBlank(sendGetData)) {
+            logger.warn("Interface return value is null");
+            return null;
+        }
+        if (sendGetData.contains("Error")) {
+            logger.warn("return err");
+            return null;
+        }
+
+        String pluginPath = JSONObject.fromObject(sendGetData).getString("pluginPath");
+        return pluginPath;
+    }
+
 }

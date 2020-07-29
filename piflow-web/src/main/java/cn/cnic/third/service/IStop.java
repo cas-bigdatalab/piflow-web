@@ -19,4 +19,6 @@ public interface IStop {
 
     public ThirdStopsComponentVo getStopInfo(String bundleStr);
 
+    public String getPluginPath();
+
 }

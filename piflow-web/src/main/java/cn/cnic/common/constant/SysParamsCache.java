@@ -71,6 +71,17 @@ public class SysParamsCache {
         INTERFACE_URL_HEAD = interfaceUrlHead;
     }
 
+    // stop jar path (get from piflow server)
+    public static String STOPJAR_PATH;
+
+    @Value("${api.pluginPath}")
+    public void setStopjarPath(String stopjarPath) {
+        STOPJAR_PATH = stopjarPath;
+    }
+
+    public static String getStopsHubUrl() {
+        return INTERFACE_URL_HEAD + STOPJAR_PATH;
+    }
 
     // Stops group information
     public static String STOPS_GROUPS_URL;

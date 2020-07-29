@@ -80,10 +80,10 @@ public class FileUtils {
      * @return
      */
     public static String upload(MultipartFile file, String path) {
-        return JsonUtils.toJsonNoException(uploadRtnMap(file, path));
+        return JsonUtils.toJsonNoException(uploadRtnMap(file, path, null));
     }
 
-    public static Map<String, Object> uploadRtnMap(MultipartFile file, String path) {
+    public static Map<String, Object> uploadRtnMap(MultipartFile file, String path, String saveFileName) {
         if (file.isEmpty()) {
             return ReturnMapUtils.setFailedMsg("The upload failed and the file was empty.");
         }
@@ -91,9 +91,10 @@ public class FileUtils {
         //file name
         String fileName = file.getOriginalFilename();
         String[] fileNameSplit = fileName.split("\\.");
-        String saveFileName = null;
-        if (fileNameSplit.length > 0) {
-            saveFileName = UUIDUtils.getUUID32() + "." + fileNameSplit[fileNameSplit.length - 1];
+        if(saveFileName == null){
+            if (fileNameSplit.length > 0) {
+                saveFileName = UUIDUtils.getUUID32() + "." + fileNameSplit[fileNameSplit.length - 1];
+            }
         }
         if (StringUtils.isBlank(saveFileName)) {
             saveFileName = UUIDUtils.getUUID32();

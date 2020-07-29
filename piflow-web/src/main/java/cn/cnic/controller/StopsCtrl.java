@@ -3,10 +3,9 @@ package cn.cnic.controller;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import cn.cnic.component.stopsComponent.service.IStopsHubService;
 import org.slf4j.Logger;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.base.util.ReturnMapUtils;
@@ -17,6 +16,7 @@ import cn.cnic.component.flow.service.IPropertyService;
 import cn.cnic.component.flow.service.IStopsService;
 import cn.cnic.component.flow.vo.StopsCustomizedPropertyVo;
 import cn.cnic.component.stopsComponent.service.IStopGroupService;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/stops")
@@ -38,6 +38,9 @@ public class StopsCtrl {
 
     @Resource
     private ICustomizedPropertyService customizedPropertyServiceImpl;
+
+    @Resource
+    private IStopsHubService stopsHubServiceImpl;
 
     /**
      * 'stops'and'groups' on the left of'reload'
@@ -159,5 +162,19 @@ public class StopsCtrl {
     @ResponseBody
     public String getRouterStopsCustomizedProperty(String customPropertyId) {
         return customizedPropertyServiceImpl.getRouterStopsCustomizedProperty(customPropertyId);
+    }
+
+
+    /**
+     * Upload stopsHub jar file and save stopsHub
+     *
+     * @param file
+     * @return
+     */
+    @RequestMapping(value = "/uploadStopsHubFile", method = RequestMethod.POST)
+    @ResponseBody
+    public String uploadStopsHubFile(@RequestParam("file") MultipartFile file) {
+        String username = SessionUserUtil.getCurrentUsername();
+        return stopsHubServiceImpl.uploadStopsHubFile(username, file);
     }
 }
