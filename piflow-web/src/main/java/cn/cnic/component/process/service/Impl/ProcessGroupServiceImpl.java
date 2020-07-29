@@ -9,6 +9,15 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import cn.cnic.base.util.*;
+import cn.cnic.base.vo.UserVo;
+import cn.cnic.component.mxGraph.model.MxCell;
+import cn.cnic.component.mxGraph.model.MxGraphModel;
+import cn.cnic.component.mxGraph.utils.MxCellUtils;
+import cn.cnic.component.mxGraph.vo.MxCellVo;
+import cn.cnic.component.mxGraph.vo.MxGraphModelVo;
+import cn.cnic.component.process.model.Process;
+import cn.cnic.component.process.vo.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -17,10 +26,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import cn.cnic.base.util.HdfsUtils;
-import cn.cnic.base.util.JsonUtils;
-import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.base.util.ReturnMapUtils;
 import cn.cnic.common.Eunm.PortType;
 import cn.cnic.common.Eunm.ProcessParentType;
 import cn.cnic.common.Eunm.ProcessState;
@@ -30,10 +35,6 @@ import cn.cnic.component.process.model.ProcessGroupPath;
 import cn.cnic.component.process.service.IProcessGroupService;
 import cn.cnic.component.process.utils.ProcessGroupUtils;
 import cn.cnic.component.process.utils.ProcessUtils;
-import cn.cnic.component.process.vo.DebugDataRequest;
-import cn.cnic.component.process.vo.DebugDataResponse;
-import cn.cnic.component.process.vo.ProcessGroupPathVo;
-import cn.cnic.component.process.vo.ProcessGroupVo;
 import cn.cnic.domain.process.ProcessDomain;
 import cn.cnic.domain.process.ProcessGroupDomain;
 import cn.cnic.domain.process.ProcessGroupPathDomain;
@@ -504,6 +505,122 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
         processGroupPathVo.setInport(StringUtils.isNotBlank(processGroupPathByPageId.getInport()) ? processGroupPathByPageId.getInport() : PortType.DEFAULT.getText());
         processGroupPathVo.setOutport(StringUtils.isNotBlank(processGroupPathByPageId.getOutport()) ? processGroupPathByPageId.getOutport() : PortType.DEFAULT.getText());
         return processGroupPathVo;
+    }
+
+    /**
+     * drawingBoard Data
+     *
+     * @param username
+     * @param isAdmin
+     * @param loadId
+     * @param parentAccessPath
+     * @return
+     */
+    @Override
+    public String drawingBoardData(String username, boolean isAdmin, String loadId, String parentAccessPath) {
+        if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
+        }
+        // Determine whether there is an'id'('load') of'Flow', and if there is, load it, otherwise generate'UUID' to return to the return page.
+        if (StringUtils.isBlank(loadId)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("param 'load' is null");
+        }
+
+        ProcessGroup processGroup = processGroupMapper.getProcessGroupById(username, isAdmin, loadId);
+        if (null == processGroup) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("No data with ID : " + loadId);
+        }
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(ReturnMapUtils.SUCCEEDED_MSG);
+        //set loadId
+        rtnMap.put("load", loadId);
+        // set current user
+        UserVo currentUser = new UserVo();
+        currentUser.setUsername(username);
+        rtnMap.put("currentUser", currentUser);
+        rtnMap.put("processType", "GROUP");
+        //set parentAccessPath
+        rtnMap.put("parentAccessPath", parentAccessPath);
+
+        ProcessGroup parentsProcessGroup = processGroup.getProcessGroup();
+        if (null != parentsProcessGroup) {
+            rtnMap.put("parentsId", parentsProcessGroup.getId());
+        }
+
+        // process state
+        String processStateStr = (processGroup.getState() != null ? processGroup.getState().name() : ProcessState.INIT.name());
+        rtnMap.put("processState", processStateStr);
+
+        //node pageId and state (process and processGroup)
+        List<Map<String, String>> nodePageIdAndStateList = new ArrayList<>();
+        // processGroupList
+        List<ProcessGroup> processGroupList = processGroup.getProcessGroupList();
+        if (null != processGroupList && processGroupList.size() > 0) {
+            Map<String, String> processGroupNode;
+            for (ProcessGroup processGroup_i : processGroupList) {
+                if (null == processGroup_i) {
+                    continue;
+                }
+                processGroupNode = new HashMap<>();
+                processGroupNode.put("pageId", processGroup_i.getPageId());
+                processGroupNode.put("state", (null != processGroup_i.getState()) ? processGroup_i.getState().getText() : ProcessState.INIT.name());
+                nodePageIdAndStateList.add(processGroupNode);
+            }
+        }
+        // processList
+        List<Process> processList = processGroup.getProcessList();
+        Map<String, String> processNode;
+        if (null != processList && processList.size() > 0) {
+            for (Process process_i : processList) {
+                if (null == process_i) {
+                    continue;
+                }
+                String process_i_stateStr = (null != process_i.getState() ? process_i.getState().getText() : "INIT");
+                processNode = new HashMap<>();
+                processNode.put("pageId", process_i.getPageId());
+                processNode.put("state", process_i_stateStr);
+                nodePageIdAndStateList.add(processNode);
+            }
+        }
+        rtnMap.put("nodePageIdAndStateList", nodePageIdAndStateList);
+
+
+
+        rtnMap.put("parentProcessId", processGroup.getParentProcessId());
+        rtnMap.put("percentage", (null != processGroup.getProgress() ? processGroup.getProgress() : 0.00));
+        rtnMap.put("appId", processGroup.getAppId());
+        rtnMap.put("pID", processGroup.getProcessId());
+
+        MxGraphModel mxGraphModel = processGroup.getMxGraphModel();
+        if (null != mxGraphModel) {
+            List<MxCell> root = mxGraphModel.getRoot();
+            if (null != root && root.size() > 0) {
+                List<MxCell> iconTranslate = new ArrayList<>();
+                MxCell iconMxCell;
+                for (MxCell mxCell : root) {
+                    if (null == mxCell) {
+                        continue;
+                    }
+                    String style = mxCell.getStyle();
+                    if (StringUtils.isBlank(style) || style.indexOf("image;") != 0) {
+                        continue;
+                    }
+                    if (null == mxCell.getMxGeometry()) {
+                        continue;
+                    }
+                    iconMxCell = MxCellUtils.initIconMxCell(mxCell);
+                    if (null == iconMxCell) {
+                        continue;
+                    }
+                    iconTranslate.add(iconMxCell);
+                }
+                root.addAll(iconTranslate);
+            }
+            mxGraphModel.setRoot(root);
+        }
+        String loadXml = MxGraphUtils.mxGraphModelToMxGraphXml(mxGraphModel);
+        rtnMap.put("xmlDate", loadXml);
+
+        return JsonUtils.toJsonNoException(rtnMap);
     }
 
 }

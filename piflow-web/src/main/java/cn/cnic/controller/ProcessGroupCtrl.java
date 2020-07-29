@@ -72,6 +72,22 @@ public class ProcessGroupCtrl {
     }
 
     /**
+     * Enter the front page of the drawing board
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping("/drawingBoardData")
+    @ResponseBody
+    public String drawingBoardData(HttpServletRequest request) {
+        String currentUsername = SessionUserUtil.getCurrentUsername();
+        boolean isAdmin = SessionUserUtil.isAdmin();
+        String loadId = request.getParameter("loadId");
+        String parentAccessPath = request.getParameter("parentAccessPath");
+        return processGroupServiceImpl.drawingBoardData(currentUsername, isAdmin, loadId, parentAccessPath);
+    }
+
+    /**
      * Query based on id and enter process details
      *
      * @param request

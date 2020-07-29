@@ -20,6 +20,7 @@ public interface ProcessGroupMapper {
     @SelectProvider(type = ProcessGroupMapperProvider.class, method = "getProcessGroupById")
     @Results({
             @Result(id = true, column = "id", property = "id"),
+            @Result(column = "fk_flow_process_group_id", property = "processGroup", one = @One(select = "cn.cnic.mapper.process.ProcessMapper.getProcessByProcessGroupId", fetchType = FetchType.LAZY)),
             @Result(column = "id", property = "processList", many = @Many(select = "cn.cnic.mapper.process.ProcessMapper.getProcessByProcessGroupId", fetchType = FetchType.LAZY)),
             @Result(column = "id", property = "processGroupPathList", many = @Many(select = "cn.cnic.mapper.process.ProcessGroupPathMapper.getProcessPathByProcessGroupId", fetchType = FetchType.LAZY))
     })

@@ -114,12 +114,71 @@
     <div id="right-group" class="right-group"></div>
 </div>
 
+<script type="text/javascript" src="/piflow-web/js/ajaxUtils.js"></script>
 <script type="text/javascript" src="/piflow-web/my_js/processGroup/processGroupContent.js"></script>
 <script type="text/javascript" src="/piflow-web/my_js/processGroup/initProcessGroupGraph.js"></script>
+
 <script th:inline="javascript">
     var parentAccessPath = [[${parentAccessPath}]];
+    var parentsId = [[${parentsId}]];
+    var flowGroupId = [[${flowGroupId}]];
+    var stopsGroupData = [[${groupsVoList}]];
     var xmlDate = [[${xmlDate}]];
-    var processGroupId = [[${processGroupId}]];
+    var xmlDateStr = [[${xmlDateStr}]];
+    var loadId = [[${load}]];
+    var isExample = [[${isExample}]];
+    var maxStopPageId = [[${maxStopPageId}]];
+    var maxFlowPageId = [[${maxFlowPageId}]];
+    var divValue = null;
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    var nodeArr = [[${nodeArr}]];
+    var processType = [[${processType}]];
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    var flowGroupData = [
+        {
+            groupName: "Group",
+            dataList: [
+                {
+                    name: "group",
+                    img_name: "group",
+                    img_type: ".png",
+                    description: 'group component'
+                }
+            ]
+        }, {
+            groupName: "Task",
+            dataList: [
+                {
+                    name: "flow",
+                    img_name: "flow",
+                    img_type: ".png",
+                    description: 'Task component'
+                }
+            ]
+        },
+        {
+            groupName: "Text",
+            dataList: [
+                {
+                    name: "text",
+                    img_name: "",
+                    img_type: "",
+                    description: 'Text'
+                }
+            ]
+        }
+    ];
+
+    function divAppend(divAppend) {
+        divValue = divAppend;
+    }
+    var parentAccessPath = [[${parentAccessPath}]];
+    var xmlDate = [[${xmlDate}]];
+    var processGroupId = [[${load}]];
     var parentProcessId = [[${parentProcessId}]];
     var pID = [[${pID}]];
     var appId = [[${appId}]];
@@ -183,18 +242,11 @@
                     stopFlowGroupBtn.hide();
                 }
             }
-            var processVoListInit = [[${processVoListInit}]];
-            if (processVoListInit && '' != processVoListInit) {
-                for (var i = 0; i < processVoListInit.length; i++) {
-                    var processVoInit = processVoListInit[i];
-                    processGroupMonitor(processVoInit.pageId, processVoInit.state);
-                }
-            }
-            var processGroupVoListInit = [[${processGroupVoListInit}]];
-            if (processGroupVoListInit && '' != processGroupVoListInit) {
-                for (var i = 0; i < processGroupVoListInit.length; i++) {
-                    var processGroupVoInit = processGroupVoListInit[i];
-                    processGroupMonitor(processGroupVoInit.pageId, processGroupVoInit.state);
+            var nodePageIdAndStateList = [[${nodePageIdAndStateList}]];
+            if (nodePageIdAndStateList && '' != nodePageIdAndStateList) {
+                for (var i = 0; i < nodePageIdAndStateList.length; i++) {
+                    var nodePageIdAndState = nodePageIdAndStateList[i];
+                    processGroupMonitor(nodePageIdAndState.pageId, nodePageIdAndState.state);
                 }
             }
             //queryProcess(processId);
