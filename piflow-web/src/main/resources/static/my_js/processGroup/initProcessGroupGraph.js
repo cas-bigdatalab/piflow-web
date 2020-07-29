@@ -131,12 +131,11 @@ function getQueryString(name) {
     return null;
 }
 
-function initGraph() {
+function initProcessGroupGraph() {
     if("PROCESS"==drawingBoardType){
         EditorUi.prototype.noEditing = true;
     }
     Format.customizeType = drawingBoardType;
-    Format.customizeTypeAttr_init();
     var editorUiInit = EditorUi.prototype.init;
     if (EditorUi.prototype.noEditing) {
         $("#right-group-wrap")[0].style.display = "block";
@@ -154,7 +153,7 @@ function initGraph() {
             setTimeout(() => {
                 console.log("svg_element")
                 var svg_element = document.getElementsByClassName('geDiagramBackdrop geDiagramContainer')[0].getElementsByTagName("svg")[0];
-                nodeArr.forEach(item => {
+                nodePageIdAndStateList.forEach(item => {
                     var img_element_init = document.createElementNS("http://www.w3.org/2000/svg", "image");
                     img_element_init.setAttribute("x", 0);
                     img_element_init.setAttribute("y", 0);
@@ -3127,23 +3126,24 @@ function initProcessGroupDrawingBoardData(loadId, parentAccessPath, backFunc) {
     ajaxRequest({
         cache: true,//Keep cached data
         type: "get",//Request for get
-        url: "/process/drawingBoardData",//This is the name of the file where I receive data in the background.
+        url: "/processGroup/drawingBoardData",//This is the name of the file where I receive data in the background.
         //data:$('#loginForm').serialize(),//Serialize the form
         data: {
             loadId: loadId,
             parentAccessPath: parentAccessPath
         },
-        async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
+        async: false,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
         error: function (request) {//Operation after request failure
             // window.location.href = (web_baseUrl + "/error/404");
             return;
         },
         success: function (data) {//Operation after request successful
             var dataMap = JSON.parse(data);
+            console.log(dataMap);
             if (200 === dataMap.code) {
                 processId = dataMap.processId;
                 processType = dataMap.processType;
-                nodeArr = dataMap.nodeArr;
+                nodePageIdAndStateList = dataMap.nodePageIdAndStateList;
                 xmlDate = dataMap.xmlDate;
                 processGroupId = dataMap.processGroupId;
                 parentsId = dataMap.processGroupId;
