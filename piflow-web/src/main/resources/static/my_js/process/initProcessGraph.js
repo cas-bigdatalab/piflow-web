@@ -6,7 +6,7 @@ var drawingBoardType = "PROCESS"
 var index = true
 var nodeArr, xmlDate, parentsId, processType, processGroupId, parentProcessId, pID, appId, processState;
 
-var web_baseUrl ="/piflow-web";
+var web_baseUrl = "/piflow-web";
 
 function initCrumbs(parentAccessPath) {
     if (parentAccessPath) {
@@ -29,7 +29,7 @@ function initCrumbs(parentAccessPath) {
     }
 }
 
-function initProcessDrawingBoardData(loadId, parentAccessPath) {
+function initProcessDrawingBoardData(loadId, parentAccessPath, backFunc) {
     $('#fullScreen').show();
     ajaxRequest({
         cache: true,//Keep cached data
@@ -40,7 +40,7 @@ function initProcessDrawingBoardData(loadId, parentAccessPath) {
             loadId: loadId,
             parentAccessPath: parentAccessPath
         },
-        async: false,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
+        async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
         error: function (request) {//Operation after request failure
             // window.location.href = (web_baseUrl + "/error/404");
             return;
@@ -68,6 +68,9 @@ function initProcessDrawingBoardData(loadId, parentAccessPath) {
                 //window.location.href = (web_baseUrl + "/error/404");
             }
             $('#fullScreen').hide();
+            if (backFunc && $.isFunction(backFunc)) {
+                backFunc(data);
+            }
         }
     });
 }

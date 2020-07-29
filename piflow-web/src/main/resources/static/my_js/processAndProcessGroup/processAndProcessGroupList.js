@@ -328,8 +328,11 @@ function delProcessOrProcessGroup(processType, id) {
 }
 
 function openProcessOrProcessGroup(loadId, processType) {
-    var windowOpen = window.open('/piflow-web/page/process/drawingBoard?drawingBoardType=PROCESS&processType=' + processType + '&load=' + loadId);
-    if (windowOpen == null || typeof (windowOpen) == 'undefined') {
-        alert('The window cannot be opened. Please check your browser settings.');
+    console.log("ssss");
+    console.log(processType);
+    if ("PROCESS" === processType) {
+        new_window_open('/page/process/drawingBoard?drawingBoardType=PROCESS&processType=' + processType + '&load=' + loadId);
+    }else if ("PROCESS_GROUP" === processType) {
+        new_window_open('/page/processGroup/drawingBoard?drawingBoardType=PROCESS&processType=' + processType + '&load=' + loadId);
     }
 }

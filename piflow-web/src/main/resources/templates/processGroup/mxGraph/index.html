@@ -1,0 +1,244 @@
+<!--[if IE]>
+<meta http-equiv="X-UA-Compatible" content="IE=5,IE=9"><![endif]-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>piflow-web</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" type="text/css" href="/piflow-web/components/mxGraph/styles/grapheditor.css">
+    <link rel="stylesheet" type="text/css" href="/piflow-web/components/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/piflow-web/my_css/publicMacro.css"/>
+    <link rel="stylesheet" type="text/css" href="/piflow-web/my_css/fullScreen.css"/>
+    <link rel="stylesheet" type="text/css" href="/piflow-web/components/font-awesome-4.7.0/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/piflow-web/css/main.css"/>
+    <link rel="shortcut icon" th:href="@{/img/logo.ico}">
+
+    <script type="text/javascript" src="/piflow-web/components/mxGraph/js/Init.js"></script>
+    <script type="text/javascript" src="/piflow-web/components/mxGraph/deflate/pako.min.js"></script>
+    <script type="text/javascript" src="/piflow-web/components/mxGraph/deflate/base64.js"></script>
+    <script type="text/javascript" src="/piflow-web/components/mxGraph/jscolor/jscolor.js"></script>
+    <script type="text/javascript" src="/piflow-web/components/mxGraph/sanitizer/sanitizer.min.js"></script>
+    <script type="text/javascript" src="/piflow-web/components/mxGraph/js/mxClient.js"></script>
+    <script type="text/javascript" src="/piflow-web/components/mxGraph/js/EditorUi.js"></script>
+    <script type="text/javascript" src="/piflow-web/components/mxGraph/js/Editor.js"></script>
+    <script type="text/javascript" src="/piflow-web/components/mxGraph/js/Sidebar.js"></script>
+    <script type="text/javascript" src="/piflow-web/components/mxGraph/js/Graph.js"></script>
+    <script type="text/javascript" src="/piflow-web/components/mxGraph/js/Shapes.js"></script>
+    <script type="text/javascript" src="/piflow-web/components/mxGraph/js/Actions.js"></script>
+    <script type="text/javascript" src="/piflow-web/components/mxGraph/js/Menus.js"></script>
+    <script type="text/javascript" src="/piflow-web/components/mxGraph/js/Format.js"></script>
+    <script type="text/javascript" src="/piflow-web/components/mxGraph/js/Toolbar.js"></script>
+    <script type="text/javascript" src="/piflow-web/components/mxGraph/js/Dialogs.js"></script>
+    <script type="text/javascript" src="/piflow-web/js/jquery/jquery.min.js"></script>
+    <!--The user drags elements, links：http://api.jqueryui.com/draggable/#method-disable/-->
+    <script type="text/javascript" src="/piflow-web/js/jquery/jquery-ui.min.js"></script>
+    <!--Mobile device users drag elements, depending on juery-ui.min.js，links：http://touchpunch.furf.com/-->
+    <script type="text/javascript" src="/piflow-web/js/jquery/jquery.ui.touch-punch.min.js"></script>
+    <script type="text/javascript" src="/piflow-web/components/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/piflow-web/components/layui/layui.all.js"></script>
+    <script type="text/javascript" src='/piflow-web/js/dataTables1.10.18/jquery.dataTables.min.js'></script>
+
+    <style>
+        .btn-position {
+            float: right;
+            margin-right: 8px
+        }
+
+        .btn-position .btn {
+            margin: 6px 6px 2px 0 !important;
+        }
+        .customize_btn_css {
+            display: inline-block;
+            padding: 6px 12px;
+            margin-bottom: 0;
+            font-size: 14px;
+            font-weight: 400;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            touch-action: manipulation;
+            cursor: pointer;
+            user-select: none;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            background: #1A8B5F;
+            color: #ffffff;
+            height: 34px;
+            text-decoration: none;
+        }
+
+        a.customize_btn_css:hover {
+            color: #ffffff;
+        }
+
+        a.customize_btn_css:focus {
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body class="geEditor">
+
+<div id="publicUserHeadMacro_load_id"></div>
+<div id="fullScreen_load_id"></div>
+
+<div id="precessGroup-run" class="precess-run"
+     style="position: fixed; z-index: 779;text-align: right;right: 10px;top: 50px;">
+    <div id="processGroup_operation_button_load_id"></div>
+</div>
+
+
+<!-- crumbs -->
+<div style="width: 100%;position: fixed;z-index: 99999;float: left;left: 0px;bottom: 0px;text-align: center;height: 28px;line-height: 28px; background: #37714b;">
+<!--    <div th:case="'GROUP'" th:include="mxGraph/inc/proccess_crumbs_group :: proccess_crumbs_group"></div>-->
+    <div id="processGroup_crumbs_task_load_id"></div>
+</div>
+
+<!--<div id="precess-run" class="precess-run"
+     style="position: fixed; z-index: 779;text-align: right;right: 10px;top: 50px;">
+    <div id="process-group" style="display: none">
+        <span>progress：<span id="groupProgress" th:text="${percentage} + '%'"></span></span>
+        <input id="runFlowGroup" type="button" class="btn btn-default" onclick="selectRunMode()" value="Run"/>
+        <input id="stopFlowGroup" type="button" class="btn btn-danger" onclick="stopProcessGroup()" value="Stop"/>
+        <input type="button" class="btn btn-primary" onclick="openLogWindow()" value="Log"/>
+    </div>
+
+</div>-->
+
+<div id="right-group-wrap" style="position:absolute;right:0;top:86px;width:25%;;height:88%;transition: 2s">
+    <div class="ExpandSidebar">
+        <div class="triggerSlider">
+            <i style="color: white" class="fa fa-angle-left fa-2x"></i>
+        </div>
+    </div>
+    <div id="right-group" class="right-group"></div>
+</div>
+
+<script type="text/javascript" src="/piflow-web/my_js/processGroup/processGroupContent.js"></script>
+<script type="text/javascript" src="/piflow-web/my_js/processGroup/initProcessGroupGraph.js"></script>
+<script th:inline="javascript">
+    var parentAccessPath = [[${parentAccessPath}]];
+    var xmlDate = [[${xmlDate}]];
+    var processGroupId = [[${processGroupId}]];
+    var parentProcessId = [[${parentProcessId}]];
+    var pID = [[${pID}]];
+    var appId = [[${appId}]];
+    var processState = [[${processState}]];
+    var stdoutLog = [[${stdoutLog}]];
+    var stderrLog = [[${stderrLog}]];
+    var processId = [[${processId}]];
+    $(function () {
+        initProcessGroupDrawingBoardData(function () {
+            ajaxLoad("fullScreen_load_id", "/page/macro/fragmentMacro");
+            ajaxLoad("publicUserHeadMacro_load_id", "/page/macro/graphHeadMacro", function () {
+                $("#span_username_id").html('Howdy,' + currentUser.username + '<b class="caret"></b>');
+            });
+            ajaxLoad("processGroup_operation_button_load_id", "/page/processGroup/inc/processGroup_operation_button", function () {
+                initProcessGraph();
+                initProcessContentPage(nodeArr);
+
+            });
+            ajaxLoad("processGroup_crumbs_task_load_id", "/page/processGroup/inc/processGroup_crumbs_task", function () {
+                initCrumbs(parentAccessPath);
+            });
+
+        });
+
+
+        if (runFlowBtn) {
+            if ("COMPLETED" !== processState && "FAILED" !== processState && "KILLED" !== processState) {
+                runFlowBtn.hide();
+                debugFlowBtn.hide();
+                stopFlowBtn.show();
+                timer = window.setInterval("processMonitoring(appId)", 5000);
+            } else {
+                runFlowBtn.show();
+                debugFlowBtn.show();
+                stopFlowBtn.hide();
+            }
+        }
+
+
+
+        (function () {
+            // console.log(processType,"processStateprocessState")
+            $('#process-flow')[0].style.display = "none"
+            $('#process-group')[0].style.display = "block"
+            if (processContent) {
+                if (xmlDate) {
+                    processContent.append(xmlDate);
+                } else {
+                    processContent.prepend('<div style="position: fixed;z-index: 779;"><h1>View missing</h1></div>');
+                }
+            }
+            if (runFlowGroupBtn) {
+                if ("COMPLETED" !== processState && "FAILED" !== processState && "KILLED" !== processState) {
+                    runFlowGroupBtn.hide();
+                    debugFlowGroupBtn.hide();
+                    stopFlowGroupBtn.show();
+                    timer = window.setInterval("processGroupMonitoring(appId)", 5000);
+                } else {
+                    runFlowGroupBtn.show();
+                    debugFlowGroupBtn.show();
+                    stopFlowGroupBtn.hide();
+                }
+            }
+            var processVoListInit = [[${processVoListInit}]];
+            if (processVoListInit && '' != processVoListInit) {
+                for (var i = 0; i < processVoListInit.length; i++) {
+                    var processVoInit = processVoListInit[i];
+                    processGroupMonitor(processVoInit.pageId, processVoInit.state);
+                }
+            }
+            var processGroupVoListInit = [[${processGroupVoListInit}]];
+            if (processGroupVoListInit && '' != processGroupVoListInit) {
+                for (var i = 0; i < processGroupVoListInit.length; i++) {
+                    var processGroupVoInit = processGroupVoListInit[i];
+                    processGroupMonitor(processGroupVoInit.pageId, processGroupVoInit.state);
+                }
+            }
+            //queryProcess(processId);
+            $("#modalDialog").draggable();//Add drag and drop for modal dialogs
+            $("#myModal").css("overflow", "hidden");//Disable translucent background scrolling of modal dialogs
+            if ("processGroupList" === parentAccessPath) {
+                $("#web_processList_navigation").hide();
+                $("#web_processGroupList_navigation").show();
+                $("#web_getProcessGroupById_navigation").show();
+            }
+        })();
+    });
+
+    $(document).ready(function () {
+        $("#myModalPort").draggable();//Add drag and drop for modal dialogs
+        $("#myModalPort").css("overflow", "hidden");//Disable translucent background scrolling of modal dialogs
+        $(".btn-group").mouseover(function () {
+            $(this).addClass("open");
+            var oDiv = document.getElementById("divloadingXml");
+            oDiv.style.display = "none";
+        });
+        $(".btn-group").mouseleave(function () {
+            $(this).removeClass("open");
+        });
+        initGraph();
+        layui.form.on('submit(component-form-submit)', function (data) {
+            addStopCustomProperty(data.field);
+            return false;
+        });
+        if ("flowGroupList" === parentAccessPath) {
+            $("#web_flowGroupList_navigation").show();
+            $("#web_flowList_navigation").hide();
+            if (parentsId) {
+                $("#grapheditor_groupDrawingBoard_navigation").show();
+            } else {
+                $("#grapheditor_groupDrawingBoard_navigation").hide();
+            }
+        }
+        var graphEditorPageType = $("#drawingBoardType").val();
+    });
+    //window.onload = showSelect;
+    //@ sourceURL=processMxGraphIndex.js
+
+</script>
+
+</body>
+</html>

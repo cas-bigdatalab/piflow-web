@@ -53,9 +53,22 @@ public class WebAppConfig implements WebMvcConfigurer {
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         // system
+        registry.addViewController("/").setViewName("index");
         registry.addViewController("/index").setViewName("index");
         registry.addViewController("/page/error/404").setViewName("errorPage");
         registry.addViewController("/page/bootPage/index").setViewName("bootPage");
+
+        //index
+        registry.addViewController("/page/dashboard").setViewName("dashboard");
+        registry.addViewController("/page/flowList").setViewName("flow/flow_List");
+        registry.addViewController("/page/flowGroupList").setViewName("flowGroup/flow_group_List");
+        registry.addViewController("/page/process_processGroup_list").setViewName("processAndProcessGroup/process_processGroup_list");
+
+        //macro
+        registry.addViewController("/page/macro/fragmentMacro").setViewName("macro/fragmentMacro");
+        registry.addViewController("/page/macro/graphHeadMacro").setViewName("macro/graphHeadMacro");
+        registry.addViewController("/page/macro/publicUserHeadMacro").setViewName("macro/publicUserHeadMacro");
+        registry.addViewController("/page/macro/headMacro").setViewName("macro/headMacro");
 
         // datasource
         registry.addViewController("/page/datasource/getDatasourceListPage").setViewName("indexRight/datasource/data_source_List");
@@ -87,17 +100,9 @@ public class WebAppConfig implements WebMvcConfigurer {
         registry.addViewController("/page/flowGroup/inc/flowGroup_path_inc").setViewName("flowGroup/inc/flowGroup_path_inc");
         registry.addViewController("/page/flowGroup/inc/flowGroup_property_inc").setViewName("flowGroup/inc/flowGroup_property_inc");
 
-        //index
-        registry.addViewController("/page/dashboard").setViewName("dashboard");
-        registry.addViewController("/page/flowList").setViewName("flow/flow_List");
-        registry.addViewController("/page/flowGroupList").setViewName("flowGroup/flow_group_List");
-        registry.addViewController("/page/process_processGroup_list").setViewName("processAndProcessGroup/process_processGroup_list");
+        //process group
+        registry.addViewController("/page/processGroup/drawingBoard").setViewName("processGroup/mxGraph/index");
 
-        //macro
-        registry.addViewController("/page/macro/fragmentMacro").setViewName("macro/fragmentMacro");
-        registry.addViewController("/page/macro/graphHeadMacro").setViewName("macro/graphHeadMacro");
-        registry.addViewController("/page/macro/publicUserHeadMacro").setViewName("macro/publicUserHeadMacro");
-        registry.addViewController("/page/macro/headMacro").setViewName("macro/headMacro");
 
 
 
