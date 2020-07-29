@@ -161,15 +161,13 @@ function window_location_href(url) {
     window.location.href = (web_header_prefix + url);
 }
 
-function window_open(url, isNewWindow) {
-    var windowOpen = "";
-    if (isNewWindow) {
-        windowOpen = window.open(web_header_prefix + url, '_blank');
+function new_window_open(url) {
+    var tempWindow = window.open('_blank');
+    if (tempWindow == null || typeof (tempWindow) == 'undefined') {
+        alert('The window cannot be opened. Please check your browser settings.')
     } else {
-        windowOpen = window.open(web_header_prefix + url);
+        tempWindow.location = (web_header_prefix + url);
     }
-    if (windowOpen == null || typeof (windowOpen) == 'undefined') {
-        alert('The window cannot be opened. Please check your browser settings.');
-    }
+
 }
 

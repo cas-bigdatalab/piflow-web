@@ -1065,7 +1065,6 @@ Menus.prototype.createPopupMenu = function(menu, cell, evt)
 //------------------------------ Custom modification content 005 start ------------------------------
 		if(!EditorUi.prototype.noEditing)
 		{
-			console.log("--------------------------------------------------");
 			if (cell.style && (cell.style).indexOf("image\;") === 0)
 			{
 				var cellMenuArray = ['delete'];

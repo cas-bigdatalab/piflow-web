@@ -27,18 +27,18 @@ public class LoginCtrl {
      */
     Logger logger = LoggerUtil.getLogger();
 
-    @RequestMapping("/")
-    public ModelAndView indexHome(ModelAndView modelAndView) {
-        modelAndView.setViewName("jump");
-        UserVo currentUser = SessionUserUtil.getCurrentUser();
-        if (null != currentUser) {
-            logger.info("user " + currentUser.getUsername() + " login successfully jump home page");
-        }
-        modelAndView.setViewName("indexNew");
-        modelAndView.addObject("currentUser", currentUser);
-        modelAndView.addObject("accessPath", "indexHome");
-        return modelAndView;
-    }
+//    @RequestMapping("/")
+//    public ModelAndView indexHome(ModelAndView modelAndView) {
+//        modelAndView.setViewName("jump");
+//        UserVo currentUser = SessionUserUtil.getCurrentUser();
+//        if (null != currentUser) {
+//            logger.info("user " + currentUser.getUsername() + " login successfully jump home page");
+//        }
+//        modelAndView.setViewName("indexNew");
+//        modelAndView.addObject("currentUser", currentUser);
+//        modelAndView.addObject("accessPath", "indexHome");
+//        return modelAndView;
+//    }
 
     @RequestMapping("/login")
     public ModelAndView login(ModelAndView modelAndView) {
