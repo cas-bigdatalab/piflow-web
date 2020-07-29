@@ -3,6 +3,7 @@ package cn.cnic.controller;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import cn.cnic.component.stopsComponent.model.StopsHub;
 import cn.cnic.component.stopsComponent.service.IStopsHubService;
 import org.slf4j.Logger;
 import org.springframework.web.bind.annotation.*;
@@ -176,5 +177,19 @@ public class StopsCtrl {
     public String uploadStopsHubFile(@RequestParam("file") MultipartFile file) {
         String username = SessionUserUtil.getCurrentUsername();
         return stopsHubServiceImpl.uploadStopsHubFile(username, file);
+    }
+
+    /**
+     * Upload stopsHub jar file and save stopsHub
+     *
+     * @param stopsHubName
+     * @return
+     */
+    @RequestMapping(value = "/mountStopsHub", method = RequestMethod.POST)
+    @ResponseBody
+    public String mountStopsHub(HttpServletRequest request, String id, String stopsHubName) {
+        String username = SessionUserUtil.getCurrentUsername();
+        Boolean isAdmin =  SessionUserUtil.isAdmin();
+        return stopsHubServiceImpl.mountStopsHub(username, isAdmin, id, stopsHubName);
     }
 }

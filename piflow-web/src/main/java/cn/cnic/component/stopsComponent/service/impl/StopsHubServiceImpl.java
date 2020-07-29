@@ -48,7 +48,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
     public String uploadStopsHubFile(String username, MultipartFile file) {
 
         //call piflow server api: plunin/path
-        String stopsHubPath = stopImpl.getPluginPath();
+        String stopsHubPath = stopImpl.getStopsHubPath();
 
         //upload jar file to plugin path
         String stopsHubName = file.getName();
@@ -76,6 +76,24 @@ public class StopsHubServiceImpl implements IStopsHubService {
         stopsHub.setStatus(StopsHubState.UNMOUNT);
         stopsHubMapper.addStopHub(stopsHub);
         return ReturnMapUtils.setSucceededMsgRtnJsonStr("successful jar upload");
+    }
+
+    @Override
+    public String mountStopsHub(String username,Boolean isAdmin, String id, String stopsHubName) {
+
+        String mountId = stopImpl.mountStopsHub(stopsHubName);
+
+        if(mountId == ""){
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Mount failed, please try again later");
+        }
+
+        StopsHub stopsHub = stopsHubMapper.getStopsHubListById(username,isAdmin,id);
+        stopsHub.setMountId(mountId);
+        stopsHub.setStatus(StopsHubState.MOUNT);
+        stopsHub.setLastUpdateUser(username);
+        stopsHub.setLastUpdateDttm(new Date());
+        stopsHubMapper.updateStopHub(stopsHub);
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr("Mount successful");
     }
 
 }

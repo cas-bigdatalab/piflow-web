@@ -7,6 +7,7 @@ import cn.cnic.component.stopsComponent.mapper.StopsComponentGroupMapper;
 import cn.cnic.third.service.IStop;
 import cn.cnic.third.vo.stop.ThirdStopsComponentPropertyVo;
 import cn.cnic.third.vo.stop.ThirdStopsComponentVo;
+import com.alibaba.fastjson.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
@@ -143,7 +144,7 @@ public class StopImpl implements IStop {
     }
 
     @Override
-    public String getPluginPath() {
+    public String getStopsHubPath() {
 
         Map<String, String> map = new HashMap<>();
         //map.put("bundle", bundleStr);
@@ -160,6 +161,26 @@ public class StopImpl implements IStop {
 
         String pluginPath = JSONObject.fromObject(sendGetData).getString("pluginPath");
         return pluginPath;
+    }
+
+    @Override
+    public String mountStopsHub(String stopsHubName) {
+
+        String stopsHubMountId = "";
+        Map<String, String> map = new HashMap<>();
+        map.put("plugin", stopsHubName);
+        String json = JSON.toJSON(map).toString();
+        String doPost = HttpUtils.doPost(SysParamsCache.getStopsHubMountUrl(), json, 5 * 1000);
+        if (StringUtils.isNotBlank(doPost) && !doPost.contains("Fail")) {
+            logger.info("Interface return value: " + doPost);
+            stopsHubMountId = JSONObject.fromObject(doPost).getJSONObject("plugin").getString("id");
+        } else {
+            logger.warn("Interface return exception");
+
+        }
+
+        return stopsHubMountId;
+
     }
 
 }

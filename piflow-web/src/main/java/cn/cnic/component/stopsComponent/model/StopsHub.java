@@ -21,7 +21,7 @@ public class StopsHub extends BaseHibernateModelUUIDNoCorpAgentId {
     private static final long serialVersionUID = 1L;
 
     @Column(columnDefinition = "varchar(1000) COMMENT 'jar mount id'")
-    private String mountID;
+    private String mountId;
 
     @Column(columnDefinition = "varchar(1000) COMMENT 'jar name'")
     private String jarName;

@@ -19,6 +19,8 @@ public interface IStop {
 
     public ThirdStopsComponentVo getStopInfo(String bundleStr);
 
-    public String getPluginPath();
+    public String getStopsHubPath();
+
+    public String mountStopsHub(String stopsHubName);
 
 }

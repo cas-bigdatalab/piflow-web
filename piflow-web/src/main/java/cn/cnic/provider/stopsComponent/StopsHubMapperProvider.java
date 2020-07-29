@@ -19,6 +19,7 @@ public class StopsHubMapperProvider {
     private String lastUpdateUser;
     private int enableFlag;
     private long version;
+    private String mountId;
     private String jarName;
     private String jarUrl;
     private String status;
@@ -44,6 +45,7 @@ public class StopsHubMapperProvider {
             this.lastUpdateDttmStr = SqlUtils.preventSQLInjection(lastUpdateDttmStr);
 
             // Selection field
+            this.mountId = SqlUtils.preventSQLInjection(stopsHub.getMountId());
             this.jarName = SqlUtils.preventSQLInjection(stopsHub.getJarName());
             this.jarUrl = SqlUtils.preventSQLInjection(stopsHub.getJarUrl());
             this.status = SqlUtils.preventSQLInjection(null != stopsHub.getStatus()? stopsHub.getStatus().name() : null);
@@ -59,6 +61,7 @@ public class StopsHubMapperProvider {
         this.lastUpdateUser = null;
         this.enableFlag = 1;
         this.version = 0L;
+        this.mountId = null;
         this.jarName = null;
         this.jarUrl = null;
         this.status = null;
@@ -94,6 +97,7 @@ public class StopsHubMapperProvider {
             sql.VALUES("last_update_user", lastUpdateUser);
             sql.VALUES("version", version + "");
             sql.VALUES("enable_flag", enableFlag + "");
+            sql.VALUES("mount_id", mountId +"");
             sql.VALUES("jar_name", jarName + "");
             sql.VALUES("jar_url", jarUrl + "");
             sql.VALUES("status", status + "");
@@ -126,9 +130,14 @@ public class StopsHubMapperProvider {
 
             // handle other fields
             sql.SET("enable_flag = " + enableFlag);
-            sql.SET("jar_name = " + jarName);
-            sql.SET("jar_url = " + jarUrl);
-            sql.SET("status = " + status);
+            if(mountId != null)
+                sql.SET("mount_id = " + mountId);
+            if(jarName != null)
+                sql.SET("jar_name = " + jarName);
+            if(jarUrl != null)
+                sql.SET("jar_url = " + jarUrl);
+            if(status != null)
+                sql.SET("status = " + status);
             sql.WHERE("version = " + version);
             sql.WHERE("id = " + id);
             sqlStr = sql.toString();

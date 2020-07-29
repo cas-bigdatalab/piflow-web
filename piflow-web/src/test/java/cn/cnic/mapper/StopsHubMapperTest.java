@@ -24,16 +24,16 @@ public class StopsHubMapperTest extends ApplicationTests {
     public void testAddStopsHub() {
 
         StopsHub stopsHub = new StopsHub();
-        stopsHub.setId(UUIDUtils.getUUID32());
+        stopsHub.setId("222");
         stopsHub.setCrtUser("Nature");
         stopsHub.setCrtDttm(new Date());
         stopsHub.setLastUpdateUser("Nature");
         stopsHub.setLastUpdateDttm(new Date());
         stopsHub.setEnableFlag(true);
         stopsHub.setVersion(1L);
-        stopsHub.setJarName("piflowexternal1.jar");
-        stopsHub.setJarUrl("/data/piflowServer/class/piflowexternal1.jar");
-        stopsHub.setStatus(StopsHubState.MOUNT);
+        stopsHub.setJarName("sks-piflow.jar");
+        stopsHub.setJarUrl("/data/piflowServer/class/sks-piflow.jar");
+        stopsHub.setStatus(StopsHubState.UNMOUNT);
         int result = stopsHubMapper.addStopHub(stopsHub);
         if (1 == result) {
             logger.info("The query result is empty");
