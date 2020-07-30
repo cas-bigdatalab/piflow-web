@@ -2026,7 +2026,7 @@ function runFlow(runMode) {
                     if (tempWindow == null || typeof (tempWindow) == 'undefined') {
                         alert('The window cannot be opened. Please check your browser settings.')
                     } else {
-                        tempWindow.location = (web_header_prefix + "/mxGraph/drawingBoard?drawingBoardType=PROCESS&processType=PROCESS&load=" + dataMap.processId);
+                        tempWindow.location = (web_header_prefix + "/page/process/drawingBoard?drawingBoardType=PROCESS&processType=PROCESS&load=" + dataMap.processId);
                     }
                 });
             } else {

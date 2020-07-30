@@ -138,4 +138,15 @@ public interface IProcessGroupService {
      */
     public ProcessGroupPathVo getProcessGroupPathVoByPageId(String processGroupId, String pageId);
 
+    /**
+     * drawingBoard Data
+     *
+     * @param username
+     * @param isAdmin
+     * @param loadId
+     * @param parentAccessPath
+     * @return
+     */
+    public String drawingBoardData(String username, boolean isAdmin, String loadId, String parentAccessPath);
+
 }

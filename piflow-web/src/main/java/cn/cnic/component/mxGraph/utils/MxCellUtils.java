@@ -80,6 +80,26 @@ public class MxCellUtils {
         return iconMxCellVo;
     }
 
+    public static MxCell initIconMxCell(MxCell mxCell) {
+        if (null == mxCell) {
+            return new MxCell();
+        }
+        MxCell iconMxCell = new MxCell();
+        BeanUtils.copyProperties(mxCell, iconMxCell);
+        iconMxCell.setPageId(mxCell.getPageId() + ".1");
+        iconMxCell.setValue(mxCell.getPageId());
+        iconMxCell.setStyle("text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;fontFamily=PiFlow;fontColor=#FFFFFF;fontSize=1;");
+        MxGeometry iconMxGeometry = new MxGeometry();
+        BeanUtils.copyProperties(mxCell.getMxGeometry(), iconMxGeometry);
+        double load_x = Double.parseDouble(iconMxGeometry.getX());
+        double load_width = Double.parseDouble(iconMxGeometry.getWidth());
+        iconMxGeometry.setHeight("0");
+        iconMxGeometry.setWidth("0");
+        iconMxGeometry.setX((load_x + load_width) + "");
+        iconMxCell.setMxGeometry(iconMxGeometry);
+        return iconMxCell;
+    }
+
     public static MxCell AddDefaultFlowMxCell(String username, String pageId, String name) {
         MxCell defaultFlowMxCell = mxCellNewNoId(username);
         defaultFlowMxCell.setPageId(pageId);

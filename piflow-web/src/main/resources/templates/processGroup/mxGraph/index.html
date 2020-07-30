@@ -48,6 +48,7 @@
         .btn-position .btn {
             margin: 6px 6px 2px 0 !important;
         }
+
         .customize_btn_css {
             display: inline-block;
             padding: 6px 12px;
@@ -90,20 +91,9 @@
 
 <!-- crumbs -->
 <div style="width: 100%;position: fixed;z-index: 99999;float: left;left: 0px;bottom: 0px;text-align: center;height: 28px;line-height: 28px; background: #37714b;">
-<!--    <div th:case="'GROUP'" th:include="mxGraph/inc/proccess_crumbs_group :: proccess_crumbs_group"></div>-->
+    <!--    <div th:case="'GROUP'" th:include="mxGraph/inc/proccess_crumbs_group :: proccess_crumbs_group"></div>-->
     <div id="processGroup_crumbs_task_load_id"></div>
 </div>
-
-<!--<div id="precess-run" class="precess-run"
-     style="position: fixed; z-index: 779;text-align: right;right: 10px;top: 50px;">
-    <div id="process-group" style="display: none">
-        <span>progress：<span id="groupProgress" th:text="${percentage} + '%'"></span></span>
-        <input id="runFlowGroup" type="button" class="btn btn-default" onclick="selectRunMode()" value="Run"/>
-        <input id="stopFlowGroup" type="button" class="btn btn-danger" onclick="stopProcessGroup()" value="Stop"/>
-        <input type="button" class="btn btn-primary" onclick="openLogWindow()" value="Log"/>
-    </div>
-
-</div>-->
 
 <div id="right-group-wrap" style="position:absolute;right:0;top:86px;width:25%;;height:88%;transition: 2s">
     <div class="ExpandSidebar">
@@ -114,12 +104,41 @@
     <div id="right-group" class="right-group"></div>
 </div>
 
+<script type="text/javascript" src="/piflow-web/js/ajaxUtils.js"></script>
 <script type="text/javascript" src="/piflow-web/my_js/processGroup/processGroupContent.js"></script>
 <script type="text/javascript" src="/piflow-web/my_js/processGroup/initProcessGroupGraph.js"></script>
+
 <script th:inline="javascript">
+    var urlParams = getUrlParams(window.location.href);
+    var loadId = urlParams.load;
+    var parentAccessPath = urlParams.parentAccessPath;
+    var currentUser = JSON.parse(localStorage.jwtUser);
+
+    var parentsId = [[${parentsId}]];
+    var flowGroupId = [[${flowGroupId}]];
+    var stopsGroupData = [[${groupsVoList}]];
+    var xmlDate = [[${xmlDate}]];
+    var xmlDateStr = [[${xmlDateStr}]];
+    var isExample = [[${isExample}]];
+    var maxStopPageId = [[${maxStopPageId}]];
+    var maxFlowPageId = [[${maxFlowPageId}]];
+    var divValue = null;
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    var nodePageIdAndStateList;
+    var processType = [[${processType}]];
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+
+    function divAppend(divAppend) {
+        divValue = divAppend;
+    }
+
     var parentAccessPath = [[${parentAccessPath}]];
     var xmlDate = [[${xmlDate}]];
-    var processGroupId = [[${processGroupId}]];
+    var processGroupId = [[${load}]];
     var parentProcessId = [[${parentProcessId}]];
     var pID = [[${pID}]];
     var appId = [[${appId}]];
@@ -128,14 +147,14 @@
     var stderrLog = [[${stderrLog}]];
     var processId = [[${processId}]];
     $(function () {
-        initProcessGroupDrawingBoardData(function () {
+        initProcessGroupDrawingBoardData(loadId, parentAccessPath, function () {
             ajaxLoad("fullScreen_load_id", "/page/macro/fragmentMacro");
             ajaxLoad("publicUserHeadMacro_load_id", "/page/macro/graphHeadMacro", function () {
                 $("#span_username_id").html('Howdy,' + currentUser.username + '<b class="caret"></b>');
             });
             ajaxLoad("processGroup_operation_button_load_id", "/page/processGroup/inc/processGroup_operation_button", function () {
-                initProcessGraph();
-                initProcessContentPage(nodeArr);
+                initProcessGroupGraph();
+                initProcessContentPage(nodePageIdAndStateList);
 
             });
             ajaxLoad("processGroup_crumbs_task_load_id", "/page/processGroup/inc/processGroup_crumbs_task", function () {
@@ -144,7 +163,7 @@
 
         });
 
-
+/*
         if (runFlowBtn) {
             if ("COMPLETED" !== processState && "FAILED" !== processState && "KILLED" !== processState) {
                 runFlowBtn.hide();
@@ -157,13 +176,11 @@
                 stopFlowBtn.hide();
             }
         }
-
+*/
 
 
         (function () {
-            // console.log(processType,"processStateprocessState")
-            $('#process-flow')[0].style.display = "none"
-            $('#process-group')[0].style.display = "block"
+
             if (processContent) {
                 if (xmlDate) {
                     processContent.append(xmlDate);
@@ -183,23 +200,13 @@
                     stopFlowGroupBtn.hide();
                 }
             }
-            var processVoListInit = [[${processVoListInit}]];
-            if (processVoListInit && '' != processVoListInit) {
-                for (var i = 0; i < processVoListInit.length; i++) {
-                    var processVoInit = processVoListInit[i];
-                    processGroupMonitor(processVoInit.pageId, processVoInit.state);
+            var nodePageIdAndStateList = [[${nodePageIdAndStateList}]];
+            if (nodePageIdAndStateList && '' != nodePageIdAndStateList) {
+                for (var i = 0; i < nodePageIdAndStateList.length; i++) {
+                    var nodePageIdAndState = nodePageIdAndStateList[i];
+                    processGroupMonitor(nodePageIdAndState.pageId, nodePageIdAndState.state);
                 }
             }
-            var processGroupVoListInit = [[${processGroupVoListInit}]];
-            if (processGroupVoListInit && '' != processGroupVoListInit) {
-                for (var i = 0; i < processGroupVoListInit.length; i++) {
-                    var processGroupVoInit = processGroupVoListInit[i];
-                    processGroupMonitor(processGroupVoInit.pageId, processGroupVoInit.state);
-                }
-            }
-            //queryProcess(processId);
-            $("#modalDialog").draggable();//Add drag and drop for modal dialogs
-            $("#myModal").css("overflow", "hidden");//Disable translucent background scrolling of modal dialogs
             if ("processGroupList" === parentAccessPath) {
                 $("#web_processList_navigation").hide();
                 $("#web_processGroupList_navigation").show();
@@ -219,11 +226,6 @@
         $(".btn-group").mouseleave(function () {
             $(this).removeClass("open");
         });
-        initGraph();
-        layui.form.on('submit(component-form-submit)', function (data) {
-            addStopCustomProperty(data.field);
-            return false;
-        });
         if ("flowGroupList" === parentAccessPath) {
             $("#web_flowGroupList_navigation").show();
             $("#web_flowList_navigation").hide();
@@ -233,7 +235,6 @@
                 $("#grapheditor_groupDrawingBoard_navigation").hide();
             }
         }
-        var graphEditorPageType = $("#drawingBoardType").val();
     });
     //window.onload = showSelect;
     //@ sourceURL=processMxGraphIndex.js
