@@ -17,8 +17,17 @@ public class StopsHubTest extends ApplicationTests {
     @Test
     @Rollback(false)
     public void testMountStopsHub() {
-        String result = stopsHubServiceImpl.mountStopsHub("Nature", true, "222","sks-piflow.jar");
+        String result = stopsHubServiceImpl.mountStopsHub("Nature", true, "222");
         System.out.println(result);
+
+    }
+
+    @Test
+    @Rollback(false)
+    public void testUnMountStopsHub() {
+        String result = stopsHubServiceImpl.unmountStopsHub("Nature", true, "222");
+        System.out.println(result);
+
     }
 
 }

@@ -190,6 +190,6 @@ public class StopsCtrl {
     public String mountStopsHub(HttpServletRequest request, String id, String stopsHubName) {
         String username = SessionUserUtil.getCurrentUsername();
         Boolean isAdmin =  SessionUserUtil.isAdmin();
-        return stopsHubServiceImpl.mountStopsHub(username, isAdmin, id, stopsHubName);
+        return stopsHubServiceImpl.mountStopsHub(username, isAdmin, id);
     }
 }

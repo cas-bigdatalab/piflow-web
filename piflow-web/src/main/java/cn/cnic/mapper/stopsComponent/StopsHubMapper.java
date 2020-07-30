@@ -39,10 +39,10 @@ public interface StopsHubMapper {
     public List<StopsHub> getStopsHubList(@Param("username") String username, @Param("isAdmin") boolean isAdmin);
 
     @SelectProvider(type = StopsHubMapperProvider.class, method = "getStopsHubListByName")
-    public List<StopsHub> getStopsHubListByName(@Param("username") String username, @Param("isAdmin") boolean isAdmin, String jarName);
+    public List<StopsHub> getStopsHubByName(@Param("username") String username, @Param("isAdmin") boolean isAdmin, String jarName);
 
     @SelectProvider(type = StopsHubMapperProvider.class, method = "getStopsHubById")
-    public StopsHub getStopsHubListById(@Param("username") String username, @Param("isAdmin") boolean isAdmin, String id);
+    public StopsHub getStopsHubById(@Param("username") String username, @Param("isAdmin") boolean isAdmin, String id);
 
 
     @UpdateProvider(type = StopsHubMapperProvider.class, method = "updateEnableFlagById")

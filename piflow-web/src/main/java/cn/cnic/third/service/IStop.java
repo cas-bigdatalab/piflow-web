@@ -1,5 +1,6 @@
 package cn.cnic.third.service;
 
+import cn.cnic.third.vo.stop.StopsHubVo;
 import cn.cnic.third.vo.stop.ThirdStopsComponentVo;
 
 import java.util.List;
@@ -21,6 +22,8 @@ public interface IStop {
 
     public String getStopsHubPath();
 
-    public String mountStopsHub(String stopsHubName);
+    public StopsHubVo mountStopsHub(String stopsHubName);
+
+    public StopsHubVo unmountStopsHub(String stopsHubMountId);
 
 }

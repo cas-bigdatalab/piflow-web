@@ -18,6 +18,8 @@ import cn.cnic.component.template.utils.FlowTemplateUtils;
 import cn.cnic.mapper.dataSource.DataSourceMapper;
 import cn.cnic.mapper.stopsComponent.StopsHubMapper;
 import cn.cnic.third.service.IStop;
+import cn.cnic.third.vo.stop.StopsHubVo;
+import cn.cnic.third.vo.stop.ThirdStopsComponentVo;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.apache.commons.lang3.StringUtils;
@@ -79,21 +81,51 @@ public class StopsHubServiceImpl implements IStopsHubService {
     }
 
     @Override
-    public String mountStopsHub(String username,Boolean isAdmin, String id, String stopsHubName) {
+    public String mountStopsHub(String username,Boolean isAdmin, String id) {
 
-        String mountId = stopImpl.mountStopsHub(stopsHubName);
-
-        if(mountId == ""){
+        StopsHub stopsHub = stopsHubMapper.getStopsHubById(username,isAdmin,id);
+        if(stopsHub.getStatus() == StopsHubState.MOUNT){
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("StopsHub have been Mounted already!");
+        }
+        StopsHubVo stopsHubVo = stopImpl.mountStopsHub(stopsHub.getJarName());
+        if(stopsHubVo == null){
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Mount failed, please try again later");
         }
 
-        StopsHub stopsHub = stopsHubMapper.getStopsHubListById(username,isAdmin,id);
-        stopsHub.setMountId(mountId);
+        stopsHub.setMountId(stopsHubVo.getMountId());
         stopsHub.setStatus(StopsHubState.MOUNT);
         stopsHub.setLastUpdateUser(username);
         stopsHub.setLastUpdateDttm(new Date());
         stopsHubMapper.updateStopHub(stopsHub);
+
+        //TODO: add stops and groups into db,
+        List<ThirdStopsComponentVo> stops = stopsHubVo.getStops();
+
         return ReturnMapUtils.setSucceededMsgRtnJsonStr("Mount successful");
+    }
+
+    @Override
+    public String unmountStopsHub(String username, Boolean isAdmin, String id) {
+
+        StopsHub stopsHub = stopsHubMapper.getStopsHubById(username,isAdmin,id);
+        if(stopsHub.getStatus() == StopsHubState.UNMOUNT){
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("StopsHub have been UNMounted already!");
+        }
+
+        StopsHubVo stopsHubVo = stopImpl.unmountStopsHub(stopsHub.getMountId());
+        if(stopsHubVo == null){
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("UNMount failed, please try again later");
+        }
+        stopsHub.setMountId(stopsHubVo.getMountId());
+        stopsHub.setStatus(StopsHubState.UNMOUNT);
+        stopsHub.setLastUpdateUser(username);
+        stopsHub.setLastUpdateDttm(new Date());
+        stopsHubMapper.updateStopHub(stopsHub);
+
+        //TODO: remove stops and groups into db,
+        List<ThirdStopsComponentVo> stops = stopsHubVo.getStops();
+
+        return null;
     }
 
 }
