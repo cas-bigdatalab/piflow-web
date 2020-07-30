@@ -114,28 +114,16 @@
     var parentAccessPath = urlParams.parentAccessPath;
     var currentUser = JSON.parse(localStorage.jwtUser);
 
+    var nodePageIdAndStateList;
     var parentsId = [[${parentsId}]];
     var flowGroupId = [[${flowGroupId}]];
-    var stopsGroupData = [[${groupsVoList}]];
     var xmlDate = [[${xmlDate}]];
     var xmlDateStr = [[${xmlDateStr}]];
     var isExample = [[${isExample}]];
     var maxStopPageId = [[${maxStopPageId}]];
     var maxFlowPageId = [[${maxFlowPageId}]];
     var divValue = null;
-    //-------------------------------------------------------------------------
-    //-------------------------------------------------------------------------
-    //-------------------------------------------------------------------------
-    var nodePageIdAndStateList;
     var processType = [[${processType}]];
-    //-------------------------------------------------------------------------
-    //-------------------------------------------------------------------------
-    //-------------------------------------------------------------------------
-
-    function divAppend(divAppend) {
-        divValue = divAppend;
-    }
-
     var parentAccessPath = [[${parentAccessPath}]];
     var xmlDate = [[${xmlDate}]];
     var processGroupId = [[${load}]];
@@ -146,78 +134,38 @@
     var stdoutLog = [[${stdoutLog}]];
     var stderrLog = [[${stderrLog}]];
     var processId = [[${processId}]];
+
+    function divAppend(divAppend) {
+        divValue = divAppend;
+    }
+
     $(function () {
         initProcessGroupDrawingBoardData(loadId, parentAccessPath, function () {
             ajaxLoad("fullScreen_load_id", "/page/macro/fragmentMacro");
             ajaxLoad("publicUserHeadMacro_load_id", "/page/macro/graphHeadMacro", function () {
                 $("#span_username_id").html('Howdy,' + currentUser.username + '<b class="caret"></b>');
             });
-            ajaxLoad("processGroup_operation_button_load_id", "/page/processGroup/inc/processGroup_operation_button", function () {
+            ajaxLoad("processGroup_operation_button_load_id", "/page/processGroup/inc/process_operation_button_group", function () {
                 initProcessGroupGraph();
-                initProcessContentPage(nodePageIdAndStateList);
+                processGroupOperationBtn(processState);
+
+
+                var nodePageIdAndStateList = [[${nodePageIdAndStateList}]];
+                if (nodePageIdAndStateList && '' != nodePageIdAndStateList) {
+                    for (var i = 0; i < nodePageIdAndStateList.length; i++) {
+                        var nodePageIdAndState = nodePageIdAndStateList[i];
+                        processGroupMonitor(nodePageIdAndState.pageId, nodePageIdAndState.state);
+                    }
+                }
 
             });
-            ajaxLoad("processGroup_crumbs_task_load_id", "/page/processGroup/inc/processGroup_crumbs_task", function () {
+            ajaxLoad("processGroup_crumbs_task_load_id", "/page/processGroup/inc/process_crumbs_group", function () {
                 initCrumbs(parentAccessPath);
             });
-
         });
-
-/*
-        if (runFlowBtn) {
-            if ("COMPLETED" !== processState && "FAILED" !== processState && "KILLED" !== processState) {
-                runFlowBtn.hide();
-                debugFlowBtn.hide();
-                stopFlowBtn.show();
-                timer = window.setInterval("processMonitoring(appId)", 5000);
-            } else {
-                runFlowBtn.show();
-                debugFlowBtn.show();
-                stopFlowBtn.hide();
-            }
-        }
-*/
-
-
-        (function () {
-
-            if (processContent) {
-                if (xmlDate) {
-                    processContent.append(xmlDate);
-                } else {
-                    processContent.prepend('<div style="position: fixed;z-index: 779;"><h1>View missing</h1></div>');
-                }
-            }
-            if (runFlowGroupBtn) {
-                if ("COMPLETED" !== processState && "FAILED" !== processState && "KILLED" !== processState) {
-                    runFlowGroupBtn.hide();
-                    debugFlowGroupBtn.hide();
-                    stopFlowGroupBtn.show();
-                    timer = window.setInterval("processGroupMonitoring(appId)", 5000);
-                } else {
-                    runFlowGroupBtn.show();
-                    debugFlowGroupBtn.show();
-                    stopFlowGroupBtn.hide();
-                }
-            }
-            var nodePageIdAndStateList = [[${nodePageIdAndStateList}]];
-            if (nodePageIdAndStateList && '' != nodePageIdAndStateList) {
-                for (var i = 0; i < nodePageIdAndStateList.length; i++) {
-                    var nodePageIdAndState = nodePageIdAndStateList[i];
-                    processGroupMonitor(nodePageIdAndState.pageId, nodePageIdAndState.state);
-                }
-            }
-            if ("processGroupList" === parentAccessPath) {
-                $("#web_processList_navigation").hide();
-                $("#web_processGroupList_navigation").show();
-                $("#web_getProcessGroupById_navigation").show();
-            }
-        })();
     });
 
     $(document).ready(function () {
-        $("#myModalPort").draggable();//Add drag and drop for modal dialogs
-        $("#myModalPort").css("overflow", "hidden");//Disable translucent background scrolling of modal dialogs
         $(".btn-group").mouseover(function () {
             $(this).addClass("open");
             var oDiv = document.getElementById("divloadingXml");
@@ -226,19 +174,8 @@
         $(".btn-group").mouseleave(function () {
             $(this).removeClass("open");
         });
-        if ("flowGroupList" === parentAccessPath) {
-            $("#web_flowGroupList_navigation").show();
-            $("#web_flowList_navigation").hide();
-            if (parentsId) {
-                $("#grapheditor_groupDrawingBoard_navigation").show();
-            } else {
-                $("#grapheditor_groupDrawingBoard_navigation").hide();
-            }
-        }
     });
-    //window.onload = showSelect;
     //@ sourceURL=processMxGraphIndex.js
-
 </script>
 
 </body>

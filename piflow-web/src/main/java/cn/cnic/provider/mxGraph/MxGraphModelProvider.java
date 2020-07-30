@@ -270,6 +270,25 @@ public class MxGraphModelProvider {
         return sqlStr;
     }
 
+    /**
+     * Query mxGraphModel according to processGroupId
+     *
+     * @param processGroupId
+     * @return
+     */
+    public String getMxGraphModelByProcessGroupId(String processGroupId) {
+        String sqlStr = "select 0";
+        if (StringUtils.isNotBlank(processGroupId)) {
+            SQL sql = new SQL();
+            sql.SELECT("*");
+            sql.FROM("mx_graph_model");
+            sql.WHERE("fk_process_group_id = " + SqlUtils.preventSQLInjection(processGroupId));
+            sql.WHERE("enable_flag = 1");
+            sqlStr = sql.toString();
+        }
+        return sqlStr;
+    }
+
 
     /**
      * Logical deletion according to flowId

@@ -14,17 +14,53 @@ public interface ProcessGroupMapper {
     /**
      * Query processGroup by processGroup ID
      *
-     * @param processGroupId
+     * @param id
+     * @return
+     */
+    @SelectProvider(type = ProcessGroupMapperProvider.class, method = "getProcessGroupByIdAndUser")
+    @Results({
+            @Result(id = true, column = "id", property = "id"),
+            @Result(column = "fk_flow_process_group_id", property = "processGroup", one = @One(select = "cn.cnic.mapper.process.ProcessGroupMapper.getProcessGroupById", fetchType = FetchType.LAZY)),
+            @Result(column = "id", property = "mxGraphModel", one = @One(select = "cn.cnic.mapper.mxGraph.MxGraphModelMapper.getMxGraphModelByProcessGroupId", fetchType = FetchType.LAZY)),
+            @Result(column = "id", property = "processList", many = @Many(select = "cn.cnic.mapper.process.ProcessMapper.getProcessByProcessGroupId", fetchType = FetchType.LAZY)),
+            @Result(column = "id", property = "processGroupList", many = @Many(select = "cn.cnic.mapper.process.ProcessGroupMapper.getProcessGroupByProcessGroupId", fetchType = FetchType.LAZY)),
+            @Result(column = "id", property = "processGroupPathList", many = @Many(select = "cn.cnic.mapper.process.ProcessGroupPathMapper.getProcessPathByProcessGroupId", fetchType = FetchType.LAZY))
+    })
+    public ProcessGroup getProcessGroupByIdAndUser(@Param("username") String username, @Param("isAdmin") boolean isAdmin, @Param("id") String id);
+
+    /**
+     * Query processGroup by processGroup ID
+     *
+     * @param id
      * @return
      */
     @SelectProvider(type = ProcessGroupMapperProvider.class, method = "getProcessGroupById")
     @Results({
             @Result(id = true, column = "id", property = "id"),
-            @Result(column = "fk_flow_process_group_id", property = "processGroup", one = @One(select = "cn.cnic.mapper.process.ProcessMapper.getProcessByProcessGroupId", fetchType = FetchType.LAZY)),
+            @Result(column = "fk_flow_process_group_id", property = "processGroup", one = @One(select = "cn.cnic.mapper.process.ProcessGroupMapper.getProcessGroupById", fetchType = FetchType.LAZY)),
+            @Result(column = "id", property = "mxGraphModel", one = @One(select = "cn.cnic.mapper.mxGraph.MxGraphModelMapper.getMxGraphModelByProcessGroupId", fetchType = FetchType.LAZY)),
             @Result(column = "id", property = "processList", many = @Many(select = "cn.cnic.mapper.process.ProcessMapper.getProcessByProcessGroupId", fetchType = FetchType.LAZY)),
+            @Result(column = "id", property = "processGroupList", many = @Many(select = "cn.cnic.mapper.process.ProcessGroupMapper.getProcessGroupByProcessGroupId", fetchType = FetchType.LAZY)),
             @Result(column = "id", property = "processGroupPathList", many = @Many(select = "cn.cnic.mapper.process.ProcessGroupPathMapper.getProcessPathByProcessGroupId", fetchType = FetchType.LAZY))
     })
-    public ProcessGroup getProcessGroupById(@Param("username") String username, @Param("isAdmin") boolean isAdmin, @Param("processGroupId") String processGroupId);
+    public ProcessGroup getProcessGroupById(@Param("id") String id);
+
+    /**
+     * Query processGroup by processGroup ID
+     *
+     * @param processGroupId
+     * @return
+     */
+    @SelectProvider(type = ProcessGroupMapperProvider.class, method = "getProcessGroupByProcessGroupId")
+    @Results({
+            @Result(id = true, column = "id", property = "id"),
+            @Result(column = "fk_flow_process_group_id", property = "processGroup", one = @One(select = "cn.cnic.mapper.process.ProcessGroupMapper.getProcessGroupById", fetchType = FetchType.LAZY)),
+            @Result(column = "id", property = "mxGraphModel", one = @One(select = "cn.cnic.mapper.mxGraph.MxGraphModelMapper.getMxGraphModelByProcessGroupId", fetchType = FetchType.LAZY)),
+            @Result(column = "id", property = "processList", many = @Many(select = "cn.cnic.mapper.process.ProcessMapper.getProcessByProcessGroupId", fetchType = FetchType.LAZY)),
+            @Result(column = "id", property = "processGroupList", many = @Many(select = "cn.cnic.mapper.process.ProcessGroupMapper.getProcessGroupByProcessGroupId", fetchType = FetchType.LAZY)),
+            @Result(column = "id", property = "processGroupPathList", many = @Many(select = "cn.cnic.mapper.process.ProcessGroupPathMapper.getProcessPathByProcessGroupId", fetchType = FetchType.LAZY))
+    })
+    public ProcessGroup getProcessGroupByProcessGroupId(@Param("processGroupId") String processGroupId);
 
     /**
      * getRunModeTypeById
@@ -94,19 +130,6 @@ public interface ProcessGroupMapper {
             @Result(id = true, column = "id", property = "id"),
     })
     public List<ProcessGroup> getProcessGroupList(@Param("username") String username, @Param("isAdmin") boolean isAdmin);
-
-    /**
-     * Query processGroup list
-     *
-     * @return
-     */
-    @SelectProvider(type = ProcessGroupMapperProvider.class, method = "getProcessGroupList")
-    @Results({
-            @Result(id = true, column = "id", property = "id"),
-            @Result(column = "id", property = "processList", many = @Many(select = "cn.cnic.mapper.process.ProcessMapper.getProcessByProcessGroupId", fetchType = FetchType.LAZY)),
-            @Result(column = "id", property = "processGroupPathList", many = @Many(select = "cn.cnic.mapper.process.ProcessGroupPathMapper.updateEnableFlagByProcessGroupId", fetchType = FetchType.LAZY))
-    })
-    public List<ProcessGroup> getProcessGroupAllList(@Param("username") String username, @Param("isAdmin") boolean isAdmin);
 
     @UpdateProvider(type = ProcessGroupMapperProvider.class, method = "updateEnableFlagById")
     public int updateEnableFlagById(String id, String userName);

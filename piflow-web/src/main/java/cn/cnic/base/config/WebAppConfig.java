@@ -102,6 +102,8 @@ public class WebAppConfig implements WebMvcConfigurer {
 
         //process group
         registry.addViewController("/page/processGroup/drawingBoard").setViewName("processGroup/mxGraph/index");
+        registry.addViewController("/page/processGroup/inc/process_operation_button_group").setViewName("processGroup/inc/process_operation_button_group");
+        registry.addViewController("/page/processGroup/inc/process_crumbs_group").setViewName("processGroup/inc/process_crumbs_group");
 
 
 

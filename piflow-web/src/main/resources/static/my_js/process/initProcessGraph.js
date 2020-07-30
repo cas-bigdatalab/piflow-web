@@ -77,14 +77,13 @@ function initProcessDrawingBoardData(loadId, parentAccessPath, backFunc) {
 
 function initProcessGraph() {
     Format.noEditing(true);
-    //Format.customizeType = "PROCESS";
-    var editorUiInit = EditorUi.prototype.init;
     $("#right-group-wrap")[0].style.display = "block";
     $("#precess-run")[0].style.display = "block";
     EditorUi.prototype.menubarHeight = 48;
     EditorUi.prototype.menubarShow = false;
     EditorUi.prototype.customToobar = true;
 
+    var editorUiInit = EditorUi.prototype.init;
     EditorUi.prototype.init = function () {
         editorUiInit.apply(this, arguments);
         graphGlobal = this.editor.graph;

@@ -15,10 +15,50 @@ public class ProcessGroupMapperProvider {
     /**
      * Query processGroup by processGroup ID
      *
+     * @param id
+     * @return
+     */
+    public String getProcessGroupByIdAndUser(String username, boolean isAdmin, String id) {
+        if (StringUtils.isBlank(id)) {
+            return "select 0";
+        }
+        StringBuffer strBuf = new StringBuffer();
+        strBuf.append("select * ");
+        strBuf.append("from flow_process_group ");
+        strBuf.append("where enable_flag = 1 ");
+        strBuf.append("and id= " + SqlUtils.preventSQLInjection(id));
+        if (!isAdmin) {
+            strBuf.append("and crt_user = " + SqlUtils.preventSQLInjection(username));
+        }
+        return strBuf.toString();
+    }
+
+    /**
+     * Query processGroup by processGroup ID
+     *
+     * @param id
+     * @return
+     */
+    public String getProcessGroupById(String id) {
+        if (StringUtils.isBlank(id)) {
+            return "select 0";
+        }
+        StringBuffer strBuf = new StringBuffer();
+        strBuf.append("select * ");
+        strBuf.append("from flow_process_group ");
+        strBuf.append("where enable_flag = 1 ");
+        strBuf.append("and id= " + SqlUtils.preventSQLInjection(id));
+        return strBuf.toString();
+    }
+
+
+    /**
+     * Query processGroup by processGroupID
+     *
      * @param processGroupId
      * @return
      */
-    public String getProcessGroupById(String username, boolean isAdmin, String processGroupId) {
+    public String getProcessGroupByProcessGroupId(String processGroupId) {
         if (StringUtils.isBlank(processGroupId)) {
             return "select 0";
         }
@@ -26,10 +66,7 @@ public class ProcessGroupMapperProvider {
         strBuf.append("select * ");
         strBuf.append("from flow_process_group ");
         strBuf.append("where enable_flag = 1 ");
-        strBuf.append("and id= " + SqlUtils.preventSQLInjection(processGroupId));
-        if (!isAdmin) {
-            strBuf.append("and crt_user = " + SqlUtils.preventSQLInjection(username));
-        }
+        strBuf.append("and fk_flow_process_group_id= " + SqlUtils.preventSQLInjection(processGroupId));
         return strBuf.toString();
     }
 

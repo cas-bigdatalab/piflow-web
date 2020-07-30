@@ -7,6 +7,21 @@ var checkpointShow = $('#checkpointShow');
 var isLoadProcessInfo = true;
 var isEnd = false;
 
+function processGroupOperationBtn(processState) {
+    if (runFlowGroupBtn) {
+        if ("COMPLETED" !== processState && "FAILED" !== processState && "KILLED" !== processState) {
+            runFlowGroupBtn.hide();
+            debugFlowGroupBtn.hide();
+            stopFlowGroupBtn.show();
+            timer = window.setInterval("processGroupMonitoring(appId)", 5000);
+        } else {
+            runFlowGroupBtn.show();
+            debugFlowGroupBtn.show();
+            stopFlowGroupBtn.hide();
+        }
+    }
+}
+
 function selectedFormation(pageId, e) {
     if (isLoadProcessInfo) {
         isLoadProcessInfo = false;
@@ -71,10 +86,10 @@ function queryProcessGroup(processGroupId) {
             //alert("Id is empty, not obtained, please check!!");
             layer.msg("Id is empty, not obtained, please check!!", {icon: 2, shade: 0, time: 2000});
         } else {
-            $.ajax({
+            ajaxRequest({
                 cache: true,//Keep cached data
                 type: "POST",//Request type post
-                url: "/piflow-web/processGroup/queryProcessGroup",//This is the name of the file where I receive data in the background.
+                url: "/processGroup/queryProcessGroup",//This is the name of the file where I receive data in the background.
                 //data:$('#loginForm').serialize(),//Serialize the form
                 data: {
                     processGroupId: processGroupId
@@ -99,10 +114,10 @@ function queryProcessGroup(processGroupId) {
 
 //Query basic information about stops
 function queryProcessStop(processGroupId, pageId) {
-    $.ajax({
+    ajaxRequest({
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: "/piflow-web/processGroup/queryProcess",//This is the name of the file where I receive data in the background.
+        url: "/processGroup/queryProcess",//This is the name of the file where I receive data in the background.
         //data:$('#loginForm').serialize(),//Serialize the form
         data: {
             processGroupId: processGroupId,
@@ -137,10 +152,10 @@ function queryProcessGroupPath(processGroupId, pageId) {
     if (isLoadProcessInfo) {
         isLoadProcessInfo = false;
     }
-    $.ajax({
+    ajaxRequest({
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: "/piflow-web/processGroup/queryProcessPath",//This is the name of the file where I receive data in the background.
+        url: "/processGroup/queryProcessPath",//This is the name of the file where I receive data in the background.
         //data:$('#loginForm').serialize(),//Serialize the form
         data: {
             processGroupId: processGroupId,
@@ -206,10 +221,10 @@ function runProcessGroup(runMode) {
     if (runMode) {
         data.runMode = runMode;
     }
-    $.ajax({
+    ajaxRequest({
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: "/piflow-web/processGroup/runProcessGroup",//This is the name of the file where I receive data in the background.
+        url: "/processGroup/runProcessGroup",//This is the name of the file where I receive data in the background.
         //data:$('#loginForm').serialize(),//Serialize the form
         data: data,
         async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
@@ -242,10 +257,10 @@ function runProcessGroup(runMode) {
 function stopProcessGroup() {
     stopFlowBtn.hide();
     fullScreen.show();
-    $.ajax({
+    ajaxRequest({
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: "/piflow-web/processGroup/stopProcessGroup",//This is the name of the file where I receive data in the background.
+        url: "/processGroup/stopProcessGroup",//This is the name of the file where I receive data in the background.
         //data:$('#loginForm').serialize(),//Serialize the form
         data: {
             processGroupId: processGroupId
@@ -291,11 +306,11 @@ function openLogWindow() {
         skin: 'layui-layer-rim', //Add borders
         btn: ['log', 'requestJson'], //button
         btn1: function (index, layero) {
-            changeLogData("/piflow-web/processGroup/getGroupLogData", {"appId": appId});
+            changeLogData("/processGroup/getGroupLogData", {"appId": appId});
             return false;
         },
         btn2: function (index, layero) {
-            changeLogData("/piflow-web/processGroup/getStartGroupJson", {"processGroupId": processGroupId});
+            changeLogData("/processGroup/getStartGroupJson", {"processGroupId": processGroupId});
             return false;
         },
         content: logContent,
@@ -309,12 +324,12 @@ function openLogWindow() {
             bleBtn1.addClass('layui-layer-btn1');
         }
     });
-    changeLogData("/piflow-web/processGroup/getGroupLogData", {"appId": appId});
+    changeLogData("/processGroup/getGroupLogData", {"appId": appId});
 
 }
 
 function changeLogData(url, requestParam) {
-    $.ajax({
+    ajaxRequest({
         cache: true,//Keep cached data
         type: "POST",//Request type post
         url: url,//This is the name of the file where I receive data in the background.
@@ -346,10 +361,10 @@ function processGroupMonitoring(appId) {
     if (appId === '') {
         return;
     }
-    $.ajax({
+    ajaxRequest({
         cache: true,
         type: "get",
-        url: "/piflow-web/processGroup/getAppInfo",
+        url: "/processGroup/getAppInfo",
         data: {appid: appId},
         async: true,
         traditional: true,
@@ -457,10 +472,10 @@ function getDebugData(stopName, portName) {
     var window_width = $(window).width();//Get browser window width
     var window_height = $(window).height();//Get browser window width
     var jsonData = {"appId": appId, "stopName": stopName, "portName": portName};
-    $.ajax({
+    ajaxRequest({
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: "/piflow-web/page/process/getDebugDataHtml",//This is the name of the file where I receive data in the background.
+        url: "/page/process/getDebugDataHtml",//This is the name of the file where I receive data in the background.
         //data:$('#loginForm').serialize(),//Serialize the form
         data: jsonData,
         async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
@@ -491,10 +506,10 @@ function loadDebugData() {
     var debug_port_name = $("#debug_port_name");
     var debug_data_last_read_line = $("#debug_data_last_read_line");
     var debug_data_last_file_name = $("#debug_data_last_file_name");
-    $.ajax({
+    ajaxRequest({
         type: "POST",
         async: false,
-        url: '/piflow-web/process/getDebugData', //Actual use, please change to the server real interface
+        url: "/process/getDebugData", //Actual use, please change to the server real interface
         data: {
             "appId": debug_app_id.html(),
             "stopName": debug_stop_name.html(),

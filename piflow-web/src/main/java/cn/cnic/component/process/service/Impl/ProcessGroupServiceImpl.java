@@ -262,7 +262,7 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
         rtnMap.put("code", 500);
         if (StringUtils.isNotBlank(processGroupId)) {
             // Query Process by 'processGroupId'
-            ProcessGroup processGroup = processGroupMapper.getProcessGroupById(username, isAdmin, processGroupId);
+            ProcessGroup processGroup = processGroupMapper.getProcessGroupByIdAndUser(username, isAdmin, processGroupId);
             // Determine whether it is empty, and determine whether the save is successful.
             if (null != processGroup) {
                 String appId = processGroup.getAppId();
@@ -344,7 +344,7 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("processGroupID is null");
         }
         // Query Process by 'processGroupID'
-        ProcessGroup processGroupById = processGroupMapper.getProcessGroupById(username, isAdmin, processGroupID);
+        ProcessGroup processGroupById = processGroupMapper.getProcessGroupByIdAndUser(username, isAdmin, processGroupID);
         if (null == processGroupById) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("No process ID is '" + processGroupID + "' process");
         }
@@ -526,7 +526,7 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("param 'load' is null");
         }
 
-        ProcessGroup processGroup = processGroupMapper.getProcessGroupById(username, isAdmin, loadId);
+        ProcessGroup processGroup = processGroupMapper.getProcessGroupByIdAndUser(username, isAdmin, loadId);
         if (null == processGroup) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("No data with ID : " + loadId);
         }
