@@ -165,10 +165,10 @@ function processGroupListMonitoring() {
             window.clearInterval(timer);
             return;
         }
-        $.ajax({
+        ajaxRequest({
             cache: true,
             type: "get",
-            url: "/piflow-web/processGroup/getAppInfoList",
+            url: "/processGroup/getAppInfoList",
             data: {arrayObj: arrayObj},
             async: true,
             traditional: true,
@@ -247,10 +247,10 @@ function listRunProcessGroup(id, runMode) {
     if (runMode) {
         data.runMode = runMode;
     }
-    $.ajax({
+    ajaxRequest({
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: "/piflow-web/processGroup/runProcessGroup",//This is the name of the file where I receive data in the background.
+        url: "/processGroup/runProcessGroup",//This is the name of the file where I receive data in the background.
         //data:$('#loginForm').serialize(),//Serialize the form
         data: data,
         async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
@@ -281,10 +281,10 @@ function listRunProcessGroup(id, runMode) {
 //stop
 function listStopProcessGroup(processGroupID) {
     $('#fullScreen').show();
-    $.ajax({
+    ajaxRequest({
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: "/piflow-web/processGroup/stopProcessGroup",//This is the name of the file where I receive data in the background.
+        url: "/processGroup/stopProcessGroup",//This is the name of the file where I receive data in the background.
         //data:$('#loginForm').serialize(),//Serialize the form
         data: {
             processGroupId: processGroupID
@@ -313,10 +313,10 @@ function listStopProcessGroup(processGroupID) {
 //remove
 function delProcessGroup(processGroupID) {
     $('#fullScreen').show();
-    $.ajax({
+    ajaxRequest({
         cache: true,//Keep cached data
         type: "get",//get
-        url: "/piflow-web/processGroup/delProcessGroup",//This is the name of the file where I receive data in the background.
+        url: "/processGroup/delProcessGroup",//This is the name of the file where I receive data in the background.
         //data:$('#loginForm').serialize(),//Serialize the form
         data: {
             processGroupId: processGroupID

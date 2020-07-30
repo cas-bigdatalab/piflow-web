@@ -112,10 +112,10 @@ function responseHandlerFlow(res) {
 }
 
 function openFlowBaseInfo(id) {
-    $.ajax({
+    ajaxRequest({
         cache: true,//Keep cached data
         type: "get",//Request type post
-        url: "/piflow-web/flow/queryFlowData",//This is the name of the file where I receive data in the background.
+        url: "/flow/queryFlowData",//This is the name of the file where I receive data in the background.
         data: {load: id},
         async: false,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
         error: function (request) {//Operation after request failure
@@ -163,10 +163,10 @@ function saveFlow() {
     var executorMemory = $("#executorMemory").val();
     var executorCores = $("#executorCores").val();
     if (checkFlowInput(flowName, description, driverMemory, executorNumber, executorMemory, executorCores))
-        $.ajax({
+        ajaxRequest({
             cache: true,//Keep cached data
             type: "get",//Request type post
-            url: "/piflow-web/flow/saveFlowInfo",//This is the name of the file where I receive data in the background.
+            url: "/flow/saveFlowInfo",//This is the name of the file where I receive data in the background.
             data: {
                 name: flowName,
                 description: description,
@@ -209,10 +209,10 @@ function updateFlow() {
     var executorMemory = $("#executorMemory").val();
     var executorCores = $("#executorCores").val();
     if (checkFlowInput(flowName, description, driverMemory, executorNumber, executorMemory, executorCores))
-        $.ajax({
+        ajaxRequest({
             cache: true,//Keep cached data
             type: "get",//Request type post
-            url: "/piflow-web/flow/updateFlowInfo",//This is the name of the file where I receive data in the background.
+            url: "/flow/updateFlowInfo",//This is the name of the file where I receive data in the background.
             data: {
                 id: id,
                 name: flowName,
@@ -251,10 +251,10 @@ function runFlows(loadId, runMode) {
     if (runMode) {
         data.runMode = runMode;
     }
-    $.ajax({
+    ajaxRequest({
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: "/piflow-web/flow/runFlow",//This is the name of the file where I receive data in the background.
+        url: "/flow/runFlow",//This is the name of the file where I receive data in the background.
         //data:$('#loginForm').serialize(),//Serialize the form
         data: data,
         async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
@@ -295,10 +295,10 @@ function deleteFlow(id, name) {
         btn: ['confirm', 'cancel'] //Button
         , title: 'Confirmation prompt'
     }, function () {
-        $.ajax({
+        ajaxRequest({
             cache: true,//Keep cached data
             type: "get",//Request type post
-            url: "/piflow-web/flow/deleteFlow",//This is the name of the file where I receive data in the background.
+            url: "/flow/deleteFlow",//This is the name of the file where I receive data in the background.
             data: {id: id},
             async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
             error: function (request) {//Operation after request failure
@@ -360,10 +360,10 @@ function saveTableTemplate(id, name) {
         btn: ['submit', 'cancel']
     }, function (text, index) {
         layer.close(index);
-        $.ajax({
+        ajaxRequest({
             cache: true,//Keep cached data
             type: "get",//Request type post
-            url: "/piflow-web/flowTemplate/saveFlowTemplate",//This is the name of the file where I receive data in the background.
+            url: "/flowTemplate/saveFlowTemplate",//This is the name of the file where I receive data in the background.
             data: {
                 load: id,
                 name: text,

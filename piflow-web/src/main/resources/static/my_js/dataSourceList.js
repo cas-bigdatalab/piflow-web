@@ -63,10 +63,10 @@ function removeCustomModule(removeId, listId) {
 
 function dataSourceOpen(dataSourceId) {
     openDatasourceId = dataSourceId;
-    $.ajax({
+    ajaxRequest({
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: "/piflow-web/page/datasource/getDataSourceInputPage",//This is the name of the file where I receive data in the background.
+        url: "/page/datasource/getDataSourceInputPage",//This is the name of the file where I receive data in the background.
         //data:$('#loginForm').serialize(),//Serialize the form
         data: {"dataSourceId": dataSourceId},
         async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
@@ -173,10 +173,10 @@ function changeDataSourceType(select) {
 }
 
 function loadDataSourceById(dataSourceId) {
-    $.ajax({
+    ajaxRequest({
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: "/piflow-web/datasource/getDatasourceById",//This is the name of the file where I receive data in the background.
+        url: "/datasource/getDatasourceById",//This is the name of the file where I receive data in the background.
         //data:$('#loginForm').serialize(),//Serialize the form
         data: {"id": dataSourceId},
         async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
@@ -220,10 +220,10 @@ function loadDataSourceById(dataSourceId) {
 }
 
 function saveOrUpdateDataSource(data) {
-    $.ajax({
+    ajaxRequest({
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: "/piflow-web/datasource/saveOrUpdate",//This is the name of the file where I receive data in the background.
+        url: "/datasource/saveOrUpdate",//This is the name of the file where I receive data in the background.
         data: data,
         async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
         error: function (request) {//Operation after request failure
@@ -246,10 +246,10 @@ function saveOrUpdateDataSource(data) {
 }
 
 function delDataSource(datasourceId) {
-    $.ajax({
+    ajaxRequest({
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: "/piflow-web/datasource/deleteDataSource",//This is the name of the file where I receive data in the background.
+        url: "/datasource/deleteDataSource",//This is the name of the file where I receive data in the background.
         //data:$('#loginForm').serialize(),//Serialize the form
         data: {"dataSourceId": datasourceId},
         async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
@@ -270,10 +270,10 @@ function delDataSource(datasourceId) {
 }
 
 function onloadPageData() {
-    $.ajax({
+    ajaxRequest({
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: "/piflow-web/datasource/getDataSourceInputData",//This is the name of the file where I receive data in the background.
+        url: "/datasource/getDataSourceInputData",//This is the name of the file where I receive data in the background.
         //data:$('#loginForm').serialize(),//Serialize the form
         data: {"dataSourceId": openDatasourceId},
         async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.

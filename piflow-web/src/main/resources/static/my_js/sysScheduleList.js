@@ -1,4 +1,3 @@
-
 function initDatatableSchedulePage(testTableId, url, searchInputId) {
     var table = "";
     layui.use('table', function () {
@@ -7,7 +6,7 @@ function initDatatableSchedulePage(testTableId, url, searchInputId) {
         //Method-level rendering
         table.render({
             elem: '#' + testTableId
-            , url: url
+            , url: (web_header_prefix + url)
             , cols: [[
                 {field: 'jobName', title: 'Name', sort: true},
                 {field: 'jobClass', title: 'Class', sort: true},
@@ -122,10 +121,10 @@ function responseHandlerSchedule(res) {
 function newScheduleWindow(id) {
     $("#buttonSchedule").attr("onclick", "");
     if (id) {
-        $.ajax({
+        ajaxRequest({
             cache: true,//Keep cached data
             type: "get",//Request type post
-            url: contextPath + "/sysSchedule/getScheduleById",//This is the name of the file where I receive data in the background.
+            url: "/sysSchedule/getScheduleById",//This is the name of the file where I receive data in the background.
             data: {scheduleId: id},
             async: false,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
             error: function (request) {//Operation after request failure
@@ -210,10 +209,10 @@ function createTask() {
     var scheduleClass = $("#scheduleClass").val();
     var scheduleCron = $("#scheduleCron").val();
     if (checkScheduleInput(scheduleName, scheduleClass, scheduleCron))
-        $.ajax({
+        ajaxRequest({
             cache: true,//Keep cached data
             type: "get",//Request type post
-            url: addContextPath("sysSchedule/createTask"),//This is the name of the file where I receive data in the background.
+            url: "/sysSchedule/createTask",//This is the name of the file where I receive data in the background.
             data: {
                 jobName: scheduleName,
                 jobClass: scheduleClass,
@@ -246,10 +245,10 @@ function updateSchedule() {
     var scheduleCron = $("#scheduleCron").val();
 
     if (checkScheduleInput(scheduleName, scheduleClass, scheduleCron))
-        $.ajax({
+        ajaxRequest({
             cache: true,//Keep cached data
             type: "get",//Request type post
-            url: addContextPath("sysSchedule/updateTask"),//This is the name of the file where I receive data in the background.
+            url: "/sysSchedule/updateTask",//This is the name of the file where I receive data in the background.
             data: {
                 id: id,
                 jobName: scheduleName,
@@ -285,10 +284,10 @@ function onceTask(id) {
 //run
 function startTask(id) {
     $('#fullScreen').show();
-    $.ajax({
+    ajaxRequest({
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: addContextPath("sysSchedule/startTask"),//This is the name of the file where I receive data in the background.
+        url: "/sysSchedule/startTask",//This is the name of the file where I receive data in the background.
         data: {sysScheduleId: id},
         async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
         error: function (request) {//Operation after request failure
@@ -316,10 +315,10 @@ function startTask(id) {
 
 function stopTask(id) {
     $('#fullScreen').show();
-    $.ajax({
+    ajaxRequest({
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: addContextPath("sysSchedule/stopTask"),//This is the name of the file where I receive data in the background.
+        url: "/sysSchedule/stopTask",//This is the name of the file where I receive data in the background.
         data: {sysScheduleId: id},
         async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
         error: function (request) {//Operation after request failure
@@ -359,10 +358,10 @@ function deleteTask(id, name) {
         btn: ['confirm', 'cancel'] //button
         , title: 'Confirmation prompt'
     }, function () {
-        $.ajax({
+        ajaxRequest({
             cache: true,//Keep cached data
             type: "get",//Request type post
-            url: addContextPath("sysSchedule/deleteTask"),//This is the name of the file where I receive data in the background.
+            url: "/sysSchedule/deleteTask",//This is the name of the file where I receive data in the background.
             data: {sysScheduleId: id},
             async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
             error: function (request) {//Operation after request failure

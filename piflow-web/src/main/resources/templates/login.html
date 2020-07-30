@@ -225,10 +225,10 @@
             $("#fullScreen").hide();
             return false;
         }
-        $.ajax({
+        ajaxRequest({
             cache: true,
             type: "POST",
-            url: "/piflow-web/register",
+            url: "/register",
             data: $('#signUpForm').serialize(),
             async: true,
             error: function (request) {
@@ -267,9 +267,9 @@
             $("#error_msg_id").show();
             return false; //阻止默认行为，提交表单
         }
-        $.ajax({
+        ajaxRequest({
             type: "POST",
-            url: "/piflow-web/jwtLogin",
+            url: "/jwtLogin",
             data: {username: loginUsername, password: loginPassword},
             cache: true,
             async: true,

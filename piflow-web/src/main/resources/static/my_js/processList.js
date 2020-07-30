@@ -146,10 +146,10 @@ function processListMonitoring() {
             window.clearInterval(timer);
             return;
         }
-        $.ajax({
+        ajaxRequest({
             cache: true,
             type: "get",
-            url: "/piflow-web/process/getAppInfoList",
+            url: "/process/getAppInfoList",
             data: {arrayObj: arrayObj},
             async: true,
             traditional: true,
@@ -200,10 +200,10 @@ function getCheckpointList(id, processId, parentProcessId, runMode) {
     }
     $('#fullScreen').show();
     $('#checkpointListShow').modal('hide');
-    $.ajax({
+    ajaxRequest({
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: "/piflow-web/page/process/getCheckpoint",//This is the name of the file where I receive data in the background.
+        url: "/page/process/getCheckpoint",//This is the name of the file where I receive data in the background.
         //data:$('#loginForm').serialize(),//Serialize the form
         data: {
             pID: processId,
@@ -257,10 +257,10 @@ function listRunProcess(id, runMode) {
     if (runMode) {
         data.runMode = runMode;
     }
-    $.ajax({
+    ajaxRequest({
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: "/piflow-web/process/runProcess",//This is the name of the file where I receive data in the background.
+        url: "/process/runProcess",//This is the name of the file where I receive data in the background.
         //data:$('#loginForm').serialize(),//Serialize the form
         data: data,
         async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
@@ -291,10 +291,10 @@ function listRunProcess(id, runMode) {
 //stop
 function stopProcess(processID) {
     $('#fullScreen').show();
-    $.ajax({
+    ajaxRequest({
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: "/piflow-web/process/stopProcess",//This is the name of the file where I receive data in the background.
+        url: "/process/stopProcess",//This is the name of the file where I receive data in the background.
         //data:$('#loginForm').serialize(),//Serialize the form
         data: {
             processId: processID
@@ -323,10 +323,10 @@ function stopProcess(processID) {
 //del
 function delProcess(processID) {
     $('#fullScreen').show();
-    $.ajax({
+    ajaxRequest({
         cache: true,//Keep cached data
         type: "get",//Request for get
-        url: "/piflow-web/process/delProcess",//This is the name of the file where I receive data in the background.
+        url: "/process/delProcess",//This is the name of the file where I receive data in the background.
         //data:$('#loginForm').serialize(),//Serialize the form
         data: {
             processID: processID

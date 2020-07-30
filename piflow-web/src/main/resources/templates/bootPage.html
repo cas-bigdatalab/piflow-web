@@ -36,10 +36,10 @@
     });
 
     function initData() {
-        $.ajax({
+        ajaxRequest({
             cache: true,
             type: "GET",
-            url: "/piflow-web/bootPage/initComponents",
+            url: "/bootPage/initComponents",
             // data: {"stopPageId": stopPageId, "fid": loadId},
             async: true,
             error: function (request) {
@@ -78,15 +78,10 @@
             $("#promptContent").text("Components are loaded and will jump!!");
             countdown_timer = window.setInterval("countdownJump()", 1000);
         }
-        /*var randomNun = Math.floor(Math.random() * 101);
-        if (randomNun > progressNum) {
-            $("#bar_div").attr("data-percent", randomNun);
-        }
-        console.log(randomNun);*/
-        $.ajax({
+        ajaxRequest({
             cache: true,
             type: "GET",
-            url: "/piflow-web/bootPage/threadMonitoring",
+            url: "/bootPage/threadMonitoring",
             async: true,
             error: function (request) {
                 //alert("Jquery Ajax request error!!!");
