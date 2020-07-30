@@ -91,6 +91,16 @@ public class SysParamsCache {
 
     public static String getStopsHubMountUrl() { return INTERFACE_URL_HEAD + STOPSHUB_MOUNT_PATH; }
 
+    // stopsHub mount path
+    public static String STOPSHUB_UNMOUNT_PATH;
+
+    @Value("${api.pluginRemove}")
+    public void setStopsHubUNMountUrl(String stopsHubUNMountPath) {
+        STOPSHUB_UNMOUNT_PATH = stopsHubUNMountPath;
+    }
+
+    public static String getStopsHubUNMountUrl() { return INTERFACE_URL_HEAD + STOPSHUB_UNMOUNT_PATH; }
+
     // Stops group information
     public static String STOPS_GROUPS_URL;
 

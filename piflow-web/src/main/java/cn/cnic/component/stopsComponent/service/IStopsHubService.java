@@ -22,10 +22,18 @@ public interface IStopsHubService {
      *
      * @param username
      * @param id
-     * @param stopsHubName
      * @return
      */
-    public String mountStopsHub(String username, Boolean isAdmin,String id, String stopsHubName);
+    public String mountStopsHub(String username, Boolean isAdmin,String id);
+
+    /**
+     * unmount stopsHub
+     *
+     * @param username
+     * @param id
+     * @return
+     */
+    public String unmountStopsHub(String username, Boolean isAdmin,String id);
 
 
 

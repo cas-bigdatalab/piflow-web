@@ -5,6 +5,7 @@ import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.component.stopsComponent.mapper.StopsComponentGroupMapper;
 import cn.cnic.third.service.IStop;
+import cn.cnic.third.vo.stop.StopsHubVo;
 import cn.cnic.third.vo.stop.ThirdStopsComponentPropertyVo;
 import cn.cnic.third.vo.stop.ThirdStopsComponentVo;
 import com.alibaba.fastjson.JSON;
@@ -97,9 +98,17 @@ public class StopImpl implements IStop {
             logger.warn("return err");
             return null;
         }
+
+        JSONObject jsonObject = JSONObject.fromObject(sendGetData).getJSONObject("StopInfo");
+        ThirdStopsComponentVo thirdStopsComponentVo = constructThirdStopsComponentVo(jsonObject);
+        return thirdStopsComponentVo;
+
+    }
+
+    private ThirdStopsComponentVo constructThirdStopsComponentVo(JSONObject jsonObject){
         ThirdStopsComponentVo thirdStopsComponentVo = new ThirdStopsComponentVo();
         // Also convert the json string to a json object, and then convert the json object to a java object, as shown below.
-        JSONObject jsonObject = JSONObject.fromObject(sendGetData).getJSONObject("StopInfo");// Convert a json string to a json object
+        //JSONObject jsonObject = JSONObject.fromObject(data).getJSONObject("StopInfo");// Convert a json string to a json object
         // Needed when there is a List in jsonObj
         @SuppressWarnings("rawtypes")
         Map<String, Class> classMap = new HashMap<>();
@@ -164,23 +173,61 @@ public class StopImpl implements IStop {
     }
 
     @Override
-    public String mountStopsHub(String stopsHubName) {
+    public StopsHubVo mountStopsHub(String stopsHubName) {
 
-        String stopsHubMountId = "";
+
         Map<String, String> map = new HashMap<>();
         map.put("plugin", stopsHubName);
         String json = JSON.toJSON(map).toString();
         String doPost = HttpUtils.doPost(SysParamsCache.getStopsHubMountUrl(), json, 5 * 1000);
+        StopsHubVo stopsHubVo = null;
         if (StringUtils.isNotBlank(doPost) && !doPost.contains("Fail")) {
             logger.info("Interface return value: " + doPost);
-            stopsHubMountId = JSONObject.fromObject(doPost).getJSONObject("plugin").getString("id");
+            stopsHubVo = constructStopsHubVo(JSONObject.fromObject(doPost));
+
+        } else {
+            logger.warn("Interface return exception");
+        }
+        return stopsHubVo;
+
+    }
+
+    @Override
+    public StopsHubVo unmountStopsHub(String stopsHubMountId) {
+
+        //String stopsHubMountId = "";
+        Map<String, String> map = new HashMap<>();
+        map.put("pluginId", stopsHubMountId);
+        String json = JSON.toJSON(map).toString();
+        String doPost = HttpUtils.doPost(SysParamsCache.getStopsHubUNMountUrl(), json, 5 * 1000);
+        StopsHubVo stopsHubVo = null;
+        if (StringUtils.isNotBlank(doPost) && !doPost.contains("Fail")) {
+            logger.info("Interface return value: " + doPost);
+            stopsHubVo = constructStopsHubVo(JSONObject.fromObject(doPost));
         } else {
             logger.warn("Interface return exception");
 
         }
 
-        return stopsHubMountId;
+        return stopsHubVo;
+    }
 
+    private StopsHubVo constructStopsHubVo(JSONObject jsonObject){
+
+        StopsHubVo stopsHubVo = new StopsHubVo();
+        String stopsHubMountId = jsonObject.getJSONObject("plugin").getString("id");
+        stopsHubVo.setMountId(stopsHubMountId);
+
+        //construct Stop Info
+        List<ThirdStopsComponentVo> stops = new ArrayList<>();
+        JSONArray stopsListJsonArray = jsonObject.getJSONArray("stopsInfo");
+        for(int i=0; i< stopsListJsonArray.size(); i++){
+            JSONObject stopInfoJsonObject = (JSONObject) stopsListJsonArray.get(i);
+            ThirdStopsComponentVo thirdStopsComponentVo = constructThirdStopsComponentVo(stopInfoJsonObject.getJSONObject("StopInfo"));
+            stops.add(thirdStopsComponentVo);
+        }
+        stopsHubVo.setStops(stops);
+        return stopsHubVo;
     }
 
 }

@@ -73,7 +73,7 @@ public class StopsHubMapperTest extends ApplicationTests {
 
     @Test
     public void testGetStopsHubByName() {
-        List<StopsHub> result = stopsHubMapper.getStopsHubListByName("Nature",false, "piflowexternal");
+        List<StopsHub> result = stopsHubMapper.getStopsHubByName("Nature",false, "piflowexternal");
         for(int i=0; i<result.size(); i++){
             StopsHub s = result.get(i);
             logger.info(s.toString());
@@ -82,7 +82,7 @@ public class StopsHubMapperTest extends ApplicationTests {
 
     @Test
     public void testGetStopsHubById() {
-        StopsHub s = stopsHubMapper.getStopsHubListById("Nature",false, "d6850e11266b42c9bdeab7595921a647");
+        StopsHub s = stopsHubMapper.getStopsHubById("Nature",false, "d6850e11266b42c9bdeab7595921a647");
         if(s != null)
          logger.info(s.toString());
         else
