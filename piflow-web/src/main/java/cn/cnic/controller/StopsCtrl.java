@@ -180,16 +180,30 @@ public class StopsCtrl {
     }
 
     /**
-     * Upload stopsHub jar file and save stopsHub
+     * Mount stopsHub
      *
-     * @param stopsHubName
+     * @param id
      * @return
      */
     @RequestMapping(value = "/mountStopsHub", method = RequestMethod.POST)
     @ResponseBody
-    public String mountStopsHub(HttpServletRequest request, String id, String stopsHubName) {
+    public String mountStopsHub(HttpServletRequest request, String id) {
         String username = SessionUserUtil.getCurrentUsername();
         Boolean isAdmin =  SessionUserUtil.isAdmin();
         return stopsHubServiceImpl.mountStopsHub(username, isAdmin, id);
+    }
+
+    /**
+     * unmount stopsHub
+     *
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/unmountStopsHub", method = RequestMethod.POST)
+    @ResponseBody
+    public String unmountStopsHub(HttpServletRequest request, String id) {
+        String username = SessionUserUtil.getCurrentUsername();
+        Boolean isAdmin =  SessionUserUtil.isAdmin();
+        return stopsHubServiceImpl.unmountStopsHub(username, isAdmin, id);
     }
 }
