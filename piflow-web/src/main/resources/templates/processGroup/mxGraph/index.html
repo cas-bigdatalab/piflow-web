@@ -114,30 +114,14 @@
     var parentAccessPath = urlParams.parentAccessPath;
     var currentUser = JSON.parse(localStorage.jwtUser);
 
-    var nodePageIdAndStateList;
-    var parentsId = [[${parentsId}]];
-    var flowGroupId = [[${flowGroupId}]];
-    var xmlDate = [[${xmlDate}]];
-    var xmlDateStr = [[${xmlDateStr}]];
-    var isExample = [[${isExample}]];
-    var maxStopPageId = [[${maxStopPageId}]];
-    var maxFlowPageId = [[${maxFlowPageId}]];
-    var divValue = null;
-    var processType = [[${processType}]];
-    var parentAccessPath = [[${parentAccessPath}]];
-    var xmlDate = [[${xmlDate}]];
-    var processGroupId = [[${load}]];
-    var parentProcessId = [[${parentProcessId}]];
-    var pID = [[${pID}]];
-    var appId = [[${appId}]];
-    var processState = [[${processState}]];
-    var stdoutLog = [[${stdoutLog}]];
-    var stderrLog = [[${stderrLog}]];
-    var processId = [[${processId}]];
-
-    function divAppend(divAppend) {
-        divValue = divAppend;
-    }
+    $(document).ready(function () {
+        $(".btn-group").mouseover(function () {
+            $(this).addClass("open");
+        });
+        $(".btn-group").mouseleave(function () {
+            $(this).removeClass("open");
+        });
+    });
 
     $(function () {
         initProcessGroupDrawingBoardData(loadId, parentAccessPath, function () {
@@ -165,16 +149,6 @@
         });
     });
 
-    $(document).ready(function () {
-        $(".btn-group").mouseover(function () {
-            $(this).addClass("open");
-            var oDiv = document.getElementById("divloadingXml");
-            oDiv.style.display = "none";
-        });
-        $(".btn-group").mouseleave(function () {
-            $(this).removeClass("open");
-        });
-    });
     //@ sourceURL=processMxGraphIndex.js
 </script>
 
