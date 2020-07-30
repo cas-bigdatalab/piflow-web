@@ -243,7 +243,6 @@ function listRunFlowGroup(loadId, runMode) {
             if (200 === dataMap.code) {
                 layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
                     var windowOpen = window.open("/piflow-web/processGroup/getProcessGroupById?parentAccessPath=grapheditor&processGroupId=" + dataMap.processGroupId);
-                    //var tempwindow = window.open('_blank');
                     if (windowOpen == null || typeof (windowOpen) == 'undefined') {
                         alert('The window cannot be opened. Please check your browser settings.')
                     }

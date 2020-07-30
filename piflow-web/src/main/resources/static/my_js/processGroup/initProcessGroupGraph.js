@@ -295,18 +295,10 @@ function OpenTheMonitorArtBoard(evt) {
                 if (data) {
                     var dataMap = JSON.parse(data);
                     if (200 === dataMap.code) {
-                        var urlPath = "";
                         if ('flow' === dataMap.nodeType) {
                             window_location_href("/page/process/drawingBoard?drawingBoardType=PROCESS&parentAccessPath=processGroupList&processType=PROCESS&load=" + dataMap.processId);
                         } else if ('flowGroup' === dataMap.nodeType) {
                             window_location_href("/page/processGroup/drawingBoard?drawingBoardType=PROCESS&parentAccessPath=processGroupList&processType=PROCESS_GROUP&load=" + dataMap.processGroupId);
-                        }
-                        if (urlPath) {
-                            var tempWindow = window.location.href = urlPath;
-                            // var tempWindow = window.open(urlPath, "_blank",);
-                            if (tempWindow == null || typeof (tempWindow) == 'undefined') {
-                                alert('The window cannot be opened. Please check your browser settings.')
-                            }
                         }
                     }
                 } else {

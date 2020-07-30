@@ -2022,12 +2022,7 @@ function runFlow(runMode) {
             if (200 === dataMap.code) {
                 layer.msg(dataMap.errorMsg, { icon: 1, shade: 0, time: 2000 }, function () {
                     //Jump to the monitor page after starting successfully
-                    var tempWindow = window.open('');
-                    if (tempWindow == null || typeof (tempWindow) == 'undefined') {
-                        alert('The window cannot be opened. Please check your browser settings.')
-                    } else {
-                        tempWindow.location = (web_header_prefix + "/page/process/drawingBoard?drawingBoardType=PROCESS&processType=PROCESS&load=" + dataMap.processId);
-                    }
+                    new_window_open("/page/process/drawingBoard?drawingBoardType=PROCESS&processType=PROCESS&load=" + dataMap.processId);
                 });
             } else {
                 //alert("Startup failure：" + dataMap.errorMsg);
