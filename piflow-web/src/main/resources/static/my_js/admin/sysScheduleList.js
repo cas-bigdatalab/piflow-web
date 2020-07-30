@@ -5,8 +5,12 @@ function initDatatableSchedulePage(testTableId, url, searchInputId) {
 
         //Method-level rendering
         table.render({
+
             elem: '#' + testTableId
             , url: (web_header_prefix + url)
+            , headers: {
+                Authorization: ("Bearer " + token)
+            }
             , cols: [[
                 {field: 'jobName', title: 'Name', sort: true},
                 {field: 'jobClass', title: 'Class', sort: true},
@@ -46,7 +50,6 @@ function initDatatableSchedulePage(testTableId, url, searchInputId) {
 
 //Results returned in the background
 function responseHandlerSchedule(res) {
-    console.log(res);
     var actionsHtmlStr = "";
     if (res) {
         var actions_btn_1 = '<a class="btn" '

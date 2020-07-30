@@ -51,7 +51,7 @@
 </div>
 <script th:src="@{/my_js/processAndProcessGroup/processAndProcessGroupList.js}"></script>
 <script th:inline="javascript">
-    initProcessAndProcessGroupDatatablePage("testTableId", "/piflow-web/processAndProcessGroup/processAndProcessGroupListPage", "search_input_id");
+    initProcessAndProcessGroupDatatablePage("testTableId", "/processAndProcessGroup/processAndProcessGroupListPage", "search_input_id");
     (function () {
         timer = window.setInterval("processGroupListMonitoring()", 5000);
     })();

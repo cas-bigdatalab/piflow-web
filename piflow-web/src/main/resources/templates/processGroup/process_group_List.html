@@ -1,44 +1,29 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<body th:fragment=process_List>
+<body th:fragment=process_group_List>
 <!-- content starts -->
 <div class="wrapper" style="margin: 20px;">
-    <!-- Search widget -->
-    <!--
-    <form class="search widget" action="#">
-        <div class="autocomplete-append">
-            <ul class="search-options">
-                <li><a href="#" title="Go to search page" class="go-option tip"></a></li>
-                <li><a href="#" title="Advanced search" class="advanced-option tip"></a></li>
-                <li><a href="#" title="Settings" class="settings-option tip"></a></li>
-            </ul>
-            <input type="text" placeholder="search website..." id="autocomplete"/>
-            <input type="submit" class="btn btn-info" value="Search"/>
-        </div>
-    </form>
-    -->
-    <!-- /search widget -->
     <!-- Media datatable -->
     <div class="widget">
         <div class="navbar">
-            <div class="demoTable">
-                <div style="margin-top: 6px">
-                    <!--                    Search:-->
-                    <div class="layui-inline">
-                        <i class="fa fa-search fa-2x" style="position:absolute;top:8px ;left:8px;font-size:18px"></i>
-                        <input class="layui-input" name="param" id="search_input_id" autocomplete="off" style="padding-left:30px">
-                    </div>
-                </div>
+            <div class="navbar-inner">
+                <h6 style="color: #1A7444">Processes</h6>
             </div>
         </div>
         <div class="table-overflow">
-            <table class="layui-hide" id="processTableId" lay-filter="user"></table>
+            <div class="demoTable">
+                Search:
+                <div class="layui-inline">
+                    <input class="layui-input" name="param" id="search_input_id" autocomplete="off">
+                </div>
+            </div>
+            <table class="layui-hide" id="testTableId" lay-filter="user"></table>
         </div>
     </div>
     <!-- /media datatable -->
 </div>
 <!-- content ends -->
-<!-- Modal Checkpoint -->
+
 <!-- Modal Checkpoint -->
 <div class="modal" id="checkpointListShow" aria-labelledby="myModalLabel" data-backdrop="static"
      style="z-index: 10000; display: none">
@@ -61,13 +46,12 @@
 </div>
 <div th:include="Macro/fragmentMacro :: fullScreen"></div>
 <script th:include="Macro/csrfTokeHeadMacro :: csrfTokeHeadMacroScript"/>
-<script th:src="@{/my_js/processList.js}"></script>
+<script th:src="@{/static/my_js/processGroup/processGroupList.js}"></script>
 <script th:inline="javascript">
-    initProcessDatatablePage("processTableId", "/piflow-web/process/processListPage", "search_input_id");
-    window.onload = function () {
-        timer = window.setInterval("processListMonitoring()", 5000);
-        //$(".paginate_button.current")[0].style.backgroundColor="red";
-    };
+    initProcessGroupDatatablePage("testTableId", "/piflow-web/processGroup/processGroupListPage", "search_input_id");
+    (function () {
+        timer = window.setInterval("processGroupListMonitoring()", 5000);
+    })();
     //@ sourceURL=processList0.js
 </script>
 </body>

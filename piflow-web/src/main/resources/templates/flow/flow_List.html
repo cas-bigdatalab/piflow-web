@@ -104,10 +104,10 @@
     </form>
 </div>
 
-<script th:src="@{/my_js/flowList.js}"></script>
+<script th:src="@{/my_js/flow/flowList.js}"></script>
 <script th:src="@{/js/ajaxUtils.js}"></script>
 <script th:inline="javascript">
-    initDatatableFlowPage('flowTableId', "/piflow-web/flow/getFlowListPage", "search_input_id");
+    initDatatableFlowPage('flowTableId', "/flow/getFlowListPage", "search_input_id");
     //@ sourceURL=table_right.js
 </script>
 </body>

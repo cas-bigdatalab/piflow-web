@@ -30,7 +30,7 @@ function initDatatableFlowPage(testTableId, url, searchInputId) {
             , headers: {
                 Authorization: ("Bearer " + token)
             }
-            , url: url
+            , url: web_header_prefix + url
             , cols: [[
                 {field: 'name', title: 'Name', sort: true},
                 {field: 'description', title: 'Description', sort: true},

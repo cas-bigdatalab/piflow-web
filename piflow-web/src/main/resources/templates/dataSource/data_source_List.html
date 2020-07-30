@@ -42,14 +42,14 @@
 <!-- content ends -->
 <div th:include="Macro/fragmentMacro :: fullScreen"></div>
 <script th:include="Macro/csrfTokeHeadMacro :: csrfTokeHeadMacroScript"/>
-<script th:src="@{/my_js/dataSourceList.js}"></script>
+<script th:src="@{/static/my_js/datasource/dataSourceList.js}"></script>
 <script th:inline="javascript">
     initDataTablePage("testTableId", "/piflow-web/datasource/getDataSourceListPagination", "search_input_id");
     window.onload = function () {
         //timer = window.setInterval("processListMonitoring()", 5000);
         //$(".paginate_button.current")[0].style.backgroundColor="red";
     };
-    //@ sourceURL=dataSourceList.js
+    //@ sourceURL=dataSourceListHtml.js
 </script>
 </body>
 </html>

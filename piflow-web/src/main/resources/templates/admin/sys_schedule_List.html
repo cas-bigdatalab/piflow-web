@@ -87,8 +87,7 @@
 </div>
 <div th:include="Macro/fragmentMacro :: fullScreen"></div>
 
-<script th:include="Macro/csrfTokeHeadMacro :: csrfTokeHeadMacroScript"/>
-<script th:src="@{/my_js/sysScheduleList.js}"></script>
+<script th:src="@{/my_js/admin/sysScheduleList.js}"></script>
 <script th:inline="javascript">
     var contextPath = [[${#httpServletRequest.getContextPath()}]];
     function addContextPath(url) {

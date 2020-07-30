@@ -8,7 +8,7 @@ function initProcessAndProcessGroupDatatablePage(testTableId, url, searchInputId
         //Method-level rendering
         table.render({
             elem: '#' + testTableId
-            , url: url
+            , url: web_header_prefix + url
             , headers: {
                 Authorization: ("Bearer " + token)
             }
@@ -332,7 +332,7 @@ function openProcessOrProcessGroup(loadId, processType) {
     console.log(processType);
     if ("PROCESS" === processType) {
         new_window_open('/page/process/drawingBoard?drawingBoardType=PROCESS&processType=' + processType + '&load=' + loadId);
-    }else if ("PROCESS_GROUP" === processType) {
+    } else if ("PROCESS_GROUP" === processType) {
         new_window_open('/page/processGroup/drawingBoard?drawingBoardType=PROCESS&processType=' + processType + '&load=' + loadId);
     }
 }

@@ -60,9 +60,10 @@ public class WebAppConfig implements WebMvcConfigurer {
 
         //index
         registry.addViewController("/page/dashboard").setViewName("dashboard");
-        registry.addViewController("/page/flowList").setViewName("flow/flow_List");
-        registry.addViewController("/page/flowGroupList").setViewName("flowGroup/flow_group_List");
-        registry.addViewController("/page/process_processGroup_list").setViewName("processAndProcessGroup/process_processGroup_list");
+        registry.addViewController("/page/flow/flow_List").setViewName("flow/flow_List");
+        registry.addViewController("/page/flowGroup/flow_group_List").setViewName("flowGroup/flow_group_List");
+        registry.addViewController("/page/processAndProcessGroup/process_processGroup_list").setViewName("processAndProcessGroup/process_processGroup_list");
+        registry.addViewController("/page/admin/sys_schedule_List").setViewName("admin/sys_schedule_List");
 
         //macro
         registry.addViewController("/page/macro/fragmentMacro").setViewName("macro/fragmentMacro");
@@ -71,7 +72,7 @@ public class WebAppConfig implements WebMvcConfigurer {
         registry.addViewController("/page/macro/headMacro").setViewName("macro/headMacro");
 
         // datasource
-        registry.addViewController("/page/datasource/getDatasourceListPage").setViewName("indexRight/datasource/data_source_List");
+        registry.addViewController("/page/datasource/getDatasourceListPage").setViewName("dataSource/data_source_List");
         registry.addViewController("/page/datasource/getDataSourceInputPage").setViewName("dataSource/dataSourceInput");
 
         // flow

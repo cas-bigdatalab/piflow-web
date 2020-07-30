@@ -94,6 +94,7 @@
     if (localStorage.jwtUser) {
         currentUser = JSON.parse(localStorage.jwtUser);
     }
+    var rightContentUrl;
     var projectContextPath_test = [[${#httpServletRequest.getContextPath()}]];
 
     (function () {
@@ -109,20 +110,30 @@
         if (accessPath && 'indexHome' !== accessPath) {
             switch (accessPath) {
                 case 'flowList':
-                    ajaxLoad("content", "/page/flowList");
+                    rightContentUrl = "/page/flow/flow_List";
                     break;
                 case 'flowGroupList':
-                    ajaxLoad("content", "/page/flowGroupList");
+                    rightContentUrl = "/page/flowGroup/flow_group_List";
                     break;
                 case 'processAndProcessGroup':
-                    ajaxLoad("content", "/page/process_processGroup_list");
+                    rightContentUrl = "/page/processAndProcessGroup/process_processGroup_list";
+                    break;
+                case 'flowTemplateList':
+                    rightContentUrl = "/page/processAndProcessGroup/process_processGroup_list";
+                    break;
+                case 'dataSources':
+                    rightContentUrl = "/page/processAndProcessGroup/process_processGroup_list";
+                    break;
+                case 'sysScheduleList':
+                    rightContentUrl = "/page/admin/sys_schedule_List";
                     break;
                 default:
                     break;
             }
         } else {
-            ajaxLoad("content", "/page/dashboard");
+            rightContentUrl = "/page/dashboard"
         }
+        ajaxLoad("content", rightContentUrl);
     })();
 
     function initMenuFunc(sysMenuVoList) {
@@ -182,7 +193,7 @@
                     menuActiveMenuId = menuUrlSpits[menuUrlSpits.length - 1];
                 }
                 if (currentMenu) {
-                    var menu_id_str = value.menuUrl.replace(new RegExp("/", "gm"), "_");
+                    var menu_id_str = menuActiveMenuId.replace("?", "_").replace(new RegExp("/", "gm"), "_").replace(new RegExp("=", "gm"), "_");
                     menuParentHtml.find("a." + value.menuName).attr("menu_id", menu_id_str + '_menu_id');
                     menuParentHtml.find("a." + value.menuName).attr("active_li_id", active_li_id);
                 }
@@ -195,8 +206,8 @@
             menuGroupsUser[valueMenuParent] = menuParentHtml;
             menuGroups.append(menuParentHtml);
         });
-        var currentUrlId = window.location.pathname.replace(new RegExp("/", "gm"), "_") + '_menu_id';
-        $('a[menu_id=' + currentUrlId + ']').addClass("current");
+        var currentUrlId = window.location.pathname.replace(new RegExp("/", "gm"), "_") + '';
+        $('a[menu_id=_index_accessPath_' + accessPath + '_menu_id]').addClass("current");
     }
 
     //@ sourceURL=index.js
