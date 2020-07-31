@@ -1,8 +1,8 @@
 package cn.cnic.component.mxGraph.utils;
 
-import cn.cnic.component.mxGraph.model.MxCell;
-import cn.cnic.component.mxGraph.model.MxGeometry;
-import cn.cnic.component.mxGraph.model.MxGraphModel;
+import cn.cnic.component.mxGraph.entity.MxCell;
+import cn.cnic.component.mxGraph.entity.MxGeometry;
+import cn.cnic.component.mxGraph.entity.MxGraphModel;
 import cn.cnic.component.mxGraph.vo.MxCellVo;
 import cn.cnic.component.mxGraph.vo.MxGeometryVo;
 import org.apache.commons.lang3.StringUtils;

@@ -1,7 +1,7 @@
 package cn.cnic.controller.modify.user;
 
 import cn.cnic.controller.modify.utils.UserUtils;
-import cn.cnic.component.flow.model.Flow;
+import cn.cnic.component.flow.entity.Flow;
 import cn.cnic.component.flow.service.IFlowGroupService;
 import cn.cnic.component.flow.service.IFlowService;
 import cn.cnic.component.flow.vo.FlowVo;

@@ -2,7 +2,7 @@ package cn.cnic.base.util;
 
 import cn.cnic.base.vo.UserVo;
 import cn.cnic.common.Eunm.SysRoleType;
-import cn.cnic.component.system.model.SysRole;
+import cn.cnic.component.system.entity.SysRole;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;

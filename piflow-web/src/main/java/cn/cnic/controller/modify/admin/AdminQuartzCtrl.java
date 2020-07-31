@@ -19,69 +19,71 @@ public class AdminQuartzCtrl {
 
     @RequestMapping("/getScheduleListPage")
     @ResponseBody
-    public String getScheduleListPage(Integer page, Integer limit, String param) {
-        return sysScheduleServiceImpl.getScheduleListPage(page, limit, param);
+    public String getScheduleListPage(HttpServletRequest request, Integer page, Integer limit, String param) {
+        String username = UserUtils.getUsername(request);
+        return sysScheduleServiceImpl.getScheduleListPage(username, true, page, limit, param);
     }
 
     @RequestMapping("/getScheduleById")
     @ResponseBody
     public String getScheduleById(HttpServletRequest request, String scheduleId) {
-        return sysScheduleServiceImpl.getScheduleById(true, scheduleId);
+        String username = UserUtils.getUsername(request);
+        return sysScheduleServiceImpl.getScheduleById(username,true, scheduleId);
     }
 
     @RequestMapping("/createTask")
     @ResponseBody
     public String createTask(HttpServletRequest request, SysScheduleVo sysScheduleVo) {
         String username = UserUtils.getUsername(request);
-        return sysScheduleServiceImpl.createJob(username, sysScheduleVo);
+        return sysScheduleServiceImpl.createJob(username,true, sysScheduleVo);
     }
 
     @RequestMapping("/runOnceTask")
     @ResponseBody
     public String runOnceTask(HttpServletRequest request, String sysScheduleId) {
         String username = UserUtils.getUsername(request);
-        return sysScheduleServiceImpl.runOnce(username, sysScheduleId);
+        return sysScheduleServiceImpl.runOnce(username,true, sysScheduleId);
     }
 
     @RequestMapping("/startTask")
     @ResponseBody
     public String startTask(HttpServletRequest request, String sysScheduleId) {
         String username = UserUtils.getUsername(request);
-        return sysScheduleServiceImpl.startJob(username, sysScheduleId);
+        return sysScheduleServiceImpl.startJob(username,true, sysScheduleId);
     }
 
     @RequestMapping("/stopTask")
     @ResponseBody
     public String stopTask(HttpServletRequest request, String sysScheduleId) {
         String username = UserUtils.getUsername(request);
-        return sysScheduleServiceImpl.stopJob(username, sysScheduleId);
+        return sysScheduleServiceImpl.stopJob(username, true,sysScheduleId);
     }
 
     @RequestMapping("/pauseTask")
     @ResponseBody
     public String pauseTask(HttpServletRequest request, String sysScheduleId) {
         String username = UserUtils.getUsername(request);
-        return sysScheduleServiceImpl.pauseJob(username, sysScheduleId);
+        return sysScheduleServiceImpl.pauseJob(username, true,sysScheduleId);
     }
 
     @RequestMapping("/resumeTask")
     @ResponseBody
     public String resumeTask(HttpServletRequest request, String sysScheduleId) {
         String username = UserUtils.getUsername(request);
-        return sysScheduleServiceImpl.resume(username, sysScheduleId);
+        return sysScheduleServiceImpl.resume(username,true, sysScheduleId);
     }
 
     @RequestMapping("/updateTask")
     @ResponseBody
     public String updateTask(HttpServletRequest request, SysScheduleVo sysScheduleVo) {
         String username = UserUtils.getUsername(request);
-        return sysScheduleServiceImpl.update(username, sysScheduleVo);
+        return sysScheduleServiceImpl.update(username,true, sysScheduleVo);
     }
 
     @RequestMapping("/deleteTask")
     @ResponseBody
     public String deleteTask(HttpServletRequest request, String sysScheduleId) {
         String username = UserUtils.getUsername(request);
-        return sysScheduleServiceImpl.deleteTask(username, sysScheduleId);
+        return sysScheduleServiceImpl.deleteTask(username, true,sysScheduleId);
     }
 }

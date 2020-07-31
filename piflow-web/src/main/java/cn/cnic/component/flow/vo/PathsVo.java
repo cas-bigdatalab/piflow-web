@@ -1,7 +1,7 @@
 package cn.cnic.component.flow.vo;
 
 import cn.cnic.base.util.DateUtils;
-import cn.cnic.component.flow.model.Stops;
+import cn.cnic.component.flow.entity.Stops;
 import lombok.Getter;
 import lombok.Setter;
 

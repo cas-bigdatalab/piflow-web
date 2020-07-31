@@ -1,17 +1,17 @@
 package cn.cnic.base.util;
 
 import cn.cnic.common.Eunm.PortType;
-import cn.cnic.component.flow.model.*;
+import cn.cnic.component.flow.entity.*;
 import cn.cnic.component.flow.utils.FlowUtil;
-import cn.cnic.component.mxGraph.model.MxCell;
-import cn.cnic.component.mxGraph.model.MxGeometry;
-import cn.cnic.component.mxGraph.model.MxGraphModel;
+import cn.cnic.component.mxGraph.entity.MxCell;
+import cn.cnic.component.mxGraph.entity.MxGeometry;
+import cn.cnic.component.mxGraph.entity.MxGraphModel;
 import cn.cnic.component.mxGraph.utils.MxCellUtils;
 import cn.cnic.component.mxGraph.vo.MxCellVo;
 import cn.cnic.component.mxGraph.vo.MxGeometryVo;
 import cn.cnic.component.mxGraph.vo.MxGraphModelVo;
-import cn.cnic.component.template.model.PropertyTemplateModel;
-import cn.cnic.component.template.model.StopTemplateModel;
+import cn.cnic.component.template.entity.PropertyTemplateModel;
+import cn.cnic.component.template.entity.StopTemplateModel;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;

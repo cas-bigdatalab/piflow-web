@@ -16,9 +16,9 @@ import cn.cnic.base.vo.UserVo;
 import cn.cnic.common.Eunm.SysRoleType;
 import cn.cnic.component.system.mapper.SysMenuMapper;
 import cn.cnic.component.system.mapper.SysUserMapper;
-import cn.cnic.component.system.model.SysMenu;
-import cn.cnic.component.system.model.SysRole;
-import cn.cnic.component.system.model.SysUser;
+import cn.cnic.component.system.entity.SysMenu;
+import cn.cnic.component.system.entity.SysRole;
+import cn.cnic.component.system.entity.SysUser;
 import cn.cnic.component.system.vo.SysMenuVo;
 
 /**

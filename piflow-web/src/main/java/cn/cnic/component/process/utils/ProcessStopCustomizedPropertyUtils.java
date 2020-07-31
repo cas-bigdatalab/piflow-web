@@ -1,6 +1,6 @@
 package cn.cnic.component.process.utils;
 
-import cn.cnic.component.process.model.ProcessStopCustomizedProperty;
+import cn.cnic.component.process.entity.ProcessStopCustomizedProperty;
 
 import java.util.Date;
 

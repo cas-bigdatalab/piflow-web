@@ -1,13 +1,13 @@
 package cn.cnic.component.flow.utils;
 
 import cn.cnic.base.util.UUIDUtils;
-import cn.cnic.component.flow.model.*;
+import cn.cnic.component.flow.entity.*;
 import cn.cnic.component.flow.vo.FlowVo;
 import cn.cnic.component.flow.vo.PathsVo;
 import cn.cnic.component.flow.vo.StopsVo;
-import cn.cnic.component.mxGraph.model.MxCell;
-import cn.cnic.component.mxGraph.model.MxGeometry;
-import cn.cnic.component.mxGraph.model.MxGraphModel;
+import cn.cnic.component.mxGraph.entity.MxCell;
+import cn.cnic.component.mxGraph.entity.MxGeometry;
+import cn.cnic.component.mxGraph.entity.MxGraphModel;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 

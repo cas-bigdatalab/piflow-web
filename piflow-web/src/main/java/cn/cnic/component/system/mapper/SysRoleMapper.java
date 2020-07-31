@@ -1,7 +1,7 @@
 package cn.cnic.component.system.mapper;
 
 import cn.cnic.component.system.mapper.provider.SysRoleMapperProvider;
-import cn.cnic.component.system.model.SysRole;
+import cn.cnic.component.system.entity.SysRole;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;

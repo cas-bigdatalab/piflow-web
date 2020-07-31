@@ -1,8 +1,8 @@
 package cn.cnic.base.config;
 
 import cn.cnic.common.constant.SysParamsCache;
-import cn.cnic.component.system.model.SysInitRecords;
-import cn.cnic.domain.system.SysInitRecordsDomain;
+import cn.cnic.component.system.entity.SysInitRecords;
+import cn.cnic.component.system.jpa.domain.SysInitRecordsDomain;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

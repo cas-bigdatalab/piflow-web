@@ -1,13 +1,13 @@
 package cn.cnic.component.mxGraph.utils;
 
 import cn.cnic.base.util.UUIDUtils;
-import cn.cnic.component.flow.model.Flow;
-import cn.cnic.component.flow.model.FlowGroup;
-import cn.cnic.component.flow.model.FlowGroupPaths;
-import cn.cnic.component.flow.model.Paths;
-import cn.cnic.component.mxGraph.model.MxCell;
-import cn.cnic.component.mxGraph.model.MxGeometry;
-import cn.cnic.component.mxGraph.model.MxGraphModel;
+import cn.cnic.component.flow.entity.Flow;
+import cn.cnic.component.flow.entity.FlowGroup;
+import cn.cnic.component.flow.entity.FlowGroupPaths;
+import cn.cnic.component.flow.entity.Paths;
+import cn.cnic.component.mxGraph.entity.MxCell;
+import cn.cnic.component.mxGraph.entity.MxGeometry;
+import cn.cnic.component.mxGraph.entity.MxGraphModel;
 import cn.cnic.component.mxGraph.vo.MxCellVo;
 import cn.cnic.component.mxGraph.vo.MxGeometryVo;
 import cn.cnic.component.mxGraph.vo.MxGraphModelVo;

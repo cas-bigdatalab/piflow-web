@@ -1,7 +1,7 @@
 package cn.cnic.third.service;
 
 import cn.cnic.common.Eunm.RunModeType;
-import cn.cnic.component.process.model.ProcessGroup;
+import cn.cnic.component.process.entity.ProcessGroup;
 import cn.cnic.third.vo.flowGroup.ThirdFlowGroupInfoResponse;
 
 import java.util.List;

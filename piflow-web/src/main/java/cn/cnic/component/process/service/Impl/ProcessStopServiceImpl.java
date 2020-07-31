@@ -2,11 +2,11 @@ package cn.cnic.component.process.service.Impl;
 
 import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.base.util.ReturnMapUtils;
-import cn.cnic.component.process.model.ProcessStop;
+import cn.cnic.component.process.entity.ProcessStop;
 import cn.cnic.component.process.service.IProcessStopService;
 import cn.cnic.component.process.utils.ProcessUtils;
 import cn.cnic.component.process.vo.ProcessStopVo;
-import cn.cnic.mapper.process.ProcessStopMapper;
+import cn.cnic.component.process.mapper.ProcessStopMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;

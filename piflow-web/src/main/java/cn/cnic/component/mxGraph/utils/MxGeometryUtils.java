@@ -1,6 +1,6 @@
 package cn.cnic.component.mxGraph.utils;
 
-import cn.cnic.component.mxGraph.model.MxGeometry;
+import cn.cnic.component.mxGraph.entity.MxGeometry;
 
 import java.util.Date;
 

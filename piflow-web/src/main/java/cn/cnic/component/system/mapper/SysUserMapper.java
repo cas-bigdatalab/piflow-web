@@ -13,7 +13,7 @@ import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.mapping.FetchType;
 
 import cn.cnic.component.system.mapper.provider.SysUserMapperProvider;
-import cn.cnic.component.system.model.SysUser;
+import cn.cnic.component.system.entity.SysUser;
 
 @Mapper
 public interface SysUserMapper {

@@ -1,7 +1,7 @@
 package cn.cnic.component.flow.service;
 
-import cn.cnic.component.flow.model.Flow;
-import cn.cnic.component.flow.model.Paths;
+import cn.cnic.component.flow.entity.Flow;
+import cn.cnic.component.flow.entity.Paths;
 import cn.cnic.component.flow.vo.PathsVo;
 
 import java.util.List;

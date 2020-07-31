@@ -72,7 +72,7 @@ public class SqlUtils {
             return " ";
         }
         StringBuffer valueStringBuffer = new StringBuffer();
-        String id = baseInfo.getId();
+        String id = StringUtils.isNotBlank(baseInfo.getId()) ? baseInfo.getId() : UUIDUtils.getUUID32();
         String crtUser = StringUtils.isNotBlank(baseInfo.getCrtUser()) ? baseInfo.getCrtUser() : "-1";
         String lastUpdateUser = baseInfo.getLastUpdateUser();
         Boolean enableFlag = baseInfo.getEnableFlag();

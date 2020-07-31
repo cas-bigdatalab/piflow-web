@@ -4,7 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
 
 import cn.cnic.base.util.SqlUtils;
-import cn.cnic.component.system.model.SysUser;
+import cn.cnic.component.system.entity.SysUser;
 
 
 public class SysUserMapperProvider {

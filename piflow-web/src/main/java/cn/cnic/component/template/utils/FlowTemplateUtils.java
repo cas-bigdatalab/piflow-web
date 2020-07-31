@@ -1,6 +1,6 @@
 package cn.cnic.component.template.utils;
 
-import cn.cnic.component.template.model.FlowTemplate;
+import cn.cnic.component.template.entity.FlowTemplate;
 
 import java.util.Date;
 

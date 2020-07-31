@@ -1,7 +1,7 @@
 package cn.cnic.third.service;
 
 import cn.cnic.common.Eunm.RunModeType;
-import cn.cnic.component.process.model.Process;
+import cn.cnic.component.process.entity.Process;
 import cn.cnic.third.vo.flow.ThirdFlowInfoVo;
 import cn.cnic.third.vo.flow.ThirdProgressVo;
 

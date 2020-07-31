@@ -1,7 +1,7 @@
 package cn.cnic.component.dataSource.utils;
 
-import cn.cnic.component.dataSource.model.DataSource;
-import cn.cnic.component.dataSource.model.DataSourceProperty;
+import cn.cnic.component.dataSource.entity.DataSource;
+import cn.cnic.component.dataSource.entity.DataSourceProperty;
 import cn.cnic.component.dataSource.vo.DataSourcePropertyVo;
 import cn.cnic.component.dataSource.vo.DataSourceVo;
 import org.apache.commons.lang3.StringUtils;

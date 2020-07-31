@@ -11,8 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cn.cnic.component.system.mapper.SysRoleMapper;
 import cn.cnic.component.system.mapper.SysUserMapper;
-import cn.cnic.component.system.model.SysRole;
-import cn.cnic.component.system.model.SysUser;
+import cn.cnic.component.system.entity.SysRole;
+import cn.cnic.component.system.entity.SysUser;
 
 @Component
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)

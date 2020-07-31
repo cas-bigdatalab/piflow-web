@@ -5,8 +5,8 @@ import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.base.util.QuartzUtils;
 import cn.cnic.common.Eunm.ScheduleState;
 import cn.cnic.common.constant.SysParamsCache;
-import cn.cnic.component.system.model.SysSchedule;
-import cn.cnic.domain.system.SysScheduleDomain;
+import cn.cnic.component.system.entity.SysSchedule;
+import cn.cnic.component.system.mapper.SysScheduleMapper;
 import org.quartz.Scheduler;
 import org.slf4j.Logger;
 import org.springframework.boot.ApplicationArguments;
@@ -24,7 +24,7 @@ public class StartLoader implements ApplicationRunner {
     Logger logger = LoggerUtil.getLogger();
 
     @Resource
-    private SysScheduleDomain sysScheduleDomain;
+    private SysScheduleMapper sysScheduleMapper;
 
     @Resource
     private Scheduler scheduler;
@@ -47,7 +47,7 @@ public class StartLoader implements ApplicationRunner {
     }
 
     private void startStatusRunning() {
-        List<SysSchedule> sysScheduleByStatusList = sysScheduleDomain.getSysScheduleByStatus(ScheduleState.RUNNING);
+        List<SysSchedule> sysScheduleByStatusList = sysScheduleMapper.getSysScheduleListByStatus(true, ScheduleState.RUNNING);
         if (null != sysScheduleByStatusList && sysScheduleByStatusList.size() > 0) {
             for (SysSchedule sysSchedule : sysScheduleByStatusList) {
                 QuartzUtils.createScheduleJob(scheduler, sysSchedule);

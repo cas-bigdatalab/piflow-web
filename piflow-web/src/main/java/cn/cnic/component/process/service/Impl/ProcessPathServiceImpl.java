@@ -15,14 +15,14 @@ import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.base.util.ReturnMapUtils;
 import cn.cnic.common.Eunm.PortType;
 import cn.cnic.common.Eunm.RunModeType;
-import cn.cnic.component.process.model.Process;
-import cn.cnic.component.process.model.ProcessPath;
-import cn.cnic.component.process.model.ProcessStop;
+import cn.cnic.component.process.entity.Process;
+import cn.cnic.component.process.entity.ProcessPath;
+import cn.cnic.component.process.entity.ProcessStop;
 import cn.cnic.component.process.service.IProcessPathService;
 import cn.cnic.component.process.vo.ProcessPathVo;
-import cn.cnic.mapper.process.ProcessMapper;
-import cn.cnic.mapper.process.ProcessPathMapper;
-import cn.cnic.mapper.process.ProcessStopMapper;
+import cn.cnic.component.process.mapper.ProcessMapper;
+import cn.cnic.component.process.mapper.ProcessPathMapper;
+import cn.cnic.component.process.mapper.ProcessStopMapper;
 
 @Service
 public class ProcessPathServiceImpl implements IProcessPathService {

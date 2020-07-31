@@ -1,15 +1,15 @@
 package cn.cnic.component.dataSource.service.impl;
 
 import cn.cnic.base.util.*;
-import cn.cnic.component.dataSource.domain.DataSourceDomain;
-import cn.cnic.component.dataSource.domain.DataSourceTransaction;
-import cn.cnic.component.dataSource.model.DataSource;
-import cn.cnic.component.dataSource.model.DataSourceProperty;
+import cn.cnic.component.dataSource.jpa.domain.DataSourceDomain;
+import cn.cnic.component.dataSource.jpa.domain.DataSourceTransaction;
+import cn.cnic.component.dataSource.entity.DataSource;
+import cn.cnic.component.dataSource.entity.DataSourceProperty;
 import cn.cnic.component.dataSource.service.IDataSource;
 import cn.cnic.component.dataSource.utils.DataSourceUtils;
 import cn.cnic.component.dataSource.vo.DataSourcePropertyVo;
 import cn.cnic.component.dataSource.vo.DataSourceVo;
-import cn.cnic.mapper.dataSource.DataSourceMapper;
+import cn.cnic.component.dataSource.mapper.DataSourceMapper;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.apache.commons.lang3.StringUtils;

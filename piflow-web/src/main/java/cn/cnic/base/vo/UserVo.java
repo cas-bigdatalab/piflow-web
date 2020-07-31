@@ -1,7 +1,7 @@
 package cn.cnic.base.vo;
 
 import cn.cnic.common.Eunm.SysRoleType;
-import cn.cnic.component.system.model.SysRole;
+import cn.cnic.component.system.entity.SysRole;
 import cn.cnic.component.system.vo.SysMenuVo;
 import lombok.Getter;
 import lombok.Setter;

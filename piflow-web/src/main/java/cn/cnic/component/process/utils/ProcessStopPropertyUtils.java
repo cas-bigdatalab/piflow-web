@@ -1,6 +1,6 @@
 package cn.cnic.component.process.utils;
 
-import cn.cnic.component.process.model.ProcessStopProperty;
+import cn.cnic.component.process.entity.ProcessStopProperty;
 
 import java.util.Date;
 

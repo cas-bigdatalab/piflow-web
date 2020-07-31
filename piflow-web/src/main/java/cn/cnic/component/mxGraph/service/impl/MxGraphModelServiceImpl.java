@@ -8,7 +8,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import cn.cnic.mapper.flow.*;
+import cn.cnic.component.flow.mapper.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
@@ -21,17 +21,17 @@ import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.base.util.ReturnMapUtils;
 import cn.cnic.base.util.UUIDUtils;
 import cn.cnic.common.Eunm.PortType;
-import cn.cnic.component.flow.model.Flow;
-import cn.cnic.component.flow.model.FlowGroup;
-import cn.cnic.component.flow.model.FlowGroupPaths;
-import cn.cnic.component.flow.model.Paths;
-import cn.cnic.component.flow.model.Property;
-import cn.cnic.component.flow.model.Stops;
+import cn.cnic.component.flow.entity.Flow;
+import cn.cnic.component.flow.entity.FlowGroup;
+import cn.cnic.component.flow.entity.FlowGroupPaths;
+import cn.cnic.component.flow.entity.Paths;
+import cn.cnic.component.flow.entity.Property;
+import cn.cnic.component.flow.entity.Stops;
 import cn.cnic.component.flow.utils.PropertyUtils;
 import cn.cnic.component.flow.utils.StopsUtils;
-import cn.cnic.component.mxGraph.model.MxCell;
-import cn.cnic.component.mxGraph.model.MxGeometry;
-import cn.cnic.component.mxGraph.model.MxGraphModel;
+import cn.cnic.component.mxGraph.entity.MxCell;
+import cn.cnic.component.mxGraph.entity.MxGeometry;
+import cn.cnic.component.mxGraph.entity.MxGraphModel;
 import cn.cnic.component.mxGraph.service.IMxGraphModelService;
 import cn.cnic.component.mxGraph.utils.MxCellUtils;
 import cn.cnic.component.mxGraph.utils.MxGraphModelUtils;
@@ -42,13 +42,13 @@ import cn.cnic.component.mxGraph.vo.MxGraphVo;
 import cn.cnic.component.stopsComponent.mapper.StopsComponentMapper;
 import cn.cnic.component.stopsComponent.model.StopsComponent;
 import cn.cnic.component.stopsComponent.model.StopsComponentProperty;
-import cn.cnic.domain.flow.FlowGroupDomain;
-import cn.cnic.domain.mxGraph.MxCellDomain;
-import cn.cnic.domain.mxGraph.MxGeometryDomain;
-import cn.cnic.domain.mxGraph.MxGraphModelDomain;
-import cn.cnic.mapper.mxGraph.MxCellMapper;
-import cn.cnic.mapper.mxGraph.MxGeometryMapper;
-import cn.cnic.mapper.mxGraph.MxGraphModelMapper;
+import cn.cnic.component.flow.jpa.domain.FlowGroupDomain;
+import cn.cnic.component.mxGraph.jpa.domain.MxCellDomain;
+import cn.cnic.component.mxGraph.jpa.domain.MxGeometryDomain;
+import cn.cnic.component.mxGraph.jpa.domain.MxGraphModelDomain;
+import cn.cnic.component.mxGraph.mapper.MxCellMapper;
+import cn.cnic.component.mxGraph.mapper.MxGeometryMapper;
+import cn.cnic.component.mxGraph.mapper.MxGraphModelMapper;
 
 @Service
 public class MxGraphModelServiceImpl implements IMxGraphModelService {

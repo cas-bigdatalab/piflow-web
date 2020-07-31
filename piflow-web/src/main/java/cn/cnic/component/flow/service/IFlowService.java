@@ -1,6 +1,6 @@
 package cn.cnic.component.flow.service;
 
-import cn.cnic.component.flow.model.Flow;
+import cn.cnic.component.flow.entity.Flow;
 import cn.cnic.component.flow.vo.FlowVo;
 
 import javax.transaction.Transactional;

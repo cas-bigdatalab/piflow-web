@@ -1,11 +1,11 @@
 package cn.cnic.component.flow.utils;
 
-import cn.cnic.component.dataSource.model.DataSource;
+import cn.cnic.component.dataSource.entity.DataSource;
 import cn.cnic.component.dataSource.utils.DataSourceUtils;
 import cn.cnic.component.dataSource.vo.DataSourceVo;
-import cn.cnic.component.flow.model.CustomizedProperty;
-import cn.cnic.component.flow.model.Property;
-import cn.cnic.component.flow.model.Stops;
+import cn.cnic.component.flow.entity.CustomizedProperty;
+import cn.cnic.component.flow.entity.Property;
+import cn.cnic.component.flow.entity.Stops;
 import cn.cnic.component.flow.vo.StopsCustomizedPropertyVo;
 import cn.cnic.component.flow.vo.StopsPropertyVo;
 import cn.cnic.component.flow.vo.StopsVo;

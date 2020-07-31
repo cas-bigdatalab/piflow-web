@@ -1,6 +1,6 @@
 package cn.cnic.component.mxGraph.service;
 
-import cn.cnic.component.mxGraph.model.MxCell;
+import cn.cnic.component.mxGraph.entity.MxCell;
 
 public interface IMxCellService {
 

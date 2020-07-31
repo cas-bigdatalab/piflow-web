@@ -1,6 +1,6 @@
 package cn.cnic.component.mxGraph.utils;
 
-import cn.cnic.component.mxGraph.model.MxNodeImage;
+import cn.cnic.component.mxGraph.entity.MxNodeImage;
 
 import java.util.Date;
 

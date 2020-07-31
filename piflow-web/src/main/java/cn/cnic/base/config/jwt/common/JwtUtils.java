@@ -2,7 +2,7 @@ package cn.cnic.base.config.jwt.common;
 
 import cn.cnic.base.vo.UserVo;
 import cn.cnic.common.Eunm.SysRoleType;
-import cn.cnic.component.system.model.SysRole;
+import cn.cnic.component.system.entity.SysRole;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.CompressionCodecs;
 import io.jsonwebtoken.Jwts;

@@ -3,7 +3,7 @@ package cn.cnic.schedule;
 import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.base.util.SpringContextUtil;
 import cn.cnic.common.executor.ServicesExecutor;
-import cn.cnic.domain.process.ProcessDomain;
+import cn.cnic.component.process.jpa.domain.ProcessDomain;
 import cn.cnic.third.service.IFlow;
 import org.apache.commons.collections.CollectionUtils;
 import org.quartz.JobExecutionContext;

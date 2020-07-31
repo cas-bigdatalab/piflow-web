@@ -1,6 +1,6 @@
 package cn.cnic.component.process.utils;
 
-import cn.cnic.component.process.model.ProcessPath;
+import cn.cnic.component.process.entity.ProcessPath;
 import org.springframework.beans.BeanUtils;
 
 import java.util.Date;

@@ -1,6 +1,6 @@
 package cn.cnic.base.util;
 
-import cn.cnic.component.system.model.SysSchedule;
+import cn.cnic.component.system.entity.SysSchedule;
 import org.quartz.*;
 import org.slf4j.Logger;
 

@@ -4,8 +4,8 @@ import cn.cnic.base.util.JsonUtils;
 import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.base.util.UUIDUtils;
 import cn.cnic.common.constant.SysParamsCache;
-import cn.cnic.component.flow.model.Property;
-import cn.cnic.component.flow.model.Stops;
+import cn.cnic.component.flow.entity.Property;
+import cn.cnic.component.flow.entity.Stops;
 import cn.cnic.component.flow.utils.PropertyUtils;
 import cn.cnic.component.stopsComponent.mapper.StopsComponentPropertyMapper;
 import cn.cnic.component.stopsComponent.mapper.StopsComponentGroupMapper;
@@ -17,11 +17,12 @@ import cn.cnic.component.stopsComponent.transactional.StopsComponentGroupTransac
 import cn.cnic.component.stopsComponent.transactional.StopsComponentTransactional;
 import cn.cnic.component.stopsComponent.utils.StopsComponentGroupUtils;
 import cn.cnic.component.stopsComponent.utils.StopsComponentUtils;
-import cn.cnic.component.system.model.SysInitRecords;
+import cn.cnic.component.system.entity.SysInitRecords;
+import cn.cnic.component.system.mapper.provider.SysInitRecordsMapper;
 import cn.cnic.component.system.service.ISysInitRecordsService;
-import cn.cnic.domain.system.SysInitRecordsDomain;
-import cn.cnic.mapper.flow.PropertyMapper;
-import cn.cnic.mapper.flow.StopsMapper;
+import cn.cnic.component.system.jpa.domain.SysInitRecordsDomain;
+import cn.cnic.component.flow.mapper.PropertyMapper;
+import cn.cnic.component.flow.mapper.StopsMapper;
 import cn.cnic.third.service.IStop;
 import cn.cnic.third.vo.stop.ThirdStopsComponentVo;
 import org.apache.commons.lang3.StringUtils;
@@ -41,7 +42,8 @@ import java.util.concurrent.TimeUnit;
 public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
 
     Logger logger = LoggerUtil.getLogger();
-
+    @Resource
+    private SysInitRecordsMapper sysInitRecordsMapper;
     @Resource
     private SysInitRecordsDomain sysInitRecordsDomain;
 

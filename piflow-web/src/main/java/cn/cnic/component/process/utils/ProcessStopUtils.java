@@ -1,9 +1,9 @@
 package cn.cnic.component.process.utils;
 
 import cn.cnic.base.util.UUIDUtils;
-import cn.cnic.component.process.model.ProcessStop;
-import cn.cnic.component.process.model.ProcessStopCustomizedProperty;
-import cn.cnic.component.process.model.ProcessStopProperty;
+import cn.cnic.component.process.entity.ProcessStop;
+import cn.cnic.component.process.entity.ProcessStopCustomizedProperty;
+import cn.cnic.component.process.entity.ProcessStopProperty;
 import org.springframework.beans.BeanUtils;
 
 import java.util.*;
