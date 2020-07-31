@@ -608,7 +608,7 @@ Sidebar.prototype.searchEntries = function (searchTerms, count, page, success, e
 
                             // NOTE Array does not contain duplicates
                             if (dict.get(entry) == null) {
-                            /*if ((index == 0) == (dict.get(entry) == null)) {*/
+                                /*if ((index == 0) == (dict.get(entry) == null)) {*/
                                 tmpDict.put(entry, entry);
                                 results.push(entry);
 
@@ -3318,18 +3318,13 @@ Sidebar.prototype.addImagePalette = function (id, title, prefix, imgArray, items
                 var dot = item.lastIndexOf('.');
                 tmpTags = item.substring((slash >= 0) ? slash + 1 : 0, (dot >= 0) ? dot : item.length).replace(/[-_]/g, ' ');
             }
-            if (item[i] == "t") {
-                if ('TASK' === Format.customizeType) {
-
-                } else {
-                    fns.push(this.createVertexTemplateEntry('text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;labelBackgroundColor=#ffffff00;',
-                        70, 30, 'Label', 'Text', null, null, 'text textbox textarea label'));
-                }
-
-
+            if ('GROUP' === Format.customizeType && item[0] == "t") {
+                fns.push(this.createVertexTemplateEntry('text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;labelBackgroundColor=#ffffff00;',
+                    70, 30, 'Label', 'Text', null, null, 'text textbox textarea label'));
             } else {
                 fns.push(this.createVertexTemplateEntry('image;html=1;labelBackgroundColor=#ffffff00;image=' + prefix + imgArray[i],
                     this.defaultImageWidth, this.defaultImageHeight, value, title, title != null, null, this.filterTags(tmpTags)));
+
             }
 
 
