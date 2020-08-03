@@ -1,6 +1,11 @@
 package cn.cnic.component.stopsComponent.mapper.provider;
 
+import cn.cnic.base.util.SqlUtils;
+import cn.cnic.component.stopsComponent.model.StopsComponentGroup;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.jdbc.SQL;
+
+import java.util.List;
 
 public class StopsComponentGroupProvider {
 
@@ -18,5 +23,10 @@ public class StopsComponentGroupProvider {
         sql.ORDER_BY(" group_name ");
         sqlStr = sql.toString();
         return sqlStr;
+    }
+
+    public String getStopGroupByGroupNameList(@Param("group_name") List<String> groupName){
+        String sql = "select * from flow_stops_groups where group_name in (" + SqlUtils.strListToStr(groupName) + ") and enable_flag = 1";
+        return  sql;
     }
 }

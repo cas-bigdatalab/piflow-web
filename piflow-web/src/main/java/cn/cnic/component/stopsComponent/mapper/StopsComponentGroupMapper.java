@@ -54,6 +54,9 @@ public interface StopsComponentGroupMapper {
             "</script>")
     List<StopsComponentGroup> getStopGroupByNameList(@Param("group_name") List<String> groupName);
 
+    @SelectProvider(type = StopsComponentGroupProvider.class, method="getStopGroupByGroupNameList")
+    List<StopsComponentGroup> getStopGroupByGroupNameList(@Param("group_name") List<String> groupName);
+
     /**
      * Query flow_stops_groups based on groupName
      *
