@@ -1,7 +1,7 @@
-vue-piflow-web/node_modules
-vue-piflow-web/dist
-vue-piflow-web/*.git
-vue-piflow-web/*.gitignore
+/vue-piflow-web/node_modules
+/vue-piflow-web/dist
+/vue-piflow-web/*.git
+/vue-piflow-web/*.gitignore
 
 
 

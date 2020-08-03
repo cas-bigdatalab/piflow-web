@@ -1,0 +1,112 @@
+.login {
+    position: relative;
+    background: url("../../../assets/img/bgc3.png") center center no-repeat;
+    background-size: 100% 100%;
+    height: 100%;
+    .ivu-logn {
+      margin-top: 10px;
+      .ivu-form-item {
+        margin-bottom: 0;
+      }
+    }
+    .ivu-logn-1 {
+      margin-top: 70px;
+    }
+    .ivu-card {
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
+      border-color: #eee;
+      border-radius: 2px;
+      padding: 10px;
+    }
+    .ivu-input-group-append,
+    .ivu-input-group-prepend {
+      border-radius: 0;
+    }
+    .ivu-form-item-i {
+      margin-bottom: 0px;
+    }
+    .ivu-form-item-content {
+      margin-bottom: 10px;
+    }
+    .ivu-form-item {
+      margin-bottom: 10px;
+    }
+    .login-tip {
+      p {
+        font-size: 12px;
+        margin: 16px 0;
+        margin-left: 5px;
+        span {
+          color: #2d8cf0;
+          cursor: pointer;
+        }
+      }
+    }
+    .header {
+      display: flex;
+      // justify-content: center;
+      align-items: center;
+      padding: 5px 30px;
+      background: #37714b;
+    }
+    .header .logo {
+      width: 30px;
+      height: 30px;
+      background: url("../../../assets/img/logo.png") center center no-repeat;
+      background-size: 100%;
+    }
+    .header .title h1 {
+      margin: 10px;
+      // width: 500px;
+      text-align: center;
+      font-size: 16px;
+      color: #ffffff;
+    }
+    .content {
+      opacity: 0.9;
+      display: flex;
+      justify-content: center;
+      .login-con {
+        width: 320px;
+      }
+    }
+  
+    .large-bgc {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url("../../../assets/img/bgc.png");
+      z-index: -5;
+    }
+    // .ivu-input-group-append, .ivu-input-group-prepend{
+    // 	background: transparent;
+    // }
+    // .yjdl {
+    //   color: #ccc;
+    //   padding: 20px;
+    //   text-align: center;
+    //   cursor: pointer;
+    // }
+  }
+  @media screen and (min-width: 1500px) and (max-width: 2000px) {
+    // .login .header .title h1 {
+    //   font-size: 32px;
+    //   width: 350px;
+    //   margin: 20px;
+    // }
+    .ivu-logn-1 {
+      margin-top: 170px !important;
+    }
+    .ivu-logn {
+      margin-top: 120px !important;
+    }
+    .login .content .login-con {
+      width: 360px;
+    }
+  }
+  .ivu-btn-primary {
+    background-color: #2f7600;
+    border-color: #2f7600;
+  }
