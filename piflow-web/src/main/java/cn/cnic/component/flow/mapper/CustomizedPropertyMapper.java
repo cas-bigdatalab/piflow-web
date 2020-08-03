@@ -1,6 +1,7 @@
 package cn.cnic.component.flow.mapper;
 
 import cn.cnic.component.flow.entity.CustomizedProperty;
+import cn.cnic.component.flow.mapper.provider.CustomizedPropertyMapperProvider;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
 

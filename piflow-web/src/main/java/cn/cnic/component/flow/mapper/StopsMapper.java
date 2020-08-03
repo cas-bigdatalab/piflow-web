@@ -1,6 +1,7 @@
 package cn.cnic.component.flow.mapper;
 
 import cn.cnic.component.flow.entity.Stops;
+import cn.cnic.component.flow.mapper.provider.StopsMapperProvider;
 import cn.cnic.third.vo.flow.ThirdFlowInfoStopVo;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <title>piflow-web</title>
+    <link rel="shortcut icon" href="/piflow-web/favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="/piflow-web/my_css/fullScreen.css"/>
+    <link rel="stylesheet" type="text/css" href="/piflow-web/css/main.css"/>
+    <link rel="stylesheet" type="text/css" href="/piflow-web/components/layui/css/layui.css"/>
+    <link rel="stylesheet" type="text/css" href="/piflow-web/components/font-awesome-4.7.0/css/font-awesome.min.css"/>
+
+    <!--[if IE 8]>
+    <link rel="stylesheet" type="text/css" href='/piflow-web/css/ie8.css'/>
+    <![endif]-->
+
+    <script type="text/javascript" src="/piflow-web/js/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/piflow-web/js/jquery/jquery.easytabs.min.js"></script>
+    <script type="text/javascript" src="/piflow-web/js/jquery/jquery.collapsible.min.js"></script>
+    <script type="text/javascript" src="/piflow-web/js/dataTables1.10.18/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="/piflow-web/js/functions.js"></script>
+    <script type="text/javascript" src="/piflow-web/components/layui/layui.all.js"></script>
+    <style>
+        .paginate_button current {
+            color: #c40029;
+            background: #c40029;
+        }
+
+        .table_tr_th {
+            color: #1A7444;
+        }
+
+        .error_class {
+            border-color: #FF5722 !important;
+        }
+
+        .layui-table-cell {
+            height: 36px;
+            line-height: 36px;
+        }
+    </style>
+</head>
+
+<body>
+<!-- Fixed top -->
+<div id="top"></div>
+<!-- /fixed top -->
+
+
+<!-- Content container -->
+<div id="container">
+
+    <!-- Sidebar -->
+    <div id="sidebar">
+
+        <div id="general">
+
+            <!-- Main navigation -->
+            <ul id="menuGroupsId" class="navigation widget">
+                <li><a href="/piflow-web/page/index.html" title=""><i class="icon-home"></i>Dashboard</a></li>
+            </ul>
+            <!-- /main navigation -->
+
+        </div>
+
+    </div>
+    <!-- /sidebar -->
+
+
+    <!-- Content -->
+    <div id="content">
+
+    </div>
+    <!-- /content -->
+</div>
+<!-- /content container -->
+
+
+<!-- Footer -->
+<!--<div id="footer"></div>-->
+<div th:include="macro/publicMacro :: footHeadMacro"></div>
+
+
+<div th:include="macro/fragmentMacro :: fullScreen"></div>
+<!-- /footer -->
+<script type="text/javascript" src='../components/bootstrap/js/bootstrap.min.js'></script>
+<script src="../js/ajaxUtils.js"></script>
+<script type="text/javascript">
+    var urlParams = getUrlParams(window.location.href);
+    var accessPath = urlParams.accessPath;
+    var projectContextPath = "/piflow-web";
+    var currentUser = {username: "tourist"};
+    if (localStorage.jwtUser) {
+        currentUser = JSON.parse(localStorage.jwtUser);
+    }
+    var rightContentUrl;
+    var projectContextPath_test = "[[${#httpServletRequest.getContextPath()}]]";
+
+    (function () {
+        ajaxLoad("top", "/page/macro/headMacro.html", function () {
+            $("#span_username_id").html('Howdy,' + currentUser.username + '<b class="caret"></b>');
+        });
+        if (currentUser) {
+            var sysMenuVoList = currentUser.sysMenuVoList;
+            if (sysMenuVoList && sysMenuVoList.length > 0) {
+                initMenuFunc(sysMenuVoList);
+            }
+        }
+        if (accessPath && 'indexHome' !== accessPath) {
+            switch (accessPath) {
+                case 'flowList':
+                    rightContentUrl = "/page/flow/flow_list.html";
+                    break;
+                case 'flowGroupList':
+                    rightContentUrl = "/page/flowGroup/flow_group_list.html";
+                    break;
+                case 'process':
+                    rightContentUrl = "/page/process/process_list.html";
+                    break;
+                case 'processGroup':
+                    rightContentUrl = "/page/processGroup/process_group_list.html";
+                    break;
+                case 'processAndProcessGroup':
+                    rightContentUrl = "/page/processAndProcessGroup/process_processGroup_list.html";
+                    break;
+                case 'flowTemplateList':
+                    rightContentUrl = "/page/template/flow_template_list.html";
+                    break;
+                case 'dataSources':
+                    rightContentUrl = "/page/dataSource/data_source_list.html";
+                    break;
+                case 'sysScheduleList':
+                    rightContentUrl = "/page/admin/sys_schedule_list.html";
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            rightContentUrl = "/page/dashboard.html"
+        }
+        ajaxLoad("content", rightContentUrl);
+    })();
+
+    function initMenuFunc(sysMenuVoList) {
+        var menuGroupsUser = {};
+        var menuGroups = $('#menuGroupsId');
+        var currentPathArray = window.location.pathname.split(projectContextPath);
+        var currentPathParam = window.location.search;
+        var currentPath = "";
+        if (currentPathArray.length == 1) {
+            currentPath = currentPathArray[0];
+        } else {
+            currentPath = currentPathArray[currentPathArray.length - 1];
+        }
+        $.each(sysMenuVoList, function (n, value) {
+            var menuParentHtml = "";
+            var active_li_id = "";
+            var valueMenuParent = value.menuParent;
+            if (valueMenuParent) {
+                menuParentHtml = menuGroupsUser[valueMenuParent];
+                if (!menuParentHtml) {
+                    active_li_id = 'active_li_' + valueMenuParent;
+                    menuParentHtml = '<li id="' + active_li_id + '">'
+                        + '<a id="active_a_' + valueMenuParent + '" href="#" title="' + value.menuDescription + '" class="expand">'
+                        + '<i class="icon-reorder"></i>'
+                        + valueMenuParent
+                        + '<strong style="background:#20794b">0</strong>'
+                        + '</a>'
+                        + '<ul></ul>'
+                        + '</li>';
+                    menuParentHtml = $(menuParentHtml);
+                }
+                var counts = parseFloat(menuParentHtml.find("strong").text());
+                menuParentHtml.find("strong").html(counts + 1);
+                var currentMenu = '<li>'
+                    + '<a class="' + value.menuName + '" href="' + value.menuUrl + '" title="' + value.menuDescription + '">'
+                    + value.menuName
+                    + '</a>'
+                    + '</li>';
+                menuParentHtml.find("ul").append(currentMenu);
+            } else {
+                valueMenuParent = 'one_menu_' + value.id;
+                active_li_id = 'active_li_' + valueMenuParent;
+                menuParentHtml = '<li id="' + active_li_id + '">'
+                    + '<a href="' + value.menuUrl + '" title="' + value.menuDescription + '">'
+                    + '<i class="icon-reorder"></i>'
+                    + value.menuName + ''
+                    + '</a>'
+                    + '</li>';
+                menuParentHtml = $(menuParentHtml);
+            }
+            if (value.menuUrl) {
+                var menuUrlSpits = value.menuUrl.split(projectContextPath);
+                var menuActiveMenuId = "";
+                if (menuUrlSpits.length == 1) {
+                    menuActiveMenuId = menuUrlSpits[0];
+                } else {
+                    menuActiveMenuId = menuUrlSpits[menuUrlSpits.length - 1];
+                }
+                if (currentMenu) {
+                    var menu_id_str = menuActiveMenuId.replace("?", "_").replace(new RegExp("/", "gm"), "_").replace(new RegExp("=", "gm"), "_");
+                    menuParentHtml.find("a." + value.menuName).attr("menu_id", menu_id_str + '_menu_id');
+                    menuParentHtml.find("a." + value.menuName).attr("active_li_id", active_li_id);
+                }
+                if ((currentPath + currentPathParam).indexOf(menuActiveMenuId) === 0) {
+                    menuParentHtml.attr("class", "active");
+                    menuParentHtml.find(".expand").attr("id", "current");
+                    menuParentHtml.find(".expand").addClass("current");
+                }
+            }
+            menuGroupsUser[valueMenuParent] = menuParentHtml;
+            menuGroups.append(menuParentHtml);
+        });
+        var currentUrlId = window.location.pathname.replace(new RegExp("/", "gm"), "_") + '';
+        $('a[menu_id=_index_accessPath_' + accessPath + '_menu_id]').addClass("current");
+    }
+
+    //@ sourceURL=index.js
+</script>
+</body>
+</html>

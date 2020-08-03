@@ -1,5 +1,6 @@
 package cn.cnic.component.process.mapper;
 
+import cn.cnic.component.process.mapper.provider.ProcessAndProcessGroupMapperProvider;
 import cn.cnic.component.process.vo.ProcessAndProcessGroupVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.SelectProvider;

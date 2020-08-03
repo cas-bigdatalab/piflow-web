@@ -1,0 +1,56 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment=process_Checkpoint_Inc>
+    <div id="checkpointsContentDiv">
+        <input id="checkpointsIsNull" style="display: none" value="isNull"/>
+    </div>
+</div>
+<script type="text/javascript">
+    var urlParams = getUrlParams(window.location.href);
+    var pID = urlParams.pID;
+    var parentProcessId = urlParams.parentProcessId;
+
+    function initProcessCheckpointIncPageData(pID, parentProcessId) {
+        ajaxRequest({
+            cache: true,//Keep cached data
+            type: "get",//Request for get
+            url: "/process/getCheckpointData",//This is the name of the file where I receive data in the background.
+            //data:$('#loginForm').serialize(),//Serialize the form
+            data: {
+                pID: pID,
+                parentProcessId: parentProcessId,
+            },
+            async: false,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
+            error: function (request) {//Operation after request failure
+                alert("Request Failed");
+                return;
+            },
+            success: function (data) {//Operation after request successful
+                var dataMap = JSON.parse(data);
+                console.log(dataMap);
+                if (200 === dataMap.code) {
+                    var checkpointsSplitArray = dataMap.checkpointsSplit;
+                    if (checkpointsSplitArray) {
+                        var checkpointsContentCheckBoxHtml = "";
+                        for (var i = 0; i < checkpointsSplitArray.length; i++) {
+                            checkpointsContentCheckBoxHtml += ('<span>'
+                                + '<input type="checkbox" th:value="' + checkpointsSplitArray[i] + '"/>'
+                                + '<span>' + checkpointsSplitArray[i] + '</span>'
+                                + '</br>'
+                                + '</span>');
+                        }
+                        $("#checkpointsContentDiv").html(checkpointsContentCheckBoxHtml);
+                    }
+                }
+                $('#fullScreen').hide();
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        initProcessCheckpointIncPageData(pID, parentProcessId);
+    });
+</script>
+</body>
+</html>

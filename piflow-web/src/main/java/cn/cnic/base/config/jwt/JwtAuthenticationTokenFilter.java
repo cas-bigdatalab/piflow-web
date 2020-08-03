@@ -44,7 +44,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
         String username = jwtUtils.getUsernameFromToken(auth_token);
 
-        logger.info(String.format("Checking authentication for user %s.", username));
+        logger.debug(String.format("Checking authentication for user %s.", username));
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserVo userVo = jwtUtils.getUserFromToken(auth_token);

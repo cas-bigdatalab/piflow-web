@@ -62,7 +62,7 @@ function getRightInfo(cell) {
             $.ajax({
                 cache: true,
                 type: "POST",
-                url: "/piflow-web/page/process/inc/process_info_inc",
+                url: "/piflow-web/page/process/inc/process_info_inc.html",
                 data: {processId: processGroupId},
                 async: true,
                 error: function (request) {
@@ -80,7 +80,7 @@ function getRightInfo(cell) {
         $.ajax({
             cache: true,
             type: "POST",
-            url: "/piflow-web/page/process/inc/process_property_inc",
+            url: "/piflow-web/page/process/inc/process_property_inc.html",
             data: {processId: processGroupId, pageId: cell.id},
             async: true,
             error: function (request) {
@@ -110,7 +110,7 @@ function getRightInfo(cell) {
             $.ajax({
                 cache: true,
                 type: "POST",
-                url: "/piflow-web/page/process/inc/process_path_inc",
+                url: "/piflow-web/page/process/inc/process_path_inc.html",
                 data: {processId: processGroupId, pageId: cell.id},
                 async: true,
                 error: function (request) {

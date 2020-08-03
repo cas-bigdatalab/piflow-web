@@ -1,6 +1,7 @@
 package cn.cnic.component.mxGraph.mapper;
 
 import cn.cnic.component.mxGraph.entity.MxGeometry;
+import cn.cnic.component.mxGraph.mapper.provider.MxGeometryMapperProvider;
 import org.apache.ibatis.annotations.*;
 
 @Mapper

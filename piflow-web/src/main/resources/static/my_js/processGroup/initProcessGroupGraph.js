@@ -296,9 +296,9 @@ function OpenTheMonitorArtBoard(evt) {
                     var dataMap = JSON.parse(data);
                     if (200 === dataMap.code) {
                         if ('flow' === dataMap.nodeType) {
-                            window_location_href("/page/process/drawingBoard?drawingBoardType=PROCESS&parentAccessPath=processGroupList&processType=PROCESS&load=" + dataMap.processId);
+                            window_location_href("/page/process/mxGraph/index.html?drawingBoardType=PROCESS&parentAccessPath=processGroupList&processType=PROCESS&load=" + dataMap.processId);
                         } else if ('flowGroup' === dataMap.nodeType) {
-                            window_location_href("/page/processGroup/drawingBoard?drawingBoardType=PROCESS&parentAccessPath=processGroupList&processType=PROCESS_GROUP&load=" + dataMap.processGroupId);
+                            window_location_href("/page/processGroup/mxGraph/index.html?drawingBoardType=PROCESS&parentAccessPath=processGroupList&processType=PROCESS_GROUP&load=" + dataMap.processGroupId);
                         }
                     }
                 } else {

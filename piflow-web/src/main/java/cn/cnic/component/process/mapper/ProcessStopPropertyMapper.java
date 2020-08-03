@@ -1,6 +1,7 @@
 package cn.cnic.component.process.mapper;
 
 import cn.cnic.component.process.entity.ProcessStopProperty;
+import cn.cnic.component.process.mapper.provider.ProcessStopPropertyMapperProvider;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;

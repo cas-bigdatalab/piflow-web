@@ -8,7 +8,10 @@ function initProcessDatatablePage(testTableId, url, searchInputId) {
         //Method-level rendering
         table.render({
             elem: '#' + testTableId
-            , url: url
+            , url: (web_header_prefix + url)
+            , headers: {
+                Authorization: ("Bearer " + token)
+            }
             , cols: [[
                 {field: 'appId', title: 'ProcessId', sort: true, templet: function (data) {return responseFieldHandler('appId', data);}},
                 {field: 'name', title: 'Name', sort: true},
@@ -203,7 +206,7 @@ function getCheckpointList(id, processId, parentProcessId, runMode) {
     ajaxRequest({
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: "/page/process/getCheckpoint",//This is the name of the file where I receive data in the background.
+        url: "/page/process/getCheckpoint.html",//This is the name of the file where I receive data in the background.
         //data:$('#loginForm').serialize(),//Serialize the form
         data: {
             pID: processId,

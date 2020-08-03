@@ -509,10 +509,10 @@ function openProcessMonitor(evt) {
                 if (200 === dataMap.code) {
                     if ('flow' === dataMap.nodeType) {
                         var flow_obj = dataMap.flowVo;
-                        window_location_href("/page/flow/drawingBoard?drawingBoardType=TASK&parentAccessPath=flowGroupList&load=" + flow_obj.id);
+                        window_location_href("/page/flow/mxGraph/index.html?drawingBoardType=TASK&parentAccessPath=flowGroupList&load=" + flow_obj.id);
                     } else if ('flowGroup' === dataMap.nodeType) {
                         var flowGroup_obj = dataMap.flowGroupVo;
-                        window_location_href("/page/flowGroup/drawingBoard?drawingBoardType=GROUP&parentAccessPath=flowGroupList&load=" + flowGroup_obj.id);
+                        window_location_href("/page/flowGroup/mxGraph/index.html?drawingBoardType=GROUP&parentAccessPath=flowGroupList&load=" + flowGroup_obj.id);
                     }
                 } else {
                     console.log(dataMap.errorMsg);
@@ -798,7 +798,7 @@ function queryFlowOrFlowGroupProperty(pageId, loadId) {
 function getFlowList() {
     var window_width = $(window).width();//Get browser window width
     var window_height = $(window).height();//Get browser window height
-    openLayerWindowLoadUrl("/page/flow/getFlowListImport", (window_width / 2), (window_height - 100), "Flows");
+    openLayerWindowLoadUrl("/page/flow/getFlowListImport.html", (window_width / 2), (window_height - 100), "Flows");
 }
 
 // ClickSlider
@@ -1457,9 +1457,9 @@ function RunFlowOrFlowGroupCells(includeEdges) {
                 layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
                     //Jump to the monitor page after starting successfully
                     if (dataMap.processGroupId) {
-                        new_window_open("/page/process/drawingBoard?drawingBoardType=PROCESS&processType=PROCESS_GROUP&load=" + dataMap.processGroupId);
+                        new_window_open("/page/processGroup/mxGraph/index.html?drawingBoardType=PROCESS&processType=PROCESS_GROUP&load=" + dataMap.processGroupId);
                     } else if (dataMap.processId) {
-                        new_window_open("/page/process/drawingBoard?drawingBoardType=PROCESS&processType=PROCESS&load=" + dataMap.processId);
+                        new_window_open("/page/process/mxGraph/index.html?drawingBoardType=PROCESS&processType=PROCESS&load=" + dataMap.processId);
                     }
                 });
             } else {
@@ -1495,7 +1495,7 @@ function runFlowGroup(runMode) {
             if (200 === dataMap.code) {
                 layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
                     //Jump to the monitoring page after starting successfully
-                    new_window_open("/page/process/drawingBoard?drawingBoardType=PROCESS&processType=PROCESS_GROUP&load=" + dataMap.processGroupId, '_blank');
+                    new_window_open("/page/process/mxGraph/index.html?drawingBoardType=PROCESS&processType=PROCESS_GROUP&load=" + dataMap.processGroupId, '_blank');
                 });
             } else {
                 layer.msg("Startup failure：" + dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});

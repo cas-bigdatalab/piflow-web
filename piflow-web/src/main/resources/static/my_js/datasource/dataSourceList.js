@@ -1,5 +1,37 @@
 var newDatasourceWindow, openDatasourceId;
 
+function initDataTablePage(testTableId, url, searchInputId) {
+    var table = "";
+    layui.use('table', function () {
+        table = layui.table;
+
+        //Method-level rendering
+        table.render({
+            elem: '#' + testTableId
+            , url: (web_header_prefix + url)
+            , headers: {
+                Authorization: ("Bearer " + token)
+            }
+            , cols: [[
+                {field: 'dataSourceName', title: 'Name', sort: true},
+                {field: 'dataSourceDescription', title: 'Description', sort: true},
+                {field: 'dataSourceType', title: 'DataSourceType', sort: true},
+                {
+                    field: 'right', title: 'Actions', sort: true, height: 100, templet: function (data) {
+                        return responseHandlerDataSource(data);
+                    }
+                }
+            ]]
+            , id: testTableId
+            , page: true
+        });
+    });
+
+    $("#" + searchInputId).bind('input propertychange', function () {
+        searchMonitor(table, testTableId, searchInputId);
+    });
+}
+
 // Replace the contents of the attribute
 function updateSAttributes(updateHtmlStr, findType, attrName, oldContent, newContent) {
     var updateHtmlStr = $(updateHtmlStr);
@@ -65,8 +97,8 @@ function dataSourceOpen(dataSourceId) {
     openDatasourceId = dataSourceId;
     ajaxRequest({
         cache: true,//Keep cached data
-        type: "POST",//Request type post
-        url: "/page/datasource/getDataSourceInputPage",//This is the name of the file where I receive data in the background.
+        type: "GET",//Request type post
+        url: "/page/datasource/getDataSourceInputPage.html",//This is the name of the file where I receive data in the background.
         //data:$('#loginForm').serialize(),//Serialize the form
         data: {"dataSourceId": dataSourceId},
         async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
@@ -88,35 +120,6 @@ function dataSourceOpen(dataSourceId) {
         }
     });
 
-}
-
-function initDataTablePage(testTableId, url, searchInputId) {
-    var table = "";
-    layui.use('table', function () {
-        table = layui.table;
-
-        //Method-level rendering
-        table.render({
-            elem: '#' + testTableId
-            , url: url
-            , cols: [[
-                {field: 'dataSourceName', title: 'Name', sort: true},
-                {field: 'dataSourceDescription', title: 'Description', sort: true},
-                {field: 'dataSourceType', title: 'DataSourceType', sort: true},
-                {
-                    field: 'right', title: 'Actions', sort: true, height: 100, templet: function (data) {
-                        return responseHandlerDataSource(data);
-                    }
-                }
-            ]]
-            , id: testTableId
-            , page: true
-        });
-    });
-
-    $("#" + searchInputId).bind('input propertychange', function () {
-        searchMonitor(table, testTableId, searchInputId);
-    });
 }
 
 function searchMonitor(layui_table, layui_table_id, searchInputId) {

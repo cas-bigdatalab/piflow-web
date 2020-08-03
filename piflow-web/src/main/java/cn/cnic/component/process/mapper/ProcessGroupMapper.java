@@ -2,6 +2,7 @@ package cn.cnic.component.process.mapper;
 
 import cn.cnic.common.Eunm.RunModeType;
 import cn.cnic.component.process.entity.ProcessGroup;
+import cn.cnic.component.process.mapper.provider.ProcessGroupMapperProvider;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
 

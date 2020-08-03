@@ -1,0 +1,61 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- content starts -->
+<div class="wrapper" style="margin: 20px;">
+    <!-- Media datatable -->
+    <div class="widget">
+        <div class="navbar">
+            <div class="navbar-inner">
+                <h6 style="color: #1A7444">Processes</h6>
+            </div>
+        </div>
+        <div class="navbar">
+            <div class="demoTable">
+                <div style="margin-top: 6px">
+                    <!--                    Search:-->
+                    <div class="layui-inline">
+                        <i class="fa fa-search fa-2x" style="position:absolute;top:8px ;left:8px;font-size:18px"></i>
+                        <input class="layui-input" name="param" id="search_input_id" autocomplete="off" style="padding-left:30px">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="table-overflow">
+            <table class="layui-hide" id="testTableId" lay-filter="user"></table>
+        </div>
+    </div>
+    <!-- /media datatable -->
+</div>
+<!-- content ends -->
+
+<!-- Modal Checkpoint -->
+<div class="modal" id="checkpointListShow" aria-labelledby="myModalLabel" data-backdrop="static"
+     style="z-index: 10000; display: none">
+    <div id="modalDialogPort" class="modal-dialog" role="document">
+        <div class="modal-content" style="width: 100%;  top: 77px;">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabelPort">CHOOSE CHECKPOINT WINDOWS</h4>
+            </div>
+            <div id="checkpointListContent" class="modal-body">
+                Did not find checkpoint information
+                <input type="checkbox" value="">
+            </div>
+            <div class="modal-footer">
+                <button id="runProcessBtn" type="button" class="btn btn-default">Run</button>
+                <button id="debugProcessBtn" type="button" class="btn btn-default">Debug</button>
+                <button id="cancelProcessBtn" type="button" class="btn btn-default">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="/piflow-web/my_js/processAndProcessGroup/processAndProcessGroupList.js"></script>
+<script type="text/javascript">
+    initProcessAndProcessGroupDatatablePage("testTableId", "/processAndProcessGroup/processAndProcessGroupListPage", "search_input_id");
+    (function () {
+        timer = window.setInterval("processGroupListMonitoring()", 5000);
+    })();
+    //@ sourceURL=processList0.js
+</script>
+</body>
+</html>

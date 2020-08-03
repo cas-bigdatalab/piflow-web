@@ -1,6 +1,7 @@
 package cn.cnic.component.dataSource.mapper;
 
 import cn.cnic.component.dataSource.entity.DataSourceProperty;
+import cn.cnic.component.dataSource.mapper.provider.DataSourcePropertyMapperProvider;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;

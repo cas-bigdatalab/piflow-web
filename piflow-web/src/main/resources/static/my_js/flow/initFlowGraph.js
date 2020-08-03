@@ -378,7 +378,7 @@ function queryFlowInfo(loadId) {
                         for (var i = 0; i < runningProcessVoList.length; i++) {
                             tableAllTd += ('<tr>'
                                 + '<td style="border: 1px solid #e8e8e8; width: 50%;">'
-                                + '<a href="' + web_header_prefix + '/page/process/drawingBoard?drawingBoardType=PROCESS&processType=PROCESS&load=' + runningProcessVoList[i].id + '">' + runningProcessVoList[i].name + '</a>'
+                                + '<a href="' + web_header_prefix + '/page/process/mxGraph/index.html?drawingBoardType=PROCESS&processType=PROCESS&load=' + runningProcessVoList[i].id + '">' + runningProcessVoList[i].name + '</a>'
                                 + '</td>'
                                 + '<td style="border: 1px solid #e8e8e8; width: 50%;"><span>' + runningProcessVoList[i].startTime + '</span></td>'
                                 + '</tr>');
@@ -1798,7 +1798,7 @@ function reloadStops() {
         success: function (data) {//Operation after request successful
             var dataMap = JSON.parse(data);
             if (200 === dataMap.code) {
-                window.location.href = (web_header_prefix + "/page/flow/drawingBoard?drawingBoardType=TASK&load=" + dataMap.load + "&_" + new Date().getTime());
+                window.location.href = (web_header_prefix + "/page/flow/mxGraph/index.html?drawingBoardType=TASK&load=" + dataMap.load + "&_" + new Date().getTime());
             } else {
                 //alert("reload fail");
                 layer.msg("reload fail", {icon: 2, shade: 0, time: 2000}, function () {
@@ -2022,7 +2022,7 @@ function runFlow(runMode) {
             if (200 === dataMap.code) {
                 layer.msg(dataMap.errorMsg, { icon: 1, shade: 0, time: 2000 }, function () {
                     //Jump to the monitor page after starting successfully
-                    new_window_open("/page/process/drawingBoard?drawingBoardType=PROCESS&processType=PROCESS&load=" + dataMap.processId);
+                    new_window_open("/page/process/mxGraph/index.html?drawingBoardType=PROCESS&processType=PROCESS&load=" + dataMap.processId);
                 });
             } else {
                 //alert("Startup failure：" + dataMap.errorMsg);
