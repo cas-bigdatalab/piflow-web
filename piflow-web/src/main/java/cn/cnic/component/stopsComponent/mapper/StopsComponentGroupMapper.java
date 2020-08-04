@@ -88,7 +88,7 @@ public interface StopsComponentGroupMapper {
     @Delete("delete from flow_stops_groups where groups_id =#{groups_id}")
     int deleteGroupById(@Param("groups_id") String groupsId);
 
-    @Select("select count(*) from association_groups_stops_template where groups_id =#{groups_id} and enable_flag=1")
+    @Select("select count(*) from association_groups_stops_template where groups_id =#{groups_id}")
     int getGroupStopCount(@Param("groups_id") String groupsId);
 
 }
