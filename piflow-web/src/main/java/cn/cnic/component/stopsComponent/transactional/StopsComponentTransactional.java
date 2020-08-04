@@ -7,6 +7,7 @@ import cn.cnic.component.stopsComponent.mapper.StopsComponentMapper;
 import cn.cnic.component.stopsComponent.model.StopsComponentGroup;
 import cn.cnic.component.stopsComponent.model.StopsComponentProperty;
 import cn.cnic.component.stopsComponent.model.StopsComponent;
+import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
 import java.util.List;
 
 @Component
@@ -59,6 +61,21 @@ public class StopsComponentTransactional {
         return insertRows;
     }
 
+    public int deleteStopsComponentAndChildren(StopsComponent stopsComponent) {
+        if (null == stopsComponent) {
+            return 0;
+        }
+        List<StopsComponentProperty> properties = stopsComponent.getProperties();
+        if (null == properties || properties.size() <= 0) {
+            return 0;
+        }
+        int deleteStopsComponentPropertyCount = stopsComponentPropertyMapper.deleteStopsComponentPropertyByStopId(stopsComponent.getId());
+
+        int deleteStopsComponentRows = stopsComponentMapper.deleteStopsComponentById(stopsComponent.getId());
+
+        return deleteStopsComponentRows;
+    }
+
     public int addListStopsComponent(List<StopsComponent> stopsComponentList) {
         if (null == stopsComponentList || stopsComponentList.size() <= 0) {
             return 0;
@@ -101,5 +118,30 @@ public class StopsComponentTransactional {
         }
         return affectedRows;
     }
+
+    public int deleteStopsComponent(StopsComponent stopsComponent) {
+        //delete relationship
+        stopsComponentGroupMapper.deleteGroupCorrelationByStopId(stopsComponent.getId());
+        logger.debug("Successful delete " + stopsComponent.getName() + " 's association!!!");
+
+        //delete stop
+        int stopCount = deleteStopsComponentAndChildren(stopsComponent);
+        logger.debug("Successful delete " + stopsComponent.getName() + " !!!");
+
+        //delete group
+        String[] stopsComponentGroup = stopsComponent.getGroups().split(",");
+        List<StopsComponentGroup> stopsComponentGroupList = stopsComponentGroupMapper.getStopGroupByNameList(Arrays.asList(stopsComponentGroup));
+        for(StopsComponentGroup sGroup : stopsComponentGroupList){
+
+            int count = stopsComponentGroupMapper.getGroupStopCount(sGroup.getId());
+            if(count == 0){
+                stopsComponentGroupMapper.deleteGroupById(sGroup.getId());
+                logger.debug("Successful delete " + stopsComponent.getName() + " group!!!");
+            }
+        }
+
+        return stopCount;
+    }
+
 
 }

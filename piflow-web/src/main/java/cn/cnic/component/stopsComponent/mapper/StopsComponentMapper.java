@@ -84,4 +84,8 @@ public interface StopsComponentMapper {
     @Delete("delete from flow_stops_template")
     int deleteStopsComponent();
 
+
+    @Delete("delete from flow_stops_template where id = #{id}")
+    int deleteStopsComponentById(String id);
+
 }
