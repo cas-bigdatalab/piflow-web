@@ -13,14 +13,38 @@ function initProcessDatatablePage(testTableId, url, searchInputId) {
                 Authorization: ("Bearer " + token)
             }
             , cols: [[
-                {field: 'appId', title: 'ProcessId', sort: true, templet: function (data) {return responseFieldHandler('appId', data);}},
+                {
+                    field: 'appId', title: 'ProcessId', sort: true, templet: function (data) {
+                        return responseFieldHandler('appId', data);
+                    }
+                },
                 {field: 'name', title: 'Name', sort: true},
                 {field: 'description', title: 'Description', sort: true},
-                {field: 'startTime', title: 'StartTime', sort: true, width: 170, templet: function (data) {return responseFieldHandler('startTime', data);}},
-                {field: 'endTime', title: 'EndTime', sort: true, width: 170, templet: function (data) {return responseFieldHandler('endTime', data);}},
-                {field: 'progress', title: 'Progress', sort: true, width: 220, templet: function (data) {return responseFieldHandler('progress', data);}},
-                {field: 'state', title: 'Status', sort: true, width: 120, templet: function (data) {return responseFieldHandler('state', data);}},
-                {field: 'right', title: 'Actions', sort: true, width: 240, templet: function (data) {return responseActionHandler(data);}}
+                {
+                    field: 'startTime', title: 'StartTime', sort: true, width: 170, templet: function (data) {
+                        return responseFieldHandler('startTime', data);
+                    }
+                },
+                {
+                    field: 'endTime', title: 'EndTime', sort: true, width: 170, templet: function (data) {
+                        return responseFieldHandler('endTime', data);
+                    }
+                },
+                {
+                    field: 'progress', title: 'Progress', sort: true, width: 220, templet: function (data) {
+                        return responseFieldHandler('progress', data);
+                    }
+                },
+                {
+                    field: 'state', title: 'Status', sort: true, width: 120, templet: function (data) {
+                        return responseFieldHandler('state', data);
+                    }
+                },
+                {
+                    field: 'right', title: 'Actions', sort: true, width: 240, templet: function (data) {
+                        return responseActionHandler(data);
+                    }
+                }
             ]]
             , id: testTableId
             , page: true
@@ -202,35 +226,34 @@ function getCheckpointList(id, processId, parentProcessId, runMode) {
         return;
     }
     $('#fullScreen').show();
-    $('#checkpointListShow').modal('hide');
     ajaxRequest({
         cache: true,//Keep cached data
-        type: "POST",//Request type post
-        url: "/page/process/getCheckpoint.html",//This is the name of the file where I receive data in the background.
+        type: "get",//Request for get
+        url: "/process/getCheckpointData",//This is the name of the file where I receive data in the background.
         //data:$('#loginForm').serialize(),//Serialize the form
         data: {
-            pID: processId,
-            parentProcessId: parentProcessId
+            pID: pID,
+            parentProcessId: parentProcessId,
         },
-        async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
+        async: false,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
         error: function (request) {//Operation after request failure
             alert("Request Failed");
-            $('#fullScreen').hide();
-            $('#checkpointListShow').modal('hide');
             return;
         },
         success: function (data) {//Operation after request successful
-            //console.log("success");
-            $('#checkpointListContent').html(data);
-            $('#runProcessBtn').attr('onclick', 'listRunProcess("' + id + '")');
-            $('#debugProcessBtn').attr('onclick', 'listRunProcess("' + id + '","DEBUG")');
-            $('#cancelProcessBtn').attr('onclick', 'cancelListRunProcess("' + id + '")');
-            console.log("=====================================");
-            if ($('#checkpointsIsNull').val()) {
-                //console.log("No Checkpoint was queried");
-                listRunProcess(id, runMode);
-            } else {
-                $('#checkpointListShow').modal('show');
+            var dataMap = JSON.parse(data);
+            if (200 === dataMap.code) {
+                var checkpointsSplitArray = dataMap.checkpointsSplit;
+                if (checkpointsSplitArray) {
+                    openLayerWindowLoadUrl(
+                        ("/page/process/inc/process_checkpoint_inc.html?id=" + id + "&pID=" + processId + "&parentProcessId=" + parentProcessId + "&runMode=" + runMode + "&pageType=list"),
+                        500,
+                        300,
+                        "debug");
+                    $('#fullScreen').hide();
+                } else {
+                    listRunProcess(id, runMode);
+                }
             }
         }
     });

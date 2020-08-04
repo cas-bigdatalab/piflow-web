@@ -85,7 +85,7 @@
 <div th:include="macro/fragmentMacro :: fullScreen"></div>
 <!-- /footer -->
 <script type="text/javascript" src='../components/bootstrap/js/bootstrap.min.js'></script>
-<script src="../js/ajaxUtils.js"></script>
+<script type="text/javascript" src="/piflow-web/js/ajaxUtils.js"></script>
 <script type="text/javascript">
     var urlParams = getUrlParams(window.location.href);
     var accessPath = urlParams.accessPath;
@@ -132,6 +132,9 @@
                     break;
                 case 'sysScheduleList':
                     rightContentUrl = "/page/admin/sys_schedule_list.html";
+                    break;
+                case 'scheduleList':
+                    rightContentUrl = "/page/schedule/schedule_list.html";
                     break;
                 default:
                     break;

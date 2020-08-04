@@ -76,6 +76,12 @@ public class ScheduleMapperProvider {
         this.scheduleRunTemplateId = null;
     }
 
+    /**
+     * insert schedule
+     *
+     * @param schedule schedule
+     * @return string sql
+     */
     public String insert(Schedule schedule) {
         String sqlStr = "select 0";
         boolean flag = this.preventSQLInjectionSchedule(schedule);
@@ -115,8 +121,8 @@ public class ScheduleMapperProvider {
     /**
      * update schedule
      *
-     * @param schedule
-     * @return
+     * @param schedule schedule
+     * @return string sql
      */
     public String update(Schedule schedule) {
 
@@ -149,7 +155,7 @@ public class ScheduleMapperProvider {
     }
 
     /**
-     * getScheduleList
+     * get Schedule list
      *
      * @param isAdmin  is admin
      * @param username username
@@ -176,16 +182,57 @@ public class ScheduleMapperProvider {
         return sqlStr;
     }
 
-    public String getScheduleById(boolean isAdmin, String username) {
+    /**
+     * get Schedule by id
+     *
+     * @param isAdmin  is admin
+     * @param username username
+     * @param id       id
+     * @return sql
+     */
+    public String getScheduleById(boolean isAdmin, String username, String id) {
+        if (StringUtils.isBlank(id)) {
+            return "select 0";
+        }
         StringBuffer strBuf = new StringBuffer();
         strBuf.append("select * ");
         strBuf.append("from group_schedule ");
         strBuf.append("where ");
         strBuf.append("enable_flag = 1 ");
+        strBuf.append("and id = " + SqlUtils.preventSQLInjection(id) + " ");
         if (!isAdmin) {
             strBuf.append("and crt_user = " + SqlUtils.preventSQLInjection(username));
         }
-        strBuf.append("order by crt_dttm desc ");
+        String sqlStr = strBuf.toString();
+        return sqlStr;
+    }
+
+    /**
+     * del Schedule by id
+     *
+     * @param isAdmin  is admin
+     * @param username username
+     * @param id       id
+     * @return sql
+     */
+    public String delScheduleById(boolean isAdmin, String username, String id) {
+        if (StringUtils.isBlank(id)) {
+            return "select 0";
+        }
+        if (StringUtils.isBlank(username)) {
+            return "select 0";
+        }
+        StringBuffer strBuf = new StringBuffer();
+        String lastUpdateDttm = DateUtils.dateTimesToStr(new Date());
+        strBuf.append("update group_schedule set ");
+        strBuf.append("enable_flag = 0 ");
+        strBuf.append("last_update_user = " + SqlUtils.preventSQLInjection(username) + " ");
+        strBuf.append("last_update_dttm = " + SqlUtils.preventSQLInjection(lastUpdateDttm) + " ");
+        strBuf.append("where ");
+        strBuf.append("enable_flag = 1 ");
+        if (!isAdmin) {
+            strBuf.append("and crt_user = " + SqlUtils.preventSQLInjection(username));
+        }
         String sqlStr = strBuf.toString();
         return sqlStr;
     }

@@ -27,12 +27,12 @@ public class ScheduleServiceImpl implements IScheduleService {
     private ScheduleMapper scheduleMapper;
 
     @Override
-    public String getScheduleListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param) {
+    public String getScheduleVoListPage(boolean isAdmin, String username, Integer offset, Integer limit, String param) {
         if (null == offset || null == limit) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.ERROR_MSG);
         }
-        Page<Schedule> page = PageHelper.startPage(offset, limit, "crt_dttm desc");
-        scheduleMapper.getScheduleList(isAdmin, username, param);
+        Page<ScheduleVo> page = PageHelper.startPage(offset, limit, "crt_dttm desc");
+        scheduleMapper.getScheduleVoList(isAdmin, username, param);
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(ReturnMapUtils.SUCCEEDED_MSG);
         rtnMap = PageHelperUtils.setLayTableParam(page, rtnMap);
         return JsonUtils.toJsonNoException(rtnMap);
@@ -65,7 +65,7 @@ public class ScheduleServiceImpl implements IScheduleService {
     }
 
     @Override
-    public String updateSchedule(String username, boolean isAdmin, ScheduleVo scheduleVo) {
+    public String updateSchedule(boolean isAdmin, String username, ScheduleVo scheduleVo) {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
         }
@@ -81,18 +81,64 @@ public class ScheduleServiceImpl implements IScheduleService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("No data with ID " + scheduleById.getId());
         }
         // Copy scheduleVo data to scheduleById
-        BeanUtils.copyProperties(scheduleVo,scheduleById);
+        BeanUtils.copyProperties(scheduleVo, scheduleById);
         //set Operator information
         scheduleById.setLastUpdateDttm(new Date());
         scheduleById.setLastUpdateUser(username);
         int update = scheduleMapper.update(scheduleById);
-        return null;
+        if (update <= 0) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("update failed");
+        }
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr(ReturnMapUtils.SUCCEEDED_MSG);
     }
 
     @Override
-    public String delSchedule(String username, String id) {
-        return null;
+    public String delSchedule(boolean isAdmin, String username, String id) {
+        if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
+        }
+        if (StringUtils.isBlank(id)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("id is null");
+        }
+        Schedule scheduleById = scheduleMapper.getScheduleById(isAdmin, username, id);
+        if (null == scheduleById) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Data does not exist");
+        }
+        int delSchedule = scheduleMapper.delScheduleById(isAdmin, username, id);
+        if (delSchedule <= 0) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("del failed");
+        }
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr(ReturnMapUtils.SUCCEEDED_MSG);
     }
 
+    @Override
+    public String startSchedule(boolean isAdmin, String username, String id) {
+        if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
+        }
+        if (StringUtils.isBlank(id)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("id is null");
+        }
+        Schedule scheduleById = scheduleMapper.getScheduleById(isAdmin, username, id);
+        if (null == scheduleById) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Data does not exist");
+        }
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr(ReturnMapUtils.SUCCEEDED_MSG);
+    }
+
+    @Override
+    public String stopSchedule(boolean isAdmin, String username, String id) {
+        if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
+        }
+        if (StringUtils.isBlank(id)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("id is null");
+        }
+        Schedule scheduleById = scheduleMapper.getScheduleById(isAdmin, username, id);
+        if (null == scheduleById) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Data does not exist");
+        }
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr(ReturnMapUtils.SUCCEEDED_MSG);
+    }
 
 }

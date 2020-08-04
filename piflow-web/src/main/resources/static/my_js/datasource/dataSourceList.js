@@ -95,30 +95,40 @@ function removeCustomModule(removeId, listId) {
 
 function dataSourceOpen(dataSourceId) {
     openDatasourceId = dataSourceId;
-    ajaxRequest({
-        cache: true,//Keep cached data
-        type: "GET",//Request type post
-        url: "/page/datasource/getDataSourceInputPage.html",//This is the name of the file where I receive data in the background.
-        //data:$('#loginForm').serialize(),//Serialize the form
-        data: {"dataSourceId": dataSourceId},
-        async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
-        error: function (request) {//Operation after request failure
-            layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000});
-            return;
-        },
-        success: function (data) {//Operation after request successful
-            newDatasourceWindow = layer.open({
-                type: 1,
-                title: '<span style="color: #269252;">data source</span>',
-                shadeClose: true,
-                closeBtn: 1,
-                shift: 7,
-                area: ['580px', '550px'], //Width height
-                skin: 'layui-layer-rim', //Add borders
-                content: data
-            });
-        }
+    newDatasourceWindow = layer.open({
+        type: 2,
+        title: '<span style="color: #269252;">data source</span>',
+        shadeClose: true,
+        closeBtn: 1,
+        shift: 7,
+        area: ['580px', '550px'], //Width height
+        skin: 'layui-layer-rim', //Add borders
+        content: (web_header_prefix + "/page/dataSource/dataSourceInput.html")
     });
+    // ajaxRequest({
+    //     cache: true,//Keep cached data
+    //     type: "GET",//Request type post
+    //     url: "/page/dataSource/getDataSourceInputPage.html",//This is the name of the file where I receive data in the background.
+    //     //data:$('#loginForm').serialize(),//Serialize the form
+    //     data: {"dataSourceId": dataSourceId},
+    //     async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
+    //     error: function (request) {//Operation after request failure
+    //         layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000});
+    //         return;
+    //     },
+    //     success: function (data) {//Operation after request successful
+    //         newDatasourceWindow = layer.open({
+    //             type: 1,
+    //             title: '<span style="color: #269252;">data source</span>',
+    //             shadeClose: true,
+    //             closeBtn: 1,
+    //             shift: 7,
+    //             area: ['580px', '550px'], //Width height
+    //             skin: 'layui-layer-rim', //Add borders
+    //             content: data
+    //         });
+    //     }
+    // });
 
 }
 

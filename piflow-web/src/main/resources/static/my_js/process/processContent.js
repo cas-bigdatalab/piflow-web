@@ -187,52 +187,32 @@ function getCheckpoint(pID, parentProcessId, processId, runMode) {
     fullScreen.show();
     ajaxRequest({
         cache: true,//Keep cached data
-        type: "POST",//Request type post
-        url: "/page/process/getCheckpoint.html",//This is the name of the file where I receive data in the background.
+        type: "get",//Request for get
+        url: "/process/getCheckpointData",//This is the name of the file where I receive data in the background.
         //data:$('#loginForm').serialize(),//Serialize the form
         data: {
             pID: pID,
-            parentProcessId: parentProcessId
+            parentProcessId: parentProcessId,
         },
-        async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
+        async: false,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
         error: function (request) {//Operation after request failure
-            runFlowBtn.show();
-            debugFlowBtn.show();
-            //alert("Request Failed");
-            layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000});
-            fullScreen.hide();
-            checkpointShow.modal('hide');
+            alert("Request Failed");
             return;
         },
         success: function (data) {//Operation after request successful
-            console.log(data);
-            $('#checkpointContentNew').html(data);
-            if ($('#checkpointsIsNull').val()) {
-                runProcess(processId, runMode);
-            } else {
-                runFlowBtn.show();
-                debugFlowBtn.show();
-                fullScreen.hide();
-
-                if ("DEBUG" === runMode) {
-                    $("#debug_checkpoint_new").show();
-                    $("#run_checkpoint_new").hide();
+            var dataMap = JSON.parse(data);
+            if (200 === dataMap.code) {
+                var checkpointsSplitArray = dataMap.checkpointsSplit;
+                if (checkpointsSplitArray) {
+                    openLayerWindowLoadUrl(
+                        ("/page/process/inc/process_checkpoint_inc.html?id=" + processId + "&pID=" + pID + "&parentProcessId=" + parentProcessId + "&runMode=" + runMode),
+                        500,
+                        300,
+                        "debug");
+                    $('#fullScreen').hide();
                 } else {
-                    $("#debug_checkpoint_new").hide();
-                    $("#run_checkpoint_new").show();
+                    runProcess(processId, runMode);
                 }
-                layer.open({
-                    type: 1,
-                    title: '<span style="color: #269252;">Select Run Mode</span>',
-                    shadeClose: true,
-                    closeBtn: 1,
-                    shift: 7,
-                    //area: ['600px', '200px'], //Width height
-                    skin: 'layui-layer-rim', //Add borders
-                    area: ['600px', ($("#layer_open_checkpoint").height() + 73) + 'px'], //Width Height
-                    content: $("#layer_open_checkpoint").html()
-                });
-
             }
         }
     });

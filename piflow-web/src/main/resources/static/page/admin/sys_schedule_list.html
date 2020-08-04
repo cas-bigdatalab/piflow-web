@@ -11,7 +11,7 @@
             <div class="navbar-inner">
                 <h6 style="color: #1A7444">Schedules</h6>
                 <div class="btn-position" style="float: right;margin-right: 8px">
-                    <a class='btn' href='javascript:void(0);' onclick="newScheduleWindow();"
+                    <a class='btn' href='javascript:void(0);' onclick="newSysScheduleWindow();"
                        style='background-color: #C0C0C0;border: 1px solid;color: #21794c;' title="create schedule">
                         <i class='icon-plus-sign icon-white'></i>
                     </a>
@@ -19,7 +19,7 @@
             </div>
         </div>
         <div class="navbar">
-<!--            <a class='btn' href='javascript:void(0);' onclick="newScheduleWindow();"-->
+<!--            <a class='btn' href='javascript:void(0);' onclick="newSysScheduleWindow();"-->
 <!--               style='background-color: #C0C0C0;border: 1px solid;color: #21794c;' title="create schedule">-->
 <!--                <i class='icon-plus-sign icon-white'></i>-->
 <!--            </a>-->
@@ -78,7 +78,7 @@
         <div class="layui-form-item" style="text-align: center;margin-right: 90px;">
             <div class="layui-input-block">
                 <button type="button" class="layui-btn layui-btn-primary" onclick='saveFlow()'
-                        style="color: #ffffff;background-color: #2f7600;border-color: #2f7600;" id="buttonSchedule">
+                        style="color: #ffffff;background-color: #2f7600;border-color: #2f7600;" id="buttonSysSchedule">
                     Submit
                 </button>
             </div>
@@ -88,7 +88,7 @@
 
 <script src="/piflow-web/my_js/admin/sysScheduleList.js"></script>
 <script type="text/javascript">
-    initDatatableSchedulePage('scheduleTableId', "/sysSchedule/getScheduleListPage", "search_input_id");
+    initDatatableSysSchedulePage('scheduleTableId', "/sysSchedule/getScheduleListPage", "search_input_id");
     /*$(document).ready(function () {
 
     });*/

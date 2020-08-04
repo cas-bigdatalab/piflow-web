@@ -89,15 +89,11 @@
 
 <!-- run button -->
 <div style="width: 30.2%;top: 48px;right: 0px;height: 50px;position: absolute;z-index: 1001;">
-    <div id="graphEditor_menus_group_load_id" style="float: right;">
-        <div th:include="flowGroup/inc/graphEditor_menus_group :: graphEditor_menus_group"></div>
-    </div>
+    <div id="graphEditor_menus_group_load_id" style="float: right;"></div>
 </div>
 <!-- crumbs -->
 <div style="width: 100%;position: fixed;z-index: 99999;float: left;left: 0px;bottom: 0px;text-align: center;height: 28px;line-height: 28px; background: #37714b;">
-    <div id="graphEditor_crumbs_task_load_id">
-        <div th:include="flowGroup/inc/graphEditor_crumbs_group :: graphEditor_crumbs_group"></div>
-    </div>
+    <div id="graphEditor_crumbs_task_load_id"></div>
 </div>
 
 <!-- ======================== new ======================================= -->
@@ -241,8 +237,8 @@
 </div>
 
 
-<script type="text/javascript" src="/piflow-web/my_js/flowGroup/initFlowGroupGraph.js"></script>
 <script type="text/javascript" src="/piflow-web/js/ajaxUtils.js"></script>
+<script type="text/javascript" src="/piflow-web/my_js/flowGroup/initFlowGroupGraph.js"></script>
 
 <script type="text/javascript">
     var urlParams = getUrlParams(window.location.href);
@@ -277,6 +273,18 @@
                 $("#tab_content" + $(this).val()).show().siblings("div").hide();
             });
         });
+        ajaxLoad("graphEditor_menus_group_load_id","/page/flowGroup/inc/graphEditor_menus_group.html");
+        ajaxLoad("graphEditor_crumbs_task_load_id","/page/flowGroup/inc/graphEditor_crumbs_group.html", function () {
+            if ("flowGroupList" === parentAccessPath) {
+                $("#web_flowGroupList_navigation").show();
+                $("#web_flowList_navigation").hide();
+                if (parentsId) {
+                    $("#grapheditor_groupDrawingBoard_navigation").show();
+                } else {
+                    $("#grapheditor_groupDrawingBoard_navigation").hide();
+                }
+            }
+        });
         $(".btn-group").mouseover(function () {
             $(this).addClass("open");
             var oDiv = document.getElementById("divloadingXml");
@@ -285,15 +293,7 @@
         $(".btn-group").mouseleave(function () {
             $(this).removeClass("open");
         });
-        if ("flowGroupList" === parentAccessPath) {
-            $("#web_flowGroupList_navigation").show();
-            $("#web_flowList_navigation").hide();
-            if (parentsId) {
-                $("#grapheditor_groupDrawingBoard_navigation").show();
-            } else {
-                $("#grapheditor_groupDrawingBoard_navigation").hide();
-            }
-        }
+
         initFlowGroupDrawingBoardData(loadId, parentAccessPath);
         initFlowGroupGraph();
     });

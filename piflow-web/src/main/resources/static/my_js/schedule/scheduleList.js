@@ -1,4 +1,4 @@
-function initDatatableSysSchedulePage(testTableId, url, searchInputId) {
+function initDatatableSchedulePage(testTableId, url, searchInputId) {
     var table = "";
     layui.use('table', function () {
         table = layui.table;
@@ -23,7 +23,7 @@ function initDatatableSysSchedulePage(testTableId, url, searchInputId) {
                 {field: 'crtDttmString', title: 'CreateTime', sort: true},
                 {
                     field: 'right', title: 'Actions', sort: true, height: 100, templet: function (data) {
-                        return responseHandlerSysSchedule(data);
+                        return responseHandlerSchedule(data);
                     }
                 }
             ]]
@@ -47,9 +47,8 @@ function initDatatableSysSchedulePage(testTableId, url, searchInputId) {
     }
 }
 
-
 //Results returned in the background
-function responseHandlerSysSchedule(res) {
+function responseHandlerSchedule(res) {
     var actionsHtmlStr = "";
     if (res) {
         var actions_btn_1 = '<a class="btn" '
@@ -90,7 +89,7 @@ function responseHandlerSysSchedule(res) {
         var actions_btn_6 = '<a class="btn" '
             + 'title="Edit this timed task" '
             + 'href="javascript:void(0);" '
-            + 'onclick="javascript:newSysScheduleWindow(\'' + res.id + '\');" '
+            + 'onclick="javascript:schedulePopup(\'' + res.id + '\',\'update schedule\');'
             + 'style="margin-right: 2px;">'
             + '<i class="icon-edit icon-white"></i>'
             + '</a>';
@@ -121,82 +120,21 @@ function responseHandlerSysSchedule(res) {
     return actionsHtmlStr;
 }
 
-function newSysScheduleWindow(id) {
-    $("#buttonSysSchedule").attr("onclick", "");
-    if (id) {
-        ajaxRequest({
-            cache: true,//Keep cached data
-            type: "get",//Request type post
-            url: "/sysSchedule/getScheduleById",//This is the name of the file where I receive data in the background.
-            data: {scheduleId: id},
-            async: false,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
-            error: function (request) {//Operation after request failure
-                layer.closeAll('page');
-                layer.msg('open failed ', {icon: 2, shade: 0, time: 2000});
-                return;
-            },
-            success: function (data) {//Operation after request successful
-                var dataMap = JSON.parse(data);
-                if (200 === dataMap.code) {
-                    console.log(dataMap);
-                    var sysScheduleVo = dataMap.sysScheduleVo;
-                    $("#buttonSysSchedule").attr("onclick", "updateSysSchedule()");
-                    $("#scheduleId").val(id);
-                    $("#scheduleName").val(sysScheduleVo.jobName);
-                    $("#scheduleClass").val(sysScheduleVo.jobClass);
-                    $("#scheduleCron").val(sysScheduleVo.cronExpression);
-                    layer.open({
-                        type: 1,
-                        title: '<span style="color: #269252;">update schedule</span>',
-                        shadeClose: true,
-                        closeBtn: false,
-                        shift: 7,
-                        closeBtn: 1,
-                        area: ['580px', '520px'], //Width height
-                        skin: 'layui-layer-rim', //Add borders
-                        content: $("#SubmitPage")
-                    });
-                } else {
-                    layer.msg('open failed', {icon: 2, shade: 0, time: 2000});
-                }
-            }
-        });
-    } else {
-        $("#buttonSysSchedule").attr("onclick", "createTask()");
-        $("#scheduleId").val("");
-        $("#scheduleName").val("");
-        $("#scheduleClass").val("");
-        $("#scheduleCron").val("");
-        layer.open({
-            type: 1,
-            title: '<span style="color: #269252;">create schedule</span>',
-            shadeClose: true,
-            closeBtn: 1,
-            shift: 7,
-            area: ['580px', '520px'], //Width height
-            skin: 'layui-layer-rim', //Add borders
-            content: $("#SubmitPage")
-        });
-    }
+function schedulePopup(id, titleName) {
+    openLayerWindowLoadUrl(("/page/schedule/schedule_new_or_update.html?openScheduleId=" + id), 580, 520, ('<span style="color: #269252;">' + titleName + '</span>'));
 }
 
-function checkSysScheduleInput(scheduleName, scheduleClass, scheduleCron, description) {
-    $('#scheduleName').removeClass('error_class');
-    $('#scheduleClass').removeClass('error_class');
-    $('#scheduleCron').removeClass('error_class');
-    if (scheduleName == '') {
-        layer.msg('name Can not be empty', {icon: 2, shade: 0, time: 2000});
-        $('#scheduleName').addClass('error_class');
-        return false;
-    }
-    if (scheduleClass == '') {
-        layer.msg('class Can not be empty', {icon: 2, shade: 0, time: 2000});
-        $('#scheduleClass').addClass('error_class');
-        return false;
-    }
+function checkScheduleInput(scheduleCron, scheduleRunTemplateId, description) {
+    $('#schedule_cron').removeClass('error_class');
+    $('#scheduleRunTemplateId').removeClass('error_class');
     if (scheduleCron == '') {
         layer.msg('cron Can not be empty', {icon: 2, shade: 0, time: 2000});
-        $('#scheduleCron').addClass('error_class');
+        $('#schedule_cron').addClass('error_class');
+        return false;
+    }
+    if (scheduleRunTemplateId == '') {
+        layer.msg('flow or group Can not be empty', {icon: 2, shade: 0, time: 2000});
+        $('#scheduleRunTemplateId').addClass('error_class');
         return false;
     }
     /*if (description == '') {
@@ -207,19 +145,20 @@ function checkSysScheduleInput(scheduleName, scheduleClass, scheduleCron, descri
     return true;
 }
 
-function createTask() {
+function createSchedule() {
+    var scheduleType = $("#schedule_type").val();
+    var scheduleCron = $("#schedule_cron").val();
+    var scheduleRunTemplateId = $("#scheduleRunTemplateId").val();
     var scheduleName = $("#scheduleName").val();
-    var scheduleClass = $("#scheduleClass").val();
-    var scheduleCron = $("#scheduleCron").val();
-    if (checkSysScheduleInput(scheduleName, scheduleClass, scheduleCron))
+    if (checkScheduleInput(scheduleCron, scheduleRunTemplateId))
         ajaxRequest({
             cache: true,//Keep cached data
             type: "get",//Request type post
-            url: "/sysSchedule/createTask",//This is the name of the file where I receive data in the background.
+            url: "/schedule/addSchedule",//This is the name of the file where I receive data in the background.
             data: {
-                jobName: scheduleName,
-                jobClass: scheduleClass,
-                cronExpression: scheduleCron
+                type: scheduleType,
+                cronExpression: scheduleCron,
+                scheduleRunTemplateId: scheduleRunTemplateId
             },
             async: false,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
             error: function (request) {//Operation after request failure
@@ -241,13 +180,13 @@ function createTask() {
         });
 }
 
-function updateSysSchedule() {
+function updateSchedule() {
     var id = $("#scheduleId").val();
     var scheduleName = $("#scheduleName").val();
     var scheduleClass = $("#scheduleClass").val();
-    var scheduleCron = $("#scheduleCron").val();
+    var scheduleCron = $("#schedule_cron").val();
 
-    if (checkSysScheduleInput(scheduleName, scheduleClass, scheduleCron))
+    if (checkScheduleInput(scheduleName, scheduleClass, scheduleCron))
         ajaxRequest({
             cache: true,//Keep cached data
             type: "get",//Request type post
@@ -388,6 +327,78 @@ function deleteTask(id, name) {
 
 function developmentFunc() {
     layer.msg("Functional development", {icon: 5, shade: 0, time: 2000}, function () {
+    });
+}
+
+function onloadScheduleInfoHtmlDate() {
+    $("#buttonSchedule").attr("onclick", "");
+    let urlSearchParams = getUrlParams(location.href)
+    if (urlSearchParams.openScheduleId) {
+        ajaxRequest({
+            cache: true,//Keep cached data
+            type: "get",//Request type post
+            url: "/schedule/getScheduleById",//This is the name of the file where I receive data in the background.
+            data: {scheduleId: urlSearchParams.openScheduleId},
+            async: false,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
+            error: function (request) {//Operation after request failure
+                layer.closeAll('page');
+                layer.msg('open failed ', {icon: 2, shade: 0, time: 2000});
+                return;
+            },
+            success: function (data) {//Operation after request successful
+                var dataMap = JSON.parse(data);
+                console.log(dataMap);
+                if (200 === dataMap.code) {
+                    var scheduleVo = dataMap.scheduleVo;
+                    $("#buttonSchedule").attr("onclick", "updateSchedule()");
+                    $("#scheduleId").val(id);
+                    $("#scheduleName").val(scheduleVo.jobName);
+                    $("#scheduleClass").val(scheduleVo.jobClass);
+                    $("#schedule_cron").val(scheduleVo.cronExpression);
+                } else {
+                    layer.msg('open failed', {icon: 2, shade: 0, time: 2000});
+                }
+            }
+        });
+    } else {
+        $("#buttonSchedule").attr("onclick", "createTask()");
+        $("#scheduleId").val("");
+        $("#scheduleName").val("");
+        $("#scheduleClass").val("");
+        $("#schedule_cron").val("");
+    }
+}
+
+function loadFlowOrGroupSelect() {
+    var schedule_type = $("#schedule_type").val();
+    $("#schedule_class").val("");
+    ajaxRequest({
+        cache: true,//Keep cached data
+        type: "POST",//Request type post
+        url: "/flow/getFlowListPage",//This is the name of the file where I receive data in the background.
+        data: {page: 1, limit: 10000},
+        async: false,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
+        error: function (request) {//Operation after request failure
+            layer.closeAll('page');
+            layer.msg('open failed ', {icon: 2, shade: 0, time: 2000});
+            return;
+        },
+        success: function (data) {//Operation after request successful
+            var dataMap = JSON.parse(data);
+            if (200 === dataMap.code) {
+                $("#schedule_class").html('<option value="">Please select</option>');
+                var option_data = dataMap.data;
+                if (dataMap.data) {
+                    for (var i = 0; i < option_data.length; i++) {
+                        var option_data_i = option_data[i];
+                        $("#schedule_class").append('<option value="' + option_data_i.id + '">' + option_data_i.name + '</option>');
+                    }
+                }
+
+            } else {
+                layer.msg('open failed', {icon: 2, shade: 0, time: 2000});
+            }
+        }
     });
 }
 

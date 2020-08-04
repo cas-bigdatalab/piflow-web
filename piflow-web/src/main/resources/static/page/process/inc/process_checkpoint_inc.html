@@ -1,13 +1,31 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <body>
-<div th:fragment=process_Checkpoint_Inc>
+<head>
+    <script type="text/javascript" src="/piflow-web/js/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/piflow-web/js/ajaxUtils.js"></script>
+</head>
+<div>
     <div id="checkpointsContentDiv">
         <input id="checkpointsIsNull" style="display: none" value="isNull"/>
     </div>
+    <div style="text-align: right;">
+        <button id="run_checkpoint_new"
+                type="button"
+                class="btn btn-default"
+                style="margin-right: 10px;display: none;">
+            Run
+        </button>
+        <button id="debug_checkpoint_new"
+                type="button"
+                class="btn btn-default"
+                style="margin-right: 10px; display: none;">
+            Debug
+        </button>
+    </div>
 </div>
 <script type="text/javascript">
-    var urlParams = getUrlParams(window.location.href);
+    var urlParams = getUrlParams(location.href);
     var pID = urlParams.pID;
     var parentProcessId = urlParams.parentProcessId;
 
@@ -28,7 +46,6 @@
             },
             success: function (data) {//Operation after request successful
                 var dataMap = JSON.parse(data);
-                console.log(dataMap);
                 if (200 === dataMap.code) {
                     var checkpointsSplitArray = dataMap.checkpointsSplit;
                     if (checkpointsSplitArray) {
@@ -41,14 +58,25 @@
                                 + '</span>');
                         }
                         $("#checkpointsContentDiv").html(checkpointsContentCheckBoxHtml);
+                        if (urlParams.runMode && 'DEBUG' === urlParams.runMode) {
+                            $("#debug_checkpoint_new").show();
+                        } else {
+                            $("#run_checkpoint_new").show();
+                        }
                     }
                 }
-                $('#fullScreen').hide();
             }
         });
     }
 
     $(document).ready(function () {
+        if ("list" === urlParams.pageType) {
+            $('#run_checkpoint_new').attr('onclick', 'listRunProcess("' + urlParams.id + '","DEBUG")');
+            $('#debug_checkpoint_new').attr('onclick', 'listRunProcess("' + urlParams.id + '")');
+        } else {
+            $('#run_checkpoint_new').attr('onclick', 'runProcess("' + urlParams.id + '","DEBUG")');
+            $('#debug_checkpoint_new').attr('onclick', 'runProcess("' + urlParams.id + '")');
+        }
         initProcessCheckpointIncPageData(pID, parentProcessId);
     });
 </script>
