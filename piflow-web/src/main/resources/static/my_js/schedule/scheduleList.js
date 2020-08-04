@@ -121,7 +121,7 @@ function responseHandlerSchedule(res) {
 }
 
 function schedulePopup(id, titleName) {
-    openLayerWindowLoadUrl(("/page/schedule/schedule_new_or_update.html?openScheduleId=" + id), 580, 520, ('<span style="color: #269252;">' + titleName + '</span>'));
+    openLayerTypeIframeWindowLoadUrl(("/page/schedule/schedule_new_or_update.html?openScheduleId=" + id), 580, 520, ('<span style="color: #269252;">' + titleName + '</span>'));
 }
 
 function checkScheduleInput(scheduleCron, scheduleRunTemplateId, description) {

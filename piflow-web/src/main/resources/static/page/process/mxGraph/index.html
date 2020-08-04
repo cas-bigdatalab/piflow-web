@@ -110,24 +110,6 @@
     </div>
 </div>
 
-<!--checkpoint open window-->
-<div style="display: none;">
-    <div id="layer_open_checkpoint">
-        <div id="checkpointContentNew" style="width: 100%; margin-left: 10px;margin-top: 10px;">
-            No checkpoint information was queried
-            <input type="checkbox" value="">
-        </div>
-        <hr>
-        <div style="text-align: right;">
-            <button id="run_checkpoint_new" type="button" class="btn btn-default" onclick="runProcess()">Submit1
-            </button>
-            <button id="debug_checkpoint_new" type="button" class="btn btn-default" onclick="runProcess('DEBUG')">
-                Submit2
-            </button>
-        </div>
-    </div>
-</div>
-
 <script type="text/javascript" src="/piflow-web/js/ajaxUtils.js"></script>
 <script type="text/javascript" src="/piflow-web/my_js/process/processContent.js"></script>
 <script type="text/javascript" src="/piflow-web/my_js/process/initProcessGraph.js"></script>
@@ -138,7 +120,6 @@
     var loadId = urlParams.load;
     var parentAccessPath = urlParams.parentAccessPath;
     var currentUser = JSON.parse(localStorage.jwtUser);
-
 
     //---------------------------------------------------
     var stdoutLog = "[[${stdoutLog}]]";

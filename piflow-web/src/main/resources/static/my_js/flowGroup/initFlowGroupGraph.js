@@ -798,7 +798,7 @@ function queryFlowOrFlowGroupProperty(pageId, loadId) {
 function getFlowList() {
     var window_width = $(window).width();//Get browser window width
     var window_height = $(window).height();//Get browser window height
-    openLayerWindowLoadUrl("/page/flow/getFlowListImport.html", (window_width / 2), (window_height - 100), "Flows");
+    openLayerTypeIframeWindowLoadUrl("/page/flow/getFlowListImport.html", (window_width / 2), (window_height - 100), "Flows");
 }
 
 // ClickSlider

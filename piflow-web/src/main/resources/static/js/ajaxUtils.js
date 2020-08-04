@@ -129,11 +129,11 @@ function getUrlParams(url) {
     return result;
 }
 
-function openLayerWindowLoadHtml(htmlStr, window_width, window_height, title) {
+function openLayerWindowLoadHtml(htmlStr, window_width, window_height, title, shade) {
     layer.open({
         type: 1,
         title: '<span style="color: #269252;">' + title + '</span>',
-        shade: 0,
+        shade: shade,
         shadeClose: false,
         closeBtn: 1,
         shift: 7,
@@ -143,11 +143,12 @@ function openLayerWindowLoadHtml(htmlStr, window_width, window_height, title) {
     });
 }
 
-function openLayerWindowLoadUrl(url, window_width, window_height, title) {
+function openLayerTypeIframeWindowLoadUrl(url, window_width, window_height, title, shade) {
+    shade = shade ? shade : 0;
     layer.open({
         type: 2,
         title: '<span style="color: #269252;">' + title + '</span>',
-        shade: 0,
+        shade: shade,
         shadeClose: false,
         closeBtn: 1,
         shift: 7,

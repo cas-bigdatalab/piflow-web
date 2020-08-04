@@ -245,14 +245,53 @@ function getCheckpointList(id, processId, parentProcessId, runMode) {
             if (200 === dataMap.code) {
                 var checkpointsSplitArray = dataMap.checkpointsSplit;
                 if (checkpointsSplitArray) {
-                    openLayerWindowLoadUrl(
-                        ("/page/process/inc/process_checkpoint_inc.html?id=" + id + "&pID=" + processId + "&parentProcessId=" + parentProcessId + "&runMode=" + runMode + "&pageType=list"),
-                        500,
-                        300,
-                        "debug");
-                    $('#fullScreen').hide();
+                    var layer_open_checkpoint_top = document.createElement("div");
+                    var layer_open_checkpoint_btn_div = document.createElement("div");
+                    layer_open_checkpoint_btn_div.setAttribute("style", "text-align: right;");
+
+                    var layer_open_checkpoint_btn = document.createElement("div");
+                    layer_open_checkpoint_btn.type = "button";
+                    layer_open_checkpoint_btn.className = "btn btn-default";
+                    layer_open_checkpoint_btn.setAttribute("style", "margin-right: 10px;");
+                    if (runMode && 'DEBUG' === runMode) {
+                        layer_open_checkpoint_btn.textContent = "DEBUG";
+                        layer_open_checkpoint_btn.setAttribute('onclick', 'listRunProcess("' + id + '","DEBUG")')
+                    } else {
+                        layer_open_checkpoint_btn.setAttribute('onclick', 'listRunProcess("' + id + '")');
+                        layer_open_checkpoint_btn.textContent = "RUN"
+                    }
+                    layer_open_checkpoint_btn_div.appendChild(layer_open_checkpoint_btn);
+
+                    var layer_open_checkpoint = document.createElement("div");
+                    layer_open_checkpoint.id = "checkpointsContentDiv";
+
+                    for (var i = 0; i < checkpointsSplitArray.length; i++) {
+                        var checkpoints_content_span = document.createElement("span");
+
+                        var checkpoints_content_span_input = document.createElement("input");
+                        checkpoints_content_span_input.type = "checkbox";
+                        checkpoints_content_span_input.value = "'" + checkpointsSplitArray[i] + "'";
+
+                        var checkpoints_content_span_span = document.createElement("span");
+                        checkpoints_content_span_span.textContent = checkpointsSplitArray[i];
+
+                        var checkpoints_content_span_br = document.createElement("br");
+
+                        checkpoints_content_span.appendChild(checkpoints_content_span_input);
+                        checkpoints_content_span.appendChild(checkpoints_content_span_span);
+                        checkpoints_content_span.appendChild(checkpoints_content_span_br);
+
+                        layer_open_checkpoint.appendChild(checkpoints_content_span);
+
+                    }
+
+                    layer_open_checkpoint_top.appendChild(layer_open_checkpoint);
+                    layer_open_checkpoint_top.appendChild(layer_open_checkpoint_btn_div);
+
+                    openLayerWindowLoadHtml(layer_open_checkpoint_top.outerHTML, 500, 300, "Checkpoint", 0.3);
+                    //$('#fullScreen').hide();
                 } else {
-                    listRunProcess(id, runMode);
+                    listRunProcess(processId, runMode);
                 }
             }
         }

@@ -184,7 +184,7 @@ function queryProcessPath(processId, pageId) {
 
 //  Get Checkpoint points
 function getCheckpoint(pID, parentProcessId, processId, runMode) {
-    fullScreen.show();
+    $('#fullScreen').show();
     ajaxRequest({
         cache: true,//Keep cached data
         type: "get",//Request for get
@@ -204,11 +204,50 @@ function getCheckpoint(pID, parentProcessId, processId, runMode) {
             if (200 === dataMap.code) {
                 var checkpointsSplitArray = dataMap.checkpointsSplit;
                 if (checkpointsSplitArray) {
-                    openLayerWindowLoadUrl(
-                        ("/page/process/inc/process_checkpoint_inc.html?id=" + processId + "&pID=" + pID + "&parentProcessId=" + parentProcessId + "&runMode=" + runMode),
-                        500,
-                        300,
-                        "debug");
+                    var layer_open_checkpoint_top = document.createElement("div");
+                    var layer_open_checkpoint_btn_div = document.createElement("div");
+                    layer_open_checkpoint_btn_div.setAttribute("style", "text-align: right;");
+
+                    var layer_open_checkpoint_btn = document.createElement("div");
+                    layer_open_checkpoint_btn.type = "button";
+                    layer_open_checkpoint_btn.className = "btn btn-default";
+                    layer_open_checkpoint_btn.setAttribute("style", "margin-right: 10px;");
+                    if (runMode && 'DEBUG' === runMode) {
+                        layer_open_checkpoint_btn.textContent = "DEBUG";
+                        layer_open_checkpoint_btn.setAttribute('onclick', 'runProcess("' + processId + '","DEBUG")')
+                    } else {
+                        layer_open_checkpoint_btn.setAttribute('onclick', 'runProcess("' + processId + '")');
+                        layer_open_checkpoint_btn.textContent = "RUN"
+                    }
+                    layer_open_checkpoint_btn_div.appendChild(layer_open_checkpoint_btn);
+
+                    var layer_open_checkpoint = document.createElement("div");
+                    layer_open_checkpoint.id = "checkpointsContentDiv";
+
+                    for (var i = 0; i < checkpointsSplitArray.length; i++) {
+                        var checkpoints_content_span = document.createElement("span");
+
+                        var checkpoints_content_span_input = document.createElement("input");
+                        checkpoints_content_span_input.type = "checkbox";
+                        checkpoints_content_span_input.value = "'" + checkpointsSplitArray[i] + "'";
+
+                        var checkpoints_content_span_span = document.createElement("span");
+                        checkpoints_content_span_span.textContent = checkpointsSplitArray[i];
+
+                        var checkpoints_content_span_br = document.createElement("br");
+
+                        checkpoints_content_span.appendChild(checkpoints_content_span_input);
+                        checkpoints_content_span.appendChild(checkpoints_content_span_span);
+                        checkpoints_content_span.appendChild(checkpoints_content_span_br);
+
+                        layer_open_checkpoint.appendChild(checkpoints_content_span);
+
+                    }
+
+                    layer_open_checkpoint_top.appendChild(layer_open_checkpoint);
+                    layer_open_checkpoint_top.appendChild(layer_open_checkpoint_btn_div);
+
+                    openLayerWindowLoadHtml(layer_open_checkpoint_top.outerHTML, 500, 300, "Checkpoint", 0.3);
                     $('#fullScreen').hide();
                 } else {
                     runProcess(processId, runMode);
@@ -221,14 +260,13 @@ function getCheckpoint(pID, parentProcessId, processId, runMode) {
 
 function cancelRunProcess() {
     checkpointShow.modal('hide');
-    fullScreen.hide();
+    $('#fullScreen').hide();
     return;
 }
 
 //run
 function runProcess(processId, runMode) {
-    fullScreen.show();
-    checkpointShow.modal('hide');
+    $('#fullScreen').show();
     runFlowBtn.hide();
     debugFlowBtn.hide();
     var checkpointStr = '';
@@ -257,7 +295,7 @@ function runProcess(processId, runMode) {
             debugFlowBtn.show();
             //alert("Request Failed");
             layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000});
-            fullScreen.hide();
+            $('#fullScreen').hide();
             return;
         },
         success: function (data) {//Operation after request successful
@@ -272,7 +310,7 @@ function runProcess(processId, runMode) {
                 layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
                 runFlowBtn.show();
                 debugFlowBtn.show();
-                fullScreen.hide();
+                $('#fullScreen').hide();
             }
 
         }
@@ -282,7 +320,7 @@ function runProcess(processId, runMode) {
 //stop
 function stopProcess() {
     stopFlowBtn.hide();
-    fullScreen.show();
+    $('#fullScreen').show();
     ajaxRequest({
         cache: true,//Keep cached data
         type: "POST",//Request type post
@@ -296,7 +334,7 @@ function stopProcess() {
             stopFlow.show();
             //alert("Request Failed");
             layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000});
-            fullScreen.hide();
+            $('#fullScreen').hide();
             return;
         },
         success: function (data) {//Operation after request successful
@@ -312,7 +350,7 @@ function stopProcess() {
                 layer.msg("Stop Failed", {icon: 2, shade: 0, time: 2000});
                 stopFlow.show();
             }
-            fullScreen.hide();
+            $('#fullScreen').hide();
         }
     });
 }
