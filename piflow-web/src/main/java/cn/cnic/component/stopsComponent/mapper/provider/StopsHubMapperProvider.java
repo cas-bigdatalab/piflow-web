@@ -1,4 +1,4 @@
-package cn.cnic.component.stopsComponent.mapper;
+package cn.cnic.component.stopsComponent.mapper.provider;
 
 import cn.cnic.base.util.DateUtils;
 import cn.cnic.base.util.SqlUtils;

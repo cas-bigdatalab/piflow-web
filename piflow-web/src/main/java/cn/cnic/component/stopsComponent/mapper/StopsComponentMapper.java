@@ -74,7 +74,7 @@ public interface StopsComponentMapper {
      * @param bundle
      * @return
      */
-    @Select("select fst.* from flow_stops_template fst where fst.bundel=#{bundle}")
+    @Select("select fst.* from flow_stops_template fst where fst.bundel=#{bundle} and enable_flag=1")
     @Results({@Result(id = true, column = "id", property = "id"),
             @Result(column = "id", property = "properties", many = @Many(select = "cn.cnic.component.stopsComponent.mapper.StopsComponentPropertyMapper.getStopsComponentPropertyByStopsId", fetchType = FetchType.LAZY))
 

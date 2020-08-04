@@ -13,6 +13,7 @@ import cn.cnic.component.stopsComponent.model.StopsComponentGroup;
 import cn.cnic.component.stopsComponent.model.StopsHub;
 import cn.cnic.component.stopsComponent.service.IStopsHubService;
 import cn.cnic.component.stopsComponent.transactional.StopsComponentGroupTransactional;
+import cn.cnic.component.stopsComponent.transactional.StopsComponentTransactional;
 import cn.cnic.component.stopsComponent.utils.StopsComponentGroupUtils;
 import cn.cnic.component.stopsComponent.utils.StopsComponentUtils;
 import cn.cnic.component.stopsComponent.utils.StopsHubUtils;
@@ -48,6 +49,9 @@ public class StopsHubServiceImpl implements IStopsHubService {
 
     @Resource
     private StopsComponentGroupTransactional stopsComponentGroupTransactional;
+
+    @Resource
+    private StopsComponentTransactional stopsComponentTransactional;
 
 
 
@@ -103,7 +107,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
         stopsHub.setLastUpdateDttm(new Date());
         stopsHubMapper.updateStopHub(stopsHub);
 
-        //TODO: add stops and groups into db,
+        //TODO: add stops and groups into db
         List<ThirdStopsComponentVo> stops = stopsHubVo.getStops();
         List<String> groupNameList = new ArrayList<>();
         Map<String, StopsComponentGroup> stopsComponentGroupMap = new HashMap<>();
@@ -132,14 +136,15 @@ public class StopsHubServiceImpl implements IStopsHubService {
             }
 
             //add stop into db
-            StopsComponent stopsComponent = stopsComponentMapper.getStopsComponentByBundle(s.getBundle());
             List<StopsComponentGroup> stopGroupByName = new ArrayList<>();
+            for (String groupName : stopGroupNameList){
+                stopGroupByName.add(stopsComponentGroupMap.get(groupName));
+            }
+            StopsComponent stopsComponent = stopsComponentMapper.getStopsComponentByBundle(s.getBundle());
             if(stopsComponent == null){
-                for (String groupName : stopGroupNameList){
-                    stopGroupByName.add(stopsComponentGroupMap.get(groupName));
-                }
                 stopsComponent = StopsComponentUtils.thirdStopsComponentVoToStopsTemplate(username, s, stopGroupByName);
-                stopsComponentMapper.insertStopsComponent(stopsComponent);
+                stopsComponentTransactional.addStopsComponentAndChildren(stopsComponent);
+                //stopsComponentMapper.insertStopsComponent(stopsComponent);
 
             }else{//update stop group
                 //stopsComponent.setStopGroupList(stopGroupByName);
@@ -147,6 +152,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
             }
             //add stop and group relationship
             for(StopsComponentGroup sGroup : stopGroupByName){
+                stopsComponentGroupMapper.deleteGroupCorrelationById(sGroup.getId(), stopsComponent.getId());
                 stopsComponentGroupMapper.insertAssociationGroupsStopsTemplate(sGroup.getId(), stopsComponent.getId());
             }
 

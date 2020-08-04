@@ -73,6 +73,11 @@ public interface StopsComponentGroupMapper {
     @Delete("delete from association_groups_stops_template")
     int deleteGroupCorrelation();
 
+
+    @Delete("delete from association_groups_stops_template where groups_id =#{groups_id},stops_template_id = #{stops_template_id}")
+    int deleteGroupCorrelationById(@Param("groups_id") String stopGroupId, @Param("stops_template_id") String stopsTemplateId);
+
+
     @Delete("delete from flow_stops_groups")
     int deleteGroup();
 
