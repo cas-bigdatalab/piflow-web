@@ -1,6 +1,7 @@
 package cn.cnic.component.flow.mapper;
 
 import cn.cnic.component.flow.entity.Paths;
+import cn.cnic.component.flow.mapper.provider.PathsMapperProvider;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
 

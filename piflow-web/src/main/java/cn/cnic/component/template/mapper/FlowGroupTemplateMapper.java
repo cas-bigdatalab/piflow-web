@@ -1,5 +1,6 @@
 package cn.cnic.component.template.mapper;
 
+import cn.cnic.component.template.mapper.provider.FlowGroupTemplateMapperProvider;
 import cn.cnic.component.template.vo.FlowGroupTemplateVo;
 import org.apache.ibatis.annotations.*;
 

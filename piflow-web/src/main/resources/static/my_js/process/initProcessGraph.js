@@ -8,7 +8,7 @@ var nodeArr, xmlDate, parentsId, processType, processGroupId, parentProcessId, p
 
 var web_baseUrl = "/piflow-web";
 
-function initCrumbs(parentAccessPath) {
+function initProcessCrumbs(parentAccessPath) {
     if (parentAccessPath) {
         switch (parentAccessPath) {
             case "flow":
@@ -67,10 +67,10 @@ function initProcessDrawingBoardData(loadId, parentAccessPath, backFunc) {
             } else {
                 //window.location.href = (web_baseUrl + "/error/404");
             }
-            $('#fullScreen').hide();
             if (backFunc && $.isFunction(backFunc)) {
                 backFunc(data);
             }
+            $('#fullScreen').hide();
         }
     });
 }

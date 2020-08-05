@@ -1,6 +1,7 @@
 package cn.cnic.component.dataSource.mapper;
 
 import cn.cnic.component.dataSource.entity.DataSource;
+import cn.cnic.component.dataSource.mapper.provider.DataSourceMapperProvider;
 import cn.cnic.component.dataSource.vo.DataSourceVo;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;

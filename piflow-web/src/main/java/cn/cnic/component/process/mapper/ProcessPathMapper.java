@@ -1,6 +1,7 @@
 package cn.cnic.component.process.mapper;
 
 import cn.cnic.component.process.entity.ProcessPath;
+import cn.cnic.component.process.mapper.provider.ProcessPathMapperProvider;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;

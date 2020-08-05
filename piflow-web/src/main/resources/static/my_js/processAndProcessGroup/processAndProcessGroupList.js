@@ -8,7 +8,7 @@ function initProcessAndProcessGroupDatatablePage(testTableId, url, searchInputId
         //Method-level rendering
         table.render({
             elem: '#' + testTableId
-            , url: web_header_prefix + url
+            , url: (web_header_prefix + url)
             , headers: {
                 Authorization: ("Bearer " + token)
             }
@@ -252,9 +252,9 @@ function runProcessOrProcessGroup(processType, id, runMode) {
             if (200 === dataMap.code) {
                 //alert(dataMap.errorMsg);
                 window.location.reload();
-                var openUrl = "/piflow-web/page/process/drawingBoard?drawingBoardType=PROCESS&processType=PROCESS_GROUP&load=" + dataMap.processGroupId;
+                var openUrl = "/piflow-web/page/processGroup/mxGraph/index.html?drawingBoardType=PROCESS&processType=PROCESS_GROUP&load=" + dataMap.processGroupId;
                 if ("PROCESS" === processType) {
-                    openUrl = "/piflow-web/page/process/drawingBoard?drawingBoardType=PROCESS&processType=PROCESS&load=" + dataMap.processId;
+                    openUrl = "/piflow-web/page/process/mxGraph/index.html?drawingBoardType=PROCESS&processType=PROCESS&load=" + dataMap.processId;
                 }
                 var windowOpen = window.open(openUrl);
                 if (windowOpen == null || typeof (windowOpen) == 'undefined') {
@@ -331,8 +331,8 @@ function openProcessOrProcessGroup(loadId, processType) {
     console.log("ssss");
     console.log(processType);
     if ("PROCESS" === processType) {
-        new_window_open('/page/process/drawingBoard?drawingBoardType=PROCESS&processType=' + processType + '&load=' + loadId);
+        new_window_open('/page/process/mxGraph/index.html?drawingBoardType=PROCESS&processType=' + processType + '&load=' + loadId);
     } else if ("PROCESS_GROUP" === processType) {
-        new_window_open('/page/processGroup/drawingBoard?drawingBoardType=PROCESS&processType=' + processType + '&load=' + loadId);
+        new_window_open('/page/processGroup/mxGraph/index.html?drawingBoardType=PROCESS&processType=' + processType + '&load=' + loadId);
     }
 }

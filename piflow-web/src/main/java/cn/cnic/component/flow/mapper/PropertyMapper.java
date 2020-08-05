@@ -2,6 +2,7 @@ package cn.cnic.component.flow.mapper;
 
 import cn.cnic.component.flow.entity.Property;
 import cn.cnic.component.flow.entity.Stops;
+import cn.cnic.component.flow.mapper.provider.PropertyMapperProvider;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
 

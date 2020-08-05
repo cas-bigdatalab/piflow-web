@@ -8,7 +8,10 @@ function initProcessGroupDatatablePage(testTableId, url, searchInputId) {
         //Method-level rendering
         table.render({
             elem: '#' + testTableId
-            , url: url
+            , url: (web_header_prefix + url)
+            , headers: {
+                Authorization: ("Bearer " + token)
+            }
             , cols: [[
                 {
                     field: 'appId', title: 'ProcessId', sort: true, templet: function (data) {

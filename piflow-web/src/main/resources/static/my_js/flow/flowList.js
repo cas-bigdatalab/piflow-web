@@ -65,7 +65,7 @@ function searchMonitor(layui_table, layui_table_id, searchInputId) {
 function responseHandlerFlow(res) {
     if (res) {
         var openHtmlStr = '<a class="btn" ' +
-            'href="/piflow-web/page/flow/drawingBoard?drawingBoardType=TASK&load=' + res.id + '"' +
+            'href="/piflow-web/page/flow/mxGraph/index.html?drawingBoardType=TASK&load=' + res.id + '"' +
             'target="_blank" ' +
             'style="margin-right: 2px;">' +
             '<i class="icon-share-alt icon-white"></i>' +

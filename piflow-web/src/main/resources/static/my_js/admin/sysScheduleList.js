@@ -1,4 +1,4 @@
-function initDatatableSchedulePage(testTableId, url, searchInputId) {
+function initDatatableSysSchedulePage(testTableId, url, searchInputId) {
     var table = "";
     layui.use('table', function () {
         table = layui.table;
@@ -23,7 +23,7 @@ function initDatatableSchedulePage(testTableId, url, searchInputId) {
                 {field: 'crtDttmString', title: 'CreateTime', sort: true},
                 {
                     field: 'right', title: 'Actions', sort: true, height: 100, templet: function (data) {
-                        return responseHandlerSchedule(data);
+                        return responseHandlerSysSchedule(data);
                     }
                 }
             ]]
@@ -49,7 +49,7 @@ function initDatatableSchedulePage(testTableId, url, searchInputId) {
 
 
 //Results returned in the background
-function responseHandlerSchedule(res) {
+function responseHandlerSysSchedule(res) {
     var actionsHtmlStr = "";
     if (res) {
         var actions_btn_1 = '<a class="btn" '
@@ -90,7 +90,7 @@ function responseHandlerSchedule(res) {
         var actions_btn_6 = '<a class="btn" '
             + 'title="Edit this timed task" '
             + 'href="javascript:void(0);" '
-            + 'onclick="javascript:newScheduleWindow(\'' + res.id + '\');" '
+            + 'onclick="javascript:newSysScheduleWindow(\'' + res.id + '\');" '
             + 'style="margin-right: 2px;">'
             + '<i class="icon-edit icon-white"></i>'
             + '</a>';
@@ -121,8 +121,8 @@ function responseHandlerSchedule(res) {
     return actionsHtmlStr;
 }
 
-function newScheduleWindow(id) {
-    $("#buttonSchedule").attr("onclick", "");
+function newSysScheduleWindow(id) {
+    $("#buttonSysSchedule").attr("onclick", "");
     if (id) {
         ajaxRequest({
             cache: true,//Keep cached data
@@ -140,7 +140,7 @@ function newScheduleWindow(id) {
                 if (200 === dataMap.code) {
                     console.log(dataMap);
                     var sysScheduleVo = dataMap.sysScheduleVo;
-                    $("#buttonSchedule").attr("onclick", "updateSchedule()");
+                    $("#buttonSysSchedule").attr("onclick", "updateSysSchedule()");
                     $("#scheduleId").val(id);
                     $("#scheduleName").val(sysScheduleVo.jobName);
                     $("#scheduleClass").val(sysScheduleVo.jobClass);
@@ -162,7 +162,7 @@ function newScheduleWindow(id) {
             }
         });
     } else {
-        $("#buttonSchedule").attr("onclick", "createTask()");
+        $("#buttonSysSchedule").attr("onclick", "createTask()");
         $("#scheduleId").val("");
         $("#scheduleName").val("");
         $("#scheduleClass").val("");
@@ -180,7 +180,7 @@ function newScheduleWindow(id) {
     }
 }
 
-function checkScheduleInput(scheduleName, scheduleClass, scheduleCron, description) {
+function checkSysScheduleInput(scheduleName, scheduleClass, scheduleCron, description) {
     $('#scheduleName').removeClass('error_class');
     $('#scheduleClass').removeClass('error_class');
     $('#scheduleCron').removeClass('error_class');
@@ -211,7 +211,7 @@ function createTask() {
     var scheduleName = $("#scheduleName").val();
     var scheduleClass = $("#scheduleClass").val();
     var scheduleCron = $("#scheduleCron").val();
-    if (checkScheduleInput(scheduleName, scheduleClass, scheduleCron))
+    if (checkSysScheduleInput(scheduleName, scheduleClass, scheduleCron))
         ajaxRequest({
             cache: true,//Keep cached data
             type: "get",//Request type post
@@ -241,13 +241,13 @@ function createTask() {
         });
 }
 
-function updateSchedule() {
+function updateSysSchedule() {
     var id = $("#scheduleId").val();
     var scheduleName = $("#scheduleName").val();
     var scheduleClass = $("#scheduleClass").val();
     var scheduleCron = $("#scheduleCron").val();
 
-    if (checkScheduleInput(scheduleName, scheduleClass, scheduleCron))
+    if (checkSysScheduleInput(scheduleName, scheduleClass, scheduleCron))
         ajaxRequest({
             cache: true,//Keep cached data
             type: "get",//Request type post

@@ -18,7 +18,7 @@ import cn.cnic.component.stopsComponent.transactional.StopsComponentTransactiona
 import cn.cnic.component.stopsComponent.utils.StopsComponentGroupUtils;
 import cn.cnic.component.stopsComponent.utils.StopsComponentUtils;
 import cn.cnic.component.system.entity.SysInitRecords;
-import cn.cnic.component.system.mapper.provider.SysInitRecordsMapper;
+import cn.cnic.component.system.mapper.SysInitRecordsMapper;
 import cn.cnic.component.system.service.ISysInitRecordsService;
 import cn.cnic.component.system.jpa.domain.SysInitRecordsDomain;
 import cn.cnic.component.flow.mapper.PropertyMapper;

@@ -2,6 +2,7 @@ package cn.cnic.component.process.mapper;
 
 import cn.cnic.component.process.entity.ProcessGroupPath;
 import cn.cnic.component.process.entity.ProcessPath;
+import cn.cnic.component.process.mapper.provider.ProcessGroupPathMapperProvider;
 import org.apache.ibatis.annotations.*;
 
 @Mapper

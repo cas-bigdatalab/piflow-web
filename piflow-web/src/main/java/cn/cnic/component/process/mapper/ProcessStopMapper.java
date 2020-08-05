@@ -1,6 +1,7 @@
 package cn.cnic.component.process.mapper;
 
 import cn.cnic.component.process.entity.ProcessStop;
+import cn.cnic.component.process.mapper.provider.ProcessStopMapperProvider;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
 

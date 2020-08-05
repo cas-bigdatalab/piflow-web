@@ -1,0 +1,99 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- content starts -->
+<div class="wrapper" style="margin: 20px;">
+
+    <!-- Media datatable -->
+    <div class="widget">
+        <div class="navbar">
+            <div class="navbar-inner">
+                <h6 style="color: #1A7444">Schedules</h6>
+                <div class="btn-position" style="float: right;margin-right: 8px">
+                    <a class='btn' href='javascript:void(0);' onclick="newSysScheduleWindow();"
+                       style='background-color: #C0C0C0;border: 1px solid;color: #21794c;' title="create schedule">
+                        <i class='icon-plus-sign icon-white'></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="navbar">
+<!--            <a class='btn' href='javascript:void(0);' onclick="newSysScheduleWindow();"-->
+<!--               style='background-color: #C0C0C0;border: 1px solid;color: #21794c;' title="create schedule">-->
+<!--                <i class='icon-plus-sign icon-white'></i>-->
+<!--            </a>-->
+            <div class="demoTable">
+                <div style="margin-top: 6px">
+<!--                    Search:-->
+                    <div class="layui-inline">
+                        <i class="fa fa-search fa-2x" style="position:absolute;top:8px ;left:8px;font-size:18px"></i>
+                        <input class="layui-input" name="param" id="search_input_id" autocomplete="off" style="padding-left:30px">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="table-overflow">
+            <table class="layui-hide" id="scheduleTableId" lay-filter="user"></table>
+        </div>
+    </div>
+    <!-- /media datatable -->
+</div>
+<!-- content ends -->
+
+<div style="display: none;" id="SubmitPage">
+    <br>
+    <form class="layui-form" action="">
+        <div class="layui-form-item">
+            <label class="layui-form-label">Name</label>
+            <div class="layui-input-block">
+                <input type="hidden" id="scheduleId"/>
+                <input id="scheduleName"
+                       autocomplete="off"
+                       class="layui-input"
+                       style="width: 400px;margin-left: 20px;"
+                       placeholder="please input scheduleName..."/>
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">Class</label>
+            <div class="layui-input-block">
+                <input id="scheduleClass"
+                       cautocomplete="off"
+                       class="layui-input"
+                       style="width: 400px;margin-left: 20px;"
+                       placeholder="please input class path..."/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">Cron</label>
+            <div class="layui-input-block">
+                <input id="scheduleCron"
+                       autocomplete="off"
+                       class="layui-input"
+                       style="width: 400px;margin-left: 20px;"
+                       placeholder="please input cron expression..."/>
+            </div>
+        </div>
+        <div class="layui-form-item" style="text-align: center;margin-right: 90px;">
+            <div class="layui-input-block">
+                <button type="button" class="layui-btn layui-btn-primary" onclick='saveFlow()'
+                        style="color: #ffffff;background-color: #2f7600;border-color: #2f7600;" id="buttonSysSchedule">
+                    Submit
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script src="/piflow-web/my_js/admin/sysScheduleList.js"></script>
+<script type="text/javascript">
+    initDatatableSysSchedulePage('scheduleTableId', "/sysSchedule/getScheduleListPage", "search_input_id");
+    /*$(document).ready(function () {
+
+    });*/
+
+    //@ sourceURL=table_right.js
+</script>
+</body>
+</html>

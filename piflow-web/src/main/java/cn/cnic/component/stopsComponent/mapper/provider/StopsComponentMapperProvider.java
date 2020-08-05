@@ -119,4 +119,5 @@ public class StopsComponentMapperProvider {
         this.reset();
         return strBuf.toString() + ";";
     }
+
 }

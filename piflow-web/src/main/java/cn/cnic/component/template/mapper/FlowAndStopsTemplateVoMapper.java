@@ -2,6 +2,7 @@ package cn.cnic.component.template.mapper;
 
 import cn.cnic.component.template.entity.PropertyTemplateModel;
 import cn.cnic.component.template.entity.StopTemplateModel;
+import cn.cnic.component.template.mapper.provider.FlowAndStopsTemplateVoMapperProvider;
 import cn.cnic.component.template.vo.FlowTemplateModelVo;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;

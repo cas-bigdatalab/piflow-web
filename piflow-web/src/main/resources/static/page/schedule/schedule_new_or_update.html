@@ -1,0 +1,73 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<body>
+<head>
+    <link rel="stylesheet" type="text/css" href="/piflow-web/components/layui/css/layui.css"/>
+    <script type="text/javascript" src="/piflow-web/js/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/piflow-web/js/ajaxUtils.js"></script>
+    <script type="text/javascript" src="/piflow-web/components/layui/layui.all.js"></script>
+</head>
+<div>
+    <br>
+    <form class="layui-form" action="">
+        <input type="hidden" id="scheduleId"/>
+        <div class="layui-form-item">
+            <label class="layui-form-label">Type</label>
+            <div class="layui-input-block">
+                <select id="schedule_type" style="width: 400px; height: 36px; margin-left: 20px;display: block;" onchange="loadFlowOrGroupSelect()">
+                    <option value="FLOW">Flow</option>
+                    <option value="FLOW_GROUP">FlowGroup</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">Cron</label>
+            <div class="layui-input-block">
+                <input id="schedule_cron"
+                       autocomplete="off"
+                       class="layui-input"
+                       style="width: 400px;margin-left: 20px;"
+                       placeholder="please input cron expression..."/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">Flow Or Group</label>
+            <div class="layui-input-block">
+                <select id="schedule_class" style="width: 400px; height: 36px; margin: 20px; display: block;">
+                    <option value="">Please select</option>
+                </select>
+            </div>
+        </div>
+        <!--
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">Flow Or Group</label>
+            <div class="layui-input-block">
+                <input cautocomplete="off"
+                       class="layui-input"
+                       style="width: 400px;margin-left: 20px;"
+                       placeholder="please input class path..."/>
+            </div>
+        </div>
+        -->
+        <div class="layui-form-item" style="text-align: center;margin-right: 90px;">
+            <div class="layui-input-block">
+                <button type="button" class="layui-btn layui-btn-primary"
+                        style="color: #ffffff;background-color: #2f7600;border-color: #2f7600;" id="buttonSchedule">
+                    Submit
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript" src="/piflow-web/my_js/schedule/scheduleList.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        onloadScheduleInfoHtmlDate();
+        loadFlowOrGroupSelect();
+    });
+
+    //@ sourceURL=table_right.js
+</script>
+</body>
+</html>

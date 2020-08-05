@@ -34,4 +34,7 @@ public interface StopsComponentPropertyMapper {
     @Delete("delete from flow_stops_property_template")
     int deleteStopsComponentProperty();
 
+    @Delete("delete from flow_stops_property_template where fk_stops_id = #{fk_stops_id}")
+    int deleteStopsComponentPropertyByStopId(@Param("fk_stops_id") String stopId);
+
 }

@@ -1,6 +1,7 @@
 package cn.cnic.component.mxGraph.mapper;
 
 import cn.cnic.component.mxGraph.entity.MxCell;
+import cn.cnic.component.mxGraph.mapper.provider.MxCellMapperProvider;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
 

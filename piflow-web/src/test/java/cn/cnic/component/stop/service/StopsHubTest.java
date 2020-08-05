@@ -26,7 +26,6 @@ public class StopsHubTest extends ApplicationTests {
     public void testUnMountStopsHub() {
         String result = stopsHubServiceImpl.unmountStopsHub("Nature", true, "222");
         System.out.println(result);
-
     }
 
 }

@@ -96,7 +96,7 @@ function responseActionsFlow(res) {
 }
 
 function openFlowGroup(flowGroupId) {
-    var windowOpen = window.open('/piflow-web/page/flowGroup/drawingBoard?drawingBoardType=GROUP&load=' + flowGroupId + '');
+    var windowOpen = window.open('/piflow-web/page/flowGroup/mxGraph/index.html?drawingBoardType=GROUP&load=' + flowGroupId + '');
     if (windowOpen == null || typeof (windowOpen) == 'undefined') {
         alert('The window cannot be opened. Please check your browser settings.')
     }

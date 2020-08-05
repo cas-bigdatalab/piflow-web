@@ -77,9 +77,14 @@ function ajaxRequest(param) {
 };
 
 function ajaxLoad(elementId, requestUrl, backFunc, errBackFunc) {
+    ajaxLoadAsync(elementId, requestUrl, true, backFunc, errBackFunc);
+}
+
+function ajaxLoadAsync(elementId, requestUrl, async, backFunc, errBackFunc) {
+    async = (async === undefined) ? true : async;
     $.ajax({
         type: "GET",
-        async: true,
+        async: async,
         url: web_header_prefix + requestUrl,
         headers: {
             Authorization: ("Bearer " + token)
@@ -111,6 +116,17 @@ function ajaxLoad(elementId, requestUrl, backFunc, errBackFunc) {
     // }
 }
 
+function ajaxFun(config) {
+    if (config) {
+        config.headers = {
+            Authorization: ("Bearer " + token)
+        };
+    } else {
+        console.log("ajax config error");
+        layer.msg("ajax config error", {icon: 2, shade: 0, time: 2000});
+    }
+}
+
 function getUrlParams(url) {
     var result = new Object();
     var idx = url.lastIndexOf('?');
@@ -129,11 +145,11 @@ function getUrlParams(url) {
     return result;
 }
 
-function openLayerWindowLoadHtml(htmlStr, window_width, window_height, title) {
+function openLayerWindowLoadHtml(htmlStr, window_width, window_height, title, shade) {
     layer.open({
         type: 1,
         title: '<span style="color: #269252;">' + title + '</span>',
-        shade: 0,
+        shade: shade,
         shadeClose: false,
         closeBtn: 1,
         shift: 7,
@@ -143,11 +159,12 @@ function openLayerWindowLoadHtml(htmlStr, window_width, window_height, title) {
     });
 }
 
-function openLayerWindowLoadUrl(url, window_width, window_height, title) {
+function openLayerTypeIframeWindowLoadUrl(url, window_width, window_height, title, shade) {
+    shade = shade ? shade : 0;
     layer.open({
         type: 2,
         title: '<span style="color: #269252;">' + title + '</span>',
-        shade: 0,
+        shade: shade,
         shadeClose: false,
         closeBtn: 1,
         shift: 7,
