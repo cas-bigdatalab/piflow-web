@@ -8,7 +8,7 @@ var nodeArr, xmlDate, parentsId, processType, processGroupId, parentProcessId, p
 
 var web_baseUrl = "/piflow-web";
 
-function initCrumbs(parentAccessPath) {
+function initProcessCrumbs(parentAccessPath) {
     if (parentAccessPath) {
         switch (parentAccessPath) {
             case "flow":
@@ -40,7 +40,7 @@ function initProcessDrawingBoardData(loadId, parentAccessPath, backFunc) {
             loadId: loadId,
             parentAccessPath: parentAccessPath
         },
-        async: false,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
+        async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
         error: function (request) {//Operation after request failure
             // window.location.href = (web_baseUrl + "/error/404");
             return;
@@ -67,10 +67,10 @@ function initProcessDrawingBoardData(loadId, parentAccessPath, backFunc) {
             } else {
                 //window.location.href = (web_baseUrl + "/error/404");
             }
-            $('#fullScreen').hide();
             if (backFunc && $.isFunction(backFunc)) {
                 backFunc(data);
             }
+            $('#fullScreen').hide();
         }
     });
 }

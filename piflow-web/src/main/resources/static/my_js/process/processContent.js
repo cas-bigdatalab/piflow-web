@@ -1,23 +1,17 @@
-var fullScreen = $('#fullScreen');
-var runFlowBtn = $('#runFlow');
-var debugFlowBtn = $('#debugFlow');
-var stopFlowBtn = $('#stopFlow');
-var processContent = $('#processContent');
-var checkpointShow = $('#checkpointShow');
 var isLoadProcessInfo = true;
 var isEnd = false;
 
 function initProcessContentPage(nodeArr) {
-    if (runFlowBtn) {
+    if ($('#runFlow')) {
         if ("COMPLETED" !== processState && "FAILED" !== processState && "KILLED" !== processState) {
-            runFlowBtn.hide();
-            debugFlowBtn.hide();
-            stopFlowBtn.show();
+            $('#runFlow').hide();
+            $('#debugFlow').hide();
+            $('#stopFlow').show();
             timer = window.setInterval("processMonitoring(appId)", 5000);
         } else {
-            runFlowBtn.show();
-            debugFlowBtn.show();
-            stopFlowBtn.hide();
+            $('#runFlow').show();
+            $('#debugFlow').show();
+            $('#stopFlow').hide();
         }
     }
     if (nodeArr && '' != nodeArr) {
@@ -26,160 +20,6 @@ function initProcessContentPage(nodeArr) {
             monitor(processStopVoInit.pageId, processStopVoInit.state);
         }
     }
-}
-
-function selectedFormation(pageId, e) {
-    if (isLoadProcessInfo) {
-        isLoadProcessInfo = false;
-    }
-    if (e && pageId) {
-        var selectedRectShow = $('#selectedRectShow');
-        if (selectedRectShow) {
-            var imgStyleX = 0;
-            var imgStyleY = 0;
-            var imgStyleWidth = 66;
-            var imgStyleHeight = 66;
-            if (e) {
-                var selectedStop = $(e).find('#stopImg' + pageId);
-                imgStyleX = $(selectedStop).attr('x');
-                imgStyleY = $(selectedStop).attr('y');
-                imgStyleWidth = $(selectedStop).attr('width');
-                imgStyleHeight = $(selectedStop).attr('height');
-            }
-            selectedRectShow.attr('x', imgStyleX).attr('y', imgStyleY).attr('width', imgStyleWidth).attr('height', imgStyleHeight);
-        }
-        queryProcessStop(processId, pageId);
-    } else {
-        //alert("Necessary position parameters were not obtained");
-        layer.msg("Necessary position parameters were not obtained", {icon: 2, shade: 0, time: 2000});
-    }
-}
-
-function selectedPath(pageId, e) {
-    if (isLoadProcessInfo) {
-        isLoadProcessInfo = false;
-    }
-    if (pageId) {
-        var selectedPathShow = $('#selectedPathShow');
-        var selectedArrowShow = $('#selectedArrowShow');
-        var pathStyleD = 'M 0 0 L 0 0';
-        var arrowStyleD = 'M 0 0 L 0 0 L 0 0 L 0 0 Z';
-        //var paths = $(e).find('path[name="arrowName"]');
-        if (e) {
-            pathStyleD = $(e).find('path[name="arrowName"]').attr("d");
-            arrowStyleD = $(e).find('path[name="pathName"]').attr("d");
-        }
-        if (selectedPathShow) {
-            selectedPathShow.attr('d', pathStyleD);
-            selectedArrowShow.attr('d', arrowStyleD);
-            selectedPathShow.show();
-            selectedArrowShow.show();
-            //selectedPolygonShow.attr('x', x).attr('y', y).attr('width', width).attr('height', height);
-        }
-        queryProcessPath(processId, pageId);
-    } else {
-        //alert("The necessary position parameters are not obtained");
-        layer.msg("Necessary position parameters were not obtained", {icon: 2, shade: 0, time: 2000});
-    }
-}
-
-// Query process basic information
-function queryProcess(processId) {
-    if (!isLoadProcessInfo) {
-        isLoadProcessInfo = true;
-    } else {
-        if (!processId || '' === processId || 'null' === processId || 'NULL' === processId) {
-            //alert("Id is empty, not obtained, please check!!");
-            layer.msg("Id is empty, not obtained, please check!!", {icon: 2, shade: 0, time: 2000});
-        } else {
-            ajaxRequest({
-                cache: true,//Keep cached data
-                type: "POST",//Request type post
-                url: "/page/process/inc/process_info_inc.html",//This is the name of the file where I receive data in the background.
-                //data:$('#loginForm').serialize(),//Serialize the form
-                data: {
-                    processId: processId
-                },
-                async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
-                error: function (request) {//Operation after request failure
-                    console.log("fail");
-                    return;
-                },
-                success: function (data) {//Operation after request successful
-                    // console.log(data);
-                    $('#processLeft').html(data)
-                    $('#selectedRectShow').hide();
-                    $('#selectedPathShow').hide();
-                    $('#selectedArrowShow').hide();
-                }
-            });
-        }
-    }
-    return;
-}
-
-//Query basic information about stops
-function queryProcessStop(processId, pageId) {
-    ajaxRequest({
-        cache: true,//Keep cached data
-        type: "POST",//Request type post
-        url: "/page/process/inc/process_property_inc.html",//This is the name of the file where I receive data in the background.
-        //data:$('#loginForm').serialize(),//Serialize the form
-        data: {
-            processId: processId,
-            pageId: pageId
-        },
-        async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
-        error: function (request) {//Operation after request failure
-            console.log("fail");
-            return;
-        },
-        success: function (data) {//Operation after request successful
-            // console.log(data);
-            $('#processLeft').html(data);
-            $('#selectedRectShow').show();
-            $('#selectedArrowShow').hide();
-            $('#selectedPathShow').hide();
-            var stopsBundleShowText = $('#stopsBundleShow').text()
-            if (stopsBundleShowText && stopsBundleShowText.toUpperCase() === "CN.PIFLOW.BUNDLE.HTTP.OPENURL") {
-                var open_action = $('.open_action');
-                if (open_action.length === 1) {
-                    var open_action_i = $(open_action.get(0));
-                    var a_href = open_action_i.text();
-                    $(open_action.get(0)).after('&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-primary" href="' + a_href + '" style="color:#ffffff;" target="_blank">OPEN</a>');
-                }
-            }
-        }
-    });
-}
-
-//Query Path basic information
-function queryProcessPath(processId, pageId) {
-    if (isLoadProcessInfo) {
-        isLoadProcessInfo = false;
-    }
-    ajaxRequest({
-        cache: true,//Keep cached data
-        type: "POST",//Request type post
-        url: "/page/process/inc/process_path_inc.html",//This is the name of the file where I receive data in the background.
-        //data:$('#loginForm').serialize(),//Serialize the form
-        data: {
-            processId: processId,
-            pageId: pageId
-        },
-        async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
-        error: function (request) {//Operation after request failure
-            console.log("fail");
-            return;
-        },
-        success: function (data) {//Operation after request successful
-            // console.log(data);
-            $('#processLeft').html(data);
-            $('#selectedArrowShow').show();
-            $('#selectedPathShow').show();
-            $('#selectedRectShow').hide();
-        }
-    });
 }
 
 //  Get Checkpoint points
@@ -259,7 +99,7 @@ function getCheckpoint(pID, parentProcessId, processId, runMode) {
 }
 
 function cancelRunProcess() {
-    checkpointShow.modal('hide');
+    $('#checkpointShow').modal('hide');
     $('#fullScreen').hide();
     return;
 }
@@ -267,8 +107,8 @@ function cancelRunProcess() {
 //run
 function runProcess(processId, runMode) {
     $('#fullScreen').show();
-    runFlowBtn.hide();
-    debugFlowBtn.hide();
+    $('#runFlow').hide();
+    $('#debugFlow').hide();
     var checkpointStr = '';
     $(".layui-layer-content").find("#checkpointContentNew").find("input[type='checkbox']:checked").each(function () {
         if ('' !== checkpointStr) {
@@ -291,8 +131,8 @@ function runProcess(processId, runMode) {
         data: data,
         async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
         error: function (request) {//Operation after request failure
-            runFlowBtn.show();
-            debugFlowBtn.show();
+            $('#runFlow').show();
+            $('#debugFlow').show();
             //alert("Request Failed");
             layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000});
             $('#fullScreen').hide();
@@ -308,8 +148,8 @@ function runProcess(processId, runMode) {
             } else {
                 //alert(dataMap.errorMsg);
                 layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
-                runFlowBtn.show();
-                debugFlowBtn.show();
+                $('#runFlow').show();
+                $('#debugFlow').show();
                 $('#fullScreen').hide();
             }
 
@@ -319,7 +159,7 @@ function runProcess(processId, runMode) {
 
 //stop
 function stopProcess() {
-    stopFlowBtn.hide();
+    $('#stopFlow').hide();
     $('#fullScreen').show();
     ajaxRequest({
         cache: true,//Keep cached data
@@ -343,8 +183,8 @@ function stopProcess() {
             if (200 === dataMap.code) {
                 //alert(dataMap.errorMsg);
                 layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000});
-                runFlowBtn.show();
-                debugFlowBtn.show();
+                $('#runFlow').show();
+                $('#debugFlow').show();
             } else {
                 //alert("Stop Failed:" + dataMap.errorMsg);
                 layer.msg("Stop Failed", {icon: 2, shade: 0, time: 2000});
@@ -479,9 +319,9 @@ function processMonitoring(appId) {
                 if (dataMap.state && "" !== dataMap.state) {
                     if ("COMPLETED" === dataMap.state || "FAILED" === dataMap.state || "KILLED" === dataMap.state) {
                         window.clearInterval(timer);
-                        runFlowBtn.show();
-                        debugFlowBtn.show();
-                        stopFlowBtn.hide();
+                        $('#runFlow').show();
+                        $('#debugFlow').show();
+                        $('#stopFlow').hide();
                     }
                 }
                 var processVo = dataMap.processVo;

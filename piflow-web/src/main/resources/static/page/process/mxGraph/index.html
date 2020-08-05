@@ -127,24 +127,30 @@
     //---------------------------------------------------
 
     $(function () {
-        ajaxLoad("fullScreen_load_id", "/page/macro/fragmentMacro.html");
         //Header
-        ajaxLoad("publicUserHeadMacro_load_id", "/page/macro/graphHeadMacro.html", function () {
+        ajaxLoadAsync("publicUserHeadMacro_load_id", "/page/macro/graphHeadMacro.html", true, function () {
             $("#span_username_id").html('Howdy,' + currentUser.username + '<b class="caret"></b>');
         });
-        ajaxLoad("process_operation_button_load_id", "/page/process/inc/process_operation_button.html", function () {
-            initProcessDrawingBoardData(loadId, parentAccessPath);
+        //crumbs
+        initProcessDrawingBoardData("process_crumbs_task_load_id", "/page/process/inc/process_crumbs_task.html", true, function () {
+            initProcessCrumbs(parentAccessPath);
+        });
+        initProcessDrawingBoardData(loadId, parentAccessPath, function () {
+            ajaxLoadAsync("fullScreen_load_id", "/page/macro/fragmentMacro.html", false);
+            ajaxLoadAsync("process_operation_button_load_id", "/page/process/inc/process_operation_button.html", false);
             initProcessContentPage(nodeArr);
             initProcessGraph();
-            ajaxLoad("process_crumbs_task_load_id", "/page/process/inc/process_crumbs_task.html", function () {
-                initCrumbs(parentAccessPath);
-            });
         });
-        ajaxLoad("div_process_info_inc_load_id", "/page/process/inc/process_info_inc.html", function () {
+        // right sidebar
+        ajaxLoadAsync("div_process_info_inc_load_id", "/page/process/inc/process_info_inc.html", true, function () {
             processMxEventClick();
         });
-        ajaxLoad("div_process_path_inc_load_id", "/page/process/inc/process_path_inc.html");
-        ajaxLoad("div_process_property_inc_load_id", "/page/process/inc/process_property_inc.html");
+        // right sidebar
+        ajaxLoadAsync("div_process_path_inc_load_id", "/page/process/inc/process_path_inc.html", true);
+        // right sidebar
+        ajaxLoadAsync("div_process_property_inc_load_id", "/page/process/inc/process_property_inc.html", true);
+
+
     });
     //@ sourceURL=processMxGraphIndex.js
 </script>
