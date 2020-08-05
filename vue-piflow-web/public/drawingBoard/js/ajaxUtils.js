@@ -86,7 +86,7 @@ function ajaxLoadAsync(elementId, requestUrl, async, backFunc, errBackFunc) {
     async = (async === undefined) ? true : async;
     $.ajax({
         type: "GET",
-        async: true,
+        async: async,
         url: '/drawingBoard' + requestUrl,
         headers: {
             Authorization: ("Bearer " + token)
@@ -114,6 +114,7 @@ function ajaxLoadAsync(elementId, requestUrl, async, backFunc, errBackFunc) {
 function ajaxFun(config) {
     if (config) {
         config.headers = {Authorization: ("Bearer " + token)};
+        config.url = (web_header_prefix + config.url);
     } else {
         console.log("ajax config error");
         layer.msg("ajax config error", {icon: 2, shade: 0, time: 2000});

@@ -2,6 +2,10 @@ var isLoadProcessInfo = true;
 var isEnd = false;
 
 function initProcessContentPage(nodeArr) {
+    $("#runFlow").attr("onclick", "getCheckpoint(" + getCheckpointParam + ")");
+    $("#debugFlow").attr("onclick", "getCheckpoint(" + getCheckpointParam + ",'DEBUG')");
+    $("#run_checkpoint_new").attr("onclick", "getCheckpoint(" + getCheckpointParam + ")");
+    $("#debug_checkpoint_new").attr("onclick", "getCheckpoint(" + getCheckpointParam + ",'DEBUG')");
     if ($('#runFlow')) {
         if ("COMPLETED" !== processState && "FAILED" !== processState && "KILLED" !== processState) {
             $('#runFlow').hide();
@@ -28,7 +32,7 @@ function getCheckpoint(pID, parentProcessId, processId, runMode) {
     ajaxRequest({
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: "/page/process/getCheckpoint",//This is the name of the file where I receive data in the background.
+        url: "/process/getCheckpointData",//This is the name of the file where I receive data in the background.
         //data:$('#loginForm').serialize(),//Serialize the form
         data: {
             pID: pID,
