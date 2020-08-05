@@ -18,7 +18,7 @@ Vue.use(iView, {
     return ''
   }
 });
-Vue.locale = () => {};
+Vue.locale = () => { };
 
 let lang = window.sessionStorage.getItem("lang");
 const i18n = new VueI18n({ //this.$i18n.locale // 通过切换locale的值来实现语言切换
@@ -52,9 +52,10 @@ axios.interceptors.request.use(
   config => {
     // 这里的config包含每次请求的内容
     let token = store.state.variable.token;
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    if (!token) {
+      token = `${window.sessionStorage.getItem("token")}`
     }
+    config.headers.Authorization = `Bearer ${token}`;
     return config;
   },
   err => {
@@ -62,7 +63,7 @@ axios.interceptors.request.use(
   }
 );
 axios.defaults.baseURL = process.env.VUE_APP_URL;
-window.sessionStorage.setItem("basePath",process.env.VUE_APP_URL)
+window.sessionStorage.setItem("basePath", process.env.VUE_APP_URL)
 Vue.prototype.$url = process.env.VUE_APP_URL;
 Vue.prototype.$axios = axios; //全局注册，使用方法为:this.$axios
 Vue.prototype.$qs = qs; //全局注册，使用方法为:this.$qs

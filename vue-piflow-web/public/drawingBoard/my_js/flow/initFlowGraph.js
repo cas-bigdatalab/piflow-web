@@ -35,7 +35,7 @@ function initFlowDrawingBoardData(loadId, parentAccessPath) {
                                 Sidebar.prototype.component_data.push({
                                     component_name: groupsVoList_i.groupName,
                                     component_group: groupsVoList_i.stopsTemplateVoList,
-                                    component_prefix: (web_header_prefix + "/images/"),
+                                    component_prefix: (sever_base_origin + "/images/"),
                                     addImagePaletteId: 'clipart'
                                 });
                             }
@@ -508,7 +508,7 @@ function queryStopsProperty(stopPageId, loadId) {
                             spanDisplayName.textContent = propertyVo_name;
                             // property description
                             var img = document.createElement("img");
-                            img.setAttribute('src', web_header_prefix + '/img/descIcon.png');
+                            img.setAttribute('src', sever_base_origin + '/img/descIcon.png');
                             img.style.cursor = "pointer";
                             img.setAttribute('title', '' + propertyVo_description + '');
                             // property value
@@ -707,7 +707,7 @@ function queryStopsProperty(stopPageId, loadId) {
                             }
 
                             var img = document.createElement("img");
-                            img.setAttribute('src', web_header_prefix + '/img/descIcon.png');
+                            img.setAttribute('src', sever_base_origin + '/img/descIcon.png');
                             img.style.cursor = "pointer";
                             img.setAttribute('title', '' + oldPropertiesVo[y].description + '');
                             var tr = document.createElement("tr");
@@ -1575,7 +1575,7 @@ function setCustomizedTableHtml(stopPageId, stopsCustomizedPropertyVo, stopOutPo
             + '<span style="margin-left: 10px;">' + stopsCustomizedPropertyVo.name + ': </span>'
             + '</td>'
             + '<td style="width: 25px;">'
-            + '<img src="' + web_header_prefix + '/img/descIcon.png" title="' + stopsCustomizedPropertyVo.description + '" style="cursor: pointer;">'
+            + '<img src="' + sever_base_origin + '/img/descIcon.png" title="' + stopsCustomizedPropertyVo.description + '" style="cursor: pointer;">'
             + '</td>'
             + '<td>'
             + '<input data-toggle="true"class="form-control"'
