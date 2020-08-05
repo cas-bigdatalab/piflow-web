@@ -1,6 +1,6 @@
 var web_header_prefix = "/piflow-web";
 
-var token = localStorage.getItem("token");
+var token = localStorage.getItem('token');
 
 
 /**
@@ -59,7 +59,7 @@ function ajaxRequest(param) {
             //data =  JSON.parse(data);
             if (data.code === 403 || data.code === 401) {
                 //  alert(data.errMsg);
-                console.log(data);
+                // console.log(data);
                 window.location.href = (web_header_prefix + "/login");
                 return;
             }
@@ -90,13 +90,6 @@ function ajaxLoadAsync(elementId, requestUrl, async, backFunc, errBackFunc) {
             Authorization: ("Bearer " + token)
         },
         success: function (data) {
-            //data =  JSON.parse(data);
-            if (data.code === 403 || data.code === 401) {
-                //  alert(data.errMsg);
-                console.log(data);
-                window.location.href = (web_header_prefix + "/login");
-                return;
-            }
             $("#" + elementId).html(data);
             if (backFunc && $.isFunction(backFunc)) {
                 backFunc(data);
@@ -118,9 +111,7 @@ function ajaxLoadAsync(elementId, requestUrl, async, backFunc, errBackFunc) {
 
 function ajaxFun(config) {
     if (config) {
-        config.headers = {
-            Authorization: ("Bearer " + token)
-        };
+        config.headers = {Authorization: ("Bearer " + token)};
     } else {
         console.log("ajax config error");
         layer.msg("ajax config error", {icon: 2, shade: 0, time: 2000});
@@ -142,10 +133,12 @@ function getUrlParams(url) {
             }
         }
     }
+
     return result;
 }
 
 function openLayerWindowLoadHtml(htmlStr, window_width, window_height, title, shade) {
+    shade = shade ? shade : 0;
     layer.open({
         type: 1,
         title: '<span style="color: #269252;">' + title + '</span>',
@@ -174,16 +167,16 @@ function openLayerTypeIframeWindowLoadUrl(url, window_width, window_height, titl
     });
 }
 
+// window.location
 function window_location_href(url) {
     window.location.href = (web_header_prefix + url);
 }
 
 function new_window_open(url) {
-    var tempWindow = window.open('_blank');
+
+    var tempWindow = window.open(web_header_prefix + url);
     if (tempWindow == null || typeof (tempWindow) == 'undefined') {
         alert('The window cannot be opened. Please check your browser settings.')
-    } else {
-        tempWindow.location = (web_header_prefix + url);
     }
 
 }

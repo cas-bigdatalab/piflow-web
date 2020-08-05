@@ -1,7 +1,7 @@
 // Extends EditorUi to update I/O action states based on availability of backend
 
 var parentsId, xmlDate, maxStopPageId, isExample, consumedFlag, timerPath, statusgroup, removegroupPaths;
-var web_header_prefix = "/piflow-web";
+
 var index = true;
 var flag = 0;
 var fullScreen = $('#fullScreen');
@@ -116,7 +116,7 @@ function updateMxGraphCellImage(cellEditor, selState, newValue, fn) {
         //执行实例
         var uploadInst = upload.render({
             elem: '#uploadimage' //绑定元素
-            , url: '/piflow-web/mxGraph/uploadNodeImage' //上传接口
+            , url: web_header_prefix + '/mxGraph/uploadNodeImage' //上传接口
             , headers: {
                 Authorization: ("Bearer " + token)
             }

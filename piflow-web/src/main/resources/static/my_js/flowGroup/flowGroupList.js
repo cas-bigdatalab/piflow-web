@@ -96,10 +96,7 @@ function responseActionsFlow(res) {
 }
 
 function openFlowGroup(flowGroupId) {
-    var windowOpen = window.open('/piflow-web/page/flowGroup/mxGraph/index.html?drawingBoardType=GROUP&load=' + flowGroupId + '');
-    if (windowOpen == null || typeof (windowOpen) == 'undefined') {
-        alert('The window cannot be opened. Please check your browser settings.')
-    }
+    new_window_open('/page/flowGroup/mxGraph/index.html?drawingBoardType=GROUP&load=' + flowGroupId + '');
 }
 
 function openFlowBaseInfo(id) {
@@ -167,10 +164,7 @@ function saveOrUpdateFlowGroup() {
                 var dataMap = JSON.parse(data);
                 if (200 === dataMap.code) {
                     layer.msg('success ', {icon: 1, shade: 0, time: 2000}, function () {
-                        var windowOpen = window.open("/piflow-web/mxGraph/drawingBoard?drawingBoardType=GROUP&load=" + dataMap.flowGroupId);
-                        if (windowOpen == null || typeof (windowOpen) == 'undefined') {
-                            alert('The window cannot be opened. Please check your browser settings.')
-                        }
+                        new_window_open("/piflow-web/mxGraph/drawingBoard?drawingBoardType=GROUP&load=" + dataMap.flowGroupId);
                     });
                 } else {
                     layer.msg('failed', {icon: 2, shade: 0, time: 2000});
@@ -242,10 +236,7 @@ function listRunFlowGroup(loadId, runMode) {
             var dataMap = JSON.parse(data);
             if (200 === dataMap.code) {
                 layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
-                    var windowOpen = window.open("/piflow-web/processGroup/getProcessGroupById?parentAccessPath=grapheditor&processGroupId=" + dataMap.processGroupId);
-                    if (windowOpen == null || typeof (windowOpen) == 'undefined') {
-                        alert('The window cannot be opened. Please check your browser settings.')
-                    }
+                    new_window_open("/processGroup/getProcessGroupById?parentAccessPath=grapheditor&processGroupId=" + dataMap.processGroupId);
                 });
             } else {
                 //alert("Startup failure：" + dataMap.errorMsg);

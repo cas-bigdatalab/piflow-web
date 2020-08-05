@@ -1,12 +1,16 @@
-function newFlowGroup() {
-    $("#buttonFlowGroup").attr("onclick", "");
-    $("#buttonFlowGroup").attr("onclick", "saveOrUpdateFlowGroup()");
-    $("#flowGroupId").val("");
-    $("#flowGroupName").val("");
+function newPath() {
+    $("#buttonFlow").attr("onclick", "");
+    $("#buttonFlow").attr("onclick", "saveFlow()");
+    $("#flowId").val("");
+    $("#flowName").val("");
     $("#description").val("");
+    $("#driverMemory").val('1g');
+    $("#executorNumber").val('1');
+    $("#executorMemory").val('1g');
+    $("#executorCores").val('1');
     layer.open({
         type: 1,
-        title: '<span style="color: #269252;">create flow group</span>',
+        title: '<span style="color: #269252;">create flow</span>',
         shadeClose: true,
         closeBtn: 1,
         shift: 7,
@@ -16,11 +20,10 @@ function newFlowGroup() {
     });
 }
 
-function initDatatableFlowGroupPage(testTableId, url, searchInputId) {
+function initDatatableFlowPage(testTableId, url, searchInputId) {
     var table = "";
     layui.use('table', function () {
         table = layui.table;
-
         //Method-level rendering
         table.render({
             elem: '#' + testTableId
@@ -34,7 +37,7 @@ function initDatatableFlowGroupPage(testTableId, url, searchInputId) {
                 {field: 'crtDttm', title: 'CreateTime', sort: true},
                 {
                     field: 'right', title: 'Actions', sort: true, height: 100, templet: function (data) {
-                        return responseActionsFlow(data);
+                        return responseHandlerFlow(data);
                     }
                 }
             ]]
@@ -59,51 +62,60 @@ function searchMonitor(layui_table, layui_table_id, searchInputId) {
 }
 
 //Results returned in the background
-function responseActionsFlow(res) {
-    var actionsHtmlStr = '<div style="width: 100%; text-align: center" >' +
-        '<a class="btn" ' +
-        'href="javascript:void(0);"' +
-        'onclick="javascript:openFlowGroup(\'' + res.id + '\'); "' +
-        'style="margin-right: 2px;">' +
-        '<i class="icon-share-alt icon-white"></i>' +
-        '</a>' +
-        '<a class="btn" ' +
-        'href="javascript:void(0);"' +
-        'onclick="javascript:openFlowBaseInfo(\'' + res.id + '\');" ' +
-        'style="margin-right: 2px;">' +
-        '<i class="icon-edit icon-white"></i>' +
-        '</a>' +
-        '<a class="btn" ' +
-        'href="javascript:void(0);" ' +
-        'onclick="javascript:listRunFlowGroup(\'' + res.id + '\');" ' +
-        'style="margin-right: 2px;">' +
-        '<i class="icon-play icon-white"></i>' +
-        '</a>' +
-        '<a class="btn" ' +
-        'href="javascript:void(0);"' +
-        'onclick="javascript:deleteFlowGroup(\'' + res.id + '\',\'' + res.name + '\');" ' +
-        'style="margin-right: 2px;">' +
-        '<i class="icon-trash icon-white"></i>' +
-        '</a>' +
-        '<a class="btn" ' +
-        'href="javascript:void(0);"' +
-        'onclick="javascript:listSaveFlowGroupTemplate(\'' + res.id + '\',\'' + res.name + '\');" ' +
-        'style="margin-right: 2px;">' +
-        '<i class="icon-check icon-white"></i>' +
-        '</a>' +
-        '</div>';
-    return actionsHtmlStr;
-}
-
-function openFlowGroup(flowGroupId) {
-    new_window_open('/page/flowGroup/mxGraph/index.html?drawingBoardType=GROUP&load=' + flowGroupId + '');
+function responseHandlerFlow(res) {
+    if (res) {
+        var openHtmlStr = '<a class="btn" ' +
+            'href="/piflow-web/page/flow/mxGraph/index.html?drawingBoardType=TASK&load=' + res.id + '"' +
+            'target="_blank" ' +
+            'style="margin-right: 2px;">' +
+            '<i class="icon-share-alt icon-white"></i>' +
+            '</a>';
+        var editHtmlStr = '<a class="btn" ' +
+            'href="javascript:void(0);" ' +
+            'onclick="javascript:openFlowBaseInfo(' +
+            '\'' + res.id + '\'' +
+            ');" style="margin-right: 2px;">' +
+            '<i class="icon-edit icon-white"></i>' +
+            '</a>';
+        var runHtmlStr = '<a class="btn" ' +
+            'href="javascript:void(0);" ' +
+            'onclick="javascript:runFlows(\'' + res.id + '\');" ' +
+            'style="margin-right: 2px;">' +
+            '<i class="icon-play icon-white"></i>' +
+            '</a>';
+        var debugHtmlStr = '<a class="btn" ' +
+            'href="javascript:void(0);" ' +
+            'onclick="javascript:runFlows(' +
+            '\'' + res.id + '\',\'DEBUG\'' +
+            ');" style="margin-right: 2px;">' +
+            '<i class="fa-bug icon-white"></i>' +
+            '</a>';
+        var delHtmlStr = '<a class="btn" ' +
+            'href="javascript:void(0);" ' +
+            'onclick="javascript:deleteFlow(' +
+            '\'' + res.id + '\',' +
+            '\'' + res.name + '\'' +
+            ');" style="margin-right: 2px;">' +
+            '<i class="icon-trash icon-white"></i>' +
+            '</a>';
+        var templateHtmlStr = '<a class="btn" ' +
+            'href="javascript:void(0);" ' +
+            'onclick="javascript:saveTableTemplate(' +
+            '\'' + res.id + '\',' +
+            '\'' + res.name + '\'' +
+            ');" style="margin-right: 2px;">' +
+            '<i class="icon-check icon-white"></i>' +
+            '</a>';
+        return '<div style="width: 100%; text-align: center" >' + openHtmlStr + editHtmlStr + runHtmlStr + debugHtmlStr + delHtmlStr + templateHtmlStr + '</div>';
+    }
+    return "";
 }
 
 function openFlowBaseInfo(id) {
     ajaxRequest({
         cache: true,//Keep cached data
         type: "get",//Request type post
-        url: "/flowGroup/queryFlowGroupData",//This is the name of the file where I receive data in the background.
+        url: "/flow/queryFlowData",//This is the name of the file where I receive data in the background.
         data: {load: id},
         async: false,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
         error: function (request) {//Operation after request failure
@@ -115,15 +127,19 @@ function openFlowBaseInfo(id) {
             layer.closeAll('page');
             var dataMap = JSON.parse(data);
             if (200 === dataMap.code) {
-                var flowGroupVo = dataMap.flowGroupVo;
-                $("#buttonFlowGroup").attr("onclick", "");
-                $("#buttonFlowGroup").attr("onclick", "updateFlowGroup()");
-                $("#flowGroupId").val(id);
-                $("#flowGroupName").val(flowGroupVo.name);
-                $("#description").val(flowGroupVo.description);
+                var flowVo = dataMap.flow;
+                $("#buttonFlow").attr("onclick", "");
+                $("#buttonFlow").attr("onclick", "updateFlow()");
+                $("#flowId").val(id);
+                $("#flowName").val(flowVo.name);
+                $("#description").val(flowVo.description);
+                $("#driverMemory").val(flowVo.driverMemory);
+                $("#executorNumber").val(flowVo.executorNumber);
+                $("#executorMemory").val(flowVo.executorMemory);
+                $("#executorCores").val(flowVo.executorCores);
                 layer.open({
                     type: 1,
-                    title: '<span style="color: #269252;">update flow group</span>',
+                    title: '<span style="color: #269252;">update flow</span>',
                     shadeClose: true,
                     closeBtn: false,
                     shift: 7,
@@ -139,19 +155,25 @@ function openFlowBaseInfo(id) {
     });
 }
 
-function saveOrUpdateFlowGroup() {
-    var id = $("#flowGroupId").val();
-    var flowGroupName = $("#flowGroupName").val();
+function saveFlow() {
+    var flowName = $("#flowName").val();
     var description = $("#description").val();
-    if (checkGroupInput(flowGroupName)) {
+    var driverMemory = $("#driverMemory").val();
+    var executorNumber = $("#executorNumber").val();
+    var executorMemory = $("#executorMemory").val();
+    var executorCores = $("#executorCores").val();
+    if (checkFlowInput(flowName, description, driverMemory, executorNumber, executorMemory, executorCores))
         ajaxRequest({
             cache: true,//Keep cached data
             type: "get",//Request type post
-            url: "/flowGroup/saveOrUpdateFlowGroup",//This is the name of the file where I receive data in the background.
+            url: "/flow/saveFlowInfo",//This is the name of the file where I receive data in the background.
             data: {
-                id: id,
-                name: flowGroupName,
-                description: description
+                name: flowName,
+                description: description,
+                driverMemory: driverMemory,
+                executorNumber: executorNumber,
+                executorMemory: executorMemory,
+                executorCores: executorCores
             },
             async: false,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
             error: function (request) {//Operation after request failure
@@ -163,63 +185,76 @@ function saveOrUpdateFlowGroup() {
                 layer.closeAll('page');
                 var dataMap = JSON.parse(data);
                 if (200 === dataMap.code) {
-                    layer.msg('success ', {icon: 1, shade: 0, time: 2000}, function () {
-                        new_window_open("/piflow-web/mxGraph/drawingBoard?drawingBoardType=GROUP&load=" + dataMap.flowGroupId);
+                    layer.msg('create success ', {icon: 1, shade: 0, time: 2000}, function () {
+                        var tempWindow = window.open('_blank');
+                        if (tempWindow == null || typeof (tempWindow) == 'undefined') {
+                            alert('The window cannot be opened. Please check your browser settings.')
+                        } else {
+                            tempWindow.location = "/piflow-web/mxGraph/drawingBoard?drawingBoardType=TASK&load=" + dataMap.flowId;
+                        }
                     });
                 } else {
-                    layer.msg('failed', {icon: 2, shade: 0, time: 2000});
+                    layer.msg('creation failed', {icon: 2, shade: 0, time: 2000});
                 }
             }
         });
-    }
 }
 
-function updateFlowGroup() {
-    var id = $("#flowGroupId").val();
-    var flowGroupName = $("#flowGroupName").val();
+function updateFlow() {
+    var id = $("#flowId").val();
+    var flowName = $("#flowName").val();
     var description = $("#description").val();
-    if (checkGroupInput(flowGroupName)) {
+    var driverMemory = $("#driverMemory").val();
+    var executorNumber = $("#executorNumber").val();
+    var executorMemory = $("#executorMemory").val();
+    var executorCores = $("#executorCores").val();
+    if (checkFlowInput(flowName, description, driverMemory, executorNumber, executorMemory, executorCores))
         ajaxRequest({
             cache: true,//Keep cached data
             type: "get",//Request type post
-            url: "/flowGroup/saveOrUpdateFlowGroup",//This is the name of the file where I receive data in the background.
+            url: "/flow/updateFlowInfo",//This is the name of the file where I receive data in the background.
             data: {
                 id: id,
-                name: flowGroupName,
-                description: description
+                name: flowName,
+                description: description,
+                driverMemory: driverMemory,
+                executorNumber: executorNumber,
+                executorMemory: executorMemory,
+                executorCores: executorCores
             },
-            async: false,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
+            async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
             error: function (request) {//Operation after request failure
                 layer.closeAll('page');
-                layer.msg('creation failed ', {icon: 2, shade: 0, time: 2000});
+                layer.msg('update failed ', {icon: 2, shade: 0, time: 2000}, function () {
+                    window.location.reload();
+                });
                 return;
             },
             success: function (data) {//Operation after request successful
-                layer.closeAll('page');
                 var dataMap = JSON.parse(data);
                 if (200 === dataMap.code) {
-                    layer.msg('success ', {icon: 1, shade: 0, time: 2000}, function () {
+                    layer.closeAll('page');
+                    layer.msg('update success', {icon: 1, shade: 0, time: 2000}, function () {
                         location.reload();
                     });
                 } else {
-                    layer.msg('failed', {icon: 2, shade: 0, time: 2000});
+                    layer.msg('update failed ', {icon: 2, shade: 0, time: 2000});
                 }
             }
         });
-    }
 }
 
 //run
-function listRunFlowGroup(loadId, runMode) {
+function runFlows(loadId, runMode) {
     $('#fullScreen').show();
-    var data = {flowGroupId: loadId}
+    var data = {flowId: loadId}
     if (runMode) {
         data.runMode = runMode;
     }
     ajaxRequest({
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: "/flowGroup/runFlowGroup",//This is the name of the file where I receive data in the background.
+        url: "/flow/runFlow",//This is the name of the file where I receive data in the background.
         //data:$('#loginForm').serialize(),//Serialize the form
         data: data,
         async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
@@ -236,7 +271,13 @@ function listRunFlowGroup(loadId, runMode) {
             var dataMap = JSON.parse(data);
             if (200 === dataMap.code) {
                 layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
-                    new_window_open("/processGroup/getProcessGroupById?parentAccessPath=grapheditor&processGroupId=" + dataMap.processGroupId);
+                    //Jump to monitoring page after successful startup
+                    var tempWindow = window.open('_blank');
+                    if (tempWindow == null || typeof (tempWindow) == 'undefined') {
+                        alert('The window cannot be opened. Please check your browser settings.')
+                    } else {
+                        tempWindow.location = "/piflow-web/mxGraph/drawingBoard?drawingBoardType=PROCESS&processType=PROCESS&load=" + dataMap.processId;
+                    }
                 });
             } else {
                 //alert("Startup failure：" + dataMap.errorMsg);
@@ -249,23 +290,22 @@ function listRunFlowGroup(loadId, runMode) {
     });
 }
 
-function deleteFlowGroup(id, name) {
+function deleteFlow(id, name) {
     layer.confirm("Are you sure to delete '" + name + "' ?", {
-        btn: ['confirm', 'cancel'] //button
+        btn: ['confirm', 'cancel'] //Button
         , title: 'Confirmation prompt'
     }, function () {
         ajaxRequest({
             cache: true,//Keep cached data
             type: "get",//Request type post
-            url: "/flowGroup/deleteFlowGroup",//This is the name of the file where I receive data in the background.
+            url: "/flow/deleteFlow",//This is the name of the file where I receive data in the background.
             data: {id: id},
             async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
             error: function (request) {//Operation after request failure
                 return;
             },
             success: function (data) {//Operation after request successful
-                var dataMap = JSON.parse(data);
-                if (200 === dataMap.code) {
+                if (data > 0) {
                     layer.msg('Delete Success', {icon: 1, shade: 0, time: 2000}, function () {
                         location.reload();
                     });
@@ -278,7 +318,7 @@ function deleteFlowGroup(id, name) {
     });
 }
 
-function checkGroupInput(flowName) {
+function checkFlowInput(flowName, description, driverMemory, executorNumber, executorMemory, executorCores) {
     if (flowName == '') {
         layer.msg('flowName Can not be empty', {icon: 2, shade: 0, time: 2000});
         document.getElementById('flowName').focus();
@@ -290,10 +330,30 @@ function checkGroupInput(flowName) {
          document.getElementById('description').focus();
          return false;
      } */
+    if (driverMemory == '') {
+        layer.msg('driverMemory Can not be empty', {icon: 2, shade: 0, time: 2000});
+        document.getElementById('driverMemory').focus();
+        return false;
+    }
+    if (executorNumber == '') {
+        layer.msg('executorNumber Can not be empty', {icon: 2, shade: 0, time: 2000});
+        document.getElementById('executorNumber').focus();
+        return false;
+    }
+    if (executorMemory == '') {
+        layer.msg('executorMemory Can not be empty', {icon: 2, shade: 0, time: 2000});
+        document.getElementById('executorMemory').focus();
+        return false;
+    }
+    if (executorCores == '') {
+        layer.msg('executorCores Can not be empty', {icon: 2, shade: 0, time: 2000});
+        document.getElementById('executorCores').focus();
+        return false;
+    }
     return true;
 }
 
-function listSaveFlowGroupTemplate(id, name) {
+function saveTableTemplate(id, name) {
     layer.prompt({
         title: 'please enter the template name',
         formType: 0,
@@ -307,7 +367,7 @@ function listSaveFlowGroupTemplate(id, name) {
             data: {
                 load: id,
                 name: text,
-                templateType: "GROUP"
+                templateType: "TASK"
             },
             async: true,
             error: function (request) {//Operation after request failure
@@ -326,4 +386,3 @@ function listSaveFlowGroupTemplate(id, name) {
         });
     });
 }
-

@@ -51,7 +51,7 @@ function imageAjax() {
     ajaxRequest({
         type: "post",//Request type post
         url: "/mxGraph/nodeImageList",
-        data: { imageType: "TASK" },
+        data: {imageType: "TASK"},
         async: true,//Synchronous Asynchronous
         error: function (request) {//Operation after request failure
             return;
@@ -113,7 +113,7 @@ function updateMxGraphCellImage(cellEditor, selState, newValue, fn) {
                 Authorization: ("Bearer " + token)
             }
             , before: function (obj) {
-                this.data = { imageType: "TASK" };
+                this.data = {imageType: "TASK"};
                 loading = layer.load(0, {
                     shade: false,
                     success: function (layerContentStyle) {
@@ -380,7 +380,7 @@ function addMxCellOperation(evt) {
             contentType: 'application/json;charset=utf-8',
             async: true,//Synchronous Asynchronous
             error: function (request) {//Operation after request failure
-                layer.msg('Add failed, refresh page after 1 second', { icon: 2, shade: 0, time: 2000 }, function () {
+                layer.msg('Add failed, refresh page after 1 second', {icon: 2, shade: 0, time: 2000}, function () {
                     graphGlobal.removeCells(cellArrayAdd);
                     //window.location.reload();
                 });
@@ -405,7 +405,7 @@ function addMxCellOperation(evt) {
                     thisEditor.setModified(false);
                     console.log("Add save success");
                 } else {
-                    layer.msg("Add save fail", { icon: 2, shade: 0, time: 2000 });
+                    layer.msg("Add save fail", {icon: 2, shade: 0, time: 2000});
                     console.log("Add save fail");
                     $('#fullScreen').hide();
                 }
@@ -506,7 +506,7 @@ function openProcessMonitor(evt) {
             cache: true,
             type: "POST",
             url: "/flowGroup/findFlowByGroup",
-            data: { "pageId": cellFor.id, "fId": loadId },
+            data: {"pageId": cellFor.id, "fId": loadId},
             async: true,
             error: function (request) {
                 //alert("Jquery Ajax request error!!!");
@@ -517,10 +517,10 @@ function openProcessMonitor(evt) {
                 if (200 === dataMap.code) {
                     if ('flow' === dataMap.nodeType) {
                         var flow_obj = dataMap.flowVo;
-                        window_location_href("/page/flow/drawingBoard?drawingBoardType=TASK&parentAccessPath=flowGroupList&load=" + flow_obj.id);
+                        window_location_href("/page/flow/mxGraph/index.html?drawingBoardType=TASK&parentAccessPath=flowGroupList&load=" + flow_obj.id);
                     } else if ('flowGroup' === dataMap.nodeType) {
                         var flowGroup_obj = dataMap.flowGroupVo;
-                        window_location_href("/page/flowGroup/drawingBoard?drawingBoardType=GROUP&parentAccessPath=flowGroupList&load=" + flowGroup_obj.id);
+                        window_location_href("/page/flowGroup/mxGraph/index.html?drawingBoardType=GROUP&parentAccessPath=flowGroupList&load=" + flowGroup_obj.id);
                     }
                 } else {
                     console.log(dataMap.errorMsg);
@@ -560,7 +560,7 @@ function saveXml(paths, operType) {
 
             } else {
                 //alert(operType + " save fail");
-                layer.msg(operType + " save fail", { icon: 2, shade: 0, time: 2000 });
+                layer.msg(operType + " save fail", {icon: 2, shade: 0, time: 2000});
                 console.log(operType + " save fail");
                 $('#fullScreen').hide();
             }
@@ -619,7 +619,7 @@ function queryFlowGroupInfo(loadId) {
     $("#flowGroup_info_inc_no_data").hide();
     $("#flowGroup_info_inc_load_data").hide();
     ajaxRequest({
-        data: { "load": loadId },
+        data: {"load": loadId},
         cache: true,//Keep cached data
         type: "POST",//Request type post
         url: "/flowGroup/queryFlowGroupData",
@@ -661,7 +661,7 @@ function queryPathInfo(id, loadId) {
         cache: true,
         type: "POST",
         url: "/flowGroupPath/queryPathInfoFlowGroup",
-        data: { "id": id, "fid": loadId },
+        data: {"id": id, "fid": loadId},
         async: true,
         error: function (request) {
             //alert("Jquery Ajax request error!!!");
@@ -707,7 +707,7 @@ function queryFlowOrFlowGroupProperty(pageId, loadId) {
         cache: true,
         type: "POST",
         url: "/flowGroup/queryIdInfo",
-        data: { "fId": loadId, "pageId": pageId },
+        data: {"fId": loadId, "pageId": pageId},
         async: true,
         error: function (request) {
             $('#cell_flowGroup_property_inc_loading').hide();
@@ -806,7 +806,7 @@ function queryFlowOrFlowGroupProperty(pageId, loadId) {
 function getFlowList() {
     var window_width = $(window).width();//Get browser window width
     var window_height = $(window).height();//Get browser window height
-    openLayerWindowLoadUrl("/page/flow/getFlowListImport", (window_width / 2), (window_height - 100), "Flows");
+    openLayerTypeIframeWindowLoadUrl("/page/flow/getFlowListImport.html", (window_width / 2), (window_height - 100), "Flows");
 }
 
 // ClickSlider
@@ -866,7 +866,7 @@ function updateFlowGroupCellsNameById(selectNodesType) {
                 loadXml(dataMap.XmlData);
 
                 selectCellByPageId(requestDataParam.currentNodePageId, false);
-                layer.msg("attribute update success", { icon: 1, shade: 0, time: 2000 }, function () {
+                layer.msg("attribute update success", {icon: 1, shade: 0, time: 2000}, function () {
                 });
                 if ('flow' === selectNodesType) {
                     $("#span_cell_flowVo_name").text(dataMap.nameContent);
@@ -875,7 +875,7 @@ function updateFlowGroupCellsNameById(selectNodesType) {
                 }
                 isShowUpdateCellsName(false, selectNodesType);
             } else {
-                layer.msg(dataMap.errorMsg, { icon: 2, shade: 0, time: 2000 });
+                layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
             }
         }
     });
@@ -998,7 +998,7 @@ function updateFlowAttributes(flowId, propertyId, updateContentId, e) {
                 $('#span_cell_flowVo_executorMemory').text(flowVo.executorMemory);
                 $('#span_cell_flowVo_executorNumber').text(flowVo.executorNumber);
             } else {
-                layer.msg('', { icon: 2, shade: 0, time: 2000 });
+                layer.msg('', {icon: 2, shade: 0, time: 2000});
             }
             layer.closeAll('page');
             console.log("attribute update success");
@@ -1045,7 +1045,7 @@ function updateFlowGroupAttributes(flowGroupId, propertyId, updateContentId, e) 
                 //baseInfo
                 $("#span_cell_flowGroupVo_description").text(flowGroupVo.description);
             } else {
-                layer.msg('', { icon: 2, shade: 0, time: 2000 });
+                layer.msg('', {icon: 2, shade: 0, time: 2000});
             }
             layer.closeAll('page');
             console.log("attribute update success");
@@ -1056,7 +1056,7 @@ function updateFlowGroupAttributes(flowGroupId, propertyId, updateContentId, e) 
 // check flow required
 function checkFlowInput(flowName, description, driverMemory, executorNumber, executorMemory, executorCores) {
     if (flowName == '') {
-        layer.msg('flowName Can not be empty', { icon: 2, shade: 0, time: 2000 });
+        layer.msg('flowName Can not be empty', {icon: 2, shade: 0, time: 2000});
         document.getElementById('flowName').focus();
         return false;
     }
@@ -1067,22 +1067,22 @@ function checkFlowInput(flowName, description, driverMemory, executorNumber, exe
          return false;
      } */
     if (driverMemory == '') {
-        layer.msg('driverMemory Can not be empty', { icon: 2, shade: 0, time: 2000 });
+        layer.msg('driverMemory Can not be empty', {icon: 2, shade: 0, time: 2000});
         document.getElementById('driverMemory').focus();
         return false;
     }
     if (executorNumber == '') {
-        layer.msg('executorNumber Can not be empty', { icon: 2, shade: 0, time: 2000 });
+        layer.msg('executorNumber Can not be empty', {icon: 2, shade: 0, time: 2000});
         document.getElementById('executorNumber').focus();
         return false;
     }
     if (executorMemory == '') {
-        layer.msg('executorMemory Can not be empty', { icon: 2, shade: 0, time: 2000 });
+        layer.msg('executorMemory Can not be empty', {icon: 2, shade: 0, time: 2000});
         document.getElementById('executorMemory').focus();
         return false;
     }
     if (executorCores == '') {
-        layer.msg('executorCores Can not be empty', { icon: 2, shade: 0, time: 2000 });
+        layer.msg('executorCores Can not be empty', {icon: 2, shade: 0, time: 2000});
         document.getElementById('executorCores').focus();
         return false;
     }
@@ -1095,7 +1095,7 @@ function saveFlow() {
     var currentPageId = $("#input_node_flow_pageId").val();
     if (!currentId && !currentPageId) {
         //alert("Please click the close button and drag it again to create");
-        layer.msg('Please click the close button and drag it again to create', { icon: 2, shade: 0, time: 2000 });
+        layer.msg('Please click the close button and drag it again to create', {icon: 2, shade: 0, time: 2000});
         return
     }
     var flowName = $("#flowName").val();
@@ -1107,7 +1107,7 @@ function saveFlow() {
     if (!checkFlowInput(flowName, description, driverMemory, executorNumber, executorMemory, executorCores)) {
         // layer.closeAll()
         // alert("flowName Can not be empty")
-        layer.msg('flowName Can not be empty', { icon: 2, shade: 0, time: 2000 });
+        layer.msg('flowName Can not be empty', {icon: 2, shade: 0, time: 2000});
         return;
     }
     ajaxRequest({
@@ -1140,13 +1140,13 @@ function saveFlow() {
                 //reload xml
                 var xml = mxUtils.parseXml(dataMap.XmlData);
                 loadXml(dataMap.XmlData);
-                layer.msg(dataMap.errorMsg, { icon: 1, shade: 0, time: 2000 }, function () {
+                layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
                     selectCellByPageId(currentPageId, true);
                     queryFlowOrFlowGroupProperty(currentPageId, loadId);
                     layer.closeAll();
                 });
             } else {
-                layer.msg(dataMap.errorMsg, { icon: 2, shade: 0, time: 2000 });
+                layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
             }
         }
     });
@@ -1163,7 +1163,7 @@ function cancelFlow() {
 // check flowGroup required
 function checkGroupInput(flowName) {
     if (flowName == '') {
-        layer.msg('flowName Can not be empty', { icon: 2, shade: 0, time: 2000 });
+        layer.msg('flowName Can not be empty', {icon: 2, shade: 0, time: 2000});
         document.getElementById('flowName').focus();
         return false;
     }
@@ -1181,13 +1181,13 @@ function saveOrUpdateFlowGroup() {
     var currentPageId = $("#input_node_flowGroup_pageId").val();
     if (!currentId && !currentPageId) {
         //alert("Please click the close button and drag it again to create");
-        layer.msg('Please click the close button and drag it again to create', { icon: 2, shade: 0, time: 2000 });
+        layer.msg('Please click the close button and drag it again to create', {icon: 2, shade: 0, time: 2000});
         return;
     }
     var flowGroupName = $("#flowGroupName").val();
     var description = $("#flowGroup_description").val();
     if (!checkGroupInput(flowGroupName)) {
-        layer.msg('flowName Can not be empty', { icon: 2, shade: 0, time: 2000 });
+        layer.msg('flowName Can not be empty', {icon: 2, shade: 0, time: 2000});
         return;
     } else {
         ajaxRequest({
@@ -1204,7 +1204,7 @@ function saveOrUpdateFlowGroup() {
             async: true,
             traditional: true,
             error: function (request) {
-                layer.msg('request error ', { icon: 2, shade: 0, time: 2000 });
+                layer.msg('request error ', {icon: 2, shade: 0, time: 2000});
                 return;
             },
             success: function (data) {
@@ -1216,13 +1216,13 @@ function saveOrUpdateFlowGroup() {
                     //reload xml
                     var xml = mxUtils.parseXml(dataMap.XmlData);
                     loadXml(dataMap.XmlData);
-                    layer.msg(dataMap.errorMsg, { icon: 1, shade: 0, time: 2000 }, function () {
+                    layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
                         selectCellByPageId(currentPageId, true);
                         queryFlowOrFlowGroupProperty(currentPageId, loadId);
                         layer.closeAll();
                     });
                 } else {
-                    layer.msg(dataMap.errorMsg, { icon: 2, shade: 0, time: 2000 });
+                    layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
                 }
                 //console.log("attribute update success");
             }
@@ -1266,10 +1266,10 @@ function saveTemplateFun() {
             success: function (data) {//After the request is successful
                 var dataMap = JSON.parse(data);
                 if (200 === dataMap.code) {
-                    layer.msg(dataMap.errorMsg, { icon: 1, shade: 0, time: 2000 }, function () {
+                    layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
                     });
                 } else {
-                    layer.msg(dataMap.errorMsg, { icon: 2, shade: 0, time: 2000 });
+                    layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
                 }
             }
         });
@@ -1300,20 +1300,20 @@ function uploadTemplateFile(element) {
     }).success(function (data) {
         var dataMap = JSON.parse(data);
         if (200 === dataMap.code) {
-            layer.msg(dataMap.errorMsg, { icon: 1, shade: 0, time: 2000 }, function () {
+            layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
             });
         } else {
-            layer.msg(dataMap.errorMsg, { icon: 2, shade: 0, time: 2000 });
+            layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
         }
     }).error(function () {
-        layer.msg("Upload failure", { icon: 2, shade: 0, time: 2000 });
+        layer.msg("Upload failure", {icon: 2, shade: 0, time: 2000});
     });
 }
 
 // check file type
 function FileTypeCheck(element) {
     if (element.value == null || element.value == '') {
-        layer.msg('please upload the XML file', { icon: 2, shade: 0, time: 2000 });
+        layer.msg('please upload the XML file', {icon: 2, shade: 0, time: 2000});
         this.focus()
         return false;
     }
@@ -1321,7 +1321,7 @@ function FileTypeCheck(element) {
     var charindex = element.value.lastIndexOf(".");
     var ExtentName = element.value.substring(charindex, charindex + 4);
     if (!(ExtentName == ".xml")) {
-        layer.msg('please upload the XML file', { icon: 2, shade: 0, time: 2000 });
+        layer.msg('please upload the XML file', {icon: 2, shade: 0, time: 2000});
         this.focus()
         return false;
     }
@@ -1347,7 +1347,7 @@ function loadingXml(id, loadId) {
             icon_code = 1;
         }
         $('#fullScreen').hide();
-        layer.msg(dataMap.errorMsg, { icon: icon_code, shade: 0.7, time: 2000 }, function () {
+        layer.msg(dataMap.errorMsg, {icon: icon_code, shade: 0.7, time: 2000}, function () {
             window.location.reload();
         });
     }).error(function () {
@@ -1359,7 +1359,7 @@ function loadingXml(id, loadId) {
 function openTemplateList() {
     console.log("openTemplateListopenTemplateListopenTemplateListopenTemplateListopenTemplateListopenTemplateListopenTemplateList");
     if (isExample) {
-        layer.msg('This is an example, you can\'t edit', { icon: 2, shade: 0, time: 2000 });
+        layer.msg('This is an example, you can\'t edit', {icon: 2, shade: 0, time: 2000});
         return;
     }
     var url = "";
@@ -1406,7 +1406,7 @@ function openTemplateList() {
                     content: showSelectDivHtml
                 });
             } else {
-                layer.msg("No template, please create", { time: 2000 });
+                layer.msg("No template, please create", {time: 2000});
             }
         }
     });
@@ -1416,7 +1416,7 @@ function openTemplateList() {
 function loadTemplateFun() {
     var id = $("#loadingXmlSelectNew").val();
     if (id == '-1') {
-        layer.msg('Please choose template', { icon: 2, shade: 0, time: 2000 });
+        layer.msg('Please choose template', {icon: 2, shade: 0, time: 2000});
         return;
     }
 
@@ -1445,16 +1445,16 @@ function RunFlowOrFlowGroupCells(includeEdges) {
     $('#fullScreen').show();
     var cells = graphGlobal.getSelectionCells();
     if (cells != null && cells.length > 1) {
-        layer.msg('Multiple runs cannot be selected at the same time', { icon: 2, shade: 0, time: 2000 });
+        layer.msg('Multiple runs cannot be selected at the same time', {icon: 2, shade: 0, time: 2000});
         return;
     }
     ajaxRequest({
         type: "post",//Request type post
         url: "/mxGraph/groupRightRun",
-        data: { pId: loadId, nodeId: cells[0].id },
+        data: {pId: loadId, nodeId: cells[0].id},
         async: true,//Synchronous Asynchronous
         error: function (request) {//Operation after request failure
-            layer.msg("Startup failure：" + dataMap.errorMsg, { icon: 2, shade: 0, time: 2000 });
+            layer.msg("Startup failure：" + dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
             $('#fullScreen').hide();
             return;
         },
@@ -1462,7 +1462,7 @@ function RunFlowOrFlowGroupCells(includeEdges) {
             $('#fullScreen').hide();
             var dataMap = JSON.parse(data);
             if (200 === dataMap.code) {
-                layer.msg(dataMap.errorMsg, { icon: 1, shade: 0, time: 2000 }, function () {
+                layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
                     //Jump to the monitor page after starting successfully
                     if (dataMap.processGroupId) {
                         new_window_open("/drawingBoard/page/processGroup/mxGraph/index.html?drawingBoardType=PROCESS&processType=PROCESS_GROUP&load=" + dataMap.processGroupId);
@@ -1471,7 +1471,7 @@ function RunFlowOrFlowGroupCells(includeEdges) {
                     }
                 });
             } else {
-                layer.msg("Startup failure：" + dataMap.errorMsg, { icon: 2, shade: 0, time: 2000 });
+                layer.msg("Startup failure：" + dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
             }
         }
     })
@@ -1480,7 +1480,7 @@ function RunFlowOrFlowGroupCells(includeEdges) {
 //run flowGroup
 function runFlowGroup(runMode) {
     $('#fullScreen').show();
-    var data = { flowGroupId: loadId }
+    var data = {flowGroupId: loadId}
     if (runMode) {
         data.runMode = runMode;
     }
@@ -1492,7 +1492,7 @@ function runFlowGroup(runMode) {
         data: data,
         async: true,//Synchronous Asynchronous
         error: function (request) {//Operation after request failure
-            layer.msg("Request Failed", { icon: 2, shade: 0, time: 2000 }, function () {
+            layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000}, function () {
                 $('#fullScreen').hide();
             });
 
@@ -1501,12 +1501,12 @@ function runFlowGroup(runMode) {
         success: function (data) {//After the request is successful
             var dataMap = JSON.parse(data);
             if (200 === dataMap.code) {
-                layer.msg(dataMap.errorMsg, { icon: 1, shade: 0, time: 2000 }, function () {
+                layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
                     //Jump to the monitoring page after starting successfully
                     new_window_open("/drawingBoard/page/process/mxGraph/index.html?drawingBoardType=PROCESS&processType=PROCESS_GROUP&load=" + dataMap.processGroupId, '_blank');
                 });
             } else {
-                layer.msg("Startup failure：" + dataMap.errorMsg, { icon: 2, shade: 0, time: 2000 });
+                layer.msg("Startup failure：" + dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
             }
             $('#fullScreen').hide();
         }

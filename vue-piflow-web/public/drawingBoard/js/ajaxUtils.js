@@ -79,6 +79,11 @@ function ajaxRequest(param) {
 };
 
 function ajaxLoad(elementId, requestUrl, backFunc, errBackFunc) {
+    ajaxLoadAsync(elementId, requestUrl, true, backFunc, errBackFunc);
+}
+
+function ajaxLoadAsync(elementId, requestUrl, async, backFunc, errBackFunc) {
+    async = (async === undefined) ? true : async;
     $.ajax({
         type: "GET",
         async: true,
@@ -87,13 +92,6 @@ function ajaxLoad(elementId, requestUrl, backFunc, errBackFunc) {
             Authorization: ("Bearer " + token)
         },
         success: function (data) {
-            //data =  JSON.parse(data);
-            // if (data.code === 403 || data.code === 401) {
-            //     //  alert(data.errMsg);
-            //     console.log(data);
-            //     // window.location.href = (web_header_prefix + "/login");
-            //     return;
-            // }
             $("#" + elementId).html(data);
             if (backFunc && $.isFunction(backFunc)) {
                 backFunc(data);
@@ -113,10 +111,19 @@ function ajaxLoad(elementId, requestUrl, backFunc, errBackFunc) {
     // }
 }
 
+function ajaxFun(config) {
+    if (config) {
+        config.headers = {Authorization: ("Bearer " + token)};
+    } else {
+        console.log("ajax config error");
+        layer.msg("ajax config error", {icon: 2, shade: 0, time: 2000});
+    }
+}
+
 function getUrlParams(url) {
     var result = new Object();
     var idx = url.lastIndexOf('?');
-    // console.log(url);
+
     if (idx > 0) {
         var params = url.substring(idx + 1).split('&');
 
@@ -132,11 +139,12 @@ function getUrlParams(url) {
     return result;
 }
 
-function openLayerWindowLoadHtml(htmlStr, window_width, window_height, title) {
+function openLayerWindowLoadHtml(htmlStr, window_width, window_height, title, shade) {
+    shade = shade ? shade : 0;
     layer.open({
         type: 1,
         title: '<span style="color: #269252;">' + title + '</span>',
-        shade: 0,
+        shade: shade,
         shadeClose: false,
         closeBtn: 1,
         shift: 7,
@@ -146,11 +154,12 @@ function openLayerWindowLoadHtml(htmlStr, window_width, window_height, title) {
     });
 }
 
-function openLayerWindowLoadUrl(url, window_width, window_height, title) {
+function openLayerTypeIframeWindowLoadUrl(url, window_width, window_height, title, shade) {
+    shade = shade ? shade : 0;
     layer.open({
         type: 2,
         title: '<span style="color: #269252;">' + title + '</span>',
-        shade: 0,
+        shade: shade,
         shadeClose: false,
         closeBtn: 1,
         shift: 7,
