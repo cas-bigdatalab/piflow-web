@@ -334,4 +334,15 @@ public class SysParamsCache {
     }
 
     public static ThreadPoolExecutor THREAD_POOL_EXECUTOR;
+
+    public static String RESOURCE_INFO_URL;
+
+    @Value("${api.resourceInfoUrl}")
+    public void setResourceInfoUrl(String resourceInfoUrl) {
+        RESOURCE_INFO_URL = resourceInfoUrl;
+    }
+
+    public static String getResourceInfoUrl() {
+        return INTERFACE_URL_HEAD + RESOURCE_INFO_URL;
+    }
 }
