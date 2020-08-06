@@ -6,7 +6,7 @@
 <div>
     <span id="web_flowGroupList_navigation" style="display: none;">
         <span style="color: #ffffff">
-            <a style="color: #ffffff" href="/piflow-web/page/index.html?accessPath=flowGroupList">FlowGroupList</a>
+            <a style="color: #ffffff" th:href="@{/web/flowGroupList}">FlowGroupList</a>
         </span>
         <span style="color: #ffffff">>></span>
     </span>
@@ -15,13 +15,13 @@
         <span style="color: #ffffff">>></span>
         <span style="color: #ffffff">
             <a style="color: #ffffff"
-               th:href="'/page/flowGroup/mxGraph/index.html?drawingBoardType=GROUP&parentAccessPath=flowGroupList&load=' + ${parentsId}">FlowGroup</a>
+               th:href="@{/mxGraph/drawingBoard} + '?drawingBoardType=GROUP&parentAccessPath=flowGroupList&load=' + ${parentsId}">FlowGroup</a>
         </span>
         <span style="color: #ffffff">>></span>
     </span>
     <span id="web_flowList_navigation">
         <span style="color: #ffffff">
-            <a style="color: #ffffff" href="/piflow-web/page/index.html?accessPath=flowList">FlowList</a>
+            <a style="color: #ffffff" href="/piflow-web/index?accessPath=flowList">FlowList</a>
         </span>
         <span style="color: #ffffff">>></span>
     </span>

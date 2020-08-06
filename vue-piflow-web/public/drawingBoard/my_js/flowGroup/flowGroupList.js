@@ -27,7 +27,7 @@ function initDatatableFlowGroupPage(testTableId, url, searchInputId) {
             , headers: {
                 Authorization: ("Bearer " + token)
             }
-            , url: web_header_prefix + url
+            , url: url
             , cols: [[
                 {field: 'name', title: 'Name', sort: true},
                 {field: 'description', title: 'Description', sort: true},
@@ -96,14 +96,17 @@ function responseActionsFlow(res) {
 }
 
 function openFlowGroup(flowGroupId) {
-    new_window_open('/page/flowGroup/mxGraph/index.html?drawingBoardType=GROUP&load=' + flowGroupId + '');
+    var windowOpen = window.open('/piflow-web/page/flowGroup/drawingBoard?drawingBoardType=GROUP&load=' + flowGroupId + '');
+    if (windowOpen == null || typeof (windowOpen) == 'undefined') {
+        alert('The window cannot be opened. Please check your browser settings.')
+    }
 }
 
 function openFlowBaseInfo(id) {
-    ajaxRequest({
+    $.ajax({
         cache: true,//Keep cached data
         type: "get",//Request type post
-        url: "/flowGroup/queryFlowGroupData",//This is the name of the file where I receive data in the background.
+        url: "/piflow-web/flowGroup/queryFlowGroupData",//This is the name of the file where I receive data in the background.
         data: {load: id},
         async: false,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
         error: function (request) {//Operation after request failure
@@ -144,10 +147,10 @@ function saveOrUpdateFlowGroup() {
     var flowGroupName = $("#flowGroupName").val();
     var description = $("#description").val();
     if (checkGroupInput(flowGroupName)) {
-        ajaxRequest({
+        $.ajax({
             cache: true,//Keep cached data
             type: "get",//Request type post
-            url: "/flowGroup/saveOrUpdateFlowGroup",//This is the name of the file where I receive data in the background.
+            url: "/piflow-web/flowGroup/saveOrUpdateFlowGroup",//This is the name of the file where I receive data in the background.
             data: {
                 id: id,
                 name: flowGroupName,
@@ -164,7 +167,10 @@ function saveOrUpdateFlowGroup() {
                 var dataMap = JSON.parse(data);
                 if (200 === dataMap.code) {
                     layer.msg('success ', {icon: 1, shade: 0, time: 2000}, function () {
-                        new_window_open("/piflow-web/mxGraph/drawingBoard?drawingBoardType=GROUP&load=" + dataMap.flowGroupId);
+                        var windowOpen = window.open("/piflow-web/mxGraph/drawingBoard?drawingBoardType=GROUP&load=" + dataMap.flowGroupId);
+                        if (windowOpen == null || typeof (windowOpen) == 'undefined') {
+                            alert('The window cannot be opened. Please check your browser settings.')
+                        }
                     });
                 } else {
                     layer.msg('failed', {icon: 2, shade: 0, time: 2000});
@@ -179,10 +185,10 @@ function updateFlowGroup() {
     var flowGroupName = $("#flowGroupName").val();
     var description = $("#description").val();
     if (checkGroupInput(flowGroupName)) {
-        ajaxRequest({
+        $.ajax({
             cache: true,//Keep cached data
             type: "get",//Request type post
-            url: "/flowGroup/saveOrUpdateFlowGroup",//This is the name of the file where I receive data in the background.
+            url: "/piflow-web/flowGroup/saveOrUpdateFlowGroup",//This is the name of the file where I receive data in the background.
             data: {
                 id: id,
                 name: flowGroupName,
@@ -216,10 +222,10 @@ function listRunFlowGroup(loadId, runMode) {
     if (runMode) {
         data.runMode = runMode;
     }
-    ajaxRequest({
+    $.ajax({
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: "/flowGroup/runFlowGroup",//This is the name of the file where I receive data in the background.
+        url: "/piflow-web/flowGroup/runFlowGroup",//This is the name of the file where I receive data in the background.
         //data:$('#loginForm').serialize(),//Serialize the form
         data: data,
         async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
@@ -236,7 +242,11 @@ function listRunFlowGroup(loadId, runMode) {
             var dataMap = JSON.parse(data);
             if (200 === dataMap.code) {
                 layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
-                    new_window_open("/processGroup/getProcessGroupById?parentAccessPath=grapheditor&processGroupId=" + dataMap.processGroupId);
+                    var windowOpen = window.open("/piflow-web/processGroup/getProcessGroupById?parentAccessPath=grapheditor&processGroupId=" + dataMap.processGroupId);
+                    //var tempwindow = window.open('_blank');
+                    if (windowOpen == null || typeof (windowOpen) == 'undefined') {
+                        alert('The window cannot be opened. Please check your browser settings.')
+                    }
                 });
             } else {
                 //alert("Startup failure：" + dataMap.errorMsg);
@@ -254,10 +264,10 @@ function deleteFlowGroup(id, name) {
         btn: ['confirm', 'cancel'] //button
         , title: 'Confirmation prompt'
     }, function () {
-        ajaxRequest({
+        $.ajax({
             cache: true,//Keep cached data
             type: "get",//Request type post
-            url: "/flowGroup/deleteFlowGroup",//This is the name of the file where I receive data in the background.
+            url: "/piflow-web/flowGroup/deleteFlowGroup",//This is the name of the file where I receive data in the background.
             data: {id: id},
             async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
             error: function (request) {//Operation after request failure
@@ -300,10 +310,10 @@ function listSaveFlowGroupTemplate(id, name) {
         btn: ['submit', 'cancel']
     }, function (text, index) {
         layer.close(index);
-        ajaxRequest({
+        $.ajax({
             cache: true,//Keep cached data
             type: "get",//Request type post
-            url: "/flowTemplate/saveFlowTemplate",//This is the name of the file where I receive data in the background.
+            url: "/piflow-web/flowTemplate/saveFlowTemplate",//This is the name of the file where I receive data in the background.
             data: {
                 load: id,
                 name: text,

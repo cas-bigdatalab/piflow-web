@@ -1,6 +1,6 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<body>
+<body th:fragment=flow_group_List>
 
 <!-- content starts -->
 <div class="wrapper" style="margin: 20px;">
@@ -64,11 +64,10 @@
         </div>
     </form>
 </div>
-<script src="../../js/ajaxUtils.js"></script>
-<script src="../../my_js/flowGroup/flowGroupList.js"></script>
-
-<script type="text/javascript">
-    initDatatableFlowGroupPage('flowGroupTableId', "/flowGroup/getFlowGroupListPage", "search_input_id");
+<script th:src="@{/my_js/flowGroup/flowGroupList.js}"></script>
+<script th:src="@{/js/ajaxUtils.js}"></script>
+<script th:inline="javascript">
+    initDatatableFlowGroupPage('flowGroupTableId', "/piflow-web/flowGroup/getFlowGroupListPage", "search_input_id");
     //@ sourceURL=table_right.js
 </script>
 </body>
