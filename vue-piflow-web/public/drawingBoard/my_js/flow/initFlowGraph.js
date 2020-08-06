@@ -1,7 +1,7 @@
 // Extends EditorUi to update I/O action states based on availability of backend
 
 var parentsId, xmlDate, maxStopPageId, isExample, consumedFlag, timerPath, statusgroup, removegroupPaths;
-// var web_header_prefix = "/piflow-web";
+
 var index = true;
 var flag = 0;
 var fullScreen = $('#fullScreen');
@@ -59,7 +59,7 @@ function imageAjax() {
     ajaxRequest({
         type: "post",//Request type post
         url: "/mxGraph/nodeImageList",
-        data: { imageType: "TASK" },
+        data: {imageType: "TASK"},
         async: true,//Synchronous Asynchronous
         error: function (request) {//Operation after request failure
             return;
@@ -121,7 +121,7 @@ function updateMxGraphCellImage(cellEditor, selState, newValue, fn) {
                 Authorization: ("Bearer " + token)
             }
             , before: function (obj) {
-                this.data = { imageType: "TASK" };
+                this.data = {imageType: "TASK"};
                 loading = layer.load(0, {
                     shade: false,
                     success: function (layerContentStyle) {
@@ -349,7 +349,7 @@ function queryFlowInfo(loadId) {
         type: "POST",
         url: "/flow/queryFlowData",
         async: true,
-        data: { "load": loadId },
+        data: {"load": loadId},
         success: function (data) {//After the request is successful
             var dataMap = JSON.parse(data);
             $('#flow_info_inc_loading').hide();
@@ -405,7 +405,7 @@ function queryPathInfo(stopPageId, loadId) {
         type: "POST",
         url: "/path/queryPathInfo",
         async: true,
-        data: { "id": stopPageId, "fid": loadId },
+        data: {"id": stopPageId, "fid": loadId},
         success: function (data) {
             var dataMap = JSON.parse(data);
             $('#flow_path_inc_loading').hide();
@@ -450,7 +450,7 @@ function queryStopsProperty(stopPageId, loadId) {
         type: "POST",
         url: "/stops/queryIdInfo",
         async: true,
-        data: { "stopPageId": stopPageId, "fid": loadId },
+        data: {"stopPageId": stopPageId, "fid": loadId},
         success: function (data) {
             var dataMap = JSON.parse(data);
             $('#process_property_inc_loading').hide();
@@ -836,7 +836,7 @@ function getDatasourceList(stop_id, stops_page_id, dataSourceVo) {
                 }
             } else {
                 //alert(operType + " save fail");
-                layer.msg("Load fail", { icon: 2, shade: 0, time: 2000 });
+                layer.msg("Load fail", {icon: 2, shade: 0, time: 2000});
                 console.log("Load fail");
             }
         },
@@ -854,15 +854,15 @@ function fillDatasource(datasource, stop_id, stops_page_id) {
             type: "POST",
             url: "/datasource/fillDatasource",
             async: true,
-            data: { "dataSourceId": datasourceId, "stopId": stop_id },
+            data: {"dataSourceId": datasourceId, "stopId": stop_id},
             success: function (data) {//Operation after request successful
                 var dataMap = JSON.parse(data);
                 if (200 === dataMap.code) {
-                    layer.msg("update success", { icon: 1, shade: 0, time: 1000 }, function () {
+                    layer.msg("update success", {icon: 1, shade: 0, time: 1000}, function () {
                         queryStopsProperty(stops_page_id, loadId);
                     });
                 } else {
-                    layer.msg(dataMap.errorMsg, { icon: 2, shade: 0, time: 2000 });
+                    layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
                     console.log(dataMap.errorMsg);
                 }
             },
@@ -871,7 +871,7 @@ function fillDatasource(datasource, stop_id, stops_page_id) {
             }
         });
     } else {
-        layer.msg("failed, stopId is null or datasourceId is null", { icon: 2, shade: 0, time: 2000 });
+        layer.msg("failed, stopId is null or datasourceId is null", {icon: 2, shade: 0, time: 2000});
     }
 }
 
@@ -906,7 +906,7 @@ function saveXml(paths, operType) {
                 }
             } else {
                 //alert(operType + " save fail");
-                layer.msg(operType + " save fail", { icon: 2, shade: 0, time: 2000 });
+                layer.msg(operType + " save fail", {icon: 2, shade: 0, time: 2000});
                 console.log(operType + " save fail");
                 $('#fullScreen').hide();
             }
@@ -1099,11 +1099,11 @@ function crtAnyPort(crtPortInputId, isSource) {
             }
             $('.' + portNameVal).text(portNameVal);
         } else {
-            layer.msg("Port name occupied!!", { icon: 2, shade: 0, time: 2000 });
+            layer.msg("Port name occupied!!", {icon: 2, shade: 0, time: 2000});
         }
     } else {
         //alert("The port name cannot be empty");
-        layer.msg("Port name cannot be empty", { icon: 2, shade: 0, time: 2000 });
+        layer.msg("Port name cannot be empty", {icon: 2, shade: 0, time: 2000});
     }
 }
 
@@ -1120,7 +1120,7 @@ function checkChoosePort() {
     var sourceTypeDiv = $('#sourceTypeDiv');
     var targetTypeDiv = $("#targetTypeDiv");
     if (!sourceTypeDiv && !targetTypeDiv) {
-        layer.msg("Page error, please check!", { icon: 2, shade: 0, time: 2000 });
+        layer.msg("Page error, please check!", {icon: 2, shade: 0, time: 2000});
         return false;
     }
     var isSourceRoute = false;
@@ -1142,11 +1142,11 @@ function checkChoosePort() {
                 }
             });
             if (sourceEffCheckbox.length > 1) {
-                layer.msg("'sourcePort'can only choose one", { icon: 2, shade: 0, time: 2000 });
+                layer.msg("'sourcePort'can only choose one", {icon: 2, shade: 0, time: 2000});
                 return false;
             }
             if (sourceEffCheckbox < 1) {
-                layer.msg("Please select'sourcePort'", { icon: 2, shade: 0, time: 2000 });
+                layer.msg("Please select'sourcePort'", {icon: 2, shade: 0, time: 2000});
                 return false;
             }
             for (var i = 0; i < sourceEffCheckbox.length; i++) {
@@ -1159,7 +1159,7 @@ function checkChoosePort() {
             }
         }
     } else {
-        layer.msg("Page error, please check!", { icon: 2, shade: 0, time: 2000 });
+        layer.msg("Page error, please check!", {icon: 2, shade: 0, time: 2000});
         return false;
     }
     if (targetTitleCheckbox) {
@@ -1177,11 +1177,11 @@ function checkChoosePort() {
                 }
             });
             if (targetEffCheckbox.length > 1) {
-                layer.msg("'targetPort'can only choose one", { icon: 2, shade: 0, time: 2000 });
+                layer.msg("'targetPort'can only choose one", {icon: 2, shade: 0, time: 2000});
                 return false;
             }
             if (targetEffCheckbox.length < 1) {
-                layer.msg("Please select'targetPort'", { icon: 2, shade: 0, time: 2000 });
+                layer.msg("Please select'targetPort'", {icon: 2, shade: 0, time: 2000});
                 return false;
             }
             for (var i = 0; i < targetEffCheckbox.length; i++) {
@@ -1194,7 +1194,7 @@ function checkChoosePort() {
             }
         }
     } else {
-        layer.msg("Page error, please check!", { icon: 2, shade: 0, time: 2000 });
+        layer.msg("Page error, please check!", {icon: 2, shade: 0, time: 2000});
         return false;
     }
 
@@ -1231,7 +1231,7 @@ function checkChoosePort() {
 function choosePortNew() {
     if (pathsCells.length > 1) {
         graphGlobal.removeCells(pathsCells);
-        layer.msg("Page error, please check!", { icon: 2, shade: 0, time: 2000 }, function () {
+        layer.msg("Page error, please check!", {icon: 2, shade: 0, time: 2000}, function () {
             layer.closeAll();
             layer.closeAll();
         });
@@ -1257,7 +1257,7 @@ function choosePortNew() {
                         layer.closeAll();
                     } else {
                         //alert("Port Selection Save Failed");
-                        layer.msg("Port Selection Save Failed", { icon: 2, shade: 0, time: 2000 }, function () {
+                        layer.msg("Port Selection Save Failed", {icon: 2, shade: 0, time: 2000}, function () {
                             layer.closeAll();
                         });
                         graphGlobal.removeCells(pathsCells);
@@ -1335,7 +1335,7 @@ function deleteLastReloadData(stopId) {
     ajaxRequest({
         type: "POST",//Request type post
         url: "/stops/deleteLastReloadData",//This is the name of the file where I receive data in the background.
-        data: { stopId: stopId },
+        data: {stopId: stopId},
         error: function (request) {//Operation after request failure
             return;
         },
@@ -1367,7 +1367,7 @@ function deleteLastReloadData(stopId) {
 function prohibitEditing(evt, operationType) {
     if ('ADD' === operationType || 'REMOVED' === operationType) {
         var msgStr = "This is an example, you can't add, edit or delete";
-        layer.msg(msgStr, { icon: 2, shade: 0, time: 2000 });
+        layer.msg(msgStr, {icon: 2, shade: 0, time: 2000});
     } else if ('MOVED' === operationType) {
         flowMxEventClickFunc(evt.properties.cell, false);
     }
@@ -1409,7 +1409,7 @@ function saveCheckpoints(stopId) {
         async: true,
         traditional: true,
         error: function (request) {
-            layer.msg("Failure to mark'Checkpoint'", { icon: 2, shade: 0, time: 2000 });
+            layer.msg("Failure to mark'Checkpoint'", {icon: 2, shade: 0, time: 2000});
             return;
         },
         success: function (data) {
@@ -1422,7 +1422,7 @@ function saveCheckpoints(stopId) {
                 }, function () {
                 });
             } else {
-                layer.msg("Failed to modify the tag'Checkpoint'", { icon: 2, shade: 0, time: 2000 });
+                layer.msg("Failed to modify the tag'Checkpoint'", {icon: 2, shade: 0, time: 2000});
             }
 
         }
@@ -1455,17 +1455,17 @@ function updateStopsName() {
                 dec.decode(node, graphGlobal.getModel());
                 var s_cell = graphGlobal.getModel().getCell($("#input_flowStopsVo_pageId").val());
                 graphGlobal.addSelectionCell(s_cell);
-                layer.msg("attribute update success", { icon: 1, shade: 0, time: 2000 }, function () {
+                layer.msg("attribute update success", {icon: 1, shade: 0, time: 2000}, function () {
                 });
                 $("#span_stopsVo_name").text($("#input_stopsVo_name").val());
                 isShowUpdateStopsName(false);
             } else {
-                layer.msg(dataMap.errorMsg, { icon: 2, shade: 0, time: 2000 });
+                layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
             }
         },
         error: function (request) {
             console.log("attribute update error");
-            layer.msg("attribute update error", { icon: 2, shade: 0, time: 2000 });
+            layer.msg("attribute update error", {icon: 2, shade: 0, time: 2000});
             return;
         }
     });
@@ -1547,11 +1547,11 @@ function updateStopsProperty(stopsPropertyId, property_name_id, type) {
             var dataMap = JSON.parse(data);
             if (200 === dataMap.code) {
                 $("#" + stopsPropertyId).val(dataMap.value);
-                layer.msg("update success", { icon: 1, shade: 0, time: 1000 }, function () {
+                layer.msg("update success", {icon: 1, shade: 0, time: 1000}, function () {
                     layer.closeAll();
                 });
             } else {
-                layer.msg(dataMap.errorMsg, { icon: 2, shade: 0, time: 2000 }, function () {
+                layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000}, function () {
                 });
             }
         },
@@ -1626,12 +1626,12 @@ function addStopCustomProperty(reqData) {
         success: function (data) {//Operation after request successful
             var dataMap = JSON.parse(data);
             if (200 === dataMap.code) {
-                layer.msg("add success", { icon: 1, shade: 0, time: 1000 }, function () {
+                layer.msg("add success", {icon: 1, shade: 0, time: 1000}, function () {
                     layer.closeAll();
                     queryStopsProperty(dataMap.stopPageId, loadId);
                 });
             } else {
-                layer.msg(dataMap.errorMsg, { icon: 2, shade: 0, time: 2000 }, function () {
+                layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000}, function () {
                 });
             }
         },
@@ -1677,7 +1677,7 @@ function updateStopsCustomizedProperty(id, name, e) {
                 });
                 $("#" + id).val(dataMap.value);
             } else {
-                layer.msg('', { icon: 2, shade: 0, time: 2000 }, function () {
+                layer.msg('', {icon: 2, shade: 0, time: 2000}, function () {
                 });
             }
             layer.closeAll('page');
@@ -1694,19 +1694,19 @@ function removeStopCustomProperty(stopPageId, customPropertyId, isRouter) {
         ajaxRequest({
             type: "POST",//Request type post
             url: "/stops/deleteStopsCustomizedProperty",//This is the name of the file where I receive data in the background.
-            data: { customPropertyId: customPropertyId },
+            data: {customPropertyId: customPropertyId},
             error: function (request) {//Operation after request failure
                 return;
             },
             success: function (data) {//Operation after request successful
                 var dataMap = JSON.parse(data);
                 if (200 === dataMap.code) {
-                    layer.msg("add success", { icon: 1, shade: 0, time: 1000 }, function () {
+                    layer.msg("add success", {icon: 1, shade: 0, time: 1000}, function () {
                         layer.closeAll();
                         queryStopsProperty(stopPageId, loadId);
                     });
                 } else {
-                    layer.msg(dataMap.errorMsg, { icon: 2, shade: 0, time: 2000 }, function () {
+                    layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000}, function () {
                     });
                 }
             }
@@ -1718,7 +1718,7 @@ function getRouterAllPaths(customPropertyId) {
     ajaxRequest({
         type: "POST",//Request type post
         url: "/stops/getRouterStopsCustomizedProperty",//This is the name of the file where I receive data in the background.
-        data: { customPropertyId: customPropertyId },
+        data: {customPropertyId: customPropertyId},
         error: function (request) {//Operation after request failure
             return;
         },
@@ -1727,14 +1727,14 @@ function getRouterAllPaths(customPropertyId) {
             if (200 === dataMap.code) {
                 if (dataMap.pathsVoList) {
                     var showPathsHtml = '<span>Deleting this rule will affect the following:</span>';
-                    layer.confirm(showPathsHtml, { icon: 1, shade: 0, time: 1000 }, function () {
+                    layer.confirm(showPathsHtml, {icon: 1, shade: 0, time: 1000}, function () {
                     });
                 } else {
                     //removeRouterStopCustomProperty(customPropertyId);
                     console.log("failed");
                 }
             } else {
-                layer.msg(dataMap.errorMsg, { icon: 2, shade: 0, time: 2000 }, function () {
+                layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000}, function () {
                 });
             }
         }
@@ -1745,19 +1745,19 @@ function removeRouterStopCustomProperty(customPropertyId) {
     ajaxRequest({
         type: "POST",//Request type post
         url: "/stops/deleteRouterStopsCustomizedProperty",//This is the name of the file where I receive data in the background.
-        data: { customPropertyId: customPropertyId },
+        data: {customPropertyId: customPropertyId},
         error: function (request) {//Operation after request failure
             return;
         },
         success: function (data) {//Operation after request successful
             var dataMap = JSON.parse(data);
             if (200 === dataMap.code) {
-                layer.msg("add success", { icon: 1, shade: 0, time: 1000 }, function () {
+                layer.msg("add success", {icon: 1, shade: 0, time: 1000}, function () {
                     layer.closeAll();
                     queryStopsProperty(stopPageId, loadId);
                 });
             } else {
-                layer.msg(dataMap.errorMsg, { icon: 2, shade: 0, time: 2000 }, function () {
+                layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000}, function () {
                 });
             }
         }
@@ -1784,14 +1784,14 @@ function ClickSlider() {
 function reloadStops() {
     $('#fullScreen').show();
     ajaxRequest({
-        data: { "load": loadId },
+        data: {"load": loadId},
         cache: true,//Keep cached data
         type: "POST",//Request type post
         url: "/stops/reloadStops",
         error: function (request) {//Operation after request failure
             $('#fullScreen').hide();
             //alert("reload fail");
-            layer.msg("reload fail", { icon: 2, shade: 0, time: 2000 }, function () {
+            layer.msg("reload fail", {icon: 2, shade: 0, time: 2000}, function () {
             });
             return;
         },
@@ -1801,7 +1801,7 @@ function reloadStops() {
                 window.location.href = (web_header_prefix + "/page/flow/drawingBoard?drawingBoardType=TASK&load=" + dataMap.load + "&_" + new Date().getTime());
             } else {
                 //alert("reload fail");
-                layer.msg("reload fail", { icon: 2, shade: 0, time: 2000 }, function () {
+                layer.msg("reload fail", {icon: 2, shade: 0, time: 2000}, function () {
                 });
                 $('#fullScreen').hide();
             }
@@ -1812,7 +1812,7 @@ function reloadStops() {
 //open template list
 function openTemplateList() {
     if (isExample) {
-        layer.msg('This is an example, you can\'t edit', { icon: 2, shade: 0, time: 2000 });
+        layer.msg('This is an example, you can\'t edit', {icon: 2, shade: 0, time: 2000});
         return;
     }
     var url = "";
@@ -1856,7 +1856,7 @@ function openTemplateList() {
                     content: showSelectDivHtml
                 });
             } else {
-                layer.msg("No template, please create", { time: 2000 });
+                layer.msg("No template, please create", {time: 2000});
             }
         }
     });
@@ -1890,9 +1890,9 @@ function saveTemplateFun() {
             success: function (data) {//After the request is successful
                 var dataMap = JSON.parse(data);
                 if (200 === dataMap.code) {
-                    layer.msg(dataMap.errorMsg, { icon: 1, shade: 0, time: 2000 });
+                    layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000});
                 } else {
-                    layer.msg(dataMap.errorMsg, { icon: 2, shade: 0, time: 2000 });
+                    layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
                 }
             }
         });
@@ -1907,7 +1907,7 @@ function uploadTemplate() {
 //file type check
 function FileTypeCheck(element) {
     if (element.value == null || element.value == '') {
-        layer.msg('please upload the XML file', { icon: 2, shade: 0, time: 2000 });
+        layer.msg('please upload the XML file', {icon: 2, shade: 0, time: 2000});
         this.focus()
         return false;
     }
@@ -1915,7 +1915,7 @@ function FileTypeCheck(element) {
     var charindex = element.value.lastIndexOf(".");
     var ExtentName = element.value.substring(charindex, charindex + 4);
     if (!(ExtentName == ".xml")) {
-        layer.msg('please upload the XML file', { icon: 2, shade: 0, time: 2000 });
+        layer.msg('please upload the XML file', {icon: 2, shade: 0, time: 2000});
         this.focus()
         return false;
     }
@@ -1938,13 +1938,13 @@ function uploadTemplateFile(element) {
         success: function (data) {
             var dataMap = JSON.parse(data);
             if (200 === dataMap.code) {
-                layer.msg(dataMap.errorMsg, { icon: 1, shade: 0, time: 2000 });
+                layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000});
             } else {
-                layer.msg(dataMap.errorMsg, { icon: 2, shade: 0, time: 2000 });
+                layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
             }
         },
         error: function () {
-            layer.msg("Upload failure", { icon: 2, shade: 0, time: 2000 });
+            layer.msg("Upload failure", {icon: 2, shade: 0, time: 2000});
         }
     });
 }
@@ -1953,7 +1953,7 @@ function uploadTemplateFile(element) {
 function loadTemplateFun() {
     var id = $("#loadingXmlSelectNew").val();
     if (id == '-1') {
-        layer.msg('Please choose template', { icon: 2, shade: 0, time: 2000 });
+        layer.msg('Please choose template', {icon: 2, shade: 0, time: 2000});
         return;
     }
 
@@ -2021,6 +2021,7 @@ function runFlow(runMode) {
             var dataMap = JSON.parse(data);
             if (200 === dataMap.code) {
                 layer.msg(dataMap.errorMsg, { icon: 1, shade: 0, time: 2000 }, function () {
+                    //Jump to the monitor page after starting successfully
                     new_window_open("/drawingBoard/page/process/mxGraph/index.html?drawingBoardType=PROCESS&processType=PROCESS&load=" + dataMap.processId);
                 });
             } else {

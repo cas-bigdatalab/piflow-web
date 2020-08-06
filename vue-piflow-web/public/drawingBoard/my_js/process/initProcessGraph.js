@@ -7,7 +7,7 @@ var index = true
 var nodeArr, xmlDate, parentsId, processType, processGroupId, parentProcessId, pID, appId, processState;
 
 
-function initCrumbs(parentAccessPath) {
+function initProcessCrumbs(parentAccessPath) {
     if (parentAccessPath) {
         switch (parentAccessPath) {
             case "flow":
@@ -30,7 +30,6 @@ function initCrumbs(parentAccessPath) {
 
 function initProcessDrawingBoardData(loadId, parentAccessPath, backFunc) {
     $('#fullScreen').show();
-    // console.log('sdfcse');
     ajaxRequest({
         cache: true,//Keep cached data
         type: "get",//Request for get
@@ -40,7 +39,7 @@ function initProcessDrawingBoardData(loadId, parentAccessPath, backFunc) {
             loadId: loadId,
             parentAccessPath: parentAccessPath
         },
-        async: false,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
+        async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
         error: function (request) {//Operation after request failure
             // window.location.href = (web_baseUrl + "/error/404");
             return;
@@ -67,24 +66,23 @@ function initProcessDrawingBoardData(loadId, parentAccessPath, backFunc) {
             } else {
                 //window.location.href = (web_baseUrl + "/error/404");
             }
-            $('#fullScreen').hide();
             if (backFunc && $.isFunction(backFunc)) {
                 backFunc(data);
             }
+            $('#fullScreen').hide();
         }
     });
 }
 
 function initProcessGraph() {
     Format.noEditing(true);
-    //Format.customizeType = "PROCESS";
-    var editorUiInit = EditorUi.prototype.init;
     $("#right-group-wrap")[0].style.display = "block";
     $("#precess-run")[0].style.display = "block";
     EditorUi.prototype.menubarHeight = 48;
     EditorUi.prototype.menubarShow = false;
     EditorUi.prototype.customToobar = true;
 
+    var editorUiInit = EditorUi.prototype.init;
     EditorUi.prototype.init = function () {
         editorUiInit.apply(this, arguments);
         graphGlobal = this.editor.graph;
