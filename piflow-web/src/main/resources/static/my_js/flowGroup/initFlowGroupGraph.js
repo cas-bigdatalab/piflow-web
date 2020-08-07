@@ -24,7 +24,15 @@ function initFlowGroupDrawingBoardData(loadId, parentAccessPath) {
                 maxStopPageId = dataMap.maxStopPageId;
                 isExample = dataMap.isExample;
                 if (dataMap.mxGraphComponentList) {
-                    Sidebar.prototype.component_data = dataMap.mxGraphComponentList
+                    var mxGraphComponentList = dataMap.mxGraphComponentList;
+                    for (var index = 0; index < mxGraphComponentList.length; index++) {
+                        var component_prefix = mxGraphComponentList[index].component_prefix
+                        if (component_prefix.indexOf("/piflow-web/")>-1) {
+                            component_prefix = component_prefix.replace('/piflow-web', sever_base_origin)
+                        }
+                        mxGraphComponentList[index].component_prefix = component_prefix
+                    }
+                    Sidebar.prototype.component_data = mxGraphComponentList
                 }
             } else {
                 window.location.href = (web_header_prefix + "/error/404");

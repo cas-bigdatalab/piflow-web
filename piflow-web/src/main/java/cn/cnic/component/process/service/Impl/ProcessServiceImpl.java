@@ -726,18 +726,18 @@ public class ProcessServiceImpl implements IProcessService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("param is null");
         }
         String checkpoints = null;
-        String[] checkpointsSplit = null;
         if (StringUtils.isNotBlank(parentProcessId) && !"null".equals(parentProcessId)) {
             checkpoints = flowImpl.getCheckpoints(parentProcessId);
         } else if (StringUtils.isNotBlank(pID)) {
             checkpoints = flowImpl.getCheckpoints(pID);
         }
         if (StringUtils.isNotBlank(checkpoints)) {
-            checkpointsSplit = checkpoints.split(",");
+            String[] checkpointsSplit = checkpoints.split(",");
+            return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("checkpointsSplit", checkpointsSplit);
         } else {
             logger.warn("No checkpoints found");
+            return ReturnMapUtils.setSucceededMsgRtnJsonStr("No checkpoints found");
         }
-        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("checkpointsSplit", checkpointsSplit);
     }
 
     /**

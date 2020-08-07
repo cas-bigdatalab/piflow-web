@@ -3,22 +3,22 @@
 <body>
 
 
-<div th:fragment=process_crumbs_task>
+<div>
     <span id="web_flowList_navigation" style="display: none;">
         <span style="color: #ffffff">
-            <a style="color: #ffffff" href="/piflow-web/index?accessPath=flowList">FlowList</a>
+            <a style="color: #ffffff" href="/piflow-web/page/index.html?accessPath=flowList">FlowList</a>
         </span>
         <span style="color: #ffffff">&gt;&gt;</span>
     </span>
     <span id="grapheditor_home_navigation" style="display: none;">
         <span style="color: #ffffff;">
-            <a style="color: #ffffff" href="/piflow-web/mxGraph/drawingBoard?drawingBoardType=TASK&load=" + process >Flow</a>
+            <a style="color: #ffffff" href="/piflow-web/page/flow/mxGraph/index.html?drawingBoardType=TASK&load=" + process >Flow</a>
         </span>
         <span style="color: #ffffff">&gt;&gt;</span>
     </span>
     <span id="web_processGroupList_navigation" style="display: none;">
         <span style="color: #ffffff">
-            <a style="color: #ffffff" href="/piflow-web/web/processAndProcessGroup">ProcessGroupList</a>
+            <a style="color: #ffffff" href="/piflow-web/page/index.html?accessPath=processAndProcessGroup">ProcessGroupList</a>
         </span>
         <span style="color: #ffffff">&gt;&gt;</span>
     </span>
@@ -27,7 +27,7 @@
         <span style="color: #ffffff">&gt;&gt;</span>
         <span style="color: #ffffff">
             <a style="color: #ffffff"
-               href="/piflow-web/mxGraph/drawingBoard?parentAccessPath=processGroupList&drawingBoardType=PROCESS&processType=PROCESS_GROUP&load=" + processGroupId>ProcessGroup</a>
+               href="/piflow-web/page/processGroup/mxGraph/index.html?parentAccessPath=processGroupList&drawingBoardType=PROCESS&processType=PROCESS_GROUP&load=" + processGroupId>ProcessGroup</a>
         </span>
         <span style="color: #ffffff">&gt;&gt;</span>
     </span>
@@ -39,7 +39,7 @@
     </span>
     <span id="web_processList_navigation">
         <span style="color: #ffffff">
-            <a style="color: #ffffff" href="/piflow-web/web/processAndProcessGroup">Process</a>
+            <a style="color: #ffffff" href="/piflow-web/page/index.html?accessPath=processAndProcessGroup">Process</a>
         </span>
         <span style="color: #ffffff">&gt;&gt;</span>
     </span>
