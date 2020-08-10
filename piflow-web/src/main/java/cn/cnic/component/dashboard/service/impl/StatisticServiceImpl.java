@@ -42,6 +42,28 @@ public class StatisticServiceImpl implements IStatisticService {
         return flowInfoMap;
     }
 
+    @Override
+    public Map<String, String> getScheduleStatisticInfo() {
+        return null;
+    }
+
+    @Override
+    public Map<String, String> getTemplateAndDataSourceStatisticInfo() {
+        Map<String, String> infoMap = new HashMap<>();
+        infoMap.put("TEMPLATE_COUNT", String.valueOf(statisticMapper.getTemplateCount()));
+        infoMap.put("DATASOURCE_COUNT", String.valueOf(statisticMapper.getDataSourceCount()));
+        infoMap.put("STOPSHUB_COUNT",  String.valueOf(statisticMapper.getStopsHubCount()));
+        return infoMap;
+    }
+
+    @Override
+    public Map<String, String> getStopStatisticInfo() {
+        Map<String, String> infoMap = new HashMap<>();
+        infoMap.put("STOP_COUNT", String.valueOf(statisticMapper.getStopsCount()));
+        infoMap.put("STOPGROUP_COUNT", String.valueOf(statisticMapper.getStopsGroupCount()));
+        return infoMap;
+    }
+
     private Map<String, String> convertList2Map(List<Map<String, String>> sqlResult, String key, String value){
         Map<String, String> result = sqlResult.stream().collect(Collectors.toMap(s -> (String)s.get(key), s -> String.valueOf(s.get(value))));
         return result;

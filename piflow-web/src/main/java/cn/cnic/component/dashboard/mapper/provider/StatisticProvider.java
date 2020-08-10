@@ -26,4 +26,29 @@ public class StatisticProvider {
         String sql = "select count(*) as count from flow_group where enable_flag = 1 and fk_flow_group_id is null";
         return  sql;
     }
+
+    public String getTemplateCount(){
+        String sql = "select count(*) as count from flow_template where enable_flag = 1";
+        return  sql;
+    }
+
+    public String getDataSourceCount(){
+        String sql = "select count(*) as count from data_source where enable_flag = 1 and is_template = 0";
+        return  sql;
+    }
+
+    public String getStopsHubCount(){
+        String sql = "select count(*) as count from stops_hub where enable_flag = 1";
+        return  sql;
+    }
+
+    public String getStopsCount(){
+        String sql = "select count(*) as count from flow_stops_template";
+        return  sql;
+    }
+
+    public String getStopsGroupCount(){
+        String sql = "select count(*) as count from flow_stops_groups";
+        return  sql;
+    }
 }

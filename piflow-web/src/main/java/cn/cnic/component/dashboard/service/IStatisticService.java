@@ -17,4 +17,26 @@ public interface IStatisticService {
      * @return statisticInfo
      */
     public Map<String,String> getGroupStatisticInfo();
+
+    /**
+     * get schedule statistic info
+     *
+     * @return statisticInfo
+     */
+    public Map<String,String> getScheduleStatisticInfo();
+
+    /**
+     * get template and dataSource statistic info
+     *
+     * @return statisticInfo
+     */
+    public Map<String,String> getTemplateAndDataSourceStatisticInfo();
+
+    /**
+     * get stop statistic info
+     *
+     * @return statisticInfo
+     */
+    public Map<String,String> getStopStatisticInfo();
+
 }

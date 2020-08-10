@@ -28,6 +28,23 @@ public class StatisticTest extends ApplicationTests {
         Map<String,String> result = statisticServiceImpl.getGroupStatisticInfo();
         //JsonUtils.toJsonNoException(setSucceededCustomParam(key, value));
         System.out.println(result);
+    }
+
+    @Test
+    @Rollback(false)
+    public void testGetTemplateAndDataSourceStatisticInfo() {
+        Map<String,String> result = statisticServiceImpl.getTemplateAndDataSourceStatisticInfo();
+        //JsonUtils.toJsonNoException(setSucceededCustomParam(key, value));
+        System.out.println(result);
+
+    }
+
+    @Test
+    @Rollback(false)
+    public void testGetStopStatisticInfo() {
+        Map<String,String> result = statisticServiceImpl.getStopStatisticInfo();
+        //JsonUtils.toJsonNoException(setSucceededCustomParam(key, value));
+        System.out.println(result);
 
     }
 }
