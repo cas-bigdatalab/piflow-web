@@ -22,14 +22,14 @@ public class StatisticServiceImpl implements IStatisticService {
 
     @Override
     public Map<String,String> getFlowStatisticInfo() {
-        List<Map<String, String>> ProcessStatisticList= statisticMapper.getFlowProcessStatisticInfo();
-        Map<String, String> processInfoMap = convertList2Map(ProcessStatisticList, "state", "count");
+        List<Map<String, String>> processStatisticList= statisticMapper.getFlowProcessStatisticInfo();
+        Map<String, String> processInfoMap = convertList2Map(processStatisticList, "state", "count");
         int processorCount = processInfoMap.values().stream().mapToInt(Integer::parseInt).sum();
         Map<String, String> flowInfoMap = new HashMap<>();
-        flowInfoMap.put("PROCESSOR_STARTED_COUNT", processInfoMap.get("STARTED"));
-        flowInfoMap.put("PROCESSOR_COMPETED_COUNT", processInfoMap.get("COMPLETED"));
-        flowInfoMap.put("PROCESSOR_FAILED_COUNT", processInfoMap.get("FAILED"));
-        flowInfoMap.put("PROCESSOR_KILLED_COUNT", processInfoMap.get("KILLED"));
+        flowInfoMap.put("PROCESSOR_STARTED_COUNT", processInfoMap.getOrDefault("STARTED","0"));
+        flowInfoMap.put("PROCESSOR_COMPETED_COUNT", processInfoMap.getOrDefault("COMPLETED","0"));
+        flowInfoMap.put("PROCESSOR_FAILED_COUNT", processInfoMap.getOrDefault("FAILED","0"));
+        flowInfoMap.put("PROCESSOR_KILLED_COUNT", processInfoMap.getOrDefault("KILLED","0"));
         int otherStateCount = flowInfoMap.values().stream().mapToInt(Integer::parseInt).sum();
         flowInfoMap.put("PROCESSOR_OTHER_COUNT", String.valueOf(processorCount - otherStateCount));
         flowInfoMap.put("PROCESSOR_COUNT", String.valueOf(processorCount));
@@ -39,14 +39,14 @@ public class StatisticServiceImpl implements IStatisticService {
 
     @Override
     public Map<String, String> getGroupStatisticInfo() {
-        List<Map<String, String>> ProcessStatisticList= statisticMapper.getGroupProcessStatisticInfo();
-        Map<String, String> processInfoMap = convertList2Map(ProcessStatisticList, "state", "count");
+        List<Map<String, String>> processStatisticList= statisticMapper.getGroupProcessStatisticInfo();
+        Map<String, String> processInfoMap = convertList2Map(processStatisticList, "state", "count");
         int processorCount = processInfoMap.values().stream().mapToInt(Integer::parseInt).sum();
         Map<String, String> groupInfoMap = new HashMap<>();
-        groupInfoMap.put("PROCESSOR_STARTED_COUNT", processInfoMap.get("STARTED"));
-        groupInfoMap.put("PROCESSOR_COMPETED_COUNT", processInfoMap.get("COMPLETED"));
-        groupInfoMap.put("PROCESSOR_FAILED_COUNT", processInfoMap.get("FAILED"));
-        groupInfoMap.put("PROCESSOR_KILLED_COUNT", processInfoMap.get("KILLED"));
+        groupInfoMap.put("PROCESSOR_STARTED_COUNT", processInfoMap.getOrDefault("STARTED","0"));
+        groupInfoMap.put("PROCESSOR_COMPETED_COUNT", processInfoMap.getOrDefault("COMPLETED","0"));
+        groupInfoMap.put("PROCESSOR_FAILED_COUNT", processInfoMap.getOrDefault("FAILED","0"));
+        groupInfoMap.put("PROCESSOR_KILLED_COUNT", processInfoMap.getOrDefault("KILLED","0"));
         int otherStateCount = groupInfoMap.values().stream().mapToInt(Integer::parseInt).sum();
         groupInfoMap.put("PROCESSOR_OTHER_COUNT", String.valueOf(processorCount - otherStateCount));
         groupInfoMap.put("PROCESSOR_COUNT", String.valueOf(processorCount));
@@ -57,7 +57,16 @@ public class StatisticServiceImpl implements IStatisticService {
 
     @Override
     public Map<String, String> getScheduleStatisticInfo() {
-        return null;
+        List<Map<String, String>> scheduleStatisticList= statisticMapper.getScheduleStatisticInfo();
+        Map<String, String> scheduleStatusMap = convertList2Map(scheduleStatisticList, "status", "count");
+        int scheduleCount = scheduleStatusMap.values().stream().mapToInt(Integer::parseInt).sum();
+        Map<String, String> scheduleInfoMap = new HashMap<>();
+        scheduleInfoMap.put("SCHEDULE_COUNT", String.valueOf(scheduleCount));
+        scheduleInfoMap.put("SCHEDULE_INIT_COUNT", scheduleStatusMap.getOrDefault("INIT","0"));
+        scheduleInfoMap.put("SCHEDULE_RUNNING_COUNT", scheduleStatusMap.getOrDefault("RUNNING","0"));
+        scheduleInfoMap.put("SCHEDULE_STOP_COUNT", scheduleStatusMap.getOrDefault("STOP","0"));
+        return scheduleInfoMap;
+
     }
 
     @Override

@@ -27,6 +27,12 @@ public class StatisticProvider {
         return  sql;
     }
 
+    public String getScheduleStatisticInfo(){
+        String sql = "select status, count(*) as count from group_schedule where enable_flag = 1 GROUP BY status";
+        return  sql;
+    }
+
+
     public String getTemplateCount(){
         String sql = "select count(*) as count from flow_template where enable_flag = 1";
         return  sql;

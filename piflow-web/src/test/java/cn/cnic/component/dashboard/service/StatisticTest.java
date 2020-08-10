@@ -32,6 +32,14 @@ public class StatisticTest extends ApplicationTests {
 
     @Test
     @Rollback(false)
+    public void testGetScheduleStatisticInfo() {
+        Map<String,String> result = statisticServiceImpl.getScheduleStatisticInfo();
+        //JsonUtils.toJsonNoException(setSucceededCustomParam(key, value));
+        System.out.println(result);
+    }
+
+    @Test
+    @Rollback(false)
     public void testGetTemplateAndDataSourceStatisticInfo() {
         Map<String,String> result = statisticServiceImpl.getTemplateAndDataSourceStatisticInfo();
         //JsonUtils.toJsonNoException(setSucceededCustomParam(key, value));

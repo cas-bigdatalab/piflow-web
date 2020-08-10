@@ -47,6 +47,14 @@ public interface StatisticMapper {
 
 
     /**
+     * query schedule statistic info
+     *
+     * @return statistic info map
+     */
+    @SelectProvider(type = StatisticProvider.class, method = "getScheduleStatisticInfo")
+    public List<Map<String, String>>getScheduleStatisticInfo();
+
+    /**
      * query template count
      *
      * @return templateCount
