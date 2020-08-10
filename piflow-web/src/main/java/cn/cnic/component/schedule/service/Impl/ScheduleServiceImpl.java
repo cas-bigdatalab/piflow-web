@@ -7,6 +7,7 @@ import cn.cnic.component.schedule.entity.Schedule;
 import cn.cnic.component.schedule.mapper.ScheduleMapper;
 import cn.cnic.component.schedule.service.IScheduleService;
 import cn.cnic.component.schedule.vo.ScheduleVo;
+import cn.cnic.third.service.ISchedule;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.apache.commons.lang3.StringUtils;
@@ -21,10 +22,11 @@ import java.util.Map;
 @Service
 public class ScheduleServiceImpl implements IScheduleService {
 
-    Logger logger = LoggerUtil.getLogger();
-
     @Resource
     private ScheduleMapper scheduleMapper;
+
+    @Resource
+    private ISchedule scheduleImpl;
 
     @Override
     public String getScheduleVoListPage(boolean isAdmin, String username, Integer offset, Integer limit, String param) {
@@ -145,6 +147,7 @@ public class ScheduleServiceImpl implements IScheduleService {
         if (null == scheduleById) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Data does not exist");
         }
+        //String s = scheduleImpl.scheduleStart(username, scheduleById);
         return ReturnMapUtils.setSucceededMsgRtnJsonStr(ReturnMapUtils.SUCCEEDED_MSG);
     }
 
