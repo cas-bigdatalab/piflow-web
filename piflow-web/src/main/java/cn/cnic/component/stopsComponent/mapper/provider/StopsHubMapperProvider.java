@@ -248,7 +248,6 @@ public class StopsHubMapperProvider {
         strBuf.append("select * ");
         strBuf.append("from stops_hub ");
         strBuf.append("where enable_flag = 1 ");
-        strBuf.append("and is_template = 0 ");
         if (StringUtils.isNotBlank(param)) {
             strBuf.append("and ( ");
             strBuf.append("jar_name like '%" + param + "%' ");
