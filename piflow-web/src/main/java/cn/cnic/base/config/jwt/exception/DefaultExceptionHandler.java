@@ -1,8 +1,10 @@
 package cn.cnic.base.config.jwt.exception;
 
+import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.common.Eunm.ResultCode;
 import cn.cnic.base.config.jwt.common.ResultJson;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -14,9 +16,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  * Created at 2018/8/27.
  */
 @RestControllerAdvice
-@Slf4j
 @SuppressWarnings("rawtypes")
 public class DefaultExceptionHandler {
+
+    Logger logger = LoggerUtil.getLogger();
 
     /**
      * 处理所有自定义异常
@@ -25,7 +28,7 @@ public class DefaultExceptionHandler {
      */
 	@ExceptionHandler(CustomException.class)
     public ResultJson handleCustomException(CustomException e){
-        log.error(e.getResultJson().getMsg().toString());
+        logger.error(e.getResultJson().getMsg().toString());
         return e.getResultJson();
     }
     /**
@@ -35,7 +38,7 @@ public class DefaultExceptionHandler {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResultJson handleMethodArgumentNotValidException(MethodArgumentNotValidException e){
-        log.error(e.getBindingResult().getFieldError().getField() + e.getBindingResult().getFieldError().getDefaultMessage());
+        logger.error(e.getBindingResult().getFieldError().getField() + e.getBindingResult().getFieldError().getDefaultMessage());
         return ResultJson.failure(ResultCode.BAD_REQUEST, e.getBindingResult().getFieldError().getDefaultMessage());
     }
 }

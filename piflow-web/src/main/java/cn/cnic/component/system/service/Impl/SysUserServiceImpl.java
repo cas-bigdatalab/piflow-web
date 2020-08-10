@@ -4,6 +4,7 @@ import cn.cnic.base.config.jwt.common.JwtUtils;
 import cn.cnic.base.config.jwt.common.ResultJson;
 import cn.cnic.base.config.jwt.exception.CustomException;
 import cn.cnic.base.util.JsonUtils;
+import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.base.util.ReturnMapUtils;
 import cn.cnic.base.util.UUIDUtils;
 import cn.cnic.base.vo.UserVo;
@@ -17,6 +18,7 @@ import cn.cnic.component.system.vo.SysUserVo;
 import cn.cnic.component.system.jpa.domain.SysUserDomain;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,7 +38,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-@Slf4j
 @Service
 @SuppressWarnings("unused")
 public class SysUserServiceImpl implements ISysUserService {
@@ -55,6 +56,8 @@ public class SysUserServiceImpl implements ISysUserService {
         this.userDetailsService = userDetailsService;
         this.jwtTokenUtil = jwtTokenUtil;
     }
+
+    Logger logger = LoggerUtil.getLogger();
 
     @Resource
     private SysUserDomain sysUserDomain;
@@ -152,7 +155,7 @@ public class SysUserServiceImpl implements ISysUserService {
             sysUserTransactional.addSysUser(sysUser);
             return ReturnMapUtils.setSucceededMsgRtnJsonStr("Congratulations, registration is successful");
         } catch (Exception e) {
-            log.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
             return ReturnMapUtils.setFailedMsgRtnJsonStr("save failed");
         }
     }

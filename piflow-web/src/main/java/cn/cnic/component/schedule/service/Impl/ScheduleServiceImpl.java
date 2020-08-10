@@ -3,6 +3,7 @@ package cn.cnic.component.schedule.service.Impl;
 import cn.cnic.base.BaseHibernateModelNoId;
 import cn.cnic.base.BaseHibernateModelNoIdUtils;
 import cn.cnic.base.util.*;
+import cn.cnic.common.Eunm.ScheduleState;
 import cn.cnic.component.schedule.entity.Schedule;
 import cn.cnic.component.schedule.mapper.ScheduleMapper;
 import cn.cnic.component.schedule.service.IScheduleService;
@@ -147,21 +148,46 @@ public class ScheduleServiceImpl implements IScheduleService {
         if (null == scheduleById) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Data does not exist");
         }
-        //String s = scheduleImpl.scheduleStart(username, scheduleById);
+        Map<String, Object> thirdScheduleMap = scheduleImpl.scheduleStart(username, scheduleById);
+        if (200 != (int) thirdScheduleMap.get("code")) {
+            return JsonUtils.toJsonNoException(thirdScheduleMap);
+        }
+        scheduleById.setStatus(ScheduleState.RUNNING);
+        scheduleById.setLastUpdateDttm(new Date());
+        scheduleById.setLastUpdateUser(username);
+        scheduleById.setScheduleId(thirdScheduleMap.get("scheduleId").toString());
+        int update = scheduleMapper.update(scheduleById);
+        if (update <= 0) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Error : Interface call succeeded, save error");
+        }
         return ReturnMapUtils.setSucceededMsgRtnJsonStr(ReturnMapUtils.SUCCEEDED_MSG);
     }
 
     @Override
     public String stopSchedule(boolean isAdmin, String username, String id) {
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Error : illegal user");
         }
         if (StringUtils.isBlank(id)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("id is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Error : id is null");
         }
         Schedule scheduleById = scheduleMapper.getScheduleById(isAdmin, username, id);
         if (null == scheduleById) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Data does not exist");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Error : Data does not exist");
+        }
+        if (StringUtils.isBlank(scheduleById.getScheduleId())) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Error : scheduleId is null");
+        }
+        String scheduleStopMsg = scheduleImpl.scheduleStop(scheduleById.getScheduleId());
+        if (StringUtils.isBlank(scheduleStopMsg) || !scheduleStopMsg.contains("ok!")) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Error : Interface call succeeded, save error");
+        }
+        scheduleById.setStatus(ScheduleState.STOP);
+        scheduleById.setLastUpdateDttm(new Date());
+        scheduleById.setLastUpdateUser(username);
+        int update = scheduleMapper.update(scheduleById);
+        if (update <= 0) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Error : Interface call succeeded, save error");
         }
         return ReturnMapUtils.setSucceededMsgRtnJsonStr(ReturnMapUtils.SUCCEEDED_MSG);
     }

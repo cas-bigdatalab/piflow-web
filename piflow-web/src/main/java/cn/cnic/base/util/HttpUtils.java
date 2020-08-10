@@ -47,7 +47,6 @@ public class HttpUtils {
      */
     public static String doPost(String url, Map json, Integer timeOutMS) {
         String formatJson = JsonUtils.toFormatJsonNoException(json);
-        logger.info("\n" + formatJson);
         return doPost(url, formatJson, timeOutMS);
     }
 
@@ -95,7 +94,9 @@ public class HttpUtils {
             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                 result = EntityUtils.toString(response.getEntity(), "utf-8");
                 logger.info("call succeeded,return msg:" + result);
-
+            } else {
+                logger.warn("call failed,return msg:" + result);
+                result = "Interface call error";
             }
         } catch (UnsupportedCharsetException e) {
             logger.error("Interface call error", e);
