@@ -887,7 +887,7 @@ function queryStopsProperty(stopPageId) {
                         }
 
                         var img = document.createElement("img");
-                        img.setAttribute('src', '/piflow-web/img/descIcon.png');
+                        img.setAttribute('src', '/drawingBoard/img/descIcon.png');
                         img.style.cursor = "pointer";
                         img.setAttribute('title', '' + oldPropertiesVo[y].description + '');
                         var tr = document.createElement("tr");
@@ -1230,7 +1230,7 @@ function taskAdd(addParamData) {
             }
 
             var img = document.createElement("img");
-            img.setAttribute('src', '/piflow-web/img/descIcon.png');
+            img.setAttribute('src', '/drawingBoard/img/descIcon.png');
             img.style.cursor = "pointer";
             img.setAttribute('title', '' + data[y].description + '');
             var tr = document.createElement("tr");
@@ -1314,7 +1314,7 @@ function taskAdd(addParamData) {
             + '<tbody>'
             + '<tr>'
             + '<td style="width: 99px;"><span>dataSource: </span></td>'
-            + '<td style="width: 25px;"><img src="/piflow-web/img/descIcon.png" title="Fill Datasoure" style="cursor: pointer;"></td>'
+            + '<td style="width: 25px;"><img src="/drawingBoard/img/descIcon.png" title="Fill Datasoure" style="cursor: pointer;"></td>'
             + '<td>'
             // + '<select id="datasourceSelectElement" onblur="alert(1);" class="form-control" style="height: 32px;">'
             + '<div id="datasourceDivElement" style="float: left;width: 98%;">'
@@ -1392,7 +1392,7 @@ function groupAdd(addParamData, flowId, nodeType) {
             mxUtils.write(spanDisplayName, '' + addData_i.name + '' + ": ");
             mxUtils.write(spanFlag, '*');
             var img = document.createElement("img");
-            img.setAttribute('src', '/piflow-web/img/descIcon.png');
+            img.setAttribute('src', '/drawingBoard/img/descIcon.png');
             img.style.cursor = "pointer";
             img.setAttribute('title', '' + addData_i.description + '');
             var tr_1 = document.createElement("tr");
@@ -1440,7 +1440,7 @@ function setCustomizedTableHtml(stopPageId, stopsCustomizedPropertyVo, stopOutPo
             + '<span style="margin-left: 10px;">' + stopsCustomizedPropertyVo.name + ': </span>'
             + '</td>'
             + '<td style="width: 25px;">'
-            + '<img src="/piflow-web/img/descIcon.png" title="' + stopsCustomizedPropertyVo.description + '" style="cursor: pointer;">'
+            + '<img src="/drawingBoard/img/descIcon.png" title="' + stopsCustomizedPropertyVo.description + '" style="cursor: pointer;">'
             + '</td>'
             + '<td>'
             + '<input data-toggle="true"class="form-control"'

@@ -1,6 +1,5 @@
 package cn.cnic.component.schedule.utils;
 
-import cn.cnic.component.mxGraph.entity.MxCell;
 import cn.cnic.component.schedule.entity.Schedule;
 
 import java.util.Date;
