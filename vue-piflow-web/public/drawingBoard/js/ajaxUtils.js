@@ -113,11 +113,11 @@ function ajaxLoadAsync(elementId, requestUrl, async, backFunc, errBackFunc) {
 
 function ajaxFun(config) {
     if (config) {
+        config.headers = {Authorization: ("Bearer " + token)};
         config.url = sever_base_origin + config.url;
-        config.headers = { Authorization: ("Bearer " + token) };
     } else {
         console.log("ajax config error");
-        layer.msg("ajax config error", { icon: 2, shade: 0, time: 2000 });
+        layer.msg("ajax config error", {icon: 2, shade: 0, time: 2000});
     }
 }
 
