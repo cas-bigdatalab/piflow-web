@@ -165,6 +165,22 @@ public class StopsCtrl {
         return customizedPropertyServiceImpl.getRouterStopsCustomizedProperty(customPropertyId);
     }
 
+    /**
+     * Query and enter the process list
+     *
+     * @param page
+     * @param limit
+     * @param param
+     * @return
+     */
+    @RequestMapping("/stopsHubListPage")
+    @ResponseBody
+    public String stopsHubListPage(Integer page, Integer limit, String param) {
+        String username = SessionUserUtil.getCurrentUsername();
+        boolean isAdmin = SessionUserUtil.isAdmin();
+        return stopsHubServiceImpl.stopsHubListPage(username, isAdmin, page, limit, param);
+    }
+
 
     /**
      * Upload stopsHub jar file and save stopsHub
@@ -205,5 +221,19 @@ public class StopsCtrl {
         String username = SessionUserUtil.getCurrentUsername();
         Boolean isAdmin =  SessionUserUtil.isAdmin();
         return stopsHubServiceImpl.unmountStopsHub(username, isAdmin, id);
+    }
+
+    /**
+     * unmount stopsHub
+     *
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/delStopsHub", method = RequestMethod.POST)
+    @ResponseBody
+    public String delStopsHub(HttpServletRequest request, String id) {
+        String username = SessionUserUtil.getCurrentUsername();
+        Boolean isAdmin =  SessionUserUtil.isAdmin();
+        return stopsHubServiceImpl.delStopsHub(username, isAdmin, id);
     }
 }

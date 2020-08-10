@@ -12,15 +12,16 @@ function initDatatableSchedulePage(testTableId, url, searchInputId) {
                 Authorization: ("Bearer " + token)
             }
             , cols: [[
-                {field: 'jobName', title: 'Name', sort: true},
-                {field: 'jobClass', title: 'Class', sort: true},
+                {field: 'type', title: 'Type', sort: true},
+                {field: 'scheduleRunTemplateName', title: 'Name', sort: true},
                 {field: 'cronExpression', title: 'Cron', sort: true},
+                {field: 'planStartTimeStr', title: 'PlanStartTime', sort: true},
+                {field: 'planEndTimeStr', title: 'PlanEndTime', sort: true},
                 {
                     field: 'dataSourceType', title: 'Status', sort: true, templet: function (data) {
                         return data.status.text
                     }
                 },
-                {field: 'crtDttmString', title: 'CreateTime', sort: true},
                 {
                     field: 'right', title: 'Actions', sort: true, height: 100, templet: function (data) {
                         return responseHandlerSchedule(data);
@@ -120,8 +121,58 @@ function responseHandlerSchedule(res) {
     return actionsHtmlStr;
 }
 
+function createScheduleTask() {
+    if ($("#schedule_cron").val()) {
+        layer.msg("Cron cannot be empty");
+    }
+    if ($("#schedule_class").val()) {
+        layer.msg("Flow or FlowGroup cannot be empty");
+    }
+    ajaxRequest({
+        cache: true,//Keep cached data
+        type: "POST",//Request type post
+        url: "/schedule/addSchedule",//This is the name of the file where I receive data in the background.
+        data: {
+            id: $("#scheduleId").val(),
+            type: $("#schedule_type").val(),
+            cronExpression: $("#schedule_cron").val(),
+            planStartTimeStr: $("#schedule_plan_start_time").val(),
+            planEndTimeStr: $("#schedule_plan_end_time").val(),
+            scheduleRunTemplateId: $("#schedule_class").val()
+        },
+        async: false,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
+        error: function (request) {//Operation after request failure
+            layer.closeAll('page');
+            layer.msg('open failed ', {icon: 2, shade: 0, time: 2000});
+            return;
+        },
+        success: function (data) {//Operation after request successful
+            console.log(data);
+        }
+    });
+}
+
+function updateScheduleTask() {
+    developmentFunc()
+}
+
+function startScheduleTask() {
+    developmentFunc()
+}
+
+function stopScheduleTask() {
+    developmentFunc()
+}
+
+function delScheduleTask() {
+    developmentFunc()
+}
+
 function schedulePopup(id, titleName) {
-    openLayerTypeIframeWindowLoadUrl(("/page/schedule/schedule_new_or_update.html?openScheduleId=" + id), 580, 520, ('<span style="color: #269252;">' + titleName + '</span>'));
+    openLayerWindowLoadHtml('<div id="layer_open_content_id" style="display:none;"></div>', 580, 520, titleName, 0.3);
+    ajaxLoadAsync("layer_open_content_id", "/page/schedule/schedule_new_or_update.html", true, function () {
+        onloadScheduleInfoHtmlDate(id);
+    });
 }
 
 function checkScheduleInput(scheduleCron, scheduleRunTemplateId, description) {
@@ -145,200 +196,14 @@ function checkScheduleInput(scheduleCron, scheduleRunTemplateId, description) {
     return true;
 }
 
-function createSchedule() {
-    var scheduleType = $("#schedule_type").val();
-    var scheduleCron = $("#schedule_cron").val();
-    var scheduleRunTemplateId = $("#scheduleRunTemplateId").val();
-    var scheduleName = $("#scheduleName").val();
-    if (checkScheduleInput(scheduleCron, scheduleRunTemplateId))
-        ajaxRequest({
-            cache: true,//Keep cached data
-            type: "get",//Request type post
-            url: "/schedule/addSchedule",//This is the name of the file where I receive data in the background.
-            data: {
-                type: scheduleType,
-                cronExpression: scheduleCron,
-                scheduleRunTemplateId: scheduleRunTemplateId
-            },
-            async: false,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
-            error: function (request) {//Operation after request failure
-                layer.closeAll('page');
-                layer.msg('creation failed ', {icon: 2, shade: 0, time: 2000});
-                return;
-            },
-            success: function (data) {//Operation after request successful
-                var dataMap = JSON.parse(data);
-                if (200 === dataMap.code) {
-                    layer.closeAll('page');
-                    layer.msg('create success ', {icon: 1, shade: 0, time: 2000}, function () {
-                        location.reload();
-                    });
-                } else {
-                    layer.msg('creation failed', {icon: 2, shade: 0, time: 2000});
-                }
-            }
-        });
-}
-
-function updateSchedule() {
-    var id = $("#scheduleId").val();
-    var scheduleName = $("#scheduleName").val();
-    var scheduleClass = $("#scheduleClass").val();
-    var scheduleCron = $("#schedule_cron").val();
-
-    if (checkScheduleInput(scheduleName, scheduleClass, scheduleCron))
-        ajaxRequest({
-            cache: true,//Keep cached data
-            type: "get",//Request type post
-            url: "/sysSchedule/updateTask",//This is the name of the file where I receive data in the background.
-            data: {
-                id: id,
-                jobName: scheduleName,
-                jobClass: scheduleClass,
-                cronExpression: scheduleCron
-            },
-            async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
-            error: function (request) {//Operation after request failure
-                layer.closeAll('page');
-                layer.msg('update failed ', {icon: 2, shade: 0, time: 2000}, function () {
-                    window.location.reload();
-                });
-                return;
-            },
-            success: function (data) {//Operation after request successful
-                var dataMap = JSON.parse(data);
-                if (200 === dataMap.code) {
-                    layer.closeAll('page');
-                    layer.msg('update success', {icon: 1, shade: 0, time: 2000}, function () {
-                        location.reload();
-                    });
-                } else {
-                    layer.msg('update failed ', {icon: 2, shade: 0, time: 2000});
-                }
-            }
-        });
-}
-
-function onceTask(id) {
-    developmentFunc();
-}
-
-//run
-function startTask(id) {
-    $('#fullScreen').show();
-    ajaxRequest({
-        cache: true,//Keep cached data
-        type: "POST",//Request type post
-        url: "/sysSchedule/startTask",//This is the name of the file where I receive data in the background.
-        data: {sysScheduleId: id},
-        async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
-        error: function (request) {//Operation after request failure
-            //alert("Request Failed");
-            layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000}, function () {
-                $('#fullScreen').hide();
-            });
-            return;
-        },
-        success: function (data) {//Operation after request successful
-            var dataMap = JSON.parse(data);
-            if (200 === dataMap.code) {
-                layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
-                    location.reload();
-                });
-            } else {
-                layer.msg("Startup failure：" + dataMap.errorMsg, {icon: 2, shade: 0, time: 2000}, function () {
-                    location.reload();
-                });
-            }
-            $('#fullScreen').hide();
-        }
-    });
-}
-
-function stopTask(id) {
-    $('#fullScreen').show();
-    ajaxRequest({
-        cache: true,//Keep cached data
-        type: "POST",//Request type post
-        url: "/sysSchedule/stopTask",//This is the name of the file where I receive data in the background.
-        data: {sysScheduleId: id},
-        async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
-        error: function (request) {//Operation after request failure
-            //alert("Request Failed");
-            layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000}, function () {
-                $('#fullScreen').hide();
-            });
-            return;
-        },
-        success: function (data) {//Operation after request successful
-            var dataMap = JSON.parse(data);
-            if (200 === dataMap.code) {
-                layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
-                    location.reload();
-                });
-            } else {
-                layer.msg("Stop failure：" + dataMap.errorMsg, {icon: 2, shade: 0, time: 2000}, function () {
-                    location.reload();
-                });
-            }
-            $('#fullScreen').hide();
-        }
-    });
-}
-
-function pauseTask(id) {
-    developmentFunc();
-}
-
-function resumeTask(id) {
-    developmentFunc();
-}
-
-function deleteTask(id, name) {
-    console.log(id);
-    layer.confirm("Are you sure to delete '" + name + "' ?", {
-        btn: ['confirm', 'cancel'] //button
-        , title: 'Confirmation prompt'
-    }, function () {
-        ajaxRequest({
-            cache: true,//Keep cached data
-            type: "get",//Request type post
-            url: "/sysSchedule/deleteTask",//This is the name of the file where I receive data in the background.
-            data: {sysScheduleId: id},
-            async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
-            error: function (request) {//Operation after request failure
-                return;
-            },
-            success: function (data) {//Operation after request successful
-                console.log(data);
-                var dataMap = JSON.parse(data);
-                if (200 === dataMap.code) {
-                    layer.msg('Delete Success', {icon: 1, shade: 0, time: 2000}, function () {
-                        location.reload();
-                    });
-                } else {
-                    layer.msg('Delete failed', {icon: 2, shade: 0, time: 2000});
-                }
-            }
-        });
-    }, function () {
-    });
-}
-
-function developmentFunc() {
-    layer.msg("Functional development", {icon: 5, shade: 0, time: 2000}, function () {
-    });
-}
-
-function onloadScheduleInfoHtmlDate() {
+function onloadScheduleInfoHtmlDate(scheduleId) {
     $("#buttonSchedule").attr("onclick", "");
-    let urlSearchParams = getUrlParams(location.href)
-    if (urlSearchParams.openScheduleId) {
+    if (scheduleId) {
         ajaxRequest({
             cache: true,//Keep cached data
             type: "get",//Request type post
             url: "/schedule/getScheduleById",//This is the name of the file where I receive data in the background.
-            data: {scheduleId: urlSearchParams.openScheduleId},
+            data: {scheduleId: scheduleId},
             async: false,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
             error: function (request) {//Operation after request failure
                 layer.closeAll('page');
@@ -351,7 +216,7 @@ function onloadScheduleInfoHtmlDate() {
                 if (200 === dataMap.code) {
                     var scheduleVo = dataMap.scheduleVo;
                     $("#buttonSchedule").attr("onclick", "updateSchedule()");
-                    $("#scheduleId").val(id);
+                    $("#scheduleId").val(scheduleVo.id);
                     $("#scheduleName").val(scheduleVo.jobName);
                     $("#scheduleClass").val(scheduleVo.jobClass);
                     $("#schedule_cron").val(scheduleVo.cronExpression);
@@ -361,7 +226,7 @@ function onloadScheduleInfoHtmlDate() {
             }
         });
     } else {
-        $("#buttonSchedule").attr("onclick", "createTask()");
+        $("#buttonSchedule").attr("onclick", "createScheduleTask()");
         $("#scheduleId").val("");
         $("#scheduleName").val("");
         $("#scheduleClass").val("");
@@ -371,11 +236,16 @@ function onloadScheduleInfoHtmlDate() {
 
 function loadFlowOrGroupSelect() {
     var schedule_type = $("#schedule_type").val();
+    var request_url = "/flow/getFlowListPage";
+    if (schedule_type === "FLOW_GROUP") {
+        request_url = "/flowGroup/getFlowGroupListPage";
+    }
+    console.log(schedule_type);
     $("#schedule_class").val("");
     ajaxRequest({
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: "/flow/getFlowListPage",//This is the name of the file where I receive data in the background.
+        url: request_url,//This is the name of the file where I receive data in the background.
         data: {page: 1, limit: 10000},
         async: false,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
         error: function (request) {//Operation after request failure
@@ -398,7 +268,13 @@ function loadFlowOrGroupSelect() {
             } else {
                 layer.msg('open failed', {icon: 2, shade: 0, time: 2000});
             }
+            $("#layer_open_content_id").show();
         }
+    });
+}
+
+function developmentFunc() {
+    layer.msg("Functional development", {icon: 5, shade: 0, time: 2000}, function () {
     });
 }
 

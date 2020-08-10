@@ -35,8 +35,23 @@ public class ScheduleVo implements Serializable {
     private Date planEndTime;
     private String scheduleProcessTemplateId;
     private String scheduleRunTemplateId;
+    private String scheduleRunTemplateName;
+
     public String getCrtDttmStr() {
         return DateUtils.dateTimesToStr(this.crtDttm);
     }
+    public String getPlanStartTimeStr() {
+        return DateUtils.dateTimesToStr(this.planStartTime);
+    }
+    public void setPlanStartTimeStr(String planStartTimeStr) {
+        this.planStartTime = DateUtils.strToTime(planStartTimeStr);
+    }
+    public String getPlanEndTimeStr() {
+        return DateUtils.dateTimesToStr(this.planEndTime);
+    }
+    public void setPlanEndTimeStr(String planEndTimeStr) {
+        this.planStartTime = DateUtils.strToTime(planEndTimeStr);
+    }
+
 
 }
