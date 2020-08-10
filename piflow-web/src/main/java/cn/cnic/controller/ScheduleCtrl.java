@@ -47,6 +47,20 @@ public class ScheduleCtrl {
     }
 
     /**
+     * get Schedule by id
+     *
+     * @param scheduleId
+     * @return
+     */
+    @RequestMapping("/getScheduleById")
+    @ResponseBody
+    public String getScheduleById(String scheduleId) {
+        String username = SessionUserUtil.getCurrentUsername();
+        boolean isAdmin = SessionUserUtil.isAdmin();
+        return scheduleServiceImpl.getScheduleVoById(isAdmin, username, scheduleId);
+    }
+
+    /**
      * update schedule
      *
      * @param scheduleVo
@@ -56,7 +70,8 @@ public class ScheduleCtrl {
     @ResponseBody
     public String updateSchedule(ScheduleVo scheduleVo) {
         String username = SessionUserUtil.getCurrentUsername();
-        return scheduleServiceImpl.addSchedule(username, scheduleVo);
+        boolean isAdmin = SessionUserUtil.isAdmin();
+        return scheduleServiceImpl.updateSchedule(isAdmin, username, scheduleVo);
     }
 
     /**
@@ -85,7 +100,7 @@ public class ScheduleCtrl {
     public String startSchedule(String scheduleId) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
-        return scheduleServiceImpl.startSchedule(isAdmin,username, scheduleId);
+        return scheduleServiceImpl.startSchedule(isAdmin, username, scheduleId);
     }
 
     /**
@@ -99,7 +114,7 @@ public class ScheduleCtrl {
     public String stopSchedule(String scheduleId) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
-        return scheduleServiceImpl.stopSchedule(isAdmin,username, scheduleId);
+        return scheduleServiceImpl.stopSchedule(isAdmin, username, scheduleId);
     }
 
 }

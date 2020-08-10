@@ -64,6 +64,28 @@ public class ScheduleServiceImpl implements IScheduleService {
         return ReturnMapUtils.setSucceededMsgRtnJsonStr(ReturnMapUtils.SUCCEEDED_MSG);
     }
 
+    /**
+     * get ScheduleVo by id
+     *
+     * @param isAdmin  is admin
+     * @param username username
+     * @param id       schedule id
+     * @return json
+     */
+    public String getScheduleVoById(boolean isAdmin, String username, String id) {
+        if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
+        }
+        if (StringUtils.isBlank(id)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("id is null");
+        }
+        ScheduleVo scheduleVoById = scheduleMapper.getScheduleVoById(isAdmin, username, id);
+        if (null == scheduleVoById) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("data is null");
+        }
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("scheduleVo", scheduleVoById);
+    }
+
     @Override
     public String updateSchedule(boolean isAdmin, String username, ScheduleVo scheduleVo) {
         if (StringUtils.isBlank(username)) {

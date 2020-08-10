@@ -90,14 +90,14 @@ function responseHandlerSchedule(res) {
         var actions_btn_6 = '<a class="btn" '
             + 'title="Edit this timed task" '
             + 'href="javascript:void(0);" '
-            + 'onclick="javascript:schedulePopup(\'' + res.id + '\',\'update schedule\');'
+            + 'onclick="javascript:schedulePopup(\'' + res.id + '\',\'update schedule\');"'
             + 'style="margin-right: 2px;">'
             + '<i class="icon-edit icon-white"></i>'
             + '</a>';
         var actions_btn_7 = '<a class="btn" '
             + 'title="Remove this timed task" '
             + 'href="javascript:void(0);" '
-            + 'onclick="javascript:deleteTask(\'' + res.id + '\',\'' + res.jobName + '\');" '
+            + 'onclick="javascript:delScheduleTask(\'' + res.id + '\');" '
             + 'style="margin-right: 2px;">'
             + '<i class="icon-trash icon-white"></i>'
             + '</a>';
@@ -147,13 +147,54 @@ function createScheduleTask() {
             return;
         },
         success: function (data) {//Operation after request successful
-            console.log(data);
+            var dataMap = JSON.parse(data);
+            if (200 === dataMap.code) {
+                layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
+                    window.location.reload();
+                });
+            } else {
+                layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
+            }
         }
     });
 }
 
-function updateScheduleTask() {
-    developmentFunc()
+function updateScheduleTask(scheduleId) {
+    if ($("#schedule_cron").val()) {
+        layer.msg("Cron cannot be empty");
+    }
+    if ($("#schedule_class").val()) {
+        layer.msg("Flow or FlowGroup cannot be empty");
+    }
+    ajaxRequest({
+        cache: true,//Keep cached data
+        type: "POST",//Request type post
+        url: "/schedule/updateSchedule",//This is the name of the file where I receive data in the background.
+        data: {
+            id: $("#scheduleId").val(),
+            type: $("#schedule_type").val(),
+            cronExpression: $("#schedule_cron").val(),
+            planStartTimeStr: $("#schedule_plan_start_time").val(),
+            planEndTimeStr: $("#schedule_plan_end_time").val(),
+            scheduleRunTemplateId: $("#schedule_class").val()
+        },
+        async: false,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
+        error: function (request) {//Operation after request failure
+            layer.closeAll('page');
+            layer.msg('open failed ', {icon: 2, shade: 0, time: 2000});
+            return;
+        },
+        success: function (data) {//Operation after request successful
+            var dataMap = JSON.parse(data);
+            if (200 === dataMap.code) {
+                layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
+                   window.location.reload();
+                });
+            } else {
+                layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
+            }
+        }
+    });
 }
 
 function startScheduleTask() {
@@ -164,8 +205,34 @@ function stopScheduleTask() {
     developmentFunc()
 }
 
-function delScheduleTask() {
-    developmentFunc()
+function delScheduleTask(scheduleId) {
+    layer.confirm("Are you sure to delete ?", {
+        btn: ['confirm', 'cancel'] //button
+        , title: 'Confirmation prompt'
+    }, function () {
+        ajaxRequest({
+            cache: true,//Keep cached data
+            type: "POST",//Request type post
+            url: "/schedule/delSchedule",//This is the name of the file where I receive data in the background.
+            data: {scheduleId: scheduleId},
+            async: false,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
+            error: function (request) {//Operation after request failure
+                layer.closeAll('page');
+                layer.msg('open failed ', {icon: 2, shade: 0, time: 2000});
+                return;
+            },
+            success: function (data) {//Operation after request successful
+                var dataMap = JSON.parse(data);
+                if (200 === dataMap.code) {
+                    layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
+                        window.location.reload();
+                    });
+                } else {
+                    layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
+                }
+            }
+        });
+    });
 }
 
 function schedulePopup(id, titleName) {
@@ -212,14 +279,14 @@ function onloadScheduleInfoHtmlDate(scheduleId) {
             },
             success: function (data) {//Operation after request successful
                 var dataMap = JSON.parse(data);
-                console.log(dataMap);
                 if (200 === dataMap.code) {
                     var scheduleVo = dataMap.scheduleVo;
-                    $("#buttonSchedule").attr("onclick", "updateSchedule()");
+                    $("#buttonSchedule").attr("onclick", "updateScheduleTask()");
                     $("#scheduleId").val(scheduleVo.id);
-                    $("#scheduleName").val(scheduleVo.jobName);
-                    $("#scheduleClass").val(scheduleVo.jobClass);
+                    $("#schedule_class").val(scheduleVo.scheduleRunTemplateId);
                     $("#schedule_cron").val(scheduleVo.cronExpression);
+                    $("#schedule_plan_start_time").val(scheduleVo.planStartTime);
+                    $("#schedule_plan_end_time").val(scheduleVo.planEndTime);
                 } else {
                     layer.msg('open failed', {icon: 2, shade: 0, time: 2000});
                 }
@@ -231,6 +298,8 @@ function onloadScheduleInfoHtmlDate(scheduleId) {
         $("#scheduleName").val("");
         $("#scheduleClass").val("");
         $("#schedule_cron").val("");
+        $("#schedule_plan_start_time").val();
+        $("#schedule_plan_end_time").val();
     }
 }
 

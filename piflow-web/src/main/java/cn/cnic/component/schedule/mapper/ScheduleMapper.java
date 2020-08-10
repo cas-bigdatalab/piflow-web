@@ -27,6 +27,9 @@ public interface ScheduleMapper {
     List<ScheduleVo> getScheduleVoList(boolean isAdmin, String username, String param);
 
     @SelectProvider(type = ScheduleMapperProvider.class, method = "getScheduleById")
+    ScheduleVo getScheduleVoById(boolean isAdmin, String username, String id);
+
+    @SelectProvider(type = ScheduleMapperProvider.class, method = "getScheduleById")
     Schedule getScheduleById(boolean isAdmin, String username, String id);
 
     @DeleteProvider(type = ScheduleMapperProvider.class,method = "delScheduleById")

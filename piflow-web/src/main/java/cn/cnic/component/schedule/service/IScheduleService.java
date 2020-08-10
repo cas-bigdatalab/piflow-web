@@ -35,6 +35,16 @@ public interface IScheduleService {
     public String addSchedule(String username, ScheduleVo scheduleVo);
 
     /**
+     * get ScheduleVo by id
+     *
+     * @param isAdmin is admin
+     * @param username username
+     * @param id       schedule id
+     * @return json
+     */
+    public String getScheduleVoById(boolean isAdmin, String username, String id);
+
+    /**
      * Update schedule
      *
      * @param isAdmin is admin

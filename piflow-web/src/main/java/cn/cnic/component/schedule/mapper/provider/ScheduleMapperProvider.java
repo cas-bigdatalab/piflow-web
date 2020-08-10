@@ -230,11 +230,12 @@ public class ScheduleMapperProvider {
         StringBuffer strBuf = new StringBuffer();
         String lastUpdateDttm = DateUtils.dateTimesToStr(new Date());
         strBuf.append("update group_schedule set ");
-        strBuf.append("enable_flag = 0 ");
-        strBuf.append("last_update_user = " + SqlUtils.preventSQLInjection(username) + " ");
+        strBuf.append("enable_flag = 0 , ");
+        strBuf.append("last_update_user = " + SqlUtils.preventSQLInjection(username) + " , ");
         strBuf.append("last_update_dttm = " + SqlUtils.preventSQLInjection(lastUpdateDttm) + " ");
         strBuf.append("where ");
         strBuf.append("enable_flag = 1 ");
+        strBuf.append("and id = " + SqlUtils.preventSQLInjection(id) + " ");
         if (!isAdmin) {
             strBuf.append("and crt_user = " + SqlUtils.preventSQLInjection(username));
         }
