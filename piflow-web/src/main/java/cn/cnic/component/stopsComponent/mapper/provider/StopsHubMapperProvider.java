@@ -46,7 +46,7 @@ public class StopsHubMapperProvider {
             this.mountId = SqlUtils.preventSQLInjection(stopsHub.getMountId());
             this.jarName = SqlUtils.preventSQLInjection(stopsHub.getJarName());
             this.jarUrl = SqlUtils.preventSQLInjection(stopsHub.getJarUrl());
-            this.status = SqlUtils.preventSQLInjection(null != stopsHub.getStatus()? stopsHub.getStatus().name() : null);
+            this.status = SqlUtils.preventSQLInjection(null != stopsHub.getStatus() ? stopsHub.getStatus().name() : null);
 
         }
     }
@@ -95,7 +95,7 @@ public class StopsHubMapperProvider {
             sql.VALUES("last_update_user", lastUpdateUser);
             sql.VALUES("version", version + "");
             sql.VALUES("enable_flag", enableFlag + "");
-            sql.VALUES("mount_id", mountId +"");
+            sql.VALUES("mount_id", mountId + "");
             sql.VALUES("jar_name", jarName + "");
             sql.VALUES("jar_url", jarUrl + "");
             sql.VALUES("status", status + "");
@@ -128,13 +128,13 @@ public class StopsHubMapperProvider {
 
             // handle other fields
             sql.SET("enable_flag = " + enableFlag);
-            if(mountId != null)
+            if (mountId != null)
                 sql.SET("mount_id = " + mountId);
-            if(jarName != null)
+            if (jarName != null)
                 sql.SET("jar_name = " + jarName);
-            if(jarUrl != null)
+            if (jarUrl != null)
                 sql.SET("jar_url = " + jarUrl);
-            if(status != null)
+            if (status != null)
                 sql.SET("status = " + status);
             sql.WHERE("version = " + version);
             sql.WHERE("id = " + id);
@@ -152,7 +152,7 @@ public class StopsHubMapperProvider {
      *
      * @return
      */
-    public String getStopsHubList(String username, boolean isAdmin) {
+    public String getStopsHubList(String username, boolean isAdmin, String param) {
         String sqlStr = "select 0";
         StringBuffer strBuf = new StringBuffer();
         strBuf.append("select * ");
@@ -235,6 +235,31 @@ public class StopsHubMapperProvider {
         sql.WHERE("id = " + SqlUtils.preventSQLInjection(id));
 
         return sql.toString();
+    }
+
+    /**
+     * Query all data sources
+     *
+     * @return
+     */
+    public String getStopsHubListParam(String username, boolean isAdmin, String param) {
+        String sqlStr = "select 0";
+        StringBuffer strBuf = new StringBuffer();
+        strBuf.append("select * ");
+        strBuf.append("from stops_hub ");
+        strBuf.append("where enable_flag = 1 ");
+        if (StringUtils.isNotBlank(param)) {
+            strBuf.append("and ( ");
+            strBuf.append("jar_name like '%" + param + "%' ");
+            strBuf.append("or status like '%" + param + "%' ");
+            strBuf.append(") ");
+        }
+        if (!isAdmin) {
+            strBuf.append("and crt_user = " + SqlUtils.preventSQLInjection(username));
+        }
+        strBuf.append("order by crt_dttm desc ");
+        sqlStr = strBuf.toString();
+        return sqlStr;
     }
 
 }

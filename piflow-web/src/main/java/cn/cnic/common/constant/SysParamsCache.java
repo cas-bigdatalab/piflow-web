@@ -300,6 +300,17 @@ public class SysParamsCache {
         return INTERFACE_URL_HEAD + SCHEDULE_STOP_URL;
     }
 
+    public static String SCHEDULE_INFO_URL;
+
+    @Value("${api.scheduleStopUrl}")
+    public void setScheduleInfoUrl(String scheduleInfoUrl) {
+        SCHEDULE_INFO_URL = scheduleInfoUrl;
+    }
+
+    public static String getScheduleInfoUrl() {
+        return INTERFACE_URL_HEAD + SCHEDULE_INFO_URL;
+    }
+
     public static String PROJECT_START_URL;
 
     @Value("${api.projectStartUrl}")

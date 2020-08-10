@@ -164,14 +164,19 @@ public class ScheduleMapperProvider {
      */
     public String getScheduleList(boolean isAdmin, String username, String param) {
         StringBuffer strBuf = new StringBuffer();
-        strBuf.append("select * ");
-        strBuf.append("from group_schedule ");
+        strBuf.append("SELECT gs.*, CASE gs.type ");
+        strBuf.append("WHEN 'FLOW' THEN f.name ");
+        strBuf.append("WHEN 'FLOW_GROUP' THEN fg.name ");
+        strBuf.append("END schedule_run_template_name ");
+        strBuf.append("from group_schedule gs ");
+        strBuf.append("LEFT JOIN flow f ON f.id = gs.schedule_run_template_id ");
+        strBuf.append("LEFT JOIN flow_group fg ON fg.id = gs.schedule_run_template_id ");
         strBuf.append("where ");
-        strBuf.append("enable_flag = 1 ");
+        strBuf.append("gs.enable_flag = 1 ");
         if (StringUtils.isNotBlank(param)) {
             strBuf.append("and ( ");
-            strBuf.append("type like '%" + param + "%' ");
-            strBuf.append("or cron_expression like '%" + param + "%' ");
+            strBuf.append("gs.type like '%" + param + "%' ");
+            strBuf.append("or gs.cron_expression like '%" + param + "%' ");
             strBuf.append(") ");
         }
         if (!isAdmin) {
