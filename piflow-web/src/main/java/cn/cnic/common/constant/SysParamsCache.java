@@ -302,7 +302,7 @@ public class SysParamsCache {
 
     public static String SCHEDULE_INFO_URL;
 
-    @Value("${api.scheduleStopUrl}")
+    @Value("${api.scheduleInfoUrl}")
     public void setScheduleInfoUrl(String scheduleInfoUrl) {
         SCHEDULE_INFO_URL = scheduleInfoUrl;
     }
