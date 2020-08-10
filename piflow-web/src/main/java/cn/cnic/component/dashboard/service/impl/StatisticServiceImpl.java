@@ -24,10 +24,16 @@ public class StatisticServiceImpl implements IStatisticService {
     public Map<String,String> getFlowStatisticInfo() {
         List<Map<String, String>> ProcessStatisticList= statisticMapper.getFlowProcessStatisticInfo();
         Map<String, String> processInfoMap = convertList2Map(ProcessStatisticList, "state", "count");
-        processInfoMap.put("PROCESSOR_COUNT", String.valueOf(processInfoMap.values().stream().mapToInt(Integer::parseInt).sum()));
+        int processorCount = processInfoMap.values().stream().mapToInt(Integer::parseInt).sum();
         Map<String, String> flowInfoMap = new HashMap<>();
+        flowInfoMap.put("PROCESSOR_STARTED_COUNT", processInfoMap.get("STARTED"));
+        flowInfoMap.put("PROCESSOR_COMPETED_COUNT", processInfoMap.get("COMPLETED"));
+        flowInfoMap.put("PROCESSOR_FAILED_COUNT", processInfoMap.get("FAILED"));
+        flowInfoMap.put("PROCESSOR_KILLED_COUNT", processInfoMap.get("KILLED"));
+        int otherStateCount = flowInfoMap.values().stream().mapToInt(Integer::parseInt).sum();
+        flowInfoMap.put("PROCESSOR_OTHER_COUNT", String.valueOf(processorCount - otherStateCount));
+        flowInfoMap.put("PROCESSOR_COUNT", String.valueOf(processorCount));
         flowInfoMap.put("FLOW_COUNT", String.valueOf(statisticMapper.getFlowCount()));
-        flowInfoMap.putAll(processInfoMap);
         return flowInfoMap;
     }
 
