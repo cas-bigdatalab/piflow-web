@@ -46,4 +46,36 @@ public class DashboardCtrl {
         Map<String, String> flowResourceInfo = statisticServiceImpl.getFlowStatisticInfo();
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("flowResourceInfo", flowResourceInfo);
     }
+
+    @RequestMapping("/groupStatistic")
+    @ResponseBody
+    public String getGroupStatisticInfo() {
+        String username = SessionUserUtil.getCurrentUsername();
+        Map<String, String> groupResourceInfo = statisticServiceImpl.getGroupStatisticInfo();
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("groupResourceInfo", groupResourceInfo);
+    }
+
+    @RequestMapping("/scheduleStatistic")
+    @ResponseBody
+    public String getScheduleStatisticInfo() {
+        String username = SessionUserUtil.getCurrentUsername();
+        Map<String, String> scheduleResourceInfo = statisticServiceImpl.getScheduleStatisticInfo();
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("scheduleResourceInfo", scheduleResourceInfo);
+    }
+
+    @RequestMapping("/templateAndDataSourceStatistic")
+    @ResponseBody
+    public String getTemplateAndDataSourceStatisticInfo() {
+        String username = SessionUserUtil.getCurrentUsername();
+        Map<String, String> tempalateAndDataSourceResourceInfo = statisticServiceImpl.getTemplateAndDataSourceStatisticInfo();
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("tempalateAndDataSourceResourceInfo", tempalateAndDataSourceResourceInfo);
+    }
+
+    @RequestMapping("/stopStatistic")
+    @ResponseBody
+    public String getStopStatisticInfo() {
+        String username = SessionUserUtil.getCurrentUsername();
+        Map<String, String> stopResourceInfo = statisticServiceImpl.getStopStatisticInfo();
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("stopResourceInfo", stopResourceInfo);
+    }
 }
