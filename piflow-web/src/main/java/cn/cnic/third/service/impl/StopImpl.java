@@ -157,7 +157,7 @@ public class StopImpl implements IStop {
 
         Map<String, String> map = new HashMap<>();
         //map.put("bundle", bundleStr);
-        String sendGetData = HttpUtils.doGet(SysParamsCache.getStopsInfoUrl(), map, 30 * 1000);
+        String sendGetData = HttpUtils.doGet(SysParamsCache.getStopsHubPathUrl(), map, 30 * 1000);
         logger.info("return msg：" + sendGetData);
         if (StringUtils.isBlank(sendGetData)) {
             logger.warn("Interface return value is null");

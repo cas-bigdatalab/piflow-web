@@ -1,23 +1,20 @@
 package cn.cnic.controller;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-
-import cn.cnic.component.stopsComponent.model.StopsHub;
-import cn.cnic.component.stopsComponent.service.IStopsHubService;
-import org.slf4j.Logger;
-import org.springframework.web.bind.annotation.*;
-
 import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.base.util.ReturnMapUtils;
 import cn.cnic.base.util.SessionUserUtil;
 import cn.cnic.component.flow.service.ICustomizedPropertyService;
-import cn.cnic.component.flow.service.IFlowService;
 import cn.cnic.component.flow.service.IPropertyService;
 import cn.cnic.component.flow.service.IStopsService;
 import cn.cnic.component.flow.vo.StopsCustomizedPropertyVo;
 import cn.cnic.component.stopsComponent.service.IStopGroupService;
+import cn.cnic.component.stopsComponent.service.IStopsHubService;
+import org.slf4j.Logger;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/stops")
@@ -33,9 +30,6 @@ public class StopsCtrl {
 
     @Resource
     private IStopsService stopsServiceImpl;
-
-    @Resource
-    private IFlowService flowServiceImpl;
 
     @Resource
     private ICustomizedPropertyService customizedPropertyServiceImpl;
