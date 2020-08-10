@@ -22,11 +22,22 @@ public class StatisticServiceImpl implements IStatisticService {
 
     @Override
     public Map<String,String> getFlowStatisticInfo() {
-        List<Map<String, String>> ProcessStatisticList= statisticMapper.getProcessStatisticInfo();
+        List<Map<String, String>> ProcessStatisticList= statisticMapper.getFlowProcessStatisticInfo();
         Map<String, String> processInfoMap = convertList2Map(ProcessStatisticList, "state", "count");
         processInfoMap.put("PROCESSOR_COUNT", String.valueOf(processInfoMap.values().stream().mapToInt(Integer::parseInt).sum()));
         Map<String, String> flowInfoMap = new HashMap<>();
         flowInfoMap.put("FLOW_COUNT", String.valueOf(statisticMapper.getFlowCount()));
+        flowInfoMap.putAll(processInfoMap);
+        return flowInfoMap;
+    }
+
+    @Override
+    public Map<String, String> getGroupStatisticInfo() {
+        List<Map<String, String>> ProcessStatisticList= statisticMapper.getGroupProcessStatisticInfo();
+        Map<String, String> processInfoMap = convertList2Map(ProcessStatisticList, "state", "count");
+        processInfoMap.put("PROCESSOR_COUNT", String.valueOf(processInfoMap.values().stream().mapToInt(Integer::parseInt).sum()));
+        Map<String, String> flowInfoMap = new HashMap<>();
+        flowInfoMap.put("GROUP_COUNT", String.valueOf(statisticMapper.getGroupCount()));
         flowInfoMap.putAll(processInfoMap);
         return flowInfoMap;
     }

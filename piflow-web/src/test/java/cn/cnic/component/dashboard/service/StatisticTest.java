@@ -21,4 +21,13 @@ public class StatisticTest extends ApplicationTests {
         System.out.println(result);
 
     }
+
+    @Test
+    @Rollback(false)
+    public void testGetGroupStatisticInfo() {
+        Map<String,String> result = statisticServiceImpl.getGroupStatisticInfo();
+        //JsonUtils.toJsonNoException(setSucceededCustomParam(key, value));
+        System.out.println(result);
+
+    }
 }

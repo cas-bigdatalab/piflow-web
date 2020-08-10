@@ -12,15 +12,38 @@ import java.util.Map;
 public interface StatisticMapper {
 
     /**
-     * query all StopsHub
+     * query flow progress statistic info
      *
-     * @return
+     * @return statistic info map
      */
-    @SelectProvider(type = StatisticProvider.class, method = "getProcessStatisticInfo")
-    public List<Map<String, String>>getProcessStatisticInfo();
+    @SelectProvider(type = StatisticProvider.class, method = "getFlowProcessStatisticInfo")
+    public List<Map<String, String>>getFlowProcessStatisticInfo();
 
+
+    /**
+     * query flow count
+     *
+     * @return flowCount
+     */
     @SelectProvider(type = StatisticProvider.class, method = "getFlowCount")
     public int getFlowCount();
+
+    /**
+     * query group progress statistic info
+     *
+     * @return statistic info map
+     */
+    @SelectProvider(type = StatisticProvider.class, method = "getGroupProcessStatisticInfo")
+    public List<Map<String, String>>getGroupProcessStatisticInfo();
+
+
+    /**
+     * query group count
+     *
+     * @return groupCount
+     */
+    @SelectProvider(type = StatisticProvider.class, method = "getGroupCount")
+    public int getGroupCount();
 
 
 }

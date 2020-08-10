@@ -5,9 +5,16 @@ import java.util.Map;
 public interface IStatisticService {
 
     /**
-     * get statistic info
+     * get flow statistic info
      *
      * @return statisticInfo
      */
     public Map<String,String> getFlowStatisticInfo();
+
+    /**
+     * get group statistic info
+     *
+     * @return statisticInfo
+     */
+    public Map<String,String> getGroupStatisticInfo();
 }
