@@ -1798,7 +1798,7 @@ function reloadStops() {
         success: function (data) {//Operation after request successful
             var dataMap = JSON.parse(data);
             if (200 === dataMap.code) {
-                window.location.href = (web_header_prefix + "/page/flow/drawingBoard?drawingBoardType=TASK&load=" + dataMap.load + "&_" + new Date().getTime());
+                window.location.href = (web_header_prefix + "/page/flow/mxGraph/index.html?drawingBoardType=TASK&load=" + dataMap.load + "&_" + new Date().getTime());
             } else {
                 //alert("reload fail");
                 layer.msg("reload fail", {icon: 2, shade: 0, time: 2000}, function () {
