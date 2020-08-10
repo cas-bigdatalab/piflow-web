@@ -4,7 +4,8 @@ var thisEditor = null;
 var fullScreen = $('#fullScreen');
 var drawingBoardType = "PROCESS"
 var index = true
-var nodeArr, xmlDate, parentsId, processType, processGroupId, parentProcessId, pID, appId, processState;
+var nodeArr, xmlDate, parentsId, processType, processGroupId, parentProcessId, pID, appId, processState,
+    getCheckpointParam;
 
 
 function initProcessCrumbs(parentAccessPath) {
@@ -58,11 +59,7 @@ function initProcessDrawingBoardData(loadId, parentAccessPath, backFunc) {
                 pID = dataMap.pID;
                 processState = dataMap.processState;
                 $("#progress").text(dataMap.percentage);
-                var getCheckpointParam = "'" + (dataMap.pID ? dataMap.pID : "") + "','" + (dataMap.parentProcessId ? dataMap.parentProcessId : "") + "', '" + (dataMap.processId ? dataMap.processId : "") + "'";
-                $("#runFlow").attr("onclick", "getCheckpoint(" + getCheckpointParam + ")");
-                $("#debugFlow").attr("onclick", "getCheckpoint(" + getCheckpointParam + ",'DEBUG')");
-                $("#run_checkpoint_new").attr("onclick", "getCheckpoint(" + getCheckpointParam + ")");
-                $("#debug_checkpoint_new").attr("onclick", "getCheckpoint(" + getCheckpointParam + ",'DEBUG')");
+                getCheckpointParam = "'" + (dataMap.pID ? dataMap.pID : "") + "','" + (dataMap.parentProcessId ? dataMap.parentProcessId : "") + "', '" + (dataMap.processId ? dataMap.processId : "") + "'";
             } else {
                 //window.location.href = (web_baseUrl + "/error/404");
             }
