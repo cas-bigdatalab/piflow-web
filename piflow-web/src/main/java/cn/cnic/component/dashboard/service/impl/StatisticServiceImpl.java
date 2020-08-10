@@ -41,11 +41,18 @@ public class StatisticServiceImpl implements IStatisticService {
     public Map<String, String> getGroupStatisticInfo() {
         List<Map<String, String>> ProcessStatisticList= statisticMapper.getGroupProcessStatisticInfo();
         Map<String, String> processInfoMap = convertList2Map(ProcessStatisticList, "state", "count");
-        processInfoMap.put("PROCESSOR_COUNT", String.valueOf(processInfoMap.values().stream().mapToInt(Integer::parseInt).sum()));
-        Map<String, String> flowInfoMap = new HashMap<>();
-        flowInfoMap.put("GROUP_COUNT", String.valueOf(statisticMapper.getGroupCount()));
-        flowInfoMap.putAll(processInfoMap);
-        return flowInfoMap;
+        int processorCount = processInfoMap.values().stream().mapToInt(Integer::parseInt).sum();
+        Map<String, String> groupInfoMap = new HashMap<>();
+        groupInfoMap.put("PROCESSOR_STARTED_COUNT", processInfoMap.get("STARTED"));
+        groupInfoMap.put("PROCESSOR_COMPETED_COUNT", processInfoMap.get("COMPLETED"));
+        groupInfoMap.put("PROCESSOR_FAILED_COUNT", processInfoMap.get("FAILED"));
+        groupInfoMap.put("PROCESSOR_KILLED_COUNT", processInfoMap.get("KILLED"));
+        int otherStateCount = groupInfoMap.values().stream().mapToInt(Integer::parseInt).sum();
+        groupInfoMap.put("PROCESSOR_OTHER_COUNT", String.valueOf(processorCount - otherStateCount));
+        groupInfoMap.put("PROCESSOR_COUNT", String.valueOf(processorCount));
+
+        groupInfoMap.put("GROUP_COUNT", String.valueOf(statisticMapper.getGroupCount()));
+        return groupInfoMap;
     }
 
     @Override
