@@ -319,7 +319,7 @@ export default {
         password: this.password
       };
       this.$axios
-        .post("/jwtLogin", this.$qs.stringify(data))
+        .post("/piflow/jwtLogin", this.$qs.stringify(data))
         .then(res => {
           if (res.data.code == 200) {
             // window.sessionStorage.setItem(

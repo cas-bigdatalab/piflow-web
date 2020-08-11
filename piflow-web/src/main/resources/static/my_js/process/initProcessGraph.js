@@ -7,7 +7,6 @@ var index = true
 var nodeArr, xmlDate, parentsId, processType, processGroupId, parentProcessId, pID, appId, processState,
     getCheckpointParam;
 
-var web_baseUrl = "/piflow-web";
 
 function initProcessCrumbs(parentAccessPath) {
     if (parentAccessPath) {
@@ -347,7 +346,7 @@ function initMonitorIcon() {
             img_element_init.setAttribute("width", 20);
             img_element_init.setAttribute("height", 20);
             img_element_init.setAttribute("PiFlow_IMG", "IMG");
-            img_element_init.href.baseVal = (web_baseUrl + "/img/Loading.gif");
+            img_element_init.href.baseVal = web_drawingBoard + "/img/Loading.gif";
             img_element_init.setAttribute("id", "stopLoadingShow" + item.pageId);
 
             var img_element_ok = document.createElementNS("http://www.w3.org/2000/svg", "image");
@@ -356,7 +355,7 @@ function initMonitorIcon() {
             img_element_ok.setAttribute("width", 20);
             img_element_ok.setAttribute("height", 20);
             img_element_ok.setAttribute("PiFlow_IMG", "IMG");
-            img_element_ok.href.baseVal = (web_baseUrl + "/img/Ok.png");
+            img_element_ok.href.baseVal = web_drawingBoard + "/img/Ok.png";
             img_element_ok.setAttribute("id", "stopOkShow" + item.pageId);
 
             var img_element_fail = document.createElementNS("http://www.w3.org/2000/svg", "image");
@@ -365,7 +364,7 @@ function initMonitorIcon() {
             img_element_fail.setAttribute("width", 20);
             img_element_fail.setAttribute("height", 20);
             img_element_fail.setAttribute("PiFlow_IMG", "IMG");
-            img_element_fail.href.baseVal = (web_baseUrl + "/img/Fail.png");
+            img_element_fail.href.baseVal = web_drawingBoard + "/img/Fail.png";
             img_element_fail.setAttribute("id", "stopFailShow" + item.pageId);
             img_element_init.style.display = "none";
             img_element_fail.style.display = "none";

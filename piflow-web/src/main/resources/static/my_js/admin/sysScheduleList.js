@@ -7,7 +7,7 @@ function initDatatableSysSchedulePage(testTableId, url, searchInputId) {
         table.render({
 
             elem: '#' + testTableId
-            , url: (web_header_prefix + url)
+            , url: (web_drawingBoard + url)
             , headers: {
                 Authorization: ("Bearer " + token)
             }

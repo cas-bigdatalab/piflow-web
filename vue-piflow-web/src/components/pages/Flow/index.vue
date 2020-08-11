@@ -518,7 +518,7 @@ export default {
         data.param = this.param;
       }
       this.$axios
-        .get("/flow/getFlowListPage", {
+        .get("/piflow/flow/getFlowListPage", {
           params: data,
         })
         .then((res) => {

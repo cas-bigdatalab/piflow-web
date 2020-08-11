@@ -1,9 +1,10 @@
 // var web_header_prefix = "http://10.0.88.46:86/piflow";
 var web_base_origin = window.location.origin;
+var web_drawingBoard = "/drawingBoard";
 var sever_base_origin = "http://10.0.85.80:6002/piflow-web";
-var basePath = window.sessionStorage.getItem("basePath")
+var basePath = window.sessionStorage.getItem("basePath");
 var web_header_prefix = basePath.indexOf(window.location.origin) > -1 ? basePath : web_base_origin + basePath; //与 .env.production 内容同步
-var token = window.sessionStorage.getItem('token') //此处放置请求到的用户token
+var token = window.sessionStorage.getItem('token'); //此处放置请求到的用户token
 
 /**
  * ajax工具js
@@ -87,7 +88,7 @@ function ajaxLoadAsync(elementId, requestUrl, async, backFunc, errBackFunc) {
     $.ajax({
         type: "GET",
         async: async,
-        url: '/drawingBoard' + requestUrl,
+        url: web_drawingBoard + requestUrl,
         headers: {
             Authorization: ("Bearer " + token)
         },
@@ -172,12 +173,12 @@ function openLayerTypeIframeWindowLoadUrl(url, window_width, window_height, titl
 
 // window.location
 function window_location_href(url) {
-    window.location.href = window.location.origin + "/#/drawingBoard?src=" + url;
+    window.location.href = window.location.origin + "/#/drawingBoard?src=" + web_drawingBoard + url;
 }
 
 function new_window_open(url) {
 
-    var tempWindow = window.open(window.location.origin + "/#/drawingBoard?src=" + url);
+    var tempWindow = window.open(window.location.origin + "/#/drawingBoard?src=" web_drawingBoard + url);
     if (tempWindow == null || typeof (tempWindow) == 'undefined') {
         alert('The window cannot be opened. Please check your browser settings.')
     }

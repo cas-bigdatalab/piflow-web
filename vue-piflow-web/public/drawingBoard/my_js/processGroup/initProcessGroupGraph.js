@@ -185,7 +185,7 @@ function initMonitorIcon() {
         img_element_init.setAttribute("width", 20);
         img_element_init.setAttribute("height", 20);
         img_element_init.setAttribute("PiFlow_IMG", "IMG");
-        img_element_init.href.baseVal = sever_base_origin + "/img/Loading.gif";
+        img_element_init.href.baseVal = web_drawingBoard + "/img/Loading.gif";
         img_element_init.setAttribute("id", "stopLoadingShow" + item.pageId);
 
         var img_element_ok = document.createElementNS("http://www.w3.org/2000/svg", "image");
@@ -194,7 +194,7 @@ function initMonitorIcon() {
         img_element_ok.setAttribute("width", 20);
         img_element_ok.setAttribute("height", 20);
         img_element_ok.setAttribute("PiFlow_IMG", "IMG");
-        img_element_ok.href.baseVal = sever_base_origin + "/img/Ok.png";
+        img_element_ok.href.baseVal = web_drawingBoard + "/img/Ok.png";
         img_element_ok.setAttribute("id", "stopOkShow" + item.pageId);
 
         var img_element_fail = document.createElementNS("http://www.w3.org/2000/svg", "image");
@@ -203,7 +203,7 @@ function initMonitorIcon() {
         img_element_fail.setAttribute("width", 20);
         img_element_fail.setAttribute("height", 20);
         img_element_fail.setAttribute("PiFlow_IMG", "IMG");
-        img_element_fail.href.baseVal = sever_base_origin + "/img/Fail.png";
+        img_element_fail.href.baseVal = web_drawingBoard + "/img/Fail.png";
         img_element_fail.setAttribute("id", "stopFailShow" + item.pageId);
         img_element_init.style.display = "none";
         img_element_fail.style.display = "none";
@@ -296,9 +296,9 @@ function OpenTheMonitorArtBoard(evt) {
                     var dataMap = JSON.parse(data);
                     if (200 === dataMap.code) {
                         if ('flow' === dataMap.nodeType) {
-                            window_location_href("/drawingBoard/page/process/mxGraph/index.html?drawingBoardType=PROCESS&parentAccessPath=processGroupList&processType=PROCESS&load=" + dataMap.processId);
+                            window_location_href("/page/process/mxGraph/index.html?drawingBoardType=PROCESS&parentAccessPath=processGroupList&processType=PROCESS&load=" + dataMap.processId);
                         } else if ('flowGroup' === dataMap.nodeType) {
-                            window_location_href("/drawingBoard/page/processGroup/mxGraph/index.html?drawingBoardType=PROCESS&parentAccessPath=processGroupList&processType=PROCESS_GROUP&load=" + dataMap.processGroupId);
+                            window_location_href("/page/processGroup/mxGraph/index.html?drawingBoardType=PROCESS&parentAccessPath=processGroupList&processType=PROCESS_GROUP&load=" + dataMap.processGroupId);
                         }
                     }
                 } else {
