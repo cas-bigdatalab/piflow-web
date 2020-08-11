@@ -4,6 +4,7 @@ import cn.cnic.base.util.ReturnMapUtils;
 import cn.cnic.base.util.SessionUserUtil;
 import cn.cnic.component.dashboard.service.IResourceService;
 import cn.cnic.component.dashboard.service.IStatisticService;
+import net.sf.json.JSONObject;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,6 +32,7 @@ public class DashboardCtrl {
     public String getResourceInfo() {
         String username = SessionUserUtil.getCurrentUsername();
         String resourceInfo = resourceServiceImpl.getResourceInfo();
+        JSONObject resourceInfoObj = JSONObject.fromObject(resourceInfo);
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("resourceInfo", resourceInfo);
     }
 

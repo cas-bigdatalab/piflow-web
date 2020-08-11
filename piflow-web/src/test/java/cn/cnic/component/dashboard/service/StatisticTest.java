@@ -2,6 +2,7 @@ package cn.cnic.component.dashboard.service;
 
 import cn.cnic.ApplicationTests;
 import cn.cnic.base.util.JsonUtils;
+import cn.cnic.base.util.ReturnMapUtils;
 import org.junit.Test;
 import org.springframework.test.annotation.Rollback;
 
@@ -18,7 +19,8 @@ public class StatisticTest extends ApplicationTests {
     public void testGetFlowStatisticInfo() {
         Map<String,String> result = statisticServiceImpl.getFlowStatisticInfo();
         //JsonUtils.toJsonNoException(setSucceededCustomParam(key, value));
-        System.out.println(result);
+        String str = ReturnMapUtils.setSucceededCustomParamRtnJsonStr("flowResourceInfo", result);
+        System.out.println(str);
 
     }
 
@@ -27,7 +29,8 @@ public class StatisticTest extends ApplicationTests {
     public void testGetGroupStatisticInfo() {
         Map<String,String> result = statisticServiceImpl.getGroupStatisticInfo();
         //JsonUtils.toJsonNoException(setSucceededCustomParam(key, value));
-        System.out.println(result);
+        String str = ReturnMapUtils.setSucceededCustomParamRtnJsonStr("groupResourceInfo", result);
+        System.out.println(str);
     }
 
     @Test
@@ -35,7 +38,8 @@ public class StatisticTest extends ApplicationTests {
     public void testGetScheduleStatisticInfo() {
         Map<String,String> result = statisticServiceImpl.getScheduleStatisticInfo();
         //JsonUtils.toJsonNoException(setSucceededCustomParam(key, value));
-        System.out.println(result);
+        String str = ReturnMapUtils.setSucceededCustomParamRtnJsonStr("scheduleResourceInfo", result);
+        System.out.println(str);
     }
 
     @Test
@@ -43,7 +47,8 @@ public class StatisticTest extends ApplicationTests {
     public void testGetTemplateAndDataSourceStatisticInfo() {
         Map<String,String> result = statisticServiceImpl.getTemplateAndDataSourceStatisticInfo();
         //JsonUtils.toJsonNoException(setSucceededCustomParam(key, value));
-        System.out.println(result);
+        String str = ReturnMapUtils.setSucceededCustomParamRtnJsonStr("tempalateAndDataSourceResourceInfo", result);
+        System.out.println(str);
 
     }
 
@@ -52,7 +57,8 @@ public class StatisticTest extends ApplicationTests {
     public void testGetStopStatisticInfo() {
         Map<String,String> result = statisticServiceImpl.getStopStatisticInfo();
         //JsonUtils.toJsonNoException(setSucceededCustomParam(key, value));
-        System.out.println(result);
+        String str = ReturnMapUtils.setSucceededCustomParamRtnJsonStr("stopResourceInfo", result);
+        System.out.println(str);
 
     }
 }
