@@ -422,7 +422,7 @@
                 if (row.status.text === "STOP" || row.status.text === "INIT") {
                     // data.processType =
                     //     row.processType === "TASK" ? "PROCESS" : "PROCESS_GROUP";
-                    url = "schedule/startSchedule";
+                    url = "/schedule/startSchedule";
                 }
 
                 this.$event.emit("looding", true);

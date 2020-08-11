@@ -90,10 +90,9 @@ module.exports = {
     },
     StopHub_columns: {
         name: "Name",
-        jarPath: "JarPath",
-        description: "description",
+        version: "Version",
+        jarUrl: "JarUrl",
         status: "Status",
-        dataSourceType: "DataSourceType",
         action: "Actions"
     },
     progress_columns: {
