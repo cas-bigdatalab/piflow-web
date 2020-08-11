@@ -1,9 +1,8 @@
-var web_base_origin = window.location.origin;;
+var web_base_origin = window.location.origin;
 var web_drawingBoard = "/piflow-web";
 var sever_base_origin = "/piflow-web";
 var web_header_prefix = "/piflow-web";
 var token = localStorage.getItem('token');
-
 
 /**
  * ajax工具js
@@ -42,7 +41,7 @@ function ajaxRequest(param) {
         cache: cache,
         type: requestType,
         async: async,
-        url: web_drawingBoard + url,
+        url: web_header_prefix + url,
         data: requestData,
         traditional: traditional,
         contentType: contentType,
@@ -62,7 +61,7 @@ function ajaxRequest(param) {
             if (data.code === 403 || data.code === 401) {
                 //  alert(data.errMsg);
                 // console.log(data);
-                window.location.href = (web_drawingBoard + "/login");
+                window.location.href = web_header_prefix + "/login";
                 return;
             }
             if (backFunc && $.isFunction(backFunc)) {
@@ -104,17 +103,13 @@ function ajaxLoadAsync(elementId, requestUrl, async, backFunc, errBackFunc) {
             return;
         }
     });
-    // if (backFunc && $.isFunction(backFunc)) {
-    //     $("#" + elementId).load(web_drawingBoard + requestUrl, backFunc());
-    // } else {
-    //     $("#" + elementId).load(web_drawingBoard + requestUrl);
-    // }
+
 }
 
 function ajaxFun(config) {
     if (config) {
         config.headers = {Authorization: ("Bearer " + token)};
-        config.url = (web_drawingBoard + config.url);
+        config.url = sever_base_origin + config.url;
     } else {
         console.log("ajax config error");
         layer.msg("ajax config error", {icon: 2, shade: 0, time: 2000});
@@ -166,13 +161,13 @@ function openLayerTypeIframeWindowLoadUrl(url, window_width, window_height, titl
         shift: 7,
         area: [window_width + 'px', window_height + 'px'], //Width height
         skin: 'layui-layer-rim', //Add borders
-        content: (web_drawingBoard + url)
+        content: web_drawingBoard + url
     });
 }
 
 // window.location
 function window_location_href(url) {
-    window.location.href = (web_drawingBoard + url);
+    window.location.href = web_drawingBoard + url;
 }
 
 function new_window_open(url) {
