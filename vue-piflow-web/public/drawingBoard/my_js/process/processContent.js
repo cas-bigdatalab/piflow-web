@@ -151,7 +151,7 @@ function runProcess(processId, runMode) {
             if (200 === dataMap.code) {
                 //alert(dataMap.errorMsg);
                 layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000});
-                window_location_href("/page/process/mxGraph/index.html?drawingBoardType=PROCESS&processType=PROCESS&load=" + dataMap.processId);
+                window_location_href("/drawingBoard/page/process/mxGraph/index.html?drawingBoardType=PROCESS&processType=PROCESS&load=" + dataMap.processId);
             } else {
                 //alert(dataMap.errorMsg);
                 layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});

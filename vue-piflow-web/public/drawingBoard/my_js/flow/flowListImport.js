@@ -8,7 +8,7 @@ function initDatatableFlowImportPage(testTableId, url, searchInputId) {
         //Method-level rendering
         table.render({
             elem: '#' + testTableId
-            , url: web_header_prefix + url
+            , url: url
             , headers: {
                 Authorization: ("Bearer " + localStorage.token)
             }
