@@ -1,11 +1,13 @@
 package cn.cnic.base.config;
 
+import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.base.util.SessionUserUtil;
 import cn.cnic.base.vo.UserVo;
 import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.component.system.entity.SysInitRecords;
 import cn.cnic.component.system.jpa.domain.SysInitRecordsDomain;
 import lombok.extern.log4j.Log4j;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -17,8 +19,9 @@ import javax.servlet.http.HttpServletResponse;
  * Defining interceptors
  */
 @Component
-@Log4j
 public class ConfigInterceptor implements HandlerInterceptor {
+
+    Logger logger = LoggerUtil.getLogger();
 
     @Resource
     private SysInitRecordsDomain sysInitRecordsDomain;
@@ -39,7 +42,7 @@ public class ConfigInterceptor implements HandlerInterceptor {
         if (requestURI.startsWith(contextPath + "/login")) {
             UserVo user = SessionUserUtil.getCurrentUser();
             if (null != user) {
-                log.info("Already logged in, jump homepage");
+                logger.info("Already logged in, jump homepage");
                 response.sendRedirect(contextPath + "/page/index.html"); // Redirect to the boot page
             } else {
                 response.sendRedirect(contextPath + "/page/login.html"); // Redirect to the boot page
@@ -49,7 +52,7 @@ public class ConfigInterceptor implements HandlerInterceptor {
         if (requestURI.startsWith(contextPath + "/page/login")) {
             UserVo user = SessionUserUtil.getCurrentUser();
             if (null != user) {
-                log.info("Already logged in, jump homepage");
+                logger.info("Already logged in, jump homepage");
                 response.sendRedirect(contextPath + "/page/index.html"); // Redirect to the boot page
                 return false;
             }
@@ -75,7 +78,7 @@ public class ConfigInterceptor implements HandlerInterceptor {
                     response.sendRedirect(contextPath + "/page/bootPage/bootPage.html"); // Redirect to the boot page
                     return false;
                 }
-                log.info("No initialization, enter the boot page");
+                logger.info("No initialization, enter the boot page");
             }
         } else if (requestURI.startsWith(contextPath + "/bootPage")) {
             response.sendRedirect(contextPath + "/page/index.html"); // Redirect to the boot page

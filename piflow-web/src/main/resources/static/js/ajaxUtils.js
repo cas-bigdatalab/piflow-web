@@ -1,5 +1,7 @@
+var web_base_origin = window.location.origin;;
+var web_drawingBoard = "/piflow-web";
+var sever_base_origin = "/piflow-web";
 var web_header_prefix = "/piflow-web";
-
 var token = localStorage.getItem('token');
 
 
@@ -40,7 +42,7 @@ function ajaxRequest(param) {
         cache: cache,
         type: requestType,
         async: async,
-        url: web_header_prefix + url,
+        url: web_drawingBoard + url,
         data: requestData,
         traditional: traditional,
         contentType: contentType,
@@ -60,7 +62,7 @@ function ajaxRequest(param) {
             if (data.code === 403 || data.code === 401) {
                 //  alert(data.errMsg);
                 // console.log(data);
-                window.location.href = (web_header_prefix + "/login");
+                window.location.href = (web_drawingBoard + "/login");
                 return;
             }
             if (backFunc && $.isFunction(backFunc)) {
@@ -85,7 +87,7 @@ function ajaxLoadAsync(elementId, requestUrl, async, backFunc, errBackFunc) {
     $.ajax({
         type: "GET",
         async: async,
-        url: web_header_prefix + requestUrl,
+        url: web_drawingBoard + requestUrl,
         headers: {
             Authorization: ("Bearer " + token)
         },
@@ -103,16 +105,16 @@ function ajaxLoadAsync(elementId, requestUrl, async, backFunc, errBackFunc) {
         }
     });
     // if (backFunc && $.isFunction(backFunc)) {
-    //     $("#" + elementId).load(web_header_prefix + requestUrl, backFunc());
+    //     $("#" + elementId).load(web_drawingBoard + requestUrl, backFunc());
     // } else {
-    //     $("#" + elementId).load(web_header_prefix + requestUrl);
+    //     $("#" + elementId).load(web_drawingBoard + requestUrl);
     // }
 }
 
 function ajaxFun(config) {
     if (config) {
         config.headers = {Authorization: ("Bearer " + token)};
-        config.url = (web_header_prefix + config.url);
+        config.url = (web_drawingBoard + config.url);
     } else {
         console.log("ajax config error");
         layer.msg("ajax config error", {icon: 2, shade: 0, time: 2000});
@@ -164,18 +166,18 @@ function openLayerTypeIframeWindowLoadUrl(url, window_width, window_height, titl
         shift: 7,
         area: [window_width + 'px', window_height + 'px'], //Width height
         skin: 'layui-layer-rim', //Add borders
-        content: (web_header_prefix + url)
+        content: (web_drawingBoard + url)
     });
 }
 
 // window.location
 function window_location_href(url) {
-    window.location.href = (web_header_prefix + url);
+    window.location.href = (web_drawingBoard + url);
 }
 
 function new_window_open(url) {
 
-    var tempWindow = window.open(web_header_prefix + url);
+    var tempWindow = window.open(web_drawingBoard + url);
     if (tempWindow == null || typeof (tempWindow) == 'undefined') {
         alert('The window cannot be opened. Please check your browser settings.')
     }

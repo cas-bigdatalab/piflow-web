@@ -35,12 +35,12 @@ function initFlowGroupDrawingBoardData(loadId, parentAccessPath) {
                     Sidebar.prototype.component_data = mxGraphComponentList
                 }
             } else {
-                window.location.href = (web_header_prefix + "/error/404");
+                window.location.href = (web_drawingBoard + "/error/404");
             }
             $('#fullScreen').hide();
         },
         error: function (request) {//Operation after request failure
-            window.location.href = (web_header_prefix + "/error/404");
+            window.location.href = (web_drawingBoard + "/page/error/errorPage.html");
             return;
         }
     });

@@ -8,7 +8,7 @@ function initDataTablePage(testTableId, url, searchInputId) {
         //Method-level rendering
         table.render({
             elem: '#' + testTableId
-            , url: (web_header_prefix + url)
+            , url: (web_drawingBoard + url)
             , headers: {
                 Authorization: ("Bearer " + token)
             }
@@ -103,7 +103,7 @@ function dataSourceOpen(dataSourceId) {
         shift: 7,
         area: ['580px', '550px'], //Width height
         skin: 'layui-layer-rim', //Add borders
-        content: (web_header_prefix + "/page/dataSource/dataSourceInput.html")
+        content: (web_drawingBoard + "/page/dataSource/dataSourceInput.html")
     });
     // ajaxRequest({
     //     cache: true,//Keep cached data

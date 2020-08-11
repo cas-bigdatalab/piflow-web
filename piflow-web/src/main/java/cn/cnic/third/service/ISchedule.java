@@ -1,12 +1,15 @@
 package cn.cnic.third.service;
 
 import cn.cnic.component.schedule.entity.Schedule;
+import cn.cnic.third.vo.schedule.ThirdScheduleVo;
+
+import java.util.Map;
 
 public interface ISchedule {
 
-    public String scheduleStart(String username, Schedule schedule);
+    public Map<String, Object> scheduleStart(String username, Schedule schedule);
 
     public String scheduleStop(String scheduleId);
 
-    public String scheduleInfo(String scheduleId);
+    public ThirdScheduleVo scheduleInfo(String scheduleId);
 }
