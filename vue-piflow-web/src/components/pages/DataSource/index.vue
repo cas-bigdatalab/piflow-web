@@ -27,18 +27,24 @@
           <!-- <span class="button-warp" @click="handleButtonSelect(row,1)">
             <Icon type="ios-redo" />
           </span>-->
-          <span class="button-warp" @click="handleButtonSelect(row,1)">
-            <Icon type="ios-create-outline" />
-          </span>
+          <Tooltip content="edit" placement="top-start">
+            <span class="button-warp" @click="handleButtonSelect(row,1)">
+              <Icon type="ios-create-outline" />
+            </span>
+          </Tooltip>
+
           <!--  <span class="button-warp" @click="handleButtonSelect(row,3)">
             <Icon type="ios-play" />
           </span>
          <span class="button-warp" @click="handleButtonSelect(row,4)">
             <Icon type="ios-bug" />
           </span>-->
-          <span class="button-warp" @click="handleButtonSelect(row,2)">
-            <Icon type="ios-trash" />
-          </span>
+          <Tooltip content="delete" placement="top-start">
+            <span class="button-warp" @click="handleButtonSelect(row,2)">
+              <Icon type="ios-trash" />
+            </span>
+          </Tooltip>
+
           <!-- <span class="button-warp" @click="handleButtonSelect(row,6)">
             <Icon type="md-checkbox-outline" />
           </span>-->

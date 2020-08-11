@@ -46,18 +46,26 @@
       <!-- 操作按钮 -->
       <template slot-scope="{ row }" slot="action">
         <div>
-          <span class="button-warp" @click="handleButtonSelect(row,1)">
-            <Icon type="ios-redo" />
-          </span>
-          <span class="button-warp" @click="handleButtonSelect(row,2)">
-            <Icon type="ios-play" />
-          </span>
-          <span class="button-warp" @click="handleButtonSelect(row,3)">
-            <Icon type="ios-square" />
-          </span>
-          <span class="button-warp" @click="handleButtonSelect(row,4)">
-            <Icon type="ios-trash" />
-          </span>
+          <Tooltip content="enter" placement="top-start">
+            <span class="button-warp" @click="handleButtonSelect(row,1)">
+              <Icon type="ios-redo" />
+            </span>
+          </Tooltip>
+          <Tooltip content="run" placement="top-start">
+            <span class="button-warp" @click="handleButtonSelect(row,2)">
+              <Icon type="ios-play" />
+            </span>
+          </Tooltip>
+          <Tooltip content="stop" placement="top-start">
+            <span class="button-warp" @click="handleButtonSelect(row,3)">
+              <Icon type="ios-square" />
+            </span>
+          </Tooltip>
+          <Tooltip content="delete" placement="top-start">
+            <span class="button-warp" @click="handleButtonSelect(row,4)">
+              <Icon type="ios-trash" />
+            </span>
+          </Tooltip>
         </div>
       </template>
     </Table>
@@ -281,11 +289,12 @@ export default {
         {
           title: this.$t("progress_columns.state"),
           key: "state",
+          width: 130,
         },
         {
           title: this.$t("progress_columns.action"),
           slot: "action",
-          width: 250,
+          width: 230,
           align: "center",
         },
       ];

@@ -32,8 +32,8 @@ const i18n = new VueI18n({ //this.$i18n.locale // 通过切换locale的值来实
 // import './assets/style/theme_1.scss'
 
 // 引入echarts
-// import echarts from 'echarts'
-// Vue.prototype.$echarts = echarts;
+import echarts from 'echarts'
+Vue.prototype.$echarts = echarts;
 
 import './assets/style/gloable.scss';
 // import 'font-awesome/css/font-awesome.css'

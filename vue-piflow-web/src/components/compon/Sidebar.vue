@@ -68,7 +68,7 @@ export default {
         {
           btnName: this.$t("sidebar.flow"),
           icoName: "ios-ionitron",
-          router: "/"
+          router: "/flow"
         },
         {
           btnName: this.$t("sidebar.group"),
@@ -90,7 +90,16 @@ export default {
           icoName: "ios-color-filter",
           router: "datasource"
         },
-
+        {
+          btnName: this.$t("sidebar.schedule"),
+          icoName: "ios-timer",
+          router: "schedule"
+        },
+        {
+          btnName: this.$t("sidebar.stopHub"),
+          icoName: "ios-speedometer",
+          router: "StopHub"
+        },
         {
           btnName: this.$t("sidebar.example"),
           icoName: "md-cube",
@@ -128,6 +137,10 @@ export default {
     // this.$refs.sideNav;
     this.menuName = window.sessionStorage.getItem("menuName");
     window.sessionStorage.removeItem("menuName");
+
+
+    let list = JSON.parse(window.sessionStorage.getItem("sysMenuVoList"));
+
   },
   methods: {
     // handleMouseOver(name) {

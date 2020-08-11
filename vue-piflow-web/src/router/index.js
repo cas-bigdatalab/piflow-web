@@ -28,6 +28,11 @@ export default new Router({
           children: [ //这里就是二级路由的配置
             {
               path: '/',
+              name: 'sections',
+              component: () => import('../components/pages/index')
+            },
+            {
+              path: '/flow',
               name: 'flow',
               component: () => import('../components/pages/Flow')
             },
@@ -50,6 +55,16 @@ export default new Router({
               path: '/datasource',
               name: 'datasource',
               component: () => import('../components/pages/DataSource')
+            },
+            {
+              path: '/schedule',
+              name: 'schedule',
+              component: () => import('../components/pages/Schedule')
+            },
+            {
+              path: '/stopHub',
+              name: 'stopHub',
+              component: () => import('../components/pages/StopHub')
             },
             {
               path: '/admin',

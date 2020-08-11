@@ -607,7 +607,7 @@ function queryStopsProperty(stopPageId, loadId) {
                     checkboxCheckpoint.setAttribute('onclick', 'saveCheckpoints("' + stopsVoData.id + '")');
                     $("#div_stops_checkpoint_html").html("");
                     $("#div_stops_checkpoint_html").append(checkboxCheckpoint);
-                    $("#div_stops_checkpoint_html").append('<span>Whether to add Checkpoint</span>');
+                    $("#div_stops_checkpoint_html").append('<span>&nbsp;&nbsp;Whether to add Checkpoint</span>');
                     $('#div_stops_checkpoint_html').show();
 
                     //stopsCustomizedPropertyVoList

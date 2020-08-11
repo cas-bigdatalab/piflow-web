@@ -24,24 +24,36 @@
     <Table border :columns="columns" :data="tableData">
       <template slot-scope="{ row }" slot="action">
         <div>
-          <span class="button-warp" @click="handleButtonSelect(row,1)">
-            <Icon type="ios-redo" />
-          </span>
-          <span class="button-warp" @click="handleButtonSelect(row,2)">
-            <Icon type="ios-create-outline" />
-          </span>
-          <span class="button-warp" @click="handleButtonSelect(row,3)">
-            <Icon type="ios-play" />
-          </span>
-          <span class="button-warp" @click="handleButtonSelect(row,4)">
-            <Icon type="ios-bug" />
-          </span>
-          <span class="button-warp" @click="handleButtonSelect(row,5)">
-            <Icon type="ios-trash" />
-          </span>
-          <span class="button-warp" @click="handleButtonSelect(row,6)">
-            <Icon type="md-checkbox-outline" />
-          </span>
+          <Tooltip content="enter" placement="top-start">
+            <span class="button-warp" @click="handleButtonSelect(row,1)">
+              <Icon type="ios-redo" />
+            </span>
+          </Tooltip>
+          <Tooltip content="edit" placement="top-start">
+            <span class="button-warp" @click="handleButtonSelect(row,2)">
+              <Icon type="ios-create-outline" />
+            </span>
+          </Tooltip>
+          <Tooltip content="run" placement="top-start">
+            <span class="button-warp" @click="handleButtonSelect(row,3)">
+              <Icon type="ios-play" />
+            </span>
+          </Tooltip>
+          <Tooltip content="debug" placement="top-start">
+            <span class="button-warp" @click="handleButtonSelect(row,4)">
+              <Icon type="ios-bug" />
+            </span>
+          </Tooltip>
+          <Tooltip content="delete" placement="top-start">
+            <span class="button-warp" @click="handleButtonSelect(row,5)">
+              <Icon type="ios-trash" />
+            </span>
+          </Tooltip>
+          <Tooltip content="Save template" placement="top-start">
+            <span class="button-warp" @click="handleButtonSelect(row,6)">
+              <Icon type="md-checkbox-outline" />
+            </span>
+          </Tooltip>
         </div>
       </template>
     </Table>

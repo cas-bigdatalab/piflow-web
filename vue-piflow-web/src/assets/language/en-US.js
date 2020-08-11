@@ -7,6 +7,8 @@ module.exports = {
         processes: "Process",
         template: "Template",
         data_source: "DataSource",
+        schedule: "Schedule",
+        stopHub: "StopHub",
         example: "Example",
         admin: "Admin",
     },
@@ -48,6 +50,7 @@ module.exports = {
         udate_title: "Update flow",
         template_title: "Template name",
         ok_text: "Submit",
+        upload_text: "upload",
         confirm: "Confirm",
         cancel_text: "Cancel",
         delete_content: "Are you sure to delete",
@@ -63,6 +66,11 @@ module.exports = {
         jobName: "Name",
         jobClass: "Class",
         cronExpression: "Cron",
+        upload: "Upload Jar",
+        startDate: "StartDate",
+        endDate: "EndtDate",
+        flowIsGroup: "Flow / Group",
+        cron: "Cron",
     },
     flow_columns: {
         name: "Name",
@@ -71,8 +79,23 @@ module.exports = {
         dataSourceType: "DataSourceType",
         action: "Actions"
     },
-
-
+    schedule_columns: {
+        cron: "Cron",
+        type:'Type',
+        name: "Name",
+        planStartTime:"PlanStartTime",
+        planEndTime:"PlanEndTime",
+        status: "Status",
+        action: "Actions"
+    },
+    StopHub_columns: {
+        name: "Name",
+        jarPath: "JarPath",
+        description: "description",
+        status: "Status",
+        dataSourceType: "DataSourceType",
+        action: "Actions"
+    },
     progress_columns: {
         progress: "Progress",
         endTime: "EndTime",

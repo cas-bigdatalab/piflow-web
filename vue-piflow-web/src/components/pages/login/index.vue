@@ -332,6 +332,7 @@ export default {
             window.sessionStorage.setItem("state", "jwtok");
             window.sessionStorage.setItem("usre", this.username);
             this.$router.push({ path: "/" });
+            window.sessionStorage.setItem("sysMenuVoList", JSON.stringify(res.data.jwtUser.sysMenuVoList));
             // this.handleClear();
             // let path = window.sessionStorage.getItem("path");
           } else {

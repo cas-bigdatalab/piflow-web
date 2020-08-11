@@ -37,8 +37,8 @@
             <Icon type="md-arrow-dropdown" size="22" />
           </div>
           <DropdownMenu slot="list">
-            <DropdownItem>个人中心</DropdownItem>
-            <DropdownItem>修改密码</DropdownItem>
+<!--            <DropdownItem>个人中心</DropdownItem>-->
+<!--            <DropdownItem>修改密码</DropdownItem>-->
             <DropdownItem divided @click.native="handleQuit">退出</DropdownItem>
           </DropdownMenu>
         </Dropdown>

@@ -13,6 +13,8 @@
   "dependencies": {
     "axios": "^0.19.2",
     "core-js": "^3.6.4",
+    "echarts": "^4.8.0",
+    "echarts-liquidfill": "^2.0.6",
     "font-awesome": "^4.7.0",
     "mockjs": "^1.1.0",
     "postcss-px2rem": "^0.3.0",

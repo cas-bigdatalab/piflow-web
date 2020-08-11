@@ -44,12 +44,18 @@
           <span class="button-warp" @click="handleButtonSelect(row,4)">
             <Icon type="ios-bug" />
           </span>-->
-          <span class="button-warp" @click="handleButtonSelect(row,1)">
-            <Icon type="md-cloud-download" />
-          </span>
-          <span class="button-warp" @click="handleButtonSelect(row,2)">
-            <Icon type="ios-trash" />
-          </span>
+          <Tooltip content="download" placement="top-start">
+            <span class="button-warp" @click="handleButtonSelect(row,1)">
+              <Icon type="md-cloud-download" />
+            </span>
+          </Tooltip>
+
+          <Tooltip content="delete" placement="top-start">
+            <span class="button-warp" @click="handleButtonSelect(row,2)">
+              <Icon type="ios-trash" />
+            </span>
+          </Tooltip>
+
           <!-- <span class="button-warp" @click="handleButtonSelect(row,6)">
             <Icon type="md-checkbox-outline" />
           </span>-->
