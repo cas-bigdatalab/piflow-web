@@ -24,20 +24,36 @@
         <Table border :columns="columns" :data="tableData">
             <template slot-scope="{ row }" slot="action">
                 <div>
-                    <Tooltip content="mount" placement="top-start">
+                    <Tooltip content="mount" placement="top-start" v-if="row.status.text==='UNMOUNT'">
                         <span class="button-warp" @click="handleButtonSelect(row,1)">
                             <Icon type="ios-aperture" />
                         </span>
                     </Tooltip>
-
-                    <Tooltip content="unmount" placement="top-start">
-                        <span class="button-warp" @click="handleButtonSelect(row,3)">
-                            <Icon type="md-aperture" />
-                    </span>
+                    <Tooltip v-else content="unmount" placement="top-start">
+                       <span class="button-warp" @click="handleButtonSelect(row,1)">
+                         <Icon type="md-aperture" />
+                       </span>
                     </Tooltip>
 
+
+
+
+
+
+                    <!--                    <Tooltip content="mount" placement="top-start">-->
+                    <!--                        <span class="button-warp" @click="handleButtonSelect(row,1)">-->
+                    <!--                            <Icon type="ios-aperture" />-->
+                    <!--                        </span>-->
+                    <!--                    </Tooltip>-->
+
+                    <!--                    <Tooltip content="unmount" placement="top-start">-->
+                    <!--                        <span class="button-warp" @click="handleButtonSelect(row,2)">-->
+                    <!--                            <Icon type="md-aperture" />-->
+                    <!--                    </span>-->
+                    <!--                    </Tooltip>-->
+
                     <Tooltip content="delete" placement="top-start">
-                        <span class="button-warp" @click="handleButtonSelect(row,2)">
+                        <span class="button-warp" @click="handleButtonSelect(row,3)">
                             <Icon type="ios-trash"/>
                         </span>
                     </Tooltip>
@@ -101,7 +117,7 @@
 
 <script>
     export default {
-        name: "index",
+        name: "stopHub",
         components: {},
         data() {
             return {
@@ -113,8 +129,6 @@
                 tableData: [],
 
                 param: "",
-                templateName: "",
-
                 row: null,
                 id: "",
                 name: "",
@@ -146,17 +160,27 @@
                 return [
                     {
                         title: this.$t("StopHub_columns.name"),
-                        key: "dataSourceName",
+                        key: "jarName",
                         sortable: true
                     },
                     {
-                        title: this.$t("StopHub_columns.jarPath"),
-                        key: "dataSourceDescription"
+                        title: this.$t("StopHub_columns.version"),
+                        key: "version",
+                        sortable: true,
+                        width: 120,
+                    },
+                    {
+                        title: this.$t("StopHub_columns.jarUrl"),
+                        key: "jarUrl"
                     },
                     {
                         title: this.$t("StopHub_columns.status"),
-                        key: "dataSourceType",
-                        sortable: true
+                        key: "status",
+                        sortable: true,
+                        render: (h, params) => {
+                            return h('span', params.row.status.text);
+                        },
+                        width: 150,
                     },
                     {
                         title: this.$t("StopHub_columns.action"),
@@ -197,9 +221,9 @@
             handleButtonSelect(row, key) {
                 switch (key) {
                     case 1:
-                        this.getRowData(row);
+                        this.handleMount(row);
                         break;
-                    case 2:
+                    case 3:
                         this.handleDeleteRow(row);
                         break;
                     default:
@@ -334,35 +358,30 @@
                 // this.dataSourcePropertyVoList.splice(m, 1);
             },
 
-            //获取行数据(编辑)
-            getRowData(row) {
+            // 挂载/卸载
+            handleMount(row) {
+                let data = { id: row.id };
+                let url = "/stops/unmountStopsHub";
+                if (row.status.text === "UNMOUNT") {
+                    url = "/stops/mountStopsHub";
+                }
+
                 this.$event.emit("looding", true);
                 this.$axios
-                    .get("/datasource/getDataSourceInputData", {
-                        params: {dataSourceId: row.id}
-                    })
+                    .post(url, this.$qs.stringify(data))
                     .then(res => {
                         if (res.data.code == 200) {
-                            let data = res.data.templateList;
-                            data.push({id: "", dataSourceType: "Other"});
-                            this.typeList = data;
-
-                            let flow = res.data.dataSourceVo;
-                            this.id = flow.id;
-                            this.type = flow.dataSourceType;
-                            this.name = flow.dataSourceName;
-                            this.description = flow.dataSourceDescription;
-                            // this.driverMemory = flow.driverMemory;
-                            // this.executorNumber = flow.executorNumber;
-                            // this.executorMemory = flow.executorMemory;
-                            // this.executorCores = flow.executorCores;
                             this.$event.emit("looding", false);
-                            this.isOpen = true;
+                            this.$Modal.success({
+                                title: this.$t("tip.tilte"),
+                                content: `${row.jarName} ` + this.$t("tip.stop_success_content")
+                            });
+                            this.getTableData();
                         } else {
                             this.$event.emit("looding", false);
-                            this.$Modal.error({
+                            this.$Modal.success({
                                 title: this.$t("tip.tilte"),
-                                content: this.$t("tip.data_fail_content")
+                                content: `${row.jarName} ` + this.$t("tip.stop_fail_content")
                             });
                         }
                     })
@@ -375,48 +394,58 @@
                         });
                     });
             },
+
             //删除某一行数据
             handleDeleteRow(row) {
-                this.$Modal.confirm({
-                    title: this.$t("tip.tilte"),
-                    okText: this.$t("modal.confirm"),
-                    cancelText: this.$t("modal.cancel_text"),
-                    content: `${this.$t("modal.delete_content")} ${row.dataSourceName}?`,
-                    onOk: () => {
-                        let data = {
-                            dataSourceId: row.id
-                        };
-                        this.$axios
-                            .post("/datasource/deleteDataSource", this.$qs.stringify(data))
-                            .then(res => {
-                                if (res.data.code == 200) {
-                                    this.$Modal.success({
-                                        title: this.$t("tip.tilte"),
-                                        content:
-                                            `${row.dataSourceName} ` +
-                                            this.$t("tip.delete_success_content")
-                                    });
-                                    this.handleReset();
-                                    this.getTableData();
-                                } else {
+                if ( row.status.text==='MOUNT' ){
+                    this.$Modal.warning({
+                        title: this.$t("tip.tilte"),
+                        content:
+                            `${row.jarName} ` +
+                            'In operation, temporarily unable to delete !'
+                    });
+                }else {
+                    this.$Modal.confirm({
+                        title: this.$t("tip.tilte"),
+                        okText: this.$t("modal.confirm"),
+                        cancelText: this.$t("modal.cancel_text"),
+                        content: `${this.$t("modal.delete_content")} ${row.jarName}?`,
+                        onOk: () => {
+                            let data = {
+                                id: row.id
+                            };
+                            this.$axios
+                                .post("/stops/delStopsHub", this.$qs.stringify(data))
+                                .then(res => {
+                                    if (res.data.code == 200) {
+                                        this.$Modal.success({
+                                            title: this.$t("tip.tilte"),
+                                            content:
+                                                `${row.jarName} ` +
+                                                this.$t("tip.delete_success_content")
+                                        });
+                                        this.handleReset();
+                                        this.getTableData();
+                                    } else {
+                                        this.$Modal.error({
+                                            title: this.$t("tip.tilte"),
+                                            content: this.$t("tip.delete_fail_content")
+                                        });
+                                    }
+                                })
+                                .catch(error => {
+                                    console.log(error);
                                     this.$Modal.error({
                                         title: this.$t("tip.tilte"),
-                                        content: this.$t("tip.delete_fail_content")
+                                        content: this.$t("tip.fault_content")
                                     });
-                                }
-                            })
-                            .catch(error => {
-                                console.log(error);
-                                this.$Modal.error({
-                                    title: this.$t("tip.tilte"),
-                                    content: this.$t("tip.fault_content")
                                 });
-                            });
-                    },
-                    onCancel: () => {
-                        // this.$Message.info('Clicked cancel');
-                    }
-                });
+                        },
+                        onCancel: () => {
+                            // this.$Message.info('Clicked cancel');
+                        }
+                    });
+                }
             },
             //获取表格数据
             getTableData() {
