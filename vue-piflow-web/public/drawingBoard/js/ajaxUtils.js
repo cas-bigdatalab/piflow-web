@@ -1,6 +1,5 @@
 // var web_header_prefix = "http://10.0.88.46:86/piflow";
 var web_base_origin = window.location.origin;
-var web_drawingBoard = "/drawingBoard";
 var sever_base_origin = "http://10.0.85.80:6002/piflow-web";
 var basePath = window.sessionStorage.getItem("basePath")
 var web_header_prefix = basePath.indexOf(window.location.origin) > -1 ? basePath : web_base_origin + basePath; //与 .env.production 内容同步
@@ -88,7 +87,7 @@ function ajaxLoadAsync(elementId, requestUrl, async, backFunc, errBackFunc) {
     $.ajax({
         type: "GET",
         async: async,
-        url: web_drawingBoard + requestUrl,
+        url: '/drawingBoard' + requestUrl,
         headers: {
             Authorization: ("Bearer " + token)
         },
@@ -105,7 +104,11 @@ function ajaxLoadAsync(elementId, requestUrl, async, backFunc, errBackFunc) {
             return;
         }
     });
-
+    // if (backFunc && $.isFunction(backFunc)) {
+    //     $("#" + elementId).load(web_header_prefix + requestUrl, backFunc());
+    // } else {
+    //     $("#" + elementId).load(web_header_prefix + requestUrl);
+    // }
 }
 
 function ajaxFun(config) {
@@ -163,18 +166,18 @@ function openLayerTypeIframeWindowLoadUrl(url, window_width, window_height, titl
         shift: 7,
         area: [window_width + 'px', window_height + 'px'], //Width height
         skin: 'layui-layer-rim', //Add borders
-        content: web_drawingBoard + url
+        content: url
     });
 }
 
 // window.location
 function window_location_href(url) {
-    window.location.href = window.location.origin + "/#/drawingBoard?src=" + web_drawingBoard + url;
+    window.location.href = window.location.origin + "/#/drawingBoard?src=" + url;
 }
 
 function new_window_open(url) {
 
-    var tempWindow = window.open(window.location.origin + "/#/drawingBoard?src=" + web_drawingBoard + url);
+    var tempWindow = window.open(window.location.origin + "/#/drawingBoard?src=" + url);
     if (tempWindow == null || typeof (tempWindow) == 'undefined') {
         alert('The window cannot be opened. Please check your browser settings.')
     }
