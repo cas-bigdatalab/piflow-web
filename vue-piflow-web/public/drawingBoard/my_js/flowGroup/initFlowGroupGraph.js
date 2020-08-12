@@ -35,12 +35,12 @@ function initFlowGroupDrawingBoardData(loadId, parentAccessPath) {
                     Sidebar.prototype.component_data = mxGraphComponentList
                 }
             } else {
-                window.location.href = (web_header_prefix + "/error/404");
+                window_location_href("/page/error/errorPage.html");
             }
             $('#fullScreen').hide();
         },
         error: function (request) {//Operation after request failure
-            window.location.href = (web_header_prefix + "/error/404");
+            window_location_href("/page/error/errorPage.html");
             return;
         }
     });
@@ -1465,9 +1465,9 @@ function RunFlowOrFlowGroupCells(includeEdges) {
                 layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
                     //Jump to the monitor page after starting successfully
                     if (dataMap.processGroupId) {
-                        new_window_open("/drawingBoard/page/processGroup/mxGraph/index.html?drawingBoardType=PROCESS&processType=PROCESS_GROUP&load=" + dataMap.processGroupId);
+                        new_window_open("/page/processGroup/mxGraph/index.html?drawingBoardType=PROCESS&processType=PROCESS_GROUP&load=" + dataMap.processGroupId);
                     } else if (dataMap.processId) {
-                        new_window_open("/drawingBoard/page/process/mxGraph/index.html?drawingBoardType=PROCESS&processType=PROCESS&load=" + dataMap.processId);
+                        new_window_open("/page/process/mxGraph/index.html?drawingBoardType=PROCESS&processType=PROCESS&load=" + dataMap.processId);
                     }
                 });
             } else {
@@ -1503,7 +1503,7 @@ function runFlowGroup(runMode) {
             if (200 === dataMap.code) {
                 layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
                     //Jump to the monitoring page after starting successfully
-                    new_window_open("/drawingBoard/page/process/mxGraph/index.html?drawingBoardType=PROCESS&processType=PROCESS_GROUP&load=" + dataMap.processGroupId, '_blank');
+                    new_window_open("/page/process/mxGraph/index.html?drawingBoardType=PROCESS&processType=PROCESS_GROUP&load=" + dataMap.processGroupId, '_blank');
                 });
             } else {
                 layer.msg("Startup failure：" + dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
