@@ -11,7 +11,7 @@ public interface ICustomizedPropertyService {
 
     public String deleteStopsCustomizedProperty(String username, String customPropertyId);
 
-    public String deleteRouterStopsCustomizedProperty(String customPropertyId);
+    public String deleteRouterStopsCustomizedProperty(String username, String customPropertyId);
 
     public String getRouterStopsCustomizedProperty(String customPropertyId);
 
