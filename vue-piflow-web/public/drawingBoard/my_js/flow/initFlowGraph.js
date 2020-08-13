@@ -4,7 +4,6 @@ var parentsId, xmlDate, maxStopPageId, isExample, consumedFlag, timerPath, statu
 
 var index = true;
 var flag = 0;
-var fullScreen = $('#fullScreen');
 var pathsCells = [];
 var thisEditor = null;
 var graphGlobal = null;
@@ -43,12 +42,12 @@ function initFlowDrawingBoardData(loadId, parentAccessPath) {
                     }
                 }
             } else {
-                window.location.href = (web_header_prefix + "/error/404");
+                window_location_href("/page/error/errorPage.html");
             }
             $('#fullScreen').hide();
         },
         error: function (request) {//Operation after request failure
-            window.location.href = (web_header_prefix + "/error/404");
+            window_location_href("/page/error/errorPage.html");
             return;
         }
     });
@@ -378,7 +377,7 @@ function queryFlowInfo(loadId) {
                         for (var i = 0; i < runningProcessVoList.length; i++) {
                             tableAllTd += ('<tr>'
                                 + '<td style="border: 1px solid #e8e8e8; width: 50%;">'
-                                + '<a href="' + web_base_origin + '/drawingBoard/page/process/mxGraph/index.html?drawingBoardType=PROCESS&processType=PROCESS&load=' + runningProcessVoList[i].id + '">' + runningProcessVoList[i].name + '</a>'
+                                + '<a href="' + web_base_origin + web_drawingBoard + '/page/process/mxGraph/index.html?drawingBoardType=PROCESS&processType=PROCESS&load=' + runningProcessVoList[i].id + '">' + runningProcessVoList[i].name + '</a>'
                                 + '</td>'
                                 + '<td style="border: 1px solid #e8e8e8; width: 50%;"><span>' + runningProcessVoList[i].startTime + '</span></td>'
                                 + '</tr>');
@@ -508,7 +507,7 @@ function queryStopsProperty(stopPageId, loadId) {
                             spanDisplayName.textContent = propertyVo_name;
                             // property description
                             var img = document.createElement("img");
-                            img.setAttribute('src', sever_base_origin + '/img/descIcon.png');
+                            img.setAttribute('src', web_drawingBoard + '/img/descIcon.png');
                             img.style.cursor = "pointer";
                             img.setAttribute('title', '' + propertyVo_description + '');
                             // property value
@@ -707,7 +706,7 @@ function queryStopsProperty(stopPageId, loadId) {
                             }
 
                             var img = document.createElement("img");
-                            img.setAttribute('src', sever_base_origin + '/img/descIcon.png');
+                            img.setAttribute('src', web_drawingBoard + '/img/descIcon.png');
                             img.style.cursor = "pointer";
                             img.setAttribute('title', '' + oldPropertiesVo[y].description + '');
                             var tr = document.createElement("tr");
@@ -1575,7 +1574,7 @@ function setCustomizedTableHtml(stopPageId, stopsCustomizedPropertyVo, stopOutPo
             + '<span style="margin-left: 10px;">' + stopsCustomizedPropertyVo.name + ': </span>'
             + '</td>'
             + '<td style="width: 25px;">'
-            + '<img src="' + sever_base_origin + '/img/descIcon.png" title="' + stopsCustomizedPropertyVo.description + '" style="cursor: pointer;">'
+            + '<img src="' + web_drawingBoard + '/img/descIcon.png" title="' + stopsCustomizedPropertyVo.description + '" style="cursor: pointer;">'
             + '</td>'
             + '<td>'
             + '<input data-toggle="true"class="form-control"'
@@ -1798,7 +1797,7 @@ function reloadStops() {
         success: function (data) {//Operation after request successful
             var dataMap = JSON.parse(data);
             if (200 === dataMap.code) {
-                window.location.href = (web_header_prefix + "/page/flow/mxGraph/index.html?drawingBoardType=TASK&load=" + dataMap.load + "&_" + new Date().getTime());
+                window_location_href("/page/flow/mxGraph/index.html?drawingBoardType=TASK&load=" + dataMap.load + "&_" + new Date().getTime());
             } else {
                 //alert("reload fail");
                 layer.msg("reload fail", {icon: 2, shade: 0, time: 2000}, function () {
@@ -1996,7 +1995,7 @@ function loadingXml(id, loadId) {
                 icon_code = 1;
             }
             $('#fullScreen').hide();
-            layer.msg(dataMap.errorMsg, { icon: icon_code, shade: 0.7, time: 2000 }, function () {
+            layer.msg(dataMap.errorMsg, {icon: icon_code, shade: 0.7, time: 2000}, function () {
                 window.location.reload();
             });
         },
@@ -2020,20 +2019,20 @@ function runFlow(runMode) {
         success: function (data) {//After the request is successful
             var dataMap = JSON.parse(data);
             if (200 === dataMap.code) {
-                layer.msg(dataMap.errorMsg, { icon: 1, shade: 0, time: 2000 }, function () {
+                layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
                     //Jump to the monitor page after starting successfully
-                    new_window_open("/drawingBoard/page/process/mxGraph/index.html?drawingBoardType=PROCESS&processType=PROCESS&load=" + dataMap.processId);
+                    new_window_open("/page/process/mxGraph/index.html?drawingBoardType=PROCESS&processType=PROCESS&load=" + dataMap.processId);
                 });
             } else {
                 //alert("Startup failure：" + dataMap.errorMsg);
-                layer.msg("Startup failure：" + dataMap.errorMsg, { icon: 2, shade: 0, time: 2000 }, function () {
+                layer.msg("Startup failure：" + dataMap.errorMsg, {icon: 2, shade: 0, time: 2000}, function () {
                 });
             }
             $('#fullScreen').hide();
         },
         error: function (request) {//Operation after request failure
             //alert("Request Failed");
-            layer.msg("Request Failed", { icon: 2, shade: 0, time: 2000 }, function () {
+            layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000}, function () {
                 $('#fullScreen').hide();
             });
             return;

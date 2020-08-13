@@ -56,4 +56,7 @@ public class Property extends BaseHibernateModelUUIDNoCorpAgentId {
     @Column(columnDefinition = "bit(1) COMMENT 'Has it been updated'")
     private Boolean isOldData = false;
 
+    @Column(columnDefinition = "text(0) COMMENT 'property example'")
+    private String example;
+
 }

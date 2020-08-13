@@ -125,10 +125,10 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
     /**
      * Add stops and drawing board mxCell
      *
-     * @param mxGraphModelVo
-     * @param flowId
+     * @param mxGraphModelVo mxGraphModelVo
+     * @param flowId         flow id
      * @param flag           Whether to add stop information
-     * @return
+     * @return map
      */
     private Map<String, Object> addFlowStops(String username, MxGraphModelVo mxGraphModelVo, String flowId, boolean flag) {
         if (StringUtils.isBlank(username)) {

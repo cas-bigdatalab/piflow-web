@@ -78,6 +78,7 @@ public class StopsComponentPropertyUtils {
         stopsComponentProperty.setName(thirdStopsComponentPropertyVo.getName());
         stopsComponentProperty.setRequired(thirdStopsComponentPropertyVo.getRequired().equals("true"));
         stopsComponentProperty.setSensitive(thirdStopsComponentPropertyVo.isSensitive());
+        stopsComponentProperty.setExample(thirdStopsComponentPropertyVo.getExample());
         stopsComponentProperty.setStopsTemplate(stopsTemplateId);
         return stopsComponentProperty;
     }

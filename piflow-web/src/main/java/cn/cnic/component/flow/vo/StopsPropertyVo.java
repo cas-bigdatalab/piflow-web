@@ -4,6 +4,7 @@ package cn.cnic.component.flow.vo;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.persistence.Column;
 import java.io.Serializable;
 
 /**
@@ -39,4 +40,6 @@ public class StopsPropertyVo implements Serializable {
     private Boolean isSelect;
 
     private Boolean isLocked = false;
+
+    private String example;
 }

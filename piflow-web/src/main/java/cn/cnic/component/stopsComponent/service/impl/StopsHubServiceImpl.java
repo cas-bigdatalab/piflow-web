@@ -188,7 +188,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
             int result = stopsComponentTransactional.deleteStopsComponent(stopsComponent);
         }
 
-        return null;
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr("Mount successful");
     }
 
     /**

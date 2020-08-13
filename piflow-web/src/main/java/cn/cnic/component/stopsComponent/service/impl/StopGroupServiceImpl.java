@@ -41,7 +41,7 @@ public class StopGroupServiceImpl implements IStopGroupService {
     /**
      * Query all groups and all stops under it
      *
-     * @return
+     * @return StopGroupVo list
      */
     @Override
     public List<StopGroupVo> getStopGroupAll() {

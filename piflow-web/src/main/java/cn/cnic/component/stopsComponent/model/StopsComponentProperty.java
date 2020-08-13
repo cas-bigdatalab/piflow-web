@@ -42,4 +42,7 @@ public class StopsComponentProperty extends BaseHibernateModelUUIDNoCorpAgentId 
 
     @Column(columnDefinition = "bigint(20) COMMENT 'property sort'")
     private Long propertySort;
+
+    @Column(columnDefinition = "text(0) COMMENT 'property example'")
+    private String example;
 }
