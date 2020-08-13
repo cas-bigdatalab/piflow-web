@@ -435,7 +435,7 @@ export default {
     getRowData(row) {
       this.$event.emit("looding", true);
       this.$axios
-        .get("/flow/queryFlowGroupData", {
+        .get("/flowGroupyFlowGroupData", {
           params: { load: row.id }
         })
         .then(res => {
