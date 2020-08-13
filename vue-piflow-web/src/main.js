@@ -62,6 +62,40 @@ axios.interceptors.request.use(
     return Promise.reject(err);
   }
 );
+
+axios.interceptors.response.use(response => {
+  if (response) {
+    switch (response.data.code) {
+      // case 401:
+      //   iView.Modal.warning({
+      //     title: 'token失效,请重新登录!',
+      //     content: 'content'
+      //   });
+      //   break;
+      case 403:
+        window.sessionStorage.clear();     //删除用户信息
+        //如果超时就处理 ，指定要跳转的页面(登陆页)
+            iView.Modal.warning({
+              title: 'Piflow system tips',
+              content: 'The token is invalid, please log in again!',
+              onOk:()=>{
+                router.replace({
+                  path: '/login',
+                })
+              }
+            });
+        break;
+    }
+  }
+  return response;
+}, error => {
+  return Promise.reject(error.response.data) //返回接口返回的错误信息
+})
+
+
+
+
+
 axios.defaults.baseURL = process.env.VUE_APP_URL;
 window.sessionStorage.setItem("basePath", process.env.VUE_APP_URL)
 Vue.prototype.$url = process.env.VUE_APP_URL;
