@@ -444,6 +444,7 @@ function queryStopsProperty(stopPageId, loadId) {
     $("#div_customized_html").hide();
     $("#div_stops_checkpoint_html").hide();
     $("#div_del_last_reload").hide();
+    $("#div_properties_example_html").hide();
     isShowUpdateStopsName(false);
     ajaxRequest({
         type: "POST",
@@ -475,6 +476,8 @@ function queryStopsProperty(stopPageId, loadId) {
                     // ----------------------- baseInfo end   -----------------------
 
                     // ----------------------- AttributeInfo start -----------------------
+                    $("#div_properties_example_table").html("");
+                    var tbody_example = document.createElement("tbody");
                     // propertiesVo
                     var propertiesVo = stopsVoData.propertiesVo;
                     if (propertiesVo && propertiesVo.length > 0) {
@@ -493,6 +496,7 @@ function queryStopsProperty(stopPageId, loadId) {
                             var propertyVo_isSelect = propertyVo.isSelect;
                             var propertyVo_required = propertyVo.required;
                             var propertyVo_isLocked = propertyVo.isLocked;
+                            var propertyVo_example = propertyVo.example;
 
                             // create tr and td
                             var tr_i = document.createElement("tr");
@@ -585,13 +589,36 @@ function queryStopsProperty(stopPageId, loadId) {
                             tr_i.appendChild(td_2);
                             tr_i.appendChild(td_3);
                             tbody.appendChild(tr_i);
+
+                            if (propertyVo_example) {
+                                var tbody_example_tr_i = document.createElement("tr");
+                                var tbody_example_td_0 = document.createElement("td");
+                                var tbody_example_td_1 = document.createElement("td");
+                                var tbody_example_td_2 = document.createElement("td");
+                                var tbody_example_td_2_obj = document.createElement('input');
+                                tbody_example_td_0.innerHTML = td_0.outerHTML;
+                                tbody_example_td_1.innerHTML = td_1.outerHTML;
+                                tbody_example_td_2_obj.setAttribute('class', 'form-control');
+                                tbody_example_td_2_obj.setAttribute('value', '' + propertyVo_example + '');
+                                tbody_example_td_2_obj.setAttribute('readonly', 'readonly');
+                                tbody_example_td_2.appendChild(tbody_example_td_2_obj);
+                                tbody_example_tr_i.appendChild(tbody_example_td_0);
+                                tbody_example_tr_i.appendChild(tbody_example_td_1);
+                                tbody_example_tr_i.appendChild(tbody_example_td_2);
+                                tbody_example.appendChild(tbody_example_tr_i);
+                            }
                         }
                         if (isExample) {
                             $('#datasourceSelectElement').attr('disabled', 'disabled');
                         }
                         $("#div_propertiesVo_table").html(tbody);
                         $("#div_propertiesVo_html").show();
+                        if (tbody_example.innerHTML) {
+                            $("#div_properties_example_table").html(tbody_example);
+                            $("#div_properties_example_html").show();
+                        }
                     }
+
 
                     //checkboxCheckpoint
                     var checkboxCheckpoint = document.createElement('input');
