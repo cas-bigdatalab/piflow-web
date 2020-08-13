@@ -145,8 +145,9 @@ public class UserStopsCtrl {
 
     @RequestMapping("/deleteRouterStopsCustomizedProperty")
     @ResponseBody
-    public String deleteRouterStopsCustomizedProperty(String customPropertyId) {
-        return customizedPropertyServiceImpl.deleteRouterStopsCustomizedProperty(customPropertyId);
+    public String deleteRouterStopsCustomizedProperty(HttpServletRequest request, String customPropertyId) {
+        String username = UserUtils.getUsername(request);
+        return customizedPropertyServiceImpl.deleteRouterStopsCustomizedProperty(username, customPropertyId);
     }
 
     @RequestMapping("/getRouterStopsCustomizedProperty")

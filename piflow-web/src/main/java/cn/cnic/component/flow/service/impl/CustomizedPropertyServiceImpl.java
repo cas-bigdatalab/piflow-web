@@ -113,20 +113,9 @@ public class CustomizedPropertyServiceImpl implements ICustomizedPropertyService
     }
 
     @Override
-    public String deleteRouterStopsCustomizedProperty(String customPropertyId) {
+    public String deleteRouterStopsCustomizedProperty(String username, String customPropertyId) {
         Map<String, Object> rtnMap = new HashMap<String, Object>();
-        rtnMap.put("code", 500);
-        int optDataCount = 0;
-        //CustomizedProperty customizedPropertyById = customizedPropertyMapper.getCustomizedPropertyById(customPropertyId);
-        //optDataCount = customizedPropertyMapper.updateEnableFlagByStopId(customPropertyId);
-        if (optDataCount > 0) {
-            rtnMap.put("code", 200);
-            //rtnMap.put("stopPageId", stopsById.getPageId());
-        } else {
-            logger.warn("remove failed");
-            rtnMap.put("errorMsg", "remove failed");
-        }
-        return JsonUtils.toJsonNoException(rtnMap);
+        return this.deleteStopsCustomizedProperty(username,customPropertyId);
     }
 
     @Override

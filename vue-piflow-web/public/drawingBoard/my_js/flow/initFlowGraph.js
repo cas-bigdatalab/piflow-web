@@ -628,7 +628,7 @@ function queryStopsProperty(stopPageId, loadId) {
                         if (stopsVoData.stopsCustomizedPropertyVoList && stopsVoData.stopsCustomizedPropertyVoList.length > 0) {
                             var stopsCustomizedPropertyVoList = stopsVoData.stopsCustomizedPropertyVoList;
                             for (var i = 0; i < stopsCustomizedPropertyVoList.length; i++) {
-                                tr_i = setCustomizedTableHtml(stopsVoData.stopPageId, stopsCustomizedPropertyVoList[i], stopsVoData.outPortType);
+                                tr_i = setCustomizedTableHtml(stopsVoData.pageId, stopsCustomizedPropertyVoList[i], stopsVoData.outPortType);
                                 $("#div_table_customized_html").append(tr_i);
                             }
                         }
@@ -1688,7 +1688,7 @@ function updateStopsCustomizedProperty(id, name, e) {
 //remove stops custom property
 function removeStopCustomProperty(stopPageId, customPropertyId, isRouter) {
     if (isRouter) {
-        getRouterAllPaths(customPropertyId)
+        getRouterAllPaths(stopPageId, customPropertyId)
     } else {
         ajaxRequest({
             type: "POST",//Request type post
@@ -1713,7 +1713,9 @@ function removeStopCustomProperty(stopPageId, customPropertyId, isRouter) {
     }
 }
 
-function getRouterAllPaths(customPropertyId) {
+function getRouterAllPaths(stopPageId, customPropertyId) {
+    removeRouterStopCustomProperty(stopPageId, customPropertyId);
+    return;
     ajaxRequest({
         type: "POST",//Request type post
         url: "/stops/getRouterStopsCustomizedProperty",//This is the name of the file where I receive data in the background.
@@ -1729,8 +1731,7 @@ function getRouterAllPaths(customPropertyId) {
                     layer.confirm(showPathsHtml, {icon: 1, shade: 0, time: 1000}, function () {
                     });
                 } else {
-                    //removeRouterStopCustomProperty(customPropertyId);
-                    console.log("failed");
+                    //removeRouterStopCustomProperty(stopPageId, customPropertyId);
                 }
             } else {
                 layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000}, function () {
@@ -1740,7 +1741,7 @@ function getRouterAllPaths(customPropertyId) {
     });
 }
 
-function removeRouterStopCustomProperty(customPropertyId) {
+function removeRouterStopCustomProperty(stopPageId, customPropertyId) {
     ajaxRequest({
         type: "POST",//Request type post
         url: "/stops/deleteRouterStopsCustomizedProperty",//This is the name of the file where I receive data in the background.

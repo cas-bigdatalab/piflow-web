@@ -150,7 +150,8 @@ public class StopsCtrl {
     @RequestMapping("/deleteRouterStopsCustomizedProperty")
     @ResponseBody
     public String deleteRouterStopsCustomizedProperty(String customPropertyId) {
-        return customizedPropertyServiceImpl.deleteRouterStopsCustomizedProperty(customPropertyId);
+        String username = SessionUserUtil.getCurrentUsername();
+        return customizedPropertyServiceImpl.deleteRouterStopsCustomizedProperty(username, customPropertyId);
     }
 
     @RequestMapping("/getRouterStopsCustomizedProperty")
@@ -199,7 +200,7 @@ public class StopsCtrl {
     @ResponseBody
     public String mountStopsHub(HttpServletRequest request, String id) {
         String username = SessionUserUtil.getCurrentUsername();
-        Boolean isAdmin =  SessionUserUtil.isAdmin();
+        Boolean isAdmin = SessionUserUtil.isAdmin();
         return stopsHubServiceImpl.mountStopsHub(username, isAdmin, id);
     }
 
@@ -213,7 +214,7 @@ public class StopsCtrl {
     @ResponseBody
     public String unmountStopsHub(HttpServletRequest request, String id) {
         String username = SessionUserUtil.getCurrentUsername();
-        Boolean isAdmin =  SessionUserUtil.isAdmin();
+        Boolean isAdmin = SessionUserUtil.isAdmin();
         return stopsHubServiceImpl.unmountStopsHub(username, isAdmin, id);
     }
 
@@ -227,7 +228,7 @@ public class StopsCtrl {
     @ResponseBody
     public String delStopsHub(HttpServletRequest request, String id) {
         String username = SessionUserUtil.getCurrentUsername();
-        Boolean isAdmin =  SessionUserUtil.isAdmin();
+        Boolean isAdmin = SessionUserUtil.isAdmin();
         return stopsHubServiceImpl.delStopsHub(username, isAdmin, id);
     }
 }
