@@ -34,26 +34,8 @@
                          <Icon type="md-aperture" />
                        </span>
                     </Tooltip>
-
-
-
-
-
-
-                    <!--                    <Tooltip content="mount" placement="top-start">-->
-                    <!--                        <span class="button-warp" @click="handleButtonSelect(row,1)">-->
-                    <!--                            <Icon type="ios-aperture" />-->
-                    <!--                        </span>-->
-                    <!--                    </Tooltip>-->
-
-                    <!--                    <Tooltip content="unmount" placement="top-start">-->
-                    <!--                        <span class="button-warp" @click="handleButtonSelect(row,2)">-->
-                    <!--                            <Icon type="md-aperture" />-->
-                    <!--                    </span>-->
-                    <!--                    </Tooltip>-->
-
                     <Tooltip content="delete" placement="top-start">
-                        <span class="button-warp" @click="handleButtonSelect(row,3)">
+                        <span class="button-warp" @click="handleButtonSelect(row,2)">
                             <Icon type="ios-trash"/>
                         </span>
                     </Tooltip>
@@ -79,13 +61,15 @@
                 :title="$t('modal.upload')"
                 :ok-text="$t('modal.upload_text')"
                 :cancel-text="$t('modal.cancel_text')"
-                footer-hide
-                @on-ok="handleSaveUpdateData"
+                @on-cancel="uploadModal"
         >
+            <div slot="footer">
+                <Button type="text" @click="uploadModal">Cancel</Button>
+            </div>
             <div class="modal-warp">
                 <div class="item">
                     <Upload
-                            action= "/piflow/stops/uploadStopsHubFile"
+                            :action= "this.$url + '/stops/uploadStopsHubFile'"
                             :headers="{'Authorization': token}"
                             style="width:100%"
                             ref="upload"
@@ -106,10 +90,10 @@
                         </div>
                     </Upload>
                 </div>
-                <div v-if="JarIsShow !== null">
-                    <Icon :color="JarIsShow?'green':'red'" :type="JarIsShow?'md-checkmark-circle':'md-close-circle'" />
-                    Upload file: {{ file.name }}
-                </div>
+<!--                <div v-if="JarIsShow !== null">-->
+<!--                    <Icon :color="JarIsShow?'green':'red'" :type="JarIsShow?'md-checkmark-circle':'md-close-circle'" />-->
+<!--                    Upload file: {{ file.name }}-->
+<!--                </div>-->
             </div>
         </Modal>
     </section>
@@ -122,7 +106,6 @@
         data() {
             return {
                 isOpen: false,
-                isTemplateOpen: false,
                 page: 1,
                 limit: 10,
                 total: 0,
@@ -223,7 +206,7 @@
                     case 1:
                         this.handleMount(row);
                         break;
-                    case 3:
+                    case 2:
                         this.handleDeleteRow(row);
                         break;
                     default:
@@ -235,19 +218,14 @@
                 this.file = file;
                 return false;
             },
-            // 文件上传成功 response, file, fileList
+            // 上传jar包 文件上传成功 response, file, fileList
             handleSuccess (res, file) {
                 this.JarIsShow = true;
-                console.log(res)
-                console.log('==============================')
-                console.log(file)
+                this.getTableData();
             },
             // 文件上传失败时的钩子，返回字段为 error, file, fileList
             handleError ( error, file) {
                 this.JarIsShow = false;
-                console.log(error)
-                console.log('---------------------------')
-                console.log(file)
             },
             // 文件格式验证失败时的钩子，返回字段为 file, fileList
             handleFormatError (file) {
@@ -275,78 +253,6 @@
                 return true;
             },
 
-
-            // 上传jar包
-            handleSaveUpdateData() {
-                setTimeout(() => {
-                    this.file = null;
-                    this.$Message.success('Success')
-                }, 1500);
-
-                // let data = {
-                //     dataSourceType: this.type,
-                //     dataSourceName: this.name,
-                //     dataSourceDescription: this.description
-                // };
-
-                // if (this.id) {
-                //     //更新数据
-                //     data.id = this.id;
-                //     this.$axios
-                //         .post("/datasource/saveOrUpdate", this.$qs.stringify(data))
-                //         .then(res => {
-                //             if (res.data.code == 200) {
-                //                 this.$Modal.success({
-                //                     title: this.$t("tip.tilte"),
-                //                     content: `${this.name} ` + this.$t("tip.update_success_content")
-                //                 });
-                //                 this.isOpen = false;
-                //                 this.handleReset();
-                //                 this.getTableData();
-                //             } else {
-                //                 this.$Modal.error({
-                //                     title: this.$t("tip.tilte"),
-                //                     content: `${this.name} ` + this.$t("tip.update_fail_content")
-                //                 });
-                //             }
-                //         })
-                //         .catch(error => {
-                //             console.log(error);
-                //             this.$Modal.error({
-                //                 title: this.$t("tip.tilte"),
-                //                 content: this.$t("tip.fault_content")
-                //             });
-                //         });
-                // }
-                // else {
-                //     //新增数据
-                //     this.$axios
-                //         .post("/datasource/saveOrUpdate", this.$qs.stringify(data))
-                //         .then(res => {
-                //             if (res.data.code == 200) {
-                //                 this.$Modal.success({
-                //                     title: this.$t("tip.tilte"),
-                //                     content: `${this.name} ` + this.$t("tip.add_success_content")
-                //                 });
-                //                 this.isOpen = false;
-                //                 this.handleReset();
-                //                 this.getTableData();
-                //             } else {
-                //                 this.$Modal.error({
-                //                     title: this.$t("tip.tilte"),
-                //                     content: `${this.name} ` + this.$t("tip.add_fail_content")
-                //                 });
-                //             }
-                //         })
-                //         .catch(error => {
-                //             console.log(error);
-                //             this.$Modal.error({
-                //                 title: this.$t("tip.tilte"),
-                //                 content: this.$t("tip.fault_content")
-                //             });
-                //         });
-                // }
-            },
             handleRemove(m, mark) {
                 if (mark) {
                     this.$Modal.warning({
@@ -446,6 +352,11 @@
                         }
                     });
                 }
+            },
+            // 关闭清空上传列表
+            uploadModal(){
+                this.isOpen = false;
+                this.$refs.upload.clearFiles();
             },
             //获取表格数据
             getTableData() {

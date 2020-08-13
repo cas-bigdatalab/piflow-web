@@ -8,12 +8,22 @@ export default {
   name: "chart",
   data: () => ({
     content: null,
-    myEcharts: null
+    myEcharts: null,
   }),
   mounted() {
     this.$nextTick(() => {
       this.initChart();
     });
+  },
+  props:['contentData'],
+  watch: {
+    contentData: {
+      handler(newVal){
+        this.content = newVal;
+        this.initChart();
+      },
+      deep:true,
+    },
   },
 
   methods: {
@@ -21,12 +31,76 @@ export default {
     initChart() {
       let echarts = this.$echarts;
       this.myEcharts = echarts.init(this.$refs.chart);
-
+      let contentData = [], color='';
+      if (this.content !== null && this.content.parameter === 'memory'){
+        contentData = [];
+        color='#a8e6cf';
+        for (let key in this.content){
+          let obj = {};
+          if (key === 'allocatedMemoryGB'){
+            obj.value = this.content[key];
+            obj.name = key;
+            obj.itemStyle = {
+              normal: {
+                color: "#a8e6cf",
+                shadowColor: "#a8e6cf"
+              },
+            };
+            contentData.push(obj)
+          }
+          if (key === 'remainingMemoryGB'){
+            obj.value = this.content[key];
+            obj.name = key;
+            obj.itemStyle = {
+              normal: {
+                color: "#dcedc1"
+              }
+            }
+            contentData.push(obj)
+          }
+        }
+      }
+      if (this.content !== null && this.content.parameter === 'hdfs'){
+        contentData = [];
+        color='#a181fc';
+        for (let key in this.content){
+          let obj = {};
+          if (key === 'allocatedCapacityGB'){
+            obj.value = this.content[key];
+            obj.name = key;
+            obj.itemStyle = {
+              normal: {
+                color: "#a181fc",
+                shadowColor: "#a181fc"
+              },
+            };
+            contentData.push(obj)
+          }
+          if (key === 'remainingCapacityGB'){
+            obj.value = this.content[key];
+            obj.name = key;
+            obj.itemStyle = {
+              normal: {
+                color: "#e3d9fe"
+              }
+            }
+            contentData.push(obj)
+          }
+        }
+      }
       let option = {
+        title : {
+          text: 'Hard disk usage',
+          x:'center',
+          textStyle:{
+            color: color
+          }
+        },
+
         tooltip: {
           trigger: "item",
           formatter: function(params) {
-            return ` ${params.name}：${params.value}% `
+            return ` ${params.name}：${params.value}GB `
           }
         },
         series: [
@@ -39,10 +113,7 @@ export default {
             },
 
             color: ["#8378ea", "#e7bcf3"],
-            data: [
-              { value: 30, name: "已使用" },
-              { value: 70, name: "未使用" }
-            ]
+            data: contentData
           },
           {
             type: "pie",
@@ -75,27 +146,7 @@ export default {
               }
             },
             center: ["50%", "50%"],
-            data: [
-              {
-                value: 30,
-                name: "已使用",
-                itemStyle: {
-                  normal: {
-                    color: "#a181fc",
-                    shadowColor: "#a181fc"
-                  }
-                }
-              },
-              {
-                value: 100 - 30,
-                name: "未使用",
-                itemStyle: {
-                  normal: {
-                    color: "#e3d9fe"
-                  }
-                }
-              }
-            ]
+            data: contentData
           }
         ]
       };

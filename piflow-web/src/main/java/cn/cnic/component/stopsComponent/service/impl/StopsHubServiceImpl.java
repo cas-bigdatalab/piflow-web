@@ -62,7 +62,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
         String stopsHubPath = stopImpl.getStopsHubPath();
 
         //upload jar file to plugin path
-        String stopsHubName = file.getName();
+        String stopsHubName = file.getOriginalFilename();
 
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
@@ -83,7 +83,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
         StopsHub stopsHub = StopsHubUtils.stopsHubNewNoId(username);
         stopsHub.setId(UUIDUtils.getUUID32());
         stopsHub.setJarName(stopsHubName);
-        stopsHub.setJarUrl(stopsHubPath);
+        stopsHub.setJarUrl(stopsHubPath + stopsHubName);
         stopsHub.setStatus(StopsHubState.UNMOUNT);
         stopsHubMapper.addStopHub(stopsHub);
         return ReturnMapUtils.setSucceededMsgRtnJsonStr("successful jar upload");
