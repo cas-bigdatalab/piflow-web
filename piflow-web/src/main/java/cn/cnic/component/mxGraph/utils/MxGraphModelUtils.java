@@ -46,13 +46,17 @@ public class MxGraphModelUtils {
         return mxGraphModel;
     }
 
-    public static MxGraphModel copyMxGraphModelAndNewNoIdAndUnlink(MxGraphModel mxGraphModel) {
+    public static MxGraphModel copyMxGraphModelAndNewNoIdAndUnlink(MxGraphModel mxGraphModel, boolean isAddId) {
         if (null == mxGraphModel) {
             return null;
         }
         MxGraphModel mxGraphModelNew = new MxGraphModel();
         BeanUtils.copyProperties(mxGraphModel, mxGraphModelNew);
-        mxGraphModelNew.setId(null);
+        if (isAddId) {
+            mxGraphModelNew.setId(UUIDUtils.getUUID32());
+        } else {
+            mxGraphModelNew.setId(null);
+        }
         mxGraphModelNew.setFlow(null);
         mxGraphModelNew.setFlowGroup(null);
         mxGraphModelNew.setProcess(null);
@@ -68,13 +72,21 @@ public class MxGraphModelUtils {
                 }
                 MxCell mxCellNew = new MxCell();
                 BeanUtils.copyProperties(mxCell, mxCellNew);
-                mxCellNew.setId(null);
+                if (isAddId) {
+                    mxCellNew.setId(UUIDUtils.getUUID32());
+                } else {
+                    mxCellNew.setId(null);
+                }
                 mxCellNew.setMxGraphModel(mxGraphModelNew);
                 MxGeometry mxGeometry = mxCell.getMxGeometry();
                 if (null != mxGeometry) {
                     MxGeometry mxGeometryNew = new MxGeometry();
                     BeanUtils.copyProperties(mxGeometry, mxGeometryNew);
-                    mxGeometryNew.setId(null);
+                    if (isAddId) {
+                        mxGeometryNew.setId(UUIDUtils.getUUID32());
+                    } else {
+                        mxGeometryNew.setId(null);
+                    }
                     mxGeometryNew.setMxCell(mxCellNew);
                     mxCellNew.setMxGeometry(mxGeometryNew);
                 }

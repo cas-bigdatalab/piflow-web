@@ -187,4 +187,25 @@ public class ProcessTransaction {
         return true;
     }
 
+    /**
+     * logically delete
+     *
+     * @param processId processId
+     * @return affected rows
+     */
+    public Process getProcessById(String username, boolean isAdmin, String processId) {
+        if (StringUtils.isBlank(processId) || StringUtils.isBlank(username)) {
+            logger.warn("process id is null");
+            return null;
+        }
+        int affectedLine = 0;
+
+        Process processById = processMapper.getProcessById(username, isAdmin, processId);
+        if (null == processById) {
+            logger.warn("data is null");
+            return null;
+        }
+        return processById;
+    }
+
 }

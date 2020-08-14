@@ -184,7 +184,7 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("No data by process group Id'" + processGroupId + "'");
         }
         // copy and Create
-        ProcessGroup copyProcessGroup = ProcessGroupUtils.copyProcessGroup(processGroupById, username, runModeType);
+        ProcessGroup copyProcessGroup = ProcessGroupUtils.copyProcessGroup(processGroupById, username, runModeType, false);
         copyProcessGroup = processGroupDomain.saveOrUpdate(username, copyProcessGroup);
 
         Map<String, Object> rtnMap = new HashMap<>();
@@ -580,7 +580,6 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
             }
         }
         rtnMap.put("nodePageIdAndStateList", nodePageIdAndStateList);
-
 
 
         rtnMap.put("parentProcessId", processGroup.getParentProcessId());

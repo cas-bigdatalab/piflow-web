@@ -69,7 +69,7 @@ public class MxGraphModelProvider {
             this.pageHeight = SqlUtils.preventSQLInjection(mxGraphModel.getPageHeight());
             this.background = SqlUtils.preventSQLInjection(mxGraphModel.getBackground());
             String flowIdStr = (null != mxGraphModel.getFlow() ? mxGraphModel.getFlow().getId() : null);
-            this.flowId = (null != flowIdStr ? SqlUtils.preventSQLInjection(flowIdStr) : null);
+            this.flowId = SqlUtils.preventSQLInjection(flowIdStr);
         }
     }
 
@@ -100,48 +100,48 @@ public class MxGraphModelProvider {
     }
 
     public String addMxGraphModel(MxGraphModel mxGraphModel) {
-        String sqlStr = "select 0";
         this.preventSQLInjectionMxGraphModel(mxGraphModel);
-        if (null != mxGraphModel) {
-            SQL sql = new SQL();
-            // INSERT_INTO brackets is table name
-            sql.INSERT_INTO("mx_graph_model");
-            // The first string in the value is the field name corresponding to the table in the database.
-
-            //Process the required fields first
-            if (null == crtDttmStr) {
-                String crtDttm = DateUtils.dateTimesToStr(new Date());
-                crtDttmStr = SqlUtils.preventSQLInjection(crtDttm);
-            }
-            if (StringUtils.isBlank(crtUser)) {
-                crtUser = SqlUtils.preventSQLInjection("-1");
-            }
-            sql.VALUES("id", id);
-            sql.VALUES("crt_dttm", crtDttmStr);
-            sql.VALUES("crt_user", crtUser);
-            sql.VALUES("last_update_dttm", lastUpdateDttmStr);
-            sql.VALUES("last_update_user", lastUpdateUser);
-            sql.VALUES("enable_flag", enableFlag + "");
-            sql.VALUES("version", version + "");
-
-            // handle other fields
-            sql.VALUES("mx_dx", dx);
-            sql.VALUES("mx_dy", dy);
-            sql.VALUES("mx_grid", grid);
-            sql.VALUES("mx_gridsize", gridSize);
-            sql.VALUES("mx_guides", guides);
-            sql.VALUES("mx_tooltips", tooltips);
-            sql.VALUES("mx_connect", connect);
-            sql.VALUES("mx_arrows", arrows);
-            sql.VALUES("mx_fold", fold);
-            sql.VALUES("mx_page", page);
-            sql.VALUES("mx_pagescale", pageScale);
-            sql.VALUES("mx_pagewidth", pageWidth);
-            sql.VALUES("mx_pageheight", pageHeight);
-            sql.VALUES("mx_background", background);
-            sql.VALUES("fk_flow_id", flowId);
-            sqlStr = sql.toString();
+        if (null == mxGraphModel) {
+            return "select 0";
         }
+        SQL sql = new SQL();
+        // INSERT_INTO brackets is table name
+        sql.INSERT_INTO("mx_graph_model");
+        // The first string in the value is the field name corresponding to the table in the database.
+
+        //Process the required fields first
+        if (null == crtDttmStr) {
+            String crtDttm = DateUtils.dateTimesToStr(new Date());
+            crtDttmStr = SqlUtils.preventSQLInjection(crtDttm);
+        }
+        if (StringUtils.isBlank(crtUser)) {
+            crtUser = SqlUtils.preventSQLInjection("-1");
+        }
+        sql.VALUES("id", id);
+        sql.VALUES("crt_dttm", crtDttmStr);
+        sql.VALUES("crt_user", crtUser);
+        sql.VALUES("last_update_dttm", lastUpdateDttmStr);
+        sql.VALUES("last_update_user", lastUpdateUser);
+        sql.VALUES("enable_flag", enableFlag + "");
+        sql.VALUES("version", version + "");
+
+        // handle other fields
+        sql.VALUES("mx_dx", dx);
+        sql.VALUES("mx_dy", dy);
+        sql.VALUES("mx_grid", grid);
+        sql.VALUES("mx_gridsize", gridSize);
+        sql.VALUES("mx_guides", guides);
+        sql.VALUES("mx_tooltips", tooltips);
+        sql.VALUES("mx_connect", connect);
+        sql.VALUES("mx_arrows", arrows);
+        sql.VALUES("mx_fold", fold);
+        sql.VALUES("mx_page", page);
+        sql.VALUES("mx_pagescale", pageScale);
+        sql.VALUES("mx_pagewidth", pageWidth);
+        sql.VALUES("mx_pageheight", pageHeight);
+        sql.VALUES("mx_background", background);
+        sql.VALUES("fk_flow_id", flowId);
+        String sqlStr = sql.toString();
         this.reset();
         return sqlStr;
     }

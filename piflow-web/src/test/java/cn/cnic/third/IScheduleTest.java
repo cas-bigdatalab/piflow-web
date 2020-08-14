@@ -37,14 +37,14 @@ public class IScheduleTest extends ApplicationTests {
         // query
         Flow flowById = flowMapper.getFlowById("0641076d5ae840c09d2be5b71fw00001");
         // flow convert process
-        Process process = ProcessUtils.flowToProcess(flowById, "admin");
+        Process process = ProcessUtils.flowToProcess(flowById, "admin",true);
         Map<String, Object> scheduleId = scheduleImpl.scheduleStart(schedule, process, null);
         logger.info(scheduleId.get("scheduleId").toString());
     }
 
     @Test
     public void scheduleStopTest() {
-        String s = scheduleImpl.scheduleStop("schedule_8f870a2b-7eff-497b-867f-e59150a046b2");
+        String s = scheduleImpl.scheduleStop("schedule_40d04683-40cc-479f-a2d2-1ad40e87eef2");
         if (StringUtils.isNotBlank(s) && s.contains("ok!")) {
             logger.info(s);
         } else {
@@ -54,7 +54,7 @@ public class IScheduleTest extends ApplicationTests {
 
     @Test
     public void scheduleInfoTest() {
-        ThirdScheduleVo s = scheduleImpl.scheduleInfo("schedule_8f870a2b-7eff-497b-867f-e59150a046b2");
+        ThirdScheduleVo s = scheduleImpl.scheduleInfo("schedule_40d04683-40cc-479f-a2d2-1ad40e87eef2");
         logger.info(s.toString());
 
 

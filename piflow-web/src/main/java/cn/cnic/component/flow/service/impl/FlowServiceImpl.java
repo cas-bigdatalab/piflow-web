@@ -393,7 +393,7 @@ public class FlowServiceImpl implements IFlowService {
         if (null == flowById) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Flow with FlowId" + flowId + "was not queried");
         }
-        Process process = ProcessUtils.flowToProcess(flowById, username);
+        Process process = ProcessUtils.flowToProcess(flowById, username,false);
         if (null == process) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Conversion failed");
         }

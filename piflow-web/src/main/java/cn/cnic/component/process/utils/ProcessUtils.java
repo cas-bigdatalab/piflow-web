@@ -151,7 +151,7 @@ public class ProcessUtils {
         return processPathVo;
     }
 
-    public static Process flowToProcess(Flow flow, String username) {
+    public static Process flowToProcess(Flow flow, String username,boolean isAddId) {
         Process process = null;
         if (null != flow) {
             process = new Process();
@@ -159,7 +159,11 @@ public class ProcessUtils {
             BeanUtils.copyProperties(flow, process);
             // Set basic information
             process = initProcessBasicPropertiesNoId(process, username);
-            process.setId(UUIDUtils.getUUID32());
+            if (isAddId) {
+                process.setId(UUIDUtils.getUUID32());
+            } else {
+                process.setId(null);
+            }
             FlowGroup flowGroup = flow.getFlowGroup();
             //Set default
             process.setProcessParentType(ProcessParentType.PROCESS);
@@ -168,7 +172,7 @@ public class ProcessUtils {
             }
             // Take out the flow board information of the flow
             MxGraphModel mxGraphModel = flow.getMxGraphModel();
-            MxGraphModel mxGraphModelProcess = MxGraphModelUtils.copyMxGraphModelAndNewNoIdAndUnlink(mxGraphModel);
+            MxGraphModel mxGraphModelProcess = MxGraphModelUtils.copyMxGraphModelAndNewNoIdAndUnlink(mxGraphModel, isAddId);
             mxGraphModelProcess = MxGraphModelUtils.initMxGraphModelBasicPropertiesNoId(mxGraphModelProcess, username);
             // add link
             mxGraphModelProcess.setProcess(process);
@@ -193,7 +197,11 @@ public class ProcessUtils {
                     BeanUtils.copyProperties(stops, processStop);
                     // Set basic information
                     processStop = ProcessStopUtils.initProcessStopBasicPropertiesNoId(processStop, username);
-                    processStop.setId(UUIDUtils.getUUID32());
+                    if (isAddId) {
+                        processStop.setId(UUIDUtils.getUUID32());
+                    } else {
+                        processStop.setId(null);
+                    }
                     // Associate foreign key
                     processStop.setProcess(process);
                     // Remove the properties of stops
@@ -213,7 +221,11 @@ public class ProcessUtils {
                             BeanUtils.copyProperties(property, processStopProperty);
                             // Set basic information
                             processStopProperty = ProcessStopPropertyUtils.initProcessStopPropertyBasicPropertiesNoId(processStopProperty, username);
-                            processStopProperty.setId(UUIDUtils.getUUID32());
+                            if (isAddId) {
+                                processStopProperty.setId(UUIDUtils.getUUID32());
+                            } else {
+                                processStopProperty.setId(null);
+                            }
                             // "stop" attribute name
                             String name = property.getName();
                             // Judge empty
@@ -249,7 +261,11 @@ public class ProcessUtils {
                             BeanUtils.copyProperties(customizedProperty, processStopCustomizedProperty);
                             // Set basic information
                             processStopCustomizedProperty = ProcessStopCustomizedPropertyUtils.initProcessStopCustomizedPropertyBasicPropertiesNoId(processStopCustomizedProperty, username);
-                            processStopCustomizedProperty.setId(UUIDUtils.getUUID32());
+                            if (isAddId) {
+                                processStopCustomizedProperty.setId(UUIDUtils.getUUID32());
+                            } else {
+                                processStopCustomizedProperty.setId(null);
+                            }
                             // Associated foreign key
                             processStopCustomizedProperty.setProcessStop(processStop);
                             processStopCustomizedPropertyList.add(processStopCustomizedProperty);
@@ -276,7 +292,11 @@ public class ProcessUtils {
                     BeanUtils.copyProperties(paths, processPath);
                     // Set basic information
                     processPath = ProcessPathUtils.initProcessPathBasicPropertiesNoId(processPath, username);
-                    processPath.setId(UUIDUtils.getUUID32());
+                    if (isAddId) {
+                        processPath.setId(UUIDUtils.getUUID32());
+                    } else {
+                        processPath.setId(null);
+                    }
                     // Associated foreign key
                     processPath.setProcess(process);
                     processPathList.add(processPath);
@@ -287,13 +307,13 @@ public class ProcessUtils {
         return process;
     }
 
-    public static List<Process> copyProcessList(List<Process> processList, String username, RunModeType runModeType, ProcessGroup processGroup) {
+    public static List<Process> copyProcessList(List<Process> processList, String username, RunModeType runModeType, ProcessGroup processGroup, boolean isAddId) {
         List<Process> copyProcessList = null;
         if (null != processList && processList.size() > 0) {
             copyProcessList = new ArrayList<>();
             Process copyProcess;
             for (Process process : processList) {
-                copyProcess = copyProcess(process, username, runModeType);
+                copyProcess = copyProcess(process, username, runModeType, isAddId);
                 if (null == copyProcess) {
                     continue;
                 }
@@ -305,7 +325,7 @@ public class ProcessUtils {
         return copyProcessList;
     }
 
-    public static Process copyProcess(Process process, String username, RunModeType runModeType) {
+    public static Process copyProcess(Process process, String username, RunModeType runModeType, boolean isAddId) {
         if (StringUtils.isBlank(username) || null == process) {
             return null;
         }
@@ -313,7 +333,11 @@ public class ProcessUtils {
         Process copyProcess = new Process();
         BeanUtils.copyProperties(process, copyProcess);
         copyProcess = ProcessUtils.initProcessBasicPropertiesNoId(copyProcess, username);
-        copyProcess.setId(null);
+        if (isAddId) {
+            copyProcess.setId(UUIDUtils.getUUID32());
+        } else {
+            copyProcess.setId(null);
+        }
         copyProcess.setState(ProcessState.INIT);
         copyProcess.setRunModeType(null != runModeType ? runModeType : RunModeType.RUN);
         copyProcess.setParentProcessId(StringUtils.isNotBlank(process.getParentProcessId()) ? process.getParentProcessId() : process.getProcessId());
@@ -327,7 +351,7 @@ public class ProcessUtils {
 
         // copy processMxGraphModel
         MxGraphModel processMxGraphModel = process.getMxGraphModel();
-        MxGraphModel copyMxGraphModel = MxGraphModelUtils.copyMxGraphModelAndNewNoIdAndUnlink(processMxGraphModel);
+        MxGraphModel copyMxGraphModel = MxGraphModelUtils.copyMxGraphModelAndNewNoIdAndUnlink(processMxGraphModel, isAddId);
         copyMxGraphModel = MxGraphModelUtils.initMxGraphModelBasicPropertiesNoId(copyMxGraphModel, username);
         // add link
         copyMxGraphModel.setProcess(copyProcess);
@@ -342,7 +366,11 @@ public class ProcessUtils {
                     ProcessPath copyProcessPath = new ProcessPath();
                     BeanUtils.copyProperties(processPath, copyProcessPath);
                     copyProcessPath = ProcessPathUtils.initProcessPathBasicPropertiesNoId(copyProcessPath, username);
-                    copyProcessPath.setId(null);
+                    if (isAddId) {
+                        copyProcessPath.setId(UUIDUtils.getUUID32());
+                    } else {
+                        copyProcessPath.setId(null);
+                    }
                     copyProcessPath.setProcess(copyProcess);
                     copyProcessPathList.add(copyProcessPath);
                 }
@@ -361,7 +389,11 @@ public class ProcessUtils {
                 ProcessStop copyProcessStop = new ProcessStop();
                 BeanUtils.copyProperties(processStop, copyProcessStop);
                 copyProcessStop = ProcessStopUtils.initProcessStopBasicPropertiesNoId(copyProcessStop, username);
-                copyProcessStop.setId(null);
+                if (isAddId) {
+                    copyProcessStop.setId(UUIDUtils.getUUID32());
+                } else {
+                    copyProcessStop.setId(null);
+                }
                 copyProcessStop.setStartTime(null);
                 copyProcessStop.setEndTime(null);
                 copyProcessStop.setState(StopState.INIT);
@@ -376,7 +408,11 @@ public class ProcessUtils {
                         ProcessStopProperty copyProcessStopProperty = new ProcessStopProperty();
                         BeanUtils.copyProperties(processStopProperty, copyProcessStopProperty);
                         copyProcessStopProperty = ProcessStopPropertyUtils.initProcessStopPropertyBasicPropertiesNoId(copyProcessStopProperty, username);
-                        copyProcessStopProperty.setId(null);
+                        if (isAddId) {
+                            copyProcessStopProperty.setId(UUIDUtils.getUUID32());
+                        } else {
+                            copyProcessStopProperty.setId(null);
+                        }
                         copyProcessStopProperty.setSensitive(copyProcessStopProperty.getSensitive());
                         copyProcessStopProperty.setProcessStop(copyProcessStop);
                         copyProcessStopPropertyList.add(copyProcessStopProperty);

@@ -35,4 +35,7 @@ public interface ScheduleMapper {
     @DeleteProvider(type = ScheduleMapperProvider.class,method = "delScheduleById")
     int delScheduleById(boolean isAdmin, String username, String id);
 
+    @SelectProvider(type = ScheduleMapperProvider.class, method = "getScheduleIdListByStateRunning")
+    List<ScheduleVo> getScheduleIdListByStateRunning(boolean isAdmin, String username);
+
 }

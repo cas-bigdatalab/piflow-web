@@ -322,7 +322,7 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
             runModeType = RunModeType.selectGender(runMode);
         }
         //ProcessGroup processGroup = flowGroupToProcessGroup(flowGroupById, username, runModeType);
-        ProcessGroup processGroup = ProcessGroupUtils.flowGroupToProcessGroup(flowGroupById, username, runModeType);
+        ProcessGroup processGroup = ProcessGroupUtils.flowGroupToProcessGroup(flowGroupById, username, runModeType, false);
         processGroup = processGroupDomain.saveOrUpdate(username, processGroup);
 
         Map<String, Object> stringObjectMap = groupImpl.startFlowGroup(processGroup, runModeType);

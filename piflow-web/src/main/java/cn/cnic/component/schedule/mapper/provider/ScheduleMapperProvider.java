@@ -244,5 +244,24 @@ public class ScheduleMapperProvider {
         return sqlStr;
     }
 
+    public String getScheduleIdListByStateRunning(boolean isAdmin, String username){
+        if (StringUtils.isBlank(id)) {
+            return "select 0";
+        }
+        if (StringUtils.isBlank(username)) {
+            return "select 0";
+        }
+        StringBuffer strBuf = new StringBuffer();
+        strBuf.append("select * from group_schedule ");
+        strBuf.append("where ");
+        strBuf.append("enable_flag=1 ");
+        strBuf.append("and ");
+        strBuf.append("status='RUNNING' ");
+        if (!isAdmin) {
+            strBuf.append("and crt_user = " + SqlUtils.preventSQLInjection(username));
+        }
+        return strBuf.toString();
+    }
+
 
 }

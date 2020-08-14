@@ -33,7 +33,7 @@ public class IFlowTest extends ApplicationTests {
     @Rollback(value = false)
     public void testStartFlow() {
         Flow flowById = flowMapper.getFlowById("0641076d5ae840c09d2be5b71fw00001");
-        Process process = ProcessUtils.flowToProcess(flowById, null);
+        Process process = ProcessUtils.flowToProcess(flowById, null,true);
         //flowImpl.startFlow(processById,null, RunModeType.RUN);
         String s = ProcessUtils.processToJson(process, null, RunModeType.DEBUG);
         logger.info(s);

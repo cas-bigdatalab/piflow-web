@@ -224,7 +224,7 @@ public class ScheduleServiceImpl implements IScheduleService {
                     return ReturnMapUtils.setFailedMsgRtnJsonStr("failed, flow data is null");
                 }
                 // flow convert process
-                process = ProcessUtils.flowToProcess(flowById, username);
+                process = ProcessUtils.flowToProcess(flowById, username,true);
                 if (null == process) {
                     return ReturnMapUtils.setFailedMsgRtnJsonStr("failed, process convert failed");
                 }
@@ -241,7 +241,7 @@ public class ScheduleServiceImpl implements IScheduleService {
                     return ReturnMapUtils.setFailedMsgRtnJsonStr("failed, Flow data is null");
                 }
                 // flowGroup convert processGroup
-                processGroup = ProcessGroupUtils.flowGroupToProcessGroup(flowGroupById, username, RunModeType.RUN);
+                processGroup = ProcessGroupUtils.flowGroupToProcessGroup(flowGroupById, username, RunModeType.RUN, true);
                 if (null == processGroup) {
                     return ReturnMapUtils.setFailedMsgRtnJsonStr("failed, process convert failed");
                 }

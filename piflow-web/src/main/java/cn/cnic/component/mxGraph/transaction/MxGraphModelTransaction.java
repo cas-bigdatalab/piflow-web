@@ -42,38 +42,38 @@ public class MxGraphModelTransaction {
      * @return affected rows
      */
     public int addMxGraphModel(MxGraphModel mxGraphModel) throws Exception {
-        int influenceCounts = 0;
-        if (null != mxGraphModel) {
-            int addMxGraphModelCounts = mxGraphModelMapper.addMxGraphModel(mxGraphModel);
-            if (addMxGraphModelCounts <= 0) {
-                throw new Exception("save failed");
-            }
-            // save path
-            // Number of save Paths
-            int addMxCellCounts = 0;
-            int addMxGeometryCounts = 0;
-            List<MxCell> mxCellList = mxGraphModel.getRoot();
-            if (null != mxCellList && mxCellList.size() > 0) {
-                for (MxCell mxCell : mxCellList) {
-                    int addMxCell = mxCellMapper.addMxCell(mxCell);
-                    if (addMxCell <= 0) {
-                        throw new Exception("save failed");
-                    }
-                    addMxCellCounts += addMxCell;
-                    MxGeometry mxGeometry = mxCell.getMxGeometry();
-                    if (null == mxGeometry) {
-                        continue;
-                    }
-                    mxGeometry.setMxCell(mxCell);
-                    int addMxGeometry = mxGeometryMapper.addMxGeometry(mxGeometry);
-                    if (addMxGeometry <= 0) {
-                        throw new Exception("save failed");
-                    }
-                    addMxGeometryCounts += addMxGeometry;
-                }
-            }
-            influenceCounts = (addMxGraphModelCounts + addMxCellCounts + addMxGeometryCounts);
+        if (null == mxGraphModel) {
+            return 0;
         }
+        int addMxGraphModelCounts = mxGraphModelMapper.addMxGraphModel(mxGraphModel);
+        if (addMxGraphModelCounts <= 0) {
+            throw new Exception("save failed");
+        }
+        // save path
+        // Number of save Paths
+        int addMxCellCounts = 0;
+        int addMxGeometryCounts = 0;
+        List<MxCell> mxCellList = mxGraphModel.getRoot();
+        if (null != mxCellList && mxCellList.size() > 0) {
+            for (MxCell mxCell : mxCellList) {
+                int addMxCell = mxCellMapper.addMxCell(mxCell);
+                if (addMxCell <= 0) {
+                    throw new Exception("save failed");
+                }
+                addMxCellCounts += addMxCell;
+                MxGeometry mxGeometry = mxCell.getMxGeometry();
+                if (null == mxGeometry) {
+                    continue;
+                }
+                mxGeometry.setMxCell(mxCell);
+                int addMxGeometry = mxGeometryMapper.addMxGeometry(mxGeometry);
+                if (addMxGeometry <= 0) {
+                    throw new Exception("save failed");
+                }
+                addMxGeometryCounts += addMxGeometry;
+            }
+        }
+        int influenceCounts = (addMxGraphModelCounts + addMxCellCounts + addMxGeometryCounts);
         return influenceCounts;
     }
 

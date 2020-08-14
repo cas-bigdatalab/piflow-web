@@ -90,4 +90,12 @@ public class ProcessGroupTransaction {
         return influenceCounts;
     }
 
+    public ProcessGroup getProcessGroupById(String username, boolean isAdmin, String processGroupId){
+        if (StringUtils.isBlank(processGroupId) || StringUtils.isBlank(username)) {
+            logger.warn("process id is null");
+            return null;
+        }
+        return processGroupMapper.getProcessGroupByIdAndUser(username,isAdmin,processGroupId);
+    }
+
 }

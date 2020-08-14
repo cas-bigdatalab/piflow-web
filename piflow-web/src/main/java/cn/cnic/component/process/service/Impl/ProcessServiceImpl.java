@@ -455,7 +455,7 @@ public class ProcessServiceImpl implements IProcessService {
             logger.warn("Unable to query flow Id for'" + flowId + "'flow, the conversion failed");
             return null;
         }
-        Process process = ProcessUtils.flowToProcess(flowById, username);
+        Process process = ProcessUtils.flowToProcess(flowById, username,false);
         if (null == process) {
             logger.warn("Conversion failed");
             return null;
@@ -592,7 +592,7 @@ public class ProcessServiceImpl implements IProcessService {
         if (null == process) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("No data by process Id:'" + processId + "'");
         }
-        Process processCopy = ProcessUtils.copyProcess(process, username, runModeType);
+        Process processCopy = ProcessUtils.copyProcess(process, username, runModeType, false);
         if (null != processCopy) {
             processCopy = processDomain.saveOrUpdate(processCopy);
         }
