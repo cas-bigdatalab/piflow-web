@@ -45,8 +45,8 @@ public class ScheduleMapperProvider {
         this.lastUpdateUser = SqlUtils.preventSQLInjection(schedule.getLastUpdateUser());
 
         // Selection field
-        String planStartTime = DateUtils.dateTimesToStr(null != schedule.getPlanStartTime() ? schedule.getPlanStartTime() : new Date());
-        String planEndTime = DateUtils.dateTimesToStr(null != schedule.getPlanEndTime() ? schedule.getPlanEndTime() : new Date());
+        String planStartTime = (null != schedule.getPlanStartTime() ? DateUtils.dateTimesToStr(schedule.getPlanStartTime()) : null);
+        String planEndTime = (null != schedule.getPlanEndTime() ? DateUtils.dateTimesToStr(schedule.getPlanEndTime()) : null);
         this.scheduleId = SqlUtils.preventSQLInjection(schedule.getScheduleId());
         this.type = SqlUtils.preventSQLInjection(schedule.getType());
         this.statusStr = SqlUtils.preventSQLInjection(null != schedule.getStatus() ? schedule.getStatus().name() : "INIT");
@@ -141,6 +141,7 @@ public class ScheduleMapperProvider {
             sql.SET("enable_flag = " + enableFlag);
             sql.SET("schedule_id = " + this.scheduleId);
             sql.SET("type = " + this.type);
+            sql.SET("status = " + this.statusStr);
             sql.SET("cron_expression = " + this.cronExpression);
             sql.SET("plan_start_time = " + this.planStartTimeStr);
             sql.SET("plan_end_time = " + this.planEndTimeStr);

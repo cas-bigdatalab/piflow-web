@@ -80,6 +80,9 @@ public class ScheduleImpl implements ISchedule {
         requestParamMap.put("schedule", scheduleContentMap);
 
         String sendPostData = HttpUtils.doPost(SysParamsCache.getScheduleStartUrl(), requestParamMap, null);
+        if (StringUtils.isBlank(sendPostData) || sendPostData.contains("Exception") || sendPostData.contains("error")) {
+            return ReturnMapUtils.setFailedMsg("Error : Interface call failed");
+        }
         return ReturnMapUtils.setSucceededCustomParam("scheduleId", sendPostData);
     }
 

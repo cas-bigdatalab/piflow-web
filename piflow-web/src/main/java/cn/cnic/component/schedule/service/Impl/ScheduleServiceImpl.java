@@ -155,7 +155,7 @@ public class ScheduleServiceImpl implements IScheduleService {
         scheduleById.setStatus(ScheduleState.RUNNING);
         scheduleById.setLastUpdateDttm(new Date());
         scheduleById.setLastUpdateUser(username);
-        scheduleById.setScheduleId(thirdScheduleMap.get("scheduleId").toString());
+        scheduleById.setScheduleId((String) thirdScheduleMap.get("scheduleId"));
         int update = scheduleMapper.update(scheduleById);
         if (update <= 0) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Error : Interface call succeeded, save error");
@@ -179,8 +179,11 @@ public class ScheduleServiceImpl implements IScheduleService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Error : scheduleId is null");
         }
         String scheduleStopMsg = scheduleImpl.scheduleStop(scheduleById.getScheduleId());
+        if (StringUtils.isBlank(scheduleStopMsg) || scheduleStopMsg.contains("Exception") || scheduleStopMsg.contains("error")) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Error : Interface call failed");
+        }
         if (StringUtils.isBlank(scheduleStopMsg) || !scheduleStopMsg.contains("ok!")) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Error : Interface call succeeded, save error");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Error : Interface call failed");
         }
         scheduleById.setStatus(ScheduleState.STOP);
         scheduleById.setLastUpdateDttm(new Date());

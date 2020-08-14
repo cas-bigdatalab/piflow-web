@@ -244,6 +244,7 @@ function queryProcessPathInfo(processId, pageId) {
 
                     if (dataMap.runModeType && dataMap.runModeType.text === 'DEBUG') {
                         $("#div_view_flow_data").html('<input type="button" class="btn btn-primary" onclick="getDebugData(\'' + processPathVo.from + '\',\'' + processPathVo.outport + '\')" value="View Flow Data">');
+                        $("#div_view_flow_data").show();
                     }
 
                     $('#process_path_inc_load_data').show();
