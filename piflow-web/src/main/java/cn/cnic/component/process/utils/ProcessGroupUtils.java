@@ -54,6 +54,9 @@ public class ProcessGroupUtils {
     }
 
     public static ProcessGroup flowGroupToProcessGroup(FlowGroup flowGroup, String username, RunModeType runModeType) {
+        if(null==flowGroup){
+            return null;
+        }
         ProcessGroup processGroupNew = new ProcessGroup();
         // copy FlowGroup to ProcessGroup
         BeanUtils.copyProperties(flowGroup, processGroupNew);

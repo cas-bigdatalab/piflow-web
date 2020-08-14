@@ -1,12 +1,18 @@
 package cn.cnic.component.process.mapper;
 
+import cn.cnic.component.process.entity.ProcessGroup;
 import cn.cnic.component.process.entity.ProcessGroupPath;
 import cn.cnic.component.process.entity.ProcessPath;
 import cn.cnic.component.process.mapper.provider.ProcessGroupPathMapperProvider;
 import org.apache.ibatis.annotations.*;
 
+import java.util.List;
+
 @Mapper
 public interface ProcessGroupPathMapper {
+
+    @InsertProvider(type = ProcessGroupPathMapperProvider.class,method = "addProcessGroupPathList")
+    public int addProcessGroupPathList(@Param("processGroupPathList") List<ProcessGroupPath> processGroupPathList);
 
 
     /**

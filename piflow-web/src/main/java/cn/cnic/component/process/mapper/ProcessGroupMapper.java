@@ -11,6 +11,9 @@ import java.util.List;
 @Mapper
 public interface ProcessGroupMapper {
 
+    @InsertProvider(type = ProcessGroupMapperProvider.class, method = "addProcessGroup")
+    public int addProcessGroup(ProcessGroup processGroup);
+
     /**
      * Query processGroup by processGroup ID
      *

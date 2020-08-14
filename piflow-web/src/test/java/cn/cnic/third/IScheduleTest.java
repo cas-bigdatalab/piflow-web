@@ -2,6 +2,11 @@ package cn.cnic.third;
 
 import cn.cnic.ApplicationTests;
 import cn.cnic.base.util.LoggerUtil;
+import cn.cnic.base.util.ReturnMapUtils;
+import cn.cnic.component.flow.entity.Flow;
+import cn.cnic.component.flow.mapper.FlowMapper;
+import cn.cnic.component.process.entity.Process;
+import cn.cnic.component.process.utils.ProcessUtils;
 import cn.cnic.component.schedule.entity.Schedule;
 import cn.cnic.component.schedule.utils.ScheduleUtils;
 import cn.cnic.third.service.ISchedule;
@@ -20,19 +25,26 @@ public class IScheduleTest extends ApplicationTests {
     @Resource
     ISchedule scheduleImpl;
 
+    @Resource
+    FlowMapper flowMapper;
+
     @Test
     public void scheduleStartTest() {
         Schedule schedule = ScheduleUtils.newScheduleNoId("admin");
         schedule.setType("FLOW");
         schedule.setCronExpression("0 0/5 * * * ?");
         schedule.setScheduleRunTemplateId("0641076d5ae840c09d2be5b71fw00001");
-        Map<String, Object> scheduleId = scheduleImpl.scheduleStart("admin", schedule);
+        // query
+        Flow flowById = flowMapper.getFlowById("0641076d5ae840c09d2be5b71fw00001");
+        // flow convert process
+        Process process = ProcessUtils.flowToProcess(flowById, "admin");
+        Map<String, Object> scheduleId = scheduleImpl.scheduleStart(schedule, process, null);
         logger.info(scheduleId.get("scheduleId").toString());
     }
 
     @Test
     public void scheduleStopTest() {
-        String s = scheduleImpl.scheduleStop("schedule_b1a7c252-a22e-4f54-868e-fced68cf2d43");
+        String s = scheduleImpl.scheduleStop("schedule_8f870a2b-7eff-497b-867f-e59150a046b2");
         if (StringUtils.isNotBlank(s) && s.contains("ok!")) {
             logger.info(s);
         } else {
@@ -42,7 +54,7 @@ public class IScheduleTest extends ApplicationTests {
 
     @Test
     public void scheduleInfoTest() {
-        ThirdScheduleVo s = scheduleImpl.scheduleInfo("schedule_b1a7c252-a22e-4f54-868e-fced68cf2d43");
+        ThirdScheduleVo s = scheduleImpl.scheduleInfo("schedule_8f870a2b-7eff-497b-867f-e59150a046b2");
         logger.info(s.toString());
 
 

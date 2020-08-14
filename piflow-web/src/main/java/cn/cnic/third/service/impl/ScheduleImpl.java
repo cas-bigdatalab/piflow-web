@@ -39,39 +39,18 @@ public class ScheduleImpl implements ISchedule {
     FlowGroupMapper flowGroupMapper;
 
     @Override
-    public Map<String, Object> scheduleStart(String username, Schedule schedule) {
+    public Map<String, Object> scheduleStart(Schedule schedule, Process process, ProcessGroup processGroup) {
         if (null == schedule) {
             return ReturnMapUtils.setFailedMsg("failed, schedule is null");
         }
-        String scheduleRunTemplateId = schedule.getScheduleRunTemplateId();
-        if (StringUtils.isBlank(scheduleRunTemplateId)) {
-            return ReturnMapUtils.setFailedMsg("failed, Flow or Group is null");
-        }
         String type = schedule.getType();
         Map<String, Object> scheduleContentMap = new HashMap<>();
-        if ("FLOW".equals(type)) {
-            Flow flowById = flowMapper.getFlowById(scheduleRunTemplateId);
-            if (null == flowById) {
-                return ReturnMapUtils.setFailedMsg("failed, flow data is null");
-            }
-            Process process = ProcessUtils.flowToProcess(flowById, username);
-            if (null == process) {
-                return ReturnMapUtils.setFailedMsg("failed, process convert failed");
-            }
+        if ("FLOW".equals(type) && null != process) {
             scheduleContentMap = ProcessUtils.processToMap(process, "", RunModeType.RUN);
-
-        } else if ("FLOW_GROUP".equals(type)) {
-            FlowGroup flowGroupById = flowGroupMapper.getFlowGroupById(scheduleRunTemplateId);
-            if (null == flowGroupById) {
-                return ReturnMapUtils.setFailedMsg("failed, Flow data is null");
-            }
-            ProcessGroup processGroup = ProcessGroupUtils.flowGroupToProcessGroup(flowGroupById, username, RunModeType.RUN);
-            if (null == processGroup) {
-                return ReturnMapUtils.setFailedMsg("failed, process convert failed");
-            }
+        } else if ("FLOW_GROUP".equals(type) && null != processGroup) {
             scheduleContentMap = ProcessUtils.processGroupToMap(processGroup, RunModeType.RUN);
         } else {
-            return ReturnMapUtils.setFailedMsg("type error");
+            return ReturnMapUtils.setFailedMsg("type error or process is null");
         }
         Map<String, Object> requestParamMap = new HashMap<>();
         requestParamMap.put("expression", schedule.getCronExpression());

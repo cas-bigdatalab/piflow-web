@@ -1,5 +1,6 @@
 package cn.cnic.third.service.impl;
 
+import cn.cnic.base.util.ReturnMapUtils;
 import com.alibaba.fastjson.JSON;
 import cn.cnic.base.util.HttpUtils;
 import cn.cnic.base.util.LoggerUtil;
@@ -47,33 +48,30 @@ public class FlowImpl implements IFlow {
      */
     @Override
     public Map<String, Object> startFlow(Process process, String checkpoint, RunModeType runModeType) {
-        Map<String, Object> rtnMap = new HashMap<>();
-        rtnMap.put("code", 500);
-        if (null != process) {
-            /*String json = ProcessUtil.processToJson(process, checkpoint, runModeType);
-            String formatJson = JsonFormatTool.formatJson(json);*/
-            String formatJson = ProcessUtils.processToJson(process, checkpoint, runModeType);
-            logger.info("\n" + formatJson);
-            String doPost = HttpUtils.doPost(SysParamsCache.getFlowStartUrl(), formatJson, null);
-            logger.info("Return information：" + doPost);
-            if (StringUtils.isNotBlank(doPost) && !doPost.contains("Exception")) {
-                try {
-                    JSONObject obj = JSONObject.fromObject(doPost).getJSONObject("flow");// Convert a json string to a json object
-                    String appId = obj.getString("id");
-                    if (StringUtils.isNotBlank(appId)) {
-                        rtnMap.put("appId", appId);
-                        rtnMap.put("code", 200);
-                    } else {
-                        rtnMap.put("errorMsg", "Error : Interface return value is null");
-                    }
-                } catch (Exception e) {
-                    rtnMap.put("errorMsg", "Error : Interface call succeeded, conversion error");
-                }
-            } else {
-                rtnMap.put("errorMsg", "Error : Interface call failed");
-            }
+        if (null == process) {
+            return ReturnMapUtils.setFailedMsg("process is null");
         }
-        return rtnMap;
+        Map<String, Object> rtnMap = new HashMap<>();
+        /*String json = ProcessUtil.processToJson(process, checkpoint, runModeType);
+        String formatJson = JsonFormatTool.formatJson(json);*/
+        String formatJson = ProcessUtils.processToJson(process, checkpoint, runModeType);
+        logger.info("\n" + formatJson);
+        String doPost = HttpUtils.doPost(SysParamsCache.getFlowStartUrl(), formatJson, null);
+        logger.info("Return information：" + doPost);
+        if (StringUtils.isBlank(doPost) || doPost.contains("Exception")) {
+            return ReturnMapUtils.setFailedMsg("Error : Interface call failed");
+        }
+        try {
+            JSONObject obj = JSONObject.fromObject(doPost).getJSONObject("flow");// Convert a json string to a json object
+            String appId = obj.getString("id");
+            if(StringUtils.isBlank(appId)){
+                return ReturnMapUtils.setFailedMsg("Error : Interface return value is null");
+            }
+            return ReturnMapUtils.setSucceededCustomParam("appId", appId);
+        } catch (Exception e) {
+            logger.error("error: ", e);
+            return ReturnMapUtils.setFailedMsg("Error : Interface call succeeded, conversion error");
+        }
     }
 
     @Override
@@ -226,7 +224,7 @@ public class FlowImpl implements IFlow {
         if (null != thirdFlowInfoVo) {
             Process processByAppId = processDomain.getProcessNoGroupByAppId(appid);
             processByAppId = ThirdFlowInfoVoUtils.setProcess(processByAppId, thirdFlowInfoVo);
-            if(null!=processByAppId){
+            if (null != processByAppId) {
                 processDomain.saveOrUpdate(processByAppId);
             }
         }

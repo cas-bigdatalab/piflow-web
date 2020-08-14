@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import cn.cnic.component.mxGraph.entity.MxGraphModel;
+import cn.cnic.component.mxGraph.transaction.MxGraphModelTransaction;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -42,22 +44,69 @@ public class ProcessTransaction {
     @Resource
     private ProcessStopPropertyMapper processStopPropertyMapper;
 
+    @Resource
+    private MxGraphModelTransaction mxGraphModelTransaction;
+
+    /**
+     * Add process of things
+     *
+     * @param process process
+     * @return affected rows
+     */
+    public int addProcess(Process process) throws Exception {
+        if (null == process) {
+            return 0;
+        }
+        int addProcessCounts = processMapper.addProcess(process);
+        if (addProcessCounts <= 0) {
+            throw new Exception("save failed");
+        }
+        // save path
+        // Number of save Paths
+        int addProcessPathCounts = 0;
+        List<ProcessPath> processPathList = process.getProcessPathList();
+        if (null != processPathList && processPathList.size() > 0) {
+            addProcessPathCounts = processPathMapper.addProcessPathList(processPathList);
+        }
+        // Save Stop
+        // Number of deposits in Stop
+        int addProcessStopCounts = 0;
+        int addProcessStopPropertyCounts = 0;
+        List<ProcessStop> processStopList = process.getProcessStopList();
+        if (null != processStopList && processStopList.size() > 0) {
+            addProcessStopCounts = processStopMapper.addProcessStopList(processStopList);
+            for (ProcessStop processStop : processStopList) {
+                List<ProcessStopProperty> processStopPropertyList = processStop.getProcessStopPropertyList();
+                if (null != processStopPropertyList && processStopPropertyList.size() > 0) {
+                    addProcessStopPropertyCounts += processStopPropertyMapper.addProcessStopProperties(processStopPropertyList);
+                }
+            }
+        }
+        int addMxGraphModel = 0;
+        MxGraphModel mxGraphModel = process.getMxGraphModel();
+        if (null != mxGraphModel) {
+            addMxGraphModel = mxGraphModelTransaction.addMxGraphModel(mxGraphModel);
+        }
+        int influenceCounts = (addProcessPathCounts + addProcessStopCounts + addProcessStopPropertyCounts + addMxGraphModel);
+
+        return influenceCounts;
+    }
+
     /**
      * The process of modifying things (just modify the process table)
      *
-     * @param process
-     * @return
+     * @param process process
+     * @return affected rows
      */
     public int updateProcess(Process process) {
-        int updateProcess = processMapper.updateProcess(process);
-        return updateProcess;
+        return processMapper.updateProcess(process);
     }
 
     /**
      * The process of modifying things (modifying the process table and all sub-tables)
      *
-     * @param process
-     * @return
+     * @param process process
+     * @return affected rows
      */
     public int updateProcessAll(Process process) {
         int influenceCounts = 0;
@@ -98,8 +147,8 @@ public class ProcessTransaction {
     /**
      * logically delete
      *
-     * @param processId
-     * @return
+     * @param processId processId
+     * @return affected rows
      */
     public boolean updateProcessEnableFlag(String username, boolean isAdmin, String processId) {
         int affectedLine = 0;
