@@ -242,7 +242,7 @@ function queryProcessPathInfo(processId, pageId) {
                     $("#span_processPathVo_inport").text(processPathVo.inport);
                     $("#span_processPathVo_to").text(processPathVo.to);
 
-                    if (dataMap.runModeType && dataMap.runModeType.value === 'DEBUG') {
+                    if (dataMap.runModeType && dataMap.runModeType.text === 'DEBUG') {
                         $("#div_view_flow_data").html('<input type="button" class="btn btn-primary" onclick="getDebugData(\'' + processPathVo.from + '\',\'' + processPathVo.outport + '\')" value="View Flow Data">');
                     }
 
