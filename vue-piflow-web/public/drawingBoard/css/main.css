@@ -1390,7 +1390,7 @@ table { max-width: 100%; background-color: transparent; border-collapse: collaps
 .modal-header { padding: 12px 15px; border-bottom: 1px solid #e1e1e1; background: #fcfcfc; }
 .modal-header .close { margin-top: 3px; }
 .modal-header h3 { margin: 0; font-size: 14px; line-height: 22px; }
-.modal-body { position: relative; max-height: 400px; padding: 14px; overflow-y: auto; }
+.modal-body { position: relative; max-height: 400px;min-height: 400px; padding: 14px; overflow-y: auto; }
 .modal-form { margin-bottom: 0; }
 .modal-footer { padding: 12px 14px; margin-bottom: 0; text-align: right; background-color: #fcfcfc; border-top: 1px solid #ddd; *zoom: 1;
   -webkit-box-shadow: inset 0 1px 0 #ffffff;

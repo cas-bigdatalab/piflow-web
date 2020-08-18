@@ -200,7 +200,8 @@ function selectRunMode(runMode) {
 
 function cancelRunProcessGroup() {
     layer.closeAll();
-    fullScreen.hide();
+    // fullScreen.hide();
+    window.parent.postMessage(false);
     return;
 }
 
@@ -213,7 +214,8 @@ function getQueryString(name) {
 }
 
 function runProcessGroup(runMode) {
-    fullScreen.show();
+    // fullScreen.show();
+    window.parent.postMessage(true);
     var id = getQueryString("load")
     var data = {
         id: id,
@@ -230,7 +232,8 @@ function runProcessGroup(runMode) {
         async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
         error: function (request) {//Operation after request failure
             alert("Request Failed");
-            fullScreen.hide();
+            // fullScreen.hide();
+            window.parent.postMessage(false);
             return;
         },
         success: function (data) {//Operation after request successful
@@ -240,7 +243,8 @@ function runProcessGroup(runMode) {
                 new_window_open("/piflow-web/mxGraph/drawingBoard?drawingBoardType=PROCESS&processType=PROCESS_GROUP&load=" + dataMap.processGroupId);
             } else {
                 alert("Startup Failed");
-                fullScreen.hide();
+                // fullScreen.hide();
+                window.parent.postMessage(false);
             }
 
         }
@@ -250,7 +254,8 @@ function runProcessGroup(runMode) {
 //stop
 function stopProcessGroup() {
     stopFlowBtn.hide();
-    fullScreen.show();
+    // fullScreen.show();
+    window.parent.postMessage(true);
     ajaxRequest({
         cache: true,//Keep cached data
         type: "POST",//Request type post
@@ -262,7 +267,8 @@ function stopProcessGroup() {
         async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
         error: function (request) {//Operation after request failure
             alert("Request Failed");
-            fullScreen.hide();
+            // fullScreen.hide();
+            window.parent.postMessage(false);
             return;
         },
         success: function (data) {//Operation after request successful
@@ -274,8 +280,8 @@ function stopProcessGroup() {
             } else {
                 alert("Stop Failed:" + dataMap.errorMsg);
             }
-            fullScreen.hide();
-
+            // fullScreen.hide();
+            window.parent.postMessage(false);
         }
     });
 }

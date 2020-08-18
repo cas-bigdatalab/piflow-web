@@ -45,7 +45,8 @@ function ClickSlider() {
 
 // get processGroup DrawingBoard data
 function initProcessGroupDrawingBoardData(loadId, parentAccessPath, backFunc) {
-    $('#fullScreen').show();
+    // $('#fullScreen').show();
+    window.parent.postMessage(true);
     ajaxRequest({
         cache: true,//Keep cached data
         type: "get",//Request for get
@@ -80,7 +81,8 @@ function initProcessGroupDrawingBoardData(loadId, parentAccessPath, backFunc) {
             } else {
                 //window.location.href = (web_baseUrl + "/error/404");
             }
-            $('#fullScreen').hide();
+            // $('#fullScreen').hide();
+            window.parent.postMessage(false);
             if (backFunc && $.isFunction(backFunc)) {
                 backFunc(data);
             }

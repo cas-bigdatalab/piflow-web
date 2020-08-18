@@ -47,7 +47,7 @@ module.exports = {
     modal: {
         placeholder: "please enter the content...",
         create_title: "Create",
-        udate_title: "Update flow",
+        udate_title: "Update",
         template_title: "Template name",
         ok_text: "Submit",
         upload_text: "upload",

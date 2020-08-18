@@ -61,11 +61,12 @@
                 :title="$t('modal.upload')"
                 :ok-text="$t('modal.upload_text')"
                 :cancel-text="$t('modal.cancel_text')"
-                @on-cancel="uploadModal"
+                @on-ok="uploadSuccess"
+                @on-cancel="uploadError"
         >
-            <div slot="footer">
-                <Button type="text" @click="uploadModal">Cancel</Button>
-            </div>
+<!--            <div slot="footer">-->
+<!--                <Button type="text" @click="uploadError">Cancel</Button>-->
+<!--            </div>-->
             <div class="modal-warp">
                 <div class="item">
                     <Upload
@@ -77,9 +78,6 @@
                             :on-success="handleSuccess"
                             :on-error="handleError"
                             :format="['jar']"
-                            :max-size="2048"
-                            :on-format-error="handleFormatError"
-                            :on-exceeded-size="handleMaxSize"
                             :before-upload="handleBeforeUpload"
                             type="drag">
                         <div style="padding: 80px 0; height: 240px">
@@ -89,6 +87,10 @@
                             </div>
                         </div>
                     </Upload>
+                </div>
+                <div v-if="file !== null">
+                    <Icon :color="JarIsShow === false?'red':''" :type="JarIsShow === false?'md-close-circle':''" />
+                    Upload file: {{ file.name }}
                 </div>
 <!--                <div v-if="JarIsShow !== null">-->
 <!--                    <Icon :color="JarIsShow?'green':'red'" :type="JarIsShow?'md-checkmark-circle':'md-close-circle'" />-->
@@ -196,10 +198,6 @@
                 this.row = null;
                 this.name = "";
                 this.description = "";
-                // this.driverMemory = "1g";
-                // this.executorNumber = 1;
-                // this.executorMemory = "1g";
-                // this.executorCores = 1;
             },
             handleButtonSelect(row, key) {
                 switch (key) {
@@ -213,14 +211,9 @@
                         break;
                 }
             },
-            //  上传jar包测试
-            handleUpload (file) {
-                this.file = file;
-                return false;
-            },
             // 上传jar包 文件上传成功 response, file, fileList
             handleSuccess (res, file) {
-                this.JarIsShow = true;
+                this.file = null;
                 this.getTableData();
             },
             // 文件上传失败时的钩子，返回字段为 error, file, fileList
@@ -228,29 +221,42 @@
                 this.JarIsShow = false;
             },
             // 文件格式验证失败时的钩子，返回字段为 file, fileList
-            handleFormatError (file) {
-                this.$Notice.warning({
-                    title: 'The file format is incorrect',
-                    desc: 'File format of ' + file.name + ' is incorrect, please select jar.'
-                });
-            },
+            // handleFormatError (file) {
+            //     this.$Notice.warning({
+            //         title: 'The file format is incorrect',
+            //         desc: 'File format of ' + file.name + ' is incorrect, please select jar.'
+            //     });
+            // },
             // 文件超出指定大小限制时的钩子，返回字段为 file, fileList
-            handleMaxSize (file) {
-                this.$Notice.warning({
-                    title: 'Exceeding file size limit',
-                    desc: 'File  ' + file.name + ' is too large, no more than 2M.'
-                });
-            },
+            // handleMaxSize (file) {
+            //     this.$Notice.warning({
+            //         title: 'Exceeding file size limit',
+            //         desc: 'File  ' + file.name + ' is too large, no more than 2M.'
+            //     });
+            // },
             // 上传文件之前的钩子，参数为上传的文件，若返回 false 或者 Promise 则停止上传
             handleBeforeUpload (file) {
-                this.file = file;
-                const check = true;
-                if (!check) {
+
+                var testmsg = file.name.substring(file.name.lastIndexOf(".") + 1);
+                const extension =
+                    testmsg === "jar";
+                // const isLt3M = file.size / 1024 / 1024 < 3;
+                if (!extension) {
                     this.$Notice.warning({
-                        title: 'Up to five pictures can be uploaded.'
+                        title: 'The file format is incorrect',
+                        desc: 'File format of ' + file.name + ' is incorrect, please select jar.'
                     });
-                }
-                return true;
+                    return false; //阻止
+                }else
+                    this.file = file;
+                // if (!isLt3M) {
+                //     this.$Notice.warning({
+                //         title: 'Exceeding file size limit',
+                //         desc: 'File  ' + file.name + ' is too large, no more than 2M.'
+                //     });
+                //     return false;
+                // }
+                return false;
             },
 
             handleRemove(m, mark) {
@@ -353,8 +359,14 @@
                     });
                 }
             },
+            // 手动上传成功
+            uploadSuccess(){
+                // this.isOpen = false;
+                // this.$refs.upload.clearFiles();
+                this.$refs.upload.post(this.file);
+            },
             // 关闭清空上传列表
-            uploadModal(){
+            uploadError(){
                 this.isOpen = false;
                 this.$refs.upload.clearFiles();
             },

@@ -289,12 +289,12 @@ export default {
         {
           title: this.$t("progress_columns.state"),
           key: "state",
-          width: 130,
+          width: 125,
         },
         {
           title: this.$t("progress_columns.action"),
           slot: "action",
-          width: 230,
+          width: 225,
           align: "center",
         },
       ];

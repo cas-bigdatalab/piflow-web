@@ -10,7 +10,8 @@ var graphGlobal = null;
 
 //init data
 function initFlowDrawingBoardData(loadId, parentAccessPath) {
-    $('#fullScreen').show();
+    // $('#fullScreen').show();
+    window.parent.postMessage(true);
     ajaxRequest({
         type: "get",
         url: "/flow/drawingBoardData",
@@ -44,7 +45,8 @@ function initFlowDrawingBoardData(loadId, parentAccessPath) {
             } else {
                 window_location_href("/page/error/errorPage.html");
             }
-            $('#fullScreen').hide();
+            // $('#fullScreen').hide();
+            window.parent.postMessage(false);
         },
         error: function (request) {//Operation after request failure
             window_location_href("/page/error/errorPage.html");
@@ -934,7 +936,8 @@ function saveXml(paths, operType) {
                 //alert(operType + " save fail");
                 layer.msg(operType + " save fail", {icon: 2, shade: 0, time: 2000});
                 console.log(operType + " save fail");
-                $('#fullScreen').hide();
+                // $('#fullScreen').hide();
+                window.parent.postMessage(false);
             }
 
         },
@@ -1612,7 +1615,7 @@ function setCustomizedTableHtml(stopPageId, stopsCustomizedPropertyVo, stopOutPo
             + '</td>'
             + '<td>'
             + '<span style="color:red">*</span>'
-            + '<a class="btn" href="javascript:removeStopCustomProperty(\'' + stopPageId + '\',\'' + stopsCustomizedPropertyVo.id + '\',' + isRouter + ');"><i class="glyphicon glyphicon-remove" style="color: red;"></i></a>'
+            + '<a style="float:right;margin-right: 10px" class="btn" href="javascript:removeStopCustomProperty(\'' + stopPageId + '\',\'' + stopsCustomizedPropertyVo.id + '\',' + isRouter + ');"><i class="glyphicon glyphicon-remove" style="color: red;"></i></a>'
             + '</td>'
             + '</tr>';
     }
@@ -1809,14 +1812,16 @@ function ClickSlider() {
 
 //Request interface to reload'stops'
 function reloadStops() {
-    $('#fullScreen').show();
+    // $('#fullScreen').show();
+    window.parent.postMessage(true);
     ajaxRequest({
         data: {"load": loadId},
         cache: true,//Keep cached data
         type: "POST",//Request type post
         url: "/stops/reloadStops",
         error: function (request) {//Operation after request failure
-            $('#fullScreen').hide();
+            // $('#fullScreen').hide();
+            window.parent.postMessage(false);
             //alert("reload fail");
             layer.msg("reload fail", {icon: 2, shade: 0, time: 2000}, function () {
             });
@@ -1830,7 +1835,8 @@ function reloadStops() {
                 //alert("reload fail");
                 layer.msg("reload fail", {icon: 2, shade: 0, time: 2000}, function () {
                 });
-                $('#fullScreen').hide();
+                // $('#fullScreen').hide();
+                window.parent.postMessage(false);
             }
         }
     });
@@ -2006,7 +2012,8 @@ function loadTemplateFun() {
 
 //load template xml
 function loadingXml(id, loadId) {
-    $('#fullScreen').show();
+    // $('#fullScreen').show();
+    window.parent.postMessage(true);
     ajaxRequest({
         type: 'post',
         data: {
@@ -2022,20 +2029,23 @@ function loadingXml(id, loadId) {
             if (200 === dataMap.code) {
                 icon_code = 1;
             }
-            $('#fullScreen').hide();
+            // $('#fullScreen').hide();
+            window.parent.postMessage(false);
             layer.msg(dataMap.errorMsg, {icon: icon_code, shade: 0.7, time: 2000}, function () {
                 window.location.reload();
             });
         },
         error: function () {
-            $('#fullScreen').hide();
+            // $('#fullScreen').hide();
+            window.parent.postMessage(false);
         }
     });
 }
 
 //run
 function runFlow(runMode) {
-    $('#fullScreen').show();
+    // $('#fullScreen').show();
+    window.parent.postMessage(true);
     ajaxRequest({
         type: "POST",
         url: "/flow/runFlow",
@@ -2056,12 +2066,14 @@ function runFlow(runMode) {
                 layer.msg("Startup failure：" + dataMap.errorMsg, {icon: 2, shade: 0, time: 2000}, function () {
                 });
             }
-            $('#fullScreen').hide();
+            // $('#fullScreen').hide();
+            window.parent.postMessage(false);
         },
         error: function (request) {//Operation after request failure
             //alert("Request Failed");
             layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000}, function () {
-                $('#fullScreen').hide();
+                // $('#fullScreen').hide();
+                window.parent.postMessage(false);
             });
             return;
         }

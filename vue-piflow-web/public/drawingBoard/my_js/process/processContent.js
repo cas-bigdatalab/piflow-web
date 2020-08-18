@@ -28,7 +28,8 @@ function initProcessContentPage(nodeArr) {
 
 //  Get Checkpoint points
 function getCheckpoint(pID, parentProcessId, processId, runMode) {
-    $('#fullScreen').show();
+    // $('#fullScreen').show();
+    window.parent.postMessage(true);
     ajaxRequest({
         cache: true,//Keep cached data
         type: "POST",//Request type post
@@ -43,7 +44,8 @@ function getCheckpoint(pID, parentProcessId, processId, runMode) {
             $('#runFlow').show();
             $('#debugFlow').show();
             layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000});
-            $('#fullScreen').hide();
+            // $('#fullScreen').hide();
+            window.parent.postMessage(false);
             return;
         },
         success: function (data) {//Operation after request successful
@@ -95,7 +97,8 @@ function getCheckpoint(pID, parentProcessId, processId, runMode) {
                     layer_open_checkpoint_top.appendChild(layer_open_checkpoint_btn_div);
 
                     openLayerWindowLoadHtml(layer_open_checkpoint_top.outerHTML, 500, 300, "Checkpoint", 0.3);
-                    $('#fullScreen').hide();
+                    // $('#fullScreen').hide();
+                    window.parent.postMessage(false);
                 } else {
                     runProcess(processId, runMode);
                 }
@@ -107,13 +110,15 @@ function getCheckpoint(pID, parentProcessId, processId, runMode) {
 
 function cancelRunProcess() {
     $('#checkpointShow').modal('hide');
-    $('#fullScreen').hide();
+    // $('#fullScreen').hide();
+    window.parent.postMessage(true);
     return;
 }
 
 //run
 function runProcess(processId, runMode) {
-    $('#fullScreen').show();
+    // $('#fullScreen').show();
+    window.parent.postMessage(true);
     $('#runFlow').hide();
     $('#debugFlow').hide();
     var checkpointStr = '';
@@ -142,7 +147,8 @@ function runProcess(processId, runMode) {
             $('#debugFlow').show();
             //alert("Request Failed");
             layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000});
-            $('#fullScreen').hide();
+            // $('#fullScreen').hide();
+            window.parent.postMessage(false);
             return;
         },
         success: function (data) {//Operation after request successful
@@ -157,7 +163,8 @@ function runProcess(processId, runMode) {
                 layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
                 $('#runFlow').show();
                 $('#debugFlow').show();
-                $('#fullScreen').hide();
+                // $('#fullScreen').hide();
+                window.parent.postMessage(false);
             }
 
         }
@@ -167,7 +174,8 @@ function runProcess(processId, runMode) {
 //stop
 function stopProcess() {
     $('#stopFlow').hide();
-    $('#fullScreen').show();
+    // $('#fullScreen').show();
+    window.parent.postMessage(true);
     ajaxRequest({
         cache: true,//Keep cached data
         type: "POST",//Request type post
@@ -181,7 +189,8 @@ function stopProcess() {
             stopFlow.show();
             //alert("Request Failed");
             layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000});
-            $('#fullScreen').hide();
+            // $('#fullScreen').hide();
+            window.parent.postMessage(false);
             return;
         },
         success: function (data) {//Operation after request successful
@@ -197,7 +206,8 @@ function stopProcess() {
                 layer.msg("Stop Failed", {icon: 2, shade: 0, time: 2000});
                 stopFlow.show();
             }
-            $('#fullScreen').hide();
+            // $('#fullScreen').hide();
+            window.parent.postMessage(false);
         }
     });
 }

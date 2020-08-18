@@ -612,7 +612,8 @@ function groupGraphAddCells(cells) {
                 } else {
                     layer.msg("Add save fail", {icon: 2, shade: 0, time: 2000});
                     console.log("Add save fail");
-                    fullScreen.hide();
+                    // fullScreen.hide();
+                    window.parent.postMessage(false);
                 }
 
             }
@@ -1695,7 +1696,8 @@ function saveXml(paths, operType) {
                 //alert(operType + " save fail");
                 layer.msg(operType + " save fail", {icon: 2, shade: 0, time: 2000});
                 console.log(operType + " save fail");
-                fullScreen.hide();
+                // fullScreen.hide();
+                window.parent.postMessage(false);
             }
 
         }
@@ -2074,14 +2076,16 @@ function loadXml(loadStr) {
 
 //Request interface to reload'stops'
 function reloadStops() {
-    fullScreen.show();
+    // fullScreen.show();
+    window.parent.postMessage(true);
     $.ajax({
         data: {"load": loadId},
         cache: true,//Keep cached data
         type: "POST",//Request type post
         url: "/piflow-web/stops/reloadStops",
         error: function (request) {//Operation after request failure
-            fullScreen.hide();
+            // fullScreen.hide();
+            window.parent.postMessage(false);
             //alert("reload fail");
             layer.msg("reload fail", {icon: 2, shade: 0, time: 2000});
             return;
@@ -2093,7 +2097,8 @@ function reloadStops() {
             } else {
                 //alert("reload fail");
                 layer.msg("reload fail", {icon: 2, shade: 0, time: 2000});
-                fullScreen.hide();
+                // fullScreen.hide();
+                window.parent.postMessage(false);
             }
         }
     });
@@ -2169,7 +2174,8 @@ function queryFlowGroup() {
 
 //run
 function runFlow(runMode) {
-    fullScreen.show();
+    // fullScreen.show();
+    window.parent.postMessage(true);
     // console.info("ss");
     var data = {flowId: loadId}
     if (runMode) {
@@ -2185,7 +2191,8 @@ function runFlow(runMode) {
         error: function (request) {//Operation after request failure
             //alert("Request Failed");
             layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000}, function () {
-                fullScreen.hide();
+                // fullScreen.hide();
+                window.parent.postMessage(false);
             });
 
             return;
@@ -2206,14 +2213,16 @@ function runFlow(runMode) {
                 //alert("Startup failure：" + dataMap.errorMsg);
                 layer.msg("Startup failure：" + dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
             }
-            fullScreen.hide();
+            // fullScreen.hide();
+            window.parent.postMessage(false);
         }
     });
 }
 
 //run
 function runFlowGroup(runMode) {
-    fullScreen.show();
+    // fullScreen.show();
+    window.parent.postMessage(true);
     var data = {flowGroupId: loadId}
     if (runMode) {
         data.runMode = runMode;
@@ -2228,7 +2237,8 @@ function runFlowGroup(runMode) {
         error: function (request) {//Operation after request failure
             //alert("Request Failed");
             layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000}, function () {
-                fullScreen.hide();
+                // fullScreen.hide();
+                window.parent.postMessage(false);
             });
 
             return;
@@ -2248,7 +2258,8 @@ function runFlowGroup(runMode) {
                 //alert("Startup failure：" + dataMap.errorMsg);
                 layer.msg("Startup failure：" + dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
             }
-            fullScreen.hide();
+            // fullScreen.hide();
+            window.parent.postMessage(false);
         }
     });
 }
@@ -2720,7 +2731,8 @@ function FileTypeCheck(element) {
 
 function loadingXml(id, loadId) {
     var loadType = Format.customizeType;
-    fullScreen.show();
+    // fullScreen.show();
+    window.parent.postMessage(true);
     $.ajax({
         type: 'post',
         data: {
@@ -2736,12 +2748,14 @@ function loadingXml(id, loadId) {
         if (200 === dataMap.code) {
             icon_code = 1;
         }
-        fullScreen.hide();
+        // fullScreen.hide();
+        window.parent.postMessage(false);
         layer.msg(dataMap.errorMsg, {icon: icon_code, shade: 0.7, time: 2000}, function () {
             window.location.reload();
         });
     }).error(function () {
-        fullScreen.hide();
+        // fullScreen.hide();
+        window.parent.postMessage(false);
     });
 }
 

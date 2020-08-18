@@ -7,7 +7,8 @@ var index = true;
 var consumedFlag, removeGroupPaths;
 
 function initFlowGroupDrawingBoardData(loadId, parentAccessPath) {
-    $('#fullScreen').show();
+    // $('#fullScreen').show();
+    window.parent.postMessage(true);
     ajaxRequest({
         type: "get",
         url: "/flowGroup/drawingBoardData",
@@ -37,7 +38,8 @@ function initFlowGroupDrawingBoardData(loadId, parentAccessPath) {
             } else {
                 window_location_href("/page/error/errorPage.html");
             }
-            $('#fullScreen').hide();
+            // $('#fullScreen').hide();
+            window.parent.postMessage(false);
         },
         error: function (request) {//Operation after request failure
             window_location_href("/page/error/errorPage.html");
@@ -407,7 +409,8 @@ function addMxCellOperation(evt) {
                 } else {
                     layer.msg("Add save fail", {icon: 2, shade: 0, time: 2000});
                     console.log("Add save fail");
-                    $('#fullScreen').hide();
+                    // $('#fullScreen').hide();
+                    window.parent.postMessage(false);
                 }
             }
 
@@ -562,7 +565,8 @@ function saveXml(paths, operType) {
                 //alert(operType + " save fail");
                 layer.msg(operType + " save fail", {icon: 2, shade: 0, time: 2000});
                 console.log(operType + " save fail");
-                $('#fullScreen').hide();
+                // $('#fullScreen').hide();
+                window.parent.postMessage(false);
             }
 
         }
@@ -1330,7 +1334,8 @@ function FileTypeCheck(element) {
 
 function loadingXml(id, loadId) {
     var loadType = Format.customizeType;
-    $('#fullScreen').show();
+    // $('#fullScreen').show();
+    window.parent.postMessage(true);
     ajaxRequest({
         type: 'post',
         data: {
@@ -1346,12 +1351,14 @@ function loadingXml(id, loadId) {
         if (200 === dataMap.code) {
             icon_code = 1;
         }
-        $('#fullScreen').hide();
+        // $('#fullScreen').hide();
+        window.parent.postMessage(false);
         layer.msg(dataMap.errorMsg, {icon: icon_code, shade: 0.7, time: 2000}, function () {
             window.location.reload();
         });
     }).error(function () {
-        $('#fullScreen').hide();
+        // $('#fullScreen').hide();
+        window.parent.postMessage(false);
     });
 }
 
@@ -1442,7 +1449,8 @@ function loadTemplateFun() {
 
 // run cells
 function RunFlowOrFlowGroupCells(includeEdges) {
-    $('#fullScreen').show();
+    // $('#fullScreen').show();
+    window.parent.postMessage(true);
     var cells = graphGlobal.getSelectionCells();
     if (cells != null && cells.length > 1) {
         layer.msg('Multiple runs cannot be selected at the same time', {icon: 2, shade: 0, time: 2000});
@@ -1455,11 +1463,13 @@ function RunFlowOrFlowGroupCells(includeEdges) {
         async: true,//Synchronous Asynchronous
         error: function (request) {//Operation after request failure
             layer.msg("Startup failure：" + dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
-            $('#fullScreen').hide();
+            // $('#fullScreen').hide();
+            window.parent.postMessage(false);
             return;
         },
         success: function (data) {//After the request is successful
-            $('#fullScreen').hide();
+            // $('#fullScreen').hide();
+            window.parent.postMessage(false);
             var dataMap = JSON.parse(data);
             if (200 === dataMap.code) {
                 layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
@@ -1479,7 +1489,8 @@ function RunFlowOrFlowGroupCells(includeEdges) {
 
 //run flowGroup
 function runFlowGroup(runMode) {
-    $('#fullScreen').show();
+    // $('#fullScreen').show();
+    window.parent.postMessage(true);
     var data = {flowGroupId: loadId}
     if (runMode) {
         data.runMode = runMode;
@@ -1493,7 +1504,8 @@ function runFlowGroup(runMode) {
         async: true,//Synchronous Asynchronous
         error: function (request) {//Operation after request failure
             layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000}, function () {
-                $('#fullScreen').hide();
+                // $('#fullScreen').hide();
+                window.parent.postMessage(false);
             });
 
             return;
@@ -1508,7 +1520,8 @@ function runFlowGroup(runMode) {
             } else {
                 layer.msg("Startup failure：" + dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
             }
-            $('#fullScreen').hide();
+            // $('#fullScreen').hide();
+            window.parent.postMessage(false);
         }
     });
 }

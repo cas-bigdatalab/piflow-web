@@ -211,7 +211,8 @@ function updateFlowGroup() {
 
 //run
 function listRunFlowGroup(loadId, runMode) {
-    $('#fullScreen').show();
+    // $('#fullScreen').show();
+    window.parent.postMessage(true);
     var data = {flowGroupId: loadId}
     if (runMode) {
         data.runMode = runMode;
@@ -226,7 +227,8 @@ function listRunFlowGroup(loadId, runMode) {
         error: function (request) {//Operation after request failure
             //alert("Request Failed");
             layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000}, function () {
-                $('#fullScreen').hide();
+                // $('#fullScreen').hide();
+                window.parent.postMessage(false);
             });
 
             return;
@@ -244,7 +246,8 @@ function listRunFlowGroup(loadId, runMode) {
                     location.reload();
                 });
             }
-            $('#fullScreen').hide();
+            // $('#fullScreen').hide();
+            window.parent.postMessage(false);
         }
     });
 }

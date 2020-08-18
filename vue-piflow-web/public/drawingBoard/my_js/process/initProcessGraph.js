@@ -30,7 +30,8 @@ function initProcessCrumbs(parentAccessPath) {
 }
 
 function initProcessDrawingBoardData(loadId, parentAccessPath, backFunc) {
-    $('#fullScreen').show();
+    // $('#fullScreen').show();
+    window.parent.postMessage(true);
     ajaxRequest({
         cache: true,//Keep cached data
         type: "get",//Request for get
@@ -66,7 +67,8 @@ function initProcessDrawingBoardData(loadId, parentAccessPath, backFunc) {
             if (backFunc && $.isFunction(backFunc)) {
                 backFunc(data);
             }
-            $('#fullScreen').hide();
+            // $('#fullScreen').hide();
+            window.parent.postMessage(false);
         }
     });
 }
@@ -202,7 +204,8 @@ function queryProcessInfo(processId) {
                 $('#process_info_inc_load_fail').show();
                 //alert("Load Failed" + dataMap.errorMsg);
             }
-            $('#fullScreen').hide();
+            // $('#fullScreen').hide();
+            window.parent.postMessage(false);
         }
     });
 }
@@ -253,7 +256,8 @@ function queryProcessPathInfo(processId, pageId) {
                 $('#process_path_inc_load_fail').show();
                 //alert("Load Failed" + dataMap.errorMsg);
             }
-            $('#fullScreen').hide();
+            // $('#fullScreen').hide();
+            window.parent.postMessage(false);
         }
     });
 }
@@ -322,7 +326,8 @@ function queryProcessStopsProperty(processId, pageId) {
                 $('#process_property_inc_load_fail').show();
                 //alert("Load Failed" + dataMap.errorMsg);
             }
-            $('#fullScreen').hide();
+            // $('#fullScreen').hide();
+            window.parent.postMessage(false);
         }
     });
 }

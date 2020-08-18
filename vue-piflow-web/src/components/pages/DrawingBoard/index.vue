@@ -57,6 +57,15 @@ export default {
       "position: fixed; width: 100%; top: 0;";
     // console.log(document.querySelector('footer'));
     this.setSize();
+
+    window.addEventListener('message', function(event) {
+      // 通过origin属性判断消息来源地址
+      // if (event.origin == 'localhost') {
+      console.log(_this.$event);
+      _this.$event.emit("looding", event.data);
+      //console.log(event.source);
+      //}
+    }, false);
   },
   methods: {
     setSize() {
