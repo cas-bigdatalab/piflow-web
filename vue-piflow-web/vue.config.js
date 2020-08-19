@@ -90,7 +90,7 @@ module.exports = {
     // open: true,
     // host: "localhost",
     proxy: {
-      '/piflow': {
+      '/piflow-web': {
         target: 'http://10.0.85.80:6002/piflow-web',
         // target: 'http://10.0.85.80:6002/piflow-web/admin',
         // target: 'http://10.0.85.82:6001',
@@ -98,7 +98,7 @@ module.exports = {
         ws: true, // 是否启用websockets
         secure: false, // 使用的是http协议则设置为false，https协议则设置为true
         pathRewrite: {
-          '^/piflow': '/'
+          '^/piflow-web': '/'
         }
       }
     },
