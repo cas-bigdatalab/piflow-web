@@ -27,6 +27,7 @@ public class StopsComponentPropertyMapperProvider {
     private Integer required;
     private Integer sensitive;
     private Long propertySort;
+    private String example;
     private String stopsTemplateId;
 
     private void preventSQLInjectionStopsComponentProperty(StopsComponentProperty stopsComponentProperty) {
@@ -58,6 +59,7 @@ public class StopsComponentPropertyMapperProvider {
             this.required = (null == stopsComponentProperty.getRequired() ? 0 : (stopsComponentProperty.getRequired() ? 1 : 0));
             this.sensitive = (null == stopsComponentProperty.getSensitive() ? 0 : (stopsComponentProperty.getSensitive() ? 1 : 0));
             this.propertySort = (null != stopsComponentProperty.getPropertySort() ? stopsComponentProperty.getPropertySort() : 0L);
+            this.example = SqlUtils.preventSQLInjection(stopsComponentProperty.getExample());
             this.stopsTemplateId = SqlUtils.preventSQLInjection(stopsComponentProperty.getStopsTemplate());
         }
     }
@@ -78,6 +80,7 @@ public class StopsComponentPropertyMapperProvider {
         this.required = null;
         this.sensitive = null;
         this.propertySort = 0L;
+        this.example = null;
         this.stopsTemplateId = null;
     }
 
@@ -124,6 +127,7 @@ public class StopsComponentPropertyMapperProvider {
                     "property_required",
                     "property_sensitive",
                     "property_sort",
+                    "example",
                     "fk_stops_id"
             );
             StringBuffer sqlValuesStr = new StringBuffer();
@@ -155,6 +159,7 @@ public class StopsComponentPropertyMapperProvider {
                     sqlValuesStr.append(required + ",");
                     sqlValuesStr.append(sensitive + ",");
                     sqlValuesStr.append(propertySort + ",");
+                    sqlValuesStr.append(example + ",");
                     sqlValuesStr.append(stopsTemplateId);
                     sqlValuesStr.append(")");
                     if (i < stopsComponentPropertyList.size() - 1) {
