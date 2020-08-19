@@ -805,25 +805,7 @@ function queryStopsProperty(stopPageId, loadId) {
 function openDatasourceList() {
     var window_width = $(window).width();//Get browser window width
     var window_height = $(window).height();//Get browser window height
-    ajaxRequest({
-        type: "POST",//Request type post
-        url: "/page/datasource/getDatasourceListPage",
-        error: function (request) {//Operation after request failure
-            return;
-        },
-        success: function (data) {//Operation after request successful
-            layer.open({
-                type: 1,
-                title: '<span style="color: #269252;">DatasourceList</span>',
-                shadeClose: false,
-                closeBtn: 1,
-                shift: 7,
-                area: [(window_width - 100) + 'px', (window_height - 100) + 'px'], //Width height
-                skin: 'layui-layer-rim', //Add borders
-                content: data
-            });
-        }
-    });
+    openLayerTypeIframeWindowLoadUrl("/page/datasource/data_source_list.html",(window_width - 100),(window_height - 100),DatasourceList)
 }
 
 //query datasource list
