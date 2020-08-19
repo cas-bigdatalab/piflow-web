@@ -61,7 +61,6 @@ export default {
     window.addEventListener('message', function(event) {
       // 通过origin属性判断消息来源地址
       // if (event.origin == 'localhost') {
-      console.log(_this.$event);
       _this.$event.emit("looding", event.data);
       //console.log(event.source);
       //}

@@ -35,7 +35,6 @@ export default {
   },
   created() {
     this.$event.on("looding", val => {
-      console.log(val);
       this.looding = val;
     });
   }

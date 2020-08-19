@@ -1542,6 +1542,9 @@ function openUpdateStopsProperty(e, isCustomized) {
     });
     $("#stopValue").focus();
     $("#stopAttributesValue").focus();
+    if ($("#stopAttributesValue").text()) {
+        $("#stopAttributesValue")[0].selectionStart =$("#stopAttributesValue").text().length;
+    }
 }
 
 //update stops property select

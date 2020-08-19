@@ -51,7 +51,8 @@
 <!--            <span>cpu usage</span>-->
 <!--          </div>-->
           <div class="card-body" :style="{height:height+'px'}">
-            <WaterPoloChart :content-data="resource.cpu" />
+<!--            <WaterPoloChart :content-data="resource.cpu" />-->
+              <RingChart :content-data="resource.cpu" />
           </div>
         </div>
       </Col>
@@ -93,15 +94,15 @@
         <Col span="12">
           <div class="card">
             <div class="card-body" :style="{height:300+'px'}">
-              <img style="width: 100px;height: 100px;background: #CCCCCC;overflow: hidden;border-radius: 10px" class="logo" src="../../../assets/img/logo.png" alt="logo" />
-              <ul class="aaa">
-                <li><p>FLOW：</p></li>
-                <li><p>PROCESSOR：</p></li>
-                <li><p>COMPETED：</p></li>
-                <li><p>FAILED：</p></li>
-                <li><p>KILLED：</p></li>
-                <li><p>OTHER：</p></li>
-                <li><p>STARTED：</p></li>
+              <img style="width: 100px;margin:20px;height: 100px;background: #CCCCCC;overflow: hidden;border-radius: 10px;float: left" class="logo" src="../../../assets/img/logo.png" alt="logo" />
+              <ul class="aaa" style="float:left;width: 65%;margin-top: 20px;margin-left: 20px">
+                <li><p>FLOW：15</p></li>
+                <li><p>PROCESSOR：123</p></li>
+                <li><p>COMPETED：69</p></li>
+                <li><p>FAILED：0</p></li>
+                <li><p>KILLED：0</p></li>
+                <li><p>OTHER：2</p></li>
+                <li><p>STARTED：52</p></li>
               </ul>
             </div>
           </div>
@@ -151,6 +152,7 @@ export default {
                 if (res.data.code == 200) {
                   let data = JSON.parse(res.data.resourceInfo);
                   this.resource.cpu = data.resource.cpu;
+                  this.resource.cpu.parameter = 'cpu';
                   this.resource.memory = data.resource.memory;
                   this.resource.memory.parameter = 'memory';
                   this.resource.hdfs = data.resource.hdfs;
@@ -172,26 +174,26 @@ export default {
     },
     getFlowInfo(){
       // flow
-      // this.$axios
-      //         .get("/dashboard/flowStatistic")
-      //         .then(res => {
-      //           if (res.data.code == 200) {
-      //             let data = res.data.flowResourceInfo;
-      //             // console.log(data)
-      //           } else {
-      //             this.$Modal.error({
-      //               title: this.$t("tip.tilte"),
-      //               content: this.$t("tip.request_fail_content")
-      //             });
-      //           }
-      //         })
-      //         .catch(error => {
-      //           console.log(error);
-      //           this.$Modal.error({
-      //             title: this.$t("tip.tilte"),
-      //             content: this.$t("tip.fault_content")
-      //           });
-      //         });
+      this.$axios
+              .get("/dashboard/flowStatistic")
+              .then(res => {
+                if (res.data.code == 200) {
+                  let data = res.data.flowResourceInfo;
+                  // console.log(data)
+                } else {
+                  this.$Modal.error({
+                    title: this.$t("tip.tilte"),
+                    content: this.$t("tip.request_fail_content")
+                  });
+                }
+              })
+              .catch(error => {
+                console.log(error);
+                this.$Modal.error({
+                  title: this.$t("tip.tilte"),
+                  content: this.$t("tip.fault_content")
+                });
+              });
 
       // 流水线组统计
       // this.$axios
@@ -289,5 +291,11 @@ export default {
   .aaa li p{
     font-weight: 400; line-height: 22px; color: #999;
   }
+.aaa li {
+    margin: 10px 0;
+     }
+.aaa li:nth-child(1){
+    margin-top: 0;
+}
 </style>
 

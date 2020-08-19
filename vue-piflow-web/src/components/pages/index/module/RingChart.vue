@@ -32,6 +32,34 @@ export default {
       let echarts = this.$echarts;
       this.myEcharts = echarts.init(this.$refs.chart);
       let contentData = [], color='';
+      if (this.content !== null && this.content.parameter === 'cpu'){
+        contentData = [];
+        color='#68b0ab';
+        for (let key in this.content){
+          let obj = {};
+          if (key === 'allocatedVirtualCores'){
+            obj.value = this.content[key];
+            obj.name = key;
+            obj.itemStyle = {
+              normal: {
+                color: "#68b0ab",
+                shadowColor: "#68b0ab"
+              },
+            };
+            contentData.push(obj)
+          }
+          if (key === 'remainingVirtualCores'){
+            obj.value = this.content[key];
+            obj.name = key;
+            obj.itemStyle = {
+              normal: {
+                color: "#99b898"
+              }
+            }
+            contentData.push(obj)
+          }
+        }
+      }
       if (this.content !== null && this.content.parameter === 'memory'){
         contentData = [];
         color='#a8e6cf';
