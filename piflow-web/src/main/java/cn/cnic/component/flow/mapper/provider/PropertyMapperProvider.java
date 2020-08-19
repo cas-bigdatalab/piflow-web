@@ -30,6 +30,7 @@ public class PropertyMapperProvider {
     private Integer isSelect;
     private Integer isLocked;
     private long propertySort;
+    private String example;
     private Integer isOldData;
 
     private void preventSQLInjectionProperty(Property property) {
@@ -65,6 +66,7 @@ public class PropertyMapperProvider {
             this.isSelect = (null == property.getIsSelect() ? null : (property.getIsSelect() ? 1 : 0));
             this.isLocked = (null == property.getIsLocked() ? null : (property.getIsLocked() ? 1 : 0));
             this.propertySort = (null != property.getPropertySort() ? property.getPropertySort() : 0L);
+            this.example = SqlUtils.preventSQLInjection(property.getExample());
             this.isOldData = (null == property.getIsOldData() ? null : (property.getIsOldData() ? 1 : 0));
         }
     }
@@ -88,6 +90,7 @@ public class PropertyMapperProvider {
         this.isSelect = null;
         this.isLocked = null;
         this.propertySort = 0L;
+        this.example = null;
         this.isOldData = null;
     }
 
@@ -123,6 +126,7 @@ public class PropertyMapperProvider {
             sqlStrBuffer.append("is_select,");
             sqlStrBuffer.append("is_locked,");
             sqlStrBuffer.append("property_sort,");
+            sqlStrBuffer.append("example,");
             sqlStrBuffer.append("is_old_data");
             sqlStrBuffer.append(") ");
             sqlStrBuffer.append("values");
@@ -157,6 +161,7 @@ public class PropertyMapperProvider {
                 sqlStrBuffer.append(isSelect + ",");
                 sqlStrBuffer.append(isLocked + ",");
                 sqlStrBuffer.append(propertySort + ",");
+                sqlStrBuffer.append(example + ",");
                 sqlStrBuffer.append(isOldData);
                 if (i != propertyList.size()) {
                     sqlStrBuffer.append("),");
