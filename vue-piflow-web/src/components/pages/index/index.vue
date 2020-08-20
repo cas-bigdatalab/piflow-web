@@ -52,7 +52,8 @@
 <!--          </div>-->
           <div class="card-body" :style="{height:height+'px'}">
 <!--            <WaterPoloChart :content-data="resource.cpu" />-->
-              <RingChart :content-data="resource.cpu" />
+<!--              <RingChart :content-data="resource.cpu" />-->
+              <raddar-chart />
           </div>
         </div>
       </Col>
@@ -62,7 +63,8 @@
 <!--            <span>Memory usage</span>-->
 <!--          </div>-->
           <div class="card-body" :style="{height:height+'px'}">
-            <RingChart :content-data="resource.memory" />
+<!--            <RingChart :content-data="resource.memory" />-->
+              <pie-chart :content-data="resource.memory" />
           </div>
         </div>
       </Col>
@@ -91,12 +93,18 @@
 <!--    </div>-->
     <div style="height: 500px; margin-top: 20px;">
       <Row :gutter="16">
-        <Col span="12">
+          <Col span="12">
           <div class="card">
             <div class="card-body" :style="{height:300+'px'}">
-              <img style="width: 100px;margin:20px;height: 100px;background: #CCCCCC;overflow: hidden;border-radius: 10px;float: left" class="logo" src="../../../assets/img/logo.png" alt="logo" />
-              <ul class="aaa" style="float:left;width: 65%;margin-top: 20px;margin-left: 20px">
-                <li><p>FLOW：15</p></li>
+              <img style="width: 100px;margin:20px;height: 100px;background: #e8ecee;overflow: hidden;border-radius: 50%;float: left" class="flow" src="../../../assets/img/flow.png" alt="flow" />
+              <ul class="aaa" style="float:left;width: 65%;margin-top: 20px;margin-left: 20px;font-size: 1.5vw;letter-spacing: -.02em;">
+                  <li>
+                      <span>FLOW:</span>
+                      <span class="example">
+                          <countTo :startVal='startVal' :endVal='endVal' :duration='3000'></countTo>
+                      </span>
+                  </li>
+                  <li><p>FLOW：15</p></li>
                 <li><p>PROCESSOR：123</p></li>
                 <li><p>COMPETED：69</p></li>
                 <li><p>FAILED：0</p></li>
@@ -107,13 +115,22 @@
             </div>
           </div>
         </Col>
-        <Col span="12">
-          <div class="card">
-            <div class="card-body" :style="{height:height+'px'}">
-              22
+          <Col span="12">
+              <div class="card">
+            <div class="card-body" :style="{height:300+'px'}">
+              <img style="width: 100px;margin:20px;height: 100px;background: #e8ecee;overflow: hidden;border-radius: 10px;float: left" class="flow" src="../../../assets/img/group1.png" alt="flow" />
+              <ul class="aaa" style="float:left;width: 65%;margin-top: 20px;margin-left: 20px;font-size: 1.5vw;letter-spacing: -.02em;">
+                <li><p>FLOW：15</p></li>
+                <li><p>PROCESSOR：123</p></li>
+                <li><p>COMPETED：69</p></li>
+                <li><p>FAILED：0</p></li>
+                <li><p>KILLED：0</p></li>
+                <li><p>OTHER：2</p></li>
+                <li><p>STARTED：52</p></li>
+              </ul>
             </div>
           </div>
-        </Col>
+          </Col>
       </Row>
     </div>
   </section>
@@ -122,10 +139,13 @@
 <script>
 import WaterPoloChart from "./module/WaterPoloChart";
 import RingChart from "./module/RingChart";
+import RaddarChart from './module/RaddarChart'
+import PieChart from './module/PieChart'
 import size from "../../../utils/winSize";
+import countTo from 'vue-count-to';
 export default {
   name: "sections",
-  components: { WaterPoloChart, RingChart },
+  components: { WaterPoloChart, RingChart, RaddarChart, PieChart, countTo },
   props: {
     msg: String
   },
@@ -137,10 +157,12 @@ export default {
         memory: {},
         hdfs: {},
       },
+        startVal: 0,
+        endVal: 2017
     };
   },
   mounted() {
-    this.height = size.PageH - 360;
+    this.height = size.PageH - 300;
     this.getResources();
     this.getFlowInfo();
   },
@@ -296,6 +318,13 @@ export default {
      }
 .aaa li:nth-child(1){
     margin-top: 0;
-}
+}.example{
+     color: #999;
+     display: inline-block;
+     margin: 10px 0;
+     text-align: center;
+     font-size: 40px;
+     font-weight: 500;
+ }
 </style>
 
