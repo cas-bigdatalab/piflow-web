@@ -805,7 +805,8 @@ function queryStopsProperty(stopPageId, loadId) {
 function openDatasourceList() {
     var window_width = $(window).width();//Get browser window width
     var window_height = $(window).height();//Get browser window height
-    openLayerTypeIframeWindowLoadUrl("/page/datasource/data_source_list.html",(window_width - 100),(window_height - 100),DatasourceList)
+    // openLayerTypeIframeWindowLoadUrl("/page/datasource/data_source_list.html",(window_width - 100),(window_height - 100),DatasourceList)
+    openLayerTypeIframeWindowLoadUrl("/page/datasource/data_source_list.html",(window_width - 100),(window_height - 100))
 }
 
 //query datasource list

@@ -138,7 +138,7 @@ export default {
     window.sessionStorage.setItem("menuName", this.menuName);
     // this.$refs.sideNav;
     this.menuName = window.sessionStorage.getItem("menuName");
-    // window.sessionStorage.removeItem("menuName");
+    window.sessionStorage.removeItem("menuName");
 
 
     let list = JSON.parse(window.sessionStorage.getItem("sysMenuVoList"));

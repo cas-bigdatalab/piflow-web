@@ -27,7 +27,6 @@ export default {
   watch: {
     contentData: {
       handler(newVal){
-        console.log(newVal,'-----------------')
         this.content = newVal;
         this.initChart();
       },
@@ -85,9 +84,6 @@ export default {
           }
         }
       }
-
-      console.log(TotalMemory,'总')
-      console.log(MemoryRatio,'占比')
       this.chart.setOption({
         // tooltip: {
         //   trigger: 'item',
@@ -128,18 +124,18 @@ export default {
           trigger: 'item',
           formatter: '{a} <br/>{b}: {c} GB '
         },
-        legend: {
-          left: 'center',
-          bottom: '10',
-          data: legendData
-        },
+        // legend: {
+        //   left: 'center',
+        //   bottom: '10',
+        //   data: legendData
+        // },
         series: [
           {
             name: 'Memory：',
             type: 'pie',
             selectedMode: 'single',
             radius: [0, '30%'],
-            center: ['50%', '38%'],
+            center: ['50%', '50%'],
             label: {
               position: 'inner'
             },
@@ -151,8 +147,8 @@ export default {
           {
             name: 'Memory：',
             type: 'pie',
-            radius: ['50%', '70%'],
-            center: ['50%', '38%'],
+            radius: ['50%', '65%'],
+            center: ['50%', '50%'],
             data: TotalMemory,
                 animationEasing: 'cubicInOut',
                 animationDuration: 2600

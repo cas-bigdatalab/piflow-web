@@ -3721,7 +3721,7 @@ Sidebar.prototype.addImagePalette = function (id, title, prefix, imgArray, items
                 var dot = item.lastIndexOf('.');
                 tmpTags = item.substring((slash >= 0) ? slash + 1 : 0, (dot >= 0) ? dot : item.length).replace(/[-_]/g, ' ');
             }
-            if (item[i] == "t") {
+            if (item == "text") {
                 if (Format.prototype.isShowTextCell) {
                     fns.push(this.createVertexTemplateEntry('text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;labelBackgroundColor=#ffffff00;',
                         70, 30, 'Label', 'Text', null, null, 'text textbox textarea label'));

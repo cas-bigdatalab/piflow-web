@@ -93,7 +93,7 @@
     >
       <div class="modal-warp">
         <div class="item">
-          <label>{{$t('modal.flow_name')}}：</label>
+          <label>{{$t('modal.group_name')}}：</label>
           <Input v-model="name" :placeholder="$t('modal.placeholder')" style="width: 350px" />
         </div>
         <!-- <div class="item">

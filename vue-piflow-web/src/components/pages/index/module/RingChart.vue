@@ -34,7 +34,7 @@ export default {
       let contentData = [], color='';
       if (this.content !== null && this.content.parameter === 'cpu'){
         contentData = [];
-        color='#68b0ab';
+        color='#a181fc';
         for (let key in this.content){
           let obj = {};
           if (key === 'allocatedVirtualCores'){
@@ -42,8 +42,8 @@ export default {
             obj.name = key;
             obj.itemStyle = {
               normal: {
-                color: "#68b0ab",
-                shadowColor: "#68b0ab"
+                color: "#a181fc",
+                shadowColor: "#a181fc"
               },
             };
             contentData.push(obj)
@@ -53,7 +53,7 @@ export default {
             obj.name = key;
             obj.itemStyle = {
               normal: {
-                color: "#99b898"
+                color: "#e3d9fe"
               }
             }
             contentData.push(obj)
@@ -90,7 +90,7 @@ export default {
       }
       if (this.content !== null && this.content.parameter === 'hdfs'){
         contentData = [];
-        color='#a181fc';
+        color='#68b0ab';
         for (let key in this.content){
           let obj = {};
           if (key === 'allocatedCapacityGB'){
@@ -98,8 +98,8 @@ export default {
             obj.name = key;
             obj.itemStyle = {
               normal: {
-                color: "#a181fc",
-                shadowColor: "#a181fc"
+                color: "#68b0ab",
+                shadowColor: "#68b0ab"
               },
             };
             contentData.push(obj)
@@ -117,14 +117,6 @@ export default {
         }
       }
       let option = {
-        title : {
-          text: 'Hard disk usage',
-          x:'center',
-          textStyle:{
-            color: color
-          }
-        },
-
         tooltip: {
           trigger: "item",
           formatter: function(params) {
