@@ -232,6 +232,18 @@ public class SysParamsCache {
         return INTERFACE_URL_HEAD + FLOW_DEBUG_DATA_URL;
     }
 
+    // "flow debug" interface
+    public static String FLOW_VISUALIZATION_DATA_URL;
+
+    @Value("${api.flowVisualizationDataUrl}")
+    public void setFlowVisualizationDataUrl(String flowVisualizationDataUrl) {
+        FLOW_VISUALIZATION_DATA_URL = flowVisualizationDataUrl;
+    }
+
+    public static String getFlowVisualizationDataUrl() {
+        return INTERFACE_URL_HEAD + FLOW_VISUALIZATION_DATA_URL;
+    }
+
     // "flow group start"  interface
     public static String FLOW_GROUP_START_URL;
 

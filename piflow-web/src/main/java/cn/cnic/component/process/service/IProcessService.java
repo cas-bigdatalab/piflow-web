@@ -176,6 +176,15 @@ public interface IProcessService {
     public String getDebugData(DebugDataRequest debugDataRequest);
 
     /**
+     * get visualization data
+     *
+     * @param appID
+     * @param stopName
+     * @return
+     */
+    public String getVisualizationData(String appID, String stopName);
+
+    /**
      * Query process based on processId and pageId
      *
      * @param processGroupId
