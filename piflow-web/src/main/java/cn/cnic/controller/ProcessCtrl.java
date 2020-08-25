@@ -261,6 +261,17 @@ public class ProcessCtrl {
         return processServiceImpl.getDebugData(new DebugDataRequest(appId, stopName, portName, startFileName, startLine));
     }
 
+    @RequestMapping("/getVisualizationData")
+    @ResponseBody
+    public String getVisualizationData(HttpServletRequest request) {
+        Map<String, Object> rtnMap = new HashMap<>();
+        rtnMap.put("code", 500);
+        String appId = request.getParameter("appId");
+        String stopName = request.getParameter("stopName");
+
+        return processServiceImpl.getVisualizationData(appId, stopName);
+    }
+
     /**
      * Get the `list'running under `flow'
      *

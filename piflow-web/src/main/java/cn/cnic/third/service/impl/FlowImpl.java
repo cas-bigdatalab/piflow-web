@@ -184,6 +184,20 @@ public class FlowImpl implements IFlow {
         return doGet;
     }
 
+    @Override
+    public String getVisualizationData(String appID, String stopName) {
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("appID", appID);
+        map.put("stopName", stopName);
+        String doGet = HttpUtils.doGet(SysParamsCache.getFlowVisualizationDataUrl(), map, 5 * 1000);
+        logger.info("call succeeded : " + doGet);
+        if (StringUtils.isNotBlank(doGet) && !doGet.contains("Exception")) {
+            return null;
+        }
+        return doGet;
+    }
+
+
     /**
      * Send post request
      */
