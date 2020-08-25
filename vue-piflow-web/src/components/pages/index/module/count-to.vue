@@ -65,11 +65,12 @@
     .example{
         /*color: #999;*/
         /*color: #F6416C;*/
-        color: #515a6e;
+        color: #4fb1f8;
         display: inline-block;
         /*margin: 10px 0;*/
         text-align: center;
-        font-size: 22px;
+        /*font-size: 22px;*/
+        font-size: 1vw;
         font-weight: 500;
     }
 </style>

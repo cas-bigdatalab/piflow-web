@@ -331,6 +331,14 @@ export default {
               this.$Modal.success({
                 title: this.$t("tip.tilte"),
                 content: `${this.name} ` + this.$t("tip.add_success_content"),
+                onOk:()=>{
+                  this.$router.push({
+                    path: "/drawingBoard",
+                    query: {
+                      src: "/drawingBoard/page/flow/mxGraph/index.html?load=" + res.data.flowId,
+                    },
+                  });
+                }
               });
               this.isOpen = false;
               this.handleReset();

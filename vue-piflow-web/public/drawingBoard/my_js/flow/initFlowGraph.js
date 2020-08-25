@@ -600,6 +600,8 @@ function queryStopsProperty(stopPageId, loadId) {
                                 var tbody_example_td_2_obj = document.createElement('input');
                                 tbody_example_td_0.innerHTML = td_0.outerHTML;
                                 tbody_example_td_1.innerHTML = td_1.outerHTML;
+                                tbody_example_td_0.style.width = "60px";
+                                tbody_example_td_1.style.width = "25px";
                                 tbody_example_td_2_obj.setAttribute('class', 'form-control');
                                 tbody_example_td_2_obj.setAttribute('value', '' + propertyVo_example + '');
                                 tbody_example_td_2_obj.setAttribute('readonly', 'readonly');
