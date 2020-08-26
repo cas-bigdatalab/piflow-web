@@ -1,4 +1,4 @@
-var fullScreen = $('#fullScreen');
+// var fullScreen = $('#fullScreen');
 var runFlowGroupBtn = $('#runFlowGroup');
 var debugFlowGroupBtn = $('#debugFlowGroup');
 var stopFlowGroupBtn = $('#stopFlowGroup');

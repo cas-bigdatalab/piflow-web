@@ -249,7 +249,7 @@ export default {
       switch (key) {
         case 1:
           this.$event.emit("crumb", [
-            { name: "Flow", path: "/" },
+            { name: "Flow", path: "/flow" },
             { name: "drawingBoard", path: "/drawingBoard" },
           ]);
           this.$router.push({

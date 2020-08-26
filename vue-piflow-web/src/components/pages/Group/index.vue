@@ -237,7 +237,12 @@ export default {
             { name: "Group", path: "/group" },
             { name: "drawingBoard", path: "/drawingBoard" }
           ]);
-         this.$router.push({ path: "/drawingBoard",  query: { src:`/drawingBoard/page/flowGroup/mxGraph/index.html?drawingBoardType=GROUP&load=${row.id}` }});
+         this.$router.push({
+           path: "/drawingBoard",
+           query: {
+             src:`/drawingBoard/page/flowGroup/mxGraph/index.html?drawingBoardType=GROUP&load=${row.id}`
+           }
+         });
           // window.location.href =
           //   window.location.origin +
           //   `/drawingBoard/page/flow/index.html?drawingBoardType=GROUP&load=${row.id}`;

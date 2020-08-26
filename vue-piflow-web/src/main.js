@@ -124,7 +124,10 @@ router.beforeEach((to, from, next) => {
     if (to.path == '/login') {
       next();
     } else {
-      next('/login');
+      next({
+        path: '/login',
+        query: { redirect: to.fullPath } // 将要跳转路由的path作为参数，传递到登录页面
+      });
     }
   }
   // } else {

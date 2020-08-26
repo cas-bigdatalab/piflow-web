@@ -331,8 +331,15 @@ export default {
             this.$store.commit("setUser", res.data.jwtUser);
             window.sessionStorage.setItem("state", "jwtok");
             window.sessionStorage.setItem("usre", this.username);
-            this.$router.push({ path: "/" });
-            window.sessionStorage.setItem("sysMenuVoList", JSON.stringify(res.data.jwtUser.sysMenuVoList));
+            if (this.$route.query.redirect) { //如果存在参数
+              let redirect = this.$route.query.redirect;
+              this.$router.push(redirect)//则跳转至进入登录页前的路由
+            } else {
+              this.$router.push({ path: "/" });//否则跳转至首页
+            }
+
+
+            // window.sessionStorage.setItem("sysMenuVoList", JSON.stringify(res.data.jwtUser.sysMenuVoList));
             // this.handleClear();
             // let path = window.sessionStorage.getItem("path");
           } else {

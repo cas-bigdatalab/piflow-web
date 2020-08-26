@@ -134,15 +134,28 @@ export default {
     });
   },
   mounted() {
-    console.log(this.menuName)
-    window.sessionStorage.setItem("menuName", this.menuName);
+    let menuName = window.sessionStorage.getItem("menuName");
+
+    if (menuName && this.menuName !== menuName) {
+      this.menuName = menuName;
+    }
+    if (!menuName){
+      window.sessionStorage.setItem("menuName", this.menuName);
+      this.menuName = window.sessionStorage.getItem("menuName");
+
+    }
     // this.$refs.sideNav;
-    this.menuName = window.sessionStorage.getItem("menuName");
-    window.sessionStorage.removeItem("menuName");
+    // window.sessionStorage.removeItem("menuName");
 
 
-    let list = JSON.parse(window.sessionStorage.getItem("sysMenuVoList"));
+    // let list = JSON.parse(window.sessionStorage.getItem("sysMenuVoList"));
 
+  },
+  watch: {
+    $route() {
+      //路由变化时就重新执行这个方法 更新传来的参数
+      this.getRouter();
+    }
   },
   methods: {
     // handleMouseOver(name) {
@@ -152,6 +165,13 @@ export default {
       if (this.menuName !== name) {
         window.sessionStorage.setItem("menuName", name);
       }
+    },
+    //监听路由动态
+    getRouter() {
+      // console.log(this.$route.path);//为当前所在页面路由
+      let url = this.$route.path;
+      let arr = url.split("/");
+      // this.showid = arr[2];
     }
   }
 };

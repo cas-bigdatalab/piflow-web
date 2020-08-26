@@ -1,7 +1,7 @@
 // Extends EditorUi to update I/O action states based on availability of backend
 var graphGlobal = null;
 var thisEditor = null;
-var fullScreen = $('#fullScreen');
+// var fullScreen = $('#fullScreen');
 var drawingBoardType = "PROCESS"
 var index = true
 var nodeArr, xmlDate, parentsId, processType, processGroupId, parentProcessId, pID, appId, processState,

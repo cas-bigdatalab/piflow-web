@@ -327,7 +327,6 @@ export default {
               .then(res => {
                 if (res.data.code == 200) {
                   let data = JSON.parse(res.data.resourceInfo);
-                    console.log(data)
                   this.resource.cpu = data.resource.cpu;
                   // this.resource.cpu.parameter = 'cpu';
                   this.resource.memory = data.resource.memory;
@@ -338,7 +337,7 @@ export default {
                   this.cpuPercent = data.resource.cpu.allocatedVirtualCores / data.resource.cpu.totalVirtualCores * 100;
                   this.memoryPercent = data.resource.memory.allocatedMemoryGB / data.resource.memory.totalMemoryGB * 100;
                   this.hdfsPercent = data.resource.hdfs.allocatedCapacityGB / data.resource.hdfs.TotalCapacityGB * 100;
-                    console.log(this.resource,'this.resource.cpu','remainingVirtualCores')
+                    // console.log(this.resource,'this.resource.cpu','remainingVirtualCores')
                 } else {
                   this.$Modal.error({
                     title: this.$t("tip.tilte"),
