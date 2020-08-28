@@ -29,7 +29,7 @@ export default new Router({
             {
               path: '/',
               name: 'sections',
-              component: () => import('../components/pages/Flow')
+              component: () => import('../components/pages/index')
             },
             {
               path: '/flow',

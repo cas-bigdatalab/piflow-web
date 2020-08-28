@@ -23,7 +23,18 @@ function initFlowDrawingBoardData(loadId, parentAccessPath) {
         success: function (data) {//Operation after request successful
             var dataMap = JSON.parse(data);
             if (200 === dataMap.code) {
-                parentsId = dataMap.parentsId;
+                if (dataMap.parentsId){
+                    parentsId = dataMap.parentsId;
+                }else {
+                    parentsId = 'null';
+                }
+                for (var key in window.parent.__VUE_HOT_MAP__){
+                    if( window.parent.__VUE_HOT_MAP__[key].options.name === 'DrawingBoard'){
+                        window.parent.postMessage({
+                            parentsId :parentsId
+                        },'*');
+                    }
+                }
                 xmlDate = dataMap.xmlDate;
                 maxStopPageId = dataMap.maxStopPageId;
                 isExample = dataMap.isExample;

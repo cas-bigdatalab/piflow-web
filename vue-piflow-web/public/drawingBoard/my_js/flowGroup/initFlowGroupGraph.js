@@ -5,6 +5,7 @@ var sign = true;
 var flag = 0;
 var index = true;
 var consumedFlag, removeGroupPaths;
+var parentsId = null;
 
 function initFlowGroupDrawingBoardData(loadId, parentAccessPath) {
     // $('#fullScreen').show();
@@ -20,7 +21,19 @@ function initFlowGroupDrawingBoardData(loadId, parentAccessPath) {
         success: function (data) {//Operation after request successful
             var dataMap = JSON.parse(data);
             if (200 === dataMap.code) {
-                parentsId = dataMap.parentsId;
+                if (dataMap.parentsId){
+                    parentsId = dataMap.parentsId;
+                }else {
+                    parentsId = 'null';
+                }
+                for (var key in window.parent.__VUE_HOT_MAP__){
+                    if( window.parent.__VUE_HOT_MAP__[key].options.name === 'DrawingBoard'){
+                        window.parent.postMessage({
+                            parentsId :parentsId
+                        },'*');
+                        // window.parent.__VUE_HOT_MAP__[key].options.methods.GetChildValue(parentsId)
+                    }
+                }
                 xmlDate = dataMap.xmlDate;
                 maxStopPageId = dataMap.maxStopPageId;
                 isExample = dataMap.isExample;
@@ -523,6 +536,7 @@ function openProcessMonitor(evt) {
                         window_location_href("/page/flow/mxGraph/index.html?drawingBoardType=TASK&parentAccessPath=flowGroupList&load=" + flow_obj.id);
                     } else if ('flowGroup' === dataMap.nodeType) {
                         var flowGroup_obj = dataMap.flowGroupVo;
+                        // window_location_href("/page/flowGroup/mxGraph/index.html?drawingBoardType=GROUP&parentAccessPath=flowGroupList&parentsId="+ loadId +"&load=" + flowGroup_obj.id);
                         window_location_href("/page/flowGroup/mxGraph/index.html?drawingBoardType=GROUP&parentAccessPath=flowGroupList&load=" + flowGroup_obj.id);
                     }
                 } else {
@@ -674,7 +688,7 @@ function queryPathInfo(id, loadId) {
         },
         success: function (data) {
             var dataMap = JSON.parse(data);
-            console.log(dataMap);
+            // console.log(dataMap);
             $('#flowGroup_path_inc_loading').hide();
             if (200 === dataMap.code) {
                 //var queryInfo = dataMap.queryInfo;
@@ -864,7 +878,7 @@ function updateFlowGroupCellsNameById(selectNodesType) {
         },
         success: function (data) {
             var dataMap = JSON.parse(data);
-            console.log(dataMap);
+            // console.log(dataMap);
             if (200 === dataMap.code) {
                 //reload xml
                 loadXml(dataMap.XmlData);
@@ -931,7 +945,7 @@ function openUpdateCellsProperty(e, selectNodesType) {
     }
     var p = $(e).offset();
     var openWindowCoordinate = [(p.top + 34) + 'px', (document.body.clientWidth - 300) + 'px'];
-    console.log(openWindowCoordinate);
+    // console.log(openWindowCoordinate);
     layer.open({
         type: 1,
         title: e.name,
@@ -1364,7 +1378,6 @@ function loadingXml(id, loadId) {
 
 // open template list
 function openTemplateList() {
-    console.log("openTemplateListopenTemplateListopenTemplateListopenTemplateListopenTemplateListopenTemplateListopenTemplateList");
     if (isExample) {
         layer.msg('This is an example, you can\'t edit', {icon: 2, shade: 0, time: 2000});
         return;
