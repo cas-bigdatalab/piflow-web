@@ -48,7 +48,7 @@ export default {
   data() {
     return {
       isCollapsed: false,
-      menuName: "1wr",
+      menuName: "0wr",
       mouseOver: ""
       // menulist: []
     };

@@ -1359,21 +1359,27 @@ function loadingXml(id, loadId) {
         },
         async: true,
         url: "/flowTemplate/loadingXmlPage",
-    }).success(function (data) {
-        var dataMap = JSON.parse(data);
-        var icon_code = 2;
-        if (200 === dataMap.code) {
-            icon_code = 1;
+        success: function (data) {
+            var dataMap = JSON.parse(data);
+            var icon_code = 2;
+            if (200 === dataMap.code) {
+                icon_code = 1;
+                layer.msg(dataMap.errorMsg, {icon: icon_code, shade: 0.7, time: 2000}, function () {
+                    window.location.reload();
+                });
+            }else {
+                layer.msg(dataMap.errorMsg, {icon: icon_code, shade: 0.7, time: 2000}, function () {
+
+                });
+            }
+            // $('#fullScreen').hide();
+            window.parent.postMessage(false);
+        },
+        error: function (data) {
+            // $('#fullScreen').hide();
+            window.parent.postMessage(false);
         }
-        // $('#fullScreen').hide();
-        window.parent.postMessage(false);
-        layer.msg(dataMap.errorMsg, {icon: icon_code, shade: 0.7, time: 2000}, function () {
-            window.location.reload();
-        });
-    }).error(function () {
-        // $('#fullScreen').hide();
-        window.parent.postMessage(false);
-    });
+    })
 }
 
 // open template list
