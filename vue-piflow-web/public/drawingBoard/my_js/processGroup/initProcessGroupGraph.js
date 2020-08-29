@@ -3,7 +3,7 @@ var graphGlobal = null;
 var thisEditor = null;
 var flag = 0;
 var index = true
-var nodePageIdAndStateList, xmlDate, processType, appId, processState, processId,stdoutLog,stderrLog;
+var nodePageIdAndStateList, xmlDate, processType, appId, processState, processId, stdoutLog, stderrLog;
 
 // init crumbs
 function initCrumbs(parentAccessPath) {
@@ -63,7 +63,6 @@ function initProcessGroupDrawingBoardData(loadId, parentAccessPath, backFunc) {
         },
         success: function (data) {//Operation after request successful
             var dataMap = JSON.parse(data);
-            console.log(dataMap);
             if (200 === dataMap.code) {
                 processId = dataMap.processId;
                 processType = dataMap.processType;
@@ -335,23 +334,77 @@ function processGroupMxEventClick(cell) {
 
 // query processGroup info
 function queryProcessGroup(loadId) {
-    ajaxRequest({
-        cache: true,
-        type: "POST",
-        url: "/processGroup/queryProcessGroup",
-        data: {processGroupId: loadId},
-        async: true,
-        error: function (request) {
-            return;
-        },
-        success: function (data) {
-            var dataMap = JSON.parse(data);
-            $('#process_info_inc_loading').hide();
-            if (200 === dataMap.code) {
-                var processVo = dataMap.processVo;
-                if (!processVo) {
-                    $('#process_info_inc_no_data').show();
+    ajaxLoad("", "/page/processGroup/inc/process_group_info_inc.html", function (data) {
+        $("#right-group")[0].innerHTML = data;
+        ajaxRequest({
+            cache: true,
+            type: "POST",
+            url: "/processGroup/queryProcessGroup",
+            data: {processGroupId: loadId},
+            async: true,
+            error: function (request) {
+                return;
+            },
+            success: function (data) {
+                var dataMap = JSON.parse(data);
+                $('#processGroup_info_inc_loading').hide();
+                if (200 === dataMap.code) {
+                    console.log(dataMap);
+                    var processGroupVo = dataMap.processGroupVo;
+                    if (!processGroupVo) {
+                        $('#processGroup_info_inc_no_data').show();
+                    } else {
+                        //Process Basic Information
+                        $("#span_processGroupVo_id").text(processGroupVo.id);
+                        $("#span_processGroupVo_name").text(processGroupVo.name);
+                        $("#span_processGroupVo_description").text(processGroupVo.description);
+                        $("#span_processGroupVo_crtDttmStr").text(processGroupVo.crtDttmStr);
+
+                        //Process Running Information
+                        $("#processGroupStartTimeShow").text(processGroupVo.startTimeStr);
+                        $("#processGroupStopTimeShow").text(processGroupVo.endTimeStr);
+                        var processGroupVo_state_text = (null !== processGroupVo.state) ? processGroupVo.state.stringValue : "INIT";
+                        $("#processGroupStateShow").text(processGroupVo_state_text);
+                        if (processGroupVo.progress) {
+                            $("#processGroupProgressShow").text(processGroupVo.progress + "%");
+                        } else {
+                            $("#processGroupProgressShow").text("0.00%");
+                        }
+                        $('#ProcessGroup_info_inc_load_data').show();
+                    }
                 } else {
+                    $('#processGroup_info_inc_load_fail').show();
+                }
+                // window.parent.postMessage(false);
+            }
+        });
+    });
+
+}
+
+// query node info
+function queryNodeInfo(loadId, pageId) {
+    ajaxLoad("", "/page/processGroup/inc/process_group_node_property_inc.html", function (data) {
+        $("#right-group")[0].innerHTML = data
+        ajaxRequest({
+            cache: true,
+            type: "POST",
+            url: "/processGroup/queryProcess",
+            data: {
+                pageId: pageId,
+                processGroupId: loadId
+            },
+            async: true,
+            error: function (request) {
+                return;
+            },
+            success: function (data) {
+                var dataMap = JSON.parse(data);
+                console.log(dataMap);
+                $("#processGroup_node_property_inc_loading").hide();
+                var nodeType = dataMap.nodeType;
+                if ("flow" === nodeType) {
+                    var processVo = dataMap.processVo;
                     //Process Basic Information
                     $("#span_processVo_id").text(processVo.id);
                     $("#span_processVo_name").text(processVo.name);
@@ -362,64 +415,84 @@ function queryProcessGroup(loadId) {
                     $("#processStopTimeShow").text(processVo.endTimeStr);
                     var processVo_state_text = (null !== processVo.state) ? processVo.state.stringValue : "INIT";
                     $("#processStateShow").text(processVo_state_text);
-                    // if (processVo.progress) {
-                    //     $("#processProgressShow").text(processVo.progress + "%");
-                    // } else {
-                    //     $("#processProgressShow").text("0.00%");
-                    // }
+                    if (processVo.progress) {
+                        $("#processProgressShow").text(processVo.progress + "%");
+                    } else {
+                        $("#processProgressShow").text("0.00%");
+                    }
+                    $("#processGroup_node_property_inc_load_process_data").show();
+                } else if ("flowGroup" === nodeType) {
+                    var processGroupVo = dataMap.processGroupVo;
+                    //Process Basic Information
+                    $("#span_processGroupVo_id").text(processGroupVo.id);
+                    $("#span_processGroupVo_name").text(processGroupVo.name);
+                    $("#span_processGroupVo_description").text(processGroupVo.description);
+                    $("#span_processGroupVo_crtDttmStr").text(processGroupVo.crtDttmStr);
 
-
-                    $('#ProcessGroup_info_inc_load_data').show();
+                    //Process Running Information
+                    $("#processGroupStartTimeShow").text(processGroupVo.startTimeStr);
+                    $("#processGroupStopTimeShow").text(processGroupVo.endTimeStr);
+                    var processGroupVo_state_text = (null !== processGroupVo.state) ? processGroupVo.state.stringValue : "INIT";
+                    $("#processGroupStateShow").text(processGroupVo_state_text);
+                    if (processGroupVo.progress) {
+                        $("#processGroupProgressShow").text(processGroupVo.progress + "%");
+                    } else {
+                        $("#processGroupProgressShow").text("0.00%");
+                    }
+                    $("#processGroup_node_property_inc_load_processGroup_data").show();
+                } else {
+                    $("#processGroup_node_property_inc_load_fail").hide();
                 }
-            } else {
-                $('#process_info_inc_load_fail').show();
-                //alert("Load Failed" + dataMap.errorMsg);
             }
-            // window.parent.postMessage(false);
-
-            // $("#right-group")[0].innerHTML = data
-        }
-    });
-}
-
-// query node info
-function queryNodeInfo(loadId, pageId) {
-    ajaxRequest({
-        cache: true,
-        type: "POST",
-        url: "/processGroup/queryProcess",
-        data: {
-            pageId: pageId,
-            processGroupId: loadId
-        },
-        async: true,
-        error: function (request) {
-            return;
-        },
-        success: function (data) {
-            $("#right-group")[0].innerHTML = data
-        }
+        });
     });
 }
 
 // query path info
 function queryPathInfo(loadId, pageId) {
-    ajaxRequest({
-        cache: true,
-        type: "POST",
-        url: "/processGroup/queryProcessGroupPath",
-        data: {
-            pageId: pageId,
-            processGroupId: loadId
-        },
-        async: true,
-        error: function (request) {
-            return;
-        },
-        success: function (data) {
-            $("#right-group")[0].innerHTML = data
-        }
-    })
+    ajaxLoad("", "/page/processGroup/inc/process_group_path_inc.html", function (data) {
+        $("#right-group")[0].innerHTML = data;
+        ajaxRequest({
+            cache: true,
+            type: "POST",
+            url: "/processGroup/queryProcessGroupPath",
+            data: {
+                pageId: pageId,
+                processGroupId: loadId
+            },
+            async: true,
+            error: function (request) {
+                return;
+            },
+            success: function (data) {
+                var dataMap = JSON.parse(data);
+                $('#processGroup_path_inc_loading').hide();
+                if (200 === dataMap.code) {
+                    var processGroupPathVo = dataMap.processGroupPathVo;
+                    if (!processGroupPathVo) {
+                        $('#processGroup_path_inc_no_data').hide();
+                    } else {
+                        // Process Path Information
+                        $("#span_processGroupPathVo_from").text(processGroupPathVo.from);
+                        $("#span_processGroupPathVo_outport").text(processGroupPathVo.outport);
+                        $("#span_processGroupPathVo_inport").text(processGroupPathVo.inport);
+                        $("#span_processGroupPathVo_to").text(processGroupPathVo.to);
+
+                        if (dataMap.runModeType && dataMap.runModeType.text === 'DEBUG') {
+                            $("#div_view_flow_data").html('<input type="button" class="btn btn-primary" onclick="getDebugData(\'' + processPathVo.from + '\',\'' + processPathVo.outport + '\')" value="View Flow Data">');
+                            $("#div_view_flow_data").show();
+                        }
+
+                        $('#processGroup_path_inc_load_data').show();
+                    }
+                } else {
+                    $('#processGroup_path_inc_load_fail').show();
+                    //alert("Load Failed" + dataMap.errorMsg);
+                }
+            }
+        })
+    });
+
 }
 
 window.onresize = function (e) {

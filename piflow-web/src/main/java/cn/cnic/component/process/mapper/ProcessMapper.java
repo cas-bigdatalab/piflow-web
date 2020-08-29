@@ -5,6 +5,7 @@ import cn.cnic.component.process.entity.Process;
 import cn.cnic.component.process.mapper.provider.ProcessMapperProvider;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -202,5 +203,8 @@ public interface ProcessMapper {
 
     @Select("select fp.run_mode_type from flow_process fp where fp.enable_flag = 1 and fp.id=#{id}")
     public RunModeType getProcessRunModeTypeById(String id);
+
+    @Select("select app_id from flow_process where enable_flag=1 and app_id is not null and ( ( state!='COMPLETED' and state!='FAILED' and state!='KILLED' ) or state is null )")
+    List<String> getRunningProcessAppId();
 
 }
