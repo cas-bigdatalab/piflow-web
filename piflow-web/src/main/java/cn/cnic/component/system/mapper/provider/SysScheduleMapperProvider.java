@@ -120,17 +120,17 @@ public class SysScheduleMapperProvider {
     }
 
     public String getSysScheduleListByStatus(@Param("isAdmin") boolean isAdmin, @Param("status") ScheduleState status) {
-        String sqlStr = "select 0";
-        if (isAdmin && null != status) {
-            StringBuffer sqlStrbuf = new StringBuffer();
-            sqlStrbuf.append("SELECT * ");
-            sqlStrbuf.append("FROM sys_schedule ");
-            sqlStrbuf.append("WHERE enable_flag = 1 ");
-            sqlStrbuf.append("AND ");
-            sqlStrbuf.append("status = " + SqlUtils.addSqlStrLikeAndReplace(status.name()) + " ");
-            sqlStrbuf.append("ORDER BY crt_dttm asc,last_update_dttm DESC");
-            sqlStr = sqlStrbuf.toString();
+        if (!isAdmin || null == status) {
+            return "select 0";
         }
+        StringBuffer sqlStrbuf = new StringBuffer();
+        sqlStrbuf.append("SELECT * ");
+        sqlStrbuf.append("FROM sys_schedule ");
+        sqlStrbuf.append("WHERE enable_flag = 1 ");
+        sqlStrbuf.append("AND ");
+        sqlStrbuf.append("status = " + SqlUtils.preventSQLInjection(status.name()) + " ");
+        sqlStrbuf.append("ORDER BY crt_dttm asc,last_update_dttm DESC");
+        String sqlStr = sqlStrbuf.toString();
         return sqlStr;
     }
 
