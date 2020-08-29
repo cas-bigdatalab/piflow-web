@@ -824,7 +824,7 @@ function queryFlowOrFlowGroupProperty(pageId, loadId) {
 function getFlowList() {
     var window_width = $(window).width();//Get browser window width
     var window_height = $(window).height();//Get browser window height
-    openLayerTypeIframeWindowLoadUrl("/page/flow/getFlowListImport.html", (window_width / 2), (window_height - 100), "Flows");
+    openLayerTypeIframeWindowLoadUrl("/page/flow/flow_list_import.html", (window_width / 2), (window_height - 100), "Flows");
 }
 
 // ClickSlider
@@ -1528,7 +1528,7 @@ function runFlowGroup(runMode) {
             if (200 === dataMap.code) {
                 layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
                     //Jump to the monitoring page after starting successfully
-                    new_window_open("/page/process/mxGraph/index.html?drawingBoardType=PROCESS&processType=PROCESS_GROUP&load=" + dataMap.processGroupId, '_blank');
+                    new_window_open("/page/processGroup/mxGraph/index.html?drawingBoardType=PROCESS&processType=PROCESS_GROUP&load=" + dataMap.processGroupId, '_blank');
                 });
             } else {
                 layer.msg("Startup failure：" + dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});

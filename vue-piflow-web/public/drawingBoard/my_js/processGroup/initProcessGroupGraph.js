@@ -345,7 +345,39 @@ function queryProcessGroup(loadId) {
             return;
         },
         success: function (data) {
-            $("#right-group")[0].innerHTML = data
+            var dataMap = JSON.parse(data);
+            $('#process_info_inc_loading').hide();
+            if (200 === dataMap.code) {
+                var processVo = dataMap.processVo;
+                if (!processVo) {
+                    $('#process_info_inc_no_data').show();
+                } else {
+                    //Process Basic Information
+                    $("#span_processVo_id").text(processVo.id);
+                    $("#span_processVo_name").text(processVo.name);
+                    $("#span_processVo_description").text(processVo.description);
+                    $("#span_processVo_crtDttmStr").text(processVo.crtDttmStr);
+                    //Process Running Information
+                    $("#processStartTimeShow").text(processVo.startTimeStr);
+                    $("#processStopTimeShow").text(processVo.endTimeStr);
+                    var processVo_state_text = (null !== processVo.state) ? processVo.state.stringValue : "INIT";
+                    $("#processStateShow").text(processVo_state_text);
+                    // if (processVo.progress) {
+                    //     $("#processProgressShow").text(processVo.progress + "%");
+                    // } else {
+                    //     $("#processProgressShow").text("0.00%");
+                    // }
+
+
+                    $('#ProcessGroup_info_inc_load_data').show();
+                }
+            } else {
+                $('#process_info_inc_load_fail').show();
+                //alert("Load Failed" + dataMap.errorMsg);
+            }
+            // window.parent.postMessage(false);
+
+            // $("#right-group")[0].innerHTML = data
         }
     });
 }

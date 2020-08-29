@@ -238,7 +238,8 @@ function listRunFlowGroup(loadId, runMode) {
             var dataMap = JSON.parse(data);
             if (200 === dataMap.code) {
                 layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
-                    new_window_open("/processGroup/getProcessGroupById?parentAccessPath=grapheditor&processGroupId=" + dataMap.processGroupId);
+                    new_window_open("/page/processGroup/mxGraph/index.html?drawingBoardType=PROCESS&processType=PROCESS_GROUP&load=" + dataMap.processGroupId);
+                    // new_window_open("/processGroup/getProcessGroupById?parentAccessPath=grapheditor&processGroupId=" + dataMap.processGroupId);
                 });
             } else {
                 //alert("Startup failure：" + dataMap.errorMsg);

@@ -10,7 +10,7 @@ function initDatatableFlowImportPage(testTableId, url, searchInputId) {
             elem: '#' + testTableId
             , url: web_header_prefix + url
             , headers: {
-                Authorization: ("Bearer " + localStorage.token)
+                Authorization: ("Bearer " + token)
             }
             , cols: [[
                 {field: 'name', title: 'Name', sort: true},

@@ -1,6 +1,9 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <body th:fragment=data_source_List>
+<head>
+    <link rel="stylesheet" type="text/css" href="/drawingBoard/components/layui/css/layui.css"/>
+</head>
 <!-- content starts -->
 <div class="wrapper" style="margin: 20px;">
     <!-- Media datatable -->
@@ -40,7 +43,10 @@
     <!-- /media datatable -->
 </div>
 <!-- content ends -->
-<script src="/piflow-web/my_js/datasource/dataSourceList.js"></script>
+<script type="text/javascript" src="/drawingBoard/js/ajaxUtils.js"></script>
+<script type="text/javascript" src="/drawingBoard/js/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="/drawingBoard/components/layui/layui.all.js"></script>
+<script src="/drawingBoard/my_js/datasource/dataSourceList.js"></script>
 <script type="text/javascript">
     initDataTablePage("testTableId", "/datasource/getDataSourceListPagination", "search_input_id");
     window.onload = function () {
