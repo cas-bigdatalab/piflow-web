@@ -19,5 +19,11 @@ public class IProcessServiceTest extends ApplicationTests {
         processServiceImpl.flowToProcessAndSave("admin","d97aa10691db4b8da2680cb5b56a7ea0");
     }
 
+    @Test
+    public void testFlowVisualizationData() {
+        String result = processServiceImpl.getVisualizationData("application_1596710850427_0039", "LineChart8");
+        System.out.println(result);
+    }
+
 
 }

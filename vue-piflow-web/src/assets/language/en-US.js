@@ -55,6 +55,7 @@ module.exports = {
         cancel_text: "Cancel",
         delete_content: "Are you sure to delete",
         flow_name: "FlowName",
+        group_name: "CreateGroup",
         driverMemory: "DriverMemory",
         executorNumber: "ExecutorNumber",
         executorMemory: "ExecutorMemory",

@@ -23,7 +23,18 @@ function initFlowDrawingBoardData(loadId, parentAccessPath) {
         success: function (data) {//Operation after request successful
             var dataMap = JSON.parse(data);
             if (200 === dataMap.code) {
-                parentsId = dataMap.parentsId;
+                if (dataMap.parentsId){
+                    parentsId = dataMap.parentsId;
+                }else {
+                    parentsId = 'null';
+                }
+                for (var key in window.parent.__VUE_HOT_MAP__){
+                    if( window.parent.__VUE_HOT_MAP__[key].options.name === 'DrawingBoard'){
+                        window.parent.postMessage({
+                            parentsId :parentsId
+                        },'*');
+                    }
+                }
                 xmlDate = dataMap.xmlDate;
                 maxStopPageId = dataMap.maxStopPageId;
                 isExample = dataMap.isExample;
@@ -600,6 +611,8 @@ function queryStopsProperty(stopPageId, loadId) {
                                 var tbody_example_td_2_obj = document.createElement('input');
                                 tbody_example_td_0.innerHTML = td_0.outerHTML;
                                 tbody_example_td_1.innerHTML = td_1.outerHTML;
+                                tbody_example_td_0.style.width = "60px";
+                                tbody_example_td_1.style.width = "25px";
                                 tbody_example_td_2_obj.setAttribute('class', 'form-control');
                                 tbody_example_td_2_obj.setAttribute('value', '' + propertyVo_example + '');
                                 tbody_example_td_2_obj.setAttribute('readonly', 'readonly');
@@ -805,7 +818,8 @@ function queryStopsProperty(stopPageId, loadId) {
 function openDatasourceList() {
     var window_width = $(window).width();//Get browser window width
     var window_height = $(window).height();//Get browser window height
-    openLayerTypeIframeWindowLoadUrl("/page/datasource/data_source_list.html",(window_width - 100),(window_height - 100),DatasourceList)
+    // openLayerTypeIframeWindowLoadUrl("/page/datasource/data_source_list.html",(window_width - 100),(window_height - 100),DatasourceList)
+    openLayerTypeIframeWindowLoadUrl("/page/datasource/data_source_list.html",(window_width - 100),(window_height - 100))
 }
 
 //query datasource list

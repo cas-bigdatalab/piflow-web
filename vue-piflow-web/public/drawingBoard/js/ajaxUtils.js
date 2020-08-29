@@ -169,7 +169,9 @@ function openLayerTypeIframeWindowLoadUrl(url, window_width, window_height, titl
 
 // window.location
 function window_location_href(url) {
-    window.location.href = window.location.origin + "/#/drawingBoard?src=" + web_drawingBoard + url;
+    window.top.location.href = window.location.origin + "/#/drawingBoard?src=" + web_drawingBoard + url ;
+    // window.top.location.reload();
+    // window.open(window.location.origin + "/#/drawingBoard?src=" + web_drawingBoard + url,"_blank");
 }
 
 function new_window_open(url) {

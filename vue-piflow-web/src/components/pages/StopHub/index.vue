@@ -6,9 +6,9 @@
                 <span>{{$t("sidebar.stopHub")}}</span>
             </div>
             <div class="right">
-        <span class="button-warp" @click="handleModalSwitch">
-          <Icon type="md-cloud-upload" />
-        </span>
+                <span class="button-warp" @click="handleModalSwitch">
+                    <Icon type="md-cloud-upload" />
+                </span>
             </div>
         </div>
         <!-- 检索部分 -->
@@ -17,8 +17,7 @@
                     suffix="ios-search"
                     v-model="param"
                     :placeholder="$t('modal.placeholder')"
-                    style="width: 300px"
-            />
+                    style="width: 300px"/>
         </div>
         <!-- 表格部分 -->
         <Table border :columns="columns" :data="tableData">
@@ -52,18 +51,17 @@
                     :total="total"
                     show-sizer
                     @on-change="onPageChange"
-                    @on-page-size-change="onPageSizeChange"
-            />
+                    @on-page-size-change="onPageSizeChange"/>
         </div>
         <!-- 上传jar包 -->
         <Modal
                 v-model="isOpen"
+                :loading="loading"
                 :title="$t('modal.upload')"
                 :ok-text="$t('modal.upload_text')"
                 :cancel-text="$t('modal.cancel_text')"
                 @on-ok="uploadSuccess"
-                @on-cancel="uploadError"
-        >
+                @on-cancel="uploadError">
 <!--            <div slot="footer">-->
 <!--                <Button type="text" @click="uploadError">Cancel</Button>-->
 <!--            </div>-->
@@ -108,6 +106,7 @@
         data() {
             return {
                 isOpen: false,
+                loading: true,
                 page: 1,
                 limit: 10,
                 total: 0,
@@ -128,12 +127,6 @@
             };
         },
         watch: {
-            //控制新增还是更新
-            isOpen(state) {
-                if (!state) {
-                    this.handleReset();
-                }
-            },
             param() {
                 this.page = 1;
                 this.limit = 10;
@@ -189,16 +182,6 @@
             this.token = `Bearer ${token}`;
         },
         methods: {
-            // 重置
-            handleReset() {
-                this.page = 1;
-                this.limit = 10;
-                this.id = "";
-                this.type = "Other";
-                this.row = null;
-                this.name = "";
-                this.description = "";
-            },
             handleButtonSelect(row, key) {
                 switch (key) {
                     case 1:
@@ -215,6 +198,9 @@
             handleSuccess (res, file) {
                 this.file = null;
                 this.getTableData();
+                setTimeout(()=>{
+                    this.isOpen = false;
+                },1000)
             },
             // 文件上传失败时的钩子，返回字段为 error, file, fileList
             handleError ( error, file) {
@@ -336,7 +322,6 @@
                                                 `${row.jarName} ` +
                                                 this.$t("tip.delete_success_content")
                                         });
-                                        this.handleReset();
                                         this.getTableData();
                                     } else {
                                         this.$Modal.error({
@@ -363,6 +348,10 @@
             uploadSuccess(){
                 // this.isOpen = false;
                 // this.$refs.upload.clearFiles();
+                // setTimeout(() => {
+                //     this.isOpen = true;
+                // }, 300);
+                this.isOpen = true;
                 this.$refs.upload.post(this.file);
             },
             // 关闭清空上传列表

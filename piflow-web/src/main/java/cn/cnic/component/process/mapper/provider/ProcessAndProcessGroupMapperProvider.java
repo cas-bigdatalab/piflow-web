@@ -23,12 +23,12 @@ public class ProcessAndProcessGroupMapperProvider {
         strBuf.append("FROM ");
         strBuf.append("( ");
         strBuf.append("SELECT id,last_update_dttm,crt_dttm,app_id,name,description,start_time,end_time,progress,state,parent_process_id,'TASK' AS processType FROM flow_process ");
-        strBuf.append("WHERE enable_flag=1 AND app_id IS NOT NULL AND fk_flow_process_group_id IS NULL AND (name LIKE CONCAT('%'," + SqlUtils.addSqlStrAndReplace(param) + ",'%') OR description LIKE CONCAT('%'," + SqlUtils.addSqlStrAndReplace(param) + ",'%')) ");
+        strBuf.append("WHERE enable_flag=1 AND app_id IS NOT NULL AND fk_flow_process_group_id IS NULL AND (name LIKE CONCAT('%'," + SqlUtils.addSqlStrAndReplace(param) + ",'%') OR description LIKE CONCAT('%'," + SqlUtils.addSqlStrAndReplace(param) + ",'%') OR state LIKE CONCAT('%'," + SqlUtils.addSqlStrAndReplace(param) + ",'%') " + ") ");
         strBuf.append("UNION ALL ");
         strBuf.append("SELECT id,last_update_dttm,crt_dttm,app_id,name,description,start_time,end_time,progress,state,parent_process_id,'GROUP' AS processType FROM flow_process_group ");
-        strBuf.append("WHERE enable_flag=1 AND app_id IS NOT NULL AND fk_flow_process_group_id IS NULL AND (name LIKE CONCAT('%'," + SqlUtils.addSqlStrAndReplace(param) + ",'%') OR description LIKE CONCAT('%'," + SqlUtils.addSqlStrAndReplace(param) + ",'%'))");
+        strBuf.append("WHERE enable_flag=1 AND app_id IS NOT NULL AND fk_flow_process_group_id IS NULL AND (name LIKE CONCAT('%'," + SqlUtils.addSqlStrAndReplace(param) + ",'%') OR description LIKE CONCAT('%'," + SqlUtils.addSqlStrAndReplace(param) + ",'%') OR state LIKE CONCAT('%'," + SqlUtils.addSqlStrAndReplace(param) + ",'%') " + ") ");
         strBuf.append(") ");
-        strBuf.append("AS re");
+        strBuf.append("AS re ");
         return strBuf.toString();
     }
 
@@ -53,10 +53,10 @@ public class ProcessAndProcessGroupMapperProvider {
         strBuf.append("FROM ");
         strBuf.append("( ");
         strBuf.append("SELECT id,last_update_dttm,crt_dttm,app_id,name,description,start_time,end_time,progress,state,parent_process_id,'TASK' AS processType FROM flow_process ");
-        strBuf.append("WHERE enable_flag=1 AND crt_user=" + SqlUtils.addSqlStrAndReplace(username) + " AND app_id IS NOT NULL AND fk_flow_process_group_id IS NULL AND (name LIKE CONCAT('%'," + SqlUtils.addSqlStrAndReplace(param) + ",'%') OR description LIKE CONCAT('%'," + SqlUtils.addSqlStrAndReplace(param) + ",'%')) ");
+        strBuf.append("WHERE enable_flag=1 AND crt_user=" + SqlUtils.addSqlStrAndReplace(username) + " AND app_id IS NOT NULL AND fk_flow_process_group_id IS NULL AND (name LIKE CONCAT('%'," + SqlUtils.addSqlStrAndReplace(param) + ",'%') OR description LIKE CONCAT('%'," + SqlUtils.addSqlStrAndReplace(param) + ",'%') OR state LIKE CONCAT('%'," + SqlUtils.addSqlStrAndReplace(param) + ",'%') " + ") ");
         strBuf.append("UNION ALL ");
         strBuf.append("SELECT id,last_update_dttm,crt_dttm,app_id,name,description,start_time,end_time,progress,state,parent_process_id,'GROUP' AS processType FROM flow_process_group ");
-        strBuf.append("WHERE enable_flag=1 AND crt_user=" + SqlUtils.addSqlStrAndReplace(username) + " AND app_id IS NOT NULL AND fk_flow_process_group_id IS NULL AND (name LIKE CONCAT('%'," + SqlUtils.addSqlStrAndReplace(param) + ",'%') OR description LIKE CONCAT('%'," + SqlUtils.addSqlStrAndReplace(param) + ",'%'))");
+        strBuf.append("WHERE enable_flag=1 AND crt_user=" + SqlUtils.addSqlStrAndReplace(username) + " AND app_id IS NOT NULL AND fk_flow_process_group_id IS NULL AND (name LIKE CONCAT('%'," + SqlUtils.addSqlStrAndReplace(param) + ",'%') OR description LIKE CONCAT('%'," + SqlUtils.addSqlStrAndReplace(param) + ",'%') OR state LIKE CONCAT('%'," + SqlUtils.addSqlStrAndReplace(param) + ",'%') " + ") ");
         strBuf.append(") ");
         strBuf.append("AS re");
         return strBuf.toString();

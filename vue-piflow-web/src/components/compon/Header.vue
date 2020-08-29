@@ -92,6 +92,7 @@ export default {
     // }
     handleQuit() {
       window.sessionStorage.removeItem("state");
+      window.sessionStorage.removeItem("menuName");
       window.sessionStorage.removeItem("user");
       this.$store.commit("setToken", "");
       this.$store.commit("setUser", {});

@@ -93,7 +93,7 @@
     >
       <div class="modal-warp">
         <div class="item">
-          <label>{{$t('modal.flow_name')}}：</label>
+          <label>{{$t('modal.group_name')}}：</label>
           <Input v-model="name" :placeholder="$t('modal.placeholder')" style="width: 350px" />
         </div>
         <!-- <div class="item">
@@ -237,7 +237,12 @@ export default {
             { name: "Group", path: "/group" },
             { name: "drawingBoard", path: "/drawingBoard" }
           ]);
-         this.$router.push({ path: "/drawingBoard",  query: { src:`/drawingBoard/page/flowGroup/mxGraph/index.html?drawingBoardType=GROUP&load=${row.id}` }});
+         this.$router.push({
+           path: "/drawingBoard",
+           query: {
+             src:`/drawingBoard/page/flowGroup/mxGraph/index.html?drawingBoardType=GROUP&load=${row.id}`
+           }
+         });
           // window.location.href =
           //   window.location.origin +
           //   `/drawingBoard/page/flow/index.html?drawingBoardType=GROUP&load=${row.id}`;
@@ -309,7 +314,15 @@ export default {
             if (res.data.code == 200) {
               this.$Modal.success({
                 title: this.$t("tip.tilte"),
-                content: `${this.name} ` + this.$t("tip.add_success_content")
+                content: `${this.name} ` + this.$t("tip.add_success_content"),
+                onOk:()=>{
+                  this.$router.push({
+                    path: "/drawingBoard",
+                    query: {
+                      src:`/drawingBoard/page/flowGroup/mxGraph/index.html?drawingBoardType=GROUP&load=${res.data.flowGroupId}`
+                    }
+                  });
+                }
               });
               this.isOpen = false;
               this.handleReset();

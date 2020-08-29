@@ -30,6 +30,7 @@ export default {
   },
   beforeDestroy() {
     window.sessionStorage.removeItem("breadcrumb");
+    // window.parent.postMessage(false);
   },
 };
 </script>
