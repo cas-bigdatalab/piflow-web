@@ -1781,7 +1781,7 @@ function removeRouterStopCustomProperty(stopPageId, customPropertyId) {
         success: function (data) {//Operation after request successful
             var dataMap = JSON.parse(data);
             if (200 === dataMap.code) {
-                layer.msg("add success", {icon: 1, shade: 0, time: 1000}, function () {
+                layer.msg("delete success", {icon: 1, shade: 0, time: 1000}, function () {
                     layer.closeAll();
                     queryStopsProperty(stopPageId, loadId);
                 });
