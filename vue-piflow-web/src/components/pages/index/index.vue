@@ -110,8 +110,10 @@
                                       <countTo :EndVal = Number(flowResourceInfo.PROCESSOR_STARTED_COUNT)></countTo>
                                   </p></li>
                               </ul>
-                              <Card class="Introduction cardStyle" shadow style="margin-top: 46px;">
-                                  流水线统计信息，包括流水线Flow数量、运行态流水线Processor数量，以及各运行状态下Processor数量。
+                              <Card class="Introduction" shadow style="margin-top: 46px;">
+                                  <div class="cardStyle">
+                                      流水线统计信息，包括流水线Flow数量、运行态流水线Processor数量，以及各运行状态下Processor数量。
+                                  </div>
                               </Card>
                           </div>
                       </Col>
@@ -134,8 +136,10 @@
                                       <countTo :EndVal = Number(scheduleResourceInfo.SCHEDULE_STOP_COUNT)></countTo>
                                   </p></li>
                               </ul>
-                              <Card class="Introduction cardStyle" shadow>
-                                  调度统计信息，包括调度流水线/流水线组数量，以及各个状态下Schedule数量。
+                              <Card class="Introduction" shadow>
+                                  <div class="cardStyle">
+                                      调度统计信息，包括调度流水线/流水线组数量，以及各个状态下Schedule数量。
+                                  </div>
                               </Card>
                           </div>
                       </Col>
@@ -167,8 +171,10 @@
                                       <countTo :EndVal = Number(groupResourceInfo.PROCESSOR_STARTED_COUNT)></countTo>
                                   </p></li>
                               </ul>
-                              <Card class="Introduction cardStyle" shadow style="margin-top: 36px;">
-                                  流水线组统计信息，包括流水线组Group数量、运行态流水线组Processor数量，以及各运行状态下Processor数量。
+                              <Card class="Introduction" shadow style="margin-top: 36px;">
+                                  <div class="cardStyle">
+                                      流水线组统计信息，包括流水线组Group数量、运行态流水线组Processor数量，以及各运行状态下Processor数量。
+                                  </div>
                               </Card>
                           </div>
                       </Col>
@@ -196,8 +202,10 @@
                                       <countTo :EndVal = Number(tempalateAndDataSourceResourceInfo.TEMPLATE_COUNT)></countTo>
                                   </p></li>
                               </ul>
-                              <Card class="Introduction cardStyle" shadow>
-                                  其他统计信息，包括数据源DataSource数量、自定义组件插件StopsHub数量、模板Template数量。
+                              <Card class="Introduction" shadow>
+                                  <div class="cardStyle">
+                                      其他统计信息，包括数据源DataSource数量、自定义组件插件StopsHub数量、模板Template数量。
+                                  </div>
                               </Card>
                           </div>
                       </Col>
@@ -214,8 +222,10 @@
                                       <countTo :EndVal = Number(stopResourceInfo.STOPGROUP_COUNT)></countTo>
                                   </p></li>
                               </ul>
-                              <Card class="Introduction cardStyle" shadow>
-                                  组件统计信息，包括数据处理组件Stop数量，数据处理组件组StopGroup数量。
+                              <Card class="Introduction" shadow>
+                                  <div class="cardStyle">
+                                      组件统计信息，包括数据处理组件Stop数量，数据处理组件组StopGroup数量。
+                                  </div>
                               </Card>
                           </div>
                       </Col>
