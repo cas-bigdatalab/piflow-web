@@ -312,18 +312,18 @@ export default {
           .get("/flowGroup/saveOrUpdateFlowGroup", { params: data })
           .then(res => {
             if (res.data.code == 200) {
-              this.$Modal.success({
-                title: this.$t("tip.tilte"),
-                content: `${this.name} ` + this.$t("tip.add_success_content"),
-                onOk:()=>{
+              // this.$Modal.success({
+              //   title: this.$t("tip.tilte"),
+              //   content: `${this.name} ` + this.$t("tip.add_success_content"),
+              //   onOk:()=>{
                   this.$router.push({
                     path: "/drawingBoard",
                     query: {
                       src:`/drawingBoard/page/flowGroup/mxGraph/index.html?drawingBoardType=GROUP&load=${res.data.flowGroupId}`
                     }
                   });
-                }
-              });
+              //   }
+              // });
               this.isOpen = false;
               this.handleReset();
               this.getTableData();
