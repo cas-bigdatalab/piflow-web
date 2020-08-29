@@ -3,7 +3,7 @@ package cn.cnic.schedule;
 import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.base.util.SpringContextUtil;
 import cn.cnic.common.executor.ServicesExecutor;
-import cn.cnic.component.process.jpa.domain.ProcessDomain;
+import cn.cnic.component.process.mapper.ProcessMapper;
 import cn.cnic.third.service.IFlow;
 import org.apache.commons.collections.CollectionUtils;
 import org.quartz.JobExecutionContext;
@@ -23,13 +23,13 @@ public class RunningProcessSync extends QuartzJobBean {
     Logger logger = LoggerUtil.getLogger();
 
     @Resource
-    private ProcessDomain processDomain;
+    private ProcessMapper processMapper;
 
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss:SSS");
         logger.info("processSync start : " + formatter.format(new Date()));
-        List<String> runningProcess = processDomain.getRunningProcessAppId();
+        List<String> runningProcess = processMapper.getRunningProcessAppId();
         if (CollectionUtils.isNotEmpty(runningProcess)) {
             Runnable runnable = new Thread(new Thread() {
                 @Override

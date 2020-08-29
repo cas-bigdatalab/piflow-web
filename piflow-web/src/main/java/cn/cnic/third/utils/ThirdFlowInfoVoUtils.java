@@ -33,6 +33,8 @@ public class ThirdFlowInfoVoUtils {
                     processState = ProcessState.INIT;
                 } else if ("RUNNING".equals(thirdFlowInfoVoState)) {
                     processState = ProcessState.SUBMITTED;
+                } else if ("FINISHED".equals(thirdFlowInfoVoState)) {
+                    processState = ProcessState.COMPLETED;
                 } else {
                     processState = ProcessState.selectGender(thirdFlowInfoVoState);
                 }
