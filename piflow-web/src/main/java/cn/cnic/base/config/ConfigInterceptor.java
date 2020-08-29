@@ -36,7 +36,7 @@ public class ConfigInterceptor implements HandlerInterceptor {
             return false;
         }
         if (requestURI.startsWith(contextPath + "/error")) {
-            response.sendRedirect(contextPath + "/page/error/errorPage.html"); // Redirect to the boot page
+            //response.sendRedirect(contextPath + "/page/error/errorPage.html"); // Redirect to the boot page
             return false;
         }
         if (requestURI.startsWith(contextPath + "/login")) {
