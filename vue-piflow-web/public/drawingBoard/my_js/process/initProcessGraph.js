@@ -5,7 +5,7 @@ var thisEditor = null;
 var drawingBoardType = "PROCESS"
 var index = true
 var nodeArr, xmlDate, parentsId, processType, processGroupId, parentProcessId, pID, appId, processState,
-    getCheckpointParam;
+    getCheckpointParam, progress;
 
 
 function initProcessCrumbs(parentAccessPath) {
@@ -59,7 +59,7 @@ function initProcessDrawingBoardData(loadId, parentAccessPath, backFunc) {
                 parentProcessId = dataMap.parentProcessId;
                 pID = dataMap.pID;
                 processState = dataMap.processState;
-                $("#progress").text(dataMap.percentage);
+                progress = dataMap.percentage;
                 getCheckpointParam = "'" + (dataMap.pID ? dataMap.pID : "") + "','" + (dataMap.parentProcessId ? dataMap.parentProcessId : "") + "', '" + (dataMap.processId ? dataMap.processId : "") + "'";
             } else {
                 //window.location.href = (web_baseUrl + "/error/404");

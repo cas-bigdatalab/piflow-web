@@ -24,6 +24,7 @@ function initProcessContentPage(nodeArr) {
             monitor(processStopVoInit.pageId, processStopVoInit.state);
         }
     }
+    $("#progress").text(progress + "%");
 }
 
 //  Get Checkpoint points
