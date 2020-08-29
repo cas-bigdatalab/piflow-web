@@ -8,7 +8,7 @@ function initDataTablePage(testTableId, url, searchInputId) {
         //Method-level rendering
         table.render({
             elem: '#' + testTableId
-            , url: (web_drawingBoard + url)
+            , url: (web_header_prefix + url)
             , headers: {
                 Authorization: ("Bearer " + token)
             }

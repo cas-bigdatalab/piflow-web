@@ -226,22 +226,23 @@
                 var testmsg = file.name.substring(file.name.lastIndexOf(".") + 1);
                 const extension =
                     testmsg === "jar";
-                // const isLt3M = file.size / 1024 / 1024 < 3;
+                const isLt500M = file.size / 1024 / 1024 < 500;
                 if (!extension) {
                     this.$Notice.warning({
                         title: 'The file format is incorrect',
                         desc: 'File format of ' + file.name + ' is incorrect, please select jar.'
                     });
                     return false; //阻止
-                }else
+                }
+                if (!isLt500M) {
+                    this.$Notice.warning({
+                        title: 'Exceeding file size limit',
+                        desc: 'File  ' + file.name + ' is too large, no more than 500M.'
+                    });
+                    return false;
+                } else
                     this.file = file;
-                // if (!isLt3M) {
-                //     this.$Notice.warning({
-                //         title: 'Exceeding file size limit',
-                //         desc: 'File  ' + file.name + ' is too large, no more than 2M.'
-                //     });
-                //     return false;
-                // }
+
                 return false;
             },
 

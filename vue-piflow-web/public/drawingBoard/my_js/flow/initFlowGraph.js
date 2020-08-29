@@ -1113,8 +1113,8 @@ function crtAnyPort(crtPortInputId, isSource) {
     var portNameVal = crtProtInput.val();
     if (portNameVal && '' !== portNameVal) {
         if (!document.getElementById(portNameVal)) {
-            var obj = '<div style="display: block;" class="addCheckbox" id="jCheckbox">'
-                + '<input type="checkbox" class="addCheckbox" id="' + portNameVal + '" name="' + portNameVal + '" value="' + portNameVal + '">'
+            var obj = '<div style="display: block;margin: 5px 0;" class="addCheckbox" id="jCheckbox">'
+                + '<input style="margin-right:5px" type="checkbox" class="addCheckbox" id="' + portNameVal + '" name="' + portNameVal + '" value="' + portNameVal + '">'
                 + '<span class="' + portNameVal + '">' + portNameVal + '</span>'
                 + '</div>';
             if (isSource) {

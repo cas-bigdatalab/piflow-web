@@ -8,7 +8,7 @@
       <div class="right">
         <Upload
           class="button-warp"
-          :action="$url+'/flowTemplate/uploadXmlFile'"
+          :action="'/flowTemplate/uploadXmlFile'"
           :on-success="handleFileSuccess"
           :on-error="handleFileError"
           :headers="headers"
@@ -305,7 +305,7 @@ export default {
     handleDownload(row) {
       this.$axios
         .get(
-          this.$url + "/flowTemplate/templateDownload?flowTemplateId=" + row.id
+                "/flowTemplate/templateDownload?flowTemplateId=" + row.id
         )
         .then(res => {
           var blob = new Blob([res.data]);
