@@ -3,9 +3,9 @@ package cn.cnic.base.config;
 import cn.cnic.base.util.LoggerUtil;
 import org.slf4j.Logger;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.annotation.Resource;
@@ -56,4 +56,14 @@ public class WebAppConfig implements WebMvcConfigurer {
 
     }
     */
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("*")
+                .allowedMethods("GET", "POST", "OPTIONS", "PUT", "DELETE")
+                .allowedHeaders("*")
+                .allowCredentials(true).maxAge(3600);
+        WebMvcConfigurer.super.addCorsMappings(registry);
+    }
 }
