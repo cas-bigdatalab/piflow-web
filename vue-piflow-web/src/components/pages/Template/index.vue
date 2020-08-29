@@ -8,7 +8,7 @@
       <div class="right">
         <Upload
           class="button-warp"
-          :action="'/flowTemplate/uploadXmlFile'"
+          :action="$url+'/flowTemplate/uploadXmlFile'"
           :on-success="handleFileSuccess"
           :on-error="handleFileError"
           :headers="headers"
