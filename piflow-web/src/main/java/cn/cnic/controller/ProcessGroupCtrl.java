@@ -4,25 +4,18 @@ import cn.cnic.base.util.JsonUtils;
 import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.base.util.ReturnMapUtils;
 import cn.cnic.base.util.SessionUserUtil;
-import cn.cnic.base.vo.UserVo;
-import cn.cnic.common.Eunm.ProcessState;
 import cn.cnic.component.process.service.IProcessGroupService;
 import cn.cnic.component.process.service.IProcessService;
-import cn.cnic.component.process.vo.ProcessGroupPathVo;
-import cn.cnic.component.process.vo.ProcessGroupVo;
-import cn.cnic.component.process.vo.ProcessVo;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -88,134 +81,44 @@ public class ProcessGroupCtrl {
     }
 
     /**
-     * Query based on id and enter process details
-     *
-     * @param request
-     * @param modelAndView
-     * @return
-     */
-    @RequestMapping("/getProcessGroupById")
-    public ModelAndView getProcessById(HttpServletRequest request, ModelAndView modelAndView) {
-        UserVo currentUser = SessionUserUtil.getCurrentUser();
-        modelAndView.addObject("currentUser", currentUser);
-        String processGroupId = request.getParameter("processGroupId");
-        String parentAccessPath = request.getParameter("parentAccessPath");
-        modelAndView.addObject("parentAccessPath", parentAccessPath);
-        // Determine whether there is a flow id (load), if it exists, load it, otherwise generate UUID to return to the return page
-        if (StringUtils.isNotBlank(processGroupId)) {
-            // Query process by load id
-            ProcessGroupVo processGroupVo = processGroupServiceImpl.getProcessGroupVoAllById(processGroupId);
-            if (null != processGroupVo) {
-                String svgStr = processGroupVo.getViewXml();
-                if (StringUtils.isNotBlank(svgStr)) {
-                    modelAndView.addObject("xmlDate", svgStr);
-                }
-                ProcessState processState = processGroupVo.getState();
-                if (null != processState) {
-                    modelAndView.addObject("processState", processState.name());
-                }
-                List<ProcessVo> processVoList = processGroupVo.getProcessVoList();
-                if (null != processVoList && processVoList.size() > 0) {
-                    modelAndView.addObject("processVoListInit", processVoList);
-                }
-                List<ProcessGroupVo> processGroupVoList = processGroupVo.getProcessGroupVoList();
-                if (null != processGroupVoList && processGroupVoList.size() > 0) {
-                    modelAndView.addObject("processGroupVoListInit", processGroupVoList);
-                }
-                ProcessGroupVo processGroupVo_parents = processGroupVo.getProcessGroupVo();
-                if (null != processGroupVo_parents) {
-                    modelAndView.addObject("parentsId", processGroupVo_parents.getId());
-                }
-                modelAndView.addObject("percentage", (null != processGroupVo.getProgress() ? processGroupVo.getProgress() : 0.00));
-                modelAndView.addObject("appId", processGroupVo.getAppId());
-                modelAndView.addObject("processGroupId", processGroupId);
-                modelAndView.addObject("parentProcessId", processGroupVo.getParentProcessId());
-                modelAndView.addObject("pID", processGroupVo.getProcessId());
-                modelAndView.addObject("processGroupVo", processGroupVo);
-                modelAndView.setViewName("processGroup/processGroupContent");
-                return modelAndView;
-            }
-        }
-        modelAndView.setViewName("errorPage");
-        return modelAndView;
-    }
-
-    /**
      * Query Process basic information
      *
      * @param request
-     * @param modelAndView
      * @return
      */
     @RequestMapping("/queryProcessGroup")
-    public ModelAndView queryProcessGroup(HttpServletRequest request, ModelAndView modelAndView) {
+    @ResponseBody
+    public String queryProcessGroup(HttpServletRequest request) {
         String processGroupId = request.getParameter("processGroupId");
-        modelAndView.setViewName("processGroup/inc/process_group_info_inc");
-        if (StringUtils.isNotBlank(processGroupId)) {
-            // Query process by load id
-            // logger.info("Query process by load id");
-            ProcessGroupVo processGroupVo = processGroupServiceImpl.getProcessGroupVoById(processGroupId);
-            modelAndView.addObject("processGroupVo", processGroupVo);
-        } else {
-            logger.warn("Parameter passed in incorrectly");
-        }
-        return modelAndView;
+        return processGroupServiceImpl.getProcessGroupVoById(processGroupId);
     }
 
     /**
      * Query ProcessStop basic information
      *
      * @param request
-     * @param modelAndView
      * @return
      */
     @RequestMapping("/queryProcess")
-    public ModelAndView queryProcess(HttpServletRequest request, ModelAndView modelAndView) {
+    public String queryProcess(HttpServletRequest request) {
         String processGroupId = request.getParameter("processGroupId");
         String pageId = request.getParameter("pageId");
-        String nodeType = "flow";
-        String viewName = "processGroup/inc/process_property_inc";
-        if (!StringUtils.isAnyEmpty(processGroupId, pageId)) {
-            String username = SessionUserUtil.getCurrentUsername();
-            boolean isAdmin = SessionUserUtil.isAdmin();
-            ProcessVo processVo = processServiceImpl.getProcessVoByPageId(username, isAdmin, processGroupId, pageId);
-            ProcessGroupVo processGroupVo = processGroupServiceImpl.getProcessGroupVoByPageId(processGroupId, pageId);
-            if (null != processVo) {
-                nodeType = "flow";
-                viewName = "processGroup/inc/process_property_inc";
-            } else if (null != processGroupVo) {
-                nodeType = "flowGroup";
-                viewName = "processGroup/inc/process_group_info_inc";
-            }
-            modelAndView.addObject("processVo", processVo);
-            modelAndView.addObject("processGroupVo", processGroupVo);
-        } else {
-            logger.warn("Parameter passed in incorrectly");
-        }
-        modelAndView.addObject("nodeType", nodeType);
-        modelAndView.setViewName(viewName);
-        return modelAndView;
+        String username = SessionUserUtil.getCurrentUsername();
+        boolean isAdmin = SessionUserUtil.isAdmin();
+        return processGroupServiceImpl.getProcessGroupNode(username, isAdmin, processGroupId, pageId);
     }
 
     /**
      * Query ProcessPath basic information
      *
      * @param request
-     * @param modelAndView
      * @return
      */
     @RequestMapping("/queryProcessGroupPath")
-    public ModelAndView queryProcessGroupPath(HttpServletRequest request, ModelAndView modelAndView) {
+    public String queryProcessGroupPath(HttpServletRequest request) {
         String processGroupId = request.getParameter("processGroupId");
         String pageId = request.getParameter("pageId");
-        modelAndView.setViewName("processGroup/inc/process_path_inc");
-        if (!StringUtils.isAnyEmpty(processGroupId, pageId)) {
-            ProcessGroupPathVo processGroupPathVo = processGroupServiceImpl.getProcessGroupPathVoByPageId(processGroupId, pageId);
-            modelAndView.addObject("processGroupPathVo", processGroupPathVo);
-        } else {
-            logger.info("Parameter passed in incorrectly");
-        }
-        return modelAndView;
+        return processGroupServiceImpl.getProcessGroupPathVoByPageId(processGroupId, pageId);
     }
 
     /**

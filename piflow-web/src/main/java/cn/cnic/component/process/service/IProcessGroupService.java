@@ -20,9 +20,9 @@ public interface IProcessGroupService {
      * Query processGroupVo based on id (only query process table)
      *
      * @param id ProcessGroup Id
-     * @return ProcessGroupVo (Only themselves do not include subtables)
+     * @return String json
      */
-    public ProcessGroupVo getProcessGroupVoById(String id);
+    public String getProcessGroupVoById(String id);
 
     /**
      * Query appInfo according to appID
@@ -136,7 +136,7 @@ public interface IProcessGroupService {
      * @param pageId         MxGraph PageId
      * @return json
      */
-    public ProcessGroupPathVo getProcessGroupPathVoByPageId(String processGroupId, String pageId);
+    public String getProcessGroupPathVoByPageId(String processGroupId, String pageId);
 
     /**
      * drawingBoard Data
@@ -148,5 +148,7 @@ public interface IProcessGroupService {
      * @return
      */
     public String drawingBoardData(String username, boolean isAdmin, String loadId, String parentAccessPath);
+
+    public String getProcessGroupNode(String username, boolean isAdmin, String processGroupId, String pageId);
 
 }

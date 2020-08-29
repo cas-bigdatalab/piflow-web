@@ -15,6 +15,7 @@ import cn.cnic.component.mxGraph.entity.MxCell;
 import cn.cnic.component.mxGraph.entity.MxGraphModel;
 import cn.cnic.component.mxGraph.utils.MxCellUtils;
 import cn.cnic.component.process.entity.Process;
+import cn.cnic.component.process.mapper.ProcessMapper;
 import cn.cnic.component.process.vo.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -56,6 +57,9 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
     private ProcessDomain processDomain;
 
     @Resource
+    private ProcessMapper processMapper;
+
+    @Resource
     private ProcessGroupMapper processGroupMapper;
 
     @Resource
@@ -86,18 +90,18 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
      * @return ProcessGroupVo (Only themselves do not include subtables)
      */
     @Override
-    public ProcessGroupVo getProcessGroupVoById(String id) {
+    public String getProcessGroupVoById(String id) {
         if (StringUtils.isBlank(id)) {
-            return null;
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Parameter passed in incorrectly");
         }
         ProcessGroup processGroupById = processGroupDomain.getProcessGroupById(id);
         if (null == processGroupById) {
-            return null;
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Data is null");
         }
         ProcessGroupVo processGroupVo = new ProcessGroupVo();
         BeanUtils.copyProperties(processGroupById, processGroupVo);
         processGroupVo.setCrtDttm(processGroupById.getCrtDttm());
-        return processGroupVo;
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("processGroupVo", processGroupVo);
     }
 
     /**
@@ -465,10 +469,13 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
      * @param pageId         MxGraph PageId
      * @return json
      */
-    public ProcessGroupPathVo getProcessGroupPathVoByPageId(String processGroupId, String pageId) {
+    public String getProcessGroupPathVoByPageId(String processGroupId, String pageId) {
+        if (StringUtils.isAnyEmpty(processGroupId, pageId)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("param is null");
+        }
         ProcessGroupPath processGroupPathByPageId = processGroupPathDomain.getProcessGroupPathByPageId(processGroupId, pageId);
         if (null == processGroupPathByPageId) {
-            return null;
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("no data");
         }
         List<String> pageIds = new ArrayList<>();
         String pathTo = processGroupPathByPageId.getTo();
@@ -478,14 +485,13 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
         }
         if (StringUtils.isNotBlank(pathTo)) {
             pageIds.add(pathTo);
-            ;
         }
         if (StringUtils.isBlank(processGroupId) || null == pageIds || pageIds.size() <= 0) {
-            return null;
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("param is error");
         }
         List<Map<String, Object>> processGroupNamesAndPageIdsByPageIds = processGroupDomain.getProcessGroupNamesAndPageIdsByPageIds(processGroupId, pageIds);
         if (null == processGroupNamesAndPageIdsByPageIds || processGroupNamesAndPageIdsByPageIds.size() <= 0) {
-            return null;
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("param is error");
         }
         ProcessGroupPathVo processGroupPathVo = new ProcessGroupPathVo();
         pathTo = (null == pathTo ? "" : pathTo);
@@ -502,7 +508,8 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
         }
         processGroupPathVo.setInport(StringUtils.isNotBlank(processGroupPathByPageId.getInport()) ? processGroupPathByPageId.getInport() : PortType.DEFAULT.getText());
         processGroupPathVo.setOutport(StringUtils.isNotBlank(processGroupPathByPageId.getOutport()) ? processGroupPathByPageId.getOutport() : PortType.DEFAULT.getText());
-        return processGroupPathVo;
+
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("processGroupPathVo", processGroupPathVo);
     }
 
     /**
@@ -617,6 +624,41 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
         String loadXml = MxGraphUtils.mxGraphModelToMxGraphXml(mxGraphModel);
         rtnMap.put("xmlDate", loadXml);
 
+        return JsonUtils.toJsonNoException(rtnMap);
+    }
+
+    /**
+     * getProcessGroupNode
+     *
+     * @param username
+     * @param isAdmin
+     * @param processGroupId
+     * @param pageId
+     * @return
+     */
+    @Override
+    public String getProcessGroupNode(String username, boolean isAdmin, String processGroupId, String pageId) {
+        if (StringUtils.isAnyEmpty(processGroupId, pageId)) {
+            logger.warn("Parameter passed in incorrectly");
+        }
+
+        String nodeType = "flow";
+        Process process = processMapper.getProcessByPageId(username, isAdmin, processGroupId, pageId);
+        ProcessGroup processGroup = processGroupDomain.getProcessGroupByPageId(processGroupId, pageId);
+        ProcessVo processVo = null;
+        ProcessGroupVo processGroupVo = null;
+        if (null != process) {
+            processVo = ProcessUtils.processPoToVo(process);
+            nodeType = "flow";
+        } else if (null != processGroup) {
+            processGroupVo = new ProcessGroupVo();
+            BeanUtils.copyProperties(processGroup, processGroupVo);
+            nodeType = "flowGroup";
+        }
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(ReturnMapUtils.SUCCEEDED_MSG);
+        rtnMap.put("processVo", processVo);
+        rtnMap.put("processGroupVo", processGroupVo);
+        rtnMap.put("nodeType", nodeType);
         return JsonUtils.toJsonNoException(rtnMap);
     }
 
