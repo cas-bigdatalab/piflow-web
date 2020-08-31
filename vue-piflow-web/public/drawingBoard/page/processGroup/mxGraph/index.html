@@ -83,6 +83,7 @@
 <div id="publicUserHeadMacro_load_id"></div>
 <div id="fullScreen_load_id"></div>
 
+<!--operation_button-->
 <div id="precessGroup-run" class="precess-run"
      style="position: fixed; z-index: 779;text-align: right;right: 10px;top: 50px;">
     <div id="processGroup_operation_button_load_id"></div>
@@ -125,26 +126,22 @@
     $(function () {
         initProcessGroupDrawingBoardData(loadId, parentAccessPath, function () {
             ajaxLoad("fullScreen_load_id", "/page/macro/fragmentMacro.html");
+            ajaxLoad("processGroup_operation_button_load_id", "/page/processGroup/inc/process_operation_button_group.html", function () {
+                processGroupOperationBtn(processState);
+            });
+            initProcessGroupGraph();
+            if (nodePageIdAndStateList && '' != nodePageIdAndStateList) {
+                for (var i = 0; i < nodePageIdAndStateList.length; i++) {
+                    var nodePageIdAndState = nodePageIdAndStateList[i];
+                    processGroupMonitor(nodePageIdAndState.pageId, nodePageIdAndState.state);
+                }
+            }
             // ajaxLoad("publicUserHeadMacro_load_id", "/page/macro/graphHeadMacro.html", function () {
             //     $("#span_username_id").html('Howdy,' + currentUser.username + '<b class="caret"></b>');
             // });
-            ajaxLoad("processGroup_operation_button_load_id", "/page/processGroup/inc/process_operation_button_group.html", function () {
-                initProcessGroupGraph();
-                processGroupOperationBtn(processState);
-
-
-                var nodePageIdAndStateList = "[[${nodePageIdAndStateList}]]";
-                if (nodePageIdAndStateList && '' != nodePageIdAndStateList) {
-                    for (var i = 0; i < nodePageIdAndStateList.length; i++) {
-                        var nodePageIdAndState = nodePageIdAndStateList[i];
-                        processGroupMonitor(nodePageIdAndState.pageId, nodePageIdAndState.state);
-                    }
-                }
-
-            });
-            ajaxLoad("processGroup_crumbs_task_load_id", "/page/processGroup/inc/process_crumbs_group.html", function () {
-                initCrumbs(parentAccessPath);
-            });
+            // ajaxLoad("processGroup_crumbs_task_load_id", "/page/processGroup/inc/process_crumbs_group.html", function () {
+            //     initCrumbs(parentAccessPath);
+            // });
         });
     });
 

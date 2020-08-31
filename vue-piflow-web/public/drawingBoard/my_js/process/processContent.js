@@ -80,7 +80,7 @@ function getCheckpoint(pID, parentProcessId, processId, runMode) {
                         checkpoints_content_span.style.margin = "5px 10px";
                         var checkpoints_content_span_input = document.createElement("input");
                         checkpoints_content_span_input.type = "checkbox";
-                        checkpoints_content_span_input.value = "'" + checkpointsSplitArray[i] + "'";
+                        checkpoints_content_span_input.value = checkpointsSplitArray[i];
                         checkpoints_content_span_input.style.marginRight = "5px";
 
                         var checkpoints_content_span_span = document.createElement("span");
@@ -125,7 +125,7 @@ function runProcess(processId, runMode) {
     $('#runFlow').hide();
     $('#debugFlow').hide();
     var checkpointStr = '';
-    $(".layui-layer-content").find("#checkpointContentNew").find("input[type='checkbox']:checked").each(function () {
+    $(".layui-layer-content").find("#checkpointsContentDiv").find("input[type='checkbox']:checked").each(function () {
         if ('' !== checkpointStr) {
             checkpointStr = (checkpointStr + ',');
         }
@@ -428,7 +428,7 @@ function getDebugData(stopName, portName) {
     var window_width = $(window).width();//Get browser window width
     var window_height = $(window).height();//Get browser window width
     var jsonData = {"appId": appId, "stopName": stopName, "portName": portName};
-    ajaxLoad("","/page/process/inc/debug_data_inc.html",function (data){
+    ajaxLoad("", "/page/process/inc/debug_data_inc.html", function (data) {
         var open_window_width = (window_width > 300 ? window_width - 200 : window_width) + "px";
         var open_window_height = (window_height > 300 ? window_height - 200 : window_height) + "px";
         layer.open({

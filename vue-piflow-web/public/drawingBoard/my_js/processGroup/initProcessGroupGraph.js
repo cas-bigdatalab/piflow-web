@@ -3,7 +3,8 @@ var graphGlobal = null;
 var thisEditor = null;
 var flag = 0;
 var index = true
-var nodePageIdAndStateList, xmlDate, processType, parentsId, appId, processState, processId, stdoutLog, stderrLog;
+var nodePageIdAndStateList, xmlDate, processType, parentsId, appId, processState, processId, stdoutLog, stderrLog,
+    load_obj_percentage;
 
 // init crumbs
 function initCrumbs(parentAccessPath) {
@@ -64,9 +65,9 @@ function initProcessGroupDrawingBoardData(loadId, parentAccessPath, backFunc) {
         success: function (data) {//Operation after request successful
             var dataMap = JSON.parse(data);
             if (200 === dataMap.code) {
-                if (dataMap.parentsId){
+                if (dataMap.parentsId) {
                     parentsId = dataMap.parentsId;
-                }else {
+                } else {
                     parentsId = 'null';
                 }
                 top.document.getElementById('BreadcrumbProcessGroup').style.display = 'block';
@@ -74,13 +75,13 @@ function initProcessGroupDrawingBoardData(loadId, parentAccessPath, backFunc) {
                 top.document.getElementById('BreadcrumbFlow').style.display = 'none';
                 top.document.getElementById('BreadcrumbGroup').style.display = 'none';
                 var link = top.document.getElementById('ProcessGroupParents');
-                if (parentsId !== 'null'){
+                if (parentsId !== 'null') {
                     link.style.display = 'inline-block';
-                    link.href='#/drawingBoard?src=/drawingBoard/page/processGroup/mxGraph/index.html?drawingBoardType=PROCESS&parentAccessPath=processGroupList&processType=PROCESS_GROUP&load='+parentsId;
-                }else {
+                    link.href = '#/drawingBoard?src=/drawingBoard/page/processGroup/mxGraph/index.html?drawingBoardType=PROCESS&parentAccessPath=processGroupList&processType=PROCESS_GROUP&load=' + parentsId;
+                } else {
                     link.style.display = 'none';
                 }
-                
+
                 processId = dataMap.processId;
                 processType = dataMap.processType;
                 nodePageIdAndStateList = dataMap.nodePageIdAndStateList;
@@ -88,7 +89,7 @@ function initProcessGroupDrawingBoardData(loadId, parentAccessPath, backFunc) {
                 parentsId = dataMap.processGroupId;
                 appId = dataMap.appId;
                 processState = dataMap.processState;
-                $("#progress").text(dataMap.percentage);
+                load_obj_percentage = dataMap.percentage;
                 var getCheckpointParam = "'" + (dataMap.pID ? dataMap.pID : "") + "','" + (dataMap.parentProcessId ? dataMap.parentProcessId : "") + "', '" + (dataMap.processId ? dataMap.processId : "") + "'";
                 $("#runFlow").attr("onclick", "getCheckpoint(" + getCheckpointParam + ")");
                 $("#debugFlow").attr("onclick", "getCheckpoint(" + getCheckpointParam + ",'DEBUG')");

@@ -1,24 +1,24 @@
 // var fullScreen = $('#fullScreen');
-var runFlowGroupBtn = $('#runFlowGroup');
-var debugFlowGroupBtn = $('#debugFlowGroup');
-var stopFlowGroupBtn = $('#stopFlowGroup');
 var processContent = $('#processContent');
 var checkpointShow = $('#checkpointShow');
 var isLoadProcessInfo = true;
 var isEnd = false;
+var timer;
 
 function processGroupOperationBtn(processState) {
-    if (runFlowGroupBtn) {
+    console.log(processState);
+    if ($('#runFlowGroup')) {
         if ("COMPLETED" !== processState && "FAILED" !== processState && "KILLED" !== processState) {
-            runFlowGroupBtn.hide();
-            debugFlowGroupBtn.hide();
-            stopFlowGroupBtn.show();
+            $('#runFlowGroup').hide();
+            $('#debugFlowGroup').hide();
+            $('#stopFlowGroup').show();
             timer = window.setInterval("processGroupMonitoring(appId)", 5000);
         } else {
-            runFlowGroupBtn.show();
-            debugFlowGroupBtn.show();
-            stopFlowGroupBtn.hide();
+            $('#runFlowGroup').show();
+            $('#debugFlowGroup').show();
+            $('#stopFlowGroup').hide();
         }
+        $("#groupProgress").text(load_obj_percentage);
     }
 }
 
@@ -379,15 +379,15 @@ function processGroupMonitoring(appId) {
                     if ('STARTED' !== dataMap.state && '100.00' === dataMap.progress) {
                         console.log(dataMap);
                         window.clearInterval(timer);
-                        runFlowGroupBtn.show();
-                        debugFlowGroupBtn.show();
-                        stopFlowGroupBtn.hide();
+                        $('#runFlowGroup').show();
+                        $('#debugFlowGroup').show();
+                        $('#stopFlowGroup').hide();
                     }
                 }
                 var processGroupVo = dataMap.processGroupVo;
                 if (processGroupVo && '' != processGroupVo) {
                     $("#groupProgress").html(dataMap.progress + "%");
-                    $("#groupProgress").css({'width': dataMap.progress + "%"});
+                    //$("#groupProgress").css({'width': dataMap.progress + "%"});
                     $("#processStartTimeShow").html(processGroupVo.startTime);
                     $("#processStopTimeShow").html(processGroupVo.endTime);
                     $("#processStateShow").html(dataMap.state);

@@ -67,7 +67,7 @@ public interface StopsMapper {
     @SelectProvider(type = StopsMapperProvider.class, method = "getStopsListByFlowId")
     @Results({@Result(id = true, column = "id", property = "id"),
             @Result(column = "is_checkpoint", property = "isCheckpoint"),
-            @Result(property = "dataSource", column = "fk_data_source_id", many = @Many(select = "cn.cnic.component.dataSource.mapper.DataSourceMapper.getDataSourceById", fetchType = FetchType.LAZY)),
+            @Result(property = "dataSource", column = "fk_data_source_id", many = @Many(select = "cn.cnic.component.dataSource.mapper.DataSourceMapper.adminGetDataSourceById", fetchType = FetchType.LAZY)),
             @Result(column = "id", property = "properties", many = @Many(select = "cn.cnic.component.flow.mapper.PropertyMapper.getPropertyListByStopsId", fetchType = FetchType.LAZY)),
             @Result(column = "id", property = "customizedPropertyList", many = @Many(select = "cn.cnic.component.flow.mapper.CustomizedPropertyMapper.getCustomizedPropertyListByStopsId", fetchType = FetchType.LAZY))
 
