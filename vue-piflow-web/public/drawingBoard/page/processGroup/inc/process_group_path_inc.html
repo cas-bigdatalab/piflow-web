@@ -40,10 +40,6 @@
             </table>
 
         </div>
-        <div style="padding: 12px 0px 12px 18px;" th:if="${runModeType?.value == 'DEBUG'}">
-            <input type="button" class="btn btn-primary"
-                   th:onclick="'getDebugData(\''+ ${processGroupPathVo.from} + '\',\'' + ${processGroupPathVo.outport} + '\')'" value="View Flow Data">
-        </div>
     </div>
 </div>
 </body>
