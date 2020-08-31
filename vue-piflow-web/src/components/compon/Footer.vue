@@ -84,6 +84,7 @@ export default {
     handleClick(val){
       switch (val) {
         case 'flow':
+          window.sessionStorage.setItem("menuName", 'flow');
           this.$router.push({
             name: 'flow',
             path: "/flow",
@@ -96,6 +97,7 @@ export default {
           });
           break;
           case 'group':
+            window.sessionStorage.setItem("menuName", 'group');
             this.$router.push({
               path: '/group',
               name: 'group',
@@ -105,6 +107,7 @@ export default {
             });
           break;
           case 'processes':
+            window.sessionStorage.setItem("menuName", 'processes');
             this.$router.push({
               name: 'processes',
               path: "/processes",

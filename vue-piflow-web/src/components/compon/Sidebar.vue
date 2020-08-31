@@ -10,7 +10,7 @@
     @on-select="handleMenuSelect"
   >
     <div v-for="(item,i) in menulist" :key="i+'q1'">
-      <MenuItem v-if="!item.children" :name="i+'wr'" class="item-par" :to="item.router">
+      <MenuItem v-if="!item.children" :name="item.name" class="item-par" :to="item.router">
         <Icon :type="item.icoName" size="18" />
         <span>{{item.btnName}}</span>
       </MenuItem>
@@ -23,7 +23,7 @@
           v-for="(item,key) in item.children "
           :key="key+'w1'"
           :to="item.router"
-          :name="i+key+'wd'"
+          :name="item.name"
         >{{item.btnName}}</MenuItem>
       </Submenu>
     </div>
@@ -48,7 +48,7 @@ export default {
   data() {
     return {
       isCollapsed: false,
-      menuName: "0wr",
+      menuName: "home",
       mouseOver: ""
       // menulist: []
     };
@@ -63,42 +63,50 @@ export default {
         {
           btnName: this.$t("sidebar.dashboard"),
           icoName: "ios-home",
-          router: "/"
+          router: "/",
+          name: 'home'
         },
         {
           btnName: this.$t("sidebar.flow"),
           icoName: "ios-ionitron",
-          router: "/flow"
+          router: "/flow",
+          name: "flow"
         },
         {
           btnName: this.$t("sidebar.group"),
           icoName: "ios-apps",
-          router: "/group"
+          router: "/group",
+          name: "group"
         },
         {
           btnName: this.$t("sidebar.processes"),
           icoName: "md-analytics",
-          router: "/processes"
+          router: "/processes",
+          name: "processes"
         },
         {
           btnName: this.$t("sidebar.template"),
           icoName: "md-list-box",
-          router: "/template"
+          router: "/template",
+          name: "template"
         },
         {
           btnName: this.$t("sidebar.data_source"),
           icoName: "ios-color-filter",
-          router: "datasource"
+          router: "datasource",
+          name: "datasource"
         },
         {
           btnName: this.$t("sidebar.schedule"),
           icoName: "ios-timer",
-          router: "schedule"
+          router: "schedule",
+          name: "schedule"
         },
         {
           btnName: this.$t("sidebar.stopHub"),
           icoName: "ios-speedometer",
-          router: "StopHub"
+          router: "StopHub",
+          name: "StopHub"
         },
         {
           btnName: this.$t("sidebar.example"),
@@ -106,11 +114,13 @@ export default {
           children: [
             {
               icoName: "ios-paper",
-              btnName: "FlowExample"
+              btnName: "FlowExample",
+              name: "FlowExample",
             },
             {
               icoName: "ios-paper",
-              btnName: "GroupExample"
+              btnName: "GroupExample",
+              name: "GroupExample",
             }
           ]
         },
@@ -121,7 +131,8 @@ export default {
             {
               router: "/admin",
               icoName: "ios-paper",
-              btnName: "Schedule"
+              btnName: "Schedule",
+              name: "admin",
             }
           ]
         }
@@ -168,10 +179,19 @@ export default {
     },
     //监听路由动态
     getRouter() {
+      let menuName = window.sessionStorage.getItem("menuName");
       // console.log(this.$route.path);//为当前所在页面路由
       let url = this.$route.path;
       let arr = url.split("/");
-      // this.showid = arr[2];
+
+      if (url === '/'){
+        this.menuName = 'home';
+      }else {
+        this.menuName = arr[1];
+      }
+      if (menuName && this.menuName !== menuName){
+        window.sessionStorage.setItem("menuName", this.menuName);
+      }
     }
   }
 };
