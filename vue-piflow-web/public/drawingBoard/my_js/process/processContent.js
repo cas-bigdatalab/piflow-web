@@ -429,18 +429,9 @@ function getDebugData(stopName, portName) {
     var window_height = $(window).height();//Get browser window width
     var jsonData = {"appId": appId, "stopName": stopName, "portName": portName};
     ajaxLoad("", "/page/process/inc/debug_data_inc.html", function (data) {
-        var open_window_width = (window_width > 300 ? window_width - 200 : window_width) + "px";
-        var open_window_height = (window_height > 300 ? window_height - 200 : window_height) + "px";
-        layer.open({
-            type: 1,
-            title: '<span style="color: #269252;">Debug Data</span>',
-            shadeClose: true,
-            closeBtn: 1,
-            shift: 7,
-            area: [open_window_width, open_window_height], //Width height
-            skin: 'layui-layer-rim', //Add borders
-            content: data
-        });
+        var open_window_width = (window_width > 300 ? window_width - 200 : window_width);
+        var open_window_height = (window_height > 300 ? window_height - 200 : window_height);
+        openLayerWindowLoadHtml(data,open_window_width,open_window_height,"Debug Data");
         $("#debug_app_id").html(appId);
         $("#debug_stop_name").html(stopName);
         $("#debug_port_name").html(portName);

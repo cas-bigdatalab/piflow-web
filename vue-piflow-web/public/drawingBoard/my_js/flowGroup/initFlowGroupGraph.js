@@ -21,9 +21,9 @@ function initFlowGroupDrawingBoardData(loadId, parentAccessPath) {
         success: function (data) {//Operation after request successful
             var dataMap = JSON.parse(data);
             if (200 === dataMap.code) {
-                if (dataMap.parentsId){
+                if (dataMap.parentsId) {
                     parentsId = dataMap.parentsId;
-                }else {
+                } else {
                     parentsId = 'null';
                 }
                 top.document.getElementById('BreadcrumbGroup').style.display = 'block';
@@ -31,10 +31,10 @@ function initFlowGroupDrawingBoardData(loadId, parentAccessPath) {
                 top.document.getElementById('BreadcrumbProcess').style.display = 'none';
                 top.document.getElementById('BreadcrumbProcessGroup').style.display = 'none';
                 var link = top.document.getElementById('GroupParents');
-                if (parentsId !== 'null'){
+                if (parentsId !== 'null') {
                     link.style.display = 'inline-block';
-                    link.href='#/drawingBoard?src=/drawingBoard/page/flowGroup/mxGraph/index.html?drawingBoardType=GROUP&parentAccessPath=flowGroupList&load='+parentsId;
-                }else {
+                    link.href = '#/drawingBoard?src=/drawingBoard/page/flowGroup/mxGraph/index.html?drawingBoardType=GROUP&parentAccessPath=flowGroupList&load=' + parentsId;
+                } else {
                     link.style.display = 'none';
                 }
 
@@ -53,7 +53,7 @@ function initFlowGroupDrawingBoardData(loadId, parentAccessPath) {
                     var mxGraphComponentList = dataMap.mxGraphComponentList;
                     for (var index = 0; index < mxGraphComponentList.length; index++) {
                         var component_prefix = mxGraphComponentList[index].component_prefix
-                        if (component_prefix.indexOf("/piflow-web/")>-1) {
+                        if (component_prefix.indexOf("/piflow-web/") > -1) {
                             component_prefix = component_prefix.replace('/piflow-web', sever_base_origin)
                         }
                         mxGraphComponentList[index].component_prefix = component_prefix
@@ -836,7 +836,9 @@ function queryFlowOrFlowGroupProperty(pageId, loadId) {
 function getFlowList() {
     var window_width = $(window).width();//Get browser window width
     var window_height = $(window).height();//Get browser window height
-    openLayerTypeIframeWindowLoadUrl("/page/flow/flow_list_import.html", (window_width / 2), (window_height - 100), "Flows");
+    ajaxLoad("", "/page/flow/flow_list_import.html", function (data) {
+        openLayerWindowLoadHtml(data, (window_width / 2), (window_height - 100), "Flows");
+    });
 }
 
 // ClickSlider
@@ -1379,7 +1381,7 @@ function loadingXml(id, loadId) {
                 layer.msg(dataMap.errorMsg, {icon: icon_code, shade: 0.7, time: 2000}, function () {
                     window.location.reload();
                 });
-            }else {
+            } else {
                 layer.msg(dataMap.errorMsg, {icon: icon_code, shade: 0.7, time: 2000}, function () {
 
                 });
