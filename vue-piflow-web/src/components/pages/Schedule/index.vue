@@ -303,8 +303,8 @@
                     type: this.formValidateType.type,
                     scheduleRunTemplateId: this.formValidate.suType,
                     cronExpression: this.formValidate.cron,
-                    paanStartTimeSrt: this.formValidate.startDate + ' ' +  this.formValidate.startTime,
-                    paanEndTimeSrt: this.formValidate.endDate + ' ' +  this.formValidate.endTime,
+                    planStartTimeStr: this.formValidate.startDate + ' ' +  this.formValidate.startTime,
+                    planEndTimeStr: this.formValidate.endDate + ' ' +  this.formValidate.endTime,
                 };
                 if (this.id) {
                     //更新数据
@@ -468,12 +468,12 @@
                             this.formValidateType.type = flow.type;
                             this.formValidate.suType = flow.scheduleRunTemplateId;
                             this.formValidate.cron = flow.cronExpression;
-                            flow.planStartTime = flow.planStartTime.split(' ');
-                            this.formValidate.startDate = flow.planStartTime[0];
-                            this.formValidate.startTime = flow.planStartTime[1];
-                            flow.planEndTime = flow.planEndTime.split(' ');
-                            this.formValidate.endDate = flow.planEndTime[0];
-                            this.formValidate.endTime = flow.planEndTime[1];
+                            //flow.planStartTime = flow.planStartTime.split(' ');
+                            //this.formValidate.startDate = flow.planStartTime[0];
+                            //this.formValidate.startTime = flow.planStartTime[1];
+                            //flow.planEndTime = flow.planEndTime.split(' ');
+                            //this.formValidate.endDate = flow.planEndTime[0];
+                            //this.formValidate.endTime = flow.planEndTime[1];
                             this.$event.emit("looding", false);
                             this.isOpen = true;
                         } else {

@@ -50,7 +50,7 @@ public class ScheduleVo implements Serializable {
         return DateUtils.dateTimesToStr(this.planEndTime);
     }
     public void setPlanEndTimeStr(String planEndTimeStr) {
-        this.planStartTime = DateUtils.strToTime(planEndTimeStr);
+        this.planEndTime = DateUtils.strToTime(planEndTimeStr);
     }
 
 
