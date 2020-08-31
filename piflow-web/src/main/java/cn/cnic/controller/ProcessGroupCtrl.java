@@ -100,6 +100,7 @@ public class ProcessGroupCtrl {
      * @return
      */
     @RequestMapping("/queryProcess")
+    @ResponseBody
     public String queryProcess(HttpServletRequest request) {
         String processGroupId = request.getParameter("processGroupId");
         String pageId = request.getParameter("pageId");
@@ -115,6 +116,7 @@ public class ProcessGroupCtrl {
      * @return
      */
     @RequestMapping("/queryProcessGroupPath")
+    @ResponseBody
     public String queryProcessGroupPath(HttpServletRequest request) {
         String processGroupId = request.getParameter("processGroupId");
         String pageId = request.getParameter("pageId");

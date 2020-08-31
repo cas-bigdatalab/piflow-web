@@ -69,7 +69,7 @@ public class MxGraphModelProvider {
             this.pageHeight = SqlUtils.preventSQLInjection(mxGraphModel.getPageHeight());
             this.background = SqlUtils.preventSQLInjection(mxGraphModel.getBackground());
             String flowIdStr = (null != mxGraphModel.getFlow() ? mxGraphModel.getFlow().getId() : null);
-            this.flowId = SqlUtils.preventSQLInjection(flowIdStr);
+            this.flowId = (StringUtils.isNotBlank(flowIdStr) ? SqlUtils.preventSQLInjection(flowIdStr) : null);
         }
     }
 
