@@ -3,7 +3,7 @@ var graphGlobal = null;
 var thisEditor = null;
 var flag = 0;
 var index = true
-var nodePageIdAndStateList, xmlDate, processType, appId, processState, processId, stdoutLog, stderrLog;
+var nodePageIdAndStateList, xmlDate, processType, parentsId, appId, processState, processId, stdoutLog, stderrLog;
 
 // init crumbs
 function initCrumbs(parentAccessPath) {
@@ -64,6 +64,23 @@ function initProcessGroupDrawingBoardData(loadId, parentAccessPath, backFunc) {
         success: function (data) {//Operation after request successful
             var dataMap = JSON.parse(data);
             if (200 === dataMap.code) {
+                if (dataMap.parentsId){
+                    parentsId = dataMap.parentsId;
+                }else {
+                    parentsId = 'null';
+                }
+                top.document.getElementById('BreadcrumbProcessGroup').style.display = 'block';
+                top.document.getElementById('BreadcrumbProcess').style.display = 'none';
+                top.document.getElementById('BreadcrumbFlow').style.display = 'none';
+                top.document.getElementById('BreadcrumbGroup').style.display = 'none';
+                var link = top.document.getElementById('ProcessGroupParents');
+                if (parentsId !== 'null'){
+                    link.style.display = 'inline-block';
+                    link.href='#/drawingBoard?src=/drawingBoard/page/processGroup/mxGraph/index.html?drawingBoardType=PROCESS&parentAccessPath=processGroupList&processType=PROCESS_GROUP&load='+parentsId;
+                }else {
+                    link.style.display = 'none';
+                }
+                
                 processId = dataMap.processId;
                 processType = dataMap.processType;
                 nodePageIdAndStateList = dataMap.nodePageIdAndStateList;

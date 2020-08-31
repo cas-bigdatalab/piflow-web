@@ -1,6 +1,6 @@
 <template>
   <header>
-    <div class="left">
+    <div class="left" @click="handleClick">
       <!-- <div :style="{width:logoWidth}">
         <img src="../../assets/img/logo.png" alt="logo" />
         <h1>前端模板</h1>
@@ -98,6 +98,12 @@ export default {
       this.$store.commit("setUser", {});
       this.$router.push({ path: "/login" });
     },
+    handleClick(){
+        this.$router.push({
+            path: '/',
+            name: 'sections',
+        });
+    }
   },
 };
 </script>
@@ -114,6 +120,7 @@ header {
   border-bottom: 4px solid gainsboro;
   box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.1);
   .left {
+    cursor: pointer;
     display: flex;
     .logo {
       width: 30px;

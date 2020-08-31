@@ -9,11 +9,11 @@
       </Tabs>
 
       <Tabs value="name1">
-          <TabPane label="Monitoring Information" name="name1">
-              <Row :gutter="16" type="flex" justify="space-around" style="margin-bottom: 20px">
+          <TabPane label="Monitor" name="name1">
+              <Row :gutter="16" type="flex" justify="center" style="margin-bottom: 20px">
                   <Col span="6">
                       <Card>
-                          <h3 class="alignLeft">CPU Disk Usage</h3>
+                          <h3 class="alignLeft">CPU磁盘使用率</h3>
                           <i-circle
                                   :size="150"
                                   :trail-width="6"
@@ -32,9 +32,9 @@
                           </i-circle>
                       </Card>
                   </Col>
-                  <Col span="6">
+                  <Col span="6" style=" margin: 0 4vw; ">
                       <Card>
-                          <h3 class="alignLeft">Memory Disk Usage</h3>
+                          <h3 class="alignLeft">内存磁盘使用率</h3>
                           <i-circle
                                   :size="150"
                                   :trail-width="6"
@@ -55,7 +55,7 @@
                   </Col>
                   <Col span="6">
                       <Card>
-                          <h3 class="alignLeft">HDFS Disk Usage</h3>
+                          <h3 class="alignLeft">HDFS磁盘使用率</h3>
                           <i-circle
                                   :size="150"
                                   :trail-width="6"
@@ -79,7 +79,7 @@
       </Tabs>
 
       <Tabs value="name1">
-          <TabPane label="statistics" name="name1">
+          <TabPane label="Statistics" name="name1">
 <!--              <div style="height: 500px">-->
                   <Row :gutter="16" style="margin-bottom: 20px">
                       <Col span="8" style="height: 340px" >
@@ -88,31 +88,33 @@
                                   <img src="../../../assets/img/flow.png" alt="flow" />
                               </div>
                               <ul class="aaa" style="float:left;width: 50%;margin-top: 20px;letter-spacing: -.02em;">
-                                  <li><p>FLOW：
+                                  <li><p>Flow：
                                       <countTo :EndVal = Number(flowResourceInfo.FLOW_COUNT)></countTo>
                                   </p></li>
-                                  <li><p>PROCESSOR：
+                                  <li><p>Processor：
                                       <countTo :EndVal = Number(flowResourceInfo.PROCESSOR_COUNT)></countTo>
                                   </p></li>
-                                  <li><p class="textIndex">COMPETED：
+                                  <li><p class="textIndex">Competed：
                                       <countTo :EndVal = Number(flowResourceInfo.PROCESSOR_COMPETED_COUNT)></countTo>
                                   </p></li>
-                                  <li><p class="textIndex">FAILED：
+                                  <li><p class="textIndex">Failed：
                                       <countTo :EndVal = Number(flowResourceInfo.PROCESSOR_FAILED_COUNT)></countTo>
                                   </p></li>
-                                  <li><p class="textIndex">KILLED：
+                                  <li><p class="textIndex">Killed：
                                       <countTo :EndVal = Number(flowResourceInfo.PROCESSOR_KILLED_COUNT)></countTo>
                                   </p></li>
-                                  <li><p class="textIndex">OTHER：
+                                  <li><p class="textIndex">Other：
                                       <countTo :EndVal = Number(flowResourceInfo.PROCESSOR_OTHER_COUNT)></countTo>
                                   </p></li>
-                                  <li><p class="textIndex">STARTED：
+                                  <li><p class="textIndex">Started：
                                       <countTo :EndVal = Number(flowResourceInfo.PROCESSOR_STARTED_COUNT)></countTo>
                                   </p></li>
                               </ul>
-                              <Card class="Introduction cardStyle" shadow>
-                                  流水线统计信息，包括流水线Flow数量、运行态流水线Processor数量，以及各运行状态下Processor数量。
-                              </Card>
+                              <div class="leftTop20">
+                                  <Card class="Introduction cardStyle" shadow>
+                                      流水线统计信息，包括流水线Flow数量、运行态流水线Processor数量，以及各运行状态下Processor数量。
+                                  </Card>
+                              </div>
                           </div>
                       </Col>
                       <Col span="8" style="height: 260px">
@@ -121,22 +123,24 @@
                                   <img src="../../../assets/img/schedule.png" alt="SCHEDULE" />
                               </div>
                               <ul class="aaa" style="float:left;width: 50%;margin-top: 20px;letter-spacing: -.02em;">
-                                  <li><p>SCHEDULE：
+                                  <li><p>Schedule：
                                       <countTo :EndVal = Number(scheduleResourceInfo.SCHEDULE_COUNT)></countTo>
                                   </p></li>
-                                  <li><p class="textIndex">INIT：
+                                  <li><p class="textIndex">Init：
                                       <countTo :EndVal = Number(scheduleResourceInfo.SCHEDULE_INIT_COUNT)></countTo>
                                   </p></li>
-                                  <li><p class="textIndex">RUNNING：
+                                  <li><p class="textIndex">Running：
                                       <countTo :EndVal = Number(scheduleResourceInfo.SCHEDULE_RUNNING_COUNT)></countTo>
                                   </p></li>
-                                  <li><p class="textIndex">STOP：
+                                  <li><p class="textIndex">Stop：
                                       <countTo :EndVal = Number(scheduleResourceInfo.SCHEDULE_STOP_COUNT)></countTo>
                                   </p></li>
                               </ul>
-                              <Card class="Introduction cardStyle" shadow>
-                                  调度统计信息，包括调度流水线/流水线组数量，以及各个状态下Schedule数量。
-                              </Card>
+                              <div class="leftTop20">
+                                  <Card class="Introduction cardStyle" shadow>
+                                      调度统计信息，包括调度流水线/流水线组数量，以及各个状态下Schedule数量。
+                                  </Card>
+                              </div>
                           </div>
                       </Col>
                       <Col span="8" style="height: 330px">
@@ -145,31 +149,33 @@
                                   <img src="../../../assets/img/group.png" alt="group" />
                               </div>
                               <ul class="aaa" style="float:left;width: 50%;margin-top: 20px;letter-spacing: -.02em;">
-                                  <li><p>GROUP：
+                                  <li><p>Group：
                                       <countTo :EndVal = Number(groupResourceInfo.GROUP_COUNT)></countTo>
                                   </p></li>
-                                  <li><p>PROCESSOR：
+                                  <li><p>Processor：
                                       <countTo :EndVal = Number(groupResourceInfo.PROCESSOR_COUNT)></countTo>
                                   </p></li>
-                                  <li><p class="textIndex">COMPETED：
+                                  <li><p class="textIndex">Competed：
                                       <countTo :EndVal = Number(groupResourceInfo.PROCESSOR_COMPETED_COUNT)></countTo>
                                   </p></li>
-                                  <li><p class="textIndex">FAILED：
+                                  <li><p class="textIndex">Failed：
                                       <countTo :EndVal = Number(groupResourceInfo.PROCESSOR_FAILED_COUNT)></countTo>
                                   </p></li>
-                                  <li><p class="textIndex">KILLED：
+                                  <li><p class="textIndex">Killed：
                                       <countTo :EndVal = Number(groupResourceInfo.PROCESSOR_KILLED_COUNT)></countTo>
                                   </p></li>
-                                  <li><p class="textIndex">OTHER：
+                                  <li><p class="textIndex">Other：
                                       <countTo :EndVal = Number(groupResourceInfo.PROCESSOR_OTHER_COUNT)></countTo>
                                   </p></li>
-                                  <li><p class="textIndex">STARTED：
+                                  <li><p class="textIndex">Started：
                                       <countTo :EndVal = Number(groupResourceInfo.PROCESSOR_STARTED_COUNT)></countTo>
                                   </p></li>
                               </ul>
-                              <Card class="Introduction cardStyle" shadow>
-                                  流水线组统计信息，包括流水线组Group数量、运行态流水线组Processor数量，以及各运行状态下Processor数量。
-                              </Card>
+                              <div class="leftTop20">
+                                  <Card class="Introduction cardStyle" shadow>
+                                      流水线组统计信息，包括流水线组Group数量、运行态流水线组Processor数量，以及各运行状态下Processor数量。
+                                  </Card>
+                              </div>
                           </div>
                       </Col>
                   </Row>
@@ -181,24 +187,25 @@
                       </Col>
                       <Col style="margin-top: -80px;height: 280px" span="8">
                           <div class="ContentQuantity">
-
                               <div class="statisticsImg SITilt">
                                   <img src="../../../assets/img/others.png" alt="others" />
                               </div>
                               <ul class="aaa" style="float:left;width: 50%;margin-top: 20px;letter-spacing: -.02em;">
-                                  <li><p>DATASOURCE：
+                                  <li><p>Datasource：
                                       <countTo :EndVal = Number(tempalateAndDataSourceResourceInfo.DATASOURCE_COUNT)></countTo>
                                   </p></li>
-                                  <li><p>STOPSHUB：
+                                  <li><p>Stopshub：
                                       <countTo :EndVal = Number(tempalateAndDataSourceResourceInfo.STOPSHUB_COUNT)></countTo>
                                   </p></li>
-                                  <li><p>TEMPLATE：
+                                  <li><p>Template：
                                       <countTo :EndVal = Number(tempalateAndDataSourceResourceInfo.TEMPLATE_COUNT)></countTo>
                                   </p></li>
                               </ul>
-                              <Card class="Introduction cardStyle" shadow>
-                                  其他统计信息，包括数据源DataSource数量、自定义组件插件StopsHub数量、模板Template数量。
-                              </Card>
+                              <div class="leftTop20">
+                                  <Card class="Introduction cardStyle" shadow>
+                                      其他统计信息，包括数据源DataSource数量、自定义组件插件StopsHub数量、模板Template数量。
+                                  </Card>
+                              </div>
                           </div>
                       </Col>
                       <Col style="margin-top: -20px;height: 260px" span="8">
@@ -207,16 +214,18 @@
                                   <img src="../../../assets/img/stop.png" alt="STOP" />
                               </div>
                               <ul class="aaa" style="float:left;width: 50%;margin-top: 20px;letter-spacing: -.02em;">
-                                  <li><p>STOP：
+                                  <li><p>Stop：
                                       <countTo :EndVal = Number(stopResourceInfo.STOP_COUNT)></countTo>
                                   </p></li>
-                                  <li><p>STOPGROUP：
+                                  <li><p>Stopgroup：
                                       <countTo :EndVal = Number(stopResourceInfo.STOPGROUP_COUNT)></countTo>
                                   </p></li>
                               </ul>
-                              <Card class="Introduction cardStyle" shadow>
-                                  组件统计信息，包括数据处理组件Stop数量，数据处理组件组StopGroup数量。
-                              </Card>
+                              <div class="leftTop20">
+                                  <Card class="Introduction cardStyle" shadow>
+                                      组件统计信息，包括数据处理组件Stop数量，数据处理组件组StopGroup数量。
+                                  </Card>
+                              </div>
                           </div>
                       </Col>
                   </Row>
@@ -548,11 +557,16 @@ export default {
         }
     }
     .cardStyle{
+        /*float:left;*/
         /deep/ .ivu-card-body{
             float:left;
             background: rgba(241, 241, 246, 0.6);
             margin: 10px;
         }
+    }
+    .leftTop20{
+        float: left;
+        /*margin-top: 20px;*/
     }
 </style>
 

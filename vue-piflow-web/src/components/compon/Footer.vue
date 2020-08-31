@@ -1,23 +1,61 @@
 <template>
   <footer>
     <Breadcrumb id="BreadcrumbFlow">
-      <div @click="handleClick('flow')">11111</div>
-      <BreadcrumbItem id="FlowList" @click="handleClick('flow')" :to="'#'">Flow</BreadcrumbItem>
-      <BreadcrumbItem id="FlowBreadcrumbItem" :to="'#'">drawingBoard</BreadcrumbItem>
+      <span class="spanPointer" @click="handleClick('flow')">Flow
+        <span style="margin: 0 5px;display: inline-block">&gt;&gt;</span>
+      </span>
+      <a class="spanPointer" id="FlowParents" href="#" style="display: none" @click="handleClick('FlowParents')">flowGroupList
+        <span style="margin: 0 5px;display: inline-block">&gt;&gt;</span>
+      </a>
+      <span style="font-weight: bold">drawingBoard</span>
+<!--      <BreadcrumbItem id="FlowList" @click="handleClick('flow')" :to="'#'">Flow</BreadcrumbItem>-->
+<!--      <BreadcrumbItem id="FlowBreadcrumbItem" :to="'#'">drawingBoard</BreadcrumbItem>-->
 
 <!--      <BreadcrumbItem v-for="(item,i) in breadcrumb" :key="'f'+i" :to="'#'">{{item.name}}</BreadcrumbItem>-->
       <!-- <BreadcrumbItem to="/components/breadcrumb">Components</BreadcrumbItem>
       <BreadcrumbItem>Breadcrumb</BreadcrumbItem>-->
     </Breadcrumb>
+
     <Breadcrumb id="BreadcrumbGroup">
-      <BreadcrumbItem id="GroupList" @click="handleClick('group')">Group</BreadcrumbItem>
-      <BreadcrumbItem id="GroupParents" :to="'#'">flowGroupList</BreadcrumbItem>
-      <BreadcrumbItem id="GroupBreadcrumbItem" :to="'#'">drawingBoard</BreadcrumbItem>
+      <span id="GroupList" class="spanPointer" @click="handleClick('group')">Group
+        <span style="margin: 0 5px;display: inline-block">&gt;&gt;</span>
+      </span>
+      <a id="GroupParents" href="#" class="spanPointer" style="display: none">flowGroupList
+        <span style="margin: 0 5px;display: inline-block">&gt;&gt;</span>
+      </a>
+      <span id="GroupBreadcrumbItem" style="font-weight: bold">drawingBoard</span>
+
+<!--      <BreadcrumbItem id="GroupList" @click="handleClick('group')">Group</BreadcrumbItem>-->
+<!--      <BreadcrumbItem id="GroupParents" to="/drawingBoard?src=/drawingBoard/page/flowGroup/mxGraph/index.html?drawingBoardType=GROUP&parentAccessPath=flowGroupList&load=8a80d5d27442608401744275e09e0000">flowGroupList</BreadcrumbItem>-->
+<!--      <BreadcrumbItem id="GroupBreadcrumbItem" :to="'#'">drawingBoard</BreadcrumbItem>-->
     </Breadcrumb>
+
     <Breadcrumb id="BreadcrumbProcess">
-      <BreadcrumbItem id="ProcessList" @click="handleClick('process')">Process</BreadcrumbItem>
-      <BreadcrumbItem id="ProcessParents" :to="'#'">ProcessList</BreadcrumbItem>
-      <BreadcrumbItem id="ProcessBreadcrumbItem" :to="'#'">drawingBoard</BreadcrumbItem>
+       <span id="ProcessList" class="spanPointer" @click="handleClick('processes')">processes
+        <span style="margin: 0 5px;display: inline-block">&gt;&gt;</span>
+      </span>
+      <a id="ProcessParents" href="#" class="spanPointer" style="display: none" @click="handleClick('ProcessList')">ProcessList
+        <span style="margin: 0 5px;display: inline-block">&gt;&gt;</span>
+      </a>
+      <span id="ProcessBreadcrumbItem" style="font-weight: bold">drawingBoard</span>
+
+<!--      <BreadcrumbItem id="ProcessList" @click="handleClick('process')">Process</BreadcrumbItem>-->
+<!--      <BreadcrumbItem id="ProcessParents" :to="'#'">ProcessList</BreadcrumbItem>-->
+<!--      <BreadcrumbItem id="ProcessBreadcrumbItem" :to="'#'">drawingBoard</BreadcrumbItem>-->
+    </Breadcrumb>
+
+    <Breadcrumb id="BreadcrumbProcessGroup">
+       <span id="ProcessGroupList" class="spanPointer" @click="handleClick('processes')">processes
+        <span style="margin: 0 5px;display: inline-block">&gt;&gt;</span>
+      </span>
+      <a id="ProcessGroupParents" href="#" class="spanPointer" style="display: none">ProcessList
+        <span style="margin: 0 5px;display: inline-block">&gt;&gt;</span>
+      </a>
+      <span id="ProcessGroupBreadcrumbItem" style="font-weight: bold">drawingBoard</span>
+
+<!--      <BreadcrumbItem id="ProcessList" @click="handleClick('process')">Process</BreadcrumbItem>-->
+<!--      <BreadcrumbItem id="ProcessParents" :to="'#'">ProcessList</BreadcrumbItem>-->
+<!--      <BreadcrumbItem id="ProcessBreadcrumbItem" :to="'#'">drawingBoard</BreadcrumbItem>-->
     </Breadcrumb>
   </footer>
 </template>
@@ -27,43 +65,60 @@ export default {
   name: "footers",
   data() {
     return {
-      breadcrumb: [],
+      // breadcrumb: [],
     };
   },
   created() {
-    let breadcrumb = window.sessionStorage.getItem("breadcrumb");
-    if (breadcrumb) {
-      this.breadcrumb = JSON.parse(breadcrumb);
-    }
+    // let breadcrumb = window.sessionStorage.getItem("breadcrumb");
+    // if (breadcrumb) {
+    //   this.breadcrumb = JSON.parse(breadcrumb);
+    // }
   },
   mounted() {
-    this.$event.on("crumb", (arr) => {
-      this.breadcrumb = arr;
-      window.sessionStorage.setItem("breadcrumb", JSON.stringify(arr));
-    });
+    // this.$event.on("crumb", (arr) => {
+    //   this.breadcrumb = arr;
+    //   window.sessionStorage.setItem("breadcrumb", JSON.stringify(arr));
+    // });
   },
   methods:{
     handleClick(val){
-      console.log(val)
       switch (val) {
         case 'flow':
           this.$router.push({
+            name: 'flow',
             path: "/flow",
             // query: {
             //   src: "/drawingBoard/page/flow/mxGraph/index.html?load=" + row.id,
             // }
           });
-          document.getElementById('BreadcrumbFlow').style.display = 'none';
+          this.$nextTick(()=>{
+            document.getElementById('BreadcrumbFlow').style.display = 'none';
+          });
           break;
           case 'group':
+            this.$router.push({
+              path: '/group',
+              name: 'group',
+            });
+            this.$nextTick(()=>{
+              document.getElementById('BreadcrumbGroup').style.display = 'none';
+            });
           break;
-          case 'process':
+          case 'processes':
+            this.$router.push({
+              name: 'processes',
+              path: "/processes",
+            });
+            this.$nextTick(()=>{
+              document.getElementById('BreadcrumbProcess').style.display = 'none';
+              document.getElementById('BreadcrumbProcessGroup').style.display = 'none';
+            });
           break;
       }
     }
   },
   beforeDestroy() {
-    window.sessionStorage.removeItem("breadcrumb");
+    // window.sessionStorage.removeItem("breadcrumb");
     // window.parent.postMessage(false);
   },
 };
@@ -86,8 +141,14 @@ footer {
   .ivu-breadcrumb > span:last-child {
     color: #fff;
   }
-  #BreadcrumbFlow, #BreadcrumbGroup, #BreadcrumbProcess{
+  #BreadcrumbFlow, #BreadcrumbGroup, #BreadcrumbProcess, #BreadcrumbProcessGroup{
     display: none;
+    span, a{
+      color: #ffffff
+    }
+  .spanPointer{
+    cursor: pointer;
+  }
   }
 }
 </style>

@@ -177,6 +177,23 @@ function queryProcessInfo(processId) {
             var dataMap = JSON.parse(data);
             $('#process_info_inc_loading').hide();
             if (200 === dataMap.code) {
+                // if (dataMap.processGroupId){
+                //     processGroupId = dataMap.processGroupId;
+                // }else {
+                //     processGroupId = 'null';
+                // }
+                top.document.getElementById('BreadcrumbProcess').style.display = 'block';
+                top.document.getElementById('BreadcrumbProcessGroup').style.display = 'none';
+                top.document.getElementById('BreadcrumbFlow').style.display = 'none';
+                top.document.getElementById('BreadcrumbGroup').style.display = 'none';
+                var link = top.document.getElementById('ProcessParents');
+                if (processGroupId !== 'null' && processGroupId !== undefined){
+                    link.style.display = 'inline-block';
+                    link.href='#/drawingBoard?src=/drawingBoard/page/processGroup/mxGraph/index.html?drawingBoardType=PROCESS&parentAccessPath=processGroupList&processType=PROCESS_GROUP&load='+processGroupId;
+                }else {
+                    link.style.display = 'none';
+                }
+
                 var processVo = dataMap.processVo;
                 if (!processVo) {
                     $('#process_info_inc_no_data').show();

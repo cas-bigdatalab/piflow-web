@@ -26,14 +26,26 @@ function initFlowGroupDrawingBoardData(loadId, parentAccessPath) {
                 }else {
                     parentsId = 'null';
                 }
-                for (var key in window.parent.__VUE_HOT_MAP__){
-                    if( window.parent.__VUE_HOT_MAP__[key].options.name === 'DrawingBoard'){
-                        window.parent.postMessage({
-                            parentsId :parentsId
-                        },'*');
-                        // window.parent.__VUE_HOT_MAP__[key].options.methods.GetChildValue(parentsId)
-                    }
+                top.document.getElementById('BreadcrumbGroup').style.display = 'block';
+                top.document.getElementById('BreadcrumbFlow').style.display = 'none';
+                top.document.getElementById('BreadcrumbProcess').style.display = 'none';
+                top.document.getElementById('BreadcrumbProcessGroup').style.display = 'none';
+                var link = top.document.getElementById('GroupParents');
+                if (parentsId !== 'null'){
+                    link.style.display = 'inline-block';
+                    link.href='#/drawingBoard?src=/drawingBoard/page/flowGroup/mxGraph/index.html?drawingBoardType=GROUP&parentAccessPath=flowGroupList&load='+parentsId;
+                }else {
+                    link.style.display = 'none';
                 }
+
+                // for (var key in window.parent.__VUE_HOT_MAP__){
+                //     if( window.parent.__VUE_HOT_MAP__[key].options.name === 'DrawingBoard'){
+                //         window.parent.postMessage({
+                //             parentsId :parentsId
+                //         },'*');
+                //         // window.parent.__VUE_HOT_MAP__[key].options.methods.GetChildValue(parentsId)
+                //     }
+                // }
                 xmlDate = dataMap.xmlDate;
                 maxStopPageId = dataMap.maxStopPageId;
                 isExample = dataMap.isExample;
