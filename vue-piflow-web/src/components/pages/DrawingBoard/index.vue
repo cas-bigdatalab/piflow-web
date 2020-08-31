@@ -69,64 +69,64 @@ export default {
     }, false);
   },
   watch:{
-    $route(to,from){
-      let baseUrl = window.location.origin;
-      let herf = to.fullPath.split("src=")[1];
-      this.src =
-              baseUrl +
-              herf
-                      .replace(/\%2F+/g, "/")
-                      .replace(/\%3F+/g, "?")
-                      .replace(/\%3D+/g, "=")
-                      .replace(/\%26+/g, "&");
-      this.$event.emit("looding", true);
-
-      let footerName = 'flowGroupList', _this = this;
-      if ( this.src.indexOf("drawingBoardType=GROUP") !== -1 ) {
-      // && this.src.indexOf("drawingBoard/page/flowGroup")!== -1
-        // GROUP
-        window.addEventListener('message', function(e){
-          if ( e.data.parentsId){
-            if (e.data.parentsId !== 'null'){
-              _this.$event.emit("crumb", [
-                { name: "Group", path: "/group" },
-                { name: footerName, path:"/drawingBoard?src=" + "/drawingBoard" +"/page/flowGroup/mxGraph/index.html?drawingBoardType=GROUP&parentAccessPath=flowGroupList&load=" + e.data.parentsId},
-                { name: "drawingBoard", path: "/drawingBoard" },
-              ]);
-            }else if(e.data.parentsId === 'null') {
-              _this.$event.emit("crumb", [
-                { name: "Group", path: "/group" },
-                { name: "drawingBoard", path: "/drawingBoard" },
-              ]);
-            }
-          }
-        })
-      }else if ( this.src.indexOf("drawingBoardType=TASK") !== -1 ){
-        // && this.src.indexOf("drawingBoard/page/flow/mxGraph") !== -1
-        // TASK
-        window.addEventListener('message', function(e){
-          if ( e.data.parentsId){
-            if (e.data.parentsId !== 'null'){
-              _this.$event.emit("crumb", [
-                { name: "Flow", path: "/flow" },
-                { name: footerName, path:"/drawingBoard?src=" + "/drawingBoard" +"/page/flowGroup/mxGraph/index.html?drawingBoardType=GROUP&parentAccessPath=flowGroupList&load=" + e.data.parentsId},
-                { name: "drawingBoard", path: "/drawingBoard" },
-              ]);
-            }else if(e.data.parentsId === 'null') {
-              _this.$event.emit("crumb", [
-                { name: "Flow", path: "/flow" },
-                { name: "drawingBoard", path: "/drawingBoard" },
-              ]);
-            }
-          }
-        })
-      }
-
-      //监听窗口变化 自适应（ 根据需求自行添加 ）
-      window.addEventListener("resize", () => {
-        this.setSize();
-      });
-    }
+    // $route(to,from){
+    //   let baseUrl = window.location.origin;
+    //   let herf = to.fullPath.split("src=")[1];
+    //   this.src =
+    //           baseUrl +
+    //           herf
+    //                   .replace(/\%2F+/g, "/")
+    //                   .replace(/\%3F+/g, "?")
+    //                   .replace(/\%3D+/g, "=")
+    //                   .replace(/\%26+/g, "&");
+    //   this.$event.emit("looding", true);
+    //
+    //   let footerName = 'flowGroupList', _this = this;
+    //   if ( this.src.indexOf("drawingBoardType=GROUP") !== -1 ) {
+    //   // && this.src.indexOf("drawingBoard/page/flowGroup")!== -1
+    //     // GROUP
+    //     window.addEventListener('message', function(e){
+    //       if ( e.data.parentsId){
+    //         if (e.data.parentsId !== 'null'){
+    //           _this.$event.emit("crumb", [
+    //             { name: "Group", path: "/group" },
+    //             { name: footerName, path:"/drawingBoard?src=" + "/drawingBoard" +"/page/flowGroup/mxGraph/index.html?drawingBoardType=GROUP&parentAccessPath=flowGroupList&load=" + e.data.parentsId},
+    //             { name: "drawingBoard", path: "/drawingBoard" },
+    //           ]);
+    //         }else if(e.data.parentsId === 'null') {
+    //           _this.$event.emit("crumb", [
+    //             { name: "Group", path: "/group" },
+    //             { name: "drawingBoard", path: "/drawingBoard" },
+    //           ]);
+    //         }
+    //       }
+    //     })
+    //   }else if ( this.src.indexOf("drawingBoardType=TASK") !== -1 ){
+    //     // && this.src.indexOf("drawingBoard/page/flow/mxGraph") !== -1
+    //     // TASK
+    //     window.addEventListener('message', function(e){
+    //       if ( e.data.parentsId){
+    //         if (e.data.parentsId !== 'null'){
+    //           _this.$event.emit("crumb", [
+    //             { name: "Flow", path: "/flow" },
+    //             { name: footerName, path:"/drawingBoard?src=" + "/drawingBoard" +"/page/flowGroup/mxGraph/index.html?drawingBoardType=GROUP&parentAccessPath=flowGroupList&load=" + e.data.parentsId},
+    //             { name: "drawingBoard", path: "/drawingBoard" },
+    //           ]);
+    //         }else if(e.data.parentsId === 'null') {
+    //           _this.$event.emit("crumb", [
+    //             { name: "Flow", path: "/flow" },
+    //             { name: "drawingBoard", path: "/drawingBoard" },
+    //           ]);
+    //         }
+    //       }
+    //     })
+    //   }
+    //
+    //   //监听窗口变化 自适应（ 根据需求自行添加 ）
+    //   window.addEventListener("resize", () => {
+    //     this.setSize();
+    //   });
+    // }
   },
   methods: {
     setSize() {

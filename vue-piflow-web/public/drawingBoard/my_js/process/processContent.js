@@ -428,32 +428,22 @@ function getDebugData(stopName, portName) {
     var window_width = $(window).width();//Get browser window width
     var window_height = $(window).height();//Get browser window width
     var jsonData = {"appId": appId, "stopName": stopName, "portName": portName};
-    ajaxRequest({
-        cache: true,//Keep cached data
-        type: "POST",//Request type post
-        url: "/page/process/inc/process_info_inc.html",//This is the name of the file where I receive data in the background.
-        //data:$('#loginForm').serialize(),//Serialize the form
-        data: jsonData,
-        async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
-        error: function (request) {//Operation after request failure
-            layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000});
-            return;
-        },
-        success: function (data) {//Operation after request successful
-            var open_window_width = (window_width > 300 ? window_width - 200 : window_width) + "px";
-            var open_window_height = (window_height > 300 ? window_height - 200 : window_height) + "px";
-            layer.open({
-                type: 1,
-                title: '<span style="color: #269252;">Debug Data</span>',
-                shadeClose: true,
-                closeBtn: 1,
-                shift: 7,
-                area: [open_window_width, open_window_height], //Width height
-                skin: 'layui-layer-rim', //Add borders
-                content: data
-            });
-        }
-    });
+    // ajaxLoad("", "/page/process/inc/debug_data_inc.html", function (data) {
+    //     var open_window_width = (window_width > 300 ? window_width - 200 : window_width) + "px";
+    //     var open_window_height = (window_height > 300 ? window_height - 200 : window_height) + "px";
+    //     layer.open({
+    //         type: 1,
+    //         title: '<span style="color: #269252;">Debug Data</span>',
+    //         shadeClose: true,
+    //         closeBtn: 1,
+    //         shift: 7,
+    //         area: [open_window_width, open_window_height], //Width height
+    //         skin: 'layui-layer-rim', //Add borders
+    //         content: data
+    //     });
+    // })
+    openLayerTypeIframeWindowLoadUrl("/page/process/inc/debug_data_inc.html",(window_width - 100),(window_height - 100))
+
 }
 
 function loadDebugData() {

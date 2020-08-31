@@ -1,9 +1,23 @@
 <template>
   <footer>
-    <Breadcrumb>
-      <BreadcrumbItem v-for="(item,i) in breadcrumb" :key="'f'+i" :to="item.path">{{item.name}}</BreadcrumbItem>
+    <Breadcrumb id="BreadcrumbFlow">
+      <div @click="handleClick('flow')">11111</div>
+      <BreadcrumbItem id="FlowList" @click="handleClick('flow')" :to="'#'">Flow</BreadcrumbItem>
+      <BreadcrumbItem id="FlowBreadcrumbItem" :to="'#'">drawingBoard</BreadcrumbItem>
+
+<!--      <BreadcrumbItem v-for="(item,i) in breadcrumb" :key="'f'+i" :to="'#'">{{item.name}}</BreadcrumbItem>-->
       <!-- <BreadcrumbItem to="/components/breadcrumb">Components</BreadcrumbItem>
       <BreadcrumbItem>Breadcrumb</BreadcrumbItem>-->
+    </Breadcrumb>
+    <Breadcrumb id="BreadcrumbGroup">
+      <BreadcrumbItem id="GroupList" @click="handleClick('group')">Group</BreadcrumbItem>
+      <BreadcrumbItem id="GroupParents" :to="'#'">flowGroupList</BreadcrumbItem>
+      <BreadcrumbItem id="GroupBreadcrumbItem" :to="'#'">drawingBoard</BreadcrumbItem>
+    </Breadcrumb>
+    <Breadcrumb id="BreadcrumbProcess">
+      <BreadcrumbItem id="ProcessList" @click="handleClick('process')">Process</BreadcrumbItem>
+      <BreadcrumbItem id="ProcessParents" :to="'#'">ProcessList</BreadcrumbItem>
+      <BreadcrumbItem id="ProcessBreadcrumbItem" :to="'#'">drawingBoard</BreadcrumbItem>
     </Breadcrumb>
   </footer>
 </template>
@@ -28,6 +42,26 @@ export default {
       window.sessionStorage.setItem("breadcrumb", JSON.stringify(arr));
     });
   },
+  methods:{
+    handleClick(val){
+      console.log(val)
+      switch (val) {
+        case 'flow':
+          this.$router.push({
+            path: "/flow",
+            // query: {
+            //   src: "/drawingBoard/page/flow/mxGraph/index.html?load=" + row.id,
+            // }
+          });
+          document.getElementById('BreadcrumbFlow').style.display = 'none';
+          break;
+          case 'group':
+          break;
+          case 'process':
+          break;
+      }
+    }
+  },
   beforeDestroy() {
     window.sessionStorage.removeItem("breadcrumb");
     // window.parent.postMessage(false);
@@ -51,6 +85,9 @@ footer {
   /deep/ .ivu-breadcrumb a,
   .ivu-breadcrumb > span:last-child {
     color: #fff;
+  }
+  #BreadcrumbFlow, #BreadcrumbGroup, #BreadcrumbProcess{
+    display: none;
   }
 }
 </style>

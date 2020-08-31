@@ -28,6 +28,8 @@ function initFlowDrawingBoardData(loadId, parentAccessPath) {
                 }else {
                     parentsId = 'null';
                 }
+                top.document.getElementById('BreadcrumbFlow').style.display = 'block';
+
                 for (var key in window.parent.__VUE_HOT_MAP__){
                     if( window.parent.__VUE_HOT_MAP__[key].options.name === 'DrawingBoard'){
                         window.parent.postMessage({
