@@ -69,7 +69,7 @@ public class MxGraphModelProvider {
             this.pageHeight = SqlUtils.preventSQLInjection(mxGraphModel.getPageHeight());
             this.background = SqlUtils.preventSQLInjection(mxGraphModel.getBackground());
             String flowIdStr = (null != mxGraphModel.getFlow() ? mxGraphModel.getFlow().getId() : null);
-            this.flowId = (StringUtils.isNotBlank(flowIdStr) ? SqlUtils.preventSQLInjection(flowIdStr) : null);
+            this.flowId = SqlUtils.preventSQLInjection(flowIdStr);
         }
     }
 
@@ -179,7 +179,7 @@ public class MxGraphModelProvider {
                 sql.SET("mx_pagewidth = " + pageWidth);
                 sql.SET("mx_pageheight = " + pageHeight);
                 sql.SET("mx_background = " + background);
-                if (null != flowId) {
+                if (!"null".equals(flowId)) {
                     sql.SET("fk_flow_id = " + flowId);
                 }
                 sql.WHERE("version = " + version);

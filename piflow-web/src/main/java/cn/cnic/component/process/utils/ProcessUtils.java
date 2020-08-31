@@ -280,7 +280,7 @@ public class ProcessUtils {
             List<Paths> pathsList = flow.getPathsList();
             // isEmpty
             if (null != pathsList && pathsList.size() > 0) {
-                List<ProcessPath> processPathList = new ArrayList<ProcessPath>();
+                List<ProcessPath> processPathList = new ArrayList<>();
                 // Loop paths information
                 for (Paths paths : pathsList) {
                     // isEmpty

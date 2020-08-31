@@ -228,6 +228,24 @@ public class DataSourceMapperProvider {
         }
         return sqlStr;
     }
+    /**
+     * Query the data source according to the workflow Id
+     *
+     * @param id
+     * @return
+     */
+    public String adminGetDataSourceById(String id) {
+        String sqlStr = "";
+        if (StringUtils.isNotBlank(id)) {
+            StringBuffer strBuf = new StringBuffer();
+            strBuf.append("select * ");
+            strBuf.append("from data_source ");
+            strBuf.append("where enable_flag = 1 ");
+            strBuf.append("and id = " + SqlUtils.preventSQLInjection(id) + " ");
+            sqlStr = strBuf.toString();
+        }
+        return sqlStr;
+    }
 
     /**
      * Delete according to id logic, set to invalid
