@@ -55,6 +55,22 @@ module.exports = {
         description: "描述",
         crtDttmString: "创建时间",
         action: "操作"
+    },
+    homeInfo: {
+        introduction_title: "简介",
+        monitor_title: "监控",
+        statistics_title: "统计",
+        CPU_Disk: 'CPU磁盘使用率',
+        Memory_Disk: '内存磁盘使用率',
+        HDFS_Disk: 'HDFS磁盘使用率',
+        totalCapacity: '总容量',
+        Used: '已使用',
+        introduction_Info: "PiFlow是一款基于分布式计算引擎Spark开发的大数据流水线系统，以所见即所得的方式，实现大数据采集、处理、存储与分析流程化配置、运行与智能监控，提供了100+的标准化组件， 包括Hadoop 、Spark、MLlib、Hive、Solr、ElasticSearch、Redis等，更支持面向领域、灵活的二次组件开发，性能优越。",
+        flowStatistics: "流水线统计信息，包括流水线Flow数量、运行态流水线Processor数量，以及各运行状态下Processor数量。",
+        scheduleStatistics: "调度统计信息，包括调度流水线/流水线组数量，以及各个状态下Schedule数量。",
+        groupStatistics: "流水线组统计信息，包括流水线组Group数量、运行态流水线组Processor数量，以及各运行状态下Processor数量。",
+        OtherStatistics: "其他统计信息，包括数据源DataSource数量、自定义组件插件StopsHub数量、模板Template数量。",
+        ComponentStatistics: "组件统计信息，包括数据处理组件Stop数量，数据处理组件组StopGroup数量。",
     }
 
 

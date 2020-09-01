@@ -1,19 +1,19 @@
 <template>
   <section>
       <Tabs value="name1">
-          <TabPane label="Introduction" name="name1">
+          <TabPane :label="$t('homeInfo.introduction_title')" name="name1">
               <Card shadow class="Introduction" style="background: rgb(241 241 246 / 0.6);margin-bottom: 20px">
-                  PiFlow是一款基于分布式计算引擎Spark开发的大数据流水线系统，以所见即所得的方式，实现大数据采集、处理、存储与分析流程化配置、运行与智能监控，提供了100+的标准化组件， 包括Hadoop 、Spark、MLlib、Hive、Solr、ElasticSearch、Redis等，更支持面向领域、灵活的二次组件开发，性能优越。
+                  {{$t('homeInfo.introduction_Info')}}
               </Card>
           </TabPane>
       </Tabs>
 
       <Tabs value="name1">
-          <TabPane label="Monitor" name="name1">
+          <TabPane :label="$t('homeInfo.monitor_title')" name="name1">
               <Row :gutter="16" type="flex" justify="center" style="margin-bottom: 20px">
                   <Col span="6">
                       <Card>
-                          <h3 class="alignLeft">CPU磁盘使用率</h3>
+                          <h3 class="alignLeft">{{$t('homeInfo.CPU_Disk')}}</h3>
                           <i-circle
                                   :size="150"
                                   :trail-width="6"
@@ -23,9 +23,9 @@
                                   :stroke-color="color">
                               <div class="demo-Circle-custom">
                                   <h3>{{resource.cpu.totalVirtualCores}}核</h3>
-                                  <p>总容量</p>
+                                  <p>{{$t('homeInfo.totalCapacity')}}</p>
                                   <span>
-                                      已使用
+                                      {{$t('homeInfo.Used')}}
                                       <i>{{ cpuPercent }}%</i>
                                   </span>
                               </div>
@@ -34,7 +34,7 @@
                   </Col>
                   <Col span="6" style=" margin: 0 4vw; ">
                       <Card>
-                          <h3 class="alignLeft">内存磁盘使用率</h3>
+                          <h3 class="alignLeft">{{$t('homeInfo.Memory_Disk')}}</h3>
                           <i-circle
                                   :size="150"
                                   :trail-width="6"
@@ -44,9 +44,9 @@
                                   :stroke-color="color">
                               <div class="demo-Circle-custom">
                                   <h3>{{resource.memory.totalMemoryGB}}GB</h3>
-                                  <p>总容量</p>
+                                  <p>{{$t('homeInfo.totalCapacity')}}</p>
                                   <span>
-                                      已使用
+                                      {{$t('homeInfo.Used')}}
                                       <i>{{ memoryPercent }}%</i>
                                   </span>
                               </div>
@@ -55,7 +55,7 @@
                   </Col>
                   <Col span="6">
                       <Card>
-                          <h3 class="alignLeft">HDFS磁盘使用率</h3>
+                          <h3 class="alignLeft">{{$t('homeInfo.HDFS_Disk')}}</h3>
                           <i-circle
                                   :size="150"
                                   :trail-width="6"
@@ -65,9 +65,9 @@
                                   :stroke-color="color">
                               <div class="demo-Circle-custom">
                                   <h3>{{resource.hdfs.TotalCapacityGB}}GB</h3>
-                                  <p>总容量</p>
+                                  <p>{{$t('homeInfo.totalCapacity')}}</p>
                                   <span>
-                                      已使用
+                                      {{$t('homeInfo.Used')}}
                                       <i>{{ Number(hdfsPercent.toFixed(2)) }}%</i>
                                   </span>
                               </div>
@@ -79,10 +79,10 @@
       </Tabs>
 
       <Tabs value="name1">
-          <TabPane label="Statistics" name="name1">
+          <TabPane :label="$t('homeInfo.statistics_title')" name="name1">
 <!--              <div style="height: 500px">-->
                   <Row :gutter="16" style="margin-bottom: 20px">
-                      <Col span="8" style="height: 340px" >
+                      <Col span="8" style="height: 350px" >
                           <div class="ContentQuantity">
                               <div class="statisticsImg SICutCorner">
                                   <img src="../../../assets/img/flow.png" alt="flow" />
@@ -112,12 +112,12 @@
                               </ul>
                               <div class="leftTop20">
                                   <Card class="Introduction cardStyle" shadow>
-                                      流水线统计信息，包括流水线Flow数量、运行态流水线Processor数量，以及各运行状态下Processor数量。
+                                      {{$t('homeInfo.flowStatistics')}}
                                   </Card>
                               </div>
                           </div>
                       </Col>
-                      <Col span="8" style="height: 260px">
+                      <Col span="8" style="height: 270px">
                           <div class="ContentQuantity">
                               <div class="statisticsImg SIRound">
                                   <img src="../../../assets/img/schedule.png" alt="SCHEDULE" />
@@ -138,12 +138,12 @@
                               </ul>
                               <div class="leftTop20">
                                   <Card class="Introduction cardStyle" shadow>
-                                      调度统计信息，包括调度流水线/流水线组数量，以及各个状态下Schedule数量。
+                                      {{$t('homeInfo.scheduleStatistics')}}
                                   </Card>
                               </div>
                           </div>
                       </Col>
-                      <Col span="8" style="height: 330px">
+                      <Col span="8" style="height: 340px">
                           <div class="ContentQuantity">
                               <div class="statisticsImg SIRrdial">
                                   <img src="../../../assets/img/group.png" alt="group" />
@@ -173,7 +173,7 @@
                               </ul>
                               <div class="leftTop20">
                                   <Card class="Introduction cardStyle" shadow>
-                                      流水线组统计信息，包括流水线组Group数量、运行态流水线组Processor数量，以及各运行状态下Processor数量。
+                                      {{$t('homeInfo.groupStatistics')}}
                                   </Card>
                               </div>
                           </div>
@@ -185,7 +185,7 @@
 
                           </div>
                       </Col>
-                      <Col style="margin-top: -80px;height: 280px" span="8">
+                      <Col style="margin-top: -80px;height: 290px" span="8">
                           <div class="ContentQuantity">
                               <div class="statisticsImg SITilt">
                                   <img src="../../../assets/img/others.png" alt="others" />
@@ -203,12 +203,12 @@
                               </ul>
                               <div class="leftTop20">
                                   <Card class="Introduction cardStyle" shadow>
-                                      其他统计信息，包括数据源DataSource数量、自定义组件插件StopsHub数量、模板Template数量。
+                                      {{$t('homeInfo.OtherStatistics')}}
                                   </Card>
                               </div>
                           </div>
                       </Col>
-                      <Col style="margin-top: -20px;height: 260px" span="8">
+                      <Col style="margin-top: -20px;height: 280px" span="8">
                           <div class="ContentQuantity">
                               <div class="statisticsImg SIRound">
                                   <img src="../../../assets/img/stop.png" alt="STOP" />
@@ -223,7 +223,7 @@
                               </ul>
                               <div class="leftTop20">
                                   <Card class="Introduction cardStyle" shadow>
-                                      组件统计信息，包括数据处理组件Stop数量，数据处理组件组StopGroup数量。
+                                      {{$t('homeInfo.ComponentStatistics')}}
                                   </Card>
                               </div>
                           </div>

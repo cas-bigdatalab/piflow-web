@@ -120,6 +120,20 @@ module.exports = {
         createTime: "CreateTime",
         action: "Actions"
     },
-
-
+    homeInfo: {
+        introduction_title: "Introduction",
+        monitor_title: "Monitor",
+        statistics_title: "Statistics",
+        CPU_Disk: 'CPU disk usage',
+        Memory_Disk: 'Memory disk usage',
+        HDFS_Disk: 'HDFS disk usage',
+        totalCapacity: 'total capacity',
+        Used: 'Used',
+        introduction_Info: "PiFlow is a big data pipeline system developed based on the distributed computing engine Spark. It realizes the flow configuration, operation and intelligent monitoring of big data collection, processing, storage and analysis in a WYSIWYG way, providing 100+ standardization Components, including Hadoop, Spark, MLlib, Hive, Solr, ElasticSearch, Redis, etc., supporting field-oriented and flexible secondary component development with superior performance.",
+        flowStatistics: "Pipeline statistics, include the number of pipeline flows, the number of processors in the running state, and the number of processors in each running state.",
+        scheduleStatistics: "Scheduling statistics, include the number of scheduling pipelines/pipeline groups, and the number of schedules in each state.",
+        groupStatistics: "Pipeline group statistics, include the number of pipeline groups, the number of processors of the pipeline groups in the running state, and the number of processors in each running state.",
+        OtherStatistics: "Other statistics include the number of DataSources, the number of custom component plug-ins StopsHub, and the number of templates.",
+        ComponentStatistics: "Component statistics, include the number of data processing components Stop and the number of data processing component groups StopGroup.",
+    }
 }

@@ -116,11 +116,23 @@ export default {
               icoName: "ios-paper",
               btnName: "FlowExample",
               name: "FlowExample",
+              router: {
+                path: "/drawingBoard",
+                query: {
+                  src: `/drawingBoard/page/flow/mxGraph/index.html?load=0641076d5ae840c09d2be5b71fw00001`,
+                },
+              },
             },
             {
               icoName: "ios-paper",
               btnName: "GroupExample",
               name: "GroupExample",
+              router: {
+                path: "/drawingBoard",
+                query: {
+                  src:`/drawingBoard/page/flowGroup/mxGraph/index.html?drawingBoardType=GROUP&load=ff808181725050fe017250group10002`
+                }
+              },
             }
           ]
         },

@@ -271,7 +271,7 @@ export default {
         //更新数据
         data.id = this.id;
         this.$axios
-          .get("/sysSchedule/updateScheduleInfo", { params: data })
+          .get("/sysSchedule/updateTask", { params: data })
           .then(res => {
             if (res.data.code == 200) {
               this.$Modal.success({
