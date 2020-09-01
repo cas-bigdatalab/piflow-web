@@ -468,12 +468,17 @@
                             this.formValidateType.type = flow.type;
                             this.formValidate.suType = flow.scheduleRunTemplateId;
                             this.formValidate.cron = flow.cronExpression;
-                            //flow.planStartTime = flow.planStartTime.split(' ');
-                            //this.formValidate.startDate = flow.planStartTime[0];
-                            //this.formValidate.startTime = flow.planStartTime[1];
-                            //flow.planEndTime = flow.planEndTime.split(' ');
-                            //this.formValidate.endDate = flow.planEndTime[0];
-                            //this.formValidate.endTime = flow.planEndTime[1];
+                            if (flow.planStartTime){
+                                flow.planStartTime = flow.planStartTime.split(' ');
+                                this.formValidate.startDate = flow.planStartTime[0];
+                                this.formValidate.startTime = flow.planStartTime[1];
+                            }
+                            if (flow.planEndTime){
+                                flow.planEndTime = flow.planEndTime.split(' ');
+                                this.formValidate.endDate = flow.planEndTime[0];
+                                this.formValidate.endTime = flow.planEndTime[1];
+                            }
+
                             this.$event.emit("looding", false);
                             this.isOpen = true;
                         } else {

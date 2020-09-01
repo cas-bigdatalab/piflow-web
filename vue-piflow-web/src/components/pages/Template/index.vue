@@ -312,7 +312,7 @@ export default {
           var a = document.createElement("a");
           var url = window.URL.createObjectURL(blob);
           a.href = url;
-          a.download = row.name;
+          a.download = row.name + '.xml';
           a.click();
           window.URL.revokeObjectURL(url);
           this.$Modal.success({
