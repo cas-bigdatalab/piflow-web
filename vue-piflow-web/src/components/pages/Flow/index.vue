@@ -162,7 +162,7 @@ export default {
           id: "b0ca399d05004abe9a3321cf7287d9c8",
           name: "text",
           uuid: "b0ca399d05004abe9a3321cf7287d9c8",
-          crtDttmString: "2020-06-30 13:43:37",
+          CreateTime: "2020-06-30 13:43:37",
           description: "测试",
           driverMemory: "1g",
           executorNumber: "1",
@@ -212,7 +212,7 @@ export default {
           key: "description",
         },
         {
-          title: this.$t("flow_columns.crtDttmString"),
+          title: this.$t("flow_columns.CreateTime"),
           key: "crtDttmString",
           sortable: true,
         },
@@ -407,6 +407,14 @@ export default {
             this.$Modal.success({
               title: this.$t("tip.tilte"),
               content: `${row.name} ` + this.$t("tip.run_success_content"),
+              onOk:()=>{
+                let src = "";
+                src = `/drawingBoard/page/process/mxGraph/index.html?drawingBoardType=PROCESS&load=${res.data.processId}`;
+                this.$router.push({
+                  path: "/drawingBoard",
+                  query: { src },
+                });
+              }
             });
           } else {
             this.$event.emit("looding", false);

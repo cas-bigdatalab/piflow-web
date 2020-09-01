@@ -255,10 +255,12 @@ export default {
   .ivu-menu-item {
     border: 1px solid #ddd;
     border-top: 0;
+    font-size: 12px;
   }
   .ivu-menu-item:hover {
     color: #497b95;
   }
+
 }
 .side-nav {
   color: #fff;

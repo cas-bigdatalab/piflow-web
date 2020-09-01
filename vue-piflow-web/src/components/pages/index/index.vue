@@ -94,6 +94,9 @@
                                   <li><p>Processor：
                                       <countTo :EndVal = Number(flowResourceInfo.PROCESSOR_COUNT)></countTo>
                                   </p></li>
+                                  <li><p class="textIndex">Started：
+                                      <countTo :EndVal = Number(flowResourceInfo.PROCESSOR_STARTED_COUNT)></countTo>
+                                  </p></li>
                                   <li><p class="textIndex">Competed：
                                       <countTo :EndVal = Number(flowResourceInfo.PROCESSOR_COMPETED_COUNT)></countTo>
                                   </p></li>
@@ -105,9 +108,6 @@
                                   </p></li>
                                   <li><p class="textIndex">Other：
                                       <countTo :EndVal = Number(flowResourceInfo.PROCESSOR_OTHER_COUNT)></countTo>
-                                  </p></li>
-                                  <li><p class="textIndex">Started：
-                                      <countTo :EndVal = Number(flowResourceInfo.PROCESSOR_STARTED_COUNT)></countTo>
                                   </p></li>
                               </ul>
                               <div class="leftTop20">
@@ -155,6 +155,9 @@
                                   <li><p>Processor：
                                       <countTo :EndVal = Number(groupResourceInfo.PROCESSOR_COUNT)></countTo>
                                   </p></li>
+                                  <li><p class="textIndex">Started：
+                                      <countTo :EndVal = Number(groupResourceInfo.PROCESSOR_STARTED_COUNT)></countTo>
+                                  </p></li>
                                   <li><p class="textIndex">Competed：
                                       <countTo :EndVal = Number(groupResourceInfo.PROCESSOR_COMPETED_COUNT)></countTo>
                                   </p></li>
@@ -166,9 +169,6 @@
                                   </p></li>
                                   <li><p class="textIndex">Other：
                                       <countTo :EndVal = Number(groupResourceInfo.PROCESSOR_OTHER_COUNT)></countTo>
-                                  </p></li>
-                                  <li><p class="textIndex">Started：
-                                      <countTo :EndVal = Number(groupResourceInfo.PROCESSOR_STARTED_COUNT)></countTo>
                                   </p></li>
                               </ul>
                               <div class="leftTop20">
