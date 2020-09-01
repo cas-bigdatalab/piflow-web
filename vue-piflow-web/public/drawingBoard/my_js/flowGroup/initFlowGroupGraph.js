@@ -7,7 +7,7 @@ var index = true;
 var consumedFlag, removeGroupPaths;
 var parentsId = null;
 
-function initFlowGroupDrawingBoardData(loadId, parentAccessPath) {
+function initFlowGroupDrawingBoardData(loadId, parentAccessPath, backFunc) {
     // $('#fullScreen').show();
     window.parent.postMessage(true);
     ajaxRequest({
@@ -37,15 +37,6 @@ function initFlowGroupDrawingBoardData(loadId, parentAccessPath) {
                 } else {
                     link.style.display = 'none';
                 }
-
-                // for (var key in window.parent.__VUE_HOT_MAP__){
-                //     if( window.parent.__VUE_HOT_MAP__[key].options.name === 'DrawingBoard'){
-                //         window.parent.postMessage({
-                //             parentsId :parentsId
-                //         },'*');
-                //         // window.parent.__VUE_HOT_MAP__[key].options.methods.GetChildValue(parentsId)
-                //     }
-                // }
                 xmlDate = dataMap.xmlDate;
                 maxStopPageId = dataMap.maxStopPageId;
                 isExample = dataMap.isExample;
@@ -62,6 +53,9 @@ function initFlowGroupDrawingBoardData(loadId, parentAccessPath) {
                 }
             } else {
                 window_location_href("/page/error/errorPage.html");
+            }
+            if (backFunc && $.isFunction(backFunc)) {
+                backFunc(data);
             }
             // $('#fullScreen').hide();
             window.parent.postMessage(false);

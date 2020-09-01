@@ -264,10 +264,8 @@
 
 
     $(function () {
+
         ajaxLoad("fullScreen_load_id", "/page/macro/fragmentMacro.html");
-        // ajaxLoad("publicUserHeadMacro_load_id","/page/macro/graphHeadMacro.html", function () {
-        //     $("#span_username_id").html('Howdy,' + currentUser.username + '<b class="caret"></b>');
-        // });
         ajaxLoad("flowGroup_info_inc_id", "/page/flowGroup/inc/flowGroup_info_inc.html");
         ajaxLoad("flowGroup_path_inc_id", "/page/flowGroup/inc/flowGroup_path_inc.html");
         ajaxLoad("flowGroup_property_inc_id", "/page/flowGroup/inc/flowGroup_property_inc.html", function () {
@@ -276,17 +274,7 @@
                 $("#tab_content" + $(this).val()).show().siblings("div").hide();
             });
         });
-        ajaxLoad("graphEditor_crumbs_task_load_id", "/page/flowGroup/inc/graphEditor_crumbs_group.html", function () {
-            if ("flowGroupList" === parentAccessPath) {
-                $("#web_flowGroupList_navigation").show();
-                $("#web_flowList_navigation").hide();
-                if (parentsId) {
-                    $("#grapheditor_groupDrawingBoard_navigation").show();
-                } else {
-                    $("#grapheditor_groupDrawingBoard_navigation").hide();
-                }
-            }
-        });
+
         $(".btn-group").mouseover(function () {
             $(this).addClass("open");
             var oDiv = document.getElementById("divloadingXml");
@@ -303,13 +291,10 @@
             var domArr = document.querySelectorAll('.img-src');
             for (var index = 0; index < domArr.length; index++) {
                 var src = domArr[index].getAttribute('src');
-                domArr[index].setAttribute('src', sever_base_origin + src)
+                domArr[index].setAttribute('src', web_header_prefix + src)
             }
         });
     });
-    // $(document).ready(function () {
-
-    // });
     //@ sourceURL=mxGraphIndex.js
 </script>
 
