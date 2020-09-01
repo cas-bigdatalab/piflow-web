@@ -295,21 +295,19 @@ public class DataSourceImpl implements IDataSource {
 
     @Override
     public String getDataSourceInputPageData(String username, boolean isAdmin, String dataSourceId) {
-        if (StringUtils.isBlank(dataSourceId)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("dataSourceId is null ");
-        }
-        DataSource dataSourceById = dataSourceTransaction.getDataSourceById(username, isAdmin, dataSourceId);
         DataSourceVo dataSourceVo = null;
-        if (null != dataSourceById) {
-            dataSourceVo = DataSourceUtils.dataSourcePoToVo(dataSourceById, true);
+        if (StringUtils.isNotBlank(dataSourceId)) {
+            DataSource dataSourceById = dataSourceTransaction.getDataSourceById(username, isAdmin, dataSourceId);
+            if (null != dataSourceById) {
+                dataSourceVo = DataSourceUtils.dataSourcePoToVo(dataSourceById, true);
+            }
         }
+        List<DataSourceVo> dataSourceTemplateList = DataSourceUtils.dataSourceListPoToVo(dataSourceTransaction.getDataSourceTemplateList(), true);
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(ReturnMapUtils.SUCCEEDED_MSG);
+        rtnMap.put("templateList", dataSourceTemplateList);
         if (null != dataSourceVo) {
             rtnMap.put("dataSourceVo", dataSourceVo);
         }
-        List<DataSourceVo> dataSourceTemplateList = DataSourceUtils.dataSourceListPoToVo(dataSourceTransaction.getDataSourceTemplateList(), true);
-        rtnMap.put("templateList", dataSourceTemplateList);
-        rtnMap.put(ReturnMapUtils.KEY_CODE, ReturnMapUtils.SUCCEEDED_CODE);
         return JsonUtils.toFormatJsonNoException(rtnMap);
     }
 

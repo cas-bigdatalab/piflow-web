@@ -27,7 +27,7 @@ import java.util.Date;
 import java.util.List;
 
 @Component
-public class GroupScheduleSync extends QuartzJobBean {
+public class RunningGroupScheduleSync extends QuartzJobBean {
 
     Logger logger = LoggerUtil.getLogger();
 
@@ -37,7 +37,7 @@ public class GroupScheduleSync extends QuartzJobBean {
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) {
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss:SSS");
-        logger.info("processGroupSync start : " + formatter.format(new Date()));
+        logger.info("groupScheduleSync start : " + formatter.format(new Date()));
         List<ScheduleVo> scheduleRunningList = scheduleMapper.getScheduleIdListByStateRunning(true, "sync");
         if (CollectionUtils.isNotEmpty(scheduleRunningList)) {
             ISchedule scheduleImpl = (ISchedule) SpringContextUtil.getBean("scheduleImpl");
@@ -94,7 +94,7 @@ public class GroupScheduleSync extends QuartzJobBean {
             }
 
         }
-        logger.info("processGroupSync end : " + formatter.format(new Date()));
+        logger.info("groupScheduleSync end : " + formatter.format(new Date()));
     }
 
 }
