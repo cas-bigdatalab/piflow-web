@@ -268,16 +268,15 @@
         // ajaxLoad("publicUserHeadMacro_load_id","/page/macro/graphHeadMacro.html", function () {
         //     $("#span_username_id").html('Howdy,' + currentUser.username + '<b class="caret"></b>');
         // });
-        ajaxLoad("flowGroup_info_inc_id","/page/flowGroup/inc/flowGroup_info_inc.html");
-        ajaxLoad("flowGroup_path_inc_id","/page/flowGroup/inc/flowGroup_path_inc.html");
-        ajaxLoad("flowGroup_property_inc_id","/page/flowGroup/inc/flowGroup_property_inc.html", function () {
+        ajaxLoad("flowGroup_info_inc_id", "/page/flowGroup/inc/flowGroup_info_inc.html");
+        ajaxLoad("flowGroup_path_inc_id", "/page/flowGroup/inc/flowGroup_path_inc.html");
+        ajaxLoad("flowGroup_property_inc_id", "/page/flowGroup/inc/flowGroup_property_inc.html", function () {
             $("#tab>li").click(function () {
                 $(this).removeAttr("style").siblings("li").attr("style", "background-color: rgb(218,218,218); border-color: rgb(192,192,192);");
                 $("#tab_content" + $(this).val()).show().siblings("div").hide();
             });
         });
-        ajaxLoad("graphEditor_menus_group_load_id","/page/flowGroup/inc/graphEditor_menus_group.html");
-        ajaxLoad("graphEditor_crumbs_task_load_id","/page/flowGroup/inc/graphEditor_crumbs_group.html", function () {
+        ajaxLoad("graphEditor_crumbs_task_load_id", "/page/flowGroup/inc/graphEditor_crumbs_group.html", function () {
             if ("flowGroupList" === parentAccessPath) {
                 $("#web_flowGroupList_navigation").show();
                 $("#web_flowList_navigation").hide();
@@ -296,16 +295,17 @@
         $(".btn-group").mouseleave(function () {
             $(this).removeClass("open");
         });
+        ajaxLoad("graphEditor_menus_group_load_id", "/page/flowGroup/inc/graphEditor_menus_group.html", function () {
+            initFlowGroupDrawingBoardData(loadId, parentAccessPath);
+            initFlowGroupGraph();
 
-        initFlowGroupDrawingBoardData(loadId, parentAccessPath);
-        initFlowGroupGraph();
-
-        // 替换图片地址
-        var domArr = document.querySelectorAll('.img-src');
-        for (var index = 0; index < domArr.length; index++) {
-            var src = domArr[index].getAttribute('src');
-            domArr[index].setAttribute('src', sever_base_origin + src)
-        }
+            // 替换图片地址
+            var domArr = document.querySelectorAll('.img-src');
+            for (var index = 0; index < domArr.length; index++) {
+                var src = domArr[index].getAttribute('src');
+                domArr[index].setAttribute('src', sever_base_origin + src)
+            }
+        });
     });
     // $(document).ready(function () {
 
