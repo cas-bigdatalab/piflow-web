@@ -1,4 +1,4 @@
-package cn.cnic.component.dataSource.jpa.domain;
+package cn.cnic.component.dataSource.transactional;
 
 import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.base.util.UUIDUtils;
@@ -6,7 +6,9 @@ import cn.cnic.component.dataSource.entity.DataSource;
 import cn.cnic.component.dataSource.entity.DataSourceProperty;
 import cn.cnic.component.dataSource.mapper.DataSourceMapper;
 import cn.cnic.component.dataSource.mapper.DataSourcePropertyMapper;
+import cn.cnic.component.dataSource.vo.DataSourceVo;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
@@ -36,9 +38,9 @@ public class DataSourceTransaction {
             return null;
         }
         if (StringUtils.isBlank(dataSource.getId())) {
-            return insertDataSource(dataSource);
+            return insert(dataSource);
         } else {
-            return updateDataSource(dataSource);
+            return update(dataSource);
         }
     }
 
@@ -48,7 +50,7 @@ public class DataSourceTransaction {
      * @param dataSource
      * @return
      */
-    public DataSource insertDataSource(DataSource dataSource) throws Exception {
+    public DataSource insert(DataSource dataSource) throws Exception {
         if (null == dataSource) {
             return null;
         }
@@ -78,7 +80,7 @@ public class DataSourceTransaction {
      * @param dataSource
      * @return
      */
-    public DataSource updateDataSource(DataSource dataSource) throws Exception {
+    public DataSource update(DataSource dataSource) throws Exception {
         if (null == dataSource) {
             return null;
         }
@@ -106,6 +108,22 @@ public class DataSourceTransaction {
             }
         }
         return dataSource;
+    }
+
+    public DataSource getDataSourceById(String username, boolean isAdmin, String id) {
+        return dataSourceMapper.getDataSourceById(username, isAdmin, id);
+    }
+
+    public List<DataSource> getDataSourceTemplateList() {
+        return dataSourceMapper.getDataSourceTemplateList();
+    }
+
+    public List<DataSource> getDataSourceList(String username, boolean isAdmin) {
+        return dataSourceMapper.getDataSourceList(username, isAdmin);
+    }
+
+    public List<DataSourceVo> getDataSourceVoListParam(String username, boolean isAdmin, String param) {
+        return dataSourceMapper.getDataSourceVoListParam(username, isAdmin, param);
     }
 
 }

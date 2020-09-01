@@ -339,7 +339,7 @@
         var domArr = document.querySelectorAll('.img-src');
         for (var index = 0; index < domArr.length; index++) {
             var src = domArr[index].getAttribute('src');
-            domArr[index].setAttribute('src', sever_base_origin + src)
+            domArr[index].setAttribute('src', web_header_prefix + src)
         }
     });
 
