@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import cn.cnic.base.util.*;
 import cn.cnic.component.flow.mapper.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -15,11 +16,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import cn.cnic.base.util.FlowXmlUtils;
-import cn.cnic.base.util.JsonUtils;
-import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.base.util.ReturnMapUtils;
-import cn.cnic.base.util.UUIDUtils;
 import cn.cnic.common.Eunm.PortType;
 import cn.cnic.component.flow.entity.Flow;
 import cn.cnic.component.flow.entity.FlowGroup;
@@ -272,11 +268,8 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
         // Take mxCellVoList(pathsList) from the Map
         List<MxCellVo> objectPaths = stopsPathsMap.get("paths");
 
-        // path list
-        List<Paths> addPathsList = new ArrayList<Paths>();
-
         // Generate a pathsList based on the contents of the MxCellList
-        addPathsList = MxGraphModelUtils.mxCellVoListToPathsList(username, objectPaths, flow);
+        List<Paths> addPathsList = MxGraphModelUtils.mxCellVoListToPathsList(username, objectPaths, flow);
         if (flag) {
             // Judge empty
             if (null != addPathsList && addPathsList.size() > 0) {
@@ -289,7 +282,9 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
                 logger.info("addPathsList is null,do not save");
             }
         }
-        return ReturnMapUtils.setSucceededMsg("Successful");
+        MxGraphModel mxGraphModelByFlowId = mxGraphModelMapper.getMxGraphModelByFlowId(flowId);
+        String xmlData = MxGraphUtils.mxGraphModelToMxGraphXml(mxGraphModelByFlowId);
+        return ReturnMapUtils.setSucceededCustomParam("xmlData",xmlData);
 
     }
 

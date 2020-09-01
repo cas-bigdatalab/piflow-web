@@ -23,9 +23,9 @@ function initFlowDrawingBoardData(loadId, parentAccessPath) {
         success: function (data) {//Operation after request successful
             var dataMap = JSON.parse(data);
             if (200 === dataMap.code) {
-                if (dataMap.parentsId){
+                if (dataMap.parentsId) {
                     parentsId = dataMap.parentsId;
-                }else {
+                } else {
                     parentsId = 'null';
                 }
                 top.document.getElementById('BreadcrumbFlow').style.display = 'block';
@@ -33,10 +33,10 @@ function initFlowDrawingBoardData(loadId, parentAccessPath) {
                 top.document.getElementById('BreadcrumbProcess').style.display = 'none';
                 top.document.getElementById('BreadcrumbProcessGroup').style.display = 'none';
                 var link = top.document.getElementById('FlowParents');
-                if (parentsId !== 'null'){
+                if (parentsId !== 'null') {
                     link.style.display = 'inline-block';
-                    link.href='#/drawingBoard?src=/drawingBoard/page/flowGroup/mxGraph/index.html?drawingBoardType=GROUP&parentAccessPath=flowGroupList&load='+parentsId;
-                }else {
+                    link.href = '#/drawingBoard?src=/drawingBoard/page/flowGroup/mxGraph/index.html?drawingBoardType=GROUP&parentAccessPath=flowGroupList&load=' + parentsId;
+                } else {
                     link.style.display = 'none';
                 }
 
@@ -336,6 +336,7 @@ function flowMxEventClickFunc(cell, consumedFlag) {
         $(".ExpandSidebar").toggleClass("ExpandSidebar-open");
         index = false
     }
+    console.log(cell);
     if (!consumedFlag) {
         $("#flow_info_inc_id").show();
         // info
@@ -831,7 +832,7 @@ function openDatasourceList() {
     var window_width = $(window).width();//Get browser window width
     var window_height = $(window).height();//Get browser window height
     // openLayerTypeIframeWindowLoadUrl("/page/datasource/data_source_list.html",(window_width - 100),(window_height - 100),DatasourceList)
-    openLayerTypeIframeWindowLoadUrl("/page/datasource/data_source_list.html",(window_width - 100),(window_height - 100))
+    openLayerTypeIframeWindowLoadUrl("/page/datasource/data_source_list.html", (window_width - 100), (window_height - 100))
 }
 
 //query datasource list
@@ -912,7 +913,7 @@ function fillDatasource(datasource, stop_id, stops_page_id) {
 }
 
 //Save XML file and related information
-function saveXml(paths, operType) {
+function saveXml(paths, operType, cells) {
     var getXml = thisEditor.getGraphXml();
     var xml_outer_html = getXml.outerHTML;
     var time, time1
@@ -939,6 +940,9 @@ function saveXml(paths, operType) {
                 }
                 if ("REMOVED" === operType) {
                     queryFlowInfo(loadId);
+                } else if ("ADD" === operType) {
+                    xmlDate = dataMap.xmlData;
+                    loadXml(xmlDate);
                 }
             } else {
                 //alert(operType + " save fail");
@@ -1332,7 +1336,7 @@ function addMxCellOperation(evt) {
     });
     graphGlobal.removeCells(removeCellArray);
     if (cells.length != removeCellArray.length) {
-        saveXml(paths, 'ADD');
+        saveXml(paths, 'ADD', evt.properties.cell);
     }
     if ('cellsAdded' == evt.name) {
         consumedFlag = evt.consumed ? true : false;
@@ -1551,7 +1555,7 @@ function openUpdateStopsProperty(e, isCustomized) {
     $("#stopValue").focus();
     $("#stopAttributesValue").focus();
     if ($("#stopAttributesValue").text()) {
-        $("#stopAttributesValue")[0].selectionStart =$("#stopAttributesValue").text().length;
+        $("#stopAttributesValue")[0].selectionStart = $("#stopAttributesValue").text().length;
     }
 }
 
