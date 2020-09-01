@@ -197,7 +197,7 @@ export default {
           key: "description"
         },
         {
-          title: this.$t("flow_columns.crtDttmString"),
+          title: this.$t("flow_columns.CreateTime"),
           key: "crtDttmString",
           sortable: true
         },
@@ -392,7 +392,15 @@ export default {
             this.$event.emit("looding", false);
             this.$Modal.success({
               title: this.$t("tip.tilte"),
-              content: `${row.name} ` + this.$t("tip.run_success_content")
+              content: `${row.name} ` + this.$t("tip.run_success_content"),
+              onOk:()=>{
+                let src = "";
+                src = `/drawingBoard/page/processGroup/mxGraph/index.html?drawingBoardType=PROCESS&load=${res.data.processGroupId}`;
+                this.$router.push({
+                  path: "/drawingBoard",
+                  query: { src },
+                });
+              }
             });
           } else {
             this.$event.emit("looding", false);

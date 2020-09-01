@@ -379,6 +379,20 @@ export default {
             this.$Modal.success({
               title: this.$t("tip.tilte"),
               content: `${row.name} ` + this.$t("tip.run_success_content"),
+              onOk:()=>{
+                // 根据类型进入不同的界面
+                let src = "";
+                if (row.processType === "TASK") {
+                  src = `/drawingBoard/page/process/mxGraph/index.html?drawingBoardType=PROCESS&processType=${row.processType}&load=${row.id}`;
+                } else if (row.processType === "GROUP") {
+                  src = `/drawingBoard/page/processGroup/mxGraph/index.html?drawingBoardType=PROCESS&processType=${row.processType}&load=${row.id}`;
+                };
+
+                this.$router.push({
+                  path: "/drawingBoard",
+                  query: { src },
+                });
+              }
             });
           } else {
             this.$event.emit("looding", false);

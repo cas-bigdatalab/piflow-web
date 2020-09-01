@@ -1,14 +1,16 @@
 module.exports = {
     title:"PiFlow大数据管理系统",
     sidebar: {
-        dashboard: "仪表盘",
-        flow: "Flow流程",
-        group: "Flow分组",
-        processes: "处理进程",
+        dashboard: "首页",
+        flow: "流水线",
+        group: "流水线组",
+        processes: "流水线进程",
         template: "流程模板",
-        data_source: "数据来源",
-        example: "流程案例",
-        admin: "用户管理",
+        data_source: "数据源",
+        schedule: '流水线调度',
+        stopHub: '自定义组件',
+        example: "样例",
+        admin: "高级",
     },
     page: {
         prev_text: "上一页",

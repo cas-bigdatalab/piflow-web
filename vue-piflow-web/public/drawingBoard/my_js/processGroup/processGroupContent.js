@@ -253,7 +253,7 @@ function runProcessGroup(runMode) {
 
 //stop
 function stopProcessGroup() {
-    stopFlowBtn.hide();
+    $('#stopFlowGroup').hide();
     // fullScreen.show();
     window.parent.postMessage(true);
     ajaxRequest({

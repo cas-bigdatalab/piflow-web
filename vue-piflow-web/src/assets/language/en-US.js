@@ -55,7 +55,7 @@ module.exports = {
         cancel_text: "Cancel",
         delete_content: "Are you sure to delete",
         flow_name: "FlowName",
-        group_name: "CreateGroup",
+        group_name: "GroupName",
         driverMemory: "DriverMemory",
         executorNumber: "ExecutorNumber",
         executorMemory: "ExecutorMemory",
@@ -76,7 +76,7 @@ module.exports = {
     flow_columns: {
         name: "Name",
         description: "description",
-        crtDttmString: "crtDttmString",
+        CreateTime: "CreateTime",
         dataSourceType: "DataSourceType",
         action: "Actions"
     },
