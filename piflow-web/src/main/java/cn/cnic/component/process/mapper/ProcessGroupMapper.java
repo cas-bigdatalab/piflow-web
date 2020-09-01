@@ -137,4 +137,7 @@ public interface ProcessGroupMapper {
     @UpdateProvider(type = ProcessGroupMapperProvider.class, method = "updateEnableFlagById")
     public int updateEnableFlagById(String id, String userName);
 
+    @Select("select app_id from flow_process_group where enable_flag=1 and app_id is not null and ( (state!='COMPLETED' and state!='FAILED' and state!='KILLED') or state is null )")
+    public List<String> getRunningProcessGroupAppId();
+
 }

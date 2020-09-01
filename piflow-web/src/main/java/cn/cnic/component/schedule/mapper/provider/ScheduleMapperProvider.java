@@ -245,9 +245,6 @@ public class ScheduleMapperProvider {
     }
 
     public String getScheduleIdListByStateRunning(boolean isAdmin, String username){
-        if (StringUtils.isBlank(id)) {
-            return "select 0";
-        }
         if (StringUtils.isBlank(username)) {
             return "select 0";
         }
