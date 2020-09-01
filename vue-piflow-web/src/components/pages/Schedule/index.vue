@@ -91,7 +91,7 @@
                         <Row>
                             <Col span="11">
                                 <FormItem prop="date">
-                                    <DatePicker type="date" placeholder="Select date" v-model="formValidate.startDate" @on-change="handleChangeStartDate"></DatePicker>
+                                    <DatePicker type="date" placeholder="Select date"  :value="formValidate.startDate" @on-change="handleChangeStartDate"></DatePicker>
                                 </FormItem>
                             </Col>
                             <Col span="1" style="text-align: center">-</Col>
@@ -106,7 +106,7 @@
                         <Row>
                             <Col span="11">
                                 <FormItem prop="date">
-                                    <DatePicker type="date" placeholder="Select date" v-model="formValidate.endDate" @on-change="handleChangeEndDate"></DatePicker>
+                                    <DatePicker type="date" placeholder="Select date" :value="formValidate.endDate" @on-change="handleChangeEndDate"></DatePicker>
                                 </FormItem>
                             </Col>
                             <Col span="1" style="text-align: center">-</Col>
@@ -594,6 +594,7 @@
             },
             // 获取创建日期格式转换
             handleChangeStartDate (date) {
+                console.log(date)
                 this.formValidate.startDate = date;
             },
             handleChangeEndDate (date) {
