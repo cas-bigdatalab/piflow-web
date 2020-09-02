@@ -1,5 +1,6 @@
 module.exports = {
     title:"PiFlow大数据管理系统",
+    logOut: '退出',
     sidebar: {
         dashboard: "首页",
         flow: "流水线",
@@ -17,7 +18,7 @@ module.exports = {
         next_text: "下一页"
     },
     tip: {
-        tilte: "Piflow系统提示",
+        title: "PiFlow系统提示",
         fault_content: "后台程序运行发生未知错误！",
         update_success_content: "更新成功！",
         update_fail_content: "更新失败！",
@@ -25,37 +26,119 @@ module.exports = {
         save_fail_content: "保存失败！",
         add_success_content: "添加成功！",
         add_fail_content: "添加失败！",
-        stop_success_content: "stop succeeded！",
-        stop_fail_content: "stop failed！",
         run_success_content: "运行成功！",
         run_fail_content: "运行失败！",
-        dubug_success_content: "dubug 运行成功！",
-        dubug_fail_content: "dubug 运行失败！",
+        stop_success_content: "停止成功！",
+        stop_fail_content: "停止失败！",
+        get_success_content: "数据采集成功！",
+        get_fail_content: "数据采集失败！",
+        debug_success_content: "debug 运行成功！",
+        debug_fail_content: "debug 运行失败！",
         delete_success_content: "删除成功！",
         delete_fail_content: "删除失败！",
         request_fail_content: "数据请求失败！",
 
+        upload_success_content: "模板上传成功！",
+        upload_fail_content: "模板上传失败！",
+        download_success_content: "下载成功！",
+        download_fail_content: "下载失败！",
+
+        data_fail_content: "数据采集失败！",
     },
     modal: {
         placeholder: "请输入内容...",
-        create_title: "新建 Flow",
-        udate_title: "更新 Flow",
         template_title: "保存模板名称",
         ok_text: "提交",
+        upload_text: "提交",
         confirm: "确定",
         cancel_text: "取消",
         delete_content: "确定要删除",
-        flow_name: "Flow 名称",
-        driverMemory: "driverMemory",
-        executorNumber: "执行编号",
-        executorMemory: "executorMemory",
-        executorCores: "executorCores",
-        description: "描述",
     },
     flow_columns: {
+        create_title: "新建流水线",
+        update_title: "更改流水线",
+        flow_name: "流水线名称",
+        driverMemory: "Driver内存",
+        executorNumber: "Executor数量",
+        executorMemory: "Executor内存",
+        executorCores: "Executor CPU核数",
         name: "名称",
-        description: "描述",
-        crtDttmString: "创建时间",
+        description: "描述信息",
+        CreateTime: "创建时间",
+        action: "操作"
+    },
+    group_columns: {
+        create_title: "新建流水线组",
+        update_title: "更改流水线组",
+        group_name: "流水线组名称",
+        name: "名称",
+        description: "描述信息",
+        CreateTime: "创建时间",
+        action: "操作"
+    },
+    progress_columns: {
+        progress: "进程",
+        endTime: "开始时间",
+        startTime: "结束时间",
+        processType: "流程类型",
+        description: "描述信息",
+        id: "ProcessGroupId",
+        name: "名称",
+        state: "状态",
+        action: "操作"
+    },
+    template_columns: {
+        name: "名称",
+        crtDttm: "创建时间",
+        action: "操作"
+    },
+    dataSource_columns: {
+        create_title: "新建数据源",
+        update_title: "更改数据源",
+        type: "数据源类型",
+        dataSource_name: "数据源名称",
+        addProperty: "添加属性",
+        name: "名称",
+        description: "描述信息",
+        CreateTime: "创建时间",
+        dataSourceType: "数据源类型",
+        action: "操作"
+    },
+    schedule_columns: {
+        create_title: "新建流水线调度",
+        update_title: "更改流水线调度",
+        scheduleType: "调度类型",
+        startDate: "开始时间",
+        endDate: "结束时间",
+        flowIsGroup: "流水线 / 流水线组",
+        cron: "CRON表达式",
+        type:'类型',
+        name: "名称",
+        StartTime:"开始时间",
+        EndTime:"结束时间",
+        status: "状态",
+        action: "操作"
+    },
+    StopHub_columns: {
+        upload: "新建自定义组件",
+        name: "组件名称",
+        version: "版本",
+        jarUrl: "Jar 地址",
+        status: "状态",
+        action: "操作",
+        jarDescription: '点 击 或 拖 动 jar 在 此 处 上 传'
+    },
+    admin_columns: {
+        create_title: "新建调度",
+        update_title: "更改调度",
+        jobName: "名称",
+        jobClass: "类",
+        cronExpression: "CRON表达式",
+        name: "调度名称",
+        class: "类",
+        cron: "CRON表达式",
+        status: "状态",
+        createTime: "创建时间",
         action: "操作"
     },
     homeInfo: {
@@ -74,6 +157,4 @@ module.exports = {
         OtherStatistics: "其他统计信息，包括数据源DataSource数量、自定义组件插件StopsHub数量、模板Template数量。",
         ComponentStatistics: "组件统计信息，包括数据处理组件Stop数量，数据处理组件组StopGroup数量。",
     }
-
-
 }

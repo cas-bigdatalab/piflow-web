@@ -39,7 +39,7 @@
           <DropdownMenu slot="list">
 <!--            <DropdownItem>个人中心</DropdownItem>-->
 <!--            <DropdownItem>修改密码</DropdownItem>-->
-            <DropdownItem divided @click.native="handleQuit">退出</DropdownItem>
+            <DropdownItem divided @click.native="handleQuit">{{$t("logOut")}}</DropdownItem>
           </DropdownMenu>
         </Dropdown>
       </li>

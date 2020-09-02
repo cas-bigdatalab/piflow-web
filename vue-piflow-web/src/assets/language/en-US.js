@@ -1,5 +1,6 @@
 module.exports = {
     title: "PiFlow Big Data Pipeline System",
+    logOut: 'Log out',
     sidebar: {
         dashboard: "Dashboard",
         flow: "Flow",
@@ -17,7 +18,7 @@ module.exports = {
         next_text: "Next"
     },
     tip: {
-        tilte: "Piflow system tips",
+        title: "PiFlow system tips",
         fault_content: "An unknown error occurred in the background run！",
         update_success_content: "update succeeded！",
         update_fail_content: "update failed！",
@@ -31,8 +32,8 @@ module.exports = {
         stop_fail_content: "stop failed！",
         get_success_content: "Data acquisition successful！",
         get_fail_content: "Data acquisition failed！",
-        dubug_success_content: "dubug succeeded！",
-        dubug_fail_content: "dubug failed！",
+        debug_success_content: "debug succeeded！",
+        debug_fail_content: "debug failed！",
         delete_success_content: "deleted successfully！",
         delete_fail_content: "deletion failed！",
         request_fail_content: "Data request failed！",
@@ -46,54 +47,33 @@ module.exports = {
     },
     modal: {
         placeholder: "please enter the content...",
-        create_title: "Create",
-        udate_title: "Update",
         template_title: "Template name",
         ok_text: "Submit",
         upload_text: "upload",
         confirm: "Confirm",
         cancel_text: "Cancel",
         delete_content: "Are you sure to delete",
+    },
+    flow_columns: {
+        create_title: "Create Flow",
+        update_title: "Update Flow",
         flow_name: "FlowName",
-        group_name: "GroupName",
         driverMemory: "DriverMemory",
         executorNumber: "ExecutorNumber",
         executorMemory: "ExecutorMemory",
         executorCores: "ExecutorCores",
+        name: "Name",
         description: "Description",
-        type: "Type",
-        name: "Name",
-        addProperty: "AddProperty",
-        jobName: "Name",
-        jobClass: "Class",
-        cronExpression: "Cron",
-        upload: "Upload Jar",
-        startDate: "StartDate",
-        endDate: "EndDate",
-        flowIsGroup: "Flow / Group",
-        cron: "Cron",
-    },
-    flow_columns: {
-        name: "Name",
-        description: "description",
         CreateTime: "CreateTime",
-        dataSourceType: "DataSourceType",
         action: "Actions"
     },
-    schedule_columns: {
-        cron: "Cron",
-        type:'Type',
+    group_columns: {
+        create_title: "Create Group",
+        update_title: "Update Group",
+        group_name: "GroupName",
         name: "Name",
-        planStartTime:"StartTime",
-        planEndTime:"EndTime",
-        status: "Status",
-        action: "Actions"
-    },
-    StopHub_columns: {
-        name: "Name",
-        version: "Version",
-        jarUrl: "JarUrl",
-        status: "Status",
+        description: "Description",
+        CreateTime: "CreateTime",
         action: "Actions"
     },
     progress_columns: {
@@ -108,11 +88,52 @@ module.exports = {
         action: "Actions"
     },
     template_columns: {
-        name: "name",
+        name: "Name",
         crtDttm: "CreateTime",
         action: "Actions"
     },
+    dataSource_columns: {
+        create_title: "Create DataSource",
+        update_title: "Update DataSource",
+        type: "Type",
+        dataSource_name: "Name",
+        addProperty: "AddProperty",
+        name: "Name",
+        description: "Description",
+        CreateTime: "CreateTime",
+        dataSourceType: "DataSourceType",
+        action: "Actions"
+    },
+    schedule_columns: {
+        create_title: "Create Schedule",
+        update_title: "Update Schedule",
+        scheduleType: "Schedule Type",
+        startDate: "StartDate",
+        endDate: "EndDate",
+        flowIsGroup: "Flow / Group",
+        cron: "Cron",
+        type:'Type',
+        name: "Name",
+        StartTime:"StartTime",
+        EndTime:"EndTime",
+        status: "Status",
+        action: "Actions"
+    },
+    StopHub_columns: {
+        upload: "Upload Jar",
+        name: "Name",
+        version: "Version",
+        jarUrl: "JarUrl",
+        status: "Status",
+        action: "Actions",
+        jarDescription: "Click or drag jar here to upload"
+    },
     admin_columns: {
+        create_title: "Create Schedule",
+        update_title: "Update Schedule",
+        jobName: "Name",
+        jobClass: "Class",
+        cronExpression: "Cron",
         name: "Name",
         class: "Class",
         cron: "Cron",

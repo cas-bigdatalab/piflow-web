@@ -300,7 +300,7 @@ export default {
                     // console.log(this.resource,'this.resource.cpu','remainingVirtualCores')
                 } else {
                   this.$Modal.error({
-                    title: this.$t("tip.tilte"),
+                    title: this.$t("tip.title"),
                     content: this.$t("tip.request_fail_content")
                   });
                 }
@@ -308,7 +308,7 @@ export default {
               .catch(error => {
                 console.log(error);
                 this.$Modal.error({
-                  title: this.$t("tip.tilte"),
+                  title: this.$t("tip.title"),
                   content: this.$t("tip.fault_content")
                 });
               });
@@ -324,7 +324,7 @@ export default {
                   // console.log(data)
                 } else {
                   this.$Modal.error({
-                    title: this.$t("tip.tilte"),
+                    title: this.$t("tip.title"),
                     content: this.$t("tip.request_fail_content")
                   });
                 }
@@ -332,7 +332,7 @@ export default {
               .catch(error => {
                 console.log(error);
                 this.$Modal.error({
-                  title: this.$t("tip.tilte"),
+                  title: this.$t("tip.title"),
                   content: this.$t("tip.fault_content")
                 });
               });
@@ -346,7 +346,7 @@ export default {
                     this.groupResourceInfo = data;
                 } else {
                   this.$Modal.error({
-                    title: this.$t("tip.tilte"),
+                    title: this.$t("tip.title"),
                     content: this.$t("tip.request_fail_content")
                   });
                 }
@@ -354,7 +354,7 @@ export default {
               .catch(error => {
                 console.log(error);
                 this.$Modal.error({
-                  title: this.$t("tip.tilte"),
+                  title: this.$t("tip.title"),
                   content: this.$t("tip.fault_content")
                 });
               });
@@ -368,7 +368,7 @@ export default {
                     this.scheduleResourceInfo = data;
                 } else {
                   this.$Modal.error({
-                    title: this.$t("tip.tilte"),
+                    title: this.$t("tip.title"),
                     content: this.$t("tip.request_fail_content")
                   });
                 }
@@ -376,7 +376,7 @@ export default {
               .catch(error => {
                 console.log(error);
                 this.$Modal.error({
-                  title: this.$t("tip.tilte"),
+                  title: this.$t("tip.title"),
                   content: this.$t("tip.fault_content")
                 });
               });
@@ -390,7 +390,7 @@ export default {
                     this.tempalateAndDataSourceResourceInfo = data;
                 } else {
                   this.$Modal.error({
-                    title: this.$t("tip.tilte"),
+                    title: this.$t("tip.title"),
                     content: this.$t("tip.request_fail_content")
                   });
                 }
@@ -398,7 +398,7 @@ export default {
               .catch(error => {
                 console.log(error);
                 this.$Modal.error({
-                  title: this.$t("tip.tilte"),
+                  title: this.$t("tip.title"),
                   content: this.$t("tip.fault_content")
                 });
               });
@@ -412,7 +412,7 @@ export default {
                     this.stopResourceInfo = data;
                 } else {
                   this.$Modal.error({
-                    title: this.$t("tip.tilte"),
+                    title: this.$t("tip.title"),
                     content: this.$t("tip.request_fail_content")
                   });
                 }
@@ -420,7 +420,7 @@ export default {
               .catch(error => {
                 console.log(error);
                 this.$Modal.error({
-                  title: this.$t("tip.tilte"),
+                  title: this.$t("tip.title"),
                   content: this.$t("tip.fault_content")
                 });
               });

@@ -77,22 +77,22 @@
     <!-- 弹窗添加/更新部分 -->
     <Modal
       v-model="isOpen"
-      :title="id?$t('modal.udate_title'):$t('modal.create_title')"
+      :title="id?$t('admin_columns.update_title'):$t('admin_columns.create_title')"
       :ok-text="$t('modal.ok_text')"
       :cancel-text="$t('modal.cancel_text')"
       @on-ok="handleSaveUpdateData"
     >
       <div class="modal-warp">
         <div class="item">
-          <label>{{$t('modal.jobName')}}：</label>
+          <label>{{$t('admin_columns.jobName')}}：</label>
           <Input v-model="jobName" :placeholder="$t('modal.placeholder')" style="width: 350px" />
         </div>
         <div class="item">
-          <label>{{$t('modal.jobClass')}}：</label>
+          <label>{{$t('admin_columns.jobClass')}}：</label>
           <Input v-model="jobClass" :placeholder="$t('modal.placeholder')" style="width: 350px" />
         </div>
         <div class="item">
-          <label>{{$t('modal.cronExpression')}}：</label>
+          <label>{{$t('admin_columns.cronExpression')}}：</label>
           <Input
             v-model="cronExpression"
             :placeholder="$t('modal.placeholder')"
@@ -116,7 +116,7 @@
           />
         </div>-->
         <!-- <div class="item">
-          <label class="self">{{$t('modal.description')}}：</label>
+          <label class="self">{{$t('admin_columns.description')}}：</label>
           <Input
             v-model="description"
             type="textarea"
@@ -275,7 +275,7 @@ export default {
           .then(res => {
             if (res.data.code == 200) {
               this.$Modal.success({
-                title: this.$t("tip.tilte"),
+                title: this.$t("tip.title"),
                 content: `${this.name} ` + this.$t("tip.update_success_content")
               });
               this.isOpen = false;
@@ -283,7 +283,7 @@ export default {
               this.getTableData();
             } else {
               this.$Modal.error({
-                title: this.$t("tip.tilte"),
+                title: this.$t("tip.title"),
                 content: `${this.name} ` + this.$t("tip.update_fail_content")
               });
             }
@@ -291,7 +291,7 @@ export default {
           .catch(error => {
             console.log(error);
             this.$Modal.error({
-              title: this.$t("tip.tilte"),
+              title: this.$t("tip.title"),
               content: this.$t("tip.fault_content")
             });
           });
@@ -302,7 +302,7 @@ export default {
           .then(res => {
             if (res.data.code == 200) {
               this.$Modal.success({
-                title: this.$t("tip.tilte"),
+                title: this.$t("tip.title"),
                 content: `${this.name} ` + this.$t("tip.add_success_content")
               });
               this.isOpen = false;
@@ -310,7 +310,7 @@ export default {
               this.getTableData();
             } else {
               this.$Modal.error({
-                title: this.$t("tip.tilte"),
+                title: this.$t("tip.title"),
                 content: `${this.name} ` + this.$t("tip.add_fail_content")
               });
             }
@@ -318,7 +318,7 @@ export default {
           .catch(error => {
             console.log(error);
             this.$Modal.error({
-              title: this.$t("tip.tilte"),
+              title: this.$t("tip.title"),
               content: this.$t("tip.fault_content")
             });
           });
@@ -336,7 +336,7 @@ export default {
     //     .then(res => {
     //       if (res.data.code == 200) {
     //         this.$Modal.success({
-    //           title: this.$t("tip.tilte"),
+    //           title: this.$t("tip.title"),
     //           content:
     //             `${this.templateName} ` + this.$t("tip.save_success_content")
     //         });
@@ -344,7 +344,7 @@ export default {
     //         this.row = null;
     //       } else {
     //         this.$Modal.error({
-    //           title: this.$t("tip.tilte"),
+    //           title: this.$t("tip.title"),
     //           content:
     //             `${this.templateName} ` + this.$t("tip.save_fail_content")
     //         });
@@ -353,7 +353,7 @@ export default {
     //     .catch(error => {
     //       console.log(error);
     //       this.$Modal.error({
-    //         title: this.$t("tip.tilte"),
+    //         title: this.$t("tip.title"),
     //         content: this.$t("tip.fault_content")
     //       });
     //     });
@@ -372,13 +372,13 @@ export default {
     //       if (res.data.code == 200) {
     //         this.$event.emit("looding", false);
     //         this.$Modal.success({
-    //           title: this.$t("tip.tilte"),
+    //           title: this.$t("tip.title"),
     //           content: `${row.name} ` + this.$t("tip.run_success_content")
     //         });
     //       } else {
     //         this.$event.emit("looding", false);
     //         this.$Modal.error({
-    //           title: this.$t("tip.tilte"),
+    //           title: this.$t("tip.title"),
     //           content: `${row.name} ` + this.$t("tip.run_fail_content")
     //         });
     //       }
@@ -387,7 +387,7 @@ export default {
     //       console.log(error);
     //       this.$event.emit("looding", false);
     //       this.$Modal.error({
-    //         title: this.$t("tip.tilte"),
+    //         title: this.$t("tip.title"),
     //         content: this.$t("tip.fault_content")
     //       });
     //     });
@@ -411,14 +411,14 @@ export default {
           if (res.data.code == 200) {
             this.$event.emit("looding", false);
             this.$Modal.success({
-              title: this.$t("tip.tilte"),
+              title: this.$t("tip.title"),
               content: `${row.jobName} ` + this.$t("tip.stop_success_content")
             });
             this.getTableData();
           } else {
             this.$event.emit("looding", false);
             this.$Modal.success({
-              title: this.$t("tip.tilte"),
+              title: this.$t("tip.title"),
               content: `${row.jobName} ` + this.$t("tip.stop_fail_content")
             });
           }
@@ -427,7 +427,7 @@ export default {
           console.log(error);
           this.$event.emit("looding", false);
           this.$Modal.error({
-            title: this.$t("tip.tilte"),
+            title: this.$t("tip.title"),
             content: this.$t("tip.fault_content")
           });
         });
@@ -457,7 +457,7 @@ export default {
             this.isOpen = true;
           } else {
             this.$Modal.error({
-              title: this.$t("tip.tilte"),
+              title: this.$t("tip.title"),
               content: this.$t("tip.get_fail_content")
             });
           }
@@ -466,7 +466,7 @@ export default {
           this.$event.emit("looding", false);
           console.log(error);
           this.$Modal.error({
-            title: this.$t("tip.tilte"),
+            title: this.$t("tip.title"),
             content: this.$t("tip.fault_content")
           });
         });
@@ -474,7 +474,7 @@ export default {
     //删除某一行数据
     handleDeleteRow(row) {
       this.$Modal.confirm({
-        title: this.$t("tip.tilte"),
+        title: this.$t("tip.title"),
         okText: this.$t("modal.confirm"),
         cancelText: this.$t("modal.cancel_text"),
         content: `${this.$t("modal.delete_content")} ${row.jobName}?`,
@@ -487,7 +487,7 @@ export default {
             .then(res => {
               if (res.data.code == 200) {
                 this.$Modal.success({
-                  title: this.$t("tip.tilte"),
+                  title: this.$t("tip.title"),
                   content:
                     `${row.jobName} ` + this.$t("tip.delete_success_content")
                 });
@@ -495,7 +495,7 @@ export default {
                 this.getTableData();
               } else {
                 this.$Modal.error({
-                  title: this.$t("tip.tilte"),
+                  title: this.$t("tip.title"),
                   content: this.$t("tip.delete_fail_content")
                 });
               }
@@ -503,7 +503,7 @@ export default {
             .catch(error => {
               console.log(error);
               this.$Modal.error({
-                title: this.$t("tip.tilte"),
+                title: this.$t("tip.title"),
                 content: this.$t("tip.fault_content")
               });
             });
@@ -533,7 +533,7 @@ export default {
             this.total = res.data.count;
           } else {
             this.$Modal.error({
-              title: this.$t("tip.tilte"),
+              title: this.$t("tip.title"),
               content: this.$t("tip.request_fail_content")
             });
           }
@@ -541,7 +541,7 @@ export default {
         .catch(error => {
           console.log(error);
           this.$Modal.error({
-            title: this.$t("tip.tilte"),
+            title: this.$t("tip.title"),
             content: this.$t("tip.fault_content")
           });
         });

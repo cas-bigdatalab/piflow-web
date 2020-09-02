@@ -68,14 +68,14 @@
         <!-- 弹窗添加/更新部分 -->
         <Modal
                 v-model="isOpen"
-                :title="id?$t('modal.udate_title'):$t('modal.create_title')"
+                :title="id?$t('schedule_columns.update_title'):$t('schedule_columns.create_title')"
                 :ok-text="$t('modal.ok_text')"
                 :cancel-text="$t('modal.cancel_text')"
                 @on-ok="handleSaveUpdateData"
         >
             <div class="modal-warp Schedule">
                 <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
-                    <FormItem :label="$t('modal.type')">
+                    <FormItem :label="$t('schedule_columns.scheduleType')">
                         <Select v-model="formValidateType.type" placeholder="type" style="width: 350px">
                             <Option
                                     v-for="item in formValidateType.typeList"
@@ -84,10 +84,10 @@
                             >{{ item.name }}</Option>
                         </Select>
                     </FormItem>
-                    <FormItem :label="$t('modal.cron')" prop="cron">
+                    <FormItem :label="$t('schedule_columns.cron')" prop="cron">
                         <Input v-model="formValidate.cron" :placeholder="$t('modal.placeholder')" style="width: 350px" />
                     </FormItem>
-                    <FormItem class="form-content" :label="$t('modal.startDate')">
+                    <FormItem class="form-content" :label="$t('schedule_columns.startDate')">
                         <Row>
                             <Col span="11">
                                 <FormItem prop="date">
@@ -102,7 +102,7 @@
                             </Col>
                         </Row>
                     </FormItem>
-                    <FormItem class="form-content" :label="$t('modal.endDate')">
+                    <FormItem class="form-content" :label="$t('schedule_columns.endDate')">
                         <Row>
                             <Col span="11">
                                 <FormItem prop="date">
@@ -117,7 +117,7 @@
                             </Col>
                         </Row>
                     </FormItem>
-                    <FormItem :label="$t('modal.flowIsGroup')" prop="suType">
+                    <FormItem :label="$t('schedule_columns.flowIsGroup')" prop="suType">
                         <Select v-model="formValidate.suType" style="width: 350px">
                             <Option
                                     v-for="item in subTypeList"
@@ -206,13 +206,13 @@
             columns() {
                 return [
                     {
-                        title: this.$t("schedule_columns.type"),
-                        key: "type",
+                        title: this.$t("schedule_columns.name"),
+                        key: "scheduleRunTemplateName",
                         sortable: true
                     },
                     {
-                        title: this.$t("schedule_columns.name"),
-                        key: "scheduleRunTemplateName",
+                        title: this.$t("schedule_columns.type"),
+                        key: "type",
                         sortable: true
                     },
                     {
@@ -221,12 +221,12 @@
                         sortable: true
                     },
                     {
-                        title: this.$t("schedule_columns.planStartTime"),
+                        title: this.$t("schedule_columns.StartTime"),
                         key: "planStartTimeStr",
                         sortable: true
                     },
                     {
-                        title: this.$t("schedule_columns.planEndTime"),
+                        title: this.$t("schedule_columns.EndTime"),
                         key: "planEndTimeStr",
                         sortable: true
                     },
@@ -314,7 +314,7 @@
                         .then(res => {
                             if (res.data.code == 200) {
                                 this.$Modal.success({
-                                    title: this.$t("tip.tilte"),
+                                    title: this.$t("tip.title"),
                                     content: `${this.name} ` + this.$t("tip.update_success_content")
                                 });
                                 this.isOpen = false;
@@ -322,7 +322,7 @@
                                 this.getTableData();
                             } else {
                                 this.$Modal.error({
-                                    title: this.$t("tip.tilte"),
+                                    title: this.$t("tip.title"),
                                     content: `${this.name} ` + this.$t("tip.update_fail_content")
                                 });
                             }
@@ -330,7 +330,7 @@
                         .catch(error => {
                             console.log(error);
                             this.$Modal.error({
-                                title: this.$t("tip.tilte"),
+                                title: this.$t("tip.title"),
                                 content: this.$t("tip.fault_content")
                             });
                         });
@@ -341,7 +341,7 @@
                         .then(res => {
                             if (res.data.code == 200) {
                                 this.$Modal.success({
-                                    title: this.$t("tip.tilte"),
+                                    title: this.$t("tip.title"),
                                     content: `${this.name} ` + this.$t("tip.add_success_content")
                                 });
                                 this.isOpen = false;
@@ -349,7 +349,7 @@
                                 this.getTableData();
                             } else {
                                 this.$Modal.error({
-                                    title: this.$t("tip.tilte"),
+                                    title: this.$t("tip.title"),
                                     content: `${this.name} ` + this.$t("tip.add_fail_content")
                                 });
                             }
@@ -357,7 +357,7 @@
                         .catch(error => {
                             console.log(error);
                             this.$Modal.error({
-                                title: this.$t("tip.tilte"),
+                                title: this.$t("tip.title"),
                                 content: this.$t("tip.fault_content")
                             });
                         });
@@ -377,7 +377,7 @@
                                 // this.total = res.data.count;
                             } else {
                                 this.$Modal.error({
-                                    title: this.$t("tip.tilte"),
+                                    title: this.$t("tip.title"),
                                     content: this.$t("tip.request_fail_content")
                                 });
                             }
@@ -385,7 +385,7 @@
                         .catch(error => {
                             console.log(error);
                             this.$Modal.error({
-                                title: this.$t("tip.tilte"),
+                                title: this.$t("tip.title"),
                                 content: this.$t("tip.fault_content")
                             });
                         });
@@ -400,7 +400,7 @@
                                 // this.total = res.data.count;
                             } else {
                                 this.$Modal.error({
-                                    title: this.$t("tip.tilte"),
+                                    title: this.$t("tip.title"),
                                     content: this.$t("tip.request_fail_content")
                                 });
                             }
@@ -408,7 +408,7 @@
                         .catch(error => {
                             console.log(error);
                             this.$Modal.error({
-                                title: this.$t("tip.tilte"),
+                                title: this.$t("tip.title"),
                                 content: this.$t("tip.fault_content")
                             });
                         });
@@ -432,14 +432,14 @@
                         if (res.data.code == 200) {
                             this.$event.emit("looding", false);
                             this.$Modal.success({
-                                title: this.$t("tip.tilte"),
+                                title: this.$t("tip.title"),
                                 content: `${row.cronExpression} ` + this.$t("tip.stop_success_content")
                             });
                             this.getTableData();
                         } else {
                             this.$event.emit("looding", false);
                             this.$Modal.success({
-                                title: this.$t("tip.tilte"),
+                                title: this.$t("tip.title"),
                                 content: `${row.cronExpression} ` + this.$t("tip.stop_fail_content")
                             });
                         }
@@ -448,7 +448,7 @@
                         console.log(error);
                         this.$event.emit("looding", false);
                         this.$Modal.error({
-                            title: this.$t("tip.tilte"),
+                            title: this.$t("tip.title"),
                             content: this.$t("tip.fault_content")
                         });
                     });
@@ -484,7 +484,7 @@
                         } else {
                             this.$event.emit("looding", false);
                             this.$Modal.error({
-                                title: this.$t("tip.tilte"),
+                                title: this.$t("tip.title"),
                                 content: this.$t("tip.data_fail_content")
                             });
                         }
@@ -493,7 +493,7 @@
                         console.log(error);
                         this.$event.emit("looding", false);
                         this.$Modal.error({
-                            title: this.$t("tip.tilte"),
+                            title: this.$t("tip.title"),
                             content: this.$t("tip.fault_content")
                         });
                     });
@@ -502,14 +502,14 @@
             handleDeleteRow(row) {
                 if ( row.status.text==='RUNNING' ){
                     this.$Modal.warning({
-                        title: this.$t("tip.tilte"),
+                        title: this.$t("tip.title"),
                         content:
                             `${row.cronExpression} ` +
                             'In operation, temporarily unable to delete !'
                     });
                 }else {
                     this.$Modal.confirm({
-                        title: this.$t("tip.tilte"),
+                        title: this.$t("tip.title"),
                         okText: this.$t("modal.confirm"),
                         cancelText: this.$t("modal.cancel_text"),
                         content: `${this.$t("modal.delete_content")} ${row.cronExpression}?`,
@@ -522,7 +522,7 @@
                                 .then(res => {
                                     if (res.data.code == 200) {
                                         this.$Modal.success({
-                                            title: this.$t("tip.tilte"),
+                                            title: this.$t("tip.title"),
                                             content:
                                                 `${row.cronExpression} ` +
                                                 this.$t("tip.delete_success_content")
@@ -531,7 +531,7 @@
                                         this.getTableData();
                                     } else {
                                         this.$Modal.error({
-                                            title: this.$t("tip.tilte"),
+                                            title: this.$t("tip.title"),
                                             content: this.$t("tip.delete_fail_content")
                                         });
                                     }
@@ -539,7 +539,7 @@
                                 .catch(error => {
                                     console.log(error);
                                     this.$Modal.error({
-                                        title: this.$t("tip.tilte"),
+                                        title: this.$t("tip.title"),
                                         content: this.$t("tip.fault_content")
                                     });
                                 });
@@ -566,7 +566,7 @@
                             this.total = res.data.count;
                         } else {
                             this.$Modal.error({
-                                title: this.$t("tip.tilte"),
+                                title: this.$t("tip.title"),
                                 content: this.$t("tip.request_fail_content")
                             });
                         }
@@ -574,7 +574,7 @@
                     .catch(error => {
                         console.log(error);
                         this.$Modal.error({
-                            title: this.$t("tip.tilte"),
+                            title: this.$t("tip.title"),
                             content: this.$t("tip.fault_content")
                         });
                     });

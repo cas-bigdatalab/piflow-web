@@ -81,14 +81,14 @@
     <!-- 弹窗添加/更新部分 -->
     <Modal
       v-model="isOpen"
-      :title="id?$t('modal.udate_title'):$t('modal.create_title')"
+      :title="id?$t('dataSource_columns.update_title'):$t('dataSource_columns.create_title')"
       :ok-text="$t('modal.ok_text')"
       :cancel-text="$t('modal.cancel_text')"
       @on-ok="handleSaveUpdateData"
     >
       <div class="modal-warp">
         <div class="item">
-          <label>{{$t('modal.type')}}：</label>
+          <label>{{$t('dataSource_columns.type')}}：</label>
           <!-- <Input v-model="type" :placeholder="$t('modal.placeholder')" style="width: 350px" /> -->
           <Select v-model="type" style="width:350px" @on-change="handleSelectChange">
             <Option
@@ -99,11 +99,11 @@
           </Select>
         </div>
         <div class="item">
-          <label>{{$t('modal.name')}}：</label>
+          <label>{{$t('dataSource_columns.dataSource_name')}}：</label>
           <Input v-model="name" :placeholder="$t('modal.placeholder')" style="width: 350px" />
         </div>
         <div class="item">
-          <label class="self">{{$t('modal.description')}}：</label>
+          <label class="self">{{$t('dataSource_columns.description')}}：</label>
           <Input
             v-model="description"
             type="textarea"
@@ -113,7 +113,7 @@
           />
         </div>
         <div class="item" v-if="type==='Other'">
-          <label class="self" style="margin-top:15px;">{{$t('modal.addProperty')}}：</label>
+          <label class="self" style="margin-top:15px;">{{$t('dataSource_columns.addProperty')}}：</label>
           <ul class="relationship">
             <li v-for="(item,m) in dataSourcePropertyVoList" :key="'ve'+m">
               <Input
@@ -203,21 +203,21 @@ export default {
     columns() {
       return [
         {
-          title: this.$t("flow_columns.name"),
+          title: this.$t("dataSource_columns.name"),
           key: "dataSourceName",
           sortable: true
         },
         {
-          title: this.$t("flow_columns.description"),
+          title: this.$t("dataSource_columns.description"),
           key: "dataSourceDescription"
         },
         {
-          title: this.$t("flow_columns.dataSourceType"),
+          title: this.$t("dataSource_columns.dataSourceType"),
           key: "dataSourceType",
           sortable: true
         },
         {
-          title: this.$t("flow_columns.action"),
+          title: this.$t("dataSource_columns.action"),
           slot: "action",
           width: 150,
           align: "center"
@@ -283,7 +283,7 @@ export default {
           .then(res => {
             if (res.data.code == 200) {
               this.$Modal.success({
-                title: this.$t("tip.tilte"),
+                title: this.$t("tip.title"),
                 content: `${this.name} ` + this.$t("tip.update_success_content")
               });
               this.isOpen = false;
@@ -291,7 +291,7 @@ export default {
               this.getTableData();
             } else {
               this.$Modal.error({
-                title: this.$t("tip.tilte"),
+                title: this.$t("tip.title"),
                 content: `${this.name} ` + this.$t("tip.update_fail_content")
               });
             }
@@ -299,7 +299,7 @@ export default {
           .catch(error => {
             console.log(error);
             this.$Modal.error({
-              title: this.$t("tip.tilte"),
+              title: this.$t("tip.title"),
               content: this.$t("tip.fault_content")
             });
           });
@@ -310,7 +310,7 @@ export default {
           .then(res => {
             if (res.data.code == 200) {
               this.$Modal.success({
-                title: this.$t("tip.tilte"),
+                title: this.$t("tip.title"),
                 content: `${this.name} ` + this.$t("tip.add_success_content")
               });
               this.isOpen = false;
@@ -318,7 +318,7 @@ export default {
               this.getTableData();
             } else {
               this.$Modal.error({
-                title: this.$t("tip.tilte"),
+                title: this.$t("tip.title"),
                 content: `${this.name} ` + this.$t("tip.add_fail_content")
               });
             }
@@ -326,7 +326,7 @@ export default {
           .catch(error => {
             console.log(error);
             this.$Modal.error({
-              title: this.$t("tip.tilte"),
+              title: this.$t("tip.title"),
               content: this.$t("tip.fault_content")
             });
           });
@@ -361,7 +361,7 @@ export default {
             this.typeList = data;
           } else {
             this.$Modal.error({
-              title: this.$t("tip.tilte"),
+              title: this.$t("tip.title"),
               content: this.$t("tip.get_fail_content")
             });
           }
@@ -369,7 +369,7 @@ export default {
         .catch(error => {
           console.log(error);
           this.$Modal.error({
-            title: this.$t("tip.tilte"),
+            title: this.$t("tip.title"),
             content: this.$t("tip.fault_content")
           });
         });
@@ -383,7 +383,7 @@ export default {
     handleRemove(m, mark) {
       if (mark) {
         this.$Modal.warning({
-          title: this.$t("tip.tilte"),
+          title: this.$t("tip.title"),
           content: "此项不可删除，请重新操作！"
         });
         return;
@@ -425,7 +425,7 @@ export default {
           } else {
             this.$event.emit("looding", false);
             this.$Modal.error({
-              title: this.$t("tip.tilte"),
+              title: this.$t("tip.title"),
               content: this.$t("tip.data_fail_content")
             });
           }
@@ -434,7 +434,7 @@ export default {
           console.log(error);
           this.$event.emit("looding", false);
           this.$Modal.error({
-            title: this.$t("tip.tilte"),
+            title: this.$t("tip.title"),
             content: this.$t("tip.fault_content")
           });
         });
@@ -442,7 +442,7 @@ export default {
     //删除某一行数据
     handleDeleteRow(row) {
       this.$Modal.confirm({
-        title: this.$t("tip.tilte"),
+        title: this.$t("tip.title"),
         okText: this.$t("modal.confirm"),
         cancelText: this.$t("modal.cancel_text"),
         content: `${this.$t("modal.delete_content")} ${row.dataSourceName}?`,
@@ -455,7 +455,7 @@ export default {
             .then(res => {
               if (res.data.code == 200) {
                 this.$Modal.success({
-                  title: this.$t("tip.tilte"),
+                  title: this.$t("tip.title"),
                   content:
                     `${row.dataSourceName} ` +
                     this.$t("tip.delete_success_content")
@@ -464,7 +464,7 @@ export default {
                 this.getTableData();
               } else {
                 this.$Modal.error({
-                  title: this.$t("tip.tilte"),
+                  title: this.$t("tip.title"),
                   content: this.$t("tip.delete_fail_content")
                 });
               }
@@ -472,7 +472,7 @@ export default {
             .catch(error => {
               console.log(error);
               this.$Modal.error({
-                title: this.$t("tip.tilte"),
+                title: this.$t("tip.title"),
                 content: this.$t("tip.fault_content")
               });
             });
@@ -498,7 +498,7 @@ export default {
             this.total = res.data.count;
           } else {
             this.$Modal.error({
-              title: this.$t("tip.tilte"),
+              title: this.$t("tip.title"),
               content: this.$t("tip.request_fail_content")
             });
           }
@@ -506,7 +506,7 @@ export default {
         .catch(error => {
           console.log(error);
           this.$Modal.error({
-            title: this.$t("tip.tilte"),
+            title: this.$t("tip.title"),
             content: this.$t("tip.fault_content")
           });
         });

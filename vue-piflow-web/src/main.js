@@ -93,7 +93,13 @@ axios.interceptors.response.use(response => {
 })
 
 
+axios.get('/config.json').then((res) => {
+  // 基础地址
+  // let data = JSON.parse(res.data);
+  console.log(res.data,'res-----------------------res')
+  // Vue.prototype.BASE_URL = res.BASE_URL;
 
+})
 
 
 axios.defaults.baseURL = process.env.VUE_APP_URL;

@@ -192,7 +192,7 @@ export default {
     //删除某一行数据
     handleDeleteRow(row) {
       this.$Modal.confirm({
-        title: this.$t("tip.tilte"),
+        title: this.$t("tip.title"),
         okText: this.$t("modal.confirm"),
         cancelText: this.$t("modal.cancel_text"),
         content: `${this.$t("modal.delete_content")} ${row.name}?`,
@@ -206,7 +206,7 @@ export default {
               this.$event.emit("looding", false);
               if (res.data.code == 200) {
                 this.$Modal.success({
-                  title: this.$t("tip.tilte"),
+                  title: this.$t("tip.title"),
                   content:
                     `${row.name} ` + this.$t("tip.delete_success_content")
                 });
@@ -214,7 +214,7 @@ export default {
                 this.getTableData();
               } else {
                 this.$Modal.error({
-                  title: this.$t("tip.tilte"),
+                  title: this.$t("tip.title"),
                   content: this.$t("tip.delete_fail_content")
                 });
               }
@@ -223,7 +223,7 @@ export default {
               this.$event.emit("looding", false);
               console.log(error);
               this.$Modal.error({
-                title: this.$t("tip.tilte"),
+                title: this.$t("tip.title"),
                 content: this.$t("tip.fault_content")
               });
             });
@@ -250,7 +250,7 @@ export default {
             this.total = res.data.count;
           } else {
             this.$Modal.error({
-              title: this.$t("tip.tilte"),
+              title: this.$t("tip.title"),
               content: this.$t("tip.request_fail_content")
             });
           }
@@ -259,7 +259,7 @@ export default {
           console.log(error);
           this.$event.emit("looding", false);
           this.$Modal.error({
-            title: this.$t("tip.tilte"),
+            title: this.$t("tip.title"),
             content: this.$t("tip.fault_content")
           });
         });
@@ -281,14 +281,14 @@ export default {
     //     .then(res => {
     //       if (res.data.code == 200) {
     //         this.$Modal.success({
-    //           title: this.$t("tip.tilte"),
-    //           content: `${row.name} ` + this.$t("tip.dubug_success_content")
+    //           title: this.$t("tip.title"),
+    //           content: `${row.name} ` + this.$t("tip.debug_success_content")
     //         });
     //       } else {
     //         this.$event.emit("looding", false);
     //         this.$Modal.error({
-    //           title: this.$t("tip.tilte"),
-    //           content: `${row.name} ` + this.$t("tip.dubug_fail_content")
+    //           title: this.$t("tip.title"),
+    //           content: `${row.name} ` + this.$t("tip.debug_fail_content")
     //         });
     //       }
     //     })
@@ -296,7 +296,7 @@ export default {
     //       console.log(error);
     //       this.$event.emit("looding", false);
     //       this.$Modal.error({
-    //         title: this.$t("tip.tilte"),
+    //         title: this.$t("tip.title"),
     //         content: this.$t("tip.fault_content")
     //       });
     //     });
@@ -316,7 +316,7 @@ export default {
           a.click();
           window.URL.revokeObjectURL(url);
           this.$Modal.success({
-            title: this.$t("tip.tilte"),
+            title: this.$t("tip.title"),
             content: row.name + " " + this.$t("tip.download_success_content")
           });
         })
@@ -325,7 +325,7 @@ export default {
           //  console.log(file);
           // this.$event.emit("looding", false);
           this.$Modal.error({
-            title: this.$t("tip.tilte"),
+            title: this.$t("tip.title"),
             content: row.name + " " + tthis.$t("tip.download_fail_content")
           });
         });
@@ -336,13 +336,13 @@ export default {
       this.$event.emit("looding", false);
       if (response.code === 200) {
         this.$Modal.success({
-          title: this.$t("tip.tilte"),
+          title: this.$t("tip.title"),
           content: this.$t("tip.upload_success_content")
         });
         this.getTableData();
       } else {
         this.$Modal.error({
-          title: this.$t("tip.tilte"),
+          title: this.$t("tip.title"),
           content: this.$t("tip.upload_fail_content")
         });
       }
@@ -352,7 +352,7 @@ export default {
       //  console.log(file);
       this.$event.emit("looding", false);
       this.$Modal.error({
-        title: this.$t("tip.tilte"),
+        title: this.$t("tip.title"),
         content: this.$t("tip.upload_fail_content")
       });
     },

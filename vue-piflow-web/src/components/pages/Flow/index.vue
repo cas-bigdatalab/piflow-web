@@ -87,18 +87,18 @@
     <!-- 弹窗添加/更新部分 -->
     <Modal
       v-model="isOpen"
-      :title="id?$t('modal.udate_title'):$t('modal.create_title')"
+      :title="id?$t('flow_columns.update_title'):$t('flow_columns.create_title')"
       :ok-text="$t('modal.ok_text')"
       :cancel-text="$t('modal.cancel_text')"
       @on-ok="handleSaveUpdateData"
     >
       <div class="modal-warp">
         <div class="item">
-          <label>{{$t('modal.flow_name')}}：</label>
+          <label>{{$t('flow_columns.flow_name')}}：</label>
           <Input v-model="name" :placeholder="$t('modal.placeholder')" style="width: 350px" />
         </div>
         <div class="item">
-          <label>{{$t('modal.driverMemory')}}：</label>
+          <label>{{$t('flow_columns.driverMemory')}}：</label>
           <Input
             v-model="driverMemory"
             :placeholder="$t('modal.placeholder')"
@@ -106,7 +106,7 @@
           />
         </div>
         <div class="item">
-          <label>{{$t('modal.executorNumber')}}：</label>
+          <label>{{$t('flow_columns.executorNumber')}}：</label>
           <Input
             v-model="executorNumber"
             :placeholder="$t('modal.placeholder')"
@@ -114,7 +114,7 @@
           />
         </div>
         <div class="item">
-          <label>{{$t('modal.executorMemory')}}：</label>
+          <label>{{$t('flow_columns.executorMemory')}}：</label>
           <Input
             v-model="executorMemory"
             :placeholder="$t('modal.placeholder')"
@@ -122,7 +122,7 @@
           />
         </div>
         <div class="item">
-          <label>{{$t('modal.executorCores')}}：</label>
+          <label>{{$t('flow_columns.executorCores')}}：</label>
           <Input
             v-model="executorCores"
             :placeholder="$t('modal.placeholder')"
@@ -130,7 +130,7 @@
           />
         </div>
         <div class="item">
-          <label class="self">{{$t('modal.description')}}：</label>
+          <label class="self">{{$t('flow_columns.description')}}：</label>
           <Input
             v-model="description"
             type="textarea"
@@ -301,7 +301,7 @@ export default {
           .then((res) => {
             if (res.data.code == 200) {
               this.$Modal.success({
-                title: this.$t("tip.tilte"),
+                title: this.$t("tip.title"),
                 content:
                   `${this.name} ` + this.$t("tip.update_success_content"),
               });
@@ -310,7 +310,7 @@ export default {
               this.getTableData();
             } else {
               this.$Modal.error({
-                title: this.$t("tip.tilte"),
+                title: this.$t("tip.title"),
                 content: `${this.name} ` + this.$t("tip.update_fail_content"),
               });
             }
@@ -318,7 +318,7 @@ export default {
           .catch((error) => {
             console.log(error);
             this.$Modal.error({
-              title: this.$t("tip.tilte"),
+              title: this.$t("tip.title"),
               content: this.$t("tip.fault_content"),
             });
           });
@@ -329,7 +329,7 @@ export default {
           .then((res) => {
             if (res.data.code == 200) {
               // this.$Modal.success({
-              //   title: this.$t("tip.tilte"),
+              //   title: this.$t("tip.title"),
               //   content: `${this.name} ` + this.$t("tip.add_success_content"),
               //   onOk:()=>{
                   this.$router.push({
@@ -345,7 +345,7 @@ export default {
               this.getTableData();
             } else {
               this.$Modal.error({
-                title: this.$t("tip.tilte"),
+                title: this.$t("tip.title"),
                 content: `${this.name} ` + this.$t("tip.add_fail_content"),
               });
             }
@@ -353,7 +353,7 @@ export default {
           .catch((error) => {
             console.log(error);
             this.$Modal.error({
-              title: this.$t("tip.tilte"),
+              title: this.$t("tip.title"),
               content: this.$t("tip.fault_content"),
             });
           });
@@ -371,7 +371,7 @@ export default {
         .then((res) => {
           if (res.data.code == 200) {
             this.$Modal.success({
-              title: this.$t("tip.tilte"),
+              title: this.$t("tip.title"),
               content:
                 `${this.templateName} ` + this.$t("tip.save_success_content"),
             });
@@ -379,7 +379,7 @@ export default {
             this.row = null;
           } else {
             this.$Modal.error({
-              title: this.$t("tip.tilte"),
+              title: this.$t("tip.title"),
               content:
                 `${this.templateName} ` + this.$t("tip.save_fail_content"),
             });
@@ -388,7 +388,7 @@ export default {
         .catch((error) => {
           console.log(error);
           this.$Modal.error({
-            title: this.$t("tip.tilte"),
+            title: this.$t("tip.title"),
             content: this.$t("tip.fault_content"),
           });
         });
@@ -405,7 +405,7 @@ export default {
           if (res.data.code == 200) {
             this.$event.emit("looding", false);
             this.$Modal.success({
-              title: this.$t("tip.tilte"),
+              title: this.$t("tip.title"),
               content: `${row.name} ` + this.$t("tip.run_success_content"),
               onOk:()=>{
                 let src = "";
@@ -419,7 +419,7 @@ export default {
           } else {
             this.$event.emit("looding", false);
             this.$Modal.error({
-              title: this.$t("tip.tilte"),
+              title: this.$t("tip.title"),
               content: `${row.name} ` + this.$t("tip.run_fail_content"),
             });
           }
@@ -428,7 +428,7 @@ export default {
           console.log(error);
           this.$event.emit("looding", false);
           this.$Modal.error({
-            title: this.$t("tip.tilte"),
+            title: this.$t("tip.title"),
             content: this.$t("tip.fault_content"),
           });
         });
@@ -447,13 +447,13 @@ export default {
           this.$event.emit("looding", false);
           if (res.data.code == 200) {
             this.$Modal.success({
-              title: this.$t("tip.tilte"),
-              content: `${row.name} ` + this.$t("tip.dubug_success_content"),
+              title: this.$t("tip.title"),
+              content: `${row.name} ` + this.$t("tip.debug_success_content"),
             });
           } else {
             this.$Modal.error({
-              title: this.$t("tip.tilte"),
-              content: `${row.name} ` + this.$t("tip.dubug_fail_content"),
+              title: this.$t("tip.title"),
+              content: `${row.name} ` + this.$t("tip.debug_fail_content"),
             });
           }
         })
@@ -461,7 +461,7 @@ export default {
           console.log(error);
           this.$event.emit("looding", false);
           this.$Modal.error({
-            title: this.$t("tip.tilte"),
+            title: this.$t("tip.title"),
             content: this.$t("tip.fault_content"),
           });
         });
@@ -488,7 +488,7 @@ export default {
             this.isOpen = true;
           } else {
             this.$Modal.success({
-              title: this.$t("tip.tilte"),
+              title: this.$t("tip.title"),
               content: this.$t("tip.request_fail_content"),
             });
           }
@@ -500,7 +500,7 @@ export default {
     //删除某一行数据
     handleDeleteRow(row) {
       this.$Modal.confirm({
-        title: this.$t("tip.tilte"),
+        title: this.$t("tip.title"),
         okText: this.$t("modal.confirm"),
         cancelText: this.$t("modal.cancel_text"),
         content: `${this.$t("modal.delete_content")} ${row.name}?`,
@@ -513,7 +513,7 @@ export default {
             .then((res) => {
               if (res.data.code == 200) {
                 this.$Modal.success({
-                  title: this.$t("tip.tilte"),
+                  title: this.$t("tip.title"),
                   content:
                     `${row.name} ` + this.$t("tip.delete_success_content"),
                 });
@@ -521,7 +521,7 @@ export default {
                 this.getTableData();
               } else {
                 this.$Modal.error({
-                  title: this.$t("tip.tilte"),
+                  title: this.$t("tip.title"),
                   content: this.$t("tip.delete_fail_content"),
                 });
               }
@@ -529,7 +529,7 @@ export default {
             .catch((error) => {
               console.log(error);
               this.$Modal.error({
-                title: this.$t("tip.tilte"),
+                title: this.$t("tip.title"),
                 content: this.$t("tip.fault_content"),
               });
             });
@@ -555,7 +555,7 @@ export default {
             this.total = res.data.count;
           } else {
             this.$Modal.error({
-              title: this.$t("tip.tilte"),
+              title: this.$t("tip.title"),
               content: this.$t("tip.request_fail_content"),
             });
           }
@@ -563,7 +563,7 @@ export default {
         .catch((error) => {
           console.log(error);
           this.$Modal.error({
-            title: this.$t("tip.tilte"),
+            title: this.$t("tip.title"),
             content: this.$t("tip.fault_content"),
           });
         });

@@ -57,7 +57,7 @@
         <Modal
                 v-model="isOpen"
                 :loading="loading"
-                :title="$t('modal.upload')"
+                :title="$t('StopHub_columns.upload')"
                 :ok-text="$t('modal.upload_text')"
                 :cancel-text="$t('modal.cancel_text')"
                 @on-ok="uploadSuccess"
@@ -81,7 +81,7 @@
                         <div style="padding: 80px 0; height: 240px">
                             <div>
                                 <Icon type="ios-cloud-upload" size="52" style="color: #20784b"></Icon>
-                                <p>Click or drag jar here to upload</p>
+                                <p>{{$t("StopHub_columns.jarDescription")}}</p>
                             </div>
                         </div>
                     </Upload>
@@ -249,7 +249,7 @@
             handleRemove(m, mark) {
                 if (mark) {
                     this.$Modal.warning({
-                        title: this.$t("tip.tilte"),
+                        title: this.$t("tip.title"),
                         content: "此项不可删除，请重新操作！"
                     });
                     return;
@@ -272,14 +272,14 @@
                         if (res.data.code == 200) {
                             this.$event.emit("looding", false);
                             this.$Modal.success({
-                                title: this.$t("tip.tilte"),
+                                title: this.$t("tip.title"),
                                 content: `${row.jarName} ` + this.$t("tip.stop_success_content")
                             });
                             this.getTableData();
                         } else {
                             this.$event.emit("looding", false);
                             this.$Modal.success({
-                                title: this.$t("tip.tilte"),
+                                title: this.$t("tip.title"),
                                 content: `${row.jarName} ` + this.$t("tip.stop_fail_content")
                             });
                         }
@@ -288,7 +288,7 @@
                         console.log(error);
                         this.$event.emit("looding", false);
                         this.$Modal.error({
-                            title: this.$t("tip.tilte"),
+                            title: this.$t("tip.title"),
                             content: this.$t("tip.fault_content")
                         });
                     });
@@ -298,14 +298,14 @@
             handleDeleteRow(row) {
                 if ( row.status.text==='MOUNT' ){
                     this.$Modal.warning({
-                        title: this.$t("tip.tilte"),
+                        title: this.$t("tip.title"),
                         content:
                             `${row.jarName} ` +
                             'In operation, temporarily unable to delete !'
                     });
                 }else {
                     this.$Modal.confirm({
-                        title: this.$t("tip.tilte"),
+                        title: this.$t("tip.title"),
                         okText: this.$t("modal.confirm"),
                         cancelText: this.$t("modal.cancel_text"),
                         content: `${this.$t("modal.delete_content")} ${row.jarName}?`,
@@ -318,7 +318,7 @@
                                 .then(res => {
                                     if (res.data.code == 200) {
                                         this.$Modal.success({
-                                            title: this.$t("tip.tilte"),
+                                            title: this.$t("tip.title"),
                                             content:
                                                 `${row.jarName} ` +
                                                 this.$t("tip.delete_success_content")
@@ -326,7 +326,7 @@
                                         this.getTableData();
                                     } else {
                                         this.$Modal.error({
-                                            title: this.$t("tip.tilte"),
+                                            title: this.$t("tip.title"),
                                             content: this.$t("tip.delete_fail_content")
                                         });
                                     }
@@ -334,7 +334,7 @@
                                 .catch(error => {
                                     console.log(error);
                                     this.$Modal.error({
-                                        title: this.$t("tip.tilte"),
+                                        title: this.$t("tip.title"),
                                         content: this.$t("tip.fault_content")
                                     });
                                 });
@@ -376,7 +376,7 @@
                             this.total = res.data.count;
                         } else {
                             this.$Modal.error({
-                                title: this.$t("tip.tilte"),
+                                title: this.$t("tip.title"),
                                 content: this.$t("tip.request_fail_content")
                             });
                         }
@@ -384,7 +384,7 @@
                     .catch(error => {
                         console.log(error);
                         this.$Modal.error({
-                            title: this.$t("tip.tilte"),
+                            title: this.$t("tip.title"),
                             content: this.$t("tip.fault_content")
                         });
                     });
