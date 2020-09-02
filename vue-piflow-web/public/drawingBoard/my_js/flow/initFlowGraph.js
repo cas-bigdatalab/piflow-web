@@ -1065,7 +1065,7 @@ function getStopsPortNew(paths) {
                         }
                     }
                     showHtml.find('#sourceTypeDiv').html(sourceTypeStr);
-                    showHtml.find('#sourceTitleStr').html('Source:' + dataMap.sourceName);
+                    showHtml.find('#sourceTitleStr').html('From：' + dataMap.sourceName);
                     // Gets the detailed use of the target port
                     var targetPortUsageMap = dataMap.targetPortUsageMap;
                     if (targetPortUsageMap) {
@@ -1097,13 +1097,13 @@ function getStopsPortNew(paths) {
                         }
                     }
                     showHtml.find('#targetTypeDiv').html(targetTypeStr);
-                    showHtml.find('#targetTitleStr').html('Target:' + dataMap.targetName);
+                    showHtml.find('#targetTitleStr').html('To：' + dataMap.targetName);
                     if ("Default" === sourceTypeStr && "Default" === targetTypeStr) {
                     } else if ("None" === sourceTypeStr || "None" === targetTypeStr) {
                     } else {
                         layer.open({
                             type: 1,
-                            title: '<span style="color: #269252;">SET PATN PROT WINDOWS</span>',
+                            title: '<span style="color: #269252;">Set Patn Prot Windows</span>',
                             shadeClose: false,
                             closeBtn: 0,
                             shift: 7,

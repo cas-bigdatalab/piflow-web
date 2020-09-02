@@ -70,47 +70,96 @@
       </template>
     </Table>
     <div class="card-list" v-else>
-      <Card style="width:19%" v-for="(item,i) in tableData" :key="'df'+i">
-        <div slot="title">
-          <!-- <Icon type="ios-film-outline"></Icon> -->
-          {{item.name}}
-        </div>
-        <img src="../../../assets/img/20200714234723.png" class="img-style" />
-        <div slot="extra">
-          <Dropdown trigger="click">
+      <Row :gutter="16">
+        <Col span="6" v-for="(item,i) in tableData" :key="'df'+i">
+          <Card style="margin-bottom: 20px">
+            <div slot="title">
+              <!-- <Icon type="ios-film-outline"></Icon> -->
+              <span v-if="item.name">{{item.name}}</span>
+              <span v-else style="visibility: hidden">a</span>
+            </div>
+            <img src="../../../assets/img/20200714234723.png" class="img-style" />
+            <div slot="extra">
+              <Dropdown trigger="click">
             <span class="md-more">
               <Icon type="md-more" size="20" />
             </span>
-            <DropdownMenu slot="list">
-              <DropdownItem @click.native="handleButtonSelect(item,1)">
-                <Icon type="ios-redo" />
-                <span>Jump</span>
-              </DropdownItem>
-              <DropdownItem @click.native="handleButtonSelect(item,2)">
-                <Icon type="ios-play" />
-                <span>Run</span>
-              </DropdownItem>
-              <DropdownItem @click.native="handleButtonSelect(item,3)">
-                <Icon type="ios-square" />
-                <span>Stop</span>
-              </DropdownItem>
-              <DropdownItem @click.native="handleButtonSelect(item,4)">
-                <Icon type="ios-trash" />
-                <span>Delete</span>
-              </DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
-        </div>
-        <!--   <ul>
-            <li>
-                <a :href="item.url" target="_blank">{{ item.name }}</a>
-                <span>
-                    <Icon type="ios-star" v-for="n in 4" :key="n"></Icon><Icon type="ios-star" v-if="item.rate >= 9.5"></Icon><Icon type="ios-star-half" v-else></Icon>
-                    {{ item.rate }}
-                </span>
-            </li>
-        </ul>-->
-      </Card>
+                <DropdownMenu slot="list">
+                  <DropdownItem @click.native="handleButtonSelect(item,1)">
+                    <Icon type="ios-redo" />
+                    <span>Jump</span>
+                  </DropdownItem>
+                  <DropdownItem @click.native="handleButtonSelect(item,2)">
+                    <Icon type="ios-play" />
+                    <span>Run</span>
+                  </DropdownItem>
+                  <DropdownItem @click.native="handleButtonSelect(item,3)">
+                    <Icon type="ios-square" />
+                    <span>Stop</span>
+                  </DropdownItem>
+                  <DropdownItem @click.native="handleButtonSelect(item,4)">
+                    <Icon type="ios-trash" />
+                    <span>Delete</span>
+                  </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+            </div>
+            <!--   <ul>
+                <li>
+                    <a :href="item.url" target="_blank">{{ item.name }}</a>
+                    <span>
+                        <Icon type="ios-star" v-for="n in 4" :key="n"></Icon><Icon type="ios-star" v-if="item.rate >= 9.5"></Icon><Icon type="ios-star-half" v-else></Icon>
+                        {{ item.rate }}
+                    </span>
+                </li>
+            </ul>-->
+          </Card>
+        </Col>
+      </Row>
+
+
+
+<!--      <Card style="width:19%" v-for="(item,i) in tableData" :key="'df'+i">-->
+<!--        <div slot="title">-->
+<!--          &lt;!&ndash; <Icon type="ios-film-outline"></Icon> &ndash;&gt;-->
+<!--          {{item.name}}-->
+<!--        </div>-->
+<!--        <img src="../../../assets/img/20200714234723.png" class="img-style" />-->
+<!--        <div slot="extra">-->
+<!--          <Dropdown trigger="click">-->
+<!--            <span class="md-more">-->
+<!--              <Icon type="md-more" size="20" />-->
+<!--            </span>-->
+<!--            <DropdownMenu slot="list">-->
+<!--              <DropdownItem @click.native="handleButtonSelect(item,1)">-->
+<!--                <Icon type="ios-redo" />-->
+<!--                <span>Jump</span>-->
+<!--              </DropdownItem>-->
+<!--              <DropdownItem @click.native="handleButtonSelect(item,2)">-->
+<!--                <Icon type="ios-play" />-->
+<!--                <span>Run</span>-->
+<!--              </DropdownItem>-->
+<!--              <DropdownItem @click.native="handleButtonSelect(item,3)">-->
+<!--                <Icon type="ios-square" />-->
+<!--                <span>Stop</span>-->
+<!--              </DropdownItem>-->
+<!--              <DropdownItem @click.native="handleButtonSelect(item,4)">-->
+<!--                <Icon type="ios-trash" />-->
+<!--                <span>Delete</span>-->
+<!--              </DropdownItem>-->
+<!--            </DropdownMenu>-->
+<!--          </Dropdown>-->
+<!--        </div>-->
+<!--        &lt;!&ndash;   <ul>-->
+<!--            <li>-->
+<!--                <a :href="item.url" target="_blank">{{ item.name }}</a>-->
+<!--                <span>-->
+<!--                    <Icon type="ios-star" v-for="n in 4" :key="n"></Icon><Icon type="ios-star" v-if="item.rate >= 9.5"></Icon><Icon type="ios-star-half" v-else></Icon>-->
+<!--                    {{ item.rate }}-->
+<!--                </span>-->
+<!--            </li>-->
+<!--        </ul>&ndash;&gt;-->
+<!--      </Card>-->
     </div>
     <!-- 分页部分 -->
     <div class="page">
