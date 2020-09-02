@@ -95,7 +95,7 @@ public class ProcessGroupMapperProvider {
         boolean flag = this.preventSQLInjectionProcessGroup(processGroup);
         if (flag) {
             StringBuffer strBuf = new StringBuffer();
-            strBuf.append("INSERT INTO group_schedule ");
+            strBuf.append("INSERT INTO flow_process_group ");
             strBuf.append("( ");
             strBuf.append(SqlUtils.baseFieldName() + ", ");
             strBuf.append("name, ");
@@ -132,7 +132,7 @@ public class ProcessGroupMapperProvider {
             strBuf.append(this.runModeType + ", ");
             strBuf.append(this.processParentType + ", ");
             strBuf.append(this.processGroupId + ", ");
-            strBuf.append(this.viewXml + ", ");
+            strBuf.append(this.viewXml + " ");
             strBuf.append(")");
             this.resetProcessGroup();
             return strBuf.toString() + ";";
