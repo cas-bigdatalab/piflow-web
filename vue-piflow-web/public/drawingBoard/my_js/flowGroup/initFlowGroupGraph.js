@@ -6,6 +6,7 @@ var flag = 0;
 var index = true;
 var consumedFlag, removeGroupPaths;
 var parentsId = null;
+var imgType = null;
 
 function initFlowGroupDrawingBoardData(loadId, parentAccessPath, backFunc) {
     // $('#fullScreen').show();
@@ -72,7 +73,7 @@ function imageAjax() {
     ajaxRequest({
         type: "post",//Request type post
         url: "/mxGraph/nodeImageList",
-        data: {imageType: "TASK"},
+        data: {imageType: imgType},
         async: true,//Synchronous Asynchronous
         error: function (request) {//Operation after request failure
             return;
@@ -745,6 +746,7 @@ function queryFlowOrFlowGroupProperty(pageId, loadId) {
                 var nodeType = dataMap.nodeType;
                 if ("flowGroup" === nodeType) {
                     var flowGroupVo = dataMap.flowGroupVo;
+                    imgType = 'GROUP';
                     $("#div_cell_flowVo_basicInfo_id").hide();
                     $("#div_cell_flowVo_attributeInfo_id").hide();
                     $("#div_cell_flowGroupVo_basicInfo_id").show();
@@ -775,6 +777,7 @@ function queryFlowOrFlowGroupProperty(pageId, loadId) {
                     $('#cell_flowGroup_property_inc_load_data').show();
                 } else if ("flow" === nodeType) {
                     var flowVo = dataMap.flowVo;
+                    imgType = 'TASK';
                     $("#div_cell_flowGroupVo_basicInfo_id").hide();
                     $("#div_cell_flowGroupVo_attributeInfo_id").hide();
                     $("#div_cell_flowVo_basicInfo_id").show();
