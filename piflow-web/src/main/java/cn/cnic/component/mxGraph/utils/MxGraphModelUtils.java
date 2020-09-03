@@ -37,7 +37,7 @@ public class MxGraphModelUtils {
             if (isAddId) {
                 mxGraphModel.setId(UUIDUtils.getUUID32());
             }
-            return mxGraphModelNewNoId(username);
+            return mxGraphModel;
         }
         // basic properties (required when creating)
         mxGraphModel.setCrtDttm(new Date());
