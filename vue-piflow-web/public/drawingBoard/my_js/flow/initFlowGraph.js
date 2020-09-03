@@ -28,10 +28,18 @@ function initFlowDrawingBoardData(loadId, parentAccessPath) {
                 } else {
                     parentsId = 'null';
                 }
-                top.document.getElementById('BreadcrumbFlow').style.display = 'block';
+                let herf = top.window.location.href.split("src=")[1];
+                if (herf.indexOf('BreadcrumbSchedule') !== -1){
+                    top.document.getElementById('BreadcrumbSchedule').style.display = 'block';
+                    top.document.getElementById('BreadcrumbFlow').style.display = 'none';
+                }else {
+                    top.document.getElementById('BreadcrumbFlow').style.display = 'block';
+                    top.document.getElementById('BreadcrumbSchedule').style.display = 'none';
+                }
                 top.document.getElementById('BreadcrumbGroup').style.display = 'none';
                 top.document.getElementById('BreadcrumbProcess').style.display = 'none';
                 top.document.getElementById('BreadcrumbProcessGroup').style.display = 'none';
+
                 var link = top.document.getElementById('FlowParents');
                 if (parentsId !== 'null') {
                     link.style.display = 'inline-block';
@@ -69,7 +77,7 @@ function initFlowDrawingBoardData(loadId, parentAccessPath) {
                 window_location_href("/page/error/errorPage.html");
             }
             // $('#fullScreen').hide();
-            window.parent.postMessage(false);
+            // window.parent.postMessage(false);
         },
         error: function (request) {//Operation after request failure
             window_location_href("/page/error/errorPage.html");
@@ -1073,7 +1081,7 @@ function getStopsPortNew(paths) {
                         for (portName in targetPortUsageMap) {
                             var portNameVal = targetPortUsageMap[portName];
                             var portCheckDiv = '<div id="' + portName + 'Checkbox" class="addCheckbox">'
-                                + '<input id="' + portName + '" name="' + portName + '" type="checkbox" class="addCheckbox" value="' + portName + '"' + (!portNameVal ? 'checked="checked" disabled="disabled"' : '') + '/>'
+                                + '<input style="margin-right: 5px" id="' + portName + '" name="' + portName + '" type="checkbox" class="addCheckbox" value="' + portName + '"' + (!portNameVal ? 'checked="checked" disabled="disabled"' : '') + '/>'
                                 + '<span class="addCheckbox ' + portName + '" disabled="' + !portNameVal + '">' + portName + '</span>'
                                 + '</div>';
                             showHtml.find('#targetTitleCheckbox').append(portCheckDiv);
@@ -1130,7 +1138,7 @@ function crtAnyPort(crtPortInputId, isSource) {
     if (portNameVal && '' !== portNameVal) {
         if (!document.getElementById(portNameVal)) {
             var obj = '<div style="display: block;margin: 5px 0;" class="addCheckbox" id="jCheckbox">'
-                + '<input style="margin-right:5px" type="checkbox" class="addCheckbox" id="' + portNameVal + '" name="' + portNameVal + '" value="' + portNameVal + '">'
+                + '<input style="margin-right:5px" type="checkbox" checked = "checked" class="addCheckbox" id="' + portNameVal + '" name="' + portNameVal + '" value="' + portNameVal + '">'
                 + '<span class="' + portNameVal + '">' + portNameVal + '</span>'
                 + '</div>';
             if (isSource) {
@@ -1536,7 +1544,8 @@ function openUpdateStopsProperty(e, isCustomized) {
     }
     stopOpenTemplateClone.find("#stopAttributesValueBtn").attr("onclick", funcStr);
     var p = $(e).offset();
-    var openWindowCoordinate = [(p.top + 34) + 'px', (document.body.clientWidth - 300) + 'px'];
+    // var openWindowCoordinate = [(p.top + 34) + 'px', (document.body.clientWidth - 300) + 'px'];
+    var openWindowCoordinate = [(p.top + 34) + 'px', 77 + 'vw'];
     console.log(openWindowCoordinate);
     layer.open({
         type: 1,
@@ -1549,7 +1558,7 @@ function openUpdateStopsProperty(e, isCustomized) {
         resize: true,//No stretching
         //move: false,//No dragging
         offset: openWindowCoordinate,//coordinate
-        area: ['290px', '204px'], //Width Height
+        area: ['22vw;', '250px'], //Width Height
         content: stopOpenTemplateClone.html()
     });
     $("#stopValue").focus();

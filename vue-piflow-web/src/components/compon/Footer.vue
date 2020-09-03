@@ -57,6 +57,13 @@
 <!--      <BreadcrumbItem id="ProcessParents" :to="'#'">ProcessList</BreadcrumbItem>-->
 <!--      <BreadcrumbItem id="ProcessBreadcrumbItem" :to="'#'">drawingBoard</BreadcrumbItem>-->
     </Breadcrumb>
+
+    <Breadcrumb id="BreadcrumbSchedule">
+      <span class="spanPointer" @click="handleClick('Schedule')">Schedule
+        <span style="margin: 0 5px;display: inline-block">&gt;&gt;</span>
+      </span>
+      <span style="font-weight: bold">drawingBoard</span>
+    </Breadcrumb>
   </footer>
 </template>
 
@@ -117,6 +124,16 @@ export default {
               document.getElementById('BreadcrumbProcessGroup').style.display = 'none';
             });
           break;
+        case 'Schedule':
+          window.sessionStorage.setItem("menuName", 'schedule');
+          this.$router.push({
+            path: '/schedule',
+            name: 'schedule',
+          });
+          this.$nextTick(()=>{
+            document.getElementById('BreadcrumbSchedule').style.display = 'none';
+          });
+          break;
       }
     }
   },
@@ -144,7 +161,7 @@ footer {
   .ivu-breadcrumb > span:last-child {
     color: #fff;
   }
-  #BreadcrumbFlow, #BreadcrumbGroup, #BreadcrumbProcess, #BreadcrumbProcessGroup{
+  #BreadcrumbFlow, #BreadcrumbGroup, #BreadcrumbProcess, #BreadcrumbProcessGroup, #BreadcrumbSchedule{
     display: none;
     span, a{
       color: #ffffff

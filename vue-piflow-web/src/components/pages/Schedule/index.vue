@@ -269,9 +269,9 @@
                 switch (key) {
                     case 1:
                         // eslint-disable-next-line no-case-declarations
-                        let src = "/drawingBoard/page/flow/mxGraph/index.html?load=" + row.scheduleRunTemplateId;
+                        let src = "/drawingBoard/page/flow/mxGraph/index.html?load=" + row.scheduleRunTemplateId + '&BreadcrumbSchedule';
                         if ( row.type === "FLOW_GROUP" ){
-                            src = `/drawingBoard/page/flowGroup/mxGraph/index.html?drawingBoardType=GROUP&load=${row.scheduleRunTemplateId}`
+                            src = `/drawingBoard/page/flowGroup/mxGraph/index.html?drawingBoardType=GROUP&load=${row.scheduleRunTemplateId}` + '&BreadcrumbSchedule'
                         }
                         this.$event.emit("crumb", [
                             { name: "flow", path: "/schedule" },

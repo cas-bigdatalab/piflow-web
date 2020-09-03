@@ -186,6 +186,7 @@ function queryProcessInfo(processId) {
                 top.document.getElementById('BreadcrumbProcessGroup').style.display = 'none';
                 top.document.getElementById('BreadcrumbFlow').style.display = 'none';
                 top.document.getElementById('BreadcrumbGroup').style.display = 'none';
+                top.document.getElementById('BreadcrumbSchedule').style.display = 'none';
                 var link = top.document.getElementById('ProcessParents');
                 if (processGroupId !== 'null' && processGroupId !== undefined){
                     link.style.display = 'inline-block';

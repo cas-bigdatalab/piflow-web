@@ -460,7 +460,8 @@ Menus.prototype.init = function()
 	{
 		if (this.editorUi.format != null)
 		{
-			this.addMenuItems(menu, ['formatPanel'], parent);
+			// Prohibit the formatPanel used in the toolbar
+			// this.addMenuItems(menu, ['formatPanel'], parent);
 		}
 		
 //------------------------------ Custom modification content 001 start ------------------------------
