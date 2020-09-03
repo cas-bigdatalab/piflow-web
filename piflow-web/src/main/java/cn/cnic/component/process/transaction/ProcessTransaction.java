@@ -190,22 +190,22 @@ public class ProcessTransaction {
     /**
      * logically delete
      *
-     * @param processId processId
+     * @param appId appId
      * @return affected rows
      */
-    public Process getProcessById(String username, boolean isAdmin, String processId) {
-        if (StringUtils.isBlank(processId) || StringUtils.isBlank(username)) {
-            logger.warn("process id is null");
+    public Process getProcessByAppId(String username, boolean isAdmin, String appId) {
+        if (StringUtils.isBlank(appId)) {
+            logger.warn("appId id is null");
             return null;
         }
         int affectedLine = 0;
 
-        Process processById = processMapper.getProcessById(username, isAdmin, processId);
-        if (null == processById) {
+        Process processByAppId = processMapper.getProcessByAppId(appId);
+        if (null == processByAppId) {
             logger.warn("data is null");
             return null;
         }
-        return processById;
+        return processByAppId;
     }
 
 }
