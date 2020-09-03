@@ -73,11 +73,16 @@ function getCheckpoint(pID, parentProcessId, processId, runMode) {
 
                     var layer_open_checkpoint = document.createElement("div");
                     layer_open_checkpoint.id = "checkpointsContentDiv";
+                    layer_open_checkpoint.style.height = "190px";
+                    layer_open_checkpoint.style.overflow = "auto";
+                    layer_open_checkpoint.style.margin = "10px";
 
                     for (var i = 0; i < checkpointsSplitArray.length; i++) {
                         var checkpoints_content_span = document.createElement("span");
                         checkpoints_content_span.style.display = "block";
                         checkpoints_content_span.style.margin = "5px 10px";
+                        checkpoints_content_span.style.borderBottom = "1px dashed #ccc";
+                        checkpoints_content_span.style.padding = "2px 0";
                         var checkpoints_content_span_input = document.createElement("input");
                         checkpoints_content_span_input.type = "checkbox";
                         checkpoints_content_span_input.value = checkpointsSplitArray[i];
@@ -427,10 +432,11 @@ function monitor(pageId, processStopVoState) {
 function getDebugData(stopName, portName) {
     var window_width = $(window).width();//Get browser window width
     var window_height = $(window).height();//Get browser window width
+    console.log(window_width,'------',window_height)
     var jsonData = {"appId": appId, "stopName": stopName, "portName": portName};
     ajaxLoad("", "/page/process/inc/debug_data_inc.html", function (data) {
-        var open_window_width = (window_width > 300 ? window_width - 200 : window_width);
-        var open_window_height = (window_height > 300 ? window_height - 200 : window_height);
+        var open_window_width = (window_width > 300 ? 1200 : window_width);
+        var open_window_height = (window_height > 400 ? 550 : window_height);
         openLayerWindowLoadHtml(data,open_window_width,open_window_height,"Debug Data");
         $("#debug_app_id").html(appId);
         $("#debug_stop_name").html(stopName);
