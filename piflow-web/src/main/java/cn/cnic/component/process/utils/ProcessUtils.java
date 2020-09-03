@@ -151,7 +151,7 @@ public class ProcessUtils {
         return processPathVo;
     }
 
-    public static Process flowToProcess(Flow flow, String username,boolean isAddId) {
+    public static Process flowToProcess(Flow flow, String username, boolean isAddId) {
         Process process = null;
         if (null != flow) {
             process = new Process();
@@ -173,7 +173,7 @@ public class ProcessUtils {
             // Take out the flow board information of the flow
             MxGraphModel mxGraphModel = flow.getMxGraphModel();
             MxGraphModel mxGraphModelProcess = MxGraphModelUtils.copyMxGraphModelAndNewNoIdAndUnlink(mxGraphModel, isAddId);
-            mxGraphModelProcess = MxGraphModelUtils.initMxGraphModelBasicPropertiesNoId(mxGraphModelProcess, username);
+            mxGraphModelProcess = MxGraphModelUtils.initMxGraphModelBasicPropertiesNoId(mxGraphModelProcess, username, isAddId);
             // add link
             mxGraphModelProcess.setProcess(process);
             process.setMxGraphModel(mxGraphModelProcess);
@@ -352,7 +352,7 @@ public class ProcessUtils {
         // copy processMxGraphModel
         MxGraphModel processMxGraphModel = process.getMxGraphModel();
         MxGraphModel copyMxGraphModel = MxGraphModelUtils.copyMxGraphModelAndNewNoIdAndUnlink(processMxGraphModel, isAddId);
-        copyMxGraphModel = MxGraphModelUtils.initMxGraphModelBasicPropertiesNoId(copyMxGraphModel, username);
+        copyMxGraphModel = MxGraphModelUtils.initMxGraphModelBasicPropertiesNoId(copyMxGraphModel, username,isAddId);
         // add link
         copyMxGraphModel.setProcess(copyProcess);
         copyProcess.setMxGraphModel(copyMxGraphModel);
