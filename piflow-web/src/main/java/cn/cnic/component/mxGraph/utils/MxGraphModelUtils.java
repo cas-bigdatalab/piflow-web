@@ -31,9 +31,13 @@ public class MxGraphModelUtils {
         return mxGraphModel;
     }
 
-    public static MxGraphModel initMxGraphModelBasicPropertiesNoId(MxGraphModel mxGraphModel, String username) {
+    public static MxGraphModel initMxGraphModelBasicPropertiesNoId(MxGraphModel mxGraphModel, String username, boolean isAddId) {
         if (null == mxGraphModel) {
-            return mxGraphModelNewNoId(username);
+            mxGraphModel = mxGraphModelNewNoId(username);
+            if (isAddId) {
+                mxGraphModel.setId(UUIDUtils.getUUID32());
+            }
+            return mxGraphModel;
         }
         // basic properties (required when creating)
         mxGraphModel.setCrtDttm(new Date());

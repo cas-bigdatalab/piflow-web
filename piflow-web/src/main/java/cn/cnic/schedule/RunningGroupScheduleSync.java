@@ -61,7 +61,7 @@ public class RunningGroupScheduleSync extends QuartzJobBean {
                             }
                             String scheduleEntryType = thirdScheduleEntryVo.getScheduleEntryType();
                             if ("Flow".equals(scheduleEntryType)) {
-                                Process processById = processTransaction.getProcessById("sync", true, scheduleVo.getScheduleProcessTemplateId());
+                                Process processById = processTransaction.getProcessByAppId("sync", true, scheduleVo.getScheduleProcessTemplateId());
                                 if(processById == null){
                                     logger.warn("sync failed");
                                 }
