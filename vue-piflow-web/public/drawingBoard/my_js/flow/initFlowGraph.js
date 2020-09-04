@@ -1600,9 +1600,9 @@ function updateStopsProperty(stopsPropertyId, property_name_id, type) {
             var dataMap = JSON.parse(data);
             if (200 === dataMap.code) {
                 $("#" + stopsPropertyId).val(dataMap.value);
-                layer.msg("update success", {icon: 1, shade: 0, time: 1000}, function () {
+                // layer.msg("update success", {icon: 1, shade: 0, time: 1000}, function () {
                     layer.closeAll();
-                });
+                // });
             } else {
                 layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000}, function () {
                 });

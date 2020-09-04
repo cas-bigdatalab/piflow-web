@@ -63,11 +63,11 @@ function getCheckpoint(pID, parentProcessId, processId, runMode) {
                     layer_open_checkpoint_btn.className = "btn btn-default";
                     layer_open_checkpoint_btn.setAttribute("style", "margin-right: 10px;");
                     if (runMode && 'DEBUG' === runMode) {
-                        layer_open_checkpoint_btn.textContent = "DEBUG";
+                        layer_open_checkpoint_btn.textContent = "Debug";
                         layer_open_checkpoint_btn.setAttribute('onclick', 'runProcess("' + processId + '","DEBUG")')
                     } else {
                         layer_open_checkpoint_btn.setAttribute('onclick', 'runProcess("' + processId + '")');
-                        layer_open_checkpoint_btn.textContent = "RUN"
+                        layer_open_checkpoint_btn.textContent = "Run"
                     }
                     layer_open_checkpoint_btn_div.appendChild(layer_open_checkpoint_btn);
 

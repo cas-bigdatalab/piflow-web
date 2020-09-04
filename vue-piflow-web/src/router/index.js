@@ -13,6 +13,11 @@ export default new Router({
       name: 'login',
       component: () => import('../components/pages/login')
     },
+    {
+      path: '/bootPage',
+      name: 'bootPage',
+      component: () => import('../components/pages/bootPage')
+    },
 
     {
       path: '/',
@@ -77,7 +82,7 @@ export default new Router({
           path: '/drawingBoard',
           name: 'drawingboard',
           component: () => import('../components/pages/DrawingBoard')
-        },
+        }
       ]
     },
 

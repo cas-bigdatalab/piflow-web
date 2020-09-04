@@ -841,7 +841,8 @@ function getFlowList() {
     var window_width = $(window).width();//Get browser window width
     var window_height = $(window).height();//Get browser window height
     ajaxLoad("", "/page/flow/flow_list_import.html", function (data) {
-        openLayerWindowLoadHtml(data, (window_width / 2), (window_height - 100), "Flows");
+        // openLayerWindowLoadHtml(data, (window_width / 2), (window_height - 100), "Flows");
+        openLayerWindowLoadHtml(data, (window_width / 2), (window_height > 400 ? 550 : window_height), "Flows");
     });
 }
 
