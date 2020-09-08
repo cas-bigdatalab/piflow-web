@@ -220,6 +220,7 @@
 <script>
 // import API from "../../api/index";
 // import axios from "axios";
+import Cookies from 'js-cookie';
 export default {
   name: "login",
   data() {
@@ -327,10 +328,13 @@ export default {
             //   JSON.stringify(res.data.jwtUser)
             // );
             this.$store.commit("setToken", res.data.token);
-            window.sessionStorage.setItem('token',res.data.token)
+            // window.sessionStorage.setItem('token',res.data.token);
+            Cookies.set('token', res.data.token);
             this.$store.commit("setUser", res.data.jwtUser);
-            window.sessionStorage.setItem("state", "jwtok");
-            window.sessionStorage.setItem("usre", this.username);
+            // window.sessionStorage.setItem("state", "jwtok");
+            Cookies.set('state', "jwtok");
+            // window.sessionStorage.setItem("usre", this.username);
+            Cookies.set('usre', this.username);
             if (this.$route.query.redirect) { //如果存在参数
               let redirect = this.$route.query.redirect;
               this.$router.push(redirect)//则跳转至进入登录页前的路由

@@ -100,6 +100,7 @@
 </template>
 
 <script>
+    import Cookies from 'js-cookie';
     export default {
         name: "stopHub",
         components: {},
@@ -177,7 +178,8 @@
             // console.log(this.$refs.upload.fileList)
             let token = this.$store.state.variable.token;
             if (!token) {
-                token = `${window.sessionStorage.getItem("token")}`
+                // token = `${window.sessionStorage.getItem("token")}`
+                token = `${Cookies.get('token')}`
             }
             this.token = `Bearer ${token}`;
         },

@@ -57,6 +57,7 @@
 </template>
 
 <script>
+    import Cookies from 'js-cookie';
 export default {
   data() {
     return {
@@ -73,15 +74,17 @@ export default {
   // props: ["width"],
   mounted() {
     // this.user = this.$store.state.variable.user;
-    this.user = { username: window.sessionStorage.usre };
-    // console.log(window.sessionStorage.getItem("user"));
+    // this.user = { username: window.sessionStorage.usre };
+    this.user = { username: Cookies.get('usre') };
+      // console.log(window.sessionStorage.getItem("user"));
     // console.log(this.user);
   },
   methods: {
     handleLanguageSwitch(val) {
       this.$i18n.locale = val; //关键语句
       // 使用 localStorage 存储语言状态
-      window.sessionStorage.setItem("lang", val);
+      // window.sessionStorage.setItem("lang", val);
+      Cookies.set('lang', val);
       // 刷新页面更新视图
       // window.location.reload();
     },
@@ -91,9 +94,12 @@ export default {
     //   this.$event.emit("isCollapsed", this.isCollapsed);
     // }
     handleQuit() {
-      window.sessionStorage.removeItem("state");
+      // window.sessionStorage.removeItem("state");
       window.sessionStorage.removeItem("menuName");
-      window.sessionStorage.removeItem("user");
+      // window.sessionStorage.removeItem("user");
+      Cookies.remove('state');
+      // Cookies.remove('menuName');
+      Cookies.remove('user');
       this.$store.commit("setToken", "");
       this.$store.commit("setUser", {});
       this.$router.push({ path: "/login" });

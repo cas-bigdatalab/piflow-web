@@ -1,6 +1,7 @@
+import Cookies from 'js-cookie';
 const state = {
   positionIsShow:false,
-  token:"",
+  token: Cookies.get('token'),
   user:{}
 }
 const mutations = {
