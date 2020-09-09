@@ -180,9 +180,10 @@ public interface IProcessService {
      *
      * @param appID
      * @param stopName
+     * @param visualizationType
      * @return
      */
-    public String getVisualizationData(String appID, String stopName);
+    public String getVisualizationData(String appID, String stopName, String visualizationType);
 
     /**
      * Query process based on processId and pageId

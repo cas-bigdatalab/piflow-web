@@ -702,18 +702,19 @@ public class ProcessServiceImpl implements IProcessService {
      *
      * @param appID
      * @param stopName
+     * @param visualizationType
      * @return
      */
     @Override
-    public String getVisualizationData(String appID, String stopName) {
-        if (null == appID || null == stopName ) {
+    public String getVisualizationData(String appID, String stopName,String visualizationType) {
+        if (null == appID || null == stopName || null == visualizationType) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("param is null");
         }
         // (all parameters have values, and isanyempty returns false)
-        if (StringUtils.isAnyBlank(appID, stopName)) {
+        if (StringUtils.isAnyBlank(appID, stopName, visualizationType)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("param is null");
         }
-        String visualizationData = flowImpl.getVisualizationData(appID, stopName);
+        String visualizationData = flowImpl.getVisualizationData(appID, stopName, visualizationType);
         if (StringUtils.isBlank(visualizationData)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Interface call failed");
         }

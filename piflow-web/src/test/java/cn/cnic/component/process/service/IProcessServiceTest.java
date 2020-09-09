@@ -20,8 +20,14 @@ public class IProcessServiceTest extends ApplicationTests {
     }
 
     @Test
-    public void testFlowVisualizationData() {
-        String result = processServiceImpl.getVisualizationData("application_1596710850427_0039", "LineChart8");
+    public void testLineChartVisualizationData() {
+        String result = processServiceImpl.getVisualizationData("application_1596710850427_0039", "LineChart8", "LINECHART");
+        System.out.println(result);
+    }
+
+    @Test
+    public void testPieChartVisualizationData() {
+        String result = processServiceImpl.getVisualizationData("application_1596710850427_0413", "PieChart", "PIECHART");
         System.out.println(result);
     }
 

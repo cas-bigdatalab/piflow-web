@@ -51,7 +51,7 @@ public interface IFlow {
 
     public String getDebugData(String appID, String stopName, String portName);
 
-    public String getVisualizationData(String appID, String stopName);
+    public String getVisualizationData(String appID, String stopName, String visualizationType);
 
     public ThirdFlowInfoVo getFlowInfo(String appid);
 
