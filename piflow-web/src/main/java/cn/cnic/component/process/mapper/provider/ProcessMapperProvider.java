@@ -314,6 +314,24 @@ public class ProcessMapperProvider {
         }
         return sqlStr;
     }
+    /**
+     * Query process id according to process appId
+     *
+     * @param appID
+     * @return
+     */
+    public String getProcessIdByAppId(String appID) {
+        String sqlStr = "select 0";
+        if (StringUtils.isNotBlank(appID)) {
+            SQL sql = new SQL();
+            sql.SELECT("id");
+            sql.FROM("flow_process");
+            sql.WHERE("enable_flag = 1");
+            sql.WHERE("app_id = " + SqlUtils.preventSQLInjection(appID));
+            sqlStr = sql.toString();
+        }
+        return sqlStr;
+    }
 
     /**
      * Query process according to process appId

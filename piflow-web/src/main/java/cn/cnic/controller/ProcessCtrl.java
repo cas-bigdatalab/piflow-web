@@ -268,8 +268,9 @@ public class ProcessCtrl {
         rtnMap.put("code", 500);
         String appId = request.getParameter("appId");
         String stopName = request.getParameter("stopName");
+        String visualizationType = request.getParameter("visualizationType");
 
-        return processServiceImpl.getVisualizationData(appId, stopName);
+        return processServiceImpl.getVisualizationData(appId, stopName, visualizationType);
     }
 
     /**

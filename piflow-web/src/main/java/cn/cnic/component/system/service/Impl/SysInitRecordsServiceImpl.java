@@ -2,6 +2,7 @@ package cn.cnic.component.system.service.Impl;
 
 import cn.cnic.base.util.JsonUtils;
 import cn.cnic.base.util.LoggerUtil;
+import cn.cnic.base.util.ReturnMapUtils;
 import cn.cnic.base.util.UUIDUtils;
 import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.component.flow.entity.Property;
@@ -71,9 +72,25 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
     @Resource
     private StopsComponentTransactional stopsComponentTransactional;
 
+    public boolean isInBootPage() {
+        // Determine if the boot flag is true
+        if (!SysParamsCache.IS_BOOT_COMPLETE) {
+            // Query is boot record
+            SysInitRecords sysInitRecordsLastNew = sysInitRecordsDomain.getSysInitRecordsLastNew(1);
+            if (null == sysInitRecordsLastNew || !sysInitRecordsLastNew.getIsSucceed()) {
+                return true;
+            }
+        }
+        return true;
+    }
+
     @Transactional
     @Override
     public String initComponents(String currentUser) {
+        boolean inBootPage = isInBootPage();
+        if (!inBootPage) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("No initialization, enter the boot page");
+        }
         Map<String, Object> rtnMap = new HashMap<>();
         ExecutorService es = new ThreadPoolExecutor(1, 5, 0L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<Runnable>(100000));
@@ -114,10 +131,8 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
 
     @Override
     public String threadMonitoring(String currentUser) {
-        Map<String, Object> rtnMap = new HashMap<>();
-        rtnMap.put("code", 500);
         if (null == SysParamsCache.THREAD_POOL_EXECUTOR) {
-            return JsonUtils.toJsonNoException(rtnMap);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("THREAD_POOL_EXECUTOR is null");
         }
         //Total number of threads
         double taskCount = SysParamsCache.THREAD_POOL_EXECUTOR.getTaskCount();
@@ -132,9 +147,7 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
         if (100 == progressNumLong) {
             addSysInitRecordsAndSave();
         }
-        rtnMap.put("progress", progressNumLong);
-        rtnMap.put("code", 200);
-        return JsonUtils.toJsonNoException(rtnMap);
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("progress", progressNumLong);
     }
 
     private List<String> loadStopGroup(String currentUser) {
@@ -284,9 +297,9 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
                 }
                 addProperties.add(property);
             }
+            stops.setProperties(properties);
+            propertyMapper.addPropertyList(addProperties);
         }
-        stops.setProperties(properties);
-        propertyMapper.addPropertyList(addProperties);
     }
 
 }

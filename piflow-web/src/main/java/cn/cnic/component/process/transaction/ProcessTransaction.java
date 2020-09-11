@@ -191,7 +191,7 @@ public class ProcessTransaction {
      * logically delete
      *
      * @param appId appId
-     * @return affected rows
+     * @return Process
      */
     public Process getProcessByAppId(String username, boolean isAdmin, String appId) {
         if (StringUtils.isBlank(appId)) {
@@ -206,6 +206,48 @@ public class ProcessTransaction {
             return null;
         }
         return processByAppId;
+    }
+
+    /**
+     * logically delete
+     *
+     * @param appId appId
+     * @return Process
+     */
+    public String getProcessIdByAppId(String username, boolean isAdmin, String appId) {
+        if (StringUtils.isBlank(appId)) {
+            logger.warn("appId id is null");
+            return null;
+        }
+        int affectedLine = 0;
+
+        String processId = processMapper.getProcessIdByAppId(appId);
+        if (null == processId) {
+            logger.warn("data is null");
+            return null;
+        }
+        return processId;
+    }
+
+    /**
+     * logically delete
+     *
+     * @param id id
+     * @return Process
+     */
+    public Process getProcessById(String username, boolean isAdmin, String id) {
+        if (StringUtils.isBlank(id)) {
+            logger.warn("id is null");
+            return null;
+        }
+        int affectedLine = 0;
+
+        Process processById = processMapper.getProcessById(username, isAdmin, id);
+        if (null == processById) {
+            logger.warn("data is null");
+            return null;
+        }
+        return processById;
     }
 
 }

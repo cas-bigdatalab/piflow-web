@@ -185,10 +185,11 @@ public class FlowImpl implements IFlow {
     }
 
     @Override
-    public String getVisualizationData(String appID, String stopName) {
+    public String getVisualizationData(String appID, String stopName, String visualizationType ) {
         Map<String, String> map = new HashMap<String, String>();
         map.put("appID", appID);
         map.put("stopName", stopName);
+        map.put("visualizationType",visualizationType);
         String doGet = HttpUtils.doGet(SysParamsCache.getFlowVisualizationDataUrl(), map, 5 * 1000);
         logger.info("call succeeded : " + doGet);
         if (StringUtils.isNotBlank(doGet) && !doGet.contains("Exception")) {

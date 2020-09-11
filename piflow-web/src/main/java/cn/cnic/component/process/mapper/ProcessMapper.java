@@ -113,6 +113,9 @@ public interface ProcessMapper {
     })
     public Process getProcessByAppId(String appID);
 
+    @SelectProvider(type = ProcessMapperProvider.class, method = "getProcessIdByAppId")
+    public String getProcessIdByAppId(String appID);
+
     /**
      * Query process according to process appid
      *
@@ -204,7 +207,7 @@ public interface ProcessMapper {
     @Select("select fp.run_mode_type from flow_process fp where fp.enable_flag = 1 and fp.id=#{id}")
     public RunModeType getProcessRunModeTypeById(String id);
 
-    @Select("select app_id from flow_process where enable_flag=1 and app_id is not null and ( ( state!='COMPLETED' and state!='FAILED' and state!='KILLED' ) or state is null )")
+    @Select("select app_id from flow_process where enable_flag=1 and fk_flow_process_group_id is null and app_id is not null and ( ( state!='COMPLETED' and state!='FINISHED' and state!='FAILED' and state!='KILLED' ) or state is null )")
     List<String> getRunningProcessAppId();
 
 }

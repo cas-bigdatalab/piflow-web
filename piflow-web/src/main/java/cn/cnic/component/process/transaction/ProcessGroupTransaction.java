@@ -82,12 +82,21 @@ public class ProcessGroupTransaction {
         MxGraphModel mxGraphModel = processGroup.getMxGraphModel();
         if (null != mxGraphModel) {
             addMxGraphModel = mxGraphModelTransaction.addMxGraphModel(mxGraphModel);
-        }
-        if (addMxGraphModel <= 0) {
-            throw new Exception("save failed");
+            if (addMxGraphModel <= 0) {
+                throw new Exception("save failed");
+            }
         }
         int influenceCounts = (addProcessGroupCounts + addProcessGroupPathCounts + addProcessListCounts + addProcessGroupListCounts + addMxGraphModel);
         return influenceCounts;
+    }
+
+
+    public List<String> getProcessGroupIdByAppId(String appId){
+        if (StringUtils.isBlank(appId)) {
+            logger.warn("process id is null");
+            return null;
+        }
+        return processGroupMapper.getProcessGroupIdByAppId(appId);
     }
 
     public ProcessGroup getProcessGroupById(String username, boolean isAdmin, String processGroupId){

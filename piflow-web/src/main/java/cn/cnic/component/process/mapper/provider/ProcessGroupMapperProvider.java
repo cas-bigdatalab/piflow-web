@@ -238,6 +238,24 @@ public class ProcessGroupMapperProvider {
         }
         return sqlStr;
     }
+    /**
+     * Query id according to processGroup appId
+     *
+     * @param appID
+     * @return
+     */
+    public String getProcessGroupIdByAppId(String appID) {
+        String sqlStr = "select 0";
+        if (StringUtils.isNotBlank(appID)) {
+            SQL sql = new SQL();
+            sql.SELECT("id");
+            sql.FROM("flow_process_group");
+            sql.WHERE("enable_flag = 1");
+            sql.WHERE("app_id = " + SqlUtils.preventSQLInjection(appID));
+            sqlStr = sql.toString();
+        }
+        return sqlStr;
+    }
 
     /**
      * Query processGroup list according to the process AppId array

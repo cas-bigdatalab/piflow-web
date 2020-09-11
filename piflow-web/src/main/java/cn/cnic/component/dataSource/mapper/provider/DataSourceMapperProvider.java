@@ -213,7 +213,7 @@ public class DataSourceMapperProvider {
      * @param id
      * @return
      */
-    public String getDataSourceById(String username, boolean isAdmin, String id) {
+    public String getDataSourceByIdAndUser(String username, boolean isAdmin, String id) {
         String sqlStr = "";
         if (StringUtils.isNotBlank(id)) {
             StringBuffer strBuf = new StringBuffer();
@@ -224,6 +224,25 @@ public class DataSourceMapperProvider {
             if (!isAdmin) {
                 strBuf.append("and crt_user = " + SqlUtils.preventSQLInjection(username));
             }
+            sqlStr = strBuf.toString();
+        }
+        return sqlStr;
+    }
+
+    /**
+     * Query the data source according to the workflow Id
+     *
+     * @param id
+     * @return
+     */
+    public String getDataSourceById(String id) {
+        String sqlStr = "";
+        if (StringUtils.isNotBlank(id)) {
+            StringBuffer strBuf = new StringBuffer();
+            strBuf.append("select * ");
+            strBuf.append("from data_source ");
+            strBuf.append("where enable_flag = 1 ");
+            strBuf.append("and id = " + SqlUtils.preventSQLInjection(id) + " ");
             sqlStr = strBuf.toString();
         }
         return sqlStr;
