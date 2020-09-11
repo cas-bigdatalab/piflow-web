@@ -3,6 +3,7 @@ package cn.cnic.schedule;
 import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.base.util.SpringContextUtil;
 import cn.cnic.common.Eunm.RunModeType;
+import cn.cnic.common.Eunm.ScheduleState;
 import cn.cnic.common.executor.ServicesExecutor;
 import cn.cnic.component.process.entity.Process;
 import cn.cnic.component.process.entity.ProcessGroup;
@@ -10,12 +11,14 @@ import cn.cnic.component.process.transaction.ProcessGroupTransaction;
 import cn.cnic.component.process.transaction.ProcessTransaction;
 import cn.cnic.component.process.utils.ProcessGroupUtils;
 import cn.cnic.component.process.utils.ProcessUtils;
+import cn.cnic.component.schedule.entity.Schedule;
 import cn.cnic.component.schedule.mapper.ScheduleMapper;
 import cn.cnic.component.schedule.vo.ScheduleVo;
 import cn.cnic.third.service.ISchedule;
 import cn.cnic.third.vo.schedule.ThirdScheduleEntryVo;
 import cn.cnic.third.vo.schedule.ThirdScheduleVo;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.quartz.JobExecutionContext;
 import org.slf4j.Logger;
 import org.springframework.scheduling.quartz.QuartzJobBean;
@@ -48,6 +51,11 @@ public class RunningGroupScheduleSync extends QuartzJobBean {
                     continue;
                 }
                 ThirdScheduleVo thirdScheduleVo = scheduleImpl.scheduleInfo(scheduleVo.getScheduleId());
+                Schedule scheduleById = scheduleMapper.getScheduleById(true, "sync", scheduleVo.getId());
+                if ("STOPED".equals(thirdScheduleVo.getState())) {
+                    scheduleById.setStatus(ScheduleState.STOP);
+                    scheduleMapper.update(scheduleById);
+                }
                 List<ThirdScheduleEntryVo> entryList = thirdScheduleVo.getEntryList();
                 if (CollectionUtils.isEmpty(entryList)) {
                     return;
@@ -61,8 +69,12 @@ public class RunningGroupScheduleSync extends QuartzJobBean {
                             }
                             String scheduleEntryType = thirdScheduleEntryVo.getScheduleEntryType();
                             if ("Flow".equals(scheduleEntryType)) {
-                                Process processById = processTransaction.getProcessByAppId("sync", true, scheduleVo.getScheduleProcessTemplateId());
-                                if(processById == null){
+                                String processIdByAppId = processTransaction.getProcessIdByAppId("sync", true, thirdScheduleEntryVo.getScheduleEntryId());
+                                if (StringUtils.isNotBlank(processIdByAppId)) {
+                                    continue;
+                                }
+                                Process processById = processTransaction.getProcessById("sync", true, scheduleVo.getScheduleProcessTemplateId());
+                                if (processById == null) {
                                     logger.warn("sync failed");
                                 }
                                 // copy and Create
@@ -76,6 +88,10 @@ public class RunningGroupScheduleSync extends QuartzJobBean {
                                 } catch (Exception e) {
                                     logger.error("error:", e);
                                 }
+                                continue;
+                            }
+                            List<String> processGroupIdByAppId = processGroupTransaction.getProcessGroupIdByAppId(thirdScheduleEntryVo.getScheduleEntryId());
+                            if (null == processGroupIdByAppId || processGroupIdByAppId.size() <= 0) {
                                 continue;
                             }
                             ProcessGroup processGroupById = processGroupTransaction.getProcessGroupById("sync", true, scheduleVo.getScheduleProcessTemplateId());
