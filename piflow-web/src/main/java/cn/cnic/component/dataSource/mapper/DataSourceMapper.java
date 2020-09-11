@@ -65,7 +65,21 @@ public interface DataSourceMapper {
             @Result(id = true, column = "id", property = "id"),
             @Result(column = "id", property = "dataSourcePropertyList", many = @Many(select = "cn.cnic.component.dataSource.mapper.DataSourcePropertyMapper.getDataSourcePropertyListByDataSourceId", fetchType = FetchType.LAZY))
     })
-    DataSource getDataSourceById(@Param("username") String username, @Param("isAdmin") boolean isAdmin, @Param("id") String id);
+    DataSource getDataSourceByIdAndUser(@Param("username") String username, @Param("isAdmin") boolean isAdmin, @Param("id") String id);
+
+
+    /**
+     * query DataSource by DataSourceId
+     *
+     * @param id
+     * @return
+     */
+    @SelectProvider(type = DataSourceMapperProvider.class, method = "getDataSourceById")
+    @Results({
+            @Result(id = true, column = "id", property = "id"),
+            @Result(column = "id", property = "dataSourcePropertyList", many = @Many(select = "cn.cnic.component.dataSource.mapper.DataSourcePropertyMapper.getDataSourcePropertyListByDataSourceId", fetchType = FetchType.LAZY))
+    })
+    DataSource getDataSourceById(@Param("id") String id);
 
     /**
      * query DataSource by DataSourceId

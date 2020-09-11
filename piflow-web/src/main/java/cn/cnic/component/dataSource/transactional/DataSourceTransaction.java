@@ -111,7 +111,7 @@ public class DataSourceTransaction {
     }
 
     public DataSource getDataSourceById(String username, boolean isAdmin, String id) {
-        return dataSourceMapper.getDataSourceById(username, isAdmin, id);
+        return dataSourceMapper.getDataSourceByIdAndUser(username, isAdmin, id);
     }
 
     public List<DataSource> getDataSourceTemplateList() {

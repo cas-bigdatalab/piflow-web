@@ -1,5 +1,6 @@
 package cn.cnic.controller.system;
 
+import cn.cnic.base.util.ReturnMapUtils;
 import cn.cnic.base.util.SessionUserUtil;
 import cn.cnic.component.system.service.ISysInitRecordsService;
 import org.springframework.stereotype.Controller;
@@ -14,6 +15,13 @@ public class BootPageCtrl {
 
     @Resource
     private ISysInitRecordsService sysInitRecordsServiceImpl;
+
+    @RequestMapping("/isInBootPage")
+    @ResponseBody
+    public String isInBootPage() {
+        boolean inBootPage = sysInitRecordsServiceImpl.isInBootPage();
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("isIn", inBootPage);
+    }
 
     @RequestMapping("/initComponents")
     @ResponseBody
