@@ -15,7 +15,7 @@
         name: "bootPage",
         data:()=>{
           return {
-              percent: 0,
+              percent: 20,
               loadComponents_timer: null,
           }
         },
