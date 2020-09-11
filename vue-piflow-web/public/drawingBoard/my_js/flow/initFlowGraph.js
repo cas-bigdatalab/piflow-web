@@ -342,6 +342,7 @@ function flowMxEventClickFunc(cell, consumedFlag) {
     if (index) {
         $(".right-group").toggleClass("open-right");
         $(".ExpandSidebar").toggleClass("ExpandSidebar-open");
+        $(".triggerSlider i").removeClass("fa fa-angle-left fa-2x ").toggleClass("fa fa-angle-right fa-2x");
         index = false
     }
     console.log(cell);
@@ -1111,7 +1112,7 @@ function getStopsPortNew(paths) {
                     } else {
                         layer.open({
                             type: 1,
-                            title: '<span style="color: #269252;">Set Patn Prot Windows</span>',
+                            title: '<span style="color: #269252;">Set Path CreatePort Window</span>',
                             shadeClose: false,
                             closeBtn: 0,
                             shift: 7,
@@ -1137,7 +1138,7 @@ function crtAnyPort(crtPortInputId, isSource) {
     var portNameVal = crtProtInput.val();
     if (portNameVal && '' !== portNameVal) {
         if (!document.getElementById(portNameVal)) {
-            var obj = '<div style="display: block;margin: 5px 0;" class="addCheckbox" id="jCheckbox">'
+            var obj = '<div style="display: block;margin: 5px 0; border-bottom: 1px dashed rgb(204, 204, 204); padding: 2px 4px" class="addCheckbox" id="jCheckbox">'
                 + '<input style="margin-right:5px" type="checkbox" checked = "checked" class="addCheckbox" id="' + portNameVal + '" name="' + portNameVal + '" value="' + portNameVal + '">'
                 + '<span class="' + portNameVal + '">' + portNameVal + '</span>'
                 + '</div>';

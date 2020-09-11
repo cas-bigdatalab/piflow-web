@@ -1,11 +1,11 @@
 <template>
     <div class="bootPage">
         <div class="center">
-            <div style="text-align: center; font-size: large; color: aliceblue;">
+            <div style="text-align: center; font-size: large; color: white;">
                 <span id="promptContent">Component loading, please wait...</span>
             </div>
             <br>
-            <Progress :percent="percent" :text-inside="true" :stroke-width="25" status="active" :stroke-color="['#58b368', '#0ef5ca']" />
+            <Progress :percent="percent" :text-inside="true" :stroke-width="28" status="active" :stroke-color="['#58b368', '#0ef5ca']" />
         </div>
     </div>
 </template>
@@ -16,75 +16,28 @@
         data:()=>{
           return {
               percent: 0,
+              loadComponents_timer: null,
           }
         },
         mounted(){
-            this.getLoadingProgress();
-            this.loading();
-            this.aaa();
-            setInterval(()=>{
-                if (this.percent <= 55){
-                    this.percent += 1
-                }
-            },100)
+            this.getIsInBootPage();
         },
         methods: {
-            //加载进度
-            getLoadingProgress() {
-                this.$event.emit("looding", true);
+            //  初始化页面
+            getInitComponents() {
+                // this.$event.emit("looding", true);
                 this.$axios
                     .get("/bootPage/initComponents")
                     .then((res) => {
-                        console.log(res);
                         // this.$event.emit("looding", false);
-                        // var dataMap = JSON.parse(res.data);
-                        // if (200 === dataMap.code) {
-                        //     // loadComponents_timer = window.setInterval("loading()", 500);
-                        // }
-                        // else {
-                        //     this.$Modal.success({
-                        //         title: this.$t("tip.title"),
-                        //         content: this.$t("tip.request_fail_content"),
-                        //     });
-                        // }
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                    });
-            },
-            loading() {
-                this.$axios
-                    .get("/bootPage/threadMonitoring")
-                    .then((res) => {
-                        this.$event.emit("looding", false);
-                        console.log(res);
-                        // var dataMap = JSON.parse(res.data);
-                        // if (200 === dataMap.code) {
-                        //     // loadComponents_timer = window.setInterval("loading()", 500);
-                        // }
-                        // else {
-                        //     this.$Modal.success({
-                        //         title: this.$t("tip.title"),
-                        //         content: this.$t("tip.request_fail_content"),
-                        //     });
-                        // }
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                    });
-            },
-            aaa(){
-                let data = { page: 1, limit: 10 };
-                this.$axios
-                    .get("/flow/getFlowListPage", {
-                        params: data,
-                    })
-                    .then((res) => {
-                        if (res.data.code == 200) {
-                            this.tableData = res.data.data;
-                            this.total = res.data.count;
-                        } else {
-                            this.$Modal.error({
+                        var dataMap = res.data;
+                        if (dataMap.code === 200) {
+                            this.loadComponents_timer = window.setInterval(()=>{
+                                this.GetThreadMonitoring()
+                            },500);
+                        }
+                        else {
+                            this.$Modal.success({
                                 title: this.$t("tip.title"),
                                 content: this.$t("tip.request_fail_content"),
                             });
@@ -92,10 +45,63 @@
                     })
                     .catch((error) => {
                         console.log(error);
-                        this.$Modal.error({
-                            title: this.$t("tip.title"),
-                            content: this.$t("tip.fault_content"),
-                        });
+                    });
+            },
+            //  获取加载进度
+            GetThreadMonitoring() {
+                this.$axios
+                    .get("/bootPage/threadMonitoring")
+                    .then((res) => {
+                        // this.$event.emit("looding", false);
+                        var dataMap = res.data;
+                        if (200 === dataMap.code) {
+                            this.percent = dataMap.progress;
+                            if (this.percent === 100){
+                                window.clearInterval(this.loadComponents_timer);
+                                setTimeout(()=>{
+                                    this.$router.push({
+                                        name: 'sections',
+                                        path: '/'
+                                    })
+                                },300)
+                            }
+                        }else if (500 === dataMap.code || !dataMap.progress){
+                            this.getInitComponents();
+                        } else {
+                            this.$Modal.success({
+                                title: this.$t("tip.title"),
+                                content: this.$t("tip.request_fail_content"),
+                            });
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            },
+            //  是否初始化页面
+            getIsInBootPage(){
+                // this.$event.emit("looding", true);
+                this.$axios
+                    .get("/bootPage/isInBootPage")
+                    .then((res) => {
+                        // this.$event.emit("looding", false);
+                        var dataMap = res.data;
+                        if (dataMap.code === 200 && dataMap.isIn === true) {
+                            this.GetThreadMonitoring();
+                        }else if (dataMap.code === 200 && dataMap.isIn === false){
+                            this.$router.push({
+                                name: 'sections',
+                                path: '/'
+                            })
+                        } else {
+                            this.$Modal.success({
+                                title: this.$t("tip.title"),
+                                content: this.$t("tip.request_fail_content"),
+                            });
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
                     });
             }
         }
@@ -103,10 +109,10 @@
 </script>
 
 <style lang="scss" scoped>
-    /deep/ .ivu-progress-inner{
-        background: url("/img/ProgressBar.e67d85a8.gif") center no-repeat;
-        background-size: 136% 135%;
-    }
+    /*/deep/ .ivu-progress-inner{*/
+    /*    background: url("/img/ProgressBar.e67d85a8.gif") center no-repeat;*/
+    /*    background-size: 136% 135%;*/
+    /*}*/
     /deep/ .ivu-progress-inner-text{
         font-size: 14px;
     }
@@ -120,7 +126,7 @@
     .bootPage{
         height: 100vh;
         width: 100vw;
-        /*background: black;*/
-        background: rgba(0, 0, 0, 0.8);
+        background: black;
+        /*background: rgba(0, 0, 0, 0.8);*/
     }
 </style>

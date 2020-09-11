@@ -335,13 +335,8 @@ export default {
             Cookies.set('state', "jwtok");
             // window.sessionStorage.setItem("usre", this.username);
             Cookies.set('usre', this.username);
-            if (this.$route.query.redirect) { //如果存在参数
-              let redirect = this.$route.query.redirect;
-              this.$router.push(redirect)//则跳转至进入登录页前的路由
-            } else {
-              this.$router.push({ path: "/" });//否则跳转至首页
-            }
 
+            this.getIsInBootPage();
 
             // window.sessionStorage.setItem("sysMenuVoList", JSON.stringify(res.data.jwtUser.sysMenuVoList));
             // this.handleClear();
@@ -493,6 +488,37 @@ export default {
     rEnumber(val) {
       let reg = new RegExp(/^\d+$/);
       return !reg.test(val);
+    },
+    getIsInBootPage(){
+      this.$axios
+              .get("/bootPage/isInBootPage")
+              .then((res) => {
+                var dataMap = res.data;
+                if (dataMap.code === 200 && dataMap.isIn === true) {
+                  this.$router.push({
+                    name: 'bootPage',
+                    path: '/bootPage'
+                  })
+                }else if (dataMap.code === 200 && dataMap.isIn === false){
+                  if (this.$route.query.redirect) { //如果存在参数
+                    let redirect = this.$route.query.redirect;
+                    this.$router.push(redirect)//则跳转至进入登录页前的路由
+                  } else {
+                    this.$router.push({
+                      name: 'sections',
+                      path: '/'
+                    });//否则跳转至首页
+                  }
+                } else {
+                  this.$Modal.success({
+                    title: this.$t("tip.title"),
+                    content: this.$t("tip.request_fail_content"),
+                  });
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
     }
   }
 };

@@ -310,7 +310,7 @@ function openLogWindow() {
             return false;
         },
         btn2: function (index, layero) {
-            changeLogData("/processGroup/getStartGroupJson", {"processGroupId": processGroupId});
+            changeLogData("/processGroup/getStartGroupJson", {"processGroupId": loadId});
             return false;
         },
         content: logContent,
@@ -329,6 +329,7 @@ function openLogWindow() {
 }
 
 function changeLogData(url, requestParam) {
+    window.parent.postMessage(true);
     ajaxRequest({
         cache: true,//Keep cached data
         type: "POST",//Request type post
@@ -338,11 +339,12 @@ function changeLogData(url, requestParam) {
         async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
         error: function (request) {//Operation after request failure
             layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000});
+            window.parent.postMessage(false);
             return;
         },
         success: function (data) {//Operation after request successful
             var dataMap = JSON.parse(data);
-
+            window.parent.postMessage(false);
             var showLogHtmlWidth = $("#divPreId").width() - 20;
             var showLogHtml = ('<pre id="preId" style="height: 100%; width: ' + showLogHtmlWidth + 'px; margin: 0 auto;">');
             if (200 === dataMap.code) {

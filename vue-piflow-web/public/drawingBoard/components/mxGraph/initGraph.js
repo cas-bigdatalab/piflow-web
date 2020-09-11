@@ -2402,7 +2402,7 @@ function getStopsPortNew(paths) {
                             if ("Default" === sourceTypeStr && "Default" === targetTypeStr) {
                             } else if ("None" === sourceTypeStr || "None" === targetTypeStr) {
                             } else {
-                                layuiOpenWindowDivFunc('Set Patn Prot Windows', showHtml.html());
+                                layuiOpenWindowDivFunc('Set Path CreatePort Window', showHtml.html());
                             }
                         } else {
                             graphGlobal.removeCells(pathsCells);

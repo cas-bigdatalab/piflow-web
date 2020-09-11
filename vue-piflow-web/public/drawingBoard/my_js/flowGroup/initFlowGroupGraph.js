@@ -302,6 +302,7 @@ function mxEventClickFunc(cell, consumedFlag) {
     if (index) {
         $(".right-group").toggleClass("open-right");
         $(".ExpandSidebar").toggleClass("ExpandSidebar-open");
+        $(".triggerSlider i").removeClass("fa fa-angle-left fa-2x ").toggleClass("fa fa-angle-right fa-2x");
         index = false
     }
     if (!consumedFlag) {

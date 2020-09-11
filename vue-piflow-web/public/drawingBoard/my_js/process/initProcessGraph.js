@@ -138,6 +138,7 @@ function processMxEventClick(cell) {
     if (index) {
         $(".right-group").toggleClass("open-right");
         $(".ExpandSidebar").toggleClass("ExpandSidebar-open");
+        $(".triggerSlider i").removeClass("fa fa-angle-left fa-2x ").toggleClass("fa fa-angle-right fa-2x");
         index = false
     }
     if (cell == undefined || cell && cell.style && (cell.style).indexOf("text\;") === 0) {
