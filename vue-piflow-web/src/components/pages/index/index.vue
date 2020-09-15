@@ -295,8 +295,11 @@ export default {
                   // this.resource.hdfs.parameter = 'hdfs';
 
                   this.cpuPercent = data.resource.cpu.allocatedVirtualCores / data.resource.cpu.totalVirtualCores * 100;
+                  this.cpuPercent = Number(this.cpuPercent.toFixed(1));
                   this.memoryPercent = data.resource.memory.allocatedMemoryGB / data.resource.memory.totalMemoryGB * 100;
+                  this.memoryPercent = Number(this.memoryPercent.toFixed(1));
                   this.hdfsPercent = data.resource.hdfs.allocatedCapacityGB / data.resource.hdfs.TotalCapacityGB * 100;
+                  this.hdfsPercent = Number(this.hdfsPercent.toFixed(2));
                     // console.log(this.resource,'this.resource.cpu','remainingVirtualCores')
                 } else {
                   this.$Modal.error({

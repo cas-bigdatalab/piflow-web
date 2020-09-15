@@ -3,7 +3,9 @@ import App from './App.vue';
 
 //引入 iview
 import iView from 'view-design';
-import 'view-design/dist/styles/iview.css';
+// import 'view-design/dist/styles/iview.css';
+import './assets/style/my-theme.less';
+
 import en from 'view-design/dist/locale/en-US';
 import zh from 'view-design/dist/locale/zh-CN';
 import VueI18n from 'vue-i18n'
