@@ -81,7 +81,7 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
                 return true;
             }
         }
-        return true;
+        return false;
     }
 
     @Transactional
