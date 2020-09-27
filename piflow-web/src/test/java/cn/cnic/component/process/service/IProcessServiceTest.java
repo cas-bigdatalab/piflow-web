@@ -31,5 +31,11 @@ public class IProcessServiceTest extends ApplicationTests {
         System.out.println(result);
     }
 
+    @Test
+    public void testHistogramVisualizationData() {
+        String result = processServiceImpl.getVisualizationData("application_1596710850427_4294", "Histogram", "HISTOGRAM");
+        System.out.println(result);
+    }
+
 
 }

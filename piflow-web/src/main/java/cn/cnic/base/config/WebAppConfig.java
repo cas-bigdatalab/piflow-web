@@ -63,7 +63,7 @@ public class WebAppConfig implements WebMvcConfigurer {
                 .allowedOrigins("*")
                 .allowedMethods("GET", "POST", "OPTIONS", "PUT", "DELETE")
                 .allowedHeaders("*")
-                .allowCredentials(true).maxAge(3600);
+                .allowCredentials(false).maxAge(3600);
         WebMvcConfigurer.super.addCorsMappings(registry);
     }
 }
