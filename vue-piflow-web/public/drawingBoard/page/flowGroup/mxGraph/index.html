@@ -264,7 +264,6 @@
 
 
     $(function () {
-
         ajaxLoad("fullScreen_load_id", "/page/macro/fragmentMacro.html");
         ajaxLoad("flowGroup_info_inc_id", "/page/flowGroup/inc/flowGroup_info_inc.html");
         ajaxLoad("flowGroup_path_inc_id", "/page/flowGroup/inc/flowGroup_path_inc.html");
@@ -293,6 +292,18 @@
                 var src = domArr[index].getAttribute('src');
                 domArr[index].setAttribute('src', web_header_prefix + src)
             }
+        });
+        $("input[id=flowGroupName]").each(function(){
+            $(this).focus(function(){
+                //禁用Enter键
+                document.onkeydown = function (e) {
+                    //捕捉回车事件
+                    var ev = (typeof event != 'undefined') ? window.event : e;
+                    if (ev.keyCode == 13 || event.which == 13) {
+                        return false;
+                    }
+                }
+            })
         });
     });
     //@ sourceURL=mxGraphIndex.js

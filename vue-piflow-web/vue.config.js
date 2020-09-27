@@ -60,6 +60,15 @@ module.exports = {
       .tap(options => Object.assign(options, { limit: 6144 }))
   },
 
+  // 更换覆盖主题
+  css: {
+    loaderOptions: {
+      less: {
+        javascriptEnabled: true,
+      }
+    }
+  },
+
   // chainWebpack: config => {
   //   // ie报错无效字符 添加该配置项 解决该问题
   //   config.module
@@ -91,7 +100,8 @@ module.exports = {
     // host: "localhost",
     proxy: {
       '/piflow-web': {
-        target: 'http://10.0.85.80:6002',
+        // target: 'http://10.0.90.119:6002',
+        target: 'http://10.0.85.82:6002',
         // target: 'http://10.0.85.80:6002/piflow-web/admin',
         // target: 'http://10.0.85.82:6001',
         changeOrigin: true,

@@ -419,10 +419,13 @@
             handleStop(row) {
                 let data = { scheduleId: row.id };
                 let url = "/schedule/stopSchedule";
+                // eslint-disable-next-line no-unused-vars
+                let flag = false;
                 if (row.status.text === "STOP" || row.status.text === "INIT") {
                     // data.processType =
                     //     row.processType === "TASK" ? "PROCESS" : "PROCESS_GROUP";
                     url = "/schedule/startSchedule";
+                    flag = true;
                 }
 
                 this.$event.emit("looding", true);
@@ -433,14 +436,14 @@
                             this.$event.emit("looding", false);
                             this.$Modal.success({
                                 title: this.$t("tip.title"),
-                                content: `${row.cronExpression} ` + this.$t("tip.stop_success_content")
+                                content: flag? `${row.cronExpression} ` + this.$t("tip.run_success_content"): `${row.cronExpression} ` + this.$t("tip.stop_success_content")
                             });
                             this.getTableData();
                         } else {
                             this.$event.emit("looding", false);
                             this.$Modal.success({
                                 title: this.$t("tip.title"),
-                                content: `${row.cronExpression} ` + this.$t("tip.stop_fail_content")
+                                content: flag? `${row.cronExpression} ` + this.$t("tip.run_fail_content"): `${row.cronExpression} ` + this.$t("tip.stop_fail_content")
                             });
                         }
                     })

@@ -378,6 +378,7 @@ function queryProcessGroup(loadId) {
                         $("#span_processGroupVo_id").text(processGroupVo.id);
                         $("#span_processGroupVo_name").text(processGroupVo.name);
                         $("#span_processGroupVo_description").text(processGroupVo.description);
+                        $("#span_processGroupVo_description").attr("title",processGroupVo.description);
                         $("#span_processGroupVo_crtDttmStr").text(processGroupVo.crtDttmStr);
 
                         //Process Running Information
@@ -447,6 +448,7 @@ function queryNodeInfo(loadId, pageId) {
                     $("#span_processGroupVo_id").text(processGroupVo.id);
                     $("#span_processGroupVo_name").text(processGroupVo.name);
                     $("#span_processGroupVo_description").text(processGroupVo.description);
+                    $("#span_processGroupVo_description").attr("title",processGroupVo.description);
                     $("#span_processGroupVo_crtDttmStr").text(processGroupVo.crtDttmStr);
 
                     //Process Running Information

@@ -18,7 +18,7 @@ function processGroupOperationBtn(processState) {
             $('#debugFlowGroup').show();
             $('#stopFlowGroup').hide();
         }
-        $("#groupProgress").text(load_obj_percentage);
+        $("#groupProgress").text(load_obj_percentage + '%');
     }
 }
 

@@ -263,8 +263,10 @@
             handleMount(row) {
                 let data = { id: row.id };
                 let url = "/stops/unmountStopsHub";
+                let flag = false;
                 if (row.status.text === "UNMOUNT") {
                     url = "/stops/mountStopsHub";
+                    flag = true;
                 }
 
                 this.$event.emit("looding", true);
@@ -275,14 +277,14 @@
                             this.$event.emit("looding", false);
                             this.$Modal.success({
                                 title: this.$t("tip.title"),
-                                content: `${row.jarName} ` + this.$t("tip.stop_success_content")
+                                content: flag? `${row.jarName} ` + this.$t("tip.mount_success_content"): `${row.jarName} ` + this.$t("tip.unmount_success_content")
                             });
                             this.getTableData();
                         } else {
                             this.$event.emit("looding", false);
                             this.$Modal.success({
                                 title: this.$t("tip.title"),
-                                content: `${row.jarName} ` + this.$t("tip.stop_fail_content")
+                                content: flag? `${row.jarName} ` + this.$t("tip.mount_fail_content"): `${row.jarName} ` + this.$t("tip.unmount_fail_content")
                             });
                         }
                     })
