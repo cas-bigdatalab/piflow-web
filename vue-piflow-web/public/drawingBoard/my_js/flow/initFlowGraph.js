@@ -1636,7 +1636,7 @@ function setCustomizedTableHtml(stopPageId, stopsCustomizedPropertyVo, stopOutPo
             + 'id="' + stopsCustomizedPropertyVo.id + '"'
             + 'name="' + stopsCustomizedPropertyVo.name + '" '
             + 'value="' + stopsCustomizedPropertyVo.customValue + '" '
-            + 'onclick="updateStopsProperty(this,true,null)"readonly="readonly" value=""style="background: rgb(245, 245, 245);">'
+            + 'onclick="openUpdateStopsProperty(this,true,null)"readonly="readonly" value=""style="background: rgb(245, 245, 245);">'
             + '</td>'
             + '<td>'
             + '<span style="color:red">*</span>'

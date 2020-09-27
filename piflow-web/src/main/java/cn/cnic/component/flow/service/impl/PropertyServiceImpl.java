@@ -104,7 +104,7 @@ public class PropertyServiceImpl implements IPropertyService {
             logger.info("The stops attribute was successfully modified:" + updateStops);
             return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("value", content);
         } else {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Database save failed");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("save failed");
         }
     }
 
@@ -246,7 +246,8 @@ public class PropertyServiceImpl implements IPropertyService {
             if (updatePathRequest.isSourceRoute()) {
                 if (updatePathRequest.isSourceRoute() && PortType.ROUTE == sourceStop.getOutPortType()) {
                     currentPaths.setFilterCondition(updatePathRequest.getSourceFilter());
-                    currentPaths.setOutport("port" + (pathsCounts));
+                    //currentPaths.setOutport("port" + (pathsCounts));
+                    currentPaths.setOutport(updatePathRequest.getSourceFilter());
                 }
             } else if (StringUtils.isNotBlank(sourcePortVal)) {
                 currentPaths.setOutport(sourcePortVal);
