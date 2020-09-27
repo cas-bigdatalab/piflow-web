@@ -106,27 +106,16 @@ import config from '../public/config.json';
 //   Vue.prototype.BASE_URL = res.data.BASE_URL;
 // });
 
-function startApp() {
-  let API_URL;
-  if(process.env.NODE_ENV == 'development'){
-    API_URL = config.DEV_URL;
-  }else{
-    API_URL = config.BASE_URL;
-  }
-  return API_URL
-}
-let service_url= startApp();
 
 
 
-
-// axios.defaults.baseURL = process.env.VUE_APP_URL;
-axios.defaults.baseURL = service_url;
-// window.sessionStorage.setItem("basePath", process.env.VUE_APP_URL);
-// Cookies.set('basePath', process.env.VUE_APP_URL);
-Cookies.set('basePath', service_url);
-// Vue.prototype.$url = process.env.VUE_APP_URL;
-Vue.prototype.$url = service_url;
+// // axios.defaults.baseURL = process.env.VUE_APP_URL;
+// axios.defaults.baseURL = service_url;
+// // window.sessionStorage.setItem("basePath", process.env.VUE_APP_URL);
+// // Cookies.set('basePath', process.env.VUE_APP_URL);
+// Cookies.set('basePath', service_url);
+// // Vue.prototype.$url = process.env.VUE_APP_URL;
+// Vue.prototype.$url = service_url;
 Vue.prototype.$axios = axios; //全局注册，使用方法为:this.$axios
 Vue.prototype.$qs = qs; //全局注册，使用方法为:this.$qs
 
@@ -164,9 +153,26 @@ router.beforeEach((to, from, next) => {
   // }
 });
 
-new Vue({
-  i18n,
-  router,
-  store,
-  render: h => h(App),
-}).$mount('#app');
+
+function startApp() {
+  let API_URL;
+  axios.get('/config.json').then((res) => {
+    if(process.env.NODE_ENV == 'development'){
+      API_URL = res.data.DEV_URL;
+    }else{
+      API_URL = res.data.BASE_URL;
+    }
+
+    axios.defaults.baseURL = API_URL;
+    Cookies.set('basePath', API_URL);
+    Vue.prototype.$url = API_URL;
+  });
+
+  new Vue({
+    i18n,
+    router,
+    store,
+    render: h => h(App),
+  }).$mount('#app');
+}
+startApp();
