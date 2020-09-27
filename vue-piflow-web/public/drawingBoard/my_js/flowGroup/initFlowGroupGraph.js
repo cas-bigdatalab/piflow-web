@@ -398,7 +398,6 @@ function addMxCellOperation(evt) {
     });
     graphGlobal.removeCells(cellArrayRemove);
     if (cells.length != cellArrayRemove.length) {
-        var time, time1;
         ajaxRequest({
             cache: true,//Keep cached data
             type: "POST",//Request type post
@@ -434,6 +433,10 @@ function addMxCellOperation(evt) {
                     }
                     thisEditor.setModified(false);
                     console.log("Add save success");
+                    if ('cellsAdded' == evt.name) {
+                        consumedFlag = evt.consumed ? true : false;
+                        mxEventClickFunc(evt.properties.cell, consumedFlag);
+                    }
                 } else {
                     layer.msg("Add save fail", {icon: 2, shade: 0, time: 2000});
                     console.log("Add save fail");
@@ -443,10 +446,6 @@ function addMxCellOperation(evt) {
             }
 
         });
-    }
-    if ('cellsAdded' == evt.name) {
-        consumedFlag = evt.consumed ? true : false;
-        mxEventClickFunc(evt.properties.cell, consumedFlag);
     }
 }
 
@@ -566,7 +565,6 @@ function openProcessMonitor(evt) {
 function saveXml(paths, operType) {
     var getXml = thisEditor.getGraphXml();
     var xml_outer_html = getXml.outerHTML;
-    var time, time1
     ajaxRequest({
         cache: true,//Keep cached data
         type: "POST",//Request type post

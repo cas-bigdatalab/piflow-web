@@ -29,10 +29,10 @@ function initFlowDrawingBoardData(loadId, parentAccessPath) {
                     parentsId = 'null';
                 }
                 let herf = top.window.location.href.split("src=")[1];
-                if (herf.indexOf('BreadcrumbSchedule') !== -1){
+                if (herf.indexOf('BreadcrumbSchedule') !== -1) {
                     top.document.getElementById('BreadcrumbSchedule').style.display = 'block';
                     top.document.getElementById('BreadcrumbFlow').style.display = 'none';
-                }else {
+                } else {
                     top.document.getElementById('BreadcrumbFlow').style.display = 'block';
                     top.document.getElementById('BreadcrumbSchedule').style.display = 'none';
                 }
@@ -318,12 +318,17 @@ function openXml() {
 }
 
 //load xml file
-function loadXml(loadStr) {
+function loadXml(loadStr, cells) {
     var xml = mxUtils.parseXml(loadStr);
     var node = xml.documentElement;
     var dec = new mxCodec(node.ownerDocument);
     dec.decode(node, graphGlobal.getModel());
     eraseRecord()
+    if (cells) {
+        var new_load_cells = graphGlobal.getModel().getCell(cells[0].id);
+        graphGlobal.setSelectionCell(new_load_cells);
+        flowMxEventClickFunc(new_load_cells, true);
+    }
 }
 
 //Erase drawing board records
@@ -951,7 +956,7 @@ function saveXml(paths, operType, cells) {
                     queryFlowInfo(loadId);
                 } else if ("ADD" === operType) {
                     xmlDate = dataMap.xmlData;
-                    loadXml(xmlDate);
+                    loadXml(xmlDate, cells);
                 }
             } else {
                 //alert(operType + " save fail");
@@ -1345,7 +1350,7 @@ function addMxCellOperation(evt) {
     });
     graphGlobal.removeCells(removeCellArray);
     if (cells.length != removeCellArray.length) {
-        saveXml(paths, 'ADD', evt.properties.cell);
+        saveXml(paths, 'ADD', evt.properties.cells);
     }
     if ('cellsAdded' == evt.name) {
         consumedFlag = evt.consumed ? true : false;
@@ -1602,7 +1607,7 @@ function updateStopsProperty(stopsPropertyId, property_name_id, type) {
             if (200 === dataMap.code) {
                 $("#" + stopsPropertyId).val(dataMap.value);
                 // layer.msg("update success", {icon: 1, shade: 0, time: 1000}, function () {
-                    layer.closeAll();
+                layer.closeAll();
                 // });
             } else {
                 layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000}, function () {
