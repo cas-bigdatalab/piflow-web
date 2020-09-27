@@ -1611,8 +1611,9 @@ public class FlowXmlUtils {
                         StringBuilder tempStringBuffer = new StringBuilder();
                         tempStringBuffer.append("[");
                         for (int i = 0; i < tempArray.length; i++) {
+                            String tempArray_i = tempArray[i].replaceAll("\"", "");
                             tempStringBuffer.append("\"");
-                            tempStringBuffer.append(tempArray[i]);
+                            tempStringBuffer.append(tempArray_i);
                             tempStringBuffer.append("\"");
                             if (i + 1 != tempArray.length) {
                                 tempStringBuffer.append(",");
