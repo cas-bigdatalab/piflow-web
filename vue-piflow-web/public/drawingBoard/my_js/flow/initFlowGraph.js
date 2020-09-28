@@ -23,6 +23,7 @@ function initFlowDrawingBoardData(loadId, parentAccessPath) {
         success: function (data) {//Operation after request successful
             var dataMap = JSON.parse(data);
             if (200 === dataMap.code) {
+                window.parent.postMessage(false);
                 if (dataMap.parentsId) {
                     parentsId = dataMap.parentsId;
                 } else {
@@ -74,6 +75,7 @@ function initFlowDrawingBoardData(loadId, parentAccessPath) {
                     }
                 }
             } else {
+                window.parent.postMessage(false);
                 window_location_href("/page/error/errorPage.html");
             }
             // $('#fullScreen').hide();

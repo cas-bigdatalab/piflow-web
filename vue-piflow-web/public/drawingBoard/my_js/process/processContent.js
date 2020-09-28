@@ -436,7 +436,7 @@ function getDebugData(stopName, portName) {
     var jsonData = {"appId": appId, "stopName": stopName, "portName": portName};
     ajaxLoad("", "/page/process/inc/debug_data_inc.html", function (data) {
         var open_window_width = (window_width > 300 ? 1200 : window_width);
-        var open_window_height = (window_height > 400 ? 550 : window_height);
+        var open_window_height = (window_height > 400 ? 570 : window_height);
         openLayerWindowLoadHtml(data,open_window_width,open_window_height,"Debug Data");
         $("#debug_app_id").html(appId);
         $("#debug_stop_name").html(stopName);

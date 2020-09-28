@@ -486,8 +486,10 @@ function getDebugData(stopName, portName) {
             return;
         },
         success: function (data) {//Operation after request successful
-            var open_window_width = (window_width > 300 ? window_width - 200 : window_width) + "px";
-            var open_window_height = (window_height > 300 ? window_height - 200 : window_height) + "px";
+            // var open_window_width = (window_width > 300 ? window_width - 200 : window_width) + "px";
+            // var open_window_height = (window_height > 300 ? window_height - 200 : window_height) + "px";
+            var open_window_width = (window_width > 300 ? 1200 : window_width);
+            var open_window_height = (window_height > 400 ? 570 : window_height);
             layer.open({
                 type: 1,
                 title: '<span style="color: #269252;">Debug Data</span>',
