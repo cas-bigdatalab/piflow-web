@@ -262,13 +262,7 @@ function initFlowGraph() {
             consumedFlag = evt.consumed ? true : false;
             flowMxEventClickFunc(evt.properties.cell, consumedFlag);
         });
-        if (xmlDate) {
-            var xml = mxUtils.parseXml(xmlDate);
-            var node = xml.documentElement;
-            var dec = new mxCodec(node.ownerDocument);
-            dec.decode(node, graphGlobal.getModel());
-            eraseRecord();
-        }
+        loadXml(xmlDate);
         // change size
         graphGlobal.setCellsResizable(false);
         // repeat connection
@@ -321,6 +315,36 @@ function openXml() {
 
 //load xml file
 function loadXml(loadStr, cells) {
+    if (!loadStr) {
+        return;
+    }
+    let loadDate = loadStr;
+    let regHead = new RegExp(/style="image;html=1;labelBackgroundColor=#ffffff00;image=(\S*)\/img\//, "g");
+    let reg_1 = loadDate.match(regHead);
+    if (reg_1 && reg_1.length > 0) {
+        let replaceArray = {};
+        for (var i = 0; i < reg_1.length; i++) {
+            let item = reg_1[i];
+            let i_r = item.replace("style=\"image;html=1;labelBackgroundColor=#ffffff00;image=", "");
+            if (replaceArray[i_r]) {
+                continue;
+            }
+            replaceArray[i_r] = true;
+        }
+        for (var key in replaceArray) {
+            if (key.indexOf("http") < 0) {
+                key = "style=\"image;html=1;labelBackgroundColor=#ffffff00;image=" + key;
+                let reg = new RegExp(key, "g")
+                loadDate = loadDate.replace(reg, "style=\"image;html=1;labelBackgroundColor=#ffffff00;image=" + web_header_prefix + "/img/");
+            } else {
+                let reg = new RegExp(key, "g")
+                loadDate = loadDate.replace(reg, web_header_prefix + "/img/");
+            }
+            let reg = new RegExp(key, "g")
+            loadDate = loadDate.replace(reg, web_header_prefix + "/img/");
+        }
+        loadStr = loadDate;
+    }
     var xml = mxUtils.parseXml(loadStr);
     var node = xml.documentElement;
     var dec = new mxCodec(node.ownerDocument);
