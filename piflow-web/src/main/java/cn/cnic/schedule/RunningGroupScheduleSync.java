@@ -95,8 +95,14 @@ public class RunningGroupScheduleSync extends QuartzJobBean {
                                 continue;
                             }
                             ProcessGroup processGroupById = processGroupTransaction.getProcessGroupById("sync", true, scheduleVo.getScheduleProcessTemplateId());
+                            if (null == processGroupById) {
+                                continue;
+                            }
                             // copy and Create
                             ProcessGroup copyProcessGroup = ProcessGroupUtils.copyProcessGroup(processGroupById, "sync", RunModeType.RUN, true);
+                            if (null == copyProcessGroup) {
+                                continue;
+                            }
                             try {
                                 copyProcessGroup.setAppId(thirdScheduleEntryVo.getScheduleEntryId());
                                 int addProcessGroup = processGroupTransaction.addProcessGroup(copyProcessGroup);
