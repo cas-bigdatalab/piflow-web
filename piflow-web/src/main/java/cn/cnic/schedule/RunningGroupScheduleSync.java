@@ -76,9 +76,14 @@ public class RunningGroupScheduleSync extends QuartzJobBean {
                                 Process processById = processTransaction.getProcessById("sync", true, scheduleVo.getScheduleProcessTemplateId());
                                 if (processById == null) {
                                     logger.warn("sync failed");
+                                    continue;
                                 }
                                 // copy and Create
                                 Process processCopy = ProcessUtils.copyProcess(processById, "sync", RunModeType.RUN, true);
+                                if (null == processCopy) {
+                                    logger.warn("sync failed");
+                                    continue;
+                                }
                                 try {
                                     processCopy.setAppId(thirdScheduleEntryVo.getScheduleEntryId());
                                     int addProcess = processTransaction.addProcess(processCopy);
@@ -95,8 +100,14 @@ public class RunningGroupScheduleSync extends QuartzJobBean {
                                 continue;
                             }
                             ProcessGroup processGroupById = processGroupTransaction.getProcessGroupById("sync", true, scheduleVo.getScheduleProcessTemplateId());
+                            if (null == processGroupById) {
+                                continue;
+                            }
                             // copy and Create
                             ProcessGroup copyProcessGroup = ProcessGroupUtils.copyProcessGroup(processGroupById, "sync", RunModeType.RUN, true);
+                            if (null == copyProcessGroup) {
+                                continue;
+                            }
                             try {
                                 copyProcessGroup.setAppId(thirdScheduleEntryVo.getScheduleEntryId());
                                 int addProcessGroup = processGroupTransaction.addProcessGroup(copyProcessGroup);
