@@ -70,7 +70,7 @@ public class DashboardCtrl {
     public String getTemplateAndDataSourceStatisticInfo() {
         String username = SessionUserUtil.getCurrentUsername();
         Map<String, String> tempalateAndDataSourceResourceInfo = statisticServiceImpl.getTemplateAndDataSourceStatisticInfo();
-        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("tempalateAndDataSourceResourceInfo", tempalateAndDataSourceResourceInfo);
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("templateAndDataSourceResourceInfo", tempalateAndDataSourceResourceInfo);
     }
 
     @RequestMapping("/stopStatistic")
