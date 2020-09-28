@@ -1165,7 +1165,7 @@ function crtAnyPort(crtPortInputId, isSource) {
 //cancel port and path
 function cancelPortAndPathNew() {
     layer.closeAll();
-    graphGlobal.removeCells(pathsCells);
+    graphGlobal.removeCells(graphGlobal.getSelectionCells());
 }
 
 // check choose port data
