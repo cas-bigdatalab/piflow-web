@@ -53,7 +53,7 @@ function initFlowGroupDrawingBoardData(loadId, parentAccessPath, backFunc) {
                     for (var index = 0; index < mxGraphComponentList.length; index++) {
                         var component_prefix = mxGraphComponentList[index].component_prefix
                         if (component_prefix.indexOf("/piflow-web/") > -1) {
-                            component_prefix = component_prefix.replace('/piflow-web', sever_base_origin)
+                            component_prefix = component_prefix.replace('/piflow-web', web_header_prefix)
                         }
                         mxGraphComponentList[index].component_prefix = component_prefix
                     }
