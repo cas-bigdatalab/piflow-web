@@ -204,10 +204,10 @@ CREATE TABLE `flow_process_stop_property`  (
 
 
 -- ----------------------------
--- Table structure for flow_stops_groups
+-- Table structure for flow_sotps_groups
 -- ----------------------------
-DROP TABLE IF EXISTS `flow_stops_groups`;
-CREATE TABLE `flow_stops_groups`  (
+DROP TABLE IF EXISTS `flow_sotps_groups`;
+CREATE TABLE `flow_sotps_groups`  (
   `id` varchar(40) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `crt_dttm` datetime(0) NOT NULL,
   `crt_user` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
@@ -378,7 +378,7 @@ CREATE TABLE `association_groups_stops_template`  (
   `stops_template_id` varchar(40) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   INDEX `FKqwv1iytgkhhgnjdvhqbskncf4`(`stops_template_id`) USING BTREE,
   INDEX `FK5ceurc1karlogl9ppecmkcp7e`(`groups_id`) USING BTREE,
-  CONSTRAINT `FK5ceurc1karlogl9ppecmkcp7e` FOREIGN KEY (`groups_id`) REFERENCES `flow_stops_groups` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `FK5ceurc1karlogl9ppecmkcp7e` FOREIGN KEY (`groups_id`) REFERENCES `flow_sotps_groups` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `FKqwv1iytgkhhgnjdvhqbskncf4` FOREIGN KEY (`stops_template_id`) REFERENCES `flow_stops_template` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = Dynamic;
 

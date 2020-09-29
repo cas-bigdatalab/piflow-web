@@ -203,7 +203,7 @@
     </dependencies>
 
     <build>
-        <finalName>piflow-web-sks</finalName>
+        <finalName>piflow-web</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

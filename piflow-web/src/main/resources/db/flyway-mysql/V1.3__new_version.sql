@@ -359,8 +359,8 @@ INSERT INTO `data_source_property`(`id`, `crt_dttm`, `crt_user`, `enable_flag`, 
 -- ----------------------------
 -- Records of sys_schedule
 -- ----------------------------
-INSERT INTO `sys_schedule`(`id`, `crt_dttm`, `crt_user`, `enable_flag`, `last_update_dttm`, `last_update_user`, `version`, `cron_expression`, `job_class`, `job_name`, `status`) VALUES ('ff8081816eaa8a5d016eaa8a77e40000', '2019-11-27 09:47:12', 'system', b'1', '2019-11-27 09:47:12', 'system', 0, '0/5 * * * * ?', 'cn.cnic.schedule.RunningProcessSync', 'RunningProcessSync', 'RUNNING');
-INSERT INTO `sys_schedule`(`id`, `crt_dttm`, `crt_user`, `enable_flag`, `last_update_dttm`, `last_update_user`, `version`, `cron_expression`, `job_class`, `job_name`, `status`) VALUES ('ff8081816eaa9317016eaa932dd50000', '2019-11-27 09:56:43', 'system', b'1', '2019-11-27 09:56:43', 'system', 0, '0/5 * * * * ?', 'cn.cnic.schedule.RunningProcessGroupSync', 'RunningProcessGroupSync', 'RUNNING');
+INSERT INTO `sys_schedule`(`id`, `crt_dttm`, `crt_user`, `enable_flag`, `last_update_dttm`, `last_update_user`, `version`, `cron_expression`, `job_class`, `job_name`, `status`) VALUES ('ff8081816eaa8a5d016eaa8a77e40000', '2019-11-27 09:47:12', 'system', b'1', '2019-11-27 09:47:12', 'system', 0, '0/5 * * * * ?', 'com.nature.schedule.RunningProcessSync', 'RunningProcessSync', 'RUNNING');
+INSERT INTO `sys_schedule`(`id`, `crt_dttm`, `crt_user`, `enable_flag`, `last_update_dttm`, `last_update_user`, `version`, `cron_expression`, `job_class`, `job_name`, `status`) VALUES ('ff8081816eaa9317016eaa932dd50000', '2019-11-27 09:56:43', 'system', b'1', '2019-11-27 09:56:43', 'system', 0, '0/5 * * * * ?', 'com.nature.schedule.RunningProcessGroupSync', 'RunningProcessGroupSync', 'RUNNING');
 -- ----------------------------
 -- update Example1
 -- ----------------------------
