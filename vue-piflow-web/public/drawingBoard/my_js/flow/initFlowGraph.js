@@ -317,8 +317,36 @@ function loadXml(loadStr, cells) {
     if (!loadStr) {
         return;
     }
-    let loadDate = loadStr;
-    let regHead = new RegExp(/style="image;html=1;labelBackgroundColor=#ffffff00;image=(\S*)\/img\//, "g");
+    loadStr = replaceImageHead(loadStr, 'img');
+    loadStr = replaceImageHead(loadStr, 'images');
+    var xml = mxUtils.parseXml(loadStr);
+    var node = xml.documentElement;
+    var dec = new mxCodec(node.ownerDocument);
+    dec.decode(node, graphGlobal.getModel());
+    eraseRecord()
+    if (cells) {
+        var new_load_cells = graphGlobal.getModel().getCell(cells[0].id);
+        graphGlobal.setSelectionCell(new_load_cells);
+        flowMxEventClickFunc(new_load_cells, true);
+    }
+}
+
+function replaceImageHead(str, end) {
+    let loadDate = str;
+    let regHead = '';
+    switch (end) {
+        case "img": {
+            regHead = new RegExp(/style="image;html=1;labelBackgroundColor=#ffffff00;image=(\S*)\/img\//, "g");
+            break;
+        }
+        case "images": {
+            regHead = new RegExp(/style="image;html=1;labelBackgroundColor=#ffffff00;image=(\S*)\/images\//, "g");
+            break;
+        }
+    }
+    if (!regHead) {
+        return "";
+    }
     let reg_1 = loadDate.match(regHead);
     if (reg_1 && reg_1.length > 0) {
         let replaceArray = {};
@@ -334,24 +362,14 @@ function loadXml(loadStr, cells) {
             if (key.indexOf("http") < 0) {
                 key = "style=\"image;html=1;labelBackgroundColor=#ffffff00;image=" + key;
                 let reg = new RegExp(key, "g")
-                loadDate = loadDate.replace(reg, "style=\"image;html=1;labelBackgroundColor=#ffffff00;image=" + web_header_prefix + "/img/");
+                loadDate = loadDate.replace(reg, "style=\"image;html=1;labelBackgroundColor=#ffffff00;image=" + web_header_prefix + "/" + end + "/");
             } else {
                 let reg = new RegExp(key, "g")
-                loadDate = loadDate.replace(reg, web_header_prefix + "/img/");
+                loadDate = loadDate.replace(reg, web_header_prefix + "/" + end + "/");
             }
         }
-        loadStr = loadDate;
     }
-    var xml = mxUtils.parseXml(loadStr);
-    var node = xml.documentElement;
-    var dec = new mxCodec(node.ownerDocument);
-    dec.decode(node, graphGlobal.getModel());
-    eraseRecord()
-    if (cells) {
-        var new_load_cells = graphGlobal.getModel().getCell(cells[0].id);
-        graphGlobal.setSelectionCell(new_load_cells);
-        flowMxEventClickFunc(new_load_cells, true);
-    }
+    return loadDate;
 }
 
 //Erase drawing board records
