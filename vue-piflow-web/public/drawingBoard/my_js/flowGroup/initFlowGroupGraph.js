@@ -373,8 +373,6 @@ function loadXml(loadStr) {
                 let reg = new RegExp(key, "g")
                 loadDate = loadDate.replace(reg, web_header_prefix + "/img/");
             }
-            let reg = new RegExp(key, "g")
-            loadDate = loadDate.replace(reg, web_header_prefix + "/img/");
         }
         loadStr = loadDate;
     }

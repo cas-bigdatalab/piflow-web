@@ -2422,7 +2422,12 @@ mxGraph.prototype.startEditingAtCell = function(cell, evt)
 				cell = null;
 			}
 		}
-	
+//------------------------------ Custom modification content 001 start ------------------------------
+        if (cell == null || !cell.style.startsWith('text;html=1;'))
+        {
+            cell = null;
+        }
+//------------------------------ Custom modification content 001 end ------------------------------
 		if (cell != null)
 		{
 			this.fireEvent(new mxEventObject(mxEvent.START_EDITING,

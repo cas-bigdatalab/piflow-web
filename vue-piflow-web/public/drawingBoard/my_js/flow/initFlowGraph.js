@@ -234,7 +234,6 @@ function initFlowGraph() {
         graphGlobal = this.editor.graph;
         thisEditor = this.editor;
         this.actions.get('export').setEnabled(false);
-        graphGlobal.setCellsEditable(false);
         //Monitoring event
         graphGlobal.addListener(mxEvent.CELLS_ADDED, function (sender, evt) {
             if (isExample) {
@@ -340,8 +339,6 @@ function loadXml(loadStr, cells) {
                 let reg = new RegExp(key, "g")
                 loadDate = loadDate.replace(reg, web_header_prefix + "/img/");
             }
-            let reg = new RegExp(key, "g")
-            loadDate = loadDate.replace(reg, web_header_prefix + "/img/");
         }
         loadStr = loadDate;
     }
