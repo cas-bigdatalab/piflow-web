@@ -1,4 +1,4 @@
-# PiFlow大数据管理系统 Web 端
+# PiFlow大数据流水线管理系统 Web 端
 支持pc端自适应。
 ### 项目初始化
 ```
@@ -31,15 +31,20 @@ npm run lint
 {
   "dependencies": {
     "axios": "^0.19.2",
-    "core-js": "^3.6.4",
-    "font-awesome": "^4.7.0",
-    "mockjs": "^1.1.0",
-    "postcss-px2rem": "^0.3.0",
-    "view-design": "^4.0.2",
-    "vue": "^2.6.11",
-    "vue-i18n": "^6.1.1",
-    "vue-router": "^3.1.3",
-    "vuex": "^3.1.2"
+     "core-js": "^3.6.4",
+     "echarts": "^4.8.0",
+     "font-awesome": "^4.7.0",
+     "js-cookie": "^2.2.1",
+     "less": "^2.7.3",
+     "less-loader": "^5.0.0",
+     "mockjs": "^1.1.0",
+     "postcss-px2rem": "^0.3.0",
+     "view-design": "^4.0.2",
+     "vue": "^2.6.11",
+     "vue-count-to": "^1.0.13",
+     "vue-i18n": "^6.1.1",
+     "vue-router": "^3.1.3",
+     "vuex": "^3.1.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.3.0",
