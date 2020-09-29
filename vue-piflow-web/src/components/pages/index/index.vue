@@ -192,13 +192,13 @@
                               </div>
                               <ul class="aaa" style="float:left;width: 50%;margin-top: 20px;letter-spacing: -.02em;">
                                   <li><p>Datasource：
-                                      <countTo :EndVal = Number(tempalateAndDataSourceResourceInfo.DATASOURCE_COUNT)></countTo>
+                                      <countTo :EndVal = Number(templateAndDataSourceResourceInfo.DATASOURCE_COUNT)></countTo>
                                   </p></li>
                                   <li><p>Stopshub：
-                                      <countTo :EndVal = Number(tempalateAndDataSourceResourceInfo.STOPSHUB_COUNT)></countTo>
+                                      <countTo :EndVal = Number(templateAndDataSourceResourceInfo.STOPSHUB_COUNT)></countTo>
                                   </p></li>
                                   <li><p>Template：
-                                      <countTo :EndVal = Number(tempalateAndDataSourceResourceInfo.TEMPLATE_COUNT)></countTo>
+                                      <countTo :EndVal = Number(templateAndDataSourceResourceInfo.TEMPLATE_COUNT)></countTo>
                                   </p></li>
                               </ul>
                               <div class="leftTop20">
@@ -254,11 +254,39 @@ export default {
         memory: {},
         hdfs: {},
       },
-      flowResourceInfo: {},
-      groupResourceInfo: {},
-      scheduleResourceInfo: {},
-      tempalateAndDataSourceResourceInfo: {},
-      stopResourceInfo: {},
+      flowResourceInfo: {
+          FLOW_COUNT: 0,
+          PROCESSOR_COUNT: 0,
+          PROCESSOR_STARTED_COUNT: 0,
+          PROCESSOR_COMPETED_COUNT: 0,
+          PROCESSOR_FAILED_COUNT: 0,
+          PROCESSOR_KILLED_COUNT: 0,
+          PROCESSOR_OTHER_COUNT: 0,
+      },
+      groupResourceInfo: {
+          GROUP_COUNT: 0,
+          PROCESSOR_COUNT: 0,
+          PROCESSOR_STARTED_COUNT: 0,
+          PROCESSOR_COMPETED_COUNT: 0,
+          PROCESSOR_FAILED_COUNT: 0,
+          PROCESSOR_KILLED_COUNT: 0,
+          PROCESSOR_OTHER_COUNT: 0,
+      },
+      scheduleResourceInfo: {
+          SCHEDULE_COUNT: 0,
+          SCHEDULE_INIT_COUNT: 0,
+          SCHEDULE_RUNNING_COUNT: 0,
+          SCHEDULE_STOP_COUNT: 0,
+      },
+        templateAndDataSourceResourceInfo: {
+          DATASOURCE_COUNT: 0,
+          STOPSHUB_COUNT: 0,
+          TEMPLATE_COUNT: 0,
+      },
+      stopResourceInfo: {
+          STOP_COUNT: 0,
+          STOPGROUP_COUNT: 0,
+      },
         percent: 0,
         cpuPercent: 0,
         memoryPercent: 0,
@@ -389,8 +417,8 @@ export default {
               .get("/dashboard/templateAndDataSourceStatistic")
               .then(res => {
                 if (res.data.code == 200) {
-                    let data = res.data.tempalateAndDataSourceResourceInfo;
-                    this.tempalateAndDataSourceResourceInfo = data;
+                    let data = res.data.templateAndDataSourceResourceInfo;
+                    this.templateAndDataSourceResourceInfo = data;
                 } else {
                   this.$Modal.error({
                     title: this.$t("tip.title"),

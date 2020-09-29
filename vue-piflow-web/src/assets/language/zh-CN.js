@@ -1,5 +1,5 @@
 module.exports = {
-    title:"PiFlow大数据管理系统",
+    title:"PiFlow大数据流水线管理系统",
     logOut: '退出',
     sidebar: {
         dashboard: "首页",
