@@ -2,6 +2,7 @@ package cn.cnic.common.Eunm;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import cn.cnic.base.TextureEnumSerializer;
+import org.apache.commons.lang3.StringUtils;
 
 @JsonSerialize(using = TextureEnumSerializer.class)
 public enum PortType {
@@ -34,6 +35,9 @@ public enum PortType {
     }
 
     public static PortType selectGender(String name) {
+        if (StringUtils.isBlank(name)) {
+            return PortType.DEFAULT;
+        }
         for (PortType portType : PortType.values()) {
             if (name.equalsIgnoreCase(portType.name())) {
                 return portType;
@@ -43,6 +47,9 @@ public enum PortType {
     }
 
     public static PortType selectGenderByValue(String value) {
+        if (StringUtils.isBlank(value)) {
+            return PortType.DEFAULT;
+        }
         for (PortType portType : PortType.values()) {
             if (value.equalsIgnoreCase(portType.value)) {
                 return portType;
