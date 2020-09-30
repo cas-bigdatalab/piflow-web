@@ -2471,7 +2471,9 @@ mxGraph.prototype.stopEditing = function(cancel)
 {
 	this.cellEditor.stopEditing(cancel);
 //------------------------------ Custom modification content 002 start ------------------------------
-    EditorUi.prototype.saveGraphData(null, 'MOVED');
+    if(false == cancel){
+        EditorUi.prototype.saveGraphData(null, 'MOVED');
+    }
 //------------------------------ Custom modification content 002 end ------------------------------
 	this.fireEvent(new mxEventObject(mxEvent.EDITING_STOPPED, 'cancel', cancel));
 };
