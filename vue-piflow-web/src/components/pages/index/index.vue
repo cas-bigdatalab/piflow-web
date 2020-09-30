@@ -22,7 +22,7 @@
                                   stroke-linecap="square"
                                   :stroke-color="color">
                               <div class="demo-Circle-custom">
-                                  <h3>{{resource.cpu.totalVirtualCores}}核</h3>
+                                  <h3>{{resource.cpu.totalVirtualCores}}{{$t('index.cpu')}}</h3>
                                   <p>{{$t('homeInfo.totalCapacity')}}</p>
                                   <span>
                                       {{$t('homeInfo.Used')}}
@@ -250,9 +250,15 @@ export default {
     return {
       height: 500,
       resource: {
-        cpu: {},
-        memory: {},
-        hdfs: {},
+        cpu: {
+            totalVirtualCores: 0
+        },
+        memory: {
+            totalMemoryGB: 0
+        },
+        hdfs: {
+            TotalCapacityGB: 0
+        },
       },
       flowResourceInfo: {
           FLOW_COUNT: 0,

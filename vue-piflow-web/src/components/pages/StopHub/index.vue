@@ -282,7 +282,7 @@
                             this.getTableData();
                         } else {
                             this.$event.emit("looding", false);
-                            this.$Modal.success({
+                            this.$Modal.error({
                                 title: this.$t("tip.title"),
                                 content: flag? `${row.jarName} ` + this.$t("tip.mount_fail_content"): `${row.jarName} ` + this.$t("tip.unmount_fail_content")
                             });
