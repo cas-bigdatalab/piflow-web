@@ -154,9 +154,9 @@ router.beforeEach((to, from, next) => {
 });
 
 
-function startApp() {
+async function startApp() {
   let API_URL;
-  axios.get('/config.json').then((res) => {
+  await axios.get('/config.json').then((res) => {
     if(process.env.NODE_ENV == 'development'){
       API_URL = res.data.DEV_URL;
     }else{
