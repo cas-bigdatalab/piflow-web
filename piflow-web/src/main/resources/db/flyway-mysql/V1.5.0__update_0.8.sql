@@ -46,6 +46,8 @@ ALTER TABLE `flow_process` ADD CONSTRAINT `FK8sqeh2bcr2pylbf4b7owvokly` FOREIGN 
 -- sys_schedule
 INSERT INTO `sys_schedule`(`id`, `crt_dttm`, `crt_user`, `enable_flag`, `last_update_dttm`, `last_update_user`, `version`, `cron_expression`, `job_class`, `job_name`, `status`, `last_run_result`) VALUES ('b494d4fecea148709a0d81cbb39e7f54', '2020-08-14 18:58:22', 'admin', b'1', '2020-09-28 22:04:59', 'admin', 17, '0/59 * * * * ?', 'cn.cnic.schedule.RunningGroupScheduleSync', 'RunningGroupScheduleSync', 'RUNNING', 'SUCCEED');
 
+INSERT INTO `sys_init_records`(`id`, `init_date`, `is_succeed`) VALUES ('8a80d89774dd81080174dd890bbb0002', '2021-01-01 00:00:00', b'1');
+
 
 -- update data
 UPDATE `sys_schedule` SET `job_class`='cn.cnic.schedule.RunningProcessSync' WHERE id='ff8081816eaa8a5d016eaa8a77e40000';
@@ -56,7 +58,3 @@ UPDATE `data_source_property` SET `name` = 'port' WHERE `id` = '968c061007fa4216
 UPDATE `data_source_property` SET `name` = 'index' WHERE `id` = 'f386627bb0734ef9a59c0316d4bd7ab7';
 
 
-
-
-
-//127.0.0.1:6001/dashboard/resourc

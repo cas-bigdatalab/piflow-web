@@ -46,6 +46,7 @@ ALTER TABLE `FLOW_PROCESS` ADD CONSTRAINT `FK8sqeh2bcr2pylbf4b7owvokly` FOREIGN 
 -- sys_schedule
 INSERT INTO `SYS_SCHEDULE`(`ID`, `CRT_DTTM`, `CRT_USER`, `ENABLE_FLAG`, `LAST_UPDATE_DTTM`, `LAST_UPDATE_USER`, `VERSION`, `CRON_EXPRESSION`, `JOB_CLASS`, `JOB_NAME`, `STATUS`, `LAST_RUN_RESULT`) VALUES ('b494d4fecea148709a0d81cbb39e7f54', '2020-08-14 18:58:22', 'admin', b'1', '2020-09-28 22:04:59', 'admin', 17, '0/59 * * * * ?', 'cn.cnic.schedule.runninggroupschedulesync', 'runninggroupschedulesync', 'running', 'succeed');
 
+INSERT INTO `SYS_INIT_RECORDS`(`ID`, `INIT_DATE`, `IS_SUCCEED`) VALUES ('8a80d89774dd81080174dd890bbb0002', parsedatetime('2021-01-01 00:00:00.00', 'dd-MM-yyyy hh:mm:ss.SS'), 1);
 
 -- update data
 UPDATE `SYS_SCHEDULE` SET `JOB_CLASS`='cn.cnic.schedule.RunningProcessSync' WHERE ID='ff8081816eaa8a5d016eaa8a77e40000';
