@@ -32,6 +32,9 @@ public class MxGraphModelProvider {
     private String pageHeight;
     private String background;
     private String flowId;
+    private String flowGroupId;
+    private String processId;
+    private String processGroupId;
 
     private void preventSQLInjectionMxGraphModel(MxGraphModel mxGraphModel) {
         if (null != mxGraphModel && StringUtils.isNotBlank(mxGraphModel.getLastUpdateUser())) {
@@ -70,6 +73,12 @@ public class MxGraphModelProvider {
             this.background = SqlUtils.preventSQLInjection(mxGraphModel.getBackground());
             String flowIdStr = (null != mxGraphModel.getFlow() ? mxGraphModel.getFlow().getId() : null);
             this.flowId = SqlUtils.preventSQLInjection(flowIdStr);
+            String flowGroupIdStr = (null != mxGraphModel.getFlowGroup() ? mxGraphModel.getFlowGroup().getId() : null);
+            this.flowGroupId = SqlUtils.preventSQLInjection(flowGroupIdStr);
+            String processIdStr = (null != mxGraphModel.getProcess() ? mxGraphModel.getProcess().getId() : null);
+            this.processId = SqlUtils.preventSQLInjection(processIdStr);
+            String processGroupIdStr = (null != mxGraphModel.getProcessGroup() ? mxGraphModel.getProcessGroup().getId() : null);
+            this.processGroupId = SqlUtils.preventSQLInjection(processGroupIdStr);
         }
     }
 
@@ -96,6 +105,9 @@ public class MxGraphModelProvider {
         this.pageHeight = null;
         this.background = null;
         this.flowId = null;
+        this.flowGroupId = null;
+        this.processId = null;
+        this.processGroupId = null;
 
     }
 
@@ -141,6 +153,9 @@ public class MxGraphModelProvider {
         sql.VALUES("mx_pageheight", pageHeight);
         sql.VALUES("mx_background", background);
         sql.VALUES("fk_flow_id", flowId);
+        sql.VALUES("fk_flow_group_id", flowGroupId);
+        sql.VALUES("fk_process_id", processId);
+        sql.VALUES("fk_process_group_id", processGroupId);
         String sqlStr = sql.toString();
         this.reset();
         return sqlStr;
@@ -181,6 +196,15 @@ public class MxGraphModelProvider {
                 sql.SET("mx_background = " + background);
                 if (!"null".equals(flowId)) {
                     sql.SET("fk_flow_id = " + flowId);
+                }
+                if (!"null".equals(flowGroupId)) {
+                    sql.SET("fk_flow_group_id = " + flowGroupId);
+                }
+                if (!"null".equals(processId)) {
+                    sql.SET("fk_process_id = " + processId);
+                }
+                if (!"null".equals(processGroupId)) {
+                    sql.SET("fk_process_group_id = " + processGroupId);
                 }
                 sql.WHERE("version = " + version);
                 sql.WHERE("id = " + id);
