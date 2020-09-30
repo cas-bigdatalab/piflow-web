@@ -17,6 +17,9 @@ module.exports = {
         prev_text: "上一页",
         next_text: "下一页"
     },
+    index: {
+        cpu: "核"
+    },
     tip: {
         title: "PiFlow系统提示",
         fault_content: "后台程序运行发生未知错误！",
@@ -65,7 +68,7 @@ module.exports = {
         driverMemory: "Driver内存",
         executorNumber: "Executor数量",
         executorMemory: "Executor内存",
-        executorCores: "Executor CPU核数",
+        executorCores: "ExecutorCPU核数",
         name: "名称",
         description: "描述信息",
         CreateTime: "创建时间",

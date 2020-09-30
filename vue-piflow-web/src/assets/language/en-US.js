@@ -17,6 +17,9 @@ module.exports = {
         prev_text: "Previous",
         next_text: "Next"
     },
+    index: {
+        cpu: "cores"
+    },
     tip: {
         title: "PiFlow system tips",
         fault_content: "An unknown error occurred in the background run！",

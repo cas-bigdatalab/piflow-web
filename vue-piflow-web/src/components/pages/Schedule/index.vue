@@ -441,7 +441,7 @@
                             this.getTableData();
                         } else {
                             this.$event.emit("looding", false);
-                            this.$Modal.success({
+                            this.$Modal.error({
                                 title: this.$t("tip.title"),
                                 content: flag? `${row.cronExpression} ` + this.$t("tip.run_fail_content"): `${row.cronExpression} ` + this.$t("tip.stop_fail_content")
                             });

@@ -98,6 +98,8 @@ export default {
       window.sessionStorage.removeItem("menuName");
       // window.sessionStorage.removeItem("user");
       Cookies.remove('state');
+      Cookies.remove('basePath');
+      Cookies.remove('token');
       // Cookies.remove('menuName');
       Cookies.remove('user');
       this.$store.commit("setToken", "");
