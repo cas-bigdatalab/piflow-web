@@ -67,7 +67,7 @@ function initFlowDrawingBoardData(loadId, parentAccessPath) {
                                 Sidebar.prototype.component_data.push({
                                     component_name: groupsVoList_i.groupName,
                                     component_group: groupsVoList_i.stopsTemplateVoList,
-                                    component_prefix: (sever_base_origin + "/images/"),
+                                    component_prefix: (web_header_prefix + "/images/"),
                                     addImagePaletteId: 'clipart'
                                 });
                             }
