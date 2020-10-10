@@ -58,7 +58,8 @@ public class PropertyServiceImpl implements IPropertyService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("stopPageId is null");
         }
         Stops stops = stopsDomain.getStopsByPageId(fid, stopPageId);
-        StopsVo stopsVo = StopsUtils.stopPoToVo(stops);
+        StopsComponent stopsComponentByBundle = stopsComponentMapper.getStopsComponentByBundle(stops.getBundel());
+        StopsVo stopsVo = StopsUtils.stopPoToVo(stops,stopsComponentByBundle);
         if (null == stopsVo) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("data is null");
         }

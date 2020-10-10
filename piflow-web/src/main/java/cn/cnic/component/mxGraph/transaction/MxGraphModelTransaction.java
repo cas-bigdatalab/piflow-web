@@ -1,12 +1,14 @@
 package cn.cnic.component.mxGraph.transaction;
 
 import cn.cnic.base.util.LoggerUtil;
+import cn.cnic.base.util.UUIDUtils;
 import cn.cnic.component.mxGraph.entity.MxCell;
 import cn.cnic.component.mxGraph.entity.MxGeometry;
 import cn.cnic.component.mxGraph.entity.MxGraphModel;
 import cn.cnic.component.mxGraph.mapper.MxCellMapper;
 import cn.cnic.component.mxGraph.mapper.MxGeometryMapper;
 import cn.cnic.component.mxGraph.mapper.MxGraphModelMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
@@ -45,6 +47,10 @@ public class MxGraphModelTransaction {
         if (null == mxGraphModel) {
             return 0;
         }
+        String id = mxGraphModel.getId();
+        if (StringUtils.isBlank(id)) {
+            mxGraphModel.setId(UUIDUtils.getUUID32());
+        }
         int addMxGraphModelCounts = mxGraphModelMapper.addMxGraphModel(mxGraphModel);
         if (addMxGraphModelCounts <= 0) {
             throw new Exception("save failed");
@@ -56,6 +62,11 @@ public class MxGraphModelTransaction {
         List<MxCell> mxCellList = mxGraphModel.getRoot();
         if (null != mxCellList && mxCellList.size() > 0) {
             for (MxCell mxCell : mxCellList) {
+                mxCell.setMxGraphModel(mxGraphModel);
+                String mxCellId = mxCell.getId();
+                if (StringUtils.isBlank(mxCellId)) {
+                    mxCell.setId(UUIDUtils.getUUID32());
+                }
                 int addMxCell = mxCellMapper.addMxCell(mxCell);
                 if (addMxCell <= 0) {
                     throw new Exception("save failed");

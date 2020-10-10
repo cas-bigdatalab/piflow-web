@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import cn.cnic.base.util.UUIDUtils;
 import cn.cnic.component.mxGraph.entity.MxGraphModel;
 import cn.cnic.component.mxGraph.transaction.MxGraphModelTransaction;
 import org.apache.commons.lang3.StringUtils;
@@ -57,6 +58,10 @@ public class ProcessTransaction {
         if (null == process) {
             return 0;
         }
+        String id = process.getId();
+        if (StringUtils.isBlank(id)) {
+            process.setId(UUIDUtils.getUUID32());
+        }
         int addProcessCounts = processMapper.addProcess(process);
         if (addProcessCounts <= 0) {
             throw new Exception("save failed");
@@ -66,6 +71,16 @@ public class ProcessTransaction {
         int addProcessPathCounts = 0;
         List<ProcessPath> processPathList = process.getProcessPathList();
         if (null != processPathList && processPathList.size() > 0) {
+            for (ProcessPath processPath : processPathList) {
+                if (null == processPath) {
+                    continue;
+                }
+                processPath.setProcess(process);
+                String processPathId = processPath.getId();
+                if (StringUtils.isBlank(processPathId)) {
+                    processPath.setId(UUIDUtils.getUUID32());
+                }
+            }
             addProcessPathCounts = processPathMapper.addProcessPathList(processPathList);
         }
         // Save Stop
@@ -76,15 +91,39 @@ public class ProcessTransaction {
         if (null != processStopList && processStopList.size() > 0) {
             addProcessStopCounts = processStopMapper.addProcessStopList(processStopList);
             for (ProcessStop processStop : processStopList) {
+                processStop.setProcess(process);
+                String processStopId = processStop.getId();
+                if (StringUtils.isBlank(processStopId)) {
+                    processStop.setId(UUIDUtils.getUUID32());
+                }
+                int addProcessStop = processStopMapper.addProcessStop(processStop);
+                if (addProcessStop < 0) {
+                    throw new Exception("save failed");
+                }
                 List<ProcessStopProperty> processStopPropertyList = processStop.getProcessStopPropertyList();
                 if (null != processStopPropertyList && processStopPropertyList.size() > 0) {
-                    addProcessStopPropertyCounts += processStopPropertyMapper.addProcessStopProperties(processStopPropertyList);
+                    for (ProcessStopProperty processStopProperty : processStopPropertyList) {
+                        if (null == processStopProperty) {
+                            continue;
+                        }
+                        processStopProperty.setProcessStop(processStop);
+                        String processStopPropertyId = processStopProperty.getId();
+                        if (StringUtils.isBlank(processStopPropertyId)) {
+                            processStopProperty.setId(UUIDUtils.getUUID32());
+                        }
+                        int addProcessStopProperty = processStopPropertyMapper.addProcessStopProperty(processStopProperty);
+                        if (addProcessStopProperty < 0) {
+                            throw new Exception("save failed");
+                        }
+                        addProcessStopPropertyCounts += addProcessStopProperty;
+                    }
                 }
             }
         }
         int addMxGraphModel = 0;
         MxGraphModel mxGraphModel = process.getMxGraphModel();
         if (null != mxGraphModel) {
+            mxGraphModel.setProcess(process);
             addMxGraphModel = mxGraphModelTransaction.addMxGraphModel(mxGraphModel);
         }
         int influenceCounts = (addProcessPathCounts + addProcessStopCounts + addProcessStopPropertyCounts + addMxGraphModel);
