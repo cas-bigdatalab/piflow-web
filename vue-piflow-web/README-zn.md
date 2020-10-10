@@ -1,34 +1,34 @@
-# PiFlow Big Data Pipeline System Web end
-Support pc end adaptive。
+# PiFlow大数据流水线管理系统 Web 端
+支持pc端自适应。
 
-[简体中文](./README-zn.md) | English
- 
-### Project initialization
+[English](./README-zn.md) | 简体中文
+
+### 项目初始化
 ```
 npm install
 ```
 
-### Start the development environment
+### 启动开发环境
 ```
 npm run dev
 ```
 
-### Project packaged online
+### 项目打包上线
 ```
 npm run build
 ```
 
-### Visual analysis of project optimization
+### 项目优化可视化分析
 ```
 npm run analyzer
 ```
 
-### Lints and fixes files
+### Lints和fixes文件
 ```
 npm run lint
 ```
 
-### Installed packages || modules
+### 已安装的包 || 模块
 
 ```json
 {
@@ -66,7 +66,7 @@ npm run lint
   }
 }
 ```
-### Supplement
-If you enable eslint code verification, add "eslint:recommended" in the extends field under package.json。
+### 补充说明
+如若开启 eslint 代码校验要在 package.json 下的 extends 字段中添加 "eslint:recommended" 即可。
 
 
