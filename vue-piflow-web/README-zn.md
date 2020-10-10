@@ -1,7 +1,7 @@
 # PiFlow大数据流水线管理系统 Web 端
 支持pc端自适应。
 
-[English](./README-zn.md) | 简体中文
+[English](./README.md) | 简体中文
 
 ### 项目初始化
 ```
