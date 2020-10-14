@@ -385,7 +385,7 @@ export default {
     // 注册
     handleRegister() {
       this.$Message.destroy();
-      if (!this.account) {
+      if (!this.username) {
         this.$Message["error"]({
           background: true,
           content: "请填写账号！"
@@ -415,68 +415,92 @@ export default {
           background: true,
           content: "用户名不得为数字，请正确填写用户名！"
         });
-      } else if (!this.mobile) {
-        this.$Message["error"]({
-          background: true,
-          content: "请填写手机号！"
-        });
-      } else if (!this.rEphone(this.mobile)) {
-        this.$Message["error"]({
-          background: true,
-          content: "手机号错误，请正确填写手机号！"
-        });
-      } else if (!this.org) {
-        this.$Message["error"]({
-          background: true,
-          content: "请填写单位名称！"
-        });
-      } else if (!this.rEnumber(this.org)) {
-        this.$Message["error"]({
-          background: true,
-          content: "请正确填写单位名称！"
-        });
-      } else if (!this.post) {
-        this.$Message["error"]({
-          background: true,
-          content: "请填写职务！"
-        });
-      } else if (!this.rEnumber(this.post)) {
-        this.$Message["error"]({
-          background: true,
-          content: "请正确填写职务！"
-        });
-      } else {
+      }
+      // else if (!this.mobile) {
+        // this.$Message["error"]({
+        //   background: true,
+        //   content: "请填写手机号！"
+        // });
+      // }
+      // else if (!this.rEphone(this.mobile)) {
+      //   this.$Message["error"]({
+      //     background: true,
+      //     content: "手机号错误，请正确填写手机号！"
+      //   });
+      // }
+      // else if (!this.org) {
+      //   this.$Message["error"]({
+      //     background: true,
+      //     content: "请填写单位名称！"
+      //   });
+      // } else if (!this.rEnumber(this.org)) {
+      //   this.$Message["error"]({
+      //     background: true,
+      //     content: "请正确填写单位名称！"
+      //   });
+      // } else if (!this.post) {
+      //   this.$Message["error"]({
+      //     background: true,
+      //     content: "请填写职务！"
+      //   });
+      // } else if (!this.rEnumber(this.post)) {
+      //   this.$Message["error"]({
+      //     background: true,
+      //     content: "请正确填写职务！"
+      //   });
+      // }
+      else {
         this.$Message.loading({
           content: "注册中，请稍后...",
           duration: 0
         });
         let data = {
-          account: this.account,
-          password: this.password,
+          username: this.username,
+          pw: this.password,
           name: this.name,
-          mobile: this.mobile,
-          org: this.org,
-          post: this.post
         };
-        API.getRegister(data, res => {
-          this.$Message.destroy();
-          if (res.data.code == 200) {
-            this.$Message["info"]({
-              background: true,
-              duration: 10,
-              closable: true,
-              content: res.data.message
-            });
-            this.onChange();
-          } else {
-            this.$Message["error"]({
-              background: true,
-              duration: 10,
-              closable: true,
-              content: res.data.message
-            });
-          }
-        });
+        this.$axios
+                .post("/register", this.$qs.stringify(data))
+                .then(res => {
+                  if (res.data.code == 200) {
+                    this.$Message["info"]({
+                      background: true,
+                      duration: 10,
+                      closable: true,
+                      content: res.data.message
+                    });
+                    this.onChange();
+                  } else {
+                    this.$Message["error"]({
+                      background: true,
+                      duration: 10,
+                      closable: true,
+                      content: res.data.message
+                    });
+                  }
+                })
+                .catch(function(error) {
+                  console.log(error);
+                });
+        // API.getRegister(data, res => {
+        //   this.$Message.destroy();
+        //   if (res.data.code == 200) {
+        //     this.$Message["info"]({
+        //       background: true,
+        //       duration: 10,
+        //       closable: true,
+        //       content: res.data.message
+        //     });
+        //     this.onChange();
+        //   } else {
+        //     this.$Message["error"]({
+        //       background: true,
+        //       duration: 10,
+        //       closable: true,
+        //       content: res.data.message
+        //     });
+        //   }
+        // });
       }
     },
     rEphone(val) {
