@@ -11,7 +11,10 @@ if (document.cookie && document.cookie != '') {
     var cookies = document.cookie.split(';');//将获得的所有cookie切割成数组
     for (var i = 0; i < cookies.length; i++) {
         var cookie = cookies[i];//得到某下标的cookies数组
-        if (cookie.substring(0, 'basePath'.length + 1).trim() == 'basePath='.trim()) {//如果存在该cookie的话就将cookie的值拿出来
+        if (cookie.substring(0, 'basePath'.length + 2).trim() == 'basePath='.trim()) {//如果存在该cookie的话就将cookie的值拿出来
+            basePath = cookie.substring('basePath'.length + 2, cookie.length);
+            // break
+        }else if (cookie.substring(0, 'basePath'.length + 1).trim() == 'basePath='.trim()) {//如果存在该cookie的话就将cookie的值拿出来
             basePath = cookie.substring('basePath'.length + 1, cookie.length);
             // break
         }
@@ -23,7 +26,6 @@ if (document.cookie && document.cookie != '') {
 }
 
 var web_header_prefix = basePath.indexOf(window.location.origin) || basePath.indexOf('http') > -1 ? basePath : web_base_origin + basePath; //与 .env.production 内容同步
-
 /**
  * ajax工具js
  * @param requestType 请求类型(get,post)
