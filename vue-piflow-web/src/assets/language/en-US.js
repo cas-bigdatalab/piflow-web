@@ -22,6 +22,7 @@ module.exports = {
     },
     tip: {
         title: "PiFlow system tips",
+        existed: "UserName Existed！",
         fault_content: "An unknown error occurred in the background run！",
         update_success_content: "update succeeded！",
         update_fail_content: "update failed！",

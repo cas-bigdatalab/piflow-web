@@ -81,6 +81,7 @@
                         type="password"
                         placeholder="Confirm password"
                         class="ivu-input ivu-input-default"
+                        @blur="onBlur"
                       />
                     </div>
                   </div>
@@ -257,17 +258,17 @@ export default {
     //   }
     // },
     isPassword(val) {
-      this.$Message.destroy();
-      if (this.password !== val) {
-        this.$Message["error"]({
-          background: true,
-          duration: 10,
-          closable: true,
-          content: "密码与确认密码不一致，请重新输入！"
-        });
-      } else {
-        this.$Message.destroy();
-      }
+      // this.$Message.destroy();
+      // if (this.password !== val) {
+      //   this.$Message["error"]({
+      //     background: true,
+      //     duration: 10,
+      //     closable: true,
+      //     content: "密码与确认密码不一致，请重新输入！"
+      //   });
+      // } else {
+      //   this.$Message.destroy();
+      // }
     }
   },
   created() {
@@ -470,6 +471,16 @@ export default {
                       content: res.data.message
                     });
                     this.onChange();
+                  }else if(res.data.code == 500){
+                    if (res.data.errorMsg == 'save failed'){
+                      this.$Modal.error({
+                        title: this.$t("tip.title"),
+                        content: this.$t("tip.existed"),
+                        onOk:()=>{
+                          this.handleReset();
+                        }
+                      });
+                    }
                   } else {
                     this.$Message["error"]({
                       background: true,
@@ -543,6 +554,19 @@ export default {
               .catch((error) => {
                 console.log(error);
               });
+    },
+    onBlur(){
+      this.$Message.destroy();
+      if (this.password !== this.isPassword) {
+        this.$Message["error"]({
+          background: true,
+          duration: 10,
+          closable: true,
+          content: "密码与确认密码不一致，请重新输入！"
+        });
+      } else {
+        this.$Message.destroy();
+      }
     }
   }
 };
