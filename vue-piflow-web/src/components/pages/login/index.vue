@@ -257,18 +257,19 @@ export default {
     //     });
     //   }
     // },
+
     isPassword(val) {
-      // this.$Message.destroy();
-      // if (this.password !== val) {
-      //   this.$Message["error"]({
-      //     background: true,
-      //     duration: 10,
-      //     closable: true,
-      //     content: "密码与确认密码不一致，请重新输入！"
-      //   });
-      // } else {
-      //   this.$Message.destroy();
-      // }
+      this.$Message.destroy();
+      if (this.password !== val) {
+        // this.$Message["error"]({
+        //   background: true,
+        //   duration: 10,
+        //   closable: true,
+        //   content: "密码与确认密码不一致，请重新输入！"
+        // });
+      } else {
+        this.$Message.destroy();
+      }
     }
   },
   created() {
@@ -464,12 +465,7 @@ export default {
                 .post("/register", this.$qs.stringify(data))
                 .then(res => {
                   if (res.data.code == 200) {
-                    this.$Message["info"]({
-                      background: true,
-                      duration: 10,
-                      closable: true,
-                      content: res.data.message
-                    });
+                    this.$Message.success('registration success！');
                     this.onChange();
                   }else if(res.data.code == 500){
                     if (res.data.errorMsg == 'save failed'){
@@ -482,10 +478,7 @@ export default {
                       });
                     }
                   } else {
-                    this.$Message["error"]({
-                      background: true,
-                      duration: 10,
-                      closable: true,
+                    this.$Message.error({
                       content: res.data.message
                     });
                   }
@@ -558,10 +551,7 @@ export default {
     onBlur(){
       this.$Message.destroy();
       if (this.password !== this.isPassword) {
-        this.$Message["error"]({
-          background: true,
-          duration: 10,
-          closable: true,
+        this.$Message.error({
           content: "密码与确认密码不一致，请重新输入！"
         });
       } else {

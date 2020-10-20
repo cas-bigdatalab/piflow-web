@@ -887,7 +887,19 @@ function openDatasourceList() {
     var window_width = $(window).width();//Get browser window width
     var window_height = $(window).height();//Get browser window height
     // openLayerTypeIframeWindowLoadUrl("/page/datasource/data_source_list.html",(window_width - 100),(window_height - 100),DatasourceList)
-    openLayerTypeIframeWindowLoadUrl("/page/datasource/data_source_list.html", (window_width - 100), (window_height - 100))
+    // openLayerTypeIframeWindowLoadUrl("/page/datasource/data_source_list.html", (window_width - 100), (window_height - 100),'Data Source')
+
+    ajaxLoad("", "/page/datasource/data_source_list.html", function (data) {
+        var open_window_width = (window_width > 300 ? 1200 : window_width);
+        var open_window_height = (window_height > 400 ? 570 : window_height);
+        openLayerWindowLoadHtml(data,open_window_width,open_window_height,"Data Source");
+        // $("#debug_app_id").html(appId);
+        // $("#debug_stop_name").html(stopName);
+        // $("#debug_port_name").html(portName);
+        // changePageNo(1);
+    });
+
+
 }
 
 //query datasource list
