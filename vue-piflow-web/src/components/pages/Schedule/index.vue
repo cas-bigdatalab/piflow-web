@@ -321,17 +321,17 @@
                                 this.handleReset();
                                 this.getTableData();
                             } else {
-                                this.$Modal.error({
-                                    title: this.$t("tip.title"),
-                                    content: `${this.name} ` + this.$t("tip.update_fail_content")
+                                this.$Message.error({
+                                  content: `${this.name} ` + this.$t("tip.update_fail_content"),
+                                  duration: 3
                                 });
                             }
                         })
                         .catch(error => {
                             console.log(error);
-                            this.$Modal.error({
-                                title: this.$t("tip.title"),
-                                content: this.$t("tip.fault_content")
+                            this.$Message.error({
+                              content: this.$t("tip.fault_content"),
+                              duration: 3
                             });
                         });
                 } else {
@@ -348,17 +348,17 @@
                                 this.handleReset();
                                 this.getTableData();
                             } else {
-                                this.$Modal.error({
-                                    title: this.$t("tip.title"),
-                                    content: `${this.name} ` + this.$t("tip.add_fail_content")
+                                this.$Message.error({
+                                  content: `${this.name} ` + this.$t("tip.add_fail_content"),
+                                  duration: 3
                                 });
                             }
                         })
                         .catch(error => {
                             console.log(error);
-                            this.$Modal.error({
-                                title: this.$t("tip.title"),
-                                content: this.$t("tip.fault_content")
+                            this.$Message.error({
+                              content: this.$t("tip.fault_content"),
+                              duration: 3
                             });
                         });
                 }
@@ -376,17 +376,17 @@
                                 this.subTypeList = res.data.data;
                                 // this.total = res.data.count;
                             } else {
-                                this.$Modal.error({
-                                    title: this.$t("tip.title"),
-                                    content: this.$t("tip.request_fail_content")
+                                this.$Message.error({
+                                  content: this.$t("tip.request_fail_content"),
+                                  duration: 3
                                 });
                             }
                         })
                         .catch(error => {
                             console.log(error);
-                            this.$Modal.error({
-                                title: this.$t("tip.title"),
-                                content: this.$t("tip.fault_content")
+                            this.$Message.error({
+                              content: this.$t("tip.fault_content"),
+                              duration: 3
                             });
                         });
                 }else if(type === 'FLOW_GROUP'){
@@ -399,17 +399,17 @@
                                 this.subTypeList = res.data.data;
                                 // this.total = res.data.count;
                             } else {
-                                this.$Modal.error({
-                                    title: this.$t("tip.title"),
-                                    content: this.$t("tip.request_fail_content")
+                                this.$Message.error({
+                                  content: this.$t("tip.request_fail_content"),
+                                  duration: 3
                                 });
                             }
                         })
                         .catch(error => {
                             console.log(error);
-                            this.$Modal.error({
-                                title: this.$t("tip.title"),
-                                content: this.$t("tip.fault_content")
+                            this.$Message.error({
+                              content: this.$t("tip.fault_content"),
+                              duration: 3
                             });
                         });
                 }
@@ -441,18 +441,18 @@
                             this.getTableData();
                         } else {
                             this.$event.emit("looding", false);
-                            this.$Modal.error({
-                                title: this.$t("tip.title"),
-                                content: flag? `${row.cronExpression} ` + this.$t("tip.run_fail_content"): `${row.cronExpression} ` + this.$t("tip.stop_fail_content")
+                            this.$Message.error({
+                              content: flag? `${row.cronExpression} ` + this.$t("tip.run_fail_content"): `${row.cronExpression} ` + this.$t("tip.stop_fail_content"),
+                              duration: 3
                             });
                         }
                     })
                     .catch(error => {
                         console.log(error);
                         this.$event.emit("looding", false);
-                        this.$Modal.error({
-                            title: this.$t("tip.title"),
-                            content: this.$t("tip.fault_content")
+                        this.$Message.error({
+                          content: this.$t("tip.fault_content"),
+                          duration: 3
                         });
                     });
             },
@@ -486,18 +486,18 @@
                             this.isOpen = true;
                         } else {
                             this.$event.emit("looding", false);
-                            this.$Modal.error({
-                                title: this.$t("tip.title"),
-                                content: this.$t("tip.data_fail_content")
+                            this.$Message.error({
+                              content: this.$t("tip.data_fail_content"),
+                              duration: 3
                             });
                         }
                     })
                     .catch(error => {
                         console.log(error);
                         this.$event.emit("looding", false);
-                        this.$Modal.error({
-                            title: this.$t("tip.title"),
-                            content: this.$t("tip.fault_content")
+                        this.$Message.error({
+                          content: this.$t("tip.fault_content"),
+                          duration: 3
                         });
                     });
             },
@@ -533,17 +533,17 @@
                                         this.handleReset();
                                         this.getTableData();
                                     } else {
-                                        this.$Modal.error({
-                                            title: this.$t("tip.title"),
-                                            content: this.$t("tip.delete_fail_content")
+                                        this.$Message.error({
+                                          content: this.$t("tip.delete_fail_content"),
+                                          duration: 3
                                         });
                                     }
                                 })
                                 .catch(error => {
                                     console.log(error);
-                                    this.$Modal.error({
-                                        title: this.$t("tip.title"),
-                                        content: this.$t("tip.fault_content")
+                                    this.$Message.error({
+                                      content: this.$t("tip.fault_content"),
+                                      duration: 3
                                     });
                                 });
                         },
@@ -568,17 +568,17 @@
                             this.tableData = res.data.data;
                             this.total = res.data.count;
                         } else {
-                            this.$Modal.error({
-                                title: this.$t("tip.title"),
-                                content: this.$t("tip.request_fail_content")
+                            this.$Message.error({
+                              content: this.$t("tip.request_fail_content"),
+                              duration: 3
                             });
                         }
                     })
                     .catch(error => {
                         console.log(error);
-                        this.$Modal.error({
-                            title: this.$t("tip.title"),
-                            content: this.$t("tip.fault_content")
+                        this.$Message.error({
+                          content: this.$t("tip.fault_content"),
+                          duration: 3
                         });
                     });
             },

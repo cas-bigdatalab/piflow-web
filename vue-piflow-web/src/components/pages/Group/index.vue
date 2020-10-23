@@ -293,17 +293,17 @@ export default {
               this.handleReset();
               this.getTableData();
             } else {
-              this.$Modal.error({
-                title: this.$t("tip.title"),
-                content: `${this.name} ` + this.$t("tip.update_fail_content")
+              this.$Message.error({
+                content: `${this.name} ` + this.$t("tip.update_fail_content"),
+                duration: 3
               });
             }
           })
           .catch(error => {
             console.log(error);
-            this.$Modal.error({
-              title: this.$t("tip.title"),
-              content: this.$t("tip.fault_content")
+            this.$Message.error({
+              content: this.$t("tip.fault_content"),
+              duration: 3
             });
           });
       } else {
@@ -328,17 +328,17 @@ export default {
               this.handleReset();
               this.getTableData();
             } else {
-              this.$Modal.error({
-                title: this.$t("tip.title"),
-                content: `${this.name} ` + this.$t("tip.add_fail_content")
+              this.$Message.error({
+                content: `${this.name} ` + this.$t("tip.add_fail_content"),
+                duration: 3
               });
             }
           })
           .catch(error => {
             console.log(error);
-            this.$Modal.error({
-              title: this.$t("tip.title"),
-              content: this.$t("tip.fault_content")
+            this.$Message.error({
+              content: this.$t("tip.fault_content"),
+              duration: 3
             });
           });
       }
@@ -362,18 +362,18 @@ export default {
             this.templateName = "";
             this.row = null;
           } else {
-            this.$Modal.error({
-              title: this.$t("tip.title"),
+            this.$Message.error({
               content:
-                `${this.templateName} ` + this.$t("tip.save_fail_content")
+                `${this.templateName} ` + this.$t("tip.save_fail_content"),
+              duration: 3
             });
           }
         })
         .catch(error => {
           console.log(error);
-          this.$Modal.error({
-            title: this.$t("tip.title"),
-            content: this.$t("tip.fault_content")
+          this.$Message.error({
+            content: this.$t("tip.fault_content"),
+            duration: 3
           });
         });
     },
@@ -404,18 +404,18 @@ export default {
             });
           } else {
             this.$event.emit("looding", false);
-            this.$Modal.error({
-              title: this.$t("tip.title"),
-              content: `${row.name} ` + this.$t("tip.run_fail_content")
+            this.$Message.error({
+              content: `${row.name} ` + this.$t("tip.run_fail_content"),
+              duration: 3
             });
           }
         })
         .catch(error => {
           console.log(error);
           this.$event.emit("looding", false);
-          this.$Modal.error({
-            title: this.$t("tip.title"),
-            content: this.$t("tip.fault_content")
+          this.$Message.error({
+            content: this.$t("tip.fault_content"),
+            duration: 3
           });
         });
     },
@@ -437,7 +437,7 @@ export default {
     //         });
     //       } else {
     //         this.$event.emit("looding", false);
-    //         this.$Modal.error({
+    //         this.$Message.error({
     //           title: this.$t("tip.title"),
     //           content: `${row.name} ` + this.$t("tip.debug_fail_content")
     //         });
@@ -446,7 +446,7 @@ export default {
     //     .catch(error => {
     //       console.log(error);
     //       this.$event.emit("looding", false);
-    //       this.$Modal.error({
+    //       this.$Message.error({
     //         title: this.$t("tip.title"),
     //         content: this.$t("tip.fault_content")
     //       });
@@ -473,18 +473,18 @@ export default {
             this.isOpen = true;
           } else {
             this.$event.emit("looding", false);
-            this.$Modal.error({
-              title: this.$t("tip.title"),
-              content: this.$t("tip.get_fail_content")
+            this.$Message.error({
+              content: this.$t("tip.get_fail_content"),
+              duration: 3
             });
           }
         })
         .catch(error => {
           console.log(error);
           this.$event.emit("looding", false);
-          this.$Modal.error({
-            title: this.$t("tip.title"),
-            content: this.$t("tip.fault_content")
+          this.$Message.error({
+            content: this.$t("tip.fault_content"),
+            duration: 3
           });
         });
     },
@@ -511,17 +511,17 @@ export default {
                     `${row.name} ` + this.$t("tip.delete_success_content")
                 });
               } else {
-                this.$Modal.error({
-                  title: this.$t("tip.title"),
-                  content: this.$t("tip.delete_fail_content")
+                this.$Message.error({
+                  content: this.$t("tip.delete_fail_content"),
+                  duration: 3
                 });
               }
             })
             .catch(error => {
               console.log(error);
-              this.$Modal.error({
-                title: this.$t("tip.title"),
-                content: this.$t("tip.fault_content")
+              this.$Message.error({
+                content: this.$t("tip.fault_content"),
+                duration: 3
               });
             });
         },
@@ -545,17 +545,17 @@ export default {
             this.tableData = res.data.data;
             this.total = res.data.count;
           } else {
-            this.$Modal.error({
-              title: this.$t("tip.title"),
-              content: this.$t("tip.request_fail_content")
+            this.$Message.error({
+              content: this.$t("tip.request_fail_content"),
+              duration: 3
             });
           }
         })
         .catch(error => {
           console.log(error);
-          this.$Modal.error({
-            title: this.$t("tip.title"),
-            content: this.$t("tip.fault_content")
+          this.$Message.error({
+            content: this.$t("tip.fault_content"),
+            duration: 3
           });
         });
     },

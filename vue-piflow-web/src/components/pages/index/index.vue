@@ -336,17 +336,17 @@ export default {
                   this.hdfsPercent = Number(this.hdfsPercent.toFixed(2));
                     // console.log(this.resource,'this.resource.cpu','remainingVirtualCores')
                 } else {
-                  this.$Modal.error({
-                    title: this.$t("tip.title"),
-                    content: this.$t("tip.request_fail_content")
+                  this.$Message.error({
+                    content: this.$t("tip.request_fail_content"),
+                    duration: 3
                   });
                 }
               })
               .catch(error => {
                 console.log(error);
-                this.$Modal.error({
-                  title: this.$t("tip.title"),
-                  content: this.$t("tip.fault_content")
+                this.$Message.error({
+                  content: this.$t("tip.fault_content"),
+                  duration: 3
                 });
               });
   },
@@ -360,17 +360,17 @@ export default {
                   this.flowResourceInfo = data;
                   // console.log(data)
                 } else {
-                  this.$Modal.error({
-                    title: this.$t("tip.title"),
-                    content: this.$t("tip.request_fail_content")
+                  this.$Message.error({
+                    content: this.$t("tip.request_fail_content"),
+                    duration: 3
                   });
                 }
               })
               .catch(error => {
                 console.log(error);
-                this.$Modal.error({
-                  title: this.$t("tip.title"),
-                  content: this.$t("tip.fault_content")
+                this.$Message.error({
+                  content: this.$t("tip.fault_content"),
+                  duration: 3
                 });
               });
 
@@ -382,17 +382,17 @@ export default {
                   let data = res.data.groupResourceInfo;
                     this.groupResourceInfo = data;
                 } else {
-                  this.$Modal.error({
-                    title: this.$t("tip.title"),
-                    content: this.$t("tip.request_fail_content")
+                  this.$Message.error({
+                    content: this.$t("tip.request_fail_content"),
+                    duration: 3
                   });
                 }
               })
               .catch(error => {
                 console.log(error);
-                this.$Modal.error({
-                  title: this.$t("tip.title"),
-                  content: this.$t("tip.fault_content")
+                this.$Message.error({
+                  content: this.$t("tip.fault_content"),
+                  duration: 3
                 });
               });
 
@@ -404,17 +404,17 @@ export default {
                     let data = res.data.scheduleResourceInfo;
                     this.scheduleResourceInfo = data;
                 } else {
-                  this.$Modal.error({
-                    title: this.$t("tip.title"),
-                    content: this.$t("tip.request_fail_content")
+                  this.$Message.error({
+                    content: this.$t("tip.request_fail_content"),
+                    duration: 3
                   });
                 }
               })
               .catch(error => {
                 console.log(error);
-                this.$Modal.error({
-                  title: this.$t("tip.title"),
-                  content: this.$t("tip.fault_content")
+                this.$Message.error({
+                  content: this.$t("tip.fault_content"),
+                  duration: 3
                 });
               });
 
@@ -426,17 +426,17 @@ export default {
                     let data = res.data.templateAndDataSourceResourceInfo;
                     this.templateAndDataSourceResourceInfo = data;
                 } else {
-                  this.$Modal.error({
-                    title: this.$t("tip.title"),
-                    content: this.$t("tip.request_fail_content")
+                  this.$Message.error({
+                    content: this.$t("tip.request_fail_content"),
+                    duration: 3
                   });
                 }
               })
               .catch(error => {
                 console.log(error);
-                this.$Modal.error({
-                  title: this.$t("tip.title"),
-                  content: this.$t("tip.fault_content")
+                this.$Message.error({
+                  content: this.$t("tip.fault_content"),
+                  duration: 3
                 });
               });
 
@@ -448,17 +448,17 @@ export default {
                     let data = res.data.stopResourceInfo;
                     this.stopResourceInfo = data;
                 } else {
-                  this.$Modal.error({
-                    title: this.$t("tip.title"),
-                    content: this.$t("tip.request_fail_content")
+                  this.$Message.error({
+                    content: this.$t("tip.request_fail_content"),
+                    duration: 3
                   });
                 }
               })
               .catch(error => {
                 console.log(error);
-                this.$Modal.error({
-                  title: this.$t("tip.title"),
-                  content: this.$t("tip.fault_content")
+                this.$Message.error({
+                  content: this.$t("tip.fault_content"),
+                  duration: 3
                 });
               });
     },

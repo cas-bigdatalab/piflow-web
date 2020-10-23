@@ -432,9 +432,9 @@ export default {
                 // 根据类型进入不同的界面
                 let src = "";
                 if (row.processType === "TASK") {
-                  src = `/drawingBoard/page/process/mxGraph/index.html?drawingBoardType=PROCESS&processType=${row.processType}&load=${row.id}`;
+                  src = `/drawingBoard/page/process/mxGraph/index.html?drawingBoardType=PROCESS&processType=${row.processType}&load=${res.data.processId}`;
                 } else if (row.processType === "GROUP") {
-                  src = `/drawingBoard/page/processGroup/mxGraph/index.html?drawingBoardType=PROCESS&processType=${row.processType}&load=${row.id}`;
+                  src = `/drawingBoard/page/processGroup/mxGraph/index.html?drawingBoardType=PROCESS&processType=${row.processType}&load=${res.data.processId}`;
                 };
 
                 this.$router.push({
@@ -445,18 +445,18 @@ export default {
             });
           } else {
             this.$event.emit("looding", false);
-            this.$Modal.error({
-              title: this.$t("tip.title"),
+            this.$Message.error({
               content: `${row.name} ` + this.$t("tip.run_fail_content"),
+              duration: 3
             });
           }
         })
         .catch((error) => {
           console.log(error);
           this.$event.emit("looding", false);
-          this.$Modal.error({
-            title: this.$t("tip.title"),
+          this.$Message.error({
             content: this.$t("tip.fault_content"),
+            duration: 3
           });
         });
     },
@@ -490,9 +490,9 @@ export default {
         .catch((error) => {
           console.log(error);
           this.$event.emit("looding", false);
-          this.$Modal.error({
-            title: this.$t("tip.title"),
+          this.$Message.error({
             content: this.$t("tip.fault_content"),
+            duration: 3
           });
         });
     },
@@ -529,7 +529,7 @@ export default {
             // });
           } else {
             // this.$event.emit("looding", false);
-            // this.$Modal.error({
+            // this.$Message.error({
             //   title: this.$t("tip.title"),
             //   content: `${row.name} ` + this.$t("tip.debug_fail_content")
             // });
@@ -538,9 +538,9 @@ export default {
         .catch((error) => {
           console.log(error);
           // this.$event.emit("looding", false);
-          this.$Modal.error({
-            title: this.$t("tip.title"),
+          this.$Message.error({
             content: this.$t("tip.fault_content"),
+            duration: 3
           });
         });
     },
@@ -597,17 +597,17 @@ export default {
                 this.handleReset();
                 this.getTableData();
               } else {
-                this.$Modal.error({
-                  title: this.$t("tip.title"),
+                this.$Message.error({
                   content: `${row.name} ` + this.$t("tip.delete_fail_content"),
+                  duration: 3
                 });
               }
             })
             .catch((error) => {
               console.log(error);
-              this.$Modal.error({
-                title: this.$t("tip.title"),
+              this.$Message.error({
                 content: this.$t("tip.fault_content"),
+                duration: 3
               });
             });
         },
@@ -632,17 +632,17 @@ export default {
             this.total = res.data.count;
             this.handleUpdateProgress();
           } else {
-            this.$Modal.error({
-              title: this.$t("tip.title"),
+            this.$Message.error({
               content: this.$t("tip.request_fail_content"),
+              duration: 3
             });
           }
         })
         .catch((error) => {
           console.log(error);
-          this.$Modal.error({
-            title: this.$t("tip.title"),
+          this.$Message.error({
             content: this.$t("tip.fault_content"),
+            duration: 3
           });
         });
     },

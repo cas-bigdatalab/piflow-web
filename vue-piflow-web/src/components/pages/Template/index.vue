@@ -213,18 +213,18 @@ export default {
                 this.handleReset();
                 this.getTableData();
               } else {
-                this.$Modal.error({
-                  title: this.$t("tip.title"),
-                  content: this.$t("tip.delete_fail_content")
+                this.$Message.error({
+                  content: this.$t("tip.delete_fail_content"),
+                  duration: 3
                 });
               }
             })
             .catch(error => {
               this.$event.emit("looding", false);
               console.log(error);
-              this.$Modal.error({
-                title: this.$t("tip.title"),
-                content: this.$t("tip.fault_content")
+              this.$Message.error({
+                content: this.$t("tip.fault_content"),
+                duration: 3
               });
             });
         },
@@ -249,18 +249,18 @@ export default {
             this.tableData = res.data.data;
             this.total = res.data.count;
           } else {
-            this.$Modal.error({
-              title: this.$t("tip.title"),
-              content: this.$t("tip.request_fail_content")
+            this.$Message.error({
+              content: this.$t("tip.request_fail_content"),
+              duration: 3
             });
           }
         })
         .catch(error => {
           console.log(error);
           this.$event.emit("looding", false);
-          this.$Modal.error({
-            title: this.$t("tip.title"),
-            content: this.$t("tip.fault_content")
+          this.$Message.error({
+            content: this.$t("tip.fault_content"),
+            duration: 3
           });
         });
     },
@@ -286,7 +286,7 @@ export default {
     //         });
     //       } else {
     //         this.$event.emit("looding", false);
-    //         this.$Modal.error({
+    //         this.$Message.error({
     //           title: this.$t("tip.title"),
     //           content: `${row.name} ` + this.$t("tip.debug_fail_content")
     //         });
@@ -295,7 +295,7 @@ export default {
     //     .catch(error => {
     //       console.log(error);
     //       this.$event.emit("looding", false);
-    //       this.$Modal.error({
+    //       this.$Message.error({
     //         title: this.$t("tip.title"),
     //         content: this.$t("tip.fault_content")
     //       });
@@ -324,9 +324,9 @@ export default {
           console.log(error);
           //  console.log(file);
           // this.$event.emit("looding", false);
-          this.$Modal.error({
-            title: this.$t("tip.title"),
-            content: row.name + " " + tthis.$t("tip.download_fail_content")
+          this.$Message.error({
+            content: row.name + " " + this.$t("tip.download_fail_content"),
+            duration: 3
           });
         });
     },
@@ -341,9 +341,9 @@ export default {
         });
         this.getTableData();
       } else {
-        this.$Modal.error({
-          title: this.$t("tip.title"),
-          content: this.$t("tip.upload_fail_content")
+        this.$Message.error({
+          content: this.$t("tip.upload_fail_content"),
+          duration: 3
         });
       }
     },
@@ -351,9 +351,9 @@ export default {
       console.log(error);
       //  console.log(file);
       this.$event.emit("looding", false);
-      this.$Modal.error({
-        title: this.$t("tip.title"),
-        content: this.$t("tip.upload_fail_content")
+      this.$Message.error({
+        content: this.$t("tip.upload_fail_content"),
+        duration: 3
       });
     },
     //上传文件之前的钩子，参数为上传的文件，若返回 false 或者 Promise 则停止上传
