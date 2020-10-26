@@ -434,7 +434,7 @@ export default {
                 if (row.processType === "TASK") {
                   src = `/drawingBoard/page/process/mxGraph/index.html?drawingBoardType=PROCESS&processType=${row.processType}&load=${res.data.processId}`;
                 } else if (row.processType === "GROUP") {
-                  src = `/drawingBoard/page/processGroup/mxGraph/index.html?drawingBoardType=PROCESS&processType=${row.processType}&load=${res.data.processId}`;
+                  src = `/drawingBoard/page/processGroup/mxGraph/index.html?drawingBoardType=PROCESS&processType=${row.processType}&load=${res.data.processGroupId}`;
                 };
 
                 this.$router.push({

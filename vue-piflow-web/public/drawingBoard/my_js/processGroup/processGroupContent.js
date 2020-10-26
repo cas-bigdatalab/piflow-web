@@ -240,7 +240,8 @@ function runProcessGroup(runMode) {
             //console.log("success");
             var dataMap = JSON.parse(data);
             if (200 === dataMap.code) {
-                new_window_open("/piflow-web/mxGraph/drawingBoard?drawingBoardType=PROCESS&processType=PROCESS_GROUP&load=" + dataMap.processGroupId);
+                // new_window_open("/page/processGroup/mxGraph/drawingBoard?drawingBoardType=PROCESS&processType=PROCESS_GROUP&load=" + dataMap.processGroupId);
+                window_location_href("/page/processGroup/mxGraph/index.html?drawingBoard?drawingBoardType=PROCESS&processType=PROCESS_GROUP&load=" + dataMap.processGroupId);
             } else {
                 alert("Startup Failed");
                 // fullScreen.hide();
