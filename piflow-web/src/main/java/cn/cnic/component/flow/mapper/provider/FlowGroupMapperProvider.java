@@ -24,4 +24,17 @@ public class FlowGroupMapperProvider {
         return sqlStr;
     }
 
+    public String getFlowGroupNameListById(String fId, String id){
+        String sqlStr = "";
+        if (StringUtils.isNotBlank(id)) {
+            StringBuffer strBuf = new StringBuffer();
+            strBuf.append("select Name ");
+            strBuf.append("from flow_group ");
+            strBuf.append("where enable_flag = 1 ");
+            strBuf.append("and fk_flow_group_id = " + SqlUtils.preventSQLInjection(fId) + " and id != " + SqlUtils.preventSQLInjection(id) + " ");
+            sqlStr = strBuf.toString();
+        }
+        return sqlStr;
+    }
+
 }

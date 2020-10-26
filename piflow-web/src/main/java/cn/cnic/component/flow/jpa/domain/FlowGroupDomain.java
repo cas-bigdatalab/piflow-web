@@ -61,6 +61,10 @@ public class FlowGroupDomain {
         return flowGroupJpaRepository.getFlowGroupByIdAndEnAndEnableFlag(id, true);
     }
 
+     public FlowGroup getFlowGroupByNameInGroup(String fId, String name) {
+        return flowGroupJpaRepository.getFlowGroupByNameAndEnableFlagInGroup(name,true);
+    }
+
     public Page<FlowGroup> userGetFlowGroupListPage(int page, int size, String param,String username) {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "crtDttm"));
         return flowGroupJpaRepository.getFlowGroupListPageByCrtUser(username, null == param ? "" : param, pageRequest);

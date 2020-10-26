@@ -193,9 +193,9 @@ public class FlowImpl implements IFlow {
         String doGet = HttpUtils.doGet(SysParamsCache.getFlowVisualizationDataUrl(), map, 5 * 1000);
         logger.info("call succeeded : " + doGet);
         if (StringUtils.isNotBlank(doGet) && !doGet.contains("Exception")) {
-            return null;
+            return doGet;
         }
-        return doGet;
+        return null;
     }
 
 

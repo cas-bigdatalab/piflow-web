@@ -103,8 +103,8 @@ public interface FlowMapper {
      * @param flowGroupId
      * @return
      */
-    @Select("SELECT f.name from flow f WHERE f.enable_flag=1 and f.fk_flow_group_id = #{flowGroupId}")
-    public String[] getFlowNamesByFlowGroupId(@Param("flowGroupId") String flowGroupId);
+    @Select("SELECT f.name from flow f WHERE f.enable_flag=1 and f.fk_flow_group_id = #{flowGroupId} and id != #{id} ")
+    public List<String> getFlowNamesByFlowGroupId(@Param("flowGroupId") String flowGroupId, @Param("id") String id);
 
     @Select("select name from flow s where s.enable_flag = 1 and s.fk_flow_group_id = #{fid} and s.page_id = #{pageId}")
     String getFlowNameByPageId(@Param("fid") String fid, @Param("pageId") String pageId);
