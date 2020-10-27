@@ -452,6 +452,17 @@ public class FlowServiceImpl implements IFlowService {
         if(StringUtils.isNotBlank(flowVo.getName())){
             flowById.setName(flowVo.getName());
         }
+        //find name in FlowGroup
+        String[] flowNamesInGroup = flowDomain.getFlowNameByFlowGroupId(fId, flowVo.getName());//already add in group
+        if(flowNamesInGroup.length > 1){
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Repeat flow name!");
+        }
+        String[] flowGroupsInGroup = flowGroupDomain.getFlowGroupNameByNameInGroup(fId, flowVo.getName());
+        if(flowGroupsInGroup.length > 0){
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Repeat flow name!");
+        }
+
+
         flowById.setDescription(flowVo.getDescription());
         flowById.setDriverMemory(flowVo.getDriverMemory());
         flowById.setExecutorCores(flowVo.getExecutorCores());

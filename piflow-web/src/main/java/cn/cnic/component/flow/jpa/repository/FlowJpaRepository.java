@@ -47,8 +47,8 @@ public interface FlowJpaRepository extends JpaRepository<Flow, String>, JpaSpeci
     @Query(nativeQuery = true, value = "select MAX(s.page_id+0) from flow s where s.enable_flag=1 and s.fk_flow_group_id=:flowGroupId")
     Integer getMaxFlowPageIdByFlowGroupId(@Param("flowGroupId") String flowGroupId);
 
-    @Query(nativeQuery = true, value = "select f.name from flow f WHERE f.enable_flag=1 and f.fk_flow_group_id=:flowGroupId")
-    String[] getFlowNamesByFlowGroupId(@Param("flowGroupId") String flowGroupId);
+    @Query(nativeQuery = true, value = "select f.name from flow f WHERE f.enable_flag=1 and f.fk_flow_group_id=:flowGroupId and f.name=:flowName")
+    String[] getFlowNameByFlowGroupId(@Param("flowGroupId") String flowGroupId, @Param("flowName") String flowName);
 
     @Query(nativeQuery = true, value = "select name from ( " +
             "select f.name from flow f WHERE f.enable_flag=1 and f.fk_flow_group_id=:flowGroupId " +

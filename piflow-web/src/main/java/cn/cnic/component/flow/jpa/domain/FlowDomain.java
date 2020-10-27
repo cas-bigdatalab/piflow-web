@@ -62,8 +62,8 @@ public class FlowDomain {
         return flowJpaRepository.getFlowListPage(username, null == param ? "" : param, pageRequest);
     }
 
-    public String[] getFlowNamesByFlowGroupId(String flowGroupId){
-        return flowJpaRepository.getFlowNamesByFlowGroupId(flowGroupId);
+    public String[] getFlowNameByFlowGroupId(String flowGroupId, String flowName){
+        return flowJpaRepository.getFlowNameByFlowGroupId(flowGroupId, flowName);
     }
 
     public String[] getFlowAndGroupNamesByFlowGroupId(String flowGroupId){

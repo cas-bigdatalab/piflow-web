@@ -1,7 +1,9 @@
 package cn.cnic.component.flow.jpa.domain;
 
+import cn.cnic.component.flow.entity.Flow;
 import cn.cnic.component.flow.entity.FlowGroup;
 import cn.cnic.component.flow.jpa.repository.FlowGroupJpaRepository;
+import org.apache.avro.generic.GenericData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -61,8 +63,10 @@ public class FlowGroupDomain {
         return flowGroupJpaRepository.getFlowGroupByIdAndEnAndEnableFlag(id, true);
     }
 
-     public FlowGroup getFlowGroupByNameInGroup(String fId, String name) {
-        return flowGroupJpaRepository.getFlowGroupByNameAndEnableFlagInGroup(name,true);
+     public String[] getFlowGroupNameByNameInGroup(String fId, String name) {
+
+        return flowGroupJpaRepository.getFlowGroupNamesByNameAndEnableFlagInGroup(fId, name, true);
+
     }
 
     public Page<FlowGroup> userGetFlowGroupListPage(int page, int size, String param,String username) {

@@ -14,6 +14,7 @@ import cn.cnic.component.flow.vo.FlowGroupPathsVo;
 import cn.cnic.component.flow.vo.FlowGroupVo;
 import cn.cnic.component.flow.vo.FlowVo;
 import cn.cnic.component.mxGraph.entity.MxCell;
+
 import cn.cnic.component.mxGraph.entity.MxGeometry;
 import cn.cnic.component.mxGraph.entity.MxGraphModel;
 import cn.cnic.component.mxGraph.utils.MxCellUtils;
@@ -541,6 +542,18 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
         if (null == flowGroupById) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Database save failed");
         }
+        //find name in FlowGroup
+
+        String[] flowGroupsInGroup = flowGroupDomain.getFlowGroupNameByNameInGroup(fId, flowGroupVo.getName());
+        if(flowGroupsInGroup.length > 0){
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Repeat flow group name!");
+        }
+
+        String[] flowNamesInGroup = flowDomain.getFlowNameByFlowGroupId(fId, flowGroupVo.getName());
+        if(flowNamesInGroup.length > 0 ){
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Repeat flow group name!");
+        }
+
         flowGroupById.setName(flowGroupVo.getName());
         flowGroupById.setDescription(flowGroupVo.getDescription());
         flowGroupById.setLastUpdateDttm(new Date());

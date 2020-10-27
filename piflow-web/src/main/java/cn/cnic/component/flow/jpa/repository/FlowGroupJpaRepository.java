@@ -17,8 +17,8 @@ public interface FlowGroupJpaRepository extends JpaRepository<FlowGroup, String>
     @Query("select c from  FlowGroup c where c.enableFlag=:enableFlag and c.id=:id")
     FlowGroup getFlowGroupByIdAndEnAndEnableFlag(@Param("id") String id, @Param("enableFlag") boolean enableFlag);
 
-    @Query(value = "select c from  FlowGroup c where c.enableFlag=:enableFlag and  c.name=:name")
-    FlowGroup getFlowGroupByNameAndEnableFlagInGroup(@Param("name") String name,@Param("enableFlag") boolean enableFlag);
+    @Query(value = "select name from  flow_group c where c.enable_flag=:enableFlag and  c.name=:name and c.fk_flow_group_id=:flowGroupId", nativeQuery = true)
+    String[] getFlowGroupNamesByNameAndEnableFlagInGroup(@Param("flowGroupId") String flowGroupId, @Param("name") String name,@Param("enableFlag") boolean enableFlag);
 
     /**
      * Paging query
