@@ -273,6 +273,7 @@ export default {
         this.dataSourcePropertyVoList.forEach((item, i) => {
           data[`dataSourcePropertyVoList[${i}].name`] = item.name;
           data[`dataSourcePropertyVoList[${i}].value`] = item.value;
+          data[`dataSourcePropertyVoList[${i}].id`] = item.id;
         });
       }
       if (this.id) {
