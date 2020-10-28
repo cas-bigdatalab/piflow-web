@@ -6,6 +6,7 @@ import cn.cnic.common.Eunm.ProcessState;
 import cn.cnic.common.Eunm.RunModeType;
 import cn.cnic.component.flow.entity.Flow;
 import cn.cnic.component.flow.entity.FlowGroup;
+import cn.cnic.component.flow.mapper.FlowGroupPathsMapper;
 import cn.cnic.component.flow.service.IFlowGroupService;
 import cn.cnic.component.flow.service.IFlowService;
 import cn.cnic.component.flow.utils.FlowGroupPathsUtil;
@@ -61,6 +62,9 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
 
     @Resource
     private FlowGroupMapper flowGroupMapper;
+
+    @Resource
+    private FlowGroupPathsMapper flowGroupPathsMapper;
 
     @Resource
     private MxGraphModelMapper mxGraphModelMapper;
@@ -399,9 +403,18 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
 
         }
         // Get the maximum value of pageid in stop
-        String maxStopPageIdByFlowGroupId = flowMapper.getMaxFlowPageIdByFlowGroupId(flowGroupId);
-        maxStopPageIdByFlowGroupId = StringUtils.isNotBlank(maxStopPageIdByFlowGroupId) ? maxStopPageIdByFlowGroupId : "1";
-        int maxPageId = Integer.parseInt(maxStopPageIdByFlowGroupId);
+        String maxFlowPageIdString = flowMapper.getMaxFlowPageIdByFlowGroupId(flowGroupId);
+        Integer maxStopPageId = StringUtils.isNotBlank(maxFlowPageIdString) ? Integer.parseInt(maxFlowPageIdString) : 1;
+        //TODO get max group_path_pageID in group
+        String maxFlowGroupPageIdString = flowGroupMapper.getMaxFlowGroupPageIdByFlowGroupId(flowGroupId);
+        Integer maxFlowGroupPageId = StringUtils.isNotBlank(maxFlowGroupPageIdString) ? Integer.parseInt(maxFlowGroupPageIdString) : 1;
+        //TODO: get max group_pageID in group
+        String maxFlowGroupPathPageIdString = flowGroupPathsMapper.getMaxFlowGroupPathPageIdByFlowGroupId(flowGroupId);
+        Integer maxFlowGroupPathPageId = StringUtils.isNotBlank(maxFlowGroupPathPageIdString) ? Integer.parseInt(maxFlowGroupPathPageIdString) : 1;
+
+        int maxPageId = Math.max(Math.max(maxStopPageId, maxFlowGroupPageId), maxFlowGroupPathPageId);
+        //maxStopPageIdByFlowGroupId = StringUtils.isNotBlank(maxStopPageIdByFlowGroupId) ? maxStopPageIdByFlowGroupId : "1";
+
 
         flowNew.setPageId((maxPageId + 1) + "");
         flowNew.setName(flowNew.getName() + (maxPageId + 1));

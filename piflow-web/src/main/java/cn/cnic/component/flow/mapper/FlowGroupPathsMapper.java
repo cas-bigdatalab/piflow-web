@@ -48,4 +48,8 @@ public interface FlowGroupPathsMapper {
     })
     public List<FlowGroupPaths> getFlowGroupPaths(String flowGroupId, String pageId, String from, String to);
 
+
+    @Select("select MAX(page_id+0) from flow_group_path where enable_flag = 1 and fk_flow_group_id = #{flowGroupId} ")
+    public String getMaxFlowGroupPathPageIdByFlowGroupId(@Param("flowGroupId") String flowGroupId);
+
 }
