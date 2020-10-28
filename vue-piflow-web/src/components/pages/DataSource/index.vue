@@ -269,8 +269,7 @@ export default {
       };
       if (
         this.dataSourcePropertyVoList[0].name &&
-        this.dataSourcePropertyVoList[0].value &&
-        this.dataSourcePropertyVoList[0].id
+        this.dataSourcePropertyVoList[0].value
       ) {
         this.dataSourcePropertyVoList.forEach((item, i) => {
           data[`dataSourcePropertyVoList[${i}].name`] = item.name;
