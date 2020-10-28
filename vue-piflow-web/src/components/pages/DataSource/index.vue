@@ -181,7 +181,8 @@ export default {
       dataSourcePropertyVoList: [
         {
           name: "",
-          value: ""
+          value: "",
+          id: ''
         }
       ]
     };
@@ -241,7 +242,7 @@ export default {
       this.row = null;
       this.name = "";
       this.description = "";
-      this.dataSourcePropertyVoList = [{ name: "", value: "" }];
+      this.dataSourcePropertyVoList = [{ name: "", value: "", id: '' }];
       // this.driverMemory = "1g";
       // this.executorNumber = 1;
       // this.executorMemory = "1g";
@@ -268,7 +269,8 @@ export default {
       };
       if (
         this.dataSourcePropertyVoList[0].name &&
-        this.dataSourcePropertyVoList[0].value
+        this.dataSourcePropertyVoList[0].value &&
+        this.dataSourcePropertyVoList[0].id
       ) {
         this.dataSourcePropertyVoList.forEach((item, i) => {
           data[`dataSourcePropertyVoList[${i}].name`] = item.name;
