@@ -1587,7 +1587,7 @@ public class FlowXmlUtils {
             stops.setOutPortType(PortType.selectGender(outPortType));
             stops.setInPortType(PortType.selectGenderByValue(inPortType));
             stops.setGroups(groups);
-            Boolean Checkpoint = "0".equals(isCheckpoint);
+            Boolean Checkpoint = "1".equals(isCheckpoint);
             stops.setIsCheckpoint(Checkpoint);
             stops.setOwner(owner);
             Iterator propertyXmlIterator = stopElement.elementIterator("property");
