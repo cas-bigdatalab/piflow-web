@@ -57,7 +57,7 @@ To Run Piflow Web：
 
 - run piflow web by release version:
 
-  - download piflow_release: https://github.com/cas-bigdatalab/piflow-web/releases/tag/v0.7
+  - download piflow_release: https://github.com/cas-bigdatalab/piflow-web/releases/tag/v0.8
   - edit config.properties
   - sh start.sh
 - how to configure config.properties
@@ -111,7 +111,7 @@ spring.flyway.locations=classpath:db/flyway-mysql/
 
 # Log Coordination Standard
 logging.level.org.flywaydb=debug
-logging.level.com.nature.mapper=debug
+logging.level.cn.cnic.mapper=debug
 logging.level.root=info
 logging.level.org.springframework.security=info
 logging.level.org.hibernate.SQL=DEBUG

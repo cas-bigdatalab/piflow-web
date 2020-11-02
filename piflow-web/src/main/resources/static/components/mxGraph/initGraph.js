@@ -9,14 +9,14 @@ var timerPath;
 var currentStopPageId;
 var drawingBoardType = $("#drawingBoardType").val();
 var statusgroup, flowPageIdcha, flowGroupdata, cellprecess, flowdatas, removegroupPaths, flowsPagesId
-getrightinfo()
+getRightInfo()
 var index = true
 
-function getrightinfo(cell) {
+function getRightInfo(cell) {
     var processGroupId = getQueryString("load")
     var pageId, value, data
     if (index) {
-        $(".rightproup").toggleClass("openright");
+        $(".right-group").toggleClass("open-right");
         $(".ExpandSidebar").toggleClass("ExpandSidebar-open");
         index = false
     }
@@ -39,7 +39,7 @@ function getrightinfo(cell) {
                 return;
             },
             success: function (data) {
-                $("#rightproup")[0].innerHTML = data
+                $("#right-group")[0].innerHTML = data
             }
         })
         //info
@@ -55,21 +55,21 @@ function getrightinfo(cell) {
                     return;
                 },
                 success: function (data) {
-                    $("#rightproup")[0].innerHTML = data
+                    $("#right-group")[0].innerHTML = data
                 }
             })
         } else if (processType == "TASK") {
             $.ajax({
                 cache: true,
                 type: "POST",
-                url: "/piflow-web/process/queryProcess",
+                url: "/piflow-web/page/process/inc/process_info_inc.html",
                 data: {processId: processGroupId},
                 async: true,
                 error: function (request) {
                     return;
                 },
                 success: function (data) {
-                    $("#rightproup")[0].innerHTML = data
+                    $("#right-group").html(data);
                 }
             })
         }
@@ -80,14 +80,14 @@ function getrightinfo(cell) {
         $.ajax({
             cache: true,
             type: "POST",
-            url: "/piflow-web/process/queryProcessStop",
+            url: "/piflow-web/page/process/inc/process_property_inc.html",
             data: {processId: processGroupId, pageId: cell.id},
             async: true,
             error: function (request) {
                 return;
             },
             success: function (data) {
-                $("#rightproup")[0].innerHTML = data
+                $("#right-group").html(data);
             }
         })
         //    path
@@ -103,21 +103,21 @@ function getrightinfo(cell) {
                     return;
                 },
                 success: function (data) {
-                    $("#rightproup")[0].innerHTML = data
+                    $("#right-group")[0].innerHTML = data
                 }
             })
         } else if (processType == "TASK") {
             $.ajax({
                 cache: true,
                 type: "POST",
-                url: "/piflow-web/process/queryProcessPath",
+                url: "/piflow-web/page/process/inc/process_path_inc.html",
                 data: {processId: processGroupId, pageId: cell.id},
                 async: true,
                 error: function (request) {
                     return;
                 },
                 success: function (data) {
-                    $("#rightproup")[0].innerHTML = data
+                    $("#right-group").html(data);
                 }
             })
         }
@@ -133,22 +133,25 @@ function getQueryString(name) {
 }
 
 function initGraph() {
+    if("PROCESS"==drawingBoardType){
+        EditorUi.prototype.noEditing = true;
+    }
     Format.customizeType = drawingBoardType;
     Format.customizeTypeAttr_init();
     var editorUiInit = EditorUi.prototype.init;
-    if (Format.customizeType == "PROCESS") {
-        $("#rightproupwrap")[0].style.display = "block";
-        $("#precessrun")[0].style.display = "block";
+    if (EditorUi.prototype.noEditing) {
+        $("#right-group-wrap")[0].style.display = "block";
+        $("#precess-run")[0].style.display = "block";
     } else {
-        $("#rightproupwrap")[0].style.display = "none";
-        $("#precessrun")[0].style.display = "none";
+        $("#right-group-wrap")[0].style.display = "none";
+        $("#precess-run")[0].style.display = "none";
     }
 
     EditorUi.prototype.init = function () {
         editorUiInit.apply(this, arguments);
         graphGlobal = this.editor.graph;
         thisEditor = this.editor;
-        if (Format.customizeType == "PROCESS") {
+        if (EditorUi.prototype.noEditing) {
             setTimeout(() => {
                 console.log("svg_element")
                 var svg_element = document.getElementsByClassName('geDiagramBackdrop geDiagramContainer')[0].getElementsByTagName("svg")[0];
@@ -257,12 +260,12 @@ function initGraph() {
         graphGlobal.addListener(mxEvent.CLICK, function (sender, evt) {
             findBasicInfo(evt);
             console.log(evt)
-            if (Format.customizeType == "PROCESS") {
-                getrightinfo(evt.properties.cell)
+            if (EditorUi.prototype.noEditing) {
+                getRightInfo(evt.properties.cell)
             }
         });
         graphGlobal.addListener(mxEvent.SIZE, function (sender, evt) {
-            if (Format.customizeType == "PROCESS") {
+            if (EditorUi.prototype.noEditing) {
                 changIconTranslate();
             }
         });
@@ -344,7 +347,7 @@ function prohibitEditing(evt, operationType) {
     $.ajax({
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: "/piflow-web/exampleMenu/exampleUrlList",
+        url: "/piflow-web/mxGraph/eraseRecord",
         data: {},
         async: true,
         error: function (request) {//Operation after request failure
@@ -607,8 +610,7 @@ function groupGraphAddCells(cells) {
                         getStopsPortNew(addPathArray);
                     }
                 } else {
-                    layer.msg("Add save fail", {icon: 2, shade: 0, time: 2000}, function () {
-                    });
+                    layer.msg("Add save fail", {icon: 2, shade: 0, time: 2000});
                     console.log("Add save fail");
                     fullScreen.hide();
                 }
@@ -656,8 +658,8 @@ function openProcessMonitor(evt) {
         $.ajax({
             cache: true,
             type: "POST",
-            url: "/piflow-web/flow/findFlowByGroup",
-            data: {"flowPageId": cellFor.id, "fId": loadId},
+            url: "/piflow-web/flowGroup/findFlowByGroup",
+            data: {"pageId": cellFor.id, "fId": loadId},
             async: true,
             error: function (request) {
                 //alert("Jquery Ajax request error!!!");
@@ -789,33 +791,34 @@ function queryStopsProperty(stopPageId) {
             return;
         },
         success: function (data) {
-            if ("" != data) {
+            var dataMap = JSON.parse(data);
+            if (200 === dataMap.code) {
+                var stopsVoData = dataMap.stopsVo;
                 var addParamData = {
-                    data: data.propertiesVo,
-                    stopId: data.id,
-                    isCheckpoint: data.isCheckpoint,
+                    data: stopsVoData.propertiesVo,
+                    stopId: stopsVoData.id,
+                    isCheckpoint: stopsVoData.isCheckpoint,
                     stopPageId: stopPageId,
-                    isCustomized: data.isCustomized,
-                    stopsCustomizedPropertyVoList: data.stopsCustomizedPropertyVoList,
-                    stopOutPortType: data.outPortType,
-                    dataSourceVo: data.dataSourceVo
+                    isCustomized: stopsVoData.isCustomized,
+                    stopsCustomizedPropertyVoList: stopsVoData.stopsCustomizedPropertyVoList,
+                    stopOutPortType: stopsVoData.outPortType,
+                    dataSourceVo: stopsVoData.dataSourceVo
                 };
                 getImagesType(data, "TASK")
-                //add(data.propertiesVo, data.id, data.checkpoint, stopPageId, data.isCustomized, data.stopsCustomizedPropertyVoList, data.outPortType, data.dataSourceVo);
                 add(addParamData);
                 //  $("#customizeBasic_td_1_2_input2_id").data("result",evt);
-                $('#customizeBasic_td_1_2_span_id').text(data.name);
-                $('#customizeBasic_td_1_2_input1_id').attr("value", data.name);
-                $('#customizeBasic_td_1_2_input1_id').attr("name", data.id);
-                $('#customizeBasic_td_1_2_input2_id').attr("value", data.name);
-                $('#customizeBasic_td_1_2_input2_id').attr("name", data.pageId);
-                $('#customizeBasic_td_2_2_span_id').text(data.description);
-                $('#customizeBasic_td_3_2_label_id').text(data.groups);
-                $('#customizeBasic_td_4_2_label_id').text(data.bundel);
-                $('#customizeBasic_td_5_2_label_id').text(data.version);
-                $('#customizeBasic_td_6_2_label_id').text(data.owner);
-                $('#customizeBasic_td_7_2_label_id').text(data.crtDttmString);
-                var oldPropertiesVo = data.oldPropertiesVo;
+                $('#customizeBasic_td_1_2_span_id').text(stopsVoData.name);
+                $('#customizeBasic_td_1_2_input1_id').attr("value", stopsVoData.name);
+                $('#customizeBasic_td_1_2_input1_id').attr("name", stopsVoData.id);
+                $('#customizeBasic_td_1_2_input2_id').attr("value", stopsVoData.name);
+                $('#customizeBasic_td_1_2_input2_id').attr("name", stopsVoData.pageId);
+                $('#customizeBasic_td_2_2_span_id').text(stopsVoData.description);
+                $('#customizeBasic_td_3_2_label_id').text(stopsVoData.groups);
+                $('#customizeBasic_td_4_2_label_id').text(stopsVoData.bundel);
+                $('#customizeBasic_td_5_2_label_id').text(stopsVoData.version);
+                $('#customizeBasic_td_6_2_label_id').text(stopsVoData.owner);
+                $('#customizeBasic_td_7_2_label_id').text(stopsVoData.crtDttmString);
+                var oldPropertiesVo = stopsVoData.oldPropertiesVo;
                 if (oldPropertiesVo && oldPropertiesVo.length > 0) {
                     var table = document.createElement("table");
                     table.style.borderCollapse = "separate";
@@ -916,7 +919,7 @@ function queryStopsProperty(stopPageId) {
                     }
                     var old_data_div = '<div id="del_last_reload_div" style="line-height: 27px;margin-left: 10px;font-size: 20px;">'
                         + '<span>last reload data</span>'
-                        + '<button class="btn" style="margin-left: 2px;" onclick="deleteLastReloadData(\'' + data.id + '\')"><i class="icon-trash"></i></button>'
+                        + '<button class="btn" style="margin-left: 2px;" onclick="deleteLastReloadData(\'' + stopsVoData.id + '\')"><i class="icon-trash"></i></button>'
                         + '</div>';
                     table.setAttribute('id', 'del_last_reload_table');
                     var attributeInfoDivObj = $("#isCheckpoint").parent();
@@ -954,8 +957,8 @@ function queryFlowOrFlowGroupProperty(flowPageId) {
     $.ajax({
         cache: true,
         type: "POST",
-        url: "/piflow-web/flow/queryIdInfo",
-        data: {"flowPageId": flowPageId, "fid": loadId},
+        url: "/piflow-web/flowGroup/queryIdInfo",
+        data: {"flowPageId": pageId, "fId": loadId},
         async: true,
         error: function (request) {
             return;
@@ -1054,8 +1057,7 @@ function queryFlowOrFlowGroupProperty(flowPageId) {
                     }
                 }
             } else {
-                layer.msg("Load fail,Please click again to reload", {icon: 2, shade: 0, time: 2000}, function () {
-                });
+                layer.msg("Load fail,Please click again to reload", {icon: 2, shade: 0, time: 2000});
             }
             if (flowGroupdata == "") {
                 getNodeId(flowdatas, "TASK")
@@ -1088,56 +1090,58 @@ function queryPathInfo(id) {
         param_values.url = "/piflow-web/flowGroupPath/queryPathInfoFlowGroup";
         param_values.customizeBasic_td_2_1_span_children = 'flowGroupName：';
     }
-    $.ajax({
-        cache: true,
-        type: "POST",
-        url: param_values.url,
-        data: {"id": id, "fid": loadId},
-        async: true,
-        error: function (request) {
-            //alert("Jquery Ajax request error!!!");
-            return;
-        },
-        success: function (data) {
-            var dataMap = JSON.parse(data);
-            if (200 === dataMap.code) {
-                var queryInfo = dataMap.queryInfo;
-                if ("" != queryInfo) {
-                    $("#AttributeInfoId").hide();
-                    $("#containerID").show();
-                    $("#basicInfoId").html('path info');
-                    $('#basicInfoId').css('text-align', '');
-                    $('#basicInfoId').css('background-color', '');
-                    $('#basicInfoId').css('border-style', '');
-                    $('#basicInfoId').css('height', '27px');
-                    $("#customizeBasic_td_1_1_span_id").html(param_values.customizeBasic_td_1_1_span_children);
-                    $("#customizeBasic_td_2_1_span_id").html(param_values.customizeBasic_td_2_1_span_children);
-                    $("#customizeBasic_td_3_1_span_id").html(param_values.customizeBasic_td_3_1_span_children);
-                    $("#customizeBasic_td_4_1_span_id").html(param_values.customizeBasic_td_4_1_span_children);
-                    $("#customizeBasic_td_5_1_span_id").html(param_values.customizeBasic_td_5_1_span_children);
-                    $("#customizeBasic_td_6_1_span_id").html(param_values.customizeBasic_td_6_1_span_children);
-                    $("#customizeBasic_td_7_1_span_id").html(param_values.customizeBasic_td_7_1_span_children);
-                    $("#customizeBasic_td_1_2_button_id").hide();
-                    $("#customizeBasic_td_3_2_label_id").html(queryInfo.inport);
-                    $("#customizeBasic_td_4_2_label_id").html(queryInfo.outport);
-                    $("#customizeBasic_td_7_2_label_id").html(queryInfo.crtDttmString);
-                    if ('TASK' === Format.customizeType) {
-                        $("#customizeBasic_td_1_2_input1_id").val(queryInfo.pageId);
-                        $("#customizeBasic_td_2_2_span_id").html(queryInfo.flowVo.name);
-                        $("#customizeBasic_td_5_2_label_id").html(queryInfo.stopFrom.name);
-                        $("#customizeBasic_td_6_2_label_id").html(queryInfo.stopTo.name);
-                    } else if ('GROUP' === Format.customizeType) {
-                        $("#customizeBasic_td_1_2_span_id").html(queryInfo.pageId);
-                        $("#customizeBasic_td_2_2_span_id").html(queryInfo.flowGroupVo.name);
-                        $("#customizeBasic_td_5_2_label_id").html(queryInfo.flowFrom);
-                        $("#customizeBasic_td_6_2_label_id").html(queryInfo.flowTo);
+    if (param_values.url) {
+        $.ajax({
+            cache: true,
+            type: "POST",
+            url: param_values.url,
+            data: {"id": id, "fid": loadId},
+            async: true,
+            error: function (request) {
+                //alert("Jquery Ajax request error!!!");
+                return;
+            },
+            success: function (data) {
+                var dataMap = JSON.parse(data);
+                if (200 === dataMap.code) {
+                    var queryInfo = dataMap.queryInfo;
+                    if ("" != queryInfo) {
+                        $("#AttributeInfoId").hide();
+                        $("#containerID").show();
+                        $("#basicInfoId").html('path info');
+                        $('#basicInfoId').css('text-align', '');
+                        $('#basicInfoId').css('background-color', '');
+                        $('#basicInfoId').css('border-style', '');
+                        $('#basicInfoId').css('height', '27px');
+                        $("#customizeBasic_td_1_1_span_id").html(param_values.customizeBasic_td_1_1_span_children);
+                        $("#customizeBasic_td_2_1_span_id").html(param_values.customizeBasic_td_2_1_span_children);
+                        $("#customizeBasic_td_3_1_span_id").html(param_values.customizeBasic_td_3_1_span_children);
+                        $("#customizeBasic_td_4_1_span_id").html(param_values.customizeBasic_td_4_1_span_children);
+                        $("#customizeBasic_td_5_1_span_id").html(param_values.customizeBasic_td_5_1_span_children);
+                        $("#customizeBasic_td_6_1_span_id").html(param_values.customizeBasic_td_6_1_span_children);
+                        $("#customizeBasic_td_7_1_span_id").html(param_values.customizeBasic_td_7_1_span_children);
+                        $("#customizeBasic_td_1_2_button_id").hide();
+                        $("#customizeBasic_td_3_2_label_id").html(queryInfo.inport);
+                        $("#customizeBasic_td_4_2_label_id").html(queryInfo.outport);
+                        $("#customizeBasic_td_7_2_label_id").html(queryInfo.crtDttmString);
+                        if ('TASK' === Format.customizeType) {
+                            $("#customizeBasic_td_1_2_input1_id").val(queryInfo.pageId);
+                            $("#customizeBasic_td_2_2_span_id").html(queryInfo.flowVo.name);
+                            $("#customizeBasic_td_5_2_label_id").html(queryInfo.stopFrom.name);
+                            $("#customizeBasic_td_6_2_label_id").html(queryInfo.stopTo.name);
+                        } else if ('GROUP' === Format.customizeType) {
+                            $("#customizeBasic_td_1_2_span_id").html(queryInfo.pageId);
+                            $("#customizeBasic_td_2_2_span_id").html(queryInfo.flowGroupVo.name);
+                            $("#customizeBasic_td_5_2_label_id").html(queryInfo.flowFrom);
+                            $("#customizeBasic_td_6_2_label_id").html(queryInfo.flowTo);
+                        }
                     }
+                } else {
+                    console.log("Path attribute query null");
                 }
-            } else {
-                console.log("Path attribute query null");
             }
-        }
-    });
+        });
+    }
 }
 
 function add(addParamData, flowId, nodeType) {
@@ -1494,8 +1498,7 @@ function getDatasourceList(stop_id, stop_page_id, dataSourceVo) {
                 $('#datasourceDivElement').html(select_html);
             } else {
                 //alert(operType + " save fail");
-                layer.msg("Load fail", {icon: 2, shade: 0, time: 2000}, function () {
-                });
+                layer.msg("Load fail", {icon: 2, shade: 0, time: 2000});
                 console.log("Load fail");
             }
         }
@@ -1521,15 +1524,13 @@ function fillDatasource(datasource, stop_id, stop_page_id) {
                     queryStopsProperty(stop_page_id);
                 } else {
                     //alert(operType + " save fail");
-                    layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000}, function () {
-                    });
+                    layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
                     console.log(dataMap.errorMsg);
                 }
             }
         });
     } else {
-        layer.msg("failed, stopId is null or datasourceId is null", {icon: 2, shade: 0, time: 2000}, function () {
-        });
+        layer.msg("failed, stopId is null or datasourceId is null", {icon: 2, shade: 0, time: 2000});
     }
 }
 
@@ -1692,8 +1693,7 @@ function saveXml(paths, operType) {
                 }
             } else {
                 //alert(operType + " save fail");
-                layer.msg(operType + " save fail", {icon: 2, shade: 0, time: 2000}, function () {
-                });
+                layer.msg(operType + " save fail", {icon: 2, shade: 0, time: 2000});
                 console.log(operType + " save fail");
                 fullScreen.hide();
             }
@@ -1781,8 +1781,7 @@ function saveOrUpdateFlowGroup() {
 
                 } else {
                     // layer.closeAll()
-                    layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000}, function () {
-                    });
+                    layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
                     alert(dataMap.errorMsg)
                     msgtrue = false
                 }
@@ -1809,8 +1808,7 @@ function saveOrUpdateFlowGroup() {
                             //baseInfo
                             $('#customizeBasic_td_2_2_span_id').text(flowGroupVo.description);
                         } else {
-                            layer.msg('', {icon: 2, shade: 0, time: 2000}, function () {
-                            });
+                            layer.msg('', {icon: 2, shade: 0, time: 2000});
                         }
                         if (msgtrue) {
                             layer.closeAll();
@@ -1923,8 +1921,7 @@ function saveFlow() {
                             $('#customizeBasic_td_5_2_label_id').text(flowVo.executorMemory);
                             $('#customizeBasic_td_6_2_label_id').text(flowVo.executorNumber);
                         } else {
-                            layer.msg('', {icon: 2, shade: 0, time: 2000}, function () {
-                            });
+                            layer.msg('', {icon: 2, shade: 0, time: 2000});
                         }
                         console.log("attribute update success");
                         if (msgtrue) {
@@ -2086,8 +2083,7 @@ function reloadStops() {
         error: function (request) {//Operation after request failure
             fullScreen.hide();
             //alert("reload fail");
-            layer.msg("reload fail", {icon: 2, shade: 0, time: 2000}, function () {
-            });
+            layer.msg("reload fail", {icon: 2, shade: 0, time: 2000});
             return;
         },
         success: function (data) {//Operation after request successful
@@ -2096,8 +2092,7 @@ function reloadStops() {
                 window.location.href = "/piflow-web/mxGraph/drawingBoard?drawingBoardType=TASK&load=" + dataMap.load + "&_" + new Date().getTime();
             } else {
                 //alert("reload fail");
-                layer.msg("reload fail", {icon: 2, shade: 0, time: 2000}, function () {
-                });
+                layer.msg("reload fail", {icon: 2, shade: 0, time: 2000});
                 fullScreen.hide();
             }
         }
@@ -2144,7 +2139,7 @@ function queryFlowGroup() {
         data: {"load": loadId},
         cache: true,//Keep cached data
         type: "POST",//Request type post
-        url: "/piflow-web/flow/queryFlowGroupData",
+        url: "/piflow-web/flowGroup/queryFlowGroupData",
         async: true,//Synchronous Asynchronous
         error: function (request) {//Operation after request failure
             return;
@@ -2209,8 +2204,7 @@ function runFlow(runMode) {
                 });
             } else {
                 //alert("Startup failure：" + dataMap.errorMsg);
-                layer.msg("Startup failure：" + dataMap.errorMsg, {icon: 2, shade: 0, time: 2000}, function () {
-                });
+                layer.msg("Startup failure：" + dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
             }
             fullScreen.hide();
         }
@@ -2252,8 +2246,7 @@ function runFlowGroup(runMode) {
                 });
             } else {
                 //alert("Startup failure：" + dataMap.errorMsg);
-                layer.msg("Startup failure：" + dataMap.errorMsg, {icon: 2, shade: 0, time: 2000}, function () {
-                });
+                layer.msg("Startup failure：" + dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
             }
             fullScreen.hide();
         }
@@ -2306,24 +2299,25 @@ function getStopsPortNew(paths) {
                         showHtml.find('#sourceTitleBtn1Copy').attr('id', 'sourceTitleBtnR_R');
                         showHtml.find('#sourceCrtPortId1Copy').attr('id', 'sourceCrtPortIdR_R');
                         showHtml.find('#sourceCrtPortBtnId1Copy').attr('id', 'sourceCrtPortBtnIdR_R');
-                        showHtml.find('#sourceCrtPortBtnIdR_R').attr('onclick', 'crtAnyPort("sourceCrtPortIdR_R",true)');
                         showHtml.find('#sourceTypeDiv1Copy').attr('id', 'sourceTypeDivR_R');
                         showHtml.find('#sourceRouteFilterList1Copy').attr('id', 'sourceRouteFilterListR_R');
                         showHtml.find('#sourceRouteFilterSelect1Copy').attr('id', 'sourceRouteFilterSelectR_R');
-                        showHtml.find('#sourceTitleBtnR_R').hide();
-                        showHtml.find('#sourceRouteFilterListR_R').hide();
                         showHtml.find('#targetTitle1Copy').attr('id', 'targetTitleR_R');
                         showHtml.find('#targetTitleStr1Copy').attr('id', 'targetTitleStrR_R');
                         showHtml.find('#targetTitleCheckbox1Copy').attr('id', 'targetTitleCheckboxR_R');
                         showHtml.find('#targetTitleBtn1Copy').attr('id', 'targetTitleBtnR_R');
                         showHtml.find('#targetCrtPortId1Copy').attr('id', 'targetCrtPortIdR_R');
                         showHtml.find('#targetCrtPortBtnId1Copy').attr('id', 'targetCrtPortBtnIdR_R');
-                        showHtml.find('#targetCrtPortBtnIdR_R').attr('onclick', 'crtAnyPort("targetCrtPortIdR_R",false)');
                         showHtml.find('#targetTypeDiv1Copy').attr('id', 'targetTypeDivR_R');
                         showHtml.find('#targetRouteFilterList1Copy').attr('id', 'targetRouteFilterListR_R');
                         showHtml.find('#targetRouteFilterSelect1Copy').attr('id', 'targetRouteFilterSelectR_R');
+
+                        showHtml.find('#sourceCrtPortBtnIdR_R').attr('onclick', 'crtAnyPort("sourceCrtPortIdR_R",true)');
+                        showHtml.find('#targetCrtPortBtnIdR_R').attr('onclick', 'crtAnyPort("targetCrtPortIdR_R",false)');
                         showHtml.find('#targetTitleBtnR_R').hide();
                         showHtml.find('#targetRouteFilterListR_R').hide();
+                        showHtml.find('#sourceTitleBtnR_R').hide();
+                        showHtml.find('#sourceRouteFilterListR_R').hide();
                         var sourceType = dataMap.sourceType;
                         var targetType = dataMap.targetType;
                         var sourceTypeStr = sourceType.text;
@@ -2419,8 +2413,7 @@ function checkChoosePort() {
     var sourceTypeDivR_R = $('#sourceTypeDivR_R');
     var targetTypeDivR_R = $("#targetTypeDivR_R");
     if (!sourceTypeDivR_R && !targetTypeDivR_R) {
-        layer.msg("Page error, please check!", {icon: 2, shade: 0, time: 2000}, function () {
-        });
+        layer.msg("Page error, please check!", {icon: 2, shade: 0, time: 2000});
         return false;
     }
     var isSourceRoute = false;
@@ -2442,13 +2435,11 @@ function checkChoosePort() {
                 }
             });
             if (sourceEffCheckbox.length > 1) {
-                layer.msg("'sourcePort'can only choose one", {icon: 2, shade: 0, time: 2000}, function () {
-                });
+                layer.msg("'sourcePort'can only choose one", {icon: 2, shade: 0, time: 2000});
                 return false;
             }
             if (sourceEffCheckbox < 1) {
-                layer.msg("Please select'sourcePort'", {icon: 2, shade: 0, time: 2000}, function () {
-                });
+                layer.msg("Please select'sourcePort'", {icon: 2, shade: 0, time: 2000});
                 return false;
             }
             for (var i = 0; i < sourceEffCheckbox.length; i++) {
@@ -2461,8 +2452,7 @@ function checkChoosePort() {
             }
         }
     } else {
-        layer.msg("Page error, please check!", {icon: 2, shade: 0, time: 2000}, function () {
-        });
+        layer.msg("Page error, please check!", {icon: 2, shade: 0, time: 2000});
         return false;
     }
     if (targetTitleCheckboxR_R) {
@@ -2480,13 +2470,11 @@ function checkChoosePort() {
                 }
             });
             if (targetEffCheckbox.length > 1) {
-                layer.msg("'targetPort'can only choose one", {icon: 2, shade: 0, time: 2000}, function () {
-                });
+                layer.msg("'targetPort'can only choose one", {icon: 2, shade: 0, time: 2000});
                 return false;
             }
             if (targetEffCheckbox.length < 1) {
-                layer.msg("Please select'targetPort'", {icon: 2, shade: 0, time: 2000}, function () {
-                });
+                layer.msg("Please select'targetPort'", {icon: 2, shade: 0, time: 2000});
                 return false;
             }
             for (var i = 0; i < targetEffCheckbox.length; i++) {
@@ -2499,8 +2487,7 @@ function checkChoosePort() {
             }
         }
     } else {
-        layer.msg("Page error, please check!", {icon: 2, shade: 0, time: 2000}, function () {
-        });
+        layer.msg("Page error, please check!", {icon: 2, shade: 0, time: 2000});
         return false;
     }
 
@@ -2594,13 +2581,11 @@ function crtAnyPort(crtProtInputId, isSource) {
             }
             $('.' + portNameVal).text(portNameVal);
         } else {
-            layer.msg("Port name occupied!!", {icon: 2, shade: 0, time: 2000}, function () {
-            });
+            layer.msg("Port name occupied!!", {icon: 2, shade: 0, time: 2000});
         }
     } else {
         //alert("The port name cannot be empty");
-        layer.msg("Port name cannot be empty", {icon: 2, shade: 0, time: 2000}, function () {
-        });
+        layer.msg("Port name cannot be empty", {icon: 2, shade: 0, time: 2000});
     }
 }
 
@@ -2621,8 +2606,7 @@ function saveCheckpoints(stopId) {
         async: true,
         traditional: true,
         error: function (request) {
-            layer.msg("Failure to mark'Checkpoint'", {icon: 2, shade: 0, time: 2000}, function () {
-            });
+            layer.msg("Failure to mark'Checkpoint'", {icon: 2, shade: 0, time: 2000});
             return;
         },
         success: function (data) {
@@ -2637,8 +2621,7 @@ function saveCheckpoints(stopId) {
                 }, function () {
                 });
             } else {
-                layer.msg("Failed to modify the tag'Checkpoint'", {icon: 2, shade: 0, time: 2000}, function () {
-                });
+                layer.msg("Failed to modify the tag'Checkpoint'", {icon: 2, shade: 0, time: 2000});
             }
 
         }
@@ -2676,8 +2659,7 @@ function saveTemplateFun(url) {
                     layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
                     });
                 } else {
-                    layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000}, function () {
-                    });
+                    layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
                 }
             }
         });
@@ -2710,22 +2692,18 @@ function uploadTemplateFile(element) {
     }).success(function (data) {
         var dataMap = JSON.parse(data);
         if (200 === dataMap.code) {
-            layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
-            });
+            layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000});
         } else {
-            layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000}, function () {
-            });
+            layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
         }
     }).error(function () {
-        layer.msg("Upload failure", {icon: 2, shade: 0, time: 2000}, function () {
-        });
+        layer.msg("Upload failure", {icon: 2, shade: 0, time: 2000});
     });
 }
 
 function FileTypeCheck(element) {
     if (element.value == null || element.value == '') {
-        layer.msg('please upload the XML file', {icon: 2, shade: 0, time: 2000}, function () {
-        });
+        layer.msg('please upload the XML file', {icon: 2, shade: 0, time: 2000});
         this.focus()
         return false;
     }
@@ -2733,8 +2711,7 @@ function FileTypeCheck(element) {
     var charindex = element.value.lastIndexOf(".");
     var ExtentName = element.value.substring(charindex, charindex + 4);
     if (!(ExtentName == ".xml")) {
-        layer.msg('please upload the XML file', {icon: 2, shade: 0, time: 2000}, function () {
-        });
+        layer.msg('please upload the XML file', {icon: 2, shade: 0, time: 2000});
         this.focus()
         return false;
     }
@@ -2770,8 +2747,7 @@ function loadingXml(id, loadId) {
 
 function openTemplateList() {
     if (isExample) {
-        layer.msg('This is an example, you can\'t edit', {icon: 2, shade: 0, time: 2000}, function () {
-        });
+        layer.msg('This is an example, you can\'t edit', {icon: 2, shade: 0, time: 2000});
         return;
     }
     var url = "";
@@ -2827,8 +2803,7 @@ function openTemplateList() {
 function loadTemplateFun() {
     var id = $("#loadingXmlSelectNew").val();
     if (id == '-1') {
-        layer.msg('Please choose template', {icon: 2, shade: 0, time: 2000}, function () {
-        });
+        layer.msg('Please choose template', {icon: 2, shade: 0, time: 2000});
         return;
     }
 
@@ -2915,8 +2890,7 @@ function addStopCustomProperty(reqData) {
                     queryStopsProperty(dataMap.stopPageId);
                 });
             } else {
-                layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000}, function () {
-                });
+                layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
             }
         }
     });
@@ -2945,8 +2919,7 @@ function removeStopCustomProperty(stopPageId, customPropertyId, isRouter) {
                         queryStopsProperty(stopPageId);
                     });
                 } else {
-                    layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000}, function () {
-                    });
+                    layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
                 }
             }
         });
@@ -2976,8 +2949,7 @@ function getRouterAllPaths(customPropertyId) {
                     console.log("failed");
                 }
             } else {
-                layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000}, function () {
-                });
+                layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
             }
         }
     });
@@ -3002,8 +2974,7 @@ function removeRouterStopCustomProperty(customPropertyId) {
                     queryStopsProperty(stopPageId);
                 });
             } else {
-                layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000}, function () {
-                });
+                layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
             }
         }
     });
@@ -3032,7 +3003,7 @@ function openDatasourceList() {
     var window_height = $(window).height();//Get browser window height
     $.ajax({
         type: "POST",//Request type post
-        url: "/piflow-web/datasource/getDatasourceListPage",
+        url: "/piflow-web/page/datasource/getDatasourceListPage",
         error: function (request) {//Operation after request failure
             return;
         },
@@ -3056,7 +3027,7 @@ function getFlowList() {
     var window_height = $(window).height();//Get browser window height
     $.ajax({
         type: "POST",//Request type post
-        url: "/piflow-web/flow/getFlowListHtml",//This is the name of the file where I receive data in the background.
+        url: "/piflow-web/page/flow/getFlowListHtml",//This is the name of the file where I receive data in the background.
         error: function (request) {//Operation after request failure
             return;
         },
@@ -3112,7 +3083,7 @@ function ClickSlider() {
         else
             $(".triggerSlider i").removeClass("fa fa-angle-right fa-2x").toggleClass("fa fa-angle-left fa-2x");
 
-        $(".rightproup").toggleClass("openright");
+        $(".right-group").toggleClass("open-right");
         $(".ExpandSidebar").toggleClass("ExpandSidebar-open");
         $(this).toggleClass("triggerSlider-open");
         index = !index
