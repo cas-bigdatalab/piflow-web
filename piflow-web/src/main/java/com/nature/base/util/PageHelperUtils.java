@@ -27,6 +27,7 @@ public class PageHelperUtils {
         return rtnMap;
     }
 
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public static Map<String, Object> setLayTableParam(Page page, Map<String, Object> rtnMap) {
         if (null == rtnMap) {
             rtnMap = new HashMap<>();
@@ -35,6 +36,7 @@ public class PageHelperUtils {
             return rtnMap;
         }
         PageInfo info = new PageInfo(page.getResult());
+        rtnMap.put("msg", "success");
         rtnMap.put("count", info.getTotal());
         rtnMap.put("data", info.getList());//Data collection
         logger.debug("success");
