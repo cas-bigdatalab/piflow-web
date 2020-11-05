@@ -101,34 +101,6 @@ public class SysParamsCache {
 
     public static String getStopsHubUNMountUrl() { return INTERFACE_URL_HEAD + STOPSHUB_UNMOUNT_PATH; }
 
-    // spark jar path
-    public static String SPARK_JAR_PATH;
-
-    @Value("${api.sparkJarPath}")
-    public void setSparkJarPath(String sparkJarPath) { SPARK_JAR_PATH = sparkJarPath;   }
-
-    public static String getSparkJarPathUrl() { return INTERFACE_URL_HEAD + SPARK_JAR_PATH; }
-
-    // spark jar mount path
-    public static String SPARK_JAR_MOUNT_PATH;
-
-    @Value("${api.sparkJarAdd}")
-    public void setSparkJarMountUrl(String sparkJarMountPath) {
-        SPARK_JAR_MOUNT_PATH = sparkJarMountPath;
-    }
-
-    public static String getSparkJarMountUrl() { return INTERFACE_URL_HEAD + SPARK_JAR_MOUNT_PATH; }
-
-    // spark jar mount path
-    public static String SPARK_JAR_UNMOUNT_PATH;
-
-    @Value("${api.sparkJarRemove}")
-    public void setsparkJarUNMountUrl(String sparkJarUNMountPath) {
-        SPARK_JAR_UNMOUNT_PATH = sparkJarUNMountPath;
-    }
-
-    public static String getSparkJarUNMountUrl() { return INTERFACE_URL_HEAD + SPARK_JAR_UNMOUNT_PATH; }
-
     // Stops group information
     public static String STOPS_GROUPS_URL;
 
