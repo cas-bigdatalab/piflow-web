@@ -1,5 +1,6 @@
 package cn.cnic.base.util;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.util.ResourceUtils;
@@ -91,7 +92,7 @@ public class FileUtils {
         //file name
         String fileName = file.getOriginalFilename();
         String[] fileNameSplit = fileName.split("\\.");
-        if(saveFileName == null){
+        if (saveFileName == null) {
             if (fileNameSplit.length > 0) {
                 saveFileName = UUIDUtils.getUUID32() + "." + fileNameSplit[fileNameSplit.length - 1];
             }
@@ -258,6 +259,30 @@ public class FileUtils {
 
             while ((len = inStream.read(b)) > 0)
                 response.getOutputStream().write(b, 0, len);
+            inStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void downloadFile(HttpServletResponse response, String fileName, String filePath) {
+        try {
+            // Download local files
+            // Read to the stream
+            InputStream inStream = new FileInputStream(filePath);// File storage path
+            // Format the output
+            response.reset();
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+            response.setContentType("bin");
+            response.addHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+            // Loop out the data in the stream
+            byte[] b = new byte[100];
+            int len;
+
+            while ((len = inStream.read(b)) > 0) {
+                IOUtils.write(b, response.getOutputStream());
+            }
             inStream.close();
         } catch (IOException e) {
             e.printStackTrace();
