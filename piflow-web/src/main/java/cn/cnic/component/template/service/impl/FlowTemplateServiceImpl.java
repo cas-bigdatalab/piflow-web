@@ -168,7 +168,8 @@ public class FlowTemplateServiceImpl implements IFlowTemplateService {
         } else {
             String fileName = flowTemplate.getName() + ".xml".toString(); // The default save name of the file
             String filePath = flowTemplate.getPath();// File storage path
-            FileUtils.downloadFileResponse(response, fileName, filePath);
+            //FileUtils.downloadFileResponse(response, fileName, filePath);
+            FileUtils.downloadFile(response, fileName, filePath);
         }
 
     }
