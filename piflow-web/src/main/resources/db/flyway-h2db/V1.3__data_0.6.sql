@@ -46,8 +46,8 @@ INSERT INTO DATA_SOURCE_PROPERTY(ID, CRT_DTTM, CRT_USER, ENABLE_FLAG, LAST_UPDAT
 -- ----------------------------
 -- Records of sys_schedule
 -- ----------------------------
-INSERT INTO SYS_SCHEDULE(ID, CRT_DTTM, CRT_USER, ENABLE_FLAG, LAST_UPDATE_DTTM, LAST_UPDATE_USER, VERSION, CRON_EXPRESSION, JOB_CLASS, JOB_NAME, STATUS) VALUES ('ff8081816eaa8a5d016eaa8a77e40000', parsedatetime('2021-01-01 00:00:00.00', 'dd-MM-yyyy hh:mm:ss.SS'), 'system', 1, parsedatetime('2021-01-01 00:00:00.00', 'dd-MM-yyyy hh:mm:ss.SS'), 'system', 0, '0/5 * * * * ?', 'com.nature.schedule.RunningProcessSync', 'RunningProcessSync', 'RUNNING');
-INSERT INTO SYS_SCHEDULE(ID, CRT_DTTM, CRT_USER, ENABLE_FLAG, LAST_UPDATE_DTTM, LAST_UPDATE_USER, VERSION, CRON_EXPRESSION, JOB_CLASS, JOB_NAME, STATUS) VALUES ('ff8081816eaa9317016eaa932dd50000', parsedatetime('2021-01-01 00:00:00.00', 'dd-MM-yyyy hh:mm:ss.SS'), 'system', 1, parsedatetime('2021-01-01 00:00:00.00', 'dd-MM-yyyy hh:mm:ss.SS'), 'system', 0, '0/5 * * * * ?', 'com.nature.schedule.RunningProcessGroupSync', 'RunningProcessGroupSync', 'RUNNING');
+INSERT INTO SYS_SCHEDULE(ID, CRT_DTTM, CRT_USER, ENABLE_FLAG, LAST_UPDATE_DTTM, LAST_UPDATE_USER, VERSION, CRON_EXPRESSION, JOB_CLASS, JOB_NAME, STATUS) VALUES ('ff8081816eaa8a5d016eaa8a77e40000', parsedatetime('2021-01-01 00:00:00.00', 'dd-MM-yyyy hh:mm:ss.SS'), 'system', 1, parsedatetime('2021-01-01 00:00:00.00', 'dd-MM-yyyy hh:mm:ss.SS'), 'system', 0, '0/5 * * * * ?', 'cn.cnicschedule.RunningProcessSync', 'RunningProcessSync', 'RUNNING');
+INSERT INTO SYS_SCHEDULE(ID, CRT_DTTM, CRT_USER, ENABLE_FLAG, LAST_UPDATE_DTTM, LAST_UPDATE_USER, VERSION, CRON_EXPRESSION, JOB_CLASS, JOB_NAME, STATUS) VALUES ('ff8081816eaa9317016eaa932dd50000', parsedatetime('2021-01-01 00:00:00.00', 'dd-MM-yyyy hh:mm:ss.SS'), 'system', 1, parsedatetime('2021-01-01 00:00:00.00', 'dd-MM-yyyy hh:mm:ss.SS'), 'system', 0, '0/5 * * * * ?', 'cn.cnicschedule.RunningProcessGroupSync', 'RunningProcessGroupSync', 'RUNNING');
 -- ----------------------------
 -- update Example1
 -- ----------------------------

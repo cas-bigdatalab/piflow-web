@@ -1,10 +1,10 @@
-package com.nature.component.process.model;
+package cn.cnic.component.process.entity;
 
-import com.nature.base.BaseHibernateModelUUIDNoCorpAgentId;
-import com.nature.common.Eunm.ProcessParentType;
-import com.nature.common.Eunm.ProcessState;
-import com.nature.common.Eunm.RunModeType;
-import com.nature.component.mxGraph.model.MxGraphModel;
+import cn.cnic.base.BaseHibernateModelUUIDNoCorpAgentId;
+import cn.cnic.common.Eunm.ProcessParentType;
+import cn.cnic.common.Eunm.ProcessState;
+import cn.cnic.common.Eunm.RunModeType;
+import cn.cnic.component.mxGraph.entity.MxGraphModel;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.OrderBy;
