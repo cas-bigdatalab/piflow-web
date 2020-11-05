@@ -18,6 +18,7 @@ public class StopsComponentMapperProvider {
     private String outports;
     private String outPortType;
     private int isCustomized;
+    private String visualizationType;
 
     private void preventSQLInjectionStops(StopsComponent stopsComponent) {
         if (null != stopsComponent && StringUtils.isNotBlank(stopsComponent.getLastUpdateUser())) {
@@ -32,6 +33,7 @@ public class StopsComponentMapperProvider {
             this.outPortType = SqlUtils.preventSQLInjection(null != stopsComponent.getOutPortType() ? stopsComponent.getOutPortType().name() : null);
             this.owner = SqlUtils.preventSQLInjection(stopsComponent.getOwner());
             this.isCustomized = ((null != stopsComponent.getIsCustomized() && stopsComponent.getIsCustomized()) ? 1 : 0);
+            this.visualizationType = SqlUtils.preventSQLInjection(stopsComponent.getVisualizationType());
         }
     }
 
@@ -46,6 +48,7 @@ public class StopsComponentMapperProvider {
         this.outPortType = null;
         this.owner = null;
         this.isCustomized = 0;
+        this.visualizationType = null;
     }
 
     /**
@@ -108,13 +111,13 @@ public class StopsComponentMapperProvider {
 
         strBuf.append("( ");
         strBuf.append(SqlUtils.baseFieldName() + ", ");
-        strBuf.append("bundel, description, groups, name, owner, inports, in_port_type, outports, out_port_type, is_customized ");
+        strBuf.append("bundel, description, groups, name, owner, inports, in_port_type, outports, out_port_type, is_customized, visualization_type ");
         strBuf.append(") ");
 
         strBuf.append("values ");
         strBuf.append("(");
         strBuf.append(SqlUtils.baseFieldValues(stopsComponent) + ", ");
-        strBuf.append(bundel + "," + description + "," + groups + "," + name + "," + owner + "," + inports + "," + inPortType + "," + outports + "," + outPortType + "," + isCustomized);
+        strBuf.append(bundel + "," + description + "," + groups + "," + name + "," + owner + "," + inports + "," + inPortType + "," + outports + "," + outPortType + "," + isCustomized + "," + visualizationType);
         strBuf.append(")");
         this.reset();
         return strBuf.toString() + ";";

@@ -49,7 +49,7 @@ public class IStopTest extends ApplicationTests {
 
     @Test
     public void testGetStopInfo() {
-        String bundle = "cn.piflow.bundle.elasticsearch.QueryElasticsearch";
+        String bundle = "cn.piflow.bundle.visualization.LineChart";
         ThirdStopsComponentVo thirdStopsComponentVo = stopImpl.getStopInfo(bundle);
         if (null != thirdStopsComponentVo) {
             logger.info("return value is not null");

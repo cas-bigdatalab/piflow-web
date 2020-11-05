@@ -48,6 +48,8 @@ public class StopsComponent extends BaseHibernateModelUUIDNoCorpAgentId {
 
     private Boolean isCustomized = false;
 
+    private String visualizationType;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "stopsTemplate")
     @Where(clause = "enable_flag=1")
     private List<StopsComponentProperty> properties = new ArrayList<StopsComponentProperty>();

@@ -7,6 +7,8 @@ import cn.cnic.component.process.service.IProcessStopService;
 import cn.cnic.component.process.utils.ProcessUtils;
 import cn.cnic.component.process.vo.ProcessStopVo;
 import cn.cnic.component.process.mapper.ProcessStopMapper;
+import cn.cnic.component.stopsComponent.mapper.StopsComponentMapper;
+import cn.cnic.component.stopsComponent.model.StopsComponent;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,9 @@ public class ProcessStopServiceImpl implements IProcessStopService {
     @Resource
     private ProcessStopMapper processStopMapper;
 
+    @Resource
+    private StopsComponentMapper stopsComponentMapper;
+
     /**
      * Query processStop based on processId and pageId
      *
@@ -34,7 +39,14 @@ public class ProcessStopServiceImpl implements IProcessStopService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Parameter passed in incorrectly");
         }
         ProcessStop processStopByPageId = processStopMapper.getProcessStopByPageIdAndPageId(processId, pageId);
+        if (null == processStopByPageId) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("process stop data is null");
+        }
         ProcessStopVo processStopVo = ProcessUtils.processStopPoToVo(processStopByPageId);
+        StopsComponent stopsComponentByBundle = stopsComponentMapper.getStopsComponentByBundle(processStopByPageId.getBundel());
+        if (null != stopsComponentByBundle) {
+            processStopVo.setVisualizationType(stopsComponentByBundle.getVisualizationType());
+        }
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("processStopVo", processStopVo);
     }
 }
