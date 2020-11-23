@@ -9,16 +9,18 @@
         width="60"
         @on-ok="updateStopsProperty"
         :mask-closable="false">
-      <RadioGroup size="small" v-model="buttonSize" type="button">
-        <Radio label="text">text</Radio>
-        <Radio label="scala">scala</Radio>
-        <Radio label="javascript">java</Radio>
-        <Radio label="python">python</Radio>
-        <Radio label="sh">shell</Radio>
-      </RadioGroup>
-      <code-editor ref="_firstRefs" class="editor h-100" v-model="editorContent"
-                   :readonly="readonly" :language="buttonSize" theme="dracula">
-      </code-editor>
+      <div :style="{ height :`${Programming}`}">
+        <RadioGroup size="small" v-model="buttonSize" type="button">
+          <Radio label="text">text</Radio>
+          <Radio label="scala">scala</Radio>
+          <Radio label="javascript">java</Radio>
+          <Radio label="python">python</Radio>
+          <Radio label="sh">shell</Radio>
+        </RadioGroup>
+        <code-editor ref="_firstRefs" class="editor h-100" v-model="editorContent"
+                     :readonly="readonly" :language="buttonSize" theme="dracula">
+        </code-editor>
+      </div>
     </Modal>
   </div>
 </template>
@@ -31,6 +33,7 @@ export default {
   data() {
     return {
       height: "100%",
+      Programming: "400px",
       src: "",
       parentsId: '',
       editorContent:'',
@@ -94,6 +97,7 @@ export default {
     }, false);
     //  接收可视化编程data
     window["openRightHelpPage"] = (val,id) => {
+      _this.Programming = window.innerHeight > 300 ? window.innerHeight - window.innerHeight*0.3 +'px' : window.innerHeight +'px' ;
       _this.modal8 = true;
       // _this.editorContent = _this.oldVal !=='' ?_this.oldVal : val;
       _this.editorContent = val;

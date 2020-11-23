@@ -541,7 +541,7 @@ function getChart(e) {
     var open_window_width = (window_width > 300 ? window_width - 200 : window_width);
     var open_window_height = (window_height > 300 ? window_height - 150 : window_height);
     var logContent = '<div id="divPreId" style="height: 100%;width: 100%;">'
-        + '<div id="preId" style="height: 100%;width: 100%; margin: 6px 6px 6px 6px;background-color: #f5f5f5;text-align: center;">'
+        + '<div id="preId" style="height: 100%;width: 100%; background-color: #f5f5f5;text-align: center;">'
         + '<div id="chartLine" style="width: 100%;height:90%;margin:0 auto; display: none"></div>'
         + '<div id="chartScatter" style="width: 100%;height:90%;margin:0 auto; display: none"></div>'
         + '<div id="chartBar" style="width: 100%;height:90%;margin:0 auto; display: none"></div>'
@@ -668,7 +668,7 @@ function getChart(e) {
                                         }
                                     }
                                 }
-
+                                visualizationData.xAxis.data = visualizationData.xAxis.data.map(i => parseInt(i, 0));
                                 // 折线图
                                 var myChart = echarts.init(document.getElementById('chartLine'));
                                 var option = {
@@ -730,6 +730,7 @@ function getChart(e) {
                                         }
                                     }
                                 }
+                                visualizationData.xAxis.data = visualizationData.xAxis.data.map(i => parseInt(i, 0));
                                 var chartBar = echarts.init(document.getElementById('chartBar'));
                                 var BarOption = {
                                     color: ['#116979', '#18b0b0', '#00bdaa', '#27496d'],
