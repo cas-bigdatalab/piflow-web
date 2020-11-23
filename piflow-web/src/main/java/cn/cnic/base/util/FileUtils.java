@@ -41,9 +41,22 @@ public class FileUtils {
      */
     @SuppressWarnings("deprecation")
     public static String createXml(String xmlStr, String fileName, String path) {
+        return createFile(xmlStr, fileName, path, "xml");
+    }
+
+    /**
+     * String to "xml" file and save the specified path
+     *
+     * @param xmlStr   xml string
+     * @param fileName File name
+     * @param path     (Storage path)
+     * @return
+     */
+    @SuppressWarnings("deprecation")
+    public static String createFile(String xmlStr, String fileName, String path, String fileType) {
         CheckPathUtils.isChartPathExist(path);
         Document doc = strToDocument(xmlStr);
-        String realPath = path + fileName + ".xml";
+        String realPath = path + fileName + "." + fileType;
         logger.debug("============Entry Generation Method：" + new Date().toLocaleString() + "=================");
         try {
             // Determine if the file exists, delete it if it exists
