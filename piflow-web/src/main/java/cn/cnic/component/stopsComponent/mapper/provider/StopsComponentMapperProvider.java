@@ -19,7 +19,6 @@ public class StopsComponentMapperProvider {
     private String outPortType;
     private int isCustomized;
     private String visualizationType;
-    private String language;
 
     private void preventSQLInjectionStops(StopsComponent stopsComponent) {
         if (null != stopsComponent && StringUtils.isNotBlank(stopsComponent.getLastUpdateUser())) {
@@ -35,7 +34,6 @@ public class StopsComponentMapperProvider {
             this.owner = SqlUtils.preventSQLInjection(stopsComponent.getOwner());
             this.isCustomized = ((null != stopsComponent.getIsCustomized() && stopsComponent.getIsCustomized()) ? 1 : 0);
             this.visualizationType = SqlUtils.preventSQLInjection(stopsComponent.getVisualizationType());
-            this.language = SqlUtils.preventSQLInjection(stopsComponent.getLanguage());
         }
     }
 
@@ -51,7 +49,6 @@ public class StopsComponentMapperProvider {
         this.owner = null;
         this.isCustomized = 0;
         this.visualizationType = null;
-        this.language = null;
     }
 
     /**
@@ -120,7 +117,7 @@ public class StopsComponentMapperProvider {
         strBuf.append("values ");
         strBuf.append("(");
         strBuf.append(SqlUtils.baseFieldValues(stopsComponent) + ", ");
-        strBuf.append(bundel + "," + description + "," + groups + "," + name + "," + owner + "," + inports + "," + inPortType + "," + outports + "," + outPortType + "," + isCustomized + "," + visualizationType + "," + language);
+        strBuf.append(bundel + "," + description + "," + groups + "," + name + "," + owner + "," + inports + "," + inPortType + "," + outports + "," + outPortType + "," + isCustomized + "," + visualizationType);
         strBuf.append(")");
         this.reset();
         return strBuf.toString() + ";";

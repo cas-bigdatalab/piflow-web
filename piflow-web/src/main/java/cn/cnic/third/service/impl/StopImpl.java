@@ -126,7 +126,6 @@ public class StopImpl implements IStop {
         thirdStopsComponentVo.setDescription(jsonObject.getString("description"));
         thirdStopsComponentVo.setIcon(jsonObject.getString("icon"));
         thirdStopsComponentVo.setVisualizationType(jsonObject.getString("visualizationType"));
-        thirdStopsComponentVo.setLanguage(jsonObject.getString("language"));
         JSONArray jsonArray = jsonObject.getJSONArray("properties");
         if (null != jsonArray && jsonArray.size() > 0) {
             List<ThirdStopsComponentPropertyVo> thirdStopsComponentPropertyVoList = new ArrayList<>();
@@ -145,6 +144,7 @@ public class StopImpl implements IStop {
                 thirdStopsComponentPropertyVo.setRequired(propertyJsonObject.getString("required"));
                 thirdStopsComponentPropertyVo.setSensitive(propertyJsonObject.getBoolean("sensitive"));
                 thirdStopsComponentPropertyVo.setExample(propertyJsonObject.getString("example"));
+                thirdStopsComponentPropertyVo.setLanguage(propertyJsonObject.getString("language"));
                 thirdStopsComponentPropertyVoList.add(thirdStopsComponentPropertyVo);
             }
             thirdStopsComponentVo.setProperties(thirdStopsComponentPropertyVoList);

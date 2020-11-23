@@ -49,6 +49,7 @@ public class IStopTest extends ApplicationTests {
 
     @Test
     public void testGetStopInfo() {
+        String bundle1 = "cn.piflow.bundle.mongodb.GetMongo";
         String bundle = "cn.piflow.bundle.visualization.LineChart";
         ThirdStopsComponentVo thirdStopsComponentVo = stopImpl.getStopInfo(bundle);
         if (null != thirdStopsComponentVo) {

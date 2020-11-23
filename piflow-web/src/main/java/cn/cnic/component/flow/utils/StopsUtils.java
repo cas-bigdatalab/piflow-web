@@ -96,22 +96,26 @@ public class StopsUtils {
         List<StopsPropertyVo> oldPropertyVos = propertyListPoToVo(stop.getOldProperties(), dataSourcePropertyMap);
         stopsVo.setOldPropertiesVo(oldPropertyVos);
         if (null != stopComponent) {
-            stopsVo.setLanguage(stopComponent.getLanguage());
             List<StopsComponentProperty> stopComponentProperties = stopComponent.getProperties();
             List<StopsPropertyVo> propertiesVo = stopsVo.getPropertiesVo();
             if (null != propertiesVo && propertiesVo.size() > 0 && null != stopComponentProperties && stopComponentProperties.size() > 0) {
-                Map<String, String> property_example_map = new HashMap<>();
+                Map<String, StopsComponentProperty> property_map = new HashMap<>();
                 for (StopsComponentProperty stopsComponentProperty : stopComponentProperties) {
                     if (null == stopsComponentProperty) {
                         continue;
                     }
-                    property_example_map.put(stopsComponentProperty.getName(), stopsComponentProperty.getExample());
+                    property_map.put(stopsComponentProperty.getName(), stopsComponentProperty);
                 }
                 for (StopsPropertyVo propertyVo : propertiesVo) {
                     if (null == propertiesVo) {
                         continue;
                     }
-                    propertyVo.setExample(property_example_map.get(propertyVo.getName()));
+                    StopsComponentProperty stopsComponentProperty = property_map.get(propertyVo.getName());
+                    if(null == stopsComponentProperty){
+                        continue;
+                    }
+                    propertyVo.setExample(stopsComponentProperty.getName());
+                    propertyVo.setLanguage(stopsComponentProperty.getLanguage());
                 }
                 stopsVo.setPropertiesVo(propertiesVo);
             }

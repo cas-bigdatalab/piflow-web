@@ -22,7 +22,6 @@ public class ThirdStopsComponentVo implements Serializable {
     private String description;
     private String icon;
     private String visualizationType;
-    private String language;
     List<ThirdStopsComponentPropertyVo> properties;
 
 }

@@ -45,4 +45,6 @@ public class StopsComponentProperty extends BaseHibernateModelUUIDNoCorpAgentId 
 
     @Column(columnDefinition = "text(0) COMMENT 'property example'")
     private String example;
+
+    private String language;
 }
