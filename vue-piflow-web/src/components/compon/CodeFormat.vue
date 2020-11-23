@@ -162,9 +162,10 @@ export default {
         tabSize: 2,
         value: this.value,
         selectionStyle: 'text',
-        maxLines: 30,
-        minLines: 20,
-        readOnly: this.readonly
+        // maxLines: 30,
+        // minLines: 20,
+        readOnly: this.readonly,
+        resize: true
       })
       // 设置属性等，具体需要可根据官方参数自行设置
       this.editor.setOptions({
@@ -224,6 +225,7 @@ export default {
 <style lang="scss" scoped>
 .wrap {
   position: relative;
+  height: 100%;
   .code-editor {
     min-height: 200px;
     height: 100%;
