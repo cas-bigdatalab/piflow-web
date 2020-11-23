@@ -55,6 +55,8 @@ public class StopsVo implements Serializable {
 
     private Date crtDttm = new Date();
 
+    private String language;
+
     private DataSourceVo dataSourceVo;
 
     private List<StopsPropertyVo> propertiesVo = new ArrayList<>();

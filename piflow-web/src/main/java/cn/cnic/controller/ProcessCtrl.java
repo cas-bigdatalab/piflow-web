@@ -264,8 +264,6 @@ public class ProcessCtrl {
     @RequestMapping("/getVisualizationData")
     @ResponseBody
     public String getVisualizationData(HttpServletRequest request) {
-        Map<String, Object> rtnMap = new HashMap<>();
-        rtnMap.put("code", 500);
         String appId = request.getParameter("appId");
         String stopName = request.getParameter("stopName");
         String visualizationType = request.getParameter("visualizationType");

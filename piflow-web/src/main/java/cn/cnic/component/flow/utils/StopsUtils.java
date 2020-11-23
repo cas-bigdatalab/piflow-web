@@ -96,6 +96,7 @@ public class StopsUtils {
         List<StopsPropertyVo> oldPropertyVos = propertyListPoToVo(stop.getOldProperties(), dataSourcePropertyMap);
         stopsVo.setOldPropertiesVo(oldPropertyVos);
         if (null != stopComponent) {
+            stopsVo.setLanguage(stopComponent.getLanguage());
             List<StopsComponentProperty> stopComponentProperties = stopComponent.getProperties();
             List<StopsPropertyVo> propertiesVo = stopsVo.getPropertiesVo();
             if (null != propertiesVo && propertiesVo.size() > 0 && null != stopComponentProperties && stopComponentProperties.size() > 0) {
