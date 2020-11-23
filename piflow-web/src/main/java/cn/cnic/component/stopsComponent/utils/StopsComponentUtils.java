@@ -97,6 +97,7 @@ public class StopsComponentUtils {
         stopsComponent.setIsCustomized(thirdStopsComponentVo.isCustomized());
         stopsComponent.setStopGroupList(stopGroupByName);
         stopsComponent.setVisualizationType(thirdStopsComponentVo.getVisualizationType());
+        stopsComponent.setLanguage(thirdStopsComponentVo.getLanguage());
         List<StopsComponentProperty> listStopsComponentProperty = StopsComponentPropertyUtils.thirdStopsComponentPropertyVoListToStopsComponentProperty(username, thirdStopsComponentVo.getProperties(), stopsComponent);
         stopsComponent.setProperties(listStopsComponentProperty);
         return stopsComponent;
