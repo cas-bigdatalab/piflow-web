@@ -41,22 +41,9 @@ public class FileUtils {
      */
     @SuppressWarnings("deprecation")
     public static String createXml(String xmlStr, String fileName, String path) {
-        return createFile(xmlStr, fileName, path, "xml");
-    }
-
-    /**
-     * String to "xml" file and save the specified path
-     *
-     * @param xmlStr   xml string
-     * @param fileName File name
-     * @param path     (Storage path)
-     * @return
-     */
-    @SuppressWarnings("deprecation")
-    public static String createFile(String xmlStr, String fileName, String path, String fileType) {
         CheckPathUtils.isChartPathExist(path);
         Document doc = strToDocument(xmlStr);
-        String realPath = path + fileName + "." + fileType;
+        String realPath = path + fileName + ".xml";
         logger.debug("============Entry Generation Method：" + new Date().toLocaleString() + "=================");
         try {
             // Determine if the file exists, delete it if it exists
@@ -83,6 +70,44 @@ public class FileUtils {
         }
         logger.debug("============Exit Generation Method：" + new Date().toLocaleString() + "=================");
         return realPath;
+    }
+
+    /**
+     * Generate JSON format file
+     */
+    public static String createJsonFile(String jsonString, String fileName, String filePath) {
+        // Mark whether the file was generated successfully
+        boolean flag = true;
+
+        // Full path of splicing file
+        //String fullPath = filePath + File.separator + fileName + ".json";
+        String fullPath = filePath + fileName + ".json";
+
+        // Generate JSON format file
+        try {
+            // Make sure to create a new file
+            File file = new File(fullPath);
+            if (!file.getParentFile().exists()) { // If the parent directory does not exist, create the parent directory
+                file.getParentFile().mkdirs();
+            }
+            if (file.exists()) { // If it already exists, delete the old file
+                file.delete();
+            }
+            file.createNewFile();
+
+            // 将格式化后的字符串写入文件
+            Writer write = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
+            write.write(jsonString);
+            write.flush();
+            write.close();
+        } catch (Exception e) {
+            flag = false;
+            fullPath = "";
+            e.printStackTrace();
+        }
+
+        // 返回是否成功的标记
+        return fullPath;
     }
 
 
