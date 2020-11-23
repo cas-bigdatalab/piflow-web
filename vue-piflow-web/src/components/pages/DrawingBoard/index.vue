@@ -2,17 +2,43 @@
   <div :style="{height}">
     <iframe :src="src" id="bariframe" style="width: 100%;height: 100%" frameborder="0"></iframe>
     <img id="piflow-bgc" src="../../../assets/img/hbbj.jpg" />
+    <!--在线编程-->
+    <Modal
+        title="Title"
+        v-model="modal8"
+        width="60"
+        @on-ok="updateStopsProperty"
+        :mask-closable="false">
+      <RadioGroup size="small" v-model="buttonSize" type="button">
+        <Radio label="text">text</Radio>
+        <Radio label="scala">scala</Radio>
+        <Radio label="javascript">java</Radio>
+        <Radio label="python">python</Radio>
+        <Radio label="sh">shell</Radio>
+      </RadioGroup>
+      <code-editor ref="_firstRefs" class="editor h-100" v-model="editorContent"
+                   :readonly="readonly" :language="buttonSize" theme="dracula">
+      </code-editor>
+    </Modal>
   </div>
 </template>
  
 <script>
+import CodeEditor from '../../compon/CodeFormat'
 export default {
   name: "DrawingBoard",
+  components:{CodeEditor},
   data() {
     return {
       height: "100%",
       src: "",
-      parentsId: ''
+      parentsId: '',
+      editorContent:'',
+      readonly: false,
+      modal8: false,
+      buttonSize: 'text',
+      stopsId: '',
+      // oldVal: ''
     };
   },
   created() {
@@ -59,7 +85,6 @@ export default {
       "position: fixed; width: 100%; top: 0;";
     // console.log(document.querySelector('footer'));
     this.setSize();
-
     window.addEventListener('message', function(event) {
       // 通过origin属性判断消息来源地址
       // if (event.origin == 'localhost') {
@@ -67,6 +92,14 @@ export default {
       //console.log(event.source);
       //}
     }, false);
+    //  接收可视化编程data
+    window["openRightHelpPage"] = (val,id) => {
+      _this.modal8 = true;
+      // _this.editorContent = _this.oldVal !=='' ?_this.oldVal : val;
+      _this.editorContent = val;
+      // _this.oldVal = '';
+      _this.stopsId = id;
+    };
   },
   watch:{
     $route(to,from){
@@ -126,7 +159,7 @@ export default {
       window.addEventListener("resize", () => {
         this.setSize();
       });
-    }
+    },
   },
   methods: {
     setSize() {
@@ -134,6 +167,38 @@ export default {
     },
     GetChildValue(val){
       this.parentsId = val;
+    },
+    // 保存更改的flow配置信息
+    updateStopsProperty(){
+      let data = {};
+      data.id = this.stopsId;
+      data.content = this.editorContent;
+      this.$axios
+          .post('/stops/updateStopsOne', this.$qs.stringify(data))
+          .then(res => {
+            var dataMap = res.data;
+            if (dataMap.code == 200) {
+              document.getElementById("bariframe").contentWindow.document.getElementById(`${this.stopsId}`).value = dataMap.value;
+              document.getElementById("bariframe").contentWindow.document.getElementById(`${this.stopsId}`).setAttribute('data',`${dataMap.value}`)
+
+              // this.oldVal = dataMap.value;
+              // console.log(document.frames('bariframe').document)
+              // $("#" + stopsPropertyId).val(dataMap.value);
+              // $("#" + stopsPropertyId).attr("data", dataMap.value);
+            } else {
+              // this.$Modal.error({
+              //   title: this.$t("tip.title"),
+              //   content: `${row.jobName} ` + this.$t("tip.stop_fail_content")
+              // });
+            }
+          })
+          .catch(error => {
+            console.log(error);
+            // this.$Message.error({
+            //   content: this.$t("tip.fault_content"),
+            //   duration: 3
+            // });
+          });
     }
   },
   beforeDestroy() {

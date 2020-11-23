@@ -73,12 +73,17 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(response => {
   if (response) {
     switch (response.data.code) {
-      // case 401:
-      //   iView.Modal.warning({
-      //     title: 'token失效,请重新登录!',
-      //     content: 'content'
-      //   });
-      //   break;
+      case 401:
+        iView.Modal.warning({
+          title: 'Piflow system tips',
+          content: 'Authentication failed, please log in again',
+          onOk:()=>{
+            router.replace({
+              path: '/login',
+            })
+          }
+        });
+        break;
       case 403:
         window.sessionStorage.clear();     //删除用户信息
         //如果超时就处理 ，指定要跳转的页面(登陆页)
@@ -100,22 +105,10 @@ axios.interceptors.response.use(response => {
 })
 
 
-// 基础地址
-import config from '../public/config.json';
-// axios.get('/config.json').then((res) => {
-//   Vue.prototype.BASE_URL = res.data.BASE_URL;
-// });
-
-
-
-
-// // axios.defaults.baseURL = process.env.VUE_APP_URL;
-// axios.defaults.baseURL = service_url;
+// axios.defaults.baseURL = process.env.VUE_APP_URL;
 // // window.sessionStorage.setItem("basePath", process.env.VUE_APP_URL);
-// // Cookies.set('basePath', process.env.VUE_APP_URL);
-// Cookies.set('basePath', service_url);
-// // Vue.prototype.$url = process.env.VUE_APP_URL;
-// Vue.prototype.$url = service_url;
+// Cookies.set('basePath', process.env.VUE_APP_URL);
+// Vue.prototype.$url = process.env.VUE_APP_URL;
 Vue.prototype.$axios = axios; //全局注册，使用方法为:this.$axios
 Vue.prototype.$qs = qs; //全局注册，使用方法为:this.$qs
 

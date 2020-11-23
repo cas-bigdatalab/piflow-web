@@ -10,6 +10,7 @@ module.exports = {
         data_source: "DataSource",
         schedule: "Schedule",
         stopHub: "StopHub",
+        sparkJar: "SparkJar",
         example: "Example",
         admin: "Admin",
     },

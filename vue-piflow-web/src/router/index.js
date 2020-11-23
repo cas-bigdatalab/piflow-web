@@ -72,6 +72,11 @@ export default new Router({
               component: () => import('../components/pages/StopHub')
             },
             {
+              path: '/sparkJar',
+              name: 'SparkJar',
+              component: () => import('../components/pages/SparkJar')
+            },
+            {
               path: '/admin',
               name: 'admin',
               component: () => import('../components/pages/Admin')

@@ -372,6 +372,14 @@ function queryProcessStopsProperty(processId, pageId) {
                     $("#span_processStopVo_groups").text(processStopVo.groups);
                     $("#stopsBundleShow").text(processStopVo.bundel);
                     $("#span_processStopVo_owner").text(processStopVo.owner);
+                    if ( processStopVo.visualizationType === '' ){
+                        $("#process_info_inc_load_chart").css('display','none');
+                    }else {
+                        $("#process_info_inc_load_chart").css('display','block');
+                        $("#process_info_inc_load_getChartBtn").attr('data', processStopVo.visualizationType);
+                        $("#process_info_inc_load_getChartBtn").attr('name', processStopVo.name);
+                    }
+
 
                     //Stop Property Information
                     var processStopPropertyVoList = processStopVo.processStopPropertyVoList;
@@ -526,4 +534,434 @@ function ClickSlider() {
     });
 }
 
+function getChart(e) {
+    $("#process_info_inc_load_getChartBtn").attr('disabled',true);
+    var window_width = $(window).width();//Get browser window width
+    var window_height = $(window).height();//Get browser window width
+    var open_window_width = (window_width > 300 ? window_width - 200 : window_width);
+    var open_window_height = (window_height > 300 ? window_height - 150 : window_height);
+    var logContent = '<div id="divPreId" style="height: 100%;width: 100%;">'
+        + '<div id="preId" style="height: 100%;width: 100%; margin: 6px 6px 6px 6px;background-color: #f5f5f5;text-align: center;">'
+        + '<div id="chartLine" style="width: 100%;height:90%;margin:0 auto; display: none"></div>'
+        + '<div id="chartScatter" style="width: 100%;height:90%;margin:0 auto; display: none"></div>'
+        + '<div id="chartBar" style="width: 100%;height:90%;margin:0 auto; display: none"></div>'
+        + '<div id="chartPie" style="width: 100%;height:90%;margin:0 auto; display: none"></div>'
+        + '</div>'
+        + '</div>';
+    var type = e.getAttribute('data');
+    var name = e.getAttribute('name');
+
+    // 可视化图表数据
+
+    ajaxRequest({
+        cache: true,//Keep cached data
+        type: "get",//Request type post
+        url: "/process/getVisualizationData",//This is the name of the file where I receive data in the background.
+        //data:$('#loginForm').serialize(),//Serialize the form
+        data: {
+            // appId: 'application_1601464533489_3396',
+            appId: appId,
+            // stopName: 'LineChart',
+            stopName: name,
+            // stopName: 'Histogram',
+            // visualizationType: 'LINECHART',
+            visualizationType: type,
+            // visualizationType: 'HISTOGRAM',
+        },
+        async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
+        error: function (request) {//Operation after request failure
+            $("#process_info_inc_load_getChartBtn").attr('disabled',false);
+            layer.msg("Request Failed", {icon: 2, shade: 0, time: 2000});
+            return;
+        },
+        success: function (data) {//Operation after request successful
+            $("#process_info_inc_load_getChartBtn").attr('disabled',false);
+            layer.open({
+                type: 1,
+                title: '<span style="color: #269252;">View Charts</span>',
+                shadeClose: true,
+                closeBtn: 1,
+                shift: 7,
+                area: [open_window_width + 'px', open_window_height + 'px'], //Width height
+                skin: 'layui-layer-rim', //Add borders
+                // btn: ['stdout', 'stderr'], //button
+                btn1: function (index, layero) {
+                    changeUrl(1);
+                    return false;
+                },
+                btn2: function (index, layero) {
+                    changeUrl(2);
+                    return false;
+                },
+                content: logContent,
+                success: function (layero) {
+                    layero.find('.layui-layer-btn').css('text-align', 'left');
+                    var bleBtn0 = layero.find('.layui-layer-btn0');
+                    var bleBtn1 = layero.find('.layui-layer-btn1');
+                    bleBtn0.removeClass('layui-layer-btn0');
+                    bleBtn1.removeClass('layui-layer-btn1');
+                    bleBtn0.addClass('layui-layer-btn1');
+                    bleBtn1.addClass('layui-layer-btn1');
+
+                    var dataMap = JSON.parse(data), visualizationData = {};
+                    if (200 === dataMap.code) {
+                        visualizationData = JSON.parse(dataMap.visualizationData);
+                        switch (type){
+                            case 'PIECHART':
+                                // 饼状图
+                                $('#chartPie').css('display','block');
+                                var newArr = [];
+                                for(var i=0;i<visualizationData.legend.length;i++){
+                                    newArr.push(Number(visualizationData.legend[i]))
+                                }
+                                var chartPie = echarts.init(document.getElementById('chartPie'));
+                                var PieOption = {
+                                    color: ['#726a95', '#709fb0', '#a0c1b8', '#f4ebc1', '#e4e4e4', '#ad6989', '#f9d89c', '#7fdbda', '#ba7967', '#e2979c', '#abc2e8'],
+                                    // title: {
+                                    //     text: '',
+                                    //     subtext: '',
+                                    //     left: 'center'
+                                    // },
+                                    tooltip: {
+                                        trigger: 'item',
+                                        formatter: '{a} <br/>{b} : {c} ({d}%)'
+                                    },
+                                    legend: {
+                                        // orient: 'vertical',
+                                        top: 10,
+                                        left: 'center',
+                                        data: newArr
+                                    },
+                                    toolbox: {
+                                        right: '50',
+                                        feature: {
+                                            saveAsImage: {}
+                                        }
+                                    },
+                                    series: [
+                                        {
+                                            name: '访问来源',
+                                            type: 'pie',
+                                            radius: '55%',
+                                            center: ['50%', '60%'],
+                                            selectedMode: 'single',
+                                            data: visualizationData.series,
+                                            emphasis: {
+                                                itemStyle: {
+                                                    shadowBlur: 10,
+                                                    shadowOffsetX: 0,
+                                                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                                }
+                                            }
+                                        }
+                                    ]
+                                };
+                                chartPie.setOption(PieOption,true);
+                                break;
+                            case 'LINECHART':
+                                $('#chartLine').css('display','block');
+                                for (var i=0;i<visualizationData.series.length;i++){
+                                    visualizationData.series[i].areaStyle = {};
+                                    for (var key in visualizationData.series[i]){
+                                        if (key === 'stack'){
+                                            visualizationData.series[i][key] = 'count';
+                                        }
+                                    }
+                                }
+
+                                // 折线图
+                                var myChart = echarts.init(document.getElementById('chartLine'));
+                                var option = {
+                                    title: {
+                                        text: ''
+                                    },
+                                    tooltip: {
+                                        trigger: 'axis',
+                                        axisPointer: {
+                                            type: 'cross',
+                                            label: {
+                                                backgroundColor: '#6a7985'
+                                            }
+                                        }
+                                    },
+                                    legend: {
+                                        data: visualizationData.legend
+                                    },
+                                    toolbox: {
+                                        right: '50',
+                                        feature: {
+                                            saveAsImage: {}
+                                        }
+                                    },
+                                    grid: {
+                                        left: '6%',
+                                        right: '6%',
+                                        bottom: '3%',
+                                        containLabel: true
+                                    },
+                                    // toolbox: {
+                                    //     feature: {
+                                    //         saveAsImage: {}
+                                    //     }
+                                    // },
+                                    xAxis: {
+                                        type: 'category',
+                                        boundaryGap: false,
+                                        name: visualizationData.xAxis.type,
+                                        data: visualizationData.xAxis.data
+                                    },
+                                    yAxis: {
+                                        type: 'value'
+                                    },
+                                    series: visualizationData.series
+                                };
+                                myChart.setOption(option,true);
+
+
+                                break;
+                            case 'HISTOGRAM':
+                                $('#chartBar').css('display','block');
+                                // 柱状图
+                                for (var i=0;i<visualizationData.series.length;i++){
+                                    visualizationData.series[i].barGap = 0;
+                                    for (var key in visualizationData.series[i]){
+                                        if (key === 'stack'){
+                                            visualizationData.series[i][key] = '';
+                                        }
+                                    }
+                                }
+                                var chartBar = echarts.init(document.getElementById('chartBar'));
+                                var BarOption = {
+                                    color: ['#116979', '#18b0b0', '#00bdaa', '#27496d'],
+                                    tooltip: {
+                                        trigger: 'axis',
+                                        axisPointer: {
+                                            type: 'shadow'
+                                        }
+                                    },
+                                    legend: {
+                                        data: visualizationData.legend
+                                    },
+                                    toolbox: {
+                                        show: true,
+                                        orient: 'vertical',
+                                        // left: 'right',
+                                        top: 'center',
+                                        right: '50',
+                                        feature: {
+                                            mark: {show: true},
+                                            dataView: {show: true, readOnly: false},
+                                            magicType: {show: true, type: ['stack', 'tiled']},
+                                            restore: {show: true},
+                                            saveAsImage: {show: true}
+                                        }
+                                    },
+                                    xAxis: [
+                                        {
+                                            type: 'category',
+                                            axisTick: {show: false},
+                                            name: visualizationData.xAxis.type,
+                                            // axisLabel:{
+                                            //     interval:0,
+                                            //     rotate:45,
+                                            //     margin:2,
+                                            //     textStyle:{
+                                            //         color:"#8f8f8f"
+                                            //     }
+                                            // },
+                                            data: visualizationData.xAxis.data
+                                        }
+                                    ],
+
+                                    yAxis: [
+                                        {
+                                            type: 'value'
+                                        }
+                                    ],
+                                    series: visualizationData.series
+                                };
+                                chartBar.setOption(BarOption,true);
+                                break;
+                            case 'SCATTERPLOT':
+                                $('#chartScatter').css('display','block');
+                                $('#preId').css('background','#404a59');
+
+                                // 散点图
+                                var chartScatter = echarts.init(document.getElementById('chartScatter'));
+                                var schema = visualizationData.schema;
+                                // var itemStyle = {
+                                //     opacity: 0.8,
+                                //     shadowBlur: 10,
+                                //     shadowOffsetX: 0,
+                                //     shadowOffsetY: 0,
+                                //     shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                // };
+                                var ScatterOption = {
+                                    backgroundColor: '#404a59',
+                                    color: [
+                                        '#fe5d4e', '#43c2f7', '#ffa61b', '#64d290', '#cf27bd', '#707ad9'
+                                    ],
+                                    legend: {
+                                        top: 10,
+                                        data: visualizationData.legend,
+                                        textStyle: {
+                                            color: '#fff',
+                                            fontSize: 16
+                                        }
+                                    },
+                                    grid: {
+                                        left: '10%',
+                                        right: 150,
+                                        top: '18%',
+                                        bottom: '10%'
+                                    },
+                                    tooltip: {
+                                        padding: 10,
+                                        backgroundColor: '#222',
+                                        borderColor: '#777',
+                                        borderWidth: 1,
+                                        formatter: function (obj) {
+                                            var value = obj.value;
+                                            return '<div style="border-bottom: 1px solid rgba(255,255,255,.3); font-size: 18px;padding-bottom: 7px;margin-bottom: 7px">'
+                                                + obj.seriesName + ' ' + value[0] + '日：'
+                                                + value[7]
+                                                + '</div>'
+                                                + schema[1].text + '：' + value[1] + '<br>'
+                                                + schema[2].text + '：' + value[2] + '<br>'
+                                                + schema[3].text + '：' + value[3] + '<br>'
+                                                + schema[4].text + '：' + value[4] + '<br>'
+                                                + schema[5].text + '：' + value[5] + '<br>'
+                                                + schema[6].text + '：' + value[6] + '<br>';
+                                        }
+                                    },
+                                    xAxis: {
+                                        type: 'value',
+                                        name: '日期',
+                                        nameGap: 16,
+                                        nameTextStyle: {
+                                            color: '#fff',
+                                            fontSize: 14
+                                        },
+                                        max: 31,
+                                        splitLine: {
+                                            show: false
+                                        },
+                                        axisLine: {
+                                            lineStyle: {
+                                                color: '#eee'
+                                            }
+                                        }
+                                    },
+                                    yAxis: {
+                                        type: 'value',
+                                        name: 'AQI指数',
+                                        nameLocation: 'end',
+                                        nameGap: 20,
+                                        nameTextStyle: {
+                                            color: '#fff',
+                                            fontSize: 16
+                                        },
+                                        axisLine: {
+                                            lineStyle: {
+                                                color: '#eee'
+                                            }
+                                        },
+                                        splitLine: {
+                                            show: false
+                                        }
+                                    },
+                                    toolbox: {
+                                        right: '50',
+                                        feature: {
+                                            saveAsImage: {
+                                                iconStyle:{
+                                                    emphasis:{
+                                                        color: '#ffffff',
+                                                    },
+                                                    normal: {
+                                                        color: '#ffffff',
+                                                        borderColor: '#ffffff',
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    },
+                                    visualMap: [
+                                        {
+                                            right: '50',
+                                            top: '10%',
+                                            dimension: 2,
+                                            min: 0,
+                                            max: 260,
+                                            itemWidth: 30,
+                                            itemHeight: 120,
+                                            calculable: true,
+                                            precision: 0.1,
+                                            text: ['圆形大小：'],
+                                            textGap: 30,
+                                            textStyle: {
+                                                color: '#fff'
+                                            },
+                                            inRange: {
+                                                symbolSize: [10, 70]
+                                            },
+                                            outOfRange: {
+                                                symbolSize: [10, 70],
+                                                color: ['rgba(255,255,255,.2)']
+                                            },
+                                            controller: {
+                                                inRange: {
+                                                    color: ['#fe5d4e']
+                                                },
+                                                outOfRange: {
+                                                    color: ['#444']
+                                                }
+                                            }
+                                        },
+                                        {
+                                            right: '50',
+                                            bottom: '2%',
+                                            dimension: 6,
+                                            min: 0,
+                                            max: 50,
+                                            itemHeight: 120,
+
+                                            precision: 0.1,
+                                            text: ['明暗：数据'],
+                                            textGap: 30,
+                                            textStyle: {
+                                                color: '#fff'
+                                            },
+                                            inRange: {
+                                                colorLightness: [1, 0.5]
+                                            },
+                                            outOfRange: {
+                                                color: ['rgba(255,255,255,.2)']
+                                            },
+                                            controller: {
+                                                inRange: {
+                                                    color: ['#fe5d4e']
+                                                },
+                                                outOfRange: {
+                                                    color: ['#444']
+                                                }
+                                            }
+                                        }
+                                    ],
+                                    series: visualizationData.series
+                                };
+                                chartScatter.setOption(ScatterOption,true);
+
+                                break;
+                            default:
+                                break;
+                        }
+
+
+                    }
+                }
+            });
+        }
+    });
+}
 

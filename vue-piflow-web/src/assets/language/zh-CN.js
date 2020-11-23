@@ -10,6 +10,7 @@ module.exports = {
         data_source: "数据源",
         schedule: '流水线调度',
         stopHub: '自定义组件',
+        sparkJar: "Spark Jar包",
         example: "样例",
         admin: "高级",
     },

@@ -109,6 +109,12 @@ export default {
           name: "StopHub"
         },
         {
+          btnName: this.$t("sidebar.sparkJar"),
+          icoName: "md-cog",
+          router: "SparkJar",
+          name: "SparkJar"
+        },
+        {
           btnName: this.$t("sidebar.example"),
           icoName: "md-cube",
           children: [
