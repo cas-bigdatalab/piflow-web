@@ -42,4 +42,6 @@ public class StopsPropertyVo implements Serializable {
     private Boolean isLocked = false;
 
     private String example;
+
+    private String language;
 }

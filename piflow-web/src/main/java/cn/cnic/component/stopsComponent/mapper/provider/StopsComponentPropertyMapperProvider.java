@@ -28,6 +28,7 @@ public class StopsComponentPropertyMapperProvider {
     private Integer sensitive;
     private Long propertySort;
     private String example;
+    private String language;
     private String stopsTemplateId;
 
     private void preventSQLInjectionStopsComponentProperty(StopsComponentProperty stopsComponentProperty) {
@@ -60,6 +61,7 @@ public class StopsComponentPropertyMapperProvider {
             this.sensitive = (null == stopsComponentProperty.getSensitive() ? 0 : (stopsComponentProperty.getSensitive() ? 1 : 0));
             this.propertySort = (null != stopsComponentProperty.getPropertySort() ? stopsComponentProperty.getPropertySort() : 0L);
             this.example = SqlUtils.preventSQLInjection(stopsComponentProperty.getExample());
+            this.language = SqlUtils.preventSQLInjection(stopsComponentProperty.getLanguage());
             this.stopsTemplateId = SqlUtils.preventSQLInjection(stopsComponentProperty.getStopsTemplate());
         }
     }
@@ -81,6 +83,7 @@ public class StopsComponentPropertyMapperProvider {
         this.sensitive = null;
         this.propertySort = 0L;
         this.example = null;
+        this.language = null;
         this.stopsTemplateId = null;
     }
 
@@ -128,6 +131,7 @@ public class StopsComponentPropertyMapperProvider {
                     "property_sensitive",
                     "property_sort",
                     "example",
+                    "language",
                     "fk_stops_id"
             );
             StringBuffer sqlValuesStr = new StringBuffer();
@@ -160,6 +164,7 @@ public class StopsComponentPropertyMapperProvider {
                     sqlValuesStr.append(sensitive + ",");
                     sqlValuesStr.append(propertySort + ",");
                     sqlValuesStr.append(example + ",");
+                    sqlValuesStr.append(language + ",");
                     sqlValuesStr.append(stopsTemplateId);
                     sqlValuesStr.append(")");
                     if (i < stopsComponentPropertyList.size() - 1) {

@@ -19,5 +19,6 @@ public class ThirdStopsComponentPropertyVo implements Serializable {
     private String required;
     private boolean sensitive;
     private String example;
+    private String language;
 
 }
