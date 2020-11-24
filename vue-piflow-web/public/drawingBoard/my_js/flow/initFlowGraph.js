@@ -632,7 +632,7 @@ function queryStopsProperty(stopPageId, loadId) {
                                 property_value_obj.setAttribute('class', 'form-control');
                                 property_value_obj.setAttribute('id', '' + propertyVo_id + '');
                                 property_value_obj.setAttribute('name', '' + propertyVo_name + '');
-                                property_value_obj.setAttribute('onclick', 'openUpdateStopsProperty(this,false,null)');
+                                property_value_obj.setAttribute('onclick', 'openUpdateStopsProperty(this,false,"'+ propertyVo.language +'" )');
                                 property_value_obj.setAttribute('locked', propertyVo_isLocked);
                                 property_value_obj.setAttribute('data', propertyVo_customValue);
                                 property_value_obj.setAttribute('readonly', 'readonly');
@@ -1581,7 +1581,7 @@ function updateStopsName() {
 }
 
 //update stops property
-function openUpdateStopsProperty(e, isCustomized) {
+function openUpdateStopsProperty(e, isCustomized, language) {
     var stopOpenTemplateClone = $("#stopOpenTemplate").clone();
     stopOpenTemplateClone.find("#stopValue").attr("id", "stopAttributesValue");
     stopOpenTemplateClone.find("#buttonStop").attr("id", "stopAttributesValueBtn");
@@ -1621,17 +1621,17 @@ function openUpdateStopsProperty(e, isCustomized) {
     //     area: ['22vw;', '250px'], //Width Height
     //     content: stopOpenTemplateClone.html()
     // });
-    openRightHelpPage(value,id);
+    openRightHelpPage(value,id,language);
     $("#stopValue").focus();
     $("#stopAttributesValue").focus();
     if ($("#stopAttributesValue").text()) {
         $("#stopAttributesValue")[0].selectionStart = $("#stopAttributesValue").text().length;
     }
 }
-var openRightHelpPage = function(value,id){
+var openRightHelpPage = function(value,id,language){
     // 判断页面是否加载完毕
     if(document.readyState === 'complete') {
-        window.parent['openRightHelpPage'](value,id);
+        window.parent['openRightHelpPage'](value,id,language);
     }
 }
 //update stops property select
@@ -1702,7 +1702,7 @@ function setCustomizedTableHtml(stopPageId, stopsCustomizedPropertyVo, stopOutPo
             + 'id="' + stopsCustomizedPropertyVo.id + '"'
             + 'name="' + stopsCustomizedPropertyVo.name + '" '
             + 'value="' + stopsCustomizedPropertyVo.customValue + '" '
-            + 'onclick="openUpdateStopsProperty(this,true,null)"readonly="readonly" value=""style="background: rgb(245, 245, 245);">'
+            + 'onclick="openUpdateStopsProperty(this,true)"readonly="readonly" value=""style="background: rgb(245, 245, 245);">'
             + '</td>'
             + '<td>'
             + '<span style="color:red">*</span>'

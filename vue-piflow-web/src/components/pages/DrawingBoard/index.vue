@@ -11,11 +11,11 @@
         :mask-closable="false">
       <div :style="{ height :`${Programming}`}">
         <RadioGroup size="small" v-model="buttonSize" type="button">
-          <Radio label="text">text</Radio>
-          <Radio label="scala">scala</Radio>
-          <Radio label="javascript">java</Radio>
-          <Radio label="python">python</Radio>
-          <Radio label="sh">shell</Radio>
+          <Radio label="text" :disabled="buttonSize === 'text'?false:true">text</Radio>
+          <Radio label="scala" :disabled="buttonSize === 'scala'?false:true">scala</Radio>
+          <Radio label="javascript" :disabled="buttonSize === 'javascript'?false:true">java</Radio>
+          <Radio label="python" :disabled="buttonSize === 'python'?false:true">python</Radio>
+          <Radio label="sh" :disabled="buttonSize === 'sh'?false:true">shell</Radio>
         </RadioGroup>
         <code-editor ref="_firstRefs" class="editor h-100" v-model="editorContent"
                      :readonly="readonly" :language="buttonSize" theme="dracula">
@@ -41,7 +41,6 @@ export default {
       modal8: false,
       buttonSize: 'text',
       stopsId: '',
-      // oldVal: ''
     };
   },
   created() {
@@ -96,13 +95,30 @@ export default {
       //}
     }, false);
     //  接收可视化编程data
-    window["openRightHelpPage"] = (val,id) => {
+    window["openRightHelpPage"] = (val,id,language) => {
       _this.Programming = window.innerHeight > 300 ? window.innerHeight - window.innerHeight*0.3 +'px' : window.innerHeight +'px' ;
       _this.modal8 = true;
-      // _this.editorContent = _this.oldVal !=='' ?_this.oldVal : val;
       _this.editorContent = val;
-      // _this.oldVal = '';
       _this.stopsId = id;
+      switch (language){
+        case 'Text':
+          _this.buttonSize = 'text';
+          break;
+        case 'Scala':
+          _this.buttonSize = 'scala';
+          break;
+        case 'Javascript':
+          _this.buttonSize = 'javascript';
+          break;
+        case 'Python':
+          _this.buttonSize = 'python';
+          break;
+        case 'Shell':
+          _this.buttonSize = 'sh';
+          break;
+        default:
+          break;
+      }
     };
   },
   watch:{
@@ -185,7 +201,6 @@ export default {
               document.getElementById("bariframe").contentWindow.document.getElementById(`${this.stopsId}`).value = dataMap.value;
               document.getElementById("bariframe").contentWindow.document.getElementById(`${this.stopsId}`).setAttribute('data',`${dataMap.value}`)
 
-              // this.oldVal = dataMap.value;
               // console.log(document.frames('bariframe').document)
               // $("#" + stopsPropertyId).val(dataMap.value);
               // $("#" + stopsPropertyId).attr("data", dataMap.value);
