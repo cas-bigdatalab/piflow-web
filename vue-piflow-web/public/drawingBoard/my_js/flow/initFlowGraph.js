@@ -1621,17 +1621,17 @@ function openUpdateStopsProperty(e, isCustomized, language) {
     //     area: ['22vw;', '250px'], //Width Height
     //     content: stopOpenTemplateClone.html()
     // });
-    openRightHelpPage(value,id,language);
+    openRightHelpPage(value,id,language,name);
     $("#stopValue").focus();
     $("#stopAttributesValue").focus();
     if ($("#stopAttributesValue").text()) {
         $("#stopAttributesValue")[0].selectionStart = $("#stopAttributesValue").text().length;
     }
 }
-var openRightHelpPage = function(value,id,language){
+var openRightHelpPage = function(value,id,language,name){
     // 判断页面是否加载完毕
     if(document.readyState === 'complete') {
-        window.parent['openRightHelpPage'](value,id,language);
+        window.parent['openRightHelpPage'](value,id,language,name);
     }
 }
 //update stops property select

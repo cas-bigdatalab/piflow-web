@@ -4,8 +4,8 @@
     <img id="piflow-bgc" src="../../../assets/img/hbbj.jpg" />
     <!--在线编程-->
     <Modal
-        title="Title"
-        v-model="modal8"
+        :title="programming_Title"
+        v-model="programming_Modal"
         width="60"
         @on-ok="updateStopsProperty"
         :mask-closable="false">
@@ -38,9 +38,10 @@ export default {
       parentsId: '',
       editorContent:'',
       readonly: false,
-      modal8: false,
+      programming_Modal: false,
       buttonSize: 'text',
       stopsId: '',
+      programming_Title: 'Title',
     };
   },
   created() {
@@ -95,11 +96,12 @@ export default {
       //}
     }, false);
     //  接收可视化编程data
-    window["openRightHelpPage"] = (val,id,language) => {
+    window["openRightHelpPage"] = (val,id,language,name) => {
       _this.Programming = window.innerHeight > 300 ? window.innerHeight - window.innerHeight*0.3 +'px' : window.innerHeight +'px' ;
-      _this.modal8 = true;
+      _this.programming_Modal = true;
       _this.editorContent = val;
       _this.stopsId = id;
+      _this.programming_Title = name;
       switch (language){
         case 'Text':
           _this.buttonSize = 'text';
