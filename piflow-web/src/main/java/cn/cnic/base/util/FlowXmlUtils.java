@@ -422,189 +422,225 @@ public class FlowXmlUtils {
      */
     public static String flowAndStopInfoToXml(Flow flow, String xmlStr) {
         // Spell xml note must write spaces
-        if (null != flow) {
-            StringBuffer xmlStrSb = new StringBuffer();
-            String id = StringCustomUtils.replaceSpecialSymbolsXml(flow.getId());
-            String name = StringCustomUtils.replaceSpecialSymbolsXml(flow.getName());
-            String description = StringCustomUtils.replaceSpecialSymbolsXml(flow.getDescription());
-            String driverMemory = StringCustomUtils.replaceSpecialSymbolsXml(flow.getDriverMemory());
-            String executorCores = StringCustomUtils.replaceSpecialSymbolsXml(flow.getExecutorCores());
-            String executorMemory = StringCustomUtils.replaceSpecialSymbolsXml(flow.getExecutorMemory());
-            String executorNumber = StringCustomUtils.replaceSpecialSymbolsXml(flow.getExecutorNumber());
-            String flowPageId = StringCustomUtils.replaceSpecialSymbolsXml(flow.getPageId());
-            xmlStrSb.append("<flow ");
-            if (StringUtils.isNotBlank(id)) {
-                xmlStrSb.append(spliceStr("id", id));
+        if (null == flow) {
+            return null;
+        }
+        StringBuffer xmlStrSb = new StringBuffer();
+        String id = StringCustomUtils.replaceSpecialSymbolsXml(flow.getId());
+        String name = StringCustomUtils.replaceSpecialSymbolsXml(flow.getName());
+        String description = StringCustomUtils.replaceSpecialSymbolsXml(flow.getDescription());
+        String driverMemory = StringCustomUtils.replaceSpecialSymbolsXml(flow.getDriverMemory());
+        String executorCores = StringCustomUtils.replaceSpecialSymbolsXml(flow.getExecutorCores());
+        String executorMemory = StringCustomUtils.replaceSpecialSymbolsXml(flow.getExecutorMemory());
+        String executorNumber = StringCustomUtils.replaceSpecialSymbolsXml(flow.getExecutorNumber());
+        String flowPageId = StringCustomUtils.replaceSpecialSymbolsXml(flow.getPageId());
+        xmlStrSb.append("<flow ");
+        if (StringUtils.isNotBlank(id)) {
+            xmlStrSb.append(spliceStr("id", id));
+        }
+        if (StringUtils.isNotBlank(name)) {
+            xmlStrSb.append(spliceStr("name", name));
+        }
+        if (StringUtils.isNotBlank(description)) {
+            xmlStrSb.append(spliceStr("description", description));
+        }
+        if (StringUtils.isNotBlank(driverMemory)) {
+            xmlStrSb.append(spliceStr("driverMemory", driverMemory));
+        }
+        if (StringUtils.isNotBlank(executorCores)) {
+            xmlStrSb.append(spliceStr("executorCores", executorCores));
+        }
+        if (StringUtils.isNotBlank(executorMemory)) {
+            xmlStrSb.append(spliceStr("executorMemory", executorMemory));
+        }
+        if (StringUtils.isNotBlank(executorNumber)) {
+            xmlStrSb.append(spliceStr("executorNumber", executorNumber));
+        }
+        if (StringUtils.isNotBlank(flowPageId)) {
+            xmlStrSb.append(spliceStr("pageId", flowPageId));
+        }
+        xmlStrSb.append("> \n");
+        List<Stops> stopsList = flow.getStopsList();
+        if (null != stopsList && stopsList.size() > 0) {
+            for (Stops stops : stopsList) {
+                String stopId = StringCustomUtils.replaceSpecialSymbolsXml(stops.getId());
+                String pageId = StringCustomUtils.replaceSpecialSymbolsXml(stops.getPageId());
+                String stopName = StringCustomUtils.replaceSpecialSymbolsXml(stops.getName());
+                String bundel = StringCustomUtils.replaceSpecialSymbolsXml(stops.getBundel());
+                String stopDescription = StringCustomUtils.replaceSpecialSymbolsXml(stops.getDescription());
+                Boolean checkpoint = stops.getIsCheckpoint();
+                Boolean isCustomized = stops.getIsCustomized();
+                String inports = StringCustomUtils.replaceSpecialSymbolsXml(stops.getInports());
+                PortType inPortType = stops.getInPortType();
+                String outports = StringCustomUtils.replaceSpecialSymbolsXml(stops.getOutports());
+                PortType outPortType = stops.getOutPortType();
+                String owner = StringCustomUtils.replaceSpecialSymbolsXml(stops.getOwner());
+                String groups = StringCustomUtils.replaceSpecialSymbolsXml(stops.getGroups());
+                String crtUser = StringCustomUtils.replaceSpecialSymbolsXml(stops.getCrtUser());
+
+                xmlStrSb.append("<stop ");
+                if (StringUtils.isNotBlank(stopId)) {
+                    xmlStrSb.append(spliceStr("id", stopId));
+                }
+                if (StringUtils.isNotBlank(pageId)) {
+                    xmlStrSb.append(spliceStr("pageId", pageId));
+                }
+                if (StringUtils.isNotBlank(stopName)) {
+                    xmlStrSb.append(spliceStr("name", stopName));
+                }
+                if (StringUtils.isNotBlank(bundel)) {
+                    xmlStrSb.append(spliceStr("bundel", bundel));
+                }
+                if (StringUtils.isNotBlank(stopDescription)) {
+                    xmlStrSb.append(spliceStr("description", stopDescription));
+                }
+                if (null != checkpoint) {
+                    xmlStrSb.append(spliceStr("isCheckpoint", (checkpoint ? 1 : 0)));
+                }
+                if (null != isCustomized) {
+                    xmlStrSb.append(spliceStr("isCustomized", (isCustomized ? 1 : 0)));
+                }
+                if (StringUtils.isNotBlank(inports)) {
+                    xmlStrSb.append(spliceStr("inports", inports));
+                }
+
+                if (StringUtils.isNotBlank(outports)) {
+                    xmlStrSb.append(spliceStr("outports", outports));
+                }
+                if (StringUtils.isNotBlank(owner)) {
+                    xmlStrSb.append(spliceStr("owner", owner));
+                }
+                if (null != inPortType) {
+                    xmlStrSb.append(spliceStr("inPortType", inPortType));
+                }
+                if (null != outPortType) {
+                    xmlStrSb.append(spliceStr("outPortType", outPortType));
+                }
+                if (StringUtils.isNotBlank(groups)) {
+                    xmlStrSb.append(spliceStr("groups", groups));
+                }
+                if (StringUtils.isNotBlank(crtUser)) {
+                    xmlStrSb.append(spliceStr("crtUser", crtUser));
+                }
+                String stopsEnd = "/> \n";
+                List<Property> propertyList = stops.getProperties();
+                if (null != propertyList && propertyList.size() > 0) {
+                    xmlStrSb.append("> \n");
+                    stopsEnd = "</stop> \n";
+                    for (Property property : propertyList) {
+                        xmlStrSb.append("<property ");
+                        String propertyId = StringCustomUtils.replaceSpecialSymbolsXml(property.getId());
+                        String displayName = StringCustomUtils.replaceSpecialSymbolsXml(property.getDisplayName());
+                        String propertyName = StringCustomUtils.replaceSpecialSymbolsXml(property.getName());
+                        String customValue = StringCustomUtils.replaceSpecialSymbolsXml(property.getCustomValue());
+                        String propertyDescription = StringCustomUtils.replaceSpecialSymbolsXml(property.getDescription());
+                        String allowableValues = StringCustomUtils.replaceSpecialSymbolsXml(property.getAllowableValues());
+                        boolean required = property.getRequired();
+                        boolean sensitive = property.getSensitive();
+                        boolean isSelect = property.getIsSelect();
+                        String propertyVocrtUser = StringCustomUtils.replaceSpecialSymbolsXml(property.getCrtUser());
+                        if (StringUtils.isNotBlank(propertyId)) {
+                            xmlStrSb.append(spliceStr("id", id));
+                        }
+                        if (StringUtils.isNotBlank(displayName)) {
+                            xmlStrSb.append(spliceStr("displayName", displayName));
+                        }
+                        if (StringUtils.isNotBlank(propertyName)) {
+                            xmlStrSb.append(spliceStr("name", propertyName));
+                        }
+                        if (StringUtils.isNotBlank(propertyDescription)) {
+                            xmlStrSb.append(spliceStr("description", propertyDescription));
+                        }
+                        if (StringUtils.isNotBlank(allowableValues)) {
+                            xmlStrSb.append(spliceStr("allowableValues", allowableValues.replaceAll("\"", "")));
+                        }
+                        if (StringUtils.isNotBlank(customValue)) {
+                            xmlStrSb.append(spliceStr("customValue", customValue));
+                        }
+                        if (StringUtils.isNotBlank(propertyVocrtUser)) {
+                            xmlStrSb.append(spliceStr("crtUser", propertyVocrtUser));
+                        }
+                        xmlStrSb.append(spliceStr("required", required));
+                        xmlStrSb.append(spliceStr("sensitive", sensitive));
+                        xmlStrSb.append(spliceStr("isSelect", isSelect));
+                        xmlStrSb.append("/> \n");
+                    }
+                }
+                List<CustomizedProperty> customizedPropertyList = stops.getCustomizedPropertyList();
+                if (null != customizedPropertyList && customizedPropertyList.size() > 0) {
+                    if ("/> \n".equals(stopsEnd)) {
+                        xmlStrSb.append("> \n");
+                        stopsEnd = "</stop> \n";
+                    }
+                    for (CustomizedProperty customizedProperty : customizedPropertyList) {
+                        xmlStrSb.append("<customizedProperty ");
+                        String customizedId = StringCustomUtils.replaceSpecialSymbolsXml(customizedProperty.getId());
+                        String customizedName = StringCustomUtils.replaceSpecialSymbolsXml(customizedProperty.getName());
+                        String customizedValue = StringCustomUtils.replaceSpecialSymbolsXml(customizedProperty.getCustomValue());
+                        String propertyDescription = StringCustomUtils.replaceSpecialSymbolsXml(customizedProperty.getDescription());
+                        String propertyVocrtUser = StringCustomUtils.replaceSpecialSymbolsXml(customizedProperty.getCrtUser());
+                        if (StringUtils.isNotBlank(customizedId)) {
+                            xmlStrSb.append(spliceStr("id", id));
+                        }
+                        if (StringUtils.isNotBlank(customizedName)) {
+                            xmlStrSb.append(spliceStr("name", customizedName));
+                        }
+                        if (StringUtils.isNotBlank(propertyDescription)) {
+                            xmlStrSb.append(spliceStr("description", propertyDescription));
+                        }
+                        if (StringUtils.isNotBlank(customizedValue)) {
+                            xmlStrSb.append(spliceStr("customValue", customizedValue));
+                        }
+                        if (StringUtils.isNotBlank(propertyVocrtUser)) {
+                            xmlStrSb.append(spliceStr("crtUser", propertyVocrtUser));
+                        }
+                        xmlStrSb.append("/> \n");
+                    }
+                }
+                xmlStrSb.append(stopsEnd);
             }
-            if (StringUtils.isNotBlank(name)) {
-                xmlStrSb.append(spliceStr("name", name));
-            }
-            if (StringUtils.isNotBlank(description)) {
-                xmlStrSb.append(spliceStr("description", description));
-            }
-            if (StringUtils.isNotBlank(driverMemory)) {
-                xmlStrSb.append(spliceStr("driverMemory", driverMemory));
-            }
-            if (StringUtils.isNotBlank(executorCores)) {
-                xmlStrSb.append(spliceStr("executorCores", executorCores));
-            }
-            if (StringUtils.isNotBlank(executorMemory)) {
-                xmlStrSb.append(spliceStr("executorMemory", executorMemory));
-            }
-            if (StringUtils.isNotBlank(executorNumber)) {
-                xmlStrSb.append(spliceStr("executorNumber", executorNumber));
-            }
-            if (StringUtils.isNotBlank(flowPageId)) {
-                xmlStrSb.append(spliceStr("pageId", flowPageId));
-            }
-            xmlStrSb.append("> \n");
-            List<Stops> stopsVoList = flow.getStopsList();
-            if (null != stopsVoList && stopsVoList.size() > 0) {
-                for (Stops stopVo : stopsVoList) {
-                    String stopId = StringCustomUtils.replaceSpecialSymbolsXml(stopVo.getId());
-                    String pageId = StringCustomUtils.replaceSpecialSymbolsXml(stopVo.getPageId());
-                    String stopName = StringCustomUtils.replaceSpecialSymbolsXml(stopVo.getName());
-                    String bundel = StringCustomUtils.replaceSpecialSymbolsXml(stopVo.getBundel());
-                    String stopDescription = StringCustomUtils.replaceSpecialSymbolsXml(stopVo.getDescription());
-                    Boolean checkpoint = stopVo.getIsCheckpoint();
-                    String inports = StringCustomUtils.replaceSpecialSymbolsXml(stopVo.getInports());
-                    PortType inPortType = stopVo.getInPortType();
-                    String outports = StringCustomUtils.replaceSpecialSymbolsXml(stopVo.getOutports());
-                    PortType outPortType = stopVo.getOutPortType();
-                    String owner = StringCustomUtils.replaceSpecialSymbolsXml(stopVo.getOwner());
-                    String groups = StringCustomUtils.replaceSpecialSymbolsXml(stopVo.getGroups());
-                    String crtUser = StringCustomUtils.replaceSpecialSymbolsXml(stopVo.getCrtUser());
-                    xmlStrSb.append("<stop ");
-                    if (StringUtils.isNotBlank(stopId)) {
-                        xmlStrSb.append(spliceStr("id", stopId));
+            List<Paths> pathsList = flow.getPathsList();
+            if (null != pathsList && pathsList.size() > 0) {
+                for (Paths paths : pathsList) {
+                    xmlStrSb.append("<paths ");
+                    String crtUser = StringCustomUtils.replaceSpecialSymbolsXml(paths.getCrtUser());
+                    String from = StringCustomUtils.replaceSpecialSymbolsXml(paths.getFrom());
+                    String to = StringCustomUtils.replaceSpecialSymbolsXml(paths.getTo());
+                    String inport = StringCustomUtils.replaceSpecialSymbolsXml(paths.getInport());
+                    String outport = StringCustomUtils.replaceSpecialSymbolsXml(paths.getOutport());
+                    String pageId = StringCustomUtils.replaceSpecialSymbolsXml(paths.getPageId());
+                    String filterCondition = StringCustomUtils.replaceSpecialSymbolsXml(paths.getFilterCondition());
+                    if (StringUtils.isNotBlank(crtUser)) {
+                        xmlStrSb.append(spliceStr("crtUser", crtUser));
+                    }
+                    if (StringUtils.isNotBlank(from)) {
+                        xmlStrSb.append(spliceStr("from", from));
+                    }
+                    if (StringUtils.isNotBlank(to)) {
+                        xmlStrSb.append(spliceStr("to", to));
+                    }
+                    if (StringUtils.isNotBlank(inport)) {
+                        xmlStrSb.append(spliceStr("inport", inport));
+                    }
+                    if (StringUtils.isNotBlank(outport)) {
+                        xmlStrSb.append(spliceStr("outport", outport));
                     }
                     if (StringUtils.isNotBlank(pageId)) {
                         xmlStrSb.append(spliceStr("pageId", pageId));
                     }
-                    if (StringUtils.isNotBlank(stopName)) {
-                        xmlStrSb.append(spliceStr("name", stopName));
+                    if (StringUtils.isNotBlank(filterCondition)) {
+                        xmlStrSb.append(spliceStr("filterCondition", filterCondition));
                     }
-                    if (StringUtils.isNotBlank(bundel)) {
-                        xmlStrSb.append(spliceStr("bundel", bundel));
-                    }
-                    if (StringUtils.isNotBlank(stopDescription)) {
-                        xmlStrSb.append(spliceStr("description", stopDescription));
-                    }
-                    if (null != checkpoint) {
-                        xmlStrSb.append(spliceStr("isCheckpoint", (checkpoint ? 1 : 0)));
-                    }
-                    if (StringUtils.isNotBlank(inports)) {
-                        xmlStrSb.append(spliceStr("inports", inports));
-                    }
-
-                    if (StringUtils.isNotBlank(outports)) {
-                        xmlStrSb.append(spliceStr("outports", outports));
-                    }
-                    if (StringUtils.isNotBlank(owner)) {
-                        xmlStrSb.append(spliceStr("owner", owner));
-                    }
-                    if (null != inPortType) {
-                        xmlStrSb.append(spliceStr("inPortType", inPortType));
-                    }
-                    if (null != outPortType) {
-                        xmlStrSb.append(spliceStr("outPortType", outPortType));
-                    }
-                    if (StringUtils.isNotBlank(groups)) {
-                        xmlStrSb.append(spliceStr("groups", groups));
-                    }
-                    if (StringUtils.isNotBlank(crtUser)) {
-                        xmlStrSb.append(spliceStr("crtUser", crtUser));
-                    }
-                    List<Property> property = stopVo.getProperties();
-                    if (null != property && property.size() > 0) {
-                        xmlStrSb.append("> \n");
-                        for (Property propertyVo : property) {
-                            xmlStrSb.append("<property ");
-                            String propertyId = StringCustomUtils.replaceSpecialSymbolsXml(propertyVo.getId());
-                            String displayName = StringCustomUtils.replaceSpecialSymbolsXml(propertyVo.getDisplayName());
-                            String propertyName = StringCustomUtils.replaceSpecialSymbolsXml(propertyVo.getName());
-                            String customValue = StringCustomUtils.replaceSpecialSymbolsXml(propertyVo.getCustomValue());
-                            String propertyDescription = StringCustomUtils.replaceSpecialSymbolsXml(propertyVo.getDescription());
-                            String allowableValues = StringCustomUtils.replaceSpecialSymbolsXml(propertyVo.getAllowableValues());
-                            boolean required = propertyVo.getRequired();
-                            boolean sensitive = propertyVo.getSensitive();
-                            boolean isSelect = propertyVo.getIsSelect();
-                            String propertyVocrtUser = StringCustomUtils.replaceSpecialSymbolsXml(propertyVo.getCrtUser());
-                            if (StringUtils.isNotBlank(propertyId)) {
-                                xmlStrSb.append(spliceStr("id", id));
-                            }
-                            if (StringUtils.isNotBlank(displayName)) {
-                                xmlStrSb.append(spliceStr("displayName", displayName));
-                            }
-                            if (StringUtils.isNotBlank(propertyName)) {
-                                xmlStrSb.append(spliceStr("name", propertyName));
-                            }
-                            if (StringUtils.isNotBlank(propertyDescription)) {
-                                xmlStrSb.append(spliceStr("description", propertyDescription));
-                            }
-                            if (StringUtils.isNotBlank(allowableValues)) {
-                                xmlStrSb.append(spliceStr("allowableValues", allowableValues.replaceAll("\"", "")));
-                            }
-                            if (StringUtils.isNotBlank(customValue)) {
-                                xmlStrSb.append(spliceStr("customValue", customValue));
-                            }
-                            if (StringUtils.isNotBlank(propertyVocrtUser)) {
-                                xmlStrSb.append(spliceStr("crtUser", propertyVocrtUser));
-                            }
-                            xmlStrSb.append(spliceStr("required", required));
-                            xmlStrSb.append(spliceStr("sensitive", sensitive));
-                            xmlStrSb.append(spliceStr("isSelect", isSelect));
-                            xmlStrSb.append("/> \n");
-                        }
-                        xmlStrSb.append("</stop> \n");
-                    } else {
-                        xmlStrSb.append("/> \n");
-                    }
+                    xmlStrSb.append(" /> \n");
                 }
-                List<Paths> pathsList = flow.getPathsList();
-                if (null != pathsList && pathsList.size() > 0) {
-                    for (Paths paths : pathsList) {
-                        xmlStrSb.append("<paths ");
-                        String crtUser = StringCustomUtils.replaceSpecialSymbolsXml(paths.getCrtUser());
-                        String from = StringCustomUtils.replaceSpecialSymbolsXml(paths.getFrom());
-                        String to = StringCustomUtils.replaceSpecialSymbolsXml(paths.getTo());
-                        String inport = StringCustomUtils.replaceSpecialSymbolsXml(paths.getInport());
-                        String outport = StringCustomUtils.replaceSpecialSymbolsXml(paths.getOutport());
-                        String pageId = StringCustomUtils.replaceSpecialSymbolsXml(paths.getPageId());
-                        String filterCondition = StringCustomUtils.replaceSpecialSymbolsXml(paths.getFilterCondition());
-                        if (StringUtils.isNotBlank(crtUser)) {
-                            xmlStrSb.append(spliceStr("crtUser", crtUser));
-                        }
-                        if (StringUtils.isNotBlank(from)) {
-                            xmlStrSb.append(spliceStr("from", from));
-                        }
-                        if (StringUtils.isNotBlank(to)) {
-                            xmlStrSb.append(spliceStr("to", to));
-                        }
-                        if (StringUtils.isNotBlank(inport)) {
-                            xmlStrSb.append(spliceStr("inport", inport));
-                        }
-                        if (StringUtils.isNotBlank(outport)) {
-                            xmlStrSb.append(spliceStr("outport", outport));
-                        }
-                        if (StringUtils.isNotBlank(pageId)) {
-                            xmlStrSb.append(spliceStr("pageId", pageId));
-                        }
-                        if (StringUtils.isNotBlank(filterCondition)) {
-                            xmlStrSb.append(spliceStr("filterCondition", filterCondition));
-                        }
-                        xmlStrSb.append(" /> \n");
-                    }
-                }
+            }
 
-            }
-            if (StringUtils.isNoneBlank(xmlStr)) {
-                xmlStrSb.append(xmlStr);
-            }
-            xmlStrSb.append("</flow>");
-            return new String(xmlStrSb);
         }
-        return null;
+        if (StringUtils.isNoneBlank(xmlStr)) {
+            xmlStrSb.append(xmlStr);
+        }
+        xmlStrSb.append("</flow>");
+        return new String(xmlStrSb);
     }
 
     /**
@@ -1475,7 +1511,7 @@ public class FlowXmlUtils {
      * @return Flow
      */
     @SuppressWarnings("unchecked")
-	public static Map<String, Object> flowTemplateXmlToFlow(String templateXml, String username, String stopMaxPageId, String flowMaxPageId, String[] stopNames) {
+    public static Map<String, Object> flowTemplateXmlToFlow(String templateXml, String username, String stopMaxPageId, String flowMaxPageId, String[] stopNames) {
         if (StringUtils.isBlank(templateXml)) {
             return ReturnMapUtils.setFailedMsg("templateXml is null");
         }
@@ -1571,6 +1607,7 @@ public class FlowXmlUtils {
             String outPortType = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("outPortType"));
             String outports = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("outports"));
             String isCheckpoint = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("isCheckpoint"));
+            String isCustomizedStr = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("isCustomized"));
             String owner = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("owner"));
             String groups = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("groups"));
             stops.setCrtDttm(new Date());
@@ -1581,14 +1618,16 @@ public class FlowXmlUtils {
             stops.setName(name);
             stops.setDescription(description);
             stops.setBundel(bundel);
-            stops.setId(id);
+            //stops.setId(id);
             stops.setInports(inports);
             stops.setOutports(outports);
             stops.setOutPortType(PortType.selectGender(outPortType));
             stops.setInPortType(PortType.selectGenderByValue(inPortType));
             stops.setGroups(groups);
             Boolean Checkpoint = "1".equals(isCheckpoint);
+            Boolean isCustomized = "1".equals(isCustomizedStr);
             stops.setIsCheckpoint(Checkpoint);
+            stops.setIsCustomized(isCustomized);
             stops.setOwner(owner);
             Iterator propertyXmlIterator = stopElement.elementIterator("property");
             if (null != propertyXmlIterator) {
@@ -1630,7 +1669,7 @@ public class FlowXmlUtils {
                     property.setCustomValue(customValue);
                     property.setDescription(propertyDescription);
                     property.setDisplayName(displayName);
-                    property.setId(propertyId);
+                    //property.setId(propertyId);
                     property.setName(propertyName);
                     property.setRequired(required);
                     property.setSensitive(sensitive);
@@ -1639,6 +1678,29 @@ public class FlowXmlUtils {
                     propertyList.add(property);
                 }
                 stops.setProperties(propertyList);
+            }
+            Iterator customizedPropertyXmlIterator = stopElement.elementIterator("customizedProperty");
+            if (null != customizedPropertyXmlIterator) {
+                List<CustomizedProperty> customizedPropertyList = new ArrayList<>();
+                while (customizedPropertyXmlIterator.hasNext()) {
+                    Element customizedPropertyValue = (Element) customizedPropertyXmlIterator.next();
+                    CustomizedProperty customizedProperty = new CustomizedProperty();
+                    String customValue = StringCustomUtils.recoverSpecialSymbolsXml(customizedPropertyValue.attributeValue("customValue"));
+                    String propertyDescription = StringCustomUtils.recoverSpecialSymbolsXml(customizedPropertyValue.attributeValue("description"));
+                    String propertyId = StringCustomUtils.recoverSpecialSymbolsXml(customizedPropertyValue.attributeValue("id"));
+                    String propertyName = StringCustomUtils.recoverSpecialSymbolsXml(customizedPropertyValue.attributeValue("name"));
+                    customizedProperty.setCrtDttm(new Date());
+                    customizedProperty.setCrtUser(username);
+                    customizedProperty.setLastUpdateDttm(new Date());
+                    customizedProperty.setLastUpdateUser(username);
+                    customizedProperty.setCustomValue(customValue);
+                    customizedProperty.setDescription(propertyDescription);
+                    //customizedProperty.setId(propertyId);
+                    customizedProperty.setName(propertyName);
+                    customizedProperty.setStops(stops);
+                    customizedPropertyList.add(customizedProperty);
+                }
+                stops.setCustomizedPropertyList(customizedPropertyList);
             }
             return stops;
         } catch (Exception e) {
