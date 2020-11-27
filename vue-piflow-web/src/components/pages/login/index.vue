@@ -560,14 +560,8 @@ export default {
       }
     },
     keyDown(e){
-      //如果是回车则执行登录方法
       if(e.keyCode === 13 || e.keyCode === 100){
-        if (this.isLogin){
-          this.handleLogin();
-        }
-        else{
-          this.handleRegister();
-        }
+        this.isLogin?this.handleLogin():this.handleRegister();
       }
     }
   },
