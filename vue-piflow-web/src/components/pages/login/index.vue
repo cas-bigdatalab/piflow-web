@@ -278,6 +278,7 @@ export default {
   },
   mounted() {
     this.$Message.destroy();
+    window.addEventListener('keydown',this.keyDown);
   },
   methods: {
     onChange() {
@@ -557,7 +558,21 @@ export default {
       } else {
         this.$Message.destroy();
       }
+    },
+    keyDown(e){
+      //如果是回车则执行登录方法
+      if(e.keyCode === 13 || e.keyCode === 100){
+        if (this.isLogin){
+          this.handleLogin();
+        }
+        else{
+          this.handleRegister();
+        }
+      }
     }
+  },
+  destroyed() {
+    window.removeEventListener('keydown',this.keyDown,false);
   }
 };
 </script>
