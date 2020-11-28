@@ -94,7 +94,12 @@
       <div class="modal-warp">
         <div class="item">
           <label>{{$t('group_columns.group_name')}}：</label>
-          <Input v-model="name" :placeholder="$t('modal.placeholder')" style="width: 350px" />
+          <Input
+              v-model="name"
+              show-word-limit
+              maxlength="100"
+              :placeholder="$t('modal.placeholder')"
+              style="width: 350px" />
         </div>
         <!-- <div class="item">
           <label>{{$t('modal.driverMemory')}}：</label>

@@ -85,16 +85,28 @@
       <div class="modal-warp">
         <div class="item">
           <label>{{$t('admin_columns.jobName')}}：</label>
-          <Input v-model="jobName" :placeholder="$t('modal.placeholder')" style="width: 350px" />
+          <Input
+              v-model="jobName"
+              show-word-limit
+              maxlength="100"
+              :placeholder="$t('modal.placeholder')"
+              style="width: 350px" />
         </div>
         <div class="item">
           <label>{{$t('admin_columns.jobClass')}}：</label>
-          <Input v-model="jobClass" :placeholder="$t('modal.placeholder')" style="width: 350px" />
+          <Input
+              v-model="jobClass"
+              show-word-limit
+              maxlength="100"
+              :placeholder="$t('modal.placeholder')"
+              style="width: 350px" />
         </div>
         <div class="item">
           <label>{{$t('admin_columns.cronExpression')}}：</label>
           <Input
             v-model="cronExpression"
+            show-word-limit
+            maxlength="100"
             :placeholder="$t('modal.placeholder')"
             style="width: 350px"
           />

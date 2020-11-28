@@ -95,38 +95,51 @@
       <div class="modal-warp">
         <div class="item">
           <label>{{$t('flow_columns.flow_name')}}：</label>
-          <Input v-model="name" :placeholder="$t('modal.placeholder')" style="width: 350px" />
+          <Input
+              show-word-limit
+              maxlength="100"
+              v-model="name"
+              :placeholder="$t('modal.placeholder')"
+              style="width: 350px" />
         </div>
         <div class="item">
           <label>{{$t('flow_columns.driverMemory')}}：</label>
           <Input
-            v-model="driverMemory"
-            :placeholder="$t('modal.placeholder')"
-            style="width: 350px"
+              show-word-limit
+              maxlength="100"
+              v-model="driverMemory"
+              :placeholder="$t('modal.placeholder')"
+              style="width: 350px"
           />
         </div>
         <div class="item">
           <label>{{$t('flow_columns.executorNumber')}}：</label>
           <Input
-            v-model="executorNumber"
-            :placeholder="$t('modal.placeholder')"
-            style="width: 350px"
+              show-word-limit
+              maxlength="100"
+              v-model="executorNumber"
+              :placeholder="$t('modal.placeholder')"
+              style="width: 350px"
           />
         </div>
         <div class="item">
           <label>{{$t('flow_columns.executorMemory')}}：</label>
           <Input
-            v-model="executorMemory"
-            :placeholder="$t('modal.placeholder')"
-            style="width: 350px"
+              show-word-limit
+              maxlength="100"
+              v-model="executorMemory"
+              :placeholder="$t('modal.placeholder')"
+              style="width: 350px"
           />
         </div>
         <div class="item">
           <label>{{$t('flow_columns.executorCores')}}：</label>
           <Input
-            v-model="executorCores"
-            :placeholder="$t('modal.placeholder')"
-            style="width: 350px"
+              show-word-limit
+              maxlength="100"
+              v-model="executorCores"
+              :placeholder="$t('modal.placeholder')"
+              style="width: 350px"
           />
         </div>
         <div class="item">

@@ -100,7 +100,12 @@
         </div>
         <div class="item">
           <label>{{$t('dataSource_columns.dataSource_name')}}：</label>
-          <Input v-model="name" :placeholder="$t('modal.placeholder')" style="width: 350px" />
+          <Input
+              v-model="name"
+              show-word-limit
+              maxlength="100"
+              :placeholder="$t('modal.placeholder')"
+              style="width: 350px" />
         </div>
         <div class="item">
           <label class="self">{{$t('dataSource_columns.description')}}：</label>
@@ -118,13 +123,17 @@
             <li v-for="(item,m) in dataSourcePropertyVoList" :key="'ve'+m">
               <Input
                 v-model="item.name"
+                show-word-limit
+                maxlength="100"
                 :placeholder="$t('modal.placeholder')"
-                style="width: 80px"
+                style="width: 100px"
               />
               <Input
                 v-model="item.value"
+                show-word-limit
+                maxlength="100"
                 :placeholder="$t('modal.placeholder')"
-                style="width: 200px"
+                style="width: 180px"
               />
               <Icon
                 @click="handleRemove(m,dataSourcePropertyVoList.length===1)"
@@ -143,6 +152,8 @@
             <label class="self">{{item.name}}：</label>
             <Input
               v-model="item.value"
+              :show-word-limit="item.name === 'url' ? false : true"
+              maxlength="100"
               :placeholder="$t('modal.placeholder')"
               style="width: 350px"
             />
