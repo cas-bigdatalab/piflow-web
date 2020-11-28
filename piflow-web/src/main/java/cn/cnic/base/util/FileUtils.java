@@ -319,13 +319,15 @@ public class FileUtils {
             int len;
 
             while ((len = inStream.read(b)) > 0) {
-                IOUtils.write(b, response.getOutputStream());
+                response.getOutputStream().write(b, 0, len);
+                //IOUtils.write(b, response.getOutputStream());
             }
             inStream.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 
     /**
      * Delete folder (force delete)
