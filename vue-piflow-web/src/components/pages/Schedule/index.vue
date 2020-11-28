@@ -85,7 +85,12 @@
                         </Select>
                     </FormItem>
                     <FormItem :label="$t('schedule_columns.cron')" prop="cron">
-                        <Input v-model="formValidate.cron" :placeholder="$t('modal.placeholder')" style="width: 350px" />
+                        <Input
+                            v-model="formValidate.cron"
+                            show-word-limit
+                            maxlength="100"
+                            :placeholder="$t('modal.placeholder')"
+                            style="width: 350px" />
                     </FormItem>
                     <FormItem class="form-content" :label="$t('schedule_columns.startDate')">
                         <Row>
