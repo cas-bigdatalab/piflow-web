@@ -30,6 +30,7 @@ public class StringCustomUtils {
             translation = translation.replace(">", EXCLUSIVE_STR + "&gt;" + EXCLUSIVE_STR);
             translation = translation.replace("'", EXCLUSIVE_STR + "&apos;" + EXCLUSIVE_STR);
             translation = translation.replace("\"", EXCLUSIVE_STR + "&quot;" + EXCLUSIVE_STR);
+            translation = translation.replace("\n", EXCLUSIVE_STR + "&quot;n" + EXCLUSIVE_STR);
             return translation;
         }
         return sourceStr;
@@ -44,6 +45,7 @@ public class StringCustomUtils {
             translation = translation.replace(EXCLUSIVE_STR + "&apos;" + EXCLUSIVE_STR, "'");
             translation = translation.replace(EXCLUSIVE_STR + "&quot;" + EXCLUSIVE_STR, "\"");
             translation = translation.replace(EXCLUSIVE_STR + "^_^" + EXCLUSIVE_STR, EXCLUSIVE_STR);
+            translation = translation.replace(EXCLUSIVE_STR + "&quot;n" + EXCLUSIVE_STR, "\n");
             return translation;
         }
         return sourceStr;
