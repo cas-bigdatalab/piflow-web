@@ -1,7 +1,7 @@
 
 -- create table
 CREATE TABLE IF NOT EXISTS `GROUP_SCHEDULE` (
-  `ID` VARCHAR(40) NOT NULL,
+  `ID` VARCHAR(40) PRIMARY KEY NOT NULL,
   `CRT_DTTM` DATETIME(0) NOT NULL COMMENT 'Create date time',
   `CRT_USER` VARCHAR(255) NOT NULL COMMENT 'Create user',
   `ENABLE_FLAG` BIT(1) NOT NULL COMMENT 'Enable flag',
@@ -16,10 +16,10 @@ CREATE TABLE IF NOT EXISTS `GROUP_SCHEDULE` (
   `SCHEDULE_RUN_TEMPLATE_ID` VARCHAR ( 255 ) COMMENT 'Start template ID',
   `STATUS` VARCHAR ( 255 ) COMMENT 'schedule task status',
   `TYPE` VARCHAR ( 255 ) COMMENT 'schedule content Flow or FlowGroup',
-  PRIMARY KEY ( ID )) ENGINE = INNODB;
+);
 
 CREATE TABLE IF NOT EXISTS `STOPS_HUB` (
-  `ID` VARCHAR(40) NOT NULL,
+  `ID` VARCHAR(40) PRIMARY KEY NOT NULL,
   `CRT_DTTM` DATETIME(0) NOT NULL COMMENT 'Create date time',
   `CRT_USER` VARCHAR(255) NOT NULL COMMENT 'Create user',
   `ENABLE_FLAG` BIT(1) NOT NULL COMMENT 'Enable flag',
@@ -29,8 +29,8 @@ CREATE TABLE IF NOT EXISTS `STOPS_HUB` (
   `JAR_NAME` VARCHAR(1000) COMMENT 'jar name',
   `JAR_URL` VARCHAR(1000) COMMENT 'jar url',
   `MOUNT_ID` VARCHAR(1000) COMMENT 'jar mount id',
-  `STATUS` VARCHAR(255) COMMENT 'StopsHue status',
-  primary key (ID)) engine=InnoDB;
+  `STATUS` VARCHAR(255) COMMENT 'StopsHue status'
+);
 
 -- rename table
 ALTER  TABLE flow_sotps_groups RENAME TO flow_stops_groups;
