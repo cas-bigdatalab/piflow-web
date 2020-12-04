@@ -117,11 +117,11 @@
         font-size: 14px;
     }
     .center{
-        position: fixed;
-        top: 40%;
-        left: 0;
-        right: 0;
-        padding: 0 20px;
+      position: fixed;
+      top: 45%;
+      left: 0;
+      right: 0;
+      padding: 0 10%;
     }
     .bootPage{
         height: 100vh;

@@ -453,40 +453,27 @@ export default {
       //   });
       // }
       else {
-        this.$Message.loading({
-          content: "注册中，请稍后...",
-          duration: 0
-        });
-        let data = {
-          username: this.username,
-          pw: this.password,
-          name: this.name,
-        };
         this.$axios
-                .post("/register", this.$qs.stringify(data))
-                .then(res => {
-                  if (res.data.code == 200) {
-                    this.$Message.success('registration success！');
-                    this.onChange();
-                  }else if(res.data.code == 500){
-                    if (res.data.errorMsg == 'save failed'){
-                      this.$Modal.error({
-                        title: this.$t("tip.title"),
-                        content: this.$t("tip.existed"),
-                        onOk:()=>{
-                          this.handleReset();
-                        }
-                      });
-                    }
-                  } else {
-                    this.$Message.error({
-                      content: res.data.message
-                    });
-                  }
-                })
-                .catch(function(error) {
-                  console.log(error);
+            .post("/checkUserName", this.$qs.stringify({'userName':this.username}))
+            .then(res => {
+              if (res.data.code == 200) {
+                this.registered();
+              }else if(res.data.code == 500){
+                this.$Modal.error({
+                  title: this.$t("tip.title"),
+                  content: res.data.errorMsg
                 });
+              } else {
+                this.$Message.error({
+                  content: res.data.errorMsg
+                });
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+
+
         // API.getRegister(data, res => {
         //   this.$Message.destroy();
         //   if (res.data.code == 200) {
@@ -507,6 +494,42 @@ export default {
         //   }
         // });
       }
+    },
+    registered(){
+      this.$Message.loading({
+        content: "注册中，请稍后...",
+        duration: 0
+      });
+      let data = {
+        username: this.username,
+        pw: this.password,
+        name: this.name,
+      };
+      this.$axios
+          .post("/register", this.$qs.stringify(data))
+          .then(res => {
+            if (res.data.code == 200) {
+              this.$Message.success('registration success！');
+              this.onChange();
+            }else if(res.data.code == 500){
+              if (res.data.errorMsg == 'save failed'){
+                this.$Modal.error({
+                  title: this.$t("tip.title"),
+                  content: this.$t("tip.existed"),
+                  onOk:()=>{
+                    this.handleReset();
+                  }
+                });
+              }
+            } else {
+              this.$Message.error({
+                content: res.data.message
+              });
+            }
+          })
+          .catch(function(error) {
+            console.log(error);
+          });
     },
     rEphone(val) {
       let reg = new RegExp(
