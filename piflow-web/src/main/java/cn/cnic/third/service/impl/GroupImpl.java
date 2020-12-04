@@ -1,5 +1,6 @@
 package cn.cnic.third.service.impl;
 
+import cn.cnic.base.util.FileUtils;
 import com.alibaba.fastjson.JSON;
 import cn.cnic.base.util.HttpUtils;
 import cn.cnic.base.util.LoggerUtil;
@@ -43,6 +44,11 @@ public class GroupImpl implements IGroup {
         // String formatJson = JsonFormatTool.formatJson(json);
         String formatJson = ProcessUtils.processGroupToJson(processGroup, runModeType);
         logger.info("\n" + formatJson);
+        //===============================临时===============================
+        //String path = FileUtils.createJsonFile(formatJson, processGroup.getName(), SysParamsCache.VIDEOS_PATH);
+        //logger.info(path);
+        //String doPost = HttpUtils.doPost(SysParamsCache.getFlowGroupStartUrl(), path, null);
+        //===============================临时===============================
         String doPost = HttpUtils.doPost(SysParamsCache.getFlowGroupStartUrl(), formatJson, null);
         logger.info("Return information：" + doPost);
         if (StringUtils.isBlank(doPost) || doPost.contains("Exception")) {

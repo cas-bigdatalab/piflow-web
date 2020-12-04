@@ -44,7 +44,7 @@ public class SysUserServiceImpl implements ISysUserService {
 
 
     private final AuthenticationManager authenticationManager;
-	private final UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
     private final JwtUtils jwtTokenUtil;
 
     @Value("${jwt.tokenHead}")
@@ -125,6 +125,10 @@ public class SysUserServiceImpl implements ISysUserService {
         // Determine if it is empty
         if (StringUtils.isAllEmpty(username, password)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Registration failed, username or password is empty");
+        }
+        String addUser = sysUserDomain.checkUsername(username);
+        if (StringUtils.isNotBlank(addUser)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Username is already taken");
         }
         //Encrypted password
         password = new BCryptPasswordEncoder().encode(password);
