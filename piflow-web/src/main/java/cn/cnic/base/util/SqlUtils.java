@@ -30,7 +30,7 @@ public class SqlUtils {
      */
     public static String replaceString(String str) {
         if (null != str) {
-            str = str.replace("'", "''");
+            str = str.replace("'", "''").replace("\\","\\\\");
         }
         return str;
     }
@@ -111,7 +111,7 @@ public class SqlUtils {
     public static String preventSQLInjection(String str) {
         String sqlStr = "null";
         if (null != str) {
-            String replace = str.replace("'", "''");
+            String replace = str.replace("'", "''").replace("\\","\\\\");
             sqlStr = "'" + replace + "'";
         }
         return sqlStr;
