@@ -398,6 +398,18 @@ function replaceImageHead(str, end) {
             }
         }
     }
+    loadDate = loadDate.replace(new RegExp("/img/flow_01_128x128.png","g"),"/img/task/task.png");
+    loadDate = loadDate.replace(new RegExp("/img/flow_02_128x128.png","g"),"/img/task/task1.png");
+    loadDate = loadDate.replace(new RegExp("/img/flow_03_128x128.png","g"),"/img/task/task2.png");
+    loadDate = loadDate.replace(new RegExp("/img/flow_04_128x128.png","g"),"/img/task/task3.png");
+    loadDate = loadDate.replace(new RegExp("/img/flow_05_128x128.png","g"),"/img/task/task4.png");
+    loadDate = loadDate.replace(new RegExp("/img/flow_06_128x128.png","g"),"/img/task/task5.png");
+    loadDate = loadDate.replace(new RegExp("/img/flow_07_128x128.png","g"),"/img/task/task6.png");
+    loadDate = loadDate.replace(new RegExp("/img/flow_08_128x128.png","g"),"/img/task/task7.png");
+    loadDate = loadDate.replace(new RegExp("/img/flow_09_128x128.png","g"),"/img/task/task8.png");
+    loadDate = loadDate.replace(new RegExp("/img/flow_10_128x128.png","g"),"/img/task/task.png");
+    loadDate = loadDate.replace(new RegExp("/img/flow_11_128x128.png","g"),"/img/task/task1.png");
+    loadDate = loadDate.replace(new RegExp("/img/flow_12_128x128.png","g"),"/img/task/task2.png");
     return loadDate;
 }
 
