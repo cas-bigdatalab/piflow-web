@@ -89,7 +89,6 @@ public class ProcessTransaction {
         int addProcessStopPropertyCounts = 0;
         List<ProcessStop> processStopList = process.getProcessStopList();
         if (null != processStopList && processStopList.size() > 0) {
-            addProcessStopCounts = processStopMapper.addProcessStopList(processStopList);
             for (ProcessStop processStop : processStopList) {
                 processStop.setProcess(process);
                 String processStopId = processStop.getId();
