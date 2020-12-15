@@ -833,4 +833,32 @@ public class StopsServiceImpl implements IStopsService {
         return JsonUtils.toJsonNoException(rtnMap);
     }
 
+    /**
+     * isNeedSource
+     *
+     * @param username
+     * @param isAdmin
+     * @param stopsId
+     * @return
+     */
+    public String isNeedSource(String username, boolean isAdmin, String stopsId) {
+        // Get current user
+        if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
+        }
+        // Determine if StopId is empty, if it is, then return, otherwise continue
+        if (StringUtils.isBlank(stopsId)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("fill failed,stopId is null");
+        }
+        // Query Stops by "stopId"
+        Stops stopsById = stopsMapper.getStopsById(stopsId);
+        if (null == stopsById) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("fill failed,Cannot find Stops with id " + stopsId);
+        }
+        if (PortType.NONE == stopsById.getInPortType()) {
+            return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("isNeedSource", false);
+        }
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("isNeedSource", true);
+    }
+
 }

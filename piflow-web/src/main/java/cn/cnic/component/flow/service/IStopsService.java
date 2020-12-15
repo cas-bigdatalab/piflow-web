@@ -68,4 +68,14 @@ public interface IStopsService {
      */
     public String fillDatasource(String username, String dataSourceId, String stopId);
 
+    /**
+     * isNeedSource
+     *
+     * @param username
+     * @param isAdmin
+     * @param stopsId
+     * @return
+     */
+    public String isNeedSource(String username, boolean isAdmin, String stopsId);
+
 }
