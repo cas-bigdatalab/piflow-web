@@ -3,17 +3,15 @@ package cn.cnic.controller;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
-import cn.cnic.base.vo.UserVo;
-import cn.cnic.common.Eunm.DrawingBoardType;
-import cn.cnic.component.flow.service.IFlowService;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.cnic.base.util.SessionUserUtil;
+import cn.cnic.common.Eunm.DrawingBoardType;
 import cn.cnic.component.flow.service.IFlowGroupService;
+import cn.cnic.component.flow.service.IFlowService;
 import cn.cnic.component.flow.vo.FlowGroupVo;
 
 @Controller

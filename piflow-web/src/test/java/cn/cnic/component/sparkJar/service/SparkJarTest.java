@@ -1,12 +1,11 @@
 package cn.cnic.component.sparkJar.service;
 
-import cn.cnic.ApplicationTests;
-import cn.cnic.component.stopsComponent.service.IStopsHubService;
-import cn.cnic.third.service.ISparkJar;
+import javax.annotation.Resource;
+
 import org.junit.Test;
 import org.springframework.test.annotation.Rollback;
 
-import javax.annotation.Resource;
+import cn.cnic.ApplicationTests;
 
 public class SparkJarTest extends ApplicationTests {
 

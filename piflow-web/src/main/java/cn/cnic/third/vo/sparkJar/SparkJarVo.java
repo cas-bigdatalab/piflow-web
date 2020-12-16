@@ -1,11 +1,9 @@
 package cn.cnic.third.vo.sparkJar;
 
-import cn.cnic.third.vo.stop.ThirdStopsComponentVo;
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.Setter;
-
-import java.io.Serializable;
-import java.util.List;
 
 @Getter
 @Setter

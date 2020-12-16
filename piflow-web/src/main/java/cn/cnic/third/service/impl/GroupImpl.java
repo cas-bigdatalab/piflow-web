@@ -1,15 +1,26 @@
 package cn.cnic.third.service.impl;
 
-import cn.cnic.base.util.FileUtils;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.transaction.Transactional;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+
 import com.alibaba.fastjson.JSON;
+
 import cn.cnic.base.util.HttpUtils;
 import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.base.util.ReturnMapUtils;
 import cn.cnic.common.Eunm.RunModeType;
 import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.component.process.entity.ProcessGroup;
-import cn.cnic.component.process.utils.ProcessUtils;
 import cn.cnic.component.process.jpa.domain.ProcessGroupDomain;
+import cn.cnic.component.process.utils.ProcessUtils;
 import cn.cnic.third.service.IGroup;
 import cn.cnic.third.utils.ThirdFlowGroupInfoResponseUtils;
 import cn.cnic.third.vo.flowGroup.ThirdFlowGroupInfoOutResponse;
@@ -17,15 +28,6 @@ import cn.cnic.third.vo.flowGroup.ThirdFlowGroupInfoResponse;
 import cn.cnic.third.vo.flowGroup.ThirdFlowInfoOutResponse;
 import cn.cnic.third.vo.flowGroup.ThirdFlowStopInfoOutResponse;
 import net.sf.json.JSONObject;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
-import javax.transaction.Transactional;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Component
 public class GroupImpl implements IGroup {

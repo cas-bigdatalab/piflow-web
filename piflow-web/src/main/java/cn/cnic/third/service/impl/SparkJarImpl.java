@@ -1,27 +1,23 @@
 package cn.cnic.third.service.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+
+import com.alibaba.fastjson.JSON;
+
 import cn.cnic.base.util.HttpUtils;
 import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.component.stopsComponent.mapper.StopsComponentGroupMapper;
 import cn.cnic.third.service.ISparkJar;
-import cn.cnic.third.service.IStop;
 import cn.cnic.third.vo.sparkJar.SparkJarVo;
-import cn.cnic.third.vo.stop.StopsHubVo;
-import cn.cnic.third.vo.stop.ThirdStopsComponentPropertyVo;
-import cn.cnic.third.vo.stop.ThirdStopsComponentVo;
-import com.alibaba.fastjson.JSON;
-import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Component
 public class SparkJarImpl implements ISparkJar {

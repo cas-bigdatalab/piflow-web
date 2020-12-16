@@ -1,14 +1,14 @@
 package cn.cnic.component.flow.mapper;
 
-import cn.cnic.ApplicationTests;
-import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.component.flow.entity.Paths;
-import cn.cnic.component.flow.mapper.PathsMapper;
+import java.util.List;
+
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
+import cn.cnic.ApplicationTests;
+import cn.cnic.base.util.LoggerUtil;
+import cn.cnic.component.flow.entity.Paths;
 
 public class PathsMapperTest extends ApplicationTests {
 

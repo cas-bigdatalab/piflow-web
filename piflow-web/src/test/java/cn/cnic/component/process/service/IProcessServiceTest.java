@@ -1,11 +1,11 @@
 package cn.cnic.component.process.service;
 
-import cn.cnic.ApplicationTests;
-import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.component.process.service.IProcessService;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import cn.cnic.ApplicationTests;
+import cn.cnic.base.util.LoggerUtil;
 
 public class IProcessServiceTest extends ApplicationTests {
 

@@ -1,14 +1,14 @@
 package cn.cnic.controller.system;
 
-import cn.cnic.base.util.SessionUserUtil;
-import cn.cnic.component.system.service.ISysScheduleService;
-import cn.cnic.component.system.vo.SysScheduleVo;
+import javax.annotation.Resource;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
+import cn.cnic.base.util.SessionUserUtil;
+import cn.cnic.component.system.service.ISysScheduleService;
+import cn.cnic.component.system.vo.SysScheduleVo;
 
 @Controller
 @RequestMapping("/sysSchedule")

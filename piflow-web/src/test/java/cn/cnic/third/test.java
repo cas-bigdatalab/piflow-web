@@ -1,14 +1,15 @@
 package cn.cnic.third;
 
-import cn.cnic.base.util.HttpUtils;
-import cn.cnic.base.util.LoggerUtil;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.slf4j.Logger;
 
-import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import cn.cnic.base.util.HttpUtils;
+import cn.cnic.base.util.LoggerUtil;
 
 public class test {
 

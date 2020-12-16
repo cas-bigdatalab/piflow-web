@@ -1,30 +1,33 @@
 package cn.cnic.third.service.impl;
 
-import cn.cnic.base.util.ReturnMapUtils;
-import com.alibaba.fastjson.JSON;
-import cn.cnic.base.util.HttpUtils;
-import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.common.Eunm.RunModeType;
-import cn.cnic.common.constant.SysParamsCache;
-import cn.cnic.component.process.entity.Process;
-import cn.cnic.component.process.utils.ProcessUtils;
-import cn.cnic.component.process.jpa.domain.ProcessDomain;
-import cn.cnic.component.process.mapper.ProcessMapper;
-import cn.cnic.third.service.IFlow;
-import cn.cnic.third.utils.ThirdFlowInfoVoUtils;
-import cn.cnic.third.vo.flow.ThirdProgressVo;
-import cn.cnic.third.vo.flow.ThirdFlowInfoStopsVo;
-import cn.cnic.third.vo.flow.ThirdFlowInfoVo;
-import cn.cnic.component.process.transaction.ProcessTransaction;
-import net.sf.json.JSONObject;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.Map;
+import com.alibaba.fastjson.JSON;
+
+import cn.cnic.base.util.HttpUtils;
+import cn.cnic.base.util.LoggerUtil;
+import cn.cnic.base.util.ReturnMapUtils;
+import cn.cnic.common.Eunm.RunModeType;
+import cn.cnic.common.constant.SysParamsCache;
+import cn.cnic.component.process.entity.Process;
+import cn.cnic.component.process.jpa.domain.ProcessDomain;
+import cn.cnic.component.process.mapper.ProcessMapper;
+import cn.cnic.component.process.transaction.ProcessTransaction;
+import cn.cnic.component.process.utils.ProcessUtils;
+import cn.cnic.third.service.IFlow;
+import cn.cnic.third.utils.ThirdFlowInfoVoUtils;
+import cn.cnic.third.vo.flow.ThirdFlowInfoStopsVo;
+import cn.cnic.third.vo.flow.ThirdFlowInfoVo;
+import cn.cnic.third.vo.flow.ThirdProgressVo;
+import net.sf.json.JSONObject;
 
 @Component
 public class FlowImpl implements IFlow {
@@ -51,7 +54,6 @@ public class FlowImpl implements IFlow {
         if (null == process) {
             return ReturnMapUtils.setFailedMsg("process is null");
         }
-        Map<String, Object> rtnMap = new HashMap<>();
         /*String json = ProcessUtil.processToJson(process, checkpoint, runModeType);
         String formatJson = JsonFormatTool.formatJson(json);*/
         String formatJson = ProcessUtils.processToJson(process, checkpoint, runModeType);

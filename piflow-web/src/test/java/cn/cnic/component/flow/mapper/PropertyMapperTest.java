@@ -1,21 +1,24 @@
 package cn.cnic.component.flow.mapper;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import cn.cnic.ApplicationTests;
 import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.base.util.UUIDUtils;
 import cn.cnic.component.flow.entity.Property;
 import cn.cnic.component.flow.entity.Stops;
 import cn.cnic.component.stopsComponent.mapper.StopsComponentMapper;
-import cn.cnic.component.stopsComponent.model.StopsComponentProperty;
 import cn.cnic.component.stopsComponent.model.StopsComponent;
-import cn.cnic.component.flow.mapper.PropertyMapper;
-import cn.cnic.component.flow.mapper.StopsMapper;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.*;
+import cn.cnic.component.stopsComponent.model.StopsComponentProperty;
 
 public class PropertyMapperTest extends ApplicationTests {
 

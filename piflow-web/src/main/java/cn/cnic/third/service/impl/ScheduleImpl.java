@@ -1,31 +1,30 @@
 package cn.cnic.third.service.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+
 import cn.cnic.base.util.DateUtils;
 import cn.cnic.base.util.HttpUtils;
 import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.base.util.ReturnMapUtils;
 import cn.cnic.common.Eunm.RunModeType;
 import cn.cnic.common.constant.SysParamsCache;
-import cn.cnic.component.flow.entity.Flow;
-import cn.cnic.component.flow.entity.FlowGroup;
 import cn.cnic.component.flow.mapper.FlowGroupMapper;
 import cn.cnic.component.flow.mapper.FlowMapper;
 import cn.cnic.component.process.entity.Process;
 import cn.cnic.component.process.entity.ProcessGroup;
-import cn.cnic.component.process.utils.ProcessGroupUtils;
 import cn.cnic.component.process.utils.ProcessUtils;
 import cn.cnic.component.schedule.entity.Schedule;
 import cn.cnic.third.service.ISchedule;
 import cn.cnic.third.vo.schedule.ThirdScheduleEntryVo;
 import cn.cnic.third.vo.schedule.ThirdScheduleVo;
 import net.sf.json.JSONObject;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.Map;
 
 @Component
 public class ScheduleImpl implements ISchedule {
@@ -85,7 +84,8 @@ public class ScheduleImpl implements ISchedule {
         // Also convert the json string to a json object, and then convert the json object to a java object, as shown below.
         JSONObject obj = JSONObject.fromObject(sendGetData).getJSONObject("schedule");// Convert a json string to a json object
         // Needed when there is a List in jsonObj
-        Map<String, Class> classMap = new HashMap<String, Class>();
+        @SuppressWarnings("rawtypes")
+		Map<String, Class> classMap = new HashMap<String, Class>();
         // Key is the name of the List in jsonObj, and the value is a generic class of list
         classMap.put("entryList", ThirdScheduleEntryVo.class);
         // Convert a json object to a java object

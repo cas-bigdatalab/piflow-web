@@ -1,16 +1,17 @@
 package cn.cnic.third;
 
+import java.util.List;
+import java.util.Map;
+
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import cn.cnic.ApplicationTests;
 import cn.cnic.base.util.HttpUtils;
 import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.third.service.IStop;
 import cn.cnic.third.vo.stop.ThirdStopsComponentVo;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
-import java.util.Map;
 
 
 public class IStopTest extends ApplicationTests {
@@ -49,7 +50,7 @@ public class IStopTest extends ApplicationTests {
 
     @Test
     public void testGetStopInfo() {
-        String bundle1 = "cn.piflow.bundle.mongodb.GetMongo";
+        //String bundle1 = "cn.piflow.bundle.mongodb.GetMongo";
         String bundle = "cn.piflow.bundle.visualization.LineChart";
         ThirdStopsComponentVo thirdStopsComponentVo = stopImpl.getStopInfo(bundle);
         if (null != thirdStopsComponentVo) {

@@ -9,7 +9,6 @@ import cn.cnic.ApplicationTests;
 import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.base.util.UUIDUtils;
 import cn.cnic.component.flow.entity.Flow;
-import cn.cnic.component.flow.service.IFlowService;
 
 public class FlowServiceTest extends ApplicationTests {
 

@@ -1,18 +1,12 @@
 package cn.cnic.component.mxGraph.service;
 
-import cn.cnic.ApplicationTests;
-import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.base.util.UUIDUtils;
-import cn.cnic.component.mxGraph.entity.MxCell;
-import cn.cnic.component.mxGraph.entity.MxGeometry;
-import cn.cnic.component.mxGraph.mapper.MxCellMapper;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback;
 
-import java.util.Date;
-import java.util.List;
+import cn.cnic.ApplicationTests;
+import cn.cnic.base.util.LoggerUtil;
+import cn.cnic.component.mxGraph.entity.MxCell;
 
 public class IMxCellServiceTest extends ApplicationTests {
 
