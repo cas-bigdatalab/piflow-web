@@ -283,8 +283,8 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
             }
         }
         MxGraphModel mxGraphModelByFlowId = mxGraphModelMapper.getMxGraphModelByFlowId(flowId);
-        String xmlData = MxGraphUtils.mxGraphModelToMxGraphXml(mxGraphModelByFlowId);
-        return ReturnMapUtils.setSucceededCustomParam("xmlData",xmlData);
+        String xmlData = MxGraphUtils.mxGraphModelToMxGraph(false, mxGraphModelByFlowId);
+        return ReturnMapUtils.setSucceededCustomParam("xmlData", xmlData);
 
     }
 

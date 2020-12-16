@@ -9,8 +9,6 @@ import java.util.List;
 
 /**
  * Use JPA to define users. Implement the UserDetails interface, the user entity is the user used by springSecurity.
- *
- * @author Nature
  */
 
 @Getter

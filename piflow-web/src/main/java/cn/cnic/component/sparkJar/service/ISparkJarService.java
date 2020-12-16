@@ -1,11 +1,7 @@
 package cn.cnic.component.sparkJar.service;
 
 
-import cn.cnic.component.flow.vo.StopsVo;
-import cn.cnic.third.vo.flow.ThirdFlowInfoStopVo;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 public interface ISparkJarService {
 

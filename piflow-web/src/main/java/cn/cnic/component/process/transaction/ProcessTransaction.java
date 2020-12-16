@@ -4,9 +4,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import cn.cnic.base.util.UUIDUtils;
-import cn.cnic.component.mxGraph.entity.MxGraphModel;
-import cn.cnic.component.mxGraph.transaction.MxGraphModelTransaction;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -15,6 +12,9 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.cnic.base.util.LoggerUtil;
+import cn.cnic.base.util.UUIDUtils;
+import cn.cnic.component.mxGraph.entity.MxGraphModel;
+import cn.cnic.component.mxGraph.transaction.MxGraphModelTransaction;
 import cn.cnic.component.process.entity.Process;
 import cn.cnic.component.process.entity.ProcessPath;
 import cn.cnic.component.process.entity.ProcessStop;
@@ -236,8 +236,6 @@ public class ProcessTransaction {
             logger.warn("appId id is null");
             return null;
         }
-        int affectedLine = 0;
-
         Process processByAppId = processMapper.getProcessByAppId(appId);
         if (null == processByAppId) {
             logger.warn("data is null");
@@ -257,8 +255,6 @@ public class ProcessTransaction {
             logger.warn("appId id is null");
             return null;
         }
-        int affectedLine = 0;
-
         String processId = processMapper.getProcessIdByAppId(appId);
         if (null == processId) {
             logger.warn("data is null");
@@ -278,8 +274,6 @@ public class ProcessTransaction {
             logger.warn("id is null");
             return null;
         }
-        int affectedLine = 0;
-
         Process processById = processMapper.getProcessById(username, isAdmin, id);
         if (null == processById) {
             logger.warn("data is null");

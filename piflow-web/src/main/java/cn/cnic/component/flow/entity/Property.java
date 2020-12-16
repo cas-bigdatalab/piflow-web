@@ -9,8 +9,6 @@ import javax.persistence.*;
 
 /**
  * stop property
- *
- * @author Nature
  */
 @Getter
 @Setter

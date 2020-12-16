@@ -11,8 +11,6 @@ import java.util.List;
 
 /**
  * Group name table
- *
- * @author Nature
  */
 @Setter
 @Getter

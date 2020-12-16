@@ -242,7 +242,7 @@ public class StopsServiceImpl implements IStopsService {
         Map<String, Object> rtnMap = new HashMap<>();
         if (null != mxGraphModel) {
             // Convert the mxGraphModel from the query to XML
-            String loadXml = MxGraphUtils.mxGraphModelToMxGraphXml(mxGraphModel);
+            String loadXml = MxGraphUtils.mxGraphModelToMxGraph(false, mxGraphModel);
             loadXml = StringUtils.isNotBlank(loadXml) ? loadXml : "";
             rtnMap.put("XmlData", loadXml);
         }

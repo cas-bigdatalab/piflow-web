@@ -14,8 +14,6 @@ import java.util.List;
 
 /**
  * Stop component table
- *
- * @author Nature
  */
 @Setter
 @Getter

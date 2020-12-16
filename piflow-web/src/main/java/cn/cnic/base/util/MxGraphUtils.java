@@ -233,26 +233,27 @@ public class MxGraphUtils {
      * "MxGraphModel" to string "xml"
      *
      * @param mxGraphModel mxGraphModel
+     * @param isSaveXml    isSaveXml
      * @return String
      */
-    public static String mxGraphModelToMxGraphXml(MxGraphModel mxGraphModel) {
+    public static String mxGraphModelToMxGraph(boolean isSaveXml, MxGraphModel mxGraphModel) {
         //Fight 'xml' note must write spaces
         if (null != mxGraphModel) {
             StringBuffer xmlStrSb = new StringBuffer();
-            String dx = StringCustomUtils.replaceSpecialSymbolsPage(mxGraphModel.getDx());
-            String dy = StringCustomUtils.replaceSpecialSymbolsPage(mxGraphModel.getDy());
-            String grid = StringCustomUtils.replaceSpecialSymbolsPage(mxGraphModel.getGrid());
-            String gridSize = StringCustomUtils.replaceSpecialSymbolsPage(mxGraphModel.getGridSize());
-            String guides = StringCustomUtils.replaceSpecialSymbolsPage(mxGraphModel.getGuides());
-            String tooltips = StringCustomUtils.replaceSpecialSymbolsPage(mxGraphModel.getTooltips());
-            String connect = StringCustomUtils.replaceSpecialSymbolsPage(mxGraphModel.getConnect());
-            String arrows = StringCustomUtils.replaceSpecialSymbolsPage(mxGraphModel.getArrows());
-            String fold = StringCustomUtils.replaceSpecialSymbolsPage(mxGraphModel.getFold());
-            String page = StringCustomUtils.replaceSpecialSymbolsPage(mxGraphModel.getPage());
-            String pageScale = StringCustomUtils.replaceSpecialSymbolsPage(mxGraphModel.getPageScale());
-            String pageWidth = StringCustomUtils.replaceSpecialSymbolsPage(mxGraphModel.getPageWidth());
-            String pageHeight = StringCustomUtils.replaceSpecialSymbolsPage(mxGraphModel.getPageHeight());
-            String background = StringCustomUtils.replaceSpecialSymbolsPage(mxGraphModel.getBackground());
+            String dx = StringCustomUtils.replaceSpecialSymbols(mxGraphModel.getDx(), isSaveXml);
+            String dy = StringCustomUtils.replaceSpecialSymbols(mxGraphModel.getDy(), isSaveXml);
+            String grid = StringCustomUtils.replaceSpecialSymbols(mxGraphModel.getGrid(), isSaveXml);
+            String gridSize = StringCustomUtils.replaceSpecialSymbols(mxGraphModel.getGridSize(), isSaveXml);
+            String guides = StringCustomUtils.replaceSpecialSymbols(mxGraphModel.getGuides(), isSaveXml);
+            String tooltips = StringCustomUtils.replaceSpecialSymbols(mxGraphModel.getTooltips(), isSaveXml);
+            String connect = StringCustomUtils.replaceSpecialSymbols(mxGraphModel.getConnect(), isSaveXml);
+            String arrows = StringCustomUtils.replaceSpecialSymbols(mxGraphModel.getArrows(), isSaveXml);
+            String fold = StringCustomUtils.replaceSpecialSymbols(mxGraphModel.getFold(), isSaveXml);
+            String page = StringCustomUtils.replaceSpecialSymbols(mxGraphModel.getPage(), isSaveXml);
+            String pageScale = StringCustomUtils.replaceSpecialSymbols(mxGraphModel.getPageScale(), isSaveXml);
+            String pageWidth = StringCustomUtils.replaceSpecialSymbols(mxGraphModel.getPageWidth(), isSaveXml);
+            String pageHeight = StringCustomUtils.replaceSpecialSymbols(mxGraphModel.getPageHeight(), isSaveXml);
+            String background = StringCustomUtils.replaceSpecialSymbols(mxGraphModel.getBackground(), isSaveXml);
             xmlStrSb.append("<mxGraphModel ");
             if (StringUtils.isNotBlank(dx)) {
                 xmlStrSb.append(spliceStr("dx", dx));
@@ -301,14 +302,14 @@ public class MxGraphUtils {
             Map<String, String> mxCellPageIds = new HashMap<>();
             if (null != rootList && rootList.size() > 0) {
                 for (MxCell mxCell : rootList) {
-                    String id = StringCustomUtils.replaceSpecialSymbolsPage(mxCell.getPageId());
-                    String parent = StringCustomUtils.replaceSpecialSymbolsPage(mxCell.getParent());
-                    String style = StringCustomUtils.replaceSpecialSymbolsPage(mxCell.getStyle());
-                    String value = StringCustomUtils.replaceSpecialSymbolsPage(mxCell.getValue());
-                    String vertex = StringCustomUtils.replaceSpecialSymbolsPage(mxCell.getVertex());
-                    String edge = StringCustomUtils.replaceSpecialSymbolsPage(mxCell.getEdge());
-                    String source = StringCustomUtils.replaceSpecialSymbolsPage(mxCell.getSource());
-                    String target = StringCustomUtils.replaceSpecialSymbolsPage(mxCell.getTarget());
+                    String id = StringCustomUtils.replaceSpecialSymbols(mxCell.getPageId(), isSaveXml);
+                    String parent = StringCustomUtils.replaceSpecialSymbols(mxCell.getParent(), isSaveXml);
+                    String style = StringCustomUtils.replaceSpecialSymbols(mxCell.getStyle(), isSaveXml);
+                    String value = StringCustomUtils.replaceSpecialSymbols(mxCell.getValue(), isSaveXml);
+                    String vertex = StringCustomUtils.replaceSpecialSymbols(mxCell.getVertex(), isSaveXml);
+                    String edge = StringCustomUtils.replaceSpecialSymbols(mxCell.getEdge(), isSaveXml);
+                    String source = StringCustomUtils.replaceSpecialSymbols(mxCell.getSource(), isSaveXml);
+                    String target = StringCustomUtils.replaceSpecialSymbols(mxCell.getTarget(), isSaveXml);
                     if (StringUtils.isBlank(id)) {
                         continue;
                     }
@@ -342,12 +343,12 @@ public class MxGraphUtils {
                     }
                     MxGeometry mxGeometry = mxCell.getMxGeometry();
                     if (null != mxGeometry) {
-                        String relative = StringCustomUtils.replaceSpecialSymbolsPage(mxGeometry.getRelative());
-                        String as = StringCustomUtils.replaceSpecialSymbolsPage(mxGeometry.getAs());
-                        String x = StringCustomUtils.replaceSpecialSymbolsPage(mxGeometry.getX());
-                        String y = StringCustomUtils.replaceSpecialSymbolsPage(mxGeometry.getY());
-                        String width = StringCustomUtils.replaceSpecialSymbolsPage(mxGeometry.getWidth());
-                        String height = StringCustomUtils.replaceSpecialSymbolsPage(mxGeometry.getHeight());
+                        String relative = StringCustomUtils.replaceSpecialSymbols(mxGeometry.getRelative(), isSaveXml);
+                        String as = StringCustomUtils.replaceSpecialSymbols(mxGeometry.getAs(), isSaveXml);
+                        String x = StringCustomUtils.replaceSpecialSymbols(mxGeometry.getX(), isSaveXml);
+                        String y = StringCustomUtils.replaceSpecialSymbols(mxGeometry.getY(), isSaveXml);
+                        String width = StringCustomUtils.replaceSpecialSymbols(mxGeometry.getWidth(), isSaveXml);
+                        String height = StringCustomUtils.replaceSpecialSymbols(mxGeometry.getHeight(), isSaveXml);
                         xmlStrSb.append("><mxGeometry ");
                         if (StringUtils.isNotBlank(x)) {
                             xmlStrSb.append(spliceStr("x", x));
@@ -380,7 +381,6 @@ public class MxGraphUtils {
         }
         return null;
     }
-
 
 
     public static TemplateType determineTemplateType(String xmlTemplateStr) {

@@ -185,7 +185,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
         List<ThirdStopsComponentVo> stops = stopsHubVo.getStops();
         for (ThirdStopsComponentVo s : stops) {
             StopsComponent stopsComponent = stopsComponentMapper.getStopsComponentByBundle(s.getBundle());
-            int result = stopsComponentTransactional.deleteStopsComponent(stopsComponent);
+            stopsComponentTransactional.deleteStopsComponent(stopsComponent);
         }
 
         return ReturnMapUtils.setSucceededMsgRtnJsonStr("Mount successful");

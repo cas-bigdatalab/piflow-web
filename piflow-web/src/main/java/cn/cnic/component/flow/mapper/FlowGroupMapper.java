@@ -39,5 +39,5 @@ public interface FlowGroupMapper {
     String getFlowGroupIdByPageId(@Param("fid") String fid, @Param("pageId") String pageId);
 
     @Select("select MAX(page_id+0) from flow_group where enable_flag = 1 and fk_flow_group_id = #{flowGroupId} ")
-    public String getMaxFlowGroupPageIdByFlowGroupId(@Param("flowGroupId") String flowGroupId);
+    public Integer getMaxFlowGroupPageIdByFlowGroupId(@Param("flowGroupId") String flowGroupId);
 }

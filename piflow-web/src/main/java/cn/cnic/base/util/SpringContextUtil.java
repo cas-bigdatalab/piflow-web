@@ -1,7 +1,10 @@
 package cn.cnic.base.util;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
 
+@Component
 public class SpringContextUtil {
 
     private static ApplicationContext applicationContext;
@@ -12,6 +15,7 @@ public class SpringContextUtil {
     }
 
     //Set context
+    @Autowired
     public static void setApplicationContext(ApplicationContext applicationContext) {
         SpringContextUtil.applicationContext = applicationContext;
     }

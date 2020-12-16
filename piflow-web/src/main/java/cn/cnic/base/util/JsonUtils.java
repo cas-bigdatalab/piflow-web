@@ -17,8 +17,6 @@ import java.util.TimeZone;
 
 /**
  * Json utils
- *
- * @author Administrator
  */
 @SuppressWarnings("deprecation")
 public class JsonUtils {
@@ -142,7 +140,6 @@ public class JsonUtils {
      * <p>
      * Then find the date get method on your POJO
      *
-     * @author godfox
      * @JsonSerialize(using = CustomDateSerializer.class) public Date getCreateAt()
      * { return createAt; }
      * <p>

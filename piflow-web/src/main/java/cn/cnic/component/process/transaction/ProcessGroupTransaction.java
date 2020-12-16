@@ -1,12 +1,9 @@
 package cn.cnic.component.process.transaction;
 
-import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.component.mxGraph.entity.MxGraphModel;
-import cn.cnic.component.mxGraph.mapper.MxGraphModelMapper;
-import cn.cnic.component.mxGraph.transaction.MxGraphModelTransaction;
-import cn.cnic.component.process.entity.*;
-import cn.cnic.component.process.entity.Process;
-import cn.cnic.component.process.mapper.*;
+import java.util.List;
+
+import javax.annotation.Resource;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -14,8 +11,14 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
-import java.util.List;
+import cn.cnic.base.util.LoggerUtil;
+import cn.cnic.component.mxGraph.entity.MxGraphModel;
+import cn.cnic.component.mxGraph.transaction.MxGraphModelTransaction;
+import cn.cnic.component.process.entity.Process;
+import cn.cnic.component.process.entity.ProcessGroup;
+import cn.cnic.component.process.entity.ProcessGroupPath;
+import cn.cnic.component.process.mapper.ProcessGroupMapper;
+import cn.cnic.component.process.mapper.ProcessGroupPathMapper;
 
 @Component
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)

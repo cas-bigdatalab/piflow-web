@@ -114,7 +114,6 @@ public class CustomizedPropertyServiceImpl implements ICustomizedPropertyService
 
     @Override
     public String deleteRouterStopsCustomizedProperty(String username, String customPropertyId) {
-        Map<String, Object> rtnMap = new HashMap<String, Object>();
         return this.deleteStopsCustomizedProperty(username,customPropertyId);
     }
 

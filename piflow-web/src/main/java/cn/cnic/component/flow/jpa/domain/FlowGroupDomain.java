@@ -1,9 +1,12 @@
 package cn.cnic.component.flow.jpa.domain;
 
-import cn.cnic.component.flow.entity.Flow;
-import cn.cnic.component.flow.entity.FlowGroup;
-import cn.cnic.component.flow.jpa.repository.FlowGroupJpaRepository;
-import org.apache.avro.generic.GenericData;
+import java.util.List;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -11,11 +14,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import java.util.List;
+import cn.cnic.component.flow.entity.FlowGroup;
+import cn.cnic.component.flow.jpa.repository.FlowGroupJpaRepository;
 
 @Component
 public class FlowGroupDomain {

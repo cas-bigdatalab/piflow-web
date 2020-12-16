@@ -99,7 +99,6 @@ public class FlowServiceImpl implements IFlowService {
      *
      * @param id
      * @return
-     * @author Nature
      */
     @Override
     public Flow getFlowById(String username, boolean isAdmin, String id) {
@@ -142,7 +141,6 @@ public class FlowServiceImpl implements IFlowService {
      *
      * @param id
      * @return
-     * @author Nature
      */
     @Override
     @Transactional
@@ -307,7 +305,7 @@ public class FlowServiceImpl implements IFlowService {
     }
 
     @Override
-    public String getMaxStopPageId(String flowId) {
+    public Integer getMaxStopPageId(String flowId) {
         return flowMapper.getMaxStopPageId(flowId);
     }
 
@@ -393,7 +391,7 @@ public class FlowServiceImpl implements IFlowService {
         if (null == flowById) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Flow with FlowId" + flowId + "was not queried");
         }
-        Process process = ProcessUtils.flowToProcess(flowById, username,false);
+        Process process = ProcessUtils.flowToProcess(flowById, username, false);
         if (null == process) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Conversion failed");
         }
@@ -449,16 +447,16 @@ public class FlowServiceImpl implements IFlowService {
         if (null == flowById) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Database save failed");
         }
-        if(StringUtils.isNotBlank(flowVo.getName())){
+        if (StringUtils.isNotBlank(flowVo.getName())) {
             flowById.setName(flowVo.getName());
         }
         //find name in FlowGroup
         String[] flowNamesInGroup = flowDomain.getFlowNameByFlowGroupId(fId, flowVo.getName());//already add in group
-        if(flowNamesInGroup.length > 1){
+        if (flowNamesInGroup.length > 1) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Repeat flow name!");
         }
         String[] flowGroupsInGroup = flowGroupDomain.getFlowGroupNameByNameInGroup(fId, flowVo.getName());
-        if(flowGroupsInGroup.length > 0){
+        if (flowGroupsInGroup.length > 0) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Repeat flow name!");
         }
 
@@ -495,7 +493,7 @@ public class FlowServiceImpl implements IFlowService {
         }
         MxGraphModel mxGraphModelById = mxGraphModelMapper.getMxGraphModelById(mxGraphModel.getId());
         // Convert the mxGraphModelById from the query to XML
-        String loadXml = MxGraphUtils.mxGraphModelToMxGraphXml(mxGraphModelById);
+        String loadXml = MxGraphUtils.mxGraphModelToMxGraph(false, mxGraphModelById);
         loadXml = StringUtils.isNotBlank(loadXml) ? loadXml : "";
         rtnMap.put("XmlData", loadXml);
         return JsonUtils.toJsonNoException(rtnMap);
@@ -543,7 +541,7 @@ public class FlowServiceImpl implements IFlowService {
                 mxCell.setLastUpdateUser(username);
                 mxCellDomain.saveOrUpdate(mxCell);
                 // Convert the mxGraphModel from the query to XML
-                String loadXml = MxGraphUtils.mxGraphModelToMxGraphXml(mxGraphModel);
+                String loadXml = MxGraphUtils.mxGraphModelToMxGraph(false, mxGraphModel);
                 loadXml = StringUtils.isNotBlank(loadXml) ? loadXml : "";
                 rtnMap.put("XmlData", loadXml);
                 rtnMap.put("nameContent", flowName);
@@ -578,7 +576,7 @@ public class FlowServiceImpl implements IFlowService {
     }
 
     @Override
-    public String getMaxFlowPageIdByFlowGroupId(String flowGroupId) {
+    public Integer getMaxFlowPageIdByFlowGroupId(String flowGroupId) {
         return flowMapper.getMaxFlowPageIdByFlowGroupId(flowGroupId);
     }
 
@@ -607,12 +605,11 @@ public class FlowServiceImpl implements IFlowService {
         // Group on the left and'stops'
         List<StopGroupVo> groupsVoList = stopGroupServiceImpl.getStopGroupAll();
         rtnMap.put("groupsVoList", groupsVoList);
-        String maxStopPageId = this.getMaxStopPageId(load);
+        Integer maxStopPageId = this.getMaxStopPageId(load);
         //'maxStopPageId'defaults to 2 if it's empty, otherwise'maxStopPageId'+1
-        maxStopPageId = StringUtils.isBlank(maxStopPageId) ? "2" : (Integer.parseInt(maxStopPageId) + 1) + "";
-        rtnMap.put("maxStopPageId", maxStopPageId);
+        maxStopPageId = null == maxStopPageId ? 2 : (maxStopPageId + 1);
         // Change the query'mxGraphModelVo'to'XML'
-        String loadXml = MxGraphUtils.mxGraphModelToMxGraphXml(flowById.getMxGraphModel());
+        String loadXml = MxGraphUtils.mxGraphModelToMxGraph(false, flowById.getMxGraphModel());
         rtnMap.put("xmlDate", loadXml);
         rtnMap.put("load", load);
         rtnMap.put("isExample", (null == flowById.getIsExample() ? false : flowById.getIsExample()));

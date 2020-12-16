@@ -9,8 +9,6 @@ import javax.persistence.*;
 
 /**
  * Stop component table
- *
- * @author Nature
  */
 @Getter
 @Setter

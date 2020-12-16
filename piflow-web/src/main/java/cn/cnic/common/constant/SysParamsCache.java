@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
  * 2, "spring" gets the settings from the "properties" file [static can not be injected, need "public" non-static "set" method]...
  * 3, database read settings
  *
- * @author LHG
  */
 @Component
 public class SysParamsCache {

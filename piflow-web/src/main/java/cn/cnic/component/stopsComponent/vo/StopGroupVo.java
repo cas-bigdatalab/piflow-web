@@ -9,8 +9,6 @@ import java.util.List;
 
 /**
  * Group name table
- *
- * @author Nature
  */
 @Getter
 @Setter

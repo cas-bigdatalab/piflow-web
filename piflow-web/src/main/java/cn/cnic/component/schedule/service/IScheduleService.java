@@ -1,15 +1,6 @@
 package cn.cnic.component.schedule.service;
 
-import cn.cnic.base.util.JsonUtils;
-import cn.cnic.base.util.PageHelperUtils;
-import cn.cnic.base.util.ReturnMapUtils;
-import cn.cnic.component.process.entity.Process;
-import cn.cnic.component.schedule.entity.Schedule;
 import cn.cnic.component.schedule.vo.ScheduleVo;
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
-
-import java.util.Map;
 
 public interface IScheduleService {
 

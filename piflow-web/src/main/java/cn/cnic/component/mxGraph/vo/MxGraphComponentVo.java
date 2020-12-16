@@ -25,7 +25,12 @@ public class MxGraphComponentVo implements Serializable {
     @Getter
     @Setter
     public static class COMPONENT_GROUP implements Serializable {
-        private String img_name;
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		private String img_name;
         private String name;
         private String img_type;
         private String description;

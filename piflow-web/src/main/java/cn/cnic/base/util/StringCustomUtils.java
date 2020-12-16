@@ -8,11 +8,20 @@ public class StringCustomUtils {
     static Logger logger = LoggerUtil.getLogger();
 
     private static String EXCLUSIVE_STR = "[PiFlow]";
-    //private static String SPECIAL_SYMBOLS_1 = "&";
-    //private static String SPECIAL_SYMBOLS_2 = "<";
-    //private static String SPECIAL_SYMBOLS_3 = ">";
-    //private static String SPECIAL_SYMBOLS_4 = "'";
-    //private static String SPECIAL_SYMBOLS_5 = "\"";
+
+    public static String replaceSpecialSymbols(String sourceStr, boolean isSaveXml) {
+        if (isSaveXml) {
+            return replaceSpecialSymbolsXml(sourceStr);
+        }
+        return replaceSpecialSymbolsPage(sourceStr);
+    }
+
+    public static String recoverSpecialSymbols(String sourceStr, boolean isSaveXml) {
+        if (isSaveXml) {
+            return recoverSpecialSymbolsXml(sourceStr);
+        }
+        return recoverSpecialSymbolsPage(sourceStr);
+    }
 
 
     /**
@@ -65,6 +74,19 @@ public class StringCustomUtils {
             translation = translation.replace(">", "&gt;");
             translation = translation.replace("'", "&apos;");
             translation = translation.replace("\"", "&quot;");
+            return translation;
+        }
+        return sourceStr;
+    }
+
+    public static String recoverSpecialSymbolsPage(String sourceStr) {
+        if (StringUtils.isNotBlank(sourceStr)) {
+            String translation = sourceStr;
+            translation = translation.replace("&amp;", "&");
+            translation = translation.replace("&lt;", "<");
+            translation = translation.replace("&gt;", ">");
+            translation = translation.replace("&apos;", "'");
+            translation = translation.replace("&quot;", "\"");
             return translation;
         }
         return sourceStr;

@@ -12,10 +12,8 @@ import javax.annotation.Resource;
 import java.util.Arrays;
 
 /**
- * @author Administrator
  * @ClassName: WebAppConfig
  * @Description: TODO(Here is a sentence describing the function of this class.)
- * @date 2017-7-11
  */
 @Configuration
 public class WebAppConfig implements WebMvcConfigurer {

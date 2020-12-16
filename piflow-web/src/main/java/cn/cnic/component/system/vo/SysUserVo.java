@@ -2,9 +2,7 @@ package cn.cnic.component.system.vo;
 
 import java.io.Serializable;
 
-/**
- * @author Nature
- */
+
 public class SysUserVo implements Serializable {
 
     private static final long serialVersionUID = 1L;

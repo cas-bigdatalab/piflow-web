@@ -16,10 +16,7 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * @author: JoeTao
- * createAt: 2018/9/14
- */
+
 @Component
 public class JwtUtils {
     public static final String ROLE_REFRESH_TOKEN = "ROLE_REFRESH_TOKEN";

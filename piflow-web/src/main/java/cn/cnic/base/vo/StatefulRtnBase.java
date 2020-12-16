@@ -5,7 +5,6 @@ import java.io.Serializable;
 /**
  * Stateful return value
  *
- * @author Nature
  */
 public class StatefulRtnBase implements Serializable {
 

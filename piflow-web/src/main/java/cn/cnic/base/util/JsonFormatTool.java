@@ -2,10 +2,6 @@ package cn.cnic.base.util;
 
 /**
  * Format input tool class
- *
- * @author lizhgb
- * @date 2015-10-14
- * @Modified 2017-04-28
  */
 public class JsonFormatTool {
 

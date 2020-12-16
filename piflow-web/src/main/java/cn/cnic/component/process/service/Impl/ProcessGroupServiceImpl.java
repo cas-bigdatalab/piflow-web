@@ -621,7 +621,7 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
             }
             mxGraphModel.setRoot(root);
         }
-        String loadXml = MxGraphUtils.mxGraphModelToMxGraphXml(mxGraphModel);
+        String loadXml = MxGraphUtils.mxGraphModelToMxGraph(false, mxGraphModel);
         rtnMap.put("xmlDate", loadXml);
 
         return JsonUtils.toJsonNoException(rtnMap);

@@ -1,9 +1,8 @@
 package cn.cnic.component.sparkJar.utils;
 
-import cn.cnic.component.sparkJar.model.SparkJarComponent;
-import cn.cnic.component.stopsComponent.model.StopsHub;
-
 import java.util.Date;
+
+import cn.cnic.component.sparkJar.model.SparkJarComponent;
 
 public class SparkJarUtils {
 

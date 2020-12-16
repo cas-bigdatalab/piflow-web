@@ -1,36 +1,19 @@
 package cn.cnic.component.process.mapper.provider;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
-import cn.cnic.common.Eunm.ProcessParentType;
-import cn.cnic.common.Eunm.RunModeType;
-import cn.cnic.component.mxGraph.entity.MxGraphModel;
-import cn.cnic.component.process.entity.Process;
-import cn.cnic.component.process.entity.ProcessGroup;
-import cn.cnic.component.process.entity.ProcessGroupPath;
-import cn.cnic.component.schedule.entity.Schedule;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
 
 import cn.cnic.base.util.DateUtils;
 import cn.cnic.base.util.SqlUtils;
 import cn.cnic.common.Eunm.ProcessState;
-import org.hibernate.annotations.Where;
-import sun.rmi.runtime.Log;
-
-import javax.persistence.*;
+import cn.cnic.component.process.entity.ProcessGroup;
 
 public class ProcessGroupMapperProvider {
 
 
-    private String id;
-    private Integer enableFlag;
-    private Long version;
-    private String lastUpdateDataTimeStr;
-    private String lastUpdateUser;
     private String name;
     private String description;
     private String pageId;
@@ -51,14 +34,6 @@ public class ProcessGroupMapperProvider {
         if (null == processGroup || StringUtils.isBlank(processGroup.getLastUpdateUser())) {
             return false;
         }
-        // Mandatory Field
-        String lastUpdateDttm = DateUtils.dateTimesToStr(null != processGroup.getLastUpdateDttm() ? processGroup.getLastUpdateDttm() : new Date());
-        this.id = SqlUtils.preventSQLInjection(processGroup.getId());
-        this.version = (null != processGroup.getVersion() ? processGroup.getVersion() : 0L);
-        this.enableFlag = ((null != processGroup.getEnableFlag() && processGroup.getEnableFlag()) ? 1 : 0);
-        this.lastUpdateDataTimeStr = SqlUtils.preventSQLInjection(lastUpdateDttm);
-        this.lastUpdateUser = SqlUtils.preventSQLInjection(processGroup.getLastUpdateUser());
-
         // Selection field
         this.name = SqlUtils.preventSQLInjection(processGroup.getName());
 
@@ -67,12 +42,6 @@ public class ProcessGroupMapperProvider {
     }
 
     private void resetProcessGroup() {
-        this.id = null;
-        this.lastUpdateUser = null;
-        this.lastUpdateDataTimeStr = null;
-        this.enableFlag = 1;
-        this.version = 0L;
-
         this.name = null;
         this.description = null;
         this.pageId = null;
@@ -263,7 +232,7 @@ public class ProcessGroupMapperProvider {
      * @param map
      * @return
      */
-    public String getProcessGroupListByAppIDs(Map map) {
+    public String getProcessGroupListByAppIDs(@SuppressWarnings("rawtypes") Map map) {
         String sqlStr = "select 0";
         String[] appIDs = (String[]) map.get("appIDs");
         if (null != appIDs && appIDs.length > 0) {

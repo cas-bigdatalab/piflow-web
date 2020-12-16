@@ -1,23 +1,12 @@
 package cn.cnic.component.schedule.vo;
 
+import java.io.Serializable;
+import java.util.Date;
+
 import cn.cnic.base.util.DateUtils;
-import cn.cnic.common.Eunm.ProcessState;
-import cn.cnic.common.Eunm.RunModeType;
 import cn.cnic.common.Eunm.ScheduleState;
-import cn.cnic.component.mxGraph.vo.MxGraphModelVo;
-import cn.cnic.component.process.vo.ProcessGroupVo;
-import cn.cnic.component.process.vo.ProcessPathVo;
-import cn.cnic.component.process.vo.ProcessStopVo;
 import lombok.Getter;
 import lombok.Setter;
-
-import javax.persistence.Column;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 @Setter
 @Getter

@@ -1,20 +1,15 @@
 
 package cn.cnic.component.flow.vo;
 
-import lombok.Getter;
-import lombok.Setter;
-
-import javax.persistence.Column;
 import java.io.Serializable;
+
+import lombok.Data;
 
 /**
  * Stop attribute
- *
- * @author Nature
  */
 
-@Setter
-@Getter
+@Data
 public class StopsPropertyVo implements Serializable {
 
     private static final long serialVersionUID = 1L;

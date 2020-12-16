@@ -147,15 +147,4 @@ public class HdfsUtils {
         return debugDataResponse;
     }
 
-    public static void main(String[] args) {
-        String hdfsUrl = "hdfs://10.0.86.89:9000/xjzhu/piflow/debug/application_1562293222869_0092/Fork/out1";
-        String startFile = "part-00000-0110f52e-93bd-46a0-b23b-0f9937f3af58.json";
-        DebugDataResponse debugDataResponse = readPath(hdfsUrl, startFile, 1, null);
-        Object lastReadLine = debugDataResponse.getLastReadLine();
-        Object lastFileName = debugDataResponse.getLastFileName();
-        List<String> data = debugDataResponse.getData();
-        System.out.println(lastFileName);
-        System.out.println(lastReadLine);
-        System.out.println(data.size());
-    }
 }

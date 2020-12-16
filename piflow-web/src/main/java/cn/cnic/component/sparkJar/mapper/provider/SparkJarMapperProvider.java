@@ -1,13 +1,13 @@
 package cn.cnic.component.sparkJar.mapper.provider;
 
-import cn.cnic.base.util.DateUtils;
-import cn.cnic.base.util.SqlUtils;
-import cn.cnic.component.sparkJar.model.SparkJarComponent;
-import cn.cnic.component.stopsComponent.model.StopsHub;
+import java.util.Date;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
 
-import java.util.Date;
+import cn.cnic.base.util.DateUtils;
+import cn.cnic.base.util.SqlUtils;
+import cn.cnic.component.sparkJar.model.SparkJarComponent;
 
 public class SparkJarMapperProvider {
 

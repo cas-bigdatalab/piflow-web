@@ -243,7 +243,7 @@ public class PropertyServiceImpl implements IPropertyService {
             if (null != pathsList && pathsList.size() == 1) {
                 currentPaths = pathsList.get(0);
             }
-            int pathsCounts = pathsMapper.getPathsCounts(flowId, null, sourceId, null);
+            pathsMapper.getPathsCounts(flowId, null, sourceId, null);
             if (updatePathRequest.isSourceRoute()) {
                 if (updatePathRequest.isSourceRoute() && PortType.ROUTE == sourceStop.getOutPortType()) {
                     currentPaths.setFilterCondition(updatePathRequest.getSourceFilter());

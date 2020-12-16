@@ -1,10 +1,6 @@
 package cn.cnic.component.stopsComponent.service;
 
-import cn.cnic.component.dataSource.vo.DataSourceVo;
-import cn.cnic.component.stopsComponent.model.StopsHub;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 public interface IStopsHubService {
 

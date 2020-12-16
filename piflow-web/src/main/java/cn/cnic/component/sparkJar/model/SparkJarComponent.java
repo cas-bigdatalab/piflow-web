@@ -1,17 +1,19 @@
 package cn.cnic.component.sparkJar.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Table;
+
 import cn.cnic.base.BaseHibernateModelUUIDNoCorpAgentId;
 import cn.cnic.common.Eunm.SparkJarState;
-import cn.cnic.common.Eunm.StopsHubState;
 import lombok.Getter;
 import lombok.Setter;
-
-import javax.persistence.*;
 
 /**
  * Stop component table
  *
- * @author Nature
  */
 @Getter
 @Setter

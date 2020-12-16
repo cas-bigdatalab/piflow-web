@@ -1,17 +1,15 @@
 package cn.cnic.component.system.mapper.provider;
 
-import cn.cnic.base.util.DateUtils;
-import cn.cnic.base.util.SqlUtils;
-import cn.cnic.base.util.UUIDUtils;
-import cn.cnic.common.Eunm.ScheduleRunResultType;
-import cn.cnic.common.Eunm.ScheduleState;
-import cn.cnic.component.flow.entity.Flow;
-import cn.cnic.component.system.entity.SysSchedule;
+import java.util.Date;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.jdbc.SQL;
 
-import java.util.Date;
+import cn.cnic.base.util.DateUtils;
+import cn.cnic.base.util.SqlUtils;
+import cn.cnic.common.Eunm.ScheduleState;
+import cn.cnic.component.system.entity.SysSchedule;
 
 public class SysScheduleMapperProvider {
 

@@ -1,29 +1,17 @@
 package cn.cnic.component.process.mapper.provider;
 
-import cn.cnic.base.util.DateUtils;
-import cn.cnic.base.util.SqlUtils;
-import cn.cnic.component.process.entity.Process;
-import cn.cnic.component.process.entity.ProcessGroup;
-import cn.cnic.component.process.entity.ProcessGroupPath;
-import cn.cnic.component.process.entity.ProcessPath;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.jdbc.SQL;
-
-import javax.persistence.Column;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class ProcessGroupPathMapperProvider {
+import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.jdbc.SQL;
 
-    private String id;
-    private Integer enableFlag;
-    private Long version;
-    private String lastUpdateDataTimeStr;
-    private String lastUpdateUser;
+import cn.cnic.base.util.DateUtils;
+import cn.cnic.base.util.SqlUtils;
+import cn.cnic.component.process.entity.ProcessGroupPath;
+
+public class ProcessGroupPathMapperProvider {
 
     private String from;
     private String outport;
@@ -36,13 +24,6 @@ public class ProcessGroupPathMapperProvider {
         if (null == processGroupPath || StringUtils.isBlank(processGroupPath.getLastUpdateUser())) {
             return false;
         }
-        // Mandatory Field
-        String lastUpdateDttm = DateUtils.dateTimesToStr(null != processGroupPath.getLastUpdateDttm() ? processGroupPath.getLastUpdateDttm() : new Date());
-        this.id = SqlUtils.preventSQLInjection(processGroupPath.getId());
-        this.version = (null != processGroupPath.getVersion() ? processGroupPath.getVersion() : 0L);
-        this.enableFlag = ((null != processGroupPath.getEnableFlag() && processGroupPath.getEnableFlag()) ? 1 : 0);
-        this.lastUpdateUser = SqlUtils.preventSQLInjection(processGroupPath.getLastUpdateUser());
-        this.lastUpdateDataTimeStr = SqlUtils.preventSQLInjection(lastUpdateDttm);
 
         // Selection field
         this.from = SqlUtils.preventSQLInjection(processGroupPath.getFrom());
@@ -56,12 +37,6 @@ public class ProcessGroupPathMapperProvider {
     }
 
     private void resetProcessGroupPath() {
-        this.id = null;
-        this.lastUpdateUser = null;
-        this.lastUpdateDataTimeStr = null;
-        this.enableFlag = 1;
-        this.version = 0L;
-
         this.from = null;
         this.outport = null;
         this.inport = null;

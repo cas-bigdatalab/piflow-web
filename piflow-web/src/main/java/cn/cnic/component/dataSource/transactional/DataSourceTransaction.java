@@ -1,5 +1,16 @@
 package cn.cnic.component.dataSource.transactional;
 
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
 import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.base.util.UUIDUtils;
 import cn.cnic.component.dataSource.entity.DataSource;
@@ -7,16 +18,6 @@ import cn.cnic.component.dataSource.entity.DataSourceProperty;
 import cn.cnic.component.dataSource.mapper.DataSourceMapper;
 import cn.cnic.component.dataSource.mapper.DataSourcePropertyMapper;
 import cn.cnic.component.dataSource.vo.DataSourceVo;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.annotations.Param;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-import java.util.List;
 
 @Component
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)

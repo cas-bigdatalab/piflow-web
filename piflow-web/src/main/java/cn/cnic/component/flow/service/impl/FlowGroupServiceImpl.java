@@ -403,16 +403,16 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
 
         }
         // Get the maximum value of pageid in stop
-        String maxFlowPageIdString = flowMapper.getMaxFlowPageIdByFlowGroupId(flowGroupId);
-        Integer maxStopPageId = StringUtils.isNotBlank(maxFlowPageIdString) ? Integer.parseInt(maxFlowPageIdString) : 1;
+        Integer maxFlowPageId = flowMapper.getMaxFlowPageIdByFlowGroupId(flowGroupId);
+        maxFlowPageId = (null != maxFlowPageId) ? maxFlowPageId : 1;
         //TODO get max group_path_pageID in group
-        String maxFlowGroupPageIdString = flowGroupMapper.getMaxFlowGroupPageIdByFlowGroupId(flowGroupId);
-        Integer maxFlowGroupPageId = StringUtils.isNotBlank(maxFlowGroupPageIdString) ? Integer.parseInt(maxFlowGroupPageIdString) : 1;
+        Integer maxFlowGroupPageId = flowGroupMapper.getMaxFlowGroupPageIdByFlowGroupId(flowGroupId);
+        maxFlowGroupPageId = (null != maxFlowGroupPageId) ? maxFlowGroupPageId : 1;
         //TODO: get max group_pageID in group
-        String maxFlowGroupPathPageIdString = flowGroupPathsMapper.getMaxFlowGroupPathPageIdByFlowGroupId(flowGroupId);
-        Integer maxFlowGroupPathPageId = StringUtils.isNotBlank(maxFlowGroupPathPageIdString) ? Integer.parseInt(maxFlowGroupPathPageIdString) : 1;
+        Integer maxFlowGroupPathPageId = flowGroupPathsMapper.getMaxFlowGroupPathPageIdByFlowGroupId(flowGroupId);
+        maxFlowGroupPathPageId = (null != maxFlowGroupPathPageId) ? maxFlowGroupPathPageId : 1;
 
-        int maxPageId = Math.max(Math.max(maxStopPageId, maxFlowGroupPageId), maxFlowGroupPathPageId);
+        int maxPageId = Math.max(Math.max(maxFlowPageId, maxFlowGroupPageId), maxFlowGroupPathPageId);
         //maxStopPageIdByFlowGroupId = StringUtils.isNotBlank(maxStopPageIdByFlowGroupId) ? maxStopPageIdByFlowGroupId : "1";
 
 
@@ -459,7 +459,7 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
         flowGroupById = flowGroupDomain.saveOrUpdate(flowGroupById);
         MxGraphModel mxGraphModelNew = flowGroupById.getMxGraphModel();
         // Change the query'mxGraphModelNew'to'XML'
-        String loadXml = MxGraphUtils.mxGraphModelToMxGraphXml(mxGraphModelNew);
+        String loadXml = MxGraphUtils.mxGraphModelToMxGraph(false, mxGraphModelNew);
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg("success");
         rtnMap.put("xmlStr", loadXml);
         return JsonUtils.toFormatJsonNoException(rtnMap);
@@ -507,7 +507,7 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
                     mxCell.setLastUpdateUser(username);
                     mxCellDomain.saveOrUpdate(mxCell);
                     // Convert the mxGraphModel from the query to XML
-                    String loadXml = MxGraphUtils.mxGraphModelToMxGraphXml(mxGraphModel);
+                    String loadXml = MxGraphUtils.mxGraphModelToMxGraph(false, mxGraphModel);
                     loadXml = StringUtils.isNotBlank(loadXml) ? loadXml : "";
                     rtnMap.put("XmlData", loadXml);
                     rtnMap.put("nameContent", flowGroupName);
@@ -558,12 +558,12 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
         //find name in FlowGroup
 
         String[] flowGroupsInGroup = flowGroupDomain.getFlowGroupNameByNameInGroup(fId, flowGroupVo.getName());
-        if(flowGroupsInGroup.length > 0){
+        if (flowGroupsInGroup.length > 0) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Repeat flow group name!");
         }
 
         String[] flowNamesInGroup = flowDomain.getFlowNameByFlowGroupId(fId, flowGroupVo.getName());
-        if(flowNamesInGroup.length > 0 ){
+        if (flowNamesInGroup.length > 0) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Repeat flow group name!");
         }
 
@@ -592,7 +592,7 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
         }
         MxGraphModel mxGraphModelById = mxGraphModelMapper.getMxGraphModelById(mxGraphModel.getId());
         // Convert the mxGraphModelById from the query to XML
-        String loadXml = MxGraphUtils.mxGraphModelToMxGraphXml(mxGraphModelById);
+        String loadXml = MxGraphUtils.mxGraphModelToMxGraph(false, mxGraphModelById);
         loadXml = StringUtils.isNotBlank(loadXml) ? loadXml : "";
         rtnMap.put("XmlData", loadXml);
         return JsonUtils.toJsonNoException(rtnMap);
@@ -682,7 +682,7 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
 
         MxGraphModel mxGraphModel = flowGroupById.getMxGraphModel();
         // Change the query'mxGraphModel'to'XML'
-        String loadXml = MxGraphUtils.mxGraphModelToMxGraphXml(mxGraphModel);
+        String loadXml = MxGraphUtils.mxGraphModelToMxGraph(false, mxGraphModel);
         rtnMap.put("xmlDate", loadXml);
         rtnMap.put("load", load);
         rtnMap.put("isExample", (null == flowGroupById.getIsExample() ? false : flowGroupById.getIsExample()));

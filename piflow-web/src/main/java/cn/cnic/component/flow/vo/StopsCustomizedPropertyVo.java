@@ -8,8 +8,6 @@ import java.io.Serializable;
 
 /**
  * stop property
- *
- * @author Nature
  */
 @Getter
 @Setter

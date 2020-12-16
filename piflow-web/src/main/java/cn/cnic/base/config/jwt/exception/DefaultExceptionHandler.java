@@ -1,19 +1,17 @@
 package cn.cnic.base.config.jwt.exception;
 
-import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.common.Eunm.ResultCode;
-import cn.cnic.base.config.jwt.common.ResultJson;
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import cn.cnic.base.config.jwt.common.ResultJson;
+import cn.cnic.base.util.LoggerUtil;
+import cn.cnic.common.Eunm.ResultCode;
+
 /**
- * @author Joetao
  * 异常处理类
  * controller层异常无法捕获处理，需要自己处理
- * Created at 2018/8/27.
  */
 @RestControllerAdvice
 @SuppressWarnings("rawtypes")

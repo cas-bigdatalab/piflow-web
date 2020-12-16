@@ -11,8 +11,6 @@ import java.util.Date;
 
 /**
  * Stop attribute
- *
- * @author Nature
  */
 @Entity
 @Table(name = "property_template")

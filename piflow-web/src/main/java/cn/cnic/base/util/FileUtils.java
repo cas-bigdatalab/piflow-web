@@ -1,6 +1,5 @@
 package cn.cnic.base.util;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.util.ResourceUtils;
@@ -76,8 +75,6 @@ public class FileUtils {
      * Generate JSON format file
      */
     public static String createJsonFile(String jsonString, String fileName, String filePath) {
-        // Mark whether the file was generated successfully
-        boolean flag = true;
 
         // Full path of splicing file
         //String fullPath = filePath + File.separator + fileName + ".json";
@@ -101,7 +98,6 @@ public class FileUtils {
             write.flush();
             write.close();
         } catch (Exception e) {
-            flag = false;
             fullPath = "";
             e.printStackTrace();
         }

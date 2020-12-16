@@ -6,9 +6,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * @author Joetao
  * RESTful API 返回类型
- * Created at 2018/3/8.
  */
 @Data
 @SuppressWarnings("rawtypes")

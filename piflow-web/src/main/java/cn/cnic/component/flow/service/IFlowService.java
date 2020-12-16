@@ -51,7 +51,7 @@ public interface IFlowService {
     @Transactional
     public String deleteFLowInfo(String username, boolean isAdmin, String id);
 
-    public String getMaxStopPageId(String flowId);
+    public Integer getMaxStopPageId(String flowId);
 
     public List<FlowVo> getFlowList();
 
@@ -84,7 +84,7 @@ public interface IFlowService {
 
     public Boolean updateFlowNameById(String username, String id, String flowName);
 
-    public String getMaxFlowPageIdByFlowGroupId(String flowGroupId);
+    public Integer getMaxFlowPageIdByFlowGroupId(String flowGroupId);
 
     public String drawingBoardData(String username, boolean isAdmin, String load, String parentAccessPath);
 

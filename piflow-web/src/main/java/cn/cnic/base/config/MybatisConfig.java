@@ -10,8 +10,6 @@ import java.util.Properties;
 
 /**
  * Paging plug-in configuration
- *
- * @author Nature
  */
 @Configuration
 public class MybatisConfig {

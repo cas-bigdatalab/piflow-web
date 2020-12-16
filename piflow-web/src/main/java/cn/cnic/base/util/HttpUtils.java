@@ -45,7 +45,7 @@ public class HttpUtils {
      * @param timeOutMS (Millisecond)
      * @return
      */
-    public static String doPost(String url, Map json, Integer timeOutMS) {
+    public static String doPost(String url, Map<?, ?> json, Integer timeOutMS) {
         String formatJson = JsonUtils.toFormatJsonNoException(json);
         return doPost(url, formatJson, timeOutMS);
     }
