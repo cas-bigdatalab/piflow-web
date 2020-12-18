@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `test_data` (
   `field_soft` BIGINT(20) COMMENT 'soft',
   PRIMARY KEY (ID)) ENGINE=INNODB;
   
-  CREATE TABLE IF NOT EXISTS `test_data_list` (
+  CREATE TABLE IF NOT EXISTS `test_data_schema_values` (
   `id` VARCHAR(40) NOT NULL,
   `crt_dttm` DATETIME(0) NOT NULL COMMENT 'Create date time',
   `crt_user` VARCHAR(255) NOT NULL COMMENT 'Create user',

@@ -1,5 +1,8 @@
 package cn.cnic.component.testData.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import cn.cnic.base.BaseHibernateModelUUIDNoCorpAgentId;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,6 +17,8 @@ public class TestDataSchema extends BaseHibernateModelUUIDNoCorpAgentId {
     private String fieldType;
     private String fieldDescription;
     private int fieldSoft;
+    private TestData testData;
+    private List<TestDataSchemaValues> schemaValuesList = new ArrayList<>();
 
 
 }

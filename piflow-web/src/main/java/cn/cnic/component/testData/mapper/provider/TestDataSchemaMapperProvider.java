@@ -21,6 +21,7 @@ public class TestDataSchemaMapperProvider {
 	private String fieldType;
 	private String fieldDescription;
 	private int fieldSoft;
+	private String testDataId;
 
 	private boolean preventSQLInjectionTestDataSchema(TestDataSchema testDataSchema) {
 		if (null == testDataSchema || StringUtils.isBlank(testDataSchema.getLastUpdateUser())) {
@@ -40,6 +41,8 @@ public class TestDataSchemaMapperProvider {
 		this.fieldType = SqlUtils.preventSQLInjection(testDataSchema.getFieldType());
 		this.fieldDescription = SqlUtils.preventSQLInjection(testDataSchema.getFieldDescription());
 		this.fieldSoft = testDataSchema.getFieldSoft();
+		this.testDataId = SqlUtils.preventSQLInjection(
+				null != testDataSchema.getTestData() ? testDataSchema.getTestData().getId() : null);
 
 		return true;
 	}
@@ -54,6 +57,7 @@ public class TestDataSchemaMapperProvider {
 		this.fieldType = null;
 		this.fieldDescription = null;
 		this.fieldSoft = 0;
+		this.testDataId = null;
 	}
 
 	public String addTestDataSchema(TestDataSchema testDataSchema) {
@@ -67,6 +71,7 @@ public class TestDataSchemaMapperProvider {
 			strBuf.append("field_type, ");
 			strBuf.append("field_description, ");
 			strBuf.append("field_soft ");
+			strBuf.append("fk_test_data_id ");
 			strBuf.append(") ");
 
 			strBuf.append("values ");
@@ -75,7 +80,8 @@ public class TestDataSchemaMapperProvider {
 			strBuf.append(this.fieldName + ", ");
 			strBuf.append(this.fieldType + ", ");
 			strBuf.append(this.fieldDescription + ", ");
-			strBuf.append(this.fieldSoft + " ");
+			strBuf.append(this.fieldSoft + ", ");
+			strBuf.append(this.testDataId + " ");
 			strBuf.append(")");
 			sql = strBuf.toString();
 		}
@@ -95,7 +101,8 @@ public class TestDataSchemaMapperProvider {
 		strBuf.append("field_name, ");
 		strBuf.append("field_type, ");
 		strBuf.append("field_description, ");
-		strBuf.append("field_soft ");
+		strBuf.append("field_soft, ");
+		strBuf.append("fk_test_data_id ");
 		strBuf.append(") ");
 		strBuf.append("values ");
 		boolean firstFlag = true;
@@ -111,7 +118,8 @@ public class TestDataSchemaMapperProvider {
 				strBuf.append(this.fieldName + ", ");
 				strBuf.append(this.fieldType + ", ");
 				strBuf.append(this.fieldDescription + ", ");
-				strBuf.append(this.fieldSoft + " ");
+				strBuf.append(this.fieldSoft + ", ");
+				strBuf.append(this.testDataId + " ");
 				strBuf.append(")");
 			}
 			this.resetTestDataSchema();
@@ -120,7 +128,7 @@ public class TestDataSchemaMapperProvider {
 		return sql;
 	}
 
-	public String updeateTestDataSchema(TestDataSchema testDataSchema) {
+	public String updateTestDataSchema(TestDataSchema testDataSchema) {
 		String sqlStr = "select 0";
 		boolean flag = preventSQLInjectionTestDataSchema(testDataSchema);
 		if (flag && StringUtils.isNotBlank(this.id)) {
@@ -139,6 +147,7 @@ public class TestDataSchemaMapperProvider {
 			sql.SET("field_type = " + this.fieldType);
 			sql.SET("field_description = " + this.fieldDescription);
 			sql.SET("field_soft = " + this.fieldSoft);
+			sql.SET("fk_test_data_id = " + this.testDataId);
 			sql.WHERE("version = " + this.version);
 			sql.WHERE("id = " + this.id);
 			sqlStr = sql.toString();

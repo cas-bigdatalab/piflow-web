@@ -72,7 +72,7 @@ public class TestDataMapperProvider {
 		return sql;
 	}
 
-	public String updeateTestData(TestData testData) {
+	public String updateTestData(TestData testData) {
 		String sqlStr = "select 0";
 		boolean flag = preventSQLInjectionTestData(testData);
 		if (flag && StringUtils.isNotBlank(this.id)) {

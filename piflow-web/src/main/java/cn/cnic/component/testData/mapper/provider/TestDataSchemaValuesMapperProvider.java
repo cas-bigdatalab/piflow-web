@@ -8,9 +8,9 @@ import org.apache.ibatis.jdbc.SQL;
 
 import cn.cnic.base.util.DateUtils;
 import cn.cnic.base.util.SqlUtils;
-import cn.cnic.component.testData.entity.TestDataList;
+import cn.cnic.component.testData.entity.TestDataSchemaValues;
 
-public class TestDataListMapperProvider {
+public class TestDataSchemaValuesMapperProvider {
 
 	private String id;
 	private String lastUpdateUser;
@@ -19,32 +19,30 @@ public class TestDataListMapperProvider {
 	private int enableFlag;
 	private String fieldValue;
 	private int dataRow;
-	private String testDataId;
 	private String testDataSchemaId;
 
-	private boolean preventSQLInjectionTestDataList(TestDataList testDataList) {
-		if (null == testDataList || StringUtils.isBlank(testDataList.getLastUpdateUser())) {
+	private boolean preventSQLInjectionTestDataSchemaValues(TestDataSchemaValues testDataSchemaValues) {
+		if (null == testDataSchemaValues || StringUtils.isBlank(testDataSchemaValues.getLastUpdateUser())) {
 			return false;
 		}
 		// Mandatory Field
 		String lastUpdateDttm = DateUtils.dateTimesToStr(
-				null != testDataList.getLastUpdateDttm() ? testDataList.getLastUpdateDttm() : new Date());
-		this.id = SqlUtils.preventSQLInjection(testDataList.getId());
-		this.enableFlag = ((null != testDataList.getEnableFlag() && testDataList.getEnableFlag()) ? 1 : 0);
-		this.version = (null != testDataList.getVersion() ? testDataList.getVersion() : 0L);
+				null != testDataSchemaValues.getLastUpdateDttm() ? testDataSchemaValues.getLastUpdateDttm() : new Date());
+		this.id = SqlUtils.preventSQLInjection(testDataSchemaValues.getId());
+		this.enableFlag = ((null != testDataSchemaValues.getEnableFlag() && testDataSchemaValues.getEnableFlag()) ? 1 : 0);
+		this.version = (null != testDataSchemaValues.getVersion() ? testDataSchemaValues.getVersion() : 0L);
 		this.lastUpdateDttmStr = SqlUtils.preventSQLInjection(lastUpdateDttm);
-		this.lastUpdateUser = SqlUtils.preventSQLInjection(testDataList.getLastUpdateUser());
+		this.lastUpdateUser = SqlUtils.preventSQLInjection(testDataSchemaValues.getLastUpdateUser());
 
 		// Selection field
-		this.fieldValue = SqlUtils.preventSQLInjection(testDataList.getFieldValue());
-		this.dataRow = testDataList.getDataRow();
-		this.testDataId = SqlUtils.preventSQLInjection(null != testDataList.getTestData() ? testDataList.getTestData().getId() : null);
-		this.testDataSchemaId = SqlUtils.preventSQLInjection(null != testDataList.getTestDataSchema() ? testDataList.getTestData().getId() : null);
+		this.fieldValue = SqlUtils.preventSQLInjection(testDataSchemaValues.getFieldValue());
+		this.dataRow = testDataSchemaValues.getDataRow();
+		this.testDataSchemaId = SqlUtils.preventSQLInjection(null != testDataSchemaValues.getTestDataSchema() ? testDataSchemaValues.getTestDataSchema().getId() : null);
 
 		return true;
 	}
 
-	private void resetTestDataList() {
+	private void resetTestDataSchemaValues() {
 		this.id = null;
 		this.lastUpdateUser = null;
 		this.lastUpdateDttmStr = null;
@@ -52,40 +50,37 @@ public class TestDataListMapperProvider {
 		this.enableFlag = 1;
 		this.fieldValue = null;
 		this.dataRow = 0;
-		this.testDataId = null;
 		this.testDataSchemaId = null;
 	}
 
-	public String addTestDataList(TestDataList testDataList) {
+	public String addTestDataSchemaValues(TestDataSchemaValues testDataSchemaValues) {
 		String sql = "select 0";
-		if (preventSQLInjectionTestDataList(testDataList)) {
+		if (preventSQLInjectionTestDataSchemaValues(testDataSchemaValues)) {
 			StringBuffer strBuf = new StringBuffer();
 			strBuf.append("INSERT INTO group_schedule ");
 			strBuf.append("( ");
 			strBuf.append(SqlUtils.baseFieldName() + ", ");
 			strBuf.append("field_value, ");
 			strBuf.append("data_row, ");
-			strBuf.append("fk_test_data_id, ");
 			strBuf.append("fk_test_data_schema_id ");
 			strBuf.append(") ");
 
 			strBuf.append("values ");
 			strBuf.append("(");
-			strBuf.append(SqlUtils.baseFieldValues(testDataList) + ", ");
+			strBuf.append(SqlUtils.baseFieldValues(testDataSchemaValues) + ", ");
 			strBuf.append(this.fieldValue + ", ");
 			strBuf.append(this.dataRow + ", ");
-			strBuf.append(this.testDataId + ", ");
 			strBuf.append(this.testDataSchemaId + " ");
 			strBuf.append(")");
 			sql = strBuf.toString();
 		}
-		this.resetTestDataList();
+		this.resetTestDataSchemaValues();
 		return sql;
 	}
 
-	public String addTestDataListList(List<TestDataList> testDataListList) {
+	public String addTestDataSchemaValuesList(List<TestDataSchemaValues> testDataSchemaValuesList) {
 		String sql = "select 0";
-		if (null == testDataListList || testDataListList.size() <= 0) {
+		if (null == testDataSchemaValuesList || testDataSchemaValuesList.size() <= 0) {
 			return "select 0";
 		}
 		StringBuffer strBuf = new StringBuffer();
@@ -94,35 +89,33 @@ public class TestDataListMapperProvider {
 		strBuf.append(SqlUtils.baseFieldName() + ", ");
 		strBuf.append("field_value, ");
 		strBuf.append("data_row, ");
-		strBuf.append("fk_test_data_id, ");
 		strBuf.append("fk_test_data_schema_id ");
 		strBuf.append(") ");
 		strBuf.append("values ");
 		boolean firstFlag = true;
-		for (int i = 0; i < testDataListList.size(); i++) {
-			TestDataList testDataList = testDataListList.get(i);
-			if (preventSQLInjectionTestDataList(testDataList)) {
+		for (int i = 0; i < testDataSchemaValuesList.size(); i++) {
+			TestDataSchemaValues testDataSchemaValues = testDataSchemaValuesList.get(i);
+			if (preventSQLInjectionTestDataSchemaValues(testDataSchemaValues)) {
 				if (firstFlag) {
 					strBuf.append("(");
 				} else {
 					strBuf.append(",(");
 				}
-				strBuf.append(SqlUtils.baseFieldValues(testDataList) + ", ");
+				strBuf.append(SqlUtils.baseFieldValues(testDataSchemaValues) + ", ");
 				strBuf.append(this.fieldValue + ", ");
 				strBuf.append(this.dataRow + ", ");
-				strBuf.append(this.testDataId + ", ");
 				strBuf.append(this.testDataSchemaId + " ");
 				strBuf.append(")");
 			}
-			this.resetTestDataList();
+			this.resetTestDataSchemaValues();
 		}
 		sql = strBuf.toString();
 		return sql;
 	}
 
-	public String updeateTestDataList(TestDataList testDataList) {
+	public String updateTestDataSchemaValues(TestDataSchemaValues testDataSchemaValues) {
 		String sqlStr = "select 0";
-		boolean flag = preventSQLInjectionTestDataList(testDataList);
+		boolean flag = preventSQLInjectionTestDataSchemaValues(testDataSchemaValues);
 		if (flag && StringUtils.isNotBlank(this.id)) {
 			SQL sql = new SQL();
 			// INSERT_INTO brackets is table name
@@ -137,13 +130,12 @@ public class TestDataListMapperProvider {
 			sql.SET("enable_flag = " + this.enableFlag);
 			sql.SET("field_value = " + this.fieldValue);
 			sql.SET("data_row = " + this.dataRow);
-			sql.SET("fk_test_data_id = " + this.testDataId);
 			sql.SET("fk_test_data_schema_id = " + this.testDataSchemaId);
 			sql.WHERE("version = " + this.version);
 			sql.WHERE("id = " + this.id);
 			sqlStr = sql.toString();
 		}
-		this.resetTestDataList();
+		this.resetTestDataSchemaValues();
 		return sqlStr;
 	}
 
