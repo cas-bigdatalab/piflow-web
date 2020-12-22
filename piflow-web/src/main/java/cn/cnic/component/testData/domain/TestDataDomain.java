@@ -1,6 +1,7 @@
 package cn.cnic.component.testData.domain;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,25 +111,25 @@ public class TestDataDomain {
 			throw new Exception("testDataSchema is null");
 		}
 		if (StringUtils.isBlank(testDataSchema.getId())) {
-			
+
 		}
 		int affectedRows = testDataSchemaMapper.updateTestDataSchema(testDataSchema);
 		List<TestDataSchemaValues> schemaValuesList = testDataSchema.getSchemaValuesList();
 		if (null != schemaValuesList) {
 			for (TestDataSchemaValues testDataSchemaValues : schemaValuesList) {
 				testDataSchemaValues.setTestDataSchema(testDataSchema);
-				if(StringUtils.isBlank(testDataSchema.getId())) {
+				if (StringUtils.isBlank(testDataSchema.getId())) {
 					affectedRows += addTestDataSchemaValues(testDataSchemaValues);
 				}
 				affectedRows += updateTestDataSchemaValues(testDataSchemaValues);
-				
+
 			}
-			
+
 		}
 		return affectedRows;
-		
+
 	}
-	
+
 	public int updateTestDataSchemaValues(TestDataSchemaValues testDataSchemaValues) throws Exception {
 		if (null == testDataSchemaValues) {
 			throw new Exception("testDataSchema is null");
@@ -136,5 +137,19 @@ public class TestDataDomain {
 		return testDataSchemaValuesMapper.updateTestDataSchemaValues(testDataSchemaValues);
 	}
 
+	public List<TestData> getTestDataList(boolean isAdmin, String username, String param) {
+		return testDataMapper.getTestDataList(isAdmin, username, param);
+	}
+
+	public String getTestDataSchemaList() {
+		return "";
+	}
+
+	public List<Map<String, String>> getTestDataSchemaValuesCustomList(boolean isAdmin, String username, List<Map<String, String>> fieldNameList) {
+		if (null == fieldNameList) {
+			return null;
+		}
+		return testDataSchemaValuesMapper.getTestDataSchemaValuesCustomList(isAdmin, username, fieldNameList);
+	}
 
 }

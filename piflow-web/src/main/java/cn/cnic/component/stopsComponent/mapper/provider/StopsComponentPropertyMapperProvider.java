@@ -95,7 +95,7 @@ public class StopsComponentPropertyMapperProvider {
      */
     public String getStopsComponentPropertyByStopsId(String stopsId) {
 
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         if (null != stopsId) {
             SQL sql = new SQL();
             sql.SELECT("*");
@@ -109,7 +109,7 @@ public class StopsComponentPropertyMapperProvider {
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
 	public String insertStopsComponentProperty(Map map) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         List<StopsComponentProperty> stopsComponentPropertyList = (List<StopsComponentProperty>) map.get("stopsComponentPropertyList");
         if (null != stopsComponentPropertyList && stopsComponentPropertyList.size() > 0) {
             SQL sqlColumns = new SQL();

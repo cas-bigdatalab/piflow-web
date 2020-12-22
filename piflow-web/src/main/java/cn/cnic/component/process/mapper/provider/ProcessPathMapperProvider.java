@@ -81,7 +81,7 @@ public class ProcessPathMapperProvider {
      * @return
      */
     public String addProcessPath(ProcessPath processPath) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         this.preventSQLInjectionProcessPath(processPath);
         if (null != processPath) {
             SQL sql = new SQL();
@@ -131,7 +131,7 @@ public class ProcessPathMapperProvider {
      */
     public String addProcessPathList(Map<String, List<ProcessPath>> processPathList) {
         List<ProcessPath> processPaths = processPathList.get("processPathList");
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         if (null != processPaths && processPaths.size() > 0) {
             StringBuffer sql = new StringBuffer();
             sql.append("insert into ");
@@ -200,7 +200,7 @@ public class ProcessPathMapperProvider {
      * @return
      */
     public String getProcessPathByProcessId(String processId) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         if (StringUtils.isNotBlank(processId)) {
             SQL sql = new SQL();
             sql.SELECT("*");
@@ -221,7 +221,7 @@ public class ProcessPathMapperProvider {
      * @return
      */
     public String getProcessPathByPageIdAndPid(String processId, String pageId) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         if (!StringUtils.isAnyEmpty(processId, pageId)) {
             SQL sql = new SQL();
             sql.SELECT("*");
@@ -242,7 +242,7 @@ public class ProcessPathMapperProvider {
      * @return
      */
     public String updateProcessPath(ProcessPath processPath) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         this.preventSQLInjectionProcessPath(processPath);
         if (null != processPath) {
             if (StringUtils.isNotBlank(id)) {
@@ -276,7 +276,7 @@ public class ProcessPathMapperProvider {
     }
 
     public String updateEnableFlagByProcessId(String processId, String userName) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         if (!StringUtils.isAnyEmpty(processId, userName)) {
             SQL sql = new SQL();
             sql.UPDATE("flow_process_path");
@@ -300,7 +300,7 @@ public class ProcessPathMapperProvider {
      * @return
      */
     public String getProcessPathByPageIdAndProcessGroupId(String processGroupId, String pageId) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         if (!StringUtils.isAnyEmpty(processGroupId, pageId)) {
             SQL sql = new SQL();
             sql.SELECT("*");

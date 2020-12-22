@@ -150,7 +150,7 @@ public class DataSourceMapperProvider {
      * @return
      */
     public String getDataSourceList(String username, boolean isAdmin) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         StringBuffer strBuf = new StringBuffer();
         strBuf.append("select * ");
         strBuf.append("from data_source ");
@@ -170,7 +170,7 @@ public class DataSourceMapperProvider {
      * @return
      */
     public String getDataSourceListParam(String username, boolean isAdmin, String param) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         StringBuffer strBuf = new StringBuffer();
         strBuf.append("select * ");
         strBuf.append("from data_source ");
@@ -178,8 +178,9 @@ public class DataSourceMapperProvider {
         strBuf.append("and is_template = 0 ");
         if (StringUtils.isNotBlank(param)) {
             strBuf.append("and ( ");
-            strBuf.append("data_source_name like '%" + param + "%' ");
-            strBuf.append("or data_source_type like '%" + param + "%' ");
+            strBuf.append("data_source_name LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%') ");
+            
+            strBuf.append("or data_source_type LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%') ");
             strBuf.append(") ");
         }
         if (!isAdmin) {
@@ -274,10 +275,10 @@ public class DataSourceMapperProvider {
      */
     public String updateEnableFlagById(String username, String id) {
         if (StringUtils.isBlank(username)) {
-            return "select 0";
+            return "SELECT 0";
         }
         if (StringUtils.isBlank(id)) {
-            return "select 0";
+            return "SELECT 0";
         }
         SQL sql = new SQL();
         sql.UPDATE("data_source");

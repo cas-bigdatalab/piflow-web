@@ -214,10 +214,10 @@ public class MxGeometryMapperProvider {
      */
     public String updateEnableFlagById(String username, String id) {
         if (StringUtils.isBlank(username)) {
-            return "select 0";
+            return "SELECT 0";
         }
         if (StringUtils.isBlank(id)) {
-            return "select 0";
+            return "SELECT 0";
         }
         SQL sql = new SQL();
         sql.UPDATE("mx_geometry");

@@ -13,7 +13,7 @@ public class FlowGroupTemplateMapperProvider {
         strBuf.append("where ");
         strBuf.append("enable_flag = 1 ");
         if (StringUtils.isNotBlank(param)) {
-            strBuf.append("and name like " + SqlUtils.addSqlStrLikeAndReplace(param) + " ");
+            strBuf.append("and name like CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%') ");
         }
         if (!isAdmin) {
             strBuf.append("and crt_user = " + SqlUtils.preventSQLInjection(username));
@@ -23,7 +23,7 @@ public class FlowGroupTemplateMapperProvider {
     }
 
     public String getFlowGroupTemplateVoById(String username, boolean isAdmin, String id) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         if (StringUtils.isNotBlank(id)) {
             StringBuffer strBuf = new StringBuffer();
             strBuf.append("select* ");

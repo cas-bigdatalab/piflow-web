@@ -114,7 +114,7 @@ public class MxGraphModelProvider {
     public String addMxGraphModel(MxGraphModel mxGraphModel) {
         this.preventSQLInjectionMxGraphModel(mxGraphModel);
         if (null == mxGraphModel) {
-            return "select 0";
+            return "SELECT 0";
         }
         SQL sql = new SQL();
         // INSERT_INTO brackets is table name
@@ -244,7 +244,7 @@ public class MxGraphModelProvider {
      * @return
      */
     public String getMxGraphModelByFlowId(String flowId) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         if (StringUtils.isNotBlank(flowId)) {
             SQL sql = new SQL();
             sql.SELECT("*");
@@ -263,7 +263,7 @@ public class MxGraphModelProvider {
      * @return
      */
     public String getMxGraphModelByFlowGroupId(String flowGroupId) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         if (StringUtils.isNotBlank(flowGroupId)) {
             SQL sql = new SQL();
             sql.SELECT("*");
@@ -282,7 +282,7 @@ public class MxGraphModelProvider {
      * @return
      */
     public String getMxGraphModelByProcessId(String processId) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         if (StringUtils.isNotBlank(processId)) {
             SQL sql = new SQL();
             sql.SELECT("*");
@@ -301,7 +301,7 @@ public class MxGraphModelProvider {
      * @return
      */
     public String getMxGraphModelByProcessGroupId(String processGroupId) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         if (StringUtils.isNotBlank(processGroupId)) {
             SQL sql = new SQL();
             sql.SELECT("*");
@@ -322,10 +322,10 @@ public class MxGraphModelProvider {
      */
     public String updateEnableFlagByFlowId(String username, String flowId) {
         if (StringUtils.isBlank(username)) {
-            return "select 0";
+            return "SELECT 0";
         }
         if (StringUtils.isBlank(flowId)) {
-            return "select 0";
+            return "SELECT 0";
         }
         SQL sql = new SQL();
         sql.UPDATE("mx_graph_model");

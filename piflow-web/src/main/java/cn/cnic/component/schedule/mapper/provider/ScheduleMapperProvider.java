@@ -78,7 +78,7 @@ public class ScheduleMapperProvider {
      * @return string sql
      */
     public String insert(Schedule schedule) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         boolean flag = this.preventSQLInjectionSchedule(schedule);
         if (flag) {
             StringBuffer strBuf = new StringBuffer();
@@ -121,7 +121,7 @@ public class ScheduleMapperProvider {
      */
     public String update(Schedule schedule) {
 
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         boolean flag = this.preventSQLInjectionSchedule(schedule);
         if (flag && StringUtils.isNotBlank(this.id)) {
             SQL sql = new SQL();
@@ -171,8 +171,8 @@ public class ScheduleMapperProvider {
         strBuf.append("gs.enable_flag = 1 ");
         if (StringUtils.isNotBlank(param)) {
             strBuf.append("and ( ");
-            strBuf.append("gs.type like '%" + param + "%' ");
-            strBuf.append("or gs.cron_expression like '%" + param + "%' ");
+            strBuf.append("gs.type like CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%') ");
+            strBuf.append("or gs.cron_expression like CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%') ");
             strBuf.append(") ");
         }
         if (!isAdmin) {
@@ -193,7 +193,7 @@ public class ScheduleMapperProvider {
      */
     public String getScheduleById(boolean isAdmin, String username, String id) {
         if (StringUtils.isBlank(id)) {
-            return "select 0";
+            return "SELECT 0";
         }
         StringBuffer strBuf = new StringBuffer();
         strBuf.append("select * ");
@@ -218,10 +218,10 @@ public class ScheduleMapperProvider {
      */
     public String delScheduleById(boolean isAdmin, String username, String id) {
         if (StringUtils.isBlank(id)) {
-            return "select 0";
+            return "SELECT 0";
         }
         if (StringUtils.isBlank(username)) {
-            return "select 0";
+            return "SELECT 0";
         }
         StringBuffer strBuf = new StringBuffer();
         String lastUpdateDttm = DateUtils.dateTimesToStr(new Date());
@@ -241,7 +241,7 @@ public class ScheduleMapperProvider {
 
     public String getScheduleIdListByStateRunning(boolean isAdmin, String username){
         if (StringUtils.isBlank(username)) {
-            return "select 0";
+            return "SELECT 0";
         }
         StringBuffer strBuf = new StringBuffer();
         strBuf.append("select * from group_schedule ");

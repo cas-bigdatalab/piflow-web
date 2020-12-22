@@ -107,7 +107,7 @@ public class ProcessGroupMapperProvider {
             return strBuf.toString() + ";";
 
         }
-        return "select 0";
+        return "SELECT 0";
     }
 
     /**
@@ -118,7 +118,7 @@ public class ProcessGroupMapperProvider {
      */
     public String getProcessGroupByIdAndUser(String username, boolean isAdmin, String id) {
         if (StringUtils.isBlank(id)) {
-            return "select 0";
+            return "SELECT 0";
         }
         StringBuffer strBuf = new StringBuffer();
         strBuf.append("select * ");
@@ -139,7 +139,7 @@ public class ProcessGroupMapperProvider {
      */
     public String getProcessGroupById(String id) {
         if (StringUtils.isBlank(id)) {
-            return "select 0";
+            return "SELECT 0";
         }
         StringBuffer strBuf = new StringBuffer();
         strBuf.append("select * ");
@@ -158,7 +158,7 @@ public class ProcessGroupMapperProvider {
      */
     public String getProcessGroupByProcessGroupId(String processGroupId) {
         if (StringUtils.isBlank(processGroupId)) {
-            return "select 0";
+            return "SELECT 0";
         }
         StringBuffer strBuf = new StringBuffer();
         strBuf.append("select * ");
@@ -176,7 +176,7 @@ public class ProcessGroupMapperProvider {
      */
     public String getRunModeTypeById(String username, boolean isAdmin, String processGroupId) {
         if (StringUtils.isBlank(processGroupId)) {
-            return "select 0";
+            return "SELECT 0";
         }
         StringBuffer strBuf = new StringBuffer();
         strBuf.append("select run_mode_type ");
@@ -196,7 +196,7 @@ public class ProcessGroupMapperProvider {
      * @return
      */
     public String getProcessGroupByAppId(String appID) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         if (StringUtils.isNotBlank(appID)) {
             SQL sql = new SQL();
             sql.SELECT("*");
@@ -214,7 +214,7 @@ public class ProcessGroupMapperProvider {
      * @return
      */
     public String getProcessGroupIdByAppId(String appID) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         if (StringUtils.isNotBlank(appID)) {
             SQL sql = new SQL();
             sql.SELECT("id");
@@ -233,7 +233,7 @@ public class ProcessGroupMapperProvider {
      * @return
      */
     public String getProcessGroupListByAppIDs(@SuppressWarnings("rawtypes") Map map) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         String[] appIDs = (String[]) map.get("appIDs");
         if (null != appIDs && appIDs.length > 0) {
             SQL sql = new SQL();
@@ -277,18 +277,18 @@ public class ProcessGroupMapperProvider {
      */
     public String getProcessGroupListByParam(String username, boolean isAdmin, String param) {
         StringBuffer strBuf = new StringBuffer();
-        strBuf.append("select * ");
-        strBuf.append("from flow_process_group ");
-        strBuf.append("where ");
+        strBuf.append("SELECT * ");
+        strBuf.append("FROM flow_process_group ");
+        strBuf.append("WHERE ");
         strBuf.append("enable_flag = 1 ");
-        strBuf.append("and app_id is not null ");
-        strBuf.append("and fk_flow_process_group_id is null ");
+        strBuf.append("AND app_id IS NOT NULL ");
+        strBuf.append("AND fk_flow_process_group_id IS NULL ");
         if (StringUtils.isNotBlank(param)) {
-            strBuf.append("and ( ");
-            strBuf.append("app_id like '%" + param + "%' ");
-            strBuf.append("or name like '%" + param + "%' ");
-            strBuf.append("or state like '%" + param + "%' ");
-            strBuf.append("or description like '%" + param + "%' ");
+            strBuf.append("AND ( ");
+            strBuf.append("app_id LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%')");
+            strBuf.append("OR name LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%')");
+            strBuf.append("OR state LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%')");
+            strBuf.append("OR description LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%')");
             strBuf.append(") ");
         }
         if (!isAdmin) {
@@ -320,7 +320,7 @@ public class ProcessGroupMapperProvider {
     }
 
     public String updateEnableFlagById(String id, String userName) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         if (!StringUtils.isAnyEmpty(id, userName)) {
             SQL sql = new SQL();
             sql.UPDATE("flow_process_group");

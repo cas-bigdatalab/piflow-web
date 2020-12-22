@@ -2,6 +2,7 @@ package cn.cnic.component.testData.mapper.provider;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
@@ -27,9 +28,11 @@ public class TestDataSchemaValuesMapperProvider {
 		}
 		// Mandatory Field
 		String lastUpdateDttm = DateUtils.dateTimesToStr(
-				null != testDataSchemaValues.getLastUpdateDttm() ? testDataSchemaValues.getLastUpdateDttm() : new Date());
+				null != testDataSchemaValues.getLastUpdateDttm() ? testDataSchemaValues.getLastUpdateDttm()
+						: new Date());
 		this.id = SqlUtils.preventSQLInjection(testDataSchemaValues.getId());
-		this.enableFlag = ((null != testDataSchemaValues.getEnableFlag() && testDataSchemaValues.getEnableFlag()) ? 1 : 0);
+		this.enableFlag = ((null != testDataSchemaValues.getEnableFlag() && testDataSchemaValues.getEnableFlag()) ? 1
+				: 0);
 		this.version = (null != testDataSchemaValues.getVersion() ? testDataSchemaValues.getVersion() : 0L);
 		this.lastUpdateDttmStr = SqlUtils.preventSQLInjection(lastUpdateDttm);
 		this.lastUpdateUser = SqlUtils.preventSQLInjection(testDataSchemaValues.getLastUpdateUser());
@@ -37,7 +40,9 @@ public class TestDataSchemaValuesMapperProvider {
 		// Selection field
 		this.fieldValue = SqlUtils.preventSQLInjection(testDataSchemaValues.getFieldValue());
 		this.dataRow = testDataSchemaValues.getDataRow();
-		this.testDataSchemaId = SqlUtils.preventSQLInjection(null != testDataSchemaValues.getTestDataSchema() ? testDataSchemaValues.getTestDataSchema().getId() : null);
+		this.testDataSchemaId = SqlUtils.preventSQLInjection(
+				null != testDataSchemaValues.getTestDataSchema() ? testDataSchemaValues.getTestDataSchema().getId()
+						: null);
 
 		return true;
 	}
@@ -54,7 +59,7 @@ public class TestDataSchemaValuesMapperProvider {
 	}
 
 	public String addTestDataSchemaValues(TestDataSchemaValues testDataSchemaValues) {
-		String sql = "select 0";
+		String sql = "SELECT 0";
 		if (preventSQLInjectionTestDataSchemaValues(testDataSchemaValues)) {
 			StringBuffer strBuf = new StringBuffer();
 			strBuf.append("INSERT INTO group_schedule ");
@@ -79,9 +84,9 @@ public class TestDataSchemaValuesMapperProvider {
 	}
 
 	public String addTestDataSchemaValuesList(List<TestDataSchemaValues> testDataSchemaValuesList) {
-		String sql = "select 0";
+		String sql = "SELECT 0";
 		if (null == testDataSchemaValuesList || testDataSchemaValuesList.size() <= 0) {
-			return "select 0";
+			return "SELECT 0";
 		}
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append("INSERT INTO group_schedule ");
@@ -114,7 +119,7 @@ public class TestDataSchemaValuesMapperProvider {
 	}
 
 	public String updateTestDataSchemaValues(TestDataSchemaValues testDataSchemaValues) {
-		String sqlStr = "select 0";
+		String sqlStr = "SELECT 0";
 		boolean flag = preventSQLInjectionTestDataSchemaValues(testDataSchemaValues);
 		if (flag && StringUtils.isNotBlank(this.id)) {
 			SQL sql = new SQL();
@@ -137,6 +142,44 @@ public class TestDataSchemaValuesMapperProvider {
 		}
 		this.resetTestDataSchemaValues();
 		return sqlStr;
+	}
+
+	public String getTestDataSchemaValuesCustomList(@SuppressWarnings("rawtypes") Map map) {
+		if (null == map) {
+			return "SELECT 0";
+		}
+		@SuppressWarnings("unchecked")
+		List<Map<String, String>> fieldNameList = (List<Map<String, String>>) map.get("fieldNameList");
+		if (null == fieldNameList || fieldNameList.size() <= 0) {
+			return "SELECT 0";
+		}
+		String condition = " ";
+		boolean isAdmin = (boolean) map.get("isAdmin");
+		String username = (String) map.get("username");
+
+		if (!isAdmin) {
+			if (StringUtils.isBlank(username)) {
+				return "SELECT 0";
+			}
+			condition = "AND TDSV.crt_user=" + SqlUtils.preventSQLInjection(username);
+		}
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("SELECT TDSV.data_row as 'dataRow' ");
+		for (Map<String, String> fieldName : fieldNameList) {
+			strBuf.append(",MAX( ");
+			strBuf.append("CASE TDSV.fk_test_data_schema_id WHEN ");
+			strBuf.append(SqlUtils.preventSQLInjection(fieldName.get("id")) + " ");
+			strBuf.append("THEN TDSV.field_value END ");
+			strBuf.append(") AS ");
+			strBuf.append(SqlUtils.preventSQLInjection(fieldName.get("field_name")) + " ");
+		}
+		strBuf.append("FROM TEST_DATA_SCHEMA_VALUES TDSV ");
+		strBuf.append("WHERE TDSV.enable_flag=1 ");
+		strBuf.append(condition + " ");
+		strBuf.append("GROUP BY TDSV.data_row");
+
+		return strBuf.toString();
+
 	}
 
 }

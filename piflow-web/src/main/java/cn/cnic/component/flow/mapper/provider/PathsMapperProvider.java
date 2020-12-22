@@ -308,7 +308,7 @@ public class PathsMapperProvider {
      * @return
      */
     public String getPathsById(String id) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         if (StringUtils.isNotBlank(id)) {
             SQL sql = new SQL();
             sql.SELECT("*");
@@ -329,10 +329,10 @@ public class PathsMapperProvider {
      */
     public String updateEnableFlagByFlowId(String username, String flowId) {
         if (StringUtils.isBlank(username)) {
-            return "select 0";
+            return "SELECT 0";
         }
         if (StringUtils.isBlank(flowId)) {
-            return "select 0";
+            return "SELECT 0";
         }
         SQL sql = new SQL();
         sql.UPDATE("flow_path");

@@ -95,7 +95,7 @@ public class ProcessGroupPathMapperProvider {
             }
             this.resetProcessGroupPath();
         }
-        return "select 0";
+        return "SELECT 0";
     }
 
     /**
@@ -105,7 +105,7 @@ public class ProcessGroupPathMapperProvider {
      * @return
      */
     public String getProcessPathByProcessGroupId(String processGroupId) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         if (StringUtils.isNotBlank(processGroupId)) {
             SQL sql = new SQL();
             sql.SELECT("*");
@@ -119,7 +119,7 @@ public class ProcessGroupPathMapperProvider {
     }
 
     public String updateEnableFlagByProcessGroupId(String processGroupId, String userName) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         if (!StringUtils.isAnyEmpty(processGroupId, userName)) {
             SQL sql = new SQL();
             sql.UPDATE("flow_process_group_path");
@@ -143,7 +143,7 @@ public class ProcessGroupPathMapperProvider {
      * @return
      */
     public String getProcessPathByPageIdAndProcessGroupId(String processGroupId, String pageId) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         if (!StringUtils.isAnyEmpty(processGroupId, pageId)) {
             SQL sql = new SQL();
             sql.SELECT("*");

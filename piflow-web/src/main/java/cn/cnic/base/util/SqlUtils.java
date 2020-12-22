@@ -49,20 +49,6 @@ public class SqlUtils {
         }
     }
 
-    /**
-     * str(Add a single quote to the string and replace the single quote in the string with a double quote)
-     *
-     * @param str
-     * @return
-     */
-    public static String addSqlStrLikeAndReplace(String str) {
-        if (StringUtils.isNotBlank(str)) {
-            return "'%" + replaceString(str) + "%' ";
-        } else {
-            return "'' ";
-        }
-    }
-
     public static String baseFieldName() {
         return " id, crt_dttm, crt_user, last_update_dttm, last_update_user, enable_flag, version ";
     }

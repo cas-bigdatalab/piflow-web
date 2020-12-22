@@ -18,7 +18,7 @@ public class TestDataSchemaValuesTest extends ApplicationTests {
 	Logger logger = LoggerUtil.getLogger();
 
 	@Test
-	public void testGetFlowById() {
+	public void testGetTestDataSchemaValuesList() {
 		List<TestDataSchemaValues> testDataSchemaValuesList = testDataSchemaValuesMapper.getTestDataSchemaValuesList();
 		logger.info("length:" + testDataSchemaValuesList.size());
 	}

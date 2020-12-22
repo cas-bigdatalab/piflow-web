@@ -154,7 +154,7 @@ public class SparkJarMapperProvider {
      * @return
      */
     public String getSparkJarList(String username, boolean isAdmin, String param) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         StringBuffer strBuf = new StringBuffer();
         strBuf.append("select * ");
         strBuf.append("from spark_jar ");
@@ -174,14 +174,14 @@ public class SparkJarMapperProvider {
      * @return
      */
     public String getSparkJarListByName(String username, boolean isAdmin, String jarName) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         StringBuffer strBuf = new StringBuffer();
         strBuf.append("select * ");
         strBuf.append("from spark_jar ");
         strBuf.append("where enable_flag = 1 ");
         if (StringUtils.isNotBlank(jarName)) {
             strBuf.append("and ( ");
-            strBuf.append("jar_name like '%" + jarName + "%' ");
+            strBuf.append("jar_name like CONCAT('%'," + SqlUtils.preventSQLInjection(jarName) + ",'%') ");
             strBuf.append(") ");
         }
         if (!isAdmin) {
@@ -222,10 +222,10 @@ public class SparkJarMapperProvider {
      */
     public String updateEnableFlagById(String username, String id) {
         if (StringUtils.isBlank(username)) {
-            return "select 0";
+            return "SELECT 0";
         }
         if (StringUtils.isBlank(id)) {
-            return "select 0";
+            return "SELECT 0";
         }
         SQL sql = new SQL();
         sql.UPDATE("spark_jar");
@@ -244,15 +244,15 @@ public class SparkJarMapperProvider {
      * @return
      */
     public String getSparkJarListParam(String username, boolean isAdmin, String param) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         StringBuffer strBuf = new StringBuffer();
         strBuf.append("select * ");
         strBuf.append("from spark_jar ");
         strBuf.append("where enable_flag = 1 ");
         if (StringUtils.isNotBlank(param)) {
             strBuf.append("and ( ");
-            strBuf.append("jar_name like '%" + param + "%' ");
-            strBuf.append("or status like '%" + param + "%' ");
+            strBuf.append("jar_name like CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%') ");
+            strBuf.append("or status like CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%') ");
             strBuf.append(") ");
         }
         if (!isAdmin) {

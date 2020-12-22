@@ -50,10 +50,10 @@ public class TestDataMapperProvider {
 	}
 
 	public String addTestData(TestData testData) {
-		String sql = "select 0";
+		String sql = "SELECT 0";
 		if (preventSQLInjectionTestData(testData)) {
 			StringBuffer strBuf = new StringBuffer();
-			strBuf.append("INSERT INTO group_schedule ");
+			strBuf.append("INSERT INTO test_data ");
 			strBuf.append("( ");
 			strBuf.append(SqlUtils.baseFieldName() + ", ");
 			strBuf.append("name, ");
@@ -73,12 +73,12 @@ public class TestDataMapperProvider {
 	}
 
 	public String updateTestData(TestData testData) {
-		String sqlStr = "select 0";
+		String sqlStr = "SELECT 0";
 		boolean flag = preventSQLInjectionTestData(testData);
 		if (flag && StringUtils.isNotBlank(this.id)) {
 			SQL sql = new SQL();
 			// INSERT_INTO brackets is table name
-			sql.UPDATE("group_schedule");
+			sql.UPDATE("test_data");
 			// The first string in the SET is the name of the field corresponding to the
 			// table in the database
 			sql.SET("last_update_dttm = " + lastUpdateDttmStr);
@@ -95,6 +95,25 @@ public class TestDataMapperProvider {
 		}
 		this.resetTestData();
 		return sqlStr;
+	}
+
+	public String getTestDataList(boolean isAdmin, String username, String param) {
+		StringBuffer stringBuf = new StringBuffer();
+		stringBuf.append("SELECT * FROM test_data WHERE enable_flag=1 ");
+		if (!isAdmin) {
+			if (StringUtils.isBlank(username)) {
+				return "SELECT 0";
+			}
+			stringBuf.append("AND crt_user=" + SqlUtils.preventSQLInjection(username) + " ");
+		}
+		if (StringUtils.isNotBlank(param)) {
+			stringBuf.append("crt_dttm LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%')");
+			stringBuf.append("last_update_dttm LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%')");
+			stringBuf.append("name LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%')");
+			stringBuf.append("description LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%')");
+		}
+		stringBuf.append("ORDER BY  last_update_dttm DESC ");
+		return stringBuf.toString();
 	}
 
 }

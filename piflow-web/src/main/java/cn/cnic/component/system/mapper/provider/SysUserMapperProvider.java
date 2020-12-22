@@ -42,12 +42,12 @@ public class SysUserMapperProvider {
      * @return
      */
     public String findUserByNameLike(String name) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         if (StringUtils.isNotBlank(name)) {
             SQL sql = new SQL();
             sql.SELECT("*");
             sql.FROM("sys_user");
-            sql.WHERE("name like '%" + name + "%'");
+            sql.WHERE("name like CONCAT('%'," + SqlUtils.preventSQLInjection(name) + ",'%') ");
             sqlStr = sql.toString();
         }
         return sqlStr;
@@ -60,7 +60,7 @@ public class SysUserMapperProvider {
      * @return
      */
     public String findUserByName(String name) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         if (StringUtils.isNotBlank(name)) {
             SQL sql = new SQL();
             sql.SELECT("*");
@@ -78,7 +78,7 @@ public class SysUserMapperProvider {
      * @return
      */
     public String findUserByUserName(String userName) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         if (StringUtils.isNotBlank(userName)) {
             SQL sql = new SQL();
             sql.SELECT("*");
@@ -106,7 +106,7 @@ public class SysUserMapperProvider {
      * @return
      */
     public String deleteUser(String id) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         if (StringUtils.isNotBlank(id)) {
             SQL sql = new SQL();
             sql.DELETE_FROM("sys_user");
@@ -118,7 +118,7 @@ public class SysUserMapperProvider {
 
     public String insertSysUser(SysUser sysUser) {
         if (null == sysUser) {
-            return "select 0";
+            return "SELECT 0";
         }
         this.preventSQLInjectionSysUser(sysUser);
 

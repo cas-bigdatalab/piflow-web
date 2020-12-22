@@ -213,10 +213,10 @@ public class CustomizedPropertyMapperProvider {
      */
     public String updateEnableFlagByStopId(String username, String id) {
         if (StringUtils.isBlank(username)) {
-            return "select 0";
+            return "SELECT 0";
         }
         if (StringUtils.isBlank(id)) {
-            return "select 0";
+            return "SELECT 0";
         }
         SQL sql = new SQL();
         sql.UPDATE("flow_stops_customized_property");
@@ -237,10 +237,10 @@ public class CustomizedPropertyMapperProvider {
      */
     public String updateCustomizedPropertyCustomValue(String username, String content, String id) {
         if (StringUtils.isBlank(username)) {
-            return "select 0";
+            return "SELECT 0";
         }
         if (StringUtils.isBlank(id)) {
-            return "select 0";
+            return "SELECT 0";
         }
         SQL sql = new SQL();
         sql.UPDATE("flow_stops_customized_property");

@@ -73,7 +73,7 @@ public class StopsComponentMapperProvider {
      * @return
      */
     public String getStopsComponentById(String id) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         SQL sql = new SQL();
         sql.SELECT("*");
         sql.FROM("flow_stops_template");
@@ -102,7 +102,7 @@ public class StopsComponentMapperProvider {
 
     public String insertStopsComponent(StopsComponent stopsComponent) {
         if (null == stopsComponent) {
-            return "select 0";
+            return "SELECT 0";
         }
         this.preventSQLInjectionStops(stopsComponent);
 

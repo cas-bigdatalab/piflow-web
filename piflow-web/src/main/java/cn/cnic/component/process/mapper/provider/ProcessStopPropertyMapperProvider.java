@@ -81,7 +81,7 @@ public class ProcessStopPropertyMapperProvider {
     }
 
     public String addProcessStopProperty(ProcessStopProperty processStopProperty) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         this.preventSQLInjectionProcessStopProperty(processStopProperty);
         if (null != processStopProperty) {
             SQL sql = new SQL();
@@ -124,7 +124,7 @@ public class ProcessStopPropertyMapperProvider {
     }
 
     public String addProcessStopProperties(Map<String, List<ProcessStopProperty>> processStopPropertyList) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         List<ProcessStopProperty> processStopProperties = processStopPropertyList.get("processStopPropertyList");
         if (null != processStopProperties && processStopProperties.size() > 0) {
             StringBuffer sql = new StringBuffer();
@@ -192,7 +192,7 @@ public class ProcessStopPropertyMapperProvider {
     }
 
     public String getStopPropertyByProcessStopId(String processStopId) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         if (StringUtils.isNotBlank(processStopId)) {
             SQL sql = new SQL();
             sql.SELECT("*");
@@ -206,7 +206,7 @@ public class ProcessStopPropertyMapperProvider {
     }
 
     public String updateProcessStopProperty(ProcessStopProperty processStopProperty) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         this.preventSQLInjectionProcessStopProperty(processStopProperty);
         if (null != processStopProperty) {
             String id = processStopProperty.getId();
@@ -243,7 +243,7 @@ public class ProcessStopPropertyMapperProvider {
     }
 
     public String updateEnableFlagByProcessStopId(String processStopId, String username) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         if (!StringUtils.isAnyEmpty(processStopId, username)) {
             SQL sql = new SQL();
             sql.UPDATE("flow_process_stop_property");

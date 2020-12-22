@@ -106,7 +106,7 @@ public class ProcessStopMapperProvider {
      * @return
      */
     public String addProcessStop(ProcessStop processStop) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         this.preventSQLInjectionProcessStop(processStop);
         if (null != processStop) {
 
@@ -161,7 +161,7 @@ public class ProcessStopMapperProvider {
      * @return
      */
     public String addProcessStopList(Map<String, List<ProcessStop>> processStopList) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         List<ProcessStop> processStops = processStopList.get("processStopList");
         if (null != processStops && processStops.size() > 0) {
             StringBuffer sql = new StringBuffer();
@@ -242,7 +242,7 @@ public class ProcessStopMapperProvider {
     }
 
     public String getProcessStopByProcessId(String processId) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         if (StringUtils.isNotBlank(processId)) {
             SQL sql = new SQL();
             sql.SELECT("*");
@@ -263,7 +263,7 @@ public class ProcessStopMapperProvider {
      * @return
      */
     public String getProcessStopByPageIdAndPageId(String processId, String pageId) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         if (!StringUtils.isAnyEmpty(processId, pageId)) {
             SQL sql = new SQL();
             sql.SELECT("*");
@@ -287,7 +287,7 @@ public class ProcessStopMapperProvider {
 	public String getProcessStopByPageIdAndPageIds(Map map) {
         String processId = (String) map.get("processId");
         String[] pageIds = (String[]) map.get("pageIds");
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         if (StringUtils.isNotBlank(processId) && null != pageIds && pageIds.length > 0) {
             SQL sql = new SQL();
             sql.SELECT("*");
@@ -309,7 +309,7 @@ public class ProcessStopMapperProvider {
      * @return
      */
     public String getProcessStopByNameAndPid(String processId, String name) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         if (!StringUtils.isAnyEmpty(processId, name)) {
             SQL sql = new SQL();
             sql.SELECT("*");
@@ -324,7 +324,7 @@ public class ProcessStopMapperProvider {
     }
 
     public String updateProcessStop(ProcessStop processStop) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         this.preventSQLInjectionProcessStop(processStop);
         if (null != processStop) {
             String id = processStop.getId();
@@ -364,7 +364,7 @@ public class ProcessStopMapperProvider {
     }
 
     public String updateEnableFlagByProcessId(String processId, String username) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         if (StringUtils.isNoneEmpty(processId, username)) {
             SQL sql = new SQL();
             sql.UPDATE("flow_process_stop");

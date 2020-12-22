@@ -3,12 +3,12 @@ package cn.cnic.component.dashboard.mapper.provider;
 public class StatisticProvider {
 
     public String getFlowProcessStatisticInfo(){
-        String sql = "SELECT state, count(*) as count FROM flow_process WHERE enable_flag=1 AND app_id IS NOT NULL AND fk_flow_process_group_id IS NULL GROUP BY state";
+        String sql = "SELECT state, count(*) AS count FROM flow_process WHERE enable_flag=1 AND app_id IS NOT NULL AND fk_flow_process_group_id IS NULL GROUP BY state";
         return  sql;
     }
 
     public String getFlowCount(){
-        String sql = "select count(*) as count from flow where enable_flag = 1 and fk_flow_group_id is null and is_example != 1";
+        String sql = "SELECT count(*) AS count FROM flow where enable_flag = 1 AND fk_flow_group_id IS NULL AND is_example != 1";
         return  sql;
     }
 
@@ -18,38 +18,38 @@ public class StatisticProvider {
     }
 
     public String getGroupCount(){
-        String sql = "select count(*) as count from flow_group where enable_flag = 1 and fk_flow_group_id is null and is_example != 1";
+        String sql = "SELECT count(*) as count FROM flow_group where enable_flag = 1 AND fk_flow_group_id IS NULL AND is_example != 1";
         return  sql;
     }
 
     public String getScheduleStatisticInfo(){
-        String sql = "select status, count(*) as count from group_schedule where enable_flag = 1 GROUP BY status";
+        String sql = "SELECT status, count(*) as count FROM group_schedule where enable_flag = 1 GROUP BY status";
         return  sql;
     }
 
 
     public String getTemplateCount(){
-        String sql = "select count(*) as count from flow_template where enable_flag = 1";
+        String sql = "SELECT count(*) as count FROM flow_template where enable_flag = 1";
         return  sql;
     }
 
     public String getDataSourceCount(){
-        String sql = "select count(*) as count from data_source where enable_flag = 1 and is_template = 0";
+        String sql = "SELECT count(*) as count FROM data_source where enable_flag = 1 AND is_template = 0";
         return  sql;
     }
 
     public String getStopsHubCount(){
-        String sql = "select count(*) as count from stops_hub where enable_flag = 1";
+        String sql = "SELECT count(*) as count FROM stops_hub where enable_flag = 1";
         return  sql;
     }
 
     public String getStopsCount(){
-        String sql = "select count(*) as count from flow_stops_template";
+        String sql = "SELECT count(*) as count FROM flow_stops_template";
         return  sql;
     }
 
     public String getStopsGroupCount(){
-        String sql = "select count(*) as count from flow_stops_groups";
+        String sql = "SELECT count(*) as count FROM flow_stops_groups";
         return  sql;
     }
 }

@@ -18,7 +18,7 @@ public class SysRoleMapperProvider {
      * @return
      */
     public String getSysRoleListBySysUserId(String sysUserId) {
-        String strSql = "select 0";
+        String strSql = "SELECT 0";
         if (StringUtils.isNotBlank(sysUserId)) {
             StringBuffer strBuf = new StringBuffer();
             strBuf.append("select * ");
@@ -35,7 +35,7 @@ public class SysRoleMapperProvider {
         List<SysRole> roles = (List<SysRole>) map.get("roles");
         String userId = (String) map.get("userId");
         if (null == roles || roles.isEmpty() || StringUtils.isBlank(userId)) {
-            return "select 0";
+            return "SELECT 0";
         }
         StringBuffer strBuf = new StringBuffer();
         strBuf.append("INSERT INTO sys_role ");

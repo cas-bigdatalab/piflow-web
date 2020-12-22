@@ -213,10 +213,10 @@ public class MxCellMapperProvider {
      */
     public String getMxCellByMxGraphIdAndPageId(String mxGraphId, String pageId) {
         if (StringUtils.isBlank(mxGraphId)) {
-            return "select 0";
+            return "SELECT 0";
         }
         if (StringUtils.isBlank(pageId)) {
-            return "select 0";
+            return "SELECT 0";
         }
         SQL sql = new SQL();
         sql.SELECT("*");
@@ -236,10 +236,10 @@ public class MxCellMapperProvider {
      */
     public String updateEnableFlagById(String username, String id) {
         if (StringUtils.isBlank(username)) {
-            return "select 0";
+            return "SELECT 0";
         }
         if (StringUtils.isBlank(id)) {
-            return "select 0";
+            return "SELECT 0";
         }
         SQL sql = new SQL();
         sql.UPDATE("mx_cell");

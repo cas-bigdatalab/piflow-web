@@ -17,7 +17,7 @@ public class SysMenuMapperProvider {
      * @return
      */
     public String getSysMenuList(String role) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         if (StringUtils.isNotBlank(role)) {
             SQL sql = new SQL();
             sql.SELECT("*");
@@ -38,7 +38,7 @@ public class SysMenuMapperProvider {
      * @return
      */
     public String getSampleMenuList() {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         SQL sql = new SQL();
         sql.SELECT("*");
         sql.FROM("sys_menu");
@@ -49,7 +49,7 @@ public class SysMenuMapperProvider {
     }
 
     public static String deleteSampleMenuListByIds(Map<String, String[]> map) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         if (null == map) {
             return sqlStr;
         }

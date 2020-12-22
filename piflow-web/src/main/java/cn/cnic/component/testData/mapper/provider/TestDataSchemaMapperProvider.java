@@ -61,7 +61,7 @@ public class TestDataSchemaMapperProvider {
 	}
 
 	public String addTestDataSchema(TestDataSchema testDataSchema) {
-		String sql = "select 0";
+		String sql = "SELECT 0";
 		if (preventSQLInjectionTestDataSchema(testDataSchema)) {
 			StringBuffer strBuf = new StringBuffer();
 			strBuf.append("INSERT INTO group_schedule ");
@@ -90,9 +90,9 @@ public class TestDataSchemaMapperProvider {
 	}
 
 	public String addTestDataSchemaList(List<TestDataSchema> testDataSchemaList) {
-		String sql = "select 0";
+		String sql = "SELECT 0";
 		if (null == testDataSchemaList || testDataSchemaList.size() <= 0) {
-			return "select 0";
+			return "SELECT 0";
 		}
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append("INSERT INTO group_schedule ");
@@ -129,7 +129,7 @@ public class TestDataSchemaMapperProvider {
 	}
 
 	public String updateTestDataSchema(TestDataSchema testDataSchema) {
-		String sqlStr = "select 0";
+		String sqlStr = "SELECT 0";
 		boolean flag = preventSQLInjectionTestDataSchema(testDataSchema);
 		if (flag && StringUtils.isNotBlank(this.id)) {
 			SQL sql = new SQL();

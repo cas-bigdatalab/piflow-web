@@ -153,7 +153,7 @@ public class StopsHubMapperProvider {
      * @return
      */
     public String getStopsHubList(String username, boolean isAdmin, String param) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         StringBuffer strBuf = new StringBuffer();
         strBuf.append("select * ");
         strBuf.append("from stops_hub ");
@@ -173,14 +173,14 @@ public class StopsHubMapperProvider {
      * @return
      */
     public String getStopsHubListByName(String username, boolean isAdmin, String jarName) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         StringBuffer strBuf = new StringBuffer();
         strBuf.append("select * ");
         strBuf.append("from stops_hub ");
         strBuf.append("where enable_flag = 1 ");
         if (StringUtils.isNotBlank(jarName)) {
             strBuf.append("and ( ");
-            strBuf.append("jar_name like '%" + jarName + "%' ");
+            strBuf.append("jar_name like CONCAT('%'," + SqlUtils.preventSQLInjection(jarName) + ",'%') ");
             strBuf.append(") ");
         }
         if (!isAdmin) {
@@ -221,10 +221,10 @@ public class StopsHubMapperProvider {
      */
     public String updateEnableFlagById(String username, String id) {
         if (StringUtils.isBlank(username)) {
-            return "select 0";
+            return "SELECT 0";
         }
         if (StringUtils.isBlank(id)) {
-            return "select 0";
+            return "SELECT 0";
         }
         SQL sql = new SQL();
         sql.UPDATE("stops_hub");
@@ -243,15 +243,15 @@ public class StopsHubMapperProvider {
      * @return
      */
     public String getStopsHubListParam(String username, boolean isAdmin, String param) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         StringBuffer strBuf = new StringBuffer();
         strBuf.append("select * ");
         strBuf.append("from stops_hub ");
         strBuf.append("where enable_flag = 1 ");
         if (StringUtils.isNotBlank(param)) {
             strBuf.append("and ( ");
-            strBuf.append("jar_name like '%" + param + "%' ");
-            strBuf.append("or status like '%" + param + "%' ");
+            strBuf.append("jar_name like CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%') ");
+            strBuf.append("or status like CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%') ");
             strBuf.append(") ");
         }
         if (!isAdmin) {

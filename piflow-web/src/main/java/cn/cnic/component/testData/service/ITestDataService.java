@@ -1,10 +1,5 @@
 package cn.cnic.component.testData.service;
 
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletResponse;
-
-
 public interface ITestDataService {
 
 
@@ -17,55 +12,43 @@ public interface ITestDataService {
      * @param templateType
      * @return
      */
-    public String addFlowTemplate(String username, String name, String loadId, String templateType);
-
+    public String addTestData(String username, String name, String loadId, String templateType);
+    
     /**
-     * Query all FlowTemplate list pagination
-     *
-     * @param username Username
-     * @param isAdmin  Is Admin
-     * @param offset   Number of pages
-     * @param limit    Number of pages per page
-     * @param param    search for the keyword
-     * @return
-     */
-    public String getFlowTemplateListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param);
-
-    /**
-     * Delete the template based on id
-     *
-     * @param id
-     * @return
-     */
-    public String deleteFlowTemplate(String id);
-
-    /**
-     * Download template
-     *
-     * @param flowTemplateId
-     */
-    public void templateDownload(HttpServletResponse response, String flowTemplateId);
-
-    /**
-     * Query all templates for drop-down displays
-     *
+     * getTestDataList
+     * 
      * @param username
      * @param isAdmin
+     * @param offset
+     * @param limit
+     * @param param
      * @return
      */
-    public String flowTemplateList(String username, boolean isAdmin);
-
+    public String getTestDataList(String username, boolean isAdmin, Integer offset, Integer limit, String param);
+    
     /**
-     * Upload xml file and save flowTemplate
-     *
+     * getTestDataSchemaList
+     * 
      * @param username
-     * @param file
+     * @param isAdmin
+     * @param offset
+     * @param limit
+     * @param param
      * @return
      */
-    public String uploadXmlFile(String username, MultipartFile file);
+    public String getTestDataSchemaList(String username, boolean isAdmin, Integer offset, Integer limit, String param);
+    
+    /**
+     * getTestDataSchemaValuesCustomList
+     * 
+     * @param username
+     * @param isAdmin
+     * @param offset
+     * @param limit
+     * @param param
+     * @return
+     */
+    public String getTestDataSchemaValuesCustomList(String username, boolean isAdmin, Integer offset, Integer limit, String param);
 
-    public String loadGroupTemplate(String username, String templateId, String loadId);
-
-    public String loadTaskTemplate(String username, String templateId, String flowId);
 
 }

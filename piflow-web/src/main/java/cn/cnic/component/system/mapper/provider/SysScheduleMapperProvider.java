@@ -61,7 +61,7 @@ public class SysScheduleMapperProvider {
     }
 
     public String insert(SysSchedule sysSchedule) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         boolean flag = this.preventSQLInjectionSysSchedule(sysSchedule);
         if (flag) {
             StringBuffer strBuf = new StringBuffer();
@@ -91,7 +91,7 @@ public class SysScheduleMapperProvider {
      */
     public String update(SysSchedule sysSchedule) {
 
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         boolean flag = this.preventSQLInjectionSysSchedule(sysSchedule);
         if (flag && StringUtils.isNotBlank(this.id)) {
             SQL sql = new SQL();
@@ -119,7 +119,7 @@ public class SysScheduleMapperProvider {
 
     public String getSysScheduleListByStatus(@Param("isAdmin") boolean isAdmin, @Param("status") ScheduleState status) {
         if (!isAdmin || null == status) {
-            return "select 0";
+            return "SELECT 0";
         }
         StringBuffer sqlStrbuf = new StringBuffer();
         sqlStrbuf.append("SELECT * ");
@@ -141,20 +141,19 @@ public class SysScheduleMapperProvider {
      * @return
      */
     public String getSysScheduleList(boolean isAdmin, String param) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         if (isAdmin) {
             StringBuffer sqlStrbuf = new StringBuffer();
             sqlStrbuf.append("SELECT * ");
             sqlStrbuf.append("FROM sys_schedule ");
             sqlStrbuf.append("WHERE enable_flag = 1 ");
             if (StringUtils.isNotBlank(param)) {
-                String paramLike = SqlUtils.addSqlStrLikeAndReplace(param);
                 sqlStrbuf.append("AND ");
                 sqlStrbuf.append("( ");
-                sqlStrbuf.append("job_name like " + paramLike + " OR ");
-                sqlStrbuf.append("job_class like " + paramLike + " OR ");
-                sqlStrbuf.append("status like " + paramLike + " OR ");
-                sqlStrbuf.append("cron_expression like " + paramLike + " ");
+                sqlStrbuf.append("job_name like CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%') OR ");
+                sqlStrbuf.append("job_class like CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%') OR ");
+                sqlStrbuf.append("status like CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%') OR ");
+                sqlStrbuf.append("cron_expression like CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%') ");
                 sqlStrbuf.append(") ");
             }
             sqlStrbuf.append("ORDER BY crt_dttm asc,last_update_dttm DESC");
@@ -170,7 +169,7 @@ public class SysScheduleMapperProvider {
      * @return
      */
     public String getSysScheduleById(boolean isAdmin, String id) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         if (isAdmin && StringUtils.isNotBlank(id)) {
             StringBuffer sqlStrbuf = new StringBuffer();
             sqlStrbuf.append("SELECT * ");
