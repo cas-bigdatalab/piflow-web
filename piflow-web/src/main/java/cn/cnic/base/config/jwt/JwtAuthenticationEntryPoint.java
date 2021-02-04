@@ -1,7 +1,9 @@
 package cn.cnic.base.config.jwt;
 
+import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.common.Eunm.ResultCode;
 import cn.cnic.base.config.jwt.common.ResultJson;
+import org.slf4j.Logger;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
@@ -22,12 +24,16 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Se
 
     private static final long serialVersionUID = -8970718410437077606L;
 
+    private Logger logger = LoggerUtil.getLogger();
+
     @Override
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
         //验证为未登陆状态会进入此方法，认证错误
-        System.out.println("认证失败：" + authException.getMessage());
+        if (!"OPTIONS".equals(request.getMethod()) && !"options".equals(request.getMethod())) {
+            logger.warn("认证失败：" + authException.getMessage());
+        }
         response.setStatus(200);
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json; charset=utf-8");
