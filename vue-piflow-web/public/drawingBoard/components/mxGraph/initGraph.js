@@ -3017,7 +3017,7 @@ function openDatasourceList() {
     var window_height = $(window).height();//Get browser window height
     $.ajax({
         type: "POST",//Request type post
-        url: "/piflow-web/page/datasource/getDatasourceListPage",
+        url: "/piflow-web/page/dataSource/getDatasourceListPage",
         error: function (request) {//Operation after request failure
             return;
         },

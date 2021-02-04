@@ -887,10 +887,10 @@ function queryStopsProperty(stopPageId, loadId) {
 function openDatasourceList() {
     var window_width = $(window).width();//Get browser window width
     var window_height = $(window).height();//Get browser window height
-    // openLayerTypeIframeWindowLoadUrl("/page/datasource/data_source_list.html",(window_width - 100),(window_height - 100),DatasourceList)
-    // openLayerTypeIframeWindowLoadUrl("/page/datasource/data_source_list.html", (window_width - 100), (window_height - 100),'Data Source')
+    // openLayerTypeIframeWindowLoadUrl("/page/dataSource/data_source_list.html",(window_width - 100),(window_height - 100),DatasourceList)
+    // openLayerTypeIframeWindowLoadUrl("/page/dataSource/data_source_list.html", (window_width - 100), (window_height - 100),'Data Source')
 
-    ajaxLoad("", "/page/datasource/data_source_list.html", function (data) {
+    ajaxLoad("", "/page/dataSource/data_source_list.html", function (data) {
         var open_window_width = (window_width > 300 ? 1200 : window_width);
         var open_window_height = (window_height > 400 ? 570 : window_height);
         openLayerWindowLoadHtml(data,open_window_width,open_window_height,"Data Source");
