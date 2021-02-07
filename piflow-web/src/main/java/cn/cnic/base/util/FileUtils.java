@@ -249,7 +249,11 @@ public class FileUtils {
             e.printStackTrace();
         }
         if (null != strBuffer) {
-            xmlString = new String(strBuffer); //When constructing ‘String’, you can use the ‘byte[]’ type.
+            try {
+                xmlString = new String(strBuffer, "UTF-8"); //When constructing ‘String’, you can use the ‘byte[]’ type.
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
             logger.info("'xml' file converted string：" + xmlString);
         }
         return xmlString;
@@ -372,6 +376,16 @@ public class FileUtils {
             System.out.println("The file has been deleted successfully");
         }
         return result;
+    }
+
+    public static void main(String[] args) {
+        String s = FileUtils.XmlFileToStrByAbsolutePath("C:\\Users\\DELL\\Desktop\\605c4f3ab5514d9cb0fe46dc76dc9c51.xml");
+        System.out.println("------------------------------------------");
+        System.out.println("------------------------------------------");
+        System.out.println("------------------------------------------");
+        System.out.println("------------------------------------------");
+        System.out.println("------------------------------------------");
+        System.out.println(s);
     }
 
 }
