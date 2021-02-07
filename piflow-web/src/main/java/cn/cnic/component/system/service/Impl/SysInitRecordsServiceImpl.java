@@ -189,10 +189,11 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
     private Boolean loadStop(String stopListInfos) {
         logger.info("Now the call is：" + stopListInfos);
         ThirdStopsComponentVo thirdStopsComponentVo = stopImpl.getStopInfo(stopListInfos);
-        List<String> list = null;
-        if (null != thirdStopsComponentVo) {
-            list = Arrays.asList(thirdStopsComponentVo.getGroups().split(","));
+        if (null == thirdStopsComponentVo) {
+            logger.warn("bundle:" + stopListInfos + " is not data");
+            return false;
         }
+        List<String> list = Arrays.asList(thirdStopsComponentVo.getGroups().split(","));
         // Query group information according to groupName in stops
         List<StopsComponentGroup> stopGroupByName = stopsComponentGroupMapper.getStopGroupByNameList(list);
         StopsComponent stopsComponent = StopsComponentUtils.thirdStopsComponentVoToStopsTemplate("init", thirdStopsComponentVo, stopGroupByName);

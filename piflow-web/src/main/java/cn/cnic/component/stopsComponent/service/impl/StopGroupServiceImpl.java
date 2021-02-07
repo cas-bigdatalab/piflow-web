@@ -131,10 +131,12 @@ public class StopGroupServiceImpl implements IStopGroupService {
                 // 2.First query "stopInfo" according to "bundle"
                 logger.info("Now the call is：" + bundle);
             ThirdStopsComponentVo thirdStopsComponentVo = stopImpl.getStopInfo(bundle);
-            List<String> list = null;
-            if (null != thirdStopsComponentVo) {
-                list = Arrays.asList(thirdStopsComponentVo.getGroups().split(","));
+
+            if (null == thirdStopsComponentVo) {
+                logger.warn("bundle:" + bundle + " is not data");
+                continue;
             }
+            List<String> list = Arrays.asList(thirdStopsComponentVo.getGroups().split(","));
             // Query group information according to groupName in stops
             List<StopsComponentGroup> stopGroupByName = stopsComponentGroupTransactional.getStopGroupByNameList(list);
             StopsComponent stopsComponent = StopsComponentUtils.thirdStopsComponentVoToStopsTemplate(username, thirdStopsComponentVo, stopGroupByName);
