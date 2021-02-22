@@ -245,7 +245,11 @@ public class FileUtils {
             e.printStackTrace();
         }
         if (null != strBuffer) {
-            xmlString = new String(strBuffer); //When constructing ‘String’, you can use the ‘byte[]’ type.
+            try {
+                xmlString = new String(strBuffer, "UTF-8"); //When constructing ‘String’, you can use the ‘byte[]’ type.
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
             logger.info("'xml' file converted string：" + xmlString);
         }
         return xmlString;

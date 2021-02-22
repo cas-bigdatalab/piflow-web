@@ -1,5 +1,6 @@
 package cn.cnic;
 
+import cn.cnic.base.util.LoggerUtil;
 import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.springframework.boot.SpringApplication;
@@ -7,8 +8,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-
-import cn.cnic.base.util.LoggerUtil;
 
 @PropertySources({
         @PropertySource(value = "classpath:apiConfig.properties", encoding = "utf-8"),
