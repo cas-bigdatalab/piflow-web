@@ -61,7 +61,23 @@ public class ProcessGroupMapperProvider {
 
         // Selection field
         this.name = SqlUtils.preventSQLInjection(processGroup.getName());
-
+        this.description = SqlUtils.preventSQLInjection(processGroup.getDescription());
+        this.pageId = SqlUtils.preventSQLInjection(processGroup.getPageId());
+        this.flowId = SqlUtils.preventSQLInjection(processGroup.getFlowId());
+        this.appId = SqlUtils.preventSQLInjection(processGroup.getAppId());
+        this.parentProcessId = SqlUtils.preventSQLInjection(processGroup.getParentProcessId());
+        this.processId = SqlUtils.preventSQLInjection(processGroup.getProcessId());
+        String state = (null == processGroup.getState() ? null : processGroup.getState().name());
+        this.stateStr = SqlUtils.preventSQLInjection(state);
+        String startTime = (null != processGroup.getStartTime() ? DateUtils.dateTimesToStr(processGroup.getStartTime()) : null);
+        this.startTimeStr = SqlUtils.preventSQLInjection(startTime);
+        String endTime = (null != processGroup.getEndTime() ? DateUtils.dateTimesToStr(processGroup.getEndTime()) : null);
+        this.endTimeStr = SqlUtils.preventSQLInjection(endTime);
+        this.progress = SqlUtils.preventSQLInjection(processGroup.getProgress());
+        this.runModeType = SqlUtils.preventSQLInjection(null != processGroup.getRunModeType() ? processGroup.getRunModeType().name() : null);
+        this.processParentType = SqlUtils.preventSQLInjection(null != processGroup.getProcessParentType() ? processGroup.getProcessParentType().name() : null);
+        this.processGroupId = SqlUtils.preventSQLInjection(null == processGroup.getProcessGroup() ? null : processGroup.getProcessGroup().getId());
+        this.viewXml = SqlUtils.preventSQLInjection(processGroup.getViewXml());
 
         return true;
     }
@@ -238,6 +254,7 @@ public class ProcessGroupMapperProvider {
         }
         return sqlStr;
     }
+
     /**
      * Query id according to processGroup appId
      *
