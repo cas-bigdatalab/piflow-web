@@ -52,10 +52,10 @@ public class ProcessGroupMapperProvider {
             return false;
         }
         // Mandatory Field
-        String lastUpdateDttm = DateUtils.dateTimesToStr(null != processGroup.getLastUpdateDttm() ? processGroup.getLastUpdateDttm() : new Date());
         this.id = SqlUtils.preventSQLInjection(processGroup.getId());
         this.version = (null != processGroup.getVersion() ? processGroup.getVersion() : 0L);
         this.enableFlag = ((null != processGroup.getEnableFlag() && processGroup.getEnableFlag()) ? 1 : 0);
+        String lastUpdateDttm = DateUtils.dateTimesToStr(null != processGroup.getLastUpdateDttm() ? processGroup.getLastUpdateDttm() : new Date());
         this.lastUpdateDataTimeStr = SqlUtils.preventSQLInjection(lastUpdateDttm);
         this.lastUpdateUser = SqlUtils.preventSQLInjection(processGroup.getLastUpdateUser());
 

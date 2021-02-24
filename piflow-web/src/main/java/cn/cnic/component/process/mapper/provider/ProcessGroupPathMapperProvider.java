@@ -45,10 +45,10 @@ public class ProcessGroupPathMapperProvider {
         this.lastUpdateDataTimeStr = SqlUtils.preventSQLInjection(lastUpdateDttm);
 
         // Selection field
-        this.from = SqlUtils.preventSQLInjection(processGroupPath.getFrom());
-        this.outport = SqlUtils.preventSQLInjection(processGroupPath.getOutport());
-        this.inport = SqlUtils.preventSQLInjection(processGroupPath.getInport());
         this.to = SqlUtils.preventSQLInjection(processGroupPath.getTo());
+        this.from = SqlUtils.preventSQLInjection(processGroupPath.getFrom());
+        this.inport = SqlUtils.preventSQLInjection(processGroupPath.getInport());
+        this.outport = SqlUtils.preventSQLInjection(processGroupPath.getOutport());
         this.pageId = SqlUtils.preventSQLInjection(processGroupPath.getPageId());
         this.processGroupId = SqlUtils.preventSQLInjection(null != processGroupPath.getProcessGroup() ? processGroupPath.getProcessGroup().getId() : null);
 

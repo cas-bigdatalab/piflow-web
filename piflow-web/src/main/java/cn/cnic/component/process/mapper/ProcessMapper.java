@@ -29,7 +29,7 @@ public interface ProcessMapper {
     @SelectProvider(type = ProcessMapperProvider.class, method = "getProcessById")
     @Results({
             @Result(id = true, column = "id", property = "id"),
-            @Result(column = "id", property = "mxGraphModel", many = @Many(select = "cn.cnic.component.mxGraph.mapper.MxGraphModelMapper.getMxGraphModelByProcessId", fetchType = FetchType.LAZY)),
+            @Result(column = "id", property = "mxGraphModel", one = @One(select = "cn.cnic.component.mxGraph.mapper.MxGraphModelMapper.getMxGraphModelByProcessId", fetchType = FetchType.LAZY)),
             @Result(column = "id", property = "processPathList", many = @Many(select = "cn.cnic.component.process.mapper.ProcessPathMapper.getProcessPathByProcessId", fetchType = FetchType.LAZY)),
             @Result(column = "id", property = "processStopList", many = @Many(select = "cn.cnic.component.process.mapper.ProcessStopMapper.getProcessStopByProcessId", fetchType = FetchType.LAZY)),
             @Result(column = "fk_flow_process_group_id", property = "processGroup", one = @One(select = "cn.cnic.component.process.mapper.ProcessGroupMapper.getProcessGroupById", fetchType = FetchType.LAZY))
@@ -46,6 +46,7 @@ public interface ProcessMapper {
     @SelectProvider(type = ProcessMapperProvider.class, method = "getProcessByProcessGroupId")
     @Results({
             @Result(id = true, column = "id", property = "id"),
+            @Result(column = "id", property = "mxGraphModel", one = @One(select = "cn.cnic.component.mxGraph.mapper.MxGraphModelMapper.getMxGraphModelByProcessId", fetchType = FetchType.LAZY)),
             @Result(column = "id", property = "processStopList", many = @Many(select = "cn.cnic.component.process.mapper.ProcessStopMapper.getProcessStopByProcessId", fetchType = FetchType.LAZY)),
             @Result(column = "id", property = "processPathList", many = @Many(select = "cn.cnic.component.process.mapper.ProcessPathMapper.getProcessPathByProcessId", fetchType = FetchType.LAZY))
 
@@ -60,6 +61,7 @@ public interface ProcessMapper {
     @SelectProvider(type = ProcessMapperProvider.class, method = "getProcessList")
     @Results({
             @Result(id = true, column = "id", property = "id"),
+            @Result(column = "id", property = "mxGraphModel", one = @One(select = "cn.cnic.component.mxGraph.mapper.MxGraphModelMapper.getMxGraphModelByProcessId", fetchType = FetchType.LAZY)),
             @Result(column = "id", property = "processStopList", many = @Many(select = "cn.cnic.component.process.mapper.ProcessStopMapper.getProcessStopByProcessId", fetchType = FetchType.LAZY)),
             @Result(column = "id", property = "processPathList", many = @Many(select = "cn.cnic.component.process.mapper.ProcessPathMapper.getProcessPathByProcessId", fetchType = FetchType.LAZY))
 
@@ -107,6 +109,7 @@ public interface ProcessMapper {
     @SelectProvider(type = ProcessMapperProvider.class, method = "getProcessByAppId")
     @Results({
             @Result(id = true, column = "id", property = "id"),
+            @Result(column = "id", property = "mxGraphModel", one = @One(select = "cn.cnic.component.mxGraph.mapper.MxGraphModelMapper.getMxGraphModelByProcessId", fetchType = FetchType.LAZY)),
             @Result(column = "id", property = "processStopList", many = @Many(select = "cn.cnic.component.process.mapper.ProcessStopMapper.getProcessStopByProcessId", fetchType = FetchType.LAZY)),
             @Result(column = "id", property = "processPathList", many = @Many(select = "cn.cnic.component.process.mapper.ProcessPathMapper.getProcessPathByProcessId", fetchType = FetchType.LAZY))
 
@@ -125,6 +128,7 @@ public interface ProcessMapper {
     @SelectProvider(type = ProcessMapperProvider.class, method = "getProcessNoGroupByAppId")
     @Results({
             @Result(id = true, column = "id", property = "id"),
+            @Result(column = "id", property = "mxGraphModel", one = @One(select = "cn.cnic.component.mxGraph.mapper.MxGraphModelMapper.getMxGraphModelByProcessId", fetchType = FetchType.LAZY)),
             @Result(column = "id", property = "processStopList", many = @Many(select = "cn.cnic.component.process.mapper.ProcessStopMapper.getProcessStopByProcessId", fetchType = FetchType.LAZY)),
             @Result(column = "id", property = "processPathList", many = @Many(select = "cn.cnic.component.process.mapper.ProcessPathMapper.getProcessPathByProcessId", fetchType = FetchType.LAZY))
 
@@ -140,6 +144,7 @@ public interface ProcessMapper {
     @SelectProvider(type = ProcessMapperProvider.class, method = "getProcessListByAppIDs")
     @Results({
             @Result(id = true, column = "id", property = "id"),
+            @Result(column = "id", property = "mxGraphModel", one = @One(select = "cn.cnic.component.mxGraph.mapper.MxGraphModelMapper.getMxGraphModelByProcessId", fetchType = FetchType.LAZY)),
             @Result(column = "id", property = "processStopList", many = @Many(select = "cn.cnic.component.process.mapper.ProcessStopMapper.getProcessStopByProcessId", fetchType = FetchType.LAZY)),
             @Result(column = "id", property = "processPathList", many = @Many(select = "cn.cnic.component.process.mapper.ProcessPathMapper.getProcessPathByProcessId", fetchType = FetchType.LAZY))
 
@@ -182,6 +187,7 @@ public interface ProcessMapper {
     @SelectProvider(type = ProcessMapperProvider.class, method = "getProcessByPageId")
     @Results({
             @Result(id = true, column = "id", property = "id"),
+            @Result(column = "id", property = "mxGraphModel", one = @One(select = "cn.cnic.component.mxGraph.mapper.MxGraphModelMapper.getMxGraphModelByProcessId", fetchType = FetchType.LAZY)),
             @Result(column = "id", property = "processStopList", many = @Many(select = "cn.cnic.component.process.mapper.ProcessStopMapper.getProcessStopByProcessId", fetchType = FetchType.LAZY)),
             @Result(column = "id", property = "processPathList", many = @Many(select = "cn.cnic.component.process.mapper.ProcessPathMapper.getProcessPathByProcessId", fetchType = FetchType.LAZY))
 
@@ -198,6 +204,7 @@ public interface ProcessMapper {
     @SelectProvider(type = ProcessMapperProvider.class, method = "getProcessByPageIds")
     @Results({
             @Result(id = true, column = "id", property = "id"),
+            @Result(column = "id", property = "mxGraphModel", one = @One(select = "cn.cnic.component.mxGraph.mapper.MxGraphModelMapper.getMxGraphModelByProcessId", fetchType = FetchType.LAZY)),
             @Result(column = "id", property = "processStopList", many = @Many(select = "cn.cnic.component.process.mapper.ProcessStopMapper.getProcessStopByProcessId", fetchType = FetchType.LAZY)),
             @Result(column = "id", property = "processPathList", many = @Many(select = "cn.cnic.component.process.mapper.ProcessPathMapper.getProcessPathByProcessId", fetchType = FetchType.LAZY))
 

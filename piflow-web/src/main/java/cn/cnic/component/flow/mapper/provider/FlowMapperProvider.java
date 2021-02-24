@@ -189,24 +189,24 @@ public class FlowMapperProvider {
      * @return
      */
     public String getFlowListParam(String username, boolean isAdmin, String param) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         StringBuffer strBuf = new StringBuffer();
-        strBuf.append("select * ");
-        strBuf.append("from flow ");
-        strBuf.append("where ");
+        strBuf.append("SELECT * ");
+        strBuf.append("FROM flow ");
+        strBuf.append("WHERE ");
         strBuf.append("enable_flag = 1 ");
-        strBuf.append("and is_example = 0 ");
-        strBuf.append("and fk_flow_group_id is null ");
+        strBuf.append("AND is_example = 0 ");
+        strBuf.append("AND fk_flow_group_id IS NULL ");
         if (StringUtils.isNotBlank(param)) {
-            strBuf.append("and ( ");
-            strBuf.append("name like '%" + param + "%' ");
-            strBuf.append("or description like '%" + param + "%' ");
+            strBuf.append("AND ( ");
+            strBuf.append("name LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%')");
+            strBuf.append("OR description LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%')");
             strBuf.append(") ");
         }
         if (!isAdmin) {
-            strBuf.append("and crt_user = " + SqlUtils.preventSQLInjection(username));
+            strBuf.append("AND crt_user = " + SqlUtils.preventSQLInjection(username));
         }
-        strBuf.append("order by crt_dttm desc ");
+        strBuf.append("ORDER BY crt_dttm DESC ");
         sqlStr = strBuf.toString();
         return sqlStr;
     }
@@ -255,10 +255,10 @@ public class FlowMapperProvider {
      */
     public String updateEnableFlagById(String username, String id) {
         if (StringUtils.isBlank(username)) {
-            return "select 0";
+            return "SELECT 0";
         }
         if (StringUtils.isBlank(id)) {
-            return "select 0";
+            return "SELECT 0";
         }
         SQL sql = new SQL();
         sql.UPDATE("flow");
@@ -273,7 +273,7 @@ public class FlowMapperProvider {
     }
 
     public String getFlowListGroupId(String flowGroupId) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         if (StringUtils.isNotBlank(flowGroupId)) {
             StringBuffer strBuf = new StringBuffer();
             strBuf.append("select * ");

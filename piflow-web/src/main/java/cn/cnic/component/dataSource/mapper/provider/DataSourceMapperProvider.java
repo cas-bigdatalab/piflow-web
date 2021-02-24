@@ -178,8 +178,8 @@ public class DataSourceMapperProvider {
         strBuf.append("and is_template = 0 ");
         if (StringUtils.isNotBlank(param)) {
             strBuf.append("and ( ");
-            strBuf.append("data_source_name like '%" + param + "%' ");
-            strBuf.append("or data_source_type like '%" + param + "%' ");
+            strBuf.append("data_source_name LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%') ");
+            strBuf.append("or data_source_type LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%') ");
             strBuf.append(") ");
         }
         if (!isAdmin) {

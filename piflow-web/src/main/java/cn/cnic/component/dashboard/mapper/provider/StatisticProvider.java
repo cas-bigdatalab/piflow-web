@@ -1,10 +1,5 @@
 package cn.cnic.component.dashboard.mapper.provider;
 
-import cn.cnic.base.util.SqlUtils;
-import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
-
 public class StatisticProvider {
 
     public String getFlowProcessStatisticInfo(){
