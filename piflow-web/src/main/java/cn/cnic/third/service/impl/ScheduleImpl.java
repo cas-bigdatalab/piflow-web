@@ -41,7 +41,6 @@ public class ScheduleImpl implements ISchedule {
             return ReturnMapUtils.setFailedMsg("failed, schedule is null");
         }
         String type = schedule.getType();
-        /*
         Map<String, Object> scheduleContentMap = new HashMap<>();
         if ("FLOW".equals(type) && null != process) {
             scheduleContentMap = ProcessUtils.processToMap(process, "", RunModeType.RUN);
@@ -50,29 +49,20 @@ public class ScheduleImpl implements ISchedule {
         } else {
             return ReturnMapUtils.setFailedMsg("type error or process is null");
         }
-        */
-        //===============================临时===============================
-        String formatJson = "";
-        String scheduleName = "";
-        if ("FLOW".equals(type) && null != process) {
-            formatJson = ProcessUtils.processToJson(process, "", RunModeType.RUN);
-            scheduleName = process.getName() + System.currentTimeMillis();
-        } else if ("FLOW_GROUP".equals(type) && null != processGroup) {
-            formatJson = ProcessUtils.processGroupToJson(processGroup, RunModeType.RUN);
-            scheduleName = processGroup.getName() + System.currentTimeMillis();
-        } else {
-            return ReturnMapUtils.setFailedMsg("type error or process is null");
-        }
-        String scheduleContentMap = FileUtils.createJsonFile(formatJson, scheduleName, SysParamsCache.VIDEOS_PATH);
-        logger.info(scheduleContentMap);
-        //===============================临时===============================
         Map<String, Object> requestParamMap = new HashMap<>();
         requestParamMap.put("expression", schedule.getCronExpression());
         requestParamMap.put("startDate", DateUtils.dateTimeToStr(schedule.getPlanStartTime()));
         requestParamMap.put("endDate", DateUtils.dateTimeToStr(schedule.getPlanEndTime()));
         requestParamMap.put("schedule", scheduleContentMap);
-
         String sendPostData = HttpUtils.doPost(SysParamsCache.getScheduleStartUrl(), requestParamMap, null);
+        //===============================临时===============================
+        /*
+        String formatJson = JsonUtils.toFormatJsonNoException(requestParamMap);
+        //String path = FileUtils.createJsonFile(formatJson, processGroup.getName(), SysParamsCache.VIDEOS_PATH);
+        //logger.info(path);
+        String sendPostData = HttpUtils.doPost(SysParamsCache.getScheduleStartUrl(), path, null);
+        */
+        //===============================临时===============================
         if (StringUtils.isBlank(sendPostData) || sendPostData.contains("Exception") || sendPostData.contains("error")) {
             return ReturnMapUtils.setFailedMsg("Error : Interface call failed");
         }
