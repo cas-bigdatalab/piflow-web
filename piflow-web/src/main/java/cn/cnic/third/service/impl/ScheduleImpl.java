@@ -55,14 +55,14 @@ public class ScheduleImpl implements ISchedule {
         requestParamMap.put("endDate", DateUtils.dateTimeToStr(schedule.getPlanEndTime()));
         requestParamMap.put("schedule", scheduleContentMap);
         String sendPostData = HttpUtils.doPost(SysParamsCache.getScheduleStartUrl(), requestParamMap, null);
+
         //===============================临时===============================
-        /*
-        String formatJson = JsonUtils.toFormatJsonNoException(requestParamMap);
+        //String formatJson = JsonUtils.toFormatJsonNoException(requestParamMap);
         //String path = FileUtils.createJsonFile(formatJson, processGroup.getName(), SysParamsCache.VIDEOS_PATH);
         //logger.info(path);
-        String sendPostData = HttpUtils.doPost(SysParamsCache.getScheduleStartUrl(), path, null);
-        */
+        //String sendPostData = HttpUtils.doPost(SysParamsCache.getScheduleStartUrl(), path, null);
         //===============================临时===============================
+
         if (StringUtils.isBlank(sendPostData) || sendPostData.contains("Exception") || sendPostData.contains("error")) {
             return ReturnMapUtils.setFailedMsg("Error : Interface call failed");
         }
