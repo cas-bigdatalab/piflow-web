@@ -5,6 +5,8 @@ import cn.cnic.component.flow.mapper.provider.FlowGroupMapperProvider;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
 
+import java.util.List;
+
 @Mapper
 public interface FlowGroupMapper {
 
@@ -19,9 +21,26 @@ public interface FlowGroupMapper {
             @Result(id = true, column = "id", property = "id"),
             @Result(column = "id", property = "mxGraphModel", one = @One(select = "cn.cnic.component.mxGraph.mapper.MxGraphModelMapper.getMxGraphModelByFlowGroupId", fetchType = FetchType.LAZY)),
             @Result(column = "id", property = "flowList", many = @Many(select = "cn.cnic.component.flow.mapper.FlowMapper.getFlowListGroupId", fetchType = FetchType.LAZY)),
+            @Result(column = "id", property = "flowGroupList", many = @Many(select = "cn.cnic.component.flow.mapper.FlowGroupMapper.getFlowGroupListByFkGroupId", fetchType = FetchType.LAZY)),
             @Result(column = "id", property = "flowGroupPathsList", many = @Many(select = "cn.cnic.component.flow.mapper.FlowGroupPathsMapper.getFlowGroupPathsByFlowGroupId", fetchType = FetchType.LAZY))
     })
     public FlowGroup getFlowGroupById(@Param("id") String id);
+
+    /**
+     * Query flow by flowGroupId
+     *
+     * @param fkFlowGroupId
+     * @return
+     */
+    @SelectProvider(type = FlowGroupMapperProvider.class, method = "getFlowGroupListByFkGroupId")
+    @Results({
+            @Result(id = true, column = "id", property = "id"),
+            @Result(column = "id", property = "mxGraphModel", one = @One(select = "cn.cnic.component.mxGraph.mapper.MxGraphModelMapper.getMxGraphModelByFlowGroupId", fetchType = FetchType.LAZY)),
+            @Result(column = "id", property = "flowList", many = @Many(select = "cn.cnic.component.flow.mapper.FlowMapper.getFlowListGroupId", fetchType = FetchType.LAZY)),
+            @Result(column = "id", property = "flowGroupList", many = @Many(select = "cn.cnic.component.flow.mapper.FlowGroupMapper.getFlowGroupListByFkGroupId", fetchType = FetchType.LAZY)),
+            @Result(column = "id", property = "flowGroupPathsList", many = @Many(select = "cn.cnic.component.flow.mapper.FlowGroupPathsMapper.getFlowGroupPathsByFlowGroupId", fetchType = FetchType.LAZY))
+    })
+    public List<FlowGroup> getFlowGroupListByFkGroupId(String fkFlowGroupId);
 
     /**
      * Query FlowGroup based on FlowGroup Id

@@ -1,9 +1,6 @@
 package cn.cnic.third.service.impl;
 
-import cn.cnic.base.util.DateUtils;
-import cn.cnic.base.util.HttpUtils;
-import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.base.util.ReturnMapUtils;
+import cn.cnic.base.util.*;
 import cn.cnic.common.Eunm.RunModeType;
 import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.component.flow.entity.Flow;
@@ -44,6 +41,7 @@ public class ScheduleImpl implements ISchedule {
             return ReturnMapUtils.setFailedMsg("failed, schedule is null");
         }
         String type = schedule.getType();
+        /*
         Map<String, Object> scheduleContentMap = new HashMap<>();
         if ("FLOW".equals(type) && null != process) {
             scheduleContentMap = ProcessUtils.processToMap(process, "", RunModeType.RUN);
@@ -52,6 +50,22 @@ public class ScheduleImpl implements ISchedule {
         } else {
             return ReturnMapUtils.setFailedMsg("type error or process is null");
         }
+        */
+        //===============================临时===============================
+        String formatJson = "";
+        String scheduleName = "";
+        if ("FLOW".equals(type) && null != process) {
+            formatJson = ProcessUtils.processToJson(process, "", RunModeType.RUN);
+            scheduleName = process.getName() + System.currentTimeMillis();
+        } else if ("FLOW_GROUP".equals(type) && null != processGroup) {
+            formatJson = ProcessUtils.processGroupToJson(processGroup, RunModeType.RUN);
+            scheduleName = processGroup.getName() + System.currentTimeMillis();
+        } else {
+            return ReturnMapUtils.setFailedMsg("type error or process is null");
+        }
+        String scheduleContentMap = FileUtils.createJsonFile(formatJson, scheduleName, SysParamsCache.VIDEOS_PATH);
+        logger.info(scheduleContentMap);
+        //===============================临时===============================
         Map<String, Object> requestParamMap = new HashMap<>();
         requestParamMap.put("expression", schedule.getCronExpression());
         requestParamMap.put("startDate", DateUtils.dateTimeToStr(schedule.getPlanStartTime()));
