@@ -146,7 +146,7 @@ public class ScheduleServiceImpl implements IScheduleService {
         Schedule scheduleById = scheduleMapper.getScheduleById(isAdmin, username, scheduleVo.getId());
         // Judge whether the query result is empty
         if (null == scheduleById) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("No data with ID " + scheduleById.getId());
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("No data with ID " + scheduleVo.getId());
         }
         // Copy scheduleVo data to scheduleById
         BeanUtils.copyProperties(scheduleVo, scheduleById);
