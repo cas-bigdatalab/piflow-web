@@ -1,23 +1,8 @@
 package cn.cnic.component.schedule.service.Impl;
 
-import java.util.Date;
-import java.util.Map;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Service;
-
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
-
-import cn.cnic.base.util.JsonUtils;
-import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.base.util.PageHelperUtils;
-import cn.cnic.base.util.ReturnMapUtils;
-import cn.cnic.base.util.UUIDUtils;
+import cn.cnic.base.BaseHibernateModelNoId;
+import cn.cnic.base.BaseHibernateModelNoIdUtils;
+import cn.cnic.base.util.*;
 import cn.cnic.common.Eunm.RunModeType;
 import cn.cnic.common.Eunm.ScheduleState;
 import cn.cnic.component.flow.entity.Flow;
@@ -35,6 +20,16 @@ import cn.cnic.component.schedule.mapper.ScheduleMapper;
 import cn.cnic.component.schedule.service.IScheduleService;
 import cn.cnic.component.schedule.vo.ScheduleVo;
 import cn.cnic.third.service.ISchedule;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.Date;
+import java.util.Map;
 
 @Service
 public class ScheduleServiceImpl implements IScheduleService {
@@ -91,14 +86,10 @@ public class ScheduleServiceImpl implements IScheduleService {
         // Copy scheduleVo to schedule
         BeanUtils.copyProperties(scheduleVo, schedule);
 
-        // basic properties (required when creating)
-        schedule.setCrtDttm(new Date());
-        schedule.setCrtUser(username);
-        // basic properties
-        schedule.setEnableFlag(true);
-        schedule.setLastUpdateUser(username);
-        schedule.setLastUpdateDttm(new Date());
-        schedule.setVersion(0L);
+        // Initialization base field value does not include ID
+        BaseHibernateModelNoId baseHibernateModelNoId = BaseHibernateModelNoIdUtils.newBaseHibernateModelNoId(username);
+        //Copy base field value to schedule
+        BeanUtils.copyProperties(baseHibernateModelNoId, schedule);
         //set uuid
         schedule.setId(UUIDUtils.getUUID32());
 

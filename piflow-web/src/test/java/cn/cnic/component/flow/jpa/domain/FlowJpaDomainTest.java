@@ -1,12 +1,12 @@
 package cn.cnic.component.flow.jpa.domain;
 
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import cn.cnic.ApplicationTests;
 import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.component.flow.entity.Flow;
+import cn.cnic.component.flow.jpa.repository.FlowJpaRepository;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 public class FlowJpaDomainTest extends ApplicationTests {

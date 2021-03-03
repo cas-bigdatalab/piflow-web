@@ -4,6 +4,9 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import cn.cnic.base.util.UUIDUtils;
+import cn.cnic.component.mxGraph.entity.MxGraphModel;
+import cn.cnic.component.mxGraph.transaction.MxGraphModelTransaction;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -12,9 +15,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.base.util.UUIDUtils;
-import cn.cnic.component.mxGraph.entity.MxGraphModel;
-import cn.cnic.component.mxGraph.transaction.MxGraphModelTransaction;
 import cn.cnic.component.process.entity.Process;
 import cn.cnic.component.process.entity.ProcessPath;
 import cn.cnic.component.process.entity.ProcessStop;

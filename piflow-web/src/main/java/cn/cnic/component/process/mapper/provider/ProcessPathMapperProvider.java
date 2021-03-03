@@ -14,8 +14,6 @@ import java.util.Map;
 public class ProcessPathMapperProvider {
 
     private String id;
-    private String crtUser;
-    private String crtDttmStr;
     private String lastUpdateDttmStr;
     private String lastUpdateUser;
     private int enableFlag;
@@ -27,41 +25,36 @@ public class ProcessPathMapperProvider {
     private String pageId;
     private String processId;
 
-    private void preventSQLInjectionProcessPath(ProcessPath processPath) {
-        if (null != processPath && StringUtils.isNotBlank(processPath.getLastUpdateUser())) {
-            // Mandatory Field
-            String id = processPath.getId();
-            String crtUser = processPath.getCrtUser();
-            String lastUpdateUser = processPath.getLastUpdateUser();
-            Boolean enableFlag = processPath.getEnableFlag();
-            Long version = processPath.getVersion();
-            Date crtDttm = processPath.getCrtDttm();
-            Date lastUpdateDttm = processPath.getLastUpdateDttm();
-            this.id = SqlUtils.preventSQLInjection(id);
-            this.crtUser = (null != crtUser ? SqlUtils.preventSQLInjection(crtUser) : null);
-            this.lastUpdateUser = SqlUtils.preventSQLInjection(lastUpdateUser);
-            this.enableFlag = ((null != enableFlag && enableFlag) ? 1 : 0);
-            this.version = (null != version ? version : 0L);
-            String crtDttmStr = DateUtils.dateTimesToStr(crtDttm);
-            String lastUpdateDttmStr = DateUtils.dateTimesToStr(null != lastUpdateDttm ? lastUpdateDttm : new Date());
-            this.crtDttmStr = (null != crtDttm ? SqlUtils.preventSQLInjection(crtDttmStr) : null);
-            this.lastUpdateDttmStr = SqlUtils.preventSQLInjection(lastUpdateDttmStr);
-
-            // Selection field
-            this.from = SqlUtils.preventSQLInjection(processPath.getFrom());
-            this.outport = SqlUtils.preventSQLInjection(processPath.getOutport());
-            this.inport = SqlUtils.preventSQLInjection(processPath.getInport());
-            this.to = SqlUtils.preventSQLInjection(processPath.getTo());
-            this.pageId = SqlUtils.preventSQLInjection(processPath.getPageId());
-            String processIdStr = (null != processPath.getProcess() ? processPath.getProcess().getId() : null);
-            this.processId = (null != processIdStr ? SqlUtils.preventSQLInjection(processIdStr) : null);
+    private boolean preventSQLInjectionProcessPath(ProcessPath processPath) {
+        if (null == processPath || StringUtils.isBlank(processPath.getLastUpdateUser())) {
+            return false;
         }
+        // Mandatory Field
+        String id = processPath.getId();
+        String lastUpdateUser = processPath.getLastUpdateUser();
+        Boolean enableFlag = processPath.getEnableFlag();
+        Long version = processPath.getVersion();
+        Date lastUpdateDttm = processPath.getLastUpdateDttm();
+        this.id = SqlUtils.preventSQLInjection(id);
+        this.lastUpdateUser = SqlUtils.preventSQLInjection(lastUpdateUser);
+        this.enableFlag = ((null != enableFlag && enableFlag) ? 1 : 0);
+        this.version = (null != version ? version : 0L);
+        String lastUpdateDttmStr = DateUtils.dateTimesToStr(null != lastUpdateDttm ? lastUpdateDttm : new Date());
+        this.lastUpdateDttmStr = SqlUtils.preventSQLInjection(lastUpdateDttmStr);
+
+        // Selection field
+        this.from = SqlUtils.preventSQLInjection(processPath.getFrom());
+        this.outport = SqlUtils.preventSQLInjection(processPath.getOutport());
+        this.inport = SqlUtils.preventSQLInjection(processPath.getInport());
+        this.to = SqlUtils.preventSQLInjection(processPath.getTo());
+        this.pageId = SqlUtils.preventSQLInjection(processPath.getPageId());
+        String processIdStr = (null != processPath.getProcess() ? processPath.getProcess().getId() : null);
+        this.processId = (null != processIdStr ? SqlUtils.preventSQLInjection(processIdStr) : null);
+        return true;
     }
 
     private void reset() {
         this.id = null;
-        this.crtUser = null;
-        this.crtDttmStr = null;
         this.lastUpdateDttmStr = null;
         this.lastUpdateUser = null;
         this.enableFlag = 1;
@@ -81,43 +74,31 @@ public class ProcessPathMapperProvider {
      * @return
      */
     public String addProcessPath(ProcessPath processPath) {
-        String sqlStr = "SELECT 0";
-        this.preventSQLInjectionProcessPath(processPath);
-        if (null != processPath) {
-            SQL sql = new SQL();
+        String sqlStr = "select 0";
+        if (this.preventSQLInjectionProcessPath(processPath)) {
+            StringBuffer strBuf = new StringBuffer();
+            strBuf.append("INSERT INTO flow_process_path ");
+            strBuf.append("( ");
+            strBuf.append(SqlUtils.baseFieldName() + ", ");
+            strBuf.append("line_from, ");
+            strBuf.append("line_outport, ");
+            strBuf.append("line_to, ");
+            strBuf.append("line_inport, ");
+            strBuf.append("page_id, ");
+            strBuf.append("fk_flow_process_id ");
+            strBuf.append(") ");
 
-            // INSERT_INTO brackets is table name
-            sql.INSERT_INTO("flow_process_path");
-            // The first string in the value is the field name corresponding to the table in the database.
-            // all types except numeric fields must be enclosed in single quotes
-
-            //Process the required fields first
-            if (null == crtDttmStr) {
-                String crtDttm = DateUtils.dateTimesToStr(new Date());
-                crtDttmStr = SqlUtils.preventSQLInjection(crtDttm);
-            }
-            if (StringUtils.isBlank(crtUser)) {
-                crtUser = SqlUtils.preventSQLInjection("-1");
-            }
-            if (StringUtils.isBlank(id)) {
-                this.id = UUIDUtils.getUUID32();
-            }
-            sql.VALUES("id", id);
-            sql.VALUES("crt_dttm", crtDttmStr);
-            sql.VALUES("crt_user", crtUser);
-            sql.VALUES("last_update_dttm", lastUpdateDttmStr);
-            sql.VALUES("last_update_user", lastUpdateUser);
-            sql.VALUES("version", version + "");
-            sql.VALUES("enable_flag", enableFlag + "");
-
-            // handle other fields
-            sql.VALUES("line_from", from);
-            sql.VALUES("line_outport", outport);
-            sql.VALUES("line_inport", inport);
-            sql.VALUES("line_to", to);
-            sql.VALUES("page_id", pageId);
-            sql.VALUES("fk_flow_process_id", processId);
-            sqlStr = sql.toString();
+            strBuf.append("values ");
+            strBuf.append("(");
+            strBuf.append(SqlUtils.baseFieldValues(processPath) + ", ");
+            strBuf.append(from + " ");
+            strBuf.append(outport + " ");
+            strBuf.append(to + " ");
+            strBuf.append(inport + " ");
+            strBuf.append(pageId + " ");
+            strBuf.append(processId + " ");
+            this.reset();
+            return strBuf.toString() + ";";
         }
         this.reset();
         return sqlStr;
@@ -156,23 +137,9 @@ public class ProcessPathMapperProvider {
             int i = 0;
             for (ProcessPath processPath : processPaths) {
                 i++;
-                if (null != processPath) {
-                    this.preventSQLInjectionProcessPath(processPath);
-                    if (null == crtDttmStr) {
-                        String crtDttm = DateUtils.dateTimesToStr(new Date());
-                        crtDttmStr = SqlUtils.preventSQLInjection(crtDttm);
-                    }
-                    if (StringUtils.isBlank(crtUser)) {
-                        crtUser = SqlUtils.preventSQLInjection("-1");
-                    }
+                if (this.preventSQLInjectionProcessPath(processPath)) {
                     sql.append("(");
-                    sql.append(id + ",");
-                    sql.append(crtDttmStr + ",");
-                    sql.append(crtUser + ",");
-                    sql.append(lastUpdateDttmStr + ",");
-                    sql.append(lastUpdateUser + ",");
-                    sql.append(version + ",");
-                    sql.append(enableFlag + ",");
+                    sql.append(SqlUtils.baseFieldValues(processPath) + ", ");
                     sql.append(from + ",");
                     sql.append(to + ",");
                     sql.append(outport + ",");

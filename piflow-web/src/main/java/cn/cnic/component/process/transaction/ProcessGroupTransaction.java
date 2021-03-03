@@ -1,9 +1,13 @@
 package cn.cnic.component.process.transaction;
 
-import java.util.List;
-
-import javax.annotation.Resource;
-
+import cn.cnic.base.util.LoggerUtil;
+import cn.cnic.base.util.UUIDUtils;
+import cn.cnic.component.mxGraph.entity.MxGraphModel;
+import cn.cnic.component.mxGraph.mapper.MxGraphModelMapper;
+import cn.cnic.component.mxGraph.transaction.MxGraphModelTransaction;
+import cn.cnic.component.process.entity.*;
+import cn.cnic.component.process.entity.Process;
+import cn.cnic.component.process.mapper.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -11,14 +15,8 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.component.mxGraph.entity.MxGraphModel;
-import cn.cnic.component.mxGraph.transaction.MxGraphModelTransaction;
-import cn.cnic.component.process.entity.Process;
-import cn.cnic.component.process.entity.ProcessGroup;
-import cn.cnic.component.process.entity.ProcessGroupPath;
-import cn.cnic.component.process.mapper.ProcessGroupMapper;
-import cn.cnic.component.process.mapper.ProcessGroupPathMapper;
+import javax.annotation.Resource;
+import java.util.List;
 
 @Component
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
@@ -51,7 +49,9 @@ public class ProcessGroupTransaction {
         if (null == processGroup) {
             return 0;
         }
-
+        if (StringUtils.isBlank(processGroup.getId())) {
+            processGroup.setId(UUIDUtils.getUUID32());
+        }
         int addProcessGroupCounts = processGroupMapper.addProcessGroup(processGroup);
         if (addProcessGroupCounts <= 0) {
             throw new Exception("save failed");
@@ -61,6 +61,9 @@ public class ProcessGroupTransaction {
         int addProcessGroupPathCounts = 0;
         List<ProcessGroupPath> processGroupPathList = processGroup.getProcessGroupPathList();
         if (null != processGroupPathList && processGroupPathList.size() > 0) {
+            for (ProcessGroupPath processGroupPath : processGroupPathList) {
+                processGroupPath.setProcessGroup(processGroup);
+            }
             addProcessGroupPathCounts = processGroupPathMapper.addProcessGroupPathList(processGroupPathList);
         }
         // Save Process
@@ -69,6 +72,7 @@ public class ProcessGroupTransaction {
         List<Process> processList = processGroup.getProcessList();
         if (null != processList && processList.size() > 0) {
             for (Process process : processList) {
+                process.setProcessGroup(processGroup);
                 addProcessListCounts += processTransaction.addProcess(process);
             }
         }
@@ -84,6 +88,7 @@ public class ProcessGroupTransaction {
         int addMxGraphModel = 0;
         MxGraphModel mxGraphModel = processGroup.getMxGraphModel();
         if (null != mxGraphModel) {
+            processGroup.setProcessGroup(processGroup);
             addMxGraphModel = mxGraphModelTransaction.addMxGraphModel(mxGraphModel);
             if (addMxGraphModel <= 0) {
                 throw new Exception("save failed");

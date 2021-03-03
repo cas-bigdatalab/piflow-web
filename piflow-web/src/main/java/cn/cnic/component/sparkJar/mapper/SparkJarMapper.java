@@ -1,15 +1,10 @@
 package cn.cnic.component.sparkJar.mapper;
 
-import java.util.List;
-
-import org.apache.ibatis.annotations.InsertProvider;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.SelectProvider;
-import org.apache.ibatis.annotations.UpdateProvider;
-
 import cn.cnic.component.sparkJar.mapper.provider.SparkJarMapperProvider;
 import cn.cnic.component.sparkJar.model.SparkJarComponent;
+import org.apache.ibatis.annotations.*;
+
+import java.util.List;
 
 @Mapper
 public interface SparkJarMapper {

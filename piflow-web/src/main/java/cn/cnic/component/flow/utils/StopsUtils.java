@@ -1,14 +1,5 @@
 package cn.cnic.component.flow.utils;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
-
 import cn.cnic.component.dataSource.entity.DataSource;
 import cn.cnic.component.dataSource.utils.DataSourceUtils;
 import cn.cnic.component.dataSource.vo.DataSourceVo;
@@ -20,6 +11,10 @@ import cn.cnic.component.flow.vo.StopsPropertyVo;
 import cn.cnic.component.flow.vo.StopsVo;
 import cn.cnic.component.stopsComponent.model.StopsComponent;
 import cn.cnic.component.stopsComponent.model.StopsComponentProperty;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
+
+import java.util.*;
 
 public class StopsUtils {
 

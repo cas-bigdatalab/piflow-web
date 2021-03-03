@@ -1,14 +1,19 @@
 package cn.cnic.component.schedule.mapper.provider;
 
-import java.util.Date;
-
+import cn.cnic.base.util.DateUtils;
+import cn.cnic.base.util.SqlUtils;
+import cn.cnic.common.Eunm.ScheduleState;
+import cn.cnic.component.schedule.entity.Schedule;
+import cn.cnic.component.system.entity.SysSchedule;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.jdbc.SQL;
 
-import cn.cnic.base.util.DateUtils;
-import cn.cnic.base.util.SqlUtils;
-import cn.cnic.component.schedule.entity.Schedule;
+import javax.persistence.Column;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import java.util.Date;
 
 @Mapper
 public class ScheduleMapperProvider {

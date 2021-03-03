@@ -64,7 +64,7 @@ public class TestDataSchemaMapperProvider {
 		String sql = "SELECT 0";
 		if (preventSQLInjectionTestDataSchema(testDataSchema)) {
 			StringBuffer strBuf = new StringBuffer();
-			strBuf.append("INSERT INTO group_schedule ");
+			strBuf.append("INSERT INTO test_data_schema ");
 			strBuf.append("( ");
 			strBuf.append(SqlUtils.baseFieldName() + ", ");
 			strBuf.append("field_name, ");
@@ -95,7 +95,7 @@ public class TestDataSchemaMapperProvider {
 			return "SELECT 0";
 		}
 		StringBuffer strBuf = new StringBuffer();
-		strBuf.append("INSERT INTO group_schedule ");
+		strBuf.append("INSERT INTO test_data_schema ");
 		strBuf.append("( ");
 		strBuf.append(SqlUtils.baseFieldName() + ", ");
 		strBuf.append("field_name, ");
@@ -134,7 +134,7 @@ public class TestDataSchemaMapperProvider {
 		if (flag && StringUtils.isNotBlank(this.id)) {
 			SQL sql = new SQL();
 			// INSERT_INTO brackets is table name
-			sql.UPDATE("group_schedule");
+			sql.UPDATE("test_data_schema");
 			// The first string in the SET is the name of the field corresponding to the
 			// table in the database
 			sql.SET("last_update_dttm = " + lastUpdateDttmStr);
@@ -154,6 +154,24 @@ public class TestDataSchemaMapperProvider {
 		}
 		this.resetTestDataSchema();
 		return sqlStr;
+	}
+
+	public String delTestDataSchemaByTestDataId(boolean isAdmin, String username, String testDataId){
+		if (StringUtils.isBlank(testDataId)) {
+			return "SELECT 0";
+		}
+		String condition = "";
+		if (!isAdmin) {
+			if (StringUtils.isBlank(username)) {
+				return "SELECT 0";
+			}
+			condition = " AND crt_user=" + SqlUtils.preventSQLInjection(username);
+		}
+		StringBuffer stringBuffer = new StringBuffer();
+		stringBuffer.append("UPDATE test_data_schema SET enable_flag=0 WHERE ");
+		stringBuffer.append("fk_test_data_id=" + SqlUtils.preventSQLInjection(testDataId));
+		stringBuffer.append(condition);
+		return  stringBuffer.toString();
 	}
 
 }

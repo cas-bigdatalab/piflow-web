@@ -1,14 +1,12 @@
 package cn.cnic.component.dashboard.service;
 
-import java.util.Map;
-
-import javax.annotation.Resource;
-
+import cn.cnic.ApplicationTests;
+import cn.cnic.base.util.ReturnMapUtils;
 import org.junit.Test;
 import org.springframework.test.annotation.Rollback;
 
-import cn.cnic.ApplicationTests;
-import cn.cnic.base.util.ReturnMapUtils;
+import javax.annotation.Resource;
+import java.util.Map;
 
 public class StatisticTest extends ApplicationTests {
 

@@ -1,12 +1,12 @@
 package cn.cnic.component.mxGraph.service;
 
+import cn.cnic.ApplicationTests;
+import cn.cnic.base.util.LoggerUtil;
+import cn.cnic.component.mxGraph.entity.MxCell;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import cn.cnic.ApplicationTests;
-import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.component.mxGraph.entity.MxCell;
 
 public class IMxCellServiceTest extends ApplicationTests {
 

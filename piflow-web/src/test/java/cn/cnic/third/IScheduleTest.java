@@ -1,13 +1,5 @@
 package cn.cnic.third;
 
-import java.util.Map;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.lang3.StringUtils;
-import org.junit.Test;
-import org.slf4j.Logger;
-
 import cn.cnic.ApplicationTests;
 import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.component.flow.entity.Flow;
@@ -18,6 +10,12 @@ import cn.cnic.component.schedule.entity.Schedule;
 import cn.cnic.component.schedule.utils.ScheduleUtils;
 import cn.cnic.third.service.ISchedule;
 import cn.cnic.third.vo.schedule.ThirdScheduleVo;
+import org.apache.commons.lang3.StringUtils;
+import org.junit.Test;
+import org.slf4j.Logger;
+
+import javax.annotation.Resource;
+import java.util.Map;
 
 public class IScheduleTest extends ApplicationTests {
 

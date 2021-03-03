@@ -116,4 +116,22 @@ public class TestDataMapperProvider {
 		return stringBuf.toString();
 	}
 
+	public String delTestDataById(boolean isAdmin, String username, String id){
+		if (StringUtils.isBlank(id)) {
+			return "SELECT 0";
+		}
+		String condition = "";
+		if (!isAdmin) {
+			if (StringUtils.isBlank(username)) {
+				return "SELECT 0";
+			}
+			condition = " AND crt_user=" + SqlUtils.preventSQLInjection(username);
+		}
+		StringBuffer stringBuffer = new StringBuffer();
+		stringBuffer.append("UPDATE test_data SET enable_flag=0 WHERE ");
+		stringBuffer.append("id=" + SqlUtils.preventSQLInjection(id));
+		stringBuffer.append(condition);
+		return  stringBuffer.toString();
+	}
+
 }

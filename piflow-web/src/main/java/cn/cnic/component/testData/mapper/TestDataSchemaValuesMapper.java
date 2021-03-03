@@ -3,15 +3,8 @@ package cn.cnic.component.testData.mapper;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.ibatis.annotations.InsertProvider;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.One;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.SelectProvider;
-import org.apache.ibatis.annotations.UpdateProvider;
+import cn.cnic.component.testData.entity.TestData;
+import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
 
 import cn.cnic.component.testData.entity.TestDataSchemaValues;
@@ -36,5 +29,8 @@ public interface TestDataSchemaValuesMapper {
 
 	@SelectProvider(type = TestDataSchemaValuesMapperProvider.class, method = "getTestDataSchemaValuesCustomList")
 	public List<Map<String, String>> getTestDataSchemaValuesCustomList(@Param("isAdmin") boolean isAdmin, @Param("username") String username, @Param("fieldNameList") List<Map<String, String>> map);
+
+	@UpdateProvider(type = TestDataSchemaValuesMapperProvider.class,method = "delTestDataSchemaValuesByTestDataId")
+	public Integer delTestDataSchemaValuesByTestDataId(@Param("isAdmin") boolean isAdmin, @Param("username") String username, @Param("testDataId") String testDataId);
 
 }

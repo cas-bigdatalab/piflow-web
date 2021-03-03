@@ -70,8 +70,7 @@ public class StopsComponentTransactional {
 		if (null == properties || properties.size() <= 0) {
 			return 0;
 		}
-		int deleteStopsComponentPropertyCount = stopsComponentPropertyMapper
-				.deleteStopsComponentPropertyByStopId(stopsComponent.getId());
+		int deleteStopsComponentPropertyCount = stopsComponentPropertyMapper.deleteStopsComponentPropertyByStopId(stopsComponent.getId());
 
 		int deleteStopsComponentRows = stopsComponentMapper.deleteStopsComponentById(stopsComponent.getId());
 
@@ -103,8 +102,7 @@ public class StopsComponentTransactional {
 		return deleteRows;
 	}
 
-	public int stopsComponentLinkStopsComponentGroupList(StopsComponent stopsComponent,
-			List<StopsComponentGroup> stopsComponentGroupList) {
+	public int stopsComponentLinkStopsComponentGroupList(StopsComponent stopsComponent, List<StopsComponentGroup> stopsComponentGroupList) {
 		if (null == stopsComponent) {
 			return 0;
 		}
@@ -115,11 +113,9 @@ public class StopsComponentTransactional {
 		for (StopsComponentGroup stopGroup : stopsComponentGroupList) {
 			String stopGroupId = stopGroup.getId();
 			String stopsTemplateId = stopsComponent.getId();
-			int insertAssociationGroupsStopsTemplate = stopsComponentGroupMapper
-					.insertAssociationGroupsStopsTemplate(stopGroupId, stopsTemplateId);
+			int insertAssociationGroupsStopsTemplate = stopsComponentGroupMapper.insertAssociationGroupsStopsTemplate(stopGroupId, stopsTemplateId);
 			affectedRows += insertAssociationGroupsStopsTemplate;
-			logger.info("association_groups_stops_template Association table insertion affects the number of rows : "
-					+ insertAssociationGroupsStopsTemplate);
+			logger.info("association_groups_stops_template Association table insertion affects the number of rows : " + insertAssociationGroupsStopsTemplate);
 		}
 		return affectedRows;
 	}
@@ -135,8 +131,7 @@ public class StopsComponentTransactional {
 
 		// delete group
 		String[] stopsComponentGroup = stopsComponent.getGroups().split(",");
-		List<StopsComponentGroup> stopsComponentGroupList = stopsComponentGroupMapper
-				.getStopGroupByNameList(Arrays.asList(stopsComponentGroup));
+		List<StopsComponentGroup> stopsComponentGroupList = stopsComponentGroupMapper.getStopGroupByNameList(Arrays.asList(stopsComponentGroup));
 		for (StopsComponentGroup sGroup : stopsComponentGroupList) {
 
 			int count = stopsComponentGroupMapper.getGroupStopCount(sGroup.getId());

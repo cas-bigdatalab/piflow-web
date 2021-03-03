@@ -144,7 +144,7 @@ public class TestDataSchemaValuesMapperProvider {
 		return sqlStr;
 	}
 
-	public String getTestDataSchemaValuesCustomList(@SuppressWarnings("rawtypes") Map map) {
+	public static String getTestDataSchemaValuesCustomList(@SuppressWarnings("rawtypes") Map map) {
 		if (null == map) {
 			return "SELECT 0";
 		}
@@ -173,13 +173,31 @@ public class TestDataSchemaValuesMapperProvider {
 			strBuf.append(") AS ");
 			strBuf.append(SqlUtils.preventSQLInjection(fieldName.get("field_name")) + " ");
 		}
-		strBuf.append("FROM TEST_DATA_SCHEMA_VALUES TDSV ");
+		strBuf.append("FROM test_data_schema_values TDSV ");
 		strBuf.append("WHERE TDSV.enable_flag=1 ");
 		strBuf.append(condition + " ");
 		strBuf.append("GROUP BY TDSV.data_row");
 
 		return strBuf.toString();
 
+	}
+
+	public String delTestDataSchemaValuesByTestDataId(boolean isAdmin, String username, String testDataId){
+		if (StringUtils.isBlank(testDataId)) {
+			return "SELECT 0";
+		}
+		String condition = "";
+        if (!isAdmin) {
+            if (StringUtils.isBlank(username)) {
+                return "SELECT 0";
+            }
+            condition = " AND crt_user=" + SqlUtils.preventSQLInjection(username);
+        }
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append("UPDATE test_data_list SET enable_flag=0 WHERE ");
+        stringBuffer.append("fk_test_data_id=" + SqlUtils.preventSQLInjection(testDataId));
+        stringBuffer.append(condition);
+		return  stringBuffer.toString();
 	}
 
 }

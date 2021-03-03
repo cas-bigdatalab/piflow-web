@@ -24,7 +24,8 @@ CREATE TABLE IF NOT EXISTS `test_data` (
   `field_description` Text COMMENT 'description',
   `field_soft` BIGINT(20) COMMENT 'soft',
   PRIMARY KEY (ID)) ENGINE=INNODB;
-  
+  ALTER TABLE `test_data_schema` ADD CONSTRAINT `FK22rp96r4290eons0000000001` FOREIGN KEY (`fk_test_data_id`) REFERENCES `test_data` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
   CREATE TABLE IF NOT EXISTS `test_data_schema_values` (
   `id` VARCHAR(40) NOT NULL,
   `crt_dttm` DATETIME(0) NOT NULL COMMENT 'Create date time',
@@ -38,3 +39,5 @@ CREATE TABLE IF NOT EXISTS `test_data` (
   `field_value` VARCHAR(1000) COMMENT 'field type',
   `data_row` bigint(20) COMMENT 'data row',
   PRIMARY KEY (ID)) ENGINE=INNODB;
+  ALTER TABLE `test_data_schema_values` ADD CONSTRAINT `FK33rp96r4290eons0000000001` FOREIGN KEY (`fk_test_data_id`) REFERENCES `test_data` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+  ALTER TABLE `test_data_schema_values` ADD CONSTRAINT `FK33rp96r4290eons0000000002` FOREIGN KEY (`fk_test_data_schema_id`) REFERENCES `test_data_schema` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;

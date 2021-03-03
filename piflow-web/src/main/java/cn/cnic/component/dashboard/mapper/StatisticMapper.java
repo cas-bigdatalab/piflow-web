@@ -1,12 +1,11 @@
 package cn.cnic.component.dashboard.mapper;
 
-import java.util.List;
-import java.util.Map;
-
+import cn.cnic.component.dashboard.mapper.provider.StatisticProvider;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.SelectProvider;
 
-import cn.cnic.component.dashboard.mapper.provider.StatisticProvider;
+import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface StatisticMapper {
