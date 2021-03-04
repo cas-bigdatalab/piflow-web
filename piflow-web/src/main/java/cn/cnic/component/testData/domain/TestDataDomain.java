@@ -16,6 +16,8 @@ import cn.cnic.component.testData.entity.TestDataSchemaValues;
 import cn.cnic.component.testData.mapper.TestDataMapper;
 import cn.cnic.component.testData.mapper.TestDataSchemaMapper;
 import cn.cnic.component.testData.mapper.TestDataSchemaValuesMapper;
+import cn.cnic.component.testData.vo.TestDataSchemaVo;
+import cn.cnic.component.testData.vo.TestDataVo;
 
 @Component
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
@@ -147,6 +149,19 @@ public class TestDataDomain {
     public List<TestData> getTestDataList(boolean isAdmin, String username, String param) {
         return testDataMapper.getTestDataList(isAdmin, username, param);
     }
+    
+    public List<TestDataVo> getTestDataVoList(boolean isAdmin, String username, String param) {
+        return testDataMapper.getTestDataVoList(isAdmin, username, param);
+    }
+
+    public List<TestDataSchema> getTestDataSchemaListByTestDataId(boolean isAdmin, String username, String param, String testDataId) {
+        return testDataSchemaMapper.getTestDataSchemaListByTestDataId(isAdmin, username, param, testDataId);
+    }
+    
+    public List<TestDataSchemaVo> getTestDataSchemaVoListByTestDataId(boolean isAdmin, String username, String param, String testDataId) {
+        return testDataSchemaMapper.getTestDataSchemaVoListByTestDataId(isAdmin, username, param, testDataId);
+    }
+
 
     public List<Map<String, String>> getTestDataSchemaIdAndNameListByTestDataId(String testDataId) {
         return testDataSchemaMapper.getTestDataSchemaIdAndNameListByTestDataId(testDataId);

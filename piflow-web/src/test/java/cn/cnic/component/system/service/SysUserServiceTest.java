@@ -2,9 +2,6 @@ package cn.cnic.component.system.service;
 
 import cn.cnic.ApplicationTests;
 import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.base.util.UUIDUtils;
-import cn.cnic.component.flow.entity.Flow;
-import cn.cnic.component.flow.service.IFlowService;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

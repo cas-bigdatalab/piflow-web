@@ -5,7 +5,6 @@ import cn.cnic.component.process.entity.Process;
 import cn.cnic.component.process.mapper.provider.ProcessMapperProvider;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
-import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 

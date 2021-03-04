@@ -97,6 +97,24 @@ public class TestDataMapperProvider {
 		return sqlStr;
 	}
 
+	public String delTestDataById(boolean isAdmin, String username, String id){
+		if (StringUtils.isBlank(id)) {
+			return "SELECT 0";
+		}
+		String condition = "";
+		if (!isAdmin) {
+			if (StringUtils.isBlank(username)) {
+				return "SELECT 0";
+			}
+			condition = " AND crt_user=" + SqlUtils.preventSQLInjection(username);
+		}
+		StringBuffer stringBuffer = new StringBuffer();
+		stringBuffer.append("UPDATE test_data SET enable_flag=0 WHERE ");
+		stringBuffer.append("id=" + SqlUtils.preventSQLInjection(id));
+		stringBuffer.append(condition);
+		return  stringBuffer.toString();
+	}
+
 	public String getTestDataList(boolean isAdmin, String username, String param) {
 		StringBuffer stringBuf = new StringBuffer();
 		stringBuf.append("SELECT * FROM test_data WHERE enable_flag=1 ");
@@ -116,22 +134,5 @@ public class TestDataMapperProvider {
 		return stringBuf.toString();
 	}
 
-	public String delTestDataById(boolean isAdmin, String username, String id){
-		if (StringUtils.isBlank(id)) {
-			return "SELECT 0";
-		}
-		String condition = "";
-		if (!isAdmin) {
-			if (StringUtils.isBlank(username)) {
-				return "SELECT 0";
-			}
-			condition = " AND crt_user=" + SqlUtils.preventSQLInjection(username);
-		}
-		StringBuffer stringBuffer = new StringBuffer();
-		stringBuffer.append("UPDATE test_data SET enable_flag=0 WHERE ");
-		stringBuffer.append("id=" + SqlUtils.preventSQLInjection(id));
-		stringBuffer.append(condition);
-		return  stringBuffer.toString();
-	}
 
 }

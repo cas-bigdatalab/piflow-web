@@ -174,4 +174,37 @@ public class TestDataSchemaMapperProvider {
 		return  stringBuffer.toString();
 	}
 
+	public String getTestDataSchemaById(String id){
+		if (StringUtils.isBlank(id)) {
+			return "SELECT 0";
+		}
+		StringBuffer stringBuffer = new StringBuffer();
+		stringBuffer.append("SELECT * FROM test_data_schema WHERE enable_flag=1 ");
+		stringBuffer.append("AND id=" + SqlUtils.preventSQLInjection(id));
+		return  stringBuffer.toString();
+	}
+
+	public String getTestDataSchemaListByTestDataId(boolean isAdmin, String username, String param, String testDataId){
+		if (StringUtils.isBlank(testDataId)) {
+			return "SELECT 0";
+		}
+		StringBuffer stringBuf = new StringBuffer();
+		stringBuf.append("SELECT * FROM test_data_schema WHERE enable_flag=1 ");
+		stringBuf.append("AND fk_test_data_id=" + SqlUtils.preventSQLInjection(testDataId) + " ");
+		if (!isAdmin) {
+			if (StringUtils.isBlank(username)) {
+				return "SELECT 0";
+			}
+			stringBuf.append("AND crt_user=" + SqlUtils.preventSQLInjection(username) + " ");
+		}
+		if (StringUtils.isNotBlank(param)) {
+			stringBuf.append("crt_dttm LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%')");
+			stringBuf.append("last_update_dttm LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%')");
+			stringBuf.append("field_name LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%')");
+			stringBuf.append("field_type LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%')");
+		}
+		stringBuf.append("ORDER BY  last_update_dttm DESC ");
+		return stringBuf.toString();
+	}
+
 }

@@ -1,7 +1,5 @@
 package cn.cnic.base;
 
-import cn.cnic.component.schedule.entity.Schedule;
-
 import java.util.Date;
 
 public class BaseHibernateModelNoIdUtils {

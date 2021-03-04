@@ -3,7 +3,6 @@ package cn.cnic.component.testData.service.impl;
 import java.util.List;
 import java.util.Map;
 
-import cn.cnic.component.testData.entity.TestData;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +19,8 @@ import cn.cnic.base.util.ReturnMapUtils;
 import cn.cnic.component.dataSource.vo.DataSourceVo;
 import cn.cnic.component.testData.domain.TestDataDomain;
 import cn.cnic.component.testData.service.ITestDataService;
+import cn.cnic.component.testData.vo.TestDataSchemaVo;
+import cn.cnic.component.testData.vo.TestDataVo;
 
 @Service
 @Transactional
@@ -65,7 +66,7 @@ public class TestDataServiceImpl implements ITestDataService {
      * @return
      */
     @Override
-    public String saveOrUpdateTestDataSchema(String username, String name, String loadId, String templateType){
+    public String saveOrUpdateTestDataSchema(String username, String name, String loadId, String templateType) {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
         }
@@ -92,7 +93,7 @@ public class TestDataServiceImpl implements ITestDataService {
      * @return
      */
     @Override
-    public String saveOrUpdateTestDataSchemaValues(String username, String name, String loadId, String templateType){
+    public String saveOrUpdateTestDataSchemaValues(String username, String name, String loadId, String templateType) {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
         }
@@ -131,6 +132,16 @@ public class TestDataServiceImpl implements ITestDataService {
         return ReturnMapUtils.setSucceededMsgRtnJsonStr("delete success");
     }
 
+    /**
+     * Get TestData list page
+     *
+     * @param username
+     * @param isAdmin
+     * @param offset
+     * @param limit
+     * @param param
+     * @return
+     */    
     @Override
     public String getTestDataListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param) {
         if (StringUtils.isBlank(username)) {
@@ -139,21 +150,61 @@ public class TestDataServiceImpl implements ITestDataService {
         if (null == offset || null == limit) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("param is error");
         }
-        Page<TestData> page = PageHelper.startPage(offset, limit);
-        testDataDomain.getTestDataList(isAdmin, username, param);
+        Page<TestDataVo> page = PageHelper.startPage(offset, limit);
+        testDataDomain.getTestDataVoList(isAdmin, username, param);
         Map<String, Object> rtnMap = PageHelperUtils.setLayTableParam(page, null);
         rtnMap.put(ReturnMapUtils.KEY_CODE, ReturnMapUtils.SUCCEEDED_CODE);
         return JsonUtils.toJsonNoException(rtnMap);
     }
 
+    /**
+     * Get TestDataSchema list by testDataId
+     *
+     * @param username
+     * @param isAdmin
+     * @param param
+     * @param testDataId
+     * @return
+     */  
     @Override
     public String getTestDataSchemaList(String username, boolean isAdmin, String param, String testDataId) {
-        return "";
+        if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
+        }
+        if (StringUtils.isBlank(testDataId)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("testDataId is null");
+        }
+        List<TestDataSchemaVo> testDataVoList = testDataDomain.getTestDataSchemaVoListByTestDataId(isAdmin, username, param, testDataId);
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("testDataList", testDataVoList);
     }
 
+    /**
+     * Get TestData list page
+     *
+     * @param username
+     * @param isAdmin
+     * @param offset
+     * @param limit
+     * @param param
+     * @param testDataId
+     * @return
+     */  
     @Override
     public String getTestDataSchemaListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param, String testDataId) {
-        return "";
+        if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
+        }
+        if (null == offset || null == limit) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("param is error");
+        }
+        if (StringUtils.isBlank(testDataId)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("testDataId is null");
+        }
+        Page<TestDataSchemaVo> page = PageHelper.startPage(offset, limit);
+        testDataDomain.getTestDataSchemaVoListByTestDataId(isAdmin, username, param, testDataId);
+        Map<String, Object> rtnMap = PageHelperUtils.setLayTableParam(page, null);
+        rtnMap.put(ReturnMapUtils.KEY_CODE, ReturnMapUtils.SUCCEEDED_CODE);
+        return JsonUtils.toJsonNoException(rtnMap);
     }
 
     /**

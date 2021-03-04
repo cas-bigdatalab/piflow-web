@@ -3,7 +3,6 @@ package cn.cnic.component.testData.mapper;
 import java.util.List;
 import java.util.Map;
 
-import cn.cnic.component.testData.entity.TestData;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
 

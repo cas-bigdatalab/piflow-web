@@ -1,9 +1,7 @@
 package cn.cnic.component.flow.jpa.domain;
 
-import cn.cnic.component.flow.entity.Flow;
 import cn.cnic.component.flow.entity.FlowGroup;
 import cn.cnic.component.flow.jpa.repository.FlowGroupJpaRepository;
-import org.apache.avro.generic.GenericData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

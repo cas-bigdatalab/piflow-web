@@ -3,7 +3,6 @@ package cn.cnic.component.process.transaction;
 import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.base.util.UUIDUtils;
 import cn.cnic.component.mxGraph.entity.MxGraphModel;
-import cn.cnic.component.mxGraph.mapper.MxGraphModelMapper;
 import cn.cnic.component.mxGraph.transaction.MxGraphModelTransaction;
 import cn.cnic.component.process.entity.*;
 import cn.cnic.component.process.entity.Process;
