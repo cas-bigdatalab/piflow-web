@@ -181,7 +181,7 @@ public class ScheduleMapperProvider {
             strBuf.append(") ");
         }
         if (!isAdmin) {
-            strBuf.append("and crt_user = " + SqlUtils.preventSQLInjection(username));
+            strBuf.append("and gs.crt_user = " + SqlUtils.preventSQLInjection(username));
         }
         strBuf.append("order by crt_dttm desc ");
         String sqlStr = strBuf.toString();
