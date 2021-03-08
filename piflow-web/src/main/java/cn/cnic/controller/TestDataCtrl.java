@@ -1,5 +1,8 @@
 package cn.cnic.controller;
 import cn.cnic.component.testData.service.ITestDataService;
+import cn.cnic.component.testData.vo.TestDataSchemaVo;
+import cn.cnic.component.testData.vo.TestDataVo;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,6 +16,45 @@ public class TestDataCtrl {
     @Resource
     private ITestDataService testDataServiceImpl;
 
+    /**
+     * saveOrUpdateTestDataSchema
+     *
+     * @param testDataId
+     * @return String
+     */
+    @RequestMapping("/saveOrUpdateTestDataSchema")
+    @ResponseBody
+    public String saveOrUpdateTestDataSchema(TestDataVo testDataVo) {
+        //String currentUsername = SessionUserUtil.getCurrentUsername();
+        //return testDataServiceImpl.saveOrUpdateTestDataSchema(currentUsername,"", "", "");
+        return testDataServiceImpl.saveOrUpdateTestDataAndSchema("admin", true, testDataVo);
+    }
+    
+    @RequestMapping("/delTestData")
+    @ResponseBody
+    public String delTestData(String testDataId) {
+        //String currentUsername = SessionUserUtil.getCurrentUsername();
+        //boolean isAdmin = SessionUserUtil.isAdmin();
+        //return testDataServiceImpl.delTestData(currentUsername, isAdmin, testDataId);
+    	return testDataServiceImpl.delTestData("admin", true, testDataId);
+        
+    }
+    
+    /**
+     * saveOrUpdateTestDataSchemaValues
+     * 
+     * @param testDataSchemaVo
+     * @return String
+     */
+    @RequestMapping("/saveOrUpdateTestDataSchemaValues")
+    @ResponseBody
+    public String saveOrUpdateTestDataSchemaValues(TestDataSchemaVo testDataSchemaVo) {
+        //String currentUsername = SessionUserUtil.getCurrentUsername();
+        //boolean isAdmin = SessionUserUtil.isAdmin();
+        //return testDataServiceImpl.saveOrUpdateTestDataSchemaValues(currentUsername,"", "", "");
+    	return testDataServiceImpl.saveOrUpdateTestDataSchemaValues("admin", true, testDataSchemaVo);
+    }
+    
     /**
      * "testData" list Pagination
      *
@@ -100,37 +142,8 @@ public class TestDataCtrl {
         
     }
 
-    /**
-     * testDataSchemaValuesListPage
-     *
-     * @param testDataId
-     * @return
-     */
-    @RequestMapping("/saveOrUpdateTestDataSchema")
-    @ResponseBody
-    public String saveOrUpdateTestDataSchema(String param, String testDataId) {
-        //String currentUsername = SessionUserUtil.getCurrentUsername();
-        //return testDataServiceImpl.saveOrUpdateTestDataSchema(currentUsername,"", "", "");
-        return testDataServiceImpl.saveOrUpdateTestDataSchema("admin","", "", "");
-    }
 
-    @RequestMapping("/saveOrUpdateTestDataSchemaValues")
-    @ResponseBody
-    public String saveOrUpdateTestDataSchemaValues(String testDataId) {
-        //String currentUsername = SessionUserUtil.getCurrentUsername();
-        //boolean isAdmin = SessionUserUtil.isAdmin();
-        //return testDataServiceImpl.saveOrUpdateTestDataSchemaValues(currentUsername,"", "", "");
-    	return testDataServiceImpl.saveOrUpdateTestDataSchemaValues("admin","", "", "");
-        
-    }
 
-    @RequestMapping("/delTestData")
-    @ResponseBody
-    public String delTestData(String testDataId) {
-        //String currentUsername = SessionUserUtil.getCurrentUsername();
-        //boolean isAdmin = SessionUserUtil.isAdmin();
-        //return testDataServiceImpl.delTestData(currentUsername, isAdmin, testDataId);
-    	return testDataServiceImpl.delTestData("admin", true, testDataId);
-        
-    }
+
+
 }

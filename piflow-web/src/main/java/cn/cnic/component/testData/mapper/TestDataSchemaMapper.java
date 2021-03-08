@@ -30,6 +30,9 @@ public interface TestDataSchemaMapper {
 	@SelectProvider(type = TestDataSchemaMapperProvider.class,method = "getTestDataSchemaListByTestDataId")
 	public List<TestDataSchema> getTestDataSchemaListByTestDataId(boolean isAdmin, String username, String param, String testDataId);
 	
+
+	
+
 	@SelectProvider(type = TestDataSchemaMapperProvider.class,method = "getTestDataSchemaListByTestDataId")
 	public List<TestDataSchemaVo> getTestDataSchemaVoListByTestDataId(boolean isAdmin, String username, String param, String testDataId);
 	

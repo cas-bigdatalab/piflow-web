@@ -32,6 +32,15 @@ public class TestDataDomain {
     @Autowired
     private TestDataSchemaValuesMapper testDataSchemaValuesMapper;
 
+    /**
+     * save or update TestData
+     * 
+     * @param testData
+     * @param @return
+     * @throws Exception
+     * @return int
+     * @throws
+     */
     public int saveOrUpdate(TestData testData) throws Exception {
         if (StringUtils.isBlank(testData.getId())) {
             return addTestData(testData);
@@ -39,6 +48,15 @@ public class TestDataDomain {
         return updateTestData(testData);
     }
 
+    /**
+     * add TestData
+     * 
+     * @param testData
+     * @param @return
+     * @throws Exception
+     * @return int
+     * @throws
+     */
     public int addTestData(TestData testData) throws Exception {
         if (null == testData) {
             throw new Exception("testData is null");
@@ -58,6 +76,15 @@ public class TestDataDomain {
         return affectedRows;
     }
 
+    /**
+     * add TestDataSchema
+     * 
+     * @param testDataSchema
+     * @param @return
+     * @throws Exception
+     * @return int
+     * @throws
+     */
     public int addTestDataSchema(TestDataSchema testDataSchema) throws Exception {
         if (null == testDataSchema) {
             throw new Exception("testDataSchema is null");
@@ -77,6 +104,15 @@ public class TestDataDomain {
         return affectedRows;
     }
 
+    /**
+     * add TestDataSchemaValues
+     * 
+     * @param testDataSchemaValues
+     * @param @return
+     * @throws Exception
+     * @return int
+     * @throws
+     */
     public int addTestDataSchemaValues(TestDataSchemaValues testDataSchemaValues) throws Exception {
         if (null == testDataSchemaValues) {
             throw new Exception("testDataSchema is null");
@@ -89,6 +125,15 @@ public class TestDataDomain {
         return affectedRows;
     }
 
+    /**
+     * update TestData
+     * 
+     * @param testData
+     * @param @return
+     * @throws Exception
+     * @return int
+     * @throws
+     */
     public int updateTestData(TestData testData) throws Exception {
         if (null == testData) {
             throw new Exception("testData is null");
@@ -108,6 +153,15 @@ public class TestDataDomain {
         return affectedRows;
     }
 
+    /**
+     * update TestDataSchema
+     * 
+     * @param testDataSchema
+     * @param @return
+     * @throws Exception
+     * @return int
+     * @throws
+     */
     public int updateTestDataSchema(TestDataSchema testDataSchema) throws Exception {
         if (null == testDataSchema) {
             throw new Exception("testDataSchema is null");
@@ -132,6 +186,15 @@ public class TestDataDomain {
 
     }
 
+    /**
+     * update TestDataSchemaValues
+     * 
+     * @param testDataSchemaValues
+     * @param @return
+     * @throws Exception
+     * @return int
+     * @throws
+     */
     public int updateTestDataSchemaValues(TestDataSchemaValues testDataSchemaValues) throws Exception {
         if (null == testDataSchemaValues) {
             throw new Exception("testDataSchema is null");
@@ -139,34 +202,106 @@ public class TestDataDomain {
         return testDataSchemaValuesMapper.updateTestDataSchemaValues(testDataSchemaValues);
     }
 
+    /**
+     * delete TestData
+     * 
+     * @param username
+     * @param isAdmin
+     * @param testDataId
+     * @return int 
+     * @throws
+     */
     public int delTestData(String username, boolean isAdmin, String testDataId) {
         int affectedRows = testDataSchemaValuesMapper.delTestDataSchemaValuesByTestDataId(isAdmin, username, testDataId);
         affectedRows += testDataSchemaMapper.delTestDataSchemaByTestDataId(isAdmin, username, testDataId);
         affectedRows += testDataMapper.delTestDataById(isAdmin, username, testDataId);
         return affectedRows;
     }
+    
+    /**
+     * getTestDataById
+     * 
+     * @param id
+     * @return TestDataVo 
+     * @throws
+     */
+    public TestDataVo getTestDataById(String id) {
+    	return testDataMapper.getTestDataVoById(id);
+    }
 
+    /**
+     * getTestDataList
+     * @param isAdmin
+     * @param username
+     * @param param
+     * @return List<TestData>
+     * @throws
+     */
     public List<TestData> getTestDataList(boolean isAdmin, String username, String param) {
         return testDataMapper.getTestDataList(isAdmin, username, param);
     }
     
+    /**
+     * getTestDataVoList
+     * @param isAdmin
+     * @param username
+     * @param param
+     * @return List<TestDataVo>
+     * @throws
+     */
     public List<TestDataVo> getTestDataVoList(boolean isAdmin, String username, String param) {
         return testDataMapper.getTestDataVoList(isAdmin, username, param);
     }
 
+    /**
+     * getTestDataSchemaListByTestDataId
+     * 
+     * @param isAdmin
+     * @param username
+     * @param param
+     * @param testDataId
+     * @return List<TestDataSchema>
+     * @throws
+     */
     public List<TestDataSchema> getTestDataSchemaListByTestDataId(boolean isAdmin, String username, String param, String testDataId) {
         return testDataSchemaMapper.getTestDataSchemaListByTestDataId(isAdmin, username, param, testDataId);
     }
     
+    /**
+     * getTestDataSchemaVoListByTestDataId
+     * 
+     * @param isAdmin
+     * @param username
+     * @param param
+     * @param testDataId
+     * @return List<TestDataSchemaVo>
+     * @throws
+     */
     public List<TestDataSchemaVo> getTestDataSchemaVoListByTestDataId(boolean isAdmin, String username, String param, String testDataId) {
         return testDataSchemaMapper.getTestDataSchemaVoListByTestDataId(isAdmin, username, param, testDataId);
     }
 
 
+    /**
+     * getTestDataSchemaIdAndNameListByTestDataId
+     * 
+     * @param testDataId
+     * @return List<Map<String,String>>
+     * @throws
+     */
     public List<Map<String, String>> getTestDataSchemaIdAndNameListByTestDataId(String testDataId) {
         return testDataSchemaMapper.getTestDataSchemaIdAndNameListByTestDataId(testDataId);
     }
 
+    /**
+     * getTestDataSchemaValuesCustomList
+     * 
+     * @param isAdmin
+     * @param username
+     * @param fieldNameList
+     * @return List<Map<String,String>> 
+     * @throws
+     */
     public List<Map<String, String>> getTestDataSchemaValuesCustomList(boolean isAdmin, String username, List<Map<String, String>> fieldNameList) {
         if (null == fieldNameList) {
             return null;

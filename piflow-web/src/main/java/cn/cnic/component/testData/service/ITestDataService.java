@@ -1,40 +1,30 @@
 package cn.cnic.component.testData.service;
 
-public interface ITestDataService {
+import cn.cnic.component.testData.vo.TestDataSchemaVo;
+import cn.cnic.component.testData.vo.TestDataVo;
 
-    /**
-     * addTestData
-     *
-     * @param username
-     * @param name
-     * @param loadId
-     * @param templateType
-     * @return
-     */
-    public String addTestData(String username, String name, String loadId, String templateType);
+public interface ITestDataService {
 
     /**
      * saveOrUpdateTestDataSchema
      *
      * @param username
-     * @param name
-     * @param loadId
-     * @param templateType
-     * @return
+     * @param isAdmin
+     * @param testDataVo
+     * @return String
      */
-    public String saveOrUpdateTestDataSchema(String username, String name, String loadId, String templateType);
+    public String saveOrUpdateTestDataAndSchema(String username, boolean isAdmin, TestDataVo testDataVo);
 
 
     /**
      * saveOrUpdateTestDataSchemaValues
      *
      * @param username
-     * @param name
-     * @param loadId
-     * @param templateType
-     * @return
+     * @param isAdmin
+     * @param testDataSchemaVo
+     * @return String
      */
-    public String saveOrUpdateTestDataSchemaValues(String username, String name, String loadId, String templateType);
+    public String saveOrUpdateTestDataSchemaValues(String username, boolean isAdmin, TestDataSchemaVo testDataSchemaVo);
 
     /**
      * delTestData
@@ -42,7 +32,7 @@ public interface ITestDataService {
      * @param username
      * @param isAdmin
      * @param testDataId
-     * @return
+     * @return String
      */
     public String delTestData(String username, boolean isAdmin, String testDataId);
 
@@ -54,7 +44,7 @@ public interface ITestDataService {
      * @param offset
      * @param limit
      * @param param
-     * @return
+     * @return String
      */
     public String getTestDataListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param);
     
@@ -67,7 +57,7 @@ public interface ITestDataService {
      * @param limit
      * @param param
      * @param testDataId
-     * @return
+     * @return String
      */
     public String getTestDataSchemaListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param, String testDataId);
 
@@ -78,7 +68,7 @@ public interface ITestDataService {
      * @param isAdmin
      * @param param
      * @param testDataId
-     * @return
+     * @return String
      */
     public String getTestDataSchemaList(String username, boolean isAdmin, String param, String testDataId);
     
@@ -101,7 +91,7 @@ public interface ITestDataService {
      * @param isAdmin
      * @param param
      * @param testDataId
-     * @return
+     * @return String
      */
     public String getTestDataSchemaValuesCustomList(String username, boolean isAdmin, String param, String testDataId);
 

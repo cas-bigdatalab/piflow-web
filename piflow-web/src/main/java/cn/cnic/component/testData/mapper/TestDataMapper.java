@@ -23,6 +23,9 @@ public interface TestDataMapper {
 	@Select("select * from test_data where enable_flag=1 and id=#{id} ")
 	public TestData getTestDataById(String id);
 	
+	@Select("select * from test_data where enable_flag=1 and id=#{id} ")
+	public TestDataVo getTestDataVoById(String id);
+	
 	@SelectProvider(type = TestDataMapperProvider.class,method = "getTestDataList")
 	public List<TestData> getTestDataList(boolean isAdmin, String username, String param);
 	

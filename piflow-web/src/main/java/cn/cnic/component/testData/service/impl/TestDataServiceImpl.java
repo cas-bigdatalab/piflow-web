@@ -31,53 +31,20 @@ public class TestDataServiceImpl implements ITestDataService {
     private TestDataDomain testDataDomain;
 
     /**
-     * add addTestData
-     *
-     * @param username
-     * @param name
-     * @param loadId
-     * @param templateType
-     * @return
-     */
-    @Override
-    public String addTestData(String username, String name, String loadId, String templateType) {
-        if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
-        }
-        if (StringUtils.isBlank(name)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("param name is empty");
-        }
-        if (StringUtils.isBlank(loadId)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("param 'loadId' is empty");
-        }
-        if (StringUtils.isBlank(templateType)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("param 'templateType' is empty");
-        }
-        return ReturnMapUtils.setSucceededMsgRtnJsonStr("save template success");
-    }
-
-    /**
      * saveOrUpdateTestDataSchema
      *
      * @param username
-     * @param name
-     * @param loadId
-     * @param templateType
-     * @return
+     * @param isAdmin
+     * @param testDataVo
+     * @return String
      */
     @Override
-    public String saveOrUpdateTestDataSchema(String username, String name, String loadId, String templateType) {
+    public String saveOrUpdateTestDataAndSchema(String username, boolean isAdmin, TestDataVo testDataVo) {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
         }
-        if (StringUtils.isBlank(name)) {
+        if (null != testDataVo) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("param name is empty");
-        }
-        if (StringUtils.isBlank(loadId)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("param 'loadId' is empty");
-        }
-        if (StringUtils.isBlank(templateType)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("param 'templateType' is empty");
         }
         return ReturnMapUtils.setSucceededMsgRtnJsonStr("save template success");
     }
@@ -87,24 +54,17 @@ public class TestDataServiceImpl implements ITestDataService {
      * saveOrUpdateTestDataSchemaValues
      *
      * @param username
-     * @param name
-     * @param loadId
-     * @param templateType
-     * @return
+     * @param isAdmin
+     * @param testDataSchemaVo
+     * @return String
      */
     @Override
-    public String saveOrUpdateTestDataSchemaValues(String username, String name, String loadId, String templateType) {
+    public String saveOrUpdateTestDataSchemaValues(String username, boolean isAdmin, TestDataSchemaVo testDataSchemaVo) {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
         }
-        if (StringUtils.isBlank(name)) {
+        if (null != testDataSchemaVo) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("param name is empty");
-        }
-        if (StringUtils.isBlank(loadId)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("param 'loadId' is empty");
-        }
-        if (StringUtils.isBlank(templateType)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("param 'templateType' is empty");
         }
         return ReturnMapUtils.setSucceededMsgRtnJsonStr("save template success");
     }
@@ -174,8 +134,13 @@ public class TestDataServiceImpl implements ITestDataService {
         if (StringUtils.isBlank(testDataId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("testDataId is null");
         }
+        TestDataVo testDataVo = testDataDomain.getTestDataById(testDataId);
+        if (null == testDataVo) {
+        	return ReturnMapUtils.setFailedMsgRtnJsonStr("data is null");
+        }
         List<TestDataSchemaVo> testDataVoList = testDataDomain.getTestDataSchemaVoListByTestDataId(isAdmin, username, param, testDataId);
-        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("testDataList", testDataVoList);
+        testDataVo.setSchemaVoList(testDataVoList);
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("testData", testDataVo);
     }
 
     /**
@@ -200,10 +165,15 @@ public class TestDataServiceImpl implements ITestDataService {
         if (StringUtils.isBlank(testDataId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("testDataId is null");
         }
+        TestDataVo testDataVo = testDataDomain.getTestDataById(testDataId);
+        if (null == testDataVo) {
+        	return ReturnMapUtils.setFailedMsgRtnJsonStr("data is null");
+        }
         Page<TestDataSchemaVo> page = PageHelper.startPage(offset, limit);
         testDataDomain.getTestDataSchemaVoListByTestDataId(isAdmin, username, param, testDataId);
         Map<String, Object> rtnMap = PageHelperUtils.setLayTableParam(page, null);
         rtnMap.put(ReturnMapUtils.KEY_CODE, ReturnMapUtils.SUCCEEDED_CODE);
+        rtnMap.put("testData",testDataVo);
         return JsonUtils.toJsonNoException(rtnMap);
     }
 
@@ -239,7 +209,7 @@ public class TestDataServiceImpl implements ITestDataService {
     }
 
     /**
-     * getDataSourceVoListPage
+     * getTestDataSchemaValuesCustomList
      *
      * @param username
      * @param isAdmin
