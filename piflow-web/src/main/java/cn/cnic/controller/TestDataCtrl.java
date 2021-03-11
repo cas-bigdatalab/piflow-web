@@ -63,7 +63,7 @@ public class TestDataCtrl {
      * @param param
      * @return
      */
-    @RequestMapping("/testDataLLstPage")
+    @RequestMapping("/testDataListPage")
     @ResponseBody
     public String testDataListPage(Integer page, Integer limit, String param) {
         //String currentUsername = SessionUserUtil.getCurrentUsername();

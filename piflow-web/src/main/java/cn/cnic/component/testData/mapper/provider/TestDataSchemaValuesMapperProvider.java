@@ -1,6 +1,7 @@
 package cn.cnic.component.testData.mapper.provider;
 
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -148,8 +149,12 @@ public class TestDataSchemaValuesMapperProvider {
 		if (null == map) {
 			return "SELECT 0";
 		}
+		String testDataId = (String) map.get("testDataId");
+		if (StringUtils.isBlank(testDataId)) {
+			return "SELECT 0";
+		}
 		@SuppressWarnings("unchecked")
-		List<Map<String, String>> fieldNameList = (List<Map<String, String>>) map.get("fieldNameList");
+		List<LinkedHashMap<String, String>> fieldNameList = (List<LinkedHashMap<String, String>>) map.get("fieldNameList");
 		if (null == fieldNameList || fieldNameList.size() <= 0) {
 			return "SELECT 0";
 		}
@@ -174,7 +179,8 @@ public class TestDataSchemaValuesMapperProvider {
 			strBuf.append(SqlUtils.preventSQLInjection(fieldName.get("field_name")) + " ");
 		}
 		strBuf.append("FROM test_data_schema_values TDSV ");
-		strBuf.append("WHERE TDSV.enable_flag=1 ");
+		strBuf.append("WHERE TDSV.fk_test_data_id= " + SqlUtils.preventSQLInjection(testDataId) + " ");
+		strBuf.append("AND TDSV.enable_flag=1 ");
 		strBuf.append(condition + " ");
 		strBuf.append("GROUP BY TDSV.data_row");
 
@@ -194,7 +200,7 @@ public class TestDataSchemaValuesMapperProvider {
             condition = " AND crt_user=" + SqlUtils.preventSQLInjection(username);
         }
         StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append("UPDATE test_data_list SET enable_flag=0 WHERE ");
+        stringBuffer.append("UPDATE test_data_schema_values SET enable_flag=0 WHERE ");
         stringBuffer.append("fk_test_data_id=" + SqlUtils.preventSQLInjection(testDataId));
         stringBuffer.append(condition);
 		return  stringBuffer.toString();

@@ -1,13 +1,18 @@
 package cn.cnic.component.testData.mapper;
 
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.apache.ibatis.annotations.InsertProvider;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.annotations.UpdateProvider;
+
 import cn.cnic.component.testData.entity.TestDataSchema;
 import cn.cnic.component.testData.mapper.provider.TestDataSchemaMapperProvider;
 import cn.cnic.component.testData.vo.TestDataSchemaVo;
-
-import org.apache.ibatis.annotations.*;
-
-import java.util.List;
-import java.util.Map;
 
 @Mapper
 public interface TestDataSchemaMapper {
@@ -37,7 +42,7 @@ public interface TestDataSchemaMapper {
 	public List<TestDataSchemaVo> getTestDataSchemaVoListByTestDataId(boolean isAdmin, String username, String param, String testDataId);
 	
 	@Select("SELECT TDS.id,TDS.field_name FROM test_data_schema TDS WHERE TDS.enable_flag=1 AND TDS.fk_test_data_id=#{testDataId} ORDER BY TDS.field_soft ASC ")
-	public List<Map<String,String>> getTestDataSchemaIdAndNameListByTestDataId(String testDataId);
+	public List<LinkedHashMap<String,String>> getTestDataSchemaIdAndNameListByTestDataId(String testDataId);
 
 
 

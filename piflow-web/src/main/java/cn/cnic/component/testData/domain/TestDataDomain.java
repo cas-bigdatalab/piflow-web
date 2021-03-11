@@ -1,7 +1,7 @@
 package cn.cnic.component.testData.domain;
 
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -289,7 +289,7 @@ public class TestDataDomain {
      * @return List<Map<String,String>>
      * @throws
      */
-    public List<Map<String, String>> getTestDataSchemaIdAndNameListByTestDataId(String testDataId) {
+    public List<LinkedHashMap<String, String>> getTestDataSchemaIdAndNameListByTestDataId(String testDataId) {
         return testDataSchemaMapper.getTestDataSchemaIdAndNameListByTestDataId(testDataId);
     }
 
@@ -299,14 +299,15 @@ public class TestDataDomain {
      * @param isAdmin
      * @param username
      * @param fieldNameList
+     * @param testDataId
      * @return List<Map<String,String>> 
      * @throws
      */
-    public List<Map<String, String>> getTestDataSchemaValuesCustomList(boolean isAdmin, String username, List<Map<String, String>> fieldNameList) {
+    public List<LinkedHashMap<String, String>> getTestDataSchemaValuesCustomList(boolean isAdmin, String username, String testDataId, List<LinkedHashMap<String, String>> fieldNameList) {
         if (null == fieldNameList) {
             return null;
         }
-        return testDataSchemaValuesMapper.getTestDataSchemaValuesCustomList(isAdmin, username, fieldNameList);
+        return testDataSchemaValuesMapper.getTestDataSchemaValuesCustomList(isAdmin, username, testDataId, fieldNameList);
     }
 
 }

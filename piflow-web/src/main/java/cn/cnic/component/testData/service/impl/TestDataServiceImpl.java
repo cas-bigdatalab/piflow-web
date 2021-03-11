@@ -1,5 +1,6 @@
 package cn.cnic.component.testData.service.impl;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -200,9 +201,9 @@ public class TestDataServiceImpl implements ITestDataService {
         if (StringUtils.isBlank(testDataId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("testDataId is error");
         }
-        List<Map<String, String>> testDataSchemaIdAndNameListByTestDataId = testDataDomain.getTestDataSchemaIdAndNameListByTestDataId(testDataId);
+        List<LinkedHashMap<String, String>> testDataSchemaIdAndNameListByTestDataId = testDataDomain.getTestDataSchemaIdAndNameListByTestDataId(testDataId);
         Page<DataSourceVo> page = PageHelper.startPage(offset, limit);
-        testDataDomain.getTestDataSchemaValuesCustomList(isAdmin, username, testDataSchemaIdAndNameListByTestDataId);
+        testDataDomain.getTestDataSchemaValuesCustomList(isAdmin, username, testDataId, testDataSchemaIdAndNameListByTestDataId);
         Map<String, Object> rtnMap = PageHelperUtils.setLayTableParam(page, null);
         rtnMap.put(ReturnMapUtils.KEY_CODE, ReturnMapUtils.SUCCEEDED_CODE);
         return JsonUtils.toJsonNoException(rtnMap);
@@ -225,8 +226,8 @@ public class TestDataServiceImpl implements ITestDataService {
         if (StringUtils.isBlank(testDataId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("testDataId is error");
         }
-        List<Map<String, String>> testDataSchemaIdAndNameListByTestDataId = testDataDomain.getTestDataSchemaIdAndNameListByTestDataId(testDataId);
-        List<Map<String, String>> testDataSchemaValuesCustomList = testDataDomain.getTestDataSchemaValuesCustomList(isAdmin, username, testDataSchemaIdAndNameListByTestDataId);
+        List<LinkedHashMap<String, String>> testDataSchemaIdAndNameListByTestDataId = testDataDomain.getTestDataSchemaIdAndNameListByTestDataId(testDataId);
+        List<LinkedHashMap<String, String>> testDataSchemaValuesCustomList = testDataDomain.getTestDataSchemaValuesCustomList(isAdmin, username, testDataId, testDataSchemaIdAndNameListByTestDataId);
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("list", testDataSchemaValuesCustomList);
     }
 
