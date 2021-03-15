@@ -21,6 +21,7 @@ import cn.cnic.component.testData.domain.TestDataDomain;
 import cn.cnic.component.testData.entity.TestData;
 import cn.cnic.component.testData.service.ITestDataService;
 import cn.cnic.component.testData.utils.TestDataUtils;
+import cn.cnic.component.testData.vo.TestDataSchemaValuesSaveVo;
 import cn.cnic.component.testData.vo.TestDataSchemaVo;
 import cn.cnic.component.testData.vo.TestDataVo;
 
@@ -49,14 +50,16 @@ public class TestDataServiceImpl implements ITestDataService {
         if (null == testDataVo) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("param name is empty");
         }
+        if (StringUtils.isBlank(testDataVo.getName())) {
+        	return ReturnMapUtils.setFailedMsgRtnJsonStr("data is null");
+        }
         TestData testData = null;
         String testDataVoId = testDataVo.getId();
-        
         if (StringUtils.isNotBlank(testDataVoId)) {
         	testData = testDataDomain.getTestDataById(testDataVoId);
         }
         testData = TestDataUtils.copyDataToTestData(testDataVo, testData, username);
-        int affectedRows = testDataDomain.saveOrUpdate(testData);
+        int affectedRows = testDataDomain.saveOrUpdate(testData, username);
         if(affectedRows <= 0) {
         	return ReturnMapUtils.setFailedMsgRtnJsonStr("save failed");
         }
@@ -69,15 +72,15 @@ public class TestDataServiceImpl implements ITestDataService {
      *
      * @param username
      * @param isAdmin
-     * @param testDataSchemaVo
+     * @param schemaValuesVo
      * @return String
      */
     @Override
-    public String saveOrUpdateTestDataSchemaValues(String username, boolean isAdmin, TestDataSchemaVo testDataSchemaVo) {
+    public String saveOrUpdateTestDataSchemaValues(String username, boolean isAdmin, TestDataSchemaValuesSaveVo schemaValuesVo) {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
         }
-        if (null != testDataSchemaVo) {
+        if (null != schemaValuesVo) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("param name is empty");
         }
         return ReturnMapUtils.setSucceededMsgRtnJsonStr("save template success");

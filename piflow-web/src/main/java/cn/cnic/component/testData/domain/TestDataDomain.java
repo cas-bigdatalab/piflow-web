@@ -1,5 +1,6 @@
 package cn.cnic.component.testData.domain;
 
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import cn.cnic.base.util.UUIDUtils;
 import cn.cnic.component.testData.entity.TestData;
 import cn.cnic.component.testData.entity.TestDataSchema;
 import cn.cnic.component.testData.entity.TestDataSchemaValues;
@@ -36,31 +38,38 @@ public class TestDataDomain {
      * save or update TestData
      * 
      * @param testData
+     * @param username
      * @param @return
      * @throws Exception
      * @return int
      * @throws
      */
-    public int saveOrUpdate(TestData testData) throws Exception {
+    public int saveOrUpdate(TestData testData, String username) throws Exception {
         if (StringUtils.isBlank(testData.getId())) {
-            return addTestData(testData);
+            return addTestData(testData, username);
         }
-        return updateTestData(testData);
+        return updateTestData(testData, username);
     }
 
     /**
      * add TestData
      * 
      * @param testData
+     * @param username
      * @param @return
      * @throws Exception
      * @return int
      * @throws
      */
-    public int addTestData(TestData testData) throws Exception {
+    public int addTestData(TestData testData, String username) throws Exception {
         if (null == testData) {
             throw new Exception("testData is null");
         }
+        testData.setId(UUIDUtils.getUUID32());
+        testData.setCrtUser(username);
+        testData.setCrtDttm(new Date());
+        testData.setLastUpdateUser(username);
+        testData.setLastUpdateDttm(new Date());
         int affectedRows = testDataMapper.addTestData(testData);
         if (affectedRows < 0) {
             throw new Exception("save testData failed");
@@ -69,7 +78,7 @@ public class TestDataDomain {
         if (null != schemaList) {
             for (TestDataSchema testDataSchema : schemaList) {
                 testDataSchema.setTestData(testData);
-                affectedRows += addTestDataSchema(testDataSchema);
+                affectedRows += addTestDataSchema(testDataSchema, username);
 
             }
         }
@@ -80,16 +89,22 @@ public class TestDataDomain {
      * add TestDataSchema
      * 
      * @param testDataSchema
+     * @param username
      * @param @return
      * @throws Exception
      * @return int
      * @throws
      */
-    public int addTestDataSchema(TestDataSchema testDataSchema) throws Exception {
+    public int addTestDataSchema(TestDataSchema testDataSchema, String username) throws Exception {
         if (null == testDataSchema) {
             throw new Exception("testDataSchema is null");
         }
-
+        testDataSchema.setId(UUIDUtils.getUUID32());
+        testDataSchema.setId(UUIDUtils.getUUID32());
+        testDataSchema.setCrtUser(username);
+        testDataSchema.setCrtDttm(new Date());
+        testDataSchema.setLastUpdateUser(username);
+        testDataSchema.setLastUpdateDttm(new Date());
         int affectedRows = testDataSchemaMapper.addTestDataSchema(testDataSchema);
         if (affectedRows < 0) {
             throw new Exception("save testData failed");
@@ -98,7 +113,7 @@ public class TestDataDomain {
         if (null != schemaValuesList) {
             for (TestDataSchemaValues testDataSchemaValues : schemaValuesList) {
                 testDataSchemaValues.setTestDataSchema(testDataSchema);
-                affectedRows += addTestDataSchemaValues(testDataSchemaValues);
+                affectedRows += addTestDataSchemaValues(testDataSchemaValues, username);
             }
         }
         return affectedRows;
@@ -108,16 +123,22 @@ public class TestDataDomain {
      * add TestDataSchemaValues
      * 
      * @param testDataSchemaValues
+     * @param username
      * @param @return
      * @throws Exception
      * @return int
      * @throws
      */
-    public int addTestDataSchemaValues(TestDataSchemaValues testDataSchemaValues) throws Exception {
+    public int addTestDataSchemaValues(TestDataSchemaValues testDataSchemaValues, String username) throws Exception {
         if (null == testDataSchemaValues) {
             throw new Exception("testDataSchema is null");
         }
-
+        testDataSchemaValues.setId(UUIDUtils.getUUID32());
+        testDataSchemaValues.setId(UUIDUtils.getUUID32());
+        testDataSchemaValues.setCrtUser(username);
+        testDataSchemaValues.setCrtDttm(new Date());
+        testDataSchemaValues.setLastUpdateUser(username);
+        testDataSchemaValues.setLastUpdateDttm(new Date());
         int affectedRows = testDataSchemaValuesMapper.addTestDataSchemaValues(testDataSchemaValues);
         if (affectedRows < 0) {
             throw new Exception("save testData failed");
@@ -129,25 +150,28 @@ public class TestDataDomain {
      * update TestData
      * 
      * @param testData
+     * @param username
      * @param @return
      * @throws Exception
      * @return int
      * @throws
      */
-    public int updateTestData(TestData testData) throws Exception {
+    public int updateTestData(TestData testData, String username) throws Exception {
         if (null == testData) {
             throw new Exception("testData is null");
         }
+        testData.setLastUpdateUser(username);
+        testData.setLastUpdateDttm(new Date());
         int affectedRows = testDataMapper.updateTestData(testData);
         List<TestDataSchema> schemaList = testData.getSchemaList();
         if (null != schemaList) {
             for (TestDataSchema testDataSchema : schemaList) {
                 testDataSchema.setTestData(testData);
                 if (StringUtils.isBlank(testDataSchema.getId())) {
-                    affectedRows += addTestDataSchema(testDataSchema);
+                    affectedRows += addTestDataSchema(testDataSchema, username);
                     continue;
                 }
-                affectedRows += updateTestDataSchema(testDataSchema);
+                affectedRows += updateTestDataSchema(testDataSchema, username);
             }
         }
         return affectedRows;
@@ -157,27 +181,30 @@ public class TestDataDomain {
      * update TestDataSchema
      * 
      * @param testDataSchema
+     * @param username
      * @param @return
      * @throws Exception
      * @return int
      * @throws
      */
-    public int updateTestDataSchema(TestDataSchema testDataSchema) throws Exception {
+    public int updateTestDataSchema(TestDataSchema testDataSchema, String username) throws Exception {
         if (null == testDataSchema) {
             throw new Exception("testDataSchema is null");
         }
         if (StringUtils.isBlank(testDataSchema.getId())) {
 
         }
+        testDataSchema.setLastUpdateUser(username);
+        testDataSchema.setLastUpdateDttm(new Date());
         int affectedRows = testDataSchemaMapper.updateTestDataSchema(testDataSchema);
         List<TestDataSchemaValues> schemaValuesList = testDataSchema.getSchemaValuesList();
         if (null != schemaValuesList) {
             for (TestDataSchemaValues testDataSchemaValues : schemaValuesList) {
                 testDataSchemaValues.setTestDataSchema(testDataSchema);
                 if (StringUtils.isBlank(testDataSchema.getId())) {
-                    affectedRows += addTestDataSchemaValues(testDataSchemaValues);
+                    affectedRows += addTestDataSchemaValues(testDataSchemaValues, username);
                 }
-                affectedRows += updateTestDataSchemaValues(testDataSchemaValues);
+                affectedRows += updateTestDataSchemaValues(testDataSchemaValues, username);
 
             }
 
@@ -190,15 +217,18 @@ public class TestDataDomain {
      * update TestDataSchemaValues
      * 
      * @param testDataSchemaValues
+     * @param username
      * @param @return
      * @throws Exception
      * @return int
      * @throws
      */
-    public int updateTestDataSchemaValues(TestDataSchemaValues testDataSchemaValues) throws Exception {
+    public int updateTestDataSchemaValues(TestDataSchemaValues testDataSchemaValues, String username) throws Exception {
         if (null == testDataSchemaValues) {
             throw new Exception("testDataSchema is null");
         }
+        testDataSchemaValues.setLastUpdateUser(username);
+        testDataSchemaValues.setLastUpdateDttm(new Date());
         return testDataSchemaValuesMapper.updateTestDataSchemaValues(testDataSchemaValues);
     }
 

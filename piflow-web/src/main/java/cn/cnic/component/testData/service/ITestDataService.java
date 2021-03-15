@@ -1,6 +1,6 @@
 package cn.cnic.component.testData.service;
 
-import cn.cnic.component.testData.vo.TestDataSchemaVo;
+import cn.cnic.component.testData.vo.TestDataSchemaValuesSaveVo;
 import cn.cnic.component.testData.vo.TestDataVo;
 
 public interface ITestDataService {
@@ -22,10 +22,10 @@ public interface ITestDataService {
      *
      * @param username
      * @param isAdmin
-     * @param testDataSchemaVo
+     * @param schemaValuesVo
      * @return String
      */
-    public String saveOrUpdateTestDataSchemaValues(String username, boolean isAdmin, TestDataSchemaVo testDataSchemaVo);
+    public String saveOrUpdateTestDataSchemaValues(String username, boolean isAdmin, TestDataSchemaValuesSaveVo schemaValuesVo);
 
     /**
      * delTestData

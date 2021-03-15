@@ -70,7 +70,7 @@ public class TestDataSchemaMapperProvider {
 			strBuf.append("field_name, ");
 			strBuf.append("field_type, ");
 			strBuf.append("field_description, ");
-			strBuf.append("field_soft ");
+			strBuf.append("field_soft, ");
 			strBuf.append("fk_test_data_id ");
 			strBuf.append(") ");
 
