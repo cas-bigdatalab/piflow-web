@@ -17,9 +17,10 @@ import cn.cnic.base.util.JsonUtils;
 import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.base.util.PageHelperUtils;
 import cn.cnic.base.util.ReturnMapUtils;
-import cn.cnic.component.dataSource.vo.DataSourceVo;
 import cn.cnic.component.testData.domain.TestDataDomain;
+import cn.cnic.component.testData.entity.TestData;
 import cn.cnic.component.testData.service.ITestDataService;
+import cn.cnic.component.testData.utils.TestDataUtils;
 import cn.cnic.component.testData.vo.TestDataSchemaVo;
 import cn.cnic.component.testData.vo.TestDataVo;
 
@@ -38,16 +39,28 @@ public class TestDataServiceImpl implements ITestDataService {
      * @param isAdmin
      * @param testDataVo
      * @return String
+     * @throws Exception 
      */
-    @Override
-    public String saveOrUpdateTestDataAndSchema(String username, boolean isAdmin, TestDataVo testDataVo) {
+	@Override
+    public String saveOrUpdateTestDataAndSchema(String username, boolean isAdmin, TestDataVo testDataVo) throws Exception {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
         }
-        if (null != testDataVo) {
+        if (null == testDataVo) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("param name is empty");
         }
-        return ReturnMapUtils.setSucceededMsgRtnJsonStr("save template success");
+        TestData testData = null;
+        String testDataVoId = testDataVo.getId();
+        
+        if (StringUtils.isNotBlank(testDataVoId)) {
+        	testData = testDataDomain.getTestDataById(testDataVoId);
+        }
+        testData = TestDataUtils.copyDataToTestData(testDataVo, testData, username);
+        int affectedRows = testDataDomain.saveOrUpdate(testData);
+        if(affectedRows <= 0) {
+        	return ReturnMapUtils.setFailedMsgRtnJsonStr("save failed");
+        }
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr("save success");
     }
 
 
@@ -135,7 +148,7 @@ public class TestDataServiceImpl implements ITestDataService {
         if (StringUtils.isBlank(testDataId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("testDataId is null");
         }
-        TestDataVo testDataVo = testDataDomain.getTestDataById(testDataId);
+        TestDataVo testDataVo = testDataDomain.getTestDataVoById(testDataId);
         if (null == testDataVo) {
         	return ReturnMapUtils.setFailedMsgRtnJsonStr("data is null");
         }
@@ -166,7 +179,7 @@ public class TestDataServiceImpl implements ITestDataService {
         if (StringUtils.isBlank(testDataId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("testDataId is null");
         }
-        TestDataVo testDataVo = testDataDomain.getTestDataById(testDataId);
+        TestDataVo testDataVo = testDataDomain.getTestDataVoById(testDataId);
         if (null == testDataVo) {
         	return ReturnMapUtils.setFailedMsgRtnJsonStr("data is null");
         }
@@ -201,10 +214,16 @@ public class TestDataServiceImpl implements ITestDataService {
         if (StringUtils.isBlank(testDataId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("testDataId is error");
         }
+        // find title
         List<LinkedHashMap<String, String>> testDataSchemaIdAndNameListByTestDataId = testDataDomain.getTestDataSchemaIdAndNameListByTestDataId(testDataId);
-        Page<DataSourceVo> page = PageHelper.startPage(offset, limit);
+        // 
+        Page<LinkedHashMap<String, String>> page = PageHelper.startPage(offset, limit);
         testDataDomain.getTestDataSchemaValuesCustomList(isAdmin, username, testDataId, testDataSchemaIdAndNameListByTestDataId);
         Map<String, Object> rtnMap = PageHelperUtils.setLayTableParam(page, null);
+        // find id
+        Page<LinkedHashMap<String, String>> page1 = PageHelper.startPage(offset, limit);
+        testDataDomain.getTestDataSchemaValuesCustomListId(isAdmin, username, testDataId, testDataSchemaIdAndNameListByTestDataId);
+        rtnMap = PageHelperUtils.setCustomDataKey(page1, "data_id", rtnMap);
         rtnMap.put(ReturnMapUtils.KEY_CODE, ReturnMapUtils.SUCCEEDED_CODE);
         return JsonUtils.toJsonNoException(rtnMap);
     }
@@ -227,8 +246,12 @@ public class TestDataServiceImpl implements ITestDataService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("testDataId is error");
         }
         List<LinkedHashMap<String, String>> testDataSchemaIdAndNameListByTestDataId = testDataDomain.getTestDataSchemaIdAndNameListByTestDataId(testDataId);
+        List<LinkedHashMap<String, String>> testDataSchemaValuesCustomList_id = testDataDomain.getTestDataSchemaValuesCustomListId(isAdmin, username, testDataId, testDataSchemaIdAndNameListByTestDataId);
         List<LinkedHashMap<String, String>> testDataSchemaValuesCustomList = testDataDomain.getTestDataSchemaValuesCustomList(isAdmin, username, testDataId, testDataSchemaIdAndNameListByTestDataId);
-        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("list", testDataSchemaValuesCustomList);
+        Map<String, Object> setSucceededMsg = ReturnMapUtils.setSucceededMsg(ReturnMapUtils.SUCCEEDED_MSG);
+        setSucceededMsg.put("list_id", testDataSchemaValuesCustomList_id);
+        setSucceededMsg.put("list", testDataSchemaValuesCustomList);
+        return JsonUtils.toJsonNoException(setSucceededMsg);
     }
 
 }

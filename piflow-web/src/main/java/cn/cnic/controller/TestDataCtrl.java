@@ -21,10 +21,11 @@ public class TestDataCtrl {
      *
      * @param testDataId
      * @return String
+     * @throws Exception 
      */
     @RequestMapping("/saveOrUpdateTestDataSchema")
     @ResponseBody
-    public String saveOrUpdateTestDataSchema(TestDataVo testDataVo) {
+    public String saveOrUpdateTestDataSchema(TestDataVo testDataVo) throws Exception {
         //String currentUsername = SessionUserUtil.getCurrentUsername();
         //return testDataServiceImpl.saveOrUpdateTestDataSchema(currentUsername,"", "", "");
         return testDataServiceImpl.saveOrUpdateTestDataAndSchema("admin", true, testDataVo);

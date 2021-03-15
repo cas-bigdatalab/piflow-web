@@ -219,14 +219,25 @@ public class TestDataDomain {
     }
     
     /**
+     * getTestDataVoById
+     * 
+     * @param id
+     * @return TestDataVo 
+     * @throws
+     */
+    public TestDataVo getTestDataVoById(String id) {
+    	return testDataMapper.getTestDataVoById(id);
+    }
+    
+    /**
      * getTestDataById
      * 
      * @param id
      * @return TestDataVo 
      * @throws
      */
-    public TestDataVo getTestDataById(String id) {
-    	return testDataMapper.getTestDataVoById(id);
+    public TestData getTestDataById(String id) {
+    	return testDataMapper.getTestDataById(id);
     }
 
     /**
@@ -308,6 +319,23 @@ public class TestDataDomain {
             return null;
         }
         return testDataSchemaValuesMapper.getTestDataSchemaValuesCustomList(isAdmin, username, testDataId, fieldNameList);
+    }
+    
+    /**
+     * getTestDataSchemaValuesCustomListId
+     * 
+     * @param isAdmin
+     * @param username
+     * @param fieldNameList
+     * @param testDataId
+     * @return List<Map<String,String>> 
+     * @throws
+     */
+    public List<LinkedHashMap<String, String>> getTestDataSchemaValuesCustomListId(boolean isAdmin, String username, String testDataId, List<LinkedHashMap<String, String>> fieldNameList) {
+        if (null == fieldNameList) {
+            return null;
+        }
+        return testDataSchemaValuesMapper.getTestDataSchemaValuesCustomListId(isAdmin, username, testDataId, fieldNameList);
     }
 
 }

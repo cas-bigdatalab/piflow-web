@@ -102,6 +102,31 @@ public class SqlUtils {
         }
         return sqlStr;
     }
+    /**
+     * addSymbol
+     * 
+     * @param str
+     * @param symbol
+     * @param isbefore
+     * @param after
+     * @return
+     */
+    public static String addSymbol(String str, String symbol, boolean isbefore, boolean after) {
+        if (null ==str) {
+        	return "null";
+        }
+        if (null == symbol) {
+        	return str;
+        }
+        String sqlStr = str;
+        if (isbefore) {
+        	sqlStr = (symbol + sqlStr);
+        }
+        if (isbefore) {
+        	sqlStr = (sqlStr + symbol);
+        }
+        return sqlStr;
+    }
 
     public static String strListToStr(List<String> strArray) {
         String str = "";

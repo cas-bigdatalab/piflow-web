@@ -169,14 +169,14 @@ public class TestDataSchemaValuesMapperProvider {
 			condition = "AND TDSV.crt_user=" + SqlUtils.preventSQLInjection(username);
 		}
 		StringBuffer strBuf = new StringBuffer();
-		strBuf.append("SELECT TDSV.data_row as 'dataRow' ");
+		strBuf.append("SELECT TDSV.data_row AS \"dataRow\"");
 		for (Map<String, String> fieldName : fieldNameList) {
 			strBuf.append(",MAX( ");
 			strBuf.append("CASE TDSV.fk_test_data_schema_id WHEN ");
-			strBuf.append(SqlUtils.preventSQLInjection(fieldName.get("id")) + " ");
+			strBuf.append(SqlUtils.preventSQLInjection(fieldName.get("ID")) + " ");
 			strBuf.append("THEN TDSV.field_value END ");
 			strBuf.append(") AS ");
-			strBuf.append(SqlUtils.preventSQLInjection(fieldName.get("field_name")) + " ");
+			strBuf.append(SqlUtils.addSymbol(fieldName.get("FIELD_NAME"), "\"", true, true) + " ");
 		}
 		strBuf.append("FROM test_data_schema_values TDSV ");
 		strBuf.append("WHERE TDSV.fk_test_data_id= " + SqlUtils.preventSQLInjection(testDataId) + " ");
@@ -204,6 +204,49 @@ public class TestDataSchemaValuesMapperProvider {
         stringBuffer.append("fk_test_data_id=" + SqlUtils.preventSQLInjection(testDataId));
         stringBuffer.append(condition);
 		return  stringBuffer.toString();
+	}
+	
+	public static String getTestDataSchemaValuesCustomListId(@SuppressWarnings("rawtypes") Map map) {
+		if (null == map) {
+			return "SELECT 0";
+		}
+		String testDataId = (String) map.get("testDataId");
+		if (StringUtils.isBlank(testDataId)) {
+			return "SELECT 0";
+		}
+		@SuppressWarnings("unchecked")
+		List<LinkedHashMap<String, String>> fieldNameList = (List<LinkedHashMap<String, String>>) map.get("fieldNameList");
+		if (null == fieldNameList || fieldNameList.size() <= 0) {
+			return "SELECT 0";
+		}
+		String condition = " ";
+		boolean isAdmin = (boolean) map.get("isAdmin");
+		String username = (String) map.get("username");
+
+		if (!isAdmin) {
+			if (StringUtils.isBlank(username)) {
+				return "SELECT 0";
+			}
+			condition = "AND TDSV.crt_user=" + SqlUtils.preventSQLInjection(username);
+		}
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("SELECT TDSV.data_row AS \"dataRow\"");
+		for (Map<String, String> fieldName : fieldNameList) {
+			strBuf.append(",MAX( ");
+			strBuf.append("CASE TDSV.fk_test_data_schema_id WHEN ");
+			strBuf.append(SqlUtils.preventSQLInjection(fieldName.get("ID")) + " ");
+			strBuf.append("THEN TDSV.id END ");
+			strBuf.append(") AS ");
+			strBuf.append(SqlUtils.addSymbol(fieldName.get("FIELD_NAME"), "\"", true, true) + " ");
+		}
+		strBuf.append("FROM test_data_schema_values TDSV ");
+		strBuf.append("WHERE TDSV.fk_test_data_id= " + SqlUtils.preventSQLInjection(testDataId) + " ");
+		strBuf.append("AND TDSV.enable_flag=1 ");
+		strBuf.append(condition + " ");
+		strBuf.append("GROUP BY TDSV.data_row");
+
+		return strBuf.toString();
+
 	}
 
 }

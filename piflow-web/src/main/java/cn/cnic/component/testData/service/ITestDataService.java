@@ -5,15 +5,16 @@ import cn.cnic.component.testData.vo.TestDataVo;
 
 public interface ITestDataService {
 
-    /**
+	/**
      * saveOrUpdateTestDataSchema
      *
      * @param username
      * @param isAdmin
      * @param testDataVo
      * @return String
+     * @throws Exception 
      */
-    public String saveOrUpdateTestDataAndSchema(String username, boolean isAdmin, TestDataVo testDataVo);
+    public String saveOrUpdateTestDataAndSchema(String username, boolean isAdmin, TestDataVo testDataVo) throws Exception;
 
 
     /**

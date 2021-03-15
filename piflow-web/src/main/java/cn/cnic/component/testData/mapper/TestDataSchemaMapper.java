@@ -41,7 +41,7 @@ public interface TestDataSchemaMapper {
 	@SelectProvider(type = TestDataSchemaMapperProvider.class,method = "getTestDataSchemaListByTestDataId")
 	public List<TestDataSchemaVo> getTestDataSchemaVoListByTestDataId(boolean isAdmin, String username, String param, String testDataId);
 	
-	@Select("SELECT TDS.id,TDS.field_name FROM test_data_schema TDS WHERE TDS.enable_flag=1 AND TDS.fk_test_data_id=#{testDataId} ORDER BY TDS.field_soft ASC ")
+	@Select("SELECT TDS.id AS ID,TDS.field_name as FIELD_NAME FROM test_data_schema TDS WHERE TDS.enable_flag=1 AND TDS.fk_test_data_id=#{testDataId} ORDER BY TDS.field_soft ASC ")
 	public List<LinkedHashMap<String,String>> getTestDataSchemaIdAndNameListByTestDataId(String testDataId);
 
 

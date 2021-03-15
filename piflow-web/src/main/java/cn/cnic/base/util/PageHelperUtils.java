@@ -42,4 +42,18 @@ public class PageHelperUtils {
         logger.debug("success");
         return rtnMap;
     }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public static Map<String, Object> setCustomDataKey(Page page, String key, Map<String, Object> rtnMap) {
+        if (null == rtnMap) {
+            rtnMap = new HashMap<>();
+        }
+        if (null == page) {
+            return rtnMap;
+        }
+        PageInfo info = new PageInfo(page.getResult());
+        rtnMap.put(key, info.getList());//Data collection
+        logger.debug("success");
+        return rtnMap;
+    }
 }
