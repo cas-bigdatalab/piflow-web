@@ -304,8 +304,8 @@ public class TestDataDomain {
      * @return List<TestDataSchema>
      * @throws
      */
-    public List<TestDataSchema> getTestDataSchemaListByTestDataId(boolean isAdmin, String username, String param, String testDataId) {
-        return testDataSchemaMapper.getTestDataSchemaListByTestDataId(isAdmin, username, param, testDataId);
+    public List<TestDataSchema> getTestDataSchemaListByTestDataIdSearch(boolean isAdmin, String username, String param, String testDataId) {
+        return testDataSchemaMapper.getTestDataSchemaListByTestDataIdSearch(isAdmin, username, param, testDataId);
     }
     
     /**
@@ -318,8 +318,8 @@ public class TestDataDomain {
      * @return List<TestDataSchemaVo>
      * @throws
      */
-    public List<TestDataSchemaVo> getTestDataSchemaVoListByTestDataId(boolean isAdmin, String username, String param, String testDataId) {
-        return testDataSchemaMapper.getTestDataSchemaVoListByTestDataId(isAdmin, username, param, testDataId);
+    public List<TestDataSchemaVo> getTestDataSchemaVoListByTestDataIdSearch(boolean isAdmin, String username, String param, String testDataId) {
+        return testDataSchemaMapper.getTestDataSchemaVoListByTestDataIdSearch(isAdmin, username, param, testDataId);
     }
 
 
@@ -366,6 +366,20 @@ public class TestDataDomain {
             return null;
         }
         return testDataSchemaValuesMapper.getTestDataSchemaValuesCustomListId(isAdmin, username, testDataId, fieldNameList);
+    }
+    
+    
+    /**
+     * getTestDataSchemaValuesCustomListId
+     * 
+     * @param testDataId
+     * @throws
+     */
+    public List<TestDataSchemaValues> getTestDataSchemaValuesListByTestDataId(String testDataId) {
+        if (StringUtils.isBlank(testDataId)) {
+            return null;
+        }
+        return testDataSchemaValuesMapper.getTestDataSchemaValuesListByTestDataId(testDataId);
     }
 
 }

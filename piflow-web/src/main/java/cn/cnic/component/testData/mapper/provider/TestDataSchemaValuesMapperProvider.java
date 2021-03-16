@@ -59,6 +59,12 @@ public class TestDataSchemaValuesMapperProvider {
 		this.testDataSchemaId = null;
 	}
 
+	/**
+	 * add TestDataSchemaValues
+	 * 
+	 * @param testDataSchemaValues
+	 * @return
+	 */
 	public String addTestDataSchemaValues(TestDataSchemaValues testDataSchemaValues) {
 		String sql = "SELECT 0";
 		if (preventSQLInjectionTestDataSchemaValues(testDataSchemaValues)) {
@@ -84,6 +90,12 @@ public class TestDataSchemaValuesMapperProvider {
 		return sql;
 	}
 
+	/**
+	 * add TestDataSchemaValues list
+	 * 
+	 * @param testDataSchemaValuesList
+	 * @return
+	 */
 	public String addTestDataSchemaValuesList(List<TestDataSchemaValues> testDataSchemaValuesList) {
 		String sql = "SELECT 0";
 		if (null == testDataSchemaValuesList || testDataSchemaValuesList.size() <= 0) {
@@ -119,6 +131,12 @@ public class TestDataSchemaValuesMapperProvider {
 		return sql;
 	}
 
+	/**
+	 * update TestDataSchemaValues
+	 * 
+	 * @param testDataSchemaValues
+	 * @return
+	 */
 	public String updateTestDataSchemaValues(TestDataSchemaValues testDataSchemaValues) {
 		String sqlStr = "SELECT 0";
 		boolean flag = preventSQLInjectionTestDataSchemaValues(testDataSchemaValues);
@@ -145,6 +163,41 @@ public class TestDataSchemaValuesMapperProvider {
 		return sqlStr;
 	}
 
+	/**
+	 * update TestDataSchemaValues enable_flag
+	 * 
+	 * @param isAdmin
+	 * @param username
+	 * @param testDataId
+	 * @return
+	 */
+	public String delTestDataSchemaValuesByTestDataId(boolean isAdmin, String username, String testDataId){
+		if (StringUtils.isBlank(testDataId)) {
+			return "SELECT 0";
+		}
+		String condition = "";
+        if (!isAdmin) {
+            if (StringUtils.isBlank(username)) {
+                return "SELECT 0";
+            }
+            condition = " AND crt_user=" + SqlUtils.preventSQLInjection(username);
+        }
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append("UPDATE test_data_schema_values SET enable_flag=0 WHERE ");
+        stringBuffer.append("fk_test_data_id=" + SqlUtils.preventSQLInjection(testDataId));
+        stringBuffer.append(condition);
+		return  stringBuffer.toString();
+	}
+
+	/**
+	 * get TestDataSchemaValues custom list
+	 * 
+	 * @param isAdmin
+	 * @param username
+	 * @param testDataId
+	 * @param map
+	 * @return
+	 */
 	public static String getTestDataSchemaValuesCustomList(@SuppressWarnings("rawtypes") Map map) {
 		if (null == map) {
 			return "SELECT 0";
@@ -188,24 +241,14 @@ public class TestDataSchemaValuesMapperProvider {
 
 	}
 
-	public String delTestDataSchemaValuesByTestDataId(boolean isAdmin, String username, String testDataId){
-		if (StringUtils.isBlank(testDataId)) {
-			return "SELECT 0";
-		}
-		String condition = "";
-        if (!isAdmin) {
-            if (StringUtils.isBlank(username)) {
-                return "SELECT 0";
-            }
-            condition = " AND crt_user=" + SqlUtils.preventSQLInjection(username);
-        }
-        StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append("UPDATE test_data_schema_values SET enable_flag=0 WHERE ");
-        stringBuffer.append("fk_test_data_id=" + SqlUtils.preventSQLInjection(testDataId));
-        stringBuffer.append(condition);
-		return  stringBuffer.toString();
-	}
-	
+	/**
+	 * get testDataSchemaValuesId custom list
+	 * @param isAdmin
+	 * @param username
+	 * @param testDataId
+	 * @param map
+	 * @return
+	 */
 	public static String getTestDataSchemaValuesCustomListId(@SuppressWarnings("rawtypes") Map map) {
 		if (null == map) {
 			return "SELECT 0";

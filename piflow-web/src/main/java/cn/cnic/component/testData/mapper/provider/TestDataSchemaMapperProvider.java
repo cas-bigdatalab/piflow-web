@@ -60,6 +60,12 @@ public class TestDataSchemaMapperProvider {
 		this.testDataId = null;
 	}
 
+	/**
+	 * add TestDataSchema
+	 * 
+	 * @param testDataSchema
+	 * @return Integer
+	 */
 	public String addTestDataSchema(TestDataSchema testDataSchema) {
 		String sql = "SELECT 0";
 		if (preventSQLInjectionTestDataSchema(testDataSchema)) {
@@ -89,6 +95,12 @@ public class TestDataSchemaMapperProvider {
 		return sql;
 	}
 
+	/**
+	 * add TestDataSchema List
+	 * 
+	 * @param testDataSchemaList
+	 * @return
+	 */
 	public String addTestDataSchemaList(List<TestDataSchema> testDataSchemaList) {
 		String sql = "SELECT 0";
 		if (null == testDataSchemaList || testDataSchemaList.size() <= 0) {
@@ -128,6 +140,12 @@ public class TestDataSchemaMapperProvider {
 		return sql;
 	}
 
+	/**
+	 * update TestDataSchema
+	 * 
+	 * @param testDataSchema
+	 * @return
+	 */
 	public String updateTestDataSchema(TestDataSchema testDataSchema) {
 		String sqlStr = "SELECT 0";
 		boolean flag = preventSQLInjectionTestDataSchema(testDataSchema);
@@ -156,6 +174,14 @@ public class TestDataSchemaMapperProvider {
 		return sqlStr;
 	}
 
+	/**
+	 * update TestDataSchema enable_flag
+	 * 
+	 * @param isAdmin
+	 * @param username
+	 * @param testDataId
+	 * @return
+	 */
 	public String delTestDataSchemaByTestDataId(boolean isAdmin, String username, String testDataId){
 		if (StringUtils.isBlank(testDataId)) {
 			return "SELECT 0";
@@ -174,6 +200,12 @@ public class TestDataSchemaMapperProvider {
 		return  stringBuffer.toString();
 	}
 
+	/**
+	 * get TestDataSchema by id
+	 * 
+	 * @param id
+	 * @return
+	 */
 	public String getTestDataSchemaById(String id){
 		if (StringUtils.isBlank(id)) {
 			return "SELECT 0";
@@ -183,8 +215,17 @@ public class TestDataSchemaMapperProvider {
 		stringBuffer.append("AND id=" + SqlUtils.preventSQLInjection(id));
 		return  stringBuffer.toString();
 	}
-
-	public String getTestDataSchemaListByTestDataId(boolean isAdmin, String username, String param, String testDataId){
+	
+	/**
+	 * get TestDataSchema list by testDataId search
+	 * 
+	 * @param isAdmin
+	 * @param username
+	 * @param param
+	 * @param testDataId
+	 * @return
+	 */
+	public String getTestDataSchemaListByTestDataIdSearch(boolean isAdmin, String username, String param, String testDataId){
 		if (StringUtils.isBlank(testDataId)) {
 			return "SELECT 0";
 		}
@@ -203,7 +244,7 @@ public class TestDataSchemaMapperProvider {
 			stringBuf.append("field_name LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%')");
 			stringBuf.append("field_type LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%')");
 		}
-		stringBuf.append("ORDER BY  last_update_dttm DESC ");
+		stringBuf.append("ORDER BY  field_soft ASC ");
 		return stringBuf.toString();
 	}
 

@@ -49,6 +49,12 @@ public class TestDataMapperProvider {
 		this.description = null;
 	}
 
+	/**
+	 * add TestData
+	 * 
+	 * @param testData
+	 * @return String
+	 */
 	public String addTestData(TestData testData) {
 		String sql = "SELECT 0";
 		if (preventSQLInjectionTestData(testData)) {
@@ -72,6 +78,12 @@ public class TestDataMapperProvider {
 		return sql;
 	}
 
+	/**
+	 * update TestData
+	 * 
+	 * @param testData
+	 * @return String
+	 */
 	public String updateTestData(TestData testData) {
 		String sqlStr = "SELECT 0";
 		boolean flag = preventSQLInjectionTestData(testData);
@@ -97,6 +109,14 @@ public class TestDataMapperProvider {
 		return sqlStr;
 	}
 
+	/**
+	 * update TestData enable_flag
+	 * 
+	 * @param isAdmin
+	 * @param username
+	 * @param id
+	 * @return String
+	 */
 	public String delTestDataById(boolean isAdmin, String username, String id){
 		if (StringUtils.isBlank(id)) {
 			return "SELECT 0";
@@ -115,6 +135,14 @@ public class TestDataMapperProvider {
 		return  stringBuffer.toString();
 	}
 
+	/**
+	 * search TestData List
+	 * 
+	 * @param isAdmin
+	 * @param username
+	 * @param param
+	 * @return String
+	 */
 	public String getTestDataList(boolean isAdmin, String username, String param) {
 		StringBuffer stringBuf = new StringBuffer();
 		stringBuf.append("SELECT * FROM test_data WHERE enable_flag=1 ");

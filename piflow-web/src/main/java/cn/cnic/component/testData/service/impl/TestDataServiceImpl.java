@@ -1,5 +1,7 @@
 package cn.cnic.component.testData.service.impl;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +21,8 @@ import cn.cnic.base.util.PageHelperUtils;
 import cn.cnic.base.util.ReturnMapUtils;
 import cn.cnic.component.testData.domain.TestDataDomain;
 import cn.cnic.component.testData.entity.TestData;
+import cn.cnic.component.testData.entity.TestDataSchema;
+import cn.cnic.component.testData.entity.TestDataSchemaValues;
 import cn.cnic.component.testData.service.ITestDataService;
 import cn.cnic.component.testData.utils.TestDataUtils;
 import cn.cnic.component.testData.vo.TestDataSchemaValuesSaveVo;
@@ -77,12 +81,67 @@ public class TestDataServiceImpl implements ITestDataService {
      */
     @Override
     public String saveOrUpdateTestDataSchemaValues(String username, boolean isAdmin, TestDataSchemaValuesSaveVo schemaValuesVo) {
-        if (StringUtils.isBlank(username)) {
+        // Determine whether it is empty
+    	if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
         }
-        if (null != schemaValuesVo) {
+        // Determine whether it is empty
+        if (null == schemaValuesVo) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("param name is empty");
         }
+        // Determine whether it is empty
+        String testDataId = schemaValuesVo.getTestDataId();
+        if (StringUtils.isBlank(testDataId)) {
+        	return ReturnMapUtils.setFailedMsgRtnJsonStr("testDataId is null");
+        }
+        // Query "TestData" based on "testDataId"
+        TestData testDataById = testDataDomain.getTestDataById(testDataId);
+        if (null == testDataById) {
+        	return ReturnMapUtils.setFailedMsgRtnJsonStr("testDataId is error, not data");
+        }
+        // schema List
+        List<TestDataSchema> schemaList = testDataById.getSchemaList();
+        if (null == schemaList || schemaList.size() <= 0) {
+        	return ReturnMapUtils.setFailedMsgRtnJsonStr("Error! TestData schema is null");
+        }
+        // "schemaList" converts "Map" (key is FieldName)
+        Map<String, TestDataSchema> schemaMapDB = new HashMap<>();
+        for (TestDataSchema testDataSchema : schemaList) {
+        	if (null == testDataSchema) {
+        		continue;
+        	}
+    		schemaMapDB.put(testDataSchema.getFieldName(), testDataSchema);
+		}
+        List<TestDataSchemaValues> testDataSchemaValuesList = testDataDomain.getTestDataSchemaValuesListByTestDataId(testDataId);
+        // "schemaValue" converts "Map" (key is id)
+        Map<String, TestDataSchemaValues> schemaValuesMapDB = new HashMap<>();
+        // cycle
+        for (TestDataSchemaValues testDataSchemaValues : testDataSchemaValuesList) {
+        	if (null == testDataSchemaValues) {
+        		continue;
+        	}
+        	//First set enable_flag to false, and then modify it according to the data passed from the page
+        	testDataSchemaValues.setEnableFlag(false);
+        	schemaValuesMapDB.put(testDataSchemaValues.getId(), testDataSchemaValues);
+		}
+        List<LinkedHashMap<String,String>> schemaValuesList = schemaValuesVo.getSchemaValuesList();
+        List<LinkedHashMap<String,String>> schemaValuesIdList = schemaValuesVo.getSchemaValuesIdList();
+        //new schemaValue list
+        if (null != schemaValuesList && null != schemaValuesIdList) {
+        	if (schemaValuesList.size() != schemaValuesIdList.size()) {
+        		return ReturnMapUtils.setFailedMsgRtnJsonStr("Error! 'schemaValuesList' and 'schemaValuesIdList' are not unified");
+        	}
+        	for (int i = 0; i < schemaValuesList.size(); i++) {
+        		LinkedHashMap<String,String> schemaValues = schemaValuesList.get(i);
+        		LinkedHashMap<String,String> schemaValuesId = schemaValuesIdList.get(i);
+        		for (String fieldName : schemaValues.keySet()) {
+        			String fieldNameValue = schemaValuesId.get(fieldName);
+				}
+        		
+    		}	
+        }
+        
+        //List<LinkedHashMap<String, String>> testDataSchemaIdAndNameListByTestDataId = testDataDomain.getTestDataSchemaIdAndNameListByTestDataId(testDataId);
         return ReturnMapUtils.setSucceededMsgRtnJsonStr("save template success");
     }
 
@@ -155,7 +214,7 @@ public class TestDataServiceImpl implements ITestDataService {
         if (null == testDataVo) {
         	return ReturnMapUtils.setFailedMsgRtnJsonStr("data is null");
         }
-        List<TestDataSchemaVo> testDataVoList = testDataDomain.getTestDataSchemaVoListByTestDataId(isAdmin, username, param, testDataId);
+        List<TestDataSchemaVo> testDataVoList = testDataDomain.getTestDataSchemaVoListByTestDataIdSearch(isAdmin, username, param, testDataId);
         testDataVo.setSchemaVoList(testDataVoList);
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("testData", testDataVo);
     }
@@ -187,7 +246,7 @@ public class TestDataServiceImpl implements ITestDataService {
         	return ReturnMapUtils.setFailedMsgRtnJsonStr("data is null");
         }
         Page<TestDataSchemaVo> page = PageHelper.startPage(offset, limit);
-        testDataDomain.getTestDataSchemaVoListByTestDataId(isAdmin, username, param, testDataId);
+        testDataDomain.getTestDataSchemaVoListByTestDataIdSearch(isAdmin, username, param, testDataId);
         Map<String, Object> rtnMap = PageHelperUtils.setLayTableParam(page, null);
         rtnMap.put(ReturnMapUtils.KEY_CODE, ReturnMapUtils.SUCCEEDED_CODE);
         rtnMap.put("testData",testDataVo);
