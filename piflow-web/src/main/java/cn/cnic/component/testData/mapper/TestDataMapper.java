@@ -50,9 +50,19 @@ public interface TestDataMapper {
 	@Select("select * from test_data where enable_flag=1 and id=#{id} ")
 	@Results({
 		@Result(id = true, column = "id", property = "id"),
-        @Result(column = "id", property = "schemaList", many = @Many(select = "cn.cnic.component.testData.mapper.TestDataSchemaMapper.getTestDataSchemaListByTestDataId", fetchType = FetchType.LAZY)) 
+        @Result(column = "id", property = "schemaList", many = @Many(select = "cn.cnic.component.testData.mapper.TestDataSchemaMapper.getTestDataSchemaListByTestDataId", fetchType = FetchType.LAZY)),
+		@Result(column = "id", property = "schemaValuesList", many = @Many(select = "cn.cnic.component.testData.mapper.TestDataSchemaValuesMapper.getTestDataSchemaValuesListByTestDataId", fetchType = FetchType.LAZY))
 	})
 	public TestData getTestDataById(String id);
+	
+	/**
+	 * get TestData by id, Do not perform related queries
+	 * 
+	 * @param id
+	 * @return TestData
+	 */
+	@Select("select * from test_data where enable_flag=1 and id=#{id} ")
+	public TestData getTestDataByIdOnly(String id);
 	
 	/**
 	 * get TestDataVo by id

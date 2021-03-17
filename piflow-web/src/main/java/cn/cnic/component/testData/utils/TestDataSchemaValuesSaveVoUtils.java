@@ -45,11 +45,11 @@ public class TestDataSchemaValuesSaveVoUtils {
 		}
 		Object schemaValuesListObj = mapTypes.get("schemaValuesList");
 		if(null != schemaValuesListObj) {
-			testDataSchemaValuesSaveVo.setSchemaValuesList((List<LinkedHashMap<String,String>>)schemaValuesListObj);
+			testDataSchemaValuesSaveVo.setSchemaValuesList((List<Map<String,String>>)schemaValuesListObj);
 		}
 		Object schemaValuesIdListObj = mapTypes.get("schemaValuesIdList");
 		if(null != schemaValuesIdListObj) {
-			testDataSchemaValuesSaveVo.setSchemaValuesIdList((List<LinkedHashMap<String,String>>) schemaValuesIdListObj);
+			testDataSchemaValuesSaveVo.setSchemaValuesIdList((List<Map<String,String>>) schemaValuesIdListObj);
 		}
 		return testDataSchemaValuesSaveVo;
 	}

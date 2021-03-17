@@ -21,6 +21,7 @@ public class TestDataSchemaValuesMapperProvider {
 	private int enableFlag;
 	private String fieldValue;
 	private int dataRow;
+	private String testDataId;
 	private String testDataSchemaId;
 
 	private boolean preventSQLInjectionTestDataSchemaValues(TestDataSchemaValues testDataSchemaValues) {
@@ -41,9 +42,8 @@ public class TestDataSchemaValuesMapperProvider {
 		// Selection field
 		this.fieldValue = SqlUtils.preventSQLInjection(testDataSchemaValues.getFieldValue());
 		this.dataRow = testDataSchemaValues.getDataRow();
-		this.testDataSchemaId = SqlUtils.preventSQLInjection(
-				null != testDataSchemaValues.getTestDataSchema() ? testDataSchemaValues.getTestDataSchema().getId()
-						: null);
+		this.testDataId = SqlUtils.preventSQLInjection(null != testDataSchemaValues.getTestData() ? testDataSchemaValues.getTestData().getId(): null);
+		this.testDataSchemaId = SqlUtils.preventSQLInjection(null != testDataSchemaValues.getTestDataSchema() ? testDataSchemaValues.getTestDataSchema().getId(): null);
 
 		return true;
 	}
@@ -56,6 +56,7 @@ public class TestDataSchemaValuesMapperProvider {
 		this.enableFlag = 1;
 		this.fieldValue = null;
 		this.dataRow = 0;
+		this.testDataId = null;
 		this.testDataSchemaId = null;
 	}
 
@@ -69,11 +70,12 @@ public class TestDataSchemaValuesMapperProvider {
 		String sql = "SELECT 0";
 		if (preventSQLInjectionTestDataSchemaValues(testDataSchemaValues)) {
 			StringBuffer strBuf = new StringBuffer();
-			strBuf.append("INSERT INTO group_schedule ");
+			strBuf.append("INSERT INTO test_data_schema_values ");
 			strBuf.append("( ");
 			strBuf.append(SqlUtils.baseFieldName() + ", ");
 			strBuf.append("field_value, ");
 			strBuf.append("data_row, ");
+			strBuf.append("fk_test_data_id, ");
 			strBuf.append("fk_test_data_schema_id ");
 			strBuf.append(") ");
 
@@ -82,6 +84,7 @@ public class TestDataSchemaValuesMapperProvider {
 			strBuf.append(SqlUtils.baseFieldValues(testDataSchemaValues) + ", ");
 			strBuf.append(this.fieldValue + ", ");
 			strBuf.append(this.dataRow + ", ");
+			strBuf.append(this.testDataId + ", ");
 			strBuf.append(this.testDataSchemaId + " ");
 			strBuf.append(")");
 			sql = strBuf.toString();
@@ -102,11 +105,12 @@ public class TestDataSchemaValuesMapperProvider {
 			return "SELECT 0";
 		}
 		StringBuffer strBuf = new StringBuffer();
-		strBuf.append("INSERT INTO group_schedule ");
+		strBuf.append("INSERT INTO test_data_schema_values ");
 		strBuf.append("( ");
 		strBuf.append(SqlUtils.baseFieldName() + ", ");
 		strBuf.append("field_value, ");
 		strBuf.append("data_row, ");
+		strBuf.append("fk_test_data_id, ");
 		strBuf.append("fk_test_data_schema_id ");
 		strBuf.append(") ");
 		strBuf.append("values ");
@@ -122,6 +126,7 @@ public class TestDataSchemaValuesMapperProvider {
 				strBuf.append(SqlUtils.baseFieldValues(testDataSchemaValues) + ", ");
 				strBuf.append(this.fieldValue + ", ");
 				strBuf.append(this.dataRow + ", ");
+				strBuf.append(this.testDataId + ", ");
 				strBuf.append(this.testDataSchemaId + " ");
 				strBuf.append(")");
 			}
@@ -143,7 +148,7 @@ public class TestDataSchemaValuesMapperProvider {
 		if (flag && StringUtils.isNotBlank(this.id)) {
 			SQL sql = new SQL();
 			// INSERT_INTO brackets is table name
-			sql.UPDATE("group_schedule");
+			sql.UPDATE("test_data_schema_values");
 			// The first string in the SET is the name of the field corresponding to the
 			// table in the database
 			sql.SET("last_update_dttm = " + lastUpdateDttmStr);
@@ -154,6 +159,7 @@ public class TestDataSchemaValuesMapperProvider {
 			sql.SET("enable_flag = " + this.enableFlag);
 			sql.SET("field_value = " + this.fieldValue);
 			sql.SET("data_row = " + this.dataRow);
+			sql.SET("fk_test_data_id = " + this.testDataId);
 			sql.SET("fk_test_data_schema_id = " + this.testDataSchemaId);
 			sql.WHERE("version = " + this.version);
 			sql.WHERE("id = " + this.id);

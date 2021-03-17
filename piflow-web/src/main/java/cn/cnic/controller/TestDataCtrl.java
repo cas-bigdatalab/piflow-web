@@ -48,10 +48,11 @@ public class TestDataCtrl {
 	 * 
 	 * @param testDataSchemaVo
 	 * @return String
+	 * @throws Exception 
 	 */
 	@RequestMapping("/saveOrUpdateTestDataSchemaValues")
 	@ResponseBody
-	public String saveOrUpdateTestDataSchemaValues(HttpServletRequest request) {
+	public String saveOrUpdateTestDataSchemaValues(HttpServletRequest request) throws Exception {
 		String currentUsername = SessionUserUtil.getCurrentUsername();
 		boolean isAdmin = SessionUserUtil.isAdmin();
 		String data = request.getParameter("data");

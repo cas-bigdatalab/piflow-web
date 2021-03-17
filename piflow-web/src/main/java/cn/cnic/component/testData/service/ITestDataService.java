@@ -24,8 +24,9 @@ public interface ITestDataService {
      * @param isAdmin
      * @param schemaValuesVo
      * @return String
+     * @throws Exception 
      */
-    public String saveOrUpdateTestDataSchemaValues(String username, boolean isAdmin, TestDataSchemaValuesSaveVo schemaValuesVo);
+    public String saveOrUpdateTestDataSchemaValues(String username, boolean isAdmin, TestDataSchemaValuesSaveVo schemaValuesVo) throws Exception;
 
     /**
      * delTestData

@@ -1,7 +1,7 @@
 package cn.cnic.component.testData.vo;
 
-import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -11,6 +11,6 @@ import lombok.Setter;
 public class TestDataSchemaValuesSaveVo {
 
 	private String testDataId;
-	private List<LinkedHashMap<String,String>> schemaValuesList;
-	private List<LinkedHashMap<String,String>> schemaValuesIdList;
+	private List<Map<String,String>> schemaValuesList;
+	private List<Map<String,String>> schemaValuesIdList;
 }

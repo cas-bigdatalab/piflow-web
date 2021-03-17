@@ -16,5 +16,7 @@ public class TestData extends BaseHibernateModelUUIDNoCorpAgentId {
     private String name;
     private String description;
     private List<TestDataSchema> schemaList = new ArrayList<>();
+    private List<TestDataSchemaValues> schemaValuesList = new ArrayList<>();
+    
 
 }

@@ -12,6 +12,7 @@ public class TestDataSchemaValues extends BaseHibernateModelUUIDNoCorpAgentId {
 
     private String fieldValue;
     private int dataRow;
+    private TestData testData;
     private TestDataSchema testDataSchema;
 
 }

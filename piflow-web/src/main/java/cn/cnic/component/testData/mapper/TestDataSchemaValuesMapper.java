@@ -62,7 +62,7 @@ public interface TestDataSchemaValuesMapper {
 	 * get TestDataSchemaValues list
 	 * @return
 	 */
-	@Select("select * from test_data_list where enable_flag=1 order by data_row asc ")
+	@Select("select * from test_data_schema_values where enable_flag=1 order by data_row asc ")
 	@Results({
 			@Result(column = "fk_test_data_schema_id", property = "testDataSchema", one = @One(select = "cn.cnic.component.testData.mapper.TestDataSchemaMapper.getTestDataSchemaById", fetchType = FetchType.LAZY)) 
 	})
@@ -74,13 +74,13 @@ public interface TestDataSchemaValuesMapper {
 	 * @param schemaId
 	 * @return
 	 */
-	@Select("select * from test_data_list where enable_flag=1 and fk_test_data_schema_id=#{schemaId} order by data_row asc ")
+	@Select("select * from test_data_schema_values where enable_flag=1 and fk_test_data_schema_id=#{schemaId} order by data_row asc ")
 	@Results({
 			@Result(column = "fk_test_data_schema_id", property = "testDataSchema", one = @One(select = "cn.cnic.component.testData.mapper.TestDataSchemaMapper.getTestDataSchemaById", fetchType = FetchType.LAZY)) 
 	})
 	public List<TestDataSchemaValues> getTestDataSchemaValuesListBySchemaId(String schemaId);
 	
-	@Select("select * from test_data_list where enable_flag=1 and id=#{id} order by data_row asc ")
+	@Select("select * from test_data_schema_values where enable_flag=1 and id=#{id} order by data_row asc ")
 	@Results({
 			@Result(column = "fk_test_data_schema_id", property = "testDataSchema", one = @One(select = "cn.cnic.component.testData.mapper.TestDataSchemaMapper.getTestDataSchemaById", fetchType = FetchType.LAZY)) 
 	})
@@ -92,9 +92,10 @@ public interface TestDataSchemaValuesMapper {
 	 * @param schemaId
 	 * @return
 	 */
-	@Select("select * from test_data_list where enable_flag=1 and fk_test_data_id=#{testDataId} order by data_row asc ")
+	@Select("select * from test_data_schema_values where enable_flag=1 and fk_test_data_id=#{testDataId} order by data_row asc ")
 	@Results({
-			@Result(column = "fk_test_data_schema_id", property = "testDataSchema", one = @One(select = "cn.cnic.component.testData.mapper.TestDataSchemaMapper.getTestDataSchemaById", fetchType = FetchType.LAZY)) 
+		@Result(column = "fk_test_data_id", property = "testData", one = @One(select = "cn.cnic.component.testData.mapper.TestDataMapper.getTestDataByIdOnly", fetchType = FetchType.LAZY)),
+		@Result(column = "fk_test_data_schema_id", property = "testDataSchema", one = @One(select = "cn.cnic.component.testData.mapper.TestDataSchemaMapper.getTestDataSchemaById", fetchType = FetchType.LAZY))
 	})
 	public List<TestDataSchemaValues> getTestDataSchemaValuesListByTestDataId(String testDataId);
 
