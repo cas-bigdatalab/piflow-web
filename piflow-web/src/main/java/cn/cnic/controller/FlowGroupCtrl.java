@@ -105,9 +105,7 @@ public class FlowGroupCtrl {
      */
     @RequestMapping("/runFlowGroup")
     @ResponseBody
-    public String runFlowGroup(HttpServletRequest request) {
-        String flowGroupId = request.getParameter("flowGroupId");
-        String runMode = request.getParameter("runMode");
+    public String runFlowGroup(String flowGroupId, String runMode) {
         String username = SessionUserUtil.getCurrentUsername();
         return flowGroupServiceImpl.runFlowGroup(username, flowGroupId, runMode);
     }

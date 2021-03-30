@@ -43,8 +43,17 @@ public interface StopsComponentMapper {
      * @param groupId
      * @return
      */
-    @Select("select * from flow_stops_template where id in (select agst.stops_template_id from association_groups_stops_template agst where agst.groups_id = #{groupId})")
+    @SelectProvider(type = StopsComponentMapperProvider.class, method = "getStopsComponentListByGroupId")
     public List<StopsComponent> getStopsComponentListByGroupId(String groupId);
+    
+    /**
+     * Query the stops template according to the id of the stops group
+     *
+     * @param groupId
+     * @return
+     */
+    @Select("select * from flow_stops_template where enable_flag=1 and id in (select agst.stops_template_id from association_groups_stops_template agst where agst.groups_id = #{groupId})")
+    public List<StopsComponent> getManageStopsComponentListByGroupId(String groupId);
 
     /**
      * Query the stops template according to the id of the stops group...

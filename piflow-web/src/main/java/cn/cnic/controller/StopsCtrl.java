@@ -231,6 +231,14 @@ public class StopsCtrl {
         Boolean isAdmin = SessionUserUtil.isAdmin();
         return stopsHubServiceImpl.delStopsHub(username, isAdmin, id);
     }
+    
+    @RequestMapping(value = "/stopsComponentList", method = RequestMethod.POST)
+    @ResponseBody
+    public String stopsComponentList() {
+    	String username = SessionUserUtil.getCurrentUsername();
+        Boolean isAdmin = SessionUserUtil.isAdmin();
+    	return stopGroupServiceImpl.stopsComponentList(username, isAdmin);
+    }
 
     /**
      * isNeedSource

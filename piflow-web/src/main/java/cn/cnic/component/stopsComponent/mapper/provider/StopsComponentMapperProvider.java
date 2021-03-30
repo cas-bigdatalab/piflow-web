@@ -82,6 +82,30 @@ public class StopsComponentMapperProvider {
         sqlStr = sql.toString();
         return sqlStr;
     }
+    
+    public String getStopsComponentListByGroupId(String groupId) {
+    	if (StringUtils.isBlank(groupId)) {
+    		return "SELECT 0";
+    	}
+    	StringBuffer strBuf = new StringBuffer();
+    	
+    	SqlUtils.preventSQLInjection(groupId);
+    	
+    	strBuf.append("SELECT * FROM flow_stops_template fst ");
+    	strBuf.append("WHERE fst.enable_flag=1 ");
+    	strBuf.append("AND fst.id IN ( ");
+    	strBuf.append("SELECT agst.stops_template_id FROM association_groups_stops_template agst WHERE agst.groups_id= ");
+    	strBuf.append(SqlUtils.preventSQLInjection(groupId));
+    	strBuf.append(") ");
+    	strBuf.append("AND fst.BUNDEL NOT IN ");
+    	strBuf.append("(");
+    	strBuf.append("SELECT fstm.bundle FROM flow_stops_template_manage fstm ");
+    	strBuf.append("WHERE fstm.enable_flag = 1 ");
+    	strBuf.append("AND fstm.is_show!=1 ");
+    	strBuf.append("AND fstm.`groups` LIKE CONCAT('%',(SELECT fsg1.group_name FROM flow_stops_groups fsg1 WHERE fsg1.id=" + SqlUtils.preventSQLInjection(groupId) + "),'%') ");
+    	strBuf.append(")");
+    	return strBuf.toString();
+    }
 
     /**
      * Query StopsComponent according to stopsName

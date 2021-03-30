@@ -1,7 +1,6 @@
 package cn.cnic.controller;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Controller;
@@ -23,7 +22,7 @@ public class FlowCtrl {
     /**
      * flowList page query
      *
-     * @param page
+     * @param page 
      * @param limit
      * @param param
      * @return
@@ -44,10 +43,7 @@ public class FlowCtrl {
      */
     @RequestMapping("/drawingBoardData")
     @ResponseBody
-    public String drawingBoardData(HttpServletRequest request) {
-        String load = request.getParameter("load");
-        //set parentAccessPath
-        String parentAccessPath = request.getParameter("parentAccessPath");
+    public String drawingBoardData(String load, String parentAccessPath) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
         return flowServiceImpl.drawingBoardData(username, isAdmin, load, parentAccessPath);
@@ -61,9 +57,7 @@ public class FlowCtrl {
      */
     @RequestMapping("/runFlow")
     @ResponseBody
-    public String runFlow(HttpServletRequest request) {
-        String flowId = request.getParameter("flowId");
-        String runMode = request.getParameter("runMode");
+    public String runFlow(String flowId, String runMode) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
         return flowServiceImpl.runFlow(username, isAdmin, flowId, runMode);

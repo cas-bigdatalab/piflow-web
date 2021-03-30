@@ -12,5 +12,14 @@ public interface IStopGroupService {
      * Call getAllStops and Group to manage, and save the stop attribute information
      */
     public void updateGroupAndStopsListByServer(String username);
+    
+
+    /**
+     * stopsComponentList
+     * 
+     * @param username
+     * @param isAdmin
+     */
+    public String stopsComponentList(String username, boolean isAdmin);
 
 }

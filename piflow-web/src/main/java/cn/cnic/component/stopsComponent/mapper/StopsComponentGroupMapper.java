@@ -19,6 +19,16 @@ public interface StopsComponentGroupMapper {
     List<StopsComponentGroup> getStopGroupList();
 
     /**
+     * Query all groups
+     *
+     * @return
+     */
+    @SelectProvider(type = StopsComponentGroupProvider.class, method = "getStopGroupList")
+    @Results({@Result(id = true, column = "id", property = "id"),
+            @Result(column = "id", property = "stopsComponentList", many = @Many(select = "cn.cnic.component.stopsComponent.mapper.StopsComponentMapper.getManageStopsComponentListByGroupId"))})
+    List<StopsComponentGroup> getManageStopGroupList();
+    
+    /**
      * Query the stops template group based on the group id
      *
      * @param stopsId

@@ -63,8 +63,7 @@ public class LoginCtrl {
 
     @RequestMapping(value = "/checkUserName")
     @ResponseBody
-    public String checkUserName(HttpServletRequest request) {
-        String username = request.getParameter("userName");
+    public String checkUserName(String username) {
         return sysUserServiceImpl.checkUserName(username);
     }
 }

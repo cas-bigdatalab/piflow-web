@@ -73,9 +73,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 //.antMatchers("/api/v1/auth", "/api/v1/signout", "/error/**", "/api/**").permitAll()
                 .antMatchers("/register", "/checkUserName", "/jwtLogin", "/error", "/login").permitAll()
                 .antMatchers("/").permitAll()
-                //.antMatchers("/index").permitAll()
                 .antMatchers("/page/**").permitAll()
-                .antMatchers("/testData/*","/testData/**").permitAll()
                 .antMatchers().permitAll()
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated();

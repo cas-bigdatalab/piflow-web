@@ -3,6 +3,8 @@ package cn.cnic.component.stopsComponent.service.impl;
 import cn.cnic.base.util.*;
 import cn.cnic.common.Eunm.StopsHubState;
 import cn.cnic.component.process.entity.Process;
+import cn.cnic.component.stopsComponent.domain.StopsComponentDomain;
+import cn.cnic.component.stopsComponent.domain.StopsComponentGroupDomain;
 import cn.cnic.component.stopsComponent.mapper.StopsComponentGroupMapper;
 import cn.cnic.component.stopsComponent.mapper.StopsComponentMapper;
 import cn.cnic.component.stopsComponent.mapper.StopsHubMapper;
@@ -10,8 +12,6 @@ import cn.cnic.component.stopsComponent.model.StopsComponent;
 import cn.cnic.component.stopsComponent.model.StopsComponentGroup;
 import cn.cnic.component.stopsComponent.model.StopsHub;
 import cn.cnic.component.stopsComponent.service.IStopsHubService;
-import cn.cnic.component.stopsComponent.transactional.StopsComponentGroupTransactional;
-import cn.cnic.component.stopsComponent.transactional.StopsComponentTransactional;
 import cn.cnic.component.stopsComponent.utils.StopsComponentGroupUtils;
 import cn.cnic.component.stopsComponent.utils.StopsComponentUtils;
 import cn.cnic.component.stopsComponent.utils.StopsHubUtils;
@@ -49,10 +49,10 @@ public class StopsHubServiceImpl implements IStopsHubService {
     private StopsComponentGroupMapper stopsComponentGroupMapper;
 
     @Resource
-    private StopsComponentGroupTransactional stopsComponentGroupTransactional;
+    private StopsComponentGroupDomain stopsComponentGroupDomain;
 
     @Resource
-    private StopsComponentTransactional stopsComponentTransactional;
+    private StopsComponentDomain stopsComponentDomain;
 
 
     @Override
@@ -131,7 +131,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
                     stopsComponentGroup = StopsComponentGroupUtils.stopsComponentGroupNewNoId(username);
                     stopsComponentGroup.setId(UUIDUtils.getUUID32());
                     stopsComponentGroup.setGroupName(groupName);
-                    stopsComponentGroupTransactional.addStopsComponentGroup(stopsComponentGroup);
+                    stopsComponentGroupDomain.addStopsComponentGroup(stopsComponentGroup);
                     stopsComponentGroupMap.put(groupName, stopsComponentGroup);
                 }
             }
@@ -144,7 +144,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
             StopsComponent stopsComponent = stopsComponentMapper.getStopsComponentByBundle(s.getBundle());
             if (stopsComponent == null) {
                 stopsComponent = StopsComponentUtils.thirdStopsComponentVoToStopsTemplate(username, s, stopGroupByName);
-                stopsComponentTransactional.addStopsComponentAndChildren(stopsComponent);
+                stopsComponentDomain.addStopsComponentAndChildren(stopsComponent);
                 //stopsComponentMapper.insertStopsComponent(stopsComponent);
 
             } else {//update stop group
@@ -185,7 +185,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
         List<ThirdStopsComponentVo> stops = stopsHubVo.getStops();
         for (ThirdStopsComponentVo s : stops) {
             StopsComponent stopsComponent = stopsComponentMapper.getStopsComponentByBundle(s.getBundle());
-            stopsComponentTransactional.deleteStopsComponent(stopsComponent);
+            stopsComponentDomain.deleteStopsComponent(stopsComponent);
         }
 
         return ReturnMapUtils.setSucceededMsgRtnJsonStr("Mount successful");

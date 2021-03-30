@@ -1,4 +1,4 @@
-package cn.cnic.component.stopsComponent.transactional;
+package cn.cnic.component.stopsComponent.domain;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ import cn.cnic.component.stopsComponent.model.StopsComponentGroup;
 
 @Component
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
-public class StopsComponentGroupTransactional {
+public class StopsComponentGroupDomain {
 
     Logger logger = LoggerUtil.getLogger();
 
@@ -26,7 +26,7 @@ public class StopsComponentGroupTransactional {
     private StopsComponentGroupMapper stopsComponentGroupMapper;
 
     @Resource
-    private StopsComponentTransactional stopsComponentTransactional;
+    private StopsComponentDomain stopsComponentDomain;
 
     public int addStopsComponentGroupAndChildren(StopsComponentGroup stopsComponentGroup) {
         if (null == stopsComponentGroup) {
@@ -39,7 +39,7 @@ public class StopsComponentGroupTransactional {
             if (null == stopsComponentList || stopsComponentList.size() <= 0) {
                 return affectedRows;
             }
-            int insertStopsTemplateRows = stopsComponentTransactional.addListStopsComponentAndChildren(stopsComponentList);
+            int insertStopsTemplateRows = stopsComponentDomain.addListStopsComponentAndChildren(stopsComponentList);
             affectedRows = insertStopsComponentGroupRows + insertStopsTemplateRows;
         }
         return affectedRows;
@@ -78,6 +78,10 @@ public class StopsComponentGroupTransactional {
 
     public List<StopsComponentGroup> getStopGroupList(){
         return stopsComponentGroupMapper.getStopGroupList();
+    }
+
+    public List<StopsComponentGroup> getManageStopGroupList(){
+        return stopsComponentGroupMapper.getManageStopGroupList();
     }
 
 }

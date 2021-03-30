@@ -1,4 +1,4 @@
-package cn.cnic.component.stopsComponent.transactional;
+package cn.cnic.component.stopsComponent.domain;
 
 import java.util.Arrays;
 import java.util.List;
@@ -21,7 +21,7 @@ import cn.cnic.component.stopsComponent.model.StopsComponentProperty;
 
 @Component
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
-public class StopsComponentTransactional {
+public class StopsComponentDomain {
 
 	Logger logger = LoggerUtil.getLogger();
 

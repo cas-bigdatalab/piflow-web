@@ -9,13 +9,13 @@ import cn.cnic.component.flow.entity.Property;
 import cn.cnic.component.flow.entity.Stops;
 import cn.cnic.component.flow.utils.PropertyUtils;
 import cn.cnic.component.stopsComponent.mapper.StopsComponentPropertyMapper;
+import cn.cnic.component.stopsComponent.domain.StopsComponentDomain;
+import cn.cnic.component.stopsComponent.domain.StopsComponentGroupDomain;
 import cn.cnic.component.stopsComponent.mapper.StopsComponentGroupMapper;
 import cn.cnic.component.stopsComponent.mapper.StopsComponentMapper;
 import cn.cnic.component.stopsComponent.model.StopsComponentProperty;
 import cn.cnic.component.stopsComponent.model.StopsComponent;
 import cn.cnic.component.stopsComponent.model.StopsComponentGroup;
-import cn.cnic.component.stopsComponent.transactional.StopsComponentGroupTransactional;
-import cn.cnic.component.stopsComponent.transactional.StopsComponentTransactional;
 import cn.cnic.component.stopsComponent.utils.StopsComponentGroupUtils;
 import cn.cnic.component.stopsComponent.utils.StopsComponentUtils;
 import cn.cnic.component.system.entity.SysInitRecords;
@@ -67,10 +67,10 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
     private PropertyMapper propertyMapper;
 
     @Resource
-    private StopsComponentGroupTransactional stopsComponentGroupTransactional;
+    private StopsComponentGroupDomain stopsComponentGroupDomain;
 
     @Resource
-    private StopsComponentTransactional stopsComponentTransactional;
+    private StopsComponentDomain stopsComponentDomain;
 
     public boolean isInBootPage() {
         // Determine if the boot flag is true
@@ -156,9 +156,9 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
             return null;
         }
         // The call is successful, empty the "StopsComponentGroup" and "StopsComponent" message and insert
-        int deleteGroup = stopsComponentGroupTransactional.deleteStopsComponentGroup();
+        int deleteGroup = stopsComponentGroupDomain.deleteStopsComponentGroup();
         logger.debug("Successful deletion Group" + deleteGroup + "piece of data!!!");
-        int deleteStopsInfo = stopsComponentTransactional.deleteStopsComponent();
+        int deleteStopsInfo = stopsComponentDomain.deleteStopsComponent();
         logger.info("Successful deletion StopsInfo" + deleteStopsInfo + "piece of data!!!");
 
         int addStopsComponentGroupRows = 0;
@@ -173,7 +173,7 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
             StopsComponentGroup stopsComponentGroup = StopsComponentGroupUtils.stopsComponentGroupNewNoId(currentUser);
             stopsComponentGroup.setId(UUIDUtils.getUUID32());
             stopsComponentGroup.setGroupName(groupName);
-            addStopsComponentGroupRows += stopsComponentGroupTransactional.addStopsComponentGroup(stopsComponentGroup);
+            addStopsComponentGroupRows += stopsComponentGroupDomain.addStopsComponentGroup(stopsComponentGroup);
             // get current group stops bundle list
             List<String> list = stopsListWithGroup.get(groupName);
             stopsBundleList.addAll(list);
