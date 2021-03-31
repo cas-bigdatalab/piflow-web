@@ -20,7 +20,7 @@ public interface IStopsComponentManageService {
      * 
      * @param username
      * @param isAdmin
-     * @param stopsManageList
+     * @param stopsManage
      * @return
      * @throws Exception
      */
