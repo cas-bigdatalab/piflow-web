@@ -6,30 +6,31 @@ import cn.cnic.common.Eunm.ProcessState;
 import cn.cnic.common.Eunm.RunModeType;
 import cn.cnic.common.Eunm.StopState;
 import cn.cnic.component.flow.entity.Flow;
+import cn.cnic.component.flow.jpa.domain.FlowDomain;
 import cn.cnic.component.mxGraph.utils.MxCellUtils;
 import cn.cnic.component.mxGraph.vo.MxCellVo;
 import cn.cnic.component.mxGraph.vo.MxGraphModelVo;
 import cn.cnic.component.process.entity.Process;
 import cn.cnic.component.process.entity.ProcessGroup;
 import cn.cnic.component.process.entity.ProcessStop;
+import cn.cnic.component.process.jpa.domain.ProcessDomain;
+import cn.cnic.component.process.mapper.ProcessMapper;
+import cn.cnic.component.process.mapper.ProcessStopMapper;
 import cn.cnic.component.process.service.IProcessService;
+import cn.cnic.component.process.transaction.ProcessTransaction;
 import cn.cnic.component.process.utils.ProcessUtils;
 import cn.cnic.component.process.vo.DebugDataRequest;
 import cn.cnic.component.process.vo.DebugDataResponse;
 import cn.cnic.component.process.vo.ProcessGroupVo;
 import cn.cnic.component.process.vo.ProcessVo;
-import cn.cnic.component.flow.jpa.domain.FlowDomain;
-import cn.cnic.component.process.jpa.domain.ProcessDomain;
-import cn.cnic.component.process.mapper.ProcessMapper;
-import cn.cnic.component.process.mapper.ProcessStopMapper;
 import cn.cnic.third.service.IFlow;
 import cn.cnic.third.vo.flow.ThirdFlowInfoStopVo;
 import cn.cnic.third.vo.flow.ThirdFlowInfoStopsVo;
 import cn.cnic.third.vo.flow.ThirdFlowInfoVo;
 import cn.cnic.third.vo.flow.ThirdProgressVo;
-import cn.cnic.component.process.transaction.ProcessTransaction;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -455,7 +456,7 @@ public class ProcessServiceImpl implements IProcessService {
             logger.warn("Unable to query flow Id for'" + flowId + "'flow, the conversion failed");
             return null;
         }
-        Process process = ProcessUtils.flowToProcess(flowById, username,false);
+        Process process = ProcessUtils.flowToProcess(flowById, username, false);
         if (null == process) {
             logger.warn("Conversion failed");
             return null;
@@ -706,7 +707,7 @@ public class ProcessServiceImpl implements IProcessService {
      * @return
      */
     @Override
-    public String getVisualizationData(String appID, String stopName,String visualizationType) {
+    public String getVisualizationData(String appID, String stopName, String visualizationType) {
         if (null == appID || null == stopName || null == visualizationType) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("param is null");
         }
@@ -718,7 +719,7 @@ public class ProcessServiceImpl implements IProcessService {
         if (StringUtils.isBlank(visualizationData)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Interface call failed");
         }
-
+        visualizationData = visualizationDataSort(visualizationData,visualizationType);
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("visualizationData", visualizationData);
     }
 
@@ -886,6 +887,78 @@ public class ProcessServiceImpl implements IProcessService {
         rtnMap.put("xmlDate", loadXml);
 
         return JsonUtils.toJsonNoException(rtnMap);
+    }
+
+    @SuppressWarnings("rawtypes")
+    private String visualizationDataSort(String visualizationData, String type) {
+        if (StringUtils.isBlank(visualizationData)) {
+            return null;
+        }
+        if (!"LINECHART".equals(type) && !"HISTOGRAM".equals(type)) {
+            return visualizationData;
+        }
+        JSONObject obj = JSONObject.fromObject(visualizationData);
+        JSONArray xAxis_data = obj.getJSONObject("xAxis").getJSONArray("data");
+        JSONArray series_data = obj.getJSONArray("series");
+        JSONArray legent = obj.getJSONArray("legent");
+
+        LinkedHashMap<String, Map> xAxisMap = new LinkedHashMap<>();
+        List<String> xAxisList = new ArrayList<>();
+
+        for (int i = 0; i < xAxis_data.size(); i++) {
+            String o = xAxis_data.getString(i);
+            xAxisList.add(o);
+            LinkedHashMap<String, String> xAxisValueMap = new LinkedHashMap<>();
+            for (int j = 0; j < series_data.size(); j++) {
+                String string = series_data.getJSONObject(j).getJSONArray("data").getString(i);
+                xAxisValueMap.put(j + "", string);
+            }
+            xAxisMap.put(o, xAxisValueMap);
+        }
+        Collections.sort(xAxisList);
+        JSONObject sort_data = new JSONObject();
+
+        for (String str : xAxisList) {
+            JSONArray new_xAxis_data = null;
+            if (0 != sort_data.size()) {
+                new_xAxis_data = sort_data.getJSONArray("xAxis_data");
+            }
+            if (null == new_xAxis_data) {
+                new_xAxis_data = new JSONArray();
+            }
+            new_xAxis_data.add(str);
+            sort_data.put("xAxis_data", new_xAxis_data);
+
+			Map str_value = xAxisMap.get(str);
+            for (Object key : str_value.keySet()) {
+                JSONArray str_value_data = null;
+                try {
+                    str_value_data = sort_data.getJSONArray(key.toString());
+                } catch (Exception e) {
+                    str_value_data = new JSONArray();
+                }
+                if (null == str_value_data) {
+                    str_value_data = new JSONArray();
+                }
+                str_value_data.add(str_value.get(key));
+                sort_data.put(key.toString(), str_value_data);
+            }
+
+        }
+        obj.getJSONObject("xAxis").put("data", sort_data.getJSONArray("xAxis_data"));
+        for (int i = 0; i < legent.size(); i++) {
+            obj.getJSONArray("series").getJSONObject(i).put("data", sort_data.getJSONArray(i + ""));
+        }
+        return obj.toString();
+    }
+
+    public static void main(String[] args) {
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("appID", "application_1613819551288_0150");
+        map.put("stopName", "LineChart");
+        map.put("visualizationType", "LINECHART");
+        String url = "http://10.0.90.155:8002/flow/visualizationData";
+        HttpUtils.doGet(url, map, 5 * 1000);
     }
 
 }

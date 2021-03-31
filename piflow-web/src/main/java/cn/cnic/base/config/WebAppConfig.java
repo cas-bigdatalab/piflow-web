@@ -40,6 +40,13 @@ public class WebAppConfig implements WebMvcConfigurer {
         logger.info("videosPath=" + videosPath);
         logger.info("xmlPath=" + xmlPath);
         registry.addResourceHandler("/images/**", "/videos/**", "/xml/**").addResourceLocations(imagesPath, videosPath, xmlPath);
+        
+        // Swagger2Config
+        registry.addResourceHandler("/**")
+        .addResourceLocations("classpath:/META-INF/resources/")
+        .addResourceLocations("classpath:/resources/")
+        .addResourceLocations("classpath:/static/")
+        .addResourceLocations("classpath:/public/");
         WebMvcConfigurer.super.addResourceHandlers(registry);
     }
 

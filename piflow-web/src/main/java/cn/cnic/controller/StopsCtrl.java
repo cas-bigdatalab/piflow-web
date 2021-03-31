@@ -231,36 +231,5 @@ public class StopsCtrl {
         Boolean isAdmin = SessionUserUtil.isAdmin();
         return stopsHubServiceImpl.delStopsHub(username, isAdmin, id);
     }
-    
-    @RequestMapping(value = "/stopsComponentList", method = RequestMethod.POST)
-    @ResponseBody
-    public String stopsComponentList() {
-    	String username = SessionUserUtil.getCurrentUsername();
-        Boolean isAdmin = SessionUserUtil.isAdmin();
-    	return stopGroupServiceImpl.stopsComponentList(username, isAdmin);
-    }
 
-    /**
-     * isNeedSource
-     *
-     * @return json
-     */
-    @RequestMapping(value = "/isNeedSource", method = RequestMethod.POST)
-    @ResponseBody
-    public String isNeedSource(String stopsId) {
-        String username = SessionUserUtil.getCurrentUsername();
-        Boolean isAdmin = SessionUserUtil.isAdmin();
-        return stopsServiceImpl.isNeedSource(username, isAdmin, stopsId);
-    }
-
-    /**
-     * runStops
-     *
-     * @return json
-     */
-    @RequestMapping(value = "/runStops", method = RequestMethod.POST)
-    @ResponseBody
-    public String runStops(String stopsId) {
-        return "isNeedSource";
-    }
 }

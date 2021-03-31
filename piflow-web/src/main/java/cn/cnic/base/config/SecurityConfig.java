@@ -49,7 +49,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) {
         //Solving the problem of static resources being intercepted
-        web.ignoring().antMatchers("/components/**", "/js/**", "/css/**", "/my_js/*", "/my_js/**", "/my_css/*", "/my_css/**", "/img/**", "/img/*", "/images/**", "/images/*");
+        web.ignoring().antMatchers("/components/**", "/js/**", "/css/**", "/my_js/*", "/my_js/**", "/my_css/*", "/my_css/**", "/img/**", "/img/*", "/images/**", "/images/*"
+        		, "/doc.html", "/webjars/**", "/swagger-resources/**", "/v2/api-docs/**"
+        		);
     }
 
     @Override
