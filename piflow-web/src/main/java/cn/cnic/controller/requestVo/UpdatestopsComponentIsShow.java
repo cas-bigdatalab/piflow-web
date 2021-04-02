@@ -1,4 +1,4 @@
-package cn.cnic.component.stopsComponent.vo;
+package cn.cnic.controller.requestVo;
 
 import java.io.Serializable;
 
@@ -12,8 +12,8 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@ApiModel(description = "Return response data")
-public class StopsComponentManageVo implements Serializable {
+@ApiModel(description = "Update stops is show request data")
+public class UpdatestopsComponentIsShow implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

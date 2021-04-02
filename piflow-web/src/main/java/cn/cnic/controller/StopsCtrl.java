@@ -107,7 +107,7 @@ public class StopsCtrl {
 
     @RequestMapping("/updateStopsById")
     @ResponseBody
-    public String updateStopsById(HttpServletRequest request) {
+    public String updateStopsById(HttpServletRequest request) throws Exception {
         String id = request.getParameter("stopId");
         String isCheckpointStr = request.getParameter("isCheckpoint");
         String username = SessionUserUtil.getCurrentUsername();
@@ -116,7 +116,7 @@ public class StopsCtrl {
 
     @RequestMapping("/updateStopsNameById")
     @ResponseBody
-    public String updateStopsNameById(HttpServletRequest request) {
+    public String updateStopsNameById(HttpServletRequest request) throws Exception {
         String id = request.getParameter("stopId");
         String flowId = request.getParameter("flowId");
         String stopName = request.getParameter("name");

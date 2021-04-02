@@ -4,6 +4,7 @@ package cn.cnic.component.flow.service;
 import java.util.List;
 
 import cn.cnic.component.flow.vo.StopsVo;
+import cn.cnic.controller.requestVo.RunStopsVo;
 import cn.cnic.third.vo.flow.ThirdFlowInfoStopVo;
 
 public interface IStopsService {
@@ -25,7 +26,7 @@ public interface IStopsService {
      * @param stopsVo
      * @return
      */
-    public Integer stopsUpdate(String username, StopsVo stopsVo);
+    public Integer stopsUpdate(String username, StopsVo stopsVo) throws Exception ;
 
     /**
      * Modify the "stops" individual fields returned by the interface
@@ -36,13 +37,14 @@ public interface IStopsService {
     public int updateStopsByFlowIdAndName(ThirdFlowInfoStopVo stopVo);
 
     /**
-     * Modify the "isCheckpoint" field
-     *
-     * @param stopId
-     * @param isCheckpointStr
-     * @return
-     */
-    public String updateStopsCheckpoint(String username, String stopId, String isCheckpointStr);
+	 * Modify the isCheckpoint field
+	 *
+	 * @param stopId
+	 * @param isCheckpointStr
+	 * @return
+	 * @throws Exception 
+	 */
+	public String updateStopsCheckpoint(String username, String stopId, String isCheckpointStr) throws Exception;
 
     /**
      * Modify "stopName" based on id
@@ -50,12 +52,32 @@ public interface IStopsService {
      * @param id
      * @param stopName
      * @return
+     * @throws Exception 
      */
-    public int updateStopsNameById(String username, String id, String stopName);
+	public int updateStopsNameById(String username, String id, String stopName) throws Exception ;
 
+	/**
+	 * getStopByNameAndFlowId
+	 * 
+	 * @param flowId
+	 * @param stopName
+	 * @return
+	 */
     public String getStopByNameAndFlowId(String flowId, String stopName);
 
-    public String updateStopName(String username, boolean isAdmin, String stopId, String flowId, String stopName, String pageId);
+    /**
+	 * updateStopName
+	 * 
+	 * @param username
+	 * @param isAdmin
+	 * @param stopId
+	 * @param flowId
+	 * @param stopName
+	 * @param pageId
+	 * @return
+	 * @throws Exception 
+	 */
+	public String updateStopName(String username, boolean isAdmin, String stopId, String flowId, String stopName, String pageId) throws Exception;
 
     public String getStopsPort(String flowId, String sourceId, String targetId, String pathLineId);
 
@@ -65,8 +87,9 @@ public interface IStopsService {
      * @param dataSourceId
      * @param stopId
      * @return
+     * @throws Exception 
      */
-    public String fillDatasource(String username, String dataSourceId, String stopId);
+	public String fillDatasource(String username, String dataSourceId, String stopId) throws Exception;
 
     /**
      * isNeedSource
@@ -77,5 +100,15 @@ public interface IStopsService {
      * @return
      */
     public String isNeedSource(String username, boolean isAdmin, String stopsId);
+    
+    /**
+     * run stops
+     *
+     * @param username
+     * @param isAdmin
+     * @param runStopsVo
+     * @return
+     */
+    public String runStops(String username, boolean isAdmin, RunStopsVo runStopsVo);
 
 }

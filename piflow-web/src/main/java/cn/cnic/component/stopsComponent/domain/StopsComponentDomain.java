@@ -144,4 +144,8 @@ public class StopsComponentDomain {
 		return stopCount;
 	}
 
+	public StopsComponent getStopsComponentByBundle(String bundle) {
+		return stopsComponentMapper.getStopsComponentByBundle(bundle);
+	}
+	
 }

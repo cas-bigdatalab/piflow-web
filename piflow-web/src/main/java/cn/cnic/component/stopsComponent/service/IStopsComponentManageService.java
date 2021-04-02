@@ -1,6 +1,6 @@
 package cn.cnic.component.stopsComponent.service;
 
-import cn.cnic.component.stopsComponent.vo.StopsComponentManageVo;
+import cn.cnic.controller.requestVo.UpdatestopsComponentIsShow;
 
 public interface IStopsComponentManageService {
 
@@ -13,7 +13,7 @@ public interface IStopsComponentManageService {
      * @return
      * @throws Exception
      */
-    public String updateStopsComponentsIsShow(String username, boolean isAdmin, StopsComponentManageVo[] stopsManageList) throws Exception;
+    public String updateStopsComponentsIsShow(String username, boolean isAdmin, UpdatestopsComponentIsShow[] stopsManageList) throws Exception;
     
     /**
      * updateStopsComponentsIsShow
@@ -24,6 +24,6 @@ public interface IStopsComponentManageService {
      * @return
      * @throws Exception
      */
-    public String updateStopsComponentIsShow(String username, boolean isAdmin, StopsComponentManageVo stopsManage) throws Exception;
+    public String updateStopsComponentIsShow(String username, boolean isAdmin, UpdatestopsComponentIsShow stopsManage) throws Exception;
 
 }

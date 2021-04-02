@@ -14,8 +14,6 @@ import java.util.Map;
 public class StopsMapperProvider {
 
     private String id;
-    private String crtUser;
-    private String crtDttmStr;
     private String lastUpdateDttmStr;
     private String lastUpdateUser;
     private int enableFlag;
@@ -34,48 +32,43 @@ public class StopsMapperProvider {
     private int isCustomized;
     private String flowId;
 
-    private void preventSQLInjectionStops(Stops stops) {
-        if (null != stops && StringUtils.isNotBlank(stops.getLastUpdateUser())) {
-            // Mandatory Field
-            String id = stops.getId();
-            String crtUser = stops.getCrtUser();
-            String lastUpdateUser = stops.getLastUpdateUser();
-            Boolean enableFlag = stops.getEnableFlag();
-            Long version = stops.getVersion();
-            Date crtDttm = stops.getCrtDttm();
-            Date lastUpdateDttm = stops.getLastUpdateDttm();
-            this.id = SqlUtils.preventSQLInjection(id);
-            this.crtUser = (null != crtUser ? SqlUtils.preventSQLInjection(crtUser) : null);
-            this.lastUpdateUser = SqlUtils.preventSQLInjection(lastUpdateUser);
-            this.enableFlag = ((null != enableFlag && enableFlag) ? 1 : 0);
-            this.version = (null != version ? version : 0L);
-            String crtDttmStr = DateUtils.dateTimesToStr(crtDttm);
-            String lastUpdateDttmStr = DateUtils.dateTimesToStr(null != lastUpdateDttm ? lastUpdateDttm : new Date());
-            this.crtDttmStr = (null != crtDttm ? SqlUtils.preventSQLInjection(crtDttmStr) : null);
-            this.lastUpdateDttmStr = SqlUtils.preventSQLInjection(lastUpdateDttmStr);
-
-            // Selection field
-            this.bundel = SqlUtils.preventSQLInjection(stops.getBundel());
-            this.description = SqlUtils.preventSQLInjection(stops.getDescription());
-            this.groups = SqlUtils.preventSQLInjection(stops.getGroups());
-            this.name = SqlUtils.preventSQLInjection(stops.getName());
-            this.inports = SqlUtils.preventSQLInjection(stops.getInports());
-            this.inPortType = SqlUtils.preventSQLInjection(null != stops.getInPortType() ? stops.getInPortType().name() : null);
-            this.outports = SqlUtils.preventSQLInjection(stops.getOutports());
-            this.outPortType = SqlUtils.preventSQLInjection(null != stops.getOutPortType() ? stops.getOutPortType().name() : null);
-            this.owner = SqlUtils.preventSQLInjection(stops.getOwner());
-            this.pageId = SqlUtils.preventSQLInjection(stops.getPageId());
-            this.checkpoint = ((null != stops.getIsCheckpoint() && stops.getIsCheckpoint()) ? 1 : 0);
-            this.isCustomized = ((null != stops.getIsCustomized() && stops.getIsCustomized()) ? 1 : 0);
-            String flowIdStr = (null != stops.getFlow() ? stops.getFlow().getId() : null);
-            this.flowId = (null != flowIdStr ? SqlUtils.preventSQLInjection(flowIdStr) : null);
+    private boolean preventSQLInjectionStops(Stops stops) {
+        if (null == stops || StringUtils.isBlank(stops.getLastUpdateUser())) {
+        	return false;
         }
+        // Mandatory Field
+        String id = stops.getId();
+        String lastUpdateUser = stops.getLastUpdateUser();
+        Boolean enableFlag = stops.getEnableFlag();
+        Long version = stops.getVersion();
+        Date lastUpdateDttm = stops.getLastUpdateDttm();
+        this.id = SqlUtils.preventSQLInjection(id);
+        this.lastUpdateUser = SqlUtils.preventSQLInjection(lastUpdateUser);
+        this.enableFlag = ((null != enableFlag && enableFlag) ? 1 : 0);
+        this.version = (null != version ? version : 0L);
+        String lastUpdateDttmStr = DateUtils.dateTimesToStr(null != lastUpdateDttm ? lastUpdateDttm : new Date());
+        this.lastUpdateDttmStr = SqlUtils.preventSQLInjection(lastUpdateDttmStr);
+
+        // Selection field
+        this.bundel = SqlUtils.preventSQLInjection(stops.getBundel());
+        this.description = SqlUtils.preventSQLInjection(stops.getDescription());
+        this.groups = SqlUtils.preventSQLInjection(stops.getGroups());
+        this.name = SqlUtils.preventSQLInjection(stops.getName());
+        this.inports = SqlUtils.preventSQLInjection(stops.getInports());
+        this.inPortType = SqlUtils.preventSQLInjection(null != stops.getInPortType() ? stops.getInPortType().name() : null);
+        this.outports = SqlUtils.preventSQLInjection(stops.getOutports());
+        this.outPortType = SqlUtils.preventSQLInjection(null != stops.getOutPortType() ? stops.getOutPortType().name() : null);
+        this.owner = SqlUtils.preventSQLInjection(stops.getOwner());
+        this.pageId = SqlUtils.preventSQLInjection(stops.getPageId());
+        this.checkpoint = ((null != stops.getIsCheckpoint() && stops.getIsCheckpoint()) ? 1 : 0);
+        this.isCustomized = ((null != stops.getIsCustomized() && stops.getIsCustomized()) ? 1 : 0);
+        String flowIdStr = (null != stops.getFlow() ? stops.getFlow().getId() : null);
+        this.flowId = (null != flowIdStr ? SqlUtils.preventSQLInjection(flowIdStr) : null);
+        return true;
     }
 
     private void reset() {
         this.id = null;
-        this.crtUser = null;
-        this.crtDttmStr = null;
         this.lastUpdateDttmStr = null;
         this.lastUpdateUser = null;
         this.enableFlag = 1;
@@ -102,44 +95,34 @@ public class StopsMapperProvider {
      * @return
      */
     public String addStops(Stops stops) {
-        String sqlStr = "";
-        this.preventSQLInjectionStops(stops);
-        if (null != stops) {
-            SQL sql = new SQL();
-
-            sql.INSERT_INTO("flow_stops");
-
-            //Process the required fields first
-            if (null == crtDttmStr) {
-                String crtDttm = DateUtils.dateTimesToStr(new Date());
-                crtDttmStr = SqlUtils.preventSQLInjection(crtDttm);
-            }
-            if (StringUtils.isBlank(crtUser)) {
-                crtUser = SqlUtils.preventSQLInjection("-1");
-            }
-            sql.VALUES("id", id);
-            sql.VALUES("crt_dttm", crtDttmStr);
-            sql.VALUES("crt_user", crtUser);
-            sql.VALUES("last_update_dttm", lastUpdateDttmStr);
-            sql.VALUES("last_update_user", lastUpdateUser);
-            sql.VALUES("version", version + "");
-            sql.VALUES("enable_flag", enableFlag + "");
-
-            // handle other fields
-            sql.VALUES("bundel", bundel);
-            sql.VALUES("description", description);
-            sql.VALUES("groups", groups);
-            sql.VALUES("name", name);
-            sql.VALUES("inports", inports);
-            sql.VALUES("in_port_type", inPortType);
-            sql.VALUES("outports", outports);
-            sql.VALUES("out_port_type", outPortType);
-            sql.VALUES("owner", owner);
-            sql.VALUES("page_id", pageId);
-            sql.VALUES("is_checkpoint", checkpoint + "");
-            sql.VALUES("is_customized", isCustomized + "");
-            sql.VALUES("fk_flow_id", flowId);
-            sqlStr = sql.toString();
+        String sqlStr = "SELECT 0";
+        boolean flag = this.preventSQLInjectionStops(stops);
+        if (flag) {
+        	StringBuffer stringBuffer = new StringBuffer();
+			stringBuffer.append("INSERT INTO ");
+			stringBuffer.append("flow_stops ");
+			stringBuffer.append("(");
+			stringBuffer.append(SqlUtils.baseFieldName() + ",");
+			stringBuffer.append("bundel,description,groups,name,inports,in_port_type,outports,out_port_type,owner,page_id,is_checkpoint,is_customized,fk_flow_id");
+			stringBuffer.append(") ");
+			stringBuffer.append("VALUES");
+			stringBuffer.append("(");
+			stringBuffer.append(SqlUtils.baseFieldValues(stops) + ",");
+			stringBuffer.append(this.bundel + ",");
+			stringBuffer.append(this.description + ",");
+			stringBuffer.append(this.groups + ",");
+			stringBuffer.append(this.name + ",");
+			stringBuffer.append(this.inports + ",");
+			stringBuffer.append(this.inPortType + ",");
+			stringBuffer.append(this.outports + ",");
+			stringBuffer.append(this.outPortType + ",");
+			stringBuffer.append(this.owner + ",");
+			stringBuffer.append(this.pageId + ",");
+			stringBuffer.append(this.checkpoint + ",");
+			stringBuffer.append(this.isCustomized + ",");
+			stringBuffer.append(this.flowId);
+			stringBuffer.append(")");
+			sqlStr = stringBuffer.toString();
         }
         this.reset();
         return sqlStr;
@@ -156,23 +139,10 @@ public class StopsMapperProvider {
         List<Stops> stopsList = (List<Stops>) map.get("stopsList");
         StringBuffer sql = new StringBuffer();
         if (null != stopsList && stopsList.size() > 0) {
-            sql.append("insert into ");
-            sql.append("flow_stops ");
-            sql.append("(");
-            if (null == crtDttmStr) {
-                String crtDttm = DateUtils.dateTimesToStr(new Date());
-                crtDttmStr = SqlUtils.preventSQLInjection(crtDttm);
-            }
-            if (StringUtils.isBlank(crtUser)) {
-                crtUser = SqlUtils.preventSQLInjection("-1");
-            }
-            sql.append("id,");
-            sql.append("crt_dttm,");
-            sql.append("crt_user,");
-            sql.append("last_update_dttm,");
-            sql.append("last_update_user,");
-            sql.append("version,");
-            sql.append("enable_flag,");
+        	sql.append("INSERT INTO ");
+        	sql.append("flow_stops ");
+        	sql.append("(");
+        	sql.append(SqlUtils.baseFieldName() + ",");            
             sql.append("bundel,");
             sql.append("description,");
             sql.append("groups,");
@@ -187,40 +157,33 @@ public class StopsMapperProvider {
             sql.append("is_customized,");
             sql.append("fk_flow_id");
             sql.append(") ");
-            sql.append("values");
+            sql.append("VALUES");
             int i = 0;
             for (Stops stops : stopsList) {
                 i++;
-                this.preventSQLInjectionStops(stops);
-                sql.append("(");
-
-                //Process the required fields first
-                sql.append(id + ",");
-                sql.append(crtDttmStr + ",");
-                sql.append(crtUser + ",");
-                sql.append(lastUpdateDttmStr + ",");
-                sql.append(lastUpdateUser + ",");
-                sql.append(version + ",");
-                sql.append(enableFlag + ",");
-
-                // handle other fields
-                sql.append(bundel + ",");
-                sql.append(description + ",");
-                sql.append(groups + ",");
-                sql.append(name + ",");
-                sql.append(inports + ",");
-                sql.append(inPortType + ",");
-                sql.append(outports + ",");
-                sql.append(outPortType + ",");
-                sql.append(owner + ",");
-                sql.append(pageId + ",");
-                sql.append(checkpoint + ",");
-                sql.append(isCustomized + ",");
-                sql.append(flowId);
-                if (i != stopsList.size()) {
-                    sql.append("),");
-                } else {
-                    sql.append(")");
+                boolean flag = this.preventSQLInjectionStops(stops);
+                if (flag) {
+                	sql.append("(");
+                	sql.append(SqlUtils.baseFieldValues(stops) + ",");
+                    // handle other fields
+                    sql.append(bundel + ",");
+                    sql.append(description + ",");
+                    sql.append(groups + ",");
+                    sql.append(name + ",");
+                    sql.append(inports + ",");
+                    sql.append(inPortType + ",");
+                    sql.append(outports + ",");
+                    sql.append(outPortType + ",");
+                    sql.append(owner + ",");
+                    sql.append(pageId + ",");
+                    sql.append(checkpoint + ",");
+                    sql.append(isCustomized + ",");
+                    sql.append(flowId);
+                    if (i != stopsList.size()) {
+                        sql.append("),");
+                    } else {
+                        sql.append(")");
+                    }
                 }
                 this.reset();
             }
@@ -237,8 +200,8 @@ public class StopsMapperProvider {
      */
     public String updateStops(Stops stops) {
         String sqlStr = "";
-        this.preventSQLInjectionStops(stops);
-        if (null != stops) {
+        boolean flag = this.preventSQLInjectionStops(stops);
+        if (flag) {
             SQL sql = new SQL();
 
             sql.UPDATE("flow_stops");
@@ -276,12 +239,7 @@ public class StopsMapperProvider {
      * @return
      */
     public String getStopsList() {
-        String sqlStr = "";
-        SQL sql = new SQL();
-        sql.SELECT("*");
-        sql.FROM("flow_stops");
-        sql.WHERE("enable_flag = 1");
-        sqlStr = sql.toString();
+        String sqlStr = "SELECT * FROM flow_stops WHERE enable_flag=1";
         return sqlStr;
     }
 
@@ -392,11 +350,11 @@ public class StopsMapperProvider {
         }
         SQL sql = new SQL();
         sql.UPDATE("flow_stops");
-        sql.SET("enable_flag = 0");
-        sql.SET("last_update_user = " + SqlUtils.preventSQLInjection(username));
-        sql.SET("last_update_dttm = " + SqlUtils.preventSQLInjection(DateUtils.dateTimesToStr(new Date())));
-        sql.WHERE("enable_flag = 1");
-        sql.WHERE("fk_flow_id = " + SqlUtils.preventSQLInjection(id));
+        sql.SET("enable_flag=0");
+        sql.SET("last_update_user=" + SqlUtils.preventSQLInjection(username));
+        sql.SET("last_update_dttm=" + SqlUtils.preventSQLInjection(DateUtils.dateTimesToStr(new Date())));
+        sql.WHERE("enable_flag = 0");
+        sql.WHERE("fk_flow_id=" + SqlUtils.preventSQLInjection(id));
 
         return sql.toString();
     }

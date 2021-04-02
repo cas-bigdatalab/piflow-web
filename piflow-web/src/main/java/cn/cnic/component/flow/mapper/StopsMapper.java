@@ -116,4 +116,18 @@ public interface StopsMapper {
     @Select("select id from flow_stops where name = #{stopName} and fk_flow_id =#{flowId} and enable_flag = 1 ")
     public String getStopByNameAndFlowId(@Param(value = "flowId") String flowId, @Param(value = "stopName") String stopName);
 
+    @Select("select MAX(page_id+0) from flow_stops where enable_flag=1 and fk_flow_id=#{flowId} ")
+    public Integer getMaxStopPageIdByFlowId(String flowId);
+
+    @Select("SELECT fs.name from flow_stops fs WHERE fs.enable_flag=1 and fs.fk_flow_id =#{flowId}")
+    public String[] getStopNamesByFlowId(String flowId);
+
+    @Select("select * from flow_stops where enable_flag=1 and fk_flow_id=#{fid} and page_id=#{stopPageId}  limit 1")
+    @Results({@Result(id = true, column = "id", property = "id"),
+            @Result(column = "id", property = "properties", many = @Many(select = "cn.cnic.component.flow.mapper.PropertyMapper.getPropertyListByStopsId", fetchType = FetchType.LAZY)),
+            @Result(column = "fk_flow_id", property = "flow", many = @Many(select = "cn.cnic.component.flow.mapper.FlowMapper.getFlowById", fetchType = FetchType.LAZY))
+
+    })
+    public Stops getStopsByPageId(String fid, String stopPageId);
+
 }

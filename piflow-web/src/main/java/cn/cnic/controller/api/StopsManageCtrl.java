@@ -13,9 +13,11 @@ import cn.cnic.base.util.SessionUserUtil;
 import cn.cnic.component.flow.service.IStopsService;
 import cn.cnic.component.stopsComponent.service.IStopGroupService;
 import cn.cnic.component.stopsComponent.service.IStopsComponentManageService;
-import cn.cnic.component.stopsComponent.vo.StopsComponentManageVo;
+import cn.cnic.controller.requestVo.RunStopsVo;
+import cn.cnic.controller.requestVo.UpdatestopsComponentIsShow;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 @RestController
 @Api(value = "stops api")
@@ -49,13 +51,14 @@ public class StopsManageCtrl {
     /**
      * updatestopsComponentIsShow
      * 
+     * @param stopsManage
      * @return
-     * @throws Exception 
+     * @throws Exception
      */
     @ApiOperation("StopsComponent Manage")
     @RequestMapping(value = "/updatestopsComponentIsShow", method = RequestMethod.POST)
     @ResponseBody
-    public String updatestopsComponentIsShow(StopsComponentManageVo stopsManage) throws Exception {
+    public String updatestopsComponentIsShow(@ApiParam(value = "stopsManage", required = true)UpdatestopsComponentIsShow stopsManage) throws Exception {
     	String username = SessionUserUtil.getCurrentUsername();
         Boolean isAdmin = SessionUserUtil.isAdmin();
     	return stopsComponentManageServiceImpl.updateStopsComponentIsShow(username, isAdmin,stopsManage);
@@ -63,12 +66,14 @@ public class StopsManageCtrl {
 
     /**
      * isNeedSource
-     *
-     * @return json
+     * 
+     * @param stopsId
+     * @return
      */
+    @ApiOperation("StopsComponent is neeed source data")
     @RequestMapping(value = "/isNeedSource", method = RequestMethod.POST)
     @ResponseBody
-    public String isNeedSource(String stopsId) {
+    public String isNeedSource(@ApiParam(value = "stopsId", required = true)String stopsId) {
         String username = SessionUserUtil.getCurrentUsername();
         Boolean isAdmin = SessionUserUtil.isAdmin();
         return stopsServiceImpl.isNeedSource(username, isAdmin, stopsId);
@@ -76,12 +81,14 @@ public class StopsManageCtrl {
 
     /**
      * runStops
-     *
-     * @return json
+     * 
+     * @param stopsId
+     * @param testDataId
+     * @return
      */
     @RequestMapping(value = "/runStops", method = RequestMethod.POST)
     @ResponseBody
-    public String runStops(String stopsId) {
+    public String runStops(@ApiParam(value = "runStopsVo", required = true)RunStopsVo runStopsVo) {
         return "isNeedSource";
     }
 }
