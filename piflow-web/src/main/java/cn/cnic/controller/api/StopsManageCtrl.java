@@ -85,10 +85,13 @@ public class StopsManageCtrl {
      * @param stopsId
      * @param testDataId
      * @return
+     * @throws Exception 
      */
     @RequestMapping(value = "/runStops", method = RequestMethod.POST)
     @ResponseBody
-    public String runStops(@ApiParam(value = "runStopsVo", required = true)RunStopsVo runStopsVo) {
-        return "isNeedSource";
+    public String runStops(@ApiParam(value = "runStopsVo", required = true)RunStopsVo runStopsVo) throws Exception {
+    	String username = SessionUserUtil.getCurrentUsername();
+        Boolean isAdmin = SessionUserUtil.isAdmin();
+        return stopsServiceImpl.runStops(username, isAdmin, runStopsVo);
     }
 }

@@ -56,5 +56,7 @@ public interface IFlow {
     public ThirdFlowInfoVo getFlowInfo(String appid);
 
     public void getProcessInfoAndSave(String appid);
+    
+    public String getTestDataPathUrl();
 
 }

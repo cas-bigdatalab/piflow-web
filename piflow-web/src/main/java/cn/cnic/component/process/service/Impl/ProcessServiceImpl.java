@@ -10,6 +10,7 @@ import cn.cnic.component.flow.jpa.domain.FlowDomain;
 import cn.cnic.component.mxGraph.utils.MxCellUtils;
 import cn.cnic.component.mxGraph.vo.MxCellVo;
 import cn.cnic.component.mxGraph.vo.MxGraphModelVo;
+import cn.cnic.component.process.domain.ProcessDomainU;
 import cn.cnic.component.process.entity.Process;
 import cn.cnic.component.process.entity.ProcessGroup;
 import cn.cnic.component.process.entity.ProcessStop;
@@ -17,7 +18,6 @@ import cn.cnic.component.process.jpa.domain.ProcessDomain;
 import cn.cnic.component.process.mapper.ProcessMapper;
 import cn.cnic.component.process.mapper.ProcessStopMapper;
 import cn.cnic.component.process.service.IProcessService;
-import cn.cnic.component.process.transaction.ProcessTransaction;
 import cn.cnic.component.process.utils.ProcessUtils;
 import cn.cnic.component.process.vo.DebugDataRequest;
 import cn.cnic.component.process.vo.DebugDataResponse;
@@ -51,7 +51,7 @@ public class ProcessServiceImpl implements IProcessService {
     private ProcessMapper processMapper;
 
     @Resource
-    private ProcessTransaction processTransaction;
+    private ProcessDomainU processDomainU;
 
     @Resource
     private ProcessStopMapper processStopMapper;
@@ -241,26 +241,28 @@ public class ProcessServiceImpl implements IProcessService {
                             processById.setName(thirdFlowInfoVo.getName());
                             processById.setStartTime(DateUtils.strCstToDate(thirdFlowInfoVo.getStartTime()));
                             processById.setEndTime(DateUtils.strCstToDate(thirdFlowInfoVo.getEndTime()));
-                            processTransaction.updateProcess(processById);
+                            processDomainU.updateProcess(processById);
                             // Modify the stops information
                             List<ThirdFlowInfoStopsVo> stops = thirdFlowInfoVo.getStops();
                             if (null != stops && stops.size() > 0) {
                                 List<ProcessStop> processStopListNew = new ArrayList<>();
                                 processVo.setId(processById.getId());
                                 for (ThirdFlowInfoStopsVo thirdFlowInfoStopsVo : stops) {
-                                    if (null != thirdFlowInfoStopsVo) {
-                                        ThirdFlowInfoStopVo thirdFlowInfoStopVo = thirdFlowInfoStopsVo.getStop();
-                                        if (null != thirdFlowInfoStopVo) {
-                                            ProcessStop processStopByNameAndPid = processStopMapper.getProcessStopByNameAndPid(processById.getId(), thirdFlowInfoStopVo.getName());
-                                            processStopByNameAndPid.setName(thirdFlowInfoStopVo.getName());
-                                            processStopByNameAndPid.setState(StopState.selectGender(thirdFlowInfoStopVo.getState()));
-                                            processStopByNameAndPid.setStartTime(DateUtils.strCstToDate(thirdFlowInfoStopVo.getStartTime()));
-                                            processStopByNameAndPid.setEndTime(DateUtils.strCstToDate(thirdFlowInfoStopVo.getEndTime()));
-                                            int updateProcessStop = processStopMapper.updateProcessStop(processStopByNameAndPid);
-                                            if (updateProcessStop > 0) {
-                                                processStopListNew.add(processStopByNameAndPid);
-                                            }
-                                        }
+                                    if (null == thirdFlowInfoStopsVo) {
+                                    	continue;
+                                    }
+                                    ThirdFlowInfoStopVo thirdFlowInfoStopVo = thirdFlowInfoStopsVo.getStop();
+                                    if (null == thirdFlowInfoStopVo) {
+                                    	continue;
+                                    }
+                                    ProcessStop processStopByNameAndPid = processStopMapper.getProcessStopByNameAndPid(processById.getId(), thirdFlowInfoStopVo.getName());
+                                    processStopByNameAndPid.setName(thirdFlowInfoStopVo.getName());
+                                    processStopByNameAndPid.setState(StopState.selectGender(thirdFlowInfoStopVo.getState()));
+                                    processStopByNameAndPid.setStartTime(DateUtils.strCstToDate(thirdFlowInfoStopVo.getStartTime()));
+                                    processStopByNameAndPid.setEndTime(DateUtils.strCstToDate(thirdFlowInfoStopVo.getEndTime()));
+                                    int updateProcessStop = processStopMapper.updateProcessStop(processStopByNameAndPid);
+                                    if (updateProcessStop > 0) {
+                                        processStopListNew.add(processStopByNameAndPid);
                                     }
                                 }
                                 processById.setProcessStopList(processStopListNew);
@@ -355,7 +357,7 @@ public class ProcessServiceImpl implements IProcessService {
                                     process.setProgress(progressNums + "");
                                     process.setState(ProcessState.selectGender(flowProgress.getState()));
                                     process.setName(flowProgress.getName());
-                                    processTransaction.updateProcess(process);
+                                    processDomainU.updateProcess(process);
                                 }
                             }
                             processVo = ProcessUtils.processPoToVo(process);
@@ -433,7 +435,7 @@ public class ProcessServiceImpl implements IProcessService {
         processById.setEndTime(processVo.getEndTime());
         processById.setProcessId(processVo.getProcessId());
         processById.setName(processVo.getName());
-        return processTransaction.updateProcess(processById);
+        return processDomainU.updateProcess(processById);
     }
 
     /**

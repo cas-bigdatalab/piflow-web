@@ -109,7 +109,7 @@ public interface TestDataSchemaValuesMapper {
 	 * @return
 	 */
 	@SelectProvider(type = TestDataSchemaValuesMapperProvider.class, method = "getTestDataSchemaValuesCustomList")
-	public List<LinkedHashMap<String, String>> getTestDataSchemaValuesCustomList(@Param("isAdmin") boolean isAdmin, @Param("username") String username, @Param("testDataId") String testDataId, @Param("fieldNameList") List<LinkedHashMap<String, String>> map);
+	public List<LinkedHashMap<String, Object>> getTestDataSchemaValuesCustomList(@Param("isAdmin") boolean isAdmin, @Param("username") String username, @Param("testDataId") String testDataId, @Param("fieldNameList") List<LinkedHashMap<String, Object>> map);
 
 	/**
 	 * get testDataSchemaValuesId custom list
@@ -120,6 +120,6 @@ public interface TestDataSchemaValuesMapper {
 	 * @return
 	 */
 	@SelectProvider(type = TestDataSchemaValuesMapperProvider.class, method = "getTestDataSchemaValuesCustomListId")
-	public List<LinkedHashMap<String, String>> getTestDataSchemaValuesCustomListId(@Param("isAdmin") boolean isAdmin, @Param("username") String username, @Param("testDataId") String testDataId, @Param("fieldNameList") List<LinkedHashMap<String, String>> map);
+	public List<LinkedHashMap<String, Object>> getTestDataSchemaValuesCustomListId(@Param("isAdmin") boolean isAdmin, @Param("username") String username, @Param("testDataId") String testDataId, @Param("fieldNameList") List<LinkedHashMap<String, Object>> map);
 
 }

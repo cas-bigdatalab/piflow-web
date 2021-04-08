@@ -313,13 +313,13 @@ public class TestDataServiceImpl implements ITestDataService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("testDataId is error");
         }
         // find title
-        List<LinkedHashMap<String, String>> testDataSchemaIdAndNameListByTestDataId = testDataDomain.getTestDataSchemaIdAndNameListByTestDataId(testDataId);
+        List<LinkedHashMap<String, Object>> testDataSchemaIdAndNameListByTestDataId = testDataDomain.getTestDataSchemaIdAndNameListByTestDataId(testDataId);
         // 
-        Page<LinkedHashMap<String, String>> page = PageHelper.startPage(offset, limit);
+        Page<LinkedHashMap<String, Object>> page = PageHelper.startPage(offset, limit);
         testDataDomain.getTestDataSchemaValuesCustomList(isAdmin, username, testDataId, testDataSchemaIdAndNameListByTestDataId);
         Map<String, Object> rtnMap = PageHelperUtils.setLayTableParam(page, null);
         // find id
-        Page<LinkedHashMap<String, String>> page1 = PageHelper.startPage(offset, limit);
+        Page<LinkedHashMap<String, Object>> page1 = PageHelper.startPage(offset, limit);
         testDataDomain.getTestDataSchemaValuesCustomListId(isAdmin, username, testDataId, testDataSchemaIdAndNameListByTestDataId);
         rtnMap = PageHelperUtils.setCustomDataKey(page1, "data_id", rtnMap);
         rtnMap.put(ReturnMapUtils.KEY_CODE, ReturnMapUtils.SUCCEEDED_CODE);
@@ -343,9 +343,9 @@ public class TestDataServiceImpl implements ITestDataService {
         if (StringUtils.isBlank(testDataId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("testDataId is error");
         }
-        List<LinkedHashMap<String, String>> testDataSchemaIdAndNameListByTestDataId = testDataDomain.getTestDataSchemaIdAndNameListByTestDataId(testDataId);
-        List<LinkedHashMap<String, String>> testDataSchemaValuesCustomList_id = testDataDomain.getTestDataSchemaValuesCustomListId(isAdmin, username, testDataId, testDataSchemaIdAndNameListByTestDataId);
-        List<LinkedHashMap<String, String>> testDataSchemaValuesCustomList = testDataDomain.getTestDataSchemaValuesCustomList(isAdmin, username, testDataId, testDataSchemaIdAndNameListByTestDataId);
+        List<LinkedHashMap<String, Object>> testDataSchemaIdAndNameListByTestDataId = testDataDomain.getTestDataSchemaIdAndNameListByTestDataId(testDataId);
+        List<LinkedHashMap<String, Object>> testDataSchemaValuesCustomList_id = testDataDomain.getTestDataSchemaValuesCustomListId(isAdmin, username, testDataId, testDataSchemaIdAndNameListByTestDataId);
+        List<LinkedHashMap<String, Object>> testDataSchemaValuesCustomList = testDataDomain.getTestDataSchemaValuesCustomList(isAdmin, username, testDataId, testDataSchemaIdAndNameListByTestDataId);
         Map<String, Object> setSucceededMsg = ReturnMapUtils.setSucceededMsg(ReturnMapUtils.SUCCEEDED_MSG);
         setSucceededMsg.put("list_id", testDataSchemaValuesCustomList_id);
         setSucceededMsg.put("list", testDataSchemaValuesCustomList);

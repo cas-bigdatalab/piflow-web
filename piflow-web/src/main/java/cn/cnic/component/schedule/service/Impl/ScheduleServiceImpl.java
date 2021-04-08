@@ -9,10 +9,10 @@ import cn.cnic.component.flow.entity.Flow;
 import cn.cnic.component.flow.entity.FlowGroup;
 import cn.cnic.component.flow.mapper.FlowGroupMapper;
 import cn.cnic.component.flow.mapper.FlowMapper;
+import cn.cnic.component.process.domain.ProcessGroupDomainU;
 import cn.cnic.component.process.entity.Process;
 import cn.cnic.component.process.entity.ProcessGroup;
-import cn.cnic.component.process.transaction.ProcessGroupTransaction;
-import cn.cnic.component.process.transaction.ProcessTransaction;
+import cn.cnic.component.process.domain.ProcessDomainU;
 import cn.cnic.component.process.utils.ProcessGroupUtils;
 import cn.cnic.component.process.utils.ProcessUtils;
 import cn.cnic.component.schedule.entity.Schedule;
@@ -49,10 +49,10 @@ public class ScheduleServiceImpl implements IScheduleService {
     private FlowGroupMapper flowGroupMapper;
 
     @Resource
-    private ProcessTransaction processTransaction;
+    private ProcessDomainU processDomainU;
 
     @Resource
-    private ProcessGroupTransaction processGroupTransaction;
+    private ProcessGroupDomainU processGroupDomainU;
 
     @Resource
     private ISchedule scheduleImpl;
@@ -228,7 +228,7 @@ public class ScheduleServiceImpl implements IScheduleService {
                 if (null == process) {
                     return ReturnMapUtils.setFailedMsgRtnJsonStr("failed, process convert failed");
                 }
-                int addProcess_i = processTransaction.addProcess(process);
+                int addProcess_i = processDomainU.addProcess(process);
                 if (addProcess_i <= 0) {
                     return ReturnMapUtils.setFailedMsgRtnJsonStr("failed, process convert failed");
                 }
@@ -245,7 +245,7 @@ public class ScheduleServiceImpl implements IScheduleService {
                 if (null == processGroup) {
                     return ReturnMapUtils.setFailedMsgRtnJsonStr("failed, process convert failed");
                 }
-                int addProcessGroup_i = processGroupTransaction.addProcessGroup(processGroup);
+                int addProcessGroup_i = processGroupDomainU.addProcessGroup(processGroup);
                 if (addProcessGroup_i <= 0) {
                     return ReturnMapUtils.setFailedMsgRtnJsonStr("failed, processGroup convert failed");
                 }

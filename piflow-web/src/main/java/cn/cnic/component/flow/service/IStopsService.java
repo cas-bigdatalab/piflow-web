@@ -108,7 +108,8 @@ public interface IStopsService {
      * @param isAdmin
      * @param runStopsVo
      * @return
+     * @throws Exception 
      */
-    public String runStops(String username, boolean isAdmin, RunStopsVo runStopsVo);
+    public String runStops(String username, boolean isAdmin, RunStopsVo runStopsVo) throws Exception;
 
 }

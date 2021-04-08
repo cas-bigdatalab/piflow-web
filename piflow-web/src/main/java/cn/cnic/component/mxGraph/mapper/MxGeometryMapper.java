@@ -48,7 +48,7 @@ public interface MxGeometryMapper {
      * @param flowId
      * @return
      */
-    @SelectProvider(type = MxGeometryMapperProvider.class, method = "getMxGeometryByFlowId")
+    @SelectProvider(type = MxGeometryMapperProvider.class, method = "getMxGeometryByMxCellId")
     @Results({
             @Result(column = "mx_relative", property = "relative"),
             @Result(column = "mx_as", property = "as"),
@@ -57,7 +57,7 @@ public interface MxGeometryMapper {
             @Result(column = "mx_width", property = "width"),
             @Result(column = "mx_height", property = "height")
     })
-    public MxGeometry getMxGeometryByFlowId(String flowId);
+    public MxGeometry getMxGeometryByMxCellId(String mxCellId);
 
 
     @UpdateProvider(type = MxGeometryMapperProvider.class, method = "updateEnableFlagById")

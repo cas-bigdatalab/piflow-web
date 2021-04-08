@@ -32,6 +32,7 @@ public class MxCellUtils {
         if (null == mxCell) {
             return mxCellNewNoId(username);
         }
+        mxCell.setId(null);
         // basic properties (required when creating)
         mxCell.setCrtDttm(new Date());
         mxCell.setCrtUser(username);
@@ -40,6 +41,11 @@ public class MxCellUtils {
         mxCell.setLastUpdateUser(username);
         mxCell.setLastUpdateDttm(new Date());
         mxCell.setVersion(0L);
+        MxGeometry mxGeometry = mxCell.getMxGeometry();
+        if (null != mxGeometry) {
+        	mxGeometry.setId(null);
+        	mxCell.setMxGeometry(mxGeometry);
+        }
         return mxCell;
     }
 
@@ -113,6 +119,42 @@ public class MxCellUtils {
         defaultFlowMxCellMxGeometry.setWidth("66");
         defaultFlowMxCellMxGeometry.setX("100");
         defaultFlowMxCellMxGeometry.setY("100");
+        defaultFlowMxCellMxGeometry.setMxCell(defaultFlowMxCell);
+        defaultFlowMxCell.setMxGeometry(defaultFlowMxCellMxGeometry);
+        return defaultFlowMxCell;
+    }
+    
+    public static MxCell AddMxCellNode(String username, String pageId, String name, String imgUrl) {
+    	if (StringUtils.isBlank(imgUrl)) {
+    		imgUrl = "/img/flow.png";
+    	}
+        MxCell defaultFlowMxCell = mxCellNewNoId(username);
+        defaultFlowMxCell.setPageId(pageId);
+        defaultFlowMxCell.setParent("1");
+        defaultFlowMxCell.setStyle("image;html=1;labelBackgroundColor=#ffffff00;image=/piflow-web"+ imgUrl);
+        defaultFlowMxCell.setValue(name);
+        defaultFlowMxCell.setVertex("1");
+        MxGeometry defaultFlowMxCellMxGeometry = MxGeometryUtils.mxGeometryNewNoId(username);
+        defaultFlowMxCellMxGeometry.setAs("geometry");
+        defaultFlowMxCellMxGeometry.setHeight("66");
+        defaultFlowMxCellMxGeometry.setWidth("66");
+        defaultFlowMxCellMxGeometry.setX("100");
+        defaultFlowMxCellMxGeometry.setY("100");
+        defaultFlowMxCellMxGeometry.setMxCell(defaultFlowMxCell);
+        defaultFlowMxCell.setMxGeometry(defaultFlowMxCellMxGeometry);
+        return defaultFlowMxCell;
+    }
+    
+    
+    public static MxCell AddMxCellLine(String username, String pageId) {
+        MxCell defaultFlowMxCell = mxCellNewNoId(username);
+        defaultFlowMxCell.setPageId(pageId);
+        defaultFlowMxCell.setEdge("1");
+        defaultFlowMxCell.setParent("1");
+        defaultFlowMxCell.setStyle("edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;");
+        MxGeometry defaultFlowMxCellMxGeometry = MxGeometryUtils.mxGeometryNewNoId(username);
+        defaultFlowMxCellMxGeometry.setAs("geometry");
+        defaultFlowMxCellMxGeometry.setRelative("1");
         defaultFlowMxCellMxGeometry.setMxCell(defaultFlowMxCell);
         defaultFlowMxCell.setMxGeometry(defaultFlowMxCellMxGeometry);
         return defaultFlowMxCell;

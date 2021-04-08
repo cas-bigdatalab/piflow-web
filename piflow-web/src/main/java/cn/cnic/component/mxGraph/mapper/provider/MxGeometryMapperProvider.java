@@ -192,13 +192,13 @@ public class MxGeometryMapperProvider {
      * @param flowId
      * @return
      */
-    public String getMxGeometryByFlowId(String flowId) {
+    public String getMxGeometryByMxCellId(String mxCellId) {
         String sqlStr = "";
-        if (StringUtils.isNotBlank(flowId)) {
+        if (StringUtils.isNotBlank(mxCellId)) {
             SQL sql = new SQL();
             sql.SELECT("*");
             sql.FROM("mx_geometry");
-            sql.WHERE("fk_mx_cell_id = " + SqlUtils.preventSQLInjection(flowId));
+            sql.WHERE("fk_mx_cell_id = " + SqlUtils.preventSQLInjection(mxCellId));
             sql.WHERE("enable_flag = 1");
             sqlStr = sql.toString();
         }

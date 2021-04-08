@@ -20,7 +20,7 @@ import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.component.process.entity.Process;
 import cn.cnic.component.process.jpa.domain.ProcessDomain;
 import cn.cnic.component.process.mapper.ProcessMapper;
-import cn.cnic.component.process.transaction.ProcessTransaction;
+import cn.cnic.component.process.domain.ProcessDomainU;
 import cn.cnic.component.process.utils.ProcessUtils;
 import cn.cnic.third.service.IFlow;
 import cn.cnic.third.utils.ThirdFlowInfoVoUtils;
@@ -41,7 +41,7 @@ public class FlowImpl implements IFlow {
     private ProcessDomain processDomain;
 
     @Resource
-    private ProcessTransaction processTransaction;
+    private ProcessDomainU processDomainU;
 
     /**
      * start process
@@ -247,5 +247,10 @@ public class FlowImpl implements IFlow {
         }
 
     }
+
+	@Override
+	public String getTestDataPathUrl() {
+		return HttpUtils.doGet(SysParamsCache.getTestDataPathUrl(), null, null);
+	}
 
 }

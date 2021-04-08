@@ -45,7 +45,7 @@ public interface MxCellMapper {
             @Result(column = "MX_TARGET", property = "target"),
             @Result(column = "MX_VALUE", property = "value"),
             @Result(column = "MX_VERTEX", property = "vertex"),
-            @Result(column = "id", property = "mxGeometry", one = @One(select = "cn.cnic.component.mxGraph.mapper.MxGeometryMapper.getMxGeometryByFlowId", fetchType = FetchType.LAZY))
+            @Result(column = "id", property = "mxGeometry", one = @One(select = "cn.cnic.component.mxGraph.mapper.MxGeometryMapper.getMxGeometryByMxCellId", fetchType = FetchType.LAZY))
     })
     public List<MxCell> getMeCellByMxGraphId(String mxGraphId);
 
@@ -66,7 +66,7 @@ public interface MxCellMapper {
             @Result(column = "MX_TARGET", property = "target"),
             @Result(column = "MX_VALUE", property = "value"),
             @Result(column = "MX_VERTEX", property = "vertex"),
-            @Result(column = "id", property = "mxGeometry", one = @One(select = "cn.cnic.component.mxGraph.mapper.MxGeometryMapper.getMxGeometryById", fetchType = FetchType.LAZY))
+            @Result(column = "id", property = "mxGeometry", one = @One(select = "cn.cnic.component.mxGraph.mapper.MxGeometryMapper.getMxGeometryByMxCellId", fetchType = FetchType.LAZY))
     })
     public MxCell getMeCellById(String id);
 
@@ -88,7 +88,7 @@ public interface MxCellMapper {
             @Result(column = "MX_TARGET", property = "target"),
             @Result(column = "MX_VALUE", property = "value"),
             @Result(column = "MX_VERTEX", property = "vertex"),
-            @Result(column = "id", property = "mxGeometry", one = @One(select = "cn.cnic.component.mxGraph.mapper.MxGeometryMapper.getMxGeometryById", fetchType = FetchType.LAZY))
+            @Result(column = "id", property = "mxGeometry", one = @One(select = "cn.cnic.component.mxGraph.mapper.MxGeometryMapper.getMxGeometryByMxCellId", fetchType = FetchType.LAZY))
     })
     public MxCell getMxCellByMxGraphIdAndPageId(@Param("mxGraphId") String mxGraphId, @Param("pageId") String pageId);
 

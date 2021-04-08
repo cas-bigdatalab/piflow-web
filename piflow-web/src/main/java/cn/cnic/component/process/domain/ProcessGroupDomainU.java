@@ -1,9 +1,9 @@
-package cn.cnic.component.process.transaction;
+package cn.cnic.component.process.domain;
 
 import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.base.util.UUIDUtils;
 import cn.cnic.component.mxGraph.entity.MxGraphModel;
-import cn.cnic.component.mxGraph.transaction.MxGraphModelTransaction;
+import cn.cnic.component.mxGraph.domain.MxGraphModelDomainU;
 import cn.cnic.component.process.entity.*;
 import cn.cnic.component.process.entity.Process;
 import cn.cnic.component.process.mapper.*;
@@ -19,7 +19,7 @@ import java.util.List;
 
 @Component
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
-public class ProcessGroupTransaction {
+public class ProcessGroupDomainU {
 
     /**
      * Introducing logs, note that they are all packaged under "org.slf4j"
@@ -33,10 +33,10 @@ public class ProcessGroupTransaction {
     private ProcessGroupPathMapper processGroupPathMapper;
 
     @Resource
-    private ProcessTransaction processTransaction;
+    private ProcessDomainU processDomainU;
 
     @Resource
-    private MxGraphModelTransaction mxGraphModelTransaction;
+    private MxGraphModelDomainU mxGraphModelDomainU;
 
     /**
      * Add process of things
@@ -72,7 +72,7 @@ public class ProcessGroupTransaction {
         if (null != processList && processList.size() > 0) {
             for (Process process : processList) {
                 process.setProcessGroup(processGroup);
-                addProcessListCounts += processTransaction.addProcess(process);
+                addProcessListCounts += processDomainU.addProcess(process);
             }
         }
         // Save Process
@@ -88,7 +88,7 @@ public class ProcessGroupTransaction {
         MxGraphModel mxGraphModel = processGroup.getMxGraphModel();
         if (null != mxGraphModel) {
             processGroup.setProcessGroup(processGroup);
-            addMxGraphModel = mxGraphModelTransaction.addMxGraphModel(mxGraphModel);
+            addMxGraphModel = mxGraphModelDomainU.addMxGraphModel(mxGraphModel);
             if (addMxGraphModel <= 0) {
                 throw new Exception("save failed");
             }

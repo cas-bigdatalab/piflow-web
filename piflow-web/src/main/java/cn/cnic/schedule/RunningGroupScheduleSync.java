@@ -7,8 +7,8 @@ import cn.cnic.common.Eunm.ScheduleState;
 import cn.cnic.common.executor.ServicesExecutor;
 import cn.cnic.component.process.entity.Process;
 import cn.cnic.component.process.entity.ProcessGroup;
-import cn.cnic.component.process.transaction.ProcessGroupTransaction;
-import cn.cnic.component.process.transaction.ProcessTransaction;
+import cn.cnic.component.process.domain.ProcessDomainU;
+import cn.cnic.component.process.domain.ProcessGroupDomainU;
 import cn.cnic.component.process.utils.ProcessGroupUtils;
 import cn.cnic.component.process.utils.ProcessUtils;
 import cn.cnic.component.schedule.entity.Schedule;
@@ -44,8 +44,8 @@ public class RunningGroupScheduleSync extends QuartzJobBean {
         List<ScheduleVo> scheduleRunningList = scheduleMapper.getScheduleIdListByStateRunning(true, "sync");
         if (CollectionUtils.isNotEmpty(scheduleRunningList)) {
             ISchedule scheduleImpl = (ISchedule) SpringContextUtil.getBean("scheduleImpl");
-            ProcessTransaction processTransaction = (ProcessTransaction) SpringContextUtil.getBean("processTransaction");
-            ProcessGroupTransaction processGroupTransaction = (ProcessGroupTransaction) SpringContextUtil.getBean("processGroupTransaction");
+            ProcessDomainU processDomainU = (ProcessDomainU) SpringContextUtil.getBean("processDomainU");
+            ProcessGroupDomainU processGroupDomainU = (ProcessGroupDomainU) SpringContextUtil.getBean("processGroupDomainU");
             for (ScheduleVo scheduleVo : scheduleRunningList) {
                 if (null == scheduleVo) {
                     continue;
@@ -69,11 +69,11 @@ public class RunningGroupScheduleSync extends QuartzJobBean {
                             }
                             String scheduleEntryType = thirdScheduleEntryVo.getScheduleEntryType();
                             if ("Flow".equals(scheduleEntryType)) {
-                                String processIdByAppId = processTransaction.getProcessIdByAppId("sync", true, thirdScheduleEntryVo.getScheduleEntryId());
+                                String processIdByAppId = processDomainU.getProcessIdByAppId("sync", true, thirdScheduleEntryVo.getScheduleEntryId());
                                 if (StringUtils.isNotBlank(processIdByAppId)) {
                                     continue;
                                 }
-                                Process processById = processTransaction.getProcessById("sync", true, scheduleVo.getScheduleProcessTemplateId());
+                                Process processById = processDomainU.getProcessById("sync", true, scheduleVo.getScheduleProcessTemplateId());
                                 if (processById == null) {
                                     logger.warn("sync failed");
                                     continue;
@@ -86,7 +86,7 @@ public class RunningGroupScheduleSync extends QuartzJobBean {
                                 }
                                 try {
                                     processCopy.setAppId(thirdScheduleEntryVo.getScheduleEntryId());
-                                    int addProcess = processTransaction.addProcess(processCopy);
+                                    int addProcess = processDomainU.addProcess(processCopy);
                                     if (addProcess <= 0) {
                                         logger.warn("sync failed");
                                     }
@@ -95,11 +95,11 @@ public class RunningGroupScheduleSync extends QuartzJobBean {
                                 }
                                 continue;
                             }
-                            List<String> processGroupIdByAppId = processGroupTransaction.getProcessGroupIdByAppId(thirdScheduleEntryVo.getScheduleEntryId());
+                            List<String> processGroupIdByAppId = processGroupDomainU.getProcessGroupIdByAppId(thirdScheduleEntryVo.getScheduleEntryId());
                             if (null != processGroupIdByAppId && processGroupIdByAppId.size() > 0) {
                                 continue;
                             }
-                            ProcessGroup processGroupById = processGroupTransaction.getProcessGroupById("sync", true, scheduleVo.getScheduleProcessTemplateId());
+                            ProcessGroup processGroupById = processGroupDomainU.getProcessGroupById("sync", true, scheduleVo.getScheduleProcessTemplateId());
                             if (null == processGroupById) {
                                 continue;
                             }
@@ -110,7 +110,7 @@ public class RunningGroupScheduleSync extends QuartzJobBean {
                             }
                             try {
                                 copyProcessGroup.setAppId(thirdScheduleEntryVo.getScheduleEntryId());
-                                int addProcessGroup = processGroupTransaction.addProcessGroup(copyProcessGroup);
+                                int addProcessGroup = processGroupDomainU.addProcessGroup(copyProcessGroup);
                                 if (addProcessGroup <= 0) {
                                     logger.warn("sync failed");
                                 }

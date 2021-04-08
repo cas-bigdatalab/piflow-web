@@ -1,4 +1,4 @@
-package cn.cnic.component.process.transaction;
+package cn.cnic.component.process.domain;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import javax.annotation.Resource;
 
 import cn.cnic.base.util.UUIDUtils;
 import cn.cnic.component.mxGraph.entity.MxGraphModel;
-import cn.cnic.component.mxGraph.transaction.MxGraphModelTransaction;
+import cn.cnic.component.mxGraph.domain.MxGraphModelDomainU;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -26,7 +26,7 @@ import cn.cnic.component.process.mapper.ProcessStopPropertyMapper;
 
 @Component
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
-public class ProcessTransaction {
+public class ProcessDomainU {
 
     /**
      * Introducing logs, note that they are all packaged under "org.slf4j"
@@ -46,7 +46,7 @@ public class ProcessTransaction {
     private ProcessStopPropertyMapper processStopPropertyMapper;
 
     @Resource
-    private MxGraphModelTransaction mxGraphModelTransaction;
+    private MxGraphModelDomainU mxGraphModelDomainU;
 
     /**
      * Add process of things
@@ -123,7 +123,7 @@ public class ProcessTransaction {
         MxGraphModel mxGraphModel = process.getMxGraphModel();
         if (null != mxGraphModel) {
             mxGraphModel.setProcess(process);
-            addMxGraphModel = mxGraphModelTransaction.addMxGraphModel(mxGraphModel);
+            addMxGraphModel = mxGraphModelDomainU.addMxGraphModel(mxGraphModel);
         }
         int influenceCounts = (addProcessPathCounts + addProcessStopCounts + addProcessStopPropertyCounts + addMxGraphModel);
 

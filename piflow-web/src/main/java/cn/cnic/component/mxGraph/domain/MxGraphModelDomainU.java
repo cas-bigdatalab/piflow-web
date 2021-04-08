@@ -1,4 +1,4 @@
-package cn.cnic.component.mxGraph.transaction;
+package cn.cnic.component.mxGraph.domain;
 
 import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.base.util.UUIDUtils;
@@ -20,7 +20,7 @@ import java.util.List;
 
 @Component
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
-public class MxGraphModelTransaction {
+public class MxGraphModelDomainU {
 
     /**
      * Introducing logs, note that they are all packaged under "org.slf4j"
@@ -77,6 +77,10 @@ public class MxGraphModelTransaction {
                     continue;
                 }
                 mxGeometry.setMxCell(mxCell);
+                String mxGeometryId = mxGeometry.getId();
+                if (StringUtils.isBlank(mxGeometryId)) {
+                	mxGeometry.setId(UUIDUtils.getUUID32());
+                }
                 int addMxGeometry = mxGeometryMapper.addMxGeometry(mxGeometry);
                 if (addMxGeometry <= 0) {
                     throw new Exception("save failed");

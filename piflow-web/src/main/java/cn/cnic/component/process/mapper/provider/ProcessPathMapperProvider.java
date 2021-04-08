@@ -117,13 +117,7 @@ public class ProcessPathMapperProvider {
             sql.append("insert into ");
             sql.append("flow_process_path ");
             sql.append("(");
-            sql.append("id,");
-            sql.append("crt_dttm,");
-            sql.append("crt_user,");
-            sql.append("last_update_dttm,");
-            sql.append("last_update_user,");
-            sql.append("version,");
-            sql.append("enable_flag,");
+            sql.append(SqlUtils.baseFieldName() + ",");
             sql.append("line_from,");
             sql.append("line_to,");
             sql.append("line_outport,");

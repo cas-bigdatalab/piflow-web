@@ -350,10 +350,10 @@ public class TestDataDomain {
      * getTestDataSchemaIdAndNameListByTestDataId
      * 
      * @param testDataId
-     * @return List<Map<String,String>>
+     * @return List<Map<String,String>> key1=ID key2=FIELD_NAME
      * @throws
      */
-    public List<LinkedHashMap<String, String>> getTestDataSchemaIdAndNameListByTestDataId(String testDataId) {
+    public List<LinkedHashMap<String, Object>> getTestDataSchemaIdAndNameListByTestDataId(String testDataId) {
         return testDataSchemaMapper.getTestDataSchemaIdAndNameListByTestDataId(testDataId);
     }
 
@@ -367,7 +367,7 @@ public class TestDataDomain {
      * @return List<Map<String,String>> 
      * @throws
      */
-    public List<LinkedHashMap<String, String>> getTestDataSchemaValuesCustomList(boolean isAdmin, String username, String testDataId, List<LinkedHashMap<String, String>> fieldNameList) {
+    public List<LinkedHashMap<String, Object>> getTestDataSchemaValuesCustomList(boolean isAdmin, String username, String testDataId, List<LinkedHashMap<String, Object>> fieldNameList) {
         if (null == fieldNameList) {
             return null;
         }
@@ -384,7 +384,7 @@ public class TestDataDomain {
      * @return List<Map<String,String>> 
      * @throws
      */
-    public List<LinkedHashMap<String, String>> getTestDataSchemaValuesCustomListId(boolean isAdmin, String username, String testDataId, List<LinkedHashMap<String, String>> fieldNameList) {
+    public List<LinkedHashMap<String, Object>> getTestDataSchemaValuesCustomListId(boolean isAdmin, String username, String testDataId, List<LinkedHashMap<String, Object>> fieldNameList) {
         if (null == fieldNameList) {
             return null;
         }

@@ -178,7 +178,7 @@ public class HttpUtils {
                 // Determine whether the network connection status code is normal (0--200 are normal)
                 if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                     result = EntityUtils.toString(response.getEntity(), "utf-8");
-                    logger.info("call succeeded,return msg:" + result);
+                    logger.info("call succeeded,return msg: " + result);
                 }
                 // Release link
                 response.close();

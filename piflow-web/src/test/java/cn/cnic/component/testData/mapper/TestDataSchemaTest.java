@@ -19,7 +19,7 @@ public class TestDataSchemaTest extends ApplicationTests {
 
 	@Test
 	public void testGetTestDataSchemaIdList() {
-		List<LinkedHashMap<String, String>> testDataSchemaIdListByTestDataId = testDataSchemaMapper.getTestDataSchemaIdAndNameListByTestDataId("0106c60c7e8a4dd3b866483fd1c14d67");
+		List<LinkedHashMap<String, Object>> testDataSchemaIdListByTestDataId = testDataSchemaMapper.getTestDataSchemaIdAndNameListByTestDataId("0106c60c7e8a4dd3b866483fd1c14d67");
 		logger.info("length:" + testDataSchemaIdListByTestDataId.size());
 	}
 }

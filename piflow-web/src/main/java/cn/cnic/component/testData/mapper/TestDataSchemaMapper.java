@@ -107,10 +107,10 @@ public interface TestDataSchemaMapper {
 	 * get TestDataSchemaId and NameList by testDataId
 	 * 
 	 * @param testDataId
-	 * @return
+	 * @return List<Map<String,String>> key1=ID key2=FIELD_NAME
 	 */
 	@Select("SELECT TDS.id AS ID,TDS.field_name as FIELD_NAME FROM test_data_schema TDS WHERE TDS.enable_flag=1 AND TDS.fk_test_data_id=#{testDataId} ORDER BY TDS.field_soft ASC ")
-	public List<LinkedHashMap<String,String>> getTestDataSchemaIdAndNameListByTestDataId(String testDataId);
+	public List<LinkedHashMap<String,Object>> getTestDataSchemaIdAndNameListByTestDataId(String testDataId);
 
 
 

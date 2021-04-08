@@ -1,12 +1,17 @@
 package cn.cnic.component.process.utils;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.BeanUtils;
+
 import cn.cnic.base.util.UUIDUtils;
 import cn.cnic.component.process.entity.ProcessStop;
 import cn.cnic.component.process.entity.ProcessStopCustomizedProperty;
 import cn.cnic.component.process.entity.ProcessStopProperty;
-import org.springframework.beans.BeanUtils;
-
-import java.util.*;
+import cn.cnic.component.stopsComponent.model.StopsComponent;
+import cn.cnic.component.stopsComponent.model.StopsComponentProperty;
 
 public class ProcessStopUtils {
 
@@ -27,6 +32,7 @@ public class ProcessStopUtils {
         if (null == processStop) {
             return processStopNewNoId(username);
         }
+        processStop.setId(null);
         // basic properties (required when creating)
         processStop.setCrtDttm(new Date());
         processStop.setCrtUser(username);
@@ -89,4 +95,49 @@ public class ProcessStopUtils {
         return copyProcessStop;
     }
 
+    public static ProcessStop copyStopsComponentToProcessStop(StopsComponent stopsComponent, String username, boolean isAddId) {
+        if (null == stopsComponent) {
+            return null;
+        }
+        ProcessStop copyProcessStop = new ProcessStop();
+        // Copy stops information into processStop
+        BeanUtils.copyProperties(stopsComponent, copyProcessStop);
+        // Set basic information
+        copyProcessStop = ProcessStopUtils.initProcessStopBasicPropertiesNoId(copyProcessStop, username);
+        if (isAddId) {
+        	copyProcessStop.setId(UUIDUtils.getUUID32());
+        } else {
+        	copyProcessStop.setId(null);
+        }
+        // Remove the properties of stops
+        List<StopsComponentProperty> properties = stopsComponent.getProperties();
+        // Determine if the stops attribute is empty
+        if (null != properties && properties.size() > 0) {
+            List<ProcessStopProperty> processStopPropertyList = new ArrayList<>();
+            // Attributes of loop stops
+            for (StopsComponentProperty property : properties) {
+                // isEmpty
+                if (null == property) {
+                    continue;
+                }
+                ProcessStopProperty processStopProperty = new ProcessStopProperty();
+                // Copy property information into processStopProperty
+                BeanUtils.copyProperties(property, processStopProperty);
+                // Set basic information
+                processStopProperty = ProcessStopPropertyUtils.initProcessStopPropertyBasicPropertiesNoId(processStopProperty, username);
+                if (isAddId) {
+                    processStopProperty.setId(UUIDUtils.getUUID32());
+                } else {
+                    processStopProperty.setId(null);
+                }
+                // Associated foreign key
+                processStopProperty.setProcessStop(copyProcessStop);
+                processStopPropertyList.add(processStopProperty);
+            }
+            copyProcessStop.setProcessStopPropertyList(processStopPropertyList);
+        }
+        return copyProcessStop;
+    }
+
+    
 }
