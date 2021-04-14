@@ -1,5 +1,6 @@
 package cn.cnic.component.mxGraph.utils;
 
+import cn.cnic.base.util.UUIDUtils;
 import cn.cnic.component.mxGraph.entity.MxCell;
 import cn.cnic.component.mxGraph.entity.MxGeometry;
 import cn.cnic.component.mxGraph.entity.MxGraphModel;
@@ -158,5 +159,31 @@ public class MxCellUtils {
         defaultFlowMxCellMxGeometry.setMxCell(defaultFlowMxCell);
         defaultFlowMxCell.setMxGeometry(defaultFlowMxCellMxGeometry);
         return defaultFlowMxCell;
+    }
+    
+    public static MxCell copyMxCell(MxCell mxCell, String username, boolean isAddId) {
+        if (null == mxCell) {
+            return null;
+        }
+        MxCell mxCellNew = new MxCell();
+        BeanUtils.copyProperties(mxCell, mxCellNew);
+        if (isAddId) {
+            mxCellNew.setId(UUIDUtils.getUUID32());
+        } else {
+            mxCellNew.setId(null);
+        }
+        MxGeometry mxGeometry = mxCell.getMxGeometry();
+        if (null != mxGeometry) {
+            MxGeometry mxGeometryNew = new MxGeometry();
+            BeanUtils.copyProperties(mxGeometry, mxGeometryNew);
+            if (isAddId) {
+                mxGeometryNew.setId(UUIDUtils.getUUID32());
+            } else {
+                mxGeometryNew.setId(null);
+            }
+            mxGeometryNew.setMxCell(mxCellNew);
+            mxCellNew.setMxGeometry(mxGeometryNew);
+        }
+        return mxCellNew;
     }
 }

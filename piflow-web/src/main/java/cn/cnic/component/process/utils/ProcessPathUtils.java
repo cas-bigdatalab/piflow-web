@@ -1,5 +1,7 @@
 package cn.cnic.component.process.utils;
 
+import cn.cnic.base.util.UUIDUtils;
+import cn.cnic.component.flow.entity.Paths;
 import cn.cnic.component.process.entity.ProcessPath;
 import org.springframework.beans.BeanUtils;
 
@@ -45,6 +47,26 @@ public class ProcessPathUtils {
         copyProcessPath = initProcessPathBasicPropertiesNoId(copyProcessPath,username);
         copyProcessPath.setProcess(null);
         return copyProcessPath;
+    }
+    
+    public static ProcessPath pathsToProcessPath(Paths paths, String username, boolean isAddId) {
+
+        // isEmpty
+        if (null == paths) {
+            return null;
+        }
+        ProcessPath processPath = new ProcessPath();
+        // Copy paths information into processPath
+        BeanUtils.copyProperties(paths, processPath);
+        // Set basic information
+        processPath = ProcessPathUtils.initProcessPathBasicPropertiesNoId(processPath, username);
+        if (isAddId) {
+            processPath.setId(UUIDUtils.getUUID32());
+        } else {
+            processPath.setId(null);
+        }
+        
+        return processPath;
     }
 
 }

@@ -21,6 +21,7 @@ import cn.cnic.base.util.MxGraphUtils;
 import cn.cnic.base.util.ReturnMapUtils;
 import cn.cnic.common.Eunm.PortType;
 import cn.cnic.common.Eunm.ProcessState;
+import cn.cnic.common.Eunm.RunModeType;
 import cn.cnic.component.dataSource.jpa.domain.DataSourceDomain;
 import cn.cnic.component.dataSource.entity.DataSource;
 import cn.cnic.component.dataSource.entity.DataSourceProperty;
@@ -1028,7 +1029,7 @@ public class StopsServiceImpl implements IStopsService {
 				// HDFS storage address
 				String hdfsUrl = testDataPathUrl + currentTimeMillis + ".csv";
 				// Write testData to HDFS
-				// HdfsUtils.writeData(hdfsUrl, testDataValueStr);
+				HdfsUtils.writeData(hdfsUrl, testDataValueStr);
 				Map<String, String> hdfsUrlObj = new HashMap<>();
 				hdfsUrlObj.put("csvpath", hdfsUrl);
 				hdfsUrlObj.put("header", "false");
@@ -1064,9 +1065,19 @@ public class StopsServiceImpl implements IStopsService {
 		rootMxCell.add(processMxCell);
 		// Determine whether to execute
 		if (runStopsVo.getIsRunFollowUp()) {
-			// Components of the original Flow
+			
+			// get stopsList
 			List<Stops> stopsList = flowDB.getStopsList();
-			// Connection of the original Flow component
+            //stopsList conversion map (key is pageId)
+			Map<String, Stops> stopsMap = new HashMap<>();
+			for (Stops stops : stopsList) {
+				if (null == stops) {
+					continue;
+				}
+				stopsMap.put(stops.getPageId(), stops);
+			}
+			
+			// get pathsList
 			List<Paths> pathsList = flowDB.getPathsList();
 
 			// pathsList conversion map (key is the pageId of the source)
@@ -1078,7 +1089,7 @@ public class StopsServiceImpl implements IStopsService {
 				pathsMap.put(paths.getFrom(), paths);
 			}
 
-			// Page component information of the original Flow
+			// get mxGraphModelRoot
 			List<MxCell> flowMxGraphModelRoot = flowMxGraphModel.getRoot();
 			// Determine whether flowMxGraphModelRoot is empty
 			if (null == flowMxGraphModelRoot || flowMxGraphModelRoot.size() <= 0) {
@@ -1092,7 +1103,57 @@ public class StopsServiceImpl implements IStopsService {
 				}
 				flowMxGraphModelRootMap.put(mxCell.getPageId(), mxCell);
 			}
+			
+			String stopsPageId = stopsById.getPageId();
+			String pathspageId = "";
 
+			while (StringUtils.isNotBlank(stopsPageId)) {
+				Paths paths = pathsMap.get(stopsPageId);
+				if (null == paths) {
+					break;
+				}
+				pathspageId = paths.getPageId();
+				String targetStopsPageId = paths.getTo();
+				if (StringUtils.isBlank(targetStopsPageId)) {
+					break;
+				}
+				Stops targetStops = stopsMap.get(targetStopsPageId);
+				if (null == targetStops) {
+					break;
+				}
+				ProcessStop processStop = ProcessUtils.stopsToProcessStop(targetStops, username, false);
+            	if(null == processStop) {
+            		break;
+            	}
+            	// Associate foreign key
+            	processStop.setProcess(process);
+				
+				ProcessPath processPath = ProcessPathUtils.pathsToProcessPath(paths, username, false);
+				if (null == processPath) {
+					break;
+				}
+				// Associated foreign key
+                processPath.setProcess(process);
+                
+                MxCell pathsMxCell = flowMxGraphModelRootMap.get(pathspageId);
+                MxCell pathsMxCellNew = MxCellUtils.copyMxCell(pathsMxCell, username, false);
+                if (null == pathsMxCellNew) {
+					break;
+				}
+                pathsMxCellNew.setMxGraphModel(mxGraphModel);
+                MxCell stopsMxCell = flowMxGraphModelRootMap.get(targetStopsPageId);
+                MxCell stopsMxCellNew = MxCellUtils.copyMxCell(stopsMxCell, username, false);
+                if (null == stopsMxCellNew) {
+					break;
+				}
+                stopsMxCellNew.setMxGraphModel(mxGraphModel);
+                
+                processStopsList.add(processStop);
+                processPathsList.add(processPath);
+                rootMxCell.add(pathsMxCellNew);
+                rootMxCell.add(pathsMxCellNew);
+                stopsPageId = targetStopsPageId;
+			}
 		}
 
 		// Determine whether the HDFS value is empty
@@ -1149,24 +1210,24 @@ public class StopsServiceImpl implements IStopsService {
 		process.setMxGraphModel(mxGraphModel);
 		process.setProcessStopList(processStopsList);
 		process.setProcessPathList(processPathsList);
-
-		/*
-		 * Map<String, Object> stringObjectMap = flowImpl.startFlow(process, null,
-		 * RunModeType.RUN); if (null == stringObjectMap || 200 != ((Integer)
-		 * stringObjectMap.get("code"))) { process.setEnableFlag(false);
-		 * process.setLastUpdateDttm(new Date()); process.setLastUpdateUser(username);
-		 * processDomain.saveOrUpdate(process); return
-		 * ReturnMapUtils.setFailedMsgRtnJsonStr((String)
-		 * stringObjectMap.get("errorMsg")); } process.setAppId((String)
-		 * stringObjectMap.get("appId")); process.setProcessId((String)
-		 * stringObjectMap.get("appId"));
-		 */
-		process.setAppId("0000000000000000000000");
-		process.setProcessId("0000000000000000000000");
-		process.setState(ProcessState.STARTED);
 		process.setLastUpdateUser(username);
 		process.setLastUpdateDttm(new Date());
+        
 		processDomainU.addProcess(process);
+		process = processDomainU.getProcessById(username, isAdmin, process.getId());
+
+		Map<String, Object> stringObjectMap = flowImpl.startFlow(process, null, RunModeType.RUN);
+		if (null == stringObjectMap || 200 != ((Integer) stringObjectMap.get("code"))) {
+			process.setEnableFlag(false);
+			process.setLastUpdateDttm(new Date());
+			process.setLastUpdateUser(username);
+			processDomainU.updateProcess(process);
+			return ReturnMapUtils.setFailedMsgRtnJsonStr((String) stringObjectMap.get("errorMsg"));
+		}
+		process.setAppId((String) stringObjectMap.get("appId"));
+		process.setProcessId((String) stringObjectMap.get("appId"));
+		process.setState(ProcessState.STARTED);
+		processDomainU.updateProcess(process);
 		Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg("save process success,update success");
 		rtnMap.put("processId", process.getId());
 		return JsonUtils.toJsonNoException(rtnMap);
