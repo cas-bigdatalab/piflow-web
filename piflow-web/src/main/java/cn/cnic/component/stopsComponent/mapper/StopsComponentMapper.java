@@ -1,6 +1,7 @@
 package cn.cnic.component.stopsComponent.mapper;
 
 import cn.cnic.component.stopsComponent.model.StopsComponent;
+import cn.cnic.component.stopsComponent.vo.StopsComponentVo;
 import cn.cnic.component.stopsComponent.mapper.provider.StopsComponentMapperProvider;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
@@ -52,8 +53,8 @@ public interface StopsComponentMapper {
      * @param groupId
      * @return
      */
-    @Select("select * from flow_stops_template where enable_flag=1 and id in (select agst.stops_template_id from association_groups_stops_template agst where agst.groups_id = #{groupId})")
-    public List<StopsComponent> getManageStopsComponentListByGroupId(String groupId);
+    @SelectProvider(type = StopsComponentMapperProvider.class, method = "getManageStopsComponentListByGroupId")
+    public List<StopsComponentVo> getManageStopsComponentListByGroupId(String groupId);
 
     /**
      * Query the stops template according to the id of the stops group...

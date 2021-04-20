@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
@@ -18,6 +19,7 @@ import cn.cnic.component.stopsComponent.mapper.StopsComponentPropertyMapper;
 import cn.cnic.component.stopsComponent.model.StopsComponent;
 import cn.cnic.component.stopsComponent.model.StopsComponentGroup;
 import cn.cnic.component.stopsComponent.model.StopsComponentProperty;
+import cn.cnic.component.stopsComponent.vo.StopsComponentVo;
 
 @Component
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
@@ -102,6 +104,14 @@ public class StopsComponentDomain {
 		return deleteRows;
 	}
 
+	public StopsComponent getStopsComponentById(String id) {
+		return stopsComponentMapper.getStopsComponentById(id);
+	}
+
+	public StopsComponent getStopsComponentAndPropertyById(String id) {
+		return stopsComponentMapper.getStopsComponentAndPropertyById(id);
+	}
+
 	public int stopsComponentLinkStopsComponentGroupList(StopsComponent stopsComponent, List<StopsComponentGroup> stopsComponentGroupList) {
 		if (null == stopsComponent) {
 			return 0;
@@ -144,8 +154,85 @@ public class StopsComponentDomain {
 		return stopCount;
 	}
 
+	/**
+	 * getStopsComponentByBundle
+	 *
+	 * @param bundle
+	 * @return
+	 */
 	public StopsComponent getStopsComponentByBundle(String bundle) {
 		return stopsComponentMapper.getStopsComponentByBundle(bundle);
 	}
+
+	public int addStopsComponentGroupAndChildren(StopsComponentGroup stopsComponentGroup) {
+		if (null == stopsComponentGroup) {
+			return 0;
+		}
+		int insertStopsComponentGroupRows = stopsComponentGroupMapper.insertStopGroup(stopsComponentGroup);
+		int affectedRows = insertStopsComponentGroupRows;
+		if (insertStopsComponentGroupRows > 0) {
+			List<StopsComponent> stopsComponentList = stopsComponentGroup.getStopsComponentList();
+			if (null == stopsComponentList || stopsComponentList.size() <= 0) {
+				return affectedRows;
+			}
+			int insertStopsTemplateRows = addListStopsComponentAndChildren(stopsComponentList);
+			affectedRows = insertStopsComponentGroupRows + insertStopsTemplateRows;
+		}
+		return affectedRows;
+	}
+
+	public int addStopsComponentGroup(StopsComponentGroup stopsComponentGroup) {
+		if (null == stopsComponentGroup) {
+			return 0;
+		}
+		return stopsComponentGroupMapper.insertStopGroup(stopsComponentGroup);
+	}
+
+	public List<StopsComponentGroup> getStopGroupByNameList(List<String> groupNameList) {
+		return stopsComponentGroupMapper.getStopGroupByNameList(groupNameList);
+	}
+
+	public StopsComponentGroup getStopsComponentGroupByGroupName(String groupName) {
+		if (StringUtils.isBlank(groupName)) {
+			return null;
+		}
+		List<StopsComponentGroup> stopGroupByName = stopsComponentGroupMapper.getStopGroupByName(groupName);
+		if (null == stopGroupByName || stopGroupByName.size() <= 0) {
+			return null;
+		}
+		return stopGroupByName.get(0);
+	}
+
+	public int deleteStopsComponentGroup() {
+		// the group table information is cleared
+		// The call is successful, the group table information is cleared and then
+		// inserted.
+		stopsComponentGroupMapper.deleteGroupCorrelation();
+		int deleteRows = stopsComponentGroupMapper.deleteGroup();
+		logger.debug("Successful deletion Group" + deleteRows + "piece of data!!!");
+		return deleteRows;
+	}
+
+	public List<StopsComponentGroup> getStopGroupList() {
+		return stopsComponentGroupMapper.getStopGroupList();
+	}
+
+	public int insertAssociationGroupsStopsTemplate(String stopGroupId, String stopsTemplateId) {
+		return stopsComponentGroupMapper.insertAssociationGroupsStopsTemplate(stopGroupId, stopsTemplateId);
+	}
+
+	public List<StopsComponentGroup> getStopGroupByGroupNameList(List<String> groupName) {
+		return stopsComponentGroupMapper.getStopGroupByGroupNameList(groupName);
+	}
+
+	public int deleteGroupCorrelationByGroupIdAndStopId(String stopGroupId, String stopsTemplateId) {
+		return stopsComponentGroupMapper.deleteGroupCorrelationByGroupIdAndStopId(stopGroupId, stopsTemplateId);
+	}
+
+	public List<StopsComponentVo> getManageStopsComponentListByGroupId(String stopGroupId) {
+		return stopsComponentMapper.getManageStopsComponentListByGroupId(stopGroupId);
+	}
 	
+	
+
 }

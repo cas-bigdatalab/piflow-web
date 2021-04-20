@@ -98,7 +98,7 @@ public class StopsComponentManageMapperProvider {
     
     public String getStopsComponentManageByBundleAndGroup(String bundle, String stopsGroups) {
         StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append("SELECT * FROM flow_stops_template_manage");
+        stringBuffer.append("SELECT * FROM flow_stops_template_manage ");
         stringBuffer.append("WHERE ");
         stringBuffer.append("bundle= " + SqlUtils.preventSQLInjection(bundle) + " ");
         stringBuffer.append("AND stops_groups= " + SqlUtils.preventSQLInjection(stopsGroups));

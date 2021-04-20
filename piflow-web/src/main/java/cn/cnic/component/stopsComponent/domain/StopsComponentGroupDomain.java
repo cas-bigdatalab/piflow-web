@@ -15,6 +15,7 @@ import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.component.stopsComponent.mapper.StopsComponentGroupMapper;
 import cn.cnic.component.stopsComponent.model.StopsComponent;
 import cn.cnic.component.stopsComponent.model.StopsComponentGroup;
+import cn.cnic.component.stopsComponent.vo.StopsComponentGroupVo;
 
 @Component
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
@@ -80,7 +81,7 @@ public class StopsComponentGroupDomain {
         return stopsComponentGroupMapper.getStopGroupList();
     }
 
-    public List<StopsComponentGroup> getManageStopGroupList(){
+    public List<StopsComponentGroupVo> getManageStopGroupList(){
         return stopsComponentGroupMapper.getManageStopGroupList();
     }
 

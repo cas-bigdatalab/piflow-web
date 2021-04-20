@@ -1,6 +1,7 @@
 package cn.cnic.component.stopsComponent.mapper;
 
 import cn.cnic.component.stopsComponent.mapper.provider.StopsComponentGroupProvider;
+import cn.cnic.component.stopsComponent.vo.StopsComponentGroupVo;
 import cn.cnic.component.stopsComponent.model.StopsComponentGroup;
 import org.apache.ibatis.annotations.*;
 
@@ -25,8 +26,8 @@ public interface StopsComponentGroupMapper {
      */
     @SelectProvider(type = StopsComponentGroupProvider.class, method = "getStopGroupList")
     @Results({@Result(id = true, column = "id", property = "id"),
-            @Result(column = "id", property = "stopsComponentList", many = @Many(select = "cn.cnic.component.stopsComponent.mapper.StopsComponentMapper.getManageStopsComponentListByGroupId"))})
-    List<StopsComponentGroup> getManageStopGroupList();
+            @Result(column = "id", property = "stopsComponentVoList", many = @Many(select = "cn.cnic.component.stopsComponent.mapper.StopsComponentMapper.getManageStopsComponentListByGroupId"))})
+    List<StopsComponentGroupVo> getManageStopGroupList();
     
     /**
      * Query the stops template group based on the group id
@@ -43,11 +44,11 @@ public interface StopsComponentGroupMapper {
      * @param stopGroup
      * @return
      */
-    @Insert("insert into flow_stops_groups(id,crt_dttm,crt_user,enable_flag,last_update_dttm,last_update_user,version,group_name) values (#{id},#{crtDttm},#{crtUser},#{enableFlag},#{lastUpdateDttm},#{lastUpdateUser},#{version},#{groupName})")
+    @Insert("INSERT INTO flow_stops_groups(id,crt_dttm,crt_user,enable_flag,last_update_dttm,last_update_user,version,group_name) VALUES (#{id},#{crtDttm},#{crtUser},#{enableFlag},#{lastUpdateDttm},#{lastUpdateUser},#{version},#{groupName})")
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     int insertStopGroup(StopsComponentGroup stopGroup);
 
-    @Insert("insert into association_groups_stops_template(groups_id,stops_template_id) values (#{groups_id},#{stops_template_id})")
+    @Insert("INSERT INTO association_groups_stops_template(groups_id,stops_template_id) VALUES (#{groups_id},#{stops_template_id})")
     int insertAssociationGroupsStopsTemplate(@Param("groups_id") String stopGroupId, @Param("stops_template_id") String stopsTemplateId);
 
     /**

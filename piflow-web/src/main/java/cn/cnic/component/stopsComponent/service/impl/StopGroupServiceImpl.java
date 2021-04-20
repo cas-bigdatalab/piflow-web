@@ -13,16 +13,16 @@ import cn.cnic.component.stopsComponent.utils.StopsComponentGroupUtils;
 import cn.cnic.component.stopsComponent.utils.StopsComponentUtils;
 import cn.cnic.component.stopsComponent.vo.PropertyTemplateVo;
 import cn.cnic.component.stopsComponent.vo.StopGroupVo;
+import cn.cnic.component.stopsComponent.vo.StopsComponentGroupVo;
 import cn.cnic.component.stopsComponent.vo.StopsTemplateVo;
 import cn.cnic.third.service.IStop;
 import cn.cnic.third.vo.stop.ThirdStopsComponentVo;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
 import java.util.*;
 
 @Service
@@ -30,14 +30,15 @@ public class StopGroupServiceImpl implements IStopGroupService {
 
     Logger logger = LoggerUtil.getLogger();
 
-    @Resource
+    @Autowired
     private IStop stopImpl;
 
-    @Resource
+    @Autowired
     private StopsComponentGroupDomain stopsComponentGroupDomain;
 
-    @Resource
+    @Autowired
     private StopsComponentDomain stopsComponentDomain;
+
 
     /**
      * Query all groups and all stops under it
@@ -46,7 +47,7 @@ public class StopGroupServiceImpl implements IStopGroupService {
      */
     @Override
     public List<StopGroupVo> getStopGroupAll() {
-        List<StopsComponentGroup> stopGroupList = stopsComponentGroupDomain.getStopGroupList();
+        List<StopsComponentGroup> stopGroupList = stopsComponentDomain.getStopGroupList();
         if (null == stopGroupList || stopGroupList.size() <= 0) {
             return null;
         }
@@ -57,11 +58,11 @@ public class StopGroupServiceImpl implements IStopGroupService {
             }
             List<StopsComponent> stopsComponentList = stopGroup.getStopsComponentList();
             if (null == stopsComponentList || stopsComponentList.size() <= 0) {
-            	continue;
+                continue;
             }
             StopGroupVo stopGroupVo = new StopGroupVo();
             BeanUtils.copyProperties(stopGroup, stopGroupVo);
-            
+
             List<StopsTemplateVo> stopsTemplateVoList = new ArrayList<>();
             for (StopsComponent stopsComponent : stopsComponentList) {
                 if (null == stopsComponent) {
@@ -74,7 +75,7 @@ public class StopGroupServiceImpl implements IStopGroupService {
                     List<PropertyTemplateVo> propertiesVo = new ArrayList<PropertyTemplateVo>();
                     for (StopsComponentProperty stopsComponentProperty : properties) {
                         if (null == propertiesVo) {
-                        	continue;
+                            continue;
                         }
                         PropertyTemplateVo propertyTemplateVo = new PropertyTemplateVo();
                         BeanUtils.copyProperties(stopsComponentProperty, propertyTemplateVo);
@@ -92,19 +93,18 @@ public class StopGroupServiceImpl implements IStopGroupService {
     }
 
     @Override
-    @Transactional
     public void updateGroupAndStopsListByServer(String username) {
         Map<String, List<String>> stopsListWithGroup = stopImpl.getStopsListWithGroup();
         if (null == stopsListWithGroup || stopsListWithGroup.isEmpty()) {
             return;
         }
         // The call is successful, empty the "StopsComponentGroup" and "StopsComponent" message and insert
-        stopsComponentGroupDomain.deleteStopsComponentGroup();
+        stopsComponentDomain.deleteStopsComponentGroup();
         stopsComponentDomain.deleteStopsComponent();
 
         int addStopsComponentGroupRows = 0;
         // StopsComponent bundle list
-        List<String> stopsBundleList = new ArrayList<>();        
+        List<String> stopsBundleList = new ArrayList<>();
         // Loop stopsListWithGroup
         for (String groupName : stopsListWithGroup.keySet()) {
             if (StringUtils.isBlank(groupName)) {
@@ -114,7 +114,7 @@ public class StopGroupServiceImpl implements IStopGroupService {
             StopsComponentGroup stopsComponentGroup = StopsComponentGroupUtils.stopsComponentGroupNewNoId(username);
             stopsComponentGroup.setId(UUIDUtils.getUUID32());
             stopsComponentGroup.setGroupName(groupName);
-            addStopsComponentGroupRows += stopsComponentGroupDomain.addStopsComponentGroup(stopsComponentGroup);
+            addStopsComponentGroupRows += stopsComponentDomain.addStopsComponentGroup(stopsComponentGroup);
             // get current group stops bundle list
             List<String> list = stopsListWithGroup.get(groupName);
             stopsBundleList.addAll(list);
@@ -143,7 +143,7 @@ public class StopGroupServiceImpl implements IStopGroupService {
             }
             List<String> list = Arrays.asList(thirdStopsComponentVo.getGroups().split(","));
             // Query group information according to groupName in stops
-            List<StopsComponentGroup> stopGroupByName = stopsComponentGroupDomain.getStopGroupByNameList(list);
+            List<StopsComponentGroup> stopGroupByName = stopsComponentDomain.getStopGroupByNameList(list);
             StopsComponent stopsComponent = StopsComponentUtils.thirdStopsComponentVoToStopsTemplate(username, thirdStopsComponentVo, stopGroupByName);
             if (null == stopsComponent) {
                 continue;
@@ -157,13 +157,13 @@ public class StopGroupServiceImpl implements IStopGroupService {
         logger.info("update StopsComponent Num :" + updateStopsComponentNum);
     }
 
-	@Override
-	public String stopsComponentList(String username, boolean isAdmin) {
-		if(!isAdmin) {
-			return ReturnMapUtils.setFailedMsgRtnJsonStr("Permission error");
-		}
-		List<StopsComponentGroup> stopGroupList = stopsComponentGroupDomain.getManageStopGroupList();
-		return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("stopGroupList",stopGroupList);
-	}
+    @Override
+    public String stopsComponentList(String username, boolean isAdmin) {
+        if(!isAdmin) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Permission error");
+        }
+        List<StopsComponentGroupVo> stopGroupList = stopsComponentGroupDomain.getManageStopGroupList();
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("stopGroupList",stopGroupList);
+    }
 
 }
