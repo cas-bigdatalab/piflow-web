@@ -20,6 +20,15 @@ public interface ProcessMapper {
     public int addProcess(Process process);
 
     /**
+     * update process
+     *
+     * @param process
+     * @return
+     */
+    @UpdateProvider(type = ProcessMapperProvider.class, method = "updateProcess")
+    public int updateProcess(Process process);
+
+    /**
      * Query process by process ID
      *
      * @param id
@@ -150,14 +159,6 @@ public interface ProcessMapper {
     })
     public List<Process> getProcessListByAppIDs(@Param("appIDs") String[] appIDs);
 
-    /**
-     * update process
-     *
-     * @param process
-     * @return
-     */
-    @UpdateProvider(type = ProcessMapperProvider.class, method = "updateProcess")
-    public int updateProcess(Process process);
 
     /**
      * update process EnableFlag
@@ -214,6 +215,15 @@ public interface ProcessMapper {
     public RunModeType getProcessRunModeTypeById(String id);
 
     @Select("select app_id from flow_process where enable_flag=1 and fk_flow_process_group_id is null and app_id is not null and ( ( state!='COMPLETED' and state!='FINISHED' and state!='FAILED' and state!='KILLED' ) or state is null )")
-    List<String> getRunningProcessAppId();
+    public List<String> getRunningProcessAppId();
 
+    @Select("select s.id from flow_process s where s.enable_flag=1 and s.fk_flow_process_group_id=#{fid} and s.page_id=#{pageId}")
+    public String getProcessIdByPageId(@Param("fid") String fid, @Param("pageId") String pageId);
+    
+    @Select("select state from flow_process where enable_flag=1 and id=#{id} ")
+    public ProcessState getProcessStateById(String id);
+    
+    
+    
+    
 }

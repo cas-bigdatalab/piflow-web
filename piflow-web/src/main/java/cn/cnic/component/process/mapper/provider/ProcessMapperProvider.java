@@ -114,7 +114,7 @@ public class ProcessMapperProvider {
      * @return
      */
     public String addProcess(Process process) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         if (this.preventSQLInjectionProcess(process)) {
             StringBuffer strBuf = new StringBuffer();
             strBuf.append("INSERT INTO flow_process ");
@@ -142,7 +142,7 @@ public class ProcessMapperProvider {
             strBuf.append("view_xml ");
             strBuf.append(") ");
 
-            strBuf.append("values ");
+            strBuf.append("VALUES ");
             strBuf.append("(");
             strBuf.append(SqlUtils.baseFieldValues(process) + ", ");
             strBuf.append(name + ", ");
@@ -168,6 +168,50 @@ public class ProcessMapperProvider {
             strBuf.append(") ");
             this.reset();
             return strBuf.toString() + ";";
+        }
+        this.reset();
+        return sqlStr;
+    }
+
+
+    /**
+     * update process
+     *
+     * @param process
+     * @return
+     */
+    public String updateProcess(Process process) {
+        String sqlStr = "SELECT 0";
+        if (this.preventSQLInjectionProcess(process)) {
+            SQL sql = new SQL();
+            sql.UPDATE("flow_process");
+
+            // Process the required fields first
+            sql.SET("last_update_dttm = " + lastUpdateDttmStr);
+            sql.SET("last_update_user = " + lastUpdateUser);
+            sql.SET("version = " + (version + 1));
+
+            // handle other fields
+            sql.SET("enable_flag=" + enableFlag);
+            sql.SET("name=" + name);
+            sql.SET("driver_memory=" + driverMemory);
+            sql.SET("executor_number=" + executorNumber);
+            sql.SET("executor_memory=" + executorMemory);
+            sql.SET("executor_cores=" + executorCores);
+            sql.SET("view_xml=" + viewXml);
+            sql.SET("description=" + description);
+            sql.SET("app_id=" + appId);
+            sql.SET("process_id=" + processId);
+            sql.SET("state=" + stateName);
+            sql.SET("start_time=" + startTimeStr);
+            sql.SET("end_time=" + endTimeStr);
+            sql.SET("progress=" + progress);
+            sql.SET("run_mode_type=" + runModeTypeStr);
+            sql.WHERE("version = " + version);
+            sql.WHERE("id = " + id);
+            if (StringUtils.isNotBlank(id)) {
+                sqlStr = sql.toString();
+            }
         }
         this.reset();
         return sqlStr;
@@ -326,6 +370,7 @@ public class ProcessMapperProvider {
         }
         return sqlStr;
     }
+
     /**
      * Query process id according to process appId
      *
@@ -378,8 +423,8 @@ public class ProcessMapperProvider {
             SQL sql = new SQL();
             String appIDsStr = SqlUtils.strArrayToStr(appIDs);
             if (StringUtils.isNotBlank(appIDsStr)) {
-                //appIDsStr = appIDsStr.replace(",", "','");
-                //appIDsStr = "'" + appIDsStr + "'";
+                // appIDsStr = appIDsStr.replace(",", "','");
+                // appIDsStr = "'" + appIDsStr + "'";
 
                 sql.SELECT("*");
                 sql.FROM("flow_process");
@@ -389,50 +434,6 @@ public class ProcessMapperProvider {
                 sqlStr = sql.toString();
             }
         }
-        return sqlStr;
-    }
-
-    /**
-     * update process
-     *
-     * @param process
-     * @return
-     */
-    public String updateProcess(Process process) {
-        String sqlStr = "SELECT 0";
-        this.preventSQLInjectionProcess(process);
-        if (null != process) {
-            SQL sql = new SQL();
-            sql.UPDATE("flow_process");
-
-            //Process the required fields first
-            sql.SET("last_update_dttm = " + lastUpdateDttmStr);
-            sql.SET("last_update_user = " + lastUpdateUser);
-            sql.SET("version = " + (version + 1));
-
-            // handle other fields
-            sql.SET("enable_flag=" + enableFlag);
-            sql.SET("name=" + name);
-            sql.SET("driver_memory=" + driverMemory);
-            sql.SET("executor_number=" + executorNumber);
-            sql.SET("executor_memory=" + executorMemory);
-            sql.SET("executor_cores=" + executorCores);
-            sql.SET("view_xml=" + viewXml);
-            sql.SET("description=" + description);
-            sql.SET("app_id=" + appId);
-            sql.SET("process_id=" + processId);
-            sql.SET("state=" + stateName);
-            sql.SET("start_time=" + startTimeStr);
-            sql.SET("end_time=" + endTimeStr);
-            sql.SET("progress=" + progress);
-            sql.SET("run_mode_type=" + runModeTypeStr);
-            sql.WHERE("version = " + version);
-            sql.WHERE("id = " + id);
-            if (StringUtils.isNotBlank(id)) {
-                sqlStr = sql.toString();
-            }
-        }
-        this.reset();
         return sqlStr;
     }
 
@@ -525,8 +526,8 @@ public class ProcessMapperProvider {
             String pageIdsStr = SqlUtils.strArrayToStr(pageIds);
             if (StringUtils.isNotBlank(pageIdsStr)) {
 
-                //pageIdsStr = pageIdsStr.replace(",", "','");
-                //pageIdsStr = "'" + pageIdsStr + "'";
+                // pageIdsStr = pageIdsStr.replace(",", "','");
+                // pageIdsStr = "'" + pageIdsStr + "'";
                 SQL sql = new SQL();
                 sql.SELECT("*");
                 sql.FROM("flow_process");

@@ -29,12 +29,11 @@ public class ProcessPathMapperProvider {
             return false;
         }
         // Mandatory Field
-        String id = processPath.getId();
         String lastUpdateUser = processPath.getLastUpdateUser();
         Boolean enableFlag = processPath.getEnableFlag();
         Long version = processPath.getVersion();
         Date lastUpdateDttm = processPath.getLastUpdateDttm();
-        this.id = SqlUtils.preventSQLInjection(id);
+        this.id = SqlUtils.preventSQLInjection(processPath.getId());
         this.lastUpdateUser = SqlUtils.preventSQLInjection(lastUpdateUser);
         this.enableFlag = ((null != enableFlag && enableFlag) ? 1 : 0);
         this.version = (null != version ? version : 0L);
@@ -73,11 +72,13 @@ public class ProcessPathMapperProvider {
      * @return
      */
     public String addProcessPath(ProcessPath processPath) {
-        String sqlStr = "select 0";
+        String sqlStr = "SELECT 0";
         if (this.preventSQLInjectionProcessPath(processPath)) {
             StringBuffer strBuf = new StringBuffer();
-            strBuf.append("INSERT INTO flow_process_path ");
-            strBuf.append("( ");
+            strBuf.append("INSERT INTO ");
+            strBuf.append("flow_process_path ");
+            strBuf.append("(");
+            // Mandatory Field
             strBuf.append(SqlUtils.baseFieldName() + ", ");
             strBuf.append("line_from, ");
             strBuf.append("line_outport, ");
@@ -87,15 +88,18 @@ public class ProcessPathMapperProvider {
             strBuf.append("fk_flow_process_id ");
             strBuf.append(") ");
 
-            strBuf.append("values ");
+            strBuf.append("VALUES ");
             strBuf.append("(");
+            // Selection field
             strBuf.append(SqlUtils.baseFieldValues(processPath) + ", ");
-            strBuf.append(from + " ");
-            strBuf.append(outport + " ");
-            strBuf.append(to + " ");
-            strBuf.append(inport + " ");
-            strBuf.append(pageId + " ");
+            // handle other fields
+            strBuf.append(from + ", ");
+            strBuf.append(outport + ", ");
+            strBuf.append(to + ", ");
+            strBuf.append(inport + ", ");
+            strBuf.append(pageId + ", ");
             strBuf.append(processId + " ");
+            strBuf.append(")");
             this.reset();
             return strBuf.toString() + ";";
         }
@@ -111,45 +115,39 @@ public class ProcessPathMapperProvider {
      */
     public String addProcessPathList(Map<String, List<ProcessPath>> processPathList) {
         List<ProcessPath> processPaths = processPathList.get("processPathList");
-        String sqlStr = "SELECT 0";
-        if (null != processPaths && processPaths.size() > 0) {
-            StringBuffer sql = new StringBuffer();
-            sql.append("insert into ");
-            sql.append("flow_process_path ");
-            sql.append("(");
-            sql.append(SqlUtils.baseFieldName() + ",");
-            sql.append("line_from,");
-            sql.append("line_to,");
-            sql.append("line_outport,");
-            sql.append("line_inport,");
-            sql.append("page_id,");
-            sql.append("fk_flow_process_id");
-            sql.append(")");
-            sql.append("values");
-            // The order must be guaranteed
-            int i = 0;
-            for (ProcessPath processPath : processPaths) {
-                i++;
-                if (this.preventSQLInjectionProcessPath(processPath)) {
-                    sql.append("(");
-                    sql.append(SqlUtils.baseFieldValues(processPath) + ", ");
-                    sql.append(from + ",");
-                    sql.append(to + ",");
-                    sql.append(outport + ",");
-                    sql.append(inport + ",");
-                    sql.append(pageId + ",");
-                    sql.append(processId);
-                    if (i != processPaths.size()) {
-                        sql.append("),");
-                    } else {
-                        sql.append(")");
-                    }
-                    this.reset();
-                }
-            }
-
-            sqlStr = sql.toString();
+        if (null == processPaths || processPaths.size() <= 0) {
+            return "SELECT 0";
         }
+        StringBuffer sql = new StringBuffer();
+        sql.append("INSERT INTO ");
+        sql.append("flow_process_path ");
+        sql.append("(");
+        sql.append(SqlUtils.baseFieldName() + ", ");
+        sql.append("line_from,line_to,line_outport,line_inport,page_id,fk_flow_process_id");
+        sql.append(")");
+        sql.append("VALUES ");
+        // The order must be guaranteed
+        int i = 0;
+        for (ProcessPath processPath : processPaths) {
+            i++;
+            if (this.preventSQLInjectionProcessPath(processPath)) {
+                sql.append("(");
+                sql.append(SqlUtils.baseFieldValues(processPath) + ",");
+                sql.append(from + ",");
+                sql.append(to + ",");
+                sql.append(outport + ",");
+                sql.append(inport + ",");
+                sql.append(pageId + ",");
+                sql.append(processId);
+                if (i != processPaths.size()) {
+                    sql.append("),");
+                } else {
+                    sql.append(")");
+                }
+                this.reset();
+            }
+        }
+        String sqlStr = sql.toString();
         return sqlStr;
     }
 
@@ -203,33 +201,32 @@ public class ProcessPathMapperProvider {
      */
     public String updateProcessPath(ProcessPath processPath) {
         String sqlStr = "SELECT 0";
-        this.preventSQLInjectionProcessPath(processPath);
-        if (null != processPath) {
-            if (StringUtils.isNotBlank(id)) {
-
-                SQL sql = new SQL();
-                sql.UPDATE("flow_process_path");
-
-                //Process the required fields first
-                sql.SET("last_update_dttm = " + lastUpdateDttmStr);
-                sql.SET("last_update_user = " + lastUpdateUser);
-                sql.SET("version = " + (version + 1));
-
-                // handle other fields
-                sql.SET("enable_flag = " + enableFlag);
-                sql.SET("line_to = " + to);
-                sql.SET("line_from = " + from);
-                sql.SET("line_outport = " + outport);
-                sql.SET("line_inport = " + inport);
-                sql.SET("page_id = " + pageId);
-                if (null != processId) {
-                    sql.SET("fk_flow_process_id = " + processId);
-                }
-                sql.WHERE("enable_flag = 1");
-                sql.WHERE("version = " + version);
-                sql.WHERE("id = " + id);
-                sqlStr = sql.toString();
+        if (this.preventSQLInjectionProcessPath(processPath)) {
+            if (StringUtils.isBlank(id)) {
+                return "SELECT 0";
             }
+            SQL sql = new SQL();
+            sql.UPDATE("flow_process_path");
+
+            //Process the required fields first
+            sql.SET("last_update_dttm = " + lastUpdateDttmStr);
+            sql.SET("last_update_user = " + lastUpdateUser);
+            sql.SET("version = " + (version + 1));
+
+            // handle other fields
+            sql.SET("enable_flag = " + enableFlag);
+            sql.SET("line_to = " + to);
+            sql.SET("line_from = " + from);
+            sql.SET("line_outport = " + outport);
+            sql.SET("line_inport = " + inport);
+            sql.SET("page_id = " + pageId);
+            if (null != processId) {
+                sql.SET("fk_flow_process_id = " + processId);
+            }
+            sql.WHERE("enable_flag = 1");
+            sql.WHERE("version = " + version);
+            sql.WHERE("id = " + id);
+            sqlStr = sql.toString();
         }
         this.reset();
         return sqlStr;
