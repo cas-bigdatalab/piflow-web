@@ -23,7 +23,7 @@ public class StatisticProvider {
     }
 
     public String getScheduleStatisticInfo(){
-        String sql = "select status as STATE, count(*) as COUNT from group_schedule where enable_flag = 1 GROUP BY status";
+        String sql = "select status as STATUS, count(*) as COUNT from group_schedule where enable_flag = 1 GROUP BY status";
         return  sql;
     }
 
@@ -49,7 +49,7 @@ public class StatisticProvider {
     }
 
     public String getStopsGroupCount(){
-        String sql = "select count(*) as count from flow_stops_groups";
+        String sql = "select count(*) as COUNT from flow_stops_groups";
         return  sql;
     }
 }
