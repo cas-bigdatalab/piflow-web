@@ -113,7 +113,7 @@ public class StopsUtils {
                     if(null == stopsComponentProperty){
                         continue;
                     }
-                    propertyVo.setExample(stopsComponentProperty.getName());
+                    propertyVo.setExample(stopsComponentProperty.getExample());
                     propertyVo.setLanguage(stopsComponentProperty.getLanguage());
                 }
                 stopsVo.setPropertiesVo(propertiesVo);
