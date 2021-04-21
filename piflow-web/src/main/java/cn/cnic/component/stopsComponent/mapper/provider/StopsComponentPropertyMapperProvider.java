@@ -96,11 +96,14 @@ public class StopsComponentPropertyMapperProvider {
             sqlValuesStr.append("example,");
             sqlValuesStr.append("language,");
             sqlValuesStr.append("fk_stops_id");
+            sqlValuesStr.append(")");
             sqlValuesStr.append("\nVALUES\n");
+
             for (int i = 0; i < stopsComponentPropertyList.size(); i++) {
                 StopsComponentProperty stopsComponentProperty = stopsComponentPropertyList.get(i);
                 boolean flag = this.preventSQLInjectionStopsComponentProperty(stopsComponentProperty);
                 if(flag) {
+                    sqlValuesStr.append("(");
                 	sqlValuesStr.append(SqlUtils.baseFieldValues(stopsComponentProperty) + ", ");
                     sqlValuesStr.append(allowableValues + ",");
                     sqlValuesStr.append(defaultValue + ",");

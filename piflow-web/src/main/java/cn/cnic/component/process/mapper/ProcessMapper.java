@@ -1,5 +1,6 @@
 package cn.cnic.component.process.mapper;
 
+import cn.cnic.common.Eunm.ProcessState;
 import cn.cnic.common.Eunm.RunModeType;
 import cn.cnic.component.process.entity.Process;
 import cn.cnic.component.process.mapper.provider.ProcessMapperProvider;
