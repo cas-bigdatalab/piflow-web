@@ -3,6 +3,7 @@ package cn.cnic.base.config.jwt;
 import cn.cnic.base.config.jwt.common.JwtUtils;
 import cn.cnic.base.vo.UserVo;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -10,7 +11,6 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.annotation.Resource;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -19,8 +19,6 @@ import java.io.IOException;
 
 /**
  * token校验,引用的stackoverflow一个答案里的处理方式
- * Author: Nature
- * createAt: 2020/6/30
  */
 @Component
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
@@ -28,7 +26,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     @Value("${jwt.header}")
     private String token_header;
 
-    @Resource
+    @Autowired
     private JwtUtils jwtUtils;
 
     @Override

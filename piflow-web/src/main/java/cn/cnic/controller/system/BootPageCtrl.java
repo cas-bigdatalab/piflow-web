@@ -3,17 +3,17 @@ package cn.cnic.controller.system;
 import cn.cnic.base.util.ReturnMapUtils;
 import cn.cnic.base.util.SessionUserUtil;
 import cn.cnic.component.system.service.ISysInitRecordsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.annotation.Resource;
 
 @Controller
 @RequestMapping("/bootPage")
 public class BootPageCtrl {
 
-    @Resource
+    @Autowired
     private ISysInitRecordsService sysInitRecordsServiceImpl;
 
     @RequestMapping("/isInBootPage")

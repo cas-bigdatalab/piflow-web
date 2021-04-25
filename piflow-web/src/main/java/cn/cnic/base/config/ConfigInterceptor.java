@@ -1,8 +1,8 @@
 package cn.cnic.base.config;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -12,7 +12,6 @@ import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.base.util.SessionUserUtil;
 import cn.cnic.base.vo.UserVo;
 import cn.cnic.common.constant.SysParamsCache;
-import cn.cnic.component.system.jpa.domain.SysInitRecordsDomain;
 
 /**
  * Defining interceptors
@@ -21,9 +20,6 @@ import cn.cnic.component.system.jpa.domain.SysInitRecordsDomain;
 public class ConfigInterceptor implements HandlerInterceptor {
 
     Logger logger = LoggerUtil.getLogger();
-
-    @Resource
-    private SysInitRecordsDomain sysInitRecordsDomain;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {

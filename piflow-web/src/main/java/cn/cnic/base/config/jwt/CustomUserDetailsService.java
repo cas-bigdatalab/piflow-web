@@ -3,10 +3,9 @@ package cn.cnic.base.config.jwt;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Resource;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -23,15 +22,13 @@ import cn.cnic.component.system.vo.SysMenuVo;
 
 /**
  * 登陆身份认证
- * Author: Nature
- * createAt: 2020/6/30
  */
 @Component
 public class CustomUserDetailsService implements UserDetailsService {
 
-    @Resource
+    @Autowired
     private SysUserMapper sysUserMapper;
-    @Resource
+    @Autowired
     private SysMenuMapper sysMenuMapper;
 
     @Override

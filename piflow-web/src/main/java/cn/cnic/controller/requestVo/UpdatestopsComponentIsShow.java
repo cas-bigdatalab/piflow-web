@@ -18,10 +18,10 @@ public class UpdatestopsComponentIsShow implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@ApiModelProperty(value = "bundle", required = true)
-	private String bundle;
+	private String[] bundle;
 
 	@ApiModelProperty(value = "stopsGroups", required = true)
-	private String stopsGroups;
+	private String[] stopsGroups;
 
 	@ApiModelProperty(value = "isShow", required = true)
 	private Boolean isShow = true;

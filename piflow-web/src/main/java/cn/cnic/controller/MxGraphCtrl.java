@@ -3,10 +3,10 @@ package cn.cnic.controller;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,11 +19,9 @@ import cn.cnic.base.util.JsonUtils;
 import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.base.util.SessionUserUtil;
 import cn.cnic.component.flow.service.IFlowGroupService;
-import cn.cnic.component.flow.service.IFlowService;
 import cn.cnic.component.mxGraph.service.IMxGraphModelService;
 import cn.cnic.component.mxGraph.service.IMxNodeImageService;
 import cn.cnic.component.mxGraph.vo.MxGraphVo;
-import cn.cnic.component.stopsComponent.service.IStopGroupService;
 
 /**
  * grapheditorctrl
@@ -36,19 +34,13 @@ public class MxGraphCtrl {
      */
     Logger logger = LoggerUtil.getLogger();
 
-    @Resource
-    private IFlowService flowServiceImpl;
-
-    @Resource
+    @Autowired
     private IFlowGroupService flowGroupServiceImpl;
 
-    @Resource
-    private IStopGroupService stopGroupServiceImpl;
-
-    @Resource
+    @Autowired
     private IMxGraphModelService mxGraphModelServiceImpl;
 
-    @Resource
+    @Autowired
     private IMxNodeImageService mxNodeImageServiceImpl;
 
     /**

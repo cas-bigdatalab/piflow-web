@@ -126,4 +126,14 @@ public interface FlowMapper {
             @Result(column = "id", property = "pathsList", many = @Many(select = "cn.cnic.component.flow.mapper.PathsMapper.getPathsListByFlowId", fetchType = FetchType.LAZY))
     })
     public List<Flow> getFlowListGroupId(String flowGroupId);
+
+    /**
+     * query flow name by flow name
+     *
+     * @param flowName
+     * @return
+     */
+    @Select("SELECT name FROM flow WHERE enable_flag=1 AND fk_flow_group_id IS NULL AND is_example=0 AND name=#{flowName} ")
+    public String getFlowName(@Param("flowGroupId") String flowName);
+
 }

@@ -1,14 +1,16 @@
 package cn.cnic.base.config.jwt.common;
 
 import cn.cnic.common.Eunm.ResultCode;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 
 /**
  * RESTful API 返回类型
  */
-@Data
+@Getter
+@Setter
 @SuppressWarnings("rawtypes")
 public class ResultJson<T> implements Serializable{
 

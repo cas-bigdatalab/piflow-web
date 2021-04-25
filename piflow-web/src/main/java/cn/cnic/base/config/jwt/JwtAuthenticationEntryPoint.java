@@ -1,8 +1,9 @@
 package cn.cnic.base.config.jwt;
 
-import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.common.Eunm.ResultCode;
 import cn.cnic.base.config.jwt.common.ResultJson;
+import cn.cnic.base.util.LoggerUtil;
+
 import org.slf4j.Logger;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -16,8 +17,6 @@ import java.io.Serializable;
 
 /**
  * 认证失败处理类，返回401
- * Author: Nature
- * createAt: 2020/6/30
  */
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Serializable {

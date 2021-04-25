@@ -19,8 +19,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
-@RestController
 @Api(value = "stops api")
+@RestController
 @RequestMapping("/stopsManage")
 public class StopsManageCtrl {
 
@@ -82,8 +82,7 @@ public class StopsManageCtrl {
     /**
      * runStops
      * 
-     * @param stopsId
-     * @param testDataId
+     * @param runStopsVo
      * @return
      * @throws Exception 
      */

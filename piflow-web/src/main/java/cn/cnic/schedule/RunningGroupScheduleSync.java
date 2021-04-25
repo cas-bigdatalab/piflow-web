@@ -21,20 +21,21 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.quartz.JobExecutionContext;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
 
 @Component
 public class RunningGroupScheduleSync extends QuartzJobBean {
 
     Logger logger = LoggerUtil.getLogger();
 
-    @Resource
+    @Autowired
     private ScheduleMapper scheduleMapper;
 
     @Override

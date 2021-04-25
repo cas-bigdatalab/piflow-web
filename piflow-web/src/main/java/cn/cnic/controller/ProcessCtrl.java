@@ -3,11 +3,11 @@ package cn.cnic.controller;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -30,16 +30,16 @@ public class ProcessCtrl {
      */
     Logger logger = LoggerUtil.getLogger();
 
-    @Resource
+    @Autowired
     IProcessService processServiceImpl;
 
-    @Resource
+    @Autowired
     IFlow flowImpl;
 
-    @Resource
+    @Autowired
     IProcessStopService processStopServiceImpl;
 
-    @Resource
+    @Autowired
     IProcessPathService processPathServiceImpl;
 
 

@@ -12,6 +12,7 @@ import lombok.Setter;
 @Setter
 public class StopsComponentVo {
 
+    private String id;
     private String name;
     private String bundel;
     private String groups;

@@ -9,20 +9,21 @@ import org.apache.commons.collections.CollectionUtils;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
 
 @Component
 public class RunningProcessSync extends QuartzJobBean {
 
     Logger logger = LoggerUtil.getLogger();
 
-    @Resource
+    @Autowired
     private ProcessMapper processMapper;
 
     @Override
@@ -35,8 +36,12 @@ public class RunningProcessSync extends QuartzJobBean {
                 @Override
                 public void run() {
                     for (String appId : runningProcess) {
-                        IFlow getFlowInfoImpl = (IFlow) SpringContextUtil.getBean("flowImpl");
-                        getFlowInfoImpl.getProcessInfoAndSave(appId);
+                        try {
+                            IFlow getFlowInfoImpl = (IFlow) SpringContextUtil.getBean("flowImpl");
+                            getFlowInfoImpl.getProcessInfoAndSave(appId);
+                        } catch (Exception e) {
+                            logger.error("errorMsg:", e);
+                        }
                     }
                 }
             });

@@ -60,9 +60,9 @@ public class TestDataDomain {
      * @throws Exception
      */
     public int saveOrUpdateTestDataSchemaValuesList(String username, boolean isInster, List<TestDataSchemaValues> schemaValuesList, TestData testData) throws Exception {
-    	
+
         if (null == schemaValuesList) {
-        	return 0;
+            return 0;
         }
         int affectedRows = 0;
         if (isInster) {
@@ -72,14 +72,13 @@ public class TestDataDomain {
             return affectedRows;
         }
         for (TestDataSchemaValues testDataSchemaValues : schemaValuesList) {
-        	if (StringUtils.isBlank(testDataSchemaValues.getId())) {
-        		affectedRows += addTestDataSchemaValues(username, testDataSchemaValues, testDataSchemaValues.getTestDataSchema(), testData);
+            if (StringUtils.isBlank(testDataSchemaValues.getId())) {
+                affectedRows += addTestDataSchemaValues(username, testDataSchemaValues, testDataSchemaValues.getTestDataSchema(), testData);
             }
-        	affectedRows += updateTestDataSchemaValues(username, testDataSchemaValues, testDataSchemaValues.getTestDataSchema(), testData);
+            affectedRows += updateTestDataSchemaValues(username, testDataSchemaValues, testDataSchemaValues.getTestDataSchema(), testData);
         }
         return affectedRows;
-    	
-    	
+
     }
     
     /**
@@ -94,7 +93,9 @@ public class TestDataDomain {
         if (null == testData) {
             throw new Exception("testData is null");
         }
-        testData.setId(UUIDUtils.getUUID32());
+        if (StringUtils.isBlank(testData.getId())) {
+            testData.setId(UUIDUtils.getUUID32());
+        }
         testData.setCrtUser(username);
         testData.setCrtDttm(new Date());
         testData.setLastUpdateUser(username);
@@ -279,7 +280,7 @@ public class TestDataDomain {
      * @throws
      */
     public TestDataVo getTestDataVoById(String id) {
-    	return testDataMapper.getTestDataVoById(id);
+        return testDataMapper.getTestDataVoById(id);
     }
     
     /**
@@ -290,7 +291,7 @@ public class TestDataDomain {
      * @throws
      */
     public TestData getTestDataById(String id) {
-    	return testDataMapper.getTestDataById(id);
+        return testDataMapper.getTestDataById(id);
     }
 
     /**
@@ -403,6 +404,10 @@ public class TestDataDomain {
             return null;
         }
         return testDataSchemaValuesMapper.getTestDataSchemaValuesListByTestDataId(testDataId);
+    }
+
+    public String getTestDataName(String testDataName){
+        return testDataMapper.getTestDataName(testDataName);
     }
 
 }

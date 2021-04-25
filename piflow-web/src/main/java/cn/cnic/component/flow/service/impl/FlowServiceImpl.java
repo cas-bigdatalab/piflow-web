@@ -197,6 +197,13 @@ public class FlowServiceImpl implements IFlowService {
         if (null == flowVo) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("param is null");
         }
+        if (StringUtils.isBlank(flowVo.getName())) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("flow name is null");
+        }
+        String flowName = flowMapper.getFlowName(flowVo.getName());
+        if (StringUtils.isNotBlank(flowName)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Repeat flow name!");
+        }
         Flow flow = new Flow();
         BeanUtils.copyProperties(flowVo, flow);
         String id = UUIDUtils.getUUID32();

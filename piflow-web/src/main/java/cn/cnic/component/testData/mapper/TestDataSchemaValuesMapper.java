@@ -89,7 +89,7 @@ public interface TestDataSchemaValuesMapper {
 	/**
 	 * get TestDataSchemaValuesList by schemaId
 	 * 
-	 * @param schemaId
+	 * @param testDataId
 	 * @return
 	 */
 	@Select("select * from test_data_schema_values where enable_flag=1 and fk_test_data_id=#{testDataId} order by data_row asc ")

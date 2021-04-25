@@ -20,27 +20,6 @@ public class StopsComponentManageServiceImpl implements IStopsComponentManageSer
 
 	@Resource
 	private StopsComponentManageDomain stopsComponentManageDomain;
-
-	@Override
-	public String updateStopsComponentsIsShow(String username, boolean isAdmin, UpdatestopsComponentIsShow[] stopsManageList) throws Exception {
-		if (!isAdmin) {
-			return ReturnMapUtils.setFailedMsgRtnJsonStr("Permission error");
-		}
-		if (null == stopsManageList || stopsManageList.length <= 0) {
-			return ReturnMapUtils.setFailedMsgRtnJsonStr("stopsManageList is null");
-		}
-		for (UpdatestopsComponentIsShow stopsManage : stopsManageList) {
-			StopsComponentManage stopsComponentManage = stopsComponentManageDomain.getStopsComponentManageByBundleAndGroup(stopsManage.getBundle(), stopsManage.getStopsGroups());
-			if (null == stopsComponentManage) {
-				stopsComponentManage = StopsComponentManageUtils.stopsComponentManageNewNoId(username);
-				stopsComponentManage.setBundle(stopsManage.getBundle());
-				stopsComponentManage.setStopsGroups(stopsManage.getStopsGroups());
-			}
-			stopsComponentManage.setIsShow(stopsManage.getIsShow());
-			stopsComponentManageDomain.saveOrUpdeate(stopsComponentManage);
-		}
-		return ReturnMapUtils.setSucceededMsgRtnJsonStr(ReturnMapUtils.SUCCEEDED_MSG);
-	}
 	
     /**
      * updateStopsComponentsIsShow
@@ -59,14 +38,26 @@ public class StopsComponentManageServiceImpl implements IStopsComponentManageSer
 		if (null == stopsManage) {
 			return ReturnMapUtils.setFailedMsgRtnJsonStr("stopsManageList is null");
 		}
-		StopsComponentManage stopsComponentManage = stopsComponentManageDomain.getStopsComponentManageByBundleAndGroup(stopsManage.getBundle(), stopsManage.getStopsGroups());
-		if (null == stopsComponentManage) {
-			stopsComponentManage = StopsComponentManageUtils.stopsComponentManageNewNoId(username);
-			stopsComponentManage.setBundle(stopsManage.getBundle());
-			stopsComponentManage.setStopsGroups(stopsManage.getStopsGroups());
+		String[] bundleArr = stopsManage.getBundle();
+		String[] stopsGroupsArr = stopsManage.getStopsGroups();
+		if (null == bundleArr || null == stopsGroupsArr || bundleArr.length <= 0 || stopsGroupsArr.length <= 0) {
+			return ReturnMapUtils.setFailedMsgRtnJsonStr("param is error");
 		}
-		stopsComponentManage.setIsShow(stopsManage.getIsShow());
-		stopsComponentManageDomain.saveOrUpdeate(stopsComponentManage);
+		if (bundleArr.length != stopsGroupsArr.length) {
+			return ReturnMapUtils.setFailedMsgRtnJsonStr("param is error");
+		}
+		for (int i = 0; i < stopsGroupsArr.length; i++) {
+			String stopsGroup_i = stopsGroupsArr[i];
+			String bundle_i = bundleArr[i];
+			StopsComponentManage stopsComponentManage = stopsComponentManageDomain.getStopsComponentManageByBundleAndGroup(bundle_i, stopsGroup_i);
+			if (null == stopsComponentManage) {
+				stopsComponentManage = StopsComponentManageUtils.stopsComponentManageNewNoId(username);
+				stopsComponentManage.setBundle(bundle_i);
+				stopsComponentManage.setStopsGroups(stopsGroup_i);
+			}
+			stopsComponentManage.setIsShow(stopsManage.getIsShow());
+			stopsComponentManageDomain.saveOrUpdeate(stopsComponentManage);
+		}
 		return ReturnMapUtils.setSucceededMsgRtnJsonStr(ReturnMapUtils.SUCCEEDED_MSG);
 	}
 

@@ -14,8 +14,6 @@ import java.io.PrintWriter;
 
 /**
 * 权限不足处理类，返回403
- * Author: Nature
- * createAt: 2020/6/30
  */
 @Component("RestAuthenticationAccessDeniedHandler")
 public class RestAuthenticationAccessDeniedHandler implements AccessDeniedHandler {

@@ -1,9 +1,9 @@
 package cn.cnic.controller;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -24,13 +24,13 @@ public class ProcessAndProcessGroupCtrl {
      */
     Logger logger = LoggerUtil.getLogger();
 
-    @Resource
+    @Autowired
     private IProcessService processServiceImpl;
 
-    @Resource
+    @Autowired
     private IProcessGroupService processGroupServiceImpl;
 
-    @Resource
+    @Autowired
     private IProcessAndProcessGroupService processAndProcessGroupServiceImpl;
 
 

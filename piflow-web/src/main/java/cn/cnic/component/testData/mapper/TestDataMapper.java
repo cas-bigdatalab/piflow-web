@@ -95,4 +95,13 @@ public interface TestDataMapper {
 	@SelectProvider(type = TestDataMapperProvider.class,method = "getTestDataList")
 	public List<TestDataVo> getTestDataVoList(boolean isAdmin, String username, String param);
 
+	/**
+	 * get TestDataVo by id
+	 *
+	 * @param testDataName
+	 * @return TestDataVo
+	 */
+	@Select("SELECT name FROM test_data WHERE enable_flag=1 and name=#{testDataName} ")
+	public String getTestDataName(String testDataName);
+
 }

@@ -11,10 +11,7 @@ import cn.cnic.component.stopsComponent.model.StopsComponentProperty;
 import cn.cnic.component.stopsComponent.service.IStopGroupService;
 import cn.cnic.component.stopsComponent.utils.StopsComponentGroupUtils;
 import cn.cnic.component.stopsComponent.utils.StopsComponentUtils;
-import cn.cnic.component.stopsComponent.vo.PropertyTemplateVo;
-import cn.cnic.component.stopsComponent.vo.StopGroupVo;
-import cn.cnic.component.stopsComponent.vo.StopsComponentGroupVo;
-import cn.cnic.component.stopsComponent.vo.StopsTemplateVo;
+import cn.cnic.component.stopsComponent.vo.*;
 import cn.cnic.third.service.IStop;
 import cn.cnic.third.vo.stop.ThirdStopsComponentVo;
 import org.apache.commons.lang3.StringUtils;
@@ -163,6 +160,13 @@ public class StopGroupServiceImpl implements IStopGroupService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Permission error");
         }
         List<StopsComponentGroupVo> stopGroupList = stopsComponentGroupDomain.getManageStopGroupList();
+        for (StopsComponentGroupVo stopsComponentGroupVo: stopGroupList) {
+            List<StopsComponentVo> stopsComponentVoList = stopsComponentGroupVo.getStopsComponentVoList();
+            for (StopsComponentVo stopsComponentVo: stopsComponentVoList) {
+                stopsComponentVo.setGroups(stopsComponentGroupVo.getGroupName());
+            }
+            stopsComponentGroupVo.setStopsComponentVoList(stopsComponentVoList);
+        }
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("stopGroupList",stopGroupList);
     }
 

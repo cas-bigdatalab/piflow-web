@@ -2,8 +2,7 @@ package cn.cnic.controller;
 
 import java.util.Map;
 
-import javax.annotation.Resource;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,10 +15,10 @@ import cn.cnic.component.dashboard.service.IStatisticService;
 @RequestMapping("/dashboard")
 public class DashboardCtrl {
 
-    @Resource
+    @Autowired
     private IResourceService resourceServiceImpl;
 
-    @Resource
+    @Autowired
     private IStatisticService statisticServiceImpl;
 
     /**

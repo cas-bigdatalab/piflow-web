@@ -1,8 +1,6 @@
 package cn.cnic.controller;
 
-import javax.annotation.Resource;
-import javax.transaction.Transactional;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -16,7 +14,7 @@ import cn.cnic.component.flow.vo.FlowVo;
 @RequestMapping("/flow")
 public class FlowCtrl {
 
-    @Resource
+    @Autowired
     private IFlowService flowServiceImpl;
 
     /**
@@ -103,7 +101,6 @@ public class FlowCtrl {
      */
     @RequestMapping("/deleteFlow")
     @ResponseBody
-    @Transactional
     public String deleteFlow(String id) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();

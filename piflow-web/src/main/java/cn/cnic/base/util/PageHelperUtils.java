@@ -2,6 +2,7 @@ package cn.cnic.base.util;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
 import java.util.HashMap;
@@ -44,15 +45,24 @@ public class PageHelperUtils {
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    public static Map<String, Object> setCustomDataKey(Page page, String key, Map<String, Object> rtnMap) {
+    public static Map<String, Object> setCustomDataKey(Page page, String key1, String key2, Map<String, Object> rtnMap) {
         if (null == rtnMap) {
             rtnMap = new HashMap<>();
         }
         if (null == page) {
             return rtnMap;
         }
+        if (StringUtils.isBlank(key1)) {
+            key1 = "count";
+        }
+        if (StringUtils.isBlank(key2)) {
+            key2 = "data";
+        }
         PageInfo info = new PageInfo(page.getResult());
-        rtnMap.put(key, info.getList());//Data collection
+        if(null == rtnMap.get(key1)){
+            rtnMap.put(key1, info.getTotal());
+        }
+        rtnMap.put(key2, info.getList());//Data collection
         logger.debug("success");
         return rtnMap;
     }

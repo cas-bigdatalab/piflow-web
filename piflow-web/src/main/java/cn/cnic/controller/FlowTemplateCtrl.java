@@ -3,12 +3,14 @@ package cn.cnic.controller;
 import cn.cnic.base.util.ReturnMapUtils;
 import cn.cnic.base.util.SessionUserUtil;
 import cn.cnic.component.template.service.IFlowTemplateService;
-import org.springframework.transaction.annotation.Transactional;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -19,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping("/flowTemplate")
 public class FlowTemplateCtrl {
 
-    @Resource
+    @Autowired
     private IFlowTemplateService flowTemplateServiceImpl;
 
 
@@ -99,7 +101,6 @@ public class FlowTemplateCtrl {
      */
     @RequestMapping("/loadingXmlPage")
     @ResponseBody
-    @Transactional
     public String loadingXml(HttpServletRequest request) {
         String templateId = request.getParameter("templateId");
         String loadId = request.getParameter("load");

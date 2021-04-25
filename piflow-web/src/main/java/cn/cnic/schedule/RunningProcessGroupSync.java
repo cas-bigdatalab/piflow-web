@@ -9,20 +9,22 @@ import org.apache.commons.collections.CollectionUtils;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
 
 @Component
 public class RunningProcessGroupSync extends QuartzJobBean {
 
     Logger logger = LoggerUtil.getLogger();
 
-    @Resource
+    @Autowired
     private ProcessGroupMapper processGroupMapper;
 
     @Override
@@ -34,8 +36,12 @@ public class RunningProcessGroupSync extends QuartzJobBean {
             Runnable runnable = new Thread(new Thread() {
                 @Override
                 public void run() {
-                    IGroup groupImpl = (IGroup) SpringContextUtil.getBean("groupImpl");
-                    groupImpl.updateFlowGroupsByInterface(runningProcessGroup);
+                    try {
+                        IGroup groupImpl = (IGroup) SpringContextUtil.getBean("groupImpl");
+                        groupImpl.updateFlowGroupsByInterface(runningProcessGroup);
+                    } catch (Exception e) {
+                        logger.error("errorMsg:", e);
+                    }
                 }
             });
             ServicesExecutor.getServicesExecutorServiceService().execute(runnable);

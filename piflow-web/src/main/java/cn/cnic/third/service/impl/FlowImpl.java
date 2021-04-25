@@ -3,10 +3,9 @@ package cn.cnic.third.service.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.Resource;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,8 +18,6 @@ import cn.cnic.common.Eunm.RunModeType;
 import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.component.process.entity.Process;
 import cn.cnic.component.process.jpa.domain.ProcessDomain;
-import cn.cnic.component.process.mapper.ProcessMapper;
-import cn.cnic.component.process.domain.ProcessDomainU;
 import cn.cnic.component.process.utils.ProcessUtils;
 import cn.cnic.third.service.IFlow;
 import cn.cnic.third.utils.ThirdFlowInfoVoUtils;
@@ -34,14 +31,8 @@ public class FlowImpl implements IFlow {
 
     Logger logger = LoggerUtil.getLogger();
 
-    @Resource
-    private ProcessMapper processMapper;
-
-    @Resource
+    @Autowired
     private ProcessDomain processDomain;
-
-    @Resource
-    private ProcessDomainU processDomainU;
 
     /**
      * start process

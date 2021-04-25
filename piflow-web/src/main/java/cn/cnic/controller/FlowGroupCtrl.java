@@ -1,8 +1,8 @@
 package cn.cnic.controller;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,10 +18,10 @@ import cn.cnic.component.flow.vo.FlowGroupVo;
 @RequestMapping("/flowGroup")
 public class FlowGroupCtrl {
 
-    @Resource
+    @Autowired
     private IFlowGroupService flowGroupServiceImpl;
 
-    @Resource
+    @Autowired
     private IFlowService flowServiceImpl;
 
     /**
