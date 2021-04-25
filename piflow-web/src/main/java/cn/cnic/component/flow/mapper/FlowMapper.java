@@ -134,6 +134,6 @@ public interface FlowMapper {
      * @return
      */
     @Select("SELECT name FROM flow WHERE enable_flag=1 AND fk_flow_group_id IS NULL AND is_example=0 AND name=#{flowName} ")
-    public String getFlowName(@Param("flowGroupId") String flowName);
+    public String getFlowName(@Param("flowName") String flowName);
 
 }

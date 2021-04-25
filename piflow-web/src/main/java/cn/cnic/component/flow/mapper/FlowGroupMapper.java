@@ -62,10 +62,10 @@ public interface FlowGroupMapper {
 
     /**
      * query flowGroup name by flowGroup name
-     * @param flowGroupId
+     * @param flowGroupName
      * @return
      */
-    @Select("SELECT name FROM flow_group WHERE enable_flag=1 AND fk_flow_group_id IS NULL AND is_example=0 AND name=#{flowName} ")
-    public String getFlowGroupName(@Param("flowGroupId") String flowGroupId);
+    @Select("SELECT name FROM flow_group WHERE enable_flag=1 AND fk_flow_group_id IS NULL AND is_example=0 AND name=#{flowGroupName} ")
+    public String getFlowGroupName(@Param("flowGroupName") String flowGroupName);
 
 }
