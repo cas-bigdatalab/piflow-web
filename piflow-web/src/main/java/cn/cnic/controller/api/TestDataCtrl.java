@@ -11,168 +11,166 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.cnic.base.util.SessionUserUtil;
 import cn.cnic.component.testData.service.ITestDataService;
-import cn.cnic.component.testData.utils.TestDataSchemaValuesSaveVoUtils;
-import cn.cnic.component.testData.vo.TestDataSchemaValuesSaveVo;
 import cn.cnic.component.testData.vo.TestDataVo;
+import cn.cnic.controller.requestVo.TestDataSchemaValuesSaveVo;
 
 @Api(value = "testData api")
 @RestController
 @RequestMapping(value = "/testData")
 public class TestDataCtrl {
 
-	@Resource
-	private ITestDataService testDataServiceImpl;
+    @Resource
+    private ITestDataService testDataServiceImpl;
 
-	/**
-	 * saveOrUpdateTestDataSchema
-	 *
-	 * @param testDataVo
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/saveOrUpdateTestDataSchema", method = RequestMethod.POST)
-	@ResponseBody
-	public String saveOrUpdateTestDataSchema(@ApiParam(value = "testDataVo", required = true)TestDataVo testDataVo) throws Exception {
-		String currentUsername = SessionUserUtil.getCurrentUsername();
-		boolean isAdmin = SessionUserUtil.isAdmin();
-		return testDataServiceImpl.saveOrUpdateTestDataAndSchema(currentUsername, isAdmin, testDataVo);
-	}
+    /**
+     * saveOrUpdateTestDataSchema
+     *
+     * @param testDataVo
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/saveOrUpdateTestDataSchema", method = RequestMethod.POST)
+    @ResponseBody
+    public String saveOrUpdateTestDataSchema(@ApiParam(value = "testDataVo", required = true)TestDataVo testDataVo) throws Exception {
+        String currentUsername = SessionUserUtil.getCurrentUsername();
+        boolean isAdmin = SessionUserUtil.isAdmin();
+        return testDataServiceImpl.saveOrUpdateTestDataAndSchema(currentUsername, isAdmin, testDataVo);
+    }
 
-	/**
-	 * delTestData
-	 *
-	 * @param testDataName
-	 * @return
-	 */
-	@RequestMapping(value = "/checkTestDataName", method = RequestMethod.POST)
-	@ResponseBody
-	public String checkTestDataName(@ApiParam(value = "testDataName", required = true)String testDataName) {
-		String currentUsername = SessionUserUtil.getCurrentUsername();
-		boolean isAdmin = SessionUserUtil.isAdmin();
-		return testDataServiceImpl.checkTestDataName(currentUsername, isAdmin, testDataName);
-	}
+    /**
+     * delTestData
+     *
+     * @param testDataName
+     * @return
+     */
+    @RequestMapping(value = "/checkTestDataName", method = RequestMethod.POST)
+    @ResponseBody
+    public String checkTestDataName(@ApiParam(value = "testDataName", required = true)String testDataName) {
+        String currentUsername = SessionUserUtil.getCurrentUsername();
+        boolean isAdmin = SessionUserUtil.isAdmin();
+        return testDataServiceImpl.checkTestDataName(currentUsername, isAdmin, testDataName);
+    }
 
-	/**
-	 * delTestData
-	 *
-	 * @param testDataId
-	 * @return
-	 */
-	@RequestMapping(value = "/delTestData", method = RequestMethod.POST)
-	@ResponseBody
-	public String delTestData(@ApiParam(value = "testDataId", required = true)String testDataId) {
-		String currentUsername = SessionUserUtil.getCurrentUsername();
-		boolean isAdmin = SessionUserUtil.isAdmin();
-		return testDataServiceImpl.delTestData(currentUsername, isAdmin, testDataId);
-	}
+    /**
+     * delTestData
+     *
+     * @param testDataId
+     * @return
+     */
+    @RequestMapping(value = "/delTestData", method = RequestMethod.POST)
+    @ResponseBody
+    public String delTestData(@ApiParam(value = "testDataId", required = true)String testDataId) {
+        String currentUsername = SessionUserUtil.getCurrentUsername();
+        boolean isAdmin = SessionUserUtil.isAdmin();
+        return testDataServiceImpl.delTestData(currentUsername, isAdmin, testDataId);
+    }
 
-	/**
-	 * saveOrUpdateTestDataSchemaValues
-	 * 
-	 * @param data
-	 * @return String
-	 * @throws Exception 
-	 */
-	@RequestMapping(value = "/saveOrUpdateTestDataSchemaValues", method = RequestMethod.POST)
-	@ResponseBody
-	public String saveOrUpdateTestDataSchemaValues(@ApiParam(value = "data", required = true)String data) throws Exception {
-		String currentUsername = SessionUserUtil.getCurrentUsername();
-		boolean isAdmin = SessionUserUtil.isAdmin();
-		TestDataSchemaValuesSaveVo schemaValuesVo = TestDataSchemaValuesSaveVoUtils.stringToTestDataSchemaValuesSaveVo(data);
-		return testDataServiceImpl.saveOrUpdateTestDataSchemaValues(currentUsername, isAdmin, schemaValuesVo);
-	}
+    /**
+     * saveOrUpdateTestDataSchemaValues
+     * 
+     * @param data
+     * @return String
+     * @throws Exception 
+     */
+    @RequestMapping(value = "/saveOrUpdateTestDataSchemaValues", method = RequestMethod.POST)
+    @ResponseBody
+    public String saveOrUpdateTestDataSchemaValues(@ApiParam(value = "schemaValuesVo", required = true)TestDataSchemaValuesSaveVo schemaValuesVo) throws Exception {
+        String currentUsername = SessionUserUtil.getCurrentUsername();
+        boolean isAdmin = SessionUserUtil.isAdmin();
+        return testDataServiceImpl.saveOrUpdateTestDataSchemaValues(currentUsername, isAdmin, schemaValuesVo);
+    }
 
-	/**
-	 * "testData" list Pagination
-	 *
-	 * @param page
-	 * @param limit
-	 * @param param
-	 * @return
-	 */
-	@RequestMapping(value = "/testDataListPage", method = RequestMethod.POST)
-	@ResponseBody
-	public String testDataListPage(@ApiParam(value = "page", required = true)Integer page,
-								   @ApiParam(value = "limit", required = true)Integer limit,
-								   @ApiParam(value = "param", required = false)String param) {
-		String currentUsername = SessionUserUtil.getCurrentUsername();
-		boolean isAdmin = SessionUserUtil.isAdmin();
-		return testDataServiceImpl.getTestDataListPage(currentUsername, isAdmin, page, limit, param);
-	}
+    /**
+     * "testData" list Pagination
+     *
+     * @param page
+     * @param limit
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/testDataListPage", method = RequestMethod.POST)
+    @ResponseBody
+    public String testDataListPage(@ApiParam(value = "page", required = true)Integer page,
+                                   @ApiParam(value = "limit", required = true)Integer limit,
+                                   @ApiParam(value = "param", required = false)String param) {
+        String currentUsername = SessionUserUtil.getCurrentUsername();
+        boolean isAdmin = SessionUserUtil.isAdmin();
+        return testDataServiceImpl.getTestDataListPage(currentUsername, isAdmin, page, limit, param);
+    }
 
-	/**
-	 * testDataSchemaListPage
-	 *
-	 * @param page
-	 * @param limit
-	 * @param param
-	 * @param testDataId
-	 * @return
-	 */
-	@RequestMapping(value = "/testDataSchemaListPage", method = RequestMethod.POST)
-	@ResponseBody
-	public String testDataSchemaLListPage(@ApiParam(value = "page", required = true)Integer page,
-										  @ApiParam(value = "limit", required = true)Integer limit,
-										  @ApiParam(value = "param", required = false)String param,
-										  @ApiParam(value = "testDataId", required = true)String testDataId) {
-		String currentUsername = SessionUserUtil.getCurrentUsername();
-		boolean isAdmin = SessionUserUtil.isAdmin();
-		return testDataServiceImpl.getTestDataSchemaListPage(currentUsername, isAdmin, page, limit, param, testDataId);
-	}
+    /**
+     * testDataSchemaListPage
+     *
+     * @param page
+     * @param limit
+     * @param param
+     * @param testDataId
+     * @return
+     */
+    @RequestMapping(value = "/testDataSchemaListPage", method = RequestMethod.POST)
+    @ResponseBody
+    public String testDataSchemaLListPage(@ApiParam(value = "page", required = true)Integer page,
+                                          @ApiParam(value = "limit", required = true)Integer limit,
+                                          @ApiParam(value = "param", required = false)String param,
+                                          @ApiParam(value = "testDataId", required = true)String testDataId) {
+        String currentUsername = SessionUserUtil.getCurrentUsername();
+        boolean isAdmin = SessionUserUtil.isAdmin();
+        return testDataServiceImpl.getTestDataSchemaListPage(currentUsername, isAdmin, page, limit, param, testDataId);
+    }
 
-	/**
-	 * testDataSchemaList
-	 *
-	 * @param param
-	 * @param testDataId
-	 * @return
-	 */
-	@RequestMapping(value = "/testDataSchemaList", method = RequestMethod.POST)
-	@ResponseBody
-	public String testDataSchemaList(@ApiParam(value = "param", required = false)String param,
-									 @ApiParam(value = "testDataId", required = true)String testDataId) {
-		String currentUsername = SessionUserUtil.getCurrentUsername();
-		boolean isAdmin = SessionUserUtil.isAdmin();
-		return testDataServiceImpl.getTestDataSchemaList(currentUsername, isAdmin, param, testDataId);
+    /**
+     * testDataSchemaList
+     *
+     * @param param
+     * @param testDataId
+     * @return
+     */
+    @RequestMapping(value = "/testDataSchemaList", method = RequestMethod.POST)
+    @ResponseBody
+    public String testDataSchemaList(@ApiParam(value = "param", required = false)String param,
+                                     @ApiParam(value = "testDataId", required = true)String testDataId) {
+        String currentUsername = SessionUserUtil.getCurrentUsername();
+        boolean isAdmin = SessionUserUtil.isAdmin();
+        return testDataServiceImpl.getTestDataSchemaList(currentUsername, isAdmin, param, testDataId);
 
-	}
+    }
 
-	/**
-	 * testDataSchemaValuesListPage
-	 *
-	 * @param page
-	 * @param limit
-	 * @param param
-	 * @param testDataId
-	 * @return
-	 */
-	@RequestMapping(value = "/testDataSchemaValuesListPage", method = RequestMethod.POST)
-	@ResponseBody
-	public String testDataSchemaValuesListPage(@ApiParam(value = "page", required = true)Integer page,
-											   @ApiParam(value = "limit", required = true)Integer limit,
-											   @ApiParam(value = "param", required = false)String param,
-											   @ApiParam(value = "testDataId", required = true)String testDataId) {
-		String currentUsername = SessionUserUtil.getCurrentUsername();
-		boolean isAdmin = SessionUserUtil.isAdmin();
-		return testDataServiceImpl.getTestDataSchemaValuesCustomListPage(currentUsername, isAdmin, page, limit, param,
-				testDataId);
-	}
+    /**
+     * testDataSchemaValuesListPage
+     *
+     * @param page
+     * @param limit
+     * @param param
+     * @param testDataId
+     * @return
+     */
+    @RequestMapping(value = "/testDataSchemaValuesListPage", method = RequestMethod.POST)
+    @ResponseBody
+    public String testDataSchemaValuesListPage(@ApiParam(value = "page", required = true)Integer page,
+                                               @ApiParam(value = "limit", required = true)Integer limit,
+                                               @ApiParam(value = "param", required = false)String param,
+                                               @ApiParam(value = "testDataId", required = true)String testDataId) {
+        String currentUsername = SessionUserUtil.getCurrentUsername();
+        boolean isAdmin = SessionUserUtil.isAdmin();
+        return testDataServiceImpl.getTestDataSchemaValuesCustomListPage(currentUsername, isAdmin, page, limit, param,
+                testDataId);
+    }
 
-	/**
-	 * testDataSchemaValuesList
-	 *
-	 * @param param
-	 * @param testDataId
-	 * @return
-	 */
-	@RequestMapping(value = "/testDataSchemaValuesList", method = RequestMethod.POST)
-	@ResponseBody
-	public String testDataSchemaValuesList(@ApiParam(value = "param", required = false)String param,
-										   @ApiParam(value = "testDataId", required = true)String testDataId) {
-		String currentUsername = SessionUserUtil.getCurrentUsername();
-		boolean isAdmin = SessionUserUtil.isAdmin();
-		return testDataServiceImpl.getTestDataSchemaValuesCustomList(currentUsername, isAdmin, param, testDataId);
+    /**
+     * testDataSchemaValuesList
+     *
+     * @param param
+     * @param testDataId
+     * @return
+     */
+    @RequestMapping(value = "/testDataSchemaValuesList", method = RequestMethod.POST)
+    @ResponseBody
+    public String testDataSchemaValuesList(@ApiParam(value = "param", required = false)String param,
+                                           @ApiParam(value = "testDataId", required = true)String testDataId) {
+        String currentUsername = SessionUserUtil.getCurrentUsername();
+        boolean isAdmin = SessionUserUtil.isAdmin();
+        return testDataServiceImpl.getTestDataSchemaValuesCustomList(currentUsername, isAdmin, param, testDataId);
 
-	}
+    }
 
 }

@@ -28,9 +28,10 @@ import cn.cnic.component.testData.entity.TestDataSchemaValues;
 import cn.cnic.component.testData.service.ITestDataService;
 import cn.cnic.component.testData.utils.TestDataSchemaValuesUtils;
 import cn.cnic.component.testData.utils.TestDataUtils;
-import cn.cnic.component.testData.vo.TestDataSchemaValuesSaveVo;
 import cn.cnic.component.testData.vo.TestDataSchemaVo;
 import cn.cnic.component.testData.vo.TestDataVo;
+import cn.cnic.controller.requestVo.SchemaValuesVo;
+import cn.cnic.controller.requestVo.TestDataSchemaValuesSaveVo;
 
 @Service
 @Transactional
@@ -140,56 +141,54 @@ public class TestDataServiceImpl implements ITestDataService {
             schemaValuesMapDB.put(testDataSchemaValues.getId(), testDataSchemaValues);
         }
         List<TestDataSchemaValues> newTestDataSchemaValuesList = new ArrayList<>();
-        List<Map<String, String>> schemaValuesList = schemaValuesVo.getSchemaValuesList();
-        List<Map<String, String>> schemaValuesIdList = schemaValuesVo.getSchemaValuesIdList();
+        SchemaValuesVo[] schemaValuesList = schemaValuesVo.getSchemaValuesList();
         //new schemaValue list
-        if (null != schemaValuesList && null != schemaValuesIdList) {
-            // Determine whether the incoming data is complete, whether the id and the number of data correspond
-            if (schemaValuesList.size() != schemaValuesIdList.size()) {
-                return ReturnMapUtils.setFailedMsgRtnJsonStr("Error! 'schemaValuesList' and 'schemaValuesIdList' are not unified");
-            }
+        if (null != schemaValuesList) {
             // cycle
-            for (int i = 0; i < schemaValuesList.size(); i++) {
+            for (int i = 0; i < schemaValuesList.length; i++) {
                 //get data object
-                Map<String, String> schemaValuesMap = schemaValuesList.get(i);
-                //get data object
-                Map<String, String> schemaValuesIdMap = schemaValuesIdList.get(i);
-                //Cycle key
-                for (String fieldName : schemaValuesMap.keySet()) {
-                    // Use "fieldName" to get id from "schemaValuesMap"
-                    String schemaValuesId = schemaValuesIdMap.get(fieldName);
-                    // "TestDataSchemaValues" after modification
-                    TestDataSchemaValues testDataSchemaValues = null;
-                    // Determine if the Id is empty, add it if it is empty, or modify it otherwise
-                    if (StringUtils.isBlank(schemaValuesId)) {
-                        testDataSchemaValues = TestDataSchemaValuesUtils.setTestDataSchemaBasicInformation(testDataSchemaValues, false, username);
-                        //  Use "fieldName" to get TestDataSchema from "schemaMapDB"
-                        TestDataSchema testDataSchema = schemaMapDB.get(fieldName);
-                        // Associative foreign key
-                        testDataSchemaValues.setTestData(testDataById);
-                        testDataSchemaValues.setTestDataSchema(testDataSchema);
-                    } else {
-                        //  Use "fieldName" to get TestDataSchema from "schemaMapDB"
-                        testDataSchemaValues = schemaValuesMapDB.get(schemaValuesId);
-                        if (null == testDataSchemaValues) {
-                            return ReturnMapUtils.setFailedMsgRtnJsonStr("Error! 'schemaValuesIdList' data is error");
-                        }
-                        testDataSchemaValues.setEnableFlag(true);
+                SchemaValuesVo schemaValuesVo_i = schemaValuesList[i];
+                //fieldName
+                String fieldName = schemaValuesVo_i.getSchemaName();
+                //schemaValuesId
+                String schemaValuesId = schemaValuesVo_i.getSchemaValueId();
+                String schemaValues = schemaValuesVo_i.getSchemaValue();
+                
+                // "TestDataSchemaValues" after modification
+                TestDataSchemaValues testDataSchemaValues = null;
+                // Determine if the Id is empty, add it if it is empty, or modify it otherwise
+                if (StringUtils.isBlank(schemaValuesId)) {
+                    testDataSchemaValues = TestDataSchemaValuesUtils.setTestDataSchemaBasicInformation(testDataSchemaValues, false, username);
+                    //  Use "fieldName" to get TestDataSchema from "schemaMapDB"
+                    TestDataSchema testDataSchema = schemaMapDB.get(fieldName);
+                    // Associative foreign key
+                    testDataSchemaValues.setTestData(testDataById);
+                    testDataSchemaValues.setTestDataSchema(testDataSchema);
+                } else {
+                    //  Use "fieldName" to get TestDataSchema from "schemaMapDB"
+                    testDataSchemaValues = schemaValuesMapDB.get(schemaValuesId);
+                    if (null == testDataSchemaValues) {
+                        return ReturnMapUtils.setFailedMsgRtnJsonStr("Error! 'schemaValuesIdList' data is error");
                     }
-                    String schemaValues = schemaValuesMap.get(fieldName);
-                    testDataSchemaValues.setFieldValue(schemaValues);
-                    testDataSchemaValues.setDataRow(i + 1);
-                    testDataSchemaValues.setLastUpdateDttm(new Date());
-                    testDataSchemaValues.setLastUpdateUser(username);
-                    newTestDataSchemaValuesList.add(testDataSchemaValues);
+                    testDataSchemaValues.setEnableFlag(true);
                 }
+                
+                testDataSchemaValues.setFieldValue(schemaValues);
+                testDataSchemaValues.setDataRow(i + 1);
+                testDataSchemaValues.setLastUpdateDttm(new Date());
+                testDataSchemaValues.setLastUpdateUser(username);
+                newTestDataSchemaValuesList.add(testDataSchemaValues);
+
             }
         }
         if (null == newTestDataSchemaValuesList || newTestDataSchemaValuesList.size() < 0) {
             return ReturnMapUtils.setSucceededMsgRtnJsonStr("no data update");
         }
-        testDataDomain.saveOrUpdateTestDataSchemaValuesList(username, false, newTestDataSchemaValuesList, testDataById);
-        return ReturnMapUtils.setSucceededMsgRtnJsonStr("save template success");
+        int saveOrUpdateTestDataSchemaValuesList = testDataDomain.saveOrUpdateTestDataSchemaValuesList(username, false, newTestDataSchemaValuesList, testDataById);
+        if(saveOrUpdateTestDataSchemaValuesList <= 0) {
+        	return ReturnMapUtils.setSucceededMsgRtnJsonStr("save failed");	
+        }
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr("save success");
     }
 
     /**

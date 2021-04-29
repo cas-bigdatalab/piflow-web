@@ -1,11 +1,11 @@
 package cn.cnic.component.testData.service;
 
-import cn.cnic.component.testData.vo.TestDataSchemaValuesSaveVo;
 import cn.cnic.component.testData.vo.TestDataVo;
+import cn.cnic.controller.requestVo.TestDataSchemaValuesSaveVo;
 
 public interface ITestDataService {
 
-	/**
+    /**
      * saveOrUpdateTestDataSchema
      *
      * @param username
