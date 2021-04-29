@@ -49,6 +49,13 @@ public class SysParamsCache {
         XML_PATH = xmlPath;
     }
 
+    // Xml file path (read in configuration file)
+    public static String CSV_PATH;
+
+    public static void setCsvPath(String csvPath) {
+        CSV_PATH = csvPath;
+    }
+
     public static Boolean IS_IFRAME;
 
     @Value("${syspara.isIframe}")
@@ -276,7 +283,7 @@ public class SysParamsCache {
     
     @Value("${api.testDataPathUrl}")
     public void setTestDataPathUrl(String testDataPathUrl) {
-    	TEST_DATA_PATH_URL = testDataPathUrl;
+        TEST_DATA_PATH_URL = testDataPathUrl;
     }
 
     public static String getTestDataPathUrl() {

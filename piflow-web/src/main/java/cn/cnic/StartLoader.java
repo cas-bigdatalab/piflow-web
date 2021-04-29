@@ -41,9 +41,11 @@ public class StartLoader implements ApplicationRunner {
         CheckPathUtils.isChartPathExist(storagePathHead + "/storage/image/");
         CheckPathUtils.isChartPathExist(storagePathHead + "/storage/video/");
         CheckPathUtils.isChartPathExist(storagePathHead + "/storage/xml/");
+        CheckPathUtils.isChartPathExist(storagePathHead + "/storage/csv/");
         SysParamsCache.setImagesPath(storagePathHead + "/storage/image/");
         SysParamsCache.setVideosPath(storagePathHead + "/storage/video/");
         SysParamsCache.setXmlPath(storagePathHead + "/storage/xml/");
+        SysParamsCache.setCsvPath(storagePathHead + "/storage/csv/");
     }
 
     private void startStatusRunning() {
@@ -55,15 +57,4 @@ public class StartLoader implements ApplicationRunner {
         }
     }
 
-
-    public static void main(String[] args) {
-        String s0 = "[]";
-        String s1 = "[asfd,asdf,asdf]";
-        String[] split = s1.split(",");
-        System.out.println(split.length);
-        String index0 = s0.substring(1, s0.length() - 1);
-        System.out.println("--------  " + index0 + "  --------");
-        String index1 = s1.substring(1, s1.length() - 1);
-        System.out.println("--------  " + index1 + "  --------");
-    }
 }

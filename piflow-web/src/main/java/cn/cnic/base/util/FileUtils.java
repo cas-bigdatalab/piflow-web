@@ -21,15 +21,18 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class FileUtils {
 
     private static Logger logger = LoggerUtil.getLogger();
 
-
+    public static String CSV_TITLE_KEY = "CSV_TITLE";
+    public static String CSV_DATA_KEY = "CSV_DATA";
     /**
      * String to "xml" file and save the specified path
      *
@@ -223,17 +226,17 @@ public class FileUtils {
         return null;
     }
 
-    public static String fileToString(File xmlFile) {
-        String xmlString = "";
-        if (null == xmlFile) {
-            return xmlString;
+    public static String fileToString(File fileStr) {
+        String fileString = "";
+        if (null == fileStr) {
+            return fileString;
         }
         byte[] strBuffer = null;
         InputStream in;
         try {
             int flen;
-            in = new FileInputStream(xmlFile);
-            flen = (int) xmlFile.length();
+            in = new FileInputStream(fileStr);
+            flen = (int) fileStr.length();
             strBuffer = new byte[flen];
             in.read(strBuffer, 0, flen);
             in.close();
@@ -246,40 +249,40 @@ public class FileUtils {
         }
         if (null != strBuffer) {
             try {
-                xmlString = new String(strBuffer, "UTF-8"); //When constructing ‘String’, you can use the ‘byte[]’ type.
+            	fileString = new String(strBuffer, "UTF-8"); //When constructing ‘String’, you can use the ‘byte[]’ type.
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
-            logger.info("'xml' file converted string：" + xmlString);
+            logger.info(" file converted string：" + fileString);
         }
-        return xmlString;
+        return fileString;
     }
 
     /**
-     * "xml" file conversion string
+     * file conversion string
      *
      * @param path
      * @return
      */
-    public static String XmlFileToStrByAbsolutePath(String path) {
+    public static String FileToStrByAbsolutePath(String path) {
         if (StringUtils.isBlank(path)) {
             return null;
         }
-        File xmlFile = new File(path);
-        return fileToString(xmlFile);
+        File file = new File(path);
+        return fileToString(file);
     }
 
-    public static String XmlFileToStrByRelativePath(String path) {
-        String xmlString = "";
+    public static String FileToStrByRelativePath(String path) {
+        String fileString = "";
         try {
-            File xmlFile = ResourceUtils.getFile("classpath:" + path);
-            xmlString = fileToString(xmlFile);
+            File file = ResourceUtils.getFile("classpath:" + path);
+            fileString = fileToString(file);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             logger.error("FileNotFound Error", e);
         }
-        logger.info("'xml' file converted string：" + xmlString);
-        return xmlString;
+        logger.info(" file converted string：" + fileString);
+        return fileString;
     }
 
     public static void downloadFileResponse(HttpServletResponse response, String fileName, String filePath) {
@@ -373,5 +376,51 @@ public class FileUtils {
         }
         return result;
     }
-
+    
+    /**
+     * file conversion string
+     *
+     * @param url
+     * @param delimiter
+     * @return
+     * @throws Exception 
+     */
+    public static Map<String, Object> ParseCsvFile(String url, String delimiter) throws Exception {
+    	if (StringUtils.isBlank(url) || StringUtils.isBlank(delimiter)) {
+    		return null;
+    	}
+    	Map<String,Object> rtnMap = new HashMap<>();
+    	File csv = new File("/home/nature/Desktop/cc.csv");
+    	BufferedReader br = null;
+		try {
+			br = new BufferedReader(new FileReader(csv));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		String line = "";
+		String everyLine = "";
+		try {
+			List<String[]> dataList = new ArrayList<>();
+			while ((line = br.readLine()) != null) {
+				everyLine = line;
+				if(StringUtils.isBlank(everyLine)) {
+					continue;
+				}
+				String[] split = everyLine.split(delimiter);
+				dataList.add(split);
+			}
+			
+			if (dataList.size() > 0) {
+				String[] title = dataList.get(0);
+				rtnMap.put(FileUtils.CSV_TITLE_KEY, title);
+				dataList.remove(0);
+				rtnMap.put(FileUtils.CSV_DATA_KEY, dataList);
+			}
+		} catch (IOException e) {
+			throw new Exception("Parse failed");
+		}
+		return rtnMap;
+    }
+    
+ 
 }

@@ -1,5 +1,7 @@
 package cn.cnic.component.testData.service;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import cn.cnic.component.testData.vo.TestDataVo;
 import cn.cnic.controller.requestVo.TestDataSchemaValuesSaveVo;
 
@@ -106,6 +108,16 @@ public interface ITestDataService {
      * @return String
      */
     public String getTestDataSchemaValuesCustomList(String username, boolean isAdmin, String param, String testDataId);
+    
+    /**
+     * Upload csv file and save flowTemplate
+     *
+     * @param username
+     * @param file
+     * @param delimiter
+     * @return
+     */
+    public String uploadCsvFile(String username, MultipartFile file, String delimiter);
 
 
 }

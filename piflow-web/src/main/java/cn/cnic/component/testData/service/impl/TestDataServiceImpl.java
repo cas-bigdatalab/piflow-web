@@ -12,15 +12,18 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 
+import cn.cnic.base.util.FileUtils;
 import cn.cnic.base.util.JsonUtils;
 import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.base.util.PageHelperUtils;
 import cn.cnic.base.util.ReturnMapUtils;
 import cn.cnic.base.util.UUIDUtils;
+import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.component.testData.domain.TestDataDomain;
 import cn.cnic.component.testData.entity.TestData;
 import cn.cnic.component.testData.entity.TestDataSchema;
@@ -68,7 +71,7 @@ public class TestDataServiceImpl implements ITestDataService {
         }
         testData = TestDataUtils.copyDataToTestData(testDataVo, testData, username);
         int affectedRows = 0;
-        if (StringUtils.isNotBlank(testDataVoId)) {
+        if (StringUtils.isBlank(testDataVoId)) {
             String testDataName = testDataDomain.getTestDataName(testData.getName());
             if(StringUtils.isNotBlank(testDataName)){
                 return ReturnMapUtils.setFailedMsgRtnJsonStr("save failed, testDataName is already taken");
@@ -383,6 +386,39 @@ public class TestDataServiceImpl implements ITestDataService {
         setSucceededMsg.put("schemaValue", testDataSchemaValuesCustomList);
         setSucceededMsg.put("schemaValueId", testDataSchemaValuesCustomList_id);
         return JsonUtils.toJsonNoException(setSucceededMsg);
+    }
+    
+    /**
+     * Upload csv file and save flowTemplate
+     *
+     * @param username
+     * @param file
+     * @param delimiter
+     * @return
+     */
+    @Override
+    public String uploadCsvFile(String username, MultipartFile file, String delimiter){
+        if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
+        }
+        if (file.isEmpty()) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Upload failed, please try again later");
+        }
+        Map<String, Object> uploadMap = FileUtils.uploadRtnMap(file, SysParamsCache.CSV_PATH, null);
+        if (null == uploadMap || uploadMap.isEmpty()) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Upload failed, please try again later");
+        }
+        Integer code = (Integer) uploadMap.get("code");
+        if (500 == code) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("failed to upload file");
+        }
+        String saveFileName = (String) uploadMap.get("saveFileName");
+        String fileName = (String) uploadMap.get("fileName");
+        String path = (String) uploadMap.get("path");
+        //Read the XML file according to the saved file path and return the XML string
+        String xmlFileToStr = FileUtils.FileToStrByAbsolutePath(path);
+
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr("successful template upload");
     }
 
 }

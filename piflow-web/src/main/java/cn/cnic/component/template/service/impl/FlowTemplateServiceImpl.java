@@ -200,7 +200,7 @@ public class FlowTemplateServiceImpl implements IFlowTemplateService {
         String fileName = (String) uploadMap.get("fileName");
         String path = (String) uploadMap.get("path");
         //Read the XML file according to the saved file path and return the XML string
-        String xmlFileToStr = FileUtils.XmlFileToStrByAbsolutePath(path);
+        String xmlFileToStr = FileUtils.FileToStrByAbsolutePath(path);
         if (StringUtils.isBlank(xmlFileToStr)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("XML file read failed, upload template failed");
         }
@@ -251,7 +251,7 @@ public class FlowTemplateServiceImpl implements IFlowTemplateService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Load failed, please try again");
         }
         //The XML file is read and returned according to the saved file path
-        String xmlFileToStr = FileUtils.XmlFileToStrByAbsolutePath(flowTemplate.getPath());
+        String xmlFileToStr = FileUtils.FileToStrByAbsolutePath(flowTemplate.getPath());
         if (StringUtils.isBlank(xmlFileToStr)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("XML file read failed, loading template failed");
         }
@@ -405,7 +405,7 @@ public class FlowTemplateServiceImpl implements IFlowTemplateService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Template types do not match, loading FlowTemplate failed");
         }
         //Read the xml file according to the saved file path and return
-        String xmlFileToStr = FileUtils.XmlFileToStrByAbsolutePath(flowTemplate.getPath());
+        String xmlFileToStr = FileUtils.FileToStrByAbsolutePath(flowTemplate.getPath());
         if (StringUtils.isBlank(xmlFileToStr)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("The xml file failed to read and the FlowTemplate failed to be loaded.");
         }

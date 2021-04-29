@@ -6,8 +6,10 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import cn.cnic.base.util.SessionUserUtil;
 import cn.cnic.component.testData.service.ITestDataService;
@@ -171,6 +173,20 @@ public class TestDataCtrl {
         boolean isAdmin = SessionUserUtil.isAdmin();
         return testDataServiceImpl.getTestDataSchemaValuesCustomList(currentUsername, isAdmin, param, testDataId);
 
+    }
+    
+    /**
+     * Upload xml file and save flowTemplate
+     *
+     * @param file
+     * @return
+     */
+    @RequestMapping(value = "/uploadCsvFile", method = RequestMethod.POST)
+    @ResponseBody
+    public String uploadCsvFile(@ApiParam(value = "file", required = true)@RequestParam("file") MultipartFile file, 
+    		                    @ApiParam(value = "delimiter", required = true)String delimiter) {
+        String username = SessionUserUtil.getCurrentUsername();
+        return testDataServiceImpl.uploadCsvFile(username, file, delimiter);
     }
 
 }

@@ -938,21 +938,22 @@ public class StopsServiceImpl implements IStopsService {
         }
         rtnMap.put("isNeedSource", true);
         String[] portsArr = stopsById.getInports().split(",");
-        if (PortType.ANY == stopsById.getInPortType()) {
-        	List<Property> properties = stopsById.getProperties();
-        	for (Property property : properties) {
-        		if (!"inports".equals(property.getName()) ) {
-        			continue;
-        		}
-        		String customValue = property.getCustomValue();
-        		if (null != customValue) {
-        			portsArr = customValue.split(",");
-        		}
-        		break;
-			}
+        if (PortType.ANY != stopsById.getInPortType()) {
+        	rtnMap.put("ports", portsArr);
         	return JsonUtils.toJsonNoException(rtnMap);
         }
-        rtnMap.put("ports", portsArr);
+    	List<Property> properties = stopsById.getProperties();
+    	for (Property property : properties) {
+    		if (!"inports".equals(property.getName()) ) {
+    			continue;
+    		}
+    		String customValue = property.getCustomValue();
+    		if (null != customValue) {
+    			portsArr = customValue.split(",");
+    		}
+    		break;
+		}
+    	rtnMap.put("ports", portsArr);
         return JsonUtils.toJsonNoException(rtnMap);
     }
 
