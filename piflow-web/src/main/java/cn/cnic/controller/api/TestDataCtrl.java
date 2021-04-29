@@ -180,11 +180,12 @@ public class TestDataCtrl {
      *
      * @param file
      * @return
+     * @throws Exception 
      */
     @RequestMapping(value = "/uploadCsvFile", method = RequestMethod.POST)
     @ResponseBody
     public String uploadCsvFile(@ApiParam(value = "file", required = true)@RequestParam("file") MultipartFile file, 
-    		                    @ApiParam(value = "delimiter", required = true)String delimiter) {
+    		                    @ApiParam(value = "delimiter", required = true)String delimiter) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
         return testDataServiceImpl.uploadCsvFile(username, file, delimiter);
     }

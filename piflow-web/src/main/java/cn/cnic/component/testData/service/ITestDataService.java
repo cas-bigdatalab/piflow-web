@@ -116,8 +116,9 @@ public interface ITestDataService {
      * @param file
      * @param delimiter
      * @return
+     * @throws Exception 
      */
-    public String uploadCsvFile(String username, MultipartFile file, String delimiter);
+    public String uploadCsvFile(String username, MultipartFile file, String delimiter) throws Exception;
 
 
 }

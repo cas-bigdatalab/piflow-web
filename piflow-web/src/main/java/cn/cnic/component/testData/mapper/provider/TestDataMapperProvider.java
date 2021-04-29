@@ -99,8 +99,8 @@ public class TestDataMapperProvider {
 
 			// handle other fields
 			sql.SET("enable_flag = " + this.enableFlag);
-			sql.SET("schedule_id = " + this.name);
-			sql.SET("type = " + this.description);
+			sql.SET("name = " + this.name);
+			sql.SET("description = " + this.description);
 			sql.WHERE("version = " + this.version);
 			sql.WHERE("id = " + this.id);
 			sqlStr = sql.toString();

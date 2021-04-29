@@ -53,27 +53,20 @@ public class TestDataDomain {
      * save or update TestDataSchemaValues list
      * 
      * @param username
-     * @param isInster
      * @param schemaValuesList
      * @param testData
      * @return
      * @throws Exception
      */
-    public int saveOrUpdateTestDataSchemaValuesList(String username, boolean isInster, List<TestDataSchemaValues> schemaValuesList, TestData testData) throws Exception {
+    public int saveOrUpdateTestDataSchemaValuesList(String username, List<TestDataSchemaValues> schemaValuesList, TestData testData) throws Exception {
 
         if (null == schemaValuesList) {
             return 0;
         }
         int affectedRows = 0;
-        if (isInster) {
-            for (TestDataSchemaValues testDataSchemaValues : schemaValuesList) {
-                affectedRows += addTestDataSchemaValues(username, testDataSchemaValues, testDataSchemaValues.getTestDataSchema(), testData);
-            }
-            return affectedRows;
-        }
         for (TestDataSchemaValues testDataSchemaValues : schemaValuesList) {
             if (StringUtils.isBlank(testDataSchemaValues.getId())) {
-                affectedRows += addTestDataSchemaValues(username, testDataSchemaValues, testDataSchemaValues.getTestDataSchema(), testData);
+                affectedRows += addTestDataSchemaValues(username, testDataSchemaValues, testData);
             }
             affectedRows += updateTestDataSchemaValues(username, testDataSchemaValues, testDataSchemaValues.getTestDataSchema(), testData);
         }
@@ -127,8 +120,9 @@ public class TestDataDomain {
         if (null == testDataSchema) {
             throw new Exception("testDataSchema is null");
         }
-        testDataSchema.setId(UUIDUtils.getUUID32());
-        testDataSchema.setId(UUIDUtils.getUUID32());
+        if (StringUtils.isBlank(testDataSchema.getId())) {
+        	testDataSchema.setId(UUIDUtils.getUUID32());
+        }
         testDataSchema.setCrtUser(username);
         testDataSchema.setCrtDttm(new Date());
         testDataSchema.setLastUpdateUser(username);
@@ -137,7 +131,36 @@ public class TestDataDomain {
         if (affectedRows < 0) {
             throw new Exception("save testData failed");
         }
-        //affectedRows += saveOrUpdateTestDataSchemaValuesList(username, true, testDataSchema.getSchemaValuesList(), testDataSchema.getTestData());
+        //affectedRows += addTestDataSchemaValuesList(username, testDataSchema.getSchemaValuesList(), testDataSchema, testDataSchema.getTestData());
+        return affectedRows;
+    }
+    
+
+
+    /**
+     * add TestDataSchemaValues
+     * 
+     * @param username
+     * @param testDataSchemaValues
+     * @param testDataSchema
+     * @param testData
+     * @return
+     * @throws Exception
+     */
+    public int addTestDataSchemaValuesList(String username, List<TestDataSchemaValues> schemaValuesList, TestData testData) throws Exception {
+        if (null == schemaValuesList) {
+        	throw new Exception("testDataSchemaValues is null");
+        }
+        if (null == testData) {
+            throw new Exception("testData is null");
+        }
+        int affectedRows = 0;
+        for (TestDataSchemaValues testDataSchemaValues : schemaValuesList) {
+            affectedRows += addTestDataSchemaValues(username, testDataSchemaValues, testData);
+        }
+        if (affectedRows < 0) {
+            throw new Exception("save testData failed");
+        }
         return affectedRows;
     }
 
@@ -151,23 +174,24 @@ public class TestDataDomain {
      * @return
      * @throws Exception
      */
-    public int addTestDataSchemaValues(String username, TestDataSchemaValues testDataSchemaValues, TestDataSchema testDataSchema, TestData testData) throws Exception {
+    public int addTestDataSchemaValues(String username, TestDataSchemaValues testDataSchemaValues, TestData testData) throws Exception {
         if (null == testDataSchemaValues) {
             throw new Exception("testDataSchemaValues is null");
         }
-        if (null == testDataSchema) {
+        if (null == testDataSchemaValues.getTestDataSchema()) {
             throw new Exception("testDataSchema is null");
         }
         if (null == testData) {
             throw new Exception("testData is null");
         }
-        testDataSchemaValues.setId(UUIDUtils.getUUID32());
+        if (StringUtils.isBlank(testDataSchemaValues.getId())) {
+        	testDataSchemaValues.setId(UUIDUtils.getUUID32());
+        }
         testDataSchemaValues.setCrtUser(username);
         testDataSchemaValues.setCrtDttm(new Date());
         testDataSchemaValues.setLastUpdateUser(username);
         testDataSchemaValues.setLastUpdateDttm(new Date());
         testDataSchemaValues.setTestData(testData);
-        testDataSchemaValues.setTestDataSchema(testDataSchema);
         int affectedRows = testDataSchemaValuesMapper.addTestDataSchemaValues(testDataSchemaValues);
         if (affectedRows < 0) {
             throw new Exception("save testData failed");
