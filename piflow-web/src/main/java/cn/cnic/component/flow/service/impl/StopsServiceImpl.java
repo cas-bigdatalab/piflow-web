@@ -1179,10 +1179,10 @@ public class StopsServiceImpl implements IStopsService {
                 processPath.setProcess(process);
                 processPathsList.add(processPath);
                 // Generate page processPath information
-                MxCell processMxCell_line = MxCellUtils.AddMxCellLine(username, processPath.getPageId());
-                processMxCell_line.setSource(processPath.getFrom());
-                processMxCell_line.setTarget(processPath.getTo());
-                rootMxCell.add(processMxCell_line);
+                //MxCell processMxCell_line = MxCellUtils.AddMxCellLine(username, processPath.getPageId());
+                //processMxCell_line.setSource(processPath.getFrom());
+                //processMxCell_line.setTarget(processPath.getTo());
+                //rootMxCell.add(processMxCell_line);
             }
         }
 
