@@ -1133,7 +1133,7 @@ public class StopsServiceImpl implements IStopsService {
                 
                 processStopsList.add(processStop);
                 processPathsList.add(processPath);
-                rootMxCell.add(pathsMxCellNew);
+                rootMxCell.add(stopsMxCellNew);
                 rootMxCell.add(pathsMxCellNew);
                 stopsPageId = targetStopsPageId;
             }
