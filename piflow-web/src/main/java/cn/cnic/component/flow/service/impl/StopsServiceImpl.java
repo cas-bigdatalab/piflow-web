@@ -1169,12 +1169,15 @@ public class StopsServiceImpl implements IStopsService {
                 //MxCell processMxCell_stops = MxCellUtils.AddMxCellNode(username, processStop.getPageId(), stopsComponentByBundle.getName(), "/images/" + stopsComponentByBundle.getName() + "_128x128.png");
                 //rootMxCell.add(processMxCell_stops);
 
+                String outPortName = PortType.DEFAULT.getText().equals(stopsComponentByBundle.getOutports()) ? "" : stopsComponentByBundle.getOutports();
+                String inPortName = PortType.DEFAULT.getText().equals(ports[i]) ? "" : ports[i];
+
                 // Generate processPath information
                 ProcessPath processPath = ProcessPathUtils.initProcessPathBasicPropertiesNoId(null, username);
                 processPath.setFrom("" + (maxStopPageIdByFlowId + 1 + i) + "");
-                processPath.setOutport(stopsComponentByBundle.getOutports());
+                processPath.setOutport(outPortName);
                 processPath.setTo(stopsById.getPageId());
-                processPath.setInport(ports[i]);
+                processPath.setInport(inPortName);
                 processPath.setPageId("" + (0 - (maxStopPageIdByFlowId + 1 + i)) + "");
                 processPath.setProcess(process);
                 processPathsList.add(processPath);
