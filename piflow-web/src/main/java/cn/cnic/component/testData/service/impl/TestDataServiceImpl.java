@@ -434,12 +434,12 @@ public class TestDataServiceImpl implements ITestDataService {
             testDataSchema.setTestData(testData);
             testDataSchemaList.add(testDataSchema);
             // values 
-            List<String> fileNameValueList = csvMap.get(fileName);
-            for (int j = 0; j < fileNameValueList.size(); j++) {
-            	String fileNameValue_j = fileNameValueList.get(j);
+            List<String> fieldNameValueList = csvMap.get(fieldName);
+            for (int j = 0; j < fieldNameValueList.size(); j++) {
+            	String fieldNameValue_j = fieldNameValueList.get(j);
             	TestDataSchemaValues testDataSchemaValues = TestDataSchemaValuesUtils.setTestDataSchemaBasicInformation(null, true, username); 
             	testDataSchemaValues.setDataRow(j);
-            	testDataSchemaValues.setFieldValue(fileNameValue_j);
+            	testDataSchemaValues.setFieldValue(fieldNameValue_j);
                 testDataSchemaValues.setTestData(testData);
                 testDataSchemaValues.setTestDataSchema(testDataSchema);
                 testDataSchemaValuesList.add(testDataSchemaValues);

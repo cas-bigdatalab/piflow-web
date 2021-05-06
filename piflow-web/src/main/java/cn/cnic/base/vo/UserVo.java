@@ -20,10 +20,10 @@ import java.util.List;
 @Setter
 public class UserVo implements UserDetails, Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String id;
-	private String username;
+    private String id;
+    private String username;
     private String password;
     private String name;
     private Integer age;
@@ -31,7 +31,7 @@ public class UserVo implements UserDetails, Serializable {
     private List<SysRole> roles = new ArrayList<>();
     List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
     @SuppressWarnings("unused")
-	private Collection<? extends GrantedAuthority> authorities;
+    private Collection<? extends GrantedAuthority> authorities;
 
     public UserVo() {
     }

@@ -207,8 +207,7 @@ public class StopsServiceImpl implements IStopsService {
      * @throws Exception
      */
     @Override
-    public String updateStopName(String username, boolean isAdmin, String stopId, String flowId, String stopName,
-            String pageId) throws Exception {
+    public String updateStopName(String username, boolean isAdmin, String stopId, String flowId, String stopName, String pageId) throws Exception {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
         }
@@ -237,20 +236,17 @@ public class StopsServiceImpl implements IStopsService {
             root = mxGraphModel.getRoot();
         }
         if (null == root || root.isEmpty()) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(
-                    "Flow '" + flowById.getId() + "' The drawing board information is empty and the update failed.");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Flow '" + flowById.getId() + "' The drawing board information is empty and the update failed.");
         }
         // Determine whether the 'Stops' exists
         List<Stops> stopsList = flowById.getStopsList();
         if (null == stopsList || stopsList.isEmpty()) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(
-                    "Flow '" + flowById.getId() + "' The Stops is empty and the update failed.");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Flow '" + flowById.getId() + "' The Stops is empty and the update failed.");
         }
         // Check if name is the same name
         String checkResult = this.getStopByNameAndFlowId(flowById.getId(), stopName);
         if (StringUtils.isNotBlank(checkResult)) {
-            return ReturnMapUtils
-                    .setFailedMsgRtnJsonStr("The name '" + stopName + "' has been repeated and the save failed.");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("The name '" + stopName + "' has been repeated and the save failed.");
         }
         // Get the MxCell node to be modified
         MxCell mxCellUpdate = null;
@@ -295,8 +291,7 @@ public class StopsServiceImpl implements IStopsService {
     public String getStopsPort(String flowId, String sourceId, String targetId, String pathLineId) {
         Map<String, Object> rtnMap = new HashMap<>();
         rtnMap.put("code", 500);
-        // The parameter is judged empty, and it is judged whether each parameter is
-        // available. If there is, it returns directly.
+        // The parameter is judged empty, and it is judged whether each parameter is available. If there is, it returns directly.
         // ('isAnyEmpty' returns true whenever there is a null value)
         if (StringUtils.isAnyEmpty(flowId, sourceId, targetId, pathLineId)) {
             logger.warn("The part of the parameter passed in is empty");
@@ -304,10 +299,8 @@ public class StopsServiceImpl implements IStopsService {
             return JsonUtils.toJsonNoException(rtnMap);
         }
         // Find the 'stop' of 'input' and 'output'
-        List<Stops> queryInfoList = stopsDomainU.getStopsListByFlowIdAndPageIds(flowId,
-                new String[] { sourceId, targetId });
-        // If 'queryInfoList' is empty, or the size of 'queryInfoList' is less than 2,
-        // return directly
+        List<Stops> queryInfoList = stopsDomainU.getStopsListByFlowIdAndPageIds(flowId, new String[] { sourceId, targetId });
+        // If 'queryInfoList' is empty, or the size of 'queryInfoList' is less than 2, return directly
         if (null == queryInfoList || queryInfoList.size() < 2) {
             logger.warn("Can't find 'source' or 'target'");
             rtnMap.put("errorMsg", "Can't find 'source' or 'target'");
@@ -337,26 +330,19 @@ public class StopsServiceImpl implements IStopsService {
         PortType sourcePortType = sourceStop.getOutPortType();
         PortType targetPortType = targetStop.getInPortType();
         if (null == sourcePortType || null == targetPortType) {
-            logger.warn(
-                    "'sourceStopOutports' of 'sourceStop' or 'targetStopInports' of 'targetStop' are Null and cannot be output.");
-            rtnMap.put("errorMsg",
-                    "'sourceStopOutports' of 'sourceStop' or 'targetStopInports' of 'targetStop' are Null and cannot be output.");
+            logger.warn("'sourceStopOutports' of 'sourceStop' or 'targetStopInports' of 'targetStop' are Null and cannot be output.");
+            rtnMap.put("errorMsg", "'sourceStopOutports' of 'sourceStop' or 'targetStopInports' of 'targetStop' are Null and cannot be output.");
             return JsonUtils.toJsonNoException(rtnMap);
         }
         if (PortType.NONE == sourcePortType || PortType.NONE == targetPortType) {
-            logger.warn(
-                    "‘sourceStopOutports’ of ‘sourceStop’ or ‘targetStopInports’ of ‘targetStop’ is ‘None’ and cannot be output");
-            rtnMap.put("errorMsg",
-                    "‘sourceStopOutports’ of ‘sourceStop’ or ‘targetStopInports’ of ‘targetStop’ is ‘None’ and cannot be output");
+            logger.warn("‘sourceStopOutports’ of ‘sourceStop’ or ‘targetStopInports’ of ‘targetStop’ is ‘None’ and cannot be output");
+            rtnMap.put("errorMsg", "‘sourceStopOutports’ of ‘sourceStop’ or ‘targetStopInports’ of ‘targetStop’ is ‘None’ and cannot be output");
             return JsonUtils.toJsonNoException(rtnMap);
         }
-        // Call 'stopPortUsage' to query the available interfaces. The keys of the
-        // returned Map are as follows:
-        // 1, key: 'stop' port type enumeration 'text' attribute, value: port can use
-        // the quantity ‘Integer’
+        // Call 'stopPortUsage' to query the available interfaces. The keys of the returned Map are as follows:
+        // 1, key: 'stop' port type enumeration 'text' attribute, value: port can use the quantity ‘Integer’
         // 2, key : 'isSourceStop', value : whether it is 'source'
-        // 3, key: 'portUsageMap', value: port details 'map' (key: port name, value:
-        // whether available 'boolean')
+        // 3, key: 'portUsageMap', value: port details 'map' (key: port name, value: whether available 'boolean')
         // Query the occupancy of the ‘sourceStop’ interface
         Map<String, Object> sourcePortUsageMap = stopPortUsage(true, flowId, sourceStop, pathLineId);
         if (null == sourcePortUsageMap) {
@@ -413,19 +399,14 @@ public class StopsServiceImpl implements IStopsService {
      * @param flowId
      * @param stop
      * @param pathLineId
-     * @return map key 1, key: 'stop' port type enumeration 'text' attribute, value:
-     *         port can use the quantity ‘Integer’ 2, key : 'isSourceStop', value :
-     *         whether it is 'source' 3, key: 'portUsageMap', value: port details
-     *         'map' (key: port name, value: whether available 'boolean')
+     * @return map key
      */
     private Map<String, Object> stopPortUsage(boolean isSourceStop, String flowId, Stops stop, String pathLineId) {
         // Map for return
         // Map content
-        // 1, key: 'stop' port type enumeration 'text' attribute, value: port can use
-        // the quantity ‘Integer’
+        // 1, key: 'stop' port type enumeration 'text' attribute, value: port can use the quantity ‘Integer’
         // 2, key : 'isSourceStop', value : whether it is 'source'
-        // 3, key: 'portUsageMap', value: port details 'map' (key: port name, value:
-        // whether available 'boolean')
+        // 3, key: 'portUsageMap', value: port details 'map' (key: port name, value: whether available 'boolean')
         Map<String, Object> stopPortUsageMap = null;
         if (null != stop) {
             stopPortUsageMap = new HashMap<String, Object>();
@@ -438,26 +419,26 @@ public class StopsServiceImpl implements IStopsService {
             // Get the port type of ‘stopVo’
             PortType stopPortType = (isSourceStop ? stop.getOutPortType() : stop.getInPortType());
             switch (stopPortType) {
-            case DEFAULT:
-                stopTypeDefault(isSourceStop, flowId, stop, pathLineId, stopPortUsageMap, usedPathsList);
-                break;
-            case USER_DEFAULT:
-                stopTypeUserDefault(isSourceStop, flowId, stop, pathLineId, stopPortUsageMap, portUsageMap);
-                break;
-            case ANY:
-                stopTypeAny(isSourceStop, flowId, stop, pathLineId, stopPortUsageMap, portUsageMap);
-            case ROUTE:
-                stopTypeRoute(isSourceStop, flowId, stop, pathLineId, stopPortUsageMap, portUsageMap);
-                break;
-            case NONE:
-                // NONE means no port available
-                stopPortUsageMap.put(PortType.NONE.getText(), 0);
-                logger.info("stopPortType is'" + stopPortType + "'. No action, return null");
-                break;
-            default:
-                stopPortUsageMap = null;
-                logger.info("stopPortType is '" + stopPortType + "'. No action, return null");
-                break;
+                case DEFAULT:
+                    stopTypeDefault(isSourceStop, flowId, stop, pathLineId, stopPortUsageMap, usedPathsList);
+                    break;
+                case USER_DEFAULT:
+                    stopTypeUserDefault(isSourceStop, flowId, stop, pathLineId, stopPortUsageMap, portUsageMap);
+                    break;
+                case ANY:
+                    stopTypeAny(isSourceStop, flowId, stop, pathLineId, stopPortUsageMap, portUsageMap);
+                case ROUTE:
+                    stopTypeRoute(isSourceStop, flowId, stop, pathLineId, stopPortUsageMap, portUsageMap);
+                    break;
+                case NONE:
+                    // NONE means no port available
+                    stopPortUsageMap.put(PortType.NONE.getText(), 0);
+                    logger.info("stopPortType is'" + stopPortType + "'. No action, return null");
+                    break;
+                default:
+                    stopPortUsageMap = null;
+                    logger.info("stopPortType is '" + stopPortType + "'. No action, return null");
+                    break;
             }
         }
         return stopPortUsageMap;
@@ -473,17 +454,14 @@ public class StopsServiceImpl implements IStopsService {
      * @param stopPortUsageMap
      * @param portUsageMap
      */
-    private void stopTypeAny(boolean isSourceStop, String flowId, Stops stop, String pathLineId,
-            Map<String, Object> stopPortUsageMap, Map<String, Boolean> portUsageMap) {
+    private void stopTypeAny(boolean isSourceStop, String flowId, Stops stop, String pathLineId, Map<String, Object> stopPortUsageMap, Map<String, Boolean> portUsageMap) {
         List<Paths> usedPathsList;// stopVo all ports
         String stopVoPortsAny = "";
 
-        // To get the attribute name, because the Stop port of the Any type is stored in
-        // the attribute.
+        // To get the attribute name, because the Stop port of the Any type is stored in the attribute.
         String propertyVoName = "";
 
-        // The number of available interfaces is unlimited, for the temporary use of
-        // 99999
+        // The number of available interfaces is unlimited, for the temporary use of 99999
         stopPortUsageMap.put(PortType.ANY.getText(), 99999);
 
         // Determine if stopVo is source
@@ -542,17 +520,14 @@ public class StopsServiceImpl implements IStopsService {
      * @param stopPortUsageMap
      * @param portUsageMap
      */
-    private void stopTypeRoute(boolean isSourceStop, String flowId, Stops stop, String pathLineId,
-            Map<String, Object> stopPortUsageMap, Map<String, Boolean> portUsageMap) {
+    private void stopTypeRoute(boolean isSourceStop, String flowId, Stops stop, String pathLineId, Map<String, Object> stopPortUsageMap, Map<String, Boolean> portUsageMap) {
         List<Paths> usedPathsList;// stopVo all ports
         String stopVoPortsAny = "";
 
-        // To get the attribute name, because the Stop port of the Any type is stored in
-        // the attribute.
+        // To get the attribute name, because the Stop port of the Any type is stored in the attribute.
         String propertyVoName = "";
 
-        // The number of available interfaces is unlimited, for the temporary use of
-        // 99999
+        // The number of available interfaces is unlimited, for the temporary use of 99999
         stopPortUsageMap.put(PortType.ROUTE.getText(), 99999);
 
         // Determine if stopVo is source
@@ -628,8 +603,7 @@ public class StopsServiceImpl implements IStopsService {
      * @param stopPortUsageMap
      * @param usedPathsList
      */
-    private void stopTypeDefault(boolean isSourceStop, String flowId, Stops stop, String pathLineId,
-            Map<String, Object> stopPortUsageMap, List<Paths> usedPathsList) {
+    private void stopTypeDefault(boolean isSourceStop, String flowId, Stops stop, String pathLineId, Map<String, Object> stopPortUsageMap, List<Paths> usedPathsList) {
         Integer availablePathsCounts;// The default number of available ports for DEFAULT is 1.
         availablePathsCounts = 1;
 
@@ -687,8 +661,7 @@ public class StopsServiceImpl implements IStopsService {
      * @param stopPortUsageMap
      * @param portUsageMap
      */
-    private void stopTypeUserDefault(boolean isSourceStop, String flowId, Stops stop, String pathLineId,
-            Map<String, Object> stopPortUsageMap, Map<String, Boolean> portUsageMap) {
+    private void stopTypeUserDefault(boolean isSourceStop, String flowId, Stops stop, String pathLineId, Map<String, Object> stopPortUsageMap, Map<String, Boolean> portUsageMap) {
         List<Paths> usedPathsList;
         Integer usedPathsCounts;
         Integer availablePathsCounts;// stopVo all ports
@@ -720,13 +693,11 @@ public class StopsServiceImpl implements IStopsService {
             // Get all ports of stopVo
             stopVoPorts = stop.getInports();
         }
-        // Currently, only the used ports are placed in the portUsageMap, and all the
-        // longest ones are the number of used ports.
+        // Currently, only the used ports are placed in the portUsageMap, and all the longest ones are the number of used ports.
         usedPathsCounts = portUsageMap.size();
         // Put all port information into the portUsageMap
         portUsageMap = this.portStrToMap(portUsageMap, null, null, stopVoPorts);
-        // portUsageMap has just been put into all ports, so the size of portUsageMap
-        // minus the number of used ports is the number of available ports.
+        // portUsageMap has just been put into all ports, so the size of portUsageMap minus the number of used ports is the number of available ports.
         availablePathsCounts = portUsageMap.size() - usedPathsCounts;
         // Put the number of available interfaces
         stopPortUsageMap.put(PortType.USER_DEFAULT.getText(), availablePathsCounts);
@@ -746,16 +717,15 @@ public class StopsServiceImpl implements IStopsService {
      * @param stopVoPorts   Port information in stop, all ports
      * @return
      */
-    private Map<String, Boolean> portStrToMap(Map<String, Boolean> portUsageMap, Boolean isSourceStop,
-            List<Paths> usedPathsList, String stopVoPorts) {
+    private Map<String, Boolean> portStrToMap(Map<String, Boolean> portUsageMap, Boolean isSourceStop, List<Paths> usedPathsList, String stopVoPorts) {
         if (null != portUsageMap) {
             if (null != usedPathsList && usedPathsList.size() > 0) {
                 String currentPathsId = "";
-                /*
-                 * Paths currentPaths = null; // Paths currentPaths =
-                 * pathsServiceImpl.getPathsByFlowIdAndPageId(flowId, pathLineId); if (null !=
-                 * currentPaths) { currentPathsId = currentPaths.getId(); }
-                 */
+                // Paths currentPaths = null;
+                // Paths currentPaths = pathsServiceImpl.getPathsByFlowIdAndPageId(flowId, pathLineId);
+                // if (null != currentPaths) {
+                //     currentPathsId = currentPaths.getId();
+                // }
                 if (null != isSourceStop && isSourceStop) {
                     // Put the port that has been found into the map
                     for (Paths paths : usedPathsList) {
@@ -788,11 +758,9 @@ public class StopsServiceImpl implements IStopsService {
                     // Loop array
                     for (String portName : stopVoPortsSplit) {
                         if (StringUtils.isNotBlank(portName)) {
-                            // In the portUsageMap, the value is taken according to the port name. If it is
-                            // obtained, the description is released.
+                            // In the portUsageMap, the value is taken according to the port name. If it is obtained, the description is released.
                             Boolean isUsed = portUsageMap.get(portName);
-                            // Before putting all the used ports into the map, if you can't get it, it means
-                            // that it has not been put in or used.
+                            // Before putting all the used ports into the map, if you can't get it, it means that it has not been put in or used.
                             if (null == isUsed) {
                                 portUsageMap.put(portName, true);
                             }
@@ -830,8 +798,7 @@ public class StopsServiceImpl implements IStopsService {
         }
         // Get Stops all attributes
         List<Property> propertyList = stopsById.getProperties();
-        // Determine if the "stop" attribute with ID "stopId" is empty. Returns if it is
-        // empty, otherwise continues.
+        // Determine if the "stop" attribute with ID "stopId" is empty. Returns if it is empty, otherwise continues.
         if (null == propertyList || propertyList.size() <= 0) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("fill failed,stop property is null");
         }
@@ -840,13 +807,11 @@ public class StopsServiceImpl implements IStopsService {
         if (StringUtils.isNotBlank(dataSourceId)) {
             DataSource dataSourceById = dataSourceDomain.getDataSourceById(dataSourceId);
             if (null == dataSourceById) {
-                return ReturnMapUtils
-                        .setFailedMsgRtnJsonStr("fill failed,Cannot find Datasource with id " + dataSourceId);
+                return ReturnMapUtils.setFailedMsgRtnJsonStr("fill failed,Cannot find Datasource with id " + dataSourceId);
             }
             // Get Database all attributes
             List<DataSourceProperty> dataSourcePropertyList = dataSourceById.getDataSourcePropertyList();
-            // Determine whether the Datasource attribute whose ID is "dataSourceId" is
-            // empty. Returns if it is empty, otherwise it is converted to Map.
+            // Determine whether the Datasource attribute whose ID is "dataSourceId" is empty. Returns if it is empty, otherwise it is converted to Map.
             if (null == dataSourcePropertyList || dataSourcePropertyList.size() <= 0) {
                 return ReturnMapUtils.setFailedMsgRtnJsonStr("fill failed,dataSource property is null");
             }
@@ -934,26 +899,26 @@ public class StopsServiceImpl implements IStopsService {
         }
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededCustomParam("isNeedSource", false);
         if (PortType.NONE == stopsById.getInPortType()) {
-        	return JsonUtils.toJsonNoException(rtnMap);
+            return JsonUtils.toJsonNoException(rtnMap);
         }
         rtnMap.put("isNeedSource", true);
         String[] portsArr = stopsById.getInports().split(",");
         if (PortType.ANY != stopsById.getInPortType()) {
-        	rtnMap.put("ports", portsArr);
-        	return JsonUtils.toJsonNoException(rtnMap);
+            rtnMap.put("ports", portsArr);
+            return JsonUtils.toJsonNoException(rtnMap);
         }
-    	List<Property> properties = stopsById.getProperties();
-    	for (Property property : properties) {
-    		if (!"inports".equals(property.getName()) ) {
-    			continue;
-    		}
-    		String customValue = property.getCustomValue();
-    		if (null != customValue) {
-    			portsArr = customValue.split(",");
-    		}
-    		break;
-		}
-    	rtnMap.put("ports", portsArr);
+        List<Property> properties = stopsById.getProperties();
+        for (Property property : properties) {
+            if (!"inports".equals(property.getName()) ) {
+                continue;
+            }
+            String customValue = property.getCustomValue();
+            if (null != customValue) {
+                portsArr = customValue.split(",");
+            }
+            break;
+        }
+        rtnMap.put("ports", portsArr);
         return JsonUtils.toJsonNoException(rtnMap);
     }
 
@@ -1013,10 +978,10 @@ public class StopsServiceImpl implements IStopsService {
                 if (null == schemaIdAndNameList || schemaIdAndNameList.size() <= 0) {
                     return ReturnMapUtils.setFailedMsgRtnJsonStr("testData error");
                 }
-                String schema = "dataRow";
+                String schema = "";
                 for (LinkedHashMap<String, Object> testDataSchema : schemaIdAndNameList) {
                     if (StringUtils.isNotBlank(schema)) {
-                        schema += "☔";
+                        schema += ",";
                     }
                     schema += testDataSchema.get("FIELD_NAME");
                 }
@@ -1030,6 +995,9 @@ public class StopsServiceImpl implements IStopsService {
                 for (LinkedHashMap<String, Object> testDataSchemaValues : schemaValueList) {
                     String testDataLineStr = "";
                     for (String key : testDataSchemaValues.keySet()) {
+                        if ("dataRow".equals(key)) {
+                            continue;
+                        }
                         if (StringUtils.isNotBlank(testDataLineStr)) {
                             testDataLineStr += "☔";
                         }
@@ -1173,8 +1141,7 @@ public class StopsServiceImpl implements IStopsService {
 
         // Determine whether the HDFS value is empty
         if (hdfsUrlArray.size() > 0) {
-            StopsComponent stopsComponentByBundle = stopsComponentDomain
-                    .getStopsComponentByBundle("cn.piflow.bundle.csv.CsvParser");
+            StopsComponent stopsComponentByBundle = stopsComponentDomain.getStopsComponentByBundle("cn.piflow.bundle.csv.CsvParser");
             Integer maxStopPageIdByFlowId = stopsDomainU.getMaxStopPageIdByFlowId(flowDB.getId());
             for (int i = 0; i < hdfsUrlArray.size(); i++) {
                 // Get the corresponding url data information
@@ -1199,10 +1166,8 @@ public class StopsServiceImpl implements IStopsService {
                 processStop.setProcessStopPropertyList(processStopPropertyList);
                 processStopsList.add(processStop);
                 // Generate page processStop information
-                MxCell processMxCell_stops = MxCellUtils.AddMxCellNode(username, processStop.getPageId(),
-                        stopsComponentByBundle.getName(),
-                        "/images/" + stopsComponentByBundle.getName() + "_128x128.png");
-                rootMxCell.add(processMxCell_stops);
+                //MxCell processMxCell_stops = MxCellUtils.AddMxCellNode(username, processStop.getPageId(), stopsComponentByBundle.getName(), "/images/" + stopsComponentByBundle.getName() + "_128x128.png");
+                //rootMxCell.add(processMxCell_stops);
 
                 // Generate processPath information
                 ProcessPath processPath = ProcessPathUtils.initProcessPathBasicPropertiesNoId(null, username);

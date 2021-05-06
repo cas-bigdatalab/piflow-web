@@ -113,17 +113,17 @@ public class SqlUtils {
      */
     public static String addSymbol(String str, String symbol, boolean isbefore, boolean after) {
         if (null ==str) {
-        	return "null";
+            return "null";
         }
         if (null == symbol) {
-        	return str;
+            return str;
         }
         String sqlStr = str;
         if (isbefore) {
-        	sqlStr = (symbol + sqlStr);
+            sqlStr = (symbol + sqlStr);
         }
         if (isbefore) {
-        	sqlStr = (sqlStr + symbol);
+            sqlStr = (sqlStr + symbol);
         }
         return sqlStr;
     }

@@ -34,8 +34,8 @@ public class DataSourceConfig {
     
     @Bean //Declare it as a bean instance
     public DataSource getDataSource() {
-    	createDatabase();
-    	DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        createDatabase();
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName(driverClassName);
         dataSource.setUrl(datasourceUrl);
         dataSource.setUsername(username);
@@ -44,8 +44,8 @@ public class DataSourceConfig {
     }
     
     private void createDatabase() {
-    	if("mysql".equals(profilesType)) {
-    		try {
+        if("mysql".equals(profilesType)) {
+            try {
                 Class.forName(driverClassName);
                 //jdbc:mysql://127.0.0.1:3306/insight?useUnicode=true&characterEncoding=utf8&failOverReadOnly=false&allowMultiQueries=true
                 String url01 = datasourceUrl.substring(0, datasourceUrl.indexOf("?"));
@@ -65,7 +65,7 @@ public class DataSourceConfig {
             } catch (Exception e) {
                 logger.error("error",e);
             }
-    	}
+        }
     }
 }
 

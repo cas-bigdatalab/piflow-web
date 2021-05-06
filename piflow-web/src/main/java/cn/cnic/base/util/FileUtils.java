@@ -391,7 +391,7 @@ public class FileUtils {
     		return null;
     	}
     	Map<String,Object> rtnMap = new HashMap<>();
-    	File csv = new File("/home/nature/Desktop/cc.csv");
+    	File csv = new File(url);
     	BufferedReader br = null;
 		try {
 			br = new BufferedReader(new FileReader(csv));

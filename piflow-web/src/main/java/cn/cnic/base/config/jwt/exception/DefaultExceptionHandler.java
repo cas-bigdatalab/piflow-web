@@ -24,7 +24,7 @@ public class DefaultExceptionHandler {
      * @param e
      * @return
      */
-	@ExceptionHandler(CustomException.class)
+    @ExceptionHandler(CustomException.class)
     public ResultJson handleCustomException(CustomException e){
         logger.error(e.getResultJson().getMsg().toString());
         return e.getResultJson();

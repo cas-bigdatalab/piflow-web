@@ -16,7 +16,7 @@ public class QuartzUtils {
      * @throws Exception
      */
     @SuppressWarnings("unchecked")
-	public static void createScheduleJob(Scheduler scheduler, SysSchedule sysSchedule) {
+    public static void createScheduleJob(Scheduler scheduler, SysSchedule sysSchedule) {
         try {
             //Get the execution class of the timed task (must be the absolute path name of the class)
             //The timing task class needs to be a concrete implementation of the job class. QuartzJobBean is an abstract class for jobs.

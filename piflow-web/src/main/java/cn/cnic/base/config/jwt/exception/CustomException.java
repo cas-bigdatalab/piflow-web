@@ -8,9 +8,9 @@ import lombok.Getter;
 @SuppressWarnings("rawtypes")
 public class CustomException extends RuntimeException{
 
-	private static final long serialVersionUID = 1L;
-	
-	private ResultJson resultJson;
+    private static final long serialVersionUID = 1L;
+    
+    private ResultJson resultJson;
 
     public CustomException(ResultJson resultJson) {
         this.resultJson = resultJson;

@@ -70,7 +70,7 @@ public class TestDataCtrl {
     /**
      * saveOrUpdateTestDataSchemaValues
      * 
-     * @param data
+     * @param schemaValuesVo
      * @return String
      * @throws Exception 
      */

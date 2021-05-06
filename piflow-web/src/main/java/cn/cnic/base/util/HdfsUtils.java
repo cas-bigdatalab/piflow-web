@@ -168,10 +168,4 @@ public class HdfsUtils {
         IOUtils.copyBytes(in, out, 4096, true);
     }
 
-    public static void main(String[] args) throws Exception {
-        String dst = "hdfs://10.0.90.155:9000/user/piflow/testData/z.txt";
-        String data = "000000000000000000000000000000000000000";
-        writeData(dst,data);
-    }
-
 }

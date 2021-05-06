@@ -19,12 +19,12 @@ public class ResultJson<T> implements Serializable{
     private String msg;
     private T data;
 
-	public static ResultJson ok() {
+    public static ResultJson ok() {
         return ok("");
     }
 
     @SuppressWarnings("unchecked")
-	public static ResultJson ok(Object o) {
+    public static ResultJson ok(Object o) {
         return new ResultJson(ResultCode.SUCCESS, o);
     }
 
@@ -33,7 +33,7 @@ public class ResultJson<T> implements Serializable{
     }
 
     @SuppressWarnings("unchecked")
-	public static ResultJson failure(ResultCode code, Object o) {
+    public static ResultJson failure(ResultCode code, Object o) {
         return new ResultJson(code, o);
     }
 
