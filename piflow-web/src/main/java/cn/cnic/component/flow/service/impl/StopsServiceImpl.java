@@ -1172,7 +1172,7 @@ public class StopsServiceImpl implements IStopsService {
                 // Generate processPath information
                 ProcessPath processPath = ProcessPathUtils.initProcessPathBasicPropertiesNoId(null, username);
                 processPath.setFrom("" + (maxStopPageIdByFlowId + 1 + i) + "");
-                processPath.setOutport("default");
+                processPath.setOutport(stopsComponentByBundle.getOutports());
                 processPath.setTo(stopsById.getPageId());
                 processPath.setInport(ports[i]);
                 processPath.setPageId("" + (0 - (maxStopPageIdByFlowId + 1 + i)) + "");
