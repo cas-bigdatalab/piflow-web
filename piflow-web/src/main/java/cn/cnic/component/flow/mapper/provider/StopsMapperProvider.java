@@ -31,6 +31,7 @@ public class StopsMapperProvider {
     private Integer checkpoint;
     private int isCustomized;
     private String flowId;
+    private String dataSourceId;
 
     private boolean preventSQLInjectionStops(Stops stops) {
         if (null == stops || StringUtils.isBlank(stops.getLastUpdateUser())) {
@@ -64,6 +65,8 @@ public class StopsMapperProvider {
         this.isCustomized = ((null != stops.getIsCustomized() && stops.getIsCustomized()) ? 1 : 0);
         String flowIdStr = (null != stops.getFlow() ? stops.getFlow().getId() : null);
         this.flowId = (null != flowIdStr ? SqlUtils.preventSQLInjection(flowIdStr) : null);
+        String dataSourceIdStr = (null != stops.getDataSource() ? stops.getDataSource().getId() : null);
+        this.dataSourceId = (null != dataSourceIdStr ? SqlUtils.preventSQLInjection(dataSourceIdStr) : null);
         return true;
     }
 
@@ -86,6 +89,7 @@ public class StopsMapperProvider {
         this.checkpoint = null;
         this.isCustomized = 0;
         this.flowId = null;
+        this.dataSourceId = null;
     }
 
     /**
@@ -103,7 +107,7 @@ public class StopsMapperProvider {
 			stringBuffer.append("flow_stops ");
 			stringBuffer.append("(");
 			stringBuffer.append(SqlUtils.baseFieldName() + ",");
-			stringBuffer.append("bundel,description,groups,name,inports,in_port_type,outports,out_port_type,owner,page_id,is_checkpoint,is_customized,fk_flow_id");
+			stringBuffer.append("bundel,description,groups,name,inports,in_port_type,outports,out_port_type,owner,page_id,is_checkpoint,is_customized,fk_flow_id,fk_data_source_id");
 			stringBuffer.append(") ");
 			stringBuffer.append("VALUES");
 			stringBuffer.append("(");
@@ -120,7 +124,8 @@ public class StopsMapperProvider {
 			stringBuffer.append(this.pageId + ",");
 			stringBuffer.append(this.checkpoint + ",");
 			stringBuffer.append(this.isCustomized + ",");
-			stringBuffer.append(this.flowId);
+			stringBuffer.append(this.flowId + ",");
+			stringBuffer.append(this.dataSourceId);
 			stringBuffer.append(")");
 			sqlStr = stringBuffer.toString();
         }
@@ -155,7 +160,8 @@ public class StopsMapperProvider {
             sql.append("page_id,");
             sql.append("is_checkpoint,");
             sql.append("is_customized,");
-            sql.append("fk_flow_id");
+            sql.append("fk_flow_id,");
+            sql.append("fk_data_source_id");
             sql.append(") ");
             sql.append("VALUES");
             int i = 0;
@@ -178,7 +184,8 @@ public class StopsMapperProvider {
                     sql.append(pageId + ",");
                     sql.append(checkpoint + ",");
                     sql.append(isCustomized + ",");
-                    sql.append(flowId);
+                    sql.append(flowId + ",");
+                    sql.append(dataSourceId);
                     if (i != stopsList.size()) {
                         sql.append("),");
                     } else {
@@ -222,6 +229,7 @@ public class StopsMapperProvider {
             sql.SET("out_port_type = " + outPortType);
             sql.SET("owner = " + owner);
             sql.SET("is_checkpoint = " + checkpoint);
+            sql.SET("fk_data_source_id = " + dataSourceId);
             sql.WHERE("version = " + version);
             sql.WHERE("id = " + id);
             sqlStr = sql.toString();

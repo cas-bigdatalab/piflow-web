@@ -67,7 +67,7 @@ public interface TestDataSchemaValuesMapper {
 	 * @return
 	 */
 	@UpdateProvider(type = TestDataSchemaValuesMapperProvider.class,method = "delTestDataSchemaValuesBySchemaId")
-	public Integer delTestDataSchemaValuesBySchemaId(@Param("isAdmin") boolean isAdmin, @Param("username") String username, @Param("testDataId") String schemaId);
+	public Integer delTestDataSchemaValuesBySchemaId(@Param("isAdmin") boolean isAdmin, @Param("username") String username, @Param("schemaId") String schemaId);
 	
 	/**
 	 * get TestDataSchemaValues list

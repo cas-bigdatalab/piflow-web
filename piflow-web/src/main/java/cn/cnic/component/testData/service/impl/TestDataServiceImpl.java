@@ -113,9 +113,16 @@ public class TestDataServiceImpl implements ITestDataService {
                 if(null == copyDataToTestDataSchema) {
                     continue;
                 }
+                testDataSchemaDbMap.remove(testDataSchemaVo.getId());
                 testDataSchemaListNew.add(copyDataToTestDataSchema);
             }
             testData.setSchemaList(testDataSchemaListNew);
+            for (TestDataSchema testDataSchema : testDataSchemaDbMap.values()) {
+            	if (null == testDataSchema || StringUtils.isBlank(testDataSchema.getId())) {
+                    continue;
+                }
+            	delSchemaIdList.add(testDataSchema.getId());
+			}
         }
 
         int affectedRows = 0;

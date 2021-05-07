@@ -309,7 +309,7 @@ public class TestDataDomain {
      * @throws Exception
      */
     public int delTestDataSchemaList(List<String> schemaIdList, boolean isAdmin, String username) throws Exception {
-        if (null == schemaIdList && schemaIdList.size() <=0) {
+        if (null == schemaIdList || schemaIdList.size() <=0) {
             throw new Exception("schemaIdList is null");
         }
         if (StringUtils.isBlank(username)) {
