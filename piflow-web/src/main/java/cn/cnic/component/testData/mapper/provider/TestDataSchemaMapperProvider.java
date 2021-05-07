@@ -201,6 +201,32 @@ public class TestDataSchemaMapperProvider {
     }
 
     /**
+     * update TestDataSchema enable_flag
+     *
+     * @param isAdmin
+     * @param username
+     * @param schemaId
+     * @return
+     */
+    public String delTestDataSchemaById(boolean isAdmin, String username, String schemaId){
+        if (StringUtils.isBlank(schemaId)) {
+            return "SELECT 0";
+        }
+        String condition = "";
+        if (!isAdmin) {
+            if (StringUtils.isBlank(username)) {
+                return "SELECT 0";
+            }
+            condition = " AND crt_user=" + SqlUtils.preventSQLInjection(username);
+        }
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append("UPDATE test_data_schema SET enable_flag=0 WHERE ");
+        stringBuffer.append("id=" + SqlUtils.preventSQLInjection(schemaId));
+        stringBuffer.append(condition);
+        return  stringBuffer.toString();
+    }
+
+    /**
      * get TestDataSchema by id
      * 
      * @param id

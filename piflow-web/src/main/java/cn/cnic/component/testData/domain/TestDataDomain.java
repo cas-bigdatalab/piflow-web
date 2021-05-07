@@ -141,8 +141,7 @@ public class TestDataDomain {
      * add TestDataSchemaValues
      * 
      * @param username
-     * @param testDataSchemaValues
-     * @param testDataSchema
+     * @param schemaValuesList
      * @param testData
      * @return
      * @throws Exception
@@ -169,7 +168,6 @@ public class TestDataDomain {
      * 
      * @param username
      * @param testDataSchemaValues
-     * @param testDataSchema
      * @param testData
      * @return
      * @throws Exception
@@ -211,6 +209,9 @@ public class TestDataDomain {
         if (null == testData) {
             throw new Exception("testData is null");
         }
+        if (StringUtils.isBlank(testData.getId())) {
+            throw new Exception("testDataSchema id is null");
+        }
         testData.setLastUpdateUser(username);
         testData.setLastUpdateDttm(new Date());
         int affectedRows = testDataMapper.updateTestData(testData);
@@ -241,7 +242,7 @@ public class TestDataDomain {
             throw new Exception("testDataSchema is null");
         }
         if (StringUtils.isBlank(testDataSchema.getId())) {
-
+            throw new Exception("testDataSchema id is null");
         }
         testDataSchema.setLastUpdateUser(username);
         testDataSchema.setLastUpdateDttm(new Date());
@@ -271,6 +272,9 @@ public class TestDataDomain {
         if (null == testData) {
             throw new Exception("testData is null");
         }
+        if (StringUtils.isBlank(testDataSchemaValues.getId())) {
+            throw new Exception("testDataSchemaValues id is null");
+        }
         testDataSchemaValues.setTestDataSchema(testDataSchema);
         testDataSchemaValues.setTestData(testData);
         testDataSchemaValues.setLastUpdateUser(username);
@@ -293,6 +297,35 @@ public class TestDataDomain {
         int affectedRows = testDataSchemaValuesMapper.delTestDataSchemaValuesByTestDataId(isAdmin, username, testDataId);
         affectedRows += testDataSchemaMapper.delTestDataSchemaByTestDataId(isAdmin, username, testDataId);
         affectedRows += testDataMapper.delTestDataById(isAdmin, username, testDataId);
+        return affectedRows;
+    }
+
+    /**
+     * update TestDataSchema
+     *
+     * @param schemaIdList
+     * @param username
+     * @return int
+     * @throws Exception
+     */
+    public int delTestDataSchemaList(List<String> schemaIdList, boolean isAdmin, String username) throws Exception {
+        if (null == schemaIdList && schemaIdList.size() <=0) {
+            throw new Exception("schemaIdList is null");
+        }
+        if (StringUtils.isBlank(username)) {
+            throw new Exception("username is null");
+        }
+        int affectedRows = 0;
+        for (String schemaId : schemaIdList) {
+            if (StringUtils.isBlank(schemaId)) {
+                throw new Exception("testDataSchema id is null");
+            }
+            Integer integer = testDataSchemaMapper.delTestDataSchemaById(isAdmin, username, schemaId);
+            if (integer > 0){
+                affectedRows += testDataSchemaValuesMapper.delTestDataSchemaValuesBySchemaId(isAdmin, username, schemaId);
+            }
+            affectedRows += integer;
+        }
         return affectedRows;
     }
     
@@ -418,7 +451,7 @@ public class TestDataDomain {
     
     
     /**
-     * getTestDataSchemaValuesCustomListId
+     * getTestDataSchemaValuesListByTestDataId
      * 
      * @param testDataId
      * @throws
@@ -428,6 +461,19 @@ public class TestDataDomain {
             return null;
         }
         return testDataSchemaValuesMapper.getTestDataSchemaValuesListByTestDataId(testDataId);
+    }
+
+    /**
+     * getTestDataSchemaValuesListBySchemaId
+     *
+     * @param schemaId
+     * @throws
+     */
+    public List<TestDataSchemaValues> getTestDataSchemaValuesListBySchemaId(String schemaId) {
+        if (StringUtils.isBlank(schemaId)) {
+            return null;
+        }
+        return testDataSchemaValuesMapper.getTestDataSchemaValuesListBySchemaId(schemaId);
     }
 
     public String getTestDataName(String testDataName){

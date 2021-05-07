@@ -58,6 +58,17 @@ public interface TestDataSchemaMapper {
 	public Integer delTestDataSchemaByTestDataId(@Param("isAdmin") boolean isAdmin, @Param("username") String username, @Param("testDataId") String testDataId);
 
 	/**
+	 * update TestDataSchema enable_flag
+	 *
+	 * @param isAdmin
+	 * @param username
+	 * @param schemaId
+	 * @return
+	 */
+	@UpdateProvider(type = TestDataSchemaMapperProvider.class,method = "delTestDataSchemaById")
+	public Integer delTestDataSchemaById(@Param("isAdmin") boolean isAdmin, @Param("username") String username, @Param("schemaId") String schemaId);
+
+	/**
 	 * get TestDataSchema by id
 	 * 
 	 * @param id

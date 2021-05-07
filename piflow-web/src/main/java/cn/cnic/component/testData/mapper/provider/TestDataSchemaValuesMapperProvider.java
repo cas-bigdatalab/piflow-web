@@ -195,12 +195,36 @@ public class TestDataSchemaValuesMapperProvider {
         return  stringBuffer.toString();
     }
 
+
     /**
-     * get TestDataSchemaValues custom list
-     * 
+     * update TestDataSchemaValues enable_flag
+     *
      * @param isAdmin
      * @param username
-     * @param testDataId
+     * @param schemaId
+     * @return
+     */
+    public String delTestDataSchemaValuesBySchemaId(boolean isAdmin, String username, String schemaId){
+        if (StringUtils.isBlank(schemaId)) {
+            return "SELECT 0";
+        }
+        String condition = "";
+        if (!isAdmin) {
+            if (StringUtils.isBlank(username)) {
+                return "SELECT 0";
+            }
+            condition = " AND crt_user=" + SqlUtils.preventSQLInjection(username);
+        }
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append("UPDATE test_data_schema_values SET enable_flag=0 WHERE ");
+        stringBuffer.append("fk_test_data_schema_id=" + SqlUtils.preventSQLInjection(schemaId));
+        stringBuffer.append(condition);
+        return  stringBuffer.toString();
+    }
+
+    /**
+     * get TestDataSchemaValues custom list
+     *
      * @param map
      * @return
      */
@@ -249,9 +273,6 @@ public class TestDataSchemaValuesMapperProvider {
 
     /**
      * get testDataSchemaValuesId custom list
-     * @param isAdmin
-     * @param username
-     * @param testDataId
      * @param map
      * @return
      */

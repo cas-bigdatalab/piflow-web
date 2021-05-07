@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -70,8 +71,55 @@ public class TestDataServiceImpl implements ITestDataService {
         if (StringUtils.isNotBlank(testDataVoId)) {
             testData = testDataDomain.getTestDataById(testDataVoId);
         }
-        testData = TestDataUtils.copyDataToTestData(testDataVo, testData, username);
+        if (null == testData) {
+            testData = TestDataUtils.setTestDataBasicInformation(null, false, username);
+        }
+        // copy
+        BeanUtils.copyProperties(testDataVo, testData);
+        // set update info
+        testData.setLastUpdateDttm(new Date());
+        testData.setLastUpdateUser(username);
+
+        // get testDataSchemaVoList
+        List<TestDataSchemaVo> testDataSchemaVoList = testDataVo.getSchemaVoList();
+
+        // update schema
+        List<TestDataSchema> testDataSchemaList = testData.getSchemaList();
+        List<String> delSchemaIdList = new ArrayList<>();
+        if (null == testDataSchemaList) {
+            testDataSchemaList = new ArrayList<>();
+        }
+        if (null == testDataSchemaVoList || testDataSchemaVoList.size() <= 0) {
+            for (TestDataSchema testDataSchema : testDataSchemaList) {
+                if (null == testDataSchema || StringUtils.isBlank(testDataSchema.getId())) {
+                    continue;
+                }
+                delSchemaIdList.add(testDataSchema.getId());
+            }
+        } else {
+            Map<String, TestDataSchema> testDataSchemaDbMap = new HashMap<>();
+            for (TestDataSchema testDataSchema : testDataSchemaList) {
+                if (null == testDataSchema) {
+                    continue;
+                }
+                testDataSchemaDbMap.put(testDataSchema.getId(), testDataSchema);
+            }
+            List<TestDataSchema> testDataSchemaListNew = new ArrayList<>();
+            for (TestDataSchemaVo testDataSchemaVo : testDataSchemaVoList) {
+                if (null == testDataSchemaVo) {
+                    continue;
+                }
+                TestDataSchema copyDataToTestDataSchema = TestDataSchemaUtils.copyDataToTestDataSchema(testDataSchemaVo, testDataSchemaDbMap.get(testDataSchemaVo.getId()), username);
+                if(null == copyDataToTestDataSchema) {
+                    continue;
+                }
+                testDataSchemaListNew.add(copyDataToTestDataSchema);
+            }
+            testData.setSchemaList(testDataSchemaListNew);
+        }
+
         int affectedRows = 0;
+
         if (StringUtils.isBlank(testDataVoId)) {
             String testDataName = testDataDomain.getTestDataName(testData.getName());
             if(StringUtils.isNotBlank(testDataName)){
@@ -81,6 +129,9 @@ public class TestDataServiceImpl implements ITestDataService {
             affectedRows = testDataDomain.addTestData(testData, username);
         } else {
             affectedRows = testDataDomain.saveOrUpdate(testData, username);
+        }
+        if (null != delSchemaIdList && delSchemaIdList.size() > 0) {
+            affectedRows += testDataDomain.delTestDataSchemaList(delSchemaIdList, isAdmin, username);
         }
         if (affectedRows <= 0) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("save failed");

@@ -1,10 +1,6 @@
 package cn.cnic.component.testData.utils;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -52,38 +48,4 @@ public class TestDataSchemaUtils {
 		return testDataSchema;
 	}
 
-	/**
-	 * testDataSchemaVo data to testDataSchema
-	 * 
-	 * @param testDataSchemaVo
-	 * @param testDataSchema
-	 * @return
-	 */
-	public static List<TestDataSchema> copyDataToTestDataSchemaList(List<TestDataSchemaVo> testDataSchemaVoList, List<TestDataSchema> testDataSchemaList, String username) {
-		if (null == testDataSchemaVoList || testDataSchemaVoList.size() <= 0 || StringUtils.isBlank(username)) {
-			return null;
-		}
-		if (null == testDataSchemaList) {
-			testDataSchemaList = new ArrayList<>();
-		}
-		Map<String, TestDataSchema> testDataSchemaDbMap = new HashMap<String, TestDataSchema>();
-		for (TestDataSchema testDataSchema : testDataSchemaList) {
-			if (null == testDataSchema) {
-				continue;
-			}
-			testDataSchemaDbMap.put(testDataSchema.getId(), testDataSchema);
-		}
-		List<TestDataSchema> testDataSchemaListNew = new ArrayList<TestDataSchema>();
-		for (TestDataSchemaVo testDataSchemaVo : testDataSchemaVoList) {
-			if (null == testDataSchemaVo) {
-				continue;
-			}
-			TestDataSchema copyDataToTestDataSchema = copyDataToTestDataSchema(testDataSchemaVo, testDataSchemaDbMap.get(testDataSchemaVo.getId()), username);
-			if(null == copyDataToTestDataSchema) {
-				
-			}
-			testDataSchemaListNew.add(copyDataToTestDataSchema);
-		}
-		return testDataSchemaListNew;
-	}
 }
