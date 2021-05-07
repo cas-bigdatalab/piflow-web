@@ -1064,12 +1064,17 @@ public class StopsServiceImpl implements IStopsService {
             List<Paths> pathsList = flowDB.getPathsList();
 
             // pathsList conversion map (key is the pageId of the source)
-            Map<String, Paths> pathsMap = new HashMap<>();
+            Map<String, List<Paths>> pathsMap = new HashMap<>();
             for (Paths paths : pathsList) {
                 if (null == paths) {
                     continue;
                 }
-                pathsMap.put(paths.getFrom(), paths);
+                List<Paths> pathsListByMap = pathsMap.get(paths.getFrom());
+                if (null == pathsListByMap) {
+                    pathsListByMap = new ArrayList<>();
+                }
+                pathsListByMap.add(paths);
+                pathsMap.put(paths.getFrom(), pathsListByMap);
             }
 
             // get mxGraphModelRoot
@@ -1090,8 +1095,9 @@ public class StopsServiceImpl implements IStopsService {
             String stopsPageId = stopsById.getPageId();
             String pathspageId = "";
 
-            while (StringUtils.isNotBlank(stopsPageId)) {
-                Paths paths = pathsMap.get(stopsPageId);
+            List<Paths> pathsListByStopsPageId = pathsMap.get(stopsPageId);
+            List<Paths> extractPaths = extractPaths(pathsMap, pathsListByStopsPageId);
+            for(Paths paths : extractPaths) {
                 if (null == paths) {
                     break;
                 }
@@ -1105,19 +1111,19 @@ public class StopsServiceImpl implements IStopsService {
                     break;
                 }
                 ProcessStop processStop = ProcessUtils.stopsToProcessStop(targetStops, username, false);
-                if(null == processStop) {
+                if (null == processStop) {
                     break;
                 }
                 // Associate foreign key
                 processStop.setProcess(process);
-                
+
                 ProcessPath processPath = ProcessPathUtils.pathsToProcessPath(paths, username, false);
                 if (null == processPath) {
                     break;
                 }
                 // Associated foreign key
                 processPath.setProcess(process);
-                
+
                 MxCell pathsMxCell = flowMxGraphModelRootMap.get(pathspageId);
                 MxCell pathsMxCellNew = MxCellUtils.copyMxCell(pathsMxCell, username, false);
                 if (null == pathsMxCellNew) {
@@ -1130,12 +1136,11 @@ public class StopsServiceImpl implements IStopsService {
                     break;
                 }
                 stopsMxCellNew.setMxGraphModel(mxGraphModel);
-                
+
                 processStopsList.add(processStop);
                 processPathsList.add(processPath);
                 rootMxCell.add(stopsMxCellNew);
                 rootMxCell.add(pathsMxCellNew);
-                stopsPageId = targetStopsPageId;
             }
         }
 
@@ -1164,6 +1169,7 @@ public class StopsServiceImpl implements IStopsService {
                     processStopProperty.setCustomValue(hdfsUrlObj.get(nameLowerCase));
                 }
                 processStop.setProcessStopPropertyList(processStopPropertyList);
+                processStop.setName(processStop.getName() + System.currentTimeMillis());
                 processStopsList.add(processStop);
                 // Generate page processStop information
                 //MxCell processMxCell_stops = MxCellUtils.AddMxCellNode(username, processStop.getPageId(), stopsComponentByBundle.getName(), "/images/" + stopsComponentByBundle.getName() + "_128x128.png");
@@ -1215,6 +1221,26 @@ public class StopsServiceImpl implements IStopsService {
         rtnMap.put("processId", process.getId());
         return JsonUtils.toJsonNoException(rtnMap);
 
+    }
+    
+    private List<Paths> extractPaths(Map<String, List<Paths>> pathsMap, List<Paths> pathsList) {
+        if (null == pathsMap) {
+            return null;
+        }
+        if (null == pathsList || pathsList.size() <= 0) {
+            return null;
+        }
+        List<Paths> all = new ArrayList<>();
+        all.addAll(pathsList);
+        for (Paths paths : pathsList) {
+            List<Paths> list = pathsMap.get(paths.getTo());
+            List<Paths> extractPaths = extractPaths(pathsMap, list);
+            if (null == extractPaths || extractPaths.size() <= 0) {
+                break;
+            }
+            all.addAll(extractPaths);
+        }
+        return all;
     }
 
 }
