@@ -1,10 +1,6 @@
 package cn.cnic.controller.api;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
+import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +50,9 @@ public class ProcessCtrl {
      */
     @RequestMapping(value = "/processListPage", method = RequestMethod.POST)
     @ResponseBody
-    public String processAndProcessGroupListPage(Integer page, Integer limit, String param) {
+    public String processAndProcessGroupListPage(@ApiParam(value = "page", required = true, example = "0")Integer page,
+                                                 @ApiParam(value = "limit", required = true, example = "0")Integer limit,
+                                                 @ApiParam(value = "param")String param) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
         return processServiceImpl.getProcessVoListPage(username, isAdmin, page, limit, param);
@@ -69,7 +67,8 @@ public class ProcessCtrl {
      */
     @RequestMapping(value = "/drawingBoardData", method = RequestMethod.GET)
     @ResponseBody
-    public String drawingBoardData(String loadId, String parentAccessPath) {
+    public String drawingBoardData(@ApiParam(value = "loadId", required = true)String loadId,
+                                   @ApiParam(value = "parentAccessPath", required = true)String parentAccessPath) {
         String currentUsername = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
         return processServiceImpl.drawingBoardData(currentUsername, isAdmin, loadId, parentAccessPath);
@@ -83,7 +82,7 @@ public class ProcessCtrl {
      */
     @RequestMapping(value = "/queryProcessData", method = RequestMethod.GET)
     @ResponseBody
-    public String queryProcessData(String processId) {
+    public String queryProcessData(@ApiParam(value = "processId", required = true)String processId) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
         return processServiceImpl.getProcessVoById(username, isAdmin, processId);
@@ -98,7 +97,8 @@ public class ProcessCtrl {
      */
     @RequestMapping(value = "/queryProcessStopData", method = RequestMethod.GET)
     @ResponseBody
-    public String queryProcessStopData(String processId, String pageId) {
+    public String queryProcessStopData(@ApiParam(value = "processId", required = true)String processId,
+                                       @ApiParam(value = "pageId", required = true)String pageId) {
         return processStopServiceImpl.getProcessStopVoByPageId(processId, pageId);
     }
 
@@ -111,7 +111,8 @@ public class ProcessCtrl {
      */
     @RequestMapping(value = "/queryProcessPathData", method = RequestMethod.GET)
     @ResponseBody
-    public String queryProcessPathData(String processId, String pageId) {
+    public String queryProcessPathData(@ApiParam(value = "processId", required = true)String processId,
+                                       @ApiParam(value = "pageId", required = true)String pageId) {
         return processPathServiceImpl.getProcessPathVoByPageId(processId, pageId);
     }
 
@@ -125,7 +126,9 @@ public class ProcessCtrl {
      */
     @RequestMapping(value = "/runProcess", method = RequestMethod.POST)
     @ResponseBody
-    public String runProcess(String id, String checkpointStr, String runMode) {
+    public String runProcess(@ApiParam(value = "id", required = true)String id,
+                             @ApiParam(value = "checkpointStr")String checkpointStr,
+                             @ApiParam(value = "runMode")String runMode) {
         String username = SessionUserUtil.getCurrentUsername();
         return processServiceImpl.startProcess(username, id, checkpointStr, runMode);
     }
@@ -138,7 +141,7 @@ public class ProcessCtrl {
      */
     @RequestMapping(value = "/stopProcess", method = RequestMethod.POST)
     @ResponseBody
-    public String stopProcess(String processId) {
+    public String stopProcess(@ApiParam(value = "processId", required = true)String processId) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
         return processServiceImpl.stopProcess(username, isAdmin, processId);
@@ -152,7 +155,7 @@ public class ProcessCtrl {
      */
     @RequestMapping(value = "/delProcess", method = RequestMethod.POST)
     @ResponseBody
-    public String delProcess(String processID) {
+    public String delProcess(@ApiParam(value = "processID", required = true)String processID) {
         String username = SessionUserUtil.getCurrentUsername();
         return processServiceImpl.delProcess(username, processID);
     }
@@ -165,7 +168,7 @@ public class ProcessCtrl {
      */
     @RequestMapping(value = "/getLogUrl", method = RequestMethod.POST)
     @ResponseBody
-    public String getLogUrl(String appId) {
+    public String getLogUrl(@ApiParam(value = "appId", required = true)String appId) {
         return processServiceImpl.getLogUrl(appId);
     }
 
@@ -177,7 +180,7 @@ public class ProcessCtrl {
      */
     @RequestMapping(value = "/getLog", method = RequestMethod.POST)
     @ResponseBody
-    public String getLog(String url) {
+    public String getLog(@ApiParam(value = "url", required = true)String url) {
         String rtnMsg = "";
         if (StringUtils.isNotBlank(url)) {
             if ("Interface call failed".equals(url)) {
@@ -200,7 +203,7 @@ public class ProcessCtrl {
      */
     @RequestMapping(value = "/getAppInfo", method = RequestMethod.GET)
     @ResponseBody
-    public String getAppInfo(String appid) {
+    public String getAppInfo(@ApiParam(value = "appid", required = true)String appid) {
         return processServiceImpl.getAppInfoByAppId(appid);
     }
 
@@ -212,7 +215,7 @@ public class ProcessCtrl {
      */
     @RequestMapping(value = "/getAppInfoList", method = RequestMethod.GET)
     @ResponseBody
-    public String getAppInfoList(String[] arrayObj) {
+    public String getAppInfoList(@ApiParam(value = "arrayObj", required = true)String[] arrayObj) {
         return processServiceImpl.getProgressByAppIds(arrayObj);
     }
 
@@ -226,13 +229,18 @@ public class ProcessCtrl {
      */
     @RequestMapping(value = "/getCheckpointData", method = RequestMethod.POST)
     @ResponseBody
-    public String getCheckpoint(String pID, String parentProcessId) {
+    public String getCheckpoint(@ApiParam(value = "pID", required = true)String pID,
+                                @ApiParam(value = "parentProcessId", required = true)String parentProcessId) {
         return processServiceImpl.getCheckpoints(parentProcessId, pID);
     }
 
     @RequestMapping(value = "/getDebugData", method = RequestMethod.POST)
     @ResponseBody
-    public String getDebugData(String appId, String stopName, String portName, String startFileName, int startLine) {
+    public String getDebugData(@ApiParam(value = "appId", required = true)String appId,
+                               @ApiParam(value = "stopName", required = true)String stopName,
+                               @ApiParam(value = "portName", required = true)String portName,
+                               @ApiParam(value = "startFileName", required = true)String startFileName,
+                               @ApiParam(value = "startLine", required = true, example = "0")int startLine) {
         if ("Default".equals(portName)) {
             portName = portName.toLowerCase();
         }
@@ -241,7 +249,10 @@ public class ProcessCtrl {
 
     @RequestMapping(value = "/getVisualizationData", method = RequestMethod.GET)
     @ResponseBody
-    public String getVisualizationData(String appId, String stopName, String visualizationType, boolean isSoft) {
+    public String getVisualizationData(@ApiParam(value = "appId", required = true)String appId,
+                                       @ApiParam(value = "stopName", required = true)String stopName,
+                                       @ApiParam(value = "visualizationType", required = true)String visualizationType,
+                                       @ApiParam(value = "isSoft", required = true, example = "false")boolean isSoft) {
         return processServiceImpl.getVisualizationData(appId, stopName, visualizationType, isSoft);
     }
 
@@ -253,7 +264,7 @@ public class ProcessCtrl {
      */
     @RequestMapping(value = "/getRunningProcessList", method = RequestMethod.POST)
     @ResponseBody
-    public String getRunningProcessList(String flowId) {
+    public String getRunningProcessList(@ApiParam(value = "flowId", required = true)String flowId) {
         return processServiceImpl.getRunningProcessVoList(flowId);
     }
 }
