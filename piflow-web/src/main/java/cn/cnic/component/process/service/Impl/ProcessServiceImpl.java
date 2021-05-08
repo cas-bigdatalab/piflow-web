@@ -709,7 +709,7 @@ public class ProcessServiceImpl implements IProcessService {
      * @return
      */
     @Override
-    public String getVisualizationData(String appID, String stopName, String visualizationType) {
+    public String getVisualizationData(String appID, String stopName, String visualizationType, boolean isSoft) {
         if (null == appID || null == stopName || null == visualizationType) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("param is null");
         }
@@ -721,7 +721,9 @@ public class ProcessServiceImpl implements IProcessService {
         if (StringUtils.isBlank(visualizationData)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Interface call failed");
         }
-        visualizationData = visualizationDataSort(visualizationData,visualizationType);
+        if (isSoft) {
+            visualizationData = visualizationDataSort(visualizationData,visualizationType);
+        }
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("visualizationData", visualizationData);
     }
 

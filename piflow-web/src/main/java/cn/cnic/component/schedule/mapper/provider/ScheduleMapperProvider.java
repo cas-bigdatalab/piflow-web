@@ -254,5 +254,21 @@ public class ScheduleMapperProvider {
         return strBuf.toString();
     }
 
+    public String getScheduleIdListByScheduleRunTemplateId(boolean isAdmin, String username, String scheduleRunTemplateId){
+        if (StringUtils.isBlank(username) || StringUtils.isBlank(scheduleRunTemplateId)) {
+            return "SELECT 0";
+        }
+        StringBuffer strBuf = new StringBuffer();
+        strBuf.append("select count(id) from group_schedule ");
+        strBuf.append("where ");
+        strBuf.append("enable_flag=1 ");
+        strBuf.append("and ");
+        strBuf.append("schedule_run_template_id=" + SqlUtils.preventSQLInjection(scheduleRunTemplateId));
+        if (!isAdmin) {
+            strBuf.append("and crt_user = " + SqlUtils.preventSQLInjection(username));
+        }
+        return strBuf.toString();
+    }
+
 
 }

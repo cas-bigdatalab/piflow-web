@@ -32,6 +32,7 @@ import cn.cnic.component.flow.mapper.FlowGroupMapper;
 import cn.cnic.component.flow.mapper.FlowMapper;
 import cn.cnic.component.mxGraph.mapper.MxCellMapper;
 import cn.cnic.component.mxGraph.mapper.MxGraphModelMapper;
+import cn.cnic.component.schedule.mapper.ScheduleMapper;
 import cn.cnic.third.service.IGroup;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -81,6 +82,8 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
     @Autowired
     private IFlowService flowServiceImpl;
 
+    @Autowired
+    private ScheduleMapper scheduleMapper;
 
     /**
      * get FlowGroup by id
@@ -350,12 +353,16 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
     }
 
     @Override
-    public String deleteFLowGroupInfo(String username, String id) {
+    public String deleteFLowGroupInfo(boolean isAdmin, String username, String id) {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal user");
         }
         if (StringUtils.isBlank(id)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("id is null");
+        }
+        int scheduleIdListByScheduleRunTemplateId = scheduleMapper.getScheduleIdListByScheduleRunTemplateId(isAdmin, username, id);
+        if (scheduleIdListByScheduleRunTemplateId > 0) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Unable to delete, there is an associated scheduled task");
         }
         FlowGroup flowGroupById = flowGroupDomain.getFlowGroupById(id);
         flowGroupById.setLastUpdateDttm(new Date());

@@ -69,7 +69,7 @@ public interface IFlowGroupService {
      * @param id
      * @return
      */
-    public String deleteFLowGroupInfo(String username, String id);
+    public String deleteFLowGroupInfo(boolean isAdmin, String username, String id);
 
     /**
      * Copy flow to group

@@ -21,6 +21,7 @@ import cn.cnic.component.mxGraph.vo.MxGraphModelVo;
 import cn.cnic.component.process.entity.Process;
 import cn.cnic.component.process.utils.ProcessUtils;
 import cn.cnic.component.process.vo.ProcessVo;
+import cn.cnic.component.schedule.mapper.ScheduleMapper;
 import cn.cnic.component.stopsComponent.service.IStopGroupService;
 import cn.cnic.component.stopsComponent.vo.StopGroupVo;
 import cn.cnic.component.flow.jpa.domain.FlowDomain;
@@ -36,6 +37,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -93,6 +95,9 @@ public class FlowServiceImpl implements IFlowService {
 
     @Resource
     private IStopGroupService stopGroupServiceImpl;
+
+    @Autowired
+    private ScheduleMapper scheduleMapper;
 
     /**
      * Query flow information based on id
@@ -270,6 +275,10 @@ public class FlowServiceImpl implements IFlowService {
         }
         if (StringUtils.isBlank(id)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("id is null");
+        }
+        int scheduleIdListByScheduleRunTemplateId = scheduleMapper.getScheduleIdListByScheduleRunTemplateId(isAdmin, username, id);
+        if (scheduleIdListByScheduleRunTemplateId > 0) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Unable to delete, there is an associated scheduled task");
         }
         Flow flowById = this.getFlowById(username, isAdmin, id);
         if (null == flowById) {

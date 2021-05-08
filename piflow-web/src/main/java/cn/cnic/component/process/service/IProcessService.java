@@ -183,7 +183,7 @@ public interface IProcessService {
      * @param visualizationType
      * @return
      */
-    public String getVisualizationData(String appID, String stopName, String visualizationType);
+    public String getVisualizationData(String appID, String stopName, String visualizationType, boolean isSoft);
 
     /**
      * Query process based on processId and pageId
