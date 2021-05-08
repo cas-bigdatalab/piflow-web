@@ -10,15 +10,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class FlowJpaRepositoryTest extends ApplicationTests {
 
-	@Autowired
-	private FlowJpaRepository flowJpaRepository;
+    @Autowired
+    private FlowJpaRepository flowJpaRepository;
 
-	Logger logger = LoggerUtil.getLogger();
+    Logger logger = LoggerUtil.getLogger();
 
-	@Test
-	public void testGetOne() {
-		Flow ff8081816dd7c769016dd7e95ecc0002 = flowJpaRepository.getOne("ff8081816dd7c769016dd7e95ecc0002");
-		logger.info(ff8081816dd7c769016dd7e95ecc0002 + "");
-	}
+    @Test
+    public void testGetOne() {
+        Flow ff8081816dd7c769016dd7e95ecc0002 = flowJpaRepository.getOne("ff8081816dd7c769016dd7e95ecc0002");
+        logger.info(ff8081816dd7c769016dd7e95ecc0002 + "");
+    }
 
 }

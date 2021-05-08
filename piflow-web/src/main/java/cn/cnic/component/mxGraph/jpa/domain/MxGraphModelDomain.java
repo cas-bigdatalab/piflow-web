@@ -20,8 +20,8 @@ public class MxGraphModelDomain {
 
     private Specification<MxGraphModel> addEnableFlagParam() {
         Specification<MxGraphModel> specification = new Specification<MxGraphModel>() {
-        	private static final long serialVersionUID = 1L;
-        	
+            private static final long serialVersionUID = 1L;
+
             @Override
             public Predicate toPredicate(Root<MxGraphModel> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
                 //root.get("enableFlag") means to get the field name of enableFlag
@@ -33,8 +33,8 @@ public class MxGraphModelDomain {
 
     private Specification<MxGraphModel> addParam(String key, String value) {
         Specification<MxGraphModel> specification = new Specification<MxGraphModel>() {
-        	private static final long serialVersionUID = 1L;
-        	
+            private static final long serialVersionUID = 1L;
+
             @Override
             public Predicate toPredicate(Root<MxGraphModel> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
                 //root.get(key) means to get the name of the key field

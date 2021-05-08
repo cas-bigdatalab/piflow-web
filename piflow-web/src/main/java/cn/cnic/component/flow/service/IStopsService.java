@@ -37,14 +37,14 @@ public interface IStopsService {
     public int updateStopsByFlowIdAndName(ThirdFlowInfoStopVo stopVo);
 
     /**
-	 * Modify the isCheckpoint field
-	 *
-	 * @param stopId
-	 * @param isCheckpointStr
-	 * @return
-	 * @throws Exception 
-	 */
-	public String updateStopsCheckpoint(String username, String stopId, String isCheckpointStr) throws Exception;
+     * Modify the isCheckpoint field
+     *
+     * @param stopId
+     * @param isCheckpointStr
+     * @return
+     * @throws Exception 
+     */
+    public String updateStopsCheckpoint(String username, String stopId, String isCheckpointStr) throws Exception;
 
     /**
      * Modify "stopName" based on id
@@ -54,30 +54,30 @@ public interface IStopsService {
      * @return
      * @throws Exception 
      */
-	public int updateStopsNameById(String username, String id, String stopName) throws Exception ;
+    public int updateStopsNameById(String username, String id, String stopName) throws Exception ;
 
-	/**
-	 * getStopByNameAndFlowId
-	 * 
-	 * @param flowId
-	 * @param stopName
-	 * @return
-	 */
+    /**
+     * getStopByNameAndFlowId
+     * 
+     * @param flowId
+     * @param stopName
+     * @return
+     */
     public String getStopByNameAndFlowId(String flowId, String stopName);
 
     /**
-	 * updateStopName
-	 * 
-	 * @param username
-	 * @param isAdmin
-	 * @param stopId
-	 * @param flowId
-	 * @param stopName
-	 * @param pageId
-	 * @return
-	 * @throws Exception 
-	 */
-	public String updateStopName(String username, boolean isAdmin, String stopId, String flowId, String stopName, String pageId) throws Exception;
+     * updateStopName
+     * 
+     * @param username
+     * @param isAdmin
+     * @param stopId
+     * @param flowId
+     * @param stopName
+     * @param pageId
+     * @return
+     * @throws Exception 
+     */
+    public String updateStopName(String username, boolean isAdmin, String stopId, String flowId, String stopName, String pageId) throws Exception;
 
     public String getStopsPort(String flowId, String sourceId, String targetId, String pathLineId);
 
@@ -89,7 +89,7 @@ public interface IStopsService {
      * @return
      * @throws Exception 
      */
-	public String fillDatasource(String username, String dataSourceId, String stopId) throws Exception;
+    public String fillDatasource(String username, String dataSourceId, String stopId) throws Exception;
 
     /**
      * isNeedSource
@@ -111,5 +111,13 @@ public interface IStopsService {
      * @throws Exception 
      */
     public String runStops(String username, boolean isAdmin, RunStopsVo runStopsVo) throws Exception;
+    
+    /**
+     * checkDatasourceLinked
+     * 
+     * @param datasourceId
+     * @return
+     */
+    public String checkDatasourceLinked(String datasourceId);
 
 }

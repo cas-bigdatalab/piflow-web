@@ -12,9 +12,9 @@ import java.io.Serializable;
 @Setter
 @Table(name = "SYS_ROLE")
 public class SysRole implements Serializable {
-	
-	private static final long serialVersionUID = 1L;
-	
+    
+    private static final long serialVersionUID = 1L;
+    
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;

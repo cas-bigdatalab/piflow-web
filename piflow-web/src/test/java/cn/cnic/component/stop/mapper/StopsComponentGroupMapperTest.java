@@ -12,18 +12,18 @@ import java.util.List;
 
 public class StopsComponentGroupMapperTest extends ApplicationTests {
 
-	@Autowired
-	private StopsComponentGroupMapper stopsComponentGroupMapper;
+    @Autowired
+    private StopsComponentGroupMapper stopsComponentGroupMapper;
 
-	Logger logger = LoggerUtil.getLogger();
+    Logger logger = LoggerUtil.getLogger();
 
-	@Test
-	public void testGetStopGroupList() {
-		List<StopsComponentGroup> stopGroupList = stopsComponentGroupMapper.getStopGroupList();
-		if (null == stopGroupList) {
-			logger.info("The query result is empty");
-		}
-		logger.info(stopGroupList.size() + "");
-	}
+    @Test
+    public void testGetStopGroupList() {
+        List<StopsComponentGroup> stopGroupList = stopsComponentGroupMapper.getStopGroupList();
+        if (null == stopGroupList) {
+            logger.info("The query result is empty");
+        }
+        logger.info(stopGroupList.size() + "");
+    }
 
 }

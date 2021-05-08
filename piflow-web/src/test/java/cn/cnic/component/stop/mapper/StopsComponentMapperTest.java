@@ -79,28 +79,28 @@ public class StopsComponentMapperTest extends ApplicationTests {
         String username = (null != user) ? user.getUsername() : "-1";
 
         String[] group = stopImpl.getAllGroup();
-		if (null != group && group.length > 0) {
-			// The call is successful, the group table information is cleared and then inserted.
-			stopsComponentGroupMapper.deleteGroupCorrelation();
-			int deleteGroup = stopsComponentGroupMapper.deleteGroup();
-			logger.debug("Group" + deleteGroup + "data was successfully deleted！！！");
-			int a = 0;
-			for (String string : group) {
-				if (string.length() > 0) {
-					StopsComponentGroup stopGroup = new StopsComponentGroup();
-					stopGroup.setId(UUIDUtils.getUUID32());
-					stopGroup.setCrtDttm(new Date());
-					stopGroup.setCrtUser(username);
-					stopGroup.setLastUpdateUser(username);
-					stopGroup.setEnableFlag(true);
-					stopGroup.setLastUpdateDttm(new Date());
-					stopGroup.setGroupName(string);
-					int insertStopGroup = stopsComponentGroupMapper.insertStopGroup(stopGroup);
-					a += insertStopGroup;
-				}
-			}
-			logger.debug("Group" + a + "data was successfully inserted！！！");
-		}
+        if (null != group && group.length > 0) {
+            // The call is successful, the group table information is cleared and then inserted.
+            stopsComponentGroupMapper.deleteGroupCorrelation();
+            int deleteGroup = stopsComponentGroupMapper.deleteGroup();
+            logger.debug("Group" + deleteGroup + "data was successfully deleted！！！");
+            int a = 0;
+            for (String string : group) {
+                if (string.length() > 0) {
+                    StopsComponentGroup stopGroup = new StopsComponentGroup();
+                    stopGroup.setId(UUIDUtils.getUUID32());
+                    stopGroup.setCrtDttm(new Date());
+                    stopGroup.setCrtUser(username);
+                    stopGroup.setLastUpdateUser(username);
+                    stopGroup.setEnableFlag(true);
+                    stopGroup.setLastUpdateDttm(new Date());
+                    stopGroup.setGroupName(string);
+                    int insertStopGroup = stopsComponentGroupMapper.insertStopGroup(stopGroup);
+                    a += insertStopGroup;
+                }
+            }
+            logger.debug("Group" + a + "data was successfully inserted！！！");
+        }
 
     }
 
@@ -108,44 +108,44 @@ public class StopsComponentMapperTest extends ApplicationTests {
     @Transactional
     @Rollback(value = false)
     public void saveStopsAndProperty() {
-		// 1.First call the stop interface to get the getAllStops data；
-		String[] stopNameList = stopImpl.getAllStops();
-		if (null != stopNameList && stopNameList.length > 0) {
-			// The call is successful and the Stop message is cleared before insertion
-			stopsComponentPropertyMapper.deleteStopsComponentProperty();
-			int deleteStopsInfo = stopsComponentMapper.deleteStopsComponent();
-			logger.info("Successful deletion StopsInfo" + deleteStopsInfo + "piece of data!!!");
-			int num = 0;
-			for (String stopListInfos : stopNameList) {
-				num++;
-				// 2.Start by querting stopInfo against the bundle
-				logger.info("Now the call is：" + stopListInfos);
-				ThirdStopsComponentVo thirdStopsComponentVo = stopImpl.getStopInfo(stopListInfos);
-				List<String> list = null;
-				if (null != thirdStopsComponentVo) {
-					list = Arrays.asList(thirdStopsComponentVo.getGroups().split(","));
-				}
-				// Query group information according to groupName in stops
-				List<StopsComponentGroup> stopGroupByName = stopsComponentGroupMapper.getStopGroupByNameList(list);
-				StopsComponent stopsComponent = StopsComponentUtils.thirdStopsComponentVoToStopsTemplate("init", thirdStopsComponentVo, stopGroupByName);
-				if (null != stopsComponent) {
-					int insertStopsTemplate = stopsComponentMapper.insertStopsComponent(stopsComponent);
-					logger.info("flow_stops_template affects the number of rows : " + insertStopsTemplate);
-					logger.info("=============================association_groups_stops_template=====start==================");
-					List<StopsComponentGroup> stopGroupList = stopsComponent.getStopGroupList();
-					for (StopsComponentGroup stopGroup : stopGroupList) {
-						String stopGroupId = stopGroup.getId();
-						String stopsTemplateId = stopsComponent.getId();
-						int insertAssociationGroupsStopsTemplate = stopsComponentGroupMapper.insertAssociationGroupsStopsTemplate(stopGroupId, stopsTemplateId);
-						logger.info("association_groups_stops_template Association table insertion affects the number of rows : " + insertAssociationGroupsStopsTemplate);
-					}
-					List<StopsComponentProperty> properties = stopsComponent.getProperties();
-					int insertPropertyTemplate = stopsComponentPropertyMapper.insertStopsComponentProperty(properties);
-					logger.info("flow_stops_property_template affects the number of rows : " + insertPropertyTemplate);
-				}
-			}
-			logger.info(num + "num");
-		}
+        // 1.First call the stop interface to get the getAllStops data；
+        String[] stopNameList = stopImpl.getAllStops();
+        if (null != stopNameList && stopNameList.length > 0) {
+            // The call is successful and the Stop message is cleared before insertion
+            stopsComponentPropertyMapper.deleteStopsComponentProperty();
+            int deleteStopsInfo = stopsComponentMapper.deleteStopsComponent();
+            logger.info("Successful deletion StopsInfo" + deleteStopsInfo + "piece of data!!!");
+            int num = 0;
+            for (String stopListInfos : stopNameList) {
+                num++;
+                // 2.Start by querting stopInfo against the bundle
+                logger.info("Now the call is：" + stopListInfos);
+                ThirdStopsComponentVo thirdStopsComponentVo = stopImpl.getStopInfo(stopListInfos);
+                List<String> list = null;
+                if (null != thirdStopsComponentVo) {
+                    list = Arrays.asList(thirdStopsComponentVo.getGroups().split(","));
+                }
+                // Query group information according to groupName in stops
+                List<StopsComponentGroup> stopGroupByName = stopsComponentGroupMapper.getStopGroupByNameList(list);
+                StopsComponent stopsComponent = StopsComponentUtils.thirdStopsComponentVoToStopsTemplate("init", thirdStopsComponentVo, stopGroupByName);
+                if (null != stopsComponent) {
+                    int insertStopsTemplate = stopsComponentMapper.insertStopsComponent(stopsComponent);
+                    logger.info("flow_stops_template affects the number of rows : " + insertStopsTemplate);
+                    logger.info("=============================association_groups_stops_template=====start==================");
+                    List<StopsComponentGroup> stopGroupList = stopsComponent.getStopGroupList();
+                    for (StopsComponentGroup stopGroup : stopGroupList) {
+                        String stopGroupId = stopGroup.getId();
+                        String stopsTemplateId = stopsComponent.getId();
+                        int insertAssociationGroupsStopsTemplate = stopsComponentGroupMapper.insertAssociationGroupsStopsTemplate(stopGroupId, stopsTemplateId);
+                        logger.info("association_groups_stops_template Association table insertion affects the number of rows : " + insertAssociationGroupsStopsTemplate);
+                    }
+                    List<StopsComponentProperty> properties = stopsComponent.getProperties();
+                    int insertPropertyTemplate = stopsComponentPropertyMapper.insertStopsComponentProperty(properties);
+                    logger.info("flow_stops_property_template affects the number of rows : " + insertPropertyTemplate);
+                }
+            }
+            logger.info(num + "num");
+        }
     }
 
 }

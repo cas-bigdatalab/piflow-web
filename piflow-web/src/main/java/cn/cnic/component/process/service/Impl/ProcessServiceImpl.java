@@ -249,11 +249,11 @@ public class ProcessServiceImpl implements IProcessService {
                                 processVo.setId(processById.getId());
                                 for (ThirdFlowInfoStopsVo thirdFlowInfoStopsVo : stops) {
                                     if (null == thirdFlowInfoStopsVo) {
-                                    	continue;
+                                        continue;
                                     }
                                     ThirdFlowInfoStopVo thirdFlowInfoStopVo = thirdFlowInfoStopsVo.getStop();
                                     if (null == thirdFlowInfoStopVo) {
-                                    	continue;
+                                        continue;
                                     }
                                     ProcessStop processStopByNameAndPid = processStopMapper.getProcessStopByNameAndPid(processById.getId(), thirdFlowInfoStopVo.getName());
                                     processStopByNameAndPid.setName(thirdFlowInfoStopVo.getName());
@@ -931,7 +931,7 @@ public class ProcessServiceImpl implements IProcessService {
             new_xAxis_data.add(str);
             sort_data.put("xAxis_data", new_xAxis_data);
 
-			Map str_value = xAxisMap.get(str);
+            Map str_value = xAxisMap.get(str);
             for (Object key : str_value.keySet()) {
                 JSONArray str_value_data = null;
                 try {

@@ -121,4 +121,32 @@ public class ReturnMapUtils {
         Map<String, Object> stringObjectMap = setCodeAndMsg(code, msg);
         return JsonUtils.toJsonNoException(stringObjectMap);
     }
+    
+    /**
+     * append Values return map
+     *
+     * @param rtnMap
+     * @param key    Custom param
+     * @param value  Custom param
+     * @return Map
+     */
+    public static Map<String, Object> appendValues(Map<String, Object> rtnMap, String key, Object value) {
+        if(null == rtnMap) {
+            rtnMap = new HashMap<>();
+        }
+        rtnMap.put(key, value);
+        return rtnMap;
+    }
+    
+    /**
+     * append Values return jsonStr
+     *
+     * @param rtnMap
+     * @param key    Custom param
+     * @param value  Custom param
+     * @return JsonStr
+     */
+    public static String appendValuesToJson(Map<String, Object> rtnMap, String key, Object value) {
+        return JsonUtils.toJsonNoException(appendValues(rtnMap, key, value));
+    }
 }

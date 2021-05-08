@@ -1,4 +1,4 @@
-package cn.cnic.controller;
+package cn.cnic.controller.api;
 
 import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.base.util.SessionUserUtil;
@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 
@@ -26,7 +27,7 @@ public class DataSourceCtrl {
     @Autowired
     private IStopsService stopsServiceImpl;
 
-    @RequestMapping("/getDatasourceList")
+    @RequestMapping(value = "/getDatasourceList", method = RequestMethod.POST)
     @ResponseBody
     public String getDatasourceList() {
         String currentUsername = SessionUserUtil.getCurrentUsername();
@@ -34,7 +35,7 @@ public class DataSourceCtrl {
         return dataSourceImpl.getDataSourceVoList(currentUsername, isAdmin);
     }
 
-    @RequestMapping("/getDataSourceListPagination")
+    @RequestMapping(value = "/getDataSourceListPagination", method = RequestMethod.GET)
     @ResponseBody
     public String getDataSourceListPagination(Integer page, Integer limit, String param) {
         String currentUsername = SessionUserUtil.getCurrentUsername();
@@ -42,7 +43,7 @@ public class DataSourceCtrl {
         return dataSourceImpl.getDataSourceVoListPage(currentUsername, isAdmin, page, limit, param);
     }
 
-    @RequestMapping("/getDatasourceById")
+    @RequestMapping(value = "/getDatasourceById", method = RequestMethod.POST)
     @ResponseBody
     public String getDatasourceById(String id) {
         String currentUsername = SessionUserUtil.getCurrentUsername();
@@ -50,15 +51,15 @@ public class DataSourceCtrl {
         return dataSourceImpl.getDataSourceVoById(currentUsername, isAdmin, id);
     }
 
-    @RequestMapping("/saveOrUpdate")
+    @RequestMapping(value = "/saveOrUpdate", method = RequestMethod.POST)
     @ResponseBody
-    public String saveOrUpdate(DataSourceVo dataSourceVo) {
+    public String saveOrUpdate(DataSourceVo dataSourceVo, boolean isSynchronize) {
         String currentUsername = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
-        return dataSourceImpl.saveOrUpdate(currentUsername, isAdmin, dataSourceVo);
+        return dataSourceImpl.saveOrUpdate(currentUsername, isAdmin, dataSourceVo, isSynchronize);
     }
 
-    @RequestMapping("/getDataSourceInputData")
+    @RequestMapping(value = "/getDataSourceInputData", method = RequestMethod.POST)
     @ResponseBody
     public String getDataSourceInputPageData(String dataSourceId) {
         String username = SessionUserUtil.getCurrentUsername();
@@ -66,7 +67,7 @@ public class DataSourceCtrl {
         return dataSourceImpl.getDataSourceInputPageData(username, isAdmin, dataSourceId);
     }
 
-    @RequestMapping("/deleteDataSource")
+    @RequestMapping(value = "/deleteDataSource", method = RequestMethod.POST)
     @ResponseBody
     public String deleteDataSource(String dataSourceId) {
         String currentUsername = SessionUserUtil.getCurrentUsername();
@@ -74,11 +75,17 @@ public class DataSourceCtrl {
         return dataSourceImpl.deleteDataSourceById(currentUsername, isAdmin, dataSourceId);
     }
 
-    @RequestMapping("/fillDatasource")
+    @RequestMapping(value = "/fillDatasource", method = RequestMethod.POST)
     @ResponseBody
     public String fillDatasource(String dataSourceId, String stopId) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
         return stopsServiceImpl.fillDatasource(username, dataSourceId, stopId);
+    }
+    
+    @RequestMapping(value = "/checkDatasourceLinked", method = RequestMethod.POST)
+    @ResponseBody
+    public String checkDatasourceLinked(String dataSourceId) throws Exception {
+        return stopsServiceImpl.checkDatasourceLinked(dataSourceId);
     }
 
 

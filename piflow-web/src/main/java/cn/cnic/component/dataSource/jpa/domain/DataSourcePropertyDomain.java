@@ -22,9 +22,9 @@ public class DataSourcePropertyDomain {
     private Specification<DataSourceProperty> addEnableFlagParam() {
         Specification<DataSourceProperty> specification = new Specification<DataSourceProperty>() {
 
-			private static final long serialVersionUID = 1L;
+            private static final long serialVersionUID = 1L;
 
-			@Override
+            @Override
             public Predicate toPredicate(Root<DataSourceProperty> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
                 //root.get("enableFlag") means to get the field name of enableFlag
                 return criteriaBuilder.equal(root.get("enableFlag"), 1);

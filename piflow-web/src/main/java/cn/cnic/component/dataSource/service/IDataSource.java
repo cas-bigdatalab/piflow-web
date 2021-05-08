@@ -12,7 +12,7 @@ public interface IDataSource {
      * @param dataSourceVo
      * @return
      */
-    public String saveOrUpdate(String username, boolean isAdmin, DataSourceVo dataSourceVo);
+    public String saveOrUpdate(String username, boolean isAdmin, DataSourceVo dataSourceVo, boolean isSynchronize);
 
     /**
      * Query DataSourceVo according to ID (query contains its subtable)
@@ -66,6 +66,14 @@ public interface IDataSource {
     public String deleteDataSourceById(String username, boolean isAdmin, String id);
 
     public String getDataSourceInputPageData(String username, boolean isAdmin, String dataSourceId);
+    
+    /**
+     * checkLinked
+     * 
+     * @param datasourceId
+     * @return
+     */
+    public String checkLinked(String datasourceId);
 
 
 }

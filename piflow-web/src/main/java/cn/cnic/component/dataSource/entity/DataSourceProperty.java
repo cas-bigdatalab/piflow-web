@@ -12,9 +12,9 @@ import javax.persistence.*;
 @Getter
 public class DataSourceProperty extends BaseHibernateModelUUIDNoCorpAgentId {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "FK_DATA_SOURCE_ID")
     private DataSource dataSource;
 

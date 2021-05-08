@@ -284,7 +284,7 @@ public class ProcessStopMapperProvider {
      * @return
      */
     @SuppressWarnings("rawtypes")
-	public String getProcessStopByPageIdAndPageIds(Map map) {
+    public String getProcessStopByPageIdAndPageIds(Map map) {
         String processId = (String) map.get("processId");
         String[] pageIds = (String[]) map.get("pageIds");
         String sqlStr = "SELECT 0";

@@ -250,7 +250,7 @@ public class FileUtils {
         }
         if (null != strBuffer) {
             try {
-            	fileString = new String(strBuffer, "UTF-8"); //When constructing ‘String’, you can use the ‘byte[]’ type.
+                fileString = new String(strBuffer, "UTF-8"); //When constructing ‘String’, you can use the ‘byte[]’ type.
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
@@ -387,40 +387,40 @@ public class FileUtils {
      * @throws Exception 
      */
     public static Map<String, Object> ParseCsvFile(String url, String delimiter) throws Exception {
-    	if (StringUtils.isBlank(url) || StringUtils.isBlank(delimiter)) {
-    		return null;
-    	}
-    	Map<String,Object> rtnMap = new HashMap<>();
-    	File csv = new File(url);
-    	BufferedReader br = null;
-		try {
-			br = new BufferedReader(new FileReader(csv));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		String line = "";
-		String everyLine = "";
-		try {
-			List<String[]> dataList = new ArrayList<>();
-			while ((line = br.readLine()) != null) {
-				everyLine = line;
-				if(StringUtils.isBlank(everyLine)) {
-					continue;
-				}
-				String[] split = everyLine.split(delimiter);
-				dataList.add(split);
-			}
-			
-			if (dataList.size() > 0) {
-				String[] title = dataList.get(0);
-				rtnMap.put(FileUtils.CSV_TITLE_KEY, title);
-				dataList.remove(0);
-				rtnMap.put(FileUtils.CSV_DATA_KEY, dataList);
-			}
-		} catch (IOException e) {
-			throw new Exception("Parse failed");
-		}
-		return rtnMap;
+        if (StringUtils.isBlank(url) || StringUtils.isBlank(delimiter)) {
+            return null;
+        }
+        Map<String,Object> rtnMap = new HashMap<>();
+        File csv = new File(url);
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(csv));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        String line = "";
+        String everyLine = "";
+        try {
+            List<String[]> dataList = new ArrayList<>();
+            while ((line = br.readLine()) != null) {
+                everyLine = line;
+                if(StringUtils.isBlank(everyLine)) {
+                    continue;
+                }
+                String[] split = everyLine.split(delimiter);
+                dataList.add(split);
+            }
+            
+            if (dataList.size() > 0) {
+                String[] title = dataList.get(0);
+                rtnMap.put(FileUtils.CSV_TITLE_KEY, title);
+                dataList.remove(0);
+                rtnMap.put(FileUtils.CSV_DATA_KEY, dataList);
+            }
+        } catch (IOException e) {
+            throw new Exception("Parse failed");
+        }
+        return rtnMap;
     }
     
     /**
@@ -432,40 +432,40 @@ public class FileUtils {
      * @throws Exception 
      */
     @SuppressWarnings("unchecked")
-	public static LinkedHashMap<String, List<String>> ParseCsvFileRtnColumnData(String url, String delimiter) throws Exception {
-    	Map<String, Object> parseCsvFile = ParseCsvFile(url,delimiter);
-    	if (null == parseCsvFile) {
-    		return null;
-    	}
-    	Object csv_title = parseCsvFile.get(FileUtils.CSV_TITLE_KEY);
-    	Object csv_data = parseCsvFile.get(FileUtils.CSV_DATA_KEY);
-    	if (null == csv_title || null == csv_data) {
-    		return null;
-    	}
-    	String[] csvTitleArray = (String[])csv_title;
-    	List<String[]> csvDataList = (List<String[]>)csv_data;
-    	LinkedHashMap <String, List<String>> csvDataMap = new LinkedHashMap<>();
-    	Map <Integer, String> csvDataNumber = new HashMap<>();
-    	for (int i = 0; i < csvTitleArray.length; i++) {
-			String string = csvTitleArray[i];
-			csvDataMap.put(string, null);
-			csvDataNumber.put(i, string);
-		}
-    	for (String[] csvData : csvDataList) {
-    		if (null == csvData || csvData.length <=0) {
-    			continue;
-    		}
-    		for (int j = 0; j < csvData.length; j++) {
-    			String title = csvDataNumber.get(j);
-        		List<String> list = csvDataMap.get(title);
-        		if (null == list) {
-        			list = new ArrayList<>();
-        		}
-        		list.add(csvData[j]);
-        		csvDataMap.put(title, list);
-			}
-		}
-		return csvDataMap;
+    public static LinkedHashMap<String, List<String>> ParseCsvFileRtnColumnData(String url, String delimiter) throws Exception {
+        Map<String, Object> parseCsvFile = ParseCsvFile(url,delimiter);
+        if (null == parseCsvFile) {
+            return null;
+        }
+        Object csv_title = parseCsvFile.get(FileUtils.CSV_TITLE_KEY);
+        Object csv_data = parseCsvFile.get(FileUtils.CSV_DATA_KEY);
+        if (null == csv_title || null == csv_data) {
+            return null;
+        }
+        String[] csvTitleArray = (String[])csv_title;
+        List<String[]> csvDataList = (List<String[]>)csv_data;
+        LinkedHashMap <String, List<String>> csvDataMap = new LinkedHashMap<>();
+        Map <Integer, String> csvDataNumber = new HashMap<>();
+        for (int i = 0; i < csvTitleArray.length; i++) {
+            String string = csvTitleArray[i];
+            csvDataMap.put(string, null);
+            csvDataNumber.put(i, string);
+        }
+        for (String[] csvData : csvDataList) {
+            if (null == csvData || csvData.length <=0) {
+                continue;
+            }
+            for (int j = 0; j < csvData.length; j++) {
+                String title = csvDataNumber.get(j);
+                List<String> list = csvDataMap.get(title);
+                if (null == list) {
+                    list = new ArrayList<>();
+                }
+                list.add(csvData[j]);
+                csvDataMap.put(title, list);
+            }
+        }
+        return csvDataMap;
     }
     
  

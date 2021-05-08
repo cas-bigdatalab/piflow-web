@@ -130,4 +130,18 @@ public interface StopsMapper {
     })
     public Stops getStopsByPageId(String fid, String stopPageId);
 
+    @Select("SELECT name FROM flow_stops WHERE fk_data_source_id=#{datasourceId}")
+    public List<String> getStopsNamesByDatasourceId(@Param(value = "datasourceId") String datasourceId);
+    
+    /**
+     * Query all stops data by datasource id
+     *
+     * @return
+     */
+    @Select("SELECT * FROM flow_stops WHERE fk_data_source_id=#{datasourceId}")
+    @Results({@Result(id = true, column = "id", property = "id"),
+            @Result(column = "id", property = "properties", many = @Many(select = "cn.cnic.component.flow.mapper.PropertyMapper.getPropertyListByStopsId", fetchType = FetchType.LAZY)),
+    })
+    public List<Stops> getStopsListByDatasourceId(@Param(value = "datasourceId") String datasourceId);
+    
 }

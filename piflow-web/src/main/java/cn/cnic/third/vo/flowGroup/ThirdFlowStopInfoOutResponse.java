@@ -8,8 +8,8 @@ import java.io.Serializable;
 @Setter
 @Getter
 public class ThirdFlowStopInfoOutResponse implements Serializable {
-	
-	private static final long serialVersionUID = 1L;
+    
+    private static final long serialVersionUID = 1L;
 
     private ThirdFlowStopInfoResponse stop;
 }

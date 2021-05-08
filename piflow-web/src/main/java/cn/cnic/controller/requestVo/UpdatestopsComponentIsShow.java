@@ -15,14 +15,14 @@ import lombok.Setter;
 @ApiModel(description = "Update stops is show request data")
 public class UpdatestopsComponentIsShow implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@ApiModelProperty(value = "bundle", required = true)
-	private String[] bundle;
+    @ApiModelProperty(value = "bundle", required = true)
+    private String[] bundle;
 
-	@ApiModelProperty(value = "stopsGroups", required = true)
-	private String[] stopsGroups;
+    @ApiModelProperty(value = "stopsGroups", required = true)
+    private String[] stopsGroups;
 
-	@ApiModelProperty(value = "isShow", required = true)
-	private Boolean isShow = true;
+    @ApiModelProperty(value = "isShow", required = true)
+    private Boolean isShow = true;
 }

@@ -8,14 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class SysUserServiceTest extends ApplicationTests {
 
-	@Autowired
-	private ISysUserService sysUserServiceImpl;
+    @Autowired
+    private ISysUserService sysUserServiceImpl;
 
-	Logger logger = LoggerUtil.getLogger();
+    Logger logger = LoggerUtil.getLogger();
 
-	@Test
-	public void testGetFlowById() {
-		String userName = sysUserServiceImpl.checkUserName("admin");
-		logger.info(userName);
-	}
+    @Test
+    public void testGetFlowById() {
+        String userName = sysUserServiceImpl.checkUserName("admin");
+        logger.info(userName);
+    }
 }

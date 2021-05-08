@@ -189,13 +189,13 @@ public class ProcessUtils {
                 List<ProcessStop> processStopList = new ArrayList<ProcessStop>();
                 // Loop stopsList
                 for (Stops stops : stopsList) {
-                	ProcessStop processStop = stopsToProcessStop(stops, username, isAddId);
-                	if(null == processStop) {
-                		continue;
-                	}
-                	// Associate foreign key
-                	processStop.setProcess(process);
-                	processStopList.add(processStop);
+                    ProcessStop processStop = stopsToProcessStop(stops, username, isAddId);
+                    if(null == processStop) {
+                        continue;
+                    }
+                    // Associate foreign key
+                    processStop.setProcess(process);
+                    processStopList.add(processStop);
                 }
                 process.setProcessStopList(processStopList);
             }

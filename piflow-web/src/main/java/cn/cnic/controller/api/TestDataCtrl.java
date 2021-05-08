@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import cn.cnic.base.util.SessionUserUtil;
 import cn.cnic.component.testData.service.ITestDataService;
-import cn.cnic.component.testData.vo.TestDataVo;
+import cn.cnic.controller.requestVo.RequestTestDataVo;
 import cn.cnic.controller.requestVo.TestDataSchemaValuesSaveVo;
 
 @Api(value = "testData api")
@@ -33,7 +33,7 @@ public class TestDataCtrl {
      */
     @RequestMapping(value = "/saveOrUpdateTestDataSchema", method = RequestMethod.POST)
     @ResponseBody
-    public String saveOrUpdateTestDataSchema(@ApiParam(value = "testDataVo", required = true)TestDataVo testDataVo) throws Exception {
+    public String saveOrUpdateTestDataSchema(@ApiParam(value = "testDataVo", required = true)RequestTestDataVo testDataVo) throws Exception {
         String currentUsername = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
         return testDataServiceImpl.saveOrUpdateTestDataAndSchema(currentUsername, isAdmin, testDataVo);
@@ -185,7 +185,7 @@ public class TestDataCtrl {
     @RequestMapping(value = "/uploadCsvFile", method = RequestMethod.POST)
     @ResponseBody
     public String uploadCsvFile(@ApiParam(value = "file", required = true)@RequestParam("file") MultipartFile file, 
-    		                    @ApiParam(value = "delimiter", required = true)String delimiter) throws Exception {
+                                @ApiParam(value = "delimiter", required = true)String delimiter) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
         return testDataServiceImpl.uploadCsvFile(username, file, delimiter);
     }

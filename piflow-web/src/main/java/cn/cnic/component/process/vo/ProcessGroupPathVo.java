@@ -9,9 +9,9 @@ import java.io.Serializable;
 @Getter
 public class ProcessGroupPathVo implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-	
-	private ProcessGroupVo processGroupVo;
+    private static final long serialVersionUID = 1L;
+    
+    private ProcessGroupVo processGroupVo;
     private String from;
     private String outport;
     private String inport;

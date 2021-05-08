@@ -11,21 +11,21 @@ import java.util.*;
 
 public class CustomizedPropertyMapperMapperTest extends ApplicationTests {
 
-	@Resource
-	private CustomizedPropertyMapper customizedPropertyMapper;
+    @Resource
+    private CustomizedPropertyMapper customizedPropertyMapper;
 
 
-	Logger logger = LoggerUtil.getLogger();
+    Logger logger = LoggerUtil.getLogger();
 
-	@Test
-	public void testGetPropertyListByStopsId() {
-		List<CustomizedProperty> customizedPropertyListByStopsId = customizedPropertyMapper.getCustomizedPropertyListByStopsId("66cb0f08e4964d94912b8503f06b73fa");
-		if (null == customizedPropertyListByStopsId) {
-			logger.info("The query result is empty");
-		} else {
-			logger.info(customizedPropertyListByStopsId.size() + "");
-		}
-	}
+    @Test
+    public void testGetPropertyListByStopsId() {
+        List<CustomizedProperty> customizedPropertyListByStopsId = customizedPropertyMapper.getCustomizedPropertyListByStopsId("66cb0f08e4964d94912b8503f06b73fa");
+        if (null == customizedPropertyListByStopsId) {
+            logger.info("The query result is empty");
+        } else {
+            logger.info(customizedPropertyListByStopsId.size() + "");
+        }
+    }
 
 
 

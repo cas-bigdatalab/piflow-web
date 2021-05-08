@@ -12,19 +12,19 @@ import lombok.Setter;
 @ApiModel(description = "save TestData")
 public class SchemaValuesVo implements Serializable {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+    
 
-	@ApiModelProperty(value = "schema name")
+    @ApiModelProperty(value = "schema name")
     private String schemaName;
 
-	@ApiModelProperty(value = "schemaValues id")
+    @ApiModelProperty(value = "schemaValues id")
     private String schemaValueId;
-	
-	@ApiModelProperty(value = "schema value")
+    
+    @ApiModelProperty(value = "schema value")
     private String schemaValue;
 
 }

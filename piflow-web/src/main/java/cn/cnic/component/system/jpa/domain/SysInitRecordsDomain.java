@@ -24,7 +24,7 @@ public class SysInitRecordsDomain {
     }
 
     @SuppressWarnings("deprecation")
-	public SysInitRecords getSysInitRecordsLastNew(int limit) {
+    public SysInitRecords getSysInitRecordsLastNew(int limit) {
         SysInitRecords sysInitRecords = null;
         PageRequest initDate = new PageRequest(0, limit, new Sort(Sort.Direction.DESC, "initDate"));
         List<SysInitRecords> content = sysInitRecordsJpaRepository.findAll(initDate).getContent();

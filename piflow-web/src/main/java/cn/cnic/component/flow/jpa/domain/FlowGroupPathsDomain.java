@@ -20,9 +20,9 @@ public class FlowGroupPathsDomain {
 
     private Specification<FlowGroupPaths> addEnableFlagParam() {
         Specification<FlowGroupPaths> specification = new Specification<FlowGroupPaths>() {
-        	
-        	private static final long serialVersionUID = 1L;
-        	
+            
+            private static final long serialVersionUID = 1L;
+            
             @Override
             public Predicate toPredicate(Root<FlowGroupPaths> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
                 //root.get("enableFlag") means to get the field name of enableFlag

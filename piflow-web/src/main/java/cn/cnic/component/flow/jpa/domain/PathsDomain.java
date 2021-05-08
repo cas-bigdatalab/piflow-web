@@ -20,9 +20,9 @@ public class PathsDomain {
 
     private Specification<Paths> addEnableFlagParam() {
         Specification<Paths> specification = new Specification<Paths>() {
-        	
-        	private static final long serialVersionUID = 1L;
-        	
+            
+            private static final long serialVersionUID = 1L;
+            
             @Override
             public Predicate toPredicate(Root<Paths> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
                 //root.get("enableFlag") means to get the field name of enableFlag

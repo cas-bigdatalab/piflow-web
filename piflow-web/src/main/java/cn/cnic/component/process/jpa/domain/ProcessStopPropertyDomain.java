@@ -20,8 +20,8 @@ public class ProcessStopPropertyDomain {
 
     private Specification<ProcessStopProperty> addEnableFlagParam() {
         Specification<ProcessStopProperty> specification = new Specification<ProcessStopProperty>() {
-        	private static final long serialVersionUID = 1L;
-        	
+            private static final long serialVersionUID = 1L;
+            
             @Override
             public Predicate toPredicate(Root<ProcessStopProperty> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
                 //root.get("enableFlag") means to get the field name of enableFlag

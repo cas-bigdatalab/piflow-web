@@ -11,10 +11,10 @@ import cn.cnic.component.stopsComponent.model.StopsComponentManage;
 
 public class StopsComponentManageMapperProvider {
 
-	private String id;
-	private String lastUpdateUser;
-	private String lastUpdateDttmStr;
-	private Long version;
+    private String id;
+    private String lastUpdateUser;
+    private String lastUpdateDttmStr;
+    private Long version;
     private String bundle;
     private String stopsGroups;
     private int isShow = 0;
@@ -22,7 +22,7 @@ public class StopsComponentManageMapperProvider {
 
     private boolean preventSQLInjectionStopsManage(StopsComponentManage stopsComponentManage) {
         if (null == stopsComponentManage || StringUtils.isBlank(stopsComponentManage.getLastUpdateUser())) {
-        	return true;
+            return true;
         }
         // Mandatory Field
         this.id = SqlUtils.preventSQLInjection(stopsComponentManage.getId());
@@ -73,7 +73,7 @@ public class StopsComponentManageMapperProvider {
             return "SELECT 0";
         }
         if (StringUtils.isBlank(id)) {
-        	return "SELECT 0";
+            return "SELECT 0";
         }
 
         SQL sql = new SQL();

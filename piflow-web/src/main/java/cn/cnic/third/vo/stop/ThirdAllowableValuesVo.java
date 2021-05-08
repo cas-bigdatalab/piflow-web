@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 public class ThirdAllowableValuesVo implements Serializable {
     
-	private static final long serialVersionUID = 1L;
-	
-	private String name;
+    private static final long serialVersionUID = 1L;
+    
+    private String name;
 }

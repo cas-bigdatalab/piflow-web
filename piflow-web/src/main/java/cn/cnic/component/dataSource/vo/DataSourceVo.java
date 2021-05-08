@@ -11,8 +11,8 @@ import java.util.List;
 @Getter
 public class DataSourceVo implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-	
+    private static final long serialVersionUID = 1L;
+    
     private String id;
     private String dataSourceType;
     private String dataSourceName;

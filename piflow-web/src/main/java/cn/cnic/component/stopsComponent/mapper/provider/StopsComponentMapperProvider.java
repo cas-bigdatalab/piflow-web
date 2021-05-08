@@ -22,7 +22,7 @@ public class StopsComponentMapperProvider {
 
     private boolean preventSQLInjectionStops(StopsComponent stopsComponent) {
         if (null == stopsComponent || StringUtils.isBlank(stopsComponent.getLastUpdateUser())) {
-        	return false;
+            return false;
         }
         // Selection field
         this.bundel = SqlUtils.preventSQLInjection(stopsComponent.getBundel());
@@ -86,27 +86,27 @@ public class StopsComponentMapperProvider {
     }
     
     public String getStopsComponentListByGroupId(String groupId) {
-    	if (StringUtils.isBlank(groupId)) {
-    		return "SELECT 0";
-    	}
-    	StringBuffer strBuf = new StringBuffer();
-    	
-    	SqlUtils.preventSQLInjection(groupId);
-    	
-    	strBuf.append("SELECT * FROM flow_stops_template fst ");
-    	strBuf.append("WHERE fst.enable_flag=1 ");
-    	strBuf.append("AND fst.id IN ( ");
-    	strBuf.append("SELECT agst.stops_template_id FROM association_groups_stops_template agst WHERE agst.groups_id= ");
-    	strBuf.append(SqlUtils.preventSQLInjection(groupId));
-    	strBuf.append(") ");
-    	strBuf.append("AND fst.BUNDEL NOT IN ");
-    	strBuf.append("(");
-    	strBuf.append("SELECT fstm.bundle FROM flow_stops_template_manage fstm ");
-    	strBuf.append("WHERE fstm.enable_flag = 1 ");
-    	strBuf.append("AND fstm.is_show!=1 ");
-    	strBuf.append("AND fstm.stops_groups LIKE CONCAT('%',(SELECT fsg1.group_name FROM flow_stops_groups fsg1 WHERE fsg1.id=" + SqlUtils.preventSQLInjection(groupId) + "),'%') ");
-    	strBuf.append(")");
-    	return strBuf.toString();
+        if (StringUtils.isBlank(groupId)) {
+            return "SELECT 0";
+        }
+        StringBuffer strBuf = new StringBuffer();
+        
+        SqlUtils.preventSQLInjection(groupId);
+        
+        strBuf.append("SELECT * FROM flow_stops_template fst ");
+        strBuf.append("WHERE fst.enable_flag=1 ");
+        strBuf.append("AND fst.id IN ( ");
+        strBuf.append("SELECT agst.stops_template_id FROM association_groups_stops_template agst WHERE agst.groups_id= ");
+        strBuf.append(SqlUtils.preventSQLInjection(groupId));
+        strBuf.append(") ");
+        strBuf.append("AND fst.BUNDEL NOT IN ");
+        strBuf.append("(");
+        strBuf.append("SELECT fstm.bundle FROM flow_stops_template_manage fstm ");
+        strBuf.append("WHERE fstm.enable_flag = 1 ");
+        strBuf.append("AND fstm.is_show!=1 ");
+        strBuf.append("AND fstm.stops_groups LIKE CONCAT('%',(SELECT fsg1.group_name FROM flow_stops_groups fsg1 WHERE fsg1.id=" + SqlUtils.preventSQLInjection(groupId) + "),'%') ");
+        strBuf.append(")");
+        return strBuf.toString();
     }
 
     public String getManageStopsComponentListByGroupId(String groupId) {
@@ -144,10 +144,10 @@ public class StopsComponentMapperProvider {
     }
 
     public String insertStopsComponent(StopsComponent stopsComponent) {
-    	String sqlStr = "SELECT 0";
+        String sqlStr = "SELECT 0";
         boolean flag = this.preventSQLInjectionStops(stopsComponent);
         if(flag) {
-        	StringBuffer strBuf = new StringBuffer();
+            StringBuffer strBuf = new StringBuffer();
             strBuf.append("INSERT INTO flow_stops_template ");
 
             strBuf.append("( ");

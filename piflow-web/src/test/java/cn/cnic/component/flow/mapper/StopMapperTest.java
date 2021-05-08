@@ -14,52 +14,52 @@ import java.util.List;
 
 public class StopMapperTest extends ApplicationTests {
 
-	@Autowired
-	private StopsMapper stopMapper;
+    @Autowired
+    private StopsMapper stopMapper;
 
-	Logger logger = LoggerUtil.getLogger();
+    Logger logger = LoggerUtil.getLogger();
 
-	@Test
-	public void testGetStopsAll() {
-		List<Stops> stopsAll = stopMapper.getStopsList();
-		logger.info(stopsAll + "");
-	}
+    @Test
+    public void testGetStopsAll() {
+        List<Stops> stopsAll = stopMapper.getStopsList();
+        logger.info(stopsAll + "");
+    }
 
-	@Test
-	public void testGetStopsByFlowId() {
-		List<Stops> stopsAll = stopMapper.getStopsListByFlowId("85f90a18423245b09cde371cbb333021");
-		logger.info(stopsAll + "");
-	}
+    @Test
+    public void testGetStopsByFlowId() {
+        List<Stops> stopsAll = stopMapper.getStopsListByFlowId("85f90a18423245b09cde371cbb333021");
+        logger.info(stopsAll + "");
+    }
 
-	@Test
-	public void testAddStopsAll() {
-		List<Stops> setStops = new ArrayList<>();
-		for (int i = 7; i < 10; i++) {
-			Stops stops = setStops(i + "");
-			setStops.add(stops);
-		}
-		int addStopsAll = stopMapper.addStopsList(setStops);
-		logger.info(addStopsAll + "");
-	}
+    @Test
+    public void testAddStopsAll() {
+        List<Stops> setStops = new ArrayList<>();
+        for (int i = 7; i < 10; i++) {
+            Stops stops = setStops(i + "");
+            setStops.add(stops);
+        }
+        int addStopsAll = stopMapper.addStopsList(setStops);
+        logger.info(addStopsAll + "");
+    }
 
-	private Stops setStops(String num) {
-		Stops stops = new Stops();
-		// The basic information
-		stops.setId(UUIDUtils.getUUID32());
-		stops.setCrtDttm(new Date());
-		stops.setCrtUser("test");
-		stops.setEnableFlag(true);
-		stops.setLastUpdateDttm(new Date());
-		stops.setLastUpdateUser("test");
+    private Stops setStops(String num) {
+        Stops stops = new Stops();
+        // The basic information
+        stops.setId(UUIDUtils.getUUID32());
+        stops.setCrtDttm(new Date());
+        stops.setCrtUser("test");
+        stops.setEnableFlag(true);
+        stops.setLastUpdateDttm(new Date());
+        stops.setLastUpdateUser("test");
 
-		// Test stops components
-		stops.setName("test_stops_" + num);
-		stops.setBundel("Bundel tests stops components" + num);
-		stops.setGroups("Groups tests the stops component" + num);
-		stops.setOwner("Owner tests stops components" + num);
-		stops.setDescription("Desc tests stops components" + num);
+        // Test stops components
+        stops.setName("test_stops_" + num);
+        stops.setBundel("Bundel tests stops components" + num);
+        stops.setGroups("Groups tests the stops component" + num);
+        stops.setOwner("Owner tests stops components" + num);
+        stops.setDescription("Desc tests stops components" + num);
 
-		return stops;
-	}
+        return stops;
+    }
 
 }

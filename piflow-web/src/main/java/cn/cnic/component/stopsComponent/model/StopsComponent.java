@@ -52,7 +52,7 @@ public class StopsComponent extends BaseHibernateModelUUIDNoCorpAgentId {
     @Where(clause = "enable_flag=1")
     private List<StopsComponentProperty> properties = new ArrayList<StopsComponentProperty>();
 
-    //	@ManyToMany(mappedBy = "stopsTemplateList")
+    //    @ManyToMany(mappedBy = "stopsTemplateList")
     @Transient
     private List<StopsComponentGroup> stopGroupList = new ArrayList<>();
 }

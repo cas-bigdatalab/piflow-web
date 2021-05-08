@@ -2,7 +2,7 @@ package cn.cnic.component.testData.service;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import cn.cnic.component.testData.vo.TestDataVo;
+import cn.cnic.controller.requestVo.RequestTestDataVo;
 import cn.cnic.controller.requestVo.TestDataSchemaValuesSaveVo;
 
 public interface ITestDataService {
@@ -16,7 +16,7 @@ public interface ITestDataService {
      * @return String
      * @throws Exception 
      */
-    public String saveOrUpdateTestDataAndSchema(String username, boolean isAdmin, TestDataVo testDataVo) throws Exception;
+    public String saveOrUpdateTestDataAndSchema(String username, boolean isAdmin, RequestTestDataVo testDataVo) throws Exception;
 
 
     /**

@@ -1223,6 +1223,19 @@ public class StopsServiceImpl implements IStopsService {
 
     }
     
+    @Override
+    public String checkDatasourceLinked(String datasourceId) {
+        if (StringUtils.isBlank(datasourceId)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("datasourceId is null");
+        }
+        List<String> stopsNamesByDatasourceId = stopsDomainU.getStopsNamesByDatasourceId(datasourceId);
+        if (null == stopsNamesByDatasourceId || stopsNamesByDatasourceId.size() <= 0) {
+            return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("isLinked", false);
+        }
+        Map<String, Object> setSucceededCustomParam = ReturnMapUtils.setSucceededCustomParam("isLinked", true);
+        return ReturnMapUtils.appendValuesToJson(setSucceededCustomParam, "stopsNameList", stopsNamesByDatasourceId);
+    }
+    
     private List<Paths> extractPaths(Map<String, List<Paths>> pathsMap, List<Paths> pathsList) {
         if (null == pathsMap) {
             return null;

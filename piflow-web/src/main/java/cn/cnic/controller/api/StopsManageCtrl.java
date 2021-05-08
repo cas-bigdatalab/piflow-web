@@ -43,9 +43,9 @@ public class StopsManageCtrl {
     @RequestMapping(value = "/stopsComponentList", method = RequestMethod.POST)
     @ResponseBody
     public String stopsComponentList() {
-    	String username = SessionUserUtil.getCurrentUsername();
+        String username = SessionUserUtil.getCurrentUsername();
         Boolean isAdmin = SessionUserUtil.isAdmin();
-    	return stopGroupServiceImpl.stopsComponentList(username, isAdmin);
+        return stopGroupServiceImpl.stopsComponentList(username, isAdmin);
     }
 
     /**
@@ -59,9 +59,9 @@ public class StopsManageCtrl {
     @RequestMapping(value = "/updatestopsComponentIsShow", method = RequestMethod.POST)
     @ResponseBody
     public String updatestopsComponentIsShow(@ApiParam(value = "stopsManage", required = true)UpdatestopsComponentIsShow stopsManage) throws Exception {
-    	String username = SessionUserUtil.getCurrentUsername();
+        String username = SessionUserUtil.getCurrentUsername();
         Boolean isAdmin = SessionUserUtil.isAdmin();
-    	return stopsComponentManageServiceImpl.updateStopsComponentIsShow(username, isAdmin,stopsManage);
+        return stopsComponentManageServiceImpl.updateStopsComponentIsShow(username, isAdmin,stopsManage);
     }
 
     /**
@@ -89,7 +89,7 @@ public class StopsManageCtrl {
     @RequestMapping(value = "/runStops", method = RequestMethod.POST)
     @ResponseBody
     public String runStops(@ApiParam(value = "runStopsVo", required = true)RunStopsVo runStopsVo) throws Exception {
-    	String username = SessionUserUtil.getCurrentUsername();
+        String username = SessionUserUtil.getCurrentUsername();
         Boolean isAdmin = SessionUserUtil.isAdmin();
         return stopsServiceImpl.runStops(username, isAdmin, runStopsVo);
     }

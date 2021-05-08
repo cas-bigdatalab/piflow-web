@@ -10,8 +10,8 @@ import java.util.List;
 @Getter
 @Setter
 public class ThirdFlowInfoResponse implements Serializable {
-	
-	private static final long serialVersionUID = 1L;
+    
+    private static final long serialVersionUID = 1L;
 
     private String id;
     private String pid;

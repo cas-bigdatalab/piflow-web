@@ -14,9 +14,9 @@ import java.util.List;
 @Setter
 public class ProcessStopVo implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-	
-	private ProcessVo processVo;
+    private static final long serialVersionUID = 1L;
+    
+    private ProcessVo processVo;
     private String name;
     private String bundel;
     private String groups;

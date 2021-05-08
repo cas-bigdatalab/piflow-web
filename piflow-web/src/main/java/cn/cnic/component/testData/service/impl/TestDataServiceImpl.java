@@ -35,6 +35,8 @@ import cn.cnic.component.testData.utils.TestDataSchemaValuesUtils;
 import cn.cnic.component.testData.utils.TestDataUtils;
 import cn.cnic.component.testData.vo.TestDataSchemaVo;
 import cn.cnic.component.testData.vo.TestDataVo;
+import cn.cnic.controller.requestVo.RequestTestDataSchemaVo;
+import cn.cnic.controller.requestVo.RequestTestDataVo;
 import cn.cnic.controller.requestVo.SchemaValuesVo;
 import cn.cnic.controller.requestVo.TestDataSchemaValuesSaveVo;
 
@@ -56,7 +58,7 @@ public class TestDataServiceImpl implements ITestDataService {
      * @throws Exception
      */
     @Override
-    public String saveOrUpdateTestDataAndSchema(String username, boolean isAdmin, TestDataVo testDataVo) throws Exception {
+    public String saveOrUpdateTestDataAndSchema(String username, boolean isAdmin, RequestTestDataVo testDataVo) throws Exception {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
         }
@@ -81,7 +83,7 @@ public class TestDataServiceImpl implements ITestDataService {
         testData.setLastUpdateUser(username);
 
         // get testDataSchemaVoList
-        List<TestDataSchemaVo> testDataSchemaVoList = testDataVo.getSchemaVoList();
+        List<RequestTestDataSchemaVo> testDataSchemaVoList = testDataVo.getSchemaVoList();
 
         // update schema
         List<TestDataSchema> testDataSchemaList = testData.getSchemaList();
@@ -105,7 +107,7 @@ public class TestDataServiceImpl implements ITestDataService {
                 testDataSchemaDbMap.put(testDataSchema.getId(), testDataSchema);
             }
             List<TestDataSchema> testDataSchemaListNew = new ArrayList<>();
-            for (TestDataSchemaVo testDataSchemaVo : testDataSchemaVoList) {
+            for (RequestTestDataSchemaVo testDataSchemaVo : testDataSchemaVoList) {
                 if (null == testDataSchemaVo) {
                     continue;
                 }
@@ -118,11 +120,11 @@ public class TestDataServiceImpl implements ITestDataService {
             }
             testData.setSchemaList(testDataSchemaListNew);
             for (TestDataSchema testDataSchema : testDataSchemaDbMap.values()) {
-            	if (null == testDataSchema || StringUtils.isBlank(testDataSchema.getId())) {
+                if (null == testDataSchema || StringUtils.isBlank(testDataSchema.getId())) {
                     continue;
                 }
-            	delSchemaIdList.add(testDataSchema.getId());
-			}
+                delSchemaIdList.add(testDataSchema.getId());
+            }
         }
 
         int affectedRows = 0;
@@ -248,7 +250,7 @@ public class TestDataServiceImpl implements ITestDataService {
         }
         int saveOrUpdateTestDataSchemaValuesList = testDataDomain.saveOrUpdateTestDataSchemaValuesList(username, newTestDataSchemaValuesList, testDataById);
         if(saveOrUpdateTestDataSchemaValuesList <= 0) {
-        	return ReturnMapUtils.setSucceededMsgRtnJsonStr("save failed");	
+            return ReturnMapUtils.setSucceededMsgRtnJsonStr("save failed");    
         }
         return ReturnMapUtils.setSucceededMsgRtnJsonStr("save success");
     }
@@ -477,7 +479,7 @@ public class TestDataServiceImpl implements ITestDataService {
         //Read the CSV file according to the saved file path and return the CSV string
         LinkedHashMap<String, List<String>> csvMap = FileUtils.ParseCsvFileRtnColumnData(path, delimiter);
         if(null == csvMap) {
-        	return ReturnMapUtils.setFailedMsgRtnJsonStr("save failed");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("save failed");
         }
         TestData testData = TestDataUtils.setTestDataBasicInformation(null, false, username);
         testData.setName(fileName + "-" + System.currentTimeMillis());
@@ -485,7 +487,7 @@ public class TestDataServiceImpl implements ITestDataService {
         List<TestDataSchemaValues> testDataSchemaValuesList = new ArrayList<>();
         int i = 0;
         for (String fieldName : csvMap.keySet()) {
-        	TestDataSchema testDataSchema = TestDataSchemaUtils.setTestDataSchemaBasicInformation(null, true, username);
+            TestDataSchema testDataSchema = TestDataSchemaUtils.setTestDataSchemaBasicInformation(null, true, username);
             testDataSchema.setFieldName(fieldName);
             testDataSchema.setFieldType("String");
             testDataSchema.setFieldSoft(i + 1);
@@ -494,21 +496,21 @@ public class TestDataServiceImpl implements ITestDataService {
             // values 
             List<String> fieldNameValueList = csvMap.get(fieldName);
             for (int j = 0; j < fieldNameValueList.size(); j++) {
-            	String fieldNameValue_j = fieldNameValueList.get(j);
-            	TestDataSchemaValues testDataSchemaValues = TestDataSchemaValuesUtils.setTestDataSchemaBasicInformation(null, true, username); 
-            	testDataSchemaValues.setDataRow(j);
-            	testDataSchemaValues.setFieldValue(fieldNameValue_j);
+                String fieldNameValue_j = fieldNameValueList.get(j);
+                TestDataSchemaValues testDataSchemaValues = TestDataSchemaValuesUtils.setTestDataSchemaBasicInformation(null, true, username); 
+                testDataSchemaValues.setDataRow(j);
+                testDataSchemaValues.setFieldValue(fieldNameValue_j);
                 testDataSchemaValues.setTestData(testData);
                 testDataSchemaValues.setTestDataSchema(testDataSchema);
                 testDataSchemaValuesList.add(testDataSchemaValues);
-			}
-        	i++;
-		}
+            }
+            i++;
+        }
         testData.setSchemaList(testDataSchemaList);
         testData.setId(UUIDUtils.getUUID32());
         int affectedRows = testDataDomain.addTestData(testData, username);
         if (affectedRows <= 0) {
-        	testDataDomain.delTestData(username, false, testData.getId());
+            testDataDomain.delTestData(username, false, testData.getId());
             return ReturnMapUtils.setFailedMsgRtnJsonStr("save failed");
         }
         affectedRows += testDataDomain.addTestDataSchemaValuesList(username, testDataSchemaValuesList, testData);

@@ -121,7 +121,7 @@ public class TestDataDomain {
             throw new Exception("testDataSchema is null");
         }
         if (StringUtils.isBlank(testDataSchema.getId())) {
-        	testDataSchema.setId(UUIDUtils.getUUID32());
+            testDataSchema.setId(UUIDUtils.getUUID32());
         }
         testDataSchema.setCrtUser(username);
         testDataSchema.setCrtDttm(new Date());
@@ -148,7 +148,7 @@ public class TestDataDomain {
      */
     public int addTestDataSchemaValuesList(String username, List<TestDataSchemaValues> schemaValuesList, TestData testData) throws Exception {
         if (null == schemaValuesList) {
-        	throw new Exception("testDataSchemaValues is null");
+            throw new Exception("testDataSchemaValues is null");
         }
         if (null == testData) {
             throw new Exception("testData is null");
@@ -183,7 +183,7 @@ public class TestDataDomain {
             throw new Exception("testData is null");
         }
         if (StringUtils.isBlank(testDataSchemaValues.getId())) {
-        	testDataSchemaValues.setId(UUIDUtils.getUUID32());
+            testDataSchemaValues.setId(UUIDUtils.getUUID32());
         }
         testDataSchemaValues.setCrtUser(username);
         testDataSchemaValues.setCrtDttm(new Date());

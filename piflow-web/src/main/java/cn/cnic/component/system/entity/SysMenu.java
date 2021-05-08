@@ -13,8 +13,8 @@ import javax.persistence.*;
 @Table(name = "SYS_MENU")
 public class SysMenu extends BaseHibernateModelUUIDNoCorpAgentId {
 
-	private static final long serialVersionUID = 1L;
-	
+    private static final long serialVersionUID = 1L;
+    
     @Column(columnDefinition = "varchar(255) COMMENT 'menu name'")
     private String menuName;
 

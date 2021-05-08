@@ -79,7 +79,7 @@ public class MxGraphModelDomainU {
                 mxGeometry.setMxCell(mxCell);
                 String mxGeometryId = mxGeometry.getId();
                 if (StringUtils.isBlank(mxGeometryId)) {
-                	mxGeometry.setId(UUIDUtils.getUUID32());
+                    mxGeometry.setId(UUIDUtils.getUUID32());
                 }
                 int addMxGeometry = mxGeometryMapper.addMxGeometry(mxGeometry);
                 if (addMxGeometry <= 0) {

@@ -105,9 +105,9 @@ public class ProcessStopUtils {
         // Set basic information
         copyProcessStop = ProcessStopUtils.initProcessStopBasicPropertiesNoId(copyProcessStop, username);
         if (isAddId) {
-        	copyProcessStop.setId(UUIDUtils.getUUID32());
+            copyProcessStop.setId(UUIDUtils.getUUID32());
         } else {
-        	copyProcessStop.setId(null);
+            copyProcessStop.setId(null);
         }
         // Remove the properties of stops
         List<StopsComponentProperty> properties = stopsComponent.getProperties();

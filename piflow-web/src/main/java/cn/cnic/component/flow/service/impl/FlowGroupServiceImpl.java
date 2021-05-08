@@ -222,7 +222,7 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
         }
         if (null == flowGroupVo) {
-        	return ReturnMapUtils.setFailedMsgRtnJsonStr("param is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("param is null");
         }
         String id = flowGroupVo.getId();
         if (StringUtils.isBlank(id)) {

@@ -12,14 +12,14 @@ import cn.cnic.component.testData.entity.TestDataSchemaValues;
 
 public class TestDataSchemaValuesTest extends ApplicationTests {
 
-	@Autowired
-	private TestDataSchemaValuesMapper testDataSchemaValuesMapper;
+    @Autowired
+    private TestDataSchemaValuesMapper testDataSchemaValuesMapper;
 
-	Logger logger = LoggerUtil.getLogger();
+    Logger logger = LoggerUtil.getLogger();
 
-	@Test
-	public void testGetTestDataSchemaValuesList() {
-		List<TestDataSchemaValues> testDataSchemaValuesList = testDataSchemaValuesMapper.getTestDataSchemaValuesList();
-		logger.info("length:" + testDataSchemaValuesList.size());
-	}
+    @Test
+    public void testGetTestDataSchemaValuesList() {
+        List<TestDataSchemaValues> testDataSchemaValuesList = testDataSchemaValuesMapper.getTestDataSchemaValuesList();
+        logger.info("length:" + testDataSchemaValuesList.size());
+    }
 }

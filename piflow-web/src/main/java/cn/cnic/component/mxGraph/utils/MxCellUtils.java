@@ -44,8 +44,8 @@ public class MxCellUtils {
         mxCell.setVersion(0L);
         MxGeometry mxGeometry = mxCell.getMxGeometry();
         if (null != mxGeometry) {
-        	mxGeometry.setId(null);
-        	mxCell.setMxGeometry(mxGeometry);
+            mxGeometry.setId(null);
+            mxCell.setMxGeometry(mxGeometry);
         }
         return mxCell;
     }
@@ -126,9 +126,9 @@ public class MxCellUtils {
     }
     
     public static MxCell AddMxCellNode(String username, String pageId, String name, String imgUrl) {
-    	if (StringUtils.isBlank(imgUrl)) {
-    		imgUrl = "/img/flow.png";
-    	}
+        if (StringUtils.isBlank(imgUrl)) {
+            imgUrl = "/img/flow.png";
+        }
         MxCell defaultFlowMxCell = mxCellNewNoId(username);
         defaultFlowMxCell.setPageId(pageId);
         defaultFlowMxCell.setParent("1");

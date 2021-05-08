@@ -92,7 +92,7 @@ public class ScheduleImpl implements ISchedule {
         JSONObject obj = JSONObject.fromObject(sendGetData).getJSONObject("schedule");// Convert a json string to a json object
         // Needed when there is a List in jsonObj
         @SuppressWarnings("rawtypes")
-		Map<String, Class> classMap = new HashMap<String, Class>();
+        Map<String, Class> classMap = new HashMap<String, Class>();
         // Key is the name of the List in jsonObj, and the value is a generic class of list
         classMap.put("entryList", ThirdScheduleEntryVo.class);
         // Convert a json object to a java object

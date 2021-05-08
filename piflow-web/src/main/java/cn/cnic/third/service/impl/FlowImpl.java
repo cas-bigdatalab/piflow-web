@@ -239,9 +239,9 @@ public class FlowImpl implements IFlow {
 
     }
 
-	@Override
-	public String getTestDataPathUrl() {
-		return HttpUtils.doGet(SysParamsCache.getTestDataPathUrl(), null, null);
-	}
+    @Override
+    public String getTestDataPathUrl() {
+        return HttpUtils.doGet(SysParamsCache.getTestDataPathUrl(), null, null);
+    }
 
 }

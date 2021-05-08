@@ -35,7 +35,7 @@ public class StopsMapperProvider {
 
     private boolean preventSQLInjectionStops(Stops stops) {
         if (null == stops || StringUtils.isBlank(stops.getLastUpdateUser())) {
-        	return false;
+            return false;
         }
         // Mandatory Field
         String id = stops.getId();
@@ -102,32 +102,32 @@ public class StopsMapperProvider {
         String sqlStr = "SELECT 0";
         boolean flag = this.preventSQLInjectionStops(stops);
         if (flag) {
-        	StringBuffer stringBuffer = new StringBuffer();
-			stringBuffer.append("INSERT INTO ");
-			stringBuffer.append("flow_stops ");
-			stringBuffer.append("(");
-			stringBuffer.append(SqlUtils.baseFieldName() + ",");
-			stringBuffer.append("bundel,description,groups,name,inports,in_port_type,outports,out_port_type,owner,page_id,is_checkpoint,is_customized,fk_flow_id,fk_data_source_id");
-			stringBuffer.append(") ");
-			stringBuffer.append("VALUES");
-			stringBuffer.append("(");
-			stringBuffer.append(SqlUtils.baseFieldValues(stops) + ",");
-			stringBuffer.append(this.bundel + ",");
-			stringBuffer.append(this.description + ",");
-			stringBuffer.append(this.groups + ",");
-			stringBuffer.append(this.name + ",");
-			stringBuffer.append(this.inports + ",");
-			stringBuffer.append(this.inPortType + ",");
-			stringBuffer.append(this.outports + ",");
-			stringBuffer.append(this.outPortType + ",");
-			stringBuffer.append(this.owner + ",");
-			stringBuffer.append(this.pageId + ",");
-			stringBuffer.append(this.checkpoint + ",");
-			stringBuffer.append(this.isCustomized + ",");
-			stringBuffer.append(this.flowId + ",");
-			stringBuffer.append(this.dataSourceId);
-			stringBuffer.append(")");
-			sqlStr = stringBuffer.toString();
+            StringBuffer stringBuffer = new StringBuffer();
+            stringBuffer.append("INSERT INTO ");
+            stringBuffer.append("flow_stops ");
+            stringBuffer.append("(");
+            stringBuffer.append(SqlUtils.baseFieldName() + ",");
+            stringBuffer.append("bundel,description,groups,name,inports,in_port_type,outports,out_port_type,owner,page_id,is_checkpoint,is_customized,fk_flow_id,fk_data_source_id");
+            stringBuffer.append(") ");
+            stringBuffer.append("VALUES");
+            stringBuffer.append("(");
+            stringBuffer.append(SqlUtils.baseFieldValues(stops) + ",");
+            stringBuffer.append(this.bundel + ",");
+            stringBuffer.append(this.description + ",");
+            stringBuffer.append(this.groups + ",");
+            stringBuffer.append(this.name + ",");
+            stringBuffer.append(this.inports + ",");
+            stringBuffer.append(this.inPortType + ",");
+            stringBuffer.append(this.outports + ",");
+            stringBuffer.append(this.outPortType + ",");
+            stringBuffer.append(this.owner + ",");
+            stringBuffer.append(this.pageId + ",");
+            stringBuffer.append(this.checkpoint + ",");
+            stringBuffer.append(this.isCustomized + ",");
+            stringBuffer.append(this.flowId + ",");
+            stringBuffer.append(this.dataSourceId);
+            stringBuffer.append(")");
+            sqlStr = stringBuffer.toString();
         }
         this.reset();
         return sqlStr;
@@ -144,10 +144,10 @@ public class StopsMapperProvider {
         List<Stops> stopsList = (List<Stops>) map.get("stopsList");
         StringBuffer sql = new StringBuffer();
         if (null != stopsList && stopsList.size() > 0) {
-        	sql.append("INSERT INTO ");
-        	sql.append("flow_stops ");
-        	sql.append("(");
-        	sql.append(SqlUtils.baseFieldName() + ",");            
+            sql.append("INSERT INTO ");
+            sql.append("flow_stops ");
+            sql.append("(");
+            sql.append(SqlUtils.baseFieldName() + ",");            
             sql.append("bundel,");
             sql.append("description,");
             sql.append("groups,");
@@ -169,8 +169,8 @@ public class StopsMapperProvider {
                 i++;
                 boolean flag = this.preventSQLInjectionStops(stops);
                 if (flag) {
-                	sql.append("(");
-                	sql.append(SqlUtils.baseFieldValues(stops) + ",");
+                    sql.append("(");
+                    sql.append(SqlUtils.baseFieldValues(stops) + ",");
                     // handle other fields
                     sql.append(bundel + ",");
                     sql.append(description + ",");

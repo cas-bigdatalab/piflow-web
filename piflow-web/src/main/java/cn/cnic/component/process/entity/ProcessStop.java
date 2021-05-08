@@ -19,9 +19,9 @@ import java.util.List;
 @Table(name = "FLOW_PROCESS_STOP")
 public class ProcessStop extends BaseHibernateModelUUIDNoCorpAgentId {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "FK_FLOW_PROCESS_ID")
     private Process process;
 

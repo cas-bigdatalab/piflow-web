@@ -20,8 +20,8 @@ public class ProcessPathDomain {
 
     private Specification<ProcessPath> addEnableFlagParam() {
         Specification<ProcessPath> specification = new Specification<ProcessPath>() {
-        	private static final long serialVersionUID = 1L;
-        	
+            private static final long serialVersionUID = 1L;
+            
             @Override
             public Predicate toPredicate(Root<ProcessPath> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
                 //root.get("enableFlag") means to get the field name of enableFlag

@@ -24,7 +24,7 @@ public class StopsComponentPropertyMapperProvider {
 
     private boolean preventSQLInjectionStopsComponentProperty(StopsComponentProperty stopsComponentProperty) {
         if (null == stopsComponentProperty || StringUtils.isBlank(stopsComponentProperty.getLastUpdateUser())) {
-        	return false;
+            return false;
         }
         // Selection field
         this.allowableValues = SqlUtils.preventSQLInjection(stopsComponentProperty.getAllowableValues());
@@ -76,11 +76,11 @@ public class StopsComponentPropertyMapperProvider {
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-	public String insertStopsComponentProperty(Map map) {
+    public String insertStopsComponentProperty(Map map) {
         String sqlStr = "SELECT 0";
         List<StopsComponentProperty> stopsComponentPropertyList = (List<StopsComponentProperty>) map.get("stopsComponentPropertyList");
         if (null != stopsComponentPropertyList && stopsComponentPropertyList.size() > 0) {
-        	StringBuffer sqlValuesStr = new StringBuffer();
+            StringBuffer sqlValuesStr = new StringBuffer();
             // INSERT_INTO brackets is table name
             sqlValuesStr.append("INSERT INTO flow_stops_property_template ");
             sqlValuesStr.append("( ");
@@ -104,7 +104,7 @@ public class StopsComponentPropertyMapperProvider {
                 boolean flag = this.preventSQLInjectionStopsComponentProperty(stopsComponentProperty);
                 if(flag) {
                     sqlValuesStr.append("(");
-                	sqlValuesStr.append(SqlUtils.baseFieldValues(stopsComponentProperty) + ", ");
+                    sqlValuesStr.append(SqlUtils.baseFieldValues(stopsComponentProperty) + ", ");
                     sqlValuesStr.append(allowableValues + ",");
                     sqlValuesStr.append(defaultValue + ",");
                     sqlValuesStr.append(description + ",");
