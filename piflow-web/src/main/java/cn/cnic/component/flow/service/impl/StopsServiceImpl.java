@@ -1010,7 +1010,7 @@ public class StopsServiceImpl implements IStopsService {
                 // Get HDFS address
                 String testDataPathUrl = flowImpl.getTestDataPathUrl();
                 // HDFS storage address
-                String hdfsUrl = testDataPathUrl + currentTimeMillis + ".csv";
+                String hdfsUrl = testDataPathUrl + currentTimeMillis + i + ".csv";
                 // Write testData to HDFS
                 HdfsUtils.writeData(hdfsUrl, testDataValueStr);
                 Map<String, String> hdfsUrlObj = new HashMap<>();
@@ -1169,7 +1169,7 @@ public class StopsServiceImpl implements IStopsService {
                     processStopProperty.setCustomValue(hdfsUrlObj.get(nameLowerCase));
                 }
                 processStop.setProcessStopPropertyList(processStopPropertyList);
-                processStop.setName(processStop.getName() + System.currentTimeMillis());
+                processStop.setName(processStop.getName() + System.currentTimeMillis() + i);
                 processStopsList.add(processStop);
                 // Generate page processStop information
                 //MxCell processMxCell_stops = MxCellUtils.AddMxCellNode(username, processStop.getPageId(), stopsComponentByBundle.getName(), "/images/" + stopsComponentByBundle.getName() + "_128x128.png");
