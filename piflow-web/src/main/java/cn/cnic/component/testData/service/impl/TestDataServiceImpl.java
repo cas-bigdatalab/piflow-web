@@ -217,7 +217,7 @@ public class TestDataServiceImpl implements ITestDataService {
                 //schemaValuesId
                 String schemaValuesId = schemaValuesVo_i.getSchemaValueId();
                 String schemaValues = schemaValuesVo_i.getSchemaValue();
-                
+                int dataRow = schemaValuesVo_i.getDataRow();
                 // "TestDataSchemaValues" after modification
                 TestDataSchemaValues testDataSchemaValues = null;
                 // Determine if the Id is empty, add it if it is empty, or modify it otherwise
@@ -238,6 +238,7 @@ public class TestDataServiceImpl implements ITestDataService {
                 }
                 
                 testDataSchemaValues.setFieldValue(schemaValues);
+                testDataSchemaValues.setDataRow(dataRow);
                 testDataSchemaValues.setDataRow(i + 1);
                 testDataSchemaValues.setLastUpdateDttm(new Date());
                 testDataSchemaValues.setLastUpdateUser(username);

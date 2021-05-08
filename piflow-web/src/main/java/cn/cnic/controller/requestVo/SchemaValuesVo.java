@@ -26,5 +26,8 @@ public class SchemaValuesVo implements Serializable {
     
     @ApiModelProperty(value = "schema value")
     private String schemaValue;
+    
+    @ApiModelProperty(value = "schema value row")
+    private int dataRow;
 
 }
