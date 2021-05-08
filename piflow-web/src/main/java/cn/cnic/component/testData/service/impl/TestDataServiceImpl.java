@@ -239,7 +239,6 @@ public class TestDataServiceImpl implements ITestDataService {
                 
                 testDataSchemaValues.setFieldValue(schemaValues);
                 testDataSchemaValues.setDataRow(dataRow);
-                testDataSchemaValues.setDataRow(i + 1);
                 testDataSchemaValues.setLastUpdateDttm(new Date());
                 testDataSchemaValues.setLastUpdateUser(username);
                 newTestDataSchemaValuesList.add(testDataSchemaValues);
