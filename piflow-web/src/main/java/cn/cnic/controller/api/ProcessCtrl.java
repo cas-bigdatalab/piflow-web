@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.cnic.base.util.HttpUtils;
@@ -51,7 +52,7 @@ public class ProcessCtrl {
      * @param param
      * @return
      */
-    @RequestMapping("/processListPage")
+    @RequestMapping(value = "/processListPage", method = RequestMethod.POST)
     @ResponseBody
     public String processAndProcessGroupListPage(Integer page, Integer limit, String param) {
         String username = SessionUserUtil.getCurrentUsername();
@@ -66,7 +67,7 @@ public class ProcessCtrl {
      * @param parentAccessPath
      * @return
      */
-    @RequestMapping("/drawingBoardData")
+    @RequestMapping(value = "/drawingBoardData", method = RequestMethod.GET)
     @ResponseBody
     public String drawingBoardData(String loadId, String parentAccessPath) {
         String currentUsername = SessionUserUtil.getCurrentUsername();
@@ -80,7 +81,7 @@ public class ProcessCtrl {
      * @param processId
      * @return
      */
-    @RequestMapping("/queryProcessData")
+    @RequestMapping(value = "/queryProcessData", method = RequestMethod.GET)
     @ResponseBody
     public String queryProcessData(String processId) {
         String username = SessionUserUtil.getCurrentUsername();
@@ -95,7 +96,7 @@ public class ProcessCtrl {
      * @param pageId
      * @return
      */
-    @RequestMapping("/queryProcessStopData")
+    @RequestMapping(value = "/queryProcessStopData", method = RequestMethod.GET)
     @ResponseBody
     public String queryProcessStopData(String processId, String pageId) {
         return processStopServiceImpl.getProcessStopVoByPageId(processId, pageId);
@@ -108,7 +109,7 @@ public class ProcessCtrl {
      * @param pageId
      * @return
      */
-    @RequestMapping("/queryProcessPathData")
+    @RequestMapping(value = "/queryProcessPathData", method = RequestMethod.GET)
     @ResponseBody
     public String queryProcessPathData(String processId, String pageId) {
         return processPathServiceImpl.getProcessPathVoByPageId(processId, pageId);
@@ -122,7 +123,7 @@ public class ProcessCtrl {
      * @param runMode
      * @return
      */
-    @RequestMapping("/runProcess")
+    @RequestMapping(value = "/runProcess", method = RequestMethod.POST)
     @ResponseBody
     public String runProcess(String id, String checkpointStr, String runMode) {
         String username = SessionUserUtil.getCurrentUsername();
@@ -135,7 +136,7 @@ public class ProcessCtrl {
      * @param processId
      * @return
      */
-    @RequestMapping("/stopProcess")
+    @RequestMapping(value = "/stopProcess", method = RequestMethod.POST)
     @ResponseBody
     public String stopProcess(String processId) {
         String username = SessionUserUtil.getCurrentUsername();
@@ -149,7 +150,7 @@ public class ProcessCtrl {
      * @param processID
      * @return
      */
-    @RequestMapping("/delProcess")
+    @RequestMapping(value = "/delProcess", method = RequestMethod.POST)
     @ResponseBody
     public String delProcess(String processID) {
         String username = SessionUserUtil.getCurrentUsername();
@@ -162,7 +163,7 @@ public class ProcessCtrl {
      * @param appId
      * @return
      */
-    @RequestMapping("/getLogUrl")
+    @RequestMapping(value = "/getLogUrl", method = RequestMethod.POST)
     @ResponseBody
     public String getLogUrl(String appId) {
         return processServiceImpl.getLogUrl(appId);
@@ -174,7 +175,7 @@ public class ProcessCtrl {
      * @param url
      * @return
      */
-    @RequestMapping("/getLog")
+    @RequestMapping(value = "/getLog", method = RequestMethod.POST)
     @ResponseBody
     public String getLog(String url) {
         String rtnMsg = "";
@@ -197,7 +198,7 @@ public class ProcessCtrl {
      * @param appid
      * @return
      */
-    @RequestMapping("/getAppInfo")
+    @RequestMapping(value = "/getAppInfo", method = RequestMethod.GET)
     @ResponseBody
     public String getAppInfo(String appid) {
         return processServiceImpl.getAppInfoByAppId(appid);
@@ -209,7 +210,7 @@ public class ProcessCtrl {
      * @param arrayObj
      * @return
      */
-    @RequestMapping("/getAppInfoList")
+    @RequestMapping(value = "/getAppInfoList", method = RequestMethod.GET)
     @ResponseBody
     public String getAppInfoList(String[] arrayObj) {
         return processServiceImpl.getProgressByAppIds(arrayObj);
@@ -223,13 +224,13 @@ public class ProcessCtrl {
      * @param parentProcessId
      * @return
      */
-    @RequestMapping("/getCheckpointData")
+    @RequestMapping(value = "/getCheckpointData", method = RequestMethod.POST)
     @ResponseBody
     public String getCheckpoint(String pID, String parentProcessId) {
         return processServiceImpl.getCheckpoints(parentProcessId, pID);
     }
 
-    @RequestMapping("/getDebugData")
+    @RequestMapping(value = "/getDebugData", method = RequestMethod.POST)
     @ResponseBody
     public String getDebugData(String appId, String stopName, String portName, String startFileName, int startLine) {
         if ("Default".equals(portName)) {
@@ -238,7 +239,7 @@ public class ProcessCtrl {
         return processServiceImpl.getDebugData(new DebugDataRequest(appId, stopName, portName, startFileName, startLine));
     }
 
-    @RequestMapping("/getVisualizationData")
+    @RequestMapping(value = "/getVisualizationData", method = RequestMethod.GET)
     @ResponseBody
     public String getVisualizationData(String appId, String stopName, String visualizationType, boolean isSoft) {
         return processServiceImpl.getVisualizationData(appId, stopName, visualizationType, isSoft);
@@ -250,7 +251,7 @@ public class ProcessCtrl {
      * @param flowId
      * @return
      */
-    @RequestMapping("/getRunningProcessListData")
+    @RequestMapping(value = "/getRunningProcessList", method = RequestMethod.POST)
     @ResponseBody
     public String getRunningProcessList(String flowId) {
         return processServiceImpl.getRunningProcessVoList(flowId);
