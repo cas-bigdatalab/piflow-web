@@ -200,24 +200,23 @@ public class TestDataServiceImpl implements ITestDataService {
             if (null == testDataSchemaValues) {
                 continue;
             }
-            //First set enable_flag to false, and then modify it according to the data passed from the page
-            testDataSchemaValues.setEnableFlag(false);
             schemaValuesMapDB.put(testDataSchemaValues.getId(), testDataSchemaValues);
         }
         List<TestDataSchemaValues> newTestDataSchemaValuesList = new ArrayList<>();
-        SchemaValuesVo[] schemaValuesList = schemaValuesVo.getSchemaValuesList();
+        SchemaValuesVo[] schemaValuesVoList = schemaValuesVo.getSchemaValuesList();
         //new schemaValue list
-        if (null != schemaValuesList) {
+        if (null != schemaValuesVoList) {
             // cycle
-            for (int i = 0; i < schemaValuesList.length; i++) {
+            for (int i = 0; i < schemaValuesVoList.length; i++) {
                 //get data object
-                SchemaValuesVo schemaValuesVo_i = schemaValuesList[i];
+                SchemaValuesVo schemaValuesVo_i = schemaValuesVoList[i];
                 //fieldName
                 String fieldName = schemaValuesVo_i.getSchemaName();
                 //schemaValuesId
                 String schemaValuesId = schemaValuesVo_i.getSchemaValueId();
                 String schemaValues = schemaValuesVo_i.getSchemaValue();
                 int dataRow = schemaValuesVo_i.getDataRow();
+                boolean isDelete = schemaValuesVo_i.isDelete();
                 // "TestDataSchemaValues" after modification
                 TestDataSchemaValues testDataSchemaValues = null;
                 // Determine if the Id is empty, add it if it is empty, or modify it otherwise
@@ -234,7 +233,9 @@ public class TestDataServiceImpl implements ITestDataService {
                     if (null == testDataSchemaValues) {
                         return ReturnMapUtils.setFailedMsgRtnJsonStr("Error! 'schemaValuesIdList' data is error");
                     }
-                    testDataSchemaValues.setEnableFlag(true);
+                    if (isDelete) {
+                        testDataSchemaValues.setEnableFlag(false);
+                    }
                 }
                 
                 testDataSchemaValues.setFieldValue(schemaValues);

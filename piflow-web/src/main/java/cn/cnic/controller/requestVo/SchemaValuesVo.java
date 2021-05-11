@@ -30,4 +30,7 @@ public class SchemaValuesVo implements Serializable {
     @ApiModelProperty(value = "schema value row", example = "0")
     private int dataRow;
 
+    @ApiModelProperty(value = "delete or not")
+    private boolean isDelete;
+
 }
