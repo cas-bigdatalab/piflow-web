@@ -25,33 +25,9 @@ public class ConfigInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String contextPath = (null == SysParamsCache.SYS_CONTEXT_PATH ? "" : SysParamsCache.SYS_CONTEXT_PATH);
         String requestURI = request.getRequestURI();
-
-        if (requestURI.equals(contextPath + "/")) {
-            response.sendRedirect(contextPath + "/page/index.html"); // Redirect to the boot page
-            return false;
-        }
         if (requestURI.startsWith(contextPath + "/error")) {
             //response.sendRedirect(contextPath + "/page/error/errorPage.html"); // Redirect to the boot page
             return false;
-        }
-        if (requestURI.startsWith(contextPath + "/login")) {
-            UserVo user = SessionUserUtil.getCurrentUser();
-            if (null != user) {
-                logger.info("Already logged in, jump homepage");
-                response.sendRedirect(contextPath + "/page/index.html"); // Redirect to the boot page
-            } else {
-                response.sendRedirect(contextPath + "/page/login.html"); // Redirect to the boot page
-            }
-            return false;
-        }
-        if (requestURI.startsWith(contextPath + "/page/login")) {
-            UserVo user = SessionUserUtil.getCurrentUser();
-            if (null != user) {
-                logger.info("Already logged in, jump homepage");
-                response.sendRedirect(contextPath + "/page/index.html"); // Redirect to the boot page
-                return false;
-            }
-            return true;
         }
         return true;
     }

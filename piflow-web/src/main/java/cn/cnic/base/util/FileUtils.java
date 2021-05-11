@@ -383,12 +383,17 @@ public class FileUtils {
      *
      * @param url
      * @param delimiter
+     * @param header
      * @return
      * @throws Exception 
      */
-    public static Map<String, Object> ParseCsvFile(String url, String delimiter) throws Exception {
+    public static Map<String, Object> ParseCsvFile(String url, String delimiter, String header) throws Exception {
         if (StringUtils.isBlank(url) || StringUtils.isBlank(delimiter)) {
             return null;
+        }
+        String[] headerArr = null;
+        if (StringUtils.isNotBlank(header)) {
+            headerArr = header.split(",");
         }
         Map<String,Object> rtnMap = new HashMap<>();
         File csv = new File(url);
@@ -410,12 +415,15 @@ public class FileUtils {
                 String[] split = everyLine.split(delimiter);
                 dataList.add(split);
             }
-            
+
             if (dataList.size() > 0) {
-                String[] title = dataList.get(0);
-                rtnMap.put(FileUtils.CSV_TITLE_KEY, title);
-                dataList.remove(0);
-                rtnMap.put(FileUtils.CSV_DATA_KEY, dataList);
+                if (null != headerArr) {
+                    rtnMap.put(FileUtils.CSV_TITLE_KEY, headerArr);
+                } else {
+                    String[] title = dataList.get(0);
+                    rtnMap.put(FileUtils.CSV_TITLE_KEY, title);
+                    dataList.remove(0);
+                }
             }
         } catch (IOException e) {
             throw new Exception("Parse failed");
@@ -428,12 +436,13 @@ public class FileUtils {
      *
      * @param url
      * @param delimiter
+     * @param header
      * @return
      * @throws Exception 
      */
     @SuppressWarnings("unchecked")
-    public static LinkedHashMap<String, List<String>> ParseCsvFileRtnColumnData(String url, String delimiter) throws Exception {
-        Map<String, Object> parseCsvFile = ParseCsvFile(url,delimiter);
+    public static LinkedHashMap<String, List<String>> ParseCsvFileRtnColumnData(String url, String delimiter, String header) throws Exception {
+        Map<String, Object> parseCsvFile = ParseCsvFile(url, delimiter, header);
         if (null == parseCsvFile) {
             return null;
         }

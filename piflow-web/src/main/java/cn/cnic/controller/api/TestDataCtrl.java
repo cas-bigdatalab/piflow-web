@@ -174,20 +174,27 @@ public class TestDataCtrl {
         return testDataServiceImpl.getTestDataSchemaValuesCustomList(currentUsername, isAdmin, param, testDataId);
 
     }
-    
+
     /**
      * Upload xml file and save flowTemplate
      *
+     * @param testDataId
+     * @param header
+     * @param schema
+     * @param delimiter
      * @param file
      * @return
-     * @throws Exception 
+     * @throws Exception
      */
     @RequestMapping(value = "/uploadCsvFile", method = RequestMethod.POST)
     @ResponseBody
-    public String uploadCsvFile(@ApiParam(value = "file", required = true)@RequestParam("file") MultipartFile file, 
-                                @ApiParam(value = "delimiter", required = true)String delimiter) throws Exception {
+    public String uploadCsvFile(@ApiParam(value = "testDataId", required = true)String testDataId,
+                                @ApiParam(value = "header", required = true)boolean header,
+                                @ApiParam(value = "schema")String schema,
+                                @ApiParam(value = "delimiter", required = true)String delimiter,
+                                @ApiParam(value = "file", required = true)@RequestParam("file") MultipartFile file) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
-        return testDataServiceImpl.uploadCsvFile(username, file, delimiter);
+        return testDataServiceImpl.uploadCsvFile(username, testDataId, header, schema, delimiter, file);
     }
 
 }

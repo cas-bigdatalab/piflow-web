@@ -108,17 +108,20 @@ public interface ITestDataService {
      * @return String
      */
     public String getTestDataSchemaValuesCustomList(String username, boolean isAdmin, String param, String testDataId);
-    
+
     /**
      * Upload csv file and save flowTemplate
      *
      * @param username
-     * @param file
+     * @param testDataId
+     * @param header
+     * @param schema
      * @param delimiter
+     * @param file
      * @return
-     * @throws Exception 
+     * @throws Exception
      */
-    public String uploadCsvFile(String username, MultipartFile file, String delimiter) throws Exception;
+    public String uploadCsvFile(String username, String testDataId, boolean header, String schema, String delimiter, MultipartFile file) throws Exception;
 
 
 }

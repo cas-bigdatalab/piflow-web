@@ -448,23 +448,42 @@ public class TestDataServiceImpl implements ITestDataService {
         setSucceededMsg.put("schemaValueId", testDataSchemaValuesCustomList_id);
         return JsonUtils.toJsonNoException(setSucceededMsg);
     }
-    
+
     /**
      * Upload csv file and save flowTemplate
      *
      * @param username
-     * @param file
+     * @param testDataId
+     * @param header
+     * @param schema
      * @param delimiter
+     * @param file
      * @return
-     * @throws Exception 
+     * @throws Exception
      */
     @Override
-    public String uploadCsvFile(String username, MultipartFile file, String delimiter) throws Exception{
+    public String uploadCsvFile(String username, String testDataId, boolean header, String schema, String delimiter, MultipartFile file) throws Exception{
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
         }
+        if (StringUtils.isBlank(testDataId)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("testDataId is null");
+        }
+        if (null ==delimiter) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("delimiter is null");
+        }
         if (file.isEmpty()) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Upload failed, please try again later");
+        }
+        TestData testDataDB = testDataDomain.getTestDataById(testDataId);
+        if (null == testDataDB) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("testData is null");
+        }
+        if (!header && StringUtils.isBlank(schema)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("schema is null");
+        }
+        if (header) {
+            schema = null;
         }
         Map<String, Object> uploadMap = FileUtils.uploadRtnMap(file, SysParamsCache.CSV_PATH, null);
         if (null == uploadMap || uploadMap.isEmpty()) {
@@ -474,15 +493,12 @@ public class TestDataServiceImpl implements ITestDataService {
         if (500 == code) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("failed to upload file");
         }
-        String fileName = (String) uploadMap.get("fileName");
         String path = (String) uploadMap.get("path");
         //Read the CSV file according to the saved file path and return the CSV string
-        LinkedHashMap<String, List<String>> csvMap = FileUtils.ParseCsvFileRtnColumnData(path, delimiter);
+        LinkedHashMap<String, List<String>> csvMap = FileUtils.ParseCsvFileRtnColumnData(path, delimiter, schema);
         if(null == csvMap) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("save failed");
         }
-        TestData testData = TestDataUtils.setTestDataBasicInformation(null, false, username);
-        testData.setName(fileName + "-" + System.currentTimeMillis());
         List<TestDataSchema> testDataSchemaList = new ArrayList<>();
         List<TestDataSchemaValues> testDataSchemaValuesList = new ArrayList<>();
         int i = 0;
@@ -491,7 +507,7 @@ public class TestDataServiceImpl implements ITestDataService {
             testDataSchema.setFieldName(fieldName);
             testDataSchema.setFieldType("String");
             testDataSchema.setFieldSoft(i + 1);
-            testDataSchema.setTestData(testData);
+            testDataSchema.setTestData(testDataDB);
             testDataSchemaList.add(testDataSchema);
             // values 
             List<String> fieldNameValueList = csvMap.get(fieldName);
@@ -500,20 +516,18 @@ public class TestDataServiceImpl implements ITestDataService {
                 TestDataSchemaValues testDataSchemaValues = TestDataSchemaValuesUtils.setTestDataSchemaBasicInformation(null, true, username); 
                 testDataSchemaValues.setDataRow(j);
                 testDataSchemaValues.setFieldValue(fieldNameValue_j);
-                testDataSchemaValues.setTestData(testData);
+                testDataSchemaValues.setTestData(testDataDB);
                 testDataSchemaValues.setTestDataSchema(testDataSchema);
                 testDataSchemaValuesList.add(testDataSchemaValues);
             }
             i++;
         }
-        testData.setSchemaList(testDataSchemaList);
-        testData.setId(UUIDUtils.getUUID32());
-        int affectedRows = testDataDomain.addTestData(testData, username);
+        int affectedRows = testDataDomain.addSchemaList(testDataSchemaList, username);
         if (affectedRows <= 0) {
-            testDataDomain.delTestData(username, false, testData.getId());
+            testDataDomain.delTestData(username, false, testDataDB.getId());
             return ReturnMapUtils.setFailedMsgRtnJsonStr("save failed");
         }
-        affectedRows += testDataDomain.addTestDataSchemaValuesList(username, testDataSchemaValuesList, testData);
+        affectedRows += testDataDomain.addTestDataSchemaValuesList(username, testDataSchemaValuesList, testDataDB);
         return ReturnMapUtils.setSucceededMsgRtnJsonStr("successful template upload");
     }
 
