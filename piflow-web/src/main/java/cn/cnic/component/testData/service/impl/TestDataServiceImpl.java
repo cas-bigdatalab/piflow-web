@@ -143,7 +143,9 @@ public class TestDataServiceImpl implements ITestDataService {
         if (affectedRows <= 0) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("save failed");
         }
-        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("testDataId", testData.getId());
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededCustomParam("testDataId", testData.getId());
+        ReturnMapUtils.appendValues(rtnMap, "testDataName", testData.getName());
+        return ReturnMapUtils.appendValuesToJson(rtnMap, "testDataDesc", testData.getDescription());
     }
 
 

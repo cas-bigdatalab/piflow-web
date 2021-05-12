@@ -424,6 +424,7 @@ public class FileUtils {
                     rtnMap.put(FileUtils.CSV_TITLE_KEY, title);
                     dataList.remove(0);
                 }
+                rtnMap.put(FileUtils.CSV_DATA_KEY, dataList);
             }
         } catch (IOException e) {
             throw new Exception("Parse failed");
