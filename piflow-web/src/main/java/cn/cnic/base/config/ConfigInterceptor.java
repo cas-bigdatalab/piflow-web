@@ -9,8 +9,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.base.util.SessionUserUtil;
-import cn.cnic.base.vo.UserVo;
 import cn.cnic.common.constant.SysParamsCache;
 
 /**

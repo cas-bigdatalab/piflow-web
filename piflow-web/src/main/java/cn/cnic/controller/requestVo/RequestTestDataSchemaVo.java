@@ -17,17 +17,20 @@ public class RequestTestDataSchemaVo  implements Serializable {
     @ApiModelProperty(value = "testDataSchema id")
     private String id;
     
-    @ApiModelProperty(value = "testDataSchema fieldName", required = true)
+    @ApiModelProperty(value = "testDataSchema fieldName")
     private String fieldName;
     
-    @ApiModelProperty(value = "testDataSchema fieldType", required = true)
+    @ApiModelProperty(value = "testDataSchema fieldType")
     private String fieldType;
     
     @ApiModelProperty(value = "testDataSchema fieldDescription")
     private String fieldDescription;
     
-    @ApiModelProperty(value = "testDataSchema fieldSoft", required = true, example = "0")
+    @ApiModelProperty(value = "testDataSchema fieldSoft", example = "0")
     private int fieldSoft;
+    
+    @ApiModelProperty(value = "delete or not")
+    private boolean isDelete;
 
 
 }
