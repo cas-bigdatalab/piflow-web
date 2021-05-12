@@ -97,7 +97,7 @@ public class TestDataDomain {
         if (affectedRows < 0) {
             throw new Exception("save testData failed");
         }
-        affectedRows += addSchemaList(testData.getSchemaList(), testData, username);
+        affectedRows += addSchemaList(testData.getSchemaList(), username);
         return affectedRows;
     }
 
@@ -136,14 +136,13 @@ public class TestDataDomain {
      * @return int
      * @throws Exception
      */
-    public int addSchemaList(List<TestDataSchema> schemaList, TestData testData, String username) throws Exception {
+    public int addSchemaList(List<TestDataSchema> schemaList, String username) throws Exception {
         if (null == schemaList || schemaList.size() <= 0) {
             return 0;
         }
         int affectedRows = 0;
         for (TestDataSchema testDataSchema : schemaList) {
-        	testDataSchema.setTestData(testData);
-        	affectedRows += addTestDataSchema(testDataSchema, username);
+            affectedRows += addTestDataSchema(testDataSchema, username);
         }
         return affectedRows;
     }

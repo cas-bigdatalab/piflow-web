@@ -523,7 +523,7 @@ public class TestDataServiceImpl implements ITestDataService {
             }
             i++;
         }
-        int affectedRows = testDataDomain.addSchemaList(testDataSchemaList, testDataDB, username);
+        int affectedRows = testDataDomain.addSchemaList(testDataSchemaList, username);
         if (affectedRows <= 0) {
             testDataDomain.delTestData(username, false, testDataDB.getId());
             return ReturnMapUtils.setFailedMsgRtnJsonStr("save failed");
