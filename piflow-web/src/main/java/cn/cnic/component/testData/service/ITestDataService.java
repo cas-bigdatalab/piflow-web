@@ -16,7 +16,7 @@ public interface ITestDataService {
      * @return String
      * @throws Exception 
      */
-    public String saveOrUpdateTestDataAndSchema(String username, boolean isAdmin, RequestTestDataVo testDataVo) throws Exception;
+    public String saveOrUpdateTestDataAndSchema(String username, boolean isAdmin, RequestTestDataVo testDataVo, boolean flag) throws Exception;
 
 
     /**

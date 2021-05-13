@@ -36,7 +36,7 @@ public class TestDataCtrl {
     public String saveOrUpdateTestDataSchema(@ApiParam(value = "testDataVo", required = true)RequestTestDataVo testDataVo) throws Exception {
         String currentUsername = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
-        return testDataServiceImpl.saveOrUpdateTestDataAndSchema(currentUsername, isAdmin, testDataVo);
+        return testDataServiceImpl.saveOrUpdateTestDataAndSchema(currentUsername, isAdmin, testDataVo, false);
     }
 
     /**
