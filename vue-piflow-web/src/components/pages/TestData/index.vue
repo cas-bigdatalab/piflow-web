@@ -728,7 +728,8 @@ export default {
       // this.$event.emit("looding", true);
       this.isOpen= true;
       this.whatStage = 'SchemaVal'
-      let data = { page: this.page, limit: this.limit,testDataId: row.id };
+      // let data = { page: this.page, limit: this.limit,testDataId: row.id };
+       let data = { testDataId: row.id };
       this.id = row.id;
       this.saveType = 'edit';
       this.schemaId = this.id;
@@ -736,7 +737,7 @@ export default {
         data.param = this.param;
       }
       this.$axios
-          .post("/testData/testDataSchemaValuesListPage", this.$qs.stringify(data))
+          .post("/testData/testDataSchemaValuesList", this.$qs.stringify(data))
           .then(res => {
             if (res.data.code == 200) {
               let data = res.data, result= {}, resultList= [];
