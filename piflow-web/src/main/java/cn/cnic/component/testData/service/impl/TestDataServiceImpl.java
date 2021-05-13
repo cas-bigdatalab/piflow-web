@@ -92,11 +92,81 @@ public class TestDataServiceImpl implements ITestDataService {
             testDataSchemaList = new ArrayList<>();
         }
         if (flag) {
-        	//update testDataSchemaList
-            testDataSchemaVoListUpdate(username, testData, testDataSchemaVoList, testDataSchemaList, delSchemaIdList);	
+            //update testDataSchemaList
+            if (null != testDataSchemaVoList && testDataSchemaVoList.size() > 0) {
+                Map<String, TestDataSchema> testDataSchemaDbMap = new HashMap<>();
+                for (TestDataSchema testDataSchema : testDataSchemaList) {
+                    if (null == testDataSchema) {
+                        continue;
+                    }
+                    testDataSchemaDbMap.put(testDataSchema.getId(), testDataSchema);
+                }
+                List<TestDataSchema> testDataSchemaListNew = new ArrayList<>();
+                for (RequestTestDataSchemaVo testDataSchemaVo : testDataSchemaVoList) {
+                    if (null == testDataSchemaVo) {
+                        continue;
+                    }
+                    // Determine if you need to delete it, if necessary, add it to delSchemaIdList
+                    if (testDataSchemaVo.isDelete()) {
+                        delSchemaIdList.add(testDataSchemaVo.getId());
+                        continue;
+                    }
+                    // get TestDataSchema from testDataSchemaDbMap by testDataSchemaVo id
+                    TestDataSchema testDataSchemaNew = testDataSchemaDbMap.get(testDataSchemaVo.getId());
+                    // If not, create a new one
+                    if (null == testDataSchemaNew) {
+                        testDataSchemaNew = TestDataSchemaUtils.setTestDataSchemaBasicInformation(null, false, username);
+                    }
+                    // copy data to testDataSchemaNew
+                    testDataSchemaNew = TestDataSchemaUtils.copyDataToTestDataSchema(testDataSchemaVo, testDataSchemaNew, username);
+                    if(null == testDataSchemaNew) {
+                        continue;
+                    }
+                    testDataSchemaListNew.add(testDataSchemaNew);
+                }
+                testData.setSchemaList(testDataSchemaListNew);
+            }
         } else {
-        	//update testDataSchemaList
-            testDataSchemaVoListUpdate_1(username, testData, testDataSchemaVoList, testDataSchemaList, delSchemaIdList);
+            //update testDataSchemaList
+            if (null == testDataSchemaVoList || testDataSchemaVoList.size() <= 0) {
+                for (TestDataSchema testDataSchema : testDataSchemaList) {
+                    if (null == testDataSchema || StringUtils.isBlank(testDataSchema.getId())) {
+                        continue;
+                    }
+                    delSchemaIdList.add(testDataSchema.getId());
+                }
+            } else {
+                Map<String, TestDataSchema> testDataSchemaDbMap = new HashMap<>();
+                for (TestDataSchema testDataSchema : testDataSchemaList) {
+                    if (null == testDataSchema) {
+                        continue;
+                    }
+                    testDataSchemaDbMap.put(testDataSchema.getId(), testDataSchema);
+                }
+                List<TestDataSchema> testDataSchemaListNew = new ArrayList<>();
+                for (RequestTestDataSchemaVo testDataSchemaVo : testDataSchemaVoList) {
+                    if (null == testDataSchemaVo) {
+                        continue;
+                    }
+                    TestDataSchema testDataSchema = testDataSchemaDbMap.get(testDataSchemaVo.getId());
+                    if (null == testDataSchema) {
+                        testDataSchema = TestDataSchemaUtils.setTestDataSchemaBasicInformation(testDataSchema, flag, username); 
+                    }
+                    TestDataSchema copyDataToTestDataSchema = TestDataSchemaUtils.copyDataToTestDataSchema(testDataSchemaVo, testDataSchema, username);
+                    if(null == copyDataToTestDataSchema) {
+                        continue;
+                    }
+                    testDataSchemaDbMap.remove(testDataSchemaVo.getId());
+                    testDataSchemaListNew.add(copyDataToTestDataSchema);
+                }
+                testData.setSchemaList(testDataSchemaListNew);
+                for (TestDataSchema testDataSchema : testDataSchemaDbMap.values()) {
+                    if (null == testDataSchema || StringUtils.isBlank(testDataSchema.getId())) {
+                        continue;
+                    }
+                    delSchemaIdList.add(testDataSchema.getId());
+                }
+            }
         }
 
         int affectedRows = 0;
@@ -504,83 +574,5 @@ public class TestDataServiceImpl implements ITestDataService {
         affectedRows += testDataDomain.addTestDataSchemaValuesList(username, testDataSchemaValuesList, testDataDB);
         return ReturnMapUtils.setSucceededMsgRtnJsonStr("successful template upload");
     }
-
-	private void testDataSchemaVoListUpdate(String username, TestData testData,
-			List<RequestTestDataSchemaVo> testDataSchemaVoList, List<TestDataSchema> testDataSchemaList,
-			List<String> delSchemaIdList) {
-		if (null != testDataSchemaVoList && testDataSchemaVoList.size() > 0) {
-            Map<String, TestDataSchema> testDataSchemaDbMap = new HashMap<>();
-            for (TestDataSchema testDataSchema : testDataSchemaList) {
-                if (null == testDataSchema) {
-                    continue;
-                }
-                testDataSchemaDbMap.put(testDataSchema.getId(), testDataSchema);
-            }
-            List<TestDataSchema> testDataSchemaListNew = new ArrayList<>();
-            for (RequestTestDataSchemaVo testDataSchemaVo : testDataSchemaVoList) {
-                if (null == testDataSchemaVo) {
-                    continue;
-                }
-                // Determine if you need to delete it, if necessary, add it to delSchemaIdList
-                if (testDataSchemaVo.isDelete()) {
-                    delSchemaIdList.add(testDataSchemaVo.getId());
-                    continue;
-                }
-                // get TestDataSchema from testDataSchemaDbMap by testDataSchemaVo id
-                TestDataSchema testDataSchemaNew = testDataSchemaDbMap.get(testDataSchemaVo.getId());
-                // If not, create a new one
-                if (null == testDataSchemaNew) {
-                    testDataSchemaNew = TestDataSchemaUtils.setTestDataSchemaBasicInformation(null, false, username);
-                }
-                // copy data to testDataSchemaNew
-                testDataSchemaNew = TestDataSchemaUtils.copyDataToTestDataSchema(testDataSchemaVo, testDataSchemaNew, username);
-                if(null == testDataSchemaNew) {
-                    continue;
-                }
-                testDataSchemaListNew.add(testDataSchemaNew);
-            }
-            testData.setSchemaList(testDataSchemaListNew);
-        }
-	}
-	
-	private void testDataSchemaVoListUpdate_1(String username, TestData testData,
-			List<RequestTestDataSchemaVo> testDataSchemaVoList, List<TestDataSchema> testDataSchemaList,
-			List<String> delSchemaIdList) {
-        if (null == testDataSchemaVoList || testDataSchemaVoList.size() <= 0) {
-            for (TestDataSchema testDataSchema : testDataSchemaList) {
-                if (null == testDataSchema || StringUtils.isBlank(testDataSchema.getId())) {
-                    continue;
-                }
-                delSchemaIdList.add(testDataSchema.getId());
-            }
-        } else {
-            Map<String, TestDataSchema> testDataSchemaDbMap = new HashMap<>();
-            for (TestDataSchema testDataSchema : testDataSchemaList) {
-                if (null == testDataSchema) {
-                    continue;
-                }
-                testDataSchemaDbMap.put(testDataSchema.getId(), testDataSchema);
-            }
-            List<TestDataSchema> testDataSchemaListNew = new ArrayList<>();
-            for (RequestTestDataSchemaVo testDataSchemaVo : testDataSchemaVoList) {
-                if (null == testDataSchemaVo) {
-                    continue;
-                }
-                TestDataSchema copyDataToTestDataSchema = TestDataSchemaUtils.copyDataToTestDataSchema(testDataSchemaVo, testDataSchemaDbMap.get(testDataSchemaVo.getId()), username);
-                if(null == copyDataToTestDataSchema) {
-                    continue;
-                }
-                testDataSchemaDbMap.remove(testDataSchemaVo.getId());
-                testDataSchemaListNew.add(copyDataToTestDataSchema);
-            }
-            testData.setSchemaList(testDataSchemaListNew);
-            for (TestDataSchema testDataSchema : testDataSchemaDbMap.values()) {
-                if (null == testDataSchema || StringUtils.isBlank(testDataSchema.getId())) {
-                    continue;
-                }
-                delSchemaIdList.add(testDataSchema.getId());
-            }
-        }
-	}
 
 }
