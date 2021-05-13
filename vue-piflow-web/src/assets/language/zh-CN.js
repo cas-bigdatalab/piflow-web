@@ -154,7 +154,8 @@ module.exports = {
         schema: "表结构",
         CreateTime: "创建时间",
         action: "操作",
-        fileDescription: "点 击 或 拖 动 文件 在 此 处 上 传"
+        fileDescription: "点 击 或 拖 动 文件 在 此 处 上 传",
+        uploadPrompt: "若您上传的CSV文件包含中文字符，请使用UTF-8编码"
     },
     admin_columns: {
         create_title: "新建调度",

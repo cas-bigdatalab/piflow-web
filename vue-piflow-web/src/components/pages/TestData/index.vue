@@ -177,6 +177,7 @@
             <div>
               <Icon type="ios-cloud-upload" size="52" style="color: #20784b"></Icon>
               <p>{{$t("testData_columns.fileDescription")}}</p>
+              <p style="font-size: 12px">{{$t("testData_columns.uploadPrompt")}}</p >
             </div>
           </div>
         </Upload>

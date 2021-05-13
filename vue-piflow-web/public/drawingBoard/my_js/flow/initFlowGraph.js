@@ -221,6 +221,7 @@ function updateMxGraphCellImage(cellEditor, selState, newValue, fn) {
 
 //init mxGraph
 function initFlowGraph() {
+    Format.prototype.isSaveGraphData = false;
     Actions.prototype.RunAll = runFlow;
     EditorUi.prototype.saveGraphData = saveXml;
     EditorUi.prototype.customUpdeteImg = updateMxGraphCellImage;

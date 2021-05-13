@@ -154,7 +154,8 @@ module.exports = {
         schema: "Schema",
         CreateTime: "CreateTime",
         action: "Actions",
-        fileDescription: "Click or drag file here to upload"
+        fileDescription: "Click or drag file here to upload",
+        uploadPrompt: "If the CSV file you upload contains Chinese characters, please use UTF-8 encoding"
     },
     admin_columns: {
         create_title: "Create Schedule",
