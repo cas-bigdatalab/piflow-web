@@ -16,11 +16,11 @@ function initDataTablePage(testTableId, url, searchInputId) {
                 {field: 'dataSourceName', title: 'Name', sort: true},
                 {field: 'dataSourceDescription', title: 'Description', sort: true},
                 {field: 'dataSourceType', title: 'DataSourceType', sort: true},
-                {
-                    field: 'right', title: 'Actions', sort: true, height: 100, templet: function (data) {
-                        return responseHandlerDataSource(data);
-                    }
-                }
+                // {
+                //     field: 'right', title: 'Actions', sort: true, height: 100, templet: function (data) {
+                //         return responseHandlerDataSource(data);
+                //     }
+                // }
             ]]
             , id: testTableId
             , page: true

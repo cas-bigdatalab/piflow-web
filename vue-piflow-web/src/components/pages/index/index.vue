@@ -344,10 +344,10 @@ export default {
               })
               .catch(error => {
                 console.log(error);
-                this.$Message.error({
-                  content: this.$t("tip.fault_content"),
-                  duration: 3
-                });
+                // this.$Message.error({
+                //   content: this.$t("tip.fault_content"),
+                //   duration: 3
+                // });
               });
   },
     getFlowInfo(){
@@ -358,20 +358,10 @@ export default {
                 if (res.data.code == 200) {
                   let data = res.data.flowResourceInfo;
                   this.flowResourceInfo = data;
-                  // console.log(data)
-                } else {
-                  this.$Message.error({
-                    content: this.$t("tip.request_fail_content"),
-                    duration: 3
-                  });
                 }
               })
               .catch(error => {
                 console.log(error);
-                this.$Message.error({
-                  content: this.$t("tip.fault_content"),
-                  duration: 3
-                });
               });
 
       // 流水线组统计
@@ -381,19 +371,10 @@ export default {
                 if (res.data.code == 200) {
                   let data = res.data.groupResourceInfo;
                     this.groupResourceInfo = data;
-                } else {
-                  this.$Message.error({
-                    content: this.$t("tip.request_fail_content"),
-                    duration: 3
-                  });
                 }
               })
               .catch(error => {
                 console.log(error);
-                this.$Message.error({
-                  content: this.$t("tip.fault_content"),
-                  duration: 3
-                });
               });
 
       // 调度
@@ -403,19 +384,10 @@ export default {
                 if (res.data.code == 200) {
                     let data = res.data.scheduleResourceInfo;
                     this.scheduleResourceInfo = data;
-                } else {
-                  this.$Message.error({
-                    content: this.$t("tip.request_fail_content"),
-                    duration: 3
-                  });
                 }
               })
               .catch(error => {
                 console.log(error);
-                this.$Message.error({
-                  content: this.$t("tip.fault_content"),
-                  duration: 3
-                });
               });
 
       // 模板和数据源统计
@@ -425,19 +397,10 @@ export default {
                 if (res.data.code == 200) {
                     let data = res.data.templateAndDataSourceResourceInfo;
                     this.templateAndDataSourceResourceInfo = data;
-                } else {
-                  this.$Message.error({
-                    content: this.$t("tip.request_fail_content"),
-                    duration: 3
-                  });
                 }
               })
               .catch(error => {
                 console.log(error);
-                this.$Message.error({
-                  content: this.$t("tip.fault_content"),
-                  duration: 3
-                });
               });
 
       // 组件统计
@@ -447,19 +410,10 @@ export default {
                 if (res.data.code == 200) {
                     let data = res.data.stopResourceInfo;
                     this.stopResourceInfo = data;
-                } else {
-                  this.$Message.error({
-                    content: this.$t("tip.request_fail_content"),
-                    duration: 3
-                  });
                 }
               })
               .catch(error => {
                 console.log(error);
-                this.$Message.error({
-                  content: this.$t("tip.fault_content"),
-                  duration: 3
-                });
               });
     },
   }

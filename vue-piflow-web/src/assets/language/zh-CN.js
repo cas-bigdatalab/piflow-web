@@ -11,8 +11,11 @@ module.exports = {
         schedule: '流水线调度',
         stopHub: '自定义组件',
         sparkJar: "Spark Jar包",
+        testData: "测试数据",
         example: "样例",
         admin: "高级",
+        admin_schedule: '监控同步任务',
+        stopsComponent: '组件显示'
     },
     page: {
         prev_text: "上一页",
@@ -62,6 +65,7 @@ module.exports = {
         confirm: "确定",
         cancel_text: "取消",
         delete_content: "确定要删除",
+        cancel_content: "确定要取消本次创建吗"
     },
     flow_columns: {
         create_title: "新建流水线",
@@ -111,7 +115,8 @@ module.exports = {
         description: "描述信息",
         CreateTime: "创建时间",
         dataSourceType: "数据源类型",
-        action: "操作"
+        action: "操作",
+        isLinked: "是否同步更改?相关的组件："
     },
     schedule_columns: {
         create_title: "新建流水线调度",
@@ -137,6 +142,20 @@ module.exports = {
         action: "操作",
         jarDescription: '点 击 或 拖 动 jar 在 此 处 上 传'
     },
+    testData_columns:{
+        create_title: "新建测试数据",
+        update_title: "更改测试数据",
+        testData_name: "测试名称",
+        name: "名称",
+        description: "描述信息",
+        methed: "创建方式",
+        header: "表头",
+        delimiter: "分隔符",
+        schema: "表结构",
+        CreateTime: "创建时间",
+        action: "操作",
+        fileDescription: "点 击 或 拖 动 文件 在 此 处 上 传"
+    },
     admin_columns: {
         create_title: "新建调度",
         update_title: "更改调度",
@@ -149,6 +168,10 @@ module.exports = {
         status: "状态",
         createTime: "创建时间",
         action: "操作"
+    },
+    stopsComponent_columns: {
+        name: "组件名称",
+        description: "描述信息",
     },
     homeInfo: {
         introduction_title: "简介",

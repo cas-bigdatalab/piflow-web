@@ -44,13 +44,13 @@
           <span class="button-warp" @click="handleButtonSelect(row,4)">
             <Icon type="ios-bug" />
           </span>-->
-          <Tooltip content="download" placement="top-start">
+          <Tooltip content="Download" placement="top-start">
             <span class="button-warp" @click="handleButtonSelect(row,1)">
               <Icon type="md-cloud-download" />
             </span>
           </Tooltip>
 
-          <Tooltip content="delete" placement="top-start">
+          <Tooltip content="Delete" placement="top-start">
             <span class="button-warp" @click="handleButtonSelect(row,2)">
               <Icon type="ios-trash" />
             </span>

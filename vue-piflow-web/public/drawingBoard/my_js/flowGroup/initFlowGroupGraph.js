@@ -171,7 +171,7 @@ function updateMxGraphCellImage(cellEditor, selState, newValue, fn) {
     });
     layer.open({
         type: 1,
-        title: '',
+        title: '<span style="color: #269252;">已有现存可选择更改的图片</span>',
         shadeClose: true,
         shade: 0.3,
         closeBtn: 1,
@@ -894,7 +894,7 @@ function getFlowList() {
     var window_height = $(window).height();//Get browser window height
     ajaxLoad("", "/page/flow/flow_list_import.html", function (data) {
         // openLayerWindowLoadHtml(data, (window_width / 2), (window_height - 100), "Flows");
-        openLayerWindowLoadHtml(data, (window_width / 2), (window_height > 400 ? 550 : window_height), "Flows");
+        openLayerWindowLoadHtml(data, (window_width / 2), (window_height > 400 ? 620 : 620), "Import Flow");
     });
 }
 

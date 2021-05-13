@@ -425,6 +425,10 @@ div.mxWindow .geButton {
 	border-radius:6px;
 	_filter:progid:DXImageTransform.Microsoft.DropShadow(OffX=2, OffY=2, Color='#d5d5d5', Positive='true');
 }
+.geSidebarTooltip div{
+	text-align: left!important;
+	/*padding: 6px 3px 0 3px!important;*/
+}
 .geFooterContainer {
 	background:#e5e5e5;
 	border-top:1px solid #c0c0c0;

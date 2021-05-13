@@ -23,17 +23,17 @@
         <Table border :columns="columns" :data="tableData">
             <template slot-scope="{ row }" slot="action">
                 <div>
-                    <Tooltip content="mount" placement="top-start" v-if="row.status.text==='UNMOUNT'">
+                    <Tooltip content="Mount" placement="top-start" v-if="row.status.text==='UNMOUNT'">
                         <span class="button-warp" @click="handleButtonSelect(row,1)">
                             <Icon type="ios-aperture" />
                         </span>
                     </Tooltip>
-                    <Tooltip v-else content="unmount" placement="top-start">
+                    <Tooltip v-else content="Unmount" placement="top-start">
                        <span class="button-warp" @click="handleButtonSelect(row,1)">
                          <Icon type="md-aperture" />
                        </span>
                     </Tooltip>
-                    <Tooltip content="delete" placement="top-start">
+                    <Tooltip content="Delete" placement="top-start">
                         <span class="button-warp" @click="handleButtonSelect(row,2)">
                             <Icon type="ios-trash"/>
                         </span>

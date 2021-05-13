@@ -16,12 +16,121 @@
           <Radio label="javascript" :disabled="buttonSize === 'javascript'?false:true">java</Radio>
           <Radio label="python" :disabled="buttonSize === 'python'?false:true">python</Radio>
           <Radio label="sh" :disabled="buttonSize === 'sh'?false:true">shell</Radio>
+          <Radio label="sql" :disabled="buttonSize === 'sql'?false:true">sql</Radio>
         </RadioGroup>
         <code-editor ref="_firstRefs" class="editor h-100" v-model="editorContent"
                      :readonly="readonly" :language="buttonSize" theme="dracula">
         </code-editor>
       </div>
     </Modal>
+
+    <!--需testData-->
+    <Modal
+        :title="programming_Title"
+        v-model="NeedSource_Modal"
+        width="60"
+        @on-ok="runParameters"
+        :mask-closable="false">
+      <div :style="{ height :`${Programming}`}">
+
+        <Tabs type="card"
+              :value="tabName"
+              @on-click="tabClick"	>
+          <TabPane v-for="tab in queryJson.ports" :key="tab" :name="tab" :label="'Port：' + tab">
+            <!-- 表格部分 -->
+            <vxe-table
+                border
+                resizable
+                highlight-hover-row
+                height="360"
+                row-key
+                ref="parameters"
+                size="medium"
+                :auto-resize="true"
+                @radio-change="selectChangeEvent"
+                :radio-config="{labelField: 'name'}"
+                :data="tableData">
+              <vxe-table-column type="radio" title="Name"></vxe-table-column>
+              <!--          <vxe-table-column field="name" title="Name"></vxe-table-column>-->
+              <vxe-table-column field="description" title="Description"></vxe-table-column>
+              <vxe-table-column field="crtDttm" title="CrtDttm"></vxe-table-column>
+              <vxe-table-column title="Actions" width="70">
+                <template #default="{ row }">
+                  <Tooltip content="To View" placement="left">
+                    <Button icon="md-search" @click="showDetailEvent(row)"></Button>
+                  </Tooltip>
+                </template>
+              </vxe-table-column>
+
+            </vxe-table>
+          </TabPane>
+        </Tabs>
+        <vxe-modal v-model="showDetails" title="Check the details" width="800" height="400" resize>
+          <template #default>
+            <vxe-grid
+                border
+                show-overflow
+                resizable
+                keep-source
+                ref="xTable"
+                max-height="400"
+                :data="editableData"
+                :columns="tableColumn"
+                class="mytable-scrollbar"
+                :toolbar-config="tableToolbar">
+            </vxe-grid>
+          </template>
+        </vxe-modal>
+
+<!--        <Table border :columns="columns" :data="tableData">-->
+<!--          <template slot-scope="{ row }" slot="action">-->
+<!--            <div>-->
+<!--&lt;!&ndash;              <Radio v-model="single"></Radio>&ndash;&gt;-->
+<!--            </div>-->
+<!--          </template>-->
+<!--        </Table>-->
+
+
+<!--        &lt;!&ndash; 分页部分 &ndash;&gt;-->
+<!--        <div class="page">-->
+<!--          <Page-->
+<!--              :prev-text="$t('page.prev_text')"-->
+<!--              :next-text="$t('page.next_text')"-->
+<!--              show-elevator-->
+<!--              :show-total="true"-->
+<!--              :total="total"-->
+<!--              show-sizer-->
+<!--              @on-change="onPageChange"-->
+<!--              @on-page-size-change="onPageSizeChange"-->
+<!--          />-->
+<!--        </div>-->
+      </div>
+    </Modal>
+
+    <!--visualization-->
+    <Modal
+        title="View Charts"
+        v-model="visualization_Modal"
+        width="60"
+        @on-ok="visualization_Modal=false"
+        :mask-closable="false">
+      <div>
+          <vxe-grid
+              border
+              show-overflow
+              resizable
+              keep-source
+              ref="xTable"
+              max-height="500"
+              :data="visualizationData"
+              :columns="tableColumn"
+              class="mytable-scrollbar"
+              :export-config="tableExport"
+              :toolbar-config="visualization_Toolbar">
+          </vxe-grid>
+      </div>
+    </Modal>
+
   </div>
 </template>
  
@@ -41,8 +150,75 @@ export default {
       programming_Modal: false,
       buttonSize: 'text',
       stopsId: '',
-      programming_Title: 'Title',
+      programming_Title: 'Set Data For Each Port',
+
+      NeedSource_Modal: false,
+      tableData: [],
+      page: 1,
+      limit: 10,
+      total: 0,
+      single: false,
+
+      queryJson: {
+        isRunFollowUp: true,
+        stopsId: '',
+        ports: [],
+        testDataIds: [],
+      },
+
+      portsList: [],
+      testDataIdList: [],
+      list: [],
+      tabName: '',
+
+      showDetails: false,
+      tableToolbar: {
+        perfect: true,
+        zoom: true,
+        custom: true,
+      },
+      editableData: [],
+      tableColumn: [],
+
+      visualization_Modal: false,
+      visualizationData: [],
+      visualization_Toolbar: {
+        perfect: true,
+        zoom: true,
+        custom: true,
+        export: true,
+      },
+      tableExport: {
+        type: 'csv',
+        types: [ 'csv', 'html', 'xml', 'txt']
+      },
     };
+  },
+  computed: {
+    columns() {
+      return [
+        {
+          title: this.$t("testData_columns.action"),
+          slot: "action",
+          width: 100,
+          align: "center"
+        },
+        {
+          title: this.$t("testData_columns.name"),
+          key: "name",
+          sortable: true
+        },
+        {
+          title: this.$t("testData_columns.description"),
+          key: "description"
+        },
+        {
+          title: this.$t("testData_columns.CreateTime"),
+          key: "crtDttm",
+          sortable: true
+        }
+      ];
+    }
   },
   created() {
     // let query = this.$router.currentRoute.query;
@@ -118,10 +294,70 @@ export default {
         case 'Shell':
           _this.buttonSize = 'sh';
           break;
+        case 'Sql':
+          _this.buttonSize = 'sql';
+          break;
         default:
           break;
       }
     };
+
+
+    //  StopsComponent is neeed source data
+    window["StopsComponentIsNeeedSourceData"] = ({id,isRunFollowUp}) => {
+      _this.NeedSource_Modal = true;
+       let data = {
+         stopsId: id
+       };
+       let inputJson = {
+         isRunFollowUp: isRunFollowUp,
+         stopsId: id,
+         ports: [],
+         testDataIds: [],
+       };
+       let isNeedSource = false;
+
+      this.$axios
+          .post("/stopsManage/isNeedSource", this.$qs.stringify(data))
+          .then((res) => {
+            let data = res.data;
+            if (data.code === 200){
+              isNeedSource = data.isNeedSource;
+              inputJson.ports = data.ports;
+              this.queryJson = inputJson;
+              this.tabName = this.queryJson.ports[0];
+              if (data.isNeedSource){
+
+                this.getTableData();
+              }else {
+                this.queryJson = inputJson;
+                this.runStops(isNeedSource,this.queryJson)
+              }
+            }
+
+            // this.$Modal.success({
+            //   title: this.$t("tip.title"),
+            //   content: `111 ` + this.$t("tip.add_success_content"),
+            //   onOk:()=>{}})
+          })
+          .catch((error) => {
+            console.log(error);
+            this.$event.emit("looding", false);
+            this.$Message.error({
+              content: this.$t("tip.fault_content"),
+              duration: 3
+            });
+          });
+
+    };
+
+    //  visualization
+    window["visualizationTable"] = ({value}) => {
+      _this.visualization_Modal = true;
+      _this.visualizationData = value;
+      _this.getTitle(_this.visualizationData);
+      console.log(value,'传递的表格数据')
+    }
   },
   watch:{
     $route(to,from){
@@ -220,7 +456,169 @@ export default {
             //   duration: 3
             // });
           });
-    }
+    },
+
+    // run parameters
+    runParameters(){
+      // let data = this.$refs.parameters.getRadioRecord();
+      this.list.forEach((item)=>{
+        Object.keys(item).forEach(key=>{
+          switch (key){
+            case 'ports':
+              this.portsList.push(item[key]);
+              break;
+            case 'testDataId':
+              this.testDataIdList.push(item[key]);
+              break;
+          }
+        })
+      })
+
+      this.queryJson.testDataIds= this.testDataIdList;
+
+      this.runStops(true,this.queryJson)
+    },
+    // run stops
+    runStops(isNeedSource,queryJson){
+      this.$event.emit("looding", true);
+      let data = {};
+      if (isNeedSource){
+        data = queryJson;
+      }else {
+        data = queryJson;
+      }
+      data.ports= this.portsList;
+      this.testDataIdList= [];
+      this.portsList = [];
+
+      this.$axios
+          .post("/stopsManage/runStops", this.$qs.stringify(data))
+          .then((res) => {
+            let data = res.data;
+            if (data.code === 200){
+              this.$event.emit("looding", false);
+              this.JumpToMonitor(data.processId,data.errorMsg)
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+            this.$event.emit("looding", false);
+          });
+
+
+    },
+
+    JumpToMonitor(id,msg){
+      // 判断页面是否加载完毕
+
+      let pageURl = {
+        pageURl: id,
+        pageMsg: msg
+      }
+      document.getElementById("bariframe").contentWindow.postMessage(pageURl,'*');
+
+
+
+
+      // $("#mapIframe")[0].contentWindow.postMessage({
+      //   module: "yxtz",
+      //   param: "sl_btn_sw"
+      // },"*");
+    },
+
+    showDetailEvent (row) {
+      this.showDetails = true;
+      let data = { testDataId: row.id };
+      this.$axios
+          .post("/testData/testDataSchemaValuesList", this.$qs.stringify(data))
+          .then(res => {
+            let data = res.data;
+            if (data.code === 200) {
+              this.editableData = data.schemaValue;
+              this.getTitle(data.schemaValue);
+
+            } else {
+              this.$Message.error({
+                content: this.$t("tip.request_fail_content"),
+                duration: 3
+              });
+            }
+          })
+          .catch(error => {
+            console.log(error);
+            this.$Message.error({
+              content: this.$t("tip.fault_content"),
+              duration: 3
+            });
+          })
+    },
+    getTitle(schemaValuesList) {
+      this.tableColumn= [];
+      let tableTitle = Object.keys(schemaValuesList[0]);
+      for (let i=0;i<tableTitle.length;i++){
+        if (tableTitle[i]==='dataRow'){
+
+        }else {
+          this.tableColumn.push({
+            field: tableTitle[i],
+            title: tableTitle[i]
+          })
+        }
+      }
+    },
+
+    //获取表格数据
+    getTableData() {
+      let data = { page: this.page, limit: this.limit };
+      if (this.param) {
+        data.param = this.param;
+      }
+      this.$axios
+          .post("/testData/testDataListPage", this.$qs.stringify(data))
+          .then(res => {
+            if (res.data.code == 200) {
+              this.tableData = res.data.data;
+              this.total = res.data.count;
+            } else {
+              this.$Message.error({
+                content: this.$t("tip.request_fail_content"),
+                duration: 3
+              });
+            }
+          })
+          .catch(error => {
+            console.log(error);
+            this.$Message.error({
+              content: this.$t("tip.fault_content"),
+              duration: 3
+            });
+          });
+    },
+
+    tabClick(name){
+      this.tabName = name;
+    },
+
+    //  选中
+    selectChangeEvent ({ row }) {
+
+      let obj = {};
+      obj.ports= this.tabName;
+      obj.testDataId= row.id;
+
+      if (this.list.length=== 0){
+        this.list.push(obj);
+      }else {
+        this.list.forEach((item,index)=>{
+          if(item.ports === obj.ports){
+            this.list.splice(index, 1);
+          }
+        })
+        this.list.push(obj);
+
+      }
+
+    },
   },
   beforeDestroy() {
     document.querySelector("header").style.cssText = "";
@@ -238,5 +636,37 @@ export default {
   height: 100%;
   display: block;
   z-index: 0;
+}
+::v-deep .ivu-tabs.ivu-tabs-card > .ivu-tabs-bar .ivu-tabs-tab-active{
+  border-color: #dcdee2!important;
+}
+::v-deep .ivu-tabs-nav .ivu-tabs-tab:hover {
+  color: #009688;
+}
+/*滚动条整体部分*/
+.mytable-scrollbar ::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+/*滚动条的轨道*/
+.mytable-scrollbar ::-webkit-scrollbar-track {
+  background-color: #FFFFFF;
+}
+/*滚动条里面的小方块，能向上向下移动*/
+.mytable-scrollbar ::-webkit-scrollbar-thumb {
+  background-color: #eeeeee;
+  border-radius: 5px;
+  border: 1px solid #F1F1F1;
+  box-shadow: inset 0 0 6px rgba(66, 65, 65, 0.3);
+}
+.mytable-scrollbar ::-webkit-scrollbar-thumb:hover {
+  background-color: #A8A8A8;
+}
+.mytable-scrollbar ::-webkit-scrollbar-thumb:active {
+  background-color: #787878;
+}
+/*边角，即两个滚动条的交汇处*/
+.mytable-scrollbar ::-webkit-scrollbar-corner {
+  background-color: #FFFFFF;
 }
 </style>

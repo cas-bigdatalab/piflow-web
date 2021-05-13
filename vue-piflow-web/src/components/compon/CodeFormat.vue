@@ -37,6 +37,7 @@ import 'ace-builds/src-min-noconflict/mode-scala'
 import 'ace-builds/src-min-noconflict/mode-sh'
 import 'ace-builds/src-min-noconflict/mode-python'
 import 'ace-builds/src-min-noconflict/mode-java'
+import 'ace-builds/src-min-noconflict/mode-sql'
 import 'ace-builds/src-min-noconflict/mode-json'
 import 'ace-builds/src-min-noconflict/mode-css'
 import 'ace-builds/src-min-noconflict/ext-language_tools'
@@ -47,6 +48,8 @@ import scalaWorkerUrl from 'file-loader!ace-builds/src-noconflict/mode-scala'
 import shWorkerUrl from 'file-loader!ace-builds/src-noconflict/mode-sh'
 import pythonWorkerUrl from 'file-loader!ace-builds/src-noconflict/mode-python'
 import javaWorkerUrl from 'file-loader!ace-builds/src-noconflict/mode-java'
+import sqlWorkerUrl from 'file-loader!ace-builds/src-noconflict/mode-sql'
+
 import jsonWorkerUrl from 'file-loader!ace-builds/src-noconflict/worker-json'
 import cssWorkerUrl from 'file-loader!ace-builds/src-noconflict/worker-css'
 ace.config.setModuleUrl('ace/mode/javascript_worker', jsWorkerUrl)
@@ -55,6 +58,7 @@ ace.config.setModuleUrl('ace/mode/scala_worker', scalaWorkerUrl)
 ace.config.setModuleUrl('ace/mode/sh_worker', shWorkerUrl)
 ace.config.setModuleUrl('ace/mode/python_worker', pythonWorkerUrl)
 ace.config.setModuleUrl('ace/mode/java_worker', javaWorkerUrl)
+ace.config.setModuleUrl('ace/mode/sql_worker', sqlWorkerUrl)
 ace.config.setModuleUrl('ace/mode/json_worker', jsonWorkerUrl)
 ace.config.setModuleUrl('ace/mode/css_worker', cssWorkerUrl)
 ace.config.setModuleUrl(
@@ -72,6 +76,10 @@ ace.config.setModuleUrl(
 ace.config.setModuleUrl(
     'ace/snippets/scala',
     require('file-loader!ace-builds/src-noconflict/snippets/scala.js')
+)
+ace.config.setModuleUrl(
+    'ace/snippets/sql',
+    require('file-loader!ace-builds/src-noconflict/snippets/sql.js')
 )
 ace.config.setModuleUrl(
     'ace/snippets/sh',

@@ -27,7 +27,7 @@
           <!-- <span class="button-warp" @click="handleButtonSelect(row,1)">
             <Icon type="ios-redo" />
           </span>-->
-          <Tooltip content="edit" placement="top-start">
+          <Tooltip content="Edit" placement="top-start">
             <span class="button-warp" @click="handleButtonSelect(row,1)">
               <Icon type="ios-create-outline" />
             </span>
@@ -39,7 +39,7 @@
          <span class="button-warp" @click="handleButtonSelect(row,4)">
             <Icon type="ios-bug" />
           </span>-->
-          <Tooltip content="delete" placement="top-start">
+          <Tooltip content="Delete" placement="top-start">
             <span class="button-warp" @click="handleButtonSelect(row,2)">
               <Icon type="ios-trash" />
             </span>
@@ -195,7 +195,8 @@ export default {
           value: "",
           id: ''
         }
-      ]
+      ],
+      editDataSourceList: []
     };
   },
   watch: {
@@ -277,7 +278,8 @@ export default {
         dataSourceType: this.type,
         dataSourceName: this.name,
         dataSourceDescription: this.description
-      };
+      },
+          contrastData = {};
       if (
         this.dataSourcePropertyVoList[0].name &&
         this.dataSourcePropertyVoList[0].value
@@ -286,36 +288,54 @@ export default {
           data[`dataSourcePropertyVoList[${i}].name`] = item.name;
           data[`dataSourcePropertyVoList[${i}].value`] = item.value;
           data[`dataSourcePropertyVoList[${i}].id`] = item.id;
+
         });
+
+        this.editDataSourceList.forEach((item, i) => {
+          contrastData[`dataSourcePropertyVoList[${i}].name`] = item.name;
+        });
+
       }
       if (this.id) {
         //更新数据
         data.id = this.id;
-        this.$axios
-          .post("/datasource/saveOrUpdate", this.$qs.stringify(data))
-          .then(res => {
-            if (res.data.code == 200) {
-              this.$Modal.success({
-                title: this.$t("tip.title"),
-                content: `${this.name} ` + this.$t("tip.update_success_content")
-              });
-              this.isOpen = false;
-              this.handleReset();
-              this.getTableData();
-            } else {
-              this.$Message.error({
-                content: `${this.name} ` + this.$t("tip.update_fail_content"),
-                duration: 3
-              });
+        let flag = false;
+        for (let key in contrastData){
+          for (let keys in data){
+            if (key === keys && contrastData[key] !== data[keys]){
+              flag = true;
             }
-          })
-          .catch(error => {
-            console.log(error);
-            this.$Message.error({
-              content: this.$t("tip.fault_content"),
-              duration: 3
-            });
-          });
+          }
+        }
+
+        if (flag){
+          this.$axios
+              .post("/datasource/checkDatasourceLinked", this.$qs.stringify({dataSourceId: data.id}))
+              .then(res => {
+                let dataList = res.data;
+                if (dataList.code === 200 && dataList.isLinked) {
+                  this.$Modal.confirm({
+                    title: this.$t("tip.title"),
+                    content: this.$t("tip.update_fail_content") + dataList.stopsNameList,
+                    onOk: () => {
+                      this.saveModifiedData(data);
+                    },
+                    onCancel: () => {
+                      // this.$Message.info('Clicked cancel');
+                    }})
+                } else {
+                  this.$Message.error({
+                    content: `${this.name} ` + this.$t("tip.update_fail_content"),
+                    duration: 3
+                  });
+                }
+              })
+              .catch(error => {
+                console.log(error);
+              });
+        }else {
+          this.saveModifiedData(data);
+        }
       } else {
         //新增数据
         this.$axios
@@ -349,7 +369,6 @@ export default {
       let data = this.typeList.filter(item => {
         return item.dataSourceName === val;
       });
-      // console.log(data);
 
       if (data.length === 0) {
         this.dataSourcePropertyVoList = [{ name: "", value: "" }];
@@ -366,7 +385,7 @@ export default {
     },
     handleGetInputData() {
       this.$axios
-        .get("/datasource/getDataSourceInputData")
+        .post("/datasource/getDataSourceInputData")
         .then(res => {
           if (res.data.code == 200) {
             let data = res.data.templateList;
@@ -403,20 +422,41 @@ export default {
       }
       this.dataSourcePropertyVoList.splice(m, 1);
     },
-    handleAdd() {
-      this.dataSourcePropertyVoList.push({
-        name: "",
-        value: ""
-      });
-    },
 
+
+    //保存修改数据
+    saveModifiedData(data){
+      this.$axios
+        .post("/datasource/saveOrUpdate", this.$qs.stringify(data))
+        .then(res => {
+          if (res.data.code == 200) {
+            this.$Modal.success({
+              title: this.$t("tip.title"),
+              content: `${this.name} ` + this.$t("tip.update_success_content")
+            });
+            this.isOpen = false;
+            this.handleReset();
+            this.getTableData();
+          } else {
+            this.$Message.error({
+              content: `${this.name} ` + this.$t("tip.update_fail_content"),
+              duration: 3
+            });
+          }
+        })
+        .catch(error => {
+          console.log(error);
+          this.$Message.error({
+            content: this.$t("tip.fault_content"),
+            duration: 3
+          });
+        });
+    },
     //获取行数据(编辑)
     getRowData(row) {
       this.$event.emit("looding", true);
       this.$axios
-        .get("/datasource/getDataSourceInputData", {
-          params: { dataSourceId: row.id }
-        })
+        .post("/datasource/getDataSourceInputData", this.$qs.stringify({dataSourceId:row.id}))
         .then(res => {
           if (res.data.code == 200) {
             let data = res.data.templateList;
@@ -429,6 +469,7 @@ export default {
             this.name = flow.dataSourceName;
             this.description = flow.dataSourceDescription;
             this.dataSourcePropertyVoList = flow.dataSourcePropertyVoList;
+            this.editDataSourceList = JSON.parse(JSON.stringify(flow.dataSourcePropertyVoList));
             // this.driverMemory = flow.driverMemory;
             // this.executorNumber = flow.executorNumber;
             // this.executorMemory = flow.executorMemory;

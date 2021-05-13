@@ -24,27 +24,27 @@
         <Table border :columns="columns" :data="tableData">
             <template slot-scope="{ row }" slot="action">
                 <div>
-                    <Tooltip content="enter" placement="top-start">
+                    <Tooltip content="Enter" placement="top-start">
                         <span class="button-warp" @click="handleButtonSelect(row,1)">
                             <Icon type="ios-redo" />
                         </span>
                     </Tooltip>
-                    <Tooltip content="edit" placement="top-start">
+                    <Tooltip content="Edit" placement="top-start">
                        <span class="button-warp" @click="handleButtonSelect(row,2)">
                         <Icon type="ios-create-outline"/>
                        </span>
                     </Tooltip>
-                    <Tooltip content="stop" placement="top-start" v-if="row.status.text==='RUNNING'">
+                    <Tooltip content="Stop" placement="top-start" v-if="row.status.text==='RUNNING'">
                         <span class="button-warp" @click="handleButtonSelect(row,3)">
                             <Icon type="ios-square" size="12"/>
                         </span>
                     </Tooltip>
-                    <Tooltip v-else content="run" placement="top-start">
+                    <Tooltip v-else content="Run" placement="top-start">
                        <span class="button-warp" @click="handleButtonSelect(row,3)">
                          <Icon type="ios-play" />
                        </span>
                     </Tooltip>
-                    <Tooltip content="delete" placement="top-start">
+                    <Tooltip content="Delete" placement="top-start">
                         <span class="button-warp" @click="handleButtonSelect(row,4)">
                             <Icon type="ios-trash" />
                         </span>
@@ -76,7 +76,7 @@
             <div class="modal-warp Schedule">
                 <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
                     <FormItem :label="$t('schedule_columns.scheduleType')">
-                        <Select v-model="formValidateType.type" placeholder="type" style="width: 350px">
+                        <Select v-model="formValidateType.type" placeholder="type" style="width: 340px">
                             <Option
                                     v-for="item in formValidateType.typeList"
                                     :value="item.name"
@@ -90,17 +90,17 @@
                             show-word-limit
                             maxlength="100"
                             :placeholder="$t('modal.placeholder')"
-                            style="width: 350px" />
+                            style="width: 340px" />
                     </FormItem>
                     <FormItem class="form-content" :label="$t('schedule_columns.startDate')">
                         <Row>
-                            <Col span="11">
+                            <Col span="10">
                                 <FormItem prop="date">
                                     <DatePicker type="date" placeholder="Select date"  :value="formValidate.startDate" @on-change="handleChangeStartDate"></DatePicker>
                                 </FormItem>
                             </Col>
-                            <Col span="1" style="text-align: center">-</Col>
-                            <Col span="11">
+                            <Col span="2" style="text-align: center">-</Col>
+                            <Col span="10">
                                 <FormItem prop="time">
                                     <TimePicker type="time" placeholder="Select time" v-model="formValidate.startTime"></TimePicker>
                                 </FormItem>
@@ -109,13 +109,13 @@
                     </FormItem>
                     <FormItem class="form-content" :label="$t('schedule_columns.endDate')">
                         <Row>
-                            <Col span="11">
+                            <Col span="10">
                                 <FormItem prop="date">
                                     <DatePicker type="date" placeholder="Select date" :value="formValidate.endDate" @on-change="handleChangeEndDate"></DatePicker>
                                 </FormItem>
                             </Col>
-                            <Col span="1" style="text-align: center">-</Col>
-                            <Col span="11">
+                            <Col span="2" style="text-align: center">-</Col>
+                            <Col span="10">
                                 <FormItem prop="time">
                                     <TimePicker type="time" placeholder="Select time" v-model="formValidate.endTime"></TimePicker>
                                 </FormItem>
@@ -123,7 +123,7 @@
                         </Row>
                     </FormItem>
                     <FormItem :label="$t('schedule_columns.flowIsGroup')" prop="suType">
-                        <Select v-model="formValidate.suType" style="width: 350px">
+                        <Select v-model="formValidate.suType" style="width: 340px">
                             <Option
                                     v-for="item in subTypeList"
                                     :value="item.id"

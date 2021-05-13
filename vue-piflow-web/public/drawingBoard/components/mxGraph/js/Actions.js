@@ -16,6 +16,10 @@ Actions.prototype.RunCells = function(includeEdges)
 {
 	alert("Please initialize the method (Actions.prototype.RunCells)");
 }
+Actions.prototype.RunCellsUp = function(includeEdges)
+{
+	alert("Please initialize the method (Actions.prototype.RunCellsUp)");
+}
 Actions.prototype.RunAll = function()
 {
 	alert("Please initialize the method (Actions.prototype.RunAll)");
@@ -251,6 +255,19 @@ Actions.prototype.init = function()
 	{
 		Actions.prototype.RunCells(evt != null && mxEvent.isShiftDown(evt));
 	}, null, null, 'Run');
+
+	//add right menu 'runCurrentStop'
+	this.addAction('runCurrentStop', function(evt)
+	{
+		Actions.prototype.RunCells(evt != null && mxEvent.isShiftDown(evt));
+	}, null, null, 'runCurrentStop');
+
+	//add right menu 'runCurrentAndBelowStops'
+	this.addAction('runCurrentAndBelowStops', function(evt)
+	{
+		Actions.prototype.RunCellsUp(evt != null && mxEvent.isShiftDown(evt));
+	}, null, null, 'runCurrentAndBelowStops');
+
 	//add right menu 'RunAll'
 	this.addAction('runAll', function() {
 		Actions.prototype.RunAll();

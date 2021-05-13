@@ -3,7 +3,7 @@
     <!-- 头部分 -->
     <div class="navbar">
       <div class="left">
-        <span>{{$t("sidebar.admin")}}</span>
+        <span>{{$t("sidebar.admin_schedule")}}</span>
       </div>
       <div class="right">
         <span class="button-warp" @click="handleModalSwitch">

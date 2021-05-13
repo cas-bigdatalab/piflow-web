@@ -454,7 +454,7 @@ export default {
       // }
       else {
         this.$axios
-            .post("/checkUserName", this.$qs.stringify({'userName':this.username}))
+            .post("/checkUserName", this.$qs.stringify({'username':this.username}))
             .then(res => {
               if (res.data.code == 200) {
                 this.registered();

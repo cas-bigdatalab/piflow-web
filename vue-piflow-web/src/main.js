@@ -42,10 +42,17 @@ import echarts from 'echarts'
 Vue.prototype.$echarts = echarts;
 
 import './assets/style/gloable.scss';
-// import 'font-awesome/css/font-awesome.css'
+import 'font-awesome/css/font-awesome.css'
 
 import event from './utils/event';
 Vue.prototype.$event = event;
+
+import 'xe-utils'
+import VXETable from 'vxe-table'
+// import 'vxe-table/lib/style.css'
+import './assets/style/my-vxe-table.scss';
+
+Vue.use(VXETable)
 
 //实例化 store
 import store from './store'; // this.$store.commit("setUser", user); 

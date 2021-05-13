@@ -46,22 +46,22 @@
       <!-- 操作按钮 -->
       <template slot-scope="{ row }" slot="action">
         <div>
-          <Tooltip content="enter" placement="top-start">
+          <Tooltip content="Enter" placement="top-start">
             <span class="button-warp" @click="handleButtonSelect(row,1)">
               <Icon type="ios-redo" />
             </span>
           </Tooltip>
-          <Tooltip content="run" placement="top-start">
+          <Tooltip content="Run" placement="top-start">
             <span class="button-warp" @click="handleButtonSelect(row,2)">
               <Icon type="ios-play" />
             </span>
           </Tooltip>
-          <Tooltip content="stop" placement="top-start">
+          <Tooltip content="Stop" placement="top-start">
             <span class="button-warp" @click="handleButtonSelect(row,3)">
               <Icon type="ios-square" />
             </span>
           </Tooltip>
-          <Tooltip content="delete" placement="top-start">
+          <Tooltip content="Delete" placement="top-start">
             <span class="button-warp" @click="handleButtonSelect(row,4)">
               <Icon type="ios-trash" />
             </span>
@@ -478,6 +478,9 @@ export default {
             this.$Modal.success({
               title: this.$t("tip.title"),
               content: `${row.name} ` + this.$t("tip.stop_success_content"),
+              onOk:()=>{
+                this.getTableData();
+              }
             });
           } else {
             this.$event.emit("looding", false);

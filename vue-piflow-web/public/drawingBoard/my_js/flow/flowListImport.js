@@ -1,6 +1,7 @@
 var flowTable;
 
 function initDatatableFlowImportPage(testTableId, url, searchInputId) {
+    console.log('========================')
     var table = "";
     layui.use('table', function () {
         table = layui.table;
@@ -36,7 +37,8 @@ function initDatatableFlowImportPage(testTableId, url, searchInputId) {
 function responseHandlerFlow(res) {
     if (res) {
         var actionsHtmlStr = '<div style="width: 100%; text-align: center" >'
-            + '<input type="button" class="btn-block" onclick="importFlow(\'' + res.id + '\')" value="Import Flow"/>'
+            // + '<input type="button" class="btn-block" onclick="importFlow(\'' + res.id + '\')" value="Import Flow"/>'
+            + '<button type="button" class="layui-btn layui-btn-xs" onclick="importFlow(\'' + res.id + '\')">Import Flow</button>'
             + '</div>';
         return actionsHtmlStr;
     }

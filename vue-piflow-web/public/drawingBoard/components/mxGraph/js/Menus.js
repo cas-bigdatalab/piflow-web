@@ -493,7 +493,7 @@ Menus.prototype.init = function()
 	this.put('edit', new Menu(mxUtils.bind(this, function(menu, parent)
 	{
 //------------------------------ Custom modification content 002 start ------------------------------
-		this.addMenuItems(menu, ['undo', 'redo', '-', 'cut', 'copy', 'paste', 'delete','run', '-', 'duplicate', '-',
+		this.addMenuItems(menu, ['undo', 'redo', '-', 'cut', 'copy', 'paste', 'delete','run','runCurrentStop','runCurrentAndBelowStops', '-', 'duplicate', '-',
 			'editData', 'editTooltip', 'editStyle', '-', 'edit', '-', 'editLink', 'openLink', '-',
 			'selectVertices', 'selectEdges', 'selectAll', 'runAll', 'selectNone', '-', 'lockUnlock']);
 //------------------------------ Custom modification content 002 end   ------------------------------
@@ -1080,7 +1080,7 @@ Menus.prototype.createPopupMenu = function(menu, cell, evt)
 			}
 			else if (cell.style && (cell.style).indexOf("text\;") === 0)
 			{
-				this.addMenuItems(menu, ['delete', '-'], null, evt);
+				this.addMenuItems(menu, ['delete','run','runCurrentStop','runCurrentAndBelowStops', '-'], null, evt);
 			}
 			else
 			{

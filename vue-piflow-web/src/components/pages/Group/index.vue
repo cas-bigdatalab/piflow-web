@@ -24,17 +24,17 @@
     <Table border :columns="columns" :data="tableData">
       <template slot-scope="{ row }" slot="action">
         <div>
-          <Tooltip content="enter" placement="top-start">
+          <Tooltip content="Enter" placement="top-start">
             <span class="button-warp" @click="handleButtonSelect(row,1)">
               <Icon type="ios-redo" />
             </span>
           </Tooltip>
-          <Tooltip content="edit" placement="top-start">
+          <Tooltip content="Edit" placement="top-start">
              <span class="button-warp" @click="handleButtonSelect(row,2)">
                <Icon type="ios-create-outline" />
              </span>
           </Tooltip>
-          <Tooltip content="run" placement="top-start">
+          <Tooltip content="Run" placement="top-start">
             <span class="button-warp" @click="handleButtonSelect(row,3)">
               <Icon type="ios-play" />
             </span>
@@ -43,12 +43,12 @@
           <!-- <span class="button-warp" @click="handleButtonSelect(row,4)">
             <Icon type="ios-bug" />
           </span>-->
-          <Tooltip content="delete" placement="top-start">
+          <Tooltip content="Delete" placement="top-start">
             <span class="button-warp" @click="handleButtonSelect(row,5)">
               <Icon type="ios-trash" />
             </span>
           </Tooltip>
-          <Tooltip content="Save template" placement="top-start">
+          <Tooltip content="Save Template" placement="top-start">
             <span class="button-warp" @click="handleButtonSelect(row,6)">
               <Icon type="md-checkbox-outline" />
             </span>

@@ -1,6 +1,6 @@
 // Extends EditorUi to update I/O action states based on availability of backend
 
-var parentsId, xmlDate, maxStopPageId, isExample, consumedFlag, timerPath, statusgroup, removegroupPaths;
+var parentsId, xmlDate, maxStopPageId, isExample, consumedFlag, timerPath, statusgroup, removegroupPaths, stopsId;
 
 var index = true;
 var flag = 0;
@@ -123,7 +123,7 @@ function imageAjax() {
                 var image = document.createElement("img");
                 image.className = "imageimg"
                 image.style = "width:100%;height:100%";
-                image.src = item.imageUrl;
+                image.src = web_header_prefix + (item.imageUrl.replace("/piflow-web", ""));
 
                 div.appendChild(image);
                 nowimage.appendChild(div);
@@ -183,7 +183,7 @@ function updateMxGraphCellImage(cellEditor, selState, newValue, fn) {
     });
     layer.open({
         type: 1,
-        title: '',
+        title: '<span style="color: #269252;">已有现存可选择更改的图片</span>',
         shadeClose: true,
         shade: 0.3,
         closeBtn: 1,
@@ -225,6 +225,9 @@ function initFlowGraph() {
     EditorUi.prototype.saveGraphData = saveXml;
     EditorUi.prototype.customUpdeteImg = updateMxGraphCellImage;
     Menus.prototype.customRightMenu = ['runAll'];
+    Menus.prototype.customCellRightMenu = ['runCurrentStop', 'runCurrentAndBelowStops'];
+    Actions.prototype.RunCells = RunFlowOrFlowCells;
+    Actions.prototype.RunCellsUp = RunFlowOrFlowCellsUp;
     Format.hideSidebar(false, true);
     //EditorUi.prototype.formatWidth = 0;
     $("#right-group-wrap")[0].style.display = "block";
@@ -391,7 +394,7 @@ function flowMxEventClickFunc(cell, consumedFlag) {
         $(".triggerSlider i").removeClass("fa fa-angle-left fa-2x ").toggleClass("fa fa-angle-right fa-2x");
         index = false
     }
-    console.log(cell);
+    // console.log(cell);
     if (!consumedFlag) {
         $("#flow_info_inc_id").show();
         // info
@@ -537,6 +540,7 @@ function queryStopsProperty(stopPageId, loadId) {
             $('#process_property_inc_loading').hide();
             if (200 === dataMap.code) {
                 var stopsVoData = dataMap.stopsVo;
+                stopsId = stopsVoData.id;
                 if (stopsVoData) {
                     //Remove the timer if successful
                     window.clearTimeout(timerPath);
@@ -632,7 +636,7 @@ function queryStopsProperty(stopPageId, loadId) {
                                 property_value_obj.setAttribute('class', 'form-control');
                                 property_value_obj.setAttribute('id', '' + propertyVo_id + '');
                                 property_value_obj.setAttribute('name', '' + propertyVo_name + '');
-                                property_value_obj.setAttribute('onclick', 'openUpdateStopsProperty(this,false,"'+ propertyVo.language +'" )');
+                                property_value_obj.setAttribute('onclick', 'openUpdateStopsProperty(this,false,'+ propertyVo.language +','+propertyVo.isLocked+' )');
                                 property_value_obj.setAttribute('locked', propertyVo_isLocked);
                                 property_value_obj.setAttribute('data', propertyVo_customValue);
                                 property_value_obj.setAttribute('readonly', 'readonly');
@@ -887,8 +891,8 @@ function queryStopsProperty(stopPageId, loadId) {
 function openDatasourceList() {
     var window_width = $(window).width();//Get browser window width
     var window_height = $(window).height();//Get browser window height
-    // openLayerTypeIframeWindowLoadUrl("/page/dataSource/data_source_list.html",(window_width - 100),(window_height - 100),DatasourceList)
-    // openLayerTypeIframeWindowLoadUrl("/page/dataSource/data_source_list.html", (window_width - 100), (window_height - 100),'Data Source')
+    // openLayerTypeIframeWindowLoadUrl("/page/datasource/data_source_list.html",(window_width - 100),(window_height - 100),DatasourceList)
+    // openLayerTypeIframeWindowLoadUrl("/page/datasource/data_source_list.html", (window_width - 100), (window_height - 100),'Data Source')
 
     ajaxLoad("", "/page/dataSource/data_source_list.html", function (data) {
         var open_window_width = (window_width > 300 ? 1200 : window_width);
@@ -1072,6 +1076,7 @@ function getStopsPortNew(paths) {
                 showHtml.find('#portInfo1Copy').attr('id', 'portInfo');
                 showHtml.find('#sourceTitle1Copy').attr('id', 'sourceTitle');
                 showHtml.find('#sourceTitleStr1Copy').attr('id', 'sourceTitleStr');
+                showHtml.find('#sourceTitleName').attr('id', 'sourceTitleName');
                 showHtml.find('#sourceTitleCheckbox1Copy').attr('id', 'sourceTitleCheckbox');
                 showHtml.find('#sourceTitleBtn1Copy').attr('id', 'sourceTitleBtn');
                 showHtml.find('#sourceCrtPortId1Copy').attr('id', 'sourceCrtPortId');
@@ -1081,6 +1086,7 @@ function getStopsPortNew(paths) {
                 showHtml.find('#sourceRouteFilterSelect1Copy').attr('id', 'sourceRouteFilterSelect');
                 showHtml.find('#targetTitle1Copy').attr('id', 'targetTitle');
                 showHtml.find('#targetTitleStr1Copy').attr('id', 'targetTitleStr');
+                showHtml.find('#targetTitleName').attr('id', 'targetTitleName');
                 showHtml.find('#targetTitleCheckbox1Copy').attr('id', 'targetTitleCheckbox');
                 showHtml.find('#targetTitleBtn1Copy').attr('id', 'targetTitleBtn');
                 showHtml.find('#targetCrtPortId1Copy').attr('id', 'targetCrtPortId');
@@ -1106,6 +1112,13 @@ function getStopsPortNew(paths) {
                     var sourcePortUsageMap = dataMap.sourcePortUsageMap;
                     if (sourcePortUsageMap) {
                         showHtml.find('#sourceTitleCheckbox').html("");
+                        var title = 'port：';
+                        if (Object.keys(sourcePortUsageMap).length === 0) {
+                            // return false // 如果为空,返回false
+                        }else {
+                            showHtml.find('#sourceTitleCheckbox').append(title);
+                        }
+
                         for (portName in sourcePortUsageMap) {
                             var portNameVal = sourcePortUsageMap[portName];
                             var portCheckDiv = '<div id="' + portName + 'Checkbox" class="addCheckbox">'
@@ -1133,7 +1146,8 @@ function getStopsPortNew(paths) {
                         }
                     }
                     showHtml.find('#sourceTypeDiv').html(sourceTypeStr);
-                    showHtml.find('#sourceTitleStr').html('From：' + dataMap.sourceName);
+                    showHtml.find('#sourceTitleStr').html('From：');
+                    showHtml.find('#sourceTitleName').html('stopName：' + dataMap.sourceName);
                     // Gets the detailed use of the target port
                     var targetPortUsageMap = dataMap.targetPortUsageMap;
                     if (targetPortUsageMap) {
@@ -1165,17 +1179,19 @@ function getStopsPortNew(paths) {
                         }
                     }
                     showHtml.find('#targetTypeDiv').html(targetTypeStr);
-                    showHtml.find('#targetTitleStr').html('To：' + dataMap.targetName);
+                    showHtml.find('#targetTitleStr').html('To：');
+                    showHtml.find('#targetTitleName').html('stopName：' + dataMap.targetName);
+
                     if ("Default" === sourceTypeStr && "Default" === targetTypeStr) {
                     } else if ("None" === sourceTypeStr || "None" === targetTypeStr) {
                     } else {
                         layer.open({
                             type: 1,
-                            title: '<span style="color: #269252;">Set Path CreatePort Window</span>',
+                            title: '<span style="color: #269252;">CreatePort</span>',
                             shadeClose: false,
                             closeBtn: 0,
                             shift: 7,
-                            area: ['580px', '520px'], //Width height
+                            area: ['580px', ''], //Width height
                             skin: 'layui-layer-rim', //Add borders
                             content: showHtml.html()
                         });
@@ -1192,23 +1208,26 @@ function getStopsPortNew(paths) {
 }
 
 //create any port
-function crtAnyPort(crtPortInputId, isSource) {
+function crtAnyPort(crtPortInputId, isSource,type) {
     var crtProtInput = $('#' + crtPortInputId);
     var portNameVal = crtProtInput.val();
     if (portNameVal && '' !== portNameVal) {
-        if (!document.getElementById(portNameVal)) {
-            var obj = '<div style="display: block;margin: 5px 0; border-bottom: 1px dashed rgb(204, 204, 204); padding: 2px 4px" class="addCheckbox" id="jCheckbox">'
-                + '<input style="margin-right:5px" type="checkbox" checked = "checked" class="addCheckbox" id="' + portNameVal + '" name="' + portNameVal + '" value="' + portNameVal + '">'
-                + '<span class="' + portNameVal + '">' + portNameVal + '</span>'
-                + '</div>';
-            if (isSource) {
-                $('#sourceTitleCheckbox').append(obj);
-            } else {
-                $('#targetTitleCheckbox').append(obj);
-            }
+        // if (!document.getElementById(portNameVal)) {
+        if ($('#'+type).find('#'+portNameVal).length===0) {
+            // var obj = '<div style="display: block;margin: 5px 0; border-bottom: 1px dashed rgb(204, 204, 204); padding: 2px 4px" class="addCheckbox" id="jCheckbox">'
+            //     + '<input style="margin-right:5px" type="checkbox" checked = "checked" class="addCheckbox" id="' + portNameVal + '" name="' + portNameVal + '" value="' + portNameVal + '">'
+            //     + '<span class="' + portNameVal + '">' + portNameVal + '</span>'
+            //     + '</div>';
+            // if (isSource) {
+            //     $('#sourceTitleCheckbox').append(obj);
+            // } else {
+            //     $('#targetTitleCheckbox').append(obj);
+            // }
             $('.' + portNameVal).text(portNameVal);
+            return true;
         } else {
             layer.msg("Port name occupied!!", {icon: 2, shade: 0, time: 2000});
+            return false;
         }
     } else {
         //alert("The port name cannot be empty");
@@ -1250,22 +1269,36 @@ function checkChoosePort() {
                     sourceEffCheckbox[sourceEffCheckbox.length] = $(this);
                 }
             });
+            var sourceProtInput = $('#sourceCrtPortId');
+            var sourceNameVal = sourceProtInput.val();
+
             if (sourceEffCheckbox.length > 1) {
                 layer.msg("'sourcePort'can only choose one", {icon: 2, shade: 0, time: 2000});
                 return false;
             }
-            if (sourceEffCheckbox < 1) {
+            // if (sourceEffCheckbox < 1) {
+            if (sourceEffCheckbox.length < 1 && !sourceNameVal) {
                 layer.msg("Please select'sourcePort'", {icon: 2, shade: 0, time: 2000});
                 return false;
             }
-            for (var i = 0; i < sourceEffCheckbox.length; i++) {
-                var sourcecheckBoxEff = sourceEffCheckbox[i];
-                if ('' === sourcePortVal) {
-                    sourcePortVal = sourcecheckBoxEff.val();
-                } else {
-                    sourcePortVal = sourcePortVal + "," + sourcecheckBoxEff.val();
+
+            if (!!sourceNameVal){
+                let whetherThrough = crtAnyPort("sourceCrtPortId",true,'sourceTitle');
+                if (whetherThrough){
+                    sourcePortVal = sourceNameVal;
+                }else
+                    return ;
+            }else {
+                for (var i = 0; i < sourceEffCheckbox.length; i++) {
+                    var sourcecheckBoxEff = sourceEffCheckbox[i];
+                    if ('' === sourcePortVal) {
+                        sourcePortVal = sourcecheckBoxEff.val();
+                    } else {
+                        sourcePortVal = sourcePortVal + "," + sourcecheckBoxEff.val();
+                    }
                 }
             }
+
         }
     } else {
         layer.msg("Page error, please check!", {icon: 2, shade: 0, time: 2000});
@@ -1285,22 +1318,36 @@ function checkChoosePort() {
                     targetEffCheckbox[targetEffCheckbox.length] = $(this);
                 }
             });
+            let targetProtInput = $('#targetCrtPortId');
+            let targetNameVal = targetProtInput.val();
+
             if (targetEffCheckbox.length > 1) {
                 layer.msg("'targetPort'can only choose one", {icon: 2, shade: 0, time: 2000});
                 return false;
             }
-            if (targetEffCheckbox.length < 1) {
+            // if (targetEffCheckbox.length < 1) {
+            if (targetEffCheckbox.length < 1 && !targetNameVal) {
                 layer.msg("Please select'targetPort'", {icon: 2, shade: 0, time: 2000});
                 return false;
             }
-            for (var i = 0; i < targetEffCheckbox.length; i++) {
-                var targetcheckBoxEff = targetEffCheckbox[i];
-                if ('' === targetPortVal) {
-                    targetPortVal = targetcheckBoxEff.val();
-                } else {
-                    targetPortVal = targetPortVal + "," + targetcheckBoxEff.val();
+
+            if (!!targetNameVal){
+                let whetherThrough =  crtAnyPort("targetCrtPortId",false,'targetTitle');
+                if (whetherThrough){
+                    targetPortVal = targetNameVal;
+                }else
+                    return ;
+            }else {
+                for (var i = 0; i < targetEffCheckbox.length; i++) {
+                    var targetcheckBoxEff = targetEffCheckbox[i];
+                    if ('' === targetPortVal) {
+                        targetPortVal = targetcheckBoxEff.val();
+                    } else {
+                        targetPortVal = targetPortVal + "," + targetcheckBoxEff.val();
+                    }
                 }
             }
+
         }
     } else {
         layer.msg("Page error, please check!", {icon: 2, shade: 0, time: 2000});
@@ -1341,7 +1388,6 @@ function choosePortNew() {
     if (pathsCells.length > 1) {
         graphGlobal.removeCells(pathsCells);
         layer.msg("Page error, please check!", {icon: 2, shade: 0, time: 2000}, function () {
-            layer.closeAll();
             layer.closeAll();
         });
         return false;
@@ -1581,7 +1627,10 @@ function updateStopsName() {
 }
 
 //update stops property
-function openUpdateStopsProperty(e, isCustomized, language) {
+function openUpdateStopsProperty(e, isCustomized, language, isLocked) {
+    if (isLocked)
+        return;
+
     var stopOpenTemplateClone = $("#stopOpenTemplate").clone();
     stopOpenTemplateClone.find("#stopValue").attr("id", "stopAttributesValue");
     stopOpenTemplateClone.find("#buttonStop").attr("id", "stopAttributesValueBtn");
@@ -1606,7 +1655,7 @@ function openUpdateStopsProperty(e, isCustomized, language) {
     var p = $(e).offset();
     // var openWindowCoordinate = [(p.top + 34) + 'px', (document.body.clientWidth - 300) + 'px'];
     var openWindowCoordinate = [(p.top + 34) + 'px', 77 + 'vw'];
-    console.log(openWindowCoordinate);
+    // console.log(openWindowCoordinate);
     // layer.open({
     //     type: 1,
     //     title: name,
@@ -2171,3 +2220,41 @@ function runFlow(runMode) {
     });
 }
 
+// run cells  runFollowUp
+function RunFlowOrFlowCellsUp(includeEdges) {
+    StopsComponentIsNeeedSourceData(stopsId, true)
+}
+
+var StopsComponentIsNeeedSourceData = function(id, isRunFollowUp){
+    // 判断页面是否加载完毕
+    if(document.readyState === 'complete') {
+        window.parent['StopsComponentIsNeeedSourceData']({id: id, isRunFollowUp: isRunFollowUp});
+    }
+
+}
+
+window.addEventListener("message",function(event){
+    window.parent.postMessage(true);
+
+    var data = event.data;
+    //以下内容为处理业务和调用当前页面的函数方法
+    if(data.pageURl){
+        layer.msg(data.pageMsg, {icon: 1, shade: 0, time: 2000}, function () {
+            //Jump to the monitor page after starting successfully
+            new_window_open("/page/process/mxGraph/index.html?drawingBoardType=PROCESS&processType=PROCESS&load=" + data.pageURl);
+        });
+        window.parent.postMessage(false);
+
+    }else {
+        layer.msg("Startup failure：" + data.pageMsg, {icon: 2, shade: 0, time: 2000}, function () {
+        });
+        window.parent.postMessage(false);
+
+    }
+});
+
+// run cells current
+function RunFlowOrFlowCells(includeEdges) {
+    StopsComponentIsNeeedSourceData(stopsId, false)
+
+}

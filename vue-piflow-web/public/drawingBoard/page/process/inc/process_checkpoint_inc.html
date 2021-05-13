@@ -33,7 +33,7 @@
     function initProcessCheckpointIncPageData() {
         ajaxRequest({
             cache: true,//Keep cached data
-            type: "get",//Request for get
+            type: "POST",//Request for get
             url: "/process/getCheckpointData",//This is the name of the file where I receive data in the background.
             //data:$('#loginForm').serialize(),//Serialize the form
             data: {

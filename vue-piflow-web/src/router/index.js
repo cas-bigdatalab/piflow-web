@@ -77,9 +77,19 @@ export default new Router({
               component: () => import('../components/pages/SparkJar')
             },
             {
+              path: '/testData',
+              name: 'TestData',
+              component: () => import('../components/pages/TestData')
+            },
+            {
               path: '/admin',
               name: 'admin',
               component: () => import('../components/pages/Admin')
+            },
+            {
+              path: '/stopsComponent',
+              name: 'stopsComponent',
+              component: () => import('../components/pages/StopsComponent')
             }
           ]
         },

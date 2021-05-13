@@ -115,6 +115,12 @@ export default {
           name: "SparkJar"
         },
         {
+          btnName: this.$t("sidebar.testData"),
+          icoName: "md-list",
+          router: "TestData",
+          name: "TestData"
+        },
+        {
           btnName: this.$t("sidebar.example"),
           icoName: "md-cube",
           children: [
@@ -149,8 +155,13 @@ export default {
             {
               router: "/admin",
               icoName: "ios-paper",
-              btnName: "Schedule",
+              btnName:  this.$t("sidebar.admin_schedule"),
               name: "admin",
+            },{
+              router: "/stopsComponent",
+              icoName: "ios-paper",
+              btnName: this.$t("sidebar.stopsComponent"),
+              name: "stopsComponent",
             }
           ]
         }

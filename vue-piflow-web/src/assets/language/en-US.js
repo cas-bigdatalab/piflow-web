@@ -11,8 +11,11 @@ module.exports = {
         schedule: "Schedule",
         stopHub: "StopHub",
         sparkJar: "SparkJar",
+        testData: "TestData",
         example: "Example",
         admin: "Admin",
+        admin_schedule: 'Schedule',
+        stopsComponent: 'StopsComponent'
     },
     page: {
         prev_text: "Previous",
@@ -62,6 +65,7 @@ module.exports = {
         confirm: "Confirm",
         cancel_text: "Cancel",
         delete_content: "Are you sure to delete",
+        cancel_content: "Are you sure you want to cancel this creation"
     },
     flow_columns: {
         create_title: "Create Flow",
@@ -111,7 +115,8 @@ module.exports = {
         description: "Description",
         CreateTime: "CreateTime",
         dataSourceType: "DataSourceType",
-        action: "Actions"
+        action: "Actions",
+        isLinked: "Do you synchronize the changes? Related components are："
     },
     schedule_columns: {
         create_title: "Create Schedule",
@@ -137,6 +142,20 @@ module.exports = {
         action: "Actions",
         jarDescription: "Click or drag jar here to upload"
     },
+    testData_columns:{
+        create_title: "Create TestData",
+        update_title: "Update TestData",
+        testData_name: "TestDataName",
+        name: "Name",
+        description: "Description",
+        methed: "Methed",
+        header: "Header",
+        delimiter: "Delimiter",
+        schema: "Schema",
+        CreateTime: "CreateTime",
+        action: "Actions",
+        fileDescription: "Click or drag file here to upload"
+    },
     admin_columns: {
         create_title: "Create Schedule",
         update_title: "Update Schedule",
@@ -149,6 +168,10 @@ module.exports = {
         status: "Status",
         createTime: "CreateTime",
         action: "Actions"
+    },
+    stopsComponent_columns: {
+        name: "Name",
+        description: "Description",
     },
     homeInfo: {
         introduction_title: "Introduction",
