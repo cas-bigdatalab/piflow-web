@@ -221,7 +221,6 @@ function updateMxGraphCellImage(cellEditor, selState, newValue, fn) {
 
 //init mxGraph
 function initFlowGraph() {
-    Format.prototype.isSaveGraphData = false;
     Actions.prototype.RunAll = runFlow;
     EditorUi.prototype.saveGraphData = saveXml;
     EditorUi.prototype.customUpdeteImg = updateMxGraphCellImage;
@@ -637,7 +636,7 @@ function queryStopsProperty(stopPageId, loadId) {
                                 property_value_obj.setAttribute('class', 'form-control');
                                 property_value_obj.setAttribute('id', '' + propertyVo_id + '');
                                 property_value_obj.setAttribute('name', '' + propertyVo_name + '');
-                                property_value_obj.setAttribute('onclick', 'openUpdateStopsProperty(this,false,'+ propertyVo.language +','+propertyVo.isLocked+' )');
+                                property_value_obj.setAttribute('onclick', 'openUpdateStopsProperty(this,false,'+ JSON.stringify(propertyVo.language) +','+propertyVo.isLocked+' )');
                                 property_value_obj.setAttribute('locked', propertyVo_isLocked);
                                 property_value_obj.setAttribute('data', propertyVo_customValue);
                                 property_value_obj.setAttribute('readonly', 'readonly');

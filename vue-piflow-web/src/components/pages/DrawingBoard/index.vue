@@ -35,8 +35,8 @@
 
         <Tabs type="card"
               :value="tabName"
-              @on-click="tabClick"	>
-          <TabPane v-for="tab in queryJson.ports" :key="tab" :name="tab" :label="'Port：' + tab">
+              @on-click="tabClick">
+          <TabPane v-for="(tab, i) in queryJson.ports" :key="tab+i" :name="tab+i" :label="'Port：' + tab">
             <!-- 表格部分 -->
             <vxe-table
                 border
@@ -325,7 +325,7 @@ export default {
               isNeedSource = data.isNeedSource;
               inputJson.ports = data.ports;
               this.queryJson = inputJson;
-              this.tabName = this.queryJson.ports[0];
+              this.tabName = this.queryJson.ports[0]+0;
               if (data.isNeedSource){
 
                 this.getTableData();
@@ -601,9 +601,14 @@ export default {
 
     //  选中
     selectChangeEvent ({ row }) {
+      let obj = {}, selectPort = ''
+      this.queryJson.ports.forEach((item,i)=>{
+        if (this.tabName === item+i){
+          selectPort = item;
+        }
+      })
 
-      let obj = {};
-      obj.ports= this.tabName;
+      obj.ports= selectPort;
       obj.testDataId= row.id;
 
       if (this.list.length=== 0){
@@ -615,7 +620,6 @@ export default {
           }
         })
         this.list.push(obj);
-
       }
 
     },
