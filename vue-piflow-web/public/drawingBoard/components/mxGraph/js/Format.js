@@ -23,7 +23,6 @@ Format.hideSidebar = function(left, right)
     }
 };
 Format.prototype.isShowTextCell = false;
-Format.prototype.isSaveGraphData = true;
 //------------------------------ Custom modification content 001 end   ------------------------------
 
 /**

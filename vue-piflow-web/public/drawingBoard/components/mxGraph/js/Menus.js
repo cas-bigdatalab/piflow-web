@@ -789,9 +789,9 @@ Menus.prototype.edgeStyleChange = function(menu, label, keys, values, sprite, pa
 			graph.getModel().endUpdate();
 		}
 //------------------------------ Custom modification content 003 start ------------------------------
-		if (Format.prototype.isSaveGraphData) {
+		setTimeout(()=>{
 			EditorUi.prototype.saveGraphData(null,"MOVED");
-		}
+		},300)
 //------------------------------ Custom modification content 003 end   ------------------------------
 	}), parent, sprite);
 };
