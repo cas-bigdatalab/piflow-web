@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import "echarts-liquidfill/src/liquidFill.js"; //在这里引入
+import "echarts-liquidfill/src/liquidFill.js";
 export default {
   name: "chart",
   data: () => ({
@@ -22,7 +22,6 @@ export default {
       deep:true,
     },
   },
-  // 使用 props 传参
   //   props: ["option", "theme"],
   //   watch: {
   //     option(obj) {
@@ -40,13 +39,11 @@ export default {
   },
 
   methods: {
-    // 使用 function 传参
     initChart() {
       //防止错误阻断，进行参数校验
       // let theme = theme ? theme : {};
       //   this.ele = ;
 
-      // 初始化
       let echarts = this.$echarts;
       this.myEcharts = echarts.init(this.$refs.chart);
 
@@ -292,6 +289,5 @@ export default {
 .chart {
   height: 100%;
   width: 100%;
-  // margin: 0px 15px;
 }
 </style>

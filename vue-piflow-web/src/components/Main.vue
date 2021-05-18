@@ -2,23 +2,18 @@
 <template>
   <div class="main">
     <Header :width="width"></Header>
-    <!-- <div class="warp" :style="style"> -->
     <router-view></router-view>
-    <!-- </div> -->
     <Footer />
     <transition name="show">
-      <div class="fullScreen" v-if="looding">
+      <div class="fullScreen" v-if="loading">
         <div style="margin-top: 15%;">
-          <p>
-            <img src="../assets/img/looding.gif" />
-          </p>
+          <p><img src="../assets/img/loading.gif" /></p>
         </div>
       </div>
     </transition>
   </div>
 </template>
 <script>
-import size from "../utils/winSize";
 import Header from "./compon/Header";
 import Footer from "./compon/Footer";
 export default {
@@ -29,13 +24,13 @@ export default {
   },
   data() {
     return {
-      looding: false,
+      loading: false,
       width: "250px"
     };
   },
   created() {
-    this.$event.on("looding", val => {
-      this.looding = val;
+    this.$event.on("loading", val => {
+      this.loading = val;
     });
   }
 };

@@ -85,41 +85,6 @@ export default {
         }
       }
       this.chart.setOption({
-        // tooltip: {
-        //   trigger: 'item',
-        //   formatter: '{a} <br/>{b}: {c} GB '
-        // },
-        // legend: {
-        //   left: 'center',
-        //   bottom: '10',
-        //   data: legendData
-        // },
-        // series: [
-        //   {
-        //     name: 'WEEKLY WRITE ARTICLES',
-        //     type: 'pie',
-        //     roseType: 'radius',
-        //     // radius: [15, 95],
-        //     radius: [0, '40%'],
-        //     center: ['50%', '38%'],
-        //     data: [
-        //       { value: 320, name: 'Industries' },
-        //       { value: 40, name: 'Technology' }
-        //     ],
-        //     animationEasing: 'cubicInOut',
-        //     animationDuration: 2600
-        //   },
-        //   {
-        //     name: 'Memory：',
-        //     type: 'pie',
-        //     radius: ['60%', '70%'],
-        //     center: ['50%', '38%'],
-        //     data: TotalMemory,
-        //     animationEasing: 'cubicInOut',
-        //     animationDuration: 2600
-        //   }
-        // ]
-
         tooltip: {
           trigger: 'item',
           formatter: '{a} <br/>{b}: {c} GB '

@@ -22,7 +22,8 @@ module.exports = {
         next_text: "Next"
     },
     index: {
-        cpu: "cores"
+        cpu: "cores",
+        loading: "Loading..."
     },
     tip: {
         title: "PiFlow system tips",

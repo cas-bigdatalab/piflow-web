@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import "echarts-liquidfill/src/liquidFill.js"; //在这里引入
+import "echarts-liquidfill/src/liquidFill.js";
 export default {
   name: "chart",
   data: () => ({
@@ -27,7 +27,6 @@ export default {
   },
 
   methods: {
-    // 使用 function 传参
     initChart() {
       let echarts = this.$echarts;
       this.myEcharts = echarts.init(this.$refs.chart);
@@ -125,7 +124,6 @@ export default {
         },
         series: [
           {
-            // name: "业务警种",
             type: "pie",
             radius: "60%",
             label: {
@@ -204,6 +202,5 @@ export default {
 .chart {
   height: 100%;
   width: 100%;
-  // margin: 0px 15px;
 }
 </style>

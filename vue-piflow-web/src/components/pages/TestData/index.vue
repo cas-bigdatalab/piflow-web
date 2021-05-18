@@ -1,6 +1,6 @@
 <template>
   <section>
-    <!-- 头部分 -->
+    <!-- header -->
     <div class="navbar">
       <div class="left">
         <span>{{$t("sidebar.testData")}}</span>
@@ -11,38 +11,25 @@
         </span>
       </div>
     </div>
-    <!-- 检索部分 -->
+    <!-- search -->
     <div class="input">
       <Input
         suffix="ios-search"
         v-model="param"
         :placeholder="$t('modal.placeholder')"
-        style="width: 300px"
-      />
+        style="width: 300px"/>
     </div>
-    <!-- 表格部分 -->
+    <!-- Table button -->
     <Table border :columns="columns" :data="tableData">
       <template slot-scope="{ row }" slot="action">
-        <div>
-          <Tooltip content="Edit Schema" placement="top-start">
-            <span class="button-warp" @click="handleButtonSelect(row,1)">
-              <Icon type="ios-brush-outline" />
+        <Tooltip v-for="(item, index) in promptContent" :key="index" :content="item.content" placement="top-start">
+            <span class="button-warp" @click="handleButtonSelect(row,index+1)">
+              <Icon :type="item.icon" />
             </span>
-          </Tooltip>
-          <Tooltip content="Edit SchemaValue" placement="top-start">
-             <span class="button-warp" @click="handleButtonSelect(row,2)">
-               <Icon type="ios-create-outline" />
-             </span>
-          </Tooltip>
-          <Tooltip content="Delete" placement="top-start">
-            <span class="button-warp" @click="handleButtonSelect(row,3)">
-              <Icon type="ios-trash" />
-            </span>
-          </Tooltip>
-        </div>
+        </Tooltip>
       </template>
     </Table>
-    <!-- 分页部分 -->
+    <!-- paging -->
     <div class="page">
       <Page
         :prev-text="$t('page.prev_text')"
@@ -52,10 +39,9 @@
         :total="total"
         show-sizer
         @on-change="onPageChange"
-        @on-page-size-change="onPageSizeChange"
-      />
+        @on-page-size-change="onPageSizeChange"/>
     </div>
-    <!-- 弹窗添加/更新部分 -->
+    <!-- add / update -->
     <Modal
       v-model="isOpen"
       :mask-closable="false"
@@ -69,7 +55,7 @@
             <Input
                 v-model="formCustom.name"
                 :placeholder="$t('modal.placeholder')"
-                style="width: 350px" />
+                style="width: 350px"/>
           </FormItem>
           <FormItem :label="$t('testData_columns.description')">
             <Input
@@ -77,15 +63,13 @@
                 type="textarea"
                 :rows="4"
                 :placeholder="$t('modal.placeholder')"
-                style="width: 350px"
-            />
+                style="width: 350px"/>
           </FormItem>
           <FormItem :label="$t('testData_columns.methed')">
             <Select v-model="Methed" style="width:350px">
               <Option value="Manual">Manual</Option>
               <Option value="csvImport">Csv Import</Option>
             </Select>
-
           </FormItem>
         </Form>
       </div>
@@ -104,8 +88,7 @@
                   type="textarea"
                   :rows="4"
                   :placeholder="$t('modal.placeholder')"
-                  style="width: 350px"
-              />
+                  style="width: 350px"/>
             </FormItem>
           </Form>
         </div>
@@ -126,13 +109,11 @@
 
               <Icon
                   @click="handleRemove(m,schemaVoList.length===1)"
-                  type="ios-remove-circle-outline"
-              />
+                  type="ios-remove-circle-outline"/>
               <Icon
                   v-if="m==(schemaVoList.length-1)"
                   @click="handleAdd"
-                  type="ios-add-circle-outline"
-              />
+                  type="ios-add-circle-outline"/>
             </li>
           </ul>
         </div>
@@ -186,16 +167,6 @@
           Upload file: {{ file.name }}
         </div>
 
-
-
-
-
-
-
-
-
-
-
       </div>
       <div slot="footer">
         <div v-if="whatStage === 'init'">
@@ -218,9 +189,6 @@
           <Button type="primary" @click="saveSchemaValues">完成</Button>
         </div>
 
-<!--        <div v-if="id && whatStage === 'csvImport'">-->
-<!--          <Button type="primary">完成111</Button>-->
-<!--        </div>-->
         <div v-if="whatStage === 'csvImport'">
           <Button type="primary" @click="delInit">上一步</Button>
           <Button type="primary" @click="uploadSuccess">完成</Button>
@@ -233,7 +201,6 @@
 <script>
 import editableForm from './modules/EditableForm';
 import Cookies from "js-cookie";
-
 export default {
   name: "TestData",
   components: {
@@ -244,7 +211,6 @@ export default {
       if (!value) {
         return callback(new Error('TestDataName cannot be empty'));
       }
-
       this.$axios
           .post("/testData/checkTestDataName", this.$qs.stringify({testDataName:value}))
           .then(res => {
@@ -288,7 +254,6 @@ export default {
         { type: 'checkbox', width: 40 },
       ],
 
-
       formCustom:{
         name: '',
         description: ''
@@ -310,7 +275,6 @@ export default {
           { validator: validateName, trigger: 'blur' }
         ]
       },
-
 
       typeList: [
         {
@@ -356,6 +320,19 @@ export default {
       ],
 
       saveType: '',
+
+      promptContent: [
+        {
+          content: 'Edit Schema',
+          icon: 'ios-brush-outline'
+        },{
+          content: 'Edit SchemaValue',
+          icon: 'ios-create-outline'
+        },{
+          content: 'Delete',
+          icon: 'ios-trash'
+        }
+      ]
 
     };
   },
@@ -409,7 +386,7 @@ export default {
     this.token = `Bearer ${token}`;
   },
   methods: {
-    // 重置
+    // Reset
     handleReset() {
       this.page = 1;
       this.limit = 10;
@@ -436,6 +413,7 @@ export default {
       this.Methed= 'Manual';
       this.$refs.formCustom.resetFields();
     },
+
     handleButtonSelect(row, key) {
       switch (key) {
         case 1:
@@ -447,11 +425,12 @@ export default {
         case 3:
           this.handleDeleteRow(row);
           break;
+
         default:
           break;
       }
     },
-    // 取消创建
+    // cancel
     handleCancelData(){
       if (this.id && this.saveType === 'edit'){
 
@@ -463,7 +442,7 @@ export default {
         this.$axios
             .post("/testData/delTestData", this.$qs.stringify(data))
             .then(res => {
-              if (res.data.code == 200) {
+              if (res.data.code === 200) {
                 this.handleReset();
                 this.getTableData();
               }
@@ -472,10 +451,8 @@ export default {
               console.log(error);
             });
       }
-
-      // this.uploadError();
     },
-    //删除某一行数据
+    //Delete
     handleDeleteRow(row) {
       this.$Modal.confirm({
         title: this.$t("tip.title"),
@@ -489,7 +466,7 @@ export default {
           this.$axios
             .post("/testData/delTestData", this.$qs.stringify(data))
             .then(res => {
-              if (res.data.code == 200) {
+              if (res.data.code === 200) {
                 this.handleReset();
                 this.getTableData();
                 this.$Modal.success({
@@ -511,13 +488,10 @@ export default {
                 duration: 3
               });
             });
-        },
-        onCancel: () => {
-          // this.$Message.info('Clicked cancel');
         }
-      });
+      })
     },
-    //获取表格数据
+
     getTableData() {
       let data = { page: this.page, limit: this.limit };
       if (this.param) {
@@ -526,7 +500,7 @@ export default {
       this.$axios
         .post("/testData/testDataListPage", this.$qs.stringify(data))
         .then(res => {
-          if (res.data.code == 200) {
+          if (res.data.code === 200) {
             this.tableData = res.data.data;
             this.total = res.data.count;
           } else {
@@ -544,21 +518,20 @@ export default {
           });
         });
     },
+
     onPageChange(pageNo) {
       this.page = pageNo;
       this.getTableData();
-      // this.spinShow=true;
     },
+
     onPageSizeChange(pageSize) {
       this.limit = pageSize;
       this.getTableData();
-      // this.spinShow=true;
     },
-    // 弹窗显隐切换
+
     handleModalSwitch() {
       this.isOpen = !this.isOpen;
     },
-
 
     handleAdd() {
       this.schemaVoList.push({
@@ -577,7 +550,6 @@ export default {
       this.schemaVoList.splice(m, 1);
     },
 
-    //  创建名称
     SaveUpdateData(){
       this.whatStage= 'Schema';
       let data = this.formCustom;
@@ -591,10 +563,10 @@ export default {
           })
           .catch((error) => {
             console.log(error);
-            this.$event.emit("looding", false);
+            this.$event.emit("loading", false);
           })
     },
-    //  创建与修改Schema
+    // Schema
     createSchema(){
       let data = this.formCustom, id='';
       if (this.id){
@@ -620,7 +592,6 @@ export default {
             let data = res.data;
             if (data.code === 200){
               if (id && this.saveType === 'edit'){
-                // this.id = data.testDataId;
                 this.getTableData();
               }else {
                 this.handleEditSchema(data.testDataId);
@@ -630,18 +601,17 @@ export default {
           })
           .catch((error) => {
             console.log(error);
-            this.$event.emit("looding", false);
+            this.$event.emit("loading", false);
           })
 
     },
-    //  创建SchemaVal
+    // SchemaVal
     createSchemaVal(){
       this.whatStage = 'SchemaVal';
-
       this.createSchema();
 
-
     },
+
     delInit(){
       this.whatStage= 'init';
       let data = {
@@ -650,9 +620,7 @@ export default {
       this.$axios
           .post("/testData/delTestData", this.$qs.stringify(data))
           .then(res => {
-            if (res.data.code == 200) {
-              // this.handleReset();
-              // this.getTableData();
+            if (res.data.code === 200) {
             }
           })
           .catch(error => {
@@ -666,7 +634,7 @@ export default {
       this.$axios
           .post("/testData/testDataSchemaValuesList", this.$qs.stringify(data))
           .then(res => {
-            if (res.data.code == 200) {
+            if (res.data.code === 200) {
               this.editableData = [];
               this.editableDataId = [];
               this.getTitle(res.data.schema, 'create');
@@ -683,9 +651,8 @@ export default {
             console.log(error);
           });
     },
-    //  编辑更新Schema
+    //  save edit Schema
     handleEditSchemaPage(row){
-      // this.$event.emit("looding", true);
       this.isOpen= true;
       this.whatStage= 'Schema';
       let data = { page: this.page, limit: this.limit,testDataId: row.id };
@@ -724,12 +691,10 @@ export default {
             });
           });
     },
-    //  编辑更新SchemaVal
+    //  save edit SchemaVal
     handleEditSchemaValPage(row){
-      // this.$event.emit("looding", true);
       this.isOpen= true;
       this.whatStage = 'SchemaVal'
-      // let data = { page: this.page, limit: this.limit,testDataId: row.id };
        let data = { testDataId: row.id };
       this.id = row.id;
       this.saveType = 'edit';
@@ -740,7 +705,7 @@ export default {
       this.$axios
           .post("/testData/testDataSchemaValuesList", this.$qs.stringify(data))
           .then(res => {
-            if (res.data.code == 200) {
+            if (res.data.code === 200) {
               let data = res.data, result= {}, resultList= [];
               if (data.schemaValue.length!==0){
                 data.schema.forEach((item)=>{
@@ -799,9 +764,8 @@ export default {
             });
           });
     },
-    //  获取SchemaVal
+    // get SchemaVal
     handleEditSchemaVal(id){
-      // this.$event.emit("looding", true);
       this.isOpen= true;
       this.whatStage = 'SchemaVal'
       let data = { testDataId: id };
@@ -812,7 +776,7 @@ export default {
       this.$axios
           .post("/testData/testDataSchemaValuesList", this.$qs.stringify(data))
           .then(res => {
-            if (res.data.code == 200) {
+            if (res.data.code === 200) {
               let data = res.data;
               this.editableData = data.schemaValue;
               this.editableDataId = data.schemaValueId;
@@ -833,15 +797,13 @@ export default {
             });
           });
     },
+
     saveSchemaValues(){
       this.isOpen=false;
       this.$refs.editable.saveSchemaValues();
-      // this.getTableData();
     },
-    getTitle(schemaValuesList, type) {
-      // this.tableTitle = Object.keys(this.rows[0]);
-      // let delTitle = this.tableTitle.splice(-4,4);
 
+    getTitle(schemaValuesList, type) {
       let list = [], result = {};
       this.tableColumn= [
         { type: 'checkbox', width: 40 },
@@ -859,16 +821,9 @@ export default {
         list = schemaValuesList;
       }
 
-
       let tableTitle = Object.keys(list[0]);
       for (let i=0;i<tableTitle.length;i++){
         if (tableTitle[i]==='dataRow'){
-          // this.tableColumn.push({
-          //   width: 50,
-          //   field: tableTitle[i],
-          //   title: '#',
-          //   editRender: { name: 'input', defaultValue: '' }
-          // })
         }else {
           this.tableColumn.push({
             field: tableTitle[i],
@@ -898,7 +853,7 @@ export default {
                 })
                 .catch((error) => {
                   console.log(error);
-                  this.$event.emit("looding", false);
+                  this.$event.emit("loading", false);
                 })
           }
         }
@@ -914,24 +869,17 @@ export default {
       });
     },
 
-    // 修改schema
+    // update schema
     editSchema(){
       this.isOpen=false;
       this.createSchema();
     },
-    // 修改schemaValues
+    // update schemaValues
     editSchemaVal(){
       this.isOpen=false;
       this.$refs.editable.saveSchemaValues();
     },
 
-
-
-
-
-
-
-    // 上传jar包 文件上传成功 response, file, fileList
     handleSuccess (res, file) {
       this.file = null;
       this.getTableData();
@@ -939,13 +887,10 @@ export default {
         this.isOpen = false;
       },1000)
     },
-    // 文件上传失败时的钩子，返回字段为 error, file, fileList
     handleError ( error, file) {
       this.JarIsShow = false;
     },
-    // 上传文件之前的钩子，参数为上传的文件，若返回 false 或者 Promise 则停止上传
     handleBeforeUpload (file) {
-
       var testmsg = file.name.substring(file.name.lastIndexOf(".") + 1);
       const extension =
           testmsg === "csv";
@@ -955,7 +900,7 @@ export default {
           title: 'The file format is incorrect',
           desc: 'File format of ' + file.name + ' is incorrect, please select csv.'
         });
-        return false; //阻止
+        return false;
       }
       if (!isLt500M) {
         this.$Notice.warning({
@@ -968,7 +913,6 @@ export default {
 
       return false;
     },
-    // 手动上传成功
     uploadSuccess(){
       let data = {
         testDataId: this.id,
@@ -985,13 +929,10 @@ export default {
 
       this.$refs.upload.post(this.file);
     },
-    // 关闭清空上传列表
     uploadError(){
       this.isOpen = false;
       this.$refs.upload.clearFiles();
-    },
-
-
+    }
   }
 };
 </script>

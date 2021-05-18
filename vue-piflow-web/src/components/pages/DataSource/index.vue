@@ -1,6 +1,6 @@
 <template>
   <section>
-    <!-- 头部分 -->
+    <!-- header -->
     <div class="navbar">
       <div class="left">
         <span>{{$t("sidebar.data_source")}}</span>
@@ -11,47 +11,25 @@
         </span>
       </div>
     </div>
-    <!-- 检索部分 -->
+    <!-- search -->
     <div class="input">
       <Input
         suffix="ios-search"
         v-model="param"
         :placeholder="$t('modal.placeholder')"
-        style="width: 300px"
-      />
+        style="width: 300px"/>
     </div>
-    <!-- 表格部分 -->
+    <!-- Table button -->
     <Table border :columns="columns" :data="tableData">
       <template slot-scope="{ row }" slot="action">
-        <div>
-          <!-- <span class="button-warp" @click="handleButtonSelect(row,1)">
-            <Icon type="ios-redo" />
-          </span>-->
-          <Tooltip content="Edit" placement="top-start">
-            <span class="button-warp" @click="handleButtonSelect(row,1)">
-              <Icon type="ios-create-outline" />
+        <Tooltip v-for="(item, index) in promptContent" :key="index" :content="item.content" placement="top-start">
+            <span class="button-warp" @click="handleButtonSelect(row,index+1)">
+              <Icon :type="item.icon" />
             </span>
-          </Tooltip>
-
-          <!--  <span class="button-warp" @click="handleButtonSelect(row,3)">
-            <Icon type="ios-play" />
-          </span>
-         <span class="button-warp" @click="handleButtonSelect(row,4)">
-            <Icon type="ios-bug" />
-          </span>-->
-          <Tooltip content="Delete" placement="top-start">
-            <span class="button-warp" @click="handleButtonSelect(row,2)">
-              <Icon type="ios-trash" />
-            </span>
-          </Tooltip>
-
-          <!-- <span class="button-warp" @click="handleButtonSelect(row,6)">
-            <Icon type="md-checkbox-outline" />
-          </span>-->
-        </div>
+        </Tooltip>
       </template>
     </Table>
-    <!-- 分页部分 -->
+    <!-- paging -->
     <div class="page">
       <Page
         :prev-text="$t('page.prev_text')"
@@ -61,41 +39,25 @@
         :total="total"
         show-sizer
         @on-change="onPageChange"
-        @on-page-size-change="onPageSizeChange"
-      />
+        @on-page-size-change="onPageSizeChange"/>
     </div>
-    <!-- 弹窗模板部分 -->
-    <!-- <Modal
-      v-model="isTemplateOpen"
-      :title="$t('modal.template_title')"
-      :ok-text="$t('modal.ok_text')"
-      :cancel-text="$t('modal.cancel_text')"
-      @on-ok="handletSetEmplate"
-    >
-      <div class="modal-warp">
-        <div class="item">
-          <Input v-model="templateName" :placeholder="$t('modal.placeholder')" />
-        </div>
-      </div>
-    </Modal>-->
-    <!-- 弹窗添加/更新部分 -->
+
+    <!-- add / update -->
     <Modal
       v-model="isOpen"
       :title="id?$t('dataSource_columns.update_title'):$t('dataSource_columns.create_title')"
       :ok-text="$t('modal.ok_text')"
       :cancel-text="$t('modal.cancel_text')"
-      @on-ok="handleSaveUpdateData"
-    >
+      @on-ok="handleSaveUpdateData">
       <div class="modal-warp">
         <div class="item">
           <label>{{$t('dataSource_columns.type')}}：</label>
-          <!-- <Input v-model="type" :placeholder="$t('modal.placeholder')" style="width: 350px" /> -->
           <Select v-model="type" style="width:350px" @on-change="handleSelectChange">
             <Option
               v-for="item in typeList"
               :value="item.dataSourceType"
-              :key="item.id"
-            >{{ item.dataSourceType }}</Option>
+              :key="item.id">
+              {{ item.dataSourceType }}</Option>
           </Select>
         </div>
         <div class="item">
@@ -114,8 +76,7 @@
             type="textarea"
             :rows="4"
             :placeholder="$t('modal.placeholder')"
-            style="width: 350px"
-          />
+            style="width: 350px"/>
         </div>
         <div class="item" v-if="type==='Other'">
           <label class="self" style="margin-top:15px;">{{$t('dataSource_columns.addProperty')}}：</label>
@@ -126,24 +87,20 @@
                 show-word-limit
                 maxlength="100"
                 :placeholder="$t('modal.placeholder')"
-                style="width: 100px"
-              />
+                style="width: 100px"/>
               <Input
                 v-model="item.value"
                 show-word-limit
                 maxlength="100"
                 :placeholder="$t('modal.placeholder')"
-                style="width: 180px"
-              />
+                style="width: 180px"/>
               <Icon
                 @click="handleRemove(m,dataSourcePropertyVoList.length===1)"
-                type="ios-remove-circle-outline"
-              />
+                type="ios-remove-circle-outline"/>
               <Icon
                 v-if="m==(dataSourcePropertyVoList.length-1)"
                 @click="handleAdd"
-                type="ios-add-circle-outline"
-              />
+                type="ios-add-circle-outline"/>
             </li>
           </ul>
         </div>
@@ -155,8 +112,7 @@
               :show-word-limit="item.name === 'url' ? false : true"
               maxlength="100"
               :placeholder="$t('modal.placeholder')"
-              style="width: 350px"
-            />
+              style="width: 350px"/>
           </div>
         </div>
       </div>
@@ -165,28 +121,34 @@
 </template>
 
 <script>
-// import WaterPoloChart from "./module/WaterPoloChart";
-
 export default {
-  name: "flow",
+  name: "dataSource",
   components: {},
   data() {
     return {
       isOpen: false,
-      isTemplateOpen: false,
       page: 1,
       limit: 10,
       total: 0,
       tableData: [],
 
       param: "",
-      templateName: "",
 
       row: null,
       id: "",
       name: "",
       type: "Other",
       description: "",
+
+      promptContent: [
+        {
+          content: 'Edit',
+          icon: 'ios-create-outline'
+        },{
+          content: 'Delete',
+          icon: 'ios-trash'
+        }
+      ],
 
       typeList: [],
       dataSourcePropertyVoList: [
@@ -241,11 +203,8 @@ export default {
   created() {
     this.getTableData();
   },
-  mounted() {
-    // this.height = size.PageH - 360;
-  },
   methods: {
-    // 重置
+    // Reset
     handleReset() {
       this.page = 1;
       this.limit = 10;
@@ -255,10 +214,6 @@ export default {
       this.name = "";
       this.description = "";
       this.dataSourcePropertyVoList = [{ name: "", value: "", id: '' }];
-      // this.driverMemory = "1g";
-      // this.executorNumber = 1;
-      // this.executorMemory = "1g";
-      // this.executorCores = 1;
     },
     handleButtonSelect(row, key) {
       switch (key) {
@@ -272,7 +227,8 @@ export default {
           break;
       }
     },
-    // 新增/更新一条数据
+
+    // add / update
     handleSaveUpdateData() {
       let data = {
         dataSourceType: this.type,
@@ -297,7 +253,7 @@ export default {
 
       }
       if (this.id) {
-        //更新数据
+        //update
         data.id = this.id;
         let flag = false;
         for (let key in contrastData){
@@ -337,11 +293,11 @@ export default {
           this.saveModifiedData(data);
         }
       } else {
-        //新增数据
+        // add
         this.$axios
           .post("/datasource/saveOrUpdate", this.$qs.stringify(data))
           .then(res => {
-            if (res.data.code == 200) {
+            if (res.data.code === 200) {
               this.$Modal.success({
                 title: this.$t("tip.title"),
                 content: `${this.name} ` + this.$t("tip.add_success_content")
@@ -383,11 +339,12 @@ export default {
         );
       }
     },
+
     handleGetInputData() {
       this.$axios
         .post("/datasource/getDataSourceInputData")
         .then(res => {
-          if (res.data.code == 200) {
+          if (res.data.code === 200) {
             let data = res.data.templateList;
             data.push({ id: "", dataSourceType: "Other" });
             this.typeList = data;
@@ -406,6 +363,7 @@ export default {
           });
         });
     },
+
     handleAdd() {
       this.dataSourcePropertyVoList.push({
         name: "",
@@ -423,13 +381,12 @@ export default {
       this.dataSourcePropertyVoList.splice(m, 1);
     },
 
-
-    //保存修改数据
+    //save update Data
     saveModifiedData(data){
       this.$axios
         .post("/datasource/saveOrUpdate", this.$qs.stringify(data))
         .then(res => {
-          if (res.data.code == 200) {
+          if (res.data.code === 200) {
             this.$Modal.success({
               title: this.$t("tip.title"),
               content: `${this.name} ` + this.$t("tip.update_success_content")
@@ -452,13 +409,13 @@ export default {
           });
         });
     },
-    //获取行数据(编辑)
+
     getRowData(row) {
-      this.$event.emit("looding", true);
+      this.$event.emit("loading", true);
       this.$axios
         .post("/datasource/getDataSourceInputData", this.$qs.stringify({dataSourceId:row.id}))
         .then(res => {
-          if (res.data.code == 200) {
+          if (res.data.code === 200) {
             let data = res.data.templateList;
             data.push({ id: "", dataSourceType: "Other" });
             this.typeList = data;
@@ -470,14 +427,10 @@ export default {
             this.description = flow.dataSourceDescription;
             this.dataSourcePropertyVoList = flow.dataSourcePropertyVoList;
             this.editDataSourceList = JSON.parse(JSON.stringify(flow.dataSourcePropertyVoList));
-            // this.driverMemory = flow.driverMemory;
-            // this.executorNumber = flow.executorNumber;
-            // this.executorMemory = flow.executorMemory;
-            // this.executorCores = flow.executorCores;
-            this.$event.emit("looding", false);
+            this.$event.emit("loading", false);
             this.isOpen = true;
           } else {
-            this.$event.emit("looding", false);
+            this.$event.emit("loading", false);
             this.$Message.error({
               content: this.$t("tip.data_fail_content"),
               duration: 3
@@ -486,14 +439,14 @@ export default {
         })
         .catch(error => {
           console.log(error);
-          this.$event.emit("looding", false);
+          this.$event.emit("loading", false);
           this.$Message.error({
             content: this.$t("tip.fault_content"),
             duration: 3
           });
         });
     },
-    //删除某一行数据
+    // Delete
     handleDeleteRow(row) {
       this.$Modal.confirm({
         title: this.$t("tip.title"),
@@ -507,7 +460,7 @@ export default {
           this.$axios
             .post("/datasource/deleteDataSource", this.$qs.stringify(data))
             .then(res => {
-              if (res.data.code == 200) {
+              if (res.data.code === 200) {
                 this.$Modal.success({
                   title: this.$t("tip.title"),
                   content:
@@ -530,13 +483,10 @@ export default {
                 duration: 3
               });
             });
-        },
-        onCancel: () => {
-          // this.$Message.info('Clicked cancel');
         }
-      });
+      })
     },
-    //获取表格数据
+
     getTableData() {
       let data = { page: this.page, limit: this.limit };
       if (this.param) {
@@ -547,7 +497,7 @@ export default {
           params: data
         })
         .then(res => {
-          if (res.data.code == 200) {
+          if (res.data.code === 200) {
             this.tableData = res.data.data;
             this.total = res.data.count;
           } else {
@@ -565,17 +515,16 @@ export default {
           });
         });
     },
+
     onPageChange(pageNo) {
       this.page = pageNo;
       this.getTableData();
-      // this.spinShow=true;
     },
     onPageSizeChange(pageSize) {
       this.limit = pageSize;
       this.getTableData();
-      // this.spinShow=true;
     },
-    // 弹窗显隐切换
+
     handleModalSwitch() {
       this.handleGetInputData();
       this.isOpen = !this.isOpen;

@@ -22,7 +22,8 @@ module.exports = {
         next_text: "下一页"
     },
     index: {
-        cpu: "核"
+        cpu: "核",
+        loading: "加载中..."
     },
     tip: {
         title: "PiFlow系统提示",

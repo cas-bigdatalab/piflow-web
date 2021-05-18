@@ -1,6 +1,6 @@
 <template>
   <section>
-    <!-- 头部分 -->
+    <!-- header -->
     <div class="navbar">
       <div class="left">
         <span>{{$t("sidebar.group")}}</span>
@@ -11,52 +11,25 @@
         </span>
       </div>
     </div>
-    <!-- 检索部分 -->
+    <!-- search -->
     <div class="input">
       <Input
         suffix="ios-search"
         v-model="param"
         :placeholder="$t('modal.placeholder')"
-        style="width: 300px"
-      />
+        style="width: 300px"/>
     </div>
-    <!-- 表格部分 -->
+    <!-- Table button -->
     <Table border :columns="columns" :data="tableData">
       <template slot-scope="{ row }" slot="action">
-        <div>
-          <Tooltip content="Enter" placement="top-start">
-            <span class="button-warp" @click="handleButtonSelect(row,1)">
-              <Icon type="ios-redo" />
+        <Tooltip v-for="(item, index) in promptContent" :key="index" :content="item.content" placement="top-start">
+            <span class="button-warp" @click="handleButtonSelect(row,index+1)">
+              <Icon :type="item.icon" />
             </span>
-          </Tooltip>
-          <Tooltip content="Edit" placement="top-start">
-             <span class="button-warp" @click="handleButtonSelect(row,2)">
-               <Icon type="ios-create-outline" />
-             </span>
-          </Tooltip>
-          <Tooltip content="Run" placement="top-start">
-            <span class="button-warp" @click="handleButtonSelect(row,3)">
-              <Icon type="ios-play" />
-            </span>
-          </Tooltip>
-
-          <!-- <span class="button-warp" @click="handleButtonSelect(row,4)">
-            <Icon type="ios-bug" />
-          </span>-->
-          <Tooltip content="Delete" placement="top-start">
-            <span class="button-warp" @click="handleButtonSelect(row,5)">
-              <Icon type="ios-trash" />
-            </span>
-          </Tooltip>
-          <Tooltip content="Save Template" placement="top-start">
-            <span class="button-warp" @click="handleButtonSelect(row,6)">
-              <Icon type="md-checkbox-outline" />
-            </span>
-          </Tooltip>
-        </div>
+        </Tooltip>
       </template>
     </Table>
-    <!-- 分页部分 -->
+    <!-- paging -->
     <div class="page">
       <Page
         :prev-text="$t('page.prev_text')"
@@ -69,28 +42,26 @@
         @on-page-size-change="onPageSizeChange"
       />
     </div>
-    <!-- 弹窗模板部分 -->
+    <!-- Save template -->
     <Modal
       v-model="isTemplateOpen"
       :title="$t('modal.template_title')"
       :ok-text="$t('modal.ok_text')"
       :cancel-text="$t('modal.cancel_text')"
-      @on-ok="handletSetEmplate"
-    >
+      @on-ok="handletSetEmplate">
       <div class="modal-warp">
         <div class="item">
           <Input v-model="templateName" :placeholder="$t('modal.placeholder')" />
         </div>
       </div>
     </Modal>
-    <!-- 弹窗添加/更新部分 -->
+    <!-- add / update -->
     <Modal
       v-model="isOpen"
       :title="id?$t('group_columns.update_title'):$t('group_columns.create_title')"
       :ok-text="$t('modal.ok_text')"
       :cancel-text="$t('modal.cancel_text')"
-      @on-ok="handleSaveUpdateData"
-    >
+      @on-ok="handleSaveUpdateData">
       <div class="modal-warp">
         <div class="item">
           <label>{{$t('group_columns.group_name')}}：</label>
@@ -101,38 +72,6 @@
               :placeholder="$t('modal.placeholder')"
               style="width: 350px" />
         </div>
-        <!-- <div class="item">
-          <label>{{$t('modal.driverMemory')}}：</label>
-          <Input
-            v-model="driverMemory"
-            :placeholder="$t('modal.placeholder')"
-            style="width: 350px"
-          />
-        </div>
-        <div class="item">
-          <label>{{$t('modal.executorNumber')}}：</label>
-          <Input
-            v-model="executorNumber"
-            :placeholder="$t('modal.placeholder')"
-            style="width: 350px"
-          />
-        </div>
-        <div class="item">
-          <label>{{$t('modal.executorMemory')}}：</label>
-          <Input
-            v-model="executorMemory"
-            :placeholder="$t('modal.placeholder')"
-            style="width: 350px"
-          />
-        </div>
-        <div class="item">
-          <label>{{$t('modal.executorCores')}}：</label>
-          <Input
-            v-model="executorCores"
-            :placeholder="$t('modal.placeholder')"
-            style="width: 350px"
-          />
-        </div>-->
         <div class="item">
           <label class="self">{{$t('group_columns.description')}}：</label>
           <Input
@@ -149,10 +88,8 @@
 </template>
 
 <script>
-// import WaterPoloChart from "./module/WaterPoloChart";
-
 export default {
-  name: "flow",
+  name: "group",
   components: {},
   data() {
     return {
@@ -169,15 +106,29 @@ export default {
       row: null,
       id: "",
       name: "",
-      description: ""
-      // driverMemory: "1g",
-      // executorNumber: 1,
-      // executorMemory: "1g",
-      // executorCores: 1
+      description: "",
+
+      promptContent: [
+        {
+          content: 'Enter',
+          icon: 'ios-redo'
+        },{
+          content: 'Edit',
+          icon: 'ios-create-outline'
+        },{
+          content: 'Run',
+          icon: 'ios-play'
+        },{
+          content: 'Delete',
+          icon: 'ios-trash'
+        },{
+          content: 'Save Template',
+          icon: 'md-checkbox-outline'
+        }
+      ]
     };
   },
   watch: {
-    //控制新增还是更新
     isOpen(state) {
       if (!state) {
         this.handleReset();
@@ -218,11 +169,8 @@ export default {
   created() {
     this.getTableData();
   },
-  mounted() {
-    // this.height = size.PageH - 360;
-  },
   methods: {
-    // 重置
+    // Reset
     handleReset() {
       this.page = 1;
       this.limit = 10;
@@ -230,10 +178,6 @@ export default {
       this.row = null;
       this.name = "";
       this.description = "";
-      // this.driverMemory = "1g";
-      // this.executorNumber = 1;
-      // this.executorMemory = "1g";
-      // this.executorCores = 1;
     },
     handleButtonSelect(row, key) {
       switch (key) {
@@ -248,9 +192,6 @@ export default {
              src:`/drawingBoard/page/flowGroup/mxGraph/index.html?drawingBoardType=GROUP&load=${row.id}`
            }
          });
-          // window.location.href =
-          //   window.location.origin +
-          //   `/drawingBoard/page/flow/index.html?drawingBoardType=GROUP&load=${row.id}`;
           break;
         case 2:
           this.getRowData(row);
@@ -258,38 +199,31 @@ export default {
         case 3:
           this.handleRun(row);
           break;
-        // case 4:
-        //   this.handleDubug(row);
-        //   break;
-        case 5:
+        case 4:
           this.handleDeleteRow(row);
           break;
-        case 6:
+        case 5:
           this.row = row;
           this.isTemplateOpen = true;
           break;
-
         default:
           break;
       }
     },
-    // 新增/更新一条数据
+
+    // add / update
     handleSaveUpdateData() {
       let data = {
         name: this.name,
         description: this.description
-        // driverMemory: this.driverMemory,
-        // executorNumber: this.executorNumber,
-        // executorMemory: this.executorMemory,
-        // executorCores: this.executorCores
       };
       if (this.id) {
-        //更新数据
+        //update
         data.id = this.id;
         this.$axios
           .get("/flowGroup/saveOrUpdateFlowGroup", { params: data })
           .then(res => {
-            if (res.data.code == 200) {
+            if (res.data.code === 200) {
               this.$Modal.success({
                 title: this.$t("tip.title"),
                 content: `${this.name} ` + this.$t("tip.update_success_content")
@@ -312,11 +246,11 @@ export default {
             });
           });
       } else {
-        //新增数据
+        // add
         this.$axios
           .get("/flowGroup/saveOrUpdateFlowGroup", { params: data })
           .then(res => {
-            if (res.data.code == 200) {
+            if (res.data.code === 200) {
               // this.$Modal.success({
               //   title: this.$t("tip.title"),
               //   content: `${this.name} ` + this.$t("tip.add_success_content"),
@@ -348,7 +282,7 @@ export default {
           });
       }
     },
-    //创建模板
+    //Create template
     handletSetEmplate() {
       let data = {
         load: this.row.id,
@@ -358,7 +292,7 @@ export default {
       this.$axios
         .get("/flowTemplate/saveFlowTemplate", { params: data })
         .then(res => {
-          if (res.data.code == 200) {
+          if (res.data.code === 200) {
             this.$Modal.success({
               title: this.$t("tip.title"),
               content:
@@ -382,19 +316,17 @@ export default {
           });
         });
     },
-    //开始运行
-    handleRun(row) {
-      // console.log(row);
 
+    handleRun(row) {
       let data = {
         flowGroupId: row.id
       };
-      this.$event.emit("looding", true);
+      this.$event.emit("loading", true);
       this.$axios
         .post("/flowGroup/runFlowGroup", this.$qs.stringify(data))
         .then(res => {
-          if (res.data.code == 200) {
-            this.$event.emit("looding", false);
+          if (res.data.code === 200) {
+            this.$event.emit("loading", false);
             this.$Modal.success({
               title: this.$t("tip.title"),
               content: `${row.name} ` + this.$t("tip.run_success_content"),
@@ -408,7 +340,7 @@ export default {
               }
             });
           } else {
-            this.$event.emit("looding", false);
+            this.$event.emit("loading", false);
             this.$Message.error({
               content: `${row.name} ` + this.$t("tip.run_fail_content"),
               duration: 3
@@ -417,7 +349,7 @@ export default {
         })
         .catch(error => {
           console.log(error);
-          this.$event.emit("looding", false);
+          this.$event.emit("loading", false);
           this.$Message.error({
             content: this.$t("tip.fault_content"),
             duration: 3
@@ -425,59 +357,22 @@ export default {
         });
     },
 
-    // //运行Dubug
-    // handleDubug(row) {
-    //   let data = {
-    //     flowId: row.id,
-    //     runMode: "DEBUG"
-    //   };
-    //   this.$event.emit("looding", true);
-    //   this.$axios
-    //     .post("/flow/runFlow", this.$qs.stringify(data))
-    //     .then(res => {
-    //       if (res.data.code == 200) {
-    //         this.$Modal.success({
-    //           title: this.$t("tip.title"),
-    //           content: `${row.name} ` + this.$t("tip.debug_success_content")
-    //         });
-    //       } else {
-    //         this.$event.emit("looding", false);
-    //         this.$Message.error({
-    //           title: this.$t("tip.title"),
-    //           content: `${row.name} ` + this.$t("tip.debug_fail_content")
-    //         });
-    //       }
-    //     })
-    //     .catch(error => {
-    //       console.log(error);
-    //       this.$event.emit("looding", false);
-    //       this.$Message.error({
-    //         title: this.$t("tip.title"),
-    //         content: this.$t("tip.fault_content")
-    //       });
-    //     });
-    // },
-    //获取行数据(编辑)
     getRowData(row) {
-      this.$event.emit("looding", true);
+      this.$event.emit("loading", true);
       this.$axios
         .get("/flowGroup/queryFlowGroupData", {
           params: { load: row.id }
         })
         .then(res => {
-          if (res.data.code == 200) {
+          if (res.data.code === 200) {
             let flowGroupVo = res.data.flowGroupVo;
             this.id = flowGroupVo.id;
             this.name = flowGroupVo.name;
             this.description = flowGroupVo.description;
-            // this.driverMemory = flow.driverMemory;
-            // this.executorNumber = flow.executorNumber;
-            // this.executorMemory = flow.executorMemory;
-            // this.executorCores = flow.executorCores;
-            this.$event.emit("looding", false);
+            this.$event.emit("loading", false);
             this.isOpen = true;
           } else {
-            this.$event.emit("looding", false);
+            this.$event.emit("loading", false);
             this.$Message.error({
               content: this.$t("tip.get_fail_content"),
               duration: 3
@@ -486,14 +381,14 @@ export default {
         })
         .catch(error => {
           console.log(error);
-          this.$event.emit("looding", false);
+          this.$event.emit("loading", false);
           this.$Message.error({
             content: this.$t("tip.fault_content"),
             duration: 3
           });
         });
     },
-    //删除某一行数据
+    // Delete
     handleDeleteRow(row) {
       this.$Modal.confirm({
         title: this.$t("tip.title"),
@@ -507,7 +402,7 @@ export default {
           this.$axios
             .get("/flowGroup/deleteFlowGroup", { params: data })
             .then(res => {
-              if (res.data.code == 200) {
+              if (res.data.code === 200) {
                 this.handleReset();
                 this.getTableData();
                 this.$Modal.success({
@@ -529,13 +424,10 @@ export default {
                 duration: 3
               });
             });
-        },
-        onCancel: () => {
-          // this.$Message.info('Clicked cancel');
         }
       });
     },
-    //获取表格数据
+
     getTableData() {
       let data = { page: this.page, limit: this.limit };
       if (this.param) {
@@ -546,7 +438,7 @@ export default {
           params: data
         })
         .then(res => {
-          if (res.data.code == 200) {
+          if (res.data.code === 200) {
             this.tableData = res.data.data;
             this.total = res.data.count;
           } else {
@@ -567,14 +459,12 @@ export default {
     onPageChange(pageNo) {
       this.page = pageNo;
       this.getTableData();
-      // this.spinShow=true;
     },
     onPageSizeChange(pageSize) {
       this.limit = pageSize;
       this.getTableData();
-      // this.spinShow=true;
     },
-    // 弹窗显隐切换
+
     handleModalSwitch() {
       this.isOpen = !this.isOpen;
     }

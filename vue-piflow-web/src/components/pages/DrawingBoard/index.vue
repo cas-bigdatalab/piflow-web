@@ -2,7 +2,8 @@
   <div :style="{height}">
     <iframe :src="src" id="bariframe" style="width: 100%;height: 100%" frameborder="0"></iframe>
     <img id="piflow-bgc" src="../../../assets/img/hbbj.jpg" />
-    <!--在线编程-->
+
+    <!--The online programming-->
     <Modal
         :title="programming_Title"
         v-model="programming_Modal"
@@ -11,20 +12,23 @@
         :mask-closable="false">
       <div :style="{ height :`${Programming}`}">
         <RadioGroup size="small" v-model="buttonSize" type="button">
-          <Radio label="text" :disabled="buttonSize === 'text'?false:true">text</Radio>
-          <Radio label="scala" :disabled="buttonSize === 'scala'?false:true">scala</Radio>
-          <Radio label="javascript" :disabled="buttonSize === 'javascript'?false:true">java</Radio>
-          <Radio label="python" :disabled="buttonSize === 'python'?false:true">python</Radio>
-          <Radio label="sh" :disabled="buttonSize === 'sh'?false:true">shell</Radio>
-          <Radio label="sql" :disabled="buttonSize === 'sql'?false:true">sql</Radio>
+          <Radio label="text" :disabled="buttonSize === 'text'? false: true">text</Radio>
+          <Radio label="scala" :disabled="buttonSize === 'scala'? false: true">scala</Radio>
+          <Radio label="javascript" :disabled="buttonSize === 'javascript'? false: true">java</Radio>
+          <Radio label="python" :disabled="buttonSize === 'python'? false: true">python</Radio>
+          <Radio label="sh" :disabled="buttonSize === 'sh'? false: true">shell</Radio>
+          <Radio label="sql" :disabled="buttonSize === 'sql'? false: true">sql</Radio>
         </RadioGroup>
-        <code-editor ref="_firstRefs" class="editor h-100" v-model="editorContent"
-                     :readonly="readonly" :language="buttonSize" theme="dracula">
+        <code-editor
+            ref="_firstRefs"
+            class="editor h-100"
+            v-model="editorContent"
+            :readonly="readonly" :language="buttonSize" theme="dracula">
         </code-editor>
       </div>
     </Modal>
 
-    <!--需testData-->
+    <!--testData-->
     <Modal
         :title="programming_Title"
         v-model="NeedSource_Modal"
@@ -32,12 +36,10 @@
         @on-ok="runParameters"
         :mask-closable="false">
       <div :style="{ height :`${Programming}`}">
-
         <Tabs type="card"
               :value="tabName"
               @on-click="tabClick">
           <TabPane v-for="(tab, i) in queryJson.ports" :key="tab+i" :name="tab+i" :label="'Port：' + tab">
-            <!-- 表格部分 -->
             <vxe-table
                 border
                 resizable
@@ -51,7 +53,6 @@
                 :radio-config="{labelField: 'name'}"
                 :data="tableData">
               <vxe-table-column type="radio" title="Name"></vxe-table-column>
-              <!--          <vxe-table-column field="name" title="Name"></vxe-table-column>-->
               <vxe-table-column field="description" title="Description"></vxe-table-column>
               <vxe-table-column field="crtDttm" title="CrtDttm"></vxe-table-column>
               <vxe-table-column title="Actions" width="70">
@@ -81,29 +82,6 @@
             </vxe-grid>
           </template>
         </vxe-modal>
-
-<!--        <Table border :columns="columns" :data="tableData">-->
-<!--          <template slot-scope="{ row }" slot="action">-->
-<!--            <div>-->
-<!--&lt;!&ndash;              <Radio v-model="single"></Radio>&ndash;&gt;-->
-<!--            </div>-->
-<!--          </template>-->
-<!--        </Table>-->
-
-
-<!--        &lt;!&ndash; 分页部分 &ndash;&gt;-->
-<!--        <div class="page">-->
-<!--          <Page-->
-<!--              :prev-text="$t('page.prev_text')"-->
-<!--              :next-text="$t('page.next_text')"-->
-<!--              show-elevator-->
-<!--              :show-total="true"-->
-<!--              :total="total"-->
-<!--              show-sizer-->
-<!--              @on-change="onPageChange"-->
-<!--              @on-page-size-change="onPageSizeChange"-->
-<!--          />-->
-<!--        </div>-->
       </div>
     </Modal>
 
@@ -130,7 +108,6 @@
           </vxe-grid>
       </div>
     </Modal>
-
   </div>
 </template>
  
@@ -144,7 +121,6 @@ export default {
       height: "100%",
       Programming: "400px",
       src: "",
-      parentsId: '',
       editorContent:'',
       readonly: false,
       programming_Modal: false,
@@ -221,7 +197,6 @@ export default {
     }
   },
   created() {
-    // let query = this.$router.currentRoute.query;
     if ( this.src === '' ){
       let baseUrl = window.location.origin;
       let herf = window.location.href.split("src=")[1];
@@ -232,9 +207,8 @@ export default {
                       .replace(/\%3F+/g, "?")
                       .replace(/\%3D+/g, "=")
                       .replace(/\%26+/g, "&");
-      this.$event.emit("looding", true);
+      this.$event.emit("loading", true);
     }
-    //监听窗口变化 自适应（ 根据需求自行添加 ）
     window.addEventListener("resize", () => {
       this.setSize();
     });
@@ -246,13 +220,13 @@ export default {
     if (piflowBgc) {
       if (oIframe.attachEvent) {
         oIframe.attachEvent("onload", () => {
-          _this.$event.emit("looding", false);
+          _this.$event.emit("loading", false);
 
           piflowBgc.remove();
         });
       } else {
         oIframe.onload = function () {
-          _this.$event.emit("looding", false);
+          _this.$event.emit("loading", false);
           piflowBgc.remove();
         };
       }
@@ -267,11 +241,13 @@ export default {
     window.addEventListener('message', function(event) {
       // 通过origin属性判断消息来源地址
       // if (event.origin == 'localhost') {
-      _this.$event.emit("looding", event.data);
+      _this.$event.emit("loading", event.data);
       //console.log(event.source);
       //}
     }, false);
-    //  接收可视化编程data
+
+
+    //  Visual programming data
     window["openRightHelpPage"] = (val,id,language,name) => {
       _this.Programming = window.innerHeight > 300 ? window.innerHeight - window.innerHeight*0.3 +'px' : window.innerHeight +'px' ;
       _this.programming_Modal = true;
@@ -301,7 +277,6 @@ export default {
           break;
       }
     };
-
 
     //  StopsComponent is neeed source data
     window["StopsComponentIsNeeedSourceData"] = ({id,isRunFollowUp}) => {
@@ -334,15 +309,10 @@ export default {
                 this.runStops(isNeedSource,this.queryJson)
               }
             }
-
-            // this.$Modal.success({
-            //   title: this.$t("tip.title"),
-            //   content: `111 ` + this.$t("tip.add_success_content"),
-            //   onOk:()=>{}})
           })
           .catch((error) => {
             console.log(error);
-            this.$event.emit("looding", false);
+            this.$event.emit("loading", false);
             this.$Message.error({
               content: this.$t("tip.fault_content"),
               duration: 3
@@ -356,7 +326,6 @@ export default {
       _this.visualization_Modal = true;
       _this.visualizationData = value;
       _this.getTitle(_this.visualizationData);
-      console.log(value,'传递的表格数据')
     }
   },
   watch:{
@@ -370,50 +339,8 @@ export default {
                       .replace(/\%3F+/g, "?")
                       .replace(/\%3D+/g, "=")
                       .replace(/\%26+/g, "&");
-      this.$event.emit("looding", true);
+      this.$event.emit("loading", true);
 
-      // let footerName = 'flowGroupList', _this = this;
-      // if ( this.src.indexOf("drawingBoardType=GROUP") !== -1 ) {
-      // // && this.src.indexOf("drawingBoard/page/flowGroup")!== -1
-      //   // GROUP
-      //   window.addEventListener('message', function(e){
-      //     if ( e.data.parentsId){
-      //       if (e.data.parentsId !== 'null'){
-      //         _this.$event.emit("crumb", [
-      //           { name: "Group", path: "/group" },
-      //           { name: footerName, path:"/drawingBoard?src=" + "/drawingBoard" +"/page/flowGroup/mxGraph/index.html?drawingBoardType=GROUP&parentAccessPath=flowGroupList&load=" + e.data.parentsId},
-      //           { name: "drawingBoard", path: "/drawingBoard" },
-      //         ]);
-      //       }else if(e.data.parentsId === 'null') {
-      //         _this.$event.emit("crumb", [
-      //           { name: "Group", path: "/group" },
-      //           { name: "drawingBoard", path: "/drawingBoard" },
-      //         ]);
-      //       }
-      //     }
-      //   })
-      // }else if ( this.src.indexOf("drawingBoardType=TASK") !== -1 ){
-      //   // && this.src.indexOf("drawingBoard/page/flow/mxGraph") !== -1
-      //   // TASK
-      //   window.addEventListener('message', function(e){
-      //     if ( e.data.parentsId){
-      //       if (e.data.parentsId !== 'null'){
-      //         _this.$event.emit("crumb", [
-      //           { name: "Flow", path: "/flow" },
-      //           { name: footerName, path:"/drawingBoard?src=" + "/drawingBoard" +"/page/flowGroup/mxGraph/index.html?drawingBoardType=GROUP&parentAccessPath=flowGroupList&load=" + e.data.parentsId},
-      //           { name: "drawingBoard", path: "/drawingBoard" },
-      //         ]);
-      //       }else if(e.data.parentsId === 'null') {
-      //         _this.$event.emit("crumb", [
-      //           { name: "Flow", path: "/flow" },
-      //           { name: "drawingBoard", path: "/drawingBoard" },
-      //         ]);
-      //       }
-      //     }
-      //   })
-      // }
-
-      //监听窗口变化 自适应（ 根据需求自行添加 ）
       window.addEventListener("resize", () => {
         this.setSize();
       });
@@ -423,10 +350,8 @@ export default {
     setSize() {
       this.height = document.querySelector("body").offsetHeight-12 + "px";
     },
-    GetChildValue(val){
-      this.parentsId = val;
-    },
-    // 保存更改的flow配置信息
+
+    // Save the changed flow configuration information
     updateStopsProperty(){
       let data = {};
       data.id = this.stopsId;
@@ -438,29 +363,15 @@ export default {
             if (dataMap.code == 200) {
               document.getElementById("bariframe").contentWindow.document.getElementById(`${this.stopsId}`).value = dataMap.value;
               document.getElementById("bariframe").contentWindow.document.getElementById(`${this.stopsId}`).setAttribute('data',`${dataMap.value}`)
-
-              // console.log(document.frames('bariframe').document)
-              // $("#" + stopsPropertyId).val(dataMap.value);
-              // $("#" + stopsPropertyId).attr("data", dataMap.value);
-            } else {
-              // this.$Modal.error({
-              //   title: this.$t("tip.title"),
-              //   content: `${row.jobName} ` + this.$t("tip.stop_fail_content")
-              // });
             }
           })
           .catch(error => {
             console.log(error);
-            // this.$Message.error({
-            //   content: this.$t("tip.fault_content"),
-            //   duration: 3
-            // });
           });
     },
 
     // run parameters
     runParameters(){
-      // let data = this.$refs.parameters.getRadioRecord();
       this.list.forEach((item)=>{
         Object.keys(item).forEach(key=>{
           switch (key){
@@ -480,7 +391,7 @@ export default {
     },
     // run stops
     runStops(isNeedSource,queryJson){
-      this.$event.emit("looding", true);
+      this.$event.emit("loading", true);
       let data = {};
       if (isNeedSource){
         data = queryJson;
@@ -496,34 +407,22 @@ export default {
           .then((res) => {
             let data = res.data;
             if (data.code === 200){
-              this.$event.emit("looding", false);
+              this.$event.emit("loading", false);
               this.JumpToMonitor(data.processId,data.errorMsg)
             }
           })
           .catch((error) => {
             console.log(error);
-            this.$event.emit("looding", false);
-          });
-
-
+            this.$event.emit("loading", false);
+          })
     },
 
     JumpToMonitor(id,msg){
-      // 判断页面是否加载完毕
-
       let pageURl = {
         pageURl: id,
         pageMsg: msg
       }
       document.getElementById("bariframe").contentWindow.postMessage(pageURl,'*');
-
-
-
-
-      // $("#mapIframe")[0].contentWindow.postMessage({
-      //   module: "yxtz",
-      //   param: "sl_btn_sw"
-      // },"*");
     },
 
     showDetailEvent (row) {
@@ -567,7 +466,6 @@ export default {
       }
     },
 
-    //获取表格数据
     getTableData() {
       let data = { page: this.page, limit: this.limit };
       if (this.param) {
@@ -576,7 +474,7 @@ export default {
       this.$axios
           .post("/testData/testDataListPage", this.$qs.stringify(data))
           .then(res => {
-            if (res.data.code == 200) {
+            if (res.data.code === 200) {
               this.tableData = res.data.data;
               this.total = res.data.count;
             } else {
@@ -599,7 +497,6 @@ export default {
       this.tabName = name;
     },
 
-    //  选中
     selectChangeEvent ({ row }) {
       let obj = {}, selectPort = ''
       this.queryJson.ports.forEach((item,i)=>{
@@ -621,14 +518,13 @@ export default {
         })
         this.list.push(obj);
       }
-
-    },
+    }
   },
   beforeDestroy() {
     document.querySelector("header").style.cssText = "";
     document.querySelector("footer").style.cssText = "";
     this.$event.emit("crumb", []);
-    this.$event.emit("looding", false);
+    this.$event.emit("loading", false);
   },
 };
 </script>

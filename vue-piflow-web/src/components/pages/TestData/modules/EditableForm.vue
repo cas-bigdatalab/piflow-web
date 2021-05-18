@@ -38,9 +38,6 @@ export default {
     }},
   data () {
     return {
-      // tableColumn: [
-      //   { type: 'checkbox', width: 40 },
-      // ],
       tableToolbar: {
         perfect: true,
         zoom: true,

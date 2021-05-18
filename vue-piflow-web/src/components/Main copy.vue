@@ -4,22 +4,18 @@
     <div class="warp" :style="style">
       <Sidebar :width="width"></Sidebar>
       <div class="content-right">
-        <!-- <TagNav></TagNav> -->
         <router-view></router-view>
       </div>
     </div>
     <Footer />
-    <div class="fullScreen" v-if="looding">
+    <div class="fullScreen" v-if="loading">
       <div style="margin-top: 15%;">
-        <p>
-          <img src="../assets/img/looding.gif" />
-        </p>
+        <p><img src="../assets/img/loading.gif" /></p>
       </div>
     </div>
   </div>
 </template>
 <script>
-import size from "../utils/winSize";
 import Header from "./compon/Header";
 import Sidebar from "./compon/Sidebar";
 import Footer from "./compon/Footer";
@@ -28,12 +24,11 @@ export default {
   components: {
     Footer,
     Sidebar,
-    // TagNav,
     Header
   },
   data() {
     return {
-      looding: false,
+      loading: false,
       style: {
         height: "auto"
       },
@@ -45,8 +40,8 @@ export default {
     window.addEventListener("resize", () => {
       this.setSize();
     });
-    this.$event.on("looding", val => {
-      this.looding = val;
+    this.$event.on("loading", val => {
+      this.loading = val;
     });
   },
   mounted() {
