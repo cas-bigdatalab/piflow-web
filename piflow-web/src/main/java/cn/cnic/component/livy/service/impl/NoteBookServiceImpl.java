@@ -36,7 +36,7 @@ import java.util.*;
 public class NoteBookServiceImpl implements INoteBookService {
     Logger logger = LoggerUtil.getLogger();
 
-    @Resource
+    @Autowired
     private NoteBookMapper noteBookMapper;
 
     @Override

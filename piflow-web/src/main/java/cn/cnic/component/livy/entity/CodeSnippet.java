@@ -16,6 +16,8 @@ public class CodeSnippet extends BaseHibernateModelUUIDNoCorpAgentId {
     private static final long serialVersionUID = 1L;
 
     private String codeContent;
+    private String executeId;
+    private int codeSnippetSort;
 
 
 }
