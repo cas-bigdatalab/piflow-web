@@ -35,7 +35,7 @@ public interface NoteBookMapper {
      * @param id
      * @return Integer
      */
-    @UpdateProvider(type = NoteBookMapperProvider.class,method = "deleteNoteBook")
+    @UpdateProvider(type = NoteBookMapperProvider.class,method = "deleteNoteBookById")
     public Integer deleteNoteBookById(@Param("isAdmin") boolean isAdmin, @Param("username") String username, @Param("id") String id);
 
     /**
@@ -46,7 +46,7 @@ public interface NoteBookMapper {
      * @param name
      * @return Integer
      */
-    @SelectProvider(type = NoteBookMapperProvider.class,method = "checkNoteBookName")
+    @SelectProvider(type = NoteBookMapperProvider.class,method = "checkNoteBookByName")
     public List<NoteBook> checkNoteBookByName(@Param("isAdmin") boolean isAdmin, @Param("username") String username, @Param("name") String name);
 
 

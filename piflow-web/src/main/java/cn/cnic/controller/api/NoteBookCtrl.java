@@ -24,22 +24,6 @@ public class NoteBookCtrl {
     /**
      * saveOrUpdateNoteBook
      *
-     * @param testDataVo
-     * @return
-     * @throws Exception
-     */
-    @RequestMapping(value = "/saveOrUpdateNoteBook", method = RequestMethod.POST)
-    @ResponseBody
-    public String saveOrUpdateNoteBook(@ApiParam(value = "testDataVo", required = true)RequestTestDataVo testDataVo) throws Exception {
-        String currentUsername = SessionUserUtil.getCurrentUsername();
-        boolean isAdmin = SessionUserUtil.isAdmin();
-        //return testDataServiceImpl.saveOrUpdateTestDataAndSchema(currentUsername, isAdmin, testDataVo, false);
-        return "";
-    }
-
-    /**
-     * saveOrUpdateNoteBook
-     *
      * @param noteBookVo
      * @return
      * @throws Exception
