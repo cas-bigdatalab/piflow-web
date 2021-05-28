@@ -414,4 +414,23 @@ public class SysParamsCache {
     public static String getResourceInfoUrl() {
         return INTERFACE_URL_HEAD + RESOURCE_INFO_URL;
     }
+
+
+    public static String LIVY_SERVER;
+
+    @Value("${syspara.livyServer}")
+    public void setLivyServer(String livyServer) {
+        LIVY_SERVER = livyServer;
+    }
+
+    public static String LIVY_INTERFACE_URL;
+
+    @Value("${api.livyInterfaceUrl}")
+    public void setLivyInterfaceUrl(String livyInterfaceUrl) {
+        LIVY_INTERFACE_URL = livyInterfaceUrl;
+    }
+
+    public static String getLivyInterfaceUrl() {
+        return LIVY_SERVER + LIVY_INTERFACE_URL;
+    }
 }
