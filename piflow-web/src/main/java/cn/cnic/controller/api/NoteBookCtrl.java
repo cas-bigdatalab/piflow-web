@@ -58,7 +58,7 @@ public class NoteBookCtrl {
      */
     @RequestMapping(value = "/deleteNoteBook", method = RequestMethod.POST)
     @ResponseBody
-    public String delTestData(@ApiParam(value = "noteBookId", required = true)String noteBookId) {
+    public String deleteNoteBook(@ApiParam(value = "noteBookId", required = true)String noteBookId) {
         String currentUsername = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
         return noteBookServiceImpl.deleteNoteBook(currentUsername, isAdmin, noteBookId);
@@ -74,12 +74,40 @@ public class NoteBookCtrl {
      */
     @RequestMapping(value = "/noteBookListPage", method = RequestMethod.POST)
     @ResponseBody
-    public String testDataListPage(@ApiParam(value = "page", required = true)Integer page,
+    public String noteBookListPage(@ApiParam(value = "page", required = true)Integer page,
                                    @ApiParam(value = "limit", required = true)Integer limit,
                                    @ApiParam(value = "param", required = false)String param) {
         String currentUsername = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
         return noteBookServiceImpl.getNoteBookListPage(currentUsername, isAdmin, page, limit, param);
+    }
+
+    /**
+     * startNoteBookSession
+     *
+     * @param noteBookId
+     * @return
+     */
+    @RequestMapping(value = "/startNoteBookSession", method = RequestMethod.POST)
+    @ResponseBody
+    public String startNoteBookSession(String noteBookId) {
+        String currentUsername = SessionUserUtil.getCurrentUsername();
+        boolean isAdmin = SessionUserUtil.isAdmin();
+        return noteBookServiceImpl.startNoteBookSession(currentUsername, isAdmin, noteBookId);
+    }
+
+    /**
+     * deleteNoteBookSession
+     *
+     * @param noteBookId
+     * @return
+     */
+    @RequestMapping(value = "/deleteNoteBookSession", method = RequestMethod.POST)
+    @ResponseBody
+    public String deleteNoteBookSession(String noteBookId) {
+        String currentUsername = SessionUserUtil.getCurrentUsername();
+        boolean isAdmin = SessionUserUtil.isAdmin();
+        return noteBookServiceImpl.delNoteBookSession(currentUsername, isAdmin, noteBookId);
     }
 
 }

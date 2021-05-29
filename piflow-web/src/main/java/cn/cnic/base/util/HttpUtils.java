@@ -8,6 +8,7 @@ import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
@@ -45,7 +46,7 @@ public class HttpUtils {
      * @param timeOutMS (Millisecond)
      * @return
      */
-    public static String doPost(String url, Map<?, ?> json, Integer timeOutMS) {
+    public static String doPostParmaMap(String url, Map<?, ?> json, Integer timeOutMS) {
         String formatJson = JsonUtils.toFormatJsonNoException(json);
         return doPost(url, formatJson, timeOutMS);
     }
@@ -236,6 +237,67 @@ public class HttpUtils {
             }
         }
         logger.debug("html info:" + result);
+        return result;
+    }
+
+    /**
+     * "post" request to transfer "json" data
+     *
+     * @param url
+     * @param json
+     * @param timeOutMS (Millisecond)
+     * @return
+     */
+    public static String doDelete(String url, Integer timeOutMS) {
+        String result = "";
+
+        // Create an "httpclient" object
+        CloseableHttpClient httpClient = null;
+        // Create a "post" mode request object
+        HttpDelete httpDelete = null;
+        try {
+            // Create an "httpclient" object
+            httpClient = HttpClients.createDefault();
+            // Create a "post" mode request object
+            httpDelete = new HttpDelete(url);
+            httpDelete.setProtocolVersion(HttpVersion.HTTP_1_1);
+            if (null != timeOutMS) {
+                // Set timeout
+                RequestConfig requestConfig = RequestConfig.custom()
+                        .setConnectTimeout(5000).setConnectionRequestTimeout(1000)
+                        .setSocketTimeout(timeOutMS).build();
+                httpDelete.setConfig(requestConfig);
+            }
+
+            logger.info("call '" + url + "' start");
+            // Perform the request operation and get the result (synchronous blocking)
+            CloseableHttpResponse response = httpClient.execute(httpDelete);
+            logger.info("call succeeded,return msg:" + response.toString());
+            // Get result entity
+            // Determine whether the network connection status code is normal (0--200 are normal)
+            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                result = EntityUtils.toString(response.getEntity(), "utf-8");
+                logger.info("call succeeded,return msg:" + result);
+            } else {
+                logger.warn("call failed,return msg:" + result);
+                result = "Interface call error";
+            }
+        } catch (UnsupportedCharsetException e) {
+            logger.error("Interface call error", e);
+            result = "Interface call error:UnsupportedCharsetException";
+        } catch (ClientProtocolException e) {
+            logger.error("Interface call error", e);
+            result = "Interface call error:ClientProtocolException";
+        } catch (ParseException e) {
+            logger.error("Interface call error", e);
+            result = "Interface call error:ParseException";
+        } catch (IOException e) {
+            logger.error("Interface call error", e);
+            result = "Interface call error:IOException";
+        } finally {
+            // Close the connection and release the resource
+            httpDelete.releaseConnection();
+        }
         return result;
     }
 }

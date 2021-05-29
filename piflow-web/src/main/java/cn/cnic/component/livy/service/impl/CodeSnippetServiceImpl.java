@@ -2,10 +2,12 @@ package cn.cnic.component.livy.service.impl;
 
 import cn.cnic.base.util.ReturnMapUtils;
 import cn.cnic.component.livy.entity.CodeSnippet;
+import cn.cnic.component.livy.entity.NoteBook;
 import cn.cnic.component.livy.mapper.CodeSnippetMapper;
 import cn.cnic.component.livy.service.ICodeSnippetService;
 import cn.cnic.component.livy.util.CodeSnippetUtils;
-import cn.cnic.component.livy.vo.CodeSnippetVo;
+import cn.cnic.controller.requestVo.RequesCodeSnippetVo;
+import cn.cnic.third.livy.service.ILivy;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -21,8 +24,11 @@ public class CodeSnippetServiceImpl implements ICodeSnippetService {
     @Autowired
     private CodeSnippetMapper codeSnippetMapper;
 
+    @Autowired
+    private ILivy livyImpl;
+
     @Override
-    public String addCodeSnippet(String username, CodeSnippetVo codeSnippetVo) {
+    public String addCodeSnippet(String username, RequesCodeSnippetVo codeSnippetVo) {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
         }
@@ -33,14 +39,15 @@ public class CodeSnippetServiceImpl implements ICodeSnippetService {
         BeanUtils.copyProperties(codeSnippetVo, codeSnippet);
         codeSnippet = CodeSnippetUtils.setCodeSnippetBasicInformation(codeSnippet, true, username);
         int affectedRows = codeSnippetMapper.addCodeSnippet(codeSnippet);
-        if (affectedRows > 0){
-            return ReturnMapUtils.setSucceededMsgRtnJsonStr("Save noteBook succeeded.");
+        if (affectedRows > 0) {
+            Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg("Save noteBook succeeded.");
+            return ReturnMapUtils.appendValuesToJson(rtnMap, "noteBookId", codeSnippet.getId());
         }
         return ReturnMapUtils.setFailedMsgRtnJsonStr("Save noteBook failed");
     }
 
     @Override
-    public String updateCodeSnippet(String username, CodeSnippetVo codeSnippetVo) {
+    public String updateCodeSnippet(String username, RequesCodeSnippetVo codeSnippetVo) {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
         }
@@ -56,7 +63,7 @@ public class CodeSnippetServiceImpl implements ICodeSnippetService {
         }
         BeanUtils.copyProperties(codeSnippetVo, codeSnippet);
         int affectedRows = codeSnippetMapper.updateCodeSnippet(codeSnippet);
-        if (affectedRows > 0){
+        if (affectedRows > 0) {
             return ReturnMapUtils.setSucceededMsgRtnJsonStr("Update noteBook succeeded.");
         }
         return ReturnMapUtils.setFailedMsgRtnJsonStr("Update noteBook failed");
@@ -68,10 +75,10 @@ public class CodeSnippetServiceImpl implements ICodeSnippetService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
         }
         if (StringUtils.isBlank(codeSnippetId)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("param id is empty");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("codeSnippetId is empty");
         }
-        int affectedRows = codeSnippetMapper.delCodeSnippetById(isAdmin,username,codeSnippetId);
-        if (affectedRows > 0){
+        int affectedRows = codeSnippetMapper.delCodeSnippetById(isAdmin, username, codeSnippetId);
+        if (affectedRows > 0) {
             return ReturnMapUtils.setSucceededMsgRtnJsonStr("Del noteBook succeeded.");
         }
         return ReturnMapUtils.setFailedMsgRtnJsonStr("Del noteBook failed");
@@ -91,6 +98,43 @@ public class CodeSnippetServiceImpl implements ICodeSnippetService {
 
     @Override
     public String runCodeSnippet(String username, String codeSnippetId) {
+        CodeSnippet codeSnippet = codeSnippetMapper.getCodeSnippetById(codeSnippetId);
+        if (null == codeSnippet) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("No data");
+        }
+        NoteBook noteBook = codeSnippet.getNoteBook();
+        if (null == noteBook) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Data Error");
+        }
+        String sessionsId = noteBook.getSessionsId();
+        String codeContent = codeSnippet.getCodeContent();
+        Map<String, Object> stringObjectMap = livyImpl.runStatements(sessionsId, codeContent);
         return null;
+    }
+
+    @Override
+    public String getStatementsResult(String codeSnippetId) {
+        if (StringUtils.isBlank(codeSnippetId)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("codeSnippetId is null ");
+        }
+        CodeSnippet codeSnippet = codeSnippetMapper.getCodeSnippetById(codeSnippetId);
+        if (null == codeSnippet) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("No data");
+        }
+        NoteBook noteBook = codeSnippet.getNoteBook();
+        if (null == noteBook) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Data error, noteBook is null");
+        }
+        String sessionsId = noteBook.getSessionsId();
+        if (StringUtils.isNotBlank(sessionsId)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Data error, sessionsId is null");
+        }
+        String executeId = codeSnippet.getExecuteId();
+        if (StringUtils.isNotBlank(executeId)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Data error, not execute");
+        }
+        Map<String, Object> statementsResult = livyImpl.getStatementsResult(noteBook.getSessionsId(), executeId);
+        String data = statementsResult.get("data").toString();
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("data", data);
     }
 }

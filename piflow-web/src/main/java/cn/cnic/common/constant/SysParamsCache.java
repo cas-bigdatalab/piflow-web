@@ -423,14 +423,25 @@ public class SysParamsCache {
         LIVY_SERVER = livyServer;
     }
 
-    public static String LIVY_INTERFACE_URL;
+    public static String LIVY_SESSIONS_URL;
 
-    @Value("${api.livyInterfaceUrl}")
-    public void setLivyInterfaceUrl(String livyInterfaceUrl) {
-        LIVY_INTERFACE_URL = livyInterfaceUrl;
+    @Value("${api.sessionsUrl}")
+    public void setLivySessionsUrl(String livySessionsUrl) {
+        LIVY_SESSIONS_URL = livySessionsUrl;
     }
 
-    public static String getLivyInterfaceUrl() {
-        return LIVY_SERVER + LIVY_INTERFACE_URL;
+    public static String getLivySessionsUrl() {
+        return LIVY_SERVER + LIVY_SESSIONS_URL;
+    }
+
+    public static String LIVY_STATEMENTS_URL;
+
+    @Value("${api.statementsUrl}")
+    public void setLivyStatementsUrl(String livyStatementsUrl) {
+        LIVY_STATEMENTS_URL = livyStatementsUrl;
+    }
+
+    public static String getLivyStatementsUrl() {
+        return LIVY_STATEMENTS_URL;
     }
 }

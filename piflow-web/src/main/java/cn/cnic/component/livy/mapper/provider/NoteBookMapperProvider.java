@@ -18,6 +18,8 @@ public class NoteBookMapperProvider {
     private int enableFlag;
     private String name;
     private String description;
+    private String codeType;
+    private String sessionsId;
 
     private boolean preventSQLInjectionNoteBook(NoteBook noteBook) {
         if (null == noteBook || StringUtils.isBlank(noteBook.getLastUpdateUser())) {
@@ -35,6 +37,8 @@ public class NoteBookMapperProvider {
         // Selection field
         this.name = SqlUtils.preventSQLInjection(noteBook.getName());
         this.description = SqlUtils.preventSQLInjection(noteBook.getDescription());
+        this.codeType = SqlUtils.preventSQLInjection(noteBook.getCodeType());
+        this.sessionsId = SqlUtils.preventSQLInjection(noteBook.getSessionsId());
 
         return true;
     }
@@ -47,6 +51,8 @@ public class NoteBookMapperProvider {
         this.enableFlag = 1;
         this.name = null;
         this.description = null;
+        this.codeType = null;
+        this.sessionsId = null;
     }
 
     /**
@@ -63,14 +69,18 @@ public class NoteBookMapperProvider {
             strBuf.append("( ");
             strBuf.append(SqlUtils.baseFieldName() + ", ");
             strBuf.append("name, ");
-            strBuf.append("description ");
+            strBuf.append("description, ");
+            strBuf.append("code_type, ");
+            strBuf.append("sessions_id ");
             strBuf.append(") ");
 
             strBuf.append("values ");
             strBuf.append("(");
             strBuf.append(SqlUtils.baseFieldValues(noteBook) + ", ");
             strBuf.append(this.name + ", ");
-            strBuf.append(this.description + " ");
+            strBuf.append(this.description + ", ");
+            strBuf.append(this.codeType + ", ");
+            strBuf.append(this.sessionsId + " ");
             strBuf.append(")");
             sql = strBuf.toString();
         }
@@ -101,6 +111,8 @@ public class NoteBookMapperProvider {
             sql.SET("enable_flag = " + this.enableFlag);
             sql.SET("name = " + this.name);
             sql.SET("description = " + this.description);
+            sql.SET("code_type = " + this.codeType);
+            sql.SET("sessions_id = " + this.sessionsId);
             sql.WHERE("version = " + this.version);
             sql.WHERE("id = " + this.id);
             sqlStr = sql.toString();
@@ -156,7 +168,7 @@ public class NoteBookMapperProvider {
         }
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append("SELECT * FROM note_book WHERE ");
-        stringBuffer.append("enable_flag=0 and name=" + SqlUtils.preventSQLInjection(name));
+        stringBuffer.append("enable_flag=1 and name=" + SqlUtils.preventSQLInjection(name));
         stringBuffer.append(condition);
         return  stringBuffer.toString();
     }
@@ -182,7 +194,7 @@ public class NoteBookMapperProvider {
         }
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append("SELECT * FROM note_book WHERE ");
-        stringBuffer.append("enable_flag=0 and id=" + SqlUtils.preventSQLInjection(id));
+        stringBuffer.append("enable_flag=1 and id=" + SqlUtils.preventSQLInjection(id));
         stringBuffer.append(condition);
         return  stringBuffer.toString();
     }

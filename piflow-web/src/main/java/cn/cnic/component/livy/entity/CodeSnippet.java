@@ -19,5 +19,7 @@ public class CodeSnippet extends BaseHibernateModelUUIDNoCorpAgentId {
     private String executeId;
     private int codeSnippetSort;
 
+    private NoteBook noteBook;
+
 
 }

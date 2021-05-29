@@ -56,7 +56,7 @@ public class ScheduleImpl implements ISchedule {
         requestParamMap.put("startDate", DateUtils.dateTimeToStr(schedule.getPlanStartTime()));
         requestParamMap.put("endDate", DateUtils.dateTimeToStr(schedule.getPlanEndTime()));
         requestParamMap.put("schedule", scheduleContentMap);
-        String sendPostData = HttpUtils.doPost(SysParamsCache.getScheduleStartUrl(), requestParamMap, null);
+        String sendPostData = HttpUtils.doPostParmaMap(SysParamsCache.getScheduleStartUrl(), requestParamMap, null);
 
         //===============================临时===============================
         //String formatJson = JsonUtils.toFormatJsonNoException(requestParamMap);
@@ -75,7 +75,7 @@ public class ScheduleImpl implements ISchedule {
     public String scheduleStop(String scheduleId) {
         Map<String, String> map = new HashMap<>();
         map.put("scheduleId", scheduleId);
-        String sendPostData = HttpUtils.doPost(SysParamsCache.getScheduleStopUrl(), map, null);
+        String sendPostData = HttpUtils.doPostParmaMap(SysParamsCache.getScheduleStopUrl(), map, null);
         return sendPostData;
     }
 

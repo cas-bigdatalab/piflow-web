@@ -49,4 +49,31 @@ public interface INoteBookService {
      */
     public String getNoteBookListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param);
 
+    /**
+     * startNoteBookSession
+     *
+     * @param username
+     * @param isAdmin
+     * @return String
+     */
+    public String startNoteBookSession(String username, boolean isAdmin, String noteBookId);
+
+    /**
+     * delNoteBookSession
+     *
+     * @param username
+     * @param isAdmin
+     * @return String
+     */
+    public String delNoteBookSession(String username, boolean isAdmin, String noteBookId);
+
+    /**
+     * getAllNoteBookRunning
+     *
+     * @param username
+     * @param isAdmin
+     * @return String
+     */
+    public String getAllNoteBookRunning(String username, boolean isAdmin);
+
 }

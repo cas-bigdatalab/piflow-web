@@ -15,6 +15,8 @@ public class NoteBook extends BaseHibernateModelUUIDNoCorpAgentId {
 
     private String name;
     private String description;
+    private String sessionsId;
+    private String codeType;
     private List<CodeSnippet> codeSnippetList = new ArrayList<>();
 
 

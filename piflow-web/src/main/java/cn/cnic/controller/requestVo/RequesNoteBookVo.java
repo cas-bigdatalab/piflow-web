@@ -25,4 +25,10 @@ public class RequesNoteBookVo implements Serializable {
     @ApiModelProperty(value = "noteBook description")
     private String description;
 
+    @ApiModelProperty(value = "noteBook code type", required = true)
+    private String codeType;
+
+    @ApiModelProperty(value = "noteBook sessions id")
+    private String sessionsId;
+
 }
