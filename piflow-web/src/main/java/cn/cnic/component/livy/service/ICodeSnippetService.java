@@ -15,6 +15,6 @@ public interface ICodeSnippetService {
 
     public String runCodeSnippet(String username, String codeSnippetId);
 
-    public String getStatementsResult(String executeId);
+    public String getStatementsResult(String codeSnippetId);
 
 }

@@ -30,10 +30,10 @@ public interface ILivy {
      * getFlowProgress
      *
      * @param sessionsId
-     * @param json
+     * @param code
      * @return
      */
-    public Map<String, Object> runStatements(String sessionsId, String json);
+    public Map<String, Object> runStatements(String sessionsId, String code);
 
     /**
      * getStatementsResult

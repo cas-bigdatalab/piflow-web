@@ -67,8 +67,8 @@ public interface NoteBookMapper {
      * @param id
      * @return Integer
      */
-    @Select(value = "SELECT * FROM note_book WHERE enable_flag=0 AND id=#{id}")
-    public NoteBook adminGetNoteBookById(@Param("id") String id);
+    @SelectProvider(type = NoteBookMapperProvider.class,method = "adminGetNoteBookById")
+    public NoteBook adminGetNoteBookById(String id);
 
 
     /**

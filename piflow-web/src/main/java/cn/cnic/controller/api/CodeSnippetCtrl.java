@@ -97,8 +97,8 @@ public class CodeSnippetCtrl {
      */
     @RequestMapping(value = "/getStatementsResult", method = RequestMethod.POST)
     @ResponseBody
-    public String getStatementsResult(String executeId) {
-        return codeSnippetServiceImpl.getStatementsResult(executeId);
+    public String getStatementsResult(String codeSnippetId) {
+        return codeSnippetServiceImpl.getStatementsResult(codeSnippetId);
     }
 
 }

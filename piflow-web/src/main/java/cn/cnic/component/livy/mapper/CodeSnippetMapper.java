@@ -50,7 +50,7 @@ public interface CodeSnippetMapper {
     @Select("select * from code_snippet where enable_flag=1 and id=#{id} ")
     @Results({
             @Result(id = true, column = "id", property = "id"),
-            @Result(column = "fk_node_book_id", property = "noteBook", one = @One(select = "cn.cnic.component.livy.mapper.NoteBookMapper.getNoteBookById", fetchType = FetchType.LAZY))
+            @Result(column = "FK_NOTE_BOOK_ID", property = "noteBook", one = @One(select = "cn.cnic.component.livy.mapper.NoteBookMapper.adminGetNoteBookById", fetchType = FetchType.LAZY))
     })
     public CodeSnippet getCodeSnippetById(String id);
 

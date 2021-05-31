@@ -4,6 +4,7 @@ import cn.cnic.base.util.ReturnMapUtils;
 import cn.cnic.component.livy.entity.CodeSnippet;
 import cn.cnic.component.livy.entity.NoteBook;
 import cn.cnic.component.livy.mapper.CodeSnippetMapper;
+import cn.cnic.component.livy.mapper.NoteBookMapper;
 import cn.cnic.component.livy.service.ICodeSnippetService;
 import cn.cnic.component.livy.util.CodeSnippetUtils;
 import cn.cnic.controller.requestVo.RequesCodeSnippetVo;
@@ -13,12 +14,16 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 @Service
 public class CodeSnippetServiceImpl implements ICodeSnippetService {
 
+    @Autowired
+    private NoteBookMapper noteBookMapper;
+    
     @Autowired
     private CodeSnippetMapper codeSnippetMapper;
 
@@ -33,13 +38,22 @@ public class CodeSnippetServiceImpl implements ICodeSnippetService {
         if (null == codeSnippetVo) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("param name is empty");
         }
+        String noteBookId = codeSnippetVo.getNoteBookId();
+        if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("noteBookId is null");
+        }
+        NoteBook noteBook = noteBookMapper.getNoteBookById(false, username, noteBookId);
+        if (null == noteBook) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("noteBookId data is null");
+        }
         CodeSnippet codeSnippet = new CodeSnippet();
         BeanUtils.copyProperties(codeSnippetVo, codeSnippet);
         codeSnippet = CodeSnippetUtils.setCodeSnippetBasicInformation(codeSnippet, true, username);
+        codeSnippet.setNoteBook(noteBook);
         int affectedRows = codeSnippetMapper.addCodeSnippet(codeSnippet);
         if (affectedRows > 0) {
-            Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg("Save noteBook succeeded.");
-            return ReturnMapUtils.appendValuesToJson(rtnMap, "noteBookId", codeSnippet.getId());
+            Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg("Save codeSnippet succeeded.");
+            return ReturnMapUtils.appendValuesToJson(rtnMap, "codeSnippetId", codeSnippet.getId());
         }
         return ReturnMapUtils.setFailedMsgRtnJsonStr("Save noteBook failed");
     }
@@ -100,14 +114,24 @@ public class CodeSnippetServiceImpl implements ICodeSnippetService {
         if (null == codeSnippet) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("No data");
         }
-        NoteBook noteBook = codeSnippet.getNoteBook();
-        if (null == noteBook) {
+        if (null == codeSnippet.getNoteBook()) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Data Error");
         }
-        String sessionsId = noteBook.getSessionsId();
+        String sessionsId = codeSnippet.getNoteBook().getSessionsId();
         String codeContent = codeSnippet.getCodeContent();
-        Map<String, Object> stringObjectMap = livyImpl.runStatements(sessionsId, codeContent);
-        return ReturnMapUtils.mapToJson(stringObjectMap);
+        Map<String, Object> rtnMap = livyImpl.runStatements(sessionsId, codeContent);
+        if (null == rtnMap || (int)rtnMap.get("code") != 200) {
+        	return ReturnMapUtils.mapToJson(rtnMap);
+        }
+        String statementsId = rtnMap.get("statementsId").toString();
+        codeSnippet.setExecuteId(statementsId);
+        codeSnippet.setLastUpdateDttm(new Date());
+        codeSnippet.setLastUpdateUser(username);
+     	int affectedRows = codeSnippetMapper.updateCodeSnippet(codeSnippet);
+       	if (affectedRows > 0) {
+    		return ReturnMapUtils.mapToJson(rtnMap);
+    	}
+        return ReturnMapUtils.setFailedMsgRtnJsonStr("Interface call succeeded, save Failed.");
     }
 
     @Override
@@ -124,15 +148,14 @@ public class CodeSnippetServiceImpl implements ICodeSnippetService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Data error, noteBook is null");
         }
         String sessionsId = noteBook.getSessionsId();
-        if (StringUtils.isNotBlank(sessionsId)) {
+        if (StringUtils.isBlank(sessionsId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Data error, sessionsId is null");
         }
         String executeId = codeSnippet.getExecuteId();
-        if (StringUtils.isNotBlank(executeId)) {
+        if (StringUtils.isBlank(executeId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Data error, not execute");
         }
-        Map<String, Object> statementsResult = livyImpl.getStatementsResult(noteBook.getSessionsId(), executeId);
-        String data = statementsResult.get("data").toString();
-        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("data", data);
+        Map<String, Object> rtnMap = livyImpl.getStatementsResult(noteBook.getSessionsId(), executeId);
+        return ReturnMapUtils.mapToJson(rtnMap);
     }
 }

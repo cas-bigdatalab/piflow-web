@@ -49,6 +49,9 @@ public class HttpUtils {
      * @return
      */
     public static String doPostParmaMap(String url, Map<?, ?> json, Integer timeOutMS) {
+    	if (null == json) {
+    		return doPost(url, null, timeOutMS);
+    	}
         String formatJson = JsonUtils.toFormatJsonNoException(json);
         return doPost(url, formatJson, timeOutMS);
     }
@@ -76,10 +79,13 @@ public class HttpUtils {
 
             logger.debug("afferent json param:" + json);
             // Set parameters to the request object
-            StringEntity stringEntity = new StringEntity(json.toString(), ContentType.APPLICATION_JSON);
-            stringEntity.setContentEncoding("utf-8");
+            
+            if (StringUtils.isNotBlank(json)) {
+            	StringEntity stringEntity = new StringEntity(json.toString(), ContentType.APPLICATION_JSON);
+                stringEntity.setContentEncoding("utf-8");
+                httpPost.setEntity(stringEntity);
+            }
             httpPost.setProtocolVersion(HttpVersion.HTTP_1_1);
-            httpPost.setEntity(stringEntity);
             if (null != timeOutMS) {
                 // Set timeout
                 RequestConfig requestConfig = RequestConfig.custom()

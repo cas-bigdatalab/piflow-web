@@ -3,6 +3,7 @@ package cn.cnic.component.livy.mapper.provider;
 import cn.cnic.base.util.DateUtils;
 import cn.cnic.base.util.SqlUtils;
 import cn.cnic.component.livy.entity.CodeSnippet;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
 
@@ -17,6 +18,7 @@ public class CodeSnippetMapperProvider {
     private int enableFlag;
     private String codeContent;
     private String executeId;
+    private String noteBookId;
     private int codeSnippetSort;
 
 
@@ -36,6 +38,8 @@ public class CodeSnippetMapperProvider {
         // Selection field
         this.executeId = SqlUtils.preventSQLInjection(codeSnippet.getExecuteId());
         this.codeContent = SqlUtils.preventSQLInjection(codeSnippet.getCodeContent());
+        String noteBookIdStr = (null != codeSnippet.getNoteBook() ? codeSnippet.getNoteBook().getId() : null);        
+        this.noteBookId = SqlUtils.preventSQLInjection(noteBookIdStr);
         this.codeSnippetSort = codeSnippet.getCodeSnippetSort();
 
         return true;
@@ -49,6 +53,7 @@ public class CodeSnippetMapperProvider {
         this.enableFlag = 1;
         this.executeId = null;
         this.codeContent = null;
+        this.noteBookId = null;
         this.codeSnippetSort = 0;
     }
 
@@ -67,6 +72,7 @@ public class CodeSnippetMapperProvider {
             strBuf.append(SqlUtils.baseFieldName() + ", ");
             strBuf.append("execute_id, ");
             strBuf.append("code_content, ");
+            strBuf.append("fk_note_book_id, ");
             strBuf.append("code_snippet_sort ");
             strBuf.append(") ");
 
@@ -75,6 +81,7 @@ public class CodeSnippetMapperProvider {
             strBuf.append(SqlUtils.baseFieldValues(codeSnippet) + ", ");
             strBuf.append(this.executeId + ", ");
             strBuf.append(this.codeContent + ", ");
+            strBuf.append(this.noteBookId + ", ");
             strBuf.append(this.codeSnippetSort + " ");
             strBuf.append(")");
             sql = strBuf.toString();

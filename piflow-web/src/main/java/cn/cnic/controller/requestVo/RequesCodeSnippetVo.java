@@ -14,9 +14,12 @@ public class RequesCodeSnippetVo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @ApiModelProperty(value = "noteBook id")
+    private String noteBookId;
+    
     @ApiModelProperty(value = "codeSnippet id")
     private String id;
-    
+
     @ApiModelProperty(value = "codeSnippet code content", required = true)
     private String codeContent;
     

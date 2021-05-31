@@ -10,6 +10,7 @@ import net.sf.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
@@ -49,30 +50,45 @@ public class LivyImpl implements ILivy {
         String doDelete = HttpUtils.doDelete(url, null);
         log.info("return msg: " + doDelete);
         if (HttpUtils.INTERFACE_CALL_ERROR.equals(doDelete)) {
-            return ReturnMapUtils.setFailedMsg("Error : Interface return value is null");
+            return ReturnMapUtils.setFailedMsg(doDelete);
         }
         return ReturnMapUtils.setSucceededCustomParam("data", doDelete);
     }
 
     @Override
-    public Map<String, Object> runStatements(String sessionsId, String json) {
+    public Map<String, Object> runStatements(String sessionsId, String code) {
+    	Map<String, Object> jsonMap = new HashMap<>();
+    	jsonMap.put("kind", "spark");
+    	jsonMap.put("code", code);
+    	String json = ReturnMapUtils.mapToJson(jsonMap);
         String url = SysParamsCache.getLivySessionsUrl() + "/" + sessionsId + "/statements";
         String doPost = HttpUtils.doPost(url, json, null);
         log.info("return msg: " + doPost);
         if (HttpUtils.INTERFACE_CALL_ERROR.equals(doPost)) {
-        	return null;
+        	return ReturnMapUtils.setFailedMsg(doPost);
         }
-        return ReturnMapUtils.setSucceededCustomParam("data", doPost);
+        try {
+            JSONObject obj = JSONObject.fromObject(doPost);// Convert a json string to a json object
+            String statementsId = obj.getString("id");
+            if(StringUtils.isBlank(statementsId)){
+                return ReturnMapUtils.setFailedMsg("Error : Interface return value is null");
+            }
+            return ReturnMapUtils.setSucceededCustomParam("statementsId", statementsId);
+        } catch (Exception e) {
+            log.error("error: ", e);
+            return ReturnMapUtils.setFailedMsg("Error : Interface call succeeded, conversion error");
+        }
     }
 
     @Override
     public Map<String, Object> getStatementsResult(String sessionsId, String statementsId) {
         String url = SysParamsCache.getLivySessionsUrl() + "/" + sessionsId + "/statements/" + statementsId;
-        String doPost = HttpUtils.doPost(url, null, null);
-        log.info("return msg: " + doPost);
-        if (HttpUtils.INTERFACE_CALL_ERROR.equals(doPost)) {
-        	return null;
+        String doGet = HttpUtils.doGet(url, null, null);
+        log.info("return msg: " + doGet);
+        if (HttpUtils.INTERFACE_CALL_ERROR.equals(doGet)) {
+        	return ReturnMapUtils.setFailedMsg(doGet);
         }
-        return ReturnMapUtils.setSucceededCustomParam("data", doPost);
+        return ReturnMapUtils.setSucceededCustomParam("data", doGet);
     }
+    
 }

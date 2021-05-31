@@ -208,6 +208,26 @@ public class NoteBookMapperProvider {
      * @param param
      * @return
      */
+    public String adminGetNoteBookById(String id) {
+    	if (StringUtils.isBlank(id)) {
+    		return "SELECT 0";
+        }
+        StringBuffer stringBuf = new StringBuffer();
+        stringBuf.append("SELECT * FROM note_book WHERE enable_flag=1");
+        stringBuf.append("AND id=" + SqlUtils.preventSQLInjection(id) + " ");
+        return stringBuf.toString();
+    }
+    
+
+
+    /**
+     * search NoteBook List
+     *
+     * @param isAdmin
+     * @param username
+     * @param param
+     * @return
+     */
     public String getNoteBookList(boolean isAdmin, String username, String param) {
         StringBuffer stringBuf = new StringBuffer();
         stringBuf.append("SELECT * FROM note_book WHERE enable_flag=1 ");
