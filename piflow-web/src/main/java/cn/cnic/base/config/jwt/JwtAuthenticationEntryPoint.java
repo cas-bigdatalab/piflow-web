@@ -16,7 +16,7 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 
 /**
- * 认证失败处理类，返回401
+ * Authentication failure processing class, return 401
  */
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Serializable {
@@ -29,9 +29,9 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Se
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
-        //验证为未登陆状态会进入此方法，认证错误
+        //It will enter this method if the verification is not logged in state, the authentication is wrong
         if (!"OPTIONS".equals(request.getMethod()) && !"options".equals(request.getMethod())) {
-            logger.warn("认证失败：" + authException.getMessage());
+            logger.warn("Authentication failed：" + authException.getMessage());
         }
         response.setStatus(200);
         response.setCharacterEncoding("UTF-8");

@@ -1,7 +1,6 @@
 package cn.cnic.component.livy.service;
 
 
-import cn.cnic.component.livy.vo.CodeSnippetVo;
 import cn.cnic.controller.requestVo.RequesCodeSnippetVo;
 
 public interface ICodeSnippetService {

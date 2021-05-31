@@ -31,7 +31,7 @@ public class CodeSnippetCtrl {
     @ResponseBody
     public String addCodeSnippet(@ApiParam(value = "codeSnippetVo", required = true) RequesCodeSnippetVo codeSnippetVo) throws Exception {
         String currentUsername = SessionUserUtil.getCurrentUsername();
-        boolean isAdmin = SessionUserUtil.isAdmin();
+        //boolean isAdmin = SessionUserUtil.isAdmin();
         return codeSnippetServiceImpl.addCodeSnippet(currentUsername, codeSnippetVo);
     }
 
@@ -46,7 +46,7 @@ public class CodeSnippetCtrl {
     @ResponseBody
     public String updateCodeSnippet(@ApiParam(value = "codeSnippetVo", required = true) RequesCodeSnippetVo codeSnippetVo) throws Exception {
         String currentUsername = SessionUserUtil.getCurrentUsername();
-        boolean isAdmin = SessionUserUtil.isAdmin();
+        //boolean isAdmin = SessionUserUtil.isAdmin();
         return codeSnippetServiceImpl.updateCodeSnippet(currentUsername, codeSnippetVo);
     }
 

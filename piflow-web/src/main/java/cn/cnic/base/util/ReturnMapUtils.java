@@ -149,4 +149,14 @@ public class ReturnMapUtils {
     public static String appendValuesToJson(Map<String, Object> rtnMap, String key, Object value) {
         return JsonUtils.toJsonNoException(appendValues(rtnMap, key, value));
     }
+    
+    /**
+     * return jsonStr
+     *
+     * @param rtnMap
+     * @return JsonStr
+     */
+    public static String mapToJson(Map<String, Object> rtnMap) {
+        return JsonUtils.toJsonNoException(rtnMap);
+    }
 }

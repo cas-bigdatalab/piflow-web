@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -129,7 +130,19 @@ public class NoteBookServiceImpl implements INoteBookService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("no data");
         }
         Map<String, Object> rtnMap = livyImpl.startSessions();
-        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("data", rtnMap.get("data"));
+        if (null == rtnMap || (int)rtnMap.get("code") != 200) {
+        	return ReturnMapUtils.mapToJson(rtnMap);
+        }
+        String sessionsId = rtnMap.get("sessionsId").toString();
+    	noteBook.setSessionsId(sessionsId);
+    	noteBook.setLastUpdateDttm(new Date());
+    	noteBook.setLastUpdateUser(username);
+    	int affectedRows = noteBookMapper.updateNoteBook(noteBook);
+    	if (affectedRows > 0) {
+    		return ReturnMapUtils.mapToJson(rtnMap);
+    	}
+    	livyImpl.stopSessions(sessionsId);
+        return ReturnMapUtils.setFailedMsgRtnJsonStr("Interface call succeeded, save Failed. sessions close");
     }
 
     /**
@@ -155,7 +168,17 @@ public class NoteBookServiceImpl implements INoteBookService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Data error, sessionsId is null");
         }
         Map<String, Object> rtnMap = livyImpl.stopSessions(sessionsId);
-        return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.SUCCEEDED_MSG);
+        if (null == rtnMap || (int)rtnMap.get("code") != 200) {
+        	return ReturnMapUtils.mapToJson(rtnMap);
+        }
+        noteBook.setSessionsId(null);
+    	noteBook.setLastUpdateDttm(new Date());
+    	noteBook.setLastUpdateUser(username);
+    	int affectedRows = noteBookMapper.updateNoteBook(noteBook);
+    	if (affectedRows > 0) {
+    		return ReturnMapUtils.mapToJson(rtnMap);
+    	}
+        return ReturnMapUtils.setFailedMsgRtnJsonStr("Interface call succeeded, save Failed. sessions close");
     }
 
     /**
@@ -167,11 +190,7 @@ public class NoteBookServiceImpl implements INoteBookService {
      */
     @Override
     public String getAllNoteBookRunning(String username, boolean isAdmin) {
-        //NoteBook noteBook = noteBookMapper.adminGetNoteBookById(nodeBootId);
-        //if (null == noteBook) {
-        //    return ReturnMapUtils.setFailedMsgRtnJsonStr("No data");
-        //}
         Map<String, Object> rtnMap = livyImpl.getAllSessions();
-        return null;
+        return ReturnMapUtils.mapToJson(rtnMap);
     }
 }

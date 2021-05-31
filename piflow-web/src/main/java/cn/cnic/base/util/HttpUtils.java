@@ -36,6 +36,8 @@ import java.util.Map;
  */
 public class HttpUtils {
 
+	public static String INTERFACE_CALL_ERROR = "Interface call error";
+	
     static Logger logger = LoggerUtil.getLogger();
 
     /**
@@ -92,25 +94,32 @@ public class HttpUtils {
             logger.info("call succeeded,return msg:" + response.toString());
             // Get result entity
             // Determine whether the network connection status code is normal (0--200 are normal)
-            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-                result = EntityUtils.toString(response.getEntity(), "utf-8");
-                logger.info("call succeeded,return msg:" + result);
-            } else {
-                logger.warn("call failed,return msg:" + result);
-                result = "Interface call error";
+            switch (response.getStatusLine().getStatusCode()) {
+                case HttpStatus.SC_OK:
+                    result = EntityUtils.toString(response.getEntity(), "utf-8");
+                    logger.info("call succeeded,return msg:" + result);
+                    break;
+                case HttpStatus.SC_CREATED:
+                    result = EntityUtils.toString(response.getEntity(), "utf-8");
+                    logger.info("call succeeded,return msg:" + result);
+                    break;
+                default:
+                    logger.warn("call failed,return msg:" + EntityUtils.toString(response.getEntity(), "utf-8"));
+                    result = INTERFACE_CALL_ERROR;
+                    break;
             }
         } catch (UnsupportedCharsetException e) {
-            logger.error("Interface call error", e);
-            result = "Interface call error:UnsupportedCharsetException";
+            logger.error(INTERFACE_CALL_ERROR, e);
+            result = (INTERFACE_CALL_ERROR + ":UnsupportedCharsetException");
         } catch (ClientProtocolException e) {
-            logger.error("Interface call error", e);
-            result = "Interface call error:ClientProtocolException";
+            logger.error(INTERFACE_CALL_ERROR, e);
+            result = (INTERFACE_CALL_ERROR + ":ClientProtocolException");
         } catch (ParseException e) {
-            logger.error("Interface call error", e);
-            result = "Interface call error:ParseException";
+            logger.error(INTERFACE_CALL_ERROR, e);
+            result = (INTERFACE_CALL_ERROR + ":ParseException");
         } catch (IOException e) {
-            logger.error("Interface call error", e);
-            result = "Interface call error:IOException";
+            logger.error(INTERFACE_CALL_ERROR, e);
+            result = (INTERFACE_CALL_ERROR + ":IOException");
         } finally {
             // Close the connection and release the resource
             httpPost.releaseConnection();
@@ -177,24 +186,34 @@ public class HttpUtils {
                 logger.info("call succeeded,return msg:" + response.toString());
                 // Get result entity
                 // Determine whether the network connection status code is normal (0--200 are normal)
-                if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-                    result = EntityUtils.toString(response.getEntity(), "utf-8");
-                    logger.info("call succeeded,return msg: " + result);
+                switch (response.getStatusLine().getStatusCode()) {
+                    case HttpStatus.SC_OK:
+                        result = EntityUtils.toString(response.getEntity(), "utf-8");
+                        logger.info("call succeeded,return msg:" + result);
+                        break;
+                    case HttpStatus.SC_CREATED:
+                        result = EntityUtils.toString(response.getEntity(), "utf-8");
+                        logger.info("call succeeded,return msg:" + result);
+                        break;
+                    default:
+                        logger.warn("call failed,return msg:" + EntityUtils.toString(response.getEntity(), "utf-8"));
+                        result = INTERFACE_CALL_ERROR;
+                        break;
                 }
                 // Release link
                 response.close();
             } catch (ClientProtocolException e) {
-                logger.error("Interface call error", e);
-                result = "Interface call error:ClientProtocolException";
+                logger.error(INTERFACE_CALL_ERROR, e);
+                result = (INTERFACE_CALL_ERROR + ":ClientProtocolException");
             } catch (ParseException e) {
-                logger.error("Interface call error", e);
-                result = "Interface call error:ParseException";
+                logger.error(INTERFACE_CALL_ERROR, e);
+                result = (INTERFACE_CALL_ERROR + ":ParseException");
             } catch (IOException e) {
-                logger.error("Interface call error", e);
-                result = "Interface call error:IOException";
+                logger.error(INTERFACE_CALL_ERROR, e);
+                result = (INTERFACE_CALL_ERROR + ":IOException");
             } catch (URISyntaxException e) {
-                logger.error("Interface call error", e);
-                result = "Interface call error:URISyntaxException";
+                logger.error(INTERFACE_CALL_ERROR, e);
+                result = (INTERFACE_CALL_ERROR + ":URISyntaxException");
             }
         }
         return result;
@@ -275,25 +294,32 @@ public class HttpUtils {
             logger.info("call succeeded,return msg:" + response.toString());
             // Get result entity
             // Determine whether the network connection status code is normal (0--200 are normal)
-            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-                result = EntityUtils.toString(response.getEntity(), "utf-8");
-                logger.info("call succeeded,return msg:" + result);
-            } else {
-                logger.warn("call failed,return msg:" + result);
-                result = "Interface call error";
-            }
+            switch (response.getStatusLine().getStatusCode()) {
+	            case HttpStatus.SC_OK:
+	            	result = EntityUtils.toString(response.getEntity(), "utf-8");
+	                logger.info("call succeeded,return msg:" + result);
+	                break;
+	            case HttpStatus.SC_CREATED:
+	            	result = EntityUtils.toString(response.getEntity(), "utf-8");
+	                logger.info("call succeeded,return msg:" + result);
+	                break;
+	            default:
+	                logger.warn("call failed,return msg:" + EntityUtils.toString(response.getEntity(), "utf-8"));
+	                result = INTERFACE_CALL_ERROR;
+	                break;
+	        }
         } catch (UnsupportedCharsetException e) {
-            logger.error("Interface call error", e);
-            result = "Interface call error:UnsupportedCharsetException";
+            logger.error(INTERFACE_CALL_ERROR, e);
+            result = (INTERFACE_CALL_ERROR + ":UnsupportedCharsetException");
         } catch (ClientProtocolException e) {
-            logger.error("Interface call error", e);
-            result = "Interface call error:ClientProtocolException";
+            logger.error(INTERFACE_CALL_ERROR, e);
+            result = (INTERFACE_CALL_ERROR + ":ClientProtocolException");
         } catch (ParseException e) {
-            logger.error("Interface call error", e);
-            result = "Interface call error:ParseException";
+            logger.error(INTERFACE_CALL_ERROR, e);
+            result = (INTERFACE_CALL_ERROR + ":ParseException");
         } catch (IOException e) {
-            logger.error("Interface call error", e);
-            result = "Interface call error:IOException";
+            logger.error(INTERFACE_CALL_ERROR, e);
+            result = (INTERFACE_CALL_ERROR + ":IOException");
         } finally {
             // Close the connection and release the resource
             httpDelete.releaseConnection();

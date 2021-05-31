@@ -1,7 +1,5 @@
 package cn.cnic.component.livy.vo;
 
-import cn.cnic.base.BaseHibernateModelNoId;
-import cn.cnic.base.BaseHibernateModelUUIDNoCorpAgentId;
 import lombok.Getter;
 import lombok.Setter;
 

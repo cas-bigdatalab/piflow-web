@@ -8,7 +8,6 @@ import cn.cnic.component.livy.service.ICodeSnippetService;
 import cn.cnic.component.livy.util.CodeSnippetUtils;
 import cn.cnic.controller.requestVo.RequesCodeSnippetVo;
 import cn.cnic.third.livy.service.ILivy;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 
-@Slf4j
 @Service
 public class CodeSnippetServiceImpl implements ICodeSnippetService {
 
@@ -109,7 +107,7 @@ public class CodeSnippetServiceImpl implements ICodeSnippetService {
         String sessionsId = noteBook.getSessionsId();
         String codeContent = codeSnippet.getCodeContent();
         Map<String, Object> stringObjectMap = livyImpl.runStatements(sessionsId, codeContent);
-        return null;
+        return ReturnMapUtils.mapToJson(stringObjectMap);
     }
 
     @Override
