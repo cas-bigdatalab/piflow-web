@@ -1,15 +1,18 @@
-package cn.cnic.controller;
+package cn.cnic.controller.api;
 
 import javax.annotation.Resource;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.cnic.base.util.SessionUserUtil;
 import cn.cnic.component.schedule.service.IScheduleService;
 import cn.cnic.component.schedule.vo.ScheduleVo;
+import io.swagger.annotations.Api;
 
+@Api(value = "schedule api")
 @RestController
 @RequestMapping("/schedule")
 public class ScheduleCtrl {
@@ -25,7 +28,7 @@ public class ScheduleCtrl {
      * @param param search param
      * @return json
      */
-    @RequestMapping("/getScheduleVoListPage")
+    @RequestMapping(value = "/getScheduleVoListPage", method = RequestMethod.GET)
     @ResponseBody
     public String getScheduleVoListPage(Integer page, Integer limit, String param) {
         String username = SessionUserUtil.getCurrentUsername();
@@ -39,7 +42,7 @@ public class ScheduleCtrl {
      * @param scheduleVo
      * @return
      */
-    @RequestMapping("/addSchedule")
+    @RequestMapping(value = "/addSchedule", method = RequestMethod.POST)
     @ResponseBody
     public String addSchedule(ScheduleVo scheduleVo) {
         String username = SessionUserUtil.getCurrentUsername();
@@ -52,7 +55,7 @@ public class ScheduleCtrl {
      * @param scheduleId
      * @return
      */
-    @RequestMapping("/getScheduleById")
+    @RequestMapping(value = "/getScheduleById", method = RequestMethod.GET)
     @ResponseBody
     public String getScheduleById(String scheduleId) {
         String username = SessionUserUtil.getCurrentUsername();
@@ -66,7 +69,7 @@ public class ScheduleCtrl {
      * @param scheduleVo
      * @return
      */
-    @RequestMapping("/updateSchedule")
+    @RequestMapping(value = "/updateSchedule", method = RequestMethod.POST)
     @ResponseBody
     public String updateSchedule(ScheduleVo scheduleVo) {
         String username = SessionUserUtil.getCurrentUsername();
@@ -80,7 +83,7 @@ public class ScheduleCtrl {
      * @param scheduleId
      * @return
      */
-    @RequestMapping("/delSchedule")
+    @RequestMapping(value = "/delSchedule", method = RequestMethod.POST)
     @ResponseBody
     public String delSchedule(String scheduleId) {
         String username = SessionUserUtil.getCurrentUsername();
@@ -95,7 +98,7 @@ public class ScheduleCtrl {
      * @param scheduleId
      * @return
      */
-    @RequestMapping("/startSchedule")
+    @RequestMapping(value = "/startSchedule", method = RequestMethod.POST)
     @ResponseBody
     public String startSchedule(String scheduleId) {
         String username = SessionUserUtil.getCurrentUsername();
@@ -109,7 +112,7 @@ public class ScheduleCtrl {
      * @param scheduleId
      * @return
      */
-    @RequestMapping("/stopSchedule")
+    @RequestMapping(value = "/stopSchedule", method = RequestMethod.POST)
     @ResponseBody
     public String stopSchedule(String scheduleId) {
         String username = SessionUserUtil.getCurrentUsername();
