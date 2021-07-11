@@ -1,7 +1,7 @@
 package cn.cnic.component.process.service.Impl;
 
-import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.base.util.ReturnMapUtils;
+import cn.cnic.base.utils.LoggerUtil;
+import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.component.process.entity.ProcessStop;
 import cn.cnic.component.process.service.IProcessStopService;
 import cn.cnic.component.process.utils.ProcessUtils;

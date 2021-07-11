@@ -1,4 +1,4 @@
-package cn.cnic.base.util;
+package cn.cnic.base.utils;
 
 import java.util.UUID;
 

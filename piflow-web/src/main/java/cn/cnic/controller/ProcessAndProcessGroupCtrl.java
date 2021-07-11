@@ -8,8 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.base.util.SessionUserUtil;
+import cn.cnic.base.utils.LoggerUtil;
+import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.component.process.service.IProcessAndProcessGroupService;
 import cn.cnic.component.process.service.IProcessGroupService;
 import cn.cnic.component.process.service.IProcessService;

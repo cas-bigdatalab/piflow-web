@@ -9,7 +9,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import cn.cnic.base.util.*;
+import cn.cnic.base.utils.*;
 import cn.cnic.base.vo.UserVo;
 import cn.cnic.component.mxGraph.entity.MxCell;
 import cn.cnic.component.mxGraph.entity.MxGraphModel;

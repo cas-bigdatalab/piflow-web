@@ -1,6 +1,6 @@
 package cn.cnic.component.template.service.impl;
 
-import cn.cnic.base.util.*;
+import cn.cnic.base.utils.*;
 import cn.cnic.common.Eunm.TemplateType;
 import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.component.flow.entity.*;

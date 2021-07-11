@@ -2,7 +2,7 @@ package cn.cnic.component.testData.utils;
 
 import java.util.Date;
 
-import cn.cnic.base.util.UUIDUtils;
+import cn.cnic.base.utils.UUIDUtils;
 import cn.cnic.component.testData.entity.TestData;
 
 public class TestDataUtils {

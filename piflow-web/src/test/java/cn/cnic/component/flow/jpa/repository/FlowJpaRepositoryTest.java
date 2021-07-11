@@ -1,7 +1,7 @@
 package cn.cnic.component.flow.jpa.repository;
 
 import cn.cnic.ApplicationTests;
-import cn.cnic.base.util.LoggerUtil;
+import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.component.flow.entity.Flow;
 import org.junit.Test;
 import org.slf4j.Logger;

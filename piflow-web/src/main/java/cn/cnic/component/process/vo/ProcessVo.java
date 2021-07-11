@@ -1,6 +1,6 @@
 package cn.cnic.component.process.vo;
 
-import cn.cnic.base.util.DateUtils;
+import cn.cnic.base.utils.DateUtils;
 import cn.cnic.common.Eunm.ProcessState;
 import cn.cnic.common.Eunm.RunModeType;
 import cn.cnic.component.mxGraph.vo.MxGraphModelVo;

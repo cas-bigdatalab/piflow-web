@@ -1,14 +1,14 @@
-package cn.cnic.base.util;
+package cn.cnic.base.utils;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
+
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 public class ReturnMapUtils {
-
-    private static Logger logger = LoggerUtil.getLogger();
 
     public static Integer SUCCEEDED_CODE = 200;
     public static Integer ERROR_CODE = 500;
@@ -26,7 +26,7 @@ public class ReturnMapUtils {
      */
     public static Map<String, Object> setFailedMsg(String errorMsg) {
         errorMsg = (StringUtils.isNotBlank(errorMsg) ? errorMsg : ERROR_MSG);
-        logger.warn(errorMsg);
+        log.warn(errorMsg);
         Map<String, Object> rtnMap = new HashMap<>();
         rtnMap.put(KEY_CODE, ERROR_CODE);
         rtnMap.put(KEY_ERROR_MSG, errorMsg);
@@ -52,7 +52,7 @@ public class ReturnMapUtils {
      */
     public static Map<String, Object> setSucceededMsg(String succeededMsg) {
         succeededMsg = (StringUtils.isNotBlank(succeededMsg) ? succeededMsg : SUCCEEDED_MSG);
-        logger.info(succeededMsg);
+        log.info(succeededMsg);
         Map<String, Object> rtnMap = new HashMap<>();
         rtnMap.put(KEY_CODE, SUCCEEDED_CODE);
         rtnMap.put(KEY_ERROR_MSG, succeededMsg);

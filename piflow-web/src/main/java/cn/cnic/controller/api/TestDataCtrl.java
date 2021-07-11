@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import cn.cnic.base.util.SessionUserUtil;
+import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.component.testData.service.ITestDataService;
 import cn.cnic.controller.requestVo.RequestTestDataVo;
 import cn.cnic.controller.requestVo.TestDataSchemaValuesSaveVo;

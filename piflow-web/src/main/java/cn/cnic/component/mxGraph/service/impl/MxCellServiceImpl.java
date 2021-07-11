@@ -1,6 +1,6 @@
 package cn.cnic.component.mxGraph.service.impl;
 
-import cn.cnic.base.util.LoggerUtil;
+import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.component.mxGraph.entity.MxCell;
 import cn.cnic.component.mxGraph.service.IMxCellService;
 import cn.cnic.component.mxGraph.mapper.MxCellMapper;

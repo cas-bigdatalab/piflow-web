@@ -1,6 +1,6 @@
 package cn.cnic.component.stopsComponent.mapper.provider;
 
-import cn.cnic.base.util.SqlUtils;
+import cn.cnic.base.utils.SqlUtils;
 import cn.cnic.component.stopsComponent.model.StopsComponentProperty;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;

@@ -1,6 +1,5 @@
 package cn.cnic.base.config;
 
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.annotation.Bean;
@@ -19,18 +18,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import cn.cnic.base.config.jwt.CustomUserDetailsService;
 import cn.cnic.base.config.jwt.JwtAuthenticationEntryPoint;
 import cn.cnic.base.config.jwt.JwtAuthenticationTokenFilter;
-import cn.cnic.base.util.LoggerUtil;
 import cn.cnic.common.constant.SysParamsCache;
 
 @Configurable
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)//Pre-Method Check for Allowing Page Entry
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
-    /**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
-    Logger logger = LoggerUtil.getLogger();
 
 
     @Autowired

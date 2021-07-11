@@ -1,6 +1,6 @@
 package cn.cnic.component.system.service.Impl;
 
-import cn.cnic.base.util.LoggerUtil;
+import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.vo.UserVo;
 import cn.cnic.common.Eunm.SysRoleType;
 import cn.cnic.component.system.entity.SysMenu;

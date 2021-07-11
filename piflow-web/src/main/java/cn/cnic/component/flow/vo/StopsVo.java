@@ -1,6 +1,6 @@
 package cn.cnic.component.flow.vo;
 
-import cn.cnic.base.util.DateUtils;
+import cn.cnic.base.utils.DateUtils;
 import cn.cnic.common.Eunm.PortType;
 import cn.cnic.component.dataSource.vo.DataSourceVo;
 import lombok.Getter;

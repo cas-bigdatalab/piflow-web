@@ -8,7 +8,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import cn.cnic.base.util.*;
+import cn.cnic.base.utils.*;
 import cn.cnic.component.flow.mapper.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;

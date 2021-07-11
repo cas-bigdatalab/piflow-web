@@ -1,7 +1,7 @@
 package cn.cnic.component.flow.service.impl;
 
-import cn.cnic.base.util.JsonUtils;
-import cn.cnic.base.util.LoggerUtil;
+import cn.cnic.base.utils.JsonUtils;
+import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.component.flow.entity.FlowGroup;
 import cn.cnic.component.flow.entity.FlowGroupPaths;
 import cn.cnic.component.flow.service.IFlowGroupPathsService;

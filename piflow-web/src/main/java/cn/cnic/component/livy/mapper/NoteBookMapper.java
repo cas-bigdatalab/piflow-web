@@ -47,7 +47,7 @@ public interface NoteBookMapper {
      * @return Integer
      */
     @SelectProvider(type = NoteBookMapperProvider.class,method = "checkNoteBookByName")
-    public List<NoteBook> checkNoteBookByName(@Param("isAdmin") boolean isAdmin, @Param("username") String username, @Param("name") String name);
+    public Integer checkNoteBookByName(@Param("isAdmin") boolean isAdmin, @Param("username") String username, @Param("name") String name);
 
 
     /**

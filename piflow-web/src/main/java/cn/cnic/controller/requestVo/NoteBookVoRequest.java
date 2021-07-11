@@ -10,7 +10,7 @@ import java.io.Serializable;
 @Setter
 @Getter
 @ApiModel(description = "noteBook")
-public class RequesNoteBookVo implements Serializable {
+public class NoteBookVoRequest implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

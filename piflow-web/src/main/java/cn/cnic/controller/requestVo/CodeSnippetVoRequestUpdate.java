@@ -10,14 +10,14 @@ import java.io.Serializable;
 @Setter
 @Getter
 @ApiModel(description = "CodeSnippet")
-public class RequesCodeSnippetVo implements Serializable {
+public class CodeSnippetVoRequestUpdate implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(value = "noteBook id")
+    @ApiModelProperty(value = "noteBook id", required = true)
     private String noteBookId;
     
-    @ApiModelProperty(value = "codeSnippet id")
+    @ApiModelProperty(value = "codeSnippet id", required = true)
     private String id;
 
     @ApiModelProperty(value = "codeSnippet code content", required = true)
@@ -26,6 +26,6 @@ public class RequesCodeSnippetVo implements Serializable {
     @ApiModelProperty(value = "codeSnippet execute id")
     private String executeId;
 
-    @ApiModelProperty(value = "codeSnippet sort id")
-    private String codeSnippetSort;
+    @ApiModelProperty(value = "codeSnippet sort id", example = "0", required = true)
+    private int codeSnippetSort;
 }

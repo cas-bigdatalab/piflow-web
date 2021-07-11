@@ -5,8 +5,8 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
-import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.base.util.ReturnMapUtils;
+import cn.cnic.base.utils.LoggerUtil;
+import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.component.stopsComponent.domain.StopsComponentManageDomain;
 import cn.cnic.component.stopsComponent.model.StopsComponentManage;
 import cn.cnic.component.stopsComponent.service.IStopsComponentManageService;

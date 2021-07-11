@@ -37,7 +37,7 @@ public class Swagger2Config {
         return new Docket(DocumentationType.SWAGGER_2)
                 .enable(true)
                 .apiInfo(apiInfo())
-                //.groupName("实时监测")
+                .groupName("piflow-web")
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("cn.cnic.controller.api"))
                 .paths(PathSelectors.any())

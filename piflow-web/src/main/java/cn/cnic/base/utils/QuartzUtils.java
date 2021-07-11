@@ -1,12 +1,12 @@
-package cn.cnic.base.util;
+package cn.cnic.base.utils;
 
 import cn.cnic.component.system.entity.SysSchedule;
+import lombok.extern.slf4j.Slf4j;
+
 import org.quartz.*;
-import org.slf4j.Logger;
 
+@Slf4j
 public class QuartzUtils {
-
-    static Logger logger = LoggerUtil.getLogger();
 
     /**
      * Create a timed task(The default startup state after a scheduled task is created)
@@ -29,9 +29,9 @@ public class QuartzUtils {
             CronTrigger trigger = TriggerBuilder.newTrigger().withIdentity(sysSchedule.getJobName()).withSchedule(scheduleBuilder).build();
             scheduler.scheduleJob(jobDetail, trigger);
         } catch (ClassNotFoundException e) {
-            logger.error("Timed task class path error: Please enter the absolute path of the class", e);
+            log.error("Timed task class path error: Please enter the absolute path of the class", e);
         } catch (SchedulerException e) {
-            logger.error("Error creating scheduled task:", e);
+            log.error("Error creating scheduled task:", e);
         }
     }
 
@@ -47,7 +47,7 @@ public class QuartzUtils {
         try {
             scheduler.pauseJob(jobKey);
         } catch (SchedulerException e) {
-            logger.error("Error suspending scheduled task:", e);
+            log.error("Error suspending scheduled task:", e);
         }
     }
 
@@ -63,7 +63,7 @@ public class QuartzUtils {
         try {
             scheduler.resumeJob(jobKey);
         } catch (SchedulerException e) {
-            logger.error("Error resuming scheduled task:", e);
+            log.error("Error resuming scheduled task:", e);
         }
     }
 
@@ -79,7 +79,7 @@ public class QuartzUtils {
         try {
             scheduler.triggerJob(jobKey);
         } catch (SchedulerException e) {
-            logger.error("Error running scheduled task：", e);
+            log.error("Error running scheduled task：", e);
         }
     }
 
@@ -102,7 +102,7 @@ public class QuartzUtils {
             //Reset the corresponding job
             scheduler.rescheduleJob(triggerKey, trigger);
         } catch (SchedulerException e) {
-            logger.error("Update timing task error:", e);
+            log.error("Update timing task error:", e);
         }
     }
 
@@ -118,7 +118,7 @@ public class QuartzUtils {
         try {
             scheduler.deleteJob(jobKey);
         } catch (SchedulerException e) {
-            logger.error("Error deleting scheduled task：", e);
+            log.error("Error deleting scheduled task：", e);
         }
     }
 }

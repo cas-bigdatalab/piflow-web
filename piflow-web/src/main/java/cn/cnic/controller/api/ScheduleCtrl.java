@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import cn.cnic.base.util.SessionUserUtil;
+import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.component.schedule.service.IScheduleService;
 import cn.cnic.component.schedule.vo.ScheduleVo;
 import io.swagger.annotations.Api;

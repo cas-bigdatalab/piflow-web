@@ -8,7 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import cn.cnic.base.util.SessionUserUtil;
+import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.common.Eunm.DrawingBoardType;
 import cn.cnic.component.flow.service.IFlowGroupService;
 import cn.cnic.component.flow.service.IFlowService;

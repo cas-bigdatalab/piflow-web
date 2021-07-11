@@ -1,7 +1,7 @@
 package cn.cnic.component.stop.service;
 
 import cn.cnic.ApplicationTests;
-import cn.cnic.base.util.LoggerUtil;
+import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.component.stopsComponent.model.StopsComponent;
 import cn.cnic.component.stopsComponent.service.IStopsComponentService;
 import org.junit.Test;

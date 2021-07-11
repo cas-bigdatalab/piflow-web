@@ -1,29 +1,27 @@
 package cn.cnic.component.livy.service.impl;
 
-import cn.cnic.base.util.*;
+import cn.cnic.base.utils.*;
 import cn.cnic.component.livy.entity.NoteBook;
 import cn.cnic.component.livy.mapper.NoteBookMapper;
 import cn.cnic.component.livy.service.INoteBookService;
 import cn.cnic.component.livy.util.NoteBookUtils;
-import cn.cnic.controller.requestVo.RequesNoteBookVo;
+import cn.cnic.controller.requestVo.NoteBookVoRequest;
 import cn.cnic.third.livy.service.ILivy;
+
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 @Service
 @Transactional
 public class NoteBookServiceImpl implements INoteBookService {
-    Logger logger = LoggerUtil.getLogger();
 
     @Autowired
     private NoteBookMapper noteBookMapper;
@@ -32,7 +30,7 @@ public class NoteBookServiceImpl implements INoteBookService {
     private ILivy livyImpl;
 
     @Override
-    public String saveOrUpdateNoteBook(String username, boolean isAdmin, RequesNoteBookVo noteBookVo, boolean flag) throws Exception {
+    public String saveOrUpdateNoteBook(String username, boolean isAdmin, NoteBookVoRequest noteBookVo, boolean flag) throws Exception {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
         }
@@ -68,12 +66,11 @@ public class NoteBookServiceImpl implements INoteBookService {
 
     @Override
     public String checkNoteBookName(String username, boolean isAdmin, String noteBookName) {
-        List<NoteBook> noteBookList = noteBookMapper.checkNoteBookByName(isAdmin, username, noteBookName);
-        if (StringUtils.isBlank(username)) {
+        int noteBookNameCount = noteBookMapper.checkNoteBookByName(isAdmin, username, noteBookName);
+        if (StringUtils.isBlank(noteBookName)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("noteBook name can not be empty");
         }
-
-        if (noteBookList.size() > 0) {
+        if (noteBookNameCount > 0) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("noteBook is already taken");
         } else {
             return ReturnMapUtils.setSucceededMsgRtnJsonStr("noteBook is available");
@@ -109,6 +106,29 @@ public class NoteBookServiceImpl implements INoteBookService {
         Map<String, Object> rtnMap = PageHelperUtils.setLayTableParam(page, null);
         rtnMap.put(ReturnMapUtils.KEY_CODE, ReturnMapUtils.SUCCEEDED_CODE);
         return JsonUtils.toJsonNoException(rtnMap);
+    }
+    
+    /**
+     * getNoteBookById
+     *
+     * @param username
+     * @param isAdmin
+     * @param id
+     * @return String
+     */
+    @Override
+    public String getNoteBookById(String username, boolean isAdmin, String id) {
+    	if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
+        }
+        if (StringUtils.isBlank(id)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("noteBookId is null");
+        }
+        NoteBook noteBook = noteBookMapper.getNoteBookById(isAdmin, username, id);
+        if (null == noteBook) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("no data");
+        }
+    	return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("noteBook", noteBook);
     }
 
     /**

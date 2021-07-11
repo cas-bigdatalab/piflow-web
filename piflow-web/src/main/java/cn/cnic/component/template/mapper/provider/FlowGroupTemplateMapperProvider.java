@@ -1,6 +1,6 @@
 package cn.cnic.component.template.mapper.provider;
 
-import cn.cnic.base.util.SqlUtils;
+import cn.cnic.base.utils.SqlUtils;
 import org.apache.commons.lang3.StringUtils;
 
 public class FlowGroupTemplateMapperProvider {

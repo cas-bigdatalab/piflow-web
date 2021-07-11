@@ -1,7 +1,7 @@
 package cn.cnic.component.process.utils;
 
-import cn.cnic.base.util.JsonUtils;
-import cn.cnic.base.util.UUIDUtils;
+import cn.cnic.base.utils.JsonUtils;
+import cn.cnic.base.utils.UUIDUtils;
 import cn.cnic.common.Eunm.*;
 import cn.cnic.component.dataSource.utils.DataSourceUtils;
 import cn.cnic.component.flow.entity.*;

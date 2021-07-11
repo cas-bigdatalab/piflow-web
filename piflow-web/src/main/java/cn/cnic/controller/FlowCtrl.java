@@ -5,7 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import cn.cnic.base.util.SessionUserUtil;
+import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.component.flow.entity.Flow;
 import cn.cnic.component.flow.service.IFlowService;
 import cn.cnic.component.flow.vo.FlowVo;

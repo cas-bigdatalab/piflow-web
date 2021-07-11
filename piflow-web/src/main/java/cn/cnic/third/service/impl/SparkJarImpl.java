@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
 
-import cn.cnic.base.util.HttpUtils;
-import cn.cnic.base.util.LoggerUtil;
+import cn.cnic.base.utils.HttpUtils;
+import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.component.stopsComponent.mapper.StopsComponentGroupMapper;
 import cn.cnic.third.service.ISparkJar;

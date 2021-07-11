@@ -7,8 +7,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
-import cn.cnic.base.util.HttpUtils;
-import cn.cnic.base.util.LoggerUtil;
+import cn.cnic.base.utils.HttpUtils;
+import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.third.service.IResource;
 

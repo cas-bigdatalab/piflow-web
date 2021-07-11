@@ -1,14 +1,12 @@
-package cn.cnic.base.util;
+package cn.cnic.base.utils;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
+
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
 
 public class CheckFiledUtils {
-
-    static Logger logger = LoggerUtil.getLogger();
 
     /**
      * Determine whether the attribute value in the object has a null value

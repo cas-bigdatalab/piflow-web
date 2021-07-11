@@ -1,6 +1,6 @@
 package cn.cnic.component.flow.utils;
 
-import cn.cnic.base.util.UUIDUtils;
+import cn.cnic.base.utils.UUIDUtils;
 import cn.cnic.component.flow.entity.*;
 import cn.cnic.component.flow.vo.FlowVo;
 import cn.cnic.component.flow.vo.PathsVo;

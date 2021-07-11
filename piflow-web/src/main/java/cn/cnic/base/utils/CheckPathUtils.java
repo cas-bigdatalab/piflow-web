@@ -1,19 +1,18 @@
-package cn.cnic.base.util;
+package cn.cnic.base.utils;
 
-import org.slf4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 
+@Slf4j
 public class CheckPathUtils {
-
-    static Logger logger = LoggerUtil.getLogger();
 
     public static void isChartPathExist(String dirPath) {
         File file = new File(dirPath);
         if (!file.exists()) {
             boolean mkdirs = file.mkdirs();
             if(!mkdirs){
-                logger.warn("Create failed");
+                log.warn("Create failed");
             }
         }
     }

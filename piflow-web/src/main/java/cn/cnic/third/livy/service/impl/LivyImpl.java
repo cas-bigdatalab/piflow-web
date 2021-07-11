@@ -1,7 +1,7 @@
 package cn.cnic.third.livy.service.impl;
 
-import cn.cnic.base.util.HttpUtils;
-import cn.cnic.base.util.ReturnMapUtils;
+import cn.cnic.base.utils.HttpUtils;
+import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.third.livy.service.ILivy;
 import lombok.extern.slf4j.Slf4j;
@@ -28,8 +28,11 @@ public class LivyImpl implements ILivy {
     public Map<String, Object> startSessions() {
         String doPost = HttpUtils.doPost(SysParamsCache.getLivySessionsUrl(), "{\"kind\":\"spark\"}", null);
         log.info("return msg: " + doPost);
-        if (HttpUtils.INTERFACE_CALL_ERROR.equals(doPost)) {
+        if(StringUtils.isBlank(doPost)) {
         	return ReturnMapUtils.setFailedMsg("Error : Interface return value is null");
+        }
+        if (doPost.startsWith(HttpUtils.INTERFACE_CALL_ERROR)) {
+        	return ReturnMapUtils.setFailedMsg(doPost);
         }
         try {
             JSONObject obj = JSONObject.fromObject(doPost);// Convert a json string to a json object
@@ -49,7 +52,10 @@ public class LivyImpl implements ILivy {
         String url = SysParamsCache.getLivySessionsUrl() + "/" + sessionsId;
         String doDelete = HttpUtils.doDelete(url, null);
         log.info("return msg: " + doDelete);
-        if (HttpUtils.INTERFACE_CALL_ERROR.equals(doDelete)) {
+        if(StringUtils.isBlank(doDelete)) {
+        	return ReturnMapUtils.setFailedMsg("Error : Interface return value is null");
+        }
+        if (doDelete.startsWith(HttpUtils.INTERFACE_CALL_ERROR)) {
             return ReturnMapUtils.setFailedMsg(doDelete);
         }
         return ReturnMapUtils.setSucceededCustomParam("data", doDelete);
@@ -64,7 +70,10 @@ public class LivyImpl implements ILivy {
         String url = SysParamsCache.getLivySessionsUrl() + "/" + sessionsId + "/statements";
         String doPost = HttpUtils.doPost(url, json, null);
         log.info("return msg: " + doPost);
-        if (HttpUtils.INTERFACE_CALL_ERROR.equals(doPost)) {
+        if(StringUtils.isBlank(doPost)) {
+        	return ReturnMapUtils.setFailedMsg("Error : Interface return value is null");
+        }
+        if (doPost.startsWith(HttpUtils.INTERFACE_CALL_ERROR)) {
         	return ReturnMapUtils.setFailedMsg(doPost);
         }
         try {
@@ -85,7 +94,10 @@ public class LivyImpl implements ILivy {
         String url = SysParamsCache.getLivySessionsUrl() + "/" + sessionsId + "/statements/" + statementsId;
         String doGet = HttpUtils.doGet(url, null, null);
         log.info("return msg: " + doGet);
-        if (HttpUtils.INTERFACE_CALL_ERROR.equals(doGet)) {
+        if(StringUtils.isBlank(doGet)) {
+        	return ReturnMapUtils.setFailedMsg("Error : Interface return value is null");
+        }
+        if (doGet.startsWith(HttpUtils.INTERFACE_CALL_ERROR)) {
         	return ReturnMapUtils.setFailedMsg(doGet);
         }
         return ReturnMapUtils.setSucceededCustomParam("data", doGet);

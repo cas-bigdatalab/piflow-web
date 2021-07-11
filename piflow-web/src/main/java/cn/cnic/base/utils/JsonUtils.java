@@ -1,4 +1,4 @@
-package cn.cnic.base.util;
+package cn.cnic.base.utils;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonGenerationException;
@@ -7,8 +7,10 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.*;
+
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -18,10 +20,9 @@ import java.util.TimeZone;
 /**
  * Json utils
  */
+@Slf4j
 @SuppressWarnings("deprecation")
 public class JsonUtils {
-
-    private static Logger logger = LoggerUtil.getLogger();
 
     private static final ObjectMapper objectMapper;
 
@@ -53,11 +54,11 @@ public class JsonUtils {
         try {
             return objectMapper.readValue(json, clazz);
         } catch (JsonParseException e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         } catch (JsonMappingException e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         } catch (IOException e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
         return null;
     }
@@ -66,11 +67,11 @@ public class JsonUtils {
         try {
             return objectMapper.writeValueAsString(entity);
         } catch (JsonGenerationException e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         } catch (JsonMappingException e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         } catch (IOException e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
         return null;
     }
@@ -79,11 +80,11 @@ public class JsonUtils {
         try {
             return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(entity);
         } catch (JsonGenerationException e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         } catch (JsonMappingException e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         } catch (IOException e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
         return null;
     }
@@ -92,11 +93,11 @@ public class JsonUtils {
         try {
             return objectMapper.readValue(json, typeReference);
         } catch (JsonParseException e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         } catch (JsonMappingException e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         } catch (IOException e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
         return null;
     }
@@ -164,7 +165,7 @@ public class JsonUtils {
             JsonNode root = objectMapper.readTree(jsonStr);
             return root.get(fieldName);
         } catch (IOException e) {
-            logger.error("parse json string error:" + jsonStr, e);
+            log.error("parse json string error:" + jsonStr, e);
             return null;
         }
     }

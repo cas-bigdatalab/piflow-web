@@ -3,7 +3,7 @@ package cn.cnic.component.stopsComponent.mapper.provider;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
 
-import cn.cnic.base.util.SqlUtils;
+import cn.cnic.base.utils.SqlUtils;
 import cn.cnic.component.stopsComponent.model.StopsComponent;
 
 public class StopsComponentMapperProvider {

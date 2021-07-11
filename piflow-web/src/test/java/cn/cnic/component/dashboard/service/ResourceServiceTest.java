@@ -1,7 +1,7 @@
 package cn.cnic.component.dashboard.service;
 
 import cn.cnic.ApplicationTests;
-import cn.cnic.base.util.ReturnMapUtils;
+import cn.cnic.base.utils.ReturnMapUtils;
 import net.sf.json.JSONObject;
 import org.junit.Test;
 import org.springframework.test.annotation.Rollback;

@@ -1,4 +1,4 @@
-package cn.cnic.base.util;
+package cn.cnic.base.utils;
 
 import cn.cnic.base.BaseHibernateModelUUIDNoCorpAgentId;
 import org.apache.commons.lang3.StringUtils;
@@ -50,7 +50,7 @@ public class SqlUtils {
     }
 
     public static String baseFieldName() {
-        return " id, crt_dttm, crt_user, last_update_dttm, last_update_user, enable_flag, version ";
+        return " `id`, `crt_dttm`, `crt_user`, `last_update_dttm`, `last_update_user`, `enable_flag`, `version` ";
     }
 
     public static String baseFieldValues(BaseHibernateModelUUIDNoCorpAgentId baseInfo) {

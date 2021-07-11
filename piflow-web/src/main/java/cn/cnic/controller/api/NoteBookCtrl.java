@@ -1,8 +1,8 @@
 package cn.cnic.controller.api;
 
-import cn.cnic.base.util.SessionUserUtil;
+import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.component.livy.service.INoteBookService;
-import cn.cnic.controller.requestVo.RequesNoteBookVo;
+import cn.cnic.controller.requestVo.NoteBookVoRequest;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +26,7 @@ public class NoteBookCtrl {
      */
     @RequestMapping(value = "/saveOrUpdateNoteBook", method = RequestMethod.POST)
     @ResponseBody
-    public String saveOrUpdateNoteBook(@ApiParam(value = "noteBookVo", required = true) RequesNoteBookVo noteBookVo) throws Exception {
+    public String saveOrUpdateNoteBook(@ApiParam(value = "noteBookVo", required = true) NoteBookVoRequest noteBookVo) throws Exception {
         String currentUsername = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
         return noteBookServiceImpl.saveOrUpdateNoteBook(currentUsername, isAdmin, noteBookVo, false);

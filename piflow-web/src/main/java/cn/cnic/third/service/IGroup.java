@@ -50,18 +50,20 @@ public interface IGroup {
     public Double getFlowGroupProgress(String groupId);
 
     /**
-     * update FlowGroup by interface
+     * update FlowGroup By Interface
      *
      * @param groupId
+     * @throws Exception 
      */
-    public void updateFlowGroupByInterface(String groupId);
+    public void updateFlowGroupByInterface(String groupId) throws Exception;
 
     /**
-     * update FlowGroups by interface
+     * update FlowGroups By Interface
      *
      * @param groupIds
+     * @throws Exception 
      */
-    public void updateFlowGroupsByInterface(List<String> groupIds);
+    public void updateFlowGroupsByInterface(List<String> groupIds) throws Exception ;
 
 
 }

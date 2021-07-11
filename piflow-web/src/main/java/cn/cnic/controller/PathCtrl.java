@@ -1,7 +1,7 @@
 package cn.cnic.controller;
 
-import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.base.util.SessionUserUtil;
+import cn.cnic.base.utils.LoggerUtil;
+import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.component.flow.request.UpdatePathRequest;
 import cn.cnic.component.flow.service.IPathsService;
 import cn.cnic.component.flow.service.IPropertyService;

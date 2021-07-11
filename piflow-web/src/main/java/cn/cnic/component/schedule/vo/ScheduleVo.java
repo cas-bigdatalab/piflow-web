@@ -3,7 +3,7 @@ package cn.cnic.component.schedule.vo;
 import java.io.Serializable;
 import java.util.Date;
 
-import cn.cnic.base.util.DateUtils;
+import cn.cnic.base.utils.DateUtils;
 import cn.cnic.common.Eunm.ScheduleState;
 import lombok.Getter;
 import lombok.Setter;

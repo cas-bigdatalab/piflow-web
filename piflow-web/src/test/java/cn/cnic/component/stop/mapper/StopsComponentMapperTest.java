@@ -1,9 +1,9 @@
 package cn.cnic.component.stop.mapper;
 
 import cn.cnic.ApplicationTests;
-import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.base.util.SessionUserUtil;
-import cn.cnic.base.util.UUIDUtils;
+import cn.cnic.base.utils.LoggerUtil;
+import cn.cnic.base.utils.SessionUserUtil;
+import cn.cnic.base.utils.UUIDUtils;
 import cn.cnic.base.vo.UserVo;
 import cn.cnic.component.stopsComponent.mapper.StopsComponentPropertyMapper;
 import cn.cnic.component.stopsComponent.mapper.StopsComponentGroupMapper;

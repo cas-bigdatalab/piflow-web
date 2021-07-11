@@ -1,8 +1,6 @@
 package cn.cnic.base.config;
 
-import cn.cnic.base.util.LoggerUtil;
 
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -10,6 +8,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
 
@@ -17,12 +16,9 @@ import java.util.Arrays;
  * @ClassName: WebAppConfig
  * @Description: TODO(Here is a sentence describing the function of this class.)
  */
+@Slf4j
 @Configuration
 public class WebAppConfig implements WebMvcConfigurer {
-    /**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
-    Logger logger = LoggerUtil.getLogger();
 
     /**
      * Inject the first defined interceptor
@@ -38,9 +34,9 @@ public class WebAppConfig implements WebMvcConfigurer {
         String imagesPath = ("file:" + storagePathHead + "/storage/image/");
         String videosPath = ("file:" + storagePathHead + "/storage/video/");
         String xmlPath = ("file:" + storagePathHead + "/storage/xml/");
-        logger.info("imagesPath=" + imagesPath);
-        logger.info("videosPath=" + videosPath);
-        logger.info("xmlPath=" + xmlPath);
+        log.info("imagesPath=" + imagesPath);
+        log.info("videosPath=" + videosPath);
+        log.info("xmlPath=" + xmlPath);
         registry.addResourceHandler("/images/**", "/videos/**", "/xml/**").addResourceLocations(imagesPath, videosPath, xmlPath);
         
         // Swagger2Config

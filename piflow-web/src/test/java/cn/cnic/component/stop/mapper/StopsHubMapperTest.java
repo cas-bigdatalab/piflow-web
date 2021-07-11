@@ -1,7 +1,7 @@
 package cn.cnic.component.stop.mapper;
 
 import cn.cnic.ApplicationTests;
-import cn.cnic.base.util.LoggerUtil;
+import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.common.Eunm.StopsHubState;
 import cn.cnic.component.stopsComponent.model.StopsHub;
 import cn.cnic.component.stopsComponent.mapper.StopsHubMapper;

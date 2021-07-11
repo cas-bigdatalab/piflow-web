@@ -1,8 +1,8 @@
 package cn.cnic.component.flow.mapper;
 
 import cn.cnic.ApplicationTests;
-import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.base.util.UUIDUtils;
+import cn.cnic.base.utils.LoggerUtil;
+import cn.cnic.base.utils.UUIDUtils;
 import cn.cnic.component.flow.entity.Stops;
 import org.junit.Test;
 import org.slf4j.Logger;

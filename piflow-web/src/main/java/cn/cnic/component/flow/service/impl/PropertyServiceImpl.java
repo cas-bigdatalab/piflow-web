@@ -1,6 +1,6 @@
 package cn.cnic.component.flow.service.impl;
 
-import cn.cnic.base.util.*;
+import cn.cnic.base.utils.*;
 import cn.cnic.common.Eunm.PortType;
 import cn.cnic.component.flow.entity.Paths;
 import cn.cnic.component.flow.entity.Property;

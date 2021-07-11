@@ -1,4 +1,4 @@
-package cn.cnic.base.util;
+package cn.cnic.base.utils;
 
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -15,7 +15,6 @@ import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
-import org.slf4j.Logger;
 import org.xml.sax.InputSource;
 
 import cn.cnic.common.Eunm.PortType;
@@ -34,11 +33,11 @@ import cn.cnic.component.mxGraph.utils.MxCellUtils;
 import cn.cnic.component.mxGraph.vo.MxCellVo;
 import cn.cnic.component.mxGraph.vo.MxGeometryVo;
 import cn.cnic.component.mxGraph.vo.MxGraphModelVo;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @SuppressWarnings("rawtypes")
 public class FlowXmlUtils {
-
-    static Logger logger = LoggerUtil.getLogger();
 
     private static String spliceStr(String key, Object value) {
         return key + "=\"" + value + "\" ";
@@ -56,7 +55,7 @@ public class FlowXmlUtils {
         try {
             String xmlStr = xmlData;
             if (isEscape) {
-                logger.debug("test");
+                log.debug("test");
                 //xmlStr = StringEscapeUtils.unescapeHtml(xmlData);
             }
             Document document = DocumentHelper.parseText(xmlStr);
@@ -69,7 +68,7 @@ public class FlowXmlUtils {
             // Get all nodes with "autoSaveNode" attribute
             return document.getRootElement(); // Get the root node
         } catch (DocumentException e) {
-            logger.error("Conversion failed", e);
+            log.error("Conversion failed", e);
             return null;
         }
     }
@@ -534,7 +533,7 @@ public class FlowXmlUtils {
             mxGraphModelVo.setRootVo(rootVoList);
             return mxGraphModelVo;
         } catch (Exception e) {
-            logger.error("Conversion failed", e);
+            log.error("Conversion failed", e);
             return null;
         }
     }
@@ -660,7 +659,7 @@ public class FlowXmlUtils {
             mxGraphModel.setRoot(rootList);
             return mxGraphModel;
         } catch (Exception e) {
-            logger.error("Conversion failed", e);
+            log.error("Conversion failed", e);
             return null;
         }
     }
@@ -752,7 +751,7 @@ public class FlowXmlUtils {
             paths.setFilterCondition(filterCondition);
             return paths;
         } catch (Exception e) {
-            logger.error("Conversion failed", e);
+            log.error("Conversion failed", e);
             return null;
         }
     }
@@ -854,7 +853,7 @@ public class FlowXmlUtils {
             }
             return stops;
         } catch (Exception e) {
-            logger.error("Conversion failed", e);
+            log.error("Conversion failed", e);
             return null;
         }
     }
@@ -930,7 +929,7 @@ public class FlowXmlUtils {
             flow.setStopsList(stopsList);
             return flow;
         } catch (Exception e) {
-            logger.error("Conversion failed", e);
+            log.error("Conversion failed", e);
             return null;
         }
     }
@@ -1033,7 +1032,7 @@ public class FlowXmlUtils {
 
             return ReturnMapUtils.setSucceededCustomParam("flowGroup", flowGroup);
         } catch (Exception e) {
-            logger.error("Conversion failed", e);
+            log.error("Conversion failed", e);
             return ReturnMapUtils.setFailedMsg("Conversion failed");
         }
     }
@@ -1111,7 +1110,7 @@ public class FlowXmlUtils {
             flow.setMxGraphModel(mxGraphModel);
             return ReturnMapUtils.setSucceededCustomParam("flow", flow);
         } catch (Exception e) {
-            logger.error("Conversion failed", e);
+            log.error("Conversion failed", e);
             return ReturnMapUtils.setFailedMsg("Conversion failed");
         }
     }
@@ -1239,7 +1238,7 @@ public class FlowXmlUtils {
             }
             return stops;
         } catch (Exception e) {
-            logger.error("Conversion failed", e);
+            log.error("Conversion failed", e);
             return null;
         }
     }
@@ -1334,7 +1333,7 @@ public class FlowXmlUtils {
             mxGraphModel.setFlowGroup(flowGroup);
             return mxGraphModel;
         } catch (Exception e) {
-            logger.error("Conversion failed", e);
+            log.error("Conversion failed", e);
             return null;
         }
     }

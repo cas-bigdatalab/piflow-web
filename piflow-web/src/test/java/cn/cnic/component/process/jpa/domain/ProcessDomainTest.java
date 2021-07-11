@@ -1,7 +1,7 @@
 package cn.cnic.component.process.jpa.domain;
 
 import cn.cnic.ApplicationTests;
-import cn.cnic.base.util.LoggerUtil;
+import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.common.Eunm.ProcessState;
 import cn.cnic.component.process.entity.Process;
 import cn.cnic.component.process.mapper.ProcessMapper;

@@ -1,6 +1,6 @@
 package cn.cnic.component.flow.utils;
 
-import cn.cnic.base.util.UUIDUtils;
+import cn.cnic.base.utils.UUIDUtils;
 import cn.cnic.component.flow.entity.FlowGroupPaths;
 import cn.cnic.component.flow.vo.FlowGroupPathsVo;
 import org.springframework.beans.BeanUtils;

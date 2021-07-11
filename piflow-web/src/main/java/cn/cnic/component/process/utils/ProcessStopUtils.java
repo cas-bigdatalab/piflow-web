@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.BeanUtils;
 
-import cn.cnic.base.util.UUIDUtils;
+import cn.cnic.base.utils.UUIDUtils;
 import cn.cnic.component.process.entity.ProcessStop;
 import cn.cnic.component.process.entity.ProcessStopCustomizedProperty;
 import cn.cnic.component.process.entity.ProcessStopProperty;

@@ -1,7 +1,7 @@
 package cn.cnic.component.livy.mapper.provider;
 
-import cn.cnic.base.util.DateUtils;
-import cn.cnic.base.util.SqlUtils;
+import cn.cnic.base.utils.DateUtils;
+import cn.cnic.base.utils.SqlUtils;
 import cn.cnic.component.livy.entity.NoteBook;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Param;
@@ -156,7 +156,7 @@ public class NoteBookMapperProvider {
      * @return String
      */
     public String checkNoteBookByName(boolean isAdmin, String username, String name){
-        if (StringUtils.isBlank(id)) {
+        if (StringUtils.isBlank(name)) {
             return "SELECT 0";
         }
         String condition = "";
@@ -167,7 +167,7 @@ public class NoteBookMapperProvider {
             condition = " AND crt_user=" + SqlUtils.preventSQLInjection(username);
         }
         StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append("SELECT * FROM note_book WHERE ");
+        stringBuffer.append("SELECT count(name) FROM note_book WHERE ");
         stringBuffer.append("enable_flag=1 and name=" + SqlUtils.preventSQLInjection(name));
         stringBuffer.append(condition);
         return  stringBuffer.toString();
@@ -213,7 +213,7 @@ public class NoteBookMapperProvider {
     		return "SELECT 0";
         }
         StringBuffer stringBuf = new StringBuffer();
-        stringBuf.append("SELECT * FROM note_book WHERE enable_flag=1");
+        stringBuf.append("SELECT * FROM note_book WHERE enable_flag=1 ");
         stringBuf.append("AND id=" + SqlUtils.preventSQLInjection(id) + " ");
         return stringBuf.toString();
     }
@@ -238,10 +238,10 @@ public class NoteBookMapperProvider {
             stringBuf.append("AND crt_user=" + SqlUtils.preventSQLInjection(username) + " ");
         }
         if (StringUtils.isNotBlank(param)) {
-            stringBuf.append("crt_dttm LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%')");
-            stringBuf.append("last_update_dttm LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%')");
-            stringBuf.append("name LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%')");
-            stringBuf.append("description LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%')");
+            stringBuf.append("crt_dttm LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%') ");
+            stringBuf.append("last_update_dttm LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%') ");
+            stringBuf.append("name LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%') ");
+            stringBuf.append("description LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%') ");
         }
         stringBuf.append("ORDER BY  last_update_dttm DESC ");
         return stringBuf.toString();

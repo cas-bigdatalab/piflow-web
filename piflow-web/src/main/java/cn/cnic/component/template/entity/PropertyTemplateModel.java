@@ -1,7 +1,7 @@
 
 package cn.cnic.component.template.entity;
 
-import cn.cnic.base.util.DateUtils;
+import cn.cnic.base.utils.DateUtils;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;

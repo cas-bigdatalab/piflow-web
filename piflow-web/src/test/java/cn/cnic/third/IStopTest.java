@@ -1,8 +1,8 @@
 package cn.cnic.third;
 
 import cn.cnic.ApplicationTests;
-import cn.cnic.base.util.HttpUtils;
-import cn.cnic.base.util.LoggerUtil;
+import cn.cnic.base.utils.HttpUtils;
+import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.third.service.IStop;
 import cn.cnic.third.vo.stop.ThirdStopsComponentVo;
 import org.junit.Test;

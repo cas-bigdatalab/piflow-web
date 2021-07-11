@@ -1,7 +1,6 @@
-package cn.cnic.base.util;
+package cn.cnic.base.utils;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -9,6 +8,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+
+import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,9 +29,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 public class FileUtils {
-
-    private static Logger logger = LoggerUtil.getLogger();
 
     public static String CSV_TITLE_KEY = "CSV_TITLE";
     public static String CSV_DATA_KEY = "CSV_DATA";
@@ -47,7 +47,7 @@ public class FileUtils {
         CheckPathUtils.isChartPathExist(path);
         Document doc = strToDocument(xmlStr);
         String realPath = path + fileName + ".xml";
-        logger.debug("============Entry Generation Method：" + new Date().toLocaleString() + "=================");
+        log.debug("============Entry Generation Method：" + new Date().toLocaleString() + "=================");
         try {
             // Determine if the file exists, delete it if it exists
             File file = new File(realPath);
@@ -55,9 +55,9 @@ public class FileUtils {
                 //Create if it does not exist
                 boolean mkdirs = file.getParentFile().mkdirs();
                 if (mkdirs) {
-                    logger.info("File created successfully");
+                    log.info("File created successfully");
                 }
-                logger.info("==============File directory does not exist, new file==============");
+                log.info("==============File directory does not exist, new file==============");
             }
             // Write the contents of the document to the file
             TransformerFactory tFactory = TransformerFactory.newInstance();
@@ -67,11 +67,11 @@ public class FileUtils {
             DOMSource source = new DOMSource(doc);
             StreamResult result = new StreamResult(new FileOutputStream(realPath));
             transformer.transform(source, result);
-            logger.info("--------------------------------" + "Update file successfully" + "-------------------------------------");
+            log.info("--------------------------------" + "Update file successfully" + "-------------------------------------");
         } catch (final Exception exception) {
-            logger.error("update " + fileName + " error ：", exception);
+            log.error("update " + fileName + " error ：", exception);
         }
-        logger.debug("============Exit Generation Method：" + new Date().toLocaleString() + "=================");
+        log.debug("============Exit Generation Method：" + new Date().toLocaleString() + "=================");
         return realPath;
     }
 
@@ -142,7 +142,7 @@ public class FileUtils {
         if (!saveFile.getParentFile().exists()) {
             boolean mkdirs = saveFile.getParentFile().mkdirs();
             if (mkdirs) {
-                logger.info("File created successfully");
+                log.info("File created successfully");
             }
         }
         Map<String, Object> rtnMap = new HashMap<>();
@@ -152,7 +152,7 @@ public class FileUtils {
             out.write(file.getBytes());
             out.flush();
             out.close();
-            logger.debug(saveFile.getName() + " Upload success");
+            log.debug(saveFile.getName() + " Upload success");
             rtnMap.put("fileName", fileName);
             rtnMap.put("saveFileName", saveFileName);
             rtnMap.put("path", path + saveFileName);
@@ -161,11 +161,11 @@ public class FileUtils {
         } catch (FileNotFoundException e) {
             //e.printStackTrace();
             rtnMap.put("msgInfo", "Upload failure");
-            logger.error("Upload failure,", e);
+            log.error("Upload failure,", e);
         } catch (IOException e) {
             //e.printStackTrace();
             rtnMap.put("msgInfo", "Upload failure");
-            logger.error("Upload failure", e);
+            log.error("Upload failure", e);
         }
         return rtnMap;
     }
@@ -190,11 +190,11 @@ public class FileUtils {
             builder = factory.newDocumentBuilder();
             doc = builder.parse(is);
         } catch (ParserConfigurationException e) {
-            logger.error("ParserConfiguration Error", e);
+            log.error("ParserConfiguration Error", e);
         } catch (SAXException e) {
-            logger.error("SAX Error", e);
+            log.error("SAX Error", e);
         } catch (IOException e) {
-            logger.error("IO Error", e);
+            log.error("IO Error", e);
         }
         return doc;
     }
@@ -243,9 +243,9 @@ public class FileUtils {
             in.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-            logger.error("FileNotFound Error", e);
+            log.error("FileNotFound Error", e);
         } catch (IOException e) {
-            logger.error("Conversion IO Error", e);
+            log.error("Conversion IO Error", e);
             e.printStackTrace();
         }
         if (null != strBuffer) {
@@ -254,7 +254,7 @@ public class FileUtils {
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
-            logger.info(" file converted string：" + fileString);
+            log.info(" file converted string：" + fileString);
         }
         return fileString;
     }
@@ -280,9 +280,9 @@ public class FileUtils {
             fileString = fileToString(file);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-            logger.error("FileNotFound Error", e);
+            log.error("FileNotFound Error", e);
         }
-        logger.info(" file converted string：" + fileString);
+        log.info(" file converted string：" + fileString);
         return fileString;
     }
 
@@ -477,6 +477,6 @@ public class FileUtils {
         }
         return csvDataMap;
     }
-    
+
  
 }

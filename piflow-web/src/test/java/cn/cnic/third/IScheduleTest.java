@@ -1,7 +1,7 @@
 package cn.cnic.third;
 
 import cn.cnic.ApplicationTests;
-import cn.cnic.base.util.LoggerUtil;
+import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.component.flow.entity.Flow;
 import cn.cnic.component.flow.mapper.FlowMapper;
 import cn.cnic.component.process.entity.Process;

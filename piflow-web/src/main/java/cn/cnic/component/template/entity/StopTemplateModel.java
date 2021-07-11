@@ -1,6 +1,6 @@
 package cn.cnic.component.template.entity;
 
-import cn.cnic.base.util.DateUtils;
+import cn.cnic.base.utils.DateUtils;
 import cn.cnic.common.Eunm.PortType;
 import lombok.Getter;
 import lombok.Setter;

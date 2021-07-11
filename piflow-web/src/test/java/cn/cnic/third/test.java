@@ -1,7 +1,7 @@
 package cn.cnic.third;
 
-import cn.cnic.base.util.HttpUtils;
-import cn.cnic.base.util.LoggerUtil;
+import cn.cnic.base.utils.HttpUtils;
+import cn.cnic.base.utils.LoggerUtil;
 import org.slf4j.Logger;
 
 import java.io.*;

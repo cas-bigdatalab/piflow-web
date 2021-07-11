@@ -1,7 +1,7 @@
 package cn.cnic.component.template.mapper.provider;
 
-import cn.cnic.base.util.DateUtils;
-import cn.cnic.base.util.SqlUtils;
+import cn.cnic.base.utils.DateUtils;
+import cn.cnic.base.utils.SqlUtils;
 import cn.cnic.common.Eunm.PortType;
 import cn.cnic.component.template.entity.PropertyTemplateModel;
 import cn.cnic.component.template.entity.StopTemplateModel;

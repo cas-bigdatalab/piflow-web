@@ -1,6 +1,6 @@
 package cn.cnic.base;
 
-import cn.cnic.base.util.DateUtils;
+import cn.cnic.base.utils.DateUtils;
 
 import javax.persistence.*;
 import java.io.Serializable;

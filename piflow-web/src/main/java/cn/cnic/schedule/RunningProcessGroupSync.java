@@ -1,7 +1,7 @@
 package cn.cnic.schedule;
 
-import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.base.util.SpringContextUtil;
+import cn.cnic.base.utils.LoggerUtil;
+import cn.cnic.base.utils.SpringContextUtil;
 import cn.cnic.common.executor.ServicesExecutor;
 import cn.cnic.component.process.mapper.ProcessGroupMapper;
 import cn.cnic.third.service.IGroup;

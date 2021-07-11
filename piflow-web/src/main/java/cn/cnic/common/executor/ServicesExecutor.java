@@ -1,15 +1,14 @@
 package cn.cnic.common.executor;
 
-import cn.cnic.base.util.LoggerUtil;
-import org.slf4j.Logger;
-
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class ServicesExecutor {
 
-    private static Logger logger = LoggerUtil.getLogger();
 
     /* Define an executor of the execution thread for the service */
     private static ExecutorService servicesExecutorService;
@@ -33,7 +32,7 @@ public class ServicesExecutor {
          */
         servicesExecutorService = null;
         servicesExecutorService = Executors.newFixedThreadPool(2);
-        logger.info("Asynchronous synchronization thread pool is initialized...");
+        log.info("Asynchronous synchronization thread pool is initialized...");
     }
 
     private synchronized static void initLogExecutorService() {
@@ -42,7 +41,7 @@ public class ServicesExecutor {
          */
         logExecutorService = null;
         logExecutorService = Executors.newFixedThreadPool(4);
-        logger.info("Asynchronous log processing thread pool initialization completed...");
+        log.info("Asynchronous log processing thread pool initialization completed...");
 
         // Create a cacheable thread pool. If the thread pool length exceeds the processing requirements, you can flexibly reclaim idle threads. If there is no reclaimable, create a new thread.
         // ExecutorService cachedThreadPool = Executors.newCachedThreadPool();

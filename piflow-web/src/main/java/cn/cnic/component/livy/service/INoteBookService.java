@@ -1,7 +1,7 @@
 package cn.cnic.component.livy.service;
 
 
-import cn.cnic.controller.requestVo.RequesNoteBookVo;
+import cn.cnic.controller.requestVo.NoteBookVoRequest;
 
 public interface INoteBookService {
 
@@ -14,7 +14,7 @@ public interface INoteBookService {
      * @return String
      * @throws Exception
      */
-    public String saveOrUpdateNoteBook(String username, boolean isAdmin, RequesNoteBookVo noteBookVo, boolean flag) throws Exception;
+    public String saveOrUpdateNoteBook(String username, boolean isAdmin, NoteBookVoRequest noteBookVo, boolean flag) throws Exception;
 
 
     /**
@@ -49,6 +49,16 @@ public interface INoteBookService {
      */
     public String getNoteBookListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param);
 
+    /**
+     * getNoteBookById
+     *
+     * @param username
+     * @param isAdmin
+     * @param id
+     * @return String
+     */
+    public String getNoteBookById(String username, boolean isAdmin, String id);
+    
     /**
      * startNoteBookSession
      *

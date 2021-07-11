@@ -1,6 +1,6 @@
 package cn.cnic.component.stopsComponent.service.impl;
 
-import cn.cnic.base.util.*;
+import cn.cnic.base.utils.*;
 import cn.cnic.common.Eunm.StopsHubState;
 import cn.cnic.component.process.entity.Process;
 import cn.cnic.component.stopsComponent.domain.StopsComponentDomain;

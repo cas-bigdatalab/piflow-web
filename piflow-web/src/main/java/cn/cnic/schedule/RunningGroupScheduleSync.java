@@ -1,7 +1,7 @@
 package cn.cnic.schedule;
 
-import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.base.util.SpringContextUtil;
+import cn.cnic.base.utils.LoggerUtil;
+import cn.cnic.base.utils.SpringContextUtil;
 import cn.cnic.common.Eunm.RunModeType;
 import cn.cnic.common.Eunm.ScheduleState;
 import cn.cnic.common.executor.ServicesExecutor;

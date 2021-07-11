@@ -1,6 +1,6 @@
 package cn.cnic.component.system.mapper.provider;
 
-import cn.cnic.base.util.SqlUtils;
+import cn.cnic.base.utils.SqlUtils;
 import cn.cnic.component.system.entity.SysRole;
 import org.apache.commons.lang3.StringUtils;
 

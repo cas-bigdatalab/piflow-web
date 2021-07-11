@@ -1,6 +1,6 @@
 package cn.cnic.component.dataSource.service.impl;
 
-import cn.cnic.base.util.*;
+import cn.cnic.base.utils.*;
 import cn.cnic.component.dataSource.entity.DataSource;
 import cn.cnic.component.dataSource.entity.DataSourceProperty;
 import cn.cnic.component.dataSource.service.IDataSource;

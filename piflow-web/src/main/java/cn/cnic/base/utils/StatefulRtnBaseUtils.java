@@ -1,11 +1,10 @@
-package cn.cnic.base.util;
+package cn.cnic.base.utils;
 
 import cn.cnic.base.vo.StatefulRtnBase;
-import org.slf4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class StatefulRtnBaseUtils {
-
-    private static Logger logger = LoggerUtil.getLogger();
 
     /**
      * set Failure information
@@ -15,7 +14,7 @@ public class StatefulRtnBaseUtils {
      */
     public static StatefulRtnBase setFailedMsg(String errorMsg) {
         StatefulRtnBase statefulRtnBase = new cn.cnic.base.vo.StatefulRtnBase();
-        logger.info(errorMsg);
+        log.info(errorMsg);
         statefulRtnBase.setReqRtnStatus(false);
         statefulRtnBase.setErrorCode(statefulRtnBase.ERRCODE_FAIL);
         statefulRtnBase.setErrorMsg(errorMsg);

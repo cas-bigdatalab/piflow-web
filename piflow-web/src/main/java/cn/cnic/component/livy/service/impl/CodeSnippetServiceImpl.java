@@ -1,13 +1,14 @@
 package cn.cnic.component.livy.service.impl;
 
-import cn.cnic.base.util.ReturnMapUtils;
+import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.component.livy.entity.CodeSnippet;
 import cn.cnic.component.livy.entity.NoteBook;
 import cn.cnic.component.livy.mapper.CodeSnippetMapper;
 import cn.cnic.component.livy.mapper.NoteBookMapper;
 import cn.cnic.component.livy.service.ICodeSnippetService;
 import cn.cnic.component.livy.util.CodeSnippetUtils;
-import cn.cnic.controller.requestVo.RequesCodeSnippetVo;
+import cn.cnic.controller.requestVo.CodeSnippetVoRequestAdd;
+import cn.cnic.controller.requestVo.CodeSnippetVoRequestUpdate;
 import cn.cnic.third.livy.service.ILivy;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -31,7 +32,7 @@ public class CodeSnippetServiceImpl implements ICodeSnippetService {
     private ILivy livyImpl;
 
     @Override
-    public String addCodeSnippet(String username, RequesCodeSnippetVo codeSnippetVo) {
+    public String addCodeSnippet(String username, CodeSnippetVoRequestAdd codeSnippetVo) {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
         }
@@ -59,7 +60,7 @@ public class CodeSnippetServiceImpl implements ICodeSnippetService {
     }
 
     @Override
-    public String updateCodeSnippet(String username, RequesCodeSnippetVo codeSnippetVo) {
+    public String updateCodeSnippet(String username, CodeSnippetVoRequestUpdate codeSnippetVo) {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
         }

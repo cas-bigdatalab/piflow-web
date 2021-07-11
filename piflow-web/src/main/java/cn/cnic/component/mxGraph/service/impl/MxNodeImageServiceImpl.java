@@ -1,9 +1,9 @@
 package cn.cnic.component.mxGraph.service.impl;
 
-import cn.cnic.base.util.FileUtils;
-import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.base.util.ReturnMapUtils;
-import cn.cnic.base.util.UUIDUtils;
+import cn.cnic.base.utils.FileUtils;
+import cn.cnic.base.utils.LoggerUtil;
+import cn.cnic.base.utils.ReturnMapUtils;
+import cn.cnic.base.utils.UUIDUtils;
 import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.component.mxGraph.entity.MxNodeImage;
 import cn.cnic.component.mxGraph.service.IMxNodeImageService;

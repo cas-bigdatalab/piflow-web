@@ -1,6 +1,6 @@
 package cn.cnic.component.livy.util;
 
-import cn.cnic.base.util.UUIDUtils;
+import cn.cnic.base.utils.UUIDUtils;
 import cn.cnic.component.livy.entity.NoteBook;
 
 import java.util.Date;

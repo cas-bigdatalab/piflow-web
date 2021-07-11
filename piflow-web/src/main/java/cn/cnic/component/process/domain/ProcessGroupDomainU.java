@@ -1,7 +1,7 @@
 package cn.cnic.component.process.domain;
 
-import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.base.util.UUIDUtils;
+import cn.cnic.base.utils.LoggerUtil;
+import cn.cnic.base.utils.UUIDUtils;
 import cn.cnic.component.mxGraph.entity.MxGraphModel;
 import cn.cnic.component.mxGraph.domain.MxGraphModelDomainU;
 import cn.cnic.component.process.entity.*;

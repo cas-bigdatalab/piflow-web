@@ -1,11 +1,8 @@
-package cn.cnic.base.util;
+package cn.cnic.base.utils;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
 
 public class StringCustomUtils {
-
-    static Logger logger = LoggerUtil.getLogger();
 
     private static String EXCLUSIVE_STR = "[PiFlow]";
 

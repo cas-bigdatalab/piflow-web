@@ -1,4 +1,4 @@
-package cn.cnic.base.util;
+package cn.cnic.base.utils;
 
 import cn.cnic.common.Eunm.TemplateType;
 import cn.cnic.component.mxGraph.entity.MxCell;
@@ -7,13 +7,14 @@ import cn.cnic.component.mxGraph.entity.MxGraphModel;
 import cn.cnic.component.mxGraph.vo.MxCellVo;
 import cn.cnic.component.mxGraph.vo.MxGeometryVo;
 import cn.cnic.component.mxGraph.vo.MxGraphModelVo;
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
-import org.slf4j.Logger;
 import org.xml.sax.InputSource;
 
 import java.io.StringReader;
@@ -21,9 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 public class MxGraphUtils {
-
-    static Logger logger = LoggerUtil.getLogger();
 
     private static String spliceStr(String key, Object value) {
         return key + "=\"" + value + "\" ";
@@ -40,7 +40,7 @@ public class MxGraphUtils {
         try {
             String xmlStr = xmlData;
             if (isEscape) {
-                logger.debug("test");
+                log.debug("test");
                 //xmlStr = StringEscapeUtils.unescapeHtml(xmlData);
             }
             Document document = DocumentHelper.parseText(xmlStr);
@@ -53,7 +53,7 @@ public class MxGraphUtils {
             // Get all nodes with "autoSaveNode" attribute
             return document.getRootElement(); // Get the root node
         } catch (DocumentException e) {
-            logger.error("Conversion failed", e);
+            log.error("Conversion failed", e);
             return null;
         }
     }

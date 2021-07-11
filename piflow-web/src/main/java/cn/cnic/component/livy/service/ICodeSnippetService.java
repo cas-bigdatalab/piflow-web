@@ -1,13 +1,14 @@
 package cn.cnic.component.livy.service;
 
 
-import cn.cnic.controller.requestVo.RequesCodeSnippetVo;
+import cn.cnic.controller.requestVo.CodeSnippetVoRequestAdd;
+import cn.cnic.controller.requestVo.CodeSnippetVoRequestUpdate;
 
 public interface ICodeSnippetService {
 
-    public String addCodeSnippet(String username, RequesCodeSnippetVo codeSnippetVo);
+    public String addCodeSnippet(String username, CodeSnippetVoRequestAdd codeSnippetVo);
 
-    public String updateCodeSnippet(String username, RequesCodeSnippetVo codeSnippetVo);
+    public String updateCodeSnippet(String username, CodeSnippetVoRequestUpdate codeSnippetVo);
 
     public String delCodeSnippet(String username, boolean isAdmin, String codeSnippetId);
 

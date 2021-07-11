@@ -1,8 +1,8 @@
 package cn.cnic.component.stopsComponent.service.impl;
 
-import cn.cnic.base.util.LoggerUtil;
-import cn.cnic.base.util.ReturnMapUtils;
-import cn.cnic.base.util.UUIDUtils;
+import cn.cnic.base.utils.LoggerUtil;
+import cn.cnic.base.utils.ReturnMapUtils;
+import cn.cnic.base.utils.UUIDUtils;
 import cn.cnic.component.stopsComponent.domain.StopsComponentDomain;
 import cn.cnic.component.stopsComponent.domain.StopsComponentGroupDomain;
 import cn.cnic.component.stopsComponent.model.StopsComponent;

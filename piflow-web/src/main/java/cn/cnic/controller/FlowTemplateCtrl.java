@@ -1,7 +1,7 @@
 package cn.cnic.controller;
 
-import cn.cnic.base.util.ReturnMapUtils;
-import cn.cnic.base.util.SessionUserUtil;
+import cn.cnic.base.utils.ReturnMapUtils;
+import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.component.template.service.IFlowTemplateService;
 
 

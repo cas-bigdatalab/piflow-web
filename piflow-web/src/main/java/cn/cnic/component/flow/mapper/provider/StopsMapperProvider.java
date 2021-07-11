@@ -1,7 +1,7 @@
 package cn.cnic.component.flow.mapper.provider;
 
-import cn.cnic.base.util.DateUtils;
-import cn.cnic.base.util.SqlUtils;
+import cn.cnic.base.utils.DateUtils;
+import cn.cnic.base.utils.SqlUtils;
 import cn.cnic.component.flow.entity.Stops;
 import cn.cnic.third.vo.flow.ThirdFlowInfoStopVo;
 import org.apache.commons.lang3.StringUtils;

@@ -1,8 +1,9 @@
 package cn.cnic.controller.api;
 
-import cn.cnic.base.util.SessionUserUtil;
+import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.component.livy.service.ICodeSnippetService;
-import cn.cnic.controller.requestVo.RequesCodeSnippetVo;
+import cn.cnic.controller.requestVo.CodeSnippetVoRequestAdd;
+import cn.cnic.controller.requestVo.CodeSnippetVoRequestUpdate;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,7 +30,7 @@ public class CodeSnippetCtrl {
      */
     @RequestMapping(value = "/addCodeSnippet", method = RequestMethod.POST)
     @ResponseBody
-    public String addCodeSnippet(@ApiParam(value = "codeSnippetVo", required = true) RequesCodeSnippetVo codeSnippetVo) throws Exception {
+    public String addCodeSnippet(@ApiParam(value = "codeSnippetVo", required = true) CodeSnippetVoRequestAdd codeSnippetVo) throws Exception {
         String currentUsername = SessionUserUtil.getCurrentUsername();
         //boolean isAdmin = SessionUserUtil.isAdmin();
         return codeSnippetServiceImpl.addCodeSnippet(currentUsername, codeSnippetVo);
@@ -44,7 +45,7 @@ public class CodeSnippetCtrl {
      */
     @RequestMapping(value = "/updateCodeSnippet", method = RequestMethod.POST)
     @ResponseBody
-    public String updateCodeSnippet(@ApiParam(value = "codeSnippetVo", required = true) RequesCodeSnippetVo codeSnippetVo) throws Exception {
+    public String updateCodeSnippet(@ApiParam(value = "codeSnippetVo", required = true) CodeSnippetVoRequestUpdate codeSnippetVo) throws Exception {
         String currentUsername = SessionUserUtil.getCurrentUsername();
         //boolean isAdmin = SessionUserUtil.isAdmin();
         return codeSnippetServiceImpl.updateCodeSnippet(currentUsername, codeSnippetVo);
@@ -92,7 +93,7 @@ public class CodeSnippetCtrl {
     /**
      * getStatementsResult
      *
-     * @param executeId
+     * @param codeSnippetId
      * @return
      */
     @RequestMapping(value = "/getStatementsResult", method = RequestMethod.POST)

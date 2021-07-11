@@ -1,7 +1,7 @@
 package cn.cnic.component.mxGraph.service;
 
 import cn.cnic.ApplicationTests;
-import cn.cnic.base.util.LoggerUtil;
+import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.component.mxGraph.entity.MxCell;
 import org.junit.Test;
 import org.slf4j.Logger;
