@@ -1,24 +1,30 @@
 package cn.cnic.base.config;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
+
+import javax.sql.DataSource;
+
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
-import lombok.extern.slf4j.Slf4j;
-
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.Statement;
+import cn.cnic.base.utils.LoggerUtil;
 
 
-@Slf4j
 @Configuration
 @Primary //In the same "DataSource", first use the labeled "DataSource"
 public class DataSourceConfig {
 
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private Logger logger = LoggerUtil.getLogger();
+	
     @Value("${spring.datasource.url}")
     private String datasourceUrl;
     @Value("${spring.datasource.driver-class-name}")
@@ -61,7 +67,7 @@ public class DataSourceConfig {
                 statement.close();
                 connection.close();
             } catch (Exception e) {
-                log.error("error",e);
+                logger.error("error",e);
             }
         }
     }

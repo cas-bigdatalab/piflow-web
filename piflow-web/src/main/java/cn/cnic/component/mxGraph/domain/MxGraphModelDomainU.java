@@ -1,6 +1,15 @@
 package cn.cnic.component.mxGraph.domain;
 
-import cn.cnic.base.utils.LoggerUtil;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
 import cn.cnic.base.utils.UUIDUtils;
 import cn.cnic.component.mxGraph.entity.MxCell;
 import cn.cnic.component.mxGraph.entity.MxGeometry;
@@ -8,24 +17,11 @@ import cn.cnic.component.mxGraph.entity.MxGraphModel;
 import cn.cnic.component.mxGraph.mapper.MxCellMapper;
 import cn.cnic.component.mxGraph.mapper.MxGeometryMapper;
 import cn.cnic.component.mxGraph.mapper.MxGraphModelMapper;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
-import java.util.List;
 
 @Component
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
 public class MxGraphModelDomainU {
-
-    /**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
-    Logger logger = LoggerUtil.getLogger();
 
     @Resource
     private MxGraphModelMapper mxGraphModelMapper;

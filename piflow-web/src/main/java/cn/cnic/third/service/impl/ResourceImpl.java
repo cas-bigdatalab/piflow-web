@@ -15,7 +15,10 @@ import cn.cnic.third.service.IResource;
 @Service
 public class ResourceImpl implements IResource {
 
-    Logger logger = LoggerUtil.getLogger();
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private Logger logger = LoggerUtil.getLogger();
 
     @Override
     public String getResourceInfo() {

@@ -25,7 +25,10 @@ import java.util.*;
 @Service
 public class StopGroupServiceImpl implements IStopGroupService {
 
-    Logger logger = LoggerUtil.getLogger();
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private Logger logger = LoggerUtil.getLogger();
 
     @Autowired
     private IStop stopImpl;

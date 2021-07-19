@@ -1,12 +1,35 @@
 package cn.cnic.component.flow.service.impl;
 
-import cn.cnic.base.utils.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.transaction.Transactional;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
+
+import cn.cnic.base.utils.JsonUtils;
+import cn.cnic.base.utils.LoggerUtil;
+import cn.cnic.base.utils.MxGraphUtils;
+import cn.cnic.base.utils.ReturnMapUtils;
+import cn.cnic.base.utils.UUIDUtils;
 import cn.cnic.common.Eunm.ProcessParentType;
 import cn.cnic.common.Eunm.ProcessState;
 import cn.cnic.common.Eunm.RunModeType;
 import cn.cnic.component.flow.entity.Flow;
 import cn.cnic.component.flow.entity.FlowGroup;
+import cn.cnic.component.flow.jpa.domain.FlowDomain;
+import cn.cnic.component.flow.jpa.domain.FlowGroupDomain;
+import cn.cnic.component.flow.mapper.FlowGroupMapper;
 import cn.cnic.component.flow.mapper.FlowGroupPathsMapper;
+import cn.cnic.component.flow.mapper.FlowMapper;
 import cn.cnic.component.flow.service.IFlowGroupService;
 import cn.cnic.component.flow.service.IFlowService;
 import cn.cnic.component.flow.utils.FlowGroupPathsUtil;
@@ -15,39 +38,28 @@ import cn.cnic.component.flow.vo.FlowGroupPathsVo;
 import cn.cnic.component.flow.vo.FlowGroupVo;
 import cn.cnic.component.flow.vo.FlowVo;
 import cn.cnic.component.mxGraph.entity.MxCell;
-
 import cn.cnic.component.mxGraph.entity.MxGeometry;
 import cn.cnic.component.mxGraph.entity.MxGraphModel;
+import cn.cnic.component.mxGraph.jpa.domain.MxCellDomain;
+import cn.cnic.component.mxGraph.mapper.MxCellMapper;
+import cn.cnic.component.mxGraph.mapper.MxGraphModelMapper;
 import cn.cnic.component.mxGraph.utils.MxCellUtils;
 import cn.cnic.component.mxGraph.utils.MxGraphComponentVoUtils;
 import cn.cnic.component.mxGraph.utils.MxGraphModelUtils;
 import cn.cnic.component.mxGraph.vo.MxGraphModelVo;
 import cn.cnic.component.process.entity.ProcessGroup;
-import cn.cnic.component.process.utils.ProcessGroupUtils;
-import cn.cnic.component.flow.jpa.domain.FlowDomain;
-import cn.cnic.component.flow.jpa.domain.FlowGroupDomain;
-import cn.cnic.component.mxGraph.jpa.domain.MxCellDomain;
 import cn.cnic.component.process.jpa.domain.ProcessGroupDomain;
-import cn.cnic.component.flow.mapper.FlowGroupMapper;
-import cn.cnic.component.flow.mapper.FlowMapper;
-import cn.cnic.component.mxGraph.mapper.MxCellMapper;
-import cn.cnic.component.mxGraph.mapper.MxGraphModelMapper;
+import cn.cnic.component.process.utils.ProcessGroupUtils;
 import cn.cnic.component.schedule.mapper.ScheduleMapper;
 import cn.cnic.third.service.IGroup;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
-import java.util.*;
 
 @Service
 public class FlowGroupServiceImpl implements IFlowGroupService {
 
-    Logger logger = LoggerUtil.getLogger();
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private Logger logger = LoggerUtil.getLogger();
 
     @Autowired
     private FlowGroupDomain flowGroupDomain;

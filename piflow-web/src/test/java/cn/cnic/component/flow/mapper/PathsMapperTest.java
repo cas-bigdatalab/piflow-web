@@ -11,10 +11,13 @@ import java.util.List;
 
 public class PathsMapperTest extends ApplicationTests {
 
-    @Autowired
-    private PathsMapper pathsMapper;
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private Logger logger = LoggerUtil.getLogger();
 
-    Logger logger = LoggerUtil.getLogger();
+	@Autowired
+    private PathsMapper pathsMapper;
 
     @Test
     public void testGetPathsListByFlowId() {

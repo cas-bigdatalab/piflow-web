@@ -1,6 +1,5 @@
 package cn.cnic.component.process.service.Impl;
 
-import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.component.process.entity.ProcessStop;
 import cn.cnic.component.process.service.IProcessStopService;
@@ -10,15 +9,12 @@ import cn.cnic.component.process.mapper.ProcessStopMapper;
 import cn.cnic.component.stopsComponent.mapper.StopsComponentMapper;
 import cn.cnic.component.stopsComponent.model.StopsComponent;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
 @Service
 public class ProcessStopServiceImpl implements IProcessStopService {
-
-    Logger logger = LoggerUtil.getLogger();
 
     @Resource
     private ProcessStopMapper processStopMapper;

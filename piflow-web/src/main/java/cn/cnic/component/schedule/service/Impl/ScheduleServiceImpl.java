@@ -34,10 +34,10 @@ import java.util.Map;
 @Service
 public class ScheduleServiceImpl implements IScheduleService {
 
-    /**
+	/**
      * Introducing logs, note that they are all packaged under "org.slf4j"
      */
-    Logger logger = LoggerUtil.getLogger();
+    private Logger logger = LoggerUtil.getLogger();
 
     @Resource
     private ScheduleMapper scheduleMapper;

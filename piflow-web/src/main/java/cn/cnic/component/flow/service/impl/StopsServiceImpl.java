@@ -22,22 +22,22 @@ import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.common.Eunm.PortType;
 import cn.cnic.common.Eunm.ProcessState;
 import cn.cnic.common.Eunm.RunModeType;
-import cn.cnic.component.dataSource.jpa.domain.DataSourceDomain;
 import cn.cnic.component.dataSource.entity.DataSource;
 import cn.cnic.component.dataSource.entity.DataSourceProperty;
+import cn.cnic.component.dataSource.jpa.domain.DataSourceDomain;
 import cn.cnic.component.flow.domain.StopsDomainU;
 import cn.cnic.component.flow.entity.CustomizedProperty;
 import cn.cnic.component.flow.entity.Flow;
 import cn.cnic.component.flow.entity.Paths;
 import cn.cnic.component.flow.entity.Property;
 import cn.cnic.component.flow.entity.Stops;
+import cn.cnic.component.flow.mapper.FlowMapper;
+import cn.cnic.component.flow.mapper.PathsMapper;
 import cn.cnic.component.flow.service.IStopsService;
 import cn.cnic.component.flow.utils.StopsUtils;
 import cn.cnic.component.flow.vo.StopsVo;
 import cn.cnic.component.mxGraph.entity.MxCell;
 import cn.cnic.component.mxGraph.entity.MxGraphModel;
-import cn.cnic.component.flow.mapper.FlowMapper;
-import cn.cnic.component.flow.mapper.PathsMapper;
 import cn.cnic.component.mxGraph.mapper.MxCellMapper;
 import cn.cnic.component.mxGraph.utils.MxCellUtils;
 import cn.cnic.component.mxGraph.utils.MxGraphModelUtils;
@@ -59,7 +59,10 @@ import cn.cnic.third.vo.flow.ThirdFlowInfoStopVo;
 @Service
 public class StopsServiceImpl implements IStopsService {
 
-    Logger logger = LoggerUtil.getLogger();
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private Logger logger = LoggerUtil.getLogger();
 
     @Resource
     private StopsDomainU stopsDomainU;

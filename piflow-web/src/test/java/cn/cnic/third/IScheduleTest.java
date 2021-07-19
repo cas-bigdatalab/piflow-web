@@ -19,8 +19,11 @@ import java.util.Map;
 
 public class IScheduleTest extends ApplicationTests {
 
-    Logger logger = LoggerUtil.getLogger();
-
+    /**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private Logger logger = LoggerUtil.getLogger();
+	
     @Resource
     ISchedule scheduleImpl;
 

@@ -1,28 +1,38 @@
 package cn.cnic.base.utils;
 
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.*;
-
-import lombok.extern.slf4j.Slf4j;
-
-import org.apache.commons.lang3.StringUtils;
-
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.SerializerProvider;
 
 /**
  * Json utils
  */
-@Slf4j
 @SuppressWarnings("deprecation")
 public class JsonUtils {
+
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private static Logger logger = LoggerUtil.getLogger();
 
     private static final ObjectMapper objectMapper;
 
@@ -54,11 +64,11 @@ public class JsonUtils {
         try {
             return objectMapper.readValue(json, clazz);
         } catch (JsonParseException e) {
-            log.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         } catch (JsonMappingException e) {
-            log.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         } catch (IOException e) {
-            log.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         }
         return null;
     }
@@ -67,11 +77,11 @@ public class JsonUtils {
         try {
             return objectMapper.writeValueAsString(entity);
         } catch (JsonGenerationException e) {
-            log.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         } catch (JsonMappingException e) {
-            log.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         } catch (IOException e) {
-            log.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         }
         return null;
     }
@@ -80,11 +90,11 @@ public class JsonUtils {
         try {
             return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(entity);
         } catch (JsonGenerationException e) {
-            log.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         } catch (JsonMappingException e) {
-            log.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         } catch (IOException e) {
-            log.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         }
         return null;
     }
@@ -93,11 +103,11 @@ public class JsonUtils {
         try {
             return objectMapper.readValue(json, typeReference);
         } catch (JsonParseException e) {
-            log.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         } catch (JsonMappingException e) {
-            log.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         } catch (IOException e) {
-            log.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         }
         return null;
     }
@@ -165,7 +175,7 @@ public class JsonUtils {
             JsonNode root = objectMapper.readTree(jsonStr);
             return root.get(fieldName);
         } catch (IOException e) {
-            log.error("parse json string error:" + jsonStr, e);
+            logger.error("parse json string error:" + jsonStr, e);
             return null;
         }
     }

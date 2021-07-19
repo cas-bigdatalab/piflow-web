@@ -1,17 +1,21 @@
 package cn.cnic.base.utils;
 
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageInfo;
-
-import lombok.extern.slf4j.Slf4j;
-
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.HashMap;
 import java.util.Map;
 
-@Slf4j
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageInfo;
+
+
 public class PageHelperUtils {
+
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private static Logger logger = LoggerUtil.getLogger();
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     public static Map<String, Object> setDataTableParam(Page page, Map<String, Object> rtnMap) {
@@ -23,7 +27,7 @@ public class PageHelperUtils {
             rtnMap.put("iTotalDisplayRecords", info.getTotal());
             rtnMap.put("iTotalRecords", info.getTotal());
             rtnMap.put("pageData", info.getList());//Data collection
-            log.debug("success");
+            logger.debug("success");
         }
         return rtnMap;
     }
@@ -40,7 +44,7 @@ public class PageHelperUtils {
         rtnMap.put("msg", "success");
         rtnMap.put("count", info.getTotal());
         rtnMap.put("data", info.getList());//Data collection
-        log.debug("success");
+        logger.debug("success");
         return rtnMap;
     }
 
@@ -63,7 +67,7 @@ public class PageHelperUtils {
             rtnMap.put(key1, info.getTotal());
         }
         rtnMap.put(key2, info.getList());//Data collection
-        log.debug("success");
+        logger.debug("success");
         return rtnMap;
     }
 }

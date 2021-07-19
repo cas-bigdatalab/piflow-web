@@ -2,13 +2,11 @@ package cn.cnic.controller.api;
 
 import javax.annotation.Resource;
 
-import org.slf4j.Logger;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.component.flow.service.IStopsService;
 import cn.cnic.component.stopsComponent.service.IStopGroupService;
@@ -23,8 +21,6 @@ import io.swagger.annotations.ApiParam;
 @RestController
 @RequestMapping("/stopsManage")
 public class StopsManageCtrl {
-
-    Logger logger = LoggerUtil.getLogger();
 
     @Resource
     private IStopGroupService stopGroupServiceImpl;

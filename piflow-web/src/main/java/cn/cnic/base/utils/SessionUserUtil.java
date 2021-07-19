@@ -1,22 +1,28 @@
 package cn.cnic.base.utils;
 
-import cn.cnic.base.vo.UserVo;
-import cn.cnic.common.Eunm.SysRoleType;
-import cn.cnic.component.system.entity.SysRole;
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
+import cn.cnic.base.vo.UserVo;
+import cn.cnic.common.Eunm.SysRoleType;
+import cn.cnic.component.system.entity.SysRole;
 
-@Slf4j
+
 public class SessionUserUtil {
 
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private static Logger logger = LoggerUtil.getLogger();
+	
     public static UserVo getCurrentUser() {
         UserVo user = null;
         SecurityContext ctx = SecurityContextHolder.getContext();
@@ -58,26 +64,26 @@ public class SessionUserUtil {
     //"X-Forwarded-For" is empty, take "X-Real-IP", "X-Real-IP" is empty, take "remoteAddress"
     public static String getIp(HttpServletRequest request) {
         String ip = request.getHeader("X-Forwarded-For");
-        log.info("X-Forwarded-For:" + ip);
+        logger.info("X-Forwarded-For:" + ip);
         if (StringUtils.isNotEmpty(ip) && !"unKnown".equalsIgnoreCase(ip)) {
             //After multiple reverse proxy, there will be multiple ip values, the first ip is true ip
             int index = ip.indexOf(",");
-            log.info("X-Forwarded-For first , index:" + index);
+            logger.info("X-Forwarded-For first , index:" + index);
             if (index != -1) {
                 String subIp = ip.substring(0, index);
-                log.info("X-Forwarded-For find ip,sub ip :" + subIp);
+                logger.info("X-Forwarded-For find ip,sub ip :" + subIp);
                 return subIp;
             } else {
-                log.info("origin ip:" + ip);
+                logger.info("origin ip:" + ip);
                 return ip;
             }
         }
         ip = request.getHeader("X-Real-IP");
-        log.info("X-Real-IP:" + ip);
+        logger.info("X-Real-IP:" + ip);
         if (StringUtils.isNotEmpty(ip) && !"unKnown".equalsIgnoreCase(ip)) {
             return ip;
         }
-        log.info("If you do not find the ip of \"X-Real-IP\", you will get \"RemoteAddr\":" + request.getRemoteAddr());
+        logger.info("If you do not find the ip of \"X-Real-IP\", you will get \"RemoteAddr\":" + request.getRemoteAddr());
         return request.getRemoteAddr();
     }
 

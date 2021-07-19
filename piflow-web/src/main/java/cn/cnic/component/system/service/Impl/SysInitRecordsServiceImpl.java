@@ -42,9 +42,14 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
 
-    Logger logger = LoggerUtil.getLogger();
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private Logger logger = LoggerUtil.getLogger();
+
     @Resource
     private SysInitRecordsMapper sysInitRecordsMapper;
+
     @Resource
     private SysInitRecordsDomain sysInitRecordsDomain;
 

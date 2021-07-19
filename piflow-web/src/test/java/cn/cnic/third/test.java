@@ -9,8 +9,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class test {
-
-    static Logger logger = LoggerUtil.getLogger();
+	
+    /**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private static Logger logger = LoggerUtil.getLogger();
 
     public static void main(String[] args) {
         //在单独的进程中执行指定命令和变量。

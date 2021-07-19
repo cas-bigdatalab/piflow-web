@@ -17,15 +17,16 @@ import java.util.Map;
 
 public class IGroupTest extends ApplicationTests {
 
+    /**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private Logger logger = LoggerUtil.getLogger();
+	
     @Resource
     private IGroup groupImpl;
 
     @Resource
     private FlowGroupDomain flowGroupDomain;
-
-    private
-
-    Logger logger = LoggerUtil.getLogger();
 
     @Test
     @Transactional

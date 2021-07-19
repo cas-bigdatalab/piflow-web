@@ -1,15 +1,19 @@
 package cn.cnic.base.utils;
 
-import org.apache.commons.lang3.StringUtils;
-
-import lombok.extern.slf4j.Slf4j;
-
 import java.util.HashMap;
 import java.util.Map;
 
-@Slf4j
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+
+
 public class ReturnMapUtils {
 
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private static Logger logger = LoggerUtil.getLogger();
+	
     public static Integer SUCCEEDED_CODE = 200;
     public static Integer ERROR_CODE = 500;
     public static String ERROR_MSG = "Failed";
@@ -26,7 +30,7 @@ public class ReturnMapUtils {
      */
     public static Map<String, Object> setFailedMsg(String errorMsg) {
         errorMsg = (StringUtils.isNotBlank(errorMsg) ? errorMsg : ERROR_MSG);
-        log.warn(errorMsg);
+        logger.warn(errorMsg);
         Map<String, Object> rtnMap = new HashMap<>();
         rtnMap.put(KEY_CODE, ERROR_CODE);
         rtnMap.put(KEY_ERROR_MSG, errorMsg);
@@ -52,7 +56,7 @@ public class ReturnMapUtils {
      */
     public static Map<String, Object> setSucceededMsg(String succeededMsg) {
         succeededMsg = (StringUtils.isNotBlank(succeededMsg) ? succeededMsg : SUCCEEDED_MSG);
-        log.info(succeededMsg);
+        logger.info(succeededMsg);
         Map<String, Object> rtnMap = new HashMap<>();
         rtnMap.put(KEY_CODE, SUCCEEDED_CODE);
         rtnMap.put(KEY_ERROR_MSG, succeededMsg);

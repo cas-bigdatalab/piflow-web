@@ -1,33 +1,39 @@
 package cn.cnic.third.livy.service.impl;
 
-import cn.cnic.base.utils.HttpUtils;
-import cn.cnic.base.utils.ReturnMapUtils;
-import cn.cnic.common.constant.SysParamsCache;
-import cn.cnic.third.livy.service.ILivy;
-import lombok.extern.slf4j.Slf4j;
-import net.sf.json.JSONObject;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Component;
-
 import java.util.HashMap;
 import java.util.Map;
 
-@Slf4j
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+
+import cn.cnic.base.utils.HttpUtils;
+import cn.cnic.base.utils.LoggerUtil;
+import cn.cnic.base.utils.ReturnMapUtils;
+import cn.cnic.common.constant.SysParamsCache;
+import cn.cnic.third.livy.service.ILivy;
+import net.sf.json.JSONObject;
+
+
 @Component
 public class LivyImpl implements ILivy {
+
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private Logger logger = LoggerUtil.getLogger();
 
     @Override
     public Map<String, Object> getAllSessions() {
         String doGet = HttpUtils.doGet(SysParamsCache.getLivySessionsUrl(), null, null);
-        log.info("return msg: " + doGet);
+        logger.info("return msg: " + doGet);
         return ReturnMapUtils.setSucceededCustomParam("data", doGet);
     }
 
     @Override
     public Map<String, Object> startSessions() {
         String doPost = HttpUtils.doPost(SysParamsCache.getLivySessionsUrl(), "{\"kind\":\"spark\"}", null);
-        log.info("return msg: " + doPost);
+        logger.info("return msg: " + doPost);
         if(StringUtils.isBlank(doPost)) {
         	return ReturnMapUtils.setFailedMsg("Error : Interface return value is null");
         }
@@ -42,7 +48,7 @@ public class LivyImpl implements ILivy {
             }
             return ReturnMapUtils.setSucceededCustomParam("sessionsId", sessionsId);
         } catch (Exception e) {
-            log.error("error: ", e);
+            logger.error("error: ", e);
             return ReturnMapUtils.setFailedMsg("Error : Interface call succeeded, conversion error");
         }
     }
@@ -51,7 +57,7 @@ public class LivyImpl implements ILivy {
     public Map<String, Object> stopSessions(String sessionsId) {
         String url = SysParamsCache.getLivySessionsUrl() + "/" + sessionsId;
         String doDelete = HttpUtils.doDelete(url, null);
-        log.info("return msg: " + doDelete);
+        logger.info("return msg: " + doDelete);
         if(StringUtils.isBlank(doDelete)) {
         	return ReturnMapUtils.setFailedMsg("Error : Interface return value is null");
         }
@@ -69,7 +75,7 @@ public class LivyImpl implements ILivy {
     	String json = ReturnMapUtils.mapToJson(jsonMap);
         String url = SysParamsCache.getLivySessionsUrl() + "/" + sessionsId + "/statements";
         String doPost = HttpUtils.doPost(url, json, null);
-        log.info("return msg: " + doPost);
+        logger.info("return msg: " + doPost);
         if(StringUtils.isBlank(doPost)) {
         	return ReturnMapUtils.setFailedMsg("Error : Interface return value is null");
         }
@@ -84,7 +90,7 @@ public class LivyImpl implements ILivy {
             }
             return ReturnMapUtils.setSucceededCustomParam("statementsId", statementsId);
         } catch (Exception e) {
-            log.error("error: ", e);
+            logger.error("error: ", e);
             return ReturnMapUtils.setFailedMsg("Error : Interface call succeeded, conversion error");
         }
     }
@@ -93,7 +99,7 @@ public class LivyImpl implements ILivy {
     public Map<String, Object> getStatementsResult(String sessionsId, String statementsId) {
         String url = SysParamsCache.getLivySessionsUrl() + "/" + sessionsId + "/statements/" + statementsId;
         String doGet = HttpUtils.doGet(url, null, null);
-        log.info("return msg: " + doGet);
+        logger.info("return msg: " + doGet);
         if(StringUtils.isBlank(doGet)) {
         	return ReturnMapUtils.setFailedMsg("Error : Interface return value is null");
         }

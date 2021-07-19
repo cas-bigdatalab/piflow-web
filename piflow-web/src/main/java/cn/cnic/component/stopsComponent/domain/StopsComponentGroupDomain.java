@@ -21,7 +21,10 @@ import cn.cnic.component.stopsComponent.vo.StopsComponentGroupVo;
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
 public class StopsComponentGroupDomain {
 
-    Logger logger = LoggerUtil.getLogger();
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private Logger logger = LoggerUtil.getLogger();
 
     @Resource
     private StopsComponentGroupMapper stopsComponentGroupMapper;

@@ -15,10 +15,13 @@ import java.util.List;
 
 public class MxCellMapperTest extends ApplicationTests {
 
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private Logger logger = LoggerUtil.getLogger();
+	
     @Autowired
     private MxCellMapper mxCellMapper;
-
-    Logger logger = LoggerUtil.getLogger();
 
     @Test
     public void testGetMeCellByMxGraphId() {

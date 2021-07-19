@@ -12,10 +12,13 @@ import cn.cnic.component.flow.entity.Flow;
 
 public class FlowServiceTest extends ApplicationTests {
 
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private Logger logger = LoggerUtil.getLogger();
+	
     @Autowired
     private IFlowService flowService;
-
-    Logger logger = LoggerUtil.getLogger();
 
     @Test
     @Rollback(false)

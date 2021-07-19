@@ -1,5 +1,16 @@
 package cn.cnic.base.utils;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.charset.UnsupportedCharsetException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
 import org.apache.http.HttpVersion;
@@ -18,25 +29,17 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-
-import lombok.extern.slf4j.Slf4j;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.charset.UnsupportedCharsetException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import org.slf4j.Logger;
 
 /**
  * Http tool class
  */
-@Slf4j
 public class HttpUtils {
+
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private static Logger logger = LoggerUtil.getLogger();
 
 	public static String INTERFACE_CALL_ERROR = "Interface call error";
 	
@@ -77,7 +80,7 @@ public class HttpUtils {
             // Create a "post" mode request object
             httpPost = new HttpPost(url);
 
-            log.debug("afferent json param:" + json);
+            logger.debug("afferent json param:" + json);
             // Set parameters to the request object
             
             if (StringUtils.isNotBlank(json)) {
@@ -94,37 +97,37 @@ public class HttpUtils {
                 httpPost.setConfig(requestConfig);
             }
 
-            log.info("call '" + url + "' start");
+            logger.info("call '" + url + "' start");
             // Perform the request operation and get the result (synchronous blocking)
             CloseableHttpResponse response = httpClient.execute(httpPost);
-            log.info("call succeeded,return msg:" + response.toString());
+            logger.info("call succeeded,return msg:" + response.toString());
             // Get result entity
             // Determine whether the network connection status code is normal (0--200 are normal)
             switch (response.getStatusLine().getStatusCode()) {
                 case HttpStatus.SC_OK:
                     result = EntityUtils.toString(response.getEntity(), "utf-8");
-                    log.info("call succeeded,return msg:" + result);
+                    logger.info("call succeeded,return msg:" + result);
                     break;
                 case HttpStatus.SC_CREATED:
                     result = EntityUtils.toString(response.getEntity(), "utf-8");
-                    log.info("call succeeded,return msg:" + result);
+                    logger.info("call succeeded,return msg:" + result);
                     break;
                 default:
                     result = INTERFACE_CALL_ERROR + ":" + EntityUtils.toString(response.getEntity(), "utf-8");
-                    log.warn("call failed,return msg:" + result);
+                    logger.warn("call failed,return msg:" + result);
                     break;
             }
         } catch (UnsupportedCharsetException e) {
-            log.error(INTERFACE_CALL_ERROR, e);
+            logger.error(INTERFACE_CALL_ERROR, e);
             result = (INTERFACE_CALL_ERROR + ":UnsupportedCharsetException");
         } catch (ClientProtocolException e) {
-            log.error(INTERFACE_CALL_ERROR, e);
+            logger.error(INTERFACE_CALL_ERROR, e);
             result = (INTERFACE_CALL_ERROR + ":ClientProtocolException");
         } catch (ParseException e) {
-            log.error(INTERFACE_CALL_ERROR, e);
+            logger.error(INTERFACE_CALL_ERROR, e);
             result = (INTERFACE_CALL_ERROR + ":ParseException");
         } catch (IOException e) {
-            log.error(INTERFACE_CALL_ERROR, e);
+            logger.error(INTERFACE_CALL_ERROR, e);
             result = (INTERFACE_CALL_ERROR + ":IOException");
         } finally {
             // Close the connection and release the resource
@@ -186,39 +189,39 @@ public class HttpUtils {
                     httpGet.setConfig(requestConfig);
                 }
 
-                log.info("call '" + url + "' start");
+                logger.info("call '" + url + "' start");
                 // Get the response object by requesting the object
                 CloseableHttpResponse response = httpClient.execute(httpGet);
-                log.info("call succeeded,return msg:" + response.toString());
+                logger.info("call succeeded,return msg:" + response.toString());
                 // Get result entity
                 // Determine whether the network connection status code is normal (0--200 are normal)
                 switch (response.getStatusLine().getStatusCode()) {
                     case HttpStatus.SC_OK:
                         result = EntityUtils.toString(response.getEntity(), "utf-8");
-                        log.info("call succeeded,return msg:" + result);
+                        logger.info("call succeeded,return msg:" + result);
                         break;
                     case HttpStatus.SC_CREATED:
                         result = EntityUtils.toString(response.getEntity(), "utf-8");
-                        log.info("call succeeded,return msg:" + result);
+                        logger.info("call succeeded,return msg:" + result);
                         break;
                     default:
                         result = INTERFACE_CALL_ERROR + ":" + EntityUtils.toString(response.getEntity(), "utf-8");
-                        log.warn("call failed,return msg:" + result);
+                        logger.warn("call failed,return msg:" + result);
                         break;
                 }
                 // Release link
                 response.close();
             } catch (ClientProtocolException e) {
-                log.error(INTERFACE_CALL_ERROR, e);
+                logger.error(INTERFACE_CALL_ERROR, e);
                 result = (INTERFACE_CALL_ERROR + ":ClientProtocolException");
             } catch (ParseException e) {
-                log.error(INTERFACE_CALL_ERROR, e);
+                logger.error(INTERFACE_CALL_ERROR, e);
                 result = (INTERFACE_CALL_ERROR + ":ParseException");
             } catch (IOException e) {
-                log.error(INTERFACE_CALL_ERROR, e);
+                logger.error(INTERFACE_CALL_ERROR, e);
                 result = (INTERFACE_CALL_ERROR + ":IOException");
             } catch (URISyntaxException e) {
-                log.error(INTERFACE_CALL_ERROR, e);
+                logger.error(INTERFACE_CALL_ERROR, e);
                 result = (INTERFACE_CALL_ERROR + ":URISyntaxException");
             }
         }
@@ -249,7 +252,7 @@ public class HttpUtils {
                 result += line + "\n";
             }
         } catch (Exception e) {
-            log.error("send get request is abnormal!" + e);
+            logger.error("send get request is abnormal!" + e);
             e.printStackTrace();
         } // Use "finally" to close the input stream
         finally {
@@ -261,7 +264,7 @@ public class HttpUtils {
                 e2.printStackTrace();
             }
         }
-        log.debug("html info:" + result);
+        logger.debug("html info:" + result);
         return result;
     }
 
@@ -293,37 +296,37 @@ public class HttpUtils {
                 httpDelete.setConfig(requestConfig);
             }
 
-            log.info("call '" + url + "' start");
+            logger.info("call '" + url + "' start");
             // Perform the request operation and get the result (synchronous blocking)
             CloseableHttpResponse response = httpClient.execute(httpDelete);
-            log.info("call succeeded,return msg:" + response.toString());
+            logger.info("call succeeded,return msg:" + response.toString());
             // Get result entity
             // Determine whether the network connection status code is normal (0--200 are normal)
             switch (response.getStatusLine().getStatusCode()) {
 	            case HttpStatus.SC_OK:
 	            	result = EntityUtils.toString(response.getEntity(), "utf-8");
-	                log.info("call succeeded,return msg:" + result);
+	                logger.info("call succeeded,return msg:" + result);
 	                break;
 	            case HttpStatus.SC_CREATED:
 	            	result = EntityUtils.toString(response.getEntity(), "utf-8");
-	                log.info("call succeeded,return msg:" + result);
+	                logger.info("call succeeded,return msg:" + result);
 	                break;
 	            default:
 	                result = INTERFACE_CALL_ERROR + ":" + EntityUtils.toString(response.getEntity(), "utf-8");
-	                log.warn("call failed,return msg:" + result);
+	                logger.warn("call failed,return msg:" + result);
 	                break;
 	        }
         } catch (UnsupportedCharsetException e) {
-            log.error(INTERFACE_CALL_ERROR, e);
+            logger.error(INTERFACE_CALL_ERROR, e);
             result = (INTERFACE_CALL_ERROR + ":UnsupportedCharsetException");
         } catch (ClientProtocolException e) {
-            log.error(INTERFACE_CALL_ERROR, e);
+            logger.error(INTERFACE_CALL_ERROR, e);
             result = (INTERFACE_CALL_ERROR + ":ClientProtocolException");
         } catch (ParseException e) {
-            log.error(INTERFACE_CALL_ERROR, e);
+            logger.error(INTERFACE_CALL_ERROR, e);
             result = (INTERFACE_CALL_ERROR + ":ParseException");
         } catch (IOException e) {
-            log.error(INTERFACE_CALL_ERROR, e);
+            logger.error(INTERFACE_CALL_ERROR, e);
             result = (INTERFACE_CALL_ERROR + ":IOException");
         } finally {
             // Close the connection and release the resource

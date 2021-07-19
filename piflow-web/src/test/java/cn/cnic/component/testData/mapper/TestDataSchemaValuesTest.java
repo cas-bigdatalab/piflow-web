@@ -12,10 +12,13 @@ import cn.cnic.component.testData.entity.TestDataSchemaValues;
 
 public class TestDataSchemaValuesTest extends ApplicationTests {
 
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private Logger logger = LoggerUtil.getLogger();
+	
     @Autowired
     private TestDataSchemaValuesMapper testDataSchemaValuesMapper;
-
-    Logger logger = LoggerUtil.getLogger();
 
     @Test
     public void testGetTestDataSchemaValuesList() {

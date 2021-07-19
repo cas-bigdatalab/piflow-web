@@ -22,7 +22,10 @@ import java.util.List;
 @Component
 public class RunningProcessGroupSync extends QuartzJobBean {
 
-    Logger logger = LoggerUtil.getLogger();
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private Logger logger = LoggerUtil.getLogger();
 
     @Autowired
     private ProcessGroupMapper processGroupMapper;

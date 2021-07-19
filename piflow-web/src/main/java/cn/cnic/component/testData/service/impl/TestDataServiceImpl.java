@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +19,6 @@ import com.github.pagehelper.PageHelper;
 
 import cn.cnic.base.utils.FileUtils;
 import cn.cnic.base.utils.JsonUtils;
-import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.PageHelperUtils;
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.base.utils.UUIDUtils;
@@ -43,7 +41,6 @@ import cn.cnic.controller.requestVo.TestDataSchemaValuesSaveVo;
 @Service
 @Transactional
 public class TestDataServiceImpl implements ITestDataService {
-    Logger logger = LoggerUtil.getLogger();
 
     @Autowired
     private TestDataDomain testDataDomain;

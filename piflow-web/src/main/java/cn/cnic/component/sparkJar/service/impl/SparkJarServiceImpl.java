@@ -12,7 +12,6 @@ import cn.cnic.third.vo.sparkJar.SparkJarVo;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,9 +21,6 @@ import java.util.*;
 
 @Service
 public class SparkJarServiceImpl implements ISparkJarService {
-
-    Logger logger = LoggerUtil.getLogger();
-
 
     @Resource
     private SparkJarMapper sparkJarMapper;

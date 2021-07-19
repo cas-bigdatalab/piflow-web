@@ -1,7 +1,6 @@
 package cn.cnic.component.process.service.Impl;
 
 import cn.cnic.base.utils.JsonUtils;
-import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.PageHelperUtils;
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.component.process.entity.Process;
@@ -17,7 +16,6 @@ import cn.cnic.component.process.mapper.ProcessMapper;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.apache.commons.collections.CollectionUtils;
-import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -27,8 +25,6 @@ import java.util.Map;
 
 @Service
 public class ProcessAndProcessGroupServiceImpl implements IProcessAndProcessGroupService {
-
-    Logger logger = LoggerUtil.getLogger();
 
     @Resource
     private ProcessAndProcessGroupMapper processAndProcessGroupMapper;

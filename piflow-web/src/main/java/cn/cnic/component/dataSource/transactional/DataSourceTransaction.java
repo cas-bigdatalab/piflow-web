@@ -1,6 +1,5 @@
 package cn.cnic.component.dataSource.transactional;
 
-import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.UUIDUtils;
 import cn.cnic.component.dataSource.entity.DataSource;
 import cn.cnic.component.dataSource.entity.DataSourceProperty;
@@ -8,7 +7,6 @@ import cn.cnic.component.dataSource.mapper.DataSourceMapper;
 import cn.cnic.component.dataSource.mapper.DataSourcePropertyMapper;
 import cn.cnic.component.dataSource.vo.DataSourceVo;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -20,11 +18,6 @@ import java.util.List;
 @Component
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
 public class DataSourceTransaction {
-
-    /**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
-    Logger logger = LoggerUtil.getLogger();
 
     @Resource
     private DataSourceMapper dataSourceMapper;

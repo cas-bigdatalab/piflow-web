@@ -10,10 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class IMxCellServiceTest extends ApplicationTests {
 
-    @Autowired
-    private IMxCellService mxCellServiceImpl;
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private Logger logger = LoggerUtil.getLogger();
 
-    Logger logger = LoggerUtil.getLogger();
+	@Autowired
+    private IMxCellService mxCellServiceImpl;
 
     @Test
     public void testGetMeCellById() {

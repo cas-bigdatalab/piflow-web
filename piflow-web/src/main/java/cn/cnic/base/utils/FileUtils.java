@@ -1,15 +1,24 @@
 package cn.cnic.base.utils;
 
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.util.ResourceUtils;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.multipart.MultipartFile;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-
-import lombok.extern.slf4j.Slf4j;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
+import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,17 +30,25 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
-@Slf4j
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.util.ResourceUtils;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.multipart.MultipartFile;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
+
 public class FileUtils {
 
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private static Logger logger = LoggerUtil.getLogger();
+	
     public static String CSV_TITLE_KEY = "CSV_TITLE";
     public static String CSV_DATA_KEY = "CSV_DATA";
     /**
@@ -47,7 +64,7 @@ public class FileUtils {
         CheckPathUtils.isChartPathExist(path);
         Document doc = strToDocument(xmlStr);
         String realPath = path + fileName + ".xml";
-        log.debug("============Entry Generation Method：" + new Date().toLocaleString() + "=================");
+        logger.debug("============Entry Generation Method：" + new Date().toLocaleString() + "=================");
         try {
             // Determine if the file exists, delete it if it exists
             File file = new File(realPath);
@@ -55,9 +72,9 @@ public class FileUtils {
                 //Create if it does not exist
                 boolean mkdirs = file.getParentFile().mkdirs();
                 if (mkdirs) {
-                    log.info("File created successfully");
+                    logger.info("File created successfully");
                 }
-                log.info("==============File directory does not exist, new file==============");
+                logger.info("==============File directory does not exist, new file==============");
             }
             // Write the contents of the document to the file
             TransformerFactory tFactory = TransformerFactory.newInstance();
@@ -67,11 +84,11 @@ public class FileUtils {
             DOMSource source = new DOMSource(doc);
             StreamResult result = new StreamResult(new FileOutputStream(realPath));
             transformer.transform(source, result);
-            log.info("--------------------------------" + "Update file successfully" + "-------------------------------------");
+            logger.info("--------------------------------" + "Update file successfully" + "-------------------------------------");
         } catch (final Exception exception) {
-            log.error("update " + fileName + " error ：", exception);
+            logger.error("update " + fileName + " error ：", exception);
         }
-        log.debug("============Exit Generation Method：" + new Date().toLocaleString() + "=================");
+        logger.debug("============Exit Generation Method：" + new Date().toLocaleString() + "=================");
         return realPath;
     }
 
@@ -142,7 +159,7 @@ public class FileUtils {
         if (!saveFile.getParentFile().exists()) {
             boolean mkdirs = saveFile.getParentFile().mkdirs();
             if (mkdirs) {
-                log.info("File created successfully");
+                logger.info("File created successfully");
             }
         }
         Map<String, Object> rtnMap = new HashMap<>();
@@ -152,7 +169,7 @@ public class FileUtils {
             out.write(file.getBytes());
             out.flush();
             out.close();
-            log.debug(saveFile.getName() + " Upload success");
+            logger.debug(saveFile.getName() + " Upload success");
             rtnMap.put("fileName", fileName);
             rtnMap.put("saveFileName", saveFileName);
             rtnMap.put("path", path + saveFileName);
@@ -161,11 +178,11 @@ public class FileUtils {
         } catch (FileNotFoundException e) {
             //e.printStackTrace();
             rtnMap.put("msgInfo", "Upload failure");
-            log.error("Upload failure,", e);
+            logger.error("Upload failure,", e);
         } catch (IOException e) {
             //e.printStackTrace();
             rtnMap.put("msgInfo", "Upload failure");
-            log.error("Upload failure", e);
+            logger.error("Upload failure", e);
         }
         return rtnMap;
     }
@@ -190,11 +207,11 @@ public class FileUtils {
             builder = factory.newDocumentBuilder();
             doc = builder.parse(is);
         } catch (ParserConfigurationException e) {
-            log.error("ParserConfiguration Error", e);
+            logger.error("ParserConfiguration Error", e);
         } catch (SAXException e) {
-            log.error("SAX Error", e);
+            logger.error("SAX Error", e);
         } catch (IOException e) {
-            log.error("IO Error", e);
+            logger.error("IO Error", e);
         }
         return doc;
     }
@@ -243,9 +260,9 @@ public class FileUtils {
             in.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-            log.error("FileNotFound Error", e);
+            logger.error("FileNotFound Error", e);
         } catch (IOException e) {
-            log.error("Conversion IO Error", e);
+            logger.error("Conversion IO Error", e);
             e.printStackTrace();
         }
         if (null != strBuffer) {
@@ -254,7 +271,7 @@ public class FileUtils {
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
-            log.info(" file converted string：" + fileString);
+            logger.info(" file converted string：" + fileString);
         }
         return fileString;
     }
@@ -280,9 +297,9 @@ public class FileUtils {
             fileString = fileToString(file);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-            log.error("FileNotFound Error", e);
+            logger.error("FileNotFound Error", e);
         }
-        log.info(" file converted string：" + fileString);
+        logger.info(" file converted string：" + fileString);
         return fileString;
     }
 

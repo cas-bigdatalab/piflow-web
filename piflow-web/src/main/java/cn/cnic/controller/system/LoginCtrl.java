@@ -19,13 +19,13 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/")
 public class LoginCtrl {
 
-    @Autowired
-    private ISysUserService sysUserServiceImpl;
-
-    /**
+	/**
      * Introducing logs, note that they are all packaged under "org.slf4j"
      */
-    Logger logger = LoggerUtil.getLogger();
+    private Logger logger = LoggerUtil.getLogger();
+
+    @Autowired
+    private ISysUserService sysUserServiceImpl;
 
     @RequestMapping("/login")
     public ModelAndView login(ModelAndView modelAndView) {

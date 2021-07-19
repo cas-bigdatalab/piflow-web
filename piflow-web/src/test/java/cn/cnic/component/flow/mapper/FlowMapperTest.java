@@ -16,10 +16,13 @@ import java.util.Date;
 
 public class FlowMapperTest extends ApplicationTests {
 
-    @Resource
-    private FlowMapper flowMapper;
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private Logger logger = LoggerUtil.getLogger();
 
-    Logger logger = LoggerUtil.getLogger();
+	@Resource
+    private FlowMapper flowMapper;
 
     @Test
     public void testGetFlowById() {

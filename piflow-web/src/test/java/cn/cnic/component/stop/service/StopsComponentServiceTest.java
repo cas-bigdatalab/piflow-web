@@ -10,10 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class StopsComponentServiceTest extends ApplicationTests {
 
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private Logger logger = LoggerUtil.getLogger();
+	
     @Autowired
     private IStopsComponentService stopsTemplateService;
-
-    Logger logger = LoggerUtil.getLogger();
 
     @Test
     public void testGetStopsTemplateById() {

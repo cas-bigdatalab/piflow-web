@@ -21,7 +21,10 @@ import java.util.List;
 @Component
 public class RunningProcessSync extends QuartzJobBean {
 
-    Logger logger = LoggerUtil.getLogger();
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private Logger logger = LoggerUtil.getLogger();
 
     @Autowired
     private ProcessMapper processMapper;

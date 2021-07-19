@@ -1,9 +1,7 @@
 package cn.cnic.controller;
 
-import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.component.sparkJar.service.ISparkJarService;
-import org.slf4j.Logger;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,8 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @RequestMapping("/sparkJar")
 public class SparkJarCtrl {
-
-    Logger logger = LoggerUtil.getLogger();
 
     @Resource
     private ISparkJarService sparkJarServiceImpl;

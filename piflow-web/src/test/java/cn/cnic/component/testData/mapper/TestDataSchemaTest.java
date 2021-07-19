@@ -12,10 +12,13 @@ import cn.cnic.base.utils.LoggerUtil;
 
 public class TestDataSchemaTest extends ApplicationTests {
 
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private Logger logger = LoggerUtil.getLogger();
+	
     @Autowired
     private TestDataSchemaMapper testDataSchemaMapper;
-
-    Logger logger = LoggerUtil.getLogger();
 
     @Test
     public void testGetTestDataSchemaIdList() {

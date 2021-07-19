@@ -29,7 +29,10 @@ import net.sf.json.JSONObject;
 @Component
 public class ScheduleImpl implements ISchedule {
 
-    Logger logger = LoggerUtil.getLogger();
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private Logger logger = LoggerUtil.getLogger();
 
     @Resource
     FlowMapper flowMapper;

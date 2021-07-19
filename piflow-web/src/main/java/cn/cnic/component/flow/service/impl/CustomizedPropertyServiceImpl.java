@@ -1,5 +1,19 @@
 package cn.cnic.component.flow.service.impl;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import cn.cnic.base.utils.JsonUtils;
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.ReturnMapUtils;
@@ -7,26 +21,21 @@ import cn.cnic.base.utils.UUIDUtils;
 import cn.cnic.component.flow.entity.CustomizedProperty;
 import cn.cnic.component.flow.entity.Paths;
 import cn.cnic.component.flow.entity.Stops;
-import cn.cnic.component.flow.service.ICustomizedPropertyService;
-import cn.cnic.component.flow.vo.PathsVo;
-import cn.cnic.component.flow.vo.StopsCustomizedPropertyVo;
 import cn.cnic.component.flow.mapper.CustomizedPropertyMapper;
 import cn.cnic.component.flow.mapper.PathsMapper;
 import cn.cnic.component.flow.mapper.StopsMapper;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-import java.util.*;
+import cn.cnic.component.flow.service.ICustomizedPropertyService;
+import cn.cnic.component.flow.vo.PathsVo;
+import cn.cnic.component.flow.vo.StopsCustomizedPropertyVo;
 
 @Service
 public class CustomizedPropertyServiceImpl implements ICustomizedPropertyService {
 
-    Logger logger = LoggerUtil.getLogger();
-
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private Logger logger = LoggerUtil.getLogger();
+	
     @Resource
     private CustomizedPropertyMapper customizedPropertyMapper;
 

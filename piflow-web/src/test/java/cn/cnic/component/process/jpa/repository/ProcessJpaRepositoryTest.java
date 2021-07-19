@@ -13,11 +13,13 @@ import java.util.List;
 
 public class ProcessJpaRepositoryTest extends ApplicationTests {
 
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private Logger logger = LoggerUtil.getLogger();
+
     @Autowired
     private ProcessJpaRepository processJpaRepository;
-
-    Logger logger = LoggerUtil.getLogger();
-
 
     @Test
     @Transactional

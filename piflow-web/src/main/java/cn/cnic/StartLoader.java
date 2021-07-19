@@ -1,26 +1,33 @@
 package cn.cnic;
 
-import cn.cnic.base.utils.CheckPathUtils;
-import cn.cnic.base.utils.QuartzUtils;
-import cn.cnic.common.Eunm.ScheduleState;
-import cn.cnic.common.constant.SysParamsCache;
-import cn.cnic.component.system.entity.SysSchedule;
-import cn.cnic.component.system.mapper.SysScheduleMapper;
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
+
+import javax.annotation.Resource;
 
 import org.quartz.Scheduler;
+import org.slf4j.Logger;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
-import java.util.List;
+import cn.cnic.base.utils.CheckPathUtils;
+import cn.cnic.base.utils.LoggerUtil;
+import cn.cnic.base.utils.QuartzUtils;
+import cn.cnic.common.Eunm.ScheduleState;
+import cn.cnic.common.constant.SysParamsCache;
+import cn.cnic.component.system.entity.SysSchedule;
+import cn.cnic.component.system.mapper.SysScheduleMapper;
 
-@Slf4j
+
 @Component
 @Order(value = 1)
 public class StartLoader implements ApplicationRunner {
+
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private Logger logger = LoggerUtil.getLogger();
 
     @Resource
     private SysScheduleMapper sysScheduleMapper;
@@ -36,7 +43,7 @@ public class StartLoader implements ApplicationRunner {
 
     private void checkStoragePath() {
         String storagePathHead = System.getProperty("user.dir");
-        log.warn(storagePathHead);
+        logger.warn(storagePathHead);
         CheckPathUtils.isChartPathExist(storagePathHead + "/storage/image/");
         CheckPathUtils.isChartPathExist(storagePathHead + "/storage/video/");
         CheckPathUtils.isChartPathExist(storagePathHead + "/storage/xml/");

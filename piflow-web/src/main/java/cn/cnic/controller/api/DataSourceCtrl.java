@@ -1,25 +1,20 @@
 package cn.cnic.controller.api;
 
-import cn.cnic.base.utils.LoggerUtil;
-import cn.cnic.base.utils.SessionUserUtil;
-import cn.cnic.component.dataSource.service.IDataSource;
-import cn.cnic.component.dataSource.vo.DataSourceVo;
-import cn.cnic.component.flow.service.IStopsService;
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import cn.cnic.base.utils.SessionUserUtil;
+import cn.cnic.component.dataSource.service.IDataSource;
+import cn.cnic.component.dataSource.vo.DataSourceVo;
+import cn.cnic.component.flow.service.IStopsService;
+
 
 @Controller
 @RequestMapping("/datasource")
 public class DataSourceCtrl {
-    /**
-     * Introduce the log, note that all are under the "org.slf4j" package
-     */
-    Logger logger = LoggerUtil.getLogger();
 
     @Autowired
     private IDataSource dataSourceImpl;

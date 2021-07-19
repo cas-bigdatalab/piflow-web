@@ -1,33 +1,35 @@
 package cn.cnic.component.flow.service.impl;
 
-import cn.cnic.base.utils.JsonUtils;
-import cn.cnic.base.utils.LoggerUtil;
-import cn.cnic.component.flow.entity.FlowGroup;
-import cn.cnic.component.flow.entity.FlowGroupPaths;
-import cn.cnic.component.flow.service.IFlowGroupPathsService;
-import cn.cnic.component.flow.vo.FlowGroupPathsVo;
-import cn.cnic.component.flow.vo.FlowGroupVo;
-import cn.cnic.component.flow.mapper.FlowGroupMapper;
-import cn.cnic.component.flow.mapper.FlowGroupPathsMapper;
-import cn.cnic.component.flow.mapper.FlowMapper;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import cn.cnic.base.utils.JsonUtils;
+import cn.cnic.base.utils.LoggerUtil;
+import cn.cnic.component.flow.entity.FlowGroup;
+import cn.cnic.component.flow.entity.FlowGroupPaths;
+import cn.cnic.component.flow.mapper.FlowGroupMapper;
+import cn.cnic.component.flow.mapper.FlowGroupPathsMapper;
+import cn.cnic.component.flow.mapper.FlowMapper;
+import cn.cnic.component.flow.service.IFlowGroupPathsService;
+import cn.cnic.component.flow.vo.FlowGroupPathsVo;
+import cn.cnic.component.flow.vo.FlowGroupVo;
 
 @Service
 public class FlowGroupPathsServiceImpl implements IFlowGroupPathsService {
 
-    /**
+	/**
      * Introducing logs, note that they are all packaged under "org.slf4j"
      */
-    Logger logger = LoggerUtil.getLogger();
-
+    private Logger logger = LoggerUtil.getLogger();
+	
     @Resource
     private FlowGroupPathsMapper flowGroupPathsMapper;
     @Resource

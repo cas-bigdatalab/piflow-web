@@ -2,10 +2,8 @@ package cn.cnic.component.stopsComponent.service.impl;
 
 import javax.annotation.Resource;
 
-import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
-import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.component.stopsComponent.domain.StopsComponentManageDomain;
 import cn.cnic.component.stopsComponent.model.StopsComponentManage;
@@ -15,8 +13,6 @@ import cn.cnic.controller.requestVo.UpdatestopsComponentIsShow;
 
 @Service
 public class StopsComponentManageServiceImpl implements IStopsComponentManageService {
-
-    Logger logger = LoggerUtil.getLogger();
 
     @Resource
     private StopsComponentManageDomain stopsComponentManageDomain;

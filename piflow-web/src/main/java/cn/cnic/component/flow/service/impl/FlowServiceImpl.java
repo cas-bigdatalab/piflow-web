@@ -1,38 +1,13 @@
 package cn.cnic.component.flow.service.impl;
 
-import cn.cnic.base.utils.*;
-import cn.cnic.common.Eunm.ProcessState;
-import cn.cnic.common.Eunm.RunModeType;
-import cn.cnic.component.flow.entity.Flow;
-import cn.cnic.component.flow.entity.FlowGroup;
-import cn.cnic.component.flow.entity.Property;
-import cn.cnic.component.flow.entity.Stops;
-import cn.cnic.component.flow.mapper.*;
-import cn.cnic.component.flow.service.IFlowService;
-import cn.cnic.component.flow.utils.PathsUtil;
-import cn.cnic.component.flow.utils.StopsUtils;
-import cn.cnic.component.flow.vo.FlowVo;
-import cn.cnic.component.flow.vo.PathsVo;
-import cn.cnic.component.flow.vo.StopsVo;
-import cn.cnic.component.mxGraph.entity.MxCell;
-import cn.cnic.component.mxGraph.entity.MxGraphModel;
-import cn.cnic.component.mxGraph.utils.MxGraphModelUtils;
-import cn.cnic.component.mxGraph.vo.MxGraphModelVo;
-import cn.cnic.component.process.entity.Process;
-import cn.cnic.component.process.utils.ProcessUtils;
-import cn.cnic.component.process.vo.ProcessVo;
-import cn.cnic.component.schedule.mapper.ScheduleMapper;
-import cn.cnic.component.stopsComponent.service.IStopGroupService;
-import cn.cnic.component.stopsComponent.vo.StopGroupVo;
-import cn.cnic.component.flow.jpa.domain.FlowDomain;
-import cn.cnic.component.flow.jpa.domain.FlowGroupDomain;
-import cn.cnic.component.mxGraph.jpa.domain.MxCellDomain;
-import cn.cnic.component.process.jpa.domain.ProcessDomain;
-import cn.cnic.component.mxGraph.mapper.MxCellMapper;
-import cn.cnic.component.mxGraph.mapper.MxGeometryMapper;
-import cn.cnic.component.mxGraph.mapper.MxGraphModelMapper;
-import cn.cnic.component.process.mapper.ProcessMapper;
-import cn.cnic.third.service.IFlow;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -42,15 +17,57 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
-import java.util.*;
+import cn.cnic.base.utils.JsonUtils;
+import cn.cnic.base.utils.LoggerUtil;
+import cn.cnic.base.utils.MxGraphUtils;
+import cn.cnic.base.utils.ReturnMapUtils;
+import cn.cnic.base.utils.UUIDUtils;
+import cn.cnic.common.Eunm.ProcessState;
+import cn.cnic.common.Eunm.RunModeType;
+import cn.cnic.component.flow.entity.Flow;
+import cn.cnic.component.flow.entity.FlowGroup;
+import cn.cnic.component.flow.entity.Property;
+import cn.cnic.component.flow.entity.Stops;
+import cn.cnic.component.flow.jpa.domain.FlowDomain;
+import cn.cnic.component.flow.jpa.domain.FlowGroupDomain;
+import cn.cnic.component.flow.mapper.FlowGroupMapper;
+import cn.cnic.component.flow.mapper.FlowMapper;
+import cn.cnic.component.flow.mapper.PathsMapper;
+import cn.cnic.component.flow.mapper.PropertyMapper;
+import cn.cnic.component.flow.mapper.StopsMapper;
+import cn.cnic.component.flow.service.IFlowService;
+import cn.cnic.component.flow.utils.PathsUtil;
+import cn.cnic.component.flow.utils.StopsUtils;
+import cn.cnic.component.flow.vo.FlowVo;
+import cn.cnic.component.flow.vo.PathsVo;
+import cn.cnic.component.flow.vo.StopsVo;
+import cn.cnic.component.mxGraph.entity.MxCell;
+import cn.cnic.component.mxGraph.entity.MxGraphModel;
+import cn.cnic.component.mxGraph.jpa.domain.MxCellDomain;
+import cn.cnic.component.mxGraph.mapper.MxCellMapper;
+import cn.cnic.component.mxGraph.mapper.MxGeometryMapper;
+import cn.cnic.component.mxGraph.mapper.MxGraphModelMapper;
+import cn.cnic.component.mxGraph.utils.MxGraphModelUtils;
+import cn.cnic.component.mxGraph.vo.MxGraphModelVo;
+import cn.cnic.component.process.entity.Process;
+import cn.cnic.component.process.jpa.domain.ProcessDomain;
+import cn.cnic.component.process.mapper.ProcessMapper;
+import cn.cnic.component.process.utils.ProcessUtils;
+import cn.cnic.component.process.vo.ProcessVo;
+import cn.cnic.component.schedule.mapper.ScheduleMapper;
+import cn.cnic.component.stopsComponent.service.IStopGroupService;
+import cn.cnic.component.stopsComponent.vo.StopGroupVo;
+import cn.cnic.third.service.IFlow;
 
 @Service
 @Transactional
 public class FlowServiceImpl implements IFlowService {
 
-    Logger logger = LoggerUtil.getLogger();
-
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private Logger logger = LoggerUtil.getLogger();
+	
     @Resource
     private FlowMapper flowMapper;
 

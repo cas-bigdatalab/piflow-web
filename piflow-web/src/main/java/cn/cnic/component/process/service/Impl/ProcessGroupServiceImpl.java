@@ -45,7 +45,10 @@ import net.sf.json.JSONObject;
 @Service
 public class ProcessGroupServiceImpl implements IProcessGroupService {
 
-    Logger logger = LoggerUtil.getLogger();
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private Logger logger = LoggerUtil.getLogger();
 
     @Resource
     private ProcessGroupDomain processGroupDomain;

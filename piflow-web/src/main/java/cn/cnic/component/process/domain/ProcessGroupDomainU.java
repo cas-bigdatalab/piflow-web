@@ -21,10 +21,10 @@ import java.util.List;
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
 public class ProcessGroupDomainU {
 
-    /**
+	/**
      * Introducing logs, note that they are all packaged under "org.slf4j"
      */
-    Logger logger = LoggerUtil.getLogger();
+    private Logger logger = LoggerUtil.getLogger();
 
     @Resource
     private ProcessGroupMapper processGroupMapper;

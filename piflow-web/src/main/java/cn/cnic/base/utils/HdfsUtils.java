@@ -1,7 +1,15 @@
 package cn.cnic.base.utils;
 
-import cn.cnic.component.process.vo.DebugDataResponse;
-import lombok.extern.slf4j.Slf4j;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.conf.Configuration;
@@ -11,19 +19,17 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IOUtils;
 import org.apache.hadoop.util.Progressable;
+import org.slf4j.Logger;
 
-import java.io.*;
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import cn.cnic.component.process.vo.DebugDataResponse;
 
 
-@Slf4j
 public class HdfsUtils {
+
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private static Logger logger = LoggerUtil.getLogger();
 
     public static void closedIO(InputStreamReader isr, BufferedReader br) {
         try {
@@ -41,7 +47,7 @@ public class HdfsUtils {
         InputStreamReader isr = null;
         BufferedReader br = null;
         try {
-            log.warn("start time : " + DateUtils.dateTimesToStr(new Date()));
+            logger.warn("start time : " + DateUtils.dateTimesToStr(new Date()));
             Configuration conf = new Configuration();
             FileSystem fs = FileSystem.get(URI.create(hdfs), conf);
             FSDataInputStream hdfsInStream = fs.open(new Path(hdfs));
@@ -51,9 +57,9 @@ public class HdfsUtils {
             // int k = 0;
             while ((line = br.readLine()) != null) {
                 json.append(line);
-                log.debug(line);
+                logger.debug(line);
             }
-            log.warn("end time : " + DateUtils.dateTimesToStr(new Date()));
+            logger.warn("end time : " + DateUtils.dateTimesToStr(new Date()));
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -71,7 +77,7 @@ public class HdfsUtils {
         InputStreamReader isr = null;
         BufferedReader br = null;
         try {
-            log.info("start time : " + DateUtils.dateTimesToStr(new Date()));
+            logger.info("start time : " + DateUtils.dateTimesToStr(new Date()));
             // Read file content
             List<String> HDFSDataList = new ArrayList<>();
             // Match the start file?
@@ -143,7 +149,7 @@ public class HdfsUtils {
             debugDataResponse.setLastFileName(lastReadFileName);
 
             debugDataResponse.setData(HDFSDataList);
-            log.info("end time : " + DateUtils.dateTimesToStr(new Date()));
+            logger.info("end time : " + DateUtils.dateTimesToStr(new Date()));
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

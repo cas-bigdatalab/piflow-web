@@ -24,7 +24,10 @@ import java.util.Map;
 @Service
 public class SysScheduleServiceImpl implements ISysScheduleService {
 
-    Logger logger = LoggerUtil.getLogger();
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private Logger logger = LoggerUtil.getLogger();
 
     //Injection task scheduling
     @Autowired

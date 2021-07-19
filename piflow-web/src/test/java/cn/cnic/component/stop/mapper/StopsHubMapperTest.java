@@ -14,10 +14,13 @@ import java.util.List;
 
 public class StopsHubMapperTest extends ApplicationTests {
 
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private Logger logger = LoggerUtil.getLogger();
+	
     @Resource
     private StopsHubMapper stopsHubMapper;
-
-    Logger logger = LoggerUtil.getLogger();
 
     @Test
     public void testAddStopsHub() {

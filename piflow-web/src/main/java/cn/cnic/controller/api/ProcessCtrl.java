@@ -22,11 +22,11 @@ import cn.cnic.third.service.IFlow;
 @RequestMapping("/process")
 public class ProcessCtrl {
 
-    /**
-     * Introduce the log, note that all are under the "org.slf4j" package
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
      */
-    Logger logger = LoggerUtil.getLogger();
-
+    private Logger logger = LoggerUtil.getLogger();
+	
     @Autowired
     IProcessService processServiceImpl;
 

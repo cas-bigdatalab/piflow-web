@@ -7,11 +7,9 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
 import cn.cnic.base.utils.JsonUtils;
-import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.common.Eunm.PortType;
 import cn.cnic.common.Eunm.RunModeType;
@@ -26,8 +24,6 @@ import cn.cnic.component.process.mapper.ProcessStopMapper;
 
 @Service
 public class ProcessPathServiceImpl implements IProcessPathService {
-
-    Logger logger = LoggerUtil.getLogger();
 
     @Resource
     private ProcessMapper processMapper;

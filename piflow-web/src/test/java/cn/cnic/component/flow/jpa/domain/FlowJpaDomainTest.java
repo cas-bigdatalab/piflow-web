@@ -10,10 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class FlowJpaDomainTest extends ApplicationTests {
 
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private Logger logger = LoggerUtil.getLogger();
+
     @Autowired
     private FlowDomain flowDomain;
-
-    Logger logger = LoggerUtil.getLogger();
 
     @Test
     public void testGetFlowById() {

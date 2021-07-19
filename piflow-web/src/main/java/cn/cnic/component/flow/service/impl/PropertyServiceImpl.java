@@ -1,10 +1,33 @@
 package cn.cnic.component.flow.service.impl;
 
-import cn.cnic.base.utils.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.transaction.Transactional;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Service;
+
+import cn.cnic.base.utils.CheckFiledUtils;
+import cn.cnic.base.utils.JsonUtils;
+import cn.cnic.base.utils.LoggerUtil;
+import cn.cnic.base.utils.ReturnMapUtils;
+import cn.cnic.base.utils.UUIDUtils;
 import cn.cnic.common.Eunm.PortType;
 import cn.cnic.component.flow.entity.Paths;
 import cn.cnic.component.flow.entity.Property;
 import cn.cnic.component.flow.entity.Stops;
+import cn.cnic.component.flow.jpa.domain.PropertyDomain;
+import cn.cnic.component.flow.jpa.domain.StopsDomain;
+import cn.cnic.component.flow.mapper.PathsMapper;
+import cn.cnic.component.flow.mapper.PropertyMapper;
+import cn.cnic.component.flow.mapper.StopsMapper;
 import cn.cnic.component.flow.request.UpdatePathRequest;
 import cn.cnic.component.flow.service.IPropertyService;
 import cn.cnic.component.flow.utils.StopsUtils;
@@ -12,25 +35,15 @@ import cn.cnic.component.flow.vo.StopsVo;
 import cn.cnic.component.stopsComponent.mapper.StopsComponentMapper;
 import cn.cnic.component.stopsComponent.model.StopsComponent;
 import cn.cnic.component.stopsComponent.model.StopsComponentProperty;
-import cn.cnic.component.flow.jpa.domain.PropertyDomain;
-import cn.cnic.component.flow.jpa.domain.StopsDomain;
-import cn.cnic.component.flow.mapper.PathsMapper;
-import cn.cnic.component.flow.mapper.PropertyMapper;
-import cn.cnic.component.flow.mapper.StopsMapper;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import javax.transaction.Transactional;
-import java.util.*;
 
 @Service
 public class PropertyServiceImpl implements IPropertyService {
 
-    Logger logger = LoggerUtil.getLogger();
-
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private Logger logger = LoggerUtil.getLogger();
+	
     @Resource
     private PropertyMapper propertyMapper;
 

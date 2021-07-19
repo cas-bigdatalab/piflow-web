@@ -17,14 +17,19 @@ import java.util.*;
 
 public class PropertyMapperTest extends ApplicationTests {
 
-    @Autowired
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private Logger logger = LoggerUtil.getLogger();
+
+	@Autowired
     private PropertyMapper propertyMapper;
+
     @Autowired
     private StopsMapper stopsMapper;
+
     @Autowired
     private StopsComponentMapper stopsComponentMapper;
-
-    Logger logger = LoggerUtil.getLogger();
 
     @Test
     public void testGetPropertyListByStopsId() {

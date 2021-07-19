@@ -1,10 +1,16 @@
 package cn.cnic.base.utils;
 
-import cn.cnic.base.vo.StatefulRtnBase;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 
-@Slf4j
+import cn.cnic.base.vo.StatefulRtnBase;
+
+
 public class StatefulRtnBaseUtils {
+
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private static Logger logger = LoggerUtil.getLogger();
 
     /**
      * set Failure information
@@ -14,7 +20,7 @@ public class StatefulRtnBaseUtils {
      */
     public static StatefulRtnBase setFailedMsg(String errorMsg) {
         StatefulRtnBase statefulRtnBase = new cn.cnic.base.vo.StatefulRtnBase();
-        log.info(errorMsg);
+        logger.info(errorMsg);
         statefulRtnBase.setReqRtnStatus(false);
         statefulRtnBase.setErrorCode(statefulRtnBase.ERRCODE_FAIL);
         statefulRtnBase.setErrorMsg(errorMsg);

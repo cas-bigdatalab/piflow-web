@@ -1,13 +1,11 @@
 package cn.cnic.controller;
 
 import cn.cnic.base.utils.JsonUtils;
-import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.component.process.service.IProcessGroupService;
 import cn.cnic.component.process.service.IProcessService;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,11 +19,6 @@ import java.util.Map;
 @Controller
 @RequestMapping("/processGroup")
 public class ProcessGroupCtrl {
-
-    /**
-     * Introduce the log, note that all are under the "org.slf4j" package
-     */
-    Logger logger = LoggerUtil.getLogger();
 
     @Resource
     private IProcessGroupService processGroupServiceImpl;

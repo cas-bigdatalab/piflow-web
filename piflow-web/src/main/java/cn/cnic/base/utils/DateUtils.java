@@ -1,9 +1,5 @@
 package cn.cnic.base.utils;
 
-import org.apache.commons.lang3.StringUtils;
-
-import lombok.extern.slf4j.Slf4j;
-
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
@@ -11,9 +7,16 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-@Slf4j
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+
 public class DateUtils {
 
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private static Logger logger = LoggerUtil.getLogger();
+	
     /**
      * yyyyMMdd 20121225
      */
@@ -142,7 +145,7 @@ public class DateUtils {
         try {
             return new SimpleDateFormat(DateUtils.DATE_PATTERN_HH_MM_ss).parse(timeStr);
         } catch (ParseException e) {
-            // logger.warn("【" + timeStr + "】格式化错误！");
+            // log.warn("【" + timeStr + "】格式化错误！");
             throw new RuntimeException(e.getMessage(), e);
         }
     }
@@ -585,7 +588,7 @@ public class DateUtils {
             SimpleDateFormat formatter = new SimpleDateFormat(EEE_MMM_dd_HH_mm_ss_zzz_yyyy, Locale.US);
             ParsePosition pos = new ParsePosition(0);
             date = formatter.parse(cstStr, pos);
-            log.debug("Converted values：" + date);
+            logger.debug("Converted values：" + date);
         }
         return date;
     }

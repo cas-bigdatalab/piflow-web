@@ -19,7 +19,10 @@ import java.util.List;
 @Service
 public class SysMenuServiceImpl implements ISysMenuService {
 
-    Logger logger = LoggerUtil.getLogger();
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private Logger logger = LoggerUtil.getLogger();
 
     @Resource
     private SysMenuMapper sysMenuMapper;

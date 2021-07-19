@@ -13,10 +13,13 @@ import java.util.Date;
 
 public class MxGeometryMapperTest extends ApplicationTests {
 
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private Logger logger = LoggerUtil.getLogger();
+
     @Autowired
     private MxGeometryMapper mxGeometryMapper;
-
-    Logger logger = LoggerUtil.getLogger();
 
     @Test
     public void testGetMxGeometryById() {

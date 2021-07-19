@@ -2,22 +2,18 @@ package cn.cnic.component.stopsComponent.domain;
 
 import java.util.List;
 
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import cn.cnic.base.utils.LoggerUtil;
-import cn.cnic.component.stopsComponent.model.StopsHub;
 import cn.cnic.component.stopsComponent.mapper.StopsHubMapper;
+import cn.cnic.component.stopsComponent.model.StopsHub;
 
 @Component
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
 public class StopsHubDomain {
-
-    Logger logger = LoggerUtil.getLogger();
 
     @Autowired
     private StopsHubMapper stopsHubMapper;

@@ -1,7 +1,6 @@
 package cn.cnic.component.mxGraph.service.impl;
 
 import cn.cnic.base.utils.FileUtils;
-import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.base.utils.UUIDUtils;
 import cn.cnic.common.constant.SysParamsCache;
@@ -11,7 +10,6 @@ import cn.cnic.component.mxGraph.utils.MxNodeImageUtils;
 import cn.cnic.component.mxGraph.vo.MxNodeImageVo;
 import cn.cnic.component.mxGraph.jpa.domain.MxNodeImageDomain;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,8 +21,6 @@ import java.util.Map;
 
 @Service
 public class MxNodeImageServiceImpl implements IMxNodeImageService {
-
-    Logger logger = LoggerUtil.getLogger();
 
     @Resource
     private MxNodeImageDomain mxNodeImageDomain;

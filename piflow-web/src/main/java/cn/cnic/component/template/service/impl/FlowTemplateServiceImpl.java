@@ -1,22 +1,14 @@
 package cn.cnic.component.template.service.impl;
 
-import cn.cnic.base.utils.*;
-import cn.cnic.common.Eunm.TemplateType;
-import cn.cnic.common.constant.SysParamsCache;
-import cn.cnic.component.flow.entity.*;
-import cn.cnic.component.mxGraph.entity.MxCell;
-import cn.cnic.component.mxGraph.entity.MxGraphModel;
-import cn.cnic.component.mxGraph.utils.MxCellUtils;
-import cn.cnic.component.mxGraph.utils.MxGraphModelUtils;
-import cn.cnic.component.template.entity.FlowTemplate;
-import cn.cnic.component.template.service.IFlowTemplateService;
-import cn.cnic.component.template.utils.FlowTemplateUtils;
-import cn.cnic.component.template.vo.FlowTemplateVo;
-import cn.cnic.component.flow.jpa.domain.FlowDomain;
-import cn.cnic.component.flow.jpa.domain.FlowGroupDomain;
-import cn.cnic.component.flow.jpa.domain.StopsDomain;
-import cn.cnic.component.mxGraph.jpa.domain.MxCellDomain;
-import cn.cnic.component.template.jpa.domain.FlowTemplateDomain;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
@@ -25,14 +17,42 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import cn.cnic.base.utils.FileUtils;
+import cn.cnic.base.utils.FlowXmlUtils;
+import cn.cnic.base.utils.JsonUtils;
+import cn.cnic.base.utils.LoggerUtil;
+import cn.cnic.base.utils.MxGraphUtils;
+import cn.cnic.base.utils.ReturnMapUtils;
+import cn.cnic.base.utils.UUIDUtils;
+import cn.cnic.common.Eunm.TemplateType;
+import cn.cnic.common.constant.SysParamsCache;
+import cn.cnic.component.flow.entity.Flow;
+import cn.cnic.component.flow.entity.FlowGroup;
+import cn.cnic.component.flow.entity.FlowGroupPaths;
+import cn.cnic.component.flow.entity.Paths;
+import cn.cnic.component.flow.entity.Stops;
+import cn.cnic.component.flow.jpa.domain.FlowDomain;
+import cn.cnic.component.flow.jpa.domain.FlowGroupDomain;
+import cn.cnic.component.flow.jpa.domain.StopsDomain;
+import cn.cnic.component.mxGraph.entity.MxCell;
+import cn.cnic.component.mxGraph.entity.MxGraphModel;
+import cn.cnic.component.mxGraph.jpa.domain.MxCellDomain;
+import cn.cnic.component.mxGraph.utils.MxCellUtils;
+import cn.cnic.component.mxGraph.utils.MxGraphModelUtils;
+import cn.cnic.component.template.entity.FlowTemplate;
+import cn.cnic.component.template.jpa.domain.FlowTemplateDomain;
+import cn.cnic.component.template.service.IFlowTemplateService;
+import cn.cnic.component.template.utils.FlowTemplateUtils;
+import cn.cnic.component.template.vo.FlowTemplateVo;
 
 @Service
 @Transactional
 public class FlowTemplateServiceImpl implements IFlowTemplateService {
-    Logger logger = LoggerUtil.getLogger();
+
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private Logger logger = LoggerUtil.getLogger();
 
     @Resource
     private FlowTemplateDomain flowTemplateDomain;

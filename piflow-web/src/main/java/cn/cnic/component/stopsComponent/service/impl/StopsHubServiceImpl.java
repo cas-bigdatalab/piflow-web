@@ -1,6 +1,28 @@
 package cn.cnic.component.stopsComponent.service.impl;
 
-import cn.cnic.base.utils.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+import javax.transaction.Transactional;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+
+import cn.cnic.base.utils.FileUtils;
+import cn.cnic.base.utils.JsonUtils;
+import cn.cnic.base.utils.PageHelperUtils;
+import cn.cnic.base.utils.ReturnMapUtils;
+import cn.cnic.base.utils.UUIDUtils;
 import cn.cnic.common.Eunm.StopsHubState;
 import cn.cnic.component.process.entity.Process;
 import cn.cnic.component.stopsComponent.domain.StopsComponentDomain;
@@ -18,23 +40,9 @@ import cn.cnic.component.stopsComponent.utils.StopsHubUtils;
 import cn.cnic.third.service.IStop;
 import cn.cnic.third.vo.stop.StopsHubVo;
 import cn.cnic.third.vo.stop.ThirdStopsComponentVo;
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Resource;
-import javax.transaction.Transactional;
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class StopsHubServiceImpl implements IStopsHubService {
-
-    Logger logger = LoggerUtil.getLogger();
-
 
     @Resource
     private StopsHubMapper stopsHubMapper;

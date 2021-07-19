@@ -1,6 +1,5 @@
 package cn.cnic.controller;
 
-import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.component.flow.service.ICustomizedPropertyService;
@@ -9,7 +8,6 @@ import cn.cnic.component.flow.service.IStopsService;
 import cn.cnic.component.flow.vo.StopsCustomizedPropertyVo;
 import cn.cnic.component.stopsComponent.service.IStopGroupService;
 import cn.cnic.component.stopsComponent.service.IStopsHubService;
-import org.slf4j.Logger;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,8 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @RequestMapping("/stops")
 public class StopsCtrl {
-
-    Logger logger = LoggerUtil.getLogger();
 
     @Resource
     private IStopGroupService stopGroupServiceImpl;

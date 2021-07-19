@@ -20,13 +20,16 @@ import javax.annotation.Resource;
 
 public class IFlowTest extends ApplicationTests {
 
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private Logger logger = LoggerUtil.getLogger();
+	
     @Autowired
     private IFlow flowImpl;
 
     @Resource
     private FlowMapper flowMapper;
-
-    Logger logger = LoggerUtil.getLogger();
 
     @Test
     @Transactional

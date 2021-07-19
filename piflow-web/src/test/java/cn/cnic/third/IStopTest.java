@@ -15,11 +15,13 @@ import java.util.Map;
 
 public class IStopTest extends ApplicationTests {
 
+    /**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private Logger logger = LoggerUtil.getLogger();
+	
     @Autowired
     private IStop stopImpl;
-
-    Logger logger = LoggerUtil.getLogger();
-
 
     @Test
     public void testGetAllGroup() {

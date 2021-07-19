@@ -4,9 +4,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import cn.cnic.base.utils.UUIDUtils;
-import cn.cnic.component.mxGraph.entity.MxGraphModel;
-import cn.cnic.component.mxGraph.domain.MxGraphModelDomainU;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -15,6 +12,9 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.cnic.base.utils.LoggerUtil;
+import cn.cnic.base.utils.UUIDUtils;
+import cn.cnic.component.mxGraph.domain.MxGraphModelDomainU;
+import cn.cnic.component.mxGraph.entity.MxGraphModel;
 import cn.cnic.component.process.entity.Process;
 import cn.cnic.component.process.entity.ProcessPath;
 import cn.cnic.component.process.entity.ProcessStop;
@@ -24,14 +24,15 @@ import cn.cnic.component.process.mapper.ProcessPathMapper;
 import cn.cnic.component.process.mapper.ProcessStopMapper;
 import cn.cnic.component.process.mapper.ProcessStopPropertyMapper;
 
+
 @Component
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
 public class ProcessDomainU {
 
-    /**
+	/**
      * Introducing logs, note that they are all packaged under "org.slf4j"
      */
-    Logger logger = LoggerUtil.getLogger();
+    private Logger logger = LoggerUtil.getLogger();
 
     @Resource
     private ProcessMapper processMapper;

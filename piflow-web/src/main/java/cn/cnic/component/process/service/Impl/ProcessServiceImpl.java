@@ -45,7 +45,10 @@ import java.util.*;
 @Service
 public class ProcessServiceImpl implements IProcessService {
 
-    Logger logger = LoggerUtil.getLogger();
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private Logger logger = LoggerUtil.getLogger();
 
     @Resource
     private ProcessMapper processMapper;
