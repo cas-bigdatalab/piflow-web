@@ -145,7 +145,7 @@ public class DateUtils {
         try {
             return new SimpleDateFormat(DateUtils.DATE_PATTERN_HH_MM_ss).parse(timeStr);
         } catch (ParseException e) {
-            // log.warn("【" + timeStr + "】格式化错误！");
+            // logger.warn("【" + timeStr + "】格式化错误！");
             throw new RuntimeException(e.getMessage(), e);
         }
     }

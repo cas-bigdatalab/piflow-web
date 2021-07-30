@@ -12,10 +12,12 @@ module.exports = {
         stopHub: '自定义组件',
         sparkJar: "Spark Jar包",
         testData: "测试数据",
+        code: "在线运行",
         example: "样例",
         admin: "高级",
         admin_schedule: '监控同步任务',
-        stopsComponent: '组件显示'
+        stopsComponent: '组件显示',
+        globalVariable: '全局变量'
     },
     page: {
         prev_text: "上一页",
@@ -50,6 +52,7 @@ module.exports = {
         delete_success_content: "删除成功！",
         delete_fail_content: "删除失败！",
         request_fail_content: "数据请求失败！",
+        reference_content: "被引用，不允许删除！",
 
         upload_success_content: "模板上传成功！",
         upload_fail_content: "模板上传失败！",
@@ -158,6 +161,16 @@ module.exports = {
         fileDescription: "点 击 或 拖 动 文件 在 此 处 上 传",
         uploadPrompt: "若您上传的CSV文件包含中文字符，请使用UTF-8编码"
     },
+    code_columns: {
+        create_title: "新建在线运行",
+        update_title: "更改在线运行",
+        code_name: "代码名称",
+        name: "名称",
+        description: "描述信息",
+        CreateTime: "创建时间",
+        UpdateTime: "修改时间",
+        action: "操作"
+    },
     admin_columns: {
         create_title: "新建调度",
         update_title: "更改调度",
@@ -174,6 +187,15 @@ module.exports = {
     stopsComponent_columns: {
         name: "组件名称",
         description: "描述信息",
+    },
+    globalVariable_columns: {
+        create_title: "新建全局变量",
+        update_title: "更改全局变量",
+        content: "全局变量内容",
+        name: "名称",
+        type: "类型",
+        createTime: "创建时间",
+        action: "操作"
     },
     homeInfo: {
         introduction_title: "简介",

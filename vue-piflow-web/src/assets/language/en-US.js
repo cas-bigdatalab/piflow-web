@@ -12,10 +12,12 @@ module.exports = {
         stopHub: "StopHub",
         sparkJar: "SparkJar",
         testData: "TestData",
+        code: "Code",
         example: "Example",
         admin: "Admin",
         admin_schedule: 'Schedule',
-        stopsComponent: 'StopsComponent'
+        stopsComponent: 'StopsComponent',
+        globalVariable: 'GlobalVariable'
     },
     page: {
         prev_text: "Previous",
@@ -50,6 +52,7 @@ module.exports = {
         delete_success_content: "deleted successfully！",
         delete_fail_content: "deletion failed！",
         request_fail_content: "Data request failed！",
+        reference_content: "referenced, not allowed to delete!",
 
         upload_success_content: "Template upload successful！",
         upload_fail_content: "Template upload failed！",
@@ -158,6 +161,16 @@ module.exports = {
         fileDescription: "Click or drag file here to upload",
         uploadPrompt: "If the CSV file you upload contains Chinese characters, please use UTF-8 encoding"
     },
+    code_columns: {
+        create_title: "Create Code",
+        update_title: "Update Code",
+        code_name: "CodeName",
+        name: "Name",
+        description: "Description",
+        CreateTime: "CreateTime",
+        UpdateTime: "UpdateTime",
+        action: "Actions"
+    },
     admin_columns: {
         create_title: "Create Schedule",
         update_title: "Update Schedule",
@@ -174,6 +187,15 @@ module.exports = {
     stopsComponent_columns: {
         name: "Name",
         description: "Description",
+    },
+    globalVariable_columns: {
+        create_title: "Create GlobalVariable",
+        update_title: "Update GlobalVariable",
+        content: "Value",
+        name: "Name",
+        type: "Type",
+        createTime: "CreateTime",
+        action: "Actions"
     },
     homeInfo: {
         introduction_title: "Introduction",

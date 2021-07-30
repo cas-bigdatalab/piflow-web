@@ -121,6 +121,12 @@ export default {
           name: "TestData"
         },
         {
+          btnName: this.$t("sidebar.code"),
+          icoName: "md-code",
+          router: "Code",
+          name: "Code"
+        },
+        {
           btnName: this.$t("sidebar.example"),
           icoName: "md-cube",
           children: [
@@ -162,6 +168,11 @@ export default {
               icoName: "ios-paper",
               btnName: this.$t("sidebar.stopsComponent"),
               name: "stopsComponent",
+            },{
+              router: "/globalVariable",
+              icoName: "ios-paper",
+              btnName: this.$t("sidebar.globalVariable"),
+              name: "globalVariable",
             }
           ]
         }

@@ -53,7 +53,7 @@
 
 <script>
 export default {
-  name: "template",
+  name: "templates",
   components: {},
   data() {
     return {

@@ -358,11 +358,10 @@ export default {
     },
 
     getRowData(row) {
+      let data = { load: row.id }
       this.$event.emit("loading", true);
       this.$axios
-        .get("/flowGroup/queryFlowGroupData", {
-          params: { load: row.id }
-        })
+        .post("/flowGroup/queryFlowGroupData", this.$qs.stringify(data))
         .then(res => {
           if (res.data.code === 200) {
             let flowGroupVo = res.data.flowGroupVo;

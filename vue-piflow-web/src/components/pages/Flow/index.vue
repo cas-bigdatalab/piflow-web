@@ -108,6 +108,12 @@
               style="width: 350px"/>
         </div>
         <div class="item">
+          <label>GlobalVariable：</label>
+          <Select class="select_type" v-model="fieldType" multiple>
+            <Option v-for="item in typeList" :value="item.id" :key="item.id">{{ item.name }}</Option>
+          </Select>
+        </div>
+        <div class="item">
           <label class="self">{{$t('flow_columns.description')}}：</label>
           <Input
             v-model="description"
@@ -145,6 +151,13 @@ export default {
       executorNumber: 1,
       executorMemory: "1g",
       executorCores: 1,
+      fieldType: [],
+      typeList: [
+        {
+          id: 'String',
+          name: 'test1'
+        }
+      ],
 
       promptContent: [
         {
@@ -173,6 +186,8 @@ export default {
     isOpen(state) {
       if (!state) {
         this.handleReset();
+      }else if (state && this.id === ''){
+        this.getGlobalList(false);
       }
     },
     param(val) {
@@ -223,6 +238,7 @@ export default {
       this.executorNumber = 1;
       this.executorMemory = "1g";
       this.executorCores = 1;
+      this.fieldType =[]
     },
 
     handleButtonSelect(row, key) {
@@ -262,6 +278,7 @@ export default {
 
     // add / update
     handleSaveUpdateData() {
+      // test-1
       let data = {
         name: this.name,
         description: this.description,
@@ -269,12 +286,13 @@ export default {
         executorNumber: this.executorNumber,
         executorMemory: this.executorMemory,
         executorCores: this.executorCores,
+        globalParamsIds: this.fieldType
       };
       if (this.id) {
         //update
         data.id = this.id;
         this.$axios
-          .get("/flow/updateFlowInfo", { params: data })
+          .post("/flow/updateFlowBaseInfo", this.$qs.stringify(data))
           .then((res) => {
             if (res.data.code === 200) {
               this.$Modal.success({
@@ -301,6 +319,7 @@ export default {
           });
       } else {
         // add
+
         this.$axios
           .get("/flow/saveFlowInfo", { params: data })
           .then((res) => {
@@ -438,11 +457,10 @@ export default {
     },
 
     getRowData(row) {
+      let data = { load: row.id };
       this.$event.emit("loading", true);
       this.$axios
-        .get("/flow/queryFlowData", {
-          params: { load: row.id },
-        })
+        .post("/flow/queryFlowData", this.$qs.stringify(data))
         .then((res) => {
           this.$event.emit("loading", false);
           if (res.data.code === 200) {
@@ -454,7 +472,15 @@ export default {
             this.executorNumber = flow.executorNumber;
             this.executorMemory = flow.executorMemory;
             this.executorCores = flow.executorCores;
+            if (!!res.data.globalParamsList && res.data.globalParamsList.length !==0){
 
+              res.data.globalParamsList.forEach(item=>{
+                this.fieldType .push(item.id)
+              })
+              this.getGlobalList(true)
+            }else {
+              this.getGlobalList(true)
+            }
             this.isOpen = true;
           } else {
             this.$Modal.success({
@@ -548,9 +574,68 @@ export default {
     handleModalSwitch() {
       this.isOpen = !this.isOpen;
     },
+
+    getGlobalList(noData){
+      this.$axios
+          .get("/flowGlobalParams/globalParamsList")
+          .then(res => {
+            if (res.data.code === 200) {
+              let data = res.data.data;
+              this.typeList = data;
+
+              if (!noData){
+                this.typeList.forEach(item=>{
+                  this.fieldType .push(item.id)
+                })
+              }
+
+            } else {
+
+            }
+          })
+          .catch(error => {
+            console.log(error);
+            this.$Message.error({
+              content: this.$t("tip.fault_content"),
+              duration: 3
+            });
+          });
+    }
   },
 };
 </script>
 <style lang="scss" scoped>
 @import "./index.scss";
+.select_type{
+  width: 350px;
+
+  /*滚动条整体部分*/
+  ::v-deep .ivu-select-dropdown::-webkit-scrollbar {
+    width: 6px;
+    height: 10px;
+  }
+  /*滚动条的轨道*/
+  ::v-deep .ivu-select-dropdown::-webkit-scrollbar-track {
+    background-color: #FFFFFF;
+  }
+  /*滚动条里面的小方块，能向上向下移动*/
+  ::v-deep .ivu-select-dropdown::-webkit-scrollbar-thumb {
+    background-color: #ebebeb;
+    border-radius: 5px;
+    border: 1px solid #F1F1F1;
+    box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+  }
+  ::v-deep .ivu-select-dropdown::-webkit-scrollbar-thumb:hover {
+    background-color: #A8A8A8;
+  }
+  ::v-deep .ivu-select-dropdown::-webkit-scrollbar-thumb:active {
+    background-color: #787878;
+  }
+  /*边角，即两个滚动条的交汇处*/
+  ::v-deep .ivu-select-dropdown::-webkit-scrollbar-corner {
+    background-color: #FFFFFF;
+  }
+
+}
+
 </style>

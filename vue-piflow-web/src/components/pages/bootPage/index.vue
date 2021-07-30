@@ -60,6 +60,8 @@ export default {
                     path: '/'
                   })
                 },300)
+              }else if (typeof this.percent === 'number' && this.percent<100){
+                this.GetThreadMonitoring();
               }
             }else if (500 === dataMap.code || !dataMap.progress){
               this.getInitComponents();

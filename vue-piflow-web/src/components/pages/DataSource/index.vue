@@ -255,43 +255,43 @@ export default {
       if (this.id) {
         //update
         data.id = this.id;
-        let flag = false;
-        for (let key in contrastData){
-          for (let keys in data){
-            if (key === keys && contrastData[key] !== data[keys]){
-              flag = true;
-            }
-          }
-        }
-
-        if (flag){
-          this.$axios
-              .post("/datasource/checkDatasourceLinked", this.$qs.stringify({dataSourceId: data.id}))
-              .then(res => {
-                let dataList = res.data;
-                if (dataList.code === 200 && dataList.isLinked) {
-                  this.$Modal.confirm({
-                    title: this.$t("tip.title"),
-                    content: this.$t("tip.update_fail_content") + dataList.stopsNameList,
-                    onOk: () => {
-                      this.saveModifiedData(data);
-                    },
-                    onCancel: () => {
-                      // this.$Message.info('Clicked cancel');
-                    }})
-                } else {
-                  this.$Message.error({
-                    content: `${this.name} ` + this.$t("tip.update_fail_content"),
-                    duration: 3
-                  });
-                }
-              })
-              .catch(error => {
-                console.log(error);
-              });
-        }else {
+        // let flag = false;
+        // for (let key in contrastData){
+        //   for (let keys in data){
+        //     if (key === keys && contrastData[key] !== data[keys]){
+        //       flag = true;
+        //     }
+        //   }
+        // }
+        //
+        // if (flag){
+        //   this.$axios
+        //       .post("/datasource/checkDatasourceLinked", this.$qs.stringify({dataSourceId: data.id}))
+        //       .then(res => {
+        //         let dataList = res.data;
+        //         if (dataList.code === 200 && dataList.isLinked) {
+        //           this.$Modal.confirm({
+        //             title: this.$t("tip.title"),
+        //             content: this.$t("tip.update_fail_content") + dataList.stopsNameList,
+        //             onOk: () => {
+        //               this.saveModifiedData(data);
+        //             },
+        //             onCancel: () => {
+        //               // this.$Message.info('Clicked cancel');
+        //             }})
+        //         } else {
+        //           this.$Message.error({
+        //             content: `${this.name} ` + this.$t("tip.update_fail_content"),
+        //             duration: 3
+        //           });
+        //         }
+        //       })
+        //       .catch(error => {
+        //         console.log(error);
+        //       });
+        // }else {
           this.saveModifiedData(data);
-        }
+        // }
       } else {
         // add
         this.$axios
@@ -448,43 +448,71 @@ export default {
     },
     // Delete
     handleDeleteRow(row) {
-      this.$Modal.confirm({
-        title: this.$t("tip.title"),
-        okText: this.$t("modal.confirm"),
-        cancelText: this.$t("modal.cancel_text"),
-        content: `${this.$t("modal.delete_content")} ${row.dataSourceName}?`,
-        onOk: () => {
-          let data = {
-            dataSourceId: row.id
-          };
-          this.$axios
-            .post("/datasource/deleteDataSource", this.$qs.stringify(data))
-            .then(res => {
-              if (res.data.code === 200) {
-                this.$Modal.success({
-                  title: this.$t("tip.title"),
-                  content:
-                    `${row.dataSourceName} ` +
-                    this.$t("tip.delete_success_content")
-                });
-                this.handleReset();
-                this.getTableData();
-              } else {
-                this.$Message.error({
-                  content: this.$t("tip.delete_fail_content"),
-                  duration: 3
-                });
-              }
-            })
-            .catch(error => {
-              console.log(error);
+      this.$axios
+          .post("/datasource/checkDatasourceLinked", this.$qs.stringify({dataSourceId: row.id}))
+          .then(res => {
+            let dataList = res.data;
+            if (dataList.code === 200 && dataList.isLinked) {
+              this.$Modal.confirm({
+                title: this.$t("tip.title"),
+                content: row.dataSourceName+'  '+ this.$t("tip.reference_content"),
+                onOk: () => {
+                  // this.saveModifiedData(data);
+                },
+                onCancel: () => {
+                  // this.$Message.info('Clicked cancel');
+                }})
+            } else if (dataList.code === 200 && dataList.isLinked === false){
+
+              this.$Modal.confirm({
+                title: this.$t("tip.title"),
+                okText: this.$t("modal.confirm"),
+                cancelText: this.$t("modal.cancel_text"),
+                content: `${this.$t("modal.delete_content")} ${row.dataSourceName}?`,
+                onOk: () => {
+                  let data = {
+                    dataSourceId: row.id
+                  };
+                  this.$axios
+                      .post("/datasource/deleteDataSource", this.$qs.stringify(data))
+                      .then(res => {
+                        if (res.data.code === 200) {
+                          this.$Modal.success({
+                            title: this.$t("tip.title"),
+                            content:
+                                `${row.dataSourceName} ` +
+                                this.$t("tip.delete_success_content")
+                          });
+                          this.handleReset();
+                          this.getTableData();
+                        } else {
+                          this.$Message.error({
+                            content: this.$t("tip.delete_fail_content"),
+                            duration: 3
+                          });
+                        }
+                      })
+                      .catch(error => {
+                        console.log(error);
+                        this.$Message.error({
+                          content: this.$t("tip.fault_content"),
+                          duration: 3
+                        });
+                      });
+                }
+              })
+
+
+            } else {
               this.$Message.error({
-                content: this.$t("tip.fault_content"),
+                content: `${this.name} ` + this.$t("tip.update_fail_content"),
                 duration: 3
               });
-            });
-        }
-      })
+            }
+          })
+          .catch(error => {
+            console.log(error);
+          })
     },
 
     getTableData() {

@@ -511,12 +511,6 @@ function loadDebugData() {
     var debug_port_name = $("#debug_port_name");
     var debug_data_last_read_line = $("#debug_data_last_read_line");
     var debug_data_last_file_name = $("#debug_data_last_file_name");
-    if(!debug_data_last_file_name.html()){
-        debug_data_last_file_name.html(0);
-    }
-    if(!debug_data_last_read_line.html()){
-        debug_data_last_read_line.html(0);
-    }
     ajaxRequest({
         type: "POST",
         async: false,

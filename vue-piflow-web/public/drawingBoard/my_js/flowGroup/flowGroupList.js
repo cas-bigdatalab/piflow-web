@@ -102,7 +102,7 @@ function openFlowGroup(flowGroupId) {
 function openFlowBaseInfo(id) {
     ajaxRequest({
         cache: true,//Keep cached data
-        type: "get",//Request type post
+        type: "POST",//Request type post
         url: "/flowGroup/queryFlowGroupData",//This is the name of the file where I receive data in the background.
         data: {load: id},
         async: false,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.

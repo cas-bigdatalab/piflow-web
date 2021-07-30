@@ -53,7 +53,7 @@ export default new Router({
             },
             {
               path: '/template',
-              name: 'template',
+              name: 'templates',
               component: () => import('../components/pages/Template')
             },
             {
@@ -82,6 +82,16 @@ export default new Router({
               component: () => import('../components/pages/TestData')
             },
             {
+              path: '/code',
+              name: 'Code',
+              component: () => import('../components/pages/Code')
+            },
+            {
+              path: '/codeDetailed',
+              name: 'codeBlock',
+              component: () => import('../components/pages/Code/codeBlock')
+            },
+            {
               path: '/admin',
               name: 'admin',
               component: () => import('../components/pages/Admin')
@@ -90,6 +100,11 @@ export default new Router({
               path: '/stopsComponent',
               name: 'stopsComponent',
               component: () => import('../components/pages/StopsComponent')
+            },
+            {
+              path: '/globalVariable',
+              name: 'globalVariable',
+              component: () => import('../components/pages/Admin/globalVariable')
             }
           ]
         },
