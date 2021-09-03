@@ -1,7 +1,5 @@
 package cn.cnic.component.process.service;
 
-import org.springframework.transaction.annotation.Transactional;
-
 public interface IProcessStopService {
 
     /**
@@ -11,6 +9,5 @@ public interface IProcessStopService {
      * @param pageId
      * @return
      */
-    @Transactional
     public String getProcessStopVoByPageId(String processId, String pageId);
 }

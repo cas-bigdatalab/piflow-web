@@ -67,6 +67,15 @@ public interface INoteBookService {
      * @return String
      */
     public String startNoteBookSession(String username, boolean isAdmin, String noteBookId);
+    
+    /**
+     * getNoteBookSessionState
+     *
+     * @param username
+     * @param isAdmin
+     * @return String
+     */
+    public String getNoteBookSessionState(String username, boolean isAdmin, String noteBookId);
 
     /**
      * delNoteBookSession

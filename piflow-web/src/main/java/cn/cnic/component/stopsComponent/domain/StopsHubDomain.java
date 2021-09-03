@@ -8,8 +8,8 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import cn.cnic.component.stopsComponent.entity.StopsHub;
 import cn.cnic.component.stopsComponent.mapper.StopsHubMapper;
-import cn.cnic.component.stopsComponent.model.StopsHub;
 
 @Component
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)

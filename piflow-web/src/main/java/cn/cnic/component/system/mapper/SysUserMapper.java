@@ -2,14 +2,7 @@ package cn.cnic.component.system.mapper;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.InsertProvider;
-import org.apache.ibatis.annotations.Many;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
 
 import cn.cnic.component.system.mapper.provider.SysUserMapperProvider;
@@ -36,5 +29,12 @@ public interface SysUserMapper {
 
     @InsertProvider(type = SysUserMapperProvider.class, method = "insertSysUser")
     public int insertSysUser(SysUser sysUser);
+
+
+    @Delete("DELETE FROM sys_init_records WHERE id=#{id}")
+    public int deleteUserById(String id);
+
+    @Select("select username from sys_user where username=#{username}")
+    public String checkUsername (String username);
 
 }

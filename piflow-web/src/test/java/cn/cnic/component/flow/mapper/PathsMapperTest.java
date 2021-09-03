@@ -3,20 +3,19 @@ package cn.cnic.component.flow.mapper;
 import cn.cnic.ApplicationTests;
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.component.flow.entity.Paths;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
+
 public class PathsMapperTest extends ApplicationTests {
 
-	/**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
     private Logger logger = LoggerUtil.getLogger();
 
-	@Autowired
+    @Autowired
     private PathsMapper pathsMapper;
 
     @Test

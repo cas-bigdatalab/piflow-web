@@ -1,5 +1,12 @@
 package cn.cnic.component.flow.mapper;
 
+import java.util.Date;
+
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
+
 import cn.cnic.ApplicationTests;
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.UUIDUtils;
@@ -7,21 +14,13 @@ import cn.cnic.common.Eunm.RunModeType;
 import cn.cnic.component.flow.entity.Flow;
 import cn.cnic.component.process.entity.Process;
 import cn.cnic.component.process.utils.ProcessUtils;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.springframework.test.annotation.Rollback;
 
-import javax.annotation.Resource;
-import java.util.Date;
 
 public class FlowMapperTest extends ApplicationTests {
 
-	/**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
     private Logger logger = LoggerUtil.getLogger();
 
-	@Resource
+    @Autowired
     private FlowMapper flowMapper;
 
     @Test

@@ -5,8 +5,8 @@ import lombok.Setter;
 
 import java.io.Serializable;
 
-@Setter
 @Getter
+@Setter
 public class DataSourcePropertyVo implements Serializable {
 
 

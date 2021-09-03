@@ -6,30 +6,27 @@ import cn.cnic.base.utils.UUIDUtils;
 import cn.cnic.component.flow.entity.Property;
 import cn.cnic.component.flow.entity.Stops;
 import cn.cnic.component.stopsComponent.mapper.StopsComponentMapper;
-import cn.cnic.component.stopsComponent.model.StopsComponentProperty;
-import cn.cnic.component.stopsComponent.model.StopsComponent;
-import org.junit.Test;
+import cn.cnic.component.stopsComponent.entity.StopsComponentProperty;
+import cn.cnic.component.stopsComponent.entity.StopsComponent;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
+
 public class PropertyMapperTest extends ApplicationTests {
 
-	/**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
     private Logger logger = LoggerUtil.getLogger();
 
-	@Autowired
+    @Autowired
     private PropertyMapper propertyMapper;
-
     @Autowired
     private StopsMapper stopsMapper;
-
     @Autowired
     private StopsComponentMapper stopsComponentMapper;
+
 
     @Test
     public void testGetPropertyListByStopsId() {

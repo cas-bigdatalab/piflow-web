@@ -5,6 +5,7 @@ import sun.misc.BASE64Decoder;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 
+
 @SuppressWarnings("restriction")
 public class ImageUtils {
 
@@ -17,7 +18,8 @@ public class ImageUtils {
      * @param pathUrl Storage address
      * @return
      */
-    public static boolean generateImage(String imgStr, String name, String type, String pathUrl) { // Base64 decoding of byte array strings and generating images
+    
+	public static boolean generateImage(String imgStr, String name, String type, String pathUrl) { // Base64 decoding of byte array strings and generating images
         if (imgStr == null) // Image data is empty
             return false;
 

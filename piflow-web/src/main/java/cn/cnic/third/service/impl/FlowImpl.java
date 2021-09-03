@@ -1,13 +1,14 @@
 package cn.cnic.third.service.impl;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSON;
 
@@ -16,8 +17,8 @@ import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.common.Eunm.RunModeType;
 import cn.cnic.common.constant.SysParamsCache;
+import cn.cnic.component.process.domain.ProcessDomain;
 import cn.cnic.component.process.entity.Process;
-import cn.cnic.component.process.jpa.domain.ProcessDomain;
 import cn.cnic.component.process.utils.ProcessUtils;
 import cn.cnic.third.service.IFlow;
 import cn.cnic.third.utils.ThirdFlowInfoVoUtils;
@@ -26,12 +27,10 @@ import cn.cnic.third.vo.flow.ThirdFlowInfoVo;
 import cn.cnic.third.vo.flow.ThirdProgressVo;
 import net.sf.json.JSONObject;
 
+
 @Component
 public class FlowImpl implements IFlow {
 
-	/**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
     private Logger logger = LoggerUtil.getLogger();
 
     @Autowired
@@ -48,19 +47,23 @@ public class FlowImpl implements IFlow {
         if (null == process) {
             return ReturnMapUtils.setFailedMsg("process is null");
         }
-        /*String json = ProcessUtil.processToJson(process, checkpoint, runModeType);
-        String formatJson = JsonFormatTool.formatJson(json);*/
+        //String json = ProcessUtil.processToJson(process, checkpoint, runModeType);
+        //String formatJson = JsonFormatTool.formatJson(json);
         String formatJson = ProcessUtils.processToJson(process, checkpoint, runModeType);
         logger.info("\n" + formatJson);
         String doPost = HttpUtils.doPost(SysParamsCache.getFlowStartUrl(), formatJson, null);
         logger.info("Return information：" + doPost);
-        if (StringUtils.isBlank(doPost) || doPost.contains("Exception")) {
-            return ReturnMapUtils.setFailedMsg("Error : Interface call failed");
+        if (StringUtils.isBlank(doPost)) {
+            return ReturnMapUtils.setFailedMsg("Error : Interface call failed ,return null");
+        }
+        if (doPost.contains(HttpUtils.INTERFACE_CALL_ERROR) || doPost.contains("Exception")) {
+            return ReturnMapUtils.setFailedMsg("Error : Interface call failed : " + doPost);
         }
         try {
-            JSONObject obj = JSONObject.fromObject(doPost).getJSONObject("flow");// Convert a json string to a json object
+            // Convert a json string to a json object
+            JSONObject obj = JSONObject.fromObject(doPost).getJSONObject("flow");
             String appId = obj.getString("id");
-            if(StringUtils.isBlank(appId)){
+            if (StringUtils.isBlank(appId)) {
                 return ReturnMapUtils.setFailedMsg("Error : Interface return value is null");
             }
             return ReturnMapUtils.setSucceededCustomParam("appId", appId);
@@ -76,8 +79,8 @@ public class FlowImpl implements IFlow {
         map.put("appID", appId);
         String json = JSON.toJSON(map).toString();
         String doPost = HttpUtils.doPost(SysParamsCache.getFlowStopUrl(), json, 5 * 1000);
-        if (StringUtils.isNotBlank(doPost) && !doPost.contains("Exception")) {
-            logger.warn("Interface return exception");
+        if (StringUtils.isBlank(doPost) || doPost.contains(HttpUtils.INTERFACE_CALL_ERROR) || doPost.contains("Exception")) {
+            logger.warn("Interface return exception : " + doPost);
         } else {
             logger.info("Interface return value: " + doPost);
         }
@@ -89,26 +92,30 @@ public class FlowImpl implements IFlow {
      */
     @Override
     public ThirdProgressVo getFlowProgress(String appId) {
-        ThirdProgressVo jd = null;
         Map<String, String> map = new HashMap<>();
         map.put("appID", appId);
         String doGet = HttpUtils.doGet(SysParamsCache.getFlowProgressUrl(), map, 10 * 1000);
-        if (StringUtils.isNotBlank(doGet) && !doGet.contains("Exception")) {
-            String jsonResult = JSONObject.fromObject(doGet).getString("FlowInfo");
-            if (StringUtils.isNotBlank(jsonResult)) {
-                // Also convert the json string to a json object, and then convert the json object to a java object, as shown below.
-                JSONObject obj = JSONObject.fromObject(jsonResult);// Convert a json string to a json object
-                // Convert a json object to a java object
-                jd = (ThirdProgressVo) JSONObject.toBean(obj, ThirdProgressVo.class);
-                String progressNums = jd.getProgress();
-                if (StringUtils.isNotBlank(progressNums)) {
-                    try {
-                        double progressNumsD = Double.parseDouble(progressNums);
-                        jd.setProgress(String.format("%.2f", progressNumsD));
-                    } catch (Throwable e) {
-                        logger.warn("Progress conversion failed");
-                    }
-                }
+        if (StringUtils.isBlank(doGet) || doGet.contains(HttpUtils.INTERFACE_CALL_ERROR) || doGet.contains("Exception")) {
+            logger.warn(HttpUtils.INTERFACE_CALL_ERROR + ": " + doGet);
+            return null;
+        }
+        String jsonResult = JSONObject.fromObject(doGet).getString("FlowInfo");
+        if (StringUtils.isNotBlank(jsonResult)) {
+            return null;
+        }
+        // Also convert the json string to a json object, 
+        // and then convert the json object to a java object, 
+        // as shown below.
+        JSONObject obj = JSONObject.fromObject(jsonResult);// Convert a json string to a json object
+        // Convert a json object to a java object
+        ThirdProgressVo jd = (ThirdProgressVo) JSONObject.toBean(obj, ThirdProgressVo.class);
+        String progressNums = jd.getProgress();
+        if (StringUtils.isNotBlank(progressNums)) {
+            try {
+                double progressNumsD = Double.parseDouble(progressNums);
+                jd.setProgress(String.format("%.2f", progressNumsD));
+            } catch (Throwable e) {
+                logger.warn("Progress conversion failed");
             }
         }
         return jd;
@@ -119,26 +126,33 @@ public class FlowImpl implements IFlow {
      */
     @Override
     public String getFlowLog(String appId) {
-        //ThirdFlowLog thirdFlowLog = null;
-        String amContainerLogs = "";
+        // ThirdFlowLog thirdFlowLog = null;
         Map<String, String> map = new HashMap<String, String>();
         map.put("appID", appId);
         String doGet = HttpUtils.doGet(SysParamsCache.getFlowLogUrl(), map, 5 * 1000);
-        if (StringUtils.isNotBlank(doGet) && !doGet.contains("Exception")) {
-            logger.info("Successful call : " + doGet);
-            // Also convert the json string to a json object, and then convert the json object to a java object, as shown below.
-            JSONObject obj = JSONObject.fromObject(doGet);// Convert a json string to a json object
-            if (null != obj) {
-                JSONObject app = obj.getJSONObject("app");
-                if (null != app) {
-                    amContainerLogs = app.getString("amContainerLogs");
-                }
-            }
-            // Convert a json object to a java object
-            // thirdFlowLog = (ThirdFlowLog) JSONObject.toBean(obj, ThirdFlowLog.class);
-        } else {
-            logger.info("call failed : " + doGet);
+        if (StringUtils.isBlank(doGet)) {
+            logger.info("call failed, return is null ");
+            return "";
         }
+        if (doGet.contains(HttpUtils.INTERFACE_CALL_ERROR) || doGet.contains("Exception")) {
+            logger.info("call failed : " + doGet);
+            return "";
+        }
+        logger.info("Successful call : " + doGet);
+        // Also convert the json string to a json object, 
+        // and then convert the json object to a java object, 
+        // as shown below.
+        JSONObject obj = JSONObject.fromObject(doGet);// Convert a json string to a json object
+        if (null == obj) {
+            return "";
+        }
+        JSONObject app = obj.getJSONObject("app");
+        if (null == app) {
+            return "";
+        }
+        String amContainerLogs = app.getString("amContainerLogs");
+        // Convert a json object to a java object
+        // thirdFlowLog = (ThirdFlowLog) JSONObject.toBean(obj, ThirdFlowLog.class);
         // return thirdFlowLog;
         return amContainerLogs;
     }
@@ -148,17 +162,25 @@ public class FlowImpl implements IFlow {
      */
     @Override
     public String getCheckpoints(String appID) {
-        String jb = null;
         Map<String, String> map = new HashMap<String, String>();
         map.put("appID", appID);
         String doGet = HttpUtils.doGet(SysParamsCache.getFlowCheckpointsUrl(), map, 5 * 1000);
-        if (StringUtils.isNotBlank(doGet) && !doGet.contains("Exception")) {
-            // Also convert the json string to a json object, and then convert the json object to a java object, as shown below.
-            JSONObject obj = JSONObject.fromObject(doGet);// Convert a json string to a json object
-            if (null != obj) {
-                jb = obj.getString("checkpoints");
-            }
+        if (StringUtils.isBlank(doGet)) {
+            logger.warn(HttpUtils.INTERFACE_CALL_ERROR + " return is null ");
+            return null;
         }
+        if (doGet.contains(HttpUtils.INTERFACE_CALL_ERROR) || doGet.contains("Exception")) {
+            logger.warn(HttpUtils.INTERFACE_CALL_ERROR + ": " + doGet);
+            return null;
+        }
+        // Also convert the json string to a json object, 
+        // and then convert the json object to a java object, 
+        // as shown below.
+        JSONObject obj = JSONObject.fromObject(doGet);// Convert a json string to a json object
+        if (null == obj) {
+            return null;
+        }
+        String jb = obj.getString("checkpoints");
         return jb;
     }
 
@@ -170,30 +192,40 @@ public class FlowImpl implements IFlow {
         map.put("port", portName);
         String doGet = HttpUtils.doGet(SysParamsCache.getFlowDebugDataUrl(), map, 5 * 1000);
         logger.info("call succeeded : " + doGet);
-        if (StringUtils.isNotBlank(doGet) && !doGet.contains("Exception")) {
-            // Also convert the json string to a json object, and then convert the json object to a java object, as shown below.
-//            JSONObject obj = JSONObject.fromObject(doGet);// Convert a json string to a json object
-//            if (null != obj) {
-//                jb = obj.getString("checkpoints");
-//            }
+        if (StringUtils.isBlank(doGet)) {
+            return HttpUtils.INTERFACE_CALL_ERROR + " return is null ";
         }
+        if (doGet.contains(HttpUtils.INTERFACE_CALL_ERROR) || doGet.contains("Exception")) {
+            return HttpUtils.INTERFACE_CALL_ERROR + ": " + doGet;
+        }
+        // Also convert the json string to a json object, 
+        // and then convert the json object to a java object, 
+        // as shown below.
+        // JSONObject obj = JSONObject.fromObject(doGet);// Convert a json string to a json object
+        // if (null != obj) {
+        //     jb = obj.getString("checkpoints");
+        // }
         return doGet;
     }
 
     @Override
-    public String getVisualizationData(String appID, String stopName, String visualizationType ) {
+    public String getVisualizationData(String appID, String stopName, String visualizationType) {
         Map<String, String> map = new HashMap<String, String>();
         map.put("appID", appID);
         map.put("stopName", stopName);
-        map.put("visualizationType",visualizationType);
+        map.put("visualizationType", visualizationType);
         String doGet = HttpUtils.doGet(SysParamsCache.getFlowVisualizationDataUrl(), map, 5 * 1000);
         logger.info("call succeeded : " + doGet);
-        if (StringUtils.isNotBlank(doGet) && !doGet.contains("Exception")) {
-            return doGet;
+        if (StringUtils.isBlank(doGet)) {
+            logger.warn(HttpUtils.INTERFACE_CALL_ERROR + " return is null ");
+            return null;
         }
-        return null;
+		if (doGet.contains(HttpUtils.INTERFACE_CALL_ERROR) || doGet.contains("Exception")) {
+            logger.warn(HttpUtils.INTERFACE_CALL_ERROR + ": " + doGet);
+            return null;
+        }
+        return doGet;
     }
-
 
     /**
      * Send post request
@@ -205,33 +237,43 @@ public class FlowImpl implements IFlow {
         Map<String, String> map = new HashMap<>();
         map.put("appID", appId);
         String doGet = HttpUtils.doGet(SysParamsCache.getFlowInfoUrl(), map, 30 * 1000);
-        if (StringUtils.isNotBlank(doGet) && !doGet.contains("Exception")) {
-            // Also convert the json string to a json object, and then convert the json object to a java object, as shown below.
-            JSONObject obj = JSONObject.fromObject(doGet).getJSONObject("flow");// Convert a json string to a json object
-            // Needed when there is a List in jsonObj
-            Map<String, Class> classMap = new HashMap<String, Class>();
-            // Key is the name of the List in jsonObj, and the value is a generic class of list
-            classMap.put("stops", ThirdFlowInfoStopsVo.class);
-            // Convert a json object to a java object
-            jb = (ThirdFlowInfoVo) JSONObject.toBean(obj, ThirdFlowInfoVo.class, classMap);
-            String progressNums = jb.getProgress();
-            if (StringUtils.isNotBlank(progressNums)) {
-                try {
-                    double progressNumsD = Double.parseDouble(progressNums);
-                    jb.setProgress(String.format("%.2f", progressNumsD));
-                } catch (Throwable e) {
-                    logger.warn("Progress conversion failed");
-                }
+        if (StringUtils.isBlank(doGet)) {
+            logger.warn(HttpUtils.INTERFACE_CALL_ERROR + " return is null ");
+            return null;
+        }
+        if (doGet.contains(HttpUtils.INTERFACE_CALL_ERROR) || doGet.contains("Exception")) {
+            logger.warn(HttpUtils.INTERFACE_CALL_ERROR + ": " + doGet);
+            return null;
+        }
+        // Also convert the json string to a json object, 
+        // and then convert the json object to a java object, 
+        // as shown below.
+
+        // Convert a json string to a json object
+        JSONObject obj = JSONObject.fromObject(doGet).getJSONObject("flow");
+        // Needed when there is a List in jsonObj
+        Map<String, Class> classMap = new HashMap<String, Class>();
+        // Key is the name of the List in jsonObj, 
+        // and the value is a generic class of list
+        classMap.put("stops", ThirdFlowInfoStopsVo.class);
+        // Convert a json object to a java object
+        jb = (ThirdFlowInfoVo) JSONObject.toBean(obj, ThirdFlowInfoVo.class, classMap);
+        String progressNums = jb.getProgress();
+        if (StringUtils.isNotBlank(progressNums)) {
+            try {
+                double progressNumsD = Double.parseDouble(progressNums);
+                jb.setProgress(String.format("%.2f", progressNumsD));
+            } catch (Throwable e) {
+                logger.warn("Progress conversion failed");
             }
         }
         return jb;
     }
 
     @Override
-    @Transactional
-    public void getProcessInfoAndSave(String appid) {
+    public void getProcessInfoAndSave(String appid) throws Exception {
         ThirdFlowInfoVo thirdFlowInfoVo = getFlowInfo(appid);
-        //Determine if the progress returned by the interface is empty
+        // Determine if the progress returned by the interface is empty
         if (null != thirdFlowInfoVo) {
             Process processByAppId = processDomain.getProcessNoGroupByAppId(appid);
             processByAppId = ThirdFlowInfoVoUtils.setProcess(processByAppId, thirdFlowInfoVo);
@@ -240,6 +282,34 @@ public class FlowImpl implements IFlow {
             }
         }
 
+    }
+
+    @Override
+    public void processInfoAndSaveSync() throws Exception {
+        List<String> runningProcess = processDomain.getRunningProcessAppId();
+        //if (CollectionUtils.isNotEmpty(runningProcess)) {
+        //    Runnable runnable = new Thread(new Thread() {
+        //        @Override
+        //        public void run() {
+        //            IFlow getFlowInfoImpl = (IFlow) SpringContextUtil.getBean("flowImpl");
+        //            for (String appId : runningProcess) {
+        //                try {
+        //                    getFlowInfoImpl.getProcessInfoAndSave(appId);
+        //                } catch (Exception e) {
+        //                    logger.error("errorMsg:", e);
+        //                }
+        //            }
+        //        }
+        //    });
+        //    ServicesExecutor.getServicesExecutorServiceService().execute(runnable);
+        //}
+        if (CollectionUtils.isEmpty(runningProcess)) {
+            return;
+        }
+        for (String appId : runningProcess) {
+            getProcessInfoAndSave(appId);
+        }
+        
     }
 
     @Override

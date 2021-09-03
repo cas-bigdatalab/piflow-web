@@ -4,11 +4,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cn.cnic.base.utils.JsonUtils;
@@ -22,19 +21,17 @@ import cn.cnic.component.flow.service.IFlowGroupPathsService;
 import cn.cnic.component.flow.vo.FlowGroupPathsVo;
 import cn.cnic.component.flow.vo.FlowGroupVo;
 
+
 @Service
 public class FlowGroupPathsServiceImpl implements IFlowGroupPathsService {
 
-	/**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
     private Logger logger = LoggerUtil.getLogger();
-	
-    @Resource
+
+    @Autowired
     private FlowGroupPathsMapper flowGroupPathsMapper;
-    @Resource
+    @Autowired
     private FlowGroupMapper flowGroupMapper;
-    @Resource
+    @Autowired
     private FlowMapper flowMapper;
 
 

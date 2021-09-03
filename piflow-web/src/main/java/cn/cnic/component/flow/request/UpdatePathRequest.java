@@ -8,9 +8,9 @@ import java.io.Serializable;
 @Getter
 @Setter
 public class UpdatePathRequest implements Serializable {
-
+    
     private static final long serialVersionUID = 1L;
-
+    
     String flowId;               // flow id
     String pathLineId;           // path id
     String sourceId;             // source stop page id

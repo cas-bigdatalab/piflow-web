@@ -1,7 +1,7 @@
 package cn.cnic.component.sparkJar.mapper;
 
 import cn.cnic.component.sparkJar.mapper.provider.SparkJarMapperProvider;
-import cn.cnic.component.sparkJar.model.SparkJarComponent;
+import cn.cnic.component.sparkJar.entity.SparkJarComponent;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;

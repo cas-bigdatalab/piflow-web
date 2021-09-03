@@ -1,10 +1,11 @@
 package cn.cnic.component.flow.service;
 
+import java.util.List;
+
 import cn.cnic.component.flow.entity.Flow;
 import cn.cnic.component.flow.vo.FlowVo;
-
-import javax.transaction.Transactional;
-import java.util.List;
+import cn.cnic.controller.requestVo.FlowInfoVoRequestAdd;
+import cn.cnic.controller.requestVo.FlowInfoVoRequestUpdate;
 
 public interface IFlowService {
 
@@ -14,7 +15,6 @@ public interface IFlowService {
      * @param id
      * @return
      */
-    @Transactional
     public Flow getFlowById(String username, boolean isAdmin, String id);
 
     /**
@@ -24,7 +24,6 @@ public interface IFlowService {
      * @param pageId
      * @return
      */
-    @Transactional
     public FlowVo getFlowByPageId(String fid, String pageId);
 
     /**
@@ -33,22 +32,18 @@ public interface IFlowService {
      * @param id
      * @return
      */
-    @Transactional
     public String getFlowVoById(String id);
 
     /**
      * add flow(Contains drawing board information)
-     *
+     * 
+     * @param username
      * @param flowVo
      * @return
+     * @throws Exception
      */
-    @Transactional
-    public String addFlow(String username, FlowVo flowVo);
+    public String addFlow(String username, FlowInfoVoRequestAdd flowVo) throws Exception ;
 
-    @Transactional
-    public String updateFlow(String username, Flow flow);
-
-    @Transactional
     public String deleteFLowInfo(String username, boolean isAdmin, String id);
 
     public Integer getMaxStopPageId(String flowId);
@@ -76,13 +71,13 @@ public interface IFlowService {
      * @param flowId
      * @return
      */
-    public String runFlow(String username, boolean isAdmin, String flowId, String runMode);
+    public String runFlow(String username, boolean isAdmin, String flowId, String runMode) throws Exception;
 
-    public String updateFlowBaseInfo(String username, String fId, FlowVo flowVo);
+    public String updateFlowBaseInfo(String username, String fId, FlowInfoVoRequestUpdate flowVo) throws Exception;
 
-    public String updateFlowNameById(String username, String id, String flowGroupId, String flowName, String pageId);
+    public String updateFlowNameById(String username, String id, String flowGroupId, String flowName, String pageId) throws Exception;
 
-    public Boolean updateFlowNameById(String username, String id, String flowName);
+    public Boolean updateFlowNameById(String username, String id, String flowName) throws Exception;
 
     public Integer getMaxFlowPageIdByFlowGroupId(String flowGroupId);
 

@@ -1,26 +1,26 @@
 package cn.cnic.component.mxGraph.service.impl;
 
-import cn.cnic.component.mxGraph.entity.MxCell;
-import cn.cnic.component.mxGraph.service.IMxCellService;
-import cn.cnic.component.mxGraph.mapper.MxCellMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
+import cn.cnic.component.mxGraph.domain.MxCellDomain;
+import cn.cnic.component.mxGraph.entity.MxCell;
+import cn.cnic.component.mxGraph.service.IMxCellService;
 
 @Service
 public class MxCellServiceImpl implements IMxCellService {
 
-    @Resource
-    private MxCellMapper mxCellMapper;
+    @Autowired
+    private MxCellDomain mxCellDomain;
 
     @Override
     public int deleteMxCellById(String username,String id) {
-        return mxCellMapper.updateEnableFlagById(username,id);
+        return mxCellDomain.updateEnableFlagById(username,id);
     }
 
     @Override
     public MxCell getMeCellById(String id) {
-        MxCell meCellById = mxCellMapper.getMeCellById(id);
+        MxCell meCellById = mxCellDomain.getMeCellById(id);
         return meCellById;
     }
 

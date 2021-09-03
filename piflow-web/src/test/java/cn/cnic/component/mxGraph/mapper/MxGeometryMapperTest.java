@@ -4,18 +4,17 @@ import cn.cnic.ApplicationTests;
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.UUIDUtils;
 import cn.cnic.component.mxGraph.entity.MxGeometry;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 
 import java.util.Date;
 
+
 public class MxGeometryMapperTest extends ApplicationTests {
 
-	/**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
     private Logger logger = LoggerUtil.getLogger();
 
     @Autowired

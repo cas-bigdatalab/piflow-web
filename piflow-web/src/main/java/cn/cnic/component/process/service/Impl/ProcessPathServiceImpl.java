@@ -4,9 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
-
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cn.cnic.base.utils.JsonUtils;
@@ -16,22 +15,22 @@ import cn.cnic.common.Eunm.RunModeType;
 import cn.cnic.component.process.entity.Process;
 import cn.cnic.component.process.entity.ProcessPath;
 import cn.cnic.component.process.entity.ProcessStop;
-import cn.cnic.component.process.service.IProcessPathService;
-import cn.cnic.component.process.vo.ProcessPathVo;
 import cn.cnic.component.process.mapper.ProcessMapper;
 import cn.cnic.component.process.mapper.ProcessPathMapper;
 import cn.cnic.component.process.mapper.ProcessStopMapper;
+import cn.cnic.component.process.service.IProcessPathService;
+import cn.cnic.component.process.vo.ProcessPathVo;
 
 @Service
 public class ProcessPathServiceImpl implements IProcessPathService {
 
-    @Resource
+    @Autowired
     private ProcessMapper processMapper;
 
-    @Resource
+    @Autowired
     private ProcessPathMapper processPathMapper;
 
-    @Resource
+    @Autowired
     private ProcessStopMapper processStopMapper;
 
     /**

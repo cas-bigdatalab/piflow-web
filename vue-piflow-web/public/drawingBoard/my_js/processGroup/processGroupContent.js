@@ -4,9 +4,9 @@ var checkpointShow = $('#checkpointShow');
 var isLoadProcessInfo = true;
 var isEnd = false;
 var timer;
+var isProgress = false;
 
 function processGroupOperationBtn(processState) {
-    console.log(processState);
     if ($('#runFlowGroup')) {
         if ("COMPLETED" !== processState && "FAILED" !== processState && "KILLED" !== processState) {
             $('#runFlowGroup').hide();
@@ -380,7 +380,6 @@ function processGroupMonitoring(appId) {
             if (200 === dataMap.code) {
                 if (dataMap.state && "" !== dataMap.state) {
                     if ('STARTED' !== dataMap.state && '100.00' === dataMap.progress) {
-                        console.log(dataMap);
                         window.clearInterval(timer);
                         $('#runFlowGroup').show();
                         $('#debugFlowGroup').show();
@@ -391,10 +390,13 @@ function processGroupMonitoring(appId) {
                 if (processGroupVo && '' != processGroupVo) {
                     $("#groupProgress").html(dataMap.progress + "%");
                     //$("#groupProgress").css({'width': dataMap.progress + "%"});
-                    $("#processStartTimeShow").html(processGroupVo.startTime);
-                    $("#processStopTimeShow").html(processGroupVo.endTime);
-                    $("#processStateShow").html(dataMap.state);
-                    $("#processProgressShow").html(dataMap.progress + "%");
+                    if (!isProgress){
+                        $("#processStartTimeShow").html(processGroupVo.startTime);
+                        $("#processStopTimeShow").html(processGroupVo.endTime);
+                        $("#processStateShow").html(dataMap.state);
+                        $("#processProgressShow").html(dataMap.progress + "%");
+                    }
+
                     // task
                     var processVoList = processGroupVo.processVoList;
                     if (processVoList && '' != processVoList) {

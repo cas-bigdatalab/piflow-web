@@ -1,5 +1,8 @@
 package cn.cnic;
 
+import cn.cnic.base.utils.LoggerUtil;
+import cn.cnic.base.utils.SpringContextUtil;
+
 import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.springframework.boot.SpringApplication;
@@ -13,9 +16,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import cn.cnic.base.utils.LoggerUtil;
-import cn.cnic.base.utils.SpringContextUtil;
-
 
 @PropertySources({
         @PropertySource(value = "classpath:apiConfig.properties", encoding = "utf-8"),
@@ -26,9 +26,6 @@ import cn.cnic.base.utils.SpringContextUtil;
 @SpringBootApplication
 public class Application {
 
-	/**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
     private static Logger logger = LoggerUtil.getLogger();
 
     public static void main(String[] args) {
@@ -38,7 +35,7 @@ public class Application {
         logger.warn("***************** Spring Boot Startup Success *****************");
         logger.warn("***************************************************************");
     }
-
+    
     @Bean
     public ConfigurableServletWebServerFactory webServerFactory() {
         TomcatServletWebServerFactory factory = new TomcatServletWebServerFactory();

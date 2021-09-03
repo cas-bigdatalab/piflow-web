@@ -3,19 +3,17 @@ package cn.cnic.component.mxGraph.service;
 import cn.cnic.ApplicationTests;
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.component.mxGraph.entity.MxCell;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
 public class IMxCellServiceTest extends ApplicationTests {
 
-	/**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
     private Logger logger = LoggerUtil.getLogger();
 
-	@Autowired
+    @Autowired
     private IMxCellService mxCellServiceImpl;
 
     @Test

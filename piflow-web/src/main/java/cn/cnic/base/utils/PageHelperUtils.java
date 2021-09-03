@@ -1,20 +1,17 @@
 package cn.cnic.base.utils;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 
 
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class PageHelperUtils {
 
-	/**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
     private static Logger logger = LoggerUtil.getLogger();
 
     @SuppressWarnings({"rawtypes", "unchecked"})

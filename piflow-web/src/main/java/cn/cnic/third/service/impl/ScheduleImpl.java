@@ -3,10 +3,9 @@ package cn.cnic.third.service.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.Resource;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import cn.cnic.base.utils.DateUtils;
@@ -26,18 +25,16 @@ import cn.cnic.third.vo.schedule.ThirdScheduleEntryVo;
 import cn.cnic.third.vo.schedule.ThirdScheduleVo;
 import net.sf.json.JSONObject;
 
+
 @Component
 public class ScheduleImpl implements ISchedule {
 
-	/**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
     private Logger logger = LoggerUtil.getLogger();
 
-    @Resource
+    @Autowired
     FlowMapper flowMapper;
 
-    @Resource
+    @Autowired
     FlowGroupMapper flowGroupMapper;
 
     @Override
@@ -68,8 +65,11 @@ public class ScheduleImpl implements ISchedule {
         //String sendPostData = HttpUtils.doPost(SysParamsCache.getScheduleStartUrl(), path, null);
         //===============================临时===============================
 
-        if (StringUtils.isBlank(sendPostData) || sendPostData.contains("Exception") || sendPostData.contains("error")) {
-            return ReturnMapUtils.setFailedMsg("Error : Interface call failed");
+        if (StringUtils.isBlank(sendPostData)) {
+            return ReturnMapUtils.setFailedMsg("Interface call failed ,return values is null");
+        }
+        if (sendPostData.contains("Exception") || sendPostData.contains("error") || sendPostData.contains(HttpUtils.INTERFACE_CALL_ERROR)) {
+            return ReturnMapUtils.setFailedMsg("Error : Interface call failed :" + sendPostData);
         }
         return ReturnMapUtils.setSucceededCustomParam("scheduleId", sendPostData);
     }
@@ -87,7 +87,11 @@ public class ScheduleImpl implements ISchedule {
         Map<String, String> map = new HashMap<>();
         map.put("scheduleId", scheduleId);
         String sendGetData = HttpUtils.doGet(SysParamsCache.getScheduleInfoUrl(), map, null);
-        if (StringUtils.isBlank(sendGetData) || sendGetData.contains("Exception")) {
+        if (StringUtils.isBlank(sendGetData)) {
+            logger.warn("Error : Interface call failed. return values is null");
+            return null;
+        }
+        if (sendGetData.contains(HttpUtils.INTERFACE_CALL_ERROR) || sendGetData.contains("Exception")) {
             logger.warn("Error : Interface call failed");
             return null;
         }

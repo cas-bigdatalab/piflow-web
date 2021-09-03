@@ -336,7 +336,7 @@ export default {
 <style lang="scss" scoped>
 @import "./index.scss";
 pre{
-  padding: 0 10px 0 50px;
+  padding: 0 10px 0 70px;
   margin: 0;
 }
 .preError{

@@ -357,7 +357,7 @@ export default {
         templateType: "TASK",
       };
       this.$axios
-        .get("/flowTemplate/saveFlowTemplate", { params: data })
+        .post("/flowTemplate/saveFlowTemplate", this.$qs.stringify(data))
         .then((res) => {
           if (res.data.code === 200) {
             this.$Modal.success({
@@ -438,6 +438,14 @@ export default {
             this.$Modal.success({
               title: this.$t("tip.title"),
               content: `${row.name} ` + this.$t("tip.debug_success_content"),
+              onOk:()=>{
+                let src = "";
+                src = `/drawingBoard/page/process/mxGraph/index.html?drawingBoardType=PROCESS&load=${res.data.processId}`;
+                this.$router.push({
+                  path: "/drawingBoard",
+                  query: { src },
+                });
+              }
             });
           } else {
             this.$Message.error({

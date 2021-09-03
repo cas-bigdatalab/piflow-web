@@ -1,15 +1,6 @@
 package cn.cnic.base.utils;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import cn.cnic.component.process.vo.DebugDataResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.conf.Configuration;
@@ -21,14 +12,18 @@ import org.apache.hadoop.io.IOUtils;
 import org.apache.hadoop.util.Progressable;
 import org.slf4j.Logger;
 
-import cn.cnic.component.process.vo.DebugDataResponse;
+import java.io.*;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 
 public class HdfsUtils {
 
-	/**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
     private static Logger logger = LoggerUtil.getLogger();
 
     public static void closedIO(InputStreamReader isr, BufferedReader br) {

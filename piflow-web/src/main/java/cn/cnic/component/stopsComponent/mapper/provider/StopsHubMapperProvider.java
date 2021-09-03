@@ -2,7 +2,7 @@ package cn.cnic.component.stopsComponent.mapper.provider;
 
 import cn.cnic.base.utils.DateUtils;
 import cn.cnic.base.utils.SqlUtils;
-import cn.cnic.component.stopsComponent.model.StopsHub;
+import cn.cnic.component.stopsComponent.entity.StopsHub;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
 
@@ -11,8 +11,6 @@ import java.util.Date;
 public class StopsHubMapperProvider {
 
     private String id;
-    private String crtUser;
-    private String crtDttmStr;
     private String lastUpdateDttmStr;
     private String lastUpdateUser;
     private int enableFlag;
@@ -22,39 +20,33 @@ public class StopsHubMapperProvider {
     private String jarUrl;
     private String status;
 
-    private void preventSQLInjectionStopsHub(StopsHub stopsHub) {
-        if (null != stopsHub && StringUtils.isNotBlank(stopsHub.getLastUpdateUser())) {
-            // Mandatory Field
-            String id = stopsHub.getId();
-            String crtUser = stopsHub.getCrtUser();
-            String lastUpdateUser = stopsHub.getLastUpdateUser();
-            Boolean enableFlag = stopsHub.getEnableFlag();
-            Long version = stopsHub.getVersion();
-            Date crtDttm = stopsHub.getCrtDttm();
-            Date lastUpdateDttm = stopsHub.getLastUpdateDttm();
-            this.id = SqlUtils.preventSQLInjection(id);
-            this.crtUser = (null != crtUser ? SqlUtils.preventSQLInjection(crtUser) : null);
-            this.lastUpdateUser = SqlUtils.preventSQLInjection(lastUpdateUser);
-            this.enableFlag = ((null != enableFlag && enableFlag) ? 1 : 0);
-            this.version = (null != version ? version : 0L);
-            String crtDttmStr = DateUtils.dateTimesToStr(crtDttm);
-            String lastUpdateDttmStr = DateUtils.dateTimesToStr(null != lastUpdateDttm ? lastUpdateDttm : new Date());
-            this.crtDttmStr = (null != crtDttm ? SqlUtils.preventSQLInjection(crtDttmStr) : null);
-            this.lastUpdateDttmStr = SqlUtils.preventSQLInjection(lastUpdateDttmStr);
-
-            // Selection field
-            this.mountId = SqlUtils.preventSQLInjection(stopsHub.getMountId());
-            this.jarName = SqlUtils.preventSQLInjection(stopsHub.getJarName());
-            this.jarUrl = SqlUtils.preventSQLInjection(stopsHub.getJarUrl());
-            this.status = SqlUtils.preventSQLInjection(null != stopsHub.getStatus() ? stopsHub.getStatus().name() : null);
-
+    private boolean preventSQLInjectionStopsHub(StopsHub stopsHub) {
+        if (null == stopsHub || StringUtils.isBlank(stopsHub.getLastUpdateUser())) {
+            return false;
         }
+        // Mandatory Field
+        String id = stopsHub.getId();
+        String lastUpdateUser = stopsHub.getLastUpdateUser();
+        Boolean enableFlag = stopsHub.getEnableFlag();
+        Long version = stopsHub.getVersion();
+        Date lastUpdateDttm = stopsHub.getLastUpdateDttm();
+        String lastUpdateDttmStr = DateUtils.dateTimesToStr(null != lastUpdateDttm ? lastUpdateDttm : new Date());
+        this.id = SqlUtils.preventSQLInjection(id);
+        this.lastUpdateUser = SqlUtils.preventSQLInjection(lastUpdateUser);
+        this.enableFlag = ((null != enableFlag && enableFlag) ? 1 : 0);
+        this.version = (null != version ? version : 0L);
+        this.lastUpdateDttmStr = SqlUtils.preventSQLInjection(lastUpdateDttmStr);
+
+        // Selection field
+        this.mountId = SqlUtils.preventSQLInjection(stopsHub.getMountId());
+        this.jarName = SqlUtils.preventSQLInjection(stopsHub.getJarName());
+        this.jarUrl = SqlUtils.preventSQLInjection(stopsHub.getJarUrl());
+        this.status = SqlUtils.preventSQLInjection(null != stopsHub.getStatus() ? stopsHub.getStatus().name() : null);
+        return true;
     }
 
     private void reset() {
         this.id = null;
-        this.crtUser = null;
-        this.crtDttmStr = null;
         this.lastUpdateDttmStr = null;
         this.lastUpdateUser = null;
         this.enableFlag = 1;
@@ -72,35 +64,26 @@ public class StopsHubMapperProvider {
      * @return
      */
     public String addStopsHub(StopsHub stopsHub) {
-        String sqlStr = "";
-        this.preventSQLInjectionStopsHub(stopsHub);
-        if (null != stopsHub) {
-            SQL sql = new SQL();
-
+        String sqlStr = "SELECT 0";
+        boolean flag = this.preventSQLInjectionStopsHub(stopsHub);
+        if (flag) {
+            StringBuffer strBuf = new StringBuffer();
             // INSERT_INTO brackets is table name
-            sql.INSERT_INTO("stops_hub");
-
-            //Process the required fields firsts
-            if (null == crtDttmStr) {
-                String crtDttm = DateUtils.dateTimesToStr(new Date());
-                crtDttmStr = SqlUtils.preventSQLInjection(crtDttm);
-            }
-            if (StringUtils.isBlank(crtUser)) {
-                crtUser = SqlUtils.preventSQLInjection("-1");
-            }
-            sql.VALUES("id", id);
-            sql.VALUES("crt_dttm", crtDttmStr);
-            sql.VALUES("crt_user", crtUser);
-            sql.VALUES("last_update_dttm", lastUpdateDttmStr);
-            sql.VALUES("last_update_user", lastUpdateUser);
-            sql.VALUES("version", version + "");
-            sql.VALUES("enable_flag", enableFlag + "");
-            sql.VALUES("mount_id", mountId + "");
-            sql.VALUES("jar_name", jarName + "");
-            sql.VALUES("jar_url", jarUrl + "");
-            sql.VALUES("status", status + "");
-
-            sqlStr = sql.toString();
+            strBuf.append("INSERT INTO stops_hub ");
+            strBuf.append("( ");
+            strBuf.append(SqlUtils.baseFieldName() + ", ");
+            strBuf.append("mount_id, ");
+            strBuf.append("jar_name, ");
+            strBuf.append("jar_url, ");
+            strBuf.append("status ");
+            strBuf.append(") VALUES ( ");
+            strBuf.append(SqlUtils.baseFieldValues(stopsHub) + ", ");
+            strBuf.append(this.mountId + ", ");
+            strBuf.append(this.jarName + ", ");
+            strBuf.append(this.jarUrl + ", ");
+            strBuf.append(this.status + " ");
+            strBuf.append(") ");
+            sqlStr = strBuf.toString();
         }
         this.reset();
         return sqlStr;
@@ -115,8 +98,8 @@ public class StopsHubMapperProvider {
     public String updateStopsHub(StopsHub stopsHub) {
 
         String sqlStr = "";
-        this.preventSQLInjectionStopsHub(stopsHub);
-        if (null != stopsHub) {
+        boolean flag = this.preventSQLInjectionStopsHub(stopsHub);
+        if (flag) {
             SQL sql = new SQL();
 
             // INSERT_INTO brackets is table name

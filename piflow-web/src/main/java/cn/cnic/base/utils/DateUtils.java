@@ -1,5 +1,8 @@
 package cn.cnic.base.utils;
 
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
@@ -7,17 +10,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
 
 public class DateUtils {
 
-	/**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
     private static Logger logger = LoggerUtil.getLogger();
-	
-    /**
+
+	/**
      * yyyyMMdd 20121225
      */
     public static final String DATE_PATTERN_yyyyMMdd = "yyyyMMdd";

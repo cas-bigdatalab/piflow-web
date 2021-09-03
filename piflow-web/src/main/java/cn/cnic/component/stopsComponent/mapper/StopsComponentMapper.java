@@ -1,8 +1,9 @@
 package cn.cnic.component.stopsComponent.mapper;
 
-import cn.cnic.component.stopsComponent.model.StopsComponent;
-import cn.cnic.component.stopsComponent.vo.StopsComponentVo;
+import cn.cnic.component.stopsComponent.entity.StopsComponent;
 import cn.cnic.component.stopsComponent.mapper.provider.StopsComponentMapperProvider;
+import cn.cnic.component.stopsComponent.vo.StopsComponentVo;
+
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
 

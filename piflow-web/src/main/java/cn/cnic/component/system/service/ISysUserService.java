@@ -17,10 +17,6 @@ public interface ISysUserService {
 
     public List<SysUser> getUserList();
 
-    public SysUser addUser(SysUser user);
-
-    public int saveOrUpdate(SysUser user);
-
     public int deleteUser(String id);
 
     public String registerUser(SysUserVo sysUserVo);

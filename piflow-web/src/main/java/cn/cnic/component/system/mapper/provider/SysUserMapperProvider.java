@@ -15,15 +15,17 @@ public class SysUserMapperProvider {
     private Integer age;
     private String sex;
 
-    private void preventSQLInjectionSysUser(SysUser sysUser) {
-        if (null != sysUser && StringUtils.isNotBlank(sysUser.getLastUpdateUser())) {
-            // Selection field
-            this.username = SqlUtils.preventSQLInjection(sysUser.getUsername());
-            this.password = SqlUtils.preventSQLInjection(sysUser.getPassword());
-            this.name = SqlUtils.preventSQLInjection(sysUser.getName());
-            this.age = sysUser.getAge();
-            this.sex = SqlUtils.preventSQLInjection(sysUser.getSex());
+    private boolean preventSQLInjectionSysUser(SysUser sysUser) {
+        if (null == sysUser || StringUtils.isBlank(sysUser.getLastUpdateUser())) {
+            return false;
         }
+        // Selection field
+        this.username = SqlUtils.preventSQLInjection(sysUser.getUsername());
+        this.password = SqlUtils.preventSQLInjection(sysUser.getPassword());
+        this.name = SqlUtils.preventSQLInjection(sysUser.getName());
+        this.age = sysUser.getAge();
+        this.sex = SqlUtils.preventSQLInjection(sysUser.getSex());
+        return true;
     }
 
     private void resetSysUser() {
@@ -117,25 +119,25 @@ public class SysUserMapperProvider {
     }
 
     public String insertSysUser(SysUser sysUser) {
-        if (null == sysUser) {
-            return "SELECT 0";
+        String sqlStr = "SELECT 0";
+        boolean flag = this.preventSQLInjectionSysUser(sysUser);
+        if(flag) {
+            StringBuffer strBuf = new StringBuffer();
+            strBuf.append("INSERT INTO sys_user ");
+
+            strBuf.append("( ");
+            strBuf.append(SqlUtils.baseFieldName() + ", ");
+            strBuf.append("username, password, name, age, sex ");
+            strBuf.append(") ");
+
+            strBuf.append("values ");
+            strBuf.append("(");
+            strBuf.append(SqlUtils.baseFieldValues(sysUser) + ", ");
+            strBuf.append(username + "," + password + "," + name + "," + age + "," + sex);
+            strBuf.append(")");
+            sqlStr = strBuf.toString() + ";";
         }
-        this.preventSQLInjectionSysUser(sysUser);
-
-        StringBuffer strBuf = new StringBuffer();
-        strBuf.append("INSERT INTO sys_user ");
-
-        strBuf.append("( ");
-        strBuf.append(SqlUtils.baseFieldName() + ", ");
-        strBuf.append("username, password, name, age, sex ");
-        strBuf.append(") ");
-
-        strBuf.append("values ");
-        strBuf.append("(");
-        strBuf.append(SqlUtils.baseFieldValues(sysUser) + ", ");
-        strBuf.append(username + "," + password + "," + name + "," + age + "," + sex);
-        strBuf.append(")");
         this.resetSysUser();
-        return strBuf.toString() + ";";
+        return sqlStr;
     }
 }

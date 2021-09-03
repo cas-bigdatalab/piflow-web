@@ -1,0 +1,33 @@
+package cn.cnic.controller.api.flow;
+
+import cn.cnic.component.flow.service.IFlowGroupPathsService;
+import io.swagger.annotations.Api;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+
+@Api(value = "flowGroupPath api")
+@RestController
+@RequestMapping("/flowGroupPath/")
+public class FlowGroupPathCtrl {
+
+    @Autowired
+    private IFlowGroupPathsService flowGroupPathsServiceImpl;
+
+    /**
+     * Query'path'according to'flowId' and'pageId'
+     *
+     * @param fid
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/queryPathInfoFlowGroup", method = RequestMethod.POST)
+    public String queryPathInfoFlowGroup(String fid, String id) {
+        return flowGroupPathsServiceImpl.queryPathInfoFlowGroup(fid, id);
+    }
+
+
+}

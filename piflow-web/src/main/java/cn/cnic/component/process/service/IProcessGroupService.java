@@ -10,18 +10,22 @@ public interface IProcessGroupService {
     /**
      * Query processVo based on id (query contains its child table)
      *
-     * @param id ProcessGroup Id
+     * @param username
+     * @param isAdmin 
+     * @param processGroupId ProcessGroup Id
      * @return ProcessGroupVo (query contains its child table)
      */
-    public ProcessGroupVo getProcessGroupVoAllById(String id);
+    public ProcessGroupVo getProcessGroupVoAllById(String username, boolean isAdmin, String processGroupId);
 
     /**
      * Query processGroupVo based on id (only query process table)
      *
-     * @param id ProcessGroup Id
-     * @return String json
+     * @param username
+     * @param isAdmin 
+     * @param processGroupId ProcessGroup Id
+     * @return String json string
      */
-    public String getProcessGroupVoById(String id);
+    public String getProcessGroupVoById(String username, boolean isAdmin, String processGroupId);
 
     /**
      * Query appInfo according to appID
@@ -58,8 +62,9 @@ public interface IProcessGroupService {
      * @param processGroupId Run ProcessGroup Id
      * @param checkpoint     checkpoint
      * @return json
+     * @throws Exception 
      */
-    public String startProcessGroup(String username, String processGroupId, String checkpoint, String runMode);
+    public String startProcessGroup(boolean isAdmin, String username, String processGroupId, String checkpoint, String runMode) throws Exception;
 
     /**
      * Stop running processGroup
@@ -99,7 +104,7 @@ public interface IProcessGroupService {
      * @param processGroupId ProcessGroup Id
      * @return json
      */
-    public String getStartGroupJson(String processGroupId);
+    public String getStartGroupJson(String username, boolean isAdmin, String processGroupId);
 
     /**
      * getProcessIdByPageId

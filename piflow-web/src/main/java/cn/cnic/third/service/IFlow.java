@@ -55,8 +55,10 @@ public interface IFlow {
 
     public ThirdFlowInfoVo getFlowInfo(String appid);
 
-    public void getProcessInfoAndSave(String appid);
+    public void getProcessInfoAndSave(String appid) throws Exception;
     
+    public void processInfoAndSaveSync() throws Exception;
+
     public String getTestDataPathUrl();
 
 }

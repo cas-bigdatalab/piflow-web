@@ -27,6 +27,14 @@ public interface ILivy {
     public Map<String, Object> stopSessions(String sessionsId);
 
     /**
+     * stopSessionsState
+     *
+     * @param sessionsId
+     * @return
+     */
+    public Map<String, Object> getSessionsState(String sessionsId);
+    
+    /**
      * getFlowProgress
      *
      * @param sessionsId

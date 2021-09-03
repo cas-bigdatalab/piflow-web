@@ -1,23 +1,20 @@
 package cn.cnic.third.service.impl;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Service;
-
 import cn.cnic.base.utils.HttpUtils;
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.third.service.IResource;
 
+import java.util.HashMap;
+import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Service;
+
+
 @Service
 public class ResourceImpl implements IResource {
 
-	/**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
     private Logger logger = LoggerUtil.getLogger();
 
     @Override
@@ -30,8 +27,8 @@ public class ResourceImpl implements IResource {
             logger.warn("Interface return value is null");
             return null;
         }
-        if (sendGetData.contains("Error")) {
-            logger.warn("return err");
+        if (sendGetData.contains("Error") || sendGetData.contains(HttpUtils.INTERFACE_CALL_ERROR)) {
+            logger.warn("return err : " + sendGetData);
             return null;
         }
 

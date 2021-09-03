@@ -1,22 +1,21 @@
 package cn.cnic.component.flow.mapper;
 
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import cn.cnic.ApplicationTests;
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.component.flow.entity.CustomizedProperty;
-import org.junit.Test;
-import org.slf4j.Logger;
 
-import javax.annotation.Resource;
-import java.util.*;
 
 public class CustomizedPropertyMapperMapperTest extends ApplicationTests {
 
-	/**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
     private Logger logger = LoggerUtil.getLogger();
 
-    @Resource
+    @Autowired
     private CustomizedPropertyMapper customizedPropertyMapper;
 
     @Test

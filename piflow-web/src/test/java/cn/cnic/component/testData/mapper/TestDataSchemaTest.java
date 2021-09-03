@@ -3,20 +3,18 @@ package cn.cnic.component.testData.mapper;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import cn.cnic.ApplicationTests;
 import cn.cnic.base.utils.LoggerUtil;
 
+
 public class TestDataSchemaTest extends ApplicationTests {
 
-	/**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
     private Logger logger = LoggerUtil.getLogger();
-	
+
     @Autowired
     private TestDataSchemaMapper testDataSchemaMapper;
 

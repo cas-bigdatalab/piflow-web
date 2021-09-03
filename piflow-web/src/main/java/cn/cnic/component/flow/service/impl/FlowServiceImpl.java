@@ -6,32 +6,32 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 
 import cn.cnic.base.utils.JsonUtils;
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.MxGraphUtils;
+import cn.cnic.base.utils.PageHelperUtils;
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.base.utils.UUIDUtils;
 import cn.cnic.common.Eunm.ProcessState;
 import cn.cnic.common.Eunm.RunModeType;
+import cn.cnic.component.flow.domain.FlowDomain;
+import cn.cnic.component.flow.domain.FlowGlobalParamsDomain;
+import cn.cnic.component.flow.domain.FlowGroupDomain;
 import cn.cnic.component.flow.entity.Flow;
+import cn.cnic.component.flow.entity.FlowGlobalParams;
 import cn.cnic.component.flow.entity.FlowGroup;
 import cn.cnic.component.flow.entity.Property;
 import cn.cnic.component.flow.entity.Stops;
-import cn.cnic.component.flow.jpa.domain.FlowDomain;
-import cn.cnic.component.flow.jpa.domain.FlowGroupDomain;
-import cn.cnic.component.flow.mapper.FlowGroupMapper;
-import cn.cnic.component.flow.mapper.FlowMapper;
 import cn.cnic.component.flow.mapper.PathsMapper;
 import cn.cnic.component.flow.mapper.PropertyMapper;
 import cn.cnic.component.flow.mapper.StopsMapper;
@@ -41,80 +41,73 @@ import cn.cnic.component.flow.utils.StopsUtils;
 import cn.cnic.component.flow.vo.FlowVo;
 import cn.cnic.component.flow.vo.PathsVo;
 import cn.cnic.component.flow.vo.StopsVo;
+import cn.cnic.component.mxGraph.domain.MxCellDomain;
 import cn.cnic.component.mxGraph.entity.MxCell;
 import cn.cnic.component.mxGraph.entity.MxGraphModel;
-import cn.cnic.component.mxGraph.jpa.domain.MxCellDomain;
-import cn.cnic.component.mxGraph.mapper.MxCellMapper;
 import cn.cnic.component.mxGraph.mapper.MxGeometryMapper;
 import cn.cnic.component.mxGraph.mapper.MxGraphModelMapper;
 import cn.cnic.component.mxGraph.utils.MxGraphModelUtils;
 import cn.cnic.component.mxGraph.vo.MxGraphModelVo;
+import cn.cnic.component.process.domain.ProcessDomain;
 import cn.cnic.component.process.entity.Process;
-import cn.cnic.component.process.jpa.domain.ProcessDomain;
 import cn.cnic.component.process.mapper.ProcessMapper;
 import cn.cnic.component.process.utils.ProcessUtils;
 import cn.cnic.component.process.vo.ProcessVo;
-import cn.cnic.component.schedule.mapper.ScheduleMapper;
+import cn.cnic.component.schedule.domain.ScheduleDomain;
 import cn.cnic.component.stopsComponent.service.IStopGroupService;
 import cn.cnic.component.stopsComponent.vo.StopGroupVo;
+import cn.cnic.controller.requestVo.FlowInfoVoRequestAdd;
+import cn.cnic.controller.requestVo.FlowInfoVoRequestUpdate;
 import cn.cnic.third.service.IFlow;
 
+
 @Service
-@Transactional
 public class FlowServiceImpl implements IFlowService {
 
-	/**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
     private Logger logger = LoggerUtil.getLogger();
-	
-    @Resource
-    private FlowMapper flowMapper;
-
-    @Resource
-    private MxGraphModelMapper mxGraphModelMapper;
-
-    @Resource
-    private MxCellMapper mxCellMapper;
-
-    @Resource
-    private MxCellDomain mxCellDomain;
-
-    @Resource
-    private MxGeometryMapper mxGeometryMapper;
-
-    @Resource
-    private PathsMapper pathsMapper;
-
-    @Resource
-    private StopsMapper stopsMapper;
-
-    @Resource
-    private PropertyMapper propertyMapper;
-
-    @Resource
-    private ProcessMapper processMapper;
-
-    @Resource
-    private FlowGroupMapper flowGroupMapper;
-
-    @Resource
-    private ProcessDomain processDomain;
-
-    @Resource
-    private IFlow flowImpl;
-
-    @Resource
-    private FlowDomain flowDomain;
-
-    @Resource
-    private FlowGroupDomain flowGroupDomain;
-
-    @Resource
-    private IStopGroupService stopGroupServiceImpl;
 
     @Autowired
-    private ScheduleMapper scheduleMapper;
+    private PathsMapper pathsMapper;
+
+    @Autowired
+    private StopsMapper stopsMapper;
+
+    @Autowired
+    private PropertyMapper propertyMapper;
+
+    @Autowired
+    private ProcessMapper processMapper;
+
+    @Autowired
+    private MxGraphModelMapper mxGraphModelMapper;
+
+    @Autowired
+    private ProcessDomain processDomain;
+
+    @Autowired
+    private IFlow flowImpl;
+
+    @Autowired
+    private MxGeometryMapper mxGeometryMapper;
+
+    @Autowired
+    private MxCellDomain mxCellDomain;
+
+    @Autowired
+    private FlowDomain flowDomain;
+
+    @Autowired
+    private FlowGroupDomain flowGroupDomain;
+
+    @Autowired
+    private IStopGroupService stopGroupServiceImpl;
+    
+    @Autowired
+    private ScheduleDomain scheduleDomain;
+    
+    @Autowired
+    private FlowGlobalParamsDomain flowGlobalParamsDomain;
+
 
     /**
      * Query flow information based on id
@@ -124,7 +117,7 @@ public class FlowServiceImpl implements IFlowService {
      */
     @Override
     public Flow getFlowById(String username, boolean isAdmin, String id) {
-        Flow flowById = flowMapper.getFlowById(id);
+        Flow flowById = flowDomain.getFlowById(id);
         if (null != flowById && !isAdmin) {
             Boolean isExample = flowById.getIsExample();
             String crtUser = flowById.getCrtUser();
@@ -143,7 +136,6 @@ public class FlowServiceImpl implements IFlowService {
      * @return
      */
     @Override
-    @Transactional
     public FlowVo getFlowByPageId(String fid, String pageId) {
         FlowVo flowVo = null;
         Flow flowById = flowDomain.getFlowByPageId(fid, pageId);
@@ -165,7 +157,6 @@ public class FlowServiceImpl implements IFlowService {
      * @return
      */
     @Override
-    @Transactional
     public String getFlowVoById(String id) {
         if (StringUtils.isBlank(id)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("id is null");
@@ -177,14 +168,12 @@ public class FlowServiceImpl implements IFlowService {
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(ReturnMapUtils.SUCCEEDED_MSG);
         FlowVo flowVo = new FlowVo();
         BeanUtils.copyProperties(flowById, flowVo);
-        //Take out 'mxGraphModel' and convert to Vo
+        // Take out 'mxGraphModel' and convert to Vo
         MxGraphModelVo mxGraphModelVo = MxGraphModelUtils.mxGraphModelPoToVo(flowById.getMxGraphModel());
-        //Take out 'stopsList' and turn it to Vo
+        // Take out 'stopsList' and turn it to Vo
         List<StopsVo> stopsVoList = StopsUtils.stopsListPoToVo(flowById.getStopsList());
-        //Take out 'pathsList' and turn it to Vo
+        // Take out 'pathsList' and turn it to Vo
         List<PathsVo> pathsVoList = PathsUtil.pathsListPoToVo(flowById.getPathsList());
-        //Take out 'flowInfoDb' and turn it to Vo
-        //FlowInfoDbVo flowInfoDbVo = FlowInfoDbUtil.flowInfoDbToVo(flowById.getAppId());
         flowVo.setMxGraphModelVo(mxGraphModelVo);
         flowVo.setStopsVoList(stopsVoList);
         flowVo.setPathsVoList(pathsVoList);
@@ -207,12 +196,16 @@ public class FlowServiceImpl implements IFlowService {
             }
             rtnMap.put("runningProcessVoList", processVoList);
         }
+        String[] globalParamsIdsByFlowId = flowDomain.getGlobalParamsIdsByFlowId(id);
+        if (null != globalParamsIdsByFlowId && globalParamsIdsByFlowId.length > 0) {
+        	List<FlowGlobalParams> flowGlobalParamsByIds = flowGlobalParamsDomain.getFlowGlobalParamsByIds(globalParamsIdsByFlowId);
+        	rtnMap.put("globalParamsList", flowGlobalParamsByIds);
+        }
         return JsonUtils.toJsonNoException(rtnMap);
     }
 
     @Override
-    @Transactional
-    public String addFlow(String username, FlowVo flowVo) {
+    public String addFlow(String username, FlowInfoVoRequestAdd flowVo) throws Exception {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
         }
@@ -222,7 +215,7 @@ public class FlowServiceImpl implements IFlowService {
         if (StringUtils.isBlank(flowVo.getName())) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("flow name is null");
         }
-        String flowName = flowMapper.getFlowName(flowVo.getName());
+        String flowName = flowDomain.getFlowName(flowVo.getName());
         if (StringUtils.isNotBlank(flowName)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Repeat flow name!");
         }
@@ -236,7 +229,8 @@ public class FlowServiceImpl implements IFlowService {
         flow.setLastUpdateUser(username);
         flow.setEnableFlag(true);
         flow.setUuid(id);
-        int addFlow = flowMapper.addFlow(flow);
+        flow.setGlobalParamsIds(flowVo.getGlobalParamsIds());
+        int addFlow = flowDomain.addFlow(flow);
         if (addFlow <= 0) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("add failed");
         }
@@ -265,27 +259,6 @@ public class FlowServiceImpl implements IFlowService {
     }
 
     @Override
-    @Transactional
-    public String updateFlow(String username, Flow flow) {
-        if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
-        }
-        String id = flow.getId();
-        flow.setId(id);
-        flow.setName(flow.getName());
-        flow.setDescription(flow.getDescription());
-        flow.setLastUpdateDttm(new Date());
-        flow.setLastUpdateUser(username);
-        Flow flowDb = flowMapper.getFlowById(flow.getId());
-        flow.setVersion(flowDb.getVersion());
-        int i = flowMapper.updateFlow(flow);
-        if (i > 0) {
-            return ReturnMapUtils.setSucceededMsgRtnJsonStr(ReturnMapUtils.SUCCEEDED_MSG);
-        }
-        return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.ERROR_MSG);
-    }
-
-    @Override
     public String deleteFLowInfo(String username, boolean isAdmin, String id) {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
@@ -293,16 +266,16 @@ public class FlowServiceImpl implements IFlowService {
         if (StringUtils.isBlank(id)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("id is null");
         }
-        int scheduleIdListByScheduleRunTemplateId = scheduleMapper.getScheduleIdListByScheduleRunTemplateId(isAdmin, username, id);
+        int scheduleIdListByScheduleRunTemplateId = scheduleDomain.getScheduleIdListByScheduleRunTemplateId(isAdmin, username, id);
         if (scheduleIdListByScheduleRunTemplateId > 0) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Unable to delete, there is an associated scheduled task");
+        	return ReturnMapUtils.setFailedMsgRtnJsonStr("Unable to delete, there is an associated scheduled task");
         }
         Flow flowById = this.getFlowById(username, isAdmin, id);
         if (null == flowById) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Data does not exist");
         }
         if (null != flowById.getStopsList()) {
-            //Loop delete stop attribute
+            // Loop delete stop attribute
             for (Stops stopId : flowById.getStopsList()) {
                 if (null != stopId.getProperties())
                     for (Property property : stopId.getProperties()) {
@@ -322,14 +295,14 @@ public class FlowServiceImpl implements IFlowService {
                         logger.info(mxcell.getMxGeometry().getId());
                         mxGeometryMapper.updateEnableFlagById(username, mxcell.getMxGeometry().getId());
                     }
-                    mxCellMapper.updateEnableFlagById(username, mxcell.getId());
+                    mxCellDomain.updateEnableFlagById(username, mxcell.getId());
 
                 }
             }
             mxGraphModelMapper.updateEnableFlagByFlowId(username, flowById.getId());
         }
         // remove FLow
-        int deleteFLowInfo = flowMapper.updateEnableFlagById(username, id);
+        int deleteFLowInfo = flowDomain.updateEnableFlagById(username, id);
         if (deleteFLowInfo > 0) {
             return ReturnMapUtils.setSucceededMsgRtnJsonStr(ReturnMapUtils.SUCCEEDED_MSG);
         } else {
@@ -339,13 +312,13 @@ public class FlowServiceImpl implements IFlowService {
 
     @Override
     public Integer getMaxStopPageId(String flowId) {
-        return flowMapper.getMaxStopPageId(flowId);
+        return flowDomain.getMaxStopPageId(flowId);
     }
 
     @Override
     public List<FlowVo> getFlowList() {
         List<FlowVo> flowVoList = new ArrayList<>();
-        List<Flow> flowList = flowMapper.getFlowList();
+        List<Flow> flowList = flowDomain.getFlowList();
         if (null != flowList && flowList.size() > 0) {
             for (Flow flow : flowList) {
                 if (null != flow) {
@@ -361,32 +334,13 @@ public class FlowServiceImpl implements IFlowService {
 
     @Override
     public String getFlowListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param) {
-        Map<String, Object> rtnMap = new HashMap<>();
-        if (null != offset && null != limit) {
-            Page<Flow> flowListPage = null;
-            if (isAdmin) {
-                flowListPage = flowDomain.getFlowListPage(offset - 1, limit, param);
-            } else {
-                flowListPage = flowDomain.getFlowListPageByUser(offset - 1, limit, param, username);
-            }
-            List<FlowVo> contentVo = new ArrayList<>();
-            List<Flow> content = flowListPage.getContent();
-            if (content.size() > 0) {
-                for (Flow flow : content) {
-                    if (null == flow) {
-                        continue;
-                    }
-                    FlowVo flowVo = new FlowVo();
-                    BeanUtils.copyProperties(flow, flowVo);
-                    contentVo.add(flowVo);
-                }
-            }
-            rtnMap.put(ReturnMapUtils.KEY_CODE, ReturnMapUtils.SUCCEEDED_CODE);
-            rtnMap.put("msg", "");
-            rtnMap.put("count", flowListPage.getTotalElements());
-            rtnMap.put("data", contentVo);//Data collection
-            rtnMap.put(ReturnMapUtils.KEY_CODE, ReturnMapUtils.SUCCEEDED_CODE);
+        if (null == offset || null == limit) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.ERROR_MSG);
         }
+        Page<FlowVo> page = PageHelper.startPage(offset, limit,"crt_dttm desc");
+        flowDomain.getFlowListParam(username, isAdmin, param);
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(ReturnMapUtils.SUCCEEDED_MSG);
+        rtnMap = PageHelperUtils.setLayTableParam(page, rtnMap);
         return JsonUtils.toJsonNoException(rtnMap);
     }
 
@@ -395,7 +349,7 @@ public class FlowServiceImpl implements IFlowService {
         Map<String, Object> rtnMap = new HashMap<String, Object>();
         rtnMap.put("code", 500);
         List<FlowVo> flowVoList = new ArrayList<>();
-        List<Flow> flowExampleList = flowMapper.getFlowExampleList();
+        List<Flow> flowExampleList = flowDomain.getFlowExampleList();
         // list判空
         if (CollectionUtils.isNotEmpty(flowExampleList)) {
             flowExampleList.forEach(flow -> {
@@ -411,7 +365,7 @@ public class FlowServiceImpl implements IFlowService {
     }
 
     @Override
-    public String runFlow(String username, boolean isAdmin, String flowId, String runMode) {
+    public String runFlow(String username, boolean isAdmin, String flowId, String runMode) throws Exception {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
         }
@@ -433,8 +387,9 @@ public class FlowServiceImpl implements IFlowService {
             runModeType = RunModeType.selectGender(runMode);
         }
         process.setRunModeType(runModeType);
-        process = processDomain.saveOrUpdate(process);
-        if (null == process) {
+        process.setId(UUIDUtils.getUUID32());
+        int updateProcess = processDomain.addProcess(process);
+        if (updateProcess <= 0) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Save failed, transform failed");
         }
         String checkpoint = "";
@@ -448,28 +403,28 @@ public class FlowServiceImpl implements IFlowService {
                 checkpoint = (checkpoint + stops.getName());
             }
         }
+        String processId = process.getId();
         Map<String, Object> stringObjectMap = flowImpl.startFlow(process, checkpoint, runModeType);
         if (null == stringObjectMap || 200 != ((Integer) stringObjectMap.get("code"))) {
-            process.setEnableFlag(false);
-            process.setLastUpdateDttm(new Date());
-            process.setLastUpdateUser(username);
-            processDomain.saveOrUpdate(process);
+            processDomain.updateProcessEnableFlag(username, isAdmin, processId);
             return ReturnMapUtils.setFailedMsgRtnJsonStr((String) stringObjectMap.get("errorMsg"));
         }
+        process = processDomain.getProcessById(username, isAdmin, processId);
+        process.setLastUpdateDttm(new Date());
+        process.setLastUpdateUser(username);
         process.setAppId((String) stringObjectMap.get("appId"));
         process.setProcessId((String) stringObjectMap.get("appId"));
         process.setState(ProcessState.STARTED);
         process.setLastUpdateUser(username);
         process.setLastUpdateDttm(new Date());
-        processDomain.saveOrUpdate(process);
+        processDomain.updateProcess(process);
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg("save process success,update success");
         rtnMap.put("processId", process.getId());
         return JsonUtils.toJsonNoException(rtnMap);
     }
 
     @Override
-    @Transactional
-    public String updateFlowBaseInfo(String username, String fId, FlowVo flowVo) {
+    public String updateFlowBaseInfo(String username, String fId, FlowInfoVoRequestUpdate flowVo) throws Exception {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
         }
@@ -483,16 +438,15 @@ public class FlowServiceImpl implements IFlowService {
         if (StringUtils.isNotBlank(flowVo.getName())) {
             flowById.setName(flowVo.getName());
         }
-        //find name in FlowGroup
-        String[] flowNamesInGroup = flowDomain.getFlowNameByFlowGroupId(fId, flowVo.getName());//already add in group
-        if (flowNamesInGroup.length > 1) {
+        // find name in FlowGroup
+        List<String> flowNamesInGroup = flowDomain.getFlowNamesByFlowGroupId(fId, flowVo.getName());// already add in group
+        if (flowNamesInGroup.size() > 0) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Repeat flow name!");
         }
         String[] flowGroupsInGroup = flowGroupDomain.getFlowGroupNameByNameInGroup(fId, flowVo.getName());
         if (flowGroupsInGroup.length > 0) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Repeat flow name!");
         }
-
 
         flowById.setDescription(flowVo.getDescription());
         flowById.setDriverMemory(flowVo.getDriverMemory());
@@ -501,13 +455,14 @@ public class FlowServiceImpl implements IFlowService {
         flowById.setExecutorNumber(flowVo.getExecutorNumber());
         flowById.setLastUpdateDttm(new Date());
         flowById.setLastUpdateUser(username);
-        flowDomain.saveOrUpdate(flowById);
+        flowById.setGlobalParamsIds(flowVo.getGlobalParamsIds());
+        flowDomain.updateFlow(flowById);
         Map<String, Object> rtnMap = new HashMap<>();
         rtnMap.put("code", 200);
         rtnMap.put("flowVo", flowVo);
         rtnMap.put("errorMsg", "successfully saved");
         logger.info("The 'Flow' attribute was successfully modified.");
-        FlowGroup flowGroup = flowGroupMapper.getFlowGroupById(fId);
+        FlowGroup flowGroup = flowGroupDomain.getFlowGroupById(fId);
         if (null == flowGroup) {
             return JsonUtils.toJsonNoException(rtnMap);
         }
@@ -515,12 +470,12 @@ public class FlowServiceImpl implements IFlowService {
         if (null == mxGraphModel) {
             return JsonUtils.toJsonNoException(rtnMap);
         }
-        MxCell meCellByMxGraphIdAndPageId = mxCellMapper.getMxCellByMxGraphIdAndPageId(mxGraphModel.getId(), flowVo.getPageId());
+        MxCell meCellByMxGraphIdAndPageId = mxCellDomain.getMxCellByMxGraphIdAndPageId(mxGraphModel.getId(), flowVo.getPageId());
         if (null == meCellByMxGraphIdAndPageId) {
             return JsonUtils.toJsonNoException(rtnMap);
         }
         meCellByMxGraphIdAndPageId.setValue(flowVo.getName());
-        int i = mxCellMapper.updateMxCell(meCellByMxGraphIdAndPageId);
+        int i = mxCellDomain.updateMxCell(meCellByMxGraphIdAndPageId);
         if (i <= 0) {
             return JsonUtils.toJsonNoException(rtnMap);
         }
@@ -533,8 +488,7 @@ public class FlowServiceImpl implements IFlowService {
     }
 
     @Override
-    @Transactional
-    public String updateFlowNameById(String username, String id, String flowGroupId, String flowName, String pageId) {
+    public String updateFlowNameById(String username, String id, String flowGroupId, String flowName, String pageId) throws Exception {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
         }
@@ -553,7 +507,7 @@ public class FlowServiceImpl implements IFlowService {
         if (null == root || root.size() <= 0) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(flowGroupById.getId() + "No flow information,update failed");
         }
-        //Check if name is the same name
+        // Check if name is the same name
         String checkResult = flowDomain.getFlowIdByNameAndFlowGroupId(flowGroupId, flowName);
         if (StringUtils.isNotBlank(checkResult)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(flowName + "The name has been repeated and the save failed.");
@@ -572,7 +526,7 @@ public class FlowServiceImpl implements IFlowService {
                 mxCell.setValue(flowName);
                 mxCell.setLastUpdateDttm(new Date());
                 mxCell.setLastUpdateUser(username);
-                mxCellDomain.saveOrUpdate(mxCell);
+                mxCellDomain.updateMxCell(mxCell);
                 // Convert the mxGraphModel from the query to XML
                 String loadXml = MxGraphUtils.mxGraphModelToMxGraph(false, mxGraphModel);
                 loadXml = StringUtils.isNotBlank(loadXml) ? loadXml : "";
@@ -589,8 +543,7 @@ public class FlowServiceImpl implements IFlowService {
     }
 
     @Override
-    @Transactional
-    public Boolean updateFlowNameById(String username, String id, String flowName) {
+    public Boolean updateFlowNameById(String username, String id, String flowName) throws Exception {
         if (StringUtils.isBlank(username)) {
             return false;
         }
@@ -604,13 +557,13 @@ public class FlowServiceImpl implements IFlowService {
         flowById.setLastUpdateUser(username);
         flowById.setLastUpdateDttm(new Date());
         flowById.setName(flowName);
-        flowDomain.saveOrUpdate(flowById);
+        flowDomain.updateFlow(flowById);
         return true;
     }
 
     @Override
     public Integer getMaxFlowPageIdByFlowGroupId(String flowGroupId) {
-        return flowMapper.getMaxFlowPageIdByFlowGroupId(flowGroupId);
+        return flowDomain.getMaxFlowPageIdByFlowGroupId(flowGroupId);
     }
 
     @Override
@@ -639,7 +592,7 @@ public class FlowServiceImpl implements IFlowService {
         List<StopGroupVo> groupsVoList = stopGroupServiceImpl.getStopGroupAll();
         rtnMap.put("groupsVoList", groupsVoList);
         Integer maxStopPageId = this.getMaxStopPageId(load);
-        //'maxStopPageId'defaults to 2 if it's empty, otherwise'maxStopPageId'+1
+        // 'maxStopPageId'defaults to 2 if it's empty, otherwise'maxStopPageId'+1
         maxStopPageId = null == maxStopPageId ? 2 : (maxStopPageId + 1);
         // Change the query'mxGraphModelVo'to'XML'
         String loadXml = MxGraphUtils.mxGraphModelToMxGraph(false, flowById.getMxGraphModel());

@@ -1,20 +1,46 @@
 package cn.cnic.component.process.service.Impl;
 
-import cn.cnic.base.utils.*;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+
+import cn.cnic.base.utils.DateUtils;
+import cn.cnic.base.utils.HdfsUtils;
+import cn.cnic.base.utils.JsonUtils;
+import cn.cnic.base.utils.LoggerUtil;
+import cn.cnic.base.utils.MxGraphUtils;
+import cn.cnic.base.utils.PageHelperUtils;
+import cn.cnic.base.utils.ReturnMapUtils;
+import cn.cnic.base.utils.UUIDUtils;
 import cn.cnic.base.vo.UserVo;
 import cn.cnic.common.Eunm.ProcessState;
 import cn.cnic.common.Eunm.RunModeType;
 import cn.cnic.common.Eunm.StopState;
+import cn.cnic.component.flow.domain.FlowDomain;
 import cn.cnic.component.flow.entity.Flow;
-import cn.cnic.component.flow.jpa.domain.FlowDomain;
 import cn.cnic.component.mxGraph.utils.MxCellUtils;
 import cn.cnic.component.mxGraph.vo.MxCellVo;
 import cn.cnic.component.mxGraph.vo.MxGraphModelVo;
-import cn.cnic.component.process.domain.ProcessDomainU;
+import cn.cnic.component.process.domain.ProcessDomain;
 import cn.cnic.component.process.entity.Process;
 import cn.cnic.component.process.entity.ProcessGroup;
 import cn.cnic.component.process.entity.ProcessStop;
-import cn.cnic.component.process.jpa.domain.ProcessDomain;
 import cn.cnic.component.process.mapper.ProcessMapper;
 import cn.cnic.component.process.mapper.ProcessStopMapper;
 import cn.cnic.component.process.service.IProcessService;
@@ -28,45 +54,30 @@ import cn.cnic.third.vo.flow.ThirdFlowInfoStopVo;
 import cn.cnic.third.vo.flow.ThirdFlowInfoStopsVo;
 import cn.cnic.third.vo.flow.ThirdFlowInfoVo;
 import cn.cnic.third.vo.flow.ThirdProgressVo;
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
-import java.math.BigDecimal;
-import java.util.*;
 
 @Service
 public class ProcessServiceImpl implements IProcessService {
 
-	/**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
     private Logger logger = LoggerUtil.getLogger();
 
-    @Resource
+    @Autowired
     private ProcessMapper processMapper;
 
-    @Resource
-    private ProcessDomainU processDomainU;
-
-    @Resource
+    @Autowired
     private ProcessStopMapper processStopMapper;
 
-    @Resource
+    @Autowired
+    private ProcessDomain processDomain;
+
+    @Autowired
     private FlowDomain flowDomain;
 
-    @Resource
+    @Autowired
     private IFlow flowImpl;
 
-    @Resource
-    private ProcessDomain processDomain;
 
     /**
      * Query processVoList (the query contains its child table)
@@ -199,19 +210,21 @@ public class ProcessServiceImpl implements IProcessService {
      *
      * @param appID
      * @return
+     * @throws Exception 
      */
     @Override
-    public ProcessVo getAppInfoByThirdAndSave(String appID) {
+    public ProcessVo getAppInfoByThirdAndSave(String appID) throws Exception {
         ProcessVo processVo = new ProcessVo();
         Process processById = processMapper.getProcessByAppId(appID);
         if (null != processById) {
-            // If the status is STARTED, the interface is removed. Otherwise, it indicates that the startup is complete and returns directly.
+            // If the status is STARTED, the interface is removed. Otherwise, 
+            // it indicates that the startup is complete and returns directly.
             ProcessState state = processById.getState();
             if (ProcessState.STARTED == state || null == processById.getStartTime()) {
                 ThirdFlowInfoVo thirdFlowInfoVo = flowImpl.getFlowInfo(appID);
                 if (null != thirdFlowInfoVo) {
                     processById.getProcessStopList();
-                    //Determine if the progress returned by the interface is empty
+                    // Determine if the progress returned by the interface is empty
                     if (StringUtils.isNotBlank(thirdFlowInfoVo.getProgress())) {
                         double progressNums = Double.parseDouble(thirdFlowInfoVo.getProgress());
                         Double progressNumsDb = null;
@@ -220,14 +233,16 @@ public class ProcessServiceImpl implements IProcessService {
                             progressNumsDb = Double.parseDouble(percentage);
                         }
                         boolean isUpdateProcess = false;
-                        // Determine the status, if the status is STARTED, determine whether the return progress is greater than the database progress, if it is greater than the save
+                        // Determine the status, if the status is STARTED, 
+                        // determine whether the return progress is greater than the database progress, 
+                        // if it is greater than the save
                         // Save the database directly if the state is not STARTED
                         if ("STARTED".equals(thirdFlowInfoVo.getState())) {
                             // Save if the database progress is empty
                             if (null == progressNumsDb) {
                                 isUpdateProcess = true;
                             } else if (progressNums > progressNumsDb) {
-                                //Save if the return progress is greater than the database progress
+                                // Save if the return progress is greater than the database progress
                                 isUpdateProcess = true;
                             }
                         } else {
@@ -239,12 +254,12 @@ public class ProcessServiceImpl implements IProcessService {
                             processById.setLastUpdateDttm(new Date());
                             processById.setProgress(progressNums + "");
                             processById.setState(ProcessState.selectGender(thirdFlowInfoVo.getState()));
-                            //processById.setProcessId(thirdFlowInfoVo.getPid());
+                            // processById.setProcessId(thirdFlowInfoVo.getPid());
                             processById.setProcessId(thirdFlowInfoVo.getId());
                             processById.setName(thirdFlowInfoVo.getName());
                             processById.setStartTime(DateUtils.strCstToDate(thirdFlowInfoVo.getStartTime()));
                             processById.setEndTime(DateUtils.strCstToDate(thirdFlowInfoVo.getEndTime()));
-                            processDomainU.updateProcess(processById);
+                            processDomain.updateProcess(processById);
                             // Modify the stops information
                             List<ThirdFlowInfoStopsVo> stops = thirdFlowInfoVo.getStops();
                             if (null != stops && stops.size() > 0) {
@@ -293,7 +308,7 @@ public class ProcessServiceImpl implements IProcessService {
         rtnMap.put("code", 500);
         if (StringUtils.isNotBlank(appID)) {
             // 查询appinfo
-            //ProcessVo processVoThird = this.getAppInfoByThirdAndSave(appID);
+            // ProcessVo processVoThird = this.getAppInfoByThirdAndSave(appID);
             Process processById = processMapper.getProcessByAppId(appID);
             ProcessVo processVo = ProcessUtils.processPoToVo(processById);
             if (null != processVo) {
@@ -313,9 +328,10 @@ public class ProcessServiceImpl implements IProcessService {
      *
      * @param appIDs
      * @return
+     * @throws Exception 
      */
     @Override
-    public String getProgressByThirdAndSave(String[] appIDs) {
+    public String getProgressByThirdAndSave(String[] appIDs) throws Exception {
         Map<String, Object> rtnMap = new HashMap<String, Object>();
         rtnMap.put("code", 500);
         List<ProcessVo> processVoList = null;
@@ -326,7 +342,8 @@ public class ProcessServiceImpl implements IProcessService {
                 for (Process process : processListByAppIDs) {
                     if (null != process) {
                         ProcessVo processVo = null;
-                        // If the status is STARTED, the interface is removed. Otherwise, it indicates that the startup is complete and returns directly.
+                        // If the status is STARTED, the interface is removed. Otherwise, 
+                        // it indicates that the startup is complete and returns directly.
                         ProcessState state = process.getState();
                         if (ProcessState.STARTED == state) {
                             ThirdProgressVo flowProgress = flowImpl.getFlowProgress(process.getAppId());
@@ -343,10 +360,12 @@ public class ProcessServiceImpl implements IProcessService {
                                     progressNums = formatBD.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
                                 }
                                 boolean isUpdateProcess = false;
-                                // Determine the status, if the status is STARTED, determine whether the return progress is greater than the database progress, if it is greater than the save
+                                // Determine the status, if the status is STARTED, 
+                                // determine whether the return progress is greater than the database progress, 
+                                // if it is greater than the save
                                 // Save the database directly if the state is not STARTED
                                 if ("STARTED".equals(flowProgress.getState())) {
-                                    //Save if the return progress is greater than the database progress
+                                    // Save if the return progress is greater than the database progress
                                     if (progressNums > progressNumsDb) {
                                         isUpdateProcess = true;
                                     }
@@ -360,7 +379,7 @@ public class ProcessServiceImpl implements IProcessService {
                                     process.setProgress(progressNums + "");
                                     process.setState(ProcessState.selectGender(flowProgress.getState()));
                                     process.setName(flowProgress.getName());
-                                    processDomainU.updateProcess(process);
+                                    processDomain.updateProcess(process);
                                 }
                             }
                             processVo = ProcessUtils.processPoToVo(process);
@@ -386,7 +405,7 @@ public class ProcessServiceImpl implements IProcessService {
     }
 
     /**
-     * Query  process according to appID
+     * Query process according to appID
      *
      * @param appIDs
      * @return
@@ -416,9 +435,10 @@ public class ProcessServiceImpl implements IProcessService {
      *
      * @param processVo
      * @return
+     * @throws Exception 
      */
     @Override
-    public int updateProcess(String username, boolean isAdmin, ProcessVo processVo) {
+    public int updateProcess(String username, boolean isAdmin, ProcessVo processVo) throws Exception {
         if (StringUtils.isBlank(username)) {
             return 0;
         }
@@ -438,18 +458,20 @@ public class ProcessServiceImpl implements IProcessService {
         processById.setEndTime(processVo.getEndTime());
         processById.setProcessId(processVo.getProcessId());
         processById.setName(processVo.getName());
-        return processDomainU.updateProcess(processById);
+        return processDomain.updateProcess(processById);
     }
 
     /**
-     * Generate Process and save according to flowId
+     * Generate Process from flowId and save it
      *
+     * @param isAdmin
+     * @param username
      * @param flowId
      * @return
      */
     @Override
-    public ProcessVo flowToProcessAndSave(String username, String flowId) {
-        //Determine if the flowId is empty
+    public ProcessVo flowToProcessAndSave(boolean isAdmin, String username, String flowId) throws Exception {
+        // Determine if the flowId is empty
         if (StringUtils.isBlank(flowId)) {
             logger.warn("The parameter'flowId'is empty and the conversion fails");
             return null;
@@ -466,14 +488,16 @@ public class ProcessServiceImpl implements IProcessService {
             logger.warn("Conversion failed");
             return null;
         }
-        process = processDomain.saveOrUpdate(process);
-        if (null != process) {
-            ProcessVo processVo = ProcessUtils.processPoToVo(process);
-            return processVo;
-        } else {
+        process.setId(UUIDUtils.getUUID32());
+        int addProcess = processDomain.addProcess(process);
+        if(addProcess<=0) {
             logger.warn("Save failed, transform failed");
             return null;
         }
+        String processId = process.getId();
+        process = processDomain.getProcessById(username, isAdmin, processId);
+        ProcessVo processVo = ProcessUtils.processPoToVo(process);
+        return processVo;
     }
 
     /**
@@ -483,26 +507,22 @@ public class ProcessServiceImpl implements IProcessService {
      * @return
      */
     @Override
-    public String delProcess(String username, String processId) {
+    public String delProcess(boolean isAdmin, String username, String processId) {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
         }
         if (StringUtils.isBlank(processId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("processID is null");
         }
-        // Query Process by 'ProcessId'
-        Process processById = processDomain.getProcessById(processId);
-        if (null == processById) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("No process with ID of'" + processId + "'was queried");
-        }
-        if (processById.getState() == ProcessState.STARTED) {
+        ProcessState processStateById = processDomain.getProcessStateById(processId);
+        if (processStateById == ProcessState.STARTED) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Status is STARTED, cannot be deleted");
         }
-        processById.setEnableFlag(false);
-        processById.setLastUpdateDttm(new Date());
-        processById.setLastUpdateUser(username);
-        processDomain.saveOrUpdate(processById);
-        return ReturnMapUtils.setSucceededMsgRtnJsonStr("Successfully Deleted");
+        boolean updateProcessEnableFlag = processDomain.updateProcessEnableFlag(username, isAdmin, processId);
+        if (updateProcessEnableFlag) {
+            return ReturnMapUtils.setSucceededMsgRtnJsonStr("Successfully Deleted");
+        }
+        return ReturnMapUtils.setFailedMsgRtnJsonStr("Failed Deleted");
     }
 
     /**
@@ -574,13 +594,16 @@ public class ProcessServiceImpl implements IProcessService {
     /**
      * Start processes
      *
+     * @param isAdmin
      * @param username
      * @param processId
      * @param checkpoint
+     * @param runMode
      * @return
+     * @throws Exception
      */
     @Override
-    public String startProcess(String username, String processId, String checkpoint, String runMode) {
+    public String startProcess(boolean isAdmin, String username, String processId, String checkpoint, String runMode) throws Exception {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
         }
@@ -594,26 +617,29 @@ public class ProcessServiceImpl implements IProcessService {
         if (StringUtils.isBlank(processId)) {
             return null;
         }
-        Process process = processDomain.getProcessById(processId);
+        Process process = processDomain.getProcessById(username, isAdmin, processId);
         if (null == process) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("No data by process Id:'" + processId + "'");
         }
         Process processCopy = ProcessUtils.copyProcess(process, username, runModeType, false);
-        if (null != processCopy) {
-            processCopy = processDomain.saveOrUpdate(processCopy);
+        if (null == processCopy) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("start failed, copy failed");
         }
+        processCopy.setId(UUIDUtils.getUUID32());
+        processDomain.addProcess(processCopy);
+        String processCopyId = processCopy.getId();
         Map<String, Object> stringObjectMap = flowImpl.startFlow(processCopy, checkpoint, runModeType);
-        processCopy.setLastUpdateUser(username);
-        processCopy.setLastUpdateDttm(new Date());
         if (200 == (Integer) stringObjectMap.get("code")) {
+            processCopy = processDomain.getProcessById(username, isAdmin, processCopyId);
+            processCopy.setLastUpdateUser(username);
+            processCopy.setLastUpdateDttm(new Date());
             processCopy.setAppId((String) stringObjectMap.get("appId"));
             processCopy.setProcessId((String) stringObjectMap.get("appId"));
             processCopy.setState(ProcessState.STARTED);
             processDomain.saveOrUpdate(processCopy);
-            return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("processId", processCopy.getId());
+            return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("processId", processCopyId);
         } else {
-            processCopy.setEnableFlag(false);
-            processDomain.saveOrUpdate(processCopy);
+            processDomain.updateProcessEnableFlag(username, isAdmin, processCopy.getId());
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Calling interface failed, startup failed");
         }
     }
@@ -725,7 +751,7 @@ public class ProcessServiceImpl implements IProcessService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Interface call failed");
         }
         if (isSoft) {
-            visualizationData = visualizationDataSort(visualizationData,visualizationType);
+        	visualizationData = visualizationDataSort(visualizationData,visualizationType);	
         }
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("visualizationData", visualizationData);
     }
@@ -825,7 +851,7 @@ public class ProcessServiceImpl implements IProcessService {
         UserVo currentUser = new UserVo();
         currentUser.setUsername(username);
         rtnMap.put("currentUser", currentUser);
-        //set parentAccessPath
+        // set parentAccessPath
         rtnMap.put("parentAccessPath", parentAccessPath);
         rtnMap.put("load", loadId);
         rtnMap.put("processType", "TASK");
@@ -957,15 +983,6 @@ public class ProcessServiceImpl implements IProcessService {
             obj.getJSONArray("series").getJSONObject(i).put("data", sort_data.getJSONArray(i + ""));
         }
         return obj.toString();
-    }
-
-    public static void main(String[] args) {
-        Map<String, String> map = new HashMap<String, String>();
-        map.put("appID", "application_1613819551288_0150");
-        map.put("stopName", "LineChart");
-        map.put("visualizationType", "LINECHART");
-        String url = "http://10.0.90.155:8002/flow/visualizationData";
-        HttpUtils.doGet(url, map, 5 * 1000);
     }
 
 }

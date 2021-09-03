@@ -290,7 +290,7 @@ export default {
         templateType: "GROUP"
       };
       this.$axios
-        .get("/flowTemplate/saveFlowTemplate", { params: data })
+        .post("/flowTemplate/saveFlowTemplate", this.$qs.stringify(data))
         .then(res => {
           if (res.data.code === 200) {
             this.$Modal.success({

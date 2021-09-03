@@ -9,8 +9,9 @@ import cn.cnic.component.flow.entity.Stops;
 import cn.cnic.component.flow.vo.StopsCustomizedPropertyVo;
 import cn.cnic.component.flow.vo.StopsPropertyVo;
 import cn.cnic.component.flow.vo.StopsVo;
-import cn.cnic.component.stopsComponent.model.StopsComponent;
-import cn.cnic.component.stopsComponent.model.StopsComponentProperty;
+import cn.cnic.component.stopsComponent.entity.StopsComponent;
+import cn.cnic.component.stopsComponent.entity.StopsComponentProperty;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 

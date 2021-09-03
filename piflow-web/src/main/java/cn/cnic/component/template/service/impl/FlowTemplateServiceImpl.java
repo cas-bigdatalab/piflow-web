@@ -6,67 +6,67 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.domain.Page;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 
 import cn.cnic.base.utils.FileUtils;
 import cn.cnic.base.utils.FlowXmlUtils;
 import cn.cnic.base.utils.JsonUtils;
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.MxGraphUtils;
+import cn.cnic.base.utils.PageHelperUtils;
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.base.utils.UUIDUtils;
 import cn.cnic.common.Eunm.TemplateType;
 import cn.cnic.common.constant.SysParamsCache;
+import cn.cnic.component.flow.domain.FlowDomain;
+import cn.cnic.component.flow.domain.FlowGroupDomain;
+import cn.cnic.component.flow.domain.StopsDomain;
 import cn.cnic.component.flow.entity.Flow;
 import cn.cnic.component.flow.entity.FlowGroup;
 import cn.cnic.component.flow.entity.FlowGroupPaths;
 import cn.cnic.component.flow.entity.Paths;
 import cn.cnic.component.flow.entity.Stops;
-import cn.cnic.component.flow.jpa.domain.FlowDomain;
-import cn.cnic.component.flow.jpa.domain.FlowGroupDomain;
-import cn.cnic.component.flow.jpa.domain.StopsDomain;
+import cn.cnic.component.mxGraph.domain.MxCellDomain;
 import cn.cnic.component.mxGraph.entity.MxCell;
 import cn.cnic.component.mxGraph.entity.MxGraphModel;
-import cn.cnic.component.mxGraph.jpa.domain.MxCellDomain;
 import cn.cnic.component.mxGraph.utils.MxCellUtils;
 import cn.cnic.component.mxGraph.utils.MxGraphModelUtils;
+import cn.cnic.component.process.entity.Process;
+import cn.cnic.component.template.domain.FlowTemplateDomain;
 import cn.cnic.component.template.entity.FlowTemplate;
-import cn.cnic.component.template.jpa.domain.FlowTemplateDomain;
 import cn.cnic.component.template.service.IFlowTemplateService;
 import cn.cnic.component.template.utils.FlowTemplateUtils;
 import cn.cnic.component.template.vo.FlowTemplateVo;
 
+
 @Service
-@Transactional
 public class FlowTemplateServiceImpl implements IFlowTemplateService {
 
-	/**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
     private Logger logger = LoggerUtil.getLogger();
 
-    @Resource
+    @Autowired
     private FlowTemplateDomain flowTemplateDomain;
 
-    @Resource
+    @Autowired
     private FlowGroupDomain flowGroupDomain;
 
-    @Resource
+    @Autowired
     private FlowDomain flowDomain;
 
-    @Resource
+    @Autowired
     private StopsDomain stopsDomain;
 
-    @Resource
+    @Autowired
     private MxCellDomain mxCellDomain;
 
 
@@ -80,7 +80,6 @@ public class FlowTemplateServiceImpl implements IFlowTemplateService {
      * @return
      */
     @Override
-    @Transactional
     public String addFlowTemplate(String username, String name, String loadId, String templateType) {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
@@ -139,20 +138,20 @@ public class FlowTemplateServiceImpl implements IFlowTemplateService {
         flowTemplate.setTemplateType(saveTemplateType);
         flowTemplate.setUrl("/xml/" + saveFileName + ".xml");
         flowTemplate.setDescription(name);
-        flowTemplateDomain.saveOrUpdate(flowTemplate);
+        flowTemplateDomain.insertFlowTemplate(flowTemplate);
         return ReturnMapUtils.setSucceededMsgRtnJsonStr("save template success");
     }
 
     @Override
     public String getFlowTemplateListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param) {
-        Map<String, Object> rtnMap = new HashMap<String, Object>();
-        if (null != offset && null != limit) {
-            Page<FlowTemplate> flowTemplateListPage = flowTemplateDomain.getFlowTemplateListPage(username, isAdmin, offset - 1, limit, param);
-            rtnMap.put(ReturnMapUtils.KEY_CODE, ReturnMapUtils.SUCCEEDED_CODE);
-            rtnMap.put("msg", "");
-            rtnMap.put("count", flowTemplateListPage.getTotalElements());
-            rtnMap.put("data", flowTemplateListPage.getContent());//Data collection
+        Map<String, Object> rtnMap = new HashMap<>();
+        if (null == offset || null == limit) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("limit or offset is null");
         }
+        Page<Process> page = PageHelper.startPage(offset, limit, "crt_dttm desc");
+        flowTemplateDomain.getFlowTemplateListByParam(username, isAdmin, param);
+        rtnMap = PageHelperUtils.setLayTableParam(page, rtnMap);
+        rtnMap.put(ReturnMapUtils.KEY_CODE, ReturnMapUtils.SUCCEEDED_CODE);
         return JsonUtils.toJsonNoException(rtnMap);
     }
 
@@ -208,7 +207,7 @@ public class FlowTemplateServiceImpl implements IFlowTemplateService {
         if (file.isEmpty()) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Upload failed, please try again later");
         }
-        Map<String, Object> uploadMap = FileUtils.uploadRtnMap(file, SysParamsCache.XML_PATH,null);
+        Map<String, Object> uploadMap = FileUtils.uploadRtnMap(file, SysParamsCache.XML_PATH, null);
         if (null == uploadMap || uploadMap.isEmpty()) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Upload failed, please try again later");
         }
@@ -236,7 +235,7 @@ public class FlowTemplateServiceImpl implements IFlowTemplateService {
         flowTemplate.setUrl("/xml/" + saveFileName);
         flowTemplate.setTemplateType(templateType);
         flowTemplate.setDescription(fileName);
-        flowTemplateDomain.saveOrUpdate(flowTemplate);
+        flowTemplateDomain.insertFlowTemplate(flowTemplate);
         return ReturnMapUtils.setSucceededMsgRtnJsonStr("successful template upload");
     }
 
@@ -258,7 +257,7 @@ public class FlowTemplateServiceImpl implements IFlowTemplateService {
     }
 
     @Override
-    public String loadGroupTemplate(String username, String templateId, String loadId) {
+    public String loadGroupTemplate(String username, String templateId, String loadId) throws Exception {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal user, Load failed");
         }
@@ -398,12 +397,12 @@ public class FlowTemplateServiceImpl implements IFlowTemplateService {
         }
 
         // update
-        flowGroupDomain.saveOrUpdate(flowGroupById);
+        flowGroupDomain.updateFlowGroup(flowGroupById);
         return ReturnMapUtils.setSucceededMsgRtnJsonStr("success");
     }
 
     @Override
-    public String loadTaskTemplate(String username, String templateId, String flowId) {
+    public String loadTaskTemplate(String username, String templateId, String flowId) throws Exception {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal user, Load failed");
         }
@@ -499,7 +498,7 @@ public class FlowTemplateServiceImpl implements IFlowTemplateService {
             flowById.setPathsList(pathsList);
         }
         // save
-        flowDomain.saveOrUpdate(flowById);
+        flowDomain.updateFlow(flowById);
         return ReturnMapUtils.setSucceededMsgRtnJsonStr("Successfully loaded FlowTemplate");
     }
 

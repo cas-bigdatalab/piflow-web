@@ -145,8 +145,7 @@ public class MxCellUtils {
         defaultFlowMxCell.setMxGeometry(defaultFlowMxCellMxGeometry);
         return defaultFlowMxCell;
     }
-    
-    
+
     public static MxCell AddMxCellLine(String username, String pageId) {
         MxCell defaultFlowMxCell = mxCellNewNoId(username);
         defaultFlowMxCell.setPageId(pageId);
@@ -181,6 +180,84 @@ public class MxCellUtils {
             } else {
                 mxGeometryNew.setId(null);
             }
+            mxGeometryNew.setMxCell(mxCellNew);
+            mxCellNew.setMxGeometry(mxGeometryNew);
+        }
+        return mxCellNew;
+    }
+
+    /**
+     * copyAndNewMxCell
+     * 
+     * @param username operator
+     * @param mxCell source data
+     * @param isAddId Add ID or not
+     * @return
+     */
+    public static MxCell copyAndNewMxCell(String username, MxCell mxCell, boolean isAddId) {
+        if (null == mxCell) {
+            return null;
+        }
+        MxCell mxCellNew = new MxCell();
+        BeanUtils.copyProperties(mxCell, mxCellNew);
+        if (isAddId) {
+            mxCellNew.setId(UUIDUtils.getUUID32());
+        } else {
+            mxCellNew.setId(null);
+        }
+        mxCellNew = initMxCellBasicPropertiesNoId(mxCellNew, username);
+        MxGeometry mxGeometry = mxCell.getMxGeometry();
+        if (null != mxGeometry) {
+            MxGeometry mxGeometryNew = new MxGeometry();
+            BeanUtils.copyProperties(mxGeometry, mxGeometryNew);
+            if (isAddId) {
+                mxGeometryNew.setId(UUIDUtils.getUUID32());
+            } else {
+                mxGeometryNew.setId(null);
+            }
+            mxGeometryNew.setMxCell(mxCellNew);
+            mxGeometryNew = MxGeometryUtils.initMxGeometryBasicPropertiesNoId(mxGeometryNew, username);
+            mxCellNew.setMxGeometry(mxGeometryNew);
+        }
+        return mxCellNew;
+    }
+    
+    /**
+     * mxCellVoToNewMxCell
+     * 
+     * @param username operator
+     * @param mxCellVo source data
+     * @param isAddId Add ID or not
+     * @return
+     */
+    public static MxCell mxCellVoToNewMxCell(String username, MxCellVo mxCellVo, boolean isAddId) {
+        if (null == mxCellVo) {
+            return null;
+        }
+
+        MxCell mxCellNew = new MxCell();
+        // Copy the value in mxCellVo to mxCell
+        BeanUtils.copyProperties(mxCellVo, mxCellNew);
+        if (isAddId) {
+            mxCellNew.setId(UUIDUtils.getUUID32());
+        } else {
+            mxCellNew.setId(null);
+        }
+        // 'mxCell' basic properties (required when creating)
+        mxCellNew = initMxCellBasicPropertiesNoId(mxCellNew, username);
+
+        MxGeometryVo mxGeometryVo = mxCellVo.getMxGeometryVo();
+        if (null != mxGeometryVo) {
+            MxGeometry mxGeometryNew = new MxGeometry();
+            // Copy the value in mxGeometryVo to mxGeometry
+            BeanUtils.copyProperties(mxGeometryVo, mxGeometryNew);
+            if (isAddId) {
+                mxGeometryNew.setId(UUIDUtils.getUUID32());
+            } else {
+                mxGeometryNew.setId(null);
+            }
+            // mxGeometry basic properties(required when creating)
+            mxGeometryNew = MxGeometryUtils.initMxGeometryBasicPropertiesNoId(mxGeometryNew, username);
             mxGeometryNew.setMxCell(mxCellNew);
             mxCellNew.setMxGeometry(mxGeometryNew);
         }

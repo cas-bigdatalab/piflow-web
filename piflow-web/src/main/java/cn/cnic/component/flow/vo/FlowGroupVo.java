@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Setter
 @Getter
+@Setter
 public class FlowGroupVo implements Serializable {
 
     private static final long serialVersionUID = 1L;

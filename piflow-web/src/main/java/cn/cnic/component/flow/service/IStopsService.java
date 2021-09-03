@@ -1,6 +1,5 @@
 package cn.cnic.component.flow.service;
 
-
 import java.util.List;
 
 import cn.cnic.component.flow.vo.StopsVo;
@@ -9,7 +8,7 @@ import cn.cnic.third.vo.flow.ThirdFlowInfoStopVo;
 
 public interface IStopsService {
 
-    public int deleteStopsByFlowId(String id);
+    public int deleteStopsByFlowId(String username, String id);
 
     /**
      * Query "stops" based on "flowId" and "pagesId"
@@ -37,7 +36,7 @@ public interface IStopsService {
     public int updateStopsByFlowIdAndName(ThirdFlowInfoStopVo stopVo);
 
     /**
-     * Modify the isCheckpoint field
+     * Modify the "isCheckpoint" field
      *
      * @param stopId
      * @param isCheckpointStr
@@ -89,7 +88,7 @@ public interface IStopsService {
      * @return
      * @throws Exception 
      */
-    public String fillDatasource(String username, String dataSourceId, String stopId) throws Exception;
+    public String fillDatasource(String username, boolean isAdmin, String dataSourceId, String stopId) throws Exception;
 
     /**
      * isNeedSource

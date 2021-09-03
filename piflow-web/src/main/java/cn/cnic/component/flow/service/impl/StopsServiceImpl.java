@@ -7,11 +7,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cn.cnic.base.utils.HdfsUtils;
@@ -22,10 +21,10 @@ import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.common.Eunm.PortType;
 import cn.cnic.common.Eunm.ProcessState;
 import cn.cnic.common.Eunm.RunModeType;
+import cn.cnic.component.dataSource.domain.DataSourceDomain;
 import cn.cnic.component.dataSource.entity.DataSource;
 import cn.cnic.component.dataSource.entity.DataSourceProperty;
-import cn.cnic.component.dataSource.jpa.domain.DataSourceDomain;
-import cn.cnic.component.flow.domain.StopsDomainU;
+import cn.cnic.component.flow.domain.StopsDomain;
 import cn.cnic.component.flow.entity.CustomizedProperty;
 import cn.cnic.component.flow.entity.Flow;
 import cn.cnic.component.flow.entity.Paths;
@@ -41,7 +40,7 @@ import cn.cnic.component.mxGraph.entity.MxGraphModel;
 import cn.cnic.component.mxGraph.mapper.MxCellMapper;
 import cn.cnic.component.mxGraph.utils.MxCellUtils;
 import cn.cnic.component.mxGraph.utils.MxGraphModelUtils;
-import cn.cnic.component.process.domain.ProcessDomainU;
+import cn.cnic.component.process.domain.ProcessDomain;
 import cn.cnic.component.process.entity.Process;
 import cn.cnic.component.process.entity.ProcessPath;
 import cn.cnic.component.process.entity.ProcessStop;
@@ -50,50 +49,55 @@ import cn.cnic.component.process.utils.ProcessPathUtils;
 import cn.cnic.component.process.utils.ProcessStopUtils;
 import cn.cnic.component.process.utils.ProcessUtils;
 import cn.cnic.component.stopsComponent.domain.StopsComponentDomain;
-import cn.cnic.component.stopsComponent.model.StopsComponent;
+import cn.cnic.component.stopsComponent.entity.StopsComponent;
 import cn.cnic.component.testData.domain.TestDataDomain;
 import cn.cnic.controller.requestVo.RunStopsVo;
 import cn.cnic.third.service.IFlow;
 import cn.cnic.third.vo.flow.ThirdFlowInfoStopVo;
 
+
 @Service
 public class StopsServiceImpl implements IStopsService {
 
-	/**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
     private Logger logger = LoggerUtil.getLogger();
 
-    @Resource
-    private StopsDomainU stopsDomainU;
-
-    @Resource
+    @Autowired
     private MxCellMapper mxCellMapper;
 
-    @Resource
+    @Autowired
     private PathsMapper pathsMapper;
 
-    @Resource
-    private DataSourceDomain dataSourceDomain;
-
-    @Resource
+    @Autowired
     private FlowMapper flowMapper;
 
-    @Resource
+    @Autowired
+    private DataSourceDomain dataSourceDomain;
+
+    @Autowired
     private TestDataDomain testDataDomain;
 
-    @Resource
+    @Autowired
     private StopsComponentDomain stopsComponentDomain;
 
-    @Resource
+    @Autowired
     private IFlow flowImpl;
 
-    @Resource
-    private ProcessDomainU processDomainU;
+    @Autowired
+    private ProcessDomain processDomain;
+
+    @Autowired
+    private StopsDomain stopsDomain;
+
 
     @Override
-    public int deleteStopsByFlowId(String id) {
-        return stopsDomainU.updateEnableFlagByFlowId(id, id);
+    public int deleteStopsByFlowId(String username, String id) {
+        if (StringUtils.isBlank(username)) {
+            return 0;
+        }
+        if (StringUtils.isBlank(id)) {
+            return 0;
+        }
+        return stopsDomain.updateEnableFlagByFlowId(username, id);
     }
 
     /**
@@ -105,7 +109,7 @@ public class StopsServiceImpl implements IStopsService {
      */
     @Override
     public List<StopsVo> getStopsByFlowIdAndPageIds(String flowId, String[] pageIds) {
-        List<Stops> stopsList = stopsDomainU.getStopsListByFlowIdAndPageIds(flowId, pageIds);
+        List<Stops> stopsList = stopsDomain.getStopsListByFlowIdAndPageIds(flowId, pageIds);
         List<StopsVo> stopsVoList = StopsUtils.stopsListPoToVo(stopsList);
         return stopsVoList;
     }
@@ -118,19 +122,19 @@ public class StopsServiceImpl implements IStopsService {
         if (null == stopsVo) {
             return 0;
         }
-        Stops stopsById = stopsDomainU.getStopsById(stopsVo.getId());
+        Stops stopsById = stopsDomain.getStopsById(stopsVo.getId());
         if (null == stopsById) {
             return 0;
         }
         BeanUtils.copyProperties(stopsVo, stopsById);
         stopsById.setLastUpdateDttm(new Date());
         stopsById.setLastUpdateUser(username);
-        return stopsDomainU.updateStops(stopsById);
+        return stopsDomain.updateStops(stopsById);
     }
 
     @Override
     public int updateStopsByFlowIdAndName(ThirdFlowInfoStopVo stopVo) {
-        return stopsDomainU.updateStopsByFlowIdAndName(stopVo);
+        return stopsDomain.updateStopsByFlowIdAndName(stopVo);
     }
 
     /**
@@ -146,7 +150,7 @@ public class StopsServiceImpl implements IStopsService {
         if (StringUtils.isAnyEmpty(stopId, isCheckpointStr)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Partial incoming parameters are empty");
         }
-        Stops stopsById = stopsDomainU.getStopsById(stopId);
+        Stops stopsById = stopsDomain.getStopsById(stopId);
         if (null == stopsById) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Data is null");
         }
@@ -157,7 +161,7 @@ public class StopsServiceImpl implements IStopsService {
         stopsById.setLastUpdateUser(username);
         stopsById.setLastUpdateDttm(new Date());
         stopsById.setIsCheckpoint(isCheckpoint);
-        int updateStopsCheckpoint = stopsDomainU.updateStops(stopsById);
+        int updateStopsCheckpoint = stopsDomain.updateStops(stopsById);
         if (updateStopsCheckpoint > 0) {
             return ReturnMapUtils.setSucceededMsgRtnJsonStr("Saved successfully");
         } else {
@@ -182,19 +186,19 @@ public class StopsServiceImpl implements IStopsService {
         if (StringUtils.isBlank(id) || StringUtils.isBlank(stopName)) {
             return 0;
         }
-        Stops stopsById = stopsDomainU.getStopsById(id);
+        Stops stopsById = stopsDomain.getStopsById(id);
         if (null == stopsById) {
             return 0;
         }
         stopsById.setLastUpdateUser(username);
         stopsById.setLastUpdateDttm(new Date());
         stopsById.setName(stopName);
-        return stopsDomainU.updateStops(stopsById);
+        return stopsDomain.updateStops(stopsById);
     }
 
     @Override
     public String getStopByNameAndFlowId(String flowId, String stopName) {
-        return stopsDomainU.getStopByNameAndFlowId(flowId, stopName);
+        return stopsDomain.getStopByNameAndFlowId(flowId, stopName);
     }
 
     /**
@@ -302,7 +306,7 @@ public class StopsServiceImpl implements IStopsService {
             return JsonUtils.toJsonNoException(rtnMap);
         }
         // Find the 'stop' of 'input' and 'output'
-        List<Stops> queryInfoList = stopsDomainU.getStopsListByFlowIdAndPageIds(flowId, new String[] { sourceId, targetId });
+        List<Stops> queryInfoList = stopsDomain.getStopsListByFlowIdAndPageIds(flowId, new String[] { sourceId, targetId });
         // If 'queryInfoList' is empty, or the size of 'queryInfoList' is less than 2, return directly
         if (null == queryInfoList || queryInfoList.size() < 2) {
             logger.warn("Can't find 'source' or 'target'");
@@ -784,7 +788,7 @@ public class StopsServiceImpl implements IStopsService {
      * @throws Exception
      */
     @Override
-    public String fillDatasource(String username, String dataSourceId, String stopId) throws Exception {
+    public String fillDatasource(String username, boolean isAdmin, String dataSourceId, String stopId) throws Exception {
 
         // Get current user
         if (StringUtils.isBlank(username)) {
@@ -795,7 +799,7 @@ public class StopsServiceImpl implements IStopsService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("fill failed,stopId is null");
         }
         // Query Stops by "stopId"
-        Stops stopsById = stopsDomainU.getStopsById(stopId);
+        Stops stopsById = stopsDomain.getStopsById(stopId);
         if (null == stopsById) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("fill failed,Cannot find Stops with id " + stopId);
         }
@@ -808,7 +812,7 @@ public class StopsServiceImpl implements IStopsService {
         // datasource Property Map(Key is the attribute name)
         Map<String, String> dataSourcePropertyMap = new HashMap<>();
         if (StringUtils.isNotBlank(dataSourceId)) {
-            DataSource dataSourceById = dataSourceDomain.getDataSourceById(dataSourceId);
+            DataSource dataSourceById = dataSourceDomain.getDataSourceById(username, isAdmin, dataSourceId);
             if (null == dataSourceById) {
                 return ReturnMapUtils.setFailedMsgRtnJsonStr("fill failed,Cannot find Datasource with id " + dataSourceId);
             }
@@ -868,7 +872,7 @@ public class StopsServiceImpl implements IStopsService {
             stopsById.setDataSource(null);
         }
         stopsById.setProperties(propertyList);
-        stopsDomainU.saveOrUpdate(stopsById);
+        stopsDomain.saveOrUpdate(stopsById);
         Map<String, Object> rtnMap = new HashMap<String, Object>();
         rtnMap.put("code", 500);
         rtnMap.put("code", 200);
@@ -896,7 +900,7 @@ public class StopsServiceImpl implements IStopsService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("fill failed, stopId is null");
         }
         // Query Stops by "stopId"
-        Stops stopsById = stopsDomainU.getStopsById(stopsId);
+        Stops stopsById = stopsDomain.getStopsById(stopsId);
         if (null == stopsById) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("fill failed,Cannot find Stops with id " + stopsId);
         }
@@ -946,8 +950,8 @@ public class StopsServiceImpl implements IStopsService {
         if (null == runStopsVo.getStopsId()) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("stopsId is null");
         }
-        // Get stops information according to stopsId
-        Stops stopsById = stopsDomainU.getStopsById(runStopsVo.getStopsId());
+        // 根据stopsId获取stops信息
+        Stops stopsById = stopsDomain.getStopsById(runStopsVo.getStopsId());
         if (null == stopsById) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("stops no data");
         }
@@ -956,15 +960,15 @@ public class StopsServiceImpl implements IStopsService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("The Flow of Stops is empty ");
         }
         MxGraphModel flowMxGraphModel = flowDB.getMxGraphModel();
-        // Determine whether flowMxGraphModel is empty
+        // 判断flowMxGraphModel是否为空
         if (null == flowMxGraphModel) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("MxGraphModel information error");
         }
-        // Take out the id array of testData
+        // 取出testData的id数组
         String[] testDataIds = runStopsVo.getTestDataIds();
-        // Take out the ports array
+        // 取出ports数组
         String[] ports = runStopsVo.getPorts();
-        // Path of testData in HDFS
+        // testData在HDFS的路径
         List<Map<String, String>> hdfsUrlArray = new ArrayList<>();
         if (null != testDataIds && testDataIds.length > 0) {
             if (null == ports) {
@@ -973,10 +977,10 @@ public class StopsServiceImpl implements IStopsService {
             if (ports.length != testDataIds.length) {
                 return ReturnMapUtils.setFailedMsgRtnJsonStr("testDataIds and ports do not correspond");
             }
-            // Loop testDataIds, and write the queried testData data to HDFS
+            // 循环testDataIds，将查询出testData数据写道HDFS中
             for (int i = 0; i < testDataIds.length; i++) {
-                // Get the schema
-                // Query the field according to Id List<Map<String,String>> key1=ID key2=FIELD_NAME
+                // 获取schema
+                // 根据Id查询字段 List<Map<String,String>> key1=ID key2=FIELD_NAME
                 List<LinkedHashMap<String, Object>> schemaIdAndNameList = testDataDomain.getTestDataSchemaIdAndNameListByTestDataId(testDataIds[i]);
                 if (null == schemaIdAndNameList || schemaIdAndNameList.size() <= 0) {
                     return ReturnMapUtils.setFailedMsgRtnJsonStr("testData error");
@@ -989,7 +993,7 @@ public class StopsServiceImpl implements IStopsService {
                     schema += testDataSchema.get("FIELD_NAME");
                 }
 
-                // Get the testDataValues
+                // 获取testDataValues
                 String testDataValueStr = "";
                 List<LinkedHashMap<String, Object>> schemaValueList = testDataDomain.getTestDataSchemaValuesCustomList(isAdmin, username, testDataIds[i], schemaIdAndNameList);
                 if (null == schemaValueList || schemaValueList.size() <= 0) {
@@ -1008,53 +1012,53 @@ public class StopsServiceImpl implements IStopsService {
                     }
                     testDataValueStr += (testDataLineStr + "\n");
                 }
-                // Get the time to make a rough name
+                // 获取时间粗做名字
                 long currentTimeMillis = System.currentTimeMillis();
-                // Get HDFS address
+                // 获取hdfs地址
                 String testDataPathUrl = flowImpl.getTestDataPathUrl();
-                // HDFS storage address
+                // HDFS存储地址
                 String hdfsUrl = testDataPathUrl + currentTimeMillis + i + ".csv";
-                // Write testData to HDFS
+                // 把testData写到HDFS
                 HdfsUtils.writeData(hdfsUrl, testDataValueStr);
                 Map<String, String> hdfsUrlObj = new HashMap<>();
                 hdfsUrlObj.put("csvpath", hdfsUrl);
                 hdfsUrlObj.put("header", "false");
                 hdfsUrlObj.put("delimiter", "☔");
                 hdfsUrlObj.put("schema", schema);
-                // The location should correspond to testDataIds
+                // 位置要与testDataIds对应
                 hdfsUrlArray.add(i, hdfsUrlObj);
             }
         }
-        // Used to store stops converted to process
+        // 用于存放转换成process的stops
         Process process = new Process();
-        // Copy basic information
+        // 拷贝基础信息
         BeanUtils.copyProperties(flowDB, process);
         ProcessUtils.initProcessBasicPropertiesNoId(process, username);
-        // Monitoring component information
+        // 监控组件信息
         List<ProcessStop> processStopsList = new ArrayList<>();
-        // The stops queried by stopId are transferred to processStops
+        // stopId查询出的stops转processStops
         ProcessStop stopsToProcessStop = ProcessUtils.stopsToProcessStop(stopsById, username, isAdmin);
         if (null == stopsToProcessStop) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Stops conversion to ProcessStop failed ");
         }
         processStopsList.add(stopsToProcessStop);
-        // Monitor connection information
+        // 监控连线信息
         List<ProcessPath> processPathsList = new ArrayList<>();
-        // Monitor page information
+        // 监控页面信息
         MxGraphModel mxGraphModel = MxGraphModelUtils.initMxGraphModelBasicPropertiesNoId(null, username, isAdmin);
-        // Basic page information of monitoring elements
+        // 监控元素的页面基础信息
         List<MxCell> rootMxCell = MxCellUtils.initMxCell(username, mxGraphModel);
         MxCell mxCellDB = mxCellMapper.getMxCellByMxGraphIdAndPageId(flowMxGraphModel.getId(), stopsById.getPageId());
         MxCell processMxCell = new MxCell();
         BeanUtils.copyProperties(mxCellDB, processMxCell);
         processMxCell = MxCellUtils.initMxCellBasicPropertiesNoId(processMxCell, username);
         rootMxCell.add(processMxCell);
-        // Determine whether to execute
+        // 判断是否执行后续
         if (runStopsVo.getIsRunFollowUp()) {
             
-            // get stopsList
+            // 原Flow的组件
             List<Stops> stopsList = flowDB.getStopsList();
-            //stopsList conversion map (key is pageId)
+            // stopsList转map(key是pageId)
             Map<String, Stops> stopsMap = new HashMap<>();
             for (Stops stops : stopsList) {
                 if (null == stops) {
@@ -1063,10 +1067,10 @@ public class StopsServiceImpl implements IStopsService {
                 stopsMap.put(stops.getPageId(), stops);
             }
             
-            // get pathsList
+            // 原Flow组件的连线
             List<Paths> pathsList = flowDB.getPathsList();
 
-            // pathsList conversion map (key is the pageId of the source)
+            // pathsList转map(key 是source的pageId)
             Map<String, List<Paths>> pathsMap = new HashMap<>();
             for (Paths paths : pathsList) {
                 if (null == paths) {
@@ -1080,14 +1084,14 @@ public class StopsServiceImpl implements IStopsService {
                 pathsMap.put(paths.getFrom(), pathsListByMap);
             }
 
-            // get mxGraphModelRoot
+            // 原Flow的页面组件信息
             List<MxCell> flowMxGraphModelRoot = flowMxGraphModel.getRoot();
-            // Determine whether flowMxGraphModelRoot is empty
+            // 判断flowMxGraphModelRoot是否为空
             if (null == flowMxGraphModelRoot || flowMxGraphModelRoot.size() <= 0) {
                 return ReturnMapUtils.setFailedMsgRtnJsonStr("MxGraphModel information error");
             }
             Map<String, MxCell> flowMxGraphModelRootMap = new HashMap<>();
-            // flowMxGraphModelRoot conversion map
+            // flowMxGraphModelRoot转map
             for (MxCell mxCell : flowMxGraphModelRoot) {
                 if (null == mxCell) {
                     continue;
@@ -1147,14 +1151,14 @@ public class StopsServiceImpl implements IStopsService {
             }
         }
 
-        // Determine whether the HDFS value is empty
+        // 判断HDFS数值是否为空
         if (hdfsUrlArray.size() > 0) {
             StopsComponent stopsComponentByBundle = stopsComponentDomain.getStopsComponentByBundle("cn.piflow.bundle.csv.CsvParser");
-            Integer maxStopPageIdByFlowId = stopsDomainU.getMaxStopPageIdByFlowId(flowDB.getId());
+            Integer maxStopPageIdByFlowId = stopsDomain.getMaxStopPageIdByFlowId(flowDB.getId());
             for (int i = 0; i < hdfsUrlArray.size(); i++) {
-                // Get the corresponding url data information
+                // 获取对应的url数据信息
                 Map<String, String> hdfsUrlObj = hdfsUrlArray.get(i);
-                // Generate processStop according to stopsComponentByBundle
+                // 根据stopsComponentByBundle生成processStop
                 ProcessStop processStop = ProcessStopUtils.copyStopsComponentToProcessStop(stopsComponentByBundle,
                         username, false);
                 if (null == processStop) {
@@ -1162,7 +1166,7 @@ public class StopsServiceImpl implements IStopsService {
                 }
                 // set pageId
                 processStop.setPageId("" + (maxStopPageIdByFlowId + 1 + i) + "");
-                // Fill in relevant attributes
+                // 填入相关属性
                 List<ProcessStopProperty> processStopPropertyList = processStop.getProcessStopPropertyList();
                 for (ProcessStopProperty processStopProperty : processStopPropertyList) {
                     String nameLowerCase = processStopProperty.getName().toLowerCase();
@@ -1174,14 +1178,14 @@ public class StopsServiceImpl implements IStopsService {
                 processStop.setProcessStopPropertyList(processStopPropertyList);
                 processStop.setName(processStop.getName() + System.currentTimeMillis() + i);
                 processStopsList.add(processStop);
-                // Generate page processStop information
+                // 生成页面processStop信息
                 //MxCell processMxCell_stops = MxCellUtils.AddMxCellNode(username, processStop.getPageId(), stopsComponentByBundle.getName(), "/images/" + stopsComponentByBundle.getName() + "_128x128.png");
                 //rootMxCell.add(processMxCell_stops);
 
                 String outPortName = PortType.DEFAULT.getText().equals(stopsComponentByBundle.getOutports()) ? "" : stopsComponentByBundle.getOutports();
                 String inPortName = PortType.DEFAULT.getText().equals(ports[i]) ? "" : ports[i];
 
-                // Generate processPath information
+                // 生成processPath信息
                 ProcessPath processPath = ProcessPathUtils.initProcessPathBasicPropertiesNoId(null, username);
                 processPath.setFrom("" + (maxStopPageIdByFlowId + 1 + i) + "");
                 processPath.setOutport(outPortName);
@@ -1190,7 +1194,7 @@ public class StopsServiceImpl implements IStopsService {
                 processPath.setPageId("" + (0 - (maxStopPageIdByFlowId + 1 + i)) + "");
                 processPath.setProcess(process);
                 processPathsList.add(processPath);
-                // Generate page processPath information
+                // 生成页面processPath信息
                 //MxCell processMxCell_line = MxCellUtils.AddMxCellLine(username, processPath.getPageId());
                 //processMxCell_line.setSource(processPath.getFrom());
                 //processMxCell_line.setTarget(processPath.getTo());
@@ -1205,21 +1209,21 @@ public class StopsServiceImpl implements IStopsService {
         process.setLastUpdateUser(username);
         process.setLastUpdateDttm(new Date());
         
-        processDomainU.addProcess(process);
-        process = processDomainU.getProcessById(username, isAdmin, process.getId());
+        processDomain.addProcess(process);
+        process = processDomain.getProcessById(username, isAdmin, process.getId());
 
         Map<String, Object> stringObjectMap = flowImpl.startFlow(process, null, RunModeType.RUN);
         if (null == stringObjectMap || 200 != ((Integer) stringObjectMap.get("code"))) {
             process.setEnableFlag(false);
             process.setLastUpdateDttm(new Date());
             process.setLastUpdateUser(username);
-            processDomainU.updateProcess(process);
+            processDomain.updateProcess(process);
             return ReturnMapUtils.setFailedMsgRtnJsonStr((String) stringObjectMap.get("errorMsg"));
         }
         process.setAppId((String) stringObjectMap.get("appId"));
         process.setProcessId((String) stringObjectMap.get("appId"));
         process.setState(ProcessState.STARTED);
-        processDomainU.updateProcess(process);
+        processDomain.updateProcess(process);
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg("save process success,update success");
         rtnMap.put("processId", process.getId());
         return JsonUtils.toJsonNoException(rtnMap);
@@ -1231,7 +1235,7 @@ public class StopsServiceImpl implements IStopsService {
         if (StringUtils.isBlank(datasourceId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("datasourceId is null");
         }
-        List<String> stopsNamesByDatasourceId = stopsDomainU.getStopsNamesByDatasourceId(datasourceId);
+        List<String> stopsNamesByDatasourceId = stopsDomain.getStopsNamesByDatasourceId(datasourceId);
         if (null == stopsNamesByDatasourceId || stopsNamesByDatasourceId.size() <= 0) {
             return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("isLinked", false);
         }

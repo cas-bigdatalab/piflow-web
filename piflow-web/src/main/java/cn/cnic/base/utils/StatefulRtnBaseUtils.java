@@ -7,9 +7,6 @@ import cn.cnic.base.vo.StatefulRtnBase;
 
 public class StatefulRtnBaseUtils {
 
-	/**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
     private static Logger logger = LoggerUtil.getLogger();
 
     /**

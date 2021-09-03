@@ -44,6 +44,7 @@ public class ProcessGroupUtils {
             return processGroupNewNoId(username);
         }
         // basic properties (required when creating)
+        processGroup.setId(null);
         processGroup.setCrtDttm(new Date());
         processGroup.setCrtUser(username);
         // basic properties
@@ -62,7 +63,10 @@ public class ProcessGroupUtils {
         // copy FlowGroup to ProcessGroup
         BeanUtils.copyProperties(flowGroup, processGroupNew);
         processGroupNew = initProcessGroupBasicPropertiesNoId(processGroupNew, username);
-
+        if (isAddId) {
+        	processGroupNew.setId(UUIDUtils.getUUID32());
+        }
+        
         // Take out the sketchpad information of 'flowGroup'
         MxGraphModel flowGroupMxGraphModel = flowGroup.getMxGraphModel();
         MxGraphModel mxGraphModelProcessGroup = MxGraphModelUtils.copyMxGraphModelAndNewNoIdAndUnlink(flowGroupMxGraphModel, isAddId);
@@ -93,6 +97,7 @@ public class ProcessGroupUtils {
                     // Copy flowGroupPaths information into processGroupPath
                     BeanUtils.copyProperties(flowGroupPaths, processGroupPath);
                     // Set basic information
+                    processGroupPath.setId(null);
                     processGroupPath.setCrtDttm(new Date());
                     processGroupPath.setCrtUser(username);
                     processGroupPath.setLastUpdateDttm(new Date());

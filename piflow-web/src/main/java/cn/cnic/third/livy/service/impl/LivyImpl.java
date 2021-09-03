@@ -1,12 +1,5 @@
 package cn.cnic.third.livy.service.impl;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-
 import cn.cnic.base.utils.HttpUtils;
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.ReturnMapUtils;
@@ -14,13 +7,17 @@ import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.third.livy.service.ILivy;
 import net.sf.json.JSONObject;
 
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+
+import java.util.HashMap;
+import java.util.Map;
+
 
 @Component
 public class LivyImpl implements ILivy {
 
-	/**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
     private Logger logger = LoggerUtil.getLogger();
 
     @Override
@@ -65,6 +62,20 @@ public class LivyImpl implements ILivy {
             return ReturnMapUtils.setFailedMsg(doDelete);
         }
         return ReturnMapUtils.setSucceededCustomParam("data", doDelete);
+    }
+
+    @Override
+    public Map<String, Object> getSessionsState(String sessionsId) {
+        String url = SysParamsCache.getLivySessionsUrl() + "/" + sessionsId + "/state";
+        String doGet = HttpUtils.doGet(url, null, null);
+        logger.info("return msg: " + doGet);
+        if(StringUtils.isBlank(doGet)) {
+        	return ReturnMapUtils.setFailedMsg("Error : Interface return value is null");
+        }
+        if (doGet.startsWith(HttpUtils.INTERFACE_CALL_ERROR)) {
+            return ReturnMapUtils.setFailedMsg(doGet);
+        }
+        return ReturnMapUtils.setSucceededCustomParam("data", doGet);
     }
 
     @Override

@@ -102,4 +102,7 @@ public interface MxCellMapper {
     @UpdateProvider(type = MxCellMapperProvider.class, method = "updateEnableFlagById")
     public int updateEnableFlagById(String username, String id);
 
+    @Select("select MAX(s.mx_pageid+0) from mx_cell s where s.enable_flag=1 and s.fk_mx_graph_id=#{mxGraphModelId}")
+    public Integer getMaxPageIdByMxGraphModelId(String mxGraphModelId);
+
 }

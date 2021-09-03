@@ -13,8 +13,6 @@ import java.util.Map;
 public class DataSourcePropertyMapperProvider {
 
     private String id;
-    private String crtUser;
-    private String crtDttmStr;
     private String lastUpdateDttmStr;
     private String lastUpdateUser;
     private int enableFlag;
@@ -24,39 +22,32 @@ public class DataSourcePropertyMapperProvider {
     private String description;
     private String dataSourceId;
 
-    private void preventSQLInjectionDataSourceProperty(DataSourceProperty dataSourceProperty) {
-        if (null != dataSourceProperty && StringUtils.isNotBlank(dataSourceProperty.getLastUpdateUser())) {
-            // Mandatory Field
-            String id = dataSourceProperty.getId();
-            String crtUser = dataSourceProperty.getCrtUser();
-            String lastUpdateUser = dataSourceProperty.getLastUpdateUser();
-            Boolean enableFlag = dataSourceProperty.getEnableFlag();
-            Long version = dataSourceProperty.getVersion();
-            Date crtDttm = dataSourceProperty.getCrtDttm();
-            Date lastUpdateDttm = dataSourceProperty.getLastUpdateDttm();
-            this.id = SqlUtils.preventSQLInjection(id);
-            this.crtUser = (null != crtUser ? SqlUtils.preventSQLInjection(crtUser) : null);
-            this.lastUpdateUser = SqlUtils.preventSQLInjection(lastUpdateUser);
-            this.enableFlag = ((null != enableFlag && enableFlag) ? 1 : 0);
-            this.version = (null != version ? version : 0L);
-            String crtDttmStr = DateUtils.dateTimesToStr(crtDttm);
-            String lastUpdateDttmStr = DateUtils.dateTimesToStr(null != lastUpdateDttm ? lastUpdateDttm : new Date());
-            this.crtDttmStr = (null != crtDttm ? SqlUtils.preventSQLInjection(crtDttmStr) : null);
-            this.lastUpdateDttmStr = SqlUtils.preventSQLInjection(lastUpdateDttmStr);
-
-            // Selection field
-            this.name = SqlUtils.preventSQLInjection(dataSourceProperty.getName());
-            this.value = SqlUtils.preventSQLInjection(dataSourceProperty.getValue());
-            this.description = SqlUtils.preventSQLInjection(dataSourceProperty.getDescription());
-            String dataSourceIdStr = (null != dataSourceProperty.getDataSource() ? dataSourceProperty.getDataSource().getId() : null);
-            this.dataSourceId = (null != dataSourceIdStr ? SqlUtils.preventSQLInjection(dataSourceIdStr) : null);
+    private boolean preventSQLInjectionDataSourceProperty(DataSourceProperty dataSourceProperty) {
+        if (null == dataSourceProperty || StringUtils.isBlank(dataSourceProperty.getLastUpdateUser())) {
+            return false;
         }
+        // Mandatory Field
+        this.id = SqlUtils.preventSQLInjection(dataSourceProperty.getId());
+        this.lastUpdateUser = SqlUtils.preventSQLInjection(dataSourceProperty.getLastUpdateUser());
+        Boolean enableFlag = dataSourceProperty.getEnableFlag();
+        this.enableFlag = ((null != enableFlag && enableFlag) ? 1 : 0);
+        Long version = dataSourceProperty.getVersion();
+        this.version = (null != version ? version : 0L);
+        Date lastUpdateDttm = dataSourceProperty.getLastUpdateDttm();
+        String lastUpdateDttmStr = DateUtils.dateTimesToStr(null != lastUpdateDttm ? lastUpdateDttm : new Date());
+        this.lastUpdateDttmStr = SqlUtils.preventSQLInjection(lastUpdateDttmStr);
+
+        // Selection field
+        this.name = SqlUtils.preventSQLInjection(dataSourceProperty.getName());
+        this.value = SqlUtils.preventSQLInjection(dataSourceProperty.getValue());
+        this.description = SqlUtils.preventSQLInjection(dataSourceProperty.getDescription());
+        String dataSourceIdStr = (null != dataSourceProperty.getDataSource() ? dataSourceProperty.getDataSource().getId() : null);
+        this.dataSourceId = (null != dataSourceIdStr ? SqlUtils.preventSQLInjection(dataSourceIdStr) : null);
+        return true;
     }
 
     private void reset() {
         this.id = null;
-        this.crtUser = null;
-        this.crtDttmStr = null;
         this.lastUpdateDttmStr = null;
         this.lastUpdateUser = null;
         this.enableFlag = 1;
@@ -70,42 +61,31 @@ public class DataSourcePropertyMapperProvider {
     /**
      * add DataSourceProperty
      *
-     * @param dataSourcePropertyProperty
+     * @param dataSourceProperty
      * @return
      */
-    public String addDataSourceProperty(DataSourceProperty dataSourcePropertyProperty) {
+    public String addDataSourceProperty(DataSourceProperty dataSourceProperty) {
         String sqlStr = "";
-        this.preventSQLInjectionDataSourceProperty(dataSourcePropertyProperty);
-        if (null != dataSourcePropertyProperty) {
-            SQL sql = new SQL();
-
-            // INSERT_INTO brackets is table name
-            sql.INSERT_INTO("data_source_property");
-            // The first string in the value is the field name corresponding to the table in the database.
-            // all types except numeric fields must be enclosed in single quotes
-
-            //Process the required fields firsts
-            if (null == crtDttmStr) {
-                String crtDttm = DateUtils.dateTimesToStr(new Date());
-                crtDttmStr = SqlUtils.preventSQLInjection(crtDttm);
-            }
-            if (StringUtils.isBlank(crtUser)) {
-                crtUser = SqlUtils.preventSQLInjection("-1");
-            }
-            sql.VALUES("id", id);
-            sql.VALUES("crt_dttm", crtDttmStr);
-            sql.VALUES("crt_user", crtUser);
-            sql.VALUES("last_update_dttm", lastUpdateDttmStr);
-            sql.VALUES("last_update_user", lastUpdateUser);
-            sql.VALUES("version", version + "");
-            sql.VALUES("enable_flag", enableFlag + "");
-
-            // handle other fields
-            sql.VALUES("name", name);
-            sql.VALUES("value", value);
-            sql.VALUES("description", description);
-            sql.VALUES("fk_data_source_id", dataSourceId);
-            sqlStr = sql.toString();
+        boolean flag = this.preventSQLInjectionDataSourceProperty(dataSourceProperty);
+        if (flag) {
+            StringBuffer stringBuffer = new StringBuffer();
+            stringBuffer.append("INSERT INTO data_source_property ");
+            stringBuffer.append("( ");
+            stringBuffer.append(SqlUtils.baseFieldName() + ", ");
+            stringBuffer.append("name, ");
+            stringBuffer.append("value, ");
+            stringBuffer.append("description, ");
+            stringBuffer.append("fk_data_source_id ");
+            stringBuffer.append(") ");
+            stringBuffer.append("VALUES ");
+            stringBuffer.append("( ");
+            stringBuffer.append(SqlUtils.baseFieldValues(dataSourceProperty) + ", ");
+            stringBuffer.append(name + ", ");
+            stringBuffer.append(value + ", ");
+            stringBuffer.append(description + ", ");
+            stringBuffer.append(dataSourceId + " ");
+            stringBuffer.append(") ");
+            sqlStr = stringBuffer.toString();
         }
         this.reset();
         return sqlStr;
@@ -122,54 +102,35 @@ public class DataSourcePropertyMapperProvider {
         List<DataSourceProperty> dataSourcePropertyList = (List<DataSourceProperty>) map.get("dataSourcePropertyList");
         StringBuffer sql = new StringBuffer();
         if (null != dataSourcePropertyList && dataSourcePropertyList.size() > 0) {
-            sql.append("insert into ");
+            sql.append("INSERT INTO ");
             sql.append("data_source_property ");
             sql.append("(");
-            if (null == crtDttmStr) {
-                String crtDttm = DateUtils.dateTimesToStr(new Date());
-                crtDttmStr = SqlUtils.preventSQLInjection(crtDttm);
-            }
-            if (StringUtils.isBlank(crtUser)) {
-                crtUser = SqlUtils.preventSQLInjection("-1");
-            }
-            sql.append("id,");
-            sql.append("crt_dttm,");
-            sql.append("crt_user,");
-            sql.append("last_update_dttm,");
-            sql.append("last_update_user,");
-            sql.append("version,");
-            sql.append("enable_flag,");
-
+            sql.append(SqlUtils.baseFieldName() + ", ");
             sql.append("name,");
             sql.append("value,");
             sql.append("description,");
             sql.append("fk_data_source_id");
             sql.append(") ");
-            sql.append("values");
+            sql.append("VALUES");
             int i = 0;
             for (DataSourceProperty dataSourceProperty : dataSourcePropertyList) {
                 i++;
-                this.preventSQLInjectionDataSourceProperty(dataSourceProperty);
-                sql.append("(");
+                boolean flag = this.preventSQLInjectionDataSourceProperty(dataSourceProperty);
+                if(flag){
+                    sql.append("(");
 
-                //Process the required fields first
-                sql.append(id + ",");
-                sql.append(crtDttmStr + ",");
-                sql.append(crtUser + ",");
-                sql.append(lastUpdateDttmStr + ",");
-                sql.append(lastUpdateUser + ",");
-                sql.append(version + ",");
-                sql.append(enableFlag + ",");
-
-                // handle other fields
-                sql.append(name + ",");
-                sql.append(value + ",");
-                sql.append(description + ",");
-                sql.append(dataSourceId);
-                if (i != dataSourcePropertyList.size()) {
-                    sql.append("),");
-                } else {
-                    sql.append(")");
+                    //Process the required fields first
+                    sql.append(SqlUtils.baseFieldValues(dataSourceProperty) + ", ");
+                    // handle other fields
+                    sql.append(name + ",");
+                    sql.append(value + ",");
+                    sql.append(description + ",");
+                    sql.append(dataSourceId + " ");
+                    if (i != dataSourcePropertyList.size()) {
+                        sql.append("),");
+                    } else {
+                        sql.append(")");
+                    }
                 }
                 this.reset();
             }
@@ -187,8 +148,8 @@ public class DataSourcePropertyMapperProvider {
     public String updateDataSourceProperty(DataSourceProperty dataSourceProperty) {
 
         String sqlStr = "";
-        this.preventSQLInjectionDataSourceProperty(dataSourceProperty);
-        if (null != dataSourceProperty) {
+        boolean flag = this.preventSQLInjectionDataSourceProperty(dataSourceProperty);
+        if (flag) {
             SQL sql = new SQL();
 
             // INSERT_INTO brackets is table name

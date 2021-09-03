@@ -1,34 +1,31 @@
 package cn.cnic.third;
 
-import cn.cnic.ApplicationTests;
-import cn.cnic.base.utils.LoggerUtil;
-import cn.cnic.common.Eunm.RunModeType;
-import cn.cnic.component.flow.entity.Flow;
-import cn.cnic.component.process.entity.Process;
-import cn.cnic.component.process.utils.ProcessUtils;
-import cn.cnic.component.flow.mapper.FlowMapper;
-import cn.cnic.third.service.IFlow;
-import cn.cnic.third.vo.flow.ThirdFlowInfoVo;
-import cn.cnic.third.vo.flow.ThirdProgressVo;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
+import cn.cnic.ApplicationTests;
+import cn.cnic.base.utils.LoggerUtil;
+import cn.cnic.common.Eunm.RunModeType;
+import cn.cnic.component.flow.entity.Flow;
+import cn.cnic.component.flow.mapper.FlowMapper;
+import cn.cnic.component.process.entity.Process;
+import cn.cnic.component.process.utils.ProcessUtils;
+import cn.cnic.third.service.IFlow;
+import cn.cnic.third.vo.flow.ThirdFlowInfoVo;
+import cn.cnic.third.vo.flow.ThirdProgressVo;
+
 
 public class IFlowTest extends ApplicationTests {
 
-	/**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
     private Logger logger = LoggerUtil.getLogger();
-	
+
     @Autowired
     private IFlow flowImpl;
 
-    @Resource
+    @Autowired
     private FlowMapper flowMapper;
 
     @Test

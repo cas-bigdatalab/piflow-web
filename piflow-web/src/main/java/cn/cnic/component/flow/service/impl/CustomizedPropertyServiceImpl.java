@@ -6,13 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import cn.cnic.base.utils.JsonUtils;
 import cn.cnic.base.utils.LoggerUtil;
@@ -28,25 +26,22 @@ import cn.cnic.component.flow.service.ICustomizedPropertyService;
 import cn.cnic.component.flow.vo.PathsVo;
 import cn.cnic.component.flow.vo.StopsCustomizedPropertyVo;
 
+
 @Service
 public class CustomizedPropertyServiceImpl implements ICustomizedPropertyService {
 
-	/**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
     private Logger logger = LoggerUtil.getLogger();
-	
-    @Resource
+
+    @Autowired
     private CustomizedPropertyMapper customizedPropertyMapper;
 
-    @Resource
+    @Autowired
     private StopsMapper stopsMapper;
 
-    @Resource
+    @Autowired
     private PathsMapper pathsMapper;
 
     @Override
-    @Transactional
     public String addStopCustomizedProperty(String username, StopsCustomizedPropertyVo stopsCustomizedPropertyVo) {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal operation");

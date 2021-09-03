@@ -3,6 +3,7 @@ package cn.cnic.controller.system;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.cnic.base.utils.SessionUserUtil;
@@ -16,7 +17,7 @@ public class QuartzCtrl {
     @Autowired
     private ISysScheduleService sysScheduleServiceImpl;
 
-    @RequestMapping("/getScheduleListPage")
+    @RequestMapping(value = "/getScheduleListPage", method = RequestMethod.GET)
     @ResponseBody
     public String getScheduleListPage(Integer page, Integer limit, String param) {
         String username = SessionUserUtil.getCurrentUsername();
@@ -24,7 +25,7 @@ public class QuartzCtrl {
         return sysScheduleServiceImpl.getScheduleListPage(username, isAdmin, page, limit, param);
     }
 
-    @RequestMapping("/getScheduleById")
+    @RequestMapping(value = "/getScheduleById", method = RequestMethod.GET)
     @ResponseBody
     public String getScheduleById(String scheduleId) {
         String username = SessionUserUtil.getCurrentUsername();
@@ -32,7 +33,7 @@ public class QuartzCtrl {
         return sysScheduleServiceImpl.getScheduleById(username, isAdmin, scheduleId);
     }
 
-    @RequestMapping("/createTask")
+    @RequestMapping(value = "/createTask", method = RequestMethod.GET)
     @ResponseBody
     public String createTask(SysScheduleVo sysScheduleVo) {
         String username = SessionUserUtil.getCurrentUsername();
@@ -40,7 +41,7 @@ public class QuartzCtrl {
         return sysScheduleServiceImpl.createJob(username, isAdmin, sysScheduleVo);
     }
 
-    @RequestMapping("/runOnceTask")
+    @RequestMapping(value = "/runOnceTask", method = RequestMethod.POST)
     @ResponseBody
     public String runOnceTask(String sysScheduleId) {
         String username = SessionUserUtil.getCurrentUsername();
@@ -48,7 +49,7 @@ public class QuartzCtrl {
         return sysScheduleServiceImpl.runOnce(username, isAdmin, sysScheduleId);
     }
 
-    @RequestMapping("/startTask")
+    @RequestMapping(value = "/startTask", method = RequestMethod.POST)
     @ResponseBody
     public String startTask(String sysScheduleId) {
         String username = SessionUserUtil.getCurrentUsername();
@@ -56,7 +57,7 @@ public class QuartzCtrl {
         return sysScheduleServiceImpl.startJob(username, isAdmin, sysScheduleId);
     }
 
-    @RequestMapping("/stopTask")
+    @RequestMapping(value = "/stopTask", method = RequestMethod.POST)
     @ResponseBody
     public String stopTask(String sysScheduleId) {
         String username = SessionUserUtil.getCurrentUsername();
@@ -64,7 +65,7 @@ public class QuartzCtrl {
         return sysScheduleServiceImpl.stopJob(username, isAdmin, sysScheduleId);
     }
 
-    @RequestMapping("/pauseTask")
+    @RequestMapping(value = "/pauseTask", method = RequestMethod.POST)
     @ResponseBody
     public String pauseTask(String sysScheduleId) {
         String username = SessionUserUtil.getCurrentUsername();
@@ -72,7 +73,7 @@ public class QuartzCtrl {
         return sysScheduleServiceImpl.pauseJob(username, isAdmin, sysScheduleId);
     }
 
-    @RequestMapping("/resumeTask")
+    @RequestMapping(value = "/resumeTask", method = RequestMethod.POST)
     @ResponseBody
     public String resumeTask(String sysScheduleId) {
         String username = SessionUserUtil.getCurrentUsername();
@@ -80,7 +81,7 @@ public class QuartzCtrl {
         return sysScheduleServiceImpl.resume(username, isAdmin, sysScheduleId);
     }
 
-    @RequestMapping("/updateTask")
+    @RequestMapping(value = "/updateTask", method = RequestMethod.GET)
     @ResponseBody
     public String updateTask(SysScheduleVo sysScheduleVo) {
         String username = SessionUserUtil.getCurrentUsername();
@@ -88,7 +89,7 @@ public class QuartzCtrl {
         return sysScheduleServiceImpl.update(username, isAdmin, sysScheduleVo);
     }
 
-    @RequestMapping("/deleteTask")
+    @RequestMapping(value = "/deleteTask", method = RequestMethod.GET)
     @ResponseBody
     public String deleteTask(String sysScheduleId) {
         String username = SessionUserUtil.getCurrentUsername();

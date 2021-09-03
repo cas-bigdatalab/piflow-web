@@ -315,10 +315,10 @@ export default {
                   this.hdfsPercent = Number(this.hdfsPercent.toFixed(2));
                   this.$Message.destroy();
                 } else {
-                  this.$Message.loading({
-                    content: this.$t("index.loading"),
-                    duration: 0
-                  });
+                  // this.$Message.loading({
+                  //   content: this.$t("index.loading"),
+                  //   duration: 0
+                  // });
                 }
               })
               .catch(error => {

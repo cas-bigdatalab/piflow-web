@@ -2,7 +2,7 @@ package cn.cnic.component.stopsComponent.mapper;
 
 import cn.cnic.component.stopsComponent.mapper.provider.StopsComponentGroupProvider;
 import cn.cnic.component.stopsComponent.vo.StopsComponentGroupVo;
-import cn.cnic.component.stopsComponent.model.StopsComponentGroup;
+import cn.cnic.component.stopsComponent.entity.StopsComponentGroup;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;

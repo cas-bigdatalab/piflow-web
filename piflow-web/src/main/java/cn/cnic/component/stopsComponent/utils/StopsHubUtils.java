@@ -1,8 +1,8 @@
 package cn.cnic.component.stopsComponent.utils;
 
-import java.util.Date;
+import cn.cnic.component.stopsComponent.entity.StopsHub;
 
-import cn.cnic.component.stopsComponent.model.StopsHub;
+import java.util.Date;
 
 public class StopsHubUtils {
 

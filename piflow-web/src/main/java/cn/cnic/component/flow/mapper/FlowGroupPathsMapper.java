@@ -1,15 +1,29 @@
 package cn.cnic.component.flow.mapper;
 
-import cn.cnic.component.flow.entity.FlowGroupPaths;
-import cn.cnic.component.flow.mapper.provider.FlowGroupPathsMapperProvider;
-import org.apache.ibatis.annotations.*;
+import java.util.List;
+
+import org.apache.ibatis.annotations.InsertProvider;
+import org.apache.ibatis.annotations.Many;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Result;
+import org.apache.ibatis.annotations.Results;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.annotations.UpdateProvider;
 import org.apache.ibatis.mapping.FetchType;
 
-import java.util.List;
+import cn.cnic.component.flow.entity.FlowGroupPaths;
+import cn.cnic.component.flow.mapper.provider.FlowGroupPathsMapperProvider;
 
 @Mapper
 public interface FlowGroupPathsMapper {
 
+    @InsertProvider(type = FlowGroupPathsMapperProvider.class, method = "addFlowGroupPaths")
+    public int addFlowGroupPaths(FlowGroupPaths flowGroupPaths);
+
+    @UpdateProvider(type = FlowGroupPathsMapperProvider.class, method = "updateFlowGroupPaths")
+    public int updateFlowGroupPaths(FlowGroupPaths flowGroupPaths);
 
     /**
      * Query flowGroupPath by flowGroupId

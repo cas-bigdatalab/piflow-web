@@ -1,46 +1,43 @@
 package cn.cnic.component.stop.mapper;
 
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
+
 import cn.cnic.ApplicationTests;
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.base.utils.UUIDUtils;
 import cn.cnic.base.vo.UserVo;
-import cn.cnic.component.stopsComponent.mapper.StopsComponentPropertyMapper;
+import cn.cnic.component.stopsComponent.entity.StopsComponent;
+import cn.cnic.component.stopsComponent.entity.StopsComponentGroup;
+import cn.cnic.component.stopsComponent.entity.StopsComponentProperty;
 import cn.cnic.component.stopsComponent.mapper.StopsComponentGroupMapper;
 import cn.cnic.component.stopsComponent.mapper.StopsComponentMapper;
-import cn.cnic.component.stopsComponent.model.StopsComponentProperty;
-import cn.cnic.component.stopsComponent.model.StopsComponent;
-import cn.cnic.component.stopsComponent.model.StopsComponentGroup;
+import cn.cnic.component.stopsComponent.mapper.StopsComponentPropertyMapper;
 import cn.cnic.component.stopsComponent.utils.StopsComponentUtils;
 import cn.cnic.third.service.IStop;
 import cn.cnic.third.vo.stop.ThirdStopsComponentVo;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
 
 public class StopsComponentMapperTest extends ApplicationTests {
 
-	/**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
     private Logger logger = LoggerUtil.getLogger();
-	
-    @Resource
+
+    @Autowired
     private StopsComponentMapper stopsComponentMapper;
-    
-    @Resource
+    @Autowired
     private StopsComponentGroupMapper stopsComponentGroupMapper;
-    
-    @Resource
+    @Autowired
     private StopsComponentPropertyMapper stopsComponentPropertyMapper;
 
-    @Resource
+    @Autowired
     private IStop stopImpl;
 
     @Test

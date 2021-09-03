@@ -1,12 +1,24 @@
 package cn.cnic.component.process.mapper;
 
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.annotations.InsertProvider;
+import org.apache.ibatis.annotations.Many;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.One;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Result;
+import org.apache.ibatis.annotations.Results;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.annotations.UpdateProvider;
+import org.apache.ibatis.mapping.FetchType;
+
 import cn.cnic.common.Eunm.RunModeType;
 import cn.cnic.component.process.entity.ProcessGroup;
 import cn.cnic.component.process.mapper.provider.ProcessGroupMapperProvider;
-import org.apache.ibatis.annotations.*;
-import org.apache.ibatis.mapping.FetchType;
-
-import java.util.List;
+import cn.cnic.component.process.vo.ProcessGroupVo;
 
 @Mapper
 public interface ProcessGroupMapper {
@@ -14,6 +26,16 @@ public interface ProcessGroupMapper {
     @InsertProvider(type = ProcessGroupMapperProvider.class, method = "addProcessGroup")
     public int addProcessGroup(ProcessGroup processGroup);
 
+    /**
+     * update updateProcessGroup
+     *
+     * @param processGroup
+     * @return
+     */
+    @UpdateProvider(type = ProcessGroupMapperProvider.class, method = "updateProcessGroup")
+    public int updateProcessGroup(ProcessGroup processGroup);
+
+    
     /**
      * Query processGroup by processGroup ID
      *
@@ -83,7 +105,9 @@ public interface ProcessGroupMapper {
     @SelectProvider(type = ProcessGroupMapperProvider.class, method = "getProcessGroupByAppId")
     @Results({
             @Result(id = true, column = "id", property = "id"),
+            @Result(column = "fk_flow_process_group_id", property = "processGroup", one = @One(select = "cn.cnic.component.process.mapper.ProcessGroupMapper.getProcessGroupById", fetchType = FetchType.LAZY)),
             @Result(column = "id", property = "processList", many = @Many(select = "cn.cnic.component.process.mapper.ProcessMapper.getProcessByProcessGroupId", fetchType = FetchType.LAZY)),
+            @Result(column = "id", property = "processGroupList", many = @Many(select = "cn.cnic.component.process.mapper.ProcessGroupMapper.getProcessGroupByProcessGroupId", fetchType = FetchType.LAZY)),
             @Result(column = "id", property = "processGroupPathList", many = @Many(select = "cn.cnic.component.process.mapper.ProcessGroupPathMapper.getProcessPathByProcessGroupId", fetchType = FetchType.LAZY))
 
     })
@@ -130,7 +154,7 @@ public interface ProcessGroupMapper {
     @Results({
             @Result(id = true, column = "id", property = "id"),
     })
-    public List<ProcessGroup> getProcessGroupListByParam(@Param("username") String username, @Param("isAdmin") boolean isAdmin, @Param("param") String param);
+    public List<ProcessGroupVo> getProcessGroupListByParam(@Param("username") String username, @Param("isAdmin") boolean isAdmin, @Param("param") String param);
 
     /**
      * Query processGroup list
@@ -148,5 +172,15 @@ public interface ProcessGroupMapper {
 
     @Select("select app_id from flow_process_group where enable_flag=1 and app_id is not null and ( (state!='COMPLETED' and state!='FINISHED' and state!='FAILED' and state!='KILLED') or state is null )")
     public List<String> getRunningProcessGroupAppId();
+
+    @SelectProvider(type = ProcessGroupMapperProvider.class, method = "getProcessGroupNamesAndPageIdsByPageIds")
+    public List<Map<String, Object>> getProcessGroupNamesAndPageIdsByPageIds(@Param("fid") String fid, @Param("pageIds") List<String> pageIds);
+    
+    @Select("select s.id from flow_process_group s where s.enable_flag=1 and s.fk_flow_process_group_id=#{fid} and s.page_id=#{pageId}")
+    public String getProcessGroupIdByPageId(@Param("fid") String fid, @Param("pageId") String pageId);
+    
+    @Select("select * from flow_process_group s where s.enable_flag=1 and s.fk_flow_process_group_id=#{fid} and s.page_id=#{pageId}")
+    public ProcessGroup getProcessGroupByPageId(@Param("fid") String fid, @Param("pageId") String pageId);
+    
 
 }

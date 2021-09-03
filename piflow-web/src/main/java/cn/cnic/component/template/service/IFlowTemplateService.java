@@ -64,8 +64,8 @@ public interface IFlowTemplateService {
      */
     public String uploadXmlFile(String username, MultipartFile file);
 
-    public String loadGroupTemplate(String username, String templateId, String loadId);
+    public String loadGroupTemplate(String username, String templateId, String loadId) throws Exception;
 
-    public String loadTaskTemplate(String username, String templateId, String flowId);
+    public String loadTaskTemplate(String username, String templateId, String flowId) throws Exception;
 
 }

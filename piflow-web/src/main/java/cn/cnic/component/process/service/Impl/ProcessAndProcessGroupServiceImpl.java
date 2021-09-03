@@ -1,38 +1,40 @@
 package cn.cnic.component.process.service.Impl;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+
 import cn.cnic.base.utils.JsonUtils;
 import cn.cnic.base.utils.PageHelperUtils;
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.component.process.entity.Process;
 import cn.cnic.component.process.entity.ProcessGroup;
+import cn.cnic.component.process.mapper.ProcessAndProcessGroupMapper;
+import cn.cnic.component.process.mapper.ProcessGroupMapper;
+import cn.cnic.component.process.mapper.ProcessMapper;
 import cn.cnic.component.process.service.IProcessAndProcessGroupService;
 import cn.cnic.component.process.utils.ProcessGroupUtils;
 import cn.cnic.component.process.utils.ProcessUtils;
 import cn.cnic.component.process.vo.ProcessGroupVo;
 import cn.cnic.component.process.vo.ProcessVo;
-import cn.cnic.component.process.mapper.ProcessAndProcessGroupMapper;
-import cn.cnic.component.process.mapper.ProcessGroupMapper;
-import cn.cnic.component.process.mapper.ProcessMapper;
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
-import org.apache.commons.collections.CollectionUtils;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Service
 public class ProcessAndProcessGroupServiceImpl implements IProcessAndProcessGroupService {
 
-    @Resource
+    @Autowired
     private ProcessAndProcessGroupMapper processAndProcessGroupMapper;
 
-    @Resource
+    @Autowired
     private ProcessGroupMapper processGroupMapper;
 
-    @Resource
+    @Autowired
     private ProcessMapper processMapper;
 
     /**

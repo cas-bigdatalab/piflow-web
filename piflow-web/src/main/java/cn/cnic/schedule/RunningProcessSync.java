@@ -5,6 +5,7 @@ import cn.cnic.base.utils.SpringContextUtil;
 import cn.cnic.common.executor.ServicesExecutor;
 import cn.cnic.component.process.mapper.ProcessMapper;
 import cn.cnic.third.service.IFlow;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -21,9 +22,6 @@ import java.util.List;
 @Component
 public class RunningProcessSync extends QuartzJobBean {
 
-	/**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
     private Logger logger = LoggerUtil.getLogger();
 
     @Autowired

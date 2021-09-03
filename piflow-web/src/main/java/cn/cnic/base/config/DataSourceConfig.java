@@ -1,11 +1,5 @@
 package cn.cnic.base.config;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.Statement;
-
-import javax.sql.DataSource;
-
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -15,15 +9,17 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import cn.cnic.base.utils.LoggerUtil;
 
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
+
 
 @Configuration
 @Primary //In the same "DataSource", first use the labeled "DataSource"
 public class DataSourceConfig {
 
-	/**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
-    private Logger logger = LoggerUtil.getLogger();
+	private Logger logger = LoggerUtil.getLogger();
 	
     @Value("${spring.datasource.url}")
     private String datasourceUrl;

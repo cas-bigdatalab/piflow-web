@@ -1,9 +1,12 @@
 package cn.cnic.base.utils;
 
-import java.io.StringReader;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import cn.cnic.common.Eunm.TemplateType;
+import cn.cnic.component.mxGraph.entity.MxCell;
+import cn.cnic.component.mxGraph.entity.MxGeometry;
+import cn.cnic.component.mxGraph.entity.MxGraphModel;
+import cn.cnic.component.mxGraph.vo.MxCellVo;
+import cn.cnic.component.mxGraph.vo.MxGeometryVo;
+import cn.cnic.component.mxGraph.vo.MxGraphModelVo;
 
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
@@ -14,20 +17,13 @@ import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
 import org.xml.sax.InputSource;
 
-import cn.cnic.common.Eunm.TemplateType;
-import cn.cnic.component.mxGraph.entity.MxCell;
-import cn.cnic.component.mxGraph.entity.MxGeometry;
-import cn.cnic.component.mxGraph.entity.MxGraphModel;
-import cn.cnic.component.mxGraph.vo.MxCellVo;
-import cn.cnic.component.mxGraph.vo.MxGeometryVo;
-import cn.cnic.component.mxGraph.vo.MxGraphModelVo;
-
+import java.io.StringReader;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MxGraphUtils {
 
-	/**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
     private static Logger logger = LoggerUtil.getLogger();
 
     private static String spliceStr(String key, Object value) {

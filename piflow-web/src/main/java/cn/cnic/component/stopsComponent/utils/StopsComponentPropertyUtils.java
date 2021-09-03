@@ -7,8 +7,8 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 import cn.cnic.base.utils.UUIDUtils;
-import cn.cnic.component.stopsComponent.model.StopsComponent;
-import cn.cnic.component.stopsComponent.model.StopsComponentProperty;
+import cn.cnic.component.stopsComponent.entity.StopsComponent;
+import cn.cnic.component.stopsComponent.entity.StopsComponentProperty;
 import cn.cnic.third.vo.stop.ThirdStopsComponentPropertyVo;
 
 public class StopsComponentPropertyUtils {

@@ -10,8 +10,8 @@ import cn.cnic.base.utils.UUIDUtils;
 import cn.cnic.component.process.entity.ProcessStop;
 import cn.cnic.component.process.entity.ProcessStopCustomizedProperty;
 import cn.cnic.component.process.entity.ProcessStopProperty;
-import cn.cnic.component.stopsComponent.model.StopsComponent;
-import cn.cnic.component.stopsComponent.model.StopsComponentProperty;
+import cn.cnic.component.stopsComponent.entity.StopsComponent;
+import cn.cnic.component.stopsComponent.entity.StopsComponentProperty;
 
 public class ProcessStopUtils {
 

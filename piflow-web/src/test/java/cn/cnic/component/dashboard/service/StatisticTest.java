@@ -1,16 +1,17 @@
 package cn.cnic.component.dashboard.service;
 
-import cn.cnic.ApplicationTests;
-import cn.cnic.base.utils.ReturnMapUtils;
-import org.junit.Test;
+import java.util.Map;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 
-import javax.annotation.Resource;
-import java.util.Map;
+import cn.cnic.ApplicationTests;
+import cn.cnic.base.utils.ReturnMapUtils;
 
 public class StatisticTest extends ApplicationTests {
 
-    @Resource
+    @Autowired
     private IStatisticService statisticServiceImpl;
 
     @Test

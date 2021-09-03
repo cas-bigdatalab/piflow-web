@@ -1,26 +1,26 @@
 package cn.cnic.component.stopsComponent.service.impl;
 
-import cn.cnic.component.stopsComponent.mapper.StopsComponentMapper;
-import cn.cnic.component.stopsComponent.model.StopsComponent;
-import cn.cnic.component.stopsComponent.service.IStopsComponentService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
+import cn.cnic.component.stopsComponent.domain.StopsComponentDomain;
+import cn.cnic.component.stopsComponent.entity.StopsComponent;
+import cn.cnic.component.stopsComponent.service.IStopsComponentService;
 
 @Service
 public class StopsComponentServiceImpl implements IStopsComponentService {
 
-    @Resource
-    private StopsComponentMapper stopsComponentMapper;
+    @Autowired
+    private StopsComponentDomain stopsComponentDomain;
 
     @Override
     public StopsComponent getStopsTemplateById(String id) {
-        return stopsComponentMapper.getStopsComponentById(id);
+        return stopsComponentDomain.getStopsComponentById(id);
     }
 
     @Override
     public StopsComponent getStopsPropertyById(String id) {
-        return stopsComponentMapper.getStopsComponentAndPropertyById(id);
+        return stopsComponentDomain.getStopsComponentAndPropertyById(id);
     }
 
 }

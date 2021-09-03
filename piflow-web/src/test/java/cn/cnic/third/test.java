@@ -2,17 +2,16 @@ package cn.cnic.third;
 
 import cn.cnic.base.utils.HttpUtils;
 import cn.cnic.base.utils.LoggerUtil;
-import org.slf4j.Logger;
 
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+
+
 public class test {
-	
-    /**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
+
     private static Logger logger = LoggerUtil.getLogger();
 
     public static void main(String[] args) {

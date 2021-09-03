@@ -211,7 +211,7 @@ function updateFlow() {
     if (checkFlowInput(flowName, description, driverMemory, executorNumber, executorMemory, executorCores))
         ajaxRequest({
             cache: true,//Keep cached data
-            type: "get",//Request type post
+            type: "POST",//Request type post
             url: "/flow/updateFlowBaseInfo",//This is the name of the file where I receive data in the background.
             data: {
                 id: id,

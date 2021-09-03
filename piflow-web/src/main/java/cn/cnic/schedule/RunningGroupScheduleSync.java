@@ -7,8 +7,8 @@ import cn.cnic.common.Eunm.ScheduleState;
 import cn.cnic.common.executor.ServicesExecutor;
 import cn.cnic.component.process.entity.Process;
 import cn.cnic.component.process.entity.ProcessGroup;
-import cn.cnic.component.process.domain.ProcessDomainU;
-import cn.cnic.component.process.domain.ProcessGroupDomainU;
+import cn.cnic.component.process.domain.ProcessDomain;
+import cn.cnic.component.process.domain.ProcessGroupDomain;
 import cn.cnic.component.process.utils.ProcessGroupUtils;
 import cn.cnic.component.process.utils.ProcessUtils;
 import cn.cnic.component.schedule.entity.Schedule;
@@ -17,6 +17,7 @@ import cn.cnic.component.schedule.vo.ScheduleVo;
 import cn.cnic.third.service.ISchedule;
 import cn.cnic.third.vo.schedule.ThirdScheduleEntryVo;
 import cn.cnic.third.vo.schedule.ThirdScheduleVo;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.quartz.JobExecutionContext;
@@ -33,9 +34,6 @@ import java.util.List;
 @Component
 public class RunningGroupScheduleSync extends QuartzJobBean {
 
-	/**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
     private Logger logger = LoggerUtil.getLogger();
 
     @Autowired
@@ -48,8 +46,8 @@ public class RunningGroupScheduleSync extends QuartzJobBean {
         List<ScheduleVo> scheduleRunningList = scheduleMapper.getScheduleIdListByStateRunning(true, "sync");
         if (CollectionUtils.isNotEmpty(scheduleRunningList)) {
             ISchedule scheduleImpl = (ISchedule) SpringContextUtil.getBean("scheduleImpl");
-            ProcessDomainU processDomainU = (ProcessDomainU) SpringContextUtil.getBean("processDomainU");
-            ProcessGroupDomainU processGroupDomainU = (ProcessGroupDomainU) SpringContextUtil.getBean("processGroupDomainU");
+            ProcessDomain processDomain = (ProcessDomain) SpringContextUtil.getBean("processDomain");
+            ProcessGroupDomain processGroupDomain = (ProcessGroupDomain) SpringContextUtil.getBean("processGroupDomain");
             for (ScheduleVo scheduleVo : scheduleRunningList) {
                 if (null == scheduleVo) {
                     continue;
@@ -73,11 +71,11 @@ public class RunningGroupScheduleSync extends QuartzJobBean {
                             }
                             String scheduleEntryType = thirdScheduleEntryVo.getScheduleEntryType();
                             if ("Flow".equals(scheduleEntryType)) {
-                                String processIdByAppId = processDomainU.getProcessIdByAppId("sync", true, thirdScheduleEntryVo.getScheduleEntryId());
+                                String processIdByAppId = processDomain.getProcessIdByAppId("sync", true, thirdScheduleEntryVo.getScheduleEntryId());
                                 if (StringUtils.isNotBlank(processIdByAppId)) {
                                     continue;
                                 }
-                                Process processById = processDomainU.getProcessById("sync", true, scheduleVo.getScheduleProcessTemplateId());
+                                Process processById = processDomain.getProcessById("sync", true, scheduleVo.getScheduleProcessTemplateId());
                                 if (processById == null) {
                                     logger.warn("sync failed");
                                     continue;
@@ -90,7 +88,7 @@ public class RunningGroupScheduleSync extends QuartzJobBean {
                                 }
                                 try {
                                     processCopy.setAppId(thirdScheduleEntryVo.getScheduleEntryId());
-                                    int addProcess = processDomainU.addProcess(processCopy);
+                                    int addProcess = processDomain.addProcess(processCopy);
                                     if (addProcess <= 0) {
                                         logger.warn("sync failed");
                                     }
@@ -99,11 +97,11 @@ public class RunningGroupScheduleSync extends QuartzJobBean {
                                 }
                                 continue;
                             }
-                            List<String> processGroupIdByAppId = processGroupDomainU.getProcessGroupIdByAppId(thirdScheduleEntryVo.getScheduleEntryId());
+                            List<String> processGroupIdByAppId = processGroupDomain.getProcessGroupIdByAppId(thirdScheduleEntryVo.getScheduleEntryId());
                             if (null != processGroupIdByAppId && processGroupIdByAppId.size() > 0) {
                                 continue;
                             }
-                            ProcessGroup processGroupById = processGroupDomainU.getProcessGroupById("sync", true, scheduleVo.getScheduleProcessTemplateId());
+                            ProcessGroup processGroupById = processGroupDomain.getProcessGroupById("sync", true, scheduleVo.getScheduleProcessTemplateId());
                             if (null == processGroupById) {
                                 continue;
                             }
@@ -114,7 +112,7 @@ public class RunningGroupScheduleSync extends QuartzJobBean {
                             }
                             try {
                                 copyProcessGroup.setAppId(thirdScheduleEntryVo.getScheduleEntryId());
-                                int addProcessGroup = processGroupDomainU.addProcessGroup(copyProcessGroup);
+                                int addProcessGroup = processGroupDomain.addProcessGroup(copyProcessGroup);
                                 if (addProcessGroup <= 0) {
                                     logger.warn("sync failed");
                                 }

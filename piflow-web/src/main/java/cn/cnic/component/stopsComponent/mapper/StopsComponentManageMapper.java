@@ -1,6 +1,6 @@
 package cn.cnic.component.stopsComponent.mapper;
 
-import cn.cnic.component.stopsComponent.model.StopsComponentManage;
+import cn.cnic.component.stopsComponent.entity.StopsComponentManage;
 import cn.cnic.component.stopsComponent.mapper.provider.StopsComponentManageMapperProvider;
 import org.apache.ibatis.annotations.*;
 

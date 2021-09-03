@@ -1,19 +1,16 @@
 package cn.cnic.base.utils;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class ReturnMapUtils {
 
-	/**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
     private static Logger logger = LoggerUtil.getLogger();
-	
+
     public static Integer SUCCEEDED_CODE = 200;
     public static Integer ERROR_CODE = 500;
     public static String ERROR_MSG = "Failed";

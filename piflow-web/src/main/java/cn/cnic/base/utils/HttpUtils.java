@@ -1,16 +1,5 @@
 package cn.cnic.base.utils;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.charset.UnsupportedCharsetException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
 import org.apache.http.HttpVersion;
@@ -31,15 +20,22 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.charset.UnsupportedCharsetException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Http tool class
  */
 public class HttpUtils {
 
-	/**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
     private static Logger logger = LoggerUtil.getLogger();
 
 	public static String INTERFACE_CALL_ERROR = "Interface call error";
@@ -304,19 +300,19 @@ public class HttpUtils {
             // Get result entity
             // Determine whether the network connection status code is normal (0--200 are normal)
             switch (response.getStatusLine().getStatusCode()) {
-	            case HttpStatus.SC_OK:
-	            	result = EntityUtils.toString(response.getEntity(), "utf-8");
-	                logger.info("call succeeded,return msg:" + result);
-	                break;
-	            case HttpStatus.SC_CREATED:
-	            	result = EntityUtils.toString(response.getEntity(), "utf-8");
-	                logger.info("call succeeded,return msg:" + result);
-	                break;
-	            default:
-	                result = INTERFACE_CALL_ERROR + ":" + EntityUtils.toString(response.getEntity(), "utf-8");
-	                logger.warn("call failed,return msg:" + result);
-	                break;
-	        }
+                case HttpStatus.SC_OK:
+                    result = EntityUtils.toString(response.getEntity(), "utf-8");
+                    logger.info("call succeeded,return msg:" + result);
+                    break;
+                case HttpStatus.SC_CREATED:
+                    result = EntityUtils.toString(response.getEntity(), "utf-8");
+                    logger.info("call succeeded,return msg:" + result);
+                    break;
+                default:
+                    result = INTERFACE_CALL_ERROR + ":" + EntityUtils.toString(response.getEntity(), "utf-8");
+                    logger.warn("call failed,return msg:" + result);
+                    break;
+            }
         } catch (UnsupportedCharsetException e) {
             logger.error(INTERFACE_CALL_ERROR, e);
             result = (INTERFACE_CALL_ERROR + ":UnsupportedCharsetException");

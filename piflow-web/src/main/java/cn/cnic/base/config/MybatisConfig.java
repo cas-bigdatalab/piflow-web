@@ -1,14 +1,14 @@
 package cn.cnic.base.config;
 
-import java.util.Properties;
+import com.github.pagehelper.PageHelper;
+
+import cn.cnic.base.utils.LoggerUtil;
 
 import org.slf4j.Logger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.github.pagehelper.PageHelper;
-
-import cn.cnic.base.utils.LoggerUtil;
+import java.util.Properties;
 
 /**
  * Paging plug-in configuration
@@ -16,10 +16,7 @@ import cn.cnic.base.utils.LoggerUtil;
 @Configuration
 public class MybatisConfig {
 
-	/**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
-    private Logger logger = LoggerUtil.getLogger();
+	private Logger logger = LoggerUtil.getLogger();
 	
     @Bean
     public PageHelper pageHelper() {

@@ -1,15 +1,15 @@
 package cn.cnic.component.stop.service;
 
-import cn.cnic.ApplicationTests;
-import cn.cnic.component.stopsComponent.service.IStopsHubService;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 
-import javax.annotation.Resource;
+import cn.cnic.ApplicationTests;
+import cn.cnic.component.stopsComponent.service.IStopsHubService;
 
 public class StopsHubTest extends ApplicationTests {
 
-    @Resource
+    @Autowired
     private IStopsHubService stopsHubServiceImpl;
 
 

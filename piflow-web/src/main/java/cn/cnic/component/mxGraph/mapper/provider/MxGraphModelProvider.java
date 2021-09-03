@@ -11,8 +11,6 @@ import java.util.Date;
 public class MxGraphModelProvider {
 
     private String id;
-    private String crtUser;
-    private String crtDttmStr;
     private int enableFlag;
     private String lastUpdateDttmStr;
     private String lastUpdateUser;
@@ -36,56 +34,53 @@ public class MxGraphModelProvider {
     private String processId;
     private String processGroupId;
 
-    private void preventSQLInjectionMxGraphModel(MxGraphModel mxGraphModel) {
-        if (null != mxGraphModel && StringUtils.isNotBlank(mxGraphModel.getLastUpdateUser())) {
-            // Mandatory Field
-            String id = mxGraphModel.getId();
-            String crtUser = mxGraphModel.getCrtUser();
-            String lastUpdateUser = mxGraphModel.getLastUpdateUser();
-            Boolean enableFlag = mxGraphModel.getEnableFlag();
-            Long version = mxGraphModel.getVersion();
-            Date crtDttm = mxGraphModel.getCrtDttm();
-            Date lastUpdateDttm = mxGraphModel.getLastUpdateDttm();
-            this.id = SqlUtils.preventSQLInjection(id);
-            this.crtUser = (null != crtUser ? SqlUtils.preventSQLInjection(crtUser) : null);
-            this.lastUpdateUser = SqlUtils.preventSQLInjection(lastUpdateUser);
-            this.enableFlag = ((null != enableFlag && enableFlag) ? 1 : 0);
-            this.version = (null != version ? version : 0L);
-            String crtDttmStr = DateUtils.dateTimesToStr(crtDttm);
-            String lastUpdateDttmStr = DateUtils.dateTimesToStr(null != lastUpdateDttm ? lastUpdateDttm : new Date());
-            this.crtDttmStr = (null != crtDttm ? SqlUtils.preventSQLInjection(crtDttmStr) : null);
-            this.lastUpdateDttmStr = SqlUtils.preventSQLInjection(lastUpdateDttmStr);
-
-            // Selection field
-            this.dx = SqlUtils.preventSQLInjection(mxGraphModel.getDx());
-            this.dy = SqlUtils.preventSQLInjection(mxGraphModel.getDy());
-            this.grid = SqlUtils.preventSQLInjection(mxGraphModel.getGrid());
-            this.gridSize = SqlUtils.preventSQLInjection(mxGraphModel.getGridSize());
-            this.guides = SqlUtils.preventSQLInjection(mxGraphModel.getGuides());
-            this.tooltips = SqlUtils.preventSQLInjection(mxGraphModel.getTooltips());
-            this.connect = SqlUtils.preventSQLInjection(mxGraphModel.getConnect());
-            this.arrows = SqlUtils.preventSQLInjection(mxGraphModel.getArrows());
-            this.fold = SqlUtils.preventSQLInjection(mxGraphModel.getFold());
-            this.page = SqlUtils.preventSQLInjection(mxGraphModel.getPage());
-            this.pageScale = SqlUtils.preventSQLInjection(mxGraphModel.getPageScale());
-            this.pageWidth = SqlUtils.preventSQLInjection(mxGraphModel.getPageWidth());
-            this.pageHeight = SqlUtils.preventSQLInjection(mxGraphModel.getPageHeight());
-            this.background = SqlUtils.preventSQLInjection(mxGraphModel.getBackground());
-            String flowIdStr = (null != mxGraphModel.getFlow() ? mxGraphModel.getFlow().getId() : null);
-            this.flowId = SqlUtils.preventSQLInjection(flowIdStr);
-            String flowGroupIdStr = (null != mxGraphModel.getFlowGroup() ? mxGraphModel.getFlowGroup().getId() : null);
-            this.flowGroupId = SqlUtils.preventSQLInjection(flowGroupIdStr);
-            String processIdStr = (null != mxGraphModel.getProcess() ? mxGraphModel.getProcess().getId() : null);
-            this.processId = SqlUtils.preventSQLInjection(processIdStr);
-            String processGroupIdStr = (null != mxGraphModel.getProcessGroup() ? mxGraphModel.getProcessGroup().getId() : null);
-            this.processGroupId = SqlUtils.preventSQLInjection(processGroupIdStr);
+    private boolean preventSQLInjectionMxGraphModel(MxGraphModel mxGraphModel) {
+        if (null == mxGraphModel || StringUtils.isBlank(mxGraphModel.getLastUpdateUser())) {
+            return false;
         }
+        // Mandatory Field
+        String id = mxGraphModel.getId();
+        String lastUpdateUser = mxGraphModel.getLastUpdateUser();
+        Boolean enableFlag = mxGraphModel.getEnableFlag();
+        Long version = mxGraphModel.getVersion();
+        Date lastUpdateDttm = mxGraphModel.getLastUpdateDttm();
+        String lastUpdateDttmStr = DateUtils.dateTimesToStr(null != lastUpdateDttm ? lastUpdateDttm : new Date());
+        this.id = SqlUtils.preventSQLInjection(id);
+        this.lastUpdateUser = SqlUtils.preventSQLInjection(lastUpdateUser);
+        this.enableFlag = ((null != enableFlag && enableFlag) ? 1 : 0);
+        this.version = (null != version ? version : 0L);
+        
+        this.lastUpdateDttmStr = SqlUtils.preventSQLInjection(lastUpdateDttmStr);
+
+        // Selection field
+        this.dx = SqlUtils.preventSQLInjection(mxGraphModel.getDx());
+        this.dy = SqlUtils.preventSQLInjection(mxGraphModel.getDy());
+        this.grid = SqlUtils.preventSQLInjection(mxGraphModel.getGrid());
+        this.gridSize = SqlUtils.preventSQLInjection(mxGraphModel.getGridSize());
+        this.guides = SqlUtils.preventSQLInjection(mxGraphModel.getGuides());
+        this.tooltips = SqlUtils.preventSQLInjection(mxGraphModel.getTooltips());
+        this.connect = SqlUtils.preventSQLInjection(mxGraphModel.getConnect());
+        this.arrows = SqlUtils.preventSQLInjection(mxGraphModel.getArrows());
+        this.fold = SqlUtils.preventSQLInjection(mxGraphModel.getFold());
+        this.page = SqlUtils.preventSQLInjection(mxGraphModel.getPage());
+        this.pageScale = SqlUtils.preventSQLInjection(mxGraphModel.getPageScale());
+        this.pageWidth = SqlUtils.preventSQLInjection(mxGraphModel.getPageWidth());
+        this.pageHeight = SqlUtils.preventSQLInjection(mxGraphModel.getPageHeight());
+        this.background = SqlUtils.preventSQLInjection(mxGraphModel.getBackground());
+        String flowIdStr = (null != mxGraphModel.getFlow() ? mxGraphModel.getFlow().getId() : null);
+        this.flowId = SqlUtils.preventSQLInjection(flowIdStr);
+        String flowGroupIdStr = (null != mxGraphModel.getFlowGroup() ? mxGraphModel.getFlowGroup().getId() : null);
+        this.flowGroupId = SqlUtils.preventSQLInjection(flowGroupIdStr);
+        String processIdStr = (null != mxGraphModel.getProcess() ? mxGraphModel.getProcess().getId() : null);
+        this.processId = SqlUtils.preventSQLInjection(processIdStr);
+        String processGroupIdStr = (null != mxGraphModel.getProcessGroup() ? mxGraphModel.getProcessGroup().getId()
+                : null);
+        this.processGroupId = SqlUtils.preventSQLInjection(processGroupIdStr);
+        return true;
     }
 
     private void reset() {
         this.id = null;
-        this.crtUser = null;
-        this.crtDttmStr = null;
         this.lastUpdateDttmStr = null;
         this.lastUpdateUser = null;
         this.enableFlag = 1;
@@ -112,51 +107,56 @@ public class MxGraphModelProvider {
     }
 
     public String addMxGraphModel(MxGraphModel mxGraphModel) {
-        this.preventSQLInjectionMxGraphModel(mxGraphModel);
-        if (null == mxGraphModel) {
-            return "SELECT 0";
+        String sqlStr = "SELECT 0";
+        boolean flag = this.preventSQLInjectionMxGraphModel(mxGraphModel);
+        if (flag) {
+            StringBuffer stringBuffer = new StringBuffer();
+            stringBuffer.append("INSERT INTO mx_graph_model");
+            stringBuffer.append("(");
+            stringBuffer.append(SqlUtils.baseFieldName() + ",");
+            stringBuffer.append("mx_dx,");
+            stringBuffer.append("mx_dy,");
+            stringBuffer.append("mx_grid,");
+            stringBuffer.append("mx_gridsize,");
+            stringBuffer.append("mx_guides,");
+            stringBuffer.append("mx_tooltips,");
+            stringBuffer.append("mx_connect,");
+            stringBuffer.append("mx_arrows,");
+            stringBuffer.append("mx_fold,");
+            stringBuffer.append("mx_page,");
+            stringBuffer.append("mx_pagescale,");
+            stringBuffer.append("mx_pagewidth,");
+            stringBuffer.append("mx_pageheight,");
+            stringBuffer.append("mx_background,");
+            stringBuffer.append("fk_flow_id,");
+            stringBuffer.append("fk_flow_group_id,");
+            stringBuffer.append("fk_process_id,");
+            stringBuffer.append("fk_process_group_id");
+            stringBuffer.append(") ");
+            stringBuffer.append("VALUES");
+            stringBuffer.append("(");
+            stringBuffer.append(SqlUtils.baseFieldValues(mxGraphModel) + ",");
+            stringBuffer.append(dx + ",");
+            stringBuffer.append(dy + ",");
+            stringBuffer.append(grid + ",");
+            stringBuffer.append(gridSize + ",");
+            stringBuffer.append(guides + ",");
+            stringBuffer.append(tooltips + ",");
+            stringBuffer.append(connect + ",");
+            stringBuffer.append(arrows + ",");
+            stringBuffer.append(fold + ",");
+            stringBuffer.append(page + ",");
+            stringBuffer.append(pageScale + ",");
+            stringBuffer.append(pageWidth + ",");
+            stringBuffer.append(pageHeight + ",");
+            stringBuffer.append(background + ",");
+            stringBuffer.append(flowId + ",");
+            stringBuffer.append(flowGroupId + ",");
+            stringBuffer.append(processId + ",");
+            stringBuffer.append(processGroupId + " ");
+            stringBuffer.append(")");
+            sqlStr = stringBuffer.toString();
         }
-        SQL sql = new SQL();
-        // INSERT_INTO brackets is table name
-        sql.INSERT_INTO("mx_graph_model");
-        // The first string in the value is the field name corresponding to the table in the database.
-
-        //Process the required fields first
-        if (null == crtDttmStr) {
-            String crtDttm = DateUtils.dateTimesToStr(new Date());
-            crtDttmStr = SqlUtils.preventSQLInjection(crtDttm);
-        }
-        if (StringUtils.isBlank(crtUser)) {
-            crtUser = SqlUtils.preventSQLInjection("-1");
-        }
-        sql.VALUES("id", id);
-        sql.VALUES("crt_dttm", crtDttmStr);
-        sql.VALUES("crt_user", crtUser);
-        sql.VALUES("last_update_dttm", lastUpdateDttmStr);
-        sql.VALUES("last_update_user", lastUpdateUser);
-        sql.VALUES("enable_flag", enableFlag + "");
-        sql.VALUES("version", version + "");
-
-        // handle other fields
-        sql.VALUES("mx_dx", dx);
-        sql.VALUES("mx_dy", dy);
-        sql.VALUES("mx_grid", grid);
-        sql.VALUES("mx_gridsize", gridSize);
-        sql.VALUES("mx_guides", guides);
-        sql.VALUES("mx_tooltips", tooltips);
-        sql.VALUES("mx_connect", connect);
-        sql.VALUES("mx_arrows", arrows);
-        sql.VALUES("mx_fold", fold);
-        sql.VALUES("mx_page", page);
-        sql.VALUES("mx_pagescale", pageScale);
-        sql.VALUES("mx_pagewidth", pageWidth);
-        sql.VALUES("mx_pageheight", pageHeight);
-        sql.VALUES("mx_background", background);
-        sql.VALUES("fk_flow_id", flowId);
-        sql.VALUES("fk_flow_group_id", flowGroupId);
-        sql.VALUES("fk_process_id", processId);
-        sql.VALUES("fk_process_group_id", processGroupId);
-        String sqlStr = sql.toString();
         this.reset();
         return sqlStr;
     }
@@ -173,7 +173,7 @@ public class MxGraphModelProvider {
                 // The first string in the SET is the name of the field corresponding to the table in the database
                 // all types except numeric fields must be enclosed in single quotes
 
-                //Process the required fields first
+                // Process the required fields first
                 sql.SET("last_update_dttm = " + lastUpdateDttmStr);
                 sql.SET("last_update_user = " + lastUpdateUser);
                 sql.SET("version = " + (version + 1));
@@ -312,7 +312,6 @@ public class MxGraphModelProvider {
         }
         return sqlStr;
     }
-
 
     /**
      * Logical deletion according to flowId

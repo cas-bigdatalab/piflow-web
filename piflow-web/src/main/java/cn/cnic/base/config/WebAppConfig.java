@@ -1,8 +1,6 @@
 package cn.cnic.base.config;
 
 
-import java.util.Arrays;
-
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +11,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import cn.cnic.base.utils.LoggerUtil;
 
+import java.util.Arrays;
+
 /**
  * @ClassName: WebAppConfig
  * @Description: TODO(Here is a sentence describing the function of this class.)
@@ -20,10 +20,7 @@ import cn.cnic.base.utils.LoggerUtil;
 @Configuration
 public class WebAppConfig implements WebMvcConfigurer {
 
-	/**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
-    private Logger logger = LoggerUtil.getLogger();
+	private Logger logger = LoggerUtil.getLogger();
 	
     /**
      * Inject the first defined interceptor

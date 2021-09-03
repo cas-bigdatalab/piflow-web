@@ -7,7 +7,8 @@ import org.apache.ibatis.jdbc.SQL;
 
 import cn.cnic.base.utils.DateUtils;
 import cn.cnic.base.utils.SqlUtils;
-import cn.cnic.component.stopsComponent.model.StopsComponentManage;
+import cn.cnic.component.stopsComponent.entity.StopsComponentManage;
+
 
 public class StopsComponentManageMapperProvider {
 

@@ -109,7 +109,9 @@
             <label class="self">{{item.name}}：</label>
             <Input
               v-model="item.value"
-              :show-word-limit="item.name === 'url' ? false : true"
+              :password="item.name === 'url'? false: true"
+              :type="item.name === 'password'?'password': ''"
+              :show-word-limit="item.name === 'url' || item.name === 'password'? false : true"
               maxlength="100"
               :placeholder="$t('modal.placeholder')"
               style="width: 350px"/>

@@ -10,6 +10,15 @@ import java.util.List;
 @Mapper
 public interface PathsMapper {
     /**
+     * Insert paths
+     *
+     * @param paths
+     * @return
+     */
+    @InsertProvider(type = PathsMapperProvider.class, method = "addPaths")
+    public int addPaths(@Param("paths") Paths paths);
+    
+    /**
      * Insert "list<Paths>" Note that the method of spelling SQL must use "map" to connect the "Param" content to the key value.
      *
      * @param username
@@ -17,7 +26,7 @@ public interface PathsMapper {
      * @return
      */
     @InsertProvider(type = PathsMapperProvider.class, method = "addPathsList")
-    public int addPathsList(@Param("username") String username, @Param("pathsList") List<Paths> pathsList);
+    public int addPathsList(@Param("pathsList") List<Paths> pathsList);
 
     /**
      * update paths
@@ -26,7 +35,7 @@ public interface PathsMapper {
      * @return
      */
     @UpdateProvider(type = PathsMapperProvider.class, method = "updatePaths")
-    public int updatePaths(String username, Paths paths);
+    public int updatePaths(@Param("paths") Paths paths);
 
     /**
      * Query according to "flowId"

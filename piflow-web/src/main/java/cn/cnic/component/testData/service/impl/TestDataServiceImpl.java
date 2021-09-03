@@ -33,10 +33,10 @@ import cn.cnic.component.testData.utils.TestDataSchemaValuesUtils;
 import cn.cnic.component.testData.utils.TestDataUtils;
 import cn.cnic.component.testData.vo.TestDataSchemaVo;
 import cn.cnic.component.testData.vo.TestDataVo;
-import cn.cnic.controller.requestVo.RequestTestDataSchemaVo;
-import cn.cnic.controller.requestVo.RequestTestDataVo;
+import cn.cnic.controller.requestVo.TestDataVoRequest;
 import cn.cnic.controller.requestVo.SchemaValuesVo;
 import cn.cnic.controller.requestVo.TestDataSchemaValuesSaveVo;
+import cn.cnic.controller.requestVo.TestDataSchemaVoRequest;
 
 @Service
 @Transactional
@@ -55,7 +55,7 @@ public class TestDataServiceImpl implements ITestDataService {
      * @throws Exception
      */
     @Override
-    public String saveOrUpdateTestDataAndSchema(String username, boolean isAdmin, RequestTestDataVo testDataVo, boolean flag) throws Exception {
+    public String saveOrUpdateTestDataAndSchema(String username, boolean isAdmin, TestDataVoRequest testDataVo, boolean flag) throws Exception {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
         }
@@ -80,7 +80,7 @@ public class TestDataServiceImpl implements ITestDataService {
         testData.setLastUpdateUser(username);
 
         // get testDataSchemaVoList
-        List<RequestTestDataSchemaVo> testDataSchemaVoList = testDataVo.getSchemaVoList();
+        List<TestDataSchemaVoRequest> testDataSchemaVoList = testDataVo.getSchemaVoList();
 
         // update schema
         List<TestDataSchema> testDataSchemaList = testData.getSchemaList();
@@ -99,7 +99,7 @@ public class TestDataServiceImpl implements ITestDataService {
                     testDataSchemaDbMap.put(testDataSchema.getId(), testDataSchema);
                 }
                 List<TestDataSchema> testDataSchemaListNew = new ArrayList<>();
-                for (RequestTestDataSchemaVo testDataSchemaVo : testDataSchemaVoList) {
+                for (TestDataSchemaVoRequest testDataSchemaVo : testDataSchemaVoList) {
                     if (null == testDataSchemaVo) {
                         continue;
                     }
@@ -141,7 +141,7 @@ public class TestDataServiceImpl implements ITestDataService {
                     testDataSchemaDbMap.put(testDataSchema.getId(), testDataSchema);
                 }
                 List<TestDataSchema> testDataSchemaListNew = new ArrayList<>();
-                for (RequestTestDataSchemaVo testDataSchemaVo : testDataSchemaVoList) {
+                for (TestDataSchemaVoRequest testDataSchemaVo : testDataSchemaVoList) {
                     if (null == testDataSchemaVo) {
                         continue;
                     }

@@ -13,6 +13,11 @@ import cn.cnic.component.process.entity.ProcessGroupPath;
 
 public class ProcessGroupPathMapperProvider {
 
+    private String id;
+    private String lastUpdateDttmStr;
+    private String lastUpdateUser;
+    private int enableFlag;
+    private long version;
     private String from;
     private String outport;
     private String inport;
@@ -24,6 +29,18 @@ public class ProcessGroupPathMapperProvider {
         if (null == processGroupPath || StringUtils.isBlank(processGroupPath.getLastUpdateUser())) {
             return false;
         }
+
+        // Mandatory Field
+        String lastUpdateUser = processGroupPath.getLastUpdateUser();
+        Boolean enableFlag = processGroupPath.getEnableFlag();
+        Long version = processGroupPath.getVersion();
+        Date lastUpdateDttm = processGroupPath.getLastUpdateDttm();
+        this.id = SqlUtils.preventSQLInjection(processGroupPath.getId());
+        this.lastUpdateUser = SqlUtils.preventSQLInjection(lastUpdateUser);
+        this.enableFlag = ((null != enableFlag && enableFlag) ? 1 : 0);
+        this.version = (null != version ? version : 0L);
+        String lastUpdateDttmStr = DateUtils.dateTimesToStr(null != lastUpdateDttm ? lastUpdateDttm : new Date());
+        this.lastUpdateDttmStr = SqlUtils.preventSQLInjection(lastUpdateDttmStr);
 
         // Selection field
         this.from = SqlUtils.preventSQLInjection(processGroupPath.getFrom());
@@ -37,6 +54,11 @@ public class ProcessGroupPathMapperProvider {
     }
 
     private void resetProcessGroupPath() {
+        this.id = null;
+        this.lastUpdateDttmStr = null;
+        this.lastUpdateUser = null;
+        this.enableFlag = 1;
+        this.version = 0L;
         this.from = null;
         this.outport = null;
         this.inport = null;
@@ -48,6 +70,44 @@ public class ProcessGroupPathMapperProvider {
     /**
      * add processGroupPath
      *
+     * @param processPath
+     * @return
+     */
+    public String addProcessGroupPath(ProcessGroupPath processGroupPath) {
+
+        String sqlStr = "SELECT 0";
+        if (this.preventSQLInjectionProcessGroupPath(processGroupPath)) {
+            StringBuffer strBuf = new StringBuffer();
+            strBuf.append("INSERT INTO flow_process_group_path ");
+            strBuf.append("( ");
+            strBuf.append(SqlUtils.baseFieldName() + ", ");
+            strBuf.append("line_from, ");
+            strBuf.append("line_outport, ");
+            strBuf.append("line_inport, ");
+            strBuf.append("line_to, ");
+            strBuf.append("page_id, ");
+            strBuf.append("fk_flow_process_group_id ");
+            strBuf.append(") ");
+            strBuf.append("VALUES ");
+            strBuf.append("(");
+            strBuf.append(SqlUtils.baseFieldValues(processGroupPath) + ", ");
+            strBuf.append(this.from + ",");
+            strBuf.append(this.outport + ",");
+            strBuf.append(this.inport + ",");
+            strBuf.append(this.to + ",");
+            strBuf.append(this.pageId + ",");
+            strBuf.append(this.processGroupId + " ");
+            strBuf.append(")");
+            strBuf.toString();
+            sqlStr = strBuf.toString();
+            this.resetProcessGroupPath();
+        }
+        return sqlStr;
+    }
+
+    /**
+     * add processGroupPath List
+     *
      * @param processPathList
      * @return
      */
@@ -55,7 +115,7 @@ public class ProcessGroupPathMapperProvider {
         List<ProcessGroupPath> processGroupPaths = processPathList.get("processGroupPathList");
 
         StringBuffer strBuf = new StringBuffer();
-        strBuf.append("INSERT INTO group_schedule ");
+        strBuf.append("INSERT INTO flow_process_group_path ");
         strBuf.append("( ");
         strBuf.append(SqlUtils.baseFieldName() + ", ");
         strBuf.append("line_from, ");
@@ -95,7 +155,44 @@ public class ProcessGroupPathMapperProvider {
             }
             this.resetProcessGroupPath();
         }
-        return "SELECT 0";
+        return strBuf.toString();
+    }
+
+    /**
+     * update updateProcessGroupPath
+     *
+     * @param processGroupPath
+     * @return
+     */
+    public String updateProcessGroupPath(ProcessGroupPath processGroupPath) {
+        String sqlStr = "SELECT 0";
+        if (this.preventSQLInjectionProcessGroupPath(processGroupPath)) {
+            SQL sql = new SQL();
+            sql.UPDATE("flow_process_group_path");
+
+            // Process the required fields first
+            sql.SET("last_update_dttm = " + this.lastUpdateDttmStr);
+            sql.SET("last_update_user = " + this.lastUpdateUser);
+            sql.SET("version = " + (this.version + 1));
+
+            // handle other fields
+            sql.SET("enable_flag=" + this.enableFlag);
+
+            sql.SET("line_from=" + this.from);
+            sql.SET("line_outport=" + this.outport);
+            sql.SET("line_inport=" + this.inport);
+            sql.SET("line_to=" + this.to);
+            sql.SET("page_id=" + this.pageId);
+            sql.SET("fk_flow_process_group_id=" + this.processGroupId);
+
+            sql.WHERE("version = " + this.version);
+            sql.WHERE("id = " + this.id);
+            if (StringUtils.isNotBlank(this.id)) {
+                sqlStr = sql.toString();
+            }
+        }
+        this.resetProcessGroupPath();
+        return sqlStr;
     }
 
     /**

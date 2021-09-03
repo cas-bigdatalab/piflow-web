@@ -1,7 +1,7 @@
 package cn.cnic.component.process.service;
 
 import cn.cnic.ApplicationTests;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class IProcessServiceTest extends ApplicationTests {
@@ -11,7 +11,12 @@ public class IProcessServiceTest extends ApplicationTests {
 
     @Test
     public void testFlowToProcessAndSave() {
-        processServiceImpl.flowToProcessAndSave("admin","d97aa10691db4b8da2680cb5b56a7ea0");
+        try {
+            processServiceImpl.flowToProcessAndSave(true, "admin", "d97aa10691db4b8da2680cb5b56a7ea0");
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     @Test
@@ -31,6 +36,5 @@ public class IProcessServiceTest extends ApplicationTests {
         String result = processServiceImpl.getVisualizationData("application_1596710850427_4294", "Histogram", "HISTOGRAM", true);
         System.out.println(result);
     }
-
 
 }

@@ -39,12 +39,9 @@ import cn.cnic.component.mxGraph.vo.MxGraphModelVo;
 @SuppressWarnings("rawtypes")
 public class FlowXmlUtils {
 
-	/**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
     private static Logger logger = LoggerUtil.getLogger();
 
-    private static String spliceStr(String key, Object value) {
+	private static String spliceStr(String key, Object value) {
         return key + "=\"" + value + "\" ";
     }
 
@@ -778,9 +775,9 @@ public class FlowXmlUtils {
             }
             Element stopElement = rootElt.element("stop");
             Stops stops = new Stops();
+            //String id = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("id"));
             String bundel = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("bundel"));
             String description = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("description"));
-            String id = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("id"));
             String name = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("name"));
             String pageId = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("pageId"));
             String inPortType = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("inPortType"));
@@ -790,6 +787,7 @@ public class FlowXmlUtils {
             String isCheckpoint = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("isCheckpoint"));
             String owner = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("owner"));
             String groups = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("groups"));
+            //stops.setId(id);
             stops.setCrtDttm(new Date());
             stops.setCrtUser(username);
             stops.setLastUpdateDttm(new Date());
@@ -798,7 +796,6 @@ public class FlowXmlUtils {
             stops.setName(name);
             stops.setDescription(description);
             stops.setBundel(bundel);
-            stops.setId(id);
             stops.setInports(inports);
             stops.setOutports(outports);
             stops.setOutPortType(PortType.selectGender(outPortType));
@@ -813,11 +810,11 @@ public class FlowXmlUtils {
                 while (propertyXmlIterator.hasNext()) {
                     Element propertyValue = (Element) propertyXmlIterator.next();
                     Property property = new Property();
+                    //String propertyId = StringCustomUtils.recoverSpecialSymbolsXml(propertyValue.attributeValue("id"));
                     String allowableValues = StringCustomUtils.recoverSpecialSymbolsXml(propertyValue.attributeValue("allowableValues"));
                     String customValue = StringCustomUtils.recoverSpecialSymbolsXml(propertyValue.attributeValue("customValue"));
                     String propertyDescription = StringCustomUtils.recoverSpecialSymbolsXml(propertyValue.attributeValue("description"));
                     String displayName = StringCustomUtils.recoverSpecialSymbolsXml(propertyValue.attributeValue("displayName"));
-                    String propertyId = StringCustomUtils.recoverSpecialSymbolsXml(propertyValue.attributeValue("id"));
                     String propertyName = StringCustomUtils.recoverSpecialSymbolsXml(propertyValue.attributeValue("name"));
                     boolean required = "true".equals(propertyValue.attributeValue("required"));
                     boolean sensitive = "true".equals(propertyValue.attributeValue("sensitive"));
@@ -839,6 +836,7 @@ public class FlowXmlUtils {
                         allowableValues = tempStringBuffer.toString();
                     }
                     property.setCrtDttm(new Date());
+                    //property.setId(propertyId);
                     property.setCrtUser(username);
                     property.setLastUpdateDttm(new Date());
                     property.setLastUpdateUser(username);
@@ -846,7 +844,6 @@ public class FlowXmlUtils {
                     property.setCustomValue(customValue);
                     property.setDescription(propertyDescription);
                     property.setDisplayName(displayName);
-                    property.setId(propertyId);
                     property.setName(propertyName);
                     property.setRequired(required);
                     property.setSensitive(sensitive);

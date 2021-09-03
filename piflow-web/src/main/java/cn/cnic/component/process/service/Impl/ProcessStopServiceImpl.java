@@ -1,25 +1,25 @@
 package cn.cnic.component.process.service.Impl;
 
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.component.process.entity.ProcessStop;
+import cn.cnic.component.process.mapper.ProcessStopMapper;
 import cn.cnic.component.process.service.IProcessStopService;
 import cn.cnic.component.process.utils.ProcessUtils;
 import cn.cnic.component.process.vo.ProcessStopVo;
-import cn.cnic.component.process.mapper.ProcessStopMapper;
+import cn.cnic.component.stopsComponent.entity.StopsComponent;
 import cn.cnic.component.stopsComponent.mapper.StopsComponentMapper;
-import cn.cnic.component.stopsComponent.model.StopsComponent;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
 
 @Service
 public class ProcessStopServiceImpl implements IProcessStopService {
 
-    @Resource
+    @Autowired
     private ProcessStopMapper processStopMapper;
 
-    @Resource
+    @Autowired
     private StopsComponentMapper stopsComponentMapper;
 
     /**

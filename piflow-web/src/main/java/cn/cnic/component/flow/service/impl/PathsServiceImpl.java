@@ -1,32 +1,33 @@
 package cn.cnic.component.flow.service.impl;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.base.utils.UUIDUtils;
 import cn.cnic.component.flow.entity.Flow;
 import cn.cnic.component.flow.entity.Paths;
 import cn.cnic.component.flow.entity.Stops;
+import cn.cnic.component.flow.mapper.PathsMapper;
+import cn.cnic.component.flow.mapper.PropertyMapper;
 import cn.cnic.component.flow.service.IPathsService;
 import cn.cnic.component.flow.utils.PathsUtil;
 import cn.cnic.component.flow.vo.FlowVo;
 import cn.cnic.component.flow.vo.PathsVo;
-import cn.cnic.component.flow.mapper.PathsMapper;
-import cn.cnic.component.flow.mapper.PropertyMapper;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 @Service
 public class PathsServiceImpl implements IPathsService {
 
-    @Resource
+    @Autowired
     private PathsMapper pathsMapper;
 
-    @Resource
+    @Autowired
     private PropertyMapper propertyMapper;
 
     @Override
@@ -116,7 +117,7 @@ public class PathsServiceImpl implements IPathsService {
                 BeanUtils.copyProperties(pathsVo, pathsById);
                 pathsById.setLastUpdateDttm(new Date());
                 pathsById.setLastUpdateUser("-1");
-                int i = pathsMapper.updatePaths(username, pathsById);
+                int i = pathsMapper.updatePaths(pathsById);
                 return i;
             }
         }
@@ -142,7 +143,7 @@ public class PathsServiceImpl implements IPathsService {
                 list.add(paths);
             }
         }
-        return pathsMapper.addPathsList(username, list);
+        return pathsMapper.addPathsList(list);
     }
 
 }

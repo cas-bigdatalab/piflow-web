@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.component.stopsComponent.domain.StopsComponentManageDomain;
-import cn.cnic.component.stopsComponent.model.StopsComponentManage;
+import cn.cnic.component.stopsComponent.entity.StopsComponentManage;
 import cn.cnic.component.stopsComponent.service.IStopsComponentManageService;
 import cn.cnic.component.stopsComponent.utils.StopsComponentManageUtils;
 import cn.cnic.controller.requestVo.UpdatestopsComponentIsShow;

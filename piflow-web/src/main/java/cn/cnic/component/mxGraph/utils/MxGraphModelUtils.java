@@ -18,6 +18,9 @@ import java.util.*;
 
 public class MxGraphModelUtils {
 
+    public static String NODE = "Node";
+    public static String PATH = "Path";
+
     public static MxGraphModel mxGraphModelNewNoId(String username) {
         MxGraphModel mxGraphModel = new MxGraphModel();
         // basic properties (required when creating)
@@ -108,7 +111,7 @@ public class MxGraphModelUtils {
         if (isSetId) {
             mxGraphModel.setId(UUIDUtils.getUUID32());
         }
-        //set MxGraphModel basic information
+        // set MxGraphModel basic information
         mxGraphModel.setCrtDttm(new Date());
         mxGraphModel.setCrtUser(username);
         mxGraphModel.setVersion(0L);
@@ -188,33 +191,89 @@ public class MxGraphModelUtils {
      * @param root
      * @return Returns a list of Mxcell types with elements and paths in the map (keys: paths and elements)
      */
-    public static Map<String, List<MxCellVo>> distinguishElementsPaths(List<MxCellVo> root) {
+    public static Map<String, List<MxCellVo>> mxCellVoDistinguishNodesAndPaths(List<MxCellVo> root) {
         Map<String, List<MxCellVo>> map = new HashMap<>();
         if (null != root && root.size() > 0) {
             List<MxCellVo> pathsList = new ArrayList<>();
-            List<MxCellVo> elementsList = new ArrayList<>();
+            List<MxCellVo> nodesList = new ArrayList<>();
             // Loop root
             for (MxCellVo mxCellVo : root) {
-                if (null == mxCellVo) {
-                    continue;
-                }
-                // Take out the style attribute
-                String style = mxCellVo.getStyle();
-                // Judge whether it is empty
-                if (StringUtils.isBlank(style)) {
-                    continue;
-                }
-                if (style.indexOf("image;") == 0) {
-                    elementsList.add(mxCellVo);
-                } else if ("1".equals(mxCellVo.getEdge()) || "true".equals(mxCellVo.getEdge())) {
+                String nodeOrPath = isNodeOrPath(mxCellVo);
+                if (NODE.equals(nodeOrPath)) {
+                    nodesList.add(mxCellVo);
+                } else if (PATH.equals(nodeOrPath)) {
                     pathsList.add(mxCellVo);
                 }
             }
 
-            map.put("elements", elementsList);
+            map.put("nodes", nodesList);
             map.put("paths", pathsList);
         }
         return map;
+    }
+
+    /**
+     * Distinguish between 'element' and 'path'
+     *
+     * @param root
+     * @return Returns a list of Mxcell types with elements and paths in the map
+     *         (keys: paths and elements)
+     */
+    public static Map<String, List<MxCell>> mxCellDistinguishNodesAndPaths(List<MxCell> root) {
+        Map<String, List<MxCell>> map = new HashMap<>();
+        if (null != root && root.size() > 0) {
+            List<MxCell> pathsList = new ArrayList<>();
+            List<MxCell> nodesList = new ArrayList<>();
+            // Loop root
+            for (MxCell mxCell : root) {
+                String nodeOrPath = isNodeOrPath(mxCell);
+                if (NODE.equals(nodeOrPath)) {
+                    nodesList.add(mxCell);
+                } else if (PATH.equals(nodeOrPath)) {
+                    pathsList.add(mxCell);
+                }
+            }
+            map.put("nodes", nodesList);
+            map.put("paths", pathsList);
+        }
+        return map;
+    }
+
+    /**
+     * Judgment object type
+     * 
+     * @param object
+     * @return
+     */
+    public static String isNodeOrPath(Object object) {
+        if (null == object) {
+            return null;
+        }
+        String name = object.getClass().getName();
+        MxCell mxCell = null;
+        if ("cn.cnic.component.mxGraph.vo.MxCellVo".equals(name)) {
+            MxCellVo mxCellVo = (MxCellVo) object;
+            mxCell = new MxCell();
+            BeanUtils.copyProperties(mxCellVo, mxCell);
+        } else if ("cn.cnic.component.mxGraph.entity.MxCell".equals(name)) {
+            mxCell = (MxCell) object;
+        } else {
+            return null;
+        }
+
+        // Take out the style attribute
+        String style = mxCell.getStyle();
+        // Judge whether it is empty
+        if (StringUtils.isBlank(style)) {
+            return null;
+        }
+        if (style.indexOf("image;") == 0) {
+            return NODE;
+        } else if ("1".equals(mxCell.getEdge()) || "true".equals(mxCell.getEdge())) {
+            return PATH;
+        }
+        return null;
+
     }
 
     /**
@@ -275,6 +334,30 @@ public class MxGraphModelUtils {
      * Generate a list of paths based on the contents of the MxCellList
      *
      * @param objectPaths
+     * @param flow
+     * @return
+     */
+    public static List<Paths> mxCellListToPathsList(String username, List<MxCell> objectPaths, Flow flow) {
+        if (null == objectPaths || objectPaths.size() <= 0) {
+            return null;
+        }
+        List<Paths> pathsList = new ArrayList<>();
+        // Loop objectPaths
+        for (MxCell mxCell : objectPaths) {
+            Paths paths = mxCellToPaths(username, mxCell, false);
+            if (null == paths) {
+                continue;
+            }
+            paths.setFlow(flow);
+            pathsList.add(paths);
+        }
+        return pathsList;
+    }
+    
+    /**
+     * Generate a list of paths based on the contents of the MxCellList
+     *
+     * @param objectPaths
      * @param flowGroup
      * @return
      */
@@ -314,6 +397,35 @@ public class MxGraphModelUtils {
             paths.setTo(mxCellVo.getTarget());
             paths.setPageId(mxCellVo.getPageId());
         }
+        return paths;
+    }
+    
+    /**
+     * mxCellVo to Paths
+     *
+     * @param username
+     * @param mxCellVo
+     * @param isAddId Add ID or not
+     * @return
+     */
+    public static Paths mxCellToPaths(String username, MxCell mxCell, boolean isAddId) {
+        if (null == mxCell) {
+            return null;
+        }
+        Paths paths = new Paths();
+        if(isAddId) {
+            paths.setId(UUIDUtils.getUUID32());    
+        } else {
+            paths.setId(null);
+        }
+        paths.setCrtDttm(new Date());
+        paths.setCrtUser(username);
+        paths.setLastUpdateDttm(new Date());
+        paths.setLastUpdateUser(username);
+        paths.setEnableFlag(true);
+        paths.setFrom(mxCell.getSource());
+        paths.setTo(mxCell.getTarget());
+        paths.setPageId(mxCell.getPageId());
         return paths;
     }
 
@@ -358,7 +470,7 @@ public class MxGraphModelUtils {
                 if (null == mxCellVo) {
                     continue;
                 }
-                //image;html=1;labelBackgroundColor=#ffffff00;image=/piflow-web/img/group.png
+                // image;html=1;labelBackgroundColor=#ffffff00;image=/piflow-web/img/group.png
                 String mxCellVoStyle = mxCellVo.getStyle();
                 // Judge whether it is empty
                 if (StringUtils.isBlank(mxCellVoStyle)) {

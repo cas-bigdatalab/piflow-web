@@ -1,17 +1,17 @@
 
 package cn.cnic.component.flow.vo;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.Setter;
-
-import java.io.Serializable;
 
 /**
  * Stop attribute
  */
 
-@Setter
 @Getter
+@Setter
 public class StopsPropertyVo implements Serializable {
 
     private static final long serialVersionUID = 1L;

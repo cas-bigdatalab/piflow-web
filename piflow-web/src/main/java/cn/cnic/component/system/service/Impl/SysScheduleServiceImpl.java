@@ -1,14 +1,8 @@
 package cn.cnic.component.system.service.Impl;
 
-import cn.cnic.base.utils.*;
-import cn.cnic.common.Eunm.ScheduleRunResultType;
-import cn.cnic.common.Eunm.ScheduleState;
-import cn.cnic.component.system.entity.SysSchedule;
-import cn.cnic.component.system.mapper.SysScheduleMapper;
-import cn.cnic.component.system.service.ISysScheduleService;
-import cn.cnic.component.system.vo.SysScheduleVo;
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
+import java.util.Date;
+import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
 import org.quartz.Scheduler;
 import org.slf4j.Logger;
@@ -16,25 +10,33 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
-import javax.transaction.Transactional;
-import java.util.Date;
-import java.util.Map;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+
+import cn.cnic.base.utils.JsonUtils;
+import cn.cnic.base.utils.LoggerUtil;
+import cn.cnic.base.utils.PageHelperUtils;
+import cn.cnic.base.utils.QuartzUtils;
+import cn.cnic.base.utils.ReturnMapUtils;
+import cn.cnic.common.Eunm.ScheduleRunResultType;
+import cn.cnic.common.Eunm.ScheduleState;
+import cn.cnic.component.system.domain.SysScheduleDomain;
+import cn.cnic.component.system.entity.SysSchedule;
+import cn.cnic.component.system.service.ISysScheduleService;
+import cn.cnic.component.system.vo.SysScheduleVo;
+
 
 @Service
 public class SysScheduleServiceImpl implements ISysScheduleService {
 
-	/**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
     private Logger logger = LoggerUtil.getLogger();
 
+    @Autowired
+    private SysScheduleDomain sysScheduleDomain;
+    
     //Injection task scheduling
     @Autowired
     private Scheduler scheduler;
-
-    @Resource
-    private SysScheduleMapper sysScheduleMapper;
 
     /**
      * Paging query schedule
@@ -50,7 +52,7 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.ERROR_MSG);
         }
         Page<SysSchedule> page = PageHelper.startPage(offset, limit, "crt_dttm desc");
-        sysScheduleMapper.getSysScheduleList(isAdmin, param);
+        sysScheduleDomain.getSysScheduleList(isAdmin, param);
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(ReturnMapUtils.SUCCEEDED_MSG);
         rtnMap = PageHelperUtils.setLayTableParam(page, rtnMap);
         return JsonUtils.toJsonNoException(rtnMap);
@@ -64,7 +66,7 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
      */
     @Override
     public String getScheduleById(String username, boolean isAdmin, String scheduleId) {
-        SysScheduleVo sysScheduleVo = sysScheduleMapper.getSysScheduleVoById(isAdmin, scheduleId);
+        SysScheduleVo sysScheduleVo = sysScheduleDomain.getSysScheduleVoById(isAdmin, scheduleId);
         if (null == sysScheduleVo) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("no data");
         }
@@ -78,7 +80,6 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
      * @return
      */
     @Override
-    @Transactional
     public String createJob(String username, boolean isAdmin, SysScheduleVo sysScheduleVo) {
         try {
             if (StringUtils.isBlank(username)) {
@@ -95,7 +96,7 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
             sysSchedule.setLastUpdateUser(username);
             sysSchedule.setStatus(ScheduleState.INIT);
             sysSchedule.setLastRunResult(ScheduleRunResultType.INIT);
-            int i = sysScheduleMapper.insert(sysSchedule);
+            int i = sysScheduleDomain.insertSysSchedule(sysSchedule);
             if (i > 0) {
                 return ReturnMapUtils.setSucceededMsgRtnJsonStr("Created successfully");
             }
@@ -113,7 +114,6 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
      * @return
      */
     @Override
-    @Transactional
     public String runOnce(String username, boolean isAdmin, String sysScheduleId) {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
@@ -121,7 +121,7 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
         if (StringUtils.isBlank(sysScheduleId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("id is empty");
         }
-        SysSchedule sysScheduleById = sysScheduleMapper.getSysScheduleById(isAdmin, sysScheduleId);
+        SysSchedule sysScheduleById = sysScheduleDomain.getSysScheduleById(isAdmin, sysScheduleId);
         if (null == sysScheduleById) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("The task corresponding to the current Id does not exist");
         }
@@ -134,7 +134,7 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
         try {
             QuartzUtils.runOnce(scheduler, jobName);
             sysScheduleById.setLastRunResult(ScheduleRunResultType.SUCCEED);
-            int update = sysScheduleMapper.update(sysScheduleById);
+            int update = sysScheduleDomain.updateSysSchedule(sysScheduleById);
             if (update <= 0) {
                 return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.ERROR_MSG);
             }
@@ -142,7 +142,7 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
         } catch (Exception e) {
             logger.error("Start failed", e);
             sysScheduleById.setLastRunResult(ScheduleRunResultType.FAILURE);
-            sysScheduleMapper.update(sysScheduleById);
+            sysScheduleDomain.updateSysSchedule(sysScheduleById);
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Start failed");
         }
     }
@@ -154,7 +154,6 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
      * @return
      */
     @Override
-    @Transactional
     public String startJob(String username, boolean isAdmin, String sysScheduleId) {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
@@ -162,7 +161,7 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
         if (StringUtils.isBlank(sysScheduleId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("id is empty");
         }
-        SysSchedule sysScheduleById = sysScheduleMapper.getSysScheduleById(isAdmin, sysScheduleId);
+        SysSchedule sysScheduleById = sysScheduleDomain.getSysScheduleById(isAdmin, sysScheduleId);
         if (null == sysScheduleById) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("The task for which the current Id does not exist");
         }
@@ -172,7 +171,7 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
             QuartzUtils.createScheduleJob(scheduler, sysScheduleById);
             sysScheduleById.setStatus(ScheduleState.RUNNING);
             sysScheduleById.setLastRunResult(ScheduleRunResultType.SUCCEED);
-            int update = sysScheduleMapper.update(sysScheduleById);
+            int update = sysScheduleDomain.updateSysSchedule(sysScheduleById);
             if (update <= 0) {
                 return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.ERROR_MSG);
             }
@@ -181,7 +180,7 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
             logger.error("Started failed", e);
             sysScheduleById.setStatus(ScheduleState.STOP);
             sysScheduleById.setLastRunResult(ScheduleRunResultType.FAILURE);
-            sysScheduleMapper.update(sysScheduleById);
+            sysScheduleDomain.updateSysSchedule(sysScheduleById);
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Started failed");
         }
     }
@@ -193,7 +192,6 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
      * @return
      */
     @Override
-    @Transactional
     public String stopJob(String username, boolean isAdmin, String sysScheduleId) {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
@@ -201,7 +199,7 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
         if (StringUtils.isBlank(sysScheduleId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("id is empty");
         }
-        SysSchedule sysScheduleById = sysScheduleMapper.getSysScheduleById(isAdmin, sysScheduleId);
+        SysSchedule sysScheduleById = sysScheduleDomain.getSysScheduleById(isAdmin, sysScheduleId);
         if (null == sysScheduleById) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("The task for which the current Id does not exist");
         }
@@ -214,7 +212,7 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
         try {
             QuartzUtils.deleteScheduleJob(scheduler, jobName);
             sysScheduleById.setStatus(ScheduleState.STOP);
-            int update = sysScheduleMapper.update(sysScheduleById);
+            int update = sysScheduleDomain.updateSysSchedule(sysScheduleById);
             if (update <= 0) {
                 return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.ERROR_MSG);
             }
@@ -232,7 +230,6 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
      * @return
      */
     @Override
-    @Transactional
     public String pauseJob(String username, boolean isAdmin, String sysScheduleId) {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
@@ -240,7 +237,7 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
         if (StringUtils.isBlank(sysScheduleId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("id is empty");
         }
-        SysSchedule sysScheduleById = sysScheduleMapper.getSysScheduleById(isAdmin,sysScheduleId);
+        SysSchedule sysScheduleById = sysScheduleDomain.getSysScheduleById(isAdmin,sysScheduleId);
         if (null == sysScheduleById) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("The task for which the current Id does not exist");
         }
@@ -253,7 +250,7 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
         try {
             QuartzUtils.pauseScheduleJob(scheduler, jobName);
             sysScheduleById.setStatus(ScheduleState.SUSPEND);
-            int update = sysScheduleMapper.update(sysScheduleById);
+            int update = sysScheduleDomain.updateSysSchedule(sysScheduleById);
             if (update <= 0) {
                 return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.ERROR_MSG);
             }
@@ -271,7 +268,6 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
      * @return
      */
     @Override
-    @Transactional
     public String resume(String username, boolean isAdmin, String sysScheduleId) {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
@@ -279,7 +275,7 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
         if (StringUtils.isBlank(sysScheduleId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("id is empty");
         }
-        SysSchedule sysScheduleById = sysScheduleMapper.getSysScheduleById(isAdmin, sysScheduleId);
+        SysSchedule sysScheduleById = sysScheduleDomain.getSysScheduleById(isAdmin, sysScheduleId);
         if (null == sysScheduleById) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("The task for which the current Id does not exist");
         }
@@ -292,7 +288,7 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
         try {
             QuartzUtils.resumeScheduleJob(scheduler, "test1");
             sysScheduleById.setStatus(ScheduleState.RUNNING);
-            int update = sysScheduleMapper.update(sysScheduleById);
+            int update = sysScheduleDomain.updateSysSchedule(sysScheduleById);
             if (update <= 0) {
                 return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.ERROR_MSG);
             }
@@ -310,7 +306,6 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
      * @return
      */
     @Override
-    @Transactional
     public String update(String username, boolean isAdmin, SysScheduleVo sysScheduleVo) {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
@@ -322,7 +317,7 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
         if (StringUtils.isBlank(id)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("id is empty");
         }
-        SysSchedule sysScheduleById = sysScheduleMapper.getSysScheduleById(isAdmin, id);
+        SysSchedule sysScheduleById = sysScheduleDomain.getSysScheduleById(isAdmin, id);
         if (null == sysScheduleById) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("The task for which the current Id does not exist");
         }
@@ -337,7 +332,7 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
             sysScheduleById.setJobName(sysScheduleVo.getJobName());
             sysScheduleById.setJobClass(sysScheduleVo.getJobClass());
             sysScheduleById.setCronExpression(sysScheduleVo.getCronExpression());
-            int update = sysScheduleMapper.update(sysScheduleById);
+            int update = sysScheduleDomain.updateSysSchedule(sysScheduleById);
             if (update <= 0) {
                 return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.ERROR_MSG);
             }
@@ -358,7 +353,6 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
      * @return
      */
     @Override
-    @Transactional
     public String deleteTask(String username, boolean isAdmin, String sysScheduleId) {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
@@ -366,7 +360,7 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
         if (StringUtils.isBlank(sysScheduleId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("id is empty");
         }
-        SysSchedule sysScheduleById = sysScheduleMapper.getSysScheduleById(isAdmin, sysScheduleId);
+        SysSchedule sysScheduleById = sysScheduleDomain.getSysScheduleById(isAdmin, sysScheduleId);
         if (null == sysScheduleById) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("The task for which the current Id does not exist");
         }
@@ -381,7 +375,7 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
             sysScheduleById.setEnableFlag(false);
             sysScheduleById.setLastUpdateDttm(new Date());
             sysScheduleById.setLastUpdateUser(username);
-            int update = sysScheduleMapper.update(sysScheduleById);
+            int update = sysScheduleDomain.updateSysSchedule(sysScheduleById);
             if (update <= 0) {
                 return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.ERROR_MSG);
             }

@@ -1,25 +1,26 @@
 package cn.cnic.component.dashboard.service.impl;
 
-import cn.cnic.component.dashboard.mapper.StatisticMapper;
-import cn.cnic.component.dashboard.service.IStatisticService;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import cn.cnic.component.dashboard.domain.StatisticDomain;
+import cn.cnic.component.dashboard.service.IStatisticService;
+
 @Service
 public class StatisticServiceImpl implements IStatisticService {
 
 
-    @Resource
-    private StatisticMapper statisticMapper;
+    @Autowired
+    private StatisticDomain statisticDomain;
 
     @Override
     public Map<String,String> getFlowStatisticInfo() {
-        List<Map<String, String>> processStatisticList= statisticMapper.getFlowProcessStatisticInfo();
+        List<Map<String, String>> processStatisticList= statisticDomain.getFlowProcessStatisticInfo();
         Map<String, String> processInfoMap = convertList2Map(processStatisticList, "STATE", "COUNT");
         Map<String, String> flowInfoMap = new HashMap<>();
         flowInfoMap.put("PROCESSOR_STARTED_COUNT", processInfoMap.getOrDefault("STARTED","0"));
@@ -30,13 +31,13 @@ public class StatisticServiceImpl implements IStatisticService {
         int processorCount = processInfoMap.values().stream().mapToInt(Integer::parseInt).sum();
         flowInfoMap.put("PROCESSOR_OTHER_COUNT", String.valueOf(processorCount - otherStateCount));
         flowInfoMap.put("PROCESSOR_COUNT", String.valueOf(processorCount));
-        flowInfoMap.put("FLOW_COUNT", String.valueOf(statisticMapper.getFlowCount()));
+        flowInfoMap.put("FLOW_COUNT", String.valueOf(statisticDomain.getFlowCount()));
         return flowInfoMap;
     }
 
     @Override
     public Map<String, String> getGroupStatisticInfo() {
-        List<Map<String, String>> processStatisticList= statisticMapper.getGroupProcessStatisticInfo();
+        List<Map<String, String>> processStatisticList= statisticDomain.getGroupProcessStatisticInfo();
         Map<String, String> processInfoMap = convertList2Map(processStatisticList, "STATE", "COUNT");
         Map<String, String> groupInfoMap = new HashMap<>();
         groupInfoMap.put("PROCESSOR_STARTED_COUNT", processInfoMap.getOrDefault("STARTED","0"));
@@ -48,13 +49,13 @@ public class StatisticServiceImpl implements IStatisticService {
         groupInfoMap.put("PROCESSOR_OTHER_COUNT", String.valueOf(processorCount - otherStateCount));
         groupInfoMap.put("PROCESSOR_COUNT", String.valueOf(processorCount));
 
-        groupInfoMap.put("GROUP_COUNT", String.valueOf(statisticMapper.getGroupCount()));
+        groupInfoMap.put("GROUP_COUNT", String.valueOf(statisticDomain.getGroupCount()));
         return groupInfoMap;
     }
 
     @Override
     public Map<String, String> getScheduleStatisticInfo() {
-        List<Map<String, String>> scheduleStatisticList= statisticMapper.getScheduleStatisticInfo();
+        List<Map<String, String>> scheduleStatisticList= statisticDomain.getScheduleStatisticInfo();
         Map<String, String> scheduleStatusMap = convertList2Map(scheduleStatisticList, "STATUS", "COUNT");
         int scheduleCount = scheduleStatusMap.values().stream().mapToInt(Integer::parseInt).sum();
         Map<String, String> scheduleInfoMap = new HashMap<>();
@@ -69,17 +70,17 @@ public class StatisticServiceImpl implements IStatisticService {
     @Override
     public Map<String, String> getTemplateAndDataSourceStatisticInfo() {
         Map<String, String> infoMap = new HashMap<>();
-        infoMap.put("TEMPLATE_COUNT", String.valueOf(statisticMapper.getTemplateCount()));
-        infoMap.put("DATASOURCE_COUNT", String.valueOf(statisticMapper.getDataSourceCount()));
-        infoMap.put("STOPSHUB_COUNT",  String.valueOf(statisticMapper.getStopsHubCount()));
+        infoMap.put("TEMPLATE_COUNT", String.valueOf(statisticDomain.getTemplateCount()));
+        infoMap.put("DATASOURCE_COUNT", String.valueOf(statisticDomain.getDataSourceCount()));
+        infoMap.put("STOPSHUB_COUNT",  String.valueOf(statisticDomain.getStopsHubCount()));
         return infoMap;
     }
 
     @Override
     public Map<String, String> getStopStatisticInfo() {
         Map<String, String> infoMap = new HashMap<>();
-        infoMap.put("STOP_COUNT", String.valueOf(statisticMapper.getStopsCount()));
-        infoMap.put("STOPGROUP_COUNT", String.valueOf(statisticMapper.getStopsGroupCount()));
+        infoMap.put("STOP_COUNT", String.valueOf(statisticDomain.getStopsCount()));
+        infoMap.put("STOPGROUP_COUNT", String.valueOf(statisticDomain.getStopsGroupCount()));
         return infoMap;
     }
 

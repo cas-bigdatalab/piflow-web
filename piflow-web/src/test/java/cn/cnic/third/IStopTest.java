@@ -5,7 +5,8 @@ import cn.cnic.base.utils.HttpUtils;
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.third.service.IStop;
 import cn.cnic.third.vo.stop.ThirdStopsComponentVo;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -15,13 +16,11 @@ import java.util.Map;
 
 public class IStopTest extends ApplicationTests {
 
-    /**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
     private Logger logger = LoggerUtil.getLogger();
-	
+
     @Autowired
     private IStop stopImpl;
+
 
     @Test
     public void testGetAllGroup() {

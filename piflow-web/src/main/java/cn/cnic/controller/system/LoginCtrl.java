@@ -5,29 +5,26 @@ import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.base.vo.UserVo;
 import cn.cnic.component.system.service.ISysUserService;
 import cn.cnic.component.system.vo.SysUserVo;
+
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping("/")
 public class LoginCtrl {
 
-	/**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
     private Logger logger = LoggerUtil.getLogger();
 
     @Autowired
     private ISysUserService sysUserServiceImpl;
 
-    @RequestMapping("/login")
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ModelAndView login(ModelAndView modelAndView) {
         UserVo user = SessionUserUtil.getCurrentUser();
         if (null != user) {
@@ -40,19 +37,15 @@ public class LoginCtrl {
         return modelAndView;
     }
 
-    @PostMapping(value = "/jwtLogin")
+    @RequestMapping(value = "/jwtLogin", method = RequestMethod.POST)
     @ResponseBody
     public String login(String username,String password){
         return sysUserServiceImpl.jwtLogin(username, password);
     }
 
-    @RequestMapping(value = "/register")
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
     @ResponseBody
-    public String register(HttpServletRequest request) {
-        String username = request.getParameter("username");
-        String pw = request.getParameter("pw");
-        String name = request.getParameter("name");
-        String sex = request.getParameter("sex");
+    public String register(String username, String pw, String name, String sex) {
         SysUserVo sysUserVo = new SysUserVo();
         sysUserVo.setUsername(username);
         sysUserVo.setPassword(pw);
@@ -61,7 +54,7 @@ public class LoginCtrl {
         return sysUserServiceImpl.registerUser(sysUserVo);
     }
 
-    @RequestMapping(value = "/checkUserName")
+    @RequestMapping(value = "/checkUserName", method = RequestMethod.POST)
     @ResponseBody
     public String checkUserName(String username) {
         return sysUserServiceImpl.checkUserName(username);

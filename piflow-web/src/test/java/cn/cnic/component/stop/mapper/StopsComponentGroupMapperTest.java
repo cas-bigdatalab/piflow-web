@@ -3,20 +3,18 @@ package cn.cnic.component.stop.mapper;
 import cn.cnic.ApplicationTests;
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.component.stopsComponent.mapper.StopsComponentGroupMapper;
-import cn.cnic.component.stopsComponent.model.StopsComponentGroup;
-import org.junit.Test;
+import cn.cnic.component.stopsComponent.entity.StopsComponentGroup;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
+
 public class StopsComponentGroupMapperTest extends ApplicationTests {
 
-	/**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
     private Logger logger = LoggerUtil.getLogger();
-	
+
     @Autowired
     private StopsComponentGroupMapper stopsComponentGroupMapper;
 

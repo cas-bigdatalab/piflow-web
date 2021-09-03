@@ -1,27 +1,15 @@
 package cn.cnic.base.utils;
 
-import org.quartz.CronScheduleBuilder;
-import org.quartz.CronTrigger;
-import org.quartz.Job;
-import org.quartz.JobBuilder;
-import org.quartz.JobDetail;
-import org.quartz.JobKey;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.TriggerBuilder;
-import org.quartz.TriggerKey;
-import org.slf4j.Logger;
-
 import cn.cnic.component.system.entity.SysSchedule;
 
 
+import org.quartz.*;
+import org.slf4j.Logger;
+
 public class QuartzUtils {
 
-	/**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
     private static Logger logger = LoggerUtil.getLogger();
-	
+
     /**
      * Create a timed task(The default startup state after a scheduled task is created)
      *

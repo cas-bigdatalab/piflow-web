@@ -1,31 +1,38 @@
 package cn.cnic.component.sparkJar.service.impl;
 
-import cn.cnic.base.utils.*;
+import java.util.Date;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+
+import cn.cnic.base.utils.FileUtils;
+import cn.cnic.base.utils.JsonUtils;
+import cn.cnic.base.utils.PageHelperUtils;
+import cn.cnic.base.utils.ReturnMapUtils;
+import cn.cnic.base.utils.UUIDUtils;
 import cn.cnic.common.Eunm.SparkJarState;
 import cn.cnic.component.process.entity.Process;
-import cn.cnic.component.sparkJar.mapper.SparkJarMapper;
-import cn.cnic.component.sparkJar.model.SparkJarComponent;
+import cn.cnic.component.sparkJar.domain.SparkJarDomain;
+import cn.cnic.component.sparkJar.entity.SparkJarComponent;
 import cn.cnic.component.sparkJar.service.ISparkJarService;
 import cn.cnic.component.sparkJar.utils.SparkJarUtils;
 import cn.cnic.third.service.ISparkJar;
 import cn.cnic.third.vo.sparkJar.SparkJarVo;
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Resource;
-import javax.transaction.Transactional;
-import java.util.*;
 
 @Service
 public class SparkJarServiceImpl implements ISparkJarService {
 
-    @Resource
-    private SparkJarMapper sparkJarMapper;
 
-    @Resource
+    @Autowired
+    private SparkJarDomain sparkJarDomain;
+
+    @Autowired
     private ISparkJar sparkJarImpl;
 
 
@@ -59,15 +66,14 @@ public class SparkJarServiceImpl implements ISparkJarService {
         sparkJarComponent.setJarName(sparkJarName);
         sparkJarComponent.setJarUrl(sparkJarPath + sparkJarName);
         sparkJarComponent.setStatus(SparkJarState.UNMOUNT);
-        sparkJarMapper.addSparkJarComponent(sparkJarComponent);
+        sparkJarDomain.addSparkJarComponent(sparkJarComponent);
         return ReturnMapUtils.setSucceededMsgRtnJsonStr("successful jar upload");
     }
 
     @Override
-    @Transactional
     public String mountSparkJar(String username, Boolean isAdmin, String id) {
 
-        SparkJarComponent sparkJarComponent = sparkJarMapper.getSparkJarById(username, isAdmin, id);
+        SparkJarComponent sparkJarComponent = sparkJarDomain.getSparkJarById(username, isAdmin, id);
 
         SparkJarVo sparkJarVo = sparkJarImpl.mountSparkJar(sparkJarComponent.getJarName());
         if (sparkJarVo == null) {
@@ -78,16 +84,15 @@ public class SparkJarServiceImpl implements ISparkJarService {
         sparkJarComponent.setStatus(SparkJarState.MOUNT);
         sparkJarComponent.setLastUpdateUser(username);
         sparkJarComponent.setLastUpdateDttm(new Date());
-        sparkJarMapper.updateSparkJarComponent(sparkJarComponent);
+        sparkJarDomain.updateSparkJarComponent(sparkJarComponent);
 
         return ReturnMapUtils.setSucceededMsgRtnJsonStr("Mount successful");
     }
 
     @Override
-    @Transactional
     public String unmountSparkJar(String username, Boolean isAdmin, String id) {
 
-        SparkJarComponent sparkJarComponent = sparkJarMapper.getSparkJarById(username, isAdmin, id);
+        SparkJarComponent sparkJarComponent = sparkJarDomain.getSparkJarById(username, isAdmin, id);
         if (sparkJarComponent.getStatus() == SparkJarState.UNMOUNT) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Spark jar have been UNMounted already!");
         }
@@ -100,7 +105,7 @@ public class SparkJarServiceImpl implements ISparkJarService {
         sparkJarComponent.setStatus(SparkJarState.UNMOUNT);
         sparkJarComponent.setLastUpdateUser(username);
         sparkJarComponent.setLastUpdateDttm(new Date());
-        sparkJarMapper.updateSparkJarComponent(sparkJarComponent);
+        sparkJarDomain.updateSparkJarComponent(sparkJarComponent);
 
 
         return ReturnMapUtils.setSucceededMsgRtnJsonStr("Unmount successful");
@@ -121,7 +126,7 @@ public class SparkJarServiceImpl implements ISparkJarService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.ERROR_MSG);
         }
         Page<Process> page = PageHelper.startPage(pageNo, limit, "crt_dttm desc");
-        sparkJarMapper.getSparkJarListParam(username, isAdmin, param);
+        sparkJarDomain.getSparkJarListParam(username, isAdmin, param);
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(ReturnMapUtils.SUCCEEDED_MSG);
         rtnMap = PageHelperUtils.setLayTableParam(page, rtnMap);
         return JsonUtils.toJsonNoException(rtnMap);
@@ -138,7 +143,7 @@ public class SparkJarServiceImpl implements ISparkJarService {
         if (StringUtils.isBlank(id)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("id is null");
         }
-        SparkJarComponent sparkJarComponent = sparkJarMapper.getSparkJarById(username, isAdmin, id);
+        SparkJarComponent sparkJarComponent = sparkJarDomain.getSparkJarById(username, isAdmin, id);
         if (null == sparkJarComponent) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("no data");
         }
@@ -146,7 +151,7 @@ public class SparkJarServiceImpl implements ISparkJarService {
         if (SparkJarState.MOUNT == status) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("The status is MOUNT and deletion is prohibited ");
         }
-        int i = sparkJarMapper.deleteSparkJarById(username, id);
+        int i = sparkJarDomain.deleteSparkJarById(username, id);
         if (i <= 0) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("delete failed");
         }

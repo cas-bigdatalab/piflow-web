@@ -4,11 +4,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
-import javax.transaction.Transactional;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
@@ -18,8 +16,8 @@ import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.common.Eunm.RunModeType;
 import cn.cnic.common.constant.SysParamsCache;
+import cn.cnic.component.process.domain.ProcessGroupDomain;
 import cn.cnic.component.process.entity.ProcessGroup;
-import cn.cnic.component.process.jpa.domain.ProcessGroupDomain;
 import cn.cnic.component.process.utils.ProcessUtils;
 import cn.cnic.third.service.IGroup;
 import cn.cnic.third.utils.ThirdFlowGroupInfoResponseUtils;
@@ -29,15 +27,13 @@ import cn.cnic.third.vo.flowGroup.ThirdFlowInfoOutResponse;
 import cn.cnic.third.vo.flowGroup.ThirdFlowStopInfoOutResponse;
 import net.sf.json.JSONObject;
 
+
 @Component
 public class GroupImpl implements IGroup {
 
-	/**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
     private Logger logger = LoggerUtil.getLogger();
 
-    @Resource
+    @Autowired
     private ProcessGroupDomain processGroupDomain;
 
     @Override
@@ -56,9 +52,13 @@ public class GroupImpl implements IGroup {
         //===============================临时===============================
         String doPost = HttpUtils.doPost(SysParamsCache.getFlowGroupStartUrl(), formatJson, null);
         logger.info("Return information：" + doPost);
-        if (StringUtils.isBlank(doPost) || doPost.contains("Exception")) {
+        if (StringUtils.isBlank(doPost)) {
+            logger.warn("Return information values is null");
+            return ReturnMapUtils.setFailedMsg("Return information values is null");
+        }
+        if (doPost.contains(HttpUtils.INTERFACE_CALL_ERROR) || doPost.contains("Exception")) {
             logger.warn("Return information：" + doPost);
-            return ReturnMapUtils.setFailedMsg("Error : Interface call failed");
+            return ReturnMapUtils.setFailedMsg("Interface call failed: " + doPost);
         }
         try {
             JSONObject obj = JSONObject.fromObject(doPost).getJSONObject("group");// Convert a json string to a json object
@@ -79,7 +79,7 @@ public class GroupImpl implements IGroup {
         map.put("groupId", processGroupId);
         String json = JSON.toJSON(map).toString();
         String doPost = HttpUtils.doPost(SysParamsCache.getFlowGroupStopUrl(), json, 5 * 1000);
-        if (StringUtils.isNotBlank(doPost) && !doPost.contains("Exception")) {
+        if (StringUtils.isBlank(doPost) || doPost.contains(HttpUtils.INTERFACE_CALL_ERROR) || doPost.contains("Exception")) {
             logger.warn("Interface return exception");
         } else {
             logger.info("Interface return value: " + doPost);
@@ -89,14 +89,13 @@ public class GroupImpl implements IGroup {
 
     @Override
     public String getFlowGroupInfoStr(String groupId) {
-        String rtnStr = null;
-        if (StringUtils.isNotBlank(groupId)) {
-            Map<String, String> map = new HashMap<>();
-            map.put("groupId", groupId);
-            String doGet = HttpUtils.doGet(SysParamsCache.getFlowGroupInfoUrl(), map, 5 * 1000);
-            rtnStr = doGet;
+        if (StringUtils.isBlank(groupId)) {
+        	return null;
         }
-        return rtnStr;
+        Map<String, String> map = new HashMap<>();
+        map.put("groupId", groupId);
+        String doGet = HttpUtils.doGet(SysParamsCache.getFlowGroupInfoUrl(), map, 5 * 1000);
+        return doGet;
     }
 
     @SuppressWarnings("rawtypes")
@@ -104,8 +103,12 @@ public class GroupImpl implements IGroup {
     public ThirdFlowGroupInfoResponse getFlowGroupInfo(String groupId) {
         ThirdFlowGroupInfoResponse thirdFlowGroupInfoResponse = null;
         String doGet = getFlowGroupInfoStr(groupId);
-        if (StringUtils.isBlank(doGet) || doGet.contains("Exception")) {
-            logger.warn("Interface exception");
+        if (StringUtils.isBlank(doGet)) {
+            logger.warn("Interface return values is null");
+            return null;
+        }
+        if (doGet.contains(HttpUtils.INTERFACE_CALL_ERROR) || doGet.contains("Exception")) {
+            logger.warn("Interface exception: " + doGet);
             return null;
         }
         // Also convert the json string to a json object, and then convert the json object to a java object, as shown below.
@@ -158,6 +161,10 @@ public class GroupImpl implements IGroup {
             logger.warn("The interface return value is empty.");
             return null;
         }
+        if (doGet.contains(HttpUtils.INTERFACE_CALL_ERROR)) {
+            logger.warn("Interface exception: " + doGet);
+            return null;
+        }
         try {
             return Double.parseDouble(doGet);
         } catch (Exception e) {
@@ -170,38 +177,38 @@ public class GroupImpl implements IGroup {
      * update FlowGroup By Interface
      *
      * @param groupId
+     * @throws Exception 
      */
     @Override
-    @Transactional
-    public void updateFlowGroupByInterface(String groupId) {
+    public void updateFlowGroupByInterface(String groupId) throws Exception {
         ThirdFlowGroupInfoResponse thirdFlowGroupInfoResponse = getFlowGroupInfo(groupId);
         Double flowGroupProgress = getFlowGroupProgress(groupId);
         //Determine if the progress returned by the interface is empty
         if (null == thirdFlowGroupInfoResponse) {
             return;
         }
-        ProcessGroup processGroupByGroupId = processGroupDomain.getProcessGroupByGroupId(groupId);
-        if (null == processGroupByGroupId) {
+        ProcessGroup processGroupByAppId = processGroupDomain.getProcessGroupByAppId(groupId);
+        if (null == processGroupByAppId) {
             return;
         }
-        processGroupByGroupId = ThirdFlowGroupInfoResponseUtils.setProcessGroup(processGroupByGroupId, thirdFlowGroupInfoResponse);
+        processGroupByAppId = ThirdFlowGroupInfoResponseUtils.setProcessGroup(processGroupByAppId, thirdFlowGroupInfoResponse);
         if (null == flowGroupProgress || Double.isNaN(flowGroupProgress)) {
             flowGroupProgress = 0.0;
         } else if (Double.isInfinite(flowGroupProgress)) {
             flowGroupProgress = 100.0;
         }
-        processGroupByGroupId.setProgress(String.format("%.2f", flowGroupProgress));
-        processGroupDomain.saveOrUpdateSyncTask(processGroupByGroupId);
+        processGroupByAppId.setProgress(String.format("%.2f", flowGroupProgress));
+        processGroupDomain.saveOrUpdateSyncTask(processGroupByAppId);
     }
 
     /**
      * update FlowGroups By Interface
      *
      * @param groupIds
+     * @throws Exception 
      */
     @Override
-    @Transactional
-    public void updateFlowGroupsByInterface(List<String> groupIds) {
+    public void updateFlowGroupsByInterface(List<String> groupIds) throws Exception {
         if (null != groupIds && groupIds.size() > 0) {
             for (String groupId : groupIds) {
                 this.updateFlowGroupByInterface(groupId);

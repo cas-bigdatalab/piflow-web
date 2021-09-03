@@ -1,11 +1,10 @@
 package cn.cnic.component.stopsComponent.mapper.provider;
 
-import java.util.List;
-
+import cn.cnic.base.utils.SqlUtils;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.jdbc.SQL;
 
-import cn.cnic.base.utils.SqlUtils;
+import java.util.List;
 
 public class StopsComponentGroupProvider {
 

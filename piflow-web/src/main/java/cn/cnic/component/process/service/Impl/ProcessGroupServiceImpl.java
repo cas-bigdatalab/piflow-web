@@ -7,69 +7,66 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
-
-import cn.cnic.base.utils.*;
-import cn.cnic.base.vo.UserVo;
-import cn.cnic.component.mxGraph.entity.MxCell;
-import cn.cnic.component.mxGraph.entity.MxGraphModel;
-import cn.cnic.component.mxGraph.utils.MxCellUtils;
-import cn.cnic.component.process.entity.Process;
-import cn.cnic.component.process.mapper.ProcessMapper;
-import cn.cnic.component.process.vo.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.domain.Page;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+
+import cn.cnic.base.utils.HdfsUtils;
+import cn.cnic.base.utils.JsonUtils;
+import cn.cnic.base.utils.LoggerUtil;
+import cn.cnic.base.utils.MxGraphUtils;
+import cn.cnic.base.utils.PageHelperUtils;
+import cn.cnic.base.utils.ReturnMapUtils;
+import cn.cnic.base.utils.UUIDUtils;
+import cn.cnic.base.vo.UserVo;
 import cn.cnic.common.Eunm.PortType;
 import cn.cnic.common.Eunm.ProcessParentType;
 import cn.cnic.common.Eunm.ProcessState;
 import cn.cnic.common.Eunm.RunModeType;
+import cn.cnic.component.mxGraph.entity.MxCell;
+import cn.cnic.component.mxGraph.entity.MxGraphModel;
+import cn.cnic.component.mxGraph.utils.MxCellUtils;
+import cn.cnic.component.process.domain.ProcessGroupDomain;
+import cn.cnic.component.process.entity.Process;
 import cn.cnic.component.process.entity.ProcessGroup;
 import cn.cnic.component.process.entity.ProcessGroupPath;
+import cn.cnic.component.process.mapper.ProcessMapper;
 import cn.cnic.component.process.service.IProcessGroupService;
 import cn.cnic.component.process.utils.ProcessGroupUtils;
 import cn.cnic.component.process.utils.ProcessUtils;
-import cn.cnic.component.process.jpa.domain.ProcessDomain;
-import cn.cnic.component.process.jpa.domain.ProcessGroupDomain;
-import cn.cnic.component.process.jpa.domain.ProcessGroupPathDomain;
-import cn.cnic.component.process.mapper.ProcessGroupMapper;
+import cn.cnic.component.process.vo.DebugDataRequest;
+import cn.cnic.component.process.vo.DebugDataResponse;
+import cn.cnic.component.process.vo.ProcessGroupPathVo;
+import cn.cnic.component.process.vo.ProcessGroupVo;
+import cn.cnic.component.process.vo.ProcessVo;
 import cn.cnic.third.service.IFlow;
 import cn.cnic.third.service.IGroup;
 import net.sf.json.JSONObject;
 
+
 @Service
 public class ProcessGroupServiceImpl implements IProcessGroupService {
 
-	/**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
     private Logger logger = LoggerUtil.getLogger();
 
-    @Resource
-    private ProcessGroupDomain processGroupDomain;
-
-    @Resource
-    private ProcessGroupPathDomain processGroupPathDomain;
-
-    @Resource
-    private ProcessDomain processDomain;
-
-    @Resource
+    @Autowired
     private ProcessMapper processMapper;
 
-    @Resource
-    private ProcessGroupMapper processGroupMapper;
+    @Autowired
+    private ProcessGroupDomain processGroupDomain;
 
-    @Resource
+    @Autowired
     private IGroup groupImpl;
 
-    @Resource
+    @Autowired
     private IFlow flowImpl;
+
 
     /**
      * Query processVo based on id (query contains its child table)
@@ -78,11 +75,16 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
      * @return ProcessGroupVo (query contains its child table)
      */
     @Override
-    public ProcessGroupVo getProcessGroupVoAllById(String id) {
-        if (StringUtils.isBlank(id)) {
+    public ProcessGroupVo getProcessGroupVoAllById(String username, boolean isAdmin, String processGroupId) {
+        if (StringUtils.isBlank(username)) {
+            logger.warn("Illegal user");
             return null;
         }
-        ProcessGroup processGroupById = processGroupDomain.getProcessGroupById(id);
+        if (StringUtils.isBlank(processGroupId)) {
+            logger.warn("processGroupId is null");
+            return null;
+        }
+        ProcessGroup processGroupById = processGroupDomain.getProcessGroupById(username, isAdmin, processGroupId);
         return ProcessGroupUtils.processGroupPoToVo(processGroupById);
     }
 
@@ -93,11 +95,14 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
      * @return ProcessGroupVo (Only themselves do not include subtables)
      */
     @Override
-    public String getProcessGroupVoById(String id) {
-        if (StringUtils.isBlank(id)) {
+    public String getProcessGroupVoById(String username, boolean isAdmin, String processGroupId) {
+        if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal user");
+        }
+        if (StringUtils.isBlank(processGroupId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Parameter passed in incorrectly");
         }
-        ProcessGroup processGroupById = processGroupDomain.getProcessGroupById(id);
+        ProcessGroup processGroupById = processGroupDomain.getProcessGroupById(username, isAdmin, processGroupId);
         if (null == processGroupById) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Data is null");
         }
@@ -134,7 +139,7 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
     }
 
     /**
-     * Query  appInfo according to appID
+     * Query appInfo according to appID
      *
      * @param appIDs AppId array
      * @return string
@@ -144,7 +149,7 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
         if (null == appIDs || appIDs.length <= 0) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Incoming parameter is null");
         }
-        List<ProcessGroup> processGroupListByAppIDs = processGroupMapper.getProcessGroupListByAppIDs(appIDs);
+        List<ProcessGroup> processGroupListByAppIDs = processGroupDomain.getProcessGroupListByAppIDs(appIDs);
         if (CollectionUtils.isEmpty(processGroupListByAppIDs)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("No data was queried");
         }
@@ -168,10 +173,10 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
      * @param processGroupId Run ProcessGroup Id
      * @param checkpoint     checkpoint
      * @return json
+     * @throws Exception 
      */
     @Override
-    @Transactional
-    public String startProcessGroup(String username, String processGroupId, String checkpoint, String runMode) {
+    public String startProcessGroup(boolean isAdmin, String username, String processGroupId, String checkpoint, String runMode) throws Exception {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
         }
@@ -186,24 +191,27 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
             runModeType = RunModeType.RUN;
         }
         // Query Process by 'processGroupId'
-        ProcessGroup processGroupById = processGroupDomain.getProcessGroupById(processGroupId);
+        ProcessGroup processGroupById = processGroupDomain.getProcessGroupById(username, isAdmin, processGroupId);
         if (null == processGroupById) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("No data by process group Id'" + processGroupId + "'");
         }
         // copy and Create
         ProcessGroup copyProcessGroup = ProcessGroupUtils.copyProcessGroup(processGroupById, username, runModeType, false);
-        copyProcessGroup = processGroupDomain.saveOrUpdate(username, copyProcessGroup);
-
+        copyProcessGroup.setId(UUIDUtils.getUUID32());
+        processGroupDomain.addProcessGroup(copyProcessGroup);
+        String copyProcessGroupId = copyProcessGroup.getId();
+        copyProcessGroup = processGroupDomain.getProcessGroupById(username, isAdmin, copyProcessGroupId);
+        
         Map<String, Object> rtnMap = new HashMap<>();
         Map<String, Object> stringObjectMap = groupImpl.startFlowGroup(copyProcessGroup, runModeType);
-        copyProcessGroup.setLastUpdateUser(username);
-        copyProcessGroup.setLastUpdateDttm(new Date());
         if (200 == (Integer) stringObjectMap.get("code")) {
+            copyProcessGroup.setLastUpdateUser(username);
+            copyProcessGroup.setLastUpdateDttm(new Date());
             copyProcessGroup.setAppId((String) stringObjectMap.get("appId"));
             copyProcessGroup.setProcessId((String) stringObjectMap.get("appId"));
             copyProcessGroup.setState(ProcessState.STARTED);
             copyProcessGroup.setProcessParentType(ProcessParentType.GROUP);
-            processGroupDomain.saveOrUpdate(username, copyProcessGroup);
+            processGroupDomain.updateProcessGroup(copyProcessGroup);
             rtnMap.put("processGroupId", copyProcessGroup.getId());
             rtnMap.put("errorMsg", "Successful startup");
             rtnMap.put(ReturnMapUtils.KEY_CODE, ReturnMapUtils.SUCCEEDED_CODE);
@@ -213,7 +221,7 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
             rtnMap.put(ReturnMapUtils.KEY_CODE, ReturnMapUtils.ERROR_CODE);
             rtnMap.put("errorMsg", "Calling interface failed, startup failed");
             logger.warn("Calling interface failed, startup failed");
-            processGroupDomain.saveOrUpdate(username, copyProcessGroup);
+            processGroupDomain.updateEnableFlagById(copyProcessGroupId, username);
         }
         return JsonUtils.toJsonNoException(rtnMap);
     }
@@ -233,25 +241,10 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
         if (null == offset || null == limit) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.ERROR_MSG);
         }
-        Page<ProcessGroup> processGroupListPage = processGroupDomain.getProcessGroupListPage(username, isAdmin, offset - 1, limit, param);
-        List<ProcessGroup> content = processGroupListPage.getContent();
-        List<ProcessGroupVo> processGroupVoList = null;
-        if (null != content && content.size() > 0) {
-            processGroupVoList = new ArrayList<>();
-            ProcessGroupVo processGroupVo;
-            for (ProcessGroup processGroup : content) {
-                if (null == processGroup) {
-                    continue;
-                }
-                processGroupVo = new ProcessGroupVo();
-                BeanUtils.copyProperties(processGroup, processGroupVo);
-                processGroupVoList.add(processGroupVo);
-            }
-        }
+        Page<ProcessGroupVo> page = PageHelper.startPage(offset, limit, "crt_dttm desc");
+        processGroupDomain.getProcessGroupListPageByParam(username, isAdmin, param);
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(ReturnMapUtils.SUCCEEDED_MSG);
-        rtnMap.put("msg", "");
-        rtnMap.put("count", processGroupListPage.getTotalElements());
-        rtnMap.put("data", processGroupVoList);//Data collection
+        rtnMap = PageHelperUtils.setLayTableParam(page, rtnMap);
         return JsonUtils.toJsonNoException(rtnMap);
     }
 
@@ -263,42 +256,28 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
      */
     @Override
     public String stopProcessGroup(String username, boolean isAdmin, String processGroupId) {
-        Map<String, Object> rtnMap = new HashMap<>();
-        rtnMap.put("code", 500);
-        if (StringUtils.isNotBlank(processGroupId)) {
-            // Query Process by 'processGroupId'
-            ProcessGroup processGroup = processGroupMapper.getProcessGroupByIdAndUser(username, isAdmin, processGroupId);
-            // Determine whether it is empty, and determine whether the save is successful.
-            if (null != processGroup) {
-                String appId = processGroup.getAppId();
-                if (null != appId) {
-                    if (ProcessState.STARTED == processGroup.getState()) {
-                        String stopFlow = groupImpl.stopFlowGroup(appId);
-                        if (StringUtils.isNotBlank(stopFlow) && !stopFlow.contains("Exception")) {
-                            rtnMap.put("code", 200);
-                            rtnMap.put("errorMsg", "Stop successful, return status is " + stopFlow);
-                        } else {
-                            logger.warn("Interface return value is null." + stopFlow);
-                            rtnMap.put("errorMsg", "Interface return value is " + stopFlow);
-                        }
-                    } else {
-                        logger.warn("The status of the process is " + processGroup.getState() + " and cannot be stopped.");
-                        rtnMap.put("errorMsg", "The status of the process is " + processGroup.getState() + " and cannot be stopped.");
-                    }
-                } else {
-                    logger.warn("The 'appId' of the 'process' is empty.");
-                    rtnMap.put("errorMsg", "The 'appId' of the 'process' is empty.");
-                }
-            } else {
-                logger.warn("No process ID is '" + processGroupId + "' process");
-                rtnMap.put("errorMsg", " No process ID is '" + processGroupId + "' process");
-            }
-        } else {
-            logger.warn("processGroupId is null");
-            rtnMap.put("errorMsg", "processGroupId is null");
+        if (StringUtils.isBlank(processGroupId)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("processGroupId is null");
         }
-
-        return JsonUtils.toJsonNoException(rtnMap);
+        // Query Process by 'processGroupId'
+        ProcessGroup processGroup = processGroupDomain.getProcessGroupByIdAndUser(username, isAdmin, processGroupId);
+        // Determine whether it is empty, and determine whether the save is successful.
+        if (null == processGroup) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("No process ID is '" + processGroupId + "' process");
+        }
+        String appId = processGroup.getAppId();
+        if (StringUtils.isBlank(appId)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("The 'appId' of the 'process' is empty.");
+        }
+        if (ProcessState.STARTED != processGroup.getState()) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(
+                    "The status of the process is " + processGroup.getState() + " and cannot be stopped.");
+        }
+        String stopFlow = groupImpl.stopFlowGroup(appId);
+        if (StringUtils.isNotBlank(stopFlow) && !stopFlow.contains("Exception")) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Interface return value is " + stopFlow);
+        }
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr("Stop successful, return status is " + stopFlow);
     }
 
     /**
@@ -349,14 +328,14 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("processGroupID is null");
         }
         // Query Process by 'processGroupID'
-        ProcessGroup processGroupById = processGroupMapper.getProcessGroupByIdAndUser(username, isAdmin, processGroupID);
+        ProcessGroup processGroupById = processGroupDomain.getProcessGroupByIdAndUser(username, isAdmin, processGroupID);
         if (null == processGroupById) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("No process ID is '" + processGroupID + "' process");
         }
         if (processGroupById.getState() == ProcessState.STARTED) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Status is STARTED, cannot be deleted");
         }
-        int updateEnableFlagById = processGroupMapper.updateEnableFlagById(processGroupID, username);
+        int updateEnableFlagById = processGroupDomain.updateEnableFlagById(processGroupID, username);
         // Determine whether the deletion is successful
         if (updateEnableFlagById > 0) {
             return ReturnMapUtils.setSucceededMsgRtnJsonStr("Successfully Deleted");
@@ -400,13 +379,15 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
      * @return json
      */
     @Override
-    @Transactional
-    public String getStartGroupJson(String processGroupId) {
+    public String getStartGroupJson(String username, boolean isAdmin, String processGroupId) {
+        if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal user");
+        }
         if (StringUtils.isBlank(processGroupId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("processGroupID is null");
         }
         // Query groupLogData by 'processGroupId'
-        ProcessGroup processGroup = processGroupDomain.getProcessGroupById(processGroupId);
+        ProcessGroup processGroup = processGroupDomain.getProcessGroupById(username, isAdmin, processGroupId);
         if (null == processGroup) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("No process ID is '" + processGroupId + "' process");
         }
@@ -423,7 +404,7 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
      */
     @Override
     public String getProcessIdByPageId(String fId, String pageId) {
-        return processDomain.getProcessIdByPageId(fId, pageId);
+        return processMapper.getProcessIdByPageId(fId, pageId);
     }
 
     /**
@@ -435,7 +416,7 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
      */
     @Override
     public String getProcessGroupIdByPageId(String fId, String pageId) {
-        return processGroupDomain.getProcessIdGroupByPageId(fId, pageId);
+        return processGroupDomain.getProcessGroupIdByPageId(fId, pageId);
     }
 
     /**
@@ -446,21 +427,12 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
      * @return json
      */
     @Override
-    @Transactional
     public ProcessGroupVo getProcessGroupVoByPageId(String processGroupId, String pageId) {
         ProcessGroupVo processGroupVo = null;
         ProcessGroup processGroup = processGroupDomain.getProcessGroupByPageId(processGroupId, pageId);
         if (null != processGroup) {
             processGroupVo = new ProcessGroupVo();
             BeanUtils.copyProperties(processGroup, processGroupVo);
-            // List<ProcessGroup> processGroupList = processGroup.getProcessGroupList();
-            // List<Process> processList = processGroup.getProcessList();
-            // if (null != processGroupList) {
-            //     processGroupVo.setFlowGroupQuantity(processGroupList.size());
-            // }
-            // if (null != processList) {
-            //     processGroupVo.setFlowQuantity(processList.size());
-            // }
         }
         return processGroupVo;
     }
@@ -476,7 +448,7 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
         if (StringUtils.isAnyEmpty(processGroupId, pageId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("param is null");
         }
-        ProcessGroupPath processGroupPathByPageId = processGroupPathDomain.getProcessGroupPathByPageId(processGroupId, pageId);
+        ProcessGroupPath processGroupPathByPageId = processGroupDomain.getProcessGroupPathByPageId(processGroupId, pageId);
         if (null == processGroupPathByPageId) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("no data");
         }
@@ -529,24 +501,25 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
         }
-        // Determine whether there is an'id'('load') of'Flow', and if there is, load it, otherwise generate'UUID' to return to the return page.
+        // Determine whether there is an'id'('load') of'Flow', and if there is, load it,
+        // otherwise generate'UUID' to return to the return page.
         if (StringUtils.isBlank(loadId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("param 'load' is null");
         }
 
-        ProcessGroup processGroup = processGroupMapper.getProcessGroupByIdAndUser(username, isAdmin, loadId);
+        ProcessGroup processGroup = processGroupDomain.getProcessGroupByIdAndUser(username, isAdmin, loadId);
         if (null == processGroup) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("No data with ID : " + loadId);
         }
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(ReturnMapUtils.SUCCEEDED_MSG);
-        //set loadId
+        // set loadId
         rtnMap.put("load", loadId);
         // set current user
         UserVo currentUser = new UserVo();
         currentUser.setUsername(username);
         rtnMap.put("currentUser", currentUser);
         rtnMap.put("processType", "GROUP");
-        //set parentAccessPath
+        // set parentAccessPath
         rtnMap.put("parentAccessPath", parentAccessPath);
 
         ProcessGroup parentsProcessGroup = processGroup.getProcessGroup();
@@ -558,7 +531,7 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
         String processStateStr = (processGroup.getState() != null ? processGroup.getState().name() : ProcessState.INIT.name());
         rtnMap.put("processState", processStateStr);
 
-        //node pageId and state (process and processGroup)
+        // node pageId and state (process and processGroup)
         List<Map<String, String>> nodePageIdAndStateList = new ArrayList<>();
         // processGroupList
         List<ProcessGroup> processGroupList = processGroup.getProcessGroupList();
@@ -590,7 +563,6 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
             }
         }
         rtnMap.put("nodePageIdAndStateList", nodePageIdAndStateList);
-
 
         rtnMap.put("parentProcessId", processGroup.getParentProcessId());
         rtnMap.put("percentage", (null != processGroup.getProgress() ? processGroup.getProgress() : 0.00));

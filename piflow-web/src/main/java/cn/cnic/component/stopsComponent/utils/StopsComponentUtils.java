@@ -4,9 +4,9 @@ import cn.cnic.base.utils.ImageUtils;
 import cn.cnic.base.utils.UUIDUtils;
 import cn.cnic.common.Eunm.PortType;
 import cn.cnic.common.constant.SysParamsCache;
-import cn.cnic.component.stopsComponent.model.StopsComponentProperty;
-import cn.cnic.component.stopsComponent.model.StopsComponent;
-import cn.cnic.component.stopsComponent.model.StopsComponentGroup;
+import cn.cnic.component.stopsComponent.entity.StopsComponentProperty;
+import cn.cnic.component.stopsComponent.entity.StopsComponent;
+import cn.cnic.component.stopsComponent.entity.StopsComponentGroup;
 import cn.cnic.third.vo.stop.ThirdStopsComponentVo;
 import org.apache.commons.lang3.StringUtils;
 

@@ -64,7 +64,7 @@ public interface PropertyMapper {
     @Select("select * from flow_stops_property where enable_flag = 1 ")
     public List<Property> getStopsPropertyList();
 
-    @Select("select * from flow_stops_property where fk_stops_id = #{stopsId} and enable_flag = 1 ")
+    @Select("select * from flow_stops_property where fk_stops_id = #{stopsId} and enable_flag = 1 ORDER BY property_sort desc ")
     @Results({ @Result(id = true, column = "id", property = "id"),
             @Result(column = "property_required", property = "required"),
             @Result(column = "property_sensitive", property = "sensitive") })
@@ -102,4 +102,5 @@ public interface PropertyMapper {
 
     @Update("update flow_stops_property fsp set fsp.enable_flag=0 where fsp.is_old_data=1 and fsp.fk_stops_id = #{stopId}")
     public int deletePropertiesByIsOldDataAndStopsId(String stopId);
+    
 }

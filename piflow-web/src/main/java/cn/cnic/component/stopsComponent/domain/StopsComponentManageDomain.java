@@ -9,8 +9,9 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.cnic.base.utils.UUIDUtils;
+import cn.cnic.component.stopsComponent.entity.StopsComponentManage;
 import cn.cnic.component.stopsComponent.mapper.StopsComponentManageMapper;
-import cn.cnic.component.stopsComponent.model.StopsComponentManage;
+
 
 @Component
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)

@@ -1,10 +1,10 @@
 package cn.cnic.component.mxGraph.vo;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import java.io.Serializable;
 import java.util.List;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -25,7 +25,9 @@ public class MxGraphComponentVo implements Serializable {
     @Getter
     @Setter
     public static class COMPONENT_GROUP implements Serializable {
-
+        /**
+         * 
+         */
         private static final long serialVersionUID = 1L;
 
         private String img_name;

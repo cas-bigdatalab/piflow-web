@@ -132,6 +132,8 @@ export default {
           { validator: validateName, trigger: 'blur' }
         ]
       },
+
+      runSession_timer: null,
     };
   },
   watch: {
@@ -277,13 +279,16 @@ export default {
       this.$axios
           .post("/noteBoot/startNoteBookSession", this.$qs.stringify(data))
           .then((res) => {
-            this.$event.emit("loading", false);
             let data = res.data;
             if (data.code === 200){
-              this.$router.push({
-                path: "/codeDetailed",
-                query: { id: id }
-              });
+              this.runSession_timer = window.setInterval(()=>{
+                this.getSessionState(id)
+              },2000);
+
+              // this.$router.push({
+              //   path: "/codeDetailed",
+              //   query: { id: id }
+              // });
             }
           })
           .catch((error) => {
@@ -380,6 +385,79 @@ export default {
             duration: 3
           });
         });
+    },
+
+    getSessionState(id) {
+      let data = {
+        noteBookId: id
+      };
+      this.$event.emit("loading", true);
+      this.$axios
+          .post("/noteBoot/getNoteBookSessionState", this.$qs.stringify(data))
+          .then((res) => {
+            let data = res.data;
+            if (data.code === 200){
+              data.data = JSON.parse(data.data);
+              //  Session状态  not_started,  starting,  idle,  busy, success,  shutting_down,  error,  dead
+
+              switch ( data.data.state ){
+                case 'not_started':
+
+                  break;
+                case 'starting':
+
+                  break;
+                case 'idle':
+                  this.$event.emit("loading", false);
+                  window.clearInterval(this.runSession_timer);
+                  this.$router.push({
+                    path: "/codeDetailed",
+                    query: { id: id }
+                  });
+                  break;
+                case 'busy':
+                  window.clearInterval(this.runSession_timer);
+                  this.$event.emit("loading", false);
+                  this.$Modal.warning({
+                    title: this.$t("tip.title"),
+                    content: "Start status BUSY！"
+                  });
+                  break;
+                case 'shutting_down':
+
+                  break;
+                case 'error':
+                  window.clearInterval(this.runSession_timer);
+                  this.$event.emit("loading", false);
+                  this.$Modal.warning({
+                    title: this.$t("tip.title"),
+                    content: "Boot failure！"
+                  });
+                  break;
+                case 'dead':
+                  window.clearInterval(this.runSession_timer);
+                  this.$event.emit("loading", false);
+                  this.$Modal.warning({
+                    title: this.$t("tip.title"),
+                    content: "Insufficient resources！"
+                  });
+                  break;
+                case 'success':
+                  this.$event.emit("loading", false);
+                  window.clearInterval(this.runSession_timer);
+                  this.$router.push({
+                    path: "/codeDetailed",
+                    query: { id: id }
+                  });
+                  break;
+              }
+
+            }
+          })
+          .catch((error) => {
+            this.$event.emit("loading", false);
+            console.log(error);
+          });
     },
 
     onPageChange(pageNo) {

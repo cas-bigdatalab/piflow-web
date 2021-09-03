@@ -580,6 +580,7 @@ function queryStopsProperty(stopPageId, loadId) {
                             var propertyVo_allowableValues = propertyVo.allowableValues;
                             var propertyVo_isSelect = propertyVo.isSelect;
                             var propertyVo_required = propertyVo.required;
+                            var propertyVo_sensitive = propertyVo.sensitive;
                             var propertyVo_isLocked = propertyVo.isLocked;
                             var propertyVo_example = propertyVo.example;
 
@@ -644,6 +645,9 @@ function queryStopsProperty(stopPageId, loadId) {
                                 property_value_obj.style.background = "rgb(245, 245, 245)";
                                 property_value_obj.setAttribute('value', '' + propertyVo_customValue + '');
                                 //Port uneditable
+                                if (propertyVo_sensitive){
+                                    property_value_obj.setAttribute('type', 'password');
+                                }
                                 if ("outports" == propertyVo_name || "inports" == propertyVo_name) {
                                     property_value_obj.setAttribute('disabled', 'disabled');
                                 }
@@ -694,6 +698,9 @@ function queryStopsProperty(stopPageId, loadId) {
                                 tbody_example_tr_i.appendChild(tbody_example_td_1);
                                 tbody_example_tr_i.appendChild(tbody_example_td_2);
                                 tbody_example.appendChild(tbody_example_tr_i);
+                                if (propertyVo_sensitive){
+                                    tbody_example_td_2_obj.setAttribute('type', 'password');
+                                }
                             }
                         }
                         if (isExample) {

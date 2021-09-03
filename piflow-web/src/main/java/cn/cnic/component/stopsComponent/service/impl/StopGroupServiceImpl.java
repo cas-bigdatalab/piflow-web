@@ -1,33 +1,40 @@
 package cn.cnic.component.stopsComponent.service.impl;
 
-import cn.cnic.base.utils.LoggerUtil;
-import cn.cnic.base.utils.ReturnMapUtils;
-import cn.cnic.base.utils.UUIDUtils;
-import cn.cnic.component.stopsComponent.domain.StopsComponentDomain;
-import cn.cnic.component.stopsComponent.domain.StopsComponentGroupDomain;
-import cn.cnic.component.stopsComponent.model.StopsComponent;
-import cn.cnic.component.stopsComponent.model.StopsComponentGroup;
-import cn.cnic.component.stopsComponent.model.StopsComponentProperty;
-import cn.cnic.component.stopsComponent.service.IStopGroupService;
-import cn.cnic.component.stopsComponent.utils.StopsComponentGroupUtils;
-import cn.cnic.component.stopsComponent.utils.StopsComponentUtils;
-import cn.cnic.component.stopsComponent.vo.*;
-import cn.cnic.third.service.IStop;
-import cn.cnic.third.vo.stop.ThirdStopsComponentVo;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+
+import cn.cnic.component.stopsComponent.vo.StopsComponentVo;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import cn.cnic.base.utils.LoggerUtil;
+import cn.cnic.base.utils.ReturnMapUtils;
+import cn.cnic.base.utils.UUIDUtils;
+import cn.cnic.component.stopsComponent.domain.StopsComponentDomain;
+import cn.cnic.component.stopsComponent.domain.StopsComponentGroupDomain;
+import cn.cnic.component.stopsComponent.entity.StopsComponent;
+import cn.cnic.component.stopsComponent.entity.StopsComponentGroup;
+import cn.cnic.component.stopsComponent.entity.StopsComponentProperty;
+import cn.cnic.component.stopsComponent.service.IStopGroupService;
+import cn.cnic.component.stopsComponent.utils.StopsComponentGroupUtils;
+import cn.cnic.component.stopsComponent.utils.StopsComponentUtils;
+import cn.cnic.component.stopsComponent.vo.PropertyTemplateVo;
+import cn.cnic.component.stopsComponent.vo.StopGroupVo;
+import cn.cnic.component.stopsComponent.vo.StopsComponentGroupVo;
+import cn.cnic.component.stopsComponent.vo.StopsTemplateVo;
+import cn.cnic.third.service.IStop;
+import cn.cnic.third.vo.stop.ThirdStopsComponentVo;
+
 
 @Service
 public class StopGroupServiceImpl implements IStopGroupService {
 
-	/**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
     private Logger logger = LoggerUtil.getLogger();
 
     @Autowired

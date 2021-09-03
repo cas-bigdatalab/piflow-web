@@ -37,7 +37,7 @@ public interface ScheduleMapper {
 
     @SelectProvider(type = ScheduleMapperProvider.class, method = "getScheduleIdListByStateRunning")
     List<ScheduleVo> getScheduleIdListByStateRunning(boolean isAdmin, String username);
-
+    
     @SelectProvider(type = ScheduleMapperProvider.class, method = "getScheduleIdListByScheduleRunTemplateId")
     int getScheduleIdListByScheduleRunTemplateId(boolean isAdmin, String username, String scheduleRunTemplateId);
 

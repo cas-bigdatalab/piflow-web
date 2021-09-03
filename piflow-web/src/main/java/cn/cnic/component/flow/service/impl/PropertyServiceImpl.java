@@ -6,12 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
-import javax.transaction.Transactional;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cn.cnic.base.utils.CheckFiledUtils;
@@ -23,8 +21,6 @@ import cn.cnic.common.Eunm.PortType;
 import cn.cnic.component.flow.entity.Paths;
 import cn.cnic.component.flow.entity.Property;
 import cn.cnic.component.flow.entity.Stops;
-import cn.cnic.component.flow.jpa.domain.PropertyDomain;
-import cn.cnic.component.flow.jpa.domain.StopsDomain;
 import cn.cnic.component.flow.mapper.PathsMapper;
 import cn.cnic.component.flow.mapper.PropertyMapper;
 import cn.cnic.component.flow.mapper.StopsMapper;
@@ -32,35 +28,27 @@ import cn.cnic.component.flow.request.UpdatePathRequest;
 import cn.cnic.component.flow.service.IPropertyService;
 import cn.cnic.component.flow.utils.StopsUtils;
 import cn.cnic.component.flow.vo.StopsVo;
+import cn.cnic.component.stopsComponent.entity.StopsComponent;
+import cn.cnic.component.stopsComponent.entity.StopsComponentProperty;
 import cn.cnic.component.stopsComponent.mapper.StopsComponentMapper;
-import cn.cnic.component.stopsComponent.model.StopsComponent;
-import cn.cnic.component.stopsComponent.model.StopsComponentProperty;
+
 
 @Service
 public class PropertyServiceImpl implements IPropertyService {
 
-	/**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
     private Logger logger = LoggerUtil.getLogger();
-	
-    @Resource
+
+    @Autowired
     private PropertyMapper propertyMapper;
 
-    @Resource
+    @Autowired
     private StopsMapper stopsMapper;
 
-    @Resource
+    @Autowired
     private StopsComponentMapper stopsComponentMapper;
 
-    @Resource
+    @Autowired
     private PathsMapper pathsMapper;
-
-    @Resource
-    private StopsDomain stopsDomain;
-
-    @Resource
-    private PropertyDomain propertyDomain;
 
     @Override
     public String queryAll(String fid, String stopPageId) {
@@ -70,7 +58,7 @@ public class PropertyServiceImpl implements IPropertyService {
         if (StringUtils.isBlank(stopPageId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("stopPageId is null");
         }
-        Stops stops = stopsDomain.getStopsByPageId(fid, stopPageId);
+        Stops stops = stopsMapper.getStopsByPageId(fid, stopPageId);
         if (null == stops) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("data is null");
         }
@@ -276,7 +264,7 @@ public class PropertyServiceImpl implements IPropertyService {
             }
             currentPaths.setLastUpdateDttm(new Date());
             currentPaths.setLastUpdateUser("-1");
-            int i = pathsMapper.updatePaths(username, currentPaths);
+            int i = pathsMapper.updatePaths(currentPaths);
             if (i <= 0) {
                 rtnMap.put("code", 500);
                 rtnMap.put("errorMsg", "Save failed");
@@ -330,10 +318,9 @@ public class PropertyServiceImpl implements IPropertyService {
      * @param stopId
      * @return
      */
-    @Transactional
     @Override
     public String deleteLastReloadDataByStopsId(String stopId) {
-        int i = propertyDomain.deletePropertiesByIsOldDataAndStopsId(stopId);
+        int i = propertyMapper.deletePropertiesByIsOldDataAndStopsId(stopId);
         if (i > 0) {
             return ReturnMapUtils.setSucceededMsgRtnJsonStr("successfully deleted");
         }

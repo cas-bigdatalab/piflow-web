@@ -1,8 +1,8 @@
 package cn.cnic.base.utils;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
+import cn.cnic.base.vo.UserVo;
+import cn.cnic.common.Eunm.SysRoleType;
+import cn.cnic.component.system.entity.SysRole;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -11,18 +11,14 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import cn.cnic.base.vo.UserVo;
-import cn.cnic.common.Eunm.SysRoleType;
-import cn.cnic.component.system.entity.SysRole;
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 
 public class SessionUserUtil {
 
-	/**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
     private static Logger logger = LoggerUtil.getLogger();
-	
+
     public static UserVo getCurrentUser() {
         UserVo user = null;
         SecurityContext ctx = SecurityContextHolder.getContext();

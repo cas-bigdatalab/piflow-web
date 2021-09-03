@@ -7,7 +7,7 @@ import org.springframework.beans.BeanUtils;
 
 import cn.cnic.base.utils.UUIDUtils;
 import cn.cnic.component.testData.entity.TestDataSchema;
-import cn.cnic.controller.requestVo.RequestTestDataSchemaVo;
+import cn.cnic.controller.requestVo.TestDataSchemaVoRequest;
 
 public class TestDataSchemaUtils {
 
@@ -34,12 +34,12 @@ public class TestDataSchemaUtils {
      * @param testDataSchema
      * @return
      */
-    public static TestDataSchema copyDataToTestDataSchema(RequestTestDataSchemaVo testDataSchemaVo, TestDataSchema testDataSchema, String username) {
+    public static TestDataSchema copyDataToTestDataSchema(TestDataSchemaVoRequest testDataSchemaVo, TestDataSchema testDataSchema, String username) {
         if (null == testDataSchemaVo || StringUtils.isBlank(username)) {
             return null;
         }
         if (null == testDataSchema) {
-        	return null;            
+        	return null;
         }
         // copy
         BeanUtils.copyProperties(testDataSchemaVo, testDataSchema);

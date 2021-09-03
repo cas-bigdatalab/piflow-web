@@ -13,8 +13,6 @@ import java.util.Map;
 public class CustomizedPropertyMapperProvider {
 
     private String id;
-    private String crtUser;
-    private String crtDttmStr;
     private String lastUpdateDttmStr;
     private String lastUpdateUser;
     private int enableFlag;
@@ -24,39 +22,32 @@ public class CustomizedPropertyMapperProvider {
     private String description;
     private String stopsId;
 
-    private void preventSQLInjectionCustomizedProperty(CustomizedProperty getPropertyBySotpsId) {
-        if (null != getPropertyBySotpsId && StringUtils.isNotBlank(getPropertyBySotpsId.getLastUpdateUser())) {
-            // Mandatory Field
-            String id = getPropertyBySotpsId.getId();
-            String crtUser = getPropertyBySotpsId.getCrtUser();
-            String lastUpdateUser = getPropertyBySotpsId.getLastUpdateUser();
-            Boolean enableFlag = getPropertyBySotpsId.getEnableFlag();
-            Long version = getPropertyBySotpsId.getVersion();
-            Date crtDttm = getPropertyBySotpsId.getCrtDttm();
-            Date lastUpdateDttm = getPropertyBySotpsId.getLastUpdateDttm();
-            this.id = SqlUtils.preventSQLInjection(id);
-            this.crtUser = (null != crtUser ? SqlUtils.preventSQLInjection(crtUser) : null);
-            this.lastUpdateUser = SqlUtils.preventSQLInjection(lastUpdateUser);
-            this.enableFlag = ((null != enableFlag && enableFlag) ? 1 : 0);
-            this.version = (null != version ? version : 0L);
-            String crtDttmStr = DateUtils.dateTimesToStr(crtDttm);
-            String lastUpdateDttmStr = DateUtils.dateTimesToStr(null != lastUpdateDttm ? lastUpdateDttm : new Date());
-            this.crtDttmStr = (null != crtDttm ? SqlUtils.preventSQLInjection(crtDttmStr) : null);
-            this.lastUpdateDttmStr = SqlUtils.preventSQLInjection(lastUpdateDttmStr);
-
-            // Selection field
-            this.name = SqlUtils.preventSQLInjection(getPropertyBySotpsId.getName());
-            this.customValue = SqlUtils.preventSQLInjection(getPropertyBySotpsId.getCustomValue());
-            this.description = SqlUtils.preventSQLInjection(getPropertyBySotpsId.getDescription());
-            String stopsIdStr = (null != getPropertyBySotpsId.getStops() ? getPropertyBySotpsId.getStops().getId() : null);
-            this.stopsId = (null != stopsIdStr ? SqlUtils.preventSQLInjection(stopsIdStr) : null);
+    private boolean preventSQLInjectionCustomizedProperty(CustomizedProperty customizedProperty) {
+        if (null == customizedProperty || StringUtils.isBlank(customizedProperty.getLastUpdateUser())) {
+            return false;
         }
+        // Mandatory Field
+        this.id = SqlUtils.preventSQLInjection(customizedProperty.getId());
+        Long version = customizedProperty.getVersion();
+        this.version = (null != version ? version : 0L);
+        Boolean enableFlag = customizedProperty.getEnableFlag();
+        this.enableFlag = ((null != enableFlag && enableFlag) ? 1 : 0);
+        this.lastUpdateUser = SqlUtils.preventSQLInjection(customizedProperty.getLastUpdateUser());
+        Date lastUpdateDttm = customizedProperty.getLastUpdateDttm();
+        String lastUpdateDttmStr = DateUtils.dateTimesToStr(null != lastUpdateDttm ? lastUpdateDttm : new Date());
+        this.lastUpdateDttmStr = SqlUtils.preventSQLInjection(lastUpdateDttmStr);
+
+        // Selection field
+        this.name = SqlUtils.preventSQLInjection(customizedProperty.getName());
+        this.customValue = SqlUtils.preventSQLInjection(customizedProperty.getCustomValue());
+        this.description = SqlUtils.preventSQLInjection(customizedProperty.getDescription());
+        String stopsIdStr = (null != customizedProperty.getStops() ? customizedProperty.getStops().getId() : null);
+        this.stopsId = (null != stopsIdStr ? SqlUtils.preventSQLInjection(stopsIdStr) : null);
+        return true;
     }
 
     private void reset() {
         this.id = null;
-        this.crtUser = null;
-        this.crtDttmStr = null;
         this.lastUpdateDttmStr = null;
         this.lastUpdateUser = null;
         this.enableFlag = 1;
@@ -78,50 +69,33 @@ public class CustomizedPropertyMapperProvider {
         List<CustomizedProperty> customizedPropertyList = (List<CustomizedProperty>) map.get("customizedPropertyList");
         StringBuffer sqlStrBuffer = new StringBuffer();
         if (null != customizedPropertyList && customizedPropertyList.size() > 0) {
-            sqlStrBuffer.append("insert into ");
+            sqlStrBuffer.append("INSERT INTO ");
             sqlStrBuffer.append("flow_stops_customized_property ");
             sqlStrBuffer.append("(");
-            sqlStrBuffer.append("id,");
-            sqlStrBuffer.append("crt_dttm,");
-            sqlStrBuffer.append("crt_user,");
-            sqlStrBuffer.append("last_update_dttm,");
-            sqlStrBuffer.append("last_update_user,");
-            sqlStrBuffer.append("version,");
-            sqlStrBuffer.append("enable_flag,");
+            sqlStrBuffer.append(SqlUtils.baseFieldName() + ", ");
             sqlStrBuffer.append("name,");
             sqlStrBuffer.append("custom_value,");
             sqlStrBuffer.append("description,");
-            sqlStrBuffer.append("fk_stops_id,");
+            sqlStrBuffer.append("fk_stops_id");
             sqlStrBuffer.append(") ");
-            sqlStrBuffer.append("values");
+            sqlStrBuffer.append("VALUES");
             int i = 0;
             for (CustomizedProperty customizedProperty : customizedPropertyList) {
                 i++;
-                this.preventSQLInjectionCustomizedProperty(customizedProperty);
-                if (null == crtDttmStr) {
-                    String crtDttm = DateUtils.dateTimesToStr(new Date());
-                    crtDttmStr = SqlUtils.preventSQLInjection(crtDttm);
-                }
-                if (StringUtils.isBlank(crtUser)) {
-                    crtUser = SqlUtils.preventSQLInjection("-1");
-                }
-                // You can't make a mistake when you splice
-                sqlStrBuffer.append("(");
-                sqlStrBuffer.append(id + ",");
-                sqlStrBuffer.append(crtDttmStr + ",");
-                sqlStrBuffer.append(crtUser + ",");
-                sqlStrBuffer.append(lastUpdateDttmStr + ",");
-                sqlStrBuffer.append(lastUpdateUser + ",");
-                sqlStrBuffer.append(version + ",");
-                sqlStrBuffer.append(enableFlag + ",");
-                sqlStrBuffer.append(name + ",");
-                sqlStrBuffer.append(customValue + ",");
-                sqlStrBuffer.append(description + ",");
-                sqlStrBuffer.append(stopsId + ",");
-                if (i != customizedPropertyList.size()) {
-                    sqlStrBuffer.append("),");
-                } else {
-                    sqlStrBuffer.append(")");
+                boolean flag = this.preventSQLInjectionCustomizedProperty(customizedProperty);
+                if(flag) {
+                    // You can't make a mistake when you splice
+                    sqlStrBuffer.append("(");
+                    sqlStrBuffer.append(SqlUtils.baseFieldValues(customizedProperty) + ", ");
+                    sqlStrBuffer.append(name + ",");
+                    sqlStrBuffer.append(customValue + ",");
+                    sqlStrBuffer.append(description + ",");
+                    sqlStrBuffer.append(stopsId + " ");
+                    if (i != customizedPropertyList.size()) {
+                        sqlStrBuffer.append("),");
+                    } else {
+                        sqlStrBuffer.append(")");
+                    }
                 }
                 this.reset();
             }
@@ -132,36 +106,27 @@ public class CustomizedPropertyMapperProvider {
     }
 
     public String addCustomizedProperty(CustomizedProperty customizedProperty) {
-        String sqlStr = "";
-        this.preventSQLInjectionCustomizedProperty(customizedProperty);
-        if (null != customizedProperty) {
-            SQL sql = new SQL();
-
-            // INSERT_INTO brackets is table name
-            sql.INSERT_INTO("flow_stops_customized_property");
-            // The first string in the value is the field name corresponding to the table in the database.
-            // all types except numeric fields must be enclosed in single quotes
-
-            //Process the required fields firsts
-            if (null == crtDttmStr) {
-                String crtDttm = DateUtils.dateTimesToStr(new Date());
-                crtDttmStr = SqlUtils.preventSQLInjection(crtDttm);
-            }
-            if (StringUtils.isBlank(crtUser)) {
-                crtUser = SqlUtils.preventSQLInjection("-1");
-            }
-            sql.VALUES("id", id);
-            sql.VALUES("crt_dttm", crtDttmStr);
-            sql.VALUES("crt_user", crtUser);
-            sql.VALUES("last_update_dttm", lastUpdateDttmStr);
-            sql.VALUES("last_update_user", lastUpdateUser);
-            sql.VALUES("version", version + "");
-            sql.VALUES("enable_flag", enableFlag + "");
-            sql.VALUES("name", name);
-            sql.VALUES("custom_value", customValue);
-            sql.VALUES("description", description);
-            sql.VALUES("fk_stops_id", stopsId);
-            sqlStr = sql.toString();
+        String sqlStr = "SELECT 0";
+        boolean flag = this.preventSQLInjectionCustomizedProperty(customizedProperty);
+        if (flag) {
+            StringBuffer sqlStrBuffer = new StringBuffer();
+            sqlStrBuffer.append("INSERT INTO flow_stops_customized_property");
+            sqlStrBuffer.append("(");
+            sqlStrBuffer.append(SqlUtils.baseFieldName() + ", ");
+            sqlStrBuffer.append("name, ");
+            sqlStrBuffer.append("custom_value, ");
+            sqlStrBuffer.append("description, ");
+            sqlStrBuffer.append("fk_stops_id ");
+            sqlStrBuffer.append(") ");
+            sqlStrBuffer.append("VALUES");
+            sqlStrBuffer.append("(");
+            sqlStrBuffer.append(SqlUtils.baseFieldValues(customizedProperty) + ", ");
+            sqlStrBuffer.append(name + ",");
+            sqlStrBuffer.append(customValue + ",");
+            sqlStrBuffer.append(description + ",");
+            sqlStrBuffer.append(stopsId + " ");
+            sqlStrBuffer.append(")");
+            sqlStr = sqlStrBuffer.toString();
         }
         this.reset();
         return sqlStr;
@@ -175,8 +140,8 @@ public class CustomizedPropertyMapperProvider {
      */
     public String updateStopsCustomizedProperty(CustomizedProperty customizedProperty) {
         String sqlStr = "";
-        this.preventSQLInjectionCustomizedProperty(customizedProperty);
-        if (null != customizedProperty) {
+        boolean flag = this.preventSQLInjectionCustomizedProperty(customizedProperty);
+        if (flag) {
 
             SQL sql = new SQL();
 

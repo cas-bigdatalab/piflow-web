@@ -44,7 +44,7 @@
       </template>
     </Table>
     <div class="card-list" v-else>
-      <Row :gutter="16">
+      <Row :gutter="16" style="width: 100%">
         <Col span="6" v-for="(item,i) in tableData" :key="'df'+i">
           <Card style="margin-bottom: 20px">
             <div slot="title">

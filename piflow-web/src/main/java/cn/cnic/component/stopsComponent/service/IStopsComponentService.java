@@ -1,6 +1,6 @@
 package cn.cnic.component.stopsComponent.service;
 
-import cn.cnic.component.stopsComponent.model.StopsComponent;
+import cn.cnic.component.stopsComponent.entity.StopsComponent;
 
 public interface IStopsComponentService {
 

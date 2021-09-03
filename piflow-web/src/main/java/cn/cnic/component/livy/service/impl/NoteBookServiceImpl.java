@@ -166,6 +166,32 @@ public class NoteBookServiceImpl implements INoteBookService {
     }
 
     /**
+     * getNoteBookSessionState
+     *
+     * @param username
+     * @param isAdmin
+     * @return String
+     */
+    public String getNoteBookSessionState(String username, boolean isAdmin, String noteBookId) {
+        if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
+        }
+        if (StringUtils.isBlank(noteBookId)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("noteBookId is null");
+        }
+        NoteBook noteBook = noteBookMapper.getNoteBookById(isAdmin, username, noteBookId);
+        if (null == noteBook) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("no data");
+        }
+        String sessionsId = noteBook.getSessionsId();
+        if (StringUtils.isBlank(sessionsId)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Data error, sessionsId is null");
+        }
+        Map<String, Object> rtnMap = livyImpl.getSessionsState(sessionsId);
+        return ReturnMapUtils.mapToJson(rtnMap);
+    }
+
+    /**
      * delNoteBookSession
      *
      * @param username

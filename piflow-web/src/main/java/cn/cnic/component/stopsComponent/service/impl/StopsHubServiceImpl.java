@@ -8,10 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.annotation.Resource;
-import javax.transaction.Transactional;
-
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,13 +24,10 @@ import cn.cnic.base.utils.UUIDUtils;
 import cn.cnic.common.Eunm.StopsHubState;
 import cn.cnic.component.process.entity.Process;
 import cn.cnic.component.stopsComponent.domain.StopsComponentDomain;
-import cn.cnic.component.stopsComponent.domain.StopsComponentGroupDomain;
-import cn.cnic.component.stopsComponent.mapper.StopsComponentGroupMapper;
-import cn.cnic.component.stopsComponent.mapper.StopsComponentMapper;
-import cn.cnic.component.stopsComponent.mapper.StopsHubMapper;
-import cn.cnic.component.stopsComponent.model.StopsComponent;
-import cn.cnic.component.stopsComponent.model.StopsComponentGroup;
-import cn.cnic.component.stopsComponent.model.StopsHub;
+import cn.cnic.component.stopsComponent.domain.StopsHubDomain;
+import cn.cnic.component.stopsComponent.entity.StopsComponent;
+import cn.cnic.component.stopsComponent.entity.StopsComponentGroup;
+import cn.cnic.component.stopsComponent.entity.StopsHub;
 import cn.cnic.component.stopsComponent.service.IStopsHubService;
 import cn.cnic.component.stopsComponent.utils.StopsComponentGroupUtils;
 import cn.cnic.component.stopsComponent.utils.StopsComponentUtils;
@@ -44,24 +39,16 @@ import cn.cnic.third.vo.stop.ThirdStopsComponentVo;
 @Service
 public class StopsHubServiceImpl implements IStopsHubService {
 
-    @Resource
-    private StopsHubMapper stopsHubMapper;
+    @Autowired
+    private StopsHubDomain stopsHubDomain;
 
-    @Resource
-    private IStop stopImpl;
-
-    @Resource
-    private StopsComponentMapper stopsComponentMapper;
-
-    @Resource
-    private StopsComponentGroupMapper stopsComponentGroupMapper;
-
-    @Resource
-    private StopsComponentGroupDomain stopsComponentGroupDomain;
-
-    @Resource
+    @Autowired
     private StopsComponentDomain stopsComponentDomain;
 
+
+    @Autowired
+    private IStop stopImpl;
+    
 
     @Override
     public String uploadStopsHubFile(String username, MultipartFile file) {
@@ -93,15 +80,14 @@ public class StopsHubServiceImpl implements IStopsHubService {
         stopsHub.setJarName(stopsHubName);
         stopsHub.setJarUrl(stopsHubPath + stopsHubName);
         stopsHub.setStatus(StopsHubState.UNMOUNT);
-        stopsHubMapper.addStopHub(stopsHub);
+        stopsHubDomain.addStopHub(stopsHub);
         return ReturnMapUtils.setSucceededMsgRtnJsonStr("successful jar upload");
     }
 
     @Override
-    @Transactional
     public String mountStopsHub(String username, Boolean isAdmin, String id) {
 
-        StopsHub stopsHub = stopsHubMapper.getStopsHubById(username, isAdmin, id);
+        StopsHub stopsHub = stopsHubDomain.getStopsHubById(username, isAdmin, id);
 //        if(stopsHub.getStatus() == StopsHubState.MOUNT){
 //            return ReturnMapUtils.setFailedMsgRtnJsonStr("StopsHub have been Mounted already!");
 //        }
@@ -114,7 +100,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
         stopsHub.setStatus(StopsHubState.MOUNT);
         stopsHub.setLastUpdateUser(username);
         stopsHub.setLastUpdateDttm(new Date());
-        stopsHubMapper.updateStopHub(stopsHub);
+        stopsHubDomain.updateStopHub(stopsHub);
 
         //TODO: remove stops and groups from db
         List<ThirdStopsComponentVo> stops = stopsHubVo.getStops();
@@ -124,7 +110,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
             groupNameList.addAll(Arrays.asList(s.getGroups().split(",")));
         }
         List<String> distinctGroupNameList = groupNameList.stream().distinct().collect(Collectors.toList());
-        List<StopsComponentGroup> stopsComponentGroupList = stopsComponentGroupMapper.getStopGroupByGroupNameList(distinctGroupNameList);
+        List<StopsComponentGroup> stopsComponentGroupList = stopsComponentDomain.getStopGroupByGroupNameList(distinctGroupNameList);
         for (StopsComponentGroup sGroup : stopsComponentGroupList) {
             stopsComponentGroupMap.put(sGroup.getGroupName(), sGroup);
         }
@@ -139,7 +125,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
                     stopsComponentGroup = StopsComponentGroupUtils.stopsComponentGroupNewNoId(username);
                     stopsComponentGroup.setId(UUIDUtils.getUUID32());
                     stopsComponentGroup.setGroupName(groupName);
-                    stopsComponentGroupDomain.addStopsComponentGroup(stopsComponentGroup);
+                    stopsComponentDomain.addStopsComponentGroup(stopsComponentGroup);
                     stopsComponentGroupMap.put(groupName, stopsComponentGroup);
                 }
             }
@@ -149,7 +135,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
             for (String groupName : stopGroupNameList) {
                 stopGroupByName.add(stopsComponentGroupMap.get(groupName));
             }
-            StopsComponent stopsComponent = stopsComponentMapper.getStopsComponentByBundle(s.getBundle());
+            StopsComponent stopsComponent = stopsComponentDomain.getStopsComponentByBundle(s.getBundle());
             if (stopsComponent == null) {
                 stopsComponent = StopsComponentUtils.thirdStopsComponentVoToStopsTemplate(username, s, stopGroupByName);
                 stopsComponentDomain.addStopsComponentAndChildren(stopsComponent);
@@ -161,8 +147,8 @@ public class StopsHubServiceImpl implements IStopsHubService {
             }
             //add stop and group relationship
             for (StopsComponentGroup sGroup : stopGroupByName) {
-                stopsComponentGroupMapper.deleteGroupCorrelationByGroupIdAndStopId(sGroup.getId(), stopsComponent.getId());
-                stopsComponentGroupMapper.insertAssociationGroupsStopsTemplate(sGroup.getId(), stopsComponent.getId());
+                stopsComponentDomain.deleteGroupCorrelationByGroupIdAndStopId(sGroup.getId(), stopsComponent.getId());
+                stopsComponentDomain.insertAssociationGroupsStopsTemplate(sGroup.getId(), stopsComponent.getId());
             }
 
         }
@@ -171,10 +157,9 @@ public class StopsHubServiceImpl implements IStopsHubService {
     }
 
     @Override
-    @Transactional
     public String unmountStopsHub(String username, Boolean isAdmin, String id) {
 
-        StopsHub stopsHub = stopsHubMapper.getStopsHubById(username, isAdmin, id);
+        StopsHub stopsHub = stopsHubDomain.getStopsHubById(username, isAdmin, id);
         if (stopsHub.getStatus() == StopsHubState.UNMOUNT) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("StopsHub have been UNMounted already!");
         }
@@ -187,12 +172,12 @@ public class StopsHubServiceImpl implements IStopsHubService {
         stopsHub.setStatus(StopsHubState.UNMOUNT);
         stopsHub.setLastUpdateUser(username);
         stopsHub.setLastUpdateDttm(new Date());
-        stopsHubMapper.updateStopHub(stopsHub);
+        stopsHubDomain.updateStopHub(stopsHub);
 
         //TODO: remove stops and groups into db,
         List<ThirdStopsComponentVo> stops = stopsHubVo.getStops();
         for (ThirdStopsComponentVo s : stops) {
-            StopsComponent stopsComponent = stopsComponentMapper.getStopsComponentByBundle(s.getBundle());
+            StopsComponent stopsComponent = stopsComponentDomain.getStopsComponentByBundle(s.getBundle());
             stopsComponentDomain.deleteStopsComponent(stopsComponent);
         }
 
@@ -214,7 +199,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.ERROR_MSG);
         }
         Page<Process> page = PageHelper.startPage(pageNo, limit, "crt_dttm desc");
-        stopsHubMapper.getStopsHubListParam(username, isAdmin, param);
+        stopsHubDomain.getStopsHubListParam(username, isAdmin, param);
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(ReturnMapUtils.SUCCEEDED_MSG);
         rtnMap = PageHelperUtils.setLayTableParam(page, rtnMap);
         return JsonUtils.toJsonNoException(rtnMap);
@@ -231,7 +216,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
         if (StringUtils.isBlank(id)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("id is null");
         }
-        StopsHub stopsHubById = stopsHubMapper.getStopsHubById(username, isAdmin, id);
+        StopsHub stopsHubById = stopsHubDomain.getStopsHubById(username, isAdmin, id);
         if (null == stopsHubById) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("no data");
         }
@@ -239,7 +224,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
         if (StopsHubState.MOUNT == status) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("The status is MOUNT and deletion is prohibited ");
         }
-        int i = stopsHubMapper.deleteStopsHubById(username, id);
+        int i = stopsHubDomain.deleteStopsHubById(username, id);
         if (i <= 0) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("delete failed");
         }
