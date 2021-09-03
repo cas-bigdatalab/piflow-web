@@ -138,7 +138,7 @@ function updateMxGraphCellImage(cellEditor, selState, newValue, fn) {
         //执行实例
         var uploadInst = upload.render({
             elem: '#uploadimage' //绑定元素
-            , url: '/piflow-web/mxGraph/uploadNodeImage' //上传接口
+            , url: web_header_prefix + '/mxGraph/uploadNodeImage' //上传接口
             , headers: {
                 Authorization: ("Bearer " + token)
             }
