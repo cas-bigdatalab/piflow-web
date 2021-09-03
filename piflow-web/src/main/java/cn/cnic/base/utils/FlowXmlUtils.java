@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import cn.cnic.component.flow.utils.StopsUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -41,7 +42,7 @@ public class FlowXmlUtils {
 
     private static Logger logger = LoggerUtil.getLogger();
 
-	private static String spliceStr(String key, Object value) {
+    private static String spliceStr(String key, Object value) {
         return key + "=\"" + value + "\" ";
     }
 
@@ -143,6 +144,10 @@ public class FlowXmlUtils {
         List<Stops> stopsList = flow.getStopsList();
         if (null != stopsList && stopsList.size() > 0) {
             for (Stops stops : stopsList) {
+                stops = StopsUtils.fillStopsPropertiesByDatasource(stops, stops.getDataSource(), stops.getCrtUser());
+                if (null == stops) {
+                    continue;
+                }
                 String stopId = StringCustomUtils.replaceSpecialSymbolsXml(stops.getId());
                 String pageId = StringCustomUtils.replaceSpecialSymbolsXml(stops.getPageId());
                 String stopName = StringCustomUtils.replaceSpecialSymbolsXml(stops.getName());

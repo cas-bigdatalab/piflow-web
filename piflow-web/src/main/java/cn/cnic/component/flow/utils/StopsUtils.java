@@ -1,6 +1,8 @@
 package cn.cnic.component.flow.utils;
 
+import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.component.dataSource.entity.DataSource;
+import cn.cnic.component.dataSource.entity.DataSourceProperty;
 import cn.cnic.component.dataSource.utils.DataSourceUtils;
 import cn.cnic.component.dataSource.vo.DataSourceVo;
 import cn.cnic.component.flow.entity.CustomizedProperty;
@@ -13,11 +15,14 @@ import cn.cnic.component.stopsComponent.entity.StopsComponent;
 import cn.cnic.component.stopsComponent.entity.StopsComponentProperty;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 
 import java.util.*;
 
 public class StopsUtils {
+
+    private static Logger logger = LoggerUtil.getLogger();
 
     public static Stops stopsNewNoId(String username) {
 
@@ -111,7 +116,7 @@ public class StopsUtils {
                         continue;
                     }
                     StopsComponentProperty stopsComponentProperty = property_map.get(propertyVo.getName());
-                    if(null == stopsComponentProperty){
+                    if (null == stopsComponentProperty) {
                         continue;
                     }
                     propertyVo.setExample(stopsComponentProperty.getExample());
@@ -181,6 +186,67 @@ public class StopsUtils {
             }
         }
         return propertiesVo;
+    }
+
+    public static Stops fillStopsPropertiesByDatasource(Stops stops, DataSource dataSource, String username) {
+        if (null == stops) {
+            logger.error("fill failed, stop is null ");
+            return null;
+        }
+        // Get Stops all attributes
+        List<Property> propertyList = stops.getProperties();
+        // Determine if the "stop" attribute with ID "stopId" is empty. Returns if it is empty, otherwise continues.
+        if (null == propertyList || propertyList.size() <= 0) {
+            logger.error("fill failed,stop property is null");
+            return stops;
+        }
+        if (null == dataSource) {
+            logger.error("fill failed,dataSource is null");
+            return stops;
+        }
+        // Get Database all attributes
+        List<DataSourceProperty> dataSourcePropertyList = dataSource.getDataSourcePropertyList();
+        // Determine whether the Datasource attribute whose ID is "dataSourceId" is empty. Returns if it is empty, otherwise it is converted to Map.
+        if (null == dataSourcePropertyList || dataSourcePropertyList.size() <= 0) {
+            logger.error("fill failed,dataSource property is null");
+            return stops;
+        }
+        // datasource Property Map(Key is the attribute name)
+        Map<String, String> dataSourcePropertyMap = new HashMap<>();
+        // Loop "datasource" attribute to map
+        for (DataSourceProperty dataSourceProperty : dataSourcePropertyList) {
+            // "datasource" attribute name
+            String dataSourcePropertyName = dataSourceProperty.getName();
+            // Judge empty and lowercase
+            if (StringUtils.isNotBlank(dataSourcePropertyName)) {
+                dataSourcePropertyName = dataSourcePropertyName.toLowerCase();
+            }
+            dataSourcePropertyMap.put(dataSourcePropertyName, dataSourceProperty.getValue());
+        }
+        // Loop fill "stop"
+        for (Property property : propertyList) {
+            // "stop" attribute name
+            String name = property.getName();
+            property.setStops(stops);
+            // Judge empty
+            if (StringUtils.isBlank(name)) {
+                continue;
+            }
+            // Go to the map of the "datasource" attribute
+            String value = dataSourcePropertyMap.get(name.toLowerCase());
+            // Judge empty
+            if (StringUtils.isBlank(value)) {
+                continue;
+            }
+            // Assignment
+            property.setCustomValue(value);
+            property.setIsLocked(true);
+            property.setLastUpdateDttm(new Date());
+            property.setLastUpdateUser(username);
+        }
+        stops.setDataSource(dataSource);
+        stops.setProperties(propertyList);
+        return stops;
     }
 
 }

@@ -41,8 +41,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) {
         //Solving the problem of static resources being intercepted
-        /*web.ignoring().antMatchers("/components/**", "/js/**", "/css/**", "/my_js/*", "/my_js/**", "/my_css/*", "/my_css/**", "/img/**", "/img/*", "/images/**", "/images/*"
-                , "/doc.html", "/webjars/**", "/swagger-resources/**", "/v2/api-docs/**");*/
+        web.ignoring().antMatchers("/components/**", "/js/**", "/css/**", "/my_js/*", "/my_js/**", "/my_css/*", "/my_css/**", "/img/**", "/img/*", "/images/**", "/images/*"
+                , "/doc.html", "/webjars/**", "/swagger-resources/**", "/v2/api-docs/**");
     }
 
     @Override
@@ -63,9 +63,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
 
                 // 对于获取token的rest api要允许匿名访问
-                //.antMatchers("/api/v1/auth", "/api/v1/signout", "/error/**", "/api/**").permitAll()
-                //.antMatchers("/register", "/checkUserName", "/jwtLogin", "/error", "/login").permitAll()
-                //.antMatchers("/").permitAll()
+                .antMatchers("/api/v1/auth", "/api/v1/signout", "/error/**", "/api/**").permitAll()
+                .antMatchers("/register", "/checkUserName", "/jwtLogin", "/error", "/login").permitAll()
+                .antMatchers("/").permitAll()
                 .antMatchers().permitAll()
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated();

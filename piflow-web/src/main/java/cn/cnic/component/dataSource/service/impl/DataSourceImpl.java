@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.cnic.component.flow.utils.StopsUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
@@ -29,7 +30,6 @@ import cn.cnic.component.dataSource.utils.DataSourceUtils;
 import cn.cnic.component.dataSource.vo.DataSourcePropertyVo;
 import cn.cnic.component.dataSource.vo.DataSourceVo;
 import cn.cnic.component.flow.domain.StopsDomain;
-import cn.cnic.component.flow.entity.Property;
 import cn.cnic.component.flow.entity.Stops;
 
 
@@ -225,33 +225,12 @@ public class DataSourceImpl implements IDataSource {
                     }
                     dataSourcePropertyMap.put(dataSourcePropertyName, dataSourceProperty.getValue());
                 }
-                for(Stops stops : stopsListByDatasourceId) {
+                for (Stops stops : stopsListByDatasourceId) {
                     if (null == stops) {
                         continue;
                     }
-                    List<Property> propertyList = stops.getProperties();
                     // Loop fill "stop"
-                    for (Property property : propertyList) {
-                        // "stop" attribute name
-                        String name = property.getName();
-                        property.setStops(stops);
-                        // Judge empty
-                        if (StringUtils.isBlank(name)) {
-                            continue;
-                        }
-                        // Go to the map of the "datasource" attribute
-                        String value = dataSourcePropertyMap.get(name.toLowerCase());
-                        // Judge empty
-                        if (StringUtils.isBlank(value)) {
-                            continue;
-                        }
-                        // Assignment
-                        property.setCustomValue(value);
-                        property.setIsLocked(true);
-                        property.setLastUpdateDttm(new Date());
-                        property.setLastUpdateUser(username);
-                    }
-                    stops.setDataSource(dataSourceById);
+                    stops = StopsUtils.fillStopsPropertiesByDatasource(stops, dataSourceById, username);
                     stopsDomain.updateStops(stops);
                 }
             }

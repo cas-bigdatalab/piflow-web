@@ -809,8 +809,6 @@ public class StopsServiceImpl implements IStopsService {
         if (null == propertyList || propertyList.size() <= 0) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("fill failed,stop property is null");
         }
-        // datasource Property Map(Key is the attribute name)
-        Map<String, String> dataSourcePropertyMap = new HashMap<>();
         if (StringUtils.isNotBlank(dataSourceId)) {
             DataSource dataSourceById = dataSourceDomain.getDataSourceById(username, isAdmin, dataSourceId);
             if (null == dataSourceById) {
@@ -822,38 +820,7 @@ public class StopsServiceImpl implements IStopsService {
             if (null == dataSourcePropertyList || dataSourcePropertyList.size() <= 0) {
                 return ReturnMapUtils.setFailedMsgRtnJsonStr("fill failed,dataSource property is null");
             }
-            stopsById.setDataSource(dataSourceById);
-            // Loop "datasource" attribute to map
-            for (DataSourceProperty dataSourceProperty : dataSourcePropertyList) {
-                // "datasource" attribute name
-                String dataSourcePropertyName = dataSourceProperty.getName();
-                // Judge empty and lowercase
-                if (StringUtils.isNotBlank(dataSourcePropertyName)) {
-                    dataSourcePropertyName = dataSourcePropertyName.toLowerCase();
-                }
-                dataSourcePropertyMap.put(dataSourcePropertyName, dataSourceProperty.getValue());
-            }
-            // Loop fill "stop"
-            for (Property property : propertyList) {
-                // "stop" attribute name
-                String name = property.getName();
-                property.setStops(stopsById);
-                // Judge empty
-                if (StringUtils.isBlank(name)) {
-                    continue;
-                }
-                // Go to the map of the "datasource" attribute
-                String value = dataSourcePropertyMap.get(name.toLowerCase());
-                // Judge empty
-                if (StringUtils.isBlank(value)) {
-                    continue;
-                }
-                // Assignment
-                property.setCustomValue(value);
-                property.setIsLocked(true);
-                property.setLastUpdateDttm(new Date());
-                property.setLastUpdateUser(username);
-            }
+            stopsById = StopsUtils.fillStopsPropertiesByDatasource(stopsById, dataSourceById, username);
         } else {
             // Loop fill "stop"
             for (Property property : propertyList) {
@@ -870,8 +837,8 @@ public class StopsServiceImpl implements IStopsService {
                 }
             }
             stopsById.setDataSource(null);
+            stopsById.setProperties(propertyList);
         }
-        stopsById.setProperties(propertyList);
         stopsDomain.saveOrUpdate(stopsById);
         Map<String, Object> rtnMap = new HashMap<String, Object>();
         rtnMap.put("code", 500);

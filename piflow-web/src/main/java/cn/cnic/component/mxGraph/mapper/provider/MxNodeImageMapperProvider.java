@@ -69,7 +69,7 @@ public class MxNodeImageMapperProvider {
         if (StringUtils.isBlank(username) || StringUtils.isBlank(imageType)) {
             return "select 0";
         }
-        String str = "select mni.* from mx_node_image mni where mni.enable_flag=1 and mni.crt_user=" + SqlUtils.preventSQLInjection(username) + " and mni.image_type=" + SqlUtils.preventSQLInjection(username) + " order by mni.last_update_dttm desc";
+        String str = "select mni.* from mx_node_image mni where mni.enable_flag=1 and mni.crt_user=" + SqlUtils.preventSQLInjection(username) + " and mni.image_type=" + SqlUtils.preventSQLInjection(imageType) + " order by mni.last_update_dttm desc";
         return str;
     }
 

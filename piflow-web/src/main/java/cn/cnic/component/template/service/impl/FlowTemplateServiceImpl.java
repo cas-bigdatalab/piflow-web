@@ -108,6 +108,7 @@ public class FlowTemplateServiceImpl implements IFlowTemplateService {
                     // Convert the query mxGraphModel to XML
                     mxGraphXml_Flow = MxGraphUtils.mxGraphModelToMxGraph(true, mxGraphModel);
                 }
+
                 //Splicing XML according to flowById
                 templateXmlStr = FlowXmlUtils.flowAndStopInfoToXml(flowById, mxGraphXml_Flow);
                 break;
