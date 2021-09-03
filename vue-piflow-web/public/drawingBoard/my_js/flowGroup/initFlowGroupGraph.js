@@ -143,7 +143,7 @@ function updateMxGraphCellImage(cellEditor, selState, newValue, fn) {
                 Authorization: ("Bearer " + token)
             }
             , before: function (obj) {
-                this.data = {imageType: "TASK"};
+                this.data = {imageType: "GROUP"};
                 loading = layer.load(0, {
                     shade: false,
                     success: function (layerContentStyle) {
