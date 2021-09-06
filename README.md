@@ -57,7 +57,7 @@ To Run Piflow Web：
 
 - run piflow web by release version:
 
-  - download piflow_release: https://github.com/cas-bigdatalab/piflow-web/releases/tag/v0.9
+  - download piflow_release: https://github.com/cas-bigdatalab/piflow-web/releases/tag/v1.1
   - edit config.properties
   - sh start.sh
 - how to configure config.properties
@@ -66,7 +66,8 @@ To Run Piflow Web：
 server.port=6002
 server.servlet.session.timeout=3600
 
-syspara.interfaceUrlHead=http://10.0.90.155:8002
+syspara.interfaceUrlHead=http://127.0.0.1:8002
+syspara.livyServer=http://127.0.0.1:8998
 syspara.isIframe=true
 
 # Total maximum value of uploaded files
@@ -79,7 +80,7 @@ spring.servlet.multipart.max-file-size=512MB
 sysParam.datasource.type=mysql
 # MySQL Configuration
 #Configure the connection address of MySQL
-spring.datasource.url = jdbc:mysql://10.0.85.81:3306/piflow_web_0.9?useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowMultiQueries=true&autoReconnect=true&failOverReadOnly=false
+spring.datasource.url = jdbc:mysql://10.0.85.81:3306/piflow_web_1.1?useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowMultiQueries=true&autoReconnect=true&failOverReadOnly=false
 #Configure database user name
 spring.datasource.username=root
 #Configuration database password
