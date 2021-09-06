@@ -179,7 +179,9 @@ export default {
           content: 'Save Template',
           icon: 'md-checkbox-outline'
         }
-      ]
+      ],
+
+      globalParamsList: []
     };
   },
   watch: {
@@ -238,7 +240,8 @@ export default {
       this.executorNumber = 1;
       this.executorMemory = "1g";
       this.executorCores = 1;
-      this.fieldType =[]
+      this.fieldType =[];
+      this.globalParamsList =[]
     },
 
     handleButtonSelect(row, key) {
@@ -482,9 +485,7 @@ export default {
             this.executorCores = flow.executorCores;
             if (!!res.data.globalParamsList && res.data.globalParamsList.length !==0){
 
-              res.data.globalParamsList.forEach(item=>{
-                this.fieldType .push(item.id)
-              })
+              this.globalParamsList = res.data.globalParamsList;
               this.getGlobalList(true)
             }else {
               this.getGlobalList(true)
@@ -593,6 +594,10 @@ export default {
 
               if (!noData){
                 this.typeList.forEach(item=>{
+                  this.fieldType .push(item.id)
+                })
+              }else {
+                this.globalParamsList.forEach(item=>{
                   this.fieldType .push(item.id)
                 })
               }
