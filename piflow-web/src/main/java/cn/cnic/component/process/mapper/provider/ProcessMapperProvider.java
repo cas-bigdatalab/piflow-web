@@ -540,5 +540,59 @@ public class ProcessMapperProvider {
         }
         return sqlStr;
     }
+    
+    public String getGlobalParamsIdsByProcessId(String processId) {
+        if (StringUtils.isBlank(processId)) {
+        	return "SELECT 0";
+        }
+        String sqlStr = ("SELECT global_params_id FROM `association_global_params_flow` WHERE process_id= " + SqlUtils.preventSQLInjection(processId));
+        return sqlStr;
+    }
+    
+    public String linkGlobalParams(String processId, String[] globalParamsIds) {
+        if (StringUtils.isBlank(processId) || globalParamsIds.length <= 0) {
+        	return "SELECT 0";
+        }
+        StringBuffer strBuf = new StringBuffer();
+        strBuf.append("INSERT INTO `association_global_params_flow` ");
+        strBuf.append("( ");
+        strBuf.append("`process_id`, ");
+        strBuf.append("`global_params_id` ");
+        strBuf.append(") ");
+        strBuf.append("values ");
+        for (int i = 0; i < globalParamsIds.length; i++) {
+        	strBuf.append("( ");
+        	strBuf.append(SqlUtils.preventSQLInjection(processId) + ", ");
+        	strBuf.append(SqlUtils.preventSQLInjection(globalParamsIds[i]));
+        	strBuf.append(") ");
+        	if((i+1) < globalParamsIds.length) {
+        		strBuf.append(", ");	
+        	}
+		}
+        String sqlStr = strBuf.toString();
+        return sqlStr;
+    }
+    
+    public String unlinkGlobalParams(String processId, String[] globalParamsIds) {
+        if (StringUtils.isBlank(processId) || globalParamsIds.length <= 0) {
+        	return "SELECT 0";
+        }
+        StringBuffer strBuf = new StringBuffer();
+        strBuf.append("DELETE FROM `association_global_params_flow` ");
+        strBuf.append("WHERE ");
+        strBuf.append(" `process_id`= " + SqlUtils.preventSQLInjection(processId));
+        strBuf.append(" AND ");
+        strBuf.append(" `global_params_id` in ");
+        strBuf.append("( ");
+        for (int i = 0; i < globalParamsIds.length; i++) {
+        	strBuf.append(SqlUtils.preventSQLInjection(globalParamsIds[i]));
+        	if((i+1) < globalParamsIds.length) {
+        		strBuf.append(", ");	
+        	}
+		}
+    	strBuf.append(") ");
+        String sqlStr = strBuf.toString();
+        return sqlStr;
+    }
 
 }

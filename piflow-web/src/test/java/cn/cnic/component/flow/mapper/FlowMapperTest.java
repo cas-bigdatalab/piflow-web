@@ -37,7 +37,7 @@ public class FlowMapperTest extends ApplicationTests {
     public void test() {
         Flow flow = flowMapper.getFlowById("0cbda2327bca445c809d5c3b8b14f5a2");
         Process process = ProcessUtils.flowToProcess(flow, "test", true);
-        String s = ProcessUtils.processToJson(process, "", RunModeType.RUN);
+        String s = ProcessUtils.processToJson(process, "", RunModeType.RUN, flow.getFlowGlobalParamsList());
         logger.info(s);
     }
 

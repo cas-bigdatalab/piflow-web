@@ -8,6 +8,7 @@ import cn.cnic.base.BaseHibernateModelUUIDNoCorpAgentId;
 import cn.cnic.common.Eunm.ProcessParentType;
 import cn.cnic.common.Eunm.ProcessState;
 import cn.cnic.common.Eunm.RunModeType;
+import cn.cnic.component.flow.entity.FlowGlobalParams;
 import cn.cnic.component.mxGraph.entity.MxGraphModel;
 import cn.cnic.component.schedule.entity.Schedule;
 import lombok.Getter;
@@ -42,6 +43,7 @@ public class Process extends BaseHibernateModelUUIDNoCorpAgentId {
     private MxGraphModel mxGraphModel;
     private List<ProcessStop> processStopList = new ArrayList<ProcessStop>();
     private List<ProcessPath> processPathList = new ArrayList<ProcessPath>();
+    List<FlowGlobalParams> flowGlobalParamsList;
 
 	public String getFlowId() {
 		return flowId;

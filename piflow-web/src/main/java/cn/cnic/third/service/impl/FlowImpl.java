@@ -49,7 +49,7 @@ public class FlowImpl implements IFlow {
         }
         //String json = ProcessUtil.processToJson(process, checkpoint, runModeType);
         //String formatJson = JsonFormatTool.formatJson(json);
-        String formatJson = ProcessUtils.processToJson(process, checkpoint, runModeType);
+        String formatJson = ProcessUtils.processToJson(process, checkpoint, runModeType, process.getFlowGlobalParamsList());
         logger.info("\n" + formatJson);
         String doPost = HttpUtils.doPost(SysParamsCache.getFlowStartUrl(), formatJson, null);
         logger.info("Return information：" + doPost);

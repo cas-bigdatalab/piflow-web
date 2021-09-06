@@ -385,8 +385,7 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
         if (null == flowNew) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Save failed, Copy failed");
         }
-        String[] globalParamsIdsByFlowId = flowDomain.getGlobalParamsIdsByFlowId(flow.getId());
-        flowNew.setGlobalParamsIds(globalParamsIdsByFlowId);
+        flowNew.setFlowGlobalParamsList(flow.getFlowGlobalParamsList());
         MxGraphModel mxGraphModel = flowGroupById.getMxGraphModel();
         if (null == mxGraphModel) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Save failed, MxGraphModel is empty");

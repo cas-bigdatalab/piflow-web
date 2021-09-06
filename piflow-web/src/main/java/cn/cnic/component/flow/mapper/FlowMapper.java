@@ -76,8 +76,8 @@ public interface FlowMapper {
             @Result(column = "fk_flow_group_id", property = "flowGroup", one = @One(select = "cn.cnic.component.flow.mapper.FlowGroupMapper.getFlowGroupById", fetchType = FetchType.LAZY)),
             @Result(column = "id", property = "mxGraphModel", one = @One(select = "cn.cnic.component.mxGraph.mapper.MxGraphModelMapper.getMxGraphModelByFlowId", fetchType = FetchType.LAZY)),
             @Result(column = "id", property = "stopsList", many = @Many(select = "cn.cnic.component.flow.mapper.StopsMapper.getStopsListByFlowId", fetchType = FetchType.LAZY)),
-            @Result(column = "id", property = "pathsList", many = @Many(select = "cn.cnic.component.flow.mapper.PathsMapper.getPathsListByFlowId", fetchType = FetchType.LAZY))
-
+            @Result(column = "id", property = "pathsList", many = @Many(select = "cn.cnic.component.flow.mapper.PathsMapper.getPathsListByFlowId", fetchType = FetchType.LAZY)),
+            @Result(column = "id", property = "flowGlobalParamsList", many = @Many(select = "cn.cnic.component.flow.mapper.FlowGlobalParamsMapper.getFlowGlobalParamsByFlowId", fetchType = FetchType.LAZY))
     })
     public Flow getFlowById(@Param("id") String id);
     

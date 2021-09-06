@@ -1,9 +1,7 @@
 package cn.cnic.component.flow.domain;
 
-import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,6 +15,7 @@ import cn.cnic.component.flow.entity.Paths;
 import cn.cnic.component.flow.entity.Stops;
 import cn.cnic.component.flow.mapper.FlowMapper;
 import cn.cnic.component.flow.mapper.PathsMapper;
+import cn.cnic.component.flow.utils.FlowGlobalParamsUtils;
 import cn.cnic.component.flow.vo.FlowVo;
 import cn.cnic.component.mxGraph.domain.MxGraphModelDomain;
 import cn.cnic.component.mxGraph.entity.MxGraphModel;
@@ -85,8 +84,9 @@ public class FlowDomain extends StopsDomain{
             mxGraphModel.setFlow(flow);
             affectedRows += mxGraphModelDomain.addMxGraphModel(mxGraphModel);
         }
-        if (null!=flow.getGlobalParamsIds() && flow.getGlobalParamsIds().length > 0) {
-        	affectedRows += linkGlobalParams(flow.getId(),flow.getGlobalParamsIds());
+        String[] globalParamsIds = FlowGlobalParamsUtils.globalParamsToIds(flow.getFlowGlobalParamsList());
+        if (null!=globalParamsIds && globalParamsIds.length > 0) {
+        	affectedRows += linkGlobalParams(flow.getId(), globalParamsIds);
         }
         return affectedRows;
     }
@@ -151,9 +151,12 @@ public class FlowDomain extends StopsDomain{
             }
         }
         String[] globalParamsIdsDB = getGlobalParamsIdsByFlowId(flow.getId());
-        if (null!=flow.getGlobalParamsIds() && flow.getGlobalParamsIds().length > 0) {
-        	List<String> req = Arrays.asList(flow.getGlobalParamsIds());
-        	List<String> db = Arrays.asList(globalParamsIdsDB);
+        String[] globalParamsIds = FlowGlobalParamsUtils.globalParamsToIds(flow.getFlowGlobalParamsList());
+        
+        affectedRows += unlinkGlobalParams(flow.getId(), globalParamsIdsDB);
+        if (null!= globalParamsIds && globalParamsIds.length > 0) {
+        	//List<String> req = Arrays.asList(globalParamsIds);
+        	//List<String> db = Arrays.asList(globalParamsIdsDB);
             //1、并集 union
         	//Object[] array = CollectionUtils.union(req, db).toArray();
             //2、交集 intersection
@@ -161,12 +164,10 @@ public class FlowDomain extends StopsDomain{
         	//3、交集的补集
         	//Object[] disjunction = CollectionUtils.disjunction(req, db).toArray();
         	//4、差集（扣除）
-        	Object[] subtract = CollectionUtils.subtract(db, req).toArray();
-            String[] unlinkIds = Arrays.copyOf(subtract, subtract.length, String[].class);
-            affectedRows += unlinkGlobalParams(flow.getId(), unlinkIds);
-            affectedRows += linkGlobalParams(flow.getId(), flow.getGlobalParamsIds());
-        } else {
-        	affectedRows += unlinkGlobalParams(flow.getId(), globalParamsIdsDB);
+        	//Object[] subtract = CollectionUtils.subtract(db, req).toArray();
+            //String[] unlinkIds = Arrays.copyOf(subtract, subtract.length, String[].class);
+            //affectedRows += unlinkGlobalParams(flow.getId(), unlinkIds);
+            affectedRows += linkGlobalParams(flow.getId(), globalParamsIds);
         }
         return affectedRows;
     }

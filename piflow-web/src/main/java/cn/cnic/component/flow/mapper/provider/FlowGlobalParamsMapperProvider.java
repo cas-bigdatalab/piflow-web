@@ -187,7 +187,7 @@ public class FlowGlobalParamsMapperProvider {
     }
     
     public String getFlowGlobalParamsByIds(String[] ids) {
-    	if (null != ids & ids.length <= 0) {
+    	if (null == ids || ids.length <= 0) {
     		return "SELECT 0";
         }
         StringBuffer strBuf = new StringBuffer();
@@ -195,6 +195,32 @@ public class FlowGlobalParamsMapperProvider {
         strBuf.append("from `flow_global_params` ");
         strBuf.append("where `enable_flag` = 1 ");
         strBuf.append("and `id` in ( " + SqlUtils.strArrayToStr(ids) + ") ");
+        String sqlStr = strBuf.toString();
+        return sqlStr;
+    }
+    
+    public String getFlowGlobalParamsByFlowId(String flowId) {
+    	if (null == flowId) {
+    		return "SELECT 0";
+        }
+        StringBuffer strBuf = new StringBuffer();
+        strBuf.append("select * ");
+        strBuf.append("from `flow_global_params` ");
+        strBuf.append("where `enable_flag` = 1 ");
+        strBuf.append("and `id` in (select global_params_id from association_global_params_flow where flow_id= " + SqlUtils.preventSQLInjection(flowId) + ") ");
+        String sqlStr = strBuf.toString();
+        return sqlStr;
+    }
+    
+    public String getFlowGlobalParamsByProcessId(String processId) {
+    	if (null == processId) {
+    		return "SELECT 0";
+        }
+        StringBuffer strBuf = new StringBuffer();
+        strBuf.append("select * ");
+        strBuf.append("from `flow_global_params` ");
+        strBuf.append("where `enable_flag` = 1 ");
+        strBuf.append("and `id` in (select global_params_id from association_global_params_flow where process_id= " + SqlUtils.preventSQLInjection(processId) + ") ");
         String sqlStr = strBuf.toString();
         return sqlStr;
     }

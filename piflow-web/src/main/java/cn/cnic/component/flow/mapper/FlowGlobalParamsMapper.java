@@ -37,5 +37,11 @@ public interface FlowGlobalParamsMapper {
     
     @SelectProvider(type = FlowGlobalParamsMapperProvider.class, method = "getFlowGlobalParamsByIds")
     public List<FlowGlobalParams> getFlowGlobalParamsByIds(@Param("ids") String[] ids);
+    
+    @SelectProvider(type = FlowGlobalParamsMapperProvider.class, method = "getFlowGlobalParamsByFlowId")
+    public List<FlowGlobalParams> getFlowGlobalParamsByFlowId(@Param("flowId") String flowId);
+    
+    @SelectProvider(type = FlowGlobalParamsMapperProvider.class, method = "getFlowGlobalParamsByProcessId")
+    public List<FlowGlobalParams> getFlowGlobalParamsByProcessId(@Param("processId") String processId);
 
 }

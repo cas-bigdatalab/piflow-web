@@ -25,7 +25,6 @@ import cn.cnic.base.utils.UUIDUtils;
 import cn.cnic.common.Eunm.ProcessState;
 import cn.cnic.common.Eunm.RunModeType;
 import cn.cnic.component.flow.domain.FlowDomain;
-import cn.cnic.component.flow.domain.FlowGlobalParamsDomain;
 import cn.cnic.component.flow.domain.FlowGroupDomain;
 import cn.cnic.component.flow.entity.Flow;
 import cn.cnic.component.flow.entity.FlowGlobalParams;
@@ -36,6 +35,7 @@ import cn.cnic.component.flow.mapper.PathsMapper;
 import cn.cnic.component.flow.mapper.PropertyMapper;
 import cn.cnic.component.flow.mapper.StopsMapper;
 import cn.cnic.component.flow.service.IFlowService;
+import cn.cnic.component.flow.utils.FlowGlobalParamsUtils;
 import cn.cnic.component.flow.utils.PathsUtil;
 import cn.cnic.component.flow.utils.StopsUtils;
 import cn.cnic.component.flow.vo.FlowVo;
@@ -104,9 +104,6 @@ public class FlowServiceImpl implements IFlowService {
     
     @Autowired
     private ScheduleDomain scheduleDomain;
-    
-    @Autowired
-    private FlowGlobalParamsDomain flowGlobalParamsDomain;
 
 
     /**
@@ -196,9 +193,8 @@ public class FlowServiceImpl implements IFlowService {
             }
             rtnMap.put("runningProcessVoList", processVoList);
         }
-        String[] globalParamsIdsByFlowId = flowDomain.getGlobalParamsIdsByFlowId(id);
-        if (null != globalParamsIdsByFlowId && globalParamsIdsByFlowId.length > 0) {
-        	List<FlowGlobalParams> flowGlobalParamsByIds = flowGlobalParamsDomain.getFlowGlobalParamsByIds(globalParamsIdsByFlowId);
+        List<FlowGlobalParams> flowGlobalParamsByIds = flowById.getFlowGlobalParamsList();
+        if (null != flowGlobalParamsByIds && flowGlobalParamsByIds.size() > 0 && flowGlobalParamsByIds.get(0) != null) {
         	rtnMap.put("globalParamsList", flowGlobalParamsByIds);
         }
         return JsonUtils.toJsonNoException(rtnMap);
@@ -229,7 +225,8 @@ public class FlowServiceImpl implements IFlowService {
         flow.setLastUpdateUser(username);
         flow.setEnableFlag(true);
         flow.setUuid(id);
-        flow.setGlobalParamsIds(flowVo.getGlobalParamsIds());
+        List<FlowGlobalParams> globalParamsIdToGlobalParams = FlowGlobalParamsUtils.globalParamsIdToGlobalParams(flowVo.getGlobalParamsIds());
+        flow.setFlowGlobalParamsList(globalParamsIdToGlobalParams);
         int addFlow = flowDomain.addFlow(flow);
         if (addFlow <= 0) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("add failed");
@@ -455,7 +452,8 @@ public class FlowServiceImpl implements IFlowService {
         flowById.setExecutorNumber(flowVo.getExecutorNumber());
         flowById.setLastUpdateDttm(new Date());
         flowById.setLastUpdateUser(username);
-        flowById.setGlobalParamsIds(flowVo.getGlobalParamsIds());
+        List<FlowGlobalParams> globalParamsIdToGlobalParams = FlowGlobalParamsUtils.globalParamsIdToGlobalParams(flowVo.getGlobalParamsIds());
+        flowById.setFlowGlobalParamsList(globalParamsIdToGlobalParams);
         flowDomain.updateFlow(flowById);
         Map<String, Object> rtnMap = new HashMap<>();
         rtnMap.put("code", 200);

@@ -43,9 +43,11 @@ CREATE TABLE IF NOT EXISTS `flow_global_params` (
 
 CREATE TABLE IF NOT EXISTS `association_global_params_flow` (
     `global_params_id` VARCHAR(40) NOT NULL COMMENT 'FLOW_GLOBAL_PARAMS primary key id',
-    `flow_id` VARCHAR(40) NOT NULL COMMENT 'FLOW primary key id'
+    `flow_id` VARCHAR(40) COMMENT 'FLOW primary key id',
+    `process_id` VARCHAR(40) COMMENT 'process primary key id'
 );
 ALTER TABLE `association_global_params_flow` ADD CONSTRAINT `FK22rp96r4290eons0000000003` FOREIGN KEY (`global_params_id`) REFERENCES `flow_global_params` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 ALTER TABLE `association_global_params_flow` ADD CONSTRAINT `FK22rp96r4290eons0000000004` FOREIGN KEY (`flow_id`) REFERENCES `flow` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+ALTER TABLE `association_global_params_flow` ADD CONSTRAINT `FK22rp96r4290eons0000000005` FOREIGN KEY (`process_id`) REFERENCES `flow_process` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 ALTER TABLE `FLOW_STOPS_TEMPLATE_MANAGE` RENAME TO `flow_stops_template_manage`;
 

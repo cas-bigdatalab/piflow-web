@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.UUIDUtils;
 import cn.cnic.common.Eunm.ProcessState;
+import cn.cnic.component.flow.utils.FlowGlobalParamsUtils;
 import cn.cnic.component.mxGraph.domain.MxGraphModelDomain;
 import cn.cnic.component.mxGraph.entity.MxGraphModel;
 import cn.cnic.component.process.entity.Process;
@@ -100,6 +101,10 @@ public class ProcessDomain {
             mxGraphModel.setProcess(process);
             affectedRows += mxGraphModelDomain.addMxGraphModel(mxGraphModel);
         }
+        String [] globalParamsIds = FlowGlobalParamsUtils.globalParamsToIds(process.getFlowGlobalParamsList());
+        if (null != globalParamsIds && globalParamsIds.length > 0) {
+        	affectedRows += linkGlobalParams(process.getId(), globalParamsIds);
+        }
 
         return affectedRows;
     }
@@ -170,6 +175,24 @@ public class ProcessDomain {
         int affectedRows = processMapper.updateProcess(process);
         affectedRows += updateProcessPathList(process.getProcessPathList());
         affectedRows += updateProcessStopList(process.getProcessStopList());
+        String[] globalParamsIdsDB = getGlobalParamsIdsByProcessId(process.getId());
+        String [] globalParamsIds = FlowGlobalParamsUtils.globalParamsToIds(process.getFlowGlobalParamsList());
+        affectedRows += unlinkGlobalParams(process.getId(), globalParamsIdsDB);
+        if (null != globalParamsIds && globalParamsIds.length > 0) {
+        	//List<String> req = Arrays.asList(globalParamsIds);
+        	//List<String> db = Arrays.asList(globalParamsIdsDB);
+            //1、并集 union
+        	//Object[] array = CollectionUtils.union(req, db).toArray();
+            //2、交集 intersection
+        	//Object[] array = CollectionUtils.intersection(req, db).toArray();
+        	//3、交集的补集
+        	//Object[] disjunction = CollectionUtils.disjunction(req, db).toArray();
+        	//4、差集（扣除）
+        	//Object[] subtract = CollectionUtils.subtract(db, req).toArray();
+            //String[] unlinkIds = Arrays.copyOf(subtract, subtract.length, String[].class);
+            //affectedRows += unlinkGlobalParams(process.getId(), unlinkIds);
+            affectedRows += linkGlobalParams(process.getId(), globalParamsIds);
+        }
         return affectedRows;
     }
 
@@ -400,6 +423,18 @@ public class ProcessDomain {
     public ProcessState getProcessStateById(String id) {
         return processMapper.getProcessStateById(id);
 
+    }
+    
+    public String[] getGlobalParamsIdsByProcessId(String processId) {
+    	return processMapper.getGlobalParamsIdsByProcessId(processId);
+    }
+    
+    public int linkGlobalParams(String processId, String[] globalParamsIds) {
+    	return processMapper.linkGlobalParams(processId, globalParamsIds);
+    }
+    
+    public int unlinkGlobalParams(String processId, String[] globalParamsIds) {
+    	return processMapper.unlinkGlobalParams(processId, globalParamsIds);
     }
 
 }

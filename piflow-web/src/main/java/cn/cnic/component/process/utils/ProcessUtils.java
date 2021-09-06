@@ -156,6 +156,8 @@ public class ProcessUtils {
         Process process = null;
         if (null != flow) {
             process = new Process();
+            List<FlowGlobalParams> flowGlobalParamsList = flow.getFlowGlobalParamsList();
+            process.setFlowGlobalParamsList(flowGlobalParamsList);
             // Copy flow information to process
             BeanUtils.copyProperties(flow, process);
             // Set basic information
@@ -437,8 +439,8 @@ public class ProcessUtils {
         return copyProcess;
     }
 
-    public static String processToJson(Process process, String checkpoint, RunModeType runModeType) {
-        Map<String, Object> flowVoMap = processToMap(process, checkpoint, runModeType);
+    public static String processToJson(Process process, String checkpoint, RunModeType runModeType, List<FlowGlobalParams> flowGlobalParamsList) {
+        Map<String, Object> flowVoMap = processToMap(process, checkpoint, runModeType, flowGlobalParamsList);
         return JsonUtils.toFormatJsonNoException(flowVoMap);
     }
 
@@ -447,10 +449,19 @@ public class ProcessUtils {
         return JsonUtils.toFormatJsonNoException(flowGroupVoMap);
     }
 
-    public static Map<String, Object> processToMap(Process process, String checkpoint, RunModeType runModeType) {
+    public static Map<String, Object> processToMap(Process process, String checkpoint, RunModeType runModeType, List<FlowGlobalParams> flowGlobalParamsList) {
         Map<String, Object> rtnMap = new HashMap<>();
         Map<String, Object> flowVoMap = new HashMap<>();
-
+        if (null != flowGlobalParamsList && flowGlobalParamsList.size() > 0) {
+        	Map<String, Object> environmentVariableMap = new HashMap<>();
+        	for (FlowGlobalParams flowGlobalParams : flowGlobalParamsList) {
+                if (null ==flowGlobalParams || StringUtils.isBlank(flowGlobalParams.getName())) {
+                	continue;
+                }
+                environmentVariableMap.put("${" + flowGlobalParams.getName() + "}", flowGlobalParams.getContent());
+			}
+        	flowVoMap.put("environmentVariable", environmentVariableMap);
+        }
         flowVoMap.put("driverMemory", process.getDriverMemory());
         flowVoMap.put("executorMemory", process.getExecutorMemory());
         flowVoMap.put("executorCores", process.getExecutorCores());
@@ -572,7 +583,7 @@ public class ProcessUtils {
             List<Map<String, Object>> processesListMap = new ArrayList<>();
             for (Process process : processList) {
                 processesMap.put(process.getPageId(), process);
-                Map<String, Object> processMap = processToMap(process, null, runModeType);
+                Map<String, Object> processMap = processToMap(process, null, runModeType, process.getFlowGlobalParamsList());
                 processesListMap.add(processMap);
             }
             flowGroupVoMap.put("flows", processesListMap);

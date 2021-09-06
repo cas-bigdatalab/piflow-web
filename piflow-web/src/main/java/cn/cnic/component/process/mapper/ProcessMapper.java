@@ -2,6 +2,7 @@ package cn.cnic.component.process.mapper;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.DeleteProvider;
 import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.Many;
 import org.apache.ibatis.annotations.Mapper;
@@ -51,7 +52,8 @@ public interface ProcessMapper {
             @Result(column = "id", property = "mxGraphModel", one = @One(select = "cn.cnic.component.mxGraph.mapper.MxGraphModelMapper.getMxGraphModelByProcessId", fetchType = FetchType.LAZY)),
             @Result(column = "id", property = "processPathList", many = @Many(select = "cn.cnic.component.process.mapper.ProcessPathMapper.getProcessPathByProcessId", fetchType = FetchType.LAZY)),
             @Result(column = "id", property = "processStopList", many = @Many(select = "cn.cnic.component.process.mapper.ProcessStopMapper.getProcessStopByProcessId", fetchType = FetchType.LAZY)),
-            @Result(column = "fk_flow_process_group_id", property = "processGroup", one = @One(select = "cn.cnic.component.process.mapper.ProcessGroupMapper.getProcessGroupById", fetchType = FetchType.LAZY))
+            @Result(column = "fk_flow_process_group_id", property = "processGroup", one = @One(select = "cn.cnic.component.process.mapper.ProcessGroupMapper.getProcessGroupById", fetchType = FetchType.LAZY)),
+            @Result(column = "id", property = "flowGlobalParamsList", many = @Many(select = "cn.cnic.component.flow.mapper.FlowGlobalParamsMapper.getFlowGlobalParamsByProcessId", fetchType = FetchType.LAZY))
 
     })
     public Process getProcessById(@Param("username") String username, @Param("isAdmin") boolean isAdmin, @Param("id") String id);
@@ -233,6 +235,33 @@ public interface ProcessMapper {
     
     @Select("select state from flow_process where enable_flag=1 and id=#{id} ")
     public ProcessState getProcessStateById(String id);
+    
+    /**
+     * get globalParams ids by process id
+     *
+     * @param flowName
+     * @return
+     */
+    @SelectProvider(type = ProcessMapperProvider.class, method = "getGlobalParamsIdsByProcessId")
+    public String[] getGlobalParamsIdsByProcessId(@Param("processId") String processId);
+
+    /**
+     * link GlobalParams
+     *
+     * @param flowName
+     * @return
+     */
+    @InsertProvider(type = ProcessMapperProvider.class, method = "linkGlobalParams")
+    public int linkGlobalParams(@Param("processId") String processId, @Param("globalParamsIds") String[] globalParamsIds);
+
+    /**
+     * unlink GlobalParams
+     *
+     * @param flowName
+     * @return
+     */
+    @DeleteProvider(type = ProcessMapperProvider.class, method = "unlinkGlobalParams")
+    public int unlinkGlobalParams(@Param("processId") String processId, @Param("globalParamsIds") String[] globalParamsIds);
     
     
     

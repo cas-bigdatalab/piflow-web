@@ -45,7 +45,7 @@ public class ScheduleImpl implements ISchedule {
         String type = schedule.getType();
         Map<String, Object> scheduleContentMap = new HashMap<>();
         if ("FLOW".equals(type) && null != process) {
-            scheduleContentMap = ProcessUtils.processToMap(process, "", RunModeType.RUN);
+            scheduleContentMap = ProcessUtils.processToMap(process, "", RunModeType.RUN, process.getFlowGlobalParamsList());
         } else if ("FLOW_GROUP".equals(type) && null != processGroup) {
             scheduleContentMap = ProcessUtils.processGroupToMap(processGroup, RunModeType.RUN);
         } else {

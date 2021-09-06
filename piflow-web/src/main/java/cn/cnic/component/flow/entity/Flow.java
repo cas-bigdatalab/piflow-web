@@ -27,6 +27,6 @@ public class Flow extends BaseHibernateModelUUIDNoCorpAgentId {
     private MxGraphModel mxGraphModel;
     private List<Stops> stopsList = new ArrayList<Stops>();
     private List<Paths> pathsList = new ArrayList<Paths>();
-    private String[] globalParamsIds;
+    List<FlowGlobalParams> flowGlobalParamsList;
 
 }
