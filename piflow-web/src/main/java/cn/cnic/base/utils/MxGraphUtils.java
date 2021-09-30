@@ -37,7 +37,7 @@ public class MxGraphUtils {
      * @param isEscape is escape
      * @return Element
      */
-    private static Element xmlStrToElement(String xmlData, boolean isEscape) {
+    public static Element xmlStrToElement(String xmlData, boolean isEscape) {
         try {
             String xmlStr = xmlData;
             if (isEscape) {

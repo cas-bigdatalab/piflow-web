@@ -63,9 +63,20 @@ public interface IFlowTemplateService {
      * @return
      */
     public String uploadXmlFile(String username, MultipartFile file);
+    
+    /**
+     * Upload Galax file and save flowTemplate
+     *
+     * @param username
+     * @param file
+     * @return
+     */
+    public String uploadGalaxFile(String username, MultipartFile file);
 
     public String loadGroupTemplate(String username, String templateId, String loadId) throws Exception;
 
     public String loadTaskTemplate(String username, String templateId, String flowId) throws Exception;
+    
+    public String loadGalaxTemplate(String username, String templateId, String flowId) throws Exception;
 
 }

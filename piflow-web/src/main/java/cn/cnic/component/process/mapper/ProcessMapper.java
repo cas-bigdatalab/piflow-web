@@ -263,7 +263,8 @@ public interface ProcessMapper {
     @DeleteProvider(type = ProcessMapperProvider.class, method = "unlinkGlobalParams")
     public int unlinkGlobalParams(@Param("processId") String processId, @Param("globalParamsIds") String[] globalParamsIds);
     
-    
+    @Select("select app_id from flow_process where enable_flag=1 and id=#{id}")
+    public String getProcessAppIdById(String id);
     
     
 }

@@ -3,6 +3,7 @@ package cn.cnic.component.flow.utils;
 import cn.cnic.base.utils.UUIDUtils;
 import cn.cnic.component.flow.entity.Paths;
 import cn.cnic.component.flow.vo.PathsVo;
+
 import org.springframework.beans.BeanUtils;
 
 import java.util.ArrayList;
@@ -10,6 +11,20 @@ import java.util.Date;
 import java.util.List;
 
 public class PathsUtil {
+	
+	
+    public static Paths newPathsNoId(String username){
+    	Paths paths = new Paths();
+        // basic properties (required when creating)
+    	paths.setCrtDttm(new Date());
+    	paths.setCrtUser(username);
+        // basic properties
+    	paths.setEnableFlag(true);
+    	paths.setLastUpdateUser(username);
+    	paths.setLastUpdateDttm(new Date());
+    	paths.setVersion(0L);
+        return paths;
+    }
     /**
      * pathsList Po To Vo
      *

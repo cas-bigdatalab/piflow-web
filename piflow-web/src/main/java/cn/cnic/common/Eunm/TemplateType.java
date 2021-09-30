@@ -6,7 +6,8 @@ import cn.cnic.base.TextureEnumSerializer;
 @JsonSerialize(using = TextureEnumSerializer.class)
 public enum TemplateType {
     GROUP("GROUP", "GROUP", "group"),
-    TASK("TASK", "TASK", "group");
+    TASK("TASK", "TASK", "group"),
+	GALAX("GALAX", "GALAX", "galax");
 
     private final String value;
     private final String text;

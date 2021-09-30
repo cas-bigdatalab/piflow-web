@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * template的ctrl
  */
-@Api(value = "flowTemplate api")
+@Api(value = "flowTemplate api", tags="flowTemplate api")
 @RestController
 @RequestMapping("/flowTemplate")
 public class FlowTemplateCtrl {
@@ -77,6 +77,19 @@ public class FlowTemplateCtrl {
 		String username = SessionUserUtil.getCurrentUsername();
 		return flowTemplateServiceImpl.uploadXmlFile(username, file);
 	}
+	
+	/**
+	 * Upload xml file and save flowTemplate
+	 *
+	 * @param file
+	 * @return
+	 */
+	@RequestMapping(value = "/uploadGalaxFile", method = RequestMethod.POST)
+	@ResponseBody
+	public String uploadGalaxFile(@RequestParam("file") MultipartFile file) {
+		String username = SessionUserUtil.getCurrentUsername();
+		return flowTemplateServiceImpl.uploadGalaxFile(username, file);
+	}
 
 	/**
 	 * Query all templates for drop-down displays
@@ -106,6 +119,24 @@ public class FlowTemplateCtrl {
 			return flowTemplateServiceImpl.loadTaskTemplate(username, templateId, load);
 		} else if ("GROUP".equals(loadType)) {
 			return flowTemplateServiceImpl.loadGroupTemplate(username, templateId, load);
+		} else {
+			return ReturnMapUtils.setFailedMsgRtnJsonStr("loadType is null");
+		}
+	}
+	
+	/**
+	 * load Galax template
+	 *
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/loadingGalaxPage", method = RequestMethod.POST)
+	@ResponseBody
+	public String loadingGalax(String templateId, String load, String loadType) throws Exception {
+		String username = SessionUserUtil.getCurrentUsername();
+		if ("GALAX".equals(loadType)) {
+			return flowTemplateServiceImpl.loadGalaxTemplate(username, templateId, load);
 		} else {
 			return ReturnMapUtils.setFailedMsgRtnJsonStr("loadType is null");
 		}

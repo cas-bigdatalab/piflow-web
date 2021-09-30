@@ -129,6 +129,13 @@ public class MxCellUtils {
         if (StringUtils.isBlank(imgUrl)) {
             imgUrl = "/img/flow.png";
         }
+        return AddMxCellNode(username, pageId, name, imgUrl, "100", "100");
+    }
+    
+    public static MxCell AddMxCellNode(String username, String pageId, String name, String imgUrl, String x, String y) {
+        if (StringUtils.isBlank(imgUrl)) {
+            imgUrl = "/img/flow.png";
+        }
         MxCell defaultFlowMxCell = mxCellNewNoId(username);
         defaultFlowMxCell.setPageId(pageId);
         defaultFlowMxCell.setParent("1");
@@ -139,8 +146,8 @@ public class MxCellUtils {
         defaultFlowMxCellMxGeometry.setAs("geometry");
         defaultFlowMxCellMxGeometry.setHeight("66");
         defaultFlowMxCellMxGeometry.setWidth("66");
-        defaultFlowMxCellMxGeometry.setX("100");
-        defaultFlowMxCellMxGeometry.setY("100");
+        defaultFlowMxCellMxGeometry.setX(x);
+        defaultFlowMxCellMxGeometry.setY(y);
         defaultFlowMxCellMxGeometry.setMxCell(defaultFlowMxCell);
         defaultFlowMxCell.setMxGeometry(defaultFlowMxCellMxGeometry);
         return defaultFlowMxCell;
@@ -152,6 +159,22 @@ public class MxCellUtils {
         defaultFlowMxCell.setEdge("1");
         defaultFlowMxCell.setParent("1");
         defaultFlowMxCell.setStyle("edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;");
+        MxGeometry defaultFlowMxCellMxGeometry = MxGeometryUtils.mxGeometryNewNoId(username);
+        defaultFlowMxCellMxGeometry.setAs("geometry");
+        defaultFlowMxCellMxGeometry.setRelative("1");
+        defaultFlowMxCellMxGeometry.setMxCell(defaultFlowMxCell);
+        defaultFlowMxCell.setMxGeometry(defaultFlowMxCellMxGeometry);
+        return defaultFlowMxCell;
+    }
+    
+    public static MxCell AddMxCellLine(String username, String pageId,String sourceId, String targetId) {
+        MxCell defaultFlowMxCell = mxCellNewNoId(username);
+        defaultFlowMxCell.setPageId(pageId);
+        defaultFlowMxCell.setEdge("1");
+        defaultFlowMxCell.setParent("1");
+        defaultFlowMxCell.setStyle("edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;");
+        defaultFlowMxCell.setSource(sourceId);
+        defaultFlowMxCell.setTarget(targetId);
         MxGeometry defaultFlowMxCellMxGeometry = MxGeometryUtils.mxGeometryNewNoId(username);
         defaultFlowMxCellMxGeometry.setAs("geometry");
         defaultFlowMxCellMxGeometry.setRelative("1");

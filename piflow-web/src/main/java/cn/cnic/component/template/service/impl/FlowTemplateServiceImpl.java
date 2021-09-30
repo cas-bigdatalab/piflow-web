@@ -224,7 +224,12 @@ public class FlowTemplateServiceImpl implements IFlowTemplateService {
         if (StringUtils.isBlank(xmlFileToStr)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("XML file read failed, upload template failed");
         }
-        TemplateType templateType = MxGraphUtils.determineTemplateType(xmlFileToStr);
+        TemplateType templateType = null;
+    	try {
+    		templateType = MxGraphUtils.determineTemplateType(xmlFileToStr);
+    	} catch(Throwable s) {
+    		logger.error("error:", s);
+    	}
         if (null == templateType) {
             FileUtils.deleteFile(path);
             return ReturnMapUtils.setFailedMsgRtnJsonStr("There is a problem with the template, please check and try again");
@@ -238,6 +243,56 @@ public class FlowTemplateServiceImpl implements IFlowTemplateService {
         flowTemplate.setDescription(fileName);
         flowTemplateDomain.insertFlowTemplate(flowTemplate);
         return ReturnMapUtils.setSucceededMsgRtnJsonStr("successful template upload");
+    }
+    /**
+     * Upload Galax file and save flowTemplate
+     *
+     * @param file
+     * @return
+     */
+    @Override
+    public String uploadGalaxFile(String username, MultipartFile file) {
+    	if (StringUtils.isBlank(username)) {
+    		return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
+    	}
+    	if (file.isEmpty()) {
+    		return ReturnMapUtils.setFailedMsgRtnJsonStr("Upload failed, please try again later");
+    	}
+    	Map<String, Object> uploadMap = FileUtils.uploadFile(file, SysParamsCache.XML_PATH, null);
+    	if (null == uploadMap || uploadMap.isEmpty()) {
+    		return ReturnMapUtils.setFailedMsgRtnJsonStr("Upload failed, please try again later");
+    	}
+    	Integer code = (Integer) uploadMap.get("code");
+    	if (500 == code) {
+    		return ReturnMapUtils.setFailedMsgRtnJsonStr("failed to upload file");
+    	}
+    	String saveFileName = (String) uploadMap.get("saveFileName");
+    	String fileName = (String) uploadMap.get("fileName");
+    	String path = (String) uploadMap.get("path");
+    	//Read the XML file according to the saved file path and return the XML string
+    	String xmlFileToStr = FileUtils.FileToStrByAbsolutePath(path);
+    	if (StringUtils.isBlank(xmlFileToStr)) {
+    		return ReturnMapUtils.setFailedMsgRtnJsonStr("XML file read failed, upload template failed");
+    	}
+    	TemplateType templateType = null;
+    	try {
+    		templateType = FlowTemplateUtils.determineTemplateType(xmlFileToStr, false);
+    	} catch(Throwable s) {
+    		logger.error("error:", s);
+    	}
+    	if (null == templateType) {
+    		FileUtils.deleteFile(path);
+    		return ReturnMapUtils.setFailedMsgRtnJsonStr("There is a problem with the template, please check and try again");
+    	}
+    	FlowTemplate flowTemplate = FlowTemplateUtils.newFlowTemplateNoId(username);
+    	flowTemplate.setId(UUIDUtils.getUUID32());
+    	flowTemplate.setName(fileName);
+    	flowTemplate.setPath(path);
+    	flowTemplate.setUrl("/xml/" + saveFileName);
+    	flowTemplate.setTemplateType(templateType);
+    	flowTemplate.setDescription(fileName);
+    	flowTemplateDomain.insertFlowTemplate(flowTemplate);
+    	return ReturnMapUtils.setSucceededMsgRtnJsonStr("successful template upload");
     }
 
     @Override
@@ -501,6 +556,107 @@ public class FlowTemplateServiceImpl implements IFlowTemplateService {
         // save
         flowDomain.updateFlow(flowById);
         return ReturnMapUtils.setSucceededMsgRtnJsonStr("Successfully loaded FlowTemplate");
+    }
+    
+    @Override
+    public String loadGalaxTemplate(String username, String templateId, String flowId) throws Exception {
+    	if (StringUtils.isBlank(username)) {
+    		return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal user, Load failed");
+    	}
+    	if (null == flowId) {
+    		return ReturnMapUtils.setFailedMsgRtnJsonStr("FlowId is empty, loading FlowTemplate failed");
+    	}
+    	if (null == templateId) {
+    		return ReturnMapUtils.setFailedMsgRtnJsonStr("FlowTemplateId is empty, loading FlowTemplate failed");
+    	}
+    	Flow flowById = flowDomain.getFlowById(flowId);
+    	if (null == flowById) {
+    		return ReturnMapUtils.setFailedMsgRtnJsonStr("Flow is empty, loading FlowTemplate failed");
+    	}
+    	FlowTemplate flowTemplate = flowTemplateDomain.getFlowTemplateById(templateId);
+    	if (null == flowTemplate) {
+    		return ReturnMapUtils.setFailedMsgRtnJsonStr("FlowTemplate is empty, loading FlowTemplate failed");
+    	}
+    	if (TemplateType.GALAX != flowTemplate.getTemplateType()) {
+    		return ReturnMapUtils.setFailedMsgRtnJsonStr("Template types do not match, loading FlowTemplate failed");
+    	}
+    	//Read the xml file according to the saved file path and return
+    	String galaxFileToStr = FileUtils.FileToStrByAbsolutePath(flowTemplate.getPath());
+    	if (StringUtils.isBlank(galaxFileToStr)) {
+    		return ReturnMapUtils.setFailedMsgRtnJsonStr("The xml file failed to read and the FlowTemplate failed to be loaded.");
+    	}
+    	// Get the maximum pageId in stop
+    	Integer maxStopPageId = stopsDomain.getMaxStopPageIdByFlowId(flowId);
+    	maxStopPageId = null == maxStopPageId ? 2 : maxStopPageId;
+    	// Get the current flow containing all stop names
+    	String[] stopNamesByFlowId = stopsDomain.getStopNamesByFlowId(flowId);
+    	Map<String, Object> galaxTemplateToFlowRtnMap = FlowTemplateUtils.galaxTemplateToFlow(galaxFileToStr, username, maxStopPageId + "", null, stopNamesByFlowId);
+    	if (200 != (Integer) galaxTemplateToFlowRtnMap.get("code")) {
+    		return JsonUtils.toJsonNoException(galaxTemplateToFlowRtnMap);
+    	}
+    	Flow galaxTemplateToFlow = (Flow) galaxTemplateToFlowRtnMap.get("flow");
+    	if (null == galaxTemplateToFlow) {
+    		return ReturnMapUtils.setFailedMsgRtnJsonStr("Conversion failure");
+    	}
+    	// Added processing drawing board data
+    	// Fetch the drawing board data to be added
+    	MxGraphModel mxGraphModelGalax = galaxTemplateToFlow.getMxGraphModel();
+    	if (null != mxGraphModelGalax) {
+    		MxGraphModel mxGraphModel = flowById.getMxGraphModel();
+    		if (null == mxGraphModel) {
+    			mxGraphModel = MxGraphModelUtils.setMxGraphModelBasicInformation(null, false, username);
+    		} else {
+    			// Update basic information
+    			mxGraphModel = MxGraphModelUtils.updateMxGraphModelBasicInformation(mxGraphModel, username);
+    		}
+    		// link flow
+    		mxGraphModel.setFlow(flowById);
+    		
+    		List<MxCell> mxCellList = null;
+    		if (null == mxGraphModel.getRoot() || mxGraphModel.getRoot().size() <= 1) {
+    			mxCellList = MxCellUtils.initMxCell(username, mxGraphModel);
+    		}
+    		if (null == mxCellList) {
+    			mxCellList = new ArrayList<>();
+    		}
+    		List<MxCell> rootXml = mxGraphModelGalax.getRoot();
+    		if (null != rootXml && rootXml.size() > 0) {
+    			for (MxCell mxCell : rootXml) {
+    				mxCell.setMxGraphModel(mxGraphModel);
+    				mxCellList.add(mxCell);
+    			}
+    		}
+    		mxGraphModel.setRoot(mxCellList);
+    		flowById.setMxGraphModel(mxGraphModel);
+    	}
+    	// Added processing flow data
+    	List<Stops> stopsListGalax = galaxTemplateToFlow.getStopsList();
+    	if (null != stopsListGalax && stopsListGalax.size() > 0) {
+    		List<Stops> stopsList = flowById.getStopsList();
+    		if (null == stopsList) {
+    			stopsList = new ArrayList<>();
+    		}
+    		for (Stops stops : stopsListGalax) {
+    			stops.setFlow(flowById);
+    			stopsList.add(stops);
+    		}
+    		flowById.setStopsList(stopsList);
+    	}
+    	List<Paths> pathsListGalax = galaxTemplateToFlow.getPathsList();
+    	if (null != pathsListGalax && pathsListGalax.size() > 0) {
+    		List<Paths> pathsList = flowById.getPathsList();
+    		if (null == pathsList) {
+    			pathsList = new ArrayList<>();
+    		}
+    		for (Paths paths : pathsListGalax) {
+    			paths.setFlow(flowById);
+    			pathsList.add(paths);
+    		}
+    		flowById.setPathsList(pathsList);
+    	}
+    	// save
+    	flowDomain.updateFlow(flowById);
+    	return ReturnMapUtils.setSucceededMsgRtnJsonStr("Successfully loaded FlowTemplate");
     }
 
 }

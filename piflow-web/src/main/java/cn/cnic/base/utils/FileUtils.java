@@ -35,6 +35,15 @@ public class FileUtils {
 
 	public static String CSV_TITLE_KEY = "CSV_TITLE";
     public static String CSV_DATA_KEY = "CSV_DATA";
+    
+    public static boolean isFileExists (String path) {
+    	if (null == path ||"".equals(path)) {
+    		return false;
+    	}
+    	File dir = new File(path);
+    	return dir.exists();
+    }
+    
     /**
      * String to "xml" file and save the specified path
      *
@@ -479,5 +488,53 @@ public class FileUtils {
         return csvDataMap;
     }
 
+    public static Map<String, Object> uploadFile(MultipartFile file, String path, String saveFileName) {
+        if (file.isEmpty()) {
+            return ReturnMapUtils.setFailedMsg("The upload failed and the file was empty.");
+        }
+        CheckPathUtils.isChartPathExist(path);
+        //file name
+        String fileName = file.getOriginalFilename();
+        String[] fileNameSplit = fileName.split("\\.");
+        if (saveFileName == null) {
+            if (fileNameSplit.length > 0) {
+                saveFileName = UUIDUtils.getUUID32() + "." + fileNameSplit[fileNameSplit.length - 1];
+            }
+        }
+        if (StringUtils.isBlank(saveFileName)) {
+            saveFileName = UUIDUtils.getUUID32();
+        }
+        File saveFile = new File(path + saveFileName);
+        if (!saveFile.getParentFile().exists()) {
+            boolean mkdirs = saveFile.getParentFile().mkdirs();
+            if (mkdirs) {
+                logger.info("File created successfully");
+            }
+        }
+        Map<String, Object> rtnMap = new HashMap<>();
+        rtnMap.put("code", 500);
+        try {
+            BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(saveFile));
+            out.write(file.getBytes());
+            out.flush();
+            out.close();
+            logger.debug(saveFile.getName() + " Upload success");
+            rtnMap.put("fileName", fileName);
+            rtnMap.put("saveFileName", saveFileName);
+            rtnMap.put("path", path + saveFileName);
+            rtnMap.put("msgInfo", "Upload success");
+            rtnMap.put("code", 200);
+        } catch (FileNotFoundException e) {
+            //e.printStackTrace();
+            rtnMap.put("msgInfo", "Upload failure");
+            logger.error("Upload failure,", e);
+        } catch (IOException e) {
+            //e.printStackTrace();
+            rtnMap.put("msgInfo", "Upload failure");
+            logger.error("Upload failure", e);
+        }
+        return rtnMap;
+    }
 
+    
 }

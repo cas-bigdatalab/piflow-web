@@ -52,6 +52,28 @@ public class MxGraphModelUtils {
         mxGraphModel.setVersion(0L);
         return mxGraphModel;
     }
+    
+    public static MxGraphModel initMxGraphModelBasicPropertiesNoId(String username, boolean isAddId) {
+    	MxGraphModel mxGraphModel = mxGraphModelNewNoId(username);
+        if (isAddId) {
+            mxGraphModel.setId(UUIDUtils.getUUID32());
+        }
+        mxGraphModel.setDx("2036");
+        mxGraphModel.setDy("1283");
+        mxGraphModel.setGrid("1");
+        mxGraphModel.setGridSize("10");
+        mxGraphModel.setGuides("1");
+        mxGraphModel.setTooltips("1");
+        mxGraphModel.setConnect("1");
+        mxGraphModel.setArrows("1");
+        mxGraphModel.setFold("1");
+        mxGraphModel.setPage("1");
+        mxGraphModel.setPageScale("1");
+        mxGraphModel.setPageWidth("827");
+        mxGraphModel.setPageHeight("1169");
+        mxGraphModel.setBackground(null);
+        return mxGraphModel;
+    }
 
     public static MxGraphModel copyMxGraphModelAndNewNoIdAndUnlink(MxGraphModel mxGraphModel, boolean isAddId) {
         if (null == mxGraphModel) {
