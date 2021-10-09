@@ -2,7 +2,8 @@ package cn.cnic.component.template.utils;
 
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.ReturnMapUtils;
-import cn.cnic.common.Eunm.PortType;
+import cn.cnic.base.utils.SpringContextUtil;
+import cn.cnic.base.utils.UUIDUtils;
 import cn.cnic.common.Eunm.TemplateType;
 import cn.cnic.component.flow.entity.Flow;
 import cn.cnic.component.flow.entity.Paths;
@@ -16,6 +17,9 @@ import cn.cnic.component.mxGraph.entity.MxCell;
 import cn.cnic.component.mxGraph.entity.MxGraphModel;
 import cn.cnic.component.mxGraph.utils.MxCellUtils;
 import cn.cnic.component.mxGraph.utils.MxGraphModelUtils;
+import cn.cnic.component.stopsComponent.domain.StopsComponentDomain;
+import cn.cnic.component.stopsComponent.entity.StopsComponent;
+import cn.cnic.component.stopsComponent.entity.StopsComponentProperty;
 import cn.cnic.component.template.entity.FlowTemplate;
 
 import java.io.StringReader;
@@ -33,6 +37,7 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
+import org.springframework.beans.BeanUtils;
 import org.xml.sax.InputSource;
 
 import com.alibaba.fastjson.JSON;
@@ -217,7 +222,7 @@ public class FlowTemplateUtils {
                   }
                   String mxCellBundle = stopOrFlowNamesMap.get(mxCell.getPageId() + "bundle");
                   if (StringUtils.isNotBlank(mxCellBundle)) {
-                	  String mxCellName = mxCellBundle.replace("cn.piflow.bundle.galax.", "");
+                	  String mxCellName = mxCellBundle.replace("cn.piflow.bundle.galaxy.", "");
                 	  mxCell.setStyle("image;html=1;labelBackgroundColor=#ffffff00;image=/piflow-web/images/" + mxCellName + "_128x128.png");
                   }
                   rootList.add(mxCell);
@@ -338,86 +343,140 @@ public class FlowTemplateUtils {
             if (StringUtils.isNotBlank(name)) {
                 name = name.replaceAll(" ", "_");
             }
-            String bundel = ("cn.piflow.bundle.galax." + name);
-            String description = name;
+            //String bundle = ("cn.piflow.bundle.galaxy." + name);
+            //String description = name;
             //String id = galaxStepsJSONObject.getString("id");
-            String pageId = galaxStepsJSONObject.getString("id");
-            String inports = "";
-            String inPortType = "";
-            JSONArray inputs = galaxStepsJSONObject.getJSONArray("inputs");
-            if (inputs.size() > 0) {
-                inPortType = "UserDefault";
-                for (Object object : inputs) {
-                    if (null == object) {
-                        continue;
-                    }
-                    if (StringUtils.isNotBlank(inports)) {
-                        inports += ",";
-                    }
-                    inports += ((JSONObject)object).getString("name");
-                    inports += ((JSONObject)object).getString("type");
-                }
-            }
-            String outPortType = "";
-            String outports = "";
-            JSONArray outputs = galaxStepsJSONObject.getJSONArray("outputs");
-            if (outputs.size() > 0) {
-                outPortType = "UserDefault";
-                for (Object object : outputs) {
-                    if (null == object) {
-                        continue;
-                    }
-                    if (StringUtils.isNotBlank(outports)) {
-                        outports += ",";
-                    }
-                    outports += ((JSONObject)object).getString("name");
-                    outports += ((JSONObject)object).getString("type");
-                }
-            }
-            String owner = "Galaxy";
-            String groups = "Galaxy";
-            Stops stops = StopsUtils.stopsNewNoId(username);            
-            stops.setPageId((Integer.parseInt(pageId) + maxPageId) + "");
-            stops.setName(name + stops.getPageId());
-            stops.setDescription(description);
-            stops.setBundel(bundel);
-            //stops.setId(id);
-            stops.setInports(inports);
-            stops.setOutports(outports);
-            stops.setOutPortType(PortType.selectGender(outPortType));
-            stops.setInPortType(PortType.selectGenderByValue(inPortType));
-            stops.setGroups(groups);
-            stops.setIsCheckpoint(false);
-            stops.setIsCustomized(false);
-            stops.setOwner(owner);
-            List<Property> propertyList = new ArrayList<>();            
-            Property inputProperty = PropertyUtils.propertyNewNoId(username);
-            inputProperty.setAllowableValues("[]");
-            inputProperty.setCustomValue("");
-            inputProperty.setDescription("input");
-            inputProperty.setDisplayName("input");
-            inputProperty.setName("input");
-            inputProperty.setRequired(false);
-            inputProperty.setSensitive(false);
-            inputProperty.setIsSelect(false);
-            inputProperty.setStops(stops);
-            Property outputProperty = PropertyUtils.propertyNewNoId(username);
-            outputProperty.setAllowableValues("[]");
-            outputProperty.setCustomValue("");
-            outputProperty.setDescription("output");
-            outputProperty.setDisplayName("output");
-            outputProperty.setName("output");
-            outputProperty.setRequired(false);
-            outputProperty.setSensitive(false);
-            outputProperty.setIsSelect(false);
-            outputProperty.setStops(stops);
-            propertyList.add(outputProperty);
-            stops.setProperties(propertyList);
-            return stops;
+            //String pageId = galaxStepsJSONObject.getString("id");
+            //String inports = "";
+            //String inPortType = "";
+            //JSONArray inputs = galaxStepsJSONObject.getJSONArray("inputs");
+            //if (inputs.size() > 0) {
+            //    inPortType = "UserDefault";
+            //    for (Object object : inputs) {
+            //        if (null == object) {
+            //            continue;
+            //        }
+            //        if (StringUtils.isNotBlank(inports)) {
+            //            inports += ",";
+            //        }
+            //        inports += ((JSONObject)object).getString("name");
+            //        inports += ((JSONObject)object).getString("type");
+            //    }
+            //}
+            //String outPortType = "";
+            //String outports = "";
+            //JSONArray outputs = galaxStepsJSONObject.getJSONArray("outputs");
+            //if (outputs.size() > 0) {
+            //    outPortType = "UserDefault";
+            //    for (Object object : outputs) {
+            //        if (null == object) {
+            //            continue;
+            //        }
+            //        if (StringUtils.isNotBlank(outports)) {
+            //            outports += ",";
+            //        }
+            //        outports += ((JSONObject)object).getString("name");
+            //        outports += ((JSONObject)object).getString("type");
+            //    }
+            //}
+            //String owner = "Galaxy";
+            //String groups = "Galaxy";
+            //Stops stops = StopsUtils.stopsNewNoId(username);            
+            //stops.setPageId((Integer.parseInt(pageId) + maxPageId) + "");
+            //stops.setName(name + stops.getPageId());
+            //stops.setDescription(description);
+            //stops.setBundel(bundel);
+            ////stops.setId(id);
+            //stops.setInports(inports);
+            //stops.setOutports(outports);
+            //stops.setOutPortType(PortType.selectGender(outPortType));
+            //stops.setInPortType(PortType.selectGenderByValue(inPortType));
+            //stops.setGroups(groups);
+            //stops.setIsCheckpoint(false);
+            //stops.setIsCustomized(false);
+            //stops.setOwner(owner);
+            //List<Property> propertyList = new ArrayList<>();            
+            //Property inputProperty = PropertyUtils.propertyNewNoId(username);
+            //inputProperty.setAllowableValues("[]");
+            //inputProperty.setCustomValue("");
+            //inputProperty.setDescription("input");
+            //inputProperty.setDisplayName("input");
+            //inputProperty.setName("input");
+            //inputProperty.setRequired(false);
+            //inputProperty.setSensitive(false);
+            //inputProperty.setIsSelect(false);
+            //inputProperty.setStops(stops);
+            //Property outputProperty = PropertyUtils.propertyNewNoId(username);
+            //outputProperty.setAllowableValues("[]");
+            //outputProperty.setCustomValue("");
+            //outputProperty.setDescription("output");
+            //outputProperty.setDisplayName("output");
+            //outputProperty.setName("output");
+            //outputProperty.setRequired(false);
+            //outputProperty.setSensitive(false);
+            //outputProperty.setIsSelect(false);
+            //outputProperty.setStops(stops);
+            //propertyList.add(outputProperty);
+            //stops.setProperties(propertyList);
+            //return stops;
+            String bundle = ("cn.piflow.bundle.galaxy." + name);
+            int pageId = Integer.parseInt(galaxStepsJSONObject.getString("id")) + maxPageId;
+            return stopsComponentToStops(username, bundle, name, pageId, false);
         } catch (Exception e) {
             logger.error("Conversion failed", e);
             return null;
         }
+    }
+    
+    public static Stops stopsComponentToStops(String username, String bundle, String stopsName, int pageId, boolean isAddId) {
+    	StopsComponentDomain stopsComponentDomain = (StopsComponentDomain) SpringContextUtil.getBean("stopsComponentDomain");
+    	StopsComponent stopsComponent = stopsComponentDomain.getStopsComponentByBundle(bundle);        
+
+        // Whether to judge whether the template is empty
+        if (null == stopsComponent) {
+            return null;
+        }
+        
+        Stops stopsNew = new Stops();
+        BeanUtils.copyProperties(stopsComponent, stopsNew);
+        StopsUtils.initStopsBasicPropertiesNoId(stopsNew, username);
+        stopsNew.setPageId(pageId + "");
+        stopsNew.setName(stopsName + stopsNew.getPageId());
+        if(isAddId) {
+        	stopsNew.setId(UUIDUtils.getUUID32());    
+        } else {
+        	stopsNew.setId(null);
+        }
+        List<Property> propertiesListNew = null;
+        List<StopsComponentProperty> propertiesTemplateList = stopsComponent.getProperties();
+        if (null != propertiesTemplateList && propertiesTemplateList.size() > 0) {
+        	propertiesListNew = new ArrayList<>();
+            for (StopsComponentProperty stopsComponentProperty : propertiesTemplateList) {
+                Property propertyNew = PropertyUtils.propertyNewNoId(username);
+                BeanUtils.copyProperties(stopsComponentProperty, propertyNew);
+                if(isAddId) {
+                	propertyNew.setId(UUIDUtils.getUUID32());    
+                } else {
+                	propertyNew.setId(null);
+                }
+                propertyNew.setStops(stopsNew);
+                propertyNew.setCustomValue(stopsComponentProperty.getDefaultValue());
+                // Indicates "select"
+                if (stopsComponentProperty.getAllowableValues().contains(",") && stopsComponentProperty.getAllowableValues().length() > 4) {
+                	propertyNew.setIsSelect(true);
+                    // Determine if there is a default value in "select"
+                    if (!stopsComponentProperty.getAllowableValues().contains(stopsComponentProperty.getDefaultValue())) {
+                        // Default value if not present
+                    	propertyNew.setCustomValue("");
+                    }
+                } else {
+                	propertyNew.setIsSelect(false);
+                }
+                propertiesListNew.add(propertyNew);
+            }
+        }
+        stopsNew.setProperties(propertiesListNew);
+        return stopsNew;
     }
 
     
@@ -435,7 +494,7 @@ public class FlowTemplateUtils {
             JSONObject stopsJsonObject = stopsJSONObjectArray.getJSONObject(key);
             Stops stops = jsonObjectToStops(stopsJsonObject, stopMaxPageIdInt, username);
             if (null == stops) {
-                continue;
+            	return ReturnMapUtils.setFailedMsg("to stops error");
             }
             String stopName = stops.getName();
 

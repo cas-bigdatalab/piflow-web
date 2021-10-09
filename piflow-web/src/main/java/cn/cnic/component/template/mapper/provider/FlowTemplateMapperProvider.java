@@ -77,11 +77,11 @@ public class FlowTemplateMapperProvider {
     public String getFlowTemplateList(String username, boolean isAdmin, String type) {
         String sqlStr = "select ft.* from flow_template ft where ft.enable_flag=1 ";
         if (!isAdmin) {
-            sqlStr = "and crt_user=" + SqlUtils.preventSQLInjection(username) + " ";
+            sqlStr += "and crt_user=" + SqlUtils.preventSQLInjection(username) + " ";
         }
         if (StringUtils.isNotBlank(type)) {
         	String[] split = type.split(",");
-            sqlStr = "and template_type in (" + SqlUtils.strArrayToStr(split) + ") ";
+            sqlStr += "and template_type in (" + SqlUtils.strArrayToStr(split) + ") ";
         }
         sqlStr += "order by crt_dttm desc ";
         return sqlStr;
