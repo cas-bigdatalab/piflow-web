@@ -74,14 +74,16 @@ public class FlowTemplateMapperProvider {
         return "update flow_template ft set ft.enable_flag = " + enableFlagInt + " where ft.id = " + SqlUtils.preventSQLInjection(id);
     }
 
-    public String getFlowTemplateList(String username, boolean isAdmin) {
-        String sqlStr = "";
-        if (isAdmin) {
-            sqlStr = "select ft.* from flow_template ft where ft.enable_flag=1 order by crt_dttm desc ";
-        } else {
-            String user_value = SqlUtils.preventSQLInjection(username);
-            sqlStr = "select ft.* from flow_template ft where ft.enable_flag=1 and crt_user=" + user_value + " order by ft.crt_dttm desc";
+    public String getFlowTemplateList(String username, boolean isAdmin, String type) {
+        String sqlStr = "select ft.* from flow_template ft where ft.enable_flag=1 ";
+        if (!isAdmin) {
+            sqlStr = "and crt_user=" + SqlUtils.preventSQLInjection(username) + " ";
         }
+        if (StringUtils.isNotBlank(type)) {
+        	String[] split = type.split(",");
+            sqlStr = "and template_type in (" + SqlUtils.strArrayToStr(split) + ") ";
+        }
+        sqlStr += "order by crt_dttm desc ";
         return sqlStr;
     }
 

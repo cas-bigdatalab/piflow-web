@@ -24,7 +24,7 @@ public interface FlowTemplateMapper {
     public FlowTemplate getFlowTemplateById(String id);
 
     @SelectProvider(type = FlowTemplateMapperProvider.class, method = "getFlowTemplateList")
-    public List<FlowTemplate> getFlowTemplateList(String username, boolean isAdmin);
+    public List<FlowTemplate> getFlowTemplateList(String username, boolean isAdmin, String type);
 
     @SelectProvider(type = FlowTemplateMapperProvider.class, method = "getFlowTemplateListByParam")
     public List<FlowTemplate> getFlowTemplateListByParam(String username, boolean isAdmin, String param);

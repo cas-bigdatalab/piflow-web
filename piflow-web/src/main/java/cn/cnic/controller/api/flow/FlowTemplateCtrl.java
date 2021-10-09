@@ -98,10 +98,10 @@ public class FlowTemplateCtrl {
 	 */
 	@RequestMapping(value = "/flowTemplateList", method = RequestMethod.POST)
 	@ResponseBody
-	public String flowTemplateList() {
+	public String flowTemplateList(String type) {
 		String username = SessionUserUtil.getCurrentUsername();
 		boolean isAdmin = SessionUserUtil.isAdmin();
-		return flowTemplateServiceImpl.flowTemplateList(username, isAdmin);
+		return flowTemplateServiceImpl.flowTemplateList(username, isAdmin, type);
 	}
 
 	/**

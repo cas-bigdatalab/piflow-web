@@ -30,8 +30,8 @@ public class FlowTemplateDomain {
         return flowTemplateMapper.getFlowTemplateById(id);
     }
 
-    public List<FlowTemplate> getFlowTemplateList(String username, boolean isAdmin) {
-        return flowTemplateMapper.getFlowTemplateList(username, isAdmin);
+    public List<FlowTemplate> getFlowTemplateList(String username, boolean isAdmin, String type) {
+        return flowTemplateMapper.getFlowTemplateList(username, isAdmin, type);
     }
 
     public List<FlowTemplate> getFlowTemplateListByParam(String username, boolean isAdmin, String param) {

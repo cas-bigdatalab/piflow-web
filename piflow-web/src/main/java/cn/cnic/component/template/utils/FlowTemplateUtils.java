@@ -378,7 +378,7 @@ public class FlowTemplateUtils {
             String groups = "Galaxy";
             Stops stops = StopsUtils.stopsNewNoId(username);            
             stops.setPageId((Integer.parseInt(pageId) + maxPageId) + "");
-            stops.setName(name);
+            stops.setName(name + stops.getPageId());
             stops.setDescription(description);
             stops.setBundel(bundel);
             //stops.setId(id);
@@ -430,6 +430,7 @@ public class FlowTemplateUtils {
         List<Paths> pathsList = new ArrayList<>();
         String duplicateStopName = null;
         int stopsSize = stopsJSONObjectArray.size();
+        int path_page_no = stopsSize + 5 + stopMaxPageIdInt;
         for (String key : stopsJSONObjectArray.keySet()) {
             JSONObject stopsJsonObject = stopsJSONObjectArray.getJSONObject(key);
             Stops stops = jsonObjectToStops(stopsJsonObject, stopMaxPageIdInt, username);
@@ -485,10 +486,10 @@ public class FlowTemplateUtils {
                     paths.setInport(input_name);
                     paths.setTo(stops.getPageId());
                     paths.setOutport(name);
-                    paths.setPageId((stopsSize + 5 + stopMaxPageIdInt) + "");
+                    paths.setPageId(path_page_no + "");
                     paths.setFlow(flow);
                     pathsList.add(paths);
-                    
+                    path_page_no ++;
                 }
                 
             }

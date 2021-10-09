@@ -296,8 +296,11 @@ public class FlowTemplateServiceImpl implements IFlowTemplateService {
     }
 
     @Override
-    public String flowTemplateList(String username, boolean isAdmin) {
-        List<FlowTemplate> findTemPlateList = flowTemplateDomain.getFlowTemplateList(username, isAdmin);
+    public String flowTemplateList(String username, boolean isAdmin, String type) {
+    	if (StringUtils.isBlank(type)) {
+    		type = "TASK,GROUP";
+    	}
+        List<FlowTemplate> findTemPlateList = flowTemplateDomain.getFlowTemplateList(username, isAdmin, type);
         if (null == findTemPlateList || findTemPlateList.size() <= 0) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Query result is empty");
         }

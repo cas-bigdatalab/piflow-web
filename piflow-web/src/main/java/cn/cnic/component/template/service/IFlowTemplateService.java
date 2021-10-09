@@ -53,7 +53,7 @@ public interface IFlowTemplateService {
      * @param isAdmin
      * @return
      */
-    public String flowTemplateList(String username, boolean isAdmin);
+    public String flowTemplateList(String username, boolean isAdmin, String type);
 
     /**
      * Upload xml file and save flowTemplate
