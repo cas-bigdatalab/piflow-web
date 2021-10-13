@@ -542,9 +542,9 @@ public class FlowTemplateUtils {
                     String input_name = ((JSONObject)input_connections_j).getString("output_name");
                     Paths paths = PathsUtil.newPathsNoId(username);
                     paths.setFrom((fromPageId + stopMaxPageIdInt) + "");
-                    paths.setInport(input_name);
+                    paths.setInport(name);
                     paths.setTo(stops.getPageId());
-                    paths.setOutport(name);
+                    paths.setOutport(input_name);
                     paths.setPageId(path_page_no + "");
                     paths.setFlow(flow);
                     pathsList.add(paths);
