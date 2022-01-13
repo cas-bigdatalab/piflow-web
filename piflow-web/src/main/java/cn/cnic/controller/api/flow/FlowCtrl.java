@@ -1,5 +1,6 @@
 package cn.cnic.controller.api.flow;
 
+import cn.cnic.component.user.service.LogHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +22,9 @@ public class FlowCtrl {
     @Autowired
     private IFlowService flowServiceImpl;
 
+    @Autowired
+    private LogHelper logHelper;
+
     /**
      * flowList page query
      *
@@ -40,7 +44,8 @@ public class FlowCtrl {
     /**
      * Enter the front page of the drawing board
      *
-     * @param request
+     * @param load
+     * @param parentAccessPath
      * @return
      */
     @RequestMapping(value = "/drawingBoardData", method = RequestMethod.GET)
@@ -54,7 +59,8 @@ public class FlowCtrl {
     /**
      * run Flow
      *
-     * @param request
+     * @param flowId
+     * @param runMode
      * @return
      * @throws Exception 
      */
@@ -63,6 +69,7 @@ public class FlowCtrl {
     public String runFlow(String flowId, String runMode) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
+        logHelper.logAuthSucceed("run flow",username);
         return flowServiceImpl.runFlow(username, isAdmin, flowId, runMode);
     }
 
@@ -83,6 +90,7 @@ public class FlowCtrl {
     @ResponseBody
     public String saveFlowInfo(FlowInfoVoRequestAdd flowVo) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
+        logHelper.logAuthSucceed("save flow",username);
         return flowServiceImpl.addFlow(username, flowVo);
     }
 
@@ -97,6 +105,7 @@ public class FlowCtrl {
     public String deleteFlow(String id) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
+        logHelper.logAuthSucceed("delete flow " + id,username);
         return flowServiceImpl.deleteFLowInfo(username, isAdmin, id);
     }
 
@@ -105,6 +114,7 @@ public class FlowCtrl {
     @ApiImplicitParam(name = "fId", value="fId")
     public String updateFlowBaseInfo(String fId, FlowInfoVoRequestUpdate flowVo) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
+        logHelper.logAuthSucceed("update flow base "+ flowVo.getName(),username);
         return flowServiceImpl.updateFlowBaseInfo(username, fId, flowVo);
     }
 

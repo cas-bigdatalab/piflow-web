@@ -18,6 +18,7 @@ import cn.cnic.component.flow.service.IFlowGroupService;
 import cn.cnic.component.mxGraph.service.IMxGraphModelService;
 import cn.cnic.component.mxGraph.service.IMxNodeImageService;
 import cn.cnic.component.mxGraph.vo.MxGraphVo;
+import cn.cnic.component.user.service.LogHelper;
 import io.swagger.annotations.Api;
 
 
@@ -38,31 +39,38 @@ public class MxGraphCtrl {
     @Autowired
     private IMxNodeImageService mxNodeImageServiceImpl;
 
+    @Autowired
+    private LogHelper logHelper;
+
     /**
      * save data
      *
-     * @param request
-     * @param model
+     * @param imageXML
+     * @param load
+     * @param operType
      * @return
      */
     @RequestMapping(value = "/saveDataForTask", method = RequestMethod.POST)
     @ResponseBody
     public String saveDataForTask(String imageXML, String load, String operType) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
+        logHelper.logAuthSucceed("saveDataForTask" + load, username);
         return mxGraphModelServiceImpl.saveDataForTask(username, imageXML, load, operType);
     }
 
     /**
      * save data
      *
-     * @param request
-     * @param model
+     * @param imageXML
+     * @param load
+     * @param operType
      * @return
      */
     @RequestMapping(value = "/saveDataForGroup", method = RequestMethod.POST)
     @ResponseBody
     public String saveDataForGroup(String imageXML, String load, String operType) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
+        logHelper.logAuthSucceed("saveDataForGroup " + load, username);
         return mxGraphModelServiceImpl.saveDataForGroup(username, imageXML, load, operType, true);
     }
 
@@ -70,13 +78,15 @@ public class MxGraphCtrl {
     @ResponseBody
     public String addMxCellAndData(@RequestBody MxGraphVo mxGraphVo) throws Exception {
         String currentUsername = SessionUserUtil.getCurrentUsername();
+        logHelper.logAuthSucceed("addMxCellAndData" + mxGraphVo.getLoadId(), currentUsername);
         return mxGraphModelServiceImpl.addMxCellAndData(mxGraphVo, currentUsername);
     }
 
-    @RequestMapping(value = "/uploadNodeImage", method = RequestMethod.POST)
+     @RequestMapping(value = "/uploadNodeImage", method = RequestMethod.POST)
     @ResponseBody
     public String uploadNodeImage(@RequestParam("file") MultipartFile file, String imageType) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
+        logHelper.logAuthSucceed("uploadNodeImage " + file.getName(),username);
         return mxNodeImageServiceImpl.uploadNodeImage(username, file, imageType);
     }
 
@@ -92,6 +102,7 @@ public class MxGraphCtrl {
     public String groupRightRun(String pId, String nodeId, String nodeType) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
+        logHelper.logAuthSucceed("groupRightRun" + nodeId, username);
         return flowGroupServiceImpl.rightRun(username, isAdmin, pId, nodeId, nodeType);
     }
 

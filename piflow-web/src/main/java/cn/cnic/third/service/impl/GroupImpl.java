@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.cnic.common.constant.MessageConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,9 @@ import net.sf.json.JSONObject;
 @Component
 public class GroupImpl implements IGroup {
 
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
     private Logger logger = LoggerUtil.getLogger();
 
     @Autowired
@@ -39,7 +43,7 @@ public class GroupImpl implements IGroup {
     @Override
     public Map<String, Object> startFlowGroup(ProcessGroup processGroup, RunModeType runModeType) {
         if (null == processGroup) {
-            return ReturnMapUtils.setFailedMsg("processGroup is null");
+            return ReturnMapUtils.setFailedMsg("processGroup " + MessageConfig.PARAM_IS_NULL_MSG(MessageConfig.LANGUAGE));
         }
         // String json = ProcessUtil.processGroupToJson(processGroup, runModeType);
         // String formatJson = JsonFormatTool.formatJson(json);
@@ -53,12 +57,11 @@ public class GroupImpl implements IGroup {
         String doPost = HttpUtils.doPost(SysParamsCache.getFlowGroupStartUrl(), formatJson, null);
         logger.info("Return information：" + doPost);
         if (StringUtils.isBlank(doPost)) {
-            logger.warn("Return information values is null");
-            return ReturnMapUtils.setFailedMsg("Return information values is null");
+            return ReturnMapUtils.setFailedMsg(MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG(MessageConfig.LANGUAGE));
         }
         if (doPost.contains(HttpUtils.INTERFACE_CALL_ERROR) || doPost.contains("Exception")) {
             logger.warn("Return information：" + doPost);
-            return ReturnMapUtils.setFailedMsg("Interface call failed: " + doPost);
+            return ReturnMapUtils.setFailedMsg(MessageConfig.INTERFACE_CALL_ERROR_MSG(MessageConfig.LANGUAGE)+ ": " + doPost);
         }
         try {
             JSONObject obj = JSONObject.fromObject(doPost).getJSONObject("group");// Convert a json string to a json object
@@ -66,7 +69,7 @@ public class GroupImpl implements IGroup {
             if (StringUtils.isNotBlank(groupId)) {
                 return ReturnMapUtils.setSucceededCustomParam("appId", groupId);
             } else {
-                return ReturnMapUtils.setFailedMsg("Error : Interface return value is null");
+                return ReturnMapUtils.setFailedMsg("Error : " + MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG(MessageConfig.LANGUAGE));
             }
         } catch (Exception e) {
             return ReturnMapUtils.setFailedMsg("Error : Interface call succeeded, conversion error");

@@ -25,6 +25,9 @@ import net.sf.json.JSONObject;
 @Component
 public class StopImpl implements IStop {
 
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
     private Logger logger = LoggerUtil.getLogger();
 
     @Override

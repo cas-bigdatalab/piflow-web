@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.cnic.common.constant.MessageConfig;
+import cn.cnic.component.mxGraph.utils.MxGraphUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -20,7 +22,6 @@ import com.github.pagehelper.PageHelper;
 import cn.cnic.base.utils.HdfsUtils;
 import cn.cnic.base.utils.JsonUtils;
 import cn.cnic.base.utils.LoggerUtil;
-import cn.cnic.base.utils.MxGraphUtils;
 import cn.cnic.base.utils.PageHelperUtils;
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.base.utils.UUIDUtils;
@@ -53,6 +54,9 @@ import net.sf.json.JSONObject;
 @Service
 public class ProcessGroupServiceImpl implements IProcessGroupService {
 
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
     private Logger logger = LoggerUtil.getLogger();
 
     @Autowired
@@ -71,7 +75,9 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
     /**
      * Query processVo based on id (query contains its child table)
      *
-     * @param id ProcessGroup Id
+     * @param username username
+     * @param isAdmin is admin
+     * @param processGroupId ProcessGroup Id
      * @return ProcessGroupVo (query contains its child table)
      */
     @Override
@@ -91,7 +97,9 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
     /**
      * Query processGroupVo based on id (only query process table)
      *
-     * @param id ProcessGroup Id
+     * @param username username
+     * @param isAdmin is admin
+     * @param processGroupId ProcessGroup Id
      * @return ProcessGroupVo (Only themselves do not include subtables)
      */
     @Override
@@ -131,7 +139,7 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("No data was queried");
 
         }
-        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(ReturnMapUtils.SUCCEEDED_MSG);
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
         rtnMap.put("progress", (null != processGroupVo.getProgress() ? processGroupVo.getProgress() : "0.00"));
         rtnMap.put("state", (null != processGroupVo.getState() ? processGroupVo.getState().name() : "NO_STATE"));
         rtnMap.put("processGroupVo", processGroupVo);
@@ -153,7 +161,7 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
         if (CollectionUtils.isEmpty(processGroupListByAppIDs)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("No data was queried");
         }
-        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(ReturnMapUtils.SUCCEEDED_MSG);
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
         for (ProcessGroup processGroup : processGroupListByAppIDs) {
             if (null == processGroup) {
                 continue;
@@ -239,11 +247,11 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
     @Override
     public String getProcessGroupVoListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param) {
         if (null == offset || null == limit) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.ERROR_MSG);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG(MessageConfig.LANGUAGE));
         }
         Page<ProcessGroupVo> page = PageHelper.startPage(offset, limit, "crt_dttm desc");
         processGroupDomain.getProcessGroupListPageByParam(username, isAdmin, param);
-        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(ReturnMapUtils.SUCCEEDED_MSG);
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
         rtnMap = PageHelperUtils.setLayTableParam(page, rtnMap);
         return JsonUtils.toJsonNoException(rtnMap);
     }
@@ -511,7 +519,7 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
         if (null == processGroup) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("No data with ID : " + loadId);
         }
-        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(ReturnMapUtils.SUCCEEDED_MSG);
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
         // set loadId
         rtnMap.put("load", loadId);
         // set current user
@@ -630,7 +638,7 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
             BeanUtils.copyProperties(processGroup, processGroupVo);
             nodeType = "flowGroup";
         }
-        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(ReturnMapUtils.SUCCEEDED_MSG);
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
         rtnMap.put("processVo", processVo);
         rtnMap.put("processGroupVo", processGroupVo);
         rtnMap.put("nodeType", nodeType);

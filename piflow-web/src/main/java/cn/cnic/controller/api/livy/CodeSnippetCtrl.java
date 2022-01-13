@@ -2,6 +2,7 @@ package cn.cnic.controller.api.livy;
 
 import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.component.livy.service.ICodeSnippetService;
+import cn.cnic.component.user.service.LogHelper;
 import cn.cnic.controller.requestVo.CodeSnippetVoRequestAdd;
 import cn.cnic.controller.requestVo.CodeSnippetVoRequestUpdate;
 import io.swagger.annotations.Api;
@@ -21,6 +22,9 @@ public class CodeSnippetCtrl {
     @Resource
     private ICodeSnippetService codeSnippetServiceImpl;
 
+    @Resource
+    private LogHelper logHelper;
+
     /**
      * addCodeSnippet
      *
@@ -33,6 +37,7 @@ public class CodeSnippetCtrl {
     public String addCodeSnippet(CodeSnippetVoRequestAdd codeSnippetVo) throws Exception {
         String currentUsername = SessionUserUtil.getCurrentUsername();
         //boolean isAdmin = SessionUserUtil.isAdmin();
+        logHelper.logAuthSucceed("addCodeSnippet" + codeSnippetVo.getNoteBookId() ,currentUsername);
         return codeSnippetServiceImpl.addCodeSnippet(currentUsername, codeSnippetVo);
     }
 
@@ -48,6 +53,7 @@ public class CodeSnippetCtrl {
     public String updateCodeSnippet(CodeSnippetVoRequestUpdate codeSnippetVo) throws Exception {
         String currentUsername = SessionUserUtil.getCurrentUsername();
         //boolean isAdmin = SessionUserUtil.isAdmin();
+        logHelper.logAuthSucceed("updateCodeSnippet " + codeSnippetVo.getCodeSnippetSort(),currentUsername);
         return codeSnippetServiceImpl.updateCodeSnippet(currentUsername, codeSnippetVo);
     }
 
@@ -63,6 +69,8 @@ public class CodeSnippetCtrl {
     public String delCodeSnippet(String codeSnippetId) {
         String currentUsername = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
+        String username = SessionUserUtil.getCurrentUsername();
+        logHelper.logAuthSucceed("deleteCodeSnippet " + codeSnippetId,username);
         return codeSnippetServiceImpl.delCodeSnippet(currentUsername, isAdmin, codeSnippetId);
     }
 
@@ -96,7 +104,7 @@ public class CodeSnippetCtrl {
     /**
      * getStatementsResult
      *
-     * @param executeId
+     * @param codeSnippetId
      * @return
      */
     @RequestMapping(value = "/getStatementsResult", method = RequestMethod.POST)

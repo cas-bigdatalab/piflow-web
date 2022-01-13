@@ -3,6 +3,7 @@ package cn.cnic.controller.api.process;
 import java.util.HashMap;
 import java.util.Map;
 
+import cn.cnic.component.user.service.LogHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,6 +29,9 @@ public class ProcessGroupCtrl {
     @Autowired
     private IProcessService processServiceImpl;
 
+    @Autowired
+    private LogHelper logHelper;
+
 
     /**
      * Query and enter the process list
@@ -48,7 +52,10 @@ public class ProcessGroupCtrl {
     /**
      * Query and enter the process list
      *
-     * @param request
+     * @param start
+     * @param length
+     * @param draw
+     * @param extra_search
      * @return
      */
     @RequestMapping(value = "/processListPage", method=RequestMethod.POST)
@@ -62,7 +69,8 @@ public class ProcessGroupCtrl {
     /**
      * Enter the front page of the drawing board
      *
-     * @param request
+     * @param loadId
+     * @param parentAccessPath
      * @return
      */
     @RequestMapping(value = "/drawingBoardData", method = RequestMethod.GET)
@@ -76,7 +84,7 @@ public class ProcessGroupCtrl {
     /**
      * Query Process basic information
      *
-     * @param request
+     * @param processGroupId
      * @return
      */
     @RequestMapping(value = "/queryProcessGroup", method = RequestMethod.POST)
@@ -91,7 +99,8 @@ public class ProcessGroupCtrl {
     /**
      * Query ProcessStop basic information
      *
-     * @param request
+     * @param processGroupId
+     * @param pageId
      * @return
      */
     @RequestMapping(value = "/queryProcess", method = RequestMethod.POST)
@@ -105,7 +114,8 @@ public class ProcessGroupCtrl {
     /**
      * Query ProcessPath basic information
      *
-     * @param request
+     * @param processGroupId
+     * @param pageId
      * @return
      */
     @RequestMapping(value = "/queryProcessGroupPath", method = RequestMethod.POST)
@@ -117,8 +127,9 @@ public class ProcessGroupCtrl {
     /**
      * Start Process
      *
-     * @param request
-     * @param model
+     * @param id
+     * @param checkpointStr
+     * @param runMode
      * @return
      * @throws Exception 
      */
@@ -127,38 +138,41 @@ public class ProcessGroupCtrl {
     public String runProcessGroup(String id, String checkpointStr, String runMode) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
+        logHelper.logAuthSucceed("runProcessGroup " + runMode,username);
         return processGroupServiceImpl.startProcessGroup(isAdmin, username, id, checkpointStr, runMode);
     }
 
     /**
      * Stop Process Group
      *
-     * @param request
-     * @param model
+     * @param processGroupId
      * @return
      */
     @RequestMapping(value = "/stopProcessGroup", method = RequestMethod.POST)
     @ResponseBody
     public String stopProcessGroup(String processGroupId) {
-        return processGroupServiceImpl.stopProcessGroup(SessionUserUtil.getCurrentUsername(), SessionUserUtil.isAdmin(), processGroupId);
+        String username = SessionUserUtil.getCurrentUsername();
+        logHelper.logAuthSucceed("stopProcessGroup " + processGroupId , username);
+        return processGroupServiceImpl.stopProcessGroup(username, SessionUserUtil.isAdmin(), processGroupId);
     }
 
     /**
      * Delete Process
      *
-     * @param request
+     * @param processGroupId
      * @return
      */
     @RequestMapping(value = "/delProcessGroup", method = RequestMethod.POST)
     @ResponseBody
     public String delProcessGroup(String processGroupId) {
+        logHelper.logAuthSucceed("delProcessGroup " + processGroupId , SessionUserUtil.getCurrentUsername());
         return processGroupServiceImpl.delProcessGroup(SessionUserUtil.getCurrentUsername(), SessionUserUtil.isAdmin(), processGroupId);
     }
 
     /**
      * Get log data of group
      *
-     * @param request
+     * @param appId
      * @return
      */
     @RequestMapping(value = "/getGroupLogData", method = RequestMethod.POST)
@@ -170,7 +184,7 @@ public class ProcessGroupCtrl {
     /**
      * Get log data of group
      *
-     * @param request
+     * @param processGroupId
      * @return
      */
     @RequestMapping(value = "/getStartGroupJson", method = RequestMethod.POST)
@@ -184,7 +198,7 @@ public class ProcessGroupCtrl {
     /**
      * Monitoring query appinfo
      *
-     * @param request
+     * @param appid
      * @return
      */
     @RequestMapping(value = "/getAppInfo", method = RequestMethod.GET)
@@ -196,7 +210,7 @@ public class ProcessGroupCtrl {
     /**
      * Monitoring query appinfoList
      *
-     * @param request
+     * @param arrayObj
      * @return
      */
     @RequestMapping(value = "/getAppInfoList", method = RequestMethod.GET)

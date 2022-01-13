@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import cn.cnic.common.constant.MessageConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,7 +75,7 @@ public class FlowGlobalParamsServiceImpl implements IFlowGlobalParamsService {
 		if (affectedRows <= 0) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("update failed");
         }
-		return ReturnMapUtils.setSucceededMsgRtnJsonStr(ReturnMapUtils.SUCCEEDED_MSG);
+		return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
 	}
     
     @Override
@@ -83,7 +84,7 @@ public class FlowGlobalParamsServiceImpl implements IFlowGlobalParamsService {
     	if (affectedRows <= 0) {
     		return ReturnMapUtils.setFailedMsgRtnJsonStr("delete failed");
         }
-    	return ReturnMapUtils.setSucceededMsgRtnJsonStr(ReturnMapUtils.SUCCEEDED_MSG);
+    	return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
     }
 
     /**
@@ -99,11 +100,11 @@ public class FlowGlobalParamsServiceImpl implements IFlowGlobalParamsService {
     @Override
     public String getFlowGlobalParamsListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param) {
         if (null == offset || null == limit) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.ERROR_MSG);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG(MessageConfig.LANGUAGE));
         }
         Page<FlowGlobalParams> page = PageHelper.startPage(offset, limit,"crt_dttm desc");
         flowGlobalParamsDomain.getFlowGlobalParamsListParam(username, isAdmin, param);
-        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(ReturnMapUtils.SUCCEEDED_MSG);
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
         rtnMap = PageHelperUtils.setLayTableParam(page, rtnMap);
         return JsonUtils.toJsonNoException(rtnMap);
     }
@@ -113,8 +114,6 @@ public class FlowGlobalParamsServiceImpl implements IFlowGlobalParamsService {
      *
      * @param username
      * @param isAdmin
-     * @param offset   Number of pages
-     * @param limit    Number of pages per page
      * @param param    search for the keyword
      * @return
      */

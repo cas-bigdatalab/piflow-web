@@ -21,6 +21,9 @@ import cn.cnic.component.system.vo.SysMenuVo;
 @Service
 public class SysMenuServiceImpl implements ISysMenuService {
 
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
     private Logger logger = LoggerUtil.getLogger();
 
     @Autowired

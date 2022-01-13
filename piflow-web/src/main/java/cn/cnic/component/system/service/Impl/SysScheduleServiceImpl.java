@@ -3,6 +3,7 @@ package cn.cnic.component.system.service.Impl;
 import java.util.Date;
 import java.util.Map;
 
+import cn.cnic.common.constant.MessageConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.quartz.Scheduler;
 import org.slf4j.Logger;
@@ -49,11 +50,11 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
     @Override
     public String getScheduleListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param) {
         if (null == offset || null == limit) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.ERROR_MSG);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG(MessageConfig.LANGUAGE));
         }
         Page<SysSchedule> page = PageHelper.startPage(offset, limit, "crt_dttm desc");
         sysScheduleDomain.getSysScheduleList(isAdmin, param);
-        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(ReturnMapUtils.SUCCEEDED_MSG);
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
         rtnMap = PageHelperUtils.setLayTableParam(page, rtnMap);
         return JsonUtils.toJsonNoException(rtnMap);
     }
@@ -100,7 +101,7 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
             if (i > 0) {
                 return ReturnMapUtils.setSucceededMsgRtnJsonStr("Created successfully");
             }
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.ERROR_MSG);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG(MessageConfig.LANGUAGE));
         } catch (Exception e) {
             logger.error("Create failed", e);
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Create failed");
@@ -136,7 +137,7 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
             sysScheduleById.setLastRunResult(ScheduleRunResultType.SUCCEED);
             int update = sysScheduleDomain.updateSysSchedule(sysScheduleById);
             if (update <= 0) {
-                return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.ERROR_MSG);
+                return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG(MessageConfig.LANGUAGE));
             }
             return ReturnMapUtils.setSucceededMsgRtnJsonStr("Start successfully");
         } catch (Exception e) {
@@ -173,7 +174,7 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
             sysScheduleById.setLastRunResult(ScheduleRunResultType.SUCCEED);
             int update = sysScheduleDomain.updateSysSchedule(sysScheduleById);
             if (update <= 0) {
-                return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.ERROR_MSG);
+                return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG(MessageConfig.LANGUAGE));
             }
             return ReturnMapUtils.setSucceededMsgRtnJsonStr("Start successfully");
         } catch (Exception e) {
@@ -214,7 +215,7 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
             sysScheduleById.setStatus(ScheduleState.STOP);
             int update = sysScheduleDomain.updateSysSchedule(sysScheduleById);
             if (update <= 0) {
-                return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.ERROR_MSG);
+                return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG(MessageConfig.LANGUAGE));
             }
             return ReturnMapUtils.setSucceededMsgRtnJsonStr("Stop successfully");
         } catch (Exception e) {
@@ -252,7 +253,7 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
             sysScheduleById.setStatus(ScheduleState.SUSPEND);
             int update = sysScheduleDomain.updateSysSchedule(sysScheduleById);
             if (update <= 0) {
-                return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.ERROR_MSG);
+                return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG(MessageConfig.LANGUAGE));
             }
             return ReturnMapUtils.setSucceededMsgRtnJsonStr("Suspended successfully");
         } catch (Exception e) {
@@ -290,7 +291,7 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
             sysScheduleById.setStatus(ScheduleState.RUNNING);
             int update = sysScheduleDomain.updateSysSchedule(sysScheduleById);
             if (update <= 0) {
-                return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.ERROR_MSG);
+                return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG(MessageConfig.LANGUAGE));
             }
             return ReturnMapUtils.setSucceededMsgRtnJsonStr("Started successfully");
         } catch (Exception e) {
@@ -334,7 +335,7 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
             sysScheduleById.setCronExpression(sysScheduleVo.getCronExpression());
             int update = sysScheduleDomain.updateSysSchedule(sysScheduleById);
             if (update <= 0) {
-                return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.ERROR_MSG);
+                return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG(MessageConfig.LANGUAGE));
             }
             if (ScheduleState.RUNNING == sysScheduleById.getStatus()) {
                 QuartzUtils.createScheduleJob(scheduler, sysScheduleById);
@@ -377,7 +378,7 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
             sysScheduleById.setLastUpdateUser(username);
             int update = sysScheduleDomain.updateSysSchedule(sysScheduleById);
             if (update <= 0) {
-                return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.ERROR_MSG);
+                return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG(MessageConfig.LANGUAGE));
             }
             return ReturnMapUtils.setSucceededMsgRtnJsonStr("Started successfully");
         } catch (Exception e) {

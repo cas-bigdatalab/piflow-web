@@ -175,6 +175,23 @@ export default {
               name: "globalVariable",
             }
           ]
+        },
+        {
+          btnName: this.$t("sidebar.user"),
+          icoName: "ios-people",
+          children: [
+            {
+              router: "/user",
+              icoName: "ios-paper",
+              btnName:  this.$t("sidebar.user"),
+              name: "user",
+            },{
+              router: "/log",
+              icoName: "ios-paper",
+              btnName:  this.$t("sidebar.log"),
+              name: "log",
+            }
+          ]
         }
       ];
     }

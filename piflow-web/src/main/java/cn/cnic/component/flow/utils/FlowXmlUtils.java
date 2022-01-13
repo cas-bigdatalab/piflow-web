@@ -1,4 +1,4 @@
-package cn.cnic.base.utils;
+package cn.cnic.component.flow.utils;
 
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -9,7 +9,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import cn.cnic.component.flow.utils.StopsUtils;
+import cn.cnic.base.utils.LoggerUtil;
+import cn.cnic.base.utils.ReturnMapUtils;
+import cn.cnic.base.utils.StringCustomUtils;
+import cn.cnic.common.constant.MessageConfig;
+import cn.cnic.component.mxGraph.utils.MxGraphUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -27,7 +31,6 @@ import cn.cnic.component.flow.entity.FlowGroupPaths;
 import cn.cnic.component.flow.entity.Paths;
 import cn.cnic.component.flow.entity.Property;
 import cn.cnic.component.flow.entity.Stops;
-import cn.cnic.component.flow.utils.FlowUtil;
 import cn.cnic.component.mxGraph.entity.MxCell;
 import cn.cnic.component.mxGraph.entity.MxGeometry;
 import cn.cnic.component.mxGraph.entity.MxGraphModel;
@@ -40,6 +43,9 @@ import cn.cnic.component.mxGraph.vo.MxGraphModelVo;
 @SuppressWarnings("rawtypes")
 public class FlowXmlUtils {
 
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
     private static Logger logger = LoggerUtil.getLogger();
 
     private static String spliceStr(String key, Object value) {
@@ -949,15 +955,15 @@ public class FlowXmlUtils {
      */
     public static Map<String, Object> XmlStrToFlowGroup(String flowGroupXmlStr, int maxPageId, String username, String[] flowNames, boolean isChildren) {
         if (StringUtils.isBlank(flowGroupXmlStr)) {
-            return ReturnMapUtils.setFailedMsg("flowGroupXmlStr is null");
+            return ReturnMapUtils.setFailedMsg("flowGroupXmlStr " + MessageConfig.PARAM_IS_NULL_MSG(MessageConfig.LANGUAGE));
         }
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsg("username is null");
+            return ReturnMapUtils.setFailedMsg("username " + MessageConfig.PARAM_IS_NULL_MSG(MessageConfig.LANGUAGE));
         }
         try {
             Element flowGroupElement = xmlStrToElementGetByKey(flowGroupXmlStr, false, "flowGroup");
             if (null == flowGroupElement) {
-                return ReturnMapUtils.setFailedMsg("No flowGroup node");
+                return ReturnMapUtils.setFailedMsg(MessageConfig.NO_FLOW_GROUP_NODE_MSG(MessageConfig.LANGUAGE));
             }
             String name = StringCustomUtils.recoverSpecialSymbolsXml(flowGroupElement.attributeValue("name"));
             String description = StringCustomUtils.recoverSpecialSymbolsXml(flowGroupElement.attributeValue("description"));
@@ -991,7 +997,7 @@ public class FlowXmlUtils {
             }
             // If there are duplicate FlowNames, directly return null
             if (StringUtils.isNotBlank(duplicateFlowName)) {
-                return ReturnMapUtils.setFailedMsg("Duplicate FlowName");
+                return ReturnMapUtils.setFailedMsg(MessageConfig.DUPLICATE_FLOW_NAME_MSG(MessageConfig.LANGUAGE));
             }
             flowGroup.setFlowList(flowList);
 
@@ -1040,7 +1046,7 @@ public class FlowXmlUtils {
             return ReturnMapUtils.setSucceededCustomParam("flowGroup", flowGroup);
         } catch (Exception e) {
             logger.error("Conversion failed", e);
-            return ReturnMapUtils.setFailedMsg("Conversion failed");
+            return ReturnMapUtils.setFailedMsg(MessageConfig.CONVERSION_FAILED_MSG(MessageConfig.LANGUAGE));
         }
     }
 
@@ -1054,10 +1060,10 @@ public class FlowXmlUtils {
     @SuppressWarnings("unchecked")
     public static Map<String, Object> flowTemplateXmlToFlow(String templateXml, String username, String stopMaxPageId, String flowMaxPageId, String[] stopNames) {
         if (StringUtils.isBlank(templateXml)) {
-            return ReturnMapUtils.setFailedMsg("templateXml is null");
+            return ReturnMapUtils.setFailedMsg("templateXml " + MessageConfig.PARAM_IS_NULL_MSG(MessageConfig.LANGUAGE));
         }
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsg("username is null");
+            return ReturnMapUtils.setFailedMsg("username " + MessageConfig.PARAM_IS_NULL_MSG(MessageConfig.LANGUAGE));
         }
         if (StringUtils.isBlank(stopMaxPageId)) {
             stopMaxPageId = "1";
@@ -1070,7 +1076,7 @@ public class FlowXmlUtils {
             }
             Element flowElement = xmlStrToElementGetByKey(templateXml, false, "flow");
             if (null == flowElement) {
-                return ReturnMapUtils.setFailedMsg("No flow node");
+                return ReturnMapUtils.setFailedMsg(MessageConfig.NO_FLOW_NODE_MSG(MessageConfig.LANGUAGE));
             }
             String driverMemory = StringCustomUtils.recoverSpecialSymbolsXml(flowElement.attributeValue("driverMemory"));
             String executorCores = StringCustomUtils.recoverSpecialSymbolsXml(flowElement.attributeValue("executorCores"));
@@ -1118,7 +1124,7 @@ public class FlowXmlUtils {
             return ReturnMapUtils.setSucceededCustomParam("flow", flow);
         } catch (Exception e) {
             logger.error("Conversion failed", e);
-            return ReturnMapUtils.setFailedMsg("Conversion failed");
+            return ReturnMapUtils.setFailedMsg(MessageConfig.CONVERSION_FAILED_MSG(MessageConfig.LANGUAGE));
         }
     }
 
@@ -1441,7 +1447,7 @@ public class FlowXmlUtils {
         }
         // If there are duplicate StopNames, directly return null
         if (StringUtils.isNotBlank(duplicateStopName)) {
-            return ReturnMapUtils.setFailedMsg("Duplicate StopName");
+            return ReturnMapUtils.setFailedMsg(MessageConfig.DUPLICATE_STOP_NAME_MSG(MessageConfig.LANGUAGE));
         }
         return ReturnMapUtils.setSucceededCustomParam("xmlToStopsList", stopsList);
     }

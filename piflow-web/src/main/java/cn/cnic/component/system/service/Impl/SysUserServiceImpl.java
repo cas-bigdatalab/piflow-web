@@ -42,6 +42,9 @@ import java.util.Map;
 @SuppressWarnings("unused")
 public class SysUserServiceImpl implements ISysUserService {
 
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
     private Logger logger = LoggerUtil.getLogger();
 
     private final AuthenticationManager authenticationManager;

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import cn.cnic.common.constant.MessageConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,10 +46,8 @@ public class StopsHubServiceImpl implements IStopsHubService {
     @Autowired
     private StopsComponentDomain stopsComponentDomain;
 
-
     @Autowired
     private IStop stopImpl;
-    
 
     @Override
     public String uploadStopsHubFile(String username, MultipartFile file) {
@@ -196,11 +195,11 @@ public class StopsHubServiceImpl implements IStopsHubService {
      */
     public String stopsHubListPage(String username, Boolean isAdmin, Integer pageNo, Integer limit, String param) {
         if (null == pageNo || null == limit) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.ERROR_MSG);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG(MessageConfig.LANGUAGE));
         }
         Page<Process> page = PageHelper.startPage(pageNo, limit, "crt_dttm desc");
         stopsHubDomain.getStopsHubListParam(username, isAdmin, param);
-        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(ReturnMapUtils.SUCCEEDED_MSG);
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
         rtnMap = PageHelperUtils.setLayTableParam(page, rtnMap);
         return JsonUtils.toJsonNoException(rtnMap);
     }
@@ -228,7 +227,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
         if (i <= 0) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("delete failed");
         }
-        return ReturnMapUtils.setSucceededMsgRtnJsonStr(ReturnMapUtils.SUCCEEDED_MSG);
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
     }
 
 }

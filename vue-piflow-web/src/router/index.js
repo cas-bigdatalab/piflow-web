@@ -105,6 +105,22 @@ export default new Router({
               path: '/globalVariable',
               name: 'globalVariable',
               component: () => import('../components/pages/Admin/globalVariable')
+            },
+
+            {
+              path: '/user',
+              name: 'user',
+              component: () => import('../components/pages/User')
+            },
+            {
+              path: '/user',
+              name: 'user',
+              component: () => import('../components/pages/User/index')
+            },
+            {
+              path:'/log',
+              name:'log',
+              component:() => import('../components/pages/User/log')
             }
           ]
         },

@@ -34,6 +34,9 @@ import java.util.List;
 @Component
 public class RunningGroupScheduleSync extends QuartzJobBean {
 
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
     private Logger logger = LoggerUtil.getLogger();
 
     @Autowired

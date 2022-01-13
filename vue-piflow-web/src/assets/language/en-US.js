@@ -17,7 +17,9 @@ module.exports = {
         admin: "Admin",
         admin_schedule: 'Schedule',
         stopsComponent: 'StopsComponent',
-        globalVariable: 'GlobalVariable'
+        globalVariable: 'GlobalVariable',
+        user:"User",
+        log:"Log"
     },
     page: {
         prev_text: "Previous",
@@ -32,7 +34,7 @@ module.exports = {
         existed: "UserName Existed！",
         fault_content: "An unknown error occurred in the background run！",
         update_success_content: "update succeeded！",
-        update_fail_content: "update failed！",
+        update_fail_content: "update failed or admin information cannot be changed！",
         save_success_content: "template saved successfully！",
         save_fail_content: "template save failed！",
         add_success_content: "added succeeded！",
@@ -47,6 +49,7 @@ module.exports = {
         unmount_fail_content: "unmount failed！",
         get_success_content: "Data acquisition successful！",
         get_fail_content: "Data acquisition failed！",
+        get_user_content:"User does not have this permission!",
         debug_success_content: "debug succeeded！",
         debug_fail_content: "debug failed！",
         delete_success_content: "deleted successfully！",
@@ -68,6 +71,7 @@ module.exports = {
         upload_text: "upload",
         confirm: "Confirm",
         cancel_text: "Cancel",
+        reset_text: "Reset",
         delete_content: "Are you sure to delete",
         cancel_content: "Are you sure you want to cancel this creation"
     },
@@ -183,6 +187,25 @@ module.exports = {
         status: "Status",
         createTime: "CreateTime",
         action: "Actions"
+    },
+    user_columns:{
+        create_title: "Create User",
+        update_title: "Update User",
+        name: "Name",
+        username: "userName",
+        status: "Status",
+        createTime: "CreateTime",
+        action: "Actions",
+        password:"Password",
+        role:"Role"
+    },
+
+    log_columns:{
+        username: "userName",
+        lastLoginIp:"ip",
+        createTime: "createTime",
+        lastUpdateTime:"lastUpdateTime",
+        action: "action"
     },
     stopsComponent_columns: {
         name: "Name",

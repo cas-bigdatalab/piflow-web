@@ -16,6 +16,7 @@ import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.component.testData.service.ITestDataService;
 import cn.cnic.controller.requestVo.TestDataSchemaValuesSaveVo;
 import cn.cnic.controller.requestVo.TestDataVoRequest;
+import cn.cnic.component.user.service.LogHelper;
 
 @Api(value = "testData api")
 @RestController
@@ -24,6 +25,9 @@ public class TestDataCtrl {
 
     @Resource
     private ITestDataService testDataServiceImpl;
+
+    @Resource
+    private LogHelper logHelper;
 
     /**
      * saveOrUpdateTestDataSchema
@@ -67,6 +71,7 @@ public class TestDataCtrl {
     public String delTestData(String testDataId) {
         String currentUsername = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
+        logHelper.logAuthSucceed("delTestData " + testDataId,currentUsername);
         return testDataServiceImpl.delTestData(currentUsername, isAdmin, testDataId);
     }
 
@@ -82,6 +87,7 @@ public class TestDataCtrl {
     public String saveOrUpdateTestDataSchemaValues(TestDataSchemaValuesSaveVo schemaValuesVo) throws Exception {
         String currentUsername = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
+        logHelper.logAuthSucceed("saveOrUpdateTestDataSchemaValues " + schemaValuesVo.getTestDataId(),currentUsername);
         return testDataServiceImpl.saveOrUpdateTestDataSchemaValues(currentUsername, isAdmin, schemaValuesVo);
     }
 
@@ -215,6 +221,7 @@ public class TestDataCtrl {
     })
     public String uploadCsvFile(String testDataId, boolean header, String schema, String delimiter, @RequestParam("file") MultipartFile file) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
+        logHelper.logAuthSucceed("uploadCsvFile" + file.getName(),username);
         return testDataServiceImpl.uploadCsvFile(username, testDataId, header, schema, delimiter, file);
     }
 

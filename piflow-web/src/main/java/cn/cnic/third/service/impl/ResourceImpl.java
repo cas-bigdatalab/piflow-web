@@ -15,6 +15,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class ResourceImpl implements IResource {
 
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
     private Logger logger = LoggerUtil.getLogger();
 
     @Override

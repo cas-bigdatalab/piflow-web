@@ -19,7 +19,9 @@ public class SysUser extends BaseHibernateModelUUIDNoCorpAgentId {
     private String username;
     private String password;
     private String name;
+    private Byte status;
     private Integer age;
     private String sex;
+    private String lastLoginIp;
     private List<SysRole> roles;
 }

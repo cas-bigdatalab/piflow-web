@@ -14,6 +14,9 @@ import org.slf4j.Logger;
 
 public class TextureEnumSerializer extends JsonSerializer<Object> {
 
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
     private Logger logger = LoggerUtil.getLogger();
 
     @Override

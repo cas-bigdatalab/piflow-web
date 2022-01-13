@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.cnic.component.mxGraph.utils.MxGraphUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
@@ -16,7 +17,6 @@ import org.springframework.stereotype.Service;
 import cn.cnic.base.utils.HdfsUtils;
 import cn.cnic.base.utils.JsonUtils;
 import cn.cnic.base.utils.LoggerUtil;
-import cn.cnic.base.utils.MxGraphUtils;
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.common.Eunm.PortType;
 import cn.cnic.common.Eunm.ProcessState;
@@ -59,6 +59,9 @@ import cn.cnic.third.vo.flow.ThirdFlowInfoStopVo;
 @Service
 public class StopsServiceImpl implements IStopsService {
 
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
     private Logger logger = LoggerUtil.getLogger();
 
     @Autowired
@@ -917,7 +920,7 @@ public class StopsServiceImpl implements IStopsService {
         if (null == runStopsVo.getStopsId()) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("stopsId is null");
         }
-        // 根据stopsId获取stops信息
+        // Get stops information according to stopsId
         Stops stopsById = stopsDomain.getStopsById(runStopsVo.getStopsId());
         if (null == stopsById) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("stops no data");
@@ -927,15 +930,15 @@ public class StopsServiceImpl implements IStopsService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("The Flow of Stops is empty ");
         }
         MxGraphModel flowMxGraphModel = flowDB.getMxGraphModel();
-        // 判断flowMxGraphModel是否为空
+        // Determine whether flowMxGraphModel is empty
         if (null == flowMxGraphModel) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("MxGraphModel information error");
         }
-        // 取出testData的id数组
+        // Take out the id array of testData
         String[] testDataIds = runStopsVo.getTestDataIds();
-        // 取出ports数组
+        // Take out the ports array
         String[] ports = runStopsVo.getPorts();
-        // testData在HDFS的路径
+        // Path of testData in HDFS
         List<Map<String, String>> hdfsUrlArray = new ArrayList<>();
         if (null != testDataIds && testDataIds.length > 0) {
             if (null == ports) {
@@ -944,10 +947,10 @@ public class StopsServiceImpl implements IStopsService {
             if (ports.length != testDataIds.length) {
                 return ReturnMapUtils.setFailedMsgRtnJsonStr("testDataIds and ports do not correspond");
             }
-            // 循环testDataIds，将查询出testData数据写道HDFS中
+            // Loop testDataIds, and write the queried testData data to HDFS
             for (int i = 0; i < testDataIds.length; i++) {
-                // 获取schema
-                // 根据Id查询字段 List<Map<String,String>> key1=ID key2=FIELD_NAME
+                // Get the schema
+                // Query the field according to Id List<Map<String,String>> key1=ID key2=FIELD_NAME
                 List<LinkedHashMap<String, Object>> schemaIdAndNameList = testDataDomain.getTestDataSchemaIdAndNameListByTestDataId(testDataIds[i]);
                 if (null == schemaIdAndNameList || schemaIdAndNameList.size() <= 0) {
                     return ReturnMapUtils.setFailedMsgRtnJsonStr("testData error");
@@ -960,7 +963,7 @@ public class StopsServiceImpl implements IStopsService {
                     schema += testDataSchema.get("FIELD_NAME");
                 }
 
-                // 获取testDataValues
+                // Get the testDataValues
                 String testDataValueStr = "";
                 List<LinkedHashMap<String, Object>> schemaValueList = testDataDomain.getTestDataSchemaValuesCustomList(isAdmin, username, testDataIds[i], schemaIdAndNameList);
                 if (null == schemaValueList || schemaValueList.size() <= 0) {
@@ -979,53 +982,53 @@ public class StopsServiceImpl implements IStopsService {
                     }
                     testDataValueStr += (testDataLineStr + "\n");
                 }
-                // 获取时间粗做名字
+                // Get the time to make a rough name
                 long currentTimeMillis = System.currentTimeMillis();
-                // 获取hdfs地址
+                // Get HDFS address
                 String testDataPathUrl = flowImpl.getTestDataPathUrl();
-                // HDFS存储地址
+                // HDFS storage address
                 String hdfsUrl = testDataPathUrl + currentTimeMillis + i + ".csv";
-                // 把testData写到HDFS
+                // Write testData to HDFS
                 HdfsUtils.writeData(hdfsUrl, testDataValueStr);
                 Map<String, String> hdfsUrlObj = new HashMap<>();
                 hdfsUrlObj.put("csvpath", hdfsUrl);
                 hdfsUrlObj.put("header", "false");
                 hdfsUrlObj.put("delimiter", "☔");
                 hdfsUrlObj.put("schema", schema);
-                // 位置要与testDataIds对应
+                // The location should correspond to testDataIds
                 hdfsUrlArray.add(i, hdfsUrlObj);
             }
         }
-        // 用于存放转换成process的stops
+        // Used to store stops converted to process
         Process process = new Process();
-        // 拷贝基础信息
+        // Copy basic information
         BeanUtils.copyProperties(flowDB, process);
         ProcessUtils.initProcessBasicPropertiesNoId(process, username);
-        // 监控组件信息
+        // Monitoring component information
         List<ProcessStop> processStopsList = new ArrayList<>();
-        // stopId查询出的stops转processStops
+        // The stops queried by stopId are transferred to processStops
         ProcessStop stopsToProcessStop = ProcessUtils.stopsToProcessStop(stopsById, username, isAdmin);
         if (null == stopsToProcessStop) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Stops conversion to ProcessStop failed ");
         }
         processStopsList.add(stopsToProcessStop);
-        // 监控连线信息
+        // Monitor connection information
         List<ProcessPath> processPathsList = new ArrayList<>();
-        // 监控页面信息
+        // Monitor page information
         MxGraphModel mxGraphModel = MxGraphModelUtils.initMxGraphModelBasicPropertiesNoId(null, username, isAdmin);
-        // 监控元素的页面基础信息
+        // Basic page information of monitoring elements
         List<MxCell> rootMxCell = MxCellUtils.initMxCell(username, mxGraphModel);
         MxCell mxCellDB = mxCellMapper.getMxCellByMxGraphIdAndPageId(flowMxGraphModel.getId(), stopsById.getPageId());
         MxCell processMxCell = new MxCell();
         BeanUtils.copyProperties(mxCellDB, processMxCell);
         processMxCell = MxCellUtils.initMxCellBasicPropertiesNoId(processMxCell, username);
         rootMxCell.add(processMxCell);
-        // 判断是否执行后续
+        // Determine whether to execute
         if (runStopsVo.getIsRunFollowUp()) {
             
-            // 原Flow的组件
+            // get stopsList
             List<Stops> stopsList = flowDB.getStopsList();
-            // stopsList转map(key是pageId)
+            //stopsList conversion map (key is pageId)
             Map<String, Stops> stopsMap = new HashMap<>();
             for (Stops stops : stopsList) {
                 if (null == stops) {
@@ -1034,10 +1037,10 @@ public class StopsServiceImpl implements IStopsService {
                 stopsMap.put(stops.getPageId(), stops);
             }
             
-            // 原Flow组件的连线
+            // get pathsList
             List<Paths> pathsList = flowDB.getPathsList();
 
-            // pathsList转map(key 是source的pageId)
+            // pathsList conversion map (key is the pageId of the source)
             Map<String, List<Paths>> pathsMap = new HashMap<>();
             for (Paths paths : pathsList) {
                 if (null == paths) {
@@ -1051,14 +1054,14 @@ public class StopsServiceImpl implements IStopsService {
                 pathsMap.put(paths.getFrom(), pathsListByMap);
             }
 
-            // 原Flow的页面组件信息
+            // get mxGraphModelRoot
             List<MxCell> flowMxGraphModelRoot = flowMxGraphModel.getRoot();
-            // 判断flowMxGraphModelRoot是否为空
+            // Determine whether flowMxGraphModelRoot is empty
             if (null == flowMxGraphModelRoot || flowMxGraphModelRoot.size() <= 0) {
                 return ReturnMapUtils.setFailedMsgRtnJsonStr("MxGraphModel information error");
             }
             Map<String, MxCell> flowMxGraphModelRootMap = new HashMap<>();
-            // flowMxGraphModelRoot转map
+            // flowMxGraphModelRoot conversion map
             for (MxCell mxCell : flowMxGraphModelRoot) {
                 if (null == mxCell) {
                     continue;
@@ -1118,14 +1121,14 @@ public class StopsServiceImpl implements IStopsService {
             }
         }
 
-        // 判断HDFS数值是否为空
+        // Determine whether the HDFS value is empty
         if (hdfsUrlArray.size() > 0) {
             StopsComponent stopsComponentByBundle = stopsComponentDomain.getStopsComponentByBundle("cn.piflow.bundle.csv.CsvParser");
             Integer maxStopPageIdByFlowId = stopsDomain.getMaxStopPageIdByFlowId(flowDB.getId());
             for (int i = 0; i < hdfsUrlArray.size(); i++) {
-                // 获取对应的url数据信息
+                // Get the corresponding url data information
                 Map<String, String> hdfsUrlObj = hdfsUrlArray.get(i);
-                // 根据stopsComponentByBundle生成processStop
+                // Generate processStop according to stopsComponentByBundle
                 ProcessStop processStop = ProcessStopUtils.copyStopsComponentToProcessStop(stopsComponentByBundle,
                         username, false);
                 if (null == processStop) {
@@ -1133,7 +1136,7 @@ public class StopsServiceImpl implements IStopsService {
                 }
                 // set pageId
                 processStop.setPageId("" + (maxStopPageIdByFlowId + 1 + i) + "");
-                // 填入相关属性
+                // Fill in relevant attributes
                 List<ProcessStopProperty> processStopPropertyList = processStop.getProcessStopPropertyList();
                 for (ProcessStopProperty processStopProperty : processStopPropertyList) {
                     String nameLowerCase = processStopProperty.getName().toLowerCase();
@@ -1145,14 +1148,14 @@ public class StopsServiceImpl implements IStopsService {
                 processStop.setProcessStopPropertyList(processStopPropertyList);
                 processStop.setName(processStop.getName() + System.currentTimeMillis() + i);
                 processStopsList.add(processStop);
-                // 生成页面processStop信息
+                // Generate page processStop information
                 //MxCell processMxCell_stops = MxCellUtils.AddMxCellNode(username, processStop.getPageId(), stopsComponentByBundle.getName(), "/images/" + stopsComponentByBundle.getName() + "_128x128.png");
                 //rootMxCell.add(processMxCell_stops);
 
                 String outPortName = PortType.DEFAULT.getText().equals(stopsComponentByBundle.getOutports()) ? "" : stopsComponentByBundle.getOutports();
                 String inPortName = PortType.DEFAULT.getText().equals(ports[i]) ? "" : ports[i];
 
-                // 生成processPath信息
+                // Generate processPath information
                 ProcessPath processPath = ProcessPathUtils.initProcessPathBasicPropertiesNoId(null, username);
                 processPath.setFrom("" + (maxStopPageIdByFlowId + 1 + i) + "");
                 processPath.setOutport(outPortName);
@@ -1161,7 +1164,7 @@ public class StopsServiceImpl implements IStopsService {
                 processPath.setPageId("" + (0 - (maxStopPageIdByFlowId + 1 + i)) + "");
                 processPath.setProcess(process);
                 processPathsList.add(processPath);
-                // 生成页面processPath信息
+                // Generate page processPath information
                 //MxCell processMxCell_line = MxCellUtils.AddMxCellLine(username, processPath.getPageId());
                 //processMxCell_line.setSource(processPath.getFrom());
                 //processMxCell_line.setTarget(processPath.getTo());

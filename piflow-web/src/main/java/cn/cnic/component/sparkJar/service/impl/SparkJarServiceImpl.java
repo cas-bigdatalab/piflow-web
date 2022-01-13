@@ -3,6 +3,7 @@ package cn.cnic.component.sparkJar.service.impl;
 import java.util.Date;
 import java.util.Map;
 
+import cn.cnic.common.constant.MessageConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -123,11 +124,11 @@ public class SparkJarServiceImpl implements ISparkJarService {
      */
     public String sparkJarListPage(String username, Boolean isAdmin, Integer pageNo, Integer limit, String param) {
         if (null == pageNo || null == limit) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.ERROR_MSG);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG(MessageConfig.LANGUAGE));
         }
         Page<Process> page = PageHelper.startPage(pageNo, limit, "crt_dttm desc");
         sparkJarDomain.getSparkJarListParam(username, isAdmin, param);
-        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(ReturnMapUtils.SUCCEEDED_MSG);
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
         rtnMap = PageHelperUtils.setLayTableParam(page, rtnMap);
         return JsonUtils.toJsonNoException(rtnMap);
     }
@@ -155,7 +156,7 @@ public class SparkJarServiceImpl implements ISparkJarService {
         if (i <= 0) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("delete failed");
         }
-        return ReturnMapUtils.setSucceededMsgRtnJsonStr(ReturnMapUtils.SUCCEEDED_MSG);
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
     }
 
 }

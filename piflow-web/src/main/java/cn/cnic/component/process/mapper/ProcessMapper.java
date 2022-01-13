@@ -248,7 +248,8 @@ public interface ProcessMapper {
     /**
      * link GlobalParams
      *
-     * @param flowName
+     * @param processId
+     * @param globalParamsIds
      * @return
      */
     @InsertProvider(type = ProcessMapperProvider.class, method = "linkGlobalParams")
@@ -257,13 +258,13 @@ public interface ProcessMapper {
     /**
      * unlink GlobalParams
      *
-     * @param flowName
+     * @param processId
+     * @param globalParamsIds
      * @return
      */
     @DeleteProvider(type = ProcessMapperProvider.class, method = "unlinkGlobalParams")
     public int unlinkGlobalParams(@Param("processId") String processId, @Param("globalParamsIds") String[] globalParamsIds);
-    
-    
-    
-    
+
+
+
 }

@@ -35,6 +35,9 @@ import cn.cnic.third.vo.stop.ThirdStopsComponentVo;
 @Service
 public class StopGroupServiceImpl implements IStopGroupService {
 
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
     private Logger logger = LoggerUtil.getLogger();
 
     @Autowired

@@ -142,6 +142,7 @@ export default {
       org: "",
       isPassword: "",
       post: "",
+      status:"",
       isLogin: true,
       isExist: false
     };
@@ -285,6 +286,7 @@ export default {
         username: this.username,
         pw: this.password,
         name: this.name,
+        status:0
       };
       this.$axios
           .post("/register", this.$qs.stringify(data))

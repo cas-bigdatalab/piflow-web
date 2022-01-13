@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.cnic.common.constant.MessageConfig;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -31,6 +32,9 @@ import net.sf.json.JSONObject;
 @Component
 public class FlowImpl implements IFlow {
 
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
     private Logger logger = LoggerUtil.getLogger();
 
     @Autowired
@@ -45,7 +49,7 @@ public class FlowImpl implements IFlow {
     @Override
     public Map<String, Object> startFlow(Process process, String checkpoint, RunModeType runModeType) {
         if (null == process) {
-            return ReturnMapUtils.setFailedMsg("process is null");
+            return ReturnMapUtils.setFailedMsg("process " + MessageConfig.PARAM_IS_NULL_MSG(MessageConfig.LANGUAGE));
         }
         //String json = ProcessUtil.processToJson(process, checkpoint, runModeType);
         //String formatJson = JsonFormatTool.formatJson(json);
@@ -54,17 +58,17 @@ public class FlowImpl implements IFlow {
         String doPost = HttpUtils.doPost(SysParamsCache.getFlowStartUrl(), formatJson, null);
         logger.info("Return information：" + doPost);
         if (StringUtils.isBlank(doPost)) {
-            return ReturnMapUtils.setFailedMsg("Error : Interface call failed ,return null");
+            return ReturnMapUtils.setFailedMsg("Error : " + MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG(MessageConfig.LANGUAGE));
         }
         if (doPost.contains(HttpUtils.INTERFACE_CALL_ERROR) || doPost.contains("Exception")) {
-            return ReturnMapUtils.setFailedMsg("Error : Interface call failed : " + doPost);
+            return ReturnMapUtils.setFailedMsg(MessageConfig.INTERFACE_CALL_ERROR_MSG(MessageConfig.LANGUAGE) + " : " + doPost);
         }
         try {
             // Convert a json string to a json object
             JSONObject obj = JSONObject.fromObject(doPost).getJSONObject("flow");
             String appId = obj.getString("id");
             if (StringUtils.isBlank(appId)) {
-                return ReturnMapUtils.setFailedMsg("Error : Interface return value is null");
+                return ReturnMapUtils.setFailedMsg("Error : " + MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG(MessageConfig.LANGUAGE));
             }
             return ReturnMapUtils.setSucceededCustomParam("appId", appId);
         } catch (Exception e) {

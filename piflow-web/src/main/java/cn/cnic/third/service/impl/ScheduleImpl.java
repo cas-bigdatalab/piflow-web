@@ -3,6 +3,7 @@ package cn.cnic.third.service.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import cn.cnic.common.constant.MessageConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,9 @@ import net.sf.json.JSONObject;
 @Component
 public class ScheduleImpl implements ISchedule {
 
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
     private Logger logger = LoggerUtil.getLogger();
 
     @Autowired
@@ -66,10 +70,10 @@ public class ScheduleImpl implements ISchedule {
         //===============================临时===============================
 
         if (StringUtils.isBlank(sendPostData)) {
-            return ReturnMapUtils.setFailedMsg("Interface call failed ,return values is null");
+            return ReturnMapUtils.setFailedMsg(MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG(MessageConfig.LANGUAGE));
         }
         if (sendPostData.contains("Exception") || sendPostData.contains("error") || sendPostData.contains(HttpUtils.INTERFACE_CALL_ERROR)) {
-            return ReturnMapUtils.setFailedMsg("Error : Interface call failed :" + sendPostData);
+            return ReturnMapUtils.setFailedMsg("Error : " + MessageConfig.INTERFACE_CALL_ERROR_MSG(MessageConfig.LANGUAGE));
         }
         return ReturnMapUtils.setSucceededCustomParam("scheduleId", sendPostData);
     }

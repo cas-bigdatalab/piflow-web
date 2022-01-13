@@ -6,17 +6,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.cnic.common.constant.MessageConfig;
 import cn.cnic.component.flow.domain.FlowDomain;
+import cn.cnic.component.flow.utils.FlowXmlUtils;
+import cn.cnic.component.mxGraph.utils.MxGraphUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import cn.cnic.base.utils.FlowXmlUtils;
 import cn.cnic.base.utils.JsonUtils;
 import cn.cnic.base.utils.LoggerUtil;
-import cn.cnic.base.utils.MxGraphUtils;
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.base.utils.UUIDUtils;
 import cn.cnic.common.Eunm.PortType;
@@ -50,6 +51,9 @@ import cn.cnic.component.stopsComponent.mapper.StopsComponentMapper;
 @Service
 public class MxGraphModelServiceImpl implements IMxGraphModelService {
 
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
     private Logger logger = LoggerUtil.getLogger();
 
     @Autowired
@@ -73,16 +77,15 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
     @Override
     public String saveDataForTask(String username, String imageXML, String loadId, String operType) throws Exception {
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG(MessageConfig.LANGUAGE));
         }
         if (StringUtils.isAnyEmpty(imageXML, loadId, operType)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("The incoming parameters are empty");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG(MessageConfig.LANGUAGE));
         }
         // Change the `XML'from the page to `mxGraphModel'
         MxGraphModelVo xmlToMxGraphModel = FlowXmlUtils.xmlToMxGraphModel(imageXML);
         // xmlToMxGraphModel Parameter null
         if (null == xmlToMxGraphModel) {
-            logger.warn("The passed parameter xmlToMxGraphModel is empty and the save failed.");
             return ReturnMapUtils.setFailedMsgRtnJsonStr("The passed parameter xmlToMxGraphModel is empty and the save failed.");
         }
         if ("ADD".equals(operType)) {
@@ -732,12 +735,12 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
     private Map<String, Object> addGroupFlows(String username, MxGraphModelVo mxGraphModelVo, String flowGroupId)
             throws Exception {
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsg("Illegal operation");
+            return ReturnMapUtils.setFailedMsg(MessageConfig.ILLEGAL_OPERATION_MSG(MessageConfig.LANGUAGE));
         }
         // Query 'flowGroup' according to 'flowGroupId'
         FlowGroup flowGroup = flowGroupDomain.getFlowGroupById(flowGroupId);
         if (null == flowGroup) {
-            return ReturnMapUtils.setFailedMsg("No query to flowId is: " + flowGroupId + " Flow information");
+            return ReturnMapUtils.setFailedMsg(MessageConfig.NO_DATA_BY_ID_XXX_MSG(MessageConfig.LANGUAGE));
         }
         // Determine if 'mxGraphModelVo' and 'flowGroup' are empty
         if (null == mxGraphModelVo) {
@@ -832,7 +835,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
      */
     private Map<String, Object> updateGroupMxGraph(String username, MxGraphModelVo mxGraphModelVo, String flowGroupId) throws Exception {
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsg("Illegal operation");
+            return ReturnMapUtils.setFailedMsg(MessageConfig.ILLEGAL_OPERATION_MSG(MessageConfig.LANGUAGE));
         }
         // Determine if the incoming data is empty
         if (null == mxGraphModelVo) {
@@ -927,7 +930,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
      */
     private Map<String, Object> updateFlowGroup(String username, MxGraphModelVo mxGraphModelVo, String flowGroupId) throws Exception {
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsg("Illegal operation");
+            return ReturnMapUtils.setFailedMsg(MessageConfig.ILLEGAL_OPERATION_MSG(MessageConfig.LANGUAGE));
         }
         if (null == mxGraphModelVo) {
             return ReturnMapUtils.setFailedMsg("mxGraphModelVo is empty, modification failed");
@@ -1179,7 +1182,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
         flowGroup = addFlowGroupNodeAndEdge(flowGroup, addMxCellVoList, username);
         flowGroupDomain.updateFlowGroup(flowGroup);
         if (null == addMxCellVoList || addMxCellVoList.size() <= 0) {
-            return ReturnMapUtils.setSucceededMsgRtnJsonStr(ReturnMapUtils.SUCCEEDED_MSG);
+            return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
         }
 
         // save id and page list

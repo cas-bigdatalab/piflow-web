@@ -36,6 +36,9 @@ import java.util.Map;
  */
 public class HttpUtils {
 
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
     private static Logger logger = LoggerUtil.getLogger();
 
 	public static String INTERFACE_CALL_ERROR = "Interface call error";

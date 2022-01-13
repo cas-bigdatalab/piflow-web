@@ -102,5 +102,5 @@ public interface PropertyMapper {
 
     @Update("update flow_stops_property fsp set fsp.enable_flag=0 where fsp.is_old_data=1 and fsp.fk_stops_id = #{stopId}")
     public int deletePropertiesByIsOldDataAndStopsId(String stopId);
-    
+
 }

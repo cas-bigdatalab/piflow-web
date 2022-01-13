@@ -17,6 +17,9 @@ import java.util.List;
 
 public class SessionUserUtil {
 
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
     private static Logger logger = LoggerUtil.getLogger();
 
     public static UserVo getCurrentUser() {

@@ -1,5 +1,6 @@
 package cn.cnic.controller.api.admin;
 
+import cn.cnic.component.user.service.LogHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,6 +20,9 @@ public class SparkJarCtrl {
 
     @Autowired
     private ISparkJarService sparkJarServiceImpl;
+
+    @Autowired
+    private LogHelper logHelper;
 
 
     /**
@@ -48,6 +52,7 @@ public class SparkJarCtrl {
     @ResponseBody
     public String uploadSparkJarFile(@RequestParam("file") MultipartFile file) {
         String username = SessionUserUtil.getCurrentUsername();
+        logHelper.logAuthSucceed("uploadSparkJarFile " + file.getName(),username);
         return sparkJarServiceImpl.uploadSparkJarFile(username, file);
     }
 
@@ -90,6 +95,7 @@ public class SparkJarCtrl {
     public String delSparkJar(String id) {
         String username = SessionUserUtil.getCurrentUsername();
         Boolean isAdmin = SessionUserUtil.isAdmin();
+        logHelper.logAuthSucceed("del SparkJar " + id,username);
         return sparkJarServiceImpl.delSparkJar(username, isAdmin, id);
     }
 }

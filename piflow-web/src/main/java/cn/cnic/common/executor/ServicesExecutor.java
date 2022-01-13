@@ -11,6 +11,9 @@ import cn.cnic.base.utils.LoggerUtil;
 
 public class ServicesExecutor {
 
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
     private static Logger logger = LoggerUtil.getLogger();
 
     /* Define an executor of the execution thread for the service */

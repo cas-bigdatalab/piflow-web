@@ -13,9 +13,12 @@ import java.util.Locale;
 
 public class DateUtils {
 
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
     private static Logger logger = LoggerUtil.getLogger();
 
-	/**
+    /**
      * yyyyMMdd 20121225
      */
     public static final String DATE_PATTERN_yyyyMMdd = "yyyyMMdd";

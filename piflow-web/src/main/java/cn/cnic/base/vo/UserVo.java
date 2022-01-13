@@ -27,6 +27,7 @@ public class UserVo implements UserDetails, Serializable {
     private String password;
     private String name;
     private Integer age;
+    private Byte status;
     private List<SysMenuVo> sysMenuVoList;
     private List<SysRole> roles = new ArrayList<>();
     List<GrantedAuthority> grantedAuthorities = new ArrayList<>();

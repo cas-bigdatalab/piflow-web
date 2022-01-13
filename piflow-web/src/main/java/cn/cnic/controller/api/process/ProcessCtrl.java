@@ -1,5 +1,6 @@
 package cn.cnic.controller.api.process;
 
+import cn.cnic.component.user.service.LogHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -35,6 +36,8 @@ public class ProcessCtrl {
     @Autowired
     IProcessPathService processPathServiceImpl;
 
+    @Autowired
+    LogHelper logHelper;
 
     /**
      * Query and enter the process list
@@ -144,6 +147,7 @@ public class ProcessCtrl {
     public String runProcess(String id, String checkpointStr, String runMode) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
+        logHelper.logAuthSucceed("runProcess" + id,username);
         return processServiceImpl.startProcess(isAdmin, username, id, checkpointStr, runMode);
     }
 
@@ -159,6 +163,7 @@ public class ProcessCtrl {
     public String stopProcess(String processId) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
+        logHelper.logAuthSucceed("stopProcess" + processId,username);
         return processServiceImpl.stopProcess(username, isAdmin, processId);
     }
 
@@ -174,6 +179,7 @@ public class ProcessCtrl {
     public String delProcess(String processID) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
+        logHelper.logAuthSucceed("delProcess" + processID,username);
         return processServiceImpl.delProcess(isAdmin, username, processID);
     }
 

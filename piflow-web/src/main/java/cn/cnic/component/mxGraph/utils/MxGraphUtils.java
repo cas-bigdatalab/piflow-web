@@ -1,5 +1,7 @@
-package cn.cnic.base.utils;
+package cn.cnic.component.mxGraph.utils;
 
+import cn.cnic.base.utils.LoggerUtil;
+import cn.cnic.base.utils.StringCustomUtils;
 import cn.cnic.common.Eunm.TemplateType;
 import cn.cnic.component.mxGraph.entity.MxCell;
 import cn.cnic.component.mxGraph.entity.MxGeometry;
@@ -24,7 +26,7 @@ import java.util.Map;
 
 public class MxGraphUtils {
 
-    private static Logger logger = LoggerUtil.getLogger();
+    private static final Logger logger = LoggerUtil.getLogger();
 
     private static String spliceStr(String key, Object value) {
         return key + "=\"" + value + "\" ";
@@ -39,12 +41,11 @@ public class MxGraphUtils {
      */
     private static Element xmlStrToElement(String xmlData, boolean isEscape) {
         try {
-            String xmlStr = xmlData;
             if (isEscape) {
                 logger.debug("test");
                 //xmlStr = StringEscapeUtils.unescapeHtml(xmlData);
             }
-            Document document = DocumentHelper.parseText(xmlStr);
+            Document document = DocumentHelper.parseText(xmlData);
             String strXml = document.getRootElement().asXML();
             String transformation = "<fg>" + strXml + "</fg>";
             InputSource in = new InputSource(new StringReader(transformation));

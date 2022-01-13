@@ -8,6 +8,9 @@ import org.slf4j.Logger;
 
 public class QuartzUtils {
 
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
     private static Logger logger = LoggerUtil.getLogger();
 
     /**

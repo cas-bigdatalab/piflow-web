@@ -13,6 +13,7 @@ import cn.cnic.base.utils.LoggerUtil;
 
 import java.util.Arrays;
 
+
 /**
  * @ClassName: WebAppConfig
  * @Description: TODO(Here is a sentence describing the function of this class.)
@@ -20,7 +21,10 @@ import java.util.Arrays;
 @Configuration
 public class WebAppConfig implements WebMvcConfigurer {
 
-	private Logger logger = LoggerUtil.getLogger();
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private Logger logger = LoggerUtil.getLogger();
 	
     /**
      * Inject the first defined interceptor

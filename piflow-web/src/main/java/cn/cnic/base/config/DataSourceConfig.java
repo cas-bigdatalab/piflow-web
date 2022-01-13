@@ -19,7 +19,10 @@ import java.sql.Statement;
 @Primary //In the same "DataSource", first use the labeled "DataSource"
 public class DataSourceConfig {
 
-	private Logger logger = LoggerUtil.getLogger();
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private Logger logger = LoggerUtil.getLogger();
 	
     @Value("${spring.datasource.url}")
     private String datasourceUrl;

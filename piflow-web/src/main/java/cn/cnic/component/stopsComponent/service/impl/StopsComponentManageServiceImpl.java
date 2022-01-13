@@ -2,6 +2,7 @@ package cn.cnic.component.stopsComponent.service.impl;
 
 import javax.annotation.Resource;
 
+import cn.cnic.common.constant.MessageConfig;
 import org.springframework.stereotype.Service;
 
 import cn.cnic.base.utils.ReturnMapUtils;
@@ -54,7 +55,7 @@ public class StopsComponentManageServiceImpl implements IStopsComponentManageSer
             stopsComponentManage.setIsShow(stopsManage.getIsShow());
             stopsComponentManageDomain.saveOrUpdeate(stopsComponentManage);
         }
-        return ReturnMapUtils.setSucceededMsgRtnJsonStr(ReturnMapUtils.SUCCEEDED_MSG);
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
     }
 
 }

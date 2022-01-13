@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.cnic.common.constant.MessageConfig;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,7 +49,7 @@ public class ProcessAndProcessGroupServiceImpl implements IProcessAndProcessGrou
     @Override
     public String getProcessAndProcessGroupListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param) {
         if (null == offset || null == limit) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.ERROR_MSG);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG(MessageConfig.LANGUAGE));
         }
         Page<Process> page = PageHelper.startPage(offset, limit,"crt_dttm desc");
         if (isAdmin) {
@@ -56,7 +57,7 @@ public class ProcessAndProcessGroupServiceImpl implements IProcessAndProcessGrou
         } else {
             processAndProcessGroupMapper.getProcessAndProcessGroupListByUser(param, username);
         }
-        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(ReturnMapUtils.SUCCEEDED_MSG);
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
         rtnMap = PageHelperUtils.setLayTableParam(page, rtnMap);
         return JsonUtils.toJsonNoException(rtnMap);
     }
@@ -72,7 +73,7 @@ public class ProcessAndProcessGroupServiceImpl implements IProcessAndProcessGrou
         if ((null == taskAppIds || taskAppIds.length <= 0) && (null == groupAppIds || groupAppIds.length <= 0)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Incoming parameter is null");
         }
-        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(ReturnMapUtils.SUCCEEDED_MSG);
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
         if (null != taskAppIds && taskAppIds.length > 0) {
             Map<String, Object> taskAppInfoMap = new HashMap<>();
             List<Process> processListByAppIDs = processMapper.getProcessListByAppIDs(taskAppIds);

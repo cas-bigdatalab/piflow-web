@@ -4,6 +4,7 @@ import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.component.dataSource.service.IDataSource;
 import cn.cnic.component.dataSource.vo.DataSourceVo;
 import cn.cnic.component.flow.service.IStopsService;
+import cn.cnic.component.user.service.LogHelper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -24,6 +25,9 @@ public class DataSourceCtrl {
 
     @Autowired
     private IStopsService stopsServiceImpl;
+
+    @Autowired
+    private LogHelper logHelper;
 
     @RequestMapping(value = "/getDatasourceList", method = RequestMethod.POST)
     @ResponseBody
@@ -60,6 +64,7 @@ public class DataSourceCtrl {
     public String saveOrUpdate(DataSourceVo dataSourceVo, boolean isSynchronize) {
         String currentUsername = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
+        logHelper.logAuthSucceed("saveOrUpdate" + dataSourceVo.getDataSourceName(),currentUsername);
         return dataSourceImpl.saveOrUpdate(currentUsername, isAdmin, dataSourceVo, isSynchronize);
     }
 
@@ -78,6 +83,7 @@ public class DataSourceCtrl {
     public String deleteDataSource(String dataSourceId) {
         String currentUsername = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
+        logHelper.logAuthSucceed("deleteDataSource" + dataSourceId,currentUsername);
         return dataSourceImpl.deleteDataSourceById(currentUsername, isAdmin, dataSourceId);
     }
 

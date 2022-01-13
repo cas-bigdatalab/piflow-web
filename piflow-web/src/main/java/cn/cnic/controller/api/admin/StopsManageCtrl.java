@@ -1,7 +1,7 @@
 package cn.cnic.controller.api.admin;
 
-import javax.annotation.Resource;
-
+import cn.cnic.component.user.service.LogHelper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -22,14 +22,17 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/stopsManage")
 public class StopsManageCtrl {
 
-    @Resource
+    @Autowired
     private IStopGroupService stopGroupServiceImpl;
 
-    @Resource
+    @Autowired
     private IStopsService stopsServiceImpl;
-    
-    @Resource
+
+    @Autowired
     private IStopsComponentManageService stopsComponentManageServiceImpl;
+
+    @Autowired
+    private LogHelper logHelper;
     
     /**
      * stopsComponentList all
@@ -58,6 +61,7 @@ public class StopsManageCtrl {
     public String updatestopsComponentIsShow(UpdatestopsComponentIsShow stopsManage) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
         Boolean isAdmin = SessionUserUtil.isAdmin();
+        logHelper.logAuthSucceed("updatestopsComponentIsShow " + stopsManage.getStopsGroups(),username);
         return stopsComponentManageServiceImpl.updateStopsComponentIsShow(username, isAdmin,stopsManage);
     }
 
@@ -90,6 +94,7 @@ public class StopsManageCtrl {
     public String runStops(RunStopsVo runStopsVo) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
         Boolean isAdmin = SessionUserUtil.isAdmin();
+        logHelper.logAuthSucceed("runStops " + runStopsVo.getStopsId(),username);
         return stopsServiceImpl.runStops(username, isAdmin, runStopsVo);
     }
 }

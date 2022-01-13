@@ -12,7 +12,9 @@ import cn.cnic.component.flow.service.IFlowGroupService;
 import cn.cnic.component.flow.service.IFlowService;
 import cn.cnic.controller.requestVo.FlowGroupInfoVoRequest;
 import cn.cnic.controller.requestVo.FlowGroupInfoVoRequestUpDate;
+import cn.cnic.component.user.service.LogHelper;
 import io.swagger.annotations.Api;
+
 
 @Api(value = "flowGroup api")
 @Controller
@@ -24,6 +26,9 @@ public class FlowGroupCtrl {
 
     @Autowired
     private IFlowService flowServiceImpl;
+
+    @Autowired
+    private LogHelper logHelper;
 
     /**
      * ‘flowGroupList’ paged query
@@ -52,6 +57,7 @@ public class FlowGroupCtrl {
     @ResponseBody
     public String saveOrUpdateFlowGroup(FlowGroupInfoVoRequest flowGroupVo) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
+        logHelper.logAuthSucceed("saveOrUpdateFlowGroup " + flowGroupVo.getName() ,username);
         return flowGroupServiceImpl.saveOrUpdate(username, flowGroupVo);
     }
     
@@ -90,9 +96,10 @@ public class FlowGroupCtrl {
     /**
      * Enter the front page of the drawing board
      *
-     * @param request
-     * @param model
+     * @param parentAccessPath
+     * @param load
      * @param drawingBoardType
+     * @param processType
      * @return
      */
     @RequestMapping(value = "/drawingBoardData", method = RequestMethod.GET)
@@ -106,7 +113,8 @@ public class FlowGroupCtrl {
     /**
      * run Flow Group
      *
-     * @param request
+     * @param flowGroupId
+     * @param runMode
      * @return
      * @throws Exception 
      */
@@ -115,6 +123,7 @@ public class FlowGroupCtrl {
     public String runFlowGroup(String flowGroupId, String runMode) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
+        logHelper.logAuthSucceed("runFlowGroup" + runMode,username);
         return flowGroupServiceImpl.runFlowGroup(isAdmin, username, flowGroupId, runMode);
     }
 
@@ -127,8 +136,9 @@ public class FlowGroupCtrl {
     @RequestMapping(value = "/deleteFlowGroup", method = RequestMethod.GET)
     @ResponseBody
     public String deleteFlowGroup(String id) {
-    	String username = SessionUserUtil.getCurrentUsername();
+        String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
+        logHelper.logAuthSucceed("deleteFlowGroup" + id, username);
         return flowGroupServiceImpl.deleteFLowGroupInfo(isAdmin, username, id);
     }
 

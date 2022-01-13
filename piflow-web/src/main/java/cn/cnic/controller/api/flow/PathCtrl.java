@@ -1,6 +1,5 @@
 package cn.cnic.controller.api.flow;
 
-
 import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.component.flow.request.UpdatePathRequest;
 import cn.cnic.component.flow.service.IPathsService;

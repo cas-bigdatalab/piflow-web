@@ -22,6 +22,9 @@ import java.util.TimeZone;
 @SuppressWarnings("deprecation")
 public class JsonUtils {
 
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
     private static Logger logger = LoggerUtil.getLogger();
 
     private static final ObjectMapper objectMapper;

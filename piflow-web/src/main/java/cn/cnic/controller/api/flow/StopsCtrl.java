@@ -16,6 +16,7 @@ import cn.cnic.component.flow.service.IStopsService;
 import cn.cnic.component.flow.vo.StopsCustomizedPropertyVo;
 import cn.cnic.component.stopsComponent.service.IStopGroupService;
 import cn.cnic.component.stopsComponent.service.IStopsHubService;
+import cn.cnic.component.user.service.LogHelper;
 import io.swagger.annotations.Api;
 
 @Api(value = "stops api")
@@ -37,6 +38,9 @@ public class StopsCtrl {
 
     @Autowired
     private IStopsHubService stopsHubServiceImpl;
+
+    @Autowired
+    private LogHelper logHelper;
 
     /**
      * 'stops'and'groups' on the left of'reload'
@@ -67,7 +71,10 @@ public class StopsCtrl {
     /**
      * Get the usage of the current connection port
      *
-     * @param request
+     * @param flowId
+     * @param sourceId
+     * @param targetId
+     * @param pathLineId
      * @return
      */
     @RequestMapping(value = "/getStopsPort", method = RequestMethod.GET)
@@ -87,6 +94,7 @@ public class StopsCtrl {
     @ResponseBody
     public String updateStops(String[] content, String id) {
         String username = SessionUserUtil.getCurrentUsername();
+        logHelper.logAuthSucceed("updateStops " + id,username);
         return propertyServiceImpl.updatePropertyList(username, content);
     }
 
@@ -94,6 +102,7 @@ public class StopsCtrl {
     @ResponseBody
     public String updateStops(String content, String id) {
         String username = SessionUserUtil.getCurrentUsername();
+        logHelper.logAuthSucceed("updateStopOne " + id, username);
         return propertyServiceImpl.updateProperty(username, content, id);
     }
 
@@ -101,6 +110,7 @@ public class StopsCtrl {
     @ResponseBody
     public String updateStopsById(String stopId, String isCheckpoint) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
+        logHelper.logAuthSucceed("updateStopsById" + stopId, username);
         return stopsServiceImpl.updateStopsCheckpoint(username, stopId, isCheckpoint);
     }
 
@@ -109,6 +119,7 @@ public class StopsCtrl {
     public String updateStopsNameById(String stopId, String flowId, String name, String pageId) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
+        logHelper.logAuthSucceed("updateStopsNameById" + name, username);
         return stopsServiceImpl.updateStopName(username, isAdmin, stopId, flowId, name, pageId);
     }
 
@@ -173,6 +184,7 @@ public class StopsCtrl {
     @ResponseBody
     public String uploadStopsHubFile(@RequestParam("file") MultipartFile file) {
         String username = SessionUserUtil.getCurrentUsername();
+        logHelper.logAuthSucceed("uploadStopsHubFile " + file.getName(),username);
         return stopsHubServiceImpl.uploadStopsHubFile(username, file);
     }
 

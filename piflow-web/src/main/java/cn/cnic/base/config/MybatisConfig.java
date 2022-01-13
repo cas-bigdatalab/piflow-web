@@ -10,13 +10,17 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.Properties;
 
+
 /**
  * Paging plug-in configuration
  */
 @Configuration
 public class MybatisConfig {
 
-	private Logger logger = LoggerUtil.getLogger();
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
+    private Logger logger = LoggerUtil.getLogger();
 	
     @Bean
     public PageHelper pageHelper() {

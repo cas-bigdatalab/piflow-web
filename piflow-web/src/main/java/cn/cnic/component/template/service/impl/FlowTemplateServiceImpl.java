@@ -8,6 +8,9 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import cn.cnic.common.constant.MessageConfig;
+import cn.cnic.component.flow.utils.FlowXmlUtils;
+import cn.cnic.component.mxGraph.utils.MxGraphUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
@@ -19,10 +22,8 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 
 import cn.cnic.base.utils.FileUtils;
-import cn.cnic.base.utils.FlowXmlUtils;
 import cn.cnic.base.utils.JsonUtils;
 import cn.cnic.base.utils.LoggerUtil;
-import cn.cnic.base.utils.MxGraphUtils;
 import cn.cnic.base.utils.PageHelperUtils;
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.base.utils.UUIDUtils;
@@ -52,6 +53,9 @@ import cn.cnic.component.template.vo.FlowTemplateVo;
 @Service
 public class FlowTemplateServiceImpl implements IFlowTemplateService {
 
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
     private Logger logger = LoggerUtil.getLogger();
 
     @Autowired
@@ -169,9 +173,9 @@ public class FlowTemplateServiceImpl implements IFlowTemplateService {
         }
         int deleteTemplate = flowTemplateDomain.updateEnableFlagById(id, false);
         if (deleteTemplate > 0) {
-            return ReturnMapUtils.setSucceededMsgRtnJsonStr(ReturnMapUtils.SUCCEEDED_MSG);
+            return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
         } else {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.ERROR_MSG);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG(MessageConfig.LANGUAGE));
         }
     }
 

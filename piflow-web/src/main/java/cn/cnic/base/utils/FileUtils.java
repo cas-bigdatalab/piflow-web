@@ -1,5 +1,6 @@
 package cn.cnic.base.utils;
 
+import cn.cnic.common.constant.MessageConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.util.ResourceUtils;
@@ -31,9 +32,12 @@ import java.util.Map;
 
 public class FileUtils {
 
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
     private static Logger logger = LoggerUtil.getLogger();
 
-	public static String CSV_TITLE_KEY = "CSV_TITLE";
+    public static String CSV_TITLE_KEY = "CSV_TITLE";
     public static String CSV_DATA_KEY = "CSV_DATA";
     /**
      * String to "xml" file and save the specified path
@@ -125,7 +129,7 @@ public class FileUtils {
 
     public static Map<String, Object> uploadRtnMap(MultipartFile file, String path, String saveFileName) {
         if (file.isEmpty()) {
-            return ReturnMapUtils.setFailedMsg("The upload failed and the file was empty.");
+            return ReturnMapUtils.setFailedMsg(MessageConfig.UPLOAD_FAILED_FILE_EMPTY(MessageConfig.LANGUAGE));
         }
         CheckPathUtils.isChartPathExist(path);
         //file name

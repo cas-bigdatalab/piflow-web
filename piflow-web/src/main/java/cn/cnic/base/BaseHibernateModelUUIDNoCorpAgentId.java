@@ -3,6 +3,7 @@ package cn.cnic.base;
 import lombok.Getter;
 import lombok.Setter;
 
+
 @Getter
 @Setter
 public class BaseHibernateModelUUIDNoCorpAgentId extends BaseHibernateModelNoId {
@@ -14,5 +15,5 @@ public class BaseHibernateModelUUIDNoCorpAgentId extends BaseHibernateModelNoId 
 
     private String id;
 
-    
+
 }

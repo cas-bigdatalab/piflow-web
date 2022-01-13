@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.cnic.common.constant.MessageConfig;
 import cn.cnic.component.flow.utils.StopsUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -36,6 +37,9 @@ import cn.cnic.component.flow.entity.Stops;
 @Service
 public class DataSourceImpl implements IDataSource {
 
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
     private Logger logger = LoggerUtil.getLogger();
 
     @Autowired
@@ -61,11 +65,11 @@ public class DataSourceImpl implements IDataSource {
     private String addDataSource(String username, DataSourceVo dataSourceVo) {
         // Determine if current user obtained are empty
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("user Illegality");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG(MessageConfig.LANGUAGE));
         }
         // Determine if the incoming parameter obtained are empty
         if (null == dataSourceVo) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("param error");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG(MessageConfig.LANGUAGE));
         }
 
         // Used for the new "datasource"
@@ -114,7 +118,7 @@ public class DataSourceImpl implements IDataSource {
             return ReturnMapUtils.setSucceededMsgRtnJsonStr("add success.");
         } catch (Exception e) {
             logger.error("save failed:", e);
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.ERROR_MSG);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG(MessageConfig.LANGUAGE));
         }
 
     }
@@ -122,11 +126,11 @@ public class DataSourceImpl implements IDataSource {
     private String updateDataSource(String username, boolean isAdmin, DataSourceVo dataSourceVo, boolean isSynchronize) {
         // Determine if current user obtained are empty
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("user Illegality");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG(MessageConfig.LANGUAGE));
         }
         // Determine if the incoming parameter obtained are empty
         if (null == dataSourceVo) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("param error");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG(MessageConfig.LANGUAGE));
         }
         String id = dataSourceVo.getId();
         // Determine if the id is empty
@@ -237,7 +241,7 @@ public class DataSourceImpl implements IDataSource {
             return ReturnMapUtils.setSucceededMsgRtnJsonStr("update success.");
         } catch (Exception e) {
             logger.error("save failed:", e);
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.ERROR_MSG);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG(MessageConfig.LANGUAGE));
         }
     }
 
@@ -260,10 +264,10 @@ public class DataSourceImpl implements IDataSource {
     @Override
     public String getDataSourceVoById(String username, boolean isAdmin, String id) {
         if (!isAdmin && StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG(MessageConfig.LANGUAGE));
         }
-        if (StringUtils.isNotBlank(id)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("No data was queried");
+        if (StringUtils.isBlank(id)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG(MessageConfig.LANGUAGE));
         }
         DataSource dataSourceById = dataSourceDomain.getDataSourceById(username, isAdmin, id);
         DataSourceVo dataSourceVo = null;
@@ -273,14 +277,14 @@ public class DataSourceImpl implements IDataSource {
         if (null != dataSourceVo) {
             return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("data", dataSourceVo);
         } else {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("No data was queried");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_BY_ID_XXX_MSG(MessageConfig.LANGUAGE));
         }
     }
 
     @Override
     public String getDataSourceVoList(String username, boolean isAdmin) {
         if (!isAdmin && StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG(MessageConfig.LANGUAGE));
         }
         List<DataSource> dataSourceList = dataSourceDomain.getDataSourceList(username, isAdmin);
         List<DataSourceVo> dataSourceVoList = DataSourceUtils.dataSourceListPoToVo(dataSourceList, false);
@@ -295,10 +299,10 @@ public class DataSourceImpl implements IDataSource {
     @Override
     public String getDataSourceVoListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param) {
         if (!isAdmin && StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG(MessageConfig.LANGUAGE));
         }
         if (null == offset || null == limit) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("param is error");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG(MessageConfig.LANGUAGE));
         }
         Page<DataSourceVo> page = PageHelper.startPage(offset, limit);
         dataSourceDomain.getDataSourceVoListParam(username, isAdmin, param);
@@ -311,7 +315,7 @@ public class DataSourceImpl implements IDataSource {
     public String deleteDataSourceById(String username, boolean isAdmin, String id) {
         // Determine if current user obtained are empty
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("user Illegality");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG(MessageConfig.LANGUAGE));
         }
         // Determine if the user is empty id is empty
         if (StringUtils.isBlank(id)) {
@@ -356,7 +360,7 @@ public class DataSourceImpl implements IDataSource {
     @Override
     public String checkLinked(String datasourceId) {
         if (StringUtils.isBlank(datasourceId)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("datasourceId is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("datasourceId " + MessageConfig.PARAM_IS_NULL_MSG(MessageConfig.LANGUAGE));
         }
         List<String> stopsNamesByDatasourceId = stopsDomain.getStopsNamesByDatasourceId(datasourceId);
         if (null == stopsNamesByDatasourceId || stopsNamesByDatasourceId.size() <= 0) {

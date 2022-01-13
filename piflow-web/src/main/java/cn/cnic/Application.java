@@ -19,13 +19,17 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @PropertySources({
         @PropertySource(value = "classpath:apiConfig.properties", encoding = "utf-8"),
-        @PropertySource(value = "classpath:baseConfig.properties", encoding = "utf-8")
+        @PropertySource(value = "classpath:baseConfig.properties", encoding = "utf-8"),
+        @PropertySource(value = "classpath:messageConfig.properties", encoding = "utf-8")
 })
 @MapperScan(basePackages = "cn.cnic.**.mapper.*.*")
 @EnableTransactionManagement
 @SpringBootApplication
 public class Application {
 
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
     private static Logger logger = LoggerUtil.getLogger();
 
     public static void main(String[] args) {
@@ -35,7 +39,7 @@ public class Application {
         logger.warn("***************** Spring Boot Startup Success *****************");
         logger.warn("***************************************************************");
     }
-    
+
     @Bean
     public ConfigurableServletWebServerFactory webServerFactory() {
         TomcatServletWebServerFactory factory = new TomcatServletWebServerFactory();

@@ -3,6 +3,7 @@ package cn.cnic.component.schedule.service.Impl;
 import java.util.Date;
 import java.util.Map;
 
+import cn.cnic.common.constant.MessageConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
@@ -39,6 +40,9 @@ import cn.cnic.third.service.ISchedule;
 @Service
 public class ScheduleServiceImpl implements IScheduleService {
 
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
     private Logger logger = LoggerUtil.getLogger();
 
     @Autowired
@@ -63,13 +67,13 @@ public class ScheduleServiceImpl implements IScheduleService {
     public String getScheduleVoListPage(boolean isAdmin, String username, Integer offset, Integer limit, String param) {
         //Determine paging conditions
         if (null == offset || null == limit) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.ERROR_MSG);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG(MessageConfig.LANGUAGE));
         }
         // Load paging plug-in
         Page<ScheduleVo> page = PageHelper.startPage(offset, limit, "crt_dttm desc");
         // search
         scheduleDomain.getScheduleVoList(isAdmin, username, param);
-        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(ReturnMapUtils.SUCCEEDED_MSG);
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
         rtnMap = PageHelperUtils.setLayTableParam(page, rtnMap);
         return JsonUtils.toJsonNoException(rtnMap);
     }
@@ -106,7 +110,7 @@ public class ScheduleServiceImpl implements IScheduleService {
         if (insert <= 0) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("add failed");
         }
-        return ReturnMapUtils.setSucceededMsgRtnJsonStr(ReturnMapUtils.SUCCEEDED_MSG);
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
     }
 
     /**
@@ -117,6 +121,7 @@ public class ScheduleServiceImpl implements IScheduleService {
      * @param id       schedule id
      * @return json
      */
+    @Override
     public String getScheduleVoById(boolean isAdmin, String username, String id) {
         // Judge whether the 'username' is empty
         if (StringUtils.isBlank(username)) {
@@ -164,7 +169,7 @@ public class ScheduleServiceImpl implements IScheduleService {
         if (update <= 0) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("update failed");
         }
-        return ReturnMapUtils.setSucceededMsgRtnJsonStr(ReturnMapUtils.SUCCEEDED_MSG);
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
     }
 
     @Override
@@ -189,7 +194,7 @@ public class ScheduleServiceImpl implements IScheduleService {
         if (delSchedule <= 0) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("del failed");
         }
-        return ReturnMapUtils.setSucceededMsgRtnJsonStr(ReturnMapUtils.SUCCEEDED_MSG);
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
     }
 
     @Override
@@ -262,7 +267,7 @@ public class ScheduleServiceImpl implements IScheduleService {
             }
         } catch (Exception e) {
             logger.error("error", e);
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(ReturnMapUtils.ERROR_MSG);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG(MessageConfig.LANGUAGE));
         }
         // call start schedule
         Map<String, Object> thirdScheduleMap = scheduleImpl.scheduleStart(scheduleById, process, processGroup);
@@ -282,7 +287,7 @@ public class ScheduleServiceImpl implements IScheduleService {
         if (update <= 0) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Error : Interface call succeeded, save error");
         }
-        return ReturnMapUtils.setSucceededMsgRtnJsonStr(ReturnMapUtils.SUCCEEDED_MSG);
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
     }
 
     @Override
@@ -324,7 +329,7 @@ public class ScheduleServiceImpl implements IScheduleService {
         if (update <= 0) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Error : Interface call succeeded, save error");
         }
-        return ReturnMapUtils.setSucceededMsgRtnJsonStr(ReturnMapUtils.SUCCEEDED_MSG);
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
     }
 
 }

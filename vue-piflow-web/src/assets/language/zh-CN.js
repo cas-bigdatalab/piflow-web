@@ -17,7 +17,9 @@ module.exports = {
         admin: "高级",
         admin_schedule: '监控同步任务',
         stopsComponent: '组件显示',
-        globalVariable: '全局变量'
+        globalVariable: '全局变量',
+        user:'用户管理',
+        log:'通知管理'
     },
     page: {
         prev_text: "上一页",
@@ -32,7 +34,7 @@ module.exports = {
         existed: "用户名重复！",
         fault_content: "后台程序运行发生未知错误！",
         update_success_content: "更新成功！",
-        update_fail_content: "更新失败！",
+        update_fail_content: "更新失败或admin信息不能修改！",
         save_success_content: "保存成功！",
         save_fail_content: "保存失败！",
         add_success_content: "添加成功！",
@@ -47,6 +49,7 @@ module.exports = {
         unmount_fail_content: "卸载失败！",
         get_success_content: "数据采集成功！",
         get_fail_content: "数据采集失败！",
+        get_user_content:"用户无此权限！",
         debug_success_content: "debug 运行成功！",
         debug_fail_content: "debug 运行失败！",
         delete_success_content: "删除成功！",
@@ -68,6 +71,7 @@ module.exports = {
         upload_text: "提交",
         confirm: "确定",
         cancel_text: "取消",
+        reset_text: "重置",
         delete_content: "确定要删除",
         cancel_content: "确定要取消本次创建吗"
     },
@@ -183,6 +187,26 @@ module.exports = {
         status: "状态",
         createTime: "创建时间",
         action: "操作"
+    },
+    user_columns:{
+        create_title: "创建用户",
+        update_title: "更新用户",
+        name: "姓名",
+        username: "用户名",
+        status: "状态",
+        createTime: "创建时间",
+        action: "操作",
+        password:"密码",
+        role:"权限"
+    },
+
+    log_columns:{
+        username: "用户名",
+        lastLoginIp:"ip地址",
+        createTime: "创建时间",
+        lastUpdateTime:"操作时间",
+        action: "操作动作"
+
     },
     stopsComponent_columns: {
         name: "组件名称",

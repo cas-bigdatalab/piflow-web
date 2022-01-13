@@ -12,6 +12,9 @@ import java.util.Map;
 
 public class PageHelperUtils {
 
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
     private static Logger logger = LoggerUtil.getLogger();
 
     @SuppressWarnings({"rawtypes", "unchecked"})

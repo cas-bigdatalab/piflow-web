@@ -23,6 +23,9 @@ import java.util.List;
 @Order(value = 1)
 public class StartLoader implements ApplicationRunner {
 
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
     private Logger logger = LoggerUtil.getLogger();
 
     @Resource

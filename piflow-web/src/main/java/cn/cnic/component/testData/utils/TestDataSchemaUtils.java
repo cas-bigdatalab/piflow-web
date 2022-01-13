@@ -39,7 +39,7 @@ public class TestDataSchemaUtils {
             return null;
         }
         if (null == testDataSchema) {
-        	return null;
+            return null;
         }
         // copy
         BeanUtils.copyProperties(testDataSchemaVo, testDataSchema);

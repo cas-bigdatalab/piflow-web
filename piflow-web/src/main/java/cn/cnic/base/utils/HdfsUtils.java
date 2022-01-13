@@ -24,6 +24,9 @@ import java.io.OutputStream;
 
 public class HdfsUtils {
 
+	/**
+     * Introducing logs, note that they are all packaged under "org.slf4j"
+     */
     private static Logger logger = LoggerUtil.getLogger();
 
     public static void closedIO(InputStreamReader isr, BufferedReader br) {
