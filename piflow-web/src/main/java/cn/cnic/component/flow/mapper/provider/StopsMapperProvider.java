@@ -107,7 +107,7 @@ public class StopsMapperProvider {
             stringBuffer.append("flow_stops ");
             stringBuffer.append("(");
             stringBuffer.append(SqlUtils.baseFieldName() + ",");
-            stringBuffer.append("bundel,description,groups,name,inports,in_port_type,outports,out_port_type,owner,page_id,is_checkpoint,is_customized,fk_flow_id,fk_data_source_id");
+            stringBuffer.append("bundel,description,`groups`,name,inports,in_port_type,outports,out_port_type,owner,page_id,is_checkpoint,is_customized,fk_flow_id,fk_data_source_id");
             stringBuffer.append(") ");
             stringBuffer.append("VALUES");
             stringBuffer.append("(");
@@ -150,7 +150,7 @@ public class StopsMapperProvider {
             sql.append(SqlUtils.baseFieldName() + ",");            
             sql.append("bundel,");
             sql.append("description,");
-            sql.append("groups,");
+            sql.append("`groups`,");
             sql.append("name,");
             sql.append("inports,");
             sql.append("in_port_type,");
@@ -221,7 +221,7 @@ public class StopsMapperProvider {
             sql.SET("enable_flag = " + enableFlag);
             sql.SET("bundel = " + bundel);
             sql.SET("description = " + description);
-            sql.SET("groups = " + groups);
+            sql.SET("`groups` = " + groups);
             sql.SET("name = " + name);
             sql.SET("inports = " + inports);
             sql.SET("in_port_type = " + inPortType);

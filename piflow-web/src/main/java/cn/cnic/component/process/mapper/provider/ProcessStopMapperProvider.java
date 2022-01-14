@@ -1,15 +1,14 @@
 package cn.cnic.component.process.mapper.provider;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.jdbc.SQL;
-
 import cn.cnic.base.utils.DateUtils;
 import cn.cnic.base.utils.SqlUtils;
 import cn.cnic.component.process.entity.ProcessStop;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.jdbc.SQL;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public class ProcessStopMapperProvider {
 
@@ -114,7 +113,7 @@ public class ProcessStopMapperProvider {
             strBuf.append(SqlUtils.baseFieldName() + ", ");
             strBuf.append("name, ");
             strBuf.append("bundel, ");
-            strBuf.append("groups, ");
+            strBuf.append("`groups`, ");
             strBuf.append("owner, ");
             strBuf.append("description, ");
             strBuf.append("inports, ");
@@ -172,7 +171,7 @@ public class ProcessStopMapperProvider {
         strBuf.append(SqlUtils.baseFieldName() + ", ");
         strBuf.append("name, ");
         strBuf.append("bundel, ");
-        strBuf.append("groups, ");
+        strBuf.append("`groups`, ");
         strBuf.append("owner, ");
         strBuf.append("description, ");
         strBuf.append("inports, ");
@@ -320,7 +319,7 @@ public class ProcessStopMapperProvider {
             sql.SET("enable_flag = " + enableFlag);
             sql.SET("name = " + name);
             sql.SET("bundel = " + bundel);
-            sql.SET("groups = " + groups);
+            sql.SET("`groups` = " + groups);
             sql.SET("owner = " + owner);
             sql.SET("description = " + description);
             sql.SET("inports = " + inports);

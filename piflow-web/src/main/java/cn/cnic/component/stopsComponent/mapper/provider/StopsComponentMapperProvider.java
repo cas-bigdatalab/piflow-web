@@ -152,7 +152,7 @@ public class StopsComponentMapperProvider {
 
             strBuf.append("( ");
             strBuf.append(SqlUtils.baseFieldName() + ", ");
-            strBuf.append("bundel, description, groups, name, owner, inports, in_port_type, outports, out_port_type, is_customized, visualization_type ");
+            strBuf.append("bundel, description, `groups`, name, owner, inports, in_port_type, outports, out_port_type, is_customized, visualization_type ");
             strBuf.append(") ");
 
             strBuf.append("values ");
