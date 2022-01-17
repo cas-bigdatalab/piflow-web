@@ -22,14 +22,18 @@ import java.util.Map;
 @Service
 public class CodeSnippetServiceImpl implements ICodeSnippetService {
 
-    @Autowired
-    private NoteBookMapper noteBookMapper;
-    
-    @Autowired
-    private CodeSnippetMapper codeSnippetMapper;
+    private final CodeSnippetMapper codeSnippetMapper;
+    private final NoteBookMapper noteBookMapper;
+    private final ILivy livyImpl;
 
     @Autowired
-    private ILivy livyImpl;
+    public CodeSnippetServiceImpl(CodeSnippetMapper codeSnippetMapper,
+                                  NoteBookMapper noteBookMapper,
+                                  ILivy livyImpl) {
+        this.codeSnippetMapper = codeSnippetMapper;
+        this.noteBookMapper = noteBookMapper;
+        this.livyImpl = livyImpl;
+    }
 
     @Override
     public String addCodeSnippet(String username, CodeSnippetVoRequestAdd codeSnippetVo) {

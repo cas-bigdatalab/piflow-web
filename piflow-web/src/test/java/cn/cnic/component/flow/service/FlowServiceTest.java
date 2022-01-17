@@ -1,5 +1,6 @@
 package cn.cnic.component.flow.service;
 
+import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +16,12 @@ public class FlowServiceTest extends ApplicationTests {
 
     private Logger logger = LoggerUtil.getLogger();
 
+    private final IFlowService flowService;
+
     @Autowired
-    private IFlowService flowService;
+    public FlowServiceTest(IFlowService flowService) {
+        this.flowService = flowService;
+    }
 
     @Test
     @Rollback(false)

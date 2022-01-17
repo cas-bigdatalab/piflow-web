@@ -4,10 +4,10 @@ import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.PasswordUtils;
 import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.base.vo.UserVo;
+import cn.cnic.component.system.service.ILogHelperService;
 import cn.cnic.component.system.service.ISysUserService;
 import cn.cnic.component.system.vo.SysUserVo;
 
-import cn.cnic.component.user.service.LogHelper;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,11 +26,14 @@ public class LoginCtrl {
      */
     private Logger logger = LoggerUtil.getLogger();
 
-    @Autowired
-    private ISysUserService sysUserServiceImpl;
+    private final ISysUserService sysUserServiceImpl;
+    private final ILogHelperService logHelperServiceImpl;
 
     @Autowired
-    private LogHelper logHelper;
+    public LoginCtrl(ISysUserService sysUserServiceImpl, ILogHelperService logHelperServiceImpl) {
+        this.sysUserServiceImpl = sysUserServiceImpl;
+        this.logHelperServiceImpl = logHelperServiceImpl;
+    }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ModelAndView login(ModelAndView modelAndView) {
@@ -63,7 +66,7 @@ public class LoginCtrl {
         sysUserVo.setName(name);
         sysUserVo.setStatus(Byte.valueOf(status));
         // sysUserVo.setLastLoginIp(ipAddr);
-        logHelper.logAuthSucceed("create user ",username);
+        logHelperServiceImpl.logAuthSucceed("create user ",username);
         PasswordUtils.getKeyAndValue(username,pw);
         return sysUserServiceImpl.registerUser(sysUserVo);
     }

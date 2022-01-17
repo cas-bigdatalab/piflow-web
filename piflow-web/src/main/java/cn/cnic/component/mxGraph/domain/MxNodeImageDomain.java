@@ -17,8 +17,12 @@ import cn.cnic.component.mxGraph.mapper.MxNodeImageMapper;
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
 public class MxNodeImageDomain {
 
+    private final MxNodeImageMapper mxNodeImageMapper;
+
     @Autowired
-    private MxNodeImageMapper mxNodeImageMapper;
+    public MxNodeImageDomain(MxNodeImageMapper mxNodeImageMapper) {
+        this.mxNodeImageMapper = mxNodeImageMapper;
+    }
 
     public int addMxNodeImage(MxNodeImage mxNodeImage) throws Exception {
         if (null == mxNodeImage) {

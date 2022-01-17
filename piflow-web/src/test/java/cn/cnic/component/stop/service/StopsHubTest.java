@@ -9,8 +9,12 @@ import cn.cnic.component.stopsComponent.service.IStopsHubService;
 
 public class StopsHubTest extends ApplicationTests {
 
+    private final IStopsHubService stopsHubServiceImpl;
+
     @Autowired
-    private IStopsHubService stopsHubServiceImpl;
+    public StopsHubTest(IStopsHubService stopsHubServiceImpl) {
+        this.stopsHubServiceImpl = stopsHubServiceImpl;
+    }
 
 
     @Test

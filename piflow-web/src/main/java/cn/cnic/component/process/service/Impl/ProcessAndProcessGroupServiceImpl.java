@@ -29,14 +29,18 @@ import cn.cnic.component.process.vo.ProcessVo;
 @Service
 public class ProcessAndProcessGroupServiceImpl implements IProcessAndProcessGroupService {
 
-    @Autowired
-    private ProcessAndProcessGroupMapper processAndProcessGroupMapper;
+    private final ProcessAndProcessGroupMapper processAndProcessGroupMapper;
+    private final ProcessGroupMapper processGroupMapper;
+    private final ProcessMapper processMapper;
 
     @Autowired
-    private ProcessGroupMapper processGroupMapper;
-
-    @Autowired
-    private ProcessMapper processMapper;
+    public ProcessAndProcessGroupServiceImpl(ProcessAndProcessGroupMapper processAndProcessGroupMapper,
+                                             ProcessGroupMapper processGroupMapper,
+                                             ProcessMapper processMapper) {
+        this.processAndProcessGroupMapper = processAndProcessGroupMapper;
+        this.processGroupMapper = processGroupMapper;
+        this.processMapper = processMapper;
+    }
 
     /**
      * Query ProcessAndProcessGroupList (parameter space-time non-paging)

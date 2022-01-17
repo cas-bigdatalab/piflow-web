@@ -10,8 +10,12 @@ import cn.cnic.component.stopsComponent.service.IStopsComponentService;
 @Service
 public class StopsComponentServiceImpl implements IStopsComponentService {
 
+    private final StopsComponentDomain stopsComponentDomain;
+
     @Autowired
-    private StopsComponentDomain stopsComponentDomain;
+    public StopsComponentServiceImpl(StopsComponentDomain stopsComponentDomain) {
+        this.stopsComponentDomain = stopsComponentDomain;
+    }
 
     @Override
     public StopsComponent getStopsTemplateById(String id) {

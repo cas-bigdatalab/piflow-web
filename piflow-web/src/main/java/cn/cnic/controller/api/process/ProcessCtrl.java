@@ -1,6 +1,6 @@
 package cn.cnic.controller.api.process;
 
-import cn.cnic.component.user.service.LogHelper;
+import cn.cnic.component.system.service.ILogHelperService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,20 +24,25 @@ import io.swagger.annotations.ApiImplicitParams;
 @RequestMapping("/process")
 public class ProcessCtrl {
 
-    @Autowired
-    IProcessService processServiceImpl;
+
+    private final IProcessStopService processStopServiceImpl;
+    private final IProcessPathService processPathServiceImpl;
+    private final IProcessService processServiceImpl;
+    private final ILogHelperService logHelperServiceImpl;
+    private final IFlow flowImpl;
 
     @Autowired
-    IFlow flowImpl;
-
-    @Autowired
-    IProcessStopService processStopServiceImpl;
-
-    @Autowired
-    IProcessPathService processPathServiceImpl;
-
-    @Autowired
-    LogHelper logHelper;
+    public ProcessCtrl(IProcessStopService processStopServiceImpl,
+                       IProcessPathService processPathServiceImpl,
+                       IProcessService processServiceImpl,
+                       ILogHelperService logHelperServiceImpl,
+                       IFlow flowImpl) {
+        this.processStopServiceImpl = processStopServiceImpl;
+        this.processPathServiceImpl = processPathServiceImpl;
+        this.processServiceImpl = processServiceImpl;
+        this.logHelperServiceImpl = logHelperServiceImpl;
+        this.flowImpl = flowImpl;
+    }
 
     /**
      * Query and enter the process list
@@ -147,7 +152,7 @@ public class ProcessCtrl {
     public String runProcess(String id, String checkpointStr, String runMode) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
-        logHelper.logAuthSucceed("runProcess" + id,username);
+        logHelperServiceImpl.logAuthSucceed("runProcess" + id,username);
         return processServiceImpl.startProcess(isAdmin, username, id, checkpointStr, runMode);
     }
 
@@ -163,7 +168,7 @@ public class ProcessCtrl {
     public String stopProcess(String processId) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
-        logHelper.logAuthSucceed("stopProcess" + processId,username);
+        logHelperServiceImpl.logAuthSucceed("stopProcess" + processId,username);
         return processServiceImpl.stopProcess(username, isAdmin, processId);
     }
 
@@ -179,7 +184,7 @@ public class ProcessCtrl {
     public String delProcess(String processID) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
-        logHelper.logAuthSucceed("delProcess" + processID,username);
+        logHelperServiceImpl.logAuthSucceed("delProcess" + processID,username);
         return processServiceImpl.delProcess(isAdmin, username, processID);
     }
 

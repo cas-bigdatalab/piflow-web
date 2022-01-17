@@ -23,17 +23,21 @@ import cn.cnic.component.mxGraph.entity.MxGraphModel;
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
 public class FlowGroupDomain {
 
-    @Autowired
-    private FlowGroupMapper flowGroupMapper;
+    private final FlowGroupMapper flowGroupMapper;
+    private final FlowGroupPathsMapper flowGroupPathsMapper;
+    private final FlowDomain flowDomain;
+    private final MxGraphModelDomain mxGraphModelDomain;
 
     @Autowired
-    private FlowGroupPathsMapper flowGroupPathsMapper;
-
-    @Autowired
-    private FlowDomain flowDomain;
-
-    @Autowired
-    private MxGraphModelDomain mxGraphModelDomain;
+    public FlowGroupDomain(FlowGroupMapper flowGroupMapper,
+                           FlowGroupPathsMapper flowGroupPathsMapper,
+                           FlowDomain flowDomain,
+                           MxGraphModelDomain mxGraphModelDomain) {
+        this.flowGroupMapper = flowGroupMapper;
+        this.flowGroupPathsMapper = flowGroupPathsMapper;
+        this.flowDomain = flowDomain;
+        this.mxGraphModelDomain = mxGraphModelDomain;
+    }
 
     public int saveOrUpdate(FlowGroup flowGroup) throws Exception {
         if (null == flowGroup) {

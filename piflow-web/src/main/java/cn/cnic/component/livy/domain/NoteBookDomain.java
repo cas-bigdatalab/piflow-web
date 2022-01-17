@@ -9,7 +9,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
 public class NoteBookDomain {
 
-//    @Autowired
-//    private NoteBookMapper noteBookMapper;
 
+//    private final NoteBookMapper noteBookMapper;
+//
+//    @Autowired
+//    public NoteBookDomain(NoteBookMapper noteBookMapper) {
+//        this.noteBookMapper = noteBookMapper;
+//    }
 }

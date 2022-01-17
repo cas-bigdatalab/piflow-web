@@ -23,11 +23,14 @@ import java.util.Map;
 @Transactional
 public class NoteBookServiceImpl implements INoteBookService {
 
-    @Autowired
-    private NoteBookMapper noteBookMapper;
+    private final NoteBookMapper noteBookMapper;
+    private final ILivy livyImpl;
 
     @Autowired
-    private ILivy livyImpl;
+    public NoteBookServiceImpl(NoteBookMapper noteBookMapper, ILivy livyImpl) {
+        this.noteBookMapper = noteBookMapper;
+        this.livyImpl = livyImpl;
+    }
 
     @Override
     public String saveOrUpdateNoteBook(String username, boolean isAdmin, NoteBookVoRequest noteBookVo, boolean flag) throws Exception {

@@ -4,20 +4,25 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import cn.cnic.ApplicationTests;
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.common.Eunm.ProcessState;
 import cn.cnic.component.process.entity.Process;
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 public class ProcessMapperTest extends ApplicationTests {
 
     private Logger logger = LoggerUtil.getLogger();
 
+
+    private final ProcessMapper processMapper;
+
     @Autowired
-    private ProcessMapper processMapper;
+    public ProcessMapperTest(ProcessMapper processMapper) {
+        this.processMapper = processMapper;
+    }
 
     @Test
     public void testGetFlowById() {

@@ -15,8 +15,12 @@ import cn.cnic.component.stopsComponent.mapper.StopsHubMapper;
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
 public class StopsHubDomain {
 
+    private final StopsHubMapper stopsHubMapper;
+
     @Autowired
-    private StopsHubMapper stopsHubMapper;
+    public StopsHubDomain(StopsHubMapper stopsHubMapper) {
+        this.stopsHubMapper = stopsHubMapper;
+    }
 
     /**
      * add StopsHub

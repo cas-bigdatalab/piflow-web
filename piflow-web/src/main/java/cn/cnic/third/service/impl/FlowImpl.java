@@ -37,8 +37,12 @@ public class FlowImpl implements IFlow {
      */
     private Logger logger = LoggerUtil.getLogger();
 
+    private final ProcessDomain processDomain;
+
     @Autowired
-    private ProcessDomain processDomain;
+    public FlowImpl(ProcessDomain processDomain) {
+        this.processDomain = processDomain;
+    }
 
     /**
      * start process

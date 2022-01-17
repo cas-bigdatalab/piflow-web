@@ -32,12 +32,14 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
 
     private Logger logger = LoggerUtil.getLogger();
 
+    private final SysScheduleDomain sysScheduleDomain;
+    private final Scheduler scheduler;
+
     @Autowired
-    private SysScheduleDomain sysScheduleDomain;
-    
-    //Injection task scheduling
-    @Autowired
-    private Scheduler scheduler;
+    public SysScheduleServiceImpl(SysScheduleDomain sysScheduleDomain, Scheduler scheduler) {
+        this.sysScheduleDomain = sysScheduleDomain;
+        this.scheduler = scheduler;
+    }
 
     /**
      * Paging query schedule

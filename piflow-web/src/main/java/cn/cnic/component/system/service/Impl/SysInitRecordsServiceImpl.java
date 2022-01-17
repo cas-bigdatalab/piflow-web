@@ -48,17 +48,22 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
      */
     private Logger logger = LoggerUtil.getLogger();
 
-    @Autowired
-    private SysInitRecordsDomain sysInitRecordsDomain;
+    private final SysInitRecordsDomain sysInitRecordsDomain;
+    private final StopsComponentDomain stopsComponentDomain;
+    private final StopsDomain stopsDomain;
+    private final IStop stopImpl;
 
     @Autowired
-    private StopsDomain stopsDomain;
+    public SysInitRecordsServiceImpl(SysInitRecordsDomain sysInitRecordsDomain,
+                                     StopsComponentDomain stopsComponentDomain,
+                                     StopsDomain stopsDomain,
+                                     IStop stopImpl) {
+        this.sysInitRecordsDomain = sysInitRecordsDomain;
+        this.stopsComponentDomain = stopsComponentDomain;
+        this.stopsDomain = stopsDomain;
+        this.stopImpl = stopImpl;
+    }
 
-    @Autowired
-    private StopsComponentDomain stopsComponentDomain;
-
-    @Autowired
-    private IStop stopImpl;
 
     public boolean isInBootPage() {
         // Determine if the boot flag is true

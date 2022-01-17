@@ -15,8 +15,12 @@ import cn.cnic.component.dashboard.service.IStatisticService;
 public class StatisticServiceImpl implements IStatisticService {
 
 
+    private final StatisticDomain statisticDomain;
+
     @Autowired
-    private StatisticDomain statisticDomain;
+    public StatisticServiceImpl(StatisticDomain statisticDomain) {
+        this.statisticDomain = statisticDomain;
+    }
 
     @Override
     public Map<String,String> getFlowStatisticInfo() {

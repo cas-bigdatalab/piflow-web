@@ -5,7 +5,6 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import cn.cnic.ApplicationTests;
 import cn.cnic.base.utils.LoggerUtil;
@@ -17,17 +16,21 @@ import cn.cnic.component.schedule.entity.Schedule;
 import cn.cnic.component.schedule.utils.ScheduleUtils;
 import cn.cnic.third.service.ISchedule;
 import cn.cnic.third.vo.schedule.ThirdScheduleVo;
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 public class IScheduleTest extends ApplicationTests {
 
     private Logger logger = LoggerUtil.getLogger();
 
-    @Autowired
-    ISchedule scheduleImpl;
+    private final ISchedule scheduleImpl;
+    private final FlowMapper flowMapper;
 
     @Autowired
-    FlowMapper flowMapper;
+    public IScheduleTest(ISchedule scheduleImpl, FlowMapper flowMapper) {
+        this.scheduleImpl = scheduleImpl;
+        this.flowMapper = flowMapper;
+    }
 
     @Test
     public void scheduleStartTest() {

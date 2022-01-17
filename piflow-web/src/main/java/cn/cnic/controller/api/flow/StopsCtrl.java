@@ -1,5 +1,6 @@
 package cn.cnic.controller.api.flow;
 
+import cn.cnic.component.system.service.ILogHelperService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,7 +17,6 @@ import cn.cnic.component.flow.service.IStopsService;
 import cn.cnic.component.flow.vo.StopsCustomizedPropertyVo;
 import cn.cnic.component.stopsComponent.service.IStopGroupService;
 import cn.cnic.component.stopsComponent.service.IStopsHubService;
-import cn.cnic.component.user.service.LogHelper;
 import io.swagger.annotations.Api;
 
 @Api(value = "stops api")
@@ -24,23 +24,27 @@ import io.swagger.annotations.Api;
 @RequestMapping("/stops")
 public class StopsCtrl {
 
-    @Autowired
-    private IStopGroupService stopGroupServiceImpl;
+    private final ICustomizedPropertyService customizedPropertyServiceImpl;
+    private final IStopGroupService stopGroupServiceImpl;
+    private final ILogHelperService logHelperServiceImpl;
+    private final IPropertyService propertyServiceImpl;
+    private final IStopsHubService stopsHubServiceImpl;
+    private final IStopsService stopsServiceImpl;
 
     @Autowired
-    private IPropertyService propertyServiceImpl;
-
-    @Autowired
-    private IStopsService stopsServiceImpl;
-
-    @Autowired
-    private ICustomizedPropertyService customizedPropertyServiceImpl;
-
-    @Autowired
-    private IStopsHubService stopsHubServiceImpl;
-
-    @Autowired
-    private LogHelper logHelper;
+    public StopsCtrl(ICustomizedPropertyService customizedPropertyServiceImpl,
+                     IStopGroupService stopGroupServiceImpl,
+                     ILogHelperService logHelperServiceImpl,
+                     IPropertyService propertyServiceImpl,
+                     IStopsHubService stopsHubServiceImpl,
+                     IStopsService stopsServiceImpl) {
+        this.customizedPropertyServiceImpl = customizedPropertyServiceImpl;
+        this.stopGroupServiceImpl = stopGroupServiceImpl;
+        this.logHelperServiceImpl = logHelperServiceImpl;
+        this.propertyServiceImpl = propertyServiceImpl;
+        this.stopsHubServiceImpl = stopsHubServiceImpl;
+        this.stopsServiceImpl = stopsServiceImpl;
+    }
 
     /**
      * 'stops'and'groups' on the left of'reload'
@@ -94,7 +98,7 @@ public class StopsCtrl {
     @ResponseBody
     public String updateStops(String[] content, String id) {
         String username = SessionUserUtil.getCurrentUsername();
-        logHelper.logAuthSucceed("updateStops " + id,username);
+        logHelperServiceImpl.logAuthSucceed("updateStops " + id,username);
         return propertyServiceImpl.updatePropertyList(username, content);
     }
 
@@ -102,7 +106,7 @@ public class StopsCtrl {
     @ResponseBody
     public String updateStops(String content, String id) {
         String username = SessionUserUtil.getCurrentUsername();
-        logHelper.logAuthSucceed("updateStopOne " + id, username);
+        logHelperServiceImpl.logAuthSucceed("updateStopOne " + id, username);
         return propertyServiceImpl.updateProperty(username, content, id);
     }
 
@@ -110,7 +114,7 @@ public class StopsCtrl {
     @ResponseBody
     public String updateStopsById(String stopId, String isCheckpoint) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
-        logHelper.logAuthSucceed("updateStopsById" + stopId, username);
+        logHelperServiceImpl.logAuthSucceed("updateStopsById" + stopId, username);
         return stopsServiceImpl.updateStopsCheckpoint(username, stopId, isCheckpoint);
     }
 
@@ -119,7 +123,7 @@ public class StopsCtrl {
     public String updateStopsNameById(String stopId, String flowId, String name, String pageId) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
-        logHelper.logAuthSucceed("updateStopsNameById" + name, username);
+        logHelperServiceImpl.logAuthSucceed("updateStopsNameById" + name, username);
         return stopsServiceImpl.updateStopName(username, isAdmin, stopId, flowId, name, pageId);
     }
 
@@ -184,7 +188,7 @@ public class StopsCtrl {
     @ResponseBody
     public String uploadStopsHubFile(@RequestParam("file") MultipartFile file) {
         String username = SessionUserUtil.getCurrentUsername();
-        logHelper.logAuthSucceed("uploadStopsHubFile " + file.getName(),username);
+        logHelperServiceImpl.logAuthSucceed("uploadStopsHubFile " + file.getName(),username);
         return stopsHubServiceImpl.uploadStopsHubFile(username, file);
     }
 

@@ -14,8 +14,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/bootPage")
 public class BootPageCtrl {
 
+    private final ISysInitRecordsService sysInitRecordsServiceImpl;
+
     @Autowired
-    private ISysInitRecordsService sysInitRecordsServiceImpl;
+    public BootPageCtrl(ISysInitRecordsService sysInitRecordsServiceImpl) {
+        this.sysInitRecordsServiceImpl = sysInitRecordsServiceImpl;
+    }
 
     @RequestMapping(value = "/isInBootPage", method = RequestMethod.GET)
     @ResponseBody

@@ -45,23 +45,27 @@ public class ScheduleServiceImpl implements IScheduleService {
      */
     private Logger logger = LoggerUtil.getLogger();
 
-    @Autowired
-    private ScheduleDomain scheduleDomain;
+    private final ProcessGroupDomain processGroupDomain;
+    private final FlowGroupDomain flowGroupDomain;
+    private final ScheduleDomain scheduleDomain;
+    private final ProcessDomain processDomain;
+    private final FlowDomain flowDomain;
+    private final ISchedule scheduleImpl;
 
     @Autowired
-    private FlowDomain flowDomain;
-
-    @Autowired
-    private FlowGroupDomain flowGroupDomain;
-
-    @Autowired
-    private ProcessDomain processDomain;
-
-    @Autowired
-    private ProcessGroupDomain processGroupDomain;
-
-    @Autowired
-    private ISchedule scheduleImpl;
+    public ScheduleServiceImpl(ProcessGroupDomain processGroupDomain,
+                               FlowGroupDomain flowGroupDomain,
+                               ScheduleDomain scheduleDomain,
+                               ProcessDomain processDomain,
+                               FlowDomain flowDomain,
+                               ISchedule scheduleImpl) {
+        this.processGroupDomain = processGroupDomain;
+        this.flowGroupDomain = flowGroupDomain;
+        this.scheduleDomain = scheduleDomain;
+        this.processDomain = processDomain;
+        this.flowDomain = flowDomain;
+        this.scheduleImpl = scheduleImpl;
+    }
 
     @Override
     public String getScheduleVoListPage(boolean isAdmin, String username, Integer offset, Integer limit, String param) {

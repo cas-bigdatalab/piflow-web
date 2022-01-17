@@ -29,17 +29,21 @@ public class ProcessGroupDomain {
 
     private Logger logger = LoggerUtil.getLogger();
 
-    @Autowired
-    private ProcessGroupMapper processGroupMapper;
+    private final ProcessGroupPathMapper processGroupPathMapper;
+    private final ProcessGroupMapper processGroupMapper;
+    private final MxGraphModelDomain mxGraphModelDomain;
+    private final ProcessDomain processDomain;
 
     @Autowired
-    private ProcessGroupPathMapper processGroupPathMapper;
-
-    @Autowired
-    private ProcessDomain processDomain;
-
-    @Autowired
-    private MxGraphModelDomain mxGraphModelDomain;
+    public ProcessGroupDomain(ProcessGroupPathMapper processGroupPathMapper,
+                              ProcessGroupMapper processGroupMapper,
+                              MxGraphModelDomain mxGraphModelDomain,
+                              ProcessDomain processDomain) {
+        this.processGroupPathMapper = processGroupPathMapper;
+        this.processGroupMapper = processGroupMapper;
+        this.mxGraphModelDomain = mxGraphModelDomain;
+        this.processDomain = processDomain;
+    }
 
     /**
      * Add process of things

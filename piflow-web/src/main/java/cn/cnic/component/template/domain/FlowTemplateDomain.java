@@ -15,8 +15,12 @@ import cn.cnic.component.template.mapper.FlowTemplateMapper;
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
 public class FlowTemplateDomain {
 
+    private final FlowTemplateMapper flowTemplateMapper;
+
     @Autowired
-    private FlowTemplateMapper flowTemplateMapper;
+    public FlowTemplateDomain(FlowTemplateMapper flowTemplateMapper) {
+        this.flowTemplateMapper = flowTemplateMapper;
+    }
 
     public int insertFlowTemplate(FlowTemplate flowTemplate) {
         return flowTemplateMapper.insertFlowTemplate(flowTemplate);

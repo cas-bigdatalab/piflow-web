@@ -1,8 +1,7 @@
 package cn.cnic.component.stopsComponent.service.impl;
 
-import javax.annotation.Resource;
-
 import cn.cnic.common.constant.MessageConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cn.cnic.base.utils.ReturnMapUtils;
@@ -15,9 +14,13 @@ import cn.cnic.controller.requestVo.UpdatestopsComponentIsShow;
 @Service
 public class StopsComponentManageServiceImpl implements IStopsComponentManageService {
 
-    @Resource
-    private StopsComponentManageDomain stopsComponentManageDomain;
-    
+    private final StopsComponentManageDomain stopsComponentManageDomain;
+
+    @Autowired
+    public StopsComponentManageServiceImpl(StopsComponentManageDomain stopsComponentManageDomain) {
+        this.stopsComponentManageDomain = stopsComponentManageDomain;
+    }
+
     /**
      * updateStopsComponentsIsShow
      * 

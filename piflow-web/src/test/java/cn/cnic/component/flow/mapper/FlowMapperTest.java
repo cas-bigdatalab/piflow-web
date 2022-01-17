@@ -20,8 +20,12 @@ public class FlowMapperTest extends ApplicationTests {
 
     private Logger logger = LoggerUtil.getLogger();
 
+    private final FlowMapper flowMapper;
+
     @Autowired
-    private FlowMapper flowMapper;
+    public FlowMapperTest(FlowMapper flowMapper) {
+        this.flowMapper = flowMapper;
+    }
 
     @Test
     public void testGetFlowById() {

@@ -5,21 +5,25 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import cn.cnic.ApplicationTests;
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.common.Eunm.StopsHubState;
 import cn.cnic.component.stopsComponent.entity.StopsHub;
 import cn.cnic.component.stopsComponent.mapper.StopsHubMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 public class StopsHubMapperTest extends ApplicationTests {
 
     private Logger logger = LoggerUtil.getLogger();
 
+    private final StopsHubMapper stopsHubMapper;
+
     @Autowired
-    private StopsHubMapper stopsHubMapper;
+    public StopsHubMapperTest(StopsHubMapper stopsHubMapper) {
+        this.stopsHubMapper = stopsHubMapper;
+    }
 
     @Test
     public void testAddStopsHub() {

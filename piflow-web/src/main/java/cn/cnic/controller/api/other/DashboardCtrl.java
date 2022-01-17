@@ -18,11 +18,15 @@ import io.swagger.annotations.Api;
 @RequestMapping("/dashboard")
 public class DashboardCtrl {
 
-    @Autowired
-    private IResourceService resourceServiceImpl;
+    private final IResourceService resourceServiceImpl;
+    private final IStatisticService statisticServiceImpl;
 
     @Autowired
-    private IStatisticService statisticServiceImpl;
+    public DashboardCtrl(IResourceService resourceServiceImpl,
+                         IStatisticService statisticServiceImpl) {
+        this.resourceServiceImpl = resourceServiceImpl;
+        this.statisticServiceImpl = statisticServiceImpl;
+    }
 
     /**
      * resource info,include cpu,memory,disk

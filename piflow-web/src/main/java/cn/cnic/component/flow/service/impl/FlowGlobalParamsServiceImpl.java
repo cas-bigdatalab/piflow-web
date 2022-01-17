@@ -26,10 +26,14 @@ import cn.cnic.controller.requestVo.FlowGlobalParamsVoRequestAdd;
 @Service
 public class FlowGlobalParamsServiceImpl implements IFlowGlobalParamsService {
 
-    @Autowired
-    private FlowGlobalParamsDomain flowGlobalParamsDomain;
+    private final FlowGlobalParamsDomain flowGlobalParamsDomain;
 
-	@Override
+    @Autowired
+    public FlowGlobalParamsServiceImpl(FlowGlobalParamsDomain flowGlobalParamsDomain) {
+        this.flowGlobalParamsDomain = flowGlobalParamsDomain;
+    }
+
+    @Override
 	public String addFlowGlobalParams(String username, FlowGlobalParamsVoRequestAdd globalParamsVo) throws Exception {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");

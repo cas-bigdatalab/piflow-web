@@ -27,12 +27,18 @@ public class FlowGroupPathsServiceImpl implements IFlowGroupPathsService {
 
     private Logger logger = LoggerUtil.getLogger();
 
+    private final FlowGroupPathsMapper flowGroupPathsMapper;
+    private final FlowGroupMapper flowGroupMapper;
+    private final FlowMapper flowMapper;
+
     @Autowired
-    private FlowGroupPathsMapper flowGroupPathsMapper;
-    @Autowired
-    private FlowGroupMapper flowGroupMapper;
-    @Autowired
-    private FlowMapper flowMapper;
+    public FlowGroupPathsServiceImpl(FlowGroupPathsMapper flowGroupPathsMapper,
+                                     FlowGroupMapper flowGroupMapper,
+                                     FlowMapper flowMapper) {
+        this.flowGroupPathsMapper = flowGroupPathsMapper;
+        this.flowGroupMapper = flowGroupMapper;
+        this.flowMapper = flowMapper;
+    }
 
 
     @Override

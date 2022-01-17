@@ -14,8 +14,13 @@ public class StopsComponentServiceTest extends ApplicationTests {
 
     private Logger logger = LoggerUtil.getLogger();
 
+
+    private final IStopsComponentService stopsTemplateService;
+
     @Autowired
-    private IStopsComponentService stopsTemplateService;
+    public StopsComponentServiceTest(IStopsComponentService stopsTemplateService) {
+        this.stopsTemplateService = stopsTemplateService;
+    }
 
     @Test
     public void testGetStopsTemplateById() {

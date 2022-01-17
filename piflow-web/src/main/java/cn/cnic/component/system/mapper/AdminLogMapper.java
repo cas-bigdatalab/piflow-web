@@ -1,13 +1,8 @@
-package cn.cnic.component.user.mapper;
+package cn.cnic.component.system.mapper;
 
-import cn.cnic.component.dataSource.entity.DataSource;
-import cn.cnic.component.dataSource.vo.DataSourceVo;
 import cn.cnic.component.system.entity.SysLog;
-import cn.cnic.component.system.entity.SysUser;
 import cn.cnic.component.system.vo.SysLogVo;
-import cn.cnic.component.system.vo.SysUserVo;
-import cn.cnic.component.user.mapper.provider.AdminLogMapperProvider;
-import cn.cnic.component.user.mapper.provider.AdminUserMapperProvider;
+import cn.cnic.component.system.mapper.provider.AdminLogMapperProvider;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;

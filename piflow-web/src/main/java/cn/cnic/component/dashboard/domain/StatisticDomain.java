@@ -15,8 +15,12 @@ import cn.cnic.component.dashboard.mapper.StatisticMapper;
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
 public class StatisticDomain {
 
+    private final StatisticMapper statisticMapper;
+
     @Autowired
-    private StatisticMapper statisticMapper;
+    public StatisticDomain(StatisticMapper statisticMapper) {
+        this.statisticMapper = statisticMapper;
+    }
 
     /**
      * query flow progress statistic info

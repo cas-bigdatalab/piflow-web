@@ -56,23 +56,27 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
      */
     private Logger logger = LoggerUtil.getLogger();
 
-    @Autowired
-    private FlowMapper flowMapper;
+    private final FlowMapper flowMapper;
+    private final FlowGroupMapper flowGroupMapper;
+    private final StopsComponentMapper stopsComponentMapper;
+    private final MxGraphModelDomain mxGraphModelDomain;
+    private final FlowGroupDomain flowGroupDomain;
+    private final FlowDomain flowDomain;
 
     @Autowired
-    private FlowGroupMapper flowGroupMapper;
-
-    @Autowired
-    private StopsComponentMapper stopsComponentMapper;
-
-    @Autowired
-    private MxGraphModelDomain mxGraphModelDomain;
-
-    @Autowired
-    private FlowGroupDomain flowGroupDomain;
-
-    @Autowired
-    private FlowDomain flowDomain;
+    public MxGraphModelServiceImpl(FlowMapper flowMapper,
+                                   FlowGroupMapper flowGroupMapper,
+                                   StopsComponentMapper stopsComponentMapper,
+                                   MxGraphModelDomain mxGraphModelDomain,
+                                   FlowGroupDomain flowGroupDomain,
+                                   FlowDomain flowDomain) {
+        this.flowMapper = flowMapper;
+        this.flowGroupMapper = flowGroupMapper;
+        this.stopsComponentMapper = stopsComponentMapper;
+        this.mxGraphModelDomain = mxGraphModelDomain;
+        this.flowGroupDomain = flowGroupDomain;
+        this.flowDomain = flowDomain;
+    }
 
     @Override
     public String saveDataForTask(String username, String imageXML, String loadId, String operType) throws Exception {

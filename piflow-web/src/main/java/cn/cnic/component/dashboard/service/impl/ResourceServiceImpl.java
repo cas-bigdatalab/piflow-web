@@ -9,8 +9,13 @@ import cn.cnic.third.service.IResource;
 @Service
 public class ResourceServiceImpl implements IResourceService {
 
+
+    private final IResource resourceImpl;
+
     @Autowired
-    private IResource resourceImpl;
+    public ResourceServiceImpl(IResource resourceImpl) {
+        this.resourceImpl = resourceImpl;
+    }
 
     @Override
     public String getResourceInfo() {

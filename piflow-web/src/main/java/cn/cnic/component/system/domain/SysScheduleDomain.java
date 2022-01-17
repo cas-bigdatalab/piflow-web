@@ -16,8 +16,12 @@ import cn.cnic.component.system.vo.SysScheduleVo;
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
 public class SysScheduleDomain {
 
+    private final SysScheduleMapper sysScheduleMapper;
+
     @Autowired
-    private SysScheduleMapper sysScheduleMapper;
+    public SysScheduleDomain(SysScheduleMapper sysScheduleMapper) {
+        this.sysScheduleMapper = sysScheduleMapper;
+    }
 
     /**
      * getSysScheduleList

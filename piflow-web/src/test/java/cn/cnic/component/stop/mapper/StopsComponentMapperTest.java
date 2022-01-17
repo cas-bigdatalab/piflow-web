@@ -30,15 +30,21 @@ public class StopsComponentMapperTest extends ApplicationTests {
 
     private Logger logger = LoggerUtil.getLogger();
 
-    @Autowired
-    private StopsComponentMapper stopsComponentMapper;
-    @Autowired
-    private StopsComponentGroupMapper stopsComponentGroupMapper;
-    @Autowired
-    private StopsComponentPropertyMapper stopsComponentPropertyMapper;
+    private final IStop stopImpl;
+    private final StopsComponentMapper stopsComponentMapper;
+    private final StopsComponentGroupMapper stopsComponentGroupMapper;
+    private final StopsComponentPropertyMapper stopsComponentPropertyMapper;
 
     @Autowired
-    private IStop stopImpl;
+    public StopsComponentMapperTest(IStop stopImpl,
+                                    StopsComponentMapper stopsComponentMapper,
+                                    StopsComponentGroupMapper stopsComponentGroupMapper,
+                                    StopsComponentPropertyMapper stopsComponentPropertyMapper) {
+        this.stopImpl = stopImpl;
+        this.stopsComponentMapper = stopsComponentMapper;
+        this.stopsComponentGroupMapper = stopsComponentGroupMapper;
+        this.stopsComponentPropertyMapper = stopsComponentPropertyMapper;
+    }
 
     @Test
     public void testGetStopsTemplateById() {

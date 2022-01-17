@@ -17,8 +17,12 @@ public class MxGeometryMapperTest extends ApplicationTests {
 
     private Logger logger = LoggerUtil.getLogger();
 
+    private final MxGeometryMapper mxGeometryMapper;
+
     @Autowired
-    private MxGeometryMapper mxGeometryMapper;
+    public MxGeometryMapperTest(MxGeometryMapper mxGeometryMapper) {
+        this.mxGeometryMapper = mxGeometryMapper;
+    }
 
     @Test
     public void testGetMxGeometryById() {

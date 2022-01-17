@@ -23,8 +23,12 @@ import cn.cnic.component.mxGraph.vo.MxNodeImageVo;
 @Service
 public class MxNodeImageServiceImpl implements IMxNodeImageService {
 
+    private final MxNodeImageDomain mxNodeImageDomain;
+
     @Autowired
-    private MxNodeImageDomain mxNodeImageDomain;
+    public MxNodeImageServiceImpl(MxNodeImageDomain mxNodeImageDomain) {
+        this.mxNodeImageDomain = mxNodeImageDomain;
+    }
 
     @Override
     public String uploadNodeImage(String username, MultipartFile file, String imageType) throws Exception {

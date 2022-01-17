@@ -1,6 +1,6 @@
 package cn.cnic.controller.api.process;
 
-import cn.cnic.component.user.service.LogHelper;
+import cn.cnic.component.system.service.ILogHelperService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,17 +18,21 @@ import io.swagger.annotations.Api;
 @RequestMapping("/processAndProcessGroup")
 public class ProcessAndProcessGroupCtrl {
 
-    @Autowired
-    private IProcessService processServiceImpl;
+    private final IProcessAndProcessGroupService processAndProcessGroupServiceImpl;
+    private final IProcessGroupService processGroupServiceImpl;
+    private final IProcessService processServiceImpl;
+    private final ILogHelperService logHelperServiceImpl;
 
     @Autowired
-    private IProcessGroupService processGroupServiceImpl;
-
-    @Autowired
-    private IProcessAndProcessGroupService processAndProcessGroupServiceImpl;
-
-    @Autowired
-    private LogHelper logHelper;
+    public ProcessAndProcessGroupCtrl(IProcessAndProcessGroupService processAndProcessGroupServiceImpl,
+                                      IProcessGroupService processGroupServiceImpl,
+                                      IProcessService processServiceImpl,
+                                      ILogHelperService logHelperServiceImpl) {
+        this.processAndProcessGroupServiceImpl = processAndProcessGroupServiceImpl;
+        this.processGroupServiceImpl = processGroupServiceImpl;
+        this.processServiceImpl = processServiceImpl;
+        this.logHelperServiceImpl = logHelperServiceImpl;
+    }
 
     /**
      * Query and enter the process list
@@ -62,10 +66,10 @@ public class ProcessAndProcessGroupCtrl {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
         if ("PROCESS".equals(processType)) {
-            logHelper.logAuthSucceed("startProcess " + runMode,username);
+            logHelperServiceImpl.logAuthSucceed("startProcess " + runMode,username);
             return processServiceImpl.startProcess(isAdmin, username, id, checkpointStr, runMode);
         } else {
-            logHelper.logAuthSucceed("startProcessGroup " + runMode,username);
+            logHelperServiceImpl.logAuthSucceed("startProcessGroup " + runMode,username);
             return processGroupServiceImpl.startProcessGroup(isAdmin, username, id, checkpointStr, runMode);
         }
     }
@@ -83,10 +87,10 @@ public class ProcessAndProcessGroupCtrl {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
         if ("PROCESS".equals(processType)) {
-            logHelper.logAuthSucceed("stopProcess " + id,username);
+            logHelperServiceImpl.logAuthSucceed("stopProcess " + id,username);
             return processServiceImpl.stopProcess(username, isAdmin, id);
         } else {
-            logHelper.logAuthSucceed("stopProcessGroup " + id,username);
+            logHelperServiceImpl.logAuthSucceed("stopProcessGroup " + id,username);
             return processGroupServiceImpl.stopProcessGroup(SessionUserUtil.getCurrentUsername(), SessionUserUtil.isAdmin(), id);
         }
     }
@@ -104,10 +108,10 @@ public class ProcessAndProcessGroupCtrl {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
         if ("PROCESS".equals(processType)) {
-            logHelper.logAuthSucceed("delProcess"+ processType, username);
+            logHelperServiceImpl.logAuthSucceed("delProcess"+ processType, username);
             return processServiceImpl.delProcess(isAdmin, username, id);
         } else {
-            logHelper.logAuthSucceed("delProcessGroup" + processType,username);
+            logHelperServiceImpl.logAuthSucceed("delProcessGroup" + processType,username);
             return processGroupServiceImpl.delProcessGroup(username, isAdmin, id);
         }
     }

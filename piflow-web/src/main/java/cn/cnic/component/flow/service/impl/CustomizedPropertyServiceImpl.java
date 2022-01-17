@@ -32,14 +32,18 @@ public class CustomizedPropertyServiceImpl implements ICustomizedPropertyService
 
     private Logger logger = LoggerUtil.getLogger();
 
-    @Autowired
-    private CustomizedPropertyMapper customizedPropertyMapper;
+    private final CustomizedPropertyMapper customizedPropertyMapper;
+    private final StopsMapper stopsMapper;
+    private final PathsMapper pathsMapper;
 
     @Autowired
-    private StopsMapper stopsMapper;
-
-    @Autowired
-    private PathsMapper pathsMapper;
+    public CustomizedPropertyServiceImpl(CustomizedPropertyMapper customizedPropertyMapper,
+                                         StopsMapper stopsMapper,
+                                         PathsMapper pathsMapper) {
+        this.customizedPropertyMapper = customizedPropertyMapper;
+        this.stopsMapper = stopsMapper;
+        this.pathsMapper = pathsMapper;
+    }
 
     @Override
     public String addStopCustomizedProperty(String username, StopsCustomizedPropertyVo stopsCustomizedPropertyVo) {

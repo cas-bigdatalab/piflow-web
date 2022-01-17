@@ -2,8 +2,8 @@ package cn.cnic.controller.api.flow;
 
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.base.utils.SessionUserUtil;
+import cn.cnic.component.system.service.ILogHelperService;
 import cn.cnic.component.template.service.IFlowTemplateService;
-import cn.cnic.component.user.service.LogHelper;
 import io.swagger.annotations.Api;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,18 +24,21 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping("/flowTemplate")
 public class FlowTemplateCtrl {
 
-    @Autowired
-    private IFlowTemplateService flowTemplateServiceImpl;
+    private final IFlowTemplateService flowTemplateServiceImpl;
+    private final ILogHelperService logHelperServiceImpl;
 
     @Autowired
-    private LogHelper logHelper;
+    public FlowTemplateCtrl(IFlowTemplateService flowTemplateServiceImpl, ILogHelperService logHelperServiceImpl) {
+        this.flowTemplateServiceImpl = flowTemplateServiceImpl;
+        this.logHelperServiceImpl = logHelperServiceImpl;
+    }
 
 
     @RequestMapping(value = "/saveFlowTemplate", method = RequestMethod.POST)
     @ResponseBody
     public String saveFlowTemplate(String name, String load, String templateType) {
         String username = SessionUserUtil.getCurrentUsername();
-        logHelper.logAuthSucceed("saveFlowTemplate",username);
+        logHelperServiceImpl.logAuthSucceed("saveFlowTemplate",username);
         return flowTemplateServiceImpl.addFlowTemplate(username, name, load, templateType);
     }
 
@@ -57,7 +60,7 @@ public class FlowTemplateCtrl {
     @ResponseBody
     public String deleteFlowTemplate(String id) {
         String username = SessionUserUtil.getCurrentUsername();
-        logHelper.logAuthSucceed("deleteFlowTemplate"+ id,username);
+        logHelperServiceImpl.logAuthSucceed("deleteFlowTemplate"+ id,username);
         return flowTemplateServiceImpl.deleteFlowTemplate(id);
     }
 
@@ -83,7 +86,7 @@ public class FlowTemplateCtrl {
     @ResponseBody
     public String uploadXmlFile(@RequestParam("file") MultipartFile file) {
         String username = SessionUserUtil.getCurrentUsername();
-        logHelper.logAuthSucceed("uploadXmlFile" + file.getName() , username);
+        logHelperServiceImpl.logAuthSucceed("uploadXmlFile" + file.getName() , username);
         return flowTemplateServiceImpl.uploadXmlFile(username, file);
     }
 

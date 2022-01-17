@@ -35,12 +35,6 @@ public class ScheduleImpl implements ISchedule {
      */
     private Logger logger = LoggerUtil.getLogger();
 
-    @Autowired
-    FlowMapper flowMapper;
-
-    @Autowired
-    FlowGroupMapper flowGroupMapper;
-
     @Override
     public Map<String, Object> scheduleStart(Schedule schedule, Process process, ProcessGroup processGroup) {
         if (null == schedule) {

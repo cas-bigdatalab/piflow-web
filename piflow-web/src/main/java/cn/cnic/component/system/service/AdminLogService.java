@@ -1,4 +1,4 @@
-package cn.cnic.component.user.service;
+package cn.cnic.component.system.service;
 
 import cn.cnic.component.dataSource.entity.DataSource;
 import cn.cnic.component.dataSource.vo.DataSourceVo;

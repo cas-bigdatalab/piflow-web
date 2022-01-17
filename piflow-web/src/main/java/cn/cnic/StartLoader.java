@@ -10,12 +10,12 @@ import cn.cnic.component.system.mapper.SysScheduleMapper;
 
 import org.quartz.Scheduler;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 
@@ -28,11 +28,14 @@ public class StartLoader implements ApplicationRunner {
      */
     private Logger logger = LoggerUtil.getLogger();
 
-    @Resource
-    private SysScheduleMapper sysScheduleMapper;
+    private final SysScheduleMapper sysScheduleMapper;
+    private final Scheduler scheduler;
 
-    @Resource
-    private Scheduler scheduler;
+    @Autowired
+    public StartLoader(SysScheduleMapper sysScheduleMapper, Scheduler scheduler) {
+        this.sysScheduleMapper = sysScheduleMapper;
+        this.scheduler = scheduler;
+    }
 
     @Override
     public void run(ApplicationArguments args) throws Exception {

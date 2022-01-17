@@ -1,6 +1,6 @@
 package cn.cnic.controller.api.admin;
 
-import cn.cnic.component.user.service.LogHelper;
+import cn.cnic.component.system.service.ILogHelperService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,18 +22,22 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/stopsManage")
 public class StopsManageCtrl {
 
-    @Autowired
-    private IStopGroupService stopGroupServiceImpl;
+    private final IStopsComponentManageService stopsComponentManageServiceImpl;
+    private final IStopGroupService stopGroupServiceImpl;
+    private final ILogHelperService logHelperServiceImpl;
+    private final IStopsService stopsServiceImpl;
 
     @Autowired
-    private IStopsService stopsServiceImpl;
+    public StopsManageCtrl(IStopsComponentManageService stopsComponentManageServiceImpl,
+                           IStopGroupService stopGroupServiceImpl,
+                           ILogHelperService logHelperServiceImpl,
+                           IStopsService stopsServiceImpl) {
+        this.stopsComponentManageServiceImpl = stopsComponentManageServiceImpl;
+        this.stopGroupServiceImpl = stopGroupServiceImpl;
+        this.logHelperServiceImpl = logHelperServiceImpl;
+        this.stopsServiceImpl = stopsServiceImpl;
+    }
 
-    @Autowired
-    private IStopsComponentManageService stopsComponentManageServiceImpl;
-
-    @Autowired
-    private LogHelper logHelper;
-    
     /**
      * stopsComponentList all
      * 
@@ -61,7 +65,7 @@ public class StopsManageCtrl {
     public String updatestopsComponentIsShow(UpdatestopsComponentIsShow stopsManage) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
         Boolean isAdmin = SessionUserUtil.isAdmin();
-        logHelper.logAuthSucceed("updatestopsComponentIsShow " + stopsManage.getStopsGroups(),username);
+        logHelperServiceImpl.logAuthSucceed("updatestopsComponentIsShow " + stopsManage.getStopsGroups(),username);
         return stopsComponentManageServiceImpl.updateStopsComponentIsShow(username, isAdmin,stopsManage);
     }
 
@@ -94,7 +98,7 @@ public class StopsManageCtrl {
     public String runStops(RunStopsVo runStopsVo) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
         Boolean isAdmin = SessionUserUtil.isAdmin();
-        logHelper.logAuthSucceed("runStops " + runStopsVo.getStopsId(),username);
+        logHelperServiceImpl.logAuthSucceed("runStops " + runStopsVo.getStopsId(),username);
         return stopsServiceImpl.runStops(username, isAdmin, runStopsVo);
     }
 }

@@ -8,8 +8,12 @@ import cn.cnic.ApplicationTests;
 
 public class SparkJarTest extends ApplicationTests {
 
-    @Autowired    
-    private ISparkJarService sparkJarServiceImpl;
+    private final ISparkJarService sparkJarServiceImpl;
+
+    @Autowired
+    public SparkJarTest(ISparkJarService sparkJarServiceImpl) {
+        this.sparkJarServiceImpl = sparkJarServiceImpl;
+    }
 
 
     @Test

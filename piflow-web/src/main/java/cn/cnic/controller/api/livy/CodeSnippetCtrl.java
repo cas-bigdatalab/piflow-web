@@ -2,28 +2,30 @@ package cn.cnic.controller.api.livy;
 
 import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.component.livy.service.ICodeSnippetService;
-import cn.cnic.component.user.service.LogHelper;
+import cn.cnic.component.system.service.ILogHelperService;
 import cn.cnic.controller.requestVo.CodeSnippetVoRequestAdd;
 import cn.cnic.controller.requestVo.CodeSnippetVoRequestUpdate;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.annotation.Resource;
 
 @Api(value = "noteBoot api")
 @RestController
 @RequestMapping(value = "/codeSnippet")
 public class CodeSnippetCtrl {
 
-    @Resource
-    private ICodeSnippetService codeSnippetServiceImpl;
+    private final ICodeSnippetService codeSnippetServiceImpl;
+    private final ILogHelperService logHelperServiceImpl;
 
-    @Resource
-    private LogHelper logHelper;
+    @Autowired
+    public CodeSnippetCtrl(ICodeSnippetService codeSnippetServiceImpl, ILogHelperService logHelperServiceImpl) {
+        this.codeSnippetServiceImpl = codeSnippetServiceImpl;
+        this.logHelperServiceImpl = logHelperServiceImpl;
+    }
 
     /**
      * addCodeSnippet
@@ -37,7 +39,7 @@ public class CodeSnippetCtrl {
     public String addCodeSnippet(CodeSnippetVoRequestAdd codeSnippetVo) throws Exception {
         String currentUsername = SessionUserUtil.getCurrentUsername();
         //boolean isAdmin = SessionUserUtil.isAdmin();
-        logHelper.logAuthSucceed("addCodeSnippet" + codeSnippetVo.getNoteBookId() ,currentUsername);
+        logHelperServiceImpl.logAuthSucceed("addCodeSnippet" + codeSnippetVo.getNoteBookId() ,currentUsername);
         return codeSnippetServiceImpl.addCodeSnippet(currentUsername, codeSnippetVo);
     }
 
@@ -53,7 +55,7 @@ public class CodeSnippetCtrl {
     public String updateCodeSnippet(CodeSnippetVoRequestUpdate codeSnippetVo) throws Exception {
         String currentUsername = SessionUserUtil.getCurrentUsername();
         //boolean isAdmin = SessionUserUtil.isAdmin();
-        logHelper.logAuthSucceed("updateCodeSnippet " + codeSnippetVo.getCodeSnippetSort(),currentUsername);
+        logHelperServiceImpl.logAuthSucceed("updateCodeSnippet " + codeSnippetVo.getCodeSnippetSort(),currentUsername);
         return codeSnippetServiceImpl.updateCodeSnippet(currentUsername, codeSnippetVo);
     }
 
@@ -70,7 +72,7 @@ public class CodeSnippetCtrl {
         String currentUsername = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
         String username = SessionUserUtil.getCurrentUsername();
-        logHelper.logAuthSucceed("deleteCodeSnippet " + codeSnippetId,username);
+        logHelperServiceImpl.logAuthSucceed("deleteCodeSnippet " + codeSnippetId,username);
         return codeSnippetServiceImpl.delCodeSnippet(currentUsername, isAdmin, codeSnippetId);
     }
 

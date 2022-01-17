@@ -17,11 +17,14 @@ import cn.cnic.component.mxGraph.mapper.MxGeometryMapper;
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
 public class MxCellDomain {
 
-    @Autowired
-    private MxCellMapper mxCellMapper;
+    private final MxCellMapper mxCellMapper;
+    private final MxGeometryMapper mxGeometryMapper;
 
     @Autowired
-    private MxGeometryMapper mxGeometryMapper;
+    public MxCellDomain(MxCellMapper mxCellMapper, MxGeometryMapper mxGeometryMapper) {
+        this.mxCellMapper = mxCellMapper;
+        this.mxGeometryMapper = mxGeometryMapper;
+    }
 
     public int addMxCell(MxCell mxCell) throws Exception {
         if (null == mxCell) {

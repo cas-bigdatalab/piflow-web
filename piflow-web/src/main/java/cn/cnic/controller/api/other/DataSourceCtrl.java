@@ -4,7 +4,7 @@ import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.component.dataSource.service.IDataSource;
 import cn.cnic.component.dataSource.vo.DataSourceVo;
 import cn.cnic.component.flow.service.IStopsService;
-import cn.cnic.component.user.service.LogHelper;
+import cn.cnic.component.system.service.ILogHelperService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -20,14 +20,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/datasource")
 public class DataSourceCtrl {
 
-    @Autowired
-    private IDataSource dataSourceImpl;
+    private final IDataSource dataSourceImpl;
+    private final IStopsService stopsServiceImpl;
+    private final ILogHelperService logHelperServiceImpl;
 
     @Autowired
-    private IStopsService stopsServiceImpl;
-
-    @Autowired
-    private LogHelper logHelper;
+    public DataSourceCtrl(IDataSource dataSourceImpl,
+                          IStopsService stopsServiceImpl,
+                          ILogHelperService logHelperServiceImpl) {
+        this.dataSourceImpl = dataSourceImpl;
+        this.stopsServiceImpl = stopsServiceImpl;
+        this.logHelperServiceImpl = logHelperServiceImpl;
+    }
 
     @RequestMapping(value = "/getDatasourceList", method = RequestMethod.POST)
     @ResponseBody
@@ -64,7 +68,7 @@ public class DataSourceCtrl {
     public String saveOrUpdate(DataSourceVo dataSourceVo, boolean isSynchronize) {
         String currentUsername = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
-        logHelper.logAuthSucceed("saveOrUpdate" + dataSourceVo.getDataSourceName(),currentUsername);
+        logHelperServiceImpl.logAuthSucceed("saveOrUpdate" + dataSourceVo.getDataSourceName(),currentUsername);
         return dataSourceImpl.saveOrUpdate(currentUsername, isAdmin, dataSourceVo, isSynchronize);
     }
 
@@ -83,7 +87,7 @@ public class DataSourceCtrl {
     public String deleteDataSource(String dataSourceId) {
         String currentUsername = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
-        logHelper.logAuthSucceed("deleteDataSource" + dataSourceId,currentUsername);
+        logHelperServiceImpl.logAuthSucceed("deleteDataSource" + dataSourceId,currentUsername);
         return dataSourceImpl.deleteDataSourceById(currentUsername, isAdmin, dataSourceId);
     }
 

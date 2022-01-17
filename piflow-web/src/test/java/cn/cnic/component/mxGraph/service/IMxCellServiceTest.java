@@ -13,8 +13,12 @@ public class IMxCellServiceTest extends ApplicationTests {
 
     private Logger logger = LoggerUtil.getLogger();
 
+    private final IMxCellService mxCellServiceImpl;
+
     @Autowired
-    private IMxCellService mxCellServiceImpl;
+    public IMxCellServiceTest(IMxCellService mxCellServiceImpl) {
+        this.mxCellServiceImpl = mxCellServiceImpl;
+    }
 
     @Test
     public void testGetMeCellById() {

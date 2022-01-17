@@ -18,8 +18,12 @@ public class IStopTest extends ApplicationTests {
 
     private Logger logger = LoggerUtil.getLogger();
 
+    private final IStop stopImpl;
+
     @Autowired
-    private IStop stopImpl;
+    public IStopTest(IStop stopImpl) {
+        this.stopImpl = stopImpl;
+    }
 
 
     @Test

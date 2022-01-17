@@ -4,19 +4,23 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import cn.cnic.ApplicationTests;
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.component.testData.entity.TestDataSchemaValues;
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 public class TestDataSchemaValuesTest extends ApplicationTests {
 
     private Logger logger = LoggerUtil.getLogger();
 
+    private final TestDataSchemaValuesMapper testDataSchemaValuesMapper;
+
     @Autowired
-    private TestDataSchemaValuesMapper testDataSchemaValuesMapper;
+    public TestDataSchemaValuesTest(TestDataSchemaValuesMapper testDataSchemaValuesMapper) {
+        this.testDataSchemaValuesMapper = testDataSchemaValuesMapper;
+    }
 
     @Test
     public void testGetTestDataSchemaValuesList() {

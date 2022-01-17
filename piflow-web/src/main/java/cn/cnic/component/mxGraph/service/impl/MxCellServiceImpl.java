@@ -10,8 +10,12 @@ import cn.cnic.component.mxGraph.service.IMxCellService;
 @Service
 public class MxCellServiceImpl implements IMxCellService {
 
+    private final MxCellDomain mxCellDomain;
+
     @Autowired
-    private MxCellDomain mxCellDomain;
+    public MxCellServiceImpl(MxCellDomain mxCellDomain) {
+        this.mxCellDomain = mxCellDomain;
+    }
 
     @Override
     public int deleteMxCellById(String username,String id) {

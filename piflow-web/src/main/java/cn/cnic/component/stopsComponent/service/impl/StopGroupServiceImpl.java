@@ -40,14 +40,18 @@ public class StopGroupServiceImpl implements IStopGroupService {
      */
     private Logger logger = LoggerUtil.getLogger();
 
-    @Autowired
-    private IStop stopImpl;
+    private final IStop stopImpl;
+    private final StopsComponentDomain stopsComponentDomain;
+    private final StopsComponentGroupDomain stopsComponentGroupDomain;
 
     @Autowired
-    private StopsComponentGroupDomain stopsComponentGroupDomain;
-
-    @Autowired
-    private StopsComponentDomain stopsComponentDomain;
+    public StopGroupServiceImpl(IStop stopImpl,
+                                StopsComponentDomain stopsComponentDomain,
+                                StopsComponentGroupDomain stopsComponentGroupDomain) {
+        this.stopImpl = stopImpl;
+        this.stopsComponentDomain = stopsComponentDomain;
+        this.stopsComponentGroupDomain = stopsComponentGroupDomain;
+    }
 
 
     /**

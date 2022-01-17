@@ -42,10 +42,14 @@ public class DataSourceImpl implements IDataSource {
      */
     private Logger logger = LoggerUtil.getLogger();
 
+    private final DataSourceDomain dataSourceDomain;
+    private final StopsDomain stopsDomain;
+
     @Autowired
-    private DataSourceDomain dataSourceDomain;
-    @Autowired
-    private StopsDomain stopsDomain;
+    public DataSourceImpl(DataSourceDomain dataSourceDomain, StopsDomain stopsDomain) {
+        this.dataSourceDomain = dataSourceDomain;
+        this.stopsDomain = stopsDomain;
+    }
 
     @Override
     public String saveOrUpdate(String username, boolean isAdmin, DataSourceVo dataSourceVo, boolean isSynchronize) {

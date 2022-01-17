@@ -18,11 +18,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/path")
 public class PathCtrl {
 
-    @Autowired
-    private IPropertyService propertyServiceImpl;
+    private final IPropertyService propertyServiceImpl;
+    private final IPathsService pathsServiceImpl;
 
     @Autowired
-    private IPathsService pathsServiceImpl;
+    public PathCtrl(IPropertyService propertyServiceImpl, IPathsService pathsServiceImpl) {
+        this.propertyServiceImpl = propertyServiceImpl;
+        this.pathsServiceImpl = pathsServiceImpl;
+    }
 
     /**
      * Query'path'according to'flowId' and'pageId'

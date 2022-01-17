@@ -1,10 +1,10 @@
 package cn.cnic.controller.api.other;
 
-import javax.annotation.Resource;
-
+import cn.cnic.component.system.service.ILogHelperService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,18 +16,21 @@ import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.component.testData.service.ITestDataService;
 import cn.cnic.controller.requestVo.TestDataSchemaValuesSaveVo;
 import cn.cnic.controller.requestVo.TestDataVoRequest;
-import cn.cnic.component.user.service.LogHelper;
 
 @Api(value = "testData api")
 @RestController
 @RequestMapping(value = "/testData")
 public class TestDataCtrl {
 
-    @Resource
-    private ITestDataService testDataServiceImpl;
+    private final ITestDataService testDataServiceImpl;
+    private final ILogHelperService logHelperServiceImpl;
 
-    @Resource
-    private LogHelper logHelper;
+    @Autowired
+    public TestDataCtrl(ITestDataService testDataServiceImpl,
+                        ILogHelperService logHelperServiceImpl) {
+        this.testDataServiceImpl = testDataServiceImpl;
+        this.logHelperServiceImpl = logHelperServiceImpl;
+    }
 
     /**
      * saveOrUpdateTestDataSchema
@@ -71,7 +74,7 @@ public class TestDataCtrl {
     public String delTestData(String testDataId) {
         String currentUsername = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
-        logHelper.logAuthSucceed("delTestData " + testDataId,currentUsername);
+        logHelperServiceImpl.logAuthSucceed("delTestData " + testDataId,currentUsername);
         return testDataServiceImpl.delTestData(currentUsername, isAdmin, testDataId);
     }
 
@@ -87,7 +90,7 @@ public class TestDataCtrl {
     public String saveOrUpdateTestDataSchemaValues(TestDataSchemaValuesSaveVo schemaValuesVo) throws Exception {
         String currentUsername = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
-        logHelper.logAuthSucceed("saveOrUpdateTestDataSchemaValues " + schemaValuesVo.getTestDataId(),currentUsername);
+        logHelperServiceImpl.logAuthSucceed("saveOrUpdateTestDataSchemaValues " + schemaValuesVo.getTestDataId(),currentUsername);
         return testDataServiceImpl.saveOrUpdateTestDataSchemaValues(currentUsername, isAdmin, schemaValuesVo);
     }
 
@@ -221,7 +224,7 @@ public class TestDataCtrl {
     })
     public String uploadCsvFile(String testDataId, boolean header, String schema, String delimiter, @RequestParam("file") MultipartFile file) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
-        logHelper.logAuthSucceed("uploadCsvFile" + file.getName(),username);
+        logHelperServiceImpl.logAuthSucceed("uploadCsvFile" + file.getName(),username);
         return testDataServiceImpl.uploadCsvFile(username, testDataId, header, schema, delimiter, file);
     }
 

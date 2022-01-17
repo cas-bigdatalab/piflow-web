@@ -15,8 +15,12 @@ public class PathsMapperTest extends ApplicationTests {
 
     private Logger logger = LoggerUtil.getLogger();
 
+    private final PathsMapper pathsMapper;
+
     @Autowired
-    private PathsMapper pathsMapper;
+    public PathsMapperTest(PathsMapper pathsMapper) {
+        this.pathsMapper = pathsMapper;
+    }
 
     @Test
     public void testGetPathsListByFlowId() {

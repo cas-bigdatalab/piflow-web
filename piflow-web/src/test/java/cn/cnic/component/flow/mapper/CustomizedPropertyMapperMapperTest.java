@@ -4,19 +4,23 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import cn.cnic.ApplicationTests;
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.component.flow.entity.CustomizedProperty;
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 public class CustomizedPropertyMapperMapperTest extends ApplicationTests {
 
     private Logger logger = LoggerUtil.getLogger();
 
+    private final CustomizedPropertyMapper customizedPropertyMapper;
+
     @Autowired
-    private CustomizedPropertyMapper customizedPropertyMapper;
+    public CustomizedPropertyMapperMapperTest(CustomizedPropertyMapper customizedPropertyMapper) {
+        this.customizedPropertyMapper = customizedPropertyMapper;
+    }
 
     @Test
     public void testGetPropertyListByStopsId() {

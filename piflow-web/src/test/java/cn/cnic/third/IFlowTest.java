@@ -22,11 +22,14 @@ public class IFlowTest extends ApplicationTests {
 
     private Logger logger = LoggerUtil.getLogger();
 
-    @Autowired
-    private IFlow flowImpl;
+    private final FlowMapper flowMapper;
+    private final IFlow flowImpl;
 
     @Autowired
-    private FlowMapper flowMapper;
+    public IFlowTest(FlowMapper flowMapper, IFlow flowImpl) {
+        this.flowMapper = flowMapper;
+        this.flowImpl = flowImpl;
+    }
 
     @Test
     @Transactional

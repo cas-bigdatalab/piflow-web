@@ -58,20 +58,24 @@ public class FlowTemplateServiceImpl implements IFlowTemplateService {
      */
     private Logger logger = LoggerUtil.getLogger();
 
-    @Autowired
-    private FlowTemplateDomain flowTemplateDomain;
+    private final FlowTemplateDomain flowTemplateDomain;
+    private final FlowGroupDomain flowGroupDomain;
+    private final FlowDomain flowDomain;
+    private final StopsDomain stopsDomain;
+    private final MxCellDomain mxCellDomain;
 
     @Autowired
-    private FlowGroupDomain flowGroupDomain;
-
-    @Autowired
-    private FlowDomain flowDomain;
-
-    @Autowired
-    private StopsDomain stopsDomain;
-
-    @Autowired
-    private MxCellDomain mxCellDomain;
+    public FlowTemplateServiceImpl(FlowTemplateDomain flowTemplateDomain,
+                                   FlowGroupDomain flowGroupDomain,
+                                   FlowDomain flowDomain,
+                                   StopsDomain stopsDomain,
+                                   MxCellDomain mxCellDomain) {
+        this.flowTemplateDomain = flowTemplateDomain;
+        this.flowGroupDomain = flowGroupDomain;
+        this.flowDomain = flowDomain;
+        this.stopsDomain = stopsDomain;
+        this.mxCellDomain = mxCellDomain;
+    }
 
 
     /**

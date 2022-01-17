@@ -64,20 +64,24 @@ public class ProcessServiceImpl implements IProcessService {
 
     private Logger logger = LoggerUtil.getLogger();
 
-    @Autowired
-    private ProcessMapper processMapper;
+    private final ProcessMapper processMapper;
+    private final ProcessStopMapper processStopMapper;
+    private final ProcessDomain processDomain;
+    private final FlowDomain flowDomain;
+    private final IFlow flowImpl;
 
     @Autowired
-    private ProcessStopMapper processStopMapper;
-
-    @Autowired
-    private ProcessDomain processDomain;
-
-    @Autowired
-    private FlowDomain flowDomain;
-
-    @Autowired
-    private IFlow flowImpl;
+    public ProcessServiceImpl(ProcessMapper processMapper,
+                              ProcessStopMapper processStopMapper,
+                              ProcessDomain processDomain,
+                              FlowDomain flowDomain,
+                              IFlow flowImpl) {
+        this.processMapper = processMapper;
+        this.processStopMapper = processStopMapper;
+        this.processDomain = processDomain;
+        this.flowDomain = flowDomain;
+        this.flowImpl = flowImpl;
+    }
 
 
     /**

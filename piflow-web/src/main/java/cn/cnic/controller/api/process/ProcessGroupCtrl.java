@@ -3,7 +3,7 @@ package cn.cnic.controller.api.process;
 import java.util.HashMap;
 import java.util.Map;
 
-import cn.cnic.component.user.service.LogHelper;
+import cn.cnic.component.system.service.ILogHelperService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,15 +23,18 @@ import io.swagger.annotations.Api;
 @RequestMapping("/processGroup")
 public class ProcessGroupCtrl {
 
-    @Autowired
-    private IProcessGroupService processGroupServiceImpl;
+    private final IProcessGroupService processGroupServiceImpl;
+    private final ILogHelperService logHelperServiceImpl;
+    private final IProcessService processServiceImpl;
 
     @Autowired
-    private IProcessService processServiceImpl;
-
-    @Autowired
-    private LogHelper logHelper;
-
+    public ProcessGroupCtrl(IProcessGroupService processGroupServiceImpl,
+                            ILogHelperService logHelperServiceImpl,
+                            IProcessService processServiceImpl) {
+        this.processGroupServiceImpl = processGroupServiceImpl;
+        this.logHelperServiceImpl = logHelperServiceImpl;
+        this.processServiceImpl = processServiceImpl;
+    }
 
     /**
      * Query and enter the process list
@@ -138,7 +141,7 @@ public class ProcessGroupCtrl {
     public String runProcessGroup(String id, String checkpointStr, String runMode) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
-        logHelper.logAuthSucceed("runProcessGroup " + runMode,username);
+        logHelperServiceImpl.logAuthSucceed("runProcessGroup " + runMode,username);
         return processGroupServiceImpl.startProcessGroup(isAdmin, username, id, checkpointStr, runMode);
     }
 
@@ -152,7 +155,7 @@ public class ProcessGroupCtrl {
     @ResponseBody
     public String stopProcessGroup(String processGroupId) {
         String username = SessionUserUtil.getCurrentUsername();
-        logHelper.logAuthSucceed("stopProcessGroup " + processGroupId , username);
+        logHelperServiceImpl.logAuthSucceed("stopProcessGroup " + processGroupId , username);
         return processGroupServiceImpl.stopProcessGroup(username, SessionUserUtil.isAdmin(), processGroupId);
     }
 
@@ -165,7 +168,7 @@ public class ProcessGroupCtrl {
     @RequestMapping(value = "/delProcessGroup", method = RequestMethod.POST)
     @ResponseBody
     public String delProcessGroup(String processGroupId) {
-        logHelper.logAuthSucceed("delProcessGroup " + processGroupId , SessionUserUtil.getCurrentUsername());
+        logHelperServiceImpl.logAuthSucceed("delProcessGroup " + processGroupId , SessionUserUtil.getCurrentUsername());
         return processGroupServiceImpl.delProcessGroup(SessionUserUtil.getCurrentUsername(), SessionUserUtil.isAdmin(), processGroupId);
     }
 

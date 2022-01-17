@@ -3,8 +3,7 @@ package cn.cnic.controller;
 
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.SessionUserUtil;
-import cn.cnic.component.user.mapper.AdminLogMapper;
-import cn.cnic.component.user.service.AdminLogService;
+import cn.cnic.component.system.service.AdminLogService;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,8 +19,12 @@ public class AdminLogCtrl {
      */
     private Logger logger = LoggerUtil.getLogger();
 
+    private final AdminLogService adminLogServiceImpl;
+
     @Autowired
-    AdminLogService adminLogServiceImpl;
+    public AdminLogCtrl(AdminLogService adminLogServiceImpl) {
+        this.adminLogServiceImpl = adminLogServiceImpl;
+    }
 
     @RequestMapping("/getLogListPage")
     @ResponseBody

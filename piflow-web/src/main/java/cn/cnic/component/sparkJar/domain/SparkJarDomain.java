@@ -17,8 +17,12 @@ import cn.cnic.component.sparkJar.mapper.provider.SparkJarMapperProvider;
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
 public class SparkJarDomain {
 
+    private final SparkJarMapper sparkJarMapper;
+
     @Autowired
-    private SparkJarMapper sparkJarMapper;
+    public SparkJarDomain(SparkJarMapper sparkJarMapper) {
+        this.sparkJarMapper = sparkJarMapper;
+    }
 
     /**
      * add SparkJarComponent

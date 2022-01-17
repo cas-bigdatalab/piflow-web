@@ -1,37 +1,20 @@
 package cn.cnic.component.user.service.impl;
 
-import cn.cnic.base.BaseHibernateModelNoId;
-import cn.cnic.base.BaseHibernateModelNoIdUtils;
 import cn.cnic.base.utils.*;
-import cn.cnic.base.vo.UserVo;
-import cn.cnic.common.Eunm.ScheduleState;
-import cn.cnic.common.Eunm.SysRoleType;
 import cn.cnic.common.constant.MessageConfig;
-import cn.cnic.component.schedule.entity.Schedule;
-import cn.cnic.component.schedule.vo.ScheduleVo;
-import cn.cnic.component.system.entity.SysRole;
-import cn.cnic.component.system.entity.SysSchedule;
 import cn.cnic.component.system.entity.SysUser;
-import cn.cnic.component.system.mapper.SysRoleMapper;
-import cn.cnic.component.system.mapper.SysScheduleMapper;
-import cn.cnic.component.system.mapper.SysUserMapper;
 import cn.cnic.component.system.vo.SysUserVo;
 import cn.cnic.component.user.mapper.AdminUserMapper;
 import cn.cnic.component.user.service.AdminUserService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.apache.commons.lang3.StringUtils;
-import org.quartz.Scheduler;
 import org.slf4j.Logger;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 @Service
@@ -43,11 +26,12 @@ public class AdminUserServiceImpl implements AdminUserService {
     private Logger logger = LoggerUtil.getLogger();
 
 
-    @Resource
-    private AdminUserMapper userMapper;
+    private final AdminUserMapper userMapper;
 
-    @Resource
-    private SysRoleMapper roleMapper;
+    @Autowired
+    public AdminUserServiceImpl(AdminUserMapper userMapper) {
+        this.userMapper = userMapper;
+    }
 
     /**
      *

@@ -31,7 +31,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -50,19 +49,24 @@ public class SysUserServiceImpl implements ISysUserService {
     private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
     private final JwtUtils jwtTokenUtil;
+    private final SysUserDomain sysUserDomain;
 
     @Value("${jwt.tokenHead}")
     private String tokenHead;
 
     @Autowired
-    public SysUserServiceImpl(AuthenticationManager authenticationManager, @Qualifier("customUserDetailsService") UserDetailsService userDetailsService, JwtUtils jwtTokenUtil) {
+    public SysUserServiceImpl(AuthenticationManager authenticationManager,
+                              @Qualifier("customUserDetailsService") UserDetailsService userDetailsService,
+                              JwtUtils jwtTokenUtil,
+                              SysUserDomain sysUserDomain) {
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
         this.jwtTokenUtil = jwtTokenUtil;
+        this.sysUserDomain = sysUserDomain;
     }
 
-    @Autowired
-    private SysUserDomain sysUserDomain;
+
+
 
     @Override
     public SysUser findByUsername(String username) {

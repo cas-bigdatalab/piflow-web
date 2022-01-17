@@ -20,12 +20,18 @@ public class PropertyMapperTest extends ApplicationTests {
 
     private Logger logger = LoggerUtil.getLogger();
 
+    private final StopsMapper stopsMapper;
+    private final PropertyMapper propertyMapper;
+    private final StopsComponentMapper stopsComponentMapper;
+
     @Autowired
-    private PropertyMapper propertyMapper;
-    @Autowired
-    private StopsMapper stopsMapper;
-    @Autowired
-    private StopsComponentMapper stopsComponentMapper;
+    public PropertyMapperTest(StopsMapper stopsMapper,
+                              PropertyMapper propertyMapper,
+                              StopsComponentMapper stopsComponentMapper) {
+        this.stopsMapper = stopsMapper;
+        this.propertyMapper = propertyMapper;
+        this.stopsComponentMapper = stopsComponentMapper;
+    }
 
 
     @Test

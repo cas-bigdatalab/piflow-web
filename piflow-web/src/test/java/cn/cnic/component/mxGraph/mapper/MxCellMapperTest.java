@@ -19,8 +19,12 @@ public class MxCellMapperTest extends ApplicationTests {
 
     private Logger logger = LoggerUtil.getLogger();
 
+    private final MxCellMapper mxCellMapper;
+
     @Autowired
-    private MxCellMapper mxCellMapper;
+    public MxCellMapperTest(MxCellMapper mxCellMapper) {
+        this.mxCellMapper = mxCellMapper;
+    }
 
     @Test
     public void testGetMeCellByMxGraphId() {

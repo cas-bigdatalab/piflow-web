@@ -17,9 +17,13 @@ import cn.cnic.component.flow.mapper.FlowGlobalParamsMapper;
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
 public class FlowGlobalParamsDomain {
 
+    private final FlowGlobalParamsMapper flowGlobalParamsMapper;
+
     @Autowired
-    private FlowGlobalParamsMapper flowGlobalParamsMapper;
-    
+    public FlowGlobalParamsDomain(FlowGlobalParamsMapper flowGlobalParamsMapper) {
+        this.flowGlobalParamsMapper = flowGlobalParamsMapper;
+    }
+
     public int saveOrUpdate(FlowGlobalParams globalParams) throws Exception {
         if (null == globalParams) {
             throw new Exception("save failed, flow is null");

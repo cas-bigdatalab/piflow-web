@@ -3,6 +3,7 @@ package cn.cnic.component.user.service;
 import cn.cnic.ApplicationTests;
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.component.system.entity.SysLog;
+import cn.cnic.component.system.service.AdminLogService;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,13 +15,17 @@ public class AdminLogServiceTest extends ApplicationTests implements Runnable {
      */
     private Logger logger = LoggerUtil.getLogger();
 
+    private final AdminLogService logService;
+
     @Autowired
-    AdminLogService logService;
+    public AdminLogServiceTest(AdminLogService logService) {
+        this.logService = logService;
+    }
 
     @Test
     @Rollback(false)
     public void testAdd() {
-       AdminLogServiceTest adminLogServiceTest = new AdminLogServiceTest();
+       AdminLogServiceTest adminLogServiceTest = new AdminLogServiceTest(logService);
         Thread thread = new Thread(adminLogServiceTest);
         thread.run();
     }

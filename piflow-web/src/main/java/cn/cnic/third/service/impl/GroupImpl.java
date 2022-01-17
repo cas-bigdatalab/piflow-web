@@ -37,8 +37,12 @@ public class GroupImpl implements IGroup {
      */
     private Logger logger = LoggerUtil.getLogger();
 
+    private final ProcessGroupDomain processGroupDomain;
+
     @Autowired
-    private ProcessGroupDomain processGroupDomain;
+    public GroupImpl(ProcessGroupDomain processGroupDomain) {
+        this.processGroupDomain = processGroupDomain;
+    }
 
     @Override
     public Map<String, Object> startFlowGroup(ProcessGroup processGroup, RunModeType runModeType) {

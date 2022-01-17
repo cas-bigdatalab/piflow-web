@@ -1,6 +1,6 @@
 package cn.cnic.controller.api.admin;
 
-import cn.cnic.component.user.service.LogHelper;
+import cn.cnic.component.system.service.ILogHelperService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,11 +18,15 @@ import io.swagger.annotations.Api;
 @RequestMapping("/sparkJar")
 public class SparkJarCtrl {
 
-    @Autowired
-    private ISparkJarService sparkJarServiceImpl;
+    private final ISparkJarService sparkJarServiceImpl;
+    private final ILogHelperService logHelperServiceImpl;
 
     @Autowired
-    private LogHelper logHelper;
+    public SparkJarCtrl(ISparkJarService sparkJarServiceImpl,
+                        ILogHelperService logHelperServiceImpl) {
+        this.sparkJarServiceImpl = sparkJarServiceImpl;
+        this.logHelperServiceImpl = logHelperServiceImpl;
+    }
 
 
     /**
@@ -52,7 +56,7 @@ public class SparkJarCtrl {
     @ResponseBody
     public String uploadSparkJarFile(@RequestParam("file") MultipartFile file) {
         String username = SessionUserUtil.getCurrentUsername();
-        logHelper.logAuthSucceed("uploadSparkJarFile " + file.getName(),username);
+        logHelperServiceImpl.logAuthSucceed("uploadSparkJarFile " + file.getName(),username);
         return sparkJarServiceImpl.uploadSparkJarFile(username, file);
     }
 
@@ -95,7 +99,7 @@ public class SparkJarCtrl {
     public String delSparkJar(String id) {
         String username = SessionUserUtil.getCurrentUsername();
         Boolean isAdmin = SessionUserUtil.isAdmin();
-        logHelper.logAuthSucceed("del SparkJar " + id,username);
+        logHelperServiceImpl.logAuthSucceed("del SparkJar " + id,username);
         return sparkJarServiceImpl.delSparkJar(username, isAdmin, id);
     }
 }

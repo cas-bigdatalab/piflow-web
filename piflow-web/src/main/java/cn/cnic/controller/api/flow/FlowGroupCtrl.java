@@ -1,5 +1,6 @@
 package cn.cnic.controller.api.flow;
 
+import cn.cnic.component.system.service.ILogHelperService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,7 +13,6 @@ import cn.cnic.component.flow.service.IFlowGroupService;
 import cn.cnic.component.flow.service.IFlowService;
 import cn.cnic.controller.requestVo.FlowGroupInfoVoRequest;
 import cn.cnic.controller.requestVo.FlowGroupInfoVoRequestUpDate;
-import cn.cnic.component.user.service.LogHelper;
 import io.swagger.annotations.Api;
 
 
@@ -21,14 +21,18 @@ import io.swagger.annotations.Api;
 @RequestMapping("/flowGroup")
 public class FlowGroupCtrl {
 
-    @Autowired
-    private IFlowGroupService flowGroupServiceImpl;
+    private final IFlowGroupService flowGroupServiceImpl;
+    private final ILogHelperService logHelperServiceImpl;
+    private final IFlowService flowServiceImpl;
 
     @Autowired
-    private IFlowService flowServiceImpl;
-
-    @Autowired
-    private LogHelper logHelper;
+    public FlowGroupCtrl(IFlowGroupService flowGroupServiceImpl,
+                         ILogHelperService logHelperServiceImpl,
+                         IFlowService flowServiceImpl) {
+        this.flowGroupServiceImpl = flowGroupServiceImpl;
+        this.logHelperServiceImpl = logHelperServiceImpl;
+        this.flowServiceImpl = flowServiceImpl;
+    }
 
     /**
      * ‘flowGroupList’ paged query
@@ -57,7 +61,7 @@ public class FlowGroupCtrl {
     @ResponseBody
     public String saveOrUpdateFlowGroup(FlowGroupInfoVoRequest flowGroupVo) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
-        logHelper.logAuthSucceed("saveOrUpdateFlowGroup " + flowGroupVo.getName() ,username);
+        logHelperServiceImpl.logAuthSucceed("saveOrUpdateFlowGroup " + flowGroupVo.getName() ,username);
         return flowGroupServiceImpl.saveOrUpdate(username, flowGroupVo);
     }
     
@@ -123,7 +127,7 @@ public class FlowGroupCtrl {
     public String runFlowGroup(String flowGroupId, String runMode) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
-        logHelper.logAuthSucceed("runFlowGroup" + runMode,username);
+        logHelperServiceImpl.logAuthSucceed("runFlowGroup" + runMode,username);
         return flowGroupServiceImpl.runFlowGroup(isAdmin, username, flowGroupId, runMode);
     }
 
@@ -138,7 +142,7 @@ public class FlowGroupCtrl {
     public String deleteFlowGroup(String id) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
-        logHelper.logAuthSucceed("deleteFlowGroup" + id, username);
+        logHelperServiceImpl.logAuthSucceed("deleteFlowGroup" + id, username);
         return flowGroupServiceImpl.deleteFLowGroupInfo(isAdmin, username, id);
     }
 

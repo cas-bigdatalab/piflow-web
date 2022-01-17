@@ -26,8 +26,12 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     @Value("${jwt.header}")
     private String token_header;
 
+    private final JwtUtils jwtUtils;
+
     @Autowired
-    private JwtUtils jwtUtils;
+    public JwtAuthenticationTokenFilter(JwtUtils jwtUtils) {
+        this.jwtUtils = jwtUtils;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {

@@ -10,8 +10,12 @@ import net.sf.json.JSONObject;
 
 public class ResourceServiceTest  extends ApplicationTests {
 
+    private final IResourceService resourceServiceImpl;
+
     @Autowired
-    private IResourceService resourceServiceImpl;
+    public ResourceServiceTest(IResourceService resourceServiceImpl) {
+        this.resourceServiceImpl = resourceServiceImpl;
+    }
 
     @Test
     @Rollback(false)

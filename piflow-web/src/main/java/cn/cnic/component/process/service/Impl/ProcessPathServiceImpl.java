@@ -24,14 +24,18 @@ import cn.cnic.component.process.vo.ProcessPathVo;
 @Service
 public class ProcessPathServiceImpl implements IProcessPathService {
 
-    @Autowired
-    private ProcessMapper processMapper;
+    private final ProcessMapper processMapper;
+    private final ProcessPathMapper processPathMapper;
+    private final ProcessStopMapper processStopMapper;
 
     @Autowired
-    private ProcessPathMapper processPathMapper;
-
-    @Autowired
-    private ProcessStopMapper processStopMapper;
+    public ProcessPathServiceImpl(ProcessMapper processMapper,
+                                  ProcessPathMapper processPathMapper,
+                                  ProcessStopMapper processStopMapper) {
+        this.processMapper = processMapper;
+        this.processPathMapper = processPathMapper;
+        this.processStopMapper = processStopMapper;
+    }
 
     /**
      * Query processPath based on processId and pageId

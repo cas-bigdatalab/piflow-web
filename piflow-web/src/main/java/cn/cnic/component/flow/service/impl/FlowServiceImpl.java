@@ -67,44 +67,48 @@ public class FlowServiceImpl implements IFlowService {
 
     private Logger logger = LoggerUtil.getLogger();
 
-    @Autowired
-    private PathsMapper pathsMapper;
+    private final PathsMapper pathsMapper;
+    private final StopsMapper stopsMapper;
+    private final PropertyMapper propertyMapper;
+    private final ProcessMapper processMapper;
+    private final MxGraphModelMapper mxGraphModelMapper;
+    private final ProcessDomain processDomain;
+    private final IFlow flowImpl;
+    private final MxGeometryMapper mxGeometryMapper;
+    private final MxCellDomain mxCellDomain;
+    private final FlowDomain flowDomain;
+    private final FlowGroupDomain flowGroupDomain;
+    private final IStopGroupService stopGroupServiceImpl;
+    private final ScheduleDomain scheduleDomain;
 
     @Autowired
-    private StopsMapper stopsMapper;
-
-    @Autowired
-    private PropertyMapper propertyMapper;
-
-    @Autowired
-    private ProcessMapper processMapper;
-
-    @Autowired
-    private MxGraphModelMapper mxGraphModelMapper;
-
-    @Autowired
-    private ProcessDomain processDomain;
-
-    @Autowired
-    private IFlow flowImpl;
-
-    @Autowired
-    private MxGeometryMapper mxGeometryMapper;
-
-    @Autowired
-    private MxCellDomain mxCellDomain;
-
-    @Autowired
-    private FlowDomain flowDomain;
-
-    @Autowired
-    private FlowGroupDomain flowGroupDomain;
-
-    @Autowired
-    private IStopGroupService stopGroupServiceImpl;
-    
-    @Autowired
-    private ScheduleDomain scheduleDomain;
+    public FlowServiceImpl(PathsMapper pathsMapper,
+                           StopsMapper stopsMapper,
+                           PropertyMapper propertyMapper,
+                           ProcessMapper processMapper,
+                           MxGraphModelMapper mxGraphModelMapper,
+                           ProcessDomain processDomain,
+                           IFlow flowImpl,
+                           MxGeometryMapper mxGeometryMapper,
+                           MxCellDomain mxCellDomain,
+                           FlowDomain flowDomain,
+                           FlowGroupDomain flowGroupDomain,
+                           IStopGroupService stopGroupServiceImpl,
+                           ScheduleDomain scheduleDomain) {
+        this.pathsMapper = pathsMapper;
+        this.stopsMapper = stopsMapper;
+        this.propertyMapper = propertyMapper;
+        this.processMapper = processMapper;
+        this.mxGraphModelMapper = mxGraphModelMapper;
+        this.processDomain = processDomain;
+        this.flowImpl = flowImpl;
+        this.mxGeometryMapper = mxGeometryMapper;
+        this.mxCellDomain = mxCellDomain;
+        this.flowDomain = flowDomain;
+        this.flowGroupDomain = flowGroupDomain;
+        this.stopGroupServiceImpl = stopGroupServiceImpl;
+        this.scheduleDomain = scheduleDomain;
+    }
 
 
     /**

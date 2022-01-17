@@ -38,16 +38,9 @@ public class PropertyServiceImpl implements IPropertyService {
 
     private Logger logger = LoggerUtil.getLogger();
 
-    @Autowired
     private PropertyMapper propertyMapper;
-
-    @Autowired
     private StopsMapper stopsMapper;
-
-    @Autowired
     private StopsComponentMapper stopsComponentMapper;
-
-    @Autowired
     private PathsMapper pathsMapper;
 
     @Override

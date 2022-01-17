@@ -15,8 +15,12 @@ import cn.cnic.component.system.mapper.SysInitRecordsMapper;
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
 public class SysInitRecordsDomain {
 
+    private final SysInitRecordsMapper sysInitRecordsMapper;
+
     @Autowired
-    private SysInitRecordsMapper sysInitRecordsMapper;
+    public SysInitRecordsDomain(SysInitRecordsMapper sysInitRecordsMapper) {
+        this.sysInitRecordsMapper = sysInitRecordsMapper;
+    }
 
     public Integer insertSysInitRecords(SysInitRecords sysInitRecords) {
         return sysInitRecordsMapper.insertSysInitRecords(sysInitRecords);

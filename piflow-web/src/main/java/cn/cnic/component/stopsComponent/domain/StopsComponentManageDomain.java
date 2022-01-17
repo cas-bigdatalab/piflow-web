@@ -1,8 +1,7 @@
 package cn.cnic.component.stopsComponent.domain;
 
-import javax.annotation.Resource;
-
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -17,8 +16,12 @@ import cn.cnic.component.stopsComponent.mapper.StopsComponentManageMapper;
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
 public class StopsComponentManageDomain {
 
-    @Resource
-    private StopsComponentManageMapper stopsComponentManageMapper;
+    private final StopsComponentManageMapper stopsComponentManageMapper;
+
+    @Autowired
+    public StopsComponentManageDomain(StopsComponentManageMapper stopsComponentManageMapper) {
+        this.stopsComponentManageMapper = stopsComponentManageMapper;
+    }
 
     public int saveOrUpdeate(StopsComponentManage stopsComponentManage) throws Exception {
         if (null == stopsComponentManage) {

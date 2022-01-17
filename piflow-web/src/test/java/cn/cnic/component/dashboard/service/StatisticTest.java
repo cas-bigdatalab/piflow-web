@@ -11,8 +11,12 @@ import cn.cnic.base.utils.ReturnMapUtils;
 
 public class StatisticTest extends ApplicationTests {
 
+    private final IStatisticService statisticServiceImpl;
+
     @Autowired
-    private IStatisticService statisticServiceImpl;
+    public StatisticTest(IStatisticService statisticServiceImpl) {
+        this.statisticServiceImpl = statisticServiceImpl;
+    }
 
     @Test
     @Rollback(false)

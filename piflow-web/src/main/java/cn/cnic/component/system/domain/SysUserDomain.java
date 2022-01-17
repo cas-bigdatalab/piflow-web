@@ -18,11 +18,15 @@ import cn.cnic.component.system.mapper.SysUserMapper;
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
 public class SysUserDomain {
 
-    @Autowired
-    private SysUserMapper sysUserMapper;
+    private final SysUserMapper sysUserMapper;
+    private final SysRoleMapper sysRoleMapper;
 
     @Autowired
-    private SysRoleMapper sysRoleMapper;
+    public SysUserDomain(SysUserMapper sysUserMapper,
+                         SysRoleMapper sysRoleMapper) {
+        this.sysUserMapper = sysUserMapper;
+        this.sysRoleMapper = sysRoleMapper;
+    }
 
     public int addSysUser(SysUser sysUser) throws Exception {
         if (null == sysUser) {

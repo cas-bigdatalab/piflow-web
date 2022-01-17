@@ -26,17 +26,21 @@ import cn.cnic.common.constant.SysParamsCache;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
-    @Autowired
-    private JwtAuthenticationEntryPoint unauthorizedHandler;
+    private final JwtAuthenticationEntryPoint unauthorizedHandler;
+    private final AccessDeniedHandler accessDeniedHandler;
+    private final CustomUserDetailsService customUserDetailsService;
+    private final JwtAuthenticationTokenFilter authenticationTokenFilter;
 
     @Autowired
-    private AccessDeniedHandler accessDeniedHandler;
-
-    @Autowired
-    private CustomUserDetailsService customUserDetailsService;
-
-    @Autowired
-    private JwtAuthenticationTokenFilter authenticationTokenFilter;
+    public SecurityConfig(JwtAuthenticationEntryPoint unauthorizedHandler,
+                          AccessDeniedHandler accessDeniedHandler,
+                          CustomUserDetailsService customUserDetailsService,
+                          JwtAuthenticationTokenFilter authenticationTokenFilter) {
+        this.unauthorizedHandler = unauthorizedHandler;
+        this.accessDeniedHandler = accessDeniedHandler;
+        this.customUserDetailsService = customUserDetailsService;
+        this.authenticationTokenFilter = authenticationTokenFilter;
+    }
 
     @Override
     public void configure(WebSecurity web) {

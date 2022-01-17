@@ -32,20 +32,24 @@ public class ProcessDomain {
 
     private Logger logger = LoggerUtil.getLogger();
 
-    @Autowired
-    private ProcessMapper processMapper;
+    private final ProcessStopPropertyMapper processStopPropertyMapper;
+    private final MxGraphModelDomain mxGraphModelDomain;
+    private final ProcessPathMapper processPathMapper;
+    private final ProcessStopMapper processStopMapper;
+    private final ProcessMapper processMapper;
 
     @Autowired
-    private ProcessPathMapper processPathMapper;
-
-    @Autowired
-    private ProcessStopMapper processStopMapper;
-
-    @Autowired
-    private ProcessStopPropertyMapper processStopPropertyMapper;
-
-    @Autowired
-    private MxGraphModelDomain mxGraphModelDomain;
+    public ProcessDomain(ProcessStopPropertyMapper processStopPropertyMapper,
+                         MxGraphModelDomain mxGraphModelDomain,
+                         ProcessPathMapper processPathMapper,
+                         ProcessStopMapper processStopMapper,
+                         ProcessMapper processMapper) {
+        this.processStopPropertyMapper = processStopPropertyMapper;
+        this.mxGraphModelDomain = mxGraphModelDomain;
+        this.processPathMapper = processPathMapper;
+        this.processStopMapper = processStopMapper;
+        this.processMapper = processMapper;
+    }
 
     public int saveOrUpdate(Process process) throws Exception {
         if (null == process) {

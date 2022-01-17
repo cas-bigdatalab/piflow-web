@@ -12,8 +12,12 @@ public class SysUserServiceTest extends ApplicationTests {
 
     private Logger logger = LoggerUtil.getLogger();
 
+    private final ISysUserService sysUserServiceImpl;
+
     @Autowired
-    private ISysUserService sysUserServiceImpl;
+    public SysUserServiceTest(ISysUserService sysUserServiceImpl) {
+        this.sysUserServiceImpl = sysUserServiceImpl;
+    }
 
     @Test
     public void testGetFlowById() {

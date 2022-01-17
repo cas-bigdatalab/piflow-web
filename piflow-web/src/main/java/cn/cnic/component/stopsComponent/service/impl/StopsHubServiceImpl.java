@@ -40,14 +40,18 @@ import cn.cnic.third.vo.stop.ThirdStopsComponentVo;
 @Service
 public class StopsHubServiceImpl implements IStopsHubService {
 
-    @Autowired
-    private StopsHubDomain stopsHubDomain;
+    private final StopsComponentDomain stopsComponentDomain;
+    private final StopsHubDomain stopsHubDomain;
+    private final IStop stopImpl;
 
     @Autowired
-    private StopsComponentDomain stopsComponentDomain;
-
-    @Autowired
-    private IStop stopImpl;
+    public StopsHubServiceImpl(StopsComponentDomain stopsComponentDomain,
+                               StopsHubDomain stopsHubDomain,
+                               IStop stopImpl) {
+        this.stopsComponentDomain = stopsComponentDomain;
+        this.stopsHubDomain = stopsHubDomain;
+        this.stopImpl = stopImpl;
+    }
 
     @Override
     public String uploadStopsHubFile(String username, MultipartFile file) {

@@ -25,11 +25,15 @@ public class DataSourceDomain {
 
     private Logger logger = LoggerUtil.getLogger();
 
-    @Autowired
-    private DataSourceMapper dataSourceMapper;
+    private final DataSourceMapper dataSourceMapper;
+    private final DataSourcePropertyMapper dataSourcePropertyMapper;
 
     @Autowired
-    private DataSourcePropertyMapper dataSourcePropertyMapper;
+    public DataSourceDomain(DataSourceMapper dataSourceMapper,
+                            DataSourcePropertyMapper dataSourcePropertyMapper) {
+        this.dataSourceMapper = dataSourceMapper;
+        this.dataSourcePropertyMapper = dataSourcePropertyMapper;
+    }
 
     /**
      * saveOrUpdate

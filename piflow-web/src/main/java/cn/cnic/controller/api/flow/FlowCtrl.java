@@ -1,6 +1,6 @@
 package cn.cnic.controller.api.flow;
 
-import cn.cnic.component.user.service.LogHelper;
+import cn.cnic.component.system.service.ILogHelperService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,11 +19,14 @@ import io.swagger.annotations.ApiImplicitParam;
 @RequestMapping("/flow")
 public class FlowCtrl {
 
-    @Autowired
-    private IFlowService flowServiceImpl;
+    private final IFlowService flowServiceImpl;
+    private final ILogHelperService logHelperServiceImpl;
 
     @Autowired
-    private LogHelper logHelper;
+    public FlowCtrl(IFlowService flowServiceImpl, ILogHelperService logHelperServiceImpl) {
+        this.flowServiceImpl = flowServiceImpl;
+        this.logHelperServiceImpl = logHelperServiceImpl;
+    }
 
     /**
      * flowList page query
@@ -69,7 +72,7 @@ public class FlowCtrl {
     public String runFlow(String flowId, String runMode) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
-        logHelper.logAuthSucceed("run flow",username);
+        logHelperServiceImpl.logAuthSucceed("run flow",username);
         return flowServiceImpl.runFlow(username, isAdmin, flowId, runMode);
     }
 
@@ -90,7 +93,7 @@ public class FlowCtrl {
     @ResponseBody
     public String saveFlowInfo(FlowInfoVoRequestAdd flowVo) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
-        logHelper.logAuthSucceed("save flow",username);
+        logHelperServiceImpl.logAuthSucceed("save flow",username);
         return flowServiceImpl.addFlow(username, flowVo);
     }
 
@@ -105,7 +108,7 @@ public class FlowCtrl {
     public String deleteFlow(String id) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
-        logHelper.logAuthSucceed("delete flow " + id,username);
+        logHelperServiceImpl.logAuthSucceed("delete flow " + id,username);
         return flowServiceImpl.deleteFLowInfo(username, isAdmin, id);
     }
 
@@ -114,7 +117,7 @@ public class FlowCtrl {
     @ApiImplicitParam(name = "fId", value="fId")
     public String updateFlowBaseInfo(String fId, FlowInfoVoRequestUpdate flowVo) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
-        logHelper.logAuthSucceed("update flow base "+ flowVo.getName(),username);
+        logHelperServiceImpl.logAuthSucceed("update flow base "+ flowVo.getName(),username);
         return flowServiceImpl.updateFlowBaseInfo(username, fId, flowVo);
     }
 

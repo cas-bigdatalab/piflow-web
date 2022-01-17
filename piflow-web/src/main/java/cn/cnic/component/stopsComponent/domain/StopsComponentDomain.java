@@ -30,14 +30,18 @@ public class StopsComponentDomain {
      */
     private Logger logger = LoggerUtil.getLogger();
 
-    @Autowired
-    private StopsComponentMapper stopsComponentMapper;
+    private final StopsComponentPropertyMapper stopsComponentPropertyMapper;
+    private final StopsComponentGroupMapper stopsComponentGroupMapper;
+    private final StopsComponentMapper stopsComponentMapper;
 
     @Autowired
-    private StopsComponentPropertyMapper stopsComponentPropertyMapper;
-
-    @Autowired
-    private StopsComponentGroupMapper stopsComponentGroupMapper;
+    public StopsComponentDomain(StopsComponentPropertyMapper stopsComponentPropertyMapper,
+                                StopsComponentGroupMapper stopsComponentGroupMapper,
+                                StopsComponentMapper stopsComponentMapper) {
+        this.stopsComponentPropertyMapper = stopsComponentPropertyMapper;
+        this.stopsComponentGroupMapper = stopsComponentGroupMapper;
+        this.stopsComponentMapper = stopsComponentMapper;
+    }
 
     public int addListStopsComponentAndChildren(List<StopsComponent> stopsComponentList) {
         if (null == stopsComponentList || stopsComponentList.size() <= 0) {

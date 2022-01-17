@@ -43,8 +43,12 @@ import cn.cnic.controller.requestVo.TestDataSchemaVoRequest;
 @Transactional
 public class TestDataServiceImpl implements ITestDataService {
 
+    private final TestDataDomain testDataDomain;
+
     @Autowired
-    private TestDataDomain testDataDomain;
+    public TestDataServiceImpl(TestDataDomain testDataDomain) {
+        this.testDataDomain = testDataDomain;
+    }
 
     /**
      * saveOrUpdateTestDataSchema

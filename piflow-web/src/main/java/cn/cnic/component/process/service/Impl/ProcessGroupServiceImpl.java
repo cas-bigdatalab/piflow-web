@@ -59,17 +59,21 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
      */
     private Logger logger = LoggerUtil.getLogger();
 
-    @Autowired
-    private ProcessMapper processMapper;
+    private final ProcessMapper processMapper;
+    private final ProcessGroupDomain processGroupDomain;
+    private final IGroup groupImpl;
+    private final IFlow flowImpl;
 
     @Autowired
-    private ProcessGroupDomain processGroupDomain;
-
-    @Autowired
-    private IGroup groupImpl;
-
-    @Autowired
-    private IFlow flowImpl;
+    public ProcessGroupServiceImpl(ProcessMapper processMapper,
+                                   ProcessGroupDomain processGroupDomain,
+                                   IGroup groupImpl,
+                                   IFlow flowImpl) {
+        this.processMapper = processMapper;
+        this.processGroupDomain = processGroupDomain;
+        this.groupImpl = groupImpl;
+        this.flowImpl = flowImpl;
+    }
 
 
     /**

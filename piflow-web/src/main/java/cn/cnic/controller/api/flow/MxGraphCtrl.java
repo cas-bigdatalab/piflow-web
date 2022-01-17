@@ -3,6 +3,7 @@ package cn.cnic.controller.api.flow;
 import java.util.HashMap;
 import java.util.Map;
 
+import cn.cnic.component.system.service.ILogHelperService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,7 +19,6 @@ import cn.cnic.component.flow.service.IFlowGroupService;
 import cn.cnic.component.mxGraph.service.IMxGraphModelService;
 import cn.cnic.component.mxGraph.service.IMxNodeImageService;
 import cn.cnic.component.mxGraph.vo.MxGraphVo;
-import cn.cnic.component.user.service.LogHelper;
 import io.swagger.annotations.Api;
 
 
@@ -30,17 +30,18 @@ import io.swagger.annotations.Api;
 @RequestMapping("/mxGraph")
 public class MxGraphCtrl {
 
-    @Autowired
-    private IFlowGroupService flowGroupServiceImpl;
+    private final IFlowGroupService flowGroupServiceImpl;
+    private final IMxGraphModelService mxGraphModelServiceImpl;
+    private final IMxNodeImageService mxNodeImageServiceImpl;
+    private final ILogHelperService logHelperServiceImpl;
 
     @Autowired
-    private IMxGraphModelService mxGraphModelServiceImpl;
-
-    @Autowired
-    private IMxNodeImageService mxNodeImageServiceImpl;
-
-    @Autowired
-    private LogHelper logHelper;
+    public MxGraphCtrl(IFlowGroupService flowGroupServiceImpl, IMxGraphModelService mxGraphModelServiceImpl, IMxNodeImageService mxNodeImageServiceImpl, ILogHelperService logHelperServiceImpl) {
+        this.flowGroupServiceImpl = flowGroupServiceImpl;
+        this.mxGraphModelServiceImpl = mxGraphModelServiceImpl;
+        this.mxNodeImageServiceImpl = mxNodeImageServiceImpl;
+        this.logHelperServiceImpl = logHelperServiceImpl;
+    }
 
     /**
      * save data
@@ -54,7 +55,7 @@ public class MxGraphCtrl {
     @ResponseBody
     public String saveDataForTask(String imageXML, String load, String operType) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
-        logHelper.logAuthSucceed("saveDataForTask" + load, username);
+        logHelperServiceImpl.logAuthSucceed("saveDataForTask" + load, username);
         return mxGraphModelServiceImpl.saveDataForTask(username, imageXML, load, operType);
     }
 
@@ -70,7 +71,7 @@ public class MxGraphCtrl {
     @ResponseBody
     public String saveDataForGroup(String imageXML, String load, String operType) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
-        logHelper.logAuthSucceed("saveDataForGroup " + load, username);
+        logHelperServiceImpl.logAuthSucceed("saveDataForGroup " + load, username);
         return mxGraphModelServiceImpl.saveDataForGroup(username, imageXML, load, operType, true);
     }
 
@@ -78,7 +79,7 @@ public class MxGraphCtrl {
     @ResponseBody
     public String addMxCellAndData(@RequestBody MxGraphVo mxGraphVo) throws Exception {
         String currentUsername = SessionUserUtil.getCurrentUsername();
-        logHelper.logAuthSucceed("addMxCellAndData" + mxGraphVo.getLoadId(), currentUsername);
+        logHelperServiceImpl.logAuthSucceed("addMxCellAndData" + mxGraphVo.getLoadId(), currentUsername);
         return mxGraphModelServiceImpl.addMxCellAndData(mxGraphVo, currentUsername);
     }
 
@@ -86,7 +87,7 @@ public class MxGraphCtrl {
     @ResponseBody
     public String uploadNodeImage(@RequestParam("file") MultipartFile file, String imageType) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
-        logHelper.logAuthSucceed("uploadNodeImage " + file.getName(),username);
+        logHelperServiceImpl.logAuthSucceed("uploadNodeImage " + file.getName(),username);
         return mxNodeImageServiceImpl.uploadNodeImage(username, file, imageType);
     }
 
@@ -102,7 +103,7 @@ public class MxGraphCtrl {
     public String groupRightRun(String pId, String nodeId, String nodeType) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
-        logHelper.logAuthSucceed("groupRightRun" + nodeId, username);
+        logHelperServiceImpl.logAuthSucceed("groupRightRun" + nodeId, username);
         return flowGroupServiceImpl.rightRun(username, isAdmin, pId, nodeId, nodeType);
     }
 

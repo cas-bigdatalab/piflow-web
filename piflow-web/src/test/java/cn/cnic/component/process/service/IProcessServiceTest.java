@@ -6,8 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class IProcessServiceTest extends ApplicationTests {
 
+    private final IProcessService processServiceImpl;
+
     @Autowired
-    private IProcessService processServiceImpl;
+    public IProcessServiceTest(IProcessService processServiceImpl) {
+        this.processServiceImpl = processServiceImpl;
+    }
 
     @Test
     public void testFlowToProcessAndSave() {

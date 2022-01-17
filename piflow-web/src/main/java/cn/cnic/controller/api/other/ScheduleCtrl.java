@@ -1,5 +1,6 @@
 package cn.cnic.controller.api.other;
 
+import cn.cnic.component.system.service.ILogHelperService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -11,19 +12,20 @@ import cn.cnic.component.schedule.service.IScheduleService;
 import cn.cnic.component.schedule.vo.ScheduleVo;
 import io.swagger.annotations.Api;
 
-import cn.cnic.component.user.service.LogHelper;
-
 
 @Api(value = "schedule api")
 @RestController
 @RequestMapping("/schedule")
 public class ScheduleCtrl {
 
-    @Autowired
-    private IScheduleService scheduleServiceImpl;
+    private final IScheduleService scheduleServiceImpl;
+    private final ILogHelperService logHelperServiceImpl;
 
     @Autowired
-    private LogHelper logHelper;
+    public ScheduleCtrl(IScheduleService scheduleServiceImpl, ILogHelperService logHelperServiceImpl) {
+        this.scheduleServiceImpl = scheduleServiceImpl;
+        this.logHelperServiceImpl = logHelperServiceImpl;
+    }
 
     /**
      * Query and enter the scheduleVo list
@@ -51,7 +53,7 @@ public class ScheduleCtrl {
     @ResponseBody
     public String addSchedule(ScheduleVo scheduleVo) {
         String username = SessionUserUtil.getCurrentUsername();
-        logHelper.logAuthSucceed("addSchedule " + scheduleVo.getScheduleRunTemplateName(),username);
+        logHelperServiceImpl.logAuthSucceed("addSchedule " + scheduleVo.getScheduleRunTemplateName(),username);
         return scheduleServiceImpl.addSchedule(username, scheduleVo);
     }
 
@@ -80,7 +82,7 @@ public class ScheduleCtrl {
     public String updateSchedule(ScheduleVo scheduleVo) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
-        logHelper.logAuthSucceed("updateSchedule " + scheduleVo.getScheduleRunTemplateName(),username);
+        logHelperServiceImpl.logAuthSucceed("updateSchedule " + scheduleVo.getScheduleRunTemplateName(),username);
         return scheduleServiceImpl.updateSchedule(isAdmin, username, scheduleVo);
     }
 
@@ -95,7 +97,7 @@ public class ScheduleCtrl {
     public String delSchedule(String scheduleId) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
-        logHelper.logAuthSucceed("updateSchedule " + scheduleId,username);
+        logHelperServiceImpl.logAuthSucceed("updateSchedule " + scheduleId,username);
         return scheduleServiceImpl.delSchedule(isAdmin, username, scheduleId);
     }
 

@@ -30,11 +30,14 @@ import cn.cnic.third.vo.sparkJar.SparkJarVo;
 public class SparkJarServiceImpl implements ISparkJarService {
 
 
-    @Autowired
-    private SparkJarDomain sparkJarDomain;
+    private final SparkJarDomain sparkJarDomain;
+    private final ISparkJar sparkJarImpl;
 
     @Autowired
-    private ISparkJar sparkJarImpl;
+    public SparkJarServiceImpl(SparkJarDomain sparkJarDomain, ISparkJar sparkJarImpl) {
+        this.sparkJarDomain = sparkJarDomain;
+        this.sparkJarImpl = sparkJarImpl;
+    }
 
 
     @Override

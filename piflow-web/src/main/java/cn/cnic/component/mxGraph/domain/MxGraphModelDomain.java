@@ -21,14 +21,18 @@ import cn.cnic.component.mxGraph.mapper.MxGraphModelMapper;
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
 public class MxGraphModelDomain {
 
-    @Autowired
-    private MxGraphModelMapper mxGraphModelMapper;
+    private final MxCellMapper mxCellMapper;
+    private final MxGeometryMapper mxGeometryMapper;
+    private final MxGraphModelMapper mxGraphModelMapper;
 
     @Autowired
-    private MxCellMapper mxCellMapper;
-
-    @Autowired
-    private MxGeometryMapper mxGeometryMapper;
+    public MxGraphModelDomain(MxCellMapper mxCellMapper,
+                              MxGeometryMapper mxGeometryMapper,
+                              MxGraphModelMapper mxGraphModelMapper) {
+        this.mxCellMapper = mxCellMapper;
+        this.mxGeometryMapper = mxGeometryMapper;
+        this.mxGraphModelMapper = mxGraphModelMapper;
+    }
 
     public int saveOrUpdate(MxGraphModel mxGraphModel) throws Exception {
         if (null == mxGraphModel) {

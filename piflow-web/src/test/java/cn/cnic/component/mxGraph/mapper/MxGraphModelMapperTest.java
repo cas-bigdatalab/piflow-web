@@ -17,8 +17,12 @@ public class MxGraphModelMapperTest extends ApplicationTests {
 
     private Logger logger = LoggerUtil.getLogger();
 
+    private final MxGraphModelMapper mxGraphModelMapper;
+
     @Autowired
-    private MxGraphModelMapper mxGraphModelMapper;
+    public MxGraphModelMapperTest(MxGraphModelMapper mxGraphModelMapper) {
+        this.mxGraphModelMapper = mxGraphModelMapper;
+    }
 
     @Test
     public void testGetMeCellByMxGraphId() {

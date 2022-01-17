@@ -27,8 +27,12 @@ public class RunningProcessSync extends QuartzJobBean {
      */
     private Logger logger = LoggerUtil.getLogger();
 
+    private final ProcessMapper processMapper;
+
     @Autowired
-    private ProcessMapper processMapper;
+    public RunningProcessSync(ProcessMapper processMapper) {
+        this.processMapper = processMapper;
+    }
 
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {

@@ -2,10 +2,9 @@ package cn.cnic.component.stopsComponent.domain;
 
 import java.util.List;
 
-import javax.annotation.Resource;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -27,11 +26,14 @@ public class StopsComponentGroupDomain {
      */
     private Logger logger = LoggerUtil.getLogger();
 
-    @Resource
-    private StopsComponentGroupMapper stopsComponentGroupMapper;
+    private final StopsComponentGroupMapper stopsComponentGroupMapper;
+    private final StopsComponentDomain stopsComponentDomain;
 
-    @Resource
-    private StopsComponentDomain stopsComponentDomain;
+    @Autowired
+    public StopsComponentGroupDomain(StopsComponentGroupMapper stopsComponentGroupMapper, StopsComponentDomain stopsComponentDomain) {
+        this.stopsComponentGroupMapper = stopsComponentGroupMapper;
+        this.stopsComponentDomain = stopsComponentDomain;
+    }
 
     public int addStopsComponentGroupAndChildren(StopsComponentGroup stopsComponentGroup) {
         if (null == stopsComponentGroup) {

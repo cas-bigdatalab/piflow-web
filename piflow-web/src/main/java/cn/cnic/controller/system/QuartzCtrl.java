@@ -1,5 +1,6 @@
 package cn.cnic.controller.system;
 
+import cn.cnic.component.system.service.ILogHelperService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,18 +11,19 @@ import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.component.system.service.ISysScheduleService;
 import cn.cnic.component.system.vo.SysScheduleVo;
 
-import cn.cnic.component.user.service.LogHelper;
-
 
 @Controller
 @RequestMapping("/sysSchedule")
 public class QuartzCtrl {
 
-    @Autowired
-    private ISysScheduleService sysScheduleServiceImpl;
+    private final ISysScheduleService sysScheduleServiceImpl;
+    private final ILogHelperService logHelperServiceImpl;
 
     @Autowired
-    private LogHelper logHelper;
+    public QuartzCtrl(ISysScheduleService sysScheduleServiceImpl, ILogHelperService logHelperServiceImpl) {
+        this.sysScheduleServiceImpl = sysScheduleServiceImpl;
+        this.logHelperServiceImpl = logHelperServiceImpl;
+    }
 
     @RequestMapping("/getScheduleListPage")
     @ResponseBody
@@ -44,7 +46,7 @@ public class QuartzCtrl {
     public String createTask(SysScheduleVo sysScheduleVo) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
-        logHelper.logAuthSucceed("create task",username);
+        logHelperServiceImpl.logAuthSucceed("create task",username);
         return sysScheduleServiceImpl.createJob(username, isAdmin, sysScheduleVo);
     }
 
@@ -53,7 +55,7 @@ public class QuartzCtrl {
     public String runOnceTask(String sysScheduleId) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
-        logHelper.logAuthSucceed("run task " + sysScheduleId,username);
+        logHelperServiceImpl.logAuthSucceed("run task " + sysScheduleId,username);
         return sysScheduleServiceImpl.runOnce(username, isAdmin, sysScheduleId);
     }
 
@@ -62,7 +64,7 @@ public class QuartzCtrl {
     public String startTask(String sysScheduleId) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
-        logHelper.logAuthSucceed("start task " + sysScheduleId,username);
+        logHelperServiceImpl.logAuthSucceed("start task " + sysScheduleId,username);
         return sysScheduleServiceImpl.startJob(username, isAdmin, sysScheduleId);
     }
 
@@ -71,7 +73,7 @@ public class QuartzCtrl {
     public String stopTask(String sysScheduleId) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
-        logHelper.logAuthSucceed("stop task " + sysScheduleId,username);
+        logHelperServiceImpl.logAuthSucceed("stop task " + sysScheduleId,username);
         return sysScheduleServiceImpl.stopJob(username, isAdmin, sysScheduleId);
     }
 
@@ -80,7 +82,7 @@ public class QuartzCtrl {
     public String pauseTask(String sysScheduleId) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
-        logHelper.logAuthSucceed("pause task " + sysScheduleId,username);
+        logHelperServiceImpl.logAuthSucceed("pause task " + sysScheduleId,username);
         return sysScheduleServiceImpl.pauseJob(username, isAdmin, sysScheduleId);
     }
 

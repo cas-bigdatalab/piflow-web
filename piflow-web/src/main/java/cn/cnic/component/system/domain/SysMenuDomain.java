@@ -15,8 +15,12 @@ import cn.cnic.component.system.mapper.SysMenuMapper;
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
 public class SysMenuDomain {
 
+    private final SysMenuMapper sysMenuMapper;
+
     @Autowired
-    private SysMenuMapper sysMenuMapper;
+    public SysMenuDomain(SysMenuMapper sysMenuMapper) {
+        this.sysMenuMapper = sysMenuMapper;
+    }
 
     public List<SysMenu> getSysMenuList(String role){
         return sysMenuMapper.getSysMenuList(role);

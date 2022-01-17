@@ -15,8 +15,12 @@ public class StopsComponentGroupMapperTest extends ApplicationTests {
 
     private Logger logger = LoggerUtil.getLogger();
 
+    private final StopsComponentGroupMapper stopsComponentGroupMapper;
+
     @Autowired
-    private StopsComponentGroupMapper stopsComponentGroupMapper;
+    public StopsComponentGroupMapperTest(StopsComponentGroupMapper stopsComponentGroupMapper) {
+        this.stopsComponentGroupMapper = stopsComponentGroupMapper;
+    }
 
     @Test
     public void testGetStopGroupList() {

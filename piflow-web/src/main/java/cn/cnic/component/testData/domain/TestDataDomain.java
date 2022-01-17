@@ -25,14 +25,18 @@ import cn.cnic.component.testData.vo.TestDataVo;
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
 public class TestDataDomain {
 
-    @Autowired
-    private TestDataMapper testDataMapper;
+    private final TestDataMapper testDataMapper;
+    private final TestDataSchemaMapper testDataSchemaMapper;
+    private final TestDataSchemaValuesMapper testDataSchemaValuesMapper;
 
     @Autowired
-    private TestDataSchemaMapper testDataSchemaMapper;
-
-    @Autowired
-    private TestDataSchemaValuesMapper testDataSchemaValuesMapper;
+    public TestDataDomain(TestDataMapper testDataMapper,
+                          TestDataSchemaMapper testDataSchemaMapper,
+                          TestDataSchemaValuesMapper testDataSchemaValuesMapper) {
+        this.testDataMapper = testDataMapper;
+        this.testDataSchemaMapper = testDataSchemaMapper;
+        this.testDataSchemaValuesMapper = testDataSchemaValuesMapper;
+    }
 
     /**
      * save or update TestData

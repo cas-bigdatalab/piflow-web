@@ -19,8 +19,12 @@ import io.swagger.annotations.ApiImplicitParams;
 @RequestMapping("/flowGlobalParams")
 public class FlowGlobalParamsCtrl {
 
+    private final IFlowGlobalParamsService flowGlobalParamsServiceImpl;
+
     @Autowired
-    private IFlowGlobalParamsService flowGlobalParamsServiceImpl;
+    public FlowGlobalParamsCtrl(IFlowGlobalParamsService flowGlobalParamsServiceImpl) {
+        this.flowGlobalParamsServiceImpl = flowGlobalParamsServiceImpl;
+    }
 
 
     /**

@@ -14,8 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/flowGroupPath/")
 public class FlowGroupPathCtrl {
 
+    private final IFlowGroupPathsService flowGroupPathsServiceImpl;
+
     @Autowired
-    private IFlowGroupPathsService flowGroupPathsServiceImpl;
+    public FlowGroupPathCtrl(IFlowGroupPathsService flowGroupPathsServiceImpl) {
+        this.flowGroupPathsServiceImpl = flowGroupPathsServiceImpl;
+    }
 
     /**
      * Query'path'according to'flowId' and'pageId'

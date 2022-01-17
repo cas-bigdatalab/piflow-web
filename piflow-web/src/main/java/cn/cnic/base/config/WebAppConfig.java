@@ -25,12 +25,13 @@ public class WebAppConfig implements WebMvcConfigurer {
      * Introducing logs, note that they are all packaged under "org.slf4j"
      */
     private Logger logger = LoggerUtil.getLogger();
-	
-    /**
-     * Inject the first defined interceptor
-     */
+
+    private final ConfigInterceptor configInterceptor;
+
     @Autowired
-    private ConfigInterceptor configInterceptor;
+    public WebAppConfig(ConfigInterceptor configInterceptor) {
+        this.configInterceptor = configInterceptor;
+    }
 
 
     //Method of accessing pictures and videos

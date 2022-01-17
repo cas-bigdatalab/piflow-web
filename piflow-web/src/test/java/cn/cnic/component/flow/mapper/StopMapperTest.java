@@ -18,8 +18,12 @@ public class StopMapperTest extends ApplicationTests {
 
     private Logger logger = LoggerUtil.getLogger();
 
+    private final StopsMapper stopMapper;
+
     @Autowired
-    private StopsMapper stopMapper;
+    public StopMapperTest(StopsMapper stopMapper) {
+        this.stopMapper = stopMapper;
+    }
 
     @Test
     public void testGetStopsAll() {

@@ -26,10 +26,14 @@ import cn.cnic.component.system.vo.SysMenuVo;
 @Component
 public class CustomUserDetailsService implements UserDetailsService {
 
+    private final SysUserMapper sysUserMapper;
+    private final SysMenuMapper sysMenuMapper;
+
     @Autowired
-    private SysUserMapper sysUserMapper;
-    @Autowired
-    private SysMenuMapper sysMenuMapper;
+    public CustomUserDetailsService(SysUserMapper sysUserMapper, SysMenuMapper sysMenuMapper) {
+        this.sysUserMapper = sysUserMapper;
+        this.sysMenuMapper = sysMenuMapper;
+    }
 
     @Override
     public UserVo loadUserByUsername(String username) throws UsernameNotFoundException {

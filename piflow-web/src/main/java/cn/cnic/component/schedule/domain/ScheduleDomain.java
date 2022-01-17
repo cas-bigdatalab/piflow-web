@@ -16,8 +16,12 @@ import cn.cnic.component.schedule.vo.ScheduleVo;
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
 public class ScheduleDomain {
 
+    private final ScheduleMapper scheduleMapper;
+
     @Autowired
-    private ScheduleMapper scheduleMapper;
+    public ScheduleDomain(ScheduleMapper scheduleMapper) {
+        this.scheduleMapper = scheduleMapper;
+    }
 
     public int insert(Schedule schedule) {
         return scheduleMapper.insert(schedule);
