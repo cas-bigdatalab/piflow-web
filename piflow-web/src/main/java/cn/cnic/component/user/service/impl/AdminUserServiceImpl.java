@@ -76,11 +76,11 @@ public class AdminUserServiceImpl implements AdminUserService {
         if (null == sysUserVo) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Parameter is empty");
         }
-        Integer id = sysUserVo.getId();
-        if (null != id) {
+        String id = sysUserVo.getId();
+        if (StringUtils.isBlank(id)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("id is empty");
         }
-        SysUser sysUserById = userMapper.getUserById(isAdmin, username, id+"");
+        SysUser sysUserById = userMapper.getUserById(isAdmin, username, id);
         if (null == sysUserById) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("The task for which the current Id does not exist");
         }

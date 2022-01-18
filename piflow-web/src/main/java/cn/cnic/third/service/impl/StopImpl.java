@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.cnic.common.constant.MessageConfig;
+import cn.cnic.third.utils.ThirdInterfaceReturnMsgUtils;
+import cn.cnic.third.utils.ThirdStopsComponentUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -33,10 +36,9 @@ public class StopImpl implements IStop {
     @Override
     public String[] getAllGroup() {
         String sendGetData = HttpUtils.doGet(SysParamsCache.getStopsGroupsUrl(), null, 30 * 1000);
-        logger.debug("return msg：" + sendGetData);
-        if (StringUtils.isBlank(sendGetData)) {
-        	logger.warn("Interface return value is null");
-        	return null;
+        logger.debug("Interface return value：" + sendGetData);
+        if (ThirdInterfaceReturnMsgUtils.THIRD_INTERFACE_IS_ERROR(sendGetData).equals(ThirdInterfaceReturnMsgUtils.ERROR)) {
+            return null;
         }
         String jsonResult = JSONObject.fromObject(sendGetData).getString("groups");
         if (StringUtils.isBlank(jsonResult)) {
@@ -50,10 +52,9 @@ public class StopImpl implements IStop {
     public String[] getAllStops() {
         String[] stop = null;
         String sendGetData = HttpUtils.doGet(SysParamsCache.getStopsListUrl(), null, 30 * 1000);
-        logger.debug("return msg：" + sendGetData);
-        if (StringUtils.isBlank(sendGetData)) {
-        	logger.warn("Interface return value is null");
-        	return null;
+        logger.debug("Interface return value：" + sendGetData);
+        if (ThirdInterfaceReturnMsgUtils.THIRD_INTERFACE_IS_ERROR(sendGetData).equals(ThirdInterfaceReturnMsgUtils.ERROR)) {
+            return null;
         }
         String jsonResult = JSONObject.fromObject(sendGetData).getString("stops");
         if (StringUtils.isBlank(jsonResult)) {
@@ -67,9 +68,8 @@ public class StopImpl implements IStop {
     @Override
     public Map<String, List<String>> getStopsListWithGroup() {
         String sendGetData = HttpUtils.doGet(SysParamsCache.getStopsListWithGroupUrl(), null, 30 * 1000);
-        logger.debug("return msg：" + sendGetData);
-        if (StringUtils.isBlank(sendGetData)) {
-        	logger.warn("Interface return value is null");
+        logger.debug("Interface return value：" + sendGetData);
+        if (ThirdInterfaceReturnMsgUtils.THIRD_INTERFACE_IS_ERROR(sendGetData).equals(ThirdInterfaceReturnMsgUtils.ERROR)) {
             return null;
         }
         Map<String, List<String>> stopsListWithGroup = new HashMap<>();
@@ -101,70 +101,18 @@ public class StopImpl implements IStop {
         Map<String, String> map = new HashMap<>();
         map.put("bundle", bundleStr);
         String sendGetData = HttpUtils.doGet(SysParamsCache.getStopsInfoUrl(), map, 30 * 1000);
-        logger.info("return msg：" + sendGetData);
-        if (StringUtils.isBlank(sendGetData)) {
-            logger.warn("Interface return value is null");
-            return null;
-        }
-        if (sendGetData.contains("Error") || sendGetData.contains(HttpUtils.INTERFACE_CALL_ERROR)) {
-            logger.warn("return err : " + sendGetData);
+        logger.info("Interface return value：" + sendGetData);
+        if (ThirdInterfaceReturnMsgUtils.THIRD_INTERFACE_IS_ERROR(sendGetData).equals(ThirdInterfaceReturnMsgUtils.ERROR)) {
             return null;
         }
 
         JSONObject jsonObject = JSONObject.fromObject(sendGetData).getJSONObject("StopInfo");
-        ThirdStopsComponentVo thirdStopsComponentVo = constructThirdStopsComponentVo(jsonObject);
+        ThirdStopsComponentVo thirdStopsComponentVo = ThirdStopsComponentUtils.constructThirdStopsComponentVo(jsonObject);
         return thirdStopsComponentVo;
 
     }
 
-    private ThirdStopsComponentVo constructThirdStopsComponentVo(JSONObject jsonObject){
-        ThirdStopsComponentVo thirdStopsComponentVo = new ThirdStopsComponentVo();
-        // Also convert the json string to a json object, and then convert the json object to a java object, as shown below.
-        //JSONObject jsonObject = JSONObject.fromObject(data).getJSONObject("StopInfo");// Convert a json string to a json object
-        // Needed when there is a List in jsonObj
-        @SuppressWarnings("rawtypes")
-        Map<String, Class> classMap = new HashMap<>();
-        // Key is the name of the List in jsonObj, and the value is a generic class of list
-        classMap.put("properties", ThirdStopsComponentPropertyVo.class);
-        // Convert a json object to a java object
-        thirdStopsComponentVo.setName(jsonObject.getString("name"));
-        thirdStopsComponentVo.setBundle(jsonObject.getString("bundle"));
-        thirdStopsComponentVo.setOwner(jsonObject.getString("owner"));
-        thirdStopsComponentVo.setOwner(jsonObject.getString("owner"));
-        thirdStopsComponentVo.setInports(jsonObject.getString("inports"));
-        thirdStopsComponentVo.setOutports(jsonObject.getString("outports"));
-        thirdStopsComponentVo.setGroups(jsonObject.getString("groups"));
-        thirdStopsComponentVo.setCustomized(jsonObject.getBoolean("isCustomized"));
-        thirdStopsComponentVo.setDescription(jsonObject.getString("description"));
-        thirdStopsComponentVo.setIcon(jsonObject.getString("icon"));
-        thirdStopsComponentVo.setVisualizationType(jsonObject.getString("visualizationType"));
-        JSONArray jsonArray = jsonObject.getJSONArray("properties");
-        if (null != jsonArray && jsonArray.size() > 0) {
-            List<ThirdStopsComponentPropertyVo> thirdStopsComponentPropertyVoList = new ArrayList<>();
-            ThirdStopsComponentPropertyVo thirdStopsComponentPropertyVo;
-            for (int i = 0; i < jsonArray.size(); i++) {
-                JSONObject propertyJsonObject = jsonArray.getJSONObject(i);
-                if (null == propertyJsonObject) {
-                    continue;
-                }
-                thirdStopsComponentPropertyVo = new ThirdStopsComponentPropertyVo();
-                thirdStopsComponentPropertyVo.setName(propertyJsonObject.getString("name"));
-                thirdStopsComponentPropertyVo.setDisplayName(propertyJsonObject.getString("displayName"));
-                thirdStopsComponentPropertyVo.setDescription(propertyJsonObject.getString("description"));
-                thirdStopsComponentPropertyVo.setDefaultValue(propertyJsonObject.getString("defaultValue"));
-                thirdStopsComponentPropertyVo.setAllowableValues(propertyJsonObject.getString("allowableValues"));
-                thirdStopsComponentPropertyVo.setRequired(propertyJsonObject.getString("required"));
-                thirdStopsComponentPropertyVo.setSensitive(propertyJsonObject.getBoolean("sensitive"));
-                thirdStopsComponentPropertyVo.setExample(propertyJsonObject.getString("example"));
-                thirdStopsComponentPropertyVo.setLanguage(propertyJsonObject.getString("language"));
-                thirdStopsComponentPropertyVoList.add(thirdStopsComponentPropertyVo);
-            }
-            thirdStopsComponentVo.setProperties(thirdStopsComponentPropertyVoList);
-        }
 
-
-        return thirdStopsComponentVo;
-    }
 
     @Override
     public String getStopsHubPath() {
@@ -172,13 +120,8 @@ public class StopImpl implements IStop {
         Map<String, String> map = new HashMap<>();
         //map.put("bundle", bundleStr);
         String sendGetData = HttpUtils.doGet(SysParamsCache.getStopsHubPathUrl(), map, 30 * 1000);
-        logger.info("return msg：" + sendGetData);
-        if (StringUtils.isBlank(sendGetData)) {
-            logger.warn("Interface return value is null");
-            return null;
-        }
-        if (sendGetData.contains("Error") || sendGetData.contains(HttpUtils.INTERFACE_CALL_ERROR)) {
-            logger.warn("return err : " + sendGetData);
+        logger.debug("Interface return value：" + sendGetData);
+        if (ThirdInterfaceReturnMsgUtils.THIRD_INTERFACE_IS_ERROR(sendGetData).equals(ThirdInterfaceReturnMsgUtils.ERROR)) {
             return null;
         }
 
@@ -192,17 +135,11 @@ public class StopImpl implements IStop {
         map.put("plugin", stopsHubName);
         String json = JSON.toJSON(map).toString();
         String doPost = HttpUtils.doPost(SysParamsCache.getStopsHubMountUrl(), json, 5 * 1000);
-        if (StringUtils.isBlank(doPost)) {
-            logger.warn("Interface return null");
+        logger.debug("Interface return value: " + doPost);
+        if (ThirdInterfaceReturnMsgUtils.THIRD_INTERFACE_IS_ERROR(doPost).equals(ThirdInterfaceReturnMsgUtils.ERROR)) {
             return null;
         }
-        if (doPost.contains("Fail") || doPost.contains(HttpUtils.INTERFACE_CALL_ERROR)) {
-            logger.warn("Interface error : " + doPost);
-            return null;
-        }
-
-        logger.info("Interface return value: " + doPost);
-        StopsHubVo stopsHubVo = constructStopsHubVo(JSONObject.fromObject(doPost));
+        StopsHubVo stopsHubVo = ThirdStopsComponentUtils.constructStopsHubVo(JSONObject.fromObject(doPost));
         return stopsHubVo;
 
     }
@@ -215,36 +152,15 @@ public class StopImpl implements IStop {
         map.put("pluginId", stopsHubMountId);
         String json = JSON.toJSON(map).toString();
         String doPost = HttpUtils.doPost(SysParamsCache.getStopsHubUNMountUrl(), json, 5 * 1000);
-        StopsHubVo stopsHubVo = null;
-        if (StringUtils.isBlank(doPost)) {
-            logger.warn("Interface return null ");
-            return null;
-        }
-        if (doPost.contains("Fail") || doPost.contains(HttpUtils.INTERFACE_CALL_ERROR)) {
-            logger.warn("Interface return exception : " + doPost);
-            return null;
-        }
         logger.info("Interface return value: " + doPost);
-        stopsHubVo = constructStopsHubVo(JSONObject.fromObject(doPost));
-        return stopsHubVo;
-    }
-
-    private StopsHubVo constructStopsHubVo(JSONObject jsonObject){
-
-        StopsHubVo stopsHubVo = new StopsHubVo();
-        String stopsHubMountId = jsonObject.getJSONObject("plugin").getString("id");
-        stopsHubVo.setMountId(stopsHubMountId);
-
-        //construct Stop Info
-        List<ThirdStopsComponentVo> stops = new ArrayList<>();
-        JSONArray stopsListJsonArray = jsonObject.getJSONArray("stopsInfo");
-        for(int i=0; i< stopsListJsonArray.size(); i++){
-            JSONObject stopInfoJsonObject = (JSONObject) stopsListJsonArray.get(i);
-            ThirdStopsComponentVo thirdStopsComponentVo = constructThirdStopsComponentVo(stopInfoJsonObject.getJSONObject("StopInfo"));
-            stops.add(thirdStopsComponentVo);
+        if (ThirdInterfaceReturnMsgUtils.THIRD_INTERFACE_IS_ERROR(doPost).equals(ThirdInterfaceReturnMsgUtils.ERROR)) {
+            return null;
         }
-        stopsHubVo.setStops(stops);
+
+        StopsHubVo stopsHubVo = ThirdStopsComponentUtils.constructStopsHubVo(JSONObject.fromObject(doPost));
         return stopsHubVo;
     }
+
+
 
 }

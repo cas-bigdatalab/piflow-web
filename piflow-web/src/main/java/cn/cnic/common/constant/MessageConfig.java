@@ -90,9 +90,9 @@ public class MessageConfig {
     }
     public static String NO_DATA_BY_ID_XXX_MSG(String language){
         if("ZH".equals(language)){
-            return NO_DATA_BY_ID_XXX_MSG;
+            return NO_DATA_BY_ID_XXX_MSG_ZH;
         }
-        return NO_DATA_BY_ID_XXX_MSG_ZH;
+        return NO_DATA_BY_ID_XXX_MSG;
     }
 
     private static String UPLOAD_FAILED_FILE_EMPTY_MSG;
@@ -107,9 +107,9 @@ public class MessageConfig {
     }
     public static String UPLOAD_FAILED_FILE_EMPTY(String language){
         if("ZH".equals(language)){
-            return UPLOAD_FAILED_FILE_EMPTY_MSG;
+            return UPLOAD_FAILED_FILE_EMPTY_MSG_ZH;
         }
-        return UPLOAD_FAILED_FILE_EMPTY_MSG_ZH;
+        return UPLOAD_FAILED_FILE_EMPTY_MSG;
     }
 
     private static String PARAM_IS_NULL_MSG;
@@ -124,9 +124,9 @@ public class MessageConfig {
     }
     public static String PARAM_IS_NULL_MSG(String language){
         if("ZH".equals(language)){
-            return PARAM_IS_NULL_MSG;
+            return PARAM_IS_NULL_MSG_ZH;
         }
-        return PARAM_IS_NULL_MSG_ZH;
+        return PARAM_IS_NULL_MSG;
     }
 
     private static String PARAM_ERROR_MSG;
@@ -141,9 +141,9 @@ public class MessageConfig {
     }
     public static String PARAM_ERROR_MSG(String language){
         if("ZH".equals(language)){
-            return PARAM_ERROR_MSG;
+            return PARAM_ERROR_MSG_ZH;
         }
-        return PARAM_ERROR_MSG_ZH;
+        return PARAM_ERROR_MSG;
     }
 
     private static String NO_FLOW_NODE_MSG;
@@ -158,9 +158,9 @@ public class MessageConfig {
     }
     public static String NO_FLOW_NODE_MSG(String language){
         if("ZH".equals(language)){
-            return NO_FLOW_NODE_MSG;
+            return NO_FLOW_NODE_MSG_ZH;
         }
-        return NO_FLOW_NODE_MSG_ZH;
+        return NO_FLOW_NODE_MSG;
     }
 
     private static String NO_FLOW_GROUP_NODE_MSG;
@@ -175,9 +175,9 @@ public class MessageConfig {
     }
     public static String NO_FLOW_GROUP_NODE_MSG(String language){
         if("ZH".equals(language)){
-            return NO_FLOW_GROUP_NODE_MSG;
+            return NO_FLOW_GROUP_NODE_MSG_ZH;
         }
-        return NO_FLOW_GROUP_NODE_MSG_ZH;
+        return NO_FLOW_GROUP_NODE_MSG;
     }
 
     private static String DUPLICATE_FLOW_NAME_MSG;
@@ -192,9 +192,9 @@ public class MessageConfig {
     }
     public static String DUPLICATE_FLOW_NAME_MSG(String language){
         if("ZH".equals(language)){
-            return DUPLICATE_FLOW_NAME_MSG;
+            return DUPLICATE_FLOW_NAME_MSG_ZH;
         }
-        return DUPLICATE_FLOW_NAME_MSG_ZH;
+        return DUPLICATE_FLOW_NAME_MSG;
     }
 
     private static String DUPLICATE_STOP_NAME_MSG;
@@ -209,9 +209,9 @@ public class MessageConfig {
     }
     public static String DUPLICATE_STOP_NAME_MSG(String language){
         if("ZH".equals(language)){
-            return DUPLICATE_STOP_NAME_MSG;
+            return DUPLICATE_STOP_NAME_MSG_ZH;
         }
-        return DUPLICATE_STOP_NAME_MSG_ZH;
+        return DUPLICATE_STOP_NAME_MSG;
     }
 
     private static String CONVERSION_FAILED_MSG;
@@ -226,9 +226,9 @@ public class MessageConfig {
     }
     public static String CONVERSION_FAILED_MSG(String language){
         if("ZH".equals(language)){
-            return CONVERSION_FAILED_MSG;
+            return CONVERSION_FAILED_MSG_ZH;
         }
-        return CONVERSION_FAILED_MSG_ZH;
+        return CONVERSION_FAILED_MSG;
     }
 
     private static String INTERFACE_RETURN_VALUE_IS_NULL_MSG;
@@ -243,9 +243,9 @@ public class MessageConfig {
     }
     public static String INTERFACE_RETURN_VALUE_IS_NULL_MSG(String language){
         if("ZH".equals(language)){
-            return INTERFACE_RETURN_VALUE_IS_NULL_MSG;
+            return INTERFACE_RETURN_VALUE_IS_NULL_MSG_ZH;
         }
-        return INTERFACE_RETURN_VALUE_IS_NULL_MSG_ZH;
+        return INTERFACE_RETURN_VALUE_IS_NULL_MSG;
     }
 
     private static String INTERFACE_CALL_ERROR_MSG;
@@ -260,9 +260,43 @@ public class MessageConfig {
     }
     public static String INTERFACE_CALL_ERROR_MSG(String language){
         if("ZH".equals(language)){
-            return INTERFACE_CALL_ERROR_MSG;
+            return INTERFACE_CALL_ERROR_MSG_ZH;
         }
-        return INTERFACE_CALL_ERROR_MSG_ZH;
+        return INTERFACE_CALL_ERROR_MSG;
+    }
+
+    private static String INIT_COMPONENTS_ERROR_MSG;
+    private static String INIT_COMPONENTS_ERROR_MSG_ZH;
+    @Value("${msg.init_components_error}")
+    private void setInitComponentsErrorMsg(String initComponentsErrorMsg) {
+        INIT_COMPONENTS_ERROR_MSG = initComponentsErrorMsg;
+    }
+    @Value("${msg.init_components_error.zh}")
+    private void setInitComponentsErrorMsgZh(String initComponentsErrorMsgZh) {
+        INIT_COMPONENTS_ERROR_MSG_ZH = initComponentsErrorMsgZh;
+    }
+    public static String INIT_COMPONENTS_ERROR_MSG(String language){
+        if("ZH".equals(language)){
+            return INIT_COMPONENTS_ERROR_MSG_ZH;
+        }
+        return INIT_COMPONENTS_ERROR_MSG;
+    }
+
+    private static String INIT_COMPONENTS_COMPLETED_MSG;
+    private static String INIT_COMPONENTS_COMPLETED_MSG_ZH;
+    @Value("${msg.init_components_completed}")
+    private void setInitComponentsCompletedMsg(String initComponentsCompletedMsg) {
+        INIT_COMPONENTS_COMPLETED_MSG = initComponentsCompletedMsg;
+    }
+    @Value("${msg.init_components_completed.zh}")
+    private void setInitComponentsCompletedMsgZh(String initComponentsCompletedMsgZh) {
+        INIT_COMPONENTS_COMPLETED_MSG_ZH = initComponentsCompletedMsgZh;
+    }
+    public static String INIT_COMPONENTS_COMPLETED_MSG(String language){
+        if("ZH".equals(language)){
+            return INIT_COMPONENTS_COMPLETED_MSG_ZH;
+        }
+        return INIT_COMPONENTS_COMPLETED_MSG;
     }
 
 

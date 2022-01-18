@@ -11,6 +11,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import cn.cnic.base.utils.*;
+import cn.cnic.common.constant.MessageConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.threads.ThreadPoolExecutor;
 import org.slf4j.Logger;
@@ -18,10 +20,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import cn.cnic.base.utils.JsonUtils;
-import cn.cnic.base.utils.LoggerUtil;
-import cn.cnic.base.utils.ReturnMapUtils;
-import cn.cnic.base.utils.UUIDUtils;
 import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.component.flow.domain.StopsDomain;
 import cn.cnic.component.flow.entity.Property;
@@ -67,74 +65,81 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
 
     public boolean isInBootPage() {
         // Determine if the boot flag is true
-        if (!SysParamsCache.IS_BOOT_COMPLETE) {
-            // Query is boot record
-            SysInitRecords sysInitRecordsLastNew = sysInitRecordsDomain.getSysInitRecordsLastNew(1);
-            if (null == sysInitRecordsLastNew || !sysInitRecordsLastNew.getIsSucceed()) {
-                return true;
-            }
+        if (SysParamsCache.IS_BOOT_COMPLETE) {
+            return false;
         }
-        return false;
+        // Query is boot record
+        SysInitRecords sysInitRecordsLastNew = sysInitRecordsDomain.getSysInitRecordsLastNew(1);
+        if (null != sysInitRecordsLastNew && sysInitRecordsLastNew.getIsSucceed()) {
+            return false;
+        }
+        return true;
     }
 
     @Override
     public String initComponents(String currentUser) {
         boolean inBootPage = isInBootPage();
         if (!inBootPage) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("No initialization, enter the boot page");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.INIT_COMPONENTS_COMPLETED_MSG(MessageConfig.LANGUAGE));
         }
-        Map<String, Object> rtnMap = new HashMap<>();
         ExecutorService es = new ThreadPoolExecutor(1, 5, 0L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<Runnable>(100000));
         List<String> stopsBundleList = loadStopGroup(currentUser);
-        if (null != stopsBundleList && !stopsBundleList.isEmpty()) {
-            if (null != stopsBundleList && stopsBundleList.size() > 0) {
-                for (String stopListInfos : stopsBundleList) {
-                    es.execute(() -> {
-                        Boolean aBoolean1 = loadStop(stopListInfos);
-                        if (!aBoolean1) {
-                            logger.warn("stop load failed, bundle : " + stopListInfos);
-                        }
-                    });
-                }
-            }
-            List<Stops> stopsList = stopsDomain.getStopsList();
-            if (null != stopsList && stopsList.size() > 0) {
-                for (Stops stops : stopsList) {
-                    if (null == stops) {
-                        continue;
+        if (null == stopsBundleList) {
+            return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.INTERFACE_CALL_ERROR_MSG(MessageConfig.LANGUAGE));
+        }
+        if (stopsBundleList.isEmpty()) {
+            return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG(MessageConfig.LANGUAGE));
+        }
+        if (null != stopsBundleList && stopsBundleList.size() > 0) {
+            for (String stopListInfos : stopsBundleList) {
+                es.execute(() -> {
+                    Boolean aBoolean1 = loadStop(stopListInfos);
+                    if (!aBoolean1) {
+                        logger.warn("stop load failed, bundle : " + stopListInfos);
                     }
-                    es.execute(() -> {
-                        try {
-                            syncStopsProperties(stops, currentUser);
-                        } catch (IllegalAccessException e) {
-                            logger.error("update stops data error", e);
-                        } catch (ClassNotFoundException e) {
-                            logger.error("update stops data error", e);
-                        }
-                    });
+                });
+            }
+        }
+        List<Stops> stopsList = stopsDomain.getStopsList();
+        if (null != stopsList && stopsList.size() > 0) {
+            for (Stops stops : stopsList) {
+                if (null == stops) {
+                    continue;
                 }
+                es.execute(() -> {
+                    try {
+                        syncStopsProperties(stops, currentUser);
+                    } catch (IllegalAccessException e) {
+                        logger.error("update stops data error", e);
+                    } catch (ClassNotFoundException e) {
+                        logger.error("update stops data error", e);
+                    }
+                });
             }
         }
         SysParamsCache.THREAD_POOL_EXECUTOR = ((ThreadPoolExecutor) es);
-        rtnMap.put("code", 200);
-        return JsonUtils.toJsonNoException(rtnMap);
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
     }
 
     @Override
     public String threadMonitoring(String currentUser) {
         if (null == SysParamsCache.THREAD_POOL_EXECUTOR) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("THREAD_POOL_EXECUTOR is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.INIT_COMPONENTS_ERROR_MSG(MessageConfig.LANGUAGE));
         }
         //Total number of threads
         double taskCount = SysParamsCache.THREAD_POOL_EXECUTOR.getTaskCount();
         //Number of execution completion threads
         double completedTaskCount = SysParamsCache.THREAD_POOL_EXECUTOR.getCompletedTaskCount();
+        if (0 == taskCount) {
+            taskCount = 1;
+            completedTaskCount = 1;
+        }
         double progressNum = ((completedTaskCount / taskCount) * 40);
         if (39 < progressNum && progressNum < 40) {
             progressNum = 39;
         }
-        long progressNumLong = (long) Math.ceil(progressNum) + 60;
+        double progressNumLong = DecimalFormatUtils.formatTwoDecimalPlaces(progressNum) + 60;
 
         if (100 == progressNumLong) {
             addSysInitRecordsAndSave();
@@ -144,12 +149,15 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
 
     private List<String> loadStopGroup(String currentUser) {
         Map<String, List<String>> stopsListWithGroup = stopImpl.getStopsListWithGroup();
-        if (null == stopsListWithGroup || stopsListWithGroup.isEmpty()) {
+        if (null == stopsListWithGroup) {
             return null;
+        }
+        if (stopsListWithGroup.isEmpty()) {
+            return new ArrayList<>();
         }
         // The call is successful, empty the "StopsComponentGroup" and "StopsComponent" message and insert
         int deleteGroup = stopsComponentDomain.deleteStopsComponentGroup();
-        logger.debug("Successful deletion Group" + deleteGroup + "piece of data!!!");
+        logger.info("Successful deletion Group" + deleteGroup + "piece of data!!!");
         int deleteStopsInfo = stopsComponentDomain.deleteStopsComponent();
         logger.info("Successful deletion StopsInfo" + deleteStopsInfo + "piece of data!!!");
 
@@ -170,7 +178,7 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
             List<String> list = stopsListWithGroup.get(groupName);
             stopsBundleList.addAll(list);
         }
-        logger.debug("Successful insert Group" + addStopsComponentGroupRows + "piece of data!!!");
+        logger.info("Successful insert Group" + addStopsComponentGroupRows + "piece of data!!!");
         // Deduplication
         HashSet<String> stopsBundleListDeduplication = new HashSet<String>(stopsBundleList);
         stopsBundleList.clear();
