@@ -9,17 +9,54 @@ import java.util.List;
 @Service
 public interface ISysUserService {
 
-    public SysUser findByUsername(String username);
+    /**
+     * Query getScheduleListPage (parameter space-time non-paging)
+     *
+     * @param isAdmin is admin
+     * @param username   username
+     * @param offset Number of pages
+     * @param limit  Number each page
+     * @param param  Search content
+     * @return json
+     */
+    public String getUserListPage( String username,boolean isAdmin, Integer offset, Integer limit, String param);
+
+
+    /**
+     * get UserVo by id
+     *
+     * @param isAdmin is admin
+     * @param username username
+     * @param id       user id
+     * @return json
+     */
+    public String getUserById(boolean isAdmin, String username, String id);
+
+    /**
+     * Update user
+     *
+     * @param isAdmin is admin
+     * @param username   username
+     * @param sysUserVo user
+     * @return json
+     */
+    public String update(boolean isAdmin, String username, SysUserVo sysUserVo);
+
+    /**
+     * Delete user
+     *
+     * @param isAdmin is admin
+     * @param username username
+     * @param id       user id
+     * @return json
+     */
+    public String delUser(boolean isAdmin, String username, String id);
 
     public String checkUserName(String username);
-
-    public List<SysUser> findByName(String name);
-
-    public List<SysUser> getUserList();
-
-    public int deleteUser(String id);
 
     public String registerUser(SysUserVo sysUserVo);
 
     public String jwtLogin(String username, String password);
+
+    public int deleteUser(String id);
 }

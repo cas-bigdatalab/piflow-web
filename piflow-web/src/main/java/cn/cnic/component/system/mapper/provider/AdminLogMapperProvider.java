@@ -77,7 +77,7 @@ public class AdminLogMapperProvider {
         }
         StringBuffer sqlStrbuf = new StringBuffer();
         sqlStrbuf.append("SELECT * ");
-        sqlStrbuf.append("FROM sys_log ");
+        sqlStrbuf.append("FROM sys_operation_log ");
         sqlStrbuf.append("WHERE enable_flag = 1 ");
         if (!isAdmin) {
             sqlStrbuf.append("AND username = " + SqlUtils.preventSQLInjection(username));
@@ -101,7 +101,7 @@ public class AdminLogMapperProvider {
         this.preventSQLInjectionLog(record);
 
         StringBuffer strBuf = new StringBuffer();
-        strBuf.append("INSERT INTO sys_log ");
+        strBuf.append("INSERT INTO sys_operation_log ");
 
         strBuf.append("( ");
 //        strBuf.append(SqlUtils.baseFieldName() + ", ");

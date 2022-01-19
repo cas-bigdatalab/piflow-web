@@ -16,6 +16,6 @@ public interface AdminLogService {
      */
     public String getLogListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param);
 
-   public void add(SysLog log);
+    public void add(SysLog log);
 
 }

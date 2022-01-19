@@ -2,6 +2,7 @@ package cn.cnic.component.system.mapper;
 
 import java.util.List;
 
+import cn.cnic.component.system.vo.SysUserVo;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
 
@@ -10,6 +11,22 @@ import cn.cnic.component.system.entity.SysUser;
 
 @Mapper
 public interface SysUserMapper {
+
+    @InsertProvider(type = SysUserMapperProvider.class, method = "insertSysUser")
+    public int insertSysUser(SysUser sysUser);
+
+    @InsertProvider(type = SysUserMapperProvider.class, method = "updateSysUser")
+    public int updateSysUser(SysUser user);
+
+    @SelectProvider(type = SysUserMapperProvider.class, method = "getSysUserById")
+    public SysUser getSysUserById(boolean isAdmin,String username, @Param("id") String id);
+
+    @SelectProvider(type = SysUserMapperProvider.class, method = "getSysUserById")
+    public SysUserVo getSysUserVoById(boolean isAdmin, String username, @Param("id") String id);
+
+    @SelectProvider(type = SysUserMapperProvider.class, method = "getUserList")
+    public List<SysUserVo> getSysUserVoList(@Param("isAdmin") boolean isAdmin,@Param("username") String username, @Param("param") String param);
+
     @SelectProvider(type = SysUserMapperProvider.class, method = "findUserByNameLike")
     public List<SysUser> findUserByNameLike(@Param("name") String name);
 
@@ -23,13 +40,6 @@ public interface SysUserMapper {
 
     })
     public SysUser findUserByUserName(String userName);
-
-    @Select("select * from sys_user")
-    public List<SysUser> getUserList();
-
-    @InsertProvider(type = SysUserMapperProvider.class, method = "insertSysUser")
-    public int insertSysUser(SysUser sysUser);
-
 
     @Delete("DELETE FROM sys_init_records WHERE id=#{id}")
     public int deleteUserById(String id);

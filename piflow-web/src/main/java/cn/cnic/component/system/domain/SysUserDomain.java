@@ -2,6 +2,7 @@ package cn.cnic.component.system.domain;
 
 import java.util.List;
 
+import cn.cnic.component.system.vo.SysUserVo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -47,16 +48,31 @@ public class SysUserDomain {
         return insertSysUserAffectedRows + insertSysRoleListAffectedRows;
     }
 
+    public int updateSysUser(SysUser sysUser) throws Exception {
+        if (null == sysUser) {
+            throw new Exception("sysUser is null");
+        }
+        return sysUserMapper.updateSysUser(sysUser);
+    }
+
+    public List<SysUserVo> getSysUserVoList(boolean isAdmin, String username, String param) {
+        return sysUserMapper.getSysUserVoList(isAdmin, username, param);
+    }
+
+    public SysUserVo getSysUserVoById(boolean isAdmin, String username, String param) {
+        return sysUserMapper.getSysUserVoById(isAdmin, username, param);
+    }
+
+    public SysUser getSysUserById(boolean isAdmin, String username, String param) {
+        return sysUserMapper.getSysUserById(isAdmin, username, param);
+    }
+
     public SysUser findUserByUserName(String userName) {
         return sysUserMapper.findUserByUserName(userName);
     }
 
     public List<SysUser> findUserByName(String name) {
         return sysUserMapper.findUserByName(name);
-    }
-
-    public List<SysUser> getUserList() {
-        return sysUserMapper.getUserList();
     }
 
     public long getSysRoleMaxId() {

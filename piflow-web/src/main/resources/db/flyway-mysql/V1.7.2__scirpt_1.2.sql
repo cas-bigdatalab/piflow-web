@@ -1,8 +1,8 @@
 -- ----------------------------
--- Table structure for sys_log
+-- Table structure for sys_operation_log
 -- ----------------------------
-DROP TABLE IF EXISTS `sys_log`;
-CREATE TABLE `sys_log`
+DROP TABLE IF EXISTS `sys_operation_log`;
+CREATE TABLE `sys_operation_log`
 (
     `id`               int(11) NOT NULL AUTO_INCREMENT,
     `username`         varchar(45) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '用户名',

@@ -78,6 +78,23 @@ public class MessageConfig {
         return ILLEGAL_USER_MSG;
     }
 
+    private static String NO_DATA_MSG;
+    private static String NO_DATA_MSG_ZH;
+    @Value("${msg.no_data}")
+    private void setNoDataMsg(String noDataMsg) {
+        NO_DATA_MSG = noDataMsg;
+    }
+    @Value("${msg.no_data.zh}")
+    private void setNoDataMsgZh(String noDataMsgZh) {
+        NO_DATA_MSG_ZH = noDataMsgZh;
+    }
+    public static String NO_DATA_MSG(String language){
+        if("ZH".equals(language)){
+            return NO_DATA_MSG_ZH;
+        }
+        return NO_DATA_MSG;
+    }
+
     private static String NO_DATA_BY_ID_XXX_MSG;
     private static String NO_DATA_BY_ID_XXX_MSG_ZH;
     @Value("${msg.no_data_by_id}")

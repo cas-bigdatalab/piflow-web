@@ -118,7 +118,7 @@ public class SysScheduleMapperProvider {
 
     public String getSysScheduleListByStatus(@Param("isAdmin") boolean isAdmin, @Param("status") ScheduleState status) {
         if (!isAdmin || null == status) {
-            return "SELECT 0";
+            return "SELECT * FROM sys_schedule WHERE id IS NULL";
         }
         StringBuffer sqlStrbuf = new StringBuffer();
         sqlStrbuf.append("SELECT * ");
@@ -140,7 +140,7 @@ public class SysScheduleMapperProvider {
      * @return
      */
     public String getSysScheduleList(boolean isAdmin, String param) {
-        String sqlStr = "SELECT 0";
+        String sqlStr = "SELECT * FROM sys_schedule WHERE id IS NULL";;
         if (isAdmin) {
             StringBuffer sqlStrbuf = new StringBuffer();
             sqlStrbuf.append("SELECT * ");

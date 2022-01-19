@@ -2,8 +2,8 @@ package cn.cnic.controller.api.admin;
 
 import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.component.system.service.ILogHelperService;
+import cn.cnic.component.system.service.ISysUserService;
 import cn.cnic.component.system.vo.SysUserVo;
-import cn.cnic.component.user.service.AdminUserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/user")
 public class AdminUserCtrl {
 
-    private final AdminUserService adminUserServiceImpl;
+    private final ISysUserService sysUserServiceImpl;
     private final ILogHelperService logHelperServiceImpl;
 
     @Autowired
-    public AdminUserCtrl(AdminUserService adminUserServiceImpl, ILogHelperService logHelperServiceImpl) {
-        this.adminUserServiceImpl = adminUserServiceImpl;
+    public AdminUserCtrl(ISysUserService sysUserServiceImpl, ILogHelperService logHelperServiceImpl) {
+        this.sysUserServiceImpl = sysUserServiceImpl;
         this.logHelperServiceImpl = logHelperServiceImpl;
     }
 
@@ -28,7 +28,7 @@ public class AdminUserCtrl {
     public String getUserListPage(Integer page, Integer limit, String param) {
         boolean isAdmin = SessionUserUtil.isAdmin();
         String username = SessionUserUtil.getCurrentUsername();
-        return adminUserServiceImpl.getUserListPage(username, isAdmin, page, limit, param);
+        return sysUserServiceImpl.getUserListPage(username, isAdmin, page, limit, param);
     }
 
     @RequestMapping("/updateUser")
@@ -37,7 +37,7 @@ public class AdminUserCtrl {
         boolean isAdmin = SessionUserUtil.isAdmin();
         String username = SessionUserUtil.getCurrentUsername();
         logHelperServiceImpl.logAuthSucceed("update user",username);
-        return  adminUserServiceImpl.update(isAdmin,username,sysUserVo);
+        return  sysUserServiceImpl.update(isAdmin,username,sysUserVo);
     }
 
     @RequestMapping("/getUserById")
@@ -45,7 +45,7 @@ public class AdminUserCtrl {
     public String getScheduleById(String userId) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
-        return adminUserServiceImpl.getUserById( isAdmin,username, userId);
+        return sysUserServiceImpl.getUserById( isAdmin,username, userId);
     }
 
     @RequestMapping("/delUser")
@@ -54,7 +54,7 @@ public class AdminUserCtrl {
         boolean isAdmin = SessionUserUtil.isAdmin();
         String username = SessionUserUtil.getCurrentUsername();
         logHelperServiceImpl.logAuthSucceed("del user" + sysUserId,username);
-        return  adminUserServiceImpl.delUser(isAdmin,username,sysUserId);
+        return  sysUserServiceImpl.delUser(isAdmin,username,sysUserId);
     }
 
 

@@ -6,6 +6,10 @@ import lombok.Setter;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * sys_operation_log
+ */
+
 @Getter
 @Setter
 public class SysLog implements Serializable {
