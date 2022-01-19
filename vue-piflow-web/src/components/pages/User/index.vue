@@ -222,7 +222,7 @@ export default {
                 username: this.username,
                 password: this.password,
                 status: this.status,
-                role:this.role.text
+                role:this.role
             };
             if (this.id) {
                 data.id = this.id;
@@ -267,7 +267,7 @@ export default {
                     this.username = data.username;
                     this.password = data.password;
                     this.status = data.status;
-                    this.role  = data.role.text;
+                    this.role  = data.role;
                     this.$event.emit("loading", false);
                     this.isOpen = true;
                 } else {
@@ -339,7 +339,7 @@ export default {
             if (res.data.code === 200) {
                 let data = res.data.data;
                 this.tableData = data.map(item => {
-                item.role = item.role.stringValue;
+                item.role = "USER";
                 return item;
                 });
                 this.total = res.data.count;
@@ -352,7 +352,7 @@ export default {
         })
         .catch(error => {
             console.log(error);
-                this.$Message.error({
+            this.$Message.error({
                 content: this.$t("tip.get_user_content"),
                 duration: 3
             });
