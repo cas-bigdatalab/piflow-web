@@ -8,6 +8,7 @@ import cn.cnic.component.system.vo.SysUserVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
@@ -23,7 +24,7 @@ public class AdminUserCtrl {
         this.logHelperServiceImpl = logHelperServiceImpl;
     }
 
-    @RequestMapping("/getUserListPage")
+    @RequestMapping(value = "/getUserListPage", method = RequestMethod.GET)
     @ResponseBody
     public String getUserListPage(Integer page, Integer limit, String param) {
         boolean isAdmin = SessionUserUtil.isAdmin();
@@ -31,7 +32,7 @@ public class AdminUserCtrl {
         return sysUserServiceImpl.getUserListPage(username, isAdmin, page, limit, param);
     }
 
-    @RequestMapping("/updateUser")
+    @RequestMapping(value = "/updateUser", method = RequestMethod.GET)
     @ResponseBody
     public String updateUserInfo(SysUserVo sysUserVo) {
         boolean isAdmin = SessionUserUtil.isAdmin();
@@ -40,7 +41,7 @@ public class AdminUserCtrl {
         return  sysUserServiceImpl.update(isAdmin,username,sysUserVo);
     }
 
-    @RequestMapping("/getUserById")
+    @RequestMapping(value = "/getUserById", method = RequestMethod.GET)
     @ResponseBody
     public String getScheduleById(String userId) {
         String username = SessionUserUtil.getCurrentUsername();
@@ -48,7 +49,7 @@ public class AdminUserCtrl {
         return sysUserServiceImpl.getUserById( isAdmin,username, userId);
     }
 
-    @RequestMapping("/delUser")
+    @RequestMapping(value = "/delUser", method = RequestMethod.GET)
     @ResponseBody
     public String delUser(String sysUserId) {
         boolean isAdmin = SessionUserUtil.isAdmin();

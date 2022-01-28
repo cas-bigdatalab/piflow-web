@@ -996,6 +996,84 @@ Graph = function(container, model, renderHint, stylesheet, themes, standalone)
 };
 
 /**
+ * 
+ * Custom Area
+ */
+//------------------------------ Custom modification content yifan-livley-02 start ------------------------------
+
+
+/**
+* 1. loop 单条线成环
+* 2. muti 多条线
+* 3. disConnect 不允许移动线条
+*/
+Graph.prototype.errorToast = function (message)
+{
+alert("Please initialize the method (Graph.prototype.errorToast)");
+};
+
+
+mxGraph.prototype.validationAlert = function (message) {
+	// console.log(message);
+	Graph.prototype.errorToast(message);
+}
+
+let mxGraphHandlerMoveCells = mxGraphHandler.prototype.moveCells;
+mxGraphHandler.prototype.moveCells = function(cells, dx, dy, clone, target, evt)
+{		
+	mxGraphHandlerMoveCells.apply(this, arguments);
+	for (let index = 0; index < cells.length; index++) {
+			if (cells[index].edge !== 1 && cells[index].edge !== true) {
+					return;
+			}
+			
+	} 
+	Graph.prototype.errorToast('disConnect');			
+};
+
+/* Overwrite getEdgeValidationError
+ * 
+ * edge - <mxCell> that represents the edge to validate.
+ * source - <mxCell> that represents the source terminal.
+ * target - <mxCell> that represents the target terminal.
+ */
+let oldGetEdgeValidationError = mxGraph.prototype.getEdgeValidationError;
+mxGraph.prototype.getEdgeValidationError = function(edge, source, target)
+{
+	// Checks if we're dealing with a loop
+	if (!this.allowLoops && source == target && source != null)
+	{
+		//------------------------------ Custom modification content yifan-livley-01 start ------------------------------
+		return 'loop';
+		//------------------------------ Custom modification content yifan-livley-01 end   ------------------------------
+		// return '';
+	}
+	
+	if (source != null && target != null)
+	{
+		var error = '';
+
+		// Checks if the cells are already connected
+		// and adds an error message if required			
+		if (!this.multigraph)
+		{
+			var tmp = this.model.getEdgesBetween(source, target, true);
+			
+			// Checks if the source and target are not connected by another edge
+			if (tmp.length > 1 || (tmp.length == 1 && tmp[0] != edge))
+			{
+				//------------------------------ Custom modification content yifan-livley-01 start ------------------------------
+				return error += 'muti';
+				//------------------------------ Custom modification content yifan-livley-01 end   ------------------------------
+
+			}
+		}
+		oldGetEdgeValidationError.apply(this,arguments);
+	}
+};
+//------------------------------ Custom modification content yifan-livley-02 end   ------------------------------
+
+/**
  * Specifies if the touch UI should be used (cannot detect touch in FF so always on for Windows/Linux)
  */
 Graph.touchStyle = mxClient.IS_TOUCH || (mxClient.IS_FF && mxClient.IS_WIN) || navigator.maxTouchPoints > 0 ||
@@ -3552,7 +3630,7 @@ HoverIcons.prototype.isResetEvent = function(evt, allowShift)
 HoverIcons.prototype.createArrow = function(img, tooltip)
 {
 	var arrow = null;
-	
+
 	if (mxClient.IS_IE && !mxClient.IS_SVG)
 	{
 		// Workaround for PNG images in IE6
@@ -3723,7 +3801,6 @@ HoverIcons.prototype.drag = function(evt, x, y)
 {
 	this.graph.popupMenuHandler.hideMenu();
 	this.graph.stopEditing(false);
-
 	// Checks if state was removed in call to stopEditing above
 	if (this.currentState != null)
 	{
@@ -5004,8 +5081,10 @@ if (typeof mxVertexHandler != 'undefined')
 			marker.getCell = mxUtils.bind(this, function(me)
 			{
 				var result = markerGetCell.apply(this, arguments);
-			
-				this.error = null;
+				//------------------------------ Custom modification content yifan-livley-02 start ------------------------------
+				// this.error = null;
+				//------------------------------ Custom modification content yifan-livley-02 end   ------------------------------
+				
 				
 				return result;
 			});

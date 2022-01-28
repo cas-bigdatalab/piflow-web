@@ -7024,7 +7024,7 @@ mxGraph.prototype.cellConnected = function(edge, terminal, source, constraint)
 			if (this.isPortsEnabled())
 			{
 				var id = null;
-	
+
 				if (this.isPort(terminal))
 				{
 					id = terminal.getId();

@@ -100,11 +100,9 @@ module.exports = {
     // host: "localhost",
     proxy: {
       '/piflow-web': {
-        // target: 'http://10.0.90.119:6002',
-        // target: 'http://10.0.90.155:6002',
-        target: 'http://127.0.0.1:6002',
-        // target: 'http://10.0.85.80:6002/piflow-web/admin',
-        // target: 'http://10.0.85.82:6001',
+        //target: 'http://localhost:6002',
+        // target: 'http://localhost:6002/piflow-web/admin',
+        // target: 'http://127.0.0.1:6001',
         changeOrigin: true,
         ws: true, // 是否启用websockets
         secure: false, // 使用的是http协议则设置为false，https协议则设置为true
