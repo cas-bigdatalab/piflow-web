@@ -190,6 +190,11 @@ export default {
               icoName: "ios-paper",
               btnName:  this.$t("sidebar.log"),
               name: "log",
+            },{
+              router: "/modification",
+              icoName: "ios-paper",
+              btnName:  this.$t("sidebar.modification"),
+              name: "modification",
             }
           ]
         }

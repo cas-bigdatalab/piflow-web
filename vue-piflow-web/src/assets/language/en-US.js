@@ -19,7 +19,8 @@ module.exports = {
         stopsComponent: 'StopsComponent',
         globalVariable: 'GlobalVariable',
         user:"User",
-        log:"Log"
+        log:"Log",
+        modification:"Modification",
     },
     page: {
         prev_text: "Previous",
@@ -199,7 +200,13 @@ module.exports = {
         password:"Password",
         role:"Role"
     },
-
+    modification_columns:{
+        oldPasswd: "old Password",
+        passwd: "new Password",
+        passwdCheck: "Confirm",
+        Reset: "Reset",
+        Submit: "Submit"
+    },
     log_columns:{
         username: "userName",
         lastLoginIp:"ip",

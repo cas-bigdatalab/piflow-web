@@ -19,7 +19,8 @@ module.exports = {
         stopsComponent: '组件显示',
         globalVariable: '全局变量',
         user:'用户管理',
-        log:'通知管理'
+        log:'通知管理',
+        modification:"修改密码",
     },
     page: {
         prev_text: "上一页",
@@ -199,7 +200,13 @@ module.exports = {
         password:"密码",
         role:"权限"
     },
-
+    modification_columns:{
+        oldPasswd: "旧密码",
+        passwd: "新密码",
+        passwdCheck: "确认密码",
+        Reset: "重置",
+        Submit: "确认"
+    },
     log_columns:{
         username: "用户名",
         lastLoginIp:"ip地址",

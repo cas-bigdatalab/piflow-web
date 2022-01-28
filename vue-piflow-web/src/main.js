@@ -160,7 +160,9 @@ async function startApp() {
     if(process.env.NODE_ENV == 'development'){
       API_URL = res.data.DEV_URL;
     }else{
-      API_URL = res.data.BASE_URL;
+      let url = res.data.BASE_URL.replace('0.0.0.0',window.location.host);
+
+      API_URL = url;
     }
 
     axios.defaults.baseURL = API_URL;

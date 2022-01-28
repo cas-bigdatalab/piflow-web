@@ -121,6 +121,11 @@ export default new Router({
               path:'/log',
               name:'log',
               component:() => import('../components/pages/User/log')
+            },
+            {
+              path:'/modification',
+              name:'modification',
+              component:() => import('../components/pages/User/modification')
             }
           ]
         },
