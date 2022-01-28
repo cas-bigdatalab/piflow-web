@@ -12,8 +12,6 @@ import java.util.Date;
 
 public class AdminLogMapperProvider {
 
-    private String id;
-
     private String username;
 
     private String lastLoginIp;
@@ -30,8 +28,6 @@ public class AdminLogMapperProvider {
 
     private String lastUpdateDttmStr;
 
-    private Boolean enableFlag;
-
 
     private boolean preventSQLInjectionLog(SysLog sysLog) {
         if (null == sysLog ) {
@@ -45,7 +41,6 @@ public class AdminLogMapperProvider {
         this.action = SqlUtils.preventSQLInjection(sysLog.getAction());
         this.comment = SqlUtils.preventSQLInjection(sysLog.getComment());
         this.result = SqlUtils.preventSQLInjection(sysLog.getResult());
-        this.enableFlag = (null != sysLog.getEnableFlag() && sysLog.getEnableFlag());
         this.status = (null != sysLog.getStatus() && sysLog.getStatus());
         this.lastUpdateDttmStr = SqlUtils.preventSQLInjection(lastUpdateDttm);
         this.ctrDttmStr = SqlUtils.preventSQLInjection(ctrDttmStr);
@@ -55,11 +50,9 @@ public class AdminLogMapperProvider {
     }
 
     private void resetLog() {
-        this.id = null;
         this.username = null;
         this.lastUpdateDttmStr = null;
         this.status = true;
-        this.enableFlag = true;
         this.lastLoginIp = null;
         this.result = null;
         this.comment = null;

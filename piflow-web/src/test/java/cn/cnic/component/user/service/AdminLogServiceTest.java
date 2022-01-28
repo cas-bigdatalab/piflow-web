@@ -1,19 +1,14 @@
 package cn.cnic.component.user.service;
 
 import cn.cnic.ApplicationTests;
-import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.component.system.entity.SysLog;
 import cn.cnic.component.system.service.AdminLogService;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 
 public class AdminLogServiceTest extends ApplicationTests implements Runnable {
-    /**
-     * Introducing logs, note that they are all packaged under "org.slf4j"
-     */
-    private Logger logger = LoggerUtil.getLogger();
+
 
     private final AdminLogService logService;
 

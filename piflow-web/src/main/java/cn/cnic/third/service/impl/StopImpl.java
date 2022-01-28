@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import cn.cnic.common.constant.MessageConfig;
 import cn.cnic.third.utils.ThirdInterfaceReturnMsgUtils;
 import cn.cnic.third.utils.ThirdStopsComponentUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -19,9 +18,7 @@ import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.third.service.IStop;
 import cn.cnic.third.vo.stop.StopsHubVo;
-import cn.cnic.third.vo.stop.ThirdStopsComponentPropertyVo;
 import cn.cnic.third.vo.stop.ThirdStopsComponentVo;
-import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 

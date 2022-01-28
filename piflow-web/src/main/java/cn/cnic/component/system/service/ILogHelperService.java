@@ -1,10 +1,7 @@
 package cn.cnic.component.system.service;
 
-import cn.cnic.component.system.entity.SysUser;
-import cn.cnic.component.system.vo.SysUserVo;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 @Service
 public interface ILogHelperService {

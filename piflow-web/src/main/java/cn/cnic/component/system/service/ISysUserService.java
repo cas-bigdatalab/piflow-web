@@ -1,10 +1,8 @@
 package cn.cnic.component.system.service;
 
-import cn.cnic.component.system.entity.SysUser;
 import cn.cnic.component.system.vo.SysUserVo;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 @Service
 public interface ISysUserService {
@@ -41,6 +39,16 @@ public interface ISysUserService {
      * @return json
      */
     public String update(boolean isAdmin, String username, SysUserVo sysUserVo);
+
+    /**
+     * Update user
+     *
+     * @param username   username
+     * @param oldPassword   old password
+     * @param password   new  password
+     * @return json
+     */
+    public String updatePassword(String username, String oldPassword, String password);
 
     /**
      * Delete user

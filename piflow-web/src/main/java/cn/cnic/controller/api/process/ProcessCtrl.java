@@ -14,7 +14,6 @@ import cn.cnic.component.process.service.IProcessPathService;
 import cn.cnic.component.process.service.IProcessService;
 import cn.cnic.component.process.service.IProcessStopService;
 import cn.cnic.component.process.vo.DebugDataRequest;
-import cn.cnic.third.service.IFlow;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -29,19 +28,16 @@ public class ProcessCtrl {
     private final IProcessPathService processPathServiceImpl;
     private final IProcessService processServiceImpl;
     private final ILogHelperService logHelperServiceImpl;
-    private final IFlow flowImpl;
 
     @Autowired
     public ProcessCtrl(IProcessStopService processStopServiceImpl,
                        IProcessPathService processPathServiceImpl,
                        IProcessService processServiceImpl,
-                       ILogHelperService logHelperServiceImpl,
-                       IFlow flowImpl) {
+                       ILogHelperService logHelperServiceImpl) {
         this.processStopServiceImpl = processStopServiceImpl;
         this.processPathServiceImpl = processPathServiceImpl;
         this.processServiceImpl = processServiceImpl;
         this.logHelperServiceImpl = logHelperServiceImpl;
-        this.flowImpl = flowImpl;
     }
 
     /**

@@ -133,7 +133,35 @@ public class SysUserServiceImpl implements ISysUserService {
         }
     }
 
-
+    /**
+     * Update user
+     *
+     * @param username   username
+     * @param oldPassword   old password
+     * @param password   new  password
+     * @return json
+     */
+    public String updatePassword(String username, String oldPassword, String password){
+        if(StringUtils.isBlank(username) || StringUtils.isBlank(oldPassword) || StringUtils.isBlank(password)){
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_OPERATION_MSG(MessageConfig.LANGUAGE));
+        }
+        SysUser userByUserName = sysUserDomain.findUserByUserName(username);
+        if (userByUserName == null || StringUtils.isBlank(userByUserName.getUsername())) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG(MessageConfig.LANGUAGE));
+        }
+        boolean matches = new BCryptPasswordEncoder().matches(oldPassword, userByUserName.getPassword());
+        if (!matches) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG(MessageConfig.LANGUAGE));
+        }
+        String encodePassword = new BCryptPasswordEncoder().encode(password);
+        userByUserName.setPassword(encodePassword);
+        try {
+            sysUserDomain.updateSysUser(userByUserName);
+        } catch (Exception e) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG(MessageConfig.LANGUAGE));
+        }
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
+    }
 
     @Override
     public String delUser(boolean isAdmin, String username, String sysUserId) {

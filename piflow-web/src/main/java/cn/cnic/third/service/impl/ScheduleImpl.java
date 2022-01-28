@@ -6,7 +6,6 @@ import java.util.Map;
 import cn.cnic.common.constant.MessageConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import cn.cnic.base.utils.DateUtils;
@@ -15,8 +14,6 @@ import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.common.Eunm.RunModeType;
 import cn.cnic.common.constant.SysParamsCache;
-import cn.cnic.component.flow.mapper.FlowGroupMapper;
-import cn.cnic.component.flow.mapper.FlowMapper;
 import cn.cnic.component.process.entity.Process;
 import cn.cnic.component.process.entity.ProcessGroup;
 import cn.cnic.component.process.utils.ProcessUtils;

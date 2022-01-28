@@ -1,7 +1,5 @@
 package cn.cnic.component.system.service;
 
-import cn.cnic.component.dataSource.entity.DataSource;
-import cn.cnic.component.dataSource.vo.DataSourceVo;
 import cn.cnic.component.system.entity.SysLog;
 
 public interface AdminLogService {
