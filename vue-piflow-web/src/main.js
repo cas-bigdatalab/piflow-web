@@ -160,7 +160,7 @@ async function startApp() {
     if(process.env.NODE_ENV == 'development'){
       API_URL = res.data.DEV_URL;
     }else{
-      let url = res.data.BASE_URL.replace('0.0.0.0',window.location.host);
+      let url = res.data.BASE_URL.replace('0.0.0.0',window.location.hostname);
 
       API_URL = url;
     }
