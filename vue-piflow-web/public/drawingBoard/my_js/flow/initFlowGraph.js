@@ -228,6 +228,7 @@ function initFlowGraph() {
     Menus.prototype.customCellRightMenu = ['runCurrentStop', 'runCurrentAndBelowStops'];
     Actions.prototype.RunCells = RunFlowOrFlowCells;
     Actions.prototype.RunCellsUp = RunFlowOrFlowCellsUp;
+    Graph.prototype.errorToast = toastErrorMsg;
     Format.hideSidebar(false, true);
     //EditorUi.prototype.formatWidth = 0;
     $("#right-group-wrap")[0].style.display = "block";
@@ -235,6 +236,7 @@ function initFlowGraph() {
     EditorUi.prototype.init = function () {
         editorUiInit.apply(this, arguments);
         graphGlobal = this.editor.graph;
+        undoManagerGlobal = this.editor.undoManager;
         thisEditor = this.editor;
         this.actions.get('export').setEnabled(false);
         //Monitoring event
@@ -269,6 +271,10 @@ function initFlowGraph() {
         graphGlobal.setCellsResizable(false);
         // repeat connection
         graphGlobal.setMultigraph(false);
+        // Disconnect cell On Move
+        graphGlobal.setDisconnectOnMove(false);
+        // Not Allow Loop connection
+        graphGlobal.setAllowLoops(false);
     };
 
     // Adds required resources (disables loading of fallback properties, this can only
@@ -1467,6 +1473,10 @@ function addMxCellOperation(evt) {
 
 // moved MxCell operation
 function movedMxCellOperation(evt) {
+    let evtCellsArr =  evt.properties.cells;
+    if(evtCellsArr.length === 1 && evtCellsArr[0].edge == 1) {
+        console.log("Connect Line MOVE");
+    }
     statusgroup = ""
     if (evt.properties.disconnect) {
         saveXml(null, 'MOVED');   // preservation method
@@ -2264,4 +2274,19 @@ window.addEventListener("message",function(event){
 function RunFlowOrFlowCells(includeEdges) {
     StopsComponentIsNeeedSourceData(stopsId, false)
 
+}
+
+//toast error msg
+function toastErrorMsg(errorMsg) {
+    switch (errorMsg) {
+        case 'loop':
+            layer.msg('不允许连接相同元素！', {icon: 2, shade: 0, time: 2000});
+            break;
+        case 'muti':
+            layer.msg('不允许同时连接两条线！', {icon: 2, shade: 0, time: 2000});
+            break;
+        case 'disConnect':
+            layer.msg('不允许单独移动边！', {icon: 2, shade: 0, time: 2000});
+            break;
+    }
 }

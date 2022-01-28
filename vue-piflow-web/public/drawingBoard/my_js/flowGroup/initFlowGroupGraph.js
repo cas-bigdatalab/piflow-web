@@ -215,6 +215,7 @@ function initFlowGroupGraph() {
     Actions.prototype.RunAll = runFlowGroup;
     Actions.prototype.RunCells = RunFlowOrFlowGroupCells;
     EditorUi.prototype.saveGraphData = saveXml;
+    Graph.prototype.errorToast = toastErrorMsg;
     Format.hideSidebar(true, true);
     Format.customizeType = "GROUP";
     var editorUiInit = EditorUi.prototype.init;
@@ -261,6 +262,10 @@ function initFlowGroupGraph() {
             }
         });
         loadXml(xmlDate);
+        // Disconnect cell On Move
+        graphGlobal.setDisconnectOnMove(false);
+        // Not Allow Loop connection
+        graphGlobal.setAllowLoops(false);
     };
 
     // Adds required resources (disables loading of fallback properties, this can only
@@ -1616,3 +1621,17 @@ function runFlowGroup(runMode) {
     });
 }
 
+//toast error msg
+function toastErrorMsg(errorMsg) {
+    switch (errorMsg) {
+        case 'loop':
+            layer.msg('不允许连接相同元素！', {icon: 2, shade: 0, time: 2000});
+            break;
+        case 'muti':
+            layer.msg('不允许同时连接两条线！', {icon: 2, shade: 0, time: 2000});
+            break;
+        case 'disConnect':
+            layer.msg('不允许单独移动边！', {icon: 2, shade: 0, time: 2000});
+            break;
+    }
+}
