@@ -23,5 +23,8 @@ public interface SysRoleMapper {
 
     @InsertProvider(type = SysRoleMapperProvider.class, method = "insertSysRoleList")
     public int insertSysRoleList(@Param("userId") String userId, @Param("roles") List<SysRole> roles);
+    
+    @SelectProvider(type = SysRoleMapperProvider.class, method = "getSysRoleBySysUserId")
+    public SysRole getSysRoleBySysUserId(@Param("sysUserId") String sysUserId);
 
 }

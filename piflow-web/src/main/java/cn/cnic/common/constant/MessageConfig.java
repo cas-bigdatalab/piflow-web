@@ -44,6 +44,23 @@ public class MessageConfig {
         return SUCCEEDED_MSG;
     }
 
+    private static String NO_PERMISSION_MSG;
+    private static String NO_PERMISSION_MSG_ZH;
+    @Value("${msg.no_permission}")
+    private void setNoPermissionMsg(String noPermissionMsg) {
+        NO_PERMISSION_MSG = noPermissionMsg;
+    }
+    @Value("${msg.no_permission.zh}")
+    private void setNoPermissionMsgZh(String noPermissionMsgZh) {
+        NO_PERMISSION_MSG_ZH = noPermissionMsgZh;
+    }
+    public static String NO_PERMISSION_MSG(String language){
+        if("ZH".equals(language)){
+            return NO_PERMISSION_MSG_ZH;
+        }
+        return NO_PERMISSION_MSG;
+    }
+
     private static String ILLEGAL_OPERATION_MSG;
     private static String ILLEGAL_OPERATION_MSG_ZH;
     @Value("${msg.illegal_operation}")

@@ -11,7 +11,7 @@
     </parent>
     <groupId>cn.cnic</groupId>
     <artifactId>piflow-web</artifactId>
-    <version>0.9</version>
+    <version>1.2</version>
     <packaging>jar</packaging>
     <name>piflow-web</name>
     <description>piflow-web</description>

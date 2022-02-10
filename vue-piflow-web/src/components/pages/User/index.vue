@@ -339,7 +339,7 @@ export default {
             if (res.data.code === 200) {
                 let data = res.data.data;
                 this.tableData = data.map(item => {
-                item.role = "USER";
+                item.role = item.role.role.stringValue;
                 return item;
                 });
                 this.total = res.data.count;

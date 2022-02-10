@@ -8,6 +8,7 @@ import cn.cnic.component.system.service.ILogHelperService;
 import cn.cnic.component.system.service.ISysUserService;
 import cn.cnic.component.system.vo.SysUserVo;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+
+
 
 
 @Controller
@@ -58,7 +61,10 @@ public class LoginCtrl {
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     @ResponseBody
     public String register(String username, String pw, String name, String sex, String status) {
-        // String ipAddr = IpUtil.getIpAddr(request);
+        if (StringUtils.isBlank(status)) {
+        	status = "0";
+        }
+    	// String ipAddr = IpUtil.getIpAddr(request);
         SysUserVo sysUserVo = new SysUserVo();
         sysUserVo.setUsername(username);
         sysUserVo.setPassword(pw);
