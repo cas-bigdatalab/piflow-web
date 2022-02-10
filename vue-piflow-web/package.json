@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "ace-builds": "^1.4.12",
-    "axios": "^0.19.2",
+    "axios": "^0.21.2",
     "core-js": "^3.6.4",
     "echarts": "^4.8.0",
     "font-awesome": "^4.7.0",
