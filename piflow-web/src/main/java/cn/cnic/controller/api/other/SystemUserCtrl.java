@@ -3,7 +3,6 @@ package cn.cnic.controller.api.other;
 import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.component.system.service.ILogHelperService;
 import cn.cnic.component.system.service.ISysUserService;
-import cn.cnic.component.system.vo.SysUserVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,8 +25,9 @@ public class SystemUserCtrl {
     @RequestMapping(value = "/updatePassword", method = RequestMethod.POST)
     @ResponseBody
     public String updatePassword(String oldPassword, String password) {
-        boolean isAdmin = SessionUserUtil.isAdmin();
+        //boolean isAdmin = SessionUserUtil.isAdmin();
         String username = SessionUserUtil.getCurrentUsername();
+        logHelperServiceImpl.logAuthSucceed("update passwd",username);
         return sysUserServiceImpl.updatePassword(username, oldPassword, password);
     }
 

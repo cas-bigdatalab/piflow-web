@@ -24,7 +24,11 @@ public interface SysUserMapper {
     @SelectProvider(type = SysUserMapperProvider.class, method = "getSysUserById")
     public SysUserVo getSysUserVoById(boolean isAdmin, String username, @Param("id") String id);
 
-    @SelectProvider(type = SysUserMapperProvider.class, method = "getUserList")
+    @SelectProvider(type = SysUserMapperProvider.class, method = "getSysUserVoList")
+    @Results({
+        @Result(id = true, column = "id", property = "id"),
+        @Result(column = "id", property = "role", many = @Many(select = "cn.cnic.component.system.mapper.SysRoleMapper.getSysRoleBySysUserId", fetchType = FetchType.EAGER))
+    })
     public List<SysUserVo> getSysUserVoList(@Param("isAdmin") boolean isAdmin,@Param("username") String username, @Param("param") String param);
 
     @SelectProvider(type = SysUserMapperProvider.class, method = "findUserByNameLike")
@@ -36,8 +40,7 @@ public interface SysUserMapper {
     @SelectProvider(type = SysUserMapperProvider.class, method = "findUserByUserName")
     @Results({
             @Result(id = true, column = "id", property = "id"),
-            @Result(column = "id", property = "roles", many = @Many(select = "cn.cnic.component.system.mapper.SysRoleMapper.getSysRoleListBySysUserId", fetchType = FetchType.EAGER)),
-
+            @Result(column = "id", property = "roles", many = @Many(select = "cn.cnic.component.system.mapper.SysRoleMapper.getSysRoleListBySysUserId", fetchType = FetchType.EAGER))
     })
     public SysUser findUserByUserName(String userName);
 

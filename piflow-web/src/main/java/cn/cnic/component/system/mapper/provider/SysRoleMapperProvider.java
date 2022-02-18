@@ -61,5 +61,24 @@ public class SysRoleMapperProvider {
         return strBuf.toString();
 
     }
+    
+    /**
+     * getSysRoleBySysUserId
+     *
+     * @param sysUserId
+     * @return
+     */
+    public String getSysRoleBySysUserId(String sysUserId) {
+        String strSql = "SELECT 0";
+        if (StringUtils.isNotBlank(sysUserId)) {
+            StringBuffer strBuf = new StringBuffer();
+            strBuf.append("SELECT * ");
+            strBuf.append("FROM sys_role ");
+            strBuf.append("WHERE ");
+            strBuf.append("fk_sys_user_id = '" + sysUserId + "' ORDER BY role ASC LIMIT 1");
+            strSql = strBuf.toString();
+        }
+        return strSql;
+    }
 
 }

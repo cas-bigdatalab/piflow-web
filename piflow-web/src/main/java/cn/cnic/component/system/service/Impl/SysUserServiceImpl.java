@@ -79,6 +79,9 @@ public class SysUserServiceImpl implements ISysUserService {
         if (null == offset || null == limit) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG(MessageConfig.LANGUAGE));
         }
+        if (!isAdmin) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_PERMISSION_MSG(MessageConfig.LANGUAGE));
+        }
         Page<SysUserVo> page = PageHelper.startPage(offset, limit, "crt_dttm desc");
         sysUserDomain.getSysUserVoList(isAdmin, username, param);
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
@@ -115,11 +118,13 @@ public class SysUserServiceImpl implements ISysUserService {
         try {
             String name = sysUserVo.getUsername();
             String password = sysUserVo.getPassword();
-            PasswordUtils.updatePassword(name,password);
-            password = new BCryptPasswordEncoder().encode(password);
+            if (StringUtils.isNotBlank(password)) {
+            	PasswordUtils.updatePassword(name,password);
+                password = new BCryptPasswordEncoder().encode(password);
+                sysUserById.setPassword(password);
+            }
             sysUserById.setName(sysUserVo.getName());
             sysUserById.setUsername(name);
-            sysUserById.setPassword(password);
             sysUserById.setStatus(sysUserVo.getStatus());
 
             int update = sysUserDomain.updateSysUser(sysUserById);
@@ -243,6 +248,7 @@ public class SysUserServiceImpl implements ISysUserService {
         sysUser.setName(sysUserVo.getName());
         sysUser.setAge(sysUserVo.getAge());
         sysUser.setSex(sysUserVo.getSex());
+        sysUser.setStatus(sysUserVo.getStatus());;
 
         List<SysRole> sysRoleList = new ArrayList<>();
         SysRole sysRole = new SysRole();

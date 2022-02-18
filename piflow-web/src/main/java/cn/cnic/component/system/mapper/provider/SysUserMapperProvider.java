@@ -79,13 +79,13 @@ public class SysUserMapperProvider {
 
         strBuf.append("( ");
         strBuf.append(SqlUtils.baseFieldName() + ", ");
-        strBuf.append("username, password, name, age, sex ");
+        strBuf.append("username, password, name, age, sex, status ");
         strBuf.append(") ");
 
         strBuf.append("values ");
         strBuf.append("(");
         strBuf.append(SqlUtils.baseFieldValues(sysUser) + ", ");
-        strBuf.append(username + "," + password + "," + name + "," + age + "," + sex);
+        strBuf.append(username + "," + password + "," + name + "," + age + "," + sex + "," + status);
         strBuf.append(")");
 
         this.resetSysUser();
@@ -224,12 +224,23 @@ public class SysUserMapperProvider {
     }
 
     /**
-     * getUserList
+     * getSysUserVoList
      *
      * @return
      */
-    public String getUserList() {
-        String sqlStr = "select* from sys_user";
+    public String getSysUserVoList(boolean isAdmin, String username, String param) {
+    	if (!isAdmin) {
+    		return "SELECT 0";
+    	}
+    	StringBuffer strBuf = new StringBuffer();
+    	strBuf.append("SELECT id, username, name, age, sex, status, last_login_ip FROM sys_user WHERE enable_flag=1");
+    	if (StringUtils.isNotBlank(param)) {
+            strBuf.append("AND ( ");
+            strBuf.append("name LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%')");
+            strBuf.append("OR username LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%')");
+            strBuf.append(") ");
+        }
+    	String sqlStr = strBuf.toString();
         return sqlStr;
     }
 

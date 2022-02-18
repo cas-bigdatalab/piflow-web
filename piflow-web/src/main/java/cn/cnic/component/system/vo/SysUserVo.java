@@ -5,6 +5,8 @@ import lombok.Setter;
 
 import java.io.Serializable;
 
+import cn.cnic.component.system.entity.SysRole;
+
 @Getter
 @Setter
 public class SysUserVo implements Serializable {
@@ -19,5 +21,6 @@ public class SysUserVo implements Serializable {
     private String sex;
     private Byte status;
     private String lastLoginIp;
+    private SysRole role;
 
 }
