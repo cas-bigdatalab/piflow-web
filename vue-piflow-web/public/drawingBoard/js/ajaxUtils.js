@@ -195,8 +195,9 @@ function window_location_href(url) {
 }
 
 function new_window_open(url) {
+    var tempWindow = window.top.location.href = window.location.origin + "/#/drawingBoard?src=" + web_drawingBoard + url;
 
-    var tempWindow = window.open(window.location.origin + "/#/drawingBoard?src=" + web_drawingBoard + url);
+    // var tempWindow = window.open(window.location.origin + "/#/drawingBoard?src=" + web_drawingBoard + url);
     if (tempWindow == null || typeof (tempWindow) == 'undefined') {
         alert('The window cannot be opened. Please check your browser settings.')
     }
