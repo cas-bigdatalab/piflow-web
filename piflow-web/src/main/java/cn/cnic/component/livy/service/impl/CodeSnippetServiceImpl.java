@@ -1,10 +1,10 @@
 package cn.cnic.component.livy.service.impl;
 
 import cn.cnic.base.utils.ReturnMapUtils;
+import cn.cnic.component.livy.domain.CodeSnippetDomain;
+import cn.cnic.component.livy.domain.NoteBookDomain;
 import cn.cnic.component.livy.entity.CodeSnippet;
 import cn.cnic.component.livy.entity.NoteBook;
-import cn.cnic.component.livy.mapper.CodeSnippetMapper;
-import cn.cnic.component.livy.mapper.NoteBookMapper;
 import cn.cnic.component.livy.service.ICodeSnippetService;
 import cn.cnic.component.livy.util.CodeSnippetUtils;
 import cn.cnic.controller.requestVo.CodeSnippetVoRequestAdd;
@@ -22,21 +22,21 @@ import java.util.Map;
 @Service
 public class CodeSnippetServiceImpl implements ICodeSnippetService {
 
-    private final CodeSnippetMapper codeSnippetMapper;
-    private final NoteBookMapper noteBookMapper;
+    private final CodeSnippetDomain codeSnippetDomain;
+    private final NoteBookDomain noteBookDomain;
     private final ILivy livyImpl;
 
     @Autowired
-    public CodeSnippetServiceImpl(CodeSnippetMapper codeSnippetMapper,
-                                  NoteBookMapper noteBookMapper,
+    public CodeSnippetServiceImpl(CodeSnippetDomain codeSnippetDomain,
+                                  NoteBookDomain noteBookDomain,
                                   ILivy livyImpl) {
-        this.codeSnippetMapper = codeSnippetMapper;
-        this.noteBookMapper = noteBookMapper;
+        this.codeSnippetDomain = codeSnippetDomain;
+        this.noteBookDomain = noteBookDomain;
         this.livyImpl = livyImpl;
     }
 
     @Override
-    public String addCodeSnippet(String username, CodeSnippetVoRequestAdd codeSnippetVo) {
+    public String addCodeSnippet(String username, CodeSnippetVoRequestAdd codeSnippetVo) throws Exception {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
         }
@@ -47,7 +47,7 @@ public class CodeSnippetServiceImpl implements ICodeSnippetService {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("noteBookId is null");
         }
-        NoteBook noteBook = noteBookMapper.getNoteBookById(false, username, noteBookId);
+        NoteBook noteBook = noteBookDomain.getNoteBookById(false, username, noteBookId);
         if (null == noteBook) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("noteBookId data is null");
         }
@@ -55,7 +55,7 @@ public class CodeSnippetServiceImpl implements ICodeSnippetService {
         BeanUtils.copyProperties(codeSnippetVo, codeSnippet);
         codeSnippet = CodeSnippetUtils.setCodeSnippetBasicInformation(codeSnippet, true, username);
         codeSnippet.setNoteBook(noteBook);
-        int affectedRows = codeSnippetMapper.addCodeSnippet(codeSnippet);
+        int affectedRows = codeSnippetDomain.addCodeSnippet(codeSnippet);
         if (affectedRows > 0) {
             Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg("Save codeSnippet succeeded.");
             return ReturnMapUtils.appendValuesToJson(rtnMap, "codeSnippetId", codeSnippet.getId());
@@ -74,12 +74,12 @@ public class CodeSnippetServiceImpl implements ICodeSnippetService {
         if (StringUtils.isBlank(codeSnippetVo.getId())) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("param id is empty");
         }
-        CodeSnippet codeSnippet = codeSnippetMapper.getCodeSnippetById(codeSnippetVo.getId());
+        CodeSnippet codeSnippet = codeSnippetDomain.getCodeSnippetById(codeSnippetVo.getId());
         if (null == codeSnippet) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Update failed, data is null");
         }
         BeanUtils.copyProperties(codeSnippetVo, codeSnippet);
-        int affectedRows = codeSnippetMapper.updateCodeSnippet(codeSnippet);
+        int affectedRows = codeSnippetDomain.updateCodeSnippet(codeSnippet);
         if (affectedRows > 0) {
             return ReturnMapUtils.setSucceededMsgRtnJsonStr("Update noteBook succeeded.");
         }
@@ -94,7 +94,7 @@ public class CodeSnippetServiceImpl implements ICodeSnippetService {
         if (StringUtils.isBlank(codeSnippetId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("codeSnippetId is empty");
         }
-        int affectedRows = codeSnippetMapper.delCodeSnippetById(isAdmin, username, codeSnippetId);
+        int affectedRows = codeSnippetDomain.delCodeSnippetById(isAdmin, username, codeSnippetId);
         if (affectedRows > 0) {
             return ReturnMapUtils.setSucceededMsgRtnJsonStr("Del noteBook succeeded.");
         }
@@ -106,7 +106,7 @@ public class CodeSnippetServiceImpl implements ICodeSnippetService {
         if (StringUtils.isBlank(noteBookId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("noteBookId is empty");
         }
-        List<CodeSnippet> codeSnippetList = codeSnippetMapper.getCodeSnippetListByNoteBookId(noteBookId);
+        List<CodeSnippet> codeSnippetList = codeSnippetDomain.getCodeSnippetListByNoteBookId(noteBookId);
         if (null == codeSnippetList) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("No data");
         }
@@ -115,7 +115,7 @@ public class CodeSnippetServiceImpl implements ICodeSnippetService {
 
     @Override
     public String runCodeSnippet(String username, String codeSnippetId) {
-        CodeSnippet codeSnippet = codeSnippetMapper.getCodeSnippetById(codeSnippetId);
+        CodeSnippet codeSnippet = codeSnippetDomain.getCodeSnippetById(codeSnippetId);
         if (null == codeSnippet) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("No data");
         }
@@ -132,7 +132,7 @@ public class CodeSnippetServiceImpl implements ICodeSnippetService {
         codeSnippet.setExecuteId(statementsId);
         codeSnippet.setLastUpdateDttm(new Date());
         codeSnippet.setLastUpdateUser(username);
-     	int affectedRows = codeSnippetMapper.updateCodeSnippet(codeSnippet);
+     	int affectedRows = codeSnippetDomain.updateCodeSnippet(codeSnippet);
        	if (affectedRows > 0) {
     		return ReturnMapUtils.mapToJson(rtnMap);
     	}
@@ -144,7 +144,7 @@ public class CodeSnippetServiceImpl implements ICodeSnippetService {
         if (StringUtils.isBlank(codeSnippetId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("codeSnippetId is null ");
         }
-        CodeSnippet codeSnippet = codeSnippetMapper.getCodeSnippetById(codeSnippetId);
+        CodeSnippet codeSnippet = codeSnippetDomain.getCodeSnippetById(codeSnippetId);
         if (null == codeSnippet) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("No data");
         }

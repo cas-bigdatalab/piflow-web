@@ -3,6 +3,8 @@ package cn.cnic.component.process.domain;
 import java.util.List;
 import java.util.Map;
 
+import cn.cnic.component.process.mapper.ProcessAndProcessGroupMapper;
+import cn.cnic.component.process.vo.ProcessAndProcessGroupVo;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,16 +31,19 @@ public class ProcessGroupDomain {
 
     private Logger logger = LoggerUtil.getLogger();
 
+    private final ProcessAndProcessGroupMapper processAndProcessGroupMapper;
     private final ProcessGroupPathMapper processGroupPathMapper;
     private final ProcessGroupMapper processGroupMapper;
     private final MxGraphModelDomain mxGraphModelDomain;
     private final ProcessDomain processDomain;
 
     @Autowired
-    public ProcessGroupDomain(ProcessGroupPathMapper processGroupPathMapper,
+    public ProcessGroupDomain(ProcessAndProcessGroupMapper processAndProcessGroupMapper,
+                              ProcessGroupPathMapper processGroupPathMapper,
                               ProcessGroupMapper processGroupMapper,
                               MxGraphModelDomain mxGraphModelDomain,
                               ProcessDomain processDomain) {
+        this.processAndProcessGroupMapper = processAndProcessGroupMapper;
         this.processGroupPathMapper = processGroupPathMapper;
         this.processGroupMapper = processGroupMapper;
         this.mxGraphModelDomain = mxGraphModelDomain;
@@ -257,6 +262,18 @@ public class ProcessGroupDomain {
 
     public ProcessGroup getProcessGroupByPageId(String fid, String pageId) {
         return processGroupMapper.getProcessGroupByPageId(fid, pageId);
+    }
+
+    public List<Process> getProcessListByAppIDs(String[] appIDs) {
+        return processDomain.getProcessListByAppIDs(appIDs);
+    }
+
+    public List<ProcessAndProcessGroupVo> getProcessAndProcessGroupList(String param) {
+        return processAndProcessGroupMapper.getProcessAndProcessGroupList(param);
+    }
+
+    public List<ProcessAndProcessGroupVo> getProcessAndProcessGroupListByUser(String param, String username) {
+        return processAndProcessGroupMapper.getProcessAndProcessGroupListByUser(param, username);
     }
     
 }

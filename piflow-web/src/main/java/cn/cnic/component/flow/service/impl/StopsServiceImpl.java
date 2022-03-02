@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.cnic.component.flow.domain.FlowDomain;
 import cn.cnic.component.mxGraph.utils.MxGraphUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -24,20 +25,16 @@ import cn.cnic.common.Eunm.RunModeType;
 import cn.cnic.component.dataSource.domain.DataSourceDomain;
 import cn.cnic.component.dataSource.entity.DataSource;
 import cn.cnic.component.dataSource.entity.DataSourceProperty;
-import cn.cnic.component.flow.domain.StopsDomain;
 import cn.cnic.component.flow.entity.CustomizedProperty;
 import cn.cnic.component.flow.entity.Flow;
 import cn.cnic.component.flow.entity.Paths;
 import cn.cnic.component.flow.entity.Property;
 import cn.cnic.component.flow.entity.Stops;
-import cn.cnic.component.flow.mapper.FlowMapper;
-import cn.cnic.component.flow.mapper.PathsMapper;
 import cn.cnic.component.flow.service.IStopsService;
 import cn.cnic.component.flow.utils.StopsUtils;
 import cn.cnic.component.flow.vo.StopsVo;
 import cn.cnic.component.mxGraph.entity.MxCell;
 import cn.cnic.component.mxGraph.entity.MxGraphModel;
-import cn.cnic.component.mxGraph.mapper.MxCellMapper;
 import cn.cnic.component.mxGraph.utils.MxCellUtils;
 import cn.cnic.component.mxGraph.utils.MxGraphModelUtils;
 import cn.cnic.component.process.domain.ProcessDomain;
@@ -65,31 +62,17 @@ public class StopsServiceImpl implements IStopsService {
     private Logger logger = LoggerUtil.getLogger();
 
     @Autowired
-    private MxCellMapper mxCellMapper;
-
-    @Autowired
-    private PathsMapper pathsMapper;
-
-    @Autowired
-    private FlowMapper flowMapper;
-
+    private FlowDomain flowDomain;
     @Autowired
     private DataSourceDomain dataSourceDomain;
-
     @Autowired
     private TestDataDomain testDataDomain;
-
     @Autowired
     private StopsComponentDomain stopsComponentDomain;
-
-    @Autowired
-    private IFlow flowImpl;
-
     @Autowired
     private ProcessDomain processDomain;
-
     @Autowired
-    private StopsDomain stopsDomain;
+    private IFlow flowImpl;
 
 
     @Override
@@ -100,7 +83,7 @@ public class StopsServiceImpl implements IStopsService {
         if (StringUtils.isBlank(id)) {
             return 0;
         }
-        return stopsDomain.updateEnableFlagByFlowId(username, id);
+        return flowDomain.updateEnableFlagByFlowId(username, id);
     }
 
     /**
@@ -112,7 +95,7 @@ public class StopsServiceImpl implements IStopsService {
      */
     @Override
     public List<StopsVo> getStopsByFlowIdAndPageIds(String flowId, String[] pageIds) {
-        List<Stops> stopsList = stopsDomain.getStopsListByFlowIdAndPageIds(flowId, pageIds);
+        List<Stops> stopsList = flowDomain.getStopsListByFlowIdAndPageIds(flowId, pageIds);
         List<StopsVo> stopsVoList = StopsUtils.stopsListPoToVo(stopsList);
         return stopsVoList;
     }
@@ -125,19 +108,19 @@ public class StopsServiceImpl implements IStopsService {
         if (null == stopsVo) {
             return 0;
         }
-        Stops stopsById = stopsDomain.getStopsById(stopsVo.getId());
+        Stops stopsById = flowDomain.getStopsById(stopsVo.getId());
         if (null == stopsById) {
             return 0;
         }
         BeanUtils.copyProperties(stopsVo, stopsById);
         stopsById.setLastUpdateDttm(new Date());
         stopsById.setLastUpdateUser(username);
-        return stopsDomain.updateStops(stopsById);
+        return flowDomain.updateStops(stopsById);
     }
 
     @Override
     public int updateStopsByFlowIdAndName(ThirdFlowInfoStopVo stopVo) {
-        return stopsDomain.updateStopsByFlowIdAndName(stopVo);
+        return flowDomain.updateStopsByFlowIdAndName(stopVo);
     }
 
     /**
@@ -153,7 +136,7 @@ public class StopsServiceImpl implements IStopsService {
         if (StringUtils.isAnyEmpty(stopId, isCheckpointStr)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Partial incoming parameters are empty");
         }
-        Stops stopsById = stopsDomain.getStopsById(stopId);
+        Stops stopsById = flowDomain.getStopsById(stopId);
         if (null == stopsById) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Data is null");
         }
@@ -164,7 +147,7 @@ public class StopsServiceImpl implements IStopsService {
         stopsById.setLastUpdateUser(username);
         stopsById.setLastUpdateDttm(new Date());
         stopsById.setIsCheckpoint(isCheckpoint);
-        int updateStopsCheckpoint = stopsDomain.updateStops(stopsById);
+        int updateStopsCheckpoint = flowDomain.updateStops(stopsById);
         if (updateStopsCheckpoint > 0) {
             return ReturnMapUtils.setSucceededMsgRtnJsonStr("Saved successfully");
         } else {
@@ -189,19 +172,19 @@ public class StopsServiceImpl implements IStopsService {
         if (StringUtils.isBlank(id) || StringUtils.isBlank(stopName)) {
             return 0;
         }
-        Stops stopsById = stopsDomain.getStopsById(id);
+        Stops stopsById = flowDomain.getStopsById(id);
         if (null == stopsById) {
             return 0;
         }
         stopsById.setLastUpdateUser(username);
         stopsById.setLastUpdateDttm(new Date());
         stopsById.setName(stopName);
-        return stopsDomain.updateStops(stopsById);
+        return flowDomain.updateStops(stopsById);
     }
 
     @Override
     public String getStopByNameAndFlowId(String flowId, String stopName) {
-        return stopsDomain.getStopByNameAndFlowId(flowId, stopName);
+        return flowDomain.getStopByNameAndFlowId(flowId, stopName);
     }
 
     /**
@@ -225,7 +208,7 @@ public class StopsServiceImpl implements IStopsService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("The incoming parameter is empty");
         }
         // find flow
-        Flow flowById = flowMapper.getFlowById(flowId);
+        Flow flowById = flowDomain.getFlowById(flowId);
         if (null == flowById) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("flow information is empty");
         }
@@ -281,7 +264,7 @@ public class StopsServiceImpl implements IStopsService {
         mxCellUpdate.setValue(stopName);
         mxCellUpdate.setLastUpdateDttm(new Date());
         mxCellUpdate.setLastUpdateUser(username);
-        int updateMxCell = mxCellMapper.updateMxCell(mxCellUpdate);
+        int updateMxCell = flowDomain.updateMxCell(mxCellUpdate);
         if (updateMxCell <= 0) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("update failed");
         }
@@ -309,7 +292,7 @@ public class StopsServiceImpl implements IStopsService {
             return JsonUtils.toJsonNoException(rtnMap);
         }
         // Find the 'stop' of 'input' and 'output'
-        List<Stops> queryInfoList = stopsDomain.getStopsListByFlowIdAndPageIds(flowId, new String[] { sourceId, targetId });
+        List<Stops> queryInfoList = flowDomain.getStopsListByFlowIdAndPageIds(flowId, new String[] { sourceId, targetId });
         // If 'queryInfoList' is empty, or the size of 'queryInfoList' is less than 2, return directly
         if (null == queryInfoList || queryInfoList.size() < 2) {
             logger.warn("Can't find 'source' or 'target'");
@@ -480,7 +463,7 @@ public class StopsServiceImpl implements IStopsService {
             stopPortUsageMap.put("isSourceStop", true);
 
             // Query the occupancy of the stopVo interface
-            usedPathsList = pathsMapper.getPaths(flowId, null, stop.getPageId(), null);
+            usedPathsList = flowDomain.getPaths(flowId, null, stop.getPageId(), null);
 
             // Put the used port into the portUsageMap
             portUsageMap = this.portStrToMap(portUsageMap, true, usedPathsList, null);
@@ -492,7 +475,7 @@ public class StopsServiceImpl implements IStopsService {
             stopPortUsageMap.put("isSourceStop", false);
 
             // Query the occupancy of the stopVo interface
-            usedPathsList = pathsMapper.getPaths(flowId, null, null, stop.getPageId());
+            usedPathsList = flowDomain.getPaths(flowId, null, null, stop.getPageId());
 
             // Put the used port into the portUsageMap
             portUsageMap = this.portStrToMap(portUsageMap, false, usedPathsList, null);
@@ -546,7 +529,7 @@ public class StopsServiceImpl implements IStopsService {
             stopPortUsageMap.put("isSourceStop", true);
 
             // Query the occupancy of the stopVo interface
-            usedPathsList = pathsMapper.getPaths(flowId, null, stop.getPageId(), null);
+            usedPathsList = flowDomain.getPaths(flowId, null, stop.getPageId(), null);
 
             // Put the used port into the portUsageMap
             portUsageMap = this.portStrToMap(portUsageMap, true, usedPathsList, null);
@@ -558,7 +541,7 @@ public class StopsServiceImpl implements IStopsService {
             stopPortUsageMap.put("isSourceStop", false);
 
             // Query the occupancy of the stopVo interface
-            usedPathsList = pathsMapper.getPaths(flowId, null, null, stop.getPageId());
+            usedPathsList = flowDomain.getPaths(flowId, null, null, stop.getPageId());
 
             // Put the used port into the portUsageMap
             portUsageMap = this.portStrToMap(portUsageMap, false, usedPathsList, null);
@@ -622,20 +605,20 @@ public class StopsServiceImpl implements IStopsService {
             // put isSourceStop
             stopPortUsageMap.put("isSourceStop", true);
             // Query 'stopVo' port usage
-            pathsMapper.getPaths(flowId, null, stop.getPageId(), null);
+            flowDomain.getPaths(flowId, null, stop.getPageId(), null);
         } else {
             // put isSourceStop
             stopPortUsageMap.put("isSourceStop", false);
 
             // Query 'stopVo' port usage
-            usedPathsList = pathsMapper.getPaths(flowId, null, null, stop.getPageId());
+            usedPathsList = flowDomain.getPaths(flowId, null, null, stop.getPageId());
         }
 
         // Determine whether the occupancy of the stopVo interface is empty.
         if (null != usedPathsList) {
             String currentPathsId = "";
             Paths currentPaths = null;
-            List<Paths> pathsList = pathsMapper.getPaths(flowId, pathLineId, null, null);
+            List<Paths> pathsList = flowDomain.getPaths(flowId, pathLineId, null, null);
             if (null != pathsList && pathsList.size() == 1) {
                 currentPaths = pathsList.get(0);
             }
@@ -682,7 +665,7 @@ public class StopsServiceImpl implements IStopsService {
             stopPortUsageMap.put("isSourceStop", true);
 
             // Query the occupancy of the stopVo interface
-            usedPathsList = pathsMapper.getPaths(flowId, null, stop.getPageId(), null);
+            usedPathsList = flowDomain.getPaths(flowId, null, stop.getPageId(), null);
 
             // Put the used port into the portUsageMap
             portUsageMap = this.portStrToMap(portUsageMap, true, usedPathsList, null);
@@ -695,7 +678,7 @@ public class StopsServiceImpl implements IStopsService {
             stopPortUsageMap.put("isSourceStop", false);
 
             // Query the occupancy of the stopVo interface
-            usedPathsList = pathsMapper.getPaths(flowId, null, null, stop.getPageId());
+            usedPathsList = flowDomain.getPaths(flowId, null, null, stop.getPageId());
 
             // Put the used port into the portUsageMap
             portUsageMap = this.portStrToMap(portUsageMap, false, usedPathsList, null);
@@ -802,7 +785,7 @@ public class StopsServiceImpl implements IStopsService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("fill failed,stopId is null");
         }
         // Query Stops by "stopId"
-        Stops stopsById = stopsDomain.getStopsById(stopId);
+        Stops stopsById = flowDomain.getStopsById(stopId);
         if (null == stopsById) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("fill failed,Cannot find Stops with id " + stopId);
         }
@@ -842,7 +825,7 @@ public class StopsServiceImpl implements IStopsService {
             stopsById.setDataSource(null);
             stopsById.setProperties(propertyList);
         }
-        stopsDomain.saveOrUpdate(stopsById);
+        flowDomain.saveOrUpdate(stopsById);
         Map<String, Object> rtnMap = new HashMap<String, Object>();
         rtnMap.put("code", 500);
         rtnMap.put("code", 200);
@@ -870,7 +853,7 @@ public class StopsServiceImpl implements IStopsService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("fill failed, stopId is null");
         }
         // Query Stops by "stopId"
-        Stops stopsById = stopsDomain.getStopsById(stopsId);
+        Stops stopsById = flowDomain.getStopsById(stopsId);
         if (null == stopsById) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("fill failed,Cannot find Stops with id " + stopsId);
         }
@@ -921,7 +904,7 @@ public class StopsServiceImpl implements IStopsService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("stopsId is null");
         }
         // Get stops information according to stopsId
-        Stops stopsById = stopsDomain.getStopsById(runStopsVo.getStopsId());
+        Stops stopsById = flowDomain.getStopsById(runStopsVo.getStopsId());
         if (null == stopsById) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("stops no data");
         }
@@ -1018,7 +1001,7 @@ public class StopsServiceImpl implements IStopsService {
         MxGraphModel mxGraphModel = MxGraphModelUtils.initMxGraphModelBasicPropertiesNoId(null, username, isAdmin);
         // Basic page information of monitoring elements
         List<MxCell> rootMxCell = MxCellUtils.initMxCell(username, mxGraphModel);
-        MxCell mxCellDB = mxCellMapper.getMxCellByMxGraphIdAndPageId(flowMxGraphModel.getId(), stopsById.getPageId());
+        MxCell mxCellDB = flowDomain.getMxCellByMxGraphIdAndPageId(flowMxGraphModel.getId(), stopsById.getPageId());
         MxCell processMxCell = new MxCell();
         BeanUtils.copyProperties(mxCellDB, processMxCell);
         processMxCell = MxCellUtils.initMxCellBasicPropertiesNoId(processMxCell, username);
@@ -1124,7 +1107,7 @@ public class StopsServiceImpl implements IStopsService {
         // Determine whether the HDFS value is empty
         if (hdfsUrlArray.size() > 0) {
             StopsComponent stopsComponentByBundle = stopsComponentDomain.getStopsComponentByBundle("cn.piflow.bundle.csv.CsvParser");
-            Integer maxStopPageIdByFlowId = stopsDomain.getMaxStopPageIdByFlowId(flowDB.getId());
+            Integer maxStopPageIdByFlowId = flowDomain.getMaxStopPageIdByFlowId(flowDB.getId());
             for (int i = 0; i < hdfsUrlArray.size(); i++) {
                 // Get the corresponding url data information
                 Map<String, String> hdfsUrlObj = hdfsUrlArray.get(i);
@@ -1205,7 +1188,7 @@ public class StopsServiceImpl implements IStopsService {
         if (StringUtils.isBlank(datasourceId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("datasourceId is null");
         }
-        List<String> stopsNamesByDatasourceId = stopsDomain.getStopsNamesByDatasourceId(datasourceId);
+        List<String> stopsNamesByDatasourceId = flowDomain.getStopsNamesByDatasourceId(datasourceId);
         if (null == stopsNamesByDatasourceId || stopsNamesByDatasourceId.size() <= 0) {
             return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("isLinked", false);
         }

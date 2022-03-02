@@ -23,6 +23,21 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- Use jdk1.8 version  -->
         <java.version>1.8</java.version>
+        <spring-security-jwt.version>1.0.10.RELEASE</spring-security-jwt.version>
+        <jjwt.version>0.9.1</jjwt.version>
+        <mybatis.version>1.3.2</mybatis.version>
+        <commons-httpclient.version>3.1</commons-httpclient.version>
+        <fastjson.version>1.2.25</fastjson.version>
+        <mysql.version>5.1.49</mysql.version>
+        <dom4j.version>2.1.1</dom4j.version>
+        <pagehelper.version>4.1.6</pagehelper.version>
+        <json-lib.version>2.4</json-lib.version>
+        <hadoop-client.version>2.7.3</hadoop-client.version>
+        <hadoop-hdfs.version>2.7.1</hadoop-hdfs.version>
+        <swagger2.version>2.9.2</swagger2.version>
+        <swagger2-ui.version>2.9.2</swagger2-ui.version>
+        <swagger2-bootstrap-ui.version>1.9.3</swagger2-bootstrap-ui.version>
+        <guava.version>29.0-jre</guava.version>
     </properties>
 
     <dependencies>
@@ -53,19 +68,19 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-jwt</artifactId>
-            <version>1.0.10.RELEASE</version>
+            <version>${spring-security-jwt.version}</version>
         </dependency>
         <!-- JwtUtils中使用JsonUtils -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
-            <version>0.9.1</version>
+            <version>${jjwt.version}</version>
         </dependency>
         <!-- Spring Boot Mybatis Dependency -->
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
-            <version>1.3.2</version>
+            <version>${mybatis.version}</version>
         </dependency>
 
         <!-- HttpClient plugin -->
@@ -76,7 +91,7 @@
         <dependency>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
-            <version>3.1</version>
+            <version>${commons-httpclient.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
@@ -98,13 +113,13 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.25</version>
+            <version>${fastjson.version}</version>
         </dependency>
         <!-- MySQL connection driver dependency -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.49</version>
+            <version>${mysql.version}</version>
         </dependency>
         <!-- H2DB connection driver dependency -->
         <dependency>
@@ -124,7 +139,7 @@
         <dependency>
             <groupId>org.dom4j</groupId>
             <artifactId>dom4j</artifactId>
-            <version>2.1.1</version>
+            <version>${dom4j.version}</version>
         </dependency>
         <!--Flywaydb dependency-->
         <dependency>
@@ -135,7 +150,7 @@
         <dependency>
             <groupId>com.github.pagehelper</groupId>
             <artifactId>pagehelper</artifactId>
-            <version>4.1.6</version>
+            <version>${pagehelper.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -144,7 +159,7 @@
         <dependency>
             <groupId>net.sf.json-lib</groupId>
             <artifactId>json-lib</artifactId>
-            <version>2.4</version>
+            <version>${json-lib.version}</version>
             <classifier>jdk15</classifier>
             <exclusions>
                 <exclusion>
@@ -166,13 +181,13 @@
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-client</artifactId>
-            <version>2.7.3</version>
+            <version>${hadoop-client.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.hadoop/hadoop-hdfs -->
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-hdfs</artifactId>
-            <version>2.7.1</version>
+            <version>${hadoop-hdfs.version}</version>
         </dependency>
         <!--Introducing the quartz timing framework-->
         <dependency>
@@ -189,24 +204,24 @@
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
-            <version>2.9.2</version>
+            <version>${swagger2.version}</version>
         </dependency>
         <!--swagger2-ui rely-->
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
-            <version>2.9.2</version>
+            <version>${swagger2-ui.version}</version>
         </dependency>
         <!--swagger2-bootstrap-ui rely-->
         <dependency>
             <groupId>com.github.xiaoymin</groupId>
             <artifactId>swagger-bootstrap-ui</artifactId>
-            <version>1.9.3</version>
+            <version>${swagger2-bootstrap-ui.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>29.0-jre</version>
+            <version>${guava.version}</version>
         </dependency>
     </dependencies>
 

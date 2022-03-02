@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.cnic.component.flow.domain.FlowDomain;
+import cn.cnic.component.flow.domain.FlowGroupDomain;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
@@ -14,9 +16,6 @@ import cn.cnic.base.utils.JsonUtils;
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.component.flow.entity.FlowGroup;
 import cn.cnic.component.flow.entity.FlowGroupPaths;
-import cn.cnic.component.flow.mapper.FlowGroupMapper;
-import cn.cnic.component.flow.mapper.FlowGroupPathsMapper;
-import cn.cnic.component.flow.mapper.FlowMapper;
 import cn.cnic.component.flow.service.IFlowGroupPathsService;
 import cn.cnic.component.flow.vo.FlowGroupPathsVo;
 import cn.cnic.component.flow.vo.FlowGroupVo;
@@ -27,17 +26,14 @@ public class FlowGroupPathsServiceImpl implements IFlowGroupPathsService {
 
     private Logger logger = LoggerUtil.getLogger();
 
-    private final FlowGroupPathsMapper flowGroupPathsMapper;
-    private final FlowGroupMapper flowGroupMapper;
-    private final FlowMapper flowMapper;
+    private final FlowGroupDomain flowGroupDomain;
+    private final FlowDomain flowDomain;
 
     @Autowired
-    public FlowGroupPathsServiceImpl(FlowGroupPathsMapper flowGroupPathsMapper,
-                                     FlowGroupMapper flowGroupMapper,
-                                     FlowMapper flowMapper) {
-        this.flowGroupPathsMapper = flowGroupPathsMapper;
-        this.flowGroupMapper = flowGroupMapper;
-        this.flowMapper = flowMapper;
+    public FlowGroupPathsServiceImpl(FlowGroupDomain flowGroupDomain,
+                                     FlowDomain flowDomain) {
+        this.flowGroupDomain = flowGroupDomain;
+        this.flowDomain = flowDomain;
     }
 
 
@@ -51,7 +47,7 @@ public class FlowGroupPathsServiceImpl implements IFlowGroupPathsService {
             return JsonUtils.toJsonNoException(rtnMap);
         }
 
-        List<FlowGroupPaths> flowGroupPathsList = flowGroupPathsMapper.getFlowGroupPaths(flowGroupId, pageId, null, null);
+        List<FlowGroupPaths> flowGroupPathsList = flowGroupDomain.getFlowGroupPaths(flowGroupId, pageId, null, null);
         if (null == flowGroupPathsList || flowGroupPathsList.size() <= 0 || null == flowGroupPathsList.get(0)) {
             rtnMap.put("errorMsg", "No'paths'information was queried");
             logger.warn("No'paths'information was queried");
@@ -61,13 +57,13 @@ public class FlowGroupPathsServiceImpl implements IFlowGroupPathsService {
         String fromName = null;
         String toName = null;
         if (StringUtils.isNotBlank(flowGroupPaths.getFrom()) && StringUtils.isNotBlank(flowGroupPaths.getTo())) {
-            fromName = flowMapper.getFlowNameByPageId(flowGroupId, flowGroupPaths.getFrom());
+            fromName = flowDomain.getFlowNameByPageId(flowGroupId, flowGroupPaths.getFrom());
             if (StringUtils.isBlank(fromName)) {
-                fromName = flowGroupMapper.getFlowGroupNameByPageId(flowGroupId, flowGroupPaths.getFrom());
+                fromName = flowGroupDomain.getFlowGroupNameByPageId(flowGroupId, flowGroupPaths.getFrom());
             }
-            toName = flowMapper.getFlowNameByPageId(flowGroupId, flowGroupPaths.getTo());
+            toName = flowDomain.getFlowNameByPageId(flowGroupId, flowGroupPaths.getTo());
             if (StringUtils.isBlank(toName)) {
-                toName = flowGroupMapper.getFlowGroupNameByPageId(flowGroupId, flowGroupPaths.getTo());
+                toName = flowGroupDomain.getFlowGroupNameByPageId(flowGroupId, flowGroupPaths.getTo());
             }
         }
         FlowGroupPathsVo flowGroupPathsVo = new FlowGroupPathsVo();

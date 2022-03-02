@@ -189,9 +189,9 @@ public class FlowGroupDomain {
     }
 
     public FlowGroup getFlowGroupById(String id) {
-    	if (StringUtils.isBlank(id)) {
-    		return null;
-    	}
+        if (StringUtils.isBlank(id)) {
+            return null;
+        }
         return flowGroupMapper.getFlowGroupById(id);
     }
 
@@ -210,18 +210,25 @@ public class FlowGroupDomain {
     public String[] getFlowGroupNameByNameInGroup(String fId, String name) {
         return flowGroupMapper.getFlowGroupNamesByNameAndEnableFlagInGroup(fId, name);
     }
-    
+
     public Integer getMaxFlowGroupPageIdByFlowGroupId(String flowGroupId) {
         return flowGroupMapper.getMaxFlowGroupPageIdByFlowGroupId(flowGroupId);
     }
-    
+
     public String getFlowGroupName(String flowGroupName) {
         return flowGroupMapper.getFlowGroupName(flowGroupName);
     }
-    
+
     public Integer getMaxFlowGroupPathPageIdByFlowGroupId(String flowGroupId) {
         return flowGroupPathsMapper.getMaxFlowGroupPathPageIdByFlowGroupId(flowGroupId);
     }
-    
+
+    public String getFlowGroupNameByPageId(String fid, String pageId) {
+        return flowGroupMapper.getFlowGroupNameByPageId(fid, pageId);
+    }
+
+    public List<FlowGroupPaths> getFlowGroupPaths(String flowGroupId, String pageId, String from, String to) {
+        return flowGroupPathsMapper.getFlowGroupPaths(flowGroupId, pageId, from, to);
+    }
 
 }

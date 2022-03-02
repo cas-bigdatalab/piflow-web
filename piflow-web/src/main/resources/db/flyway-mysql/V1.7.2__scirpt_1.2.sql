@@ -24,3 +24,6 @@ ALTER TABLE `sys_user` ADD COLUMN `last_login_ip` varchar(63) NULL COMMENT 'last
 
 
 UPDATE `sys_user` SET `status`=0 WHERE `id`='bef148e608004bd8a72e658fed2f9c9f';
+
+
+ALTER TABLE `mx_cell` MODIFY COLUMN `mx_value` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT 'mx_value';

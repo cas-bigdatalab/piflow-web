@@ -24,13 +24,11 @@ public class StopsDomain {
 
     @Autowired
     private StopsMapper stopsMapper;
-
     @Autowired
     private PropertyMapper propertyMapper;
-
     @Autowired
     private CustomizedPropertyMapper customizedPropertyMapper;
-    
+
     public int saveOrUpdate(Stops stops) throws Exception {
         if (null == stops) {
             throw new Exception("save failed, stops is null");
@@ -108,7 +106,7 @@ public class StopsDomain {
         return affectedRows;
     }
 
-    
+
     public int updateStops(Stops stops) throws Exception {
         if (null == stops) {
             return 0;
@@ -171,9 +169,13 @@ public class StopsDomain {
             return 0;
         }
         return customizedPropertyMapper.updateStopsCustomizedProperty(customizedProperty);
-        
+
     }
-    
+
+    public Stops getStopsByPageId(String fid, String stopPageId) {
+        return stopsMapper.getStopsByPageId(fid, stopPageId);
+    }
+
     public Stops getStopsById(String id) {
         return stopsMapper.getStopsById(id);
     }
@@ -201,7 +203,7 @@ public class StopsDomain {
     public int updateEnableFlagByFlowId(String username, String id) {
         return stopsMapper.updateEnableFlagByFlowId(username, id);
     }
-    
+
     /**
      * Verify that stopname is duplicated
      *
@@ -212,21 +214,49 @@ public class StopsDomain {
     public String getStopByNameAndFlowId(String flowId, String stopName) {
         return stopsMapper.getStopByNameAndFlowId(flowId, stopName);
     }
-    
+
     public List<Stops> getStopsListByFlowIdAndPageIds(String flowId, String[] pageIds) {
-        return stopsMapper.getStopsListByFlowIdAndPageIds(flowId,pageIds);
+        return stopsMapper.getStopsListByFlowIdAndPageIds(flowId, pageIds);
     }
-    
+
     public int updateStopsByFlowIdAndName(ThirdFlowInfoStopVo stopVo) {
         return stopsMapper.updateStopsByFlowIdAndName(stopVo);
     }
-    
+
     public List<String> getStopsNamesByDatasourceId(String datasourecId) {
         return stopsMapper.getStopsNamesByDatasourceId(datasourecId);
     }
 
     public List<Stops> getStopsListByDatasourceId(String datasourecId) {
         return stopsMapper.getStopsListByDatasourceId(datasourecId);
+    }
+
+    public Stops getStopByFlowIdAndStopPageId(String flowId, String stopPageId) {
+        return stopsMapper.getStopByFlowIdAndStopPageId(flowId, stopPageId);
+    }
+
+    public int updateEnableFlagByStopId(String username, String id) {
+        return propertyMapper.updateEnableFlagByStopId(username, id);
+    }
+
+    public Stops getStopGroupList(String fid, String stopPageId) {
+        return propertyMapper.getStopGroupList(fid, stopPageId);
+    }
+
+    public int updatePropertyCustomValue(String username, String content, String id) {
+        return propertyMapper.updatePropertyCustomValue(username, content, id);
+    }
+
+    public List<Property> getStopsPropertyList() {
+        return propertyMapper.getStopsPropertyList();
+    }
+
+    public int deleteStopsPropertyById(String id) {
+        return propertyMapper.deleteStopsPropertyById(id);
+    }
+
+    public int deletePropertiesByIsOldDataAndStopsId(String stopId) {
+        return propertyMapper.deletePropertiesByIsOldDataAndStopsId(stopId);
     }
 
 

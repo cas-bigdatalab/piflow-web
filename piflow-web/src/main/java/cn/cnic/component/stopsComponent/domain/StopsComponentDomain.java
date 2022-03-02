@@ -239,7 +239,9 @@ public class StopsComponentDomain {
     public List<StopsComponentVo> getManageStopsComponentListByGroupId(String stopGroupId) {
         return stopsComponentMapper.getManageStopsComponentListByGroupId(stopGroupId);
     }
-    
-    
+
+    public List<StopsComponent> getStopsComponentByName(String stopsName) {
+        return stopsComponentMapper.getStopsComponentByName(stopsName);
+    }
 
 }

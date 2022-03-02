@@ -129,7 +129,7 @@ public class StopsCtrl {
 
     @RequestMapping(value = "/addStopCustomizedProperty", method = RequestMethod.POST)
     @ResponseBody
-    public String addStopCustomizedProperty(StopsCustomizedPropertyVo stopsCustomizedPropertyVo) {
+    public String addStopCustomizedProperty(StopsCustomizedPropertyVo stopsCustomizedPropertyVo) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
         return customizedPropertyServiceImpl.addStopCustomizedProperty(username, stopsCustomizedPropertyVo);
     }

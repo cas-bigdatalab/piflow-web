@@ -40,7 +40,7 @@ import cn.cnic.third.service.ISchedule;
 @Service
 public class ScheduleServiceImpl implements IScheduleService {
 
-	/**
+    /**
      * Introducing logs, note that they are all packaged under "org.slf4j"
      */
     private Logger logger = LoggerUtil.getLogger();
@@ -95,7 +95,7 @@ public class ScheduleServiceImpl implements IScheduleService {
         Schedule schedule = new Schedule();
         // Copy scheduleVo to schedule
         BeanUtils.copyProperties(scheduleVo, schedule);
-        
+
         // basic properties (required when creating)
         schedule.setCrtDttm(new Date());
         schedule.setCrtUser(username);
@@ -104,7 +104,7 @@ public class ScheduleServiceImpl implements IScheduleService {
         schedule.setLastUpdateUser(username);
         schedule.setLastUpdateDttm(new Date());
         schedule.setVersion(0L);
-        
+
         //set uuid
         schedule.setId(UUIDUtils.getUUID32());
 
@@ -164,6 +164,10 @@ public class ScheduleServiceImpl implements IScheduleService {
         if (null == scheduleById) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("No data with ID " + scheduleVo.getId());
         }
+        ScheduleState status = scheduleById.getStatus();
+        if (ScheduleState.RUNNING == status || ScheduleState.SUSPEND == status) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.SCHEDULED_TASK_ERROR_MSG(MessageConfig.LANGUAGE));
+        }
         // Copy scheduleVo data to scheduleById
         BeanUtils.copyProperties(scheduleVo, scheduleById);
         //set Operator information
@@ -191,6 +195,10 @@ public class ScheduleServiceImpl implements IScheduleService {
         // Judge whether the query result is empty
         if (null == scheduleById) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Data does not exist");
+        }
+        ScheduleState status = scheduleById.getStatus();
+        if (ScheduleState.RUNNING == status || ScheduleState.SUSPEND == status) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.SCHEDULED_TASK_ERROR_MSG(MessageConfig.LANGUAGE));
         }
         // delete
         int delSchedule = scheduleDomain.delScheduleById(isAdmin, username, id);
@@ -240,7 +248,7 @@ public class ScheduleServiceImpl implements IScheduleService {
                     return ReturnMapUtils.setFailedMsgRtnJsonStr("failed, flow data is null");
                 }
                 // flow convert process
-                process = ProcessUtils.flowToProcess(flowById, username,true);
+                process = ProcessUtils.flowToProcess(flowById, username, true);
                 if (null == process) {
                     return ReturnMapUtils.setFailedMsgRtnJsonStr("failed, process convert failed");
                 }

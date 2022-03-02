@@ -5,7 +5,7 @@ import cn.cnic.component.flow.vo.StopsCustomizedPropertyVo;
 
 public interface ICustomizedPropertyService {
 
-    public String addStopCustomizedProperty(String username, StopsCustomizedPropertyVo stopsCustomizedPropertyVo);
+    public String addStopCustomizedProperty(String username, StopsCustomizedPropertyVo stopsCustomizedPropertyVo) throws Exception;
 
     public String updateStopsCustomizedProperty(String username, StopsCustomizedPropertyVo stopsCustomizedPropertyVo);
 

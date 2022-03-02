@@ -61,7 +61,6 @@ public class FlowTemplateServiceImpl implements IFlowTemplateService {
     private final FlowTemplateDomain flowTemplateDomain;
     private final FlowGroupDomain flowGroupDomain;
     private final FlowDomain flowDomain;
-    private final StopsDomain stopsDomain;
     private final MxCellDomain mxCellDomain;
 
     @Autowired
@@ -73,7 +72,6 @@ public class FlowTemplateServiceImpl implements IFlowTemplateService {
         this.flowTemplateDomain = flowTemplateDomain;
         this.flowGroupDomain = flowGroupDomain;
         this.flowDomain = flowDomain;
-        this.stopsDomain = stopsDomain;
         this.mxCellDomain = mxCellDomain;
     }
 
@@ -438,10 +436,10 @@ public class FlowTemplateServiceImpl implements IFlowTemplateService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("The xml file failed to read and the FlowTemplate failed to be loaded.");
         }
         // Get the maximum pageId in stop
-        Integer maxStopPageId = stopsDomain.getMaxStopPageIdByFlowId(flowId);
+        Integer maxStopPageId = flowDomain.getMaxStopPageIdByFlowId(flowId);
         maxStopPageId = null == maxStopPageId ? 2 : maxStopPageId;
         // Get the current flow containing all stop names
-        String[] stopNamesByFlowId = stopsDomain.getStopNamesByFlowId(flowId);
+        String[] stopNamesByFlowId = flowDomain.getStopNamesByFlowId(flowId);
         Map<String, Object> flowTemplateXmlToFlowRtnMap = FlowXmlUtils.flowTemplateXmlToFlow(xmlFileToStr, username, maxStopPageId + "", null, stopNamesByFlowId);
         if (200 != (Integer) flowTemplateXmlToFlowRtnMap.get("code")) {
             return JsonUtils.toJsonNoException(flowTemplateXmlToFlowRtnMap);

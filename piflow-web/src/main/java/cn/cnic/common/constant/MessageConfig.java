@@ -333,6 +333,23 @@ public class MessageConfig {
         return INIT_COMPONENTS_COMPLETED_MSG;
     }
 
+    private static String SCHEDULED_TASK_ERROR_MSG;
+    private static String SCHEDULED_TASK_ERROR_MSG_ZH;
+    @Value("${msg.scheduled_task_error}")
+    private void setScheduledTaskErrorMsg(String scheduledTaskErrorMsg) {
+        SCHEDULED_TASK_ERROR_MSG = scheduledTaskErrorMsg;
+    }
+    @Value("${msg.scheduled_task_error.zh}")
+    private void setScheduledTaskErrorMsgZh(String scheduledTaskErrorMsgZh) {
+        SCHEDULED_TASK_ERROR_MSG_ZH = scheduledTaskErrorMsgZh;
+    }
+    public static String SCHEDULED_TASK_ERROR_MSG(String language){
+        if("ZH".equals(language)){
+            return SCHEDULED_TASK_ERROR_MSG_ZH;
+        }
+        return SCHEDULED_TASK_ERROR_MSG;
+    }
+
 
 
 

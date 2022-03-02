@@ -5,7 +5,6 @@ import cn.cnic.base.utils.SqlUtils;
 import cn.cnic.common.Eunm.ScheduleState;
 import cn.cnic.component.system.entity.SysSchedule;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.jdbc.SQL;
 
 import java.util.Date;
@@ -116,7 +115,7 @@ public class SysScheduleMapperProvider {
         return sqlStr;
     }
 
-    public String getSysScheduleListByStatus(@Param("isAdmin") boolean isAdmin, @Param("status") ScheduleState status) {
+    public String getSysScheduleListByStatus(boolean isAdmin, ScheduleState status) {
         if (!isAdmin || null == status) {
             return "SELECT * FROM sys_schedule WHERE id IS NULL";
         }

@@ -2,6 +2,7 @@ package cn.cnic.component.flow.domain;
 
 import java.util.List;
 
+import cn.cnic.component.mxGraph.entity.MxCell;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,7 +23,7 @@ import cn.cnic.component.mxGraph.entity.MxGraphModel;
 
 @Component
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
-public class FlowDomain extends StopsDomain{
+public class FlowDomain extends StopsDomain {
 
     @Autowired
     private FlowMapper flowMapper;
@@ -85,8 +86,8 @@ public class FlowDomain extends StopsDomain{
             affectedRows += mxGraphModelDomain.addMxGraphModel(mxGraphModel);
         }
         String[] globalParamsIds = FlowGlobalParamsUtils.globalParamsToIds(flow.getFlowGlobalParamsList());
-        if (null!=globalParamsIds && globalParamsIds.length > 0) {
-        	affectedRows += linkGlobalParams(flow.getId(), globalParamsIds);
+        if (null != globalParamsIds && globalParamsIds.length > 0) {
+            affectedRows += linkGlobalParams(flow.getId(), globalParamsIds);
         }
         return affectedRows;
     }
@@ -152,19 +153,19 @@ public class FlowDomain extends StopsDomain{
         }
         String[] globalParamsIdsDB = getGlobalParamsIdsByFlowId(flow.getId());
         String[] globalParamsIds = FlowGlobalParamsUtils.globalParamsToIds(flow.getFlowGlobalParamsList());
-        
+
         affectedRows += unlinkGlobalParams(flow.getId(), globalParamsIdsDB);
-        if (null!= globalParamsIds && globalParamsIds.length > 0) {
-        	//List<String> req = Arrays.asList(globalParamsIds);
-        	//List<String> db = Arrays.asList(globalParamsIdsDB);
+        if (null != globalParamsIds && globalParamsIds.length > 0) {
+            //List<String> req = Arrays.asList(globalParamsIds);
+            //List<String> db = Arrays.asList(globalParamsIdsDB);
             //1、并集 union
-        	//Object[] array = CollectionUtils.union(req, db).toArray();
+            //Object[] array = CollectionUtils.union(req, db).toArray();
             //2、交集 intersection
-        	//Object[] array = CollectionUtils.intersection(req, db).toArray();
-        	//3、交集的补集
-        	//Object[] disjunction = CollectionUtils.disjunction(req, db).toArray();
-        	//4、差集（扣除）
-        	//Object[] subtract = CollectionUtils.subtract(db, req).toArray();
+            //Object[] array = CollectionUtils.intersection(req, db).toArray();
+            //3、交集的补集
+            //Object[] disjunction = CollectionUtils.disjunction(req, db).toArray();
+            //4、差集（扣除）
+            //Object[] subtract = CollectionUtils.subtract(db, req).toArray();
             //String[] unlinkIds = Arrays.copyOf(subtract, subtract.length, String[].class);
             //affectedRows += unlinkGlobalParams(flow.getId(), unlinkIds);
             affectedRows += linkGlobalParams(flow.getId(), globalParamsIds);
@@ -184,6 +185,13 @@ public class FlowDomain extends StopsDomain{
             return 0;
         }
         return pathsMapper.updatePaths(paths);
+    }
+
+    public int addPathsList(List<Paths> pathsList) {
+        if (null == pathsList || pathsList.size() <= 0) {
+            return 0;
+        }
+        return pathsMapper.addPathsList(pathsList);
     }
 
     public Flow getFlowById(String id) {
@@ -237,17 +245,61 @@ public class FlowDomain extends StopsDomain{
     public String getFlowName(String flowName) {
         return flowMapper.getFlowName(flowName);
     }
-    
+
     public String[] getGlobalParamsIdsByFlowId(String flowId) {
-    	return flowMapper.getGlobalParamsIdsByFlowId(flowId);
+        return flowMapper.getGlobalParamsIdsByFlowId(flowId);
     }
-    
+
     public int linkGlobalParams(String flowId, String[] globalParamsIds) {
-    	return flowMapper.linkGlobalParams(flowId, globalParamsIds);
+        return flowMapper.linkGlobalParams(flowId, globalParamsIds);
     }
-    
+
     public int unlinkGlobalParams(String flowId, String[] globalParamsIds) {
-    	return flowMapper.unlinkGlobalParams(flowId, globalParamsIds);
+        return flowMapper.unlinkGlobalParams(flowId, globalParamsIds);
     }
-    
+
+    public String getFlowNameByPageId(String fid, String pageId) {
+        return flowMapper.getFlowNameByPageId(fid, pageId);
+    }
+
+    public int updatePathsEnableFlagByFlowId(String username, String flowId) {
+        return pathsMapper.updateEnableFlagByFlowId(username, flowId);
+    }
+
+    public int addMxGraphModel(MxGraphModel mxGraphModel) throws Exception {
+        return mxGraphModelDomain.addMxGraphModel(mxGraphModel);
+    }
+
+    public int updateEnableFlagByFlowId(String username, String flowId) {
+        return mxGraphModelDomain.updateEnableFlagByFlowId(username, flowId);
+    }
+
+    public MxGraphModel getMxGraphModelById(String id) {
+        return mxGraphModelDomain.getMxGraphModelById(id);
+    }
+
+    public int updateMxGeometryEnableFlagById(String username, String id) {
+        return mxGraphModelDomain.updateMxGeometryEnableFlagById(username, id);
+    }
+
+    public List<Paths> getPaths(String flowId, String pageId, String from, String to) {
+        return pathsMapper.getPaths(flowId, pageId, from, to);
+    }
+
+    public Integer getPathsCounts(String flowId, String pageId, String from, String to) {
+        return pathsMapper.getPathsCounts(flowId, pageId, from, to);
+    }
+
+    public Paths getPathsById(String id) {
+        return pathsMapper.getPathsById(id);
+    }
+
+    public int updateMxCell(MxCell mxCell) throws Exception {
+        return mxGraphModelDomain.updateMxCell(mxCell);
+    }
+
+    public MxCell getMxCellByMxGraphIdAndPageId(String mxGraphId, String pageId) {
+        return mxGraphModelDomain.getMxCellByMxGraphIdAndPageId(mxGraphId, pageId);
+    }
+
 }

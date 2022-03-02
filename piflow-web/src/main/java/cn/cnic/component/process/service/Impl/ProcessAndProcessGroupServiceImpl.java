@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import cn.cnic.common.constant.MessageConfig;
+import cn.cnic.component.process.domain.ProcessGroupDomain;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,9 +18,6 @@ import cn.cnic.base.utils.PageHelperUtils;
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.component.process.entity.Process;
 import cn.cnic.component.process.entity.ProcessGroup;
-import cn.cnic.component.process.mapper.ProcessAndProcessGroupMapper;
-import cn.cnic.component.process.mapper.ProcessGroupMapper;
-import cn.cnic.component.process.mapper.ProcessMapper;
 import cn.cnic.component.process.service.IProcessAndProcessGroupService;
 import cn.cnic.component.process.utils.ProcessGroupUtils;
 import cn.cnic.component.process.utils.ProcessUtils;
@@ -29,17 +27,12 @@ import cn.cnic.component.process.vo.ProcessVo;
 @Service
 public class ProcessAndProcessGroupServiceImpl implements IProcessAndProcessGroupService {
 
-    private final ProcessAndProcessGroupMapper processAndProcessGroupMapper;
-    private final ProcessGroupMapper processGroupMapper;
-    private final ProcessMapper processMapper;
+    private final ProcessGroupDomain processGroupDomain;
 
     @Autowired
-    public ProcessAndProcessGroupServiceImpl(ProcessAndProcessGroupMapper processAndProcessGroupMapper,
-                                             ProcessGroupMapper processGroupMapper,
-                                             ProcessMapper processMapper) {
-        this.processAndProcessGroupMapper = processAndProcessGroupMapper;
-        this.processGroupMapper = processGroupMapper;
-        this.processMapper = processMapper;
+    public ProcessAndProcessGroupServiceImpl(ProcessGroupDomain processGroupDomain) {
+
+        this.processGroupDomain = processGroupDomain;
     }
 
     /**
@@ -57,9 +50,9 @@ public class ProcessAndProcessGroupServiceImpl implements IProcessAndProcessGrou
         }
         Page<Process> page = PageHelper.startPage(offset, limit,"crt_dttm desc");
         if (isAdmin) {
-            processAndProcessGroupMapper.getProcessAndProcessGroupList(param);
+            processGroupDomain.getProcessAndProcessGroupList(param);
         } else {
-            processAndProcessGroupMapper.getProcessAndProcessGroupListByUser(param, username);
+            processGroupDomain.getProcessAndProcessGroupListByUser(param, username);
         }
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
         rtnMap = PageHelperUtils.setLayTableParam(page, rtnMap);
@@ -80,7 +73,7 @@ public class ProcessAndProcessGroupServiceImpl implements IProcessAndProcessGrou
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
         if (null != taskAppIds && taskAppIds.length > 0) {
             Map<String, Object> taskAppInfoMap = new HashMap<>();
-            List<Process> processListByAppIDs = processMapper.getProcessListByAppIDs(taskAppIds);
+            List<Process> processListByAppIDs = processGroupDomain.getProcessListByAppIDs(taskAppIds);
             if (CollectionUtils.isNotEmpty(processListByAppIDs)){
                 for (Process process : processListByAppIDs) {
                     ProcessVo processVo = ProcessUtils.processPoToVo(process);
@@ -94,7 +87,7 @@ public class ProcessAndProcessGroupServiceImpl implements IProcessAndProcessGrou
         }
         if (null != groupAppIds && groupAppIds.length > 0) {
             Map<String, Object> groupAppInfoMap = new HashMap<>();
-            List<ProcessGroup> processGroupListByAppIDs = processGroupMapper.getProcessGroupListByAppIDs(groupAppIds);
+            List<ProcessGroup> processGroupListByAppIDs = processGroupDomain.getProcessGroupListByAppIDs(groupAppIds);
             if (CollectionUtils.isNotEmpty(processGroupListByAppIDs)) {
                 for (ProcessGroup processGroup : processGroupListByAppIDs) {
                     ProcessGroupVo processGroupVo = ProcessGroupUtils.processGroupPoToVo(processGroup);

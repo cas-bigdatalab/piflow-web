@@ -397,7 +397,7 @@ public class ProcessDomain {
     /**
      * getProcessNoGroupByAppId
      *
-     * @param appid appId
+     * @param appId appId
      * @return Process
      */
     public Process getProcessNoGroupByAppId(String appId) {
@@ -417,7 +417,6 @@ public class ProcessDomain {
     /**
      * getProcessNoGroupByAppId
      *
-     * @param appid appId
      * @return Process
      */
     public List<String> getRunningProcessAppId() {
@@ -439,6 +438,14 @@ public class ProcessDomain {
     
     public int unlinkGlobalParams(String processId, String[] globalParamsIds) {
     	return processMapper.unlinkGlobalParams(processId, globalParamsIds);
+    }
+
+    public List<Process> getRunningProcessList(String flowId) {
+        return processMapper.getRunningProcessList(flowId);
+    }
+
+    public List<Process> getProcessListByAppIDs(String[] appIDs) {
+        return processMapper.getProcessListByAppIDs(appIDs);
     }
 
 }

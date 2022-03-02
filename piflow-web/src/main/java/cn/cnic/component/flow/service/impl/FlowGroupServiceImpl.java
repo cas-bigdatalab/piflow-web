@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import cn.cnic.common.constant.MessageConfig;
+import cn.cnic.component.mxGraph.domain.MxGraphModelDomain;
 import cn.cnic.component.mxGraph.utils.MxGraphUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -40,7 +41,6 @@ import cn.cnic.component.mxGraph.domain.MxCellDomain;
 import cn.cnic.component.mxGraph.entity.MxCell;
 import cn.cnic.component.mxGraph.entity.MxGeometry;
 import cn.cnic.component.mxGraph.entity.MxGraphModel;
-import cn.cnic.component.mxGraph.mapper.MxGraphModelMapper;
 import cn.cnic.component.mxGraph.utils.MxCellUtils;
 import cn.cnic.component.mxGraph.utils.MxGraphComponentVoUtils;
 import cn.cnic.component.mxGraph.utils.MxGraphModelUtils;
@@ -63,29 +63,21 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
     private Logger logger = LoggerUtil.getLogger();
 
     @Autowired
+    private MxGraphModelDomain mxGraphModelDomain;
+    @Autowired
     private FlowGroupDomain flowGroupDomain;
-
     @Autowired
     private FlowDomain flowDomain;
-
     @Autowired
     private ProcessGroupDomain processGroupDomain;
-
-    @Autowired
-    private IGroup groupImpl;
-
-    @Autowired
-    private MxGraphModelMapper mxGraphModelMapper;
-
     @Autowired
     private MxCellDomain mxCellDomain;
-
-    @Autowired
-    private IFlowService flowServiceImpl;
-    
     @Autowired
     private ScheduleDomain scheduleDomain;
-
+    @Autowired
+    private IFlowService flowServiceImpl;
+    @Autowired
+    private IGroup groupImpl;
 
     /**
      * get FlowGroup by id
@@ -589,7 +581,7 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
         if (i <= 0) {
             return JsonUtils.toJsonNoException(rtnMap);
         }
-        MxGraphModel mxGraphModelById = mxGraphModelMapper.getMxGraphModelById(mxGraphModel.getId());
+        MxGraphModel mxGraphModelById = mxGraphModelDomain.getMxGraphModelById(mxGraphModel.getId());
         // Convert the mxGraphModelById from the query to XML
         String loadXml = MxGraphUtils.mxGraphModelToMxGraph(false, mxGraphModelById);
         loadXml = StringUtils.isNotBlank(loadXml) ? loadXml : "";

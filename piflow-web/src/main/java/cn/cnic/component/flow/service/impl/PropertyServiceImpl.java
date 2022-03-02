@@ -6,9 +6,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.cnic.component.flow.domain.FlowDomain;
+import cn.cnic.component.stopsComponent.domain.StopsComponentDomain;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cn.cnic.base.utils.CheckFiledUtils;
@@ -20,16 +23,12 @@ import cn.cnic.common.Eunm.PortType;
 import cn.cnic.component.flow.entity.Paths;
 import cn.cnic.component.flow.entity.Property;
 import cn.cnic.component.flow.entity.Stops;
-import cn.cnic.component.flow.mapper.PathsMapper;
-import cn.cnic.component.flow.mapper.PropertyMapper;
-import cn.cnic.component.flow.mapper.StopsMapper;
 import cn.cnic.component.flow.request.UpdatePathRequest;
 import cn.cnic.component.flow.service.IPropertyService;
 import cn.cnic.component.flow.utils.StopsUtils;
 import cn.cnic.component.flow.vo.StopsVo;
 import cn.cnic.component.stopsComponent.entity.StopsComponent;
 import cn.cnic.component.stopsComponent.entity.StopsComponentProperty;
-import cn.cnic.component.stopsComponent.mapper.StopsComponentMapper;
 
 
 @Service
@@ -37,11 +36,14 @@ public class PropertyServiceImpl implements IPropertyService {
 
     private Logger logger = LoggerUtil.getLogger();
 
-    private PropertyMapper propertyMapper;
-    private StopsMapper stopsMapper;
-    private StopsComponentMapper stopsComponentMapper;
-    private PathsMapper pathsMapper;
+    private final FlowDomain flowDomain;
+    private final StopsComponentDomain stopsComponentDomain;
 
+    @Autowired
+    public PropertyServiceImpl(FlowDomain flowDomain, StopsComponentDomain stopsComponentDomain){
+        this.flowDomain = flowDomain;
+        this.stopsComponentDomain = stopsComponentDomain;
+    }
     @Override
     public String queryAll(String fid, String stopPageId) {
         if (StringUtils.isBlank(fid)) {
@@ -50,11 +52,11 @@ public class PropertyServiceImpl implements IPropertyService {
         if (StringUtils.isBlank(stopPageId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("stopPageId is null");
         }
-        Stops stops = stopsMapper.getStopsByPageId(fid, stopPageId);
+        Stops stops = flowDomain.getStopsByPageId(fid, stopPageId);
         if (null == stops) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("data is null");
         }
-        StopsComponent stopsComponentByBundle = stopsComponentMapper.getStopsComponentByBundle(stops.getBundel());
+        StopsComponent stopsComponentByBundle = stopsComponentDomain.getStopsComponentByBundle(stops.getBundel());
         StopsVo stopsVo = StopsUtils.stopPoToVo(stops, stopsComponentByBundle);
         if (null == stopsVo) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("data is null");
@@ -79,7 +81,7 @@ public class PropertyServiceImpl implements IPropertyService {
             }
             String updateContent = split[0];
             String updateId = split[1];
-            updateStops += propertyMapper.updatePropertyCustomValue(username, updateContent, updateId);
+            updateStops += flowDomain.updatePropertyCustomValue(username, updateContent, updateId);
         }
         if (updateStops > 0) {
             return ReturnMapUtils.setSucceededMsgRtnJsonStr("The stops attribute was successfully modified. counts:" + updateStops);
@@ -96,7 +98,7 @@ public class PropertyServiceImpl implements IPropertyService {
         if (StringUtils.isBlank(id)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("id is null");
         }
-        int updateStops = propertyMapper.updatePropertyCustomValue(username, content, id);
+        int updateStops = flowDomain.updatePropertyCustomValue(username, content, id);
         if (updateStops > 0) {
             logger.info("The stops attribute was successfully modified:" + updateStops);
             return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("value", content);
@@ -107,12 +109,12 @@ public class PropertyServiceImpl implements IPropertyService {
 
     @Override
     public List<Property> getStopsPropertyList() {
-        return propertyMapper.getStopsPropertyList();
+        return flowDomain.getStopsPropertyList();
     }
 
     @Override
     public int deleteStopsPropertyById(String id) {
-        return propertyMapper.deleteStopsPropertyById(id);
+        return flowDomain.deleteStopsPropertyById(id);
     }
 
     /**
@@ -126,9 +128,9 @@ public class PropertyServiceImpl implements IPropertyService {
         Map<String, Property> PropertyMap = new HashMap<String, Property>();
         List<Property> addPropertyList = new ArrayList<Property>();
         //Get stop information
-        Stops stopsList = stopsMapper.getStopsById(id);
+        Stops stopsList = flowDomain.getStopsById(id);
         //Get the StopsTemplate of the current stops
-        List<StopsComponent> stopsComponentList = stopsComponentMapper.getStopsComponentByName(stopsList.getName());
+        List<StopsComponent> stopsComponentList = stopsComponentDomain.getStopsComponentByName(stopsList.getName());
         StopsComponent stopsComponent = null;
         List<StopsComponentProperty> propertiesTemplateList = null;
         if (null != stopsComponentList && !stopsComponentList.isEmpty()) {
@@ -166,7 +168,7 @@ public class PropertyServiceImpl implements IPropertyService {
                         update.setDisplayName(displayName);
                         update.setDescription(description);
                         update.setId(ptname.getId());
-                        propertyMapper.updateStopsProperty(update);
+                        flowDomain.updateStopsProperty(update);
                     } else {
                         logger.info("===============The 'stop' attribute is inconsistent with the template and needs to be added=================");
                         Property newProperty = new Property();
@@ -185,7 +187,7 @@ public class PropertyServiceImpl implements IPropertyService {
                 }
             }
             if (addPropertyList.size() > 0 && !addPropertyList.isEmpty()) {
-                propertyMapper.addPropertyList(addPropertyList);
+                flowDomain.addPropertyList(addPropertyList);
             }
             //All the changes in ‘objectPathsMap’ that need to be modified, left for logical deletion.
             if (null != PropertyMap && PropertyMap.size() > 0)
@@ -193,7 +195,7 @@ public class PropertyServiceImpl implements IPropertyService {
                     Property deleteProperty = PropertyMap.get(pageid);
                     if (null != deleteProperty) {
                         logger.info("===============The 'stop' attribute is inconsistent with the template and needs to be deleted.=================");
-                        propertyMapper.deleteStopsPropertyById(deleteProperty.getId());
+                        flowDomain.deleteStopsPropertyById(deleteProperty.getId());
                     }
                 }
         }
@@ -217,7 +219,7 @@ public class PropertyServiceImpl implements IPropertyService {
             String targetPortVal = updatePathRequest.getTargetPortVal();
             Stops sourceStop = null;
             Stops targetStop = null;
-            List<Stops> queryInfoList = stopsMapper.getStopsListByFlowIdAndPageIds(flowId, new String[]{sourceId, targetId});
+            List<Stops> queryInfoList = flowDomain.getStopsListByFlowIdAndPageIds(flowId, new String[]{sourceId, targetId});
             // If 'queryInfoList' is empty, or the size of 'queryInfoList' is less than 2, return directly
             if (null == queryInfoList || queryInfoList.size() < 2) {
                 rtnMap.put("errorMsg", "Can't find 'source' or 'target'");
@@ -235,11 +237,11 @@ public class PropertyServiceImpl implements IPropertyService {
                 }
             }
             Paths currentPaths = null;
-            List<Paths> pathsList = pathsMapper.getPaths(flowId, pathLineId, null, null);
+            List<Paths> pathsList = flowDomain.getPaths(flowId, pathLineId, null, null);
             if (null != pathsList && pathsList.size() == 1) {
                 currentPaths = pathsList.get(0);
             }
-            pathsMapper.getPathsCounts(flowId, null, sourceId, null);
+            flowDomain.getPathsCounts(flowId, null, sourceId, null);
             if (updatePathRequest.isSourceRoute()) {
                 if (updatePathRequest.isSourceRoute() && PortType.ROUTE == sourceStop.getOutPortType()) {
                     currentPaths.setFilterCondition(updatePathRequest.getSourceFilter());
@@ -256,7 +258,7 @@ public class PropertyServiceImpl implements IPropertyService {
             }
             currentPaths.setLastUpdateDttm(new Date());
             currentPaths.setLastUpdateUser("-1");
-            int i = pathsMapper.updatePaths(currentPaths);
+            int i = flowDomain.updatePaths(currentPaths);
             if (i <= 0) {
                 rtnMap.put("code", 500);
                 rtnMap.put("errorMsg", "Save failed");
@@ -297,7 +299,7 @@ public class PropertyServiceImpl implements IPropertyService {
                         if (StringUtils.isNotBlank(ports)) {
                             ports = ports + ",";
                         }
-                        propertyMapper.updatePropertyCustomValue(username, (ports + sourcePortVal), propertySave.getId());
+                        flowDomain.updatePropertyCustomValue(username, (ports + sourcePortVal), propertySave.getId());
                     }
                 }
             }
@@ -312,7 +314,7 @@ public class PropertyServiceImpl implements IPropertyService {
      */
     @Override
     public String deleteLastReloadDataByStopsId(String stopId) {
-        int i = propertyMapper.deletePropertiesByIsOldDataAndStopsId(stopId);
+        int i = flowDomain.deletePropertiesByIsOldDataAndStopsId(stopId);
         if (i > 0) {
             return ReturnMapUtils.setSucceededMsgRtnJsonStr("successfully deleted");
         }

@@ -158,4 +158,20 @@ public class MxGraphModelDomain {
         return mxGraphModelMapper.getMxGraphModelByFlowGroupId(flowGroupId);
     }
 
+    public MxGraphModel getMxGraphModelById(String id) {
+        return mxGraphModelMapper.getMxGraphModelById(id);
+    }
+
+    public int updateEnableFlagByFlowId(String username, String flowId) {
+        return mxGraphModelMapper.updateEnableFlagByFlowId(username, flowId);
+    }
+
+    public int updateMxGeometryEnableFlagById(String username, String id) {
+        return mxGeometryMapper.updateEnableFlagById(username, id);
+    }
+
+    public MxCell getMxCellByMxGraphIdAndPageId(String mxGraphId, String pageId) {
+        return mxCellMapper.getMxCellByMxGraphIdAndPageId(mxGraphId, pageId);
+    }
+
 }

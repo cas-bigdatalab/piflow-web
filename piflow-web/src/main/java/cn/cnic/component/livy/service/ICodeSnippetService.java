@@ -6,7 +6,7 @@ import cn.cnic.controller.requestVo.CodeSnippetVoRequestUpdate;
 
 public interface ICodeSnippetService {
 
-    public String addCodeSnippet(String username, CodeSnippetVoRequestAdd codeSnippetVo);
+    public String addCodeSnippet(String username, CodeSnippetVoRequestAdd codeSnippetVo) throws Exception;
 
     public String updateCodeSnippet(String username, CodeSnippetVoRequestUpdate codeSnippetVo);
 

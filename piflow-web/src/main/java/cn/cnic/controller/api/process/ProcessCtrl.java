@@ -270,7 +270,7 @@ public class ProcessCtrl {
 		@ApiImplicitParam(name = "appId", value = "appId", required = true, paramType = "query"),
 		@ApiImplicitParam(name = "stopName", value = "stopName", required = true, paramType = "query"),
 		@ApiImplicitParam(name = "portName", value = "portName", required = true, paramType = "query"),
-		@ApiImplicitParam(name = "startFileName", value = "startFileName", required = true, paramType = "query"),
+		@ApiImplicitParam(name = "startFileName", value = "startFileName", required = false, paramType = "query"),
 		@ApiImplicitParam(name = "startLine", value = "startLine", example = "0", dataType = "long",  required = true, paramType = "query")
 	})
     public String getDebugData(String appId, String stopName, String portName, String startFileName, int startLine) {

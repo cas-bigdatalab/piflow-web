@@ -10,6 +10,7 @@ import cn.cnic.common.constant.MessageConfig;
 import cn.cnic.component.flow.domain.FlowDomain;
 import cn.cnic.component.flow.utils.FlowXmlUtils;
 import cn.cnic.component.mxGraph.utils.MxGraphUtils;
+import cn.cnic.component.stopsComponent.domain.StopsComponentDomain;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
@@ -28,8 +29,6 @@ import cn.cnic.component.flow.entity.FlowGroupPaths;
 import cn.cnic.component.flow.entity.Paths;
 import cn.cnic.component.flow.entity.Property;
 import cn.cnic.component.flow.entity.Stops;
-import cn.cnic.component.flow.mapper.FlowGroupMapper;
-import cn.cnic.component.flow.mapper.FlowMapper;
 import cn.cnic.component.flow.utils.PropertyUtils;
 import cn.cnic.component.flow.utils.StopsUtils;
 import cn.cnic.component.mxGraph.domain.MxGraphModelDomain;
@@ -45,7 +44,6 @@ import cn.cnic.component.mxGraph.vo.MxGraphModelVo;
 import cn.cnic.component.mxGraph.vo.MxGraphVo;
 import cn.cnic.component.stopsComponent.entity.StopsComponent;
 import cn.cnic.component.stopsComponent.entity.StopsComponentProperty;
-import cn.cnic.component.stopsComponent.mapper.StopsComponentMapper;
 
 
 @Service
@@ -56,23 +54,17 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
      */
     private Logger logger = LoggerUtil.getLogger();
 
-    private final FlowMapper flowMapper;
-    private final FlowGroupMapper flowGroupMapper;
-    private final StopsComponentMapper stopsComponentMapper;
+    private final StopsComponentDomain stopsComponentDomain;
     private final MxGraphModelDomain mxGraphModelDomain;
     private final FlowGroupDomain flowGroupDomain;
     private final FlowDomain flowDomain;
 
     @Autowired
-    public MxGraphModelServiceImpl(FlowMapper flowMapper,
-                                   FlowGroupMapper flowGroupMapper,
-                                   StopsComponentMapper stopsComponentMapper,
+    public MxGraphModelServiceImpl(StopsComponentDomain stopsComponentDomain,
                                    MxGraphModelDomain mxGraphModelDomain,
                                    FlowGroupDomain flowGroupDomain,
                                    FlowDomain flowDomain) {
-        this.flowMapper = flowMapper;
-        this.flowGroupMapper = flowGroupMapper;
-        this.stopsComponentMapper = stopsComponentMapper;
+        this.stopsComponentDomain = stopsComponentDomain;
         this.mxGraphModelDomain = mxGraphModelDomain;
         this.flowGroupDomain = flowGroupDomain;
         this.flowDomain = flowDomain;
@@ -388,7 +380,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
         // Get the name of the stops
         String stopsName = split2[split2.length - 1];
         // Query the stops template according to the name of the stops
-        List<StopsComponent> stopsComponentList = stopsComponentMapper.getStopsComponentByName(stopsName);
+        List<StopsComponent> stopsComponentList = stopsComponentDomain.getStopsComponentByName(stopsName);
         if (null == stopsComponentList || stopsComponentList.size() <= 0) {
             return null;
         }
@@ -1197,7 +1189,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
                 continue;
             }
             addNodeIdAndPageId = new HashMap<>();
-            String flowIdByPageId = flowMapper.getFlowIdByPageId(loadId, mxCellVo.getPageId());
+            String flowIdByPageId = flowDomain.getFlowIdByPageId(loadId, mxCellVo.getPageId());
             if (StringUtils.isNotBlank(flowIdByPageId)) {
                 addNodeIdAndPageId.put("id", flowIdByPageId);
                 addNodeIdAndPageId.put("pageId", mxCellVo.getPageId());
@@ -1205,7 +1197,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
                 addNodeIdAndPageIdList.add(addNodeIdAndPageId);
                 continue;
             }
-            String flowGroupIdByPageId = flowGroupMapper.getFlowGroupIdByPageId(loadId, mxCellVo.getPageId());
+            String flowGroupIdByPageId = flowGroupDomain.getFlowGroupIdByPageId(loadId, mxCellVo.getPageId());
             if (StringUtils.isNotBlank(flowGroupIdByPageId)) {
                 addNodeIdAndPageId.put("id", flowGroupIdByPageId);
                 addNodeIdAndPageId.put("pageId", mxCellVo.getPageId());

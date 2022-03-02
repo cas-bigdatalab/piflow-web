@@ -17,11 +17,10 @@ public interface PathsMapper {
      */
     @InsertProvider(type = PathsMapperProvider.class, method = "addPaths")
     public int addPaths(@Param("paths") Paths paths);
-    
+
     /**
      * Insert "list<Paths>" Note that the method of spelling SQL must use "map" to connect the "Param" content to the key value.
      *
-     * @param username
      * @param pathsList
      * @return
      */
@@ -120,7 +119,8 @@ public interface PathsMapper {
     /**
      * Logically delete flowInfo according to flowId
      *
-     * @param id
+     * @param username
+     * @param flowId
      * @return
      */
     @UpdateProvider(type = PathsMapperProvider.class, method = "updateEnableFlagByFlowId")

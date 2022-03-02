@@ -32,9 +32,6 @@ import cn.cnic.component.flow.entity.FlowGlobalParams;
 import cn.cnic.component.flow.entity.FlowGroup;
 import cn.cnic.component.flow.entity.Property;
 import cn.cnic.component.flow.entity.Stops;
-import cn.cnic.component.flow.mapper.PathsMapper;
-import cn.cnic.component.flow.mapper.PropertyMapper;
-import cn.cnic.component.flow.mapper.StopsMapper;
 import cn.cnic.component.flow.service.IFlowService;
 import cn.cnic.component.flow.utils.FlowGlobalParamsUtils;
 import cn.cnic.component.flow.utils.PathsUtil;
@@ -45,13 +42,10 @@ import cn.cnic.component.flow.vo.StopsVo;
 import cn.cnic.component.mxGraph.domain.MxCellDomain;
 import cn.cnic.component.mxGraph.entity.MxCell;
 import cn.cnic.component.mxGraph.entity.MxGraphModel;
-import cn.cnic.component.mxGraph.mapper.MxGeometryMapper;
-import cn.cnic.component.mxGraph.mapper.MxGraphModelMapper;
 import cn.cnic.component.mxGraph.utils.MxGraphModelUtils;
 import cn.cnic.component.mxGraph.vo.MxGraphModelVo;
 import cn.cnic.component.process.domain.ProcessDomain;
 import cn.cnic.component.process.entity.Process;
-import cn.cnic.component.process.mapper.ProcessMapper;
 import cn.cnic.component.process.utils.ProcessUtils;
 import cn.cnic.component.process.vo.ProcessVo;
 import cn.cnic.component.schedule.domain.ScheduleDomain;
@@ -67,47 +61,29 @@ public class FlowServiceImpl implements IFlowService {
 
     private Logger logger = LoggerUtil.getLogger();
 
-    private final PathsMapper pathsMapper;
-    private final StopsMapper stopsMapper;
-    private final PropertyMapper propertyMapper;
-    private final ProcessMapper processMapper;
-    private final MxGraphModelMapper mxGraphModelMapper;
     private final ProcessDomain processDomain;
-    private final IFlow flowImpl;
-    private final MxGeometryMapper mxGeometryMapper;
     private final MxCellDomain mxCellDomain;
     private final FlowDomain flowDomain;
     private final FlowGroupDomain flowGroupDomain;
-    private final IStopGroupService stopGroupServiceImpl;
     private final ScheduleDomain scheduleDomain;
+    private final IStopGroupService stopGroupServiceImpl;
+    private final IFlow flowImpl;
 
     @Autowired
-    public FlowServiceImpl(PathsMapper pathsMapper,
-                           StopsMapper stopsMapper,
-                           PropertyMapper propertyMapper,
-                           ProcessMapper processMapper,
-                           MxGraphModelMapper mxGraphModelMapper,
-                           ProcessDomain processDomain,
-                           IFlow flowImpl,
-                           MxGeometryMapper mxGeometryMapper,
+    public FlowServiceImpl(ProcessDomain processDomain,
                            MxCellDomain mxCellDomain,
                            FlowDomain flowDomain,
                            FlowGroupDomain flowGroupDomain,
+                           ScheduleDomain scheduleDomain,
                            IStopGroupService stopGroupServiceImpl,
-                           ScheduleDomain scheduleDomain) {
-        this.pathsMapper = pathsMapper;
-        this.stopsMapper = stopsMapper;
-        this.propertyMapper = propertyMapper;
-        this.processMapper = processMapper;
-        this.mxGraphModelMapper = mxGraphModelMapper;
+                           IFlow flowImpl) {
         this.processDomain = processDomain;
-        this.flowImpl = flowImpl;
-        this.mxGeometryMapper = mxGeometryMapper;
         this.mxCellDomain = mxCellDomain;
         this.flowDomain = flowDomain;
         this.flowGroupDomain = flowGroupDomain;
-        this.stopGroupServiceImpl = stopGroupServiceImpl;
         this.scheduleDomain = scheduleDomain;
+        this.stopGroupServiceImpl = stopGroupServiceImpl;
+        this.flowImpl = flowImpl;
     }
 
 
@@ -184,7 +160,7 @@ public class FlowServiceImpl implements IFlowService {
         }
         rtnMap.put("flow", flowVo);
 
-        List<Process> processList = processMapper.getRunningProcessList(id);
+        List<Process> processList = processDomain.getRunningProcessList(id);
         if (CollectionUtils.isNotEmpty(processList)) {
             List<ProcessVo> processVoList = new ArrayList<ProcessVo>();
             ProcessVo processVo;
@@ -247,7 +223,7 @@ public class FlowServiceImpl implements IFlowService {
         mxGraphModel.setEnableFlag(true);
         if (null != mxGraphModel) {
             mxGraphModel.setFlow(flow);
-            int addMxGraphModel = mxGraphModelMapper.addMxGraphModel(mxGraphModel);
+            int addMxGraphModel = flowDomain.addMxGraphModel(mxGraphModel);
             if (addMxGraphModel > 0) {
                 flow.setMxGraphModel(mxGraphModel);
                 optDataCount += addMxGraphModel;
@@ -281,27 +257,27 @@ public class FlowServiceImpl implements IFlowService {
             for (Stops stopId : flowById.getStopsList()) {
                 if (null != stopId.getProperties())
                     for (Property property : stopId.getProperties()) {
-                        propertyMapper.updateEnableFlagByStopId(username, property.getId());
+                        flowDomain.updateEnableFlagByStopId(username, property.getId());
                     }
             }
         }
         // remove stop
-        stopsMapper.updateEnableFlagByFlowId(username, flowById.getId());
+        flowDomain.updateEnableFlagByFlowId(username, flowById.getId());
         // remove paths
-        pathsMapper.updateEnableFlagByFlowId(username, flowById.getId());
+        flowDomain.updatePathsEnableFlagByFlowId(username, flowById.getId());
         if (null != flowById.getMxGraphModel()) {
             List<MxCell> root = flowById.getMxGraphModel().getRoot();
             if (null != root && !root.isEmpty()) {
                 for (MxCell mxcell : root) {
                     if (mxcell.getMxGeometry() != null) {
                         logger.info(mxcell.getMxGeometry().getId());
-                        mxGeometryMapper.updateEnableFlagById(username, mxcell.getMxGeometry().getId());
+                        flowDomain.updateMxGeometryEnableFlagById(username, mxcell.getMxGeometry().getId());
                     }
                     mxCellDomain.updateEnableFlagById(username, mxcell.getId());
 
                 }
             }
-            mxGraphModelMapper.updateEnableFlagByFlowId(username, flowById.getId());
+            flowDomain.updateEnableFlagByFlowId(username, flowById.getId());
         }
         // remove FLow
         int deleteFLowInfo = flowDomain.updateEnableFlagById(username, id);
@@ -482,7 +458,7 @@ public class FlowServiceImpl implements IFlowService {
         if (i <= 0) {
             return JsonUtils.toJsonNoException(rtnMap);
         }
-        MxGraphModel mxGraphModelById = mxGraphModelMapper.getMxGraphModelById(mxGraphModel.getId());
+        MxGraphModel mxGraphModelById = flowDomain.getMxGraphModelById(mxGraphModel.getId());
         // Convert the mxGraphModelById from the query to XML
         String loadXml = MxGraphUtils.mxGraphModelToMxGraph(false, mxGraphModelById);
         loadXml = StringUtils.isNotBlank(loadXml) ? loadXml : "";

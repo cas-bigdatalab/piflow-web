@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import cn.cnic.component.flow.domain.FlowDomain;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +15,6 @@ import cn.cnic.base.utils.UUIDUtils;
 import cn.cnic.component.flow.entity.Flow;
 import cn.cnic.component.flow.entity.Paths;
 import cn.cnic.component.flow.entity.Stops;
-import cn.cnic.component.flow.mapper.PathsMapper;
-import cn.cnic.component.flow.mapper.PropertyMapper;
 import cn.cnic.component.flow.service.IPathsService;
 import cn.cnic.component.flow.utils.PathsUtil;
 import cn.cnic.component.flow.vo.FlowVo;
@@ -25,14 +24,11 @@ import cn.cnic.component.flow.vo.PathsVo;
 public class PathsServiceImpl implements IPathsService {
 
     @Autowired
-    private PathsMapper pathsMapper;
-
-    @Autowired
-    private PropertyMapper propertyMapper;
+    private FlowDomain flowDomain;
 
     @Override
     public int deletePathsByFlowId(String username, String id) {
-        return pathsMapper.updateEnableFlagByFlowId(username, id);
+        return flowDomain.updatePathsEnableFlagByFlowId(username, id);
     }
 
     @Override
@@ -40,7 +36,7 @@ public class PathsServiceImpl implements IPathsService {
         if (StringUtils.isBlank(flowId) || StringUtils.isBlank(pageId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("The parameter'fid'or'id' is empty");
         }
-        List<Paths> pathsList = pathsMapper.getPaths(flowId, pageId, null, null);
+        List<Paths> pathsList = flowDomain.getPaths(flowId, pageId, null, null);
         if (null == pathsList || pathsList.isEmpty()) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("No'paths'information was queried");
         }
@@ -51,8 +47,8 @@ public class PathsServiceImpl implements IPathsService {
         Stops stopFrom = null;
         Stops stopTo = null;
         if (StringUtils.isNotBlank(paths.getFrom()) && StringUtils.isNotBlank(paths.getTo())) {
-            stopFrom = propertyMapper.getStopGroupList(flowId, paths.getFrom());
-            stopTo = propertyMapper.getStopGroupList(flowId, paths.getTo());
+            stopFrom = flowDomain.getStopGroupList(flowId, paths.getFrom());
+            stopTo = flowDomain.getStopGroupList(flowId, paths.getTo());
         }
         PathsVo pathsVo = new PathsVo();
         BeanUtils.copyProperties(paths, pathsVo);
@@ -88,7 +84,7 @@ public class PathsServiceImpl implements IPathsService {
     @Override
     public List<PathsVo> getPaths(String flowId, String from, String to) {
         List<PathsVo> pathsVoList = null;
-        List<Paths> pathsList = pathsMapper.getPaths(flowId, null, from, to);
+        List<Paths> pathsList = flowDomain.getPaths(flowId, null, from, to);
         if (null != pathsList && pathsList.size() > 0) {
             pathsVoList = PathsUtil.pathsListPoToVo(pathsList);
         }
@@ -105,19 +101,19 @@ public class PathsServiceImpl implements IPathsService {
      */
     @Override
     public Integer getPathsCounts(String flowId, String from, String to) {
-        Integer pathsCounts = pathsMapper.getPathsCounts(flowId, null, from, to);
+        Integer pathsCounts = flowDomain.getPathsCounts(flowId, null, from, to);
         return pathsCounts;
     }
 
     @Override
     public int upDatePathsVo(String username, PathsVo pathsVo) {
         if (null != pathsVo) {
-            Paths pathsById = pathsMapper.getPathsById(pathsVo.getId());
+            Paths pathsById = flowDomain.getPathsById(pathsVo.getId());
             if (null != pathsById) {
                 BeanUtils.copyProperties(pathsVo, pathsById);
                 pathsById.setLastUpdateDttm(new Date());
                 pathsById.setLastUpdateUser("-1");
-                int i = pathsMapper.updatePaths(pathsById);
+                int i = flowDomain.updatePaths(pathsById);
                 return i;
             }
         }
@@ -143,7 +139,7 @@ public class PathsServiceImpl implements IPathsService {
                 list.add(paths);
             }
         }
-        return pathsMapper.addPathsList(list);
+        return flowDomain.addPathsList(list);
     }
 
 }
