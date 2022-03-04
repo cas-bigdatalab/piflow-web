@@ -125,6 +125,18 @@ public class ProcessUtils {
                 }
                 processStopVo.setProcessStopPropertyVoList(processStopPropertyVoList);
             }
+            List<ProcessStopCustomizedProperty> processStopCustomizedPropertyList = processStop.getProcessStopCustomizedPropertyList();
+            if (null != processStopCustomizedPropertyList && processStopCustomizedPropertyList.size() > 0) {
+                List<ProcessStopsCustomizedPropertyVo> processStopsCustomizedPropertyVoList = new ArrayList<>();
+                for (ProcessStopCustomizedProperty processStopCustomizedProperty : processStopCustomizedPropertyList) {
+                    if (null != processStopCustomizedProperty) {
+                        ProcessStopsCustomizedPropertyVo processStopsCustomizedPropertyVo = new ProcessStopsCustomizedPropertyVo();
+                        BeanUtils.copyProperties(processStopCustomizedProperty, processStopsCustomizedPropertyVo);
+                        processStopsCustomizedPropertyVoList.add(processStopsCustomizedPropertyVo);
+                    }
+                }
+                processStopVo.setProcessStopCustomizedPropertyVoList(processStopsCustomizedPropertyVoList);
+            }
         }
         return processStopVo;
     }

@@ -53,7 +53,7 @@ public interface ProcessStopMapper {
     @Results({
             @Result(id = true, column = "id", property = "id"),
             @Result(column = "id", property = "processStopPropertyList", many = @Many(select = "cn.cnic.component.process.mapper.ProcessStopPropertyMapper.getStopPropertyByProcessStopId", fetchType = FetchType.LAZY)),
-            @Result(column = "id", property = "processStopCustomizedPropertyList", many = @Many(select = "cn.cnic.component.process.mapper.ProcessStopCustomizedPropertyMapper.getProcessStopCustomizedPropertyListByStopsId", fetchType = FetchType.LAZY))
+            @Result(column = "id", property = "processStopCustomizedPropertyList", many = @Many(select = "cn.cnic.component.process.mapper.ProcessStopCustomizedPropertyMapper.getProcessStopCustomizedPropertyListByProcessStopsId", fetchType = FetchType.LAZY))
     })
     public ProcessStop getProcessStopByPageIdAndPageId(String processId, String pageId);
 
