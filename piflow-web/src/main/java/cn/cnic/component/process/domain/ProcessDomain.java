@@ -2,6 +2,10 @@ package cn.cnic.component.process.domain;
 
 import java.util.List;
 
+import cn.cnic.component.flow.entity.CustomizedProperty;
+import cn.cnic.component.process.entity.*;
+import cn.cnic.component.process.entity.Process;
+import cn.cnic.component.process.mapper.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,14 +20,6 @@ import cn.cnic.common.Eunm.ProcessState;
 import cn.cnic.component.flow.utils.FlowGlobalParamsUtils;
 import cn.cnic.component.mxGraph.domain.MxGraphModelDomain;
 import cn.cnic.component.mxGraph.entity.MxGraphModel;
-import cn.cnic.component.process.entity.Process;
-import cn.cnic.component.process.entity.ProcessPath;
-import cn.cnic.component.process.entity.ProcessStop;
-import cn.cnic.component.process.entity.ProcessStopProperty;
-import cn.cnic.component.process.mapper.ProcessMapper;
-import cn.cnic.component.process.mapper.ProcessPathMapper;
-import cn.cnic.component.process.mapper.ProcessStopMapper;
-import cn.cnic.component.process.mapper.ProcessStopPropertyMapper;
 
 
 @Component
@@ -32,6 +28,7 @@ public class ProcessDomain {
 
     private Logger logger = LoggerUtil.getLogger();
 
+    private final ProcessStopCustomizedPropertyMapper processStopCustomizedPropertyMapper;
     private final ProcessStopPropertyMapper processStopPropertyMapper;
     private final MxGraphModelDomain mxGraphModelDomain;
     private final ProcessPathMapper processPathMapper;
@@ -39,11 +36,13 @@ public class ProcessDomain {
     private final ProcessMapper processMapper;
 
     @Autowired
-    public ProcessDomain(ProcessStopPropertyMapper processStopPropertyMapper,
+    public ProcessDomain(ProcessStopCustomizedPropertyMapper processStopCustomizedPropertyMapper,
+                         ProcessStopPropertyMapper processStopPropertyMapper,
                          MxGraphModelDomain mxGraphModelDomain,
                          ProcessPathMapper processPathMapper,
                          ProcessStopMapper processStopMapper,
                          ProcessMapper processMapper) {
+        this.processStopCustomizedPropertyMapper = processStopCustomizedPropertyMapper;
         this.processStopPropertyMapper = processStopPropertyMapper;
         this.mxGraphModelDomain = mxGraphModelDomain;
         this.processPathMapper = processPathMapper;
@@ -150,6 +149,16 @@ public class ProcessDomain {
                 affectedRows += addProcessStopProperty(processStopProperty);
             }
         }
+        List<ProcessStopCustomizedProperty> processStopCustomizedPropertyList = processStop.getProcessStopCustomizedPropertyList();
+        if (null != processStopCustomizedPropertyList && processStopCustomizedPropertyList.size() > 0) {
+            for (ProcessStopCustomizedProperty processStopCustomizedProperty : processStopCustomizedPropertyList) {
+                if (null == processStopCustomizedProperty) {
+                    throw new Exception("save failed");
+                }
+                processStopCustomizedProperty.setProcessStop(processStop);
+                affectedRows += addProcessStopCustomizedProperty(processStopCustomizedProperty);
+            }
+        }
         return affectedRows;
     }
 
@@ -168,6 +177,16 @@ public class ProcessDomain {
         return affectedRows;
     }
 
+    public int addProcessStopCustomizedProperty(ProcessStopCustomizedProperty processStopCustomizedProperty) throws Exception {
+        if (null == processStopCustomizedProperty) {
+            throw new Exception("save failed");
+        }
+        int affectedRows = processStopCustomizedPropertyMapper.addProcessStopCustomizedProperty(processStopCustomizedProperty);
+        if (affectedRows <= 0) {
+            throw new Exception("save failed");
+        }
+        return affectedRows;
+    }
     /**
      * The process of modifying things (just modify the process table)
      *

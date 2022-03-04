@@ -125,6 +125,8 @@ public interface StopsMapper {
     @Select("select * from flow_stops where enable_flag=1 and fk_flow_id=#{fid} and page_id=#{stopPageId}  limit 1")
     @Results({@Result(id = true, column = "id", property = "id"),
             @Result(column = "id", property = "properties", many = @Many(select = "cn.cnic.component.flow.mapper.PropertyMapper.getPropertyListByStopsId", fetchType = FetchType.LAZY)),
+            @Result(column = "id", property = "oldProperties", many = @Many(select = "cn.cnic.component.flow.mapper.PropertyMapper.getOldPropertyListByStopsId", fetchType = FetchType.LAZY)),
+            @Result(column = "id", property = "customizedPropertyList", many = @Many(select = "cn.cnic.component.flow.mapper.CustomizedPropertyMapper.getCustomizedPropertyListByStopsId", fetchType = FetchType.LAZY)),
             @Result(column = "fk_flow_id", property = "flow", many = @Many(select = "cn.cnic.component.flow.mapper.FlowMapper.getFlowById", fetchType = FetchType.LAZY)),
             @Result(column = "fk_data_source_id", property = "dataSource", many = @Many(select = "cn.cnic.component.dataSource.mapper.DataSourceMapper.getDataSourceById", fetchType = FetchType.LAZY))
 
