@@ -22,16 +22,16 @@ public interface ProcessStopCustomizedPropertyMapper {
     @InsertProvider(type = ProcessStopCustomizedPropertyMapperProvider.class, method = "addProcessStopCustomizedProperty")
     public int addProcessStopCustomizedProperty(@Param("processStopCustomizedProperty") ProcessStopCustomizedProperty processStopCustomizedProperty);
 
-    @Select("select * from flow_stops_customized_property where id = #{id} and enable_flag = 1 ")
+    @Select("select * from process_stops_customized_property where id = #{id} and enable_flag = 1 ")
     @Results({
-            @Result(column = "fk_stops_id", property = "stops", many = @Many(select = "cn.cnic.component.flow.mapper.StopsMapper.getStopsById", fetchType = FetchType.LAZY))
+            @Result(column = "fk_flow_process_stop_id", property = "stops", many = @Many(select = "cn.cnic.component.flow.mapper.StopsMapper.getStopsById", fetchType = FetchType.LAZY))
     })
     public ProcessStopCustomizedProperty getProcessStopCustomizedPropertyById(String id);
 
-    @Select("select * from flow_stops_customized_property where fk_stops_id = #{processStopsId} and enable_flag = 1 ")
+    @Select("select * from process_stops_customized_property where fk_flow_process_stop_id = #{processStopsId} and enable_flag = 1 ")
     public List<ProcessStopCustomizedProperty> getProcessStopCustomizedPropertyListByProcessStopsId(String processStopsId);
 
-    @Select("select * from flow_stops_customized_property where fk_stops_id = #{processStopsId} and name = #{name} and enable_flag = 1 ")
+    @Select("select * from process_stops_customized_property where fk_flow_process_stop_id = #{processStopsId} and name = #{name} and enable_flag = 1 ")
     public List<ProcessStopCustomizedProperty> getProcessStopCustomizedPropertyListByProcessStopsIdAndName(String processStopsId, String name);
 
     @UpdateProvider(type = ProcessStopCustomizedPropertyMapperProvider.class, method = "updateProcessStopCustomizedProperty")
