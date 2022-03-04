@@ -57,7 +57,7 @@ To Run Piflow Web：
 
 - run piflow web by release version:
 
-  - download piflow_release: https://github.com/cas-bigdatalab/piflow-web/releases/tag/v1.1
+  - download piflow_release: https://github.com/cas-bigdatalab/piflow-web/releases/tag/v1.2
   - edit config.properties
   - sh start.sh
 - how to configure config.properties
