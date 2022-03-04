@@ -44,6 +44,7 @@
 </template>
 <script>
 import { log } from 'util';
+import Cookies from "js-cookie";
 export default {
   data() {
     return {
@@ -205,6 +206,21 @@ export default {
     this.$event.on("isCollapsed", e => {
       this.isCollapsed = e;
     });
+
+    let isRole = JSON.parse(Cookies.get('setUser'));
+    if (!!isRole && isRole[0].role.stringValue !== "ADMIN"){
+      this.menulist.forEach((item,index,arr)=>{
+        if (!!item.children){
+          item.children.forEach((items,inx,arrs)=>{
+            if ( items.name=== "user"){
+              arrs.splice(inx,1);
+            }
+          })
+        }
+      })
+    }
+
+
   },
   mounted() {
     let menuName = window.sessionStorage.getItem("menuName");

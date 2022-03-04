@@ -207,6 +207,7 @@ export default {
             this.$store.commit("setUser", res.data.jwtUser);
             Cookies.set('state', "jwtok");
             Cookies.set('usre', this.username);
+            Cookies.set('setUser', JSON.stringify(res.data.jwtUser.roles));
 
             this.getIsInBootPage();
           } else {

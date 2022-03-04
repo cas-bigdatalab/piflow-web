@@ -102,6 +102,7 @@ export default {
       Cookies.remove('token');
       // Cookies.remove('menuName');
       Cookies.remove('user');
+      Cookies.remove('setUser');
       this.$store.commit("setToken", "");
       this.$store.commit("setUser", {});
       this.$router.push({ path: "/login" });
