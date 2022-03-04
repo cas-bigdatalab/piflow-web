@@ -37,7 +37,7 @@ public interface PropertyMapper {
     @Select("select fs.* from flow_stops fs left join flow f on f.id = fs.fk_flow_id where f.id = #{fid} and fs.page_id = #{stopPageId} and fs.enable_flag = 1  limit 1 ")
     @Results({ @Result(id = true, column = "id", property = "id"),
             @Result(property = "dataSource", column = "fk_data_source_id", many = @Many(select = "cn.cnic.component.dataSource.mapper.DataSourceMapper.getDataSourceById", fetchType = FetchType.LAZY)),
-            @Result(property = "properties", column = "id", many = @Many(select = "cn.cnic.component.flow.mapper.PropertyMapper.getPropertyBySotpsId", fetchType = FetchType.LAZY)),
+            @Result(property = "properties", column = "id", many = @Many(select = "cn.cnic.component.flow.mapper.PropertyMapper.getPropertyByStopsId", fetchType = FetchType.LAZY)),
             @Result(property = "customizedPropertyList", column = "id", many = @Many(select = "cn.cnic.component.flow.mapper.CustomizedPropertyMapper.getCustomizedPropertyListByStopsId", fetchType = FetchType.LAZY)) })
     public Stops getStopGroupList(@Param("fid") String fid, @Param("stopPageId") String stopPageId);
 
@@ -82,7 +82,7 @@ public interface PropertyMapper {
             @Result(column = "property_required", property = "required"),
             @Result(column = "property_sensitive", property = "sensitive"),
             @Result(column = "is_select", property = "isSelect") })
-    List<Property> getPropertyBySotpsId(String id);
+    List<Property> getPropertyByStopsId(String id);
 
     /**
      * delete StopsProperty according to ID;
@@ -102,5 +102,15 @@ public interface PropertyMapper {
 
     @Update("update flow_stops_property fsp set fsp.enable_flag=0 where fsp.is_old_data=1 and fsp.fk_stops_id = #{stopId}")
     public int deletePropertiesByIsOldDataAndStopsId(String stopId);
+
+    @Select("select fsp.id, fsp.name, fsp.description,fsp.display_name,fsp.custom_value,fsp.version,fsp.allowable_values,fsp.property_required,fsp.is_select,fsp.is_locked "
+            + " from flow_stops_property fsp where fsp.is_old_data=1 and fsp.fk_stops_id = #{id}  ORDER BY fsp.property_sort desc")
+    public List<Property> getOldPropertyByStopsId(String stopId);
+
+    @Select("select * from flow_stops_property where is_old_data=1 and fk_stops_id = #{stopsId} and enable_flag = 1 ORDER BY property_sort desc ")
+    @Results({ @Result(id = true, column = "id", property = "id"),
+            @Result(column = "property_required", property = "required"),
+            @Result(column = "property_sensitive", property = "sensitive") })
+    public List<Property> getOldPropertyListByStopsId(String stopsId);
 
 }
