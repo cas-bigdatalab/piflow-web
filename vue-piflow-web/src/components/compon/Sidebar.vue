@@ -212,7 +212,7 @@ export default {
       this.menulist.forEach((item,index,arr)=>{
         if (!!item.children){
           item.children.forEach((items,inx,arrs)=>{
-            if ( items.name=== "user"){
+            if ( items.name=== "user" || items.name=== "stopsComponent"){
               arrs.splice(inx,1);
             }
           })
