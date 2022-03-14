@@ -36,7 +36,7 @@ public class LivyImpl implements ILivy {
         String doPost = HttpUtils.doPost(SysParamsCache.getLivySessionsUrl(), "{\"kind\":\"spark\"}", null);
         logger.info("return msg: " + doPost);
         if(StringUtils.isBlank(doPost)) {
-        	return ReturnMapUtils.setFailedMsg("Error : " + MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG(MessageConfig.LANGUAGE));
+        	return ReturnMapUtils.setFailedMsg("Error : " + MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG());
         }
         if (doPost.startsWith(HttpUtils.INTERFACE_CALL_ERROR)) {
         	return ReturnMapUtils.setFailedMsg(doPost);
@@ -45,7 +45,7 @@ public class LivyImpl implements ILivy {
             JSONObject obj = JSONObject.fromObject(doPost);// Convert a json string to a json object
             String sessionsId = obj.getString("id");
             if(StringUtils.isBlank(sessionsId)){
-                return ReturnMapUtils.setFailedMsg("Error : " + MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG(MessageConfig.LANGUAGE));
+                return ReturnMapUtils.setFailedMsg("Error : " + MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG());
             }
             return ReturnMapUtils.setSucceededCustomParam("sessionsId", sessionsId);
         } catch (Exception e) {
@@ -60,7 +60,7 @@ public class LivyImpl implements ILivy {
         String doDelete = HttpUtils.doDelete(url, null);
         logger.info("return msg: " + doDelete);
         if(StringUtils.isBlank(doDelete)) {
-        	return ReturnMapUtils.setFailedMsg("Error : " + MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG(MessageConfig.LANGUAGE));
+        	return ReturnMapUtils.setFailedMsg("Error : " + MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG());
         }
         if (doDelete.startsWith(HttpUtils.INTERFACE_CALL_ERROR)) {
             return ReturnMapUtils.setFailedMsg(doDelete);
@@ -74,7 +74,7 @@ public class LivyImpl implements ILivy {
         String doGet = HttpUtils.doGet(url, null, null);
         logger.info("return msg: " + doGet);
         if(StringUtils.isBlank(doGet)) {
-        	return ReturnMapUtils.setFailedMsg("Error : " + MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG(MessageConfig.LANGUAGE));
+        	return ReturnMapUtils.setFailedMsg("Error : " + MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG());
         }
         if (doGet.startsWith(HttpUtils.INTERFACE_CALL_ERROR)) {
             return ReturnMapUtils.setFailedMsg(doGet);
@@ -92,7 +92,7 @@ public class LivyImpl implements ILivy {
         String doPost = HttpUtils.doPost(url, json, null);
         logger.info("return msg: " + doPost);
         if(StringUtils.isBlank(doPost)) {
-        	return ReturnMapUtils.setFailedMsg("Error : " + MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG(MessageConfig.LANGUAGE));
+        	return ReturnMapUtils.setFailedMsg("Error : " + MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG());
         }
         if (doPost.startsWith(HttpUtils.INTERFACE_CALL_ERROR)) {
         	return ReturnMapUtils.setFailedMsg(doPost);
@@ -101,7 +101,7 @@ public class LivyImpl implements ILivy {
             JSONObject obj = JSONObject.fromObject(doPost);// Convert a json string to a json object
             String statementsId = obj.getString("id");
             if(StringUtils.isBlank(statementsId)){
-                return ReturnMapUtils.setFailedMsg("Error : " + MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG(MessageConfig.LANGUAGE));
+                return ReturnMapUtils.setFailedMsg("Error : " + MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG());
             }
             return ReturnMapUtils.setSucceededCustomParam("statementsId", statementsId);
         } catch (Exception e) {
@@ -116,7 +116,7 @@ public class LivyImpl implements ILivy {
         String doGet = HttpUtils.doGet(url, null, null);
         logger.info("return msg: " + doGet);
         if(StringUtils.isBlank(doGet)) {
-        	return ReturnMapUtils.setFailedMsg("Error : " + MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG(MessageConfig.LANGUAGE));
+        	return ReturnMapUtils.setFailedMsg("Error : " + MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG());
         }
         if (doGet.startsWith(HttpUtils.INTERFACE_CALL_ERROR)) {
         	return ReturnMapUtils.setFailedMsg(doGet);

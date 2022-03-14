@@ -175,9 +175,9 @@ public class FlowTemplateServiceImpl implements IFlowTemplateService {
         }
         int deleteTemplate = flowTemplateDomain.updateEnableFlagById(id, false);
         if (deleteTemplate > 0) {
-            return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
+            return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG());
         } else {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG(MessageConfig.LANGUAGE));
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
         }
     }
 

@@ -53,7 +53,7 @@ public class FlowImpl implements IFlow {
     @Override
     public Map<String, Object> startFlow(Process process, String checkpoint, RunModeType runModeType) {
         if (null == process) {
-            return ReturnMapUtils.setFailedMsg("process " + MessageConfig.PARAM_IS_NULL_MSG(MessageConfig.LANGUAGE));
+            return ReturnMapUtils.setFailedMsg(MessageConfig.PARAM_ERROR_MSG());
         }
         //String json = ProcessUtil.processToJson(process, checkpoint, runModeType);
         //String formatJson = JsonFormatTool.formatJson(json);
@@ -62,17 +62,17 @@ public class FlowImpl implements IFlow {
         String doPost = HttpUtils.doPost(SysParamsCache.getFlowStartUrl(), formatJson, null);
         logger.info("Return information：" + doPost);
         if (StringUtils.isBlank(doPost)) {
-            return ReturnMapUtils.setFailedMsg("Error : " + MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG(MessageConfig.LANGUAGE));
+            return ReturnMapUtils.setFailedMsg("Error : " + MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG());
         }
         if (doPost.contains(HttpUtils.INTERFACE_CALL_ERROR) || doPost.contains("Exception")) {
-            return ReturnMapUtils.setFailedMsg(MessageConfig.INTERFACE_CALL_ERROR_MSG(MessageConfig.LANGUAGE) + " : " + doPost);
+            return ReturnMapUtils.setFailedMsg(MessageConfig.INTERFACE_CALL_ERROR_MSG() + " : " + doPost);
         }
         try {
             // Convert a json string to a json object
             JSONObject obj = JSONObject.fromObject(doPost).getJSONObject("flow");
             String appId = obj.getString("id");
             if (StringUtils.isBlank(appId)) {
-                return ReturnMapUtils.setFailedMsg("Error : " + MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG(MessageConfig.LANGUAGE));
+                return ReturnMapUtils.setFailedMsg("Error : " + MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG());
             }
             return ReturnMapUtils.setSucceededCustomParam("appId", appId);
         } catch (Exception e) {

@@ -143,7 +143,7 @@ public class FlowServiceImpl implements IFlowService {
         if (null == flowById) {
             return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("flow", null);
         }
-        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
         FlowVo flowVo = new FlowVo();
         BeanUtils.copyProperties(flowById, flowVo);
         // Take out 'mxGraphModel' and convert to Vo
@@ -282,9 +282,9 @@ public class FlowServiceImpl implements IFlowService {
         // remove FLow
         int deleteFLowInfo = flowDomain.updateEnableFlagById(username, id);
         if (deleteFLowInfo > 0) {
-            return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
+            return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG());
         } else {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG(MessageConfig.LANGUAGE));
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
         }
     }
 
@@ -313,11 +313,11 @@ public class FlowServiceImpl implements IFlowService {
     @Override
     public String getFlowListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param) {
         if (null == offset || null == limit) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG(MessageConfig.LANGUAGE));
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
         }
         Page<FlowVo> page = PageHelper.startPage(offset, limit,"crt_dttm desc");
         flowDomain.getFlowListParam(username, isAdmin, param);
-        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
         rtnMap = PageHelperUtils.setLayTableParam(page, rtnMap);
         return JsonUtils.toJsonNoException(rtnMap);
     }
@@ -559,7 +559,7 @@ public class FlowServiceImpl implements IFlowService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("No data with ID : " + load);
         }
 
-        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
 
         rtnMap.put("parentAccessPath", parentAccessPath);
 

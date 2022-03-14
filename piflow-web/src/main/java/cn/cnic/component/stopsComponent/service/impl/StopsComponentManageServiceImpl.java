@@ -58,7 +58,7 @@ public class StopsComponentManageServiceImpl implements IStopsComponentManageSer
             stopsComponentManage.setIsShow(stopsManage.getIsShow());
             stopsComponentManageDomain.saveOrUpdeate(stopsComponentManage);
         }
-        return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG());
     }
 
 }

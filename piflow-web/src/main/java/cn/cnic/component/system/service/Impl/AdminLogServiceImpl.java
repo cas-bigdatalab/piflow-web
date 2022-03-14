@@ -26,11 +26,11 @@ public class AdminLogServiceImpl implements AdminLogService {
     @Override
     public String getLogListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param) {
         if (null == offset || null == limit) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG(MessageConfig.LANGUAGE));
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
         }
         Page<SysLogVo> page = PageHelper.startPage(offset, limit, "crt_dttm desc");
         adminLogDomain.getLogList(isAdmin,username,param);
-        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
         rtnMap = PageHelperUtils.setLayTableParam(page, rtnMap);
         return JsonUtils.toJsonNoException(rtnMap);
     }

@@ -127,11 +127,11 @@ public class SparkJarServiceImpl implements ISparkJarService {
      */
     public String sparkJarListPage(String username, Boolean isAdmin, Integer pageNo, Integer limit, String param) {
         if (null == pageNo || null == limit) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG(MessageConfig.LANGUAGE));
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
         }
         Page<Process> page = PageHelper.startPage(pageNo, limit, "crt_dttm desc");
         sparkJarDomain.getSparkJarListParam(username, isAdmin, param);
-        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
         rtnMap = PageHelperUtils.setLayTableParam(page, rtnMap);
         return JsonUtils.toJsonNoException(rtnMap);
     }
@@ -159,7 +159,7 @@ public class SparkJarServiceImpl implements ISparkJarService {
         if (i <= 0) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("delete failed");
         }
-        return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG());
     }
 
 }

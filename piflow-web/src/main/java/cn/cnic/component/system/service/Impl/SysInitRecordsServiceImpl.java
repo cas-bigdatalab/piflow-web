@@ -80,16 +80,16 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
     public String initComponents(String currentUser) {
         boolean inBootPage = isInBootPage();
         if (!inBootPage) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.INIT_COMPONENTS_COMPLETED_MSG(MessageConfig.LANGUAGE));
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.INIT_COMPONENTS_COMPLETED_MSG());
         }
         ExecutorService es = new ThreadPoolExecutor(1, 5, 0L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<Runnable>(100000));
         List<String> stopsBundleList = loadStopGroup(currentUser);
         if (null == stopsBundleList) {
-            return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.INTERFACE_CALL_ERROR_MSG(MessageConfig.LANGUAGE));
+            return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.INTERFACE_CALL_ERROR_MSG());
         }
         if (stopsBundleList.isEmpty()) {
-            return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG(MessageConfig.LANGUAGE));
+            return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG());
         }
         if (null != stopsBundleList && stopsBundleList.size() > 0) {
             for (String stopListInfos : stopsBundleList) {
@@ -119,13 +119,13 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
             }
         }
         SysParamsCache.THREAD_POOL_EXECUTOR = ((ThreadPoolExecutor) es);
-        return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG());
     }
 
     @Override
     public String threadMonitoring(String currentUser) {
         if (null == SysParamsCache.THREAD_POOL_EXECUTOR) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.INIT_COMPONENTS_ERROR_MSG(MessageConfig.LANGUAGE));
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.INIT_COMPONENTS_ERROR_MSG());
         }
         //Total number of threads
         double taskCount = SysParamsCache.THREAD_POOL_EXECUTOR.getTaskCount();

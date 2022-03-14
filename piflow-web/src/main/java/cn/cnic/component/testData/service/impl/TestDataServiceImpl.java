@@ -488,7 +488,7 @@ public class TestDataServiceImpl implements ITestDataService {
         List<LinkedHashMap<String, Object>> testDataSchemaIdAndNameListByTestDataId = testDataDomain.getTestDataSchemaIdAndNameListByTestDataId(testDataId);
         List<LinkedHashMap<String, Object>> testDataSchemaValuesCustomList_id = testDataDomain.getTestDataSchemaValuesCustomListId(isAdmin, username, testDataId, testDataSchemaIdAndNameListByTestDataId);
         List<LinkedHashMap<String, Object>> testDataSchemaValuesCustomList = testDataDomain.getTestDataSchemaValuesCustomList(isAdmin, username, testDataId, testDataSchemaIdAndNameListByTestDataId);
-        Map<String, Object> setSucceededMsg = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
+        Map<String, Object> setSucceededMsg = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
         setSucceededMsg.put("schema", testDataSchemaIdAndNameListByTestDataId);
         setSucceededMsg.put("schemaValue", testDataSchemaValuesCustomList);
         setSucceededMsg.put("schemaValueId", testDataSchemaValuesCustomList_id);

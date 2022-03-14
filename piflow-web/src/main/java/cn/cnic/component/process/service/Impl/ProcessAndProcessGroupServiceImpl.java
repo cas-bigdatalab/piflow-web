@@ -46,7 +46,7 @@ public class ProcessAndProcessGroupServiceImpl implements IProcessAndProcessGrou
     @Override
     public String getProcessAndProcessGroupListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param) {
         if (null == offset || null == limit) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG(MessageConfig.LANGUAGE));
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
         }
         Page<Process> page = PageHelper.startPage(offset, limit,"crt_dttm desc");
         if (isAdmin) {
@@ -54,7 +54,7 @@ public class ProcessAndProcessGroupServiceImpl implements IProcessAndProcessGrou
         } else {
             processGroupDomain.getProcessAndProcessGroupListByUser(param, username);
         }
-        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
         rtnMap = PageHelperUtils.setLayTableParam(page, rtnMap);
         return JsonUtils.toJsonNoException(rtnMap);
     }
@@ -70,7 +70,7 @@ public class ProcessAndProcessGroupServiceImpl implements IProcessAndProcessGrou
         if ((null == taskAppIds || taskAppIds.length <= 0) && (null == groupAppIds || groupAppIds.length <= 0)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Incoming parameter is null");
         }
-        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
         if (null != taskAppIds && taskAppIds.length > 0) {
             Map<String, Object> taskAppInfoMap = new HashMap<>();
             List<Process> processListByAppIDs = processGroupDomain.getProcessListByAppIDs(taskAppIds);

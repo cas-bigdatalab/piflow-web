@@ -27,7 +27,7 @@ public class ReturnMapUtils {
      * @return Map
      */
     public static Map<String, Object> setFailedMsg(String errorMsg) {
-        errorMsg = (StringUtils.isNotBlank(errorMsg) ? errorMsg : MessageConfig.ERROR_MSG(MessageConfig.LANGUAGE));
+        errorMsg = (StringUtils.isNotBlank(errorMsg) ? errorMsg : MessageConfig.ERROR_MSG());
         logger.warn(errorMsg);
         Map<String, Object> rtnMap = new HashMap<>();
         rtnMap.put(KEY_CODE, ERROR_CODE);
@@ -53,7 +53,7 @@ public class ReturnMapUtils {
      * @return Map
      */
     public static Map<String, Object> setSucceededMsg(String succeededMsg) {
-        succeededMsg = (StringUtils.isNotBlank(succeededMsg) ? succeededMsg : MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
+        succeededMsg = (StringUtils.isNotBlank(succeededMsg) ? succeededMsg : MessageConfig.SUCCEEDED_MSG());
         logger.info(succeededMsg);
         Map<String, Object> rtnMap = new HashMap<>();
         rtnMap.put(KEY_CODE, SUCCEEDED_CODE);
@@ -82,7 +82,7 @@ public class ReturnMapUtils {
     public static Map<String, Object> setSucceededCustomParam(String key, Object value) {
         Map<String, Object> rtnMap = new HashMap<>();
         rtnMap.put(KEY_CODE, SUCCEEDED_CODE);
-        rtnMap.put(KEY_ERROR_MSG, MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
+        rtnMap.put(KEY_ERROR_MSG, MessageConfig.SUCCEEDED_MSG());
         rtnMap.put(key, value);
         return rtnMap;
     }

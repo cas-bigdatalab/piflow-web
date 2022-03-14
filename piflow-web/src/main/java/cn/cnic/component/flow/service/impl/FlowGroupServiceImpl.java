@@ -194,11 +194,11 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
     @Override
     public String getFlowGroupListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param) {
         if (null == offset || null == limit) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG(MessageConfig.LANGUAGE));
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
         }
         Page<FlowGroupVo> page = PageHelper.startPage(offset, limit, "crt_dttm desc");
         flowGroupDomain.getFlowGroupListParam(username, isAdmin, param);
-        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
         rtnMap = PageHelperUtils.setLayTableParam(page, rtnMap);
         return JsonUtils.toJsonNoException(rtnMap);
     }
@@ -659,7 +659,7 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("No data with ID : " + load);
         }
 
-        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
 
         rtnMap.put("parentAccessPath", parentAccessPath);
 

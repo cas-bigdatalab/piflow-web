@@ -424,7 +424,7 @@ public class ProcessServiceImpl implements IProcessService {
         if (CollectionUtils.isEmpty(processListByAppIDs)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("data is null ");
         }
-        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
         for (Process process : processListByAppIDs) {
             ProcessVo processVo = ProcessUtils.processPoToVo(process);
             if (null == processVo) {
@@ -587,11 +587,11 @@ public class ProcessServiceImpl implements IProcessService {
     @Override
     public String getProcessGroupVoListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param) {
         if (null == offset || null == limit) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG(MessageConfig.LANGUAGE));
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
         }
         Page<Process> page = PageHelper.startPage(offset, limit);
         processMapper.getProcessGroupListByParam(username, isAdmin, param);
-        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
         rtnMap = PageHelperUtils.setLayTableParam(page, rtnMap);
         return JsonUtils.toJsonNoException(rtnMap);
     }
@@ -851,7 +851,7 @@ public class ProcessServiceImpl implements IProcessService {
         if (null == process) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("No data with ID : " + loadId);
         }
-        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
         // set current user
         UserVo currentUser = new UserVo();
         currentUser.setUsername(username);

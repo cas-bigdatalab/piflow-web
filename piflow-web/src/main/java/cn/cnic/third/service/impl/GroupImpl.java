@@ -47,7 +47,7 @@ public class GroupImpl implements IGroup {
     @Override
     public Map<String, Object> startFlowGroup(ProcessGroup processGroup, RunModeType runModeType) {
         if (null == processGroup) {
-            return ReturnMapUtils.setFailedMsg("processGroup " + MessageConfig.PARAM_IS_NULL_MSG(MessageConfig.LANGUAGE));
+            return ReturnMapUtils.setFailedMsg(MessageConfig.PARAM_IS_NULL_MSG("processGroup"));
         }
         // String json = ProcessUtil.processGroupToJson(processGroup, runModeType);
         // String formatJson = JsonFormatTool.formatJson(json);
@@ -61,11 +61,11 @@ public class GroupImpl implements IGroup {
         String doPost = HttpUtils.doPost(SysParamsCache.getFlowGroupStartUrl(), formatJson, null);
         logger.info("Return information：" + doPost);
         if (StringUtils.isBlank(doPost)) {
-            return ReturnMapUtils.setFailedMsg(MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG(MessageConfig.LANGUAGE));
+            return ReturnMapUtils.setFailedMsg(MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG());
         }
         if (doPost.contains(HttpUtils.INTERFACE_CALL_ERROR) || doPost.contains("Exception")) {
             logger.warn("Return information：" + doPost);
-            return ReturnMapUtils.setFailedMsg(MessageConfig.INTERFACE_CALL_ERROR_MSG(MessageConfig.LANGUAGE)+ ": " + doPost);
+            return ReturnMapUtils.setFailedMsg(MessageConfig.INTERFACE_CALL_ERROR_MSG()+ ": " + doPost);
         }
         try {
             JSONObject obj = JSONObject.fromObject(doPost).getJSONObject("group");// Convert a json string to a json object
@@ -73,7 +73,7 @@ public class GroupImpl implements IGroup {
             if (StringUtils.isNotBlank(groupId)) {
                 return ReturnMapUtils.setSucceededCustomParam("appId", groupId);
             } else {
-                return ReturnMapUtils.setFailedMsg("Error : " + MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG(MessageConfig.LANGUAGE));
+                return ReturnMapUtils.setFailedMsg("Error : " + MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG());
             }
         } catch (Exception e) {
             return ReturnMapUtils.setFailedMsg("Error : Interface call succeeded, conversion error");

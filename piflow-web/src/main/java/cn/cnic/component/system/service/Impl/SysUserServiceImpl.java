@@ -77,14 +77,14 @@ public class SysUserServiceImpl implements ISysUserService {
     @Override
     public String getUserListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param) {
         if (null == offset || null == limit) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG(MessageConfig.LANGUAGE));
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
         }
         if (!isAdmin) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_PERMISSION_MSG(MessageConfig.LANGUAGE));
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_PERMISSION_MSG());
         }
         Page<SysUserVo> page = PageHelper.startPage(offset, limit, "crt_dttm desc");
         sysUserDomain.getSysUserVoList(isAdmin, username, param);
-        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
         rtnMap = PageHelperUtils.setLayTableParam(page, rtnMap);
         return JsonUtils.toJsonNoException(rtnMap);
     }
@@ -93,7 +93,7 @@ public class SysUserServiceImpl implements ISysUserService {
     public String getUserById(boolean isAdmin, String username, String userId) {
         SysUserVo sysUser = sysUserDomain.getSysUserVoById(isAdmin,username,userId);
         if (null == sysUser) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_MSG(MessageConfig.LANGUAGE));
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_MSG());
         }
         sysUser.setPassword("");
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("sysUserVo", sysUser);
@@ -129,9 +129,9 @@ public class SysUserServiceImpl implements ISysUserService {
 
             int update = sysUserDomain.updateSysUser(sysUserById);
             if (update <= 0) {
-                return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG(MessageConfig.LANGUAGE));
+                return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
             }
-            return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
+            return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG());
         } catch (Exception e) {
             logger.error("update failed", e);
             return ReturnMapUtils.setFailedMsgRtnJsonStr("update failed");
@@ -148,24 +148,24 @@ public class SysUserServiceImpl implements ISysUserService {
      */
     public String updatePassword(String username, String oldPassword, String password){
         if(StringUtils.isBlank(username) || StringUtils.isBlank(oldPassword) || StringUtils.isBlank(password)){
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_OPERATION_MSG(MessageConfig.LANGUAGE));
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_OPERATION_MSG());
         }
         SysUser userByUserName = sysUserDomain.findUserByUserName(username);
         if (userByUserName == null || StringUtils.isBlank(userByUserName.getUsername())) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG(MessageConfig.LANGUAGE));
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
         }
         boolean matches = new BCryptPasswordEncoder().matches(oldPassword, userByUserName.getPassword());
         if (!matches) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG(MessageConfig.LANGUAGE));
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
         }
         String encodePassword = new BCryptPasswordEncoder().encode(password);
         userByUserName.setPassword(encodePassword);
         try {
             sysUserDomain.updateSysUser(userByUserName);
         } catch (Exception e) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG(MessageConfig.LANGUAGE));
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
         }
-        return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG());
     }
 
     @Override
@@ -185,13 +185,13 @@ public class SysUserServiceImpl implements ISysUserService {
             sysUserById.setLastUpdateDttm(new Date());
             sysUserById.setLastUpdateUser(username);
             if ("admin".equals(sysUserById.getUsername())) {
-                return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG(MessageConfig.LANGUAGE));
+                return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
             }
             sysUserById.setEnableFlag(false);
             int update = sysUserDomain.updateSysUser(sysUserById);
 
             if (update <= 0) {
-                return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG(MessageConfig.LANGUAGE));
+                return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
             }
             return ReturnMapUtils.setSucceededMsgRtnJsonStr("Started successfully");
         } catch (Exception e) {

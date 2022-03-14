@@ -18,11 +18,11 @@ public class ThirdInterfaceReturnMsgUtils {
 
     public static String THIRD_INTERFACE_IS_ERROR(String returnMsg){
         if (StringUtils.isBlank(returnMsg)) {
-            logger.warn(MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG(MessageConfig.LANGUAGE));
+            logger.warn(MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG());
             return ERROR;
         }
         if (returnMsg.contains(HttpUtils.INTERFACE_CALL_ERROR) || returnMsg.contains("Exception") || returnMsg.contains("Error") || returnMsg.contains("Fail")) {
-            logger.warn(MessageConfig.INTERFACE_CALL_ERROR_MSG(MessageConfig.LANGUAGE) + " : " + returnMsg);
+            logger.warn(MessageConfig.INTERFACE_CALL_ERROR_MSG() + " : " + returnMsg);
             return ERROR;
         }
 

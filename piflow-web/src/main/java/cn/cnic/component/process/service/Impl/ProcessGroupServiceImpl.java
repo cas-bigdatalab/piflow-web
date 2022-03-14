@@ -143,7 +143,7 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("No data was queried");
 
         }
-        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
         rtnMap.put("progress", (null != processGroupVo.getProgress() ? processGroupVo.getProgress() : "0.00"));
         rtnMap.put("state", (null != processGroupVo.getState() ? processGroupVo.getState().name() : "NO_STATE"));
         rtnMap.put("processGroupVo", processGroupVo);
@@ -165,7 +165,7 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
         if (CollectionUtils.isEmpty(processGroupListByAppIDs)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("No data was queried");
         }
-        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
         for (ProcessGroup processGroup : processGroupListByAppIDs) {
             if (null == processGroup) {
                 continue;
@@ -251,11 +251,11 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
     @Override
     public String getProcessGroupVoListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param) {
         if (null == offset || null == limit) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG(MessageConfig.LANGUAGE));
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
         }
         Page<ProcessGroupVo> page = PageHelper.startPage(offset, limit, "crt_dttm desc");
         processGroupDomain.getProcessGroupListPageByParam(username, isAdmin, param);
-        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
         rtnMap = PageHelperUtils.setLayTableParam(page, rtnMap);
         return JsonUtils.toJsonNoException(rtnMap);
     }
@@ -523,7 +523,7 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
         if (null == processGroup) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("No data with ID : " + loadId);
         }
-        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
         // set loadId
         rtnMap.put("load", loadId);
         // set current user
@@ -642,7 +642,7 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
             BeanUtils.copyProperties(processGroup, processGroupVo);
             nodeType = "flowGroup";
         }
-        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG(MessageConfig.LANGUAGE));
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
         rtnMap.put("processVo", processVo);
         rtnMap.put("processGroupVo", processGroupVo);
         rtnMap.put("nodeType", nodeType);
