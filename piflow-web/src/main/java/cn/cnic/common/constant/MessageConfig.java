@@ -73,9 +73,9 @@ public class MessageConfig {
     }
     public static String ADD_SUCCEEDED_MSG(){
         if("ZH".equals(LANGUAGE)){
-            return SUCCEEDED_MSG_ZH;
+            return ADD_SUCCEEDED_MSG_ZH;
         }
-        return SUCCEEDED_MSG;
+        return ADD_SUCCEEDED_MSG;
     }
 
     private static String UPDATE_ERROR_MSG;
@@ -116,11 +116,11 @@ public class MessageConfig {
     private static String DELETE_ERROR_MSG_ZH;
     @Value("${msg.delete.error}")
     private void setDeleteErrorMsg(String deleteErrorMsg) {
-        UPDATE_ERROR_MSG = deleteErrorMsg;
+        DELETE_ERROR_MSG = deleteErrorMsg;
     }
     @Value("${msg.delete.error.zh}")
     private void setDeleteErrorMsgZh(String deleteErrorMsgZh) {
-        UPDATE_ERROR_MSG_ZH = deleteErrorMsgZh;
+        DELETE_ERROR_MSG_ZH = deleteErrorMsgZh;
     }
     public static String DELETE_ERROR_MSG(){
         if("ZH".equals(LANGUAGE)){
@@ -133,11 +133,11 @@ public class MessageConfig {
     private static String DELETE_SUCCEEDED_MSG_ZH;
     @Value("${msg.delete.succeeded}")
     private void setDeleteSucceededMsg(String deleteSucceededMsg) {
-        UPDATE_SUCCEEDED_MSG = deleteSucceededMsg;
+        DELETE_SUCCEEDED_MSG = deleteSucceededMsg;
     }
     @Value("${msg.delete.succeeded.zh}")
     private void setDeleteSucceededMsgZh(String deleteSucceededMsgZh) {
-        UPDATE_SUCCEEDED_MSG_ZH = deleteSucceededMsgZh;
+        DELETE_SUCCEEDED_MSG_ZH = deleteSucceededMsgZh;
     }
     public static String DELETE_SUCCEEDED_MSG(){
         if("ZH".equals(LANGUAGE)){
@@ -258,7 +258,7 @@ public class MessageConfig {
     private void setUploadFailedFileEmptyMsgZh(String uploadFailedFileEmptyMsgZh) {
         UPLOAD_FAILED_FILE_EMPTY_MSG_ZH = uploadFailedFileEmptyMsgZh;
     }
-    public static String UPLOAD_FAILED_FILE_EMPTY(){
+    public static String UPLOAD_FAILED_FILE_EMPTY_MSG(){
         if("ZH".equals(LANGUAGE)){
             return UPLOAD_FAILED_FILE_EMPTY_MSG_ZH;
         }
