@@ -129,7 +129,7 @@ public class FileUtils {
 
     public static Map<String, Object> uploadRtnMap(MultipartFile file, String path, String saveFileName) {
         if (file.isEmpty()) {
-            return ReturnMapUtils.setFailedMsg(MessageConfig.UPLOAD_FAILED_FILE_EMPTY());
+            return ReturnMapUtils.setFailedMsg(MessageConfig.UPLOAD_FAILED_FILE_EMPTY_MSG());
         }
         CheckPathUtils.isChartPathExist(path);
         //file name
