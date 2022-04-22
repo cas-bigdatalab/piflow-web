@@ -163,6 +163,40 @@ public class MessageConfig {
         return DATA_ERROR_MSG;
     }
 
+    private static String NO_DATA_UPDATE_MSG;
+    private static String NO_DATA_UPDATE_MSG_ZH;
+    @Value("${msg.no_data_update}")
+    private void setNoDataUpdateMsg(String noDataUpdateMsg) {
+        NO_DATA_UPDATE_MSG = noDataUpdateMsg;
+    }
+    @Value("${msg.no_data_update.zh}")
+    private void setNoDataUpdateMsgZh(String noDataUpdateMsgZh) {
+        NO_DATA_UPDATE_MSG_ZH = noDataUpdateMsgZh;
+    }
+    public static String NO_DATA_UPDATE_MSG(){
+        if("ZH".equals(LANGUAGE)){
+            return NO_DATA_UPDATE_MSG_ZH;
+        }
+        return NO_DATA_UPDATE_MSG;
+    }
+
+    private static String DATA_PROPERTY_IS_NULL_MSG;
+    private static String DATA_PROPERTY_IS_NULL_MSG_ZH;
+    @Value("${msg.data_property_is_null}")
+    private void setDataPropertyIsNullMsg(String dataErrorMsg) {
+        DATA_PROPERTY_IS_NULL_MSG = dataErrorMsg;
+    }
+    @Value("${msg.data_property_is_null.zh}")
+    private void setDataPropertyIsNullMsgZh(String dataErrorMsgZh) {
+        DATA_PROPERTY_IS_NULL_MSG_ZH = dataErrorMsgZh;
+    }
+    public static String DATA_PROPERTY_IS_NULL_MSG(String name){
+        if("ZH".equals(LANGUAGE)){
+            return String.format(DATA_PROPERTY_IS_NULL_MSG_ZH, name);
+        }
+        return String.format(DATA_PROPERTY_IS_NULL_MSG, name);
+    }
+
     private static String NO_PERMISSION_MSG;
     private static String NO_PERMISSION_MSG_ZH;
     @Value("${msg.no_permission}")
@@ -299,55 +333,21 @@ public class MessageConfig {
         return PARAM_ERROR_MSG;
     }
 
-    private static String NO_FLOW_NODE_MSG;
-    private static String NO_FLOW_NODE_MSG_ZH;
-    @Value("${msg.no_flow_node}")
-    private void setNoFlowNodeMsg(String noFlowNodeMsg) {
-        NO_FLOW_NODE_MSG = noFlowNodeMsg;
+    private static String NO_XXX_NODE_MSG;
+    private static String NO_XXX_NODE_MSG_ZH;
+    @Value("${msg.no_xxx_node}")
+    private void setNoXxxNodeMsg(String noFlowNodeMsg) {
+        NO_XXX_NODE_MSG = noFlowNodeMsg;
     }
-    @Value("${msg.no_flow_node.zh}")
-    private void setNoFlowNodeMsgZh(String noFlowNodeMsgZh) {
-        NO_FLOW_NODE_MSG_ZH = noFlowNodeMsgZh;
+    @Value("${msg.no_xxx_node.zh}")
+    private void setNoXxxNodeMsgZh(String noFlowNodeMsgZh) {
+        NO_XXX_NODE_MSG_ZH = noFlowNodeMsgZh;
     }
-    public static String NO_FLOW_NODE_MSG(){
+    public static String NO_XXX_NODE_MSG(String xxx){
         if("ZH".equals(LANGUAGE)){
-            return NO_FLOW_NODE_MSG_ZH;
+            return String.format(NO_XXX_NODE_MSG_ZH, xxx);
         }
-        return NO_FLOW_NODE_MSG;
-    }
-
-    private static String NO_FLOW_GROUP_NODE_MSG;
-    private static String NO_FLOW_GROUP_NODE_MSG_ZH;
-    @Value("${msg.no_flowGroup_node}")
-    private void setNoFlowGroupNodeMsg(String noFlowGroupNodeMsg) {
-        NO_FLOW_GROUP_NODE_MSG = noFlowGroupNodeMsg;
-    }
-    @Value("${msg.no_flowGroup_node.zh}")
-    private void setNoFlowGroupNodeMsgZh(String noFlowGroupNodeMsgZh) {
-        NO_FLOW_GROUP_NODE_MSG_ZH = noFlowGroupNodeMsgZh;
-    }
-    public static String NO_FLOW_GROUP_NODE_MSG(){
-        if("ZH".equals(LANGUAGE)){
-            return NO_FLOW_GROUP_NODE_MSG_ZH;
-        }
-        return NO_FLOW_GROUP_NODE_MSG;
-    }
-
-    private static String DUPLICATE_FLOW_NAME_MSG;
-    private static String DUPLICATE_FLOW_NAME_MSG_ZH;
-    @Value("${msg.duplicate_flow_name}")
-    private void setDuplicateFlowNameMsg(String duplicateFlowNameMsg) {
-        DUPLICATE_FLOW_NAME_MSG = duplicateFlowNameMsg;
-    }
-    @Value("${msg.duplicate_flow_name.zh}")
-    private void setDuplicateFlowNameMsgZh(String duplicateFlowNameMsgZh) {
-        DUPLICATE_FLOW_NAME_MSG_ZH = duplicateFlowNameMsgZh;
-    }
-    public static String DUPLICATE_FLOW_NAME_MSG(){
-        if("ZH".equals(LANGUAGE)){
-            return DUPLICATE_FLOW_NAME_MSG_ZH;
-        }
-        return DUPLICATE_FLOW_NAME_MSG;
+        return String.format(NO_XXX_NODE_MSG, xxx);
     }
 
     private static String DUPLICATE_NAME_MSG;
@@ -360,11 +360,45 @@ public class MessageConfig {
     private void setDuplicateNameMsgZh(String duplicateNameMsgZh) {
         DUPLICATE_NAME_MSG_ZH = duplicateNameMsgZh;
     }
-    public static String DUPLICATE_NAME_MSG(){
+    public static String DUPLICATE_NAME_MSG(String name){
         if("ZH".equals(LANGUAGE)){
-            return DUPLICATE_NAME_MSG_ZH;
+            return String.format(DUPLICATE_NAME_MSG_ZH, name);
         }
-        return DUPLICATE_NAME_MSG;
+        return String.format(DUPLICATE_NAME_MSG, name);
+    }
+
+    private static String DUPLICATE_NAME_PLEASE_MODIFY_MSG;
+    private static String DUPLICATE_NAME_PLEASE_MODIFY_MSG_ZH;
+    @Value("${msg.duplicate_name_please_modify}")
+    private void setDuplicateNamePleaseModifyMsg(String duplicateNamePleaseModifyMsg) {
+        DUPLICATE_NAME_PLEASE_MODIFY_MSG = duplicateNamePleaseModifyMsg;
+    }
+    @Value("${msg.duplicate_name_please_modify.zh}")
+    private void setDuplicateNamePleaseModifyMsgZh(String duplicateNamePleaseModifyMsgZh) {
+        DUPLICATE_NAME_PLEASE_MODIFY_MSG_ZH = duplicateNamePleaseModifyMsgZh;
+    }
+    public static String DUPLICATE_NAME_PLEASE_MODIFY_MSG(String name){
+        if("ZH".equals(LANGUAGE)){
+            return String.format(DUPLICATE_NAME_PLEASE_MODIFY_MSG_ZH, name);
+        }
+        return String.format(DUPLICATE_NAME_PLEASE_MODIFY_MSG, name);
+    }
+
+    private static String XXX_AVAILABLE_MSG;
+    private static String XXX_AVAILABLE_MSG_ZH;
+    @Value("${msg.xxx_available}")
+    private void setXxxAvailableMsg(String duplicateNameMsg) {
+        XXX_AVAILABLE_MSG = duplicateNameMsg;
+    }
+    @Value("${msg.xxx_available.zh}")
+    private void setXxxAvailableMsgZh(String duplicateNameMsgZh) {
+        XXX_AVAILABLE_MSG_ZH = duplicateNameMsgZh;
+    }
+    public static String XXX_AVAILABLE_MSG(String name){
+        if("ZH".equals(LANGUAGE)){
+            return String.format(XXX_AVAILABLE_MSG_ZH, name);
+        }
+        return String.format(XXX_AVAILABLE_MSG, name);
     }
 
     private static String CONVERSION_FAILED_MSG;
@@ -467,6 +501,23 @@ public class MessageConfig {
             return SCHEDULED_TASK_ERROR_MSG_ZH;
         }
         return SCHEDULED_TASK_ERROR_MSG;
+    }
+
+    private static String SCHEDULED_TYPE_OR_DATA_ERROR_MSG;
+    private static String SCHEDULED_TYPE_OR_DATA_ERROR_MSG_ZH;
+    @Value("${msg.scheduled_type_or_data_error}")
+    private void setScheduledTypeOrDataErrorMsg(String scheduledTypeOrDataErrorMsg) {
+        SCHEDULED_TYPE_OR_DATA_ERROR_MSG = scheduledTypeOrDataErrorMsg;
+    }
+    @Value("${msg.scheduled_type_or_data_error.zh}")
+    private void setScheduledTypeOrDataErrorMsgZh(String scheduledTypeOrDataErrorMsgZh) {
+        SCHEDULED_TYPE_OR_DATA_ERROR_MSG_ZH = scheduledTypeOrDataErrorMsgZh;
+    }
+    public static String SCHEDULED_TYPE_OR_DATA_ERROR_MSG(){
+        if("ZH".equals(LANGUAGE)){
+            return SCHEDULED_TYPE_OR_DATA_ERROR_MSG_ZH;
+        }
+        return SCHEDULED_TYPE_OR_DATA_ERROR_MSG;
     }
 
 

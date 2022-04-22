@@ -69,8 +69,8 @@ public class DashboardCtrl {
     @RequestMapping(value = "/templateAndDataSourceStatistic", method = RequestMethod.GET)
     @ResponseBody
     public String getTemplateAndDataSourceStatisticInfo() {
-        Map<String, String> tempalateAndDataSourceResourceInfo = statisticServiceImpl.getTemplateAndDataSourceStatisticInfo();
-        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("templateAndDataSourceResourceInfo", tempalateAndDataSourceResourceInfo);
+        Map<String, String> templateAndDataSourceResourceInfo = statisticServiceImpl.getTemplateAndDataSourceStatisticInfo();
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("templateAndDataSourceResourceInfo", templateAndDataSourceResourceInfo);
     }
 
     @RequestMapping(value = "/stopStatistic", method = RequestMethod.GET)

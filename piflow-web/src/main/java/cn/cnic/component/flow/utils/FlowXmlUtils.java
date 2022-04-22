@@ -963,7 +963,7 @@ public class FlowXmlUtils {
         try {
             Element flowGroupElement = xmlStrToElementGetByKey(flowGroupXmlStr, false, "flowGroup");
             if (null == flowGroupElement) {
-                return ReturnMapUtils.setFailedMsg(MessageConfig.NO_FLOW_GROUP_NODE_MSG());
+                return ReturnMapUtils.setFailedMsg(MessageConfig.NO_XXX_NODE_MSG("flowGroup"));
             }
             String name = StringCustomUtils.recoverSpecialSymbolsXml(flowGroupElement.attributeValue("name"));
             String description = StringCustomUtils.recoverSpecialSymbolsXml(flowGroupElement.attributeValue("description"));
@@ -997,7 +997,7 @@ public class FlowXmlUtils {
             }
             // If there are duplicate FlowNames, directly return null
             if (StringUtils.isNotBlank(duplicateFlowName)) {
-                return ReturnMapUtils.setFailedMsg(MessageConfig.DUPLICATE_FLOW_NAME_MSG());
+                return ReturnMapUtils.setFailedMsg(MessageConfig.DUPLICATE_NAME_MSG("Flow"));
             }
             flowGroup.setFlowList(flowList);
 
@@ -1076,7 +1076,7 @@ public class FlowXmlUtils {
             }
             Element flowElement = xmlStrToElementGetByKey(templateXml, false, "flow");
             if (null == flowElement) {
-                return ReturnMapUtils.setFailedMsg(MessageConfig.NO_FLOW_NODE_MSG());
+                return ReturnMapUtils.setFailedMsg(MessageConfig.NO_XXX_NODE_MSG("flow"));
             }
             String driverMemory = StringCustomUtils.recoverSpecialSymbolsXml(flowElement.attributeValue("driverMemory"));
             String executorCores = StringCustomUtils.recoverSpecialSymbolsXml(flowElement.attributeValue("executorCores"));
@@ -1447,7 +1447,7 @@ public class FlowXmlUtils {
         }
         // If there are duplicate StopNames, directly return null
         if (StringUtils.isNotBlank(duplicateStopName)) {
-            return ReturnMapUtils.setFailedMsg(MessageConfig.DUPLICATE_NAME_MSG());
+            return ReturnMapUtils.setFailedMsg(MessageConfig.DUPLICATE_NAME_PLEASE_MODIFY_MSG("StopName"));
         }
         return ReturnMapUtils.setSucceededCustomParam("xmlToStopsList", stopsList);
     }

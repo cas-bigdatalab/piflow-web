@@ -62,13 +62,13 @@ public class TestDataServiceImpl implements ITestDataService {
     @Override
     public String saveOrUpdateTestDataAndSchema(String username, boolean isAdmin, TestDataVoRequest testDataVo, boolean flag) throws Exception {
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         if (null == testDataVo) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("param name is empty");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
         }
         if (StringUtils.isBlank(testDataVo.getName())) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("data is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_MSG());
         }
         TestData testData = null;
         String testDataVoId = testDataVo.getId();
@@ -176,7 +176,7 @@ public class TestDataServiceImpl implements ITestDataService {
         if (StringUtils.isBlank(testDataVoId)) {
             String testDataName = testDataDomain.getTestDataName(testData.getName());
             if(StringUtils.isNotBlank(testDataName)){
-                return ReturnMapUtils.setFailedMsgRtnJsonStr("save failed, testDataName is already taken");
+                return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.DUPLICATE_NAME_PLEASE_MODIFY_MSG("testDataName"));
             }
             testData.setId(UUIDUtils.getUUID32());
             affectedRows = testDataDomain.addTestData(testData, username);
@@ -187,7 +187,7 @@ public class TestDataServiceImpl implements ITestDataService {
             affectedRows += testDataDomain.delTestDataSchemaList(delSchemaIdList, isAdmin, username);
         }
         if (affectedRows <= 0) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("save failed");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
         }
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededCustomParam("testDataId", testData.getId());
         ReturnMapUtils.appendValues(rtnMap, "testDataName", testData.getName());
@@ -207,26 +207,26 @@ public class TestDataServiceImpl implements ITestDataService {
     public String saveOrUpdateTestDataSchemaValues(String username, boolean isAdmin, TestDataSchemaValuesSaveVo schemaValuesVo) throws Exception {
         // Determine whether it is empty
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         // Determine whether it is empty
         if (null == schemaValuesVo) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("param name is empty");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
         }
         // Determine whether it is empty
         String testDataId = schemaValuesVo.getTestDataId();
         if (StringUtils.isBlank(testDataId)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("testDataId is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("testDataId"));
         }
         // Query "TestData" based on "testDataId"
         TestData testDataById = testDataDomain.getTestDataById(testDataId);
         if (null == testDataById) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("testDataId is error, not data");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_BY_ID_XXX_MSG(testDataId));
         }
         // schema List
         List<TestDataSchema> schemaList = testDataById.getSchemaList();
         if (null == schemaList || schemaList.size() <= 0) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Error! TestData schema is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.DATA_PROPERTY_IS_NULL_MSG("schema"));
         }
         // "schemaList" converts "Map" (key is FieldName)
         Map<String, TestDataSchema> schemaMapDB = new HashMap<>();
@@ -276,7 +276,7 @@ public class TestDataServiceImpl implements ITestDataService {
                     //  Use "fieldName" to get TestDataSchema from "schemaMapDB"
                     testDataSchemaValues = schemaValuesMapDB.get(schemaValuesId);
                     if (null == testDataSchemaValues) {
-                        return ReturnMapUtils.setFailedMsgRtnJsonStr("Error! 'schemaValuesIdList' data is error");
+                        return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.DATA_PROPERTY_IS_NULL_MSG("schemaValuesIdList"));
                     }
                     if (isDelete) {
                         testDataSchemaValues.setEnableFlag(false);
@@ -292,13 +292,13 @@ public class TestDataServiceImpl implements ITestDataService {
             }
         }
         if (null == newTestDataSchemaValuesList || newTestDataSchemaValuesList.size() < 0) {
-            return ReturnMapUtils.setSucceededMsgRtnJsonStr("no data update");
+            return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.NO_DATA_UPDATE_MSG());
         }
         int saveOrUpdateTestDataSchemaValuesList = testDataDomain.saveOrUpdateTestDataSchemaValuesList(username, newTestDataSchemaValuesList, testDataById);
         if(saveOrUpdateTestDataSchemaValuesList <= 0) {
-            return ReturnMapUtils.setSucceededMsgRtnJsonStr("save failed");    
+            return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.UPDATE_ERROR_MSG());
         }
-        return ReturnMapUtils.setSucceededMsgRtnJsonStr("save success");
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.UPDATE_SUCCEEDED_MSG());
     }
 
     /**
@@ -312,13 +312,13 @@ public class TestDataServiceImpl implements ITestDataService {
     @Override
     public String checkTestDataName(String username, boolean isAdmin, String testDataName){
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Username can not be empty");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         String res = testDataDomain.getTestDataName(testDataName);
         if (StringUtils.isNotBlank(res)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Username is already taken");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.DUPLICATE_NAME_PLEASE_MODIFY_MSG("testDataName"));
         } else {
-            return ReturnMapUtils.setSucceededMsgRtnJsonStr("Username is available");
+            return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.XXX_AVAILABLE_MSG("testDataName"));
         }
     }
 

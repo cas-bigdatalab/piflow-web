@@ -16,7 +16,8 @@ public class TestDataSchemaValuesSaveVoUtils {
             return null;
         }
         // Also convert the json string to a json object, and then convert the json object to a java object, as shown below.
-        JSONObject obj = JSONObject.fromObject(json);// Convert a json string to a json object
+        // Convert a json string to a json object
+        JSONObject obj = JSONObject.fromObject(json);
         // Needed when there is a List in jsonObj
         @SuppressWarnings("rawtypes")
         Map<String, Class> classMap = new HashMap<String, Class>();

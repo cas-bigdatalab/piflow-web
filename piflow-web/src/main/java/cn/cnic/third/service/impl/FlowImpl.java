@@ -77,7 +77,7 @@ public class FlowImpl implements IFlow {
             return ReturnMapUtils.setSucceededCustomParam("appId", appId);
         } catch (Exception e) {
             logger.error("error: ", e);
-            return ReturnMapUtils.setFailedMsg("Error : Interface call succeeded, conversion error");
+            return ReturnMapUtils.setFailedMsg(MessageConfig.CONVERSION_FAILED_MSG());
         }
     }
 
@@ -114,7 +114,9 @@ public class FlowImpl implements IFlow {
         // Also convert the json string to a json object, 
         // and then convert the json object to a java object, 
         // as shown below.
-        JSONObject obj = JSONObject.fromObject(jsonResult);// Convert a json string to a json object
+
+        // Convert a json string to a json object
+        JSONObject obj = JSONObject.fromObject(jsonResult);
         // Convert a json object to a java object
         ThirdProgressVo jd = (ThirdProgressVo) JSONObject.toBean(obj, ThirdProgressVo.class);
         String progressNums = jd.getProgress();
@@ -150,7 +152,9 @@ public class FlowImpl implements IFlow {
         // Also convert the json string to a json object, 
         // and then convert the json object to a java object, 
         // as shown below.
-        JSONObject obj = JSONObject.fromObject(doGet);// Convert a json string to a json object
+
+        // Convert a json string to a json object
+        JSONObject obj = JSONObject.fromObject(doGet);
         if (null == obj) {
             return "";
         }
@@ -184,7 +188,9 @@ public class FlowImpl implements IFlow {
         // Also convert the json string to a json object, 
         // and then convert the json object to a java object, 
         // as shown below.
-        JSONObject obj = JSONObject.fromObject(doGet);// Convert a json string to a json object
+
+        // Convert a json string to a json object
+        JSONObject obj = JSONObject.fromObject(doGet);
         if (null == obj) {
             return null;
         }

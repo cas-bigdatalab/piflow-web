@@ -75,7 +75,7 @@ public class SparkJarImpl implements ISparkJar {
         String json = JSON.toJSON(map).toString();
         String doPost = HttpUtils.doPost(SysParamsCache.getSparkJarUNMountUrl(), json, 5 * 1000);
         if (StringUtils.isBlank(doPost)) {
-            logger.warn("Interface returnvalues is null");
+            logger.warn("Interface return values is null");
             return null;
         }
         if (doPost.contains(HttpUtils.INTERFACE_CALL_ERROR) || doPost.contains("Fail")) {

@@ -60,7 +60,7 @@ public class CustomizedPropertyServiceImpl implements ICustomizedPropertyService
         }
         List<CustomizedProperty> customizedPropertyListByStopsIdAndName = customizedPropertyDomain.getCustomizedPropertyListByStopsIdAndName(stopId, stopsCustomizedPropertyVo.getName());
         if (null != customizedPropertyListByStopsIdAndName && customizedPropertyListByStopsIdAndName.size() > 0) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.DUPLICATE_NAME_MSG());
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.DUPLICATE_NAME_PLEASE_MODIFY_MSG("StopsCustomizedPropertyName"));
         }
         Stops stopsById = stopsDomain.getStopsById(stopId);
         if (null == stopsById) {

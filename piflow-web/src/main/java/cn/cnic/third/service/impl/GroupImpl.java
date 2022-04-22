@@ -68,7 +68,8 @@ public class GroupImpl implements IGroup {
             return ReturnMapUtils.setFailedMsg(MessageConfig.INTERFACE_CALL_ERROR_MSG()+ ": " + doPost);
         }
         try {
-            JSONObject obj = JSONObject.fromObject(doPost).getJSONObject("group");// Convert a json string to a json object
+            // Convert a json string to a json object
+            JSONObject obj = JSONObject.fromObject(doPost).getJSONObject("group");
             String groupId = obj.getString("id");
             if (StringUtils.isNotBlank(groupId)) {
                 return ReturnMapUtils.setSucceededCustomParam("appId", groupId);
@@ -76,7 +77,7 @@ public class GroupImpl implements IGroup {
                 return ReturnMapUtils.setFailedMsg("Error : " + MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG());
             }
         } catch (Exception e) {
-            return ReturnMapUtils.setFailedMsg("Error : Interface call succeeded, conversion error");
+            return ReturnMapUtils.setFailedMsg(MessageConfig.CONVERSION_FAILED_MSG());
         }
     }
 
@@ -119,7 +120,8 @@ public class GroupImpl implements IGroup {
             return null;
         }
         // Also convert the json string to a json object, and then convert the json object to a java object, as shown below.
-        JSONObject obj = JSONObject.fromObject(doGet);// Convert a json string to a json object
+        // Convert a json string to a json object
+        JSONObject obj = JSONObject.fromObject(doGet);
         // Needed when there is a List in jsonObj
         Map<String, Class> classMap = new HashMap<>();
         // Key is the name of the List in jsonObj, and the value is a generic class of list
@@ -156,6 +158,7 @@ public class GroupImpl implements IGroup {
      * @param groupId
      * @return
      */
+    @Override
     public Double getFlowGroupProgress(String groupId) {
         if (StringUtils.isBlank(groupId)) {
             logger.warn("groupId is null");

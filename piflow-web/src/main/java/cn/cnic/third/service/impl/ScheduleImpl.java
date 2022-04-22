@@ -44,7 +44,7 @@ public class ScheduleImpl implements ISchedule {
         } else if ("FLOW_GROUP".equals(type) && null != processGroup) {
             scheduleContentMap = ProcessUtils.processGroupToMap(processGroup, RunModeType.RUN);
         } else {
-            return ReturnMapUtils.setFailedMsg("type error or process is null");
+            return ReturnMapUtils.setFailedMsg(MessageConfig.SCHEDULED_TYPE_OR_DATA_ERROR_MSG());
         }
         Map<String, Object> requestParamMap = new HashMap<>();
         requestParamMap.put("expression", schedule.getCronExpression());
@@ -91,7 +91,8 @@ public class ScheduleImpl implements ISchedule {
             return null;
         }
         // Also convert the json string to a json object, and then convert the json object to a java object, as shown below.
-        JSONObject obj = JSONObject.fromObject(sendGetData).getJSONObject("schedule");// Convert a json string to a json object
+        // Convert a json string to a json object
+        JSONObject obj = JSONObject.fromObject(sendGetData).getJSONObject("schedule");
         // Needed when there is a List in jsonObj
         @SuppressWarnings("rawtypes")
         Map<String, Class> classMap = new HashMap<String, Class>();
