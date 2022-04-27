@@ -95,6 +95,7 @@ public class StopsComponentUtils {
         stopsComponent.setOutPortType(outPortType);
         stopsComponent.setOwner(thirdStopsComponentVo.getOwner());
         stopsComponent.setIsCustomized(thirdStopsComponentVo.isCustomized());
+        stopsComponent.setIsDataSource(thirdStopsComponentVo.isDataSource());
         stopsComponent.setStopGroupList(stopGroupByName);
         stopsComponent.setVisualizationType(thirdStopsComponentVo.getVisualizationType());
         List<StopsComponentProperty> listStopsComponentProperty = StopsComponentPropertyUtils.thirdStopsComponentPropertyVoListToStopsComponentProperty(username, thirdStopsComponentVo.getProperties(), stopsComponent);

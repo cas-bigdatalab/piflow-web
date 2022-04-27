@@ -31,6 +31,7 @@ public class ProcessStopMapperProvider {
     private String endTimeStr;
     private String pageId;
     private String processId;
+    private int isDataSource;
 
     private boolean preventSQLInjectionProcessStop(ProcessStop processStop) {
         if (null == processStop || StringUtils.isBlank(processStop.getLastUpdateUser())) {
@@ -71,6 +72,7 @@ public class ProcessStopMapperProvider {
         this.pageId = SqlUtils.preventSQLInjection(processStop.getPageId());
         String processIdStr = (null != processStop.getProcess() ? processStop.getProcess().getId() : null);
         this.processId = (null != processIdStr ? SqlUtils.preventSQLInjection(processIdStr) : null);
+        this.isDataSource = ((null != processStop.getIsDataSource() && processStop.getIsDataSource()) ? 1 : 0);
         return true;
     }
 
@@ -124,7 +126,8 @@ public class ProcessStopMapperProvider {
             strBuf.append("start_time, ");
             strBuf.append("end_time, ");
             strBuf.append("page_id, ");
-            strBuf.append("fk_flow_process_id ");
+            strBuf.append("fk_flow_process_id, ");
+            strBuf.append("is_data_source ");
             strBuf.append(") ");
             strBuf.append("VALUES ");
             strBuf.append("(");
@@ -144,7 +147,8 @@ public class ProcessStopMapperProvider {
             strBuf.append(this.startTimeStr + ", ");
             strBuf.append(this.endTimeStr + ", ");
             strBuf.append(this.pageId + ", ");
-            strBuf.append(this.processId + " ");
+            strBuf.append(this.processId + ", ");
+            strBuf.append(this.isDataSource + " ");
             strBuf.append(") ");
             this.reset();
             return strBuf.toString();
@@ -182,7 +186,8 @@ public class ProcessStopMapperProvider {
         strBuf.append("start_time, ");
         strBuf.append("end_time, ");
         strBuf.append("page_id, ");
-        strBuf.append("fk_flow_process_id ");
+        strBuf.append("fk_flow_process_id, ");
+        strBuf.append("is_data_source ");
         strBuf.append(") ");
         strBuf.append("VALUES ");
 
@@ -211,7 +216,8 @@ public class ProcessStopMapperProvider {
                 strBuf.append(this.startTimeStr + ", ");
                 strBuf.append(this.endTimeStr + ", ");
                 strBuf.append(this.pageId + ", ");
-                strBuf.append(this.processId + " ");
+                strBuf.append(this.processId + ", ");
+                strBuf.append(this.isDataSource + " ");
                 strBuf.append(") ");
             }
             this.reset();

@@ -31,6 +31,7 @@ public class ThirdStopsComponentUtils {
         thirdStopsComponentVo.setOutports(jsonObject.getString("outports"));
         thirdStopsComponentVo.setGroups(jsonObject.getString("groups"));
         thirdStopsComponentVo.setCustomized(jsonObject.getBoolean("isCustomized"));
+        thirdStopsComponentVo.setDataSource(jsonObject.getBoolean("isDataSource"));
         thirdStopsComponentVo.setDescription(jsonObject.getString("description"));
         thirdStopsComponentVo.setIcon(jsonObject.getString("icon"));
         thirdStopsComponentVo.setVisualizationType(jsonObject.getString("visualizationType"));

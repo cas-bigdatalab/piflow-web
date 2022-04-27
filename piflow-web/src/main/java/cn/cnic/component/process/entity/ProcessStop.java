@@ -1,14 +1,14 @@
 package cn.cnic.component.process.entity;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import cn.cnic.base.BaseHibernateModelUUIDNoCorpAgentId;
 import cn.cnic.common.Eunm.PortType;
 import cn.cnic.common.Eunm.StopState;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Setter
 @Getter
@@ -32,4 +32,5 @@ public class ProcessStop extends BaseHibernateModelUUIDNoCorpAgentId {
     private String pageId;
     private List<ProcessStopProperty> processStopPropertyList = new ArrayList<ProcessStopProperty>();
     private List<ProcessStopCustomizedProperty> processStopCustomizedPropertyList = new ArrayList<>();
+    private Boolean isDataSource = false;
 }

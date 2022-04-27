@@ -19,6 +19,7 @@ public class StopsComponentMapperProvider {
     private String outPortType;
     private int isCustomized;
     private String visualizationType;
+    private int isDataSource;
 
     private boolean preventSQLInjectionStops(StopsComponent stopsComponent) {
         if (null == stopsComponent || StringUtils.isBlank(stopsComponent.getLastUpdateUser())) {
@@ -36,6 +37,7 @@ public class StopsComponentMapperProvider {
         this.owner = SqlUtils.preventSQLInjection(stopsComponent.getOwner());
         this.isCustomized = ((null != stopsComponent.getIsCustomized() && stopsComponent.getIsCustomized()) ? 1 : 0);
         this.visualizationType = SqlUtils.preventSQLInjection(stopsComponent.getVisualizationType());
+        this.isDataSource = ((null != stopsComponent.getIsDataSource() && stopsComponent.getIsDataSource()) ? 1 : 0);
         return true;
     }
 
@@ -51,6 +53,7 @@ public class StopsComponentMapperProvider {
         this.owner = null;
         this.isCustomized = 0;
         this.visualizationType = null;
+        this.isDataSource = 0;
     }
 
     /**
@@ -152,13 +155,13 @@ public class StopsComponentMapperProvider {
 
             strBuf.append("( ");
             strBuf.append(SqlUtils.baseFieldName() + ", ");
-            strBuf.append("bundel, description, `groups`, name, owner, inports, in_port_type, outports, out_port_type, is_customized, visualization_type ");
+            strBuf.append("bundel, description, `groups`, name, owner, inports, in_port_type, outports, out_port_type, is_customized, visualization_type, is_data_source ");
             strBuf.append(") ");
 
             strBuf.append("values ");
             strBuf.append("(");
             strBuf.append(SqlUtils.baseFieldValues(stopsComponent) + ", ");
-            strBuf.append(bundel + "," + description + "," + groups + "," + name + "," + owner + "," + inports + "," + inPortType + "," + outports + "," + outPortType + "," + isCustomized + "," + visualizationType);
+            strBuf.append(bundel + "," + description + "," + groups + "," + name + "," + owner + "," + inports + "," + inPortType + "," + outports + "," + outPortType + "," + isCustomized + "," + visualizationType+","+isDataSource);
             strBuf.append(")");
             sqlStr = strBuf.toString() + ";";
         }

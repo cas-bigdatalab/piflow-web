@@ -1,16 +1,16 @@
 package cn.cnic.component.flow.entity;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import cn.cnic.base.BaseHibernateModelUUIDNoCorpAgentId;
 import cn.cnic.base.utils.DateUtils;
 import cn.cnic.common.Eunm.PortType;
 import cn.cnic.component.dataSource.entity.DataSource;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * stop component table
@@ -41,6 +41,7 @@ public class Stops extends BaseHibernateModelUUIDNoCorpAgentId {
     private List<Property> properties = new ArrayList<Property>();
     private List<Property> oldProperties = new ArrayList<Property>();
     private List<CustomizedProperty> customizedPropertyList = new ArrayList<>();
+    private Boolean isDataSource = false;
 
     public String getStartTimes() {
         SimpleDateFormat sdf = new SimpleDateFormat(DateUtils.DATE_PATTERN_yyyy_MM_dd_HH_MM_ss);
