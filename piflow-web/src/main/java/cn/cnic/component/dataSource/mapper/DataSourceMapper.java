@@ -63,7 +63,9 @@ public interface DataSourceMapper {
     @SelectProvider(type = DataSourceMapperProvider.class, method = "getDataSourceById")
     @Results({
             @Result(id = true, column = "id", property = "id"),
-            @Result(column = "id", property = "dataSourcePropertyList", many = @Many(select = "cn.cnic.component.dataSource.mapper.DataSourcePropertyMapper.getDataSourcePropertyListByDataSourceId", fetchType = FetchType.LAZY))
+            @Result(column = "stops_template_bundle", property = "stopsTemplateBundle"),
+            @Result(column = "id", property = "dataSourcePropertyList", many = @Many(select = "cn.cnic.component.dataSource.mapper.DataSourcePropertyMapper.getDataSourcePropertyListByDataSourceId", fetchType = FetchType.LAZY)),
+            @Result(column = "stops_template_bundle",property = "stopsComponent",many = @Many(select = "cn.cnic.component.stopsComponent.mapper.StopsComponentMapper.getDataSourceStopsComponentByBundle"))
     })
     DataSource getDataSourceByIdAndUser(@Param("username") String username, @Param("isAdmin") boolean isAdmin, @Param("id") String id);
 

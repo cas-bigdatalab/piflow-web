@@ -19,6 +19,7 @@ public class DataSourceMapperProvider {
     private String dataSourceName;
     private String dataSourceDescription;
     private Integer isTemplate;
+    private String stopsTemplateBundle;
 
     private boolean preventSQLInjectionDataSource(DataSource dataSource) {
         if (null == dataSource || StringUtils.isBlank(dataSource.getLastUpdateUser())) {
@@ -40,6 +41,7 @@ public class DataSourceMapperProvider {
         this.dataSourceName = SqlUtils.preventSQLInjection(dataSource.getDataSourceName());
         this.dataSourceDescription = SqlUtils.preventSQLInjection(dataSource.getDataSourceDescription());
         this.isTemplate = (null == dataSource.getIsTemplate() ? 0 : (dataSource.getIsTemplate() ? 1 : 0));
+        this.stopsTemplateBundle = dataSource.getStopsTemplateBundle();
         return true;
     }
 
@@ -53,6 +55,7 @@ public class DataSourceMapperProvider {
         this.dataSourceName = null;
         this.dataSourceDescription = null;
         this.isTemplate = null;
+        this.stopsTemplateBundle = null;
     }
 
     /**
@@ -72,7 +75,8 @@ public class DataSourceMapperProvider {
             stringBuffer.append("is_template, ");
             stringBuffer.append("data_source_type, ");
             stringBuffer.append("data_source_name, ");
-            stringBuffer.append("data_source_description ");
+            stringBuffer.append("data_source_description, ");
+            stringBuffer.append("stops_template_bundle ");
             stringBuffer.append(") ");
             stringBuffer.append("VALUES ");
             stringBuffer.append("( ");
@@ -80,7 +84,8 @@ public class DataSourceMapperProvider {
             stringBuffer.append(isTemplate + ", ");
             stringBuffer.append(dataSourceType + ", ");
             stringBuffer.append(dataSourceName + ", ");
-            stringBuffer.append(dataSourceDescription + " ");
+            stringBuffer.append(dataSourceDescription + ", ");
+            stringBuffer.append(stopsTemplateBundle+ " ");
             stringBuffer.append(") ");
             sqlStr = stringBuffer.toString();
         }
@@ -113,6 +118,7 @@ public class DataSourceMapperProvider {
             sql.SET("data_source_type = " + dataSourceType);
             sql.SET("data_source_name = " + dataSourceName);
             sql.SET("data_source_description = " + dataSourceDescription);
+            sql.SET("stops_template_bundle = "+stopsTemplateBundle);
             sql.WHERE("version = " + version);
             sql.WHERE("id = " + id);
             sqlStr = sql.toString();

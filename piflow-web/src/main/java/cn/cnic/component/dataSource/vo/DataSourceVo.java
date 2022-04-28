@@ -1,5 +1,6 @@
 package cn.cnic.component.dataSource.vo;
 
+import cn.cnic.component.stopsComponent.entity.StopsComponent;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,5 +22,7 @@ public class DataSourceVo implements Serializable {
     private Boolean isTemplate = false;
 
     private List<DataSourcePropertyVo> dataSourcePropertyVoList = new ArrayList<>();
+    private String stopsTemplateBundle;
+    private StopsComponent stopsComponent;
 
 }

@@ -1,7 +1,12 @@
 package cn.cnic.component.dataSource.domain;
 
-import java.util.List;
-
+import cn.cnic.base.utils.LoggerUtil;
+import cn.cnic.base.utils.UUIDUtils;
+import cn.cnic.component.dataSource.entity.DataSource;
+import cn.cnic.component.dataSource.entity.DataSourceProperty;
+import cn.cnic.component.dataSource.mapper.DataSourceMapper;
+import cn.cnic.component.dataSource.mapper.DataSourcePropertyMapper;
+import cn.cnic.component.dataSource.vo.DataSourceVo;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,13 +15,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import cn.cnic.base.utils.LoggerUtil;
-import cn.cnic.base.utils.UUIDUtils;
-import cn.cnic.component.dataSource.entity.DataSource;
-import cn.cnic.component.dataSource.entity.DataSourceProperty;
-import cn.cnic.component.dataSource.mapper.DataSourceMapper;
-import cn.cnic.component.dataSource.mapper.DataSourcePropertyMapper;
-import cn.cnic.component.dataSource.vo.DataSourceVo;
+import java.util.List;
 
 
 @Component
@@ -210,6 +209,15 @@ public class DataSourceDomain {
      */
     public List<DataSourceVo> getDataSourceVoListParam(String username, boolean isAdmin, String param) {
         return dataSourceMapper.getDataSourceVoListParam(username, isAdmin, param);
+    }
+
+    /**
+     *
+     * @param dataSourceId
+     * @return
+     */
+    public List<DataSourceProperty>getDataSourcePropertyListByDataSourceId(String dataSourceId){
+        return dataSourcePropertyMapper.getDataSourcePropertyListByDataSourceId(dataSourceId);
     }
 
 }

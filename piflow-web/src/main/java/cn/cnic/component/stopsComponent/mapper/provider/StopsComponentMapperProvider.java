@@ -169,4 +169,21 @@ public class StopsComponentMapperProvider {
         return sqlStr;
     }
 
+    /**
+     * Query StopsComponent according to bundle
+     *
+     * @param bundle
+     * @return
+     */
+    public String getStopsComponentByBundle(String bundle) {
+        String sqlStr = "SELECT 0";
+        SQL sql = new SQL();
+        sql.SELECT("*");
+        sql.FROM("flow_stops_template");
+        sql.WHERE("enable_flag = 1 ");
+        sql.WHERE("bundle = " + SqlUtils.addSqlStr(bundle));
+        sqlStr = sql.toString();
+        return sqlStr;
+    }
+
 }

@@ -1,16 +1,5 @@
 package cn.cnic.component.stopsComponent.domain;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.component.stopsComponent.entity.StopsComponent;
 import cn.cnic.component.stopsComponent.entity.StopsComponentGroup;
@@ -19,6 +8,16 @@ import cn.cnic.component.stopsComponent.mapper.StopsComponentGroupMapper;
 import cn.cnic.component.stopsComponent.mapper.StopsComponentMapper;
 import cn.cnic.component.stopsComponent.mapper.StopsComponentPropertyMapper;
 import cn.cnic.component.stopsComponent.vo.StopsComponentVo;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Arrays;
+import java.util.List;
 
 
 @Component
@@ -244,4 +243,12 @@ public class StopsComponentDomain {
         return stopsComponentMapper.getStopsComponentByName(stopsName);
     }
 
+    public List<StopsComponent> getDataSourceStopList(){
+        return stopsComponentMapper.getDataSourceStopList();
+    }
+
+    public List<StopsComponentProperty> getDataSourceStopsComponentByBundle(String stopsTemplateBundle){
+        StopsComponent stopsComponent = stopsComponentMapper.getDataSourceStopsComponentByBundle(stopsTemplateBundle);
+        return  stopsComponent.getProperties();
+    }
 }
