@@ -120,8 +120,8 @@ function imageAjax() {
                     for (var i = 0; i < imgwrap1.length; i++) {
                         imgwrap1[i].style.backgroundColor = "#fff"
                     }
-                    e.toElement.style = "background-color:#009688;width:100%;height:100%"
-                    imagSrc = e.toElement.src
+                    e.srcElement.style = "background-color:#009688;width:100%;height:100%"
+                    imagSrc = e.srcElement.src
                 }
             })
             var imgwrap1 = $(".imageimg")

@@ -14,10 +14,10 @@
     <!-- search -->
     <div class="input">
       <Input
-        suffix="ios-search"
-        v-model="param"
-        :placeholder="$t('modal.placeholder')"
-        style="width: 300px"/>
+          suffix="ios-search"
+          v-model="param"
+          :placeholder="$t('modal.placeholder')"
+          style="width: 300px"/>
     </div>
     <!-- Table button -->
     <Table border :columns="columns" :data="tableData">
@@ -32,32 +32,42 @@
     <!-- paging -->
     <div class="page">
       <Page
-        :prev-text="$t('page.prev_text')"
-        :next-text="$t('page.next_text')"
-        show-elevator
-        :show-total="true"
-        :total="total"
-        show-sizer
-        @on-change="onPageChange"
-        @on-page-size-change="onPageSizeChange"/>
+          :prev-text="$t('page.prev_text')"
+          :next-text="$t('page.next_text')"
+          show-elevator
+          :show-total="true"
+          :total="total"
+          show-sizer
+          @on-change="onPageChange"
+          @on-page-size-change="onPageSizeChange"/>
     </div>
 
     <!-- add / update -->
     <Modal
-      v-model="isOpen"
-      :title="id?$t('dataSource_columns.update_title'):$t('dataSource_columns.create_title')"
-      :ok-text="$t('modal.ok_text')"
-      :cancel-text="$t('modal.cancel_text')"
-      @on-ok="handleSaveUpdateData">
+        v-model="isOpen"
+        :title="id?$t('dataSource_columns.update_title'):$t('dataSource_columns.create_title')"
+        :ok-text="$t('modal.ok_text')"
+        :cancel-text="$t('modal.cancel_text')"
+        @on-ok="handleSaveUpdateData">
       <div class="modal-warp">
         <div class="item">
           <label>{{$t('dataSource_columns.type')}}：</label>
           <Select v-model="type" style="width:350px" @on-change="handleSelectChange">
             <Option
-              v-for="item in typeList"
-              :value="item.dataSourceType"
-              :key="item.id">
+                v-for="item in typeList"
+                :value="item.dataSourceType"
+                :key="item.id">
               {{ item.dataSourceType }}</Option>
+          </Select>
+        </div>
+        <div class="item" v-if="type==='STOP'">
+          <label>{{$t('dataSource_columns.type')}}：</label>
+          <Select v-model="stop" style="width:350px" @on-change="handleStopChange">
+            <Option
+                v-for="item in stopList"
+                :value="item.name"
+                :key="item.bundel">
+              {{ item.name }}</Option>
           </Select>
         </div>
         <div class="item">
@@ -72,35 +82,35 @@
         <div class="item">
           <label class="self">{{$t('dataSource_columns.description')}}：</label>
           <Input
-            v-model="description"
-            type="textarea"
-            :rows="4"
-            :placeholder="$t('modal.placeholder')"
-            style="width: 350px"/>
+              v-model="description"
+              type="textarea"
+              :rows="4"
+              :placeholder="$t('modal.placeholder')"
+              style="width: 350px"/>
         </div>
         <div class="item" v-if="type==='Other'">
           <label class="self" style="margin-top:15px;">{{$t('dataSource_columns.addProperty')}}：</label>
           <ul class="relationship">
             <li v-for="(item,m) in dataSourcePropertyVoList" :key="'ve'+m">
               <Input
-                v-model="item.name"
-                show-word-limit
-                maxlength="100"
-                :placeholder="$t('modal.placeholder')"
-                style="width: 100px"/>
+                  v-model="item.name"
+                  show-word-limit
+                  maxlength="100"
+                  :placeholder="$t('modal.placeholder')"
+                  style="width: 100px"/>
               <Input
-                v-model="item.value"
-                show-word-limit
-                maxlength="100"
-                :placeholder="$t('modal.placeholder')"
-                style="width: 180px"/>
+                  v-model="item.value"
+                  show-word-limit
+                  maxlength="100"
+                  :placeholder="$t('modal.placeholder')"
+                  style="width: 180px"/>
               <Icon
-                @click="handleRemove(m,dataSourcePropertyVoList.length===1)"
-                type="ios-remove-circle-outline"/>
+                  @click="handleRemove(m,dataSourcePropertyVoList.length===1)"
+                  type="ios-remove-circle-outline"/>
               <Icon
-                v-if="m==(dataSourcePropertyVoList.length-1)"
-                @click="handleAdd"
-                type="ios-add-circle-outline"/>
+                  v-if="m==(dataSourcePropertyVoList.length-1)"
+                  @click="handleAdd"
+                  type="ios-add-circle-outline"/>
             </li>
           </ul>
         </div>
@@ -108,13 +118,13 @@
           <div class="item" v-for="(item,m) in dataSourcePropertyVoList" :key="'vqe'+m">
             <label class="self">{{item.name}}：</label>
             <Input
-              v-model="item.value"
-              :password="item.name === 'url'? false: true"
-              :type="item.name === 'password'?'password': ''"
-              :show-word-limit="item.name === 'url' || item.name === 'password'? false : true"
-              maxlength="100"
-              :placeholder="$t('modal.placeholder')"
-              style="width: 350px"/>
+                v-model="item.value"
+                :password="item.name === 'url'? false: true"
+                :type="item.name === 'password'?'password': 'text'"
+                :show-word-limit="item.name === 'url' || item.name === 'password'? false : true"
+                maxlength="100"
+                :placeholder="$t('modal.placeholder')"
+                style="width: 350px"/>
           </div>
         </div>
       </div>
@@ -140,7 +150,9 @@ export default {
       id: "",
       name: "",
       type: "Other",
+      stop: "",
       description: "",
+      bundel: "",
 
       promptContent: [
         {
@@ -153,6 +165,7 @@ export default {
       ],
 
       typeList: [],
+      stopList: [],
       dataSourcePropertyVoList: [
         {
           name: "",
@@ -216,11 +229,15 @@ export default {
       this.name = "";
       this.description = "";
       this.dataSourcePropertyVoList = [{ name: "", value: "", id: '' }];
+      this.stop = "";
+      this.bundel = "";
     },
     handleButtonSelect(row, key) {
       switch (key) {
         case 1:
           this.getRowData(row);
+          if (row.dataSourceType === 'STOP')
+            this.handleGetStopData(row);
           break;
         case 2:
           this.handleDeleteRow(row);
@@ -233,14 +250,14 @@ export default {
     // add / update
     handleSaveUpdateData() {
       let data = {
-        dataSourceType: this.type,
-        dataSourceName: this.name,
-        dataSourceDescription: this.description
-      },
+            dataSourceType: this.type,
+            dataSourceName: this.name,
+            dataSourceDescription: this.description
+          },
           contrastData = {};
       if (
-        this.dataSourcePropertyVoList[0].name &&
-        this.dataSourcePropertyVoList[0].value
+          this.dataSourcePropertyVoList[0].name &&
+          this.dataSourcePropertyVoList[0].value
       ) {
         this.dataSourcePropertyVoList.forEach((item, i) => {
           data[`dataSourcePropertyVoList[${i}].name`] = item.name;
@@ -253,6 +270,11 @@ export default {
           contrastData[`dataSourcePropertyVoList[${i}].name`] = item.name;
         });
 
+      }
+
+
+      if ( this.type === 'STOP' ){
+        data.stopsTemplateBundle = this.bundel;
       }
       if (this.id) {
         //update
@@ -292,24 +314,73 @@ export default {
         //         console.log(error);
         //       });
         // }else {
-          this.saveModifiedData(data);
+        this.saveModifiedData(data);
         // }
       } else {
         // add
         this.$axios
-          .post("/datasource/saveOrUpdate", this.$qs.stringify(data))
+            .post("/datasource/saveOrUpdate", this.$qs.stringify(data))
+            .then(res => {
+              if (res.data.code === 200) {
+                this.$Modal.success({
+                  title: this.$t("tip.title"),
+                  content: `${this.name} ` + this.$t("tip.add_success_content")
+                });
+                this.isOpen = false;
+                this.handleReset();
+                this.getTableData();
+              } else {
+                this.$Message.error({
+                  content: `${this.name} ` + this.$t("tip.add_fail_content"),
+                  duration: 3
+                });
+              }
+            })
+            .catch(error => {
+              console.log(error);
+              this.$Message.error({
+                content: this.$t("tip.fault_content"),
+                duration: 3
+              });
+            });
+      }
+    },
+    handleSelectChange(val) {
+      let data = this.typeList.filter(item => {
+        return item.dataSourceName === val;
+      });
+
+      if (data.length === 0) {
+        this.dataSourcePropertyVoList = [{ name: "", value: "" }];
+      } else {
+        if (val==='STOP'){
+          this.dataSourcePropertyVoList = [];
+          this.handleGetStopData();
+        }else {
+          this.dataSourcePropertyVoList = data[0].dataSourcePropertyVoList.map(
+              item => {
+                return {
+                  name: item.name,
+                  value: ""
+                };
+              }
+          );
+        }
+
+      }
+    },
+
+    handleGetInputData() {
+      this.$axios
+          .post("/datasource/getDataSourceInputData")
           .then(res => {
             if (res.data.code === 200) {
-              this.$Modal.success({
-                title: this.$t("tip.title"),
-                content: `${this.name} ` + this.$t("tip.add_success_content")
-              });
-              this.isOpen = false;
-              this.handleReset();
-              this.getTableData();
+              let data = res.data.templateList;
+              data.push({ id: "", dataSourceType: "Other" });
+              this.typeList = data;
             } else {
               this.$Message.error({
-                content: `${this.name} ` + this.$t("tip.add_fail_content"),
+                content: this.$t("tip.get_fail_content"),
                 duration: 3
               });
             }
@@ -321,49 +392,6 @@ export default {
               duration: 3
             });
           });
-      }
-    },
-    handleSelectChange(val) {
-      let data = this.typeList.filter(item => {
-        return item.dataSourceName === val;
-      });
-
-      if (data.length === 0) {
-        this.dataSourcePropertyVoList = [{ name: "", value: "" }];
-      } else {
-        this.dataSourcePropertyVoList = data[0].dataSourcePropertyVoList.map(
-          item => {
-            return {
-              name: item.name,
-              value: ""
-            };
-          }
-        );
-      }
-    },
-
-    handleGetInputData() {
-      this.$axios
-        .post("/datasource/getDataSourceInputData")
-        .then(res => {
-          if (res.data.code === 200) {
-            let data = res.data.templateList;
-            data.push({ id: "", dataSourceType: "Other" });
-            this.typeList = data;
-          } else {
-            this.$Message.error({
-              content: this.$t("tip.get_fail_content"),
-              duration: 3
-            });
-          }
-        })
-        .catch(error => {
-          console.log(error);
-          this.$Message.error({
-            content: this.$t("tip.fault_content"),
-            duration: 3
-          });
-        });
     },
 
     handleAdd() {
@@ -386,67 +414,67 @@ export default {
     //save update Data
     saveModifiedData(data){
       this.$axios
-        .post("/datasource/saveOrUpdate", this.$qs.stringify(data))
-        .then(res => {
-          if (res.data.code === 200) {
-            this.$Modal.success({
-              title: this.$t("tip.title"),
-              content: `${this.name} ` + this.$t("tip.update_success_content")
-            });
-            this.isOpen = false;
-            this.handleReset();
-            this.getTableData();
-          } else {
+          .post("/datasource/saveOrUpdate", this.$qs.stringify(data))
+          .then(res => {
+            if (res.data.code === 200) {
+              this.$Modal.success({
+                title: this.$t("tip.title"),
+                content: `${this.name} ` + this.$t("tip.update_success_content")
+              });
+              this.isOpen = false;
+              this.handleReset();
+              this.getTableData();
+            } else {
+              this.$Message.error({
+                content: `${this.name} ` + this.$t("tip.update_fail_content"),
+                duration: 3
+              });
+            }
+          })
+          .catch(error => {
+            console.log(error);
             this.$Message.error({
-              content: `${this.name} ` + this.$t("tip.update_fail_content"),
+              content: this.$t("tip.fault_content"),
               duration: 3
             });
-          }
-        })
-        .catch(error => {
-          console.log(error);
-          this.$Message.error({
-            content: this.$t("tip.fault_content"),
-            duration: 3
           });
-        });
     },
 
     getRowData(row) {
       this.$event.emit("loading", true);
       this.$axios
-        .post("/datasource/getDataSourceInputData", this.$qs.stringify({dataSourceId:row.id}))
-        .then(res => {
-          if (res.data.code === 200) {
-            let data = res.data.templateList;
-            data.push({ id: "", dataSourceType: "Other" });
-            this.typeList = data;
+          .post("/datasource/getDataSourceInputData", this.$qs.stringify({dataSourceId:row.id}))
+          .then(res => {
+            if (res.data.code === 200) {
+              let data = res.data.templateList;
+              data.push({ id: "", dataSourceType: "Other" });
+              this.typeList = data;
 
-            let flow = res.data.dataSourceVo;
-            this.id = flow.id;
-            this.type = flow.dataSourceType;
-            this.name = flow.dataSourceName;
-            this.description = flow.dataSourceDescription;
-            this.dataSourcePropertyVoList = flow.dataSourcePropertyVoList;
-            this.editDataSourceList = JSON.parse(JSON.stringify(flow.dataSourcePropertyVoList));
-            this.$event.emit("loading", false);
-            this.isOpen = true;
-          } else {
+              let flow = res.data.dataSourceVo;
+              this.id = flow.id;
+              this.type = flow.dataSourceType;
+              this.name = flow.dataSourceName;
+              this.description = flow.dataSourceDescription;
+              this.dataSourcePropertyVoList = flow.dataSourcePropertyVoList;
+              this.editDataSourceList = JSON.parse(JSON.stringify(flow.dataSourcePropertyVoList));
+              this.$event.emit("loading", false);
+              this.isOpen = true;
+            } else {
+              this.$event.emit("loading", false);
+              this.$Message.error({
+                content: this.$t("tip.data_fail_content"),
+                duration: 3
+              });
+            }
+          })
+          .catch(error => {
+            console.log(error);
             this.$event.emit("loading", false);
             this.$Message.error({
-              content: this.$t("tip.data_fail_content"),
+              content: this.$t("tip.fault_content"),
               duration: 3
             });
-          }
-        })
-        .catch(error => {
-          console.log(error);
-          this.$event.emit("loading", false);
-          this.$Message.error({
-            content: this.$t("tip.fault_content"),
-            duration: 3
           });
-        });
     },
     // Delete
     handleDeleteRow(row) {
@@ -523,27 +551,27 @@ export default {
         data.param = this.param;
       }
       this.$axios
-        .get("/datasource/getDataSourceListPagination", {
-          params: data
-        })
-        .then(res => {
-          if (res.data.code === 200) {
-            this.tableData = res.data.data;
-            this.total = res.data.count;
-          } else {
+          .get("/datasource/getDataSourceListPagination", {
+            params: data
+          })
+          .then(res => {
+            if (res.data.code === 200) {
+              this.tableData = res.data.data;
+              this.total = res.data.count;
+            } else {
+              this.$Message.error({
+                content: this.$t("tip.request_fail_content"),
+                duration: 3
+              });
+            }
+          })
+          .catch(error => {
+            console.log(error);
             this.$Message.error({
-              content: this.$t("tip.request_fail_content"),
+              content: this.$t("tip.fault_content"),
               duration: 3
             });
-          }
-        })
-        .catch(error => {
-          console.log(error);
-          this.$Message.error({
-            content: this.$t("tip.fault_content"),
-            duration: 3
           });
-        });
     },
 
     onPageChange(pageNo) {
@@ -558,7 +586,72 @@ export default {
     handleModalSwitch() {
       this.handleGetInputData();
       this.isOpen = !this.isOpen;
-    }
+    },
+
+    handleGetStopData(row) {
+      this.$axios
+          .post("/datasource/getDataSourceStopList")
+          .then(res => {
+            if (res.data.code === 200) {
+              let data = res.data.dataSourceStopList;
+              this.stopList = data;
+              if (!!row){
+                let select = this.stopList.filter(item => {
+                  return item.bundel === row.stopsTemplateBundle;
+                })
+                this.stop = select[0].name;
+              }
+
+
+            } else {
+              this.$Message.error({
+                content: this.$t("tip.get_fail_content"),
+                duration: 3
+              });
+            }
+          })
+          .catch(error => {
+            console.log(error);
+            this.$Message.error({
+              content: this.$t("tip.fault_content"),
+              duration: 3
+            });
+          });
+    },
+    handleStopChange(val) {
+      let row = this.stopList.filter(item => {
+        return item.name === val;
+      });
+      this.bundel = row[0].bundel;
+      this.$axios
+          .post("/datasource/getDataSourceStopProperty", this.$qs.stringify({stopsTemplateBundle: this.bundel}))
+          .then(res => {
+            if (res.data.code === 200) {
+              let data = res.data.dataSourceStopPropertyList;
+              this.dataSourcePropertyVoList = data.map(
+                  item => {
+                    return {
+                      name: item.name,
+                      value: ""
+                    };
+                  }
+              );
+            } else {
+              this.$Message.error({
+                content: this.$t("tip.get_fail_content"),
+                duration: 3
+              });
+            }
+          })
+          .catch(error => {
+            console.log(error);
+            this.$Message.error({
+              content: this.$t("tip.fault_content"),
+              duration: 3
+            });
+          });
+    },
+
   }
 };
 </script>
