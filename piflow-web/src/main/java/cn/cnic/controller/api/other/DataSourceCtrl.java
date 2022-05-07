@@ -129,8 +129,7 @@ public class DataSourceCtrl {
             @ApiImplicitParam(name = "stopsTemplateBundle",value = "stopsTemplateBundle",required = true,paramType = "query"),
     })
     public String getDataSourceStopProperty(String stopsTemplateBundle){
-        stopsComponentServiceImpl.getStopsComponentPropertyByStopsId(stopsTemplateBundle);
-        return null;
+        return stopsComponentServiceImpl.getStopsComponentPropertyByStopsId(stopsTemplateBundle);
     }
 
 }
