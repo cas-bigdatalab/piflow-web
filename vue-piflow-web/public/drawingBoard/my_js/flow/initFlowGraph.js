@@ -64,7 +64,7 @@ function initFlowDrawingBoardData(loadId, parentAccessPath) {
                         for (var i = 0; i < dataMap.groupsVoList.length; i++) {
                             var groupsVoList_i = dataMap.groupsVoList[i];
                             if (groupsVoList_i && '' !== groupsVoList_i) {
-                                Sidebar.prototype.component_data.push({
+                                Sidebar.prototype.component_Stop_data.push({
                                     component_name: groupsVoList_i.groupName,
                                     component_group: groupsVoList_i.stopsTemplateVoList,
                                     component_prefix: (web_header_prefix + "/images/"),
@@ -72,6 +72,16 @@ function initFlowDrawingBoardData(loadId, parentAccessPath) {
                                 });
                             }
                         }
+                    }
+                }
+                if (dataMap.dataSourceVoList) {
+                    if (dataMap.dataSourceVoList && dataMap.dataSourceVoList.length > 0) {
+                        Sidebar.prototype.component_DataSource_data.push({
+                            component_name: 'DataSource',
+                            component_group: dataMap.dataSourceVoList,
+                            component_prefix: (web_header_prefix + "/images/"),
+                            addImagePaletteId: 'clipart'
+                        });
                     }
                 }
             } else {

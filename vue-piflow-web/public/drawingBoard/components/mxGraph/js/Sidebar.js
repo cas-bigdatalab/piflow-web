@@ -81,6 +81,8 @@ var groupDrag, taskDrag, textDrag;
  * Component array data
  */
 Sidebar.prototype.component_data = [];
+Sidebar.prototype.component_Stop_data = [];
+Sidebar.prototype.component_DataSource_data = [];
 //------------------------------ Custom modification content 001 end   ------------------------------
 
 /**
@@ -118,6 +120,100 @@ Sidebar.prototype.init = function()
 
 	//search
 	this.addSearchPalette(true);
+	if (null != Sidebar.prototype.component_DataSource_data && Sidebar.prototype.component_DataSource_data.length > 0) {
+		for (var i = 0; i < Sidebar.prototype.component_DataSource_data.length; i++) {
+			var component_i = Sidebar.prototype.component_DataSource_data[i];
+			if (component_i && '' !== component_i) {
+				var component_name_arrays = new Array();
+				var component_desc_arrays = new Array();
+				var component_img_arrays = new Array();
+				var component_i_group = component_i.component_group;
+				if (component_i_group && component_i_group.length > 0) {
+					for (var j = 0; j < component_i_group.length; j++) {
+						var component_i_group_j = component_i_group[j];
+						if (component_i_group_j && '' !== component_i_group_j) {
+							if (!component_i_group_j.img_name) {
+								component_i_group_j.img_name = component_i_group_j.id+ '_@/' +component_i_group_j.dataSourceName + "_128x128";
+							}
+							if (!component_i_group_j.img_type) {
+								component_i_group_j.img_type = ".png"
+							}
+							component_name_arrays.push(component_i_group_j.dataSourceName);
+							component_desc_arrays.push(component_i_group_j.dataSourceDescription);
+							component_img_arrays.push(component_i_group_j.img_name + component_i_group_j.img_type);
+						}
+					}
+				}
+				this.addImagePalette(component_i.addImagePaletteId, component_i.component_name, component_i.component_prefix, component_img_arrays, component_name_arrays, component_desc_arrays, component_name_arrays, component_name_arrays);
+			}
+		}
+	}
+
+	if (null != Sidebar.prototype.component_Stop_data && Sidebar.prototype.component_Stop_data.length > 0) {
+		var div = document.createElement('div');
+		div.className = 'geCategory';
+		div.style.boxSizing = 'border-box';
+		div.style.overflow = 'hidden';
+		div.style.width = '100%';
+
+		var outer = document.createElement('div');
+
+		var grouping_title = ['Stop'];
+		for (var key=0; key<grouping_title.length; key++){
+			var elt = document.createElement('a');
+			var eltDiv = document.createElement('div');
+			// elt.setAttribute('title', mxResources.get('sidebarTooltip'));
+			elt.className = 'geTitle';
+			elt.style.backgroundImage = 'url(\'' + this.collapsedImage + '\')';
+			elt.style.backgroundRepeat = 'no-repeat';
+			elt.style.backgroundPosition = '0% 50%';
+			// elt.style.backgroundImage = (content.style.display == 'none') ?
+			// 	'url(\'' + this.collapsedImage + '\')' : 'url(\'' + this.expandedImage + '\')';
+			mxUtils.write(elt, grouping_title[key]);
+			div.appendChild(elt);
+
+
+			eltDiv.id = grouping_title[key]+'Title';
+			eltDiv.style.padding = '10px';
+			eltDiv.style.display = 'none';
+
+			this.addFoldingHandler(elt, eltDiv);
+			if (grouping_title[key]!=='DataSource'){
+				for (var i = 0; i < Sidebar.prototype.component_Stop_data.length; i++) {
+					var component_i = Sidebar.prototype.component_Stop_data[i];
+					if (component_i && '' !== component_i) {
+						var component_name_arrays = new Array();
+						var component_desc_arrays = new Array();
+						var component_img_arrays = new Array();
+						var component_i_group = component_i.component_group;
+						if (component_i_group && component_i_group.length > 0) {
+							for (var j = 0; j < component_i_group.length; j++) {
+								var component_i_group_j = component_i_group[j];
+								if (component_i_group_j && '' !== component_i_group_j) {
+									if (!component_i_group_j.img_name) {
+										component_i_group_j.img_name = component_i_group_j.name + "_128x128";
+									}
+									if (!component_i_group_j.img_type) {
+										component_i_group_j.img_type = ".png"
+									}
+									component_name_arrays.push(component_i_group_j.name);
+									component_desc_arrays.push(component_i_group_j.description);
+									component_img_arrays.push(component_i_group_j.img_name + component_i_group_j.img_type);
+								}
+							}
+						}
+						this.addImagePalette(component_i.addImagePaletteId, component_i.component_name, component_i.component_prefix, component_img_arrays, component_name_arrays, component_desc_arrays, component_name_arrays, component_name_arrays,eltDiv);
+					}
+				}
+			}
+
+			div.appendChild(eltDiv);
+		}
+		outer.appendChild(div);
+		this.container.appendChild(outer);
+
+	}
+
 	if (null != Sidebar.prototype.component_data && Sidebar.prototype.component_data.length > 0) {
 		for (var i = 0; i < Sidebar.prototype.component_data.length; i++) {
 			var component_i = Sidebar.prototype.component_data[i];
@@ -3542,7 +3638,8 @@ Sidebar.prototype.createEdgeTemplateFromCells = function(cells, width, height, t
 /**
  * Adds the given palette.
  */
-Sidebar.prototype.addPaletteFunctions = function(id, title, expanded, fns)
+//------------------------------ Custom modification content 018 start ------------------------------
+Sidebar.prototype.addPaletteFunctions = function(id, title, expanded, fns, eltDiv)
 {
 	this.addPalette(id, title, expanded, mxUtils.bind(this, function(content)
 	{
@@ -3550,16 +3647,22 @@ Sidebar.prototype.addPaletteFunctions = function(id, title, expanded, fns)
 		{
 			content.appendChild(fns[i](content));
 		}
-	}));
+	}),eltDiv);
+	//------------------------------ Custom modification content 018 end ------------------------------
 };
 
 /**
  * Adds the given palette.
  */
-Sidebar.prototype.addPalette = function(id, title, expanded, onInit)
+Sidebar.prototype.addPalette = function(id, title, expanded, onInit, container)
 {
 	var elt = this.createTitle(title);
-	this.container.appendChild(elt);
+	//------------------------------ Custom modification content 019 start ------------------------------
+	if (!!container)
+		container.appendChild(elt);
+	else
+		//------------------------------ Custom modification content 019 end ------------------------------
+		this.container.appendChild(elt);
 	
 	var div = document.createElement('div');
 	div.className = 'geSidebar';
@@ -3584,17 +3687,20 @@ Sidebar.prototype.addPalette = function(id, title, expanded, onInit)
 	
 	var outer = document.createElement('div');
     outer.appendChild(div);
-    this.container.appendChild(outer);
-    
+	//------------------------------ Custom modification content 020 start ------------------------------
+	if (!!container)
+		container.appendChild(div);
+	else
+		//------------------------------ Custom modification content 020 end ------------------------------
+		this.container.appendChild(outer);
+
 //------------------------------ Custom modification content 016 start ------------------------------
     if (groupDrag == null) {
         this.container.appendChild(outer);
     } else if (title == "Group") {
         groupDrag.appendChild(outer)
-        // console.log(outer,"outerouter22222")
     } else if (title == "Task") {
         taskDrag.appendChild(outer)
-        // console.log(outer,"outerouter11111")
     } else {
         textDrag.appendChild(outer)
     }
@@ -3710,7 +3816,7 @@ Sidebar.prototype.removePalette = function(id)
  * Adds the given image palette.
  */
 //------------------------------ Custom modification content 017 start ------------------------------
-Sidebar.prototype.addImagePalette = function (id, title, prefix, imgArray, items, titles, values, tags) {
+Sidebar.prototype.addImagePalette = function (id, title, prefix, imgArray, items, titles, values, tags, eltDiv) {
     var showTitles = titles != null;
     var fns = [];
 
@@ -3735,7 +3841,7 @@ Sidebar.prototype.addImagePalette = function (id, title, prefix, imgArray, items
         }))(items[i], (titles != null) ? values[i] + "#" + titles[i] : null, (values != null) ? (values[i].length > 10) ? values[i].substring(0, 10) + "..." : values[i] : '', (tags != null) ? tags[items[i]] : null);
     }
 
-     this.addPaletteFunctions(id, title, Format.prototype.isShowTextCell, fns);
+     this.addPaletteFunctions(id, title, Format.prototype.isShowTextCell, fns, eltDiv);
 };
 //------------------------------ Custom modification content 017 end   ------------------------------
 
