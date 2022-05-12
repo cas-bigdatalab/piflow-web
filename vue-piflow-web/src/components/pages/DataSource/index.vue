@@ -6,6 +6,7 @@
         <span>{{$t("sidebar.data_source")}}</span>
       </div>
       <div class="right">
+        <Button class="stop_btn" @click="handleModalSwitch('STOP')" type="text">STOP</Button>
         <span class="button-warp" @click="handleModalSwitch">
           <Icon type="md-add" />
         </span>
@@ -50,7 +51,7 @@
         :cancel-text="$t('modal.cancel_text')"
         @on-ok="handleSaveUpdateData">
       <div class="modal-warp">
-        <div class="item">
+        <div class="item" v-if="currentType!=='STOP'">
           <label>{{$t('dataSource_columns.type')}}：</label>
           <Select v-model="type" style="width:350px" @on-change="handleSelectChange">
             <Option
@@ -60,9 +61,11 @@
               {{ item.dataSourceType }}</Option>
           </Select>
         </div>
-        <div class="item" v-if="type==='STOP'">
+        <div class="item" v-if="currentType==='STOP'">
           <label>{{$t('dataSource_columns.type')}}：</label>
-          <Select v-model="stop" style="width:350px" @on-change="handleStopChange">
+          <Select v-model="stop" style="width:350px"
+                  @on-change="handleStopChange"
+                  :disabled="id!==''?true:false">
             <Option
                 v-for="item in stopList"
                 :value="item.name"
@@ -173,7 +176,8 @@ export default {
           id: ''
         }
       ],
-      editDataSourceList: []
+      editDataSourceList: [],
+      currentType: ''
     };
   },
   watch: {
@@ -236,8 +240,10 @@ export default {
       switch (key) {
         case 1:
           this.getRowData(row);
-          if (row.dataSourceType === 'STOP')
+          if (row.dataSourceType === 'STOP'){
+            this.currentType = 'STOP';
             this.handleGetStopData(row);
+          }
           break;
         case 2:
           this.handleDeleteRow(row);
@@ -352,21 +358,15 @@ export default {
 
       if (data.length === 0) {
         this.dataSourcePropertyVoList = [{ name: "", value: "" }];
-      } else {
-        if (val==='STOP'){
-          this.dataSourcePropertyVoList = [];
-          this.handleGetStopData();
-        }else {
-          this.dataSourcePropertyVoList = data[0].dataSourcePropertyVoList.map(
-              item => {
-                return {
-                  name: item.name,
-                  value: ""
-                };
-              }
-          );
-        }
-
+      }else {
+        this.dataSourcePropertyVoList = data[0].dataSourcePropertyVoList.map(
+            item => {
+              return {
+                name: item.name,
+                value: ""
+              };
+            }
+        );
       }
     },
 
@@ -457,6 +457,10 @@ export default {
               this.description = flow.dataSourceDescription;
               this.dataSourcePropertyVoList = flow.dataSourcePropertyVoList;
               this.editDataSourceList = JSON.parse(JSON.stringify(flow.dataSourcePropertyVoList));
+              this.currentType = flow.dataSourceType;
+              if (this.type === 'STOP'){
+                this.bundel = flow.stopsTemplateBundle;
+              }
               this.$event.emit("loading", false);
               this.isOpen = true;
             } else {
@@ -583,8 +587,16 @@ export default {
       this.getTableData();
     },
 
-    handleModalSwitch() {
-      this.handleGetInputData();
+    handleModalSwitch(val) {
+      if (val==='STOP'){
+        this.type = val;
+        this.currentType = val;
+        this.dataSourcePropertyVoList = [];
+        this.handleGetStopData();
+      }else {
+        this.currentType = '';
+        this.handleGetInputData();
+      }
       this.isOpen = !this.isOpen;
     },
 
@@ -619,37 +631,39 @@ export default {
           });
     },
     handleStopChange(val) {
-      let row = this.stopList.filter(item => {
-        return item.name === val;
-      });
-      this.bundel = row[0].bundel;
-      this.$axios
-          .post("/datasource/getDataSourceStopProperty", this.$qs.stringify({stopsTemplateBundle: this.bundel}))
-          .then(res => {
-            if (res.data.code === 200) {
-              let data = res.data.dataSourceStopPropertyList;
-              this.dataSourcePropertyVoList = data.map(
-                  item => {
-                    return {
-                      name: item.name,
-                      value: ""
-                    };
-                  }
-              );
-            } else {
+      if (!!val && val!==''){
+        let row = this.stopList.filter(item => {
+          return item.name === val;
+        });
+        this.bundel = row[0].bundel;
+        this.$axios
+            .post("/datasource/getDataSourceStopProperty", this.$qs.stringify({stopsTemplateBundle: this.bundel}))
+            .then(res => {
+              if (res.data.code === 200) {
+                let data = res.data.dataSourceStopPropertyList;
+                this.dataSourcePropertyVoList = data.map(
+                    item => {
+                      return {
+                        name: item.name,
+                        value: ""
+                      };
+                    }
+                );
+              } else {
+                this.$Message.error({
+                  content: this.$t("tip.get_fail_content"),
+                  duration: 3
+                });
+              }
+            })
+            .catch(error => {
+              console.log(error);
               this.$Message.error({
-                content: this.$t("tip.get_fail_content"),
+                content: this.$t("tip.fault_content"),
                 duration: 3
               });
-            }
-          })
-          .catch(error => {
-            console.log(error);
-            this.$Message.error({
-              content: this.$t("tip.fault_content"),
-              duration: 3
             });
-          });
+      }
     },
 
   }
@@ -674,6 +688,11 @@ export default {
   label {
     margin-top: 5px;
   }
+}
+.stop_btn{
+  height: 27px;
+  padding: 0 3px;
+  margin-right: 6px;
 }
 </style>
 
