@@ -133,12 +133,12 @@ Sidebar.prototype.init = function()
 						var component_i_group_j = component_i_group[j];
 						if (component_i_group_j && '' !== component_i_group_j) {
 							if (!component_i_group_j.img_name) {
-								component_i_group_j.img_name = component_i_group_j.id+ '_@/' +component_i_group_j.dataSourceName + "_128x128";
+								component_i_group_j.img_name = component_i_group_j.id+ '_@/' +component_i_group_j.stopsName + "_128x128";
 							}
 							if (!component_i_group_j.img_type) {
 								component_i_group_j.img_type = ".png"
 							}
-							component_name_arrays.push(component_i_group_j.dataSourceName);
+							component_name_arrays.push(component_i_group_j.stopsName);
 							component_desc_arrays.push(component_i_group_j.dataSourceDescription);
 							component_img_arrays.push(component_i_group_j.img_name + component_i_group_j.img_type);
 						}

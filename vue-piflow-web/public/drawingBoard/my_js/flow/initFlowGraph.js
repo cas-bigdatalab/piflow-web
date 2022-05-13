@@ -963,6 +963,9 @@ function getDatasourceList(stop_id, stops_page_id, dataSourceVo) {
                 }
                 select_html += (option_html + "</select></div>");
                 $('#datasourceDivElement').html(select_html);
+                var option = $('#datasourceSelectElement option:selected').text();
+                if(option.indexOf('(STOP)')!==-1)
+                    $('#datasourceSelectElement').attr('disabled', 'disabled');
                 if (isExample) {
                     $('#datasourceSelectElement').attr('disabled', 'disabled');
                 }
