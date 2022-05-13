@@ -24,5 +24,6 @@ public class DataSourceVo implements Serializable {
     private List<DataSourcePropertyVo> dataSourcePropertyVoList = new ArrayList<>();
     private String stopsTemplateBundle;
     private StopsComponent stopsComponent;
+    private String stopsName;
 
 }

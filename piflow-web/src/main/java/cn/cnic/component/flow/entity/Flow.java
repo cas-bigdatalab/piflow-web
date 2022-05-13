@@ -1,12 +1,13 @@
 package cn.cnic.component.flow.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import cn.cnic.base.BaseHibernateModelUUIDNoCorpAgentId;
+import cn.cnic.component.dataSource.entity.DataSource;
 import cn.cnic.component.mxGraph.entity.MxGraphModel;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Setter
 @Getter
@@ -28,5 +29,6 @@ public class Flow extends BaseHibernateModelUUIDNoCorpAgentId {
     private List<Stops> stopsList = new ArrayList<Stops>();
     private List<Paths> pathsList = new ArrayList<Paths>();
     List<FlowGlobalParams> flowGlobalParamsList;
+    private List<DataSource> dataSourceList = new ArrayList<>();
 
 }

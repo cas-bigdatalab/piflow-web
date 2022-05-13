@@ -1,12 +1,16 @@
 package cn.cnic.component.dataSource.domain;
 
+import cn.cnic.base.utils.ImageUtils;
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.UUIDUtils;
+import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.component.dataSource.entity.DataSource;
 import cn.cnic.component.dataSource.entity.DataSourceProperty;
 import cn.cnic.component.dataSource.mapper.DataSourceMapper;
 import cn.cnic.component.dataSource.mapper.DataSourcePropertyMapper;
 import cn.cnic.component.dataSource.vo.DataSourceVo;
+import cn.cnic.third.service.IStop;
+import cn.cnic.third.vo.stop.ThirdStopsComponentVo;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +30,15 @@ public class DataSourceDomain {
 
     private final DataSourceMapper dataSourceMapper;
     private final DataSourcePropertyMapper dataSourcePropertyMapper;
+    private final IStop stopImpl;
 
     @Autowired
     public DataSourceDomain(DataSourceMapper dataSourceMapper,
-                            DataSourcePropertyMapper dataSourcePropertyMapper) {
+                            DataSourcePropertyMapper dataSourcePropertyMapper,
+                            IStop stopImpl) {
         this.dataSourceMapper = dataSourceMapper;
         this.dataSourcePropertyMapper = dataSourcePropertyMapper;
+        this.stopImpl = stopImpl;
     }
 
     /**
@@ -77,6 +84,14 @@ public class DataSourceDomain {
             dataSourceProperty.setDataSource(dataSource);
         }
         insertDataSourcePropertyList(dataSourcePropertyList);
+        //if DataSourceType = 'STOP',insert image,for flowPage use
+        if ("STOP".equals(dataSource.getDataSourceType()) && StringUtils.isNotEmpty(dataSource.getStopsTemplateBundle())){
+            ThirdStopsComponentVo thirdStopsComponentVo = stopImpl.getStopInfo(dataSource.getStopsTemplateBundle());
+            String icon = thirdStopsComponentVo.getIcon();
+            if (StringUtils.isNotBlank(icon)) {
+                ImageUtils.generateImage(icon, thirdStopsComponentVo.getName() + "_128x128", "png", SysParamsCache.IMAGES_PATH+dataSource.getId()+"_@/");
+            }
+        }
         return dataSource;
     }
 
@@ -137,6 +152,14 @@ public class DataSourceDomain {
                 }
                 dataSourceProperty.setDataSource(dataSource);
                 saveOrUpdateDataSourceProperty(dataSourceProperty);
+            }
+        }
+        //if DataSourceType = 'STOP',insert image,for flowPage use
+        if ("STOP".equals(dataSource.getDataSourceType()) && StringUtils.isNotEmpty(dataSource.getStopsTemplateBundle())){
+            ThirdStopsComponentVo thirdStopsComponentVo = stopImpl.getStopInfo(dataSource.getStopsTemplateBundle());
+            String icon = thirdStopsComponentVo.getIcon();
+            if (StringUtils.isNotBlank(icon)) {
+                ImageUtils.generateImage(icon, thirdStopsComponentVo.getName() + "_128x128", "png", SysParamsCache.IMAGES_PATH+dataSource.getId()+"_@/");
             }
         }
         return dataSource;
@@ -218,6 +241,21 @@ public class DataSourceDomain {
      */
     public List<DataSourceProperty>getDataSourcePropertyListByDataSourceId(String dataSourceId){
         return dataSourcePropertyMapper.getDataSourcePropertyListByDataSourceId(dataSourceId);
+    }
+
+    public int updateEnableFlagByDatasourceId(String username, String id){
+        return dataSourcePropertyMapper.updateEnableFlagByDatasourceId(username,id);
+    }
+
+    /**
+     * getStopDataSourceForFlowPage
+     *
+     * @param username
+     * @param isAdmin
+     * @return
+     */
+    public List<DataSourceVo> getStopDataSourceForFlowPage(String username, boolean isAdmin) {
+        return dataSourceMapper.getStopDataSourceForFlowPage(username, isAdmin);
     }
 
 }

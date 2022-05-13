@@ -1,14 +1,5 @@
 package cn.cnic.component.flow.domain;
 
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
 import cn.cnic.base.utils.UUIDUtils;
 import cn.cnic.component.flow.entity.CustomizedProperty;
 import cn.cnic.component.flow.entity.Property;
@@ -17,6 +8,14 @@ import cn.cnic.component.flow.mapper.CustomizedPropertyMapper;
 import cn.cnic.component.flow.mapper.PropertyMapper;
 import cn.cnic.component.flow.mapper.StopsMapper;
 import cn.cnic.third.vo.flow.ThirdFlowInfoStopVo;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Component
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)

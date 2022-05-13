@@ -236,6 +236,7 @@ public class StopsMapperProvider {
             sql.SET("owner = " + owner);
             sql.SET("is_checkpoint = " + checkpoint);
             sql.SET("fk_data_source_id = " + dataSourceId);
+            sql.SET("is_data_source =" + isDataSource);
             sql.WHERE("version = " + version);
             sql.WHERE("id = " + id);
             sqlStr = sql.toString();
