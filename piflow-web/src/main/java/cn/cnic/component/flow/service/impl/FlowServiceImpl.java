@@ -1,37 +1,14 @@
 package cn.cnic.component.flow.service.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import cn.cnic.common.constant.MessageConfig;
-import cn.cnic.component.mxGraph.utils.MxGraphUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
-
-import cn.cnic.base.utils.JsonUtils;
-import cn.cnic.base.utils.LoggerUtil;
-import cn.cnic.base.utils.PageHelperUtils;
-import cn.cnic.base.utils.ReturnMapUtils;
-import cn.cnic.base.utils.UUIDUtils;
+import cn.cnic.base.utils.*;
 import cn.cnic.common.Eunm.ProcessState;
 import cn.cnic.common.Eunm.RunModeType;
+import cn.cnic.common.constant.MessageConfig;
+import cn.cnic.component.dataSource.domain.DataSourceDomain;
+import cn.cnic.component.dataSource.vo.DataSourceVo;
 import cn.cnic.component.flow.domain.FlowDomain;
 import cn.cnic.component.flow.domain.FlowGroupDomain;
-import cn.cnic.component.flow.entity.Flow;
-import cn.cnic.component.flow.entity.FlowGlobalParams;
-import cn.cnic.component.flow.entity.FlowGroup;
-import cn.cnic.component.flow.entity.Property;
-import cn.cnic.component.flow.entity.Stops;
+import cn.cnic.component.flow.entity.*;
 import cn.cnic.component.flow.service.IFlowService;
 import cn.cnic.component.flow.utils.FlowGlobalParamsUtils;
 import cn.cnic.component.flow.utils.PathsUtil;
@@ -43,6 +20,7 @@ import cn.cnic.component.mxGraph.domain.MxCellDomain;
 import cn.cnic.component.mxGraph.entity.MxCell;
 import cn.cnic.component.mxGraph.entity.MxGraphModel;
 import cn.cnic.component.mxGraph.utils.MxGraphModelUtils;
+import cn.cnic.component.mxGraph.utils.MxGraphUtils;
 import cn.cnic.component.mxGraph.vo.MxGraphModelVo;
 import cn.cnic.component.process.domain.ProcessDomain;
 import cn.cnic.component.process.entity.Process;
@@ -54,6 +32,16 @@ import cn.cnic.component.stopsComponent.vo.StopGroupVo;
 import cn.cnic.controller.requestVo.FlowInfoVoRequestAdd;
 import cn.cnic.controller.requestVo.FlowInfoVoRequestUpdate;
 import cn.cnic.third.service.IFlow;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
 
 
 @Service
@@ -68,6 +56,7 @@ public class FlowServiceImpl implements IFlowService {
     private final ScheduleDomain scheduleDomain;
     private final IStopGroupService stopGroupServiceImpl;
     private final IFlow flowImpl;
+    private final DataSourceDomain dataSourceDomain;
 
     @Autowired
     public FlowServiceImpl(ProcessDomain processDomain,
@@ -76,7 +65,8 @@ public class FlowServiceImpl implements IFlowService {
                            FlowGroupDomain flowGroupDomain,
                            ScheduleDomain scheduleDomain,
                            IStopGroupService stopGroupServiceImpl,
-                           IFlow flowImpl) {
+                           IFlow flowImpl,
+                           DataSourceDomain dataSourceDomain) {
         this.processDomain = processDomain;
         this.mxCellDomain = mxCellDomain;
         this.flowDomain = flowDomain;
@@ -84,6 +74,7 @@ public class FlowServiceImpl implements IFlowService {
         this.scheduleDomain = scheduleDomain;
         this.stopGroupServiceImpl = stopGroupServiceImpl;
         this.flowImpl = flowImpl;
+        this.dataSourceDomain = dataSourceDomain;
     }
 
 
@@ -570,6 +561,9 @@ public class FlowServiceImpl implements IFlowService {
         // Group on the left and'stops'
         List<StopGroupVo> groupsVoList = stopGroupServiceImpl.getStopGroupAll();
         rtnMap.put("groupsVoList", groupsVoList);
+        // DataSource the left
+        List<DataSourceVo> dataSourceVoList = dataSourceDomain.getStopDataSourceForFlowPage(username, isAdmin);
+        rtnMap.put("dataSourceVoList",dataSourceVoList);
         Integer maxStopPageId = this.getMaxStopPageId(load);
         // 'maxStopPageId'defaults to 2 if it's empty, otherwise'maxStopPageId'+1
         maxStopPageId = null == maxStopPageId ? 2 : (maxStopPageId + 1);

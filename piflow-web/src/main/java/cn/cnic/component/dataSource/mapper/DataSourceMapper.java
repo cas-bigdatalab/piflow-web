@@ -50,6 +50,7 @@ public interface DataSourceMapper {
     @SelectProvider(type = DataSourceMapperProvider.class, method = "getDataSourceTemplateList")
     @Results({
             @Result(id = true, column = "id", property = "id"),
+            @Result(column = "stops_template_bundle", property = "stopsTemplateBundle"),
             @Result(column = "id", property = "dataSourcePropertyList", many = @Many(select = "cn.cnic.component.dataSource.mapper.DataSourcePropertyMapper.getDataSourcePropertyListByDataSourceId", fetchType = FetchType.LAZY))
     })
     public List<DataSource> getDataSourceTemplateList();
@@ -65,7 +66,7 @@ public interface DataSourceMapper {
             @Result(id = true, column = "id", property = "id"),
             @Result(column = "stops_template_bundle", property = "stopsTemplateBundle"),
             @Result(column = "id", property = "dataSourcePropertyList", many = @Many(select = "cn.cnic.component.dataSource.mapper.DataSourcePropertyMapper.getDataSourcePropertyListByDataSourceId", fetchType = FetchType.LAZY)),
-            @Result(column = "stops_template_bundle",property = "stopsComponent",many = @Many(select = "cn.cnic.component.stopsComponent.mapper.StopsComponentMapper.getDataSourceStopsComponentByBundle"))
+            @Result(column = "stops_template_bundle",property = "stopsComponent",many = @Many(select = "cn.cnic.component.stopsComponent.mapper.StopsComponentMapper.getDataSourceStopsComponentByBundle", fetchType = FetchType.LAZY))
     })
     DataSource getDataSourceByIdAndUser(@Param("username") String username, @Param("isAdmin") boolean isAdmin, @Param("id") String id);
 
@@ -79,6 +80,7 @@ public interface DataSourceMapper {
     @SelectProvider(type = DataSourceMapperProvider.class, method = "getDataSourceById")
     @Results({
             @Result(id = true, column = "id", property = "id"),
+            @Result(column = "stops_template_bundle", property = "stopsTemplateBundle"),
             @Result(column = "id", property = "dataSourcePropertyList", many = @Many(select = "cn.cnic.component.dataSource.mapper.DataSourcePropertyMapper.getDataSourcePropertyListByDataSourceId", fetchType = FetchType.LAZY))
     })
     DataSource getDataSourceById(@Param("id") String id);
@@ -92,6 +94,7 @@ public interface DataSourceMapper {
     @SelectProvider(type = DataSourceMapperProvider.class, method = "adminGetDataSourceById")
     @Results({
             @Result(id = true, column = "id", property = "id"),
+            @Result(column = "stops_template_bundle", property = "stopsTemplateBundle"),
             @Result(column = "id", property = "dataSourcePropertyList", many = @Many(select = "cn.cnic.component.dataSource.mapper.DataSourcePropertyMapper.getDataSourcePropertyListByDataSourceId", fetchType = FetchType.LAZY))
     })
     DataSource adminGetDataSourceById(@Param("id") String id);
@@ -99,5 +102,12 @@ public interface DataSourceMapper {
     @UpdateProvider(type = DataSourceMapperProvider.class, method = "updateEnableFlagById")
     public int updateEnableFlagById(@Param("username") String username, @Param("id") String id);
 
+
+    @SelectProvider(type = DataSourceMapperProvider.class, method = "getStopDataSourceForFlowPage")
+    @Results({
+        @Result(column = "stops_template_bundle", property = "stopsTemplateBundle"),
+        @Result(column = "name",property = "stopsName")
+    })
+    public List<DataSourceVo> getStopDataSourceForFlowPage(@Param("username") String username, @Param("isAdmin") boolean isAdmin);
 
 }

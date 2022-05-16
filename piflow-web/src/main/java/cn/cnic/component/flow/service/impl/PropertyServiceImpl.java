@@ -1,25 +1,8 @@
 package cn.cnic.component.flow.service.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import cn.cnic.component.flow.domain.FlowDomain;
-import cn.cnic.component.stopsComponent.domain.StopsComponentDomain;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import cn.cnic.base.utils.CheckFiledUtils;
-import cn.cnic.base.utils.JsonUtils;
-import cn.cnic.base.utils.LoggerUtil;
-import cn.cnic.base.utils.ReturnMapUtils;
-import cn.cnic.base.utils.UUIDUtils;
+import cn.cnic.base.utils.*;
 import cn.cnic.common.Eunm.PortType;
+import cn.cnic.component.flow.domain.FlowDomain;
 import cn.cnic.component.flow.entity.Paths;
 import cn.cnic.component.flow.entity.Property;
 import cn.cnic.component.flow.entity.Stops;
@@ -27,8 +10,16 @@ import cn.cnic.component.flow.request.UpdatePathRequest;
 import cn.cnic.component.flow.service.IPropertyService;
 import cn.cnic.component.flow.utils.StopsUtils;
 import cn.cnic.component.flow.vo.StopsVo;
+import cn.cnic.component.stopsComponent.domain.StopsComponentDomain;
 import cn.cnic.component.stopsComponent.entity.StopsComponent;
 import cn.cnic.component.stopsComponent.entity.StopsComponentProperty;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
 
 
 @Service

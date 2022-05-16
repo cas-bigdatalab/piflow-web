@@ -1,28 +1,7 @@
 package cn.cnic.component.dataSource.service.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import cn.cnic.base.utils.*;
 import cn.cnic.common.constant.MessageConfig;
-import cn.cnic.component.flow.utils.StopsUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
-
-import cn.cnic.base.utils.DateUtils;
-import cn.cnic.base.utils.JsonUtils;
-import cn.cnic.base.utils.LoggerUtil;
-import cn.cnic.base.utils.PageHelperUtils;
-import cn.cnic.base.utils.ReturnMapUtils;
-import cn.cnic.base.utils.UUIDUtils;
 import cn.cnic.component.dataSource.domain.DataSourceDomain;
 import cn.cnic.component.dataSource.entity.DataSource;
 import cn.cnic.component.dataSource.entity.DataSourceProperty;
@@ -31,7 +10,15 @@ import cn.cnic.component.dataSource.utils.DataSourceUtils;
 import cn.cnic.component.dataSource.vo.DataSourcePropertyVo;
 import cn.cnic.component.dataSource.vo.DataSourceVo;
 import cn.cnic.component.flow.domain.StopsDomain;
-import cn.cnic.component.flow.entity.Stops;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
 
 
 @Service
@@ -147,6 +134,11 @@ public class DataSourceImpl implements IDataSource {
         if (null == dataSourceById) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_BY_ID_XXX_MSG(id));
         }
+        //update or delete old dataSourceProperty
+        Boolean isDeleteDataSourceProperty = false;
+        if (!dataSourceById.getDataSourceType().equals(dataSourceVo.getDataSourceType())){
+            isDeleteDataSourceProperty = true;
+        }
         // Copy pass the parameter "dataSourceVo" to "dataSource"
         BeanUtils.copyProperties(dataSourceVo, dataSourceById);
         // Set last updater
@@ -154,8 +146,57 @@ public class DataSourceImpl implements IDataSource {
         // Set last update time
         dataSourceById.setLastUpdateDttm(new Date());
 
+        if (isDeleteDataSourceProperty){
+            List<DataSourceProperty> dataSourcePropertyList = new ArrayList<>();
+            //delete old dataSourceProperty,and insert new dataSourceProperty
+            dataSourceDomain.updateEnableFlagByDatasourceId(username,id);
+            List<DataSourcePropertyVo> dataSourcePropertyVoList = dataSourceVo.getDataSourcePropertyVoList();
+            List<DataSourceProperty> dataSourcePropertyListAdd = new ArrayList<>();
+            DataSourceProperty dataSourcePropertyAdd;
+            for (DataSourcePropertyVo dataSourcePropertyVo : dataSourcePropertyVoList) {
+                if (null == dataSourcePropertyVo) {
+                    continue;
+                }
+                dataSourcePropertyAdd = new DataSourceProperty();
+                BeanUtils.copyProperties(dataSourcePropertyVo, dataSourcePropertyAdd);
+                dataSourcePropertyAdd.setCrtDttm(new Date());
+                dataSourcePropertyAdd.setCrtUser(username);
+                dataSourcePropertyAdd.setLastUpdateDttm(new Date());
+                dataSourcePropertyAdd.setLastUpdateUser(username);
+                dataSourcePropertyAdd.setDataSource(dataSourceById);
+                dataSourcePropertyListAdd.add(dataSourcePropertyAdd);
+            }
+            if (null == dataSourcePropertyList) {
+                dataSourcePropertyList = new ArrayList<>();
+            }
+            dataSourcePropertyList.addAll(dataSourcePropertyListAdd);
+            dataSourceById.setDataSourcePropertyList(dataSourcePropertyList);
+        }else {
+            //DataSourceType not change ,only update dataSourceProperty
+            List<DataSourcePropertyVo> dataSourcePropertyVoList = dataSourceVo.getDataSourcePropertyVoList();
+            Map<String, DataSourcePropertyVo> dataSourcePropertyVoMap = new HashMap<>();
+            if (null != dataSourcePropertyVoList && dataSourcePropertyVoList.size() > 0) {
+                for (DataSourcePropertyVo dataSourcePropertyVo : dataSourcePropertyVoList) {
+                    if (null == dataSourcePropertyVo || StringUtils.isEmpty(dataSourcePropertyVo.getId())) {
+                        continue;
+                    }
+                    dataSourcePropertyVoMap.put(dataSourcePropertyVo.getId(), dataSourcePropertyVo);
+                }
+            }
+            List<DataSourceProperty> dataSourcePropertyList = dataSourceById.getDataSourcePropertyList();
+            for (DataSourceProperty dataSourceProperty : dataSourcePropertyList) {
+                DataSourcePropertyVo dataSourcePropertyVo = dataSourcePropertyVoMap.get(dataSourceProperty.getId());
+                if (null != dataSourcePropertyVo && StringUtils.isNotBlank(dataSourcePropertyVo.getId())) {
+                    //update
+                    BeanUtils.copyProperties(dataSourcePropertyVo, dataSourceProperty);
+                    dataSourceProperty.setLastUpdateDttm(new Date());
+                    dataSourceProperty.setLastUpdateUser(username);
+                    dataSourcePropertyVoMap.remove(dataSourceProperty.getId());
+                }
+            }
+        }
         //Get the attribute of "datasource" in the incoming parameter
-        List<DataSourcePropertyVo> dataSourcePropertyVoList = dataSourceVo.getDataSourcePropertyVoList();
+        /*List<DataSourcePropertyVo> dataSourcePropertyVoList = dataSourceVo.getDataSourcePropertyVoList();
         // dataSourcePropertyVoList to map
         Map<String, DataSourcePropertyVo> dataSourcePropertyVoMap = new HashMap<>();
         if (null != dataSourcePropertyVoList && dataSourcePropertyVoList.size() > 0) {
@@ -210,10 +251,10 @@ public class DataSourceImpl implements IDataSource {
             }
             dataSourcePropertyList.addAll(dataSourcePropertyListAdd);
             dataSourceById.setDataSourcePropertyList(dataSourcePropertyList);
-        }
+        }*/
         try {
             dataSourceDomain.updateDataSource(dataSourceById);
-            if (isSynchronize) {
+            /*if (isSynchronize) {
                 // get stops by datasource Id
                 List<Stops> stopsListByDatasourceId = stopsDomain.getStopsListByDatasourceId(id);
                 if (null == stopsListByDatasourceId || stopsListByDatasourceId.size() <= 0) {
@@ -222,7 +263,7 @@ public class DataSourceImpl implements IDataSource {
                 // datasource Property Map(Key is the attribute name)
                 Map<String, String> dataSourcePropertyMap = new HashMap<>();
                 // Get Database all attributes
-                dataSourcePropertyList = dataSourceById.getDataSourcePropertyList();
+                List<DataSourceProperty> dataSourcePropertyList = dataSourceById.getDataSourcePropertyList();
                 // Loop "datasource" attribute to map
                 for (DataSourceProperty dataSourceProperty : dataSourcePropertyList) {
                     // "datasource" attribute name
@@ -241,7 +282,7 @@ public class DataSourceImpl implements IDataSource {
                     stops = StopsUtils.fillStopsPropertiesByDatasource(stops, dataSourceById, username);
                     stopsDomain.updateStops(stops);
                 }
-            }
+            }*/
             return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.UPDATE_SUCCEEDED_MSG());
         } catch (Exception e) {
             logger.error(MessageConfig.UPDATE_ERROR_MSG() + ":", e);

@@ -41,7 +41,7 @@ public class DataSourceMapperProvider {
         this.dataSourceName = SqlUtils.preventSQLInjection(dataSource.getDataSourceName());
         this.dataSourceDescription = SqlUtils.preventSQLInjection(dataSource.getDataSourceDescription());
         this.isTemplate = (null == dataSource.getIsTemplate() ? 0 : (dataSource.getIsTemplate() ? 1 : 0));
-        this.stopsTemplateBundle = dataSource.getStopsTemplateBundle();
+        this.stopsTemplateBundle = SqlUtils.preventSQLInjection(dataSource.getStopsTemplateBundle());
         return true;
     }
 
@@ -141,7 +141,7 @@ public class DataSourceMapperProvider {
         strBuf.append("select * ");
         strBuf.append("from data_source ");
         strBuf.append("where enable_flag = 1 ");
-        strBuf.append("and is_template = 0 ");
+        strBuf.append("and is_template = 0 and stops_template_bundle is null ");
         if (!isAdmin) {
             strBuf.append("and crt_user = " + SqlUtils.preventSQLInjection(username));
         }
@@ -279,4 +279,21 @@ public class DataSourceMapperProvider {
         return sql.toString();
     }
 
+
+    public String getStopDataSourceForFlowPage(String username,Boolean isAdmin){
+        String sqlStr = "SELECT 0";
+        StringBuffer strBuf = new StringBuffer();
+        strBuf.append("select ds.*,st.name ");
+        strBuf.append("from data_source ds ");
+        strBuf.append("join flow_stops_template st on ds.stops_template_bundle = st.bundel ");
+        strBuf.append("where ds.enable_flag = 1 ");
+        strBuf.append("and ds.is_template = 0 ");
+        strBuf.append("and ds.stops_template_bundle is not null ");
+        if (!isAdmin) {
+            strBuf.append("and ds.crt_user = " + SqlUtils.preventSQLInjection(username));
+        }
+        strBuf.append(" order by ds.crt_dttm desc ");
+        sqlStr = strBuf.toString();
+        return sqlStr;
+    }
 }
