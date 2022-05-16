@@ -138,7 +138,7 @@ Sidebar.prototype.init = function()
 							if (!component_i_group_j.img_type) {
 								component_i_group_j.img_type = ".png"
 							}
-							component_name_arrays.push(component_i_group_j.stopsName);
+							component_name_arrays.push(component_i_group_j.dataSourceName);
 							component_desc_arrays.push(component_i_group_j.dataSourceDescription);
 							component_img_arrays.push(component_i_group_j.img_name + component_i_group_j.img_type);
 						}
