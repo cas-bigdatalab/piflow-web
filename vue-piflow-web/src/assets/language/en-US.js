@@ -1,5 +1,5 @@
 module.exports = {
-    title: "PiFlow Big Data Pipeline System",
+    title: "πFlow Big Data Pipeline System",
     logOut: 'Log out',
     sidebar: {
         dashboard: "Dashboard",

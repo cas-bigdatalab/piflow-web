@@ -3,7 +3,7 @@
     <div class="header">
       <div class="logo"></div>
       <div class="title">
-        <h1>PiFlow Big Data Pipeline System</h1>
+        <h1>πFlow Big Data Pipeline System</h1>
       </div>
     </div>
 
