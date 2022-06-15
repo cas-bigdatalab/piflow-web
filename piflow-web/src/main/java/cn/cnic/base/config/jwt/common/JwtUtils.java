@@ -7,12 +7,11 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.CompressionCodecs;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-
-import com.alibaba.fastjson.JSON;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -143,7 +142,7 @@ public class JwtUtils {
         Map<String, Object> claims = generateClaims(userDetail);
         // 只授于更新 token 的权限
         String roles[] = new String[]{JwtUtils.ROLE_REFRESH_TOKEN};
-        claims.put(CLAIM_KEY_AUTHORITIES, JSON.toJSON(roles).toString());
+        claims.put(CLAIM_KEY_AUTHORITIES, JSONArray.fromObject(roles).toString());
         return generateRefreshToken(userDetail.getUsername(), claims);
     }
 

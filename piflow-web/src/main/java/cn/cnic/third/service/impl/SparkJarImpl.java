@@ -7,8 +7,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
-import com.alibaba.fastjson.JSON;
-
 import cn.cnic.base.utils.HttpUtils;
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.common.constant.SysParamsCache;
@@ -51,7 +49,7 @@ public class SparkJarImpl implements ISparkJar {
 
         Map<String, String> map = new HashMap<>();
         map.put("sparkJar", sparkjarName);
-        String json = JSON.toJSON(map).toString();
+        String json = JSONObject.fromObject(map).toString();
         String doPost = HttpUtils.doPost(SysParamsCache.getSparkJarMountUrl(), json, 5 * 1000);
         if (StringUtils.isBlank(doPost)) {
             logger.warn("Interface return values is null");
@@ -72,7 +70,7 @@ public class SparkJarImpl implements ISparkJar {
 
         Map<String, String> map = new HashMap<>();
         map.put("sparkJarId", sparkJarMountId);
-        String json = JSON.toJSON(map).toString();
+        String json = JSONObject.fromObject(map).toString();
         String doPost = HttpUtils.doPost(SysParamsCache.getSparkJarUNMountUrl(), json, 5 * 1000);
         if (StringUtils.isBlank(doPost)) {
             logger.warn("Interface return values is null");

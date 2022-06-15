@@ -11,8 +11,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
-import com.alibaba.fastjson.JSON;
-
 import cn.cnic.base.utils.HttpUtils;
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.common.constant.SysParamsCache;
@@ -130,7 +128,7 @@ public class StopImpl implements IStop {
     public StopsHubVo mountStopsHub(String stopsHubName) {
         Map<String, String> map = new HashMap<>();
         map.put("plugin", stopsHubName);
-        String json = JSON.toJSON(map).toString();
+        String json = JSONObject.fromObject(map).toString();
         String doPost = HttpUtils.doPost(SysParamsCache.getStopsHubMountUrl(), json, 5 * 1000);
         logger.debug("Interface return value: " + doPost);
         if (ThirdInterfaceReturnMsgUtils.THIRD_INTERFACE_IS_ERROR(doPost).equals(ThirdInterfaceReturnMsgUtils.ERROR)) {
@@ -147,7 +145,7 @@ public class StopImpl implements IStop {
         //String stopsHubMountId = "";
         Map<String, String> map = new HashMap<>();
         map.put("pluginId", stopsHubMountId);
-        String json = JSON.toJSON(map).toString();
+        String json = JSONObject.fromObject(map).toString();
         String doPost = HttpUtils.doPost(SysParamsCache.getStopsHubUNMountUrl(), json, 5 * 1000);
         logger.info("Interface return value: " + doPost);
         if (ThirdInterfaceReturnMsgUtils.THIRD_INTERFACE_IS_ERROR(doPost).equals(ThirdInterfaceReturnMsgUtils.ERROR)) {

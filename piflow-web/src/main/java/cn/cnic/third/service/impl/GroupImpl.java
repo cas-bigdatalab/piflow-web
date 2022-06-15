@@ -10,8 +10,6 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.alibaba.fastjson.JSON;
-
 import cn.cnic.base.utils.HttpUtils;
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.ReturnMapUtils;
@@ -85,7 +83,7 @@ public class GroupImpl implements IGroup {
     public String stopFlowGroup(String processGroupId) {
         Map<String, String> map = new HashMap<>();
         map.put("groupId", processGroupId);
-        String json = JSON.toJSON(map).toString();
+        String json = JSONObject.fromObject(map).toString();
         String doPost = HttpUtils.doPost(SysParamsCache.getFlowGroupStopUrl(), json, 5 * 1000);
         if (StringUtils.isBlank(doPost) || doPost.contains(HttpUtils.INTERFACE_CALL_ERROR) || doPost.contains("Exception")) {
             logger.warn("Interface return exception");

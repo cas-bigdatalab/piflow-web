@@ -1,6 +1,6 @@
 # 共有8个级别，按照从低到高为：ALL < TRACE < DEBUG < INFO < WARN < ERROR < FATAL < OFF。
 Configuration:
-  status: warn
+  status: info
   monitorInterval: 30
   Properties: # 定义全局变量
     Property: # 缺省配置（用于开发环境）。其他环境需要在VM参数中指定，如下：
@@ -9,7 +9,7 @@ Configuration:
       - name: log.level.console
         value: info
       - name: log.path
-        value: log
+        value: ../../logs
       - name: project.name
         value: opendoc
       - name: log.pattern
