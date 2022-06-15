@@ -258,5 +258,9 @@ public class StopsDomain {
         return propertyMapper.deletePropertiesByIsOldDataAndStopsId(stopId);
     }
 
+    public List<Stops> getStopsListByFlowId(String flowId) {
+        return stopsMapper.getStopsListByFlowId(flowId);
+    }
+
 
 }

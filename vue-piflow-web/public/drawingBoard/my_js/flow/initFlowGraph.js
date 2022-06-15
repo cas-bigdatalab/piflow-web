@@ -1491,9 +1491,9 @@ function movedMxCellOperation(evt) {
         console.log("Connect Line MOVE");
     }
     statusgroup = ""
-    if (evt.properties.disconnect) {
+    // if (evt.properties.disconnect) {
         saveXml(null, 'MOVED');   // preservation method
-    }
+    // }
     consumedFlag = evt.consumed ? true : false;
     flowMxEventClickFunc(evt.properties.cell, consumedFlag);
 }

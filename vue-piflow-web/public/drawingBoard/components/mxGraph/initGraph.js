@@ -420,9 +420,9 @@ function addMxCellOperation(evt) {
 
 function movedMxCellOperation(evt) {
     statusgroup = ""
-    if (evt.properties.disconnect) {
+    // if (evt.properties.disconnect) {
         saveXml(null, 'MOVED');   // preservation method
-    }
+    // }
     findBasicInfo(evt);
 }
 

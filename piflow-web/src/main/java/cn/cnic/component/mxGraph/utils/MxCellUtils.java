@@ -9,9 +9,7 @@ import cn.cnic.component.mxGraph.vo.MxGeometryVo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class MxCellUtils {
 
@@ -262,5 +260,31 @@ public class MxCellUtils {
             mxCellNew.setMxGeometry(mxGeometryNew);
         }
         return mxCellNew;
+    }
+
+    public static Map<String, String> mxCellStyleToParamData(String style) {
+        if (StringUtils.isBlank(style)) {
+            return new HashMap<>();
+        }
+        String[] styleArray = style.split(";data=");
+        if (styleArray.length <= 1) {
+            return new HashMap<>();
+        }
+        String[] paramDataArray = styleArray[1].split(";")[0].split("&");
+        if (paramDataArray.length <= 0) {
+            return new HashMap<>();
+        }
+        Map<String, String> paramData = new HashMap<>();
+        for (String str: paramDataArray) {
+            if (StringUtils.isBlank(str)){
+                continue;
+            }
+            String[] paramArray = str.split("=");
+            if (paramDataArray.length <= 1) {
+                continue;
+            }
+            paramData.put(paramArray[0], paramArray[1]);
+        }
+        return paramData;
     }
 }

@@ -126,7 +126,7 @@ Sidebar.prototype.init = function()
 			if (component_i && '' !== component_i) {
 				var component_name_arrays = new Array();
 				var component_desc_arrays = new Array();
-				var component_img_arrays = new Array();
+				var component_param_arrays = new Array();
 				var component_i_group = component_i.component_group;
 				if (component_i_group && component_i_group.length > 0) {
 					for (var j = 0; j < component_i_group.length; j++) {
@@ -140,11 +140,14 @@ Sidebar.prototype.init = function()
 							}
 							component_name_arrays.push(component_i_group_j.dataSourceName);
 							component_desc_arrays.push(component_i_group_j.dataSourceDescription);
-							component_img_arrays.push(component_i_group_j.img_name + component_i_group_j.img_type);
+							var component_param_i = {};
+							component_param_i.img_url = (component_i_group_j.img_name + component_i_group_j.img_type);
+							component_param_i.nodeType = 'DataSource';
+							component_param_arrays.push(component_param_i);
 						}
 					}
 				}
-				this.addImagePalette(component_i.addImagePaletteId, component_i.component_name, component_i.component_prefix, component_img_arrays, component_name_arrays, component_desc_arrays, component_name_arrays, component_name_arrays);
+				this.addImagePalette(component_i.addImagePaletteId, component_i.component_name, component_i.component_prefix, component_param_arrays, component_name_arrays, component_desc_arrays, component_name_arrays, component_name_arrays);
 			}
 		}
 	}
@@ -184,7 +187,7 @@ Sidebar.prototype.init = function()
 					if (component_i && '' !== component_i) {
 						var component_name_arrays = new Array();
 						var component_desc_arrays = new Array();
-						var component_img_arrays = new Array();
+						var component_param_arrays = new Array();
 						var component_i_group = component_i.component_group;
 						if (component_i_group && component_i_group.length > 0) {
 							for (var j = 0; j < component_i_group.length; j++) {
@@ -198,11 +201,15 @@ Sidebar.prototype.init = function()
 									}
 									component_name_arrays.push(component_i_group_j.name);
 									component_desc_arrays.push(component_i_group_j.description);
-									component_img_arrays.push(component_i_group_j.img_name + component_i_group_j.img_type);
+									var component_param_i = {};
+									component_param_i.img_url = (component_i_group_j.img_name + component_i_group_j.img_type);
+									component_param_i.bundel = component_i_group_j.bundel;
+									component_param_i.nodeType = 'Stop';
+									component_param_arrays.push(component_param_i);
 								}
 							}
 						}
-						this.addImagePalette(component_i.addImagePaletteId, component_i.component_name, component_i.component_prefix, component_img_arrays, component_name_arrays, component_desc_arrays, component_name_arrays, component_name_arrays,eltDiv);
+						this.addImagePalette(component_i.addImagePaletteId, component_i.component_name, component_i.component_prefix, component_param_arrays, component_name_arrays, component_desc_arrays, component_name_arrays, component_name_arrays,eltDiv);
 					}
 				}
 			}
@@ -220,7 +227,7 @@ Sidebar.prototype.init = function()
 			if (component_i && '' !== component_i) {
 				var component_name_arrays = new Array();
 				var component_desc_arrays = new Array();
-				var component_img_arrays = new Array();
+				var component_param_arrays = new Array();
 				var component_i_group = component_i.component_group;
 				if (component_i_group && component_i_group.length > 0) {
 					for (var j = 0; j < component_i_group.length; j++) {
@@ -234,11 +241,15 @@ Sidebar.prototype.init = function()
 							}
 							component_name_arrays.push(component_i_group_j.name);
 							component_desc_arrays.push(component_i_group_j.description);
-							component_img_arrays.push(component_i_group_j.img_name + component_i_group_j.img_type);
+							var component_param_i = {};
+							component_param_i.img_url = (component_i_group_j.img_name + component_i_group_j.img_type);
+							component_param_i.bundel = component_i_group_j.bundel;
+							component_param_i.nodeType = 'Stop';
+							component_param_arrays.push(component_param_i);
 						}
 					}
 				}
-				this.addImagePalette(component_i.addImagePaletteId, component_i.component_name, component_i.component_prefix, component_img_arrays, component_name_arrays, component_desc_arrays, component_name_arrays, component_name_arrays);
+				this.addImagePalette(component_i.addImagePaletteId, component_i.component_name, component_i.component_prefix, component_param_arrays, component_name_arrays, component_desc_arrays, component_name_arrays, component_name_arrays);
 			}
 		}
 	}
@@ -3816,7 +3827,7 @@ Sidebar.prototype.removePalette = function(id)
  * Adds the given image palette.
  */
 //------------------------------ Custom modification content 017 start ------------------------------
-Sidebar.prototype.addImagePalette = function (id, title, prefix, imgArray, items, titles, values, tags, eltDiv) {
+Sidebar.prototype.addImagePalette = function (id, title, prefix, paramArrays, items, titles, values, tags, eltDiv) {
     var showTitles = titles != null;
     var fns = [];
 
@@ -3833,7 +3844,8 @@ Sidebar.prototype.addImagePalette = function (id, title, prefix, imgArray, items
                         70, 30, 'Label', 'Text', null, null, 'text textbox textarea label'));
                 }
             } else {
-                fns.push(this.createVertexTemplateEntry('image;html=1;labelBackgroundColor=#ffffff00;image=' + prefix + imgArray[i],
+				var paramData = ('data=nodeType=' + paramArrays[i].nodeType + '&bundle=' + paramArrays[i].bundel + ';');
+                fns.push(this.createVertexTemplateEntry('image;html=1;labelBackgroundColor=#ffffff00;image=' + prefix + paramArrays[i].img_url + ';' + paramData,
                     this.defaultImageWidth, this.defaultImageHeight, value, title, title != null, null, this.filterTags(tmpTags)));
             }
 

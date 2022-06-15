@@ -177,10 +177,29 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
             // Judge whether "mxCell" is of type "stops" or "path"
             String nodeOrPath = MxGraphModelUtils.isNodeOrPath(mxCell);
             if (MxGraphModelUtils.NODE.equals(nodeOrPath)) {
+                Map<String, String> paramData = mxCellVo.getParamData();
+                if (null == paramData || paramData.size() <= 0) {
+                    return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("nodeType"));
+                }
                 // mxCell to stops
-                Stops stops = this.stopsTemplateToStops(mxCell, username, false);
+                Stops stops;
+                String nodeType = paramData.get("nodeType");
+                switch (nodeType){
+                    case "Stop" :{
+                        stops = this.stopsTemplateToStops(mxCell, paramData, username, false);
+                        break;
+                    }
+                    case "DataSource" :{
+                        stops = this.dataSourceToStops(mxCell, paramData, username, false);
+                        break;
+                    }
+                    default:{
+                        stops = null;
+                        break;
+                    }
+                }
                 if (null == stops) {
-                    continue;
+                    return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
                 }
                 if (StringUtils.isNotBlank(stopByNameAndFlowId)) {
                     stops.setName(stops.getName() + "-" + currentTimeMillis);
@@ -191,7 +210,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
                 // mxCell to stops
                 Paths paths = MxGraphModelUtils.mxCellToPaths(username, mxCell, false);
                 if (null == paths) {
-                    continue;
+                    return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.CONVERSION_FAILED_MSG());
                 }
                 paths.setFlow(flowDB);
                 addPathsList.add(paths);
@@ -334,21 +353,88 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
         int updateMxGraphModel = mxGraphModelDomain.updateMxGraphModel(mxGraphModelDB);
         // Determine if mxGraphModel is saved successfully
         if (updateMxGraphModel <= 0) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("save failed");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
         }
-        return ReturnMapUtils.setSucceededMsgRtnJsonStr("Successful");
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG());
     }
 
     /**
-     * mxCellVo to stops
+     * mxCell to stops
      *
      * @param mxCell
      * @param username
      * @param isAddId Add ID or not
      * @return
      */
-    private Stops stopsTemplateToStops(MxCell mxCell, String username, boolean isAddId) {
-        Stops stops = null;
+    private Stops stopsTemplateToStops(MxCell mxCell, Map<String, String> paramData, String username, boolean isAddId) {
+        if (null == mxCell) {
+            return null;
+        }
+        if (null == paramData || paramData.size() <= 0) {
+            return null;
+        }
+        // Get the bundle of the stops
+        String bundle = paramData.get("bundle");
+        if (null == bundle) {
+            return null;
+        }
+        StopsComponent stopsComponent = stopsComponentDomain.getStopsComponentByBundle(bundle);
+        // Whether to judge whether the template is empty
+        if (null == stopsComponent) {
+            return null;
+        }
+        Stops stops = new Stops();
+        BeanUtils.copyProperties(stopsComponent, stops);
+        StopsUtils.initStopsBasicPropertiesNoId(stops, username);
+        if(isAddId) {
+            stops.setId(UUIDUtils.getUUID32());
+        } else {
+            stops.setId(null);
+        }
+        stops.setPageId(mxCell.getPageId());
+        stops.setIsDataSource(false);
+        List<Property> propertiesList = null;
+        List<StopsComponentProperty> propertiesTemplateList = stopsComponent.getProperties();
+        if (null != propertiesTemplateList && propertiesTemplateList.size() > 0) {
+            propertiesList = new ArrayList<>();
+            for (StopsComponentProperty stopsComponentProperty : propertiesTemplateList) {
+                Property property = PropertyUtils.propertyNewNoId(username);
+                BeanUtils.copyProperties(stopsComponentProperty, property);
+                if(isAddId) {
+                    property.setId(UUIDUtils.getUUID32());
+                } else {
+                    property.setId(null);
+                }
+                property.setStops(stops);
+                property.setCustomValue(stopsComponentProperty.getDefaultValue());
+                // Indicates "select"
+                if (stopsComponentProperty.getAllowableValues().contains(",") && stopsComponentProperty.getAllowableValues().length() > 4) {
+                    property.setIsSelect(true);
+                    // Determine if there is a default value in "select"
+                    if (!stopsComponentProperty.getAllowableValues().contains(stopsComponentProperty.getDefaultValue())) {
+                        // Default value if not present
+                        property.setCustomValue("");
+                    }
+                } else {
+                    property.setIsSelect(false);
+                }
+                propertiesList.add(property);
+            }
+        }
+        stops.setProperties(propertiesList);
+        return stops;
+    }
+
+
+    /**
+     * mxCell to datasource stops
+     *
+     * @param mxCell
+     * @param username
+     * @param isAddId Add ID or not
+     * @return
+     */
+    private Stops dataSourceToStops(MxCell mxCell, Map<String, String> paramData, String username, boolean isAddId) {
         if (null == mxCell) {
             return null;
         }
@@ -375,65 +461,8 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
             String[] withDataSourceIdArr = withDataSourceIdString.split("/");
             String dataSourceId = withDataSourceIdArr[withDataSourceIdArr.length-1];
             return this.stopsTemplateToStopsWithDataSourceProperty(mxCell,username,isAddId,dataSourceId);
-        }else {
-            String[] split2 = string.split("/");
-            // Empty, take the last bit of the array (the name of the stops)
-            if (null == split2 || split2.length <= 0) {
-                return null;
-            }
-            // Get the name of the stops
-            String stopsName = split2[split2.length - 1];
-            // Query the stops template according to the name of the stops
-            List<StopsComponent> stopsComponentList = stopsComponentDomain.getStopsComponentByName(stopsName);
-            if (null == stopsComponentList || stopsComponentList.size() <= 0) {
-                return null;
-            }
-            StopsComponent stopsComponent = stopsComponentList.get(0);
-            // Whether to judge whether the template is empty
-            if (null == stopsComponent) {
-                return null;
-            }
-            stops = new Stops();
-            BeanUtils.copyProperties(stopsComponent, stops);
-            StopsUtils.initStopsBasicPropertiesNoId(stops, username);
-            if(isAddId) {
-                stops.setId(UUIDUtils.getUUID32());
-            } else {
-                stops.setId(null);
-            }
-            stops.setPageId(mxCell.getPageId());
-            stops.setIsDataSource(false);
-            List<Property> propertiesList = null;
-            List<StopsComponentProperty> propertiesTemplateList = stopsComponent.getProperties();
-            if (null != propertiesTemplateList && propertiesTemplateList.size() > 0) {
-                propertiesList = new ArrayList<>();
-                for (StopsComponentProperty stopsComponentProperty : propertiesTemplateList) {
-                    Property property = PropertyUtils.propertyNewNoId(username);
-                    BeanUtils.copyProperties(stopsComponentProperty, property);
-                    if(isAddId) {
-                        property.setId(UUIDUtils.getUUID32());
-                    } else {
-                        property.setId(null);
-                    }
-                    property.setStops(stops);
-                    property.setCustomValue(stopsComponentProperty.getDefaultValue());
-                    // Indicates "select"
-                    if (stopsComponentProperty.getAllowableValues().contains(",") && stopsComponentProperty.getAllowableValues().length() > 4) {
-                        property.setIsSelect(true);
-                        // Determine if there is a default value in "select"
-                        if (!stopsComponentProperty.getAllowableValues().contains(stopsComponentProperty.getDefaultValue())) {
-                            // Default value if not present
-                            property.setCustomValue("");
-                        }
-                    } else {
-                        property.setIsSelect(false);
-                    }
-                    propertiesList.add(property);
-                }
-            }
-            stops.setProperties(propertiesList);
-            return stops;
         }
+        return null;
     }
 
     /**

@@ -514,9 +514,9 @@ function removeMxCellOperation(evt) {
 
 // moved node
 function movedMxCellOperation(evt) {
-    if (evt.properties.disconnect) {
+    // if (evt.properties.disconnect) {
         saveXml(null, 'MOVED');   // preservation method
-    }
+    // }
 }
 
 // example operation

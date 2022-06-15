@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -32,5 +34,7 @@ public class MxCellVo implements Serializable {
     private String vertex;
 
     private MxGeometryVo mxGeometryVo;
+
+    private Map<String, String> paramData = new HashMap<>();
 
 }

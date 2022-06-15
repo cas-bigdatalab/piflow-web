@@ -200,6 +200,7 @@ public class MxGraphModelUtils {
             for (MxCellVo mxCellVo : root) {
                 String nodeOrPath = isNodeOrPath(mxCellVo);
                 if (NODE.equals(nodeOrPath)) {
+                    mxCellVo.setParamData(MxCellUtils.mxCellStyleToParamData(mxCellVo.getStyle()));
                     nodesList.add(mxCellVo);
                 } else if (PATH.equals(nodeOrPath)) {
                     pathsList.add(mxCellVo);
@@ -404,7 +405,7 @@ public class MxGraphModelUtils {
      * mxCellVo to Paths
      *
      * @param username
-     * @param mxCellVo
+     * @param mxCell
      * @param isAddId Add ID or not
      * @return
      */
@@ -464,31 +465,36 @@ public class MxGraphModelUtils {
         Map<String, List> rtnMapData = new HashMap<>();
         List<Flow> flowList = new ArrayList<>();
         List<FlowGroup> flowGroupList = new ArrayList<>();
-        if (null != mxCellVoList && mxCellVoList.size() > 0) {
-            // Loop mxCellVoList
-            for (MxCellVo mxCellVo : mxCellVoList) {
-                if (null == mxCellVo) {
-                    continue;
+        if (null == mxCellVoList || mxCellVoList.size() <= 0) {
+            rtnMapData.put("flows", flowList);
+            rtnMapData.put("flowGroups", flowGroupList);
+            return rtnMapData;
+        }
+        // Loop mxCellVoList
+        for (MxCellVo mxCellVo : mxCellVoList) {
+            if (null == mxCellVo) {
+                continue;
+            }
+            // image;html=1;labelBackgroundColor=#ffffff00;image=/piflow-web/img/group.png
+            String mxCellVoStyle = mxCellVo.getStyle();
+            // Judge whether it is empty
+            if (StringUtils.isBlank(mxCellVoStyle)) {
+                continue;
+            }
+            if (mxCellVoStyle.indexOf("image;") != 0) {
+                continue;
+            }
+            Map<String, String> paramData = mxCellVo.getParamData();
+            String nodeType = paramData.get("nodeType");
+            if ("group".equals(nodeType)) {
+                FlowGroup flowGroupNew = mxCellVoToGroup(mxCellVo, flowGroup, username);
+                if (null != flowGroupNew) {
+                    flowGroupList.add(flowGroupNew);
                 }
-                // image;html=1;labelBackgroundColor=#ffffff00;image=/piflow-web/img/group.png
-                String mxCellVoStyle = mxCellVo.getStyle();
-                // Judge whether it is empty
-                if (StringUtils.isBlank(mxCellVoStyle)) {
-                    continue;
-                }
-                if (mxCellVoStyle.indexOf("image;") != 0) {
-                    continue;
-                }
-                if (mxCellVoStyle.length() - "/group.png".length() == mxCellVoStyle.indexOf("/group.png")) {
-                    FlowGroup flowGroupNew = mxCellVoToGroup(mxCellVo, flowGroup, username);
-                    if (null != flowGroupNew) {
-                        flowGroupList.add(flowGroupNew);
-                    }
-                } else if (mxCellVoStyle.length() - "/flow.png".length() == mxCellVoStyle.indexOf("/flow.png")) {
-                    Flow flowNew = mxCellVoToFlow(mxCellVo, flowGroup, username);
-                    if (null != flowNew) {
-                        flowList.add(flowNew);
-                    }
+            } else if ("flow".equals(nodeType)) {
+                Flow flowNew = mxCellVoToFlow(mxCellVo, flowGroup, username);
+                if (null != flowNew) {
+                    flowList.add(flowNew);
                 }
             }
         }

@@ -541,6 +541,7 @@ public class FlowXmlUtils {
                     mxGeometryVo.setHeight(height);
                 }
                 mxCellVo.setMxGeometryVo(mxGeometryVo);
+                mxCellVo.setParamData(MxCellUtils.mxCellStyleToParamData(style));
                 rootVoList.add(mxCellVo);
             }
             mxGraphModelVo.setRootVo(rootVoList);
