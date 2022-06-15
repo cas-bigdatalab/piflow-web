@@ -27,7 +27,7 @@
         <jjwt.version>0.9.1</jjwt.version>
         <mybatis.version>1.3.2</mybatis.version>
         <commons-httpclient.version>3.1</commons-httpclient.version>
-        <mysql.version>5.1.49</mysql.version>
+        <mysql.version>8.0.16</mysql.version>
         <dom4j.version>2.1.3</dom4j.version>
         <pagehelper.version>4.1.6</pagehelper.version>
         <json-lib.version>2.4</json-lib.version>
