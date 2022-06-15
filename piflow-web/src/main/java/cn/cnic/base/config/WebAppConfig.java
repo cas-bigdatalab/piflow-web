@@ -1,6 +1,7 @@
 package cn.cnic.base.config;
 
 
+import cn.cnic.common.constant.SysParamsCache;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -38,9 +39,13 @@ public class WebAppConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         String storagePathHead = System.getProperty("user.dir");
-        String imagesPath = ("file:" + storagePathHead + "/storage/image/");
-        String videosPath = ("file:" + storagePathHead + "/storage/video/");
-        String xmlPath = ("file:" + storagePathHead + "/storage/xml/");
+        SysParamsCache.setImagesPath(storagePathHead + "/../../storage/image/");
+        SysParamsCache.setVideosPath(storagePathHead + "/../../storage/video/");
+        SysParamsCache.setXmlPath(storagePathHead + "/../../storage/xml/");
+        SysParamsCache.setCsvPath(storagePathHead + "/../../storage/csv/");
+        String imagesPath = ("file:" + SysParamsCache.IMAGES_PATH);
+        String videosPath = ("file:" + SysParamsCache.VIDEOS_PATH);
+        String xmlPath = ("file:" + SysParamsCache.XML_PATH);
         logger.info("imagesPath=" + imagesPath);
         logger.info("videosPath=" + videosPath);
         logger.info("xmlPath=" + xmlPath);

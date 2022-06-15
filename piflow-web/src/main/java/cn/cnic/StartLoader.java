@@ -44,16 +44,10 @@ public class StartLoader implements ApplicationRunner {
     }
 
     private void checkStoragePath() {
-        String storagePathHead = System.getProperty("user.dir");
-        logger.warn(storagePathHead);
-        CheckPathUtils.isChartPathExist(storagePathHead + "/storage/image/");
-        CheckPathUtils.isChartPathExist(storagePathHead + "/storage/video/");
-        CheckPathUtils.isChartPathExist(storagePathHead + "/storage/xml/");
-        CheckPathUtils.isChartPathExist(storagePathHead + "/storage/csv/");
-        SysParamsCache.setImagesPath(storagePathHead + "/storage/image/");
-        SysParamsCache.setVideosPath(storagePathHead + "/storage/video/");
-        SysParamsCache.setXmlPath(storagePathHead + "/storage/xml/");
-        SysParamsCache.setCsvPath(storagePathHead + "/storage/csv/");
+        CheckPathUtils.isChartPathExist(SysParamsCache.IMAGES_PATH);
+        CheckPathUtils.isChartPathExist(SysParamsCache.VIDEOS_PATH);
+        CheckPathUtils.isChartPathExist(SysParamsCache.XML_PATH);
+        CheckPathUtils.isChartPathExist(SysParamsCache.CSV_PATH);
     }
 
     private void startStatusRunning() {
