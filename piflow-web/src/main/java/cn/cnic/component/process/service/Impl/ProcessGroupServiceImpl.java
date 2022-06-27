@@ -216,26 +216,19 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
         
         Map<String, Object> rtnMap = new HashMap<>();
         Map<String, Object> stringObjectMap = groupImpl.startFlowGroup(copyProcessGroup, runModeType);
-        if (200 == (Integer) stringObjectMap.get("code")) {
-            copyProcessGroup.setLastUpdateUser(username);
-            copyProcessGroup.setLastUpdateDttm(new Date());
-            copyProcessGroup.setAppId((String) stringObjectMap.get("appId"));
-            copyProcessGroup.setProcessId((String) stringObjectMap.get("appId"));
-            copyProcessGroup.setState(ProcessState.STARTED);
-            copyProcessGroup.setProcessParentType(ProcessParentType.GROUP);
-            processGroupDomain.updateProcessGroup(copyProcessGroup);
-            rtnMap.put("processGroupId", copyProcessGroup.getId());
-            rtnMap.put("errorMsg", "Successful startup");
-            rtnMap.put(ReturnMapUtils.KEY_CODE, ReturnMapUtils.SUCCEEDED_CODE);
-            logger.info("save process success,update success");
-        } else {
+        if (200 != (Integer) stringObjectMap.get("code")) {
             copyProcessGroup.setEnableFlag(false);
-            rtnMap.put(ReturnMapUtils.KEY_CODE, ReturnMapUtils.ERROR_CODE);
-            rtnMap.put("errorMsg", "Calling interface failed, startup failed");
-            logger.warn("Calling interface failed, startup failed");
             processGroupDomain.updateEnableFlagById(copyProcessGroupId, username);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.INTERFACE_CALL_ERROR_MSG());
         }
-        return JsonUtils.toJsonNoException(rtnMap);
+        copyProcessGroup.setLastUpdateUser(username);
+        copyProcessGroup.setLastUpdateDttm(new Date());
+        copyProcessGroup.setAppId((String) stringObjectMap.get("appId"));
+        copyProcessGroup.setProcessId((String) stringObjectMap.get("appId"));
+        copyProcessGroup.setState(ProcessState.STARTED);
+        copyProcessGroup.setProcessParentType(ProcessParentType.GROUP);
+        processGroupDomain.updateProcessGroup(copyProcessGroup);
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("processGroupId", copyProcessGroup.getId());
     }
 
     /**
@@ -256,8 +249,7 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
         Page<ProcessGroupVo> page = PageHelper.startPage(offset, limit, "crt_dttm desc");
         processGroupDomain.getProcessGroupListPageByParam(username, isAdmin, param);
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
-        rtnMap = PageHelperUtils.setLayTableParam(page, rtnMap);
-        return JsonUtils.toJsonNoException(rtnMap);
+        return PageHelperUtils.setLayTableParamRtnStr(page, rtnMap);
     }
 
     /**
@@ -365,23 +357,15 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
      */
     @Override
     public String getGroupLogData(String processGroupAppID) {
-        Map<String, Object> rtnMap = new HashMap<>();
-        rtnMap.put("code", 500);
-        if (StringUtils.isNotBlank(processGroupAppID)) {
-            // Query groupLogData by 'processGroupAppID'
-            String groupLogData = groupImpl.getFlowGroupInfoStr(processGroupAppID);
-            if (StringUtils.isNotBlank(groupLogData)) {
-                rtnMap.put("code", 200);
-                rtnMap.put("data", groupLogData);
-            } else {
-                logger.warn("No process ID is '" + processGroupAppID + "' process");
-                rtnMap.put("errorMsg", "Interface return data is empty");
-            }
-        } else {
-            logger.warn("processGroupID is null");
-            rtnMap.put("errorMsg", "processGroupID is null");
+        if (StringUtils.isBlank(processGroupAppID)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("processGroupAppID"));
         }
-        return JsonUtils.toJsonNoException(rtnMap);
+        // Query groupLogData by 'processGroupAppID'
+        String groupLogData = groupImpl.getFlowGroupInfoStr(processGroupAppID);
+        if (StringUtils.isBlank(groupLogData)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG());
+        }
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("data", groupLogData);
     }
 
     /**

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.cnic.common.constant.MessageConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -89,14 +90,11 @@ public class ProcessPathServiceImpl implements IProcessPathService {
 
         // Find Process RunModeType
         RunModeType runModeType = processMapper.getProcessRunModeTypeById(processId);
-        Map<String, Object> rtnMap = new HashMap<>();
-        rtnMap.put(ReturnMapUtils.KEY_CODE, ReturnMapUtils.SUCCEEDED_CODE);
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
         if (null != runModeType) {
             rtnMap.put("runModeType", runModeType);
         }
-        rtnMap.put("processPathVo", processPathVo);
-
-        return JsonUtils.toJsonNoException(rtnMap);
+        return ReturnMapUtils.appendValuesToJson(rtnMap, "processPathVo", processPathVo);
     }
 
     /**

@@ -11,7 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.base.utils.SessionUserUtil;
-import cn.cnic.component.flow.service.ICustomizedPropertyService;
 import cn.cnic.component.flow.service.IPropertyService;
 import cn.cnic.component.flow.service.IStopsService;
 import cn.cnic.component.flow.vo.StopsCustomizedPropertyVo;
@@ -24,7 +23,6 @@ import io.swagger.annotations.Api;
 @RequestMapping("/stops")
 public class StopsCtrl {
 
-    private final ICustomizedPropertyService customizedPropertyServiceImpl;
     private final IStopGroupService stopGroupServiceImpl;
     private final ILogHelperService logHelperServiceImpl;
     private final IPropertyService propertyServiceImpl;
@@ -32,13 +30,11 @@ public class StopsCtrl {
     private final IStopsService stopsServiceImpl;
 
     @Autowired
-    public StopsCtrl(ICustomizedPropertyService customizedPropertyServiceImpl,
-                     IStopGroupService stopGroupServiceImpl,
+    public StopsCtrl(IStopGroupService stopGroupServiceImpl,
                      ILogHelperService logHelperServiceImpl,
                      IPropertyService propertyServiceImpl,
                      IStopsHubService stopsHubServiceImpl,
                      IStopsService stopsServiceImpl) {
-        this.customizedPropertyServiceImpl = customizedPropertyServiceImpl;
         this.stopGroupServiceImpl = stopGroupServiceImpl;
         this.logHelperServiceImpl = logHelperServiceImpl;
         this.propertyServiceImpl = propertyServiceImpl;
@@ -131,34 +127,34 @@ public class StopsCtrl {
     @ResponseBody
     public String addStopCustomizedProperty(StopsCustomizedPropertyVo stopsCustomizedPropertyVo) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
-        return customizedPropertyServiceImpl.addStopCustomizedProperty(username, stopsCustomizedPropertyVo);
+        return stopsServiceImpl.addStopCustomizedProperty(username, stopsCustomizedPropertyVo);
     }
 
     @RequestMapping(value = "/updateStopsCustomizedProperty", method = RequestMethod.POST)
     @ResponseBody
     public String updateStopsCustomizedProperty(StopsCustomizedPropertyVo stopsCustomizedPropertyVo) {
         String username = SessionUserUtil.getCurrentUsername();
-        return customizedPropertyServiceImpl.updateStopsCustomizedProperty(username, stopsCustomizedPropertyVo);
+        return stopsServiceImpl.updateStopsCustomizedProperty(username, stopsCustomizedPropertyVo);
     }
 
     @RequestMapping(value = "/deleteStopsCustomizedProperty", method = RequestMethod.POST)
     @ResponseBody
     public String deleteStopsCustomizedProperty(String customPropertyId) {
         String username = SessionUserUtil.getCurrentUsername();
-        return customizedPropertyServiceImpl.deleteStopsCustomizedProperty(username, customPropertyId);
+        return stopsServiceImpl.deleteStopsCustomizedProperty(username, customPropertyId);
     }
 
     @RequestMapping(value = "/deleteRouterStopsCustomizedProperty", method = RequestMethod.POST)
     @ResponseBody
     public String deleteRouterStopsCustomizedProperty(String customPropertyId) {
         String username = SessionUserUtil.getCurrentUsername();
-        return customizedPropertyServiceImpl.deleteRouterStopsCustomizedProperty(username, customPropertyId);
+        return stopsServiceImpl.deleteRouterStopsCustomizedProperty(username, customPropertyId);
     }
 
     @RequestMapping(value = "/getRouterStopsCustomizedProperty", method = RequestMethod.POST)
     @ResponseBody
     public String getRouterStopsCustomizedProperty(String customPropertyId) {
-        return customizedPropertyServiceImpl.getRouterStopsCustomizedProperty(customPropertyId);
+        return stopsServiceImpl.getRouterStopsCustomizedProperty(customPropertyId);
     }
 
     /**

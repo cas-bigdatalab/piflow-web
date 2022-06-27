@@ -359,7 +359,7 @@ public class ProcessDomain {
      * @param appId appId
      * @return Process
      */
-    public Process getProcessByAppId(String username, boolean isAdmin, String appId) {
+    public Process getProcessByAppId(String appId) {
         if (StringUtils.isBlank(appId)) {
             logger.warn("appId id is null");
             return null;
@@ -463,8 +463,32 @@ public class ProcessDomain {
         return processMapper.getRunningProcessList(flowId);
     }
 
+    public Process getProcessByPageId(String username, boolean isAdmin, String processGroupId, String pageId) {
+        return processMapper.getProcessByPageId(username, isAdmin, processGroupId, pageId);
+    }
+
+    public List<Process> getProcessListByParam(String username, boolean isAdmin, String param) {
+        return processMapper.getProcessListByParam(username, isAdmin, param);
+    }
+
+    public List<Process> getProcessGroupListByParam(String username, boolean isAdmin, String param) {
+        return processMapper.getProcessGroupListByParam(username, isAdmin, param);
+    }
+
+    public List<Process> getProcessList() {
+        return processMapper.getProcessList();
+    }
+
     public List<Process> getProcessListByAppIDs(String[] appIDs) {
         return processMapper.getProcessListByAppIDs(appIDs);
+    }
+
+    public ProcessStop getProcessStopByPageIdAndPageId(String processId, String pageId) {
+        return processStopMapper.getProcessStopByPageIdAndPageId(processId, pageId);
+    }
+
+    public ProcessStop getProcessStopByNameAndPid(String processId, String name) {
+        return processStopMapper.getProcessStopByNameAndPid(processId, name);
     }
 
 }

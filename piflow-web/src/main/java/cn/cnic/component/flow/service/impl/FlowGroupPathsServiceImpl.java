@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.cnic.base.utils.ReturnMapUtils;
+import cn.cnic.common.constant.MessageConfig;
 import cn.cnic.component.flow.domain.FlowDomain;
 import cn.cnic.component.flow.domain.FlowGroupDomain;
 import org.apache.commons.lang3.StringUtils;
@@ -39,14 +41,11 @@ public class FlowGroupPathsServiceImpl implements IFlowGroupPathsService {
 
     @Override
     public String queryPathInfoFlowGroup(String flowGroupId, String pageId) {
-        Map<String, Object> rtnMap = new HashMap<String, Object>();
-        rtnMap.put("code", 500);
         if (StringUtils.isBlank(flowGroupId) || StringUtils.isBlank(pageId)) {
-            rtnMap.put("errorMsg", "The parameter'fid'or'id' is empty");
-            logger.warn("The parameter'fid'or'id' is empty");
-            return JsonUtils.toJsonNoException(rtnMap);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
         }
-
+        Map<String, Object> rtnMap = new HashMap<>();
+        rtnMap.put("code", 500);
         List<FlowGroupPaths> flowGroupPathsList = flowGroupDomain.getFlowGroupPaths(flowGroupId, pageId, null, null);
         if (null == flowGroupPathsList || flowGroupPathsList.size() <= 0 || null == flowGroupPathsList.get(0)) {
             rtnMap.put("errorMsg", "No'paths'information was queried");

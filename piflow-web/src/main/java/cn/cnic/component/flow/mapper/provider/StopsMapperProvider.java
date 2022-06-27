@@ -356,7 +356,7 @@ public class StopsMapperProvider {
     }
 
 
-    public String updateEnableFlagByFlowId(String username, String id) {
+    public String updateStopEnableFlagByFlowId(String username, String id) {
         if (StringUtils.isBlank(username)) {
             return "SELECT 0";
         }

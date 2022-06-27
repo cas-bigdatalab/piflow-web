@@ -259,7 +259,7 @@ public class PropertyMapperProvider {
      * @param id
      * @return
      */
-    public String updateEnableFlagByStopId(String username, String id) {
+    public String updateStopPropertyEnableFlagByStopId(String username, String id) {
         if (StringUtils.isBlank(username)) {
             return "SELECT 0";
         }

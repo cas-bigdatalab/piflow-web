@@ -57,8 +57,7 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
         Page<SysSchedule> page = PageHelper.startPage(offset, limit, "crt_dttm desc");
         sysScheduleDomain.getSysScheduleList(isAdmin, param);
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
-        rtnMap = PageHelperUtils.setLayTableParam(page, rtnMap);
-        return JsonUtils.toJsonNoException(rtnMap);
+        return PageHelperUtils.setLayTableParamRtnStr(page, rtnMap);
     }
 
     /**

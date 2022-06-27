@@ -55,8 +55,7 @@ public class ProcessAndProcessGroupServiceImpl implements IProcessAndProcessGrou
             processGroupDomain.getProcessAndProcessGroupListByUser(param, username);
         }
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
-        rtnMap = PageHelperUtils.setLayTableParam(page, rtnMap);
-        return JsonUtils.toJsonNoException(rtnMap);
+        return PageHelperUtils.setLayTableParamRtnStr(page, rtnMap);
     }
 
     /**
@@ -66,6 +65,7 @@ public class ProcessAndProcessGroupServiceImpl implements IProcessAndProcessGrou
      * @param groupAppIds group appId array
      * @return json
      */
+    @Override
     public String getAppInfoList(String[] taskAppIds, String[] groupAppIds) {
         if ((null == taskAppIds || taskAppIds.length <= 0) && (null == groupAppIds || groupAppIds.length <= 0)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Incoming parameter is null");

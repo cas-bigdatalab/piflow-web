@@ -1,5 +1,7 @@
 package cn.cnic.component.process.service.Impl;
 
+import cn.cnic.component.stopsComponent.domain.StopsComponentDomain;
+import cn.cnic.component.stopsComponent.domain.StopsComponentManageDomain;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +22,7 @@ public class ProcessStopServiceImpl implements IProcessStopService {
     private ProcessStopMapper processStopMapper;
 
     @Autowired
-    private StopsComponentMapper stopsComponentMapper;
+    private StopsComponentDomain stopsComponentDomain;
 
     /**
      * Query processStop based on processId and pageId
@@ -39,7 +41,7 @@ public class ProcessStopServiceImpl implements IProcessStopService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("process stop data is null");
         }
         ProcessStopVo processStopVo = ProcessUtils.processStopPoToVo(processStopByPageId);
-        StopsComponent stopsComponentByBundle = stopsComponentMapper.getStopsComponentByBundle(processStopByPageId.getBundel());
+        StopsComponent stopsComponentByBundle = stopsComponentDomain.getStopsComponentByBundle(processStopByPageId.getBundel());
         if (null != stopsComponentByBundle) {
             processStopVo.setVisualizationType(stopsComponentByBundle.getVisualizationType());
         }

@@ -351,9 +351,8 @@ public class DataSourceImpl implements IDataSource {
         }
         Page<DataSourceVo> page = PageHelper.startPage(offset, limit);
         dataSourceDomain.getDataSourceVoListParam(username, isAdmin, param);
-        Map<String, Object> rtnMap = PageHelperUtils.setLayTableParam(page, null);
-        rtnMap.put(ReturnMapUtils.KEY_CODE, ReturnMapUtils.SUCCEEDED_CODE);
-        return JsonUtils.toJsonNoException(rtnMap);
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
+        return PageHelperUtils.setLayTableParamRtnStr(page, rtnMap);
     }
 
     @Override

@@ -85,8 +85,7 @@ public class SysUserServiceImpl implements ISysUserService {
         Page<SysUserVo> page = PageHelper.startPage(offset, limit, "crt_dttm desc");
         sysUserDomain.getSysUserVoList(isAdmin, username, param);
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
-        rtnMap = PageHelperUtils.setLayTableParam(page, rtnMap);
-        return JsonUtils.toJsonNoException(rtnMap);
+        return PageHelperUtils.setLayTableParamRtnStr(page, rtnMap);
     }
 
     @Override

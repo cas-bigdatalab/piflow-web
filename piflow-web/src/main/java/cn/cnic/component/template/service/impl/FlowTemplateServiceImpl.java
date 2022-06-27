@@ -151,15 +151,13 @@ public class FlowTemplateServiceImpl implements IFlowTemplateService {
 
     @Override
     public String getFlowTemplateListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param) {
-        Map<String, Object> rtnMap = new HashMap<>();
         if (null == offset || null == limit) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("limit or offset is null");
         }
         Page<Process> page = PageHelper.startPage(offset, limit, "crt_dttm desc");
         flowTemplateDomain.getFlowTemplateListByParam(username, isAdmin, param);
-        rtnMap = PageHelperUtils.setLayTableParam(page, rtnMap);
-        rtnMap.put(ReturnMapUtils.KEY_CODE, ReturnMapUtils.SUCCEEDED_CODE);
-        return JsonUtils.toJsonNoException(rtnMap);
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
+        return PageHelperUtils.setLayTableParamRtnStr(page, rtnMap);
     }
 
     /**

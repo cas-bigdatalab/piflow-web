@@ -7,7 +7,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.cnic.base.utils.*;
+import cn.cnic.common.constant.MessageConfig;
 import cn.cnic.component.flow.domain.FlowDomain;
+import cn.cnic.component.flow.vo.PathsVo;
+import cn.cnic.component.flow.vo.StopsCustomizedPropertyVo;
 import cn.cnic.component.mxGraph.utils.MxGraphUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -15,10 +19,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import cn.cnic.base.utils.HdfsUtils;
-import cn.cnic.base.utils.JsonUtils;
-import cn.cnic.base.utils.LoggerUtil;
-import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.common.Eunm.PortType;
 import cn.cnic.common.Eunm.ProcessState;
 import cn.cnic.common.Eunm.RunModeType;
@@ -268,19 +268,18 @@ public class StopsServiceImpl implements IStopsService {
         if (updateMxCell <= 0) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("update failed");
         }
-        Map<String, Object> rtnMap = new HashMap<>();
-        if (null != mxGraphModel) {
-            // Convert the mxGraphModel from the query to XML
-            String loadXml = MxGraphUtils.mxGraphModelToMxGraph(false, mxGraphModel);
-            loadXml = StringUtils.isNotBlank(loadXml) ? loadXml : "";
-            rtnMap.put("XmlData", loadXml);
+
+        if (null == mxGraphModel) {
+            return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG());
         }
-        rtnMap.put("code", 200);
-        rtnMap.put("errorMsg", "Successfully modified");
-        return JsonUtils.toJsonNoException(rtnMap);
+        // Convert the mxGraphModel from the query to XML
+        String loadXml = MxGraphUtils.mxGraphModelToMxGraph(false, mxGraphModel);
+        loadXml = StringUtils.isNotBlank(loadXml) ? loadXml : "";
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("XmlData", loadXml);
     }
 
     @SuppressWarnings("unchecked")
+    @Override
     public String getStopsPort(String flowId, String sourceId, String targetId, String pathLineId) {
         Map<String, Object> rtnMap = new HashMap<>();
         rtnMap.put("code", 500);
@@ -826,7 +825,7 @@ public class StopsServiceImpl implements IStopsService {
             stopsById.setProperties(propertyList);
         }
         flowDomain.saveOrUpdate(stopsById);
-        Map<String, Object> rtnMap = new HashMap<String, Object>();
+        Map<String, Object> rtnMap = new HashMap<>();
         rtnMap.put("code", 500);
         rtnMap.put("code", 200);
         rtnMap.put("errorMsg", "fill success");
@@ -1194,6 +1193,124 @@ public class StopsServiceImpl implements IStopsService {
         }
         Map<String, Object> setSucceededCustomParam = ReturnMapUtils.setSucceededCustomParam("isLinked", true);
         return ReturnMapUtils.appendValuesToJson(setSucceededCustomParam, "stopsNameList", stopsNamesByDatasourceId);
+    }
+
+    @Override
+    public String addStopCustomizedProperty(String username, StopsCustomizedPropertyVo stopsCustomizedPropertyVo) throws Exception {
+        if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_OPERATION_MSG());
+        }
+        if (null == stopsCustomizedPropertyVo) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
+        }
+        String stopId = stopsCustomizedPropertyVo.getStopId();
+        if (StringUtils.isBlank(stopId)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("stopId"));
+        }
+        List<CustomizedProperty> customizedPropertyListByStopsIdAndName = flowDomain.getCustomizedPropertyListByStopsIdAndName(stopId, stopsCustomizedPropertyVo.getName());
+        if (null != customizedPropertyListByStopsIdAndName && customizedPropertyListByStopsIdAndName.size() > 0) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.DUPLICATE_NAME_PLEASE_MODIFY_MSG("StopsCustomizedPropertyName"));
+        }
+        Stops stopsById = flowDomain.getStopsById(stopId);
+        if (null == stopsById) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_BY_ID_XXX_MSG(stopId));
+        }
+        CustomizedProperty customizedProperty = new CustomizedProperty();
+        BeanUtils.copyProperties(stopsCustomizedPropertyVo, customizedProperty);
+        String id = UUIDUtils.getUUID32();
+        customizedProperty.setId(id);
+        customizedProperty.setCrtDttm(new Date());
+        customizedProperty.setCrtUser(username);
+        customizedProperty.setLastUpdateDttm(new Date());
+        customizedProperty.setLastUpdateUser(username);
+        customizedProperty.setEnableFlag(true);
+
+        customizedProperty.setStops(stopsById);
+        int optDataCount = flowDomain.addCustomizedProperty(customizedProperty);
+        if (optDataCount > 0) {
+            return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("stopPageId", stopsById.getPageId());
+        } else {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ADD_ERROR_MSG());
+        }
+
+    }
+
+    @Override
+    public String updateStopsCustomizedProperty(String username, StopsCustomizedPropertyVo stopsCustomizedPropertyVo) {
+        if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
+        }
+        if (null == stopsCustomizedPropertyVo) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
+        }
+        String id = stopsCustomizedPropertyVo.getId();
+        if (StringUtils.isBlank(id)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("stopId"));
+        }
+        int optDataCount = flowDomain.updateCustomizedPropertyCustomValue(username, stopsCustomizedPropertyVo.getCustomValue(), id);
+        if (optDataCount > 0) {
+            return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("value", stopsCustomizedPropertyVo.getCustomValue());
+        } else {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.UPDATE_ERROR_MSG());
+        }
+    }
+
+    @Override
+    public String deleteStopsCustomizedProperty(String username, String customPropertyId) {
+        Map<String, Object> rtnMap = new HashMap<>();
+        rtnMap.put("code", 500);
+        int optDataCount = 0;
+        optDataCount = flowDomain.updateEnableFlagByStopId(username, customPropertyId);
+        if (optDataCount <= 0) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.DELETE_ERROR_MSG());
+        }
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG());
+    }
+
+    @Override
+    public String deleteRouterStopsCustomizedProperty(String username, String customPropertyId) {
+        return this.deleteStopsCustomizedProperty(username,customPropertyId);
+    }
+
+    @Override
+    public String getRouterStopsCustomizedProperty(String customPropertyId) {
+        Map<String, Object> rtnMap = new HashMap<>();
+        rtnMap.put("code", 500);
+        CustomizedProperty customizedPropertyById = flowDomain.getCustomizedPropertyById(customPropertyId);
+        if (null == customizedPropertyById) {
+            logger.warn(MessageConfig.NO_DATA_BY_ID_XXX_MSG(customPropertyId));
+            rtnMap.put("errorMsg", MessageConfig.NO_DATA_BY_ID_XXX_MSG(customPropertyId));
+        }
+        Stops stops = customizedPropertyById.getStops();
+        if (null == stops || null == stops.getFlow()) {
+            logger.warn(MessageConfig.DATA_ERROR_MSG());
+            rtnMap.put("errorMsg", MessageConfig.DATA_ERROR_MSG());
+        }
+        String flowId = stops.getFlow().getId();
+        String stopsPageId = stops.getPageId();
+        if (StringUtils.isNoneEmpty(flowId)) {
+            List<Paths> pathsList = flowDomain.getPaths(flowId, null, stopsPageId, null);
+            List<PathsVo> pathsVoList = null;
+            if (null != pathsList && pathsList.size() > 0) {
+                pathsVoList = new ArrayList<>();
+                for (Paths paths : pathsList) {
+                    PathsVo pathsVo = new PathsVo();
+                    Stops stopByFlowIdAndStopPageId = flowDomain.getStopByFlowIdAndStopPageId(flowId, paths.getTo());
+                    if (null != stopByFlowIdAndStopPageId) {
+                        BeanUtils.copyProperties(paths, pathsVo);
+                        pathsVo.setFrom(stops.getName());
+                        pathsVo.setTo(stopByFlowIdAndStopPageId.getName());
+                        pathsVoList.add(pathsVo);
+                    }
+                }
+            }
+            rtnMap.put("pathsVoList", pathsVoList);
+            rtnMap.put("code", 200);
+        } else {
+            logger.warn("remove failed , stopID or flowID data error");
+            rtnMap.put("errorMsg", "remove failed , stopID or flowID data error");
+        }
+        return JsonUtils.toJsonNoException(rtnMap);
     }
     
     private List<Paths> extractPaths(Map<String, List<Paths>> pathsMap, List<Paths> pathsList) {

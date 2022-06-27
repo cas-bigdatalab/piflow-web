@@ -109,8 +109,7 @@ public class FlowGlobalParamsServiceImpl implements IFlowGlobalParamsService {
         Page<FlowGlobalParams> page = PageHelper.startPage(offset, limit,"crt_dttm desc");
         flowGlobalParamsDomain.getFlowGlobalParamsListParam(username, isAdmin, param);
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
-        rtnMap = PageHelperUtils.setLayTableParam(page, rtnMap);
-        return JsonUtils.toJsonNoException(rtnMap);
+        return PageHelperUtils.setLayTableParamRtnStr(page, rtnMap);
     }
     
     /**

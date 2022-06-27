@@ -98,6 +98,10 @@ public class StopsDomain {
         if (null == customizedProperty) {
             throw new Exception("save failed");
         }
+        String id = customizedProperty.getId();
+        if (StringUtils.isBlank(id)) {
+            customizedProperty.setId(UUIDUtils.getUUID32());
+        }
         int affectedRows = customizedPropertyMapper.addCustomizedProperty(customizedProperty);
         if (affectedRows <= 0) {
             throw new Exception("save failed");
@@ -168,7 +172,6 @@ public class StopsDomain {
             return 0;
         }
         return customizedPropertyMapper.updateStopsCustomizedProperty(customizedProperty);
-
     }
 
     public Stops getStopsByPageId(String fid, String stopPageId) {
@@ -199,8 +202,8 @@ public class StopsDomain {
         return propertyMapper.addPropertyList(propertyList);
     }
 
-    public int updateEnableFlagByFlowId(String username, String id) {
-        return stopsMapper.updateEnableFlagByFlowId(username, id);
+    public int updateStopEnableFlagByFlowId(String username, String id) {
+        return stopsMapper.updateStopEnableFlagByFlowId(username, id);
     }
 
     /**
@@ -234,8 +237,8 @@ public class StopsDomain {
         return stopsMapper.getStopByFlowIdAndStopPageId(flowId, stopPageId);
     }
 
-    public int updateEnableFlagByStopId(String username, String id) {
-        return propertyMapper.updateEnableFlagByStopId(username, id);
+    public int updateStopPropertyEnableFlagByStopId(String username, String id) {
+        return propertyMapper.updateStopPropertyEnableFlagByStopId(username, id);
     }
 
     public Stops getStopGroupList(String fid, String stopPageId) {
@@ -260,6 +263,22 @@ public class StopsDomain {
 
     public List<Stops> getStopsListByFlowId(String flowId) {
         return stopsMapper.getStopsListByFlowId(flowId);
+    }
+
+    public int updateEnableFlagByStopId(String username, String id){
+        return customizedPropertyMapper.updateEnableFlagByStopId(username, id);
+    }
+
+    public int updateCustomizedPropertyCustomValue(String username, String content, String id){
+        return customizedPropertyMapper.updateCustomizedPropertyCustomValue(username, content, id);
+    }
+
+    public CustomizedProperty getCustomizedPropertyById(String id){
+        return customizedPropertyMapper.getCustomizedPropertyById(id);
+    }
+
+    public List<CustomizedProperty> getCustomizedPropertyListByStopsIdAndName(String stopsId, String name){
+        return customizedPropertyMapper.getCustomizedPropertyListByStopsIdAndName(stopsId, name);
     }
 
 

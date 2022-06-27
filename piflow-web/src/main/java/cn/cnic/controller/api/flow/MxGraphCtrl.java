@@ -3,6 +3,7 @@ package cn.cnic.controller.api.flow;
 import java.util.HashMap;
 import java.util.Map;
 
+import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.component.system.service.ILogHelperService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -110,10 +111,7 @@ public class MxGraphCtrl {
     @RequestMapping(value = "/eraseRecord", method = RequestMethod.POST)
     @ResponseBody
     public String eraseRecord() {
-        Map<String, Object> rtnMap = new HashMap<String, Object>();
-        rtnMap.put("code", 200);
-        rtnMap.put("flag", true);
-        return JsonUtils.toJsonNoException(rtnMap);
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("flag", true);
     }
 
 }

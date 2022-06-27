@@ -309,13 +309,12 @@ public class FlowServiceImpl implements IFlowService {
         Page<FlowVo> page = PageHelper.startPage(offset, limit,"crt_dttm desc");
         flowDomain.getFlowListParam(username, isAdmin, param);
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
-        rtnMap = PageHelperUtils.setLayTableParam(page, rtnMap);
-        return JsonUtils.toJsonNoException(rtnMap);
+        return PageHelperUtils.setLayTableParamRtnStr(page, rtnMap);
     }
 
     @Override
     public String getFlowExampleList() {
-        Map<String, Object> rtnMap = new HashMap<String, Object>();
+        Map<String, Object> rtnMap = new HashMap<>();
         rtnMap.put("code", 500);
         List<FlowVo> flowVoList = new ArrayList<>();
         List<Flow> flowExampleList = flowDomain.getFlowExampleList();
@@ -492,22 +491,23 @@ public class FlowServiceImpl implements IFlowService {
             if (null == mxCell) {
                 continue;
             }
-            if (mxCell.getPageId().equals(pageId)) {
-                mxCell.setValue(flowName);
-                mxCell.setLastUpdateDttm(new Date());
-                mxCell.setLastUpdateUser(username);
-                mxCellDomain.updateMxCell(mxCell);
-                // Convert the mxGraphModel from the query to XML
-                String loadXml = MxGraphUtils.mxGraphModelToMxGraph(false, mxGraphModel);
-                loadXml = StringUtils.isNotBlank(loadXml) ? loadXml : "";
-                rtnMap.put("XmlData", loadXml);
-                rtnMap.put("nameContent", flowName);
-                rtnMap.put("code", 200);
-                rtnMap.put("errorMsg", "Successfully modified");
-                logger.info("Successfully modified");
-                rtnMap.put("errorMsg", "Successfully modified");
-                break;
+            if (!pageId.equals(mxCell.getPageId())) {
+                continue;
             }
+            mxCell.setValue(flowName);
+            mxCell.setLastUpdateDttm(new Date());
+            mxCell.setLastUpdateUser(username);
+            mxCellDomain.updateMxCell(mxCell);
+            // Convert the mxGraphModel from the query to XML
+            String loadXml = MxGraphUtils.mxGraphModelToMxGraph(false, mxGraphModel);
+            loadXml = StringUtils.isNotBlank(loadXml) ? loadXml : "";
+            rtnMap.put("XmlData", loadXml);
+            rtnMap.put("nameContent", flowName);
+            rtnMap.put("code", 200);
+            rtnMap.put("errorMsg", "Successfully modified");
+            logger.info("Successfully modified");
+            rtnMap.put("errorMsg", "Successfully modified");
+            break;
         }
         return JsonUtils.toJsonNoException(rtnMap);
     }

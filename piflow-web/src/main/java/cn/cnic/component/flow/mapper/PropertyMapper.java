@@ -97,8 +97,8 @@ public interface PropertyMapper {
      *
      * @return
      */
-    @UpdateProvider(type = PropertyMapperProvider.class, method = "updateEnableFlagByStopId")
-    public int updateEnableFlagByStopId(String username, String id);
+    @UpdateProvider(type = PropertyMapperProvider.class, method = "updateStopPropertyEnableFlagByStopId")
+    public int updateStopPropertyEnableFlagByStopId(String username, String id);
 
     @Update("update flow_stops_property fsp set fsp.enable_flag=0 where fsp.is_old_data=1 and fsp.fk_stops_id = #{stopId}")
     public int deletePropertiesByIsOldDataAndStopsId(String stopId);

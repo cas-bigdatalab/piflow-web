@@ -1,6 +1,7 @@
 package cn.cnic.component.livy.service.impl;
 
 import cn.cnic.base.utils.ReturnMapUtils;
+import cn.cnic.common.constant.MessageConfig;
 import cn.cnic.component.livy.domain.CodeSnippetDomain;
 import cn.cnic.component.livy.domain.NoteBookDomain;
 import cn.cnic.component.livy.entity.CodeSnippet;
@@ -38,18 +39,18 @@ public class CodeSnippetServiceImpl implements ICodeSnippetService {
     @Override
     public String addCodeSnippet(String username, CodeSnippetVoRequestAdd codeSnippetVo) throws Exception {
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         if (null == codeSnippetVo) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("param name is empty");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("param"));
         }
         String noteBookId = codeSnippetVo.getNoteBookId();
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("noteBookId is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("noteBookId"));
         }
         NoteBook noteBook = noteBookDomain.getNoteBookById(false, username, noteBookId);
         if (null == noteBook) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("noteBookId data is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_BY_ID_XXX_MSG(noteBookId));
         }
         CodeSnippet codeSnippet = new CodeSnippet();
         BeanUtils.copyProperties(codeSnippetVo, codeSnippet);
@@ -57,58 +58,57 @@ public class CodeSnippetServiceImpl implements ICodeSnippetService {
         codeSnippet.setNoteBook(noteBook);
         int affectedRows = codeSnippetDomain.addCodeSnippet(codeSnippet);
         if (affectedRows > 0) {
-            Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg("Save codeSnippet succeeded.");
-            return ReturnMapUtils.appendValuesToJson(rtnMap, "codeSnippetId", codeSnippet.getId());
+            return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("codeSnippetId", codeSnippet.getId());
         }
-        return ReturnMapUtils.setFailedMsgRtnJsonStr("Save noteBook failed");
+        return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
     }
 
     @Override
     public String updateCodeSnippet(String username, CodeSnippetVoRequestUpdate codeSnippetVo) {
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         if (null == codeSnippetVo) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("param name is empty");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("param"));
         }
         if (StringUtils.isBlank(codeSnippetVo.getId())) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("param id is empty");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("id"));
         }
         CodeSnippet codeSnippet = codeSnippetDomain.getCodeSnippetById(codeSnippetVo.getId());
         if (null == codeSnippet) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Update failed, data is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.UPDATE_ERROR_MSG());
         }
         BeanUtils.copyProperties(codeSnippetVo, codeSnippet);
         int affectedRows = codeSnippetDomain.updateCodeSnippet(codeSnippet);
         if (affectedRows > 0) {
-            return ReturnMapUtils.setSucceededMsgRtnJsonStr("Update noteBook succeeded.");
+            return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.UPDATE_SUCCEEDED_MSG());
         }
-        return ReturnMapUtils.setFailedMsgRtnJsonStr("Update noteBook failed");
+        return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.UPDATE_ERROR_MSG());
     }
 
     @Override
     public String delCodeSnippet(String username, boolean isAdmin, String codeSnippetId) {
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         if (StringUtils.isBlank(codeSnippetId)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("codeSnippetId is empty");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("codeSnippetId"));
         }
         int affectedRows = codeSnippetDomain.delCodeSnippetById(isAdmin, username, codeSnippetId);
         if (affectedRows > 0) {
-            return ReturnMapUtils.setSucceededMsgRtnJsonStr("Del noteBook succeeded.");
+            return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.DELETE_SUCCEEDED_MSG());
         }
-        return ReturnMapUtils.setFailedMsgRtnJsonStr("Del noteBook failed");
+        return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.DELETE_ERROR_MSG());
     }
 
     @Override
     public String getCodeSnippetList(String noteBookId) {
         if (StringUtils.isBlank(noteBookId)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("noteBookId is empty");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("noteBookId"));
         }
         List<CodeSnippet> codeSnippetList = codeSnippetDomain.getCodeSnippetListByNoteBookId(noteBookId);
         if (null == codeSnippetList) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("No data");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_MSG());
         }
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("codeSnippetList", codeSnippetList);
     }
@@ -117,15 +117,15 @@ public class CodeSnippetServiceImpl implements ICodeSnippetService {
     public String runCodeSnippet(String username, String codeSnippetId) {
         CodeSnippet codeSnippet = codeSnippetDomain.getCodeSnippetById(codeSnippetId);
         if (null == codeSnippet) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("No data");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_MSG());
         }
         if (null == codeSnippet.getNoteBook()) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Data Error");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_MSG());
         }
         String sessionsId = codeSnippet.getNoteBook().getSessionsId();
         String codeContent = codeSnippet.getCodeContent();
         Map<String, Object> rtnMap = livyImpl.runStatements(sessionsId, codeContent);
-        if (null == rtnMap || (int)rtnMap.get("code") != 200) {
+        if (null == rtnMap || (int)rtnMap.get(ReturnMapUtils.KEY_CODE) != 200) {
         	return ReturnMapUtils.mapToJson(rtnMap);
         }
         String statementsId = rtnMap.get("statementsId").toString();
@@ -136,29 +136,29 @@ public class CodeSnippetServiceImpl implements ICodeSnippetService {
        	if (affectedRows > 0) {
     		return ReturnMapUtils.mapToJson(rtnMap);
     	}
-        return ReturnMapUtils.setFailedMsgRtnJsonStr("Interface call succeeded, save Failed.");
+        return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.INTERFACE_CALL_ERROR_MSG());
     }
 
     @Override
     public String getStatementsResult(String codeSnippetId) {
         if (StringUtils.isBlank(codeSnippetId)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("codeSnippetId is null ");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("codeSnippetId"));
         }
         CodeSnippet codeSnippet = codeSnippetDomain.getCodeSnippetById(codeSnippetId);
         if (null == codeSnippet) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("No data");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_MSG());
         }
         NoteBook noteBook = codeSnippet.getNoteBook();
         if (null == noteBook) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Data error, noteBook is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_BY_ID_XXX_MSG("noteBook"));
         }
         String sessionsId = noteBook.getSessionsId();
         if (StringUtils.isBlank(sessionsId)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Data error, sessionsId is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_BY_ID_XXX_MSG("sessionsId"));
         }
         String executeId = codeSnippet.getExecuteId();
         if (StringUtils.isBlank(executeId)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Data error, not execute");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_MSG());
         }
         Map<String, Object> rtnMap = livyImpl.getStatementsResult(noteBook.getSessionsId(), executeId);
         return ReturnMapUtils.mapToJson(rtnMap);

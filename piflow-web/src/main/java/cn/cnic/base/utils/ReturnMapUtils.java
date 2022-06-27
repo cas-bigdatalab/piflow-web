@@ -80,9 +80,7 @@ public class ReturnMapUtils {
      * @return Map
      */
     public static Map<String, Object> setSucceededCustomParam(String key, Object value) {
-        Map<String, Object> rtnMap = new HashMap<>();
-        rtnMap.put(KEY_CODE, SUCCEEDED_CODE);
-        rtnMap.put(KEY_ERROR_MSG, MessageConfig.SUCCEEDED_MSG());
+        Map<String, Object> rtnMap = setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
         rtnMap.put(key, value);
         return rtnMap;
     }
@@ -139,6 +137,19 @@ public class ReturnMapUtils {
         rtnMap.put(key, value);
         return rtnMap;
     }
+
+    /**
+     * append Succeeded return map
+     *
+     * @param rtnMap
+     * @return Map
+     */
+    public static Map<String, Object> appendSucceeded(Map<String, Object> rtnMap) {
+        if(null == rtnMap) {
+            rtnMap = new HashMap<>();
+        }
+        return setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
+    }
     
     /**
      * append Values return jsonStr
@@ -150,6 +161,16 @@ public class ReturnMapUtils {
      */
     public static String appendValuesToJson(Map<String, Object> rtnMap, String key, Object value) {
         return JsonUtils.toJsonNoException(appendValues(rtnMap, key, value));
+    }
+
+    /**
+     * append Succeeded return jsonStr
+     *
+     * @param rtnMap
+     * @return JsonStr
+     */
+    public static String appendSucceededToJson(Map<String, Object> rtnMap) {
+        return JsonUtils.toJsonNoException(appendSucceeded(rtnMap));
     }
     
     /**

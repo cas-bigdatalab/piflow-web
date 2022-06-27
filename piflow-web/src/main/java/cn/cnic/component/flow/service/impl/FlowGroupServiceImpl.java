@@ -105,21 +105,16 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
     @Override
     public String getFlowGroupVoInfoById(String flowGroupId) {
         if (StringUtils.isBlank(flowGroupId)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("flowGroupId is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("flowGroupId"));
         }
         FlowGroup flowGroupById = flowGroupDomain.getFlowGroupById(flowGroupId);
         if (null == flowGroupById) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("data is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_MSG());
         }
-        Map<String, Object> rtnMap = new HashMap<>();
-        rtnMap.put("code", 500);
         FlowGroupVo flowGroupVo = new FlowGroupVo();
-        flowGroupVo = new FlowGroupVo();
         BeanUtils.copyProperties(flowGroupById, flowGroupVo);
         flowGroupVo.setFlowQuantity((null != flowGroupById.getFlowList() ? flowGroupById.getFlowList().size() : 0));
         flowGroupVo.setFlowGroupQuantity((null != flowGroupById.getFlowGroupList() ? flowGroupById.getFlowGroupList().size() : 0));
-        rtnMap.put("code", 200);
-        rtnMap.put("flowGroupVo", flowGroupVo);
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("flowGroupVo", flowGroupVo);    
     }
 
@@ -199,8 +194,7 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
         Page<FlowGroupVo> page = PageHelper.startPage(offset, limit, "crt_dttm desc");
         flowGroupDomain.getFlowGroupListParam(username, isAdmin, param);
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
-        rtnMap = PageHelperUtils.setLayTableParam(page, rtnMap);
-        return JsonUtils.toJsonNoException(rtnMap);
+        return PageHelperUtils.setLayTableParamRtnStr(page, rtnMap);
     }
 
     @Override
@@ -623,24 +617,20 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
      * @param pageId
      * @return
      */
+    @Override
     public String queryIdInfo(String fid, String pageId) {
         if (StringUtils.isBlank(fid) || StringUtils.isBlank(pageId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Missing parameters");
         }
-        Map<String, Object> rtnMap = new HashMap<>();
         FlowVo flowVo = flowServiceImpl.getFlowByPageId(fid, pageId);
         if (null != flowVo) {
-            rtnMap.put("nodeType", "flow");
-            rtnMap.put("flowVo", flowVo);
-            rtnMap.put(ReturnMapUtils.KEY_CODE, ReturnMapUtils.SUCCEEDED_CODE);
-            return JsonUtils.toJsonNoException(rtnMap);
+            Map<String, Object> rtnMap = ReturnMapUtils.setSucceededCustomParam("nodeType", "flow");
+            return ReturnMapUtils.appendValuesToJson(rtnMap, "flowVo", flowVo);
         }
         FlowGroupVo flowGroupVo = this.getFlowGroupByPageId(fid, pageId);
         if (null != flowGroupVo) {
-            rtnMap.put("nodeType", "flowGroup");
-            rtnMap.put("flowGroupVo", flowGroupVo);
-            rtnMap.put(ReturnMapUtils.KEY_CODE, ReturnMapUtils.SUCCEEDED_CODE);
-            return JsonUtils.toJsonNoException(rtnMap);
+            Map<String, Object> rtnMap = ReturnMapUtils.setSucceededCustomParam("nodeType", "flowGroup");
+            return ReturnMapUtils.appendValuesToJson(rtnMap, "flowGroupVo", flowGroupVo);
         }
         return ReturnMapUtils.setFailedMsgRtnJsonStr("no Data");
     }

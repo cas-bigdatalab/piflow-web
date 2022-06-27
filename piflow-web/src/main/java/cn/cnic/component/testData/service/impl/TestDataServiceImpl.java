@@ -365,9 +365,8 @@ public class TestDataServiceImpl implements ITestDataService {
         }
         Page<TestDataVo> page = PageHelper.startPage(offset, limit);
         testDataDomain.getTestDataVoList(isAdmin, username, param);
-        Map<String, Object> rtnMap = PageHelperUtils.setLayTableParam(page, null);
-        rtnMap.put(ReturnMapUtils.KEY_CODE, ReturnMapUtils.SUCCEEDED_CODE);
-        return JsonUtils.toJsonNoException(rtnMap);
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
+        return PageHelperUtils.setLayTableParamRtnStr(page, rtnMap);
     }
 
     /**
@@ -424,10 +423,9 @@ public class TestDataServiceImpl implements ITestDataService {
         }
         Page<TestDataSchemaVo> page = PageHelper.startPage(offset, limit);
         testDataDomain.getTestDataSchemaVoListByTestDataIdSearch(isAdmin, username, param, testDataId);
-        Map<String, Object> rtnMap = PageHelperUtils.setLayTableParam(page, null);
-        rtnMap.put(ReturnMapUtils.KEY_CODE, ReturnMapUtils.SUCCEEDED_CODE);
-        rtnMap.put("testData", testDataVo);
-        return JsonUtils.toJsonNoException(rtnMap);
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
+        rtnMap = ReturnMapUtils.appendValues(rtnMap, "testData", testDataVo);
+        return PageHelperUtils.setLayTableParamRtnStr(page, rtnMap);
     }
 
     /**
@@ -464,8 +462,7 @@ public class TestDataServiceImpl implements ITestDataService {
         testDataDomain.getTestDataSchemaValuesCustomListId(isAdmin, username, testDataId, testDataSchemaIdAndNameListByTestDataId);
         rtnMap = PageHelperUtils.setCustomDataKey(page1, "count","schemaValueId", rtnMap);
         rtnMap.put("schema", testDataSchemaIdAndNameListByTestDataId);
-        rtnMap.put(ReturnMapUtils.KEY_CODE, ReturnMapUtils.SUCCEEDED_CODE);
-        return JsonUtils.toJsonNoException(rtnMap);
+        return ReturnMapUtils.appendSucceededToJson(rtnMap);
     }
 
     /**

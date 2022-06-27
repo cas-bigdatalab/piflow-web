@@ -26,7 +26,8 @@ public class PageHelperUtils {
             PageInfo info = new PageInfo(page.getResult());
             rtnMap.put("iTotalDisplayRecords", info.getTotal());
             rtnMap.put("iTotalRecords", info.getTotal());
-            rtnMap.put("pageData", info.getList());//Data collection
+            //Data collection
+            rtnMap.put("pageData", info.getList());
             logger.debug("success");
         }
         return rtnMap;
@@ -43,9 +44,14 @@ public class PageHelperUtils {
         PageInfo info = new PageInfo(page.getResult());
         rtnMap.put("msg", "success");
         rtnMap.put("count", info.getTotal());
-        rtnMap.put("data", info.getList());//Data collection
+        //Data collection
+        rtnMap.put("data", info.getList());
         logger.debug("success");
         return rtnMap;
+    }
+
+    public static String setLayTableParamRtnStr(Page page, Map<String, Object> rtnMap) {
+        return JsonUtils.toJsonNoException(setLayTableParam(page, rtnMap));
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
@@ -66,7 +72,8 @@ public class PageHelperUtils {
         if(null == rtnMap.get(key1)){
             rtnMap.put(key1, info.getTotal());
         }
-        rtnMap.put(key2, info.getList());//Data collection
+        //Data collection
+        rtnMap.put(key2, info.getList());
         logger.debug("success");
         return rtnMap;
     }

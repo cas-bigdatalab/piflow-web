@@ -232,18 +232,17 @@ public class ProcessGroupCtrl {
         }
         String processId = processGroupServiceImpl.getProcessIdByPageId(processGroupId, pageId);
         String processGroupIdParents = processGroupServiceImpl.getProcessGroupIdByPageId(processGroupId, pageId);
-        Map<String, Object> rtnMap = new HashMap<>();
-        String nodeType = "flow";
+        String nodeType;
         if (StringUtils.isNotBlank(processId)) {
-            rtnMap.put("nodeType", nodeType);
+            nodeType = "flow";
         } else if (StringUtils.isNotBlank(processGroupIdParents)) {
-            rtnMap.put("nodeType", "flowGroup");
+            nodeType = "flowGroup";
         } else {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("No query found");
         }
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededCustomParam("nodeType", nodeType);
         rtnMap.put("processId", processId);
         rtnMap.put("processGroupId", processGroupIdParents);
-        rtnMap.put("code", 200);
         return JsonUtils.toJsonNoException(rtnMap);
 
     }

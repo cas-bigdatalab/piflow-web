@@ -248,6 +248,23 @@ public class MessageConfig {
         return ILLEGAL_USER_MSG;
     }
 
+    private static String NO_DATA_XXX_IS_NULL_MSG;
+    private static String NO_DATA_XXX_IS_NULL_MSG_ZH;
+    @Value("${msg.no_data_xxx_is_null}")
+    private void setNoDataXxxIsNullMsg(String noDataMsg) {
+        NO_DATA_XXX_IS_NULL_MSG = noDataMsg;
+    }
+    @Value("${msg.no_data_xxx_is_null.zh}")
+    private void setNoDataXxxIsNullMsgZh(String noDataMsgZh) {
+        NO_DATA_XXX_IS_NULL_MSG_ZH = noDataMsgZh;
+    }
+    public static String NO_DATA_XXX_IS_NULL_MSG(String xxx){
+        if("ZH".equals(LANGUAGE)){
+            return String.format(NO_DATA_XXX_IS_NULL_MSG_ZH, xxx);
+        }
+        return String.format(NO_DATA_XXX_IS_NULL_MSG, xxx);
+    }
+
     private static String NO_DATA_MSG;
     private static String NO_DATA_MSG_ZH;
     @Value("${msg.no_data}")
@@ -401,6 +418,23 @@ public class MessageConfig {
         return String.format(XXX_AVAILABLE_MSG, name);
     }
 
+    private static String XXX_ALREADY_TAKEN_MSG;
+    private static String XXX_ALREADY_TAKEN_MSG_ZH;
+    @Value("${msg.xxx_already_taken}")
+    private void setXxxAlreadyTakenMsg(String duplicateNameMsg) {
+        XXX_ALREADY_TAKEN_MSG = duplicateNameMsg;
+    }
+    @Value("${msg.xxx_already_taken.zh}")
+    private void setXxxAlreadyTakenMsgZh(String duplicateNameMsgZh) {
+        XXX_ALREADY_TAKEN_MSG_ZH = duplicateNameMsgZh;
+    }
+    public static String XXX_ALREADY_TAKEN_MSG(String name){
+        if("ZH".equals(LANGUAGE)){
+            return String.format(XXX_ALREADY_TAKEN_MSG_ZH, name);
+        }
+        return String.format(XXX_ALREADY_TAKEN_MSG, name);
+    }
+
     private static String CONVERSION_FAILED_MSG;
     private static String CONVERSION_FAILED_MSG_ZH;
     @Value("${msg.conversion_failed}")
@@ -450,6 +484,23 @@ public class MessageConfig {
             return INTERFACE_CALL_ERROR_MSG_ZH;
         }
         return INTERFACE_CALL_ERROR_MSG;
+    }
+
+    private static String INTERFACE_CALL_SUCCEEDED_SAVE_ERROR_MSG;
+    private static String INTERFACE_CALL_SUCCEEDED_SAVE_ERROR_MSG_ZH;
+    @Value("${msg.interface_call_succeeded_save_error}")
+    private void setInterfaceCallSucceededSaveErrorMsg(String interfaceCallSucceededSaveErrorMsg) {
+        INTERFACE_CALL_SUCCEEDED_SAVE_ERROR_MSG = interfaceCallSucceededSaveErrorMsg;
+    }
+    @Value("${msg.interface_call_succeeded_save_error.zh}")
+    private void setInterfaceCallSucceededSaveErrorMsgZh(String interfaceCallSucceededSaveErrorMsgZh) {
+        INTERFACE_CALL_SUCCEEDED_SAVE_ERROR_MSG_ZH = interfaceCallSucceededSaveErrorMsgZh;
+    }
+    public static String INTERFACE_CALL_SUCCEEDED_SAVE_ERROR_MSG(){
+        if("ZH".equals(LANGUAGE)){
+            return INTERFACE_CALL_SUCCEEDED_SAVE_ERROR_MSG_ZH;
+        }
+        return INTERFACE_CALL_SUCCEEDED_SAVE_ERROR_MSG;
     }
 
     private static String INIT_COMPONENTS_ERROR_MSG;

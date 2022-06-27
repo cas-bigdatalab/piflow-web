@@ -125,6 +125,7 @@ public class SparkJarServiceImpl implements ISparkJarService {
      * @param param    Search content
      * @return
      */
+    @Override
     public String sparkJarListPage(String username, Boolean isAdmin, Integer pageNo, Integer limit, String param) {
         if (null == pageNo || null == limit) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
@@ -132,8 +133,7 @@ public class SparkJarServiceImpl implements ISparkJarService {
         Page<Process> page = PageHelper.startPage(pageNo, limit, "crt_dttm desc");
         sparkJarDomain.getSparkJarListParam(username, isAdmin, param);
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
-        rtnMap = PageHelperUtils.setLayTableParam(page, rtnMap);
-        return JsonUtils.toJsonNoException(rtnMap);
+        return PageHelperUtils.setLayTableParamRtnStr(page, rtnMap);
     }
 
     /**
@@ -143,6 +143,7 @@ public class SparkJarServiceImpl implements ISparkJarService {
      * @param id       id
      * @return json
      */
+    @Override
     public String delSparkJar(String username, Boolean isAdmin, String id) {
         if (StringUtils.isBlank(id)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("id is null");
