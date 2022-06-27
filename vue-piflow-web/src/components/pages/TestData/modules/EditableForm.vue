@@ -187,7 +187,7 @@ export default {
             let data = res.data;
             if (data.code === 200) {
               this.$Modal.success({
-                title: "PiFlow system tips",
+                title: "πFlow system tips",
                 content: data.errorMsg,
                 onOk: () => {
                   this.fatherMethod();

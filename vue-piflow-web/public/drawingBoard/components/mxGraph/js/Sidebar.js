@@ -141,8 +141,10 @@ Sidebar.prototype.init = function()
 							component_name_arrays.push(component_i_group_j.dataSourceName);
 							component_desc_arrays.push(component_i_group_j.dataSourceDescription);
 							var component_param_i = {};
-							component_param_i.img_url = (component_i_group_j.img_name + component_i_group_j.img_type);
-							component_param_i.nodeType = 'DataSource';
+							// component_param_i.img_url = (component_i_group_j.img_name + component_i_group_j.img_type);
+							component_param_i.img_url = component_i_group_j.imageUrl;
+							component_param_i.nodeType = Sidebar.prototype.component_DataSource_data[i].component_type;
+							component_param_i.dataParam = ('nodeType=' + component_param_i.nodeType + '&dataCenterId=' + component_i_group_j.dataCenterId + '&dataCenterName=' + component_i_group_j.dataCenterName+ '&id=' + component_i_group_j.ID + ';');
 							component_param_arrays.push(component_param_i);
 						}
 					}
@@ -202,9 +204,11 @@ Sidebar.prototype.init = function()
 									component_name_arrays.push(component_i_group_j.name);
 									component_desc_arrays.push(component_i_group_j.description);
 									var component_param_i = {};
-									component_param_i.img_url = (component_i_group_j.img_name + component_i_group_j.img_type);
+									// component_param_i.img_url = (component_i_group_j.img_name + component_i_group_j.img_type);
+									component_param_i.img_url = component_i_group_j.imageUrl;
 									component_param_i.bundel = component_i_group_j.bundel;
-									component_param_i.nodeType = 'Stop';
+									component_param_i.nodeType = Sidebar.prototype.component_Stop_data[i].component_type;
+									component_param_i.dataParam = ('nodeType=' + component_param_i.nodeType);
 									component_param_arrays.push(component_param_i);
 								}
 							}
@@ -242,9 +246,16 @@ Sidebar.prototype.init = function()
 							component_name_arrays.push(component_i_group_j.name);
 							component_desc_arrays.push(component_i_group_j.description);
 							var component_param_i = {};
-							component_param_i.img_url = (component_i_group_j.img_name + component_i_group_j.img_type);
+							// component_param_i.img_url = (component_i_group_j.img_name + component_i_group_j.img_type);
+							component_param_i.img_url = component_i_group_j.imageUrl;
 							component_param_i.bundel = component_i_group_j.bundel;
-							component_param_i.nodeType = 'Stop';
+							if ('Group' === Sidebar.prototype.component_data.component_type) {
+								component_param_i.nodeType = component_i.component_type;
+								component_param_i.dataParam = ('nodeType=' + component_param_i.nodeType);
+							} else {
+								component_param_i.nodeType = Sidebar.prototype.component_Stop_data.component_type;
+								component_param_i.dataParam = ('nodeType=' + component_param_i.nodeType + '&bundle=' + component_param_i.bundel);
+							}
 							component_param_arrays.push(component_param_i);
 						}
 					}
@@ -3844,9 +3855,15 @@ Sidebar.prototype.addImagePalette = function (id, title, prefix, paramArrays, it
                         70, 30, 'Label', 'Text', null, null, 'text textbox textarea label'));
                 }
             } else {
-				var paramData = ('data=nodeType=' + paramArrays[i].nodeType + '&bundle=' + paramArrays[i].bundel + ';');
-                fns.push(this.createVertexTemplateEntry('image;html=1;labelBackgroundColor=#ffffff00;image=' + prefix + paramArrays[i].img_url + ';' + paramData,
-                    this.defaultImageWidth, this.defaultImageHeight, value, title, title != null, null, this.filterTags(tmpTags)));
+                if (paramArrays[i].nodeType === 'DataSource'){
+                    var paramData = ('data=' + paramArrays[i].dataParam + ';');
+                    fns.push(this.createVertexTemplateEntry('image;html=1;labelBackgroundColor=#ffffff00;image=' + paramArrays[i].img_url + ';' + paramData,
+                        this.defaultImageWidth, this.defaultImageHeight, value, title, title != null, null, this.filterTags(tmpTags)));
+                }else {
+                    var paramData = ('data=' + paramArrays[i].dataParam + ';');
+                    fns.push(this.createVertexTemplateEntry('image;html=1;labelBackgroundColor=#ffffff00;image=' + paramArrays[i].img_url + ';' + paramData,
+                        this.defaultImageWidth, this.defaultImageHeight, value, title, title != null, null, this.filterTags(tmpTags)));
+                }
             }
 
 

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 import cn.cnic.base.utils.HttpUtils;
 import cn.cnic.base.utils.LoggerUtil;
-import cn.cnic.common.constant.SysParamsCache;
+import cn.cnic.common.constant.ApiConfig;
 import cn.cnic.third.service.ISparkJar;
 import cn.cnic.third.vo.sparkJar.SparkJarVo;
 import net.sf.json.JSONObject;
@@ -28,7 +28,7 @@ public class SparkJarImpl implements ISparkJar {
 
         Map<String, String> map = new HashMap<>();
         //map.put("bundle", bundleStr);
-        String sendGetData = HttpUtils.doGet(SysParamsCache.getSparkJarPathUrl(), map, 30 * 1000);
+        String sendGetData = HttpUtils.doGet(ApiConfig.getSparkJarPathUrl(), map, 30 * 1000);
         logger.info("return msg：" + sendGetData);
         if (StringUtils.isBlank(sendGetData)) {
             logger.warn("Interface return value is null");
@@ -50,7 +50,7 @@ public class SparkJarImpl implements ISparkJar {
         Map<String, String> map = new HashMap<>();
         map.put("sparkJar", sparkjarName);
         String json = JSONObject.fromObject(map).toString();
-        String doPost = HttpUtils.doPost(SysParamsCache.getSparkJarMountUrl(), json, 5 * 1000);
+        String doPost = HttpUtils.doPost(ApiConfig.getSparkJarMountUrl(), json, 5 * 1000);
         if (StringUtils.isBlank(doPost)) {
             logger.warn("Interface return values is null");
             return null;
@@ -71,7 +71,7 @@ public class SparkJarImpl implements ISparkJar {
         Map<String, String> map = new HashMap<>();
         map.put("sparkJarId", sparkJarMountId);
         String json = JSONObject.fromObject(map).toString();
-        String doPost = HttpUtils.doPost(SysParamsCache.getSparkJarUNMountUrl(), json, 5 * 1000);
+        String doPost = HttpUtils.doPost(ApiConfig.getSparkJarUNMountUrl(), json, 5 * 1000);
         if (StringUtils.isBlank(doPost)) {
             logger.warn("Interface return values is null");
             return null;

@@ -66,6 +66,7 @@ function initFlowDrawingBoardData(loadId, parentAccessPath) {
                             if (groupsVoList_i && '' !== groupsVoList_i) {
                                 Sidebar.prototype.component_Stop_data.push({
                                     component_name: groupsVoList_i.groupName,
+                                    component_type: 'Stop',
                                     component_group: groupsVoList_i.stopsTemplateVoList,
                                     component_prefix: (web_header_prefix + "/images/"),
                                     addImagePaletteId: 'clipart'
@@ -78,6 +79,7 @@ function initFlowDrawingBoardData(loadId, parentAccessPath) {
                     if (dataMap.dataSourceVoList && dataMap.dataSourceVoList.length > 0) {
                         Sidebar.prototype.component_DataSource_data.push({
                             component_name: 'DataSource',
+                            component_type: 'DataSource',
                             component_group: dataMap.dataSourceVoList,
                             component_prefix: (web_header_prefix + "/images/"),
                             addImagePaletteId: 'clipart'

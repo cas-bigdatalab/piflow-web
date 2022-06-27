@@ -14,7 +14,7 @@ import cn.cnic.base.utils.HttpUtils;
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.common.Eunm.RunModeType;
-import cn.cnic.common.constant.SysParamsCache;
+import cn.cnic.common.constant.ApiConfig;
 import cn.cnic.component.process.domain.ProcessGroupDomain;
 import cn.cnic.component.process.entity.ProcessGroup;
 import cn.cnic.component.process.utils.ProcessUtils;
@@ -52,11 +52,11 @@ public class GroupImpl implements IGroup {
         String formatJson = ProcessUtils.processGroupToJson(processGroup, runModeType);
         logger.info("\n" + formatJson);
         //===============================临时===============================
-        //String path = FileUtils.createJsonFile(formatJson, processGroup.getName(), SysParamsCache.VIDEOS_PATH);
+        //String path = FileUtils.createJsonFile(formatJson, processGroup.getName(), ApiConfig.VIDEOS_PATH);
         //logger.info(path);
-        //String doPost = HttpUtils.doPost(SysParamsCache.getFlowGroupStartUrl(), path, null);
+        //String doPost = HttpUtils.doPost(ApiConfig.getFlowGroupStartUrl(), path, null);
         //===============================临时===============================
-        String doPost = HttpUtils.doPost(SysParamsCache.getFlowGroupStartUrl(), formatJson, null);
+        String doPost = HttpUtils.doPost(ApiConfig.getFlowGroupStartUrl(), formatJson, null);
         logger.info("Return information：" + doPost);
         if (StringUtils.isBlank(doPost)) {
             return ReturnMapUtils.setFailedMsg(MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG());
@@ -84,7 +84,7 @@ public class GroupImpl implements IGroup {
         Map<String, String> map = new HashMap<>();
         map.put("groupId", processGroupId);
         String json = JSONObject.fromObject(map).toString();
-        String doPost = HttpUtils.doPost(SysParamsCache.getFlowGroupStopUrl(), json, 5 * 1000);
+        String doPost = HttpUtils.doPost(ApiConfig.getFlowGroupStopUrl(), json, 5 * 1000);
         if (StringUtils.isBlank(doPost) || doPost.contains(HttpUtils.INTERFACE_CALL_ERROR) || doPost.contains("Exception")) {
             logger.warn("Interface return exception");
         } else {
@@ -100,7 +100,7 @@ public class GroupImpl implements IGroup {
         }
         Map<String, String> map = new HashMap<>();
         map.put("groupId", groupId);
-        String doGet = HttpUtils.doGet(SysParamsCache.getFlowGroupInfoUrl(), map, 5 * 1000);
+        String doGet = HttpUtils.doGet(ApiConfig.getFlowGroupInfoUrl(), map, 5 * 1000);
         return doGet;
     }
 
@@ -164,7 +164,7 @@ public class GroupImpl implements IGroup {
         }
         Map<String, String> param = new HashMap<>();
         param.put("groupId", groupId);
-        String doGet = HttpUtils.doGet(SysParamsCache.getFlowGroupProgressUrl(), param, 5 * 1000);
+        String doGet = HttpUtils.doGet(ApiConfig.getFlowGroupProgressUrl(), param, 5 * 1000);
         if (StringUtils.isBlank(doGet)) {
             logger.warn("The interface return value is empty.");
             return null;

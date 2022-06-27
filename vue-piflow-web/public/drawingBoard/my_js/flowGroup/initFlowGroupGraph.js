@@ -56,8 +56,17 @@ function initFlowGroupDrawingBoardData(loadId, parentAccessPath, backFunc) {
                             component_prefix = component_prefix.replace('/piflow-web', web_header_prefix)
                         }
                         mxGraphComponentList[index].component_prefix = component_prefix
+                        var component_name = mxGraphComponentList[index].component_name;
+                        if ('Group' === component_name) {
+                            mxGraphComponentList[index].component_type = 'Flow';
+                            mxGraphComponentList[index].component_group[0].imageUrl = '/piflow-web/img/group.png';
+                        } else if ('Task' === component_name) {
+                            mxGraphComponentList[index].component_type = 'Group';
+                            mxGraphComponentList[index].component_group[0].imageUrl = '/piflow-web/img/flow.png';
+                        }
                     }
-                    Sidebar.prototype.component_data = mxGraphComponentList
+                    Sidebar.prototype.component_data = mxGraphComponentList;
+                    Sidebar.prototype.component_data.component_type = 'Group';
                 }
             } else {
                 window_location_href("/page/error/errorPage.html");

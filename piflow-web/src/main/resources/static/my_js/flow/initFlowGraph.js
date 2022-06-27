@@ -33,6 +33,7 @@ function initFlowDrawingBoardData(loadId, parentAccessPath) {
                             if (groupsVoList_i && '' !== groupsVoList_i) {
                                 Sidebar.prototype.component_data.push({
                                     component_name: groupsVoList_i.groupName,
+                                    component_type: 'Stop',
                                     component_group: groupsVoList_i.stopsTemplateVoList,
                                     component_prefix: (sever_base_origin + "/images/"),
                                     addImagePaletteId: 'clipart'

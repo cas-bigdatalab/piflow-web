@@ -280,7 +280,7 @@ public class MxCellUtils {
                 continue;
             }
             String[] paramArray = str.split("=");
-            if (paramDataArray.length <= 1) {
+            if (paramArray.length <= 1) {
                 continue;
             }
             paramData.put(paramArray[0], paramArray[1]);

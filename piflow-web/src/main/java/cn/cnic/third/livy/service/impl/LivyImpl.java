@@ -3,8 +3,8 @@ package cn.cnic.third.livy.service.impl;
 import cn.cnic.base.utils.HttpUtils;
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.ReturnMapUtils;
+import cn.cnic.common.constant.ApiConfig;
 import cn.cnic.common.constant.MessageConfig;
-import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.third.livy.service.ILivy;
 import net.sf.json.JSONObject;
 
@@ -26,14 +26,14 @@ public class LivyImpl implements ILivy {
 
     @Override
     public Map<String, Object> getAllSessions() {
-        String doGet = HttpUtils.doGet(SysParamsCache.getLivySessionsUrl(), null, null);
+        String doGet = HttpUtils.doGet(ApiConfig.getLivySessionsUrl(), null, null);
         logger.info("return msg: " + doGet);
         return ReturnMapUtils.setSucceededCustomParam("data", doGet);
     }
 
     @Override
     public Map<String, Object> startSessions() {
-        String doPost = HttpUtils.doPost(SysParamsCache.getLivySessionsUrl(), "{\"kind\":\"spark\"}", null);
+        String doPost = HttpUtils.doPost(ApiConfig.getLivySessionsUrl(), "{\"kind\":\"spark\"}", null);
         logger.info("return msg: " + doPost);
         if(StringUtils.isBlank(doPost)) {
         	return ReturnMapUtils.setFailedMsg("Error : " + MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG());
@@ -56,7 +56,7 @@ public class LivyImpl implements ILivy {
 
     @Override
     public Map<String, Object> stopSessions(String sessionsId) {
-        String url = SysParamsCache.getLivySessionsUrl() + "/" + sessionsId;
+        String url = ApiConfig.getLivySessionsUrl() + "/" + sessionsId;
         String doDelete = HttpUtils.doDelete(url, null);
         logger.info("return msg: " + doDelete);
         if(StringUtils.isBlank(doDelete)) {
@@ -70,7 +70,7 @@ public class LivyImpl implements ILivy {
 
     @Override
     public Map<String, Object> getSessionsState(String sessionsId) {
-        String url = SysParamsCache.getLivySessionsUrl() + "/" + sessionsId + "/state";
+        String url = ApiConfig.getLivySessionsUrl() + "/" + sessionsId + "/state";
         String doGet = HttpUtils.doGet(url, null, null);
         logger.info("return msg: " + doGet);
         if(StringUtils.isBlank(doGet)) {
@@ -88,7 +88,7 @@ public class LivyImpl implements ILivy {
     	jsonMap.put("kind", "spark");
     	jsonMap.put("code", code);
     	String json = ReturnMapUtils.mapToJson(jsonMap);
-        String url = SysParamsCache.getLivySessionsUrl() + "/" + sessionsId + "/statements";
+        String url = ApiConfig.getLivySessionsUrl() + "/" + sessionsId + "/statements";
         String doPost = HttpUtils.doPost(url, json, null);
         logger.info("return msg: " + doPost);
         if(StringUtils.isBlank(doPost)) {
@@ -112,7 +112,7 @@ public class LivyImpl implements ILivy {
 
     @Override
     public Map<String, Object> getStatementsResult(String sessionsId, String statementsId) {
-        String url = SysParamsCache.getLivySessionsUrl() + "/" + sessionsId + "/statements/" + statementsId;
+        String url = ApiConfig.getLivySessionsUrl() + "/" + sessionsId + "/statements/" + statementsId;
         String doGet = HttpUtils.doGet(url, null, null);
         logger.info("return msg: " + doGet);
         if(StringUtils.isBlank(doGet)) {

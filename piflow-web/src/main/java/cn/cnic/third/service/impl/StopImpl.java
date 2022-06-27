@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 import cn.cnic.base.utils.HttpUtils;
 import cn.cnic.base.utils.LoggerUtil;
-import cn.cnic.common.constant.SysParamsCache;
+import cn.cnic.common.constant.ApiConfig;
 import cn.cnic.third.service.IStop;
 import cn.cnic.third.vo.stop.StopsHubVo;
 import cn.cnic.third.vo.stop.ThirdStopsComponentVo;
@@ -30,7 +30,7 @@ public class StopImpl implements IStop {
 
     @Override
     public String[] getAllGroup() {
-        String sendGetData = HttpUtils.doGet(SysParamsCache.getStopsGroupsUrl(), null, 30 * 1000);
+        String sendGetData = HttpUtils.doGet(ApiConfig.getStopsGroupsUrl(), null, 30 * 1000);
         logger.debug("Interface return value：" + sendGetData);
         if (ThirdInterfaceReturnMsgUtils.THIRD_INTERFACE_IS_ERROR(sendGetData).equals(ThirdInterfaceReturnMsgUtils.ERROR)) {
             return null;
@@ -46,7 +46,7 @@ public class StopImpl implements IStop {
     @Override
     public String[] getAllStops() {
         String[] stop = null;
-        String sendGetData = HttpUtils.doGet(SysParamsCache.getStopsListUrl(), null, 30 * 1000);
+        String sendGetData = HttpUtils.doGet(ApiConfig.getStopsListUrl(), null, 30 * 1000);
         logger.debug("Interface return value：" + sendGetData);
         if (ThirdInterfaceReturnMsgUtils.THIRD_INTERFACE_IS_ERROR(sendGetData).equals(ThirdInterfaceReturnMsgUtils.ERROR)) {
             return null;
@@ -62,7 +62,7 @@ public class StopImpl implements IStop {
 
     @Override
     public Map<String, List<String>> getStopsListWithGroup() {
-        String sendGetData = HttpUtils.doGet(SysParamsCache.getStopsListWithGroupUrl(), null, 30 * 1000);
+        String sendGetData = HttpUtils.doGet(ApiConfig.getStopsListWithGroupUrl(), null, 30 * 1000);
         logger.debug("Interface return value：" + sendGetData);
         if (ThirdInterfaceReturnMsgUtils.THIRD_INTERFACE_IS_ERROR(sendGetData).equals(ThirdInterfaceReturnMsgUtils.ERROR)) {
             return null;
@@ -95,7 +95,7 @@ public class StopImpl implements IStop {
         }
         Map<String, String> map = new HashMap<>();
         map.put("bundle", bundleStr);
-        String sendGetData = HttpUtils.doGet(SysParamsCache.getStopsInfoUrl(), map, 30 * 1000);
+        String sendGetData = HttpUtils.doGet(ApiConfig.getStopsInfoUrl(), map, 30 * 1000);
         logger.info("Interface return value：" + sendGetData);
         if (ThirdInterfaceReturnMsgUtils.THIRD_INTERFACE_IS_ERROR(sendGetData).equals(ThirdInterfaceReturnMsgUtils.ERROR)) {
             return null;
@@ -114,7 +114,7 @@ public class StopImpl implements IStop {
 
         Map<String, String> map = new HashMap<>();
         //map.put("bundle", bundleStr);
-        String sendGetData = HttpUtils.doGet(SysParamsCache.getStopsHubPathUrl(), map, 30 * 1000);
+        String sendGetData = HttpUtils.doGet(ApiConfig.getStopsHubPathUrl(), map, 30 * 1000);
         logger.debug("Interface return value：" + sendGetData);
         if (ThirdInterfaceReturnMsgUtils.THIRD_INTERFACE_IS_ERROR(sendGetData).equals(ThirdInterfaceReturnMsgUtils.ERROR)) {
             return null;
@@ -129,7 +129,7 @@ public class StopImpl implements IStop {
         Map<String, String> map = new HashMap<>();
         map.put("plugin", stopsHubName);
         String json = JSONObject.fromObject(map).toString();
-        String doPost = HttpUtils.doPost(SysParamsCache.getStopsHubMountUrl(), json, 5 * 1000);
+        String doPost = HttpUtils.doPost(ApiConfig.getStopsHubMountUrl(), json, 5 * 1000);
         logger.debug("Interface return value: " + doPost);
         if (ThirdInterfaceReturnMsgUtils.THIRD_INTERFACE_IS_ERROR(doPost).equals(ThirdInterfaceReturnMsgUtils.ERROR)) {
             return null;
@@ -146,7 +146,7 @@ public class StopImpl implements IStop {
         Map<String, String> map = new HashMap<>();
         map.put("pluginId", stopsHubMountId);
         String json = JSONObject.fromObject(map).toString();
-        String doPost = HttpUtils.doPost(SysParamsCache.getStopsHubUNMountUrl(), json, 5 * 1000);
+        String doPost = HttpUtils.doPost(ApiConfig.getStopsHubUNMountUrl(), json, 5 * 1000);
         logger.info("Interface return value: " + doPost);
         if (ThirdInterfaceReturnMsgUtils.THIRD_INTERFACE_IS_ERROR(doPost).equals(ThirdInterfaceReturnMsgUtils.ERROR)) {
             return null;

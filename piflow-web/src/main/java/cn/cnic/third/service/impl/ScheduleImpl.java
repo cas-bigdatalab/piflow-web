@@ -3,6 +3,7 @@ package cn.cnic.third.service.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import cn.cnic.common.constant.ApiConfig;
 import cn.cnic.common.constant.MessageConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -13,7 +14,6 @@ import cn.cnic.base.utils.HttpUtils;
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.common.Eunm.RunModeType;
-import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.component.process.entity.Process;
 import cn.cnic.component.process.entity.ProcessGroup;
 import cn.cnic.component.process.utils.ProcessUtils;
@@ -51,13 +51,13 @@ public class ScheduleImpl implements ISchedule {
         requestParamMap.put("startDate", DateUtils.dateTimeToStr(schedule.getPlanStartTime()));
         requestParamMap.put("endDate", DateUtils.dateTimeToStr(schedule.getPlanEndTime()));
         requestParamMap.put("schedule", scheduleContentMap);
-        String sendPostData = HttpUtils.doPostParmaMap(SysParamsCache.getScheduleStartUrl(), requestParamMap, null);
+        String sendPostData = HttpUtils.doPostParmaMap(ApiConfig.getScheduleStartUrl(), requestParamMap, null);
 
         //===============================临时===============================
         //String formatJson = JsonUtils.toFormatJsonNoException(requestParamMap);
-        //String path = FileUtils.createJsonFile(formatJson, processGroup.getName(), SysParamsCache.VIDEOS_PATH);
+        //String path = FileUtils.createJsonFile(formatJson, processGroup.getName(), ApiConfig.VIDEOS_PATH);
         //logger.info(path);
-        //String sendPostData = HttpUtils.doPost(SysParamsCache.getScheduleStartUrl(), path, null);
+        //String sendPostData = HttpUtils.doPost(ApiConfig.getScheduleStartUrl(), path, null);
         //===============================临时===============================
 
         if (StringUtils.isBlank(sendPostData)) {
@@ -73,7 +73,7 @@ public class ScheduleImpl implements ISchedule {
     public String scheduleStop(String scheduleId) {
         Map<String, String> map = new HashMap<>();
         map.put("scheduleId", scheduleId);
-        String sendPostData = HttpUtils.doPostParmaMap(SysParamsCache.getScheduleStopUrl(), map, null);
+        String sendPostData = HttpUtils.doPostParmaMap(ApiConfig.getScheduleStopUrl(), map, null);
         return sendPostData;
     }
 
@@ -81,7 +81,7 @@ public class ScheduleImpl implements ISchedule {
     public ThirdScheduleVo scheduleInfo(String scheduleId) {
         Map<String, String> map = new HashMap<>();
         map.put("scheduleId", scheduleId);
-        String sendGetData = HttpUtils.doGet(SysParamsCache.getScheduleInfoUrl(), map, null);
+        String sendGetData = HttpUtils.doGet(ApiConfig.getScheduleInfoUrl(), map, null);
         if (StringUtils.isBlank(sendGetData)) {
             logger.warn("Error : Interface call failed. return values is null");
             return null;

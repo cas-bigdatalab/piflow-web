@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.cnic.common.constant.ApiConfig;
 import cn.cnic.common.constant.MessageConfig;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -15,7 +16,6 @@ import cn.cnic.base.utils.HttpUtils;
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.common.Eunm.RunModeType;
-import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.component.process.domain.ProcessDomain;
 import cn.cnic.component.process.entity.Process;
 import cn.cnic.component.process.utils.ProcessUtils;
@@ -57,7 +57,7 @@ public class FlowImpl implements IFlow {
         //String formatJson = JsonFormatTool.formatJson(json);
         String formatJson = ProcessUtils.processToJson(process, checkpoint, runModeType, process.getFlowGlobalParamsList());
         logger.info("\n" + formatJson);
-        String doPost = HttpUtils.doPost(SysParamsCache.getFlowStartUrl(), formatJson, null);
+        String doPost = HttpUtils.doPost(ApiConfig.getFlowStartUrl(), formatJson, null);
         logger.info("Return information：" + doPost);
         if (StringUtils.isBlank(doPost)) {
             return ReturnMapUtils.setFailedMsg("Error : " + MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG());
@@ -84,7 +84,7 @@ public class FlowImpl implements IFlow {
         Map<String, String> map = new HashMap<>();
         map.put("appID", appId);
         String json = JSONObject.fromObject(map).toString();
-        String doPost = HttpUtils.doPost(SysParamsCache.getFlowStopUrl(), json, 5 * 1000);
+        String doPost = HttpUtils.doPost(ApiConfig.getFlowStopUrl(), json, 5 * 1000);
         if (StringUtils.isBlank(doPost) || doPost.contains(HttpUtils.INTERFACE_CALL_ERROR) || doPost.contains("Exception")) {
             logger.warn("Interface return exception : " + doPost);
         } else {
@@ -100,7 +100,7 @@ public class FlowImpl implements IFlow {
     public ThirdProgressVo getFlowProgress(String appId) {
         Map<String, String> map = new HashMap<>();
         map.put("appID", appId);
-        String doGet = HttpUtils.doGet(SysParamsCache.getFlowProgressUrl(), map, 10 * 1000);
+        String doGet = HttpUtils.doGet(ApiConfig.getFlowProgressUrl(), map, 10 * 1000);
         if (StringUtils.isBlank(doGet) || doGet.contains(HttpUtils.INTERFACE_CALL_ERROR) || doGet.contains("Exception")) {
             logger.warn(HttpUtils.INTERFACE_CALL_ERROR + ": " + doGet);
             return null;
@@ -137,7 +137,7 @@ public class FlowImpl implements IFlow {
         // ThirdFlowLog thirdFlowLog = null;
         Map<String, String> map = new HashMap<String, String>();
         map.put("appID", appId);
-        String doGet = HttpUtils.doGet(SysParamsCache.getFlowLogUrl(), map, 5 * 1000);
+        String doGet = HttpUtils.doGet(ApiConfig.getFlowLogUrl(), map, 5 * 1000);
         if (StringUtils.isBlank(doGet)) {
             logger.info("call failed, return is null ");
             return "";
@@ -174,7 +174,7 @@ public class FlowImpl implements IFlow {
     public String getCheckpoints(String appID) {
         Map<String, String> map = new HashMap<String, String>();
         map.put("appID", appID);
-        String doGet = HttpUtils.doGet(SysParamsCache.getFlowCheckpointsUrl(), map, 5 * 1000);
+        String doGet = HttpUtils.doGet(ApiConfig.getFlowCheckpointsUrl(), map, 5 * 1000);
         if (StringUtils.isBlank(doGet)) {
             logger.warn(HttpUtils.INTERFACE_CALL_ERROR + " return is null ");
             return null;
@@ -202,7 +202,7 @@ public class FlowImpl implements IFlow {
         map.put("appID", appID);
         map.put("stopName", stopName);
         map.put("port", portName);
-        String doGet = HttpUtils.doGet(SysParamsCache.getFlowDebugDataUrl(), map, 5 * 1000);
+        String doGet = HttpUtils.doGet(ApiConfig.getFlowDebugDataUrl(), map, 5 * 1000);
         logger.info("call succeeded : " + doGet);
         if (StringUtils.isBlank(doGet)) {
             return HttpUtils.INTERFACE_CALL_ERROR + " return is null ";
@@ -226,7 +226,7 @@ public class FlowImpl implements IFlow {
         map.put("appID", appID);
         map.put("stopName", stopName);
         map.put("visualizationType", visualizationType);
-        String doGet = HttpUtils.doGet(SysParamsCache.getFlowVisualizationDataUrl(), map, 5 * 1000);
+        String doGet = HttpUtils.doGet(ApiConfig.getFlowVisualizationDataUrl(), map, 5 * 1000);
         logger.info("call succeeded : " + doGet);
         if (StringUtils.isBlank(doGet)) {
             logger.warn(HttpUtils.INTERFACE_CALL_ERROR + " return is null ");
@@ -248,7 +248,7 @@ public class FlowImpl implements IFlow {
         ThirdFlowInfoVo jb = null;
         Map<String, String> map = new HashMap<>();
         map.put("appID", appId);
-        String doGet = HttpUtils.doGet(SysParamsCache.getFlowInfoUrl(), map, 30 * 1000);
+        String doGet = HttpUtils.doGet(ApiConfig.getFlowInfoUrl(), map, 30 * 1000);
         if (StringUtils.isBlank(doGet)) {
             logger.warn(HttpUtils.INTERFACE_CALL_ERROR + " return is null ");
             return null;
@@ -326,7 +326,7 @@ public class FlowImpl implements IFlow {
 
     @Override
     public String getTestDataPathUrl() {
-        return HttpUtils.doGet(SysParamsCache.getTestDataPathUrl(), null, null);
+        return HttpUtils.doGet(ApiConfig.getTestDataPathUrl(), null, null);
     }
 
 }

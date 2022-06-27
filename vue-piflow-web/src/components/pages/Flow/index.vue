@@ -338,7 +338,7 @@ export default {
               this.getTableData();
             } else {
               this.$Message.error({
-                content: `${this.name} ` + this.$t("tip.add_fail_content"),
+                content: res.data.errorMsg,
                 duration: 3
               });
             }
