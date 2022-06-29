@@ -774,8 +774,12 @@ function queryStopsProperty(stopPageId, loadId) {
                         }
                         $("#div_customized_html").show();
                     }
-                    // datasource
-                    getDatasourceList(stopsVoData.id, stopsVoData.pageId, stopsVoData.dataSourceVo);
+                    $("#div_datasource_html").hide();
+                    if (stopsVoData.isDataSource) {
+                        $("#div_datasource_html").show();
+                        // datasource
+                        getDatasourceList(stopsVoData.id, stopsVoData.pageId, stopsVoData.dataSourceVo);
+                    }
 
                     var oldPropertiesVo = stopsVoData.oldPropertiesVo;
                     if (oldPropertiesVo && oldPropertiesVo.length > 0) {

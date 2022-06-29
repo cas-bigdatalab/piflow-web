@@ -144,7 +144,7 @@ Sidebar.prototype.init = function()
 							// component_param_i.img_url = (component_i_group_j.img_name + component_i_group_j.img_type);
 							component_param_i.img_url = component_i_group_j.imageUrl;
 							component_param_i.nodeType = Sidebar.prototype.component_DataSource_data[i].component_type;
-							component_param_i.dataParam = ('nodeType=' + component_param_i.nodeType + '&dataCenterId=' + component_i_group_j.dataCenterId + '&dataCenterName=' + component_i_group_j.dataCenterName+ '&id=' + component_i_group_j.ID + ';');
+							component_param_i.dataParam = ('nodeType=' + component_param_i.nodeType + '&id=' + component_i_group_j.id + ';');
 							component_param_arrays.push(component_param_i);
 						}
 					}
@@ -206,9 +206,8 @@ Sidebar.prototype.init = function()
 									var component_param_i = {};
 									// component_param_i.img_url = (component_i_group_j.img_name + component_i_group_j.img_type);
 									component_param_i.img_url = component_i_group_j.imageUrl;
-									component_param_i.bundel = component_i_group_j.bundel;
 									component_param_i.nodeType = Sidebar.prototype.component_Stop_data[i].component_type;
-									component_param_i.dataParam = ('nodeType=' + component_param_i.nodeType);
+									component_param_i.dataParam = ('nodeType=' + component_param_i.nodeType + '&bundle=' + component_i_group_j.bundel);
 									component_param_arrays.push(component_param_i);
 								}
 							}
