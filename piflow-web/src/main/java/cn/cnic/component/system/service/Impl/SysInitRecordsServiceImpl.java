@@ -63,6 +63,7 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
     }
 
 
+    @Override
     public boolean isInBootPage() {
         // Determine if the boot flag is true
         if (SysParamsCache.IS_BOOT_COMPLETE) {
@@ -282,11 +283,12 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
                 property.setId(UUIDUtils.getUUID32());
                 property.setStops(stops);
                 property.setCustomValue(stopsComponentProperty.getDefaultValue());
+                String allowableValues = stopsComponentProperty.getAllowableValues();
                 //Indicates "select"
-                if (stopsComponentProperty.getAllowableValues().contains(",") && stopsComponentProperty.getAllowableValues().length() > 4) {
+                if (allowableValues.contains(",") && allowableValues.length() > 4) {
                     property.setIsSelect(true);
                     //Determine if there is a default value in "select"
-                    if (!stopsComponentProperty.getAllowableValues().contains(stopsComponentProperty.getDefaultValue())) {
+                    if (!allowableValues.contains(stopsComponentProperty.getDefaultValue())) {
                         //Default value if not present
                         property.setCustomValue("");
                     }

@@ -21,7 +21,7 @@ public interface StopsComponentManageMapper {
     /**
      * update StopsComponentManage.
      *
-     * @param stopsComponent
+     * @param stopsComponentManage
      * @return
      */
     @InsertProvider(type = StopsComponentManageMapperProvider.class, method = "updateStopsComponentManage")
@@ -30,8 +30,9 @@ public interface StopsComponentManageMapper {
     /**
      * Query StopsComponentManage by bundle and stopsGroups
      *
-     * @param id
-     * @return
+     * @param bundle
+     * @param stopsGroups
+     * @return StopsComponentManage
      */
     @SelectProvider(type = StopsComponentManageMapperProvider.class, method = "getStopsComponentManageByBundleAndGroup")
     public StopsComponentManage getStopsComponentManageByBundleAndGroup(String bundle, String stopsGroups);

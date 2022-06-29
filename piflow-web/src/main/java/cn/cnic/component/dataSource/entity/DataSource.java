@@ -23,5 +23,7 @@ public class DataSource extends BaseHibernateModelUUIDNoCorpAgentId {
     private List<DataSourceProperty> dataSourcePropertyList = new ArrayList<>();
     private String stopsTemplateBundle;
     private StopsComponent stopsComponent;
+    private Boolean isAvailable = true;
+    private String imageUrl;
 
 }

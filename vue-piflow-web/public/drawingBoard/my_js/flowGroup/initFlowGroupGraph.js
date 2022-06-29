@@ -58,10 +58,10 @@ function initFlowGroupDrawingBoardData(loadId, parentAccessPath, backFunc) {
                         mxGraphComponentList[index].component_prefix = component_prefix
                         var component_name = mxGraphComponentList[index].component_name;
                         if ('Group' === component_name) {
-                            mxGraphComponentList[index].component_type = 'Flow';
+                            mxGraphComponentList[index].component_type = 'Group';
                             mxGraphComponentList[index].component_group[0].imageUrl = '/piflow-web/img/group.png';
                         } else if ('Task' === component_name) {
-                            mxGraphComponentList[index].component_type = 'Group';
+                            mxGraphComponentList[index].component_type = 'Flow';
                             mxGraphComponentList[index].component_group[0].imageUrl = '/piflow-web/img/flow.png';
                         }
                     }

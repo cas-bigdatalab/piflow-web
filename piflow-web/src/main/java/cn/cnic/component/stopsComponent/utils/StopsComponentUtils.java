@@ -98,6 +98,8 @@ public class StopsComponentUtils {
         stopsComponent.setIsDataSource(thirdStopsComponentVo.isDataSource());
         stopsComponent.setStopGroupList(stopGroupByName);
         stopsComponent.setVisualizationType(thirdStopsComponentVo.getVisualizationType());
+        String imageUrl =  SysParamsCache.SYS_CONTEXT_PATH + "/images/" + thirdStopsComponentVo.getName() + "_128x128.png";
+        stopsComponent.setImageUrl(imageUrl);
         List<StopsComponentProperty> listStopsComponentProperty = StopsComponentPropertyUtils.thirdStopsComponentPropertyVoListToStopsComponentProperty(username, thirdStopsComponentVo.getProperties(), stopsComponent);
         stopsComponent.setProperties(listStopsComponentProperty);
         return stopsComponent;

@@ -1,16 +1,13 @@
 package cn.cnic.component.dataSource.domain;
 
-import cn.cnic.base.utils.ImageUtils;
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.UUIDUtils;
-import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.component.dataSource.entity.DataSource;
 import cn.cnic.component.dataSource.entity.DataSourceProperty;
 import cn.cnic.component.dataSource.mapper.DataSourceMapper;
 import cn.cnic.component.dataSource.mapper.DataSourcePropertyMapper;
 import cn.cnic.component.dataSource.vo.DataSourceVo;
-import cn.cnic.third.service.IStop;
-import cn.cnic.third.vo.stop.ThirdStopsComponentVo;
+import cn.cnic.component.stopsComponent.mapper.StopsComponentMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,15 +27,15 @@ public class DataSourceDomain {
 
     private final DataSourceMapper dataSourceMapper;
     private final DataSourcePropertyMapper dataSourcePropertyMapper;
-    private final IStop stopImpl;
+    private StopsComponentMapper stopsComponentMapper;
 
     @Autowired
     public DataSourceDomain(DataSourceMapper dataSourceMapper,
                             DataSourcePropertyMapper dataSourcePropertyMapper,
-                            IStop stopImpl) {
+                            StopsComponentMapper stopsComponentMapper) {
         this.dataSourceMapper = dataSourceMapper;
         this.dataSourcePropertyMapper = dataSourcePropertyMapper;
-        this.stopImpl = stopImpl;
+        this.stopsComponentMapper = stopsComponentMapper;
     }
 
     /**
@@ -50,7 +47,7 @@ public class DataSourceDomain {
      */
     public DataSource saveOrUpdate(DataSource dataSource) throws Exception {
         if (null == dataSource) {
-            return null;
+            throw new Exception("dataSource is null");
         }
         if (StringUtils.isBlank(dataSource.getId())) {
             return insertDataSource(dataSource);
@@ -67,7 +64,21 @@ public class DataSourceDomain {
      */
     public DataSource insertDataSource(DataSource dataSource) throws Exception {
         if (null == dataSource) {
-            return null;
+            throw new Exception("dataSource is null");
+        }
+        if (StringUtils.isBlank(dataSource.getId())){
+            dataSource.setId(UUIDUtils.getUUID32());
+        }
+		// Duplicate checking
+        List<String> isExitsName = dataSourceMapper.getDataSourceByDataSourceName(dataSource.getDataSourceName(), dataSource.getId());
+        if (isExitsName != null && isExitsName.size() > 0){
+            throw new Exception("dataSourceName already exists，please change dataSourceName");
+        }
+        //if DataSourceType = 'STOP',insert image,for flowPage use
+        if ("STOP".equals(dataSource.getDataSourceType()) && StringUtils.isNotEmpty(dataSource.getStopsTemplateBundle())){
+            //Get "Stops" component image url by bundle
+            String imgUrl = stopsComponentMapper.getStopsComponentImageUrlByBundle(dataSource.getStopsTemplateBundle());
+            dataSource.setImageUrl(imgUrl);
         }
         int addDataSource = dataSourceMapper.addDataSource(dataSource);
         if (addDataSource <= 0) {
@@ -84,14 +95,6 @@ public class DataSourceDomain {
             dataSourceProperty.setDataSource(dataSource);
         }
         insertDataSourcePropertyList(dataSourcePropertyList);
-        //if DataSourceType = 'STOP',insert image,for flowPage use
-        if ("STOP".equals(dataSource.getDataSourceType()) && StringUtils.isNotEmpty(dataSource.getStopsTemplateBundle())){
-            ThirdStopsComponentVo thirdStopsComponentVo = stopImpl.getStopInfo(dataSource.getStopsTemplateBundle());
-            String icon = thirdStopsComponentVo.getIcon();
-            if (StringUtils.isNotBlank(icon)) {
-                ImageUtils.generateImage(icon, thirdStopsComponentVo.getName() + "_128x128", "png", SysParamsCache.IMAGES_PATH+dataSource.getId()+"_@/");
-            }
-        }
         return dataSource;
     }
 
@@ -138,7 +141,14 @@ public class DataSourceDomain {
      */
     public DataSource updateDataSource(DataSource dataSource) throws Exception {
         if (null == dataSource) {
-            return null;
+            throw new Exception("dataSource is null");
+        }
+        if (StringUtils.isBlank(dataSource.getId())){
+            throw new Exception("dataSource id is null");
+        }
+        List<String> isExitsName = dataSourceMapper.getDataSourceByDataSourceName(dataSource.getDataSourceName(), dataSource.getId());
+        if (isExitsName != null && isExitsName.size() > 0) {
+            throw new Exception("dataSourceName already exists，please change dataSourceName");
         }
         int updateDataSource = dataSourceMapper.updateDataSource(dataSource);
         if (updateDataSource <= 0) {
@@ -152,14 +162,6 @@ public class DataSourceDomain {
                 }
                 dataSourceProperty.setDataSource(dataSource);
                 saveOrUpdateDataSourceProperty(dataSourceProperty);
-            }
-        }
-        //if DataSourceType = 'STOP',insert image,for flowPage use
-        if ("STOP".equals(dataSource.getDataSourceType()) && StringUtils.isNotEmpty(dataSource.getStopsTemplateBundle())){
-            ThirdStopsComponentVo thirdStopsComponentVo = stopImpl.getStopInfo(dataSource.getStopsTemplateBundle());
-            String icon = thirdStopsComponentVo.getIcon();
-            if (StringUtils.isNotBlank(icon)) {
-                ImageUtils.generateImage(icon, thirdStopsComponentVo.getName() + "_128x128", "png", SysParamsCache.IMAGES_PATH+dataSource.getId()+"_@/");
             }
         }
         return dataSource;

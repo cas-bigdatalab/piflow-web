@@ -20,6 +20,8 @@ public class DataSourceMapperProvider {
     private String dataSourceDescription;
     private Integer isTemplate;
     private String stopsTemplateBundle;
+    private int isAvailable;
+    private String imageUrl;
 
     private boolean preventSQLInjectionDataSource(DataSource dataSource) {
         if (null == dataSource || StringUtils.isBlank(dataSource.getLastUpdateUser())) {
@@ -42,6 +44,8 @@ public class DataSourceMapperProvider {
         this.dataSourceDescription = SqlUtils.preventSQLInjection(dataSource.getDataSourceDescription());
         this.isTemplate = (null == dataSource.getIsTemplate() ? 0 : (dataSource.getIsTemplate() ? 1 : 0));
         this.stopsTemplateBundle = SqlUtils.preventSQLInjection(dataSource.getStopsTemplateBundle());
+        this.isAvailable = (null == dataSource.getIsAvailable() ? 0 : (dataSource.getIsAvailable() ? 1 : 0));
+        this.imageUrl = SqlUtils.preventSQLInjection(dataSource.getImageUrl());
         return true;
     }
 
@@ -56,6 +60,7 @@ public class DataSourceMapperProvider {
         this.dataSourceDescription = null;
         this.isTemplate = null;
         this.stopsTemplateBundle = null;
+        this.imageUrl = null;
     }
 
     /**
@@ -76,7 +81,9 @@ public class DataSourceMapperProvider {
             stringBuffer.append("data_source_type, ");
             stringBuffer.append("data_source_name, ");
             stringBuffer.append("data_source_description, ");
-            stringBuffer.append("stops_template_bundle ");
+            stringBuffer.append("stops_template_bundle, ");
+            stringBuffer.append("is_available, ");
+            stringBuffer.append("image_url ");
             stringBuffer.append(") ");
             stringBuffer.append("VALUES ");
             stringBuffer.append("( ");
@@ -85,7 +92,9 @@ public class DataSourceMapperProvider {
             stringBuffer.append(dataSourceType + ", ");
             stringBuffer.append(dataSourceName + ", ");
             stringBuffer.append(dataSourceDescription + ", ");
-            stringBuffer.append(stopsTemplateBundle+ " ");
+            stringBuffer.append(stopsTemplateBundle+ ", ");
+            stringBuffer.append(isAvailable+ ", ");
+            stringBuffer.append(imageUrl+ " ");
             stringBuffer.append(") ");
             sqlStr = stringBuffer.toString();
         }

@@ -486,12 +486,12 @@ public class MxGraphModelUtils {
             }
             Map<String, String> paramData = mxCellVo.getParamData();
             String nodeType = paramData.get("nodeType");
-            if ("group".equals(nodeType)) {
+            if ("Group".equals(nodeType)) {
                 FlowGroup flowGroupNew = mxCellVoToGroup(mxCellVo, flowGroup, username);
                 if (null != flowGroupNew) {
                     flowGroupList.add(flowGroupNew);
                 }
-            } else if ("flow".equals(nodeType)) {
+            } else if ("Flow".equals(nodeType)) {
                 Flow flowNew = mxCellVoToFlow(mxCellVo, flowGroup, username);
                 if (null != flowNew) {
                     flowList.add(flowNew);

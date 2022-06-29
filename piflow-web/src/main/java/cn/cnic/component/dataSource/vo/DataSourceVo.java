@@ -25,5 +25,7 @@ public class DataSourceVo implements Serializable {
     private String stopsTemplateBundle;
     private StopsComponent stopsComponent;
     private String stopsName;
+    private Boolean isAvailable;
+    private String imageUrl;
 
 }

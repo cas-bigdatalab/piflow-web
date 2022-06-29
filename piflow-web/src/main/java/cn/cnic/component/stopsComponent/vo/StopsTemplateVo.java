@@ -35,4 +35,6 @@ public class StopsTemplateVo implements Serializable {
 
     private List<PropertyTemplateVo> propertiesVo = new ArrayList<>();
 
+    private String imageUrl;
+
 }

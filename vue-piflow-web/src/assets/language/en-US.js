@@ -31,7 +31,7 @@ module.exports = {
         loading: "Loading..."
     },
     tip: {
-        title: "PiFlow system tips",
+        title: "πFlow system tips",
         existed: "UserName Existed！",
         fault_content: "An unknown error occurred in the background run！",
         update_success_content: "update succeeded！",
@@ -236,7 +236,7 @@ module.exports = {
         HDFS_Disk: 'HDFS disk usage',
         totalCapacity: 'total capacity',
         Used: 'Used',
-        introduction_Info: "PiFlow is a big data pipeline system developed based on the distributed computing engine Spark. It realizes the flow configuration, operation and intelligent monitoring of big data collection, processing, storage and analysis in a WYSIWYG way, providing 100+ standardization Components, including Hadoop, Spark, MLlib, Hive, Solr, ElasticSearch, Redis, etc., supporting field-oriented and flexible secondary component development with superior performance.",
+        introduction_Info: "πFlow is a big data pipeline system developed based on the distributed computing engine Spark. It realizes the flow configuration, operation and intelligent monitoring of big data collection, processing, storage and analysis in a WYSIWYG way, providing 100+ standardization Components, including Hadoop, Spark, MLlib, Hive, Solr, ElasticSearch, Redis, etc., supporting field-oriented and flexible secondary component development with superior performance.",
         flowStatistics: "Pipeline statistics, include the number of pipeline flows, the number of processors in the running state, and the number of processors in each running state.",
         scheduleStatistics: "Scheduling statistics, include the number of scheduling pipelines/pipeline groups, and the number of schedules in each state.",
         groupStatistics: "Pipeline group statistics, include the number of pipeline groups, the number of processors of the pipeline groups in the running state, and the number of processors in each running state.",

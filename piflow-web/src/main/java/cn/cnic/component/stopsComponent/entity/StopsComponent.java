@@ -33,4 +33,6 @@ public class StopsComponent extends BaseHibernateModelUUIDNoCorpAgentId {
     private List<StopsComponentProperty> properties = new ArrayList<StopsComponentProperty>();
 
     private List<StopsComponentGroup> stopGroupList = new ArrayList<>();
+
+    private String imageUrl;
 }

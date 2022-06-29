@@ -110,4 +110,42 @@ public interface DataSourceMapper {
     })
     public List<DataSourceVo> getStopDataSourceForFlowPage(@Param("username") String username, @Param("isAdmin") boolean isAdmin);
 
+    /**
+     * Query "stoptemplatebundle" of all "stop" data sources
+     * @return
+     */
+    @Select("select DISTINCT(stops_template_bundle) from data_source where  stops_template_bundle is not null")
+    public List<String> getAllStopDataSourceBundle();
+
+    /**
+     * Change 'datasource' to available / unavailable
+	 * 
+     * @param bundle stop的bundle
+     * @param isAvailable 1:available;0:unavailable
+     * @return
+     * @author leilei
+     * @date 2022-05-23
+     */
+    @Update("update data_source set is_available = #{isAvailable} where stops_template_bundle = #{bundle}")
+    public int updateDataSourceIsAvailableByBundle(@Param("bundle") String bundle, @Param("isAvailable") int isAvailable);
+
+    /**
+     * Modify 'imageurl' of 'datasource'
+	 * 
+     * @param bundle
+     * @param imageUrl
+     * @return
+     * @author leilei
+     * @date 2022-06-14
+     */
+    @Update("update data_source set image_url = #{imageUrl} where stops_template_bundle = #{bundle}")
+    public int updateDataSourceImageUrlByBundle(@Param("bundle") String bundle, @Param("imageUrl") String imageUrl);
+
+    /**
+     * getDataSource Id by dataSourceName
+     * @param dataSourceName
+     * @return
+     */
+    @Select("select id from data_source where data_source_name = #{dataSourceName} and id !=#{id} and is_template = 0 and enable_flag = 1 ")
+    public List<String> getDataSourceByDataSourceName(@Param("dataSourceName")String dataSourceName, @Param("id")String id);
 }

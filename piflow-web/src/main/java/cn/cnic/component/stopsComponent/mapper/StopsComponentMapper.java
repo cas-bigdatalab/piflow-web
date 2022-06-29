@@ -114,4 +114,12 @@ public interface StopsComponentMapper {
 
     })
     public StopsComponent getDataSourceStopsComponentByBundle(@Param("bundle") String bundle);
+
+    /**
+     * get "stop" image by bundle
+     * @param bundle
+     * @return
+     */
+    @Select("select image_url from flow_stops_template where bundel=#{bundle}")
+    public String getStopsComponentImageUrlByBundle(@Param("bundle") String bundle);
 }

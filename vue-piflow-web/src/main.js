@@ -82,7 +82,7 @@ axios.interceptors.response.use(response => {
     switch (response.data.code) {
       case 401:
         iView.Modal.warning({
-          title: 'Piflow system tips',
+          title: 'πFlow system tips',
           content: 'Authentication failed, please log in again',
           onOk:()=>{
             router.replace({
@@ -95,7 +95,7 @@ axios.interceptors.response.use(response => {
         window.sessionStorage.clear();     //删除用户信息
         //如果超时就处理 ，指定要跳转的页面(登陆页)
             iView.Modal.warning({
-              title: 'Piflow system tips',
+              title: 'πFlow system tips',
               content: 'The token is invalid, please log in again!',
               onOk:()=>{
                 router.replace({

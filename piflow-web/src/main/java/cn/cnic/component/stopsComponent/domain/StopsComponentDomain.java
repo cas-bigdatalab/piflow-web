@@ -1,6 +1,7 @@
 package cn.cnic.component.stopsComponent.domain;
 
 import cn.cnic.base.utils.LoggerUtil;
+import cn.cnic.component.dataSource.mapper.DataSourceMapper;
 import cn.cnic.component.stopsComponent.entity.StopsComponent;
 import cn.cnic.component.stopsComponent.entity.StopsComponentGroup;
 import cn.cnic.component.stopsComponent.entity.StopsComponentProperty;
@@ -32,14 +33,18 @@ public class StopsComponentDomain {
     private final StopsComponentPropertyMapper stopsComponentPropertyMapper;
     private final StopsComponentGroupMapper stopsComponentGroupMapper;
     private final StopsComponentMapper stopsComponentMapper;
+    private final DataSourceMapper dataSourceMapper;
 
     @Autowired
     public StopsComponentDomain(StopsComponentPropertyMapper stopsComponentPropertyMapper,
                                 StopsComponentGroupMapper stopsComponentGroupMapper,
-                                StopsComponentMapper stopsComponentMapper) {
+                                StopsComponentMapper stopsComponentMapper,
+                                DataSourceMapper dataSourceMapper) {
         this.stopsComponentPropertyMapper = stopsComponentPropertyMapper;
         this.stopsComponentGroupMapper = stopsComponentGroupMapper;
         this.stopsComponentMapper = stopsComponentMapper;
+        this.dataSourceMapper = dataSourceMapper;
+
     }
 
     public int addListStopsComponentAndChildren(List<StopsComponent> stopsComponentList) {
@@ -66,6 +71,14 @@ public class StopsComponentDomain {
             }
             int insertStopsTemplateRows = stopsComponentPropertyMapper.insertStopsComponentProperty(properties);
             insertRows += insertStopsTemplateRows;
+        }
+        //Change the corresponding "datasource" data source to available
+        if (stopsComponent.getIsDataSource()){
+            dataSourceMapper.updateDataSourceIsAvailableByBundle(stopsComponent.getBundel(),1);
+            //Modify imageurl of "datasource"
+            dataSourceMapper.updateDataSourceImageUrlByBundle(stopsComponent.getBundel(),stopsComponent.getImageUrl());
+        }else{
+            dataSourceMapper.updateDataSourceIsAvailableByBundle(stopsComponent.getBundel(),0);
         }
         return insertRows;
     }
@@ -156,7 +169,8 @@ public class StopsComponentDomain {
                 logger.debug("Successful delete " + stopsComponent.getName() + " group!!!");
             }
         }
-
+        // Change the corresponding "datasource" data source to unavailable
+        dataSourceMapper.updateDataSourceIsAvailableByBundle(stopsComponent.getBundel(),0);
         return stopCount;
     }
 

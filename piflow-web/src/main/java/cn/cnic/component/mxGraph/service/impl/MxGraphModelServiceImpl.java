@@ -113,9 +113,9 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Flow information with flowId: " + flowId + " is not queried");
         }
         // update flow
-        flowDB.setLastUpdateDttm(new Date()); // last update time
-        flowDB.setLastUpdateUser(username);// last update user
-        flowDB.setEnableFlag(true);// is it effective
+        flowDB.setLastUpdateDttm(new Date());
+        flowDB.setLastUpdateUser(username);
+        flowDB.setEnableFlag(true);
         // Take out the drawing board of the data inventory
         MxGraphModel mxGraphModelDB = flowDB.getMxGraphModel();
         // Determine if the drawing board of the data inventory exists
@@ -128,7 +128,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
         mxGraphModelDB.setEnableFlag(true);
         mxGraphModelDB.setLastUpdateUser(username);
         mxGraphModelDB.setLastUpdateDttm(new Date());
-        mxGraphModelDB.setFlow(flowDB); // Add a foreign key
+        mxGraphModelDB.setFlow(flowDB);
         
         // Loop database data
         List<MxCell> mxCellRootDB = mxGraphModelDB.getRoot();
@@ -256,8 +256,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
      * @param flowId
      * @return
      */
-    private String movedOperation(String username, MxGraphModelVo mxGraphModelVo, String flowId)
-            throws Exception {
+    private String movedOperation(String username, MxGraphModelVo mxGraphModelVo, String flowId) throws Exception {
         // If "mxGraphModel" and "mxCellList" are empty, the modification will fail, 
         // because this method only deals with the modification, not the addition
         if (StringUtils.isBlank(username)) {
@@ -296,7 +295,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
                 mxCellVoMap.put(mxCell.getPageId(), mxCell);
             }
         }
-        // Including modified and tombstoned
+        // Including modified and tombstones
         List<MxCell> updateMxCellList = new ArrayList<>();
         // Loop page data for classification (requires modification and tombstone)
         for (MxCell mxCellDB : mxCellListDB) {
@@ -321,9 +320,9 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
             // Copy the value in mxCellVo to mxCell
             BeanUtils.copyProperties(mxCellVo, mxCellDB);
             // mxCell basic properties
-            mxCellDB.setEnableFlag(true);// Tombstone ID
-            mxCellDB.setLastUpdateUser(username);// last update user
-            mxCellDB.setLastUpdateDttm(new Date());// last update time
+            mxCellDB.setEnableFlag(true);
+            mxCellDB.setLastUpdateUser(username);
+            mxCellDB.setLastUpdateDttm(new Date());
 
             // Do not handle foreign keys when modifying, unless you cancel or modify the
             // foreign key
@@ -335,7 +334,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
                 // Copy the value from mxGeometryVo into mxGeometry
                 BeanUtils.copyProperties(mxGeometryVo, mxGeometryDB);
 
-                // setmxGraphModel basic properties
+                // set mxGraphModel basic properties
                 mxGeometryDB.setLastUpdateUser(username);// last update user
                 mxGeometryDB.setLastUpdateDttm(new Date());// last update time
                 mxGeometryDB.setEnableFlag(true);// Tombstone ID
@@ -438,55 +437,26 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
         if (null == mxCell) {
             return null;
         }
-        // Take out the style attribute (the name of the stop in the attribute)
-        // Example of the style attribute of stops
-        // (image;html=1;labelBackgroundColor=#ffffff;image=/grapheditor/stencils/clipart/test_stops_1_128x128.png)
-        // What we need is "test_stops_1"
-        String style = mxCell.getStyle();
-        if (StringUtils.isBlank(style)) {
+        if (null == paramData || paramData.size() <= 0) {
             return null;
         }
-        // Determine whether it is a stop by intercepting keywords
-        String[] split = style.split("_128x128.");
-        // Think of stops when there is one and only one keyword ("_128x128.")
-        if (null == split || split.length != 2) {
-            return null;
-        }
-        // Take the first bit of the array and continue to intercept
-        String string = split[0];
-        if (string.lastIndexOf("_@") != -1){
-            // dataSource stop,the id in the image is required
-            // /grapheditor/stencils/clipart/id_@/test_stops_1
-            String withDataSourceIdString = string.substring(0,string.lastIndexOf("_@"));
-            String[] withDataSourceIdArr = withDataSourceIdString.split("/");
-            String dataSourceId = withDataSourceIdArr[withDataSourceIdArr.length-1];
-            return this.stopsTemplateToStopsWithDataSourceProperty(mxCell,username,isAddId,dataSourceId);
-        }
-        return null;
-    }
-
-    /**
-     * mxCellVo to stops, property value is dataSourceProperty
-     *
-     * @param mxCell
-     * @param username
-     * @param isAddId Add ID or not
-     * @return
-     */
-    private Stops stopsTemplateToStopsWithDataSourceProperty(MxCell mxCell, String username, boolean isAddId,String dataSourceId) {
-        Stops stops = null;
-        if (null == mxCell || StringUtils.isEmpty(dataSourceId)) {
+        String dataSourceId = paramData.get("id");
+        if (StringUtils.isBlank(dataSourceId)) {
             return null;
         }
         DataSource dataSource = dataSourceDomain.getDataSourceById(username, true, dataSourceId);
+        if (null == dataSource) {
+            return null;
+        }
         StopsComponent stopsComponent = dataSource.getStopsComponent();
         // Whether to judge whether the template is empty
         if (null == stopsComponent) {
             return null;
         }
-        stops = new Stops();
+        Stops stops = new Stops();
         BeanUtils.copyProperties(stopsComponent, stops);
         StopsUtils.initStopsBasicPropertiesNoId(stops, username);
+        stops.setName(mxCell.getValue());
         if(isAddId) {
             stops.setId(UUIDUtils.getUUID32());
         } else {
@@ -494,40 +464,43 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
         }
         stops.setPageId(mxCell.getPageId());
         stops.setIsDataSource(true);
-        List<Property> propertiesList = null;
+        stops.setDataSource(dataSource);
         List<StopsComponentProperty> propertiesTemplateList = stopsComponent.getProperties();
+        if (null == propertiesTemplateList || propertiesTemplateList.size() <= 0) {
+            return stops;
+        }
         List<DataSourceProperty> dataSourcePropertyList = dataSource.getDataSourcePropertyList();
         Map<String,String> dataSourcePropertyMap = new HashMap<>();
-        dataSourcePropertyList.forEach(a->dataSourcePropertyMap.put(a.getName(),a.getValue()));
-        if (null != propertiesTemplateList && propertiesTemplateList.size() > 0) {
-            propertiesList = new ArrayList<>();
-            for (StopsComponentProperty stopsComponentProperty : propertiesTemplateList) {
-                Property property = PropertyUtils.propertyNewNoId(username);
-                property.setIsLocked(true);//Assign true to prevent the flow page from changing
-                BeanUtils.copyProperties(stopsComponentProperty, property);
-                if(isAddId) {
-                    property.setId(UUIDUtils.getUUID32());
-                } else {
-                    property.setId(null);
-                }
-                property.setStops(stops);
-                property.setCustomValue(dataSourcePropertyMap.get(property.getName()));
-                // Indicates "select"
-                if (stopsComponentProperty.getAllowableValues().contains(",") && stopsComponentProperty.getAllowableValues().length() > 4) {
-                    property.setIsSelect(true);
-                    // Determine if there is a default value in "select"
-                    if (!stopsComponentProperty.getAllowableValues().contains(stopsComponentProperty.getDefaultValue())) {
-                        // Default value if not present
-                        property.setCustomValue("");
-                    }
-                } else {
-                    property.setIsSelect(false);
-                }
-                propertiesList.add(property);
+        if (null != dataSourcePropertyList) {
+            dataSourcePropertyList.forEach(a->dataSourcePropertyMap.put(a.getName(),a.getValue()));
+        }
+        List<Property> propertiesList = new ArrayList<>();
+        for (StopsComponentProperty stopsComponentProperty : propertiesTemplateList) {
+            Property property = PropertyUtils.propertyNewNoId(username);
+            property.setIsLocked(true);//Assign true to prevent the flow page from changing
+            BeanUtils.copyProperties(stopsComponentProperty, property);
+            if(isAddId) {
+                property.setId(UUIDUtils.getUUID32());
+            } else {
+                property.setId(null);
             }
+            property.setStops(stops);
+            property.setCustomValue(dataSourcePropertyMap.get(property.getName()));
+            String allowableValues = stopsComponentProperty.getAllowableValues();
+            // Indicates "select"
+            if (allowableValues.contains(",") && allowableValues.length() > 4) {
+                // Determine if there is a default value in "select"
+                if (!allowableValues.contains(stopsComponentProperty.getDefaultValue())) {
+                    // Default value if not present
+                    property.setCustomValue("");
+                }
+                property.setIsSelect(true);
+            } else {
+                property.setIsSelect(false);
+            }
+            propertiesList.add(property);
         }
         stops.setProperties(propertiesList);
-        stops.setDataSource(dataSource);
         return stops;
     }
 
@@ -563,11 +536,11 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
         }
         // Copy the value from mxGraphModelVo to mxGraphModelDb
         BeanUtils.copyProperties(mxGraphModelVo, mxGraphModelDB);
-        // setmxGraphModel basic attribute
-        mxGraphModelDB.setLastUpdateUser(username);// last update user
-        mxGraphModelDB.setLastUpdateDttm(new Date());// last update time
-        mxGraphModelDB.setEnableFlag(true);// is it effective
-        mxGraphModelDB.setFlow(flowDB); // Add a foreign key
+        // set mxGraphModel basic attribute
+        mxGraphModelDB.setLastUpdateUser(username);
+        mxGraphModelDB.setLastUpdateDttm(new Date());
+        mxGraphModelDB.setEnableFlag(true);
+        mxGraphModelDB.setFlow(flowDB);
         // Take out the MxCellList information queried by the database.
         List<MxCell> mxCellListDB = mxGraphModelDB.getRoot();
         if (null == mxCellListDB || mxCellListDB.size() <= 0) {
@@ -613,10 +586,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
         
         // Get out the PathsList stored in the database
         List<Paths> pathsListDB = flowDB.getPathsList();
-        if (null == pathsListDB || pathsListDB.size() <= 0) {
-            // The stopsList in the database is empty and the modification failed.
-            logger.info("The pathsList in the database is empty");
-        } else {
+        if (null != pathsListDB && pathsListDB.size() > 0) {
             // The pathsList to be modified
             List<Paths> updatePaths = new ArrayList<Paths>();
             // The data pathsList of the loop database is retrieved by using the pageId in
@@ -655,23 +625,17 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
                 updatePaths.add(pathsDB);
             }
             flowDB.setPathsList(updatePaths);
+        } else {
+            // The stopsList in the database is empty and the modification failed.
+            logger.info("The pathsList in the database is empty");
         }
 
-        
-        
-        
-        
-        
-        
         // Get out the Stopslist stored in the database
         List<Stops> stopsListDB = flowDB.getStopsList();
 
         // continue the judgment operation below, or directly add
         // this method only processes the modification and is not responsible for adding
-        if (null == stopsListDB || stopsListDB.size() <= 0) {
-            // The stops data in the database is empty.
-            logger.info("The stops data in the database is empty.");
-        } else {
+        if (null != stopsListDB && stopsListDB.size() > 0) {
             // The data stopsList of the loop database, using the pageId in the stops to
             // convert to the map of the value of the page after the map is fetched,
             for (Stops stopsDB : stopsListDB) {
@@ -682,9 +646,9 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
                 MxCellVo mxCellVo = mxCellVoMap.get(pageId);
                 // If you get it, you need to modify it. Otherwise, it is to be deleted.
                 if (null == mxCellVo) {
-                    stopsDB.setEnableFlag(false);// Tombstone ID
-                    stopsDB.setLastUpdateDttm(new Date());//
-                    stopsDB.setLastUpdateUser(username);// Last update user
+                    stopsDB.setEnableFlag(false);
+                    stopsDB.setLastUpdateDttm(new Date());
+                    stopsDB.setLastUpdateUser(username);
                     //stopsDB property
                     List<Property> properties = stopsDB.getProperties();
                     // Whether the judgment is empty
@@ -695,15 +659,15 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
                             if (null == propertyDB) {
                                 continue;
                             }
-                            propertyDB.setEnableFlag(false);//Tombstone ID
-                            propertyDB.setLastUpdateDttm(new Date());//Last update time
-                            propertyDB.setLastUpdateUser(username);//Last update user
+                            propertyDB.setEnableFlag(false);
+                            propertyDB.setLastUpdateDttm(new Date());
+                            propertyDB.setLastUpdateUser(username);
                         }
                         stopsDB.setProperties(propertyList);
                     }
                     continue;
                 }
-                // When deleting "paths", you need to determine whether there are ports of type "any" at both ends of "paths". 
+                // When deleting "paths", you need to determine whether there are ports of type "any" at both ends of "paths".
                 // If so, you need to delete the corresponding port information.
                 if (stopsDB.getInPortType() != PortType.ANY && stopsDB.getOutPortType() != PortType.ANY) {
                     continue;
@@ -740,12 +704,15 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
                 }
                 stopsDB.setProperties(properties);
                 if (isUpdate) {
-                    stopsDB.setLastUpdateDttm(new Date());// Last update time
-                    stopsDB.setLastUpdateUser(username);// Last update user
+                    stopsDB.setLastUpdateDttm(new Date());
+                    stopsDB.setLastUpdateUser(username);
                     stopsDB.setFlow(flowDB);
                 }
             }
             flowDB.setStopsList(stopsListDB);
+        } else {
+            // The stops data in the database is empty.
+            logger.info("The stops data in the database is empty.");
         }
 
         // save flow
