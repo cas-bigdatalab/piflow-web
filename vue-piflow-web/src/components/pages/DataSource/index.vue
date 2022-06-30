@@ -73,13 +73,6 @@
               {{ item.name }}</Option>
           </Select>
         </div>
-        <div class="item" v-if="currentType==='STOP'">
-          <label>computeNode：</label>
-          <Select v-model="computeNode" style="width:350px">
-            <Option value="http://10.0.90.155:8002">http://10.0.90.155:8002</Option>
-            <Option value="http://10.0.82.42:8002">http://10.0.82.42:8002</Option>
-          </Select>
-        </div>
         <div class="item">
           <label>{{$t('dataSource_columns.dataSource_name')}}：</label>
           <Input
@@ -161,7 +154,6 @@ export default {
       name: "",
       type: "Other",
       stop: "",
-      computeNode: "",
       description: "",
       bundel: "",
 
@@ -242,7 +234,6 @@ export default {
       this.description = "";
       this.dataSourcePropertyVoList = [{ name: "", value: "", id: '' }];
       this.stop = "";
-      this.computeNode = "";
       this.bundel = "";
     },
     handleButtonSelect(row, key) {
@@ -290,7 +281,6 @@ export default {
 
       if ( this.type === 'STOP' ){
         data.stopsTemplateBundle = this.bundel;
-        data.computeNode = this.computeNode;
       }
       if (this.id) {
         //update
@@ -470,7 +460,6 @@ export default {
               this.currentType = flow.dataSourceType;
               if (this.type === 'STOP'){
                 this.bundel = flow.stopsTemplateBundle;
-                this.computeNode = flow.computeNode;
               }
               this.$event.emit("loading", false);
               this.isOpen = true;

@@ -774,9 +774,9 @@ function queryStopsProperty(stopPageId, loadId) {
                         }
                         $("#div_customized_html").show();
                     }
-                    $("#div_datasource_html").hide();
+                    $("#div_datasource_html").show();
                     if (stopsVoData.isDataSource) {
-                        $("#div_datasource_html").show();
+                        $("#div_datasource_html").hide();
                         // datasource
                         getDatasourceList(stopsVoData.id, stopsVoData.pageId, stopsVoData.dataSourceVo);
                     }
