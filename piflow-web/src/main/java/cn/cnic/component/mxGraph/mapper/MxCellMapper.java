@@ -94,14 +94,31 @@ public interface MxCellMapper {
 
 
     /**
-     * Logically delete flowInfo according to flowId
+     * Delete according to id logic, set to invalid
      *
+     * @param username
      * @param id
      * @return
      */
     @UpdateProvider(type = MxCellMapperProvider.class, method = "updateEnableFlagById")
-    public int updateEnableFlagById(String username, String id);
+    public int updateMxCellEnableFlagById(String username, String id);
 
+    /**
+     * Delete 'MxCell' by 'mxGraphModelId'
+     *
+     * @param username
+     * @param mxGraphModelId
+     * @return
+     */
+    @UpdateProvider(type = MxCellMapperProvider.class, method = "deleteMxCellByFlowId")
+    public int deleteMxCellByFlowId(String username, String mxGraphModelId);
+
+    /**
+     * query max pageId by mxGraphModelId
+     *
+     * @param mxGraphModelId
+     * @return
+     */
     @Select("select MAX(s.mx_pageid+0) from mx_cell s where s.enable_flag=1 and s.fk_mx_graph_id=#{mxGraphModelId}")
     public Integer getMaxPageIdByMxGraphModelId(String mxGraphModelId);
 

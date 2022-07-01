@@ -158,8 +158,14 @@ public interface MxGraphModelMapper {
     })
     public MxGraphModel getMxGraphModelByProcessGroupId(String processGroupId);
 
-
-    @UpdateProvider(type = MxGraphModelProvider.class, method = "updateEnableFlagByFlowId")
-    public int updateEnableFlagByFlowId(@Param("username") String username,@Param("flowId") String flowId);
+    /**
+     * delete 'MxGraphModel' by 'flowId'
+     *
+     * @param username
+     * @param flowId
+     * @return
+     */
+    @UpdateProvider(type = MxGraphModelProvider.class, method = "deleteMxGraphModelEnableFlagByFlowId")
+    public int deleteMxGraphModelEnableFlagByFlowId(@Param("username") String username,@Param("flowId") String flowId);
 
 }

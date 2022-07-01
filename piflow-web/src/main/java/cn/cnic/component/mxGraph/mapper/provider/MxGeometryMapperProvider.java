@@ -166,9 +166,9 @@ public class MxGeometryMapperProvider {
     }
 
     /**
-     * Query MxGeometry based on flowId
+     * Query MxGeometry based on mxCellId
      *
-     * @param flowId
+     * @param mxCellId
      * @return
      */
     public String getMxGeometryByMxCellId(String mxCellId) {
@@ -186,25 +186,26 @@ public class MxGeometryMapperProvider {
     }
 
     /**
-     * Delete according to id logic, set to invalid
+     * delete 'MxGeometry' by 'mxCellId'
      *
-     * @param id
+     * @param username
+     * @param mxCellId
      * @return
      */
-    public String updateEnableFlagById(String username, String id) {
+    public String deleteMxGeometryByFlowId(String username, String mxCellId) {
         if (StringUtils.isBlank(username)) {
             return "SELECT 0";
         }
-        if (StringUtils.isBlank(id)) {
+        if (StringUtils.isBlank(mxCellId)) {
             return "SELECT 0";
         }
         SQL sql = new SQL();
-        sql.UPDATE("mx_geometry");
+        sql.UPDATE("mx_graph_model");
         sql.SET("enable_flag = 0");
         sql.SET("last_update_user = " + SqlUtils.preventSQLInjection(username));
         sql.SET("last_update_dttm = " + SqlUtils.preventSQLInjection(DateUtils.dateTimesToStr(new Date())));
         sql.WHERE("enable_flag = 1");
-        sql.WHERE("id = " + SqlUtils.preventSQLInjection(id));
+        sql.WHERE("fk_mx_cell_id = " + SqlUtils.preventSQLInjection(mxCellId));
 
         return sql.toString();
     }

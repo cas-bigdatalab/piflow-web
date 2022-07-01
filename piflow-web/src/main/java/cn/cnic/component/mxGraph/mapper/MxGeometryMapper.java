@@ -45,7 +45,7 @@ public interface MxGeometryMapper {
     /**
      * Query MxGeometry based on flowId
      *
-     * @param flowId
+     * @param mxCellId
      * @return
      */
     @SelectProvider(type = MxGeometryMapperProvider.class, method = "getMxGeometryByMxCellId")
@@ -59,8 +59,14 @@ public interface MxGeometryMapper {
     })
     public MxGeometry getMxGeometryByMxCellId(String mxCellId);
 
-
-    @UpdateProvider(type = MxGeometryMapperProvider.class, method = "updateEnableFlagById")
-    public int updateEnableFlagById(String username, String id);
+    /**
+     * Delete 'MxGeometry' by 'mxCellId'
+     *
+     * @param username
+     * @param mxCellId
+     * @return
+     */
+    @UpdateProvider(type = MxGeometryMapperProvider.class, method = "deleteMxGeometryByFlowId")
+    public int deleteMxGeometryByFlowId(String username, String mxCellId);
 
 }

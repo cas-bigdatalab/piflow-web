@@ -87,19 +87,28 @@ public interface PropertyMapper {
     /**
      * delete StopsProperty according to ID;
      *
+     * @param id
      * @return
      */
     @Delete("delete from flow_stops_property where id=#{id}")
     public int deleteStopsPropertyById(String id);
 
     /**
-     * delete StopsProperty according to StopId;
+     * delete StopsProperty by StopId;
      *
+     * @param username
+     * @param stopId
      * @return
      */
     @UpdateProvider(type = PropertyMapperProvider.class, method = "updateStopPropertyEnableFlagByStopId")
-    public int updateStopPropertyEnableFlagByStopId(String username, String id);
+    public int updateStopPropertyEnableFlagByStopId(String username, String stopId);
 
+    /**
+     * Delete 'StopsProperty' by 'IsOldData' and 'StopsId'
+     *
+     * @param stopId
+     * @return
+     */
     @Update("update flow_stops_property fsp set fsp.enable_flag=0 where fsp.is_old_data=1 and fsp.fk_stops_id = #{stopId}")
     public int deletePropertiesByIsOldDataAndStopsId(String stopId);
 

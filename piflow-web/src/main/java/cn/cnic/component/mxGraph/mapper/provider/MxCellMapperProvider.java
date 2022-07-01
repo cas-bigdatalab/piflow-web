@@ -241,4 +241,28 @@ public class MxCellMapperProvider {
         return sql.toString();
     }
 
+    /**
+     *  Delete 'MxCell' by 'mxGraphModelId'
+     *
+     * @param mxGraphModelId
+     * @return
+     */
+    public String deleteMxCellByFlowId(String username, String mxGraphModelId) {
+        if (StringUtils.isBlank(username)) {
+            return "SELECT 0";
+        }
+        if (StringUtils.isBlank(mxGraphModelId)) {
+            return "SELECT 0";
+        }
+        SQL sql = new SQL();
+        sql.UPDATE("mx_cell");
+        sql.SET("enable_flag = 0");
+        sql.SET("last_update_user = " + SqlUtils.preventSQLInjection(username));
+        sql.SET("last_update_dttm = " + SqlUtils.addSqlStr(DateUtils.dateTimesToStr(new Date())));
+        sql.WHERE("enable_flag = 1");
+        sql.WHERE("fk_mx_graph_id = " + SqlUtils.preventSQLInjection(mxGraphModelId));
+
+        return sql.toString();
+    }
+
 }

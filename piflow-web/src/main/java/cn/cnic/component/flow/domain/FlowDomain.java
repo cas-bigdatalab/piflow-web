@@ -237,8 +237,30 @@ public class FlowDomain extends StopsDomain {
         return flowMapper.getMaxStopPageId(flowId);
     }
 
-    public Integer updateEnableFlagById(String username, String flowId) {
-        return flowMapper.updateEnableFlagById(username, flowId);
+    public Integer deleteFlowInfoById(String username, String flowId) throws Exception {
+        Flow flow = flowMapper.getFlowById(flowId);
+        if (null == flow) {
+            throw new Exception("Data does not exist");
+        }
+        // remove flow
+        Integer affectedRows = 0;
+        if (null != flow.getStopsList()) {
+            // remove stops
+            affectedRows += deleteStopsByFlowId(username, flowId);
+            // Loop delete stop attribute
+            for (Stops stopId : flow.getStopsList()) {
+                if (null == stopId.getProperties()) {
+                    continue;
+                }
+                affectedRows += updateStopPropertyEnableFlagByStopId(username, stopId.getId());
+            }
+        }
+        // remove paths
+        affectedRows += updatePathsEnableFlagByFlowId(username, flow.getId());
+        // remove mxGraph
+        affectedRows += mxGraphModelDomain.deleteMxGraphModelByFlowId(username, flow.getId());
+        affectedRows += flowMapper.updateEnableFlagById(username, flowId);
+        return affectedRows;
     }
 
     public String getFlowName(String flowName) {
@@ -269,16 +291,8 @@ public class FlowDomain extends StopsDomain {
         return mxGraphModelDomain.addMxGraphModel(mxGraphModel);
     }
 
-    public int updateEnableFlagByFlowId(String username, String flowId) {
-        return mxGraphModelDomain.updateEnableFlagByFlowId(username, flowId);
-    }
-
     public MxGraphModel getMxGraphModelById(String id) {
         return mxGraphModelDomain.getMxGraphModelById(id);
-    }
-
-    public int updateMxGeometryEnableFlagById(String username, String id) {
-        return mxGraphModelDomain.updateMxGeometryEnableFlagById(username, id);
     }
 
     public List<Paths> getPaths(String flowId, String pageId, String from, String to) {

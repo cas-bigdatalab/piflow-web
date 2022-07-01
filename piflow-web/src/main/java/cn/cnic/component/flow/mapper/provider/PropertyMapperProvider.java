@@ -256,10 +256,11 @@ public class PropertyMapperProvider {
     /**
      * remove
      *
-     * @param id
+     * @param username
+     * @param stopId
      * @return
      */
-    public String updateStopPropertyEnableFlagByStopId(String username, String id) {
+    public String updateStopPropertyEnableFlagByStopId(String username, String stopId) {
         if (StringUtils.isBlank(username)) {
             return "SELECT 0";
         }
@@ -273,7 +274,7 @@ public class PropertyMapperProvider {
         sql.SET("last_update_user = " + SqlUtils.preventSQLInjection(username));
         sql.SET("last_update_dttm = " + SqlUtils.preventSQLInjection(DateUtils.dateTimesToStr(new Date())));
         sql.WHERE("enable_flag = 1");
-        sql.WHERE("ID = " + SqlUtils.preventSQLInjection(id));
+        sql.WHERE("fk_stops_id = " + SqlUtils.preventSQLInjection(stopId));
 
         return sql.toString();
     }

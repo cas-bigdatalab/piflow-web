@@ -81,10 +81,6 @@ public class MxCellDomain {
         return mxCellMapper.getMxCellByMxGraphIdAndPageId(mxGraphId, pageId);
     }
 
-    public int updateEnableFlagById(String username,String id) {
-        return mxCellMapper.updateEnableFlagById(username, id);
-    }
-
     public MxCell getMeCellById(String id) {
         return mxCellMapper.getMeCellById(id);
     }

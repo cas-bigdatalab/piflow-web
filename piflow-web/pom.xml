@@ -16,6 +16,39 @@
     <name>piflow-web</name>
     <description>piflow-web</description>
 
+    <profiles>
+        <profile>
+            <!-- 本地环境：id表示在什么环境下打包 -->
+            <!-- 在idea中MavenProjects下的Profiles我们就可以看到当前环境，也可以更改环境 -->
+            <id>dev</id>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/main/resources</directory>
+                    </resource>
+                </resources>
+            </build>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <!-- 产品环境：产品环境需要排除配置文件 -->
+            <id>prod</id>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/main/resources</directory>
+                        <!--打包时排除哪些内容-->
+                        <excludes>
+                            <exclude>**/application-h2.properties</exclude>
+                            <exclude>**/application-mysql.properties</exclude>
+                        </excludes>
+                    </resource>
+                </resources>
+            </build>
+        </profile>
+    </profiles>
 
     <properties>
         <!-- Use UTF-8 encoding  -->
@@ -255,15 +288,15 @@
         <finalName>piflow-web</finalName>
         <plugins>
             <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <skip>true</skip>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>

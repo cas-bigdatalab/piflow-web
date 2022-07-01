@@ -9,33 +9,6 @@ import cn.cnic.third.vo.flow.ThirdFlowInfoStopVo;
 
 public interface IStopsService {
 
-    public int deleteStopsByFlowId(String username, String id);
-
-    /**
-     * Query "stops" based on "flowId" and "pagesId"
-     *
-     * @param flowId  Required
-     * @param pageIds Can be empty
-     * @return
-     */
-    public List<StopsVo> getStopsByFlowIdAndPageIds(String flowId, String[] pageIds);
-
-    /**
-     * update stop
-     *
-     * @param stopsVo
-     * @return
-     */
-    public Integer stopsUpdate(String username, StopsVo stopsVo) throws Exception ;
-
-    /**
-     * Modify the "stops" individual fields returned by the interface
-     *
-     * @param stopVo
-     * @return
-     */
-    public int updateStopsByFlowIdAndName(ThirdFlowInfoStopVo stopVo);
-
     /**
      * Modify the "isCheckpoint" field
      *

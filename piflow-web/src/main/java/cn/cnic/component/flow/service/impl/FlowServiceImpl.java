@@ -239,39 +239,17 @@ public class FlowServiceImpl implements IFlowService {
         if (scheduleIdListByScheduleRunTemplateId > 0) {
         	return ReturnMapUtils.setFailedMsgRtnJsonStr("Unable to delete, there is an associated scheduled task");
         }
-        Flow flowById = this.getFlowById(username, isAdmin, id);
+        /*Flow flowById = this.getFlowById(username, isAdmin, id);
         if (null == flowById) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Data does not exist");
-        }
-        if (null != flowById.getStopsList()) {
-            // Loop delete stop attribute
-            for (Stops stopId : flowById.getStopsList()) {
-                if (null != stopId.getProperties())
-                    for (Property property : stopId.getProperties()) {
-                        flowDomain.updateEnableFlagByStopId(username, property.getId());
-                    }
-            }
-        }
-        // remove stop
-        flowDomain.updateEnableFlagByFlowId(username, flowById.getId());
-        // remove paths
-        flowDomain.updatePathsEnableFlagByFlowId(username, flowById.getId());
-        if (null != flowById.getMxGraphModel()) {
-            List<MxCell> root = flowById.getMxGraphModel().getRoot();
-            if (null != root && !root.isEmpty()) {
-                for (MxCell mxcell : root) {
-                    if (mxcell.getMxGeometry() != null) {
-                        logger.info(mxcell.getMxGeometry().getId());
-                        flowDomain.updateMxGeometryEnableFlagById(username, mxcell.getMxGeometry().getId());
-                    }
-                    mxCellDomain.updateEnableFlagById(username, mxcell.getId());
-
-                }
-            }
-            flowDomain.updateEnableFlagByFlowId(username, flowById.getId());
-        }
+        }*/
         // remove FLow
-        int deleteFLowInfo = flowDomain.updateEnableFlagById(username, id);
+        int deleteFLowInfo = 0;
+        try {
+            deleteFLowInfo = flowDomain.deleteFlowInfoById(username, id);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
         if (deleteFLowInfo > 0) {
             return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG());
         } else {

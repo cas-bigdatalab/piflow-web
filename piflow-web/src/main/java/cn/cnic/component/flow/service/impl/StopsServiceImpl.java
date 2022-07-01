@@ -74,55 +74,6 @@ public class StopsServiceImpl implements IStopsService {
     @Autowired
     private IFlow flowImpl;
 
-
-    @Override
-    public int deleteStopsByFlowId(String username, String id) {
-        if (StringUtils.isBlank(username)) {
-            return 0;
-        }
-        if (StringUtils.isBlank(id)) {
-            return 0;
-        }
-        return flowDomain.updateEnableFlagByFlowId(username, id);
-    }
-
-    /**
-     * Query stops based on flowId and pagesId
-     *
-     * @param flowId  Required
-     * @param pageIds Can be empty
-     * @return
-     */
-    @Override
-    public List<StopsVo> getStopsByFlowIdAndPageIds(String flowId, String[] pageIds) {
-        List<Stops> stopsList = flowDomain.getStopsListByFlowIdAndPageIds(flowId, pageIds);
-        List<StopsVo> stopsVoList = StopsUtils.stopsListPoToVo(stopsList);
-        return stopsVoList;
-    }
-
-    @Override
-    public Integer stopsUpdate(String username, StopsVo stopsVo) throws Exception {
-        if (StringUtils.isBlank(username)) {
-            return 0;
-        }
-        if (null == stopsVo) {
-            return 0;
-        }
-        Stops stopsById = flowDomain.getStopsById(stopsVo.getId());
-        if (null == stopsById) {
-            return 0;
-        }
-        BeanUtils.copyProperties(stopsVo, stopsById);
-        stopsById.setLastUpdateDttm(new Date());
-        stopsById.setLastUpdateUser(username);
-        return flowDomain.updateStops(stopsById);
-    }
-
-    @Override
-    public int updateStopsByFlowIdAndName(ThirdFlowInfoStopVo stopVo) {
-        return flowDomain.updateStopsByFlowIdAndName(stopVo);
-    }
-
     /**
      * Modify the isCheckpoint field
      *

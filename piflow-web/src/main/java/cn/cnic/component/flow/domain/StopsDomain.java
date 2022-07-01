@@ -237,8 +237,8 @@ public class StopsDomain {
         return stopsMapper.getStopByFlowIdAndStopPageId(flowId, stopPageId);
     }
 
-    public int updateStopPropertyEnableFlagByStopId(String username, String id) {
-        return propertyMapper.updateStopPropertyEnableFlagByStopId(username, id);
+    public int updateStopPropertyEnableFlagByStopId(String username, String stopId) {
+        return propertyMapper.updateStopPropertyEnableFlagByStopId(username, stopId);
     }
 
     public Stops getStopGroupList(String fid, String stopPageId) {
@@ -251,6 +251,10 @@ public class StopsDomain {
 
     public List<Property> getStopsPropertyList() {
         return propertyMapper.getStopsPropertyList();
+    }
+
+    public int deleteStopsByFlowId(String username, String flowId) {
+        return stopsMapper.updateStopEnableFlagByFlowId(username, flowId);
     }
 
     public int deleteStopsPropertyById(String id) {

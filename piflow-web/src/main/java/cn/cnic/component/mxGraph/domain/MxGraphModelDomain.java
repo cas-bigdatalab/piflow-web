@@ -2,6 +2,7 @@ package cn.cnic.component.mxGraph.domain;
 
 import java.util.List;
 
+import cn.cnic.component.flow.entity.Flow;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -162,12 +163,32 @@ public class MxGraphModelDomain {
         return mxGraphModelMapper.getMxGraphModelById(id);
     }
 
-    public int updateEnableFlagByFlowId(String username, String flowId) {
-        return mxGraphModelMapper.updateEnableFlagByFlowId(username, flowId);
-    }
-
-    public int updateMxGeometryEnableFlagById(String username, String id) {
-        return mxGeometryMapper.updateEnableFlagById(username, id);
+    /**
+     * Delete 'MxGraphModel' by 'flowId'
+     *
+     * @param username
+     * @param flowId
+     * @return
+     * @throws Exception
+     */
+    public int deleteMxGraphModelByFlowId(String username, String flowId) {
+        MxGraphModel mxGraphModel = mxGraphModelMapper.getMxGraphModelByFlowId(flowId);
+        if (null == mxGraphModel) {
+            return 0;
+        }
+        Integer affectedRows = 0;
+        List<MxCell> root = mxGraphModel.getRoot();
+        if (null != root && !root.isEmpty()) {
+            for (MxCell mxcell : root) {
+                if (mxcell.getMxGeometry() == null) {
+                    continue;
+                }
+                affectedRows += mxGeometryMapper.deleteMxGeometryByFlowId(username, mxcell.getMxGeometry().getId());
+            }
+            affectedRows += mxCellMapper.deleteMxCellByFlowId(username, mxGraphModel.getId());
+        }
+        affectedRows += mxGraphModelMapper.deleteMxGraphModelEnableFlagByFlowId(username, flowId);
+        return affectedRows;
     }
 
     public MxCell getMxCellByMxGraphIdAndPageId(String mxGraphId, String pageId) {

@@ -10,7 +10,7 @@
 * JDK 1.8
 * MySQL 5.7
 ## Getting Started
-To Build: mvn package -Dmaven.test.skip=true
+To Build: mvn clean package -U -DskipTests -P prod -e
 ```c
 [INFO] 
 [INFO] ------------------------------------------------------------------------
