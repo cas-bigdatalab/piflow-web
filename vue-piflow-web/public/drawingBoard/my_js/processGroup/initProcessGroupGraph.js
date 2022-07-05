@@ -486,7 +486,7 @@ function queryNodeInfo(loadId, pageId) {
                     //Process Running Information
                     $("#processStartTimeShow").text(processVo.startTimeStr);
                     $("#processStopTimeShow").text(processVo.endTimeStr);
-                    var processVo_state_text = (null !== processVo.state) ? processVo.state.stringValue : "INIT";
+                    var processVo_state_text = (undefined !== processVo.state && null !== processVo.state) ? processVo.state.stringValue : "INIT";
                     $("#processStateShow").text(processVo_state_text);
                     if (processVo.progress) {
                         $("#processProgressShow").text(processVo.progress + "%");
