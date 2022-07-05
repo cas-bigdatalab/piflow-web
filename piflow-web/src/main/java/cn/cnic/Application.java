@@ -7,14 +7,20 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.embedded.tomcat.TomcatConnectorCustomizer;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 
 
 @PropertySources({
@@ -25,7 +31,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @MapperScan(basePackages = "cn.cnic.**.mapper.*.*")
 @EnableTransactionManagement
 @SpringBootApplication
-public class Application {
+public class Application extends SpringBootServletInitializer {
 
 	/**
      * Introducing logs, note that they are all packaged under "org.slf4j"
@@ -38,6 +44,17 @@ public class Application {
         logger.warn("***************************************************************");
         logger.warn("***************** Spring Boot Startup Success *****************");
         logger.warn("***************************************************************");
+    }
+
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+        return builder.sources(Application.class);
+    }
+
+    @Override
+    public void onStartup(ServletContext servletContext) throws ServletException {
+        super.onStartup(servletContext);
+        SpringContextUtil.setApplicationContext(WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext));
     }
 
     @Bean
