@@ -41,6 +41,7 @@
                         <directory>src/main/resources</directory>
                         <!--打包时排除哪些内容-->
                         <excludes>
+                            <exclude>**/application.properties</exclude>
                             <exclude>**/application-h2.properties</exclude>
                             <exclude>**/application-mysql.properties</exclude>
                         </excludes>
