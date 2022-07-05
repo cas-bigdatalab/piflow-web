@@ -328,7 +328,7 @@ public class MxGraphModelProvider {
             return "SELECT 0";
         }
         SQL sql = new SQL();
-        sql.UPDATE("mx_geometry");
+        sql.UPDATE("mx_graph_model");
         sql.SET("enable_flag = 0");
         sql.SET("last_update_user = " + SqlUtils.preventSQLInjection(username));
         sql.SET("last_update_dttm = " + SqlUtils.preventSQLInjection(DateUtils.dateTimesToStr(new Date())));
