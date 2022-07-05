@@ -436,7 +436,7 @@ function queryProcessGroup(loadId) {
                         //Process Running Information
                         $("#processGroupStartTimeShow").text(processGroupVo.startTimeStr);
                         $("#processGroupStopTimeShow").text(processGroupVo.endTimeStr);
-                        var processGroupVo_state_text = (null !== processGroupVo.state) ? processGroupVo.state.stringValue : "INIT";
+                        var processGroupVo_state_text = (undefined !== processGroupVo.state && null !== processGroupVo.state) ? processGroupVo.state.stringValue : "INIT";
                         $("#processGroupStateShow").text(processGroupVo_state_text);
                         if (processGroupVo.progress) {
                             $("#processGroupProgressShow").text(processGroupVo.progress + "%");
@@ -506,7 +506,7 @@ function queryNodeInfo(loadId, pageId) {
                     //Process Running Information
                     $("#processGroupStartTimeShow").text(processGroupVo.startTimeStr);
                     $("#processGroupStopTimeShow").text(processGroupVo.endTimeStr);
-                    var processGroupVo_state_text = (null !== processGroupVo.state) ? processGroupVo.state.stringValue : "INIT";
+                    var processGroupVo_state_text = (undefined !== processGroupVo.state && null !== processGroupVo.state) ? processGroupVo.state.stringValue : "INIT";
                     $("#processGroupStateShow").text(processGroupVo_state_text);
                     if (processGroupVo.progress) {
                         $("#processGroupProgressShow").text(processGroupVo.progress + "%");
