@@ -774,9 +774,10 @@ function queryStopsProperty(stopPageId, loadId) {
                         }
                         $("#div_customized_html").show();
                     }
-                    $("#div_datasource_html").show();
                     if (stopsVoData.isDataSource) {
                         $("#div_datasource_html").hide();
+                    } else {
+                        $("#div_datasource_html").show();
                         // datasource
                         getDatasourceList(stopsVoData.id, stopsVoData.pageId, stopsVoData.dataSourceVo);
                     }
