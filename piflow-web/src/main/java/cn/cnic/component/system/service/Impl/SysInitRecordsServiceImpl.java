@@ -83,8 +83,7 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
         if (!inBootPage) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.INIT_COMPONENTS_COMPLETED_MSG());
         }
-        ExecutorService es = new ThreadPoolExecutor(1, 5, 0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<Runnable>(100000));
+        SysParamsCache.INIT_STOP_THREAD_POOL_EXECUTOR = ThreadPoolExecutorUtils.createThreadPoolExecutor(1, 5, 0L);
         List<String> stopsBundleList = loadStopGroup(currentUser);
         if (null == stopsBundleList) {
             return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.INTERFACE_CALL_ERROR_MSG());
@@ -94,7 +93,7 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
         }
         if (null != stopsBundleList && stopsBundleList.size() > 0) {
             for (String stopListInfos : stopsBundleList) {
-                es.execute(() -> {
+                SysParamsCache.INIT_STOP_THREAD_POOL_EXECUTOR.execute(() -> {
                     Boolean aBoolean1 = loadStop(stopListInfos);
                     if (!aBoolean1) {
                         logger.warn("stop load failed, bundle : " + stopListInfos);
@@ -108,7 +107,7 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
                 if (null == stops) {
                     continue;
                 }
-                es.execute(() -> {
+                SysParamsCache.INIT_STOP_THREAD_POOL_EXECUTOR.execute(() -> {
                     try {
                         syncStopsProperties(stops, currentUser);
                     } catch (IllegalAccessException e) {
@@ -119,19 +118,18 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
                 });
             }
         }
-        SysParamsCache.THREAD_POOL_EXECUTOR = ((ThreadPoolExecutor) es);
         return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG());
     }
 
     @Override
     public String threadMonitoring(String currentUser) {
-        if (null == SysParamsCache.THREAD_POOL_EXECUTOR) {
+        if (null == SysParamsCache.INIT_STOP_THREAD_POOL_EXECUTOR) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.INIT_COMPONENTS_ERROR_MSG());
         }
         //Total number of threads
-        double taskCount = SysParamsCache.THREAD_POOL_EXECUTOR.getTaskCount();
+        double taskCount = SysParamsCache.INIT_STOP_THREAD_POOL_EXECUTOR.getTaskCount();
         //Number of execution completion threads
-        double completedTaskCount = SysParamsCache.THREAD_POOL_EXECUTOR.getCompletedTaskCount();
+        double completedTaskCount = SysParamsCache.INIT_STOP_THREAD_POOL_EXECUTOR.getCompletedTaskCount();
         if (0 == taskCount) {
             taskCount = 1;
             completedTaskCount = 1;
@@ -220,6 +218,7 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
         sysInitRecords.setIsSucceed(true);
         sysInitRecordsDomain.insertSysInitRecords(sysInitRecords);
         SysParamsCache.setIsBootComplete(true);
+        SysParamsCache.INIT_STOP_THREAD_POOL_EXECUTOR.shutdown();
         return true;
     }
 

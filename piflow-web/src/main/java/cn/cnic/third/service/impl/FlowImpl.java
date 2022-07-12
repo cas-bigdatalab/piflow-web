@@ -283,14 +283,16 @@ public class FlowImpl implements IFlow {
     }
 
     @Override
-    public void getProcessInfoAndSave(String appid) throws Exception {
-        ThirdFlowInfoVo thirdFlowInfoVo = getFlowInfo(appid);
+    public void getProcessInfoAndSave(String appId) throws Exception {
+        ThirdFlowInfoVo thirdFlowInfoVo = getFlowInfo(appId);
         // Determine if the progress returned by the interface is empty
         if (null != thirdFlowInfoVo) {
-            Process processByAppId = processDomain.getProcessNoGroupByAppId(appid);
-            processByAppId = ThirdFlowInfoVoUtils.setProcess(processByAppId, thirdFlowInfoVo);
-            if (null != processByAppId) {
-                processDomain.saveOrUpdate(processByAppId);
+            List<Process> processList = processDomain.getProcessNoGroupByAppId(appId);
+            for (Process process : processList) {
+                process = ThirdFlowInfoVoUtils.setProcess(process, thirdFlowInfoVo);
+                if (null != process) {
+                    processDomain.saveOrUpdate(process);
+                }
             }
         }
 
@@ -299,22 +301,6 @@ public class FlowImpl implements IFlow {
     @Override
     public void processInfoAndSaveSync() throws Exception {
         List<String> runningProcess = processDomain.getRunningProcessAppId();
-        //if (CollectionUtils.isNotEmpty(runningProcess)) {
-        //    Runnable runnable = new Thread(new Thread() {
-        //        @Override
-        //        public void run() {
-        //            IFlow getFlowInfoImpl = (IFlow) SpringContextUtil.getBean("flowImpl");
-        //            for (String appId : runningProcess) {
-        //                try {
-        //                    getFlowInfoImpl.getProcessInfoAndSave(appId);
-        //                } catch (Exception e) {
-        //                    logger.error("errorMsg:", e);
-        //                }
-        //            }
-        //        }
-        //    });
-        //    ServicesExecutor.getServicesExecutorServiceService().execute(runnable);
-        //}
         if (CollectionUtils.isEmpty(runningProcess)) {
             return;
         }

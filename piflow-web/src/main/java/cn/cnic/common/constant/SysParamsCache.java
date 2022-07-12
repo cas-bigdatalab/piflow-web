@@ -4,6 +4,8 @@ import org.apache.tomcat.util.threads.ThreadPoolExecutor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
+
 /**
  * System parameter cache class
  * <p>
@@ -21,11 +23,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class SysParamsCache {
 
-    public static String SYS_CONTEXT_PATH;
+    public static ThreadPoolExecutor INIT_STOP_THREAD_POOL_EXECUTOR;
 
-    @Value("${server.servlet.context-path}")
-    public void setSysContextPath(String sysContextPath) {
-        SYS_CONTEXT_PATH = sysContextPath;
+    public static ThreadPoolExecutor MONITOR_THREAD_POOL_EXECUTOR;
+
+    public static Boolean IS_BOOT_COMPLETE = false;
+
+    public static void setIsBootComplete(boolean isBootComplete) {
+        IS_BOOT_COMPLETE = isBootComplete;
     }
 
     // Image path (read in configuration file)
@@ -56,17 +61,18 @@ public class SysParamsCache {
         CSV_PATH = csvPath;
     }
 
+    public static String SYS_CONTEXT_PATH;
+
+    @Value("${server.servlet.context-path}")
+    public void setSysContextPath(String sysContextPath) {
+        SYS_CONTEXT_PATH = sysContextPath;
+    }
+
     public static Boolean IS_IFRAME;
 
     @Value("${syspara.isIframe}")
     public void setIsIframe(String isIframe) {
         IS_IFRAME = Boolean.valueOf(isIframe);
-    }
-
-    public static Boolean IS_BOOT_COMPLETE = false;
-
-    public static void setIsBootComplete(boolean isBootComplete) {
-        IS_BOOT_COMPLETE = isBootComplete;
     }
 
     // Interface ip and port
@@ -76,8 +82,6 @@ public class SysParamsCache {
     public void setInterfaceUrlHead(String interfaceUrlHead) {
         INTERFACE_URL_HEAD = interfaceUrlHead;
     }
-
-    public static ThreadPoolExecutor THREAD_POOL_EXECUTOR;
 
     public static String LIVY_SERVER;
 

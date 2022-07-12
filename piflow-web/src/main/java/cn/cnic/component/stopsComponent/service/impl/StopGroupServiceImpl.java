@@ -86,7 +86,7 @@ public class StopGroupServiceImpl implements IStopGroupService {
                 BeanUtils.copyProperties(stopsComponent, stopsTemplateVo);
                 List<StopsComponentProperty> properties = stopsComponent.getProperties();
                 if (null != properties && properties.size() > 0) {
-                    List<PropertyTemplateVo> propertiesVo = new ArrayList<PropertyTemplateVo>();
+                    List<PropertyTemplateVo> propertiesVo = new ArrayList<>();
                     for (StopsComponentProperty stopsComponentProperty : properties) {
                         if (null == propertiesVo) {
                             continue;
@@ -146,9 +146,10 @@ public class StopGroupServiceImpl implements IStopGroupService {
         int updateStopsComponentNum = 0;
         for (String bundle : stopsBundleList) {
 
-            if (StringUtils.isBlank(bundle))
+            if (StringUtils.isBlank(bundle)){
                 // 2.First query "stopInfo" according to "bundle"
                 logger.info("Now the call is：" + bundle);
+            }
             ThirdStopsComponentVo thirdStopsComponentVo = stopImpl.getStopInfo(bundle);
 
             if (null == thirdStopsComponentVo) {

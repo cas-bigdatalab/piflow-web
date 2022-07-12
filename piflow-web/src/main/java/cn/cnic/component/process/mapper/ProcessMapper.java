@@ -154,7 +154,7 @@ public interface ProcessMapper {
             @Result(column = "id", property = "processPathList", many = @Many(select = "cn.cnic.component.process.mapper.ProcessPathMapper.getProcessPathByProcessId", fetchType = FetchType.LAZY))
 
     })
-    public Process getProcessNoGroupByAppId(String appID);
+    public List<Process> getProcessNoGroupByAppId(String appID);
 
     /**
      * Query process list according to process appid array

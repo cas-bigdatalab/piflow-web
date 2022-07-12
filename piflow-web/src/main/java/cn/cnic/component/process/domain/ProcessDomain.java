@@ -419,18 +419,18 @@ public class ProcessDomain {
      * @param appId appId
      * @return Process
      */
-    public Process getProcessNoGroupByAppId(String appId) {
+    public List<Process> getProcessNoGroupByAppId(String appId) {
         if (StringUtils.isBlank(appId)) {
             logger.warn("appId is null");
             return null;
         }
 
-        Process processNoGroupByAppId = processMapper.getProcessNoGroupByAppId(appId);
-        if (null == processNoGroupByAppId) {
+        List<Process> processNoGroupList = processMapper.getProcessNoGroupByAppId(appId);
+        if (null == processNoGroupList) {
             logger.warn("data is null");
             return null;
         }
-        return processNoGroupByAppId;
+        return processNoGroupList;
     }
 
     /**

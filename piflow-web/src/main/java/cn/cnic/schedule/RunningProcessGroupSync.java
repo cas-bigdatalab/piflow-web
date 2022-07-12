@@ -2,10 +2,14 @@ package cn.cnic.schedule;
 
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.SpringContextUtil;
+import cn.cnic.base.utils.ThreadPoolExecutorUtils;
+import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.common.executor.ServicesExecutor;
 import cn.cnic.component.process.mapper.ProcessGroupMapper;
+import cn.cnic.third.service.IFlow;
 import cn.cnic.third.service.IGroup;
 
+import lombok.SneakyThrows;
 import org.apache.commons.collections.CollectionUtils;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -31,24 +35,26 @@ public class RunningProcessGroupSync extends QuartzJobBean {
     @Autowired
     private ProcessGroupMapper processGroupMapper;
 
+    @SneakyThrows
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss:SSS");
         logger.info("processGroupSync start : " + formatter.format(new Date()));
         List<String> runningProcessGroup = processGroupMapper.getRunningProcessGroupAppId();
         if (CollectionUtils.isNotEmpty(runningProcessGroup)) {
-            Runnable runnable = new Thread(new Thread() {
-                @Override
-                public void run() {
+            if (null == SysParamsCache.MONITOR_THREAD_POOL_EXECUTOR) {
+                SysParamsCache.MONITOR_THREAD_POOL_EXECUTOR = ThreadPoolExecutorUtils.createThreadPoolExecutor(1, 5, 0L);;
+            }
+            for (String groupId : runningProcessGroup) {
+                SysParamsCache.MONITOR_THREAD_POOL_EXECUTOR.execute(() -> {
                     try {
                         IGroup groupImpl = (IGroup) SpringContextUtil.getBean("groupImpl");
-                        groupImpl.updateFlowGroupsByInterface(runningProcessGroup);
+                        groupImpl.updateFlowGroupByInterface(groupId);
                     } catch (Exception e) {
-                        logger.error("errorMsg:", e);
+                        logger.error("update process group data error", e);
                     }
-                }
-            });
-            ServicesExecutor.getServicesExecutorServiceService().execute(runnable);
+                });
+            }
         }
         logger.info("processGroupSync end : " + formatter.format(new Date()));
     }

@@ -11,6 +11,7 @@ import cn.cnic.component.process.domain.ProcessDomain;
 import cn.cnic.component.process.domain.ProcessGroupDomain;
 import cn.cnic.component.process.utils.ProcessGroupUtils;
 import cn.cnic.component.process.utils.ProcessUtils;
+import cn.cnic.component.schedule.domain.ScheduleDomain;
 import cn.cnic.component.schedule.entity.Schedule;
 import cn.cnic.component.schedule.mapper.ScheduleMapper;
 import cn.cnic.component.schedule.vo.ScheduleVo;
@@ -40,13 +41,13 @@ public class RunningGroupScheduleSync extends QuartzJobBean {
     private Logger logger = LoggerUtil.getLogger();
 
     @Autowired
-    private ScheduleMapper scheduleMapper;
+    private ScheduleDomain scheduleDomain;
 
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) {
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss:SSS");
         logger.info("groupScheduleSync start : " + formatter.format(new Date()));
-        List<ScheduleVo> scheduleRunningList = scheduleMapper.getScheduleIdListByStateRunning(true, "sync");
+        List<ScheduleVo> scheduleRunningList = scheduleDomain.getScheduleIdListByStateRunning(true, "sync");
         if (CollectionUtils.isNotEmpty(scheduleRunningList)) {
             ISchedule scheduleImpl = (ISchedule) SpringContextUtil.getBean("scheduleImpl");
             ProcessDomain processDomain = (ProcessDomain) SpringContextUtil.getBean("processDomain");
@@ -56,10 +57,10 @@ public class RunningGroupScheduleSync extends QuartzJobBean {
                     continue;
                 }
                 ThirdScheduleVo thirdScheduleVo = scheduleImpl.scheduleInfo(scheduleVo.getScheduleId());
-                Schedule scheduleById = scheduleMapper.getScheduleById(true, "sync", scheduleVo.getId());
+                Schedule scheduleById = scheduleDomain.getScheduleById(true, "sync", scheduleVo.getId());
                 if ("STOPED".equals(thirdScheduleVo.getState())) {
                     scheduleById.setStatus(ScheduleState.STOP);
-                    scheduleMapper.update(scheduleById);
+                    scheduleDomain.update(scheduleById);
                 }
                 List<ThirdScheduleEntryVo> entryList = thirdScheduleVo.getEntryList();
                 if (CollectionUtils.isEmpty(entryList)) {
