@@ -138,45 +138,53 @@ function imageAjax() {
         }
     });
 }
-
+var uploadInst;
 function updateMxGraphCellImage(cellEditor, selState, newValue, fn) {
     //   Change picture
     layui.use('upload', function () {
-        var upload = layui.upload;
+        upload = layui.upload;
         var loading
-        //执行实例
-        var uploadInst = upload.render({
-            elem: '#uploadimage' //绑定元素
-            , url: web_header_prefix + '/mxGraph/uploadNodeImage' //上传接口
-            , headers: {
-                Authorization: ("Bearer " + token)
-            }
-            , before: function (obj) {
-                this.data = {imageType: "GROUP"};
-                loading = layer.load(0, {
-                    shade: false,
-                    success: function (layerContentStyle) {
-                        layerContentStyle.find('.layui-layer-content').css({
-                            'padding-top': '35px',
-                            'text-align': 'left',
-                            'width': '120px',
-                        });
-                    },
-                    icon: 2,
-                    // time: 100*1000
-                });
-            }
-            , done: function (res) {
-                //上传完毕回调
-                console.log("upload success")
-                imageAjax();
-                layer.close(loading);
-            }
-            , error: function () {
-                //请求异常回调
-                console.log("upload error")
-            }
-        });
+        if (uploadInst) {
+            uploadInst.config.elem = $('#uploadimage');
+        } else {
+            //执行实例
+            uploadInst = upload.render({
+                elem: '#uploadimage' //绑定元素
+                , url: web_header_prefix + '/mxGraph/uploadNodeImage' //上传接口
+                , headers: {
+                    Authorization: ("Bearer " + token)
+                }
+                , before: function (obj) {
+                    this.data = {imageType: imgType};
+                    loading = layer.load(0, {
+                        shade: false,
+                        success: function (layerContentStyle) {
+                            layerContentStyle.find('.layui-layer-content').css({
+                                'padding-top': '35px',
+                                'text-align': 'left',
+                                'width': '120px',
+                            });
+                        },
+                        icon: 2,
+                        // time: 100*1000
+                    });
+                }
+                , done: function (res) {
+                    //上传完毕回调
+                    console.log("upload success")
+                    imageAjax();
+                    layer.close(loading);
+                }
+                , error: function () {
+                    //请求异常回调
+                    console.log("upload error")
+                }
+            });
+            console.log(cellEditor);
+            console.log(selState);
+            console.log(newValue);
+            console.log(fn);
+        }
     });
     layer.open({
         type: 1,
