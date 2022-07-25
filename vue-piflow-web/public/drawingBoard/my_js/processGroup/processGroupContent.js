@@ -12,7 +12,8 @@ function processGroupOperationBtn(processState) {
             $('#runFlowGroup').hide();
             $('#debugFlowGroup').hide();
             $('#stopFlowGroup').show();
-            timer = window.setInterval("processGroupMonitoring(appId)", 5000);
+            //timer = window.setInterval("processGroupMonitoring(appId)", 5000);
+            processGroupMonitoring(appId);
         } else {
             $('#runFlowGroup').show();
             $('#debugFlowGroup').show();
@@ -263,7 +264,7 @@ function stopProcessGroup() {
         url: "/processGroup/stopProcessGroup",//This is the name of the file where I receive data in the background.
         //data:$('#loginForm').serialize(),//Serialize the form
         data: {
-            processGroupId: processGroupId
+            processGroupId: loadId
         },
         async: true,//Setting it to true indicates that other code can still be executed after the request has started. If this option is set to false, it means that all requests are no longer asynchronous, which also causes the browser to be locked.
         error: function (request) {//Operation after request failure
@@ -378,14 +379,6 @@ function processGroupMonitoring(appId) {
         success: function (data) {
             var dataMap = JSON.parse(data);
             if (200 === dataMap.code) {
-                if (dataMap.state && "" !== dataMap.state) {
-                    if ('STARTED' !== dataMap.state && '100.00' === dataMap.progress) {
-                        window.clearInterval(timer);
-                        $('#runFlowGroup').show();
-                        $('#debugFlowGroup').show();
-                        $('#stopFlowGroup').hide();
-                    }
-                }
                 var processGroupVo = dataMap.processGroupVo;
                 if (processGroupVo && '' != processGroupVo) {
                     $("#groupProgress").html(dataMap.progress + "%");
@@ -426,15 +419,22 @@ function processGroupMonitoring(appId) {
                                     $("#processStartTimeShow").html(processGroupVo.startTime);
                                     $("#processStopTimeShow").html(processGroupVo.endTime);
                                     $("#processStateShow").html(processGroupVo.state);
-                                    $("#processStateShow").html(processGroupVo.state);
-                                    $("#processStateShow").html(processGroupVo.state);
-                                    $("#processStateShow").html(processGroupVo.state);
                                 }
                                 processGroupMonitor(processGroupVo.pageId, processGroupVo.state)
                             }
                         }
                     }
                 }
+            }
+            if ('STARTED' !== dataMap.state || '100.00' === dataMap.progress) {
+                $('#runFlowGroup').show();
+                $('#debugFlowGroup').show();
+                $('#stopFlowGroup').hide();
+            } else {
+                setTimeout(() => {
+                    processGroupMonitoring(appId);
+                }, 5000);
+                
             }
         }
     });

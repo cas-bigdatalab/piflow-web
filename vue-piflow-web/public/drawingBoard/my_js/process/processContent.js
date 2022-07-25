@@ -11,7 +11,8 @@ function initProcessContentPage(nodeArr) {
             $('#runFlow').hide();
             $('#debugFlow').hide();
             $('#stopFlow').show();
-            timer = window.setInterval("processMonitoring(appId)", 5000);
+            processMonitoring(appId);
+            //timer = window.setInterval("processMonitoring(appId)", 5000);
         } else {
             $('#runFlow').show();
             $('#debugFlow').show();
@@ -342,14 +343,6 @@ function processMonitoring(appId) {
         success: function (data) {
             var dataMap = JSON.parse(data);
             if (200 === dataMap.code) {
-                if (dataMap.state && "" !== dataMap.state) {
-                    if ("COMPLETED" === dataMap.state || "FAILED" === dataMap.state || "KILLED" === dataMap.state) {
-                        window.clearInterval(timer);
-                        $('#runFlow').show();
-                        $('#debugFlow').show();
-                        $('#stopFlow').hide();
-                    }
-                }
                 var processVo = dataMap.processVo;
                 if (processVo && '' != processVo) {
                     $("#progress").html(dataMap.progress + "%");
@@ -377,6 +370,17 @@ function processMonitoring(appId) {
                         }
                     }
                 }
+            }
+            if ("COMPLETED" === dataMap.state || "FAILED" === dataMap.state || "KILLED" === dataMap.state) {
+                //aff
+                //window.clearInterval(timer);
+                $('#runFlow').show();
+                $('#debugFlow').show();
+                $('#stopFlow').hide();
+            } else {
+                setTimeout(() => {
+                    processMonitoring(appId);
+                }, 5000);
             }
         }
     });

@@ -8,6 +8,7 @@ import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.component.system.entity.SysSchedule;
 import cn.cnic.component.system.mapper.SysScheduleMapper;
 
+import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +55,10 @@ public class StartLoader implements ApplicationRunner {
         List<SysSchedule> sysScheduleByStatusList = sysScheduleMapper.getSysScheduleListByStatus(true, ScheduleState.RUNNING);
         if (null != sysScheduleByStatusList && sysScheduleByStatusList.size() > 0) {
             for (SysSchedule sysSchedule : sysScheduleByStatusList) {
+                JobDetail scheduleJobByJobName = QuartzUtils.getScheduleJobByJobName(scheduler, sysSchedule.getJobName());
+                if (null != scheduleJobByJobName) {
+                    continue;
+                }
                 QuartzUtils.createScheduleJob(scheduler, sysSchedule);
             }
         }

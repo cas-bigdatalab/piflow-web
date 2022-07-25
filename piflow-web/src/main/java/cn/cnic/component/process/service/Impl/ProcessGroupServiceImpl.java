@@ -138,7 +138,7 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
         }
         // find appInfo
         ProcessGroup processGroupByAppId = processGroupDomain.getProcessGroupByAppId(appID);
-        ProcessGroupVo processGroupVo = ProcessGroupUtils.processGroupPoToVo(processGroupByAppId);
+        ProcessGroupVo processGroupVo = ProcessGroupUtils.processGroupBasePoToVo(processGroupByAppId);
         if (null == processGroupVo) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("No data was queried");
 

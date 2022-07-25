@@ -1,7 +1,10 @@
 package cn.cnic.common.executor;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 
 import org.slf4j.Logger;
@@ -23,6 +26,8 @@ public class ServicesExecutor {
     private static ExecutorService logExecutorService;
 
     private static ScheduledExecutorService scheduledThreadPool;
+
+    public static Map<String, Future<?>> TASK_FUTURE = new HashMap<>();
 
     /* Initialize the thread pool */
     static {

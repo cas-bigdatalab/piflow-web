@@ -320,4 +320,53 @@ public class ProcessGroupUtils {
         }
         return processGroupVo;
     }
+
+    public static ProcessGroupVo processGroupBasePoToVo(ProcessGroup processGroup) {
+        if (null == processGroup) {
+            return null;
+        }
+        ProcessGroupVo processGroupVo = new ProcessGroupVo();
+
+        BeanUtils.copyProperties(processGroup, processGroupVo);
+        processGroupVo.setProgress(StringUtils.isNotBlank(processGroup.getProgress()) ? processGroup.getProgress() : "0.00");
+
+        //Process List Copy
+        List<Process> processList = processGroup.getProcessList();
+        if (null != processList && processList.size() > 0) {
+            List<ProcessVo> processVoList = new ArrayList<>();
+            ProcessVo processVo;
+            for (Process process : processList) {
+                if (null == process) {
+                    continue;
+                }
+                processVo = new ProcessVo();
+                processVo.setState(process.getState());
+                processVo.setStartTime(process.getStartTime());
+                processVo.setEndTime(process.getEndTime());
+                processVo.setPageId(process.getPageId());
+                processVoList.add(processVo);
+            }
+            processGroupVo.setProcessVoList(processVoList);
+        }
+
+        // ProcessGroup List Copy
+        List<ProcessGroup> processGroupList = processGroup.getProcessGroupList();
+        if (null != processGroupList && processGroupList.size() > 0) {
+            List<ProcessGroupVo> processGroupVoList = new ArrayList<>();
+            ProcessGroupVo processGroupVo_I;
+            for (ProcessGroup processGroup_i : processGroupList) {
+                if (null == processGroup_i) {
+                    continue;
+                }
+                processGroupVo_I = new ProcessGroupVo();
+                processGroupVo_I.setState(processGroup_i.getState());
+                processGroupVo_I.setStartTime(processGroup_i.getStartTime());
+                processGroupVo_I.setEndTime(processGroup_i.getEndTime());
+                processGroupVo_I.setPageId(processGroup_i.getPageId());
+                processGroupVoList.add(processGroupVo_I);
+            }
+            processGroupVo.setProcessGroupVoList(processGroupVoList);
+        }
+        return processGroupVo;
+    }
 }

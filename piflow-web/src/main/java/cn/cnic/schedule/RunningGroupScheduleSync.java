@@ -13,7 +13,6 @@ import cn.cnic.component.process.utils.ProcessGroupUtils;
 import cn.cnic.component.process.utils.ProcessUtils;
 import cn.cnic.component.schedule.domain.ScheduleDomain;
 import cn.cnic.component.schedule.entity.Schedule;
-import cn.cnic.component.schedule.mapper.ScheduleMapper;
 import cn.cnic.component.schedule.vo.ScheduleVo;
 import cn.cnic.third.service.ISchedule;
 import cn.cnic.third.vo.schedule.ThirdScheduleEntryVo;
@@ -50,8 +49,6 @@ public class RunningGroupScheduleSync extends QuartzJobBean {
         List<ScheduleVo> scheduleRunningList = scheduleDomain.getScheduleIdListByStateRunning(true, "sync");
         if (CollectionUtils.isNotEmpty(scheduleRunningList)) {
             ISchedule scheduleImpl = (ISchedule) SpringContextUtil.getBean("scheduleImpl");
-            ProcessDomain processDomain = (ProcessDomain) SpringContextUtil.getBean("processDomain");
-            ProcessGroupDomain processGroupDomain = (ProcessGroupDomain) SpringContextUtil.getBean("processGroupDomain");
             for (ScheduleVo scheduleVo : scheduleRunningList) {
                 if (null == scheduleVo) {
                     continue;
@@ -66,72 +63,85 @@ public class RunningGroupScheduleSync extends QuartzJobBean {
                 if (CollectionUtils.isEmpty(entryList)) {
                     return;
                 }
-                Runnable runnable = new Thread(new Thread() {
-                    @Override
-                    public void run() {
-                        for (ThirdScheduleEntryVo thirdScheduleEntryVo : entryList) {
-                            if (null == thirdScheduleEntryVo) {
-                                continue;
-                            }
-                            String scheduleEntryType = thirdScheduleEntryVo.getScheduleEntryType();
-                            if ("Flow".equals(scheduleEntryType)) {
-                                String processIdByAppId = processDomain.getProcessIdByAppId("sync", true, thirdScheduleEntryVo.getScheduleEntryId());
-                                if (StringUtils.isNotBlank(processIdByAppId)) {
-                                    continue;
-                                }
-                                Process processById = processDomain.getProcessById("sync", true, scheduleVo.getScheduleProcessTemplateId());
-                                if (processById == null) {
-                                    logger.warn("sync failed");
-                                    continue;
-                                }
-                                // copy and Create
-                                Process processCopy = ProcessUtils.copyProcess(processById, "sync", RunModeType.RUN, true);
-                                if (null == processCopy) {
-                                    logger.warn("sync failed");
-                                    continue;
-                                }
-                                try {
-                                    processCopy.setAppId(thirdScheduleEntryVo.getScheduleEntryId());
-                                    int addProcess = processDomain.addProcess(processCopy);
-                                    if (addProcess <= 0) {
-                                        logger.warn("sync failed");
-                                    }
-                                } catch (Exception e) {
-                                    logger.error("error:", e);
-                                }
-                                continue;
-                            }
-                            List<String> processGroupIdByAppId = processGroupDomain.getProcessGroupIdByAppId(thirdScheduleEntryVo.getScheduleEntryId());
-                            if (null != processGroupIdByAppId && processGroupIdByAppId.size() > 0) {
-                                continue;
-                            }
-                            ProcessGroup processGroupById = processGroupDomain.getProcessGroupById("sync", true, scheduleVo.getScheduleProcessTemplateId());
-                            if (null == processGroupById) {
-                                continue;
-                            }
-                            // copy and Create
-                            ProcessGroup copyProcessGroup = ProcessGroupUtils.copyProcessGroup(processGroupById, "sync", RunModeType.RUN, true);
-                            if (null == copyProcessGroup) {
-                                continue;
-                            }
-                            try {
-                                copyProcessGroup.setAppId(thirdScheduleEntryVo.getScheduleEntryId());
-                                int addProcessGroup = processGroupDomain.addProcessGroup(copyProcessGroup);
-                                if (addProcessGroup <= 0) {
-                                    logger.warn("sync failed");
-                                }
-                            } catch (Exception e) {
-                                logger.error("error:", e);
-                            }
-
-                        }
-                    }
-                });
-                ServicesExecutor.getServicesExecutorServiceService().execute(runnable);
+                ServicesExecutor.getServicesExecutorServiceService().execute(new ScheduleRunnable(scheduleVo.getScheduleProcessTemplateId(), entryList));
             }
 
         }
         logger.info("groupScheduleSync end : " + formatter.format(new Date()));
+    }
+
+    class ScheduleRunnable implements Runnable{
+        private String scheduleProcessTemplateId;
+        private List<ThirdScheduleEntryVo> entryList;
+        public ScheduleRunnable(String scheduleProcessTemplateId, List<ThirdScheduleEntryVo> entryList){
+            this.scheduleProcessTemplateId = scheduleProcessTemplateId;
+            this.entryList = entryList;
+        }
+        @Override
+        public void run() {
+            try {
+                ProcessDomain processDomain = (ProcessDomain) SpringContextUtil.getBean("processDomain");
+                ProcessGroupDomain processGroupDomain = (ProcessGroupDomain) SpringContextUtil.getBean("processGroupDomain");
+                for (ThirdScheduleEntryVo thirdScheduleEntryVo : entryList) {
+                    if (null == thirdScheduleEntryVo) {
+                        continue;
+                    }
+                    String scheduleEntryType = thirdScheduleEntryVo.getScheduleEntryType();
+                    if ("Flow".equals(scheduleEntryType)) {
+                        String processIdByAppId = processDomain.getProcessIdByAppId("sync", true, thirdScheduleEntryVo.getScheduleEntryId());
+                        if (StringUtils.isNotBlank(processIdByAppId)) {
+                            continue;
+                        }
+                        Process processById = processDomain.getProcessById("sync", true, scheduleProcessTemplateId);
+                        if (processById == null) {
+                            logger.warn("sync failed");
+                            continue;
+                        }
+                        // copy and Create
+                        Process processCopy = ProcessUtils.copyProcess(processById, "sync", RunModeType.RUN, true);
+                        if (null == processCopy) {
+                            logger.warn("sync failed");
+                            continue;
+                        }
+                        try {
+                            processCopy.setAppId(thirdScheduleEntryVo.getScheduleEntryId());
+                            int addProcess = processDomain.addProcess(processCopy);
+                            if (addProcess <= 0) {
+                                logger.warn("sync failed");
+                            }
+                        } catch (Exception e) {
+                            logger.error("error:", e);
+                        }
+                        continue;
+                    }
+                    List<String> processGroupIdByAppId = processGroupDomain.getProcessGroupIdByAppId(thirdScheduleEntryVo.getScheduleEntryId());
+                    if (null != processGroupIdByAppId && processGroupIdByAppId.size() > 0) {
+                        continue;
+                    }
+                    ProcessGroup processGroupById = processGroupDomain.getProcessGroupById("sync", true, scheduleProcessTemplateId);
+                    if (null == processGroupById) {
+                        continue;
+                    }
+                    // copy and Create
+                    ProcessGroup copyProcessGroup = ProcessGroupUtils.copyProcessGroup(processGroupById, "sync", RunModeType.RUN, true);
+                    if (null == copyProcessGroup) {
+                        continue;
+                    }
+                    try {
+                        copyProcessGroup.setAppId(thirdScheduleEntryVo.getScheduleEntryId());
+                        int addProcessGroup = processGroupDomain.addProcessGroup(copyProcessGroup);
+                        if (addProcessGroup <= 0) {
+                            logger.warn("sync failed");
+                        }
+                    } catch (Exception e) {
+                        logger.error("error:", e);
+                    }
+
+                }
+            } catch (Exception e) {
+                logger.error("update process group data error", e);
+            }
+        }
     }
 
 }

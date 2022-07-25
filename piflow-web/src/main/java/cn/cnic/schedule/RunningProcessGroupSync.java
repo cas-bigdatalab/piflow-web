@@ -9,8 +9,10 @@ import cn.cnic.component.process.mapper.ProcessGroupMapper;
 import cn.cnic.third.service.IFlow;
 import cn.cnic.third.service.IGroup;
 
+import lombok.Getter;
 import lombok.SneakyThrows;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.tomcat.util.threads.ThreadPoolExecutor;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
@@ -20,8 +22,10 @@ import org.springframework.stereotype.Component;
 
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.*;
 
 
 @Component
@@ -42,20 +46,35 @@ public class RunningProcessGroupSync extends QuartzJobBean {
         logger.info("processGroupSync start : " + formatter.format(new Date()));
         List<String> runningProcessGroup = processGroupMapper.getRunningProcessGroupAppId();
         if (CollectionUtils.isNotEmpty(runningProcessGroup)) {
-            if (null == SysParamsCache.MONITOR_THREAD_POOL_EXECUTOR) {
-                SysParamsCache.MONITOR_THREAD_POOL_EXECUTOR = ThreadPoolExecutorUtils.createThreadPoolExecutor(1, 5, 0L);;
-            }
             for (String groupId : runningProcessGroup) {
-                SysParamsCache.MONITOR_THREAD_POOL_EXECUTOR.execute(() -> {
-                    try {
-                        IGroup groupImpl = (IGroup) SpringContextUtil.getBean("groupImpl");
-                        groupImpl.updateFlowGroupByInterface(groupId);
-                    } catch (Exception e) {
-                        logger.error("update process group data error", e);
+                Future<?> future = ServicesExecutor.TASK_FUTURE.get(groupId);
+                if (null != future){
+                    if (false == future.isDone()){
+                        continue;
                     }
-                });
+                    ServicesExecutor.TASK_FUTURE.remove(groupId);
+                }
+                Future<?> submit = ServicesExecutor.getServicesExecutorServiceService().submit(new ProcessGroupCallable(groupId));
+                ServicesExecutor.TASK_FUTURE.put(groupId, submit);
             }
+
         }
         logger.info("processGroupSync end : " + formatter.format(new Date()));
     }
+
+    class ProcessGroupCallable implements Callable<String> {
+        private String groupId;
+
+        public ProcessGroupCallable(String groupId) {
+            this.groupId = groupId;
+        }
+
+        @Override
+        public String call() throws Exception {
+            IGroup groupImpl = (IGroup) SpringContextUtil.getBean("groupImpl");
+            groupImpl.updateFlowGroupByInterface(groupId);
+            return null;
+        }
+    }
+
 }

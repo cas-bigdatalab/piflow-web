@@ -126,4 +126,21 @@ public class QuartzUtils {
             logger.error("Error deleting scheduled task：", e);
         }
     }
+
+    /**
+     * Pause a scheduled task based on the task name
+     *
+     * @param scheduler scheduler
+     * @param jobName   Scheduled task name
+     * @throws SchedulerException
+     */
+    public static JobDetail getScheduleJobByJobName(Scheduler scheduler, String jobName) {
+        JobKey jobKey = JobKey.jobKey(jobName);
+        try {
+            return scheduler.getJobDetail(jobKey);
+        } catch (SchedulerException e) {
+            logger.error("Error suspending scheduled task:", e);
+        }
+        return null;
+    }
 }
