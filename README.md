@@ -35,7 +35,7 @@ To Build: mvn clean package -U -DskipTests -P prod -e
 [INFO] Tests are skipped.
 [INFO] 
 [INFO] --- maven-jar-plugin:3.0.2:jar (default-jar) @ piflow-web ---
-[INFO] Building jar: /home/nature/git_repository/piflow-web/piflow-web/target/piflow-web.jar
+[INFO] Building jar: /home/nature/git_repository/piflow-web/piflow-web/target/piflow-web.war
 [INFO] 
 [INFO] --- spring-boot-maven-plugin:2.0.4.RELEASE:repackage (default) @ piflow-web ---
 [INFO] ------------------------------------------------------------------------
@@ -57,13 +57,12 @@ To Run Piflow Web：
 
 - run piflow web by release version:
 
-  - download piflow_release: https://github.com/cas-bigdatalab/piflow-web/releases/tag/v1.2
+  - download piflow_release: https://github.com/cas-bigdatalab/piflow-web/releases/tag/v1.3
   - edit config.properties
   - sh start.sh
 - how to configure config.properties
 ```c
 
-server.port=6002
 server.servlet.session.timeout=3600
 
 syspara.interfaceUrlHead=http://127.0.0.1:8002
