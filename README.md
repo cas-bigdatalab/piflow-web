@@ -1,4 +1,4 @@
-![](https://github.com/cas-bigdatalab/piflow/blob/master/doc/piflow-logo2.png) 
+![](https://github.com/cas-bigdatalab/piflow/blob/master/doc/piflow-logo3.png) 
 
 [![GitHub releases](https://img.shields.io/github/release/cas-bigdatalab/piflow-web.svg)](https://github.com/cas-bigdatalab/piflow-web/releases)
 [![GitHub downloads](https://img.shields.io/github/downloads/cas-bigdatalab/piflow-web/total.svg)](https://github.com/cas-bigdatalab/piflow-web/releases)
