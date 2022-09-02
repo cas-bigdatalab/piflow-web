@@ -307,6 +307,26 @@ public class ProcessStopMapperProvider {
         return sqlStr;
     }
 
+    /**
+     * Query by id
+     *
+     * @param id
+     * @return
+     */
+    public static String getProcessStopById(String id) {
+        String sqlStr = "SELECT 0";
+        if (!StringUtils.isAnyEmpty(id)) {
+            SQL sql = new SQL();
+            sql.SELECT("*");
+            sql.FROM("flow_process_stop");
+            sql.WHERE("enable_flag = 1");
+            sql.WHERE("id = " + SqlUtils.preventSQLInjection(id));
+
+            sqlStr = sql.toString();
+        }
+        return sqlStr;
+    }
+
     public String updateProcessStop(ProcessStop processStop) {
         String sqlStr = "SELECT 0";
         if (this.preventSQLInjectionProcessStop(processStop)) {

@@ -88,6 +88,20 @@ public interface ProcessStopMapper {
     public ProcessStop getProcessStopByNameAndPid(String processId, String name);
 
     /**
+     * 根据id
+     *
+     * @param id
+     * @return
+     */
+    @SelectProvider(type = ProcessStopMapperProvider.class, method = "getProcessStopById")
+    @Results({
+            @Result(id = true, column = "id", property = "id"),
+            @Result(column = "id", property = "processStopPropertyList", many = @Many(select = "cn.cnic.component.process.mapper.ProcessStopPropertyMapper.getStopPropertyByProcessStopId", fetchType = FetchType.LAZY))
+
+    })
+    public ProcessStop getProcessStopById(String id);
+
+    /**
      * 修改ProcessStop
      *
      * @param processStop

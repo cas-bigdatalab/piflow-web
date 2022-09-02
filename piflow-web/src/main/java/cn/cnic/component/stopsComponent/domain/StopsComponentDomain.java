@@ -87,15 +87,15 @@ public class StopsComponentDomain {
         if (null == stopsComponent) {
             return 0;
         }
+        int affectedRows = 0;
         List<StopsComponentProperty> properties = stopsComponent.getProperties();
-        if (null == properties || properties.size() <= 0) {
-            return 0;
+        if (null != properties && properties.size() > 0) {
+            affectedRows = stopsComponentPropertyMapper.deleteStopsComponentPropertyByStopId(stopsComponent.getId());
         }
-        int deleteStopsComponentPropertyCount = stopsComponentPropertyMapper.deleteStopsComponentPropertyByStopId(stopsComponent.getId());
 
         int deleteStopsComponentRows = stopsComponentMapper.deleteStopsComponentById(stopsComponent.getId());
-
-        return deleteStopsComponentRows + deleteStopsComponentPropertyCount;
+        affectedRows += deleteStopsComponentRows;
+        return affectedRows;
     }
 
     public int addListStopsComponent(List<StopsComponent> stopsComponentList) {
@@ -155,7 +155,7 @@ public class StopsComponentDomain {
         logger.debug("Successful delete " + stopsComponent.getName() + " 's association!!!");
 
         // delete stop
-        int stopCount = deleteStopsComponentAndChildren(stopsComponent);
+        int affectedRows = deleteStopsComponentAndChildren(stopsComponent);
         logger.debug("Successful delete " + stopsComponent.getName() + " !!!");
 
         // delete group
@@ -171,7 +171,7 @@ public class StopsComponentDomain {
         }
         // Change the corresponding "datasource" data source to unavailable
         dataSourceMapper.updateDataSourceIsAvailableByBundle(stopsComponent.getBundel(),0);
-        return stopCount;
+        return affectedRows;
     }
 
     /**
