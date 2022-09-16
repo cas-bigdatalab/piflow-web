@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 
-import cn.cnic.base.utils.JsonUtils;
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.PageHelperUtils;
 import cn.cnic.base.utils.ReturnMapUtils;
@@ -85,11 +84,11 @@ public class ScheduleServiceImpl implements IScheduleService {
     public String addSchedule(String username, ScheduleVo scheduleVo) {
         // Judge whether the 'username' is empty
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         // Judge whether the 'scheduleVo' is empty
         if (null == scheduleVo) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("param is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
         }
         Schedule schedule = new Schedule();
         // Copy scheduleVo to schedule
@@ -128,17 +127,17 @@ public class ScheduleServiceImpl implements IScheduleService {
     public String getScheduleVoById(boolean isAdmin, String username, String id) {
         // Judge whether the 'username' is empty
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         // Judge whether the 'id' is empty
         if (StringUtils.isBlank(id)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("id is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("id"));
         }
         // search
         ScheduleVo scheduleVoById = scheduleDomain.getScheduleVoById(isAdmin, username, id);
         // Judge whether the query result is empty
         if (null == scheduleVoById) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("data is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_MSG());
         }
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("scheduleVo", scheduleVoById);
     }
@@ -147,15 +146,15 @@ public class ScheduleServiceImpl implements IScheduleService {
     public String updateSchedule(boolean isAdmin, String username, ScheduleVo scheduleVo) {
         // Judge whether the 'username' is empty
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         // Judge whether the 'scheduleVo' is empty
         if (null == scheduleVo) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("param is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
         }
         // Judge whether the 'scheduleVo Id' is empty
         if (StringUtils.isBlank(scheduleVo.getId())) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("id is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("id"));
         }
         // query
         Schedule scheduleById = scheduleDomain.getScheduleById(isAdmin, username, scheduleVo.getId());
@@ -174,7 +173,7 @@ public class ScheduleServiceImpl implements IScheduleService {
         scheduleById.setLastUpdateUser(username);
         int update = scheduleDomain.update(scheduleById);
         if (update <= 0) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("update failed");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.UPDATE_ERROR_MSG());
         }
         return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG());
     }
@@ -183,11 +182,11 @@ public class ScheduleServiceImpl implements IScheduleService {
     public String delSchedule(boolean isAdmin, String username, String id) {
         // Judge whether the 'username' is empty
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         // Judge whether the 'id' is empty
         if (StringUtils.isBlank(id)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("id is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("id"));
         }
         // query
         Schedule scheduleById = scheduleDomain.getScheduleById(isAdmin, username, id);
@@ -212,11 +211,11 @@ public class ScheduleServiceImpl implements IScheduleService {
     public String startSchedule(boolean isAdmin, String username, String id) {
         // Judge whether the 'id' is empty
         if (StringUtils.isBlank(id)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("id is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("id"));
         }
         // Judge whether the 'username' is empty
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         // query
         Schedule scheduleById = scheduleDomain.getScheduleById(isAdmin, username, id);
@@ -284,7 +283,7 @@ public class ScheduleServiceImpl implements IScheduleService {
         Map<String, Object> thirdScheduleMap = scheduleImpl.scheduleStart(scheduleById, process, processGroup);
         // Judge whether it is successful or not
         if (200 != (int) thirdScheduleMap.get("code")) {
-            return JsonUtils.toJsonNoException(thirdScheduleMap);
+            return ReturnMapUtils.toJson(thirdScheduleMap);
         }
 
         // update

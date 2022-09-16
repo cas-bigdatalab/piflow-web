@@ -172,14 +172,26 @@ public class ReturnMapUtils {
     public static String appendSucceededToJson(Map<String, Object> rtnMap) {
         return JsonUtils.toJsonNoException(appendSucceeded(rtnMap));
     }
-    
+
     /**
      * return jsonStr
      *
-     * @param rtnMap
-     * @return JsonStr
+     * @param entity
+     * @param <T>
+     * @return
      */
-    public static String mapToJson(Map<String, Object> rtnMap) {
-        return JsonUtils.toJsonNoException(rtnMap);
+    public static <T> String toJson(T entity) {
+        return JsonUtils.toJsonNoException(entity);
+    }
+
+    /**
+     * return jsonStr
+     *
+     * @param entity
+     * @param <T>
+     * @return
+     */
+    public static <T> String toFormatJson(T entity) {
+        return JsonUtils.toFormatJsonNoException(entity);
     }
 }

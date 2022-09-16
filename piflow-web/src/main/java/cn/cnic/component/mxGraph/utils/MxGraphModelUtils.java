@@ -53,7 +53,7 @@ public class MxGraphModelUtils {
         return mxGraphModel;
     }
 
-    public static MxGraphModel copyMxGraphModelAndNewNoIdAndUnlink(MxGraphModel mxGraphModel, boolean isAddId) {
+    public static MxGraphModel copyMxGraphModelAndNewNoIdAndUnlink(String username, MxGraphModel mxGraphModel, boolean isAddId, List<String> disablePageIds) {
         if (null == mxGraphModel) {
             return null;
         }
@@ -73,31 +73,30 @@ public class MxGraphModelUtils {
         mxGraphModelNew.setRoot(null);
         if (null != root && root.size() > 0) {
             List<MxCell> rootNew = new ArrayList<>();
-            for (MxCell mxCell : root) {
-                if (null == mxCell) {
-                    continue;
-                }
-                MxCell mxCellNew = new MxCell();
-                BeanUtils.copyProperties(mxCell, mxCellNew);
-                if (isAddId) {
-                    mxCellNew.setId(UUIDUtils.getUUID32());
-                } else {
-                    mxCellNew.setId(null);
-                }
-                mxCellNew.setMxGraphModel(mxGraphModelNew);
-                MxGeometry mxGeometry = mxCell.getMxGeometry();
-                if (null != mxGeometry) {
-                    MxGeometry mxGeometryNew = new MxGeometry();
-                    BeanUtils.copyProperties(mxGeometry, mxGeometryNew);
-                    if (isAddId) {
-                        mxGeometryNew.setId(UUIDUtils.getUUID32());
-                    } else {
-                        mxGeometryNew.setId(null);
+            if (null != disablePageIds) {
+                for (MxCell mxCell : root) {
+                    if (null == mxCell) {
+                        return null;
                     }
-                    mxGeometryNew.setMxCell(mxCellNew);
-                    mxCellNew.setMxGeometry(mxGeometryNew);
+                    if (disablePageIds.contains(mxCell.getPageId())) {
+                        continue;
+                    }
+                    MxCell mxCellNew = MxCellUtils.copyAndNewMxCell(username, mxCell, isAddId);
+                    if (null == mxCellNew) {
+                        continue;
+                    }
+                    mxCellNew.setMxGraphModel(mxGraphModelNew);
+                    rootNew.add(mxCellNew);
                 }
-                rootNew.add(mxCellNew);
+            } else {
+                for (MxCell mxCell : root) {
+                    MxCell mxCellNew = MxCellUtils.copyAndNewMxCell(username, mxCell, isAddId);
+                    if (null == mxCellNew) {
+                        continue;
+                    }
+                    mxCellNew.setMxGraphModel(mxGraphModelNew);
+                    rootNew.add(mxCellNew);
+                }
             }
             mxGraphModelNew.setRoot(rootNew);
         }

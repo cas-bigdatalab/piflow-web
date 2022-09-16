@@ -42,6 +42,7 @@ public class Stops extends BaseHibernateModelUUIDNoCorpAgentId {
     private List<Property> oldProperties = new ArrayList<Property>();
     private List<CustomizedProperty> customizedPropertyList = new ArrayList<>();
     private Boolean isDataSource = false;
+    private Boolean isDisabled = false;
 
     public String getStartTimes() {
         SimpleDateFormat sdf = new SimpleDateFormat(DateUtils.DATE_PATTERN_yyyy_MM_dd_HH_MM_ss);

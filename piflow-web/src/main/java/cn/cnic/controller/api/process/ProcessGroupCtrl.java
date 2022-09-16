@@ -3,6 +3,7 @@ package cn.cnic.controller.api.process;
 import java.util.HashMap;
 import java.util.Map;
 
+import cn.cnic.common.constant.MessageConfig;
 import cn.cnic.component.system.service.ILogHelperService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import cn.cnic.base.utils.JsonUtils;
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.component.process.service.IProcessGroupService;
@@ -228,7 +228,7 @@ public class ProcessGroupCtrl {
     public String getProcessIdByPageId(String processGroupId, String pageId) {
         
         if (StringUtils.isBlank(processGroupId) || StringUtils.isBlank(pageId)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("processGroupID is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
         }
         String processId = processGroupServiceImpl.getProcessIdByPageId(processGroupId, pageId);
         String processGroupIdParents = processGroupServiceImpl.getProcessGroupIdByPageId(processGroupId, pageId);
@@ -238,12 +238,12 @@ public class ProcessGroupCtrl {
         } else if (StringUtils.isNotBlank(processGroupIdParents)) {
             nodeType = "flowGroup";
         } else {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("No query found");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_MSG());
         }
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededCustomParam("nodeType", nodeType);
         rtnMap.put("processId", processId);
         rtnMap.put("processGroupId", processGroupIdParents);
-        return JsonUtils.toJsonNoException(rtnMap);
+        return ReturnMapUtils.toJson(rtnMap);
 
     }
 

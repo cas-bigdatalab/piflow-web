@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 
-import cn.cnic.base.utils.JsonUtils;
 import cn.cnic.base.utils.PageHelperUtils;
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.component.process.entity.Process;
@@ -68,7 +67,7 @@ public class ProcessAndProcessGroupServiceImpl implements IProcessAndProcessGrou
     @Override
     public String getAppInfoList(String[] taskAppIds, String[] groupAppIds) {
         if ((null == taskAppIds || taskAppIds.length <= 0) && (null == groupAppIds || groupAppIds.length <= 0)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Incoming parameter is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
         }
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
         if (null != taskAppIds && taskAppIds.length > 0) {
@@ -99,7 +98,7 @@ public class ProcessAndProcessGroupServiceImpl implements IProcessAndProcessGrou
             }
             rtnMap.put("groupAppInfo",groupAppInfoMap);
         }
-        return JsonUtils.toJsonNoException(rtnMap);
+        return ReturnMapUtils.toJson(rtnMap);
     }
 
 }

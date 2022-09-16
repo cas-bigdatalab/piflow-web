@@ -1,25 +1,24 @@
 package cn.cnic.component.process.service.Impl;
 
+import cn.cnic.component.process.domain.ProcessDomain;
 import cn.cnic.component.stopsComponent.domain.StopsComponentDomain;
-import cn.cnic.component.stopsComponent.domain.StopsComponentManageDomain;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.component.process.entity.ProcessStop;
-import cn.cnic.component.process.mapper.ProcessStopMapper;
 import cn.cnic.component.process.service.IProcessStopService;
 import cn.cnic.component.process.utils.ProcessUtils;
 import cn.cnic.component.process.vo.ProcessStopVo;
 import cn.cnic.component.stopsComponent.entity.StopsComponent;
-import cn.cnic.component.stopsComponent.mapper.StopsComponentMapper;
+
 
 @Service
 public class ProcessStopServiceImpl implements IProcessStopService {
 
     @Autowired
-    private ProcessStopMapper processStopMapper;
+    private ProcessDomain processDomain;
 
     @Autowired
     private StopsComponentDomain stopsComponentDomain;
@@ -36,7 +35,7 @@ public class ProcessStopServiceImpl implements IProcessStopService {
         if (StringUtils.isAnyEmpty(processId, pageId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Parameter passed in incorrectly");
         }
-        ProcessStop processStopByPageId = processStopMapper.getProcessStopByPageIdAndPageId(processId, pageId);
+        ProcessStop processStopByPageId = processDomain.getProcessStopByPageIdAndPageId(processId, pageId);
         if (null == processStopByPageId) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("process stop data is null");
         }

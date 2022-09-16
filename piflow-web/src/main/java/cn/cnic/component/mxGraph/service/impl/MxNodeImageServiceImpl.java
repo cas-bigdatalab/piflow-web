@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import cn.cnic.common.constant.MessageConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,17 +34,17 @@ public class MxNodeImageServiceImpl implements IMxNodeImageService {
     @Override
     public String uploadNodeImage(String username, MultipartFile file, String imageType) throws Exception {
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         if (StringUtils.isBlank(imageType)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("imageType is null");
         }
         if (file.isEmpty()) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Upload failed, please try again later");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.UPLOAD_FAILED_MSG());
         }
         Map<String, Object> uploadMap = FileUtils.uploadRtnMap(file, SysParamsCache.IMAGES_PATH, null);
         if (null == uploadMap || uploadMap.isEmpty()) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Upload failed, please try again later");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.UPLOAD_FAILED_MSG());
         }
         Integer code = (Integer) uploadMap.get("code");
         if (500 == code) {
@@ -65,7 +66,7 @@ public class MxNodeImageServiceImpl implements IMxNodeImageService {
     @Override
     public String getMxNodeImageList(String username, String imageType) {
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         if (StringUtils.isBlank(imageType)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("imageType is null");

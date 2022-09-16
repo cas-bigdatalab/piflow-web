@@ -491,4 +491,8 @@ public class ProcessDomain {
         return processStopMapper.getProcessStopByNameAndPid(processId, name);
     }
 
+    public String getProcessAppIdByStopId(String stopsId) {
+        return processStopMapper.getProcessAppIdByStopId(stopsId);
+    }
+
 }

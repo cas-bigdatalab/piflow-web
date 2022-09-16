@@ -1,6 +1,5 @@
 package cn.cnic.component.stopsComponent.service.impl;
 
-import cn.cnic.base.utils.JsonUtils;
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.common.constant.MessageConfig;
 import cn.cnic.component.dataSource.domain.DataSourceDomain;
@@ -54,7 +53,7 @@ public class StopsComponentServiceImpl implements IStopsComponentService {
             stopsVoList.add(stopsVo);
         }
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededCustomParam("dataSourceStopList", stopsVoList);
-        return JsonUtils.toFormatJsonNoException(rtnMap);
+        return ReturnMapUtils.toFormatJson(rtnMap);
     }
 
     @Override
@@ -70,7 +69,7 @@ public class StopsComponentServiceImpl implements IStopsComponentService {
                 propertiesVo.add(propertyTemplateVo);
             }
             Map<String, Object> rtnMap = ReturnMapUtils.setSucceededCustomParam("dataSourceStopPropertyList", propertiesVo);
-            return JsonUtils.toFormatJsonNoException(rtnMap);
+            return ReturnMapUtils.toFormatJson(rtnMap);
         }
     }
 }

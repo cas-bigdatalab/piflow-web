@@ -22,7 +22,7 @@ public class StatisticTest extends ApplicationTests {
     @Rollback(false)
     public void testGetFlowStatisticInfo() {
         Map<String,String> result = statisticServiceImpl.getFlowStatisticInfo();
-        //JsonUtils.toJsonNoException(setSucceededCustomParam(key, value));
+        //return ReturnMapUtils.toJson(setSucceededCustomParam(key, value));
         String str = ReturnMapUtils.setSucceededCustomParamRtnJsonStr("flowResourceInfo", result);
         System.out.println(str);
 
@@ -32,7 +32,7 @@ public class StatisticTest extends ApplicationTests {
     @Rollback(false)
     public void testGetGroupStatisticInfo() {
         Map<String,String> result = statisticServiceImpl.getGroupStatisticInfo();
-        //JsonUtils.toJsonNoException(setSucceededCustomParam(key, value));
+        //return ReturnMapUtils.toJson(setSucceededCustomParam(key, value));
         String str = ReturnMapUtils.setSucceededCustomParamRtnJsonStr("groupResourceInfo", result);
         System.out.println(str);
     }
@@ -41,7 +41,7 @@ public class StatisticTest extends ApplicationTests {
     @Rollback(false)
     public void testGetScheduleStatisticInfo() {
         Map<String,String> result = statisticServiceImpl.getScheduleStatisticInfo();
-        //JsonUtils.toJsonNoException(setSucceededCustomParam(key, value));
+        //return ReturnMapUtils.toJson(setSucceededCustomParam(key, value));
         String str = ReturnMapUtils.setSucceededCustomParamRtnJsonStr("scheduleResourceInfo", result);
         System.out.println(str);
     }
@@ -50,7 +50,7 @@ public class StatisticTest extends ApplicationTests {
     @Rollback(false)
     public void testGetTemplateAndDataSourceStatisticInfo() {
         Map<String,String> result = statisticServiceImpl.getTemplateAndDataSourceStatisticInfo();
-        //JsonUtils.toJsonNoException(setSucceededCustomParam(key, value));
+        //return ReturnMapUtils.toJson(setSucceededCustomParam(key, value));
         String str = ReturnMapUtils.setSucceededCustomParamRtnJsonStr("tempalateAndDataSourceResourceInfo", result);
         System.out.println(str);
 
@@ -60,7 +60,7 @@ public class StatisticTest extends ApplicationTests {
     @Rollback(false)
     public void testGetStopStatisticInfo() {
         Map<String,String> result = statisticServiceImpl.getStopStatisticInfo();
-        //JsonUtils.toJsonNoException(setSucceededCustomParam(key, value));
+        //return ReturnMapUtils.toJson(setSucceededCustomParam(key, value));
         String str = ReturnMapUtils.setSucceededCustomParamRtnJsonStr("stopResourceInfo", result);
         System.out.println(str);
 

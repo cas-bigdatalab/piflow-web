@@ -43,7 +43,7 @@ public class NoteBookServiceImpl implements INoteBookService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
         }
         if (StringUtils.isBlank(noteBookVo.getName())) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.DATA_ERROR_MSG());
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("name"));
         }
         NoteBook noteBook = null;
         String noteBookVoId = noteBookVo.getId();
@@ -156,7 +156,7 @@ public class NoteBookServiceImpl implements INoteBookService {
         }
         Map<String, Object> rtnMap = livyImpl.startSessions();
         if (null == rtnMap || (int)rtnMap.get(ReturnMapUtils.KEY_CODE) != 200) {
-        	return ReturnMapUtils.mapToJson(rtnMap);
+        	return ReturnMapUtils.toJson(rtnMap);
         }
         String sessionsId = rtnMap.get("sessionsId").toString();
     	noteBook.setSessionsId(sessionsId);
@@ -164,7 +164,7 @@ public class NoteBookServiceImpl implements INoteBookService {
     	noteBook.setLastUpdateUser(username);
     	int affectedRows = noteBookDomain.updateNoteBook(noteBook);
     	if (affectedRows > 0) {
-    		return ReturnMapUtils.mapToJson(rtnMap);
+    		return ReturnMapUtils.toJson(rtnMap);
     	}
     	livyImpl.stopSessions(sessionsId);
         return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.INTERFACE_CALL_SUCCEEDED_SAVE_ERROR_MSG());
@@ -187,14 +187,14 @@ public class NoteBookServiceImpl implements INoteBookService {
         }
         NoteBook noteBook = noteBookDomain.getNoteBookById(isAdmin, username, noteBookId);
         if (null == noteBook) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.DATA_ERROR_MSG());
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_MSG());
         }
         String sessionsId = noteBook.getSessionsId();
         if (StringUtils.isBlank(sessionsId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_XXX_IS_NULL_MSG("sessionsId"));
         }
         Map<String, Object> rtnMap = livyImpl.getSessionsState(sessionsId);
-        return ReturnMapUtils.mapToJson(rtnMap);
+        return ReturnMapUtils.toJson(rtnMap);
     }
 
     /**
@@ -214,7 +214,7 @@ public class NoteBookServiceImpl implements INoteBookService {
         }
         NoteBook noteBook = noteBookDomain.getNoteBookById(isAdmin, username, noteBookId);
         if (null == noteBook) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.DATA_ERROR_MSG());
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_MSG());
         }
         String sessionsId = noteBook.getSessionsId();
         if (StringUtils.isBlank(sessionsId)) {
@@ -222,14 +222,14 @@ public class NoteBookServiceImpl implements INoteBookService {
         }
         Map<String, Object> rtnMap = livyImpl.stopSessions(sessionsId);
         if (null == rtnMap || (int)rtnMap.get(ReturnMapUtils.KEY_CODE) != 200) {
-        	return ReturnMapUtils.mapToJson(rtnMap);
+        	return ReturnMapUtils.toJson(rtnMap);
         }
         noteBook.setSessionsId(null);
     	noteBook.setLastUpdateDttm(new Date());
     	noteBook.setLastUpdateUser(username);
     	int affectedRows = noteBookDomain.updateNoteBook(noteBook);
     	if (affectedRows > 0) {
-    		return ReturnMapUtils.mapToJson(rtnMap);
+    		return ReturnMapUtils.toJson(rtnMap);
     	}
         return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.INTERFACE_CALL_SUCCEEDED_SAVE_ERROR_MSG());
     }
@@ -244,6 +244,6 @@ public class NoteBookServiceImpl implements INoteBookService {
     @Override
     public String getAllNoteBookRunning(String username, boolean isAdmin) {
         Map<String, Object> rtnMap = livyImpl.getAllSessions();
-        return ReturnMapUtils.mapToJson(rtnMap);
+        return ReturnMapUtils.toJson(rtnMap);
     }
 }

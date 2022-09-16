@@ -1,9 +1,11 @@
 package cn.cnic.component.flow.service.impl;
 
+import java.rmi.MarshalException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import cn.cnic.common.constant.MessageConfig;
 import cn.cnic.component.flow.domain.FlowDomain;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -34,15 +36,15 @@ public class PathsServiceImpl implements IPathsService {
     @Override
     public String getPathsByFlowIdAndPageId(String flowId, String pageId) {
         if (StringUtils.isBlank(flowId) || StringUtils.isBlank(pageId)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("The parameter'fid'or'id' is empty");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
         }
         List<Paths> pathsList = flowDomain.getPaths(flowId, pageId, null, null);
         if (null == pathsList || pathsList.isEmpty()) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("No'paths'information was queried");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_PATH_DATA_MSG());
         }
         Paths paths = pathsList.get(0);
         if (null == paths) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("No'paths'information was queried");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_PATH_DATA_MSG());
         }
         Stops stopFrom = null;
         Stops stopTo = null;

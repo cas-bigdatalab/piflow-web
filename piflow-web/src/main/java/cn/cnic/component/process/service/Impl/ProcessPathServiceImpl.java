@@ -9,7 +9,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import cn.cnic.base.utils.JsonUtils;
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.common.Eunm.PortType;
 import cn.cnic.common.Eunm.RunModeType;
@@ -53,7 +52,7 @@ public class ProcessPathServiceImpl implements IProcessPathService {
         // Find ProcessPath
         ProcessPath processPathByPageId = processPathMapper.getProcessPathByPageIdAndPid(processId, pageId);
         if (null == processPathByPageId) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("No Data");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_MSG());
         }
         // get from PageId and to PageId
         String[] pageIds = new String[2];

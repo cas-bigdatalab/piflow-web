@@ -165,88 +165,99 @@ public class ProcessUtils {
     }
 
     public static Process flowToProcess(Flow flow, String username, boolean isAddId) {
-        Process process = null;
-        if (null != flow) {
-            process = new Process();
-            List<FlowGlobalParams> flowGlobalParamsList = flow.getFlowGlobalParamsList();
-            process.setFlowGlobalParamsList(flowGlobalParamsList);
-            // Copy flow information to process
-            BeanUtils.copyProperties(flow, process);
-            // Set basic information
-            process = initProcessBasicPropertiesNoId(process, username);
-            if (isAddId) {
-                process.setId(UUIDUtils.getUUID32());
-            } else {
-                process.setId(null);
-            }
-            FlowGroup flowGroup = flow.getFlowGroup();
-            //Set default
-            process.setProcessParentType(ProcessParentType.PROCESS);
-            if (null != flowGroup) {
-                process.setProcessParentType(ProcessParentType.GROUP);
-            }
-            // Take out the flow board information of the flow
-            MxGraphModel mxGraphModel = flow.getMxGraphModel();
-            MxGraphModel mxGraphModelProcess = MxGraphModelUtils.copyMxGraphModelAndNewNoIdAndUnlink(mxGraphModel, isAddId);
-            mxGraphModelProcess = MxGraphModelUtils.initMxGraphModelBasicPropertiesNoId(mxGraphModelProcess, username, isAddId);
-            // add link
-            mxGraphModelProcess.setProcess(process);
-            process.setMxGraphModel(mxGraphModelProcess);
-
-            // set flowId
-            process.setFlowId(flow.getId());
-            // Stops to remove flow
-            List<Stops> stopsList = flow.getStopsList();
-            // stopsList isEmpty
-            if (null != stopsList && stopsList.size() > 0) {
-                // List of stop of process
-                List<ProcessStop> processStopList = new ArrayList<ProcessStop>();
-                // Loop stopsList
-                for (Stops stops : stopsList) {
-                    ProcessStop processStop = stopsToProcessStop(stops, username, isAddId);
-                    if(null == processStop) {
-                        continue;
-                    }
-                    // Associate foreign key
-                    processStop.setProcess(process);
-                    processStopList.add(processStop);
-                }
-                process.setProcessStopList(processStopList);
-            }
-            // Get the paths information of flow
-            List<Paths> pathsList = flow.getPathsList();
-            // isEmpty
-            if (null != pathsList && pathsList.size() > 0) {
-                List<ProcessPath> processPathList = new ArrayList<>();
-                // Loop paths information
-                for (Paths paths : pathsList) {
-                    // isEmpty
-                    if (null == paths) {
-                        continue;
-                    }
-                    ProcessPath processPath = new ProcessPath();
-                    // Copy paths information into processPath
-                    BeanUtils.copyProperties(paths, processPath);
-                    // Set basic information
-                    processPath = ProcessPathUtils.initProcessPathBasicPropertiesNoId(processPath, username);
-                    if (isAddId) {
-                        processPath.setId(UUIDUtils.getUUID32());
-                    } else {
-                        processPath.setId(null);
-                    }
-                    // Associated foreign key
-                    processPath.setProcess(process);
-                    processPathList.add(processPath);
-                }
-                process.setProcessPathList(processPathList);
-            }
+        if (null == flow) {
+            return null;
         }
+        Process process = new Process();
+        List<FlowGlobalParams> flowGlobalParamsList = flow.getFlowGlobalParamsList();
+        process.setFlowGlobalParamsList(flowGlobalParamsList);
+        // Copy flow information to process
+        BeanUtils.copyProperties(flow, process);
+        // Set basic information
+        process = initProcessBasicPropertiesNoId(process, username);
+        if (isAddId) {
+            process.setId(UUIDUtils.getUUID32());
+        } else {
+            process.setId(null);
+        }
+        FlowGroup flowGroup = flow.getFlowGroup();
+        //Set default
+        process.setProcessParentType(ProcessParentType.PROCESS);
+        if (null != flowGroup) {
+            process.setProcessParentType(ProcessParentType.GROUP);
+        }
+        // set flowId
+        process.setFlowId(flow.getId());
+        // Stops to remove flow
+        List<Stops> stopsList = flow.getStopsList();
+        // disable stops pageIds
+        List<String> disablePageIds = new ArrayList<>();
+        // stopsList isEmpty
+        if (null != stopsList && stopsList.size() > 0) {
+            // List of stop of process
+            List<ProcessStop> processStopList = new ArrayList<ProcessStop>();
+            // Loop stopsList
+            for (Stops stops : stopsList) {
+                ProcessStop processStop = stopsToProcessStop(stops, username, isAddId);
+                if (null == processStop) {
+                   if (null != stops && null != stops.getIsDisabled() && stops.getIsDisabled()) {
+                       disablePageIds.add(stops.getPageId());
+                   }
+                    continue;
+                }
+                // Associate foreign key
+                processStop.setProcess(process);
+                processStopList.add(processStop);
+            }
+            process.setProcessStopList(processStopList);
+        }
+        // Get the paths information of flow
+        List<Paths> pathsList = flow.getPathsList();
+        // isEmpty
+        if (null != pathsList && pathsList.size() > 0) {
+            List<ProcessPath> processPathList = new ArrayList<>();
+            // Loop paths information
+            for (Paths paths : pathsList) {
+                // isEmpty
+                if (null == paths) {
+                    continue;
+                }
+                if (disablePageIds.contains(paths.getFrom()) || disablePageIds.contains(paths.getTo())) {
+                    continue;
+                }
+                ProcessPath processPath = new ProcessPath();
+                // Copy paths information into processPath
+                BeanUtils.copyProperties(paths, processPath);
+                // Set basic information
+                processPath = ProcessPathUtils.initProcessPathBasicPropertiesNoId(processPath, username);
+                if (isAddId) {
+                    processPath.setId(UUIDUtils.getUUID32());
+                } else {
+                    processPath.setId(null);
+                }
+                // Associated foreign key
+                processPath.setProcess(process);
+                processPathList.add(processPath);
+            }
+            process.setProcessPathList(processPathList);
+        }
+        // Take out the flow board information of the flow
+        MxGraphModel mxGraphModel = flow.getMxGraphModel();
+        MxGraphModel mxGraphModelProcess = MxGraphModelUtils.copyMxGraphModelAndNewNoIdAndUnlink(username, mxGraphModel, isAddId, disablePageIds);
+        mxGraphModelProcess = MxGraphModelUtils.initMxGraphModelBasicPropertiesNoId(mxGraphModelProcess, username, isAddId);
+        // add link
+        mxGraphModelProcess.setProcess(process);
+        process.setMxGraphModel(mxGraphModelProcess);
         return process;
     }
 
     public static ProcessStop stopsToProcessStop(Stops stops, String username, boolean isAddId) {
         // isEmpty
         if (null == stops) {
+            return null;
+        }
+        // isDisable
+        if (null != stops.getIsDisabled() && stops.getIsDisabled()) {
             return null;
         }
         ProcessStop processStop = new ProcessStop();
@@ -376,7 +387,7 @@ public class ProcessUtils {
 
         // copy processMxGraphModel
         MxGraphModel processMxGraphModel = process.getMxGraphModel();
-        MxGraphModel copyMxGraphModel = MxGraphModelUtils.copyMxGraphModelAndNewNoIdAndUnlink(processMxGraphModel, isAddId);
+        MxGraphModel copyMxGraphModel = MxGraphModelUtils.copyMxGraphModelAndNewNoIdAndUnlink(username, processMxGraphModel, isAddId, null);
         copyMxGraphModel = MxGraphModelUtils.initMxGraphModelBasicPropertiesNoId(copyMxGraphModel, username,isAddId);
         // add link
         copyMxGraphModel.setProcess(copyProcess);

@@ -14,7 +14,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import cn.cnic.base.utils.JsonUtils;
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.component.flow.entity.FlowGroup;
 import cn.cnic.component.flow.entity.FlowGroupPaths;
@@ -25,8 +24,6 @@ import cn.cnic.component.flow.vo.FlowGroupVo;
 
 @Service
 public class FlowGroupPathsServiceImpl implements IFlowGroupPathsService {
-
-    private Logger logger = LoggerUtil.getLogger();
 
     private final FlowGroupDomain flowGroupDomain;
     private final FlowDomain flowDomain;
@@ -44,13 +41,9 @@ public class FlowGroupPathsServiceImpl implements IFlowGroupPathsService {
         if (StringUtils.isBlank(flowGroupId) || StringUtils.isBlank(pageId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
         }
-        Map<String, Object> rtnMap = new HashMap<>();
-        rtnMap.put("code", 500);
         List<FlowGroupPaths> flowGroupPathsList = flowGroupDomain.getFlowGroupPaths(flowGroupId, pageId, null, null);
         if (null == flowGroupPathsList || flowGroupPathsList.size() <= 0 || null == flowGroupPathsList.get(0)) {
-            rtnMap.put("errorMsg", "No'paths'information was queried");
-            logger.warn("No'paths'information was queried");
-            return JsonUtils.toJsonNoException(rtnMap);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_PATH_DATA_MSG());
         }
         FlowGroupPaths flowGroupPaths = flowGroupPathsList.get(0);
         String fromName = null;
@@ -81,10 +74,7 @@ public class FlowGroupPathsServiceImpl implements IFlowGroupPathsService {
         if (StringUtils.isBlank(flowGroupPathsVo.getOutport())) {
             flowGroupPathsVo.setOutport("default");
         }
-        rtnMap.put("code", 200);
-        rtnMap.put("queryInfo", flowGroupPathsVo);
-        rtnMap.put("errorMsg", "Success");
-        return JsonUtils.toJsonNoException(rtnMap);
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("queryInfo", flowGroupPathsVo);
 
     }
 }

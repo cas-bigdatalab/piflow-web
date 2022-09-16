@@ -139,7 +139,7 @@ public class SysScheduleMapperProvider {
      * @return
      */
     public String getSysScheduleList(boolean isAdmin, String param) {
-        String sqlStr = "SELECT * FROM sys_schedule WHERE id IS NULL";;
+        String sqlStr = "SELECT * FROM sys_schedule WHERE id IS NULL";
         if (isAdmin) {
             StringBuffer sqlStrbuf = new StringBuffer();
             sqlStrbuf.append("SELECT * ");

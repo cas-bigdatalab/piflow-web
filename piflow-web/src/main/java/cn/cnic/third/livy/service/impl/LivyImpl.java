@@ -87,7 +87,7 @@ public class LivyImpl implements ILivy {
     	Map<String, Object> jsonMap = new HashMap<>();
     	jsonMap.put("kind", "spark");
     	jsonMap.put("code", code);
-    	String json = ReturnMapUtils.mapToJson(jsonMap);
+    	String json = ReturnMapUtils.toJson(jsonMap);
         String url = ApiConfig.getLivySessionsUrl() + "/" + sessionsId + "/statements";
         String doPost = HttpUtils.doPost(url, json, null);
         logger.info("return msg: " + doPost);

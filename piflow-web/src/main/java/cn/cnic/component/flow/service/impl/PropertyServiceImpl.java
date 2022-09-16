@@ -2,6 +2,7 @@ package cn.cnic.component.flow.service.impl;
 
 import cn.cnic.base.utils.*;
 import cn.cnic.common.Eunm.PortType;
+import cn.cnic.common.constant.MessageConfig;
 import cn.cnic.component.flow.domain.FlowDomain;
 import cn.cnic.component.flow.entity.Paths;
 import cn.cnic.component.flow.entity.Property;
@@ -19,6 +20,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.MacSpi;
 import java.util.*;
 
 
@@ -38,19 +40,19 @@ public class PropertyServiceImpl implements IPropertyService {
     @Override
     public String queryAll(String fid, String stopPageId) {
         if (StringUtils.isBlank(fid)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("flowId is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("fid"));
         }
         if (StringUtils.isBlank(stopPageId)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("stopPageId is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("stopPageId"));
         }
         Stops stops = flowDomain.getStopsByPageId(fid, stopPageId);
         if (null == stops) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("data is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_MSG());
         }
         StopsComponent stopsComponentByBundle = stopsComponentDomain.getStopsComponentByBundle(stops.getBundel());
         StopsVo stopsVo = StopsUtils.stopPoToVo(stops, stopsComponentByBundle);
         if (null == stopsVo) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("data is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_MSG());
         }
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("stopsVo", stopsVo);
     }
@@ -58,10 +60,10 @@ public class PropertyServiceImpl implements IPropertyService {
     @Override
     public String updatePropertyList(String username, String[] content) {
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("user Illegality");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         if (null == content || content.length <= 0) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("param is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
         }
         int updateStops = 0;
         for (String string : content) {
@@ -77,24 +79,24 @@ public class PropertyServiceImpl implements IPropertyService {
         if (updateStops > 0) {
             return ReturnMapUtils.setSucceededMsgRtnJsonStr("The stops attribute was successfully modified. counts:" + updateStops);
         } else {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("update failed");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.UPDATE_ERROR_MSG());
         }
     }
 
     @Override
     public String updateProperty(String username, String content, String id) {
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("user Illegality");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         if (StringUtils.isBlank(id)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("id is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
         }
         int updateStops = flowDomain.updatePropertyCustomValue(username, content, id);
         if (updateStops > 0) {
             logger.info("The stops attribute was successfully modified:" + updateStops);
             return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("value", content);
         } else {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("save failed");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG());
         }
     }
 
@@ -142,39 +144,40 @@ public class PropertyServiceImpl implements IPropertyService {
         // the same modification operation is performed, and the new 'stops' attribute is added.
         if (propertiesTemplateList.size() > 0 && property.size() > 0) {
             for (StopsComponentProperty pt : propertiesTemplateList) {
-                if (null != pt) {
-                    Property ptname = PropertyMap.get(pt.getName());
-                    if (ptname != null) {
-                        PropertyMap.remove(pt.getName());
-                        Property update = new Property();
-                        String name = ptname.getName();
-                        Date crtDttm = ptname.getCrtDttm();
-                        String crtUser = ptname.getCrtUser();
-                        String displayName = pt.getDisplayName();
-                        String description = pt.getDescription();
-                        BeanUtils.copyProperties(pt, update);
-                        update.setName(name);
-                        update.setCrtDttm(crtDttm);
-                        update.setCrtUser(crtUser);
-                        update.setDisplayName(displayName);
-                        update.setDescription(description);
-                        update.setId(ptname.getId());
-                        flowDomain.updateStopsProperty(update);
-                    } else {
-                        logger.info("===============The 'stop' attribute is inconsistent with the template and needs to be added=================");
-                        Property newProperty = new Property();
-                        String displayName = pt.getDisplayName();
-                        String description = pt.getDescription();
-                        BeanUtils.copyProperties(pt, newProperty);
-                        newProperty.setId(UUIDUtils.getUUID32());
-                        newProperty.setCrtDttm(new Date());
-                        newProperty.setCrtUser(username);
-                        newProperty.setEnableFlag(true);
-                        newProperty.setDisplayName(displayName);
-                        newProperty.setDescription(description);
-                        newProperty.setStops(stopsList);
-                        addPropertyList.add(newProperty);
-                    }
+                if (null == pt) {
+                    continue;
+                }
+                Property ptname = PropertyMap.get(pt.getName());
+                if (ptname != null) {
+                    PropertyMap.remove(pt.getName());
+                    Property update = new Property();
+                    String name = ptname.getName();
+                    Date crtDttm = ptname.getCrtDttm();
+                    String crtUser = ptname.getCrtUser();
+                    String displayName = pt.getDisplayName();
+                    String description = pt.getDescription();
+                    BeanUtils.copyProperties(pt, update);
+                    update.setName(name);
+                    update.setCrtDttm(crtDttm);
+                    update.setCrtUser(crtUser);
+                    update.setDisplayName(displayName);
+                    update.setDescription(description);
+                    update.setId(ptname.getId());
+                    flowDomain.updateStopsProperty(update);
+                } else {
+                    logger.info("===============The 'stop' attribute is inconsistent with the template and needs to be added=================");
+                    Property newProperty = new Property();
+                    String displayName = pt.getDisplayName();
+                    String description = pt.getDescription();
+                    BeanUtils.copyProperties(pt, newProperty);
+                    newProperty.setId(UUIDUtils.getUUID32());
+                    newProperty.setCrtDttm(new Date());
+                    newProperty.setCrtUser(username);
+                    newProperty.setEnableFlag(true);
+                    newProperty.setDisplayName(displayName);
+                    newProperty.setDescription(description);
+                    newProperty.setStops(stopsList);
+                    addPropertyList.add(newProperty);
                 }
             }
             if (addPropertyList.size() > 0 && !addPropertyList.isEmpty()) {
@@ -184,81 +187,72 @@ public class PropertyServiceImpl implements IPropertyService {
             if (null != PropertyMap && PropertyMap.size() > 0)
                 for (String pageid : PropertyMap.keySet()) {
                     Property deleteProperty = PropertyMap.get(pageid);
-                    if (null != deleteProperty) {
-                        logger.info("===============The 'stop' attribute is inconsistent with the template and needs to be deleted.=================");
-                        flowDomain.deleteStopsPropertyById(deleteProperty.getId());
+                    if (null == deleteProperty) {
+                        continue;
                     }
+                    logger.info("===============The 'stop' attribute is inconsistent with the template and needs to be deleted.=================");
+                    flowDomain.deleteStopsPropertyById(deleteProperty.getId());
                 }
         }
     }
 
     @Override
     public String saveOrUpdateRoutePath(String username, UpdatePathRequest updatePathRequest) {
-        Map<String, Object> rtnMap = new HashMap<>();
-        rtnMap.put("code", 500);
         String[] checkFields = new String[]{"flowId", "pathLineId", "sourceId", "targetId"};
         if (CheckFiledUtils.checkObjSpecifiedFieldsIsNull(updatePathRequest, checkFields)) {
-            rtnMap.put("errorMsg", "Required field is empty");
-            logger.info("Required field is empty");
-            return JsonUtils.toJsonNoException(rtnMap);
-        } else {
-            String flowId = updatePathRequest.getFlowId();
-            String pathLineId = updatePathRequest.getPathLineId();
-            String sourceId = updatePathRequest.getSourceId();
-            String sourcePortVal = updatePathRequest.getSourcePortVal();
-            String targetId = updatePathRequest.getTargetId();
-            String targetPortVal = updatePathRequest.getTargetPortVal();
-            Stops sourceStop = null;
-            Stops targetStop = null;
-            List<Stops> queryInfoList = flowDomain.getStopsListByFlowIdAndPageIds(flowId, new String[]{sourceId, targetId});
-            // If 'queryInfoList' is empty, or the size of 'queryInfoList' is less than 2, return directly
-            if (null == queryInfoList || queryInfoList.size() < 2) {
-                rtnMap.put("errorMsg", "Can't find 'source' or 'target'");
-                return JsonUtils.toJsonNoException(rtnMap);
-            } else {
-                //Loop out 'sourceStop' and 'targetStop'
-                for (Stops stop : queryInfoList) {
-                    if (null != stop) {
-                        if (sourceId.equals(stop.getPageId())) {
-                            sourceStop = stop;
-                        } else if (targetId.equals(stop.getPageId())) {
-                            targetStop = stop;
-                        }
-                    }
-                }
-            }
-            Paths currentPaths = null;
-            List<Paths> pathsList = flowDomain.getPaths(flowId, pathLineId, null, null);
-            if (null != pathsList && pathsList.size() == 1) {
-                currentPaths = pathsList.get(0);
-            }
-            flowDomain.getPathsCounts(flowId, null, sourceId, null);
-            if (updatePathRequest.isSourceRoute()) {
-                if (updatePathRequest.isSourceRoute() && PortType.ROUTE == sourceStop.getOutPortType()) {
-                    currentPaths.setFilterCondition(updatePathRequest.getSourceFilter());
-                    //currentPaths.setOutport("port" + (pathsCounts));
-                    currentPaths.setOutport(updatePathRequest.getSourceFilter());
-                }
-            } else if (StringUtils.isNotBlank(sourcePortVal)) {
-                currentPaths.setOutport(sourcePortVal);
-                updatePropertyBypaths(username, sourcePortVal, sourceStop, "outports");
-            }
-            if (StringUtils.isNotBlank(targetPortVal)) {
-                currentPaths.setInport(targetPortVal);
-                updatePropertyBypaths(username, targetPortVal, targetStop, "inports");
-            }
-            currentPaths.setLastUpdateDttm(new Date());
-            currentPaths.setLastUpdateUser("-1");
-            int i = flowDomain.updatePaths(currentPaths);
-            if (i <= 0) {
-                rtnMap.put("code", 500);
-                rtnMap.put("errorMsg", "Save failed");
-            } else {
-                rtnMap.put("code", 200);
-                rtnMap.put("errorMsg", "Successfully saved");
-            }
-            return JsonUtils.toJsonNoException(rtnMap);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
         }
+        String flowId = updatePathRequest.getFlowId();
+        String pathLineId = updatePathRequest.getPathLineId();
+        String sourceId = updatePathRequest.getSourceId();
+        String sourcePortVal = updatePathRequest.getSourcePortVal();
+        String targetId = updatePathRequest.getTargetId();
+        String targetPortVal = updatePathRequest.getTargetPortVal();
+        Stops sourceStop = null;
+        Stops targetStop = null;
+        List<Stops> queryInfoList = flowDomain.getStopsListByFlowIdAndPageIds(flowId, new String[]{sourceId, targetId});
+        // If 'queryInfoList' is empty, or the size of 'queryInfoList' is less than 2, return directly
+        if (null == queryInfoList || queryInfoList.size() < 2) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Can't find 'source' or 'target'");
+        }
+        //Loop out 'sourceStop' and 'targetStop'
+        for (Stops stop : queryInfoList) {
+            if (null == stop) {
+                continue;
+            }
+            if (sourceId.equals(stop.getPageId())) {
+                sourceStop = stop;
+            } else if (targetId.equals(stop.getPageId())) {
+                targetStop = stop;
+            }
+        }
+        Paths currentPaths = null;
+        List<Paths> pathsList = flowDomain.getPaths(flowId, pathLineId, null, null);
+        if (null != pathsList && pathsList.size() == 1) {
+            currentPaths = pathsList.get(0);
+        }
+        flowDomain.getPathsCounts(flowId, null, sourceId, null);
+        if (updatePathRequest.isSourceRoute()) {
+            if (updatePathRequest.isSourceRoute() && PortType.ROUTE == sourceStop.getOutPortType()) {
+                currentPaths.setFilterCondition(updatePathRequest.getSourceFilter());
+                //currentPaths.setOutport("port" + (pathsCounts));
+                currentPaths.setOutport(updatePathRequest.getSourceFilter());
+            }
+        } else if (StringUtils.isNotBlank(sourcePortVal)) {
+            currentPaths.setOutport(sourcePortVal);
+            updatePropertyBypaths(username, sourcePortVal, sourceStop, "outports");
+        }
+        if (StringUtils.isNotBlank(targetPortVal)) {
+            currentPaths.setInport(targetPortVal);
+            updatePropertyBypaths(username, targetPortVal, targetStop, "inports");
+        }
+        currentPaths.setLastUpdateDttm(new Date());
+        currentPaths.setLastUpdateUser("-1");
+        int i = flowDomain.updatePaths(currentPaths);
+        if (i <= 0) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
+        }
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG());
     }
 
     /**
@@ -269,32 +263,37 @@ public class PropertyServiceImpl implements IPropertyService {
      * @param propertyName
      */
     private void updatePropertyBypaths(String username, String sourcePortVal, Stops stops, String propertyName) {
-        if (null != stops) {
-            if (PortType.ANY == stops.getInPortType() || PortType.ANY == stops.getOutPortType()) {
-                List<Property> propertyList = stops.getProperties();
-                if (null != propertyList && propertyList.size() > 0) {
-                    String ports = null;
-                    Property propertySave = null;
-                    for (Property property : propertyList) {
-                        if (propertyName.equals(property.getName())) {
-                            propertySave = property;
-                            break;
-                        }
-                    }
-                    if (null != propertySave) {
-                        if (null == propertySave.getCustomValue()) {
-                            ports = "";
-                        } else {
-                            ports = propertySave.getCustomValue();
-                        }
-                        if (StringUtils.isNotBlank(ports)) {
-                            ports = ports + ",";
-                        }
-                        flowDomain.updatePropertyCustomValue(username, (ports + sourcePortVal), propertySave.getId());
-                    }
-                }
-            }
+        if (null == stops) {
+            return;
         }
+        if (PortType.ANY != stops.getInPortType() && PortType.ANY != stops.getOutPortType()) {
+            return;
+        }
+        List<Property> propertyList = stops.getProperties();
+        if (null == propertyList || propertyList.size() <= 0) {
+            return;
+        }
+        String ports = null;
+        Property propertySave = null;
+        for (Property property : propertyList) {
+            if (!propertyName.equals(property.getName())) {
+                continue;
+            }
+            propertySave = property;
+            break;
+        }
+        if (null == propertySave) {
+            return;
+        }
+        if (null == propertySave.getCustomValue()) {
+            ports = "";
+        } else {
+            ports = propertySave.getCustomValue();
+        }
+        if (StringUtils.isNotBlank(ports)) {
+            ports = ports + ",";
+        }
+        flowDomain.updatePropertyCustomValue(username, (ports + sourcePortVal), propertySave.getId());
     }
 
     /**
@@ -307,9 +306,53 @@ public class PropertyServiceImpl implements IPropertyService {
     public String deleteLastReloadDataByStopsId(String stopId) {
         int i = flowDomain.deletePropertiesByIsOldDataAndStopsId(stopId);
         if (i > 0) {
-            return ReturnMapUtils.setSucceededMsgRtnJsonStr("successfully deleted");
+            return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.DELETE_SUCCEEDED_MSG());
         }
-        return ReturnMapUtils.setFailedMsgRtnJsonStr("Failed to delete");
+        return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.DELETE_ERROR_MSG());
+    }
+
+    /**
+     * updateStopDisabled
+     *
+     * @param username
+     * @param isAdmin
+     * @param id
+     * @param disabled
+     */
+    @Override
+    public String updateStopDisabled(String username, Boolean isAdmin, String id, Boolean disabled) {
+        if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
+        }
+        if (null == isAdmin) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
+        }
+        if (StringUtils.isBlank(id)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("id"));
+        }
+        if (null == disabled) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("disabled"));
+        }
+        Stops stops = flowDomain.getStopsById(id);
+        if (null == stops) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_MSG());
+        }
+        if (!isAdmin) {
+            String crtUser = stops.getCrtUser();
+            if (!username.equals(crtUser)) {
+                return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_OPERATION_MSG());
+            }
+        }
+        stops.setIsDisabled(disabled);
+        try {
+            int affectedRows = flowDomain.saveOrUpdate(stops);
+            if (affectedRows <= 0) {
+                return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
+            }
+        } catch (Exception e) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
+        }
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG());
     }
 
 }

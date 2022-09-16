@@ -12,11 +12,11 @@ public class MessageConfig {
 
     private static String ERROR_MSG;
     private static String ERROR_MSG_ZH;
-    @Value("${msg.base.error}")
+    @Value("${msg.base_error}")
     private void setErrorMsg(String errorMsg) {
         ERROR_MSG = errorMsg;
     }
-    @Value("${msg.base.error.zh}")
+    @Value("${msg.base_error.zh}")
     private void setErrorMsgZh(String errorMsgZh) {
         ERROR_MSG_ZH = errorMsgZh;
     }
@@ -29,11 +29,11 @@ public class MessageConfig {
 
     private static String SUCCEEDED_MSG;
     private static String SUCCEEDED_MSG_ZH;
-    @Value("${msg.base.succeeded}")
+    @Value("${msg.base_succeeded}")
     private void setSucceededMsg(String succeededMsg) {
         SUCCEEDED_MSG = succeededMsg;
     }
-    @Value("${msg.base.succeeded.zh}")
+    @Value("${msg.base_succeeded.zh}")
     private void setSucceededMsgZh(String succeededMsgZh) {
         SUCCEEDED_MSG_ZH = succeededMsgZh;
     }
@@ -46,11 +46,11 @@ public class MessageConfig {
 
     private static String ADD_ERROR_MSG;
     private static String ADD_ERROR_MSG_ZH;
-    @Value("${msg.add.error}")
+    @Value("${msg.add_error}")
     private void setAddErrorMsg(String addErrorMsg) {
         ADD_ERROR_MSG = addErrorMsg;
     }
-    @Value("${msg.add.error.zh}")
+    @Value("${msg.add_error.zh}")
     private void setAddErrorMsgZh(String addErrorMsgZh) {
         ADD_ERROR_MSG_ZH = addErrorMsgZh;
     }
@@ -63,11 +63,11 @@ public class MessageConfig {
 
     private static String ADD_SUCCEEDED_MSG;
     private static String ADD_SUCCEEDED_MSG_ZH;
-    @Value("${msg.add.succeeded}")
+    @Value("${msg.add_succeeded}")
     private void setAddSucceededMsg(String addSucceededMsg) {
         ADD_SUCCEEDED_MSG = addSucceededMsg;
     }
-    @Value("${msg.add.succeeded.zh}")
+    @Value("${msg.add_succeeded.zh}")
     private void setAddSucceededMsgZh(String addSucceededMsgZh) {
         ADD_SUCCEEDED_MSG_ZH = addSucceededMsgZh;
     }
@@ -80,11 +80,11 @@ public class MessageConfig {
 
     private static String UPDATE_ERROR_MSG;
     private static String UPDATE_ERROR_MSG_ZH;
-    @Value("${msg.update.error}")
+    @Value("${msg.update_error}")
     private void setUpdateErrorMsg(String updateErrorMsg) {
         UPDATE_ERROR_MSG = updateErrorMsg;
     }
-    @Value("${msg.update.error.zh}")
+    @Value("${msg.update_error.zh}")
     private void setUpdateErrorMsgZh(String updateErrorMsgZh) {
         UPDATE_ERROR_MSG_ZH = updateErrorMsgZh;
     }
@@ -97,11 +97,11 @@ public class MessageConfig {
 
     private static String UPDATE_SUCCEEDED_MSG;
     private static String UPDATE_SUCCEEDED_MSG_ZH;
-    @Value("${msg.update.succeeded}")
+    @Value("${msg.update_succeeded}")
     private void setUpdateSucceededMsg(String updateSucceededMsg) {
         UPDATE_SUCCEEDED_MSG = updateSucceededMsg;
     }
-    @Value("${msg.update.succeeded.zh}")
+    @Value("${msg.update_succeeded.zh}")
     private void setUpdateSucceededMsgZh(String updateSucceededMsgZh) {
         UPDATE_SUCCEEDED_MSG_ZH = updateSucceededMsgZh;
     }
@@ -114,11 +114,11 @@ public class MessageConfig {
 
     private static String DELETE_ERROR_MSG;
     private static String DELETE_ERROR_MSG_ZH;
-    @Value("${msg.delete.error}")
+    @Value("${msg.delete_error}")
     private void setDeleteErrorMsg(String deleteErrorMsg) {
         DELETE_ERROR_MSG = deleteErrorMsg;
     }
-    @Value("${msg.delete.error.zh}")
+    @Value("${msg.delete_error.zh}")
     private void setDeleteErrorMsgZh(String deleteErrorMsgZh) {
         DELETE_ERROR_MSG_ZH = deleteErrorMsgZh;
     }
@@ -129,13 +129,30 @@ public class MessageConfig {
         return DELETE_ERROR_MSG;
     }
 
+    private static String DELETE_LINK_SCHEDULED_ERROR_MSG;
+    private static String DELETE_LINK_SCHEDULED_ERROR_MSG_ZH;
+    @Value("${msg.delete_link_scheduled_error}")
+    private void setDeleteLinkScheduledErrorMsg(String deleteLinkScheduledErrorMsg) {
+        DELETE_LINK_SCHEDULED_ERROR_MSG = deleteLinkScheduledErrorMsg;
+    }
+    @Value("${msg.delete_link_scheduled_error.zh}")
+    private void setDeleteLinkScheduledErrorMsgZh(String deleteLinkScheduledErrorMsgZh) {
+        DELETE_LINK_SCHEDULED_ERROR_MSG_ZH = deleteLinkScheduledErrorMsgZh;
+    }
+    public static String DELETE_LINK_SCHEDULED_ERROR_MSG(){
+        if("ZH".equals(LANGUAGE)){
+            return DELETE_LINK_SCHEDULED_ERROR_MSG_ZH;
+        }
+        return DELETE_LINK_SCHEDULED_ERROR_MSG;
+    }
+
     private static String DELETE_SUCCEEDED_MSG;
     private static String DELETE_SUCCEEDED_MSG_ZH;
-    @Value("${msg.delete.succeeded}")
+    @Value("${msg.delete_succeeded}")
     private void setDeleteSucceededMsg(String deleteSucceededMsg) {
         DELETE_SUCCEEDED_MSG = deleteSucceededMsg;
     }
-    @Value("${msg.delete.succeeded.zh}")
+    @Value("${msg.delete_succeeded.zh}")
     private void setDeleteSucceededMsgZh(String deleteSucceededMsgZh) {
         DELETE_SUCCEEDED_MSG_ZH = deleteSucceededMsgZh;
     }
@@ -144,23 +161,6 @@ public class MessageConfig {
             return DELETE_SUCCEEDED_MSG_ZH;
         }
         return DELETE_SUCCEEDED_MSG;
-    }
-
-    private static String DATA_ERROR_MSG;
-    private static String DATA_ERROR_MSG_ZH;
-    @Value("${msg.data.error}")
-    private void setDataErrorMsg(String dataErrorMsg) {
-        DATA_ERROR_MSG = dataErrorMsg;
-    }
-    @Value("${msg.data.error.zh}")
-    private void setDataErrorMsgZh(String dataErrorMsgZh) {
-        DATA_ERROR_MSG_ZH = dataErrorMsgZh;
-    }
-    public static String DATA_ERROR_MSG(){
-        if("ZH".equals(LANGUAGE)){
-            return DATA_ERROR_MSG_ZH;
-        }
-        return DATA_ERROR_MSG;
     }
 
     private static String NO_DATA_UPDATE_MSG;
@@ -265,6 +265,23 @@ public class MessageConfig {
         return String.format(NO_DATA_XXX_IS_NULL_MSG, xxx);
     }
 
+    private static String NO_PATH_DATA_MSG;
+    private static String NO_PATH_DATA_MSG_ZH;
+    @Value("${msg.no_path_data}")
+    private void setNoPathDataMsg(String noPathDataMsg) {
+        NO_PATH_DATA_MSG = noPathDataMsg;
+    }
+    @Value("${msg.no_path_data.zh}")
+    private void setNoPathDataMsgZh(String noPathDataMsgZh) {
+        NO_PATH_DATA_MSG_ZH = noPathDataMsgZh;
+    }
+    public static String NO_PATH_DATA_MSG(){
+        if("ZH".equals(LANGUAGE)){
+            return NO_PATH_DATA_MSG_ZH;
+        }
+        return NO_PATH_DATA_MSG;
+    }
+
     private static String NO_DATA_MSG;
     private static String NO_DATA_MSG_ZH;
     @Value("${msg.no_data}")
@@ -310,6 +327,23 @@ public class MessageConfig {
         UPLOAD_FAILED_FILE_EMPTY_MSG_ZH = uploadFailedFileEmptyMsgZh;
     }
     public static String UPLOAD_FAILED_FILE_EMPTY_MSG(){
+        if("ZH".equals(LANGUAGE)){
+            return UPLOAD_FAILED_FILE_EMPTY_MSG_ZH;
+        }
+        return UPLOAD_FAILED_FILE_EMPTY_MSG;
+    }
+
+    private static String UPLOAD_FAILED_MSG;
+    private static String UPLOAD_FAILED_MSG_ZH;
+    @Value("${msg.upload_failed}")
+    private void setUploadFailedMsg(String uploadFailedMsg) {
+        UPLOAD_FAILED_MSG = uploadFailedMsg;
+    }
+    @Value("${msg.upload_failed.zh}")
+    private void setUploadFailedMsgZh(String uploadFailedMsgZh) {
+        UPLOAD_FAILED_MSG_ZH = uploadFailedMsgZh;
+    }
+    public static String UPLOAD_FAILED_MSG(){
         if("ZH".equals(LANGUAGE)){
             return UPLOAD_FAILED_FILE_EMPTY_MSG_ZH;
         }
@@ -569,6 +603,23 @@ public class MessageConfig {
             return SCHEDULED_TYPE_OR_DATA_ERROR_MSG_ZH;
         }
         return SCHEDULED_TYPE_OR_DATA_ERROR_MSG;
+    }
+
+    private static String LOAD_TYPE_ERROR_MSG;
+    private static String LOAD_TYPE_ERROR_MSG_ZH;
+    @Value("${msg.load_type_error}")
+    private void setLoadTypeErrorMsg(String loadTypeErrorMsg) {
+        LOAD_TYPE_ERROR_MSG = loadTypeErrorMsg;
+    }
+    @Value("${msg.load_type_error.zh}")
+    private void setLoadTypeErrorMsgZh(String loadTypeErrorMsgZh) {
+        LOAD_TYPE_ERROR_MSG_ZH = loadTypeErrorMsgZh;
+    }
+    public static String LOAD_TYPE_ERROR_MSG(){
+        if("ZH".equals(LANGUAGE)){
+            return LOAD_TYPE_ERROR_MSG_ZH;
+        }
+        return LOAD_TYPE_ERROR_MSG;
     }
 
 

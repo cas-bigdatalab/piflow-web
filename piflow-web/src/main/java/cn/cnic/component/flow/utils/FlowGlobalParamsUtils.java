@@ -39,7 +39,7 @@ public class FlowGlobalParamsUtils {
     		}
     		globalParamsIdsList.add(flowGlobalParams.getId());
 		}
-    	String[] globalParamsIds = globalParamsIdsList.toArray(new String[globalParamsIdsList.size()]);;
+    	String[] globalParamsIds = globalParamsIdsList.toArray(new String[globalParamsIdsList.size()]);
     	return globalParamsIds;
 	}
     

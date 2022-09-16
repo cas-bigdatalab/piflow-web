@@ -69,7 +69,7 @@ public class ProcessGroupUtils {
         
         // Take out the sketchpad information of 'flowGroup'
         MxGraphModel flowGroupMxGraphModel = flowGroup.getMxGraphModel();
-        MxGraphModel mxGraphModelProcessGroup = MxGraphModelUtils.copyMxGraphModelAndNewNoIdAndUnlink(flowGroupMxGraphModel, isAddId);
+        MxGraphModel mxGraphModelProcessGroup = MxGraphModelUtils.copyMxGraphModelAndNewNoIdAndUnlink(username, flowGroupMxGraphModel, isAddId, null);
         mxGraphModelProcessGroup = MxGraphModelUtils.initMxGraphModelBasicPropertiesNoId(mxGraphModelProcessGroup, username, isAddId);
         // add link
         mxGraphModelProcessGroup.setProcessGroup(processGroupNew);
@@ -191,7 +191,7 @@ public class ProcessGroupUtils {
         // copyMxGraphModel remove Id
         MxGraphModel copyMxGraphModel = copyProcessGroup.getMxGraphModel();
         if (null != copyMxGraphModel) {
-            copyMxGraphModel = MxGraphModelUtils.copyMxGraphModelAndNewNoIdAndUnlink(copyMxGraphModel, isAddId);
+            copyMxGraphModel = MxGraphModelUtils.copyMxGraphModelAndNewNoIdAndUnlink(username, copyMxGraphModel, isAddId, null);
             copyMxGraphModel = MxGraphModelUtils.initMxGraphModelBasicPropertiesNoId(copyMxGraphModel, username, isAddId);
             // add link
             copyMxGraphModel.setProcessGroup(copyProcessGroup);

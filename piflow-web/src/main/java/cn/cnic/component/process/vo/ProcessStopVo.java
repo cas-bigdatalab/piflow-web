@@ -17,6 +17,7 @@ public class ProcessStopVo implements Serializable {
     private static final long serialVersionUID = 1L;
     
     private ProcessVo processVo;
+    private String id;
     private String name;
     private String bundel;
     private String groups;

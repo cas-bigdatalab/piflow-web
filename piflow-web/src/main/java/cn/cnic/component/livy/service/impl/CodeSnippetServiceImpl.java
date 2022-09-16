@@ -126,7 +126,7 @@ public class CodeSnippetServiceImpl implements ICodeSnippetService {
         String codeContent = codeSnippet.getCodeContent();
         Map<String, Object> rtnMap = livyImpl.runStatements(sessionsId, codeContent);
         if (null == rtnMap || (int)rtnMap.get(ReturnMapUtils.KEY_CODE) != 200) {
-        	return ReturnMapUtils.mapToJson(rtnMap);
+        	return ReturnMapUtils.toJson(rtnMap);
         }
         String statementsId = rtnMap.get("statementsId").toString();
         codeSnippet.setExecuteId(statementsId);
@@ -134,7 +134,7 @@ public class CodeSnippetServiceImpl implements ICodeSnippetService {
         codeSnippet.setLastUpdateUser(username);
      	int affectedRows = codeSnippetDomain.updateCodeSnippet(codeSnippet);
        	if (affectedRows > 0) {
-    		return ReturnMapUtils.mapToJson(rtnMap);
+    		return ReturnMapUtils.toJson(rtnMap);
     	}
         return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.INTERFACE_CALL_ERROR_MSG());
     }
@@ -161,6 +161,6 @@ public class CodeSnippetServiceImpl implements ICodeSnippetService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_MSG());
         }
         Map<String, Object> rtnMap = livyImpl.getStatementsResult(noteBook.getSessionsId(), executeId);
-        return ReturnMapUtils.mapToJson(rtnMap);
+        return ReturnMapUtils.toJson(rtnMap);
     }
 }

@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 
-import cn.cnic.base.utils.JsonUtils;
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.PageHelperUtils;
 import cn.cnic.base.utils.QuartzUtils;
@@ -70,7 +69,7 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
     public String getScheduleById(String username, boolean isAdmin, String scheduleId) {
         SysScheduleVo sysScheduleVo = sysScheduleDomain.getSysScheduleVoById(isAdmin, scheduleId);
         if (null == sysScheduleVo) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("no data");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_MSG());
         }
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("sysScheduleVo", sysScheduleVo);
     }
@@ -85,10 +84,10 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
     public String createJob(String username, boolean isAdmin, SysScheduleVo sysScheduleVo) {
         try {
             if (StringUtils.isBlank(username)) {
-                return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
+                return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
             }
             if (null == sysScheduleVo) {
-                return ReturnMapUtils.setFailedMsgRtnJsonStr("Parameter is empty");
+                return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
             }
             SysSchedule sysSchedule = new SysSchedule();
             BeanUtils.copyProperties(sysScheduleVo, sysSchedule);
@@ -118,10 +117,10 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
     @Override
     public String runOnce(String username, boolean isAdmin, String sysScheduleId) {
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         if (StringUtils.isBlank(sysScheduleId)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("id is empty");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("sysScheduleId"));
         }
         SysSchedule sysScheduleById = sysScheduleDomain.getSysScheduleById(isAdmin, sysScheduleId);
         if (null == sysScheduleById) {
@@ -158,10 +157,10 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
     @Override
     public String startJob(String username, boolean isAdmin, String sysScheduleId) {
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         if (StringUtils.isBlank(sysScheduleId)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("id is empty");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("sysScheduleId"));
         }
         SysSchedule sysScheduleById = sysScheduleDomain.getSysScheduleById(isAdmin, sysScheduleId);
         if (null == sysScheduleById) {
@@ -196,10 +195,10 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
     @Override
     public String stopJob(String username, boolean isAdmin, String sysScheduleId) {
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         if (StringUtils.isBlank(sysScheduleId)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("id is empty");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("sysScheduleId"));
         }
         SysSchedule sysScheduleById = sysScheduleDomain.getSysScheduleById(isAdmin, sysScheduleId);
         if (null == sysScheduleById) {
@@ -234,10 +233,10 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
     @Override
     public String pauseJob(String username, boolean isAdmin, String sysScheduleId) {
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         if (StringUtils.isBlank(sysScheduleId)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("id is empty");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("sysScheduleId"));
         }
         SysSchedule sysScheduleById = sysScheduleDomain.getSysScheduleById(isAdmin,sysScheduleId);
         if (null == sysScheduleById) {
@@ -272,10 +271,10 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
     @Override
     public String resume(String username, boolean isAdmin, String sysScheduleId) {
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         if (StringUtils.isBlank(sysScheduleId)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("id is empty");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("sysScheduleId"));
         }
         SysSchedule sysScheduleById = sysScheduleDomain.getSysScheduleById(isAdmin, sysScheduleId);
         if (null == sysScheduleById) {
@@ -310,14 +309,14 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
     @Override
     public String update(String username, boolean isAdmin, SysScheduleVo sysScheduleVo) {
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         if (null == sysScheduleVo) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Parameter is empty");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
         }
         String id = sysScheduleVo.getId();
         if (StringUtils.isBlank(id)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("id is empty");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("sysScheduleId"));
         }
         SysSchedule sysScheduleById = sysScheduleDomain.getSysScheduleById(isAdmin, id);
         if (null == sysScheduleById) {
@@ -357,10 +356,10 @@ public class SysScheduleServiceImpl implements ISysScheduleService {
     @Override
     public String deleteTask(String username, boolean isAdmin, String sysScheduleId) {
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         if (StringUtils.isBlank(sysScheduleId)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("id is empty");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("sysScheduleId"));
         }
         SysSchedule sysScheduleById = sysScheduleDomain.getSysScheduleById(isAdmin, sysScheduleId);
         if (null == sysScheduleById) {

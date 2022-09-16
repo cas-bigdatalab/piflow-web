@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 
-import cn.cnic.base.utils.JsonUtils;
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.PageHelperUtils;
 import cn.cnic.base.utils.ReturnMapUtils;
@@ -156,11 +155,11 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
     @Override
     public String getFlowGroupVoAllById(String flowGroupId) {
         if (StringUtils.isBlank(flowGroupId)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("flowGroupId is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("flowGroupId"));
         }
         FlowGroup flowGroupById = flowGroupDomain.getFlowGroupById(flowGroupId);
         if (null == flowGroupById) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("data is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_MSG());
         }
 
         FlowGroupVo flowGroupVo = new FlowGroupVo();
@@ -200,10 +199,10 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
     @Override
     public String saveOrUpdate(String username, FlowGroupInfoVoRequest flowGroupVo) throws Exception {
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         if (null == flowGroupVo) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("param is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
         }
         String id = flowGroupVo.getId();
         if (StringUtils.isBlank(id)) {
@@ -215,17 +214,17 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
 
     private String insert(FlowGroupInfoVoRequest flowGroupVo, String username) throws Exception {
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         if (null == flowGroupVo) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("param is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
         }
         if (StringUtils.isBlank(flowGroupVo.getName())) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("flowGroup is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("name"));
         }
         String flowGroupName = flowGroupDomain.getFlowGroupName(flowGroupVo.getName());
         if (StringUtils.isNotBlank(flowGroupName)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Repeat flowGroup name!");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.DUPLICATE_NAME_MSG(flowGroupName));
         }
         FlowGroup flowGroup = new FlowGroup();
 
@@ -251,35 +250,26 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
     }
 
     private String update(FlowGroupInfoVoRequest flowGroupVo, String username) throws Exception {
-        Map<String, Object> rtnMap = new HashMap<>();
-        rtnMap.put("code", 500);
         if (StringUtils.isBlank(username)) {
-            rtnMap.put("errorMsg", "Illegal users");
-            return JsonUtils.toJsonNoException(rtnMap);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         if (null == flowGroupVo) {
-            rtnMap.put("errorMsg", "Parameter is empty");
-            return JsonUtils.toJsonNoException(rtnMap);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
         }
         String id = flowGroupVo.getId();
         if (StringUtils.isBlank(id)) {
-            rtnMap.put("errorMsg", "Id is null");
-            return JsonUtils.toJsonNoException(rtnMap);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("id"));
         }
         FlowGroup flowGroup = flowGroupDomain.getFlowGroupById(id);
         if (null == flowGroup) {
-            rtnMap.put("errorMsg", "The current Id does not exist for the flowGroup");
-            return JsonUtils.toJsonNoException(rtnMap);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_BY_ID_XXX_MSG(id));
         }
         flowGroup.setName(flowGroupVo.getName());
         flowGroup.setDescription(flowGroupVo.getDescription());
         flowGroup.setLastUpdateDttm(new Date());
         flowGroup.setLastUpdateUser(username);
         flowGroupDomain.updateFlowGroup(flowGroup);
-        rtnMap.put("code", 200);
-        rtnMap.put("flowGroupId", flowGroup.getId());
-
-        return JsonUtils.toJsonNoException(rtnMap);
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("flowGroupId", flowGroup.getId());
     }
 
     /**
@@ -294,16 +284,16 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
     public String runFlowGroup(boolean isAdmin, String username, String flowGroupId, String runMode) throws Exception {
         RunModeType runModeType = RunModeType.RUN;
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         if (StringUtils.isBlank(flowGroupId)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("FlowGroupId is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("flowGroupId"));
         }
         // find flow by flowId
         FlowGroup flowGroupById = flowGroupDomain.getFlowGroupById(flowGroupId);
         // addFlow is not empty and the value of ReqRtnStatus is true, then the save is successful.
         if (null == flowGroupById) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Flow with FlowGroupId" + flowGroupId + "was not queried");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_BY_ID_XXX_MSG(flowGroupId));
         }
         if (StringUtils.isNotBlank(runMode)) {
             runModeType = RunModeType.selectGender(runMode);
@@ -334,17 +324,17 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
     @Override
     public String deleteFLowGroupInfo(boolean isAdmin, String username, String id) {
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal user");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         if (StringUtils.isBlank(id)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("id is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("id"));
         }
         int scheduleIdListByScheduleRunTemplateId = scheduleDomain.getScheduleIdListByScheduleRunTemplateId(isAdmin, username, id);
         if (scheduleIdListByScheduleRunTemplateId > 0) {
-        	return ReturnMapUtils.setFailedMsgRtnJsonStr("Unable to delete, there is an associated scheduled task");
+        	return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.DELETE_LINK_SCHEDULED_ERROR_MSG());
         }
         flowGroupDomain.updateEnableFlagById(username, id, false);
-        return ReturnMapUtils.setSucceededMsgRtnJsonStr("delete succeed");
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.DELETE_SUCCEEDED_MSG());
     }
 
     /**
@@ -358,18 +348,18 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
     @Override
     public String copyFlowToGroup(String username, String flowId, String flowGroupId) throws Exception {
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal user, Load failed");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         if (StringUtils.isBlank(flowGroupId) || StringUtils.isBlank(flowId)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("flowGroupId or flowId is empty");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
         }
         FlowGroup flowGroupById = flowGroupDomain.getFlowGroupById(flowGroupId);
         if (null == flowGroupById) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Save failed, flowGroup is empty");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_MSG());
         }
         Flow flow = flowDomain.getFlowById(flowId);
         if (null == flow) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Save failed, Flow is empty");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_MSG());
         }
         Flow flowNew = FlowUtil.copyCreateFlow(flow, username);
         if (null == flowNew) {
@@ -447,17 +437,13 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
         MxGraphModel mxGraphModelNew = flowGroupById.getMxGraphModel();
         // Change the query'mxGraphModelNew'to'XML'
         String loadXml = MxGraphUtils.mxGraphModelToMxGraph(false, mxGraphModelNew);
-        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg("success");
-        rtnMap.put("xmlStr", loadXml);
-        return JsonUtils.toFormatJsonNoException(rtnMap);
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("xmlStr", loadXml);
     }
 
     @Override
     public String updateFlowGroupNameById(String username, String id, String parentsId, String flowGroupName, String pageId) throws Exception {
-        Map<String, Object> rtnMap = new HashMap<>();
-        rtnMap.put("code", 500);
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         if (StringUtils.isAnyEmpty(id, flowGroupName, parentsId, pageId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("The incoming parameter is empty");
@@ -482,31 +468,31 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
         }
         boolean updateFlowNameById = this.updateFlowGroupNameById(username, id, flowGroupName);
         if (!updateFlowNameById) {
-            logger.info("Modify flowName failed");
-            rtnMap.put("errorMsg", "Modify flowName failed");
-            return JsonUtils.toJsonNoException(rtnMap);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.UPDATE_ERROR_MSG());
         }
+        String loadXml = null;
         for (MxCell mxCell : root) {
-            if (null != mxCell) {
-                if (mxCell.getPageId().equals(pageId)) {
-                    mxCell.setValue(flowGroupName);
-                    mxCell.setLastUpdateDttm(new Date());
-                    mxCell.setLastUpdateUser(username);
-                    mxCellDomain.updateMxCell(mxCell);
-                    // Convert the mxGraphModel from the query to XML
-                    String loadXml = MxGraphUtils.mxGraphModelToMxGraph(false, mxGraphModel);
-                    loadXml = StringUtils.isNotBlank(loadXml) ? loadXml : "";
-                    rtnMap.put("XmlData", loadXml);
-                    rtnMap.put("nameContent", flowGroupName);
-                    rtnMap.put("code", 200);
-                    rtnMap.put("errorMsg", "Successfully modified");
-                    logger.info("Successfully modified");
-                    rtnMap.put("errorMsg", "Successfully modified");
-                    break;
-                }
+            if (null == mxCell) {
+                continue;
             }
+            if (!mxCell.getPageId().equals(pageId)) {
+                continue;
+            }
+            mxCell.setValue(flowGroupName);
+            mxCell.setLastUpdateDttm(new Date());
+            mxCell.setLastUpdateUser(username);
+            mxCellDomain.updateMxCell(mxCell);
+            // Convert the mxGraphModel from the query to XML
+            loadXml = MxGraphUtils.mxGraphModelToMxGraph(false, mxGraphModel);
+            loadXml = StringUtils.isNotBlank(loadXml) ? loadXml : "";
+
+            break;
         }
-        return JsonUtils.toJsonNoException(rtnMap);
+        if (StringUtils.isBlank(loadXml)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
+        }
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededCustomParam("nameContent", flowGroupName);
+        return ReturnMapUtils.appendValuesToJson(rtnMap, "XmlData", loadXml);
     }
 
     @Override
@@ -531,7 +517,7 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
     @Override
     public String updateFlowGroupBaseInfo(String username, String fId, FlowGroupInfoVoRequestUpDate flowGroupVo) throws Exception {
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         if (null == flowGroupVo || StringUtils.isBlank(flowGroupVo.getId())) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Parameter passed error");
@@ -544,12 +530,12 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
 
         String[] flowGroupsInGroup = flowGroupDomain.getFlowGroupNameByNameInGroup(fId, flowGroupVo.getName());
         if (flowGroupsInGroup.length > 0) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Repeat flow group name!");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.DUPLICATE_NAME_MSG(flowGroupVo.getName()));
         }
 
         List<String> flowNamesInGroup = flowDomain.getFlowNamesByFlowGroupId(fId, flowGroupVo.getName());
         if (flowNamesInGroup.size() > 0) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Repeat flow group name!");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.DUPLICATE_NAME_MSG(flowGroupVo.getName()));
         }
 
         flowGroupById.setName(flowGroupVo.getName());
@@ -560,36 +546,36 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededCustomParam("flowGroupVo", flowGroupVo);
         FlowGroup flowGroup = flowGroupDomain.getFlowGroupById(fId);
         if (null == flowGroup) {
-            return JsonUtils.toJsonNoException(rtnMap);
+            return ReturnMapUtils.toJson(rtnMap);
         }
         MxGraphModel mxGraphModel = flowGroup.getMxGraphModel();
         if (null == mxGraphModel) {
-            return JsonUtils.toJsonNoException(rtnMap);
+            return ReturnMapUtils.toJson(rtnMap);
         }
         MxCell meCellByMxGraphIdAndPageId = mxCellDomain.getMxCellByMxGraphIdAndPageId(mxGraphModel.getId(), flowGroupVo.getPageId());
         if (null == meCellByMxGraphIdAndPageId) {
-            return JsonUtils.toJsonNoException(rtnMap);
+            return ReturnMapUtils.toJson(rtnMap);
         }
         meCellByMxGraphIdAndPageId.setValue(flowGroupVo.getName());
         int i = mxCellDomain.updateMxCell(meCellByMxGraphIdAndPageId);
         if (i <= 0) {
-            return JsonUtils.toJsonNoException(rtnMap);
+            return ReturnMapUtils.toJson(rtnMap);
         }
         MxGraphModel mxGraphModelById = mxGraphModelDomain.getMxGraphModelById(mxGraphModel.getId());
         // Convert the mxGraphModelById from the query to XML
         String loadXml = MxGraphUtils.mxGraphModelToMxGraph(false, mxGraphModelById);
         loadXml = StringUtils.isNotBlank(loadXml) ? loadXml : "";
         rtnMap.put("XmlData", loadXml);
-        return JsonUtils.toJsonNoException(rtnMap);
+        return ReturnMapUtils.toJson(rtnMap);
     }
 
     @Override
     public String rightRun(String username, boolean isAdmin, String pId, String nodeId, String nodeType) throws Exception {
         if (StringUtils.isBlank(pId)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("pId is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("pId"));
         }
         if (StringUtils.isBlank(nodeId)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("nodeId is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("nodeId"));
         }
         String flowGroupId = null;
         String flowId = null;
@@ -620,7 +606,7 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
     @Override
     public String queryIdInfo(String fid, String pageId) {
         if (StringUtils.isBlank(fid) || StringUtils.isBlank(pageId)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Missing parameters");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
         }
         FlowVo flowVo = flowServiceImpl.getFlowByPageId(fid, pageId);
         if (null != flowVo) {
@@ -632,21 +618,21 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
             Map<String, Object> rtnMap = ReturnMapUtils.setSucceededCustomParam("nodeType", "flowGroup");
             return ReturnMapUtils.appendValuesToJson(rtnMap, "flowGroupVo", flowGroupVo);
         }
-        return ReturnMapUtils.setFailedMsgRtnJsonStr("no Data");
+        return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_MSG());
     }
 
     @Override
     public String drawingBoardData(String username, boolean isAdmin, String load, String parentAccessPath) {
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         if (StringUtils.isBlank(load)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("param 'load' is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("load"));
         }
         // Query by loading'id'
         FlowGroup flowGroupById = flowGroupDomain.getFlowGroupById(load);
         if (null == flowGroupById) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("No data with ID : " + load);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_BY_ID_XXX_MSG(load));
         }
 
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
@@ -668,7 +654,7 @@ public class FlowGroupServiceImpl implements IFlowGroupService {
         rtnMap.put("load", load);
         rtnMap.put("isExample", (null == flowGroupById.getIsExample() ? false : flowGroupById.getIsExample()));
 
-        return JsonUtils.toJsonNoException(rtnMap);
+        return ReturnMapUtils.toJson(rtnMap);
     }
 
 }

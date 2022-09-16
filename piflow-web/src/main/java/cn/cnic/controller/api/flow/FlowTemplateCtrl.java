@@ -2,6 +2,7 @@ package cn.cnic.controller.api.flow;
 
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.base.utils.SessionUserUtil;
+import cn.cnic.common.constant.MessageConfig;
 import cn.cnic.component.system.service.ILogHelperService;
 import cn.cnic.component.template.service.IFlowTemplateService;
 import io.swagger.annotations.Api;
@@ -121,7 +122,7 @@ public class FlowTemplateCtrl {
         } else if ("GROUP".equals(loadType)) {
             return flowTemplateServiceImpl.loadGroupTemplate(username, templateId, load);
         } else {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("loadType is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.LOAD_TYPE_ERROR_MSG());
         }
     }
 }

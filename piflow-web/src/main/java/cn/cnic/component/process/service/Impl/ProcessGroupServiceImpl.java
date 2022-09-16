@@ -20,7 +20,6 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 
 import cn.cnic.base.utils.HdfsUtils;
-import cn.cnic.base.utils.JsonUtils;
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.PageHelperUtils;
 import cn.cnic.base.utils.ReturnMapUtils;
@@ -109,14 +108,14 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
     @Override
     public String getProcessGroupVoById(String username, boolean isAdmin, String processGroupId) {
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal user");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         if (StringUtils.isBlank(processGroupId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Parameter passed in incorrectly");
         }
         ProcessGroup processGroupById = processGroupDomain.getProcessGroupById(username, isAdmin, processGroupId);
         if (null == processGroupById) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Data is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_MSG());
         }
         ProcessGroupVo processGroupVo = new ProcessGroupVo();
         BeanUtils.copyProperties(processGroupById, processGroupVo);
@@ -147,7 +146,7 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
         rtnMap.put("progress", (null != processGroupVo.getProgress() ? processGroupVo.getProgress() : "0.00"));
         rtnMap.put("state", (null != processGroupVo.getState() ? processGroupVo.getState().name() : "NO_STATE"));
         rtnMap.put("processGroupVo", processGroupVo);
-        return JsonUtils.toJsonNoException(rtnMap);
+        return ReturnMapUtils.toJson(rtnMap);
     }
 
     /**
@@ -159,7 +158,7 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
     @Override
     public String getAppInfoByAppIds(String[] appIDs) {
         if (null == appIDs || appIDs.length <= 0) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Incoming parameter is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
         }
         List<ProcessGroup> processGroupListByAppIDs = processGroupDomain.getProcessGroupListByAppIDs(appIDs);
         if (CollectionUtils.isEmpty(processGroupListByAppIDs)) {
@@ -175,7 +174,7 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
                 rtnMap.put(processGroupVo.getAppId(), processGroupVo);
             }
         }
-        return JsonUtils.toJsonNoException(rtnMap);
+        return ReturnMapUtils.toJson(rtnMap);
     }
 
     /**
@@ -190,7 +189,7 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
     @Override
     public String startProcessGroup(boolean isAdmin, String username, String processGroupId, String checkpoint, String runMode) throws Exception {
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         if (StringUtils.isBlank(processGroupId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("processGroupId is null");
@@ -342,10 +341,10 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
         int updateEnableFlagById = processGroupDomain.updateEnableFlagById(processGroupID, username);
         // Determine whether the deletion is successful
         if (updateEnableFlagById > 0) {
-            return ReturnMapUtils.setSucceededMsgRtnJsonStr("Successfully Deleted");
+            return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.DELETE_SUCCEEDED_MSG());
         } else {
             logger.warn("Failed to delete");
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Failed to delete");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.DELETE_ERROR_MSG());
         }
     }
 
@@ -377,7 +376,7 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
     @Override
     public String getStartGroupJson(String username, boolean isAdmin, String processGroupId) {
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal user");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         if (StringUtils.isBlank(processGroupId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("processGroupID is null");
@@ -442,11 +441,11 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
      */
     public String getProcessGroupPathVoByPageId(String processGroupId, String pageId) {
         if (StringUtils.isAnyEmpty(processGroupId, pageId)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("param is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
         }
         ProcessGroupPath processGroupPathByPageId = processGroupDomain.getProcessGroupPathByPageId(processGroupId, pageId);
         if (null == processGroupPathByPageId) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("no data");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_MSG());
         }
         List<String> pageIds = new ArrayList<>();
         String pathTo = processGroupPathByPageId.getTo();
@@ -495,7 +494,7 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
     @Override
     public String drawingBoardData(String username, boolean isAdmin, String loadId, String parentAccessPath) {
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         // Determine whether there is an'id'('load') of'Flow', and if there is, load it,
         // otherwise generate'UUID' to return to the return page.
@@ -595,7 +594,7 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
         String loadXml = MxGraphUtils.mxGraphModelToMxGraph(false, mxGraphModel);
         rtnMap.put("xmlDate", loadXml);
 
-        return JsonUtils.toJsonNoException(rtnMap);
+        return ReturnMapUtils.toJson(rtnMap);
     }
 
     /**
@@ -630,7 +629,7 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
         rtnMap.put("processVo", processVo);
         rtnMap.put("processGroupVo", processGroupVo);
         rtnMap.put("nodeType", nodeType);
-        return JsonUtils.toJsonNoException(rtnMap);
+        return ReturnMapUtils.toJson(rtnMap);
     }
 
 }

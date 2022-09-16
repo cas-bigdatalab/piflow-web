@@ -22,7 +22,6 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 
 import cn.cnic.base.utils.FileUtils;
-import cn.cnic.base.utils.JsonUtils;
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.PageHelperUtils;
 import cn.cnic.base.utils.ReturnMapUtils;
@@ -88,7 +87,7 @@ public class FlowTemplateServiceImpl implements IFlowTemplateService {
     @Override
     public String addFlowTemplate(String username, String name, String loadId, String templateType) {
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         if (StringUtils.isBlank(name)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("param name is empty");
@@ -169,7 +168,7 @@ public class FlowTemplateServiceImpl implements IFlowTemplateService {
     @Override
     public String deleteFlowTemplate(String id) {
         if (StringUtils.isBlank(id)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("id is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("id"));
         }
         int deleteTemplate = flowTemplateDomain.updateEnableFlagById(id, false);
         if (deleteTemplate > 0) {
@@ -207,14 +206,14 @@ public class FlowTemplateServiceImpl implements IFlowTemplateService {
     @Override
     public String uploadXmlFile(String username, MultipartFile file) {
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         if (file.isEmpty()) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Upload failed, please try again later");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.UPLOAD_FAILED_MSG());
         }
         Map<String, Object> uploadMap = FileUtils.uploadRtnMap(file, SysParamsCache.XML_PATH, null);
         if (null == uploadMap || uploadMap.isEmpty()) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Upload failed, please try again later");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.UPLOAD_FAILED_MSG());
         }
         Integer code = (Integer) uploadMap.get("code");
         if (500 == code) {
@@ -322,7 +321,7 @@ public class FlowTemplateServiceImpl implements IFlowTemplateService {
 
             Map<String, Object> XmlStrToFlowGroupRtnMap = FlowXmlUtils.XmlStrToFlowGroup(xmlFileToStr, maxPageId, username, flowNamesByFlowGroupId, false);
             if (200 != (Integer) XmlStrToFlowGroupRtnMap.get("code")) {
-                return JsonUtils.toJsonNoException(XmlStrToFlowGroupRtnMap);
+                return ReturnMapUtils.toJson(XmlStrToFlowGroupRtnMap);
             }
             FlowGroup flowGroupXml = (FlowGroup) XmlStrToFlowGroupRtnMap.get("flowGroup");
             if (null == flowGroupXml) {
@@ -440,7 +439,7 @@ public class FlowTemplateServiceImpl implements IFlowTemplateService {
         String[] stopNamesByFlowId = flowDomain.getStopNamesByFlowId(flowId);
         Map<String, Object> flowTemplateXmlToFlowRtnMap = FlowXmlUtils.flowTemplateXmlToFlow(xmlFileToStr, username, maxStopPageId + "", null, stopNamesByFlowId);
         if (200 != (Integer) flowTemplateXmlToFlowRtnMap.get("code")) {
-            return JsonUtils.toJsonNoException(flowTemplateXmlToFlowRtnMap);
+            return ReturnMapUtils.toJson(flowTemplateXmlToFlowRtnMap);
         }
         Flow flowTemplateXmlToFlow = (Flow) flowTemplateXmlToFlowRtnMap.get("flow");
         if (null == flowTemplateXmlToFlow) {

@@ -230,4 +230,12 @@ public class StopsCtrl {
         return stopsHubServiceImpl.delStopsHub(username, isAdmin, id);
     }
 
+    @RequestMapping(value = "/updateStopDisabled", method = RequestMethod.POST)
+    @ResponseBody
+    public String updateStopDisabled(String id, Boolean disabled) {
+        String username = SessionUserUtil.getCurrentUsername();
+        Boolean isAdmin = SessionUserUtil.isAdmin();
+        return propertyServiceImpl.updateStopDisabled(username, isAdmin, id, disabled);
+    }
+
 }

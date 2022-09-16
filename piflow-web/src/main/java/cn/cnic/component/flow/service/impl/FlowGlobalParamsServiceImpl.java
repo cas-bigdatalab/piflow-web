@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 
-import cn.cnic.base.utils.JsonUtils;
 import cn.cnic.base.utils.PageHelperUtils;
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.component.flow.domain.FlowGlobalParamsDomain;
@@ -36,13 +35,13 @@ public class FlowGlobalParamsServiceImpl implements IFlowGlobalParamsService {
     @Override
 	public String addFlowGlobalParams(String username, FlowGlobalParamsVoRequestAdd globalParamsVo) throws Exception {
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         if (null == globalParamsVo) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("param name is empty");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
         }
         if (StringUtils.isBlank(globalParamsVo.getName())) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("data is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_MSG());
         }
         FlowGlobalParams globalParams = FlowGlobalParamsUtils.setFlowGlobalParamsBasicInformation(null, true, username);
         // copy
@@ -52,7 +51,7 @@ public class FlowGlobalParamsServiceImpl implements IFlowGlobalParamsService {
         globalParams.setLastUpdateUser(username);
         int affectedRows = flowGlobalParamsDomain.addFlowGlobalParams(globalParams);
         if (affectedRows <= 0) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("save failed");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ADD_ERROR_MSG());
         }
 		return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("globalParamsId", globalParams.getId());
 	}
@@ -60,24 +59,24 @@ public class FlowGlobalParamsServiceImpl implements IFlowGlobalParamsService {
 	@Override
 	public String updateFlowGlobalParams(String username, boolean isAdmin, FlowGlobalParamsVoRequest globalParamsVo) throws Exception {
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         if (null == globalParamsVo) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("param name is empty");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
         }
         String id = globalParamsVo.getId();
         if (StringUtils.isBlank(id)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("data is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_MSG());
         }
         FlowGlobalParams globalParamsById = flowGlobalParamsDomain.getFlowGlobalParamsById(username, isAdmin, id);
         if (null == globalParamsById) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("data is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_MSG());
         }
         // copy
         BeanUtils.copyProperties(globalParamsVo, globalParamsById);
 		int affectedRows = flowGlobalParamsDomain.updateFlowGlobalParams(globalParamsById);
 		if (affectedRows <= 0) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("update failed");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.UPDATE_ERROR_MSG());
         }
 		return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG());
 	}
@@ -86,7 +85,7 @@ public class FlowGlobalParamsServiceImpl implements IFlowGlobalParamsService {
     public String deleteFlowGlobalParamsById(String username, boolean isAdmin, String id) {
     	int affectedRows = flowGlobalParamsDomain.updateEnableFlagById(username, id, false);
     	if (affectedRows <= 0) {
-    		return ReturnMapUtils.setFailedMsgRtnJsonStr("delete failed");
+    		return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.DELETE_ERROR_MSG());
         }
     	return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG());
     }
@@ -129,14 +128,14 @@ public class FlowGlobalParamsServiceImpl implements IFlowGlobalParamsService {
 	@Override
 	public String getFlowGlobalParamsById(String username, boolean isAdmin, String id) {
 		if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         if (StringUtils.isBlank(id)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("data is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("id"));
         }
         FlowGlobalParams globalParamsById = flowGlobalParamsDomain.getFlowGlobalParamsById(username, isAdmin, id);
         if (null == globalParamsById) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("data is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_BY_ID_XXX_MSG(id));
         }
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("globalParams", globalParamsById);
 	}

@@ -18,7 +18,6 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 
 import cn.cnic.base.utils.FileUtils;
-import cn.cnic.base.utils.JsonUtils;
 import cn.cnic.base.utils.PageHelperUtils;
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.base.utils.UUIDUtils;
@@ -63,14 +62,14 @@ public class StopsHubServiceImpl implements IStopsHubService {
         String stopsHubName = file.getOriginalFilename();
 
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         if (file.isEmpty()) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Upload failed, please try again later");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.UPLOAD_FAILED_FILE_EMPTY_MSG());
         }
         Map<String, Object> uploadMap = FileUtils.uploadRtnMap(file, stopsHubPath, stopsHubName);
         if (null == uploadMap || uploadMap.isEmpty()) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Upload failed, please try again later");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.UPLOAD_FAILED_MSG());
         }
         Integer code = (Integer) uploadMap.get("code");
         if (500 == code) {
@@ -218,11 +217,11 @@ public class StopsHubServiceImpl implements IStopsHubService {
     @Override
     public String delStopsHub(String username, Boolean isAdmin, String id) {
         if (StringUtils.isBlank(id)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("id is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("id"));
         }
         StopsHub stopsHubById = stopsHubDomain.getStopsHubById(username, isAdmin, id);
         if (null == stopsHubById) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("no data");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_MSG());
         }
         StopsHubState status = stopsHubById.getStatus();
         if (StopsHubState.MOUNT == status) {
@@ -230,7 +229,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
         }
         int i = stopsHubDomain.deleteStopsHubById(username, id);
         if (i <= 0) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("delete failed");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.DELETE_ERROR_MSG());
         }
         return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG());
     }

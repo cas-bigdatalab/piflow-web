@@ -13,7 +13,6 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 
 import cn.cnic.base.utils.FileUtils;
-import cn.cnic.base.utils.JsonUtils;
 import cn.cnic.base.utils.PageHelperUtils;
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.base.utils.UUIDUtils;
@@ -50,14 +49,14 @@ public class SparkJarServiceImpl implements ISparkJarService {
         String sparkJarName = file.getOriginalFilename();
 
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         if (file.isEmpty()) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Upload failed, please try again later");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.UPLOAD_FAILED_FILE_EMPTY_MSG());
         }
         Map<String, Object> uploadMap = FileUtils.uploadRtnMap(file, sparkJarPath, sparkJarName);
         if (null == uploadMap || uploadMap.isEmpty()) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Upload failed, please try again later");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.UPLOAD_FAILED_MSG());
         }
         Integer code = (Integer) uploadMap.get("code");
         if (500 == code) {
@@ -146,11 +145,11 @@ public class SparkJarServiceImpl implements ISparkJarService {
     @Override
     public String delSparkJar(String username, Boolean isAdmin, String id) {
         if (StringUtils.isBlank(id)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("id is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("id"));
         }
         SparkJarComponent sparkJarComponent = sparkJarDomain.getSparkJarById(username, isAdmin, id);
         if (null == sparkJarComponent) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("no data");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_MSG());
         }
         SparkJarState status = sparkJarComponent.getStatus();
         if (SparkJarState.MOUNT == status) {
@@ -158,7 +157,7 @@ public class SparkJarServiceImpl implements ISparkJarService {
         }
         int i = sparkJarDomain.deleteSparkJarById(username, id);
         if (i <= 0) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("delete failed");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.DELETE_ERROR_MSG());
         }
         return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG());
     }

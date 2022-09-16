@@ -101,14 +101,14 @@ public class SysUserServiceImpl implements ISysUserService {
     @Override
     public String update(boolean isAdmin, String username, SysUserVo sysUserVo) {
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         if (null == sysUserVo) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Parameter is empty");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
         }
         String id = sysUserVo.getId();
         if (StringUtils.isBlank(id)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("id is empty");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("id"));
         }
         SysUser sysUserById = sysUserDomain.getSysUserById(isAdmin, username, id);
         if (null == sysUserById) {
@@ -133,7 +133,7 @@ public class SysUserServiceImpl implements ISysUserService {
             return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG());
         } catch (Exception e) {
             logger.error("update failed", e);
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("update failed");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.UPDATE_ERROR_MSG());
         }
     }
 
@@ -170,14 +170,14 @@ public class SysUserServiceImpl implements ISysUserService {
     @Override
     public String delUser(boolean isAdmin, String username, String sysUserId) {
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         if (StringUtils.isBlank(sysUserId)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("id is empty");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("sysUserId"));
         }
         SysUser sysUserById = sysUserDomain.getSysUserById(isAdmin,username,sysUserId);
         if (null == sysUserById) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("The task for which the current Id does not exist");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_BY_ID_XXX_MSG(sysUserId));
         }
         try {
 
@@ -195,14 +195,14 @@ public class SysUserServiceImpl implements ISysUserService {
             return ReturnMapUtils.setSucceededMsgRtnJsonStr("Started successfully");
         } catch (Exception e) {
             logger.error("delete failed", e);
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("delete failed");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.DELETE_ERROR_MSG());
         }
     }
 
     @Override
     public String checkUserName(String username) {
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Username can not be empty");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("username"));
         }
         String addUser = sysUserDomain.checkUsername(username);
         if (StringUtils.isNotBlank(addUser)) {
@@ -247,7 +247,7 @@ public class SysUserServiceImpl implements ISysUserService {
         sysUser.setName(sysUserVo.getName());
         sysUser.setAge(sysUserVo.getAge());
         sysUser.setSex(sysUserVo.getSex());
-        sysUser.setStatus(sysUserVo.getStatus());;
+        sysUser.setStatus(sysUserVo.getStatus());
 
         List<SysRole> sysRoleList = new ArrayList<>();
         SysRole sysRole = new SysRole();
@@ -264,7 +264,7 @@ public class SysUserServiceImpl implements ISysUserService {
             return ReturnMapUtils.setSucceededMsgRtnJsonStr("Congratulations, registration is successful");
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("save failed");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG());
         }
     }
 
@@ -282,7 +282,7 @@ public class SysUserServiceImpl implements ISysUserService {
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededCustomParam("token", token);
         userVo.setPassword("");
         rtnMap.put("jwtUser", userVo);
-        return JsonUtils.toJsonNoException(rtnMap);
+        return ReturnMapUtils.toJson(rtnMap);
     }
 
     private Authentication authenticate(String username, String password) {

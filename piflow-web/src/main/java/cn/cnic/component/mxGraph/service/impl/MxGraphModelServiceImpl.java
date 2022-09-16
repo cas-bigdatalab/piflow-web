@@ -1,6 +1,5 @@
 package cn.cnic.component.mxGraph.service.impl;
 
-import cn.cnic.base.utils.JsonUtils;
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.base.utils.UUIDUtils;
@@ -105,7 +104,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
      */
     private String addOperation(String username, String flowId, MxGraphModelVo mxGraphModelVo) throws Exception {
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         // Query flow by flowId
         Flow flowDB = flowDomain.getFlowById(flowId);
@@ -242,7 +241,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
         int updateFlow = flowDomain.updateFlow(flowDB);
         // Determine if mxGraphModelDb is updated successfully
         if (updateFlow <= 0) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("update failed");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.UPDATE_ERROR_MSG());
         }
         MxGraphModel mxGraphModelByFlowId = mxGraphModelDomain.getMxGraphModelByFlowId(flowId);
         String xmlData = MxGraphUtils.mxGraphModelToMxGraph(false, mxGraphModelByFlowId);
@@ -261,7 +260,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
         // because this method only deals with the modification, not the addition
         if (StringUtils.isBlank(username)) {
             logger.warn("illegal user");
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         MxGraphModel mxGraphModelDB = mxGraphModelDomain.getMxGraphModelByFlowId(flowId);
         // Determine if the incoming data is empty
@@ -515,7 +514,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
             throws Exception {
         if (StringUtils.isBlank(username)) {
             logger.warn("illegal user");
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         if (null == mxGraphModelVo) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("mxGraphModelVo is empty, modification failed");
@@ -777,15 +776,15 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
         }
         if ("ADD".equals(operType)) {
             logger.info("ADD Operation begins");
-            return JsonUtils.toJsonNoException(this.addGroupFlows(username, mxGraphModelVo, loadId));
+            return ReturnMapUtils.toJson(this.addGroupFlows(username, mxGraphModelVo, loadId));
         } else if ("MOVED".equals(operType)) {
             logger.info("MOVED Operation begins");
-            return JsonUtils.toJsonNoException(this.updateGroupMxGraph(username, mxGraphModelVo, loadId));
+            return ReturnMapUtils.toJson(this.updateGroupMxGraph(username, mxGraphModelVo, loadId));
         } else if ("REMOVED".equals(operType)) {
             logger.info("REMOVED Operation begins");
-            return JsonUtils.toJsonNoException(this.updateFlowGroup(username, mxGraphModelVo, loadId));
+            return ReturnMapUtils.toJson(this.updateFlowGroup(username, mxGraphModelVo, loadId));
         } else {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("No operType:" + operType + "type");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("No OperationType:" + operType + "type");
         }
     }
 
@@ -1157,10 +1156,10 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
 
     public String addMxCellAndData(MxGraphVo mxGraphVo, String username) throws Exception {
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         if (null == mxGraphVo) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("param is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
         }
         String loadId = mxGraphVo.getLoadId();
         if (StringUtils.isBlank(loadId)) {

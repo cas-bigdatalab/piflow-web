@@ -27,7 +27,6 @@ import com.github.pagehelper.PageHelper;
 
 import cn.cnic.base.utils.DateUtils;
 import cn.cnic.base.utils.HdfsUtils;
-import cn.cnic.base.utils.JsonUtils;
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.PageHelperUtils;
 import cn.cnic.base.utils.ReturnMapUtils;
@@ -157,7 +156,7 @@ public class ProcessServiceImpl implements IProcessService {
     public String getProcessVoById(String username, boolean isAdmin, String id) {
         // Determine if current user obtained are empty
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("user Illegality");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         if (StringUtils.isBlank(id)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Parameter passed in incorrectly");
@@ -320,7 +319,7 @@ public class ProcessServiceImpl implements IProcessService {
         // ProcessVo processVoThird = this.getAppInfoByThirdAndSave(appID);
         Process processById = processDomain.getProcessByAppId(appID);
         if (processById == null) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("no data");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_MSG());
         }
         ProcessVo processVo = ProcessUtils.processPoToVo(processById);
         if (null == processVo) {
@@ -329,7 +328,7 @@ public class ProcessServiceImpl implements IProcessService {
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededCustomParam("processVo", processVo);
         rtnMap.put("progress", (null != processVo.getProgress() ? processVo.getProgress() : "0.00"));
         rtnMap.put("state", (null != processVo.getState() ? processVo.getState().name() : "NO_STATE"));
-        return JsonUtils.toJsonNoException(rtnMap);
+        return ReturnMapUtils.toJson(rtnMap);
     }
 
     /**
@@ -341,76 +340,77 @@ public class ProcessServiceImpl implements IProcessService {
      */
     @Override
     public String getProgressByThirdAndSave(String[] appIDs) throws Exception {
-        Map<String, Object> rtnMap = new HashMap<>();
-        rtnMap.put("code", 500);
-        List<ProcessVo> processVoList = null;
-        if (null != appIDs && appIDs.length > 0) {
-            List<Process> processListByAppIDs = processDomain.getProcessListByAppIDs(appIDs);
-            if (null != processListByAppIDs && processListByAppIDs.size() > 0) {
-                processVoList = new ArrayList<>();
-                for (Process process : processListByAppIDs) {
-                    if (null != process) {
-                        ProcessVo processVo = null;
-                        // If the status is STARTED, the interface is removed. Otherwise, 
-                        // it indicates that the startup is complete and returns directly.
-                        ProcessState state = process.getState();
-                        if (ProcessState.STARTED == state) {
-                            ThirdProgressVo flowProgress = flowImpl.getFlowProgress(process.getAppId());
-                            if (null != flowProgress) {
-                                double progressNumsDb = 0.00;
-                                String percentage = process.getProgress();
-                                if (StringUtils.isNotBlank(percentage)) {
-                                    progressNumsDb = Float.parseFloat(percentage);
-                                }
-                                double progressNums = progressNumsDb;
-                                if (!"NaN".equals(flowProgress.getProgress())) {
-                                    progressNums = Double.parseDouble(flowProgress.getProgress());
-                                    BigDecimal formatBD = new BigDecimal(progressNums);
-                                    progressNums = formatBD.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-                                }
-                                boolean isUpdateProcess = false;
-                                // Determine the status, if the status is STARTED, 
-                                // determine whether the return progress is greater than the database progress, 
-                                // if it is greater than the save
-                                // Save the database directly if the state is not STARTED
-                                if ("STARTED".equals(flowProgress.getState())) {
-                                    // Save if the return progress is greater than the database progress
-                                    if (progressNums > progressNumsDb) {
-                                        isUpdateProcess = true;
-                                    }
-                                } else {
-                                    isUpdateProcess = true;
-                                }
-                                if (isUpdateProcess) {
-                                    // Modify flow information
-                                    process.setLastUpdateUser("update");
-                                    process.setLastUpdateDttm(new Date());
-                                    process.setProgress(progressNums + "");
-                                    process.setState(ProcessState.selectGender(flowProgress.getState()));
-                                    process.setName(flowProgress.getName());
-                                    processDomain.updateProcess(process);
-                                }
-                            }
-                            processVo = ProcessUtils.processPoToVo(process);
-                        } else if (null == process.getStartTime()) {
-                            processVo = this.getAppInfoByThirdAndSave(process.getAppId());
+        if (null == appIDs || appIDs.length <= 0) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
+        }
+        List<Process> processListByAppIDs = processDomain.getProcessListByAppIDs(appIDs);
+        if (null == processListByAppIDs || processListByAppIDs.size() <= 0) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_MSG());
+        }
+        List<ProcessVo> processVoList = new ArrayList<>();
+        for (Process process : processListByAppIDs) {
+            if (null == process) {
+                continue;
+            }
+            ProcessVo processVo = null;
+            // If the status is STARTED, the interface is removed. Otherwise,
+            // it indicates that the startup is complete and returns directly.
+            ProcessState state = process.getState();
+            if (ProcessState.STARTED == state) {
+                ThirdProgressVo flowProgress = flowImpl.getFlowProgress(process.getAppId());
+                if (null != flowProgress) {
+                    double progressNumsDb = 0.00;
+                    String percentage = process.getProgress();
+                    if (StringUtils.isNotBlank(percentage)) {
+                        progressNumsDb = Float.parseFloat(percentage);
+                    }
+                    double progressNums = progressNumsDb;
+                    if (!"NaN".equals(flowProgress.getProgress())) {
+                        progressNums = Double.parseDouble(flowProgress.getProgress());
+                        BigDecimal formatBD = new BigDecimal(progressNums);
+                        progressNums = formatBD.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+                    }
+                    boolean isUpdateProcess = false;
+                    // Determine the status, if the status is STARTED,
+                    // determine whether the return progress is greater than the database progress,
+                    // if it is greater than the save
+                    // Save the database directly if the state is not STARTED
+                    if ("STARTED".equals(flowProgress.getState())) {
+                        // Save if the return progress is greater than the database progress
+                        if (progressNums > progressNumsDb) {
+                            isUpdateProcess = true;
                         }
-                        if (null != processVo) {
-                            processVoList.add(processVo);
-                        }
+                    } else {
+                        isUpdateProcess = true;
+                    }
+                    if (isUpdateProcess) {
+                        // Modify flow information
+                        process.setLastUpdateUser("update");
+                        process.setLastUpdateDttm(new Date());
+                        process.setProgress(progressNums + "");
+                        process.setState(ProcessState.selectGender(flowProgress.getState()));
+                        process.setName(flowProgress.getName());
+                        processDomain.updateProcess(process);
                     }
                 }
+                processVo = ProcessUtils.processPoToVo(process);
+            } else if (null == process.getStartTime()) {
+                processVo = this.getAppInfoByThirdAndSave(process.getAppId());
+            }
+            if (null != processVo) {
+                processVoList.add(processVo);
             }
         }
-        if (null != processVoList && processVoList.size() > 0) {
-            rtnMap.put("code", 200);
-            for (ProcessVo processVo : processVoList) {
-                if (null != processVo) {
-                    rtnMap.put(processVo.getAppId(), processVo);
-                }
+        if (null == processVoList || processVoList.size() <= 0) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
+        }
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
+        for (ProcessVo processVo : processVoList) {
+            if (null != processVo) {
+                rtnMap.put(processVo.getAppId(), processVo);
             }
         }
-        return JsonUtils.toJsonNoException(rtnMap);
+        return ReturnMapUtils.toJson(rtnMap);
     }
 
     /**
@@ -422,11 +422,11 @@ public class ProcessServiceImpl implements IProcessService {
     @Override
     public String getProgressByAppIds(String[] appIDs) {
         if (null == appIDs || appIDs.length <= 0) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("appId is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
         }
         List<Process> processListByAppIDs = processDomain.getProcessListByAppIDs(appIDs);
         if (CollectionUtils.isEmpty(processListByAppIDs)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("data is null ");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_MSG());
         }
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
         for (Process process : processListByAppIDs) {
@@ -436,7 +436,7 @@ public class ProcessServiceImpl implements IProcessService {
             }
             rtnMap.put(processVo.getAppId(), processVo);
         }
-        return JsonUtils.toJsonNoException(rtnMap);
+        return ReturnMapUtils.toJson(rtnMap);
     }
 
     /**
@@ -518,7 +518,7 @@ public class ProcessServiceImpl implements IProcessService {
     @Override
     public String delProcess(boolean isAdmin, String username, String processId) {
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         if (StringUtils.isBlank(processId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("processID is null");
@@ -547,7 +547,7 @@ public class ProcessServiceImpl implements IProcessService {
         }
         List<Process> processList = processDomain.getRunningProcessList(flowId);
         if (CollectionUtils.isEmpty(processList)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("No data");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_MSG());
         }
         List<ProcessVo> processVoList = new ArrayList<ProcessVo>();
         for (Process process : processList) {
@@ -611,7 +611,7 @@ public class ProcessServiceImpl implements IProcessService {
     @Override
     public String startProcess(boolean isAdmin, String username, String processId, String checkpoint, String runMode) throws Exception {
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         RunModeType runModeType = RunModeType.RUN;
         if (StringUtils.isNotBlank(runMode)) {
@@ -658,42 +658,28 @@ public class ProcessServiceImpl implements IProcessService {
      */
     @Override
     public String stopProcess(String username, boolean isAdmin, String processId) {
-        Map<String, Object> rtnMap = new HashMap<>();
-        rtnMap.put("code", 500);
-        if (StringUtils.isNotBlank(processId)) {
-            // Query Process by 'ProcessId'
-            Process process = processDomain.getProcessById(username, isAdmin, processId);
-            // Determine whether it is empty, and determine whether the save is successful.
-            if (null != process) {
-                String appId = process.getAppId();
-                if (null != appId) {
-                    if (ProcessState.STARTED == process.getState()) {
-                        String stopFlow = flowImpl.stopFlow(appId);
-                        if (StringUtils.isNotBlank(stopFlow) && !stopFlow.contains("Exception")) {
-                            rtnMap.put("code", 200);
-                            rtnMap.put("errorMsg", "Stop successful, return status is " + stopFlow);
-                        } else {
-                            logger.warn("Interface return value is null." + stopFlow);
-                            rtnMap.put("errorMsg", "Interface return value is " + stopFlow);
-                        }
-                    } else {
-                        logger.warn("The status of the process is " + process.getState() + " and cannot be stopped.");
-                        rtnMap.put("errorMsg", "The status of the process is " + process.getState() + " and cannot be stopped.");
-                    }
-                } else {
-                    logger.warn("The 'appId' of the 'process' is empty.");
-                    rtnMap.put("errorMsg", "The 'appId' of the 'process' is empty.");
-                }
-            } else {
-                logger.warn("No process ID is '" + processId + "' process");
-                rtnMap.put("errorMsg", " No process ID is '" + processId + "' process");
-            }
-        } else {
-            logger.warn("processId is null");
-            rtnMap.put("errorMsg", "processId is null");
+        if (StringUtils.isBlank(processId)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("processId"));
         }
-
-        return JsonUtils.toJsonNoException(rtnMap);
+        // Query Process by 'ProcessId'
+        Process process = processDomain.getProcessById(username, isAdmin, processId);
+        // Determine whether it is empty, and determine whether the save is successful.
+        if (null == process) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_BY_ID_XXX_MSG(processId));
+        }
+        String appId = process.getAppId();
+        if (StringUtils.isBlank(appId)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("The 'appId' of the 'process' is empty.");
+        }
+        if (ProcessState.STARTED != process.getState()) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("The status of the process is " + process.getState() + " and cannot be stopped.");
+        }
+        String stopFlow = flowImpl.stopFlow(appId);
+        if (StringUtils.isBlank(stopFlow) || stopFlow.contains("Exception")) {
+            logger.warn("Interface return value is null." + stopFlow);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Interface return value is " + stopFlow);
+        }
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr("Stop successful, return status is " + stopFlow);
     }
 
     /**
@@ -705,15 +691,15 @@ public class ProcessServiceImpl implements IProcessService {
     @Override
     public String getDebugData(DebugDataRequest debugDataRequest) {
         if (null == debugDataRequest) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("param is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
         }
         // (all parameters have values, and isanyempty returns false)
         if (StringUtils.isAnyBlank(debugDataRequest.getAppID(), debugDataRequest.getStopName(), debugDataRequest.getPortName())) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("param is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
         }
         String debugData = flowImpl.getDebugData(debugDataRequest.getAppID(), debugDataRequest.getStopName(), debugDataRequest.getPortName());
         if (StringUtils.isBlank(debugData)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Interface call failed");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.INTERFACE_CALL_ERROR_MSG());
         }
         JSONObject obj = JSONObject.fromObject(debugData);
         String schema = (String) obj.get("schema");
@@ -746,15 +732,15 @@ public class ProcessServiceImpl implements IProcessService {
     @Override
     public String getVisualizationData(String appID, String stopName, String visualizationType, boolean isSoft) {
         if (null == appID || null == stopName || null == visualizationType) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("param is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
         }
         // (all parameters have values, and isanyempty returns false)
         if (StringUtils.isAnyBlank(appID, stopName, visualizationType)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("param is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
         }
         String visualizationData = flowImpl.getVisualizationData(appID, stopName, visualizationType);
         if (StringUtils.isBlank(visualizationData)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Interface call failed");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.INTERFACE_CALL_ERROR_MSG());
         }
         if (isSoft) {
         	visualizationData = visualizationDataSort(visualizationData,visualizationType);	
@@ -788,7 +774,7 @@ public class ProcessServiceImpl implements IProcessService {
     @Override
     public String getCheckpoints(String parentProcessId, String pID) {
         if (StringUtils.isAllBlank(parentProcessId, pID)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("param is null");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
         }
         String checkpoints = null;
         if (StringUtils.isNotBlank(parentProcessId) && !"null".equals(parentProcessId)) {
@@ -826,7 +812,7 @@ public class ProcessServiceImpl implements IProcessService {
             rtnMap.put("stdoutLog", MessageConfig.INTERFACE_CALL_ERROR_MSG());
             rtnMap.put("stderrLog", MessageConfig.INTERFACE_CALL_ERROR_MSG());
         }
-        return JsonUtils.toJsonNoException(rtnMap);
+        return ReturnMapUtils.toJson(rtnMap);
     }
 
     /**
@@ -841,7 +827,7 @@ public class ProcessServiceImpl implements IProcessService {
     @Override
     public String drawingBoardData(String username, boolean isAdmin, String loadId, String parentAccessPath) {
         if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("illegal user");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
         if (StringUtils.isBlank(loadId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("param 'load' is null");
@@ -924,7 +910,7 @@ public class ProcessServiceImpl implements IProcessService {
         String loadXml = MxGraphUtils.mxGraphModelVoToMxGraphXml(mxGraphModelVo);
         rtnMap.put("xmlDate", loadXml);
 
-        return JsonUtils.toJsonNoException(rtnMap);
+        return ReturnMapUtils.toJson(rtnMap);
     }
 
     /**
