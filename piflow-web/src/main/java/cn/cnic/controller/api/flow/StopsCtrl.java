@@ -1,6 +1,7 @@
 package cn.cnic.controller.api.flow;
 
 import cn.cnic.component.system.service.ILogHelperService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,7 +19,7 @@ import cn.cnic.component.stopsComponent.service.IStopGroupService;
 import cn.cnic.component.stopsComponent.service.IStopsHubService;
 import io.swagger.annotations.Api;
 
-@Api(value = "stops api")
+@Api(value = "stops api", tags = "stops api")
 @RestController
 @RequestMapping("/stops")
 public class StopsCtrl {
@@ -50,6 +51,7 @@ public class StopsCtrl {
      */
     @RequestMapping(value = "/reloadStops", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="reloadStops", notes="reload Stops")
     public String reloadStops(String load) {
         String username = SessionUserUtil.getCurrentUsername();
         stopGroupServiceImpl.updateGroupAndStopsListByServer(username);
@@ -58,12 +60,14 @@ public class StopsCtrl {
 
     @RequestMapping(value = "/queryIdInfo", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="queryIdInfo", notes="query id info")
     public String getStopGroup(String fid, String stopPageId) {
         return propertyServiceImpl.queryAll(fid, stopPageId);
     }
 
     @RequestMapping(value = "/deleteLastReloadData", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="deleteLastReloadData", notes="delete last reload data")
     public String deleteLastReloadData(String stopId) {
         return propertyServiceImpl.deleteLastReloadDataByStopsId(stopId);
     }
@@ -79,6 +83,7 @@ public class StopsCtrl {
      */
     @RequestMapping(value = "/getStopsPort", method = RequestMethod.GET)
     @ResponseBody
+    @ApiOperation(value="getStopsPort", notes="get Stops port")
     public String getStopsPort(String flowId, String sourceId, String targetId, String pathLineId) {
         return stopsServiceImpl.getStopsPort(flowId, sourceId, targetId, pathLineId);
     }
@@ -92,6 +97,7 @@ public class StopsCtrl {
      */
     @RequestMapping(value = "/updateStops", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="updateStops", notes="update Stops")
     public String updateStops(String[] content, String id) {
         String username = SessionUserUtil.getCurrentUsername();
         logHelperServiceImpl.logAuthSucceed("updateStops " + id,username);
@@ -100,6 +106,7 @@ public class StopsCtrl {
 
     @RequestMapping(value = "/updateStopsOne", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="updateStopsOne", notes="update Stops one")
     public String updateStops(String content, String id) {
         String username = SessionUserUtil.getCurrentUsername();
         logHelperServiceImpl.logAuthSucceed("updateStopOne " + id, username);
@@ -108,6 +115,7 @@ public class StopsCtrl {
 
     @RequestMapping(value = "/updateStopsById", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="updateStopsById", notes="update Stops by id")
     public String updateStopsById(String stopId, String isCheckpoint) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
         logHelperServiceImpl.logAuthSucceed("updateStopsById" + stopId, username);
@@ -116,6 +124,7 @@ public class StopsCtrl {
 
     @RequestMapping(value = "/updateStopsNameById", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="updateStopsNameById", notes="update Stops name by id")
     public String updateStopsNameById(String stopId, String flowId, String name, String pageId) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
@@ -125,6 +134,7 @@ public class StopsCtrl {
 
     @RequestMapping(value = "/addStopCustomizedProperty", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="addStopCustomizedProperty", notes="add StopsCustomizedProperty")
     public String addStopCustomizedProperty(StopsCustomizedPropertyVo stopsCustomizedPropertyVo) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
         return stopsServiceImpl.addStopCustomizedProperty(username, stopsCustomizedPropertyVo);
@@ -132,6 +142,7 @@ public class StopsCtrl {
 
     @RequestMapping(value = "/updateStopsCustomizedProperty", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="updateStopsCustomizedProperty", notes="update StopsCustomizedProperty")
     public String updateStopsCustomizedProperty(StopsCustomizedPropertyVo stopsCustomizedPropertyVo) {
         String username = SessionUserUtil.getCurrentUsername();
         return stopsServiceImpl.updateStopsCustomizedProperty(username, stopsCustomizedPropertyVo);
@@ -139,6 +150,7 @@ public class StopsCtrl {
 
     @RequestMapping(value = "/deleteStopsCustomizedProperty", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="deleteStopsCustomizedProperty", notes="delete StopsCustomizedProperty")
     public String deleteStopsCustomizedProperty(String customPropertyId) {
         String username = SessionUserUtil.getCurrentUsername();
         return stopsServiceImpl.deleteStopsCustomizedProperty(username, customPropertyId);
@@ -146,6 +158,7 @@ public class StopsCtrl {
 
     @RequestMapping(value = "/deleteRouterStopsCustomizedProperty", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="deleteRouterStopsCustomizedProperty", notes="delete RouterStopsCustomizedProperty")
     public String deleteRouterStopsCustomizedProperty(String customPropertyId) {
         String username = SessionUserUtil.getCurrentUsername();
         return stopsServiceImpl.deleteRouterStopsCustomizedProperty(username, customPropertyId);
@@ -153,6 +166,7 @@ public class StopsCtrl {
 
     @RequestMapping(value = "/getRouterStopsCustomizedProperty", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="getRouterStopsCustomizedProperty", notes="get RouterStopsCustomizedProperty")
     public String getRouterStopsCustomizedProperty(String customPropertyId) {
         return stopsServiceImpl.getRouterStopsCustomizedProperty(customPropertyId);
     }
@@ -167,6 +181,7 @@ public class StopsCtrl {
      */
     @RequestMapping(value = "/stopsHubListPage", method = RequestMethod.GET)
     @ResponseBody
+    @ApiOperation(value="stopsHubListPage", notes="stopsHub list page")
     public String stopsHubListPage(Integer page, Integer limit, String param) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
@@ -182,6 +197,7 @@ public class StopsCtrl {
      */
     @RequestMapping(value = "/uploadStopsHubFile", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="uploadStopsHubFile", notes="upload StopsHub file")
     public String uploadStopsHubFile(@RequestParam("file") MultipartFile file) {
         String username = SessionUserUtil.getCurrentUsername();
         logHelperServiceImpl.logAuthSucceed("uploadStopsHubFile " + file.getName(),username);
@@ -196,6 +212,7 @@ public class StopsCtrl {
      */
     @RequestMapping(value = "/mountStopsHub", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="mountStopsHub", notes="mount StopsHub")
     public String mountStopsHub(String id) {
         String username = SessionUserUtil.getCurrentUsername();
         Boolean isAdmin = SessionUserUtil.isAdmin();
@@ -210,6 +227,7 @@ public class StopsCtrl {
      */
     @RequestMapping(value = "/unmountStopsHub", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="unmountStopsHub", notes="unmount StopsHub")
     public String unmountStopsHub(String id) {
         String username = SessionUserUtil.getCurrentUsername();
         Boolean isAdmin = SessionUserUtil.isAdmin();
@@ -224,6 +242,7 @@ public class StopsCtrl {
      */
     @RequestMapping(value = "/delStopsHub", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="delStopsHub", notes="delete StopsHub")
     public String delStopsHub(String id) {
         String username = SessionUserUtil.getCurrentUsername();
         Boolean isAdmin = SessionUserUtil.isAdmin();
@@ -232,6 +251,7 @@ public class StopsCtrl {
 
     @RequestMapping(value = "/updateStopDisabled", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="updateStopDisabled", notes="update Stops disabled")
     public String updateStopDisabled(String id, Boolean disabled) {
         String username = SessionUserUtil.getCurrentUsername();
         Boolean isAdmin = SessionUserUtil.isAdmin();

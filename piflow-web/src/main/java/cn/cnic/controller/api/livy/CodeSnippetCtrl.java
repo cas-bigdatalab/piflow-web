@@ -7,13 +7,14 @@ import cn.cnic.controller.requestVo.CodeSnippetVoRequestAdd;
 import cn.cnic.controller.requestVo.CodeSnippetVoRequestUpdate;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-@Api(value = "noteBoot api")
+@Api(value = "noteBoot api", tags = "noteBoot api")
 @RestController
 @RequestMapping(value = "/codeSnippet")
 public class CodeSnippetCtrl {
@@ -36,6 +37,7 @@ public class CodeSnippetCtrl {
      */
     @RequestMapping(value = "/addCodeSnippet", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="addCodeSnippet", notes="add code snippet")
     public String addCodeSnippet(CodeSnippetVoRequestAdd codeSnippetVo) throws Exception {
         String currentUsername = SessionUserUtil.getCurrentUsername();
         //boolean isAdmin = SessionUserUtil.isAdmin();
@@ -52,6 +54,7 @@ public class CodeSnippetCtrl {
      */
     @RequestMapping(value = "/updateCodeSnippet", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="updateCodeSnippet", notes="update code snippet")
     public String updateCodeSnippet(CodeSnippetVoRequestUpdate codeSnippetVo) throws Exception {
         String currentUsername = SessionUserUtil.getCurrentUsername();
         //boolean isAdmin = SessionUserUtil.isAdmin();
@@ -67,6 +70,7 @@ public class CodeSnippetCtrl {
      */
     @RequestMapping(value = "/deleteCodeSnippet", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="deleteCodeSnippet", notes="delete code snippet")
     @ApiImplicitParam(name="codeSnippetId", value="codeSnippet id", required = true)
     public String delCodeSnippet(String codeSnippetId) {
         String currentUsername = SessionUserUtil.getCurrentUsername();
@@ -84,6 +88,7 @@ public class CodeSnippetCtrl {
      */
     @RequestMapping(value = "/codeSnippetList", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="codeSnippetList", notes="code snippet list")
     @ApiImplicitParam(name="noteBookId", value="noteBookId", required = true, paramType = "query")
     public String codeSnippetList(String noteBookId) {
         return codeSnippetServiceImpl.getCodeSnippetList(noteBookId);
@@ -97,6 +102,7 @@ public class CodeSnippetCtrl {
      */
     @RequestMapping(value = "/runStatements", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="runStatements", notes="run statements")
     @ApiImplicitParam(name="codeSnippetId", value="codeSnippet id", required = true, paramType = "query")
     public String runStatements(String codeSnippetId) {
         String currentUsername = SessionUserUtil.getCurrentUsername();
@@ -111,6 +117,7 @@ public class CodeSnippetCtrl {
      */
     @RequestMapping(value = "/getStatementsResult", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="getStatementsResult", notes="get statements result")
     @ApiImplicitParam(name="codeSnippetId", value="codeSnippet id", required = true, paramType = "query")
     public String getStatementsResult(String codeSnippetId) {
         return codeSnippetServiceImpl.getStatementsResult(codeSnippetId);

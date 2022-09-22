@@ -5,12 +5,15 @@ import cn.cnic.component.system.service.ILogHelperService;
 import cn.cnic.component.system.service.ISysUserService;
 import cn.cnic.component.system.vo.SysUserVo;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+@Api(value = "system user manage api", tags = "system user manage api")
 @Controller
 @RequestMapping("/user")
 public class AdminUserCtrl {
@@ -26,6 +29,7 @@ public class AdminUserCtrl {
 
     @RequestMapping(value = "/getUserListPage", method = RequestMethod.GET)
     @ResponseBody
+    @ApiOperation(value="getUserListPage", notes="user list")
     public String getUserListPage(Integer page, Integer limit, String param) {
         boolean isAdmin = SessionUserUtil.isAdmin();
         String username = SessionUserUtil.getCurrentUsername();
@@ -34,6 +38,7 @@ public class AdminUserCtrl {
 
     @RequestMapping(value = "/updateUser", method = RequestMethod.GET)
     @ResponseBody
+    @ApiOperation(value="updateUserInfo", notes="update user info")
     public String updateUserInfo(SysUserVo sysUserVo) {
         boolean isAdmin = SessionUserUtil.isAdmin();
         String username = SessionUserUtil.getCurrentUsername();
@@ -43,6 +48,7 @@ public class AdminUserCtrl {
 
     @RequestMapping(value = "/getUserById", method = RequestMethod.GET)
     @ResponseBody
+    @ApiOperation(value="getUserById", notes="get user info by id")
     public String getScheduleById(String userId) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
@@ -51,6 +57,7 @@ public class AdminUserCtrl {
 
     @RequestMapping(value = "/delUser", method = RequestMethod.GET)
     @ResponseBody
+    @ApiOperation(value="delUser", notes="delete user info by id")
     public String delUser(String sysUserId) {
         boolean isAdmin = SessionUserUtil.isAdmin();
         String username = SessionUserUtil.getCurrentUsername();

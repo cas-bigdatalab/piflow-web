@@ -7,6 +7,7 @@ import cn.cnic.component.system.service.ILogHelperService;
 import cn.cnic.component.template.service.IFlowTemplateService;
 import io.swagger.annotations.Api;
 
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * template的ctrl
  */
-@Api(value = "flowTemplate api")
+@Api(value = "flowTemplate api", tags = "flowTemplate api")
 @RestController
 @RequestMapping("/flowTemplate")
 public class FlowTemplateCtrl {
@@ -37,6 +38,7 @@ public class FlowTemplateCtrl {
 
     @RequestMapping(value = "/saveFlowTemplate", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="saveFlowTemplate", notes="save FlowTemplate")
     public String saveFlowTemplate(String name, String load, String templateType) {
         String username = SessionUserUtil.getCurrentUsername();
         logHelperServiceImpl.logAuthSucceed("saveFlowTemplate",username);
@@ -45,6 +47,7 @@ public class FlowTemplateCtrl {
 
     @RequestMapping(value = "/flowTemplatePage", method = RequestMethod.GET)
     @ResponseBody
+    @ApiOperation(value="flowTemplatePage", notes="get FlowTemplate list page")
     public String templatePage(Integer page, Integer limit, String param) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
@@ -59,6 +62,7 @@ public class FlowTemplateCtrl {
      */
     @RequestMapping(value = "/deleteFlowTemplate", method = RequestMethod.GET)
     @ResponseBody
+    @ApiOperation(value="deleteFlowTemplate", notes="delete FlowTemplate")
     public String deleteFlowTemplate(String id) {
         String username = SessionUserUtil.getCurrentUsername();
         logHelperServiceImpl.logAuthSucceed("deleteFlowTemplate"+ id,username);
@@ -73,6 +77,7 @@ public class FlowTemplateCtrl {
      * @throws Exception
      */
     @RequestMapping(value = "/templateDownload", method = RequestMethod.GET)
+    @ApiOperation(value="templateDownload", notes="download FlowTemplate")
     public void templateDownload(HttpServletResponse response, String flowTemplateId) throws Exception {
         flowTemplateServiceImpl.templateDownload(response, flowTemplateId);
     }
@@ -85,6 +90,7 @@ public class FlowTemplateCtrl {
      */
     @RequestMapping(value = "/uploadXmlFile", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="uploadXmlFile", notes="upload FlowTemplate")
     public String uploadXmlFile(@RequestParam("file") MultipartFile file) {
         String username = SessionUserUtil.getCurrentUsername();
         logHelperServiceImpl.logAuthSucceed("uploadXmlFile" + file.getName() , username);
@@ -98,6 +104,7 @@ public class FlowTemplateCtrl {
      */
     @RequestMapping(value = "/flowTemplateList", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="flowTemplateList", notes="flowTemplate List")
     public String flowTemplateList() {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
@@ -115,6 +122,7 @@ public class FlowTemplateCtrl {
      */
     @RequestMapping(value = "/loadingXmlPage", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="loadingXmlPage", notes="loading xml Page")
     public String loadingXml(String templateId, String load, String loadType) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
         if ("TASK".equals(loadType)) {

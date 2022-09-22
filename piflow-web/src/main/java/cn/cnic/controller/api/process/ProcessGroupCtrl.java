@@ -5,6 +5,7 @@ import java.util.Map;
 
 import cn.cnic.common.constant.MessageConfig;
 import cn.cnic.component.system.service.ILogHelperService;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,7 +19,7 @@ import cn.cnic.component.process.service.IProcessGroupService;
 import cn.cnic.component.process.service.IProcessService;
 import io.swagger.annotations.Api;
 
-@Api(value = "processGroup api")
+@Api(value = "processGroup api", tags = "processGroup api")
 @Controller
 @RequestMapping("/processGroup")
 public class ProcessGroupCtrl {
@@ -46,6 +47,7 @@ public class ProcessGroupCtrl {
      */
     @RequestMapping(value = "/processGroupListPage", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="processGroupListPage", notes="get ProcessGroup list page")
     public String processGroupListPage(Integer page, Integer limit, String param) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
@@ -63,6 +65,7 @@ public class ProcessGroupCtrl {
      */
     @RequestMapping(value = "/processListPage", method=RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="processListPage", notes="get Process list")
     public String processListPage(Integer start, Integer length, Integer draw, String extra_search) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
@@ -78,6 +81,7 @@ public class ProcessGroupCtrl {
      */
     @RequestMapping(value = "/drawingBoardData", method = RequestMethod.GET)
     @ResponseBody
+    @ApiOperation(value="drawingBoardData", notes="drawingBoard data")
     public String drawingBoardData(String loadId, String parentAccessPath) {
         String currentUsername = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
@@ -92,6 +96,7 @@ public class ProcessGroupCtrl {
      */
     @RequestMapping(value = "/queryProcessGroup", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="queryProcessGroup", notes="query ProcessGroup")
     public String queryProcessGroup(String processGroupId) {
         
         String username = SessionUserUtil.getCurrentUsername();
@@ -108,6 +113,7 @@ public class ProcessGroupCtrl {
      */
     @RequestMapping(value = "/queryProcess", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="queryProcess", notes="query Process")
     public String queryProcess(String processGroupId, String pageId) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
@@ -123,6 +129,7 @@ public class ProcessGroupCtrl {
      */
     @RequestMapping(value = "/queryProcessGroupPath", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="queryProcessGroupPath", notes="query ProcessGroupPath")
     public String queryProcessGroupPath(String processGroupId, String pageId) {
         return processGroupServiceImpl.getProcessGroupPathVoByPageId(processGroupId, pageId);
     }
@@ -138,6 +145,7 @@ public class ProcessGroupCtrl {
      */
     @RequestMapping(value = "/runProcessGroup", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="runProcessGroup", notes="run ProcessGroup")
     public String runProcessGroup(String id, String checkpointStr, String runMode) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
@@ -153,6 +161,7 @@ public class ProcessGroupCtrl {
      */
     @RequestMapping(value = "/stopProcessGroup", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="stopProcessGroup", notes="stop ProcessGroup")
     public String stopProcessGroup(String processGroupId) {
         String username = SessionUserUtil.getCurrentUsername();
         logHelperServiceImpl.logAuthSucceed("stopProcessGroup " + processGroupId , username);
@@ -167,6 +176,7 @@ public class ProcessGroupCtrl {
      */
     @RequestMapping(value = "/delProcessGroup", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="delProcessGroup", notes="delete ProcessGroup")
     public String delProcessGroup(String processGroupId) {
         logHelperServiceImpl.logAuthSucceed("delProcessGroup " + processGroupId , SessionUserUtil.getCurrentUsername());
         return processGroupServiceImpl.delProcessGroup(SessionUserUtil.getCurrentUsername(), SessionUserUtil.isAdmin(), processGroupId);
@@ -180,6 +190,7 @@ public class ProcessGroupCtrl {
      */
     @RequestMapping(value = "/getGroupLogData", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="getGroupLogData", notes="get Group log data")
     public String getGroupLogData(String appId) {
         return processGroupServiceImpl.getGroupLogData(appId);
     }
@@ -192,6 +203,7 @@ public class ProcessGroupCtrl {
      */
     @RequestMapping(value = "/getStartGroupJson", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="getStartGroupJson", notes="get start Group json")
     public String getStartGroupJson(String processGroupId) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
@@ -206,6 +218,7 @@ public class ProcessGroupCtrl {
      */
     @RequestMapping(value = "/getAppInfo", method = RequestMethod.GET)
     @ResponseBody
+    @ApiOperation(value="getAppInfo", notes="get Api info")
     public String getAppInfo(String appid) {
         return processGroupServiceImpl.getAppInfoByAppId(appid);
     }
@@ -218,6 +231,7 @@ public class ProcessGroupCtrl {
      */
     @RequestMapping(value = "/getAppInfoList", method = RequestMethod.GET)
     @ResponseBody
+    @ApiOperation(value="getAppInfoList", notes="get Api info list")
     public String getAppInfoList(String[] arrayObj) {
         String appInfoByAppIds = processGroupServiceImpl.getAppInfoByAppIds(arrayObj);
         return appInfoByAppIds;
@@ -225,6 +239,7 @@ public class ProcessGroupCtrl {
 
     @RequestMapping(value = "/getProcessIdByPageId", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="getProcessIdByPageId", notes="get Process id by page id")
     public String getProcessIdByPageId(String processGroupId, String pageId) {
         
         if (StringUtils.isBlank(processGroupId) || StringUtils.isBlank(pageId)) {

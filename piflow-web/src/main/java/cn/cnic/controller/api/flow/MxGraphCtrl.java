@@ -5,6 +5,7 @@ import java.util.Map;
 
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.component.system.service.ILogHelperService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,7 +26,7 @@ import io.swagger.annotations.Api;
 /**
  * grapheditorctrl
  */
-@Api(value = "mxGraph api")
+@Api(value = "mxGraph api", tags = "mxGraph api")
 @Controller
 @RequestMapping("/mxGraph")
 public class MxGraphCtrl {
@@ -53,6 +54,7 @@ public class MxGraphCtrl {
      */
     @RequestMapping(value = "/saveDataForTask", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="saveDataForTask", notes="save Data for task")
     public String saveDataForTask(String imageXML, String load, String operType) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
         logHelperServiceImpl.logAuthSucceed("saveDataForTask" + load, username);
@@ -69,6 +71,7 @@ public class MxGraphCtrl {
      */
     @RequestMapping(value = "/saveDataForGroup", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="saveDataForGroup", notes="save Data for group")
     public String saveDataForGroup(String imageXML, String load, String operType) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
         logHelperServiceImpl.logAuthSucceed("saveDataForGroup " + load, username);
@@ -77,6 +80,7 @@ public class MxGraphCtrl {
 
     @RequestMapping(value = "/addMxCellAndData", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="addMxCellAndData", notes="add MxCell and data")
     public String addMxCellAndData(@RequestBody MxGraphVo mxGraphVo) throws Exception {
         String currentUsername = SessionUserUtil.getCurrentUsername();
         logHelperServiceImpl.logAuthSucceed("addMxCellAndData" + mxGraphVo.getLoadId(), currentUsername);
@@ -85,6 +89,7 @@ public class MxGraphCtrl {
 
      @RequestMapping(value = "/uploadNodeImage", method = RequestMethod.POST)
     @ResponseBody
+     @ApiOperation(value="uploadNodeImage", notes="upload NodeImage")
     public String uploadNodeImage(@RequestParam("file") MultipartFile file, String imageType) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
         logHelperServiceImpl.logAuthSucceed("uploadNodeImage " + file.getName(),username);
@@ -93,6 +98,7 @@ public class MxGraphCtrl {
 
     @RequestMapping(value = "/nodeImageList", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="nodeImageList", notes="NodeImage list")
     public String nodeImageList(String imageType) {
         String username = SessionUserUtil.getCurrentUsername();
         return mxNodeImageServiceImpl.getMxNodeImageList(username, imageType);
@@ -100,6 +106,7 @@ public class MxGraphCtrl {
 
     @RequestMapping(value = "/groupRightRun", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="groupRightRun", notes="group right run")
     public String groupRightRun(String pId, String nodeId, String nodeType) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
@@ -109,6 +116,7 @@ public class MxGraphCtrl {
 
     @RequestMapping(value = "/eraseRecord", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="eraseRecord", notes="eraseRecord")
     public String eraseRecord() {
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("flag", true);
     }

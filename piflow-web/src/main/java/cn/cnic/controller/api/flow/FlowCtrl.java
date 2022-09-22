@@ -1,6 +1,7 @@
 package cn.cnic.controller.api.flow;
 
 import cn.cnic.component.system.service.ILogHelperService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,7 +15,7 @@ import cn.cnic.controller.requestVo.FlowInfoVoRequestUpdate;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 
-@Api(value = "flow api")
+@Api(value = "flow api", tags = "flow api")
 @Controller
 @RequestMapping("/flow")
 public class FlowCtrl {
@@ -38,6 +39,7 @@ public class FlowCtrl {
      */
     @RequestMapping(value = "/getFlowListPage", method = RequestMethod.GET)
     @ResponseBody
+    @ApiOperation(value="getFlowListPage", notes="get Flow list page")
     public String getFlowListPage(Integer page, Integer limit, String param) {
         boolean isAdmin = SessionUserUtil.isAdmin();
         String username = SessionUserUtil.getCurrentUsername();
@@ -53,6 +55,7 @@ public class FlowCtrl {
      */
     @RequestMapping(value = "/drawingBoardData", method = RequestMethod.GET)
     @ResponseBody
+    @ApiOperation(value="drawingBoardData", notes="drawingBoard data")
     public String drawingBoardData(String load, String parentAccessPath) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
@@ -69,6 +72,7 @@ public class FlowCtrl {
      */
     @RequestMapping(value = "/runFlow", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="runFlow", notes="run Flow")
     public String runFlow(String flowId, String runMode) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
@@ -78,6 +82,7 @@ public class FlowCtrl {
 
     @RequestMapping(value = "/queryFlowData", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="queryFlowData", notes="query Flow data")
     public String queryFlowData(String load) {
         return flowServiceImpl.getFlowVoById(load);
     }
@@ -91,6 +96,7 @@ public class FlowCtrl {
      */
     @RequestMapping(value = "/saveFlowInfo", method = RequestMethod.GET)
     @ResponseBody
+    @ApiOperation(value="saveFlowInfo", notes="save Flow info")
     public String saveFlowInfo(FlowInfoVoRequestAdd flowVo) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
         logHelperServiceImpl.logAuthSucceed("save flow",username);
@@ -105,6 +111,7 @@ public class FlowCtrl {
      */
     @RequestMapping(value = "/deleteFlow", method = RequestMethod.GET)
     @ResponseBody
+    @ApiOperation(value="deleteFlow", notes="delete Flow")
     public String deleteFlow(String id) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
@@ -114,6 +121,7 @@ public class FlowCtrl {
 
     @RequestMapping(value = "/updateFlowBaseInfo", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="updateFlowBaseInfo", notes="update Flow base info")
     @ApiImplicitParam(name = "fId", value="fId")
     public String updateFlowBaseInfo(String fId, FlowInfoVoRequestUpdate flowVo) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();

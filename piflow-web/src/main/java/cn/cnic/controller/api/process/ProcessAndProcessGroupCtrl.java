@@ -1,6 +1,7 @@
 package cn.cnic.controller.api.process;
 
 import cn.cnic.component.system.service.ILogHelperService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,7 +14,7 @@ import cn.cnic.component.process.service.IProcessGroupService;
 import cn.cnic.component.process.service.IProcessService;
 import io.swagger.annotations.Api;
 
-@Api(value = "processAndProcessGroup api")
+@Api(value = "processAndProcessGroup api", tags = "processAndProcessGroup api")
 @Controller
 @RequestMapping("/processAndProcessGroup")
 public class ProcessAndProcessGroupCtrl {
@@ -44,6 +45,7 @@ public class ProcessAndProcessGroupCtrl {
      */
     @RequestMapping(value = "/processAndProcessGroupListPage", method = RequestMethod.GET)
     @ResponseBody
+    @ApiOperation(value="ProcessAndProcessGroupListPage", notes="Process and ProcessGroup list page")
     public String processAndProcessGroupListPage(Integer page, Integer limit, String param) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
@@ -62,6 +64,7 @@ public class ProcessAndProcessGroupCtrl {
      */
     @RequestMapping(value = "/runProcessOrProcessGroup", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="runProcessOrProcessGroup", notes="Run Process or ProcessGroup")
     public String runProcessOrProcessGroup(String id, String runMode, String processType, String checkpointStr) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
@@ -83,6 +86,7 @@ public class ProcessAndProcessGroupCtrl {
      */
     @RequestMapping(value = "/stopProcessOrProcessGroup", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="stopProcessOrProcessGroup", notes="stop Process or ProcessGroup")
     public String stopProcessOrProcessGroup(String id,String processType) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
@@ -104,6 +108,7 @@ public class ProcessAndProcessGroupCtrl {
      */
     @RequestMapping(value = "/delProcessOrProcessGroup", method = RequestMethod.GET)
     @ResponseBody
+    @ApiOperation(value="delProcessOrProcessGroup", notes="delete Process or ProcessGroup")
     public String delProcessGroup(String id, String processType) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
@@ -118,6 +123,7 @@ public class ProcessAndProcessGroupCtrl {
 
     @RequestMapping(value = "/getAppInfoList", method = RequestMethod.GET)
     @ResponseBody
+    @ApiOperation(value="getAppInfoList", notes="get App info list")
     public String getAppInfoList(String[] taskAppIds,String[] groupAppIds) {
         return processAndProcessGroupServiceImpl.getAppInfoList(taskAppIds, groupAppIds);
     }

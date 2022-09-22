@@ -4,6 +4,7 @@ import cn.cnic.component.system.service.ILogHelperService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,7 +18,7 @@ import cn.cnic.component.testData.service.ITestDataService;
 import cn.cnic.controller.requestVo.TestDataSchemaValuesSaveVo;
 import cn.cnic.controller.requestVo.TestDataVoRequest;
 
-@Api(value = "testData api")
+@Api(value = "testData api", tags = "testData api")
 @RestController
 @RequestMapping(value = "/testData")
 public class TestDataCtrl {
@@ -41,6 +42,7 @@ public class TestDataCtrl {
      */
     @RequestMapping(value = "/saveOrUpdateTestDataSchema", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="saveOrUpdateTestDataSchema", notes="save or update TestDataSchema")
     public String saveOrUpdateTestDataSchema(TestDataVoRequest testDataVo) throws Exception {
         String currentUsername = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
@@ -55,6 +57,7 @@ public class TestDataCtrl {
      */
     @RequestMapping(value = "/checkTestDataName", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="checkTestDataName", notes="check TestData name")
     @ApiImplicitParam(name="testDataName", value = "testDataName", required = true)
     public String checkTestDataName(String testDataName) {
         String currentUsername = SessionUserUtil.getCurrentUsername();
@@ -70,6 +73,7 @@ public class TestDataCtrl {
      */
     @RequestMapping(value = "/delTestData", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="delTestData", notes="delete TestData")
     @ApiImplicitParam(name="testDataId", value = "testDataId", required = true)
     public String delTestData(String testDataId) {
         String currentUsername = SessionUserUtil.getCurrentUsername();
@@ -87,6 +91,7 @@ public class TestDataCtrl {
      */
     @RequestMapping(value = "/saveOrUpdateTestDataSchemaValues", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="saveOrUpdateTestDataSchemaValues", notes="save or update TestDataSchemaValues")
     public String saveOrUpdateTestDataSchemaValues(TestDataSchemaValuesSaveVo schemaValuesVo) throws Exception {
         String currentUsername = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
@@ -104,6 +109,7 @@ public class TestDataCtrl {
      */
     @RequestMapping(value = "/testDataListPage", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="testDataListPage", notes="get TestData list page")
     @ApiImplicitParams({
     	@ApiImplicitParam(name="page", value = "page", required = true),
     	@ApiImplicitParam(name="limit", value = "limit", required = true),
@@ -126,6 +132,7 @@ public class TestDataCtrl {
      */
     @RequestMapping(value = "/testDataSchemaListPage", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="testDataSchemaListPage", notes="get TestDataSchema list page")
     @ApiImplicitParams({
     	@ApiImplicitParam(name="testDataId", value = "testDataId", required = true),
     	@ApiImplicitParam(name="page", value = "page", required = true),
@@ -147,6 +154,7 @@ public class TestDataCtrl {
      */
     @RequestMapping(value = "/testDataSchemaList", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="testDataSchemaList", notes="get TestDataSchema list")
     @ApiImplicitParams({
     	@ApiImplicitParam(name="testDataId", value = "testDataId", required = true),
     	@ApiImplicitParam(name="param", value = "param", required = false)
@@ -169,6 +177,7 @@ public class TestDataCtrl {
      */
     @RequestMapping(value = "/testDataSchemaValuesListPage", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="testDataSchemaValuesListPage", notes="get TestDataSchemaValues list page")
     @ApiImplicitParams({
     	@ApiImplicitParam(name="testDataId", value = "testDataId", required = true),
     	@ApiImplicitParam(name="page", value = "page", required = true),
@@ -191,6 +200,7 @@ public class TestDataCtrl {
      */
     @RequestMapping(value = "/testDataSchemaValuesList", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="testDataSchemaValuesList", notes="get TestDataSchemaValues list")
     @ApiImplicitParams({
     	@ApiImplicitParam(name="testDataId", value = "testDataId", required = true),
     	@ApiImplicitParam(name="param", value = "param", required = false)
@@ -215,6 +225,7 @@ public class TestDataCtrl {
      */
     @RequestMapping(value = "/uploadCsvFile", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="uploadCsvFile", notes="upload csv file")
     @ApiImplicitParams({
     	@ApiImplicitParam(name="testDataId", value = "testDataId", required = true),
     	@ApiImplicitParam(name="header", value = "header", required = true),

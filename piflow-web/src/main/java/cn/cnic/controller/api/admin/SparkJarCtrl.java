@@ -1,6 +1,7 @@
 package cn.cnic.controller.api.admin;
 
 import cn.cnic.component.system.service.ILogHelperService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -13,7 +14,7 @@ import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.component.sparkJar.service.ISparkJarService;
 import io.swagger.annotations.Api;
 
-@Api(value = "sparkJar api")
+@Api(value = "sparkJar api", tags = "sparkJar api")
 @RestController
 @RequestMapping("/sparkJar")
 public class SparkJarCtrl {
@@ -39,6 +40,7 @@ public class SparkJarCtrl {
      */
     @RequestMapping(value = "/sparkJarListPage", method = RequestMethod.GET)
     @ResponseBody
+    @ApiOperation(value="sparkJarListPage", notes="spark jar list")
     public String sparkJarListPage(Integer page, Integer limit, String param) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
@@ -54,6 +56,7 @@ public class SparkJarCtrl {
      */
     @RequestMapping(value = "/uploadSparkJarFile", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="uploadSparkJarFile", notes="update spark jar")
     public String uploadSparkJarFile(@RequestParam("file") MultipartFile file) {
         String username = SessionUserUtil.getCurrentUsername();
         logHelperServiceImpl.logAuthSucceed("uploadSparkJarFile " + file.getName(),username);
@@ -68,6 +71,7 @@ public class SparkJarCtrl {
      */
     @RequestMapping(value = "/mountSparkJar", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="mountSparkJar", notes="mount spark jar")
     public String mountSparkJar(String id) {
         String username = SessionUserUtil.getCurrentUsername();
         Boolean isAdmin = SessionUserUtil.isAdmin();
@@ -82,6 +86,7 @@ public class SparkJarCtrl {
      */
     @RequestMapping(value = "/unmountSparkJar", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="unmountSparkJar", notes="mount spark jar")
     public String unmountSparkJar(String id) {
         String username = SessionUserUtil.getCurrentUsername();
         Boolean isAdmin = SessionUserUtil.isAdmin();
@@ -96,6 +101,7 @@ public class SparkJarCtrl {
      */
     @RequestMapping(value = "/delSparkJar", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="delSparkJar", notes="delete spark jar")
     public String delSparkJar(String id) {
         String username = SessionUserUtil.getCurrentUsername();
         Boolean isAdmin = SessionUserUtil.isAdmin();

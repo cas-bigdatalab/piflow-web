@@ -1,6 +1,7 @@
 package cn.cnic.controller.api.flow;
 
 import cn.cnic.component.system.service.ILogHelperService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,7 +17,7 @@ import cn.cnic.controller.requestVo.FlowGroupInfoVoRequestUpDate;
 import io.swagger.annotations.Api;
 
 
-@Api(value = "flowGroup api")
+@Api(value = "flowGroup api", tags = "flowGroup api")
 @Controller
 @RequestMapping("/flowGroup")
 public class FlowGroupCtrl {
@@ -44,6 +45,7 @@ public class FlowGroupCtrl {
      */
     @RequestMapping(value = "/getFlowGroupListPage", method = RequestMethod.GET)
     @ResponseBody
+    @ApiOperation(value="getFlowGroupListPage", notes="get FlowGroup list page")
     public String getFlowGroupListPage(Integer page, Integer limit, String param) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
@@ -59,6 +61,7 @@ public class FlowGroupCtrl {
      */
     @RequestMapping(value = "/saveOrUpdateFlowGroup", method = RequestMethod.GET)
     @ResponseBody
+    @ApiOperation(value="saveOrUpdateFlowGroup", notes="save or update FlowGroup")
     public String saveOrUpdateFlowGroup(FlowGroupInfoVoRequest flowGroupVo) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
         logHelperServiceImpl.logAuthSucceed("saveOrUpdateFlowGroup " + flowGroupVo.getName() ,username);
@@ -67,6 +70,7 @@ public class FlowGroupCtrl {
     
     @RequestMapping(value = "/updateFlowGroupBaseInfo", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="updateFlowGroupBaseInfo", notes="update FlowGroup base info")
     public String updateFlowGroupBaseInfo(String fId, FlowGroupInfoVoRequestUpDate flowGroupVo) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
         return flowGroupServiceImpl.updateFlowGroupBaseInfo(username, fId, flowGroupVo);
@@ -74,12 +78,14 @@ public class FlowGroupCtrl {
 
     @RequestMapping(value = "/queryFlowGroupData", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="queryFlowGroupData", notes="query FlowGroup data")
     public String queryFlowGroupData(String load) {
         return flowGroupServiceImpl.getFlowGroupVoInfoById(load);
     }
 
     @RequestMapping(value = "/queryIdInfo", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="queryIdInfo", notes="query id info")
     public String queryIdInfo(String fId, String pageId) {
         return flowGroupServiceImpl.queryIdInfo(fId, pageId);
     }
@@ -93,6 +99,7 @@ public class FlowGroupCtrl {
      */
     @RequestMapping(value = "/findFlowByGroup", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="findFlowByGroup", notes="find FlowByGroup")
     public String findFlowByGroup(String fId, String pageId) {
         return flowGroupServiceImpl.queryIdInfo(fId, pageId);
     }
@@ -108,6 +115,7 @@ public class FlowGroupCtrl {
      */
     @RequestMapping(value = "/drawingBoardData", method = RequestMethod.GET)
     @ResponseBody
+    @ApiOperation(value="drawingBoardData", notes="drawingBoard data")
     public String drawingBoardData(String parentAccessPath, String load, DrawingBoardType drawingBoardType, String processType) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
@@ -124,6 +132,7 @@ public class FlowGroupCtrl {
      */
     @RequestMapping(value = "/runFlowGroup", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="runFlowGroup", notes="run FlowGroup")
     public String runFlowGroup(String flowGroupId, String runMode) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
@@ -139,6 +148,7 @@ public class FlowGroupCtrl {
      */
     @RequestMapping(value = "/deleteFlowGroup", method = RequestMethod.GET)
     @ResponseBody
+    @ApiOperation(value="deleteFlowGroup", notes="delete FlowGroup")
     public String deleteFlowGroup(String id) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
@@ -156,6 +166,7 @@ public class FlowGroupCtrl {
      */
     @RequestMapping(value = "/copyFlowToGroup", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="copyFlowToGroup", notes="copy Flow to FlowGroup")
     public String copyFlowToGroup(String flowId, String flowGroupId) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
         return flowGroupServiceImpl.copyFlowToGroup(username, flowId, flowGroupId);
@@ -163,6 +174,7 @@ public class FlowGroupCtrl {
 
     @RequestMapping(value = "/updateFlowNameById", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="updateFlowNameById", notes="update Flow name by id")
     public String updateFlowNameById(String updateType, String parentId, String currentNodeId, String currentNodePageId, String name) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
         if ("flowGroup".equals(updateType)) {

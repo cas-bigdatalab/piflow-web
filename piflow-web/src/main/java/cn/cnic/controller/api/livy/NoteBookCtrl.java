@@ -7,10 +7,11 @@ import cn.cnic.controller.requestVo.NoteBookVoRequest;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-@Api(value = "noteBoot api")
+@Api(value = "noteBoot api", tags = "noteBoot api")
 @RestController
 @RequestMapping(value = "/noteBoot")
 public class NoteBookCtrl {
@@ -33,6 +34,7 @@ public class NoteBookCtrl {
      */
     @RequestMapping(value = "/saveOrUpdateNoteBook", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="saveOrUpdateNoteBook", notes="save or update NoteBook")
     public String saveOrUpdateNoteBook(NoteBookVoRequest noteBookVo) throws Exception {
         String currentUsername = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
@@ -49,6 +51,7 @@ public class NoteBookCtrl {
      */
     @RequestMapping(value = "/getNoteBookById", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="getNoteBookById", notes="get NoteBook by id")
     @ApiImplicitParam(name = "id", value = "id", required = true, paramType = "query")
     public String getNoteBookById(String id) throws Exception {
         String currentUsername = SessionUserUtil.getCurrentUsername();
@@ -64,6 +67,7 @@ public class NoteBookCtrl {
      */
     @RequestMapping(value = "/checkNoteBookName", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="checkNoteBookName", notes="check NoteBook name")
     @ApiImplicitParam(name = "noteBookName", value = "noteBookName", required = true, paramType = "query")
     public String checkNoteBookName(String noteBookName) {
         String currentUsername = SessionUserUtil.getCurrentUsername();
@@ -79,6 +83,7 @@ public class NoteBookCtrl {
      */
     @RequestMapping(value = "/deleteNoteBook", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="deleteNoteBook", notes="delete NoteBook")
     @ApiImplicitParam(name = "noteBookId", value = "noteBookId", required = true, paramType = "query")
     public String deleteNoteBook(String noteBookId) {
         String currentUsername = SessionUserUtil.getCurrentUsername();
@@ -97,6 +102,7 @@ public class NoteBookCtrl {
      */
     @RequestMapping(value = "/noteBookListPage", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="noteBookListPage", notes="NoteBook list")
     @ApiImplicitParams({ 
         @ApiImplicitParam(name = "page", value = "page", required = true, paramType = "query"),
         @ApiImplicitParam(name = "limit", value = "limit", required = true, paramType = "query"),
@@ -116,6 +122,7 @@ public class NoteBookCtrl {
      */
     @RequestMapping(value = "/startNoteBookSession", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="startNoteBookSession", notes="start NoteBook session")
     @ApiImplicitParam(name = "noteBookId", value = "noteBookId", required = true, paramType = "query")
     public String startNoteBookSession(String noteBookId) {
         String currentUsername = SessionUserUtil.getCurrentUsername();
@@ -132,6 +139,7 @@ public class NoteBookCtrl {
      */
     @RequestMapping(value = "/getNoteBookSessionState", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="startNoteBookSession", notes="start NoteBook session")
     @ApiImplicitParam(name = "noteBookId", value = "noteBookId", required = true, paramType = "query")
     public String getNoteBookSessionState(String noteBookId) {
         String currentUsername = SessionUserUtil.getCurrentUsername();
@@ -147,6 +155,7 @@ public class NoteBookCtrl {
      */
     @RequestMapping(value = "/deleteNoteBookSession", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="deleteNoteBookSession", notes="delete NoteBook session")
     @ApiImplicitParam(name = "noteBookId", value = "noteBookId", required = true, paramType = "query")
     public String deleteNoteBookSession(String noteBookId) {
         String currentUsername = SessionUserUtil.getCurrentUsername();

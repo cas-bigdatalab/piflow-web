@@ -1,5 +1,6 @@
 package cn.cnic.base.config;
 
+import io.swagger.annotations.ApiOperation;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -39,7 +40,12 @@ public class Swagger2Config {
                 .apiInfo(apiInfo())
                 .groupName("piflow-web")
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("cn.cnic.controller.api"))
+                // Scan all annotated apis, which is more flexible
+                .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
+                // Scan the "swagger" annotation in the specified package
+                // .apis(RequestHandlerSelectors.basePackage("cn.cnic.controller.api"))
+                // Scan All
+                // .apis(RequestHandlerSelectors.any())
                 .paths(PathSelectors.any())
                 .build()
                 .globalOperationParameters(par);

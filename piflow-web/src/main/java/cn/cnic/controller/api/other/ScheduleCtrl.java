@@ -1,6 +1,7 @@
 package cn.cnic.controller.api.other;
 
 import cn.cnic.component.system.service.ILogHelperService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -13,7 +14,7 @@ import cn.cnic.component.schedule.vo.ScheduleVo;
 import io.swagger.annotations.Api;
 
 
-@Api(value = "schedule api")
+@Api(value = "schedule api",tags = "schedule api")
 @RestController
 @RequestMapping("/schedule")
 public class ScheduleCtrl {
@@ -37,6 +38,7 @@ public class ScheduleCtrl {
      */
     @RequestMapping(value = "/getScheduleVoListPage", method = RequestMethod.GET)
     @ResponseBody
+    @ApiOperation(value="getScheduleVoListPage", notes="get ScheduleVo list")
     public String getScheduleVoListPage(Integer page, Integer limit, String param) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
@@ -51,6 +53,7 @@ public class ScheduleCtrl {
      */
     @RequestMapping(value = "/addSchedule", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="addSchedule", notes="add Schedule")
     public String addSchedule(ScheduleVo scheduleVo) {
         String username = SessionUserUtil.getCurrentUsername();
         logHelperServiceImpl.logAuthSucceed("addSchedule " + scheduleVo.getScheduleRunTemplateName(),username);
@@ -65,6 +68,7 @@ public class ScheduleCtrl {
      */
     @RequestMapping(value = "/getScheduleById", method = RequestMethod.GET)
     @ResponseBody
+    @ApiOperation(value="getScheduleById", notes="get Schedule by id")
     public String getScheduleById(String scheduleId) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
@@ -79,6 +83,7 @@ public class ScheduleCtrl {
      */
     @RequestMapping(value = "/updateSchedule", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="updateSchedule", notes="update Schedule")
     public String updateSchedule(ScheduleVo scheduleVo) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
@@ -94,6 +99,7 @@ public class ScheduleCtrl {
      */
     @RequestMapping(value = "/delSchedule", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="delSchedule", notes="delete Schedule")
     public String delSchedule(String scheduleId) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
@@ -110,6 +116,7 @@ public class ScheduleCtrl {
      */
     @RequestMapping(value = "/startSchedule", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="startSchedule", notes="start Schedule")
     public String startSchedule(String scheduleId) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
@@ -124,6 +131,7 @@ public class ScheduleCtrl {
      */
     @RequestMapping(value = "/stopSchedule", method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value="stopSchedule", notes="stop Schedule")
     public String stopSchedule(String scheduleId) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();

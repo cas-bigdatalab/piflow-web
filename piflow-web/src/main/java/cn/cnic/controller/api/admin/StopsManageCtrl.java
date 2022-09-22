@@ -17,7 +17,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 
-@Api(value = "stopsManage api")
+@Api(value = "stopsManage api", tags = "stopsManage api")
 @RestController
 @RequestMapping("/stopsManage")
 public class StopsManageCtrl {
@@ -45,7 +45,7 @@ public class StopsManageCtrl {
      */
     @RequestMapping(value = "/stopsComponentList", method = RequestMethod.POST)
     @ResponseBody
-    @ApiOperation(value="stopsComponentList", notes="StopsComponent lsit")
+    @ApiOperation(value="stopsComponentList", notes="StopsComponent list")
     public String stopsComponentList() {
         String username = SessionUserUtil.getCurrentUsername();
         Boolean isAdmin = SessionUserUtil.isAdmin();
@@ -77,7 +77,7 @@ public class StopsManageCtrl {
      */
     @RequestMapping(value = "/isNeedSource", method = RequestMethod.POST)
     @ResponseBody
-    @ApiOperation(value="isNeedSource", notes="StopsComponent is neeed source data")
+    @ApiOperation(value="isNeedSource", notes="StopsComponent is need source data")
     @ApiImplicitParam(name = "stopsId", value="stopsId", required = true)
     public String isNeedSource(String stopsId) {
         String username = SessionUserUtil.getCurrentUsername();
@@ -94,7 +94,7 @@ public class StopsManageCtrl {
      */
     @RequestMapping(value = "/runStops", method = RequestMethod.POST)
     @ResponseBody
-    @ApiOperation(value="runStops", notes="runStops")
+    @ApiOperation(value="runStops", notes="run Stops")
     public String runStops(RunStopsVo runStopsVo) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
         Boolean isAdmin = SessionUserUtil.isAdmin();
