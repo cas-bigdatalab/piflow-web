@@ -545,6 +545,7 @@ function queryStopsProperty(stopPageId, loadId) {
     $("#div_propertiesVo_html").hide();
     $("#div_customized_html").hide();
     $("#div_stops_checkpoint_html").hide();
+    $("#div_stops_disabled_html").hide();
     $("#div_del_last_reload").hide();
     $("#div_properties_example_html").hide();
     isShowUpdateStopsName(false);
@@ -749,6 +750,20 @@ function queryStopsProperty(stopPageId, loadId) {
                     $("#div_stops_checkpoint_html").append('<span>&nbsp;&nbsp;Whether to add Checkpoint</span>');
                     $('#div_stops_checkpoint_html').show();
 
+
+                    //disabledCheckpoint
+                    var disabledCheckpoint = document.createElement('input');
+                    disabledCheckpoint.setAttribute('type', 'checkbox');
+                    disabledCheckpoint.setAttribute('id', 'isDisabledCheckpoint');
+                    if (stopsVoData.isDisabled) {
+                        disabledCheckpoint.setAttribute('checked', 'checked');
+                    }
+                    disabledCheckpoint.setAttribute('onclick', 'StopDisabled("' + stopsVoData.id + '")');
+                    $("#div_stops_disabled_html").html("");
+                    $("#div_stops_disabled_html").append(disabledCheckpoint);
+                    $("#div_stops_disabled_html").append('<span>&nbsp;&nbsp;是否废弃</span>');
+                    $('#div_stops_disabled_html').show();
+
                     //stopsCustomizedPropertyVoList
                     if (stopsVoData.isCustomized) {
                         $("#div_a_customized_html").attr("href", "javascript:openAddStopCustomAttrPage('" + stopsVoData.id + "');");
@@ -907,6 +922,32 @@ function queryStopsProperty(stopPageId, loadId) {
                     window.clearTimeout(timerPath);
                     return;
                 }
+            }
+            layer.close(layer.index);
+        },
+        error: function (request) {
+            //alert("Jquery Ajax request error!!!");
+            return;
+        }
+    });
+}
+
+function StopDisabled(stopsId){
+    var isCheckpoint = false;
+    if ($('#isDisabledCheckpoint').is(':checked')) {
+        isCheckpoint = true;
+    }
+    ajaxRequest({
+        type: "POST",
+        url: "/stops/updateStopDisabled",
+        async: true,
+        data: {"id": stopsId,"disabled":isCheckpoint},
+        success: function (data) {
+            var dataMap = JSON.parse(data);
+            if (200 === dataMap.code) {
+                console.log(dataMap)
+            } else {
+
             }
             layer.close(layer.index);
         },
