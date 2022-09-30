@@ -152,5 +152,13 @@ public interface StopsMapper {
             @Result(column = "is_data_source",property = "isDataSource")
     })
     public List<Stops> getStopsListByDatasourceId(@Param(value = "datasourceId") String datasourceId);
-    
+
+    /**
+     * Get StopsDisabledPages List By FlowId
+     *
+     * @return
+     */
+    @Select("SELECT page_id FROM flow_stops WHERE enable_flag=1 and is_disabled=1 and fk_flow_id=#{flowId}")
+    public List<String> getStopsDisabledPagesListByFlowId(@Param(value = "flowId") String flowId);
+
 }

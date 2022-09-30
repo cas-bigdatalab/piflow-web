@@ -65,6 +65,8 @@ public class StopsVo implements Serializable {
 
     private Boolean isDataSource = false;
 
+    private Boolean isDisabled = false;
+
     public String getCrtDttmString() {
         SimpleDateFormat sdf = new SimpleDateFormat(DateUtils.DATE_PATTERN_yyyy_MM_dd_HH_MM_ss);
         return crtDttm != null ? sdf.format(crtDttm) : "";

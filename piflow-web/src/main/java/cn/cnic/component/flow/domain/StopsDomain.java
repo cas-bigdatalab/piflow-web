@@ -237,6 +237,10 @@ public class StopsDomain {
         return stopsMapper.getStopByFlowIdAndStopPageId(flowId, stopPageId);
     }
 
+    public List<String> getStopsDisabledPagesListByFlowId(String flowId) {
+        return stopsMapper.getStopsDisabledPagesListByFlowId(flowId);
+    }
+
     public int updateStopPropertyEnableFlagByStopId(String username, String stopId) {
         return propertyMapper.updateStopPropertyEnableFlagByStopId(username, stopId);
     }

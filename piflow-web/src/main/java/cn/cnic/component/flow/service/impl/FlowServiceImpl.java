@@ -543,6 +543,8 @@ public class FlowServiceImpl implements IFlowService {
         rtnMap.put("xmlDate", loadXml);
         rtnMap.put("load", load);
         rtnMap.put("isExample", (null == flowById.getIsExample() ? false : flowById.getIsExample()));
+        List<String> stopsDisabledPagesList = flowDomain.getStopsDisabledPagesListByFlowId(load);
+        rtnMap.put("stopsDisabled", stopsDisabledPagesList);
         return ReturnMapUtils.toJson(rtnMap);
     }
 }
