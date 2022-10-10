@@ -3,7 +3,7 @@ package cn.cnic.component.mxGraph.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.cnic.base.BaseHibernateModelUUIDNoCorpAgentId;
+import cn.cnic.base.BaseModelUUIDNoCorpAgentId;
 import cn.cnic.component.flow.entity.Flow;
 import cn.cnic.component.flow.entity.FlowGroup;
 import cn.cnic.component.process.entity.Process;
@@ -13,7 +13,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class MxGraphModel extends BaseHibernateModelUUIDNoCorpAgentId {
+public class MxGraphModel extends BaseModelUUIDNoCorpAgentId {
     /**
      *
      */

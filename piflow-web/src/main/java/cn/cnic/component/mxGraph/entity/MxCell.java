@@ -1,12 +1,12 @@
 package cn.cnic.component.mxGraph.entity;
 
-import cn.cnic.base.BaseHibernateModelUUIDNoCorpAgentId;
+import cn.cnic.base.BaseModelUUIDNoCorpAgentId;
 import lombok.Getter;
 import lombok.Setter;
 
 @Setter
 @Getter
-public class MxCell extends BaseHibernateModelUUIDNoCorpAgentId {
+public class MxCell extends BaseModelUUIDNoCorpAgentId {
     /**
      *
      */

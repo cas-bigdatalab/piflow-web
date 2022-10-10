@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import cn.cnic.base.BaseHibernateModelUUIDNoCorpAgentId;
+import cn.cnic.base.BaseModelUUIDNoCorpAgentId;
 import cn.cnic.common.Eunm.ProcessParentType;
 import cn.cnic.common.Eunm.ProcessState;
 import cn.cnic.common.Eunm.RunModeType;
@@ -16,7 +16,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Process extends BaseHibernateModelUUIDNoCorpAgentId {
+public class Process extends BaseModelUUIDNoCorpAgentId {
 
     private static final long serialVersionUID = 1L;
 

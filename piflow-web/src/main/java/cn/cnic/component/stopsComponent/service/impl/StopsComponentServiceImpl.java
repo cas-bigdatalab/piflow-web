@@ -2,7 +2,6 @@ package cn.cnic.component.stopsComponent.service.impl;
 
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.common.constant.MessageConfig;
-import cn.cnic.component.dataSource.domain.DataSourceDomain;
 import cn.cnic.component.flow.vo.StopsVo;
 import cn.cnic.component.stopsComponent.domain.StopsComponentDomain;
 import cn.cnic.component.stopsComponent.entity.StopsComponent;
@@ -21,12 +20,10 @@ import java.util.Map;
 public class StopsComponentServiceImpl implements IStopsComponentService {
 
     private final StopsComponentDomain stopsComponentDomain;
-    private final DataSourceDomain dataSourceDomain;
 
     @Autowired
-    public StopsComponentServiceImpl(StopsComponentDomain stopsComponentDomain,DataSourceDomain dataSourceDomain) {
+    public StopsComponentServiceImpl(StopsComponentDomain stopsComponentDomain) {
         this.stopsComponentDomain = stopsComponentDomain;
-        this.dataSourceDomain = dataSourceDomain;
     }
 
     @Override

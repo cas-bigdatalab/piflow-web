@@ -2,6 +2,7 @@ package cn.cnic.component.flow.mapper;
 
 import cn.cnic.component.flow.entity.CustomizedProperty;
 import cn.cnic.component.flow.mapper.provider.CustomizedPropertyMapperProvider;
+import cn.cnic.component.flow.vo.StopsCustomizedPropertyVo;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
 
@@ -42,6 +43,9 @@ public interface CustomizedPropertyMapper {
 
     @UpdateProvider(type = CustomizedPropertyMapperProvider.class, method = "updateCustomizedPropertyCustomValue")
     public int updateCustomizedPropertyCustomValue(String username, String content, String id);
+
+    @Select("select * from flow_stops_customized_property where fk_stops_id = #{stopsId} and enable_flag = 1 ")
+    public List<StopsCustomizedPropertyVo> getCustomizedPropertyVoListByStopsId(String stopsId);
 
 
 }

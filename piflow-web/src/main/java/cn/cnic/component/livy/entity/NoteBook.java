@@ -1,6 +1,6 @@
 package cn.cnic.component.livy.entity;
 
-import cn.cnic.base.BaseHibernateModelUUIDNoCorpAgentId;
+import cn.cnic.base.BaseModelUUIDNoCorpAgentId;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,7 +9,7 @@ import java.util.List;
 
 @Setter
 @Getter
-public class NoteBook extends BaseHibernateModelUUIDNoCorpAgentId {
+public class NoteBook extends BaseModelUUIDNoCorpAgentId {
 
     private static final long serialVersionUID = 1L;
 

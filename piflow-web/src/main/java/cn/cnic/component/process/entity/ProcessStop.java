@@ -1,6 +1,6 @@
 package cn.cnic.component.process.entity;
 
-import cn.cnic.base.BaseHibernateModelUUIDNoCorpAgentId;
+import cn.cnic.base.BaseModelUUIDNoCorpAgentId;
 import cn.cnic.common.Eunm.PortType;
 import cn.cnic.common.Eunm.StopState;
 import lombok.Getter;
@@ -12,7 +12,7 @@ import java.util.List;
 
 @Setter
 @Getter
-public class ProcessStop extends BaseHibernateModelUUIDNoCorpAgentId {
+public class ProcessStop extends BaseModelUUIDNoCorpAgentId {
 
     private static final long serialVersionUID = 1L;
 

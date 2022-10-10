@@ -148,4 +148,19 @@ public interface DataSourceMapper {
      */
     @Select("select id from data_source where data_source_name = #{dataSourceName} and id !=#{id} and is_template = 0 and enable_flag = 1 ")
     public List<String> getDataSourceByDataSourceName(@Param("dataSourceName")String dataSourceName, @Param("id")String id);
+
+    /**
+     * query DataSource by DataSourceId
+     *
+     * @param id
+     * @return
+     */
+    @SelectProvider(type = DataSourceMapperProvider.class, method = "getDataSourceById")
+    @Results({
+            @Result(id = true, column = "id", property = "id"),
+            @Result(column = "stops_template_bundle", property = "stopsTemplateBundle"),
+            @Result(column = "id", property = "dataSourcePropertyList", many = @Many(select = "cn.cnic.component.dataSource.mapper.DataSourcePropertyMapper.getDataSourcePropertyVoListByDataSourceId", fetchType = FetchType.LAZY))
+    })
+    DataSourceVo getDataSourceVoById(@Param("id") String id);
+
 }

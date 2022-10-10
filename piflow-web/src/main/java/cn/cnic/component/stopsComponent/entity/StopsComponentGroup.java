@@ -3,7 +3,7 @@ package cn.cnic.component.stopsComponent.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.cnic.base.BaseHibernateModelUUIDNoCorpAgentId;
+import cn.cnic.base.BaseModelUUIDNoCorpAgentId;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,7 +12,7 @@ import lombok.Setter;
  */
 @Setter
 @Getter
-public class StopsComponentGroup extends BaseHibernateModelUUIDNoCorpAgentId {
+public class StopsComponentGroup extends BaseModelUUIDNoCorpAgentId {
 
     private static final long serialVersionUID = 1L;
 

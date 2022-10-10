@@ -3,14 +3,14 @@ package cn.cnic.component.schedule.entity;
 
 import java.util.Date;
 
-import cn.cnic.base.BaseHibernateModelUUIDNoCorpAgentId;
+import cn.cnic.base.BaseModelUUIDNoCorpAgentId;
 import cn.cnic.common.Eunm.ScheduleState;
 import lombok.Getter;
 import lombok.Setter;
 
 @Setter
 @Getter
-public class Schedule extends BaseHibernateModelUUIDNoCorpAgentId {
+public class Schedule extends BaseModelUUIDNoCorpAgentId {
 
     private static final long serialVersionUID = 1L;
 

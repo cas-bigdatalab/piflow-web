@@ -1,5 +1,6 @@
 package cn.cnic.controller.api.flow;
 
+import cn.cnic.component.flow.service.IFlowStopsPublishingService;
 import cn.cnic.component.system.service.ILogHelperService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,8 @@ import cn.cnic.component.stopsComponent.service.IStopGroupService;
 import cn.cnic.component.stopsComponent.service.IStopsHubService;
 import io.swagger.annotations.Api;
 
+import java.util.List;
+
 @Api(value = "stops api", tags = "stops api")
 @RestController
 @RequestMapping("/stops")
@@ -29,18 +32,21 @@ public class StopsCtrl {
     private final IPropertyService propertyServiceImpl;
     private final IStopsHubService stopsHubServiceImpl;
     private final IStopsService stopsServiceImpl;
+    private final IFlowStopsPublishingService flowStopsPublishingServiceImpl;
 
     @Autowired
     public StopsCtrl(IStopGroupService stopGroupServiceImpl,
                      ILogHelperService logHelperServiceImpl,
                      IPropertyService propertyServiceImpl,
                      IStopsHubService stopsHubServiceImpl,
-                     IStopsService stopsServiceImpl) {
+                     IStopsService stopsServiceImpl,
+                     IFlowStopsPublishingService flowStopsPublishingServiceImpl) {
         this.stopGroupServiceImpl = stopGroupServiceImpl;
         this.logHelperServiceImpl = logHelperServiceImpl;
         this.propertyServiceImpl = propertyServiceImpl;
         this.stopsHubServiceImpl = stopsHubServiceImpl;
         this.stopsServiceImpl = stopsServiceImpl;
+        this.flowStopsPublishingServiceImpl = flowStopsPublishingServiceImpl;
     }
 
     /**
@@ -256,6 +262,30 @@ public class StopsCtrl {
         String username = SessionUserUtil.getCurrentUsername();
         Boolean isAdmin = SessionUserUtil.isAdmin();
         return propertyServiceImpl.updateStopDisabled(username, isAdmin, id, disabled);
+    }
+
+    @RequestMapping(value = "/publishingStops", method = RequestMethod.POST)
+    @ResponseBody
+    @ApiOperation(value="publishingStops", notes="Publishing Stops")
+    public String publishingStops(String name, List<String> stopsIds) {
+        String username = SessionUserUtil.getCurrentUsername();
+        return flowStopsPublishingServiceImpl.addFlowStopsPublishing(username, name, stopsIds);
+    }
+
+    @RequestMapping(value = "/updatePublishing", method = RequestMethod.POST)
+    @ResponseBody
+    @ApiOperation(value="updatePublishing", notes="Update Publishing")
+    public String updatePublishing(String publishingId, String name, List<String> stopsIds) {
+        Boolean isAdmin = SessionUserUtil.isAdmin();
+        String username = SessionUserUtil.getCurrentUsername();
+        return flowStopsPublishingServiceImpl.updateFlowStopsPublishing(isAdmin, username, publishingId, name, stopsIds);
+    }
+
+    @RequestMapping(value = "/getPublishingById", method = RequestMethod.POST)
+    @ResponseBody
+    @ApiOperation(value="getPublishingById", notes="Get Publishing by PublishingId")
+    public String getPublishingById(String publishingId) {
+        return flowStopsPublishingServiceImpl.getFlowStopsPublishingVo(publishingId);
     }
 
 }

@@ -3,14 +3,14 @@ package cn.cnic.component.flow.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.cnic.base.BaseHibernateModelUUIDNoCorpAgentId;
+import cn.cnic.base.BaseModelUUIDNoCorpAgentId;
 import cn.cnic.component.mxGraph.entity.MxGraphModel;
 import lombok.Getter;
 import lombok.Setter;
 
 @Setter
 @Getter
-public class FlowGroup extends BaseHibernateModelUUIDNoCorpAgentId {
+public class FlowGroup extends BaseModelUUIDNoCorpAgentId {
 
     private static final long serialVersionUID = 1L;
 

@@ -1,7 +1,7 @@
 
 package cn.cnic.component.process.entity;
 
-import cn.cnic.base.BaseHibernateModelUUIDNoCorpAgentId;
+import cn.cnic.base.BaseModelUUIDNoCorpAgentId;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,7 +10,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class ProcessStopCustomizedProperty extends BaseHibernateModelUUIDNoCorpAgentId {
+public class ProcessStopCustomizedProperty extends BaseModelUUIDNoCorpAgentId {
 
     private static final long serialVersionUID = 1L;
 

@@ -4,7 +4,6 @@ import cn.cnic.base.utils.*;
 import cn.cnic.common.constant.MessageConfig;
 import cn.cnic.component.livy.domain.NoteBookDomain;
 import cn.cnic.component.livy.entity.NoteBook;
-import cn.cnic.component.livy.mapper.NoteBookMapper;
 import cn.cnic.component.livy.service.INoteBookService;
 import cn.cnic.component.livy.util.NoteBookUtils;
 import cn.cnic.controller.requestVo.NoteBookVoRequest;

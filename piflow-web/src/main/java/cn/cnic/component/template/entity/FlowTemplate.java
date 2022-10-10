@@ -1,13 +1,13 @@
 package cn.cnic.component.template.entity;
 
-import cn.cnic.base.BaseHibernateModelUUIDNoCorpAgentId;
+import cn.cnic.base.BaseModelUUIDNoCorpAgentId;
 import cn.cnic.common.Eunm.TemplateType;
 import lombok.Getter;
 import lombok.Setter;
 
 @Setter
 @Getter
-public class FlowTemplate extends BaseHibernateModelUUIDNoCorpAgentId {
+public class FlowTemplate extends BaseModelUUIDNoCorpAgentId {
 
     private static final long serialVersionUID = 1L;
 

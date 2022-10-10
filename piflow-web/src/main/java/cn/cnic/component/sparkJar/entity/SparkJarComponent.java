@@ -1,6 +1,6 @@
 package cn.cnic.component.sparkJar.entity;
 
-import cn.cnic.base.BaseHibernateModelUUIDNoCorpAgentId;
+import cn.cnic.base.BaseModelUUIDNoCorpAgentId;
 import cn.cnic.common.Eunm.SparkJarState;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,7 +11,7 @@ import lombok.Setter;
  */
 @Setter
 @Getter
-public class SparkJarComponent extends BaseHibernateModelUUIDNoCorpAgentId {
+public class SparkJarComponent extends BaseModelUUIDNoCorpAgentId {
 
     private static final long serialVersionUID = 1L;
 

@@ -2,7 +2,6 @@ package cn.cnic.base.utils;
 
 import org.apache.tomcat.util.threads.ThreadPoolExecutor;
 
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 

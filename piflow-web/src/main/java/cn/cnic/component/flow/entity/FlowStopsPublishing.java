@@ -1,21 +1,22 @@
-
 package cn.cnic.component.flow.entity;
 
 import cn.cnic.base.BaseModelUUIDNoCorpAgentId;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 /**
- * stop property
+ * stop component table
  */
 @Getter
 @Setter
-public class CustomizedProperty extends BaseModelUUIDNoCorpAgentId {
+public class FlowStopsPublishing extends BaseModelUUIDNoCorpAgentId {
 
     private static final long serialVersionUID = 1L;
 
-    private Stops stops;
+    private String publishingId;
     private String name;
-    private String customValue;
-    private String description;
+    private String state;
+    private List<String> stopsIds;
 }

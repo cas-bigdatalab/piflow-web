@@ -228,7 +228,7 @@ public class ProcessServiceImpl implements IProcessService {
             return processVo;
         }
         ThirdFlowInfoVo thirdFlowInfoVo = flowImpl.getFlowInfo(appID);
-        if (null != thirdFlowInfoVo) {
+        if (null == thirdFlowInfoVo) {
             processVo = ProcessUtils.processPoToVo(processById);
             return processVo;
         }

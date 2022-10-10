@@ -1,13 +1,13 @@
 package cn.cnic.component.system.entity;
 
-import cn.cnic.base.BaseHibernateModelUUIDNoCorpAgentId;
+import cn.cnic.base.BaseModelUUIDNoCorpAgentId;
 import cn.cnic.common.Eunm.SysRoleType;
 import lombok.Getter;
 import lombok.Setter;
 
 @Setter
 @Getter
-public class SysMenu extends BaseHibernateModelUUIDNoCorpAgentId {
+public class SysMenu extends BaseModelUUIDNoCorpAgentId {
 
     private static final long serialVersionUID = 1L;
 

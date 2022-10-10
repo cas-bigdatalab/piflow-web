@@ -1,6 +1,6 @@
 package cn.cnic.component.flow.entity;
 
-import cn.cnic.base.BaseHibernateModelUUIDNoCorpAgentId;
+import cn.cnic.base.BaseModelUUIDNoCorpAgentId;
 import cn.cnic.base.utils.DateUtils;
 import cn.cnic.common.Eunm.PortType;
 import cn.cnic.component.dataSource.entity.DataSource;
@@ -17,7 +17,7 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class Stops extends BaseHibernateModelUUIDNoCorpAgentId {
+public class Stops extends BaseModelUUIDNoCorpAgentId {
 
     private static final long serialVersionUID = 1L;
 

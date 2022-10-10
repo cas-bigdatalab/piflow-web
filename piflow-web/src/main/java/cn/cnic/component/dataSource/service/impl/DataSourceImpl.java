@@ -147,7 +147,7 @@ public class DataSourceImpl implements IDataSource {
         dataSourceById.setLastUpdateDttm(new Date());
 
         if (isDeleteDataSourceProperty){
-            List<DataSourceProperty> dataSourcePropertyList = new ArrayList<>();
+            
             //delete old dataSourceProperty,and insert new dataSourceProperty
             dataSourceDomain.updateEnableFlagByDatasourceId(username,id);
             List<DataSourcePropertyVo> dataSourcePropertyVoList = dataSourceVo.getDataSourcePropertyVoList();
@@ -166,9 +166,7 @@ public class DataSourceImpl implements IDataSource {
                 dataSourcePropertyAdd.setDataSource(dataSourceById);
                 dataSourcePropertyListAdd.add(dataSourcePropertyAdd);
             }
-            if (null == dataSourcePropertyList) {
-                dataSourcePropertyList = new ArrayList<>();
-            }
+            List<DataSourceProperty> dataSourcePropertyList = new ArrayList<>();
             dataSourcePropertyList.addAll(dataSourcePropertyListAdd);
             dataSourceById.setDataSourcePropertyList(dataSourcePropertyList);
         }else {

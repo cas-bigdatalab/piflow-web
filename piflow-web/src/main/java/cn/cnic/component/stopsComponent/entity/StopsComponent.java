@@ -1,6 +1,6 @@
 package cn.cnic.component.stopsComponent.entity;
 
-import cn.cnic.base.BaseHibernateModelUUIDNoCorpAgentId;
+import cn.cnic.base.BaseModelUUIDNoCorpAgentId;
 import cn.cnic.common.Eunm.PortType;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +13,7 @@ import java.util.List;
  */
 @Setter
 @Getter
-public class StopsComponent extends BaseHibernateModelUUIDNoCorpAgentId {
+public class StopsComponent extends BaseModelUUIDNoCorpAgentId {
 
     private static final long serialVersionUID = 1L;
 

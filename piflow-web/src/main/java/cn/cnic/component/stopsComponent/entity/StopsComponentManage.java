@@ -1,6 +1,6 @@
 package cn.cnic.component.stopsComponent.entity;
 
-import cn.cnic.base.BaseHibernateModelUUIDNoCorpAgentId;
+import cn.cnic.base.BaseModelUUIDNoCorpAgentId;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,7 +9,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class StopsComponentManage extends BaseHibernateModelUUIDNoCorpAgentId {
+public class StopsComponentManage extends BaseModelUUIDNoCorpAgentId {
 
     private static final long serialVersionUID = 1L;
 

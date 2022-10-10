@@ -2,17 +2,12 @@ package cn.cnic.schedule;
 
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.SpringContextUtil;
-import cn.cnic.base.utils.ThreadPoolExecutorUtils;
-import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.common.executor.ServicesExecutor;
 import cn.cnic.component.process.mapper.ProcessGroupMapper;
-import cn.cnic.third.service.IFlow;
 import cn.cnic.third.service.IGroup;
 
-import lombok.Getter;
 import lombok.SneakyThrows;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.tomcat.util.threads.ThreadPoolExecutor;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
@@ -22,7 +17,6 @@ import org.springframework.stereotype.Component;
 
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.*;

@@ -212,8 +212,7 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
         processGroupDomain.addProcessGroup(copyProcessGroup);
         String copyProcessGroupId = copyProcessGroup.getId();
         copyProcessGroup = processGroupDomain.getProcessGroupById(username, isAdmin, copyProcessGroupId);
-        
-        Map<String, Object> rtnMap = new HashMap<>();
+
         Map<String, Object> stringObjectMap = groupImpl.startFlowGroup(copyProcessGroup, runModeType);
         if (200 != (Integer) stringObjectMap.get("code")) {
             copyProcessGroup.setEnableFlag(false);

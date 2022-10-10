@@ -2,7 +2,7 @@ package cn.cnic.component.system.entity;
 
 import java.util.List;
 
-import cn.cnic.base.BaseHibernateModelUUIDNoCorpAgentId;
+import cn.cnic.base.BaseModelUUIDNoCorpAgentId;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,7 +12,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class SysUser extends BaseHibernateModelUUIDNoCorpAgentId {
+public class SysUser extends BaseModelUUIDNoCorpAgentId {
 
     private static final long serialVersionUID = 1L;
 

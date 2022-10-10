@@ -2,6 +2,7 @@ package cn.cnic.component.dataSource.mapper;
 
 import cn.cnic.component.dataSource.entity.DataSourceProperty;
 import cn.cnic.component.dataSource.mapper.provider.DataSourcePropertyMapperProvider;
+import cn.cnic.component.dataSource.vo.DataSourcePropertyVo;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -55,5 +56,8 @@ public interface DataSourcePropertyMapper {
      */
     @UpdateProvider(type = DataSourcePropertyMapperProvider.class, method = "updateEnableFlagByDatasourceId")
     public int updateEnableFlagByDatasourceId(String username, String id);
+
+    @SelectProvider(type = DataSourcePropertyMapperProvider.class, method = "getDataSourcePropertyListByDataSourceId")
+    public List<DataSourcePropertyVo> getDataSourcePropertyVoListByDataSourceId(String dataSourceId);
 
 }

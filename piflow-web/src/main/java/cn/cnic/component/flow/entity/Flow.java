@@ -1,6 +1,6 @@
 package cn.cnic.component.flow.entity;
 
-import cn.cnic.base.BaseHibernateModelUUIDNoCorpAgentId;
+import cn.cnic.base.BaseModelUUIDNoCorpAgentId;
 import cn.cnic.component.dataSource.entity.DataSource;
 import cn.cnic.component.mxGraph.entity.MxGraphModel;
 import lombok.Getter;
@@ -11,7 +11,7 @@ import java.util.List;
 
 @Setter
 @Getter
-public class Flow extends BaseHibernateModelUUIDNoCorpAgentId {
+public class Flow extends BaseModelUUIDNoCorpAgentId {
 
     private static final long serialVersionUID = 1L;
 

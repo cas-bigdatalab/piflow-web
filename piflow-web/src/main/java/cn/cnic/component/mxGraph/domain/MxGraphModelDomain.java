@@ -2,7 +2,6 @@ package cn.cnic.component.mxGraph.domain;
 
 import java.util.List;
 
-import cn.cnic.component.flow.entity.Flow;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

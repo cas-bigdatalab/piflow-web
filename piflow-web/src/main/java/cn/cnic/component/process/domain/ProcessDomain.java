@@ -2,7 +2,6 @@ package cn.cnic.component.process.domain;
 
 import java.util.List;
 
-import cn.cnic.component.flow.entity.CustomizedProperty;
 import cn.cnic.component.process.entity.*;
 import cn.cnic.component.process.entity.Process;
 import cn.cnic.component.process.mapper.*;

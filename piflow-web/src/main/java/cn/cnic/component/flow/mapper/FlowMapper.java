@@ -203,6 +203,14 @@ public interface FlowMapper {
      */
     @DeleteProvider(type = FlowMapperProvider.class, method = "unlinkGlobalParams")
     public int unlinkGlobalParams(@Param("flowId") String flowId, @Param("globalParamsIds") String[] globalParamsIds);
-    
+
+    /**
+     * Query workflow based on workflow Id
+     *
+     * @param id
+     * @return
+     */
+    @SelectProvider(type = FlowMapperProvider.class, method = "getFlowById")
+    public FlowVo getFlowVoById(@Param("id") String id);
 
 }

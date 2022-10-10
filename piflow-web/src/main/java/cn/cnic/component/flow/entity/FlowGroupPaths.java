@@ -1,12 +1,12 @@
 package cn.cnic.component.flow.entity;
 
-import cn.cnic.base.BaseHibernateModelUUIDNoCorpAgentId;
+import cn.cnic.base.BaseModelUUIDNoCorpAgentId;
 import lombok.Getter;
 import lombok.Setter;
 
 @Setter
 @Getter
-public class FlowGroupPaths extends BaseHibernateModelUUIDNoCorpAgentId {
+public class FlowGroupPaths extends BaseModelUUIDNoCorpAgentId {
 
     private static final long serialVersionUID = 1L;
 

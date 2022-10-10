@@ -11,7 +11,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class BaseHibernateModelNoId implements Serializable {
+public class BaseModelNoId implements Serializable {
 
     /**
      *

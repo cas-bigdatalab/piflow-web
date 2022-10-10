@@ -2,6 +2,7 @@ package cn.cnic.component.flow.mapper;
 
 import cn.cnic.component.flow.entity.Stops;
 import cn.cnic.component.flow.mapper.provider.StopsMapperProvider;
+import cn.cnic.component.flow.vo.StopsVo;
 import cn.cnic.third.vo.flow.ThirdFlowInfoStopVo;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
@@ -160,5 +161,22 @@ public interface StopsMapper {
      */
     @Select("SELECT page_id FROM flow_stops WHERE enable_flag=1 and is_disabled=1 and fk_flow_id=#{flowId}")
     public List<String> getStopsDisabledPagesListByFlowId(@Param(value = "flowId") String flowId);
+
+    /**
+     * Query stop and attribute information based on stopsId
+     *
+     * @param Id
+     * @return
+     */
+    @SelectProvider(type = StopsMapperProvider.class, method = "getStopsById")
+    @Results({
+            @Result(column = "id", property = "propertiesVo", many = @Many(select = "cn.cnic.component.flow.mapper.PropertyMapper.getPropertyVoListByStopsId", fetchType = FetchType.LAZY)),
+            @Result(column = "id", property = "oldPropertiesVo", many = @Many(select = "cn.cnic.component.flow.mapper.PropertyMapper.getOldPropertyVoListByStopsId", fetchType = FetchType.LAZY)),
+            @Result(column = "id", property = "stopsCustomizedPropertyVoList", many = @Many(select = "cn.cnic.component.flow.mapper.CustomizedPropertyMapper.getCustomizedPropertyVoListByStopsId", fetchType = FetchType.LAZY)),
+            @Result(column = "fk_flow_id", property = "flowVo", many = @Many(select = "cn.cnic.component.flow.mapper.FlowMapper.getFlowVoById", fetchType = FetchType.LAZY)),
+            @Result(column = "is_data_source",property = "isDataSource"),
+            @Result(column = "fk_data_source_id", property = "dataSourceVo", many = @Many(select = "cn.cnic.component.dataSource.mapper.DataSourceMapper.getDataSourceVoById", fetchType = FetchType.LAZY))
+    })
+    public StopsVo getStopsVoById(String Id);
 
 }

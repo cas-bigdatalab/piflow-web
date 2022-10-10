@@ -3,6 +3,7 @@ package cn.cnic.component.flow.mapper;
 import cn.cnic.component.flow.entity.Property;
 import cn.cnic.component.flow.entity.Stops;
 import cn.cnic.component.flow.mapper.provider.PropertyMapperProvider;
+import cn.cnic.component.flow.vo.StopsPropertyVo;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
 
@@ -121,5 +122,17 @@ public interface PropertyMapper {
             @Result(column = "property_required", property = "required"),
             @Result(column = "property_sensitive", property = "sensitive") })
     public List<Property> getOldPropertyListByStopsId(String stopsId);
+
+    @Select("select * from flow_stops_property where fk_stops_id = #{stopsId} and enable_flag = 1 ORDER BY property_sort desc ")
+    @Results({ @Result(id = true, column = "id", property = "id"),
+            @Result(column = "property_required", property = "required"),
+            @Result(column = "property_sensitive", property = "sensitive") })
+    public List<StopsPropertyVo> getPropertyVoListByStopsId(String stopsId);
+
+    @Select("select * from flow_stops_property where is_old_data=1 and fk_stops_id = #{stopsId} and enable_flag = 1 ORDER BY property_sort desc ")
+    @Results({ @Result(id = true, column = "id", property = "id"),
+            @Result(column = "property_required", property = "required"),
+            @Result(column = "property_sensitive", property = "sensitive") })
+    public List<StopsPropertyVo> getOldPropertyVoListByStopsId(String stopsId);
 
 }

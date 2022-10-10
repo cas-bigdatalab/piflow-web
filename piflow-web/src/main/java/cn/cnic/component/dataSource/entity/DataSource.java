@@ -1,6 +1,6 @@
 package cn.cnic.component.dataSource.entity;
 
-import cn.cnic.base.BaseHibernateModelUUIDNoCorpAgentId;
+import cn.cnic.base.BaseModelUUIDNoCorpAgentId;
 import cn.cnic.component.flow.entity.Stops;
 import cn.cnic.component.stopsComponent.entity.StopsComponent;
 import lombok.Getter;
@@ -11,7 +11,7 @@ import java.util.List;
 
 @Setter
 @Getter
-public class DataSource extends BaseHibernateModelUUIDNoCorpAgentId {
+public class DataSource extends BaseModelUUIDNoCorpAgentId {
 
     private static final long serialVersionUID = 1L;
 
