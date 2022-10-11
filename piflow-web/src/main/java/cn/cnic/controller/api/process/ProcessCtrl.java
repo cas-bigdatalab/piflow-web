@@ -335,7 +335,7 @@ public class ProcessCtrl {
     @RequestMapping(value = "/showViewStopData/{id}", method = RequestMethod.GET)
     @ResponseBody
     @ApiOperation(value="showViewStopData", notes="show view Stop data")
-    public void showViewData(HttpServletResponse response, @PathVariable String id) {
+    public void showViewData(HttpServletResponse response, @PathVariable String id) throws Exception {
         processStopServiceImpl.showViewData(response, id);
     }
 
