@@ -151,4 +151,12 @@ public interface IStopsService {
      */
     public String getRouterStopsCustomizedProperty(String customPropertyId);
 
+    /**
+     * Get stops name by flow id
+     *
+     * @param flowId
+     * @return
+     */
+    public String getStopsNameByFlowId(String flowId);
+
 }

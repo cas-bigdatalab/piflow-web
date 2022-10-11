@@ -151,7 +151,6 @@ public class StopImpl implements IStop {
         if (ThirdInterfaceReturnMsgUtils.THIRD_INTERFACE_IS_ERROR(doPost).equals(ThirdInterfaceReturnMsgUtils.ERROR)) {
             return null;
         }
-
         StopsHubVo stopsHubVo = ThirdStopsComponentUtils.constructStopsHubVo(JSONObject.fromObject(doPost));
         return stopsHubVo;
     }

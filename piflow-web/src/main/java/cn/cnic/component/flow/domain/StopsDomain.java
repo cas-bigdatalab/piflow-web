@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 @Component
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
@@ -287,6 +288,10 @@ public class StopsDomain {
 
     public List<CustomizedProperty> getCustomizedPropertyListByStopsIdAndName(String stopsId, String name){
         return customizedPropertyMapper.getCustomizedPropertyListByStopsIdAndName(stopsId, name);
+    }
+
+    public List<Map<String, String>> getStopsIdAndNameListByFlowId(String flowId){
+        return stopsMapper.getStopsIdAndNameListByFlowId(flowId);
     }
 
 

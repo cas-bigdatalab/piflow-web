@@ -2,6 +2,7 @@ package cn.cnic.component.flow.mapper.provider;
 
 import cn.cnic.base.utils.DateUtils;
 import cn.cnic.base.utils.SqlUtils;
+import cn.cnic.base.utils.UUIDUtils;
 import cn.cnic.component.flow.entity.FlowStopsPublishing;
 import cn.cnic.component.flow.entity.Stops;
 import cn.cnic.third.vo.flow.ThirdFlowInfoStopVo;
@@ -84,11 +85,13 @@ public class FlowStopsPublishingMapperProvider {
         boolean flag = this.preventSQLInjectionFlowStopsPublishing(flowStopsPublishing);
         if (flag) {
             StringBuffer stringBuffer = splicingInsert();
-            String baseFieldValues = SqlUtils.baseFieldValues(flowStopsPublishing);
+            String baseFieldValues = SqlUtils.baseFieldValuesNoId(flowStopsPublishing);
             int i = 0;
             for (String stopsId : flowStopsPublishing.getStopsIds()) {
                 i++;
                 stringBuffer.append("(");
+                stringBuffer.append(SqlUtils.preventSQLInjection(UUIDUtils.getUUID32()));
+                stringBuffer.append(",");
                 stringBuffer.append(baseFieldValues);
                 // handle other fields
                 stringBuffer.append(",");
@@ -96,7 +99,7 @@ public class FlowStopsPublishingMapperProvider {
                 stringBuffer.append(",");
                 stringBuffer.append(this.name);
                 stringBuffer.append(",");
-                stringBuffer.append(stopsId);
+                stringBuffer.append(SqlUtils.preventSQLInjection(stopsId));
                 if (i != flowStopsPublishing.getStopsIds().size()) {
                     stringBuffer.append("),");
                 } else {

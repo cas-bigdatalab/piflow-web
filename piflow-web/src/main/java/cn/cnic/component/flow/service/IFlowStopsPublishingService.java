@@ -17,7 +17,7 @@ public interface IFlowStopsPublishingService {
      * @param stopsIds
      * @return
      */
-    public String addFlowStopsPublishing(String username, String name, List<String> stopsIds);
+    public String addFlowStopsPublishing(String username, String name, String stopsIds);
 
     /**
      * update FlowStopsPublishing

@@ -60,11 +60,15 @@ public class FlowStopsPublishingServiceImpl implements IFlowStopsPublishingServi
     private FlowStopsPublishingDomain flowStopsPublishingDomain;
 
     @Override
-    public String addFlowStopsPublishing(String username, String name, List<String> stopsIds) {
+    public String addFlowStopsPublishing(String username, String name, String stopsIds) {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
-        if (null == stopsIds || stopsIds.size() <= 0) {
+        if (StringUtils.isBlank(stopsIds)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("stopsIds"));
+        }
+        List<String> stopsIdList = Arrays.asList(stopsIds.split(","));;
+        if (null == stopsIdList || stopsIdList.size() <= 0) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("stopsIds"));
         }
         if (StringUtils.isBlank(name)) {
@@ -73,7 +77,7 @@ public class FlowStopsPublishingServiceImpl implements IFlowStopsPublishingServi
         FlowStopsPublishing flowStopsPublishing = FlowStopsPublishingUtils.flowStopsPublishingNewNoId(username);
         flowStopsPublishing.setPublishingId(UUIDUtils.getUUID32());
         flowStopsPublishing.setName(name);
-        flowStopsPublishing.setStopsIds(stopsIds);
+        flowStopsPublishing.setStopsIds(stopsIdList);
         try {
             int affectedRows = flowStopsPublishingDomain.addFlowStopsPublishing(flowStopsPublishing);
             if (affectedRows <= 0) {
