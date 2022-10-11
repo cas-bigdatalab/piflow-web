@@ -93,6 +93,14 @@ public interface FlowStopsPublishingMapper {
     @SelectProvider(type = FlowStopsPublishingMapperProvider.class, method = "getFlowStopsPublishingListByPublishingIdAndStopsId")
     public List<FlowStopsPublishing> getFlowStopsPublishingListByPublishingIdAndStopsId(String publishingId, String stopsId);
 
+    /**
+     * Get FlowStopsPublishing List by flowId
+     *
+     * @return
+     */
+    @SelectProvider(type = FlowStopsPublishingMapperProvider.class, method = "getFlowStopsPublishingListByFlowId")
+    public List<FlowStopsPublishing> getFlowStopsPublishingListByFlowId(String username, String flowId);
+
 
 
 

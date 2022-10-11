@@ -113,9 +113,11 @@ public class FlowStopsPublishingMapperProvider {
     }
 
     /**
-     * update stops
+     * updateFlowStopsPublishingName
      *
-     * @param flowStopsPublishing
+     * @param username
+     * @param publishingId
+     * @param name
      * @return
      */
     public String updateFlowStopsPublishingName(String username, String publishingId, String name) {
@@ -237,11 +239,31 @@ public class FlowStopsPublishingMapperProvider {
             return "SELECT 0";
         }
         StringBuffer sql = new StringBuffer();
-        sql.append("SELECT * FROM flow_stops_publishing WHERE enable_flag=1 and ");
-        sql.append("publishing_id=");
+        sql.append("SELECT * FROM flow_stops_publishing WHERE enable_flag=1 ");
+        sql.append(" and publishing_id=");
         sql.append(SqlUtils.preventSQLInjection(publishingId));
-        sql.append("stops_id=");
+        sql.append(" and stops_id=");
         sql.append(SqlUtils.preventSQLInjection(stopsId));
+        return sql.toString();
+    }
+
+    public String getFlowStopsPublishingListByFlowId(String username, String flowId) {
+        if (StringUtils.isBlank(username)) {
+            return "SELECT 0";
+        }
+        if (StringUtils.isBlank(flowId)) {
+            return "SELECT 0";
+        }
+        //SELECT DISTINCT fsp.publishing_id, fsp.name FROM flow_stops_publishing fsp
+        //LEFT JOIN flow_stops fs ON fsp.stops_id=fs.id
+        //WHERE fsp.enable_flag=1 AND fs.enable_flag=1 AND fsp.crt_user='admin' AND fs.fk_flow_id='6111a00006a44a1e87d112f289d54640';
+        StringBuffer sql = new StringBuffer();
+        sql.append("SELECT DISTINCT fsp.publishing_id, fsp.name FROM flow_stops_publishing fsp LEFT JOIN flow_stops fs ON fsp.stops_id=fs.id ");
+        sql.append(" WHERE fsp.enable_flag=1 AND fs.enable_flag=1 ");
+        sql.append(" AND fsp.crt_user=");
+        sql.append(SqlUtils.preventSQLInjection(username));
+        sql.append(" AND fs.fk_flow_id=");
+        sql.append(SqlUtils.preventSQLInjection(flowId));
         return sql.toString();
     }
 

@@ -39,4 +39,13 @@ public interface IFlowStopsPublishingService {
      */
     public String getFlowStopsPublishingVo(String publishingId);
 
+    /**
+     * getFlowStopsPublishingList
+     *
+     * @param username
+     * @param flowId
+     * @return
+     */
+    public String getFlowStopsPublishingList(String username, String flowId);
+
 }
