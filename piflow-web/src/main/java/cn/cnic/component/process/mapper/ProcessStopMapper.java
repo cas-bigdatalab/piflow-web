@@ -97,6 +97,15 @@ public interface ProcessStopMapper {
     public String getProcessAppIdByStopId(String stopId);
 
     /**
+     * 根据id
+     *
+     * @param stopId
+     * @return
+     */
+    @SelectProvider(type = ProcessStopMapperProvider.class, method = "getProcessStopNameByStopId")
+    public String getProcessStopNameByStopId(String stopId);
+
+    /**
      * 修改ProcessStop
      *
      * @param processStop

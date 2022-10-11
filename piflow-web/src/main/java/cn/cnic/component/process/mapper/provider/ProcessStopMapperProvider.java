@@ -316,6 +316,26 @@ public class ProcessStopMapperProvider {
         return sqlStr;
     }
 
+    /**
+     * Query appId by stopId
+     *
+     * @param stopId
+     * @return
+     */
+    public static String getProcessStopNameByStopId(String stopId) {
+        String sqlStr = "SELECT 0";
+        if (!StringUtils.isAnyEmpty(stopId)) {
+            SQL sql = new SQL();
+            sql.SELECT("fps.name");
+            sql.FROM("flow_process_stop fps");
+            sql.WHERE("fps.enable_flag = 1");
+            sql.WHERE("fps.id = " + SqlUtils.preventSQLInjection(stopId));
+
+            sqlStr = sql.toString();
+        }
+        return sqlStr;
+    }
+
     public String updateProcessStop(ProcessStop processStop) {
         String sqlStr = "SELECT 0";
         if (this.preventSQLInjectionProcessStop(processStop)) {

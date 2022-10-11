@@ -21,7 +21,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+
 
 @Api(value = "process api", tags = "process api")
 @Controller
@@ -324,6 +324,19 @@ public class ProcessCtrl {
     @ApiImplicitParam(name = "flowId", value = "flowId", required = true, paramType = "query")
     public String getRunningProcessList(String flowId) {
         return processServiceImpl.getRunningProcessVoList(flowId);
+    }
+
+    /**
+     * show View Data
+     *
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/showViewStopData/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    @ApiOperation(value="showViewStopData", notes="show view Stop data")
+    public void showViewData(HttpServletResponse response, @PathVariable String id) {
+        processStopServiceImpl.showViewData(response, id);
     }
 
 }

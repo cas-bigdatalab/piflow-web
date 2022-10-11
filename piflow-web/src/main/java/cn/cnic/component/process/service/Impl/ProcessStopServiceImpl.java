@@ -1,8 +1,16 @@
 package cn.cnic.component.process.service.Impl;
 
+import cn.cnic.common.constant.MessageConfig;
+import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.component.process.domain.ProcessDomain;
 import cn.cnic.component.stopsComponent.domain.StopsComponentDomain;
+import cn.cnic.third.service.IVisualDataDirectory;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FSDataInputStream;
+import org.apache.hadoop.fs.FileStatus;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +21,14 @@ import cn.cnic.component.process.utils.ProcessUtils;
 import cn.cnic.component.process.vo.ProcessStopVo;
 import cn.cnic.component.stopsComponent.entity.StopsComponent;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.util.Map;
 
 @Service
 public class ProcessStopServiceImpl implements IProcessStopService {
@@ -22,6 +38,9 @@ public class ProcessStopServiceImpl implements IProcessStopService {
 
     @Autowired
     private StopsComponentDomain stopsComponentDomain;
+
+    @Autowired
+    private IVisualDataDirectory visualDataDirectoryImpl;
 
     /**
      * Query processStop based on processId and pageId
@@ -46,4 +65,89 @@ public class ProcessStopServiceImpl implements IProcessStopService {
         }
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("processStopVo", processStopVo);
     }
+
+    /**
+     * showViewData
+     *
+     * @param stopId       stopId
+     * @return json
+     */
+    @Override
+    public void showViewData(HttpServletResponse response, String stopId) throws Exception {
+        try {
+            if (StringUtils.isBlank(stopId)) {
+                throw new Exception(MessageConfig.PARAM_IS_NULL_MSG("id"));
+            }
+            String appId = processDomain.getProcessAppIdByStopId(stopId);
+            if (StringUtils.isBlank(appId)) {
+                throw new Exception(MessageConfig.NO_DATA_BY_ID_XXX_MSG(stopId));
+            }
+            String stopName = processDomain.getProcessStopNameByStopId(stopId);
+            if (StringUtils.isBlank(stopName)) {
+                throw new Exception(MessageConfig.NO_DATA_BY_ID_XXX_MSG(stopName));
+            }
+            String visualDataDirectoryPathUrl = visualDataDirectoryImpl.getVisualDataDirectoryPathUrl(appId, stopName);
+            if (StringUtils.isBlank(visualDataDirectoryPathUrl)) {
+                throw new Exception("Error");
+            }
+            response.setCharacterEncoding("utf-8");
+            downloadFile(response, visualDataDirectoryPathUrl);
+        } catch (Exception e) {
+            reSetError(response, e.getMessage());
+        }
+    }
+
+    /**
+     * The file is read as a stream
+     *
+     * @param hdfsPath hdfs path
+     * @return
+     */
+    private void downloadFile(HttpServletResponse response, String hdfsPath) throws URISyntaxException, IOException {
+        byte[] buffer = null;
+        String fileName = null;
+        //下面两行，初始化hdfs配置连接
+        Configuration conf = new Configuration();
+        FileSystem fs = FileSystem.get(new URI(hdfsPath), conf);
+        FileStatus[] status = fs.listStatus(new Path(hdfsPath));
+        for (FileStatus file : status) {
+            if (!file.getPath().getName().startsWith("part")) {
+                continue;
+            }
+            fileName = file.getPath().getName();
+            FSDataInputStream inputStream = fs.open(file.getPath());
+            buffer = new byte[inputStream.available()];
+            inputStream.read(buffer);
+            inputStream.close();
+            break;
+        }
+        // Clear response
+        response.reset();
+        // Set the header of response and UTF-8 code the file name. Otherwise, the file name is garbled and wrong when downloading
+        response.addHeader("Content-Disposition", "attachment;filename="+ URLEncoder.encode (fileName, "UTF-8" ));
+        response.addHeader("Content-Length", "" + buffer.length);
+        OutputStream toClient = new BufferedOutputStream(
+                response.getOutputStream());
+        response.setContentType("application/vnd.ms-excel;charset=utf-8");
+        toClient.write(buffer);
+        toClient.flush();
+        toClient.close();
+    }
+
+    private void reSetError(HttpServletResponse response, String errorMessage) throws Exception {
+        // 重置response
+        response.reset();
+        response.setContentType("application/json");
+        response.setCharacterEncoding("utf-8");
+        Map<String, Object> map = ReturnMapUtils.setFailedMsg(errorMessage);
+        map.put("status", "failure");
+        map.put("message", errorMessage);
+        response.setStatus(ReturnMapUtils.ERROR_CODE);
+        try {
+            response.getWriter().println();
+        } catch (IOException e) {
+            throw new Exception("error");
+        }
+    }
+
 }
