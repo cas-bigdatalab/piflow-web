@@ -107,4 +107,8 @@ public class FlowStopsPublishingDomain {
         return flowStopsPublishingMapper.getFlowStopsPublishingListByPublishingIdAndStopsId(publishingId, stopsId);
     }
 
+    public List<FlowStopsPublishing> getFlowStopsPublishingListByFlowId(String username, String flowId) {
+        return flowStopsPublishingMapper.getFlowStopsPublishingListByFlowId(username, flowId);
+    }
+
 }

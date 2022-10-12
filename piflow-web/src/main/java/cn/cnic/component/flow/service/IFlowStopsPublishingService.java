@@ -17,7 +17,7 @@ public interface IFlowStopsPublishingService {
      * @param stopsIds
      * @return
      */
-    public String addFlowStopsPublishing(String username, String name, List<String> stopsIds);
+    public String addFlowStopsPublishing(String username, String name, String stopsIds);
 
     /**
      * update FlowStopsPublishing
@@ -38,5 +38,14 @@ public interface IFlowStopsPublishingService {
      * @return
      */
     public String getFlowStopsPublishingVo(String publishingId);
+
+    /**
+     * getFlowStopsPublishingList
+     *
+     * @param username
+     * @param flowId
+     * @return
+     */
+    public String getFlowStopsPublishingList(String username, String flowId);
 
 }

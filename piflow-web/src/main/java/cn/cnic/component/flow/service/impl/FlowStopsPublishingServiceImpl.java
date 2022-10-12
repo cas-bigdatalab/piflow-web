@@ -60,11 +60,15 @@ public class FlowStopsPublishingServiceImpl implements IFlowStopsPublishingServi
     private FlowStopsPublishingDomain flowStopsPublishingDomain;
 
     @Override
-    public String addFlowStopsPublishing(String username, String name, List<String> stopsIds) {
+    public String addFlowStopsPublishing(String username, String name, String stopsIds) {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
-        if (null == stopsIds || stopsIds.size() <= 0) {
+        if (StringUtils.isBlank(stopsIds)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("stopsIds"));
+        }
+        List<String> stopsIdList = Arrays.asList(stopsIds.split(","));;
+        if (null == stopsIdList || stopsIdList.size() <= 0) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("stopsIds"));
         }
         if (StringUtils.isBlank(name)) {
@@ -73,7 +77,7 @@ public class FlowStopsPublishingServiceImpl implements IFlowStopsPublishingServi
         FlowStopsPublishing flowStopsPublishing = FlowStopsPublishingUtils.flowStopsPublishingNewNoId(username);
         flowStopsPublishing.setPublishingId(UUIDUtils.getUUID32());
         flowStopsPublishing.setName(name);
-        flowStopsPublishing.setStopsIds(stopsIds);
+        flowStopsPublishing.setStopsIds(stopsIdList);
         try {
             int affectedRows = flowStopsPublishingDomain.addFlowStopsPublishing(flowStopsPublishing);
             if (affectedRows <= 0) {
@@ -125,7 +129,7 @@ public class FlowStopsPublishingServiceImpl implements IFlowStopsPublishingServi
         if (null == flowStopsPublishingVo) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_MSG());
         }
-        Map<String, Object> rtnData = new HashMap<>();
+        Map<String, Object> rtnData = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
         rtnData.put("publishingId", flowStopsPublishingVo.getPublishingId());
         rtnData.put("name", flowStopsPublishingVo.getName());
         List<Object> stopsDataList = new ArrayList<>();
@@ -136,6 +140,34 @@ public class FlowStopsPublishingServiceImpl implements IFlowStopsPublishingServi
             stopsDataList.add(flowStopsPublishingVoI.getStopsVo());
         }
         rtnData.put("stopsDataList", stopsDataList);
-        return ReturnMapUtils.toFormatJson(stopsDataList);
+        return ReturnMapUtils.toFormatJson(rtnData);
+    }
+
+    @Override
+    public String getFlowStopsPublishingList(String username, String flowId) {
+        if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
+        }
+        if (StringUtils.isBlank(flowId)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_BY_ID_XXX_MSG(flowId));
+        }
+        List<FlowStopsPublishing> flowStopsPublishingList = flowStopsPublishingDomain.getFlowStopsPublishingListByFlowId(username, flowId);
+        if (null == flowStopsPublishingList || flowStopsPublishingList.size() <=0){
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_MSG());
+        }
+        Map<String, Object> rtnData = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
+        List<Map<String, String>> publishingDataList = new ArrayList<>();
+        Map<String, String> publishingData;
+        for (FlowStopsPublishing flowStopsPublishing : flowStopsPublishingList) {
+            if (null == flowStopsPublishing || null == flowStopsPublishing.getPublishingId()) {
+                continue;
+            }
+            publishingData = new HashMap<>();
+            publishingData.put("name", flowStopsPublishing.getName());
+            publishingData.put("publishingId", flowStopsPublishing.getPublishingId());
+            publishingDataList.add(publishingData);
+        }
+        rtnData.put("publishingDataList", publishingDataList);
+        return ReturnMapUtils.toFormatJson(rtnData);
     }
 }

@@ -1254,4 +1254,13 @@ public class StopsServiceImpl implements IStopsService {
         return all;
     }
 
+    @Override
+    public String getStopsNameByFlowId(String flowId) {
+        if (StringUtils.isBlank(flowId)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
+        }
+        List<Map<String, String>> stopsIdAndNameList = flowDomain.getStopsIdAndNameListByFlowId(flowId);
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("stopsIdAndNameList" , stopsIdAndNameList);
+    }
+
 }

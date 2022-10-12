@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Stop component table
@@ -178,5 +179,8 @@ public interface StopsMapper {
             @Result(column = "fk_data_source_id", property = "dataSourceVo", many = @Many(select = "cn.cnic.component.dataSource.mapper.DataSourceMapper.getDataSourceVoById", fetchType = FetchType.LAZY))
     })
     public StopsVo getStopsVoById(String Id);
+
+    @Select("SELECT id, name FROM flow_stops WHERE enable_flag=1 and is_disabled=0 and fk_flow_id=#{flowId}")
+    public List<Map<String, String>> getStopsIdAndNameListByFlowId(String flowId);
 
 }

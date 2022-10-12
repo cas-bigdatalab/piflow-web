@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 
 public class StopMapperTest extends ApplicationTests {
@@ -25,6 +26,11 @@ public class StopMapperTest extends ApplicationTests {
         this.stopMapper = stopMapper;
     }
 
+    @Test
+    public void testGetStopsIdAndNameListByFlowId() {
+        List<Map<String, String>> stopsIdAndNameListByFlowId = stopMapper.getStopsIdAndNameListByFlowId("6111a00006a44a1e87d112f289d54640");
+        logger.info(stopsIdAndNameListByFlowId + "");
+    }
     @Test
     public void testGetStopsAll() {
         List<Stops> stopsAll = stopMapper.getStopsList();

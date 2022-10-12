@@ -267,7 +267,7 @@ public class StopsCtrl {
     @RequestMapping(value = "/publishingStops", method = RequestMethod.POST)
     @ResponseBody
     @ApiOperation(value="publishingStops", notes="Publishing Stops")
-    public String publishingStops(String name, List<String> stopsIds) {
+    public String publishingStops(String name, String stopsIds) {
         String username = SessionUserUtil.getCurrentUsername();
         return flowStopsPublishingServiceImpl.addFlowStopsPublishing(username, name, stopsIds);
     }
@@ -286,6 +286,21 @@ public class StopsCtrl {
     @ApiOperation(value="getPublishingById", notes="Get Publishing by PublishingId")
     public String getPublishingById(String publishingId) {
         return flowStopsPublishingServiceImpl.getFlowStopsPublishingVo(publishingId);
+    }
+
+    @RequestMapping(value = "/getStopsNameByFlowId", method = RequestMethod.POST)
+    @ResponseBody
+    @ApiOperation(value="getStopsNameByFlowId", notes="Get stop name by flow id")
+    public String getStopsNameByFlowId(String flowId) {
+        return stopsServiceImpl.getStopsNameByFlowId(flowId);
+    }
+
+    @RequestMapping(value = "/getPublishingList", method = RequestMethod.POST)
+    @ResponseBody
+    @ApiOperation(value="getPublishingListByFlowId", notes="Get Publishing list")
+    public String getPublishingList(String flowId) {
+        String username = SessionUserUtil.getCurrentUsername();
+        return flowStopsPublishingServiceImpl.getFlowStopsPublishingList(username, flowId);
     }
 
 }
