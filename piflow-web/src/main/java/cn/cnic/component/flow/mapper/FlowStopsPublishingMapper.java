@@ -26,7 +26,9 @@ public interface FlowStopsPublishingMapper {
     /**
      * update FlowStopsPublishing
      *
-     * @param flowStopsPublishing
+     * @param username
+     * @param publishingId
+     * @param name
      * @return
      */
     @UpdateProvider(type = FlowStopsPublishingMapperProvider.class, method = "updateFlowStopsPublishingName")
@@ -84,6 +86,15 @@ public interface FlowStopsPublishingMapper {
      */
     @SelectProvider(type = FlowStopsPublishingMapperProvider.class, method = "getPublishingStopsIdsByPublishingId")
     public List<String> getPublishingStopsIdsByPublishingId(String publishingId);
+
+    /**
+     * Get FlowStopsPublishing List By id
+     *
+     * @param publishingId
+     * @return
+     */
+    @SelectProvider(type = FlowStopsPublishingMapperProvider.class, method = "getFlowStopsPublishingByPublishingIdAndCreateUser")
+    public List<String> getFlowStopsPublishingByPublishingIdAndCreateUser(String username, String publishingId);
 
     /**
      * Get FlowStopsPublishing List

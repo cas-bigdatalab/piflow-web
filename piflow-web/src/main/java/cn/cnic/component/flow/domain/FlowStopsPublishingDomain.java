@@ -67,6 +67,7 @@ public class FlowStopsPublishingDomain {
         for (String stopsId : publishingStopsIdList) {
             if (stopsIds.contains(stopsId)) {
                 stopsIds.remove(stopsId);
+                continue;
             }
             affectedRows += flowStopsPublishingMapper.updateFlowStopsPublishingEnableFlagByPublishingIdAndStopId(username, publishingId, stopsId);
         }
@@ -100,7 +101,7 @@ public class FlowStopsPublishingDomain {
     }
 
     public List<String> getFlowStopsPublishingByPublishingIdAndCreateUser(String username, String publishingId) {
-        return flowStopsPublishingMapper.getPublishingStopsIdsByPublishingId(publishingId);
+        return flowStopsPublishingMapper.getFlowStopsPublishingByPublishingIdAndCreateUser(username, publishingId);
     }
 
     public List<FlowStopsPublishing> getFlowStopsPublishingListByPublishingIdAndStopsId(String publishingId, String stopsId) {

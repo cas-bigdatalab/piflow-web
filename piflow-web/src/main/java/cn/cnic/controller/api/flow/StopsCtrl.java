@@ -275,7 +275,7 @@ public class StopsCtrl {
     @RequestMapping(value = "/updatePublishing", method = RequestMethod.POST)
     @ResponseBody
     @ApiOperation(value="updatePublishing", notes="Update Publishing")
-    public String updatePublishing(String publishingId, String name, List<String> stopsIds) {
+    public String updatePublishing(String publishingId, String name, String stopsIds) {
         Boolean isAdmin = SessionUserUtil.isAdmin();
         String username = SessionUserUtil.getCurrentUsername();
         return flowStopsPublishingServiceImpl.updateFlowStopsPublishing(isAdmin, username, publishingId, name, stopsIds);
@@ -301,6 +301,14 @@ public class StopsCtrl {
     public String getPublishingList(String flowId) {
         String username = SessionUserUtil.getCurrentUsername();
         return flowStopsPublishingServiceImpl.getFlowStopsPublishingList(username, flowId);
+    }
+
+    @RequestMapping(value = "/deleteFlowStopsPublishing", method = RequestMethod.POST)
+    @ResponseBody
+    @ApiOperation(value="deleteFlowStopsPublishing", notes="Delete Publishing")
+    public String deleteFlowStopsPublishing(String publishingId) {
+        String username = SessionUserUtil.getCurrentUsername();
+        return flowStopsPublishingServiceImpl.deleteFlowStopsPublishing(username, publishingId);
     }
 
 }
