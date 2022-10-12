@@ -417,6 +417,7 @@ function flowMxEventClickFunc(cell, consumedFlag) {
         $("#flow_info_inc_id").show();
         // info
         queryFlowInfo(loadId);
+        distributeList(loadId);
         return;
     }
     var cells_arr = graphGlobal.getSelectionCells();
@@ -424,6 +425,7 @@ function flowMxEventClickFunc(cell, consumedFlag) {
         $("#flow_info_inc_id").show();
         // info
         queryFlowInfo(loadId);
+        distributeList(loadId);
     } else {
         var selectedCell = cells_arr[0]
         if (selectedCell && (selectedCell.edge === 1 || selectedCell.edge)) {
@@ -436,6 +438,7 @@ function flowMxEventClickFunc(cell, consumedFlag) {
             $("#flow_info_inc_id").show();
             // info
             queryFlowInfo(loadId);
+            distributeList(loadId);
         }
     }
 }
@@ -500,6 +503,67 @@ function queryFlowInfo(loadId) {
     });
 }
 
+//Publishing List Information
+function distributeList(flowId){
+    $("#flow_distribute_list").hide();
+    const urlParams = getUrlParams(window.location.href);
+    if (!flowId)
+        flowId=urlParams.load
+
+    ajaxRequest({
+        type: "POST",
+        url: "/stops/getPublishingList",
+        async: true,
+        data: {"flowId": flowId},
+        success: function (data) {//After the request is successful
+            var dataMap = JSON.parse(data);
+            var publishingDataList = dataMap.publishingDataList;
+            if (publishingDataList.length>0 && !!publishingDataList) {
+                $("#flow_distribute_list").show();
+                var runningProcessID_tbody = $("#flow_distribute_list").find("tbody");
+                if (runningProcessID_tbody) {
+                    var tableTitle = '<tr>'
+                        + '<td style="width: 50%;"><label>Name</label></td>'
+                        + '<td style="width: 50%;"><label>operation</label></td>'
+                        + '</tr>';
+                    var tableAllTd = '';
+                    for (var i = 0; i < publishingDataList.length; i++) {
+                        tableAllTd += ('<tr>'
+                            + '<td style="border: 1px solid #e8e8e8; width: 70%;">'
+                            + '<a href="' + web_base_origin + web_drawingBoard + '/page/process/mxGraph/index.html?drawingBoardType=PROCESS&processType=PROCESS&load=' + publishingDataList[i].publishingId + '">' + publishingDataList[i].name + '</a>'
+                            + '</td>'
+                            + '<td style="border: 1px solid #e8e8e8; width: 30%;">' +
+                            '<button type="button" class="btn btn-default" onclick="chooseRelease(\'edit\',\'' + publishingDataList[i].publishingId + '\')">edit</button>' +
+                            '<button type="button" class="btn btn-default" style="margin-left: 10px" onclick="distributeDelete(\'' + publishingDataList[i].publishingId + '\')">delete</button></td>'
+                            + '</tr>');
+                    }
+                    runningProcessID_tbody.html(tableTitle + tableAllTd);
+                }
+            }
+        },
+        error: function (request) {//Operation after request failure
+            return;
+        }
+    });
+}
+//Publishing delete
+function distributeDelete(publishingId){
+    ajaxRequest({
+        type: "POST",
+        url: "/stops/deleteFlowStopsPublishing",
+        async: true,
+        data: {"publishingId": publishingId},
+        success: function (data) {//After the request is successful
+            var dataMap = JSON.parse(data);
+            distributeList(loadId);
+
+        },
+        error: function (request) {//Operation after request failure
+            return;
+        }
+    });
+}
+
 //query Flow path
 function queryPathInfo(stopPageId, loadId) {
     ajaxRequest({
@@ -529,6 +593,7 @@ function queryPathInfo(stopPageId, loadId) {
                 }
             } else {
                 queryFlowInfo(loadId);
+                distributeList(loadId);
                 console.log("Path attribute query null");
             }
         },
@@ -1086,6 +1151,7 @@ function saveXml(paths, operType, cells) {
                 }
                 if ("REMOVED" === operType) {
                     queryFlowInfo(loadId);
+                    distributeList(loadId);
                 } else if ("ADD" === operType) {
                     xmlDate = dataMap.xmlData;
                     loadXml(xmlDate, cells);
@@ -2296,6 +2362,13 @@ function runFlow(runMode) {
             return;
         }
     });
+}
+
+function chooseRelease(type,id){
+    if(document.readyState === 'complete') {
+        let urlParams = getUrlParams(window.location.href);
+        window.parent['processToRelease']({value: urlParams.load,type:type,id:id});
+    }
 }
 
 // run cells  runFollowUp

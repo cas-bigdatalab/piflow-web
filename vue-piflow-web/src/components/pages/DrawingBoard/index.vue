@@ -108,11 +108,45 @@
           </vxe-grid>
       </div>
     </Modal>
+
+    <!--processToRelease-->
+    <Modal
+        title="Stop List"
+        v-model="processToRelease_Modal"
+        width="40"
+        :mask-closable="false">
+      <div>
+        <div style="margin-bottom: 10px">
+          <label style="width: 110px; text-align: right;display: inline-block">Process Name：</label>
+          <Input v-model="publish" :placeholder="$t('modal.placeholder')" style="width: 530px" />
+        </div>
+        <div>
+          <label style="width: 110px;text-align: right;display: inline-block;vertical-align: top">Component：</label>
+          <vxe-grid
+              border
+              show-overflow
+              resizable
+              keep-source
+              ref="processToRelease"
+              max-height="300"
+              :data="processToReleaseData"
+              :columns="processToReleaseColumn"
+              style="width: 530px;display: inline-block"
+              class="mytable-scrollbar">
+          </vxe-grid>
+        </div>
+      </div>
+      <div slot="footer">
+        <Button type="primary" @click="processToRelease_Modal=false">{{ $t("modal.cancel_text") }}</Button>
+        <Button type="primary" @click="getSelectEvent()">{{ $t("modal.confirm") }}</Button>
+      </div>
+    </Modal>
   </div>
 </template>
  
 <script>
 import CodeEditor from '../../compon/CodeFormat'
+import log from "../User/log";
 export default {
   name: "DrawingBoard",
   components:{CodeEditor},
@@ -168,6 +202,13 @@ export default {
         type: 'csv',
         types: [ 'csv', 'html', 'xml', 'txt']
       },
+
+
+      publish: '',
+      publishingId: '',
+      processToRelease_Modal: false,
+      processToReleaseData: [{name:'aa'}],
+      processToReleaseColumn: [{type: "checkbox", width:"60"}, {  field: 'name', title: 'Stop Name'}],
     };
   },
   computed: {
@@ -326,6 +367,11 @@ export default {
       _this.visualization_Modal = true;
       _this.visualizationData = value;
       _this.getTitle(_this.visualizationData);
+    }
+    //  process to release
+    window["processToRelease"] = ({value,type,id}) => {
+      _this.gettingStopList(value,type,id);
+      this.publishingId= id;
     }
   },
   watch:{
@@ -518,7 +564,82 @@ export default {
         })
         this.list.push(obj);
       }
-    }
+    },
+
+
+    gettingStopList(value,type,id){
+      this.processToRelease_Modal = true;
+
+      let parameter = {flowId: value};
+      this.$axios
+          .post('/stops/getStopsNameByFlowId', this.$qs.stringify(parameter))
+          .then(res => {
+            var dataMap = res.data;
+            if (dataMap.code == 200) {
+              this.processToReleaseData = dataMap.stopsIdAndNameList;
+              if (type==='edit')
+                this.getSelectStopList(id);
+            }
+          })
+          .catch(error => {
+            console.log(error);
+          });
+    },
+    getSelectStopList(value){
+      let parameter = {publishingId: value};
+      this.$axios
+          .post('/stops/getPublishingById', this.$qs.stringify(parameter))
+          .then(res => {
+            var dataMap = res.data;
+            if (dataMap.code == 200) {
+              this.publish= dataMap.name;
+              let checkboxRow= [];
+              dataMap.stopsDataList.forEach(item=>{
+                this.processToReleaseData.forEach((node,inx)=>{
+                  if ( item.name ===  node.name)
+                    checkboxRow.push(this.processToReleaseData[inx])
+                })
+              })
+              this.$refs.processToRelease.setCheckboxRow(checkboxRow, true)
+            }
+          })
+          .catch(error => {
+            console.log(error);
+          });
+    },
+
+    getSelectEvent () {
+      let selectRecords = this.$refs.processToRelease.getCheckboxRecords();
+      if (selectRecords.length===0 || !this.publish)
+        return;
+      let stopsIds = '';
+      selectRecords.forEach(item=>{
+        stopsIds+= item.id+','
+      })
+
+      let parameter = {name: this.publish, stopsIds: stopsIds.substr(0,stopsIds.length -1)};
+      let url = '/stops/publishingStops';
+      if (this.publishingId){
+        parameter.publishingId= this.publishingId;
+        url= '/stops/updatePublishing';
+      }
+
+      this.$axios
+          .post(url, this.$qs.stringify(parameter))
+          .then(res => {
+            var dataMap = res.data;
+            if (dataMap.code == 200) {
+              this.processToRelease_Modal=false;
+              this.publish= '';
+              this.publishingId= '';
+              document.getElementById('bariframe').contentWindow.distributeList()
+            }
+          })
+          .catch(error => {
+            console.log(error);
+          });
+    },
+
   },
   beforeDestroy() {
     document.querySelector("header").style.cssText = "";
