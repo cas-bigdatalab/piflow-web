@@ -192,8 +192,32 @@ public class FlowStopsPublishingMapperProvider {
      *
      * @return
      */
-    public String getFlowStopsPublishingList() {
-        return "SELECT * FROM flow_stops_publishing WHERE enable_flag=1";
+    public String getFlowStopsPublishingList(String username, boolean isAdmin, String param) {
+        if (StringUtils.isBlank(username)) {
+            return "SELECT 0";
+        }
+        //SELECT DISTINCT tmp_table.* FROM (
+        //        SELECT fsp.publishing_id, fsp.name, fsp.crt_dttm FROM flow_stops_publishing fsp
+        //        LEFT JOIN flow_stops fs ON fsp.stops_id=fs.id
+        //        WHERE fsp.enable_flag=1 AND fs.enable_flag=1 AND fsp.crt_user='admin' AND fs.fk_flow_id='6111a00006a44a1e87d112f289d54640' order by fsp.crt_dttm desc
+        //) as tmp_table;
+        StringBuffer sql = new StringBuffer();
+        sql.append("SELECT DISTINCT tmp_table.publishing_id, tmp_table.name FROM ( ");
+        sql.append("SELECT fsp.publishing_id, fsp.name, fsp.crt_dttm FROM flow_stops_publishing fsp LEFT JOIN flow_stops fs ON fsp.stops_id=fs.id ");
+        sql.append(" WHERE fsp.enable_flag=1 AND fs.enable_flag=1 ");
+        if (StringUtils.isNotBlank(param)) {
+            sql.append("AND ( ");
+            sql.append("fsp.name LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%')");
+            sql.append("OR fs.name LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%')");
+            sql.append(") ");
+        }
+        if (!isAdmin) {
+            sql.append(" AND fsp.crt_user=");
+            sql.append(SqlUtils.preventSQLInjection(username));
+        }
+        sql.append(" order by fsp.crt_dttm desc ");
+        sql.append(" ) as tmp_table ");
+        return sql.toString();
     }
 
     /**

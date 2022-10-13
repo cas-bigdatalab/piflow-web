@@ -295,12 +295,21 @@ public class StopsCtrl {
         return stopsServiceImpl.getStopsNameByFlowId(flowId);
     }
 
-    @RequestMapping(value = "/getPublishingList", method = RequestMethod.POST)
+    @RequestMapping(value = "/getPublishingListByFlowId", method = RequestMethod.POST)
     @ResponseBody
     @ApiOperation(value="getPublishingListByFlowId", notes="Get Publishing list")
-    public String getPublishingList(String flowId) {
+    public String getPublishingListByFlowId(String flowId) {
         String username = SessionUserUtil.getCurrentUsername();
-        return flowStopsPublishingServiceImpl.getFlowStopsPublishingList(username, flowId);
+        return flowStopsPublishingServiceImpl.getFlowStopsPublishingListByFlowId(username, flowId);
+    }
+
+    @RequestMapping(value = "/getPublishingListPager", method = RequestMethod.POST)
+    @ResponseBody
+    @ApiOperation(value="getPublishingListPager", notes="Get Publishing list")
+    public String getPublishingList(Integer page, Integer limit, String param) {
+        String username = SessionUserUtil.getCurrentUsername();
+        Boolean isAdmin = SessionUserUtil.isAdmin();
+        return flowStopsPublishingServiceImpl.getFlowStopsPublishingListPager(username, isAdmin, page, limit, param);
     }
 
     @RequestMapping(value = "/deleteFlowStopsPublishing", method = RequestMethod.POST)

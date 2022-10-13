@@ -35,13 +35,21 @@ public interface IFlowStopsPublishingService {
     public String getFlowStopsPublishingVo(String publishingId);
 
     /**
-     * getFlowStopsPublishingList
+     * getFlowStopsPublishingListByFlowId
      *
      * @param username
      * @param flowId
      * @return
      */
-    public String getFlowStopsPublishingList(String username, String flowId);
+    public String getFlowStopsPublishingListByFlowId(String username, String flowId);
+
+    /**
+     * getFlowStopsPublishingList
+     *
+     * @param username
+     * @return
+     */
+    public String getFlowStopsPublishingListPager(String username, boolean isAdmin, Integer offset, Integer limit, String param);
 
     /**
      * deleteFlowStopsPublishing

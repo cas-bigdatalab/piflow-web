@@ -1,6 +1,7 @@
 package cn.cnic.component.flow.service.impl;
 
 import cn.cnic.base.utils.LoggerUtil;
+import cn.cnic.base.utils.PageHelperUtils;
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.base.utils.UUIDUtils;
 import cn.cnic.common.constant.MessageConfig;
@@ -9,6 +10,8 @@ import cn.cnic.component.flow.entity.*;
 import cn.cnic.component.flow.service.IFlowStopsPublishingService;
 import cn.cnic.component.flow.utils.FlowStopsPublishingUtils;
 import cn.cnic.component.flow.vo.FlowStopsPublishingVo;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -117,7 +120,7 @@ public class FlowStopsPublishingServiceImpl implements IFlowStopsPublishingServi
     }
 
     @Override
-    public String getFlowStopsPublishingList(String username, String flowId) {
+    public String getFlowStopsPublishingListByFlowId(String username, String flowId) {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
@@ -142,6 +145,17 @@ public class FlowStopsPublishingServiceImpl implements IFlowStopsPublishingServi
         }
         rtnData.put("publishingDataList", publishingDataList);
         return ReturnMapUtils.toFormatJson(rtnData);
+    }
+
+    @Override
+    public String getFlowStopsPublishingListPager(String username, boolean isAdmin, Integer offset, Integer limit, String param) {
+        if (null == offset || null == limit) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
+        }
+        Page<FlowStopsPublishing> page = PageHelper.startPage(offset, limit);
+        flowStopsPublishingDomain.getFlowStopsPublishingList(username, isAdmin, param);
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
+        return PageHelperUtils.setLayTableParamRtnStr(page, rtnMap);
     }
 
     @Override

@@ -60,10 +60,7 @@ public interface FlowStopsPublishingMapper {
      * @return
      */
     @SelectProvider(type = FlowStopsPublishingMapperProvider.class, method = "getFlowStopsPublishingList")
-    @Results({
-            @Result(column = "stops_id", property = "stops", one = @One(select = "cn.cnic.component.flow.mapper.StopsMapper.getStopsById", fetchType = FetchType.LAZY))
-    })
-    public List<FlowStopsPublishingVo> getFlowStopsPublishingList();
+    public List<FlowStopsPublishing> getFlowStopsPublishingList(String username, boolean isAdmin, String param);
 
     /**
      * Get FlowStopsPublishing List By id
@@ -111,6 +108,15 @@ public interface FlowStopsPublishingMapper {
      */
     @SelectProvider(type = FlowStopsPublishingMapperProvider.class, method = "getFlowStopsPublishingListByFlowId")
     public List<FlowStopsPublishing> getFlowStopsPublishingListByFlowId(String username, String flowId);
+
+
+    /**
+     * Get FlowStopsPublishing List by flowId
+     *
+     * @return
+     */
+    @Select("SELECT DISTINCT fs.fk_flow_id FROM flow_stops_publishing fsp LEFT JOIN flow_stops fs ON fsp.stops_id=fs.id WHERE fsp.enable_flag=1 AND fs.enable_flag=1 AND fsp.publishing_id=#{publishingId}")
+    public List<String> getFlowIdByPublishingId(String publishingId);
 
 
 

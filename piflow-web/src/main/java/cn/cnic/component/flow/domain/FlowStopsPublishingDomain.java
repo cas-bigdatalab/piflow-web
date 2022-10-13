@@ -88,8 +88,8 @@ public class FlowStopsPublishingDomain {
         return flowStopsPublishingMapper.updateFlowStopsPublishingEnableFlagByPublishingId(username, publishingId);
     }
 
-    public List<FlowStopsPublishingVo> getFlowStopsPublishingList() {
-        return flowStopsPublishingMapper.getFlowStopsPublishingList();
+    public List<FlowStopsPublishing> getFlowStopsPublishingList(String username, boolean isAdmin, String param) {
+        return flowStopsPublishingMapper.getFlowStopsPublishingList(username, isAdmin, param);
     }
 
     public List<FlowStopsPublishingVo> getFlowStopsPublishingVoByPublishingId(String publishingId) {
@@ -110,6 +110,10 @@ public class FlowStopsPublishingDomain {
 
     public List<FlowStopsPublishing> getFlowStopsPublishingListByFlowId(String username, String flowId) {
         return flowStopsPublishingMapper.getFlowStopsPublishingListByFlowId(username, flowId);
+    }
+
+    public List<String> getFlowIdByPublishingId(String publishingId) {
+        return flowStopsPublishingMapper.getFlowIdByPublishingId(publishingId);
     }
 
 }

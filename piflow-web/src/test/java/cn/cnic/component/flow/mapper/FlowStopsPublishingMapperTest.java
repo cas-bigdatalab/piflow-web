@@ -26,9 +26,9 @@ public class FlowStopsPublishingMapperTest extends ApplicationTests {
     }
 
     @Test
-    public void testGetFlowStopsPublishingAll() {
-        List<FlowStopsPublishingVo> flowStopsPublishingList = flowStopsPublishingMapper.getFlowStopsPublishingList();
-        logger.info(flowStopsPublishingList + "");
+    public void testGetFlowIdByPublishingId() {
+        List<String> flowIdByPublishingId = flowStopsPublishingMapper.getFlowIdByPublishingId("bff398355a5c41d8bd784803ac9fc9bb");
+        logger.info(flowIdByPublishingId.size() + "");
     }
 
     @Test
