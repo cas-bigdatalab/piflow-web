@@ -60,6 +60,9 @@ public interface FlowStopsPublishingMapper {
      * @return
      */
     @SelectProvider(type = FlowStopsPublishingMapperProvider.class, method = "getFlowStopsPublishingList")
+    @Results({
+            @Result(id = true, column = "fk_flow_id", property = "flowId")
+    })
     public List<FlowStopsPublishing> getFlowStopsPublishingList(String username, boolean isAdmin, String param);
 
     /**

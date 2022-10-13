@@ -95,7 +95,7 @@ public class FlowCtrl {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
         logHelperServiceImpl.logAuthSucceed("run flow", username);
-        return flowServiceImpl.runFlow(username, isAdmin, publishingId, runMode);
+        return flowServiceImpl.runFlowByPublishingId(username, isAdmin, publishingId, runMode);
     }
 
     @RequestMapping(value = "/queryFlowData", method = RequestMethod.POST)

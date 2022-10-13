@@ -196,14 +196,14 @@ public class FlowStopsPublishingMapperProvider {
         if (StringUtils.isBlank(username)) {
             return "SELECT 0";
         }
-        //SELECT DISTINCT tmp_table.* FROM (
-        //        SELECT fsp.publishing_id, fsp.name, fsp.crt_dttm FROM flow_stops_publishing fsp
+        //SELECT DISTINCT tmp_table.publishing_id, tmp_table.name, tmp_table.fk_flow_id FROM (
+        //        SELECT fsp.publishing_id, fsp.name, fsp.crt_dttm, fs.fk_flow_id FROM flow_stops_publishing fsp
         //        LEFT JOIN flow_stops fs ON fsp.stops_id=fs.id
         //        WHERE fsp.enable_flag=1 AND fs.enable_flag=1 AND fsp.crt_user='admin' AND fs.fk_flow_id='6111a00006a44a1e87d112f289d54640' order by fsp.crt_dttm desc
         //) as tmp_table;
         StringBuffer sql = new StringBuffer();
-        sql.append("SELECT DISTINCT tmp_table.publishing_id, tmp_table.name FROM ( ");
-        sql.append("SELECT fsp.publishing_id, fsp.name, fsp.crt_dttm FROM flow_stops_publishing fsp LEFT JOIN flow_stops fs ON fsp.stops_id=fs.id ");
+        sql.append("SELECT DISTINCT tmp_table.publishing_id, tmp_table.name, tmp_table.fk_flow_id FROM ( ");
+        sql.append("SELECT fsp.publishing_id, fsp.name, fsp.crt_dttm, fs.fk_flow_id FROM flow_stops_publishing fsp LEFT JOIN flow_stops fs ON fsp.stops_id=fs.id ");
         sql.append(" WHERE fsp.enable_flag=1 AND fs.enable_flag=1 ");
         if (StringUtils.isNotBlank(param)) {
             sql.append("AND ( ");
