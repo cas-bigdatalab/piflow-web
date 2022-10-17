@@ -73,6 +73,14 @@ public interface IFlowService {
      */
     public String runFlow(String username, boolean isAdmin, String flowId, String runMode) throws Exception;
 
+    /**
+     * Call the start interface and save the return information
+     *
+     * @param publishingId
+     * @return
+     */
+    public String runFlowByPublishingId(String username, boolean isAdmin, String publishingId, String runMode) throws Exception;
+
     public String updateFlowBaseInfo(String username, String fId, FlowInfoVoRequestUpdate flowVo) throws Exception;
 
     public String updateFlowNameById(String username, String id, String flowGroupId, String flowName, String pageId) throws Exception;

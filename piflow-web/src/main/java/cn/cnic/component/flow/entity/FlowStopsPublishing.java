@@ -18,5 +18,6 @@ public class FlowStopsPublishing extends BaseModelUUIDNoCorpAgentId {
     private String publishingId;
     private String name;
     private String state;
+    private String flowId;
     private List<String> stopsIds;
 }

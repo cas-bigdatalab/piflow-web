@@ -1,10 +1,5 @@
 package cn.cnic.component.flow.service;
 
-import cn.cnic.component.flow.entity.FlowStopsPublishing;
-import cn.cnic.component.flow.vo.FlowStopsPublishingVo;
-import cn.cnic.component.flow.vo.StopsCustomizedPropertyVo;
-import cn.cnic.controller.requestVo.RunStopsVo;
-
 import java.util.List;
 
 public interface IFlowStopsPublishingService {
@@ -29,7 +24,7 @@ public interface IFlowStopsPublishingService {
      * @param stopsIds
      * @return
      */
-    public String updateFlowStopsPublishing(boolean isAdmin, String username, String publishingId, String name, List<String> stopsIds);
+    public String updateFlowStopsPublishing(boolean isAdmin, String username, String publishingId, String name, String stopsIds);
 
     /**
      * getStopByNameAndFlowId
@@ -40,12 +35,29 @@ public interface IFlowStopsPublishingService {
     public String getFlowStopsPublishingVo(String publishingId);
 
     /**
-     * getFlowStopsPublishingList
+     * getFlowStopsPublishingListByFlowId
      *
      * @param username
      * @param flowId
      * @return
      */
-    public String getFlowStopsPublishingList(String username, String flowId);
+    public String getFlowStopsPublishingListByFlowId(String username, String flowId);
+
+    /**
+     * getFlowStopsPublishingList
+     *
+     * @param username
+     * @return
+     */
+    public String getFlowStopsPublishingListPager(String username, boolean isAdmin, Integer offset, Integer limit, String param);
+
+    /**
+     * deleteFlowStopsPublishing
+     *
+     * @param username
+     * @param publishingId
+     * @return
+     */
+    public String deleteFlowStopsPublishing(String username, String publishingId);
 
 }

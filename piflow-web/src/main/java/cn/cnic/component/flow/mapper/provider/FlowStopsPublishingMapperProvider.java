@@ -135,12 +135,12 @@ public class FlowStopsPublishingMapperProvider {
         sql.UPDATE("flow_stops_publishing");
         String lastUpdateDatetimeStr = DateUtils.dateTimesToStr(new Date());
         sql.SET("last_update_dttm = " + SqlUtils.preventSQLInjection(lastUpdateDatetimeStr));
-        sql.SET("last_update_user = " + username);
+        sql.SET("last_update_user = " + SqlUtils.preventSQLInjection(username));
 
         // handle other fields
-        sql.SET("name = " + name);
+        sql.SET("name = " + SqlUtils.preventSQLInjection(name));
         sql.WHERE("enable_flag = 1");
-        sql.WHERE("publishing_id = " + publishingId);
+        sql.WHERE("publishing_id = " + SqlUtils.preventSQLInjection(publishingId));
         String sqlStr = sql.toString();
         return sqlStr;
     }
@@ -157,8 +157,9 @@ public class FlowStopsPublishingMapperProvider {
         sql.SET("enable_flag=0");
         sql.SET("last_update_user=" + SqlUtils.preventSQLInjection(username));
         sql.SET("last_update_dttm=" + SqlUtils.preventSQLInjection(DateUtils.dateTimesToStr(new Date())));
-        sql.WHERE("enable_flag = 0");
+        sql.WHERE("enable_flag = 1");
         sql.WHERE("publishing_id=" + SqlUtils.preventSQLInjection(publishingId));
+        sql.WHERE("crt_user=" + SqlUtils.preventSQLInjection(username));
 
         return sql.toString();
     }
@@ -178,9 +179,10 @@ public class FlowStopsPublishingMapperProvider {
         sql.SET("enable_flag=0");
         sql.SET("last_update_user=" + SqlUtils.preventSQLInjection(username));
         sql.SET("last_update_dttm=" + SqlUtils.preventSQLInjection(DateUtils.dateTimesToStr(new Date())));
-        sql.WHERE("enable_flag = 0");
+        sql.WHERE("enable_flag = 1");
         sql.WHERE("publishing_id=" + SqlUtils.preventSQLInjection(publishingId));
         sql.WHERE("stops_id=" + SqlUtils.preventSQLInjection(stopsId));
+        sql.WHERE("crt_user=" + SqlUtils.preventSQLInjection(username));
 
         return sql.toString();
     }
@@ -190,8 +192,32 @@ public class FlowStopsPublishingMapperProvider {
      *
      * @return
      */
-    public String getFlowStopsPublishingList() {
-        return "SELECT * FROM flow_stops_publishing WHERE enable_flag=1";
+    public String getFlowStopsPublishingList(String username, boolean isAdmin, String param) {
+        if (StringUtils.isBlank(username)) {
+            return "SELECT 0";
+        }
+        //SELECT DISTINCT tmp_table.publishing_id, tmp_table.name, tmp_table.fk_flow_id FROM (
+        //        SELECT fsp.publishing_id, fsp.name, fsp.crt_dttm, fs.fk_flow_id FROM flow_stops_publishing fsp
+        //        LEFT JOIN flow_stops fs ON fsp.stops_id=fs.id
+        //        WHERE fsp.enable_flag=1 AND fs.enable_flag=1 AND fsp.crt_user='admin' AND fs.fk_flow_id='6111a00006a44a1e87d112f289d54640' order by fsp.crt_dttm desc
+        //) as tmp_table;
+        StringBuffer sql = new StringBuffer();
+        sql.append("SELECT DISTINCT tmp_table.publishing_id, tmp_table.name, tmp_table.fk_flow_id FROM ( ");
+        sql.append("SELECT fsp.publishing_id, fsp.name, fsp.crt_dttm, fs.fk_flow_id FROM flow_stops_publishing fsp LEFT JOIN flow_stops fs ON fsp.stops_id=fs.id ");
+        sql.append(" WHERE fsp.enable_flag=1 AND fs.enable_flag=1 ");
+        if (StringUtils.isNotBlank(param)) {
+            sql.append("AND ( ");
+            sql.append("fsp.name LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%')");
+            sql.append("OR fs.name LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%')");
+            sql.append(") ");
+        }
+        if (!isAdmin) {
+            sql.append(" AND fsp.crt_user=");
+            sql.append(SqlUtils.preventSQLInjection(username));
+        }
+        sql.append(" order by fsp.crt_dttm desc ");
+        sql.append(" ) as tmp_table ");
+        return sql.toString();
     }
 
     /**
@@ -220,8 +246,26 @@ public class FlowStopsPublishingMapperProvider {
            return "SELECT 0";
         }
         StringBuffer sql = new StringBuffer();
-        sql.append("SELECT * FROM flow_stops_publishing WHERE enable_flag=1 and ");
+        sql.append("SELECT stops_id FROM flow_stops_publishing WHERE enable_flag=1 and ");
         sql.append("publishing_id=");
+        sql.append(SqlUtils.preventSQLInjection(publishingId));
+        return sql.toString();
+    }
+
+    /**
+     * Query all stops data
+     *
+     * @return
+     */
+    public String getFlowStopsPublishingByPublishingIdAndCreateUser(String username, String publishingId) {
+        if (StringUtils.isBlank(publishingId)) {
+           return "SELECT 0";
+        }
+        StringBuffer sql = new StringBuffer();
+        sql.append("SELECT stops_id FROM flow_stops_publishing WHERE enable_flag=1 ");
+        sql.append(" and crt_user= ");
+        sql.append(SqlUtils.preventSQLInjection(username));
+        sql.append(" and publishing_id= ");
         sql.append(SqlUtils.preventSQLInjection(publishingId));
         return sql.toString();
     }

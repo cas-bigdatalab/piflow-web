@@ -8,6 +8,7 @@ import cn.cnic.component.dataSource.domain.DataSourceDomain;
 import cn.cnic.component.dataSource.vo.DataSourceVo;
 import cn.cnic.component.flow.domain.FlowDomain;
 import cn.cnic.component.flow.domain.FlowGroupDomain;
+import cn.cnic.component.flow.domain.FlowStopsPublishingDomain;
 import cn.cnic.component.flow.entity.*;
 import cn.cnic.component.flow.service.IFlowService;
 import cn.cnic.component.flow.utils.FlowGlobalParamsUtils;
@@ -57,6 +58,7 @@ public class FlowServiceImpl implements IFlowService {
     private final IStopGroupService stopGroupServiceImpl;
     private final IFlow flowImpl;
     private final DataSourceDomain dataSourceDomain;
+    private final FlowStopsPublishingDomain flowStopsPublishingDomain;
 
     @Autowired
     public FlowServiceImpl(ProcessDomain processDomain,
@@ -66,7 +68,7 @@ public class FlowServiceImpl implements IFlowService {
                            ScheduleDomain scheduleDomain,
                            IStopGroupService stopGroupServiceImpl,
                            IFlow flowImpl,
-                           DataSourceDomain dataSourceDomain) {
+                           DataSourceDomain dataSourceDomain, FlowStopsPublishingDomain flowStopsPublishingDomain) {
         this.processDomain = processDomain;
         this.mxCellDomain = mxCellDomain;
         this.flowDomain = flowDomain;
@@ -75,6 +77,7 @@ public class FlowServiceImpl implements IFlowService {
         this.stopGroupServiceImpl = stopGroupServiceImpl;
         this.flowImpl = flowImpl;
         this.dataSourceDomain = dataSourceDomain;
+        this.flowStopsPublishingDomain = flowStopsPublishingDomain;
     }
 
 
@@ -363,6 +366,21 @@ public class FlowServiceImpl implements IFlowService {
         process.setLastUpdateDttm(new Date());
         processDomain.updateProcess(process);
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("processId", process.getId());
+    }
+
+    @Override
+    public String runFlowByPublishingId(String username, boolean isAdmin, String publishingId, String runMode) throws Exception {
+        if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
+        }
+        if (StringUtils.isBlank(publishingId)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("publishingId"));
+        }
+        List<String> flowIdByPublishingId = flowStopsPublishingDomain.getFlowIdByPublishingId(publishingId);
+        if (null == flowIdByPublishingId || flowIdByPublishingId.size() <= 0) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_MSG());
+        }
+        return runFlow(username,isAdmin,flowIdByPublishingId.get(0), runMode);
     }
 
     @Override

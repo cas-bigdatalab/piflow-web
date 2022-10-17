@@ -80,6 +80,24 @@ public class FlowCtrl {
         return flowServiceImpl.runFlow(username, isAdmin, flowId, runMode);
     }
 
+    /**
+     * run Flow
+     *
+     * @param publishingId
+     * @param runMode
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/runFlowByPublishingId", method = RequestMethod.POST)
+    @ResponseBody
+    @ApiOperation(value="runFlowByPublishingId", notes="run Flow")
+    public String runFlowByPublishingId(String publishingId, String runMode) throws Exception {
+        String username = SessionUserUtil.getCurrentUsername();
+        boolean isAdmin = SessionUserUtil.isAdmin();
+        logHelperServiceImpl.logAuthSucceed("run flow", username);
+        return flowServiceImpl.runFlowByPublishingId(username, isAdmin, publishingId, runMode);
+    }
+
     @RequestMapping(value = "/queryFlowData", method = RequestMethod.POST)
     @ResponseBody
     @ApiOperation(value="queryFlowData", notes="query Flow data")
