@@ -100,6 +100,14 @@ public class StopsUtils {
         stopsVo.setStopsCustomizedPropertyVoList(stopsCustomizedPropertyVoList);
         List<StopsPropertyVo> oldPropertyVos = propertyListPoToVo(stop.getOldProperties(), dataSourcePropertyMap);
         stopsVo.setOldPropertiesVo(oldPropertyVos);
+
+        return stopComponentToStopsVo(stopsVo, stopComponent);
+    }
+
+    public static StopsVo stopComponentToStopsVo(StopsVo stopsVo, StopsComponent stopComponent) {
+        if (null == stopsVo) {
+            stopsVo = new StopsVo();
+        }
         if (null != stopComponent) {
             List<StopsComponentProperty> stopComponentProperties = stopComponent.getProperties();
             List<StopsPropertyVo> propertiesVo = stopsVo.getPropertiesVo();
