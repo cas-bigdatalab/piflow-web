@@ -87,6 +87,11 @@ export default new Router({
               component: () => import('../components/pages/Code')
             },
             {
+              path: '/publish',
+              name: 'publish',
+              component: () => import('../components/pages/publish')
+            },
+            {
               path: '/codeDetailed',
               name: 'codeBlock',
               component: () => import('../components/pages/Code/codeBlock')

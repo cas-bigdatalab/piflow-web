@@ -13,6 +13,7 @@ module.exports = {
         sparkJar: "Spark Jar包",
         testData: "测试数据",
         code: "在线运行",
+        publish: "一键发布",
         example: "样例",
         admin: "高级",
         admin_schedule: '监控同步任务',
@@ -213,7 +214,6 @@ module.exports = {
         createTime: "创建时间",
         lastUpdateTime:"操作时间",
         action: "操作动作"
-
     },
     stopsComponent_columns: {
         name: "组件名称",

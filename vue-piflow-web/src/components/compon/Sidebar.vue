@@ -128,6 +128,12 @@ export default {
           name: "Code"
         },
         {
+          btnName: this.$t("sidebar.publish"),
+          icoName: "md-checkbox-outline",
+          router: "publish",
+          name: "publish"
+        },
+        {
           btnName: this.$t("sidebar.example"),
           icoName: "md-cube",
           children: [

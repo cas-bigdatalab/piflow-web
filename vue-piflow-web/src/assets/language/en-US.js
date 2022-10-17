@@ -13,6 +13,7 @@ module.exports = {
         sparkJar: "SparkJar",
         testData: "TestData",
         code: "Code",
+        publish: "Publish",
         example: "Example",
         admin: "Admin",
         admin_schedule: 'Schedule',
