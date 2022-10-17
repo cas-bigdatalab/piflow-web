@@ -218,7 +218,7 @@ public class HttpUtils {
                 httpPost.setConfig(requestConfig);
             }
             //add header param
-            if (null != herderParam || herderParam.keySet().size() > 0) {
+            if (null != herderParam && herderParam.keySet().size() > 0) {
                 for (String key : herderParam.keySet()) {
                     if (null == key) {
                         continue;
