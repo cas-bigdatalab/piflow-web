@@ -32,8 +32,15 @@
               <Icon type="md-aperture" />
             </span>
         </Tooltip>
+        <Tooltip content="Publish" placement="top-start">
+            <span class="button-warp"
+                  :class="row.status.text==='UNMOUNT'?'':'gray_btn'"
+                  @click="row.status.text==='UNMOUNT'?handleButtonSelect(row,2):''">
+              <Icon type="md-paper-plane" />
+            </span>
+        </Tooltip>
         <Tooltip content="Delete" placement="top-start">
-            <span class="button-warp" @click="handleButtonSelect(row,2)">
+            <span class="button-warp" @click="handleButtonSelect(row,3)">
               <Icon type="ios-trash"/>
             </span>
         </Tooltip>
@@ -170,6 +177,9 @@ export default {
           this.handleMount(row);
           break;
         case 2:
+          this.handlePublish(row);
+          break;
+        case 3:
           this.handleDeleteRow(row);
           break;
         default:
@@ -258,6 +268,11 @@ export default {
               duration: 3
             });
           });
+    },
+
+    handlePublish(row) {
+      // 一键发布
+      console.log(row)
     },
 
     //Delete
@@ -372,5 +387,10 @@ export default {
 }
 /deep/ .ivu-upload-drag:hover{
   border: 1px dashed #20784b;
+}
+.gray_btn{
+  cursor: not-allowed!important;
+  filter: grayscale(100%) !important;
+
 }
 </style>

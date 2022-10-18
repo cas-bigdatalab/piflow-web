@@ -22,6 +22,7 @@ module.exports = {
         user:"User",
         log:"Log",
         modification:"Modification",
+        bindingAccount:"BindingAccount",
     },
     page: {
         prev_text: "Previous",
@@ -205,6 +206,11 @@ module.exports = {
         oldPasswd: "old Password",
         passwd: "new Password",
         passwdCheck: "Confirm",
+        Reset: "Reset",
+        Submit: "Submit"
+    },
+    bindingAccount_columns:{
+        value: "Account",
         Reset: "Reset",
         Submit: "Submit"
     },

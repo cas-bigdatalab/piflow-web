@@ -22,6 +22,7 @@ module.exports = {
         user:'用户管理',
         log:'通知管理',
         modification:"修改密码",
+        bindingAccount:"绑定开发者账号",
     },
     page: {
         prev_text: "上一页",
@@ -205,6 +206,11 @@ module.exports = {
         oldPasswd: "旧密码",
         passwd: "新密码",
         passwdCheck: "确认密码",
+        Reset: "重置",
+        Submit: "确认"
+    },
+    bindingAccount_columns:{
+        value: "账号",
         Reset: "重置",
         Submit: "确认"
     },

@@ -131,6 +131,11 @@ export default new Router({
               path:'/modification',
               name:'modification',
               component:() => import('../components/pages/User/modification')
+            },
+            {
+              path:'/bindingAccount',
+              name:'bindingAccount',
+              component:() => import('../components/pages/User/bindingAccount')
             }
           ]
         },

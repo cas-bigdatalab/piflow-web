@@ -202,6 +202,11 @@ export default {
               icoName: "ios-paper",
               btnName:  this.$t("sidebar.modification"),
               name: "modification",
+            },{
+              router: "/bindingAccount",
+              icoName: "ios-paper",
+              btnName:  this.$t("sidebar.bindingAccount"),
+              name: "bindingAccount",
             }
           ]
         }
