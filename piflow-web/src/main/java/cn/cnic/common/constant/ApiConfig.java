@@ -379,4 +379,37 @@ public class ApiConfig {
         return SysParamsCache.LIVY_SERVER + LIVY_STATEMENTS_URL;
     }
 
+    public static String MARKET_PUBLISH_COMPONENTS_URL;
+
+    @Value("${api.market.publishComponentsUrl}")
+    public void setMarketPublishComponentsUrl(String marketPublishComponentsUrl) {
+        MARKET_PUBLISH_COMPONENTS_URL = marketPublishComponentsUrl;
+    }
+
+    public static String getMarketPublishComponentsUrl() {
+        return MARKET_PUBLISH_COMPONENTS_URL;
+    }
+
+    public static String MARKET_COMPONENTS_LIST_URL;
+
+    @Value("${api.market.componentsList}")
+    public void setMarketComponentsListURL(String marketComponentsListURL) {
+        MARKET_COMPONENTS_LIST_URL = marketComponentsListURL;
+    }
+
+    public static String getMarketComponentsListUrl() {
+        return MARKET_COMPONENTS_LIST_URL;
+    }
+
+    public static String MARKET_DOWNLOAD_COMPONENTS_URL;
+
+    @Value("${api.market.downloadComponentsUrl}")
+    public void setMarketDownloadComponentsUrl(String marketDownloadComponentsUrl) {
+        MARKET_DOWNLOAD_COMPONENTS_URL = marketDownloadComponentsUrl;
+    }
+
+    public static String getMarketDownloadComponentsUrl() {
+        return MARKET_DOWNLOAD_COMPONENTS_URL;
+    }
+
 }

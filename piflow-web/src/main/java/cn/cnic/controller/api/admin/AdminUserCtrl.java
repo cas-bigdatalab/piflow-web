@@ -65,7 +65,14 @@ public class AdminUserCtrl {
         return  sysUserServiceImpl.delUser(isAdmin,username,sysUserId);
     }
 
-
-
+    @RequestMapping(value = "/bindDeveloperAccessKey", method = RequestMethod.POST)
+    @ResponseBody
+    @ApiOperation(value="bindDeveloperAccessKey", notes="bind Developer Access Key")
+    public String bindDeveloperAccessKey(String accessKey) {
+        boolean isAdmin = SessionUserUtil.isAdmin();
+        String username = SessionUserUtil.getCurrentUsername();
+        logHelperServiceImpl.logAuthSucceed("Bind Developer " + accessKey, username);
+        return  sysUserServiceImpl.bindDeveloperAccessKey(isAdmin, username, accessKey);
+    }
 
 }

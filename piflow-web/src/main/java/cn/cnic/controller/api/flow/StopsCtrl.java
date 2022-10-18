@@ -6,10 +6,8 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.base.utils.SessionUserUtil;
@@ -17,7 +15,6 @@ import cn.cnic.component.flow.service.IPropertyService;
 import cn.cnic.component.flow.service.IStopsService;
 import cn.cnic.component.flow.vo.StopsCustomizedPropertyVo;
 import cn.cnic.component.stopsComponent.service.IStopGroupService;
-import cn.cnic.component.stopsComponent.service.IStopsHubService;
 import io.swagger.annotations.Api;
 
 import java.util.List;
@@ -28,25 +25,22 @@ import java.util.List;
 public class StopsCtrl {
 
     private final IStopGroupService stopGroupServiceImpl;
-    private final ILogHelperService logHelperServiceImpl;
     private final IPropertyService propertyServiceImpl;
-    private final IStopsHubService stopsHubServiceImpl;
     private final IStopsService stopsServiceImpl;
     private final IFlowStopsPublishingService flowStopsPublishingServiceImpl;
+    private final ILogHelperService logHelperServiceImpl;
 
     @Autowired
     public StopsCtrl(IStopGroupService stopGroupServiceImpl,
-                     ILogHelperService logHelperServiceImpl,
                      IPropertyService propertyServiceImpl,
-                     IStopsHubService stopsHubServiceImpl,
                      IStopsService stopsServiceImpl,
-                     IFlowStopsPublishingService flowStopsPublishingServiceImpl) {
+                     IFlowStopsPublishingService flowStopsPublishingServiceImpl,
+                     ILogHelperService logHelperServiceImpl) {
         this.stopGroupServiceImpl = stopGroupServiceImpl;
-        this.logHelperServiceImpl = logHelperServiceImpl;
         this.propertyServiceImpl = propertyServiceImpl;
-        this.stopsHubServiceImpl = stopsHubServiceImpl;
         this.stopsServiceImpl = stopsServiceImpl;
         this.flowStopsPublishingServiceImpl = flowStopsPublishingServiceImpl;
+        this.logHelperServiceImpl = logHelperServiceImpl;
     }
 
     /**
@@ -79,22 +73,6 @@ public class StopsCtrl {
     }
 
     /**
-     * Get the usage of the current connection port
-     *
-     * @param flowId
-     * @param sourceId
-     * @param targetId
-     * @param pathLineId
-     * @return
-     */
-    @RequestMapping(value = "/getStopsPort", method = RequestMethod.GET)
-    @ResponseBody
-    @ApiOperation(value="getStopsPort", notes="get Stops port")
-    public String getStopsPort(String flowId, String sourceId, String targetId, String pathLineId) {
-        return stopsServiceImpl.getStopsPort(flowId, sourceId, targetId, pathLineId);
-    }
-
-    /**
      * Multiple saves to modify
      *
      * @param content
@@ -117,6 +95,22 @@ public class StopsCtrl {
         String username = SessionUserUtil.getCurrentUsername();
         logHelperServiceImpl.logAuthSucceed("updateStopOne " + id, username);
         return propertyServiceImpl.updateProperty(username, content, id);
+    }
+
+    /**
+     * Get the usage of the current connection port
+     *
+     * @param flowId
+     * @param sourceId
+     * @param targetId
+     * @param pathLineId
+     * @return
+     */
+    @RequestMapping(value = "/getStopsPort", method = RequestMethod.GET)
+    @ResponseBody
+    @ApiOperation(value="getStopsPort", notes="get Stops port")
+    public String getStopsPort(String flowId, String sourceId, String targetId, String pathLineId) {
+        return stopsServiceImpl.getStopsPort(flowId, sourceId, targetId, pathLineId);
     }
 
     @RequestMapping(value = "/updateStopsById", method = RequestMethod.POST)
@@ -177,82 +171,11 @@ public class StopsCtrl {
         return stopsServiceImpl.getRouterStopsCustomizedProperty(customPropertyId);
     }
 
-    /**
-     * Query and enter the process list
-     *
-     * @param page
-     * @param limit
-     * @param param
-     * @return
-     */
-    @RequestMapping(value = "/stopsHubListPage", method = RequestMethod.GET)
+    @RequestMapping(value = "/getStopsNameByFlowId", method = RequestMethod.POST)
     @ResponseBody
-    @ApiOperation(value="stopsHubListPage", notes="stopsHub list page")
-    public String stopsHubListPage(Integer page, Integer limit, String param) {
-        String username = SessionUserUtil.getCurrentUsername();
-        boolean isAdmin = SessionUserUtil.isAdmin();
-        return stopsHubServiceImpl.stopsHubListPage(username, isAdmin, page, limit, param);
-    }
-
-
-    /**
-     * Upload stopsHub jar file and save stopsHub
-     *
-     * @param file
-     * @return
-     */
-    @RequestMapping(value = "/uploadStopsHubFile", method = RequestMethod.POST)
-    @ResponseBody
-    @ApiOperation(value="uploadStopsHubFile", notes="upload StopsHub file")
-    public String uploadStopsHubFile(@RequestParam("file") MultipartFile file) {
-        String username = SessionUserUtil.getCurrentUsername();
-        logHelperServiceImpl.logAuthSucceed("uploadStopsHubFile " + file.getName(),username);
-        return stopsHubServiceImpl.uploadStopsHubFile(username, file);
-    }
-
-    /**
-     * Mount stopsHub
-     *
-     * @param id
-     * @return
-     */
-    @RequestMapping(value = "/mountStopsHub", method = RequestMethod.POST)
-    @ResponseBody
-    @ApiOperation(value="mountStopsHub", notes="mount StopsHub")
-    public String mountStopsHub(String id) {
-        String username = SessionUserUtil.getCurrentUsername();
-        Boolean isAdmin = SessionUserUtil.isAdmin();
-        return stopsHubServiceImpl.mountStopsHub(username, isAdmin, id);
-    }
-
-    /**
-     * unmount stopsHub
-     *
-     * @param id
-     * @return
-     */
-    @RequestMapping(value = "/unmountStopsHub", method = RequestMethod.POST)
-    @ResponseBody
-    @ApiOperation(value="unmountStopsHub", notes="unmount StopsHub")
-    public String unmountStopsHub(String id) {
-        String username = SessionUserUtil.getCurrentUsername();
-        Boolean isAdmin = SessionUserUtil.isAdmin();
-        return stopsHubServiceImpl.unmountStopsHub(username, isAdmin, id);
-    }
-
-    /**
-     * unmount stopsHub
-     *
-     * @param id
-     * @return
-     */
-    @RequestMapping(value = "/delStopsHub", method = RequestMethod.POST)
-    @ResponseBody
-    @ApiOperation(value="delStopsHub", notes="delete StopsHub")
-    public String delStopsHub(String id) {
-        String username = SessionUserUtil.getCurrentUsername();
-        Boolean isAdmin = SessionUserUtil.isAdmin();
-        return stopsHubServiceImpl.delStopsHub(username, isAdmin, id);
+    @ApiOperation(value="getStopsNameByFlowId", notes="Get stop name by flow id")
+    public String getStopsNameByFlowId(String flowId) {
+        return stopsServiceImpl.getStopsNameByFlowId(flowId);
     }
 
     @RequestMapping(value = "/updateStopDisabled", method = RequestMethod.POST)
@@ -286,13 +209,6 @@ public class StopsCtrl {
     @ApiOperation(value="getPublishingById", notes="Get Publishing by PublishingId")
     public String getPublishingById(String publishingId) {
         return flowStopsPublishingServiceImpl.getFlowStopsPublishingVo(publishingId);
-    }
-
-    @RequestMapping(value = "/getStopsNameByFlowId", method = RequestMethod.POST)
-    @ResponseBody
-    @ApiOperation(value="getStopsNameByFlowId", notes="Get stop name by flow id")
-    public String getStopsNameByFlowId(String flowId) {
-        return stopsServiceImpl.getStopsNameByFlowId(flowId);
     }
 
     @RequestMapping(value = "/getPublishingListByFlowId", method = RequestMethod.POST)

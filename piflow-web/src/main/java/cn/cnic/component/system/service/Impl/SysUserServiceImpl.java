@@ -219,6 +219,24 @@ public class SysUserServiceImpl implements ISysUserService {
     }
 
     @Override
+    public String bindDeveloperAccessKey(boolean isAdmin, String username, String accessKey) {
+        if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
+        }
+        if (StringUtils.isBlank(accessKey)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("accessKey"));
+        }
+        SysUser user = sysUserDomain.findUserByUserName(username);
+        user.setDeveloperAccessKey(accessKey);
+        try {
+            sysUserDomain.updateSysUser(user);
+        } catch (Exception e) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
+        }
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG());
+    }
+
+    @Override
     public String registerUser(SysUserVo sysUserVo) {
         if (null == sysUserVo) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Registration failed, username or password is empty");

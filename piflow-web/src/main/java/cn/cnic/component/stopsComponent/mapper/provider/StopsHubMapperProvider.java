@@ -19,6 +19,8 @@ public class StopsHubMapperProvider {
     private String jarName;
     private String jarUrl;
     private String status;
+    private String bundles;
+    private int isPublishing;
 
     private boolean preventSQLInjectionStopsHub(StopsHub stopsHub) {
         if (null == stopsHub || StringUtils.isBlank(stopsHub.getLastUpdateUser())) {
@@ -42,6 +44,8 @@ public class StopsHubMapperProvider {
         this.jarName = SqlUtils.preventSQLInjection(stopsHub.getJarName());
         this.jarUrl = SqlUtils.preventSQLInjection(stopsHub.getJarUrl());
         this.status = SqlUtils.preventSQLInjection(null != stopsHub.getStatus() ? stopsHub.getStatus().name() : null);
+        this.bundles = SqlUtils.preventSQLInjection(stopsHub.getBundles());
+        this.isPublishing = ((null != stopsHub.getIsPublishing() && stopsHub.getIsPublishing()) ? 1 : 0);
         return true;
     }
 
@@ -55,6 +59,8 @@ public class StopsHubMapperProvider {
         this.jarName = null;
         this.jarUrl = null;
         this.status = null;
+        this.bundles = null;
+        this.isPublishing = 0;
     }
 
     /**
@@ -64,27 +70,31 @@ public class StopsHubMapperProvider {
      * @return
      */
     public String addStopsHub(StopsHub stopsHub) {
-        String sqlStr = "SELECT 0";
         boolean flag = this.preventSQLInjectionStopsHub(stopsHub);
-        if (flag) {
-            StringBuffer strBuf = new StringBuffer();
-            // INSERT_INTO brackets is table name
-            strBuf.append("INSERT INTO stops_hub ");
-            strBuf.append("( ");
-            strBuf.append(SqlUtils.baseFieldName() + ", ");
-            strBuf.append("mount_id, ");
-            strBuf.append("jar_name, ");
-            strBuf.append("jar_url, ");
-            strBuf.append("status ");
-            strBuf.append(") VALUES ( ");
-            strBuf.append(SqlUtils.baseFieldValues(stopsHub) + ", ");
-            strBuf.append(this.mountId + ", ");
-            strBuf.append(this.jarName + ", ");
-            strBuf.append(this.jarUrl + ", ");
-            strBuf.append(this.status + " ");
-            strBuf.append(") ");
-            sqlStr = strBuf.toString();
+        if (!flag) {
+            return "SELECT 0";
         }
+        StringBuffer strBuf = new StringBuffer();
+        // INSERT_INTO brackets is table name
+        strBuf.append("INSERT INTO stops_hub ");
+        strBuf.append("( ");
+        strBuf.append(SqlUtils.baseFieldName() + ", ");
+        strBuf.append("mount_id ");
+        strBuf.append(",jar_name ");
+        strBuf.append(",jar_url ");
+        strBuf.append(",status ");
+        strBuf.append(",bundles ");
+        strBuf.append(",is_publishing ");
+        strBuf.append(") VALUES ( ");
+        strBuf.append(SqlUtils.baseFieldValues(stopsHub));
+        strBuf.append(", " + this.mountId);
+        strBuf.append(", " + this.jarName);
+        strBuf.append(", " + this.jarUrl);
+        strBuf.append(", " + this.status);
+        strBuf.append(", " + this.bundles);
+        strBuf.append(", " + this.isPublishing);
+        strBuf.append(") ");
+        String sqlStr = strBuf.toString();
         this.reset();
         return sqlStr;
     }
@@ -96,36 +106,43 @@ public class StopsHubMapperProvider {
      * @return
      */
     public String updateStopsHub(StopsHub stopsHub) {
-
-        String sqlStr = "";
         boolean flag = this.preventSQLInjectionStopsHub(stopsHub);
-        if (flag) {
-            SQL sql = new SQL();
-
-            // INSERT_INTO brackets is table name
-            sql.UPDATE("stops_hub");
-            // The first string in the SET is the name of the field corresponding to the table in the database
-            sql.SET("last_update_dttm = " + lastUpdateDttmStr);
-            sql.SET("last_update_user = " + lastUpdateUser);
-            sql.SET("version = " + (version + 1));
-
-            // handle other fields
-            sql.SET("enable_flag = " + enableFlag);
-            if (mountId != null)
-                sql.SET("mount_id = " + mountId);
-            if (jarName != null)
-                sql.SET("jar_name = " + jarName);
-            if (jarUrl != null)
-                sql.SET("jar_url = " + jarUrl);
-            if (status != null)
-                sql.SET("status = " + status);
-            sql.WHERE("version = " + version);
-            sql.WHERE("id = " + id);
-            sqlStr = sql.toString();
-            if (StringUtils.isBlank(id)) {
-                sqlStr = "";
-            }
+        if (!flag) {
+            return "SELECT 0";
         }
+        if (StringUtils.isBlank(id)) {
+            return "SELECT 0";
+        }
+        SQL sql = new SQL();
+
+        // INSERT_INTO brackets is table name
+        sql.UPDATE("stops_hub");
+        // The first string in the SET is the name of the field corresponding to the table in the database
+        sql.SET("last_update_dttm = " + lastUpdateDttmStr);
+        sql.SET("last_update_user = " + lastUpdateUser);
+        sql.SET("version = " + (version + 1));
+
+        // handle other fields
+        sql.SET("enable_flag = " + enableFlag);
+        if (mountId != null) {
+            sql.SET("mount_id = " + mountId);
+        }
+        if (jarName != null) {
+            sql.SET("jar_name = " + jarName);
+        }
+        if (jarUrl != null) {
+            sql.SET("jar_url = " + jarUrl);
+        }
+        if (status != null) {
+            sql.SET("status = " + status);
+        }
+        if (bundles != null) {
+            sql.SET("bundles = " + bundles);
+        }
+        sql.SET("is_publishing = " + isPublishing);
+        sql.WHERE("version = " + version);
+        sql.WHERE("id = " + id);
+        String sqlStr = sql.toString();
         this.reset();
         return sqlStr;
     }

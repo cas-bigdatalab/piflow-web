@@ -23,5 +23,6 @@ public class SysUser extends BaseModelUUIDNoCorpAgentId {
     private Integer age;
     private String sex;
     private String lastLoginIp;
+    private String developerAccessKey;
     private List<SysRole> roles;
 }

@@ -18,5 +18,7 @@ public class StopsHub extends BaseModelUUIDNoCorpAgentId {
     private String jarName;
     private String jarUrl;
     private StopsHubState status;
+    private String bundles;
+    private Boolean isPublishing;
 
 }

@@ -150,6 +150,9 @@ public class StopsComponentDomain {
     }
 
     public int deleteStopsComponent(StopsComponent stopsComponent) {
+        if (null == stopsComponent) {
+            return 0;
+        }
         // delete relationship
         stopsComponentGroupMapper.deleteGroupCorrelationByStopId(stopsComponent.getId());
         logger.debug("Successful delete " + stopsComponent.getName() + " 's association!!!");

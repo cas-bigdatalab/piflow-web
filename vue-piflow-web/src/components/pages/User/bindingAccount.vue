@@ -46,9 +46,9 @@ export default {
     },
     changePassword(){
       let parameter= {};
-      parameter.oldPassword = this.formCustom.value;
+      parameter.accessKey = this.formCustom.value;
       this.$axios
-          .post("/sysUser/updatePassword", this.$qs.stringify(parameter))
+          .post("/user/bindDeveloperAccessKey", this.$qs.stringify(parameter))
           .then((res) => {
             if (res.data.code === 200) {
 

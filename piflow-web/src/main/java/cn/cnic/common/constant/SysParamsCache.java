@@ -89,4 +89,11 @@ public class SysParamsCache {
         LIVY_SERVER = livyServer;
     }
 
+    public static String MARKET_SOFTWARE_FLAG;
+
+    @Value("${market.software.flag}")
+    public void setMarketSoftwareFlag(String marketSoftwareFlag) {
+        MARKET_SOFTWARE_FLAG = marketSoftwareFlag;
+    }
+
 }

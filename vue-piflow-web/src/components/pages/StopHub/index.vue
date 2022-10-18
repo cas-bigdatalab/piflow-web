@@ -34,8 +34,8 @@
         </Tooltip>
         <Tooltip content="Publish" placement="top-start">
             <span class="button-warp"
-                  :class="row.status.text==='UNMOUNT'?'':'gray_btn'"
-                  @click="row.status.text==='UNMOUNT'?handleButtonSelect(row,2):''">
+                  :class="row.status.text==='MOUNT'&row.isPublishing===false?'':'gray_btn'"
+                  @click="row.status.text==='MOUNT'&row.isPublishing===false?handleButtonSelect(row,2):''">
               <Icon type="md-paper-plane" />
             </span>
         </Tooltip>
@@ -272,7 +272,34 @@ export default {
 
     handlePublish(row) {
       // 一键发布
-      console.log(row)
+      let data = { id: row.id };
+      this.$event.emit("loading", true);
+      this.$axios
+          .post("/stops/stopsHubPublishing", this.$qs.stringify(data))
+          .then(res => {
+            if (res.data.code === 200) {
+              this.$event.emit("loading", false);
+              this.$Modal.success({
+                title: this.$t("tip.title"),
+                content: `${row.jarName} ` + this.$t("tip.mount_success_content")
+              });
+              this.getTableData();
+            } else {
+              this.$event.emit("loading", false);
+              this.$Message.error({
+                content: `${row.jarName} ` + this.$t("tip.mount_fail_content"),
+                duration: 3
+              });
+            }
+          })
+          .catch(error => {
+            console.log(error);
+            this.$event.emit("loading", false);
+            this.$Message.error({
+              content: this.$t("tip.fault_content"),
+              duration: 3
+            });
+          });
     },
 
     //Delete

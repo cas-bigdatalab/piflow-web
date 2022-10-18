@@ -374,7 +374,9 @@ function queryProcessStopsProperty(processId, pageId) {
                     $("#span_processStopVo_owner").text(processStopVo.owner);
                     if ( processStopVo.visualizationType === '' ){
                         $("#process_info_inc_load_chart").css('display','none');
-                    }else {
+                    } else if (processStopVo.visualizationType === 'CustomView') {
+                        getCustomView(processStopVo.id);
+                    } else {
                         $("#process_info_inc_load_chart").css('display','block');
                         $("#process_info_inc_load_getChartBtn").attr('data', processStopVo.visualizationType);
                         $("#process_info_inc_load_getChartBtn").attr('name', processStopVo.name);
@@ -1491,4 +1493,13 @@ function getChart(e,softData,isSoft, ifTheFirst) {
             }
         }
     });
+}
+
+function getCustomView(dataId) {
+    var customViewDataUrl = base64encode(utf16to8('/piflow-web/process/showViewStopData/' + dataId));
+    //http://10.0.90.210:6001/HighDimensionVis/?url=aHR0cDovLzEwLjAuOTAuMjEwOjYwMDEvcGlmbG93LXdlYi9wcm9jZXNzL3Nob3dWaWV3U3RvcERhdGEvZmMzYWI4MGRjZjg1NGU5ZjljMzE4ODBiYzk3NWEyZWI%3D
+    var viewUrl = "/HighDimensionVis/?url=" + customViewDataUrl;
+    if(document.readyState === 'complete') {
+        window.parent['visualization_Drawer']({value: viewUrl});
+    }
 }

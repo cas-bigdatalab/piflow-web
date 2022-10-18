@@ -67,4 +67,6 @@ public interface ISysUserService {
     public String jwtLogin(String username, String password);
 
     public int deleteUser(String id);
+
+    public String bindDeveloperAccessKey(boolean isAdmin, String username, String accessKey);
 }

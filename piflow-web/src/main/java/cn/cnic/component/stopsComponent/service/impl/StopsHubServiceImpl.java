@@ -1,5 +1,6 @@
 package cn.cnic.component.stopsComponent.service.impl;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -9,6 +10,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import cn.cnic.common.constant.MessageConfig;
+import cn.cnic.component.system.domain.SysUserDomain;
+import cn.cnic.component.system.entity.SysUser;
+import cn.cnic.third.market.service.IMarket;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,15 +45,19 @@ public class StopsHubServiceImpl implements IStopsHubService {
 
     private final StopsComponentDomain stopsComponentDomain;
     private final StopsHubDomain stopsHubDomain;
+    private final SysUserDomain sysUserDomain;
     private final IStop stopImpl;
+    private final IMarket marketImpl;
 
     @Autowired
     public StopsHubServiceImpl(StopsComponentDomain stopsComponentDomain,
                                StopsHubDomain stopsHubDomain,
-                               IStop stopImpl) {
+                               SysUserDomain sysUserDomain, IStop stopImpl, IMarket marketImpl) {
         this.stopsComponentDomain = stopsComponentDomain;
         this.stopsHubDomain = stopsHubDomain;
+        this.sysUserDomain = sysUserDomain;
         this.stopImpl = stopImpl;
+        this.marketImpl = marketImpl;
     }
 
     @Override
@@ -98,12 +106,6 @@ public class StopsHubServiceImpl implements IStopsHubService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Mount failed, please try again later");
         }
 
-        stopsHub.setMountId(stopsHubVo.getMountId());
-        stopsHub.setStatus(StopsHubState.MOUNT);
-        stopsHub.setLastUpdateUser(username);
-        stopsHub.setLastUpdateDttm(new Date());
-        stopsHubDomain.updateStopHub(stopsHub);
-
         //TODO: remove stops and groups from db
         List<ThirdStopsComponentVo> stops = stopsHubVo.getStops();
         List<String> groupNameList = new ArrayList<>();
@@ -116,6 +118,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
         for (StopsComponentGroup sGroup : stopsComponentGroupList) {
             stopsComponentGroupMap.put(sGroup.getGroupName(), sGroup);
         }
+        StringBuffer bundles = new StringBuffer();
         for (ThirdStopsComponentVo s : stops) {
 
             List<String> stopGroupNameList = Arrays.asList(s.getGroups().split(","));
@@ -152,9 +155,18 @@ public class StopsHubServiceImpl implements IStopsHubService {
                 stopsComponentDomain.deleteGroupCorrelationByGroupIdAndStopId(sGroup.getId(), stopsComponent.getId());
                 stopsComponentDomain.insertAssociationGroupsStopsTemplate(sGroup.getId(), stopsComponent.getId());
             }
-
+            if (bundles.length() > 0) {
+                bundles.append(",");
+            }
+            bundles.append(s.getBundle());
         }
 
+        stopsHub.setMountId(stopsHubVo.getMountId());
+        stopsHub.setStatus(StopsHubState.MOUNT);
+        stopsHub.setLastUpdateUser(username);
+        stopsHub.setLastUpdateDttm(new Date());
+        stopsHub.setBundles(bundles.toString());
+        stopsHubDomain.updateStopHub(stopsHub);
         return ReturnMapUtils.setSucceededMsgRtnJsonStr("Mount successful");
     }
 
@@ -170,19 +182,17 @@ public class StopsHubServiceImpl implements IStopsHubService {
         if (stopsHubVo == null) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("UNMount failed, please try again later");
         }
-        stopsHub.setMountId(stopsHubVo.getMountId());
-        stopsHub.setStatus(StopsHubState.UNMOUNT);
-        stopsHub.setLastUpdateUser(username);
-        stopsHub.setLastUpdateDttm(new Date());
-        stopsHubDomain.updateStopHub(stopsHub);
-
         //TODO: remove stops and groups into db,
         List<ThirdStopsComponentVo> stops = stopsHubVo.getStops();
         for (ThirdStopsComponentVo s : stops) {
             StopsComponent stopsComponent = stopsComponentDomain.getStopsComponentByBundle(s.getBundle());
             stopsComponentDomain.deleteStopsComponent(stopsComponent);
         }
-
+        stopsHub.setMountId(stopsHubVo.getMountId());
+        stopsHub.setStatus(StopsHubState.UNMOUNT);
+        stopsHub.setLastUpdateUser(username);
+        stopsHub.setLastUpdateDttm(new Date());
+        stopsHubDomain.updateStopHub(stopsHub);
         return ReturnMapUtils.setSucceededMsgRtnJsonStr("UNMount successful");
     }
 
@@ -232,6 +242,57 @@ public class StopsHubServiceImpl implements IStopsHubService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.DELETE_ERROR_MSG());
         }
         return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG());
+    }
+
+    /**
+     * stopsHub publishing
+     *
+     * @param username username
+     * @param id       id
+     * @return json
+     */
+    @Override
+    public String stopsHubPublishing(String username, Boolean isAdmin, String id) {
+        if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
+        }
+        SysUser user = sysUserDomain.findUserByUserName(username);
+        if (StringUtils.isBlank(user.getDeveloperAccessKey())) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
+        }
+        if (StringUtils.isBlank(id)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("id"));
+        }
+        StopsHub stopsHub = stopsHubDomain.getStopsHubById(username, isAdmin, id);
+        if (null == stopsHub) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
+        }
+        if (StopsHubState.MOUNT != stopsHub.getStatus()) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
+        }
+        if (StringUtils.isBlank(stopsHub.getBundles())) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
+        }
+        String[] bundlesArray = stopsHub.getBundles().split(",");
+        if (null == bundlesArray || bundlesArray.length <= 0) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
+        }
+        if (bundlesArray.length > 1) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
+        }
+        ThirdStopsComponentVo stopInfo = stopImpl.getStopInfo(bundlesArray[0]);
+        if (null == stopInfo) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
+        }
+        File file = new File(stopsHub.getJarUrl());
+        Map<String, Object> rtnMap = marketImpl.publishComponents(user.getDeveloperAccessKey(), stopInfo.getBundle(), stopInfo.getGroups(), stopInfo.getDescription(), stopInfo.getIcon(), stopInfo.getName(), file);
+        String code = rtnMap.get("code").toString();
+        if (!"200".equals(code)) {
+            return ReturnMapUtils.toJson(rtnMap);
+        }
+        stopsHub.setIsPublishing(true);
+        stopsHubDomain.updateStopHub(stopsHub);
+        return ReturnMapUtils.toJson(rtnMap);
     }
 
 }

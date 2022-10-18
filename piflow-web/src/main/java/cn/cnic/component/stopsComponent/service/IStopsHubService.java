@@ -52,5 +52,14 @@ public interface IStopsHubService {
      */
     public String delStopsHub(String username, Boolean isAdmin, String id);
 
+    /**
+     * stopsHub publishing
+     *
+     * @param username username
+     * @param id       id
+     * @return json
+     */
+    public String stopsHubPublishing(String username, Boolean isAdmin, String id);
+
 
 }
