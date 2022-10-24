@@ -80,6 +80,9 @@ public class HttpUtils {
      * @return
      */
     public static String doGet(String url, Map<String, String> map, Integer timeOutMS) {
+        if (null == map || map.isEmpty()) {
+            return doGetComCustomizeHeader(url, null, timeOutMS, null);
+        }
         Map<String, Object> mapObject = new HashMap<>();
         for (String key : map.keySet()) {
             mapObject.put(key, map.get(key));
