@@ -21,7 +21,7 @@ public class ThirdInterfaceReturnMsgUtils {
             logger.warn(MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG());
             return ERROR;
         }
-        if (returnMsg.contains(HttpUtils.INTERFACE_CALL_ERROR) || returnMsg.contains("Exception") || returnMsg.contains("Error") || returnMsg.contains("Fail")) {
+        if (returnMsg.contains(MessageConfig.INTERFACE_CALL_ERROR_MSG()) || returnMsg.contains("Exception") || returnMsg.contains("Error") || returnMsg.contains("Fail")) {
             logger.warn(MessageConfig.INTERFACE_CALL_ERROR_MSG() + " : " + returnMsg);
             return ERROR;
         }

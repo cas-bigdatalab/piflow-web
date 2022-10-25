@@ -61,7 +61,7 @@ public class GroupImpl implements IGroup {
         if (StringUtils.isBlank(doPost)) {
             return ReturnMapUtils.setFailedMsg(MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG());
         }
-        if (doPost.contains(HttpUtils.INTERFACE_CALL_ERROR) || doPost.contains("Exception")) {
+        if (doPost.contains(MessageConfig.INTERFACE_CALL_ERROR_MSG()) || doPost.contains("Exception")) {
             logger.warn("Return information：" + doPost);
             return ReturnMapUtils.setFailedMsg(MessageConfig.INTERFACE_CALL_ERROR_MSG()+ ": " + doPost);
         }
@@ -85,7 +85,7 @@ public class GroupImpl implements IGroup {
         map.put("groupId", processGroupId);
         String json = JSONObject.fromObject(map).toString();
         String doPost = HttpUtils.doPost(ApiConfig.getFlowGroupStopUrl(), json, 5 * 1000);
-        if (StringUtils.isBlank(doPost) || doPost.contains(HttpUtils.INTERFACE_CALL_ERROR) || doPost.contains("Exception")) {
+        if (StringUtils.isBlank(doPost) || doPost.contains(MessageConfig.INTERFACE_CALL_ERROR_MSG()) || doPost.contains("Exception")) {
             logger.warn("Interface return exception");
         } else {
             logger.info("Interface return value: " + doPost);
@@ -113,7 +113,7 @@ public class GroupImpl implements IGroup {
             logger.warn("Interface return values is null");
             return null;
         }
-        if (doGet.contains(HttpUtils.INTERFACE_CALL_ERROR) || doGet.contains("Exception")) {
+        if (doGet.contains(MessageConfig.INTERFACE_CALL_ERROR_MSG()) || doGet.contains("Exception")) {
             logger.warn("Interface exception: " + doGet);
             return null;
         }
@@ -169,7 +169,7 @@ public class GroupImpl implements IGroup {
             logger.warn("The interface return value is empty.");
             return null;
         }
-        if (doGet.contains(HttpUtils.INTERFACE_CALL_ERROR)) {
+        if (doGet.contains(MessageConfig.INTERFACE_CALL_ERROR_MSG())) {
             logger.warn("Interface exception: " + doGet);
             return null;
         }

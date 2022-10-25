@@ -62,7 +62,7 @@ public class FlowImpl implements IFlow {
         if (StringUtils.isBlank(doPost)) {
             return ReturnMapUtils.setFailedMsg("Error : " + MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG());
         }
-        if (doPost.contains(HttpUtils.INTERFACE_CALL_ERROR) || doPost.contains("Exception")) {
+        if (doPost.contains(MessageConfig.INTERFACE_CALL_ERROR_MSG()) || doPost.contains("Exception")) {
             return ReturnMapUtils.setFailedMsg(MessageConfig.INTERFACE_CALL_ERROR_MSG() + " : " + doPost);
         }
         try {
@@ -85,7 +85,7 @@ public class FlowImpl implements IFlow {
         map.put("appID", appId);
         String json = JSONObject.fromObject(map).toString();
         String doPost = HttpUtils.doPost(ApiConfig.getFlowStopUrl(), json, 5 * 1000);
-        if (StringUtils.isBlank(doPost) || doPost.contains(HttpUtils.INTERFACE_CALL_ERROR) || doPost.contains("Exception")) {
+        if (StringUtils.isBlank(doPost) || doPost.contains(MessageConfig.INTERFACE_CALL_ERROR_MSG()) || doPost.contains("Exception")) {
             logger.warn("Interface return exception : " + doPost);
         } else {
             logger.info("Interface return value: " + doPost);
@@ -101,8 +101,8 @@ public class FlowImpl implements IFlow {
         Map<String, String> map = new HashMap<>();
         map.put("appID", appId);
         String doGet = HttpUtils.doGet(ApiConfig.getFlowProgressUrl(), map, 10 * 1000);
-        if (StringUtils.isBlank(doGet) || doGet.contains(HttpUtils.INTERFACE_CALL_ERROR) || doGet.contains("Exception")) {
-            logger.warn(HttpUtils.INTERFACE_CALL_ERROR + ": " + doGet);
+        if (StringUtils.isBlank(doGet) || doGet.contains(MessageConfig.INTERFACE_CALL_ERROR_MSG()) || doGet.contains("Exception")) {
+            logger.warn(MessageConfig.INTERFACE_CALL_ERROR_MSG() + ": " + doGet);
             return null;
         }
         String jsonResult = JSONObject.fromObject(doGet).getString("FlowInfo");
@@ -142,7 +142,7 @@ public class FlowImpl implements IFlow {
             logger.info("call failed, return is null ");
             return "";
         }
-        if (doGet.contains(HttpUtils.INTERFACE_CALL_ERROR) || doGet.contains("Exception")) {
+        if (doGet.contains(MessageConfig.INTERFACE_CALL_ERROR_MSG()) || doGet.contains("Exception")) {
             logger.info("call failed : " + doGet);
             return "";
         }
@@ -176,11 +176,11 @@ public class FlowImpl implements IFlow {
         map.put("appID", appID);
         String doGet = HttpUtils.doGet(ApiConfig.getFlowCheckpointsUrl(), map, 5 * 1000);
         if (StringUtils.isBlank(doGet)) {
-            logger.warn(HttpUtils.INTERFACE_CALL_ERROR + " return is null ");
+            logger.warn(MessageConfig.INTERFACE_CALL_ERROR_MSG() + " return is null ");
             return null;
         }
-        if (doGet.contains(HttpUtils.INTERFACE_CALL_ERROR) || doGet.contains("Exception")) {
-            logger.warn(HttpUtils.INTERFACE_CALL_ERROR + ": " + doGet);
+        if (doGet.contains(MessageConfig.INTERFACE_CALL_ERROR_MSG()) || doGet.contains("Exception")) {
+            logger.warn(MessageConfig.INTERFACE_CALL_ERROR_MSG() + ": " + doGet);
             return null;
         }
         // Also convert the json string to a json object, 
@@ -205,10 +205,10 @@ public class FlowImpl implements IFlow {
         String doGet = HttpUtils.doGet(ApiConfig.getFlowDebugDataUrl(), map, 5 * 1000);
         logger.info("call succeeded : " + doGet);
         if (StringUtils.isBlank(doGet)) {
-            return HttpUtils.INTERFACE_CALL_ERROR + " return is null ";
+            return MessageConfig.INTERFACE_CALL_ERROR_MSG() + " return is null ";
         }
-        if (doGet.contains(HttpUtils.INTERFACE_CALL_ERROR) || doGet.contains("Exception")) {
-            return HttpUtils.INTERFACE_CALL_ERROR + ": " + doGet;
+        if (doGet.contains(MessageConfig.INTERFACE_CALL_ERROR_MSG()) || doGet.contains("Exception")) {
+            return MessageConfig.INTERFACE_CALL_ERROR_MSG() + ": " + doGet;
         }
         // Also convert the json string to a json object, 
         // and then convert the json object to a java object, 
@@ -229,11 +229,11 @@ public class FlowImpl implements IFlow {
         String doGet = HttpUtils.doGet(ApiConfig.getFlowVisualizationDataUrl(), map, 5 * 1000);
         logger.info("call succeeded : " + doGet);
         if (StringUtils.isBlank(doGet)) {
-            logger.warn(HttpUtils.INTERFACE_CALL_ERROR + " return is null ");
+            logger.warn(MessageConfig.INTERFACE_CALL_ERROR_MSG() + " return is null ");
             return null;
         }
-		if (doGet.contains(HttpUtils.INTERFACE_CALL_ERROR) || doGet.contains("Exception")) {
-            logger.warn(HttpUtils.INTERFACE_CALL_ERROR + ": " + doGet);
+		if (doGet.contains(MessageConfig.INTERFACE_CALL_ERROR_MSG()) || doGet.contains("Exception")) {
+            logger.warn(MessageConfig.INTERFACE_CALL_ERROR_MSG() + ": " + doGet);
             return null;
         }
         return doGet;
@@ -250,11 +250,11 @@ public class FlowImpl implements IFlow {
         map.put("appID", appId);
         String doGet = HttpUtils.doGet(ApiConfig.getFlowInfoUrl(), map, 30 * 1000);
         if (StringUtils.isBlank(doGet)) {
-            logger.warn(HttpUtils.INTERFACE_CALL_ERROR + " return is null ");
+            logger.warn(MessageConfig.INTERFACE_CALL_ERROR_MSG() + " return is null ");
             return null;
         }
-        if (doGet.contains(HttpUtils.INTERFACE_CALL_ERROR) || doGet.contains("Exception")) {
-            logger.warn(HttpUtils.INTERFACE_CALL_ERROR + ": " + doGet);
+        if (doGet.contains(MessageConfig.INTERFACE_CALL_ERROR_MSG()) || doGet.contains("Exception")) {
+            logger.warn(MessageConfig.INTERFACE_CALL_ERROR_MSG() + ": " + doGet);
             return null;
         }
         // Also convert the json string to a json object, 

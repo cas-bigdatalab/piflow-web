@@ -87,7 +87,11 @@ public class MarketImpl implements IMarket {
         param.put("description", description);
         param.put("logo", logo);
         param.put("name", name);
+        logger.warn(ApiConfig.getMarketComponentsListUrl());
         String doPost = HttpUtils.doPostComCustomizeHeaderAndFile(ApiConfig.getMarketComponentsListUrl(), headerParam, param, file, 50000);
+        if (doPost.contains(MessageConfig.INTERFACE_CALL_ERROR_MSG()) || doPost.contains("Exception")) {
+            return ReturnMapUtils.setFailedMsg(MessageConfig.INTERFACE_CALL_ERROR_MSG() + " : " + doPost);
+        }
         try {
             // Convert a json string to a json object
             JSONObject obj = JSONObject.fromObject(doPost);
@@ -150,8 +154,8 @@ public class MarketImpl implements IMarket {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("bundle"));
         }
         String doGet = HttpUtils.doGet(ApiConfig.getFlowProgressUrl(), null, 10 * 1000);
-        if (StringUtils.isBlank(doGet) || doGet.contains(HttpUtils.INTERFACE_CALL_ERROR) || doGet.contains("Exception")) {
-            logger.warn(HttpUtils.INTERFACE_CALL_ERROR + ": " + doGet);
+        if (StringUtils.isBlank(doGet) || doGet.contains(MessageConfig.INTERFACE_CALL_ERROR_MSG()) || doGet.contains("Exception")) {
+            logger.warn(MessageConfig.INTERFACE_CALL_ERROR_MSG() + ": " + doGet);
             return null;
         }
         String jsonResult = JSONObject.fromObject(doGet).getString("FlowInfo");

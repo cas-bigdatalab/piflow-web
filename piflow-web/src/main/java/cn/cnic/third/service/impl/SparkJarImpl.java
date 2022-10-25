@@ -3,6 +3,7 @@ package cn.cnic.third.service.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import cn.cnic.common.constant.MessageConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -34,7 +35,7 @@ public class SparkJarImpl implements ISparkJar {
             logger.warn("Interface return value is null");
             return null;
         }
-        if (sendGetData.contains("Error") || sendGetData.contains(HttpUtils.INTERFACE_CALL_ERROR)) {
+        if (sendGetData.contains("Error") || sendGetData.contains(MessageConfig.INTERFACE_CALL_ERROR_MSG())) {
             logger.warn("return err: " + sendGetData);
             return null;
         }
@@ -55,7 +56,7 @@ public class SparkJarImpl implements ISparkJar {
             logger.warn("Interface return values is null");
             return null;
         }
-        if (doPost.contains(HttpUtils.INTERFACE_CALL_ERROR) || doPost.contains("Fail")) {
+        if (doPost.contains(MessageConfig.INTERFACE_CALL_ERROR_MSG()) || doPost.contains("Fail")) {
             logger.warn("Interface return exception: " + doPost);
             return null;
         }
@@ -76,7 +77,7 @@ public class SparkJarImpl implements ISparkJar {
             logger.warn("Interface return values is null");
             return null;
         }
-        if (doPost.contains(HttpUtils.INTERFACE_CALL_ERROR) || doPost.contains("Fail")) {
+        if (doPost.contains(MessageConfig.INTERFACE_CALL_ERROR_MSG()) || doPost.contains("Fail")) {
             logger.warn("Interface return exception : " + doPost);
             return null;
         }

@@ -63,7 +63,7 @@ public class ScheduleImpl implements ISchedule {
         if (StringUtils.isBlank(sendPostData)) {
             return ReturnMapUtils.setFailedMsg(MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG());
         }
-        if (sendPostData.contains("Exception") || sendPostData.contains("error") || sendPostData.contains(HttpUtils.INTERFACE_CALL_ERROR)) {
+        if (sendPostData.contains("Exception") || sendPostData.contains("error") || sendPostData.contains(MessageConfig.INTERFACE_CALL_ERROR_MSG())) {
             return ReturnMapUtils.setFailedMsg("Error : " + MessageConfig.INTERFACE_CALL_ERROR_MSG());
         }
         return ReturnMapUtils.setSucceededCustomParam("scheduleId", sendPostData);
@@ -86,7 +86,7 @@ public class ScheduleImpl implements ISchedule {
             logger.warn("Error : Interface call failed. return values is null");
             return null;
         }
-        if (sendGetData.contains(HttpUtils.INTERFACE_CALL_ERROR) || sendGetData.contains("Exception")) {
+        if (sendGetData.contains(MessageConfig.INTERFACE_CALL_ERROR_MSG()) || sendGetData.contains("Exception")) {
             logger.warn("Error : Interface call failed");
             return null;
         }

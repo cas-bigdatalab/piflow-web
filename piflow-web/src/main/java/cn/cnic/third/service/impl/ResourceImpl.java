@@ -3,6 +3,7 @@ package cn.cnic.third.service.impl;
 import cn.cnic.base.utils.HttpUtils;
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.common.constant.ApiConfig;
+import cn.cnic.common.constant.MessageConfig;
 import cn.cnic.third.service.IResource;
 
 import java.util.HashMap;
@@ -30,7 +31,7 @@ public class ResourceImpl implements IResource {
             logger.warn("Interface return value is null");
             return null;
         }
-        if (sendGetData.contains("Error") || sendGetData.contains(HttpUtils.INTERFACE_CALL_ERROR)) {
+        if (sendGetData.contains("Error") || sendGetData.contains(MessageConfig.INTERFACE_CALL_ERROR_MSG())) {
             logger.warn("return err : " + sendGetData);
             return null;
         }

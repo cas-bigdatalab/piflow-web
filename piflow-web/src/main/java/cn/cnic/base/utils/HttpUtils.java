@@ -1,5 +1,6 @@
 package cn.cnic.base.utils;
 
+import cn.cnic.common.constant.MessageConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.*;
 import org.apache.http.client.ClientProtocolException;
@@ -41,7 +42,7 @@ public class HttpUtils {
      */
     private static Logger logger = LoggerUtil.getLogger();
 
-	public static String INTERFACE_CALL_ERROR = "Interface call error";
+	//public static String INTERFACE_CALL_ERROR = "Interface call error";
 	
     /**
      * "post" request to transfer "json" data
@@ -174,22 +175,22 @@ public class HttpUtils {
                     logger.info("call succeeded,return msg:" + result);
                     break;
                 default:
-                    result = INTERFACE_CALL_ERROR + ":" + EntityUtils.toString(response.getEntity(), "utf-8");
+                    result = MessageConfig.INTERFACE_CALL_ERROR_MSG() + ":" + EntityUtils.toString(response.getEntity(), "utf-8");
                     logger.warn("call failed,return msg:" + result);
                     break;
             }
         } catch (UnsupportedCharsetException e) {
-            logger.error(INTERFACE_CALL_ERROR, e);
-            result = (INTERFACE_CALL_ERROR + ":UnsupportedCharsetException");
+            logger.error(MessageConfig.INTERFACE_CALL_ERROR_MSG(), e);
+            result = (MessageConfig.INTERFACE_CALL_ERROR_MSG() + ":UnsupportedCharsetException");
         } catch (ClientProtocolException e) {
-            logger.error(INTERFACE_CALL_ERROR, e);
-            result = (INTERFACE_CALL_ERROR + ":ClientProtocolException");
+            logger.error(MessageConfig.INTERFACE_CALL_ERROR_MSG(), e);
+            result = (MessageConfig.INTERFACE_CALL_ERROR_MSG() + ":ClientProtocolException");
         } catch (ParseException e) {
-            logger.error(INTERFACE_CALL_ERROR, e);
-            result = (INTERFACE_CALL_ERROR + ":ParseException");
+            logger.error(MessageConfig.INTERFACE_CALL_ERROR_MSG(), e);
+            result = (MessageConfig.INTERFACE_CALL_ERROR_MSG() + ":ParseException");
         } catch (IOException e) {
-            logger.error(INTERFACE_CALL_ERROR, e);
-            result = (INTERFACE_CALL_ERROR + ":IOException");
+            logger.error(MessageConfig.INTERFACE_CALL_ERROR_MSG(), e);
+            result = (MessageConfig.INTERFACE_CALL_ERROR_MSG() + ":IOException");
         } finally {
             // Close the connection and release the resource
             httpDelete.releaseConnection();
@@ -233,11 +234,11 @@ public class HttpUtils {
             logger.info("call '" + url + "' start");
             result = doPostComCustomizeHttpPost(httpPost);
         } catch (UnsupportedCharsetException e) {
-            logger.error(INTERFACE_CALL_ERROR, e);
-            result = (INTERFACE_CALL_ERROR + ":UnsupportedCharsetException");
+            logger.error(MessageConfig.INTERFACE_CALL_ERROR_MSG(), e);
+            result = (MessageConfig.INTERFACE_CALL_ERROR_MSG() + ":UnsupportedCharsetException");
         } catch (ParseException e) {
-            logger.error(INTERFACE_CALL_ERROR, e);
-            result = (INTERFACE_CALL_ERROR + ":ParseException");
+            logger.error(MessageConfig.INTERFACE_CALL_ERROR_MSG(), e);
+            result = (MessageConfig.INTERFACE_CALL_ERROR_MSG() + ":ParseException");
         } finally {
             // Close the connection and release the resource
             httpPost.releaseConnection();
@@ -288,11 +289,11 @@ public class HttpUtils {
             logger.info("call '" + url + "' start");
             result = doPostComCustomizeHttpPost(httpPost);
         } catch (UnsupportedCharsetException e) {
-            logger.error(INTERFACE_CALL_ERROR, e);
-            result = (INTERFACE_CALL_ERROR + ":UnsupportedCharsetException");
+            logger.error(MessageConfig.INTERFACE_CALL_ERROR_MSG(), e);
+            result = (MessageConfig.INTERFACE_CALL_ERROR_MSG() + ":UnsupportedCharsetException");
         } catch (ParseException e) {
-            logger.error(INTERFACE_CALL_ERROR, e);
-            result = (INTERFACE_CALL_ERROR + ":ParseException");
+            logger.error(MessageConfig.INTERFACE_CALL_ERROR_MSG(), e);
+            result = (MessageConfig.INTERFACE_CALL_ERROR_MSG() + ":ParseException");
         } finally {
             // Close the connection and release the resource
             httpPost.releaseConnection();
@@ -302,7 +303,7 @@ public class HttpUtils {
 
     public static String doPostComCustomizeHttpPost(HttpPost httpPost) {
         if (null == httpPost) {
-            return (INTERFACE_CALL_ERROR + ":HttpPost is Null");
+            return (MessageConfig.INTERFACE_CALL_ERROR_MSG() + ":HttpPost is Null");
         }
         String result = "";
         // Create an "httpclient" object
@@ -325,25 +326,25 @@ public class HttpUtils {
                     logger.info("call succeeded,return msg:" + result);
                     break;
                 default:
-                    result = INTERFACE_CALL_ERROR + ":" + EntityUtils.toString(response.getEntity(), "utf-8");
+                    result = MessageConfig.INTERFACE_CALL_ERROR_MSG() + ":" + EntityUtils.toString(response.getEntity(), "utf-8");
                     logger.warn("call failed,return msg:" + result);
                     break;
             }
         } catch (UnsupportedCharsetException e) {
-            logger.error(INTERFACE_CALL_ERROR, e);
-            result = (INTERFACE_CALL_ERROR + ":UnsupportedCharsetException");
+            logger.error(MessageConfig.INTERFACE_CALL_ERROR_MSG(), e);
+            result = (MessageConfig.INTERFACE_CALL_ERROR_MSG() + ":UnsupportedCharsetException");
         } catch (ClientProtocolException e) {
-            logger.error(INTERFACE_CALL_ERROR, e);
-            result = (INTERFACE_CALL_ERROR + ":ClientProtocolException");
+            logger.error(MessageConfig.INTERFACE_CALL_ERROR_MSG(), e);
+            result = (MessageConfig.INTERFACE_CALL_ERROR_MSG() + ":ClientProtocolException");
         } catch (ParseException e) {
-            logger.error(INTERFACE_CALL_ERROR, e);
-            result = (INTERFACE_CALL_ERROR + ":ParseException");
+            logger.error(MessageConfig.INTERFACE_CALL_ERROR_MSG(), e);
+            result = (MessageConfig.INTERFACE_CALL_ERROR_MSG() + ":ParseException");
         } catch (IOException e) {
-            logger.error(INTERFACE_CALL_ERROR, e);
-            result = (INTERFACE_CALL_ERROR + ":IOException");
+            logger.error(MessageConfig.INTERFACE_CALL_ERROR_MSG(), e);
+            result = (MessageConfig.INTERFACE_CALL_ERROR_MSG() + ":IOException");
         } catch (Exception e) {
-            logger.error(INTERFACE_CALL_ERROR, e);
-            result = (INTERFACE_CALL_ERROR + ":IOException");
+            logger.error(MessageConfig.INTERFACE_CALL_ERROR_MSG(), e);
+            result = (MessageConfig.INTERFACE_CALL_ERROR_MSG() + ":Exception");
         }
         return result;
     }
@@ -418,24 +419,24 @@ public class HttpUtils {
                         logger.info("call succeeded,return msg:" + result);
                         break;
                     default:
-                        result = INTERFACE_CALL_ERROR + ":" + EntityUtils.toString(response.getEntity(), "utf-8");
+                        result = MessageConfig.INTERFACE_CALL_ERROR_MSG() + ":" + EntityUtils.toString(response.getEntity(), "utf-8");
                         logger.warn("call failed,return msg:" + result);
                         break;
                 }
                 // Release link
                 response.close();
             } catch (ClientProtocolException e) {
-                logger.error(INTERFACE_CALL_ERROR, e);
-                result = (INTERFACE_CALL_ERROR + ":ClientProtocolException");
+                logger.error(MessageConfig.INTERFACE_CALL_ERROR_MSG(), e);
+                result = (MessageConfig.INTERFACE_CALL_ERROR_MSG() + ":ClientProtocolException");
             } catch (ParseException e) {
-                logger.error(INTERFACE_CALL_ERROR, e);
-                result = (INTERFACE_CALL_ERROR + ":ParseException");
+                logger.error(MessageConfig.INTERFACE_CALL_ERROR_MSG(), e);
+                result = (MessageConfig.INTERFACE_CALL_ERROR_MSG() + ":ParseException");
             } catch (IOException e) {
-                logger.error(INTERFACE_CALL_ERROR, e);
-                result = (INTERFACE_CALL_ERROR + ":IOException");
+                logger.error(MessageConfig.INTERFACE_CALL_ERROR_MSG(), e);
+                result = (MessageConfig.INTERFACE_CALL_ERROR_MSG() + ":IOException");
             } catch (URISyntaxException e) {
-                logger.error(INTERFACE_CALL_ERROR, e);
-                result = (INTERFACE_CALL_ERROR + ":URISyntaxException");
+                logger.error(MessageConfig.INTERFACE_CALL_ERROR_MSG(), e);
+                result = (MessageConfig.INTERFACE_CALL_ERROR_MSG() + ":URISyntaxException");
             }
         }
         return result;

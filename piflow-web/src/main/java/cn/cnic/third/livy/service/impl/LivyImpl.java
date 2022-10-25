@@ -38,7 +38,7 @@ public class LivyImpl implements ILivy {
         if(StringUtils.isBlank(doPost)) {
         	return ReturnMapUtils.setFailedMsg("Error : " + MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG());
         }
-        if (doPost.startsWith(HttpUtils.INTERFACE_CALL_ERROR)) {
+        if (doPost.startsWith(MessageConfig.INTERFACE_CALL_ERROR_MSG())) {
         	return ReturnMapUtils.setFailedMsg(doPost);
         }
         try {
@@ -62,7 +62,7 @@ public class LivyImpl implements ILivy {
         if(StringUtils.isBlank(doDelete)) {
         	return ReturnMapUtils.setFailedMsg("Error : " + MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG());
         }
-        if (doDelete.startsWith(HttpUtils.INTERFACE_CALL_ERROR)) {
+        if (doDelete.startsWith(MessageConfig.INTERFACE_CALL_ERROR_MSG())) {
             return ReturnMapUtils.setFailedMsg(doDelete);
         }
         return ReturnMapUtils.setSucceededCustomParam("data", doDelete);
@@ -76,7 +76,7 @@ public class LivyImpl implements ILivy {
         if(StringUtils.isBlank(doGet)) {
         	return ReturnMapUtils.setFailedMsg("Error : " + MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG());
         }
-        if (doGet.startsWith(HttpUtils.INTERFACE_CALL_ERROR)) {
+        if (doGet.startsWith(MessageConfig.INTERFACE_CALL_ERROR_MSG())) {
             return ReturnMapUtils.setFailedMsg(doGet);
         }
         return ReturnMapUtils.setSucceededCustomParam("data", doGet);
@@ -94,7 +94,7 @@ public class LivyImpl implements ILivy {
         if(StringUtils.isBlank(doPost)) {
         	return ReturnMapUtils.setFailedMsg("Error : " + MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG());
         }
-        if (doPost.startsWith(HttpUtils.INTERFACE_CALL_ERROR)) {
+        if (doPost.startsWith(MessageConfig.INTERFACE_CALL_ERROR_MSG())) {
         	return ReturnMapUtils.setFailedMsg(doPost);
         }
         try {
@@ -118,7 +118,7 @@ public class LivyImpl implements ILivy {
         if(StringUtils.isBlank(doGet)) {
         	return ReturnMapUtils.setFailedMsg("Error : " + MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG());
         }
-        if (doGet.startsWith(HttpUtils.INTERFACE_CALL_ERROR)) {
+        if (doGet.startsWith(MessageConfig.INTERFACE_CALL_ERROR_MSG())) {
         	return ReturnMapUtils.setFailedMsg(doGet);
         }
         return ReturnMapUtils.setSucceededCustomParam("data", doGet);
