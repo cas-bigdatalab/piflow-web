@@ -50,7 +50,7 @@ public class LivyImpl implements ILivy {
             return ReturnMapUtils.setSucceededCustomParam("sessionsId", sessionsId);
         } catch (Exception e) {
             logger.error("error: ", e);
-            return ReturnMapUtils.setFailedMsg("Error : Interface call succeeded, conversion error");
+            return ReturnMapUtils.setFailedMsg("Error : " + MessageConfig.INTERFACE_CALL_SUCCEEDED_CONVERSION_ERROR_MSG());
         }
     }
 
@@ -106,7 +106,7 @@ public class LivyImpl implements ILivy {
             return ReturnMapUtils.setSucceededCustomParam("statementsId", statementsId);
         } catch (Exception e) {
             logger.error("error: ", e);
-            return ReturnMapUtils.setFailedMsg("Error : Interface call succeeded, conversion error");
+            return ReturnMapUtils.setFailedMsg("Error : " + MessageConfig.INTERFACE_CALL_SUCCEEDED_CONVERSION_ERROR_MSG());
         }
     }
 

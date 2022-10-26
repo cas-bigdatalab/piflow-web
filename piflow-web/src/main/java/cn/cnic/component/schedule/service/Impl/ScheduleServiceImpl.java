@@ -295,7 +295,7 @@ public class ScheduleServiceImpl implements IScheduleService {
         // save
         int update = scheduleDomain.update(scheduleById);
         if (update <= 0) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Error : Interface call succeeded, save error");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Error : " + MessageConfig.INTERFACE_CALL_SUCCEEDED_SAVE_ERROR_MSG());
         }
         return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG());
     }
@@ -324,11 +324,11 @@ public class ScheduleServiceImpl implements IScheduleService {
         String scheduleStopMsg = scheduleImpl.scheduleStop(scheduleById.getScheduleId());
         // Judge whether it is successful or not
         if (StringUtils.isBlank(scheduleStopMsg) || scheduleStopMsg.contains("Exception") || scheduleStopMsg.contains("error")) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Error : Interface call failed");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Error : " + MessageConfig.INTERFACE_CALL_ERROR_MSG());
         }
         // Judge whether it is successful or not
         if (StringUtils.isBlank(scheduleStopMsg) || scheduleStopMsg.contains("failed")) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Error : Interface call failed");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Error : " + MessageConfig.INTERFACE_CALL_ERROR_MSG());
         }
         // update
         scheduleById.setStatus(ScheduleState.STOP);
@@ -337,7 +337,7 @@ public class ScheduleServiceImpl implements IScheduleService {
         // save
         int update = scheduleDomain.update(scheduleById);
         if (update <= 0) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Error : Interface call succeeded, save error");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Error : " + MessageConfig.INTERFACE_CALL_SUCCEEDED_SAVE_ERROR_MSG());
         }
         return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG());
     }

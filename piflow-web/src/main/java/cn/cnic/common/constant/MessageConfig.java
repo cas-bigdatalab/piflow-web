@@ -520,6 +520,41 @@ public class MessageConfig {
         return INTERFACE_CALL_ERROR_MSG;
     }
 
+    private static String INTERFACE_CALL_SUCCEEDED_VALUE_NULL_ERROR_MSG;
+    private static String INTERFACE_CALL_SUCCEEDED_VALUE_NULL_ERROR_MSG_ZH;
+    @Value("${msg.interface_call_succeeded_value_null_error}")
+    private void setInterfaceCallSucceededValueNullErrorMsg(String interfaceCallSucceededValueNullErrorMsg) {
+        INTERFACE_CALL_SUCCEEDED_VALUE_NULL_ERROR_MSG = interfaceCallSucceededValueNullErrorMsg;
+    }
+    @Value("${msg.interface_call_succeeded_value_null_error.zh}")
+    private void setInterfaceCallSucceededValueNullErrorMsgZh(String interfaceCallSucceededValueNullErrorMsgZh) {
+        INTERFACE_CALL_SUCCEEDED_VALUE_NULL_ERROR_MSG_ZH = interfaceCallSucceededValueNullErrorMsgZh;
+    }
+    public static String INTERFACE_CALL_SUCCEEDED_VALUE_NULL_ERROR_MSG(){
+        if("ZH".equals(LANGUAGE)){
+            return INTERFACE_CALL_SUCCEEDED_VALUE_NULL_ERROR_MSG_ZH;
+        }
+        return INTERFACE_CALL_SUCCEEDED_VALUE_NULL_ERROR_MSG;
+    }
+
+
+    private static String INTERFACE_CALL_SUCCEEDED_CONVERSION_ERROR_MSG;
+    private static String INTERFACE_CALL_SUCCEEDED_CONVERSION_ERROR_MSG_ZH;
+    @Value("${msg.interface_call_succeeded_conversion_error}")
+    private void setInterfaceCallSucceededConversionErrorMsg(String interfaceCallSucceededConversionErrorMsg) {
+        INTERFACE_CALL_SUCCEEDED_CONVERSION_ERROR_MSG = interfaceCallSucceededConversionErrorMsg;
+    }
+    @Value("${msg.interface_call_succeeded_conversion_error.zh}")
+    private void setInterfaceCallSucceededConversionErrorMsgZh(String interfaceCallSucceededConversionErrorMsgZh) {
+        INTERFACE_CALL_SUCCEEDED_CONVERSION_ERROR_MSG_ZH = interfaceCallSucceededConversionErrorMsgZh;
+    }
+    public static String INTERFACE_CALL_SUCCEEDED_CONVERSION_ERROR_MSG(){
+        if("ZH".equals(LANGUAGE)){
+            return INTERFACE_CALL_SUCCEEDED_CONVERSION_ERROR_MSG_ZH;
+        }
+        return INTERFACE_CALL_SUCCEEDED_CONVERSION_ERROR_MSG;
+    }
+
     private static String INTERFACE_CALL_SUCCEEDED_SAVE_ERROR_MSG;
     private static String INTERFACE_CALL_SUCCEEDED_SAVE_ERROR_MSG_ZH;
     @Value("${msg.interface_call_succeeded_save_error}")

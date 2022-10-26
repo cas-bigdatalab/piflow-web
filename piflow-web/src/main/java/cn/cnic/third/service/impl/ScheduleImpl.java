@@ -83,11 +83,11 @@ public class ScheduleImpl implements ISchedule {
         map.put("scheduleId", scheduleId);
         String sendGetData = HttpUtils.doGet(ApiConfig.getScheduleInfoUrl(), map, null);
         if (StringUtils.isBlank(sendGetData)) {
-            logger.warn("Error : Interface call failed. return values is null");
+            logger.warn("Error : " + MessageConfig.INTERFACE_CALL_SUCCEEDED_VALUE_NULL_ERROR_MSG());
             return null;
         }
         if (sendGetData.contains(MessageConfig.INTERFACE_CALL_ERROR_MSG()) || sendGetData.contains("Exception")) {
-            logger.warn("Error : Interface call failed");
+            logger.warn("Error : " + MessageConfig.INTERFACE_CALL_ERROR_MSG());
             return null;
         }
         // Also convert the json string to a json object, and then convert the json object to a java object, as shown below.

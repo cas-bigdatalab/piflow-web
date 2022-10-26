@@ -302,7 +302,7 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
         }
         String debugData = flowImpl.getDebugData(debugDataRequest.getAppID(), debugDataRequest.getStopName(), debugDataRequest.getPortName());
         if (StringUtils.isBlank(debugData)) {
-            logger.warn("Interface call failed");
+            logger.warn(MessageConfig.INTERFACE_CALL_ERROR_MSG());
             return null;
         }
         JSONObject obj = JSONObject.fromObject(debugData);

@@ -1,0 +1,1 @@
+function bodyResize(){$(".wrappers").css({transform:"scale("+$(window).width()/1920+")"});var i=$(".top").height()*$(window).width()/1920;$(".high_box").css({top:i})}bodyResize(),$(window).resize(function(){bodyResize()});

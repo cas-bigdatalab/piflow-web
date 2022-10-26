@@ -1,0 +1,17 @@
+body, html { /* height: auto !important;*/height: 100%;}
+body {font: 14px/1.5 microsoft yahei, arial;overflow: hidden;}
+.wrappers {position: fixed;width: 1920px;height: 1080px;transform-origin: top left;z-index: 10;}
+body {background-color: #242d4a !important;}
+li {list-style: none;}
+
+/* 通用 */
+.top {width: 100%;}
+.wrap {margin: 0;position: absolute;left: 0;right: 0;top: 0;bottom: 0;padding: 30px 0;height: auto !important;min-height: auto;}
+.high_box {position: fixed; left: 0; right: 0; top: 90px; bottom: 0; overflow-y: auto; z-index: 99;}
+.high_box .pull-right .high_select_stack {position: relative !important;}
+/*,.high_box .ng-scope*/
+/*.high_box ul.select.dropdown-menu{left: 0!important; top: 30px !important;}
+.high_box .high_section_graph{min-height: auto;}*/
+.high_box .nav-pills > li.active > a:hover, .nav-pills > li.active > a, .nav-pills > li.active > a:focus {background-color: #21293f;}
+.high_box .alert-success, .high_box .layout.selected, .dimension, .high_box .btn-success:hover, .high_box .btn-success:focus, .high_box .btn-success:active, .high_box .btn-success.active, .high_box .open .dropdown-toggle.btn-success {background-color: #0b3e6f;}
+.high_box .btn-success.disabled, .high_box .btn-success[disabled], fieldset[disabled] .btn-success, .btn-success.disabled:hover, .btn-success[disabled]:hover, fieldset[disabled] .btn-success:hover, .btn-success.disabled:focus, .btn-success[disabled]:focus, fieldset[disabled] .btn-success:focus, .btn-success.disabled:active, .btn-success[disabled]:active, fieldset[disabled] .btn-success:active, .btn-success.disabled.active, .btn-success[disabled].active, fieldset[disabled] .btn-success.active, .btn-success {background-color: #0b3e6f;}

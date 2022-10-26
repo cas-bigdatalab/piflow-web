@@ -1,5 +1,6 @@
 package cn.cnic.controller.api.process;
 
+import cn.cnic.common.constant.MessageConfig;
 import cn.cnic.component.system.service.ILogHelperService;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
@@ -222,18 +223,15 @@ public class ProcessCtrl {
     @ApiOperation(value="getLog", notes="get log data")
     @ApiImplicitParam(name = "url", value = "url", required = true, paramType = "query")
     public String getLog(String url) {
-        String rtnMsg = "";
-        if (StringUtils.isNotBlank(url)) {
-            if ("Interface call failed".equals(url)) {
-                rtnMsg = "Interface call failed";
-            } else {
-                rtnMsg = HttpUtils.getHtml(url);
-            }
+        if (StringUtils.isBlank(url)) {
         } else {
-            rtnMsg = "urlStr is null";
+            return "urlStr is null";
         }
-
-        return rtnMsg;
+        String rtnMsg = "";
+        if (MessageConfig.INTERFACE_CALL_ERROR_MSG().equals(url)) {
+            return MessageConfig.INTERFACE_CALL_ERROR_MSG();
+        }
+        return HttpUtils.getHtml(url);
     }
 
     /**

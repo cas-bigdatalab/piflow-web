@@ -1,0 +1,109 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+.navContainer {
+  width: 68%;
+  height: 42px;
+  font-weight: 700;
+  background: linear-gradient(
+    to right,
+    rgba(33, 35, 67, 0) 0%,
+    rgba(48, 49, 89, 1) 10%,
+    rgba(48, 49, 89, 1) 90%,
+    rgba(33, 35, 67, 0) 100%
+  );
+  margin-left: 17%;
+  position: relative;
+  top: 8px;
+  z-index: 99999;
+  min-width: 621.26px;
+  float: left;
+}
+.nav_ul {
+  list-style-type: none;
+  font-size: 15px;
+  padding-left: 12%;
+}
+.homePage {
+  width: 5%;
+  position: absolute;
+  color: #aaadbe;
+  left: 5%;
+  cursor: pointer;
+  padding: 10px;
+  height: 100%;
+  min-width: 41px;
+  margin-left: -1%;
+}
+.homePage span {
+  display: block;
+  font-size: 15px;
+  text-align: center;
+  line-height: 20px;
+  min-width: 41px;
+}
+.homePage span::after {
+  content: "|";
+  position: absolute;
+  right: -50%;
+  color: #aaadbe;
+}
+@media all and (max-width: 1075px) {
+  .nav_ul,
+  .nav_active {
+    font-size: 12px;
+  }
+  .homePage {
+    padding-right: 0;
+  }
+  .homePage span {
+    top: 2px;
+    font-size: 12px;
+  }
+}
+@media all and (max-width: 1000px) {
+  .homePage span::after {
+    right: -28%;
+  }
+}
+.navContainer .nav_ul li.ul_li {
+  width: 12%;
+  float: left;
+  color: #aaadbe;
+  line-height: 42px;
+  cursor: pointer;
+  display: none;
+  text-align: center;
+}
+.ul_li::after {
+  content: "|";
+  float: left;
+  color: #aaadbe;
+}
+.ul_li:first-child::after {
+  display: none;
+}
+.verticalBar {
+  color: #8589a1;
+  position: relative;
+  top: 3px;
+}
+.nav_active {
+  width: 10%;
+  font-weight: 700;
+  cursor: pointer;
+  color: #ebecf0 !important;
+  left: 10px;
+  text-align: center;
+  background-image: radial-gradient(
+    circle,
+    rgba(155, 186, 245, 0.9),
+    rgba(45, 49, 86, 0) 85%
+  );
+}
+.mainContaiber {
+  width: 100%;
+  height: 100%;
+  background-color: #8589a1;
+}
