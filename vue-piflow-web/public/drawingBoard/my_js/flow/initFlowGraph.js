@@ -1,6 +1,6 @@
 // Extends EditorUi to update I/O action states based on availability of backend
 
-var parentsId, xmlDate, maxStopPageId, isExample, consumedFlag, timerPath, statusgroup, removegroupPaths, stopsId;
+var parentsId, xmlDate, maxStopPageId, isExample, consumedFlag, timerPath, statusgroup, removegroupPaths, stopsId, stopsDisabled, nodeId;
 
 var index = true;
 var flag = 0;
@@ -57,6 +57,7 @@ function initFlowDrawingBoardData(loadId, parentAccessPath) {
                 //     }
                 // }
                 xmlDate = dataMap.xmlDate;
+                stopsDisabled = dataMap.stopsDisabled
                 maxStopPageId = dataMap.maxStopPageId;
                 isExample = dataMap.isExample;
                 if (dataMap.groupsVoList) {
@@ -344,6 +345,14 @@ function loadXml(loadStr, cells) {
     var node = xml.documentElement;
     var dec = new mxCodec(node.ownerDocument);
     dec.decode(node, graphGlobal.getModel());
+
+    let disabledArr= [];
+    if (!!stopsDisabled && stopsDisabled.length>0)
+        for (let i=0;i<stopsDisabled.length;i++){
+            disabledArr.push(graphGlobal.getModel().getCell(stopsDisabled[i]))
+        }
+    mxUtils.setCellStyles(graphGlobal.getModel(), disabledArr, mxConstants.STYLE_OPACITY,40);
+
     eraseRecord()
     if (cells) {
         var new_load_cells = graphGlobal.getModel().getCell(cells[0].id);
@@ -614,6 +623,7 @@ function queryStopsProperty(stopPageId, loadId) {
     $("#div_del_last_reload").hide();
     $("#div_properties_example_html").hide();
     isShowUpdateStopsName(false);
+    nodeId=stopPageId;
     ajaxRequest({
         type: "POST",
         url: "/stops/queryIdInfo",
@@ -1010,7 +1020,10 @@ function StopDisabled(stopsId){
         success: function (data) {
             var dataMap = JSON.parse(data);
             if (200 === dataMap.code) {
-                console.log(dataMap)
+                if (!isCheckpoint)
+                    mxUtils.setCellStyles(graphGlobal.getModel(), [graphGlobal.getModel().getCell(nodeId)], mxConstants.STYLE_OPACITY,100);
+                else
+                    mxUtils.setCellStyles(graphGlobal.getModel(), [graphGlobal.getModel().getCell(nodeId)], mxConstants.STYLE_OPACITY,40);
             } else {
 
             }
