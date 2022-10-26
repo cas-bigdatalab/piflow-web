@@ -141,6 +141,11 @@
         <Button type="primary" @click="getSelectEvent()">{{ $t("modal.confirm") }}</Button>
       </div>
     </Modal>
+
+    <Drawer :closable="false" width="640" v-model="visualization_Drawer">
+      <div slot="header"><a target="_blank" :href="visualization_url">查看全部</a></div>
+      <iframe :src="visualization_url" style="width: 100%;height: 100%" frameborder="0"></iframe>
+    </Drawer>
   </div>
 </template>
  
@@ -209,6 +214,9 @@ export default {
       processToRelease_Modal: false,
       processToReleaseData: [{name:'aa'}],
       processToReleaseColumn: [{type: "checkbox", width:"60"}, {  field: 'name', title: 'Stop Name'}],
+
+      visualization_Drawer: false,
+      visualization_url: ''
     };
   },
   computed: {
@@ -372,6 +380,12 @@ export default {
     window["processToRelease"] = ({value,type,id}) => {
       _this.gettingStopList(value,type,id);
       this.publishingId= id;
+    }
+
+    //  visualization_Drawer
+    window["visualization_Drawer"] = ({value}) => {
+      _this.visualization_url = value;
+      _this.visualization_Drawer = true;
     }
   },
   watch:{
