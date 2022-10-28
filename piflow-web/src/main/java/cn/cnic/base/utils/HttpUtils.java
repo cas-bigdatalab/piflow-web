@@ -441,4 +441,68 @@ public class HttpUtils {
         }
         return result;
     }
+
+    /**
+     * Get request to back response
+     *
+     * @param url
+     * @param map       Request incoming parameters ("key" is the parameter name, "value" is the parameter value) "map" can be empty
+     * @param timeOutMS (Millisecond)
+     * @return
+     */
+    public static CloseableHttpResponse doGetReturnResponse(String url, Map<String, String> map, Integer timeOutMS) {
+        CloseableHttpResponse response = null;
+        if (StringUtils.isNotBlank(url)) {
+            try {
+                // Create an "httpclient" object
+                CloseableHttpClient httpClient = HttpClients.createDefault();
+
+                // Create a "get" mode request object
+                HttpGet httpGet = null;
+                // Determine whether to add parameters
+                if (null != map && !map.isEmpty()) {
+                    // Since the parameters of the "GET" request are all assembled behind the "URL" address, we have to build a "URL" with parameters.
+                    URIBuilder uriBuilder = new URIBuilder(url);
+
+                    List<NameValuePair> list = new LinkedList<>();
+                    for (String key : map.keySet()) {
+                        BasicNameValuePair param = new BasicNameValuePair(key, map.get(key));
+                        list.add(param);
+                    }
+
+                    uriBuilder.setParameters(list);
+                    // Construct a "GET" request object from a "URI" object with parameters
+                    httpGet = new HttpGet(uriBuilder.build());
+                } else {
+                    httpGet = new HttpGet(url);
+                }
+                // Type of transmission
+                httpGet.addHeader("Content-type", "application/json");
+                if (null != timeOutMS) {
+                    // Set timeout
+                    RequestConfig requestConfig = RequestConfig.custom()
+                            .setConnectTimeout(5000).setConnectionRequestTimeout(1000)
+                            .setSocketTimeout(timeOutMS).build();
+                    httpGet.setConfig(requestConfig);
+                }
+
+                logger.info("call '" + url + "' start");
+                // Get the response object by requesting the object
+                response = httpClient.execute(httpGet);
+                // Get result entity
+                // Determine whether the network connection status code is normal (0--200 are normal)
+                // Release link
+            } catch (ClientProtocolException e) {
+                logger.error(MessageConfig.INTERFACE_CALL_ERROR_MSG(), e);
+            } catch (ParseException e) {
+                logger.error(MessageConfig.INTERFACE_CALL_ERROR_MSG(), e);
+            } catch (IOException e) {
+                logger.error(MessageConfig.INTERFACE_CALL_ERROR_MSG(), e);
+            } catch (URISyntaxException e) {
+                logger.error(MessageConfig.INTERFACE_CALL_ERROR_MSG(), e);
+            }
+        }
+        return response;
+    }
+
 }

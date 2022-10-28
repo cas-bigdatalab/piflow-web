@@ -86,12 +86,13 @@ public class ProcessStopServiceImpl implements IProcessStopService {
             if (StringUtils.isBlank(stopName)) {
                 throw new Exception(MessageConfig.NO_DATA_BY_ID_XXX_MSG(stopName));
             }
-            String visualDataDirectoryPathUrl = visualDataDirectoryImpl.getVisualDataDirectoryPathUrl(appId, stopName);
-            if (StringUtils.isBlank(visualDataDirectoryPathUrl)) {
-                throw new Exception("Error");
+            Map<String, Object> visualDataDirectoryData = visualDataDirectoryImpl.getVisualDataDirectoryData(appId, stopName);
+            if (!"200".equals(visualDataDirectoryData.get(ReturnMapUtils.KEY_CODE).toString())) {
+                throw new Exception(MessageConfig.ERROR_MSG());
             }
+            byte[] fileContent = (byte[]) visualDataDirectoryData.get("fileContent");
             response.setCharacterEncoding("utf-8");
-            downloadFile(response, visualDataDirectoryPathUrl);
+            downloadFile(response, stopName, fileContent);
         } catch (Exception e) {
             reSetError(response, e.getMessage());
         }
@@ -100,31 +101,18 @@ public class ProcessStopServiceImpl implements IProcessStopService {
     /**
      * The file is read as a stream
      *
-     * @param hdfsPath hdfs path
+     * @param fileName fileName
+     * @param buffer buffer
      * @return
      */
-    private void downloadFile(HttpServletResponse response, String hdfsPath) throws URISyntaxException, IOException {
-        byte[] buffer = null;
-        String fileName = null;
-        //下面两行，初始化hdfs配置连接
-        Configuration conf = new Configuration();
-        FileSystem fs = FileSystem.get(new URI(hdfsPath), conf);
-        FileStatus[] status = fs.listStatus(new Path(hdfsPath));
-        for (FileStatus file : status) {
-            if (!file.getPath().getName().startsWith("part")) {
-                continue;
-            }
-            fileName = file.getPath().getName();
-            FSDataInputStream inputStream = fs.open(file.getPath());
-            buffer = new byte[inputStream.available()];
-            inputStream.read(buffer);
-            inputStream.close();
-            break;
+    private void downloadFile(HttpServletResponse response, String fileName, byte[] buffer) throws URISyntaxException, IOException {
+        if (null == buffer || StringUtils.isBlank(fileName)) {
+            new Exception("data error");
         }
         // Clear response
         response.reset();
         // Set the header of response and UTF-8 code the file name. Otherwise, the file name is garbled and wrong when downloading
-        response.addHeader("Content-Disposition", "attachment;filename="+ URLEncoder.encode (fileName, "UTF-8" ));
+        response.addHeader("Content-Disposition", "attachment;filename="+ URLEncoder.encode (fileName + ".csv", "UTF-8" ));
         response.addHeader("Content-Length", "" + buffer.length);
         OutputStream toClient = new BufferedOutputStream(
                 response.getOutputStream());

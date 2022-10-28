@@ -346,15 +346,15 @@ public class ApiConfig {
         return SysParamsCache.INTERFACE_URL_HEAD + RESOURCE_INFO_URL;
     }
 
-    public static String VISUAL_DATA_DIRECTORY_PATH_URL;
+    public static String VISUAL_DATA_DIRECTORY_DATA;
 
-    @Value("${api.visualDataDirectoryPathUrl}")
-    public void setVisualDataDirectoryPathUrl(String visualDataDirectoryPathUrl) {
-        VISUAL_DATA_DIRECTORY_PATH_URL = visualDataDirectoryPathUrl;
+    @Value("${api.visualDataDirectoryData}")
+    public void setVisualDataDirectoryData(String visualDataDirectoryData) {
+        VISUAL_DATA_DIRECTORY_DATA = visualDataDirectoryData;
     }
 
-    public static String getVisualDataDirectoryPathUrl() {
-        return SysParamsCache.INTERFACE_URL_HEAD + VISUAL_DATA_DIRECTORY_PATH_URL;
+    public static String getVisualDataDirectoryData() {
+        return SysParamsCache.INTERFACE_URL_HEAD + VISUAL_DATA_DIRECTORY_DATA;
     }
 
     public static String LIVY_SESSIONS_URL;

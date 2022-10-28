@@ -1,8 +1,10 @@
 package cn.cnic.third.service;
 
 
+import java.util.Map;
+
 public interface IVisualDataDirectory {
 
-    public String getVisualDataDirectoryPathUrl(String appId, String stopName);
+    public Map<String, Object> getVisualDataDirectoryData(String appId, String stopName);
 
 }
