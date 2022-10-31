@@ -224,10 +224,8 @@ public class ProcessCtrl {
     @ApiImplicitParam(name = "url", value = "url", required = true, paramType = "query")
     public String getLog(String url) {
         if (StringUtils.isBlank(url)) {
-        } else {
             return "urlStr is null";
         }
-        String rtnMsg = "";
         if (MessageConfig.INTERFACE_CALL_ERROR_MSG().equals(url)) {
             return MessageConfig.INTERFACE_CALL_ERROR_MSG();
         }
