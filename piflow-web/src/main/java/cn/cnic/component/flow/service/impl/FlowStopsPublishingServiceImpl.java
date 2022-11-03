@@ -5,8 +5,6 @@ import cn.cnic.base.utils.PageHelperUtils;
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.base.utils.UUIDUtils;
 import cn.cnic.common.constant.MessageConfig;
-import cn.cnic.component.dataSource.entity.DataSource;
-import cn.cnic.component.dataSource.entity.DataSourceProperty;
 import cn.cnic.component.flow.domain.FlowStopsPublishingDomain;
 import cn.cnic.component.flow.domain.StopsDomain;
 import cn.cnic.component.flow.entity.*;
@@ -179,19 +177,23 @@ public class FlowStopsPublishingServiceImpl implements IFlowStopsPublishingServi
         Map<String, Object> rtnData = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
         rtnData.put("publishingId", flowStopsPublishingVo.getPublishingId());
         rtnData.put("name", flowStopsPublishingVo.getName());
+        StopsVo stopsVo = flowStopsPublishingVo.getStopsVo();
+        if (null != stopsVo) {
+            rtnData.put("flowVo", stopsVo.getFlowVo());
+        }
         List<Object> stopsDataList = new ArrayList<>();
         Map<String, StopsComponent> stopsComponentMaps = new HashMap<>();
         for (FlowStopsPublishingVo flowStopsPublishingVoI : flowStopsPublishingVoList) {
             if (null == flowStopsPublishingVo || null == flowStopsPublishingVoI.getStopsVo()) {
                 continue;
             }
-            StopsVo stopsVo = flowStopsPublishingVoI.getStopsVo();
-            StopsComponent stopsComponent = stopsComponentMaps.get(stopsVo.getBundel());
+            StopsVo stopsVoI = flowStopsPublishingVoI.getStopsVo();
+            StopsComponent stopsComponent = stopsComponentMaps.get(stopsVoI.getBundel());
             if (null == stopsComponent) {
-                stopsComponent = stopsComponentDomain.getStopsComponentByBundle(stopsVo.getBundel());
+                stopsComponent = stopsComponentDomain.getStopsComponentByBundle(stopsVoI.getBundel());
             }
-            stopsVo = StopsUtils.stopComponentToStopsVo(stopsVo, stopsComponent);
-            stopsDataList.add(stopsVo);
+            stopsVoI = StopsUtils.stopComponentToStopsVo(stopsVoI, stopsComponent);
+            stopsDataList.add(stopsVoI);
         }
         rtnData.put("stopsDataList", stopsDataList);
         return ReturnMapUtils.toFormatJson(rtnData);
