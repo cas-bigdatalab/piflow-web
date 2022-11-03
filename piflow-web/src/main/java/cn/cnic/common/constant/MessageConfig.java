@@ -8,7 +8,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class MessageConfig {
 
-    public static String LANGUAGE = "EN";
+    public static String LANGUAGE_TYPE_EN = "EN";
+    public static String LANGUAGE_TYPE_ZH = "ZH";
+    public static String LANGUAGE = LANGUAGE_TYPE_EN;
 
     private static String ERROR_MSG;
     private static String ERROR_MSG_ZH;
@@ -21,7 +23,7 @@ public class MessageConfig {
         ERROR_MSG_ZH = errorMsgZh;
     }
     public static String ERROR_MSG(){
-        if("ZH".equals(LANGUAGE)){
+        if(LANGUAGE_TYPE_ZH.equals(LANGUAGE)){
             return ERROR_MSG_ZH;
         }
         return ERROR_MSG;
@@ -38,7 +40,7 @@ public class MessageConfig {
         SUCCEEDED_MSG_ZH = succeededMsgZh;
     }
     public static String SUCCEEDED_MSG(){
-        if("ZH".equals(LANGUAGE)){
+        if(LANGUAGE_TYPE_ZH.equals(LANGUAGE)){
             return SUCCEEDED_MSG_ZH;
         }
         return SUCCEEDED_MSG;
@@ -55,7 +57,7 @@ public class MessageConfig {
         ADD_ERROR_MSG_ZH = addErrorMsgZh;
     }
     public static String ADD_ERROR_MSG(){
-        if("ZH".equals(LANGUAGE)){
+        if(LANGUAGE_TYPE_ZH.equals(LANGUAGE)){
             return ADD_ERROR_MSG_ZH;
         }
         return ADD_ERROR_MSG;
@@ -72,7 +74,7 @@ public class MessageConfig {
         ADD_SUCCEEDED_MSG_ZH = addSucceededMsgZh;
     }
     public static String ADD_SUCCEEDED_MSG(){
-        if("ZH".equals(LANGUAGE)){
+        if(LANGUAGE_TYPE_ZH.equals(LANGUAGE)){
             return ADD_SUCCEEDED_MSG_ZH;
         }
         return ADD_SUCCEEDED_MSG;
@@ -89,7 +91,7 @@ public class MessageConfig {
         UPDATE_ERROR_MSG_ZH = updateErrorMsgZh;
     }
     public static String UPDATE_ERROR_MSG(){
-        if("ZH".equals(LANGUAGE)){
+        if(LANGUAGE_TYPE_ZH.equals(LANGUAGE)){
             return UPDATE_ERROR_MSG_ZH;
         }
         return UPDATE_ERROR_MSG;
@@ -106,7 +108,7 @@ public class MessageConfig {
         UPDATE_SUCCEEDED_MSG_ZH = updateSucceededMsgZh;
     }
     public static String UPDATE_SUCCEEDED_MSG(){
-        if("ZH".equals(LANGUAGE)){
+        if(LANGUAGE_TYPE_ZH.equals(LANGUAGE)){
             return UPDATE_SUCCEEDED_MSG_ZH;
         }
         return UPDATE_SUCCEEDED_MSG;
@@ -123,7 +125,7 @@ public class MessageConfig {
         DELETE_ERROR_MSG_ZH = deleteErrorMsgZh;
     }
     public static String DELETE_ERROR_MSG(){
-        if("ZH".equals(LANGUAGE)){
+        if(LANGUAGE_TYPE_ZH.equals(LANGUAGE)){
             return DELETE_ERROR_MSG_ZH;
         }
         return DELETE_ERROR_MSG;
@@ -140,7 +142,7 @@ public class MessageConfig {
         DELETE_LINK_SCHEDULED_ERROR_MSG_ZH = deleteLinkScheduledErrorMsgZh;
     }
     public static String DELETE_LINK_SCHEDULED_ERROR_MSG(){
-        if("ZH".equals(LANGUAGE)){
+        if(LANGUAGE_TYPE_ZH.equals(LANGUAGE)){
             return DELETE_LINK_SCHEDULED_ERROR_MSG_ZH;
         }
         return DELETE_LINK_SCHEDULED_ERROR_MSG;
@@ -157,7 +159,7 @@ public class MessageConfig {
         DELETE_SUCCEEDED_MSG_ZH = deleteSucceededMsgZh;
     }
     public static String DELETE_SUCCEEDED_MSG(){
-        if("ZH".equals(LANGUAGE)){
+        if(LANGUAGE_TYPE_ZH.equals(LANGUAGE)){
             return DELETE_SUCCEEDED_MSG_ZH;
         }
         return DELETE_SUCCEEDED_MSG;
@@ -174,7 +176,7 @@ public class MessageConfig {
         NO_DATA_UPDATE_MSG_ZH = noDataUpdateMsgZh;
     }
     public static String NO_DATA_UPDATE_MSG(){
-        if("ZH".equals(LANGUAGE)){
+        if(LANGUAGE_TYPE_ZH.equals(LANGUAGE)){
             return NO_DATA_UPDATE_MSG_ZH;
         }
         return NO_DATA_UPDATE_MSG;
@@ -191,7 +193,7 @@ public class MessageConfig {
         DATA_PROPERTY_IS_NULL_MSG_ZH = dataErrorMsgZh;
     }
     public static String DATA_PROPERTY_IS_NULL_MSG(String name){
-        if("ZH".equals(LANGUAGE)){
+        if(LANGUAGE_TYPE_ZH.equals(LANGUAGE)){
             return String.format(DATA_PROPERTY_IS_NULL_MSG_ZH, name);
         }
         return String.format(DATA_PROPERTY_IS_NULL_MSG, name);
@@ -208,7 +210,7 @@ public class MessageConfig {
         NO_PERMISSION_MSG_ZH = noPermissionMsgZh;
     }
     public static String NO_PERMISSION_MSG(){
-        if("ZH".equals(LANGUAGE)){
+        if(LANGUAGE_TYPE_ZH.equals(LANGUAGE)){
             return NO_PERMISSION_MSG_ZH;
         }
         return NO_PERMISSION_MSG;
@@ -225,7 +227,7 @@ public class MessageConfig {
         ILLEGAL_OPERATION_MSG_ZH = illegalOperationMsgZh;
     }
     public static String ILLEGAL_OPERATION_MSG(){
-        if("ZH".equals(LANGUAGE)){
+        if(LANGUAGE_TYPE_ZH.equals(LANGUAGE)){
             return ILLEGAL_OPERATION_MSG_ZH;
         }
         return ILLEGAL_OPERATION_MSG;
@@ -242,7 +244,7 @@ public class MessageConfig {
         ILLEGAL_USER_MSG_ZH = illegalUserMsgZh;
     }
     public static String ILLEGAL_USER_MSG(){
-        if("ZH".equals(LANGUAGE)){
+        if(LANGUAGE_TYPE_ZH.equals(LANGUAGE)){
             return ILLEGAL_USER_MSG_ZH;
         }
         return ILLEGAL_USER_MSG;
@@ -259,7 +261,7 @@ public class MessageConfig {
         NO_DATA_XXX_IS_NULL_MSG_ZH = noDataMsgZh;
     }
     public static String NO_DATA_XXX_IS_NULL_MSG(String xxx){
-        if("ZH".equals(LANGUAGE)){
+        if(LANGUAGE_TYPE_ZH.equals(LANGUAGE)){
             return String.format(NO_DATA_XXX_IS_NULL_MSG_ZH, xxx);
         }
         return String.format(NO_DATA_XXX_IS_NULL_MSG, xxx);
@@ -276,7 +278,7 @@ public class MessageConfig {
         NO_PATH_DATA_MSG_ZH = noPathDataMsgZh;
     }
     public static String NO_PATH_DATA_MSG(){
-        if("ZH".equals(LANGUAGE)){
+        if(LANGUAGE_TYPE_ZH.equals(LANGUAGE)){
             return NO_PATH_DATA_MSG_ZH;
         }
         return NO_PATH_DATA_MSG;
@@ -293,7 +295,7 @@ public class MessageConfig {
         NO_DATA_MSG_ZH = noDataMsgZh;
     }
     public static String NO_DATA_MSG(){
-        if("ZH".equals(LANGUAGE)){
+        if(LANGUAGE_TYPE_ZH.equals(LANGUAGE)){
             return NO_DATA_MSG_ZH;
         }
         return NO_DATA_MSG;
@@ -310,7 +312,7 @@ public class MessageConfig {
         NO_DATA_BY_ID_XXX_MSG_ZH = noDataByIdXxxMsgZh;
     }
     public static String NO_DATA_BY_ID_XXX_MSG(String xxx){
-        if("ZH".equals(LANGUAGE)){
+        if(LANGUAGE_TYPE_ZH.equals(LANGUAGE)){
             return String.format(NO_DATA_BY_ID_XXX_MSG_ZH, xxx);
         }
         return String.format(NO_DATA_BY_ID_XXX_MSG, xxx);
@@ -327,7 +329,7 @@ public class MessageConfig {
         UPLOAD_FAILED_FILE_EMPTY_MSG_ZH = uploadFailedFileEmptyMsgZh;
     }
     public static String UPLOAD_FAILED_FILE_EMPTY_MSG(){
-        if("ZH".equals(LANGUAGE)){
+        if(LANGUAGE_TYPE_ZH.equals(LANGUAGE)){
             return UPLOAD_FAILED_FILE_EMPTY_MSG_ZH;
         }
         return UPLOAD_FAILED_FILE_EMPTY_MSG;
@@ -344,7 +346,7 @@ public class MessageConfig {
         UPLOAD_FAILED_MSG_ZH = uploadFailedMsgZh;
     }
     public static String UPLOAD_FAILED_MSG(){
-        if("ZH".equals(LANGUAGE)){
+        if(LANGUAGE_TYPE_ZH.equals(LANGUAGE)){
             return UPLOAD_FAILED_FILE_EMPTY_MSG_ZH;
         }
         return UPLOAD_FAILED_FILE_EMPTY_MSG;
@@ -361,7 +363,7 @@ public class MessageConfig {
         PARAM_IS_NULL_MSG_ZH = paramIsNullMsgZh;
     }
     public static String PARAM_IS_NULL_MSG(String param){
-        if("ZH".equals(LANGUAGE)){
+        if(LANGUAGE_TYPE_ZH.equals(LANGUAGE)){
             return String.format(PARAM_IS_NULL_MSG_ZH, param);
         }
         return String.format(PARAM_IS_NULL_MSG, param);
@@ -378,7 +380,7 @@ public class MessageConfig {
         PARAM_ERROR_MSG_ZH = paramErrorMsg;
     }
     public static String PARAM_ERROR_MSG(){
-        if("ZH".equals(LANGUAGE)){
+        if(LANGUAGE_TYPE_ZH.equals(LANGUAGE)){
             return PARAM_ERROR_MSG_ZH;
         }
         return PARAM_ERROR_MSG;
@@ -395,7 +397,7 @@ public class MessageConfig {
         NO_XXX_NODE_MSG_ZH = noFlowNodeMsgZh;
     }
     public static String NO_XXX_NODE_MSG(String xxx){
-        if("ZH".equals(LANGUAGE)){
+        if(LANGUAGE_TYPE_ZH.equals(LANGUAGE)){
             return String.format(NO_XXX_NODE_MSG_ZH, xxx);
         }
         return String.format(NO_XXX_NODE_MSG, xxx);
@@ -412,7 +414,7 @@ public class MessageConfig {
         DUPLICATE_NAME_MSG_ZH = duplicateNameMsgZh;
     }
     public static String DUPLICATE_NAME_MSG(String name){
-        if("ZH".equals(LANGUAGE)){
+        if(LANGUAGE_TYPE_ZH.equals(LANGUAGE)){
             return String.format(DUPLICATE_NAME_MSG_ZH, name);
         }
         return String.format(DUPLICATE_NAME_MSG, name);
@@ -429,7 +431,7 @@ public class MessageConfig {
         DUPLICATE_NAME_PLEASE_MODIFY_MSG_ZH = duplicateNamePleaseModifyMsgZh;
     }
     public static String DUPLICATE_NAME_PLEASE_MODIFY_MSG(String name){
-        if("ZH".equals(LANGUAGE)){
+        if(LANGUAGE_TYPE_ZH.equals(LANGUAGE)){
             return String.format(DUPLICATE_NAME_PLEASE_MODIFY_MSG_ZH, name);
         }
         return String.format(DUPLICATE_NAME_PLEASE_MODIFY_MSG, name);
@@ -446,7 +448,7 @@ public class MessageConfig {
         XXX_AVAILABLE_MSG_ZH = duplicateNameMsgZh;
     }
     public static String XXX_AVAILABLE_MSG(String name){
-        if("ZH".equals(LANGUAGE)){
+        if(LANGUAGE_TYPE_ZH.equals(LANGUAGE)){
             return String.format(XXX_AVAILABLE_MSG_ZH, name);
         }
         return String.format(XXX_AVAILABLE_MSG, name);
@@ -463,7 +465,7 @@ public class MessageConfig {
         XXX_ALREADY_TAKEN_MSG_ZH = duplicateNameMsgZh;
     }
     public static String XXX_ALREADY_TAKEN_MSG(String name){
-        if("ZH".equals(LANGUAGE)){
+        if(LANGUAGE_TYPE_ZH.equals(LANGUAGE)){
             return String.format(XXX_ALREADY_TAKEN_MSG_ZH, name);
         }
         return String.format(XXX_ALREADY_TAKEN_MSG, name);
@@ -480,7 +482,7 @@ public class MessageConfig {
         CONVERSION_FAILED_MSG_ZH = conversionFailedMsgZh;
     }
     public static String CONVERSION_FAILED_MSG(){
-        if("ZH".equals(LANGUAGE)){
+        if(LANGUAGE_TYPE_ZH.equals(LANGUAGE)){
             return CONVERSION_FAILED_MSG_ZH;
         }
         return CONVERSION_FAILED_MSG;
@@ -497,7 +499,7 @@ public class MessageConfig {
         INTERFACE_RETURN_VALUE_IS_NULL_MSG_ZH = interfaceReturnValueIsNullMsgZh;
     }
     public static String INTERFACE_RETURN_VALUE_IS_NULL_MSG(){
-        if("ZH".equals(LANGUAGE)){
+        if(LANGUAGE_TYPE_ZH.equals(LANGUAGE)){
             return INTERFACE_RETURN_VALUE_IS_NULL_MSG_ZH;
         }
         return INTERFACE_RETURN_VALUE_IS_NULL_MSG;
@@ -514,7 +516,7 @@ public class MessageConfig {
         INTERFACE_CALL_ERROR_MSG_ZH = interfaceCallErrorMsgZh;
     }
     public static String INTERFACE_CALL_ERROR_MSG(){
-        if("ZH".equals(LANGUAGE)){
+        if(LANGUAGE_TYPE_ZH.equals(LANGUAGE)){
             return INTERFACE_CALL_ERROR_MSG_ZH;
         }
         return INTERFACE_CALL_ERROR_MSG;
@@ -531,7 +533,7 @@ public class MessageConfig {
         INTERFACE_CALL_SUCCEEDED_VALUE_NULL_ERROR_MSG_ZH = interfaceCallSucceededValueNullErrorMsgZh;
     }
     public static String INTERFACE_CALL_SUCCEEDED_VALUE_NULL_ERROR_MSG(){
-        if("ZH".equals(LANGUAGE)){
+        if(LANGUAGE_TYPE_ZH.equals(LANGUAGE)){
             return INTERFACE_CALL_SUCCEEDED_VALUE_NULL_ERROR_MSG_ZH;
         }
         return INTERFACE_CALL_SUCCEEDED_VALUE_NULL_ERROR_MSG;
@@ -549,7 +551,7 @@ public class MessageConfig {
         INTERFACE_CALL_SUCCEEDED_CONVERSION_ERROR_MSG_ZH = interfaceCallSucceededConversionErrorMsgZh;
     }
     public static String INTERFACE_CALL_SUCCEEDED_CONVERSION_ERROR_MSG(){
-        if("ZH".equals(LANGUAGE)){
+        if(LANGUAGE_TYPE_ZH.equals(LANGUAGE)){
             return INTERFACE_CALL_SUCCEEDED_CONVERSION_ERROR_MSG_ZH;
         }
         return INTERFACE_CALL_SUCCEEDED_CONVERSION_ERROR_MSG;
@@ -566,7 +568,7 @@ public class MessageConfig {
         INTERFACE_CALL_SUCCEEDED_SAVE_ERROR_MSG_ZH = interfaceCallSucceededSaveErrorMsgZh;
     }
     public static String INTERFACE_CALL_SUCCEEDED_SAVE_ERROR_MSG(){
-        if("ZH".equals(LANGUAGE)){
+        if(LANGUAGE_TYPE_ZH.equals(LANGUAGE)){
             return INTERFACE_CALL_SUCCEEDED_SAVE_ERROR_MSG_ZH;
         }
         return INTERFACE_CALL_SUCCEEDED_SAVE_ERROR_MSG;
@@ -583,7 +585,7 @@ public class MessageConfig {
         INIT_COMPONENTS_ERROR_MSG_ZH = initComponentsErrorMsgZh;
     }
     public static String INIT_COMPONENTS_ERROR_MSG(){
-        if("ZH".equals(LANGUAGE)){
+        if(LANGUAGE_TYPE_ZH.equals(LANGUAGE)){
             return INIT_COMPONENTS_ERROR_MSG_ZH;
         }
         return INIT_COMPONENTS_ERROR_MSG;
@@ -600,7 +602,7 @@ public class MessageConfig {
         INIT_COMPONENTS_COMPLETED_MSG_ZH = initComponentsCompletedMsgZh;
     }
     public static String INIT_COMPONENTS_COMPLETED_MSG(){
-        if("ZH".equals(LANGUAGE)){
+        if(LANGUAGE_TYPE_ZH.equals(LANGUAGE)){
             return INIT_COMPONENTS_COMPLETED_MSG_ZH;
         }
         return INIT_COMPONENTS_COMPLETED_MSG;
@@ -617,7 +619,7 @@ public class MessageConfig {
         SCHEDULED_TASK_ERROR_MSG_ZH = scheduledTaskErrorMsgZh;
     }
     public static String SCHEDULED_TASK_ERROR_MSG(){
-        if("ZH".equals(LANGUAGE)){
+        if(LANGUAGE_TYPE_ZH.equals(LANGUAGE)){
             return SCHEDULED_TASK_ERROR_MSG_ZH;
         }
         return SCHEDULED_TASK_ERROR_MSG;
@@ -634,7 +636,7 @@ public class MessageConfig {
         SCHEDULED_TYPE_OR_DATA_ERROR_MSG_ZH = scheduledTypeOrDataErrorMsgZh;
     }
     public static String SCHEDULED_TYPE_OR_DATA_ERROR_MSG(){
-        if("ZH".equals(LANGUAGE)){
+        if(LANGUAGE_TYPE_ZH.equals(LANGUAGE)){
             return SCHEDULED_TYPE_OR_DATA_ERROR_MSG_ZH;
         }
         return SCHEDULED_TYPE_OR_DATA_ERROR_MSG;
@@ -651,7 +653,7 @@ public class MessageConfig {
         LOAD_TYPE_ERROR_MSG_ZH = loadTypeErrorMsgZh;
     }
     public static String LOAD_TYPE_ERROR_MSG(){
-        if("ZH".equals(LANGUAGE)){
+        if(LANGUAGE_TYPE_ZH.equals(LANGUAGE)){
             return LOAD_TYPE_ERROR_MSG_ZH;
         }
         return LOAD_TYPE_ERROR_MSG;
@@ -668,7 +670,7 @@ public class MessageConfig {
         STOP_DISABLED_MSG_ZH = stopDisabledMsgZh;
     }
     public static String STOP_DISABLED_MSG(String stopNames){
-        if("ZH".equals(LANGUAGE)){
+        if(LANGUAGE_TYPE_ZH.equals(LANGUAGE)){
             return String.format(STOP_DISABLED_MSG_ZH, stopNames);
         }
         return String.format(STOP_DISABLED_MSG, stopNames);
@@ -685,7 +687,7 @@ public class MessageConfig {
         STOP_PUBLISHED_CANNOT_DISABLED_MSG_ZH = stopPublishedCannotDisabledMsgZh;
     }
     public static String STOP_PUBLISHED_CANNOT_DISABLED_MSG(String stopNames){
-        if("ZH".equals(LANGUAGE)){
+        if(LANGUAGE_TYPE_ZH.equals(LANGUAGE)){
             return String.format(STOP_PUBLISHED_CANNOT_DISABLED_MSG_ZH, stopNames);
         }
         return String.format(STOP_PUBLISHED_CANNOT_DISABLED_MSG, stopNames);
@@ -702,7 +704,7 @@ public class MessageConfig {
         STOP_PUBLISHED_CANNOT_BIND_MSG_ZH = stopPublishedCannotBindMsgZh;
     }
     public static String STOP_PUBLISHED_CANNOT_BIND_MSG(String stopNames){
-        if("ZH".equals(LANGUAGE)){
+        if(LANGUAGE_TYPE_ZH.equals(LANGUAGE)){
             return String.format(STOP_PUBLISHED_CANNOT_BIND_MSG_ZH, stopNames);
         }
         return String.format(STOP_PUBLISHED_CANNOT_BIND_MSG, stopNames);
@@ -719,7 +721,7 @@ public class MessageConfig {
         STOP_HAS_NO_PROPERTY_MSG_ZH = stopHasNoPropertyMsgZh;
     }
     public static String STOP_HAS_NO_PROPERTY_MSG(String stopNames){
-        if("ZH".equals(LANGUAGE)){
+        if(LANGUAGE_TYPE_ZH.equals(LANGUAGE)){
             return String.format(STOP_HAS_NO_PROPERTY_MSG_ZH, stopNames);
         }
         return String.format(STOP_HAS_NO_PROPERTY_MSG, stopNames);
@@ -736,7 +738,7 @@ public class MessageConfig {
         PLEASE_BIND_THE_DEVELOPER_ACCOUNT_MSG_ZH = pleaseBindTheDeveloperAccountMsgZh;
     }
     public static String PLEASE_BIND_THE_DEVELOPER_ACCOUNT_MSG(){
-        if("ZH".equals(LANGUAGE)){
+        if(LANGUAGE_TYPE_ZH.equals(LANGUAGE)){
             return PLEASE_BIND_THE_DEVELOPER_ACCOUNT_MSG_ZH;
         }
         return PLEASE_BIND_THE_DEVELOPER_ACCOUNT_MSG;
