@@ -197,6 +197,12 @@ public class StopsUtils {
     }
 
     public static Stops fillStopsPropertiesByDatasource(Stops stops, DataSource dataSource, String username) {
+        return PropertiesCopyDatasourceToStops(stops, dataSource, username, true);
+    }
+
+
+
+    public static Stops PropertiesCopyDatasourceToStops(Stops stops, DataSource dataSource, String username, boolean isLockedProperty) {
         if (null == stops) {
             logger.error("fill failed, stop is null ");
             return null;
@@ -248,7 +254,7 @@ public class StopsUtils {
             }
             // Assignment
             property.setCustomValue(value);
-            property.setIsLocked(true);
+            property.setIsLocked(isLockedProperty);
             property.setLastUpdateDttm(new Date());
             property.setLastUpdateUser(username);
         }

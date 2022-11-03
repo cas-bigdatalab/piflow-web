@@ -121,6 +121,21 @@ public interface FlowStopsPublishingMapper {
     @Select("SELECT DISTINCT fs.fk_flow_id FROM flow_stops_publishing fsp LEFT JOIN flow_stops fs ON fsp.stops_id=fs.id WHERE fsp.enable_flag=1 AND fs.enable_flag=1 AND fsp.publishing_id=#{publishingId}")
     public List<String> getFlowIdByPublishingId(String publishingId);
 
+    /**
+     * Get publishingName List by stopsId
+     *
+     * @return
+     */
+    @Select("SELECT f0.name FROM flow_stops_publishing f0 WHERE f0.enable_flag=1 AND f0.stops_id=#{stopsId}")
+    public List<String> getPublishingNamesByStopsId(String stopsId);
+
+    /**
+     * Get FlowStopsPublishing id List by publishingName
+     *
+     * @return
+     */
+    @Select("SELECT f0.id FROM flow_stops_publishing f0 WHERE f0.enable_flag=1 AND f0.name=#{publishingName}")
+    public List<String> getPublishingIdsByPublishingName(String publishingName);
 
 
 

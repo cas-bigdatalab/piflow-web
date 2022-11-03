@@ -4,6 +4,7 @@ import cn.cnic.base.utils.*;
 import cn.cnic.common.Eunm.PortType;
 import cn.cnic.common.constant.MessageConfig;
 import cn.cnic.component.flow.domain.FlowDomain;
+import cn.cnic.component.flow.domain.FlowStopsPublishingDomain;
 import cn.cnic.component.flow.entity.Paths;
 import cn.cnic.component.flow.entity.Property;
 import cn.cnic.component.flow.entity.Stops;
@@ -20,7 +21,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.MacSpi;
 import java.util.*;
 
 
@@ -31,11 +31,13 @@ public class PropertyServiceImpl implements IPropertyService {
 
     private final FlowDomain flowDomain;
     private final StopsComponentDomain stopsComponentDomain;
+    private final FlowStopsPublishingDomain flowStopsPublishingDomain;
 
     @Autowired
-    public PropertyServiceImpl(FlowDomain flowDomain, StopsComponentDomain stopsComponentDomain){
+    public PropertyServiceImpl(FlowDomain flowDomain, StopsComponentDomain stopsComponentDomain, FlowStopsPublishingDomain flowStopsPublishingDomain){
         this.flowDomain = flowDomain;
         this.stopsComponentDomain = stopsComponentDomain;
+        this.flowStopsPublishingDomain = flowStopsPublishingDomain;
     }
     @Override
     public String queryAll(String fid, String stopPageId) {
@@ -332,6 +334,13 @@ public class PropertyServiceImpl implements IPropertyService {
         }
         if (null == disabled) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("disabled"));
+        }
+
+        if (true == disabled) {
+            List<String> publishingNames = flowStopsPublishingDomain.getPublishingNamesByStopsId(id);
+            if (null != publishingNames && publishingNames.size() > 0) {
+                return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.STOP_PUBLISHED_CANNOT_DISABLED_MSG(publishingNames.toString().replace("[", "'").replace("]", "'")));
+            }
         }
         Stops stops = flowDomain.getStopsById(id);
         if (null == stops) {

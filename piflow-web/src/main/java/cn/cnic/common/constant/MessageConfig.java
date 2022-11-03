@@ -657,6 +657,91 @@ public class MessageConfig {
         return LOAD_TYPE_ERROR_MSG;
     }
 
+    private static String STOP_DISABLED_MSG;
+    private static String STOP_DISABLED_MSG_ZH;
+    @Value("${msg.stop_disabled}")
+    private void setStopDisabledMsg(String stopDisabledMsg) {
+        STOP_DISABLED_MSG = stopDisabledMsg;
+    }
+    @Value("${msg.stop_disabled.zh}")
+    private void setStopDisabledMsgZh(String stopDisabledMsgZh) {
+        STOP_DISABLED_MSG_ZH = stopDisabledMsgZh;
+    }
+    public static String STOP_DISABLED_MSG(String stopNames){
+        if("ZH".equals(LANGUAGE)){
+            return String.format(STOP_DISABLED_MSG_ZH, stopNames);
+        }
+        return String.format(STOP_DISABLED_MSG, stopNames);
+    }
+
+    private static String STOP_PUBLISHED_CANNOT_DISABLED_MSG;
+    private static String STOP_PUBLISHED_CANNOT_DISABLED_MSG_ZH;
+    @Value("${msg.stop_published_cannot_disabled}")
+    private void setStopPublishedCannotDisabledMsg(String stopPublishedCannotDisabledMsg) {
+        STOP_PUBLISHED_CANNOT_DISABLED_MSG = stopPublishedCannotDisabledMsg;
+    }
+    @Value("${msg.stop_published_cannot_disabled.zh}")
+    private void setStopPublishedCannotDisabledMsgZh(String stopPublishedCannotDisabledMsgZh) {
+        STOP_PUBLISHED_CANNOT_DISABLED_MSG_ZH = stopPublishedCannotDisabledMsgZh;
+    }
+    public static String STOP_PUBLISHED_CANNOT_DISABLED_MSG(String stopNames){
+        if("ZH".equals(LANGUAGE)){
+            return String.format(STOP_PUBLISHED_CANNOT_DISABLED_MSG_ZH, stopNames);
+        }
+        return String.format(STOP_PUBLISHED_CANNOT_DISABLED_MSG, stopNames);
+    }
+
+    private static String STOP_PUBLISHED_CANNOT_BIND_MSG;
+    private static String STOP_PUBLISHED_CANNOT_BIND_MSG_ZH;
+    @Value("${msg.stop_published_cannot_bind}")
+    private void setStopPublishedCannotBindMsg(String stopPublishedCannotBindMsg) {
+        STOP_PUBLISHED_CANNOT_BIND_MSG = stopPublishedCannotBindMsg;
+    }
+    @Value("${msg.stop_published_cannot_bind.zh}")
+    private void setStopPublishedCannotBindMsgZh(String stopPublishedCannotBindMsgZh) {
+        STOP_PUBLISHED_CANNOT_BIND_MSG_ZH = stopPublishedCannotBindMsgZh;
+    }
+    public static String STOP_PUBLISHED_CANNOT_BIND_MSG(String stopNames){
+        if("ZH".equals(LANGUAGE)){
+            return String.format(STOP_PUBLISHED_CANNOT_BIND_MSG_ZH, stopNames);
+        }
+        return String.format(STOP_PUBLISHED_CANNOT_BIND_MSG, stopNames);
+    }
+
+    private static String STOP_HAS_NO_PROPERTY_MSG;
+    private static String STOP_HAS_NO_PROPERTY_MSG_ZH;
+    @Value("${msg.stop_has_no_property}")
+    private void setStopHasNoPropertyMsg(String stopHasNoPropertyMsg) {
+        STOP_HAS_NO_PROPERTY_MSG = stopHasNoPropertyMsg;
+    }
+    @Value("${msg.stop_has_no_property.zh}")
+    private void setStopHasNoPropertyMsgZh(String stopHasNoPropertyMsgZh) {
+        STOP_HAS_NO_PROPERTY_MSG_ZH = stopHasNoPropertyMsgZh;
+    }
+    public static String STOP_HAS_NO_PROPERTY_MSG(String stopNames){
+        if("ZH".equals(LANGUAGE)){
+            return String.format(STOP_HAS_NO_PROPERTY_MSG_ZH, stopNames);
+        }
+        return String.format(STOP_HAS_NO_PROPERTY_MSG, stopNames);
+    }
+
+    private static String PLEASE_BIND_THE_DEVELOPER_ACCOUNT_MSG;
+    private static String PLEASE_BIND_THE_DEVELOPER_ACCOUNT_MSG_ZH;
+    @Value("${msg.please_bind_the_developer_account}")
+    private void setPleaseBindTheDeveloperAccountMsg(String pleaseBindTheDeveloperAccountMsg) {
+        PLEASE_BIND_THE_DEVELOPER_ACCOUNT_MSG = pleaseBindTheDeveloperAccountMsg;
+    }
+    @Value("${msg.please_bind_the_developer_account.zh}")
+    private void setPleaseBindTheDeveloperAccountMsgZh(String pleaseBindTheDeveloperAccountMsgZh) {
+        PLEASE_BIND_THE_DEVELOPER_ACCOUNT_MSG_ZH = pleaseBindTheDeveloperAccountMsgZh;
+    }
+    public static String PLEASE_BIND_THE_DEVELOPER_ACCOUNT_MSG(){
+        if("ZH".equals(LANGUAGE)){
+            return PLEASE_BIND_THE_DEVELOPER_ACCOUNT_MSG_ZH;
+        }
+        return PLEASE_BIND_THE_DEVELOPER_ACCOUNT_MSG;
+    }
+
 
 
 

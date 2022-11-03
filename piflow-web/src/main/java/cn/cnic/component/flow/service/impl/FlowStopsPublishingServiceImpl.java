@@ -5,7 +5,10 @@ import cn.cnic.base.utils.PageHelperUtils;
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.base.utils.UUIDUtils;
 import cn.cnic.common.constant.MessageConfig;
+import cn.cnic.component.dataSource.entity.DataSource;
+import cn.cnic.component.dataSource.entity.DataSourceProperty;
 import cn.cnic.component.flow.domain.FlowStopsPublishingDomain;
+import cn.cnic.component.flow.domain.StopsDomain;
 import cn.cnic.component.flow.entity.*;
 import cn.cnic.component.flow.service.IFlowStopsPublishingService;
 import cn.cnic.component.flow.utils.FlowStopsPublishingUtils;
@@ -38,6 +41,9 @@ public class FlowStopsPublishingServiceImpl implements IFlowStopsPublishingServi
     @Autowired
     private StopsComponentDomain stopsComponentDomain;
 
+    @Autowired
+    private StopsDomain stopsDomain;
+
     @Override
     public String addFlowStopsPublishing(String username, String name, String stopsIds) {
         if (StringUtils.isBlank(username)) {
@@ -46,12 +52,15 @@ public class FlowStopsPublishingServiceImpl implements IFlowStopsPublishingServi
         if (StringUtils.isBlank(stopsIds)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("stopsIds"));
         }
-        List<String> stopsIdList = Arrays.asList(stopsIds.split(","));;
-        if (null == stopsIdList || stopsIdList.size() <= 0) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("stopsIds"));
+        List<String> stopsIdList = new ArrayList<>(Arrays.asList(stopsIds.split(",")));
+        String rtnStr = checkParam(name, stopsIdList, true, null);
+        if (null != rtnStr) {
+            return rtnStr;
         }
-        if (StringUtils.isBlank(name)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("name"));
+        try {
+            unbindDatasource(stopsIdList, username);
+        } catch (Exception e) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
         }
         FlowStopsPublishing flowStopsPublishing = FlowStopsPublishingUtils.flowStopsPublishingNewNoId(username);
         flowStopsPublishing.setPublishingId(UUIDUtils.getUUID32());
@@ -74,18 +83,18 @@ public class FlowStopsPublishingServiceImpl implements IFlowStopsPublishingServi
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
-        if (StringUtils.isBlank(publishingId)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("publishingId"));
-        }
         if (StringUtils.isBlank(stopsIds)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("stopsIds"));
         }
         List<String> stopsIdList = new ArrayList<>(Arrays.asList(stopsIds.split(",")));
-        if (null == stopsIdList || stopsIdList.size() <= 0) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("stopsIds"));
+        String rtnStr = checkParam(name, stopsIdList, true, publishingId);
+        if (null != rtnStr) {
+            return rtnStr;
         }
-        if (StringUtils.isBlank(name)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("name"));
+        try {
+            unbindDatasource(stopsIdList, username);
+        } catch (Exception e) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
         }
         try {
             int affectedRows = flowStopsPublishingDomain.updateFlowStopsPublishing(isAdmin, username, publishingId, name, stopsIdList);
@@ -97,6 +106,61 @@ public class FlowStopsPublishingServiceImpl implements IFlowStopsPublishingServi
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.UPDATE_ERROR_MSG());
         }
         return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.UPDATE_SUCCEEDED_MSG());
+    }
+
+    private String checkParam(String name, List<String> stopsIdList, boolean isUpdate, String publishingId) {
+        if (StringUtils.isBlank(name)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("name"));
+        }
+        if (null == stopsIdList || stopsIdList.size() <= 0) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("stopsIds"));
+        }
+        if (isUpdate) {
+            // Judge whether the name is duplicate
+            List<String> publishingIds = flowStopsPublishingDomain.getPublishingIdsByPublishingName(name);
+            if (null != publishingIds && publishingIds.size() > 0) {
+                return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.DUPLICATE_NAME_MSG(name));
+            }
+        } else {
+            if (StringUtils.isBlank(publishingId)) {
+                return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("publishingId"));
+            }
+            // Judge whether the name is duplicate
+            List<String> publishingIds = flowStopsPublishingDomain.getPublishingIdsByPublishingName(name);
+            if (null != publishingIds) {
+                if (publishingIds.size() > 1) {
+                    return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.DUPLICATE_NAME_MSG(name));
+                }
+                if (publishingId.equals(publishingIds.get(0))) {
+                    return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.DUPLICATE_NAME_MSG(name));
+                }
+            }
+        }
+        // Judge whether it is disabled
+        List<String> disabledStopsNameList = stopsDomain.getDisabledStopsNameListByIds(stopsIdList);
+        if (null != disabledStopsNameList && disabledStopsNameList.size() > 0) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.STOP_DISABLED_MSG(disabledStopsNameList.toString().replace("[", "'").replace("]", "'")));
+        }
+        // Judge whether there are attributes
+        List<String> cannotPublishedStopsNameList = stopsDomain.getCannotPublishedStopsNameByIds(stopsIdList);
+        if (null != cannotPublishedStopsNameList && cannotPublishedStopsNameList.size() > 0) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.STOP_HAS_NO_PROPERTY_MSG(cannotPublishedStopsNameList.toString().replace("[", "'").replace("]", "'")));
+        }
+        return null;
+    }
+
+    private void unbindDatasource (List<String> stopsIdList, String username) throws Exception {
+        if (null == stopsIdList || stopsIdList.size() <= 0) {
+            return;
+        }
+        List<Stops> stopsBindDatasourceByIds = stopsDomain.getStopsBindDatasourceByIds(stopsIdList);
+        for (Stops stops : stopsBindDatasourceByIds) {
+            Stops stopsX = StopsUtils.PropertiesCopyDatasourceToStops(stops, stops.getDataSource(), username, false);
+            if (null == stopsX) {
+                continue;
+            }
+            stopsDomain.saveOrUpdate(stops);
+        }
     }
 
     @Override

@@ -183,4 +183,37 @@ public interface StopsMapper {
     @Select("SELECT id, name FROM flow_stops WHERE enable_flag=1 and is_disabled=0 and fk_flow_id=#{flowId}")
     public List<Map<String, String>> getStopsIdAndNameListByFlowId(String flowId);
 
+    /**
+     * Query stop and attribute information based on stopsId
+     *
+     * @param Ids
+     * @return
+     */
+    @SelectProvider(type = StopsMapperProvider.class, method = "getDisabledStopsNameListByIds")
+    public List<String> getDisabledStopsNameListByIds(@Param(value = "Ids") List<String> Ids);
+
+    /**
+     * Query cannot published Stops name list by ids
+     *
+     * @param Ids
+     * @return
+     */
+    @SelectProvider(type = StopsMapperProvider.class, method = "getCannotPublishedStopsNameByIds")
+    public List<String> getCannotPublishedStopsNameByIds(@Param(value = "Ids") List<String> Ids);
+
+
+    /**
+     * Query stop and attribute information based on stopsId
+     *
+     * @param Ids
+     * @return
+     */
+    @SelectProvider(type = StopsMapperProvider.class, method = "getStopsBindDatasourceByIds")
+    @Results({@Result(id = true, column = "id", property = "id"),
+            @Result(column = "is_data_source",property = "isDataSource"),
+            @Result(column = "id", property = "properties", many = @Many(select = "cn.cnic.component.flow.mapper.PropertyMapper.getPropertyListByStopsId", fetchType = FetchType.LAZY)),
+            @Result(column = "fk_flow_id", property = "flow", many = @Many(select = "cn.cnic.component.flow.mapper.FlowMapper.getFlowById", fetchType = FetchType.LAZY))
+    })
+    public List<Stops> getStopsBindDatasourceByIds(@Param(value = "Ids") List<String> Ids);
+
 }

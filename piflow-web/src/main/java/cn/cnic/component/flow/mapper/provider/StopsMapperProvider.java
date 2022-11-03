@@ -7,9 +7,7 @@ import cn.cnic.third.vo.flow.ThirdFlowInfoStopVo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class StopsMapperProvider {
 
@@ -379,6 +377,73 @@ public class StopsMapperProvider {
         sql.WHERE("fk_flow_id=" + SqlUtils.preventSQLInjection(id));
 
         return sql.toString();
+    }
+
+    /**
+     * Query disabled StopsName list by ids
+     *
+     * @param Ids
+     * @return
+     */
+    public String getDisabledStopsNameListByIds(List<String> Ids) {
+        String sqlStr = "";
+        SQL sql = new SQL();
+        sql.SELECT("name");
+        sql.FROM("flow_stops");
+        sql.WHERE("enable_flag = 1");
+        sql.WHERE("is_disabled = 1");
+        sql.WHERE("id = " + SqlUtils.strListToStr(Ids));
+        sqlStr = sql.toString();
+        return sqlStr;
+    }
+
+    /**
+     * Query disabled StopsName list by ids
+     *
+     * @param Ids
+     * @return
+     */
+    public String getCannotPublishedStopsNameByIds(List<String> Ids) {
+        /**
+         SELECT fs.`name`
+         FROM flow_stops fs
+         LEFT JOIN flow_stops_property fsp ON fs.id=fsp.fk_stops_id
+         WHERE fs.enable_flag = 1
+         and fs.is_disabled = 0
+         and fs.is_customized=0
+         and fsp.id IS NULL
+         and fs.id IN ('1fc963ca8264471a8de8ca1d3c2d8586','cbe7efad8ad04cb3827e554f0065de16','399c6aab3fe441538edf939549cdd4ba','fa27e1932d37410886e14d7995f57319');
+         **/
+        String sqlStr = "";
+        SQL sql = new SQL();
+        sql.SELECT("fs.`name`");
+        sql.FROM("flow_stops fs");
+        sql.LEFT_OUTER_JOIN("flow_stops_property fsp ON fs.id=fsp.fk_stops_id");
+        sql.WHERE("fs.enable_flag = 1");
+        sql.WHERE("fs.is_disabled = 0");
+        sql.WHERE("fs.is_customized = 0");
+        sql.WHERE("fsp.id IS NULL");
+        sql.WHERE("fs.id IN ( " + SqlUtils.strListToStr(Ids) + ")");
+        sqlStr = sql.toString();
+        return sqlStr;
+    }
+
+    /**
+     * Query Stops Bind Datasource list by ids
+     *
+     * @param Ids
+     * @return
+     */
+    public String getStopsBindDatasourceByIds(List<String> Ids) {
+        String sqlStr = "";
+        SQL sql = new SQL();
+        sql.SELECT("*");
+        sql.FROM("flow_stops");
+        sql.WHERE("enable_flag = 1");
+        sql.WHERE("fk_data_source_id IS NOT NULL");
+        sql.WHERE("id IN ( " + SqlUtils.strListToStr(Ids) + ")");
+        sqlStr = sql.toString();
+        return sqlStr;
     }
 
 }

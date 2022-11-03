@@ -294,5 +294,17 @@ public class StopsDomain {
         return stopsMapper.getStopsIdAndNameListByFlowId(flowId);
     }
 
+    public List<String> getDisabledStopsNameListByIds(List<String> Ids) {
+        return stopsMapper.getDisabledStopsNameListByIds(Ids);
+    }
+
+    public List<String> getCannotPublishedStopsNameByIds(List<String> Ids) {
+        return stopsMapper.getCannotPublishedStopsNameByIds(Ids);
+    }
+
+    public List<Stops> getStopsBindDatasourceByIds(List<String> Ids) {
+        return stopsMapper.getStopsBindDatasourceByIds(Ids);
+    }
+
 
 }

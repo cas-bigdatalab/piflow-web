@@ -116,4 +116,12 @@ public class FlowStopsPublishingDomain {
         return flowStopsPublishingMapper.getFlowIdByPublishingId(publishingId);
     }
 
+    public List<String> getPublishingIdsByPublishingName(String publishingName) {
+        return flowStopsPublishingMapper.getPublishingIdsByPublishingName(publishingName);
+    }
+
+    public List<String> getPublishingNamesByStopsId(String stopsId) {
+        return flowStopsPublishingMapper.getPublishingNamesByStopsId(stopsId);
+    }
+
 }

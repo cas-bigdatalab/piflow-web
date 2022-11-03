@@ -258,7 +258,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
         }
         SysUser user = sysUserDomain.findUserByUserName(username);
         if (StringUtils.isBlank(user.getDeveloperAccessKey())) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PLEASE_BIND_THE_DEVELOPER_ACCOUNT_MSG());
         }
         if (StringUtils.isBlank(id)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("id"));

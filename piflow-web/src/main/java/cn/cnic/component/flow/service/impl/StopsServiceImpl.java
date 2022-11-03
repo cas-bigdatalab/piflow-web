@@ -10,6 +10,7 @@ import java.util.Map;
 import cn.cnic.base.utils.*;
 import cn.cnic.common.constant.MessageConfig;
 import cn.cnic.component.flow.domain.FlowDomain;
+import cn.cnic.component.flow.domain.FlowStopsPublishingDomain;
 import cn.cnic.component.flow.vo.PathsVo;
 import cn.cnic.component.flow.vo.StopsCustomizedPropertyVo;
 import cn.cnic.component.mxGraph.utils.MxGraphUtils;
@@ -71,6 +72,8 @@ public class StopsServiceImpl implements IStopsService {
     private StopsComponentDomain stopsComponentDomain;
     @Autowired
     private ProcessDomain processDomain;
+    @Autowired
+    private FlowStopsPublishingDomain flowStopsPublishingDomain;
     @Autowired
     private IFlow flowImpl;
 
@@ -715,6 +718,10 @@ public class StopsServiceImpl implements IStopsService {
         if (StringUtils.isBlank(stopId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("stopId"));
         }
+        List<String> publishingNames = flowStopsPublishingDomain.getPublishingNamesByStopsId(stopId);
+        if (null != publishingNames && publishingNames.size() > 0) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.STOP_PUBLISHED_CANNOT_BIND_MSG(publishingNames.toString()));
+        }
         // Query Stops by "stopId"
         Stops stopsById = flowDomain.getStopsById(stopId);
         if (null == stopsById) {
@@ -757,7 +764,7 @@ public class StopsServiceImpl implements IStopsService {
             stopsById.setProperties(propertyList);
         }
         flowDomain.saveOrUpdate(stopsById);
-        return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG());
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG());
     }
 
     /**
