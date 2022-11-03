@@ -13,38 +13,33 @@
 To Build: mvn clean package -U -DskipTests -P prod -e
 ```c
 [INFO] 
-[INFO] ------------------------------------------------------------------------
-[INFO] Building piflow-web 0.0.1-SNAPSHOT
-[INFO] ------------------------------------------------------------------------
-[INFO] 
-[INFO] --- maven-resources-plugin:3.0.2:resources (default-resources) @ piflow-web ---
+[INFO] --- maven-resources-plugin:3.2.0:testResources (default-testResources) @ piflow-web ---
 [INFO] Using 'UTF-8' encoding to copy filtered resources.
-[INFO] Copying 1 resource
-[INFO] Copying 690 resources
+[INFO] Using 'UTF-8' encoding to copy filtered properties files.
+[INFO] skip non existing resourceDirectory /zData/workspaces/PiFlow/piflow-web/piflow-web/src/test/resources
 [INFO] 
-[INFO] --- maven-compiler-plugin:3.7.0:compile (default-compile) @ piflow-web ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] --- maven-compiler-plugin:3.8.1:testCompile (default-testCompile) @ piflow-web ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 33 source files to /zData/workspaces/PiFlow/piflow-web/piflow-web/target/test-classes
 [INFO] 
-[INFO] --- maven-resources-plugin:3.0.2:testResources (default-testResources) @ piflow-web ---
-[INFO] Not copying test resources
-[INFO] 
-[INFO] --- maven-compiler-plugin:3.7.0:testCompile (default-testCompile) @ piflow-web ---
-[INFO] Not compiling test sources
-[INFO] 
-[INFO] --- maven-surefire-plugin:2.21.0:test (default-test) @ piflow-web ---
+[INFO] --- maven-surefire-plugin:2.22.2:test (default-test) @ piflow-web ---
 [INFO] Tests are skipped.
 [INFO] 
-[INFO] --- maven-jar-plugin:3.0.2:jar (default-jar) @ piflow-web ---
-[INFO] Building jar: /home/nature/git_repository/piflow-web/piflow-web/target/piflow-web.war
+[INFO] --- maven-war-plugin:3.3.1:war (default-war) @ piflow-web ---
+[INFO] Packaging webapp
+[INFO] Assembling webapp [piflow-web] in [/zData/workspaces/PiFlow/piflow-web/piflow-web/target/piflow-web]
+[INFO] Processing war project
+[INFO] Building war: /workspaces/PiFlow/piflow-web/piflow-web/target/piflow-web.war
 [INFO] 
-[INFO] --- spring-boot-maven-plugin:2.0.4.RELEASE:repackage (default) @ piflow-web ---
+[INFO] --- spring-boot-maven-plugin:2.4.0:repackage (repackage) @ piflow-web ---
+[INFO] Replacing main artifact with repackaged archive
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time: 6.363 s
-[INFO] Finished at: 2019-03-26T10:34:00+08:00
-[INFO] Final Memory: 26M/97M
+[INFO] Total time:  30.800 s
+[INFO] Finished at: 2022-11-03T12:44:58+08:00
 [INFO] ------------------------------------------------------------------------
+[WARNING] The requested profile "downloadSources" could not be activated because it does not exist.
 ```
 To Run Piflow Web：
 - Note: 
@@ -62,10 +57,8 @@ To Run Piflow Web：
   - sh start.sh
 - how to configure config.properties
 ```c
-
 server.port=6002
 server.servlet.session.timeout=3600
-
 syspara.interfaceUrlHead=http://127.0.0.1:8002
 syspara.livyServer=http://127.0.0.1:8998
 syspara.isIframe=true
@@ -96,7 +89,7 @@ spring.flyway.locations=classpath:db/flyway-mysql/
 #sysParam.datasource.type=h2
 ## h2 Configuration
 ##Configure the connection address of H2DB
-#spring.datasource.url=jdbc:h2:file:/media/nature/linux_disk_0/PiFlow_DB/piflow_web
+#spring.datasource.url=jdbc:h2:file:/PiFlow_DB/piflow_web
 ##Configure database user name
 #spring.datasource.username=Admin
 ##Configuration database password
@@ -117,11 +110,10 @@ spring.flyway.locations=classpath:db/flyway-mysql/
 
 
 # Log Coordination Standard
-logging.level.org.flywaydb=warn
-logging.level.com.nature.mapper=warn
-logging.level.root=warn
-logging.level.org.springframework.security=warn
-logging.level.org.hibernate.SQL=warn
+logging.level.root=info
+logging.level.org.flywaydb=info
+logging.level.org.springframework.security=info
+#logging.level.cn.cnic.component.testData.mapper.*=debug
 ```
 
 
