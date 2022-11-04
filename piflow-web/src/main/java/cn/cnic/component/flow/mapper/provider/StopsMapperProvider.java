@@ -392,7 +392,7 @@ public class StopsMapperProvider {
         sql.FROM("flow_stops");
         sql.WHERE("enable_flag = 1");
         sql.WHERE("is_disabled = 1");
-        sql.WHERE("id = " + SqlUtils.strListToStr(Ids));
+        sql.WHERE("id IN (" + SqlUtils.strListToStr(Ids) + ")");
         sqlStr = sql.toString();
         return sqlStr;
     }
