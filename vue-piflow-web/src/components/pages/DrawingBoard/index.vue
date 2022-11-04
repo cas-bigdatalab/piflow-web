@@ -137,7 +137,7 @@
         </div>
       </div>
       <div slot="footer">
-        <Button type="primary" @click="processToRelease_Modal=false">{{ $t("modal.cancel_text") }}</Button>
+        <Button @click="removeStop">{{ $t("modal.cancel_text") }}</Button>
         <Button type="primary" @click="getSelectEvent()">{{ $t("modal.confirm") }}</Button>
       </div>
     </Modal>
@@ -621,7 +621,10 @@ export default {
             console.log(error);
           });
     },
-
+    removeStop(){
+      this.processToRelease_Modal= false;
+      this.publish= '';
+    },
     getSelectEvent () {
       let selectRecords = this.$refs.processToRelease.getCheckboxRecords();
       if (selectRecords.length===0 || !this.publish)
@@ -646,10 +649,23 @@ export default {
               this.processToRelease_Modal=false;
               this.publish= '';
               this.publishingId= '';
+              this.$Message.success({
+                content: dataMap.errorMsg,
+                duration: 3
+              });
               document.getElementById('bariframe').contentWindow.distributeList()
             }
+            else
+              this.$Message.error({
+                content: dataMap.errorMsg,
+                duration: 3
+              });
           })
           .catch(error => {
+            this.$Message.error({
+              content: error,
+              duration: 3
+            });
             console.log(error);
           });
     },

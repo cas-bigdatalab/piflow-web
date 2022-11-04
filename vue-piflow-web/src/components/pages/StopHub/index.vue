@@ -249,13 +249,13 @@ export default {
               this.$event.emit("loading", false);
               this.$Modal.success({
                 title: this.$t("tip.title"),
-                content: flag? `${row.jarName} ` + this.$t("tip.mount_success_content"): `${row.jarName} ` + this.$t("tip.unmount_success_content")
+                content: res.data.errorMsg
               });
               this.getTableData();
             } else {
               this.$event.emit("loading", false);
               this.$Message.error({
-                content: flag? `${row.jarName} ` + this.$t("tip.mount_fail_content"): `${row.jarName} ` + this.$t("tip.unmount_fail_content"),
+                content:  res.data.errorMsg,
                 duration: 3
               });
             }
@@ -281,13 +281,13 @@ export default {
               this.$event.emit("loading", false);
               this.$Modal.success({
                 title: this.$t("tip.title"),
-                content: `${row.jarName} ` + this.$t("tip.mount_success_content")
+                content: res.data.errorMsg,
               });
               this.getTableData();
             } else {
               this.$event.emit("loading", false);
               this.$Message.error({
-                content: `${row.jarName} ` + this.$t("tip.mount_fail_content"),
+                content: res.data.errorMsg,
                 duration: 3
               });
             }

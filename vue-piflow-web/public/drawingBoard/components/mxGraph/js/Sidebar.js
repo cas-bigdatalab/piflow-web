@@ -180,7 +180,7 @@ Sidebar.prototype.init = function()
 
 			eltDiv.id = grouping_title[key]+'Title';
 			eltDiv.style.padding = '10px';
-			eltDiv.style.display = 'none';
+			eltDiv.style.display = 'block';
 
 			this.addFoldingHandler(elt, eltDiv);
 			if (grouping_title[key]!=='DataSource'){

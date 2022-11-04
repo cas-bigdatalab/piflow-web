@@ -1047,7 +1047,7 @@ EditorUi.prototype.sidebarFooterHeight = 34;
  * screen widths <= 640px.
  */
 //------------------------------ Custom modification content 003 start ------------------------------
-EditorUi.prototype.hsplitPosition = (screen.width <= 640) ? 118 : ((urlParams['sidebar-entries'] != 'large') ? 292 : 240);
+EditorUi.prototype.hsplitPosition = (screen.width <= 640) ? 118 : ((urlParams['sidebar-entries'] != 'large') ? 312 : 240);
 //------------------------------ Custom modification content 003 end   ------------------------------
 
 /**

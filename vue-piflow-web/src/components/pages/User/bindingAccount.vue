@@ -51,10 +51,13 @@ export default {
           .post("/user/bindDeveloperAccessKey", this.$qs.stringify(parameter))
           .then((res) => {
             if (res.data.code === 200) {
-
+              this.$Message.success({
+                content: res.data.errorMsg,
+                duration: 3
+              });
 
             } else {
-              this.$Message.error('Fail!');
+              this.$Message.error(res.data.errorMsg);
 
             }
           })

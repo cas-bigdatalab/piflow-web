@@ -836,7 +836,7 @@ function queryStopsProperty(stopPageId, loadId) {
                     disabledCheckpoint.setAttribute('onclick', 'StopDisabled("' + stopsVoData.id + '")');
                     $("#div_stops_disabled_html").html("");
                     $("#div_stops_disabled_html").append(disabledCheckpoint);
-                    $("#div_stops_disabled_html").append('<span>&nbsp;&nbsp;是否废弃</span>');
+                    $("#div_stops_disabled_html").append('<span>&nbsp;&nbsp;Whether the abandoned</span>');
                     $('#div_stops_disabled_html').show();
 
                     //stopsCustomizedPropertyVoList

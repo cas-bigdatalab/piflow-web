@@ -92,6 +92,11 @@ export default new Router({
               component: () => import('../components/pages/publish')
             },
             {
+              path: '/stopProperties',
+              name: 'stopProperties',
+              component: () => import('../components/pages/publish/properties')
+            },
+            {
               path: '/codeDetailed',
               name: 'codeBlock',
               component: () => import('../components/pages/Code/codeBlock')
