@@ -180,7 +180,9 @@ public interface StopsMapper {
     })
     public StopsVo getStopsVoById(String Id);
 
-    @Select("SELECT id, name FROM flow_stops WHERE enable_flag=1 and is_disabled=0 and fk_flow_id=#{flowId}")
+    @Select("SELECT fs.id, fs.name FROM flow_stops fs\n" +
+            "LEFT JOIN flow f ON f.id=fs.fk_flow_id\n" +
+            "WHERE fs.enable_flag=1 AND f.is_example <> 1 AND (fs.is_disabled=0 or fs.is_disabled is null) AND fs.fk_flow_id=#{flowId}")
     public List<Map<String, String>> getStopsIdAndNameListByFlowId(String flowId);
 
     /**
