@@ -627,8 +627,19 @@ export default {
     },
     getSelectEvent () {
       let selectRecords = this.$refs.processToRelease.getCheckboxRecords();
-      if (selectRecords.length===0 || !this.publish)
+      if (!this.publish){
+        this.$Message.warning({
+          content: 'Please enter the Process Name',
+          duration: 3
+        });
+          return;
+      }else if (selectRecords.length===0){
+        this.$Message.warning({
+          content: 'Please select a Component',
+          duration: 3
+        });
         return;
+      }
       let stopsIds = '';
       selectRecords.forEach(item=>{
         stopsIds+= item.id+','
@@ -653,7 +664,10 @@ export default {
                 content: dataMap.errorMsg,
                 duration: 3
               });
-              document.getElementById('bariframe').contentWindow.distributeList()
+              this.$router.push({
+                name: 'publish',
+                path: "/publish",
+              })
             }
             else
               this.$Message.error({
