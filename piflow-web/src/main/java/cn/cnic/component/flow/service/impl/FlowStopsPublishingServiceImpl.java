@@ -178,7 +178,9 @@ public class FlowStopsPublishingServiceImpl implements IFlowStopsPublishingServi
         rtnData.put("publishingId", flowStopsPublishingVo.getPublishingId());
         rtnData.put("name", flowStopsPublishingVo.getName());
         StopsVo stopsVo = flowStopsPublishingVo.getStopsVo();
-        if (null != stopsVo) {
+        if (null != stopsVo && null != stopsVo.getFlowVo()) {
+            int stopsCounts = stopsDomain.getStopsCountsByFlowId(stopsVo.getFlowVo().getId());
+            stopsVo.getFlowVo().setStopQuantity(stopsCounts);
             rtnData.put("flowVo", stopsVo.getFlowVo());
         }
         List<Object> stopsDataList = new ArrayList<>();

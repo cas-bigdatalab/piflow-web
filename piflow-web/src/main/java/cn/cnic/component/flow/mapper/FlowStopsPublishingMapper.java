@@ -2,6 +2,7 @@ package cn.cnic.component.flow.mapper;
 
 import cn.cnic.component.flow.entity.FlowStopsPublishing;
 import cn.cnic.component.flow.mapper.provider.FlowStopsPublishingMapperProvider;
+import cn.cnic.component.flow.mapper.provider.StopsMapperProvider;
 import cn.cnic.component.flow.vo.FlowStopsPublishingVo;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
@@ -112,6 +113,23 @@ public interface FlowStopsPublishingMapper {
     @SelectProvider(type = FlowStopsPublishingMapperProvider.class, method = "getFlowStopsPublishingListByFlowId")
     public List<FlowStopsPublishing> getFlowStopsPublishingListByFlowId(String username, String flowId);
 
+    /**
+     * Query PublishingName list by StopsIds
+     *
+     * @param stopsIds
+     * @return
+     */
+    @SelectProvider(type = FlowStopsPublishingMapperProvider.class, method = "getPublishingNameListByStopsIds")
+    public List<String> getPublishingNameListByStopsIds(@Param(value = "stopsIds") List<String> stopsIds);
+
+    /**
+     * Query PublishingName list by flowId
+     *
+     * @param flowId
+     * @return
+     */
+    @SelectProvider(type = FlowStopsPublishingMapperProvider.class, method = "getPublishingNameListByFlowId")
+    public List<String> getPublishingNameListByFlowId(@Param(value = "flowId") String flowId);
 
     /**
      * Get FlowStopsPublishing List by flowId

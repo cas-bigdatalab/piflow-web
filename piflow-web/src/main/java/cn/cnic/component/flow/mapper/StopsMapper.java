@@ -218,4 +218,13 @@ public interface StopsMapper {
     })
     public List<Stops> getStopsBindDatasourceByIds(@Param(value = "Ids") List<String> Ids);
 
+    /**
+     * Query stop counts by flowId
+     *
+     * @param flowId
+     * @return
+     */
+    @Select("SELECT COUNT(fs.id) AS num FROM flow_stops fs WHERE fs.enable_flag=1 AND fs.fk_flow_id=#{flowId};")
+    public int getStopsCountsByFlowId(@Param(value = "flowId") String flowId);
+
 }

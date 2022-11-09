@@ -306,5 +306,9 @@ public class StopsDomain {
         return stopsMapper.getStopsBindDatasourceByIds(Ids);
     }
 
+    public int getStopsCountsByFlowId(String flowId) {
+        return stopsMapper.getStopsCountsByFlowId(flowId);
+    }
+
 
 }

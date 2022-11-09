@@ -727,6 +727,40 @@ public class MessageConfig {
         return String.format(STOP_HAS_NO_PROPERTY_MSG, stopNames);
     }
 
+    private static String STOP_PUBLISHED_CANNOT_DEL_STOP_MSG;
+    private static String STOP_PUBLISHED_CANNOT_DEL_STOP_MSG_ZH;
+    @Value("${msg.stop_published_cannot_del_stop}")
+    private void setStopPublishedCannotDelStopMsg(String stopPublishedCannotDelStopMsg) {
+        STOP_PUBLISHED_CANNOT_DEL_STOP_MSG = stopPublishedCannotDelStopMsg;
+    }
+    @Value("${msg.stp_published_cannot_del_stop.zh}")
+    private void setStopPublishedCannotDelStopMsgZh(String stopPublishedCannotDelStopMsgZh) {
+        STOP_PUBLISHED_CANNOT_DEL_STOP_MSG_ZH = stopPublishedCannotDelStopMsgZh;
+    }
+    public static String STOP_PUBLISHED_CANNOT_DEL_STOP_MSG(String publishedName){
+        if(LANGUAGE_TYPE_ZH.equals(LANGUAGE)){
+            return String.format(STOP_PUBLISHED_CANNOT_DEL_STOP_MSG_ZH, publishedName);
+        }
+        return String.format(STOP_PUBLISHED_CANNOT_DEL_STOP_MSG, publishedName);
+    }
+
+    private static String STOP_PUBLISHED_CANNOT_DEL_FLOW_MSG;
+    private static String STOP_PUBLISHED_CANNOT_DEL_FLOW_MSG_ZH;
+    @Value("${msg.stop_published_cannot_del_stop}")
+    private void setStopPublishedCannotDelFlowMsg(String stopPublishedCannotDelFlowMsg) {
+        STOP_PUBLISHED_CANNOT_DEL_FLOW_MSG = stopPublishedCannotDelFlowMsg;
+    }
+    @Value("${msg.stp_published_cannot_del_stop.zh}")
+    private void setStopPublishedCannotDelFlowMsgZh(String stopPublishedCannotDelFlowMsgZh) {
+        STOP_PUBLISHED_CANNOT_DEL_FLOW_MSG_ZH = stopPublishedCannotDelFlowMsgZh;
+    }
+    public static String STOP_PUBLISHED_CANNOT_DEL_FLOW_MSG(String publishedName){
+        if(LANGUAGE_TYPE_ZH.equals(LANGUAGE)){
+            return String.format(STOP_PUBLISHED_CANNOT_DEL_FLOW_MSG_ZH, publishedName);
+        }
+        return String.format(STOP_PUBLISHED_CANNOT_DEL_FLOW_MSG, publishedName);
+    }
+
     private static String PLEASE_BIND_THE_DEVELOPER_ACCOUNT_MSG;
     private static String PLEASE_BIND_THE_DEVELOPER_ACCOUNT_MSG_ZH;
     @Value("${msg.please_bind_the_developer_account}")

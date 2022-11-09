@@ -313,5 +313,43 @@ public class FlowStopsPublishingMapperProvider {
         return sql.toString();
     }
 
+    /**
+     * Query PublishingName list by StopsIds
+     *
+     * @param stopsIds
+     * @return
+     */
+    public String getPublishingNameListByStopsIds(List<String> stopsIds) {
+        if (null == stopsIds || stopsIds.size() <= 0) {
+            return "SELECT 0";
+        }
+        String sqlStr = "";
+        SQL sql = new SQL();
+        sql.SELECT("fsp.name");
+        sql.FROM("flow_stops_publishing fsp");
+        sql.WHERE("fsp.enable_flag=1");
+        sql.WHERE("fsp.stops_id IN (" + SqlUtils.strListToStr(stopsIds) + ")");
+        sqlStr = sql.toString();
+        return sqlStr;
+    }
+
+    /**
+     * Query PublishingName list by StopsIds
+     *
+     * @param flowId
+     * @return
+     */
+    public String getPublishingNameListByFlowId(String flowId) {
+        // SELECT fsp.name FROM flow_stops_publishing fsp WHERE fsp.enable_flag=1 AND fsp.stops_id IN (SELECT fs.id FROM flow_stops fs WHERE fs.fk_flow_id ='71213b942bee4c5994775774f45ff5ad' AND fs.is_disabled=0)
+        StringBuffer sqlBuffer = new StringBuffer();
+        sqlBuffer.append("SELECT fsp.name FROM flow_stops_publishing fsp ");
+        sqlBuffer.append("WHERE fsp.enable_flag=1 ");
+        sqlBuffer.append(" AND fsp.stops_id IN ( ");
+        sqlBuffer.append(" SELECT fs.id FROM flow_stops fs WHERE fs.is_disabled=0 AND fs.fk_flow_id = ");
+        sqlBuffer.append(SqlUtils.preventSQLInjection(flowId));
+        sqlBuffer.append(" ) ");
+        return sqlBuffer.toString();
+    }
+
 
 }

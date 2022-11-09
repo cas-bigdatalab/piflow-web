@@ -10,6 +10,7 @@ import cn.cnic.component.dataSource.entity.DataSource;
 import cn.cnic.component.dataSource.entity.DataSourceProperty;
 import cn.cnic.component.flow.domain.FlowDomain;
 import cn.cnic.component.flow.domain.FlowGroupDomain;
+import cn.cnic.component.flow.domain.FlowStopsPublishingDomain;
 import cn.cnic.component.flow.entity.*;
 import cn.cnic.component.flow.utils.FlowXmlUtils;
 import cn.cnic.component.flow.utils.PropertyUtils;
@@ -51,18 +52,20 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
     private final FlowGroupDomain flowGroupDomain;
     private final FlowDomain flowDomain;
     private final DataSourceDomain dataSourceDomain;
+    private final FlowStopsPublishingDomain flowStopsPublishingDomain;
 
     @Autowired
     public MxGraphModelServiceImpl(StopsComponentDomain stopsComponentDomain,
                                    MxGraphModelDomain mxGraphModelDomain,
                                    FlowGroupDomain flowGroupDomain,
                                    FlowDomain flowDomain,
-                                   DataSourceDomain dataSourceDomain) {
+                                   DataSourceDomain dataSourceDomain, FlowStopsPublishingDomain flowStopsPublishingDomain) {
         this.stopsComponentDomain = stopsComponentDomain;
         this.mxGraphModelDomain = mxGraphModelDomain;
         this.flowGroupDomain = flowGroupDomain;
         this.flowDomain = flowDomain;
         this.dataSourceDomain = dataSourceDomain;
+        this.flowStopsPublishingDomain = flowStopsPublishingDomain;
     }
 
     @Override
@@ -632,6 +635,8 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
         // Get out the Stopslist stored in the database
         List<Stops> stopsListDB = flowDB.getStopsList();
 
+        //
+        List<String> removeStopsId = new ArrayList<>();
         // continue the judgment operation below, or directly add
         // this method only processes the modification and is not responsible for adding
         if (null != stopsListDB && stopsListDB.size() > 0) {
@@ -648,11 +653,12 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
                     stopsDB.setEnableFlag(false);
                     stopsDB.setLastUpdateDttm(new Date());
                     stopsDB.setLastUpdateUser(username);
+                    removeStopsId.add(stopsDB.getId());
                     //stopsDB property
                     List<Property> properties = stopsDB.getProperties();
                     // Whether the judgment is empty
                     if (null != properties) {
-                        List<Property> propertyList = new ArrayList<Property>();
+                        List<Property> propertyList = new ArrayList<>();
                         // Loop tombstone properties
                         for (Property propertyDB : properties) {
                             if (null == propertyDB) {
@@ -712,6 +718,10 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
         } else {
             // The stops data in the database is empty.
             logger.info("The stops data in the database is empty.");
+        }
+        List<String> publishingNameList = flowStopsPublishingDomain.getPublishingNameListByStopsIds(removeStopsId);
+        if (null != publishingNameList && publishingNameList.size() > 0) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.STOP_PUBLISHED_CANNOT_DEL_STOP_MSG(publishingNameList.toString().replace("[", "'").replace("]", "'")));
         }
 
         // save flow

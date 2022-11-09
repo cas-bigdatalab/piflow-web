@@ -242,6 +242,10 @@ public class FlowServiceImpl implements IFlowService {
         if (scheduleIdListByScheduleRunTemplateId > 0) {
         	return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.DELETE_LINK_SCHEDULED_ERROR_MSG());
         }
+        List<String> publishingNameList = flowStopsPublishingDomain.getPublishingNameListByFlowId(id);
+        if (null != publishingNameList && publishingNameList.size() > 0) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.STOP_PUBLISHED_CANNOT_DEL_FLOW_MSG(publishingNameList.toString().replace("[", "'").replace("]", "'")));
+        }
         /*Flow flowById = this.getFlowById(username, isAdmin, id);
         if (null == flowById) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Data does not exist");
