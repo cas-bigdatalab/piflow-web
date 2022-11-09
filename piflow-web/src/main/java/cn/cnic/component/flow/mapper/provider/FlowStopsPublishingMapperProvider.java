@@ -4,15 +4,11 @@ import cn.cnic.base.utils.DateUtils;
 import cn.cnic.base.utils.SqlUtils;
 import cn.cnic.base.utils.UUIDUtils;
 import cn.cnic.component.flow.entity.FlowStopsPublishing;
-import cn.cnic.component.flow.entity.Stops;
-import cn.cnic.third.vo.flow.ThirdFlowInfoStopVo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 public class FlowStopsPublishingMapperProvider {
 
@@ -329,6 +325,7 @@ public class FlowStopsPublishingMapperProvider {
         sql.FROM("flow_stops_publishing fsp");
         sql.WHERE("fsp.enable_flag=1");
         sql.WHERE("fsp.stops_id IN (" + SqlUtils.strListToStr(stopsIds) + ")");
+        sql.GROUP_BY("fsp.name, fsp.publishing_id ");
         sqlStr = sql.toString();
         return sqlStr;
     }
@@ -340,14 +337,16 @@ public class FlowStopsPublishingMapperProvider {
      * @return
      */
     public String getPublishingNameListByFlowId(String flowId) {
-        // SELECT fsp.name FROM flow_stops_publishing fsp WHERE fsp.enable_flag=1 AND fsp.stops_id IN (SELECT fs.id FROM flow_stops fs WHERE fs.fk_flow_id ='71213b942bee4c5994775774f45ff5ad' AND fs.is_disabled=0)
+        // SELECT fsp.name FROM flow_stops_publishing fsp WHERE fsp.enable_flag=1
+        // AND fsp.stops_id IN (SELECT fs.id FROM flow_stops fs WHERE fs.is_disabled=0 AND fs.fk_flow_id ='71213b942bee4c5994775774f45ff5ad' )
+        // GROUP BY fsp.name, fsp.publishing_id
         StringBuffer sqlBuffer = new StringBuffer();
         sqlBuffer.append("SELECT fsp.name FROM flow_stops_publishing fsp ");
         sqlBuffer.append("WHERE fsp.enable_flag=1 ");
         sqlBuffer.append(" AND fsp.stops_id IN ( ");
         sqlBuffer.append(" SELECT fs.id FROM flow_stops fs WHERE fs.is_disabled=0 AND fs.fk_flow_id = ");
         sqlBuffer.append(SqlUtils.preventSQLInjection(flowId));
-        sqlBuffer.append(" ) ");
+        sqlBuffer.append(" ) GROUP BY fsp.name, fsp.publishing_id");
         return sqlBuffer.toString();
     }
 
