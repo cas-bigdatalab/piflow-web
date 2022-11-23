@@ -145,7 +145,13 @@ export default {
       }
     },
     copyToClipboard(text){
-      return window.navigator.clipboard?.writeText && window.navigator.clipboard.writeText(text)
+      let input = document.createElement('textarea')
+      input.value = text;
+      document.body.appendChild(input)
+      input.select()
+      document.execCommand('copy')
+      document.body.removeChild(input)
+      // return window.navigator.clipboard?.writeText && window.navigator.clipboard.writeText(text)
     },
 
     // run
@@ -154,7 +160,7 @@ export default {
         { name: "Process", path: "/processes" },
         { name: "drawingBoard", path: "/drawingBoard" },
       ]);
-
+      this.$event.emit("loading", true);
       this.$axios
           .post("/flow/runFlowByPublishingId", this.$qs.stringify({publishingId: row.publishingId}))
           .then(res => {
@@ -165,6 +171,12 @@ export default {
               this.$router.push({
                 path: "/drawingBoard",
                 query: { src },
+              });
+            }else{
+              this.$event.emit("loading", false);
+              this.$Message.error({
+                content: dataList.errorMsg,
+                duration: 3
               });
             }
           })

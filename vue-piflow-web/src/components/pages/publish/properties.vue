@@ -2,86 +2,42 @@
   <section class="box_warp">
     <div>
       <div style="padding: 10px; border-bottom: 1px solid rgb(192, 192, 192);">
-        <div style="padding: 0px 0px 6px; white-space: nowrap; overflow: hidden; width: 200px; font-weight: bold;">
+        <div style="padding: 0px 0px 6px; white-space: nowrap; font-weight: bold;overflow: hidden;font-size: 16px">
           Flow Basic Information
+          <span class="btn_group">
+            <span class="button-warp" @click="handleButtonSelect(1)"><Icon type="ios-play"/></span>
+            <span class="button-warp" @click="handleButtonSelect(2)"><Icon type="md-return-left" /></span>
+          </span>
         </div>
-        <table style="border-collapse: separate; border-spacing: 0px 5px;">
-          <tbody>
-          <tr>
-            <td valign="top"><span>UUID</span></td>
-            <td valign="top">：<span id="span_flowVo_id">{{ flowInfo.uuid }}</span></td>
-          </tr>
-          <tr>
-            <td valign="top"><span>FlowName</span></td>
-            <td valign="top">：<span id="span_flowVo_name" @click="routerPush(flowInfo)">{{ flowInfo.name }}</span></td>
-          </tr>
-          <tr>
-            <td valign="top"><span>Description</span></td>
-            <td valign="top">：<span id="span_flowVo_description">{{ flowInfo.description }}</span></td>
-          </tr>
-          <tr>
-            <td valign="top"><span>CreateTime</span></td>
-            <td valign="top">：<span id="span_flowVo_crtDttmStr">{{ flowInfo.crtDttmString }}</span></td>
-          </tr>
-          <tr>
-            <td valign="top"><span>Stops</span></td>
-            <td valign="top">：<span id="span_flowVo_stopsCounts">{{ flowInfo.stopQuantity }}</span></td>
-          </tr>
-          </tbody>
-        </table>
+        <div class="flowBasicInfo">
+          <ul>
+            <li><span>UUID</span>：<span>{{ flowInfo.uuid }}</span></li>
+            <li><span>FlowName</span>：<span @click="routerPush(flowInfo)" class="highlighted">{{ flowInfo.name }}</span></li>
+            <li><span>Description</span>：<span>{{ flowInfo.description }}</span></li>
+            <li><span>CreateTime</span>：<span>{{ flowInfo.crtDttmString }}</span></li>
+            <li><span>Stops</span>：<span>{{ flowInfo.stopQuantity }}</span></li>
+          </ul>
+        </div>
       </div>
 
       <div v-for="(item,index) in stopsDataList" :key="index" :style="{borderBottom: index+1!==stopsDataList.length?'1px solid #e8eaec':''}">
         <div id="tab_content1" style="display:block;">
           <div style="padding: 10px;">
-            <div style="padding: 0px 0px 6px; white-space: nowrap; overflow: hidden; width: 200px; font-weight: bold;">
+            <div style="padding: 0px 0px 6px; white-space: nowrap; overflow: hidden; width: 200px; font-weight: bold;font-size: 16px">
               Stop Basic Information
             </div>
-            <input id="input_flowStopsVo_id" value="" style="display: none;">
-            <input id="input_flowStopsVo_pageId" value="" style="display: none;">
-            <table style="border-collapse: separate; border-spacing: 0px 5px;">
-              <tbody>
-              <tr id="tr_stopsVo_name_info">
-                <td><span>StopsName</span></td>
-                <td>
-                  ：<span id="span_stopsVo_name">{{ item.name }}</span>
-                </td>
-              </tr>
-              <tr id="tr_stopsVo_name_input" style="display: none;">
-                <td><span>StopsName</span></td>
-                <td>
-                  <input id="input_stopsVo_name" class="form-control" style="width: 80%;display: inline;">
-                  <button style="height: 28px; width: 28px; background: rgb(245, 245, 245); border: 1px solid; margin-left: 10px;" title="Update name" onclick="updateStopsName();">
-                    <i class="glyphicon glyphicon-saved"></i>
-                  </button>
-                </td>
-              </tr>
-              <tr>
-                <td><span>Description</span></td>
-                <td>：<span id="span_processStopVo_description">{{ item.description }}</span></td>
-              </tr>
-              <tr>
-                <td><span>Groups</span></td>
-                <td>：<span id="span_processStopVo_groups">{{ item.groups }}</span></td>
-              </tr>
-              <tr>
-                <td><span>Bundle</span></td>
-                <td>：<span id="span_flowStopsVo_bundle">{{ item.bundel }}</span></td>
-              </tr>
-              <tr>
-                <td><span>ModifyCounts</span></td>
-                <td>：<span id="span_flowStopsVo_version">{{ item.version }}</span></td>
-              </tr>
-              <tr>
-                <td><span>Owner</span></td>
-                <td>：<span id="span_processStopVo_owner">{{ item.owner }}</span></td>
-              </tr>
-              <tr>
-                <td><span>CreateTime</span></td>
-                <td>：<span id="span_processStopVo_crtDttmString">{{ item.crtDttmString }}</span></td>
-              </tr>
-              </tbody>
-            </table>
+            <div class="stopBasicInfo">
+              <ul>
+                <li><span>StopsName</span>：<span>{{ item.name }}</span></li>
+                <li><span>Description</span>：<span>{{ item.description }}</span></li>
+                <li><span>Groups</span>：<span>{{ item.groups }}</span></li>
+                <li><span>Bundle</span>：<span>{{ item.bundel }}</span></li>
+                <li><span>ModifyCounts</span>：<span>{{ item.version }}</span></li>
+                <li><span>Owner</span>：<span>{{ item.owner }}</span></li>
+                <li><span>CreateTime</span>：<span>{{ item.crtDttmString }}</span></li>
+              </ul>
+            </div>
+
           </div>
         </div>
 
@@ -90,10 +46,14 @@
           <div style="overflow: hidden">
             <div style=" width: 50%;float: left;" class="basicInfo">
               <div v-for="items in item.propertiesVo"
-                   style="margin-bottom: 10px">
+                   style="overflow: hidden">
                 <p style="width: 110px;float: left;line-height:32px;text-align: right;overflow: hidden; white-space: nowrap; text-overflow: ellipsis;margin: 6px 0; ">
-                  {{items.name}}：</p>
-                <Input v-model="items.customValue" style="width: calc(100% - 110px);float: left" @on-focus="updateText(items.customValue,items.id,items.language,items.name)"/></div>
+                  {{items.name}}
+                  <Tooltip max-width="200" :content="items.description" theme="light">
+                  <Icon type="md-help-circle" />
+                </Tooltip></p>
+                <Input v-model="items.customValue" style="width: calc(100% - 120px);float: left" @on-focus="updateText(items.customValue,items.id,items.language,items.name)"/>
+                <span style="color: red;line-height: 42px;display: inline-block;">*</span></div>
 
             </div>
 <!--            <p class="display_btn" v-if="!displayList['show'+index]">-->
@@ -102,10 +62,13 @@
             <div style=" width: 50%;float: left;">
               <div class="basicInfo">
                 <div v-for="items in item.propertiesVo"
-                     style="margin-bottom: 10px">
+                     style="overflow: hidden">
                   <p style="width: 110px;float: left;line-height:32px;text-align: right;overflow: hidden; white-space: nowrap; text-overflow: ellipsis; margin: 6px 0;">
-                    {{items.name}}：</p>
-                  <Input v-model="items.example" disabled style="width: calc(100% - 110px);float: left"/></div>
+                    {{items.name}}
+                    <Tooltip max-width="200" :content="items.description" theme="light">
+                      <Icon type="md-help-circle" />
+                    </Tooltip></p>
+                  <Input v-model="items.example" disabled style="width: calc(100% - 120px);float: left"/></div>
               </div>
 <!--              <p class="display_btn">-->
 <!--                <Icon type="ios-arrow-dropup" @click="changeState(index)"/>-->
@@ -179,6 +142,7 @@ export default {
   },
 
   created() {
+    this.publishingId= this.$route.query.publishingId;
     this.setProperties(this.$route.query.publishingId);
   },
   methods: {
@@ -330,7 +294,52 @@ export default {
           src: "/drawingBoard/page/flow/mxGraph/index.html?load=" + row.id,
         },
       });
-    }
+    },
+
+    handleButtonSelect(key) {
+      switch (key) {
+        case 1:
+          this.handleRunRow();
+          break;
+        case 2:
+          this.$router.push({ path: "/publish" })
+          break;
+        default:
+          break;
+      }
+    },
+
+    // run
+    handleRunRow() {
+      this.$event.emit("crumb", [
+        { name: "Process", path: "/processes" },
+        { name: "drawingBoard", path: "/drawingBoard" },
+      ]);
+      this.$event.emit("loading", true);
+      this.$axios
+          .post("/flow/runFlowByPublishingId", this.$qs.stringify({publishingId: this.publishingId}))
+          .then(res => {
+            let dataList = res.data;
+            if (dataList.code === 200) {
+              // 根据类型进入不同的界面
+              let src = `/drawingBoard/page/process/mxGraph/index.html?drawingBoardType=PROCESS&processType=TASK&load=${dataList.processId}`;
+              this.$router.push({
+                path: "/drawingBoard",
+                query: { src },
+              });
+            }else{
+              this.$event.emit("loading", false);
+              this.$Message.error({
+                content: dataList.errorMsg,
+                duration: 3
+              });
+            }
+          })
+          .catch(error => {
+            console.log(error);
+          })
+    },
+
   }
 };
 </script>
@@ -346,7 +355,7 @@ export default {
   }
 }
 .title_bar{
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
   margin: 10px 0;
 }
@@ -357,7 +366,7 @@ export default {
   padding-bottom: 20px;
 }
 ::v-deep .ivu-input-disabled{
-  background-color: #eee;
+  background-color: #f9f9f9;
   color: #777;
 }
 .display_btn{

@@ -19,6 +19,7 @@ section {
       padding: 8px 10px;
     }
   }
+
   .input {
     margin-bottom: 5px;
     margin-top: 10px;
@@ -46,14 +47,44 @@ section {
     background-color: #fff;
   }
 
-}
- .modal-warp{
-    .item{
-      margin: 12px 0px;
-      label{
-        display: inline-block;
-        width: 120px;
-        text-align: right;
+  .btn_group{
+    float: right;
+    margin: 0!important;
+  }
+  .flowBasicInfo, .stopBasicInfo{
+    ul{
+      overflow: hidden;
+      li{
+        width: 33%;
+        height: 30px;
+        float: left;
+        margin: 10px 0;
+        display: flex;
+        align-items: center;
+        span:first-child{
+          width: 90px;
+          display: inline-block;
+          //text-align: right;
+        }
+        span:last-child{
+          height: 32px;
+          display: inline-block;
+          padding: 5px 10px;
+          background-color: #f9f9f9;
+          color: #777;
+          border: 1px solid #dcdee2;
+          cursor: not-allowed;
+          width: calc(100% - 120px);
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
+        .highlighted{
+          cursor: pointer!important;
+          color: #2D8cF0!important;
+        }
       }
     }
   }
+
+}

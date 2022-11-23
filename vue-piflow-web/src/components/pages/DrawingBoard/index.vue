@@ -118,7 +118,7 @@
       <div>
         <div style="margin-bottom: 10px">
           <label style="width: 110px; text-align: right;display: inline-block">Process Name：</label>
-          <Input v-model="publish" :placeholder="$t('modal.placeholder')" style="width: 530px" />
+          <Input v-model="publish" :placeholder="$t('modal.placeholder')" style="width: 100%" />
         </div>
         <div>
           <label style="width: 110px;text-align: right;display: inline-block;vertical-align: top">Component：</label>
@@ -131,7 +131,7 @@
               max-height="300"
               :data="processToReleaseData"
               :columns="processToReleaseColumn"
-              style="width: 530px;display: inline-block"
+              style="width: 100%;display: inline-block"
               class="mytable-scrollbar">
           </vxe-grid>
         </div>
