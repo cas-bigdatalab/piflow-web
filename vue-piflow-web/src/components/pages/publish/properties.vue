@@ -52,8 +52,26 @@
                   <Tooltip max-width="200" :content="items.description" theme="light">
                   <Icon type="md-help-circle" />
                 </Tooltip></p>
-                <Input v-model="items.customValue" style="width: calc(100% - 120px);float: left" @on-focus="updateText(items.customValue,items.id,items.language,items.name)"/>
+                <Input v-model="items.customValue" style="width: calc(100% - 120px);float: left" :disabled="'outports'===items.name || 'inports'===items.name?true:false" @on-focus="updateText(items.customValue,items.id,items.language,items.name)"/>
                 <span style="color: red;line-height: 42px;display: inline-block;">*</span></div>
+
+              <div v-if="item.isCustomized">
+                <div> Add Custom Property <span class="button-warp" style=" margin-left: 30px;" @click="clickCustomProperty(item.id)"><Icon type="md-add" /></span></div>
+                <div v-for="items in item.stopsCustomizedPropertyVoList"
+                     style="overflow: hidden">
+                  <p style="width: 110px;float: left;line-height:32px;text-align: right;overflow: hidden; white-space: nowrap; text-overflow: ellipsis;margin: 6px 0; ">
+                    {{items.name}}
+                    <Tooltip max-width="200" :content="items.description" theme="light">
+                      <Icon type="md-help-circle" />
+                    </Tooltip></p>
+                  <Input v-model="items.customValue" style="width: calc(100% - 200px);float: left" :disabled="'outports'===items.name || 'inports'===items.name?true:false" @on-focus="updateText(items.customValue,items.id,items.language,items.name)"/>
+                  <span style="color: red;line-height: 42px;display: inline-block;">*</span>
+                  <span class="button-warp" style=" margin-left: 30px;" @click="removeRouterStopCustomProperty(items.id)"><Icon type="md-close" style="color: red;font-weight: bold"/></span>
+                </div>
+              </div>
+
+
+
 
             </div>
 <!--            <p class="display_btn" v-if="!displayList['show'+index]">-->
@@ -107,6 +125,44 @@
         </code-editor>
       </div>
     </Modal>
+
+    <Modal
+        title="Add Customized Property"
+        v-model="CustomProperty"
+        :ok-text="$t('modal.ok_text')"
+        :cancel-text="$t('modal.cancel_text')"
+        @on-ok="addStopCustomProperty">
+      <div class="modal-warp">
+        <div class="item">
+          <label>Key：</label>
+          <Input
+              show-word-limit
+              maxlength="100"
+              v-model="customForm.Key"
+              :placeholder="$t('modal.placeholder')"
+              style="width: 350px" />
+        </div>
+        <div class="item">
+          <label>CustomValue：</label>
+          <Input
+              show-word-limit
+              maxlength="100"
+              v-model="customForm.CustomValue"
+              :placeholder="$t('modal.placeholder')"
+              style="width: 350px"/>
+        </div>
+        <div class="item">
+          <label class="self">SDescription：</label>
+          <Input
+              v-model="customForm.SDescription"
+              type="textarea"
+              :rows="4"
+              :placeholder="$t('modal.placeholder')"
+              style="width: 350px"/>
+        </div>
+      </div>
+    </Modal>
+
   </section>
 </template>
 
@@ -134,7 +190,15 @@ export default {
       readonly: false,
       stopsInputId: '',
 
-      displayList: {}
+      displayList: {},
+
+      CustomProperty: false,
+      customForm: {
+        id: '',
+        Key: '',
+        CustomValue: '',
+        SDescription: ''
+      }
     };
   },
   mounted() {
@@ -151,11 +215,12 @@ export default {
       this.getSelectStopList(publishingId);
     },
     updateText(val,id,language,name){
+      if ("outports" === name || "inports" === name)
+        return;
       let _this = this;
       _this.programming_Modal = true;
       _this.editorContent = val;
       _this.stopsInputId = id;
-
       switch (language){
         case 'Text':
           _this.buttonSize = 'text';
@@ -338,6 +403,71 @@ export default {
           .catch(error => {
             console.log(error);
           })
+    },
+
+    clickCustomProperty(id){
+      this.customForm.id= id;
+      this.CustomProperty= true;
+    },
+    addStopCustomProperty(){
+      let parameter = {
+        stopId: this.customForm.id,
+        name: this.customForm.Key,
+        customValue: this.customForm.CustomValue,
+        description: this.customForm.SDescription
+      };
+      this.$axios
+          .post('/stops/addStopCustomizedProperty', this.$qs.stringify(parameter))
+          .then(res => {
+            var dataMap = res.data;
+            if (dataMap.code == 200) {
+              this.$Message.success({
+                content: 'add success',
+                duration: 3
+              });
+              this.getSelectStopList(this.publishingId);
+              this.customForm= {
+                id: '',
+                Key: '',
+                CustomValue: '',
+                SDescription: ''
+              }
+            }else {
+              this.$Message.error({
+                content: dataMap.errorMsg,
+                duration: 3
+              });
+            }
+          })
+          .catch(error => {
+            console.log(error);
+          });
+    },
+    removeRouterStopCustomProperty(id){
+      let parameter = {
+        customPropertyId: id
+      };
+      this.$axios
+          .post('/stops/deleteRouterStopsCustomizedProperty', this.$qs.stringify(parameter))
+          .then(res => {
+            var dataMap = res.data;
+            if (dataMap.code == 200) {
+              this.$Message.success({
+                content: 'delete success',
+                duration: 3
+              });
+              this.getSelectStopList(this.publishingId);
+
+            }else {
+              this.$Message.error({
+                content: dataMap.errorMsg,
+                duration: 3
+              });
+            }
+          })
+          .catch(error => {
+            console.log(error);
+          });
     },
 
   }

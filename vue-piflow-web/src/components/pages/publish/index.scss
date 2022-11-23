@@ -88,3 +88,18 @@ section {
   }
 
 }
+.modal-warp{
+  .item{
+    margin: 12px 0px;
+    display: flex;
+    align-items: center;
+    label{
+      display: inline-block;
+      width: 132px;
+      text-align: right;
+    }
+    .self{
+      align-self:flex-start;
+    }
+  }
+}
