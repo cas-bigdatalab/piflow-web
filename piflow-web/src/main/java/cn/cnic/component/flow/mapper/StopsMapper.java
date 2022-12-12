@@ -171,6 +171,7 @@ public interface StopsMapper {
      */
     @SelectProvider(type = StopsMapperProvider.class, method = "getStopsById")
     @Results({
+            @Result(id = true, column = "id", property = "id"),
             @Result(column = "id", property = "propertiesVo", many = @Many(select = "cn.cnic.component.flow.mapper.PropertyMapper.getPropertyVoListByStopsId", fetchType = FetchType.LAZY)),
             @Result(column = "id", property = "oldPropertiesVo", many = @Many(select = "cn.cnic.component.flow.mapper.PropertyMapper.getOldPropertyVoListByStopsId", fetchType = FetchType.LAZY)),
             @Result(column = "id", property = "stopsCustomizedPropertyVoList", many = @Many(select = "cn.cnic.component.flow.mapper.CustomizedPropertyMapper.getCustomizedPropertyVoListByStopsId", fetchType = FetchType.LAZY)),
