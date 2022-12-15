@@ -1,16 +1,12 @@
-
 <template>
-
     <section>
         <div class="navbar">
             <!-- 初始栏的建立 -->
             <div class="left">
                 <span>{{$t("sidebar.log")}}</span>
             </div>
-
         </div>
 
-        <!-- 搜索栏的建立，此处的搜索栏与系统的其他地方相同 -->
         <div class="input">
             <Input
                 suffix="ios-search"
@@ -20,11 +16,9 @@
             />
         </div>
 
-        <!-- 建立主体：表单 -->
         <Table border :columns="columns" :data="tableData">
         </Table>
 
-        <!-- 下拉页面的建立 -->
         <div class="page">
             <Page
                 :prev-text="$t('page.prev_text')"
@@ -37,8 +31,6 @@
                 @on-page-size-change="onPageSizeChange"
             />
         </div>
-
-        
     </section>
 </template>
 
@@ -118,15 +110,6 @@ export default {
             this.status = "";
         },
 
-        // handleSaveUpdateData() {
-        //     let data = {
-        //         username: this.username,
-        //         ip: this.ip,
-        //         action: this.action,
-        //         lastUpdateDttm:this.lastUpdateDttm
-        //     };
-        // },
-
         getTableData() {
             let data = { page: this.page, limit: this.limit };
             if (this.param) {
@@ -163,6 +146,7 @@ export default {
         this.page = pageNo;
         this.getTableData()
         },
+
         onPageSizeChange(pageSize) {
         this.limit = pageSize;
         this.getTableData()

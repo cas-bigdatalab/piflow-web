@@ -171,11 +171,11 @@ export default {
     this.getTableData();
   },
   methods: {
-    // Reset
     handleReset() {
       this.page = 1;
       this.limit = 10;
     },
+
     handleButtonSelect(row, key) {
       switch (key) {
         case 1:
@@ -305,7 +305,7 @@ export default {
           });
         });
     },
-    //更新进程
+
     handleUpdateProgress() {
       let url = "";
       this.tableData.forEach((item) => {
@@ -346,7 +346,7 @@ export default {
           });
         });
     },
-    // delete
+
     handleDeleteRow(row) {
       this.$Modal.confirm({
         title: this.$t("tip.title"),
@@ -419,10 +419,12 @@ export default {
           });
         });
     },
+
     onPageChange(pageNo) {
       this.page = pageNo;
       this.getTableData();
     },
+
     onPageSizeChange(pageSize) {
       this.limit = pageSize;
       this.getTableData();

@@ -1,26 +1,6 @@
 <template>
   <div class="wrap h-100">
     <div class="w-100 code-editor" :ref="generateId"></div>
-<!--    <span v-if="withFullscreenBtn" title="全屏显示">-->
-<!--      <span-->
-<!--          class="icon-fullscreen"-->
-<!--          :style="{ bottom: (withFooterBtns ? 47 : 10) + 'px' }"-->
-<!--          @click.native="fullscreen"-->
-<!--      ></span>-->
-<!--    </span>-->
-
-    <!--    <el-dialog-->
-    <!--        ref="dialog"-->
-    <!--        custom-class="code-dialog"-->
-    <!--        :visible.sync="isVisible"-->
-    <!--        title="脚本编辑"-->
-    <!--        fullscreen-->
-    <!--        append-to-body-->
-    <!--        :show-footer="false"-->
-    <!--        @close="closeEditCode"-->
-    <!--    >-->
-    <!--      <code-editor v-model="dialogValue"></code-editor>-->
-    <!--    </el-dialog>-->
   </div>
 </template>
 
@@ -90,8 +70,6 @@ ace.config.setModuleUrl(
     require('file-loader!ace-builds/src-noconflict/snippets/python.js')
 )
 ace.config.setModuleUrl('ace/snippets/css', require('file-loader!ace-builds/src-noconflict/snippets/css.js'))
-// import { cloneDeep } from '@/utils/tool'
-
 export default {
   name: "CodeFormat",
   model: {
@@ -204,15 +182,15 @@ export default {
     gotoLine(lineNumber) {
       this.editor.gotoLine(lineNumber)
     },
-    // 全屏编辑
-    fullscreen() {
-      // this.dialogValue = cloneDeep(this.editor.getValue())
-      this.isVisible = true
-    },
-    closeEditCode() {
-      this.editor.setValue(this.dialogValue)
-      this.editor.clearSelection()
-    },
+    // // 全屏编辑
+    // fullscreen() {
+    //   // this.dialogValue = cloneDeep(this.editor.getValue())
+    //   this.isVisible = true
+    // },
+    // closeEditCode() {
+    //   this.editor.setValue(this.dialogValue)
+    //   this.editor.clearSelection()
+    // },
     // resize编辑器
     resize() {
       this.editor.resize(true)

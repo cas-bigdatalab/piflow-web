@@ -151,7 +151,6 @@
  
 <script>
 import CodeEditor from '../../compon/CodeFormat'
-import log from "../User/log";
 export default {
   name: "DrawingBoard",
   components:{CodeEditor},
@@ -285,14 +284,9 @@ export default {
       "position: fixed; bottom: 0;";
     document.querySelector("header").style.cssText =
       "position: fixed; width: 100%; top: 0;";
-    // console.log(document.querySelector('footer'));
     this.setSize();
     window.addEventListener('message', function(event) {
-      // 通过origin属性判断消息来源地址
-      // if (event.origin == 'localhost') {
       _this.$event.emit("loading", event.data);
-      //console.log(event.source);
-      //}
     }, false);
 
 
@@ -411,7 +405,6 @@ export default {
       this.height = document.querySelector("body").offsetHeight-12 + "px";
     },
 
-    // Save the changed flow configuration information
     updateStopsProperty(){
       let data = {};
       data.id = this.stopsId;
@@ -430,7 +423,6 @@ export default {
           });
     },
 
-    // run parameters
     runParameters(){
       this.list.forEach((item)=>{
         Object.keys(item).forEach(key=>{
@@ -449,7 +441,7 @@ export default {
 
       this.runStops(true,this.queryJson)
     },
-    // run stops
+
     runStops(isNeedSource,queryJson){
       this.$event.emit("loading", true);
       let data = {};
@@ -511,6 +503,7 @@ export default {
             });
           })
     },
+
     getTitle(schemaValuesList) {
       this.tableColumn= [];
       let tableTitle = Object.keys(schemaValuesList[0]);
@@ -580,7 +573,6 @@ export default {
       }
     },
 
-
     gettingStopList(value,type,id){
       this.processToRelease_Modal = true;
 
@@ -599,6 +591,7 @@ export default {
             console.log(error);
           });
     },
+
     getSelectStopList(value){
       let parameter = {publishingId: value};
       this.$axios
@@ -621,10 +614,12 @@ export default {
             console.log(error);
           });
     },
+
     removeStop(){
       this.processToRelease_Modal= false;
       this.publish= '';
     },
+
     getSelectEvent () {
       let selectRecords = this.$refs.processToRelease.getCheckboxRecords();
       if (!this.publish){

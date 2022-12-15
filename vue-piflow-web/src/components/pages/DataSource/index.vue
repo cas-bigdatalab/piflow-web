@@ -223,7 +223,6 @@ export default {
     this.getTableData();
   },
   methods: {
-    // Reset
     handleReset() {
       this.page = 1;
       this.limit = 10;
@@ -236,6 +235,7 @@ export default {
       this.stop = "";
       this.bundel = "";
     },
+
     handleButtonSelect(row, key) {
       switch (key) {
         case 1:
@@ -253,7 +253,6 @@ export default {
       }
     },
 
-    // add / update
     handleSaveUpdateData() {
       let data = {
             dataSourceType: this.type,
@@ -351,6 +350,7 @@ export default {
             });
       }
     },
+
     handleSelectChange(val) {
       let data = this.typeList.filter(item => {
         return item.dataSourceName === val;
@@ -400,6 +400,7 @@ export default {
         value: ""
       });
     },
+
     handleRemove(m, mark) {
       if (mark) {
         this.$Modal.warning({
@@ -411,7 +412,6 @@ export default {
       this.dataSourcePropertyVoList.splice(m, 1);
     },
 
-    //save update Data
     saveModifiedData(data){
       this.$axios
           .post("/datasource/saveOrUpdate", this.$qs.stringify(data))
@@ -480,7 +480,7 @@ export default {
             });
           });
     },
-    // Delete
+
     handleDeleteRow(row) {
       this.$axios
           .post("/datasource/checkDatasourceLinked", this.$qs.stringify({dataSourceId: row.id}))
@@ -582,6 +582,7 @@ export default {
       this.page = pageNo;
       this.getTableData();
     },
+
     onPageSizeChange(pageSize) {
       this.limit = pageSize;
       this.getTableData();
@@ -630,6 +631,7 @@ export default {
             });
           });
     },
+
     handleStopChange(val) {
       if (!!val && val!==''){
         let row = this.stopList.filter(item => {
@@ -664,8 +666,7 @@ export default {
               });
             });
       }
-    },
-
+    }
   }
 };
 </script>

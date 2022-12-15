@@ -69,8 +69,6 @@ ace.config.setModuleUrl(
     require('file-loader!ace-builds/src-noconflict/snippets/python.js')
 )
 ace.config.setModuleUrl('ace/snippets/css', require('file-loader!ace-builds/src-noconflict/snippets/css.js'))
-// import { cloneDeep } from '@/utils/tool'
-
 export default {
   name: "CodeFormat",
   model: {
@@ -188,7 +186,6 @@ export default {
         this.isFocus = true;
         this.editor.focus();
       }
-      // this.editor.renderer.visualizeFocus()
 
       // 设置值改变
       this.editor.on('change', () => {
@@ -225,10 +222,6 @@ export default {
         };
         this.$emit('func', data)
         this.isFocus = false;
-
-
-        // this.editor.setTheme("ace/theme/clouds_midnight");
-        // this.editor.getSession().setMode("ace/mode/javascript");
       })
 
 
@@ -265,15 +258,11 @@ export default {
   position: relative;
   height: 100%;
   .code-editor {
-    //min-height: 100px;
     height: 100%;
-    //border: 1px solid #282f3a;
-    //background-color: #0e1013;
   }
 
 }
 .Focus{
-  //box-shadow: #009688 0px 0px 3px 1px inset;
   box-shadow: #009688 0px 0px 3px 1px;
 }
 .blur{

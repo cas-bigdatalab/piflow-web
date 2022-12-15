@@ -1,16 +1,14 @@
 import Vue from 'vue';
 import App from './App.vue';
 
-//引入 iview
-import iView from 'view-design';
-// import 'view-design/dist/styles/iview.css';
-import './assets/style/my-theme.less';
+import Cookies from 'js-cookie';
 
+import iView from 'view-design';
+import './assets/style/my-theme.less';
 import en from 'view-design/dist/locale/en-US';
 import zh from 'view-design/dist/locale/zh-CN';
 import VueI18n from 'vue-i18n'
-Vue.use(VueI18n); // 通过插件的形式挂载
-// Vue.use(iView);
+Vue.use(VueI18n);
 Vue.use(iView, {
   i18n: function (path, options) {
     let value = i18n.t(path, options)
@@ -22,9 +20,8 @@ Vue.use(iView, {
 });
 Vue.locale = () => { };
 
-// let lang = window.sessionStorage.getItem("lang");
 let lang = Cookies.get('lang');
-const i18n = new VueI18n({ //this.$i18n.locale // 通过切换locale的值来实现语言切换
+const i18n = new VueI18n({
   locale: lang ? lang : 'en', // 语言标识
   messages: {
     'zh': Object.assign(require('./assets/language/zh-CN'), zh), // 中文语言包
@@ -32,12 +29,7 @@ const i18n = new VueI18n({ //this.$i18n.locale // 通过切换locale的值来实
   }
 });
 
-// import './assets/style/theme_1.scss'
 
-// 引入 Cookie
-import Cookies from 'js-cookie';
-
-// 引入echarts
 import echarts from 'echarts'
 Vue.prototype.$echarts = echarts;
 
@@ -49,18 +41,15 @@ Vue.prototype.$event = event;
 
 import 'xe-utils'
 import VXETable from 'vxe-table'
-// import 'vxe-table/lib/style.css'
 import './assets/style/my-vxe-table.scss';
 
 Vue.use(VXETable)
 
-//实例化 store
-import store from './store'; // this.$store.commit("setUser", user); 
+import store from './store';
 
-//引入axios
 import axios from 'axios';
 import qs from 'qs';
-axios.defaults.withCredentials = false; //让ajax携带cookie
+axios.defaults.withCredentials = false;
 axios.interceptors.request.use(
   config => {
     // 这里的config包含每次请求的内容
@@ -108,21 +97,11 @@ axios.interceptors.response.use(response => {
   }
   return response;
 }, error => {
-  return Promise.reject(error.response.data) //返回接口返回的错误信息
+  return Promise.reject(error.response.data)
 })
 
-
-// axios.defaults.baseURL = process.env.VUE_APP_URL;
-// // window.sessionStorage.setItem("basePath", process.env.VUE_APP_URL);
-// Cookies.set('basePath', process.env.VUE_APP_URL);
-// Vue.prototype.$url = process.env.VUE_APP_URL;
-Vue.prototype.$axios = axios; //全局注册，使用方法为:this.$axios
-Vue.prototype.$qs = qs; //全局注册，使用方法为:this.$qs
-
-//全局引入模拟数据
-// import mock from './mock'
-// Vue.prototype.$mock = mock
-// import './utils/flexible' //rem 转换
+Vue.prototype.$axios = axios;
+Vue.prototype.$qs = qs;
 
 Vue.config.productionTip = false;
 
@@ -132,10 +111,7 @@ import router from './router';
 //// 路由拦截
 const whiteList = ['/task']; //不需要登录能访问的path
 router.beforeEach((to, from, next) => {
-  // let userInfo = JSON.parse(sessionStorage.getItem('state'));//获取缓存看是否登录过
-  // let state = window.sessionStorage.getItem('state'); //获取缓存看是否登录过
   let state = Cookies.get('state'); //获取缓存看是否登录过
-  // if (whiteList.indexOf(to.path) < 0) {//访问了需要登录才能访问的页面
   if (state == 'jwtok') { //登录过来直接进去
     next();
   } else {
@@ -148,9 +124,6 @@ router.beforeEach((to, from, next) => {
       });
     }
   }
-  // } else {
-  //   next();
-  // }
 });
 
 

@@ -69,14 +69,8 @@
                   <span class="button-warp" style=" margin-left: 30px;" @click="removeRouterStopCustomProperty(items.id)"><Icon type="md-close" style="color: red;font-weight: bold"/></span>
                 </div>
               </div>
-
-
-
-
             </div>
-<!--            <p class="display_btn" v-if="!displayList['show'+index]">-->
-<!--              <Icon type="ios-arrow-dropdown" @click="changeState(index)"/>-->
-<!--            </p>-->
+
             <div style=" width: 50%;float: left;">
               <div class="basicInfo">
                 <div v-for="items in item.propertiesVo"
@@ -88,20 +82,13 @@
                     </Tooltip></p>
                   <Input v-model="items.example" disabled style="width: calc(100% - 120px);float: left"/></div>
               </div>
-<!--              <p class="display_btn">-->
-<!--                <Icon type="ios-arrow-dropup" @click="changeState(index)"/>-->
-<!--              </p>-->
             </div>
           </div>
 
         </div>
       </div>
     </div>
-<!--    <div class="btn_group">-->
-<!--      <Button @click="properties_Modal=false">{{ $t("modal.cancel_text") }}</Button>-->
-<!--      <Button type="primary" @click="getSelectEvent()">{{ $t("modal.confirm") }}</Button>-->
-<!--    </div>-->
-    <!--The online programming-->
+
     <Modal
         title="schema"
         v-model="programming_Modal"
@@ -162,7 +149,6 @@
         </div>
       </div>
     </Modal>
-
   </section>
 </template>
 
@@ -210,10 +196,10 @@ export default {
     this.setProperties(this.$route.query.publishingId);
   },
   methods: {
-    // set
     setProperties(publishingId){
       this.getSelectStopList(publishingId);
     },
+
     updateText(val,id,language,name){
       if ("outports" === name || "inports" === name)
         return;
@@ -264,14 +250,13 @@ export default {
                     checkboxRow.push(this.processToReleaseData[inx])
                 })
               })
-              // this.$refs.processToRelease.setCheckboxRow(checkboxRow, true)
             }
           })
           .catch(error => {
             console.log(error);
           });
     },
-    // save
+
     getSelectEvent () {
       let selectRecords = this.$refs.processToRelease.getCheckboxRecords();
       if (selectRecords.length===0 || !this.publish)
@@ -301,8 +286,6 @@ export default {
           });
     },
 
-
-    // Save the changed flow configuration information
     updateStopsProperty(){
       let data = {};
       data.id = this.stopsInputId;
@@ -320,6 +303,7 @@ export default {
             console.log(error);
           });
     },
+
     handleChange(val){
       let data = { dataSourceId: val, stopId: this.publishingId };
       this.$axios
@@ -343,6 +327,7 @@ export default {
             console.log(error);
           });
     },
+
     changeState(index){
       this.displayList['show'+index] = !this.displayList['show'+index];
       this.displayList = Object.assign({},this.displayList)
@@ -374,7 +359,6 @@ export default {
       }
     },
 
-    // run
     handleRunRow() {
       this.$event.emit("crumb", [
         { name: "Process", path: "/processes" },
@@ -409,6 +393,7 @@ export default {
       this.customForm.id= id;
       this.CustomProperty= true;
     },
+
     addStopCustomProperty(){
       let parameter = {
         stopId: this.customForm.id,
@@ -443,6 +428,7 @@ export default {
             console.log(error);
           });
     },
+
     removeRouterStopCustomProperty(id){
       let parameter = {
         customPropertyId: id
@@ -468,8 +454,7 @@ export default {
           .catch(error => {
             console.log(error);
           });
-    },
-
+    }
   }
 };
 </script>

@@ -112,12 +112,12 @@ export default {
     this.getTableData();
   },
   methods: {
-    // Reset
     handleReset() {
       this.page = 1;
       this.limit = 10;
       this.id = "";
     },
+
     handleButtonSelect(row, key) {
       switch (key) {
         case 1:
@@ -144,6 +144,7 @@ export default {
           break;
       }
     },
+
     copyToClipboard(text){
       let input = document.createElement('textarea')
       input.value = text;
@@ -151,10 +152,8 @@ export default {
       input.select()
       document.execCommand('copy')
       document.body.removeChild(input)
-      // return window.navigator.clipboard?.writeText && window.navigator.clipboard.writeText(text)
     },
 
-    // run
     handleRunRow(row) {
       this.$event.emit("crumb", [
         { name: "Process", path: "/processes" },
@@ -185,7 +184,6 @@ export default {
           })
     },
 
-    // Delete
     handleDeleteRow(row) {
       this.$axios
           .post("/stops/deleteFlowStopsPublishing", this.$qs.stringify({publishingId: row.publishingId}))
@@ -240,10 +238,11 @@ export default {
       this.page = pageNo;
       this.getTableData();
     },
+
     onPageSizeChange(pageSize) {
       this.limit = pageSize;
       this.getTableData();
-    },
+    }
   }
 };
 </script>

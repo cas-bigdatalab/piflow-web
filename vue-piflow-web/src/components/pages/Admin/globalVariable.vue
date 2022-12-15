@@ -199,6 +199,7 @@ export default {
       this.fieldType = "";
 
     },
+
     handleButtonSelect(row, key) {
       switch (key) {
         case 1:
@@ -207,7 +208,6 @@ export default {
         case 2:
           this.handleDeleteRow(row);
           break;
-
         default:
           break;
       }
@@ -275,7 +275,6 @@ export default {
             });
       }
     },
-
 
     getRowData(row) {
       this.$event.emit("loading", true);
@@ -380,10 +379,12 @@ export default {
             });
           });
     },
+
     onPageChange(pageNo) {
       this.page = pageNo;
       this.getTableData()
     },
+
     onPageSizeChange(pageSize) {
       this.limit = pageSize;
       this.getTableData()

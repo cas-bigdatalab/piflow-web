@@ -1,34 +1,12 @@
 <template>
   <header>
     <div class="left" @click="handleClick">
-      <!-- <div :style="{width:logoWidth}">
-        <img src="../../assets/img/logo.png" alt="logo" />
-        <h1>前端模板</h1>
-      </div>-->
       <div class="warp">
-        <!-- <Icon @click="collapsedSider" :class="rotateIcon" type="md-menu"></Icon> -->
         <img class="logo" src="../../assets/img/logo.png" alt="logo" />
         <span>{{$t("title")}}</span>
       </div>
     </div>
     <ul class="right">
-      <!-- <li>
-        <Tooltip content="全屏放大" placement="bottom">
-          <Icon type="ios-move" size="26"></Icon>
-        </Tooltip>
-      </li>
-      <li>
-        <Badge dot>
-          <Tooltip content="消息" placement="bottom">
-            <Icon type="ios-notifications-outline" size="26"></Icon>
-          </Tooltip>
-        </Badge>
-      </li>
-      <li>
-        <Tooltip content="锁屏" placement="bottom">
-          <Icon type="ios-unlock-outline" size="26"></Icon>
-        </Tooltip>
-      </li>-->
       <li>
         <Dropdown trigger="click" style="margin-left: 20px">
           <div class="author">
@@ -37,8 +15,6 @@
             <Icon type="md-arrow-dropdown" size="22" />
           </div>
           <DropdownMenu slot="list">
-<!--            <DropdownItem>个人中心</DropdownItem>-->
-<!--            <DropdownItem>修改密码</DropdownItem>-->
             <DropdownItem divided @click.native="handleQuit">{{$t("logOut")}}</DropdownItem>
           </DropdownMenu>
         </Dropdown>
@@ -61,46 +37,21 @@
 export default {
   data() {
     return {
-      user: {},
-      // isCollapsed: false,
-      // logoWidth: this.width
+      user: {}
     };
   },
-  // computed: {
-  //   rotateIcon() {
-  //     return ["menu-icon", this.isCollapsed ? "rotate-icon" : ""];
-  //   }
-  // },
-  // props: ["width"],
   mounted() {
-    // this.user = this.$store.state.variable.user;
-    // this.user = { username: window.sessionStorage.usre };
     this.user = { username: Cookies.get('usre') };
-      // console.log(window.sessionStorage.getItem("user"));
-    // console.log(this.user);
   },
   methods: {
     handleLanguageSwitch(val) {
-      this.$i18n.locale = val; //关键语句
-      // 使用 localStorage 存储语言状态
-      // window.sessionStorage.setItem("lang", val);
+      this.$i18n.locale = val;
       Cookies.set('lang', val);
-      // 刷新页面更新视图
-      // window.location.reload();
     },
-    // collapsedSider() {
-    //   this.isCollapsed = !this.isCollapsed;
-    //   this.logoWidth = this.isCollapsed ? "64px" : this.width;
-    //   this.$event.emit("isCollapsed", this.isCollapsed);
-    // }
     handleQuit() {
-      // window.sessionStorage.removeItem("state");
       window.sessionStorage.removeItem("menuName");
-      // window.sessionStorage.removeItem("user");
       Cookies.remove('state');
-      // Cookies.remove('basePath');
       Cookies.remove('token');
-      // Cookies.remove('menuName');
       Cookies.remove('user');
       Cookies.remove('setUser');
       this.$store.commit("setToken", "");

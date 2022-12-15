@@ -228,7 +228,6 @@ export default {
     this.getTableData();
   },
   methods: {
-    // Reset
     handleReset() {
       this.page = 1;
       this.limit = 10;
@@ -279,9 +278,7 @@ export default {
       }
     },
 
-    // add / update
     handleSaveUpdateData() {
-      // test-1
       let data = {
         name: this.name,
         description: this.description,
@@ -352,7 +349,7 @@ export default {
           });
       }
     },
-    // Create template
+
     handletSetEmplate() {
       let data = {
         load: this.row.id,
@@ -502,7 +499,7 @@ export default {
           console.log(error);
         });
     },
-    // Delete
+
     handleDeleteRow(row) {
       this.$Modal.confirm({
         title: this.$t("tip.title"),
@@ -575,6 +572,7 @@ export default {
       this.page = pageNo;
       this.getTableData();
     },
+
     onPageSizeChange(pageSize) {
       this.limit = pageSize;
       this.getTableData();

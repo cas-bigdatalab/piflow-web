@@ -186,7 +186,7 @@ export default {
           break;
       }
     },
-    // Upload Success: response, file, fileList
+
     handleSuccess (res, file) {
       this.file = null;
       this.getTableData();
@@ -194,9 +194,11 @@ export default {
         this.isOpen = false;
       },1000)
     },
+
     handleError ( error, file) {
       this.JarIsShow = false;
     },
+
     handleBeforeUpload (file) {
       var testmsg = file.name.substring(file.name.lastIndexOf(".") + 1);
       const extension =
@@ -231,7 +233,6 @@ export default {
       }
     },
 
-    // mount / unmount
     handleMount(row) {
       let data = { id: row.id };
       let url = "/stops/unmountStopsHub";
@@ -271,7 +272,6 @@ export default {
     },
 
     handlePublish(row) {
-      // 一键发布
       let data = { id: row.id };
       this.$event.emit("loading", true);
       this.$axios
@@ -302,7 +302,6 @@ export default {
           });
     },
 
-    //Delete
     handleDeleteRow(row) {
       if ( row.status.text==='MOUNT' ){
         this.$Modal.warning({
@@ -392,6 +391,7 @@ export default {
       this.page = pageNo;
       this.getTableData();
     },
+
     onPageSizeChange(pageSize) {
       this.limit = pageSize;
       this.getTableData();

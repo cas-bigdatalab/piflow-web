@@ -247,7 +247,6 @@ export default {
     this.getTableData();
   },
   methods: {
-    // Reset
     handleReset() {
       this.page = 1;
       this.limit = 10;
@@ -290,7 +289,7 @@ export default {
           break;
       }
     },
-    // add / update
+
     handleSaveUpdateData() {
       let data = {
         type: this.formValidateType.type,
@@ -407,7 +406,6 @@ export default {
       }
     },
 
-    //Stop / start
     handleStop(row) {
       let data = { scheduleId: row.id };
       let url = "/schedule/stopSchedule";
@@ -490,7 +488,6 @@ export default {
           });
     },
 
-    //Delete
     handleDeleteRow(row) {
       if ( row.status.text==='RUNNING' ){
         this.$Modal.warning({
@@ -569,6 +566,7 @@ export default {
       this.page = pageNo;
       this.getTableData();
     },
+
     onPageSizeChange(pageSize) {
       this.limit = pageSize;
       this.getTableData();
@@ -581,6 +579,7 @@ export default {
     handleChangeStartDate (date) {
       this.formValidate.startDate = date;
     },
+
     handleChangeEndDate (date) {
       this.formValidate.endDate = date;
     }

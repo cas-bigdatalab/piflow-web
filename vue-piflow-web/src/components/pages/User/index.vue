@@ -17,7 +17,6 @@
         </div>
 
         <Table border :columns="columns" :data="tableData">
-
             <template slot-scope="{ row }" slot="action">
                 <Tooltip content="Edit" placement="top-start">
                     <span class="button-warp" @click="handleButtonSelect(row,1)">
@@ -112,17 +111,13 @@ export default {
             param:"",
             statusList:['Working','Freezing','Closing'],
 
-            //下面是表格的初始化
             row:null,
             id:"",
             name:"",
             username:"",
             password:"",
-            //操作记录需要在修改页进行显示，但是要设置成不可修改
-            //设置最后更新时间，在进行修改之后需要同步更新
             crtDttm:"",
             status:""
-            //此处是否要对状态进行初始化，等待实验
         };
     },
     
@@ -189,7 +184,7 @@ export default {
         this.getTableData();
     },
     methods:{
-        handleReset() {
+      handleReset() {
             this.page = 1;
             this.limit = 10;
             this.id = "";
@@ -199,11 +194,11 @@ export default {
             this.status = "";
         },
 
-        handleResetPassword() {
+      handleResetPassword() {
             this.password= this.username;
         },
 
-        handleButtonSelect(row,key) {
+      handleButtonSelect(row,key) {
             switch (key) {
                 case 1:
                     this.getRowData(row);
@@ -216,7 +211,7 @@ export default {
             }
         },
 
-        handleSaveUpdateData() {
+      handleSaveUpdateData() {
             let data = {
                 name : this.name,
                 username: this.username,
@@ -254,7 +249,7 @@ export default {
             }
         },
 
-        getRowData(row) {
+      getRowData(row) {
             this.$event.emit("loading", true);
             this.$axios
                 .get("/user/getUserById", { params: { userId: row.id }})
@@ -287,7 +282,7 @@ export default {
             });
         },
 
-        handleDeleteRow(row) {
+      handleDeleteRow(row) {
             this.$Modal.confirm({
                 title: this.$t("tip.title"),
                 okText: this.$t("modal.confirm"),
@@ -326,7 +321,7 @@ export default {
         })
     },
 
-    getTableData() {
+      getTableData() {
         let data = { page: this.page, limit: this.limit };
         if (this.param) {
             data.param = this.param;
@@ -358,16 +353,18 @@ export default {
             });
         });
     },
-    onPageChange(pageNo) {
+
+      onPageChange(pageNo) {
         this.page = pageNo;
         this.getTableData()
     },
-    onPageSizeChange(pageSize) {
+
+      onPageSizeChange(pageSize) {
         this.limit = pageSize;
         this.getTableData()
     },
 
-    handleModalSwitch() {
+      handleModalSwitch() {
         this.isOpen = !this.isOpen;
         }
     }

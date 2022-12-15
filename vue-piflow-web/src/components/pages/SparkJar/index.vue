@@ -177,7 +177,7 @@ export default {
           break;
       }
     },
-    // Upload Success: response, file, fileList
+
     handleSuccess (res, file) {
       this.file = null;
       this.getTableData();
@@ -185,6 +185,7 @@ export default {
         this.isOpen = false;
       },1000)
     },
+
     handleError ( error, file) {
       this.JarIsShow = false;
     },
@@ -222,7 +223,7 @@ export default {
         return;
       }
     },
-    // mount / unmount
+
     handleMount(row) {
       let data = { id: row.id };
       let url = "/sparkJar/unmountSparkJar";
@@ -260,7 +261,7 @@ export default {
             });
           });
     },
-    // Delete
+
     handleDeleteRow(row) {
       if ( row.status.text==='MOUNT' ){
         this.$Modal.warning({
@@ -316,6 +317,7 @@ export default {
       this.isOpen = true;
       this.$refs.upload.post(this.file);
     },
+
     uploadError(){
       this.isOpen = false;
       this.$refs.upload.clearFiles();
@@ -354,6 +356,7 @@ export default {
       this.page = pageNo;
       this.getTableData()
     },
+
     onPageSizeChange(pageSize) {
       this.limit = pageSize;
       this.getTableData()

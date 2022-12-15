@@ -16,8 +16,6 @@
         </FormItem>
       </Form>
     </div>
-
-
   </section>
 </template>
 
@@ -32,18 +30,15 @@ export default {
       },
     };
   },
-
-  created() {
-
-  },
-
   methods:{
     handleSubmit (name) {
       this.changePassword();
     },
+
     handleReset () {
       this.formCustom.value= '';
     },
+
     changePassword(){
       let parameter= {};
       parameter.accessKey = this.formCustom.value;
@@ -64,7 +59,7 @@ export default {
           .catch((error) => {
             console.log(error);
           });
-    },
+    }
   }
 };
 </script>

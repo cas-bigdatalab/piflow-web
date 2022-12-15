@@ -8,12 +8,6 @@
         <span style="margin: 0 5px;display: inline-block">&gt;&gt;</span>
       </a>
       <span style="font-weight: bold">drawingBoard</span>
-<!--      <BreadcrumbItem id="FlowList" @click="handleClick('flow')" :to="'#'">Flow</BreadcrumbItem>-->
-<!--      <BreadcrumbItem id="FlowBreadcrumbItem" :to="'#'">drawingBoard</BreadcrumbItem>-->
-
-<!--      <BreadcrumbItem v-for="(item,i) in breadcrumb" :key="'f'+i" :to="'#'">{{item.name}}</BreadcrumbItem>-->
-      <!-- <BreadcrumbItem to="/components/breadcrumb">Components</BreadcrumbItem>
-      <BreadcrumbItem>Breadcrumb</BreadcrumbItem>-->
     </Breadcrumb>
 
     <Breadcrumb id="BreadcrumbGroup">
@@ -24,10 +18,6 @@
         <span style="margin: 0 5px;display: inline-block">&gt;&gt;</span>
       </a>
       <span id="GroupBreadcrumbItem" style="font-weight: bold">drawingBoard</span>
-
-<!--      <BreadcrumbItem id="GroupList" @click="handleClick('group')">Group</BreadcrumbItem>-->
-<!--      <BreadcrumbItem id="GroupParents" to="/drawingBoard?src=/drawingBoard/page/flowGroup/mxGraph/index.html?drawingBoardType=GROUP&parentAccessPath=flowGroupList&load=8a80d5d27442608401744275e09e0000">flowGroupList</BreadcrumbItem>-->
-<!--      <BreadcrumbItem id="GroupBreadcrumbItem" :to="'#'">drawingBoard</BreadcrumbItem>-->
     </Breadcrumb>
 
     <Breadcrumb id="BreadcrumbProcess">
@@ -38,10 +28,6 @@
         <span style="margin: 0 5px;display: inline-block">&gt;&gt;</span>
       </a>
       <span id="ProcessBreadcrumbItem" style="font-weight: bold">drawingBoard</span>
-
-<!--      <BreadcrumbItem id="ProcessList" @click="handleClick('process')">Process</BreadcrumbItem>-->
-<!--      <BreadcrumbItem id="ProcessParents" :to="'#'">ProcessList</BreadcrumbItem>-->
-<!--      <BreadcrumbItem id="ProcessBreadcrumbItem" :to="'#'">drawingBoard</BreadcrumbItem>-->
     </Breadcrumb>
 
     <Breadcrumb id="BreadcrumbProcessGroup">
@@ -52,10 +38,6 @@
         <span style="margin: 0 5px;display: inline-block">&gt;&gt;</span>
       </a>
       <span id="ProcessGroupBreadcrumbItem" style="font-weight: bold">drawingBoard</span>
-
-<!--      <BreadcrumbItem id="ProcessList" @click="handleClick('process')">Process</BreadcrumbItem>-->
-<!--      <BreadcrumbItem id="ProcessParents" :to="'#'">ProcessList</BreadcrumbItem>-->
-<!--      <BreadcrumbItem id="ProcessBreadcrumbItem" :to="'#'">drawingBoard</BreadcrumbItem>-->
     </Breadcrumb>
 
     <Breadcrumb id="BreadcrumbSchedule">
@@ -70,23 +52,6 @@
 <script>
 export default {
   name: "footers",
-  data() {
-    return {
-      // breadcrumb: [],
-    };
-  },
-  created() {
-    // let breadcrumb = window.sessionStorage.getItem("breadcrumb");
-    // if (breadcrumb) {
-    //   this.breadcrumb = JSON.parse(breadcrumb);
-    // }
-  },
-  mounted() {
-    // this.$event.on("crumb", (arr) => {
-    //   this.breadcrumb = arr;
-    //   window.sessionStorage.setItem("breadcrumb", JSON.stringify(arr));
-    // });
-  },
   methods:{
     handleClick(val){
       switch (val) {
@@ -94,10 +59,7 @@ export default {
           window.sessionStorage.setItem("menuName", 'flow');
           this.$router.push({
             name: 'flow',
-            path: "/flow",
-            // query: {
-            //   src: "/drawingBoard/page/flow/mxGraph/index.html?load=" + row.id,
-            // }
+            path: "/flow"
           });
           this.$nextTick(()=>{
             document.getElementById('BreadcrumbFlow').style.display = 'none';
@@ -136,11 +98,7 @@ export default {
           break;
       }
     }
-  },
-  beforeDestroy() {
-    // window.sessionStorage.removeItem("breadcrumb");
-    // window.parent.postMessage(false);
-  },
+  }
 };
 </script>
 

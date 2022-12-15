@@ -1,4 +1,3 @@
-
 <template>
   <Menu
     :active-name="menuName"
@@ -51,14 +50,10 @@ export default {
       isCollapsed: false,
       menuName: "home",
       mouseOver: ""
-      // menulist: []
     };
   },
   props: ["width"],
   computed: {
-    // menuitemClasses() {
-    //   return [this.isCollapsed ? "collapsed-menu" : ""];
-    // },
     menulist() {
       return [
         {
@@ -242,31 +237,20 @@ export default {
     if (!menuName){
       window.sessionStorage.setItem("menuName", this.menuName);
       this.menuName = window.sessionStorage.getItem("menuName");
-
     }
-    // this.$refs.sideNav;
-    // window.sessionStorage.removeItem("menuName");
-
-
-    // let list = JSON.parse(window.sessionStorage.getItem("sysMenuVoList"));
-
   },
   watch: {
     $route() {
-      //路由变化时就重新执行这个方法 更新传来的参数
       this.getRouter();
     }
   },
   methods: {
-    // handleMouseOver(name) {
-    //   this.mouseOver = name;
-    // },
     handleMenuSelect(name) {
       if (this.menuName !== name) {
         window.sessionStorage.setItem("menuName", name);
       }
     },
-    //监听路由动态
+
     getRouter() {
       let menuName = window.sessionStorage.getItem("menuName");
       // console.log(this.$route.path);//为当前所在页面路由

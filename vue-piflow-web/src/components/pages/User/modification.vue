@@ -22,8 +22,6 @@
         </FormItem>
       </Form>
     </div>
-
-
   </section>
 </template>
 
@@ -37,7 +35,6 @@ export default {
         callback(new Error('Please enter your new password'));
       } else {
         if (this.formCustom.passwdCheck !== '') {
-          // 对第二个密码框单独验证
           this.$refs.formCustom.validateField('passwdCheck');
         }
         callback();
@@ -71,11 +68,6 @@ export default {
       }
     };
   },
-
-  created() {
-
-  },
-
   methods:{
     handleSubmit (name) {
       this.$refs[name].validate((valid) => {
@@ -87,9 +79,11 @@ export default {
         }
       })
     },
+
     handleReset (name) {
       this.$refs[name].resetFields();
     },
+
     changePassword(){
       let parameter= {};
       parameter.oldPassword = this.formCustom.oldPasswd;

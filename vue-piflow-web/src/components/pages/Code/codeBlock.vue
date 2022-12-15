@@ -8,9 +8,7 @@
       </ButtonGroup>
     </div>
 
-
     <ul class="relationship">
-<!--      codeSnippetList-->
       <li v-for="(item,m) in EditorList" :key="'ve'+m">
         <div :class="highlighted.index === m+1? 'prefix-identification': ''"></div>
         <div style="margin: 10px 0">
@@ -34,8 +32,6 @@
         </div>
       </li>
     </ul>
-
-
   </section>
 </template>
 
@@ -93,7 +89,6 @@ export default {
     }
   },
   methods: {
-    //  初始页面没有值的时候
     initEditorList(){
       if (this.codeSnippetList.length === 0){
         this.EditorList.push({
@@ -127,8 +122,8 @@ export default {
       });
       this.addEditor();
     },
-    addEditor(){
 
+    addEditor(){
       let key = this.codeSnippetList.length-1;
       let data = {
         codeContent: '',
@@ -162,7 +157,6 @@ export default {
           });
     },
 
-    //
     changeVal(val){
       this.highlighted.isFocus = val.isFocus;
       this.highlighted.index = val.data.codeSnippetSort;
@@ -184,21 +178,12 @@ export default {
       this.$axios
           .post("/codeSnippet/updateCodeSnippet", this.$qs.stringify(data))
           .then((res) => {
-            if (res.data.code === 200) {
 
-              // this.getCodeSnippetList();
-            } else {
-              // this.$Message.error({
-              //   content: res.data.errorMsg,
-              //   duration: 3
-              // });
-            }
           })
           .catch((error) => {
             console.log(error);
           });
     },
-
 
     runInfo(){
       let data = {
@@ -225,6 +210,7 @@ export default {
             console.log(error);
           });
     },
+
     getRunResults(){
       let data = {
         codeSnippetId: this.blurId
@@ -329,7 +315,6 @@ export default {
             console.log(error);
           });
     }
-
   },
 };
 </script>

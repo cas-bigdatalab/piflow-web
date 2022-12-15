@@ -122,16 +122,6 @@ export default {
           this.stopsDisplayed(queryJson);
         }
       }
-
-
-
-
-
-
-
-
-
-
     },
 
     selectAll ({ checked, records }) {
@@ -217,8 +207,6 @@ export default {
               duration: 3
             });
           });
-
-
     },
 
     searchEvent () {
@@ -235,7 +223,6 @@ export default {
         }, options)
         this.tableList = rest
 
-        // 搜索之后默认展开所有子节点
         this.$nextTick(() => {
           let defaultState = [];
           this.tableList.forEach((item)=>{
@@ -258,6 +245,7 @@ export default {
     onPageChange(pageNo) {
       this.page = pageNo
     },
+
     onPageSizeChange(pageSize) {
       this.limit = pageSize
     },

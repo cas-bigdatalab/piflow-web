@@ -109,7 +109,6 @@ export default {
     this.getTableData();
   },
   methods: {
-    // Reset
     handleReset() {
       this.page = 1;
       this.limit = 10;
@@ -128,7 +127,7 @@ export default {
           break;
       }
     },
-    //Delete
+
     handleDeleteRow(row) {
       this.$Modal.confirm({
         title: this.$t("tip.title"),
@@ -205,6 +204,7 @@ export default {
       this.page = pageNo;
       this.getTableData();
     },
+
     onPageSizeChange(pageSize) {
       this.limit = pageSize;
       this.getTableData();
@@ -234,7 +234,7 @@ export default {
           });
         });
     },
-    // upload
+
     handleFileSuccess(response, file, fileList) {
       this.$event.emit("loading", false);
       if (response.code === 200) {
@@ -250,6 +250,7 @@ export default {
         });
       }
     },
+
     handleFileError(error, file, fileList) {
       console.log(error);
       this.$event.emit("loading", false);

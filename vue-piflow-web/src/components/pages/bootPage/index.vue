@@ -119,6 +119,5 @@ export default {
         height: 100vh;
         width: 100vw;
         background: black;
-        /*background: rgba(0, 0, 0, 0.8);*/
     }
 </style>

@@ -183,7 +183,6 @@ export default {
     this.getTableData();
   },
   methods: {
-    // Reset
     handleReset() {
       this.page = 1;
       this.limit = 10;
@@ -211,7 +210,6 @@ export default {
       }
     },
 
-    // add / update
     handleSaveUpdateData() {
       let data = {
         name: this.formData.name,
@@ -284,11 +282,6 @@ export default {
               this.runSession_timer = window.setInterval(()=>{
                 this.getSessionState(id)
               },2000);
-
-              // this.$router.push({
-              //   path: "/codeDetailed",
-              //   query: { id: id }
-              // });
             }
           })
           .catch((error) => {
@@ -320,7 +313,7 @@ export default {
             console.log(error);
           });
       },
-    // Delete
+
     handleDeleteRow(row) {
       this.$Modal.confirm({
         title: this.$t("tip.title"),
@@ -464,6 +457,7 @@ export default {
       this.page = pageNo;
       this.getTableData();
     },
+
     onPageSizeChange(pageSize) {
       this.limit = pageSize;
       this.getTableData();
@@ -471,7 +465,7 @@ export default {
 
     handleModalSwitch() {
       this.isOpen = !this.isOpen;
-    },
+    }
   },
 };
 </script>

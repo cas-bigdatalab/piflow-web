@@ -337,12 +337,12 @@ export default {
     };
   },
   watch: {
-    //控制新增还是更新
     isOpen(state) {
       if (!state) {
         this.handleReset();
       }
     },
+
     param() {
       this.page = 1;
       this.limit = 10;
@@ -386,7 +386,6 @@ export default {
     this.token = `Bearer ${token}`;
   },
   methods: {
-    // Reset
     handleReset() {
       this.page = 1;
       this.limit = 10;
@@ -430,7 +429,7 @@ export default {
           break;
       }
     },
-    // cancel
+
     handleCancelData(){
       if (this.id && this.saveType === 'edit'){
 
@@ -452,7 +451,7 @@ export default {
             });
       }
     },
-    //Delete
+
     handleDeleteRow(row) {
       this.$Modal.confirm({
         title: this.$t("tip.title"),
@@ -539,6 +538,7 @@ export default {
         fieldType: ""
       });
     },
+
     handleRemove(m, mark) {
       if (mark) {
         this.$Modal.warning({
@@ -566,7 +566,7 @@ export default {
             this.$event.emit("loading", false);
           })
     },
-    // Schema
+
     createSchema(){
       let data = this.formCustom, id='';
       if (this.id){
@@ -605,7 +605,7 @@ export default {
           })
 
     },
-    // SchemaVal
+
     createSchemaVal(){
       this.whatStage = 'SchemaVal';
       this.createSchema();
@@ -627,7 +627,7 @@ export default {
             console.log(error);
           });
     },
-    //  创建后返回上一步SchemaList
+
     handleEditSchema(id){
       let data = { testDataId: id };
       this.schemaId = id;
@@ -651,7 +651,7 @@ export default {
             console.log(error);
           });
     },
-    //  save edit Schema
+
     handleEditSchemaPage(row){
       this.isOpen= true;
       this.whatStage= 'Schema';
@@ -691,7 +691,7 @@ export default {
             });
           });
     },
-    //  save edit SchemaVal
+
     handleEditSchemaValPage(row){
       this.isOpen= true;
       this.whatStage = 'SchemaVal'
@@ -764,7 +764,7 @@ export default {
             });
           });
     },
-    // get SchemaVal
+
     handleEditSchemaVal(id){
       this.isOpen= true;
       this.whatStage = 'SchemaVal'
@@ -859,9 +859,11 @@ export default {
         }
       })
     },
+
     handleResetss (name) {
       this.$refs.formCustom.resetFields();
     },
+
     handleCreate (val) {
       this.typeList.push({
         value: val,
@@ -869,12 +871,11 @@ export default {
       });
     },
 
-    // update schema
     editSchema(){
       this.isOpen=false;
       this.createSchema();
     },
-    // update schemaValues
+
     editSchemaVal(){
       this.isOpen=false;
       this.$refs.editable.saveSchemaValues();
@@ -887,9 +888,11 @@ export default {
         this.isOpen = false;
       },1000)
     },
+
     handleError ( error, file) {
       this.JarIsShow = false;
     },
+
     handleBeforeUpload (file) {
       var testmsg = file.name.substring(file.name.lastIndexOf(".") + 1);
       const extension =
@@ -913,6 +916,7 @@ export default {
 
       return false;
     },
+
     uploadSuccess(){
       let data = {
         testDataId: this.id,
@@ -929,6 +933,7 @@ export default {
 
       this.$refs.upload.post(this.file);
     },
+
     uploadError(){
       this.isOpen = false;
       this.$refs.upload.clearFiles();

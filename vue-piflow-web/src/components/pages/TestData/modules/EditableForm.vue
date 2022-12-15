@@ -69,9 +69,6 @@ export default {
     },
     schemaId(newVal){
       this.schemaId = newVal;
-    },
-    tableColumn(newVal){
-      // console.log(newVal)
     }
   },
   methods: {
@@ -79,6 +76,7 @@ export default {
       let { row: newRow } = await this.$refs.xTable.insertAt('', row)
       await this.$refs.xTable.setActiveRow(newRow, '')
     },
+
     saveSchemaValues(){
       const { insertRecords, removeRecords, updateRecords } = this.$refs.xTable.getRecordset();
       let schemaValuesList=[];

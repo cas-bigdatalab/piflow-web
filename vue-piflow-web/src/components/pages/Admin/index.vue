@@ -170,6 +170,7 @@ export default {
       this.jobClass = "";
       this.cronExpression = "";
     },
+
     handleButtonSelect(row, key) {
       switch (key) {
         case 1:
@@ -388,10 +389,12 @@ export default {
           });
         });
     },
+
     onPageChange(pageNo) {
       this.page = pageNo;
       this.getTableData()
     },
+
     onPageSizeChange(pageSize) {
       this.limit = pageSize;
       this.getTableData()

@@ -314,11 +314,6 @@ export default {
                   this.hdfsPercent = data.resource.hdfs.allocatedCapacityGB / data.resource.hdfs.TotalCapacityGB * 100;
                   this.hdfsPercent = Number(this.hdfsPercent.toFixed(2));
                   this.$Message.destroy();
-                } else {
-                  // this.$Message.loading({
-                  //   content: this.$t("index.loading"),
-                  //   duration: 0
-                  // });
                 }
               })
               .catch(error => {
@@ -331,7 +326,6 @@ export default {
   },
 
     getStatistics(){
-      // flow
       this.$axios
           .get("/dashboard/flowStatistic")
           .then(res => {
@@ -344,7 +338,6 @@ export default {
             console.log(error);
           });
 
-      // group
       this.$axios
           .get("/dashboard/groupStatistic")
           .then(res => {
@@ -357,7 +350,6 @@ export default {
             console.log(error);
           });
 
-      // schedule
       this.$axios
           .get("/dashboard/scheduleStatistic")
           .then(res => {
@@ -370,7 +362,6 @@ export default {
             console.log(error);
           });
 
-      // datasource
       this.$axios
           .get("/dashboard/templateAndDataSourceStatistic")
           .then(res => {
@@ -383,7 +374,6 @@ export default {
             console.log(error);
           });
 
-      // stop
       this.$axios
           .get("/dashboard/stopStatistic")
           .then(res => {
@@ -395,7 +385,7 @@ export default {
           .catch(error => {
             console.log(error);
           });
-    },
+    }
   }
 };
 </script>
