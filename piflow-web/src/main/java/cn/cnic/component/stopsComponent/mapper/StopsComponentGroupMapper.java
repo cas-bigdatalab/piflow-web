@@ -96,7 +96,7 @@ public interface StopsComponentGroupMapper {
     @Delete("delete from flow_stops_groups")
     int deleteGroup();
 
-    @Delete("delete from flow_stops_groups where groups_id =#{groups_id}")
+    @Delete("delete from flow_stops_groups where id =#{groups_id}")
     int deleteGroupById(@Param("groups_id") String groupsId);
 
     @Select("select count(*) from association_groups_stops_template where groups_id =#{groups_id}")
