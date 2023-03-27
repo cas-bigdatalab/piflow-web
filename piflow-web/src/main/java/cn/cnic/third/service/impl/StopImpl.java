@@ -129,7 +129,7 @@ public class StopImpl implements IStop {
         Map<String, String> map = new HashMap<>();
         map.put("plugin", stopsHubName);
         String json = JSONObject.fromObject(map).toString();
-        String doPost = HttpUtils.doPost(ApiConfig.getStopsHubMountUrl(), json, 30 * 1000);
+        String doPost = HttpUtils.doPost(ApiConfig.getStopsHubMountUrl(), json, 20 * 60 * 1000);
         logger.debug("Interface return value: " + doPost);
         if (ThirdInterfaceReturnMsgUtils.THIRD_INTERFACE_IS_ERROR(doPost).equals(ThirdInterfaceReturnMsgUtils.ERROR)) {
             return null;
@@ -146,7 +146,7 @@ public class StopImpl implements IStop {
         Map<String, String> map = new HashMap<>();
         map.put("pluginId", stopsHubMountId);
         String json = JSONObject.fromObject(map).toString();
-        String doPost = HttpUtils.doPost(ApiConfig.getStopsHubUNMountUrl(), json, 30 * 1000);
+        String doPost = HttpUtils.doPost(ApiConfig.getStopsHubUNMountUrl(), json, 20 * 60 * 1000);
         logger.info("Interface return value: " + doPost);
         if (ThirdInterfaceReturnMsgUtils.THIRD_INTERFACE_IS_ERROR(doPost).equals(ThirdInterfaceReturnMsgUtils.ERROR)) {
             return null;

@@ -30,6 +30,7 @@ import cn.cnic.component.mxGraph.vo.MxGraphVo;
 import cn.cnic.component.stopsComponent.domain.StopsComponentDomain;
 import cn.cnic.component.stopsComponent.entity.StopsComponent;
 import cn.cnic.component.stopsComponent.entity.StopsComponentProperty;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
@@ -719,11 +720,12 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
             // The stops data in the database is empty.
             logger.info("The stops data in the database is empty.");
         }
-        List<String> publishingNameList = flowStopsPublishingDomain.getPublishingNameListByStopsIds(removeStopsId);
-        if (null != publishingNameList && publishingNameList.size() > 0) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.STOP_PUBLISHED_CANNOT_DEL_STOP_MSG(publishingNameList.toString().replace("[", "'").replace("]", "'")));
+        if(CollectionUtils.isNotEmpty(removeStopsId)){
+            List<String> publishingNameList = flowStopsPublishingDomain.getPublishingNameListByStopsIds(removeStopsId);
+            if (null != publishingNameList && publishingNameList.size() > 0) {
+                return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.STOP_PUBLISHED_CANNOT_DEL_STOP_MSG(publishingNameList.toString().replace("[", "'").replace("]", "'")));
+            }
         }
-
         // save flow
         int updateFlow = flowDomain.updateFlow(flowDB);
         // Determine whether the save is successful
