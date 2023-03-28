@@ -21,6 +21,8 @@ public class StopsHubMapperProvider {
     private String status;
     private String bundles;
     private int isPublishing;
+    private String type;
+    private String languageVersion;
 
     private boolean preventSQLInjectionStopsHub(StopsHub stopsHub) {
         if (null == stopsHub || StringUtils.isBlank(stopsHub.getLastUpdateUser())) {
@@ -46,6 +48,8 @@ public class StopsHubMapperProvider {
         this.status = SqlUtils.preventSQLInjection(null != stopsHub.getStatus() ? stopsHub.getStatus().name() : null);
         this.bundles = SqlUtils.preventSQLInjection(stopsHub.getBundles());
         this.isPublishing = ((null != stopsHub.getIsPublishing() && stopsHub.getIsPublishing()) ? 1 : 0);
+        this.type = SqlUtils.preventSQLInjection(null != stopsHub.getType() ? stopsHub.getType().name() : null);
+        this.languageVersion = SqlUtils.preventSQLInjection(stopsHub.getLanguageVersion());
         return true;
     }
 
@@ -61,6 +65,8 @@ public class StopsHubMapperProvider {
         this.status = null;
         this.bundles = null;
         this.isPublishing = 0;
+        this.type = null;
+        this.languageVersion = null;
     }
 
     /**
@@ -85,6 +91,8 @@ public class StopsHubMapperProvider {
         strBuf.append(",status ");
         strBuf.append(",bundles ");
         strBuf.append(",is_publishing ");
+        strBuf.append("type, ");
+        strBuf.append("language_version ");
         strBuf.append(") VALUES ( ");
         strBuf.append(SqlUtils.baseFieldValues(stopsHub));
         strBuf.append(", " + this.mountId);
@@ -93,6 +101,8 @@ public class StopsHubMapperProvider {
         strBuf.append(", " + this.status);
         strBuf.append(", " + this.bundles);
         strBuf.append(", " + this.isPublishing);
+        strBuf.append(this.type + ", ");
+        strBuf.append(this.languageVersion + " ");
         strBuf.append(") ");
         String sqlStr = strBuf.toString();
         this.reset();

@@ -1,6 +1,7 @@
 package cn.cnic.component.stopsComponent.entity;
 
 import cn.cnic.base.BaseModelUUIDNoCorpAgentId;
+import cn.cnic.common.Eunm.ComponentFileType;
 import cn.cnic.common.Eunm.StopsHubState;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,5 +21,7 @@ public class StopsHub extends BaseModelUUIDNoCorpAgentId {
     private StopsHubState status;
     private String bundles;
     private Boolean isPublishing;
+    private ComponentFileType type;        //component type:PYTHON/SCALA
+    private String languageVersion;         //the language version that the component depends on
 
 }

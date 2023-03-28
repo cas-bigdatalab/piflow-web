@@ -9,9 +9,11 @@ public interface IStopsHubService {
      *
      * @param username
      * @param file
+     * @param type Component type:Python/Scala
+     * @param languageVersion
      * @return
      */
-    public String uploadStopsHubFile(String username, MultipartFile file);
+    public String uploadStopsHubFile(String username, MultipartFile file, String type, String languageVersion);
 
     /**
      * mount stopsHub

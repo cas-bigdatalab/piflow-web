@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import cn.cnic.common.Eunm.ComponentFileType;
 import cn.cnic.common.constant.MessageConfig;
 import cn.cnic.component.system.domain.SysUserDomain;
 import cn.cnic.component.system.entity.SysUser;
@@ -61,20 +62,26 @@ public class StopsHubServiceImpl implements IStopsHubService {
     }
 
     @Override
-    public String uploadStopsHubFile(String username, MultipartFile file) {
+    public String uploadStopsHubFile(String username, MultipartFile file, String type, String languageVersion) {
+        if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
+        }
+        if (file.isEmpty()) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Upload failed, please try again later");
+        }
 
         //call piflow server api: plunin/path
         String stopsHubPath = stopImpl.getStopsHubPath();
-
+        if (!stopsHubPath.endsWith("/")){
+            stopsHubPath = stopsHubPath+"/";
+        }
         //upload jar file to plugin path
         String stopsHubName = file.getOriginalFilename();
+        ComponentFileType fileType = ComponentFileType.selectGender(type);
+        if (fileType ==null){
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Please select a file type or an incorrect file type");
+        }
 
-        if (StringUtils.isBlank(username)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
-        }
-        if (file.isEmpty()) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.UPLOAD_FAILED_FILE_EMPTY_MSG());
-        }
         Map<String, Object> uploadMap = FileUtils.uploadRtnMap(file, stopsHubPath, stopsHubName);
         if (null == uploadMap || uploadMap.isEmpty()) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.UPLOAD_FAILED_MSG());
@@ -90,6 +97,8 @@ public class StopsHubServiceImpl implements IStopsHubService {
         stopsHub.setJarName(stopsHubName);
         stopsHub.setJarUrl(stopsHubPath + stopsHubName);
         stopsHub.setStatus(StopsHubState.UNMOUNT);
+        stopsHub.setType(fileType);
+        stopsHub.setLanguageVersion(languageVersion);
         stopsHubDomain.addStopHub(stopsHub);
         return ReturnMapUtils.setSucceededMsgRtnJsonStr("successful jar upload");
     }
