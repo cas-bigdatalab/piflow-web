@@ -23,15 +23,15 @@ public class StopsHubInfoVo implements Serializable {
     private String chineseName;
     private String stopName;
 
-
-    //Python组件查询单个算法详情,返回给前台,以下是python特有的字段
-    private String groups;              //所属组
-    private String bundleDescription;         //组件描述
+    private String groups;
+    private String bundleDescription;
     private String inports;
     private String outports;
     private String owner;
     private String imageUrl;
-    private Boolean isComponent = false;        //是否是Python组件
-    private Boolean isHaveParams = false;           //Python脚本是否有参数
-    private List<StopsComponentPropertyVo> properties;     //对应的python属性值集合
+    private List<StopsComponentPropertyVo> properties;
+
+    //python component properties
+    private Boolean isPythonComponent = false;
+    private Boolean isHaveParams = false;
 }

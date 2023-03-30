@@ -159,4 +159,11 @@ public interface IStopsService {
      */
     public String getStopsNameByFlowId(String flowId);
 
+    /**
+     * Get stops info by id,if type is python,it's file_record_id,if type is scala,it's flow_stops_template_id
+     * @param id
+     * @param type
+     * @return
+     */
+    String getStopsInfoById(String id,String type);
 }

@@ -778,7 +778,32 @@ public class MessageConfig {
         return PLEASE_BIND_THE_DEVELOPER_ACCOUNT_MSG;
     }
 
+    private static String PLEASE_SPECIFY_STOP_TYPE_MSG;
 
+    @Value("${msg.please_specify_stop_type}")
+    private void setPleaseSpecifyStopTypeMsgZh(String pleaseSpecifyStopType) {
+        PLEASE_SPECIFY_STOP_TYPE_MSG = pleaseSpecifyStopType;
+    }
+    public static String PLEASE_SPECIFY_STOP_TYPE_MSG(){
+        return PLEASE_SPECIFY_STOP_TYPE_MSG;
+    }
+
+    private static String DATA_ERROR_MSG;
+    private static String DATA_ERROR_MSG_ZH;
+    @Value("${msg.data.error}")
+    private void setDataErrorMsg(String dataErrorMsg) {
+        DATA_ERROR_MSG = dataErrorMsg;
+    }
+    @Value("${msg.data.error.zh}")
+    private void setDataErrorMsgZh(String dataErrorMsgZh) {
+        DATA_ERROR_MSG_ZH = dataErrorMsgZh;
+    }
+    public static String DATA_ERROR_MSG(){
+        if("ZH".equals(LANGUAGE)){
+            return DATA_ERROR_MSG_ZH;
+        }
+        return DATA_ERROR_MSG;
+    }
 
 
 }

@@ -236,4 +236,17 @@ public class StopsCtrl {
         return flowStopsPublishingServiceImpl.deleteFlowStopsPublishing(username, publishingId);
     }
 
+    /**
+     * Get stops info by id,if type is python,it's file_record_id,if type is scala,it's flow_stops_template_id
+     * @param id
+     * @param type PYTHON/SCALA
+     * @return
+     */
+    @RequestMapping(value = "/getStopsInfoById",method = RequestMethod.POST)
+    @ResponseBody
+    @ApiOperation(value="getStopsInfoById", notes="Get stops info by id")
+    public String getStopsInfoById(String id,String type){
+        return stopsServiceImpl.getStopsInfoById(id,type);
+    }
+
 }

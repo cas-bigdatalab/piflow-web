@@ -14,6 +14,11 @@ import cn.cnic.component.flow.domain.FlowStopsPublishingDomain;
 import cn.cnic.component.flow.vo.PathsVo;
 import cn.cnic.component.flow.vo.StopsCustomizedPropertyVo;
 import cn.cnic.component.mxGraph.utils.MxGraphUtils;
+import cn.cnic.component.stopsComponent.domain.StopsHubFileRecordDomain;
+import cn.cnic.component.stopsComponent.entity.StopsComponentProperty;
+import cn.cnic.component.stopsComponent.entity.StopsHubFileRecord;
+import cn.cnic.component.stopsComponent.vo.StopsComponentPropertyVo;
+import cn.cnic.component.stopsComponent.vo.StopsHubInfoVo;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
@@ -33,7 +38,6 @@ import cn.cnic.component.flow.entity.Property;
 import cn.cnic.component.flow.entity.Stops;
 import cn.cnic.component.flow.service.IStopsService;
 import cn.cnic.component.flow.utils.StopsUtils;
-import cn.cnic.component.flow.vo.StopsVo;
 import cn.cnic.component.mxGraph.entity.MxCell;
 import cn.cnic.component.mxGraph.entity.MxGraphModel;
 import cn.cnic.component.mxGraph.utils.MxCellUtils;
@@ -51,7 +55,6 @@ import cn.cnic.component.stopsComponent.entity.StopsComponent;
 import cn.cnic.component.testData.domain.TestDataDomain;
 import cn.cnic.controller.requestVo.RunStopsVo;
 import cn.cnic.third.service.IFlow;
-import cn.cnic.third.vo.flow.ThirdFlowInfoStopVo;
 
 
 @Service
@@ -76,6 +79,8 @@ public class StopsServiceImpl implements IStopsService {
     private FlowStopsPublishingDomain flowStopsPublishingDomain;
     @Autowired
     private IFlow flowImpl;
+    @Autowired
+    private StopsHubFileRecordDomain stopsHubFileRecordDomain;
 
     /**
      * Modify the isCheckpoint field
@@ -1268,6 +1273,81 @@ public class StopsServiceImpl implements IStopsService {
         }
         List<Map<String, String>> stopsIdAndNameList = flowDomain.getStopsIdAndNameListByFlowId(flowId);
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("stopsIdAndNameList" , stopsIdAndNameList);
+    }
+
+    @Override
+    public String getStopsInfoById(String id,String type) {
+        if (StringUtils.isBlank(type)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PLEASE_SPECIFY_STOP_TYPE_MSG());
+        }
+        switch (type) {
+            case "PYTHON":
+                StopsHubFileRecord stopsHubFileRecord = stopsHubFileRecordDomain.getStopsHubFileRecordById(id);
+                if (stopsHubFileRecord == null) {
+                    logger.error("The specific file record data is lost");
+                    return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.DATA_ERROR_MSG());
+                }
+                StopsComponent stopsComponent = stopsComponentDomain.getStopsComponentByBundle(stopsHubFileRecord.getFilePath());
+                if (stopsComponent == null) {
+                    StopsHubInfoVo stopsHubInfoVo = new StopsHubInfoVo();
+                    stopsHubInfoVo.setId(id);
+                    stopsHubInfoVo.setStopBundle(stopsHubFileRecord.getFilePath());//file path is bundle value
+                    return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("data", stopsHubInfoVo);
+                } else {
+                    StopsHubInfoVo stopsHubInfoVo = new StopsHubInfoVo();
+                    stopsHubInfoVo.setId(id);
+                    stopsHubInfoVo.setStopBundle(stopsComponent.getBundel());
+                    //modifiable parameters
+                    stopsHubInfoVo.setGroups(stopsComponent.getGroups());
+                    stopsHubInfoVo.setBundleDescription(stopsComponent.getDescription());
+                    stopsHubInfoVo.setInports(stopsComponent.getInports());
+                    stopsHubInfoVo.setOutports(stopsComponent.getOutports());
+                    stopsHubInfoVo.setOwner(stopsComponent.getOwner());
+                    stopsHubInfoVo.setImageUrl(stopsComponent.getImageUrl());
+                    stopsHubInfoVo.setIsPythonComponent(true);
+
+                    if (!(stopsComponent.getProperties().isEmpty())) {
+                        List<StopsComponentPropertyVo> propertiesVoList = new ArrayList<>();
+                        for (StopsComponentProperty property : stopsComponent.getProperties()) {
+                            StopsComponentPropertyVo stopsComponentPropertyVo = new StopsComponentPropertyVo();
+                            BeanUtils.copyProperties(property, stopsComponentPropertyVo);
+                            propertiesVoList.add(stopsComponentPropertyVo);
+                        }
+                        stopsHubInfoVo.setProperties(propertiesVoList);
+                        stopsHubInfoVo.setIsHaveParams(true);
+                    }
+                    return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("data", stopsHubInfoVo);
+                }
+            case "SCALA":
+                //Get component info with properties
+                StopsComponent stops = stopsComponentDomain.getStopsComponentAndPropertyById(id);
+                StopsHubInfoVo stopsHubInfoVo = new StopsHubInfoVo();
+                stopsHubInfoVo.setId(id);
+                stopsHubInfoVo.setStopBundle(stops.getBundel());
+                //modifiable parameters
+                stopsHubInfoVo.setGroups(stops.getGroups());
+                stopsHubInfoVo.setBundleDescription(stops.getDescription());
+                stopsHubInfoVo.setInports(stops.getInports());
+                stopsHubInfoVo.setOutports(stops.getOutports());
+                stopsHubInfoVo.setOwner(stops.getOwner());
+                stopsHubInfoVo.setImageUrl(stops.getImageUrl());
+                stopsHubInfoVo.setIsPythonComponent(false);
+
+                if (!(stops.getProperties().isEmpty())) {
+                    List<StopsComponentPropertyVo> propertiesVoList = new ArrayList<>();
+                    for (StopsComponentProperty property : stops.getProperties()) {
+                        StopsComponentPropertyVo stopsComponentPropertyVo = new StopsComponentPropertyVo();
+                        BeanUtils.copyProperties(property, stopsComponentPropertyVo);
+                        propertiesVoList.add(stopsComponentPropertyVo);
+                    }
+                    stopsHubInfoVo.setProperties(propertiesVoList);
+                    stopsHubInfoVo.setIsHaveParams(true);
+                }
+                return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("data", stopsHubInfoVo);
+
+            default:
+                return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PLEASE_SPECIFY_STOP_TYPE_MSG());
+        }
     }
 
 }
