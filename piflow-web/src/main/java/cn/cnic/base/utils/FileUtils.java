@@ -2,6 +2,11 @@ package cn.cnic.base.utils;
 
 import cn.cnic.common.constant.MessageConfig;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IOUtils;
+import org.apache.hadoop.util.Progressable;
 import org.slf4j.Logger;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.context.request.RequestAttributes;
@@ -22,12 +27,16 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.*;
+import java.net.URI;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipInputStream;
 
 
 public class FileUtils {
@@ -483,5 +492,12 @@ public class FileUtils {
         return csvDataMap;
     }
 
-
+    public static void writeData(String url, String data) throws IOException {
+        InputStream in = org.apache.commons.io.IOUtils.toInputStream(data, StandardCharsets.UTF_8.name());
+        FileOutputStream out = new FileOutputStream(url);
+        IOUtils.copyBytes(in, out, 4096, true);
+        //close stream
+        in.close();
+        out.close();
+    }
 }

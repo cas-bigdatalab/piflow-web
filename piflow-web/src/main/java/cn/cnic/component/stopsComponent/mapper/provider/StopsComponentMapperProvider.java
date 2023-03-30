@@ -21,6 +21,9 @@ public class StopsComponentMapperProvider {
     private String visualizationType;
     private int isDataSource;
     private String imageUrl;
+    private String componentType;    //PYTHON/SCALA
+    private String dockerImagesName; //python component
+    private String stopsHubId;
 
     private boolean preventSQLInjectionStops(StopsComponent stopsComponent) {
         if (null == stopsComponent || StringUtils.isBlank(stopsComponent.getLastUpdateUser())) {
@@ -40,6 +43,9 @@ public class StopsComponentMapperProvider {
         this.visualizationType = SqlUtils.preventSQLInjection(stopsComponent.getVisualizationType());
         this.isDataSource = ((null != stopsComponent.getIsDataSource() && stopsComponent.getIsDataSource()) ? 1 : 0);
         this.imageUrl = SqlUtils.preventSQLInjection(stopsComponent.getImageUrl());
+        this.componentType = SqlUtils.preventSQLInjection(null != stopsComponent.getComponentType() ? stopsComponent.getComponentType().name() : null);
+        this.dockerImagesName = SqlUtils.preventSQLInjection(stopsComponent.getDockerImagesName());
+        this.stopsHubId = SqlUtils.preventSQLInjection(stopsComponent.getStopsHubId());
         return true;
     }
 
@@ -57,6 +63,9 @@ public class StopsComponentMapperProvider {
         this.visualizationType = null;
         this.isDataSource = 0;
         this.imageUrl = null;
+        this.componentType = null;
+        this.dockerImagesName = null;
+        this.stopsHubId = null;
     }
 
     /**
@@ -158,13 +167,13 @@ public class StopsComponentMapperProvider {
 
             strBuf.append("( ");
             strBuf.append(SqlUtils.baseFieldName() + ", ");
-            strBuf.append("bundel, description, `groups`, name, owner, inports, in_port_type, outports, out_port_type, is_customized, visualization_type, is_data_source,image_url ");
+            strBuf.append("bundel, description, `groups`, name, owner, inports, in_port_type, outports, out_port_type, is_customized, visualization_type, is_data_source,image_url,component_type,docker_images_name,stops_hub_id ");
             strBuf.append(") ");
 
             strBuf.append("values ");
             strBuf.append("(");
             strBuf.append(SqlUtils.baseFieldValues(stopsComponent) + ", ");
-            strBuf.append(bundel + "," + description + "," + groups + "," + name + "," + owner + "," + inports + "," + inPortType + "," + outports + "," + outPortType + "," + isCustomized + "," + visualizationType+","+isDataSource+","+imageUrl);
+            strBuf.append(bundel + "," + description + "," + groups + "," + name + "," + owner + "," + inports + "," + inPortType + "," + outports + "," + outPortType + "," + isCustomized + "," + visualizationType+","+isDataSource+","+imageUrl+","+componentType+","+dockerImagesName+","+stopsHubId);
             strBuf.append(")");
             sqlStr = strBuf.toString() + ";";
         }

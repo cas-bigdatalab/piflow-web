@@ -1,6 +1,7 @@
 package cn.cnic.component.stopsComponent.entity;
 
 import cn.cnic.base.BaseModelUUIDNoCorpAgentId;
+import cn.cnic.common.Eunm.ComponentFileType;
 import cn.cnic.common.Eunm.PortType;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,4 +36,8 @@ public class StopsComponent extends BaseModelUUIDNoCorpAgentId {
     private List<StopsComponentGroup> stopGroupList = new ArrayList<>();
 
     private String imageUrl;
+
+    private ComponentFileType componentType;        //PYTHON/SCALA
+    private String dockerImagesName;            //python component image
+    private String stopsHubId;
 }

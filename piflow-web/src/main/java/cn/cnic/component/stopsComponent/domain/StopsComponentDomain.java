@@ -268,4 +268,8 @@ public class StopsComponentDomain {
         StopsComponent stopsComponent = stopsComponentMapper.getDataSourceStopsComponentByBundle(stopsTemplateBundle);
         return  stopsComponent.getProperties();
     }
+
+    public List<StopsComponent> getStopsComponentByStopsHubId(String stopsHubId) {
+        return stopsComponentMapper.getStopsComponentByStopsHubId(stopsHubId);
+    }
 }

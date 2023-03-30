@@ -122,4 +122,10 @@ public interface StopsComponentMapper {
      */
     @Select("select image_url from flow_stops_template where bundel=#{bundle}")
     public String getStopsComponentImageUrlByBundle(@Param("bundle") String bundle);
+
+    @Select("select * from flow_stops_template where bundel=#{bundle}")
+    public StopsComponent getOnlyStopsComponentByBundle(@Param("bundle") String bundle);
+
+    @Select("select * from flow_stops_template where stops_hub_id=#{stopsHubId}")
+    List<StopsComponent> getStopsComponentByStopsHubId(@Param("stopsHubId") String stopsHubId);
 }

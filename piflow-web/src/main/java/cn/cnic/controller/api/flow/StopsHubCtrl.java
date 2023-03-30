@@ -1,10 +1,13 @@
 package cn.cnic.controller.api.flow;
 
+import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.base.utils.SessionUserUtil;
+import cn.cnic.common.constant.MessageConfig;
 import cn.cnic.component.stopsComponent.service.IStopsHubService;
 import cn.cnic.component.system.service.ILogHelperService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -116,6 +119,24 @@ public class StopsHubCtrl {
         String username = SessionUserUtil.getCurrentUsername();
         Boolean isAdmin = SessionUserUtil.isAdmin();
         return stopsHubServiceImpl.stopsHubPublishing(username, isAdmin, id);
+    }
+
+    /**
+     * Get StopsHubInfo by id
+     * @param stopsHubId id
+     * @return
+     */
+    @RequestMapping(value = "/getStopsHubInfoByStopHubId",method = RequestMethod.POST)
+    @ResponseBody
+    @ApiOperation(value="getStopsHubInfoByStopHubId", notes="get stopsHubInfo")
+    public String getStopsHubInfoByStopHubId(String stopsHubId){
+        if (StringUtils.isEmpty(stopsHubId)){
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("id"));
+        }else{
+            String username = SessionUserUtil.getCurrentUsername();
+            Boolean isAdmin = SessionUserUtil.isAdmin();
+            return stopsHubServiceImpl.getStopsHubInfoByStopHubId(username,isAdmin,stopsHubId);
+        }
     }
 
 }

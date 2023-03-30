@@ -64,4 +64,5 @@ public interface IStopsHubService {
     public String stopsHubPublishing(String username, Boolean isAdmin, String id);
 
 
+    String getStopsHubInfoByStopHubId(String username, Boolean isAdmin,String stopsHubId);
 }
