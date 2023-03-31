@@ -29,6 +29,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
@@ -320,17 +323,75 @@ public class StopsHubServiceImpl implements IStopsHubService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("StopsHub have been UNMounted already!");
         }
 
+        switch (stopsHub.getType()) {
+            case SCALA:
+                //unmount scala.jar
+                return unMountScalaStopsHub(stopsHub, username);
+            case PYTHON:
+                //unmount python.zip
+                return unMountPythonStopsZip(stopsHub, username);
+            default:
+                return ReturnMapUtils.setFailedMsgRtnJsonStr("UNMount failed, Data type error, contact the administrator");
+        }
+    }
+    /**
+     * @Description unmount scala.jar
+
+     * @Param stopsHub
+     * @Param username
+
+     * @Return java.lang.String
+     * @Author TY
+     * @Date 17:03 2023/3/30
+     **/
+
+    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
+    public String unMountScalaStopsHub(StopsHub stopsHub,String username){
         StopsHubVo stopsHubVo = stopImpl.unmountStopsHub(stopsHub.getMountId());
         if (stopsHubVo == null) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("UNMount failed, please try again later");
         }
-        //TODO: remove stops and groups into db,
+
+        //remove stops and groups into db,
         List<ThirdStopsComponentVo> stops = stopsHubVo.getStops();
         for (ThirdStopsComponentVo s : stops) {
             StopsComponent stopsComponent = stopsComponentDomain.getStopsComponentByBundle(s.getBundle());
-            stopsComponentDomain.deleteStopsComponent(stopsComponent);
+            if (stopsComponent !=null){
+                stopsComponentDomain.deleteStopsComponent(stopsComponent);
+            }
         }
+
         stopsHub.setMountId(stopsHubVo.getMountId());
+        stopsHub.setStatus(StopsHubState.UNMOUNT);
+        stopsHub.setLastUpdateUser(username);
+        stopsHub.setLastUpdateDttm(new Date());
+        stopsHubDomain.updateStopHub(stopsHub);
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr("UNMount successful");
+    }
+
+    /**
+     * unMount python.zip
+     * @param stopsHub
+     * @param username
+     * @data 2022-02-03
+     * @author leilei
+     * @return
+     */
+    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
+    public String unMountPythonStopsZip(StopsHub stopsHub, String username){
+        //1.search stops_hub_file_record
+        List<StopsHubFileRecord> fileRecordList = stopsHubFileRecordDomain.getStopsHubFileRecordByHubId(stopsHub.getId());
+        //2.delete flow_stops_template、flow_stops_property_template、flow_stops_groups
+        for (StopsHubFileRecord s : fileRecordList) {
+            //file path = bundle
+            StopsComponent stopsComponent = stopsComponentDomain.getStopsComponentByBundle(s.getFilePath());
+            if (stopsComponent !=null){
+                stopsComponentDomain.deleteStopsComponent(stopsComponent);
+            }
+            stopsHubFileRecordDomain.deleteStopsHubFileRecord(s.getId());
+        }
+
+//        stopsHub.setMountId(stopsHubVo.getMountId());
         stopsHub.setStatus(StopsHubState.UNMOUNT);
         stopsHub.setLastUpdateUser(username);
         stopsHub.setLastUpdateDttm(new Date());
