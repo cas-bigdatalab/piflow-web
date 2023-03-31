@@ -70,7 +70,7 @@ public class FlowCtrl {
      * @return
      * @throws Exception 
      */
-    @RequestMapping(value = "/runFlow", method = RequestMethod.POST)
+    @RequestMapping(value = "", method = RequestMethod.POST)
     @ResponseBody
     @ApiOperation(value="runFlow", notes="run Flow")
     public String runFlow(String flowId, String runMode) throws Exception {

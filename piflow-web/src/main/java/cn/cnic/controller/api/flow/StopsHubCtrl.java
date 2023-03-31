@@ -92,7 +92,7 @@ public class StopsHubCtrl {
     }
 
     /**
-     * unmount stopsHub
+     * delete stopsHub
      *
      * @param id
      * @return

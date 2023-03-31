@@ -300,6 +300,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
                 stopsHub.setStatus(StopsHubState.MOUNT);
                 stopsHub.setLastUpdateUser(username);
                 stopsHub.setLastUpdateDttm(new Date());
+                stopsHub.setBundles(insertList.stream().map(StopsHubFileRecord::getFilePath).collect(Collectors.joining(",")));
                 stopsHubDomain.updateStopHub(stopsHub);
 
                 //close stream
