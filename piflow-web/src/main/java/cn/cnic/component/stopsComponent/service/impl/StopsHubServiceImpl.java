@@ -4,6 +4,7 @@ import cn.cnic.base.utils.*;
 import cn.cnic.common.Eunm.ComponentFileType;
 import cn.cnic.common.Eunm.StopsHubState;
 import cn.cnic.common.constant.MessageConfig;
+import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.component.process.entity.Process;
 import cn.cnic.component.stopsComponent.domain.StopsComponentDomain;
 import cn.cnic.component.stopsComponent.domain.StopsHubDomain;
@@ -16,6 +17,7 @@ import cn.cnic.component.stopsComponent.service.IStopsHubService;
 import cn.cnic.component.stopsComponent.utils.StopsComponentGroupUtils;
 import cn.cnic.component.stopsComponent.utils.StopsComponentUtils;
 import cn.cnic.component.stopsComponent.utils.StopsHubUtils;
+import cn.cnic.component.stopsComponent.vo.PublishComponentVo;
 import cn.cnic.component.stopsComponent.vo.StopsHubInfoVo;
 import cn.cnic.component.system.domain.SysUserDomain;
 import cn.cnic.component.system.entity.SysUser;
@@ -23,6 +25,7 @@ import cn.cnic.third.market.service.IMarket;
 import cn.cnic.third.service.IStop;
 import cn.cnic.third.vo.stop.StopsHubVo;
 import cn.cnic.third.vo.stop.ThirdStopsComponentVo;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.apache.commons.lang3.StringUtils;
@@ -65,10 +68,9 @@ public class StopsHubServiceImpl implements IStopsHubService {
     }
 
     /**
-     *
      * @param username
      * @param file
-     * @param type Component type:Python/Scala
+     * @param type            Component type:Python/Scala
      * @param languageVersion
      * @return
      */
@@ -83,13 +85,13 @@ public class StopsHubServiceImpl implements IStopsHubService {
 
         //call piflow server api: plunin/path
         String stopsHubPath = stopImpl.getStopsHubPath();
-        if (!stopsHubPath.endsWith("/")){
-            stopsHubPath = stopsHubPath+"/";
+        if (!stopsHubPath.endsWith("/")) {
+            stopsHubPath = stopsHubPath + "/";
         }
         //upload jar file to plugin path
         String stopsHubName = file.getOriginalFilename();
         ComponentFileType fileType = ComponentFileType.selectGender(type);
-        if (fileType ==null){
+        if (fileType == null) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Please select a file type or an incorrect file type");
         }
 
@@ -121,19 +123,19 @@ public class StopsHubServiceImpl implements IStopsHubService {
 //        if(stopsHub.getStatus() == StopsHubState.MOUNT){
 //            return ReturnMapUtils.setFailedMsgRtnJsonStr("StopsHub have been Mounted already!");
 //        }
-        if (stopsHub == null ){
+        if (stopsHub == null) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("no data");
-        }else if (stopsHub.getType() == null){
+        } else if (stopsHub.getType() == null) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Data type error,Delete it and upload it again or contact the administrator");
         }
 
-        switch (stopsHub.getType()){
+        switch (stopsHub.getType()) {
             case SCALA:
                 //mount scala stopsHub, parse on server
-                return mountScalaStopsHub(stopsHub,username);
+                return mountScalaStopsHub(stopsHub, username);
             case PYTHON:
                 //mount python stopsHub,parse on web
-                return mountPythonStopsZip(stopsHub,username);
+                return mountPythonStopsZip(stopsHub, username);
             default:
                 return ReturnMapUtils.setFailedMsgRtnJsonStr("Data type error,Delete it and upload it again or contact the administrator");
         }
@@ -141,13 +143,14 @@ public class StopsHubServiceImpl implements IStopsHubService {
 
     /**
      * mount scala.jar
+     *
      * @param stopsHub
      * @param username
+     * @return
      * @data 2022-02-03
      * @author leilei
-     * @return
      */
-    private String mountScalaStopsHub(StopsHub stopsHub, String username){
+    private String mountScalaStopsHub(StopsHub stopsHub, String username) {
         StopsHubVo stopsHubVo = stopImpl.mountStopsHub(stopsHub.getJarName());
         if (stopsHubVo == null) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Mount failed, please try again later");
@@ -199,7 +202,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
             } else {//update stop group
                 //stopsComponent.setStopGroupList(stopGroupByName);
                 //TODO: Update group info
-                logger.info("bundle is already exists, bundle name is "+s.getBundle());
+                logger.info("bundle is already exists, bundle name is " + s.getBundle());
             }
             //add stop and group relationship
             for (StopsComponentGroup sGroup : stopGroupByName) {
@@ -226,13 +229,14 @@ public class StopsHubServiceImpl implements IStopsHubService {
 
     /**
      * mount python.zip
+     *
      * @param stopsHub 算法包
      * @param username
+     * @return
      * @data 2022-02-03
      * @author leilei
-     * @return
      */
-    private String mountPythonStopsZip(StopsHub stopsHub, String username){
+    private String mountPythonStopsZip(StopsHub stopsHub, String username) {
         if (StringUtils.isNotEmpty(stopsHub.getJarUrl()) && StringUtils.isNotBlank(stopsHub.getJarName())) {
             List<StopsHubFileRecord> insertList = new ArrayList<>();
             String jarName = stopsHub.getJarName();
@@ -251,7 +255,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
                             StopsHubFileRecord stopsHubFileRecord = new StopsHubFileRecord();
                             stopsHubFileRecord.setId(UUIDUtils.getUUID32());
                             String fileName = zipEntryFileName.contains("/") ? zipEntryFileName.substring(zipEntryFileName.lastIndexOf("/") + 1) : zipEntryFileName;
-                            String stopName = fileName.endsWith(".py")? fileName.substring(0,fileName.length()-3):fileName;
+                            String stopName = fileName.endsWith(".py") ? fileName.substring(0, fileName.length() - 3) : fileName;
                             stopsHubFileRecord.setFileName(stopName);
                             stopsHubFileRecord.setFilePath(zipEntryFileName);
                             stopsHubFileRecord.setStopsHubId(stopsHub.getId());
@@ -266,7 +270,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
                             dockerFileSb.append("&& apt-get install -y zip" + System.lineSeparator());
                             dockerFileSb.append("RUN set -ex" + System.lineSeparator());
                             dockerFileSb.append("&& mkdir -p /pythonDir" + System.lineSeparator());
-                            dockerFileSb.append("&& unzip /usr/local/"+ jarName +" -d /pythonDir/" + System.lineSeparator());
+                            dockerFileSb.append("&& unzip /usr/local/" + jarName + " -d /pythonDir/" + System.lineSeparator());
                             String line;
                             while ((line = br.readLine()) != null) {
                                 //之前python的依赖,有个whl结尾的离线安装包,安装命令有所不同,所以这里用if-else判断下
@@ -277,13 +281,12 @@ public class StopsHubServiceImpl implements IStopsHubService {
                                 }
                             }
                             dockerFileSb.append("&& rm -rf  ~/.cache/pip/*" + System.lineSeparator());
-                            dockerFileSb.append("&& rm -rf /usr/local/"+jarName + System.lineSeparator());
+                            dockerFileSb.append("&& rm -rf /usr/local/" + jarName + System.lineSeparator());
                             //write dockerfile
                             String stopsHubPath = stopImpl.getStopsHubPath();
-                            String dockerFileSavePath = stopsHubPath +"/dockerFile/DockerFile-" + stopsHub.getId();
+                            String dockerFileSavePath = stopsHubPath + "/dockerFile/DockerFile-" + stopsHub.getId();
                             FileUtils.writeData(dockerFileSavePath, dockerFileSb.toString());
                             //TODO create docker images and push
-
 
 
                         }
@@ -335,19 +338,18 @@ public class StopsHubServiceImpl implements IStopsHubService {
                 return ReturnMapUtils.setFailedMsgRtnJsonStr("UNMount failed, Data type error, contact the administrator");
         }
     }
+
     /**
      * @Description unmount scala.jar
-
      * @Param stopsHub
      * @Param username
-
      * @Return java.lang.String
      * @Author TY
      * @Date 17:03 2023/3/30
      **/
 
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
-    public String unMountScalaStopsHub(StopsHub stopsHub,String username){
+    public String unMountScalaStopsHub(StopsHub stopsHub, String username) {
         StopsHubVo stopsHubVo = stopImpl.unmountStopsHub(stopsHub.getMountId());
         if (stopsHubVo == null) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("UNMount failed, please try again later");
@@ -357,7 +359,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
         List<ThirdStopsComponentVo> stops = stopsHubVo.getStops();
         for (ThirdStopsComponentVo s : stops) {
             StopsComponent stopsComponent = stopsComponentDomain.getStopsComponentByBundle(s.getBundle());
-            if (stopsComponent !=null){
+            if (stopsComponent != null) {
                 stopsComponentDomain.deleteStopsComponent(stopsComponent);
             }
         }
@@ -372,21 +374,22 @@ public class StopsHubServiceImpl implements IStopsHubService {
 
     /**
      * unMount python.zip
+     *
      * @param stopsHub
      * @param username
+     * @return
      * @data 2022-02-03
      * @author leilei
-     * @return
      */
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
-    public String unMountPythonStopsZip(StopsHub stopsHub, String username){
+    public String unMountPythonStopsZip(StopsHub stopsHub, String username) {
         //1.search stops_hub_file_record
         List<StopsHubFileRecord> fileRecordList = stopsHubFileRecordDomain.getStopsHubFileRecordByHubId(stopsHub.getId());
         //2.delete flow_stops_template、flow_stops_property_template、flow_stops_groups
         for (StopsHubFileRecord s : fileRecordList) {
             //file path = bundle
             StopsComponent stopsComponent = stopsComponentDomain.getStopsComponentByBundle(s.getFilePath());
-            if (stopsComponent !=null){
+            if (stopsComponent != null) {
                 stopsComponentDomain.deleteStopsComponent(stopsComponent);
             }
             stopsHubFileRecordDomain.deleteStopsHubFileRecord(s.getId());
@@ -456,7 +459,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
      * @return json
      */
     @Override
-    public String stopsHubPublishing(String username, Boolean isAdmin, String id) {
+    public String stopsHubPublishing(String username, Boolean isAdmin, String id) throws JsonProcessingException {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
@@ -484,12 +487,60 @@ public class StopsHubServiceImpl implements IStopsHubService {
         if (bundlesArray.length > 1) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
         }
-        ThirdStopsComponentVo stopInfo = stopImpl.getStopInfo(bundlesArray[0]);
-        if (null == stopInfo) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
+        PublishComponentVo publishComponentVo = new PublishComponentVo();
+        switch (stopsHub.getType()) {
+            case DEFAULT:
+                break;
+            case SCALA:
+//                StopsComponent stopsComponentByBundle1 = stopsComponentDomain.getStopsComponentByBundle(bundlesArray[0]);
+                ThirdStopsComponentVo thirdStopsComponentVo = stopImpl.getStopInfo(bundlesArray[0]);
+                if (null == thirdStopsComponentVo) {
+                    return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
+                }
+                publishComponentVo.setName(thirdStopsComponentVo.getName());
+                publishComponentVo.setLogo(thirdStopsComponentVo.getIcon());
+                publishComponentVo.setDescription(thirdStopsComponentVo.getDescription());
+                publishComponentVo.setCategory(thirdStopsComponentVo.getGroups());
+                publishComponentVo.setBundle(thirdStopsComponentVo.getBundle());
+                publishComponentVo.setAuthorName(thirdStopsComponentVo.getOwner());
+                publishComponentVo.setSoftware(SysParamsCache.MARKET_SOFTWARE_FLAG);
+                publishComponentVo.setComponentType("algorithm");
+                List<Map<String, String>> params = new ArrayList<>();
+                thirdStopsComponentVo.getProperties().forEach(pro -> {
+                    Map<String,String> param = new HashMap<>();
+                    param.put(pro.getName(), pro.getDefaultValue());
+                    params.add(param);
+
+                });
+                publishComponentVo.setParameters(params);
+                break;
+            case PYTHON:
+                StopsComponent stopsComponentByBundle = stopsComponentDomain.getStopsComponentByBundle(bundlesArray[0]);
+                if (null == stopsComponentByBundle) {
+                    return ReturnMapUtils.setFailedMsgRtnJsonStr("Please add a component before publishing");
+                }
+                publishComponentVo.setName(stopsComponentByBundle.getName());
+                publishComponentVo.setLogo(stopsComponentByBundle.getImageUrl());
+                publishComponentVo.setDescription(stopsComponentByBundle.getDescription());
+                publishComponentVo.setCategory(stopsComponentByBundle.getGroups());
+                publishComponentVo.setBundle(stopsComponentByBundle.getBundel());
+                publishComponentVo.setAuthorName(stopsComponentByBundle.getOwner());
+                publishComponentVo.setSoftware(SysParamsCache.MARKET_SOFTWARE_FLAG);
+                publishComponentVo.setComponentType("algorithm");
+                List<Map<String, String>> params1 = new ArrayList<>();
+                stopsComponentByBundle.getProperties().forEach(pro -> {
+                    Map<String,String> param = new HashMap<>();
+                    param.put(pro.getName(), pro.getDefaultValue());
+                    params1.add(param);
+
+                });
+                publishComponentVo.setParameters(params1);
+                break;
+            default:
+                return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG() + ",unknown component type!");
         }
         File file = new File(stopsHub.getJarUrl());
-        Map<String, Object> rtnMap = marketImpl.publishComponents(user.getDeveloperAccessKey(), stopInfo.getBundle(), stopInfo.getGroups(), stopInfo.getDescription(), stopInfo.getIcon(), stopInfo.getName(), file);
+        Map<String, Object> rtnMap = marketImpl.publishComponents(user.getDeveloperAccessKey(), publishComponentVo, file);
         String code = rtnMap.get("code").toString();
         if (!"200".equals(code)) {
             return ReturnMapUtils.toJson(rtnMap);
@@ -500,7 +551,6 @@ public class StopsHubServiceImpl implements IStopsHubService {
     }
 
     /**
-     *
      * @param stopsHubId
      * @return
      */
@@ -510,7 +560,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("id"));
         } else {
             StopsHub stopsHub = stopsHubDomain.getStopsHubById(username, isAdmin, stopsHubId);
-            switch (stopsHub.getType()){
+            switch (stopsHub.getType()) {
                 case PYTHON:
                     //search from stops_hub_file_record
                     List<StopsHubFileRecord> fileRecordList = stopsHubFileRecordDomain.getStopsHubFileRecordByHubId(stopsHubId);

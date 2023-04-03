@@ -5,6 +5,7 @@ import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.common.constant.MessageConfig;
 import cn.cnic.component.stopsComponent.service.IStopsHubService;
 import cn.cnic.component.system.service.ILogHelperService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
@@ -115,7 +116,7 @@ public class StopsHubCtrl {
     @RequestMapping(value = "/stopsHubPublishing", method = RequestMethod.POST)
     @ResponseBody
     @ApiOperation(value="stopsHubPublishing", notes="stopsHub publishing")
-    public String stopsHubPublishing(String id) {
+    public String stopsHubPublishing(String id) throws JsonProcessingException {
         String username = SessionUserUtil.getCurrentUsername();
         Boolean isAdmin = SessionUserUtil.isAdmin();
         return stopsHubServiceImpl.stopsHubPublishing(username, isAdmin, id);

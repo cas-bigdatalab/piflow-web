@@ -1,5 +1,6 @@
 package cn.cnic.component.stopsComponent.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface IStopsHubService {
@@ -61,7 +62,7 @@ public interface IStopsHubService {
      * @param id       id
      * @return json
      */
-    public String stopsHubPublishing(String username, Boolean isAdmin, String id);
+    public String stopsHubPublishing(String username, Boolean isAdmin, String id) throws JsonProcessingException;
 
 
     String getStopsHubInfoByStopHubId(String username, Boolean isAdmin,String stopsHubId);
