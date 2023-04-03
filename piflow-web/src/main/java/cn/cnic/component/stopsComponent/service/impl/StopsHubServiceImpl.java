@@ -2,6 +2,7 @@ package cn.cnic.component.stopsComponent.service.impl;
 
 import cn.cnic.base.utils.*;
 import cn.cnic.common.Eunm.ComponentFileType;
+import cn.cnic.common.Eunm.PortType;
 import cn.cnic.common.Eunm.StopsHubState;
 import cn.cnic.common.constant.MessageConfig;
 import cn.cnic.common.constant.SysParamsCache;
@@ -9,15 +10,14 @@ import cn.cnic.component.process.entity.Process;
 import cn.cnic.component.stopsComponent.domain.StopsComponentDomain;
 import cn.cnic.component.stopsComponent.domain.StopsHubDomain;
 import cn.cnic.component.stopsComponent.domain.StopsHubFileRecordDomain;
-import cn.cnic.component.stopsComponent.entity.StopsComponent;
-import cn.cnic.component.stopsComponent.entity.StopsComponentGroup;
-import cn.cnic.component.stopsComponent.entity.StopsHub;
-import cn.cnic.component.stopsComponent.entity.StopsHubFileRecord;
+import cn.cnic.component.stopsComponent.entity.*;
 import cn.cnic.component.stopsComponent.service.IStopsHubService;
 import cn.cnic.component.stopsComponent.utils.StopsComponentGroupUtils;
+import cn.cnic.component.stopsComponent.utils.StopsComponentPropertyUtils;
 import cn.cnic.component.stopsComponent.utils.StopsComponentUtils;
 import cn.cnic.component.stopsComponent.utils.StopsHubUtils;
 import cn.cnic.component.stopsComponent.vo.PublishComponentVo;
+import cn.cnic.component.stopsComponent.vo.StopsComponentPropertyVo;
 import cn.cnic.component.stopsComponent.vo.StopsHubInfoVo;
 import cn.cnic.component.system.domain.SysUserDomain;
 import cn.cnic.component.system.entity.SysUser;
@@ -30,6 +30,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -597,6 +598,217 @@ public class StopsHubServiceImpl implements IStopsHubService {
                     return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_MSG());
             }
         }
+    }
+
+    /**
+     * @Description update component info when save or remove a component except scala component
+     * @Param stopsHubInfoVo
+     * @Param file
+     * @Param username
+     * @Param isAdmin
+     * @Return java.lang.String
+     * @Author TY
+     * @Date 15:52 2023/4/3
+     **/
+    @Override
+    public String updateComponentInfo(StopsHubInfoVo stopsHubInfoVo, MultipartFile file, String username, Boolean isAdmin) {
+        if (stopsHubInfoVo == null) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
+        } else {
+            StopsComponent stopsComponent = stopsComponentDomain.getStopsComponentByBundle(stopsHubInfoVo.getStopBundle());
+            if (stopsComponent != null) {
+                if (ComponentFileType.PYTHON == stopsComponent.getComponentType()) {
+                    //python component
+                    return updatePythonStopsHubInfo(stopsHubInfoVo, username, file);
+                } else {
+                    logger.error("已存在算法记录,但算法类型错误");
+                    return ReturnMapUtils.setFailedMsgRtnJsonStr("The data type is incorrect. Contact the administrator");
+                }
+            } else {
+                //没有组件信息,说明是其他语言算法第一次编辑扩展信息
+                //查询算法包,判断算法包的类型是否为已支持语言(目前只支持python)
+                StopsHubFileRecord stopsHubFileRecord = stopsHubFileRecordDomain.getStopsHubFileRecordByBundle(stopsHubInfoVo.getStopBundle());
+                StopsHub stopsHub = stopsHubDomain.getStopsHubById("", true, stopsHubFileRecord.getStopsHubId());
+                if (stopsHub.getType() == ComponentFileType.PYTHON) {
+                    return updatePythonStopsHubInfo(stopsHubInfoVo, username, file);
+                } else {
+                    logger.error("目前还未支持此语言的算法");
+                    return ReturnMapUtils.setFailedMsgRtnJsonStr("The data type is incorrect. Contact the administrator");
+                }
+            }
+        }
+    }
+
+    /**
+     * 修改python组件扩展信息
+     *
+     * @param stopsHubInfoVo
+     * @param file               上传图片
+    //     * @param stopsHubFileRecord 算法的具体文件记录(用于新增stop获取stopName和dockerImageName)
+     * @return
+     */
+    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
+    public String updatePythonStopsHubInfo(StopsHubInfoVo stopsHubInfoVo, String username, MultipartFile file) {
+        if (stopsHubInfoVo == null) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
+        }
+        if (!stopsHubInfoVo.getIsPythonComponent()) {
+            //delete component, property, component group
+            StopsComponent stopsComponent = stopsComponentDomain.getStopsComponentByBundle(stopsHubInfoVo.getStopBundle());
+            if (stopsComponent != null) {
+                stopsComponentDomain.deleteStopsComponent(stopsComponent);
+            }
+        } else {
+            //update component, property, component group
+            List<String> groupNameList = new ArrayList<>();
+            Map<String, StopsComponentGroup> stopsComponentGroupMap = new HashMap<>();
+            groupNameList.addAll(Arrays.asList(stopsHubInfoVo.getGroups().split(",")));
+            List<String> distinctGroupNameList = groupNameList.stream().distinct().collect(Collectors.toList());
+            List<StopsComponentGroup> stopsComponentGroupList = stopsComponentDomain.getStopGroupByGroupNameList(distinctGroupNameList);
+            for (StopsComponentGroup sGroup : stopsComponentGroupList) {
+                stopsComponentGroupMap.put(sGroup.getGroupName(), sGroup);
+            }
+
+            for (String groupName : distinctGroupNameList) {
+                StopsComponentGroup stopsComponentGroup = stopsComponentGroupMap.get(groupName);
+                if (stopsComponentGroup == null) {
+                    // add group into db
+                    stopsComponentGroup = StopsComponentGroupUtils.stopsComponentGroupNewNoId(username);
+                    stopsComponentGroup.setId(UUIDUtils.getUUID32());
+                    stopsComponentGroup.setGroupName(groupName);
+                    stopsComponentDomain.addStopsComponentGroup(stopsComponentGroup);
+
+                    stopsComponentGroupMap.put(groupName, stopsComponentGroup);
+                }
+            }
+
+            //add stops-group relation
+            List<StopsComponentGroup> stopGroupByName = new ArrayList<>();
+            for (String groupName : distinctGroupNameList) {
+                stopGroupByName.add(stopsComponentGroupMap.get(groupName));
+            }
+            //upload image file
+            if (file != null && !file.isEmpty()) {
+                Map<String, Object> uploadRtnMap = FileUtils.uploadRtnMap(file, SysParamsCache.IMAGES_PATH, null);
+                if (null == uploadRtnMap || uploadRtnMap.isEmpty()) {
+                    return ReturnMapUtils.setFailedMsgRtnJsonStr("Upload failed, please try again later");
+                }
+                Integer code = (Integer) uploadRtnMap.get("code");
+                if (500 == code) {
+                    return ReturnMapUtils.setFailedMsgRtnJsonStr("failed to upload file");
+                }
+                String path = (String) uploadRtnMap.get("path");
+                String replacePath = path.replace("/storage/image", "/images");
+                stopsHubInfoVo.setImageUrl(replacePath);
+            }
+
+            StopsHubFileRecord stopsHubFileRecord = stopsHubFileRecordDomain.getStopsHubFileRecordByBundle(stopsHubInfoVo.getStopBundle());
+            if (stopsHubFileRecord == null) {
+                return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.DATA_ERROR_MSG());
+            }
+            StopsComponent stopsComponent = stopsComponentDomain.getStopsComponentByBundle(stopsHubInfoVo.getStopBundle());
+            if (stopsComponent == null) {
+                stopsComponent = new StopsComponent();
+                stopsComponent.setId(UUIDUtils.getUUID32());
+                stopsComponent.setBundel(stopsHubInfoVo.getStopBundle());
+                stopsComponent.setName(stopsHubFileRecord.getFileName());
+                stopsComponent.setCrtUser(username);
+                stopsComponent.setLastUpdateUser(username);
+                stopsComponent.setDockerImagesName(stopsHubFileRecord.getDockerImagesName());
+                stopsComponent.setComponentType(ComponentFileType.PYTHON);
+                stopsComponent.setStopsHubId(stopsHubFileRecord.getStopsHubId());
+
+                stopsComponent.setGroups(stopsHubInfoVo.getGroups());
+                stopsComponent.setDescription(stopsHubInfoVo.getBundleDescription());
+                stopsComponent.setImageUrl(stopsHubInfoVo.getImageUrl());
+                stopsComponent.setOwner(stopsHubInfoVo.getOwner());
+
+                //inports outports
+                if (StringUtils.isBlank(stopsHubInfoVo.getInports())) {
+                    stopsComponent.setInports("Default");
+                    stopsComponent.setInPortType(PortType.DEFAULT);
+                } else {
+                    stopsComponent.setInports(stopsHubInfoVo.getInports());
+                    stopsComponent.setInPortType(PortType.USER_DEFAULT);
+                }
+                if (StringUtils.isBlank(stopsHubInfoVo.getOutports())) {
+                    stopsComponent.setOutports("Default");
+                    stopsComponent.setOutPortType(PortType.DEFAULT);
+                } else {
+                    stopsComponent.setOutports(stopsHubInfoVo.getInports());
+                    stopsComponent.setOutPortType(PortType.USER_DEFAULT);
+                }
+                stopsComponent.setLastUpdateUser(username);
+                stopsComponent.setLastUpdateDttm(new Date());
+
+                //init properties
+                if (stopsHubInfoVo.getIsHaveParams() && stopsHubInfoVo.getProperties() != null && stopsHubInfoVo.getProperties().size()>0) {
+                    List<StopsComponentProperty> propertyList = new ArrayList<>();
+                    for (StopsComponentPropertyVo property : stopsHubInfoVo.getProperties()) {
+                        StopsComponentProperty stopsComponentProperty = StopsComponentPropertyUtils.stopsComponentPropertyNewNoId(username);
+                        stopsComponentProperty.setId(UUIDUtils.getUUID32());
+                        stopsComponentProperty.setDescription(property.getDescription());
+                        stopsComponentProperty.setName(property.getName());
+                        stopsComponentProperty.setPropertySort(property.getPropertySort());
+                        stopsComponentProperty.setExample(property.getExample());
+                        stopsComponentProperty.setStopsTemplate(stopsComponent.getId());
+                        propertyList.add(stopsComponentProperty);
+                    }
+                    stopsComponent.setProperties(propertyList);
+                }
+                stopsComponentDomain.addStopsComponentAndChildren(stopsComponent);
+            } else {
+                //update stop和stopProperties
+                stopsComponent.setGroups(stopsHubInfoVo.getGroups());
+                stopsComponent.setDescription(stopsHubInfoVo.getBundleDescription());
+                stopsComponent.setOwner(stopsHubInfoVo.getOwner());
+
+                if (StringUtils.isBlank(stopsHubInfoVo.getInports())) {
+                    stopsComponent.setInports("Default");
+                    stopsComponent.setInPortType(PortType.DEFAULT);
+                } else {
+                    stopsComponent.setInports(stopsHubInfoVo.getInports());
+                    stopsComponent.setInPortType(PortType.USER_DEFAULT);
+                }
+
+                if (StringUtils.isBlank(stopsHubInfoVo.getOutports())) {
+                    stopsComponent.setOutports("Default");
+                    stopsComponent.setOutPortType(PortType.DEFAULT);
+                } else {
+                    stopsComponent.setOutports(stopsHubInfoVo.getOutports());
+                    stopsComponent.setOutPortType(PortType.USER_DEFAULT);
+                }
+                stopsComponent.setLastUpdateUser(username);
+                stopsComponent.setLastUpdateDttm(new Date());
+                stopsComponent.setImageUrl(stopsHubInfoVo.getImageUrl());
+                //update flow_stops_template
+                stopsComponentDomain.updateStopsComponent(stopsComponent);
+                //update properties delete old properties and add new properties
+                stopsComponentDomain.deleteStopsComponentProperty(stopsComponent.getId());
+                if (stopsHubInfoVo.getIsHaveParams() && stopsHubInfoVo.getProperties() != null && stopsHubInfoVo.getProperties().size()>0) {
+                    List<StopsComponentProperty> propertyList = new ArrayList<>();
+                    for (StopsComponentPropertyVo property : stopsHubInfoVo.getProperties()) {
+
+                        StopsComponentProperty stopsComponentProperty = StopsComponentPropertyUtils.stopsComponentPropertyNewNoId(username);
+                        stopsComponentProperty.setId(UUIDUtils.getUUID32());
+                        stopsComponentProperty.setDescription(property.getDescription());
+                        stopsComponentProperty.setName(property.getName());
+                        stopsComponentProperty.setPropertySort(property.getPropertySort());
+                        stopsComponentProperty.setExample(property.getExample());
+                        stopsComponentProperty.setStopsTemplate(stopsComponent.getId());
+                        propertyList.add(stopsComponentProperty);
+                    }
+                    stopsComponentDomain.insertStopsComponentProperty(propertyList);
+                    stopsComponent.setProperties(propertyList);
+                }
+            }
+            //add stop and group relationship
+            for (StopsComponentGroup sGroup : stopGroupByName) {
+                stopsComponentDomain.deleteGroupCorrelationByGroupIdAndStopId(sGroup.getId(), stopsComponent.getId());
+                stopsComponentDomain.insertAssociationGroupsStopsTemplate(sGroup.getId(), stopsComponent.getId());
+            }
+        }
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.UPDATE_SUCCEEDED_MSG());
     }
 
 }

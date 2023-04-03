@@ -128,4 +128,7 @@ public interface StopsComponentMapper {
 
     @Select("select * from flow_stops_template where stops_hub_id=#{stopsHubId}")
     List<StopsComponent> getStopsComponentByStopsHubId(@Param("stopsHubId") String stopsHubId);
+
+    @UpdateProvider(type = StopsComponentMapperProvider.class, method = "updateStopsComponent")
+    int updateStopsComponent(StopsComponent stopsComponent);
 }

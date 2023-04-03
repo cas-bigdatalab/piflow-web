@@ -4,6 +4,7 @@ import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.common.constant.MessageConfig;
 import cn.cnic.component.stopsComponent.service.IStopsHubService;
+import cn.cnic.component.stopsComponent.vo.StopsHubInfoVo;
 import cn.cnic.component.system.service.ILogHelperService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.annotations.Api;
@@ -137,6 +138,22 @@ public class StopsHubCtrl {
             String username = SessionUserUtil.getCurrentUsername();
             Boolean isAdmin = SessionUserUtil.isAdmin();
             return stopsHubServiceImpl.getStopsHubInfoByStopHubId(username,isAdmin,stopsHubId);
+        }
+    }
+
+    /**
+     * update component info when save or remove a component except scala component
+     * @param stopsHubInfoVo
+     * @return
+     */
+    @RequestMapping(value = "/updateComponentInfo",method = RequestMethod.POST)
+    public String updateComponentInfo(StopsHubInfoVo stopsHubInfoVo, @RequestParam(name = "file", required = false) MultipartFile file){
+        if (stopsHubInfoVo == null){
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
+        }else{
+            String username = SessionUserUtil.getCurrentUsername();
+            Boolean isAdmin = SessionUserUtil.isAdmin();
+            return stopsHubServiceImpl.updateComponentInfo(stopsHubInfoVo,file,username,isAdmin);
         }
     }
 

@@ -25,7 +25,7 @@ import java.util.List;
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
 public class StopsComponentDomain {
 
-	/**
+    /**
      * Introducing logs, note that they are all packaged under "org.slf4j"
      */
     private Logger logger = LoggerUtil.getLogger();
@@ -73,12 +73,12 @@ public class StopsComponentDomain {
             insertRows += insertStopsTemplateRows;
         }
         //Change the corresponding "datasource" data source to available
-        if (stopsComponent.getIsDataSource()){
-            dataSourceMapper.updateDataSourceIsAvailableByBundle(stopsComponent.getBundel(),1);
+        if (stopsComponent.getIsDataSource()) {
+            dataSourceMapper.updateDataSourceIsAvailableByBundle(stopsComponent.getBundel(), 1);
             //Modify imageurl of "datasource"
-            dataSourceMapper.updateDataSourceImageUrlByBundle(stopsComponent.getBundel(),stopsComponent.getImageUrl());
-        }else{
-            dataSourceMapper.updateDataSourceIsAvailableByBundle(stopsComponent.getBundel(),0);
+            dataSourceMapper.updateDataSourceImageUrlByBundle(stopsComponent.getBundel(), stopsComponent.getImageUrl());
+        } else {
+            dataSourceMapper.updateDataSourceIsAvailableByBundle(stopsComponent.getBundel(), 0);
         }
         return insertRows;
     }
@@ -173,7 +173,7 @@ public class StopsComponentDomain {
             }
         }
         // Change the corresponding "datasource" data source to unavailable
-        dataSourceMapper.updateDataSourceIsAvailableByBundle(stopsComponent.getBundel(),0);
+        dataSourceMapper.updateDataSourceIsAvailableByBundle(stopsComponent.getBundel(), 0);
         return affectedRows;
     }
 
@@ -260,16 +260,49 @@ public class StopsComponentDomain {
         return stopsComponentMapper.getStopsComponentByName(stopsName);
     }
 
-    public List<StopsComponent> getDataSourceStopList(){
+    public List<StopsComponent> getDataSourceStopList() {
         return stopsComponentMapper.getDataSourceStopList();
     }
 
-    public List<StopsComponentProperty> getDataSourceStopsComponentByBundle(String stopsTemplateBundle){
+    public List<StopsComponentProperty> getDataSourceStopsComponentByBundle(String stopsTemplateBundle) {
         StopsComponent stopsComponent = stopsComponentMapper.getDataSourceStopsComponentByBundle(stopsTemplateBundle);
-        return  stopsComponent.getProperties();
+        return stopsComponent.getProperties();
     }
 
     public List<StopsComponent> getStopsComponentByStopsHubId(String stopsHubId) {
         return stopsComponentMapper.getStopsComponentByStopsHubId(stopsHubId);
+    }
+
+    /**
+     * @Description update flow+stops_template
+     * @Param stopsComponent
+     * @Return int
+     * @Author TY
+     * @Date 16:32 2023/4/3
+     **/
+    public int updateStopsComponent(StopsComponent stopsComponent) {
+        return stopsComponentMapper.updateStopsComponent(stopsComponent);
+    }
+
+    /**
+     * @Description delete properties
+     * @Param stopsId   flow_stops_template id
+     * @Return int
+     * @Author TY
+     * @Date 16:36 2023/4/3
+     **/
+    public int deleteStopsComponentProperty(String stopsId) {
+        return stopsComponentPropertyMapper.deleteStopsComponentPropertyByStopId(stopsId);
+    }
+
+    /**
+     * @Description add properties
+     * @Param stopsComponentPropertyList
+     * @Return int
+     * @Author TY
+     * @Date 16:49 2023/4/3
+     **/
+    public int insertStopsComponentProperty(List<StopsComponentProperty> stopsComponentPropertyList) {
+        return stopsComponentPropertyMapper.insertStopsComponentProperty(stopsComponentPropertyList);
     }
 }
