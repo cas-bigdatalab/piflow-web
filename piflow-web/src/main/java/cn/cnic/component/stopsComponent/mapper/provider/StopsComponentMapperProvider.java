@@ -2,12 +2,15 @@ package cn.cnic.component.stopsComponent.mapper.provider;
 
 import cn.cnic.base.utils.DateUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.jdbc.SQL;
 
 import cn.cnic.base.utils.SqlUtils;
 import cn.cnic.component.stopsComponent.entity.StopsComponent;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class StopsComponentMapperProvider {
 
@@ -102,15 +105,15 @@ public class StopsComponentMapperProvider {
         sqlStr = sql.toString();
         return sqlStr;
     }
-    
+
     public String getStopsComponentListByGroupId(String groupId) {
         if (StringUtils.isBlank(groupId)) {
             return "SELECT 0";
         }
         StringBuffer strBuf = new StringBuffer();
-        
+
         SqlUtils.preventSQLInjection(groupId);
-        
+
         strBuf.append("SELECT * FROM flow_stops_template fst ");
         strBuf.append("WHERE fst.enable_flag=1 ");
         strBuf.append("AND fst.id IN ( ");
@@ -164,7 +167,7 @@ public class StopsComponentMapperProvider {
     public String insertStopsComponent(StopsComponent stopsComponent) {
         String sqlStr = "SELECT 0";
         boolean flag = this.preventSQLInjectionStops(stopsComponent);
-        if(flag) {
+        if (flag) {
             StringBuffer strBuf = new StringBuffer();
             strBuf.append("INSERT INTO flow_stops_template ");
 
@@ -176,7 +179,7 @@ public class StopsComponentMapperProvider {
             strBuf.append("values ");
             strBuf.append("(");
             strBuf.append(SqlUtils.baseFieldValues(stopsComponent) + ", ");
-            strBuf.append(bundel + "," + description + "," + groups + "," + name + "," + owner + "," + inports + "," + inPortType + "," + outports + "," + outPortType + "," + isCustomized + "," + visualizationType+","+isDataSource+","+imageUrl+","+componentType+","+dockerImagesName+","+stopsHubId);
+            strBuf.append(bundel + "," + description + "," + groups + "," + name + "," + owner + "," + inports + "," + inPortType + "," + outports + "," + outPortType + "," + isCustomized + "," + visualizationType + "," + isDataSource + "," + imageUrl + "," + componentType + "," + dockerImagesName + "," + stopsHubId);
             strBuf.append(")");
             sqlStr = strBuf.toString() + ";";
         }
@@ -201,34 +204,60 @@ public class StopsComponentMapperProvider {
         return sqlStr;
     }
 
-    public String updateStopsComponent(StopsComponent stopsComponent){
+    public String updateStopsComponent(StopsComponent stopsComponent) {
         String sqlStr = "SELECT 0";
         boolean flag = this.preventSQLInjectionStops(stopsComponent);
-        if(flag) {
+        if (flag) {
             SQL sql = new SQL();
             sql.UPDATE("flow_stops_template");
-            sql.SET("`groups` = "+groups);
-            sql.SET("description = "+description);
-            sql.SET("image_url = "+imageUrl);
-            sql.SET("owner = "+owner);
-            sql.SET("inports = "+inports);
-            sql.SET("in_port_type = "+inPortType);
-            sql.SET("outports = "+outports);
-            sql.SET("out_port_type = "+outPortType);
-            sql.SET("is_data_source = "+isDataSource);
-            sql.SET("is_customized = "+isCustomized);
-            sql.SET("visualization_type = "+visualizationType);
+            sql.SET("`groups` = " + groups);
+            sql.SET("description = " + description);
+            sql.SET("image_url = " + imageUrl);
+            sql.SET("owner = " + owner);
+            sql.SET("inports = " + inports);
+            sql.SET("in_port_type = " + inPortType);
+            sql.SET("outports = " + outports);
+            sql.SET("out_port_type = " + outPortType);
+            sql.SET("is_data_source = " + isDataSource);
+            sql.SET("is_customized = " + isCustomized);
+            sql.SET("visualization_type = " + visualizationType);
             String lastUpdateDttmStr = DateUtils.dateTimesToStr(null != stopsComponent.getLastUpdateDttm() ? stopsComponent.getLastUpdateDttm() : new Date());
             sql.SET("last_update_dttm = " + SqlUtils.preventSQLInjection(lastUpdateDttmStr));
             sql.SET("last_update_user = " + SqlUtils.preventSQLInjection(stopsComponent.getLastUpdateUser()));
-            sql.SET("image_url = "+imageUrl);
+            sql.SET("image_url = " + imageUrl);
             sql.SET("version = " + (stopsComponent.getVersion() + 1));
-            sql.WHERE("id = "+ SqlUtils.preventSQLInjection(stopsComponent.getId()));
-            sql.WHERE("version = "+stopsComponent.getVersion());
+            sql.WHERE("id = " + SqlUtils.preventSQLInjection(stopsComponent.getId()));
+            sql.WHERE("version = " + stopsComponent.getVersion());
             sqlStr = sql.toString();
         }
         this.reset();
         return sqlStr;
+    }
+
+    /**
+     * @Description update component type by id and type
+     * @Param stopsComponents
+     * @Return java.lang.String
+     * @Author TY
+     * @Date 12:57 2023/4/4
+     **/
+    public String updateComponentTypeByIdAndType(List<StopsComponent> stopsComponents) {
+        List<String> stopsIds = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("UPDATE flow_stops_template SET component_type = CASE id");
+        for (StopsComponent stopsComponent : stopsComponents) {
+            stopsIds.add(stopsComponent.getId());
+            sql.append(" WHEN ").append(stopsComponent.getId()).append(" THEN ").append(stopsComponent.getComponentType().name());
+        }
+        sql.append(" END,version = CASE id");
+        for (StopsComponent stopsComponent : stopsComponents) {
+            sql.append(" WHEN ").append(stopsComponent.getId()).append(" THEN ").append(stopsComponent.getVersion() + 1);
+        }
+        sql.append(" END,last_update_dttm = CASE id");
+        for (StopsComponent stopsComponent : stopsComponents) {
+            sql.append(" WHEN ").append(stopsComponent.getId()).append(" THEN ").append(stopsComponent.getLastUpdateDttm());
+        }
+        sql.append(" END WHERE id IN (").append(SqlUtils.strListToStr(stopsIds)).append(") and enable_flag = 1");
+        return sql.toString();
     }
 
 }

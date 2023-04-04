@@ -305,4 +305,13 @@ public class StopsComponentDomain {
     public int insertStopsComponentProperty(List<StopsComponentProperty> stopsComponentPropertyList) {
         return stopsComponentPropertyMapper.insertStopsComponentProperty(stopsComponentPropertyList);
     }
+
+    public List<StopsComponent> getSystemDefaultStops() {
+        return stopsComponentMapper.getSystemDefaultStops();
+    }
+
+
+    public StopsComponent getOnlyStopsComponentByBundle(String bundle) {
+        return stopsComponentMapper.getOnlyStopsComponentByBundle(bundle);
+    }
 }

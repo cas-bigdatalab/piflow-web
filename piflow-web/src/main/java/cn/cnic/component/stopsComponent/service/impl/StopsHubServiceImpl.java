@@ -621,32 +621,23 @@ public class StopsHubServiceImpl implements IStopsHubService {
                     //python component
                     return updatePythonStopsHubInfo(stopsHubInfoVo, username, file);
                 } else {
-                    logger.error("已存在算法记录,但算法类型错误");
+                    logger.error("The data type is incorrect. Contact the administrator");
                     return ReturnMapUtils.setFailedMsgRtnJsonStr("The data type is incorrect. Contact the administrator");
                 }
             } else {
-                //没有组件信息,说明是其他语言算法第一次编辑扩展信息
-                //查询算法包,判断算法包的类型是否为已支持语言(目前只支持python)
                 StopsHubFileRecord stopsHubFileRecord = stopsHubFileRecordDomain.getStopsHubFileRecordByBundle(stopsHubInfoVo.getStopBundle());
                 StopsHub stopsHub = stopsHubDomain.getStopsHubById("", true, stopsHubFileRecord.getStopsHubId());
                 if (stopsHub.getType() == ComponentFileType.PYTHON) {
                     return updatePythonStopsHubInfo(stopsHubInfoVo, username, file);
                 } else {
-                    logger.error("目前还未支持此语言的算法");
+                    logger.error("The data type is incorrect. Contact the administrator");
                     return ReturnMapUtils.setFailedMsgRtnJsonStr("The data type is incorrect. Contact the administrator");
                 }
             }
         }
     }
 
-    /**
-     * 修改python组件扩展信息
-     *
-     * @param stopsHubInfoVo
-     * @param file               上传图片
-    //     * @param stopsHubFileRecord 算法的具体文件记录(用于新增stop获取stopName和dockerImageName)
-     * @return
-     */
+
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
     public String updatePythonStopsHubInfo(StopsHubInfoVo stopsHubInfoVo, String username, MultipartFile file) {
         if (stopsHubInfoVo == null) {

@@ -1,6 +1,7 @@
 package cn.cnic.component.stopsComponent.mapper;
 
 import cn.cnic.component.stopsComponent.entity.StopsComponent;
+import cn.cnic.component.stopsComponent.entity.StopsComponentGroup;
 import cn.cnic.component.stopsComponent.mapper.provider.StopsComponentMapperProvider;
 import cn.cnic.component.stopsComponent.vo.StopsComponentVo;
 
@@ -47,7 +48,7 @@ public interface StopsComponentMapper {
      */
     @SelectProvider(type = StopsComponentMapperProvider.class, method = "getStopsComponentListByGroupId")
     public List<StopsComponent> getStopsComponentListByGroupId(String groupId);
-    
+
     /**
      * Query the stops template according to the id of the stops group
      *
@@ -100,7 +101,7 @@ public interface StopsComponentMapper {
     int deleteStopsComponentById(String id);
 
     @Select("select * from flow_stops_template where enable_flag = 1 and is_data_source = 1 ")
-    public List<StopsComponent>getDataSourceStopList();
+    public List<StopsComponent> getDataSourceStopList();
 
     /**
      * getStopsComponentByBundle
@@ -117,6 +118,7 @@ public interface StopsComponentMapper {
 
     /**
      * get "stop" image by bundle
+     *
      * @param bundle
      * @return
      */
@@ -131,4 +133,23 @@ public interface StopsComponentMapper {
 
     @UpdateProvider(type = StopsComponentMapperProvider.class, method = "updateStopsComponent")
     int updateStopsComponent(StopsComponent stopsComponent);
+
+    /**
+     * @Description update component type
+     * @Param stopsComponents
+     * @Return int
+     * @Author TY
+     * @Date 14:19 2023/4/4
+     **/
+    @UpdateProvider(type = StopsComponentMapperProvider.class, method = "updateComponentTypeByIdAndType")
+    int updateComponentTypeByIdAndType(@Param("stops") List<StopsComponent> stopsComponents);
+
+    /**
+     * @Description get all default components
+     * @Return java.util.List<cn.cnic.component.stopsComponent.entity.StopsComponent>
+     * @Author TY
+     * @Date 14:19 2023/4/4
+     **/
+    @Select("select * from flow_stops_template where component_type = 'DEFAULT'")
+    List<StopsComponent> getSystemDefaultStops();
 }

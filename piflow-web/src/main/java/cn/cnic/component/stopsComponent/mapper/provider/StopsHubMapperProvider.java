@@ -2,11 +2,14 @@ package cn.cnic.component.stopsComponent.mapper.provider;
 
 import cn.cnic.base.utils.DateUtils;
 import cn.cnic.base.utils.SqlUtils;
+import cn.cnic.component.stopsComponent.entity.StopsComponent;
 import cn.cnic.component.stopsComponent.entity.StopsHub;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.SQL;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class StopsHubMapperProvider {
 
@@ -270,6 +273,48 @@ public class StopsHubMapperProvider {
         strBuf.append("order by crt_dttm desc ");
         sqlStr = strBuf.toString();
         return sqlStr;
+    }
+
+    /**
+     * Query all stopsHub
+     *
+     * @return
+     */
+    public String getAllStopsHub() {
+        String sqlStr = "SELECT 0";
+        StringBuffer strBuf = new StringBuffer();
+        strBuf.append("select * ");
+        strBuf.append("from stops_hub ");
+        strBuf.append("where enable_flag = 1 ");
+        strBuf.append("order by crt_dttm desc ");
+        sqlStr = strBuf.toString();
+        return sqlStr;
+    }
+
+    /**
+     * @Description update stop hub type
+     * @Param stopsComponents
+     * @Return java.lang.String
+     * @Author TY
+     * @Date 12:58 2023/4/4
+     **/
+    public String updateStopHubType(List<StopsHub> scalaStopsHubs) {
+        List<String> stopsHubIds = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("UPDATE stops_hub SET type = CASE id");
+        for (StopsHub  stopsHub: scalaStopsHubs) {
+            stopsHubIds.add(stopsHub.getId());
+            sql.append(" WHEN ").append(stopsHub.getId()).append(" THEN ").append(stopsHub.getType().name());
+        }
+        sql.append(" END,version = CASE id");
+        for (StopsHub  stopsHub: scalaStopsHubs) {
+            sql.append(" WHEN ").append(stopsHub.getId()).append(" THEN ").append(stopsHub.getVersion() + 1);
+        }
+        sql.append(" END,last_update_dttm = CASE id");
+        for (StopsHub  stopsHub: scalaStopsHubs) {
+            sql.append(" WHEN ").append(stopsHub.getId()).append(" THEN ").append(stopsHub.getLastUpdateDttm());
+        }
+        sql.append(" END WHERE id IN (").append(SqlUtils.strListToStr(stopsHubIds)).append(") and enable_flag = 1");
+        return sql.toString();
     }
 
 }

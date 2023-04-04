@@ -48,4 +48,9 @@ public interface StopsHubMapper {
     @SelectProvider(type = StopsHubMapperProvider.class, method = "getStopsHubListParam")
     public List<StopsHub> getStopsHubListParam(@Param("username") String username, @Param("isAdmin") boolean isAdmin, @Param("param") String param);
 
+    @SelectProvider(type = StopsHubMapperProvider.class, method = "getAllStopsHub")
+    List<StopsHub> getAllStopsHub();
+
+    @UpdateProvider(type = StopsHubMapperProvider.class, method = "updateStopHubType")
+    int updateStopHubType(@Param("hubs") List<StopsHub> scalaStopsHubs);
 }

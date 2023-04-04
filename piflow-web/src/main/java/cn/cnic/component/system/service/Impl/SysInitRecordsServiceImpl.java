@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import cn.cnic.base.utils.*;
+import cn.cnic.common.Eunm.ComponentFileType;
 import cn.cnic.common.constant.MessageConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -193,6 +194,7 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
         List<StopsComponentGroup> stopGroupByName = stopsComponentDomain.getStopGroupByNameList(list);
         StopsComponent stopsComponent = StopsComponentUtils.thirdStopsComponentVoToStopsTemplate("init", thirdStopsComponentVo, stopGroupByName);
         if (null != stopsComponent) {
+            stopsComponent.setComponentType(ComponentFileType.DEFAULT);
             int insertStopsTemplate = stopsComponentDomain.addStopsComponentAndChildren(stopsComponent);
             logger.info("flow_stops_template affects the number of rows : " + insertStopsTemplate);
             logger.info("=============================association_groups_stops_template=====start==================");

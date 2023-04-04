@@ -2,6 +2,7 @@ package cn.cnic.component.stopsComponent.utils;
 
 import cn.cnic.base.utils.ImageUtils;
 import cn.cnic.base.utils.UUIDUtils;
+import cn.cnic.common.Eunm.ComponentFileType;
 import cn.cnic.common.Eunm.PortType;
 import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.component.stopsComponent.entity.StopsComponentProperty;
