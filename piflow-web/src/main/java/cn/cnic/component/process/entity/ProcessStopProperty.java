@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class ProcessStopProperty extends BaseModelUUIDNoCorpAgentId {
+public class ProcessStopProperty extends BaseModelUUIDNoCorpAgentId implements Comparable<ProcessStopProperty> {
 
     private static final long serialVersionUID = 1L;
 
@@ -19,4 +19,11 @@ public class ProcessStopProperty extends BaseModelUUIDNoCorpAgentId {
     private Boolean required;
     private Boolean sensitive;
 
+    //TODO not save in table recently
+    private Long propertySort;
+
+    @Override
+    public int compareTo(ProcessStopProperty o) {
+        return this.propertySort.compareTo(o.propertySort);
+    }
 }

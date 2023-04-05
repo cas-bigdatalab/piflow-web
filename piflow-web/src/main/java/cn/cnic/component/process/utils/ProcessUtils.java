@@ -541,9 +541,22 @@ public class ProcessUtils {
             thirdStopVo.put("name", processStop.getName());
             thirdStopVo.put("bundle", processStop.getBundel());
 
+            if(ComponentFileType.PYTHON.equals(processStop.getComponentType())){
+                Map<String, Object> pythonProperties = new HashMap<String, Object>();
+                String ymlContent = generateYmlContent(processStop);
+                pythonProperties.put("inports",processStop.getInports());
+                pythonProperties.put("outports",processStop.getOutports());
+                pythonProperties.put("ymlContent",ymlContent);       //convert yml to server
+                thirdStopVo.put("properties", pythonProperties);
+                thirdStopVo.put("bundle", "cn.piflow.bundle.script.DockerExecute");
+            }
+
             // StopProperty
             List<ProcessStopProperty> processStopPropertyList = processStop.getProcessStopPropertyList();
-            Map<String, Object> properties = new HashMap<String, Object>();
+            Map<String, Object> properties = (Map<String, Object>)thirdStopVo.get("properties");
+            if (null == properties) {
+                properties = new HashMap<String, Object>();
+            }
             if (null != processStopPropertyList && processStopPropertyList.size() > 0) {
                 for (ProcessStopProperty processStopProperty : processStopPropertyList) {
                     String name = processStopProperty.getName();
@@ -653,6 +666,45 @@ public class ProcessUtils {
         }
         rtnMap.put("group", flowGroupVoMap);
         return rtnMap;
+    }
+
+    //generate yml for docker execute
+    public static String generateYmlContent(ProcessStop processStop){
+        long currentTimeMillis = System.currentTimeMillis();
+        StringBuffer ymlContentSb = new StringBuffer();
+        String ymlName = processStop.getName() + "-" + currentTimeMillis;
+        ymlContentSb.append("version: \"3\"" + System.lineSeparator());
+        ymlContentSb.append("services:" + System.lineSeparator());
+        ymlContentSb.append("  docker-python-demo:" + System.lineSeparator());
+        //docker image name,example:10.1.23.456/example:latest   docker url/imageName:tag
+        ymlContentSb.append("    image: \"" + processStop.getDockerImagesName()+"\"" + System.lineSeparator());
+//        //2023-01-05:因为想把Python也进行分发,所以这里的参数不能再写本地的,改为可以替换的值,将来在哪个server提交任务,哪个sever去替换bigflow_extra_hosts
+//        //server端在bigflow_extra_hosts前自己拼了换行
+//        ymlContentSb.append("    extra_hosts:bigflow_extra_hosts" + System.lineSeparator());
+        /*String hdfsClusterIpNameArr = SysParamsCache.HDFS_CLUSTER_IP_NAME_ARR;
+        String[] hdfsClusterArr = hdfsClusterIpNameArr.split(",");
+        for (String s : hdfsClusterArr) {
+            ymlymlContentSb.append(String.format("      - \"%s\"", s) + System.lineSeparator());
+        }*/
+//        ymlContentSb.append("bigflow_extra_hosts"+System.lineSeparator());     //2023-01-05:因为想把Python也进行分发,所以这里的参数不能再写本地的,改为可以替换的值,将来在哪个server提交任务,哪个sever去替换bigflow_extra_hosts
+        ymlContentSb.append("    hostname: " + ymlName + System.lineSeparator());
+        ymlContentSb.append("    container_name: " + ymlName + System.lineSeparator());
+        ymlContentSb.append("    environment:" + System.lineSeparator());
+//        ymlymlContentSb.append(String.format("      - hdfs_url=%s", SysParamsCache.HDFS_URL) + System.lineSeparator());       //从配置文件中获取
+//        ymlContentSb.append("      - hdfs_url=bigflow_hdfs_url" + System.lineSeparator());       //2023-01-05:因为想把Python也进行分发,所以这里的参数不能再写本地的,改为可以替换的值,将来在哪个server提交任务,哪个sever去替换
+        ymlContentSb.append("      - TZ=Asia/Shanghai" + System.lineSeparator());
+        ymlContentSb.append("    volumes:" + System.lineSeparator());
+        ymlContentSb.append("      - ../app:/app" + System.lineSeparator());
+        ymlContentSb.append("    command: python3 /pythonDir/" + processStop.getBundel()+" " );
+        if (processStop.getProcessStopPropertyList() !=null && processStop.getProcessStopPropertyList().size()>0){
+            Collections.sort(processStop.getProcessStopPropertyList());
+            for (ProcessStopProperty processStopProperty : processStop.getProcessStopPropertyList()) {
+                ymlContentSb.append(processStopProperty.getCustomValue()+" ");
+            }
+        }
+        ymlContentSb.append(System.lineSeparator());
+        ymlContentSb.append("    network_mode: bridge" + System.lineSeparator());
+        return ymlContentSb.toString();
     }
 
 }

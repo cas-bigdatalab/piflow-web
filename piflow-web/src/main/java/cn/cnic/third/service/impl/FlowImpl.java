@@ -4,8 +4,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.cnic.common.Eunm.ComponentFileType;
 import cn.cnic.common.constant.ApiConfig;
 import cn.cnic.common.constant.MessageConfig;
+import cn.cnic.component.process.entity.ProcessStop;
+import cn.cnic.component.stopsComponent.domain.StopsComponentDomain;
+import cn.cnic.component.stopsComponent.entity.StopsComponent;
+import com.alibaba.fastjson2.JSON;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -36,10 +41,12 @@ public class FlowImpl implements IFlow {
     private Logger logger = LoggerUtil.getLogger();
 
     private final ProcessDomain processDomain;
+    private final StopsComponentDomain stopsComponentDomain;
 
     @Autowired
-    public FlowImpl(ProcessDomain processDomain) {
+    public FlowImpl(ProcessDomain processDomain, StopsComponentDomain stopsComponentDomain) {
         this.processDomain = processDomain;
+        this.stopsComponentDomain = stopsComponentDomain;
     }
 
     /**
@@ -55,8 +62,24 @@ public class FlowImpl implements IFlow {
         }
         //String json = ProcessUtil.processToJson(process, checkpoint, runModeType);
         //String formatJson = JsonFormatTool.formatJson(json);
+        List<ProcessStop> processStopList = process.getProcessStopList();
+        if (processStopList == null || processStopList.size() == 0) {
+            return ReturnMapUtils.setFailedMsg(MessageConfig.PARAM_IS_NULL_MSG("Stop"));
+        }else {
+            for (ProcessStop processStop : processStopList) {
+                StopsComponent stops = stopsComponentDomain.getOnlyStopsComponentByBundle(processStop.getBundel());
+                if (stops == null) {
+                    return ReturnMapUtils.setFailedMsg(MessageConfig.DATA_ERROR_MSG());
+                }
+                processStop.setComponentType(stops.getComponentType());
+                if (ComponentFileType.PYTHON == processStop.getComponentType()) {
+                    processStop.setDockerImagesName(stops.getDockerImagesName());
+                }
+            }
+        }
+        logger.info("==========startFlow::process::"+ JSON.toJSONString(process));
         String formatJson = ProcessUtils.processToJson(process, checkpoint, runModeType, process.getFlowGlobalParamsList());
-        logger.info("\n" + formatJson);
+        logger.info("====startFlow::formatJson::\n" + formatJson);
         String doPost = HttpUtils.doPost(ApiConfig.getFlowStartUrl(), formatJson, null);
         logger.info("Return information：" + doPost);
         if (StringUtils.isBlank(doPost)) {

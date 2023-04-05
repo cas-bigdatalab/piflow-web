@@ -37,7 +37,7 @@ public class StopsComponent extends BaseModelUUIDNoCorpAgentId {
 
     private String imageUrl;
 
-    private ComponentFileType componentType;        //PYTHON/SCALA
+    private ComponentFileType componentType;        //PYTHON/SCALA/DEFAULT
     private String dockerImagesName;            //python component image
     private String stopsHubId;
 }
