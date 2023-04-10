@@ -12,9 +12,7 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class DockerUtils {
     private final static Logger logger = LoggerFactory.getLogger(DockerUtils.class);
@@ -90,42 +88,46 @@ public class DockerUtils {
 
     /**
      * 获取docker基础信息
+     *
      * @param dockerClient
      * @return
      */
-    public static String getDockerInfo(DockerClient dockerClient){
+    public static String getDockerInfo(DockerClient dockerClient) {
         Info info = dockerClient.infoCmd().exec();
         return JSON.toJSONString(info);
     }
 
     /**
      * 给镜像打标签
+     *
      * @param dockerClient
      * @param imageIdOrFullName
      * @param respository
      * @param tag
      */
-    public static void tagImage(DockerClient dockerClient, String imageIdOrFullName, String respository,String tag){
+    public static void tagImage(DockerClient dockerClient, String imageIdOrFullName, String respository, String tag) {
         TagImageCmd tagImageCmd = dockerClient.tagImageCmd(imageIdOrFullName, respository, tag);
         tagImageCmd.exec();
     }
 
     /**
      * load镜像
+     *
      * @param dockerClient
      * @param inputStream
      */
-    public static void loadImage(DockerClient dockerClient, InputStream inputStream){
+    public static void loadImage(DockerClient dockerClient, InputStream inputStream) {
         LoadImageCmd loadImageCmd = dockerClient.loadImageCmd(inputStream);
         loadImageCmd.exec();
     }
 
     /**
      * pull镜像
+     *
      * @param dockerClient
      * @param repository
      */
-    public static PullImageCmd pullImage(DockerClient dockerClient,String repository){
+    public static PullImageCmd pullImage(DockerClient dockerClient, String repository) {
         PullImageCmd pullImageCmd = dockerClient.pullImageCmd(repository);
         pullImageCmd.exec(new ResultCallback<PullResponseItem>() {
             @Override
@@ -158,21 +160,22 @@ public class DockerUtils {
 
     /**
      * 推送镜像
+     *
      * @param dockerClient
      * @param imageName
      * @return
      * @throws InterruptedException
      */
-    public static Boolean pushImage(DockerClient dockerClient,String imageName) throws InterruptedException {
+    public static Boolean pushImage(DockerClient dockerClient, String imageName) throws InterruptedException {
         final Boolean[] result = {true};
         ResultCallback.Adapter<PushResponseItem> callBack = new ResultCallback.Adapter<PushResponseItem>() {
             @Override
             public void onNext(PushResponseItem pushResponseItem) {
-                if (pushResponseItem != null){
+                if (pushResponseItem != null) {
                     ResponseItem.ErrorDetail errorDetail = pushResponseItem.getErrorDetail();
-                    if (errorDetail!= null){
+                    if (errorDetail != null) {
                         result[0] = false;
-                        logger.error(errorDetail.getMessage(),errorDetail);
+                        logger.error(errorDetail.getMessage(), errorDetail);
                     }
                 }
                 super.onNext(pushResponseItem);
@@ -184,10 +187,11 @@ public class DockerUtils {
 
     /**
      * 从镜像的tar文件中获取镜像名称
+     *
      * @param imagePath
      * @return
      */
-    public static String getImageName(String imagePath){
+    public static String getImageName(String imagePath) {
         try {
             return UnCompressUtils.getImageName(imagePath);
         } catch (Exception e) {
@@ -198,15 +202,25 @@ public class DockerUtils {
 
     /**
      * 通过dockerFile构建镜像
+     *
      * @param dockerClient
      * @param dockerFile
      * @return
      */
-    public static String buildImage(DockerClient dockerClient, File dockerFile,String imageName,String tags,long currentTimeMillis){
+    public static Map<String, String> buildImage(DockerClient dockerClient, File dockerFile, String imageName, String tags, long currentTimeMillis) {
         Set<String> tagsSet = new HashSet<>();
-        //拼成 name-时间戳:tag 格式
+        //拼成 name-时间戳:tag 格式   registryUrl/projectName/imageName-currentTimeMillis:tags
+        String registryUrl = DockerClientUtils.getRegistryUrl();
+        String registryProjectName = DockerClientUtils.getRegistryProjectName();
+        String originProjectPath = "";
+        if (registryUrl.endsWith("/")) {
+            originProjectPath = registryUrl + registryProjectName;
+        } else {
+            originProjectPath = registryUrl + "/" + registryProjectName+"/";
+        }
+        String tagsName = originProjectPath + imageName + "-" + currentTimeMillis + ":" + tags;
         //tagsSet.add(imageName+"-"+System.currentTimeMillis()+":"+tags);
-        tagsSet.add(imageName+"-"+currentTimeMillis+":"+tags);
+        tagsSet.add(tagsName);
         BuildImageCmd buildImageCmd = dockerClient.buildImageCmd(dockerFile)
                 .withTags(tagsSet);
         BuildImageResultCallback buildImageResultCallback = new BuildImageResultCallback() {
@@ -216,17 +230,21 @@ public class DockerUtils {
                 super.onNext(item);
             }
         };
-
-        return buildImageCmd.exec(buildImageResultCallback).awaitImageId();
-//        logger.info(imageId);
+        Map<String, String> result = new HashMap<>();
+        String imageId = buildImageCmd.exec(buildImageResultCallback).awaitImageId();
+        result.put("imageId", imageId);
+        result.put("imageName", tagsName);
+        logger.info("docker image create:" + JSON.toJSONString(result));
+        return result;
     }
 
     /**
      * 获取镜像列表
+     *
      * @param dockerClient
      * @return
      */
-    public static List<Image> imageList(DockerClient dockerClient){
+    public static List<Image> imageList(DockerClient dockerClient) {
         List<Image> imageList = dockerClient.listImagesCmd().withShowAll(true).exec();
         return imageList;
     }

@@ -679,23 +679,18 @@ public class ProcessUtils {
         //docker image name,example:10.1.23.456/example:latest   docker url/imageName:tag
         ymlContentSb.append("    image: \"" + processStop.getDockerImagesName()+"\"" + System.lineSeparator());
 //        //2023-01-05:因为想把Python也进行分发,所以这里的参数不能再写本地的,改为可以替换的值,将来在哪个server提交任务,哪个sever去替换bigflow_extra_hosts
-//        //server端在bigflow_extra_hosts前自己拼了换行
-//        ymlContentSb.append("    extra_hosts:bigflow_extra_hosts" + System.lineSeparator());
-        /*String hdfsClusterIpNameArr = SysParamsCache.HDFS_CLUSTER_IP_NAME_ARR;
-        String[] hdfsClusterArr = hdfsClusterIpNameArr.split(",");
-        for (String s : hdfsClusterArr) {
-            ymlymlContentSb.append(String.format("      - \"%s\"", s) + System.lineSeparator());
-        }*/
-//        ymlContentSb.append("bigflow_extra_hosts"+System.lineSeparator());     //2023-01-05:因为想把Python也进行分发,所以这里的参数不能再写本地的,改为可以替换的值,将来在哪个server提交任务,哪个sever去替换bigflow_extra_hosts
-        ymlContentSb.append("    hostname: " + ymlName + System.lineSeparator());
-        ymlContentSb.append("    container_name: " + ymlName + System.lineSeparator());
+//        //param that .py needs,used to store procedure data
+        ymlContentSb.append("    extra_hosts:extra_hosts" + System.lineSeparator());
+        ymlContentSb.append("    hostname: " + ymlName + System.lineSeparator()); //.py docker compose needs
+        ymlContentSb.append("    container_name: " + ymlName + System.lineSeparator());//.py docker compose needs
         ymlContentSb.append("    environment:" + System.lineSeparator());
 //        ymlymlContentSb.append(String.format("      - hdfs_url=%s", SysParamsCache.HDFS_URL) + System.lineSeparator());       //从配置文件中获取
-//        ymlContentSb.append("      - hdfs_url=bigflow_hdfs_url" + System.lineSeparator());       //2023-01-05:因为想把Python也进行分发,所以这里的参数不能再写本地的,改为可以替换的值,将来在哪个server提交任务,哪个sever去替换
+        ymlContentSb.append("      - hdfs_url=hdfs_url" + System.lineSeparator());    //params that .py needs,used to store procedure data
         ymlContentSb.append("      - TZ=Asia/Shanghai" + System.lineSeparator());
         ymlContentSb.append("    volumes:" + System.lineSeparator());
         ymlContentSb.append("      - ../app:/app" + System.lineSeparator());
         ymlContentSb.append("    command: python3 /pythonDir/" + processStop.getBundel()+" " );
+        //params that .py needs,used to run .py
         if (processStop.getProcessStopPropertyList() !=null && processStop.getProcessStopPropertyList().size()>0){
             Collections.sort(processStop.getProcessStopPropertyList());
             for (ProcessStopProperty processStopProperty : processStop.getProcessStopPropertyList()) {

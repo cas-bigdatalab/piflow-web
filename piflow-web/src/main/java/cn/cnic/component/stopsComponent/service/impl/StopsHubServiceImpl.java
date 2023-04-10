@@ -12,10 +12,7 @@ import cn.cnic.component.stopsComponent.domain.StopsHubDomain;
 import cn.cnic.component.stopsComponent.domain.StopsHubFileRecordDomain;
 import cn.cnic.component.stopsComponent.entity.*;
 import cn.cnic.component.stopsComponent.service.IStopsHubService;
-import cn.cnic.component.stopsComponent.utils.StopsComponentGroupUtils;
-import cn.cnic.component.stopsComponent.utils.StopsComponentPropertyUtils;
-import cn.cnic.component.stopsComponent.utils.StopsComponentUtils;
-import cn.cnic.component.stopsComponent.utils.StopsHubUtils;
+import cn.cnic.component.stopsComponent.utils.*;
 import cn.cnic.component.stopsComponent.vo.PublishComponentVo;
 import cn.cnic.component.stopsComponent.vo.StopsComponentPropertyVo;
 import cn.cnic.component.stopsComponent.vo.StopsHubInfoVo;
@@ -26,6 +23,7 @@ import cn.cnic.third.service.IStop;
 import cn.cnic.third.vo.stop.StopsHubVo;
 import cn.cnic.third.vo.stop.ThirdStopsComponentVo;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.github.dockerjava.api.DockerClient;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.apache.commons.lang3.StringUtils;
@@ -246,7 +244,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
                 ZipInputStream zipInputStream = new ZipInputStream(new BufferedInputStream(input), Charset.forName("GBK"));
 
                 ZipEntry zipEntry = null;
-                String dockerImagesName = null;   //下面通过代码打docker镜像时,重新赋值,用于 算法包的具体文件记录字段
+                String dockerImagesName = null;
                 while ((zipEntry = zipInputStream.getNextEntry()) != null) {
                     if (zipEntry.isDirectory()) {
                         continue;
@@ -274,7 +272,6 @@ public class StopsHubServiceImpl implements IStopsHubService {
                             dockerFileSb.append("&& unzip /usr/local/" + jarName + " -d /pythonDir/" + System.lineSeparator());
                             String line;
                             while ((line = br.readLine()) != null) {
-                                //之前python的依赖,有个whl结尾的离线安装包,安装命令有所不同,所以这里用if-else判断下
                                 if (line.endsWith(".whl")) {
                                     dockerFileSb.append("&& pip install " + line + System.lineSeparator());
                                 } else {
@@ -287,9 +284,12 @@ public class StopsHubServiceImpl implements IStopsHubService {
                             String stopsHubPath = stopImpl.getStopsHubPath();
                             String dockerFileSavePath = stopsHubPath + "/dockerFile/DockerFile-" + stopsHub.getId();
                             FileUtils.writeData(dockerFileSavePath, dockerFileSb.toString());
-                            //TODO create docker images and push
-
-
+                            DockerClient dockerClient = DockerClientUtils.getDockerClient();
+                            File dockerFile = new File(dockerFileSavePath);
+                            Map<String, String> imageInfo = DockerUtils.buildImage(dockerClient, dockerFile, jarName, "latast", System.currentTimeMillis());
+                            //TODO with http
+                            dockerImagesName = imageInfo.get("imageName");
+                            Boolean pushInfo = DockerUtils.pushImage(dockerClient, dockerImagesName);
                         }
                     }
                 }

@@ -27,11 +27,11 @@ public class DockerClientUtils {
     public static String DCOEKR_CERT_PATH;
 
     @Value("${DCOEKR_CERT_PATH}")
-    public void setDcoekrCertPath(String dcoekrCertPath) {
+    public void setDockerCertPath(String dcoekrCertPath) {
         this.DCOEKR_CERT_PATH = dcoekrCertPath;
     }
 
-    public static String getDcoekrCertPath() {
+    public static String getDockerCertPath() {
         return DCOEKR_CERT_PATH;
     }
 
@@ -92,29 +92,29 @@ public class DockerClientUtils {
     public static String getRegistryPassword() {
         return REGISTRY_PASSWORD;
     }
-
-    // docker远程仓库的类型，此处默认是harbor
-    public static String REGISTRY_TYPE;
-
-    @Value("${REGISTRY_TYPE}")
-    public void setRegistryType(String registryType) {
-        this.REGISTRY_TYPE = registryType;
-    }
-
-    public static String getRegistryType() {
-        return REGISTRY_TYPE;
-    }
-
-    public static String REGISTRY_PROTOCAL;
-
-    @Value("${REGISTRY_PROTOCAL}")
-    public void setRegistryProtocal(String registryProtocal) {
-        this.REGISTRY_PROTOCAL = registryProtocal;
-    }
-
-    public static String getRegistryProtocal() {
-        return REGISTRY_PROTOCAL;
-    }
+//
+//    // docker远程仓库的类型，此处默认是harbor
+//    public static String REGISTRY_TYPE;
+//
+//    @Value("${REGISTRY_TYPE}")
+//    public void setRegistryType(String registryType) {
+//        this.REGISTRY_TYPE = registryType;
+//    }
+//
+//    public static String getRegistryType() {
+//        return REGISTRY_TYPE;
+//    }
+//
+//    public static String REGISTRY_PROTOCAL;
+//
+//    @Value("${REGISTRY_PROTOCAL}")
+//    public void setRegistryProtocal(String registryProtocal) {
+//        this.REGISTRY_PROTOCAL = registryProtocal;
+//    }
+//
+//    public static String getRegistryProtocal() {
+//        return REGISTRY_PROTOCAL;
+//    }
 
 
     /**
@@ -141,12 +141,13 @@ public class DockerClientUtils {
         DockerHttpClient httpClient = new ApacheDockerHttpClient.Builder()
                 .dockerHost(dockerClientConfig.getDockerHost())
                 .sslConfig(dockerClientConfig.getSSLConfig())
+                .maxConnections(100)
                 .build();
 
         return DockerClientImpl.getInstance(dockerClientConfig, httpClient);
     }
 
     public static DockerClient getDockerClient() {
-        return getDockerClient(getDockerHost(), getDockerTlsVerify(), getDcoekrCertPath(), getRegistryUserName(), getRegistryPassword(), getRegistryUrl());
+        return getDockerClient(getDockerHost(), getDockerTlsVerify(), getDockerCertPath(), getRegistryUserName(), getRegistryPassword(), getRegistryUrl());
     }
 }
